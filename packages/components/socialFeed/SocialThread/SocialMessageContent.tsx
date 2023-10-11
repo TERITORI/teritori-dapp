@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { Fragment, useMemo } from "react";
 import { View } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
@@ -11,6 +11,7 @@ import {
 import { AudioView } from "../../FilePreview/AudioView";
 import { ImagesViews } from "../../FilePreview/ImagesViews";
 import { VideoView } from "../../FilePreview/VideoView";
+import { SpacerColumn } from "../../spacer";
 import { SocialFeedMetadata, PostCategory } from "../NewsFeed/NewsFeed.type";
 import { TextRenderer } from "../NewsFeed/TextRenderer/TextRenderer";
 interface Props {
@@ -18,7 +19,6 @@ interface Props {
   postCategory: PostCategory;
   isPreview?: boolean;
 }
-export const THUMBNAIL_WIDTH = 140;
 
 export const SocialMessageContent: React.FC<Props> = ({
   metadata,
@@ -77,7 +77,10 @@ export const SocialMessageContent: React.FC<Props> = ({
         ))}
 
         {audioFiles?.map((file, index) => (
-          <AudioView key={index} file={file} />
+          <Fragment key={index}>
+            {metadata.message && <SpacerColumn size={2} />}
+            <AudioView file={file} />
+          </Fragment>
         ))}
       </>
     );

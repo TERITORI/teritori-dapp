@@ -61,6 +61,8 @@ export const RipperStat: React.FC<RipperStatProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
@@ -70,7 +72,7 @@ const styles = StyleSheet.create({
     minWidth: 80,
   },
   rightCol: {
-    marginLeft: layout.padding_x4,
+    marginLeft: layout.spacing_x4,
   },
   progressBarOuter: {
     borderRadius: 100,
@@ -88,6 +90,6 @@ const styles = StyleSheet.create({
   },
   subText: {
     color: neutralA3,
-    marginTop: layout.padding_x1,
+    marginTop: layout.spacing_x1,
   },
 });

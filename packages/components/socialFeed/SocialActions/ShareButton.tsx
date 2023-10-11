@@ -7,11 +7,12 @@ import { layout } from "../../../utils/style/layout";
 import { IconBox } from "../../IconBox";
 import { SocialButton } from "../../buttons/SocialButton";
 import ModalBase from "../../modals/ModalBase";
-interface FeedPostShareModalProps {
+
+interface ShareButtonProps {
   postId: string;
 }
 
-export const ShareButton = ({ postId }: FeedPostShareModalProps) => {
+export const ShareButton = ({ postId }: ShareButtonProps) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const SOCIAL_BUTTONS = [
@@ -45,8 +46,8 @@ export const ShareButton = ({ postId }: FeedPostShareModalProps) => {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
-            paddingTop: layout.padding_x2,
-            paddingBottom: layout.padding_x4,
+            paddingTop: layout.spacing_x2,
+            paddingBottom: layout.spacing_x4,
           }}
         >
           {SOCIAL_BUTTONS.map((button) => (
@@ -54,7 +55,7 @@ export const ShareButton = ({ postId }: FeedPostShareModalProps) => {
               key={button.text}
               {...button}
               style={{
-                marginHorizontal: layout.padding_x0_75,
+                marginHorizontal: layout.spacing_x0_75,
               }}
             />
           ))}

@@ -5,6 +5,7 @@ import { FlatList, TextStyle, View } from "react-native";
 
 import { Activity } from "../../api/marketplace/v1/marketplace";
 import { useActivity } from "../../hooks/useActivity";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseActivityId, parseUserId, txExplorerLink } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
@@ -15,7 +16,7 @@ import {
   neutral77,
 } from "../../utils/style/colors";
 import { fontMedium14 } from "../../utils/style/fonts";
-import { layout, screenContentMaxWidth } from "../../utils/style/layout";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
 import { Pagination } from "../Pagination";
@@ -53,6 +54,7 @@ export const ActivityTable: React.FC<{
   nftId?: string;
   collectionId?: string;
 }> = ({ nftId, collectionId }) => {
+  const isMobile = useIsMobile();
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [pageIndex, setPageIndex] = useState(0);
   const { total, activities } = useActivity({
@@ -61,13 +63,15 @@ export const ActivityTable: React.FC<{
     offset: pageIndex * itemsPerPage,
     limit: itemsPerPage,
   });
+  if (isMobile) {
+    return null;
+  }
   const maxPage = Math.max(Math.ceil(total / itemsPerPage), 1);
   return (
     <View
       style={{
         justifyContent: "space-between",
         width: "100%",
-        maxWidth: screenContentMaxWidth,
       }}
     >
       <TableRow headings={Object.values(TABLE_ROWS)} />
@@ -111,14 +115,14 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
         width: "100%",
         borderColor: mineShaftColor,
         borderBottomWidth: 1,
-        paddingVertical: layout.padding_x2,
-        paddingHorizontal: layout.padding_x2_5,
+        paddingVertical: layout.spacing_x2,
+        paddingHorizontal: layout.spacing_x2_5,
       }}
     >
       <View
         style={{
           flex: TABLE_ROWS.transactionId.flex,
-          paddingRight: layout.padding_x1,
+          paddingRight: layout.spacing_x1,
         }}
       >
         <ExternalLink
@@ -135,7 +139,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
           fontMedium14,
           {
             flex: TABLE_ROWS.transactionType.flex,
-            paddingRight: layout.padding_x1,
+            paddingRight: layout.spacing_x1,
           },
           activityNameStyle(activity.transactionKind),
         ]}
@@ -145,7 +149,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
       <BrandText
         style={[
           fontMedium14,
-          { flex: TABLE_ROWS.time.flex, paddingRight: layout.padding_x1 },
+          { flex: TABLE_ROWS.time.flex, paddingRight: layout.spacing_x1 },
         ]}
       >
         {moment(activity.time).fromNow()}
@@ -155,7 +159,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
           fontMedium14,
           {
             flex: TABLE_ROWS.totalAmount.flex,
-            paddingRight: layout.padding_x1,
+            paddingRight: layout.spacing_x1,
           },
         ]}
       >
@@ -163,7 +167,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
           prettyPrice(network?.id || "", activity.amount, activity.denom)}
       </BrandText>
       <View
-        style={{ flex: TABLE_ROWS.buyer.flex, paddingRight: layout.padding_x1 }}
+        style={{ flex: TABLE_ROWS.buyer.flex, paddingRight: layout.spacing_x1 }}
       >
         <Link
           to={`/user/${activity.buyerId}`}

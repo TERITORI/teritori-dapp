@@ -79,10 +79,12 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   modalContainer: {
-    paddingHorizontal: layout.padding_x1,
-    paddingVertical: layout.padding_x1_5,
+    paddingHorizontal: layout.spacing_x1,
+    paddingVertical: layout.spacing_x1_5,
     backgroundColor: neutral67,
     borderWidth: 1,
     borderColor: neutral33,

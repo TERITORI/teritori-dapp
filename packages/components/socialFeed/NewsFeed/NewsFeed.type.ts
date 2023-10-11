@@ -12,6 +12,7 @@ export enum PostCategory {
   Video,
   Question,
   BriefForStableDiffusion,
+  Flagged,
 }
 
 export interface NewPostFormValues {

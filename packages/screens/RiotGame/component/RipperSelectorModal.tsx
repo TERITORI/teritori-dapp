@@ -22,6 +22,7 @@ import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { SpacerRow } from "../../../components/spacer";
 import { useBreeding } from "../../../hooks/riotGame/useBreeding";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import { getRipperTokenId, isNFTStaked } from "../../../utils/game";
 import {
@@ -34,7 +35,11 @@ import {
   fontMedium32,
   fontMedium48,
 } from "../../../utils/style/fonts";
-import { headerHeight, layout } from "../../../utils/style/layout";
+import {
+  headerHeight,
+  layout,
+  MOBILE_MAX_WIDTH,
+} from "../../../utils/style/layout";
 
 type RipperSelectorModalProps = ModalProps & {
   slotId: number | undefined;
@@ -55,6 +60,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   confirmButton,
   ...props
 }) => {
+  const isMobile = useIsMobile();
   const [selectedRipper, setSelectedRipper] = useState<NFT | undefined>();
   const [breedingsLeft, setBreedingsLeft] = useState<number>(0);
   const networkId = useSelectedNetworkId();
@@ -104,11 +110,16 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
           contentContainerStyle={{ alignItems: "center" }}
           showsVerticalScrollIndicator={false}
         >
-          <BrandText style={[fontMedium48, { marginTop: layout.padding_x2 }]}>
+          <BrandText
+            style={[
+              isMobile ? fontMedium32 : fontMedium48,
+              { marginTop: layout.spacing_x2 },
+            ]}
+          >
             {selectedRipper?.name || "Please select a Ripper"}
           </BrandText>
 
-          <FlexRow breakpoint={992} justifyContent="space-around">
+          <FlexRow breakpoint={MOBILE_MAX_WIDTH} justifyContent="space-around">
             <View style={{ justifyContent: "space-around" }}>
               <View>
                 <BrandText style={[fontMedium32]}>Available Rippers</BrandText>
@@ -152,7 +163,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                   {
                     alignItems: "center",
                     alignSelf: "center",
-                    marginTop: layout.padding_x2,
+                    marginTop: layout.spacing_x2,
                   },
                 ]}
               >
@@ -172,6 +183,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -182,7 +195,7 @@ const styles = StyleSheet.create({
   dashedBorder: {
     width: RIPPER_IMAGE_SIZE,
     height: RIPPER_IMAGE_SIZE,
-    marginTop: layout.padding_x2_5,
+    marginTop: layout.spacing_x2_5,
   },
   roundedContainer: {
     width: RIPPER_IMAGE_SIZE - 4,
@@ -194,7 +207,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   btnGroup: {
-    marginTop: layout.padding_x2_5,
+    marginTop: layout.spacing_x2_5,
     flexDirection: "row",
     alignSelf: "center",
   },

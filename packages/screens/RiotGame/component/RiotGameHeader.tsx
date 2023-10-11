@@ -20,6 +20,7 @@ import { ConnectWalletButton } from "../../../components/TopMenu/ConnectWalletBu
 import { TopLogo } from "../../../components/navigation/components/TopLogo";
 import { SpacerRow } from "../../../components/spacer";
 import { useForceNetworkKind } from "../../../hooks/useForceNetworkKind";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { NetworkFeature, NetworkKind } from "../../../networks";
 import {
   RootStackParamList,
@@ -99,7 +100,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
   const navigation = useAppNavigation();
   const { name: routeName } = useRoute();
   useForceNetworkKind([NetworkKind.Cosmos, NetworkKind.Ethereum]);
-
+  const isMobile = useIsMobile();
   const onMenuItemClick = (item: MenuItem) => {
     if (item.externalRoute) {
       Linking.openURL(item.externalRoute);
@@ -135,7 +136,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
                 return (
                   <TouchableOpacity
                     onPress={() => onMenuItemClick(menuItem)}
-                    style={{ marginRight: layout.padding_x4 }}
+                    style={{ marginRight: layout.spacing_x4 }}
                     key={menuItem.id}
                   >
                     <FlexRow style={{ alignItems: "center" }}>
@@ -144,7 +145,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
                         height={16}
                         color={color}
                         source={menuItem.iconSVG}
-                        style={{ marginRight: layout.padding_x1 }}
+                        style={{ marginRight: layout.spacing_x1 }}
                       />
                       <BrandText style={[fontMedium16, { color }]}>
                         {menuItem.name}
@@ -156,22 +157,25 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
             </FlexRow>
           )}
         </ScrollView>
-
-        <View style={styles.section}>
-          <SpacerRow size={1.5} />
-          <Separator horizontal color={neutral33} />
-          <SpacerRow size={1.5} />
-          <NetworkSelector forceNetworkFeatures={[NetworkFeature.P2E]} />
-          <SpacerRow size={1.5} />
-          <ConnectWalletButton
-            style={{ marginRight: headerMarginHorizontal }}
-          />
-        </View>
+        {!isMobile && (
+          <View style={styles.section}>
+            <SpacerRow size={1.5} />
+            <Separator horizontal color={neutral33} />
+            <SpacerRow size={1.5} />
+            <NetworkSelector forceNetworkFeatures={[NetworkFeature.P2E]} />
+            <SpacerRow size={1.5} />
+            <ConnectWalletButton
+              style={{ marginRight: headerMarginHorizontal }}
+            />
+          </View>
+        )}
       </View>
     </View>
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   outerContainer: {
     height: headerHeight,
@@ -186,7 +190,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   menu: {
-    paddingHorizontal: layout.padding_x4,
+    paddingHorizontal: layout.spacing_x4,
   },
   section: {
     flexDirection: "row",

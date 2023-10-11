@@ -1,6 +1,6 @@
 // mostly a copy of https://github.com/sindresorhus/ts-extras since it can't be resolved
 
-export type ObjectKeys<T extends object> = `${Exclude<keyof T, symbol>}`;
+type ObjectKeys<T extends object> = `${Exclude<keyof T, symbol>}`;
 
 export const objectKeys = Object.keys as <Type extends object>(
   value: Type

@@ -25,7 +25,7 @@ export const CopyToClipboardSecondary: React.FC<{
         height={40}
         width={216}
         mainContainerStyle={{
-          paddingHorizontal: layout.padding_x1_5,
+          paddingHorizontal: layout.spacing_x1_5,
           justifyContent: "space-between",
           flexDirection: "row",
         }}
@@ -35,7 +35,7 @@ export const CopyToClipboardSecondary: React.FC<{
         <BrandText
           style={[
             fontMedium14,
-            { width: "100%", marginHorizontal: layout.padding_x1_5 },
+            { width: "100%", marginHorizontal: layout.spacing_x1_5 },
           ]}
           numberOfLines={1}
         >

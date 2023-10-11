@@ -27,7 +27,7 @@ export const CollectionInfoInline: React.FC<{
           width={32}
         />
         <BrandText
-          style={[fontSemibold14, { marginLeft: layout.padding_x1_5 }]}
+          style={[fontSemibold14, { marginLeft: layout.spacing_x1_5 }]}
         >
           {name}
         </BrandText>

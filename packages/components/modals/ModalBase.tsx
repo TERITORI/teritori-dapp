@@ -45,7 +45,7 @@ type ModalBaseProps = {
 };
 
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
-export const ModalBase: React.FC<ModalBaseProps> = ({
+const ModalBase: React.FC<ModalBaseProps> = ({
   label,
   labelComponent,
   visible,
@@ -132,7 +132,7 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
               justifyContent: "space-between",
               width: "100%",
               paddingHorizontal: modalMarginPadding,
-              paddingVertical: layout.padding_x2,
+              paddingVertical: layout.spacing_x2,
             }}
           >
             {(label || labelComponent || description) && (

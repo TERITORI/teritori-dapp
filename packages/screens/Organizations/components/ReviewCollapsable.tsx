@@ -1,4 +1,3 @@
-// libraries
 import React, { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
@@ -31,7 +30,6 @@ export const ReviewCollapsable: React.FC<ReviewCollapsableProps> = ({
   children,
   isExpandedByDefault = false,
 }) => {
-  // variables
   const [isExpanded, setIsExpanded] = useState(false);
   const aref = useAnimatedRef<View>();
   const heightRef = useRef<number>(0);
@@ -69,7 +67,6 @@ export const ReviewCollapsable: React.FC<ReviewCollapsableProps> = ({
     setIsExpanded(!isExpanded);
   };
 
-  // returns
   return (
     <View style={styles.container}>
       <Pressable onPress={toggleExpansion} style={styles.header}>
@@ -105,6 +102,8 @@ export const ReviewCollapsable: React.FC<ReviewCollapsableProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: { borderRadius: 12, borderWidth: 1, borderColor: neutral33 },
   header: {
@@ -112,7 +111,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    padding: layout.padding_x2,
+    padding: layout.spacing_x2,
   },
   rowWithCenter: {
     flexDirection: "row",
@@ -127,7 +126,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   childInsideContainer: {
-    padding: layout.padding_x1,
+    padding: layout.spacing_x1,
     borderTopWidth: 1,
     borderColor: neutral33,
   },

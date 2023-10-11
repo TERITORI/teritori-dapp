@@ -3,14 +3,16 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { Post, PostsRequest } from "../../api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
-import {
-  GNO_SOCIAL_FEEDS_PKG_PATH,
-  TERITORI_FEED_ID,
-} from "../../components/socialFeed/const";
+import { TERITORI_FEED_ID } from "../../components/socialFeed/const";
 import { decodeGnoPost } from "../../components/socialFeed/utils";
-import { GnoNetworkInfo, NetworkInfo, NetworkKind } from "../../networks";
+import {
+  GnoNetworkInfo,
+  NetworkInfo,
+  NetworkKind,
+  parseUserId,
+} from "../../networks";
 import { mustGetFeedClient } from "../../utils/backend";
-import { extractGnoString } from "../../utils/gno";
+import { extractGnoJSONString } from "../../utils/gno";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
 
@@ -47,33 +49,42 @@ const fetchTeritoriFeed = async (
 
 const fetchGnoFeed = async (
   selectedNetwork: GnoNetworkInfo,
+  callerAddress: string | undefined,
   req: PostsRequest,
   pageParam: number
 ) => {
+  if (!selectedNetwork.socialFeedsPkgPath) return { list: [], totalCount: 0 };
+  callerAddress = callerAddress || "";
+  const userId = req.filter?.user || "";
+
+  const [, userAddress] = parseUserId(userId);
+
   try {
     const offset = pageParam || 0;
-    const limit = 10;
+    const limit = req.limit;
     const categories = req.filter?.categories || []; // Default = all
     const categoriesStr = `[]uint64{${categories.join(",")}}`;
+    const parentId = 0;
 
     const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
     const output = await provider.evaluateExpression(
-      GNO_SOCIAL_FEEDS_PKG_PATH,
-      `GetPosts(${TERITORI_FEED_ID}, ${categoriesStr}, ${offset}, ${limit})`
+      selectedNetwork.socialFeedsPkgPath,
+      `GetPostsWithCaller(${TERITORI_FEED_ID}, ${parentId}, "${callerAddress}", "${userAddress}", ${categoriesStr}, ${offset}, ${limit})`
     );
 
     const posts: Post[] = [];
+    const gnoPosts = extractGnoJSONString(output);
 
-    const outputStr = extractGnoString(output);
-    for (const postData of outputStr.split(",")) {
-      const post = decodeGnoPost(selectedNetwork.id, postData);
+    for (const gnoPost of gnoPosts) {
+      const post = decodeGnoPost(selectedNetwork.id, gnoPost);
       posts.push(post);
     }
 
-    return {
+    const result = {
       list: posts.sort((p1, p2) => p2.createdAt - p1.createdAt),
       totalCount: posts.length,
     } as PostsList;
+    return result;
   } catch (err) {
     throw err;
   }
@@ -86,21 +97,28 @@ export const useFetchFeed = (req: PostsRequest) => {
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useInfiniteQuery(
       ["posts", selectedNetwork?.id, wallet?.address, { ...req }],
-
       async ({ pageParam = req.offset }) => {
         if (selectedNetwork?.kind === NetworkKind.Cosmos) {
           return fetchTeritoriFeed(selectedNetwork, req, pageParam);
         } else if (selectedNetwork?.kind === NetworkKind.Gno) {
-          return fetchGnoFeed(selectedNetwork, req, pageParam);
+          return fetchGnoFeed(selectedNetwork, wallet?.address, req, pageParam);
         }
 
         throw Error(`Network ${selectedNetwork?.id} is not supported`);
       },
       {
         getNextPageParam: (lastPage, pages) => {
-          const postsLength = combineFetchFeedPages(pages).length;
-          if (lastPage?.totalCount && lastPage.totalCount > postsLength) {
-            return postsLength;
+          // NOTE: On gno feeds, due to list length depends on each user (due to flag, hide)
+          // so if last page contains posts = limit => try to load more content
+          if (selectedNetwork?.kind === NetworkKind.Gno) {
+            if (lastPage?.totalCount && lastPage.totalCount === req.limit) {
+              return pages.length * req.limit;
+            }
+          } else {
+            const postsLength = combineFetchFeedPages(pages).length;
+            if (lastPage?.totalCount && lastPage.totalCount > postsLength) {
+              return postsLength;
+            }
           }
         },
         staleTime: Infinity,

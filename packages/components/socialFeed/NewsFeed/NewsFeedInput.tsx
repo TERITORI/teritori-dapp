@@ -95,7 +95,7 @@ import { FileUploader } from "../../fileUploader";
 import { SpacerColumn } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
-import { GNO_SOCIAL_FEEDS_PKG_PATH, TERITORI_FEED_ID } from "../const";
+import { TERITORI_FEED_ID } from "../const";
 
 interface NewsFeedInputProps {
   type: "comment" | "post";
@@ -174,8 +174,8 @@ export const NewsFeedInput = React.forwardRef<
 
     const onPostCreationSuccess = () => {
       reset();
-      onSubmitSuccess && onSubmitSuccess();
-      onCloseCreateModal && onCloseCreateModal();
+      onSubmitSuccess?.();
+      onCloseCreateModal?.();
     };
 
     const balances = useBalances(selectedNetworkId, wallet?.address);
@@ -322,7 +322,7 @@ export const NewsFeedInput = React.forwardRef<
             const vmCall = {
               caller: selectedWallet?.address || "",
               send: "",
-              pkg_path: GNO_SOCIAL_FEEDS_PKG_PATH,
+              pkg_path: selectedNetwork.socialFeedsPkgPath,
               func: "CreatePost",
               args: [
                 TERITORI_FEED_ID,
@@ -436,14 +436,14 @@ export const NewsFeedInput = React.forwardRef<
             style={{
               width: "100%",
               paddingRight: isMobile
-                ? layout.padding_x1_5
-                : layout.padding_x2_5,
-              paddingLeft: isMobile ? layout.padding_x1_5 : layout.padding_x3,
-              paddingTop: isMobile ? layout.padding_x1_5 : layout.padding_x3,
-              paddingBottom: layout.padding_x1_5,
+                ? layout.spacing_x1_5
+                : layout.spacing_x2_5,
+              paddingLeft: isMobile ? layout.spacing_x1_5 : layout.spacing_x3,
+              paddingTop: isMobile ? layout.spacing_x1_5 : layout.spacing_x3,
+              paddingBottom: layout.spacing_x1_5,
             }}
           >
-            <FlexRow style={{ marginTop: layout.padding_x1 }}>
+            <FlexRow style={{ marginTop: layout.spacing_x1 }}>
               <SVG
                 height={24}
                 width={24}
@@ -451,7 +451,7 @@ export const NewsFeedInput = React.forwardRef<
                 color={secondaryColor}
                 style={{
                   alignSelf: "flex-end",
-                  marginRight: layout.padding_x1_5,
+                  marginRight: layout.spacing_x1_5,
                 }}
               />
               <Animated.View style={{ flex: 1, height: "auto" }}>
@@ -508,7 +508,7 @@ export const NewsFeedInput = React.forwardRef<
                       SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                     ? errorColor
                     : primaryColor,
-                  marginTop: layout.padding_x0_5,
+                  marginTop: layout.spacing_x0_5,
                   alignSelf: "flex-end",
                 },
               ]}
@@ -552,11 +552,11 @@ export const NewsFeedInput = React.forwardRef<
           style={{
             backgroundColor: neutral17,
             paddingVertical: isMobile
-              ? layout.padding_x1_5
-              : layout.padding_x1_5,
+              ? layout.spacing_x1_5
+              : layout.spacing_x1_5,
             paddingHorizontal: isMobile
-              ? layout.padding_x1_5
-              : layout.padding_x2_5,
+              ? layout.spacing_x1_5
+              : layout.spacing_x2_5,
             flexDirection:
               viewWidth < SOCIAL_FEED_BREAKPOINT_M ? "column" : "row",
             alignItems:
@@ -585,7 +585,7 @@ export const NewsFeedInput = React.forwardRef<
             <BrandText
               style={[
                 fontSemibold13,
-                { color: neutral77, marginLeft: layout.padding_x1 },
+                { color: neutral77, marginLeft: layout.spacing_x1 },
               ]}
             >
               {freePostCount
@@ -618,11 +618,11 @@ export const NewsFeedInput = React.forwardRef<
             >
               <EmojiSelector
                 onEmojiSelected={onEmojiSelected}
-                buttonStyle={{ marginRight: layout.padding_x2_5 }}
+                buttonStyle={{ marginRight: layout.spacing_x2_5 }}
               />
 
               <GIFSelector
-                buttonStyle={{ marginRight: layout.padding_x2_5 }}
+                buttonStyle={{ marginRight: layout.spacing_x2_5 }}
                 onGIFSelected={(url) => {
                   // Don't add if already added
                   if (formValues.gifs?.find((gif) => gif === url)) return;
@@ -645,7 +645,7 @@ export const NewsFeedInput = React.forwardRef<
                   <IconBox
                     icon={audioSVG}
                     onPress={onPress}
-                    style={{ marginRight: layout.padding_x2_5 }}
+                    style={{ marginRight: layout.spacing_x2_5 }}
                     disabled={
                       !!formValues.files?.length || !!formValues.gifs?.length
                     }
@@ -660,7 +660,7 @@ export const NewsFeedInput = React.forwardRef<
                   <IconBox
                     icon={videoSVG}
                     onPress={onPress}
-                    style={{ marginRight: layout.padding_x2_5 }}
+                    style={{ marginRight: layout.spacing_x2_5 }}
                     disabled={
                       !!formValues.files?.length || !!formValues.gifs?.length
                     }
@@ -694,7 +694,7 @@ export const NewsFeedInput = React.forwardRef<
                     onPress={onPress}
                     style={{
                       marginRight:
-                        viewWidth < BREAKPOINT_S ? 0 : layout.padding_x2_5,
+                        viewWidth < BREAKPOINT_S ? 0 : layout.spacing_x2_5,
                     }}
                     iconProps={{
                       height: 18,
@@ -725,7 +725,7 @@ export const NewsFeedInput = React.forwardRef<
                     }
                     borderColor={primaryColor}
                     touchableStyle={{
-                      marginRight: layout.padding_x2_5,
+                      marginRight: layout.spacing_x2_5,
                     }}
                     backgroundColor={
                       formValues?.message.length >

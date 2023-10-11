@@ -59,7 +59,7 @@ export const GnoDAOCard: React.FC<{
   );
 };
 
-export const DAOCardView: React.FC<{
+const DAOCardView: React.FC<{
   daoId: string;
   name: string | null | undefined;
   tokenId?: string | null;
@@ -96,13 +96,15 @@ export const DAOCardView: React.FC<{
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     width: 250,
     height: 300,
     flexDirection: "column",
-    paddingVertical: layout.padding_x2_5,
-    paddingHorizontal: layout.padding_x2_5,
+    paddingVertical: layout.spacing_x2_5,
+    paddingHorizontal: layout.spacing_x2_5,
     borderWidth: 1,
     borderColor: neutral33,
     borderRadius: 12,

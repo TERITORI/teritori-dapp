@@ -14,7 +14,7 @@ import buttonBackgorundBlackMobile from "../../assets/button/RectangleButtonMobi
 import buttonBackgroundBlackSmall from "../../assets/button/RectangleButtonSmall.png";
 import { useContentContext } from "../../context/ContentProvider";
 
-export interface ButtonType {
+interface ButtonType {
   onPress?: () => void;
   text: string;
   size: "S" | "L" | "L-mobile";

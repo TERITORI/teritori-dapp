@@ -68,8 +68,8 @@ export const FightProgressBar: React.FC<FightProgressBarProps> = ({
                 backgroundColor: bgColor,
                 zIndex: -1,
                 position: "relative",
-                marginLeft: index === 0 ? layout.padding_x1 : 0, // Add left margin at first cell to show pointer
-                marginRight: index === TOTAL_CELLS - 1 ? layout.padding_x1 : 0, // Add right margin at most right cell to show pointer
+                marginLeft: index === 0 ? layout.spacing_x1 : 0, // Add left margin at first cell to show pointer
+                marginRight: index === TOTAL_CELLS - 1 ? layout.spacing_x1 : 0, // Add right margin at most right cell to show pointer
               }}
             >
               {pointerRelativePosition > 0 && currentCellIndex === index && (

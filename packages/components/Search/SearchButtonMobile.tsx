@@ -15,7 +15,7 @@ export const SearchButtonMobile: React.FC = () => {
         noBrokenCorners
         mainContainerStyle={{
           flexDirection: "row",
-          paddingHorizontal: layout.padding_x1,
+          paddingHorizontal: layout.spacing_x1,
         }}
         height={32}
         width={32}

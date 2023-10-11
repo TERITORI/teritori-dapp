@@ -11,11 +11,11 @@ import {
   getStakingCurrency,
 } from "../networks";
 
-export interface TokenHolder {
+interface TokenHolder {
   address: string;
   amount: string;
 }
-export interface DaoMember {
+interface DaoMember {
   addr: string;
   weight: number;
 }

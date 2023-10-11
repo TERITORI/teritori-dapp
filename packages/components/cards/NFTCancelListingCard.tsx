@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
 import { prettyPrice } from "../../utils/coins";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
+import { NFTInfo } from "../../utils/types/nft";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
 import { TertiaryBox } from "../boxes/TertiaryBox";

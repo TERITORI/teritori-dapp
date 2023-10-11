@@ -63,7 +63,6 @@ export const ScreenContainer: React.FC<{
   forceNetworkKind,
   forceNetworkFeatures,
 }) => {
-  // variables
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
@@ -205,6 +204,8 @@ export const ScreenContainer: React.FC<{
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     flex: 1,

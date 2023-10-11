@@ -54,8 +54,8 @@ const DAOsSection: React.FC<{
   return (
     <View
       style={{
-        padding: layout.contentPadding,
-        paddingTop: layout.topContentPaddingWithHeading,
+        padding: layout.contentSpacing,
+        paddingTop: layout.topContentSpacingWithHeading,
       }}
     >
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>

@@ -23,7 +23,7 @@ const SeparatorGradient: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
-export const ModalBaseTest: React.FC<{
+const ModalBaseTest: React.FC<{
   label: string;
   onClose?: () => void;
   width?: number;

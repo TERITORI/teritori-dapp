@@ -41,6 +41,8 @@ export const ImagePreviewer: React.FC<ImagePreviewerProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   imagePreviewer: {
     height: 140,
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
     backgroundColor: neutral22,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: layout.padding_x1_5,
+    marginBottom: layout.spacing_x1_5,
     overflow: "hidden",
   },
   image: {

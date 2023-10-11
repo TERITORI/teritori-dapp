@@ -3,48 +3,13 @@ import { bech32 } from "bech32";
 
 import { ContractVersion } from "../../contracts-clients/dao-core/DaoCore.types";
 import {
-  NetworkKind,
+  getNetwork,
   mustGetNonSigningCosmWasmClient,
+  NetworkKind,
   parseUserId,
 } from "../../networks";
 
-export const useCosmWasmContract = (
-  networkId: string | undefined,
-  address: string | undefined
-) => {
-  return useQuery(
-    ["cosmwasmContract", networkId, address],
-    async () => {
-      if (!networkId || !address) {
-        return null;
-      }
-      const client = await mustGetNonSigningCosmWasmClient(networkId);
-      const contract = await client.getContract(address);
-      return contract;
-    },
-    { staleTime: Infinity }
-  );
-};
-
-export const useCosmWasmCodeDetails = (
-  networkId: string | undefined,
-  codeId: number | undefined
-) => {
-  return useQuery(
-    ["cosmwasmCodeDetails", networkId, codeId],
-    async () => {
-      if (!networkId || !codeId) {
-        return null;
-      }
-      const client = await mustGetNonSigningCosmWasmClient(networkId);
-      const info = await client.getCodeDetails(codeId);
-      return info;
-    },
-    { staleTime: Infinity }
-  );
-};
-
-export const useCosmWasmContractVersion = (
+const useCosmWasmContractVersion = (
   networkId: string | undefined,
   address: string | undefined
 ) => {
@@ -54,6 +19,12 @@ export const useCosmWasmContractVersion = (
       if (!networkId || !address) {
         return null;
       }
+
+      const network = getNetwork(networkId);
+      if (network?.kind !== NetworkKind.Cosmos) {
+        return null;
+      }
+
       const client = await mustGetNonSigningCosmWasmClient(networkId);
       const { info } = await client.queryContractSmart(address, { info: {} });
       return info as ContractVersion;

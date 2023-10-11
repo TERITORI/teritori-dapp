@@ -2,10 +2,7 @@ import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
-import {
-  GNO_SOCIAL_FEEDS_PKG_PATH,
-  TERITORI_FEED_ID,
-} from "../../components/socialFeed/const";
+import { TERITORI_FEED_ID } from "../../components/socialFeed/const";
 import { decodeGnoPost } from "../../components/socialFeed/utils";
 import {
   PostResult,
@@ -16,14 +13,14 @@ import {
   NetworkKind,
   parseNetworkObjectId,
 } from "../../networks";
-import { extractGnoString } from "../../utils/gno";
+import { extractGnoJSONString } from "../../utils/gno";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 
 export type FetchCommentResponse = {
   list: PostResult[];
 } | null;
 
-export type PostResultWithCreatedAt = PostResult & {
+type PostResultWithCreatedAt = PostResult & {
   created_at: number;
 };
 
@@ -63,16 +60,20 @@ const fetchGnoComments = async (
   parentId: string
 ): Promise<FetchCommentResponse> => {
   const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
+
+  const offset = 0;
+  const limit = 100; // For now hardcode to load max 100 comments
+
   const output = await provider.evaluateExpression(
-    GNO_SOCIAL_FEEDS_PKG_PATH,
-    `GetComments(${TERITORI_FEED_ID}, ${parentId})`
+    selectedNetwork.socialFeedsPkgPath || "",
+    `GetComments(${TERITORI_FEED_ID}, ${parentId}, ${offset}, ${limit})`
   );
 
   const posts: PostResultWithCreatedAt[] = [];
 
-  const outputStr = extractGnoString(output);
-  for (const postData of outputStr.split(",")) {
-    const post = decodeGnoPost(selectedNetwork.id, postData);
+  const gnoPosts = extractGnoJSONString(output);
+  for (const gnoPost of gnoPosts) {
+    const post = decodeGnoPost(selectedNetwork.id, gnoPost);
     const [, creatorAddress] = parseNetworkObjectId(post.authorId);
 
     posts.push({
@@ -100,7 +101,6 @@ export const useFetchComments = ({
   totalCount,
   enabled,
 }: ConfigType) => {
-  // variable
   const selectedNetwork = useSelectedNetworkInfo();
 
   // request

@@ -26,6 +26,7 @@ import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork, parseUserId } from "../../networks";
@@ -85,7 +86,7 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
         />
 
         <BrandText
-          style={[styles.colData, { marginLeft: layout.padding_x1 }]}
+          style={[styles.colData, { marginLeft: layout.spacing_x1 }]}
           numberOfLines={1}
         >
           {name}
@@ -95,7 +96,7 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
           height={16}
           color={primaryColor}
           source={badgeSVG}
-          style={{ marginLeft: layout.padding_x1 }}
+          style={{ marginLeft: layout.spacing_x1 }}
         />
       </TouchableOpacity>
     </FlexRow>
@@ -105,7 +106,7 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
 const Rank: React.FC<RankProps> = ({ changes }) => {
   if (changes === 0) {
     return (
-      <BrandText style={[styles.colData, { marginLeft: layout.padding_x3 }]}>
+      <BrandText style={[styles.colData, { marginLeft: layout.spacing_x3 }]}>
         0
       </BrandText>
     );
@@ -120,7 +121,7 @@ const Rank: React.FC<RankProps> = ({ changes }) => {
       <BrandText
         style={[
           styles.colData,
-          { color: rankColor, marginLeft: layout.padding_x1 },
+          { color: rankColor, marginLeft: layout.spacing_x1 },
         ]}
       >
         {rankSign} {Math.abs(changes)}
@@ -130,6 +131,7 @@ const Rank: React.FC<RankProps> = ({ changes }) => {
 };
 
 export const RiotGameLeaderboardScreen = () => {
+  const isMobile = useIsMobile();
   const [userScores, setUserScores] = useState<UserScore[]>([]);
   const [currentSeason, setCurrentSeason] = useState<CurrentSeasonResponse>();
   const selectedNetwork = useSelectedNetworkInfo();
@@ -175,16 +177,16 @@ export const RiotGameLeaderboardScreen = () => {
         <BrandText style={fontMedium16}>{currentSeason?.id}</BrandText>
       </ImageBackground>
 
-      <TertiaryBox fullWidth style={{ marginTop: layout.padding_x2 }}>
+      <TertiaryBox fullWidth style={{ marginTop: layout.spacing_x2 }}>
         <FlexRow>
           <View style={{ flex: 1 }}>
             <BrandText
-              style={[styles.colHeaderTitle, { marginLeft: layout.padding_x2 }]}
+              style={[styles.colHeaderTitle, { marginLeft: layout.spacing_x2 }]}
             >
               Rank
             </BrandText>
           </View>
-          <View style={{ flex: 5 }}>
+          <View style={{ flex: isMobile ? 1 : 5 }}>
             <BrandText style={styles.colHeaderTitle}>Player</BrandText>
           </View>
           <View style={{ flex: 2 }}>
@@ -197,9 +199,13 @@ export const RiotGameLeaderboardScreen = () => {
               Time spent in Fight
             </BrandText>
           </View>
-          <View style={{ flex: 1 }}>
-            <BrandText style={styles.colHeaderTitle}>24 hours Change</BrandText>
-          </View>
+          {!isMobile && (
+            <View style={{ flex: 1 }}>
+              <BrandText style={styles.colHeaderTitle}>
+                24 hours Change
+              </BrandText>
+            </View>
+          )}
         </FlexRow>
       </TertiaryBox>
 
@@ -213,12 +219,12 @@ export const RiotGameLeaderboardScreen = () => {
             <FlexRow style={styles.rowItem}>
               <View style={{ flex: 1 }}>
                 <BrandText
-                  style={[styles.colData, { marginLeft: layout.padding_x3 }]}
+                  style={[styles.colData, { marginLeft: layout.spacing_x3 }]}
                 >
                   {userScore.rank}
                 </BrandText>
               </View>
-              <View style={{ flex: 5 }}>
+              <View style={{ flex: isMobile ? 1 : 5 }}>
                 <PlayerName userId={userScore.userId} />
               </View>
               <View
@@ -239,9 +245,11 @@ export const RiotGameLeaderboardScreen = () => {
 
                 <BrandText style={styles.colData}>{hours} hours</BrandText>
               </View>
-              <View style={{ flex: 1 }}>
-                <Rank changes={rankChanges} />
-              </View>
+              {!isMobile && (
+                <View style={{ flex: 1 }}>
+                  <Rank changes={rankChanges} />
+                </View>
+              )}
             </FlexRow>
           );
         }}
@@ -250,9 +258,11 @@ export const RiotGameLeaderboardScreen = () => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   contentContainer: {
-    paddingHorizontal: layout.padding_x2_5,
+    paddingHorizontal: layout.spacing_x2_5,
   },
 
   jumbotron: {
@@ -264,10 +274,10 @@ const styles = StyleSheet.create({
   colHeaderTitle: {
     color: neutral77,
     ...(fontSemibold12 as object),
-    marginVertical: layout.padding_x2,
+    marginVertical: layout.spacing_x2,
   },
   colData: {
-    marginVertical: layout.padding_x2_5,
+    marginVertical: layout.spacing_x2_5,
     ...(fontSemibold12 as object),
   },
   rowItem: {

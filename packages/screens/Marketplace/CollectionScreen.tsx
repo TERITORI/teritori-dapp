@@ -23,7 +23,6 @@ import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
-  // variables
   const { id } = route.params;
   const [selectedTab, setSelectedTab] = useState<TabsListType>("collections");
   const { collectionInfo: info } = useCollectionInfo(id);
@@ -49,7 +48,6 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   };
 
   const SideCartWidth = 245 + 10;
-  // returns
   return (
     <ScreenContainer
       isLarge
@@ -96,16 +94,16 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
           style={{
             position: "absolute",
             right: -10,
-            marginTop: 36,
+            marginTop: layout.spacing_x4,
             flexDirection: "column",
             width: 245,
-            marginBottom: layout.padding_x2_5,
+            marginBottom: layout.spacing_x2_5,
             backgroundColor: neutral00,
-            borderRadius: layout.padding_x2,
+            borderRadius: layout.spacing_x2,
             borderColor: neutral33,
             borderWidth: 1,
-            paddingVertical: layout.padding_x1,
-            paddingHorizontal: layout.padding_x1_5,
+            paddingVertical: layout.spacing_x1,
+            paddingHorizontal: layout.spacing_x1_5,
             borderStyle: "solid",
           }}
         />

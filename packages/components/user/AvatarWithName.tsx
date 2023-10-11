@@ -28,7 +28,7 @@ export const AvatarWithName: React.FC<
   return <AvatarWithNameFromUserId {...props} />;
 };
 
-export const AvatarWithNameFromName: React.FC<{
+const AvatarWithNameFromName: React.FC<{
   networkId: string | undefined;
   name: string | undefined;
   style?: StyleProp<ViewStyle>;
@@ -45,7 +45,7 @@ export const AvatarWithNameFromName: React.FC<{
   );
 };
 
-export const AvatarWithNameFromUserId: React.FC<{
+const AvatarWithNameFromUserId: React.FC<{
   userId: string | undefined;
   style?: StyleProp<ViewStyle>;
   onPress: (userId: string) => void;
@@ -61,7 +61,7 @@ export const AvatarWithNameFromUserId: React.FC<{
   );
 };
 
-export const AvatarWithNameView: React.FC<{
+const AvatarWithNameView: React.FC<{
   name: string | undefined;
   userId: string | undefined;
   style?: StyleProp<ViewStyle>;

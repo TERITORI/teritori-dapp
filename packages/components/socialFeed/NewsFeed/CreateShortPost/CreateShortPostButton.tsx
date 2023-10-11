@@ -26,6 +26,8 @@ export const CreateShortPostButton: React.FC<{
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   selfCenter: {
     alignSelf: "center",
@@ -38,11 +40,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: neutral33,
     borderRadius: 999,
-    paddingLeft: layout.padding_x1_5,
-    paddingRight: layout.padding_x2,
+    paddingLeft: layout.spacing_x1_5,
+    paddingRight: layout.spacing_x2,
     height: 42,
   },
   textContainer: {
-    marginLeft: layout.padding_x1,
+    marginLeft: layout.spacing_x1,
   },
 });

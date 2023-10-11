@@ -95,7 +95,6 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
     onGIFSelected && onGIFSelected(item.media_formats["gif"].url);
   };
 
-  // returns
   return (
     <Menu
       opened={isGIFModalVisible}
@@ -160,13 +159,15 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   modalContainer: {
     backgroundColor: neutral67,
     borderWidth: 1,
     borderColor: neutral33,
-    paddingHorizontal: layout.padding_x1,
-    paddingVertical: layout.padding_x1_5,
+    paddingHorizontal: layout.spacing_x1,
+    paddingVertical: layout.spacing_x1_5,
     width: WIDTH,
     height: HEIGHT,
     borderRadius: 10,
@@ -180,14 +181,14 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: neutral33,
     width: "100%",
-    paddingVertical: layout.padding_x0_5,
-    paddingLeft: layout.padding_x1_5,
+    paddingVertical: layout.spacing_x0_5,
+    paddingLeft: layout.spacing_x1_5,
     color: secondaryColor,
     borderRadius: 3,
   },
   gif: {
     width: 65,
     height: 65,
-    margin: layout.padding_x0_5,
+    margin: layout.spacing_x0_5,
   },
 });

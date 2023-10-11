@@ -360,7 +360,7 @@ export const SwapView: React.FC = () => {
             flexDirection: "row",
             justifyContent: "space-between",
             width: "100%",
-            padding: layout.padding_x2_5,
+            padding: layout.spacing_x2_5,
           }}
         >
           <SwapHeader
@@ -369,8 +369,8 @@ export const SwapView: React.FC = () => {
           />
         </View>
 
-        <View style={{ width: "100%", paddingHorizontal: layout.padding_x2_5 }}>
-          <SeparatorGradient style={{ marginBottom: layout.padding_x2_5 }} />
+        <View style={{ width: "100%", paddingHorizontal: layout.spacing_x2_5 }}>
+          <SeparatorGradient style={{ marginBottom: layout.spacing_x2_5 }} />
           <View style={styles.childrenContainer}>
             <View style={styles.currencies}>
               {/*======= First currency */}
@@ -396,7 +396,7 @@ export const SwapView: React.FC = () => {
                       onPress={onPressHalf}
                       size="XS"
                       text="HALF"
-                      touchableStyle={{ marginLeft: layout.padding_x1 }}
+                      touchableStyle={{ marginLeft: layout.spacing_x1 }}
                     />
                   </View>
                 </View>
@@ -542,6 +542,8 @@ export const SwapView: React.FC = () => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   loaderContainer: {
     position: "absolute",
@@ -576,15 +578,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headerTitle: {
-    marginLeft: layout.padding_x2,
+    marginLeft: layout.spacing_x2,
   },
 
   childrenContainer: {
     alignItems: "center",
-    paddingBottom: layout.padding_x2_5,
+    paddingBottom: layout.spacing_x2_5,
   },
   currencyBoxMainContainer: {
-    padding: layout.padding_x2,
+    padding: layout.spacing_x2,
   },
 
   counts: {
@@ -592,7 +594,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    marginBottom: layout.padding_x2,
+    marginBottom: layout.spacing_x2,
   },
   currencies: {
     width: "100%",

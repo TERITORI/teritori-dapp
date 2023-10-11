@@ -34,7 +34,6 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
   isRefreshing,
   onPress,
 }) => {
-  // variables
   const isRefreshingAnim = useDerivedValue(() => {
     return isRefreshing.value;
   }, [isRefreshing.value]);
@@ -66,6 +65,8 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
     };
   }, [rotateValue.value]);
 
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({
     selfCenter: {
       alignSelf: "center",
@@ -77,7 +78,7 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
       borderWidth: 1,
       borderColor: neutral33,
       borderRadius: 999,
-      padding: layout.padding_x1_5,
+      padding: layout.spacing_x1_5,
 
       justifyContent: "center",
       width:
@@ -90,11 +91,10 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
           : ROUND_BUTTON_WIDTH_L,
     },
     textContainer: {
-      marginLeft: layout.padding_x1_5,
+      marginLeft: layout.spacing_x1_5,
     },
   });
 
-  // returns
   return (
     <Animated.View style={[styles.selfCenter]}>
       <TouchableOpacity style={styles.container} onPress={onPress}>

@@ -1,13 +1,21 @@
-import React, { ReactElement, useState } from "react";
+import React, {
+  FC,
+  Fragment,
+  ReactElement,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   View,
   ScrollView,
-  StyleSheet,
   StyleProp,
   ViewStyle,
+  ActivityIndicator,
+  TextStyle,
 } from "react-native";
 
-import { Label } from "./TextInputCustom";
+import { Label, TextInputCustom } from "./TextInputCustom";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import lockSVG from "../../../assets/icons/lock.svg";
@@ -25,46 +33,93 @@ import { SVG } from "../SVG";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
-export type SelectInputDataValue = string | number;
-
-export type SelectInputData = {
+export type SelectInputItem = {
   label: string;
-  value: SelectInputDataValue;
+  value: string;
   iconComponent?: ReactElement;
 };
 
 type Props = {
-  data: SelectInputData[];
+  data: SelectInputItem[];
   placeHolder?: string;
-  selectedData: SelectInputData;
-  setData: (data: SelectInputData) => void;
+  selectedItem: SelectInputItem;
+  selectItem: (item: SelectInputItem) => void;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
   boxStyle?: StyleProp<ViewStyle>;
   label?: string;
   isRequired?: boolean;
+  allowSearchValue?: boolean;
+  name?: string;
+  isLoading?: boolean;
+  renderItem?: ({
+    onPressItem,
+    item,
+  }: {
+    onPressItem: (item: SelectInputItem) => void;
+    item: SelectInputItem;
+  }) => JSX.Element;
 };
 
 export const SelectInput: React.FC<Props> = ({
   data,
   placeHolder,
-  selectedData,
-  setData,
+  selectedItem,
+  selectItem,
   disabled,
   style,
   boxStyle,
   label,
   isRequired,
+  allowSearchValue,
+  name,
+  isLoading,
+  renderItem,
 }) => {
   const [openMenu, setOpenMenu] = useState<boolean>(false);
-  const [hoveredIndex, setHoveredIndex] = useState<number>(0);
   const [hovered, setHovered] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const selectableData = useMemo(
+    () =>
+      allowSearchValue && searchValue
+        ? // selectableData depends on searchValue
+          data.filter((d) =>
+            d.label.toLowerCase().includes(searchValue.toLowerCase())
+          )
+        : // Or selectableData is just the given data
+          data,
+    [allowSearchValue, data, searchValue]
+  );
+
+  // It obliges the user to select a value from the list to trigger a valid selectItem. The searchValue will not be used as selectedItem.
+  // Also, after the user selected a value, if he modifies the searchValue, he will have to re-select a value from the list.
+  useEffect(() => {
+    if (
+      allowSearchValue &&
+      selectedItem.label &&
+      searchValue !== selectedItem.label
+    ) {
+      selectItem({ label: "", value: "" });
+    }
+  }, [allowSearchValue, searchValue, selectItem, selectedItem]);
+
+  useEffect(() => {
+    if (!selectableData.length) {
+      setOpenMenu(false);
+    }
+  }, [selectableData]);
 
   const getScrollViewStyle = () => {
-    if (data.length > 5) {
-      return [styles.dropdownMenu, { height: 200 }];
+    if (selectableData.length > 5) {
+      return [dropdownMenuStyle, { height: 200 }];
     }
-    return styles.dropdownMenu;
+    return dropdownMenuStyle;
+  };
+
+  const onPressItem = (item: SelectInputItem) => {
+    selectItem(item);
+    setSearchValue(item.label);
+    setOpenMenu(false);
   };
 
   return (
@@ -73,9 +128,9 @@ export const SelectInput: React.FC<Props> = ({
       onHoverIn={() => setHovered(true)}
       onHoverOut={() => setHovered(false)}
       onPress={() => {
-        if (!disabled || data.length) setOpenMenu((value) => !value);
+        if (!disabled || selectableData.length) setOpenMenu((value) => !value);
       }}
-      disabled={disabled || !data.length}
+      disabled={disabled || !selectableData.length}
     >
       {label && (
         <>
@@ -92,81 +147,83 @@ export const SelectInput: React.FC<Props> = ({
       <View>
         <View
           style={[
-            styles.selectInput,
+            selectInputStyle,
             hovered && { borderColor: secondaryColor },
             boxStyle,
           ]}
         >
-          <View style={styles.iconLabel}>
-            {selectedData.iconComponent && (
+          <View style={iconLabelStyle}>
+            {selectedItem.iconComponent && (
               <>
-                {selectedData.iconComponent}
+                {selectedItem.iconComponent}
                 <SpacerRow size={1} />
               </>
             )}
 
-            <BrandText
-              style={[
-                fontSemibold14,
-                { color: selectedData ? secondaryColor : neutral77 },
-              ]}
-            >
-              {selectedData?.label ? selectedData.label : placeHolder}
-            </BrandText>
+            {allowSearchValue ? (
+              <TextInputCustom
+                placeHolder={placeHolder}
+                name={name || ""}
+                hideLabel
+                label=""
+                variant="noStyle"
+                value={searchValue}
+                onChangeText={(text) => {
+                  setSearchValue(text);
+                  setOpenMenu(!!selectableData.length);
+                }}
+                rules={{ required: isRequired }}
+                style={{ flex: 1 }}
+                containerStyle={{ flex: 1 }}
+                boxMainContainerStyle={{ flex: 1 }}
+                textInputStyle={{ width: "100%" }}
+                disabled={disabled || isLoading}
+              />
+            ) : (
+              <BrandText
+                style={[
+                  fontSemibold14,
+                  { color: selectedItem ? secondaryColor : neutral77 },
+                ]}
+              >
+                {selectedItem?.label ? selectedItem.label : placeHolder}
+              </BrandText>
+            )}
           </View>
 
-          <SVG
-            source={
-              !data.length || disabled
-                ? lockSVG
-                : openMenu
-                ? chevronUpSVG
-                : chevronDownSVG
-            }
-            width={16}
-            height={16}
-            color={secondaryColor}
-          />
+          {isLoading ? (
+            <ActivityIndicator
+              color={secondaryColor}
+              style={{ marginLeft: layout.spacing_x1_5 }}
+            />
+          ) : (
+            <SVG
+              source={
+                !selectableData.length || disabled
+                  ? lockSVG
+                  : openMenu
+                  ? chevronUpSVG
+                  : chevronDownSVG
+              }
+              width={16}
+              height={16}
+              color={secondaryColor}
+              style={{ marginLeft: layout.spacing_x1_5 }}
+            />
+          )}
         </View>
 
         {/*TODO: If the opened menu appears under other elements, you'll may need to set zIndex:-1 or something to these elements*/}
         {openMenu && (
           <ScrollView style={getScrollViewStyle()}>
-            {data.map((item, index) => (
-              <CustomPressable
-                onHoverIn={() => {
-                  setHoveredIndex(index + 1);
-                  setHovered(true);
-                }}
-                onHoverOut={() => {
-                  setHoveredIndex(0);
-                  setHovered(false);
-                }}
-                onPress={() => {
-                  setData(item);
-                  setOpenMenu(false);
-                }}
-                key={index}
-                style={styles.dropdownMenuRow}
-              >
-                <View
-                  style={[
-                    styles.iconLabel,
-                    hoveredIndex === index + 1 && { opacity: 0.5 },
-                  ]}
-                >
-                  {item.iconComponent && (
-                    <>
-                      {item.iconComponent}
-                      <SpacerRow size={1.5} />
-                    </>
-                  )}
-
-                  <BrandText style={styles.dropdownMenuText}>
-                    {item.label}
-                  </BrandText>
-                </View>
-              </CustomPressable>
+            {data?.map((item, index) => (
+              <Fragment key={index}>
+                {renderItem ? (
+                  renderItem({ onPressItem, item })
+                ) : (
+                  <SelectInputItemComponent item={item} onPress={onPressItem} />
+                )}
+              </Fragment>
             ))}
           </ScrollView>
         )}
@@ -175,58 +232,68 @@ export const SelectInput: React.FC<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  selectInputLabel: StyleSheet.flatten([fontSemibold14, { color: neutralA3 }]),
-  selectInput: {
-    backgroundColor: neutral00,
-    fontSize: 14,
-    fontWeight: 600,
-    color: secondaryColor,
-    borderColor: neutral33,
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: layout.padding_x1_5,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  inputContainer: {
-    backgroundColor: neutral00,
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: 12,
-    paddingHorizontal: layout.padding_x1_5,
-  },
-  inputItemStyle: {
-    backgroundColor: "#292929",
-    color: neutralA3,
-    paddingVertical: layout.padding_x1_5,
-    paddingHorizontal: layout.padding_x1,
-  },
-  iconLabel: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
+export const SelectInputItemComponent: FC<{
+  onPress: (item: SelectInputItem) => void;
+  item: SelectInputItem;
+  isLoading?: boolean;
+}> = ({ onPress, item, isLoading }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  return (
+    <CustomPressable
+      onHoverIn={() => setIsHovered(true)}
+      onHoverOut={() => setIsHovered(false)}
+      onPress={() => onPress(item)}
+      style={dropdownMenuRowStyle}
+      disabled={isLoading}
+    >
+      <View
+        style={[iconLabelStyle, (isHovered || isLoading) && { opacity: 0.5 }]}
+      >
+        {item.iconComponent && (
+          <>
+            {item.iconComponent}
+            <SpacerRow size={1.5} />
+          </>
+        )}
+        <BrandText style={dropdownMenuTextStyle}>{item.label}</BrandText>
+      </View>
 
-  dropdownMenu: {
-    backgroundColor: "#292929",
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: 12,
-    padding: layout.padding_x1,
-    position: "absolute",
-    top: 52,
-    width: "100%",
-    zIndex: 10,
-  },
-  dropdownMenuText: StyleSheet.flatten([fontMedium13]),
-  dropdownMenuRow: {
-    borderRadius: 6,
-    padding: layout.padding_x1,
-  },
-  // dropdownMenuRow: {
-  //   backgroundColor: neutral00,
-  //   borderRadius: 6,
-  //   padding: layout.padding_x1,
-  // },
-});
+      {isLoading && <ActivityIndicator color={secondaryColor} />}
+    </CustomPressable>
+  );
+};
+
+const selectInputStyle: ViewStyle = {
+  backgroundColor: neutral00,
+  borderColor: neutral33,
+  borderWidth: 1,
+  borderRadius: 12,
+  padding: layout.spacing_x1_5,
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+};
+const iconLabelStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  flex: 1,
+};
+const dropdownMenuStyle: ViewStyle = {
+  backgroundColor: "#292929",
+  borderWidth: 1,
+  borderColor: neutral33,
+  borderRadius: 12,
+  padding: layout.spacing_x1,
+  position: "absolute",
+  top: 52,
+  width: "100%",
+  maxHeight: 330,
+  zIndex: 10,
+};
+const dropdownMenuTextStyle: TextStyle = fontMedium13;
+const dropdownMenuRowStyle: ViewStyle = {
+  borderRadius: 6,
+  padding: layout.spacing_x1,
+  flexDirection: "row",
+  justifyContent: "space-between",
+};

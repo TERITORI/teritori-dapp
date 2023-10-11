@@ -48,7 +48,7 @@ export const SwapDetail: React.FC<{
     >
       <TertiaryBox
         fullWidth
-        mainContainerStyle={{ padding: layout.padding_x2 }}
+        mainContainerStyle={{ padding: layout.spacing_x2 }}
       >
         <View style={styles.row}>
           <BrandText
@@ -127,6 +127,8 @@ export const SwapDetail: React.FC<{
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   row: {
     width: "100%",

@@ -25,7 +25,7 @@ export const CollectionGallery: React.FC<{
     (props: { item: Collection }) => (
       <View
         style={{
-          padding: layout.padding_x1,
+          padding: layout.spacing_x1,
         }}
       >
         <CollectionView
@@ -48,7 +48,7 @@ export const CollectionGallery: React.FC<{
         columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
         numColumns={99} // needed to deal with wrap via css
         ItemSeparatorComponent={() => (
-          <View style={{ height: layout.padding_x1 }} />
+          <View style={{ height: layout.spacing_x1 }} />
         )}
         style={{
           width,

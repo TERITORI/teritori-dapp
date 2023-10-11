@@ -1,4 +1,3 @@
-// libraries
 import React, { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
@@ -37,7 +36,6 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
   children,
   isExpandedByDefault = false,
 }) => {
-  // variables
   const [isExpanded, setIsExpanded] = useState(false);
   const aref = useAnimatedRef<View>();
   const heightRef = useRef<number>(0);
@@ -75,7 +73,6 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
     setIsExpanded(!isExpanded);
   };
 
-  // returns
   return (
     <TertiaryBox fullWidth>
       <Pressable onPress={toggleExpansion} style={styles.header}>
@@ -113,13 +110,15 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    padding: layout.padding_x2,
+    padding: layout.spacing_x2,
   },
   rowWithCenter: {
     flexDirection: "row",

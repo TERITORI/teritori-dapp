@@ -29,7 +29,7 @@ import { RiotGameInventoryScreen } from "../../screens/RiotGame/RiotGameInventor
 import { RiotGameLeaderboardScreen } from "../../screens/RiotGame/RiotGameLeaderboardScreen";
 import { RiotGameMarketplaceScreen } from "../../screens/RiotGame/RiotGameMarketplaceScreen";
 import { RiotGameMemoriesScreen } from "../../screens/RiotGame/RiotGameMemoriesScreen";
-import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
+import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { SettingsScreen } from "../../screens/Settings/SettingsScreen";
 import { StakeScreen } from "../../screens/Stake";
@@ -41,7 +41,7 @@ import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsS
 import { RootStackParamList } from "../../utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-export const screenTitle = (title: string) => "Teritori - " + title;
+const screenTitle = (title: string) => "Teritori - " + title;
 
 export const Navigator: React.FC = () => {
   return (

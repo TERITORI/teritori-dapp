@@ -128,11 +128,11 @@ export const RiotGameFightScreen = () => {
       <PrimaryButtonOutline
         touchableStyle={{
           alignSelf: "flex-end",
-          marginTop: layout.padding_x1_5,
-          paddingRight: 2 * layout.padding_x4,
+          marginTop: layout.spacing_x1_5,
+          paddingRight: 2 * layout.spacing_x4,
         }}
         style={{
-          paddingRight: 2 * layout.padding_x4,
+          paddingRight: 2 * layout.spacing_x4,
         }}
         onPress={gotoMarketplace}
         color={yellowDefault}

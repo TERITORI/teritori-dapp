@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { FlatList, View } from "react-native";
 
 import { NFTView } from "./NFTView";
@@ -17,7 +17,7 @@ import { SpacerColumn } from "../spacer";
 
 const keyExtractor = (item: NFT) => item.id;
 
-const halfGap = layout.padding_x1;
+const halfGap = layout.spacing_x1;
 
 export const minNFTWidth = 250;
 
@@ -64,6 +64,12 @@ export const NFTs: React.FC<{
     fetchMore();
   }, [fetchMore]);
 
+  const nftViewStyle = useMemo(() => {
+    return {
+      width: elemSize,
+    };
+  }, [elemSize]);
+
   return (
     <View
       style={{
@@ -82,13 +88,13 @@ export const NFTs: React.FC<{
               flexDirection: "column",
               width: 245,
               backgroundColor: neutral00,
-              borderRadius: layout.padding_x2,
+              borderRadius: layout.spacing_x2,
               borderColor: neutral33,
               borderWidth: 1,
               height,
-              padding: layout.padding_x2,
+              padding: layout.spacing_x2,
               borderStyle: "solid",
-              marginRight: layout.padding_x1_5,
+              marginRight: layout.spacing_x1_5,
             }}
           />
         )}
@@ -107,17 +113,12 @@ export const NFTs: React.FC<{
           data={padded}
           onEndReached={handleEndReached}
           keyExtractor={keyExtractor}
+          onEndReachedThreshold={4}
           ListEmptyComponent={
             <BrandText style={fontSemibold20}>No results found.</BrandText>
           }
           renderItem={(info) => (
-            <NFTView
-              key={info.item.mintAddress}
-              data={info.item}
-              style={{
-                width: elemSize,
-              }}
-            />
+            <NFTView key={info.item.id} data={info.item} style={nftViewStyle} />
           )}
         />
       </View>

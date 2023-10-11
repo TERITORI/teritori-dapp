@@ -2,7 +2,7 @@ import { StyleProp, View, ViewStyle, Text } from "react-native";
 
 import { useContentContext } from "../../context/ContentProvider";
 
-export interface ButtonLabelType {
+interface ButtonLabelType {
   text: string;
   size: "S" | "Mobile";
   style?: StyleProp<ViewStyle>;

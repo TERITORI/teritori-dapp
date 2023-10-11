@@ -21,8 +21,6 @@ export const GameBgCard: React.FC<GameBgCardProps> = ({
   hidePlus,
   item,
 }) => {
-  // variables
-
   //  returns
   const renderCard = useCallback(() => {
     switch (item.type) {
@@ -56,6 +54,8 @@ export const GameBgCard: React.FC<GameBgCardProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   card: {
     borderRightWidth: 1,

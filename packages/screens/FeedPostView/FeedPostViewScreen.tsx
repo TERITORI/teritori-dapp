@@ -41,8 +41,13 @@ import { usePost } from "../../hooks/feed/usePost";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { NetworkFeature, parseUserId } from "../../networks";
+import {
+  getNetworkObjectId,
+  parseNetworkObjectId,
+  parseUserId,
+} from "../../networks";
+import { gnoTeritoriNetwork } from "../../networks/gno-teritori";
+import { teritoriNetwork } from "../../networks/teritori";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { DEFAULT_USERNAME } from "../../utils/social-feed";
 import { primaryColor } from "../../utils/style/colors";
@@ -61,14 +66,29 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   },
 }) => {
   const navigation = useAppNavigation();
+
+  let [network, postId] = parseNetworkObjectId(id);
+  if (!network) {
+    // fallback to teritori or gno network if there is no network prefix in the id
+    if (id.includes("-")) {
+      // teritori ids are uuids
+      network = teritoriNetwork;
+      postId = id;
+    } else {
+      // gno ids are integers
+      network = gnoTeritoriNetwork;
+      postId = id;
+    }
+  }
+  const networkId = network?.id;
+
   const { width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
   const isMobile = useIsMobile();
-  const selectedNetworkId = useSelectedNetworkId();
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
   const { post: postResult, isLoading: isLoadingPostResult } = usePost(
-    id,
-    selectedNetworkId
+    postId,
+    networkId
   );
 
   const authorId = postResult?.authorId;
@@ -172,7 +192,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
 
   return (
     <ScreenContainer
-      forceNetworkFeatures={[NetworkFeature.SocialFeed]}
+      forceNetworkId={networkId}
       fullWidth
       responsive
       noMargin
@@ -182,7 +202,10 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
       onBackPress={() =>
         postResult?.parentPostIdentifier
           ? navigation.navigate("FeedPostView", {
-              id: postResult?.parentPostIdentifier || "",
+              id: getNetworkObjectId(
+                networkId,
+                postResult?.parentPostIdentifier || ""
+              ),
             })
           : navigation.canGoBack()
           ? navigation.goBack()
@@ -195,7 +218,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         <ActivityIndicator
           color={primaryColor}
           size="large"
-          style={{ marginTop: layout.padding_x4 }}
+          style={{ marginTop: layout.spacing_x4 }}
         />
       ) : !postResult ? (
         <NotFound label="Post" />
@@ -215,7 +238,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
                   windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
                 maxWidth: screenContentMaxWidth,
                 alignItems: "center",
-                paddingVertical: layout.padding_x2,
+                paddingVertical: layout.spacing_x2,
               }}
             >
               {!!postResult && (
@@ -231,6 +254,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
                   style={{ width: "100%" }}
                 >
                   <SocialThreadCard
+                    refetchFeed={refetch}
                     style={
                       windowWidth < RESPONSIVE_BREAKPOINT_S && {
                         borderRadius: 0,
@@ -325,7 +349,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
               style={{ alignSelf: "center" }}
               ref={feedInputRef}
               type="comment"
-              parentId={id}
+              parentId={postId}
               replyTo={replyTo}
               onSubmitInProgress={handleSubmitInProgress}
               onSubmitSuccess={() => {
@@ -349,6 +373,8 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   contentContainer: {
     alignItems: "center",

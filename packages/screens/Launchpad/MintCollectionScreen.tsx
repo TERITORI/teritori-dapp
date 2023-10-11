@@ -329,7 +329,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 justifyContent: "flex-start",
                 width: "100%",
                 maxWidth: 534,
-                margin: layout.padding_x2,
+                margin: layout.spacing_x2,
               }}
             >
               <BrandText style={{ marginBottom: 12 }}>{info.name}</BrandText>
@@ -370,7 +370,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 style={[
                   fontSemibold14,
                   {
-                    marginBottom: layout.padding_x3,
+                    marginBottom: layout.spacing_x3,
                   },
                 ]}
               >
@@ -384,7 +384,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 }
                 valueMax={info.maxSupply ? parseInt(info.maxSupply, 10) : 0}
                 style={{
-                  marginBottom: layout.padding_x3,
+                  marginBottom: layout.spacing_x3,
                 }}
               />
 
@@ -404,7 +404,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                   {/* Left block */}
                   <View
                     style={{
-                      padding: layout.padding_x2,
+                      padding: layout.spacing_x2,
                       borderRightColor: neutral33,
                       borderRightWidth: currentWidth >= 650 ? 1 : 0,
                       flex: 1,
@@ -414,7 +414,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     <SVG
                       style={{
                         backgroundColor: neutral22,
-                        padding: layout.padding_x1_5,
+                        padding: layout.spacing_x1_5,
                         borderRadius: 8,
                       }}
                       source={sigmaSVG}
@@ -443,14 +443,14 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                   <View
                     style={{
                       flexDirection: "row",
-                      padding: layout.padding_x2,
+                      padding: layout.spacing_x2,
                       flex: 1,
                     }}
                   >
                     <SVG
                       style={{
                         backgroundColor: neutral22,
-                        padding: layout.padding_x1_5,
+                        padding: layout.spacing_x1_5,
                         borderRadius: 8,
                       }}
                       source={balanceSVG}
@@ -477,7 +477,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 <FlexRow
                   style={{
                     width: "100%",
-                    paddingHorizontal: layout.padding_x2,
+                    paddingHorizontal: layout.spacing_x2,
                     alignItems: "center",
                     justifyContent: "space-between",
                   }}
@@ -488,7 +488,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        marginVertical: layout.padding_x2,
+                        marginVertical: layout.spacing_x2,
                       }}
                     >
                       <TouchableOpacity
@@ -539,7 +539,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                       style={{
                         borderRightWidth: 1,
                         borderRightColor: neutral33,
-                        height: layout.padding_x4,
+                        height: layout.spacing_x4,
                       }}
                     />
                   )}
@@ -547,7 +547,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                   <View
                     style={{
                       flexDirection: "row",
-                      marginVertical: layout.padding_x2,
+                      marginVertical: layout.spacing_x2,
                     }}
                   >
                     {priceCurrency?.kind === "ibc" && (
@@ -588,7 +588,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 <View
                   style={{
                     flexDirection: "row",
-                    marginTop: layout.padding_x0_5,
+                    marginTop: layout.spacing_x0_5,
                   }}
                 >
                   <BrandText
@@ -622,7 +622,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
               {hasLinks && (
                 <View
                   style={{
-                    marginTop: layout.padding_x2_5,
+                    marginTop: layout.spacing_x2_5,
                   }}
                 >
                   <View
@@ -650,7 +650,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 maxWidth: 534,
                 maxHeight: 806,
                 paddingBottom: 72,
-                margin: layout.padding_x2,
+                margin: layout.spacing_x2,
               }}
             >
               <TertiaryBox style={{ marginBottom: 40 }}>
@@ -861,7 +861,7 @@ const PhaseCountdown: React.FC<{
           fontWeight: "600",
           color: pinkDefault,
         }}
-        style={{ marginLeft: layout.padding_x1 }}
+        style={{ marginLeft: layout.spacing_x1 }}
         digitStyle={{ backgroundColor: "none" }}
         showSeparator
         timeLabels={{ d: "", h: "", m: "", s: "" }}

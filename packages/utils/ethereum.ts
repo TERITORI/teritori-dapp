@@ -181,7 +181,7 @@ export const addNftListMetadata = async (nfts: NFT[]) => {
   return await Promise.all(queries);
 };
 
-export const getCollectionMetadata = async (collectionId: string) => {
+const getCollectionMetadata = async (collectionId: string) => {
   const [network, minter] = parseNetworkObjectId(collectionId);
   if (network?.kind !== NetworkKind.Ethereum) {
     return;

@@ -1,4 +1,3 @@
-// libraries
 import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, TextProps, View, ViewStyle } from "react-native";
 import Animated, {
@@ -22,7 +21,6 @@ export const ErrorText: React.FC<ErrorTextProps> = ({
   style,
   ...restProps
 }) => {
-  // variables
   const aref = useAnimatedRef<View>();
   const heightRef = useRef<number>(0);
   const [isExpandable, setIsExpandable] = useState(false);
@@ -46,7 +44,6 @@ export const ErrorText: React.FC<ErrorTextProps> = ({
     }
   }, [children]);
 
-  // returns
   return (
     <Animated.View style={animStyle}>
       <View
@@ -65,6 +62,8 @@ export const ErrorText: React.FC<ErrorTextProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   text: StyleSheet.flatten([
     fontSemibold14,

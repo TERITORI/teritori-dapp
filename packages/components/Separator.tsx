@@ -1,4 +1,3 @@
-// libraries
 import React from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
@@ -15,7 +14,6 @@ export const Separator: React.FC<SeparatorProps> = ({
   color = neutral44,
   horizontal,
 }: SeparatorProps) => {
-  // returns
   return (
     <View
       style={[
@@ -30,6 +28,8 @@ export const Separator: React.FC<SeparatorProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     width: "100%",

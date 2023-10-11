@@ -29,7 +29,11 @@ export const IntroLogoText: React.FC<{
       ]}
     >
       <SVG height={72} source={logoSVG} />
-      <BrandText style={[fontSemibold28, { marginTop: 14 }]}>{title}</BrandText>
+      <BrandText
+        style={[fontSemibold28, { marginTop: 14, textAlign: "center" }]}
+      >
+        {title}
+      </BrandText>
     </ImageBackground>
   );
 };

@@ -24,6 +24,7 @@ import toolSVG from "../../assets/game/tool.svg";
 import { NFT } from "../api/marketplace/v1/marketplace";
 import { TeritoriSquadStakingClient } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.client";
 import { Nft as SquadStakeNFT } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
+import { AxelarTeritoriNft__factory } from "../evm-contracts-clients/axelar-teritori-nft/AxelarTeritoriNft__factory";
 import {
   getCosmosNetwork,
   getKeplrSigningCosmWasmClient,
@@ -40,7 +41,6 @@ import {
   RipperTraitType,
   SquadConfig,
 } from "../screens/RiotGame/types";
-import { AxelarTeritoriNft__factory } from "../evm-contracts-clients/axelar-teritori-nft/AxelarTeritoriNft__factory";
 
 const round = (input: number) => {
   return Math.floor(100 * input) / 100;
@@ -183,7 +183,7 @@ export const buildBreedingMsg = (
   };
 };
 
-export const buildStakingMsg = (
+const buildStakingMsg = (
   sender: string,
   nfts: SquadStakeNFT[],
   contractAddress: string
@@ -388,8 +388,8 @@ export const isNFTStaked = (ripper: NFT | undefined) => {
   return ids.includes(ripper.lockedOn);
 };
 
-export const SQUAD_STAKE_COEF = 0.125; // Duration (in hours) = 0.125 * stamin
-export const DURATION_TO_XP_COEF = 100; // XP = 100 * duration (in hours)
+const SQUAD_STAKE_COEF = 0.125; // Duration (in hours) = 0.125 * stamin
+const DURATION_TO_XP_COEF = 100; // XP = 100 * duration (in hours)
 
 export const squadWithdrawSeason1 = async (userId: string | undefined) => {
   const [network, userAddress] = parseUserId(userId);

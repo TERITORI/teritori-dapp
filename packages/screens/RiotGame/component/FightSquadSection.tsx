@@ -28,8 +28,8 @@ export const FightSquadSection: React.FC<FightSquadSectionProps> = ({
         height: 300,
         justifyContent: "center",
         alignItems: "center",
-        padding: layout.padding_x3,
-        marginTop: layout.padding_x4,
+        padding: layout.spacing_x3,
+        marginTop: layout.spacing_x4,
       }}
     >
       <BrandText style={fontMedium32}>Your Squad</BrandText>
@@ -68,10 +68,12 @@ export const FightSquadSection: React.FC<FightSquadSectionProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   ripperInfo: {
     flexDirection: "column",
     alignItems: "center",
-    marginHorizontal: layout.padding_x1_5,
+    marginHorizontal: layout.spacing_x1_5,
   },
 });

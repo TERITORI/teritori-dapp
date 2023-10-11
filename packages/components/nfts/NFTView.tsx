@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { memo, useRef, useState } from "react";
 import {
   ViewStyle,
   View,
@@ -54,11 +54,11 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 export const NFTView: React.FC<{
   data: NFT;
   style?: StyleProp<ViewStyle>;
-}> = ({ data: nft, style }) => {
+}> = memo(({ data: nft, style }) => {
   const isMobile = useIsMobile();
   const cardWidth = isMobile ? 220 : 250;
   const { width: maxWidth } = useMaxResolution({ isLarge: true });
-  const insideMargin = layout.padding_x2;
+  const insideMargin = layout.spacing_x2;
   const flatStyle = StyleSheet.flatten(style);
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(nft.ownerId);
@@ -108,7 +108,6 @@ export const NFTView: React.FC<{
   const widthNumber =
     typeof width === "number" ? width : parseInt(width || "0", 10) || cardWidth;
 
-  // returns
   return (
     <>
       <View
@@ -209,7 +208,20 @@ export const NFTView: React.FC<{
                       <SVG source={dotsCircleSVG} height={32} width={32} />
                     </Pressable>
                     {isDropdownOpen(dropdownRef) && (
-                      <View style={styles.optionContainer}>
+                      <View
+                        style={{
+                          position: "absolute",
+                          zIndex: 2,
+                          top: layout.iconButton + layout.spacing_x0_5,
+                          backgroundColor: neutral00,
+                          padding: layout.spacing_x0_5,
+                          borderColor: neutral33,
+                          borderWidth: 1,
+                          borderRadius: 8,
+                          right: -layout.spacing_x1_5,
+                          minWidth: 250,
+                        }}
+                      >
                         <DropdownOption
                           onPress={closeOpenedDropdown}
                           icon={octagonSVG}
@@ -217,12 +229,17 @@ export const NFTView: React.FC<{
                           label="Set as Avatar"
                         />
                         <SpacerColumn size={0.5} />
-                        <DropdownOption
-                          onPress={closeOpenedDropdown}
-                          isComingSoon
-                          icon={gridSVG}
-                          label="List this NFT"
-                        />
+                        <OmniLink
+                          to={{
+                            screen: "NFTDetail",
+                            params: { id: nft.id },
+                          }}
+                        >
+                          <DropdownOption
+                            icon={gridSVG}
+                            label="List this NFT"
+                          />
+                        </OmniLink>
                         <SpacerColumn size={0.5} />
                         <DropdownOption
                           onPress={closeOpenedDropdown}
@@ -298,7 +315,7 @@ export const NFTView: React.FC<{
                       numberOfLines={1}
                       style={{
                         fontSize: 12,
-                        marginLeft: layout.padding_x1,
+                        marginLeft: layout.spacing_x1,
                       }}
                     >
                       {nft.collectionName}
@@ -390,21 +407,6 @@ export const NFTView: React.FC<{
       />
     </>
   );
-};
-
-const styles = StyleSheet.create({
-  optionContainer: {
-    position: "absolute",
-    zIndex: 2,
-    top: layout.iconButton + layout.padding_x0_5,
-    backgroundColor: neutral00,
-    padding: layout.padding_x0_5,
-    borderColor: neutral33,
-    borderWidth: 1,
-    borderRadius: 8,
-    right: -layout.padding_x1_5,
-    minWidth: 250,
-  },
 });
 
 // using this because ellipizeMode seems broken

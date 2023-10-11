@@ -11,7 +11,6 @@ import { ConnectWalletModal } from "../connectWallet/ConnectWalletModal";
 export const ConnectWalletButtonMobile: FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ style }) => {
-  // variables
   const selectedWallet = useSelectedWallet();
   const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
 
@@ -19,7 +18,6 @@ export const ConnectWalletButtonMobile: FC<{
   const toggleConnectWallet = () =>
     setIsConnectWalletVisible(!isConnectWalletVisible);
 
-  // returns
   return (
     <>
       <View style={style}>

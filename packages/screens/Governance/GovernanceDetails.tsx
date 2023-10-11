@@ -7,7 +7,7 @@ import { RadioButton } from "react-native-paper";
 import { VictoryPie } from "victory";
 
 import { ProposalStatus } from "./types";
-import { BrandText } from "../../components/BrandText/BrandText";
+import { BrandText } from "../../components/BrandText";
 import { ConfirmationVote } from "../../components/GovernanceBox/ConfirmationVote";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
@@ -153,7 +153,7 @@ export const GovernanceDetails: React.FC<{
   }
 
   function activeConfirmationVotePopup() {
-    if (displayConfirmationVote === true && checked !== "nothingChecked") {
+    if (displayConfirmationVote && checked !== "nothingChecked") {
       return (
         <ConfirmationVote
           numberProposal={numberProposal}

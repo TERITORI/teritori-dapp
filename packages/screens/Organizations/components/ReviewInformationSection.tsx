@@ -36,7 +36,6 @@ export const ReviewInformationSection: React.FC<
   memberSettingData,
   onSubmit,
 }) => {
-  // returns
   const AddressBalanceValue = useCallback(
     ({ address, balance }: { address: string; balance: string }) => (
       <View style={styles.row}>
@@ -217,11 +216,13 @@ export const ReviewInformationSection: React.FC<
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
-    padding: layout.contentPadding,
-    paddingRight: layout.padding_x2_5,
-    paddingTop: layout.topContentPaddingWithHeading,
+    padding: layout.contentSpacing,
+    paddingRight: layout.spacing_x2_5,
+    paddingTop: layout.topContentSpacingWithHeading,
   },
   row: { flexDirection: "row", alignItems: "center", flexWrap: "wrap" },
   rowSB: {
@@ -243,7 +244,7 @@ const styles = StyleSheet.create({
   },
   addressText: StyleSheet.flatten([
     fontSemibold14,
-    { padding: layout.padding_x1, backgroundColor: neutral00, borderRadius: 8 },
+    { padding: layout.spacing_x1, backgroundColor: neutral00, borderRadius: 8 },
   ]),
   fill: { flex: 1 },
 });

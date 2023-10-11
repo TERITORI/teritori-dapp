@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import { AttributeRarityFloor } from "../../api/marketplace/v1/marketplace";
-import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { neutral33 } from "../../utils/style/colors";
+import { NFTInfo } from "../../utils/types/nft";
 import { ToggleableButton } from "../buttons/ToggleableButton";
 import { NFTAttributeCard } from "../cards/NFTAttributeCard";
 
@@ -14,6 +15,7 @@ export const NFTAttributes: React.FC<{
   nftInfo: NFTInfo;
 }> = ({ nftAttributes = [], nftInfo }) => {
   const [isMoreDisplayed, setIsMoreDisplayed] = useState(false);
+  const isMobile = useIsMobile();
 
   return (
     <>
@@ -21,6 +23,7 @@ export const NFTAttributes: React.FC<{
         style={{
           flexWrap: "wrap",
           flexDirection: "row",
+          maxWidth: isMobile ? 418 : undefined,
           margin: -6,
         }}
       >

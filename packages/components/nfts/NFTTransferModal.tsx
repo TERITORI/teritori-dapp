@@ -171,7 +171,6 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
     onClose();
   };
 
-  // returns
   return (
     <ModalBase
       width={456}
@@ -216,12 +215,14 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   image: { height: 223, width: 223, borderRadius: 12 },
   detailContainer: {
     justifyContent: "center",
     alignItems: "center",
-    paddingBottom: layout.padding_x4,
+    paddingBottom: layout.spacing_x4,
   },
   rowCenter: {
     flexDirection: "row",

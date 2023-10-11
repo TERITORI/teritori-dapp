@@ -40,8 +40,8 @@ export const VideoView: React.FC<VideoPreviewProps> = ({
       <Video
         style={{
           height: 400,
-          marginTop: layout.padding_x2,
-          marginBottom: layout.padding_x2,
+          marginTop: layout.spacing_x2,
+          marginBottom: layout.spacing_x2,
         }}
         source={{
           uri: ipfsURLToHTTPURL(file.url),

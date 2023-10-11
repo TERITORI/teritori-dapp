@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ResizeMode, Video } from "expo-av";
 import moment from "moment";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import { FlatList, Pressable, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
 import { EnrollSlot } from "./component/EnrollSlot";
@@ -25,6 +25,7 @@ import {
   getSquadStakingSquadsV1QueryKey,
   useSquadStakingSquadsV1,
 } from "../../hooks/riotGame/useSquadStakingSquadsV1";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
@@ -47,8 +48,10 @@ import {
   yellowDefault,
 } from "../../utils/style/colors";
 import {
+  fontMedium24,
   fontMedium32,
   fontMedium48,
+  fontSemibold20,
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -59,7 +62,8 @@ const EMBEDDED_VIDEO_URI =
 const embeddedVideoHeight = 267;
 const embeddedVideoWidth = 468;
 
-export const RiotGameEnrollScreen = () => {
+export const RiotGameEnrollScreen: React.FC = () => {
+  const isMobile = useIsMobile();
   const navigation = useAppNavigation();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const [activeSquadId, setActiveSquadId] = useState<number>(1);
@@ -266,26 +270,44 @@ export const RiotGameEnrollScreen = () => {
   return (
     <GameContentView>
       <View>
-        <BrandText style={styles.pageTitle}>Send to fight</BrandText>
+        <BrandText
+          style={[
+            {
+              alignSelf: "center",
+            },
+            isMobile ? fontSemibold28 : fontMedium48,
+          ]}
+        >
+          Send to fight
+        </BrandText>
       </View>
 
-      <View style={styles.enrollContainer}>
-        <View style={[styles.col, { maxWidth: 575 }]}>
+      <View
+        style={{
+          justifyContent: "space-around",
+          margin: layout.spacing_x1_5,
+          flexDirection: "row",
+          flexWrap: "wrap",
+        }}
+      >
+        <View style={[colStyles, { maxWidth: 575 }]}>
           <View
             style={{
-              marginTop: layout.padding_x1,
+              marginTop: layout.spacing_x1,
               width: "100%",
               flexDirection: "row",
               justifyContent: "space-between",
             }}
           >
-            <BrandText style={fontMedium32}>Enroll your Ripper(s)</BrandText>
+            <BrandText style={isMobile ? fontMedium24 : fontMedium32}>
+              Enroll your Ripper(s)
+            </BrandText>
 
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                marginRight: layout.padding_x2_5,
+                marginRight: layout.spacing_x3,
               }}
             >
               <SimpleButton
@@ -310,12 +332,13 @@ export const RiotGameEnrollScreen = () => {
           <FlatList
             scrollEnabled={false}
             data={RIPPER_SLOTS}
-            numColumns={3}
+            key={`squad-selector-col-buster-${isMobile}`}
+            numColumns={isMobile ? 2 : 3}
             keyExtractor={(item, index) => "" + index}
             ListFooterComponent={
               activeSquadId ? (
                 <TertiaryButton
-                  style={{ marginTop: layout.padding_x2_5 }}
+                  style={{ marginTop: layout.spacing_x2_5 }}
                   text={`Save as Squad ${activeSquadId}`}
                   size="XS"
                   onPress={() => saveSquadPreset(activeSquadId)}
@@ -323,10 +346,20 @@ export const RiotGameEnrollScreen = () => {
               ) : null
             }
             renderItem={({ item: slotId }) => (
-              <View style={styles.ripperSlot}>
+              <View
+                style={{
+                  marginRight: layout.spacing_x2_5,
+                  marginTop: layout.spacing_x2_5,
+                }}
+              >
                 {selectedRippers[slotId] && (
                   <Pressable
-                    style={styles.clearIcon}
+                    style={{
+                      position: "absolute",
+                      right: layout.spacing_x1,
+                      top: layout.spacing_x1,
+                      zIndex: 1,
+                    }}
                     onPress={() => clearSlot(slotId)}
                   >
                     <SVG width={20} height={20} source={closeSVG} />
@@ -343,28 +376,37 @@ export const RiotGameEnrollScreen = () => {
           />
         </View>
 
-        <View style={[styles.col, { maxWidth: 540 }]}>
-          <View style={{ marginTop: layout.padding_x1, width: "100%" }}>
-            <BrandText style={fontMedium32}>Staking duration</BrandText>
+        <View style={[colStyles, { maxWidth: 540 }]}>
+          <View style={{ marginTop: layout.spacing_x1, width: "100%" }}>
+            <BrandText style={isMobile ? fontMedium24 : fontMedium32}>
+              Staking duration
+            </BrandText>
           </View>
 
           <TertiaryBox
             mainContainerStyle={{
-              padding: layout.padding_x4,
+              padding: layout.spacing_x4,
               alignItems: "flex-start",
             }}
-            style={{ marginTop: layout.padding_x2 }}
+            style={{ marginTop: layout.spacing_x2 }}
             fullWidth
             height={148}
           >
-            <BrandText style={fontSemibold28}>
+            <BrandText style={isMobile ? fontSemibold20 : fontSemibold28}>
               {moment
                 .utc(stakingDuration)
                 .format("HH [hours] mm [minutes] ss [seconds]")}
             </BrandText>
           </TertiaryBox>
 
-          <View style={styles.videoContainer}>
+          <View
+            style={{
+              marginTop: layout.spacing_x2_5,
+              alignSelf: "center",
+              width: embeddedVideoWidth,
+              height: embeddedVideoHeight,
+            }}
+          >
             <Video
               ref={videoRef}
               style={{ borderRadius: 25 }}
@@ -383,8 +425,8 @@ export const RiotGameEnrollScreen = () => {
           <SimpleButton
             onPress={gotoCurrentFight}
             containerStyle={{
-              marginVertical: layout.padding_x4,
-              marginRight: layout.padding_x2,
+              marginVertical: layout.spacing_x4,
+              marginRight: layout.spacing_x2,
             }}
             text="Go to current Fight"
             loading={isJoiningFight}
@@ -396,7 +438,7 @@ export const RiotGameEnrollScreen = () => {
         <SimpleButton
           disabled={selectedRippers.length === 0}
           onPress={joinTheFight}
-          containerStyle={{ marginVertical: layout.padding_x4 }}
+          containerStyle={{ marginVertical: layout.spacing_x4 }}
           text="Join the Fight"
           loading={isJoiningFight}
         />
@@ -406,7 +448,7 @@ export const RiotGameEnrollScreen = () => {
         <SimpleButton
           disabled={isUnstaking}
           onPress={unstakeSeason1}
-          containerStyle={{ marginVertical: layout.padding_x2 }}
+          containerStyle={{ marginVertical: layout.spacing_x2 }}
           text="Retrieve Season 1 Squad"
           loading={isUnstaking}
           outline
@@ -425,36 +467,8 @@ export const RiotGameEnrollScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  pageTitle: {
-    alignSelf: "center",
-    ...(fontMedium48 as object),
-  },
-  enrollContainer: {
-    justifyContent: "space-around",
-    marginTop: layout.padding_x1,
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  col: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-  },
-  ripperSlot: {
-    marginRight: layout.padding_x2_5,
-    marginTop: layout.padding_x2_5,
-  },
-  videoContainer: {
-    marginTop: layout.padding_x2_5,
-    alignSelf: "center",
-    width: embeddedVideoWidth,
-    height: embeddedVideoHeight,
-  },
-  clearIcon: {
-    position: "absolute",
-    right: layout.padding_x1,
-    top: layout.padding_x1,
-    zIndex: 1,
-  },
-});
+const colStyles: ViewStyle = {
+  justifyContent: "center",
+  alignItems: "center",
+  width: "100%",
+};
