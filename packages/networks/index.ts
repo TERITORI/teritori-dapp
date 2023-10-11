@@ -81,6 +81,7 @@ export const defaultEnabledNetworks = [
   "cosmos-registry:axelar",
   "cosmos-registry:evmos",
   "cosmos-registry:chihuahua",
+  "ethereum",
 ];
 
 export const allNetworks = [
