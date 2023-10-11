@@ -21,6 +21,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     NetworkFeature.NameService,
     NetworkFeature.BurnTokens,
     NetworkFeature.NFTLaunchpad,
+    NetworkFeature.RiotP2E,
   ],
   currencies: teritoriTestnetCurrencies,
   txExplorer: "https://explorer.teritori.com/teritori-testnet/tx/$hash",

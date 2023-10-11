@@ -24,7 +24,12 @@ import { useIsLeapConnected } from "../../hooks/useIsLeapConnected";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind, getCollectionId, getCosmosNetwork } from "../../networks";
+import {
+  NetworkKind,
+  getCollectionId,
+  getCosmosNetwork,
+  NetworkFeature,
+} from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 
 type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
@@ -142,6 +147,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
     <ScreenContainer
       noMargin={width <= 1600}
       headerChildren={<BrandText>Name Service</BrandText>}
+      forceNetworkFeatures={[NetworkFeature.NameService]}
       forceNetworkKind={NetworkKind.Cosmos}
     >
       <View

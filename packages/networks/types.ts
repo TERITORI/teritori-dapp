@@ -121,6 +121,7 @@ export enum NetworkFeature {
   Organizations = "Organizations",
   SocialFeed = "SocialFeed",
   UPP = "UPP",
+  RiotP2E = "RiotP2E",
 }
 
 export enum UserKind {
