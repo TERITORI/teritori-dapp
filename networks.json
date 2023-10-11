@@ -9000,7 +9000,8 @@
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad"
+      "NFTLaunchpad",
+      "RiotP2E"
     ],
     "overrides": "cosmos-registry:teritori",
     "walletUrlForStaking": "https://app.teritori.com/staking",
@@ -9090,7 +9091,8 @@
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad"
+      "NFTLaunchpad",
+      "RiotP2E"
     ],
     "currencies": [
       {
