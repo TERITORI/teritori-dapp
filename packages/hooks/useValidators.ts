@@ -117,6 +117,7 @@ export const useValidators = (networkId: string | undefined) => {
       return initialData;
     },
     {
+      staleTime: Infinity,
       initialData,
     }
   );
