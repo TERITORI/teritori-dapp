@@ -322,10 +322,11 @@ const JoinMultisigModal: React.FC<{
   visible: boolean;
   onClose?: () => void;
 }> = ({ multisigId, userId, visible, onClose }) => {
+  const [network] = parseUserId(userId);
   const [name, setName] = useState("");
   const authToken = useMultisigAuthToken(userId);
   const { multisig } = useMultisigInfo(multisigId);
-  const multisigClient = useMultisigClient();
+  const multisigClient = useMultisigClient(network?.id);
   const { wrapWithFeedback } = useFeedbacks();
   const queryClient = useQueryClient();
 

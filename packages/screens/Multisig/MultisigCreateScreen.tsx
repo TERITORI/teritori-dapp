@@ -88,7 +88,6 @@ export const MultisigCreateScreen = () => {
     () => addressIndexes.length.toString(),
     [addressIndexes.length]
   );
-  const multisigClient = useMultisigClient();
 
   const globalSelectedNetwork = useSelectedNetworkInfo();
   const [selectedInputData, setSelectedInputData] = useState<SelectInputItem>({
@@ -99,6 +98,9 @@ export const MultisigCreateScreen = () => {
     ),
   });
   const selectedNetwork = useSelectedNetworkInfo();
+  // FIXME: weird
+
+  const multisigClient = useMultisigClient(selectedNetwork?.id);
 
   const removeAddressField = (index: number) => {
     const copyIndexes = [...addressIndexes];

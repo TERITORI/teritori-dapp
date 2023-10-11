@@ -26,7 +26,7 @@ export const useRunOrProposeTransaction = (
 ) => {
   const wallet = useSelectedWallet();
   const multisigAuthToken = useMultisigAuthToken(wallet?.userId);
-  const multisigClient = useMultisigClient();
+  const multisigClient = useMultisigClient(wallet?.networkId);
   const makeDAOProposal = useDAOMakeProposal(
     userId,
     userKind === UserKind.Organization

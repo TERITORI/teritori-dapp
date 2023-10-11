@@ -17,7 +17,7 @@ export const useUserMultisigs = (
 ) => {
   const [network] = parseUserId(userId);
   const authToken = useMultisigAuthToken(userId);
-  const multisigClient = useMultisigClient();
+  const multisigClient = useMultisigClient(network?.id);
   const { data, ...other } = useQuery(
     [...userMultisigsQueryKey(userId), joinState, authToken, multisigClient],
     async () => {

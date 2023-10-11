@@ -11,7 +11,7 @@ export const MultisigDeauth: FC = memo(() => {
   const wallet = useSelectedWallet();
   const authToken = useMultisigAuthToken(wallet?.userId);
   const dispatch = useAppDispatch();
-  const client = useMultisigClient();
+  const client = useMultisigClient(wallet?.networkId);
   useEffect(() => {
     const effect = async () => {
       const addr = wallet?.address;

@@ -13,7 +13,7 @@ export const multisigInfoQueryKey = (multisigId: string | undefined) => [
 export const useMultisigInfo = (id: string | undefined) => {
   const selectedWallet = useSelectedWallet();
   const authToken = useMultisigAuthToken(selectedWallet?.userId);
-  const client = useMultisigClient();
+  const client = useMultisigClient(selectedWallet?.networkId);
   const { data, ...other } = useQuery(
     [...multisigInfoQueryKey(id), authToken, client],
     async () => {

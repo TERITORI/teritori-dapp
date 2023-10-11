@@ -11,8 +11,8 @@ export const useMultisigTransactionsCounts = (
 ) => {
   const walletAccount = useSelectedWallet();
   const authToken = useMultisigAuthToken(walletAccount?.userId);
-  const multisigClient = useMultisigClient();
   const [network] = parseUserId(userId);
+  const multisigClient = useMultisigClient(network?.id);
 
   const { data: transactionsCounts, ...others } = useQuery(
     [

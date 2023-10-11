@@ -15,11 +15,11 @@ import { keplrSignArbitrary } from "../../utils/keplr";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 
 export const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
-  const [, userAddress] = parseUserId(userId);
+  const [network, userAddress] = parseUserId(userId);
   const storeAuthToken = useMultisigAuthToken(userId);
   const dispatch = useAppDispatch();
   const { wrapWithFeedback } = useFeedbacks();
-  const client = useMultisigClient();
+  const client = useMultisigClient(network?.id);
 
   return (
     <PrimaryButton

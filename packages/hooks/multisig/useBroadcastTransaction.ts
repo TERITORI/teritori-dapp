@@ -21,7 +21,7 @@ export const useBroadcastTransaction = () => {
   const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
   const authToken = useMultisigAuthToken(selectedWallet?.userId);
-  const multisigClient = useMultisigClient();
+  const multisigClient = useMultisigClient(selectedWallet?.networkId);
   const queryClient = useQueryClient();
 
   return useMutation(

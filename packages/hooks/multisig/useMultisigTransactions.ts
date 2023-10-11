@@ -34,8 +34,8 @@ export const useMultisigTransactions = (
   executionState: ExecutionState
 ) => {
   const authToken = useMultisigAuthToken(userId);
-  const client = useMultisigClient();
   const [network] = parseUserId(userId);
+  const client = useMultisigClient(network?.id);
 
   return useInfiniteQuery(
     [
