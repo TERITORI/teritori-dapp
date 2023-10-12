@@ -7,31 +7,20 @@ import { MultisigSection } from "./components/MultisigSection";
 import trashSVG from "../../../assets/icons/trash.svg";
 import walletInputSVG from "../../../assets/icons/wallet-input.svg";
 import { BrandText } from "../../components/BrandText";
-import { NetworkIcon } from "../../components/NetworkIcon";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { SearchNSInputContainer } from "../../components/inputs/SearchNSInputContainer";
-import {
-  SelectInput,
-  SelectInputItem,
-} from "../../components/inputs/SelectInput";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideLabel";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMultisigAuthToken } from "../../hooks/multisig/useMultisigAuthToken";
 import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
-import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  NetworkKind,
-  getUserId,
-  CosmosNetworkInfo,
-  parseUserId,
-} from "../../networks";
+import { NetworkKind, getUserId, parseUserId } from "../../networks";
 import { getCosmosAccount } from "../../utils/cosmos";
 import {
   patternOnlyNumbers,
@@ -65,7 +54,6 @@ const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
 export const MultisigCreateScreen = () => {
   const selectedWallet = useSelectedWallet();
   const authToken = useMultisigAuthToken(selectedWallet?.userId);
-  const enabledNetworks = useEnabledNetworks();
   const { wrapWithFeedback } = useFeedbacks();
   const { control, handleSubmit, watch, setValue } =
     useForm<CreateMultisigWalletFormType>();
@@ -89,16 +77,7 @@ export const MultisigCreateScreen = () => {
     [addressIndexes.length]
   );
 
-  const globalSelectedNetwork = useSelectedNetworkInfo();
-  const [selectedInputData, setSelectedInputData] = useState<SelectInputItem>({
-    label: globalSelectedNetwork?.displayName || "",
-    value: globalSelectedNetwork?.id || "",
-    iconComponent: (
-      <NetworkIcon networkId={globalSelectedNetwork?.id} size={16} />
-    ),
-  });
   const selectedNetwork = useSelectedNetworkInfo();
-  // FIXME: weird
 
   const multisigClient = useMultisigClient(selectedNetwork?.id);
 
@@ -175,10 +154,6 @@ export const MultisigCreateScreen = () => {
     setAddressIndexes(tempPubkeys);
   };
 
-  const selectableCosmosNetworks = enabledNetworks.filter(
-    (n): n is CosmosNetworkInfo => n.kind === NetworkKind.Cosmos
-  );
-
   return (
     <ScreenContainer
       headerChildren={
@@ -235,21 +210,6 @@ export const MultisigCreateScreen = () => {
             iconSVG={walletInputSVG}
           />
           <SpacerColumn size={3} />
-          <SelectInput
-            data={selectableCosmosNetworks.map((n) => {
-              return {
-                label: n.displayName,
-                value: n.id,
-                iconComponent: <NetworkIcon networkId={n?.id} size={16} />,
-              };
-            })}
-            selectedItem={selectedInputData}
-            selectItem={(d: SelectInputItem) => {
-              setSelectedInputData(d);
-            }}
-            label="Network"
-          />
-          <SpacerColumn size={2.5} />
 
           {addressIndexes.map((_, index) => (
             <>
