@@ -3024,7 +3024,8 @@
     "displayName": "Ethereum",
     "icon": "icons/networks/ethereum.svg",
     "features": [
-      "NFTMarketplace"
+      "NFTMarketplace",
+      "NFTLaunchpad"
     ],
     "currencies": [
       {
@@ -3056,7 +3057,8 @@
     "displayName": "Ethereum Goerli",
     "icon": "icons/networks/ethereum.svg",
     "features": [
-      "NFTMarketplace"
+      "NFTMarketplace",
+      "NFTLaunchpad"
     ],
     "currencies": [
       {
