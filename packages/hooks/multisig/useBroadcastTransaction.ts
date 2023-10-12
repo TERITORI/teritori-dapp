@@ -8,6 +8,7 @@ import {
   ParsedTransaction,
   multisigTransactionsQueryKey,
 } from "./useMultisigTransactions";
+import { multisigTransactionsCountsQueryKey } from "./useMultisigTransactionsCounts";
 import { Signature } from "../../api/multisig/v1/multisig";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import {
@@ -93,6 +94,9 @@ export const useBroadcastTransaction = () => {
         );
         await queryClient.invalidateQueries(
           multisigTransactionsQueryKey(network.id, undefined)
+        );
+        await queryClient.invalidateQueries(
+          multisigTransactionsCountsQueryKey(network.id)
         );
 
         return result.transactionHash;

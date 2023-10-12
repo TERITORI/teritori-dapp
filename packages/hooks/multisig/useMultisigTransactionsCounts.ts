@@ -5,6 +5,10 @@ import { useMultisigClient } from "./useMultisigClient";
 import { getCosmosNetwork, parseUserId } from "../../networks";
 import useSelectedWallet from "../useSelectedWallet";
 
+export const multisigTransactionsCountsQueryKey = (
+  networkId: string | undefined
+) => ["multisig-transactions-counts", networkId];
+
 export const useMultisigTransactionsCounts = (
   userId: string | undefined,
   multisigUserId: string | undefined
@@ -16,8 +20,7 @@ export const useMultisigTransactionsCounts = (
 
   const { data: transactionsCounts, ...others } = useQuery(
     [
-      "multisig-transactions-counts",
-      network?.id,
+      ...multisigTransactionsCountsQueryKey(network?.id),
       multisigUserId,
       authToken,
       multisigClient,

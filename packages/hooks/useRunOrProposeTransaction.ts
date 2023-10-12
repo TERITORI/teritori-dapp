@@ -7,6 +7,7 @@ import { useDAOMakeProposal } from "./dao/useDAOMakeProposal";
 import { useMultisigAuthToken } from "./multisig/useMultisigAuthToken";
 import { useMultisigClient } from "./multisig/useMultisigClient";
 import { multisigTransactionsQueryKey } from "./multisig/useMultisigTransactions";
+import { multisigTransactionsCountsQueryKey } from "./multisig/useMultisigTransactionsCounts";
 import useSelectedWallet from "./useSelectedWallet";
 import { MultisigService, Token } from "../api/multisig/v1/multisig";
 import { CosmosMsgForEmpty } from "../contracts-clients/dao-core/DaoCore.types";
@@ -167,6 +168,9 @@ const runOrProposeTransaction = async ({
       ]);
       await queryClient.invalidateQueries([
         ...multisigTransactionsQueryKey(cosmosNetwork.id, undefined),
+      ]);
+      await queryClient.invalidateQueries([
+        ...multisigTransactionsCountsQueryKey(cosmosNetwork.id),
       ]);
       if (navigateToProposals && userId) {
         navigation.navigate("MultisigWalletDashboard", { id: userId });
