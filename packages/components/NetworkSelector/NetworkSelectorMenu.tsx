@@ -5,6 +5,7 @@ import { useDropdowns } from "../../context/DropdownsProvider";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useWallets } from "../../context/WalletsProvider";
 import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { getNetwork, NetworkFeature, NetworkKind } from "../../networks";
 import {
@@ -35,6 +36,7 @@ export const NetworkSelectorMenu: FC<{
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const [networksModalVisible, setNetworksModalVisible] = useState(false);
   const enabledNetworks = useEnabledNetworks();
+  const isMobile = useIsMobile();
 
   const onPressNetwork = (networkId: string) => {
     let walletProvider: WalletProvider | null = null;
@@ -74,16 +76,20 @@ export const NetworkSelectorMenu: FC<{
       width={172}
       noBrokenCorners
       style={style}
-      mainContainerStyle={{
-        paddingHorizontal: layout.spacing_x2,
-        paddingTop: layout.spacing_x2,
-        backgroundColor: neutral17,
-        alignItems: "flex-start",
-        borderTopWidth: 0,
-        borderRightWidth: 0,
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
-      }}
+      mainContainerStyle={[
+        {
+          paddingHorizontal: layout.spacing_x2,
+          paddingTop: layout.spacing_x2,
+          backgroundColor: neutral17,
+          alignItems: "flex-start",
+        },
+        isMobile && {
+          borderTopWidth: 0,
+          borderRightWidth: 0,
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0,
+        },
+      ]}
     >
       {enabledNetworks
         .filter((network) => {
