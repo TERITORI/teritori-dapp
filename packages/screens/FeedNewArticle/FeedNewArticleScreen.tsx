@@ -67,10 +67,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
   const userId = getUserId(selectedNetworkId, wallet?.address);
-  const balances = useBalances(
-    process.env.TERITORI_NETWORK_ID,
-    wallet?.address
-  );
+  const balances = useBalances(selectedNetworkId, wallet?.address);
   const {
     control,
     setValue,

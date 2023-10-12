@@ -21,7 +21,7 @@ import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
 import { Pagination } from "../Pagination";
 import { SpacerColumn } from "../spacer";
-import { TableRowHeading, TableRow } from "../table";
+import { TableRowHeading, TableRow } from "../table/TableRow";
 
 const TABLE_ROWS: { [key: string]: TableRowHeading } = {
   transactionId: {

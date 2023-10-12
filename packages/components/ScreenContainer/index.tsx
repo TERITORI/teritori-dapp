@@ -9,9 +9,9 @@ import {
 
 import { Header } from "./Header";
 import { ScreenContainerMobile } from "./ScreenContainerMobile";
+import { useForceNetworkFeatures } from "../../hooks/useForceNetworkFeatures";
 import { useForceNetworkKind } from "../../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
-import { useForceUnselectNetworks } from "../../hooks/useForceUnselectNetworks";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
@@ -88,7 +88,7 @@ export const ScreenContainer: React.FC<{
 
   useForceNetworkSelection(forceNetworkId);
   useForceNetworkKind(forceNetworkKind);
-  useForceUnselectNetworks();
+  useForceNetworkFeatures(forceNetworkFeatures);
 
   const networkFilter = useCallback(
     (n: NetworkInfo | undefined) => {

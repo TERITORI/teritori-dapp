@@ -53,7 +53,7 @@ import {
   clearSelectedByCollection,
 } from "../../store/slices/marketplaceFilters";
 import { RootState, useAppDispatch } from "../../store/store";
-import { mustGetMarketplaceClient } from "../../utils/backend";
+import { getMarketplaceClient } from "../../utils/backend";
 import { prettyPrice } from "../../utils/coins";
 import {
   codGrayColor,
@@ -501,10 +501,14 @@ export const SideFilters: React.FC<{
   const buyNow = useSelector(selectBuyNow);
   const dispatch = useAppDispatch();
 
+  // FIXME: transform this into a react-query hook
   useEffect(() => {
     try {
       setAttributes([]);
-      const backendClient = mustGetMarketplaceClient(network?.id);
+      const backendClient = getMarketplaceClient(network?.id);
+      if (!backendClient) {
+        return;
+      }
       const allAtributes: AttributeRarityFloor[] = [];
       const stream = backendClient.NFTCollectionAttributes({
         collectionId,

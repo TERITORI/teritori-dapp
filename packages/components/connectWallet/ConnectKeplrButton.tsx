@@ -5,11 +5,13 @@ import { Linking } from "react-native";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import keplrSVG from "../../../assets/icons/keplr.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import {
+  CosmosNetworkInfo,
   getCosmosNetwork,
   keplrChainInfoFromNetworkInfo,
-  selectableCosmosNetworks,
+  NetworkKind,
 } from "../../networks";
 import {
   setIsKeplrConnected,
@@ -23,6 +25,7 @@ export const ConnectKeplrButton: React.FC<{
   const { setToastError } = useFeedbacks();
   const dispatch = useAppDispatch();
   const networkId = useSelectedNetworkId();
+  const enabledNetworks = useEnabledNetworks();
   const handlePress = async () => {
     try {
       const keplr = (window as KeplrWindow)?.keplr;
@@ -32,6 +35,10 @@ export const ConnectKeplrButton: React.FC<{
         );
         return;
       }
+
+      const selectableCosmosNetworks = enabledNetworks.filter(
+        (n): n is CosmosNetworkInfo => n.kind === NetworkKind.Cosmos
+      );
 
       let network = getCosmosNetwork(networkId);
       if (!network) {
@@ -64,6 +71,7 @@ export const ConnectKeplrButton: React.FC<{
       onDone && onDone(err);
     }
   };
+
   return (
     <ConnectWalletButton
       text="Keplr Wallet"

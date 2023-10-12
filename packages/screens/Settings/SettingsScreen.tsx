@@ -12,6 +12,8 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CustomPressable } from "../../components/buttons/CustomPressable";
+import { TertiaryButton } from "../../components/buttons/TertiaryButton";
+import { NetworksListModal } from "../../components/modals/NetworksListModal";
 import { SpacerColumn } from "../../components/spacer";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import {
@@ -70,6 +72,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
   const isKeplrConnected = useIsKeplrConnected();
   const testnetEnabled = useSelector(selectAreTestnetsEnabled);
   const dispatch = useAppDispatch();
+  const [networksModalVisible, setNetworksModalVisible] = React.useState(false);
 
   return (
     <ScreenContainer>
@@ -86,6 +89,23 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
             }}
           />
         </View>
+
+        <SpacerColumn size={3} />
+
+        <TertiaryButton
+          text="Manage Networks"
+          size="M"
+          onPress={() => {
+            setNetworksModalVisible(true);
+          }}
+          fullWidth
+        />
+        <NetworksListModal
+          isVisible={networksModalVisible}
+          onClose={() => {
+            setNetworksModalVisible(false);
+          }}
+        />
 
         <SpacerColumn size={3} />
 

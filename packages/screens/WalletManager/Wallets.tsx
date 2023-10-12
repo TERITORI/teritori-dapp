@@ -5,14 +5,14 @@ import { WalletItem } from "./WalletItem";
 import { BrandText } from "../../components/BrandText";
 import { useRewards } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getNetwork } from "../../networks";
+import { UserKind, getNetwork } from "../../networks";
 import { neutral33 } from "../../utils/style/colors";
 
 export const Wallets: React.FC = () => {
   const selectedWallet = useSelectedWallet();
 
   // TODO: Handle multiple wallets addresses
-  const { totalsRewards } = useRewards(selectedWallet?.userId);
+  const { totalsRewards } = useRewards(selectedWallet?.userId, UserKind.Single);
 
   const wallets = [];
 

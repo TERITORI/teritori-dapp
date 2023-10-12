@@ -14,6 +14,7 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { ConnectWalletModal } from "../../components/connectWallet/ConnectWalletModal";
 import { useRewards } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { UserKind } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
 import { walletProviderToNetworkKind } from "../../utils/network";
 import { neutral33, neutralA3, secondaryColor } from "../../utils/style/colors";
@@ -109,7 +110,10 @@ export const WalletManagerWalletsScreen: ScreenFC<
   const selectedWallet = useSelectedWallet();
 
   // TODO: Handle multiple wallets addresses
-  const { totalsRewards, claimReward } = useRewards(selectedWallet?.userId);
+  const { totalsRewards, claimReward } = useRewards(
+    selectedWallet?.userId,
+    UserKind.Single
+  );
 
   const title = walletProviderToNetworkKind(selectedWallet?.provider);
 

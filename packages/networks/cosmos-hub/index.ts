@@ -9,6 +9,7 @@ export const cosmosNetwork: NetworkInfo = {
   icon: "icons/networks/cosmos-hub.svg",
   features: [],
   currencies: cosmosHubCurrencies,
+  overrides: "cosmos-registry:cosmoshub",
   txExplorer: "https://www.mintscan.io/cosmos/txs/$hash",
   accountExplorer: "https://www.mintscan.io/cosmos/account/$address",
   contractExplorer: "https://www.mintscan.io/cosmos/account/$address",

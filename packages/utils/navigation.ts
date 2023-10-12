@@ -47,9 +47,15 @@ export type RootStackParamList = {
   RiotGameInventory: undefined;
 
   Swap: undefined;
-  Staking: undefined;
+  Staking: { multisigId?: string; daoId?: string } | undefined;
 
   ComingSoon: undefined;
+
+  OrganizationGetStarted: undefined;
+
+  Multisig: undefined;
+  MultisigCreate: undefined;
+  MultisigWalletDashboard: { id: string };
 
   Settings: undefined;
 
@@ -61,12 +67,17 @@ export type RootStackParamList = {
   ToriPunks: { route: string };
 };
 
-type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
+export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export type ScreenFC<T extends keyof RootStackParamList> = React.FC<{
   navigation: NativeStackNavigationProp<RootStackParamList, T>;
   route: RouteProp<RootStackParamList, T>;
 }>;
+
+export type AppRouteType<T extends keyof RootStackParamList> = RouteProp<
+  RootStackParamList,
+  T
+>;
 
 export const useAppNavigation = () => useNavigation<AppNavigationProp>();
 
@@ -119,6 +130,15 @@ const navConfig: {
     OrganizationDeployer: "create-org",
     Organizations: "orgs",
     CoreDAO: "core-dao",
+
+    // === Organization
+
+    OrganizationGetStarted: "organization-get-started",
+
+    // === Multisig
+    Multisig: "multisig",
+    MultisigCreate: "multisig/create",
+    MultisigWalletDashboard: "multisig/:id",
 
     // ==== Swap
     Swap: "swap",

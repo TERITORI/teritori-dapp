@@ -1,5 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import { isDeliverTxFailure } from "@cosmjs/stargate";
+import { MsgUndelegateEncodeObject } from "@cosmjs/stargate";
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
@@ -15,11 +15,13 @@ import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useCosmosValidatorBondedAmount } from "../../../hooks/useCosmosValidatorBondedAmount";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useRunOrProposeTransaction } from "../../../hooks/useRunOrProposeTransaction";
 import {
-  getKeplrSigningStargateClient,
+  UserKind,
+  getCosmosNetwork,
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
+  parseUserId,
 } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import {
@@ -40,27 +42,31 @@ interface UndelegateModalProps {
   onClose?: () => void;
   visible?: boolean;
   validator?: ValidatorInfo;
+  userId: string | undefined;
+  userKind: UserKind;
 }
 
 export const UndelegateModal: React.FC<UndelegateModalProps> = ({
   onClose,
   visible,
   validator,
+  userId,
+  userKind,
 }) => {
-  const wallet = useSelectedWallet();
-  const networkId = wallet?.networkId || "";
+  const [network, userAddress] = parseUserId(userId);
+  const networkId = network?.id;
   const { bondedTokens, refreshBondedTokens } = useCosmosValidatorBondedAmount(
-    wallet?.userId,
+    userId,
     validator?.address
   );
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
+  const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);
 
   const { control, setValue, handleSubmit, reset } =
     useForm<StakeFormValuesType>();
   const stakingCurrency = getStakingCurrency(networkId);
 
-  // hooks
   useEffect(() => {
     reset();
   }, [reset, visible]);
@@ -69,7 +75,6 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
     setValue("validatorName", validator?.moniker || "");
   }, [validator?.moniker, setValue]);
 
-  // functions
   const onSubmit = useCallback(
     async (formData: StakeFormValuesType) => {
       try {
@@ -81,14 +86,6 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
           });
           return;
         }
-        if (!wallet?.connected || !wallet.address) {
-          console.warn("invalid wallet", wallet);
-          setToastError({
-            title: "Invalid wallet",
-            message: "",
-          });
-          return;
-        }
         if (!validator) {
           setToastError({
             title: "Internal error",
@@ -96,30 +93,59 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
           });
           return;
         }
-        const client = await getKeplrSigningStargateClient(wallet.networkId);
-        const txResponse = await client.undelegateTokens(
-          wallet.address,
-          validator.address,
-          {
-            amount: Decimal.fromUserInput(
-              formData.amount,
-              stakingCurrency.decimals
-            ).atomics,
-            denom: stakingCurrency.denom,
-          },
-          "auto"
-        );
-        if (isDeliverTxFailure(txResponse)) {
-          console.error("tx failed", txResponse);
-          onClose && onClose();
+        if (!network) {
           setToastError({
-            title: "Transaction failed",
-            message: txResponse.rawLog || "",
+            title: "Internal error",
+            message: "No network",
           });
           return;
         }
-        setToastSuccess({ title: "Undelegation success", message: "" });
-        refreshBondedTokens();
+        const cosmosNetwork = getCosmosNetwork(network.id);
+        if (!cosmosNetwork) {
+          setToastError({
+            title: "Internal error",
+            message: "No cosmos network",
+          });
+          return;
+        }
+
+        const amount = Decimal.fromUserInput(
+          formData.amount,
+          stakingCurrency.decimals
+        ).atomics;
+        const msg: MsgUndelegateEncodeObject = {
+          typeUrl: "/cosmos.staking.v1beta1.MsgUndelegate",
+          value: {
+            amount: {
+              amount,
+              denom: stakingCurrency.denom,
+            },
+            delegatorAddress: userAddress,
+            validatorAddress: validator.address,
+          },
+        };
+        await runOrProposeTransaction({
+          msgs: [msg],
+          navigateToProposals: true,
+        });
+
+        const toastTitle =
+          userKind === UserKind.Single
+            ? "Undelegation success"
+            : "Proposed to undelegate";
+        setToastSuccess({
+          title: toastTitle,
+          message: `${prettyPrice(
+            networkId,
+            amount,
+            stakingCurrency.denom
+          )} from ${validator.moniker}`,
+        });
+
+        if (userKind === UserKind.Single) {
+          refreshBondedTokens();
+        }
+        onClose?.();
       } catch (error) {
         triggerError({
           title: "Undelegation failed!",
@@ -129,14 +155,18 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
       }
     },
     [
-      validator,
+      network,
+      networkId,
       onClose,
       refreshBondedTokens,
+      runOrProposeTransaction,
       setToastError,
       setToastSuccess,
       stakingCurrency,
       triggerError,
-      wallet,
+      userAddress,
+      userKind,
+      validator,
     ]
   );
 
@@ -183,7 +213,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
       onClose={onClose}
       visible={visible}
       Header={Header}
-      childrenBottom={Footer()}
+      childrenBottom={Footer()} // TODO: use proper jsx
       hideMainSeparator
     >
       <View style={styles.container}>

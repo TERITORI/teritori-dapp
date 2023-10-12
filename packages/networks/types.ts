@@ -1,3 +1,5 @@
+import { IBCCurrencyInfo } from "./ibc";
+
 export enum NetworkKind {
   Unknown = "Unknown",
   Ethereum = "Ethereum",
@@ -21,6 +23,7 @@ interface NetworkInfoBase {
   backendEndpoint: string;
   secondaryDuringMintList?: string[];
   excludeFromLaunchpadList?: string[];
+  overrides?: string;
 }
 
 export type CosmosNetworkInfo = NetworkInfoBase & {
@@ -71,12 +74,6 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
   riotContractAddress: string;
 };
 
-type SolanaNetworkInfo = NetworkInfoBase & {
-  kind: NetworkKind.Solana;
-  holaplexGraphqlEndpoint: string;
-  vaultContractAddress: string;
-};
-
 export type GnoNetworkInfo = NetworkInfoBase & {
   kind: NetworkKind.Gno;
   chainId: string;
@@ -101,7 +98,6 @@ export type GnoNetworkInfo = NetworkInfoBase & {
 export type NetworkInfo =
   | CosmosNetworkInfo
   | EthereumNetworkInfo
-  | SolanaNetworkInfo
   | GnoNetworkInfo;
 
 export type NativeCurrencyInfo = {
@@ -114,18 +110,6 @@ export type NativeCurrencyInfo = {
   color: string;
 };
 
-type IBCCurrencyInfo = {
-  kind: "ibc";
-  denom: string;
-  sourceNetwork: string;
-  sourceDenom: string;
-  sourceChannelPort: string;
-  sourceChannelId: string;
-  destinationChannelPort: string;
-  destinationChannelId: string;
-  deprecated?: boolean;
-};
-
 export type CurrencyInfo = NativeCurrencyInfo | IBCCurrencyInfo;
 
 export enum NetworkFeature {
@@ -133,7 +117,15 @@ export enum NetworkFeature {
   NFTLaunchpad = "NFTLaunchpad",
   NameService = "NameService",
   Swap = "Swap",
+  BurnTokens = "BurnTokens",
   Organizations = "Organizations",
   SocialFeed = "SocialFeed",
   UPP = "UPP",
+  RiotP2E = "RiotP2E",
+}
+
+export enum UserKind {
+  Single = "Single",
+  Multisig = "Multisig",
+  Organization = "Organization",
 }
