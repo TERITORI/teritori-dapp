@@ -2,10 +2,6 @@ import { Coin } from "@cosmjs/amino";
 import { toUtf8 } from "@cosmjs/encoding";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 
-import { UserScore } from "./../api/p2e/v1/p2e";
-import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import { SquadStakingV3__factory } from "./../evm-contracts-clients/teritori-squad-staking/SquadStakingV3__factory";
-import { NetworkInfo } from "./../networks/types";
 import { getKeplrSquadStakingClient } from "./contracts";
 import { getMetaMaskEthereumSigner } from "./ethereum";
 import backpackSVG from "../../assets/game/backpack.svg";
@@ -22,10 +18,14 @@ import nft5 from "../../assets/game/nft-5.png";
 import subtractSVG from "../../assets/game/subtract.svg";
 import toolSVG from "../../assets/game/tool.svg";
 import { NFT } from "../api/marketplace/v1/marketplace";
+import { UserScore } from "../api/p2e/v1/p2e";
 import { TeritoriSquadStakingClient } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.client";
 import { Nft as SquadStakeNFT } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import { AxelarTeritoriNft__factory } from "../evm-contracts-clients/axelar-teritori-nft/AxelarTeritoriNft__factory";
+import { TeritoriNft__factory } from "../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { SquadStakingV3__factory } from "../evm-contracts-clients/teritori-squad-staking/SquadStakingV3__factory";
 import {
+  NetworkInfo,
   getCosmosNetwork,
   getKeplrSigningCosmWasmClient,
   getUserId,
@@ -485,7 +485,7 @@ export const getSquadPresetId = (
   return `${userId}-${squadId}`;
 };
 
-export const ethereumSquadStake = async (
+const ethereumSquadStake = async (
   network: NetworkInfo,
   sender: string,
   selectedRippers: NFT[]
@@ -547,7 +547,7 @@ export const ethereumSquadStake = async (
   return res.transactionHash;
 };
 
-export const cosmosSquadStake = async (
+const cosmosSquadStake = async (
   network: NetworkInfo,
   sender: string,
   selectedRippers: NFT[]
