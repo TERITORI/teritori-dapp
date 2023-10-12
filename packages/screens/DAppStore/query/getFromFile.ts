@@ -117,7 +117,7 @@ export function getAvailableApps(): dAppGroup {
           icon: multisig,
           route: "Multisig",
           groupKey: "teritori-core-apps",
-          selectedByDefault: false,
+          selectedByDefault: true,
           alwaysOn: false,
         },
       },
