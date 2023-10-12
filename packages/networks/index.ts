@@ -73,6 +73,9 @@ const packageNetworks = [
 
 export const defaultEnabledNetworks = [
   "teritori",
+  "teritori-testnet",
+  "ethereum",
+  "ethereum-goerli",
   "cosmos-hub",
   "osmosis",
   "gno-teritori",
@@ -81,7 +84,6 @@ export const defaultEnabledNetworks = [
   "cosmos-registry:axelar",
   "cosmos-registry:evmos",
   "cosmos-registry:chihuahua",
-  "ethereum",
 ];
 
 export const allNetworks = [
