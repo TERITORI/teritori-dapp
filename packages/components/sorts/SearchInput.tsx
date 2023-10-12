@@ -25,7 +25,7 @@ export const SearchInput: React.FC<{
       fullWidth
     >
       <SVG
-        style={{ marginRight: layout.padding_x1, maxWidth: 22 }}
+        style={{ marginRight: layout.spacing_x1, maxWidth: 22 }}
         source={searchSVG}
       />
       <TextInput
@@ -38,6 +38,8 @@ export const SearchInput: React.FC<{
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   textInput: {
     color: "#FFFFFF",

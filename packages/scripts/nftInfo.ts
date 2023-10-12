@@ -1,3 +1,5 @@
+import { program } from "commander";
+
 import { mustGetNodeMarketplaceClient } from "./lib";
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
@@ -8,10 +10,13 @@ import {
   NetworkKind,
 } from "../networks";
 
-const nftId =
-  "testori-tori10z8um7u47e24rv68ghd43tspeztmqy3cc283gvc3pj48zxs5ljdqn84deq-4";
-
 const main = async () => {
+  program.argument("<nft-id>", "ID of the nft to inspect");
+  program.parse();
+  // FIXME: use typesafe commander
+
+  const [nftId] = program.args as [string];
+
   console.log("NFT id:", nftId);
   const [network, minterContractAddress, tokenId] = parseNftId(nftId);
   if (network?.kind !== NetworkKind.Cosmos) {
@@ -21,13 +26,19 @@ const main = async () => {
   console.log("Connecting to blockchain...");
   const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
 
-  console.log("Fetching minter config...");
-  const minterClient = new TeritoriBunkerMinterQueryClient(
-    cosmwasmClient,
-    minterContractAddress
-  );
-  const config = await minterClient.config();
-  const nftContractAddress = config.nft_addr;
+  let nftContractAddress;
+  if (minterContractAddress === network.nameServiceContractAddress) {
+    console.log("NFT is a name service token");
+    nftContractAddress = network.nameServiceContractAddress;
+  } else {
+    console.log("Fetching minter config...");
+    const minterClient = new TeritoriBunkerMinterQueryClient(
+      cosmwasmClient,
+      minterContractAddress
+    );
+    const config = await minterClient.config();
+    nftContractAddress = config.nft_addr;
+  }
   console.log("NFT contract address:", nftContractAddress);
   const nftClient = new TeritoriNftQueryClient(
     cosmwasmClient,

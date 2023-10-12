@@ -4,7 +4,7 @@ import { useMintEnded } from "./useMintEnded";
 import { parseNetworkObjectId } from "../networks";
 import { useAppNavigation } from "../utils/navigation";
 
-export interface NavigateToCollectionOpts {
+interface NavigateToCollectionOpts {
   forceSecondaryDuringMint?: boolean;
   forceLinkToMint?: boolean;
 }

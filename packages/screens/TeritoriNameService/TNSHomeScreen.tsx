@@ -20,14 +20,15 @@ import { TNSNameFinderModal } from "../../components/modals/teritoriNameService/
 import { FlowCard } from "../../components/teritoriNameService/FlowCard";
 import { useTNS } from "../../context/TNSProvider";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { useIsLeapConnected } from "../../hooks/useIsLeapConnected";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, getCollectionId, getCosmosNetwork } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 
-export type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
-export type TNSModals =
+type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
+type TNSModals =
   | "TNSManage"
   | "TNSRegister"
   | "TNSExplore"
@@ -79,6 +80,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   );
 
   const isKeplrConnected = useIsKeplrConnected();
+  const isLeapConnected = useIsLeapConnected();
 
   const handleModalClose: TNSCloseHandler = (
     modalName,
@@ -159,7 +161,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
           }}
         >
           <FlowCard
-            disabled={!isKeplrConnected}
+            disabled={!isKeplrConnected && !isLeapConnected}
             label="Register"
             description="Register and configure a new name"
             iconSVG={registerSVG}
@@ -168,7 +170,9 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
             }
           />
           <FlowCard
-            disabled={!isKeplrConnected || !tokens?.length}
+            disabled={
+              (!isKeplrConnected && !isLeapConnected) || !tokens?.length
+            }
             label="Manage"
             description="Transfer, edit, or burn a name that you own"
             iconSVG={penSVG}

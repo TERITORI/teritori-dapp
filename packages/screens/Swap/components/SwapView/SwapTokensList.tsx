@@ -30,7 +30,7 @@ export const SwapTokensList: React.FC<{
         <FadeInView style={{ position: "absolute", left: 20, top: 50 }}>
           <TertiaryBox
             mainContainerStyle={{
-              padding: layout.padding_x2_5,
+              padding: layout.spacing_x2_5,
               alignItems: "flex-start",
             }}
             width={width - 40}
@@ -41,7 +41,7 @@ export const SwapTokensList: React.FC<{
                 flexDirection: "row",
                 width: "100%",
                 justifyContent: "flex-end",
-                marginBottom: layout.padding_x1_5,
+                marginBottom: layout.spacing_x1_5,
               }}
             >
               <TouchableOpacity
@@ -76,6 +76,8 @@ export const SwapTokensList: React.FC<{
   return <></>;
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   modalContainer: {
     position: "absolute",

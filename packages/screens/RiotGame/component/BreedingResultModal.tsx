@@ -97,13 +97,15 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   footer: {
     borderTopWidth: 1,
     borderTopColor: mineShaftColor,
     width: "100%",
     alignItems: "center",
-    paddingVertical: layout.padding_x2_5,
-    paddingHorizontal: layout.padding_x1_5,
+    paddingVertical: layout.spacing_x2_5,
+    paddingHorizontal: layout.spacing_x1_5,
   },
 });

@@ -2,7 +2,8 @@ import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import { AttributeRarityFloor } from "../../api/marketplace/v1/marketplace";
-import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
+import { useIsMobile } from "../../hooks/useIsMobile";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { resolveColor } from "../../screens/Marketplace/utils";
 import { prettyPrice } from "../../utils/coins";
 import {
@@ -11,6 +12,7 @@ import {
   fontSemibold12,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { NFTInfo } from "../../utils/types/nft";
 import { BrandText } from "../BrandText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
@@ -21,12 +23,15 @@ export const NFTAttributeCard: React.FC<{
   nftInfo: NFTInfo;
   style?: StyleProp<ViewStyle>;
 }> = ({ nftAttribute, nftInfo, style }) => {
+  const isMobile = useIsMobile();
+  const { width } = useMaxResolution({ responsive: true, noMargin: true });
+
   return (
     nftAttribute &&
     nftInfo && (
       <TertiaryBox
         height={92}
-        width={192}
+        width={isMobile && width < 380 ? 158 : 192}
         style={style}
         mainContainerStyle={{
           padding: 12,
@@ -49,7 +54,7 @@ export const NFTAttributeCard: React.FC<{
           style={[
             fontMedium14,
             {
-              marginTop: layout.padding_x0_5,
+              marginTop: layout.spacing_x0_5,
               color: resolveColor("color", nftAttribute.rareRatio),
             },
           ]}
@@ -60,7 +65,7 @@ export const NFTAttributeCard: React.FC<{
         <View
           style={{
             flexDirection: "row",
-            marginTop: layout.padding_x0_5,
+            marginTop: layout.spacing_x0_5,
           }}
         >
           <BrandText
@@ -68,7 +73,7 @@ export const NFTAttributeCard: React.FC<{
               fontSemibold12,
               {
                 color: resolveColor("color", nftAttribute.rareRatio),
-                marginRight: layout.padding_x0_5,
+                marginRight: layout.spacing_x0_5,
               },
             ]}
           >
@@ -90,7 +95,7 @@ export const NFTAttributeCard: React.FC<{
         <BrandText
           style={[
             {
-              marginTop: layout.padding_x0_5,
+              marginTop: layout.spacing_x0_5,
               color: resolveColor("color", nftAttribute.rareRatio),
             },
             fontBold11,

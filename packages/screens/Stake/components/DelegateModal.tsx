@@ -44,7 +44,6 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
   visible,
   validator,
 }) => {
-  // variables
   const wallet = useSelectedWallet();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
@@ -136,7 +135,6 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     ]
   );
 
-  // returns
   const Header = useCallback(
     () => (
       <View>
@@ -235,6 +233,8 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     width: 446,
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    padding: layout.padding_x2_5,
+    padding: layout.spacing_x2_5,
   },
   alternateText: {
     ...StyleSheet.flatten(fontSemibold12),

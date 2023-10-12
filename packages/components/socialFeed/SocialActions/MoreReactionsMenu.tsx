@@ -26,14 +26,14 @@ export const MoreReactionsMenu: React.FC<{
         backgroundColor: neutral15,
         borderColor: neutral22,
         borderWidth: 1,
-        padding: layout.padding_x0_25,
+        padding: layout.spacing_x0_25,
         borderRadius: 12,
         flexDirection: "row",
         flexWrap: "wrap",
         position: "absolute",
         left: -3,
         right: -3,
-        top: -layout.padding_x0_5 - 1,
+        top: -layout.spacing_x0_5 - 1,
         zIndex: -1,
       }}
     >
@@ -44,16 +44,16 @@ export const MoreReactionsMenu: React.FC<{
             label={moreReactionsButtonLabel}
             onPress={onPressMore}
             style={{
-              marginHorizontal: layout.padding_x0_25,
-              marginVertical: layout.padding_x0_25,
+              marginHorizontal: layout.spacing_x0_25,
+              marginVertical: layout.spacing_x0_25,
             }}
           />
         ) : (
           <SocialStat
             key={index}
             style={{
-              marginHorizontal: layout.padding_x0_25,
-              marginVertical: layout.padding_x0_25,
+              marginHorizontal: layout.spacing_x0_25,
+              marginVertical: layout.spacing_x0_25,
             }}
             label={String(reaction.count)}
             emoji={reaction.icon}

@@ -1,5 +1,4 @@
 import React from "react";
-import { StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import addSVG from "../../../../assets/icons/add.svg";
@@ -10,6 +9,7 @@ import FlexRow from "../../../components/FlexRow";
 import { OptimizedImage } from "../../../components/OptimizedImage";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { isNFTStaked } from "../../../utils/game";
 import {
   neutral33,
@@ -35,15 +35,16 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
   active,
 }) => {
   const isStaked = isNFTStaked(ripper);
-  const imageSize = 200 - layout.padding_x2 * 2;
-
+  const isMobile = useIsMobile();
+  const computedSize = isMobile ? 150 : 200;
+  const imageSize = computedSize - layout.spacing_x2 * 2;
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
       <TertiaryBox
-        width={200}
-        height={200}
+        width={computedSize}
+        height={computedSize}
         mainContainerStyle={{
-          padding: layout.padding_x2,
+          padding: layout.spacing_x2,
           borderRadius: 8,
           borderColor: neutral33,
           borderWidth: active ? 1.2 : 1,
@@ -51,7 +52,16 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
       >
         {ripper ? (
           <>
-            <FlexRow style={styles.breedingsLeftTxt}>
+            <FlexRow
+              style={{
+                position: "absolute",
+                zIndex: 1,
+                top: 10,
+                left: 10,
+                width: "auto",
+                alignItems: "center",
+              }}
+            >
               <SVG
                 source={gameBoxSVG}
                 width={16}
@@ -60,7 +70,7 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
               />
               <BrandText
                 style={[
-                  { color: neutralA3, marginLeft: layout.padding_x1 },
+                  { color: neutralA3, marginLeft: layout.spacing_x1 },
                   fontMedium14,
                 ]}
               >
@@ -69,14 +79,33 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
             </FlexRow>
 
             <OptimizedImage
-              style={[styles.ripperImage, isStaked && { opacity: 0.4 }]}
+              style={[
+                {
+                  width: computedSize - 20,
+                  height: computedSize - 20,
+                },
+                isStaked && { opacity: 0.4 },
+              ]}
               sourceURI={ripper.imageUri}
               width={imageSize}
               height={imageSize}
             />
 
             {isStaked && (
-              <BrandText style={styles.stakedTitle}>Staked</BrandText>
+              <BrandText
+                style={{
+                  position: "absolute",
+                  top: 2 * layout.spacing_x4,
+                  color: redDefault,
+                  backgroundColor: withAlpha(redDefault, 0.3),
+                  paddingVertical: layout.spacing_x0_5,
+                  paddingHorizontal: layout.spacing_x1_5,
+                  borderRadius: 100,
+                  ...fontSemibold12,
+                }}
+              >
+                Staked
+              </BrandText>
             )}
           </>
         ) : (
@@ -92,28 +121,3 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  stakedTitle: {
-    position: "absolute",
-    top: 2 * layout.padding_x4,
-    color: redDefault,
-    backgroundColor: withAlpha(redDefault, 0.3),
-    paddingVertical: layout.padding_x0_5,
-    paddingHorizontal: layout.padding_x1_5,
-    borderRadius: 100,
-    ...(fontSemibold12 as object),
-  },
-  breedingsLeftTxt: {
-    position: "absolute",
-    zIndex: 1,
-    top: 10,
-    left: 10,
-    width: "auto",
-    alignItems: "center",
-  },
-  ripperImage: {
-    width: 180,
-    height: 180,
-  },
-});

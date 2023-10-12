@@ -95,7 +95,7 @@ export const TopMenuMyTeritories: React.FC = () => {
               style={{
                 width: topMenuWidth - 2,
               }}
-              width={ORG_CARD_WIDTH + layout.padding_x1_5}
+              width={ORG_CARD_WIDTH + layout.spacing_x1_5}
               data={fakeOrgs}
               height={48}
               loop={false}
@@ -113,6 +113,8 @@ export const TopMenuMyTeritories: React.FC = () => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   comingSoonContainer: {
     zIndex: 21,
@@ -136,13 +138,13 @@ const styles = StyleSheet.create({
   },
 
   orgCardBoxMainContainer: {
-    paddingVertical: layout.padding_x1,
-    paddingLeft: layout.padding_x1,
-    paddingRight: layout.padding_x1_5,
+    paddingVertical: layout.spacing_x1,
+    paddingLeft: layout.spacing_x1,
+    paddingRight: layout.spacing_x1_5,
   },
   orgCardImage: {
     borderRadius: 999,
-    marginRight: layout.padding_x1,
+    marginRight: layout.spacing_x1,
     minHeight: 32,
     minWidth: 32,
     width: 32,

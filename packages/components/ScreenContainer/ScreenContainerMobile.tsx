@@ -32,7 +32,7 @@ export const MobileTitle: FC<{ title: string }> = ({ title }) => {
         alignItems: "center",
         borderBottomColor: neutral33,
         width: windowWidth,
-        paddingHorizontal: layout.padding_x2,
+        paddingHorizontal: layout.spacing_x2,
       }}
     >
       <BrandText style={[fontBold12, { color: neutral77 }]}>{title}</BrandText>
@@ -109,6 +109,8 @@ export const ScreenContainerMobile: FC<{
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     flex: 1,

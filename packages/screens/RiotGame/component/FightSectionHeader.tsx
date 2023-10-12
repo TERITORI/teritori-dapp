@@ -54,26 +54,28 @@ export const FightSectionHeader: React.FC<FightSectionHeaderProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   pageTitle: {
     alignSelf: "center",
     ...(fontMedium48 as object),
   },
   section: {
-    paddingHorizontal: layout.padding_x4 * 2,
+    paddingHorizontal: layout.spacing_x4 * 2,
   },
   col: {
-    marginTop: layout.padding_x4,
+    marginTop: layout.spacing_x4,
   },
   totalContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: neutral17,
-    width: layout.padding_x4 * 2,
-    height: layout.padding_x4 * 2,
-    borderRadius: layout.padding_x4,
-    marginLeft: layout.padding_x2,
+    width: layout.spacing_x4 * 2,
+    height: layout.spacing_x4 * 2,
+    borderRadius: layout.spacing_x4,
+    marginLeft: layout.spacing_x2,
   },
   btnStake: {
     alignSelf: "flex-end",

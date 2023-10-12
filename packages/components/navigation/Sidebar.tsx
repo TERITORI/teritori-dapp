@@ -44,9 +44,9 @@ const SidebarSeparator: React.FC = () => {
     <View
       style={{
         height: 1,
-        marginHorizontal: layout.padding_x2,
+        marginHorizontal: layout.spacing_x2,
         backgroundColor: neutral33,
-        marginBottom: layout.padding_x1,
+        marginBottom: layout.spacing_x1,
       }}
     />
   );
@@ -167,6 +167,8 @@ export const Sidebar: React.FC = () => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     borderRightWidth: 1,
@@ -198,6 +200,6 @@ const styles = StyleSheet.create({
   },
   bottomSeperatorContainer: {
     width: 40,
-    marginLeft: layout.padding_x2,
+    marginLeft: layout.spacing_x2,
   },
 });

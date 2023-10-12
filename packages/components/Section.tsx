@@ -12,7 +12,6 @@ export const Section: React.FC<{
   subtitle?: string;
   topRightChild?: React.ReactNode;
 }> = ({ children, title, subtitle, topRightChild }) => {
-  // variables
   const fontSize = 20;
   const { width } = useMaxResolution();
 
@@ -20,7 +19,7 @@ export const Section: React.FC<{
   return (
     <View
       style={{
-        marginTop: layout.contentPadding,
+        marginTop: layout.contentSpacing,
         overflow: "hidden",
         width: "100%",
         maxWidth: width,

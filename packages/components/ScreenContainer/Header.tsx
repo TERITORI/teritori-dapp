@@ -33,7 +33,7 @@ export const Header: React.FC<{
           flex: 1,
           flexDirection: "row",
           alignItems: "center",
-          marginLeft: layout.contentPadding,
+          marginLeft: layout.contentSpacing,
         }}
       >
         {onBackPress && <BackButton onPress={onBackPress} />}

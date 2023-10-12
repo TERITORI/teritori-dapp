@@ -11,7 +11,7 @@ import {
 } from "../../networks";
 import { extractGnoNumber } from "../../utils/gno";
 
-export const useDAOMember = (
+const useDAOMember = (
   daoId: string | undefined,
   userId: string | undefined,
   enabled?: boolean
@@ -51,7 +51,8 @@ export const useDAOMember = (
       const power = extractGnoNumber(
         await provider.evaluateExpression(
           packagePath,
-          `GetCore().VotingModule().VotingPower("${userAddress}")`
+          `daoCore.VotingModule().VotingPowerAtHeight("${userAddress}", 0)`,
+          0
         )
       );
       const res: MemberResponse = {

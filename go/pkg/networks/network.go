@@ -58,7 +58,12 @@ type EthereumNetwork struct {
 	RiotContractAddressGen1         string `json:"riotContractAddressGen1"`
 	RiotSquadStakingContractAddress string `json:"riotSquadStakingContractAddress"`
 	DistributorContractAddress      string `json:"distributorContractAddress"`
-	AxelarRiotContractAddressGen0   string `json:"axelarRiotContractAddressGen0"`
+	RiotBridgeAddressGen0           string `json:"riotBridgeAddressGen0"`
+	RiotBridgeAddressGen1           string `json:"riotBridgeAddressGen1"`
+	RiotNFTAddressGen0              string `json:"riotNFTAddressGen0"`
+	RiotNFTAddressGen1              string `json:"riotNFTAddressGen1"`
+	RiotBridgedNFTAddressGen0       string `json:"riotBridgedNFTAddressGen0"`
+	RiotBridgedNFTAddressGen1       string `json:"riotBridgedNFTAddressGen1"`
 }
 
 var _ Network = &EthereumNetwork{}

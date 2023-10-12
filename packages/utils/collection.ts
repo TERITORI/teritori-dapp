@@ -11,7 +11,7 @@ import {
   parseNetworkObjectId,
 } from "../networks";
 
-export type MintState = "not-started" | "whitelist" | "public-sale" | "ended";
+type MintState = "not-started" | "whitelist" | "public-sale" | "ended";
 
 export interface MintPhase {
   mintMax: Long;

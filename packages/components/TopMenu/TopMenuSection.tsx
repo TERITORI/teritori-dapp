@@ -28,7 +28,7 @@ export const TopMenuSection: React.FC<{
           <BrandText
             style={[
               styles.title,
-              isCarousel && { marginLeft: layout.padding_x2 },
+              isCarousel && { marginLeft: layout.spacing_x2 },
             ]}
           >
             {title}
@@ -40,14 +40,16 @@ export const TopMenuSection: React.FC<{
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: layout.padding_x1_5,
-    paddingHorizontal: layout.padding_x2,
+    paddingVertical: layout.spacing_x1_5,
+    paddingHorizontal: layout.spacing_x2,
   },
   title: {
     ...(fontSemibold12 as object),
     color: neutral77,
-    marginBottom: layout.padding_x1,
+    marginBottom: layout.spacing_x1,
   },
 });

@@ -20,10 +20,6 @@ export const defaultMetaData: Metadata = {
 //   extension: Metadata | null;
 // }
 
-export interface MetadataWithTokenId extends Metadata {
-  token_id: string;
-}
-
 export type TNSSendFundsFormType = {
   comment: string;
   amount: string;

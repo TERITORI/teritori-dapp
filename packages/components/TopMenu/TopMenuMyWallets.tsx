@@ -80,8 +80,8 @@ const TokenBalance: React.FC = () => {
       <FlexRow
         alignItems="center"
         style={{
-          marginBottom: layout.padding_x1_5,
-          marginTop: layout.padding_x1,
+          marginBottom: layout.spacing_x1_5,
+          marginTop: layout.spacing_x1,
         }}
       >
         {!availableUSDBalance ? (
@@ -128,18 +128,18 @@ const TokenBalance: React.FC = () => {
       <FlexCol
         style={{
           backgroundColor: neutral17,
-          padding: layout.padding_x1,
+          padding: layout.spacing_x1,
           borderRadius: 8,
         }}
       >
         <FlexRow
           justifyContent="space-between"
-          style={{ marginBottom: layout.padding_x1 }}
+          style={{ marginBottom: layout.spacing_x1 }}
         >
           <FlexRow alignItems="center" width="auto">
             <LinearGradient
               style={{
-                marginRight: layout.padding_x1,
+                marginRight: layout.spacing_x1,
                 width: 16,
                 height: 16,
                 borderRadius: 999,
@@ -163,7 +163,7 @@ const TokenBalance: React.FC = () => {
           <FlexRow alignItems="center" width="auto">
             <View
               style={{
-                marginRight: layout.padding_x1,
+                marginRight: layout.spacing_x1,
                 width: 16,
                 height: 16,
                 backgroundColor: purpleDark,
@@ -206,14 +206,14 @@ export const TopMenuMyWallets: React.FC = () => {
         >
           <SecondaryButton
             disabled={selectedNetworkInfo?.kind !== NetworkKind.Cosmos}
-            paddingHorizontal={layout.padding_x2}
+            paddingHorizontal={layout.spacing_x2}
             text="Deposit"
             size="XS"
             onPress={() => setDepositVisible(true)}
           />
           <SecondaryButton
             disabled={selectedNetworkInfo?.kind !== NetworkKind.Cosmos}
-            paddingHorizontal={layout.padding_x2}
+            paddingHorizontal={layout.spacing_x2}
             text="Stake"
             size="XS"
             onPress={() => navigation.navigate("Staking")}
@@ -224,14 +224,14 @@ export const TopMenuMyWallets: React.FC = () => {
                 selectedNetworkInfo?.kind || NetworkKind.Unknown
               )
             }
-            paddingHorizontal={layout.padding_x2}
+            paddingHorizontal={layout.spacing_x2}
             text="Send"
             size="XS"
             onPress={() => setSendVisible(true)}
           />
           {/*TODO: Handle this when the Swap feature is available*/}
           <SecondaryButton
-            paddingHorizontal={layout.padding_x2}
+            paddingHorizontal={layout.spacing_x2}
             text="Swap"
             size="XS"
             disabled
@@ -271,9 +271,11 @@ export const TopMenuMyWallets: React.FC = () => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   buttonsContainer: {
-    marginVertical: layout.padding_x1_5,
+    marginVertical: layout.spacing_x1_5,
   },
   manageWalletsContainer: {
     flexDirection: "row",
@@ -281,6 +283,6 @@ const styles = StyleSheet.create({
   },
   manageWallets: {
     ...(fontSemibold14 as object),
-    marginRight: layout.padding_x1,
+    marginRight: layout.spacing_x1,
   },
 });

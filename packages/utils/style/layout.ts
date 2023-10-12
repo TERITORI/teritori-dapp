@@ -14,8 +14,6 @@ export const MOBILE_MAX_WIDTH = 1024;
 export const RESPONSIVE_BREAKPOINT_S = 512;
 export const SOCIAL_FEED_BREAKPOINT_M = 800;
 
-const BASE_SIZE = 8;
-
 export const getResponsiveScreenContainerMarginHorizontal = (width: number) => {
   if (width >= 992) {
     return 140;
@@ -38,47 +36,50 @@ export const getMobileScreenContainerMarginHorizontal = (width: number) => {
   }
 };
 
-export const layout = {
-  padding_x1: BASE_SIZE,
+export const layout = Object.freeze({
+  base: 8,
   // 2
-  get padding_x0_25() {
-    return this.padding_x1 * 0.25;
+  get spacing_x0_25() {
+    return this.base * 0.25;
   },
   // 4
-  get padding_x0_5() {
-    return this.padding_x1 * 0.5;
+  get spacing_x0_5() {
+    return this.base * 0.5;
   },
   // 6
-  get padding_x0_75() {
-    return this.padding_x1 * 0.75;
+  get spacing_x0_75() {
+    return this.base * 0.75;
+  },
+  get spacing_x1() {
+    return this.base;
   },
   // 12
-  get padding_x1_5() {
-    return this.padding_x1 * 1.5;
+  get spacing_x1_5() {
+    return this.base * 1.5;
   },
   // 16
-  get padding_x2() {
-    return this.padding_x1 * 2;
+  get spacing_x2() {
+    return this.base * 2;
   },
   // 20
-  get padding_x2_5() {
-    return this.padding_x1 * 2.5;
+  get spacing_x2_5() {
+    return this.base * 2.5;
   },
   // 24
-  get padding_x3() {
-    return this.padding_x1 * 3;
+  get spacing_x3() {
+    return this.base * 3;
   },
   // 28
-  get padding_x3_5() {
-    return this.padding_x1 * 3.5;
+  get spacing_x3_5() {
+    return this.base * 3.5;
   },
   // 32
-  get padding_x4() {
-    return this.padding_x1 * 4;
+  get spacing_x4() {
+    return this.base * 4;
   },
 
   borderRadius: 12,
-  contentPadding: 48,
-  topContentPaddingWithHeading: 42,
+  contentSpacing: 48,
+  topContentSpacingWithHeading: 42,
   iconButton: 32,
-};
+});

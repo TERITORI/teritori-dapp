@@ -6,7 +6,6 @@ import { Decimal } from "@cosmjs/math";
 import { Registry } from "@cosmjs/proto-signing";
 import {
   SigningStargateClient,
-  StargateClient,
   GasPrice,
   defaultRegistryTypes,
 } from "@cosmjs/stargate";
@@ -24,12 +23,12 @@ import { junoNetwork } from "./juno";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
 // import { solanaNetwork } from "./solana";
+import { polygonNetwork } from "./polygon";
 import { polygonMumbaiNetwork } from "./polygon-mumbai";
 import { teritoriNetwork } from "./teritori";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import {
   CosmosNetworkInfo,
-  CurrencyInfo,
   EthereumNetworkInfo,
   GnoNetworkInfo,
   NativeCurrencyInfo,
@@ -57,6 +56,7 @@ export const allNetworks = [
   gnoDevNetwork,
   gnoTeritoriNetwork,
   polygonMumbaiNetwork,
+  polygonNetwork,
   // solanaNetwork,
 ];
 
@@ -71,21 +71,6 @@ export const getCurrency = (
     return undefined;
   }
   return getNetwork(networkId)?.currencies.find((c) => c.denom === denom);
-};
-
-export const getToriNativeCurrency = (networkId: string) => {
-  const network = getNetwork(networkId);
-  if (network?.kind === NetworkKind.Cosmos)
-    return network?.currencies.find(
-      (currencyInfo: CurrencyInfo) => currencyInfo.kind === "native"
-    ) as NativeCurrencyInfo;
-  else {
-    const toriIbcCurrency = network?.currencies.find(
-      (currencyInfo: CurrencyInfo) =>
-        currencyInfo.kind === "ibc" && currencyInfo.sourceDenom === "utori"
-    );
-    return getNativeCurrency(networkId, toriIbcCurrency?.denom);
-  }
 };
 
 export const getIBCCurrency = (
@@ -207,6 +192,17 @@ export const parseActivityId = (
     return [undefined, "", ""];
   }
   return [network, parts[0], subId.substring(parts[0].length + 1)];
+};
+
+export const getNetworkObjectId = (
+  networkId: string | null | undefined,
+  subId: string | null | undefined
+) => {
+  if (!networkId || !subId) {
+    return "";
+  }
+  const network = getNetwork(networkId);
+  return `${network?.idPrefix}-${subId}`;
 };
 
 export const getUserId = (
@@ -414,12 +410,6 @@ export const getKeplrSigningStargateClient = async (
       registry: pbTypesRegistry,
     }
   );
-};
-
-export const getNonSigningStargateClient = async (networkId: string) => {
-  const network = mustGetCosmosNetwork(networkId);
-
-  return await StargateClient.connect(network.rpcEndpoint);
 };
 
 export const getKeplrSigningCosmWasmClient = async (

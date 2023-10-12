@@ -84,7 +84,7 @@ export const UserPublicProfileScreenHeader = ({
   const items = Object.entries(screenTabItems).reduce((o, [key, item]) => {
     if (
       network?.kind === NetworkKind.Gno &&
-      ["userPosts", "nfts", "quests", "mentionsPosts", "funds"].includes(key)
+      ["nfts", "quests", "mentionsPosts", "funds"].includes(key)
     ) {
       return o;
     }
@@ -108,7 +108,7 @@ export const UserPublicProfileScreenHeader = ({
     ? selectedTab
     : objectKeys(items)[0];
   useEffect(() => {
-    if (selectedTab !== forcedSelection) {
+    if (forcedSelection && selectedTab !== forcedSelection) {
       setSelectedTab(forcedSelection);
     }
   }, [setSelectedTab, selectedTab, forcedSelection]);
@@ -126,7 +126,7 @@ export const UserPublicProfileScreenHeader = ({
         style={{
           width,
           marginTop: 32,
-          marginBottom: layout.padding_x4,
+          marginBottom: layout.spacing_x4,
           height: 45,
         }}
         borderColorTabSelected={primaryColor}

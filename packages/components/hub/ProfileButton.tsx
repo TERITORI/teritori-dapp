@@ -78,7 +78,7 @@ export const ProfileButton: React.FC<{
   return <RegisterButton networkId={network?.id} style={style} />;
 };
 
-export const RegisterButton: React.FC<{
+const RegisterButton: React.FC<{
   style?: StyleProp<ViewStyle>;
   networkId: string | undefined;
 }> = ({ networkId, style }) => {
@@ -128,7 +128,7 @@ export const RegisterButton: React.FC<{
 
 const gnoNameCost = 200_000_000; // MAYBE TODO: fetch min fee from contract https://testnet.gno.teritori.com/r/demo/users/users.gno
 
-export const RegisterGnoNameModal: React.FC<{
+const RegisterGnoNameModal: React.FC<{
   visible: boolean;
   networkId: string | undefined;
   onClose?: () => void;

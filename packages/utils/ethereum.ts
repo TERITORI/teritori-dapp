@@ -1,15 +1,16 @@
 import detectEthereumProvider from "@metamask/detect-provider";
 import { ethers } from "ethers";
 
-import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
-import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import { ipfsURLToHTTPURL } from "./ipfs";
 import { Attribute, Collection, NFT } from "../api/marketplace/v1/marketplace";
+import { TeritoriMinter__factory } from "../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { TeritoriNft__factory } from "../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import {
   EthereumNetworkInfo,
   parseNetworkObjectId,
   parseNftId,
   NetworkKind,
+  getNetworkByIdPrefix,
 } from "../networks";
 
 // this is used to block all calls to the provider getter while we wait for network switch auth
@@ -75,14 +76,21 @@ export const getMetaMaskEthereumProvider = async (
 const alchemyProviders: { [key: string]: ethers.providers.AlchemyProvider } =
   {};
 
-export const getEthereumProvider = async (network: EthereumNetworkInfo) => {
-  try {
-    const metamaskProvider = await getMetaMaskEthereumProvider(network.chainId);
-    if (metamaskProvider) {
-      return metamaskProvider;
+export const getEthereumProvider = async (
+  network: EthereumNetworkInfo,
+  forceAlchemyProvider: boolean = false
+) => {
+  if (!forceAlchemyProvider) {
+    try {
+      const metamaskProvider = await getMetaMaskEthereumProvider(
+        network.chainId
+      );
+      if (metamaskProvider) {
+        return metamaskProvider;
+      }
+    } catch (err) {
+      console.warn("failed to get metamask ethereum provider:", err);
     }
-  } catch (err) {
-    console.warn("failed to get metamask ethereum provider:", err);
   }
 
   const cacheKey = `${network.chainId}-${network.alchemyApiKey}`;
@@ -119,20 +127,34 @@ export const addCollectionMetadata = async (collection: Collection) => {
 };
 
 const addNftMetadata = async (nft: NFT) => {
-  const [network, , nftTokenId] = parseNftId(nft.id);
+  let [network, minter, nftTokenId] = parseNftId(nft.id);
+  let isBridged = false;
+
+  // Handle the bridged nft
+  if (minter.includes(":")) {
+    isBridged = true;
+    const networkIdPrefix = minter.split(":")[1];
+    network = getNetworkByIdPrefix(networkIdPrefix);
+  }
+
   if (network?.kind !== NetworkKind.Ethereum) {
     return nft;
   }
 
-  const provider = await getEthereumProvider(network);
+  const forceAlchemyProvider = isBridged;
+  const provider = await getEthereumProvider(network, forceAlchemyProvider);
 
-  const nftClient = TeritoriNft__factory.connect(
-    nft.nftContractAddress,
-    provider
-  );
+  let nftContractAddress = nft.nftContractAddress;
+
+  // Handle the bridged nft
+  if (nftContractAddress.includes(":")) {
+    nftContractAddress = nftContractAddress.split(":")[1];
+  }
+  const nftClient = TeritoriNft__factory.connect(nftContractAddress, provider);
 
   const tokenURI = await nftClient.callStatic.tokenURI(nftTokenId);
   const metadataURL = ipfsURLToHTTPURL(tokenURI);
+
   const infoReply = await fetch(metadataURL);
   const info = await infoReply.json();
 
@@ -159,7 +181,7 @@ export const addNftListMetadata = async (nfts: NFT[]) => {
   return await Promise.all(queries);
 };
 
-export const getCollectionMetadata = async (collectionId: string) => {
+const getCollectionMetadata = async (collectionId: string) => {
   const [network, minter] = parseNetworkObjectId(collectionId);
   if (network?.kind !== NetworkKind.Ethereum) {
     return;

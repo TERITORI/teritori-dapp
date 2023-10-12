@@ -1,4 +1,3 @@
-// libraries
 import { useQuery } from "@tanstack/react-query";
 import { BigNumber, ethers } from "ethers";
 import moment from "moment";
@@ -76,7 +75,7 @@ export const CollapsablePriceHistory: React.FC<{ nftId: string }> = ({
           height={200}
         >
           <VictoryAxis
-            domainPadding={layout.padding_x4}
+            domainPadding={layout.spacing_x4}
             style={axisStyle}
             tickFormat={(val) => moment(val).format("D MMM")}
           />
@@ -130,15 +129,17 @@ const useNFTPriceHistory = (nftId: string) => {
   return data;
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
-    margin: layout.padding_x2,
+    margin: layout.spacing_x2,
     marginTop: 0,
     borderRadius: layout.borderRadius * 0.67,
     borderColor: neutral33,
     borderWidth: 1,
     flex: 1,
-    paddingTop: layout.padding_x2,
+    paddingTop: layout.spacing_x2,
   },
   priceLabelTextContainer: {
     flex: 1,

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+import { View } from "react-native";
 
 import { SettingItem } from "./SettingItem";
 import { BrandText } from "../../../components/BrandText";
@@ -8,24 +8,6 @@ import { neutral17, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { SettingItemGroupType, SettingItemType } from "../types";
-
-const styles = StyleSheet.create({
-  bigTitle: StyleSheet.flatten([
-    fontSemibold20,
-    {
-      paddingTop: layout.padding_x4,
-      paddingLeft: layout.padding_x2,
-    },
-  ]),
-  bigText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutralA3,
-      paddingLeft: layout.padding_x2,
-      paddingTop: layout.padding_x1,
-    },
-  ]),
-});
 
 export const Notifications: React.FC = () => {
   const data: SettingItemGroupType = {
@@ -62,28 +44,46 @@ export const Notifications: React.FC = () => {
 
   return (
     <>
-      <BrandText style={styles.bigTitle}>Notifications</BrandText>
-      <BrandText style={styles.bigText}>
+      <BrandText
+        style={[
+          fontSemibold20,
+          {
+            paddingTop: layout.spacing_x4,
+            paddingLeft: layout.spacing_x2,
+          },
+        ]}
+      >
+        Notifications
+      </BrandText>
+      <BrandText
+        style={[
+          fontSemibold14,
+          {
+            color: neutralA3,
+            paddingLeft: layout.spacing_x2,
+            paddingTop: layout.spacing_x1,
+          },
+        ]}
+      >
         Select the kinds of notifications you’d like receive to your email and
         in-app notifications center
       </BrandText>
 
       <SpacerColumn size={2} />
 
-      <div // change into View
+      <View
         style={{
-          width: "100%",
-          borderRadius: layout.padding_x1_5,
+          borderRadius: layout.spacing_x1_5,
           backgroundColor: neutral17,
-          padding: layout.padding_x1_5,
+          padding: layout.spacing_x1_5,
           opacity: 0.5, //  delete when ready
-          pointerEvents: "none", //  delete when ready
         }}
       >
         {Object.keys(data).map((key) => {
           const item = settings[key];
           return (
             <SettingItem
+              disabled //  delete when ready
               key={key}
               onPress={(item: SettingItemType) => {
                 item.state = !item.state;
@@ -93,7 +93,7 @@ export const Notifications: React.FC = () => {
             />
           );
         })}
-      </div>
+      </View>
     </>
   );
 };

@@ -50,8 +50,8 @@ export const FilesPreviewsContainer: React.FC<FilePreviewContainerProps> = ({
       style={[
         {
           width: "100%",
-          marginBottom: layout.padding_x2,
-          paddingHorizontal: layout.padding_x2,
+          marginBottom: layout.spacing_x2,
+          paddingHorizontal: layout.spacing_x2,
         },
       ]}
     >

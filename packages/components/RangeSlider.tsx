@@ -48,6 +48,8 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   row: { flexDirection: "row", alignItems: "center" },
   input: StyleSheet.flatten([
@@ -55,8 +57,8 @@ const styles = StyleSheet.create({
     {
       color: secondaryColor,
       borderWidth: 1,
-      padding: layout.padding_x2,
-      marginLeft: layout.padding_x2,
+      padding: layout.spacing_x2,
+      marginLeft: layout.spacing_x2,
       borderColor: neutral33,
       borderRadius: 12,
       width: 70,

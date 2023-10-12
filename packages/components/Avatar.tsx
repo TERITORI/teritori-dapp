@@ -1,4 +1,3 @@
-// libraries
 import React from "react";
 import { SvgProps } from "react-native-svg";
 
@@ -7,7 +6,7 @@ import { SVG } from "./SVG";
 import { avatarWidth } from "../utils/style/layout";
 
 // types
-export interface AvatarProps {
+interface AvatarProps {
   uri?: string;
   size?: "regular" | "medium";
   defaultIcon?: React.FC<SvgProps>;
@@ -29,7 +28,6 @@ export const Avatar: React.FC<AvatarProps> = ({
     }
   };
 
-  // variables
   const avatarSize = getSize();
 
   // renders

@@ -1,5 +1,5 @@
 import React from "react";
-import { Linking } from "react-native";
+import { Linking, ViewStyle } from "react-native";
 
 import coin from "../../../assets/icons/coin.svg";
 import discordSVG from "../../../assets/icons/discord.svg";
@@ -19,13 +19,14 @@ export const CollectionSocialButtons: React.FC<{
     isMintable,
   } = collectionInfo;
 
+  const style: ViewStyle = { marginRight: 12, marginVertical: 2 };
   return (
     <>
       {isMintable && !hideMintButton && (
         <SocialButton
           text="Mintable"
           iconSvg={coin}
-          style={{ marginRight: 12 }}
+          style={style}
           onPress={() => Linking.openURL(window.location.href + "/mint")}
         />
       )}
@@ -33,7 +34,7 @@ export const CollectionSocialButtons: React.FC<{
         <SocialButton
           text="Website"
           iconSvg={websiteSVG}
-          style={{ marginRight: 12 }}
+          style={style}
           onPress={() => Linking.openURL(websiteLink)}
         />
       )}
@@ -41,7 +42,7 @@ export const CollectionSocialButtons: React.FC<{
         <SocialButton
           text="Discord"
           iconSvg={discordSVG}
-          style={{ marginRight: 12 }}
+          style={style}
           onPress={() => Linking.openURL(discordLink)}
         />
       )}
@@ -49,7 +50,7 @@ export const CollectionSocialButtons: React.FC<{
         <SocialButton
           text="Twitter"
           iconSvg={twitterSVG}
-          style={{ marginRight: 12 }}
+          style={style}
           onPress={() => Linking.openURL(twitterLink)}
         />
       )}

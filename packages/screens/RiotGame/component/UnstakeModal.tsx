@@ -66,7 +66,7 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
         <FlexRow>
           <BrandText style={fontSemibold20}>Success Fight !</BrandText>
           <Image
-            style={{ width: 24, height: 24, marginLeft: layout.padding_x0_5 }}
+            style={{ width: 24, height: 24, marginLeft: layout.spacing_x0_5 }}
             source={firePNG}
           />
         </FlexRow>
@@ -125,12 +125,14 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   footer: {
     borderTopWidth: 1,
     borderTopColor: mineShaftColor,
     width: "100%",
     alignItems: "center",
-    padding: layout.padding_x2_5,
+    padding: layout.spacing_x2_5,
   },
 });

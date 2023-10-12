@@ -1,4 +1,3 @@
-// libraries
 import React from "react";
 import { Pressable, StyleSheet } from "react-native";
 
@@ -12,7 +11,6 @@ type MaxButtonProps = {
 };
 
 export const MaxButton = ({ onPress }: MaxButtonProps) => {
-  // returns
   return (
     <Pressable onPress={onPress}>
       <BrandText style={styles.maxText}>max</BrandText>
@@ -20,12 +18,14 @@ export const MaxButton = ({ onPress }: MaxButtonProps) => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   maxText: {
     ...StyleSheet.flatten(fontSemibold12),
     backgroundColor: primaryColor,
     color: neutral22,
     borderRadius: layout.borderRadius,
-    paddingHorizontal: layout.padding_x0_5,
+    paddingHorizontal: layout.spacing_x0_5,
   },
 });

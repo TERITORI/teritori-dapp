@@ -19,7 +19,7 @@ export const teritoriNetwork: CosmosNetworkInfo = {
     NetworkFeature.SocialFeed,
     NetworkFeature.UPP,
   ],
-  walletUrlForStaking: "https://explorer.teritori.com/teritori/staking",
+  walletUrlForStaking: "https://app.teritori.com/staking",
   currencies: teritoriCurrencies,
   txExplorer: "https://www.mintscan.io/teritori/txs/$hash",
   accountExplorer: "https://www.mintscan.io/teritori/account/$address",

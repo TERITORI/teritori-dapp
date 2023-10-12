@@ -34,8 +34,8 @@ export const SocialCardHeader: FC<{
             style={{
               marginRight:
                 width < RESPONSIVE_BREAKPOINT_S
-                  ? layout.padding_x1
-                  : layout.padding_x2,
+                  ? layout.spacing_x1
+                  : layout.spacing_x2,
             }}
             userId={authorId}
             size={width < RESPONSIVE_BREAKPOINT_S ? "S" : "M"}
@@ -53,7 +53,11 @@ export const SocialCardHeader: FC<{
             {/*---- User name */}
             <AnimationFadeIn>
               <BrandText style={fontSemibold16}>
-                {authorMetadata?.public_name || DEFAULT_NAME}
+                {authorMetadata?.public_name ||
+                  (!authorMetadata?.tokenId
+                    ? DEFAULT_NAME
+                    : authorMetadata.tokenId.split(".")[0]) ||
+                  DEFAULT_NAME}
               </BrandText>
             </AnimationFadeIn>
           </OmniLink>
@@ -86,7 +90,7 @@ export const SocialCardHeader: FC<{
                 height: 2,
                 width: 2,
                 borderRadius: 999,
-                marginHorizontal: layout.padding_x0_75,
+                marginHorizontal: layout.spacing_x0_75,
               }}
             />
             {/*---- Date */}

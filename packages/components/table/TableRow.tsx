@@ -24,7 +24,7 @@ export const TableRow: React.FC<TableRowProps> = ({ headings, labelStyle }) => {
             {
               flex,
               paddingRight:
-                headings.length - 1 === index ? 0 : layout.padding_x1,
+                headings.length - 1 === index ? 0 : layout.spacing_x1,
             },
             labelStyle,
           ]}
@@ -36,6 +36,8 @@ export const TableRow: React.FC<TableRowProps> = ({ headings, labelStyle }) => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
@@ -43,8 +45,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     backgroundColor: codGrayColor,
-    minHeight: layout.contentPadding,
-    paddingHorizontal: layout.padding_x2_5,
+    minHeight: layout.contentSpacing,
+    paddingHorizontal: layout.spacing_x2_5,
     borderTopLeftRadius: layout.borderRadius,
     borderTopRightRadius: layout.borderRadius,
   },

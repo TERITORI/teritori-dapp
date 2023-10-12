@@ -16,7 +16,7 @@ import { SVG } from "../../SVG";
 import { CustomPressable } from "../../buttons/CustomPressable";
 import { SpacerRow } from "../../spacer";
 
-export type SidebarNestedButtonProps = Omit<SidebarButtonProps, "nested">;
+type SidebarNestedButtonProps = Omit<SidebarButtonProps, "nested">;
 
 export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
   icon,
@@ -25,7 +25,6 @@ export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
   route,
   iconSize = 20,
 }) => {
-  // variables
   const { isSidebarExpanded } = useSidebar();
   const { name: currentRouteName } = useRoute();
   const isComingSoon = route === "ComingSoon";
@@ -39,7 +38,6 @@ export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
     [isSidebarExpanded]
   );
 
-  // returns
   return (
     <CustomPressable
       onPress={isComingSoon ? () => {} : onPress && (() => onPress(route))}
@@ -74,9 +72,11 @@ export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: layout.padding_x1_5,
+    paddingHorizontal: layout.spacing_x1_5,
     alignItems: "center",
     flexDirection: "row",
     height: 32,

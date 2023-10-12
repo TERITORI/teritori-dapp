@@ -32,7 +32,7 @@ export const EnrollSlot: React.FC<EnrollSlotProps> = ({
   isLeader,
 }) => {
   const isStaked = isNFTStaked(ripper);
-  const imageSize = 172 - layout.padding_x2 * 2;
+  const imageSize = 172 - layout.spacing_x2 * 2;
 
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
@@ -40,8 +40,8 @@ export const EnrollSlot: React.FC<EnrollSlotProps> = ({
         width={172}
         height={148}
         mainContainerStyle={{
-          padding: layout.padding_x2,
-          borderRadius: layout.padding_x1,
+          padding: layout.spacing_x2,
+          borderRadius: layout.spacing_x1,
           borderColor: isLeader ? yellowDefault : neutral33,
           borderWidth: isLeader ? 1.2 : 1,
         }}
@@ -76,14 +76,16 @@ export const EnrollSlot: React.FC<EnrollSlotProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   stakedTitle: {
     position: "absolute",
     top: 20,
     color: redDefault,
     backgroundColor: withAlpha(redDefault, 0.3),
-    paddingVertical: layout.padding_x0_5,
-    paddingHorizontal: layout.padding_x1_5,
+    paddingVertical: layout.spacing_x0_5,
+    paddingHorizontal: layout.spacing_x1_5,
     borderRadius: 100,
     ...(fontSemibold12 as object),
   },
@@ -93,8 +95,8 @@ const styles = StyleSheet.create({
     bottom: 20,
     color: yellowDefault,
     backgroundColor: withAlpha(orangeLight, 0.3),
-    paddingVertical: layout.padding_x0_5,
-    paddingHorizontal: layout.padding_x1_5,
+    paddingVertical: layout.spacing_x0_5,
+    paddingHorizontal: layout.spacing_x1_5,
     borderRadius: 100,
     ...(fontSemibold12 as object),
   },

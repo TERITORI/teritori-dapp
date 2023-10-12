@@ -256,7 +256,6 @@ export const OrganizationDeployerScreen = () => {
     }
   };
 
-  // returns
   return (
     <ScreenContainer
       headerChildren={<BrandText>Organization Deployer</BrandText>}
@@ -328,6 +327,8 @@ export const OrganizationDeployerScreen = () => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   row: { flexDirection: "row", flex: 1 },
   fill: { flex: 1 },

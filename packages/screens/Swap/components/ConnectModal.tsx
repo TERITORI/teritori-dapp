@@ -89,23 +89,25 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   modalHeaderContainer: {
     flexDirection: "row",
     alignItems: "center",
   },
   modalHeaderTitle: {
-    marginLeft: layout.padding_x2,
+    marginLeft: layout.spacing_x2,
   },
   modalChildren: {
     alignItems: "center",
-    paddingBottom: layout.padding_x2_5,
+    paddingBottom: layout.spacing_x2_5,
   },
   text: {
     color: neutral77,
     maxWidth: 371,
-    marginBottom: layout.padding_x2_5,
-    marginTop: layout.padding_x4,
+    marginBottom: layout.spacing_x2_5,
+    marginTop: layout.spacing_x4,
     ...StyleSheet.flatten(fontSemibold14),
   },
   textWhite: {

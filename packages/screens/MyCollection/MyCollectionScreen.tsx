@@ -31,13 +31,15 @@ export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
     <ScreenContainer>
       <OwnedNFTs
         ownerId={selectedWallet?.userId || ""}
-        style={{ marginHorizontal: layout.padding_x3 }}
+        style={{ marginHorizontal: layout.spacing_x3 }}
         EmptyListComponent={EmptyListComponent}
       />
     </ScreenContainer>
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   emptyContainer: {
     flex: 1,

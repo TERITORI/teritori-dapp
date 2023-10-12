@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 
 export function usePrevious<T>(value: T): T | null {
-  // variables
   const ref = useRef<T | null>(null);
 
   // hooks
@@ -9,6 +8,5 @@ export function usePrevious<T>(value: T): T | null {
     ref.current = value;
   }, [value]);
 
-  // returns
   return ref.current;
 }

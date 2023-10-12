@@ -38,7 +38,7 @@ export const CollectionStat = ({
             fontSemibold14,
             {
               lineHeight: 19,
-              marginRight: layout.padding_x0_5,
+              marginRight: layout.spacing_x0_5,
             },
           ]}
         >
@@ -56,6 +56,8 @@ export const CollectionStat = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     flex: 1,

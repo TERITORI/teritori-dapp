@@ -19,6 +19,7 @@ import { Metadata } from "../../contracts-clients/teritori-name-service/Teritori
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useBalances } from "../../hooks/useBalances";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { useIsLeapConnected } from "../../hooks/useIsLeapConnected";
 import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
@@ -96,6 +97,8 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
   const isKeplrConnected = useIsKeplrConnected();
+  const isLeapConnected = useIsLeapConnected();
+
   const userHasCoWallet = useAreThereWallets();
   const navigation = useAppNavigation();
   const networkId = useSelectedNetworkId();
@@ -140,7 +143,8 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   // ==== Init
   useFocusEffect(() => {
     // ===== Controls many things, be careful
-    if (!userHasCoWallet || !isKeplrConnected) navigation.navigate("TNSHome");
+    if (!userHasCoWallet || (!isKeplrConnected && !isLeapConnected))
+      navigation.navigate("TNSHome");
     if (name && userHasCoWallet && tokens.includes(normalizedTokenId))
       onClose();
 
@@ -152,7 +156,8 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   const queryClient = useQueryClient();
 
   const submitData = async (data: Metadata) => {
-    if (!isKeplrConnected || !price) {
+    if ((!isKeplrConnected && !isLeapConnected) || !price) {
+      // FIXME: define some central "areCosmosWalletsConnected"
       return;
     }
 

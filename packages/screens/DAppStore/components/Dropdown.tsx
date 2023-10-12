@@ -74,8 +74,8 @@ export const DropdownDappsStoreFilter: React.FC = () => {
       ref={dropdownRef}
       style={{
         alignSelf: "flex-end",
-        marginRight: layout.padding_x3,
-        marginBottom: layout.padding_x2,
+        marginRight: layout.spacing_x3,
+        marginBottom: layout.spacing_x2,
       }}
     >
       <TouchableOpacity
@@ -86,7 +86,7 @@ export const DropdownDappsStoreFilter: React.FC = () => {
         activeOpacity={1}
         onPress={() => onPressDropdownButton(dropdownRef)}
       >
-        <BrandText style={[fontSemibold14, { marginRight: layout.padding_x1 }]}>
+        <BrandText style={[fontSemibold14, { marginRight: layout.spacing_x1 }]}>
           All dApps
         </BrandText>
         <SVG
@@ -103,15 +103,15 @@ export const DropdownDappsStoreFilter: React.FC = () => {
           width={248}
           style={{ position: "absolute", top: 29, right: -14 }}
           mainContainerStyle={{
-            paddingHorizontal: layout.padding_x1_5,
-            paddingTop: layout.padding_x1_5,
+            paddingHorizontal: layout.spacing_x1_5,
+            paddingTop: layout.spacing_x1_5,
             backgroundColor: neutral33,
             alignItems: "flex-start",
           }}
         >
           {options.map((option) => (
             <SelectableOption
-              style={{ marginBottom: layout.padding_x1_5 }}
+              style={{ marginBottom: layout.spacing_x1_5 }}
               key={option.id}
               name={option.name}
               id={option.id}

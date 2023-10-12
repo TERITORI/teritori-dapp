@@ -45,10 +45,10 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	switch {
 	case strings.EqualFold(tx.Info.To, h.network.RiotSquadStakingContractAddress):
 		metaData = abiGo.SquadStakingV3MetaData
-	case strings.EqualFold(tx.Info.To, h.network.AxelarRiotContractAddressGen0):
+	case strings.EqualFold(tx.Info.To, h.network.RiotBridgedNFTAddressGen0), strings.EqualFold(tx.Info.To, h.network.RiotBridgedNFTAddressGen1):
 		metaData = abiGo.TeritoriNFTAxelarMetaData
 	// RiotNFT contract
-	case strings.EqualFold(tx.Info.To, "0x7a9e5dbe7d3946ce4ea2f2396549c349635ebf2f"):
+	case strings.EqualFold(tx.Info.To, h.network.RiotNFTAddressGen0), strings.EqualFold(tx.Info.To, h.network.RiotNFTAddressGen1):
 		metaData = abiGo.TeritoriNFTMetaData
 	// Minter contract
 	case strings.EqualFold(tx.Info.To, h.network.RiotContractAddressGen0):
@@ -57,6 +57,8 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 		metaData = abiGo.TeritoriVaultMetaData
 	case strings.EqualFold(tx.Info.To, h.network.DistributorContractAddress):
 		metaData = abiGo.DistributorMetaData
+	case strings.EqualFold(tx.Info.To, h.network.RiotBridgeAddressGen0), strings.EqualFold(tx.Info.To, h.network.RiotBridgeAddressGen1):
+		metaData = abiGo.AxelarBridgeETHMetaData
 	// If not matching with known handlers continue
 	default:
 		return nil
@@ -99,6 +101,10 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	case "execute":
 		if err := h.handleExecute(contractABI, tx, args); err != nil {
 			return errors.Wrap(err, "failed to handle execute axelar NFT")
+		}
+	case "bridgeNft":
+		if err := h.handleBridgeNFT(contractABI, tx, args); err != nil {
+			return errors.Wrap(err, "failed to handle execute bridge NFT")
 		}
 	// SquadStake
 	case "stake":

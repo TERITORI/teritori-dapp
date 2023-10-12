@@ -2,10 +2,6 @@ import { Coin } from "@cosmjs/amino";
 import { toUtf8 } from "@cosmjs/encoding";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 
-import { UserScore } from "./../api/p2e/v1/p2e";
-import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import { SquadStakingV3__factory } from "./../evm-contracts-clients/teritori-squad-staking/SquadStakingV3__factory";
-import { NetworkInfo } from "./../networks/types";
 import { getKeplrSquadStakingClient } from "./contracts";
 import { getMetaMaskEthereumSigner } from "./ethereum";
 import backpackSVG from "../../assets/game/backpack.svg";
@@ -22,9 +18,14 @@ import nft5 from "../../assets/game/nft-5.png";
 import subtractSVG from "../../assets/game/subtract.svg";
 import toolSVG from "../../assets/game/tool.svg";
 import { NFT } from "../api/marketplace/v1/marketplace";
+import { UserScore } from "../api/p2e/v1/p2e";
 import { TeritoriSquadStakingClient } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.client";
 import { Nft as SquadStakeNFT } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
+import { AxelarTeritoriNft__factory } from "../evm-contracts-clients/axelar-teritori-nft/AxelarTeritoriNft__factory";
+import { TeritoriNft__factory } from "../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { SquadStakingV3__factory } from "../evm-contracts-clients/teritori-squad-staking/SquadStakingV3__factory";
 import {
+  NetworkInfo,
   getCosmosNetwork,
   getKeplrSigningCosmWasmClient,
   getUserId,
@@ -182,7 +183,7 @@ export const buildBreedingMsg = (
   };
 };
 
-export const buildStakingMsg = (
+const buildStakingMsg = (
   sender: string,
   nfts: SquadStakeNFT[],
   contractAddress: string
@@ -387,8 +388,8 @@ export const isNFTStaked = (ripper: NFT | undefined) => {
   return ids.includes(ripper.lockedOn);
 };
 
-export const SQUAD_STAKE_COEF = 0.125; // Duration (in hours) = 0.125 * stamin
-export const DURATION_TO_XP_COEF = 100; // XP = 100 * duration (in hours)
+const SQUAD_STAKE_COEF = 0.125; // Duration (in hours) = 0.125 * stamin
+const DURATION_TO_XP_COEF = 100; // XP = 100 * duration (in hours)
 
 export const squadWithdrawSeason1 = async (userId: string | undefined) => {
   const [network, userAddress] = parseUserId(userId);
@@ -484,7 +485,7 @@ export const getSquadPresetId = (
   return `${userId}-${squadId}`;
 };
 
-export const ethereumSquadStake = async (
+const ethereumSquadStake = async (
   network: NetworkInfo,
   sender: string,
   selectedRippers: NFT[]
@@ -506,23 +507,35 @@ export const ethereumSquadStake = async (
   for (const selectedRipper of selectedRippers) {
     const tokenId = getRipperTokenId(selectedRipper);
 
+    let nftFactory;
+    let nftContractAddress;
     // Set approveForAll for each NFT contract
-    const nftClient = TeritoriNft__factory.connect(
-      selectedRipper.nftContractAddress,
-      signer
-    );
+
+    if (
+      ethereumNetwork.id === "polygon-mumbai" ||
+      ethereumNetwork.id === "polygon"
+    ) {
+      nftFactory = AxelarTeritoriNft__factory;
+      nftContractAddress = selectedRipper.nftContractAddress.split(":")[0];
+    } else {
+      nftFactory = TeritoriNft__factory;
+      nftContractAddress = selectedRipper.nftContractAddress;
+    }
+
+    const nftClient = nftFactory.connect(nftContractAddress, signer);
 
     const isApprovedForAll = await nftClient.isApprovedForAll(
       sender,
       squadContract
     );
+
     if (!isApprovedForAll) {
       const approveTx = await nftClient.setApprovalForAll(squadContract, true);
       await approveTx.wait();
     }
 
     selectedNfts.push({
-      collection: selectedRipper.nftContractAddress,
+      collection: nftContractAddress,
       tokenId,
     });
   }
@@ -534,7 +547,7 @@ export const ethereumSquadStake = async (
   return res.transactionHash;
 };
 
-export const cosmosSquadStake = async (
+const cosmosSquadStake = async (
   network: NetworkInfo,
   sender: string,
   selectedRippers: NFT[]
