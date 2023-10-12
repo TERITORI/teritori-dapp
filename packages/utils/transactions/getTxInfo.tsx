@@ -341,13 +341,12 @@ export const getTxInfo = (
         } catch (err) {
           console.error("olol failed to parse msg", err, msg);
         }
-        let method;
+        let method = "?";
         try {
           // TODO: prettify method name
           method = Object.keys(execMsg)[0];
         } catch (err) {
           console.error("failed to find method name", err);
-          method = "Unknown";
         }
         let icon = multisigWhiteSVG;
         let name = "Execute";
@@ -404,7 +403,22 @@ export const getTxInfo = (
           preview = () => {
             return (
               <View>
-                <BrandText>{JSON.stringify(execMsg, null, 2)}</BrandText>
+                <BrandText>Execute</BrandText>
+                <SpacerColumn size={2.5} />
+                <BrandText style={brandTextNormalStyle}>
+                  Contract address:{" "}
+                  <Text style={{ color: "white" }}>{contractAddress}</Text>
+                </BrandText>
+                <SpacerColumn size={1} />
+                <BrandText style={brandTextNormalStyle}>
+                  Method: <Text style={{ color: "white" }}>{method}</Text>
+                </BrandText>
+                <SpacerColumn size={1} />
+                <BrandText style={brandTextNormalStyle}>Data:</BrandText>
+                <SpacerColumn size={1} />
+                <BrandText style={[brandTextNormalStyle, { color: "white" }]}>
+                  {JSON.stringify(execMsg[method], null, 4)}
+                </BrandText>
               </View>
             );
           };
