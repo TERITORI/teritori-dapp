@@ -7,11 +7,17 @@ import { NetworkFeature } from "../networks";
 import { setSelectedNetworkId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
 
-export const useForceNetworkFeatures = (networkFeatures: NetworkFeature[]) => {
+export const useForceNetworkFeatures = (
+  networkFeatures: NetworkFeature[] | undefined
+) => {
   const selectedNetwork = useSelectedNetworkInfo();
   const enabledNetworks = useEnabledNetworks();
   const dispatch = useAppDispatch();
   const effect = useCallback(() => {
+    if (!networkFeatures?.length) {
+      return;
+    }
+
     if (networkFeatures.every((f) => selectedNetwork?.features.includes(f))) {
       return;
     }
