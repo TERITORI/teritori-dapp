@@ -40,10 +40,10 @@ export const NetworksListModal: FC<{
   return (
     <ModalBase
       scrollable
-      label="Mangage Networks"
+      label="Manage Networks"
       visible={isVisible}
       onClose={onClose}
-      contentStyle={{ minWidth: 600, paddingBottom: modalMarginPadding }}
+      contentStyle={{ minWidth: 360, paddingBottom: modalMarginPadding }}
     >
       <NetworksSettings />
     </ModalBase>
@@ -112,10 +112,16 @@ const NetworkSettingsItem: FC<{ networkId: string }> = memo(({ networkId }) => {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <NetworkIcon networkId={n.id} size={20} />
           <SpacerRow size={1} />
-          <BrandText style={fontSemibold14} key={n.id}>
+          <BrandText
+            style={[fontSemibold14, { maxWidth: 216 }]}
+            key={n.id}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
             {n.displayName}
           </BrandText>
         </View>
+        <SpacerRow size={1} />
         <Switch
           // @ts-expect-error
           activeThumbColor={primaryColor}
