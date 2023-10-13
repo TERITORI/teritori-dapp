@@ -1,5 +1,5 @@
 import React from "react";
-import { Linking, TextStyle, TouchableOpacity } from "react-native";
+import { TextStyle } from "react-native";
 import { CreditCardIcon } from "react-native-heroicons/outline";
 
 import { primaryColor } from "../../utils/style/colors";
