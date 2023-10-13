@@ -46,6 +46,7 @@ func GetSeasonByTime(givenTime time.Time, network networks.Network) (Season, flo
 
 	for _, season := range GetAllSeasons(network) {
 		seasonStartsAt, err := time.Parse(layout, season.StartsAt)
+
 		if err != nil {
 			return Season{}, 0, errors.Wrap(err, "failed to parsed season start time")
 		}

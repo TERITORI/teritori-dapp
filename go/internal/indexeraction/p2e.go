@@ -38,7 +38,6 @@ func (u *IndexerAction) SquadUnstake(
 				isUnstaked = true
 			}
 		}
-
 		if !isUnstaked {
 			continue
 		}
@@ -102,14 +101,13 @@ func (u *IndexerAction) SquadUnstake(
 			WHERE
 				n.collection_id = tc.collection_id
 				AND tn.nft_id = n.id
-				AND tc.nft_contract_address = ?
+				AND split_part(tc.nft_contract_address, ':', 1) = ?
 				AND tn.token_id = ?
 		`, nftContractAddress, tokenId)
 		if result.Error != nil {
 			return errors.New("failed to update lockedOn")
 		}
 	}
-
 	return nil
 }
 
@@ -121,6 +119,7 @@ func (u *IndexerAction) SquadStake(
 	ownerId := u.network.UserID(userAddress)
 
 	startTimeDt := time.Unix(int64(startTime), 0)
+
 	season, _, err := p2e.GetSeasonByTime(startTimeDt, u.network)
 	if err != nil {
 		return errors.Wrap(err, "failed to get season")
@@ -186,7 +185,7 @@ func (u *IndexerAction) SquadStake(
 			WHERE 
 				n.collection_id = tc.collection_id
 				AND tn.nft_id = n.id 
-				AND tc.nft_contract_address = ?
+				AND split_part(tc.nft_contract_address, ':', 1) = ?
 				AND tn.token_id = ?
 		`, lockedOn, nftContracts[idx], tokenID)
 		if result.Error != nil {

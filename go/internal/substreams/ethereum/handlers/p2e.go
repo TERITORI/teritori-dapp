@@ -65,8 +65,15 @@ func (h *Handler) handleSquadUnstake(contractABI *abi.ABI, tx *pb.Tx, args map[s
 	var tokenIDs []string
 	var nftContracts []string
 
+	var shifted int
+	if h.network.ID == "polygon" || h.network.ID == "polygon-mumbai" {
+		shifted = 2
+	} else {
+		shifted = 1
+	}
+
 	// TODO: find a way to decode topics with go ABI
-	for _, log := range tx.Receipt.Logs[:totalLogs-1] {
+	for _, log := range tx.Receipt.Logs[:totalLogs-shifted] {
 		tokenID, err := DecodeTopicToInt(log.Topics[3])
 
 		if err != nil {
@@ -88,7 +95,7 @@ func (h *Handler) handleSquadUnstake(contractABI *abi.ABI, tx *pb.Tx, args map[s
 		tokenIDs,
 		nftContracts,
 	); err != nil {
-		return errors.Wrap(err, "failed to index squadStake")
+		return errors.Wrap(err, "failed to index squadUnStake")
 	}
 
 	return nil
@@ -100,10 +107,20 @@ func (h *Handler) handleSquadStake(contractABI *abi.ABI, tx *pb.Tx, args map[str
 		return errors.Wrap(err, "failed parse squad stake input")
 	}
 
-	lastLogEntry := tx.Receipt.Logs[len(tx.Receipt.Logs)-1]
+	var stakeLogEntry *pb.Log
+
+	for _, log := range tx.Receipt.Logs {
+		if log.Address == h.network.RiotSquadStakingContractAddress {
+			stakeLogEntry = log
+		}
+	}
+
+	if stakeLogEntry == nil {
+		return errors.New("failed to get stake log entry")
+	}
 
 	squadStakeEvent := new(abiGo.SquadStakingV3Stake)
-	if err := contractABI.UnpackIntoInterface(squadStakeEvent, "Stake", []byte(lastLogEntry.Data)); err != nil {
+	if err := contractABI.UnpackIntoInterface(squadStakeEvent, "Stake", []byte(stakeLogEntry.Data)); err != nil {
 		return err
 	}
 

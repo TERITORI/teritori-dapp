@@ -127,8 +127,6 @@ func (h *Handler) handleExecute(contractABI *abi.ABI, tx *pb.Tx, args map[string
 		return errors.Wrap(err, "failed to create teritori_nft")
 	}
 
-	h.dbTransaction.Commit()
-
 	return nil
 }
 

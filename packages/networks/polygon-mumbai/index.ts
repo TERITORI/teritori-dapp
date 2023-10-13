@@ -27,7 +27,7 @@ export const polygonMumbaiNetwork: NetworkInfo = {
   // Substreams
   firehoseEndpoint: "mumbai.streamingfast.io:443",
   indexStartBlock: "40891584",
-  indexStopBlock: "+1",
+  indexStopBlock: "-1",
   indexBlockProgress: 1000,
   indexLiveBlockProgress: 1,
   substreamsManifest: "go/internal/substreams/ethereum/polygon_mumbai.yaml",
