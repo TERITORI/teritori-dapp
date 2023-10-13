@@ -12,7 +12,7 @@ type ExecCreateVideoMsg struct {
 	CreateVideo CreateVideoMsg `json:"create_video"`
 }
 type CreateVideoMsg struct {
-	Metadata   string `json:"metadata"`
+	Metadata string `json:"metadata"`
 }
 
 func (h *Handler) handleExecuteCreateVideo(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
@@ -20,11 +20,17 @@ func (h *Handler) handleExecuteCreateVideo(e *Message, execMsg *wasmtypes.MsgExe
 	if err := json.Unmarshal(execMsg.Msg, &execCreateVideoMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal execute create video msg")
 	}
+
+	videoIdentifiers := e.Events["wasm.video_identifier"]
+	if len(videoIdentifiers) == 0 {
+		return errors.New("no video identifier")
+	}
+	identifier := videoIdentifiers[0]
+
 	createVideo := &execCreateVideoMsg.CreateVideo
 
 	var metadataJSON map[string]interface{}
 	if err := json.Unmarshal([]byte(createVideo.Metadata), &metadataJSON); err != nil {
-		return errors.Wrap(err, "failed to unmarshal metadata")
 		return nil
 	}
 
@@ -34,6 +40,7 @@ func (h *Handler) handleExecuteCreateVideo(e *Message, execMsg *wasmtypes.MsgExe
 	}
 
 	video := indexerdb.Video{
+		Identifier: identifier,
 		Metadata:   metadataJSON,
 		CreatedBy:  h.config.Network.UserID(execMsg.Sender),
 		CreatedAt:  createdAt.Unix(),
@@ -60,6 +67,13 @@ func (h *Handler) handleExecuteCreateComment(e *Message, execMsg *wasmtypes.MsgE
 	if err := json.Unmarshal(execMsg.Msg, &execCreateCommentMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal execute create comment msg")
 	}
+
+  commentIdentifiers := e.Events["wasm.comment_identifier"]
+  if len(commentIdentifiers) == 0 {
+    return errors.New("no comment identifier")
+  }
+  identifier := commentIdentifiers[0]
+
 	createComment := &execCreateCommentMsg.CreateComment
 
 	createdAt, err := e.GetBlockTime()
@@ -68,6 +82,7 @@ func (h *Handler) handleExecuteCreateComment(e *Message, execMsg *wasmtypes.MsgE
 	}
 
 	comment := indexerdb.VideoComment{
+	  Identifier: identifier,
 		VideoIdentifier: createComment.VideoIdentifier,
 		Comment:         createComment.Comment,
 		CreatedBy:       h.config.Network.UserID(execMsg.Sender),
