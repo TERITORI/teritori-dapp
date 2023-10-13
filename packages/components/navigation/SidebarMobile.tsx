@@ -93,11 +93,11 @@ export const SidebarMobile: FC = () => {
             <SidebarButton
               icon={addSVG}
               iconSize={36}
-              route="ComingSoon"
+              route="DAppStore"
               key="ComingSoon2"
               id="ComingSoon2"
               title=""
-              onPress={() => navigation.navigate("ComingSoon")}
+              onPress={() => navigation.navigate("DAppStore")}
             />
             <SpacerColumn size={1} />
           </>
