@@ -6,6 +6,7 @@ import { AUDIO_WAVEFORM_MAX_WIDTH } from "./AudioWaveform/AudioWaveform.web";
 import pauseSVG from "../../../assets/icons/pause.svg";
 import playSVG from "../../../assets/icons/play.svg";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
+import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
@@ -33,6 +34,7 @@ export const AudioView: React.FC<{
 }> = ({ file, authorId, postId }) => {
   const selectedNetwork = useSelectedNetworkInfo();
   const userInfo = useNSUserInfo(authorId);
+  const { isDAO } = useIsDAO(authorId);
   const {
     media,
     isPlaying,
@@ -57,7 +59,7 @@ export const AudioView: React.FC<{
         imageUrl:
           file?.thumbnailFileData?.url ||
           userInfo.metadata.image ||
-          nameServiceDefaultImage(selectedNetwork),
+          nameServiceDefaultImage(isDAO, selectedNetwork),
         name: "Song from Social Feed",
         createdBy: authorId,
         fileUrl: file.url,
