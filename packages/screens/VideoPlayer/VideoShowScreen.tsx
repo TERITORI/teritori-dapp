@@ -1,63 +1,43 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
-import {
-  View,
-  Pressable,
-  TextInput,
-  Image,
-  ViewStyle,
-  TextStyle,
-  ImageStyle,
-} from "react-native";
+import React, {useEffect, useMemo, useRef, useState} from "react";
+import {Image, ImageStyle, Pressable, TextInput, TextStyle, View, ViewStyle,} from "react-native";
 import Animated from "react-native-reanimated";
 
-import { VideoComment } from "./VideoComment";
+import {VideoComment} from "./VideoComment";
 import Dislike from "../../../assets/icons/player/dislike.svg";
 import Like from "../../../assets/icons/player/like.svg";
 import TipIcon from "../../../assets/icons/tip.svg";
-import {
-  LikeRequest,
-  DislikeRequest,
-  CommentInfo,
-} from "../../api/video/v1/video";
-import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { UserAvatarWithFrame } from "../../components/images/AvatarWithFrame";
-import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
-import { DateTime } from "../../components/socialFeed/SocialThread/DateTime";
-import { SpacerRow } from "../../components/spacer";
-import { MoreVideoPlayerCard } from "../../components/videoPlayer/MoreVideoCard";
-import { VideoPlayerTab } from "../../components/videoPlayer/VideoPlayerTab";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import {CommentInfo, DislikeRequest, LikeRequest,} from "../../api/video/v1/video";
+import {signingVideoPlayerClient} from "../../client-creators/videoplayerClient";
+import {BrandText} from "../../components/BrandText";
+import {SVG} from "../../components/SVG";
+import {ScreenContainer} from "../../components/ScreenContainer";
+import {PrimaryButton} from "../../components/buttons/PrimaryButton";
+import {UserAvatarWithFrame} from "../../components/images/AvatarWithFrame";
+import {TipModal} from "../../components/socialFeed/SocialActions/TipModal";
+import {DateTime} from "../../components/socialFeed/SocialThread/DateTime";
+import {SpacerRow} from "../../components/spacer";
+import {MoreVideoPlayerCard} from "../../components/videoPlayer/MoreVideoCard";
+import {VideoPlayerTab} from "../../components/videoPlayer/VideoPlayerTab";
+import {useFeedbacks} from "../../context/FeedbacksProvider";
+import {useNSUserInfo} from "../../hooks/useNSUserInfo";
+import {useSelectedNetworkId} from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useFetchComments } from "../../hooks/video/useFetchComments";
-import { useFetchVideo } from "../../hooks/video/useFetchVideo";
-import { useIncreaseViewCount } from "../../hooks/video/useIncreaseViewCount";
-import {
-  increaseLike,
-  increaseDislike,
-} from "../../hooks/video/useLikeDislike";
-import {
-  useUserFetchVideos,
-  combineFetchVideoPages,
-} from "../../hooks/video/useUserFetchVideos";
-import { getUserId } from "../../networks";
-import { defaultSocialFeedFee } from "../../utils/fee";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT } from "../../utils/social-feed";
-import { neutral77, secondaryColor } from "../../utils/style/colors";
-import {
-  fontSemibold14,
-  fontMedium14,
-  fontSemibold16,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { tinyAddress } from "../../utils/text";
+import {useFetchComments} from "../../hooks/video/useFetchComments";
+import {useFetchVideo} from "../../hooks/video/useFetchVideo";
+import {useIncreaseViewCount} from "../../hooks/video/useIncreaseViewCount";
+import {increaseDislike, increaseLike,} from "../../hooks/video/useLikeDislike";
+import {combineFetchVideoPages, useUserFetchVideos,} from "../../hooks/video/useUserFetchVideos";
+import {getUserId} from "../../networks";
+import {defaultSocialFeedFee} from "../../utils/fee";
+import {ipfsURLToHTTPURL} from "../../utils/ipfs";
+import {ScreenFC, useAppNavigation} from "../../utils/navigation";
+import {SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT} from "../../utils/social-feed";
+import {neutral77, secondaryColor} from "../../utils/style/colors";
+import {fontMedium14, fontSemibold14, fontSemibold16,} from "../../utils/style/fonts";
+import {layout} from "../../utils/style/layout";
+import {tinyAddress} from "../../utils/text";
+import {useGetPostFee} from "../../hooks/feed/useGetPostFee";
+import {PostCategory} from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 
 export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
   route: {
@@ -90,12 +70,14 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
   const [dislikeNum, setDislikeNum] = useState(0);
   const [comment, setComment] = useState("");
   const videoRef = useRef<HTMLVideoElement>(null);
-
   const { data: comments } = useFetchComments({
     identifier: id,
   });
-
   const [commentList, setCommentList] = useState<CommentInfo[]>([]);
+  const { postFee } = useGetPostFee(
+    selectedNetworkId,
+    PostCategory.Normal
+  );
 
   // TODO: use MediaPlayerContext
   // useEffect(() => {
@@ -197,7 +179,8 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
           comment,
         },
         defaultSocialFeedFee,
-        ""
+        "",
+        [{ amount: postFee.toString(), denom: "utori" }],
       );
 
       if (res.transactionHash) {
