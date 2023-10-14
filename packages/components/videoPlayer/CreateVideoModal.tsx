@@ -17,6 +17,7 @@ import { signingVideoPlayerClient } from "../../client-creators/videoplayerClien
 import ModalBase from "../../components/modals/ModalBase";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { MediaPlayerVideo } from "../../context/MediaPlayerProvider";
+import { useGetPostFee } from "../../hooks/feed/useGetPostFee";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId } from "../../networks";
@@ -44,6 +45,7 @@ import { SVG } from "../SVG";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { FileUploader } from "../fileUploader";
 import { TextInputCustom } from "../inputs/TextInputCustom";
+import { PostCategory } from "../socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
 interface UploadAlbumModalProps {
@@ -83,6 +85,7 @@ export const CreateVideoModal: React.FC<UploadAlbumModalProps> = ({
   const userIPFSKey = useSelector(selectNFTStorageAPI);
   const [videoInfo, setVideoInfo] =
     useState<VideoInfoWithMeta>(DEFAULT_VIDEO_INFO);
+  const { postFee } = useGetPostFee(selectedNetworkId, PostCategory.Video);
 
   const onUploadVideoImage = async (files: LocalFileData[]) => {
     setIsUploading(true);
@@ -185,7 +188,8 @@ export const CreateVideoModal: React.FC<UploadAlbumModalProps> = ({
           metadata: JSON.stringify(videoInfo.videoMetaInfo),
         },
         defaultSocialFeedFee,
-        ""
+        "",
+        [{ amount: postFee.toString(), denom: "utori" }]
       );
 
       if (res.transactionHash) {
