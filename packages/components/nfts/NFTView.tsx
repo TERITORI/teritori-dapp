@@ -19,6 +19,7 @@ import raffleSVG from "../../../assets/icons/raffle.svg";
 import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useDropdowns } from "../../context/DropdownsProvider";
+import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
@@ -63,6 +64,7 @@ export const NFTView: React.FC<{
   const flatStyle = StyleSheet.flatten(style);
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(nft.ownerId);
+  const { isDAO } = useIsDAO(nft.ownerId);
   const network = getNetwork(nft.networkId);
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
@@ -160,7 +162,7 @@ export const NFTView: React.FC<{
                 >
                   <OptimizedImage
                     sourceURI={userInfo.metadata.image}
-                    fallbackURI={nameServiceDefaultImage(network)}
+                    fallbackURI={nameServiceDefaultImage(isDAO, network)}
                     width={32}
                     height={32}
                     style={{
