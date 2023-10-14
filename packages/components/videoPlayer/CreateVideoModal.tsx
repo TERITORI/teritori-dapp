@@ -212,7 +212,9 @@ export const CreateVideoModal: React.FC<UploadAlbumModalProps> = ({
       width={MODAL_WIDTH}
     >
       <View style={inputBoxStyle}>
-        <View style={imgBoxStyle}>
+        <View
+          style={[imgBoxStyle, (isUploading || isLoading) && { opacity: 0.5 }]}
+        >
           <Image
             source={
               videoInfo.videoMetaInfo.image === ""
@@ -230,7 +232,11 @@ export const CreateVideoModal: React.FC<UploadAlbumModalProps> = ({
               setIsLoading={setIsLoading}
             >
               {({ onPress }) => (
-                <TouchableOpacity style={uploadButtonStyle} onPress={onPress}>
+                <TouchableOpacity
+                  style={uploadButtonStyle}
+                  onPress={onPress}
+                  disabled={isUploading || isLoading}
+                >
                   <SVG source={Img} width={16} height={16} />
                   <SpacerRow size={1} />
                   <BrandText style={fontSemibold14}>upload image</BrandText>
@@ -283,7 +289,14 @@ export const CreateVideoModal: React.FC<UploadAlbumModalProps> = ({
           setIsLoading={setIsLoading}
         >
           {({ onPress }) => (
-            <TouchableOpacity style={buttonContainerStyle} onPress={onPress}>
+            <TouchableOpacity
+              style={[
+                buttonContainerStyle,
+                (isUploading || isLoading) && { opacity: 0.5 },
+              ]}
+              onPress={onPress}
+              disabled={isUploading || isLoading}
+            >
               <SVG source={Add} width={20} height={20} stroke={primaryColor} />
               <SpacerRow size={1} />
               <BrandText style={buttonTextStyle}>Add video</BrandText>
