@@ -21,6 +21,7 @@ import React, {
 import { StyleProp, ViewStyle } from "react-native";
 
 import { useFeedbacks } from "./FeedbacksProvider";
+import { useIsDAO } from "../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useNSUserInfo } from "../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../hooks/useSelectedNetwork";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
@@ -287,6 +288,7 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
 }) => {
   const selectedNetwork = useSelectedNetworkInfo();
   const userInfo = useNSUserInfo(authorId);
+  const { isDAO } = useIsDAO(authorId);
   const videoRef = useRef<Video>(null);
   const [localPlaybackStatus, setLocalPlaybackStatus] =
     useState<AVPlaybackStatus>();
@@ -312,7 +314,7 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
         imageUrl:
           thumbnailUrl ||
           userInfo.metadata.image ||
-          nameServiceDefaultImage(selectedNetwork),
+          nameServiceDefaultImage(isDAO, selectedNetwork),
         name: "Video from Social Feed",
         createdBy: authorId,
         fileUrl: videoUrl,
