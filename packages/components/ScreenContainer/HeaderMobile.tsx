@@ -8,6 +8,7 @@ import hamburgerSVG from "../../../assets/icons/hamburger-button.svg";
 import { useSidebar } from "../../context/SidebarProvider";
 import { NetworkFeature, NetworkKind } from "../../networks";
 import { selectAllSelectedNFTData } from "../../store/slices/marketplaceCartItems";
+import { isElectron } from "../../utils/isElectron";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33 } from "../../utils/style/colors";
 import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
@@ -37,7 +38,7 @@ export const HeaderMobile: FC<{
 
   return (
     <View style={styles.container}>
-      <TopLogoMobile />
+      {!isElectron() && <TopLogoMobile />}
       <View style={styles.rightContainer}>
         <SpacerRow size={1} />
         {onBackPress && <BackButton onPress={onBackPress} />}
