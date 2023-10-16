@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Modal,
   ModalProps,
-  StyleSheet,
   View,
   ImageBackground,
   ScrollView,
@@ -24,6 +23,7 @@ import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SpacerRow } from "../../../components/spacer";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { getRipperRarity, isNFTStaked } from "../../../utils/game";
 import {
   neutral00,
@@ -36,7 +36,11 @@ import {
   fontMedium48,
   fontSemibold11,
 } from "../../../utils/style/fonts";
-import { headerHeight, layout } from "../../../utils/style/layout";
+import {
+  headerHeight,
+  layout,
+  MOBILE_MAX_WIDTH,
+} from "../../../utils/style/layout";
 
 type RipperSelectorModalProps = ModalProps & {
   slotId: number | undefined;
@@ -51,8 +55,6 @@ const TOTAL_VISIBLE = 4;
 
 const THUMB_SIZE = 100;
 
-const RIPPER_IMAGE_SIZE = 540;
-
 export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   slotId,
   onClose,
@@ -62,14 +64,16 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   confirmButton,
   ...props
 }) => {
+  const isMobile = useIsMobile();
   const [selectedRipper, setSelectedRipper] = useState<NFT | undefined>();
   const { width: currentWidth } = useWindowDimensions();
 
-  const breakPoint = 1200;
+  const breakPoint = isMobile ? MOBILE_MAX_WIDTH : 1200;
+  const ripperImageSize = isMobile ? 280 : 540;
 
   const centerFlex = useMemo(
     () => (currentWidth > breakPoint ? 2 : 1),
-    [currentWidth]
+    [breakPoint, currentWidth]
   );
 
   const selectRipper = async (ripper: NFT) => {
@@ -98,12 +102,29 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
       visible={visible}
       {...props}
     >
-      <View style={styles.container}>
-        <Pressable style={styles.closeIcon} onPress={onClose}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          backgroundColor: withAlpha(neutral00, 0.95),
+          paddingTop: headerHeight,
+          borderWidth: 1,
+          position: "relative",
+        }}
+      >
+        <Pressable
+          style={{
+            position: "absolute",
+            right: layout.spacing_x1_5,
+            top: layout.spacing_x1_5,
+            zIndex: 1,
+          }}
+          onPress={onClose}
+        >
           <SVG width={40} height={40} source={closeSVG} />
         </Pressable>
 
-        <BrandText style={fontMedium48}>
+        <BrandText style={isMobile ? fontMedium32 : fontMedium48}>
           {selectedRipper?.name || "Please select a Ripper"}
         </BrandText>
 
@@ -120,8 +141,18 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 position: "relative",
               }}
             >
-              <View style={{ position: "relative" }}>
-                <View style={styles.selectListContainer}>
+              <View
+                style={{
+                  position: "relative",
+                }}
+              >
+                <View
+                  style={{
+                    position: "absolute",
+                    zIndex: 2,
+                    left: -60,
+                  }}
+                >
                   <FlatList
                     data={availableRippers}
                     numColumns={1}
@@ -142,7 +173,13 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                           <TertiaryBox
                             noBrokenCorners
                             mainContainerStyle={[
-                              styles.ripperThumb,
+                              {
+                                alignItems: "center",
+                                width: THUMB_CONTAINER_SIZE,
+                                borderWidth: 0,
+                                margin: layout.spacing_x1,
+                                marginRight: layout.spacing_x3,
+                              },
                               isSelected && {
                                 borderColor: secondaryColor,
                                 borderWidth: 1,
@@ -165,7 +202,19 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                               isStaked={isNFTStaked(item)}
                             />
 
-                            {isSelected && <View style={styles.arrowRight} />}
+                            {isSelected && (
+                              <View
+                                style={{
+                                  position: "absolute",
+                                  borderWidth: 10,
+                                  borderRightWidth: 0,
+                                  borderStyle: "solid",
+                                  borderColor: "transparent",
+                                  borderLeftColor: secondaryColor,
+                                  right: -16,
+                                }}
+                              />
+                            )}
                           </TertiaryBox>
                         </TouchableOpacity>
                       );
@@ -174,14 +223,26 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 </View>
 
                 <ImageBackground
-                  style={styles.dashedBorder}
+                  style={{
+                    width: ripperImageSize,
+                    height: ripperImageSize,
+                    marginTop: layout.spacing_x2_5,
+                  }}
                   source={dashedBorderPNG}
                 >
                   <RipperAvatar
                     source={selectedRipper?.imageUri || ""}
-                    size={RIPPER_IMAGE_SIZE}
+                    size={ripperImageSize}
                     rounded
-                    containerStyle={styles.roundedContainer}
+                    containerStyle={{
+                      width: ripperImageSize - 4,
+                      height: ripperImageSize - 4,
+                      position: "absolute",
+                      left: 2,
+                      top: 2,
+                      borderRadius: 999,
+                      overflow: "hidden",
+                    }}
                     isStaked={isNFTStaked(selectedRipper)}
                   />
                 </ImageBackground>
@@ -199,7 +260,14 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
 
               <RipperStatsSection ripper={selectedRipper} size="LG" />
 
-              <View style={styles.btnGroup}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: 2 * layout.spacing_x4,
+                  marginLeft: layout.spacing_x4,
+                }}
+              >
                 <SVG color={yellowDefault} source={controllerSVG} />
                 <SpacerRow size={2} />
                 <SimpleButton
@@ -216,63 +284,3 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
     </Modal>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    backgroundColor: withAlpha(neutral00, 0.95),
-    paddingTop: headerHeight,
-    borderWidth: 1,
-    position: "relative",
-  },
-  dashedBorder: {
-    width: RIPPER_IMAGE_SIZE,
-    height: RIPPER_IMAGE_SIZE,
-    marginTop: layout.spacing_x2_5,
-  },
-  roundedContainer: {
-    width: RIPPER_IMAGE_SIZE - 4,
-    height: RIPPER_IMAGE_SIZE - 4,
-    position: "absolute",
-    left: 2,
-    top: 2,
-    borderRadius: 999,
-    overflow: "hidden",
-  },
-  selectListContainer: {
-    position: "absolute",
-    zIndex: 2,
-    left: -60,
-  },
-  ripperThumb: {
-    alignItems: "center",
-    width: THUMB_CONTAINER_SIZE,
-    borderWidth: 0,
-    margin: layout.spacing_x1,
-    marginRight: layout.spacing_x3,
-  },
-  arrowRight: {
-    position: "absolute",
-    borderWidth: 10,
-    borderRightWidth: 0,
-    borderStyle: "solid",
-    borderColor: "transparent",
-    borderLeftColor: secondaryColor,
-    right: -16,
-  },
-  btnGroup: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 2 * layout.spacing_x4,
-    marginLeft: layout.spacing_x4,
-  },
-  closeIcon: {
-    position: "absolute",
-    right: layout.spacing_x1_5,
-    top: layout.spacing_x1_5,
-    zIndex: 1,
-  },
-});

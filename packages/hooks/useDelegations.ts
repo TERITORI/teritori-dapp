@@ -34,11 +34,14 @@ export const useDelegations = (
       }
       return getNetworkDelegations(networkId, address);
     },
-    { initialData, refetchInterval: 5000 }
+    { initialData, refetchInterval: 30000 }
   );
 
+  const delegations =
+    networkDelegations.delegation_responses || initialData.delegation_responses;
+
   const { prices } = useCoingeckoPrices(
-    networkDelegations.delegation_responses?.map((deleg) => ({
+    delegations.map((deleg) => ({
       networkId,
       denom: deleg.balance.denom,
     }))
@@ -46,7 +49,7 @@ export const useDelegations = (
 
   // Same pattern as useBalances
   const finalDelegationsBalances = useMemo(() => {
-    const balances = networkDelegations.delegation_responses?.map((deleg) => {
+    const balances = delegations.map((deleg) => {
       const currency = getNativeCurrency(networkId, deleg.balance.denom);
       const price =
         currency &&
@@ -63,7 +66,7 @@ export const useDelegations = (
     });
     balances.sort((a, b) => (b.usdAmount || 0) - (a.usdAmount || 0));
     return balances;
-  }, [networkId, networkDelegations, prices]);
+  }, [delegations, networkId, prices]);
 
   return { delegationsBalances: finalDelegationsBalances };
 };

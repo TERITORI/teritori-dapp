@@ -34,7 +34,7 @@ export const useBalances = (
 
       return await getNetworkBalances(networkId, address);
     },
-    { initialData: [], refetchInterval: 5000 }
+    { initialData: [], refetchInterval: 30000 }
   );
 
   const { prices } = useCoingeckoPrices(

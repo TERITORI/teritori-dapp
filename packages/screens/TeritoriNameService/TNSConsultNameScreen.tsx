@@ -68,7 +68,7 @@ const NotOwnerActions: React.FC<{
       )}
       <PrimaryButton
         size="XL"
-        disabled={!isKeplrConnected || !isLeapConnected}
+        disabled={!isKeplrConnected && !isLeapConnected}
         text="Send funds"
         // TODO: if no signed, connectKeplr, then, open modal
         onPress={() => setSendFundsModalVisible(true)}

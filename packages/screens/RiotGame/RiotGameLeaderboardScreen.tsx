@@ -26,6 +26,7 @@ import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork, parseUserId } from "../../networks";
@@ -130,6 +131,7 @@ const Rank: React.FC<RankProps> = ({ changes }) => {
 };
 
 export const RiotGameLeaderboardScreen = () => {
+  const isMobile = useIsMobile();
   const [userScores, setUserScores] = useState<UserScore[]>([]);
   const [currentSeason, setCurrentSeason] = useState<CurrentSeasonResponse>();
   const selectedNetwork = useSelectedNetworkInfo();
@@ -181,7 +183,7 @@ export const RiotGameLeaderboardScreen = () => {
               Rank
             </BrandText>
           </View>
-          <View style={{ flex: 5 }}>
+          <View style={{ flex: isMobile ? 1 : 5 }}>
             <BrandText style={styles.colHeaderTitle}>Player</BrandText>
           </View>
           <View style={{ flex: 2 }}>
@@ -194,9 +196,13 @@ export const RiotGameLeaderboardScreen = () => {
               Time spent in Fight
             </BrandText>
           </View>
-          <View style={{ flex: 1 }}>
-            <BrandText style={styles.colHeaderTitle}>24 hours Change</BrandText>
-          </View>
+          {!isMobile && (
+            <View style={{ flex: 1 }}>
+              <BrandText style={styles.colHeaderTitle}>
+                24 hours Change
+              </BrandText>
+            </View>
+          )}
         </FlexRow>
       </TertiaryBox>
 
@@ -215,7 +221,7 @@ export const RiotGameLeaderboardScreen = () => {
                   {userScore.rank}
                 </BrandText>
               </View>
-              <View style={{ flex: 5 }}>
+              <View style={{ flex: isMobile ? 1 : 5 }}>
                 <PlayerName userId={userScore.userId} />
               </View>
               <View
@@ -236,9 +242,11 @@ export const RiotGameLeaderboardScreen = () => {
 
                 <BrandText style={styles.colData}>{hours} hours</BrandText>
               </View>
-              <View style={{ flex: 1 }}>
-                <Rank changes={rankChanges} />
-              </View>
+              {!isMobile && (
+                <View style={{ flex: 1 }}>
+                  <Rank changes={rankChanges} />
+                </View>
+              )}
             </FlexRow>
           );
         }}

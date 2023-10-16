@@ -1,5 +1,7 @@
+import { MsgExecuteContractEncodeObject } from "@cosmjs/cosmwasm-stargate";
+import { toUtf8 } from "@cosmjs/encoding";
 import { useFocusEffect } from "@react-navigation/native";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { View } from "react-native";
 
@@ -15,20 +17,26 @@ import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
+import {
+  ExecuteMsg as TNSExecuteMsg,
+  Metadata,
+} from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useBalances } from "../../hooks/useBalances";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { useIsLeapConnected } from "../../hooks/useIsLeapConnected";
+import { useNSMintPrice } from "../../hooks/useNSMintPrice";
 import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import { useRunOrProposeTransaction } from "../../hooks/useRunOrProposeTransaction";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
-  getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
   getCosmosNetwork,
+  parseUserId,
+  UserKind,
 } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { useAppNavigation } from "../../utils/navigation";
@@ -91,10 +99,8 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
 }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const [isSuccessModal, setSuccessModal] = useState(false);
   const selectedWallet = useSelectedWallet();
   const { name } = useTNS();
-  const { setToastError, setToastSuccess } = useFeedbacks();
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
   const isKeplrConnected = useIsKeplrConnected();
   const isLeapConnected = useIsLeapConnected();
@@ -106,9 +112,6 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   const normalizedTokenId = (
     name + network?.nameServiceTLD || ""
   ).toLowerCase();
-  const price = useTNSMintPrice(networkId, normalizedTokenId);
-  const balances = useBalances(networkId, selectedWallet?.address);
-  const balance = balances.find((bal) => bal.denom === price?.denom);
 
   const initData = async () => {
     try {
@@ -143,7 +146,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   // ==== Init
   useFocusEffect(() => {
     // ===== Controls many things, be careful
-    if (!userHasCoWallet || !isKeplrConnected || !isLeapConnected)
+    if (!userHasCoWallet || (!isKeplrConnected && !isLeapConnected))
       navigation.navigate("TNSHome");
     if (name && userHasCoWallet && tokens.includes(normalizedTokenId))
       onClose();
@@ -153,49 +156,89 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
     }
   });
 
+  return (
+    <TNSMintNameModal
+      initialData={initialData}
+      userId={selectedWallet?.userId}
+      userKind={UserKind.Single}
+      onClose={onClose}
+      navigateBackTo={navigateBackTo}
+    />
+  );
+};
+
+export const TNSMintNameModal: React.FC<
+  TNSModalCommonProps & {
+    initialData: Metadata;
+    userId: string | undefined;
+    userKind: UserKind;
+  }
+> = ({ onClose, initialData, userId, userKind, navigateBackTo }) => {
+  const [network, userAddress] = parseUserId(userId);
+  const networkId = network?.id;
+  const cosmosNetwork = getCosmosNetwork(networkId);
+  const { name } = useTNS();
+  const normalizedTokenId = (
+    name + cosmosNetwork?.nameServiceTLD || ""
+  ).toLowerCase();
+  const [isSuccessModal, setSuccessModal] = useState(false);
+  const balances = useBalances(networkId, userAddress);
+  const isKeplrConnected = useIsKeplrConnected();
+  const isLeapConnected = useIsLeapConnected();
+
+  const { setToastError, setToastSuccess } = useFeedbacks();
+  const price = useNSMintPrice(networkId, normalizedTokenId);
+  const balance = balances.find((bal) => bal.denom === price?.denom);
+
+  const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);
   const queryClient = useQueryClient();
 
-  const submitData = async (data: Metadata) => {
-    if (!isKeplrConnected || !isLeapConnected || !price) {
+  const handleSubmit = async (data: Metadata) => {
+    if ((!isKeplrConnected && !isLeapConnected) || !price) {
+      // FIXME: define some central "areCosmosWalletsConnected"
       return;
     }
 
     try {
-      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
-      if (!network.nameServiceContractAddress) {
-        throw new Error("network not supported");
+      if (!cosmosNetwork?.nameServiceContractAddress) {
+        throw new Error("Invalid network");
+      }
+      if (!price) {
+        throw new Error("Invalid price");
       }
 
-      const walletAddress = selectedWallet?.address;
-
-      const msg = {
+      const payload: TNSExecuteMsg = {
         mint: {
-          owner: walletAddress,
+          owner: userAddress,
           token_id: normalizedTokenId,
           extension: data,
         },
       };
 
-      const signingClient = await getKeplrSigningCosmWasmClient(
-        selectedWallet?.networkId || ""
-      );
+      const msg: MsgExecuteContractEncodeObject = {
+        typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+        value: {
+          sender: userAddress,
+          contract: cosmosNetwork.nameServiceContractAddress,
+          msg: toUtf8(JSON.stringify(payload)),
+          funds: [price],
+        },
+      };
 
-      const mintedToken = await signingClient.execute(
-        walletAddress!,
-        network.nameServiceContractAddress,
-        msg,
-        "auto",
-        undefined,
-        [price]
-      );
-      if (mintedToken) {
-        console.log(normalizedTokenId + " successfully minted");
-        setToastSuccess({
-          title: normalizedTokenId + " successfully minted",
-          message: "",
-        });
+      await runOrProposeTransaction({ msgs: [msg], navigateToProposals: true });
 
+      const toastTitle =
+        userKind === UserKind.Single
+          ? normalizedTokenId + " successfully booked"
+          : "Proposed to book " + normalizedTokenId;
+      setToastSuccess({
+        title: toastTitle,
+        message: "",
+      });
+      if (userKind === UserKind.Single) {
         setSuccessModal(true);
+      } else {
+        onClose?.();
       }
     } catch (err) {
       console.warn(err);
@@ -212,7 +255,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
     }
 
     await queryClient.invalidateQueries(
-      nsNameInfoQueryKey(selectedWallet?.networkId, normalizedTokenId)
+      nsNameInfoQueryKey(networkId, normalizedTokenId)
     );
   };
 
@@ -261,8 +304,12 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
           name={name}
         />
         <NameDataForm
-          btnLabel="Register your username"
-          onPressBtn={submitData}
+          btnLabel={
+            userKind === UserKind.Single
+              ? "Register your username"
+              : "Propose to register"
+          }
+          onPressBtn={handleSubmit}
           initialData={initialData}
           disabled={
             !price ||
@@ -273,35 +320,4 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
       <TNSRegisterSuccess visible={isSuccessModal} onClose={handleModalClose} />
     </ModalBase>
   );
-};
-
-const useTNSMintPrice = (networkId: string | undefined, tokenId: string) => {
-  const { data } = useQuery(
-    ["tnsMintPrice", networkId, tokenId],
-    async () => {
-      if (!networkId) {
-        return null;
-      }
-      const network = mustGetCosmosNetwork(networkId);
-      if (!network.nameServiceContractAddress) {
-        return null;
-      }
-
-      const client = await mustGetNonSigningCosmWasmClient(networkId);
-
-      const tnsClient = new TeritoriNameServiceQueryClient(
-        client,
-        network.nameServiceContractAddress
-      );
-      console.log("fetching price for", tokenId);
-
-      const info = await tnsClient.contractInfo();
-
-      const amount = await tnsClient.mintPrice({ tokenId });
-
-      return { denom: info.native_denom, amount: amount?.toString() || "0" };
-    },
-    { staleTime: Infinity }
-  );
-  return data;
 };

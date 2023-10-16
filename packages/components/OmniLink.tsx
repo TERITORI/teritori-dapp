@@ -26,6 +26,18 @@ export const OmniLink: React.FC<{
 
   const [isHovered, setIsHovered] = React.useState(false);
 
+  const handlePress = (e: any) => {
+    if (Platform.OS === "web") {
+      e.stopPropagation();
+      // we prevent default action only if it's not a middle click, a right click, or a ctrl/cmd click
+      if (!(e.which === 2 || e.metaKey || e.ctrlKey)) {
+        // see https://stackoverflow.com/q/20087368
+        e.preventDefault();
+        return onPress();
+      }
+    }
+  };
+
   if (Platform.OS === "web") {
     // It's important to use a `View` or `Text` on web instead of `TouchableX`
     // Otherwise React Native for Web omits the `onClick` prop that's passed
@@ -36,7 +48,7 @@ export const OmniLink: React.FC<{
         // is required to ignore the following to fix a problem with the linter
         // and allow to use onClick in this special case
         // @ts-expect-error
-        onClick={!disabled ? onPress : null}
+        onClick={!disabled ? handlePress : null}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         style={[

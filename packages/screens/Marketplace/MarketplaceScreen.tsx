@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { FlatList, StyleProp, TextStyle, View, ViewStyle } from "react-native";
-import { useSelector } from "react-redux";
 
 import { PrettyPrint } from "./types";
 import {
@@ -17,13 +16,13 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
 import { SearchInput } from "../../components/sorts/SearchInput";
 import { SpacerColumn } from "../../components/spacer";
-import { TableRow } from "../../components/table";
+import { TableRow } from "../../components/table/TableRow";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useCollections } from "../../hooks/useCollections";
+import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { NetworkFeature, selectableNetworks } from "../../networks";
-import { selectAreTestnetsEnabled } from "../../store/slices/settings";
+import { NetworkFeature } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
@@ -83,13 +82,11 @@ const TABLE_ROWS = {
 export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
-  const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
+  const enabledNetworks = useEnabledNetworks();
 
-  const marketplaceNetworks = selectableNetworks.filter(
-    (network) =>
-      (areTestnetsEnabled || !network.testnet) &&
-      network.features.includes(NetworkFeature.NFTMarketplace)
-  );
+  const marketplaceNetworks = enabledNetworks.filter((network) => {
+    return network.features.includes(NetworkFeature.NFTMarketplace);
+  });
 
   const tabs = marketplaceNetworks.reduce(
     (tabs, network) => ({

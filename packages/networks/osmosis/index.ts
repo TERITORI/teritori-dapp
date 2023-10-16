@@ -8,6 +8,7 @@ export const osmosisNetwork: NetworkInfo = {
   displayName: "Osmosis",
   icon: "icons/networks/osmosis.svg",
   features: [NetworkFeature.Swap],
+  overrides: "cosmos-registry:osmosis",
   currencies: osmosisCurrencies,
   txExplorer: "https://www.mintscan.io/osmosis/txs/$hash",
   accountExplorer: "https://www.mintscan.io/osmosis/account/$address",
@@ -24,6 +25,8 @@ export const osmosisNetwork: NetworkInfo = {
     average: 0.025,
     high: 0.04,
   },
+  nameServiceDefaultImage:
+    "https://raw.githubusercontent.com/cosmos/chain-registry/master/osmosis/images/osmo.svg",
   cosmosFeatures: [
     "stargate",
     "ibc-transfer",

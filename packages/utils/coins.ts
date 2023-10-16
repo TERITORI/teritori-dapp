@@ -40,7 +40,7 @@ export const prettyPrice = (
   }
   const currency = getNativeCurrency(networkId, denom);
   if (currency) {
-    const decval = Decimal.fromAtomics(value, currency.decimals);
+    const decval = Decimal.fromAtomics(value || "0", currency.decimals);
     if (
       !decval.isGreaterThanOrEqual(
         Decimal.fromUserInput("10", currency.decimals)

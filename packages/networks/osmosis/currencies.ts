@@ -37,7 +37,7 @@ export const osmosisCurrencies: CurrencyInfo[] = [
     kind: "ibc",
     denom:
       "ibc/46B44899322F3CD854D2D46DEEF881958467CDD4B3B10086DA49296BBED94BED",
-    sourceNetwork: "juno",
+    sourceNetwork: "cosmos-registry:juno",
     sourceDenom: "ujuno",
     sourceChannelPort: "transfer",
     sourceChannelId: "channel-169",
