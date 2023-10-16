@@ -114,9 +114,16 @@ export const selectMultisigToken = (
   if (!userAddress) {
     return undefined;
   }
+  let addr;
+  try {
+    addr = universalUserAddress(userAddress);
+  } catch (error) {
+    console.warn("failed to transform user address", error, userAddress);
+    return undefined;
+  }
   const token = multisigTokensSelectors.selectById(
     state.settings.multisigTokens,
-    universalUserAddress(userAddress)
+    addr
   );
   if (!token || Date.parse(token.expiration) <= Date.now()) {
     return undefined;
@@ -160,10 +167,14 @@ const settingsSlice = createSlice({
       }>
     ) => {
       if (!action.payload.token) {
-        multisigTokensAdapter.removeOne(
-          state.multisigTokens,
-          universalUserAddress(action.payload.userAddress)
-        );
+        let addr;
+        try {
+          addr = universalUserAddress(action.payload.userAddress);
+        } catch (error) {
+          console.warn("failed to transform user address", error, action);
+          return;
+        }
+        multisigTokensAdapter.removeOne(state.multisigTokens, addr);
         return;
       }
       state.multisigTokens = multisigTokensAdapter.setOne(
