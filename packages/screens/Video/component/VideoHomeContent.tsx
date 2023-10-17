@@ -5,31 +5,24 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
-import Upload from "../../../assets/icons/upload.svg";
-import Logo from "../../../assets/logos/logo.svg";
-import { GetVideoListRequest } from "../../api/video/v1/video";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { SpacerRow } from "../../components/spacer";
-import { CreateVideoModal } from "../../components/videoPlayer/CreateVideoModal";
-import { VideoPlayerCard } from "../../components/videoPlayer/VideoPlayerCard";
+import Upload from "../../../../assets/icons/upload.svg";
+import Logo from "../../../../assets/logos/logo.svg";
+import { GetVideoListRequest } from "../../../api/video/v1/video";
+import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
+import { SpacerRow } from "../../../components/spacer";
+import { CreateVideoModal } from "../../../components/videoPlayer/CreateVideoModal";
 import {
   combineFetchVideoPages,
   useFetchVideos,
-} from "../../hooks/video/useFetchVideos";
-import { primaryColor } from "../../utils/style/colors";
-import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { VideoInfoWithMeta } from "../../utils/types/video";
+} from "../../../hooks/video/useFetchVideos";
+import { primaryColor } from "../../../utils/style/colors";
+import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { VideoCard } from "../../VideoDetail/components/VideoCard";
 
-interface VideoPlayerProps {
-  req: GetVideoListRequest;
-  videoListForLibrary: VideoInfoWithMeta[];
-}
-
-export const VideoPlayerHomeContent: React.FC<VideoPlayerProps> = ({
+export const VideoHomeContent: React.FC<{ req: GetVideoListRequest }> = ({
   req,
-  videoListForLibrary,
 }) => {
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const { data, isFetching, hasNextPage, fetchNextPage, isLoading } =
@@ -104,15 +97,8 @@ export const VideoPlayerHomeContent: React.FC<VideoPlayerProps> = ({
           data={videos}
           numColumns={4}
           renderItem={({ item: videoInfo }) => (
-            <View style={albumGridStyle}>
-              <VideoPlayerCard
-                item={videoInfo}
-                hasLibrary={
-                  videoListForLibrary.findIndex(
-                    (item) => item.identifier === videoInfo.identifier
-                  ) !== -1
-                }
-              />
+            <View style={videosGridStyle}>
+              <VideoCard video={videoInfo} />
             </View>
           )}
           onScroll={scrollHandler}
@@ -161,6 +147,6 @@ const buttonTextStyle: TextStyle = {
   ...fontSemibold14,
   color: primaryColor,
 };
-const albumGridStyle: ViewStyle = {
+const videosGridStyle: ViewStyle = {
   margin: layout.spacing_x3,
 };

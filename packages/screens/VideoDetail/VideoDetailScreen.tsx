@@ -1,45 +1,67 @@
-import React, {useEffect, useMemo, useRef, useState} from "react";
-import {Image, ImageStyle, Pressable, TextInput, TextStyle, View, ViewStyle,} from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Image,
+  ImageStyle,
+  Pressable,
+  TextInput,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
 import Animated from "react-native-reanimated";
 
-import {VideoComment} from "./VideoComment";
-import Dislike from "../../../assets/icons/player/dislike.svg";
-import Like from "../../../assets/icons/player/like.svg";
+import { VideoComment } from "./components/VideoComment";
 import TipIcon from "../../../assets/icons/tip.svg";
-import {CommentInfo, DislikeRequest, LikeRequest,} from "../../api/video/v1/video";
-import {signingVideoPlayerClient} from "../../client-creators/videoplayerClient";
-import {BrandText} from "../../components/BrandText";
-import {SVG} from "../../components/SVG";
-import {ScreenContainer} from "../../components/ScreenContainer";
-import {PrimaryButton} from "../../components/buttons/PrimaryButton";
-import {UserAvatarWithFrame} from "../../components/images/AvatarWithFrame";
-import {TipModal} from "../../components/socialFeed/SocialActions/TipModal";
-import {DateTime} from "../../components/socialFeed/SocialThread/DateTime";
-import {SpacerRow} from "../../components/spacer";
-import {MoreVideoPlayerCard} from "../../components/videoPlayer/MoreVideoCard";
-import {VideoPlayerTab} from "../../components/videoPlayer/VideoPlayerTab";
-import {useFeedbacks} from "../../context/FeedbacksProvider";
-import {useNSUserInfo} from "../../hooks/useNSUserInfo";
-import {useSelectedNetworkId} from "../../hooks/useSelectedNetwork";
+import Dislike from "../../../assets/icons/video-player/dislike.svg";
+import Like from "../../../assets/icons/video-player/like.svg";
+import {
+  CommentInfo,
+  DislikeRequest,
+  LikeRequest,
+} from "../../api/video/v1/video";
+import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
+import { BrandText } from "../../components/BrandText";
+import { SVG } from "../../components/SVG";
+import { ScreenContainer } from "../../components/ScreenContainer";
+import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { UserAvatarWithFrame } from "../../components/images/AvatarWithFrame";
+import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
+import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
+import { DateTime } from "../../components/socialFeed/SocialThread/DateTime";
+import { SpacerRow } from "../../components/spacer";
+import { MoreVideoPlayerCard } from "../../components/videoPlayer/MoreVideoCard";
+import { VideoTab } from "../../components/videoPlayer/VideoTab";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useGetPostFee } from "../../hooks/feed/useGetPostFee";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {useFetchComments} from "../../hooks/video/useFetchComments";
-import {useFetchVideo} from "../../hooks/video/useFetchVideo";
-import {useIncreaseViewCount} from "../../hooks/video/useIncreaseViewCount";
-import {increaseDislike, increaseLike,} from "../../hooks/video/useLikeDislike";
-import {combineFetchVideoPages, useUserFetchVideos,} from "../../hooks/video/useUserFetchVideos";
-import {getUserId} from "../../networks";
-import {defaultSocialFeedFee} from "../../utils/fee";
-import {ipfsURLToHTTPURL} from "../../utils/ipfs";
-import {ScreenFC, useAppNavigation} from "../../utils/navigation";
-import {SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT} from "../../utils/social-feed";
-import {neutral77, secondaryColor} from "../../utils/style/colors";
-import {fontMedium14, fontSemibold14, fontSemibold16,} from "../../utils/style/fonts";
-import {layout} from "../../utils/style/layout";
-import {tinyAddress} from "../../utils/text";
-import {useGetPostFee} from "../../hooks/feed/useGetPostFee";
-import {PostCategory} from "../../components/socialFeed/NewsFeed/NewsFeed.type";
+import { useFetchComments } from "../../hooks/video/useFetchComments";
+import { useFetchVideo } from "../../hooks/video/useFetchVideo";
+import { useIncreaseViewCount } from "../../hooks/video/useIncreaseViewCount";
+import {
+  increaseDislike,
+  increaseLike,
+} from "../../hooks/video/useLikeDislike";
+import {
+  combineFetchVideoPages,
+  useUserFetchVideos,
+} from "../../hooks/video/useUserFetchVideos";
+import { getUserId } from "../../networks";
+import { defaultSocialFeedFee } from "../../utils/fee";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT } from "../../utils/social-feed";
+import { neutral77, secondaryColor } from "../../utils/style/colors";
+import {
+  fontMedium14,
+  fontSemibold14,
+  fontSemibold16,
+} from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { tinyAddress } from "../../utils/text";
 
-export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
+export const VideoDetailScreen: ScreenFC<"VideoDetail"> = ({
   route: {
     params: { id },
   },
@@ -58,7 +80,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
   // );
   const { setToastError, setToastSuccess } = useFeedbacks();
   const [tipModalVisible, setTipModalVisible] = useState<boolean>(false);
-  const { data } = useFetchVideo({ identifier: id });
+  const { data: video } = useFetchVideo({ identifier: id });
   useIncreaseViewCount({
     identifier: id,
     user: userId,
@@ -74,10 +96,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
     identifier: id,
   });
   const [commentList, setCommentList] = useState<CommentInfo[]>([]);
-  const { postFee } = useGetPostFee(
-    selectedNetworkId,
-    PostCategory.Normal
-  );
+  const { postFee } = useGetPostFee(selectedNetworkId, PostCategory.Normal);
 
   // TODO: use MediaPlayerContext
   // useEffect(() => {
@@ -120,7 +139,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
   // }, [data, username, setVideoMeta]);
 
   const { data: userVideos } = useUserFetchVideos({
-    createdBy: data?.createdBy!,
+    createdBy: video?.createdBy!,
     offset: 0,
     limit: 10,
   });
@@ -131,9 +150,9 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
   );
 
   const videoLike = async () => {
-    if (!data || !data.identifier || !userId || !selectedNetworkId) return;
+    if (!video || !video.id || !userId || !selectedNetworkId) return;
     const req: LikeRequest = {
-      identifier: data.identifier,
+      identifier: video.id,
       user: userId,
     };
     const res = await increaseLike(req, selectedNetworkId);
@@ -142,9 +161,9 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
     }
   };
   const videoDislike = async () => {
-    if (!data || !data.identifier || !userId || !selectedNetworkId) return;
+    if (!video || !video.id || !userId || !selectedNetworkId) return;
     const req: DislikeRequest = {
-      identifier: data.identifier,
+      identifier: video.id,
       user: userId,
     };
     const res = await increaseDislike(req, selectedNetworkId);
@@ -164,7 +183,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
   };
 
   const handleComment = async () => {
-    if (!data || !comment) return;
+    if (!video || !comment) return;
     if (!wallet || !wallet.connected || !wallet.address) {
       return;
     }
@@ -175,12 +194,12 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
     try {
       const res = await client.createVideoComment(
         {
-          videoIdentifier: data.identifier,
+          videoIdentifier: video.id,
           comment,
         },
         defaultSocialFeedFee,
         "",
-        [{ amount: postFee.toString(), denom: "utori" }],
+        [{ amount: postFee.toString(), denom: "utori" }]
       );
 
       if (res.transactionHash) {
@@ -197,26 +216,26 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
     }
   };
 
-  if (!data) {
+  if (!video) {
     return <></>;
   }
   return (
     <ScreenContainer
-      headerChildren={<BrandText>{data.videoMetaInfo.title}</BrandText>}
+      headerChildren={<BrandText>{video.videoMetaInfo.title}</BrandText>}
       fullWidth
     >
       <View style={pageContainerStyle}>
-        <VideoPlayerTab
+        <VideoTab
           setTab={() => {
-            navigation.navigate("VideoPlayer");
+            navigation.navigate("Video");
           }}
         />
 
         <View style={pagePanelStyle}>
           <View style={pageLeftPanelStyle}>
-            {data && (
+            {video && (
               <video
-                src={ipfsURLToHTTPURL(data.videoMetaInfo.url)}
+                src={ipfsURLToHTTPURL(video.videoMetaInfo.url)}
                 controls
                 ref={videoRef}
                 style={{
@@ -226,7 +245,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
               />
             )}
             <BrandText style={leftVideoNameStyle}>
-              {data?.videoMetaInfo.title}
+              {video?.videoMetaInfo.title}
             </BrandText>
             <View style={videoInfoStyle}>
               <View style={avatarDetailStyle}>
@@ -246,7 +265,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 }}
               >
                 <BrandText style={contentDescriptionStyle}>
-                  {data?.viewCount} views
+                  {video?.viewCount} views
                 </BrandText>
                 {/* A dot separator */}
                 <View
@@ -260,7 +279,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 />
                 {/*---- Date */}
                 <DateTime
-                  date={data.createdAt.toString()}
+                  date={video.createdAt.toString()}
                   textStyle={{ color: neutral77 }}
                 />
               </View>
@@ -286,7 +305,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
             {/*<View style={blueContentsStyle} />*/}
 
             <BrandText style={contentNameStyle}>
-              {data?.videoMetaInfo.description}
+              {video?.videoMetaInfo.description}
             </BrandText>
             <BrandText style={commentsStyle}>
               {commentList.length} comments
@@ -336,10 +355,10 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 data={videos}
                 numColumns={1}
                 renderItem={({ item: videoInfo }) => {
-                  if (videoInfo.identifier === data.identifier) return <></>;
+                  if (videoInfo.id === video.id) return <></>;
                   return (
                     <View style={moreVideoGridStyle}>
-                      <MoreVideoPlayerCard item={videoInfo} />
+                      <MoreVideoPlayerCard video={videoInfo} />
                     </View>
                   );
                 }}

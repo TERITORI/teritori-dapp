@@ -140,7 +140,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
   videoplayer: {
     title: "Video",
     id: "Video",
-    route: "VideoPlayer",
+    route: "Video",
     icon: videoSVG,
   },
 };
