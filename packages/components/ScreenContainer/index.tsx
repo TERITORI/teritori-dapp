@@ -27,6 +27,7 @@ import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
 import { SearchBar } from "../Search/SearchBar";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
+import { NotificationDrawer } from "../TopMenu/NotificationDrawer";
 import { Footer } from "../footers/Footer";
 import { Sidebar } from "../navigation/Sidebar";
 import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
@@ -178,6 +179,7 @@ export const ScreenContainer: React.FC<{
               alignItems: "center",
             }}
           >
+            <NotificationDrawer />
             <SearchBar />
             <View
               style={{
