@@ -17,12 +17,15 @@ import { OmniLink } from "../../../../components/OmniLink";
 import { SVG } from "../../../../components/SVG";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { UserAvatarWithFrame } from "../../../../components/images/AvatarWithFrame";
+import { DotSeparator } from "../../../../components/separators/DotSeparator";
+import { DateTime } from "../../../../components/socialFeed/SocialThread/DateTime";
 import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
 import { useDropdowns } from "../../../../context/DropdownsProvider";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import { useFetchVideosForLibrary } from "../../../../hooks/video/useFetchVideosForLibrary";
 import { parseUserId } from "../../../../networks";
 import { ipfsURLToHTTPURL } from "../../../../utils/ipfs";
+import { prettyMediaDuration } from "../../../../utils/mediaPlayer";
 import { useAppNavigation } from "../../../../utils/navigation";
 import { neutral77 } from "../../../../utils/style/colors";
 import {
@@ -61,6 +64,8 @@ export const VideoCard: React.FC<{
     // await loadAndPlayVideo(item);
   };
 
+  console.log("videovideo", video);
+
   return (
     <View style={unitCardStyle}>
       <CustomPressable
@@ -77,8 +82,11 @@ export const VideoCard: React.FC<{
         />
 
         <View style={imgDurationBoxStyle}>
-          <BrandText style={fontSemibold13}>{`${"1:40:52"}`}</BrandText>
+          <BrandText style={fontSemibold13}>
+            {prettyMediaDuration(video.videoMetaInfo.duration)}
+          </BrandText>
         </View>
+
         <View style={imgButtonsBoxStyle}>
           <TouchableOpacity onPress={onPressPlayVideo}>
             <SVG
@@ -132,11 +140,14 @@ export const VideoCard: React.FC<{
 
       <SpacerColumn size={1} />
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <BrandText style={videoStatsTextStyle}>{`${"111"} views`}</BrandText>
-        <SpacerRow size={0.75} />
-        <View style={{ width: 1.5, height: 1.5, backgroundColor: neutral77 }} />
-        <SpacerRow size={0.75} />
-        <BrandText style={videoStatsTextStyle}>{`${"3"} days ago`}</BrandText>
+        <BrandText
+          style={videoStatsTextStyle}
+        >{`${video.viewCount} views`}</BrandText>
+        <DotSeparator style={{ marginHorizontal: layout.spacing_x0_75 }} />
+        <DateTime
+          date={new Date(video.createdAt * 1000).toDateString()}
+          textStyle={{ color: neutral77 }}
+        />
       </View>
     </View>
   );
@@ -157,7 +168,7 @@ const imgBoxStyle: ViewStyle = {
 const imgDurationBoxStyle: ViewStyle = {
   justifyContent: "center",
   alignItems: "center",
-  width: 55,
+  paddingHorizontal: layout.spacing_x0_75,
   height: 26,
   borderRadius: 4,
   backgroundColor: neutral77,

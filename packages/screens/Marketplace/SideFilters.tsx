@@ -30,8 +30,8 @@ import { AttributeRarityFloor } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { CurrencyIcon } from "../../components/CurrencyIcon";
 import { SVG } from "../../components/SVG";
-import { Separator } from "../../components/Separator";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { Separator } from "../../components/separators/Separator";
 import { SearchInput } from "../../components/sorts/SearchInput";
 import { useCollectionStats } from "../../hooks/useCollectionStats";
 import {

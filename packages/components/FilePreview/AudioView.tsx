@@ -10,7 +10,7 @@ import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { getMediaDuration } from "../../utils/mediaPlayer";
+import { prettyMediaDuration } from "../../utils/mediaPlayer";
 import {
   errorColor,
   neutral00,
@@ -47,7 +47,7 @@ export const AudioView: React.FC<{
     [media?.postId, postId]
   );
   const duration = useMemo(
-    () => getMediaDuration(file.audioMetadata?.duration),
+    () => prettyMediaDuration(file.audioMetadata?.duration),
     [file]
   );
 
@@ -146,7 +146,7 @@ export const AudioView: React.FC<{
               }}
             >
               <BrandText style={[fontSemibold14]}>
-                {getMediaDuration(
+                {prettyMediaDuration(
                   isInMediaPlayer && playbackStatus?.positionMillis
                     ? playbackStatus.positionMillis
                     : 0

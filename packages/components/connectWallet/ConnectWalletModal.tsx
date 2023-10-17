@@ -12,9 +12,9 @@ import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { DisclaimerPopup } from "../PopupDisclaimer/DisclaimerPopup";
-import { SeparatorGradient } from "../SeparatorGradient";
 import { TertiaryButton } from "../buttons/TertiaryButton";
 import ModalBase from "../modals/ModalBase";
+import { SeparatorGradient } from "../separators/SeparatorGradient";
 import { SpacerColumn } from "../spacer";
 
 type ConnectWalletProps = {
