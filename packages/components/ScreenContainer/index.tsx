@@ -26,13 +26,13 @@ import {
 import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
 import { SearchBar } from "../Search/SearchBar";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
-import { Separator } from "../Separator";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
 import { Footer } from "../footers/Footer";
 import { MediaPlayerBar } from "../mediaPlayer/MediaPlayerBar";
 import { TogglePlayerButton } from "../mediaPlayer/TogglePlayerButton";
 import { Sidebar } from "../navigation/Sidebar";
 import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
+import { Separator } from "../separators/Separator";
 
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;

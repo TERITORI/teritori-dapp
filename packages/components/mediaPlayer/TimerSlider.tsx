@@ -3,7 +3,7 @@ import React, { FC, useState } from "react";
 import { TextStyle, View } from "react-native";
 
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
-import { getMediaDuration } from "../../utils/mediaPlayer";
+import { prettyMediaDuration } from "../../utils/mediaPlayer";
 import {
   neutral55,
   neutral77,
@@ -32,7 +32,7 @@ export const TimerSlider: FC<{
       <View style={{ width: 46, alignItems: "flex-end" }}>
         {media && (
           <BrandText style={timeTextStyle}>
-            {getMediaDuration(playbackStatus?.positionMillis)}
+            {prettyMediaDuration(playbackStatus?.positionMillis)}
           </BrandText>
         )}
       </View>
@@ -68,7 +68,7 @@ export const TimerSlider: FC<{
       <View style={{ width: 40 }}>
         {!!media?.duration && (
           <BrandText style={timeTextStyle}>
-            {getMediaDuration(media.duration)}
+            {prettyMediaDuration(media.duration)}
           </BrandText>
         )}
       </View>
