@@ -11,8 +11,8 @@ import {
 import { useSelector } from "react-redux";
 
 import Add from "../../../assets/icons/add-alt.svg";
-import DefaultVideoImage from "../../../assets/icons/player/cover-img.png";
-import Img from "../../../assets/icons/player/img.svg";
+import DefaultVideoImage from "../../../assets/icons/video-player/cover-img.png";
+import Img from "../../../assets/icons/video-player/img.svg";
 import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
 import ModalBase from "../../components/modals/ModalBase";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -53,7 +53,7 @@ interface UploadAlbumModalProps {
   isVisible: boolean;
 }
 const DEFAULT_VIDEO_INFO = {
-  identifier: "",
+  id: "",
   createdBy: "",
   createdAt: 0,
   viewCount: 0,

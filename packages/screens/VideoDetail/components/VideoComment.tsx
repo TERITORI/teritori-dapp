@@ -1,16 +1,16 @@
 import React, { FC, useMemo } from "react";
 import { TextStyle, View } from "react-native";
 
-import { CommentInfo } from "../../api/video/v1/video";
-import { BrandText } from "../../components/BrandText";
-import { UserAvatarWithFrame } from "../../components/images/AvatarWithFrame";
-import { DateTime } from "../../components/socialFeed/SocialThread/DateTime";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { parseUserId } from "../../networks";
-import { neutral77 } from "../../utils/style/colors";
-import { fontMedium14, fontSemibold13 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { tinyAddress } from "../../utils/text";
+import { CommentInfo } from "../../../api/video/v1/video";
+import { BrandText } from "../../../components/BrandText";
+import { UserAvatarWithFrame } from "../../../components/images/AvatarWithFrame";
+import { DateTime } from "../../../components/socialFeed/SocialThread/DateTime";
+import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
+import { parseUserId } from "../../../networks";
+import { neutral77 } from "../../../utils/style/colors";
+import { fontMedium14, fontSemibold13 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { tinyAddress } from "../../../utils/text";
 
 export const VideoComment: FC<{
   comment: CommentInfo;

@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { View, ViewStyle, TextStyle } from "react-native";
 
 import { HoverView } from "./HoverView";
-import Code from "../../../assets/icons/player/code.svg";
-import Enter from "../../../assets/icons/player/enter.svg";
-import Link from "../../../assets/icons/player/link.svg";
-import Share from "../../../assets/icons/player/share.svg";
 import trashSVG from "../../../assets/icons/trash.svg";
+import Code from "../../../assets/icons/video-player/code.svg";
+import Enter from "../../../assets/icons/video-player/enter.svg";
+import Link from "../../../assets/icons/video-player/link.svg";
+import Share from "../../../assets/icons/video-player/share.svg";
 import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
@@ -40,7 +40,7 @@ export const MyVideoMenu: React.FC<MyVideoMenuProps> = ({ videoInfo }) => {
     });
     try {
       const res = await client.deleteVideo({
-        identifier: videoInfo.identifier,
+        identifier: videoInfo.id,
       });
       if (res.transactionHash) {
         setToastSuccess({
@@ -68,7 +68,7 @@ export const MyVideoMenu: React.FC<MyVideoMenuProps> = ({ videoInfo }) => {
         <View style={oneLineStyle}>
           <SVG source={trashSVG} width={16} height={16} />
           <SpacerRow size={1} />
-          <BrandText style={deleteTextStyle}>Delete album</BrandText>
+          <BrandText style={deleteTextStyle}>Delete video</BrandText>
         </View>
       </HoverView>
       <SpacerColumn size={0.75} />

@@ -7,7 +7,7 @@ export interface VideoMetaInfo {
 }
 
 export interface VideoInfoWithMeta {
-  identifier: string;
+  id: string;
   videoMetaInfo: VideoMetaInfo;
   createdBy: string;
   createdAt: number;

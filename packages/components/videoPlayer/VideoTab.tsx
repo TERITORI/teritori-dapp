@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Pressable, TextStyle, ViewStyle } from "react-native";
 
-import HomeSelected from "../../../assets/icons/player/home-selected.svg";
-import HomeUnselected from "../../../assets/icons/player/home-unselected.svg";
-import MusicSelected from "../../../assets/icons/player/music-selected.svg";
-import MusicUnselected from "../../../assets/icons/player/music-unselected.svg";
+import HomeSelected from "../../../assets/icons/video-player/home-selected.svg";
+import HomeUnselected from "../../../assets/icons/video-player/home-unselected.svg";
+import MusicSelected from "../../../assets/icons/video-player/music-selected.svg";
+import MusicUnselected from "../../../assets/icons/video-player/music-unselected.svg";
 import { neutral33, neutralA3, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -17,10 +17,7 @@ interface VideoPlayerTabProps {
   setTab?: any;
 }
 
-export const VideoPlayerTab: React.FC<VideoPlayerTabProps> = ({
-  tab,
-  setTab,
-}) => {
+export const VideoTab: React.FC<VideoPlayerTabProps> = ({ tab, setTab }) => {
   const tabData: string[] = ["Home", "My Library", "Search"];
   return (
     <View style={tabContainerStyle}>

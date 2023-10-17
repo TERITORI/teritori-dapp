@@ -5,27 +5,25 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
-import Logo from "../../../assets/logos/logo.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { SpacerRow } from "../../components/spacer";
-import { CreateVideoModal } from "../../components/videoPlayer/CreateVideoModal";
-import { VideoPlayerCard } from "../../components/videoPlayer/VideoPlayerCard";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
+import Logo from "../../../../assets/logos/logo.svg";
+import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
+import { SpacerRow } from "../../../components/spacer";
+import { CreateVideoModal } from "../../../components/videoPlayer/CreateVideoModal";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useFetchVideosForLibrary } from "../../../hooks/video/useFetchVideosForLibrary";
 import {
   useUserFetchVideos,
   combineFetchVideoPages,
-} from "../../hooks/video/useUserFetchVideos";
-import { getUserId } from "../../networks";
-import { primaryColor } from "../../utils/style/colors";
-import { fontSemibold20, fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { VideoInfoWithMeta } from "../../utils/types/video";
+} from "../../../hooks/video/useUserFetchVideos";
+import { getUserId } from "../../../networks";
+import { primaryColor } from "../../../utils/style/colors";
+import { fontSemibold20, fontSemibold14 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { VideoCard } from "../../VideoDetail/components/VideoCard";
 
-export const VideoPlayerMyLibraryContent: React.FC<{
-  videoListForLibrary: VideoInfoWithMeta[];
-}> = ({ videoListForLibrary }) => {
+export const VideoMyLibraryContent: React.FC = () => {
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
 
@@ -34,6 +32,12 @@ export const VideoPlayerMyLibraryContent: React.FC<{
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
   const userId = getUserId(selectedNetworkId, wallet?.address);
+
+  const { data: libraryVideos } = useFetchVideosForLibrary();
+  const videoListForLibrary = useMemo(
+    () => (libraryVideos ? libraryVideos : []),
+    [libraryVideos]
+  );
 
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
   const { data, isFetching, hasNextPage, fetchNextPage, isLoading } =
@@ -115,8 +119,8 @@ export const VideoPlayerMyLibraryContent: React.FC<{
           data={myVideos}
           numColumns={4}
           renderItem={({ item: videoInfo }) => (
-            <View style={albumGridStyle}>
-              <VideoPlayerCard item={videoInfo} hasLibrary />
+            <View style={videosGridStyle}>
+              <VideoCard video={videoInfo} />
             </View>
           )}
           onScroll={scrollHandler}
@@ -134,8 +138,8 @@ export const VideoPlayerMyLibraryContent: React.FC<{
           data={videoListForLibrary}
           numColumns={4}
           renderItem={({ item: videoInfo }) => (
-            <View style={albumGridStyle}>
-              <VideoPlayerCard item={videoInfo} hasLibrary />
+            <View style={videosGridStyle}>
+              <VideoCard video={videoInfo} />
             </View>
           )}
           onScroll={scrollHandlerOther}
@@ -184,6 +188,6 @@ const buttonTextStyle: TextStyle = {
   ...fontSemibold14,
   color: primaryColor,
 };
-const albumGridStyle: ViewStyle = {
+const videosGridStyle: ViewStyle = {
   margin: layout.spacing_x3,
 };

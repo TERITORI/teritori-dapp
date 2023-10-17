@@ -39,8 +39,8 @@ import { StakeScreen } from "../../screens/Stake";
 import { SwapScreen } from "../../screens/Swap/SwapScreen";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
 import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
-import { VideoPlayerScreen } from "../../screens/VideoPlayer/VideoPlayerScreen";
-import { VideoShowScreen } from "../../screens/VideoPlayer/VideoShowScreen";
+import { VideoScreen } from "../../screens/Video/VideoScreen";
+import { VideoDetailScreen } from "../../screens/VideoDetail/VideoDetailScreen";
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
@@ -318,14 +318,14 @@ export const Navigator: React.FC = () => {
         options={{ header: () => null, title: screenTitle("Core DAO") }}
       />
       <Stack.Screen
-        name="VideoPlayer"
-        component={VideoPlayerScreen}
-        options={{ header: () => null, title: screenTitle("Video Player") }}
+        name="Video"
+        component={VideoScreen}
+        options={{ header: () => null, title: screenTitle("Video") }}
       />
       <Stack.Screen
-        name="VideoShow"
-        component={VideoShowScreen}
-        options={{ header: () => null, title: screenTitle("Video Show") }}
+        name="VideoDetail"
+        component={VideoDetailScreen}
+        options={{ header: () => null, title: screenTitle("Video Detail") }}
       />
     </Stack.Navigator>
   );

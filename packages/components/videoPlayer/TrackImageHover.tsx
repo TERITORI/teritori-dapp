@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Pressable, ViewStyle } from "react-native";
 
 import { MyVideoMenu } from "./MyVideoMenu";
-import { TrackHoverMenu } from "./TrackHoverMenu";
-import HoveredMenu from "../../../assets/icons/player/hovered-menu.svg";
-import HoveredPlay from "../../../assets/icons/player/hovered-play.svg";
-import NormalMenu from "../../../assets/icons/player/normal-menu.svg";
-import NormalPlay from "../../../assets/icons/player/normal-play.svg";
+import HoveredMenu from "../../../assets/icons/video-player/hovered-menu.svg";
+import HoveredPlay from "../../../assets/icons/video-player/hovered-play.svg";
+import NormalMenu from "../../../assets/icons/video-player/normal-menu.svg";
+import NormalPlay from "../../../assets/icons/video-player/normal-play.svg";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId } from "../../networks";
+import { VideoHoverMenu } from "../../screens/VideoDetail/components/VideoCard/VideoHoverMenu";
 import { useAppNavigation } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 import { VideoInfoWithMeta } from "../../utils/types/video";
@@ -32,7 +32,7 @@ export const TrackImageHover: React.FC<{
     <Pressable
       style={hoverBoxStyle}
       onPress={() => {
-        navigation.navigate("VideoShow", { id: videoInfo.identifier });
+        navigation.navigate("VideoDetail", { id: videoInfo.id });
       }}
     >
       {hoverPlayIcon && (
@@ -78,10 +78,10 @@ export const TrackImageHover: React.FC<{
         />
       )}
       {openMenu && userId !== videoInfo.createdBy && (
-        <TrackHoverMenu
-          videoInfo={videoInfo}
-          hasLibrary={hasLibrary}
-          userName={userName}
+        <VideoHoverMenu
+          video={videoInfo}
+          isInLibrary={hasLibrary}
+          owner={userId}
         />
       )}
       {openMenu && userId === videoInfo.createdBy && (
