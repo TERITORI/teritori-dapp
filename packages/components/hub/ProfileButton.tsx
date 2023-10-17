@@ -15,6 +15,7 @@ import {
   getStakingCurrency,
   mustGetGnoNetwork,
   parseUserId,
+  NetworkFeature,
 } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { VmCall, adenaVMCall } from "../../utils/gno";
@@ -41,6 +42,9 @@ export const ProfileButton: React.FC<{
   const selectedWallet = useSelectedWallet();
   const network = getNetwork(selectedWallet?.networkId);
   const { metadata } = useNSUserInfo(selectedWallet?.userId);
+  if (!network?.features.includes(NetworkFeature.NameService)) {
+    return null;
+  }
 
   if (selectedWallet && metadata?.tokenId)
     return (

@@ -8,7 +8,7 @@ import {
   WEI_TOKEN_ADDRESS,
   NetworkKind,
 } from "../networks";
-import { mustGetMarketplaceClient } from "../utils/backend";
+import { getMarketplaceClient } from "../utils/backend";
 
 export const useCollectionStats = (collectionId: string, ownerId?: string) => {
   const [network] = parseNetworkObjectId(collectionId);
@@ -25,7 +25,10 @@ export const useCollectionStats = (collectionId: string, ownerId?: string) => {
   const { data } = useQuery(
     ["collectionStats", collectionId, ownerId],
     async () => {
-      const marketplaceClient = mustGetMarketplaceClient(networkId);
+      const marketplaceClient = getMarketplaceClient(networkId);
+      if (!marketplaceClient) {
+        return null;
+      }
 
       const req = {
         collectionId,

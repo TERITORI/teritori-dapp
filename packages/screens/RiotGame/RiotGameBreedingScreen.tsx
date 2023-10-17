@@ -24,17 +24,23 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { ConfigResponse } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 import { useBreeding } from "../../hooks/riotGame/useBreeding";
 import { useRippers } from "../../hooks/riotGame/useRippers";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, getCollectionId, parseNftId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { getRipperTokenId } from "../../utils/game";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
-import { fontMedium14, fontMedium48 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import {
+  fontMedium14,
+  fontMedium32,
+  fontMedium48,
+} from "../../utils/style/fonts";
+import { layout, MOBILE_MAX_WIDTH } from "../../utils/style/layout";
 
 export const RiotGameBreedingScreen = () => {
   const { myAvailableRippers } = useRippers();
+  const isMobile = useIsMobile();
   const [isShowBreedingResultModal, setIsShowBreedingResultModal] =
     useState(false);
   const [selectedSlot, setSelectedSlot] = useState<number>();
@@ -224,7 +230,9 @@ export const RiotGameBreedingScreen = () => {
           alignSelf: "center",
         }}
       >
-        <BrandText style={[fontMedium48]}>Breeding</BrandText>
+        <BrandText style={[isMobile ? fontMedium32 : fontMedium48]}>
+          Breeding
+        </BrandText>
 
         <FlexRow
           style={{ justifyContent: "center", marginTop: layout.spacing_x4 }}
@@ -242,7 +250,14 @@ export const RiotGameBreedingScreen = () => {
           />
         </FlexRow>
 
-        <FlexRow style={{ marginTop: layout.spacing_x4 }}>
+        <FlexRow
+          breakpoint={MOBILE_MAX_WIDTH}
+          style={{
+            marginTop: layout.spacing_x4,
+            height: isMobile ? 280 : "inherit",
+            justifyContent: isMobile ? "space-between" : undefined,
+          }}
+        >
           <InfoBox
             size="LG"
             title="Price"
@@ -272,12 +287,16 @@ export const RiotGameBreedingScreen = () => {
           onPress={doBreed}
           color={yellowDefault}
           size="M"
+          style={{
+            marginBottom: layout.spacing_x1,
+          }}
           text={isBreeding ? "Breeding..." : "Breed my Rippers"}
           iconSVG={breedSVG}
           touchableStyle={{ marginTop: layout.spacing_x2 }}
         />
 
         <FlexRow
+          breakpoint={MOBILE_MAX_WIDTH}
           width="auto"
           alignItems="center"
           style={{ marginTop: layout.spacing_x2 }}

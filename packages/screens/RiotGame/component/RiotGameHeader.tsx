@@ -20,8 +20,9 @@ import { ConnectWalletButton } from "../../../components/TopMenu/ConnectWalletBu
 import { BackButton } from "../../../components/navigation/components/BackButton";
 import { TopLogo } from "../../../components/navigation/components/TopLogo";
 import { SpacerRow } from "../../../components/spacer";
-import { useForceNetworkKind } from "../../../hooks/useForceNetworkKind";
-import { NetworkKind } from "../../../networks";
+import { useForceNetworkFeatures } from "../../../hooks/useForceNetworkFeatures";
+import { useIsMobile } from "../../../hooks/useIsMobile";
+import { NetworkFeature } from "../../../networks";
 import {
   RootStackParamList,
   useAppNavigation,
@@ -99,7 +100,8 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
 }) => {
   const navigation = useAppNavigation();
   const { name: routeName } = useRoute();
-  useForceNetworkKind(NetworkKind.Cosmos);
+  useForceNetworkFeatures([NetworkFeature.RiotP2E]);
+  const isMobile = useIsMobile();
 
   const onMenuItemClick = (item: MenuItem) => {
     if (item.externalRoute) {
@@ -158,17 +160,18 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
             </FlexRow>
           )}
         </ScrollView>
-
-        <View style={styles.section}>
-          <SpacerRow size={1.5} />
-          <Separator horizontal color={neutral33} />
-          <SpacerRow size={1.5} />
-          <NetworkSelector forceNetworkKind={NetworkKind.Cosmos} />
-          <SpacerRow size={1.5} />
-          <ConnectWalletButton
-            style={{ marginRight: headerMarginHorizontal }}
-          />
-        </View>
+        {!isMobile && (
+          <View style={styles.section}>
+            <SpacerRow size={1.5} />
+            <Separator horizontal color={neutral33} />
+            <SpacerRow size={1.5} />
+            <NetworkSelector forceNetworkFeatures={[NetworkFeature.RiotP2E]} />
+            <SpacerRow size={1.5} />
+            <ConnectWalletButton
+              style={{ marginRight: headerMarginHorizontal }}
+            />
+          </View>
+        )}
       </View>
     </View>
   );

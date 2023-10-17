@@ -1,5 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import { isDeliverTxFailure } from "@cosmjs/stargate";
+import { MsgDelegateEncodeObject } from "@cosmjs/stargate";
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet, View } from "react-native";
@@ -16,11 +16,12 @@ import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useBalances } from "../../../hooks/useBalances";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useRunOrProposeTransaction } from "../../../hooks/useRunOrProposeTransaction";
 import {
-  getKeplrSigningStargateClient,
+  UserKind,
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
+  parseUserId,
 } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { neutral77 } from "../../../utils/style/colors";
@@ -37,28 +38,34 @@ interface DelegateModalProps {
   onClose?: () => void;
   visible?: boolean;
   validator?: ValidatorInfo;
+  userKind: UserKind;
+  userId: string | undefined;
 }
 
 export const DelegateModal: React.FC<DelegateModalProps> = ({
   onClose,
   visible,
   validator,
+  userKind,
+  userId,
 }) => {
-  const wallet = useSelectedWallet();
+  const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
-  const networkId = wallet?.networkId || "";
-  const balances = useBalances(networkId, wallet?.address);
+  const [network, userAddress] = parseUserId(userId);
+  const networkId = network?.id;
+  const balances = useBalances(networkId, userAddress);
   const stakingCurrency = getStakingCurrency(networkId);
-  const toriBalance = balances.find((bal) => bal.denom === "utori");
-  const toriBalanceDecimal = Decimal.fromAtomics(
-    toriBalance?.amount || "0",
+  const stakingCurrencyBalance =
+    stakingCurrency &&
+    balances.find((bal) => bal.denom === stakingCurrency.denom);
+  const stakingCurrencyBalanceDecimal = Decimal.fromAtomics(
+    stakingCurrencyBalance?.amount || "0",
     stakingCurrency?.decimals || 0
   );
   const { control, setValue, handleSubmit, reset } =
     useForm<StakeFormValuesType>();
 
-  // hooks
   useEffect(() => {
     reset();
   }, [reset, visible]);
@@ -67,7 +74,6 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     setValue("validatorName", validator?.moniker || "");
   }, [validator?.moniker, setValue]);
 
-  // functions
   const onSubmit = useCallback(
     async (formData: StakeFormValuesType) => {
       try {
@@ -79,14 +85,6 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           });
           return;
         }
-        if (!wallet?.connected || !wallet.address) {
-          console.warn("invalid wallet", wallet);
-          setToastError({
-            title: "Invalid wallet",
-            message: "",
-          });
-          return;
-        }
         if (!validator) {
           setToastError({
             title: "Internal error",
@@ -94,44 +92,53 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           });
           return;
         }
-        const client = await getKeplrSigningStargateClient(wallet.networkId);
-        const txResponse = await client.delegateTokens(
-          wallet.address,
-          validator.address,
-          {
-            amount: Decimal.fromUserInput(
-              formData.amount,
-              stakingCurrency.decimals
-            ).atomics,
-            denom: stakingCurrency.denom,
+        const amount = Decimal.fromUserInput(
+          formData.amount,
+          stakingCurrency.decimals
+        ).atomics;
+        const msg: MsgDelegateEncodeObject = {
+          typeUrl: "/cosmos.staking.v1beta1.MsgDelegate",
+          value: {
+            amount: {
+              amount,
+              denom: stakingCurrency.denom,
+            },
+            delegatorAddress: userAddress,
+            validatorAddress: validator.address,
           },
-          "auto"
-        );
-
-        if (isDeliverTxFailure(txResponse)) {
-          console.error("tx failed", txResponse);
-          onClose && onClose();
-          setToastError({
-            title: "Transaction failed",
-            message: txResponse.rawLog || "",
-          });
-          return;
-        }
-
-        setToastSuccess({ title: "Delegation success", message: "" });
+        };
+        await runOrProposeTransaction({
+          msgs: [msg],
+          navigateToProposals: true,
+        });
+        const toastTitle =
+          userKind === UserKind.Single
+            ? "Delegation success"
+            : "Proposed to delegate";
+        setToastSuccess({
+          title: toastTitle,
+          message: `${prettyPrice(
+            networkId,
+            amount,
+            stakingCurrency.denom
+          )} to ${validator.moniker}`,
+        });
         onClose && onClose();
       } catch (error) {
         triggerError({ title: "Delegation failed!", error, callback: onClose });
       }
     },
     [
-      validator,
+      networkId,
       onClose,
+      runOrProposeTransaction,
       setToastError,
       setToastSuccess,
       stakingCurrency,
       triggerError,
-      wallet,
+      userAddress,
+      userKind,
+      validator,
     ]
   );
 
@@ -164,14 +171,14 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           <PrimaryButton
             size="XS"
             loader
-            text="Stake"
-            width={120}
+            text={userKind === UserKind.Single ? "Stake" : "Propose stake"}
+            width={140}
             onPress={handleSubmit(onSubmit)}
           />
         </View>
       </>
     ),
-    [handleSubmit, onClose, onSubmit]
+    [handleSubmit, onClose, onSubmit, userKind]
   );
 
   return (
@@ -207,11 +214,14 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           placeHolder="0"
           currency={keplrCurrencyFromNativeCurrencyInfo(stakingCurrency)}
           defaultValue=""
-          rules={{ required: true, max: toriBalanceDecimal.toString() }}
+          rules={{
+            required: true,
+            max: stakingCurrencyBalanceDecimal.toString(),
+          }}
         >
           <MaxButton
             onPress={() =>
-              setValue("amount", toriBalanceDecimal.toString(), {
+              setValue("amount", stakingCurrencyBalanceDecimal.toString(), {
                 shouldValidate: true,
               })
             }
@@ -223,8 +233,8 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           Available balance:{" "}
           {prettyPrice(
             networkId,
-            toriBalanceDecimal.atomics,
-            stakingCurrency?.denom || ""
+            stakingCurrencyBalance?.amount,
+            stakingCurrency?.denom
           )}
         </BrandText>
         <SpacerColumn size={2.5} />

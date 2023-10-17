@@ -11,7 +11,12 @@ import {
   useSelectedNetworkInfo,
 } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { CurrencyInfo, getStakingCurrency, NetworkKind } from "../../networks";
+import {
+  CurrencyInfo,
+  getStakingCurrency,
+  NetworkKind,
+  UserKind,
+} from "../../networks";
 import { DepositWithdrawModal } from "../../screens/WalletManager/components/DepositWithdrawModal";
 import { useAppNavigation } from "../../utils/navigation";
 import {
@@ -258,7 +263,7 @@ export const TopMenuMyWallets: React.FC = () => {
             isVisible={isDepositVisible}
           />
           <SendModal
-            networkId={selectedNetworkInfo.id}
+            userKind={UserKind.Single}
             nativeCurrency={getStakingCurrency(selectedNetworkInfo.id)}
             onClose={() => setSendVisible(false)}
             isVisible={isSendVisible}

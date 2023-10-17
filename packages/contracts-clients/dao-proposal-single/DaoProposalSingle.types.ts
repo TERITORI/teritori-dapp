@@ -363,7 +363,7 @@ export interface SingleChoiceProposal {
   description: string;
   expiration: Expiration;
   min_voting_period?: Expiration | null;
-  msgs: CosmosMsgForEmpty[];
+  msgs: (CosmosMsgForEmpty | {type: string, payload: unknown, gno: true})[];
   proposer: Addr;
   start_height: number;
   status: Status;

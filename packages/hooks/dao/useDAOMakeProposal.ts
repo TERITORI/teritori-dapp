@@ -11,9 +11,12 @@ import {
   parseUserId,
 } from "../../networks";
 
-export const useDAOMakeProposal = (daoId: string | undefined) => {
+export const useDAOMakeProposal = (
+  daoId: string | undefined,
+  enabled?: boolean
+) => {
   const [network] = parseUserId(daoId);
-  const { daoFirstProposalModule } = useDAOFirstProposalModule(daoId);
+  const { daoFirstProposalModule } = useDAOFirstProposalModule(daoId, enabled);
   const invalidateDAOProposals = useInvalidateDAOProposals(daoId);
 
   return useCallback(
@@ -25,6 +28,10 @@ export const useDAOMakeProposal = (daoId: string | undefined) => {
         title: string;
       }
     ) => {
+      if (!enabled) {
+        throw new Error("Hook is not enabled");
+      }
+
       if (!network?.id) {
         throw new Error("Invalid DAO id");
       }
@@ -67,6 +74,11 @@ export const useDAOMakeProposal = (daoId: string | undefined) => {
 
       return res;
     },
-    [daoFirstProposalModule?.address, invalidateDAOProposals, network?.id]
+    [
+      daoFirstProposalModule?.address,
+      invalidateDAOProposals,
+      network?.id,
+      enabled,
+    ]
   );
 };

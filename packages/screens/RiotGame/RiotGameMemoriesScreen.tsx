@@ -4,9 +4,9 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   FlatList,
   Image,
-  StyleSheet,
   useWindowDimensions,
   View,
+  ViewStyle,
 } from "react-native";
 
 import { GameContentView } from "./component/GameContentView";
@@ -15,15 +15,12 @@ import { BrandText } from "../../components/BrandText";
 import { EmbeddedWeb } from "../../components/EmbeddedWeb";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn } from "../../components/spacer";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { fontMedium32 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 const seasonVideoUri =
   "https://www.youtube.com/embed/videoseries?list=PLRcO8OPsbd7zhj7PDysX2XIh095tazSWM";
-const seasonVideoHeight = 293;
-const seasonVideoWidth = 516;
-const episodeVideoSmHeight = 245;
-const episodeVideoSmWidth = 430;
 
 //TODO: Type and fetch this dynamically
 const episodes = [
@@ -40,9 +37,15 @@ const episodes = [
 
 export const RiotGameMemoriesScreen = () => {
   const { width } = useWindowDimensions();
+  const isMobile = useIsMobile();
   const episodesVideosRefs = useRef<Video[]>([]);
   const [displayYT, setDisplayYT] = useState(false);
   const isScreenFocused = useIsFocused();
+
+  const seasonVideoHeight = isMobile ? 214 : 293;
+  const seasonVideoWidth = isMobile ? 400 : 516;
+  const episodeVideoSmHeight = isMobile ? 240 : 245;
+  const episodeVideoSmWidth = isMobile ? 425 : 430;
 
   // Stop videos when changing screen through react-navigation
   useEffect(() => {
@@ -68,9 +71,14 @@ export const RiotGameMemoriesScreen = () => {
 
   return (
     <GameContentView>
-      <View style={styles.contentContainer} onLayout={() => setDisplayYT(true)}>
+      <View
+        style={{
+          padding: isMobile ? layout.spacing_x1 : layout.spacing_x4,
+        }}
+        onLayout={() => setDisplayYT(true)}
+      >
         {/* Current season */}
-        <BrandText style={[fontMedium32, styles.title]}>
+        <BrandText style={[fontMedium32, titleStyles]}>
           The R!ot Season I
         </BrandText>
         <TertiaryBox height={seasonVideoHeight} width={seasonVideoWidth}>
@@ -86,7 +94,7 @@ export const RiotGameMemoriesScreen = () => {
         <SpacerColumn size={8} />
 
         {/* Season list */}
-        <BrandText style={[fontMedium32, styles.title]}>
+        <BrandText style={[fontMedium32, titleStyles]}>
           Operation Philipp Rustov
         </BrandText>
         <FlatList
@@ -98,7 +106,10 @@ export const RiotGameMemoriesScreen = () => {
               key={index}
               height={episodeVideoSmHeight - 2}
               width={episodeVideoSmWidth}
-              style={styles.videoSmBox}
+              style={{
+                marginRight: layout.spacing_x2_5,
+                marginBottom: layout.spacing_x2_5,
+              }}
             >
               {item.videoUri ? (
                 <Video
@@ -116,7 +127,11 @@ export const RiotGameMemoriesScreen = () => {
                 />
               ) : (
                 <Image
-                  style={styles.videoSmImageFallback}
+                  style={{
+                    height: "100%",
+                    width: "100%",
+                    borderRadius: 7,
+                  }}
                   source={defaultSendToFightPNG}
                 />
               )}
@@ -128,22 +143,6 @@ export const RiotGameMemoriesScreen = () => {
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  contentContainer: {
-    padding: layout.spacing_x4,
-  },
-  videoSmBox: {
-    marginRight: layout.spacing_x2_5,
-    marginBottom: layout.spacing_x2_5,
-  },
-  videoSmImageFallback: {
-    height: "100%",
-    width: "100%",
-    borderRadius: 7,
-  },
-  title: {
-    marginBottom: layout.spacing_x2,
-  },
-});
+const titleStyles: ViewStyle = {
+  marginBottom: layout.spacing_x2,
+};

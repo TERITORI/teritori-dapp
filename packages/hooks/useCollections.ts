@@ -11,7 +11,7 @@ import {
   CollectionsRequest,
 } from "../api/marketplace/v1/marketplace";
 import { getNetwork, NetworkKind } from "../networks";
-import { mustGetMarketplaceClient } from "../utils/backend";
+import { getMarketplaceClient } from "../utils/backend";
 
 export const useCollections = (
   req: CollectionsRequest,
@@ -37,11 +37,10 @@ export const useCollections = (
     async ({ pageParam = 0 }) => {
       let collections: Collection[] = [];
 
-      if (!req.networkId) {
+      const marketplaceClient = getMarketplaceClient(req.networkId);
+      if (!marketplaceClient) {
         return { nextCursor: pageParam + req.limit, collections };
       }
-
-      const marketplaceClient = mustGetMarketplaceClient(req.networkId);
 
       const pageReq = {
         ...req,

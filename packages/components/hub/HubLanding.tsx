@@ -18,6 +18,7 @@ import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
+import { EmbeddedWeb } from "../EmbeddedWeb";
 import { Link } from "../Link";
 import { Section } from "../Section";
 import { DAppCard } from "../cards/DAppCard";
@@ -41,6 +42,14 @@ export const HubLanding: React.FC = () => {
 
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
+      <EmbeddedWeb
+        // uri="https://instamobile.io/blog"
+        uri="https://chain-monitor.cros-nest.com/d-solo/Cros-nest/block-chains?orgId=1&var-chain_id=teritori-1&var-chain_name=teritori&panelId=23"
+        // uri="https://chain-monitor.cros-nest.com/d-solo/Cros-nest/block-chains?orgId=1&var-chain_id=teritori-1&var-chain_name=teritori&from=1697000896182&to=1697087296182&panelId=23"
+        width={450}
+        height={200}
+      />
+
       <View style={{ flex: 1 }}>
         <Link to={banner?.url || ""}>
           <Image

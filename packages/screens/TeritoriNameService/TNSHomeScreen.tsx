@@ -24,7 +24,12 @@ import { useIsLeapConnected } from "../../hooks/useIsLeapConnected";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind, getCollectionId, getCosmosNetwork } from "../../networks";
+import {
+  NetworkKind,
+  getCollectionId,
+  getCosmosNetwork,
+  NetworkFeature,
+} from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 
@@ -146,6 +151,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
         <BrandText style={fontSemibold20}>Name Service</BrandText>
       }
       responsive
+      forceNetworkFeatures={[NetworkFeature.NameService]}
       forceNetworkKind={NetworkKind.Cosmos}
     >
       <View

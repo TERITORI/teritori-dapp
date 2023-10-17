@@ -3360,6 +3360,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.21.0":
+  version: 7.23.1
+  resolution: "@babel/runtime@npm:7.23.1"
+  dependencies:
+    regenerator-runtime: ^0.14.0
+  checksum: 0cd0d43e6e7dc7f9152fda8c8312b08321cda2f56ef53d6c22ebdd773abdc6f5d0a69008de90aa41908d00e2c1facb24715ff121274e689305c858355ff02c70
+  languageName: node
+  linkType: hard
+
 "@babel/runtime@npm:^7.5.5":
   version: 7.20.7
   resolution: "@babel/runtime@npm:7.20.7"
@@ -3558,6 +3567,15 @@ __metadata:
   dependencies:
     "@babel/runtime": ^7.19.4
   checksum: 88106166545321a394d1ea74eb42a1d4eed01170715f319454e11777a49657423ba7a1d6bfe7ef0cc10348a691055d835e04b73e42116f40728f9cbd32bf2a7a
+  languageName: node
+  linkType: hard
+
+"@chain-registry/types@npm:^0.17.0":
+  version: 0.17.0
+  resolution: "@chain-registry/types@npm:0.17.0"
+  dependencies:
+    "@babel/runtime": ^7.21.0
+  checksum: 4a36ecb2b50da88af79bdb825fcfef9f6acebb4dd02cc4d09caacd10741006f9aebbf0672284caa5519261221b2736ab52e4ed16a126a68f4f64cbb931872661
   languageName: node
   linkType: hard
 
@@ -11760,6 +11778,16 @@ __metadata:
     "@babel/runtime": ^7.19.4
     "@chain-registry/types": ^0.14.0
   checksum: 33638a23b9266ba350cab52f794f3dbc33b9eb8090051ae3a878f7f21f263fccb5b48f89397bbc7d35281d5eadeac90a90312210f42057f4e9989f15bbf42802
+  languageName: node
+  linkType: hard
+
+"chain-registry@npm:^1.20.0":
+  version: 1.20.0
+  resolution: "chain-registry@npm:1.20.0"
+  dependencies:
+    "@babel/runtime": ^7.21.0
+    "@chain-registry/types": ^0.17.0
+  checksum: 0b28cea3503a9a0f3028bdeb9dd5922fc6be10d112aa0b45218d0167e1d1c68d736d14d26110b33321ba99aa5abe4a3cc6473758307a149aceeea51f768ba5d3
   languageName: node
   linkType: hard
 
@@ -25258,6 +25286,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"regenerator-runtime@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "regenerator-runtime@npm:0.14.0"
+  checksum: 1c977ad82a82a4412e4f639d65d22be376d3ebdd30da2c003eeafdaaacd03fc00c2320f18120007ee700900979284fc78a9f00da7fb593f6e6eeebc673fba9a3
+  languageName: node
+  linkType: hard
+
 "regenerator-transform@npm:^0.15.0":
   version: 0.15.0
   resolution: "regenerator-transform@npm:0.15.0"
@@ -27707,6 +27742,7 @@ __metadata:
     babel-plugin-react-inline-svg-unique-id: ^1.3.1
     bech32: ^2.0.0
     browser-headers: ^0.4.1
+    chain-registry: ^1.20.0
     commander: ^10.0.1
     cors-anywhere: ^0.4.4
     dotenv-webpack: ^8.0.0
