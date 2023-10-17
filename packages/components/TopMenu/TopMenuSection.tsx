@@ -7,7 +7,7 @@ import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import FlexCol from "../FlexCol";
 import FlexRow from "../FlexRow";
-import { Separator } from "../Separator";
+import { Separator } from "../separators/Separator";
 
 export const TopMenuSection: React.FC<{
   title: string;
