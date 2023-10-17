@@ -14,8 +14,8 @@ import { DateTime } from "../socialFeed/SocialThread/DateTime";
 
 const unitWidth = 300;
 export const MoreVideoPlayerCard: React.FC<{
-  item: VideoInfoWithMeta;
-}> = ({ item }) => {
+  video: VideoInfoWithMeta;
+}> = ({ video }) => {
   const navigation = useAppNavigation();
 
   return (
@@ -23,7 +23,7 @@ export const MoreVideoPlayerCard: React.FC<{
       <View style={imgBoxStyle}>
         <Pressable
           onPress={() => {
-            navigation.navigate("VideoShow", { id: item.identifier });
+            navigation.navigate("VideoDetail", { id: video.id });
           }}
         >
           <Image
@@ -33,17 +33,17 @@ export const MoreVideoPlayerCard: React.FC<{
           />
           <View style={videoDurationStyle}>
             <BrandText style={contentDurationStyle}>
-              {getMediaDuration(item.videoMetaInfo.duration)}
+              {getMediaDuration(video.videoMetaInfo.duration)}
             </BrandText>
           </View>
         </Pressable>
       </View>
       <BrandText style={contentTitleStyle}>
-        {item.videoMetaInfo.title}
+        {video.videoMetaInfo.title}
       </BrandText>
       <View style={titleRowStyle}>
         <BrandText style={contentDescriptionStyle}>
-          {item.viewCount} views
+          {video.viewCount} views
         </BrandText>
         {/* A dot separator */}
         <View
@@ -57,7 +57,7 @@ export const MoreVideoPlayerCard: React.FC<{
         />
         {/*---- Date */}
         <DateTime
-          date={item.createdAt.toString()}
+          date={video.createdAt.toString()}
           textStyle={{ color: neutral77 }}
         />
       </View>

@@ -65,8 +65,8 @@ export type RootStackParamList = {
 
   DAppStore: undefined;
   ToriPunks: { route: string };
-  VideoPlayer: undefined;
-  VideoShow: { id: string };
+  Video: undefined;
+  VideoDetail: { id: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -152,8 +152,8 @@ const navConfig: {
     // === DApps
     ToriPunks: "dapp/tori-punks/:route?",
     // === VideoPlayer
-    VideoPlayer: "video-player/home",
-    VideoShow: "video-player/show/:id",
+    Video: "video",
+    VideoDetail: "video/:id",
   },
 };
 
