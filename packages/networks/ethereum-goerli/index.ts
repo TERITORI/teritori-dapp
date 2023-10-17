@@ -5,13 +5,8 @@ export const ethereumGoerliNetwork: NetworkInfo = {
   id: "ethereum-goerli",
   kind: NetworkKind.Ethereum,
   displayName: "Ethereum Goerli",
-<<<<<<< HEAD
-  icon: "icons/networks/ethereum.svg",
-  features: [NetworkFeature.NFTMarketplace, NetworkFeature.NFTLaunchpad],
-=======
-  features: [NetworkFeature.NFTMarketplace],
   icon: "ethereum.svg",
->>>>>>> 9a0880e1 (mobile & desktop build)
+  features: [NetworkFeature.NFTMarketplace, NetworkFeature.NFTLaunchpad],
   currencies: ethereumGoerliCurrencies,
   idPrefix: "testeth",
   endpoint: "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",

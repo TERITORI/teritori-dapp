@@ -3,6 +3,7 @@ import cosmosHubCircle from "./cosmos-hub-circle.svg";
 import cosmosHub from "./cosmos-hub.svg";
 import ethereumCircle from "./ethereum-circle.svg";
 import ethereum from "./ethereum.svg";
+import gno from "./gno.svg";
 import junoCircle from "./juno-circle.svg";
 import juno from "./juno.svg";
 import osmosisCircle from "./osmosis-circle.svg";
@@ -26,4 +27,5 @@ export {
   osmosisCircle,
   solana,
   solanaCircle,
+  gno,
 };

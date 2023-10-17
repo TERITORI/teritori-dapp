@@ -33,7 +33,7 @@ import {
 import { useSelectedNetworkId } from "./packages/hooks/useSelectedNetwork";
 import useSelectedWallet from "./packages/hooks/useSelectedWallet";
 import { setSelectedWalletId } from "./packages/store/slices/settings";
-import { store, useAppDispatch } from "./packages/store/store";
+import { store, useAppDispatch, persistor } from "./packages/store/store";
 import { handleAstilectronMessages } from "./packages/utils/astilectron";
 import { linking } from "./packages/utils/navigation";
 
@@ -61,55 +61,53 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-        <ReduxProvider store={store}>
-          <PersistGate
-            loading={
-              <View
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  backgroundColor: "black",
-                }}
-              />
-            }
-            persistor={persistor}
-          >
-            <QueryClientProvider client={queryClient}>
-              <FormProvider<DefaultForm> {...methods}>
-                <MetaMaskProvider>
-                  <NavigationContainer linking={linking}>
-                    <SafeAreaProvider>
-                      <FeedbacksContextProvider>
-                        <DropdownsContextProvider>
-                          <WalletsProvider>
-                            <WalletSyncer />
-                            <MultisigDeauth />
-                            <SearchBarContextProvider>
-                              <TransactionModalsProvider>
-                                <TNSContextProvider>
-                                  <TNSMetaDataListContextProvider>
-                                    <MenuProvider>
-                                      <MessageContextProvider>
-                                        <StatusBar style="inverted" />
-                                        <Navigator />
-                                      </MessageContextProvider>
-                                    </MenuProvider>
-                                  </TNSMetaDataListContextProvider>
-                                </TNSContextProvider>
-                              </TransactionModalsProvider>
-                            </SearchBarContextProvider>
-                          </WalletsProvider>
-                        </DropdownsContextProvider>
-                      </FeedbacksContextProvider>
-                    </SafeAreaProvider>
-                  </NavigationContainer>
-                </MetaMaskProvider>
-              </FormProvider>
-            </QueryClientProvider>
-          </PersistGate>
-        </ReduxProvider>
-      </View>
+      <ReduxProvider store={store}>
+        <PersistGate
+          loading={
+            <View
+              style={{
+                width: "100%",
+                height: "100%",
+                backgroundColor: "black",
+              }}
+            />
+          }
+          persistor={persistor}
+        >
+          <QueryClientProvider client={queryClient}>
+            <FormProvider<DefaultForm> {...methods}>
+              <MetaMaskProvider>
+                <NavigationContainer linking={linking}>
+                  <SafeAreaProvider>
+                    <FeedbacksContextProvider>
+                      <DropdownsContextProvider>
+                        <WalletsProvider>
+                          <WalletSyncer />
+                          <MultisigDeauth />
+                          <SearchBarContextProvider>
+                            <TransactionModalsProvider>
+                              <TNSContextProvider>
+                                <TNSMetaDataListContextProvider>
+                                  <MenuProvider>
+                                    <MessageContextProvider>
+                                      <StatusBar style="inverted" />
+                                      <Navigator />
+                                    </MessageContextProvider>
+                                  </MenuProvider>
+                                </TNSMetaDataListContextProvider>
+                              </TNSContextProvider>
+                            </TransactionModalsProvider>
+                          </SearchBarContextProvider>
+                        </WalletsProvider>
+                      </DropdownsContextProvider>
+                    </FeedbacksContextProvider>
+                  </SafeAreaProvider>
+                </NavigationContainer>
+              </MetaMaskProvider>
+            </FormProvider>
+          </QueryClientProvider>
+        </PersistGate>
+      </ReduxProvider>
     </ErrorBoundary>
   );
 }

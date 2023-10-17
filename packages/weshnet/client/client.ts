@@ -76,7 +76,7 @@ class WeshClient {
 
 const weshClient = new WeshClient();
 
-if (Platform.OS === "web" && !isElectron()) {
+if (Platform.OS === "web") {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const port = urlParams.get("weshPort");

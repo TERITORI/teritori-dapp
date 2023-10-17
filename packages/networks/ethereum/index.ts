@@ -5,13 +5,8 @@ export const ethereumNetwork: NetworkInfo = {
   id: "ethereum",
   kind: NetworkKind.Ethereum,
   displayName: "Ethereum",
-<<<<<<< HEAD
-  icon: "icons/networks/ethereum.svg",
-  features: [NetworkFeature.NFTMarketplace, NetworkFeature.NFTLaunchpad],
-=======
-  features: [NetworkFeature.NFTMarketplace],
   icon: "ethereum.svg",
->>>>>>> 9a0880e1 (mobile & desktop build)
+  features: [NetworkFeature.NFTMarketplace, NetworkFeature.NFTLaunchpad],
   currencies: ethereumCurrencies,
   idPrefix: "eth",
   endpoint: "https://ethereum.publicnode.com",

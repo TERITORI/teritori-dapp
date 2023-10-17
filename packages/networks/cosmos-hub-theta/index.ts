@@ -5,16 +5,10 @@ export const cosmosThetaNetwork: NetworkInfo = {
   id: "cosmos-hub-theta",
   kind: NetworkKind.Cosmos,
   chainId: "theta-testnet-001",
-<<<<<<< HEAD
   displayName: "Cosmos Hub Theta Testnet",
-  icon: "icons/networks/cosmos-hub.svg",
+  icon: "cosmos-hub.svg",
   features: [],
   overrides: "cosmos-registry:cosmoshubtestnet",
-=======
-  displayName: "Cosmos Hub Theta",
-  features: [],
-  icon: "cosmos-hub.svg",
->>>>>>> 9a0880e1 (mobile & desktop build)
   currencies: cosmosHubThetaCurrencies,
   txExplorer: "https://explorer.theta-testnet.polypore.xyz/transactions/$hash",
   accountExplorer:
