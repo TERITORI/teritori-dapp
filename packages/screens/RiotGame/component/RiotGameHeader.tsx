@@ -19,9 +19,9 @@ import { Separator } from "../../../components/Separator";
 import { ConnectWalletButton } from "../../../components/TopMenu/ConnectWalletButton";
 import { TopLogo } from "../../../components/navigation/components/TopLogo";
 import { SpacerRow } from "../../../components/spacer";
-import { useForceNetworkKind } from "../../../hooks/useForceNetworkKind";
+import { useForceNetworkFeatures } from "../../../hooks/useForceNetworkFeatures";
 import { useIsMobile } from "../../../hooks/useIsMobile";
-import { NetworkFeature, NetworkKind } from "../../../networks";
+import { NetworkFeature } from "../../../networks";
 import {
   RootStackParamList,
   useAppNavigation,
@@ -99,7 +99,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
 }) => {
   const navigation = useAppNavigation();
   const { name: routeName } = useRoute();
-  useForceNetworkKind([NetworkKind.Cosmos, NetworkKind.Ethereum]);
+  useForceNetworkFeatures([NetworkFeature.RiotP2E]);
   const isMobile = useIsMobile();
   const onMenuItemClick = (item: MenuItem) => {
     if (item.externalRoute) {
@@ -162,7 +162,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
             <SpacerRow size={1.5} />
             <Separator horizontal color={neutral33} />
             <SpacerRow size={1.5} />
-            <NetworkSelector forceNetworkFeatures={[NetworkFeature.P2E]} />
+            <NetworkSelector forceNetworkFeatures={[NetworkFeature.RiotP2E]} />
             <SpacerRow size={1.5} />
             <ConnectWalletButton
               style={{ marginRight: headerMarginHorizontal }}

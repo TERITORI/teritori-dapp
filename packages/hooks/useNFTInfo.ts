@@ -16,7 +16,6 @@ import {
   getCollectionId,
   mustGetNonSigningCosmWasmClient,
   parseNftId,
-  WEI_TOKEN_ADDRESS,
   NetworkKind,
   getUserId,
 } from "../networks";
@@ -241,7 +240,7 @@ const getEthereumStandardNFTInfo = async (
     priceDenom: vaultInfo?.denom || "",
     collectionName,
     collectionImageURL: collectionMetadata.image,
-    mintDenom: WEI_TOKEN_ADDRESS,
+    mintDenom: network.currencies[0].denom,
     royalty: royalties,
     breedingsAvailable: 0,
     networkId: network.id,

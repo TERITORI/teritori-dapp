@@ -39,7 +39,7 @@ type GnoDAOProposal = {
   threshold: any; // TODO: type
   totalPower: number;
   startHeight: number;
-  messages: unknown[]; // TODO: type
+  messages: { type: string; payload: unknown }[]; // TODO: type
   // Ballots     *avl.Tree // dev
   votes: GnoProposalVotes;
   // Status ProposalStatus
@@ -90,7 +90,10 @@ export const useDAOProposals = (daoId: string | undefined) => {
             },
             allow_revoting: false,
             expiration: "TODO" as any,
-            msgs: [],
+            msgs: prop.messages.map((m) => ({
+              ...m,
+              gno: true,
+            })),
             actions,
             proposer,
             start_height: prop.startHeight,

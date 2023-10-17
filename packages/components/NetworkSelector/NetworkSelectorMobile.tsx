@@ -48,7 +48,7 @@ export const NetworkSelectorMobile: React.FC<{
 
       {isDropdownOpen(dropdownRef) && (
         <NetworkSelectorMenu
-          style={{ position: "absolute", top: 48, right: -108 }}
+          style={{ position: "absolute", top: 48, right: -93 }}
           forceNetworkId={forceNetworkId}
           forceNetworkKind={forceNetworkKind}
           forceNetworkFeatures={forceNetworkFeatures}

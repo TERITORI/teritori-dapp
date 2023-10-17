@@ -6,15 +6,14 @@ import FlexRow from "./FlexRow";
 import { OmniLink } from "./OmniLink";
 import { RoundedGradientImage } from "./images/RoundedGradientImage";
 import { useNSUserInfo } from "../hooks/useNSUserInfo";
-import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
-import useSelectedWallet from "../hooks/useSelectedWallet";
-import { getCosmosNetwork } from "../networks";
+import { getCosmosNetwork, parseUserId } from "../networks";
 import { fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 import { tinyAddress } from "../utils/text";
 
 type PlayerNameProps = {
-  userId: string;
+  userId: string | undefined;
+  multisignWalletAddres?: string | null;
   style?: StyleProp<TextStyle>;
 };
 
@@ -22,14 +21,12 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
   userId,
   style,
 }) => {
-  const selectedWallet = useSelectedWallet();
-  const userInfo = useNSUserInfo(selectedWallet?.userId);
-  const selectedNetworkId = useSelectedNetworkId();
-  const network = getCosmosNetwork(selectedNetworkId);
+  const [userNetwork, userAddress] = parseUserId(userId);
+  const userInfo = useNSUserInfo(userId);
+  const networkId = userNetwork?.id;
+  const network = getCosmosNetwork(networkId);
   const name =
-    userInfo?.metadata?.tokenId ||
-    tinyAddress(selectedWallet?.address, 30) ||
-    "";
+    userInfo?.metadata?.tokenId || tinyAddress(userAddress, 30) || "";
 
   return (
     <FlexRow alignItems="center" style={style}>

@@ -15,7 +15,6 @@ import {
   mustGetNonSigningCosmWasmClient,
   NetworkKind,
   parseUserId,
-  WEI_TOKEN_ADDRESS,
 } from "../../networks";
 import { mustGetP2eClient } from "../../utils/backend";
 import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
@@ -43,7 +42,7 @@ const ethereumGetClaimableAmount = async (
   const p2eClient = mustGetP2eClient(network?.id);
   const data = await p2eClient.MerkleData({
     userId: userAddress,
-    token: WEI_TOKEN_ADDRESS,
+    token: network.currencies[0].denom,
     networkId: network?.id,
   });
   return data.claimableAmount;
@@ -72,7 +71,7 @@ const ethereumClaim = async (
   const p2eClient = mustGetP2eClient(network.id);
   const resp = await p2eClient.MerkleData({
     userId: userAddress,
-    token: WEI_TOKEN_ADDRESS,
+    token: network.currencies[0].denom,
     networkId: network.id,
   });
   const allocation = resp.userReward?.amount || "0";
@@ -91,13 +90,12 @@ const ethereumClaim = async (
 
   const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
   const estimatedGasLimit = await distributorClient.estimateGas.claim(
-    WEI_TOKEN_ADDRESS,
+    network.currencies[0].denom,
     claimableAmount,
     resp.proof
   );
-
   const tx = await distributorClient.claim(
-    WEI_TOKEN_ADDRESS,
+    network.currencies[0].denom,
     claimableAmount,
     resp.proof,
     {
@@ -139,7 +137,6 @@ export const useGameRewards = () => {
           network,
           userAddress
         );
-
         return claimable;
       } else {
         throw Error("failed to get claimable amount: unknown network");

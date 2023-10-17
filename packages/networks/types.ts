@@ -1,3 +1,5 @@
+import { IBCCurrencyInfo } from "./ibc";
+
 export enum NetworkKind {
   Unknown = "Unknown",
   Ethereum = "Ethereum",
@@ -26,6 +28,7 @@ interface NetworkInfoBase {
   distributorContractAddress?: string;
   riotContractAddressGen0?: string;
   riotContractAddressGen1?: string;
+  overrides?: string;
 }
 
 export type CosmosNetworkInfo = NetworkInfoBase & {
@@ -70,25 +73,17 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
   alchemyApiKey: string;
   theGraphEndpoint: string;
   vaultContractAddress: string;
+  riotContractAddressGen0: string;
   riotSquadStakingContractAddress: string;
-  firehoseEndpoint: string;
-  indexStartBlock: string;
-  indexStopBlock: string;
-  indexBlockProgress: number;
-  indexLiveBlockProgress: number;
-  substreamsManifest: string;
+  firehoseEndpoint?: string;
+  indexStartBlock?: string;
+  indexStopBlock?: string;
+  indexBlockProgress?: number;
+  indexLiveBlockProgress?: number;
+  substreamsManifest?: string;
   riotBridgeAddressGen0?: string;
-  riotBridgeAddressGen1?: string;
   riotNFTAddressGen0?: string;
-  riotNFTAddressGen1?: string;
   riotBridgedNFTAddressGen0?: string;
-  riotBridgedNFTAddressGen1?: string;
-};
-
-type SolanaNetworkInfo = NetworkInfoBase & {
-  kind: NetworkKind.Solana;
-  holaplexGraphqlEndpoint: string;
-  vaultContractAddress: string;
 };
 
 export type GnoNetworkInfo = NetworkInfoBase & {
@@ -115,7 +110,6 @@ export type GnoNetworkInfo = NetworkInfoBase & {
 export type NetworkInfo =
   | CosmosNetworkInfo
   | EthereumNetworkInfo
-  | SolanaNetworkInfo
   | GnoNetworkInfo;
 
 export type NativeCurrencyInfo = {
@@ -128,18 +122,6 @@ export type NativeCurrencyInfo = {
   color: string;
 };
 
-type IBCCurrencyInfo = {
-  kind: "ibc";
-  denom: string;
-  sourceNetwork: string;
-  sourceDenom: string;
-  sourceChannelPort: string;
-  sourceChannelId: string;
-  destinationChannelPort: string;
-  destinationChannelId: string;
-  deprecated?: boolean;
-};
-
 export type CurrencyInfo = NativeCurrencyInfo | IBCCurrencyInfo;
 
 export enum NetworkFeature {
@@ -147,8 +129,16 @@ export enum NetworkFeature {
   NFTLaunchpad = "NFTLaunchpad",
   NameService = "NameService",
   Swap = "Swap",
+  BurnTokens = "BurnTokens",
   Organizations = "Organizations",
   P2E = "P2E",
   SocialFeed = "SocialFeed",
   UPP = "UPP",
+  RiotP2E = "RiotP2E",
+}
+
+export enum UserKind {
+  Single = "Single",
+  Multisig = "Multisig",
+  Organization = "Organization",
 }

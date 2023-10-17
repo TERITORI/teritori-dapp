@@ -75,7 +75,7 @@ func (s *LeaderboardService) startScheduler() {
 	})
 
 	schedule.Every(1).Day().At("00:00").Do(func() {
-  // schedule.Every(15).Minutes().Do(func() {
+		// schedule.Every(15).Minutes().Do(func() {
 		s.execReportRewards(network, rpcEndpoint)
 	})
 
@@ -187,7 +187,7 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 	leaderboard []indexerdb.P2eLeaderboard,
 	rpcEndpoint string,
 ) (string, error) {
-	const TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000"
+	TOKEN_ADDRESS := network.Currencies[0].GetDenom()
 
 	dailyRewards, err := p2e.GetDailyRewardsConfigBySeason(seasonId, network)
 	if err != nil {
@@ -371,7 +371,12 @@ func (s *LeaderboardService) ethUpdateMerkleRoot(merkleRoot []byte) (string, err
 		return "", errors.Wrap(err, "failed to get suggest price")
 	}
 
-	auth := bind.NewKeyedTransactor(privateKey)
+	chainID := big.NewInt(int64(network.ChainID))
+	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to get chain")
+	}
+
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)      // in wei
 	auth.GasLimit = uint64(500_000) // in units

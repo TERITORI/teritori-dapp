@@ -13,7 +13,7 @@ import { useTransactionModals } from "../../context/TransactionModalsProvider";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { parseNetworkObjectId } from "../../networks";
-import { mustGetMarketplaceClient } from "../../utils/backend";
+import { getMarketplaceClient } from "../../utils/backend";
 import { RootStackParamList } from "../../utils/navigation";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import {
@@ -85,10 +85,14 @@ export const NFTMainInfo: React.FC<{
   const [network] = parseNetworkObjectId(nftInfo?.collectionId);
   const [attributes, setAttributes] = useState<AttributeRarityFloor[]>([]);
 
+  // FIXME: transform this in a react-query hook
   useEffect(() => {
     try {
       setAttributes([]);
-      const backendClient = mustGetMarketplaceClient(network?.id);
+      const backendClient = getMarketplaceClient(network?.id);
+      if (!backendClient) {
+        return;
+      }
       const allAtributes: AttributeRarityFloor[] = [];
       const stream = backendClient.NFTCollectionAttributes({
         collectionId: nftInfo?.collectionId,

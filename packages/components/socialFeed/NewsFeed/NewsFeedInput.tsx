@@ -148,7 +148,6 @@ export const NewsFeedInput = React.forwardRef<
     const inputMaxHeight = 400;
     const inputMinHeight = 20;
     const inputHeight = useSharedValue(20);
-    const wallet = useSelectedWallet();
     const selectedNetwork = useSelectedNetworkInfo();
     const selectedNetworkId = selectedNetwork?.id || "teritori";
     const selectedWallet = useSelectedWallet();
@@ -177,8 +176,7 @@ export const NewsFeedInput = React.forwardRef<
       onSubmitSuccess?.();
       onCloseCreateModal?.();
     };
-
-    const balances = useBalances(selectedNetworkId, wallet?.address);
+    const balances = useBalances(selectedNetwork?.id, selectedWallet?.address);
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
@@ -200,7 +198,7 @@ export const NewsFeedInput = React.forwardRef<
     const { freePostCount } = useUpdateAvailableFreePost(
       selectedNetworkId,
       getPostCategory(formValues),
-      wallet
+      selectedWallet
     );
 
     const processSubmit = async () => {
@@ -288,10 +286,10 @@ export const NewsFeedInput = React.forwardRef<
           if (!network.socialFeedContractAddress) {
             throw new Error("Social feed contract address not found");
           }
-          if (!wallet?.address) {
+          if (!selectedWallet?.address) {
             throw new Error("Invalid sender");
           }
-          await makeProposal(wallet?.address, {
+          await makeProposal(selectedWallet?.address, {
             title: "Post on feed",
             description: "",
             msgs: [
@@ -344,7 +342,7 @@ export const NewsFeedInput = React.forwardRef<
           } else {
             const client = await signingSocialFeedClient({
               networkId: selectedNetworkId,
-              walletAddress: wallet?.address || "",
+              walletAddress: selectedWallet?.address || "",
             });
             await mutateAsync({
               client,
@@ -746,7 +744,7 @@ export const NewsFeedInput = React.forwardRef<
                     !formValues?.gifs?.length) ||
                   formValues?.message.length >
                     SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
-                  !wallet
+                  !selectedWallet
                 }
                 isLoading={isLoading || isMutateLoading}
                 loader

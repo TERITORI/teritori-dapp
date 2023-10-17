@@ -6,7 +6,7 @@ export const useNSNameAvailability = (
 ) => {
   const { notFound, isLoading, error } = useNSNameInfo(networkId, tokenId);
   return {
-    nameAvailable: notFound === true,
+    nameAvailable: notFound,
     nameError: !!error,
     loading: isLoading,
   };

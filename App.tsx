@@ -17,6 +17,7 @@ import { Provider as ReduxProvider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
 import { BrandText } from "./packages/components/BrandText";
+import { MultisigDeauth } from "./packages/components/multisig/MultisigDeauth";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
@@ -78,6 +79,7 @@ export default function App() {
                       <DropdownsContextProvider>
                         <WalletsProvider>
                           <WalletSyncer />
+                          <MultisigDeauth />
                           <SearchBarContextProvider>
                             <TransactionModalsProvider>
                               <TNSContextProvider>

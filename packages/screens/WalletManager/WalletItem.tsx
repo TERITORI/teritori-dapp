@@ -16,7 +16,7 @@ import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { rewardsPrice, TotalRewards, useRewards } from "../../hooks/useRewards";
-import { accountExplorerLink, getUserId } from "../../networks";
+import { UserKind, accountExplorerLink, getUserId } from "../../networks";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 
 export interface WalletItemProps {
@@ -40,7 +40,8 @@ export const WalletItem: React.FC<WalletItemProps> = ({
   const { width } = useWindowDimensions();
   const { setToastSuccess } = useFeedbacks();
   const { claimAllRewards } = useRewards(
-    getUserId(item.networkId, item.address)
+    getUserId(item.networkId, item.address),
+    UserKind.Single
   );
 
   // Total rewards price with all denoms

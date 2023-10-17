@@ -34,6 +34,10 @@ func main() {
 		panic(errors.Wrap(err, "failed to parse flags"))
 	}
 
+	if len(os.Args) != 3 {
+		panic(errors.New("command invalid. Expected: main.go <network> <mnemonic>"))
+	}
+
 	networkId := os.Args[1]
 	if networkId == "" {
 		panic(errors.New("network id must be provided. Ex: teritori-testnet,ethereum-goerli,polygon-mumbai"))

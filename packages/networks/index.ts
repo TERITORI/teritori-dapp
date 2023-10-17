@@ -2,24 +2,39 @@ import {
   CosmWasmClient,
   SigningCosmWasmClient,
 } from "@cosmjs/cosmwasm-stargate";
+import {
+  createWasmAminoConverters,
+  wasmTypes,
+} from "@cosmjs/cosmwasm-stargate/build/modules";
 import { Decimal } from "@cosmjs/math";
 import { Registry } from "@cosmjs/proto-signing";
 import {
   SigningStargateClient,
   GasPrice,
   defaultRegistryTypes,
+  AminoTypes,
+  AminoConverters,
+  createAuthzAminoConverters,
+  createBankAminoConverters,
+  createDistributionAminoConverters,
+  createFeegrantAminoConverters,
+  createGovAminoConverters,
+  createIbcAminoConverters,
+  createStakingAminoConverters,
+  createVestingAminoConverters,
+  StargateClient,
 } from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 import { bech32 } from "bech32";
 
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
+import { networksFromCosmosRegistry } from "./cosmos-registry";
 import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
 import { gnoDevNetwork } from "./gno-dev";
 import { gnoTeritoriNetwork } from "./gno-teritori";
 import { gnoTest3Network } from "./gno-test3";
-import { junoNetwork } from "./juno";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
 // import { solanaNetwork } from "./solana";
@@ -35,21 +50,21 @@ import {
   NetworkInfo,
   NetworkKind,
 } from "./types";
-import { MsgBurnTokens } from "../api/teritori/mint";
+import {
+  teritoriAminoConverters,
+  teritoriProtoRegistry,
+} from "../api/teritori-chain";
 import { getKeplr } from "../utils/keplr";
 
 export * from "./types";
 
-export const WEI_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000";
-
-export const allNetworks = [
+const packageNetworks = [
   teritoriNetwork,
   cosmosNetwork,
   teritoriTestnetNetwork,
   cosmosThetaNetwork,
   ethereumGoerliNetwork,
   ethereumNetwork,
-  junoNetwork,
   osmosisNetwork,
   osmosisTestnetNetwork,
   gnoTest3Network,
@@ -57,11 +72,57 @@ export const allNetworks = [
   gnoTeritoriNetwork,
   polygonMumbaiNetwork,
   polygonNetwork,
-  // solanaNetwork,
 ];
 
-const pbTypesRegistry = new Registry(defaultRegistryTypes);
-pbTypesRegistry.register("/teritori.mint.v1beta1.MsgBurnTokens", MsgBurnTokens);
+export const defaultEnabledNetworks = [
+  "teritori",
+  "teritori-testnet",
+  "ethereum",
+  "ethereum-goerli",
+  "polygon",
+  "polygon-mumbai",
+  "cosmos-hub",
+  "osmosis",
+  "gno-teritori",
+  "cosmos-registry:juno",
+  "cosmos-registry:kujira",
+  "cosmos-registry:axelar",
+  "cosmos-registry:evmos",
+  "cosmos-registry:chihuahua",
+];
+
+export const allNetworks = [
+  ...packageNetworks,
+  ...networksFromCosmosRegistry().filter(
+    (rn) => !packageNetworks.some((pn) => pn.overrides === rn.id)
+  ),
+].sort((a, b) => a.displayName.localeCompare(b.displayName));
+
+export const cosmosTypesRegistry = new Registry([
+  ...defaultRegistryTypes,
+  ...wasmTypes,
+  ...teritoriProtoRegistry,
+]);
+
+// FIXME: upgrade stargate since it exposes this function in new versions
+function createDefaultAminoConverters(): AminoConverters {
+  return {
+    ...createAuthzAminoConverters(),
+    ...createBankAminoConverters(),
+    ...createDistributionAminoConverters(),
+    ...createGovAminoConverters(),
+    ...createStakingAminoConverters(""),
+    ...createIbcAminoConverters(),
+    ...createFeegrantAminoConverters(),
+    ...createVestingAminoConverters(),
+  };
+}
+
+const cosmosAminoTypes = new AminoTypes({
+  ...createDefaultAminoConverters(),
+  ...createWasmAminoConverters(),
+  ...teritoriAminoConverters,
+});
 
 export const getCurrency = (
   networkId: string | undefined,
@@ -243,6 +304,15 @@ export const getCosmosNetwork = (
   return network;
 };
 
+export const getCosmosNetworkByChainId = (chainId: string | undefined) => {
+  return allNetworks.find((n): n is CosmosNetworkInfo => {
+    if (n.kind === NetworkKind.Cosmos && n.chainId === chainId) {
+      return true;
+    }
+    return false;
+  });
+};
+
 export const mustGetCosmosNetwork = (
   networkId: string | undefined
 ): CosmosNetworkInfo => {
@@ -389,6 +459,18 @@ export const getKeplrSigner = async (networkId: string) => {
   return keplr.getOfflineSignerAuto(network.chainId);
 };
 
+const getKeplrOnlyAminoSigner = async (networkId: string) => {
+  const network = mustGetCosmosNetwork(networkId);
+
+  const keplr = getKeplr();
+
+  await keplr.experimentalSuggestChain(keplrChainInfoFromNetworkInfo(network));
+
+  await keplr.enable(network.chainId);
+
+  return keplr.getOfflineSignerOnlyAmino(network.chainId);
+};
+
 export const getKeplrSigningStargateClient = async (
   networkId: string,
   gasPriceKind: "low" | "average" | "high" = "average"
@@ -407,7 +489,32 @@ export const getKeplrSigningStargateClient = async (
     signer,
     {
       gasPrice,
-      registry: pbTypesRegistry,
+      registry: cosmosTypesRegistry,
+      aminoTypes: cosmosAminoTypes,
+    }
+  );
+};
+
+export const getKeplrOnlyAminoStargateClient = async (
+  networkId: string,
+  gasPriceKind: "low" | "average" | "high" = "average"
+) => {
+  const network = mustGetCosmosNetwork(networkId);
+
+  const gasPrice = cosmosNetworkGasPrice(network, gasPriceKind);
+  if (!gasPrice) {
+    throw new Error("gas price not found");
+  }
+
+  const signer = await getKeplrOnlyAminoSigner(networkId);
+
+  return await SigningStargateClient.connectWithSigner(
+    network.rpcEndpoint,
+    signer,
+    {
+      gasPrice,
+      registry: cosmosTypesRegistry,
+      aminoTypes: cosmosAminoTypes,
     }
   );
 };
@@ -433,6 +540,11 @@ export const getKeplrSigningCosmWasmClient = async (
 export const mustGetNonSigningCosmWasmClient = async (networkId: string) => {
   const network = mustGetCosmosNetwork(networkId);
   return await CosmWasmClient.connect(network.rpcEndpoint);
+};
+
+export const getNonSigningStargateClient = async (networkId: string) => {
+  const network = mustGetCosmosNetwork(networkId);
+  return await StargateClient.connect(network.rpcEndpoint);
 };
 
 export const txExplorerLink = (
@@ -467,16 +579,3 @@ export const contractExplorerLink = (
   }
   return network.contractExplorer.replace("$address", address);
 };
-
-export const selectableNetworks = (process.env.SELECTABLE_NETWORKS_IDS || "")
-  .split(",")
-  .map((s) => getNetwork(s.trim()))
-  .filter((n): n is NetworkInfo => !!n);
-
-export const selectableCosmosNetworks = selectableNetworks.filter(
-  (n): n is CosmosNetworkInfo => n.kind === NetworkKind.Cosmos
-);
-
-export const selectableEthereumNetworks = selectableNetworks.filter(
-  (n): n is EthereumNetworkInfo => n.kind === NetworkKind.Ethereum
-);

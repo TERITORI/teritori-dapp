@@ -36,16 +36,6 @@ export const getMarketplaceClient = (networkId: string | undefined) => {
   return marketplaceClients[network.id];
 };
 
-export const mustGetMarketplaceClient = (networkId: string | undefined) => {
-  const client = getMarketplaceClient(networkId);
-  if (!client) {
-    throw new Error(
-      `failed to get marketplace client for network '${networkId}'`
-    );
-  }
-  return client;
-};
-
 const p2eClients: { [key: string]: P2eService } = {};
 
 export const getP2eClient = (networkId: string | undefined) => {

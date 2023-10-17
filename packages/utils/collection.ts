@@ -7,7 +7,7 @@ import { ConfigResponse } from "../contracts-clients/teritori-bunker-minter/Teri
 import {
   CosmosNetworkInfo,
   NetworkKind,
-  WEI_TOKEN_ADDRESS,
+  getEthereumNetwork,
   parseNetworkObjectId,
 } from "../networks";
 
@@ -182,8 +182,7 @@ export const expandEthereumBunkerConfig = (
   currentSupply: BigNumber
 ) => {
   const secondsSinceEpoch = Long.fromNumber(Date.now() / 1000);
-
-  const priceDenom = WEI_TOKEN_ADDRESS;
+  const priceDenom = getEthereumNetwork(networkId)?.currencies[0].denom;
 
   const mintStartedAt = Long.fromString(
     minterConfig.mintStartTime.toString() || "0"

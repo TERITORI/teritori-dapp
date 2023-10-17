@@ -3,12 +3,8 @@ import { BigNumber, ethers } from "ethers";
 import { useMemo } from "react";
 
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
-import {
-  parseNetworkObjectId,
-  WEI_TOKEN_ADDRESS,
-  NetworkKind,
-} from "../networks";
-import { mustGetMarketplaceClient } from "../utils/backend";
+import { parseNetworkObjectId, NetworkKind } from "../networks";
+import { getMarketplaceClient } from "../utils/backend";
 
 export const useCollectionStats = (collectionId: string, ownerId?: string) => {
   const [network] = parseNetworkObjectId(collectionId);
@@ -17,7 +13,7 @@ export const useCollectionStats = (collectionId: string, ownerId?: string) => {
 
   const coins =
     network?.kind === NetworkKind.Ethereum
-      ? [{ networkId, denom: WEI_TOKEN_ADDRESS }]
+      ? [{ networkId, denom: network.currencies[0].denom }]
       : [];
 
   const { prices } = useCoingeckoPrices(coins);
@@ -25,7 +21,10 @@ export const useCollectionStats = (collectionId: string, ownerId?: string) => {
   const { data } = useQuery(
     ["collectionStats", collectionId, ownerId],
     async () => {
-      const marketplaceClient = mustGetMarketplaceClient(networkId);
+      const marketplaceClient = getMarketplaceClient(networkId);
+      if (!marketplaceClient) {
+        return null;
+      }
 
       const req = {
         collectionId,

@@ -8,7 +8,7 @@ import { useSeasonRank } from "../../../hooks/riotGame/useSeasonRank";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { NetworkKind, WEI_TOKEN_ADDRESS } from "../../../networks";
+import { NetworkKind } from "../../../networks";
 import { teritoriCurrencies } from "../../../networks/teritori/currencies";
 import { decimalFromAtomics } from "../../../utils/coins";
 import { yellowDefault } from "../../../utils/style/colors";
@@ -40,11 +40,16 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
       selectedWallet.networkId,
       "" + claimableAmount,
       selectedNetwork.kind === NetworkKind.Ethereum
-        ? WEI_TOKEN_ADDRESS
+        ? selectedNetwork.currencies[0].denom
         : teritoriCurrencies[0].denom
     );
     return res;
-  }, [claimableAmount, selectedNetwork?.kind, selectedWallet?.networkId]);
+  }, [
+    claimableAmount,
+    selectedNetwork?.kind,
+    selectedWallet?.networkId,
+    selectedNetwork?.currencies,
+  ]);
 
   return (
     <View
@@ -90,7 +95,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
               ? "Claiming..."
               : `Claim available rewards: ${formattedClaimable} ${
                   selectedNetwork?.kind === NetworkKind.Ethereum
-                    ? "ETH"
+                    ? selectedNetwork.currencies[0].displayName
                     : "TORI"
                 }`
           }

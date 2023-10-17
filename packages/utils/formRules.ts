@@ -21,3 +21,10 @@ export const patternOnlyNumbers: ValidationRule<RegExp> = {
   value: /^\d+$/,
   message: "Only numbers are allowed",
 };
+
+export const validateMaxNumber = (value: string, max: number) => {
+  if (parseFloat(value) > max) {
+    return "Max input value is " + max;
+  }
+  return true;
+};

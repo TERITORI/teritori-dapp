@@ -1,4 +1,4 @@
-import React, { ComponentType } from "react";
+import React, { ComponentType, useEffect } from "react";
 import {
   Modal,
   View,
@@ -12,6 +12,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../assets/icons/hamburger-button-cross.svg";
+import { useAppNavigation } from "../../utils/navigation";
 import { neutral77, neutral22 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
@@ -42,6 +43,7 @@ type ModalBaseProps = {
   childrenContainerStyle?: StyleProp<ViewStyle>;
   closeButtonStyle?: StyleProp<ViewStyle>;
   verticalPosition?: "center" | "top" | "bottom";
+  closeOnBlur?: boolean;
 };
 
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
@@ -64,8 +66,19 @@ const ModalBase: React.FC<ModalBaseProps> = ({
   noBrokenCorners,
   closeButtonStyle,
   verticalPosition = "center",
+  closeOnBlur,
 }) => {
   const { width: windowWidth } = useWindowDimensions();
+  const navigation = useAppNavigation();
+
+  useEffect(() => {
+    if (closeOnBlur !== true) return;
+    const unsubscribe = navigation.addListener("blur", () => {
+      onClose?.();
+    });
+
+    return unsubscribe;
+  }, [onClose, navigation, closeOnBlur]);
 
   return (
     <Modal

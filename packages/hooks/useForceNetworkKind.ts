@@ -1,8 +1,9 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
 
+import { useEnabledNetworks } from "./useEnabledNetworks";
 import { useSelectedNetworkKind } from "./useSelectedNetwork";
-import { NetworkKind, selectableNetworks } from "../networks";
+import { NetworkKind } from "../networks";
 import { setSelectedNetworkId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
 
@@ -10,25 +11,18 @@ export const useForceNetworkKind = (
   networkKind: NetworkKind | NetworkKind[] | undefined
 ) => {
   const selectedNetworkKind = useSelectedNetworkKind();
+  const enabledNetworks = useEnabledNetworks();
   const dispatch = useAppDispatch();
 
   const effect = useCallback(() => {
-    const forcedKinds =
-      networkKind && !Array.isArray(networkKind) ? [networkKind] : networkKind;
-
-    if (
-      selectedNetworkKind &&
-      forcedKinds &&
-      !forcedKinds.includes(selectedNetworkKind)
-    ) {
-      const firstNetworkKind = forcedKinds[0];
-      const newNetwork = selectableNetworks.find(
-        (network) => network.kind === firstNetworkKind
+    if (networkKind && networkKind !== selectedNetworkKind) {
+      const newNetwork = enabledNetworks.find(
+        (network) => network.kind === networkKind
       );
       if (newNetwork) {
         dispatch(setSelectedNetworkId(newNetwork.id));
       }
     }
-  }, [dispatch, networkKind, selectedNetworkKind]);
+  }, [dispatch, enabledNetworks, networkKind, selectedNetworkKind]);
   useFocusEffect(effect);
 };
