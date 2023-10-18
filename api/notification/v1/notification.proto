@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package notification.v1;
+option go_package = "./notificationpb";
+
+service NotificationService {
+  rpc Notifications(NotificationRequest) returns (NotificationResponse);
+}
+
+message NotificationRequest {
+  string network_id = 1;
+  string user_id = 2;
+}
+
+ message NotificationResponse {
+   repeated Notification notifications = 1;
+ }
+
+message Notification {
+  string image = 1;
+  string text = 2;
+  string type = 3;
+  int64 timestamp = 4;
+}

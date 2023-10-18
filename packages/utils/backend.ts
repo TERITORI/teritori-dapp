@@ -14,6 +14,11 @@ import {
   MarketplaceService,
 } from "../api/marketplace/v1/marketplace";
 import {
+  NotificationServiceClientImpl,
+  GrpcWebImpl as NotificationGrpcWebImpl,
+  NotificationService,
+} from "../api/notification/v1/notification";
+import {
   P2eServiceClientImpl,
   GrpcWebImpl as P2eGrpcWebImpl,
   P2eService,
@@ -104,6 +109,32 @@ export const mustGetFeedClient = (networkId: string | undefined) => {
   const client = getFeedClient(networkId);
   if (!client) {
     throw new Error(`failed to get feed client for network '${networkId}'`);
+  }
+  return client;
+};
+
+const notificationClients: { [key: string]: NotificationService } = {};
+
+export const getNotificationClient = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  if (!network) {
+    return undefined;
+  }
+  if (!notificationClients[network.id]) {
+    const rpc = new NotificationGrpcWebImpl(network.backendEndpoint, {
+      debug: false,
+    });
+    notificationClients[network.id] = new NotificationServiceClientImpl(rpc);
+  }
+  return notificationClients[network.id];
+};
+
+export const mustGetNotificationClient = (networkId: string | undefined) => {
+  const client = getNotificationClient(networkId);
+  if (!client) {
+    throw new Error(
+      `failed to get notification client for network '${networkId}'`
+    );
   }
   return client;
 };

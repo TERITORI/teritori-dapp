@@ -11,7 +11,13 @@ import {
 import { BellIcon } from "react-native-heroicons/outline";
 
 import { TOP_MENU_BUTTON_HEIGHT } from "./TopMenu";
+import { Post, PostsRequest } from "../../api/feed/v1/feed";
+import { NotificationRequest } from "../../api/notification/v1/notification";
 import { useDropdowns } from "../../context/DropdownsProvider";
+import {
+  mustGetFeedClient,
+  mustGetNotificationClient,
+} from "../../utils/backend";
 import {
   neutral00,
   neutral33,
@@ -81,6 +87,28 @@ const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
   style,
 }) => {
   const { height: windowHeight } = useWindowDimensions();
+
+  const getNotifications = async (
+    networkId: string,
+    req: NotificationRequest
+  ) => {
+    try {
+      const notificationService = mustGetNotificationClient(networkId);
+      const response = await notificationService.Notifications(req);
+
+      return response.notifications;
+    } catch (err) {
+      console.log("initData err", err);
+      return [] as Post[];
+    }
+  };
+
+  console.log(
+    getNotifications("teritori", {
+      networkId: "teritori",
+      userId: "testori-tori1q3cy3znau0gzulws23zhn6c0g6h3wlwmhfttpe",
+    })
+  );
 
   const notifications: Notification[] = [
     {
