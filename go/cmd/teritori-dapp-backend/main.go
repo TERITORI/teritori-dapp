@@ -17,6 +17,8 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplace"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+	"github.com/TERITORI/teritori-dapp/go/pkg/notification"
+	"github.com/TERITORI/teritori-dapp/go/pkg/notificationpb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2e"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2epb"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
@@ -128,11 +130,18 @@ func main() {
 		NetStore:  &netstore,
 	})
 
+	notificationSvc := notification.NewNotificationService(context.Background(), &notification.Config{
+		Logger:    logger,
+		IndexerDB: indexerDB,
+		NetStore:  &netstore,
+	})
+
 	server := grpc.NewServer()
 	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
 	p2epb.RegisterP2EServiceServer(server, p2eSvc)
 	daopb.RegisterDAOServiceServer(server, daoSvc)
 	feedpb.RegisterFeedServiceServer(server, feedSvc)
+	notificationpb.RegisterNotificationServiceServer(server, notificationSvc)
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),
