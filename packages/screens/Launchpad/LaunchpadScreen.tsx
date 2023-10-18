@@ -24,7 +24,8 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
     <ScreenContainer
       headerChildren={<BrandText style={fontSemibold20}>Launchpad</BrandText>}
       responsive
-      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}>
+      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+    >
       <View
         style={{
           paddingBottom: layout.contentSpacing,
