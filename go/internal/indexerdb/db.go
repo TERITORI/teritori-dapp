@@ -63,6 +63,9 @@ var allModels = []interface{}{
 
 	// names
 	&Name{},
+
+	// notifications
+	&Notification{},
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {
