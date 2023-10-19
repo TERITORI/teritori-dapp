@@ -4,7 +4,7 @@ package notification.v1;
 option go_package = "./notificationpb";
 
 service NotificationService {
-  rpc Notifications(NotificationsRequest) returns (NotificationnResponse);
+  rpc Notifications(NotificationsRequest) returns (NotificationsResponse);
 }
 
 message NotificationsRequest {
@@ -12,7 +12,7 @@ message NotificationsRequest {
   string user_id = 2;
 }
 
- message NotificationnResponse {
+ message NotificationsResponse {
    repeated Notification notifications = 1;
  }
 
