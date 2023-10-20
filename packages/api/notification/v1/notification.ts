@@ -6,28 +6,29 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "notification.v1";
 
-export interface NotificationRequest {
+export interface NotificationsRequest {
   networkId: string;
   userId: string;
 }
 
-export interface NotificationResponse {
+export interface NotificationsResponse {
   notifications: Notification[];
 }
 
 export interface Notification {
-  image: string;
-  text: string;
+  userId: string;
+  body: string;
   type: string;
   timestamp: number;
+  triggerBy: string;
 }
 
-function createBaseNotificationRequest(): NotificationRequest {
+function createBaseNotificationsRequest(): NotificationsRequest {
   return { networkId: "", userId: "" };
 }
 
-export const NotificationRequest = {
-  encode(message: NotificationRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const NotificationsRequest = {
+  encode(message: NotificationsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.networkId !== "") {
       writer.uint32(10).string(message.networkId);
     }
@@ -37,10 +38,10 @@ export const NotificationRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): NotificationRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): NotificationsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseNotificationRequest();
+    const message = createBaseNotificationsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -58,44 +59,44 @@ export const NotificationRequest = {
     return message;
   },
 
-  fromJSON(object: any): NotificationRequest {
+  fromJSON(object: any): NotificationsRequest {
     return {
       networkId: isSet(object.networkId) ? String(object.networkId) : "",
       userId: isSet(object.userId) ? String(object.userId) : "",
     };
   },
 
-  toJSON(message: NotificationRequest): unknown {
+  toJSON(message: NotificationsRequest): unknown {
     const obj: any = {};
     message.networkId !== undefined && (obj.networkId = message.networkId);
     message.userId !== undefined && (obj.userId = message.userId);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<NotificationRequest>, I>>(object: I): NotificationRequest {
-    const message = createBaseNotificationRequest();
+  fromPartial<I extends Exact<DeepPartial<NotificationsRequest>, I>>(object: I): NotificationsRequest {
+    const message = createBaseNotificationsRequest();
     message.networkId = object.networkId ?? "";
     message.userId = object.userId ?? "";
     return message;
   },
 };
 
-function createBaseNotificationResponse(): NotificationResponse {
+function createBaseNotificationsResponse(): NotificationsResponse {
   return { notifications: [] };
 }
 
-export const NotificationResponse = {
-  encode(message: NotificationResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const NotificationsResponse = {
+  encode(message: NotificationsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.notifications) {
       Notification.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): NotificationResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): NotificationsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseNotificationResponse();
+    const message = createBaseNotificationsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -110,7 +111,7 @@ export const NotificationResponse = {
     return message;
   },
 
-  fromJSON(object: any): NotificationResponse {
+  fromJSON(object: any): NotificationsResponse {
     return {
       notifications: Array.isArray(object?.notifications)
         ? object.notifications.map((e: any) => Notification.fromJSON(e))
@@ -118,7 +119,7 @@ export const NotificationResponse = {
     };
   },
 
-  toJSON(message: NotificationResponse): unknown {
+  toJSON(message: NotificationsResponse): unknown {
     const obj: any = {};
     if (message.notifications) {
       obj.notifications = message.notifications.map((e) => e ? Notification.toJSON(e) : undefined);
@@ -128,30 +129,33 @@ export const NotificationResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<NotificationResponse>, I>>(object: I): NotificationResponse {
-    const message = createBaseNotificationResponse();
+  fromPartial<I extends Exact<DeepPartial<NotificationsResponse>, I>>(object: I): NotificationsResponse {
+    const message = createBaseNotificationsResponse();
     message.notifications = object.notifications?.map((e) => Notification.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseNotification(): Notification {
-  return { image: "", text: "", type: "", timestamp: 0 };
+  return { userId: "", body: "", type: "", timestamp: 0, triggerBy: "" };
 }
 
 export const Notification = {
   encode(message: Notification, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.image !== "") {
-      writer.uint32(10).string(message.image);
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
     }
-    if (message.text !== "") {
-      writer.uint32(18).string(message.text);
+    if (message.body !== "") {
+      writer.uint32(18).string(message.body);
     }
     if (message.type !== "") {
       writer.uint32(26).string(message.type);
     }
     if (message.timestamp !== 0) {
       writer.uint32(32).int64(message.timestamp);
+    }
+    if (message.triggerBy !== "") {
+      writer.uint32(42).string(message.triggerBy);
     }
     return writer;
   },
@@ -164,16 +168,19 @@ export const Notification = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.image = reader.string();
+          message.userId = reader.string();
           break;
         case 2:
-          message.text = reader.string();
+          message.body = reader.string();
           break;
         case 3:
           message.type = reader.string();
           break;
         case 4:
           message.timestamp = longToNumber(reader.int64() as Long);
+          break;
+        case 5:
+          message.triggerBy = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -185,34 +192,37 @@ export const Notification = {
 
   fromJSON(object: any): Notification {
     return {
-      image: isSet(object.image) ? String(object.image) : "",
-      text: isSet(object.text) ? String(object.text) : "",
+      userId: isSet(object.userId) ? String(object.userId) : "",
+      body: isSet(object.body) ? String(object.body) : "",
       type: isSet(object.type) ? String(object.type) : "",
       timestamp: isSet(object.timestamp) ? Number(object.timestamp) : 0,
+      triggerBy: isSet(object.triggerBy) ? String(object.triggerBy) : "",
     };
   },
 
   toJSON(message: Notification): unknown {
     const obj: any = {};
-    message.image !== undefined && (obj.image = message.image);
-    message.text !== undefined && (obj.text = message.text);
+    message.userId !== undefined && (obj.userId = message.userId);
+    message.body !== undefined && (obj.body = message.body);
     message.type !== undefined && (obj.type = message.type);
     message.timestamp !== undefined && (obj.timestamp = Math.round(message.timestamp));
+    message.triggerBy !== undefined && (obj.triggerBy = message.triggerBy);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<Notification>, I>>(object: I): Notification {
     const message = createBaseNotification();
-    message.image = object.image ?? "";
-    message.text = object.text ?? "";
+    message.userId = object.userId ?? "";
+    message.body = object.body ?? "";
     message.type = object.type ?? "";
     message.timestamp = object.timestamp ?? 0;
+    message.triggerBy = object.triggerBy ?? "";
     return message;
   },
 };
 
 export interface NotificationService {
-  Notifications(request: DeepPartial<NotificationRequest>, metadata?: grpc.Metadata): Promise<NotificationResponse>;
+  Notifications(request: DeepPartial<NotificationsRequest>, metadata?: grpc.Metadata): Promise<NotificationsResponse>;
 }
 
 export class NotificationServiceClientImpl implements NotificationService {
@@ -223,8 +233,8 @@ export class NotificationServiceClientImpl implements NotificationService {
     this.Notifications = this.Notifications.bind(this);
   }
 
-  Notifications(request: DeepPartial<NotificationRequest>, metadata?: grpc.Metadata): Promise<NotificationResponse> {
-    return this.rpc.unary(NotificationServiceNotificationsDesc, NotificationRequest.fromPartial(request), metadata);
+  Notifications(request: DeepPartial<NotificationsRequest>, metadata?: grpc.Metadata): Promise<NotificationsResponse> {
+    return this.rpc.unary(NotificationServiceNotificationsDesc, NotificationsRequest.fromPartial(request), metadata);
   }
 }
 
@@ -237,13 +247,13 @@ export const NotificationServiceNotificationsDesc: UnaryMethodDefinitionish = {
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return NotificationRequest.encode(this).finish();
+      return NotificationsRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
       return {
-        ...NotificationResponse.decode(data),
+        ...NotificationsResponse.decode(data),
         toObject() {
           return this;
         },

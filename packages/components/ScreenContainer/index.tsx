@@ -14,6 +14,7 @@ import { useForceNetworkKind } from "../../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
 import { neutral33 } from "../../utils/style/colors";
@@ -67,6 +68,7 @@ export const ScreenContainer: React.FC<{
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
+  const selectedWallet = useSelectedWallet();
   const { width: screenWidth } = useMaxResolution({
     responsive,
     noMargin,
@@ -179,7 +181,7 @@ export const ScreenContainer: React.FC<{
               alignItems: "center",
             }}
           >
-            <NotificationDrawer />
+            {selectedWallet?.connected && <NotificationDrawer />}
             <SearchBar />
             <View
               style={{

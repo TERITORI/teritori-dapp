@@ -29,16 +29,20 @@ func NewNotificationService(ctx context.Context, conf *Config) notificationpb.No
 	}
 }
 
-func (s *NotificationService) Notifications(ctx context.Context, req *notificationpb.NotificationRequest) (*notificationpb.NotificationResponse, error) {
-	db := s.conf.IndexerDB
+func (s *NotificationService) Notifications(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.NotificationsResponse, error) {
+	query := s.conf.IndexerDB
 	userId := req.GetUserId()
 	if userId == "" {
 		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address}"), "need a wallet address")
 	}
-	db.Where("created_by = ?", userId)
+	//networkId := req.GetNetworkId()
+	//if networkId != "" {
+	//	query = query.Where("network_id = ?", networkId)
+	//}
+	query = query.Where("user_id = ?", userId)
 
-	var notifications []*indexerdb.Post
-	err := db.Find(&notifications).Error
+	var notifications []*indexerdb.Notification
+	err := query.Find(&notifications).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
@@ -47,14 +51,15 @@ func (s *NotificationService) Notifications(ctx context.Context, req *notificati
 	for i, d := range notifications {
 
 		pbnotifications[i] = &notificationpb.Notification{
-			Image:     string(d.AuthorId),
-			Text:      d.Identifier,
+			UserId:    string(d.UserId),
+			Body:      d.Body,
 			Type:      "post-" + strconv.Itoa(int(d.Category)),
 			Timestamp: d.CreatedAt,
+			TriggerBy: string(d.TriggerBy),
 		}
 	}
 
-	return &notificationpb.NotificationResponse{
+	return &notificationpb.NotificationsResponse{
 		Notifications: pbnotifications,
 	}, nil
 }
