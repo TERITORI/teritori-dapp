@@ -11,13 +11,10 @@ import {
 import { BellIcon } from "react-native-heroicons/outline";
 
 import { TOP_MENU_BUTTON_HEIGHT } from "./TopMenu";
-import { Post, PostsRequest } from "../../api/feed/v1/feed";
-import { NotificationRequest } from "../../api/notification/v1/notification";
+import { Notification } from "../../api/notification/v1/notification";
 import { useDropdowns } from "../../context/DropdownsProvider";
-import {
-  mustGetFeedClient,
-  mustGetNotificationClient,
-} from "../../utils/backend";
+import { useNotifications } from "../../hooks/useNotifications";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   neutral00,
   neutral33,
@@ -28,8 +25,8 @@ import {
 import { fontBold16, fontSemibold12 } from "../../utils/style/fonts";
 import { headerHeight, layout, topMenuWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
-import { OmniLink, OmniLinkToType } from "../OmniLink";
-import { OptimizedImage } from "../OptimizedImage";
+import { OmniLink } from "../OmniLink";
+import { UserNameInline } from "../UserNameInline";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const NotificationDrawer: React.FC = () => {
@@ -75,91 +72,24 @@ export const NotificationDrawer: React.FC = () => {
   );
 };
 
-interface Notification {
-  image: string;
-  text: string;
-  linkTo: OmniLinkToType;
-  timestamp: string;
-  type: string;
-}
+// interface Notification {
+//   image: string;
+//   text: string;
+//   linkTo: OmniLinkToType;
+//   timestamp: string;
+//   type: string;
+// }
 
 const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
   style,
 }) => {
   const { height: windowHeight } = useWindowDimensions();
+  const selectedWallet = useSelectedWallet();
+  const notifications = useNotifications({
+    networkId: selectedWallet?.networkId,
+    userId: selectedWallet?.userId,
+  });
 
-  const getNotifications = async (
-    networkId: string,
-    req: NotificationRequest
-  ) => {
-    try {
-      const notificationService = mustGetNotificationClient(networkId);
-      const response = await notificationService.Notifications(req);
-
-      return response.notifications;
-    } catch (err) {
-      console.log("initData err", err);
-      return [] as Post[];
-    }
-  };
-
-  console.log(
-    getNotifications("teritori", {
-      networkId: "teritori",
-      userId: "testori-tori1q3cy3znau0gzulws23zhn6c0g6h3wlwmhfttpe",
-    })
-  );
-
-  const notifications: Notification[] = [
-    {
-      image:
-        "https://imgproxy.tools.teritori.com/insecure/width:462/height:462/plain/ipfs%3A%2F%2Fbafybeia5flcghp5ry7wm4sk326kixvdvxbqzw65hyb5e6zicpy7xmfqhle%2Fnft.png",
-      text: "Your NFT just sold for XXX Tori",
-      linkTo: { screen: "Settings" },
-      timestamp: "yesterday",
-      type: "Marketplace",
-    },
-    {
-      image:
-        "https://imgproxy.tools.teritori.com/insecure/width:462/height:462/plain/ipfs%3A%2F%2Fbafybeia5flcghp5ry7wm4sk326kixvdvxbqzw65hyb5e6zicpy7xmfqhle%2Fnft.png",
-      text: "Your NFT just sold for XXX Tori",
-      linkTo: { screen: "Settings" },
-      timestamp: "yesterday",
-      type: "Marketplace",
-    },
-    {
-      image:
-        "https://imgproxy.tools.teritori.com/insecure/width:462/height:462/plain/ipfs%3A%2F%2Fbafybeia5flcghp5ry7wm4sk326kixvdvxbqzw65hyb5e6zicpy7xmfqhle%2Fnft.png",
-      text: "Your NFT just sold for XXX Tori",
-      linkTo: { screen: "Settings" },
-      timestamp: "yesterday",
-      type: "Marketplace",
-    },
-    {
-      image:
-        "https://imgproxy.tools.teritori.com/insecure/width:462/height:462/plain/ipfs%3A%2F%2Fbafybeia5flcghp5ry7wm4sk326kixvdvxbqzw65hyb5e6zicpy7xmfqhle%2Fnft.png",
-      text: "Your NFT just sold for XXX Tori",
-      linkTo: { screen: "Settings" },
-      timestamp: "yesterday",
-      type: "Marketplace",
-    },
-    {
-      image:
-        "https://imgproxy.tools.teritori.com/insecure/width:462/height:462/plain/ipfs%3A%2F%2Fbafybeia5flcghp5ry7wm4sk326kixvdvxbqzw65hyb5e6zicpy7xmfqhle%2Fnft.png",
-      text: "Your NFT just sold for XXX Tori",
-      linkTo: { screen: "Settings" },
-      timestamp: "yesterday",
-      type: "Marketplace",
-    },
-    {
-      image:
-        "https://imgproxy.tools.teritori.com/insecure/width:462/height:462/plain/ipfs%3A%2F%2Fbafybeia5flcghp5ry7wm4sk326kixvdvxbqzw65hyb5e6zicpy7xmfqhle%2Fnft.png",
-      text: "Your NFT just sold for XXX Tori",
-      linkTo: { screen: "Settings" },
-      timestamp: "yesterday",
-      type: "Marketplace",
-    },
-  ];
   return (
     <TertiaryBox
       width={topMenuWidth}
@@ -186,7 +116,7 @@ const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
 const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
   return (
     <OmniLink
-      to={item.linkTo}
+      to={{ screen: "Settings" }}
       style={{
         padding: layout.spacing_x1,
         borderBottomWidth: 1,
@@ -207,23 +137,19 @@ const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
             justifyContent: "center",
             alignContent: "center",
             flexWrap: "wrap",
+            width: "100%",
           }}
         >
-          <OptimizedImage
-            sourceURI={item.image}
-            width={32}
-            height={32}
-            style={{
-              height: 32,
-              width: 32,
-              borderRadius: 18,
-              marginRight: 6,
-            }}
+          <UserNameInline
+            userId={item.triggerBy || ""}
+            showText={false}
+            size="S"
+            style={{ width: "100%" }}
           />
         </View>
         <View style={{ flex: 4 }}>
           <View>
-            <BrandText style={fontBold16}>{item.text}</BrandText>
+            <BrandText style={fontBold16}>{item.body}</BrandText>
             <View
               style={{
                 marginTop: layout.spacing_x1,

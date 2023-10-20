@@ -4,7 +4,10 @@ import { StyleProp, TextStyle } from "react-native";
 import { BrandText } from "./BrandText";
 import FlexRow from "./FlexRow";
 import { OmniLink } from "./OmniLink";
-import { RoundedGradientImage } from "./images/RoundedGradientImage";
+import {
+  RoundedGradientImage,
+  RoundedGradientImageSize,
+} from "./images/RoundedGradientImage";
 import { useNSUserInfo } from "../hooks/useNSUserInfo";
 import { getCosmosNetwork, parseUserId } from "../networks";
 import { fontSemibold14 } from "../utils/style/fonts";
@@ -14,12 +17,16 @@ import { tinyAddress } from "../utils/text";
 type PlayerNameProps = {
   userId: string | undefined;
   multisignWalletAddres?: string | null;
+  showText?: boolean;
   style?: StyleProp<TextStyle>;
+  size?: RoundedGradientImageSize;
 };
 
 export const UserNameInline: React.FC<PlayerNameProps> = ({
   userId,
   style,
+  showText = true,
+  size = "XXS",
 }) => {
   const [userNetwork, userAddress] = parseUserId(userId);
   const userInfo = useNSUserInfo(userId);
@@ -35,17 +42,19 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
         style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
       >
         <RoundedGradientImage
-          size="XXS"
+          size={size}
           sourceURI={userInfo?.metadata?.image}
           fallbackURI={network?.nameServiceDefaultImage}
         />
-        <BrandText
-          style={[{ marginLeft: layout.spacing_x1_5 }, fontSemibold14]}
-          ellipsizeMode="middle"
-          numberOfLines={1}
-        >
-          {name}
-        </BrandText>
+        {showText && (
+          <BrandText
+            style={[{ marginLeft: layout.spacing_x1_5 }, fontSemibold14]}
+            ellipsizeMode="middle"
+            numberOfLines={1}
+          >
+            {name}
+          </BrandText>
+        )}
       </OmniLink>
     </FlexRow>
   );

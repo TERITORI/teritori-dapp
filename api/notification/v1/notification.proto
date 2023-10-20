@@ -17,8 +17,9 @@ message NotificationsRequest {
  }
 
 message Notification {
-  string image = 1;
-  string text = 2;
+  string user_id = 1;
+  string body = 2;
   string type = 3;
   int64 timestamp = 4;
+  string trigger_by = 5;
 }
