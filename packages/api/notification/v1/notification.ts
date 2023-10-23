@@ -7,7 +7,6 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "notification.v1";
 
 export interface NotificationsRequest {
-  networkId: string;
   userId: string;
 }
 
@@ -24,16 +23,13 @@ export interface Notification {
 }
 
 function createBaseNotificationsRequest(): NotificationsRequest {
-  return { networkId: "", userId: "" };
+  return { userId: "" };
 }
 
 export const NotificationsRequest = {
   encode(message: NotificationsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.networkId !== "") {
-      writer.uint32(10).string(message.networkId);
-    }
     if (message.userId !== "") {
-      writer.uint32(18).string(message.userId);
+      writer.uint32(10).string(message.userId);
     }
     return writer;
   },
@@ -46,9 +42,6 @@ export const NotificationsRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.networkId = reader.string();
-          break;
-        case 2:
           message.userId = reader.string();
           break;
         default:
@@ -60,22 +53,17 @@ export const NotificationsRequest = {
   },
 
   fromJSON(object: any): NotificationsRequest {
-    return {
-      networkId: isSet(object.networkId) ? String(object.networkId) : "",
-      userId: isSet(object.userId) ? String(object.userId) : "",
-    };
+    return { userId: isSet(object.userId) ? String(object.userId) : "" };
   },
 
   toJSON(message: NotificationsRequest): unknown {
     const obj: any = {};
-    message.networkId !== undefined && (obj.networkId = message.networkId);
     message.userId !== undefined && (obj.userId = message.userId);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<NotificationsRequest>, I>>(object: I): NotificationsRequest {
     const message = createBaseNotificationsRequest();
-    message.networkId = object.networkId ?? "";
     message.userId = object.userId ?? "";
     return message;
   },

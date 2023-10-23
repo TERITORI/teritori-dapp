@@ -8,8 +8,7 @@ service NotificationService {
 }
 
 message NotificationsRequest {
-  string network_id = 1;
-  string user_id = 2;
+  string user_id = 1;
 }
 
  message NotificationsResponse {

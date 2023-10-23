@@ -6,7 +6,6 @@ type Notification struct {
 	id        int64           `gorm:"primaryKey"`
 	UserId    networks.UserID `gorm:"index"`
 	TriggerBy networks.UserID
-	NetworkId string `gorm:"index"`
 	Body      string
 	Category  uint32 `gorm:"index"`
 	CreatedAt int64
