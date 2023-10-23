@@ -35,10 +35,7 @@ func (s *NotificationService) Notifications(ctx context.Context, req *notificati
 	if userId == "" {
 		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address}"), "need a wallet address")
 	}
-	//networkId := req.GetNetworkId()
-	//if networkId != "" {
-	//	query = query.Where("network_id = ?", networkId)
-	//}
+
 	query = query.Where("user_id = ?", userId)
 
 	var notifications []*indexerdb.Notification
