@@ -99,3 +99,35 @@ func (s *NotificationService) DismissAllNotification(ctx context.Context, req *n
 		Ok: true,
 	}, nil
 }
+
+//func (s *NotificationService) UpdateNotifications(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.DismissNotificationResponse, error) {
+//	userId := req.GetUserId()
+//	query := s.conf.IndexerDB
+//
+//	var post []*indexerdb.Post
+//	if err := query.Where("created_by = ?", userId).Find(&post).Error; err != nil {
+//		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address} and a notification Id"), "need a wallet address")
+//	}
+//
+//	//pbnotifications := make([]*feedpb.Post, len(post))
+//	for i, d := range post {
+//		userReactions := d.UserReactions
+//		for k, reaction := range userReactions {
+//			print(reaction, k, i)
+//
+//			//notification := indexerdb.Notification{
+//			//	UserId:    d.AuthorId,
+//			//	Body:      userReactions,
+//			//	Type:      "post-" + strconv.Itoa(int(d.Category)),
+//			//	Timestamp: d.CreatedAt,
+//			//	TriggerBy: userReactions.Value,
+//			//}
+//			//if err := s.conf.IndexerDB.Create(&notification).Error; err != nil {
+//			//	return errors.Wrap(err, "failed to create post")
+//			//}
+//		}
+//	}
+//	return &notificationpb.DismissNotificationResponse{
+//		Ok: true,
+//	}, nil
+//}

@@ -86,7 +86,6 @@ const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
   const { height: windowHeight } = useWindowDimensions();
   const selectedWallet = useSelectedWallet();
   const notifications = useNotifications({
-    networkId: selectedWallet?.networkId,
     userId: selectedWallet?.userId,
   });
 
