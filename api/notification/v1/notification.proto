@@ -5,8 +5,22 @@ option go_package = "./notificationpb";
 
 service NotificationService {
   rpc Notifications(NotificationsRequest) returns (NotificationsResponse);
+  rpc DismissNotification(DismissNotificationRequest) returns (DismissNotificationResponse);
+  rpc DismissAllNotification(NotificationsRequest) returns (DismissNotificationResponse);
+
 }
 
+// DismissNotification
+message DismissNotificationRequest {
+  string user_id = 1;
+  string notification_id = 2;
+}
+message DismissNotificationResponse {
+  bool ok = 1;
+}
+// --
+
+// Notifications
 message NotificationsRequest {
   string user_id = 1;
 }
@@ -22,3 +36,4 @@ message Notification {
   int64 timestamp = 4;
   string trigger_by = 5;
 }
+// --

@@ -36,7 +36,7 @@ func (s *NotificationService) Notifications(ctx context.Context, req *notificati
 		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address}"), "need a wallet address")
 	}
 
-	query = query.Where("user_id = ?", userId)
+	query = query.Where("user_id = ? and dismissed = ?", userId, false)
 
 	var notifications []*indexerdb.Notification
 	err := query.Find(&notifications).Error
@@ -58,5 +58,44 @@ func (s *NotificationService) Notifications(ctx context.Context, req *notificati
 
 	return &notificationpb.NotificationsResponse{
 		Notifications: pbnotifications,
+	}, nil
+}
+
+func (s *NotificationService) DismissNotification(ctx context.Context, req *notificationpb.DismissNotificationRequest) (*notificationpb.DismissNotificationResponse, error) {
+	query := s.conf.IndexerDB
+	userId := req.GetUserId()
+	notificationId := req.GetNotificationId()
+
+	if userId == "" || notificationId == "" {
+		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address} and a notification Id"), "need a wallet address")
+	}
+	query = query.Where("user_id = ? and id = ?", userId, req.GetNotificationId())
+
+	var notifications []*indexerdb.Notification
+	err := query.Find(&notifications).Update("dismissed", true).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
+	return &notificationpb.DismissNotificationResponse{
+		Ok: true,
+	}, nil
+}
+
+func (s *NotificationService) NotificationsRequest(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.DismissNotificationResponse, error) {
+	query := s.conf.IndexerDB
+	userId := req.GetUserId()
+
+	if userId == "" {
+		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address} and a notification Id"), "need a wallet address")
+	}
+	query = query.Where("user_id = ? ", userId)
+
+	var notifications []*indexerdb.Notification
+	err := query.Find(&notifications).Update("dismissed", true).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
+	return &notificationpb.DismissNotificationResponse{
+		Ok: true,
 	}, nil
 }
