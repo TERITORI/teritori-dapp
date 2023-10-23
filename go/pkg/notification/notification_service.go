@@ -81,7 +81,7 @@ func (s *NotificationService) DismissNotification(ctx context.Context, req *noti
 	}, nil
 }
 
-func (s *NotificationService) NotificationsRequest(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.DismissNotificationResponse, error) {
+func (s *NotificationService) DismissAllNotification(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.DismissNotificationResponse, error) {
 	query := s.conf.IndexerDB
 	userId := req.GetUserId()
 
