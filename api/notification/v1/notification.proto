@@ -7,7 +7,6 @@ service NotificationService {
   rpc Notifications(NotificationsRequest) returns (NotificationsResponse);
   rpc DismissNotification(DismissNotificationRequest) returns (DismissNotificationResponse);
   rpc DismissAllNotification(NotificationsRequest) returns (DismissNotificationResponse);
-
 }
 
 // DismissNotification
