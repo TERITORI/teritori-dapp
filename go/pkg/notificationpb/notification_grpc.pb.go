@@ -25,6 +25,7 @@ type NotificationServiceClient interface {
 	Notifications(ctx context.Context, in *NotificationsRequest, opts ...grpc.CallOption) (*NotificationsResponse, error)
 	DismissNotification(ctx context.Context, in *DismissNotificationRequest, opts ...grpc.CallOption) (*DismissNotificationResponse, error)
 	DismissAllNotification(ctx context.Context, in *NotificationsRequest, opts ...grpc.CallOption) (*DismissNotificationResponse, error)
+	UpdateNotifications(ctx context.Context, in *NotificationsRequest, opts ...grpc.CallOption) (*DismissNotificationResponse, error)
 }
 
 type notificationServiceClient struct {
@@ -62,6 +63,15 @@ func (c *notificationServiceClient) DismissAllNotification(ctx context.Context, 
 	return out, nil
 }
 
+func (c *notificationServiceClient) UpdateNotifications(ctx context.Context, in *NotificationsRequest, opts ...grpc.CallOption) (*DismissNotificationResponse, error) {
+	out := new(DismissNotificationResponse)
+	err := c.cc.Invoke(ctx, "/notification.v1.NotificationService/UpdateNotifications", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NotificationServiceServer is the server API for NotificationService service.
 // All implementations must embed UnimplementedNotificationServiceServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type NotificationServiceServer interface {
 	Notifications(context.Context, *NotificationsRequest) (*NotificationsResponse, error)
 	DismissNotification(context.Context, *DismissNotificationRequest) (*DismissNotificationResponse, error)
 	DismissAllNotification(context.Context, *NotificationsRequest) (*DismissNotificationResponse, error)
+	UpdateNotifications(context.Context, *NotificationsRequest) (*DismissNotificationResponse, error)
 	mustEmbedUnimplementedNotificationServiceServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedNotificationServiceServer) DismissNotification(context.Contex
 }
 func (UnimplementedNotificationServiceServer) DismissAllNotification(context.Context, *NotificationsRequest) (*DismissNotificationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DismissAllNotification not implemented")
+}
+func (UnimplementedNotificationServiceServer) UpdateNotifications(context.Context, *NotificationsRequest) (*DismissNotificationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateNotifications not implemented")
 }
 func (UnimplementedNotificationServiceServer) mustEmbedUnimplementedNotificationServiceServer() {}
 
@@ -152,6 +166,24 @@ func _NotificationService_DismissAllNotification_Handler(srv interface{}, ctx co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NotificationService_UpdateNotifications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NotificationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotificationServiceServer).UpdateNotifications(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/notification.v1.NotificationService/UpdateNotifications",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotificationServiceServer).UpdateNotifications(ctx, req.(*NotificationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NotificationService_ServiceDesc is the grpc.ServiceDesc for NotificationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var NotificationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DismissAllNotification",
 			Handler:    _NotificationService_DismissAllNotification_Handler,
+		},
+		{
+			MethodName: "UpdateNotifications",
+			Handler:    _NotificationService_UpdateNotifications_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

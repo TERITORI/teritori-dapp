@@ -41,10 +41,12 @@ func main() {
 		pollDelay                   = fs.Duration("poll-delay", 2*time.Second, "delay between tail queries")
 		minterCodeIDs               = fs.String("teritori-minter-code-ids", "", "code ids of teritori minter contracts")
 		dbHost                      = fs.String("db-indexer-host", "", "host postgreSQL database")
+		dbUser                      = fs.String("postgres-user", "", "username for postgreSQL")
 		dbPort                      = fs.String("db-indexer-port", "", "port for postgreSQL database")
 		dbPass                      = fs.String("postgres-password", "", "password for postgreSQL database")
-		dbName                      = fs.String("database-name", "", "database name for postgreSQL")
-		dbUser                      = fs.String("postgres-user", "", "username for postgreSQL")
+		dbNameIndexer               = fs.String("database-name", "", "indexer database name for postgreSQL")
+		dbNamePersistent            = fs.String("database-name-persistent", "", "persistent database name for postgreSQL")
+		dbPortPersistent            = fs.String("db-persistent-port", "", "port for postgreSQL database")
 		tendermintWebsocketEndpoint = fs.String("tendermint-websocket-endpoint", "", "tendermint websocket endpoint")
 		tailSize                    = fs.Int64("tail-size", 8640, "x blocks tail size means that the tendermint indexer can lag x blocks behind before the indexer misses an event")
 		pricesServiceURI            = fs.String("prices-service-uri", "localhost:9091", "price service URI")
@@ -116,7 +118,7 @@ func main() {
 	if err != nil {
 		panic(errors.Wrap(err, "failed to init logger"))
 	}
-	if dbHost == nil || dbUser == nil || dbPass == nil || dbName == nil || dbPort == nil {
+	if dbHost == nil || dbUser == nil || dbPass == nil || dbNameIndexer == nil || dbPort == nil {
 		panic(errors.New("missing Database configuration"))
 	}
 
@@ -145,9 +147,9 @@ func main() {
 	}
 	ps := pricespb.NewPricesServiceClient(pconn)
 
-	// init db
+	// init db indexer
 	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
-		*dbHost, *dbUser, *dbPass, *dbName, *dbPort)
+		*dbHost, *dbUser, *dbPass, *dbNameIndexer, *dbPort)
 	db, err := indexerdb.NewPostgresDB(dataConnexion)
 
 	if err != nil {
@@ -156,6 +158,20 @@ func main() {
 	err = indexerdb.MigrateDB(db)
 	if err != nil {
 		panic(errors.Wrap(err, "failed migrate database models"))
+	}
+
+	// init db persistent
+
+	dataConnexion = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
+		*dbHost, *dbUser, *dbPass, *dbNamePersistent, *dbPortPersistent)
+
+	dbPersistent, err := indexerdb.NewPostgresDB(dataConnexion)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to access db"))
+	}
+	err = indexerdb.MigratePersistentDB(dbPersistent)
+	if err != nil {
+		panic(errors.Wrap(err, "failed migrate dbPersistent models"))
 	}
 
 	// init/get height

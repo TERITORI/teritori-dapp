@@ -9,10 +9,11 @@ export const useNotifications = (req: Partial<NotificationsRequest>) => {
     ["notifications", req],
     async () => {
       const networkId = parseNetworkObjectId(req?.userId);
-      debugger;
+
       if (!networkId) {
         return [];
       }
+
       const notificationService = mustGetNotificationClient(networkId[0]?.id);
       const { notifications } = await notificationService.Notifications(req);
       return notifications;

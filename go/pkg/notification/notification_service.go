@@ -18,9 +18,10 @@ type NotificationService struct {
 }
 
 type Config struct {
-	Logger    *zap.Logger
-	IndexerDB *gorm.DB
-	NetStore  *networks.NetworkStore
+	Logger       *zap.Logger
+	IndexerDB    *gorm.DB
+	PersistentDB *gorm.DB
+	NetStore     *networks.NetworkStore
 }
 
 func NewNotificationService(ctx context.Context, conf *Config) notificationpb.NotificationServiceServer {
@@ -30,10 +31,14 @@ func NewNotificationService(ctx context.Context, conf *Config) notificationpb.No
 }
 
 func (s *NotificationService) Notifications(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.NotificationsResponse, error) {
-	query := s.conf.IndexerDB
+	query := s.conf.PersistentDB
 	userId := req.GetUserId()
 	if userId == "" {
 		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address}"), "need a wallet address")
+	}
+	_, updateerr := s.UpdateNotifications(ctx, req)
+	if updateerr != nil {
+		return nil, updateerr
 	}
 
 	query = query.Where("user_id = ? and dismissed = ?", userId, false)
@@ -62,7 +67,7 @@ func (s *NotificationService) Notifications(ctx context.Context, req *notificati
 }
 
 func (s *NotificationService) DismissNotification(ctx context.Context, req *notificationpb.DismissNotificationRequest) (*notificationpb.DismissNotificationResponse, error) {
-	query := s.conf.IndexerDB
+	query := s.conf.PersistentDB
 	userId := req.GetUserId()
 	notificationId := req.GetNotificationId()
 
@@ -82,7 +87,7 @@ func (s *NotificationService) DismissNotification(ctx context.Context, req *noti
 }
 
 func (s *NotificationService) DismissAllNotification(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.DismissNotificationResponse, error) {
-	query := s.conf.IndexerDB
+	query := s.conf.PersistentDB
 	userId := req.GetUserId()
 
 	if userId == "" {
@@ -100,34 +105,40 @@ func (s *NotificationService) DismissAllNotification(ctx context.Context, req *n
 	}, nil
 }
 
-//func (s *NotificationService) UpdateNotifications(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.DismissNotificationResponse, error) {
-//	userId := req.GetUserId()
-//	query := s.conf.IndexerDB
-//
-//	var post []*indexerdb.Post
-//	if err := query.Where("created_by = ?", userId).Find(&post).Error; err != nil {
-//		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address} and a notification Id"), "need a wallet address")
-//	}
-//
-//	//pbnotifications := make([]*feedpb.Post, len(post))
-//	for i, d := range post {
-//		userReactions := d.UserReactions
-//		for k, reaction := range userReactions {
-//			print(reaction, k, i)
-//
-//			//notification := indexerdb.Notification{
-//			//	UserId:    d.AuthorId,
-//			//	Body:      userReactions,
-//			//	Type:      "post-" + strconv.Itoa(int(d.Category)),
-//			//	Timestamp: d.CreatedAt,
-//			//	TriggerBy: userReactions.Value,
-//			//}
-//			//if err := s.conf.IndexerDB.Create(&notification).Error; err != nil {
-//			//	return errors.Wrap(err, "failed to create post")
-//			//}
-//		}
-//	}
-//	return &notificationpb.DismissNotificationResponse{
-//		Ok: true,
-//	}, nil
-//}
+func (s *NotificationService) UpdateNotifications(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.DismissNotificationResponse, error) {
+	userId := req.GetUserId()
+	query := s.conf.IndexerDB
+
+	var post []*indexerdb.Post
+	if err := query.Where("created_by = ?", userId).Find(&post).Error; err != nil {
+		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address} and a notification Id"), "need a wallet address")
+
+	}
+
+	//pbnotifications := make([]*feedpb.Post, len(post))
+	for i, d := range post {
+		userReactions := d.UserReactions
+		for emoji, users := range userReactions {
+
+			print(users, emoji, i)
+
+			for _, user := range users.([]interface{}) {
+				print(user)
+				notification := indexerdb.Notification{
+					UserId:    networks.UserID(userId),
+					Body:      "user " + user.(string) + " reaction" + emoji,
+					Category:  d.Category,
+					CreatedAt: d.CreatedAt,
+					TriggerBy: networks.UserID(user.(string)),
+				}
+				if err := s.conf.PersistentDB.Create(&notification).Error; err != nil {
+					return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address} and a notification Id"), "need a wallet address")
+				}
+			}
+
+		}
+	}
+	return &notificationpb.DismissNotificationResponse{
+		Ok: true,
+	}, nil
+}

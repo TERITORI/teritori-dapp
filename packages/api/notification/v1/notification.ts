@@ -335,6 +335,10 @@ export interface NotificationService {
     request: DeepPartial<NotificationsRequest>,
     metadata?: grpc.Metadata,
   ): Promise<DismissNotificationResponse>;
+  UpdateNotifications(
+    request: DeepPartial<NotificationsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<DismissNotificationResponse>;
 }
 
 export class NotificationServiceClientImpl implements NotificationService {
@@ -345,6 +349,7 @@ export class NotificationServiceClientImpl implements NotificationService {
     this.Notifications = this.Notifications.bind(this);
     this.DismissNotification = this.DismissNotification.bind(this);
     this.DismissAllNotification = this.DismissAllNotification.bind(this);
+    this.UpdateNotifications = this.UpdateNotifications.bind(this);
   }
 
   Notifications(request: DeepPartial<NotificationsRequest>, metadata?: grpc.Metadata): Promise<NotificationsResponse> {
@@ -368,6 +373,17 @@ export class NotificationServiceClientImpl implements NotificationService {
   ): Promise<DismissNotificationResponse> {
     return this.rpc.unary(
       NotificationServiceDismissAllNotificationDesc,
+      NotificationsRequest.fromPartial(request),
+      metadata,
+    );
+  }
+
+  UpdateNotifications(
+    request: DeepPartial<NotificationsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<DismissNotificationResponse> {
+    return this.rpc.unary(
+      NotificationServiceUpdateNotificationsDesc,
       NotificationsRequest.fromPartial(request),
       metadata,
     );
@@ -422,6 +438,28 @@ export const NotificationServiceDismissNotificationDesc: UnaryMethodDefinitionis
 
 export const NotificationServiceDismissAllNotificationDesc: UnaryMethodDefinitionish = {
   methodName: "DismissAllNotification",
+  service: NotificationServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return NotificationsRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...DismissNotificationResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const NotificationServiceUpdateNotificationsDesc: UnaryMethodDefinitionish = {
+  methodName: "UpdateNotifications",
   service: NotificationServiceDesc,
   requestStream: false,
   responseStream: false,
