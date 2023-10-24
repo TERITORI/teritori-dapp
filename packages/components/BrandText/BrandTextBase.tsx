@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, TextProps, StyleSheet } from "react-native";
+import { Text, TextProps, TextStyle } from "react-native";
 import TextTicker from "react-native-text-ticker";
 import { useSelector } from "react-redux";
 
@@ -33,12 +33,14 @@ export const BrandTextBase: React.FC<TextProps & { isTicker?: boolean }> = (
 const useStyles = () => {
   const isLightTheme = useSelector(selectIsLightTheme);
   // eslint-disable-next-line no-restricted-syntax
-  const styles = StyleSheet.create({
+  const styles: {
+    base: TextStyle;
+  } = {
     base: {
       color: isLightTheme ? "black" : "white",
       fontSize: 20,
       fontWeight: "600",
     },
-  });
+  };
   return styles;
 };
