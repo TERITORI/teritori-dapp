@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, TouchableOpacity, View } from "react-native";
 
 import { NFTView } from "./NFTView";
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
@@ -24,7 +24,8 @@ export const minNFTWidth = 250;
 export const NFTs: React.FC<{
   req: NFTsRequest;
   hideFilters?: boolean;
-}> = ({ req, hideFilters = false }) => {
+  onPressNFT?: (nft: NFT) => Promise<void>;
+}> = ({ req, hideFilters = false, onPressNFT }) => {
   const { nfts, fetchMore } = useNFTs(req);
 
   const { height } = useMaxResolution({ isLarge: true });
@@ -117,9 +118,27 @@ export const NFTs: React.FC<{
           ListEmptyComponent={
             <BrandText style={fontSemibold20}>No results found.</BrandText>
           }
-          renderItem={(info) => (
-            <NFTView key={info.item.id} data={info.item} style={nftViewStyle} />
-          )}
+          renderItem={(info) => {
+            const content = (
+              <NFTView
+                key={info.item.id}
+                data={info.item}
+                style={nftViewStyle}
+              />
+            );
+            if (!onPressNFT) {
+              return content;
+            }
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  onPressNFT(info.item);
+                }}
+              >
+                {content}
+              </TouchableOpacity>
+            );
+          }}
         />
       </View>
     </View>

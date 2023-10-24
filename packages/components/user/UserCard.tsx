@@ -40,7 +40,7 @@ import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
 export const UserCard: React.FC<{
   userId: string;
-  style: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
   daoId?: string;
 }> = ({ userId, style, daoId }) => {
   const [, userAddress] = parseUserId(userId);
@@ -53,7 +53,7 @@ export const UserCard: React.FC<{
   );
   const proposeToRemoveMember = useProposeToRemoveMember(daoId);
 
-  const flatStyle = StyleSheet.flatten(style);
+  const flatStyle = StyleSheet.flatten(style || {});
 
   const padding = 16;
   const width = typeof flatStyle.width === "number" ? flatStyle.width : 325;

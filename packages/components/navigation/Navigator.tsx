@@ -8,6 +8,7 @@ import { ToriPunks } from "../../screens/DAppStore/apps/toripunks/HomeScreen";
 import { FeedScreen } from "../../screens/Feed/FeedScreen";
 import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
 import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
+import { GameScreen } from "../../screens/Game/GameScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
 import { HashtagFeedScreen } from "../../screens/HashtagFeed/HashtagFeedScreen";
@@ -314,6 +315,11 @@ export const Navigator: React.FC = () => {
         name="CoreDAO"
         component={CoreDAOScreen}
         options={{ header: () => null, title: screenTitle("Core DAO") }}
+      />
+      <Stack.Screen
+        name="Game"
+        component={GameScreen}
+        options={{ header: () => null, title: screenTitle("Game") }}
       />
     </Stack.Navigator>
   );
