@@ -1,3 +1,4 @@
+import moment from "moment/moment";
 import React, { useRef } from "react";
 import {
   FlatList,
@@ -157,7 +158,9 @@ const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
                 justifyContent: "space-between",
               }}
             >
-              <BrandText style={fontSemibold12}>{item.timestamp}</BrandText>
+              <BrandText style={fontSemibold12}>
+                {moment.unix(item.timestamp).fromNow()}
+              </BrandText>
               <BrandText style={fontSemibold12}>{item.type}</BrandText>
             </View>
           </View>
