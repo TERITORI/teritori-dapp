@@ -2,11 +2,9 @@ package notification
 
 import (
 	"context"
-	"github.com/TERITORI/teritori-dapp/go/pkg/notificationpb"
-	"strconv"
-
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+	"github.com/TERITORI/teritori-dapp/go/pkg/notificationpb"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -41,7 +39,7 @@ func (s *NotificationService) Notifications(ctx context.Context, req *notificati
 		return nil, updateerr
 	}
 
-	query = query.Where("user_id = ? and dismissed = ?", userId, false)
+	query = query.Where("user_id = ? and dismissed = ?", userId, false).Order("created_at desc")
 
 	var notifications []*indexerdb.Notification
 	err := query.Find(&notifications).Error
@@ -54,10 +52,12 @@ func (s *NotificationService) Notifications(ctx context.Context, req *notificati
 
 		pbnotifications[i] = &notificationpb.Notification{
 			UserId:    string(d.UserId),
-			Body:      d.Body,
-			Type:      "post-" + strconv.Itoa(int(d.Category)),
-			Timestamp: d.CreatedAt,
 			TriggerBy: string(d.TriggerBy),
+			Body:      d.Body,
+			Action:    d.Action,
+			Category:  d.Category,
+			CreatedAt: d.CreatedAt,
+			Dismissed: d.Dismissed,
 		}
 	}
 
@@ -115,7 +115,6 @@ func (s *NotificationService) UpdateNotifications(ctx context.Context, req *noti
 
 	}
 
-	//pbnotifications := make([]*feedpb.Post, len(post))
 	for i, d := range post {
 		userReactions := d.UserReactions
 		for emoji, users := range userReactions {
@@ -126,14 +125,16 @@ func (s *NotificationService) UpdateNotifications(ctx context.Context, req *noti
 				print(user)
 				notification := indexerdb.Notification{
 					UserId:    networks.UserID(userId),
-					Body:      "user " + user.(string) + " reaction" + emoji,
-					Category:  d.Category,
-					CreatedAt: d.CreatedAt,
 					TriggerBy: networks.UserID(user.(string)),
+					Body:      emoji,
+					Action:    d.Identifier,
+					Category:  "reaction",
+					CreatedAt: d.CreatedAt,
 				}
-				if err := s.conf.PersistentDB.Create(&notification).Error; !errors.Is(err, gorm.ErrDuplicatedKey) {
-					return nil, errors.Wrap(errors.New(err.Error()), "Create notification record error")
-				}
+				s.conf.PersistentDB.Create(&notification)
+				//if err := s.conf.PersistentDB.Create(&notification).Error; err != nil && !errors.Is(err, gorm.ErrDuplicatedKey) {
+				//	return nil, errors.Wrap(errors.New(err.Error()), "Create notification record error")
+				//}
 			}
 
 		}
