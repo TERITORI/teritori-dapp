@@ -31,9 +31,11 @@ message NotificationsRequest {
 
 message Notification {
   string user_id = 1;
-  string body = 2;
-  string type = 3;
-  int64 timestamp = 4;
-  string trigger_by = 5;
+  string trigger_by = 2;
+  string body = 3;
+  string action = 4;
+  string category = 5;
+  int64 created_at = 6;
+  bool dismissed = 7;
 }
 // --

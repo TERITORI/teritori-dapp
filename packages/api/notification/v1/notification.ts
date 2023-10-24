@@ -27,10 +27,12 @@ export interface NotificationsResponse {
 
 export interface Notification {
   userId: string;
-  body: string;
-  type: string;
-  timestamp: number;
   triggerBy: string;
+  body: string;
+  action: string;
+  category: string;
+  createdAt: number;
+  dismissed: boolean;
 }
 
 function createBaseDismissNotificationRequest(): DismissNotificationRequest {
@@ -241,7 +243,7 @@ export const NotificationsResponse = {
 };
 
 function createBaseNotification(): Notification {
-  return { userId: "", body: "", type: "", timestamp: 0, triggerBy: "" };
+  return { userId: "", triggerBy: "", body: "", action: "", category: "", createdAt: 0, dismissed: false };
 }
 
 export const Notification = {
@@ -249,17 +251,23 @@ export const Notification = {
     if (message.userId !== "") {
       writer.uint32(10).string(message.userId);
     }
-    if (message.body !== "") {
-      writer.uint32(18).string(message.body);
-    }
-    if (message.type !== "") {
-      writer.uint32(26).string(message.type);
-    }
-    if (message.timestamp !== 0) {
-      writer.uint32(32).int64(message.timestamp);
-    }
     if (message.triggerBy !== "") {
-      writer.uint32(42).string(message.triggerBy);
+      writer.uint32(18).string(message.triggerBy);
+    }
+    if (message.body !== "") {
+      writer.uint32(26).string(message.body);
+    }
+    if (message.action !== "") {
+      writer.uint32(34).string(message.action);
+    }
+    if (message.category !== "") {
+      writer.uint32(42).string(message.category);
+    }
+    if (message.createdAt !== 0) {
+      writer.uint32(48).int64(message.createdAt);
+    }
+    if (message.dismissed === true) {
+      writer.uint32(56).bool(message.dismissed);
     }
     return writer;
   },
@@ -275,16 +283,22 @@ export const Notification = {
           message.userId = reader.string();
           break;
         case 2:
-          message.body = reader.string();
+          message.triggerBy = reader.string();
           break;
         case 3:
-          message.type = reader.string();
+          message.body = reader.string();
           break;
         case 4:
-          message.timestamp = longToNumber(reader.int64() as Long);
+          message.action = reader.string();
           break;
         case 5:
-          message.triggerBy = reader.string();
+          message.category = reader.string();
+          break;
+        case 6:
+          message.createdAt = longToNumber(reader.int64() as Long);
+          break;
+        case 7:
+          message.dismissed = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -297,30 +311,36 @@ export const Notification = {
   fromJSON(object: any): Notification {
     return {
       userId: isSet(object.userId) ? String(object.userId) : "",
-      body: isSet(object.body) ? String(object.body) : "",
-      type: isSet(object.type) ? String(object.type) : "",
-      timestamp: isSet(object.timestamp) ? Number(object.timestamp) : 0,
       triggerBy: isSet(object.triggerBy) ? String(object.triggerBy) : "",
+      body: isSet(object.body) ? String(object.body) : "",
+      action: isSet(object.action) ? String(object.action) : "",
+      category: isSet(object.category) ? String(object.category) : "",
+      createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
+      dismissed: isSet(object.dismissed) ? Boolean(object.dismissed) : false,
     };
   },
 
   toJSON(message: Notification): unknown {
     const obj: any = {};
     message.userId !== undefined && (obj.userId = message.userId);
-    message.body !== undefined && (obj.body = message.body);
-    message.type !== undefined && (obj.type = message.type);
-    message.timestamp !== undefined && (obj.timestamp = Math.round(message.timestamp));
     message.triggerBy !== undefined && (obj.triggerBy = message.triggerBy);
+    message.body !== undefined && (obj.body = message.body);
+    message.action !== undefined && (obj.action = message.action);
+    message.category !== undefined && (obj.category = message.category);
+    message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
+    message.dismissed !== undefined && (obj.dismissed = message.dismissed);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<Notification>, I>>(object: I): Notification {
     const message = createBaseNotification();
     message.userId = object.userId ?? "";
-    message.body = object.body ?? "";
-    message.type = object.type ?? "";
-    message.timestamp = object.timestamp ?? 0;
     message.triggerBy = object.triggerBy ?? "";
+    message.body = object.body ?? "";
+    message.action = object.action ?? "";
+    message.category = object.category ?? "";
+    message.createdAt = object.createdAt ?? 0;
+    message.dismissed = object.dismissed ?? false;
     return message;
   },
 };

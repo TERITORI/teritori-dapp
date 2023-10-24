@@ -14,6 +14,7 @@ import { BellIcon } from "react-native-heroicons/outline";
 import { TOP_MENU_BUTTON_HEIGHT } from "./TopMenu";
 import { Notification } from "../../api/notification/v1/notification";
 import { useDropdowns } from "../../context/DropdownsProvider";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useNotifications } from "../../hooks/useNotifications";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
@@ -25,13 +26,15 @@ import {
 } from "../../utils/style/colors";
 import { fontBold16, fontSemibold12 } from "../../utils/style/fonts";
 import { headerHeight, layout, topMenuWidth } from "../../utils/style/layout";
+import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { OmniLink } from "../OmniLink";
 import { UserNameInline } from "../UserNameInline";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const NotificationDrawer: React.FC = () => {
-  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
+  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
+    useDropdowns();
 
   const dropdownRef = useRef<View>(null);
 
@@ -73,14 +76,6 @@ export const NotificationDrawer: React.FC = () => {
   );
 };
 
-// interface Notification {
-//   image: string;
-//   text: string;
-//   linkTo: OmniLinkToType;
-//   timestamp: string;
-//   type: string;
-// }
-
 const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
   style,
 }) => {
@@ -105,8 +100,14 @@ const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
         }}
       >
         <FlatList
+          key="notification-list"
           data={notifications}
-          renderItem={({ item }) => <NotificationItem item={item} />}
+          renderItem={({ item }) => (
+            <NotificationItem
+              key={`${item.triggerBy}-${item.createdAt}`}
+              item={item}
+            />
+          )}
         />
       </ScrollView>
     </TertiaryBox>
@@ -116,7 +117,10 @@ const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
 const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
   return (
     <OmniLink
-      to={{ screen: "Settings" }}
+      to={{
+        screen: "FeedPostView",
+        params: { id: item.action },
+      }}
       style={{
         padding: layout.spacing_x1,
         borderBottomWidth: 1,
@@ -149,7 +153,7 @@ const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
         </View>
         <View style={{ flex: 4 }}>
           <View>
-            <BrandText style={fontBold16}>{item.body}</BrandText>
+            <BrandText style={fontBold16}>{useBuildBodyText(item)}</BrandText>
             <View
               style={{
                 marginTop: layout.spacing_x1,
@@ -159,13 +163,23 @@ const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
               }}
             >
               <BrandText style={fontSemibold12}>
-                {moment.unix(item.timestamp).fromNow()}
+                {moment.unix(item.createdAt).fromNow()}
               </BrandText>
-              <BrandText style={fontSemibold12}>{item.type}</BrandText>
+              <BrandText style={fontSemibold12}>{item.category}</BrandText>
             </View>
           </View>
         </View>
       </View>
     </OmniLink>
   );
+};
+
+const useBuildBodyText = (item: Notification) => {
+  const userInfo = useNSUserInfo(item.triggerBy);
+  const name =
+    userInfo?.metadata?.tokenId || tinyAddress(item.triggerBy, 30) || "";
+
+  if (item.category === "reaction") {
+    return `${name} ${item.body} your post.`;
+  }
 };

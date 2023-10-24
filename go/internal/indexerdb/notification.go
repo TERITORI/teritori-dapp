@@ -9,7 +9,8 @@ type Notification struct {
 	UserId    networks.UserID `gorm:"index"`
 	TriggerBy networks.UserID `gorm:"index:unique_triggerBy_body,unique"`
 	Body      string          `gorm:"index:unique_triggerBy_body,unique"`
-	Category  uint32          `gorm:"index"`
+	Action    string
+	Category  string
 	CreatedAt int64
 	Dismissed bool `gorm:"default:false"`
 }
