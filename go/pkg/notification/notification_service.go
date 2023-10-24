@@ -131,8 +131,8 @@ func (s *NotificationService) UpdateNotifications(ctx context.Context, req *noti
 					CreatedAt: d.CreatedAt,
 					TriggerBy: networks.UserID(user.(string)),
 				}
-				if err := s.conf.PersistentDB.Create(&notification).Error; err != nil {
-					return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address} and a notification Id"), "need a wallet address")
+				if err := s.conf.PersistentDB.Create(&notification).Error; !errors.Is(err, gorm.ErrDuplicatedKey) {
+					return nil, errors.Wrap(errors.New(err.Error()), "Create notification record error")
 				}
 			}
 
