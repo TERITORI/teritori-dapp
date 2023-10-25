@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { View, ViewStyle, TextStyle, StyleProp } from "react-native";
 
-import AddLibrary from "../../../../../assets/icons/video-player/add-library.svg";
 import Link from "../../../../../assets/icons/video-player/link.svg";
-import RemoveLibrary from "../../../../../assets/icons/video-player/remove-library.svg";
 import Tip from "../../../../../assets/icons/video-player/tip-other.svg";
 import Trash from "../../../../../assets/icons/video-player/trash.svg";
 import { signingVideoPlayerClient } from "../../../../client-creators/videoplayerClient";
@@ -12,7 +10,6 @@ import { useCopyToClipboard } from "../../../../components/CopyToClipboard";
 import { SVG } from "../../../../components/SVG";
 import { TipModal } from "../../../../components/socialFeed/SocialActions/TipModal";
 import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
-import { HoverView } from "../../../../components/videoPlayer/HoverView";
 import { useFeedbacks } from "../../../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
@@ -26,6 +23,7 @@ import {
 import { fontSemibold13 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { VideoInfoWithMeta } from "../../../../utils/types/video";
+import { HoverView } from "../../../Video/component/HoverView";
 
 interface Props {
   video: VideoInfoWithMeta;
@@ -36,7 +34,6 @@ interface Props {
 }
 export const VideoHoverMenu: React.FC<Props> = ({
   video,
-  isInLibrary,
   isAlbumScreen,
   owner,
   style,
@@ -47,58 +44,6 @@ export const VideoHoverMenu: React.FC<Props> = ({
   const [tipModalVisible, setTipModalVisible] = useState<boolean>(false);
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { copyToClipboard } = useCopyToClipboard();
-
-  const addToLibrary = async () => {
-    if (!selectedWallet?.connected || !selectedWallet.address || !video.id) {
-      return;
-    }
-    const client = await signingVideoPlayerClient({
-      networkId: selectedNetworkId,
-      walletAddress: selectedWallet.address,
-    });
-    try {
-      const res = await client.addToLibrary({
-        identifier: video.id,
-      });
-      if (res.transactionHash) {
-        setToastSuccess({
-          title: "Add video to my library",
-          message: `tx_hash: ${res.transactionHash}`,
-        });
-      }
-    } catch (err) {
-      setToastError({
-        title: "Failed to add video to my library",
-        message: `Error: ${err}`,
-      });
-    }
-  };
-
-  const removeFromLibrary = async () => {
-    if (!selectedWallet?.connected || !selectedWallet.address || !video.id) {
-      return;
-    }
-    const client = await signingVideoPlayerClient({
-      networkId: selectedNetworkId,
-      walletAddress: selectedWallet.address,
-    });
-    try {
-      const res = await client.removeFromLibrary({
-        identifier: video.id,
-      });
-      if (res.transactionHash) {
-        setToastSuccess({
-          title: "remove video from my library",
-          message: `tx_hash: ${res.transactionHash}`,
-        });
-      }
-    } catch (err) {
-      setToastError({
-        title: "Failed to remove video from my library",
-        message: `Error: ${err}`,
-      });
-    }
-  };
 
   const deleteVideo = async () => {
     if (!selectedWallet?.connected || !selectedWallet.address || !video.id) {
@@ -148,48 +93,51 @@ export const VideoHoverMenu: React.FC<Props> = ({
           <SpacerColumn size={0.75} />
         </>
       )}
-      {selectedWallet &&
-        userId !== video.createdBy &&
-        isInLibrary &&
-        !isAlbumScreen && (
-          <>
-            <HoverView
-              normalStyle={unitBoxNormalStyle}
-              hoverStyle={unitBoxHoveredStyle}
-              onPress={removeFromLibrary}
-            >
-              <View style={oneLineStyle}>
-                <SVG source={RemoveLibrary} width={16} height={16} />
-                <SpacerRow size={1} />
-                <BrandText style={textStyle}>Remove from library</BrandText>
-              </View>
-            </HoverView>
-            <SpacerColumn size={0.75} />
-            <View style={divideLineStyle} />
-            <SpacerColumn size={0.75} />
-          </>
-        )}
-      {selectedWallet &&
-        userId !== video.createdBy &&
-        !isInLibrary &&
-        !isAlbumScreen && (
-          <>
-            <HoverView
-              normalStyle={unitBoxNormalStyle}
-              hoverStyle={unitBoxHoveredStyle}
-              onPress={addToLibrary}
-            >
-              <View style={oneLineStyle}>
-                <SVG source={AddLibrary} width={16} height={16} />
-                <SpacerRow size={1} />
-                <BrandText style={textStyle}>Add to library</BrandText>
-              </View>
-            </HoverView>
-            <SpacerColumn size={0.75} />
-            <View style={divideLineStyle} />
-            <SpacerColumn size={0.75} />
-          </>
-        )}
+      {/*TODO: Flag video*/}
+
+      {/*{selectedWallet &&*/}
+      {/*  userId !== video.createdBy &&*/}
+      {/*  isInLibrary &&*/}
+      {/*  !isAlbumScreen && (*/}
+      {/*    <>*/}
+      {/*      <HoverView*/}
+      {/*        normalStyle={unitBoxNormalStyle}*/}
+      {/*        hoverStyle={unitBoxHoveredStyle}*/}
+      {/*        onPress={removeFromLibrary}*/}
+      {/*      >*/}
+      {/*        <View style={oneLineStyle}>*/}
+      {/*          <SVG source={RemoveLibrary} width={16} height={16} />*/}
+      {/*          <SpacerRow size={1} />*/}
+      {/*          <BrandText style={textStyle}>Remove from library</BrandText>*/}
+      {/*        </View>*/}
+      {/*      </HoverView>*/}
+      {/*      <SpacerColumn size={0.75} />*/}
+      {/*      <View style={divideLineStyle} />*/}
+      {/*      <SpacerColumn size={0.75} />*/}
+      {/*    </>*/}
+      {/*  )}*/}
+
+      {/*{selectedWallet &&*/}
+      {/*  userId !== video.createdBy &&*/}
+      {/*  !isInLibrary &&*/}
+      {/*  !isAlbumScreen && (*/}
+      {/*    <>*/}
+      {/*      <HoverView*/}
+      {/*        normalStyle={unitBoxNormalStyle}*/}
+      {/*        hoverStyle={unitBoxHoveredStyle}*/}
+      {/*        onPress={addToLibrary}*/}
+      {/*      >*/}
+      {/*        <View style={oneLineStyle}>*/}
+      {/*          <SVG source={AddLibrary} width={16} height={16} />*/}
+      {/*          <SpacerRow size={1} />*/}
+      {/*          <BrandText style={textStyle}>Add to library</BrandText>*/}
+      {/*        </View>*/}
+      {/*      </HoverView>*/}
+      {/*      <SpacerColumn size={0.75} />*/}
+      {/*      <View style={divideLineStyle} />*/}
+      {/*      <SpacerColumn size={0.75} />*/}
+      {/*    </>*/}
+      {/*  )}*/}
       {selectedWallet && userId !== video.createdBy && !isAlbumScreen && (
         <>
           <HoverView

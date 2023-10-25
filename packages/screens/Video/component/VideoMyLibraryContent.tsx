@@ -5,24 +5,29 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
+import { CreateVideoModal } from "./CreateVideoModal";
 import Logo from "../../../../assets/logos/logo.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { SpacerRow } from "../../../components/spacer";
-import { CreateVideoModal } from "../../../components/videoPlayer/CreateVideoModal";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { useFetchVideosForLibrary } from "../../../hooks/video/useFetchVideosForLibrary";
+import { useFetchLibraryIds } from "../../../hooks/videoplayer/useFetchLibraryIds";
+import { useFetchOtherAlbums } from "../../../hooks/videoplayer/useFetchOtherVideos";
 import {
-  useUserFetchVideos,
+  useFetchUserVideos,
   combineFetchVideoPages,
-} from "../../../hooks/video/useUserFetchVideos";
+} from "../../../hooks/videoplayer/useFetchUserVideos";
 import { getUserId } from "../../../networks";
 import { primaryColor } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { VideoCard } from "../../VideoDetail/components/VideoCard";
+import {
+  VIDEO_CARD_WIDTH,
+  VideoCard,
+} from "../../VideoDetail/components/VideoCard";
 
+const FLAT_LIST_SEPARATOR_WIDTH = 20;
 export const VideoMyLibraryContent: React.FC = () => {
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
@@ -33,15 +38,25 @@ export const VideoMyLibraryContent: React.FC = () => {
   const wallet = useSelectedWallet();
   const userId = getUserId(selectedNetworkId, wallet?.address);
 
-  const { data: libraryVideos } = useFetchVideosForLibrary();
-  const videoListForLibrary = useMemo(
-    () => (libraryVideos ? libraryVideos : []),
-    [libraryVideos]
-  );
+  // const { data: libraryVideos } = useFetchVideosForLibrary();
+  // const videoListForLibrary = useMemo(
+  //   () => (libraryVideos ? libraryVideos : []),
+  //   [libraryVideos]
+  // );
 
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
+  const [flatListWidth, setFlatListWidth] = useState(0);
+  const [flatListOthersWidth, setFlatListOthersWidth] = useState(0);
+  const elemsPerRow =
+    Math.floor(
+      flatListWidth / (VIDEO_CARD_WIDTH + FLAT_LIST_SEPARATOR_WIDTH)
+    ) || 1;
+  const elemsOthersPerRow =
+    Math.floor(
+      flatListOthersWidth / (VIDEO_CARD_WIDTH + FLAT_LIST_SEPARATOR_WIDTH)
+    ) || 1;
   const { data, isFetching, hasNextPage, fetchNextPage, isLoading } =
-    useUserFetchVideos({
+    useFetchUserVideos({
       limit: 10,
       offset: 0,
       createdBy: userId,
@@ -50,6 +65,23 @@ export const VideoMyLibraryContent: React.FC = () => {
   const myVideos = useMemo(
     () => (data ? combineFetchVideoPages(data.pages) : []),
     [data]
+  );
+
+  const {
+    data: dataOther,
+    // isFetching: isFetchingOther,
+    // hasNextPage: hasNextPageOther,
+    // fetchNextPage: fetchNextPageOther,
+    // isLoading: isLoadingOther,
+    // refetch: refetchOther,
+  } = useFetchOtherAlbums({
+    user: userId,
+    // limit: 10,
+    // offset: 0,
+  });
+  const otherAlbums = useMemo(
+    () => (dataOther ? combineFetchVideoPages(dataOther.pages) : []),
+    [dataOther]
   );
 
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
@@ -115,17 +147,25 @@ export const VideoMyLibraryContent: React.FC = () => {
       </View>
       <View style={contentGroupStyle}>
         <Animated.FlatList
+          onLayout={(e) => setFlatListWidth(e.nativeEvent.layout.width)}
+          key={`video-library-flat-list-${elemsPerRow}`}
           scrollEventThrottle={0.1}
           data={myVideos}
-          numColumns={4}
-          renderItem={({ item: videoInfo }) => (
-            <View style={videosGridStyle}>
-              <VideoCard video={videoInfo} />
-            </View>
+          numColumns={elemsPerRow}
+          renderItem={({ item: videoInfo, index }) => (
+            <>
+              <VideoCard video={videoInfo} hideAuthor />
+              {index !== elemsPerRow - 1 && (
+                <SpacerRow size={FLAT_LIST_SEPARATOR_WIDTH / 8} />
+              )}
+            </>
           )}
           onScroll={scrollHandler}
           onEndReachedThreshold={1}
           onEndReached={onEndReached}
+          ItemSeparatorComponent={() => (
+            <SpacerColumn size={FLAT_LIST_SEPARATOR_WIDTH / 8} />
+          )}
         />
       </View>
 
@@ -134,17 +174,23 @@ export const VideoMyLibraryContent: React.FC = () => {
       </View>
       <View style={contentGroupStyle}>
         <Animated.FlatList
+          onLayout={(e) => setFlatListOthersWidth(e.nativeEvent.layout.width)}
+          key={`video-library-others-flat-list-${elemsOthersPerRow}`}
           scrollEventThrottle={0.1}
-          data={videoListForLibrary}
-          numColumns={4}
-          renderItem={({ item: videoInfo }) => (
-            <View style={videosGridStyle}>
+          data={otherAlbums}
+          numColumns={elemsOthersPerRow}
+          renderItem={({ item: videoInfo, index }) => (
+            <>
               <VideoCard video={videoInfo} />
-            </View>
+              {index !== elemsOthersPerRow - 1 && (
+                <SpacerRow size={FLAT_LIST_SEPARATOR_WIDTH / 8} />
+              )}
+            </>
           )}
           onScroll={scrollHandlerOther}
           onEndReachedThreshold={1}
           onEndReached={onEndReachedOther}
+          ItemSeparatorComponent={() => <SpacerColumn size={2.5} />}
         />
       </View>
       <CreateVideoModal
@@ -187,7 +233,4 @@ const buttonContainerStyle: ViewStyle = {
 const buttonTextStyle: TextStyle = {
   ...fontSemibold14,
   color: primaryColor,
-};
-const videosGridStyle: ViewStyle = {
-  margin: layout.spacing_x3,
 };

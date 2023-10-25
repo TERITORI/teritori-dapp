@@ -8,6 +8,7 @@ import { errorColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { LocalFileData, RemoteFileData } from "../../utils/types/files";
+import { VideoMetaInfo } from "../../utils/types/video";
 import { BrandText } from "../BrandText";
 
 interface VideoPreviewProps {
@@ -25,6 +26,14 @@ export const VideoView: React.FC<VideoPreviewProps> = ({
   postId,
   isEditable = false,
 }) => {
+  const videoMetaInfo: VideoMetaInfo = {
+    title: "Video from Social Feed",
+    description: "",
+    url: file.url,
+    image: file.thumbnailFileData?.url || "",
+    duration: 0,
+  };
+
   if (!file?.url)
     return (
       <BrandText style={[fontSemibold13, { color: errorColor }]}>
@@ -42,8 +51,7 @@ export const VideoView: React.FC<VideoPreviewProps> = ({
         <DeleteButton onPress={() => onDelete(file)} />
       )}
       <MediaPlayerVideo
-        videoUrl={file.url}
-        thumbnailUrl={file.thumbnailFileData?.url}
+        videoMetaInfo={videoMetaInfo}
         style={{
           height: 400,
           marginTop: layout.spacing_x2,

@@ -10,7 +10,6 @@ interface Props {
   textStyle?: StyleProp<TextStyle>;
 }
 export const DateTime = ({ date, textStyle }: Props) => {
-  console.log("datedatedatedate", date);
   const [isFullDate, setIsFullDate] = useState(false);
 
   return (
