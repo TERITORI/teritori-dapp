@@ -129,71 +129,7 @@ export const getNotificationClient = (networkId: string | undefined) => {
   return notificationClients[network.id];
 };
 
-export const mustGetNotificationClient = (
-  networkId:
-    | (NetworkInfoBase & {
-        kind: NetworkKind.Cosmos;
-        chainId: string;
-        addressPrefix: string;
-        restEndpoint: string;
-        rpcEndpoint: string;
-        stakeCurrency: string;
-        gasPriceStep: { low: number; average: number; high: number };
-        cosmosFeatures: string[];
-        walletUrlForStaking?: string;
-        nameServiceContractAddress?: string;
-        nameServiceDefaultImage?: string;
-        nameServiceTLD?: string;
-        vaultContractAddress?: string;
-        distributorContractAddress?: string;
-        riotContractAddressGen0?: string;
-        riotContractAddressGen1?: string;
-        riotSquadStakingContractAddressV1?: string;
-        riotSquadStakingContractAddressV2?: string;
-        riotersFooterContractAddress?: string;
-        socialFeedContractAddress?: string;
-        daoCw20CodeId?: number;
-        daoFactoryCodeId?: number;
-        daoCoreCodeId?: number;
-        daoPreProposeSingleCodeId?: number;
-        daoProposalSingleCodeId?: number;
-        daoVotingCw20StakedCodeId?: number;
-        daoCw20StakeCodeId?: number;
-        daoCw4GroupCodeId?: number;
-        daoVotingCw4CodeId?: number;
-        daoFactoryContractAddress?: string;
-        coreDAOAddress?: string;
-      })
-    | (NetworkInfoBase & {
-        kind: NetworkKind.Ethereum;
-        endpoint: string;
-        chainId: number;
-        alchemyApiKey: string;
-        theGraphEndpoint: string;
-        vaultContractAddress: string;
-        riotContractAddress: string;
-      })
-    | (NetworkInfoBase & {
-        kind: NetworkKind.Gno;
-        chainId: string;
-        endpoint: string;
-        stakeCurrency: string;
-        vaultContractAddress: string;
-        nameServiceContractAddress: string;
-        nameServiceDefaultImage: string;
-        gnowebURL: string;
-        daoRegistryPkgPath?: string;
-        modboardsPkgPath?: string;
-        socialFeedsPkgPath?: string;
-        socialFeedsDAOPkgPath?: string;
-        votingGroupPkgPath?: string;
-        daoProposalSinglePkgPath?: string;
-        daoInterfacesPkgPath?: string;
-        daoCorePkgPath?: string;
-        groupsPkgPath?: string;
-        faucetURL?: string;
-      })
-) => {
+export const mustGetNotificationClient = (networkId: string | undefined) => {
   const client = getNotificationClient(networkId);
   if (!client) {
     throw new Error(
