@@ -33,8 +33,7 @@ import { UserNameInline } from "../UserNameInline";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const NotificationDrawer: React.FC = () => {
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
+  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
 
   const dropdownRef = useRef<View>(null);
 
