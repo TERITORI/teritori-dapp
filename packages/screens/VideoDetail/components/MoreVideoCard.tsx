@@ -2,15 +2,15 @@ import React from "react";
 import { View, Image, ViewStyle, TextStyle, ImageStyle } from "react-native";
 import { Pressable } from "react-native-hoverable";
 
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { prettyMediaDuration } from "../../utils/mediaPlayer";
-import { useAppNavigation } from "../../utils/navigation";
-import { neutral77 } from "../../utils/style/colors";
-import { fontSemibold14, fontMedium14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { VideoInfoWithMeta } from "../../utils/types/video";
-import { BrandText } from "../BrandText";
-import { DateTime } from "../socialFeed/SocialThread/DateTime";
+import { BrandText } from "../../../components/BrandText";
+import { DateTime } from "../../../components/socialFeed/SocialThread/DateTime";
+import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
+import { prettyMediaDuration } from "../../../utils/mediaPlayer";
+import { useAppNavigation } from "../../../utils/navigation";
+import { neutral77 } from "../../../utils/style/colors";
+import { fontSemibold14, fontMedium14 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { VideoInfoWithMeta } from "../../../utils/types/video";
 
 const unitWidth = 300;
 export const MoreVideoPlayerCard: React.FC<{
@@ -28,7 +28,7 @@ export const MoreVideoPlayerCard: React.FC<{
         >
           <Image
             // @ts-ignore
-            source={ipfsURLToHTTPURL(item.videoMetaInfo.coverImage)}
+            source={ipfsURLToHTTPURL(video.videoMetaInfo.coverImage)}
             style={contentImgStyle}
           />
           <View style={videoDurationStyle}>

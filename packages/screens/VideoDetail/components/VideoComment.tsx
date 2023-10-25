@@ -1,15 +1,15 @@
 import React, { FC, useMemo } from "react";
-import { TextStyle, View } from "react-native";
+import { View } from "react-native";
 
 import { CommentInfo } from "../../../api/video/v1/video";
 import { BrandText } from "../../../components/BrandText";
 import { UserAvatarWithFrame } from "../../../components/images/AvatarWithFrame";
 import { DateTime } from "../../../components/socialFeed/SocialThread/DateTime";
+import { SpacerRow } from "../../../components/spacer";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { parseUserId } from "../../../networks";
-import { neutral77 } from "../../../utils/style/colors";
-import { fontMedium14, fontSemibold13 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { neutral77, primaryColor } from "../../../utils/style/colors";
+import { fontMedium13, fontSemibold14 } from "../../../utils/style/fonts";
 import { tinyAddress } from "../../../utils/text";
 
 export const VideoComment: FC<{
@@ -27,47 +27,29 @@ export const VideoComment: FC<{
     <View>
       <View
         style={{
-          display: "flex",
           flexDirection: "row",
-          alignItems: "center",
-          marginTop: "20px",
+          alignItems: "flex-start",
         }}
       >
-        <UserAvatarWithFrame
-          style={{
-            marginRight: layout.spacing_x2,
-          }}
-          userId={comment.createdBy}
-          size="S"
-        />
-        <BrandText style={blueContentsStyle}>{username}</BrandText>
-        <BrandText style={contentDateStyle}>
-          <DateTime
-            date={new Date(comment.createdAt * 1000).toISOString()}
-            textStyle={{ color: neutral77 }}
-          />
-        </BrandText>
+        <UserAvatarWithFrame userId={comment.createdBy} size="XXS" noFrame />
+        <SpacerRow size={2} />
+
+        <View style={{ width: "100%" }}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <BrandText style={[fontSemibold14, { color: primaryColor }]}>
+              {username}
+            </BrandText>
+            <SpacerRow size={1} />
+            <DateTime
+              date={new Date(comment.createdAt * 1000).toISOString()}
+              textStyle={{ color: neutral77 }}
+            />
+          </View>
+          <BrandText style={[fontMedium13, { width: "100%", maxWidth: 1200 }]}>
+            {comment.comment}
+          </BrandText>
+        </View>
       </View>
-      <BrandText style={commentContentStyle}>{comment.comment}</BrandText>
     </View>
   );
-};
-
-const contentDateStyle: TextStyle = {
-  ...fontMedium14,
-
-  color: neutral77,
-  marginLeft: "0.5em",
-};
-const blueContentsStyle: TextStyle = {
-  ...fontSemibold13,
-  color: "#16BBFF",
-};
-const commentContentStyle: TextStyle = {
-  marginTop: "0.5em",
-  display: "flex",
-  flexDirection: "row",
-  marginLeft: "40px",
-  fontSize: 13,
-  // gap: "0.6em",
 };

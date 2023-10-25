@@ -1,15 +1,9 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import {
-  Image,
-  ImageStyle,
-  Pressable,
-  TextInput,
-  TextStyle,
-  View,
-  ViewStyle,
-} from "react-native";
-import Animated from "react-native-reanimated";
+import { ResizeMode } from "expo-av";
+import React, { useEffect, useMemo, useState } from "react";
+import { Pressable, TextInput, TextStyle, View, ViewStyle } from "react-native";
+import Animated, { useSharedValue } from "react-native-reanimated";
 
+import { VideoCard } from "./components/VideoCard";
 import { VideoComment } from "./components/VideoComment";
 import TipIcon from "../../../assets/icons/tip.svg";
 import Dislike from "../../../assets/icons/video-player/dislike.svg";
@@ -21,63 +15,63 @@ import {
 } from "../../api/video/v1/video";
 import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
 import { BrandText } from "../../components/BrandText";
+import { OmniLink } from "../../components/OmniLink";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { UserAvatarWithFrame } from "../../components/images/AvatarWithFrame";
+import { DotSeparator } from "../../components/separators/DotSeparator";
 import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
 import { DateTime } from "../../components/socialFeed/SocialThread/DateTime";
-import { SpacerRow } from "../../components/spacer";
-import { MoreVideoPlayerCard } from "../../components/videoPlayer/MoreVideoCard";
-import { VideoTab } from "../../components/videoPlayer/VideoTab";
+import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { MediaPlayerVideo } from "../../context/MediaPlayerProvider";
 import { useGetPostFee } from "../../hooks/feed/useGetPostFee";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useFetchComments } from "../../hooks/video/useFetchComments";
-import { useFetchVideo } from "../../hooks/video/useFetchVideo";
-import { useIncreaseViewCount } from "../../hooks/video/useIncreaseViewCount";
+import { useFetchComments } from "../../hooks/videoplayer/useFetchComments";
+import {
+  combineFetchVideoPages,
+  useFetchUserVideos,
+} from "../../hooks/videoplayer/useFetchUserVideos";
+import { useFetchVideo } from "../../hooks/videoplayer/useFetchVideo";
+import { useIncreaseViewCount } from "../../hooks/videoplayer/useIncreaseViewCount";
 import {
   increaseDislike,
   increaseLike,
-} from "../../hooks/video/useLikeDislike";
-import {
-  combineFetchVideoPages,
-  useUserFetchVideos,
-} from "../../hooks/video/useUserFetchVideos";
-import { getUserId } from "../../networks";
+} from "../../hooks/videoplayer/useLikeDislike";
+import { getUserId, parseUserId } from "../../networks";
 import { defaultSocialFeedFee } from "../../utils/fee";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT } from "../../utils/social-feed";
-import { neutral77, secondaryColor } from "../../utils/style/colors";
 import {
-  fontMedium14,
+  neutral22,
+  neutral77,
+  primaryColor,
+  secondaryColor,
+} from "../../utils/style/colors";
+import {
+  fontMedium13,
+  fontSemibold13,
   fontSemibold14,
   fontSemibold16,
+  fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
+import { VideoTab } from "../Video/component/VideoTab";
 
 export const VideoDetailScreen: ScreenFC<"VideoDetail"> = ({
   route: {
     params: { id },
   },
 }) => {
-  // TODO: use MediaPlayerContext
-  // const { setVideoMeta, setVideoRef } = useVideoPlayer();
   const navigation = useAppNavigation();
-
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
   const userId = getUserId(selectedNetworkId, wallet?.address);
-
-  // TODO: use MediaPlayerContext
-  // const [videoListForLibrary, setVideoListForLibrary] = useState<VideoInfo[]>(
-  //   []
-  // );
   const { setToastError, setToastSuccess } = useFeedbacks();
   const [tipModalVisible, setTipModalVisible] = useState<boolean>(false);
   const { data: video } = useFetchVideo({ identifier: id });
@@ -85,66 +79,39 @@ export const VideoDetailScreen: ScreenFC<"VideoDetail"> = ({
     identifier: id,
     user: userId,
   });
-  const [createdBy] = useState("");
-  const authorNSInfo = useNSUserInfo(createdBy);
-  const [userAddress] = useState("");
+  const authorNSInfo = useNSUserInfo(video?.createdBy);
+  const [, userAddress] = parseUserId(video?.createdBy);
   const [likeNum, setLikeNum] = useState(0);
   const [dislikeNum, setDislikeNum] = useState(0);
   const [comment, setComment] = useState("");
-  const videoRef = useRef<HTMLVideoElement>(null);
   const { data: comments } = useFetchComments({
     identifier: id,
   });
   const [commentList, setCommentList] = useState<CommentInfo[]>([]);
   const { postFee } = useGetPostFee(selectedNetworkId, PostCategory.Normal);
+  const [isCreateCommentLoading, setCreateCommentLoading] = useState(false);
+  const inputMinHeight = 20;
+  const inputHeight = useSharedValue(inputMinHeight);
+  const inputMaxHeight = 400;
 
-  // TODO: use MediaPlayerContext
-  // useEffect(() => {
-  //   setVideoRef(videoRef);
-  // }, [videoRef, setVideoRef]);
+  const username = authorNSInfo?.metadata?.tokenId
+    ? authorNSInfo?.metadata?.tokenId
+    : tinyAddress(userAddress, 16);
 
   useEffect(() => {
-    if (!comments) return;
-    const comment_list: CommentInfo[] = [];
-    comments.map((comment) => {
-      comment_list.push(comment);
-    });
-    setCommentList(comment_list);
-  }, [comments]);
+    if (video) {
+      setLikeNum(video.like);
+      setDislikeNum(video.dislike);
+    }
+  }, [video, username]);
 
-  const username = useMemo(() => {
-    return authorNSInfo?.metadata?.tokenId
-      ? authorNSInfo?.metadata?.tokenId
-      : tinyAddress(userAddress);
-  }, [authorNSInfo, userAddress]);
-
-  // TODO: use MediaPlayerContext
-  // useEffect(() => {
-  //   if (data) {
-  //     setCreatedBy(data.createdBy);
-  //     const [, userAddr] = parseUserId(data.createdBy);
-  //     setUserAddress(userAddr);
-  //     setLikeNum(data.like);
-  //     setDislikeNum(data.dislike);
-  //     setVideoMeta((videoMeta) => {
-  //       return {
-  //         ...videoMeta,
-  //         title: data.videoMetaInfo.title,
-  //         createdBy: data.createdBy,
-  //         userName: username,
-  //         duration: data.videoMetaInfo.duration,
-  //       };
-  //     });
-  //   }
-  // }, [data, username, setVideoMeta]);
-
-  const { data: userVideos } = useUserFetchVideos({
+  const { data: userVideos } = useFetchUserVideos({
     createdBy: video?.createdBy!,
     offset: 0,
     limit: 10,
   });
 
-  const videos = useMemo(
+  const moreVideos = useMemo(
     () => (userVideos ? combineFetchVideoPages(userVideos.pages) : []),
     [userVideos]
   );
@@ -183,6 +150,7 @@ export const VideoDetailScreen: ScreenFC<"VideoDetail"> = ({
   };
 
   const handleComment = async () => {
+    setCreateCommentLoading(true);
     if (!video || !comment) return;
     if (!wallet || !wallet.connected || !wallet.address) {
       return;
@@ -201,6 +169,7 @@ export const VideoDetailScreen: ScreenFC<"VideoDetail"> = ({
         "",
         [{ amount: postFee.toString(), denom: "utori" }]
       );
+      console.log("resresresres", res);
 
       if (res.transactionHash) {
         setToastSuccess({
@@ -213,8 +182,21 @@ export const VideoDetailScreen: ScreenFC<"VideoDetail"> = ({
         title: "Failed to create comment",
         message: `Error: ${err}`,
       });
+    } finally {
+      setCreateCommentLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!comments) return;
+    const comment_list: CommentInfo[] = [];
+    comments.map((comment) => {
+      comment_list.push(comment);
+    });
+    setCommentList(comment_list);
+  }, [comments]);
+
+  console.log("moreVideosmoreVideosmoreVideosmoreVideos", moreVideos);
 
   if (!video) {
     return <></>;
@@ -222,9 +204,10 @@ export const VideoDetailScreen: ScreenFC<"VideoDetail"> = ({
   return (
     <ScreenContainer
       headerChildren={<BrandText>{video.videoMetaInfo.title}</BrandText>}
-      fullWidth
+      isLarge
+      responsive
     >
-      <View style={pageContainerStyle}>
+      <View style={{ width: "100%" }}>
         <VideoTab
           setTab={() => {
             navigation.navigate("Video");
@@ -234,134 +217,176 @@ export const VideoDetailScreen: ScreenFC<"VideoDetail"> = ({
         <View style={pagePanelStyle}>
           <View style={pageLeftPanelStyle}>
             {video && (
-              <video
-                src={ipfsURLToHTTPURL(video.videoMetaInfo.url)}
-                controls
-                ref={videoRef}
+              <MediaPlayerVideo
+                videoMetaInfo={video.videoMetaInfo}
+                videoId={video.id}
+                authorId={userId}
+                resizeMode={ResizeMode.CONTAIN}
                 style={{
-                  borderRadius: 10,
-                  paddingBottom: layout.spacing_x1_5,
+                  borderRadius: 8,
+                  maxHeight: 600,
                 }}
               />
             )}
-            <BrandText style={leftVideoNameStyle}>
+
+            <SpacerColumn size={1.5} />
+            <BrandText style={fontSemibold20}>
               {video?.videoMetaInfo.title}
             </BrandText>
+
+            <SpacerColumn size={1.5} />
             <View style={videoInfoStyle}>
               <View style={avatarDetailStyle}>
-                <Image
-                  source={require("../../../assets/icon.png")}
-                  style={avatarStyle}
-                />
-                <Pressable>
+                <OmniLink
+                  to={{
+                    screen: "UserPublicProfile",
+                    params: { id: video.createdBy },
+                  }}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  {/*---- User image */}
+                  <UserAvatarWithFrame
+                    userId={video.createdBy}
+                    size="XXS"
+                    noFrame
+                  />
+                  <SpacerRow size={1.5} />
                   <BrandText style={contentNameStyle}>@{username}</BrandText>
-                </Pressable>
+                </OmniLink>
               </View>
+
+              <SpacerRow size={1} />
               <View
                 style={{
-                  marginLeft: "0.5em",
                   display: "flex",
                   flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
-                <BrandText style={contentDescriptionStyle}>
+                <BrandText style={videoStatsTextStyle}>
                   {video?.viewCount} views
                 </BrandText>
-                {/* A dot separator */}
-                <View
-                  style={{
-                    backgroundColor: neutral77,
-                    height: 2,
-                    width: 2,
-                    borderRadius: 999,
-                    marginHorizontal: layout.spacing_x0_75,
-                  }}
+                <DotSeparator
+                  style={{ marginHorizontal: layout.spacing_x0_75 }}
                 />
-                {/*---- Date */}
                 <DateTime
-                  date={video.createdAt.toString()}
+                  date={new Date(video.createdAt * 1000).toDateString()}
                   textStyle={{ color: neutral77 }}
                 />
               </View>
               <View style={btnGroupStyle}>
                 <Pressable onPress={videoLike} style={buttonContainerStyle}>
                   <SVG source={Like} />
-                  <SpacerRow size={1.5} />
-                  <BrandText style={tipContentStyle}>{likeNum}</BrandText>
+                  <SpacerRow size={1} />
+                  <BrandText style={fontSemibold13}>{likeNum}</BrandText>
                 </Pressable>
+                <SpacerRow size={1.5} />
                 <Pressable onPress={videoDislike} style={buttonContainerStyle}>
                   <SVG source={Dislike} />
-                  <SpacerRow size={1.5} />
-                  <BrandText style={tipContentStyle}>{dislikeNum}</BrandText>
+                  <SpacerRow size={1} />
+                  <BrandText style={fontSemibold13}>{dislikeNum}</BrandText>
                 </Pressable>
+                <SpacerRow size={1.5} />
                 <Pressable onPress={tipVideo} style={buttonContainerStyle}>
                   <SVG source={TipIcon} />
-                  <SpacerRow size={1.5} />
-                  <BrandText style={tipContentStyle}>Tip</BrandText>
+                  <SpacerRow size={1} />
+                  <BrandText style={fontSemibold13}>Tip</BrandText>
                 </Pressable>
               </View>
             </View>
 
-            {/*<View style={blueContentsStyle} />*/}
-
-            <BrandText style={contentNameStyle}>
+            <SpacerColumn size={1.5} />
+            <BrandText style={fontMedium13}>
               {video?.videoMetaInfo.description}
             </BrandText>
-            <BrandText style={commentsStyle}>
+            <SpacerColumn size={3} />
+            <BrandText style={fontSemibold16}>
               {commentList.length} comments
             </BrandText>
+            <SpacerColumn size={1.5} />
             <View style={flexRowItemCenterStyle}>
-              <UserAvatarWithFrame
-                style={{
-                  marginRight: layout.spacing_x2,
-                }}
-                userId={userId}
-                size="S"
-              />
-              <TextInput
-                placeholder="Write your comment"
-                placeholderTextColor={neutral77}
-                onChangeText={handleTextChange}
-                style={[
-                  fontSemibold16,
-                  {
-                    height: 20,
+              <UserAvatarWithFrame userId={userId} size="XXS" noFrame />
+              <SpacerRow size={2} />
+              <View style={{ flex: 1 }}>
+                <TextInput
+                  value={comment}
+                  placeholder="Leave your comment here"
+                  placeholderTextColor={neutral77}
+                  onChangeText={handleTextChange}
+                  multiline
+                  onContentSizeChange={(e) => {
+                    // TODO: onContentSizeChange is not fired when deleting lines. We can only grow the input, but not shrink
+                    if (e.nativeEvent.contentSize.height < inputMaxHeight) {
+                      inputHeight.value = e.nativeEvent.contentSize.height;
+                    }
+                  }}
+                  style={[
+                    fontSemibold14,
+                    {
+                      height: comment
+                        ? inputHeight.value || inputMinHeight
+                        : inputMinHeight,
+                      width: "100%",
+                      color: secondaryColor,
+                      //@ts-ignore
+                      outlineStyle: "none",
+                      outlineWidth: 0,
+                    },
+                  ]}
+                />
+                <SpacerColumn size={0.5} />
+                <View
+                  style={{
                     width: "100%",
-                    color: secondaryColor,
-                    //@ts-ignore
-                    outlineStyle: "none",
-                    outlineWidth: 0,
-                  },
-                ]}
-              />
+                    height: 1,
+                    backgroundColor: neutral77,
+                  }}
+                />
+              </View>
+              <SpacerRow size={2} />
               <PrimaryButton
                 size="M"
                 text="Comment"
-                disabled={!comment.trim()}
+                disabled={!comment.trim() || !wallet}
+                isLoading={isCreateCommentLoading}
                 onPress={handleComment}
               />
             </View>
+
             {commentList.map((comment, index) => (
-              <VideoComment key={index} comment={comment} />
+              <>
+                <SpacerColumn size={2.5} />
+                <VideoComment key={index} comment={comment} />
+              </>
             ))}
           </View>
+
+          <SpacerRow size={3} />
           <View style={pageRightPanelStyle}>
             <BrandText style={rightTitleStyle}>
-              More videos from @nickname
+              More videos from
+              <OmniLink
+                to={{
+                  screen: "UserPublicProfile",
+                  params: { id: video.createdBy },
+                }}
+              >
+                <BrandText> @{username}</BrandText>
+              </OmniLink>
             </BrandText>
+
             <View style={flexColumnItemStyle}>
               <Animated.FlatList
                 scrollEventThrottle={0.1}
-                data={videos}
+                data={moreVideos}
                 numColumns={1}
-                renderItem={({ item: videoInfo }) => {
-                  if (videoInfo.id === video.id) return <></>;
-                  return (
-                    <View style={moreVideoGridStyle}>
-                      <MoreVideoPlayerCard video={videoInfo} />
-                    </View>
-                  );
-                }}
+                renderItem={({ item: videoInfo }) => (
+                  <VideoCard video={videoInfo} hideAuthor />
+                )}
+                ItemSeparatorComponent={() => <SpacerColumn size={2.5} />}
               />
             </View>
           </View>
@@ -388,12 +413,6 @@ const flexColumnItemStyle: ViewStyle = {
   display: "flex",
   flexDirection: "column",
 };
-const avatarStyle: ImageStyle = {
-  aspectRatio: 1,
-  width: "32px",
-  borderRadius: 1000,
-  marginRight: layout.spacing_x1,
-};
 const avatarDetailStyle: ViewStyle = {
   display: "flex",
   flexDirection: "row",
@@ -403,38 +422,25 @@ const videoInfoStyle: ViewStyle = {
   display: "flex",
   flexDirection: "row",
   alignItems: "center",
-  paddingBottom: layout.spacing_x1_5,
 };
 const btnGroupStyle: ViewStyle = {
   marginLeft: "auto",
   display: "flex",
   flexDirection: "row",
 };
-const commentsStyle: TextStyle = {
-  fontSize: 16,
-  marginTop: "1.5em",
-  marginBottom: "0.875em",
-};
 
 const buttonContainerStyle: ViewStyle = {
-  marginLeft: "0.5em",
   flexDirection: "row",
   alignItems: "center",
-  paddingLeft: layout.spacing_x1,
+  paddingLeft: layout.spacing_x1_5,
   paddingRight: layout.spacing_x1_5,
   paddingVertical: layout.spacing_x1,
-  backgroundColor: "#2B2B33",
+  backgroundColor: neutral22,
   borderRadius: layout.spacing_x4,
 };
-const pageContainerStyle: TextStyle = {
-  width: "100%",
-  paddingHorizontal: 80,
-  paddingBottom: 80,
-  fontFamily: "Exo_500Medium",
-  color: "white",
-};
+
 const pagePanelStyle: ViewStyle = {
-  paddingTop: layout.spacing_x1_5,
+  paddingTop: layout.spacing_x2_5,
   width: "100%",
   display: "flex",
   flexDirection: "row",
@@ -443,24 +449,16 @@ const pageLeftPanelStyle: ViewStyle = {
   flex: 1,
 };
 const pageRightPanelStyle: ViewStyle = {
-  paddingLeft: layout.spacing_x1_5,
-  paddingRight: layout.spacing_x1_5,
+  width: "100%",
+  maxWidth: 308,
 };
 const rightTitleStyle: TextStyle = {
-  fontFamily: "Exo_500Medium",
-  paddingBottom: layout.spacing_x1_5,
+  ...fontSemibold20,
+  paddingBottom: layout.spacing_x2_5,
 };
-const leftVideoNameStyle: TextStyle = {
-  fontFamily: "Exo_500Medium",
-  // fontSize: "1.5em",
-  paddingBottom: layout.spacing_x1_5,
-};
-const contentNameStyle: TextStyle = { ...fontSemibold14 };
-const contentDescriptionStyle: TextStyle = {
-  ...fontMedium14,
+
+const contentNameStyle: TextStyle = { ...fontSemibold14, color: primaryColor };
+const videoStatsTextStyle: TextStyle = {
+  ...fontMedium13,
   color: neutral77,
-};
-const tipContentStyle: TextStyle = { ...fontMedium14 };
-const moreVideoGridStyle: ViewStyle = {
-  margin: layout.spacing_x3,
 };

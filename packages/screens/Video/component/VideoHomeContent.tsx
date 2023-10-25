@@ -5,32 +5,41 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
+import { CreateVideoModal } from "./CreateVideoModal";
 import Upload from "../../../../assets/icons/upload.svg";
 import Logo from "../../../../assets/logos/logo.svg";
-import { GetVideoListRequest } from "../../../api/video/v1/video";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { SpacerRow } from "../../../components/spacer";
-import { CreateVideoModal } from "../../../components/videoPlayer/CreateVideoModal";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   combineFetchVideoPages,
   useFetchVideos,
-} from "../../../hooks/video/useFetchVideos";
+} from "../../../hooks/videoplayer/useFetchVideos";
 import { primaryColor } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { VideoCard } from "../../VideoDetail/components/VideoCard";
+import {
+  VIDEO_CARD_WIDTH,
+  VideoCard,
+} from "../../VideoDetail/components/VideoCard";
 
-export const VideoHomeContent: React.FC<{ req: GetVideoListRequest }> = ({
-  req,
-}) => {
+const FLAT_LIST_SEPARATOR_WIDTH = 20;
+export const VideoHomeContent: React.FC = () => {
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const { data, isFetching, hasNextPage, fetchNextPage, isLoading } =
-    useFetchVideos(req);
+    useFetchVideos({
+      limit: 10,
+      offset: 0,
+    });
 
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
+  const [flatListWidth, setFlatListWidth] = useState(0);
+  const elemsPerRow =
+    Math.floor(
+      flatListWidth / (VIDEO_CARD_WIDTH + FLAT_LIST_SEPARATOR_WIDTH)
+    ) || 1;
 
   const videos = useMemo(
     () => (data ? combineFetchVideoPages(data.pages) : []),
@@ -93,17 +102,25 @@ export const VideoHomeContent: React.FC<{ req: GetVideoListRequest }> = ({
       </View>
       <View style={contentGroupStyle}>
         <Animated.FlatList
+          onLayout={(e) => setFlatListWidth(e.nativeEvent.layout.width)}
+          key={`video-home-flat-list-${elemsPerRow}`}
           scrollEventThrottle={0.1}
           data={videos}
-          numColumns={4}
-          renderItem={({ item: videoInfo }) => (
-            <View style={videosGridStyle}>
+          numColumns={elemsPerRow}
+          renderItem={({ item: videoInfo, index }) => (
+            <>
               <VideoCard video={videoInfo} />
-            </View>
+              {index !== elemsPerRow - 1 && (
+                <SpacerRow size={FLAT_LIST_SEPARATOR_WIDTH / 8} />
+              )}
+            </>
           )}
           onScroll={scrollHandler}
           onEndReachedThreshold={1}
           onEndReached={onEndReached}
+          ItemSeparatorComponent={() => (
+            <SpacerColumn size={FLAT_LIST_SEPARATOR_WIDTH / 8} />
+          )}
         />
       </View>
       <CreateVideoModal
@@ -146,7 +163,4 @@ const buttonContainerStyle: ViewStyle = {
 const buttonTextStyle: TextStyle = {
   ...fontSemibold14,
   color: primaryColor,
-};
-const videosGridStyle: ViewStyle = {
-  margin: layout.spacing_x3,
 };
