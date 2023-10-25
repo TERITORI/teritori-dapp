@@ -182,4 +182,7 @@ const useBuildBodyText = (item: Notification) => {
   if (item.category === "reaction") {
     return `${name} ${item.body} your post.`;
   }
+  if (item.category === "comment") {
+    return `${name} commented your post.`;
+  }
 };

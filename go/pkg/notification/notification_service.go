@@ -112,34 +112,56 @@ func (s *NotificationService) UpdateNotifications(ctx context.Context, req *noti
 	var post []*indexerdb.Post
 	if err := query.Where("created_by = ?", userId).Find(&post).Error; err != nil {
 		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address} and a notification Id"), "need a wallet address")
-
 	}
 
-	for i, d := range post {
-		userReactions := d.UserReactions
-		for emoji, users := range userReactions {
-
-			print(users, emoji, i)
-
-			for _, user := range users.([]interface{}) {
-				print(user)
-				notification := indexerdb.Notification{
-					UserId:    networks.UserID(userId),
-					TriggerBy: networks.UserID(user.(string)),
-					Body:      emoji,
-					Action:    d.Identifier,
-					Category:  "reaction",
-					CreatedAt: d.CreatedAt,
-				}
-				s.conf.PersistentDB.Create(&notification)
-				//if err := s.conf.PersistentDB.Create(&notification).Error; err != nil && !errors.Is(err, gorm.ErrDuplicatedKey) {
-				//	return nil, errors.Wrap(errors.New(err.Error()), "Create notification record error")
-				//}
-			}
-
-		}
+	for _, d := range post {
+		createComment(d, userId, s)
+		createReaction(d, userId, s)
 	}
 	return &notificationpb.DismissNotificationResponse{
 		Ok: true,
 	}, nil
+}
+
+func createComment(d *indexerdb.Post, userId string, s *NotificationService) {
+
+	query := s.conf.IndexerDB
+	var comments []*indexerdb.Post
+	query.Where("parent_post_identifier = ? and created_by != ?", d.Identifier, userId).Find(&comments)
+
+	for _, d := range comments {
+
+		notification := indexerdb.Notification{
+			UserId:    networks.UserID(userId),
+			TriggerBy: d.AuthorId,
+			Body:      "comment-" + d.ParentPostIdentifier + "-" + d.Identifier,
+			Action:    d.ParentPostIdentifier,
+			Category:  "comment",
+			CreatedAt: d.CreatedAt,
+		}
+		s.conf.PersistentDB.Create(&notification)
+
+	}
+}
+
+func createReaction(d *indexerdb.Post, userId string, s *NotificationService) {
+	userReactions := d.UserReactions
+	for emoji, users := range userReactions {
+
+		for _, user := range users.([]interface{}) {
+			notification := indexerdb.Notification{
+				UserId:    networks.UserID(userId),
+				TriggerBy: networks.UserID(user.(string)),
+				Body:      emoji,
+				Action:    d.Identifier,
+				Category:  "reaction",
+				CreatedAt: d.CreatedAt,
+			}
+			s.conf.PersistentDB.Create(&notification)
+			//if err := s.conf.PersistentDB.Create(&notification).Error; err != nil && !errors.Is(err, gorm.ErrDuplicatedKey) {
+			//	return nil, errors.Wrap(errors.New(err.Error()), "Create notification record error")
+			//}
+		}
+
+	}
 }
