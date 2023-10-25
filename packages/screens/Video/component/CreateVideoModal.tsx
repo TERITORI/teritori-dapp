@@ -10,43 +10,43 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 
-import Add from "../../../assets/icons/add-alt.svg";
-import DefaultVideoImage from "../../../assets/icons/video-player/cover-img.png";
-import Img from "../../../assets/icons/video-player/img.svg";
-import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
-import ModalBase from "../../components/modals/ModalBase";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { MediaPlayerVideo } from "../../context/MediaPlayerProvider";
-import { useGetPostFee } from "../../hooks/feed/useGetPostFee";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId } from "../../networks";
-import { selectNFTStorageAPI } from "../../store/slices/settings";
-import { defaultSocialFeedFee } from "../../utils/fee";
+import Add from "../../../../assets/icons/add-alt.svg";
+import DefaultVideoImage from "../../../../assets/icons/video-player/cover-img.png";
+import Img from "../../../../assets/icons/video-player/img.svg";
+import { signingVideoPlayerClient } from "../../../client-creators/videoplayerClient";
+import { BrandText } from "../../../components/BrandText";
+import { DeleteButton } from "../../../components/FilePreview/DeleteButton";
+import { SVG } from "../../../components/SVG";
+import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { FileUploader } from "../../../components/fileUploader";
+import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
+import ModalBase from "../../../components/modals/ModalBase";
+import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { MediaPlayerVideo } from "../../../context/MediaPlayerProvider";
+import { useGetPostFee } from "../../../hooks/feed/useGetPostFee";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { getUserId } from "../../../networks";
+import { selectNFTStorageAPI } from "../../../store/slices/settings";
+import { defaultSocialFeedFee } from "../../../utils/fee";
 import {
   generateIpfsKey,
   ipfsURLToHTTPURL,
   uploadFileToIPFS,
-} from "../../utils/ipfs";
-import { IMAGE_MIME_TYPES, VIDEO_MIME_TYPES } from "../../utils/mime";
+} from "../../../utils/ipfs";
+import { IMAGE_MIME_TYPES, VIDEO_MIME_TYPES } from "../../../utils/mime";
 import {
   neutral30,
   neutral33,
   neutral77,
   primaryColor,
-} from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { LocalFileData } from "../../utils/types/files";
-import { VideoInfoWithMeta } from "../../utils/types/video";
-import { BrandText } from "../BrandText";
-import { DeleteButton } from "../FilePreview/DeleteButton";
-import { SVG } from "../SVG";
-import { PrimaryButton } from "../buttons/PrimaryButton";
-import { FileUploader } from "../fileUploader";
-import { TextInputCustom } from "../inputs/TextInputCustom";
-import { PostCategory } from "../socialFeed/NewsFeed/NewsFeed.type";
-import { SpacerColumn, SpacerRow } from "../spacer";
+} from "../../../utils/style/colors";
+import { fontSemibold14 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { LocalFileData } from "../../../utils/types/files";
+import { VideoInfoWithMeta } from "../../../utils/types/video";
 
 interface UploadAlbumModalProps {
   onClose: () => void;
@@ -280,7 +280,7 @@ export const CreateVideoModal: React.FC<UploadAlbumModalProps> = ({
           />
 
           <MediaPlayerVideo
-            videoUrl={videoInfo.videoMetaInfo.url}
+            videoMetaInfo={videoInfo.videoMetaInfo}
             resizeMode={ResizeMode.CONTAIN}
             authorId={userId}
           />

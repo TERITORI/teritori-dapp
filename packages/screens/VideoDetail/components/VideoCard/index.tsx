@@ -7,10 +7,8 @@ import {
   ImageStyle,
   TouchableOpacity,
 } from "react-native";
-import { Pressable } from "react-native-hoverable";
 
 import { VideoHoverMenu } from "./VideoHoverMenu";
-import NormalPlay from "../../../../../assets/icons/video-player/normal-play.svg";
 import ThreeDotsCircleWhite from "../../../../../assets/icons/video-player/three-dot-circle-white.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { OmniLink } from "../../../../components/OmniLink";
@@ -22,12 +20,16 @@ import { DateTime } from "../../../../components/socialFeed/SocialThread/DateTim
 import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
 import { useDropdowns } from "../../../../context/DropdownsProvider";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
-import { useFetchVideosForLibrary } from "../../../../hooks/video/useFetchVideosForLibrary";
+import { useFetchLibraryIds } from "../../../../hooks/videoplayer/useFetchLibraryIds";
 import { parseUserId } from "../../../../networks";
 import { ipfsURLToHTTPURL } from "../../../../utils/ipfs";
 import { prettyMediaDuration } from "../../../../utils/mediaPlayer";
 import { useAppNavigation } from "../../../../utils/navigation";
-import { neutral77 } from "../../../../utils/style/colors";
+import {
+  neutral22,
+  neutral77,
+  withAlpha,
+} from "../../../../utils/style/colors";
 import {
   fontMedium13,
   fontSemibold13,
@@ -43,28 +45,23 @@ export const VIDEO_CARD_WIDTH = 308;
 export const VIDEO_CARD_HEIGHT = 267;
 export const VideoCard: React.FC<{
   video: VideoInfoWithMeta;
-}> = ({ video }) => {
+  hideAuthor?: boolean;
+}> = ({ video, hideAuthor }) => {
   const authorNSInfo = useNSUserInfo(video.createdBy);
   const [, userAddress] = parseUserId(video.createdBy);
   const [isHovered, setIsHovered] = useState(false);
   const navigation = useAppNavigation();
-  const { data } = useFetchVideosForLibrary();
+  const { data: idForLibraryList } = useFetchLibraryIds();
   const isInLibrary =
-    data && !!data.find((videoInfo) => videoInfo.id === video.id);
+    idForLibraryList &&
+    idForLibraryList.findIndex((item) => item === video.id) !== -1;
 
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
   const videoMenuRef = useRef<View>(null);
 
-  // const { loadAndPlayVideo } = useMediaPlayer();
   const username = authorNSInfo?.metadata?.tokenId
     ? authorNSInfo?.metadata?.tokenId
     : tinyAddress(userAddress, 16);
-
-  const onPressPlayVideo = async () => {
-    // await loadAndPlayVideo(item);
-  };
-
-  console.log("videovideo", video);
 
   return (
     <View style={unitCardStyle}>
@@ -88,14 +85,7 @@ export const VideoCard: React.FC<{
         </View>
 
         <View style={imgButtonsBoxStyle}>
-          <TouchableOpacity onPress={onPressPlayVideo}>
-            <SVG
-              source={NormalPlay}
-              width={BUTTONS_HEIGHT}
-              height={BUTTONS_HEIGHT}
-            />
-          </TouchableOpacity>
-
+          <View />
           <TouchableOpacity onPress={() => onPressDropdownButton(videoMenuRef)}>
             <SVG
               source={ThreeDotsCircleWhite}
@@ -119,24 +109,26 @@ export const VideoCard: React.FC<{
         {video.videoMetaInfo.title}
       </BrandText>
 
-      <SpacerColumn size={1} />
-      <OmniLink
-        to={{
-          screen: "UserPublicProfile",
-          params: { id: video.createdBy },
-        }}
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        {/*---- User image */}
-        <UserAvatarWithFrame userId={video.createdBy} size="XXS" noFrame />
-        <SpacerRow size={1} />
-        <Pressable>
-          <BrandText style={contentNameStyle}>@{username}</BrandText>
-        </Pressable>
-      </OmniLink>
+      {!hideAuthor && (
+        <>
+          <SpacerColumn size={1} />
+          <OmniLink
+            to={{
+              screen: "UserPublicProfile",
+              params: { id: video.createdBy },
+            }}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            {/*---- User image */}
+            <UserAvatarWithFrame userId={video.createdBy} size="XXS" noFrame />
+            <SpacerRow size={1} />
+            <BrandText style={contentNameStyle}>@{username}</BrandText>
+          </OmniLink>
+        </>
+      )}
 
       <SpacerColumn size={1} />
       <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -155,8 +147,7 @@ export const VideoCard: React.FC<{
 
 const unitCardStyle: ViewStyle = {
   width: VIDEO_CARD_WIDTH,
-  height: VIDEO_CARD_HEIGHT,
-  borderRadius: 12,
+  borderRadius: 8,
 };
 const contentTitleStyle: TextStyle = {
   ...fontSemibold14,
@@ -171,7 +162,7 @@ const imgDurationBoxStyle: ViewStyle = {
   paddingHorizontal: layout.spacing_x0_75,
   height: 26,
   borderRadius: 4,
-  backgroundColor: neutral77,
+  backgroundColor: withAlpha(neutral22, 0.6),
   position: "absolute",
   top: layout.spacing_x1,
   left: layout.spacing_x1,

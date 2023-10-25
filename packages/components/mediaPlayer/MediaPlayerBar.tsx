@@ -68,6 +68,8 @@ export const MediaPlayerBar: FC<{
       ]}
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
+        {/*TODO: No random for Video*/}
+
         <CustomPressable onPress={() => setIsRandom((isRandom) => !isRandom)}>
           <SVG
             source={RandomIcon}
@@ -77,6 +79,8 @@ export const MediaPlayerBar: FC<{
           />
         </CustomPressable>
         <SpacerRow size={2.5} />
+
+        {/*TODO: No previous for Video*/}
 
         <CustomPressable onPress={prevMedia} disabled={!canPrev}>
           <SVG
@@ -132,6 +136,8 @@ export const MediaPlayerBar: FC<{
         <MediaNameImage style={{ maxWidth: 400, width: "100%" }} />
       </View>
       <SpacerRow size={isDesktopContentSmall ? 2 : 4} />
+
+      {/*TODO: Full screen button for Video*/}
 
       <VolumeSlider />
     </View>

@@ -1,16 +1,20 @@
 import React from "react";
 import { View, Pressable, TextStyle, ViewStyle } from "react-native";
 
-import HomeSelected from "../../../assets/icons/video-player/home-selected.svg";
-import HomeUnselected from "../../../assets/icons/video-player/home-unselected.svg";
-import MusicSelected from "../../../assets/icons/video-player/music-selected.svg";
-import MusicUnselected from "../../../assets/icons/video-player/music-unselected.svg";
-import { neutral33, neutralA3, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { BrandText } from "../BrandText/BrandText.electron";
-import { SVG } from "../SVG";
-import { SpacerRow } from "../spacer";
+import HomeSelected from "../../../../assets/icons/video-player/home-selected.svg";
+import HomeUnselected from "../../../../assets/icons/video-player/home-unselected.svg";
+import MusicSelected from "../../../../assets/icons/video-player/music-selected.svg";
+import MusicUnselected from "../../../../assets/icons/video-player/music-unselected.svg";
+import { BrandText } from "../../../components/BrandText/BrandText.electron";
+import { SVG } from "../../../components/SVG";
+import { SpacerRow } from "../../../components/spacer";
+import {
+  neutral33,
+  neutralA3,
+  secondaryColor,
+} from "../../../utils/style/colors";
+import { fontSemibold14 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 
 interface VideoPlayerTabProps {
   tab?: string;
