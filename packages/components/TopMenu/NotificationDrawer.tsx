@@ -75,6 +75,17 @@ export const NotificationDrawer: React.FC = () => {
   );
 };
 
+const NoNotifications: React.FC = () => (
+  <View
+    style={{
+      alignSelf: "center",
+      padding: layout.spacing_x3,
+    }}
+  >
+    <BrandText>No new Notifications 🥺</BrandText>
+  </View>
+);
+
 const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
   style,
 }) => {
@@ -107,6 +118,7 @@ const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
               item={item}
             />
           )}
+          ListEmptyComponent={<NoNotifications />}
         />
       </ScrollView>
     </TertiaryBox>
