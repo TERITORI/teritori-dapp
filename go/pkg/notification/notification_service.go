@@ -110,7 +110,7 @@ func (s *NotificationService) UpdateNotifications(ctx context.Context, req *noti
 	query := s.conf.IndexerDB
 
 	var post []*indexerdb.Post
-	if err := query.Where("created_by = ?", userId).Find(&post).Error; err != nil {
+	if err := query.Where("author_id = ?", userId).Find(&post).Error; err != nil {
 		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address} and a notification Id"), "need a wallet address")
 	}
 
@@ -127,7 +127,7 @@ func createComment(d *indexerdb.Post, userId string, s *NotificationService) {
 
 	query := s.conf.IndexerDB
 	var comments []*indexerdb.Post
-	query.Where("parent_post_identifier = ? and created_by != ?", d.Identifier, userId).Find(&comments)
+	query.Where("parent_post_identifier = ? and author_id != ?", d.Identifier, userId).Find(&comments)
 
 	for _, d := range comments {
 
