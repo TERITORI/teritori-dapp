@@ -196,4 +196,7 @@ const useBuildBodyText = (item: Notification) => {
   if (item.category === "comment") {
     return `${name} commented your post.`;
   }
+  if (item.category === "tip") {
+    return `${name} tip ${item.body.split(":")[-1]} your post.`;
+  }
 };

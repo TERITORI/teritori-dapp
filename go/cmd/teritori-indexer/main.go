@@ -260,6 +260,7 @@ func main() {
 			if err := db.Transaction(func(dbtx *gorm.DB) error {
 				handler, err := indexerhandler.NewHandler(dbtx, indexerhandler.Config{
 					MinterCodeIDs:    mcis,
+					DbPersistent:     dbPersistent,
 					TendermintClient: client,
 					BlockTimeCache:   blockTimeCache,
 					PricesClient:     ps,
