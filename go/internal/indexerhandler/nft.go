@@ -2,7 +2,7 @@ package indexerhandler
 
 import (
 	"encoding/json"
-
+	"fmt"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/pkg/errors"
@@ -230,6 +230,16 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create transfer activity")
 	}
+
+	notification := indexerdb.Notification{
+		UserId:    receiverID,
+		TriggerBy: h.config.Network.UserID(execMsg.Sender),
+		Body:      fmt.Sprintf("%s:%s:%s", collection.TeritoriCollection.MintContractAddress, msg.Data.TokenID, blockTime.Unix()),
+		Action:    fmt.Sprintf("%s:%s", collection.TeritoriCollection.MintContractAddress, msg.Data.TokenID),
+		Category:  "nft-transfer",
+		CreatedAt: blockTime.Unix(),
+	}
+	h.config.DbPersistent.Create(&notification)
 
 	h.logger.Debug("transfered nft", zap.String("id", string(nftId)))
 
