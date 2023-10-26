@@ -3,7 +3,9 @@ import React, { FC, useState } from "react";
 import { View } from "react-native";
 
 import VolumeIcon from "../../../assets/icons/media-player/volume.svg";
+import VolumeAltIcon from "../../../assets/icons/media-player/volume_alt.svg";
 import VolumeOffIcon from "../../../assets/icons/media-player/volume_off.svg";
+import VolumeOffAltIcon from "../../../assets/icons/media-player/volume_off_alt.svg";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import {
   neutral55,
@@ -15,7 +17,9 @@ import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 import { CustomPressable } from "../buttons/CustomPressable";
 
-export const VolumeSlider: FC = () => {
+export const VolumeSlider: FC<{
+  useAltStyle?: boolean;
+}> = ({ useAltStyle }) => {
   const { onChangeVolume } = useMediaPlayer();
   const [volume, setVolume] = useState(0.5);
   const [lastVolume, setLastVolume] = useState(0.5);
@@ -50,10 +54,24 @@ export const VolumeSlider: FC = () => {
         onHoverOut={() => setIsHovered(false)}
       >
         <SVG
-          source={volume ? VolumeIcon : VolumeOffIcon}
+          source={
+            volume
+              ? useAltStyle
+                ? VolumeAltIcon
+                : VolumeIcon
+              : useAltStyle
+              ? VolumeOffAltIcon
+              : VolumeOffIcon
+          }
           height={20}
           width={20}
-          color={isSliding || isHovered ? secondaryColor : neutralA3}
+          color={
+            useAltStyle
+              ? secondaryColor
+              : isSliding || isHovered
+              ? secondaryColor
+              : neutralA3
+          }
         />
       </CustomPressable>
 

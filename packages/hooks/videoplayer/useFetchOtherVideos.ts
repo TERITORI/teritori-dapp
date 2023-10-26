@@ -15,7 +15,7 @@ export const combineFetchVideoPages = (pages: VideosList[]) =>
     []
   );
 
-export const useFetchOtherAlbums = (req: GetVideoListForLibraryRequest) => {
+export const useFetchOtherVideos = (req: GetVideoListForLibraryRequest) => {
   const selectedNetworkId = useSelectedNetworkId();
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useInfiniteQuery(

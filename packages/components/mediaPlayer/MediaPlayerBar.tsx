@@ -7,8 +7,8 @@ import { TimerSlider } from "./TimerSlider";
 import { VolumeSlider } from "./VolumeSlider";
 import LoopIcon from "../../../assets/icons/media-player/loop.svg";
 import NextIcon from "../../../assets/icons/media-player/next.svg";
-import PauseIcon from "../../../assets/icons/media-player/pause.svg";
-import PlayIcon from "../../../assets/icons/media-player/play.svg";
+import PauseIcon from "../../../assets/icons/media-player/pause_round.svg";
+import PlayIcon from "../../../assets/icons/media-player/play_round.svg";
 import PreviousIcon from "../../../assets/icons/media-player/previous.svg";
 import RandomIcon from "../../../assets/icons/media-player/random.svg";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
@@ -133,7 +133,10 @@ export const MediaPlayerBar: FC<{
       <SpacerRow size={isDesktopContentSmall ? 2 : 4} />
 
       <View style={{ flex: 1 }}>
-        <MediaNameImage style={{ maxWidth: 400, width: "100%" }} />
+        <MediaNameImage
+          style={{ maxWidth: 400, width: "100%" }}
+          isVideo={!!media?.videoId}
+        />
       </View>
       <SpacerRow size={isDesktopContentSmall ? 2 : 4} />
 

@@ -3,13 +3,13 @@ import React from "react";
 import { View } from "react-native";
 
 import { DeleteButton } from "./DeleteButton";
-import { MediaPlayerVideo } from "../../context/MediaPlayerProvider";
 import { errorColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { LocalFileData, RemoteFileData } from "../../utils/types/files";
 import { VideoMetaInfo } from "../../utils/types/video";
 import { BrandText } from "../BrandText";
+import { MediaPlayerVideo } from "../mediaPlayer/MediaPlayerVideo";
 
 interface VideoPreviewProps {
   file: LocalFileData | RemoteFileData;
@@ -43,7 +43,6 @@ export const VideoView: React.FC<VideoPreviewProps> = ({
   return (
     <View
       style={{
-        height: 400,
         position: "relative",
       }}
     >
