@@ -307,6 +307,16 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 	}
 	h.config.DbPersistent.Create(&notification)
 
+	notification = indexerdb.Notification{
+		UserId:    sellerID,
+		TriggerBy: buyerID,
+		Body:      fmt.Sprintf("%s:%s:%s:%s:%s", collection.TeritoriCollection.MintContractAddress, nftID, price, denom, blockTime.Unix()),
+		Action:    fmt.Sprintf("%s:%s", collection.TeritoriCollection.MintContractAddress, nftID),
+		Category:  "nft-trade-seller",
+		CreatedAt: blockTime.Unix(),
+	}
+	h.config.DbPersistent.Create(&notification)
+
 	// complete buy quest
 	if err := h.db.Save(&indexerdb.QuestCompletion{
 		UserID:    buyerID,
