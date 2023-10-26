@@ -297,6 +297,16 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 		return errors.Wrap(err, "failed to create trade in db")
 	}
 
+	notification := indexerdb.Notification{
+		UserId:    buyerID,
+		TriggerBy: sellerID,
+		Body:      fmt.Sprintf("%s:%s:%s:%s:%s", collection.TeritoriCollection.MintContractAddress, nftID, price, denom, blockTime.Unix()),
+		Action:    fmt.Sprintf("%s:%s", collection.TeritoriCollection.MintContractAddress, nftID),
+		Category:  "nft-trade-buyer",
+		CreatedAt: blockTime.Unix(),
+	}
+	h.config.DbPersistent.Create(&notification)
+
 	// complete buy quest
 	if err := h.db.Save(&indexerdb.QuestCompletion{
 		UserID:    buyerID,
