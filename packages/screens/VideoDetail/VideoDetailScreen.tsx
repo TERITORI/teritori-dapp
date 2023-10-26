@@ -1,5 +1,5 @@
 import { ResizeMode } from "expo-av";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import { Pressable, TextInput, TextStyle, View, ViewStyle } from "react-native";
 import Animated, { useSharedValue } from "react-native-reanimated";
 
@@ -20,13 +20,13 @@ import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { UserAvatarWithFrame } from "../../components/images/AvatarWithFrame";
+import { MediaPlayerVideo } from "../../components/mediaPlayer/MediaPlayerVideo";
 import { DotSeparator } from "../../components/separators/DotSeparator";
 import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
 import { DateTime } from "../../components/socialFeed/SocialThread/DateTime";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { MediaPlayerVideo } from "../../context/MediaPlayerProvider";
 import { useGetPostFee } from "../../hooks/feed/useGetPostFee";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
@@ -61,6 +61,7 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
+import { VideoInfoWithMeta } from "../../utils/types/video";
 import { VideoTab } from "../Video/component/VideoTab";
 
 export const VideoDetailScreen: ScreenFC<"VideoDetail"> = ({
@@ -160,6 +161,8 @@ export const VideoDetailScreen: ScreenFC<"VideoDetail"> = ({
       walletAddress: wallet.address,
     });
     try {
+      console.log("commentcommentcommentcomment", comment);
+      console.log("video.idvideo.idvideo.id", video.id);
       const res = await client.createVideoComment(
         {
           videoIdentifier: video.id,
@@ -204,6 +207,7 @@ export const VideoDetailScreen: ScreenFC<"VideoDetail"> = ({
   return (
     <ScreenContainer
       headerChildren={<BrandText>{video.videoMetaInfo.title}</BrandText>}
+      onBackPress={() => navigation.navigate("Video")}
       isLarge
       responsive
     >
@@ -357,16 +361,16 @@ export const VideoDetailScreen: ScreenFC<"VideoDetail"> = ({
             </View>
 
             {commentList.map((comment, index) => (
-              <>
+              <Fragment key={index}>
                 <SpacerColumn size={2.5} />
-                <VideoComment key={index} comment={comment} />
-              </>
+                <VideoComment comment={comment} />
+              </Fragment>
             ))}
           </View>
 
           <SpacerRow size={3} />
           <View style={pageRightPanelStyle}>
-            <BrandText style={rightTitleStyle}>
+            <BrandText style={fontSemibold16}>
               More videos from
               <OmniLink
                 to={{
@@ -374,19 +378,20 @@ export const VideoDetailScreen: ScreenFC<"VideoDetail"> = ({
                   params: { id: video.createdBy },
                 }}
               >
-                <BrandText> @{username}</BrandText>
+                <BrandText style={fontSemibold16}> @{username}</BrandText>
               </OmniLink>
             </BrandText>
-
+            <SpacerColumn size={1.5} />
             <View style={flexColumnItemStyle}>
               <Animated.FlatList
                 scrollEventThrottle={0.1}
                 data={moreVideos}
                 numColumns={1}
-                renderItem={({ item: videoInfo }) => (
+                renderItem={({ item: videoInfo, index }) => (
                   <VideoCard video={videoInfo} hideAuthor />
                 )}
                 ItemSeparatorComponent={() => <SpacerColumn size={2.5} />}
+                keyExtractor={(video: VideoInfoWithMeta) => video.id}
               />
             </View>
           </View>
@@ -401,8 +406,6 @@ export const VideoDetailScreen: ScreenFC<"VideoDetail"> = ({
     </ScreenContainer>
   );
 };
-
-//TODO: Fix these styles
 
 const flexRowItemCenterStyle: ViewStyle = {
   display: "flex",
@@ -451,10 +454,6 @@ const pageLeftPanelStyle: ViewStyle = {
 const pageRightPanelStyle: ViewStyle = {
   width: "100%",
   maxWidth: 308,
-};
-const rightTitleStyle: TextStyle = {
-  ...fontSemibold20,
-  paddingBottom: layout.spacing_x2_5,
 };
 
 const contentNameStyle: TextStyle = { ...fontSemibold14, color: primaryColor };

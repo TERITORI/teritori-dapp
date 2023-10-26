@@ -8,7 +8,7 @@ import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { ScreenFC } from "../../utils/navigation";
 
-export const VideoScreen: ScreenFC<"Video"> = () => {
+export const VideosScreen: ScreenFC<"Video"> = () => {
   const tabData: string[] = ["Home", "My Library"];
   const [tab, setTab] = useState<string>(tabData[0]);
 

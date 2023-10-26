@@ -6,8 +6,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { CreateVideoModal } from "./CreateVideoModal";
-import Upload from "../../../../assets/icons/upload.svg";
-import Logo from "../../../../assets/logos/logo.svg";
+import Upload from "../../../../assets/icons/video-player/upload.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
@@ -15,9 +14,10 @@ import {
   combineFetchVideoPages,
   useFetchVideos,
 } from "../../../hooks/videoplayer/useFetchVideos";
-import { primaryColor } from "../../../utils/style/colors";
+import { neutral30, primaryColor } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { VideoInfoWithMeta } from "../../../utils/types/video";
 import {
   VIDEO_CARD_WIDTH,
   VideoCard,
@@ -76,16 +76,6 @@ export const VideoHomeContent: React.FC = () => {
       <View style={oneLineStyle}>
         <BrandText style={fontSemibold20}>All Videos</BrandText>
         <View style={buttonGroupStyle}>
-          <Pressable style={buttonContainerStyle}>
-            <SVG
-              source={Logo}
-              width={layout.spacing_x2}
-              height={layout.spacing_x2}
-            />
-            <SpacerRow size={1.5} />
-            <BrandText style={buttonTextStyle}>Create funding</BrandText>
-          </Pressable>
-          <SpacerRow size={2} />
           <Pressable
             style={buttonContainerStyle}
             onPress={() => setOpenUploadModal(true)}
@@ -95,9 +85,11 @@ export const VideoHomeContent: React.FC = () => {
               width={layout.spacing_x2}
               height={layout.spacing_x2}
             />
-            <SpacerRow size={1.5} />
+            <SpacerRow size={1} />
             <BrandText style={buttonTextStyle}>Upload video</BrandText>
           </Pressable>
+
+          {/*TODO: Create funding button*/}
         </View>
       </View>
       <View style={contentGroupStyle}>
@@ -121,6 +113,7 @@ export const VideoHomeContent: React.FC = () => {
           ItemSeparatorComponent={() => (
             <SpacerColumn size={FLAT_LIST_SEPARATOR_WIDTH / 8} />
           )}
+          keyExtractor={(video: VideoInfoWithMeta) => video.id}
         />
       </View>
       <CreateVideoModal
@@ -157,7 +150,7 @@ const buttonContainerStyle: ViewStyle = {
   paddingLeft: layout.spacing_x1,
   paddingRight: layout.spacing_x1_5,
   paddingVertical: layout.spacing_x1,
-  backgroundColor: "#2B2B33",
+  backgroundColor: neutral30,
   borderRadius: layout.spacing_x4,
 };
 const buttonTextStyle: TextStyle = {

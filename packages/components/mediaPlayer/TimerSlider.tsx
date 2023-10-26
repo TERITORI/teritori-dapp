@@ -17,11 +17,11 @@ import { SpacerRow } from "../spacer";
 
 export const TimerSlider: FC<{
   width?: number;
-}> = ({ width = 324 }) => {
+  hideDuration?: boolean;
+}> = ({ hideDuration, width = 324 }) => {
   const { media, playbackStatus, onChangeTimerPosition } = useMediaPlayer();
   const [isHovered, setIsHovered] = useState(false);
   const [isSliding, setIsSliding] = useState(false);
-
   return (
     <View
       style={{
@@ -29,14 +29,19 @@ export const TimerSlider: FC<{
         alignItems: "center",
       }}
     >
-      <View style={{ width: 46, alignItems: "flex-end" }}>
-        {media && (
-          <BrandText style={timeTextStyle}>
-            {prettyMediaDuration(playbackStatus?.positionMillis)}
-          </BrandText>
-        )}
-      </View>
-      <SpacerRow size={1} />
+      {!hideDuration && (
+        <>
+          <View style={{ width: 46, alignItems: "flex-end" }}>
+            {media && (
+              <BrandText style={timeTextStyle}>
+                {prettyMediaDuration(playbackStatus?.positionMillis)}
+              </BrandText>
+            )}
+          </View>
+          <SpacerRow size={1} />
+        </>
+      )}
+
       <CustomPressable
         onHoverIn={() => setIsHovered(true)}
         onHoverOut={() => setIsHovered(false)}
@@ -64,14 +69,21 @@ export const TimerSlider: FC<{
           disabled={!media}
         />
       </CustomPressable>
-      <SpacerRow size={1} />
-      <View style={{ width: 40 }}>
-        {!!media?.duration && (
-          <BrandText style={timeTextStyle}>
-            {prettyMediaDuration(media.duration)}
-          </BrandText>
-        )}
-      </View>
+
+      {!hideDuration && (
+        <>
+          <SpacerRow size={1} />
+          <View style={{ width: 40 }}>
+            {!!media?.duration && (
+              <BrandText style={timeTextStyle}>
+                {prettyMediaDuration(
+                  playbackStatus?.durationMillis || media.duration
+                )}
+              </BrandText>
+            )}
+          </View>
+        </>
+      )}
     </View>
   );
 };
