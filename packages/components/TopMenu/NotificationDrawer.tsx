@@ -195,27 +195,16 @@ const useBuildBodyText = (item: Notification) => {
     return `${name} commented your post.`;
   }
   if (item.category === "tip") {
-    return `${name} tip ${item.body.split(":")[-1]} your post.`;
+    return `${name} tip ${getPrettyPrice(item)} your post.`;
   }
   if (item.category === "nft-transfer") {
     return `${name} transfer an NFT  ${item.body.split(":")[-1]}.`;
   }
   if (item.category === "nft-trade-buyer") {
-    const values = item.body.split(":");
-    return `Your NFT was sold for ${prettyPrice(
-      values[0],
-      values[1],
-      values[2]
-    )}.`;
+    return `Your NFT was sold for ${getPrettyPrice(item)}.`;
   }
   if (item.category === "nft-trade-seller") {
-    const values = item.body.split(":");
-
-    return `${name} bought your nft for ${prettyPrice(
-      values[0],
-      values[1],
-      values[2]
-    )}.`;
+    return `${name} bought your nft for ${getPrettyPrice(item)}.`;
   }
 };
 
@@ -235,4 +224,10 @@ const getOmniLink = (item: Notification): OmniLinkToType => {
   return {
     screen: "Home",
   };
+};
+
+const getPrettyPrice = (item: Notification): string => {
+  const values = item.body.split(":");
+
+  return prettyPrice(values[0], values[1], values[2]);
 };

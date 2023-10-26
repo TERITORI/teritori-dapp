@@ -2,8 +2,7 @@ package indexerhandler
 
 import (
 	"encoding/json"
-	"strconv"
-
+	"fmt"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
@@ -221,8 +220,8 @@ func (h *Handler) handleExecuteTipPost(e *Message, execMsg *wasmtypes.MsgExecute
 	notification := indexerdb.Notification{
 		UserId:    post.AuthorId,
 		TriggerBy: h.config.Network.UserID(execMsg.Sender),
-		Body:      "tip:" + post.Identifier + ":" + strconv.FormatInt(createdAt.Unix(), 10) + ":" + strconv.FormatInt(execMsg.Funds[0].Amount.Int64(), 10),
-		Action:    execTipPostMsg.TipPost.Identifier,
+		Body:      fmt.Sprintf("%s:%s:%s:%s", h.config.Network.ChainID, execMsg.Funds[0].Amount.Int64(), h.config.Network.Currencies[0].Currency.GetDenom(), createdAt.Unix()),
+		Action:    post.Identifier,
 		Category:  "tip",
 		CreatedAt: createdAt.Unix(),
 	}
