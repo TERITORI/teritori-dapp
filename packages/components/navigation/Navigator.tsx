@@ -39,7 +39,7 @@ import { StakeScreen } from "../../screens/Stake";
 import { SwapScreen } from "../../screens/Swap/SwapScreen";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
 import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
-import { VideoScreen } from "../../screens/Video/VideoScreen";
+import { VideosScreen } from "../../screens/Video/VideosScreen";
 import { VideoDetailScreen } from "../../screens/VideoDetail/VideoDetailScreen";
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
@@ -319,7 +319,7 @@ export const Navigator: React.FC = () => {
       />
       <Stack.Screen
         name="Video"
-        component={VideoScreen}
+        component={VideosScreen}
         options={{ header: () => null, title: screenTitle("Video") }}
       />
       <Stack.Screen

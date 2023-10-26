@@ -3,6 +3,7 @@ import { View } from "react-native";
 
 import { CommentInfo } from "../../../api/video/v1/video";
 import { BrandText } from "../../../components/BrandText";
+import { OmniLink } from "../../../components/OmniLink";
 import { UserAvatarWithFrame } from "../../../components/images/AvatarWithFrame";
 import { DateTime } from "../../../components/socialFeed/SocialThread/DateTime";
 import { SpacerRow } from "../../../components/spacer";
@@ -32,13 +33,20 @@ export const VideoComment: FC<{
         }}
       >
         <UserAvatarWithFrame userId={comment.createdBy} size="XXS" noFrame />
-        <SpacerRow size={2} />
+        <SpacerRow size={1.5} />
 
         <View style={{ width: "100%" }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <BrandText style={[fontSemibold14, { color: primaryColor }]}>
-              {username}
-            </BrandText>
+            <OmniLink
+              to={{
+                screen: "UserPublicProfile",
+                params: { id: comment.createdBy },
+              }}
+            >
+              <BrandText style={[fontSemibold14, { color: primaryColor }]}>
+                {username}
+              </BrandText>
+            </OmniLink>
             <SpacerRow size={1} />
             <DateTime
               date={new Date(comment.createdAt * 1000).toISOString()}

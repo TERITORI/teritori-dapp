@@ -15,7 +15,8 @@ import { SpacerRow } from "../spacer";
 
 export const MediaNameImage: FC<{
   style?: StyleProp<ViewStyle>;
-}> = ({ style }) => {
+  isVideo?: boolean;
+}> = ({ style, isVideo }) => {
   const { media } = useMediaPlayer();
   const authorNSInfo = useNSUserInfo(media?.createdBy);
   const [network, userAddress] = parseUserId(media?.createdBy);
@@ -24,7 +25,6 @@ export const MediaNameImage: FC<{
     : tinyAddress(userAddress, 20);
 
   //TODO: Video in MediaPlayer
-  const isVideo = false;
   const imageWidth = isVideo ? 57 : 32;
   const imageHeight = 32;
 

@@ -1,4 +1,4 @@
-import { ResizeMode } from "expo-av";
+import { ResizeMode, Video } from "expo-av";
 import React, { useState } from "react";
 import {
   Image,
@@ -24,7 +24,6 @@ import ModalBase from "../../../components/modals/ModalBase";
 import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { MediaPlayerVideo } from "../../../context/MediaPlayerProvider";
 import { useGetPostFee } from "../../../hooks/feed/useGetPostFee";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
@@ -278,11 +277,12 @@ export const CreateVideoModal: React.FC<UploadAlbumModalProps> = ({
             onPress={handleRemoveVideo}
             style={{ top: 12, right: 12 }}
           />
-
-          <MediaPlayerVideo
-            videoMetaInfo={videoInfo.videoMetaInfo}
+          <Video
+            source={{
+              uri: ipfsURLToHTTPURL(videoInfo.videoMetaInfo.url),
+            }}
             resizeMode={ResizeMode.CONTAIN}
-            authorId={userId}
+            useNativeControls
           />
         </View>
       ) : (

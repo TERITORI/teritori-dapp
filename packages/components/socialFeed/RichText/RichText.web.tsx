@@ -558,7 +558,7 @@ const createHTMLFromState = (state: ContentState) =>
   convertToHTML({
     entityToHTML: (entity, originalText) => {
       if (entity.type === VIDEOTYPE || entity.type === "VIDEO") {
-        return <video src={entity.data.src} controls />;
+        return <video src={entity.data.src} controls style={{ height: 400 }} />;
       }
       if (entity.type === "IMAGE") {
         return <img src={entity.data.src} />;

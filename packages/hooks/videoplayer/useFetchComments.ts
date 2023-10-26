@@ -22,7 +22,7 @@ export const useFetchComments = (req: GetCommentListRequest) => {
 const getComments = async (networkId: string, req: GetCommentListRequest) => {
   try {
     // ===== We use FeedService to be able to fetch filtered posts
-    const videoClient = mustGetVideoClient(networkId);
+    // const videoClient = mustGetVideoClient(networkId);
     // const response = await videoClient.GetCommentList(req);
     // ---- We sort by creation date
     // return response.commentInfos;

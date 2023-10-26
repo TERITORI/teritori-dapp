@@ -8,8 +8,8 @@ import {
 import { MediaNameImage } from "./MediaNameImage";
 import { TimerSliderMobile } from "./TimerSliderMobile";
 import LoopIcon from "../../../assets/icons/media-player/loop.svg";
-import PauseIcon from "../../../assets/icons/media-player/pause.svg";
-import PlayIcon from "../../../assets/icons/media-player/play.svg";
+import PauseIcon from "../../../assets/icons/media-player/pause_round.svg";
+import PlayIcon from "../../../assets/icons/media-player/play_round.svg";
 import RandomIcon from "../../../assets/icons/media-player/random.svg";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import {
@@ -67,7 +67,10 @@ export const MediaPlayerBarMobile: FC<{
             onSwipeableRightOpen={canPrev ? prevMedia : undefined}
             onSwipeableLeftOpen={canNext ? nextMedia : undefined}
           >
-            <MediaNameImage style={{ width: "100%" }} />
+            <MediaNameImage
+              style={{ width: "100%" }}
+              isVideo={!!media?.videoId}
+            />
           </Swipeable>
         </GestureHandlerRootView>
         <SpacerRow size={2} />
