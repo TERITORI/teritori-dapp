@@ -337,10 +337,9 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
             dispatch(removeSelected(nft.id)); //remove items from cart
             setLoadingFullScreen(false);
           });
-        } catch (e) {
+        } catch (e: any) {
           setToastError({
             title: "Error",
-            // @ts-expect-error
             message: e.toString() || "",
             duration: 30000,
           });

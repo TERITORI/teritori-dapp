@@ -84,6 +84,7 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
   riotBridgeAddressGen0?: string;
   riotNFTAddressGen0?: string;
   riotBridgedNFTAddressGen0?: string;
+  toriBridgedTokenAddress?: string;
 };
 
 export type GnoNetworkInfo = NetworkInfoBase & {

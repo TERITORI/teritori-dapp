@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { ethers } from "ethers";
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 
@@ -68,7 +69,9 @@ const ethereumNFTInfos = async (
     squad.nfts.map(async (nft) => {
       // If nft is bridged then use the original contract to query info
       let nftContract = nft.contract;
-      let ethProvider: any = metamaskProvider;
+      let ethProvider:
+        | ethers.providers.Web3Provider
+        | ethers.providers.AlchemyProvider = metamaskProvider;
 
       if (
         nft.contract.toLowerCase() === ethereumNetwork.riotBridgedNFTAddressGen0

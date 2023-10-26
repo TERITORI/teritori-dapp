@@ -93,11 +93,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
           text={
             isClaiming
               ? "Claiming..."
-              : `Claim available rewards: ${formattedClaimable} ${
-                  selectedNetwork?.kind === NetworkKind.Ethereum
-                    ? selectedNetwork.currencies[0].displayName
-                    : "TORI"
-                }`
+              : `Claim available rewards: ${formattedClaimable} TORI`
           }
           touchableStyle={{ marginLeft: layout.spacing_x1 }}
           onPress={claimRewards}

@@ -187,7 +187,7 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 	leaderboard []indexerdb.P2eLeaderboard,
 	rpcEndpoint string,
 ) (string, error) {
-	TOKEN_ADDRESS := network.Currencies[0].GetDenom()
+	TOKEN_ADDRESS := network.ToriBridgedTokenAddress
 
 	dailyRewards, err := p2e.GetDailyRewardsConfigBySeason(seasonId, network)
 	if err != nil {

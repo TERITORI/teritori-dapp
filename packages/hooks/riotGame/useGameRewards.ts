@@ -68,10 +68,15 @@ const ethereumClaim = async (
   userAddress: string,
   distributorContractAddress: string
 ) => {
+  const TOKEN = network.toriBridgedTokenAddress;
+  if (!TOKEN) {
+    throw Error("Requested token is not provided");
+  }
+
   const p2eClient = mustGetP2eClient(network.id);
   const resp = await p2eClient.MerkleData({
     userId: userAddress,
-    token: network.currencies[0].denom,
+    token: TOKEN,
     networkId: network.id,
   });
   const allocation = resp.userReward?.amount || "0";
@@ -90,20 +95,15 @@ const ethereumClaim = async (
 
   const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
   const estimatedGasLimit = await distributorClient.estimateGas.claim(
-    network.currencies[0].denom,
+    TOKEN,
     claimableAmount,
     resp.proof
   );
-  const tx = await distributorClient.claim(
-    network.currencies[0].denom,
-    claimableAmount,
-    resp.proof,
-    {
-      maxFeePerGas: maxFeePerGas?.toNumber(),
-      maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
-      gasLimit: estimatedGasLimit.mul(150).div(100),
-    }
-  );
+  const tx = await distributorClient.claim(TOKEN, claimableAmount, resp.proof, {
+    maxFeePerGas: maxFeePerGas?.toNumber(),
+    maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
+    gasLimit: estimatedGasLimit.mul(150).div(100),
+  });
   await tx.wait();
 
   return true;

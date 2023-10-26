@@ -64,6 +64,7 @@ type EthereumNetwork struct {
 	RiotNFTAddressGen1              string `json:"riotNFTAddressGen1"`
 	RiotBridgedNFTAddressGen0       string `json:"riotBridgedNFTAddressGen0"`
 	RiotBridgedNFTAddressGen1       string `json:"riotBridgedNFTAddressGen1"`
+	ToriBridgedTokenAddress         string `json:"toriBridgedTokenAddress"`
 }
 
 var _ Network = &EthereumNetwork{}
