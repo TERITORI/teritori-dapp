@@ -17,6 +17,7 @@ import { useDropdowns } from "../../context/DropdownsProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useNotifications } from "../../hooks/useNotifications";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { prettyPrice } from "../../utils/coins";
 import {
   neutral00,
   neutral33,
@@ -28,7 +29,7 @@ import { fontBold16, fontSemibold12 } from "../../utils/style/fonts";
 import { headerHeight, layout, topMenuWidth } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
-import { OmniLink } from "../OmniLink";
+import { OmniLink, OmniLinkToType } from "../OmniLink";
 import { UserNameInline } from "../UserNameInline";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
@@ -128,10 +129,7 @@ const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
 const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
   return (
     <OmniLink
-      to={{
-        screen: "FeedPostView",
-        params: { id: item.action },
-      }}
+      to={getOmniLink(item)}
       style={{
         padding: layout.spacing_x1,
         borderBottomWidth: 1,
@@ -199,4 +197,42 @@ const useBuildBodyText = (item: Notification) => {
   if (item.category === "tip") {
     return `${name} tip ${item.body.split(":")[-1]} your post.`;
   }
+  if (item.category === "nft-transfer") {
+    return `${name} transfer an NFT  ${item.body.split(":")[-1]}.`;
+  }
+  if (item.category === "nft-trade-buyer") {
+    const values = item.body.split(":");
+    return `Your NFT was sold for ${prettyPrice(
+      values[0],
+      values[1],
+      values[2]
+    )}.`;
+  }
+  if (item.category === "nft-trade-seller") {
+    const values = item.body.split(":");
+
+    return `${name} bought your nft for ${prettyPrice(
+      values[0],
+      values[1],
+      values[2]
+    )}.`;
+  }
+};
+
+const getOmniLink = (item: Notification): OmniLinkToType => {
+  if (["reaction", "comment"].includes(item.category)) {
+    return {
+      screen: "FeedPostView",
+      params: { id: item.action },
+    };
+  }
+  if (["nft-trade-seller", "nft-trade-buyer"].includes(item.category)) {
+    return {
+      screen: "NFTDetail",
+      params: { id: item.action },
+    };
+  }
+  return {
+    screen: "Home",
+  };
 };

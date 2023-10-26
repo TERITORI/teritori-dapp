@@ -300,8 +300,8 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 	notification := indexerdb.Notification{
 		UserId:    buyerID,
 		TriggerBy: sellerID,
-		Body:      fmt.Sprintf("%s:%s:%s:%s:%s", collection.TeritoriCollection.MintContractAddress, nftID, price, denom, blockTime.Unix()),
-		Action:    fmt.Sprintf("%s:%s", collection.TeritoriCollection.MintContractAddress, nftID),
+		Body:      fmt.Sprintf("%s:%s:%s:%s:%s", h.config.Network.ChainID, price, denom, nftID, blockTime.Unix()),
+		Action:    fmt.Sprintf("%s", nftID),
 		Category:  "nft-trade-buyer",
 		CreatedAt: blockTime.Unix(),
 	}
@@ -310,8 +310,8 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 	notification = indexerdb.Notification{
 		UserId:    sellerID,
 		TriggerBy: buyerID,
-		Body:      fmt.Sprintf("%s:%s:%s:%s:%s", collection.TeritoriCollection.MintContractAddress, nftID, price, denom, blockTime.Unix()),
-		Action:    fmt.Sprintf("%s:%s", collection.TeritoriCollection.MintContractAddress, nftID),
+		Body:      fmt.Sprintf("%s:%s:%s:%s:%s", h.config.Network.ChainID, price, denom, nftID, blockTime.Unix()),
+		Action:    fmt.Sprintf("%s", nftID),
 		Category:  "nft-trade-seller",
 		CreatedAt: blockTime.Unix(),
 	}
