@@ -57,7 +57,7 @@ var SinkCmd = Command(sinkE,
 		flags.String("networks-file", "networks.json", "Path to networks config file")
 
 		// Add default sink Flags ====================================================================
-		flags.Int(sink.FlagUndoBufferSize, 12, "Number of blocks to keep buffered to handle fork reorganizations")
+		flags.Int(sink.FlagUndoBufferSize, 3, "Number of blocks to keep buffered to handle fork reorganizations")
 
 		ignore := sink.FlagIgnore(sink.FlagUndoBufferSize)
 		sink.AddFlagsToSet(flags, ignore)
