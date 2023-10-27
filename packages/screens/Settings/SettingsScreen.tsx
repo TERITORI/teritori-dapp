@@ -18,8 +18,10 @@ import { SpacerColumn } from "../../components/spacer";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import {
   selectAreTestnetsEnabled,
+  selectIsLightTheme,
   selectNFTStorageAPI,
   setAreTestnetsEnabled,
+  setIsLightTheme,
   setNFTStorageAPI,
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
@@ -73,6 +75,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
   const testnetEnabled = useSelector(selectAreTestnetsEnabled);
   const dispatch = useAppDispatch();
   const [networksModalVisible, setNetworksModalVisible] = React.useState(false);
+  const isLightTheme = useSelector(selectIsLightTheme);
 
   return (
     <ScreenContainer>
@@ -134,6 +137,22 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
             </View>
           </TouchableOpacity>
         </View>
+
+        <SpacerColumn size={4} />
+
+        <View style={commonStyles.cardContainer}>
+          <SettingItem
+            onPress={() => {
+              dispatch(setIsLightTheme(!isLightTheme));
+            }}
+            item={{
+              title: "Experimental Light theme",
+              description: "Light theme",
+              state: isLightTheme,
+            }}
+          />
+        </View>
+
         {/*Please note that the "user profile customization" part of this task was changed to navigate to the TNS manage page.*/}
         {/*I left the files ( committed to the repo UserProfileModal.tsx) as by the previous developer.*/}
         {/*<UserProfileModal*/}
