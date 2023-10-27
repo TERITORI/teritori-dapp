@@ -195,7 +195,7 @@ const useBuildBodyText = (item: Notification) => {
     return `${name} commented your post.`;
   }
   if (item.category === "tip") {
-    return `💸 ${name} tip ${getPrettyPrice(item)} your post.`;
+    return `💸 ${name} TIP ${getPrettyPrice(item)} your post.`;
   }
   if (item.category === "nft-transfer") {
     return `${name} transfer an NFT.`;
