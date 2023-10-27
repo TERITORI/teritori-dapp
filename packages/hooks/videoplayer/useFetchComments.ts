@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { GetCommentListRequest, CommentInfo } from "../../api/video/v1/video";
-import { mustGetVideoClient } from "../../utils/backend";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
 
 export const useFetchComments = (req: GetCommentListRequest) => {

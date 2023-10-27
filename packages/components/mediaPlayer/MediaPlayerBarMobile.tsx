@@ -67,10 +67,7 @@ export const MediaPlayerBarMobile: FC<{
             onSwipeableRightOpen={canPrev ? prevMedia : undefined}
             onSwipeableLeftOpen={canNext ? nextMedia : undefined}
           >
-            <MediaNameImage
-              style={{ width: "100%" }}
-              isVideo={!!media?.videoId}
-            />
+            <MediaNameImage style={{ width: "100%" }} />
           </Swipeable>
         </GestureHandlerRootView>
         <SpacerRow size={2} />
@@ -110,7 +107,7 @@ export const MediaPlayerBarMobile: FC<{
           </CustomPressable>
         </View>
       </View>
-      <TimerSliderMobile />
+      <TimerSliderMobile playbackStatus={playbackStatus} />
     </View>
   );
 };

@@ -1,4 +1,5 @@
 import Slider from "@react-native-community/slider";
+import { AVPlaybackStatusSuccess } from "expo-av";
 import React, { FC, useState } from "react";
 import { View } from "react-native";
 
@@ -19,9 +20,10 @@ import { CustomPressable } from "../buttons/CustomPressable";
 
 export const VolumeSlider: FC<{
   useAltStyle?: boolean;
-}> = ({ useAltStyle }) => {
+  playbackStatus?: AVPlaybackStatusSuccess;
+}> = ({ useAltStyle, playbackStatus }) => {
   const { onChangeVolume } = useMediaPlayer();
-  const [volume, setVolume] = useState(0.5);
+  const [localVolume, setLocalVolume] = useState(0.5);
   const [lastVolume, setLastVolume] = useState(0.5);
   const [isHovered, setIsHovered] = useState(false);
   const [isSliding, setIsSliding] = useState(false);
@@ -30,13 +32,13 @@ export const VolumeSlider: FC<{
 
   // We store a lastVolume to handle mute/unmute by clicking on the volume icon, with retrieving the precedent volume
   const onPressVolumeIcon = () => {
-    if (volume) {
-      setLastVolume(volume);
+    if (localVolume) {
+      setLastVolume(localVolume);
       onChangeVolume(0);
-      setVolume(0);
+      setLocalVolume(0);
     } else {
       onChangeVolume(lastVolume);
-      setVolume(lastVolume);
+      setLocalVolume(lastVolume);
     }
   };
 
@@ -55,7 +57,7 @@ export const VolumeSlider: FC<{
       >
         <SVG
           source={
-            volume
+            localVolume
               ? useAltStyle
                 ? VolumeAltIcon
                 : VolumeIcon
@@ -80,10 +82,10 @@ export const VolumeSlider: FC<{
         onHoverOut={() => setIsHovered(false)}
       >
         <Slider
-          value={volume}
+          value={localVolume}
           onValueChange={(value: number) => {
             onChangeVolume(value);
-            setVolume(value);
+            setLocalVolume(value);
           }}
           tapToSeek
           onSlidingStart={() => setIsSliding(true)}

@@ -11,6 +11,7 @@ import PauseIcon from "../../../assets/icons/media-player/pause_round.svg";
 import PlayIcon from "../../../assets/icons/media-player/play_round.svg";
 import PreviousIcon from "../../../assets/icons/media-player/previous.svg";
 import RandomIcon from "../../../assets/icons/media-player/random.svg";
+import FullScreenIcon from "../../../assets/icons/video-player/full-screen.svg";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
@@ -43,10 +44,12 @@ export const MediaPlayerBar: FC<{
     prevMedia,
     onToggleLoop,
     playbackStatus,
+    triggerVideoFullscreen,
   } = useMediaPlayer();
 
   const isDesktopContentSmall =
     contentWidth < screenContentMaxWidth && !isMobile;
+
   if (!isMediaPlayerOpen) return null;
   if (isMobile) return <MediaPlayerBarMobile />;
   return (
@@ -68,29 +71,44 @@ export const MediaPlayerBar: FC<{
       ]}
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        {/*TODO: No random for Video*/}
+        {media?.isVideo ? (
+          <>
+            {/* The user will be redirected to the video's screen if he's not on it when clicking on this button */}
+            <CustomPressable onPress={triggerVideoFullscreen}>
+              <SVG
+                source={FullScreenIcon}
+                width={20}
+                height={20}
+                color={neutralA3}
+              />
+            </CustomPressable>
+            <SpacerRow size={2.5} />
+          </>
+        ) : (
+          <>
+            <CustomPressable
+              onPress={() => setIsRandom((isRandom) => !isRandom)}
+            >
+              <SVG
+                source={RandomIcon}
+                height={20}
+                width={20}
+                color={isRandom ? secondaryColor : neutralA3}
+              />
+            </CustomPressable>
+            <SpacerRow size={2.5} />
 
-        <CustomPressable onPress={() => setIsRandom((isRandom) => !isRandom)}>
-          <SVG
-            source={RandomIcon}
-            height={20}
-            width={20}
-            color={isRandom ? secondaryColor : neutralA3}
-          />
-        </CustomPressable>
-        <SpacerRow size={2.5} />
-
-        {/*TODO: No previous for Video*/}
-
-        <CustomPressable onPress={prevMedia} disabled={!canPrev}>
-          <SVG
-            source={PreviousIcon}
-            height={20}
-            width={20}
-            color={canPrev ? secondaryColor : neutralA3}
-          />
-        </CustomPressable>
-        <SpacerRow size={2.5} />
+            <CustomPressable onPress={prevMedia} disabled={!canPrev}>
+              <SVG
+                source={PreviousIcon}
+                height={20}
+                width={20}
+                color={canPrev ? secondaryColor : neutralA3}
+              />
+            </CustomPressable>
+            <SpacerRow size={2.5} />
+          </>
+        )}
 
         <CustomPressable onPress={handlePlayPause} disabled={!media}>
           <SVG
@@ -128,21 +146,19 @@ export const MediaPlayerBar: FC<{
       <View style={{ flex: 1 }} />
 
       <View style={{ flex: 1, alignItems: "flex-end" }}>
-        <TimerSlider width={isDesktopContentSmall ? 200 : undefined} />
-      </View>
-      <SpacerRow size={isDesktopContentSmall ? 2 : 4} />
-
-      <View style={{ flex: 1 }}>
-        <MediaNameImage
-          style={{ maxWidth: 400, width: "100%" }}
-          isVideo={!!media?.videoId}
+        <TimerSlider
+          width={isDesktopContentSmall ? 200 : undefined}
+          playbackStatus={playbackStatus}
         />
       </View>
       <SpacerRow size={isDesktopContentSmall ? 2 : 4} />
 
-      {/*TODO: Full screen button for Video*/}
+      <View style={{ flex: 1 }}>
+        <MediaNameImage style={{ maxWidth: 400, width: "100%" }} />
+      </View>
+      <SpacerRow size={isDesktopContentSmall ? 2 : 4} />
 
-      <VolumeSlider />
+      <VolumeSlider playbackStatus={playbackStatus} />
     </View>
   );
 };
