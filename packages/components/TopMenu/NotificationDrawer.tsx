@@ -195,10 +195,17 @@ const useBuildBodyText = (item: Notification) => {
     return `${name} commented your post.`;
   }
   if (item.category === "tip") {
-    return `${name} tip ${getPrettyPrice(item)} your post.`;
+    return `💸 ${name} tip ${getPrettyPrice(item)} your post.`;
   }
   if (item.category === "nft-transfer") {
     return `${name} transfer an NFT.`;
+  }
+  if (item.category === "mint") {
+    return `🤑 Your newly minted NFT is here.`;
+  }
+  if (item.category === "mint-tns") {
+    const tnsTokenId = item.body.split(":");
+    return `🎉 on minting ${tnsTokenId[0]}`;
   }
   if (item.category === "nft-trade-buyer") {
     return `Your NFT was sold for ${getPrettyPrice(item)}.`;
@@ -216,9 +223,13 @@ const getOmniLink = (item: Notification): OmniLinkToType => {
     };
   }
   if (
-    ["nft-trade-seller", "nft-trade-buyer", "nft-transfer"].includes(
-      item.category
-    )
+    [
+      "nft-trade-seller",
+      "nft-trade-buyer",
+      "nft-transfer",
+      "mint",
+      "mint-tns",
+    ].includes(item.category)
   ) {
     return {
       screen: "NFTDetail",

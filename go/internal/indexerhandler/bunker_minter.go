@@ -2,6 +2,7 @@ package indexerhandler
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
@@ -148,6 +149,16 @@ func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Coll
 	}
 
 	h.logger.Info("minted nft", zap.String("id", string(nftId)), zap.String("owner-id", string(ownerId)))
+
+	notification := indexerdb.Notification{
+		UserId:    ownerId,
+		TriggerBy: h.config.Network.UserID(execMsg.Sender),
+		Body:      fmt.Sprintf("%s:%s", nftId, blockTime.Unix()),
+		Action:    fmt.Sprintf("%s", nftId),
+		Category:  "mint",
+		CreatedAt: blockTime.Unix(),
+	}
+	h.config.DbPersistent.Create(&notification)
 
 	return nil
 }

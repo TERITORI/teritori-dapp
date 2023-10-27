@@ -2,6 +2,7 @@ package indexerhandler
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
@@ -155,6 +156,16 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create mint activity")
 	}
+
+	notification := indexerdb.Notification{
+		UserId:    ownerId,
+		TriggerBy: h.config.Network.UserID(execMsg.Sender),
+		Body:      fmt.Sprintf("%s:%s:%s", tokenId, nftId, blockTime.Unix()),
+		Action:    fmt.Sprintf("%s", nftId),
+		Category:  "mint-tns",
+		CreatedAt: blockTime.Unix(),
+	}
+	h.config.DbPersistent.Create(&notification)
 
 	return nil
 }
