@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
 
 import { selectIsLightTheme } from "../store/slices/settings";
-import { darkTheme, lightTheme } from "../utils/themes";
+import { darkTheme, lightTheme, Theme } from "../utils/themes";
 
-export const useTheme = () => {
+export const useTheme = (): Theme => {
   const isLightThem = useSelector(selectIsLightTheme);
   return isLightThem ? lightTheme : darkTheme;
 };
