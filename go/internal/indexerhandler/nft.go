@@ -234,14 +234,14 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 	notification := indexerdb.Notification{
 		UserId:    receiverID,
 		TriggerBy: h.config.Network.UserID(execMsg.Sender),
-		Body:      fmt.Sprintf("%s:%s:%s", collection.TeritoriCollection.MintContractAddress, msg.Data.TokenID, blockTime.Unix()),
-		Action:    fmt.Sprintf("%s:%s", collection.TeritoriCollection.MintContractAddress, msg.Data.TokenID),
+		Body:      fmt.Sprintf("%s:%s", nftId, blockTime.Unix()),
+		Action:    fmt.Sprintf("%s", nftId),
 		Category:  "nft-transfer",
 		CreatedAt: blockTime.Unix(),
 	}
 	h.config.DbPersistent.Create(&notification)
 
-	h.logger.Debug("transfered nft", zap.String("id", string(nftId)))
+	h.logger.Debug("transferred nft", zap.String("id", string(nftId)))
 
 	return nil
 }

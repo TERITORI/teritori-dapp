@@ -198,7 +198,7 @@ const useBuildBodyText = (item: Notification) => {
     return `${name} tip ${getPrettyPrice(item)} your post.`;
   }
   if (item.category === "nft-transfer") {
-    return `${name} transfer an NFT  ${item.body.split(":")[-1]}.`;
+    return `${name} transfer an NFT.`;
   }
   if (item.category === "nft-trade-buyer") {
     return `Your NFT was sold for ${getPrettyPrice(item)}.`;
@@ -209,13 +209,17 @@ const useBuildBodyText = (item: Notification) => {
 };
 
 const getOmniLink = (item: Notification): OmniLinkToType => {
-  if (["reaction", "comment"].includes(item.category)) {
+  if (["reaction", "comment", "tip"].includes(item.category)) {
     return {
       screen: "FeedPostView",
       params: { id: item.action },
     };
   }
-  if (["nft-trade-seller", "nft-trade-buyer"].includes(item.category)) {
+  if (
+    ["nft-trade-seller", "nft-trade-buyer", "nft-transfer"].includes(
+      item.category
+    )
+  ) {
     return {
       screen: "NFTDetail",
       params: { id: item.action },
