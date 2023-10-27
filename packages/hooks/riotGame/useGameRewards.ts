@@ -42,7 +42,7 @@ const ethereumGetClaimableAmount = async (
   const p2eClient = mustGetP2eClient(network?.id);
   const data = await p2eClient.MerkleData({
     userId: userAddress,
-    token: network.currencies[0].denom,
+    token: network.toriBridgedTokenAddress,
     networkId: network?.id,
   });
   return data.claimableAmount;
