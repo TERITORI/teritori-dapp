@@ -1,8 +1,9 @@
-import { ResizeMode } from "expo-av";
+import { ResizeMode, Video } from "expo-av";
 import React from "react";
 import { View } from "react-native";
 
 import { DeleteButton } from "./DeleteButton";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { errorColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -49,17 +50,30 @@ export const VideoView: React.FC<VideoPreviewProps> = ({
       {isEditable && onDelete && (
         <DeleteButton onPress={() => onDelete(file)} />
       )}
-      <MediaPlayerVideo
-        videoMetaInfo={videoMetaInfo}
-        style={{
-          height: 400,
-          marginTop: layout.spacing_x2,
-          marginBottom: layout.spacing_x2,
-        }}
-        resizeMode={ResizeMode.CONTAIN}
-        authorId={authorId}
-        postId={postId}
-      />
+      {isEditable ? (
+        <Video
+          useNativeControls
+          source={{ uri: ipfsURLToHTTPURL(videoMetaInfo.url) }}
+          resizeMode={ResizeMode.CONTAIN}
+          style={{
+            height: 400,
+            marginTop: layout.spacing_x2,
+            marginBottom: layout.spacing_x2,
+          }}
+        />
+      ) : (
+        <MediaPlayerVideo
+          videoMetaInfo={videoMetaInfo}
+          style={{
+            height: 400,
+            marginTop: layout.spacing_x2,
+            marginBottom: layout.spacing_x2,
+          }}
+          resizeMode={ResizeMode.CONTAIN}
+          authorId={authorId}
+          postId={postId}
+        />
+      )}
     </View>
   );
 };

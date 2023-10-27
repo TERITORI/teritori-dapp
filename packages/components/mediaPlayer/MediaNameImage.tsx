@@ -1,3 +1,4 @@
+import { ResizeMode } from "expo-av";
 import { FC } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
@@ -15,8 +16,7 @@ import { SpacerRow } from "../spacer";
 
 export const MediaNameImage: FC<{
   style?: StyleProp<ViewStyle>;
-  isVideo?: boolean;
-}> = ({ style, isVideo }) => {
+}> = ({ style }) => {
   const { media } = useMediaPlayer();
   const authorNSInfo = useNSUserInfo(media?.createdBy);
   const [network, userAddress] = parseUserId(media?.createdBy);
@@ -25,7 +25,7 @@ export const MediaNameImage: FC<{
     : tinyAddress(userAddress, 20);
 
   //TODO: Video in MediaPlayer
-  const imageWidth = isVideo ? 57 : 32;
+  const imageWidth = media?.isVideo ? 57 : 32;
   const imageHeight = 32;
 
   if (!media) return <View />;
@@ -38,7 +38,7 @@ export const MediaNameImage: FC<{
               screen: "MusicAlbum",
               params: { id: media.albumId },
             }
-          : media?.videoId
+          : media.videoId
           ? {
               screen: "VideoDetail",
               params: { id: media.videoId },
@@ -62,6 +62,7 @@ export const MediaNameImage: FC<{
           style={{ height: imageHeight, width: imageWidth }}
           height={imageHeight}
           width={imageWidth}
+          resizeMode={ResizeMode.CONTAIN}
         />
         <SpacerRow size={1.5} />
         <View

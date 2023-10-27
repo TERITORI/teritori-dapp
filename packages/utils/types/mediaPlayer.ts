@@ -6,5 +6,6 @@ export interface Media {
   duration?: number;
   albumId?: string;
   postId?: string;
+  isVideo?: boolean;
   videoId?: string;
 }

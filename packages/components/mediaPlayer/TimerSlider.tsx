@@ -1,4 +1,5 @@
 import Slider from "@react-native-community/slider";
+import { AVPlaybackStatusSuccess } from "expo-av";
 import React, { FC, useState } from "react";
 import { TextStyle, View } from "react-native";
 
@@ -18,10 +19,12 @@ import { SpacerRow } from "../spacer";
 export const TimerSlider: FC<{
   width?: number;
   hideDuration?: boolean;
-}> = ({ hideDuration, width = 324 }) => {
-  const { media, playbackStatus, onChangeTimerPosition } = useMediaPlayer();
+  playbackStatus?: AVPlaybackStatusSuccess;
+}> = ({ hideDuration, playbackStatus, width = 324 }) => {
+  const { media, onChangeTimerPosition } = useMediaPlayer();
   const [isHovered, setIsHovered] = useState(false);
   const [isSliding, setIsSliding] = useState(false);
+
   return (
     <View
       style={{
@@ -48,8 +51,8 @@ export const TimerSlider: FC<{
       >
         <Slider
           onSlidingStart={() => setIsSliding(true)}
-          onSlidingComplete={(a: number) => {
-            onChangeTimerPosition(a);
+          onSlidingComplete={(value: number) => {
+            onChangeTimerPosition(value);
             setIsSliding(false);
           }}
           value={playbackStatus?.positionMillis}
@@ -60,7 +63,7 @@ export const TimerSlider: FC<{
             height: (isSliding || isHovered) && media ? 12 : 0,
           }}
           thumbTintColor={secondaryColor}
-          maximumValue={media?.duration}
+          maximumValue={playbackStatus?.durationMillis || media?.duration}
           minimumTrackTintColor={
             (isSliding || isHovered) && media ? primaryColor : secondaryColor
           }
@@ -74,10 +77,10 @@ export const TimerSlider: FC<{
         <>
           <SpacerRow size={1} />
           <View style={{ width: 40 }}>
-            {!!media?.duration && (
+            {(!!playbackStatus?.durationMillis || !!media?.duration) && (
               <BrandText style={timeTextStyle}>
                 {prettyMediaDuration(
-                  playbackStatus?.durationMillis || media.duration
+                  playbackStatus?.durationMillis || media?.duration
                 )}
               </BrandText>
             )}
