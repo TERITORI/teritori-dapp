@@ -1,20 +1,24 @@
 import React from "react";
 import { Text, TextProps, TextStyle } from "react-native";
 import TextTicker from "react-native-text-ticker";
-import { useSelector } from "react-redux";
 
-import { selectIsLightTheme } from "../../store/slices/settings";
+import { useTheme } from "../../hooks/useTheme";
 
 export const BrandTextBase: React.FC<TextProps & { isTicker?: boolean }> = (
   props
 ) => {
   const { style, isTicker, ...otherProps } = props;
-  const styles = useStyles();
+  const theme = useTheme();
+  const baseStyle: TextStyle = {
+    color: theme.textColor,
+    fontSize: 20,
+    fontWeight: "600",
+  };
 
   if (isTicker)
     return (
       <TextTicker
-        style={[styles.base, style]}
+        style={[baseStyle, style]}
         duration={4000}
         loop
         repeatSpacer={16}
@@ -24,23 +28,8 @@ export const BrandTextBase: React.FC<TextProps & { isTicker?: boolean }> = (
     );
   else
     return (
-      <Text style={[styles.base, style]} {...otherProps}>
+      <Text style={[baseStyle, style]} {...otherProps}>
         {props.children}
       </Text>
     );
-};
-
-const useStyles = () => {
-  const isLightTheme = useSelector(selectIsLightTheme);
-  // eslint-disable-next-line no-restricted-syntax
-  const styles: {
-    base: TextStyle;
-  } = {
-    base: {
-      color: isLightTheme ? "black" : "white",
-      fontSize: 20,
-      fontWeight: "600",
-    },
-  };
-  return styles;
 };
