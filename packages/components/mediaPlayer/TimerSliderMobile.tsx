@@ -1,13 +1,16 @@
 import Slider from "@react-native-community/slider";
+import { AVPlaybackStatusSuccess } from "expo-av";
 import React, { FC, useState } from "react";
 import { View } from "react-native";
 
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { neutral55, secondaryColor } from "../../utils/style/colors";
 
-export const TimerSliderMobile: FC = () => {
+export const TimerSliderMobile: FC<{
+  playbackStatus?: AVPlaybackStatusSuccess;
+}> = ({ playbackStatus }) => {
   const [width, setWidth] = useState(0);
-  const { media, playbackStatus, onChangeTimerPosition } = useMediaPlayer();
+  const { media, onChangeTimerPosition } = useMediaPlayer();
 
   return (
     <View
