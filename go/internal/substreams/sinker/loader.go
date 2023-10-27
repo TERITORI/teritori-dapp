@@ -95,7 +95,8 @@ func (l *Loader) ApplyChanges(sinkCursor *sink.Cursor, cursorID string, networkI
 		return err
 	}
 
-	l.logger.Info(">>> cursor updated and changes applied !")
+	// NOTE: Activate this if needed when debug
+	// l.logger.Info(">>> cursor updated and changes applied !")
 
 	// Start new transaction
 	l.MustStartDbTransaction()

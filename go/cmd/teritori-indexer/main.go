@@ -174,8 +174,9 @@ func main() {
 	}
 	for _, q := range qs {
 		db.Save(&indexerdb.Quest{
-			ID:    q.ID,
-			Title: q.Title,
+			ID:        q.ID,
+			Title:     q.Title,
+			NetworkID: *networkID,
 		})
 	}
 
@@ -311,6 +312,7 @@ func main() {
 					"height":         lastProcessedHeight,
 					"tx_hash":        lastProcessedHash,
 					"chunked_height": chunkedHeight,
+					"network_id":     networkID,
 				}).Error; err != nil {
 					return errors.Wrap(err, "failed to update app height")
 				}

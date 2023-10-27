@@ -94,10 +94,12 @@ func (h *Handler) handleExecuteSendNFTFallback(e *Message, execMsg *wasmtypes.Ms
 		Kind: indexerdb.ActivityKindSendNFT,
 		Time: blockTime,
 		SendNFT: &indexerdb.SendNFT{
-			Sender:   senderID,
-			Receiver: receiverID,
+			Sender:    senderID,
+			Receiver:  receiverID,
+			NetworkID: collection.NetworkID,
 		},
-		NFTID: nftId,
+		NFTID:     nftId,
+		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create mint activity")
 	}
@@ -154,9 +156,11 @@ func (h *Handler) handleExecuteBurn(e *Message, execMsg *wasmtypes.MsgExecuteCon
 		Kind: indexerdb.ActivityKindBurn,
 		Time: blockTime,
 		Burn: &indexerdb.Burn{
-			BurnerID: h.config.Network.UserID(execMsg.Sender),
+			BurnerID:  h.config.Network.UserID(execMsg.Sender),
+			NetworkID: collection.NetworkID,
 		},
-		NFTID: nftId,
+		NFTID:     nftId,
+		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create burn activity")
 	}
@@ -223,10 +227,12 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 		Kind: indexerdb.ActivityKindTransferNFT,
 		Time: blockTime,
 		TransferNFT: &indexerdb.TransferNFT{
-			Sender:   h.config.Network.UserID(execMsg.Sender),
-			Receiver: receiverID,
+			Sender:    h.config.Network.UserID(execMsg.Sender),
+			Receiver:  receiverID,
+			NetworkID: collection.NetworkID,
 		},
-		NFTID: nftId,
+		NFTID:     nftId,
+		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create transfer activity")
 	}

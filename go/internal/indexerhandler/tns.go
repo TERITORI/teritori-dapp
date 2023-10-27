@@ -37,6 +37,7 @@ func (h *Handler) handleInstantiateTNS(e *Message, contractAddress string, insta
 		SecondaryDuringMint: true,
 		Time:                blockTime,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
+			NetworkID:           h.config.Network.ID,
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  contractAddress,
 			CreatorAddress:      tnsInstantiateMsg.AdminAddress,
@@ -98,8 +99,10 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		ImageURI:     imageURI,
 		CollectionID: collection.ID,
 		TeritoriNFT: &indexerdb.TeritoriNFT{
-			TokenID: tokenId,
+			TokenID:   tokenId,
+			NetworkID: h.config.Network.ID,
 		},
+		NetworkID: h.config.Network.ID,
 	}
 	var count int64
 	if err := h.db.Model(&indexerdb.NFT{}).Where(&indexerdb.NFT{ID: nftId}).Count(&count).Error; err != nil {
@@ -132,6 +135,7 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		UserID:    ownerId,
 		QuestID:   "book_tns",
 		Completed: true,
+		NetworkID: h.config.Network.ID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save quest completion")
 	}
@@ -149,9 +153,11 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		Time: blockTime,
 		Mint: &indexerdb.Mint{
 			// TODO: get price
-			BuyerID: ownerId,
+			BuyerID:   ownerId,
+			NetworkID: collection.NetworkID,
 		},
-		NFTID: nftId,
+		NFTID:     nftId,
+		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create mint activity")
 	}

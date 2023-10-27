@@ -89,6 +89,7 @@ func (h *Handler) handleExecute(contractABI *abi.ABI, tx *pb.Tx, args map[string
 			MintContractAddress: targetMint,
 			NFTContractAddress:  fmt.Sprintf("%s:%s", tx.Info.To, sourceTeritoriCollection.NFTContractAddress),
 			CreatorAddress:      fmt.Sprintf("%s:%s", sourceTeritoriCollection.CreatorAddress, sourceNetworkIDPrefix),
+			NetworkID:           h.network.ID,
 		}
 		if err := h.dbTransaction.FirstOrCreate(&targetTeritoriCollection).Error; err != nil {
 			return errors.Wrap(err, "failed to create bridged collection")
@@ -112,6 +113,7 @@ func (h *Handler) handleExecute(contractABI *abi.ABI, tx *pb.Tx, args map[string
 		IsListed:     sourceNFT.IsListed,
 		Attributes:   sourceNFT.Attributes,
 		CollectionID: targetTeritoriCollection.CollectionID,
+		NetworkID:    h.network.ID,
 	}
 
 	if err := h.dbTransaction.FirstOrCreate(&targetNFT).Error; err != nil {
@@ -120,8 +122,9 @@ func (h *Handler) handleExecute(contractABI *abi.ABI, tx *pb.Tx, args map[string
 
 	// 8. Create target teritori_nft
 	teritoriNFT := indexerdb.TeritoriNFT{
-		NFTID:   string(targetNFT.ID),
-		TokenID: strconv.Itoa(int(tokenID)),
+		NFTID:     string(targetNFT.ID),
+		TokenID:   strconv.Itoa(int(tokenID)),
+		NetworkID: h.network.ID,
 	}
 	if err := h.dbTransaction.FirstOrCreate(&teritoriNFT).Error; err != nil {
 		return errors.Wrap(err, "failed to create teritori_nft")
@@ -154,6 +157,10 @@ func (h *Handler) handleBridgeNFT(contractABI *abi.ABI, tx *pb.Tx, args map[stri
 	nftID := h.network.GetBase().NFTID(mintAddress, input.TokenID.String())
 
 	var nft indexerdb.NFT
+
+	fmt.Println(mintAddress, nftID, input.TokenID.String())
+	panic("====================")
+
 	if err := h.dbTransaction.First(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
 		return errors.Wrap(err, "failed to get nft")
 	}

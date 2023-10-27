@@ -72,6 +72,7 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 		SecondaryDuringMint: secondaryDuringMint,
 		Time:                blockTime,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
+			NetworkID:           network.GetBase().ID,
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  nftAddr,
 			CreatorAddress:      instantiateMsg.Sender,
@@ -119,8 +120,10 @@ func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Coll
 		CollectionID: collection.ID,
 		Attributes:   metadata.Attributes,
 		TeritoriNFT: &indexerdb.TeritoriNFT{
-			TokenID: tokenId,
+			TokenID:   tokenId,
+			NetworkID: h.config.Network.ID,
 		},
+		NetworkID: h.config.Network.ID,
 	}
 
 	if err := h.db.Create(&nft).Error; err != nil {
@@ -140,9 +143,11 @@ func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Coll
 		Time: blockTime,
 		Mint: &indexerdb.Mint{
 			// TODO: get price
-			BuyerID: ownerId,
+			BuyerID:   ownerId,
+			NetworkID: collection.NetworkID,
 		},
-		NFTID: nftId,
+		NFTID:     nftId,
+		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create mint activity")
 	}

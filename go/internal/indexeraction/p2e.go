@@ -161,6 +161,7 @@ func (u *IndexerAction) SquadStake(
 		SeasonID:  season.ID,
 		NetworkID: u.network.ID,
 	}
+
 	if err := u.dbTransaction.Where(q2).FirstOrCreate(&userScore).Error; err != nil {
 		return errors.Wrap(err, "failed to get/create user record for leaderboard")
 	}

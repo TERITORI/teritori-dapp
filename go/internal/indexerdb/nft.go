@@ -34,9 +34,13 @@ type NFT struct {
 	Activities []Activity
 	Attributes ArrayJSONB `gorm:"type:jsonb;default:'[]'"`
 	Burnt      bool
+
+	NetworkID string `gorm:"index"`
 }
 
 type TeritoriNFT struct {
 	NFTID   string `gorm:"primaryKey"`
 	TokenID string
+
+	NetworkID string `gorm:"index"`
 }

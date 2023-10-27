@@ -13,6 +13,8 @@ type App struct {
 	Height        int64
 	ChunkedHeight int64
 	TxHash        string
+
+	NetworkID string
 }
 
 // Cursor used by Substreams indexer
@@ -26,6 +28,8 @@ type Cursors struct {
 
 type User struct {
 	ID networks.UserID
+
+	NetworkID string `gorm:"index"`
 }
 
 var allModels = []interface{}{

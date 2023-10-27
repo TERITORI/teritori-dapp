@@ -55,8 +55,10 @@ func (u *IndexerAction) WithdrawNFT(
 		Kind:  indexerdb.ActivityKindCancelListing,
 		Time:  blockTime,
 		CancelListing: &indexerdb.CancelListing{
-			SellerID: u.network.UserID(userAddress),
+			SellerID:  u.network.UserID(userAddress),
+			NetworkID: collection.NetworkID,
 		},
+		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create listing cancelation in db")
 	}
@@ -136,7 +138,9 @@ func (u *IndexerAction) ListNFT(
 			PriceDenom: denom,
 			USDPrice:   usdAmount,
 			SellerID:   sellerID,
+			NetworkID:  collection.NetworkID,
 		},
+		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create listing in db")
 	}
@@ -146,6 +150,7 @@ func (u *IndexerAction) ListNFT(
 		UserID:    sellerID,
 		QuestID:   "list_nft",
 		Completed: true,
+		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save quest completion")
 	}
@@ -225,7 +230,9 @@ func (u *IndexerAction) BuyNFT(
 			USDPrice:   0,
 			BuyerID:    buyerID,
 			SellerID:   sellerID,
+			NetworkID:  collection.NetworkID,
 		},
+		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create trade in db")
 	}
@@ -235,6 +242,7 @@ func (u *IndexerAction) BuyNFT(
 		UserID:    buyerID,
 		QuestID:   "buy_nft",
 		Completed: true,
+		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save buy quest completion")
 	}
@@ -244,6 +252,7 @@ func (u *IndexerAction) BuyNFT(
 		UserID:    sellerID,
 		QuestID:   "sell_nft",
 		Completed: true,
+		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save sell quest completion")
 	}

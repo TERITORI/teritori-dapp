@@ -184,6 +184,7 @@ func (h *Handler) createPost(
 		AuthorId:             h.config.Network.UserID(execMsg.Sender),
 		CreatedAt:            createdAt.Unix(),
 		IsBot:                isBot,
+		NetworkID:            h.config.Network.ID,
 	}
 
 	if err := h.db.Create(&post).Error; err != nil {
@@ -222,6 +223,7 @@ func (h *Handler) handleExecuteTipPost(e *Message, execMsg *wasmtypes.MsgExecute
 		UserID:    h.config.Network.UserID(execMsg.Sender),
 		QuestID:   "social_feed_tip_content_creator",
 		Completed: true,
+		NetworkID: h.config.Network.ID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save social_feed_tip_content_creator quest completion")
 	}
@@ -257,6 +259,7 @@ func (h *Handler) handleQuests(
 			UserID:    h.config.Network.UserID(execMsg.Sender),
 			QuestID:   questId,
 			Completed: true,
+			NetworkID: h.config.Network.ID,
 		}).Error; err != nil {
 			return errors.Wrap(err, "failed to save quest completion")
 		}

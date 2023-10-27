@@ -5,6 +5,8 @@ import "github.com/TERITORI/teritori-dapp/go/pkg/networks"
 type Quest struct {
 	ID    string
 	Title string
+
+	NetworkID string
 }
 
 type QuestCompletion struct {
@@ -13,4 +15,6 @@ type QuestCompletion struct {
 
 	Quest     *Quest
 	Completed bool
+
+	NetworkID string
 }

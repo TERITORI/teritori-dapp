@@ -50,10 +50,12 @@ func (h *Handler) handleTransferFrom(contractABI *abi.ABI, tx *pb.Tx, args map[s
 		Kind: indexerdb.ActivityKindSendNFT,
 		Time: time.Unix(int64(tx.Clock.Timestamp), 0),
 		SendNFT: &indexerdb.SendNFT{
-			Sender:   h.network.UserID(input.From.String()),
-			Receiver: h.network.UserID(input.To.String()),
+			Sender:    h.network.UserID(input.From.String()),
+			Receiver:  h.network.UserID(input.To.String()),
+			NetworkID: collection.NetworkID,
 		},
-		NFTID: nftId,
+		NFTID:     nftId,
+		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create send activity")
 	}
@@ -106,6 +108,7 @@ func (h *Handler) handleInitialize(tx *pb.Tx) error {
 		SecondaryDuringMint: false,
 		Time:                time.Unix(int64(tx.Clock.Timestamp), 0),
 		TeritoriCollection: &indexerdb.TeritoriCollection{
+			NetworkID:           network.GetBase().ID,
 			MintContractAddress: minterAddress,
 			NFTContractAddress:  nftAddress,
 			CreatorAddress:      tx.Info.From,

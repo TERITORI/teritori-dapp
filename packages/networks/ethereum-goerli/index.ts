@@ -32,8 +32,8 @@ export const ethereumGoerliNetwork: NetworkInfo = {
   riotSquadStakingContractAddress: "0xdfa5cbcd0db5d966e68dd143c6441ec47e2777be",
   // Substreams
   firehoseEndpoint: "goerli.eth.streamingfast.io:443",
-  indexStartBlock: "9817776", //  Stake: "8694034", Mint: "8218450", Bridge: "9817776"
-  indexStopBlock: "+1",
+  indexStartBlock: "8218450", //  Stake: "8694034", Mint: "8218450", Bridge: "9817776"
+  indexStopBlock: "-1",
   indexBlockProgress: 1000,
   indexLiveBlockProgress: 1,
   substreamsManifest: "go/internal/substreams/ethereum/ethereum_goerli.yaml",

@@ -53,8 +53,10 @@ func (h *Handler) handleMintWithMetadata(contractABI *abi.ABI, tx *pb.Tx, args m
 			CollectionID: collectionID,
 			Attributes:   metaData.Attributes,
 			TeritoriNFT: &indexerdb.TeritoriNFT{
-				TokenID: tokenID,
+				TokenID:   tokenID,
+				NetworkID: h.network.ID,
 			},
+			NetworkID: h.network.ID,
 		}
 
 		if err := h.dbTransaction.Create(&nft).Error; err != nil {
@@ -69,9 +71,11 @@ func (h *Handler) handleMintWithMetadata(contractABI *abi.ABI, tx *pb.Tx, args m
 			Time: time.Unix(int64(tx.Clock.Timestamp), 0),
 			Mint: &indexerdb.Mint{
 				// TODO: get price
-				BuyerID: ownerID,
+				BuyerID:   ownerID,
+				NetworkID: h.network.ID,
 			},
-			NFTID: nftID,
+			NFTID:     nftID,
+			NetworkID: h.network.ID,
 		}).Error; err != nil {
 			return errors.Wrap(err, "failed to create mint activity")
 		}

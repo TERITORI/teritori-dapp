@@ -69,6 +69,7 @@ func (h *Handler) handleInstantiateBreeding(e *Message, contractAddress string, 
 		SecondaryDuringMint: true,
 		Time:                blockTime,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
+			NetworkID:           h.config.Network.ID,
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  nftAddr,
 			CreatorAddress:      instantiateMsg.Sender,
@@ -148,6 +149,7 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 		EndTime:   endTime,
 		TokenIDs:  strings.Join(tokenIds, ","),
 		SeasonID:  season.ID,
+		NetworkID: h.config.Network.ID,
 	}
 
 	if err := h.db.Create(&squadStaking).Error; err != nil {
@@ -157,8 +159,9 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 	// Create leaderboard (by season) record if does not exist
 	var userScore indexerdb.P2eLeaderboard
 	q2 := &indexerdb.P2eLeaderboard{
-		UserID:   ownerId,
-		SeasonID: season.ID,
+		UserID:    ownerId,
+		SeasonID:  season.ID,
+		NetworkID: h.config.Network.ID,
 	}
 	if err := h.db.Where(q2).FirstOrCreate(&userScore).Error; err != nil {
 		return errors.Wrap(err, "failed to get/create user record for leaderboard")
