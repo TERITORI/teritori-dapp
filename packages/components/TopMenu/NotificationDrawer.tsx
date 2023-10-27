@@ -176,7 +176,16 @@ const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
               <BrandText style={fontSemibold12}>
                 {moment.unix(item.createdAt).fromNow()}
               </BrandText>
-              <BrandText style={fontSemibold12}>{item.category}</BrandText>
+              <BrandText
+                style={[
+                  fontSemibold12,
+                  {
+                    textTransform: "capitalize",
+                  },
+                ]}
+              >
+                {item.category}
+              </BrandText>
             </View>
           </View>
         </View>
