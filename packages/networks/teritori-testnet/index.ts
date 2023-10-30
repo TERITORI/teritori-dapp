@@ -72,7 +72,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   ],
   excludeFromLaunchpadList: [riotContractAddressGen1],
   socialFeedContractAddress:
-    "tori19y3xr6lghw04tj2ets8y70mrynlnflejanl2ys3n3c5vaasj358shjsk20",
+    "tori1ch4dpzqupmqvrsak0ezwnxcmslyqppzp4dkpjk9zqq4m5x4amfkq54f7kn",
   daoCw20CodeId: 99,
   daoFactoryCodeId: 100,
   daoCoreCodeId: 101,
