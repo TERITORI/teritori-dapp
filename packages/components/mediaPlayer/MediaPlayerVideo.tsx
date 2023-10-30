@@ -162,28 +162,30 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
           style={style}
           resizeMode={resizeMode}
         />
-
-        {/* Shadow */}
-        <LinearGradient
-          start={{ x: 0, y: 1 }}
-          end={{ x: 0, y: 0.5 }}
-          colors={[
-            "rgba(0,0,0,1)",
-            "rgba(0,0,0,.9)",
-            "rgba(0,0,0,.3)",
-            "rgba(0,0,0,0)",
-          ]}
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            height: "20%",
-            width: "100%",
-            borderBottomRightRadius: 8,
-            borderBottomLeftRadius: 8,
-          }}
-        />
       </CustomPressable>
+
+      {/*TODO: Hide controls and shadow if pause and video not hovered*/}
+
+      {/* Shadow */}
+      <LinearGradient
+        start={{ x: 0, y: 1 }}
+        end={{ x: 0, y: 0.5 }}
+        colors={[
+          "rgba(0,0,0,1)",
+          "rgba(0,0,0,.8)",
+          "rgba(0,0,0,.2)",
+          "rgba(0,0,0,0)",
+        ]}
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          height: "20%",
+          width: "100%",
+          borderBottomRightRadius: 8,
+          borderBottomLeftRadius: 8,
+        }}
+      />
 
       {/*---- Custom controls*/}
       <View
