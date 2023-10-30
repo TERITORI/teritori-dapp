@@ -24,7 +24,7 @@ export const EmbeddedWeb: React.FC<IFrameProps> = ({
         border: 0,
         borderRadius,
       }}
-      // allowsFullscreenVideo
+      allowsFullscreenVideo
     />
   );
 };
