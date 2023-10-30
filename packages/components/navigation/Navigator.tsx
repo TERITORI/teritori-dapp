@@ -29,6 +29,7 @@ import { MultisigWalletDashboardScreen } from "../../screens/Multisig/MultisigWa
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
+import { RWAHome } from "../../screens/RWA/RWAHome";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
@@ -344,6 +345,11 @@ export const Navigator: React.FC = () => {
           header: () => null,
           title: screenTitle("Friends Add"),
         }}
+      />
+      <Stack.Screen
+        name="RWAHome"
+        component={RWAHome}
+        options={{ header: () => null, title: screenTitle("RWA Home") }}
       />
     </Stack.Navigator>
   );
