@@ -42,6 +42,7 @@ import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPub
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
+import { RWAHome } from "../../screens/RWA/RWAHome";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const screenTitle = (title: string) => "Teritori - " + title;
@@ -314,6 +315,11 @@ export const Navigator: React.FC = () => {
         name="CoreDAO"
         component={CoreDAOScreen}
         options={{ header: () => null, title: screenTitle("Core DAO") }}
+      />
+      <Stack.Screen
+        name="RWAHome"
+        component={RWAHome}
+        options={{ header: () => null, title: screenTitle("RWA Home") }}
       />
     </Stack.Navigator>
   );
