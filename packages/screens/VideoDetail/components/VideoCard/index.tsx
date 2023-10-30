@@ -42,7 +42,6 @@ import { VideoInfoWithMeta } from "../../../../utils/types/video";
 const IMAGE_HEIGHT = 173;
 const BUTTONS_HEIGHT = 28;
 export const VIDEO_CARD_WIDTH = 308;
-export const VIDEO_CARD_HEIGHT = 267;
 export const VideoCard: React.FC<{
   video: VideoInfoWithMeta;
   hideAuthor?: boolean;
