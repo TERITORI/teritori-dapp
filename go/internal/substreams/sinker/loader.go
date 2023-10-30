@@ -27,8 +27,8 @@ func NewLoader(indexerDB *gorm.DB, logger *zap.Logger) *Loader {
 // NOTE: There is mechanism to continue the indexer with changed/updated module but we don't process that
 // we can implement that in the future if needed, for now, when changing module we have to re-run indexer
 // Or maybe change the module hash manually ?
-func (l *Loader) GetOrCreateCursor(cursorID string, networkID string) (*sink.Cursor, error) {
-	c := indexerdb.Cursors{ID: cursorID}
+func (l *Loader) GetOrCreateCursor(cursorID string, networkID string, indexerMode indexerdb.IndexerMode) (*sink.Cursor, error) {
+	c := indexerdb.Cursors{ID: cursorID, IndexerMode: indexerMode}
 	err := l.indexerDB.First(&c).Error
 
 	// If no error then return the cursor
@@ -40,7 +40,7 @@ func (l *Loader) GetOrCreateCursor(cursorID string, networkID string) (*sink.Cur
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		sinkCursor := sink.NewBlankCursor()
 
-		if err := l.WriteCursor(sinkCursor, cursorID, networkID); err != nil {
+		if err := l.WriteCursor(sinkCursor, cursorID, networkID, indexerMode); err != nil {
 			return nil, errors.Wrap(err, "failed to init cursor")
 		}
 		return sinkCursor, nil
@@ -50,13 +50,14 @@ func (l *Loader) GetOrCreateCursor(cursorID string, networkID string) (*sink.Cur
 	return nil, errors.Wrap(err, "failed to retrieve cursor")
 }
 
-func (l *Loader) WriteCursor(sinkCursor *sink.Cursor, cursorID string, networkID string) error {
+func (l *Loader) WriteCursor(sinkCursor *sink.Cursor, cursorID string, networkID string, indexerMode indexerdb.IndexerMode) error {
 	cursor := indexerdb.Cursors{
-		ID:       cursorID,
-		Cursor:   sinkCursor.String(),
-		BlockNum: sinkCursor.Block().Num(),
-		BlockId:  sinkCursor.Block().ID(),
-		Network:  networkID,
+		ID:          cursorID,
+		Cursor:      sinkCursor.String(),
+		BlockNum:    sinkCursor.Block().Num(),
+		BlockId:     sinkCursor.Block().ID(),
+		Network:     networkID,
+		IndexerMode: indexerMode,
 	}
 
 	if err := l.indexerDB.Create(&cursor).Error; err != nil {

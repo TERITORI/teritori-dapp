@@ -6,7 +6,6 @@ import (
 	"os"
 	"strings"
 
-	"go.uber.org/zap"
 	"golang.org/x/exp/slices"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
@@ -23,6 +22,9 @@ func main() {
 		dbPass = fs.String("postgres-password", "", "password for postgreSQL database")
 		dbName = fs.String("database-name", "", "database name for postgreSQL")
 		dbUser = fs.String("postgres-user", "", "username for postgreSQL")
+
+		mode            = fs.String("indexer-mode", "", "mode to run indexer: p2e, data")
+		targetNetworkID = fs.String("target-network-id", "", "target network id to flush")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -43,17 +45,27 @@ func main() {
 		"polygon-mumbai",
 	}
 
-	if len(os.Args) < 2 {
-		panic("You have to provide network-id. Syntax: flush-db <networkID>")
-	}
-
-	networkID := os.Args[1]
-
+	// Check target network id
+	networkID := *targetNetworkID
 	if !slices.Contains(NETWORK_IDS, networkID) {
 		panic("NetworkId " + networkID + " is not supported")
 	}
 
-	sqlFilePath := "./go/cmd/flush-data/sql/clean.sql"
+	// Check indexer mode
+	var sqlFilePath string
+	var indexerMode indexerdb.IndexerMode
+
+	switch *mode {
+	case string(indexerdb.IndexerModeData):
+		sqlFilePath = "./go/cmd/flush-data/sql/clean-data.sql"
+		indexerMode = indexerdb.IndexerModeData
+	case string(indexerdb.IndexerModeP2E):
+		sqlFilePath = "./go/cmd/flush-data/sql/clean-p2e.sql"
+		indexerMode = indexerdb.IndexerModeP2E
+	default:
+		panic("missing indexer-mode or mode is not valid. Only support: p2e, data")
+	}
+
 	stmtBytes, err := os.ReadFile(sqlFilePath)
 	if err != nil {
 		panic(fmt.Errorf("failed to load sql file: %w", err))
@@ -68,10 +80,11 @@ func main() {
 
 	cleanStmt := string(stmtBytes)
 	cleanStmt = strings.Replace(cleanStmt, "<networkID>", networkID, -1)
+	cleanStmt = strings.Replace(cleanStmt, "<indexerMode>", string(indexerMode), -1)
 
 	if err := indexerDB.Exec(cleanStmt).Error; err != nil {
 		panic(fmt.Errorf("failed to exec sql: %w", err))
 	}
 
-	fmt.Println("data has been cleaned", zap.String("networkID", networkID))
+	fmt.Printf("Data has been cleaned - Mode: %s - NetworkID: %s", *mode, networkID)
 }

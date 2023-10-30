@@ -51,6 +51,9 @@ func main() {
 		insecurePrices              = fs.Bool("prices-insecure-grpc", false, "do not use TLS to connect to prices service")
 		networksFile                = fs.String("networks-file", "networks.json", "path to networks config file")
 		networkID                   = fs.String("indexer-network-id", "teritori", "network id to index")
+		// TODO: Add this mode to support of indexing p2e independly from the rest and vice-versa
+		// This is the temporary way to finish quickly p2e feature. We should rethink of indexing p2e more efficiently when having time
+		mode = fs.String("indexer-mode", "", "the mode to run indexer: p2e, data. p2e: index only p2e, data: index all data without p2e")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -64,6 +67,17 @@ func main() {
 
 	if *tendermintWebsocketEndpoint == "" {
 		panic(errors.New("missing tendermint-websocket-endpoint flag"))
+	}
+
+	var indexerMode indexerdb.IndexerMode
+
+	switch *mode {
+	case string(indexerdb.IndexerModeData):
+		indexerMode = indexerdb.IndexerModeData
+	case string(indexerdb.IndexerModeP2E):
+		indexerMode = indexerdb.IndexerModeP2E
+	default:
+		panic("missing indexer-mode or mode is not valid. Only support: p2e, data")
 	}
 
 	// load networks
@@ -159,10 +173,11 @@ func main() {
 	}
 
 	// init/get height
-	var dbApp indexerdb.App
-	if err := db.FirstOrCreate(&dbApp).Error; err != nil {
+	dbApp := indexerdb.App{}
+	if err := db.Where(indexerdb.App{IndexerMode: indexerMode}).FirstOrCreate(&dbApp).Error; err != nil {
 		panic(errors.Wrap(err, "failed to get db app"))
 	}
+
 	lastProcessedHeight := dbApp.Height
 	lastProcessedHash := dbApp.TxHash
 	chunkedHeight := dbApp.ChunkedHeight
@@ -250,6 +265,7 @@ func main() {
 					PricesClient:     ps,
 					Network:          network,
 					NetworkStore:     netstore,
+					IndexerMode:      indexerMode,
 				}, logger)
 				if err != nil {
 					return errors.Wrap(err, "failed to create handler")
@@ -313,6 +329,7 @@ func main() {
 					"tx_hash":        lastProcessedHash,
 					"chunked_height": chunkedHeight,
 					"network_id":     networkID,
+					"indexer_mode":   indexerMode,
 				}).Error; err != nil {
 					return errors.Wrap(err, "failed to update app height")
 				}

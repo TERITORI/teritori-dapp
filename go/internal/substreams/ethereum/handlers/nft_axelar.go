@@ -158,9 +158,6 @@ func (h *Handler) handleBridgeNFT(contractABI *abi.ABI, tx *pb.Tx, args map[stri
 
 	var nft indexerdb.NFT
 
-	fmt.Println(mintAddress, nftID, input.TokenID.String())
-	panic("====================")
-
 	if err := h.dbTransaction.First(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
 		return errors.Wrap(err, "failed to get nft")
 	}

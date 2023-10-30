@@ -41,6 +41,7 @@ type Config struct {
 	PricesClient     pricespb.PricesServiceClient
 	Network          *networks.CosmosNetwork
 	NetworkStore     networks.NetworkStore
+	IndexerMode      indexerdb.IndexerMode
 }
 
 type Handler struct {
@@ -114,8 +115,10 @@ func (h *Handler) HandleTx(height int64, hash string, tx cosmostx.Tx, logs []Ten
 
 		switch codecMsg.TypeUrl {
 		case "/cosmwasm.wasm.v1.MsgInstantiateContract":
-			if err := h.handleInstantiate(&handlerMsg); err != nil {
-				return errors.Wrap(err, "failed to handle instantiate")
+			if h.config.IndexerMode == indexerdb.IndexerModeData {
+				if err := h.handleInstantiate(&handlerMsg); err != nil {
+					return errors.Wrap(err, "failed to handle instantiate")
+				}
 			}
 		case "/cosmwasm.wasm.v1.MsgExecuteContract":
 			if err := h.handleExecute(&handlerMsg); err != nil {
@@ -185,109 +188,120 @@ func (h *Handler) handleExecute(e *Message) error {
 
 	h.logger.Debug("wasm", zap.String("action", wasmAction), zap.String("contract", executeMsg.Contract), zap.Int64("height", e.Height))
 
-	switch wasmAction {
-	case "mint":
-		if err := h.handleExecuteMint(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle mint")
-		}
-	case "buy":
-		if err := h.handleExecuteBuy(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle buy")
-		}
-	case "send_nft":
-		if err := h.handleExecuteSendNFT(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle send_nft")
-		}
-	case "withdraw":
-		// Squad unstaking
-		if executeMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV1 || executeMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV2 {
-			if err := h.handleExecuteSquadUnstake(e, &executeMsg); err != nil {
-				return errors.Wrap(err, "failed to handle squad unstake")
+	// Index p2e
+	if h.config.IndexerMode == indexerdb.IndexerModeP2E {
+		switch wasmAction {
+		case "withdraw":
+			// Squad unstaking
+			if executeMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV1 || executeMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV2 {
+				if err := h.handleExecuteSquadUnstake(e, &executeMsg); err != nil {
+					return errors.Wrap(err, "failed to handle squad unstake")
+				}
 			}
-		} else {
-			if err := h.handleExecuteWithdraw(e, &executeMsg); err != nil {
-				return errors.Wrap(err, "failed to handle withdraw")
+		case "stake":
+			if executeMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV1 || executeMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV2 {
+				if err := h.handleExecuteSquadStake(e, &executeMsg); err != nil {
+					return errors.Wrap(err, "failed to handle squad stake")
+				}
 			}
 		}
-	case "burn":
-		if err := h.handleExecuteBurn(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle burn")
-		}
-	case "update_price":
-		if err := h.handleExecuteUpdatePrice(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle update_price")
-		}
-	case "transfer_nft":
-		if err := h.handleExecuteTransferNFT(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer_nft")
-		}
-	case "update_metadata":
-		if err := h.handleExecuteUpdateTNSMetadata(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle update_metadata")
-		}
-	case "set_admin_address":
-		if err := h.handleExecuteTNSSetAdminAddress(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle set_admin_address")
-		}
-	case "update_config":
-		if err := h.handleExecuteBunkerUpdateConfig(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle update_config")
-		}
-	case "pause":
-		if err := h.handleExecuteBunkerPause(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle pause")
-		}
-	case "unpause":
-		if err := h.handleExecuteBunkerUnpause(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle unpause")
-		}
-	case "stake":
-		if executeMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV1 || executeMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV2 {
-			if err := h.handleExecuteSquadStake(e, &executeMsg); err != nil {
-				return errors.Wrap(err, "failed to handle squad stake")
+	}
+
+	// Index data
+	if h.config.IndexerMode == indexerdb.IndexerModeData {
+		switch wasmAction {
+		case "mint":
+			if err := h.handleExecuteMint(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle mint")
 			}
-		}
-	// Feeds actions
-	case "create_post":
-		if err := h.handleExecuteCreatePost(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle create post")
-		}
-	case "create_post_by_bot":
-		if executeMsg.Contract == h.config.Network.SocialFeedContractAddress {
-			if err := h.handleExecuteCreatePostByBot(e, &executeMsg); err != nil {
-				return errors.Wrap(err, "failed to handle create post by bot")
+		case "buy":
+			if err := h.handleExecuteBuy(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle buy")
 			}
-		}
-	case "tip_post":
-		if executeMsg.Contract == h.config.Network.SocialFeedContractAddress {
-			if err := h.handleExecuteTipPost(e, &executeMsg); err != nil {
-				return errors.Wrap(err, "failed to handle tip post")
+		case "send_nft":
+			if err := h.handleExecuteSendNFT(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle send_nft")
 			}
-		}
-	case "react_post":
-		if executeMsg.Contract == h.config.Network.SocialFeedContractAddress {
-			if err := h.handleExecuteReactPost(e, &executeMsg); err != nil {
-				return errors.Wrap(err, "failed to handle react post")
+		case "withdraw":
+			if executeMsg.Contract != h.config.Network.RiotSquadStakingContractAddressV1 && executeMsg.Contract != h.config.Network.RiotSquadStakingContractAddressV2 {
+				if err := h.handleExecuteWithdraw(e, &executeMsg); err != nil {
+					return errors.Wrap(err, "failed to handle withdraw")
+				}
 			}
-		}
-	case "delete_post":
-		if executeMsg.Contract == h.config.Network.SocialFeedContractAddress {
-			if err := h.handleExecuteDeletePost(e, &executeMsg); err != nil {
-				return errors.Wrap(err, "failed to handle delete post")
+		case "burn":
+			if err := h.handleExecuteBurn(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle burn")
 			}
-		}
-	// Orgs actions
-	case "instantiate_contract_with_self_admin":
-		if err := h.handleExecuteInstantiateContractWithSelfAdmin(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle instantiate_contract_with_self_admin")
-		}
-	case "propose":
-		if err := h.handleExecuteDAOPropose(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle dao execute")
-		}
-	case "execute":
-		if err := h.handleExecuteDAOExecute(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle dao execute")
+		case "update_price":
+			if err := h.handleExecuteUpdatePrice(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle update_price")
+			}
+		case "transfer_nft":
+			if err := h.handleExecuteTransferNFT(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle transfer_nft")
+			}
+		case "update_metadata":
+			if err := h.handleExecuteUpdateTNSMetadata(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle update_metadata")
+			}
+		case "set_admin_address":
+			if err := h.handleExecuteTNSSetAdminAddress(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle set_admin_address")
+			}
+		case "update_config":
+			if err := h.handleExecuteBunkerUpdateConfig(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle update_config")
+			}
+		case "pause":
+			if err := h.handleExecuteBunkerPause(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle pause")
+			}
+		case "unpause":
+			if err := h.handleExecuteBunkerUnpause(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle unpause")
+			}
+		// Feeds actions
+		case "create_post":
+			if err := h.handleExecuteCreatePost(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle create post")
+			}
+		case "create_post_by_bot":
+			if executeMsg.Contract == h.config.Network.SocialFeedContractAddress {
+				if err := h.handleExecuteCreatePostByBot(e, &executeMsg); err != nil {
+					return errors.Wrap(err, "failed to handle create post by bot")
+				}
+			}
+		case "tip_post":
+			if executeMsg.Contract == h.config.Network.SocialFeedContractAddress {
+				if err := h.handleExecuteTipPost(e, &executeMsg); err != nil {
+					return errors.Wrap(err, "failed to handle tip post")
+				}
+			}
+		case "react_post":
+			if executeMsg.Contract == h.config.Network.SocialFeedContractAddress {
+				if err := h.handleExecuteReactPost(e, &executeMsg); err != nil {
+					return errors.Wrap(err, "failed to handle react post")
+				}
+			}
+		case "delete_post":
+			if executeMsg.Contract == h.config.Network.SocialFeedContractAddress {
+				if err := h.handleExecuteDeletePost(e, &executeMsg); err != nil {
+					return errors.Wrap(err, "failed to handle delete post")
+				}
+			}
+		// Orgs actions
+		case "instantiate_contract_with_self_admin":
+			if err := h.handleExecuteInstantiateContractWithSelfAdmin(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle instantiate_contract_with_self_admin")
+			}
+		case "propose":
+			if err := h.handleExecuteDAOPropose(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle dao execute")
+			}
+		case "execute":
+			if err := h.handleExecuteDAOExecute(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle dao execute")
+			}
 		}
 	}
 

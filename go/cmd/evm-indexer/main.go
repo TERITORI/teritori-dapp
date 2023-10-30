@@ -6,6 +6,8 @@ import (
 	"os"
 	"time"
 
+	"golang.org/x/exp/slices"
+
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/sinker"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
@@ -43,9 +45,8 @@ var (
 )
 
 var SinkCmd = Command(sinkE,
-	"sink <network>",
-	"Sink the data from given network. Supported: ethereum",
-	RangeArgs(1, 1),
+	"sink",
+	"Sink the data from given network",
 	Flags(func(flags *pflag.FlagSet) {
 		// Teritori params ==========================================================
 		flags.String("db-indexer-host", "", "host postgreSQL database")
@@ -55,6 +56,8 @@ var SinkCmd = Command(sinkE,
 		flags.String("postgres-user", "", "username for postgreSQL")
 
 		flags.String("networks-file", "networks.json", "Path to networks config file")
+		flags.String("indexer-mode", "", "the mode to run indexer: p2e, data. p2e: index only p2e, data: index all data without p2e")
+		flags.String("target-network-id", "", "target network to index")
 
 		// Add default sink Flags ====================================================================
 		flags.Int(sink.FlagUndoBufferSize, 3, "Number of blocks to keep buffered to handle fork reorganizations")
@@ -68,9 +71,31 @@ func sinkE(cmd *cobra.Command, args []string) error {
 	MustLoadEnv()
 
 	// Prepare params ===============================================================================================
-	networkID := args[0]
-	if networkID != "ethereum" && networkID != "ethereum-goerli" && networkID != "polygon-mumbai" {
-		panic("given network is not supported")
+	networkID := MustGetFlagString("target-network-id")
+
+	NETWORK_IDS := []string{
+		"ethereum-goerli",
+		"ethereum",
+		"mumbai",
+		"polygon-mumbai",
+	}
+
+	// Verify target network id
+	if !slices.Contains(NETWORK_IDS, networkID) {
+		panic("NetworkId " + networkID + " is not supported")
+	}
+
+	// Verify indexerMode
+	mode := MustGetFlagString("indexer-mode")
+	var indexerMode indexerdb.IndexerMode
+
+	switch mode {
+	case string(indexerdb.IndexerModeData):
+		indexerMode = indexerdb.IndexerModeData
+	case string(indexerdb.IndexerModeP2E):
+		indexerMode = indexerdb.IndexerModeP2E
+	default:
+		panic("missing indexer-mode or mode is not valid. Only support: p2e, data")
 	}
 
 	// load networks
@@ -166,6 +191,7 @@ func sinkE(cmd *cobra.Command, args []string) error {
 		Network:      network,
 		NetworkStore: &netstore,
 		Loader:       loader,
+		IndexerMode:  indexerMode,
 	}
 
 	sink, err := sink.NewFromViper(

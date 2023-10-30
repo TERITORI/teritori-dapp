@@ -8,22 +8,30 @@ import (
 	"gorm.io/gorm"
 )
 
+type IndexerMode string
+
+const (
+	IndexerModeData IndexerMode = "data"
+	IndexerModeP2E  IndexerMode = "p2e"
+)
+
 type App struct {
 	ID            uint
 	Height        int64
 	ChunkedHeight int64
 	TxHash        string
-
-	NetworkID string
+	NetworkID     string
+	IndexerMode   IndexerMode
 }
 
 // Cursor used by Substreams indexer
 type Cursors struct {
-	ID       string `gorm:"primaryKey;notNull"`
-	Cursor   string
-	BlockNum uint64
-	BlockId  string
-	Network  string
+	ID          string `gorm:"primaryKey;notNull"`
+	Cursor      string
+	BlockNum    uint64
+	BlockId     string
+	Network     string
+	IndexerMode IndexerMode
 }
 
 type User struct {

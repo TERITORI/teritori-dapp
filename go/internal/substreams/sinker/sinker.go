@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	ethereumHandlers "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/handlers"
 
 	"github.com/pkg/errors"
@@ -32,9 +33,7 @@ type PostgresSinker struct {
 	tracer logging.Tracer
 
 	// Teritori config
-	network      *networks.EthereumNetwork
-	networkStore *networks.NetworkStore
-	loader       *Loader
+	config *TeritoriConfig
 
 	// Set when create transaction
 	lastCursor *sink.Cursor
@@ -44,6 +43,7 @@ type TeritoriConfig struct {
 	Network      *networks.EthereumNetwork
 	NetworkStore *networks.NetworkStore
 	Loader       *Loader
+	IndexerMode  indexerdb.IndexerMode
 }
 
 func New(sink *sink.Sinker, config *TeritoriConfig, logger *zap.Logger, tracer logging.Tracer) (*PostgresSinker, error) {
@@ -54,21 +54,19 @@ func New(sink *sink.Sinker, config *TeritoriConfig, logger *zap.Logger, tracer l
 		logger: logger,
 		tracer: tracer,
 
-		network:      config.Network,
-		networkStore: config.NetworkStore,
-		loader:       config.Loader,
+		config: config,
 	}, nil
 }
 
 func (s *PostgresSinker) Run(ctx context.Context) error {
 	// cursor, mistmatchDetected, err := s.loader.GetCursor(ctx, s.OutputModuleHash())
-	cursor, err := s.loader.GetOrCreateCursor(s.OutputModuleHash(), s.network.ID)
+	cursor, err := s.config.Loader.GetOrCreateCursor(s.OutputModuleHash(), s.config.Network.ID, s.config.IndexerMode)
 	if err != nil {
 		return fmt.Errorf("unable to retrieve cursor: %w", err)
 	}
 
 	// Start TX if everything is ok
-	s.loader.MustStartDbTransaction()
+	s.config.Loader.MustStartDbTransaction()
 
 	s.Sinker.OnTerminating(s.Shutdown)
 	s.OnTerminating(func(err error) {
@@ -107,10 +105,11 @@ func (s *PostgresSinker) HandleBlockScopedData(ctx context.Context, data *pbsubs
 
 	handler, err := ethereumHandlers.NewHandler(&ethereumHandlers.HandlerConfig{
 		Logger:        s.logger,
-		Network:       s.network,
-		NetworkStore:  s.networkStore,
-		IndexerDB:     s.loader.indexerDB,
-		DbTransaction: s.loader.dbTransaction,
+		Network:       s.config.Network,
+		NetworkStore:  s.config.NetworkStore,
+		IndexerDB:     s.config.Loader.indexerDB,
+		DbTransaction: s.config.Loader.dbTransaction,
+		IndexerMode:   s.config.IndexerMode,
 	})
 
 	if err != nil {
@@ -125,7 +124,7 @@ func (s *PostgresSinker) HandleBlockScopedData(ctx context.Context, data *pbsubs
 
 	s.lastCursor = cursor
 	if cursor.Block().Num()%s.batchBlockModulo(data, isLive) == 0 {
-		if err := s.loader.ApplyChanges(cursor, s.OutputModuleHash(), s.network.ID); err != nil {
+		if err := s.config.Loader.ApplyChanges(cursor, s.OutputModuleHash(), s.config.Network.ID); err != nil {
 			return fmt.Errorf("failed to flush: %w", err)
 		}
 	}

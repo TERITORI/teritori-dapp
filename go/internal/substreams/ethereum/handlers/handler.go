@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"strings"
 
+	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	abiGo "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/abi_go"
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/pb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
@@ -19,6 +20,7 @@ type Handler struct {
 	networkStore  *networks.NetworkStore
 	indexerDB     *gorm.DB
 	dbTransaction *gorm.DB
+	indexerMode   indexerdb.IndexerMode
 }
 
 type HandlerConfig struct {
@@ -27,6 +29,7 @@ type HandlerConfig struct {
 	NetworkStore  *networks.NetworkStore
 	IndexerDB     *gorm.DB
 	DbTransaction *gorm.DB
+	IndexerMode   indexerdb.IndexerMode
 }
 
 func NewHandler(handlerConfig *HandlerConfig) (*Handler, error) {
@@ -36,6 +39,7 @@ func NewHandler(handlerConfig *HandlerConfig) (*Handler, error) {
 		networkStore:  handlerConfig.NetworkStore,
 		indexerDB:     handlerConfig.IndexerDB,
 		dbTransaction: handlerConfig.DbTransaction,
+		indexerMode:   handlerConfig.IndexerMode,
 	}, nil
 }
 
@@ -96,49 +100,56 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 
 	h.logger.Info("method", zap.String("method", method.Name))
 
-	switch method.Name {
-	// Axelar NFT
-	case "execute":
-		if err := h.handleExecute(contractABI, tx, args); err != nil {
-			return errors.Wrap(err, "failed to handle execute axelar NFT")
+	if h.indexerMode == indexerdb.IndexerModeP2E {
+		switch method.Name {
+		// SquadStake
+		case "stake":
+			if err := h.handleSquadStake(contractABI, tx, args); err != nil {
+				return errors.Wrap(err, "failed to handle squad stake")
+			}
+		case "unstake":
+			if err := h.handleSquadUnstake(contractABI, tx, args); err != nil {
+				return errors.Wrap(err, "failed to handle squad unstake")
+			}
+		case "claim":
+			if err := h.handleClaim(contractABI, tx, args); err != nil {
+				return errors.Wrap(err, "failed to handle claim")
+			}
 		}
-	case "bridgeNft":
-		if err := h.handleBridgeNFT(contractABI, tx, args); err != nil {
-			return errors.Wrap(err, "failed to handle execute bridge NFT")
-		}
-	// SquadStake
-	case "stake":
-		if err := h.handleSquadStake(contractABI, tx, args); err != nil {
-			return errors.Wrap(err, "failed to handle squad stake")
-		}
-	case "unstake":
-		if err := h.handleSquadUnstake(contractABI, tx, args); err != nil {
-			return errors.Wrap(err, "failed to handle squad unstake")
-		}
-	case "mintWithMetadata":
-		if err := h.handleMintWithMetadata(contractABI, tx, args); err != nil {
-			return errors.Wrap(err, "failed to handle mint with meta data")
-		}
-	case "transferFrom":
-		if err := h.handleTransferFrom(contractABI, tx, args); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
-		}
-	case "claim":
-		if err := h.handleClaim(contractABI, tx, args); err != nil {
-			return errors.Wrap(err, "failed to handle claim")
-		}
-	// Vault
-	case "listNFT":
-		if err := h.handleListNFT(contractABI, tx, args); err != nil {
-			return errors.Wrap(err, "failed to handle listNFT")
-		}
-	case "withdrawNFT":
-		if err := h.handleWithdrawNFT(contractABI, tx, args); err != nil {
-			return errors.Wrap(err, "failed to handle withdrawNFT")
-		}
-	case "buyNFT":
-		if err := h.handleBuyNFT(contractABI, tx, args); err != nil {
-			return errors.Wrap(err, "failed to handle buyNFT")
+	}
+
+	if h.indexerMode == indexerdb.IndexerModeData {
+		switch method.Name {
+		// Axelar NFT
+		case "execute":
+			if err := h.handleExecute(contractABI, tx, args); err != nil {
+				return errors.Wrap(err, "failed to handle execute axelar NFT")
+			}
+		case "bridgeNft":
+			if err := h.handleBridgeNFT(contractABI, tx, args); err != nil {
+				return errors.Wrap(err, "failed to handle execute bridge NFT")
+			}
+		case "mintWithMetadata":
+			if err := h.handleMintWithMetadata(contractABI, tx, args); err != nil {
+				return errors.Wrap(err, "failed to handle mint with meta data")
+			}
+		case "transferFrom":
+			if err := h.handleTransferFrom(contractABI, tx, args); err != nil {
+				return errors.Wrap(err, "failed to handle transfer")
+			}
+		// Vault
+		case "listNFT":
+			if err := h.handleListNFT(contractABI, tx, args); err != nil {
+				return errors.Wrap(err, "failed to handle listNFT")
+			}
+		case "withdrawNFT":
+			if err := h.handleWithdrawNFT(contractABI, tx, args); err != nil {
+				return errors.Wrap(err, "failed to handle withdrawNFT")
+			}
+		case "buyNFT":
+			if err := h.handleBuyNFT(contractABI, tx, args); err != nil {
+				return errors.Wrap(err, "failed to handle buyNFT")
+			}
 		}
 	}
 
