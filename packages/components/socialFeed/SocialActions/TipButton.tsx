@@ -15,7 +15,7 @@ import { SVG } from "../../SVG";
 import { SpacerRow } from "../../spacer";
 
 type TipAmountProps = {
-  amount: number;
+  amount: number | undefined;
   networkId?: string;
 };
 const GnoTipAmount: React.FC<TipAmountProps> = ({ amount, networkId }) => {
@@ -40,7 +40,12 @@ const TeritoriTipAmount: React.FC<TipAmountProps> = ({ amount }) => {
   const { prices } = useCoingeckoPrices(coins);
   const price = useMemo(
     () =>
-      getCoingeckoPrice(selectedNetworkId, denom, amount.toString(), prices),
+      getCoingeckoPrice(
+        selectedNetworkId,
+        denom,
+        amount?.toString() || "0",
+        prices
+      ),
     [selectedNetworkId, amount, prices]
   );
 

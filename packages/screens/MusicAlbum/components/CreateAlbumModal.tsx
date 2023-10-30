@@ -1,3 +1,4 @@
+import { coin } from "@cosmjs/amino";
 import React, { Fragment, useState } from "react";
 import {
   Image,
@@ -9,26 +10,28 @@ import {
 } from "react-native";
 import { DraxList, DraxProvider } from "react-native-drax";
 import { useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
 
 import Add from "../../../../assets/icons/music-player/add-primary.svg";
 import DefaultAlbumImage from "../../../../assets/icons/music-player/album.png";
 import Img from "../../../../assets/icons/music-player/img.svg";
 import List from "../../../../assets/icons/music-player/list.svg";
 import TrashCircle from "../../../../assets/icons/music-player/trash-circle.svg";
-import { signingMusicPlayerClient } from "../../../client-creators/musicplayerClient";
+import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { FileUploader } from "../../../components/fileUploader";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
+import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useUpdatePostFee } from "../../../hooks/feed/useUpdatePostFee";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
-import { defaultSocialFeedFee } from "../../../utils/fee";
 import {
   generateIpfsKey,
   ipfsURLToHTTPURL,
@@ -81,6 +84,10 @@ export const CreateAlbumModal: React.FC<UploadAlbumModalProps> = ({
     audios: [],
   });
   const [audios, setAudios] = useState<Media[]>([]);
+  const { postFee } = useUpdatePostFee(
+    selectedNetworkId,
+    PostCategory.MusicAlbum
+  );
 
   const onItemRemove = (index: number) => {
     const newAudios = audios.slice();
@@ -167,7 +174,7 @@ export const CreateAlbumModal: React.FC<UploadAlbumModalProps> = ({
     if (!wallet?.connected || !wallet.address) {
       return;
     }
-    const client = await signingMusicPlayerClient({
+    const client = await signingSocialFeedClient({
       networkId: selectedNetworkId,
       walletAddress: wallet.address,
     });
@@ -185,12 +192,16 @@ export const CreateAlbumModal: React.FC<UploadAlbumModalProps> = ({
     };
 
     try {
-      const res = await client.createMusicAlbum(
+      const res = await client.createPost(
         {
+          category: PostCategory.MusicAlbum,
+          identifier: uuidv4(),
           metadata: JSON.stringify(metadata),
+          parentPostIdentifier: undefined,
         },
-        defaultSocialFeedFee,
-        ""
+        "auto",
+        undefined,
+        [coin(postFee, "utori")] // FIXME: don't hardcode denom
       );
 
       if (res.transactionHash) {
