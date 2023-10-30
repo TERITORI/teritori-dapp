@@ -27,112 +27,110 @@ export const useFetchVideos = (req: GetVideoListRequest) => {
             ...req,
             offset: pageParam || 0,
           };
-          const _videoList = await getVideos(selectedNetworkId, postsRequest);
+          const videoList = await getVideos(selectedNetworkId, postsRequest);
 
-          console.log("_videoList_videoList_videoList", _videoList);
-
-          const videoList = [
-            {
-              identifier: "1",
-              metadata:
-                '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
-              createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
-              createdAt: 1697302641,
-              viewCount: 23,
-              like: 12,
-              dislike: 4,
-            },
-            {
-              identifier: "2a",
-              metadata:
-                '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
-              createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
-              createdAt: 1697302641,
-              viewCount: 23,
-              like: 12,
-              dislike: 4,
-            },
-            {
-              identifier: "3a",
-              metadata:
-                '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
-              createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
-              createdAt: 1697302641,
-              viewCount: 23,
-              like: 12,
-              dislike: 4,
-            },
-            {
-              identifier: "4a",
-              metadata:
-                '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
-              createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
-              createdAt: 1697302641,
-              viewCount: 23,
-              like: 12,
-              dislike: 4,
-            },
-            {
-              identifier: "5a",
-              metadata:
-                '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
-              createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
-              createdAt: 1697302641,
-              viewCount: 23,
-              like: 12,
-              dislike: 4,
-            },
-            {
-              identifier: "6a",
-              metadata:
-                '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
-              createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
-              createdAt: 1697302641,
-              viewCount: 23,
-              like: 12,
-              dislike: 4,
-            },
-            {
-              identifier: "7a",
-              metadata:
-                '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
-              createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
-              createdAt: 1697302641,
-              viewCount: 23,
-              like: 12,
-              dislike: 4,
-            },
-            {
-              identifier: "8a",
-              metadata:
-                '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
-              createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
-              createdAt: 1697302641,
-              viewCount: 23,
-              like: 12,
-              dislike: 4,
-            },
-            {
-              identifier: "9a",
-              metadata:
-                '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
-              createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
-              createdAt: 1697302641,
-              viewCount: 23,
-              like: 12,
-              dislike: 4,
-            },
-            {
-              identifier: "10a",
-              metadata:
-                '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
-              createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
-              createdAt: 1697302641,
-              viewCount: 23,
-              like: 12,
-              dislike: 4,
-            },
-          ];
+          // const videoList = [
+          //   {
+          //     identifier: "1",
+          //     metadata:
+          //       '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
+          //     createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
+          //     createdAt: 1697302641,
+          //     viewCount: 23,
+          //     like: 12,
+          //     dislike: 4,
+          //   },
+          //   {
+          //     identifier: "2a",
+          //     metadata:
+          //       '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
+          //     createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
+          //     createdAt: 1697302641,
+          //     viewCount: 23,
+          //     like: 12,
+          //     dislike: 4,
+          //   },
+          //   {
+          //     identifier: "3a",
+          //     metadata:
+          //       '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
+          //     createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
+          //     createdAt: 1697302641,
+          //     viewCount: 23,
+          //     like: 12,
+          //     dislike: 4,
+          //   },
+          //   {
+          //     identifier: "4a",
+          //     metadata:
+          //       '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
+          //     createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
+          //     createdAt: 1697302641,
+          //     viewCount: 23,
+          //     like: 12,
+          //     dislike: 4,
+          //   },
+          //   {
+          //     identifier: "5a",
+          //     metadata:
+          //       '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
+          //     createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
+          //     createdAt: 1697302641,
+          //     viewCount: 23,
+          //     like: 12,
+          //     dislike: 4,
+          //   },
+          //   {
+          //     identifier: "6a",
+          //     metadata:
+          //       '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
+          //     createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
+          //     createdAt: 1697302641,
+          //     viewCount: 23,
+          //     like: 12,
+          //     dislike: 4,
+          //   },
+          //   {
+          //     identifier: "7a",
+          //     metadata:
+          //       '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
+          //     createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
+          //     createdAt: 1697302641,
+          //     viewCount: 23,
+          //     like: 12,
+          //     dislike: 4,
+          //   },
+          //   {
+          //     identifier: "8a",
+          //     metadata:
+          //       '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
+          //     createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
+          //     createdAt: 1697302641,
+          //     viewCount: 23,
+          //     like: 12,
+          //     dislike: 4,
+          //   },
+          //   {
+          //     identifier: "9a",
+          //     metadata:
+          //       '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
+          //     createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
+          //     createdAt: 1697302641,
+          //     viewCount: 23,
+          //     like: 12,
+          //     dislike: 4,
+          //   },
+          //   {
+          //     identifier: "10a",
+          //     metadata:
+          //       '{"url": "QmQqjkE5jBK3T7vQiBun8YCG41dooxgvXCYbzF1sBJRQs1", "image": "https://hips.hearstapps.com/hmg-prod/images/graphic-illustration-of-the-earth-and-the-sun-royalty-free-image-1679061019.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*", "title": "Cosmos adventures - Part 1. All around the sun", "duration": 5535632, "description": "sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb sfdsdg dg bh d bdbsdb"}',
+          //     createdBy: "testori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
+          //     createdAt: 1697302641,
+          //     viewCount: 23,
+          //     like: 12,
+          //     dislike: 4,
+          //   },
+          // ];
           const videoInfos: VideoInfoWithMeta[] = [];
           videoList.map((videoInfo) => {
             const metadata = JSON.parse(videoInfo.metadata) as VideoMetaInfo;

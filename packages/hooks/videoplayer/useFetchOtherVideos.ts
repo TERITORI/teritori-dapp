@@ -63,10 +63,7 @@ const getVideos = async (
   try {
     // ===== We use FeedService to be able to fetch filtered posts
     const videoClient = mustGetVideoClient(networkId);
-    console.log("XXXXXXXXXXXXXXXXXXXXXXXXX");
     const response = await videoClient.GetVideoListForLibrary(req);
-    console.log("YYYYYYYYYYYYYYYYYYYYYY", response);
-
     // ---- We sort by creation date
     return response.videoInfos;
   } catch (err) {
