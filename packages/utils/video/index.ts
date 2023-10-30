@@ -2,7 +2,7 @@ import { VideoFileMetadata } from "../types/files";
 
 window.URL = window.URL || window.webkitURL;
 
-export const getVideoDuration = (file: File) => {
+const getVideoDuration = (file: File) => {
   let duration = 0;
   try {
     const video = document.createElement("video");
