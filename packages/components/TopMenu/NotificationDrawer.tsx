@@ -1,5 +1,5 @@
 import moment from "moment/moment";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   FlatList,
   ScrollView,
@@ -10,13 +10,20 @@ import {
   ViewStyle,
 } from "react-native";
 import { BellIcon } from "react-native-heroicons/outline";
+import { XMarkIcon } from "react-native-heroicons/solid";
 
 import { TOP_MENU_BUTTON_HEIGHT } from "./TopMenu";
-import { Notification } from "../../api/notification/v1/notification";
+import {
+  DismissNotificationsRequest,
+  Notification,
+  NotificationsRequest,
+} from "../../api/notification/v1/notification";
 import { useDropdowns } from "../../context/DropdownsProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useNotifications } from "../../hooks/useNotifications";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { parseNetworkObjectId } from "../../networks";
+import { mustGetNotificationClient } from "../../utils/backend";
 import {
   neutral00,
   neutral33,
@@ -24,7 +31,7 @@ import {
   primaryColor,
   secondaryColor,
 } from "../../utils/style/colors";
-import { fontBold16, fontSemibold12 } from "../../utils/style/fonts";
+import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
 import { headerHeight, layout, topMenuWidth } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
@@ -75,17 +82,6 @@ export const NotificationDrawer: React.FC = () => {
   );
 };
 
-const NoNotifications: React.FC = () => (
-  <View
-    style={{
-      alignSelf: "center",
-      padding: layout.spacing_x3,
-    }}
-  >
-    <BrandText>No new Notifications 🥺</BrandText>
-  </View>
-);
-
 const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
   style,
 }) => {
@@ -118,6 +114,10 @@ const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
               item={item}
             />
           )}
+          ListHeaderComponent={
+            // @ts-ignore
+            notifications?.length > 0 ? <Controls /> : null
+          }
           ListEmptyComponent={<NoNotifications />}
         />
       </ScrollView>
@@ -125,14 +125,41 @@ const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
   );
 };
 
-const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
+const DismissNotificationButton: React.FC<{
+  id: number;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ id, setVisible }) => {
+  const selectedWallet = useSelectedWallet();
+
   return (
-    <OmniLink
-      to={{
-        screen: "FeedPostView",
-        params: { id: item.action },
+    <TouchableOpacity
+      onPress={() => {
+        setVisible(false);
+        clearNotification({
+          userId: selectedWallet?.userId,
+          notificationId: id,
+        });
       }}
+    >
+      <XMarkIcon
+        // @ts-ignore
+        style={{
+          justifyContent: "flex-end",
+          alignSelf: "flex-end",
+          fill: secondaryColor,
+        }}
+      />
+    </TouchableOpacity>
+  );
+};
+
+const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
+  const [visible, setVisible] = useState(true);
+
+  return (
+    <View
       style={{
+        display: visible ? "flex" : "none",
         padding: layout.spacing_x1,
         borderBottomWidth: 1,
         borderBottomColor: neutral44,
@@ -140,7 +167,7 @@ const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
     >
       <View
         style={{
-          flex: 5,
+          flex: 6,
           flexDirection: "row",
           flexWrap: "nowrap",
           justifyContent: "space-around",
@@ -162,35 +189,94 @@ const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
             style={{ width: "100%" }}
           />
         </View>
-        <View style={{ flex: 4 }}>
-          <View>
-            <BrandText style={fontBold16}>{useBuildBodyText(item)}</BrandText>
-            <View
-              style={{
-                marginTop: layout.spacing_x1,
-                flexDirection: "row",
-                flexWrap: "nowrap",
-                justifyContent: "space-between",
-              }}
-            >
-              <BrandText style={fontSemibold12}>
-                {moment.unix(item.createdAt).fromNow()}
+
+        <View style={{ flex: 4, marginHorizontal: layout.spacing_x1 }}>
+          <OmniLink
+            to={{
+              screen: "FeedPostView",
+              params: { id: item.action },
+            }}
+          >
+            <View>
+              <BrandText style={fontSemibold14}>
+                {useBuildBodyText(item)}
               </BrandText>
-              <BrandText
-                style={[
-                  fontSemibold12,
-                  {
-                    textTransform: "capitalize",
-                  },
-                ]}
+              <View
+                style={{
+                  marginTop: layout.spacing_x1,
+                  flexDirection: "row",
+                  flexWrap: "nowrap",
+                  justifyContent: "space-between",
+                }}
               >
-                {item.category}
-              </BrandText>
+                <BrandText style={fontSemibold12}>
+                  {moment.unix(item.createdAt).fromNow()}
+                </BrandText>
+                <BrandText
+                  style={[
+                    fontSemibold12,
+                    {
+                      textTransform: "capitalize",
+                    },
+                  ]}
+                >
+                  {item.category}
+                </BrandText>
+              </View>
             </View>
-          </View>
+          </OmniLink>
+        </View>
+
+        <View
+          style={{
+            flex: 0.5,
+            zIndex: 2,
+            justifyContent: "flex-end",
+            alignSelf: "center",
+          }}
+        >
+          <DismissNotificationButton id={item.id} setVisible={setVisible} />
         </View>
       </View>
-    </OmniLink>
+    </View>
+  );
+};
+const NoNotifications: React.FC = () => (
+  <View
+    style={{
+      alignSelf: "center",
+      padding: layout.spacing_x3,
+    }}
+  >
+    <BrandText>No new Notifications 🥺</BrandText>
+  </View>
+);
+
+const Controls: React.FC = () => {
+  const selectedWallet = useSelectedWallet();
+
+  return (
+    <View
+      style={{
+        padding: layout.spacing_x1,
+        borderBottomWidth: 1,
+        width: "100%",
+        borderBottomColor: neutral44,
+      }}
+    >
+      <TouchableOpacity
+        style={{
+          alignSelf: "flex-end",
+        }}
+        onPress={() => {
+          clearAllNotifications({
+            userId: selectedWallet?.userId,
+          });
+        }}
+      >
+        <BrandText style={fontSemibold14}>Clear All</BrandText>
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -205,4 +291,34 @@ const useBuildBodyText = (item: Notification) => {
   if (item.category === "comment") {
     return `${name} commented your post.`;
   }
+};
+
+export const clearAllNotifications = (req: Partial<NotificationsRequest>) => {
+  (async () => {
+    const networkId = parseNetworkObjectId(req?.userId);
+
+    if (!networkId) {
+      return [];
+    }
+
+    const notificationService = mustGetNotificationClient(networkId[0]?.id);
+    const { ok } = await notificationService.DismissAllNotifications(req);
+    return ok;
+  })();
+};
+
+export const clearNotification = (
+  req: Partial<DismissNotificationsRequest>
+) => {
+  (async () => {
+    const networkId = parseNetworkObjectId(req?.userId);
+
+    if (!networkId) {
+      return [];
+    }
+
+    const notificationService = mustGetNotificationClient(networkId[0]?.id);
+    const { ok } = await notificationService.DismissNotification(req);
+    return ok;
+  })();
 };
