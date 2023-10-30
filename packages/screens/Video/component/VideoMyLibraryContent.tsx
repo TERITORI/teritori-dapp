@@ -12,11 +12,11 @@ import { SVG } from "../../../components/SVG";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { useFetchOtherVideos } from "../../../hooks/videoplayer/useFetchOtherVideos";
 import {
-  useFetchUserVideos,
+  useFetchOtherVideos,
   combineFetchVideoPages,
-} from "../../../hooks/videoplayer/useFetchUserVideos";
+} from "../../../hooks/videoplayer/useFetchOtherVideos";
+import { useFetchUserVideos } from "../../../hooks/videoplayer/useFetchUserVideos";
 import { getUserId } from "../../../networks";
 import { neutral30, primaryColor } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold14 } from "../../../utils/style/fonts";
