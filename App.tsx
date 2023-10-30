@@ -10,13 +10,12 @@ import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
 import React, { memo, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { Platform, View } from "react-native";
+import { Platform, View, Text } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
-import { BrandText } from "./packages/components/BrandText";
 import { MultisigDeauth } from "./packages/components/multisig/MultisigDeauth";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
@@ -139,11 +138,13 @@ class ErrorBoundary extends React.Component {
       // You can render any custom fallback UI
       return (
         <View style={{ backgroundColor: "black", height: "100%" }}>
-          <BrandText>{`${this.state.error}`}</BrandText>
+          <Text style={{ color: "white" }}>{`${this.state.error}`}</Text>
           {this.state.error !== this.state.catchError && (
-            <BrandText>{`${this.state.catchError}`}</BrandText>
+            <Text style={{ color: "white" }}>{`${this.state.catchError}`}</Text>
           )}
-          <BrandText>{this.state.catchInfo?.componentStack}</BrandText>
+          <Text style={{ color: "white" }}>
+            {this.state.catchInfo?.componentStack}
+          </Text>
         </View>
       );
     }

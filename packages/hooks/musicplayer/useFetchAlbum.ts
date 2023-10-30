@@ -1,17 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { GetAlbumRequest } from "../../api/musicplayer/v1/musicplayer";
+import { parseNetworkObjectId } from "../../networks";
 import { mustGetMusicplayerClient } from "../../utils/backend";
 import { musicAlbumInfoToAlbumInfo } from "../../utils/types/mediaPlayer";
-import { useSelectedNetworkId } from "../useSelectedNetwork";
 
 export const useFetchAlbum = (req: GetAlbumRequest) => {
-  const selectedNetworkId = useSelectedNetworkId();
   const { data, isFetching, isLoading } = useQuery(
-    ["music-album", selectedNetworkId, { ...req }],
+    ["music-album", req],
     async () => {
       try {
-        const res = await mustGetMusicplayerClient(selectedNetworkId).GetAlbum({
+        const [network] = parseNetworkObjectId(req.identifier);
+        const res = await mustGetMusicplayerClient(network?.id).GetAlbum({
           identifier: req.identifier,
         });
         const musicAlbum = res.musicAlbum;

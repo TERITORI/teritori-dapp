@@ -16,7 +16,10 @@ type ExecCreateMusicAlbumMsg struct {
 	CreateMusicAlbum CreateMusicAlbumMsg `json:"create_music_album"`
 }
 
+// FIXME: remove all this
 func (h *Handler) handleExecuteCreateAlbum(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	return nil
+
 	var execCreateMusicAlbumMsg ExecCreateMusicAlbumMsg
 	if err := json.Unmarshal(execMsg.Msg, &execCreateMusicAlbumMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal execute create_music_album msg")
@@ -62,6 +65,8 @@ type ExecDeleteMusicAlbumMsg struct {
 }
 
 func (h *Handler) handleExecuteDeleteMusicAlbum(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	return nil
+
 	var execDeleteMusicAlbumMsg ExecDeleteMusicAlbumMsg
 	if err := json.Unmarshal(execMsg.Msg, &execDeleteMusicAlbumMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal execute delete music album msg")

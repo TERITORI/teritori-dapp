@@ -75,11 +75,10 @@ export const MusicAlbumScreen: ScreenFC<"MusicAlbum"> = ({
 
   const albumInfo: AlbumInfo = {
     id: _albumInfo.id,
-    description: "metadata.description",
-    image:
-      "https://deseret.brightspotcdn.com/dims4/default/b5cad51/2147483647/strip/true/crop/1081x720+60+0/resize/1300x866!/format/webp/quality/90/?url=https%3A%2F%2Fcdn.vox-cdn.com%2Fthumbor%2F0Dfzg4KRslQ4NFETKg0xmuYKxHE%3D%2F0x0%3A1200x720%2F1200x720%2Ffilters%3Afocal%28600x360%3A601x361%29%2Fcdn.vox-cdn.com%2Fuploads%2Fchorus_asset%2Ffile%2F24651468%2Fsolar_flare.en.jpg",
+    description: _albumInfo.description,
+    image: _albumInfo.image,
     createdBy: _albumInfo.createdBy,
-    name: "metadata.title",
+    name: _albumInfo.name,
     audios: _albumInfo.audios,
   };
 
