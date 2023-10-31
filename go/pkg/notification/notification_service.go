@@ -66,7 +66,7 @@ func (s *NotificationService) Notifications(ctx context.Context, req *notificati
 	}, nil
 }
 
-func (s *NotificationService) DismissNotification(ctx context.Context, req *notificationpb.DismissNotificationsRequest) (*notificationpb.DismissNotificationsResponse, error) {
+func (s *NotificationService) DismissNotification(ctx context.Context, req *notificationpb.DismissNotificationRequest) (*notificationpb.DismissNotificationResponse, error) {
 	query := s.conf.IndexerDB
 	userId := req.GetUserId()
 	notificationId := req.GetNotificationId()
@@ -81,12 +81,12 @@ func (s *NotificationService) DismissNotification(ctx context.Context, req *noti
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
-	return &notificationpb.DismissNotificationsResponse{
+	return &notificationpb.DismissNotificationResponse{
 		Ok: true,
 	}, nil
 }
 
-func (s *NotificationService) DismissAllNotifications(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.DismissNotificationsResponse, error) {
+func (s *NotificationService) DismissAllNotifications(ctx context.Context, req *notificationpb.DismissAllNotificationsRequest) (*notificationpb.DismissAllNotificationsResponse, error) {
 	query := s.conf.IndexerDB
 	userId := req.GetUserId()
 
@@ -100,12 +100,12 @@ func (s *NotificationService) DismissAllNotifications(ctx context.Context, req *
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
-	return &notificationpb.DismissNotificationsResponse{
+	return &notificationpb.DismissAllNotificationsResponse{
 		Ok: true,
 	}, nil
 }
 
-func (s *NotificationService) UpdateNotifications(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.DismissNotificationsResponse, error) {
+func (s *NotificationService) UpdateNotifications(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.DismissNotificationResponse, error) {
 	userId := req.GetUserId()
 	query := s.conf.IndexerDB
 
@@ -118,7 +118,7 @@ func (s *NotificationService) UpdateNotifications(ctx context.Context, req *noti
 		createComment(d, userId, s)
 		createReaction(d, userId, s)
 	}
-	return &notificationpb.DismissNotificationsResponse{
+	return &notificationpb.DismissNotificationResponse{
 		Ok: true,
 	}, nil
 }
