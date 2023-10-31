@@ -1,15 +1,27 @@
 const createExpoWebpackConfigAsync = require("@expo/webpack-config");
 const Dotenv = require("dotenv-webpack");
 const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
+const webpack = require("webpack");
 // const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const { WebpackDeduplicationPlugin } = require("webpack-deduplication-plugin");
 module.exports = async function (env, argv) {
   const config = await createExpoWebpackConfigAsync(env, argv);
-  config.externals = ["crypto"];
 
-  // needed to use environment variables
+  // since webpack5, node libs are not polyfilled automatically
+  config.resolve.fallback = {
+    ...config.resolve.fallback,
+    crypto: require.resolve("crypto-browserify"),
+    stream: require.resolve("stream-browserify"),
+  };
   config.plugins.push(
-    new Dotenv({ ignoreStub: true }),
+    new webpack.ProvidePlugin({
+      process: "process/browser",
+      Buffer: ["buffer", "Buffer"],
+    }),
+  );
+
+  config.plugins.push(
+    new Dotenv({ ignoreStub: true }), // needed to use environment variables
     new MomentLocalesPlugin(), // removes all locales except en-us
     // new BundleAnalyzerPlugin({
     //   path: "web-report",
