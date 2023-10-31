@@ -165,7 +165,7 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		Category:  "mint-tns",
 		CreatedAt: blockTime.Unix(),
 	}
-	h.config.DbPersistent.Create(&notification)
+	h.db.Create(&notification)
 
 	return nil
 }

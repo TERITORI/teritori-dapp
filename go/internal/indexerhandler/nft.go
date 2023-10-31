@@ -239,7 +239,7 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 		Category:  "nft-transfer",
 		CreatedAt: blockTime.Unix(),
 	}
-	h.config.DbPersistent.Create(&notification)
+	h.db.Create(&notification)
 
 	h.logger.Debug("transferred nft", zap.String("id", string(nftId)))
 

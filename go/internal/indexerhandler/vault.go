@@ -305,7 +305,7 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 		Category:  "nft-trade-buyer",
 		CreatedAt: blockTime.Unix(),
 	}
-	h.config.DbPersistent.Create(&notification)
+	h.db.Create(&notification)
 
 	notification = indexerdb.Notification{
 		UserId:    sellerID,
@@ -315,7 +315,7 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 		Category:  "nft-trade-seller",
 		CreatedAt: blockTime.Unix(),
 	}
-	h.config.DbPersistent.Create(&notification)
+	h.db.Create(&notification)
 
 	// complete buy quest
 	if err := h.db.Save(&indexerdb.QuestCompletion{

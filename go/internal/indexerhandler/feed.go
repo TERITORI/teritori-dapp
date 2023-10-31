@@ -225,7 +225,7 @@ func (h *Handler) handleExecuteTipPost(e *Message, execMsg *wasmtypes.MsgExecute
 		Category:  "tip",
 		CreatedAt: createdAt.Unix(),
 	}
-	h.config.DbPersistent.Create(&notification)
+	h.db.Create(&notification)
 
 	h.db.Save(&post)
 

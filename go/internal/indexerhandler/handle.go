@@ -36,7 +36,6 @@ type Message struct {
 
 type Config struct {
 	MinterCodeIDs    []uint64
-	DbPersistent     *gorm.DB
 	TendermintClient *tmws.Client
 	BlockTimeCache   *bigcache.BigCache
 	PricesClient     pricespb.PricesServiceClient

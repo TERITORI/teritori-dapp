@@ -158,7 +158,7 @@ func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Coll
 		Category:  "mint",
 		CreatedAt: blockTime.Unix(),
 	}
-	h.config.DbPersistent.Create(&notification)
+	h.db.Create(&notification)
 
 	return nil
 }
