@@ -293,7 +293,7 @@ const useBuildBodyText = (item: Notification) => {
   }
 };
 
-export const clearAllNotifications = (req: Partial<NotificationsRequest>) => {
+const clearAllNotifications = (req: Partial<NotificationsRequest>) => {
   (async () => {
     const networkId = parseNetworkObjectId(req?.userId);
 
@@ -307,7 +307,7 @@ export const clearAllNotifications = (req: Partial<NotificationsRequest>) => {
   })();
 };
 
-export const clearNotification = (req: Partial<DismissNotificationRequest>) => {
+const clearNotification = (req: Partial<DismissNotificationRequest>) => {
   (async () => {
     const networkId = parseNetworkObjectId(req?.userId);
 
