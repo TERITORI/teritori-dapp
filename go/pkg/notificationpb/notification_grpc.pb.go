@@ -23,8 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NotificationServiceClient interface {
 	Notifications(ctx context.Context, in *NotificationsRequest, opts ...grpc.CallOption) (*NotificationsResponse, error)
-	DismissNotification(ctx context.Context, in *DismissNotificationsRequest, opts ...grpc.CallOption) (*DismissNotificationsResponse, error)
-	DismissAllNotifications(ctx context.Context, in *NotificationsRequest, opts ...grpc.CallOption) (*DismissNotificationsResponse, error)
+	DismissNotification(ctx context.Context, in *DismissNotificationRequest, opts ...grpc.CallOption) (*DismissNotificationResponse, error)
+	DismissAllNotifications(ctx context.Context, in *DismissAllNotificationsRequest, opts ...grpc.CallOption) (*DismissAllNotificationsResponse, error)
 }
 
 type notificationServiceClient struct {
@@ -44,8 +44,8 @@ func (c *notificationServiceClient) Notifications(ctx context.Context, in *Notif
 	return out, nil
 }
 
-func (c *notificationServiceClient) DismissNotification(ctx context.Context, in *DismissNotificationsRequest, opts ...grpc.CallOption) (*DismissNotificationsResponse, error) {
-	out := new(DismissNotificationsResponse)
+func (c *notificationServiceClient) DismissNotification(ctx context.Context, in *DismissNotificationRequest, opts ...grpc.CallOption) (*DismissNotificationResponse, error) {
+	out := new(DismissNotificationResponse)
 	err := c.cc.Invoke(ctx, "/notification.v1.NotificationService/DismissNotification", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -53,8 +53,8 @@ func (c *notificationServiceClient) DismissNotification(ctx context.Context, in 
 	return out, nil
 }
 
-func (c *notificationServiceClient) DismissAllNotifications(ctx context.Context, in *NotificationsRequest, opts ...grpc.CallOption) (*DismissNotificationsResponse, error) {
-	out := new(DismissNotificationsResponse)
+func (c *notificationServiceClient) DismissAllNotifications(ctx context.Context, in *DismissAllNotificationsRequest, opts ...grpc.CallOption) (*DismissAllNotificationsResponse, error) {
+	out := new(DismissAllNotificationsResponse)
 	err := c.cc.Invoke(ctx, "/notification.v1.NotificationService/DismissAllNotifications", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -67,8 +67,8 @@ func (c *notificationServiceClient) DismissAllNotifications(ctx context.Context,
 // for forward compatibility
 type NotificationServiceServer interface {
 	Notifications(context.Context, *NotificationsRequest) (*NotificationsResponse, error)
-	DismissNotification(context.Context, *DismissNotificationsRequest) (*DismissNotificationsResponse, error)
-	DismissAllNotifications(context.Context, *NotificationsRequest) (*DismissNotificationsResponse, error)
+	DismissNotification(context.Context, *DismissNotificationRequest) (*DismissNotificationResponse, error)
+	DismissAllNotifications(context.Context, *DismissAllNotificationsRequest) (*DismissAllNotificationsResponse, error)
 	mustEmbedUnimplementedNotificationServiceServer()
 }
 
@@ -79,10 +79,10 @@ type UnimplementedNotificationServiceServer struct {
 func (UnimplementedNotificationServiceServer) Notifications(context.Context, *NotificationsRequest) (*NotificationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Notifications not implemented")
 }
-func (UnimplementedNotificationServiceServer) DismissNotification(context.Context, *DismissNotificationsRequest) (*DismissNotificationsResponse, error) {
+func (UnimplementedNotificationServiceServer) DismissNotification(context.Context, *DismissNotificationRequest) (*DismissNotificationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DismissNotification not implemented")
 }
-func (UnimplementedNotificationServiceServer) DismissAllNotifications(context.Context, *NotificationsRequest) (*DismissNotificationsResponse, error) {
+func (UnimplementedNotificationServiceServer) DismissAllNotifications(context.Context, *DismissAllNotificationsRequest) (*DismissAllNotificationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DismissAllNotifications not implemented")
 }
 func (UnimplementedNotificationServiceServer) mustEmbedUnimplementedNotificationServiceServer() {}
@@ -117,7 +117,7 @@ func _NotificationService_Notifications_Handler(srv interface{}, ctx context.Con
 }
 
 func _NotificationService_DismissNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DismissNotificationsRequest)
+	in := new(DismissNotificationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -129,13 +129,13 @@ func _NotificationService_DismissNotification_Handler(srv interface{}, ctx conte
 		FullMethod: "/notification.v1.NotificationService/DismissNotification",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NotificationServiceServer).DismissNotification(ctx, req.(*DismissNotificationsRequest))
+		return srv.(NotificationServiceServer).DismissNotification(ctx, req.(*DismissNotificationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _NotificationService_DismissAllNotifications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NotificationsRequest)
+	in := new(DismissAllNotificationsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -147,7 +147,7 @@ func _NotificationService_DismissAllNotifications_Handler(srv interface{}, ctx c
 		FullMethod: "/notification.v1.NotificationService/DismissAllNotifications",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NotificationServiceServer).DismissAllNotifications(ctx, req.(*NotificationsRequest))
+		return srv.(NotificationServiceServer).DismissAllNotifications(ctx, req.(*DismissAllNotificationsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

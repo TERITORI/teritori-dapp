@@ -39,8 +39,6 @@ func main() {
 		dbPass                   = fs.String("postgres-password", "", "password for postgreSQL database")
 		dbUser                   = fs.String("postgres-user", "", "username for postgreSQL")
 		dbNameIndexer            = fs.String("database-name", "", "indexer database name for postgreSQL")
-		dbNamePersistent         = fs.String("database-name-persistent", "", "persistent database name for postgreSQL")
-		dbPortPersistent         = fs.String("db-persistent-port", "", "port for postgreSQL database")
 		whitelistString          = fs.String("teritori-collection-whitelist", "", "whitelist of collections to return")
 		airtableAPIKey           = fs.String("airtable-api-key", "", "api key of airtable for home and launchpad")
 		airtableAPIKeydappsStore = fs.String("airtable-api-key-dapps-store", "", "api key of airtable for the dapps store")
@@ -93,10 +91,6 @@ func main() {
 		panic(errors.Wrap(err, "failed to access db"))
 	}
 
-	dataConnexion = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
-		*dbHost, *dbUser, *dbPass, *dbNamePersistent, *dbPortPersistent)
-	persistentDB, err := indexerdb.NewPostgresDB(dataConnexion)
-
 	port := 9090
 	if *enableTls {
 		port = 9091
@@ -137,10 +131,9 @@ func main() {
 	})
 
 	notificationSvc := notification.NewNotificationService(context.Background(), &notification.Config{
-		Logger:       logger,
-		IndexerDB:    indexerDB,
-		PersistentDB: persistentDB,
-		NetStore:     &netstore,
+		Logger:    logger,
+		IndexerDB: indexerDB,
+		NetStore:  &netstore,
 	})
 
 	server := grpc.NewServer()

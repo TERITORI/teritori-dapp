@@ -14,7 +14,7 @@ import { XMarkIcon } from "react-native-heroicons/solid";
 
 import { TOP_MENU_BUTTON_HEIGHT } from "./TopMenu";
 import {
-  DismissNotificationsRequest,
+  DismissNotificationRequest,
   Notification,
   NotificationsRequest,
 } from "../../api/notification/v1/notification";
@@ -307,9 +307,7 @@ export const clearAllNotifications = (req: Partial<NotificationsRequest>) => {
   })();
 };
 
-export const clearNotification = (
-  req: Partial<DismissNotificationsRequest>
-) => {
+export const clearNotification = (req: Partial<DismissNotificationRequest>) => {
   (async () => {
     const networkId = parseNetworkObjectId(req?.userId);
 

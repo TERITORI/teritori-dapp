@@ -5,17 +5,25 @@ option go_package = "./notificationpb";
 
 service NotificationService {
   rpc Notifications(NotificationsRequest) returns (NotificationsResponse);
-  rpc DismissNotification(DismissNotificationsRequest) returns (DismissNotificationsResponse);
-  rpc DismissAllNotifications(NotificationsRequest) returns (DismissNotificationsResponse);
-//  rpc UpdateNotifications(NotificationsRequest) returns (DismissNotificationsResponse);
+  rpc DismissNotification(DismissNotificationRequest) returns (DismissNotificationResponse);
+  rpc DismissAllNotifications(DismissAllNotificationsRequest) returns (DismissAllNotificationsResponse);
 }
 
 // DismissNotification
-message DismissNotificationsRequest {
+message DismissNotificationRequest {
   string user_id = 1;
   int64 notification_id = 2;
 }
-message DismissNotificationsResponse {
+message DismissNotificationResponse {
+  bool ok = 1;
+}
+// --
+
+// DismissAllNotification
+message DismissAllNotificationsRequest {
+  string user_id = 1;
+}
+message DismissAllNotificationsResponse {
   bool ok = 1;
 }
 // --

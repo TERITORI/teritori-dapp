@@ -16,10 +16,9 @@ type NotificationService struct {
 }
 
 type Config struct {
-	Logger       *zap.Logger
-	IndexerDB    *gorm.DB
-	PersistentDB *gorm.DB
-	NetStore     *networks.NetworkStore
+	Logger    *zap.Logger
+	IndexerDB *gorm.DB
+	NetStore  *networks.NetworkStore
 }
 
 func NewNotificationService(ctx context.Context, conf *Config) notificationpb.NotificationServiceServer {
@@ -29,7 +28,7 @@ func NewNotificationService(ctx context.Context, conf *Config) notificationpb.No
 }
 
 func (s *NotificationService) Notifications(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.NotificationsResponse, error) {
-	query := s.conf.PersistentDB
+	query := s.conf.IndexerDB
 	userId := req.GetUserId()
 	if userId == "" {
 		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address}"), "need a wallet address")
@@ -68,7 +67,7 @@ func (s *NotificationService) Notifications(ctx context.Context, req *notificati
 }
 
 func (s *NotificationService) DismissNotification(ctx context.Context, req *notificationpb.DismissNotificationsRequest) (*notificationpb.DismissNotificationsResponse, error) {
-	query := s.conf.PersistentDB
+	query := s.conf.IndexerDB
 	userId := req.GetUserId()
 	notificationId := req.GetNotificationId()
 
@@ -88,7 +87,7 @@ func (s *NotificationService) DismissNotification(ctx context.Context, req *noti
 }
 
 func (s *NotificationService) DismissAllNotifications(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.DismissNotificationsResponse, error) {
-	query := s.conf.PersistentDB
+	query := s.conf.IndexerDB
 	userId := req.GetUserId()
 
 	if userId == "" {
@@ -140,7 +139,7 @@ func createComment(d *indexerdb.Post, userId string, s *NotificationService) {
 			Category:  "comment",
 			CreatedAt: d.CreatedAt,
 		}
-		s.conf.PersistentDB.Create(&notification)
+		s.conf.IndexerDB.Create(&notification)
 
 	}
 }
@@ -158,10 +157,7 @@ func createReaction(d *indexerdb.Post, userId string, s *NotificationService) {
 				Category:  "reaction",
 				CreatedAt: d.CreatedAt,
 			}
-			s.conf.PersistentDB.Create(&notification)
-			//if err := s.conf.PersistentDB.Create(&notification).Error; err != nil && !errors.Is(err, gorm.ErrDuplicatedKey) {
-			//	return nil, errors.Wrap(errors.New(err.Error()), "Create notification record error")
-			//}
+			s.conf.IndexerDB.Create(&notification)
 		}
 
 	}
