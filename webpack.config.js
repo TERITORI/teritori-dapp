@@ -9,7 +9,7 @@ module.exports = async function (env, argv) {
 
   // needed to use environment variables
   config.plugins.push(
-    new Dotenv(),
+    new Dotenv({ ignoreStub: true }),
     new MomentLocalesPlugin(), // removes all locales except en-us
     // new BundleAnalyzerPlugin({
     //   path: "web-report",
