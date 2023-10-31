@@ -20,18 +20,7 @@ services:
       - prices-data:/var/lib/postgresql/data/ # persist data even if container shuts down  
     ports:
       - "5433:5432"
-  persistent-postgres:
-    image: postgres:15.4-alpine3.18
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${DATABASE_NAME_PERSISTENT}
-    volumes:
-      - teritori-persistent-data:/var/lib/postgresql/data/ # persist data even if container shuts down
-    ports:
-      - "5434:5432"
 
 volumes:
   teritori-data:
   prices-data:
-  teritori-persistent-data:

@@ -45,8 +45,6 @@ func main() {
 		dbPort                      = fs.String("db-indexer-port", "", "port for postgreSQL database")
 		dbPass                      = fs.String("postgres-password", "", "password for postgreSQL database")
 		dbNameIndexer               = fs.String("database-name", "", "indexer database name for postgreSQL")
-		dbNamePersistent            = fs.String("database-name-persistent", "", "persistent database name for postgreSQL")
-		dbPortPersistent            = fs.String("db-persistent-port", "", "port for postgreSQL database")
 		tendermintWebsocketEndpoint = fs.String("tendermint-websocket-endpoint", "", "tendermint websocket endpoint")
 		tailSize                    = fs.Int64("tail-size", 8640, "x blocks tail size means that the tendermint indexer can lag x blocks behind before the indexer misses an event")
 		pricesServiceURI            = fs.String("prices-service-uri", "localhost:9091", "price service URI")
@@ -158,20 +156,6 @@ func main() {
 	err = indexerdb.MigrateDB(db)
 	if err != nil {
 		panic(errors.Wrap(err, "failed migrate database models"))
-	}
-
-	// init db persistent
-
-	dataConnexion = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
-		*dbHost, *dbUser, *dbPass, *dbNamePersistent, *dbPortPersistent)
-
-	dbPersistent, err := indexerdb.NewPostgresDB(dataConnexion)
-	if err != nil {
-		panic(errors.Wrap(err, "failed to access db"))
-	}
-	err = indexerdb.MigratePersistentDB(dbPersistent)
-	if err != nil {
-		panic(errors.Wrap(err, "failed migrate dbPersistent models"))
 	}
 
 	// init/get height

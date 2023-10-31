@@ -7,12 +7,21 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "notification.v1";
 
 /** DismissNotification */
-export interface DismissNotificationsRequest {
+export interface DismissNotificationRequest {
   userId: string;
-  notificationId: string;
+  notificationId: number;
 }
 
-export interface DismissNotificationsResponse {
+export interface DismissNotificationResponse {
+  ok: boolean;
+}
+
+/** DismissAllNotification */
+export interface DismissAllNotificationsRequest {
+  userId: string;
+}
+
+export interface DismissAllNotificationsResponse {
   ok: boolean;
 }
 
@@ -33,27 +42,28 @@ export interface Notification {
   category: string;
   createdAt: number;
   dismissed: boolean;
+  id: number;
 }
 
-function createBaseDismissNotificationsRequest(): DismissNotificationsRequest {
-  return { userId: "", notificationId: "" };
+function createBaseDismissNotificationRequest(): DismissNotificationRequest {
+  return { userId: "", notificationId: 0 };
 }
 
-export const DismissNotificationsRequest = {
-  encode(message: DismissNotificationsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const DismissNotificationRequest = {
+  encode(message: DismissNotificationRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.userId !== "") {
       writer.uint32(10).string(message.userId);
     }
-    if (message.notificationId !== "") {
-      writer.uint32(18).string(message.notificationId);
+    if (message.notificationId !== 0) {
+      writer.uint32(16).int64(message.notificationId);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): DismissNotificationsRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): DismissNotificationRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDismissNotificationsRequest();
+    const message = createBaseDismissNotificationRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -61,7 +71,7 @@ export const DismissNotificationsRequest = {
           message.userId = reader.string();
           break;
         case 2:
-          message.notificationId = reader.string();
+          message.notificationId = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -71,44 +81,44 @@ export const DismissNotificationsRequest = {
     return message;
   },
 
-  fromJSON(object: any): DismissNotificationsRequest {
+  fromJSON(object: any): DismissNotificationRequest {
     return {
       userId: isSet(object.userId) ? String(object.userId) : "",
-      notificationId: isSet(object.notificationId) ? String(object.notificationId) : "",
+      notificationId: isSet(object.notificationId) ? Number(object.notificationId) : 0,
     };
   },
 
-  toJSON(message: DismissNotificationsRequest): unknown {
+  toJSON(message: DismissNotificationRequest): unknown {
     const obj: any = {};
     message.userId !== undefined && (obj.userId = message.userId);
-    message.notificationId !== undefined && (obj.notificationId = message.notificationId);
+    message.notificationId !== undefined && (obj.notificationId = Math.round(message.notificationId));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DismissNotificationsRequest>, I>>(object: I): DismissNotificationsRequest {
-    const message = createBaseDismissNotificationsRequest();
+  fromPartial<I extends Exact<DeepPartial<DismissNotificationRequest>, I>>(object: I): DismissNotificationRequest {
+    const message = createBaseDismissNotificationRequest();
     message.userId = object.userId ?? "";
-    message.notificationId = object.notificationId ?? "";
+    message.notificationId = object.notificationId ?? 0;
     return message;
   },
 };
 
-function createBaseDismissNotificationsResponse(): DismissNotificationsResponse {
+function createBaseDismissNotificationResponse(): DismissNotificationResponse {
   return { ok: false };
 }
 
-export const DismissNotificationsResponse = {
-  encode(message: DismissNotificationsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const DismissNotificationResponse = {
+  encode(message: DismissNotificationResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.ok === true) {
       writer.uint32(8).bool(message.ok);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): DismissNotificationsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): DismissNotificationResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDismissNotificationsResponse();
+    const message = createBaseDismissNotificationResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -123,18 +133,116 @@ export const DismissNotificationsResponse = {
     return message;
   },
 
-  fromJSON(object: any): DismissNotificationsResponse {
+  fromJSON(object: any): DismissNotificationResponse {
     return { ok: isSet(object.ok) ? Boolean(object.ok) : false };
   },
 
-  toJSON(message: DismissNotificationsResponse): unknown {
+  toJSON(message: DismissNotificationResponse): unknown {
     const obj: any = {};
     message.ok !== undefined && (obj.ok = message.ok);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DismissNotificationsResponse>, I>>(object: I): DismissNotificationsResponse {
-    const message = createBaseDismissNotificationsResponse();
+  fromPartial<I extends Exact<DeepPartial<DismissNotificationResponse>, I>>(object: I): DismissNotificationResponse {
+    const message = createBaseDismissNotificationResponse();
+    message.ok = object.ok ?? false;
+    return message;
+  },
+};
+
+function createBaseDismissAllNotificationsRequest(): DismissAllNotificationsRequest {
+  return { userId: "" };
+}
+
+export const DismissAllNotificationsRequest = {
+  encode(message: DismissAllNotificationsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DismissAllNotificationsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDismissAllNotificationsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.userId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DismissAllNotificationsRequest {
+    return { userId: isSet(object.userId) ? String(object.userId) : "" };
+  },
+
+  toJSON(message: DismissAllNotificationsRequest): unknown {
+    const obj: any = {};
+    message.userId !== undefined && (obj.userId = message.userId);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DismissAllNotificationsRequest>, I>>(
+    object: I,
+  ): DismissAllNotificationsRequest {
+    const message = createBaseDismissAllNotificationsRequest();
+    message.userId = object.userId ?? "";
+    return message;
+  },
+};
+
+function createBaseDismissAllNotificationsResponse(): DismissAllNotificationsResponse {
+  return { ok: false };
+}
+
+export const DismissAllNotificationsResponse = {
+  encode(message: DismissAllNotificationsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.ok === true) {
+      writer.uint32(8).bool(message.ok);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DismissAllNotificationsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDismissAllNotificationsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.ok = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DismissAllNotificationsResponse {
+    return { ok: isSet(object.ok) ? Boolean(object.ok) : false };
+  },
+
+  toJSON(message: DismissAllNotificationsResponse): unknown {
+    const obj: any = {};
+    message.ok !== undefined && (obj.ok = message.ok);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DismissAllNotificationsResponse>, I>>(
+    object: I,
+  ): DismissAllNotificationsResponse {
+    const message = createBaseDismissAllNotificationsResponse();
     message.ok = object.ok ?? false;
     return message;
   },
@@ -243,7 +351,7 @@ export const NotificationsResponse = {
 };
 
 function createBaseNotification(): Notification {
-  return { userId: "", triggerBy: "", body: "", action: "", category: "", createdAt: 0, dismissed: false };
+  return { userId: "", triggerBy: "", body: "", action: "", category: "", createdAt: 0, dismissed: false, id: 0 };
 }
 
 export const Notification = {
@@ -268,6 +376,9 @@ export const Notification = {
     }
     if (message.dismissed === true) {
       writer.uint32(56).bool(message.dismissed);
+    }
+    if (message.id !== 0) {
+      writer.uint32(64).int64(message.id);
     }
     return writer;
   },
@@ -300,6 +411,9 @@ export const Notification = {
         case 7:
           message.dismissed = reader.bool();
           break;
+        case 8:
+          message.id = longToNumber(reader.int64() as Long);
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -317,6 +431,7 @@ export const Notification = {
       category: isSet(object.category) ? String(object.category) : "",
       createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
       dismissed: isSet(object.dismissed) ? Boolean(object.dismissed) : false,
+      id: isSet(object.id) ? Number(object.id) : 0,
     };
   },
 
@@ -329,6 +444,7 @@ export const Notification = {
     message.category !== undefined && (obj.category = message.category);
     message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
     message.dismissed !== undefined && (obj.dismissed = message.dismissed);
+    message.id !== undefined && (obj.id = Math.round(message.id));
     return obj;
   },
 
@@ -341,17 +457,21 @@ export const Notification = {
     message.category = object.category ?? "";
     message.createdAt = object.createdAt ?? 0;
     message.dismissed = object.dismissed ?? false;
+    message.id = object.id ?? 0;
     return message;
   },
 };
 
 export interface NotificationService {
-  /**
-   * rpc DismissNotification(DismissNotificationsRequest) returns (DismissNotificationsResponse);
-   *  rpc DismissAllNotification(NotificationsRequest) returns (DismissNotificationsResponse);
-   *  rpc UpdateNotifications(NotificationsRequest) returns (DismissNotificationsResponse);
-   */
   Notifications(request: DeepPartial<NotificationsRequest>, metadata?: grpc.Metadata): Promise<NotificationsResponse>;
+  DismissNotification(
+    request: DeepPartial<DismissNotificationRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<DismissNotificationResponse>;
+  DismissAllNotifications(
+    request: DeepPartial<DismissAllNotificationsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<DismissAllNotificationsResponse>;
 }
 
 export class NotificationServiceClientImpl implements NotificationService {
@@ -360,10 +480,34 @@ export class NotificationServiceClientImpl implements NotificationService {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Notifications = this.Notifications.bind(this);
+    this.DismissNotification = this.DismissNotification.bind(this);
+    this.DismissAllNotifications = this.DismissAllNotifications.bind(this);
   }
 
   Notifications(request: DeepPartial<NotificationsRequest>, metadata?: grpc.Metadata): Promise<NotificationsResponse> {
     return this.rpc.unary(NotificationServiceNotificationsDesc, NotificationsRequest.fromPartial(request), metadata);
+  }
+
+  DismissNotification(
+    request: DeepPartial<DismissNotificationRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<DismissNotificationResponse> {
+    return this.rpc.unary(
+      NotificationServiceDismissNotificationDesc,
+      DismissNotificationRequest.fromPartial(request),
+      metadata,
+    );
+  }
+
+  DismissAllNotifications(
+    request: DeepPartial<DismissAllNotificationsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<DismissAllNotificationsResponse> {
+    return this.rpc.unary(
+      NotificationServiceDismissAllNotificationsDesc,
+      DismissAllNotificationsRequest.fromPartial(request),
+      metadata,
+    );
   }
 }
 
@@ -383,6 +527,50 @@ export const NotificationServiceNotificationsDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...NotificationsResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const NotificationServiceDismissNotificationDesc: UnaryMethodDefinitionish = {
+  methodName: "DismissNotification",
+  service: NotificationServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return DismissNotificationRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...DismissNotificationResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const NotificationServiceDismissAllNotificationsDesc: UnaryMethodDefinitionish = {
+  methodName: "DismissAllNotifications",
+  service: NotificationServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return DismissAllNotificationsRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...DismissAllNotificationsResponse.decode(data),
         toObject() {
           return this;
         },

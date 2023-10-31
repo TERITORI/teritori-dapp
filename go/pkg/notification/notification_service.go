@@ -16,10 +16,9 @@ type NotificationService struct {
 }
 
 type Config struct {
-	Logger       *zap.Logger
-	IndexerDB    *gorm.DB
-	PersistentDB *gorm.DB
-	NetStore     *networks.NetworkStore
+	Logger    *zap.Logger
+	IndexerDB *gorm.DB
+	NetStore  *networks.NetworkStore
 }
 
 func NewNotificationService(ctx context.Context, conf *Config) notificationpb.NotificationServiceServer {
@@ -29,7 +28,7 @@ func NewNotificationService(ctx context.Context, conf *Config) notificationpb.No
 }
 
 func (s *NotificationService) Notifications(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.NotificationsResponse, error) {
-	query := s.conf.PersistentDB
+	query := s.conf.IndexerDB
 	userId := req.GetUserId()
 	if userId == "" {
 		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address}"), "need a wallet address")
@@ -58,6 +57,7 @@ func (s *NotificationService) Notifications(ctx context.Context, req *notificati
 			Category:  d.Category,
 			CreatedAt: d.CreatedAt,
 			Dismissed: d.Dismissed,
+			Id:        d.Id,
 		}
 	}
 
@@ -66,44 +66,44 @@ func (s *NotificationService) Notifications(ctx context.Context, req *notificati
 	}, nil
 }
 
-//func (s *NotificationService) DismissNotification(ctx context.Context, req *notificationpb.DismissNotificationRequest) (*notificationpb.DismissNotificationResponse, error) {
-//	query := s.conf.PersistentDB
-//	userId := req.GetUserId()
-//	notificationId := req.GetNotificationId()
-//
-//	if userId == "" || notificationId == "" {
-//		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address} and a notification Id"), "need a wallet address")
-//	}
-//	query = query.Where("user_id = ? and id = ?", userId, req.GetNotificationId())
-//
-//	var notifications []*indexerdb.Notification
-//	err := query.Find(&notifications).Update("dismissed", true).Error
-//	if err != nil {
-//		return nil, errors.Wrap(err, "failed to query database")
-//	}
-//	return &notificationpb.DismissNotificationsResponse{
-//		Ok: true,
-//	}, nil
-//}
+func (s *NotificationService) DismissNotification(ctx context.Context, req *notificationpb.DismissNotificationsRequest) (*notificationpb.DismissNotificationsResponse, error) {
+	query := s.conf.IndexerDB
+	userId := req.GetUserId()
+	notificationId := req.GetNotificationId()
 
-//func (s *NotificationService) DismissAllNotifications(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.DismissNotificationsResponse, error) {
-//	query := s.conf.PersistentDB
-//	userId := req.GetUserId()
-//
-//	if userId == "" {
-//		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address} and a notification Id"), "need a wallet address")
-//	}
-//	query = query.Where("user_id = ? ", userId)
-//
-//	var notifications []*indexerdb.Notification
-//	err := query.Find(&notifications).Update("dismissed", true).Error
-//	if err != nil {
-//		return nil, errors.Wrap(err, "failed to query database")
-//	}
-//	return &notificationpb.DismissNotificationsResponse{
-//		Ok: true,
-//	}, nil
-//}
+	if userId == "" || notificationId == 0 {
+		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address} and a notification Id"), "need a wallet address")
+	}
+	query = query.Where("user_id = ? and id = ?", userId, req.GetNotificationId())
+
+	var notifications []*indexerdb.Notification
+	err := query.Find(&notifications).Update("dismissed", true).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
+	return &notificationpb.DismissNotificationsResponse{
+		Ok: true,
+	}, nil
+}
+
+func (s *NotificationService) DismissAllNotifications(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.DismissNotificationsResponse, error) {
+	query := s.conf.IndexerDB
+	userId := req.GetUserId()
+
+	if userId == "" {
+		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address} and a notification Id"), "need a wallet address")
+	}
+	query = query.Where("user_id = ? ", userId)
+
+	var notifications []*indexerdb.Notification
+	err := query.Find(&notifications).Update("dismissed", true).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
+	return &notificationpb.DismissNotificationsResponse{
+		Ok: true,
+	}, nil
+}
 
 func (s *NotificationService) UpdateNotifications(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.DismissNotificationsResponse, error) {
 	userId := req.GetUserId()
@@ -139,7 +139,7 @@ func createComment(d *indexerdb.Post, userId string, s *NotificationService) {
 			Category:  "comment",
 			CreatedAt: d.CreatedAt,
 		}
-		s.conf.PersistentDB.Create(&notification)
+		s.conf.IndexerDB.Create(&notification)
 
 	}
 }
@@ -157,10 +157,7 @@ func createReaction(d *indexerdb.Post, userId string, s *NotificationService) {
 				Category:  "reaction",
 				CreatedAt: d.CreatedAt,
 			}
-			s.conf.PersistentDB.Create(&notification)
-			//if err := s.conf.PersistentDB.Create(&notification).Error; err != nil && !errors.Is(err, gorm.ErrDuplicatedKey) {
-			//	return nil, errors.Wrap(errors.New(err.Error()), "Create notification record error")
-			//}
+			s.conf.IndexerDB.Create(&notification)
 		}
 
 	}
