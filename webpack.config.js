@@ -5,6 +5,7 @@ const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
 const { WebpackDeduplicationPlugin } = require("webpack-deduplication-plugin");
 module.exports = async function (env, argv) {
   const config = await createExpoWebpackConfigAsync(env, argv);
+  config.externals = ["crypto"];
 
   // needed to use environment variables
   config.plugins.push(
