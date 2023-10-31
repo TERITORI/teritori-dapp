@@ -54,7 +54,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
 
   const nativeTargetCurrency = getNativeCurrency(
     ibcTargetCurrency?.sourceNetwork,
-    ibcTargetCurrency?.sourceDenom
+    ibcTargetCurrency?.sourceDenom,
   );
 
   const sourceNetworkId =
@@ -88,7 +88,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
         </BrandText>
       </View>
     ),
-    [variation, networkId]
+    [variation, networkId],
   );
 
   const maxAtomics =
@@ -98,7 +98,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
     )?.amount || "0";
   const max = Decimal.fromAtomics(
     maxAtomics,
-    nativeTargetCurrency?.decimals || 0
+    nativeTargetCurrency?.decimals || 0,
   ).toString();
 
   return (
@@ -239,7 +239,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
 
               const amount = Decimal.fromUserInput(
                 formValues.amount,
-                nativeTargetCurrency.decimals
+                nativeTargetCurrency.decimals,
               ).atomics;
 
               const timeoutSeconds = 30;
@@ -254,9 +254,8 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
                   ? ibcTargetCurrency.destinationChannelId
                   : ibcTargetCurrency.sourceChannelId;
 
-              const client = await getKeplrSigningStargateClient(
-                sourceNetworkId
-              );
+              const client =
+                await getKeplrSigningStargateClient(sourceNetworkId);
 
               const tx = await client.sendIbcTokens(
                 sender,
@@ -266,7 +265,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
                 channelId,
                 undefined,
                 (Date.now() + timeoutSeconds * 1000) * 1000000,
-                "auto"
+                "auto",
               );
 
               if (isDeliverTxFailure(tx)) {
@@ -339,7 +338,7 @@ const styles = StyleSheet.create({
 
 const convertCosmosAddress = (
   sourceAddress: string | undefined,
-  targetNetworkId: string | undefined
+  targetNetworkId: string | undefined,
 ) => {
   if (!sourceAddress) {
     return undefined;

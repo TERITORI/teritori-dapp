@@ -26,7 +26,6 @@ export const DAppStoreScreen: ScreenFC<"DAppStore"> = () => {
       <View
         style={{
           flexDirection: isMobile ? "column" : "row",
-          minHeight: "inherit",
         }}
       >
         <LeftRail />

@@ -67,23 +67,16 @@ const NextButton: React.FC<ButtonProps> = ({
 );
 
 export const SmallCarousel: React.FC<TCarouselProps & { height: number }> = (
-  props
+  props,
 ) => {
-  const {
-    children,
-    width = 0,
-    height = 0,
-    style,
-    data,
-    ...carouselProps
-  } = props;
+  const { width = 0, height = 0, style, data, ...carouselProps } = props;
   // loop is true by default in Carousel, so we need to override SmallCarousel props.loop like this
   const isLoop = props.loop === undefined || props.loop;
 
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const viewWidth = StyleSheet.flatten(style)?.width;
   const step = Math.floor(
-    (typeof viewWidth === "number" ? viewWidth : 0) / (width || 0)
+    (typeof viewWidth === "number" ? viewWidth : 0) / (width || 0),
   );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isScrolling, setScrolling] = useState(false);
@@ -119,13 +112,13 @@ export const SmallCarousel: React.FC<TCarouselProps & { height: number }> = (
         (!isLoop && currentIndex > 0)) &&
       // The button is always hidden if all items are visible (without doing next/prev)
       data.length > step,
-    [isLoop, currentIndex, data.length, step]
+    [isLoop, currentIndex, data.length, step],
   );
   const isNextButtonDisplayed = useMemo(
     () =>
       (isLoop || (!isLoop && currentIndex < data.length - 1)) &&
       data.length > step,
-    [isLoop, currentIndex, data.length, step]
+    [isLoop, currentIndex, data.length, step],
   );
 
   return (

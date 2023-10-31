@@ -54,7 +54,7 @@ export const useKeplr: () => UseKeplrResult = () => {
         return;
       }
       const offlineSigner = await keplr.getOfflineSignerAuto(
-        selectedNetworkInfo.chainId
+        selectedNetworkInfo.chainId,
       );
       const accounts = await offlineSigner.getAccounts();
       setAddresses(accounts.map((account) => account.address));

@@ -88,7 +88,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
   const { post: postResult, isLoading: isLoadingPostResult } = usePost(
     postId,
-    networkId
+    networkId,
   );
 
   const authorId = postResult?.authorId;
@@ -124,7 +124,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
 
   const comments = useMemo(
     () => (data ? combineFetchCommentPages(data.pages) : []),
-    [data]
+    [data],
   );
 
   const onPressReply: OnPressReplyType = (data) => {
@@ -159,7 +159,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         setFlatListContentOffsetY(event.contentOffset.y);
       },
     },
-    [postResult?.identifier]
+    [postResult?.identifier],
   );
 
   const handleSubmitInProgress = () => {
@@ -204,7 +204,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
           ? navigation.navigate("FeedPostView", {
               id: getNetworkObjectId(
                 networkId,
-                postResult?.parentPostIdentifier || ""
+                postResult?.parentPostIdentifier || "",
               ),
             })
           : navigation.canGoBack()

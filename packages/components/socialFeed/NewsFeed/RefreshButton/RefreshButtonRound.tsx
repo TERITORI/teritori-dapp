@@ -47,7 +47,7 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
             duration: 500,
             easing: Easing.linear,
           }),
-          -1
+          -1,
         )
       : withTiming(0, {
           duration: 500,

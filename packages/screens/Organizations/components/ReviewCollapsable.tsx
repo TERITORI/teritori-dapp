@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   Extrapolate,
@@ -23,6 +23,7 @@ import { layout } from "../../../utils/style/layout";
 type ReviewCollapsableProps = {
   title: string;
   isExpandedByDefault?: boolean;
+  children: ReactNode;
 };
 
 export const ReviewCollapsable: React.FC<ReviewCollapsableProps> = ({
@@ -38,14 +39,14 @@ export const ReviewCollapsable: React.FC<ReviewCollapsableProps> = ({
       height: isExpanded ? withTiming(heightRef.current) : withTiming(0),
       opacity: isExpanded ? withTiming(1) : withTiming(0),
     }),
-    [isExpanded]
+    [isExpanded],
   );
   const rotateStyle = useAnimatedStyle(() => {
     const rotate = interpolate(
       isExpanded ? 1 : 0,
       [0, 1],
       [0, 180],
-      Extrapolate.CLAMP
+      Extrapolate.CLAMP,
     );
 
     return {

@@ -59,7 +59,7 @@ export const MoreReactionsMenu: React.FC<{
             emoji={reaction.icon}
             onPress={() => onPressReaction(reaction.icon)}
           />
-        )
+        ),
       )}
     </View>
   );

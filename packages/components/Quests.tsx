@@ -61,6 +61,6 @@ const useQuests = (userId: string | undefined) => {
       });
       return quests;
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
 };

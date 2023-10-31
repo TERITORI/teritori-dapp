@@ -35,7 +35,7 @@ func UnmarshalNetwork(b []byte) (Network, error) {
           return nil, errors.Wrap(err, "failed to unmarshal ${name} network")
         }
         return &n, nil
-      `
+      `,
     )
     .join("\n")}
 	default:
@@ -45,7 +45,7 @@ func UnmarshalNetwork(b []byte) (Network, error) {
 `;
 
 for (const name of Object.keys(NetworkKind).filter(
-  (val) => val !== NetworkKind.Unknown
+  (val) => val !== NetworkKind.Unknown,
 )) {
   content += `
     func (netstore NetworkStore) Get${name}Network(id string) (*${name}Network, error) {

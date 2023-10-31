@@ -1,10 +1,12 @@
 import { LinearGradient } from "expo-linear-gradient";
+import { ReactNode } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 
 export const InnerSideBlackShadow: React.FC<{
   side: "left" | "right";
   height: number;
   style?: StyleProp<ViewStyle>;
+  children: ReactNode;
 }> = ({ height, side, style, children }) => {
   return (
     <LinearGradient

@@ -37,7 +37,7 @@ export const useCreatePost = ({
       const prevData = addUpdateNewComment(
         data?.msg?.parentPostIdentifier || "",
         newComment,
-        "add"
+        "add",
       );
       onMutate && onMutate();
       // Return a context with the previous user and updated user
@@ -50,7 +50,7 @@ export const useCreatePost = ({
       addUpdateNewComment(
         data?.msg?.parentPostIdentifier || "",
         updatedComment,
-        "update"
+        "update",
       );
 
       setToastSuccess({
@@ -63,7 +63,7 @@ export const useCreatePost = ({
     onError: (err, formData, context: any) => {
       queryClient.setQueryData(
         ["FetchComment", wallet?.address, formData.msg.parentPostIdentifier],
-        context.prevData
+        context.prevData,
       );
 
       setToastError({
@@ -77,7 +77,7 @@ export const useCreatePost = ({
   const addUpdateNewComment = (
     parentPostIdentifier: string,
     newComment: PostResultExtra,
-    type: "add" | "update" = "add"
+    type: "add" | "update" = "add",
   ) => {
     const prevData: { pages: FetchCommentResponse[] } =
       queryClient.getQueryData([
@@ -112,7 +112,7 @@ export const useCreatePost = ({
 
     queryClient.setQueryData(
       ["FetchComment", wallet?.address, parentPostIdentifier],
-      commentData
+      commentData,
     );
 
     return prevData;

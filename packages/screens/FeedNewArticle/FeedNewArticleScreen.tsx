@@ -58,7 +58,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const { freePostCount } = useUpdateAvailableFreePost(
     selectedNetworkId,
     PostCategory.Article,
-    wallet
+    wallet,
   );
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -226,12 +226,12 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
             {freePostCount
               ? `You have ${freePostCount} free ${pluralOrNot(
                   "Article",
-                  freePostCount
+                  freePostCount,
                 )} left`
               : `The cost for this Article is ${prettyPrice(
                   selectedNetworkId,
                   postFee.toString(),
-                  selectNetworkInfo?.currencies?.[0].denom || "utori"
+                  selectNetworkInfo?.currencies?.[0].denom || "utori",
                 )}`}
           </BrandText>
         </TertiaryBox>

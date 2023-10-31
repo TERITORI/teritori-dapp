@@ -6,22 +6,25 @@ const batchSize = 1000;
 // returns the number of nfts owned per address
 export const snapshotCollectionOwners = async (
   collectionId: string,
-  backendClient: MarketplaceService | undefined
+  backendClient: MarketplaceService | undefined,
 ) => {
   const listByOwner = await snapshotCollectionOwnersWithIds(
     collectionId,
-    backendClient
+    backendClient,
   );
-  return Object.entries(listByOwner).reduce((result, [key, list]) => {
-    result[key] = list.length;
-    return result;
-  }, {} as { [key: string]: number });
+  return Object.entries(listByOwner).reduce(
+    (result, [key, list]) => {
+      result[key] = list.length;
+      return result;
+    },
+    {} as { [key: string]: number },
+  );
 };
 
 // returns the list of nfts owned per address
 export const snapshotCollectionOwnersWithIds = async (
   collectionId: string,
-  backendClient: MarketplaceService | undefined
+  backendClient: MarketplaceService | undefined,
 ) => {
   if (!backendClient) {
     return {};
@@ -64,7 +67,7 @@ export const snapshotCollectionOwnersWithIds = async (
 // returns the count of nfts by address that minted an nft and never tried to sell it
 export const snapshotCollectionOGs = async (
   collectionId: string,
-  backendClient: MarketplaceService | undefined
+  backendClient: MarketplaceService | undefined,
 ) => {
   if (!backendClient) {
     return {};
@@ -114,7 +117,7 @@ export const snapshotCollectionOGs = async (
       result[addr] = held.length;
       return result;
     },
-    {} as { [key: string]: number }
+    {} as { [key: string]: number },
   );
   return holders;
 };

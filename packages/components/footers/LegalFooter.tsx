@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { View } from "react-native";
 
 import logoSVG from "../../../assets/logos/logo.svg";
@@ -9,7 +9,9 @@ import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
 import { SVG } from "../SVG";
 
-export const LegalFooter: React.FC = ({ children }) => {
+export const LegalFooter: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   return (
     <View
       style={{

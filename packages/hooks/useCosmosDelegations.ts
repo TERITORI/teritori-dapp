@@ -17,8 +17,8 @@ export const useCosmosDelegations = (userId: string | undefined) => {
           `${
             network.restEndpoint
           }/cosmos/staking/v1beta1/delegations/${userAddress}?pagination.key=${encodeURIComponent(
-            nextKey
-          )}`
+            nextKey,
+          )}`,
         );
         const response = await httpResponse.json();
         delegations.push(...response.delegation_responses);
@@ -29,6 +29,6 @@ export const useCosmosDelegations = (userId: string | undefined) => {
       }
       return delegations;
     },
-    { enabled: !!userId }
+    { enabled: !!userId },
   );
 };

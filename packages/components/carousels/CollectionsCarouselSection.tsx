@@ -46,7 +46,7 @@ export const CollectionsCarouselSection: React.FC<{
         mintState={req.mintState}
       />
     ),
-    [linkToMint, req.mintState]
+    [linkToMint, req.mintState],
   );
 
   return (

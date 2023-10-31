@@ -24,7 +24,7 @@ for (const net of allNetworks) {
     case NetworkKind.Ethereum: {
       if (ethereumChainIds[net.chainId]) {
         throw new Error(
-          `ethereum chain id '${net.chainId}' for network '${net.id}' is not unique`
+          `ethereum chain id '${net.chainId}' for network '${net.id}' is not unique`,
         );
       }
       ethereumChainIds[net.chainId] = true;
@@ -33,7 +33,7 @@ for (const net of allNetworks) {
     case NetworkKind.Cosmos: {
       if (cosmosChainIds[net.chainId]) {
         throw new Error(
-          `cosmos chain id '${net.chainId}' for network '${net.id}' is not unique`
+          `cosmos chain id '${net.chainId}' for network '${net.id}' is not unique`,
         );
       }
       cosmosChainIds[net.chainId] = true;
@@ -42,7 +42,7 @@ for (const net of allNetworks) {
     case NetworkKind.Gno: {
       if (gnoChainIds[net.chainId]) {
         throw new Error(
-          `gno chain id '${net.chainId}' for network '${net.id}' is not unique`
+          `gno chain id '${net.chainId}' for network '${net.id}' is not unique`,
         );
       }
       gnoChainIds[net.chainId] = true;
@@ -56,7 +56,7 @@ for (const net of allNetworks) {
     // denom must be unique for this network
     if (denoms[currency.denom]) {
       throw new Error(
-        `currency denom '${currency.denom}' of network '${net.id}' is not unique`
+        `currency denom '${currency.denom}' of network '${net.id}' is not unique`,
       );
     }
     denoms[currency.denom] = true;
@@ -66,7 +66,7 @@ for (const net of allNetworks) {
       const nc = getNativeCurrency(net.id, currency.denom);
       if (!nc) {
         throw new Error(
-          `invalid ibc currency '${currency.denom}' of network '${net.id}': currency '${currency.sourceDenom}' does not exists in network '${currency.sourceNetwork}'`
+          `invalid ibc currency '${currency.denom}' of network '${net.id}': currency '${currency.sourceDenom}' does not exists in network '${currency.sourceNetwork}'`,
         );
       }
     }

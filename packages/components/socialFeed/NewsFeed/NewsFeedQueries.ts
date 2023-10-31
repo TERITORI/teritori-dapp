@@ -201,7 +201,7 @@ export const createPost = async ({
       [{ type: "/vm.m_call", value: vmCall }],
       {
         gasWanted: 2_000_000,
-      }
+      },
     );
 
     const provider = new GnoJSONRPCProvider(network.endpoint);
@@ -221,7 +221,7 @@ export const createPost = async ({
       },
       defaultSocialFeedFee,
       "",
-      freePostCount ? undefined : [coin(fee, "utori")]
+      freePostCount ? undefined : [coin(fee, "utori")],
     );
   }
 

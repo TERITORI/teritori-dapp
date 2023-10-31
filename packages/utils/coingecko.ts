@@ -13,7 +13,7 @@ export const getCoingeckoPrice = (
   networkId: string,
   denom: string,
   amount: string,
-  prices: CoingeckoPrices
+  prices: CoingeckoPrices,
 ) => {
   const currency = getNativeCurrency(networkId, denom);
   return (
@@ -21,7 +21,7 @@ export const getCoingeckoPrice = (
     Decimal.fromAtomics(
       // An amount with not enough decimals will be considered as zero
       Math.round(parseFloat(amount)).toString(),
-      currency.decimals
+      currency.decimals,
     ).toFloatApproximation() * (prices[currency.coingeckoId]?.usd || 0)
   );
 };

@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, ReactNode } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -46,6 +46,7 @@ export const ScreenContainer: React.FC<{
   isLarge?: boolean;
   onBackPress?: () => void;
   maxWidth?: number;
+  children?: ReactNode;
 }> = ({
   children,
   headerChildren,
@@ -75,7 +76,7 @@ export const ScreenContainer: React.FC<{
 
   const calculatedWidth = useMemo(
     () => (maxWidth ? Math.min(maxWidth, screenWidth) : screenWidth),
-    [screenWidth, maxWidth]
+    [screenWidth, maxWidth],
   );
 
   const marginStyle = hasMargin && {
@@ -97,7 +98,7 @@ export const ScreenContainer: React.FC<{
       }
       return !(forceNetworkKind && n?.kind !== forceNetworkKind);
     },
-    [forceNetworkId, forceNetworkKind]
+    [forceNetworkId, forceNetworkKind],
   );
 
   /////////////// mobile returns

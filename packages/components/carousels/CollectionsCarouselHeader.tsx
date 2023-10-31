@@ -132,7 +132,7 @@ export const CollectionsCarouselHeader: React.FC<{
         </TouchableOpacity>
       </View>
     ),
-    [carouselRef]
+    [carouselRef],
   );
 
   return (

@@ -32,10 +32,10 @@ export const SelectedCurrency: React.FC<{
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
   const currencyNetwork: CosmosNetworkInfo | undefined = useMemo(() => {
     const cosmosNetworks = allNetworks.filter(
-      (networkInfo) => networkInfo.kind === NetworkKind.Cosmos
+      (networkInfo) => networkInfo.kind === NetworkKind.Cosmos,
     ) as CosmosNetworkInfo[];
     return cosmosNetworks.find(
-      (networkInfo) => networkInfo.stakeCurrency === currency?.denom
+      (networkInfo) => networkInfo.stakeCurrency === currency?.denom,
     );
   }, [currency?.denom]);
 

@@ -27,7 +27,7 @@ export const TopMenuMobile: FC = () => {
             uri: ipfsURLToHTTPURL(
               userInfo?.metadata?.image ||
                 network?.nameServiceDefaultImage ||
-                ""
+                "",
             ),
           }}
         />

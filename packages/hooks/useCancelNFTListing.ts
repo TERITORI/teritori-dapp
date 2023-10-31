@@ -17,7 +17,7 @@ const teritoriCancelNFTListing = async (
   networkId: string,
   sender: string,
   nftContractAddress: string,
-  tokenId: string
+  tokenId: string,
 ) => {
   const network = mustGetCosmosNetwork(networkId);
   if (!network.vaultContractAddress) {
@@ -27,7 +27,7 @@ const teritoriCancelNFTListing = async (
   const vaultClient = new TeritoriNftVaultClient(
     cosmwasmClient,
     sender,
-    network.vaultContractAddress
+    network.vaultContractAddress,
   );
   const reply = await vaultClient.withdraw({
     nftContractAddr: nftContractAddress,
@@ -40,7 +40,7 @@ const ethereumCancelNFTListing = async (
   networkId: string,
   sender: string,
   nftContractAddress: string,
-  tokenId: string
+  tokenId: string,
 ) => {
   const network = mustGetEthereumNetwork(networkId);
 
@@ -52,7 +52,7 @@ const ethereumCancelNFTListing = async (
   const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
   const vaultClient = NFTVault__factory.connect(
     network.vaultContractAddress,
-    signer
+    signer,
   );
 
   const cancelListingTx = await vaultClient.withdrawNFT(
@@ -61,7 +61,7 @@ const ethereumCancelNFTListing = async (
     {
       maxFeePerGas: maxFeePerGas?.toNumber(),
       maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
-    }
+    },
   );
 
   await cancelListingTx.wait();
@@ -72,7 +72,7 @@ const ethereumCancelNFTListing = async (
 export const useCancelNFTListing = (
   networkId: string | undefined,
   nftContractAddress: string,
-  tokenId: string
+  tokenId: string,
 ) => {
   const wallet = useSelectedWallet();
   const { setToastError } = useFeedbacks();
@@ -94,14 +94,14 @@ export const useCancelNFTListing = (
             network.id,
             wallet.address,
             nftContractAddress,
-            tokenId
+            tokenId,
           );
         case NetworkKind.Ethereum:
           return await ethereumCancelNFTListing(
             network.id,
             wallet.address,
             nftContractAddress,
-            tokenId
+            tokenId,
           );
         default:
           throw Error(`Unsupported network ${network}`);

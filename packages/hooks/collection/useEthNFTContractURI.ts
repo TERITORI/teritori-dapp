@@ -6,7 +6,7 @@ import { getEthereumProvider } from "../../utils/ethereum";
 
 export const useEthNFTContractURI = (
   networkId: string | undefined,
-  nftAddress: string | undefined
+  nftAddress: string | undefined,
 ) => {
   return useQuery(
     ["ethNFTContractURI ", networkId, nftAddress],
@@ -28,6 +28,6 @@ export const useEthNFTContractURI = (
       const nftClient = TeritoriNft__factory.connect(nftAddress, provider);
       return await nftClient.callStatic.contractURI();
     },
-    { staleTime: Infinity, enabled: !!networkId && !!nftAddress }
+    { staleTime: Infinity, enabled: !!networkId && !!nftAddress },
   );
 };

@@ -7,7 +7,7 @@ import { getEthereumProvider } from "../../utils/ethereum";
 export const useEthMinterCurrentSupply = (
   networkId: string | undefined,
   mintAddress: string | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   if (enabled === undefined) {
     enabled = true;
@@ -31,10 +31,10 @@ export const useEthMinterCurrentSupply = (
 
       const minterClient = TeritoriMinter__factory.connect(
         mintAddress,
-        provider
+        provider,
       );
       return await minterClient.callStatic.currentSupply();
     },
-    { staleTime: Infinity, enabled: enabled && !!networkId }
+    { staleTime: Infinity, enabled: enabled && !!networkId },
   );
 };

@@ -145,7 +145,7 @@ export const CollectionHeader: React.FC<{
                       network.id,
                       stats.floorPrice[0].quantity,
                       stats.floorPrice[0].denom,
-                      true
+                      true,
                     )
                   : "-"
               }
@@ -168,7 +168,7 @@ export const CollectionHeader: React.FC<{
                       network.id,
                       parseFloat(stats.totalVolume).toFixed(0),
                       stats.floorPrice[0].denom,
-                      true
+                      true,
                     )
                   : "-"
               }
@@ -204,7 +204,7 @@ export const CollectionHeader: React.FC<{
                           network.id,
                           stats.avgPricePeriod.toFixed(0),
                           stats.floorPrice[0].denom,
-                          true
+                          true,
                         )
                       : "-"
                   }
@@ -252,7 +252,7 @@ export const CollectionHeader: React.FC<{
                 onPress={() => {
                   const url = contractExplorerLink(
                     network?.id,
-                    collectionMintAddress
+                    collectionMintAddress,
                   );
                   Linking.openURL(url);
                 }}

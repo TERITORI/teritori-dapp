@@ -40,7 +40,7 @@ export const useSidebar = () => {
                 return `${groupKey}${SEPARATOR}${id}`;
               });
           }),
-        ])
+        ]),
       );
     }
   }, [availableApps, dispatch, selectedApps.length]);

@@ -31,7 +31,7 @@ export interface MultisigTransactionItemProps extends ParsedTransaction {
 }
 
 export const MultisigTransactionItem: React.FC<MultisigTransactionItemProps> = (
-  props
+  props,
 ) => {
   const {
     chainId,
@@ -119,7 +119,7 @@ export const MultisigTransactionItem: React.FC<MultisigTransactionItemProps> = (
               {prettyPrice(
                 network?.id,
                 fee.amount[0]?.amount,
-                fee.amount[0]?.denom
+                fee.amount[0]?.denom,
               )}
             </BrandText>
           </View>

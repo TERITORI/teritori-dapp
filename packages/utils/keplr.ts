@@ -12,7 +12,7 @@ export const getKeplr = () => {
 
 export const keplrSignArbitrary = async (
   userId: string,
-  data: string | Uint8Array
+  data: string | Uint8Array,
 ) => {
   const keplr = getKeplr();
   const [network, signerAddress] = parseUserId(userId);
@@ -20,7 +20,7 @@ export const keplrSignArbitrary = async (
   const signature = await keplr.signArbitrary(
     cosmosNetwork.chainId,
     signerAddress,
-    data
+    data,
   );
   return signature;
 };

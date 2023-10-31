@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { View, ViewStyle, StyleProp, StyleSheet } from "react-native";
 
 import { neutral11 } from "../../utils/style/colors";
@@ -14,6 +14,7 @@ export const SecondaryBox: React.FC<{
   mainContainerStyle?: StyleProp<ViewStyle>;
   noBrokenCorners?: boolean;
   squaresBorderColor?: string;
+  children: ReactNode;
 }> = ({
   width,
   height,

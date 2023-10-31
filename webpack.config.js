@@ -17,7 +17,7 @@ module.exports = async function (env, argv) {
     // }),
     new WebpackDeduplicationPlugin({
       cacheDir: "./cache",
-    })
+    }),
   );
 
   // victory native specific code

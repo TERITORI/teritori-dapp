@@ -27,15 +27,15 @@ export const FilesPreviewsContainer: React.FC<FilePreviewContainerProps> = ({
 }) => {
   const audioFiles = useMemo(
     () => files?.filter((file) => file.fileType === "audio"),
-    [files]
+    [files],
   );
   const imageFiles = useMemo(
     () => files?.filter((file) => file.fileType === "image"),
-    [files]
+    [files],
   );
   const videoFiles = useMemo(
     () => files?.filter((file) => file.fileType === "video"),
-    [files]
+    [files],
   );
   const gifsFiles = useMemo(() => {
     const fileName = "GIF-" + uuidv4();
