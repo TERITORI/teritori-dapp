@@ -84,6 +84,7 @@ export const LotteryHistory = () => {
 
   return (
     <View
+      // @ts-expect-error
       style={{
         flexWrap: "nowrap",
         alignItems: "center",
@@ -101,6 +102,7 @@ export const LotteryHistory = () => {
       >
         <Label
           styleType="H2_DHBS_80"
+          // @ts-expect-error
           style={{
             textAlign: "center",
             color: "#FFD753",
@@ -113,6 +115,7 @@ export const LotteryHistory = () => {
           gigantic lottery
         </Label>
         <FlatList
+          // @ts-expect-error
           contentContainerStyle={{
             alignItems: "center",
             marginBottom: "7em",

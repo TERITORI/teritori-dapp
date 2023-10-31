@@ -91,6 +91,7 @@ export const MenuLink = () => {
       </View>
       {selectedSection !== "welcome" && (
         <View
+          // @ts-expect-error
           style={{
             display: "flex",
             position: "relative",

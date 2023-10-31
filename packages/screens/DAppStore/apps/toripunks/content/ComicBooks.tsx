@@ -24,6 +24,7 @@ export const ComicBooks = () => {
   return (
     <>
       <View
+        // @ts-expect-error
         style={{
           height: isMinimunWindowWidth ? "56vh" : "74vh",
           justifyContent: isMinimunWindowWidth ? "space-around" : "flex-end",
