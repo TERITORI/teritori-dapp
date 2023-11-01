@@ -8,7 +8,7 @@ export const ethereumNetwork: NetworkInfo = {
   icon: "icons/networks/ethereum.svg",
   features: [
     NetworkFeature.NFTMarketplace,
-    NetworkFeature.P2E,
+    NetworkFeature.RiotP2E,
     NetworkFeature.NFTLaunchpad,
   ],
   currencies: ethereumCurrencies,

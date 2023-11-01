@@ -7,11 +7,12 @@ type Network interface {
 }
 
 type NetworkBase struct {
-	ID         string        `json:"id"`
-	Currencies []CurrencyObj `json:"currencies"`
-	Kind       NetworkKind   `json:"kind"`
-	IDPrefix   string        `json:"idPrefix"`
-	Testnet    bool          `json:"testnet"`
+	ID         string           `json:"id"`
+	Currencies []CurrencyObj    `json:"currencies"`
+	Kind       NetworkKind      `json:"kind"`
+	IDPrefix   string           `json:"idPrefix"`
+	Testnet    bool             `json:"testnet"`
+	Features   []NetworkFeature `json:"features"`
 }
 
 func (nb *NetworkBase) GetBase() *NetworkBase {

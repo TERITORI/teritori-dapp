@@ -6,8 +6,6 @@ import (
 	"os"
 	"time"
 
-	"golang.org/x/exp/slices"
-
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/sinker"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
@@ -22,6 +20,7 @@ import (
 	"github.com/streamingfast/shutter"
 	sink "github.com/streamingfast/substreams-sink"
 	"go.uber.org/zap"
+	"golang.org/x/exp/slices"
 )
 
 var zlog, tracer = logging.RootLogger("teritori-sink", "github.com/TERITORI/sink/cmd/sink")
@@ -37,12 +36,6 @@ func main() {
 		ConfigureViper("SINK"),
 	)
 }
-
-var (
-	SUPPORTED_NETWORKS = map[string]bool{
-		"ethereum": true,
-	}
-)
 
 var SinkCmd = Command(sinkE,
 	"sink",
@@ -73,31 +66,6 @@ func sinkE(cmd *cobra.Command, args []string) error {
 	// Prepare params ===============================================================================================
 	networkID := MustGetFlagString("target-network-id")
 
-	NETWORK_IDS := []string{
-		"ethereum-goerli",
-		"ethereum",
-		"mumbai",
-		"polygon-mumbai",
-	}
-
-	// Verify target network id
-	if !slices.Contains(NETWORK_IDS, networkID) {
-		panic("NetworkId " + networkID + " is not supported")
-	}
-
-	// Verify indexerMode
-	mode := MustGetFlagString("indexer-mode")
-	var indexerMode indexerdb.IndexerMode
-
-	switch mode {
-	case string(indexerdb.IndexerModeData):
-		indexerMode = indexerdb.IndexerModeData
-	case string(indexerdb.IndexerModeP2E):
-		indexerMode = indexerdb.IndexerModeP2E
-	default:
-		panic("missing indexer-mode or mode is not valid. Only support: p2e, data")
-	}
-
 	// load networks
 	networksFile := MustGetFlagString("networks-file")
 
@@ -112,6 +80,23 @@ func sinkE(cmd *cobra.Command, args []string) error {
 
 	// get and validate selected network
 	network := netstore.MustGetEthereumNetwork(networkID)
+
+	// Verify indexerMode
+	mode := MustGetFlagString("indexer-mode")
+	var indexerMode indexerdb.IndexerMode
+
+	switch mode {
+	case string(indexerdb.IndexerModeData):
+		indexerMode = indexerdb.IndexerModeData
+	case string(indexerdb.IndexerModeP2E):
+		indexerMode = indexerdb.IndexerModeP2E
+	default:
+		panic("missing indexer-mode or mode is not valid. Only support: p2e, data")
+	}
+
+	if indexerMode == indexerdb.IndexerModeP2E && !slices.Contains(network.Features, networks.RiotP2E) {
+		panic("The provided network does not support P2E")
+	}
 
 	// Load global env
 	// apiToken := MustGetFlagString("substreams-api-token")

@@ -9,6 +9,7 @@ import (
 	"golang.org/x/exp/slices"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
 )
@@ -17,12 +18,12 @@ func main() {
 	// handle args
 	fs := flag.NewFlagSet("flush-db", flag.ContinueOnError)
 	var (
-		dbHost = fs.String("db-indexer-host", "", "host postgreSQL database")
-		dbPort = fs.String("db-indexer-port", "", "port for postgreSQL database")
-		dbPass = fs.String("postgres-password", "", "password for postgreSQL database")
-		dbName = fs.String("database-name", "", "database name for postgreSQL")
-		dbUser = fs.String("postgres-user", "", "username for postgreSQL")
-
+		dbHost          = fs.String("db-indexer-host", "", "host postgreSQL database")
+		dbPort          = fs.String("db-indexer-port", "", "port for postgreSQL database")
+		dbPass          = fs.String("postgres-password", "", "password for postgreSQL database")
+		dbName          = fs.String("database-name", "", "database name for postgreSQL")
+		dbUser          = fs.String("postgres-user", "", "username for postgreSQL")
+		networksFile    = fs.String("networks-file", "networks.json", "path to networks config file")
 		mode            = fs.String("indexer-mode", "", "mode to run indexer: p2e, data")
 		targetNetworkID = fs.String("target-network-id", "", "target network id to flush")
 	)
@@ -36,20 +37,21 @@ func main() {
 		panic(errors.Wrap(err, "failed to parse flags"))
 	}
 
-	NETWORK_IDS := []string{
-		"ethereum-goerli",
-		"ethereum",
-		"teritori",
-		"teritori-testnet",
-		"mumbai",
-		"polygon-mumbai",
-	}
-
 	// Check target network id
 	networkID := *targetNetworkID
-	if !slices.Contains(NETWORK_IDS, networkID) {
-		panic("NetworkId " + networkID + " is not supported")
+
+	// load networks
+	networksBytes, err := os.ReadFile(*networksFile)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to read networks config file"))
 	}
+	netstore, err := networks.UnmarshalNetworkStore(networksBytes)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to unmarshal networks config"))
+	}
+
+	// get and validate selected network
+	network := netstore.MustGetNetwork(networkID)
 
 	// Check indexer mode
 	var sqlFilePath string
@@ -64,6 +66,10 @@ func main() {
 		indexerMode = indexerdb.IndexerModeP2E
 	default:
 		panic("missing indexer-mode or mode is not valid. Only support: p2e, data")
+	}
+
+	if indexerMode == indexerdb.IndexerModeP2E && !slices.Contains(network.GetBase().Features, networks.RiotP2E) {
+		panic("The provided network does not support P2E")
 	}
 
 	stmtBytes, err := os.ReadFile(sqlFilePath)
