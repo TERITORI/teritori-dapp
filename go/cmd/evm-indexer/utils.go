@@ -93,6 +93,8 @@ func MustLoadEnv() {
 	globalEnv := ".env"
 	err := godotenv.Load(globalEnv)
 	if err != nil {
-		panic(fmt.Errorf("failed to load env files: %s", err))
+		zlog.Info(fmt.Sprintf("failed to load env files: %s", err))
 	}
+
+	// Dont panic here, if we cannot load env from file, then maybe env var are already injected in env
 }

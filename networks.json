@@ -3025,7 +3025,7 @@
     "icon": "icons/networks/ethereum.svg",
     "features": [
       "NFTMarketplace",
-      "P2E",
+      "RiotP2E",
       "NFTLaunchpad"
     ],
     "currencies": [
@@ -3066,7 +3066,7 @@
     "icon": "icons/networks/ethereum.svg",
     "features": [
       "NFTMarketplace",
-      "P2E",
+      "RiotP2E",
       "NFTLaunchpad"
     ],
     "currencies": [
@@ -9105,14 +9105,13 @@
     "icon": "icons/networks/teritori.svg",
     "features": [
       "NFTMarketplace",
-      "P2E",
+      "RiotP2E",
       "Organizations",
       "SocialFeed",
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad",
-      "RiotP2E"
+      "NFTLaunchpad"
     ],
     "overrides": "cosmos-registry:teritori",
     "walletUrlForStaking": "https://app.teritori.com/staking",
@@ -9194,14 +9193,13 @@
     "icon": "icons/networks/teritori.svg",
     "features": [
       "NFTMarketplace",
-      "P2E",
+      "RiotP2E",
       "Organizations",
       "SocialFeed",
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad",
-      "RiotP2E"
+      "NFTLaunchpad"
     ],
     "currencies": [
       {

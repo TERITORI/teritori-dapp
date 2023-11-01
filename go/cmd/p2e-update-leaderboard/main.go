@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"golang.org/x/exp/slices"
+
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/peterbourgon/ff/v3"
@@ -17,11 +19,13 @@ func main() {
 	var (
 		networksFile = fs.String("networks-file", "networks.json", "path to networks config file")
 
-		dbHost = fs.String("db-indexer-host", "", "host postgreSQL database")
-		dbPort = fs.String("db-indexer-port", "", "port for postgreSQL database")
-		dbPass = fs.String("postgres-password", "", "password for postgreSQL database")
-		dbName = fs.String("database-name", "", "database name for postgreSQL")
-		dbUser = fs.String("postgres-user", "", "username for postgreSQL")
+		dbHost          = fs.String("db-indexer-host", "", "host postgreSQL database")
+		dbPort          = fs.String("db-indexer-port", "", "port for postgreSQL database")
+		dbPass          = fs.String("postgres-password", "", "password for postgreSQL database")
+		dbName          = fs.String("database-name", "", "database name for postgreSQL")
+		dbUser          = fs.String("postgres-user", "", "username for postgreSQL")
+		targetNetworkID = fs.String("target-network-id", "", "target network to index")
+		mnemonic        = fs.String("mnemonic", "", "mnemonic of reporter account")
 	)
 
 	if err := ff.Parse(fs, os.Args[1:],
@@ -34,24 +38,10 @@ func main() {
 		panic(errors.Wrap(err, "failed to parse flags"))
 	}
 
-	if len(os.Args) != 3 {
-		panic(errors.New("command invalid. Expected: main.go <network> <mnemonic>"))
-	}
-
-	networkId := os.Args[1]
-	if networkId == "" {
-		panic(errors.New("network id must be provided. Ex: teritori-testnet,ethereum-goerli,polygon-mumbai"))
-	}
-
-	mnemonic := os.Args[2]
-	if networkId == "" {
-		panic(errors.New("mnemonic must be provided"))
-	}
-
-	// get logger
-	logger, err := zap.NewDevelopment()
-	if err != nil {
-		panic(errors.Wrap(err, "failed to init logger"))
+	// Check target network id
+	networkID := *targetNetworkID
+	if networkID == "" {
+		panic("You must provide the <target-network-id>")
 	}
 
 	// load networks
@@ -62,6 +52,23 @@ func main() {
 	netstore, err := networks.UnmarshalNetworkStore(networksBytes)
 	if err != nil {
 		panic(errors.Wrap(err, "failed to unmarshal networks config"))
+	}
+
+	// get and validate selected network
+	network := netstore.MustGetNetwork(networkID)
+
+	if !slices.Contains(network.GetBase().Features, networks.RiotP2E) {
+		panic("The provided network does not support P2E")
+	}
+
+	if *mnemonic == "" {
+		panic(errors.New("you must provide the <mnemonic>"))
+	}
+
+	// get logger
+	logger, err := zap.NewDevelopment()
+	if err != nil {
+		panic(errors.Wrap(err, "failed to init logger"))
 	}
 
 	// TODO: check if mnemonic is correct, matched with distributor account =============================
@@ -78,10 +85,10 @@ func main() {
 	}
 
 	service, err := NewLeaderboardService(
-		networkId,
+		network.GetBase().ID,
 		&netstore,
 		db,
-		mnemonic,
+		*mnemonic,
 		logger,
 	)
 	if err != nil {

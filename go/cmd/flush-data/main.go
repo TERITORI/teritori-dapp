@@ -39,6 +39,9 @@ func main() {
 
 	// Check target network id
 	networkID := *targetNetworkID
+	if networkID == "" {
+		panic("You must provide the <target-network-id>")
+	}
 
 	// load networks
 	networksBytes, err := os.ReadFile(*networksFile)
