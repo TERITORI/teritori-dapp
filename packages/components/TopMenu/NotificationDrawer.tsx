@@ -312,6 +312,9 @@ const useBuildBodyText = (item: Notification) => {
   if (item.category === "dao-member-deleted") {
     return `${name} removed you from their organization`;
   }
+  if (item.category === "dao-proposal-created") {
+    return `${name} has new proposals to vote.`;
+  }
   if (item.category === "p2e-riot-squad-staking") {
     return `Your R!OT fight ${
       moment.unix(item.createdAt).isBefore(moment.now())
@@ -347,7 +350,11 @@ const getOmniLink = (item: Notification): OmniLinkToType => {
       screen: "RiotGame",
     };
   }
-  if (["dao-member-removed", "dao-member-added"].includes(item.category)) {
+  if (
+    ["dao-member-removed", "dao-member-added", "dao-proposal-created"].includes(
+      item.category
+    )
+  ) {
     return {
       screen: "UserPublicProfile",
       params: { id: item.action },
