@@ -306,6 +306,12 @@ const useBuildBodyText = (item: Notification) => {
   if (item.category === "nft-trade-seller") {
     return `${name} bought your nft for ${getPrettyPrice(item)}.`;
   }
+  if (item.category === "dao-member-added") {
+    return `${name} added to their organization`;
+  }
+  if (item.category === "dao-member-deleted") {
+    return `${name} removed you from their organization`;
+  }
   if (item.category === "p2e-riot-squad-staking") {
     return `Your R!OT fight ${
       moment.unix(item.createdAt).isBefore(moment.now())
@@ -339,6 +345,12 @@ const getOmniLink = (item: Notification): OmniLinkToType => {
   if (["p2e-riot-squad-staking"].includes(item.category)) {
     return {
       screen: "RiotGame",
+    };
+  }
+  if (["dao-member-removed", "dao-member-added"].includes(item.category)) {
+    return {
+      screen: "UserPublicProfile",
+      params: { id: item.action },
     };
   }
   return {

@@ -2,6 +2,8 @@ package indexerhandler
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"strconv"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
@@ -300,6 +302,12 @@ func (h *Handler) handleExecuteDAOUpdateMembers(e *Message, execMsg *wasmtypes.M
 		return errors.Wrap(err, "failed to unmarshal update_members msg")
 	}
 
+	// get block time
+	blockTime, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
 	// add/update members
 	if len(payload.UpdateMembers.Add) != 0 {
 		dbMembers := make([]*indexerdb.DAOMember, len(payload.UpdateMembers.Add))
@@ -315,6 +323,18 @@ func (h *Handler) handleExecuteDAOUpdateMembers(e *Message, execMsg *wasmtypes.M
 		}).Create(dbMembers).Error; err != nil {
 			return errors.Wrap(err, "failed to save dao members")
 		}
+
+		for _, m := range payload.UpdateMembers.Add {
+			notification := indexerdb.Notification{
+				UserId:    networks.UserID(m.Address),
+				TriggerBy: networks.UserID(dao.ContractAddress),
+				Body:      fmt.Sprintf("dao-member-added:%s:%s", dao.ContractAddress, blockTime.Unix()),
+				Action:    fmt.Sprintf("%s", networks.UserID(dao.ContractAddress)),
+				Category:  "dao-member-added",
+				CreatedAt: blockTime.Unix(),
+			}
+			h.db.Create(&notification)
+		}
 	}
 
 	// remove members
@@ -328,6 +348,18 @@ func (h *Handler) handleExecuteDAOUpdateMembers(e *Message, execMsg *wasmtypes.M
 		}
 		if result.RowsAffected != int64(len(payload.UpdateMembers.Remove)) {
 			return errors.Wrap(err, "did not delete enough members")
+		}
+
+		for _, m := range payload.UpdateMembers.Remove {
+			notification := indexerdb.Notification{
+				UserId:    networks.UserID(m),
+				TriggerBy: networks.UserID(dao.ContractAddress),
+				Body:      fmt.Sprintf("dao-member-removed:%s:%s", dao.ContractAddress, blockTime.Unix()),
+				Action:    fmt.Sprintf("%s", networks.UserID(dao.ContractAddress)),
+				Category:  "dao-member-removed",
+				CreatedAt: blockTime.Unix(),
+			}
+			h.db.Create(&notification)
 		}
 	}
 
