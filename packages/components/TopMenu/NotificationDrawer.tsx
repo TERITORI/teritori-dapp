@@ -306,6 +306,13 @@ const useBuildBodyText = (item: Notification) => {
   if (item.category === "nft-trade-seller") {
     return `${name} bought your nft for ${getPrettyPrice(item)}.`;
   }
+  if (item.category === "p2e-riot-squad-staking") {
+    return `Your R!OT fight ${
+      moment.unix(item.createdAt).isBefore(moment.now())
+        ? `has finished ${moment.unix(item.createdAt).fromNow()}`
+        : `will finish in ${moment.unix(item.createdAt).fromNow()}`
+    }`;
+  }
 };
 
 const getOmniLink = (item: Notification): OmniLinkToType => {
@@ -327,6 +334,11 @@ const getOmniLink = (item: Notification): OmniLinkToType => {
     return {
       screen: "NFTDetail",
       params: { id: item.action },
+    };
+  }
+  if (["p2e-riot-squad-staking"].includes(item.category)) {
+    return {
+      screen: "RiotGame",
     };
   }
   return {

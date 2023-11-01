@@ -2,6 +2,7 @@ package indexerhandler
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -142,17 +143,35 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 		return errors.New("data corrupts: we should not have a current staking")
 	}
 
+	stakedTokenIds := strings.Join(tokenIds, ",")
+
 	squadStaking := indexerdb.P2eSquadStaking{
 		OwnerID:   ownerId,
 		StartTime: startTime,
 		EndTime:   endTime,
-		TokenIDs:  strings.Join(tokenIds, ","),
+		TokenIDs:  stakedTokenIds,
 		SeasonID:  season.ID,
 	}
 
 	if err := h.db.Create(&squadStaking).Error; err != nil {
 		return errors.Wrap(err, "failed to create squad staking")
 	}
+
+	notification := indexerdb.Notification{
+		UserId: ownerId,
+		// NOTE: I'm setting up on purpose the same user to trigger this notification
+		// The reason is I need to keep it consistent with the UI.
+		// The avatar to show will be the one set by the user
+		// another option would be to have an official RIOT account and this instead
+		// to be the one creating the "TriggerBy" another option is to use:
+		// h.config.Network.UserID(execMsg.Contract),
+		TriggerBy: ownerId,
+		Body:      fmt.Sprintf("%s:%s", stakedTokenIds, endTime),
+		Action:    stakedTokenIds,
+		Category:  "p2e-riot-squad-staking",
+		CreatedAt: int64(endTime),
+	}
+	h.db.Create(&notification)
 
 	// Create leaderboard (by season) record if does not exist
 	var userScore indexerdb.P2eLeaderboard
