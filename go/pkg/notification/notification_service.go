@@ -33,10 +33,6 @@ func (s *NotificationService) Notifications(ctx context.Context, req *notificati
 	if userId == "" {
 		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address}"), "need a wallet address")
 	}
-	_, updateerr := s.UpdateNotifications(ctx, req)
-	if updateerr != nil {
-		return nil, updateerr
-	}
 
 	query = query.Where("user_id = ? and dismissed = ?", userId, false).Order("created_at desc")
 
@@ -46,10 +42,10 @@ func (s *NotificationService) Notifications(ctx context.Context, req *notificati
 		return nil, errors.Wrap(err, "failed to query database")
 	}
 
-	pbnotifications := make([]*notificationpb.Notification, len(notifications))
+	pbNotifications := make([]*notificationpb.Notification, len(notifications))
 	for i, d := range notifications {
 
-		pbnotifications[i] = &notificationpb.Notification{
+		pbNotifications[i] = &notificationpb.Notification{
 			UserId:    string(d.UserId),
 			TriggerBy: string(d.TriggerBy),
 			Body:      d.Body,
@@ -62,7 +58,7 @@ func (s *NotificationService) Notifications(ctx context.Context, req *notificati
 	}
 
 	return &notificationpb.NotificationsResponse{
-		Notifications: pbnotifications,
+		Notifications: pbNotifications,
 	}, nil
 }
 
@@ -103,62 +99,4 @@ func (s *NotificationService) DismissAllNotifications(ctx context.Context, req *
 	return &notificationpb.DismissAllNotificationsResponse{
 		Ok: true,
 	}, nil
-}
-
-func (s *NotificationService) UpdateNotifications(ctx context.Context, req *notificationpb.NotificationsRequest) (*notificationpb.DismissNotificationResponse, error) {
-	userId := req.GetUserId()
-	query := s.conf.IndexerDB
-
-	var post []*indexerdb.Post
-	if err := query.Where("author_id = ?", userId).Find(&post).Error; err != nil {
-		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address} and a notification Id"), "need a wallet address")
-	}
-
-	for _, d := range post {
-		createComment(d, userId, s)
-		createReaction(d, userId, s)
-	}
-	return &notificationpb.DismissNotificationResponse{
-		Ok: true,
-	}, nil
-}
-
-func createComment(d *indexerdb.Post, userId string, s *NotificationService) {
-
-	query := s.conf.IndexerDB
-	var comments []*indexerdb.Post
-	query.Where("parent_post_identifier = ? and author_id != ?", d.Identifier, userId).Find(&comments)
-
-	for _, d := range comments {
-
-		notification := indexerdb.Notification{
-			UserId:    networks.UserID(userId),
-			TriggerBy: d.AuthorId,
-			Body:      "comment-" + d.ParentPostIdentifier + "-" + d.Identifier,
-			Action:    d.ParentPostIdentifier,
-			Category:  "comment",
-			CreatedAt: d.CreatedAt,
-		}
-		s.conf.IndexerDB.Create(&notification)
-
-	}
-}
-
-func createReaction(d *indexerdb.Post, userId string, s *NotificationService) {
-	userReactions := d.UserReactions
-	for emoji, users := range userReactions {
-
-		for _, user := range users.([]interface{}) {
-			notification := indexerdb.Notification{
-				UserId:    networks.UserID(userId),
-				TriggerBy: networks.UserID(user.(string)),
-				Body:      emoji,
-				Action:    d.Identifier,
-				Category:  "reaction",
-				CreatedAt: d.CreatedAt,
-			}
-			s.conf.IndexerDB.Create(&notification)
-		}
-
-	}
 }
