@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package follow.v1;
+option go_package = "./followpb";
+
+service FollowService {
+  rpc FollowUser(FollowUserRequest) returns (FollowUserResponse);
+  rpc Followers(FollowersRequest) returns (FollowersResponse);
+}
+
+// Follow / Unfollow Action
+message FollowUserRequest {
+  string user_id = 1;
+  string follow_user_id = 2;
+}
+message FollowUserResponse {
+  bool ok = 1;
+}
+// --
+
+// Followers
+message FollowersRequest {
+  string user_id = 1;
+}
+
+message FollowersResponse {
+  repeated Follower followers = 1;
+}
+
+message Follower {
+  string user_id = 1;
+}
+// --
