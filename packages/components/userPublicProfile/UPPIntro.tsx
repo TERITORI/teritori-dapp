@@ -6,11 +6,21 @@ import discordSVG from "../../../assets/icons/discord.svg";
 import shareSVG from "../../../assets/icons/share.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
+import {
+  useGetFollowersStats,
+  useUserFollowsUser,
+} from "../../hooks/useGetFollowers";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseUserId } from "../../networks";
 import { DEFAULT_NAME } from "../../utils/social-feed";
-import { neutral00, neutral55, neutral77 } from "../../utils/style/colors";
+import {
+  errorColor,
+  neutral00,
+  neutral55,
+  neutral77,
+} from "../../utils/style/colors";
 import {
   fontBold16,
   fontMedium14,
@@ -28,17 +38,24 @@ import { SocialButton } from "../buttons/SocialButton";
 import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
 import { ProfileButton } from "../hub/ProfileButton";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
+import { toggleFollow } from "../socialFeed/utils";
 
 export const UPPIntro: React.FC<{
   userId: string;
   isUserOwner?: boolean;
 }> = ({ userId, isUserOwner }) => {
+  const selectedWallet = useSelectedWallet();
   const { metadata } = useNSUserInfo(userId);
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { margin: layout.spacing_x0_75 };
   const [network, userAddress] = parseUserId(userId);
   const { width } = useMaxResolution();
   const { width: windowWidth } = useWindowDimensions();
+  const { followers, following } = useGetFollowersStats({ userId });
+  const useUserFollowsUserStatus = useUserFollowsUser({
+    userId: selectedWallet?.userId,
+    followUserId: userId,
+  });
 
   return (
     <>
@@ -114,11 +131,16 @@ export const UPPIntro: React.FC<{
         ) : (
           <SecondaryButtonOutline
             touchableStyle={{ position: "absolute", right: 0, bottom: -80 }}
-            text="Follow this Teritorian"
+            text={
+              useUserFollowsUserStatus ? "Unfollow" : "Follow this Teritorian"
+            }
             size="XL"
-            backgroundColor={neutral00}
+            backgroundColor={useUserFollowsUserStatus ? errorColor : neutral00}
             onPress={() => {
-              console.log("follow");
+              toggleFollow({
+                userId: selectedWallet?.userId,
+                followUserId: userId, // from the profile not the wallet
+              });
             }}
           />
         )}
@@ -185,9 +207,9 @@ export const UPPIntro: React.FC<{
             }}
           >
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-              Coming Soon
+              Followers
             </BrandText>
-            <BrandText style={[fontSemibold14]}>21.5k</BrandText>
+            <BrandText style={[fontSemibold14]}>{followers}</BrandText>
           </View>
           <View
             style={{
@@ -198,9 +220,10 @@ export const UPPIntro: React.FC<{
             }}
           >
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-              Coming Soon
+              Following
             </BrandText>
-            <BrandText style={[fontSemibold14]}>36</BrandText>
+
+            <BrandText style={[fontSemibold14]}>{following}</BrandText>
           </View>
 
           <CopyToClipboardSecondary

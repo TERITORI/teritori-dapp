@@ -66,6 +66,9 @@ var allModels = []interface{}{
 
 	// notifications
 	&Notification{},
+
+	// follow users feature
+	&FollowUser{},
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {

@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { grpc } from "@improbable-eng/grpc-web";
 import { BrowserHeaders } from "browser-headers";
+import Long from "long";
 import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "follow.v1";
@@ -26,6 +27,26 @@ export interface FollowersResponse {
 
 export interface Follower {
   userId: string;
+}
+
+/** Followers stats */
+export interface UserFollowStatsRequest {
+  userId: string;
+}
+
+export interface UserFollowStatsResponse {
+  followers: number;
+  following: number;
+}
+
+/** Does user follows user? */
+export interface UserFollowsUserRequest {
+  userId: string;
+  followUserId: string;
+}
+
+export interface UserFollowsUserResponse {
+  status: boolean;
 }
 
 function createBaseFollowUserRequest(): FollowUserRequest {
@@ -280,9 +301,227 @@ export const Follower = {
   },
 };
 
+function createBaseUserFollowStatsRequest(): UserFollowStatsRequest {
+  return { userId: "" };
+}
+
+export const UserFollowStatsRequest = {
+  encode(message: UserFollowStatsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserFollowStatsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserFollowStatsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.userId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UserFollowStatsRequest {
+    return { userId: isSet(object.userId) ? String(object.userId) : "" };
+  },
+
+  toJSON(message: UserFollowStatsRequest): unknown {
+    const obj: any = {};
+    message.userId !== undefined && (obj.userId = message.userId);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<UserFollowStatsRequest>, I>>(object: I): UserFollowStatsRequest {
+    const message = createBaseUserFollowStatsRequest();
+    message.userId = object.userId ?? "";
+    return message;
+  },
+};
+
+function createBaseUserFollowStatsResponse(): UserFollowStatsResponse {
+  return { followers: 0, following: 0 };
+}
+
+export const UserFollowStatsResponse = {
+  encode(message: UserFollowStatsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.followers !== 0) {
+      writer.uint32(8).int64(message.followers);
+    }
+    if (message.following !== 0) {
+      writer.uint32(16).int64(message.following);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserFollowStatsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserFollowStatsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.followers = longToNumber(reader.int64() as Long);
+          break;
+        case 2:
+          message.following = longToNumber(reader.int64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UserFollowStatsResponse {
+    return {
+      followers: isSet(object.followers) ? Number(object.followers) : 0,
+      following: isSet(object.following) ? Number(object.following) : 0,
+    };
+  },
+
+  toJSON(message: UserFollowStatsResponse): unknown {
+    const obj: any = {};
+    message.followers !== undefined && (obj.followers = Math.round(message.followers));
+    message.following !== undefined && (obj.following = Math.round(message.following));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<UserFollowStatsResponse>, I>>(object: I): UserFollowStatsResponse {
+    const message = createBaseUserFollowStatsResponse();
+    message.followers = object.followers ?? 0;
+    message.following = object.following ?? 0;
+    return message;
+  },
+};
+
+function createBaseUserFollowsUserRequest(): UserFollowsUserRequest {
+  return { userId: "", followUserId: "" };
+}
+
+export const UserFollowsUserRequest = {
+  encode(message: UserFollowsUserRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    if (message.followUserId !== "") {
+      writer.uint32(18).string(message.followUserId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserFollowsUserRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserFollowsUserRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.userId = reader.string();
+          break;
+        case 2:
+          message.followUserId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UserFollowsUserRequest {
+    return {
+      userId: isSet(object.userId) ? String(object.userId) : "",
+      followUserId: isSet(object.followUserId) ? String(object.followUserId) : "",
+    };
+  },
+
+  toJSON(message: UserFollowsUserRequest): unknown {
+    const obj: any = {};
+    message.userId !== undefined && (obj.userId = message.userId);
+    message.followUserId !== undefined && (obj.followUserId = message.followUserId);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<UserFollowsUserRequest>, I>>(object: I): UserFollowsUserRequest {
+    const message = createBaseUserFollowsUserRequest();
+    message.userId = object.userId ?? "";
+    message.followUserId = object.followUserId ?? "";
+    return message;
+  },
+};
+
+function createBaseUserFollowsUserResponse(): UserFollowsUserResponse {
+  return { status: false };
+}
+
+export const UserFollowsUserResponse = {
+  encode(message: UserFollowsUserResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.status === true) {
+      writer.uint32(8).bool(message.status);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserFollowsUserResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserFollowsUserResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.status = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UserFollowsUserResponse {
+    return { status: isSet(object.status) ? Boolean(object.status) : false };
+  },
+
+  toJSON(message: UserFollowsUserResponse): unknown {
+    const obj: any = {};
+    message.status !== undefined && (obj.status = message.status);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<UserFollowsUserResponse>, I>>(object: I): UserFollowsUserResponse {
+    const message = createBaseUserFollowsUserResponse();
+    message.status = object.status ?? false;
+    return message;
+  },
+};
+
 export interface FollowService {
   FollowUser(request: DeepPartial<FollowUserRequest>, metadata?: grpc.Metadata): Promise<FollowUserResponse>;
   Followers(request: DeepPartial<FollowersRequest>, metadata?: grpc.Metadata): Promise<FollowersResponse>;
+  UserFollowStats(
+    request: DeepPartial<UserFollowStatsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<UserFollowStatsResponse>;
+  UserFollowsUser(
+    request: DeepPartial<UserFollowsUserRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<UserFollowsUserResponse>;
 }
 
 export class FollowServiceClientImpl implements FollowService {
@@ -292,6 +531,8 @@ export class FollowServiceClientImpl implements FollowService {
     this.rpc = rpc;
     this.FollowUser = this.FollowUser.bind(this);
     this.Followers = this.Followers.bind(this);
+    this.UserFollowStats = this.UserFollowStats.bind(this);
+    this.UserFollowsUser = this.UserFollowsUser.bind(this);
   }
 
   FollowUser(request: DeepPartial<FollowUserRequest>, metadata?: grpc.Metadata): Promise<FollowUserResponse> {
@@ -300,6 +541,20 @@ export class FollowServiceClientImpl implements FollowService {
 
   Followers(request: DeepPartial<FollowersRequest>, metadata?: grpc.Metadata): Promise<FollowersResponse> {
     return this.rpc.unary(FollowServiceFollowersDesc, FollowersRequest.fromPartial(request), metadata);
+  }
+
+  UserFollowStats(
+    request: DeepPartial<UserFollowStatsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<UserFollowStatsResponse> {
+    return this.rpc.unary(FollowServiceUserFollowStatsDesc, UserFollowStatsRequest.fromPartial(request), metadata);
+  }
+
+  UserFollowsUser(
+    request: DeepPartial<UserFollowsUserRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<UserFollowsUserResponse> {
+    return this.rpc.unary(FollowServiceUserFollowsUserDesc, UserFollowsUserRequest.fromPartial(request), metadata);
   }
 }
 
@@ -341,6 +596,50 @@ export const FollowServiceFollowersDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...FollowersResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const FollowServiceUserFollowStatsDesc: UnaryMethodDefinitionish = {
+  methodName: "UserFollowStats",
+  service: FollowServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return UserFollowStatsRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...UserFollowStatsResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const FollowServiceUserFollowsUserDesc: UnaryMethodDefinitionish = {
+  methodName: "UserFollowsUser",
+  service: FollowServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return UserFollowsUserRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...UserFollowsUserResponse.decode(data),
         toObject() {
           return this;
         },
@@ -417,6 +716,25 @@ export class GrpcWebImpl {
   }
 }
 
+declare var self: any | undefined;
+declare var window: any | undefined;
+declare var global: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
+  throw "Unable to locate global object";
+})();
+
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
@@ -427,6 +745,18 @@ export type DeepPartial<T> = T extends Builtin ? T
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
+function longToNumber(long: Long): number {
+  if (long.gt(Number.MAX_SAFE_INTEGER)) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  return long.toNumber();
+}
+
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
+}
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;

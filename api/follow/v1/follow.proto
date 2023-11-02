@@ -6,6 +6,8 @@ option go_package = "./followpb";
 service FollowService {
   rpc FollowUser(FollowUserRequest) returns (FollowUserResponse);
   rpc Followers(FollowersRequest) returns (FollowersResponse);
+  rpc UserFollowStats(UserFollowStatsRequest) returns (UserFollowStatsResponse);
+  rpc UserFollowsUser(UserFollowsUserRequest) returns (UserFollowsUserResponse);
 }
 
 // Follow / Unfollow Action
@@ -31,3 +33,23 @@ message Follower {
   string user_id = 1;
 }
 // --
+
+// Followers stats
+message UserFollowStatsRequest {
+  string user_id = 1;
+}
+message UserFollowStatsResponse {
+  int64 followers = 1;
+  int64 following = 2;
+}
+// --
+
+// Does user follows user?
+message UserFollowsUserRequest {
+  string user_id = 1;
+  string follow_user_id = 2;
+}
+
+message UserFollowsUserResponse {
+  bool status = 1;
+}
