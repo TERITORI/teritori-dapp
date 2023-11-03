@@ -9,7 +9,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { BellIcon } from "react-native-heroicons/outline";
+import { BellAlertIcon, BellIcon } from "react-native-heroicons/outline";
 import { XMarkIcon } from "react-native-heroicons/solid";
 
 import { TOP_MENU_BUTTON_HEIGHT } from "./TopMenu";
@@ -31,7 +31,11 @@ import {
   primaryColor,
   secondaryColor,
 } from "../../utils/style/colors";
-import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
+import {
+  fontSemibold12,
+  fontSemibold14,
+  fontSemibold8,
+} from "../../utils/style/fonts";
 import { headerHeight, layout, topMenuWidth } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
@@ -43,6 +47,10 @@ export const NotificationDrawer: React.FC = () => {
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
 
   const dropdownRef = useRef<View>(null);
+  const selectedWallet = useSelectedWallet();
+  const notifications = useNotifications({
+    userId: selectedWallet?.userId,
+  });
 
   return (
     <View ref={dropdownRef}>
@@ -62,13 +70,49 @@ export const NotificationDrawer: React.FC = () => {
           }}
           height={TOP_MENU_BUTTON_HEIGHT}
         >
-          <BellIcon
-            color={isDropdownOpen(dropdownRef) ? primaryColor : secondaryColor}
-          />
+          {notifications && notifications.length > 0 ? (
+            <>
+              <View
+                style={{
+                  position: "absolute",
+                  top: 6,
+                  right: 4,
+                  borderRadius: 9999,
+                  width: 8,
+                  height: 8,
+                  backgroundColor: primaryColor,
+                }}
+              >
+                <BrandText
+                  style={[
+                    fontSemibold8,
+                    {
+                      position: "absolute",
+                      right: 2.3,
+                    },
+                  ]}
+                >
+                  {notifications.length > 9 ? "♾️" : notifications.length}
+                </BrandText>
+              </View>
+              <BellAlertIcon
+                color={
+                  isDropdownOpen(dropdownRef) ? primaryColor : secondaryColor
+                }
+              />
+            </>
+          ) : (
+            <BellIcon
+              color={
+                isDropdownOpen(dropdownRef) ? primaryColor : secondaryColor
+              }
+            />
+          )}
         </TertiaryBox>
       </TouchableOpacity>
 
       <NotificationList
+        notifications={notifications}
         style={[
           {
             position: "absolute",
@@ -82,14 +126,11 @@ export const NotificationDrawer: React.FC = () => {
   );
 };
 
-const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
-  style,
-}) => {
+const NotificationList: React.FC<{
+  style: StyleProp<ViewStyle>;
+  notifications: Notification[] | undefined;
+}> = ({ style, notifications }) => {
   const { height: windowHeight } = useWindowDimensions();
-  const selectedWallet = useSelectedWallet();
-  const notifications = useNotifications({
-    userId: selectedWallet?.userId,
-  });
 
   return (
     <TertiaryBox
