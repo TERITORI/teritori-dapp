@@ -35,13 +35,8 @@ export const AudioView: React.FC<{
   const selectedNetwork = useSelectedNetworkInfo();
   const userInfo = useNSUserInfo(authorId);
   const { isDAO } = useIsDAO(authorId);
-  const {
-    media,
-    isPlaying,
-    handlePlayPause,
-    loadAndPlaySoundsQueue,
-    playbackStatus,
-  } = useMediaPlayer();
+  const { media, handlePlayPause, loadAndPlaySoundsQueue, playbackStatus } =
+    useMediaPlayer();
   const isInMediaPlayer = useMemo(
     () => media?.postId === postId,
     [media?.postId, postId]
@@ -107,7 +102,9 @@ export const AudioView: React.FC<{
         activeOpacity={0.9}
         style={{
           backgroundColor:
-            isInMediaPlayer && isPlaying ? secondaryColor : neutral00,
+            isInMediaPlayer && playbackStatus?.isPlaying
+              ? secondaryColor
+              : neutral00,
           height: 40,
           width: 40,
           borderRadius: 30,
@@ -116,10 +113,16 @@ export const AudioView: React.FC<{
         }}
       >
         <SVG
-          source={isInMediaPlayer && isPlaying ? pauseSVG : playSVG}
+          source={
+            isInMediaPlayer && playbackStatus?.isPlaying ? pauseSVG : playSVG
+          }
           width={24}
           height={24}
-          color={isInMediaPlayer && isPlaying ? neutral00 : secondaryColor}
+          color={
+            isInMediaPlayer && playbackStatus?.isPlaying
+              ? neutral00
+              : secondaryColor
+          }
         />
       </TouchableOpacity>
 

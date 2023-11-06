@@ -27,7 +27,6 @@ export const MediaPlayerBarMobile: FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ style }) => {
   const {
-    isPlaying,
     handlePlayPause,
     media,
     isRandom,
@@ -96,7 +95,7 @@ export const MediaPlayerBarMobile: FC<{
           <CustomPressable onPress={handlePlayPause} disabled={!media}>
             <SVG
               source={
-                isPlaying && !playbackStatus?.didJustFinish
+                playbackStatus?.isPlaying && !playbackStatus?.didJustFinish
                   ? PauseIcon
                   : PlayIcon
               }
