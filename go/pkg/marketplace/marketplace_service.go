@@ -123,43 +123,40 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		return errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
 	}
 
-	switch network := network.(type) {
+	var collections []DBCollectionWithExtra
 
-	case *networks.CosmosNetwork:
-		var collections []DBCollectionWithExtra
+	where := ""
+	switch req.GetMintState() {
+	case marketplacepb.MintState_MINT_STATE_RUNNING:
+		where = "where c.paused = false and c.max_supply != -1 and (select count from count_by_collection where collection_id = c.id) != c.max_supply"
+	case marketplacepb.MintState_MINT_STATE_ENDED:
+		where = "where (select count from count_by_collection where collection_id = c.id) = c.max_supply"
+	}
+	orderDirection := ""
+	switch req.GetSortDirection() {
+	case marketplacepb.SortDirection_SORT_DIRECTION_UNSPECIFIED:
+		orderDirection = ""
+	case marketplacepb.SortDirection_SORT_DIRECTION_ASCENDING:
+		orderDirection = " ASC "
+	case marketplacepb.SortDirection_SORT_DIRECTION_DESCENDING:
+		orderDirection = " DESC "
+	}
+	orderSQL := ""
+	switch req.GetSort() {
+	case marketplacepb.Sort_SORT_PRICE:
+		where = where + "AND tc.denom = utori" // not mixed denoms allowed !
+		orderSQL = "tc.price" + orderDirection
+	case marketplacepb.Sort_SORT_VOLUME:
+		orderSQL = "case when total_volume is null then 1 else 0 end, total_volume " + orderDirection
+	case marketplacepb.Sort_SORT_CREATED_AT:
+		orderSQL = "tc.time " + orderDirection
+	case marketplacepb.Sort_SORT_VOLUME_USD:
+		orderSQL = "case when total_volume_usd is null then 1 else 0 end, total_volume_usd " + orderDirection
+	case marketplacepb.Sort_SORT_UNSPECIFIED:
+		orderSQL = "volume DESC"
+	}
 
-		where := ""
-		switch req.GetMintState() {
-		case marketplacepb.MintState_MINT_STATE_RUNNING:
-			where = "where c.paused = false and c.max_supply != -1 and (select count from count_by_collection where collection_id = c.id) != c.max_supply"
-		case marketplacepb.MintState_MINT_STATE_ENDED:
-			where = "where (select count from count_by_collection where collection_id = c.id) = c.max_supply"
-		}
-		orderDirection := ""
-		switch req.GetSortDirection() {
-		case marketplacepb.SortDirection_SORT_DIRECTION_UNSPECIFIED:
-			orderDirection = ""
-		case marketplacepb.SortDirection_SORT_DIRECTION_ASCENDING:
-			orderDirection = " ASC "
-		case marketplacepb.SortDirection_SORT_DIRECTION_DESCENDING:
-			orderDirection = " DESC "
-		}
-		orderSQL := ""
-		switch req.GetSort() {
-		case marketplacepb.Sort_SORT_PRICE:
-			where = where + "AND tc.denom = utori" // not mixed denoms allowed !
-			orderSQL = "tc.price" + orderDirection
-		case marketplacepb.Sort_SORT_VOLUME:
-			orderSQL = "case when total_volume is null then 1 else 0 end, total_volume " + orderDirection
-		case marketplacepb.Sort_SORT_CREATED_AT:
-			orderSQL = "tc.time " + orderDirection
-		case marketplacepb.Sort_SORT_VOLUME_USD:
-			orderSQL = "case when total_volume_usd is null then 1 else 0 end, total_volume_usd " + orderDirection
-		case marketplacepb.Sort_SORT_UNSPECIFIED:
-			orderSQL = "volume DESC"
-		}
-
-		err := s.conf.IndexerDB.Raw(fmt.Sprintf(`
+	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`
 			WITH count_by_collection AS (
 				SELECT count(1), collection_id FROM nfts GROUP BY nfts.collection_id
 			),
@@ -218,58 +215,43 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 			LIMIT ?
 			OFFSET ?
 		`, where, orderSQL), // order By here or it won't work
-			s.conf.Whitelist,
-			time.Now().AddDate(0, 0, -30),
-			time.Now().AddDate(0, 0, -30),
-			time.Now().AddDate(0, 0, -60),
-			limit,
-			offset,
-		).Scan(&collections).Error
-		if err != nil {
-			return errors.Wrap(err, "failed to query database")
-		}
-
-		for _, c := range collections {
-			if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: &marketplacepb.Collection{
-				Id:                  c.ID,
-				CollectionName:      c.Name,
-				Verified:            true,
-				ImageUri:            c.ImageURI,
-				MintAddress:         c.MintContractAddress,
-				NetworkId:           req.GetNetworkId(),
-				Volume:              c.Volume,
-				VolumeDenom:         c.Denom,
-				VolumeCompare:       c.VolumeCompare,
-				CreatorId:           string(network.UserID(c.CreatorAddress)),
-				SecondaryDuringMint: c.SecondaryDuringMint,
-				MintPrice:           c.Price,
-				Denom:               c.Denom,
-				FloorPrice:          c.FloorPrice,
-				TotalVolume:         c.TotalVolume,
-				NumTrades:           c.NumTrades,
-				NumOwners:           c.NumOwners,
-				MaxSupply:           c.MaxSupply,
-			}}); err != nil {
-				return errors.Wrap(err, "failed to send collection")
-			}
-		}
-
-		return nil
-
-	case *networks.EthereumNetwork:
-		collections, err := s.ethereumProvider.GetCollections(srv.Context(), networkID, req)
-		if err != nil {
-			return errors.Wrap(err, "failed to query database")
-		}
-		for i := range collections {
-			if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: &collections[i]}); err != nil {
-				return errors.Wrap(err, "failed to send collection")
-			}
-		}
-		return nil
+		s.conf.Whitelist,
+		time.Now().AddDate(0, 0, -30),
+		time.Now().AddDate(0, 0, -30),
+		time.Now().AddDate(0, 0, -60),
+		limit,
+		offset,
+	).Scan(&collections).Error
+	if err != nil {
+		return errors.Wrap(err, "failed to query database")
 	}
 
-	return fmt.Errorf("unsupported network kind '%s'", network.GetBase().Kind)
+	for _, c := range collections {
+		if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: &marketplacepb.Collection{
+			Id:                  c.ID,
+			CollectionName:      c.Name,
+			Verified:            true,
+			ImageUri:            c.ImageURI,
+			MintAddress:         c.MintContractAddress,
+			NetworkId:           req.GetNetworkId(),
+			Volume:              c.Volume,
+			VolumeDenom:         c.Denom,
+			VolumeCompare:       c.VolumeCompare,
+			CreatorId:           string(network.GetBase().UserID(c.CreatorAddress)),
+			SecondaryDuringMint: c.SecondaryDuringMint,
+			MintPrice:           c.Price,
+			Denom:               c.Denom,
+			FloorPrice:          c.FloorPrice,
+			TotalVolume:         c.TotalVolume,
+			NumTrades:           c.NumTrades,
+			NumOwners:           c.NumOwners,
+			MaxSupply:           c.MaxSupply,
+		}}); err != nil {
+			return errors.Wrap(err, "failed to send collection")
+		}
+	}
+
+	return nil
 }
 
 type NFTOwnerInfo struct {
