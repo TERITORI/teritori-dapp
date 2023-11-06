@@ -41,12 +41,15 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
   -o /app/build/ \
   ./go/cmd/evm-indexer
 
+RUN touch /app/build/.env
+
 # --------------------------------------------------------
 # Runner
 # --------------------------------------------------------
 FROM ${RUNNER_IMAGE}
 
 COPY --from=builder /app/build/evm-indexer /bin/evm-indexer
+COPY --from=builder /app/build/.env /app/.env
 
 ENV HOME /app
 WORKDIR $HOME
