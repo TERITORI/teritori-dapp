@@ -173,9 +173,12 @@ func main() {
 	}
 
 	// init/get height
-	dbApp := indexerdb.App{}
-	if err := db.Where(indexerdb.App{IndexerMode: indexerMode}).FirstOrCreate(&dbApp).Error; err != nil {
-		panic(errors.Wrap(err, "failed to get db app"))
+	dbApp := indexerdb.App{
+		IndexerMode: indexerMode,
+		NetworkID:   network.ID,
+	}
+	if err := db.Where(indexerdb.App{IndexerMode: indexerMode, NetworkID: network.ID}).FirstOrCreate(&dbApp).Error; err != nil {
+		panic(errors.Wrap(err, "failed to get or create db app"))
 	}
 
 	lastProcessedHeight := dbApp.Height
