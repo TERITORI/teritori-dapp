@@ -28,8 +28,8 @@ func NewLoader(indexerDB *gorm.DB, logger *zap.Logger) *Loader {
 // we can implement that in the future if needed, for now, when changing module we have to re-run indexer
 // Or maybe change the module hash manually ?
 func (l *Loader) GetOrCreateCursor(cursorID string, networkID string, indexerMode indexerdb.IndexerMode) (*sink.Cursor, error) {
-	c := indexerdb.Cursors{ID: cursorID, IndexerMode: indexerMode, Network: networkID}
-	err := l.indexerDB.First(&c).Error
+	c := indexerdb.Cursors{}
+	err := l.indexerDB.Where("id = ? AND indexer_mode = ? AND network = ?", cursorID, indexerMode, networkID).First(&c).Error
 
 	// If no error then return the cursor
 	if err == nil {
@@ -67,13 +67,8 @@ func (l *Loader) WriteCursor(sinkCursor *sink.Cursor, cursorID string, networkID
 	return nil
 }
 
-func (l *Loader) UpdateCursor(sinkCursor *sink.Cursor, cursorID string, networkID string) error {
-	cursor := indexerdb.Cursors{
-		ID:      cursorID,
-		Network: networkID,
-	}
-
-	err := l.dbTransaction.Model(&cursor).Updates(indexerdb.Cursors{
+func (l *Loader) UpdateCursor(sinkCursor *sink.Cursor, cursorID string, networkID string, indexerMode indexerdb.IndexerMode) error {
+	err := l.dbTransaction.Model(&indexerdb.Cursors{}).Where("id = ? AND indexer_mode = ? AND network = ?", cursorID, indexerMode, networkID).Updates(indexerdb.Cursors{
 		Cursor:   sinkCursor.String(),
 		BlockNum: sinkCursor.Block().Num(),
 		BlockId:  sinkCursor.Block().ID(),
@@ -86,8 +81,8 @@ func (l *Loader) UpdateCursor(sinkCursor *sink.Cursor, cursorID string, networkI
 	return nil
 }
 
-func (l *Loader) ApplyChanges(sinkCursor *sink.Cursor, cursorID string, networkID string) (err error) {
-	if err := l.UpdateCursor(sinkCursor, cursorID, networkID); err != nil {
+func (l *Loader) ApplyChanges(sinkCursor *sink.Cursor, cursorID string, networkID string, indexerMode indexerdb.IndexerMode) (err error) {
+	if err := l.UpdateCursor(sinkCursor, cursorID, networkID, indexerMode); err != nil {
 		return errors.Wrap(err, "failed to update cursor when apply changes")
 	}
 

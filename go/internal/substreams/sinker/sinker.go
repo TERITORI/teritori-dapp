@@ -124,7 +124,7 @@ func (s *PostgresSinker) HandleBlockScopedData(ctx context.Context, data *pbsubs
 
 	s.lastCursor = cursor
 	if cursor.Block().Num()%s.batchBlockModulo(data, isLive) == 0 {
-		if err := s.config.Loader.ApplyChanges(cursor, s.OutputModuleHash(), s.config.Network.ID); err != nil {
+		if err := s.config.Loader.ApplyChanges(cursor, s.OutputModuleHash(), s.config.Network.ID, s.config.IndexerMode); err != nil {
 			return fmt.Errorf("failed to flush: %w", err)
 		}
 	}
