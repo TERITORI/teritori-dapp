@@ -18,6 +18,7 @@ import FullScreenIcon from "../../../assets/icons/video-player/full-screen.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
+import { useMousePosition } from "../../hooks/useMousePosition";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
@@ -43,6 +44,7 @@ interface MediaPlayerVideoProps {
 }
 
 const CONTROLS_PADDING = layout.spacing_x2;
+const CONTROLS_HEIGHT = 68;
 // expo-av Video component plugged to MediaPlayerContext
 export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   videoMetaInfo,
@@ -52,12 +54,11 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   resizeMode,
   style,
 }) => {
+  const { setToastError } = useFeedbacks();
   const selectedNetwork = useSelectedNetworkInfo();
   const userInfo = useNSUserInfo(authorId);
-  const [width, setWidth] = useState(0);
-  const [localStatus, setLocalStatus] = useState<AVPlaybackStatusSuccess>();
   const { isDAO } = useIsDAO(authorId);
-  const { setToastError } = useFeedbacks();
+
   const {
     media,
     onVideoStatusUpdate,
@@ -67,11 +68,24 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
     firstPlayVideo,
     triggerVideoFullscreen,
   } = useMediaPlayer();
+  const [localStatus, setLocalStatus] = useState<AVPlaybackStatusSuccess>();
   const isInMediaPlayer = useMemo(
     () => media?.fileUrl === videoMetaInfo.url,
     [videoMetaInfo.url, media?.fileUrl]
   );
+  const statusToUse = useMemo(
+    () => (isInMediaPlayer ? playbackStatus : localStatus),
+    [isInMediaPlayer, playbackStatus, localStatus]
+  );
+  const containerRef = useRef<View>(null);
   const videoRef = useRef<Video>(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const [extraPressCount, setExtraPressCount] = useState(0);
+  const [pressTimer, setPressTimer] = useState<NodeJS.Timeout>();
+  const [fullScreenUpdate, setFullScreenUpdate] =
+    useState<VideoFullscreenUpdate>();
+  const [isControlsShown, setControlsShown] = useState(false);
+
   const mediaToSet: Media = {
     imageUrl:
       videoMetaInfo.image ||
@@ -86,10 +100,6 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
     videoId: videoId || "",
     isVideo: true,
   };
-  const [extraPressCount, setExtraPressCount] = useState(0);
-  const [pressTimer, setPressTimer] = useState<NodeJS.Timeout>();
-  const [fullScreenUpdate, setFullScreenUpdate] =
-    useState<VideoFullscreenUpdate>();
 
   const onPressPlayPause = async () => {
     if (isInMediaPlayer || !videoRef.current) {
@@ -143,16 +153,38 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
     }
   };
 
+  // Handle show/hide controls by hovering the video area with mouse
+  const mousePosition = useMousePosition();
+  containerRef.current?.measure((ox, oy, width, height, px, py) => {
+    if (
+      (mousePosition.x >= px &&
+        mousePosition.x <= px + width &&
+        mousePosition.y >= py &&
+        mousePosition.y <= py + height) ||
+      !statusToUse?.isPlaying
+    ) {
+      setControlsShown(true);
+    } else {
+      setControlsShown(false);
+    }
+  });
+
   return (
     <View
+      ref={containerRef}
       style={{ width: "100%" }}
-      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
+      onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
     >
       {/*---- expo-av Video */}
-      <CustomPressable onPress={onPressVideoWrapper}>
+      <CustomPressable
+        onPress={onPressVideoWrapper}
+        style={{
+          zIndex: 0,
+        }}
+      >
         <Video
           ref={videoRef}
-          status={isInMediaPlayer ? playbackStatus : localStatus}
+          status={statusToUse}
           onFullscreenUpdate={(e) => setFullScreenUpdate(e.fullscreenUpdate)}
           onPlaybackStatusUpdate={onLocalPlaybackStatusUpdate}
           useNativeControls={false}
@@ -166,122 +198,135 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
 
       {/*TODO: Hide controls and shadow if pause and video not hovered*/}
 
-      {/* Shadow */}
-      <LinearGradient
-        start={{ x: 0, y: 1 }}
-        end={{ x: 0, y: 0.5 }}
-        colors={[
-          "rgba(0,0,0,1)",
-          "rgba(0,0,0,.8)",
-          "rgba(0,0,0,.2)",
-          "rgba(0,0,0,0)",
-        ]}
+      <View
         style={{
+          zIndex: 2,
           position: "absolute",
-          bottom: 0,
           left: 0,
-          height: "20%",
-          width: "100%",
-          borderBottomRightRadius: 8,
-          borderBottomLeftRadius: 8,
+          bottom: 0,
+          width: containerWidth,
+          height: CONTROLS_HEIGHT,
         }}
       />
 
-      {/*---- Custom controls*/}
-      <View
-        style={{
-          zIndex: 1,
-          position: "absolute",
-          left: 0,
-          bottom: 0,
-          paddingHorizontal: CONTROLS_PADDING,
-          width,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <CustomPressable
-              style={{ alignItems: "center", justifyContent: "center" }}
-              onPress={onPressPlayPause}
-            >
-              <SVG
-                source={
-                  (isInMediaPlayer && playbackStatus?.isPlaying) ||
-                  (!isInMediaPlayer && localStatus?.isPlaying)
-                    ? PauseIcon
-                    : PlayIcon
-                }
-                height={24}
-                width={24}
-                color={secondaryColor}
-              />
-            </CustomPressable>
-
-            <SpacerRow size={1.5} />
-            <CustomPressable
-              style={{ alignItems: "center", justifyContent: "center" }}
-              onPress={nextMedia}
-            >
-              <SVG
-                source={NextIcon}
-                height={20}
-                width={20}
-                color={secondaryColor}
-              />
-            </CustomPressable>
-
-            <SpacerRow size={0.5} />
-
-            {/*FIXME: Volume badly sync*/}
-            <VolumeSlider
-              useAltStyle
-              playbackStatus={isInMediaPlayer ? playbackStatus : localStatus}
+      {
+        // isControlsShown
+        isControlsShown && (
+          <>
+            {/* Shadow */}
+            <LinearGradient
+              start={{ x: 0, y: 1 }}
+              end={{ x: 0, y: 0.5 }}
+              colors={[
+                "rgba(0,0,0,1)",
+                "rgba(0,0,0,.9)",
+                "rgba(0,0,0,.3)",
+                "rgba(0,0,0,0)",
+              ]}
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                height: "20%",
+                width: "100%",
+                borderBottomRightRadius: 8,
+                borderBottomLeftRadius: 8,
+                zIndex: 1,
+              }}
             />
-            <SpacerRow size={1.5} />
 
-            {/* Display time */}
-            <BrandText style={fontSemibold13}>
-              {`${prettyMediaDuration(
-                isInMediaPlayer
-                  ? playbackStatus?.positionMillis
-                  : localStatus?.positionMillis
-              )} / ${prettyMediaDuration(
-                isInMediaPlayer
-                  ? playbackStatus?.durationMillis
-                  : localStatus?.durationMillis
-              )}`}
-            </BrandText>
-          </View>
+            {/*---- Custom controls*/}
+            <View
+              style={{
+                zIndex: 2,
+                position: "absolute",
+                left: 0,
+                bottom: 0,
+                paddingHorizontal: CONTROLS_PADDING,
+                width: containerWidth,
+                height: CONTROLS_HEIGHT,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <CustomPressable
+                    style={{ alignItems: "center", justifyContent: "center" }}
+                    onPress={onPressPlayPause}
+                  >
+                    <SVG
+                      source={statusToUse?.isPlaying ? PauseIcon : PlayIcon}
+                      height={24}
+                      width={24}
+                      color={secondaryColor}
+                    />
+                  </CustomPressable>
 
-          <CustomPressable
-            onPress={() => {
-              if (isInMediaPlayer) triggerVideoFullscreen();
-              else videoRef.current?._setFullscreen(true);
-            }}
-          >
-            <SVG
-              source={FullScreenIcon}
-              width={20}
-              height={20}
-              color={secondaryColor}
-            />
-          </CustomPressable>
-        </View>
+                  <SpacerRow size={1.5} />
+                  <CustomPressable
+                    style={{ alignItems: "center", justifyContent: "center" }}
+                    onPress={nextMedia}
+                  >
+                    <SVG
+                      source={NextIcon}
+                      height={20}
+                      width={20}
+                      color={secondaryColor}
+                    />
+                  </CustomPressable>
 
-        <SpacerColumn size={1} />
-        <TimerSlider
-          width={width - CONTROLS_PADDING * 2}
-          hideDuration
-          playbackStatus={isInMediaPlayer ? playbackStatus : localStatus}
-        />
-        <SpacerColumn size={2.5} />
-      </View>
+                  <SpacerRow size={0.5} />
+
+                  {/*FIXME: Volume badly sync*/}
+                  <VolumeSlider useAltStyle playbackStatus={statusToUse} />
+                  <SpacerRow size={1.5} />
+
+                  {/* Display time */}
+                  <BrandText style={fontSemibold13}>
+                    {`${prettyMediaDuration(
+                      statusToUse?.positionMillis
+                      // isInMediaPlayer
+                      //   ? playbackStatus?.positionMillis
+                      //   : localStatus?.positionMillis
+                    )} / ${prettyMediaDuration(statusToUse?.durationMillis)}`}
+                    {/*  isInMediaPlayer*/}
+                    {/*    ? playbackStatus?.durationMillis*/}
+                    {/*    : localStatus?.durationMillis*/}
+                    {/*)}`}*/}
+                  </BrandText>
+                </View>
+
+                <CustomPressable
+                  onPress={() => {
+                    if (isInMediaPlayer) triggerVideoFullscreen();
+                    else videoRef.current?._setFullscreen(true);
+                  }}
+                >
+                  <SVG
+                    source={FullScreenIcon}
+                    width={20}
+                    height={20}
+                    color={secondaryColor}
+                  />
+                </CustomPressable>
+              </View>
+
+              <SpacerColumn size={1} />
+              <TimerSlider
+                width={containerWidth - CONTROLS_PADDING * 2}
+                hideDuration
+                playbackStatus={statusToUse}
+              />
+              <SpacerColumn size={2.5} />
+            </View>
+          </>
+        )
+      }
     </View>
   );
 };

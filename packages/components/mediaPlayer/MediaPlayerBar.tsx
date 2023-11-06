@@ -32,7 +32,6 @@ export const MediaPlayerBar: FC<{
   const { contentWidth } = useMaxResolution();
   const isMobile = useIsMobile();
   const {
-    isPlaying,
     handlePlayPause,
     media,
     isRandom,
@@ -113,7 +112,9 @@ export const MediaPlayerBar: FC<{
         <CustomPressable onPress={handlePlayPause} disabled={!media}>
           <SVG
             source={
-              isPlaying && !playbackStatus?.didJustFinish ? PauseIcon : PlayIcon
+              playbackStatus?.isPlaying && !playbackStatus?.didJustFinish
+                ? PauseIcon
+                : PlayIcon
             }
             height={28}
             width={28}

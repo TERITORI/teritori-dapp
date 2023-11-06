@@ -25,7 +25,6 @@ import { Media } from "../utils/types/mediaPlayer";
 
 interface DefaultValue {
   handlePlayPause: () => Promise<void>;
-  isPlaying: boolean;
   media?: Media;
   isRandom: boolean;
   setIsRandom: Dispatch<SetStateAction<boolean>>;
@@ -35,7 +34,6 @@ interface DefaultValue {
     queue: Media[],
     mediaToStart?: Media
   ) => Promise<void>;
-  removeAv: () => Promise<void>;
   canNext: boolean;
   canPrev: boolean;
   nextMedia: () => Promise<void>;
@@ -51,14 +49,12 @@ interface DefaultValue {
 
 const defaultValue: DefaultValue = {
   handlePlayPause: async () => {},
-  isPlaying: false,
   media: undefined,
   isRandom: false,
   setIsRandom: () => {},
   isMediaPlayerOpen: false,
   setIsMediaPlayerOpen: () => {},
   loadAndPlaySoundsQueue: async () => {},
-  removeAv: async () => {},
   canNext: false,
   canPrev: false,
   nextMedia: async () => {},
@@ -84,9 +80,6 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
   );
   const [queue, setQueue] = useState<Media[]>([]);
   const [randomQueue, setRandomQueue] = useState<Media[]>([]);
-
-  // TODO: Remove isPLaying ? Since we have playbackStatus.isPlaying. If playbackStatus is correctly set
-  const [isPlaying, setIsPlaying] = useState(defaultValue.isPlaying);
 
   const [media, setMedia] = useState(defaultValue.media);
   // ------
@@ -119,7 +112,6 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
               setPlaybackStatus(status);
 
               if (status.didJustFinish && !status?.isLooping) {
-                setIsPlaying(false);
                 // ------- Autoplay queue
                 const queueCurrentIndex = queue.indexOf(media);
                 if (
@@ -149,7 +141,6 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
         // ------- Autoplay createdSound
         await av?.unloadAsync();
         await createdSound?.playAsync();
-        setIsPlaying(true);
         setIsMediaPlayerOpen(true);
         // -------
       } catch (e) {
@@ -175,13 +166,11 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
     await av?.unloadAsync();
     setAv(video);
     await video.playAsync();
-    setIsPlaying(true);
     setIsMediaPlayerOpen(true);
   };
 
   const onVideoStatusUpdate = async (status: AVPlaybackStatusSuccess) => {
     setPlaybackStatus(status);
-    setIsPlaying(status.isPlaying);
   };
 
   // ============== Only used in UI
@@ -224,10 +213,8 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
     }
     if (playbackStatus.isPlaying) {
       await av.pauseAsync();
-      setIsPlaying(false);
     } else {
       await av.playAsync();
-      setIsPlaying(true);
     }
   };
 
@@ -257,14 +244,6 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
     await loadAndPlaySound(queueToUse[queueCurrentIndex - 1], queueToUse);
   };
 
-  // Force reset MediaPlayer
-  const removeAv = async () => {
-    if (!av) return;
-    setIsPlaying(false);
-    setMedia(undefined);
-    await av.unloadAsync();
-  };
-
   const onChangeTimerPosition = (value: number) => av?.setPositionAsync(value);
 
   const onChangeVolume = (value: number) =>
@@ -278,14 +257,12 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
     <MediaPlayerContext.Provider
       value={{
         handlePlayPause,
-        isPlaying,
         media,
         isRandom,
         setIsRandom,
         isMediaPlayerOpen,
         setIsMediaPlayerOpen,
         loadAndPlaySoundsQueue,
-        removeAv,
         canNext,
         canPrev,
         nextMedia,
