@@ -305,20 +305,20 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 
 	// complete buy quest
 	if err := h.db.Save(&indexerdb.QuestCompletion{
-		UserID:    buyerID,
-		QuestID:   "buy_nft",
-		Completed: true,
-		NetworkID: collection.NetworkID,
+		UserID:         buyerID,
+		QuestID:        "buy_nft",
+		Completed:      true,
+		QuestNetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save buy quest completion")
 	}
 
 	// complete sell quest
 	if err := h.db.Save(&indexerdb.QuestCompletion{
-		UserID:    sellerID,
-		QuestID:   "sell_nft",
-		Completed: true,
-		NetworkID: collection.NetworkID,
+		UserID:         sellerID,
+		QuestID:        "sell_nft",
+		Completed:      true,
+		QuestNetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save sell quest completion")
 	}
@@ -408,10 +408,10 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 
 	// complete quest
 	if err := h.db.Save(&indexerdb.QuestCompletion{
-		UserID:    sellerID,
-		QuestID:   "list_nft",
-		Completed: true,
-		NetworkID: collection.NetworkID,
+		UserID:         sellerID,
+		QuestID:        "list_nft",
+		Completed:      true,
+		QuestNetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save quest completion")
 	}

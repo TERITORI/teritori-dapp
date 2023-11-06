@@ -147,10 +147,10 @@ func (u *IndexerAction) ListNFT(
 
 	// complete quest
 	if err := u.dbTransaction.Save(&indexerdb.QuestCompletion{
-		UserID:    sellerID,
-		QuestID:   "list_nft",
-		Completed: true,
-		NetworkID: collection.NetworkID,
+		UserID:         sellerID,
+		QuestID:        "list_nft",
+		Completed:      true,
+		QuestNetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save quest completion")
 	}
@@ -239,20 +239,20 @@ func (u *IndexerAction) BuyNFT(
 
 	// complete buy quest
 	if err := u.dbTransaction.Save(&indexerdb.QuestCompletion{
-		UserID:    buyerID,
-		QuestID:   "buy_nft",
-		Completed: true,
-		NetworkID: collection.NetworkID,
+		UserID:         buyerID,
+		QuestID:        "buy_nft",
+		Completed:      true,
+		QuestNetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save buy quest completion")
 	}
 
 	// complete sell quest
 	if err := u.dbTransaction.Save(&indexerdb.QuestCompletion{
-		UserID:    sellerID,
-		QuestID:   "sell_nft",
-		Completed: true,
-		NetworkID: collection.NetworkID,
+		UserID:         sellerID,
+		QuestID:        "sell_nft",
+		Completed:      true,
+		QuestNetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save sell quest completion")
 	}

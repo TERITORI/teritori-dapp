@@ -132,10 +132,10 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 
 	// complete quest
 	if err := h.db.Save(&indexerdb.QuestCompletion{
-		UserID:    ownerId,
-		QuestID:   "book_tns",
-		Completed: true,
-		NetworkID: h.config.Network.ID,
+		UserID:         ownerId,
+		QuestID:        "book_tns",
+		Completed:      true,
+		QuestNetworkID: h.config.Network.ID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save quest completion")
 	}

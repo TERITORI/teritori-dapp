@@ -220,10 +220,10 @@ func (h *Handler) handleExecuteTipPost(e *Message, execMsg *wasmtypes.MsgExecute
 
 	// complete social_feed_tip_content_creator quest
 	if err := h.db.Save(&indexerdb.QuestCompletion{
-		UserID:    h.config.Network.UserID(execMsg.Sender),
-		QuestID:   "social_feed_tip_content_creator",
-		Completed: true,
-		NetworkID: h.config.Network.ID,
+		UserID:         h.config.Network.UserID(execMsg.Sender),
+		QuestID:        "social_feed_tip_content_creator",
+		Completed:      true,
+		QuestNetworkID: h.config.Network.ID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save social_feed_tip_content_creator quest completion")
 	}
@@ -256,10 +256,10 @@ func (h *Handler) handleQuests(
 
 	if questId != "unknown" {
 		if err := h.db.Save(&indexerdb.QuestCompletion{
-			UserID:    h.config.Network.UserID(execMsg.Sender),
-			QuestID:   questId,
-			Completed: true,
-			NetworkID: h.config.Network.ID,
+			UserID:         h.config.Network.UserID(execMsg.Sender),
+			QuestID:        questId,
+			Completed:      true,
+			QuestNetworkID: h.config.Network.ID,
 		}).Error; err != nil {
 			return errors.Wrap(err, "failed to save quest completion")
 		}

@@ -10,10 +10,10 @@ type Quest struct {
 }
 
 type QuestCompletion struct {
-	QuestID   string          `gorm:"primaryKey"`
-	UserID    networks.UserID `gorm:"primaryKey"`
-	NetworkID string          `gorm:"primaryKey"`
+	QuestID        string `gorm:"primaryKey"`
+	QuestNetworkID string `gorm:"primaryKey"`
+	Quest          *Quest
 
-	Quest     *Quest
+	UserID    networks.UserID `gorm:"primaryKey"`
 	Completed bool
 }
