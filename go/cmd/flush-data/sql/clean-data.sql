@@ -22,4 +22,4 @@ DELETE FROM cursors WHERE network = '<networkID>' AND indexer_mode='<indexerMode
 DELETE FROM apps WHERE network_id = '<networkID>' AND indexer_mode='<indexerMode>';
 -- Quests
 DELETE FROM quest_completions WHERE network_id = '<networkID>';
-DELETE FROM quests WHERE network_id = '<networkID>';
+DELETE FROM quests WHERE quest_network_id = '<networkID>';
