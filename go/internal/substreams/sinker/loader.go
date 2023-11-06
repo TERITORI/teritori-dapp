@@ -28,7 +28,7 @@ func NewLoader(indexerDB *gorm.DB, logger *zap.Logger) *Loader {
 // we can implement that in the future if needed, for now, when changing module we have to re-run indexer
 // Or maybe change the module hash manually ?
 func (l *Loader) GetOrCreateCursor(cursorID string, networkID string, indexerMode indexerdb.IndexerMode) (*sink.Cursor, error) {
-	c := indexerdb.Cursors{ID: cursorID, IndexerMode: indexerMode}
+	c := indexerdb.Cursors{ID: cursorID, IndexerMode: indexerMode, Network: networkID}
 	err := l.indexerDB.First(&c).Error
 
 	// If no error then return the cursor
