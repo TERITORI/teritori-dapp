@@ -8,6 +8,7 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+	"gorm.io/gorm/clause"
 )
 
 type Reaction struct {
@@ -132,7 +133,9 @@ func (h *Handler) handleExecuteReactPost(e *Message, execMsg *wasmtypes.MsgExecu
 	if err := h.db.Save(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to update reactions")
 	}
-	createReactionNotification(&post, h)
+	if err := createReactionNotification(&post, h); err != nil {
+		return errors.Wrap(err, "failed to create reaction notification")
+	}
 
 	return nil
 }
@@ -193,7 +196,9 @@ func (h *Handler) createPost(
 
 	// is comment
 	if createPostMsg.ParentPostIdentifier != "" {
-		createCommentNotification(&post, h.config.Network.UserID(execMsg.Sender), h)
+		if err := createCommentNotification(&post, h.config.Network.UserID(execMsg.Sender), h); err != nil {
+			return errors.Wrap(err, "failed to create comment notification")
+		}
 	}
 
 	if err != nil {
@@ -276,11 +281,11 @@ func (h *Handler) handleQuests(
 	return nil
 }
 
-func createCommentNotification(post *indexerdb.Post, userId networks.UserID, h *Handler) {
-
-	query := h.db
-	var parentPost *indexerdb.Post
-	query.Where("identifier = ?", post.ParentPostIdentifier).First(&parentPost)
+func createCommentNotification(post *indexerdb.Post, userId networks.UserID, h *Handler) error {
+	var parentPost indexerdb.Post
+	if err := h.db.Where("identifier = ?", post.ParentPostIdentifier).First(&parentPost).Error; err != nil {
+		return errors.Wrap(err, "failed to query for parent post")
+	}
 
 	if parentPost.AuthorId != userId { // don't notify on my own parentPosts
 		notification := indexerdb.Notification{
@@ -291,26 +296,45 @@ func createCommentNotification(post *indexerdb.Post, userId networks.UserID, h *
 			Category:  "comment",
 			CreatedAt: parentPost.CreatedAt,
 		}
-		h.db.Create(&notification)
-
+		if err := h.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&notification).Error; err != nil {
+			return errors.Wrap(err, "failed to create notification")
+		}
 	}
+
+	return nil
 }
 
-func createReactionNotification(post *indexerdb.Post, h *Handler) {
+func createReactionNotification(post *indexerdb.Post, h *Handler) error {
 	userReactions := post.UserReactions
-	for emoji, users := range userReactions {
+	for emoji, jb := range userReactions {
+		var users []networks.UserID
+		var ok bool
 
-		for _, user := range users.([]interface{}) {
+		users, ok = jb.([]networks.UserID)
+		if !ok {
+			iuser, ok := jb.([]interface{})
+			if !ok {
+				return errors.New("failed to case jsonb users")
+			}
+			users = make([]networks.UserID, 0)
+			for _, user := range iuser {
+				users = append(users, networks.UserID(user.(string)))
+			}
+		}
+
+		for _, user := range users {
 			notification := indexerdb.Notification{
 				UserId:    post.AuthorId,
-				TriggerBy: networks.UserID(user.(string)),
+				TriggerBy: user,
 				Body:      emoji,
 				Action:    post.Identifier,
 				Category:  "reaction",
 				CreatedAt: post.CreatedAt,
 			}
-			h.db.Create(&notification)
+			if err := h.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&notification).Error; err != nil {
+				return errors.Wrap(err, "failed to create notification")
+			}
 		}
-
 	}
+	return nil
 }
