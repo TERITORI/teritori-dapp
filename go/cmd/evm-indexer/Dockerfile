@@ -53,6 +53,4 @@ WORKDIR $HOME
 COPY networks.json $HOME/networks.json
 COPY ./go/internal/substreams /app/go/internal/substreams
 
-RUN touch .env
-
 ENTRYPOINT ["evm-indexer"]
