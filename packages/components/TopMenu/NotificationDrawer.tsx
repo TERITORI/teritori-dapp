@@ -9,7 +9,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { BellIcon } from "react-native-heroicons/outline";
+import { BellAlertIcon, BellIcon } from "react-native-heroicons/outline";
 import { XMarkIcon } from "react-native-heroicons/solid";
 
 import { TOP_MENU_BUTTON_HEIGHT } from "./TopMenu";
@@ -22,9 +22,8 @@ import { useDropdowns } from "../../context/DropdownsProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useNotifications } from "../../hooks/useNotifications";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { parseNetworkObjectId } from "../../networks";
+import { parseUserId } from "../../networks";
 import { mustGetNotificationClient } from "../../utils/backend";
-import { prettyPrice } from "../../utils/coins";
 import {
   neutral00,
   neutral33,
@@ -32,18 +31,26 @@ import {
   primaryColor,
   secondaryColor,
 } from "../../utils/style/colors";
-import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
+import {
+  fontSemibold12,
+  fontSemibold14,
+  fontSemibold8,
+} from "../../utils/style/fonts";
 import { headerHeight, layout, topMenuWidth } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
-import { OmniLink, OmniLinkToType } from "../OmniLink";
+import { OmniLink } from "../OmniLink";
 import { UserNameInline } from "../UserNameInline";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const NotificationDrawer: React.FC = () => {
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
-
   const dropdownRef = useRef<View>(null);
+  const selectedWallet = useSelectedWallet();
+  const notifications = useNotifications({
+    userId: selectedWallet?.userId,
+  });
+
 
   return (
     <View ref={dropdownRef}>
@@ -63,13 +70,51 @@ export const NotificationDrawer: React.FC = () => {
           }}
           height={TOP_MENU_BUTTON_HEIGHT}
         >
-          <BellIcon
-            color={isDropdownOpen(dropdownRef) ? primaryColor : secondaryColor}
-          />
+          {notifications && notifications.length > 0 ? (
+            <>
+              <View
+                style={{
+                  position: "absolute",
+                  top: 6,
+                  right: 4,
+                  borderRadius: 9999,
+                  width: 8,
+                  height: 8,
+                  backgroundColor: primaryColor,
+                }}
+              >
+                <BrandText
+                  style={[
+                    fontSemibold8,
+                    {
+                      position: "absolute",
+                      right: 2.3,
+                    },
+                  ]}
+                >
+                  {notifications.length > 9 ? "♾️" : notifications.length}
+                </BrandText>
+              </View>
+              <BellAlertIcon
+                color={
+                  isDropdownOpen(dropdownRef) ? primaryColor : secondaryColor
+                }
+              />
+            </>
+          ) : (
+            <BellIcon
+              color={
+                isDropdownOpen(dropdownRef) ? primaryColor : secondaryColor
+              }
+            />
+          )}
+
         </TertiaryBox>
       </TouchableOpacity>
 
       <NotificationList
+        notifications={notifications}
+
         style={[
           {
             position: "absolute",
@@ -83,14 +128,12 @@ export const NotificationDrawer: React.FC = () => {
   );
 };
 
-const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
-  style,
-}) => {
+
+const NotificationList: React.FC<{
+  style: StyleProp<ViewStyle>;
+  notifications: Notification[] | undefined;
+}> = ({ style, notifications }) => {
   const { height: windowHeight } = useWindowDimensions();
-  const selectedWallet = useSelectedWallet();
-  const notifications = useNotifications({
-    userId: selectedWallet?.userId,
-  });
 
   return (
     <TertiaryBox
@@ -115,10 +158,7 @@ const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
               item={item}
             />
           )}
-          ListHeaderComponent={
-            // @ts-ignore
-            notifications?.length > 0 ? <Controls /> : null
-          }
+          ListHeaderComponent={notifications?.length ? <Controls /> : null}
           ListEmptyComponent={<NoNotifications />}
         />
       </ScrollView>
@@ -134,21 +174,20 @@ const DismissNotificationButton: React.FC<{
 
   return (
     <TouchableOpacity
-      onPress={() => {
+      onPress={async () => {
         setVisible(false);
-        clearNotification({
+        await clearNotification({
           userId: selectedWallet?.userId,
           notificationId: id,
         });
       }}
     >
       <XMarkIcon
-        // @ts-ignore
         style={{
           justifyContent: "flex-end",
           alignSelf: "flex-end",
-          fill: secondaryColor,
         }}
+        fill={secondaryColor}
       />
     </TouchableOpacity>
   );
@@ -192,7 +231,12 @@ const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
         </View>
 
         <View style={{ flex: 4, marginHorizontal: layout.spacing_x1 }}>
-          <OmniLink to={getOmniLink(item)}>
+          <OmniLink
+            to={{
+              screen: "FeedPostView",
+              params: { id: item.action },
+            }}
+          >
             <View>
               <BrandText style={fontSemibold14}>
                 {useBuildBodyText(item)}
@@ -264,8 +308,8 @@ const Controls: React.FC = () => {
         style={{
           alignSelf: "flex-end",
         }}
-        onPress={() => {
-          clearAllNotifications({
+        onPress={async () => {
+          await clearAllNotifications({
             userId: selectedWallet?.userId,
           });
         }}
@@ -352,30 +396,25 @@ const getPrettyPrice = (item: Notification): string => {
   return prettyPrice(values[0], values[1], values[2]);
 };
 
-const clearAllNotifications = (req: Partial<NotificationsRequest>) => {
-  (async () => {
-    const networkId = parseNetworkObjectId(req?.userId);
+const clearAllNotifications = async (req: Partial<NotificationsRequest>) => {
+  const [network] = parseUserId(req?.userId);
 
-    if (!networkId) {
-      return [];
-    }
+  if (!network) {
+    return false;
+  }
 
-    const notificationService = mustGetNotificationClient(networkId[0]?.id);
-    const { ok } = await notificationService.DismissAllNotifications(req);
-    return ok;
-  })();
+  const notificationService = mustGetNotificationClient(network.id);
+  await notificationService.DismissAllNotifications(req);
 };
 
-const clearNotification = (req: Partial<DismissNotificationRequest>) => {
-  (async () => {
-    const networkId = parseNetworkObjectId(req?.userId);
+const clearNotification = async (req: Partial<DismissNotificationRequest>) => {
+  const [network] = parseUserId(req?.userId);
 
-    if (!networkId) {
-      return [];
-    }
+  if (!network) {
+    return false;
+  }
 
-    const notificationService = mustGetNotificationClient(networkId[0]?.id);
-    const { ok } = await notificationService.DismissNotification(req);
-    return ok;
-  })();
+  const notificationService = mustGetNotificationClient(network.id);
+  await notificationService.DismissNotification(req);
+
 };

@@ -13,7 +13,7 @@ export interface DismissNotificationRequest {
 }
 
 export interface DismissNotificationResponse {
-  ok: boolean;
+
 }
 
 /** DismissAllNotification */
@@ -22,7 +22,7 @@ export interface DismissAllNotificationsRequest {
 }
 
 export interface DismissAllNotificationsResponse {
-  ok: boolean;
+
 }
 
 /** Notifications */
@@ -104,14 +104,11 @@ export const DismissNotificationRequest = {
 };
 
 function createBaseDismissNotificationResponse(): DismissNotificationResponse {
-  return { ok: false };
+  return {};
 }
 
 export const DismissNotificationResponse = {
-  encode(message: DismissNotificationResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.ok === true) {
-      writer.uint32(8).bool(message.ok);
-    }
+  encode(_: DismissNotificationResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
@@ -122,9 +119,6 @@ export const DismissNotificationResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.ok = reader.bool();
-          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -133,19 +127,17 @@ export const DismissNotificationResponse = {
     return message;
   },
 
-  fromJSON(object: any): DismissNotificationResponse {
-    return { ok: isSet(object.ok) ? Boolean(object.ok) : false };
+  fromJSON(_: any): DismissNotificationResponse {
+    return {};
   },
 
-  toJSON(message: DismissNotificationResponse): unknown {
+  toJSON(_: DismissNotificationResponse): unknown {
     const obj: any = {};
-    message.ok !== undefined && (obj.ok = message.ok);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DismissNotificationResponse>, I>>(object: I): DismissNotificationResponse {
+  fromPartial<I extends Exact<DeepPartial<DismissNotificationResponse>, I>>(_: I): DismissNotificationResponse {
     const message = createBaseDismissNotificationResponse();
-    message.ok = object.ok ?? false;
     return message;
   },
 };
@@ -200,14 +192,11 @@ export const DismissAllNotificationsRequest = {
 };
 
 function createBaseDismissAllNotificationsResponse(): DismissAllNotificationsResponse {
-  return { ok: false };
+  return {};
 }
 
 export const DismissAllNotificationsResponse = {
-  encode(message: DismissAllNotificationsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.ok === true) {
-      writer.uint32(8).bool(message.ok);
-    }
+  encode(_: DismissAllNotificationsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
@@ -218,9 +207,6 @@ export const DismissAllNotificationsResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.ok = reader.bool();
-          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -229,21 +215,17 @@ export const DismissAllNotificationsResponse = {
     return message;
   },
 
-  fromJSON(object: any): DismissAllNotificationsResponse {
-    return { ok: isSet(object.ok) ? Boolean(object.ok) : false };
+  fromJSON(_: any): DismissAllNotificationsResponse {
+    return {};
   },
 
-  toJSON(message: DismissAllNotificationsResponse): unknown {
+  toJSON(_: DismissAllNotificationsResponse): unknown {
     const obj: any = {};
-    message.ok !== undefined && (obj.ok = message.ok);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DismissAllNotificationsResponse>, I>>(
-    object: I,
-  ): DismissAllNotificationsResponse {
+  fromPartial<I extends Exact<DeepPartial<DismissAllNotificationsResponse>, I>>(_: I): DismissAllNotificationsResponse {
     const message = createBaseDismissAllNotificationsResponse();
-    message.ok = object.ok ?? false;
     return message;
   },
 };

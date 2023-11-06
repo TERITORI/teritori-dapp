@@ -189,6 +189,12 @@ func (h *Handler) createPost(
 	if err := h.db.Create(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to create post")
 	}
+
+	err = createNotifications(string(h.config.Network.UserID(execMsg.Sender)), h)
+	if err != nil {
+		return errors.Wrap(err, "Problems when trying to create notifications")
+	}
+
 	if !isBot {
 		h.handleQuests(execMsg, createPostMsg)
 	}
@@ -279,4 +285,61 @@ func (h *Handler) handleQuests(
 	}
 
 	return nil
+}
+
+func createNotifications(userId string, h *Handler) error {
+
+	query := h.db
+
+	var post []*indexerdb.Post
+	if err := query.Where("author_id = ?", userId).Find(&post).Error; err != nil {
+		return errors.Wrap(err, "failed to find user posts")
+	}
+
+	for _, d := range post {
+		createComment(d, userId, h)
+		createReaction(d, userId, h)
+	}
+
+	return nil
+}
+
+func createComment(d *indexerdb.Post, userId string, h *Handler) {
+
+	query := h.db
+	var comments []*indexerdb.Post
+	query.Where("parent_post_identifier = ? and author_id != ?", d.Identifier, userId).Find(&comments)
+
+	for _, d := range comments {
+
+		notification := indexerdb.Notification{
+			UserId:    networks.UserID(userId),
+			TriggerBy: d.AuthorId,
+			Body:      "comment-" + d.ParentPostIdentifier + "-" + d.Identifier,
+			Action:    d.ParentPostIdentifier,
+			Category:  "comment",
+			CreatedAt: d.CreatedAt,
+		}
+		h.db.Create(&notification)
+
+	}
+}
+
+func createReaction(d *indexerdb.Post, userId string, h *Handler) {
+	userReactions := d.UserReactions
+	for emoji, users := range userReactions {
+
+		for _, user := range users.([]interface{}) {
+			notification := indexerdb.Notification{
+				UserId:    networks.UserID(userId),
+				TriggerBy: networks.UserID(user.(string)),
+				Body:      emoji,
+				Action:    d.Identifier,
+				Category:  "reaction",
+				CreatedAt: d.CreatedAt,
+			}
+			h.db.Create(&notification)
+		}
+
+	}
 }

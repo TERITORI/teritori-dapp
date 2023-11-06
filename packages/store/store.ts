@@ -39,6 +39,15 @@ const migrations = {
       },
     };
   },
+  1: (state: any) => {
+    return {
+      ...state,
+      settings: {
+        ...state.settings,
+        isLightTheme: false,
+      },
+    };
+  },
 };
 
 const persistConfig = {

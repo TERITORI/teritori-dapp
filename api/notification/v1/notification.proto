@@ -15,7 +15,7 @@ message DismissNotificationRequest {
   int64 notification_id = 2;
 }
 message DismissNotificationResponse {
-  bool ok = 1;
+
 }
 // --
 
@@ -24,7 +24,7 @@ message DismissAllNotificationsRequest {
   string user_id = 1;
 }
 message DismissAllNotificationsResponse {
-  bool ok = 1;
+
 }
 // --
 
