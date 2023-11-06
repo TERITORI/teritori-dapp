@@ -314,7 +314,7 @@ func createReactionNotification(post *indexerdb.Post, h *Handler) error {
 		if !ok {
 			iuser, ok := jb.([]interface{})
 			if !ok {
-				return errors.New("failed to case jsonb users")
+				return errors.New("failed to cast jsonb users")
 			}
 			users = make([]networks.UserID, 0)
 			for _, user := range iuser {
