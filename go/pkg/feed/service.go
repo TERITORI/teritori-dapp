@@ -81,12 +81,14 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	var mentions []string
 	var categories []uint32
 	var hashtags []string
+	var followedBy string
 
 	if filter != nil {
-		categories = filter.Categories
-		user = filter.User
-		hashtags = filter.Hashtags
-		mentions = filter.Mentions
+		categories = filter.GetCategories()
+		user = filter.GetUser()
+		hashtags = filter.GetHashtags()
+		mentions = filter.GetMentions()
+		followedBy = filter.GetFollowedBy()
 	}
 
 	queryUserID := req.GetQueryUserId()
@@ -117,6 +119,18 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	}
 	if user != "" {
 		query = query.Where("author_id = ?", user)
+	}
+	if followedBy != "" {
+		var followingUsers []*indexerdb.FollowUser
+		err := s.conf.IndexerDB.Where("user_id = ?", followedBy).Find(&followingUsers).Error
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to query followers")
+		}
+		options := []string(nil)
+		for _, d := range followingUsers {
+			options = append(options, string(d.FollowUserId))
+		}
+		query = query.Where("author_id IN ?", options)
 	}
 	if len(hashtags) > 0 {
 		formattedHashtags := make([]string, 0)

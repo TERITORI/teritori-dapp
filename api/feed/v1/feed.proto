@@ -39,6 +39,7 @@ message PostFilter {
   repeated string mentions = 2;
   repeated uint32 categories = 3;
   repeated string hashtags = 4;
+  string followed_by = 5;
 }
 
 message PostsRequest {

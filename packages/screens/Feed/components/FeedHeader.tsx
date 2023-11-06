@@ -40,6 +40,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
       user: "",
       mentions: [],
       hashtags: [],
+      followedBy: "",
     },
     limit: 1,
     offset: 0,

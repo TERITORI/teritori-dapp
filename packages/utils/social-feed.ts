@@ -55,6 +55,9 @@ export const feedsTabItems: { [key: string]: TabDefinition } = {
   all: {
     name: "Jungle News Feed",
   },
+  following: {
+    name: "Following",
+  },
   sounds: {
     name: "Sounds Feed",
   },

@@ -67,6 +67,7 @@ export const HashtagFeedScreen: ScreenFC<"HashtagFeed"> = ({
         mentions: [],
         categories: [],
         hashtags: [`#${hashtag}`],
+        followedBy: "",
       },
       limit: 10,
       offset: 0,
