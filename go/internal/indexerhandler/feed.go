@@ -132,6 +132,7 @@ func (h *Handler) handleExecuteReactPost(e *Message, execMsg *wasmtypes.MsgExecu
 	if err := h.db.Save(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to update reactions")
 	}
+	createReactionNotification(&post, h)
 
 	return nil
 }
@@ -190,7 +191,11 @@ func (h *Handler) createPost(
 		return errors.Wrap(err, "failed to create post")
 	}
 
-	err = createNotifications(string(h.config.Network.UserID(execMsg.Sender)), h)
+	// is comment
+	if createPostMsg.ParentPostIdentifier != "" {
+		createCommentNotification(&post, h.config.Network.UserID(execMsg.Sender), h)
+	}
+
 	if err != nil {
 		return errors.Wrap(err, "Problems when trying to create notifications")
 	}
@@ -271,56 +276,38 @@ func (h *Handler) handleQuests(
 	return nil
 }
 
-func createNotifications(userId string, h *Handler) error {
+func createCommentNotification(post *indexerdb.Post, userId networks.UserID, h *Handler) {
 
 	query := h.db
+	var parentPost *indexerdb.Post
+	query.Where("identifier = ?", post.ParentPostIdentifier).First(&parentPost)
 
-	var post []*indexerdb.Post
-	if err := query.Where("author_id = ?", userId).Find(&post).Error; err != nil {
-		return errors.Wrap(err, "failed to find user posts")
-	}
-
-	for _, d := range post {
-		createComment(d, userId, h)
-		createReaction(d, userId, h)
-	}
-
-	return nil
-}
-
-func createComment(d *indexerdb.Post, userId string, h *Handler) {
-
-	query := h.db
-	var comments []*indexerdb.Post
-	query.Where("parent_post_identifier = ? and author_id != ?", d.Identifier, userId).Find(&comments)
-
-	for _, d := range comments {
-
+	if parentPost.AuthorId != userId { // don't notify on my own parentPosts
 		notification := indexerdb.Notification{
-			UserId:    networks.UserID(userId),
-			TriggerBy: d.AuthorId,
-			Body:      "comment-" + d.ParentPostIdentifier + "-" + d.Identifier,
-			Action:    d.ParentPostIdentifier,
+			UserId:    parentPost.AuthorId, // notify parent author
+			TriggerBy: userId,              // user X has commented in your post
+			Body:      "comment-" + parentPost.ParentPostIdentifier + "-" + parentPost.Identifier,
+			Action:    parentPost.ParentPostIdentifier,
 			Category:  "comment",
-			CreatedAt: d.CreatedAt,
+			CreatedAt: parentPost.CreatedAt,
 		}
 		h.db.Create(&notification)
 
 	}
 }
 
-func createReaction(d *indexerdb.Post, userId string, h *Handler) {
-	userReactions := d.UserReactions
+func createReactionNotification(post *indexerdb.Post, h *Handler) {
+	userReactions := post.UserReactions
 	for emoji, users := range userReactions {
 
 		for _, user := range users.([]interface{}) {
 			notification := indexerdb.Notification{
-				UserId:    networks.UserID(userId),
+				UserId:    post.AuthorId,
 				TriggerBy: networks.UserID(user.(string)),
 				Body:      emoji,
-				Action:    d.Identifier,
+				Action:    post.Identifier,
 				Category:  "reaction",
-				CreatedAt: d.CreatedAt,
+				CreatedAt: post.CreatedAt,
 			}
 			h.db.Create(&notification)
 		}
