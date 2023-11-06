@@ -13,7 +13,6 @@ export interface DismissNotificationRequest {
 }
 
 export interface DismissNotificationResponse {
-
 }
 
 /** DismissAllNotification */
@@ -22,7 +21,6 @@ export interface DismissAllNotificationsRequest {
 }
 
 export interface DismissAllNotificationsResponse {
-
 }
 
 /** Notifications */
