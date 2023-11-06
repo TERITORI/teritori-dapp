@@ -15,7 +15,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/streamingfast/cli"
-	. "github.com/streamingfast/cli"
 	"github.com/streamingfast/logging"
 	"github.com/streamingfast/shutter"
 	sink "github.com/streamingfast/substreams-sink"
@@ -30,17 +29,16 @@ func init() {
 }
 
 func main() {
-	Run("sink", "Teritori Sink Blockchain to Postgres",
+	cli.Run("sink", "Teritori Sink Blockchain to Postgres",
 		SinkCmd,
-
-		ConfigureViper("SINK"),
+		cli.ConfigureViper("SINK"),
 	)
 }
 
-var SinkCmd = Command(sinkE,
+var SinkCmd = cli.Command(sinkE,
 	"sink",
 	"Sink the data from given network",
-	Flags(func(flags *pflag.FlagSet) {
+	cli.Flags(func(flags *pflag.FlagSet) {
 		// Teritori params ==========================================================
 		flags.String("db-indexer-host", "", "host postgreSQL database")
 		flags.String("db-indexer-port", "", "port for postgreSQL database")
@@ -50,7 +48,7 @@ var SinkCmd = Command(sinkE,
 
 		flags.String("networks-file", "networks.json", "Path to networks config file")
 		flags.String("indexer-mode", "", "the mode to run indexer: p2e, data. p2e: index only p2e, data: index all data without p2e")
-		flags.String("target-network-id", "", "target network to index")
+		flags.String("indexer-network-id", "", "target network to index")
 
 		// Add default sink Flags ====================================================================
 		flags.Int(sink.FlagUndoBufferSize, 3, "Number of blocks to keep buffered to handle fork reorganizations")
