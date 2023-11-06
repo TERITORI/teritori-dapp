@@ -206,7 +206,7 @@ func (h *Handler) createPost(
 	}
 
 	if !isBot {
-		h.handleQuests(execMsg, createPostMsg)
+		h.handleQuests(execMsg, createPostMsg) // FIXME: handle error
 	}
 
 	return nil
