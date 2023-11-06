@@ -28,7 +28,7 @@ func NewLoader(indexerDB *gorm.DB, logger *zap.Logger) *Loader {
 // we can implement that in the future if needed, for now, when changing module we have to re-run indexer
 // Or maybe change the module hash manually ?
 func (l *Loader) GetOrCreateCursor(cursorID string, networkID string, indexerMode indexerdb.IndexerMode) (*sink.Cursor, error) {
-	c := indexerdb.Cursors{}
+	c := indexerdb.Cursor{}
 	err := l.indexerDB.Where("id = ? AND indexer_mode = ? AND network = ?", cursorID, indexerMode, networkID).First(&c).Error
 
 	// If no error then return the cursor
@@ -51,7 +51,7 @@ func (l *Loader) GetOrCreateCursor(cursorID string, networkID string, indexerMod
 }
 
 func (l *Loader) WriteCursor(sinkCursor *sink.Cursor, cursorID string, networkID string, indexerMode indexerdb.IndexerMode) error {
-	cursor := indexerdb.Cursors{
+	cursor := indexerdb.Cursor{
 		ID:          cursorID,
 		Cursor:      sinkCursor.String(),
 		BlockNum:    sinkCursor.Block().Num(),
@@ -68,7 +68,7 @@ func (l *Loader) WriteCursor(sinkCursor *sink.Cursor, cursorID string, networkID
 }
 
 func (l *Loader) UpdateCursor(sinkCursor *sink.Cursor, cursorID string, networkID string, indexerMode indexerdb.IndexerMode) error {
-	err := l.dbTransaction.Model(&indexerdb.Cursors{}).Where("id = ? AND indexer_mode = ? AND network = ?", cursorID, indexerMode, networkID).Updates(indexerdb.Cursors{
+	err := l.dbTransaction.Model(&indexerdb.Cursor{}).Where("id = ? AND indexer_mode = ? AND network = ?", cursorID, indexerMode, networkID).Updates(indexerdb.Cursor{
 		Cursor:   sinkCursor.String(),
 		BlockNum: sinkCursor.Block().Num(),
 		BlockId:  sinkCursor.Block().ID(),

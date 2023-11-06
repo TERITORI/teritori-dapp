@@ -25,13 +25,13 @@ type App struct {
 }
 
 // Cursor used by Substreams indexer
-type Cursors struct {
+type Cursor struct {
 	ID          string `gorm:"primaryKey;notNull"`
 	Cursor      string
 	BlockNum    uint64
 	BlockId     string
-	Network     string
-	IndexerMode IndexerMode
+	Network     string      `gorm:"primaryKey;notNull"`
+	IndexerMode IndexerMode `gorm:"primaryKey;notNull"`
 }
 
 type User struct {
@@ -45,7 +45,7 @@ var allModels = []interface{}{
 	&App{},
 
 	// cursor
-	&Cursors{},
+	&Cursor{},
 
 	// users
 	&User{},
