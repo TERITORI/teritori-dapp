@@ -155,10 +155,7 @@ const NotificationList: React.FC<{
               item={item}
             />
           )}
-          ListHeaderComponent={
-            // @ts-ignore
-            notifications?.length > 0 ? <Controls /> : null
-          }
+          ListHeaderComponent={notifications?.length ? <Controls /> : null}
           ListEmptyComponent={<NoNotifications />}
         />
       </ScrollView>
@@ -183,12 +180,11 @@ const DismissNotificationButton: React.FC<{
       }}
     >
       <XMarkIcon
-        // @ts-ignore
         style={{
           justifyContent: "flex-end",
           alignSelf: "flex-end",
-          fill: secondaryColor,
         }}
+        fill={secondaryColor}
       />
     </TouchableOpacity>
   );
