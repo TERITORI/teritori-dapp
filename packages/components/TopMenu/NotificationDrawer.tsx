@@ -22,7 +22,7 @@ import { useDropdowns } from "../../context/DropdownsProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useNotifications } from "../../hooks/useNotifications";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { parseNetworkObjectId } from "../../networks";
+import { parseUserId } from "../../networks";
 import { mustGetNotificationClient } from "../../utils/backend";
 import {
   neutral00,
@@ -336,13 +336,13 @@ const useBuildBodyText = (item: Notification) => {
 
 const clearAllNotifications = (req: Partial<NotificationsRequest>) => {
   (async () => {
-    const networkId = parseNetworkObjectId(req?.userId);
+    const [network] = parseUserId(req?.userId);
 
-    if (!networkId) {
-      return [];
+    if (!network) {
+      return false;
     }
 
-    const notificationService = mustGetNotificationClient(networkId[0]?.id);
+    const notificationService = mustGetNotificationClient(network.id);
     const { ok } = await notificationService.DismissAllNotifications(req);
     return ok;
   })();
@@ -350,13 +350,13 @@ const clearAllNotifications = (req: Partial<NotificationsRequest>) => {
 
 const clearNotification = (req: Partial<DismissNotificationRequest>) => {
   (async () => {
-    const networkId = parseNetworkObjectId(req?.userId);
+    const [network] = parseUserId(req?.userId);
 
-    if (!networkId) {
-      return [];
+    if (!network) {
+      return false;
     }
 
-    const notificationService = mustGetNotificationClient(networkId[0]?.id);
+    const notificationService = mustGetNotificationClient(network.id);
     const { ok } = await notificationService.DismissNotification(req);
     return ok;
   })();
