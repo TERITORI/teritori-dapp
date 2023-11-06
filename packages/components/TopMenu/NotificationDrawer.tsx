@@ -24,6 +24,7 @@ import { useNotifications } from "../../hooks/useNotifications";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseUserId } from "../../networks";
 import { mustGetNotificationClient } from "../../utils/backend";
+import { prettyPrice } from "../../utils/coins";
 import {
   neutral00,
   neutral33,
@@ -39,7 +40,7 @@ import {
 import { headerHeight, layout, topMenuWidth } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
-import { OmniLink } from "../OmniLink";
+import { OmniLink, OmniLinkToType } from "../OmniLink";
 import { UserNameInline } from "../UserNameInline";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
@@ -50,7 +51,6 @@ export const NotificationDrawer: React.FC = () => {
   const notifications = useNotifications({
     userId: selectedWallet?.userId,
   });
-
 
   return (
     <View ref={dropdownRef}>
@@ -108,13 +108,11 @@ export const NotificationDrawer: React.FC = () => {
               }
             />
           )}
-
         </TertiaryBox>
       </TouchableOpacity>
 
       <NotificationList
         notifications={notifications}
-
         style={[
           {
             position: "absolute",
@@ -127,7 +125,6 @@ export const NotificationDrawer: React.FC = () => {
     </View>
   );
 };
-
 
 const NotificationList: React.FC<{
   style: StyleProp<ViewStyle>;
@@ -231,12 +228,7 @@ const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
         </View>
 
         <View style={{ flex: 4, marginHorizontal: layout.spacing_x1 }}>
-          <OmniLink
-            to={{
-              screen: "FeedPostView",
-              params: { id: item.action },
-            }}
-          >
+          <OmniLink to={getOmniLink(item)}>
             <View>
               <BrandText style={fontSemibold14}>
                 {useBuildBodyText(item)}
@@ -416,5 +408,4 @@ const clearNotification = async (req: Partial<DismissNotificationRequest>) => {
 
   const notificationService = mustGetNotificationClient(network.id);
   await notificationService.DismissNotification(req);
-
 };
