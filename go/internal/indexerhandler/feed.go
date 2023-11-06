@@ -277,7 +277,7 @@ func createNotifications(userId string, h *Handler) error {
 
 	var post []*indexerdb.Post
 	if err := query.Where("author_id = ?", userId).Find(&post).Error; err != nil {
-		return errors.Wrap(err, "need a user id tori-{wallet_address} and a notification Id")
+		return errors.Wrap(err, "failed to find user posts")
 	}
 
 	for _, d := range post {

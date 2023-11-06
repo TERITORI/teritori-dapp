@@ -2,6 +2,7 @@ package notification
 
 import (
 	"context"
+
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/TERITORI/teritori-dapp/go/pkg/notificationpb"
@@ -31,7 +32,7 @@ func (s *NotificationService) Notifications(ctx context.Context, req *notificati
 	query := s.conf.IndexerDB
 	userId := req.GetUserId()
 	if userId == "" {
-		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address}"), "need a wallet address")
+		return nil, errors.New("empty user id")
 	}
 
 	query = query.Where("user_id = ? and dismissed = ?", userId, false).Order("created_at desc")
@@ -67,15 +68,18 @@ func (s *NotificationService) DismissNotification(ctx context.Context, req *noti
 	userId := req.GetUserId()
 	notificationId := req.GetNotificationId()
 
-	if userId == "" || notificationId == 0 {
-		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address} and a notification Id"), "need a wallet address")
+	if userId == "" {
+		return nil, errors.New("empty user id")
+	}
+	if notificationId <= 0 {
+		return nil, errors.New("invalid notification id")
 	}
 	query = query.Where("user_id = ? and id = ?", userId, req.GetNotificationId())
 
 	var notifications []*indexerdb.Notification
 	err := query.Find(&notifications).Update("dismissed", true).Error
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to query database")
+		return nil, errors.Wrap(err, "failed to update database")
 	}
 	return &notificationpb.DismissNotificationResponse{
 		Ok: true,
@@ -87,14 +91,14 @@ func (s *NotificationService) DismissAllNotifications(ctx context.Context, req *
 	userId := req.GetUserId()
 
 	if userId == "" {
-		return nil, errors.Wrap(errors.New("need a user id tori-{wallet_address} and a notification Id"), "need a wallet address")
+		return nil, errors.New("empty user id")
 	}
 	query = query.Where("user_id = ? ", userId)
 
 	var notifications []*indexerdb.Notification
 	err := query.Find(&notifications).Update("dismissed", true).Error
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to query database")
+		return nil, errors.Wrap(err, "failed to update database")
 	}
 	return &notificationpb.DismissAllNotificationsResponse{
 		Ok: true,
