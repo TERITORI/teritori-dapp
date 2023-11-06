@@ -62,7 +62,7 @@ func sinkE(cmd *cobra.Command, args []string) error {
 	MustLoadEnv()
 
 	// Prepare params ===============================================================================================
-	networkID := MustGetFlagString("target-network-id")
+	networkID := MustGetFlagString("indexer-network-id")
 
 	// load networks
 	networksFile := MustGetFlagString("networks-file")
