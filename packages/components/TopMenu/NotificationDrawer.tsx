@@ -174,9 +174,9 @@ const DismissNotificationButton: React.FC<{
 
   return (
     <TouchableOpacity
-      onPress={() => {
+      onPress={async () => {
         setVisible(false);
-        clearNotification({
+        await clearNotification({
           userId: selectedWallet?.userId,
           notificationId: id,
         });
@@ -309,8 +309,8 @@ const Controls: React.FC = () => {
         style={{
           alignSelf: "flex-end",
         }}
-        onPress={() => {
-          clearAllNotifications({
+        onPress={async () => {
+          await clearAllNotifications({
             userId: selectedWallet?.userId,
           });
         }}
@@ -334,30 +334,24 @@ const useBuildBodyText = (item: Notification) => {
   }
 };
 
-const clearAllNotifications = (req: Partial<NotificationsRequest>) => {
-  (async () => {
-    const [network] = parseUserId(req?.userId);
+const clearAllNotifications = async (req: Partial<NotificationsRequest>) => {
+  const [network] = parseUserId(req?.userId);
 
-    if (!network) {
-      return false;
-    }
+  if (!network) {
+    return false;
+  }
 
-    const notificationService = mustGetNotificationClient(network.id);
-    const { ok } = await notificationService.DismissAllNotifications(req);
-    return ok;
-  })();
+  const notificationService = mustGetNotificationClient(network.id);
+  await notificationService.DismissAllNotifications(req);
 };
 
-const clearNotification = (req: Partial<DismissNotificationRequest>) => {
-  (async () => {
-    const [network] = parseUserId(req?.userId);
+const clearNotification = async (req: Partial<DismissNotificationRequest>) => {
+  const [network] = parseUserId(req?.userId);
 
-    if (!network) {
-      return false;
-    }
+  if (!network) {
+    return false;
+  }
 
-    const notificationService = mustGetNotificationClient(network.id);
-    const { ok } = await notificationService.DismissNotification(req);
-    return ok;
-  })();
+  const notificationService = mustGetNotificationClient(network.id);
+  await notificationService.DismissNotification(req);
 };

@@ -81,9 +81,7 @@ func (s *NotificationService) DismissNotification(ctx context.Context, req *noti
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to update database")
 	}
-	return &notificationpb.DismissNotificationResponse{
-		Ok: true,
-	}, nil
+	return &notificationpb.DismissNotificationResponse{}, nil
 }
 
 func (s *NotificationService) DismissAllNotifications(ctx context.Context, req *notificationpb.DismissAllNotificationsRequest) (*notificationpb.DismissAllNotificationsResponse, error) {
@@ -100,7 +98,5 @@ func (s *NotificationService) DismissAllNotifications(ctx context.Context, req *
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to update database")
 	}
-	return &notificationpb.DismissAllNotificationsResponse{
-		Ok: true,
-	}, nil
+	return &notificationpb.DismissAllNotificationsResponse{}, nil
 }
