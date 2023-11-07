@@ -53,7 +53,6 @@ export const toggleFollow = (req: Partial<FollowUserRequest>) => {
     }
 
     const svc = mustGetFollowClient(networkId[0]?.id);
-    const { ok } = await svc.FollowUser(req);
-    return ok;
+    await svc.FollowUser(req);
   })();
 };
