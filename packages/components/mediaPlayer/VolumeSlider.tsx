@@ -1,6 +1,6 @@
 import Slider from "@react-native-community/slider";
 import { AVPlaybackStatusSuccess } from "expo-av";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import VolumeIcon from "../../../assets/icons/media-player/volume.svg";
@@ -23,17 +23,24 @@ export const VolumeSlider: FC<{
   playbackStatus?: AVPlaybackStatusSuccess;
 }> = ({ useAltStyle, playbackStatus }) => {
   const { onChangeVolume } = useMediaPlayer();
-  const [localVolume, setLocalVolume] = useState(0.5);
-  const [lastVolume, setLastVolume] = useState(0.5);
+  const [localVolume, setLocalVolume] = useState(1);
+  const [lastVolume, setLastVolume] = useState(1);
   const [isHovered, setIsHovered] = useState(false);
   const [isSliding, setIsSliding] = useState(false);
+
+  // Plug or not the playbackStatus.volume from MediaPLayerProvider
+  const [volumeToUse, setVolumeToUse] = useState(1);
+  useEffect(() => {
+    if (!playbackStatus) setVolumeToUse(localVolume);
+    else setVolumeToUse(playbackStatus?.volume);
+  }, [playbackStatus, localVolume]);
 
   //FIXME: `NaN` is an invalid value for the `WebkitFlexGrow` css style property.
 
   // We store a lastVolume to handle mute/unmute by clicking on the volume icon, with retrieving the precedent volume
   const onPressVolumeIcon = () => {
-    if (localVolume) {
-      setLastVolume(localVolume);
+    if (volumeToUse) {
+      setLastVolume(volumeToUse);
       onChangeVolume(0);
       setLocalVolume(0);
     } else {
@@ -57,7 +64,7 @@ export const VolumeSlider: FC<{
       >
         <SVG
           source={
-            localVolume
+            volumeToUse
               ? useAltStyle
                 ? VolumeAltIcon
                 : VolumeIcon
@@ -82,7 +89,7 @@ export const VolumeSlider: FC<{
         onHoverOut={() => setIsHovered(false)}
       >
         <Slider
-          value={localVolume}
+          value={volumeToUse}
           onValueChange={(value: number) => {
             onChangeVolume(value);
             setLocalVolume(value);

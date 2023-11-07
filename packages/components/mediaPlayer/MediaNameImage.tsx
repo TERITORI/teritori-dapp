@@ -5,7 +5,6 @@ import { StyleProp, View, ViewStyle } from "react-native";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { getNetworkObjectId, parseUserId } from "../../networks";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { tinyAddress } from "../../utils/text";
@@ -14,6 +13,7 @@ import { OmniLink } from "../OmniLink";
 import { OptimizedImage } from "../OptimizedImage";
 import { SpacerRow } from "../spacer";
 
+const IMAGE_SIZE = 32;
 export const MediaNameImage: FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ style }) => {
@@ -23,10 +23,6 @@ export const MediaNameImage: FC<{
   const username = authorNSInfo?.metadata?.tokenId
     ? authorNSInfo?.metadata?.tokenId
     : tinyAddress(userAddress, 20);
-
-  //TODO: Video in MediaPlayer
-  const imageWidth = media?.isVideo ? 57 : 32;
-  const imageHeight = 32;
 
   if (!media) return <View />;
   return (
@@ -38,12 +34,13 @@ export const MediaNameImage: FC<{
               screen: "MusicAlbum",
               params: { id: media.albumId },
             }
-          : media.videoId
-          ? {
-              screen: "VideoDetail",
-              params: { id: media.videoId },
-            }
-          : {
+          : // TODO: Uncomment this after video stuff integration
+            // : media.videoId
+            // ? {
+            //     screen: "VideoDetail",
+            //     params: { id: media.videoId },
+            //   }
+            {
               screen: "FeedPostView",
               params: {
                 id: getNetworkObjectId(network?.id, media?.postId) || "",
@@ -58,10 +55,10 @@ export const MediaNameImage: FC<{
         }}
       >
         <OptimizedImage
-          sourceURI={ipfsURLToHTTPURL(media.imageUrl)}
-          style={{ height: imageHeight, width: imageWidth }}
-          height={imageHeight}
-          width={imageWidth}
+          sourceURI={media.imageUrl}
+          style={{ height: IMAGE_SIZE, width: IMAGE_SIZE }}
+          height={IMAGE_SIZE}
+          width={IMAGE_SIZE}
           resizeMode={ResizeMode.CONTAIN}
         />
         <SpacerRow size={1.5} />

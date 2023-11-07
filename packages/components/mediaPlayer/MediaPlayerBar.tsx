@@ -5,13 +5,13 @@ import { MediaNameImage } from "./MediaNameImage";
 import { MediaPlayerBarMobile } from "./MediaPlayerBarMobile";
 import { TimerSlider } from "./TimerSlider";
 import { VolumeSlider } from "./VolumeSlider";
+import FullScreenIcon from "../../../assets/icons/media-player/full-screen.svg";
 import LoopIcon from "../../../assets/icons/media-player/loop.svg";
 import NextIcon from "../../../assets/icons/media-player/next.svg";
 import PauseIcon from "../../../assets/icons/media-player/pause_round.svg";
 import PlayIcon from "../../../assets/icons/media-player/play_round.svg";
 import PreviousIcon from "../../../assets/icons/media-player/previous.svg";
 import RandomIcon from "../../../assets/icons/media-player/random.svg";
-import FullScreenIcon from "../../../assets/icons/video-player/full-screen.svg";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
@@ -71,18 +71,15 @@ export const MediaPlayerBar: FC<{
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         {media?.isVideo ? (
-          <>
-            {/* The user will be redirected to the video's screen if he's not on it when clicking on this button */}
-            <CustomPressable onPress={triggerVideoFullscreen}>
-              <SVG
-                source={FullScreenIcon}
-                width={20}
-                height={20}
-                color={neutralA3}
-              />
-            </CustomPressable>
-            <SpacerRow size={2.5} />
-          </>
+          // The user will be redirected to the video's screen if he's not on it when clicking on this button
+          <CustomPressable onPress={triggerVideoFullscreen}>
+            <SVG
+              source={FullScreenIcon}
+              width={20}
+              height={20}
+              color={neutralA3}
+            />
+          </CustomPressable>
         ) : (
           <>
             <CustomPressable
@@ -96,7 +93,6 @@ export const MediaPlayerBar: FC<{
               />
             </CustomPressable>
             <SpacerRow size={2.5} />
-
             <CustomPressable onPress={prevMedia} disabled={!canPrev}>
               <SVG
                 source={PreviousIcon}
@@ -105,9 +101,9 @@ export const MediaPlayerBar: FC<{
                 color={canPrev ? secondaryColor : neutralA3}
               />
             </CustomPressable>
-            <SpacerRow size={2.5} />
           </>
         )}
+        <SpacerRow size={2.5} />
 
         <CustomPressable onPress={handlePlayPause} disabled={!media}>
           <SVG

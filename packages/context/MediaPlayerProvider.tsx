@@ -195,7 +195,8 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
       navigation.getState().routes[navigation.getState().routes.length - 1].key
     ) {
       if (media?.videoId) {
-        navigation.navigate("VideoDetail", { id: media.videoId });
+        // TODO: Uncomment this after video stuff integration
+        // navigation.navigate("VideoDetail", { id: media.videoId });
       } else if (media?.postId) {
         navigation.navigate("FeedPostView", {
           id: getNetworkObjectId(selectedNetworkId, media.postId),

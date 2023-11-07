@@ -14,7 +14,6 @@ import pathwarSVG from "../../assets/icons/pathwar.svg";
 import riotersGameSVG from "../../assets/icons/rioters-game.svg";
 import stakingSVG from "../../assets/icons/staking.svg";
 import tnsServiceSVG from "../../assets/icons/tns-service.svg";
-import videoSVG from "../../assets/icons/videoplayer.svg";
 import walletRegSVG from "../../assets/icons/wallet-regular.svg";
 import walletSVG from "../../assets/icons/wallet-sidebar.svg";
 import { SidebarRecordType } from "../components/navigation/types";
@@ -136,11 +135,5 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     id: "dApp Store",
     route: "DAppStore",
     icon: dappStoreSVG,
-  },
-  videoplayer: {
-    title: "Video",
-    id: "Video",
-    route: "Video",
-    icon: videoSVG,
   },
 };

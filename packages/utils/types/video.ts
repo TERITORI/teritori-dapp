@@ -5,14 +5,3 @@ export interface VideoMetaInfo {
   image: string; // ipfs
   duration: number;
 }
-
-export interface VideoInfoWithMeta {
-  id: string;
-  videoMetaInfo: VideoMetaInfo;
-  createdBy: string;
-  createdAt: number;
-  viewCount: number;
-  like: number;
-  dislike: number;
-  viewLastTimestamp: number;
-}

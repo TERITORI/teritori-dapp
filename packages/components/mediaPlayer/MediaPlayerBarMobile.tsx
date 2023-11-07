@@ -7,6 +7,7 @@ import {
 
 import { MediaNameImage } from "./MediaNameImage";
 import { TimerSliderMobile } from "./TimerSliderMobile";
+import FullScreenIcon from "../../../assets/icons/media-player/full-screen.svg";
 import LoopIcon from "../../../assets/icons/media-player/loop.svg";
 import PauseIcon from "../../../assets/icons/media-player/pause_round.svg";
 import PlayIcon from "../../../assets/icons/media-player/play_round.svg";
@@ -38,6 +39,7 @@ export const MediaPlayerBarMobile: FC<{
     prevMedia,
     onToggleLoop,
     playbackStatus,
+    triggerVideoFullscreen,
   } = useMediaPlayer();
 
   if (!isMediaPlayerOpen) return null;
@@ -82,14 +84,26 @@ export const MediaPlayerBarMobile: FC<{
           </CustomPressable>
           <SpacerRow size={2} />
 
-          <CustomPressable onPress={onToggleLoop}>
-            <SVG
-              source={LoopIcon}
-              height={20}
-              width={20}
-              color={playbackStatus?.isLooping ? secondaryColor : neutralA3}
-            />
-          </CustomPressable>
+          {media?.isVideo ? (
+            // The user will be redirected to the video's screen if he's not on it when clicking on this button
+            <CustomPressable onPress={triggerVideoFullscreen}>
+              <SVG
+                source={FullScreenIcon}
+                width={20}
+                height={20}
+                color={neutralA3}
+              />
+            </CustomPressable>
+          ) : (
+            <CustomPressable onPress={onToggleLoop}>
+              <SVG
+                source={LoopIcon}
+                height={20}
+                width={20}
+                color={playbackStatus?.isLooping ? secondaryColor : neutralA3}
+              />
+            </CustomPressable>
+          )}
           <SpacerRow size={2} />
 
           <CustomPressable onPress={handlePlayPause} disabled={!media}>
