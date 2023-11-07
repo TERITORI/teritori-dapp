@@ -22,11 +22,10 @@ import {
 } from "../../api/p2e/v1/p2e";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
-import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { UserAvatarWithFrame } from "../../components/images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
@@ -47,7 +46,6 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { nameServiceDefaultImage } from "../../utils/tns";
 
 type RankProps = {
   changes: number;
@@ -58,9 +56,8 @@ type PlayerNameProps = {
 
 const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
   const navigation = useAppNavigation();
-  const [network, address] = parseUserId(userId);
+  const [, address] = parseUserId(userId);
   const userInfo = useNSUserInfo(userId);
-  const { isDAO } = useIsDAO(userId);
 
   const name = userInfo.metadata?.tokenId || address || "";
 
@@ -74,18 +71,7 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
           });
         }}
       >
-        <OptimizedImage
-          sourceURI={userInfo.metadata?.image}
-          fallbackURI={nameServiceDefaultImage(isDAO, network)}
-          width={32}
-          height={32}
-          style={{
-            borderRadius: 999,
-            width: 32,
-            height: 32,
-            aspectRatio: 1,
-          }}
-        />
+        <UserAvatarWithFrame userId={userId} size="XXS" />
 
         <BrandText
           style={[styles.colData, { marginLeft: layout.spacing_x1 }]}

@@ -19,12 +19,11 @@ import raffleSVG from "../../../assets/icons/raffle.svg";
 import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useDropdowns } from "../../context/DropdownsProvider";
-import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getNetwork, parseUserId } from "../../networks";
+import { parseUserId } from "../../networks";
 import {
   addSelected,
   removeSelected,
@@ -40,17 +39,16 @@ import {
   neutral77,
 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
-import { nameServiceDefaultImage } from "../../utils/tns";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
 import { DropdownOption } from "../DropdownOption";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { NetworkIcon } from "../NetworkIcon";
 import { OmniLink } from "../OmniLink";
-import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButton } from "../buttons/SecondaryButton";
+import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
 export const NFTView: React.FC<{
@@ -64,8 +62,6 @@ export const NFTView: React.FC<{
   const flatStyle = StyleSheet.flatten(style);
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(nft.ownerId);
-  const { isDAO } = useIsDAO(nft.ownerId);
-  const network = getNetwork(nft.networkId);
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
@@ -160,15 +156,10 @@ export const NFTView: React.FC<{
                     zIndex: 1000,
                   }}
                 >
-                  <OptimizedImage
-                    sourceURI={userInfo.metadata.image}
-                    fallbackURI={nameServiceDefaultImage(isDAO, network)}
-                    width={32}
-                    height={32}
+                  <UserAvatarWithFrame
+                    userId={nft.ownerId}
+                    size="XXS"
                     style={{
-                      height: 32,
-                      width: 32,
-                      borderRadius: 18,
                       marginRight: 6,
                     }}
                   />

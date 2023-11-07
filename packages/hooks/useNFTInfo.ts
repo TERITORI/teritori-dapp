@@ -146,9 +146,8 @@ const getTNSNFTInfo = async (
     attributes: [],
     nftAddress: contractAddress,
     mintAddress: contractAddress,
-    imageURL: nftInfo.extension.image
-      ? nftInfo.extension.image
-      : nameServiceDefaultImage(false, network) || "",
+    imageURL:
+      nftInfo.extension.image || nameServiceDefaultImage(false, network) || "",
     tokenId,
     ownerAddress: vaultOwnerAddress || owner,
     isSeller: isListed && isOwner,
