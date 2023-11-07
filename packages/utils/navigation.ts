@@ -64,7 +64,6 @@ export type RootStackParamList = {
   CoreDAO: undefined;
 
   DAppStore: undefined;
-
   ToriPunks: { route: string };
 };
 
