@@ -92,8 +92,7 @@ export const getFeedClient = (networkId: string | undefined) => {
     return undefined;
   }
   if (!feedClients[network.id]) {
-    const backendEndpoint = network.backendEndpoint;
-    const rpc = new FeedGrpcWebImpl(backendEndpoint, {
+    const rpc = new FeedGrpcWebImpl(network.backendEndpoint, {
       debug: false,
     });
     feedClients[network.id] = new FeedServiceClientImpl(rpc);
