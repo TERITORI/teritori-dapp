@@ -1,5 +1,3 @@
-TERITORI_CONTRACTS_REPO=teritori-contracts
-
 CANDYMACHINE_REPO=teritori-nfts
 BUNKER_MINTER_PACKAGE=teritori-bunker-minter
 
@@ -201,7 +199,6 @@ $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
 	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(VAULT_REPO)/contracts/nft-vault/schema/execute_msg.json -o go/pkg/contracts/vault_types/execute_msg.go -p vault_types
 	go fmt ./go/pkg/contracts/vault_types
 	rm -fr $(VAULT_REPO)
-
 
 .PHONY: publish.backend
 publish.backend:
