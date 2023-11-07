@@ -7,6 +7,7 @@ import launchpad from "../../../../assets/icons/launchpad.svg";
 import marketplace from "../../../../assets/icons/marketplace.svg";
 import messages from "../../../../assets/icons/messages.svg";
 import multisig from "../../../../assets/icons/multisig.svg";
+import musicplayer from "../../../../assets/icons/musicplayer.svg";
 import osmosisSVG from "../../../../assets/icons/networks/osmosis.svg";
 import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
 import pathwar from "../../../../assets/icons/pathwar.svg";
@@ -333,6 +334,16 @@ export function getAvailableApps(): dAppGroup {
           title: "Freelance Service",
           description: "Find the perfect match for your project",
           icon: freelance,
+          route: "ComingSoon",
+          groupKey: "coming-soon",
+          selectedByDefault: false,
+          alwaysOn: false,
+        },
+        "music-player": {
+          id: "music-player",
+          title: "Music Player",
+          description: "Play your favorite music",
+          icon: musicplayer,
           route: "ComingSoon",
           groupKey: "coming-soon",
           selectedByDefault: false,
