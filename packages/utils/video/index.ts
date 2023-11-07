@@ -1,7 +1,5 @@
 import { VideoFileMetadata } from "../types/files";
 
-window.URL = window.URL || window.webkitURL;
-
 const getVideoDuration = (file: File) => {
   let duration = 0;
   try {
@@ -9,8 +7,9 @@ const getVideoDuration = (file: File) => {
     video.preload = "metadata";
 
     video.onloadedmetadata = () => {
-      window.URL.revokeObjectURL(file.path);
-      video.src = window.URL.createObjectURL(file);
+      const windowURL = window.URL || window.webkitURL;
+      windowURL.revokeObjectURL(file.path);
+      video.src = windowURL.createObjectURL(file);
       duration = video.duration;
     };
 
