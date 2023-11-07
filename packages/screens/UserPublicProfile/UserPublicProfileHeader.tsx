@@ -41,9 +41,6 @@ export const screenTabItems = {
   gnoDemo: {
     name: "POCs",
   },
-  musicAlbums: {
-    name: "Albums",
-  },
   // pathwar: {
   //   name: "Pathwar Challenges",
   //   disabled: true,

@@ -22,8 +22,6 @@ import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MultisigCreateScreen } from "../../screens/Multisig/MultisigCreateScreen";
 import { MultisigScreen } from "../../screens/Multisig/MultisigScreen";
 import { MultisigWalletDashboardScreen } from "../../screens/Multisig/MultisigWalletDashboardScreen";
-import { MusicScreen } from "../../screens/Music/MusicScreen";
-import { MusicAlbumScreen } from "../../screens/MusicAlbum/MusicAlbumScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
@@ -322,17 +320,6 @@ export const Navigator: React.FC = () => {
           name="CoreDAO"
           component={CoreDAOScreen}
           options={{ header: () => null, title: screenTitle("Core DAO") }}
-        />
-        {/* ==== Music */}
-        <Stack.Screen
-          name="Music"
-          component={MusicScreen}
-          options={{ header: () => null, title: screenTitle("Music") }}
-        />
-        <Stack.Screen
-          name="MusicAlbum"
-          component={MusicAlbumScreen}
-          options={{ header: () => null, title: screenTitle("Album Name") }}
         />
       </Stack.Navigator>
     </>

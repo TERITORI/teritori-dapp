@@ -20,7 +20,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   accountExplorer: "https://etherscan.io/address/$address",
   contractExplorer: "https://etherscan.io/address/$address",
   testnet: true,
-  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
+  backendEndpoint: "http://localhost:9090",
   vaultContractAddress: "",
   daoRegistryPkgPath: "gno.land/r/demo/teritori/dao_registry",
   socialFeedsPkgPath: "gno.land/r/demo/teritori/social_feeds",
