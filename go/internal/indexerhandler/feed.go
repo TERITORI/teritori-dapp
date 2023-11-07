@@ -85,8 +85,6 @@ func (h *Handler) handleExecuteDeletePost(e *Message, execMsg *wasmtypes.MsgExec
 		return errors.Wrap(err, "failed to set deleted to post")
 	}
 
-	// TODO: remove album if album
-
 	return nil
 }
 
@@ -169,8 +167,7 @@ func (h *Handler) createPost(
 ) error {
 	var metadataJSON map[string]interface{}
 	if err := json.Unmarshal([]byte(createPostMsg.Metadata), &metadataJSON); err != nil {
-		h.logger.Warn("failed to unmarshal post metadata", zap.String("tx", e.TxHash), zap.Error(err))
-		return nil
+		return errors.Wrap(err, "failed to unmarshal metadata")
 	}
 
 	createdAt, err := e.GetBlockTime()
@@ -194,27 +191,6 @@ func (h *Handler) createPost(
 	}
 	if !isBot {
 		h.handleQuests(execMsg, createPostMsg)
-	}
-
-	if createPostMsg.Category == 10 { // Music album
-		identifier := createPostMsg.Identifier
-
-		createdAt, err := e.GetBlockTime()
-		if err != nil {
-			return errors.Wrap(err, "failed to get block time")
-		}
-
-		musicAlbum := indexerdb.MusicAlbum{
-			Identifier: h.config.Network.ObjectID(identifier),
-			Metadata:   metadataJSON,
-			CreatedBy:  h.config.Network.UserID(execMsg.Sender),
-			CreatedAt:  createdAt.Unix(),
-		}
-
-		if err := h.db.Create(&musicAlbum).Error; err != nil {
-			return errors.Wrap(err, "failed to create music album")
-		}
-		return nil
 	}
 
 	return nil
