@@ -5,6 +5,5 @@ export interface Media {
   createdBy: string;
   fileUrl: string;
   duration?: number;
-  albumId?: string;
   postId?: string;
 }

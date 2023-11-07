@@ -31,19 +31,12 @@ export const MediaNameImage: FC<{
   return (
     <OmniLink
       style={[{ alignSelf: "flex-start" }, style]}
-      to={
-        media?.albumId
-          ? {
-              screen: "MusicAlbum",
-              params: { id: media?.albumId },
-            }
-          : {
-              screen: "FeedPostView",
-              params: {
-                id: getNetworkObjectId(network?.id, media?.postId) || "",
-              },
-            }
-      }
+      to={{
+        screen: "FeedPostView",
+        params: {
+          id: getNetworkObjectId(network?.id, media?.postId) || "",
+        },
+      }}
     >
       <View
         style={{
