@@ -24,7 +24,7 @@ import { RichText } from "../../components/socialFeed/RichText";
 import { PublishValues } from "../../components/socialFeed/RichText/RichText.type";
 import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useGetPostFee } from "../../hooks/feed/useGetPostFee";
+import { useFeedPostFee } from "../../hooks/feed/useFeedPostFee";
 import { useUpdateAvailableFreePost } from "../../hooks/feed/useUpdateAvailableFreePost";
 import { useBalances } from "../../hooks/useBalances";
 import { useIsMobile } from "../../hooks/useIsMobile";
@@ -54,7 +54,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const selectNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkId = selectNetworkInfo?.id || "";
   const wallet = useSelectedWallet();
-  const { postFee } = useGetPostFee(selectedNetworkId, PostCategory.Article);
+  const { postFee } = useFeedPostFee(selectedNetworkId, PostCategory.Article);
   const { freePostCount } = useUpdateAvailableFreePost(
     selectedNetworkId,
     PostCategory.Article,
