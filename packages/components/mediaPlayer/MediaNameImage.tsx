@@ -4,7 +4,6 @@ import { StyleProp, View, ViewStyle } from "react-native";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { getNetworkObjectId, parseUserId } from "../../networks";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { tinyAddress } from "../../utils/text";
@@ -53,7 +52,7 @@ export const MediaNameImage: FC<{
         }}
       >
         <OptimizedImage
-          sourceURI={ipfsURLToHTTPURL(media.imageUrl)}
+          sourceURI={media.imageUrl}
           style={{ height: imageHeight, width: imageWidth }}
           height={imageHeight}
           width={imageWidth}
