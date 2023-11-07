@@ -157,64 +157,66 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 	}
 
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`
-			WITH count_by_collection AS (
-				SELECT count(1), collection_id FROM nfts GROUP BY nfts.collection_id
-			),
-			tori_collections AS (
-				SELECT c.*, tc.* FROM collections AS c
-				INNER JOIN teritori_collections tc ON tc.collection_id = c.id
-				%s
-				AND tc.mint_contract_address IN ?
-			),
-			nft_by_collection AS (
-				SELECT  tc.id,n.id  nft_id  FROM tori_collections AS tc
-				INNER JOIN nfts AS n ON tc.id = n.collection_id
-			),
-			activities_on_period AS (
-				SELECT * FROM activities a2 WHERE a2."time" > ?
-			),
-			trades_on_period AS (
-				SELECT * FROM trades t2 INNER JOIN activities_on_period aop
-				ON aop.id = t2.activity_id
-			),
-     activities_on_period_comparision AS (
-         SELECT * FROM activities a2 WHERE a2."time" < ? and a2."time" > ?
-     ),
-     trades_on_period_comparision AS (
-         SELECT * FROM trades t2 INNER JOIN activities_on_period_comparision aop
-                                            ON aop.id = t2.activity_id
-     ),
-     trades_by_collection_historic AS (
-         select COALESCE(sum(cast(t.price as float8)),0) as total_volume, COALESCE(sum(t.usd_price),0) as total_volume_usd, c.id, count(*) num_trades
-         FROM trades t join activities a on a.id = t.activity_id
-                       join teritori_collections tc on split_part(a.nft_id,'-',2)=tc.mint_contract_address
-                       join collections c on c.id = tc.collection_id
-         group by c.id),
-     current_num_owners AS (
-         select count (DISTINCT owner_id) num_owners, collection_id, min(price_amount) floor_price
-         from nfts
-         group by collection_id),
-			trades_by_collection AS (
-				SELECT SUM(cast(t.price as float8)) volume, nbc.id FROM trades_on_period AS t
-				INNER JOIN nft_by_collection nbc ON nbc.nft_id = t.nft_id
-				GROUP BY nbc.id
-      ),
-     trades_by_collection_comparision AS (
-         SELECT SUM(cast(t.price as float8)) volume, nbc.id 
-         FROM trades_on_period_comparision AS t
-         INNER JOIN nft_by_collection nbc ON nbc.nft_id = t.nft_id
-         GROUP BY nbc.id
-     )
-      SELECT tc.*, COALESCE((SELECT tbc.volume FROM trades_by_collection tbc WHERE tbc.id = tc.id), 0) volume,
-         total_volume, floor_price, num_trades, num_owners, 
-       COALESCE((SELECT tcc.volume FROM trades_by_collection_comparision tcc WHERE tcc.id = tc.id), 0) volume_compare
-      FROM tori_collections tc
-      left join trades_by_collection_historic tch on tc.id = tch.id
-      left join current_num_owners on tc.collection_id = current_num_owners.collection_id
-			ORDER BY %s
-			LIMIT ?
-			OFFSET ?
-		`, where, orderSQL), // order By here or it won't work
+    WITH count_by_collection AS (
+      SELECT count(1), collection_id FROM nfts GROUP BY nfts.collection_id
+    ),
+    tori_collections AS (
+      SELECT c.*, tc.* FROM collections AS c
+      INNER JOIN teritori_collections tc ON tc.collection_id = c.id
+      %s
+      AND c.network_id = ?
+      AND tc.mint_contract_address IN ?
+    ),
+    nft_by_collection AS (
+      SELECT  tc.id,n.id  nft_id  FROM tori_collections AS tc
+      INNER JOIN nfts AS n ON tc.id = n.collection_id
+    ),
+    activities_on_period AS (
+      SELECT * FROM activities a2 WHERE a2."time" > ?
+    ),
+    trades_on_period AS (
+      SELECT * FROM trades t2 INNER JOIN activities_on_period aop
+      ON aop.id = t2.activity_id
+    ),
+    activities_on_period_comparision AS (
+        SELECT * FROM activities a2 WHERE a2."time" < ? and a2."time" > ?
+    ),
+    trades_on_period_comparision AS (
+        SELECT * FROM trades t2 INNER JOIN activities_on_period_comparision aop
+                                          ON aop.id = t2.activity_id
+    ),
+    trades_by_collection_historic AS (
+        select COALESCE(sum(cast(t.price as float8)),0) as total_volume, COALESCE(sum(t.usd_price),0) as total_volume_usd, c.id, count(*) num_trades
+        FROM trades t join activities a on a.id = t.activity_id
+                      join teritori_collections tc on split_part(a.nft_id,'-',2)=tc.mint_contract_address
+                      join collections c on c.id = tc.collection_id
+        group by c.id),
+    current_num_owners AS (
+        select count (DISTINCT owner_id) num_owners, collection_id, min(price_amount) floor_price
+        from nfts
+        group by collection_id),
+    trades_by_collection AS (
+      SELECT SUM(cast(t.price as float8)) volume, nbc.id FROM trades_on_period AS t
+      INNER JOIN nft_by_collection nbc ON nbc.nft_id = t.nft_id
+      GROUP BY nbc.id
+    ),
+    trades_by_collection_comparision AS (
+        SELECT SUM(cast(t.price as float8)) volume, nbc.id 
+        FROM trades_on_period_comparision AS t
+        INNER JOIN nft_by_collection nbc ON nbc.nft_id = t.nft_id
+        GROUP BY nbc.id
+    )
+    SELECT tc.*, COALESCE((SELECT tbc.volume FROM trades_by_collection tbc WHERE tbc.id = tc.id), 0) volume,
+        total_volume, floor_price, num_trades, num_owners, 
+      COALESCE((SELECT tcc.volume FROM trades_by_collection_comparision tcc WHERE tcc.id = tc.id), 0) volume_compare
+    FROM tori_collections tc
+    left join trades_by_collection_historic tch on tc.id = tch.id
+    left join current_num_owners on tc.collection_id = current_num_owners.collection_id
+    ORDER BY %s
+    LIMIT ?
+    OFFSET ?
+	`, where, orderSQL), // order By here or it won't work
+		network.GetBase().ID,
 		s.conf.Whitelist,
 		time.Now().AddDate(0, 0, -30),
 		time.Now().AddDate(0, 0, -30),
