@@ -8,6 +8,12 @@ export const notificationsQueryKey = (userId: string | undefined) => [
   "notifications",
   userId,
 ];
+import {
+  FollowingUsersRequest,
+  NotificationsRequest,
+} from "../api/notification/v1/notification";
+import { parseNetworkObjectId } from "../networks";
+import { mustGetNotificationClient } from "../utils/backend";
 
 export const useNotifications = (req: Partial<NotificationsRequest>) => {
   const { userId, ...rest } = req;
@@ -28,6 +34,27 @@ export const useNotifications = (req: Partial<NotificationsRequest>) => {
       return notifications;
     },
     { staleTime: Infinity, refetchInterval: 10000 },
+  );
+  return data;
+};
+
+export const useFollowingUserNotifications = (
+  req: Partial<FollowingUsersRequest>
+) => {
+  const { data } = useQuery(
+    ["followingUserNotifications", req],
+    async () => {
+      const networkId = parseNetworkObjectId(req?.userId);
+
+      if (!networkId) {
+        return [];
+      }
+
+      const notificationService = mustGetNotificationClient(networkId[0]?.id);
+      const { notifications } = await notificationService.FollowingUsers(req);
+      return notifications;
+    },
+    { staleTime: Infinity }
   );
   return data;
 };

@@ -17,10 +17,9 @@ export const screenTabItems = {
   nfts: {
     name: "NFTs",
   },
-  // activity: {
-  //   name: "Activity",
-  //   disabled: true,
-  // },
+  following: {
+    name: "Following",
+  },
   quests: {
     name: "Quests",
   },

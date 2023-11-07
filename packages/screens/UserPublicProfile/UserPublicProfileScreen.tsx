@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { View } from "react-native";
 
+import { Tab as FollowingTab } from "./Following/Tab";
 import {
   screenTabItems,
   UserPublicProfileScreenHeader,
@@ -175,8 +176,8 @@ const SelectedTabContent: React.FC<{
       );
     case "nfts":
       return <UPPNFTs userId={userId} />;
-    // case "activity":
-    //   return <UPPActivity />;
+    case "following":
+      return <FollowingTab userId={userId} />;
     case "quests":
       return <Quests userId={userId} />;
     // case "pathwar":

@@ -102,3 +102,50 @@ func (s *NotificationService) DismissAllNotifications(ctx context.Context, req *
 	}
 	return &notificationpb.DismissAllNotificationsResponse{}, nil
 }
+
+func (s *NotificationService) FollowingUsers(ctx context.Context, req *notificationpb.FollowingUsersRequest) (*notificationpb.FollowingUsersResponse, error) {
+	query := s.conf.IndexerDB
+	userId := req.GetUserId()
+	if userId == "" {
+		return nil, errors.New("empty user id")
+	}
+
+	var followingUsers []*indexerdb.FollowUser
+	err := s.conf.IndexerDB.Where("user_id = ?", userId).Find(&followingUsers).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query followers")
+	}
+	userIdsOfUsersFollowedByUser := []string(nil)
+	for _, d := range followingUsers {
+		userIdsOfUsersFollowedByUser = append(userIdsOfUsersFollowedByUser, string(d.FollowUserId))
+	}
+
+	// currently we show all notifications from the users in the following list
+	// however; we might want to hide our own notification to this user. Or maybe not🤔
+	query = query.Where("user_id IN ?", userIdsOfUsersFollowedByUser).Order("created_at desc")
+
+	var notifications []*indexerdb.Notification
+	err = query.Find(&notifications).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
+
+	pbNotifications := make([]*notificationpb.Notification, len(notifications))
+	for i, d := range notifications {
+
+		pbNotifications[i] = &notificationpb.Notification{
+			UserId:    string(d.UserId),
+			TriggerBy: string(d.TriggerBy),
+			Body:      d.Body,
+			Action:    d.Action,
+			Category:  d.Category,
+			CreatedAt: d.CreatedAt,
+			Dismissed: d.Dismissed,
+			Id:        d.Id,
+		}
+	}
+
+	return &notificationpb.FollowingUsersResponse{
+		Notifications: pbNotifications,
+	}, nil
+}

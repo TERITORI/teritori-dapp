@@ -7,6 +7,7 @@ service NotificationService {
   rpc Notifications(NotificationsRequest) returns (NotificationsResponse);
   rpc DismissNotification(DismissNotificationRequest) returns (DismissNotificationResponse);
   rpc DismissAllNotifications(DismissAllNotificationsRequest) returns (DismissAllNotificationsResponse);
+  rpc FollowingUsers(FollowingUsersRequest) returns (FollowingUsersResponse);
 }
 
 // DismissNotification
@@ -45,4 +46,16 @@ message Notification {
   bool dismissed = 7;
   int64 id = 8;
 }
+// --
+
+// FollowingUsers
+
+message FollowingUsersRequest {
+  string user_id = 1;
+}
+
+message FollowingUsersResponse {
+  repeated Notification notifications = 1;
+}
+
 // --
