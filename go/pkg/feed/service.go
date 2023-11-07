@@ -126,11 +126,11 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to query followers")
 		}
-		options := []string(nil)
+		authorIds := []string(nil)
 		for _, d := range followingUsers {
-			options = append(options, string(d.FollowUserId))
+			authorIds = append(authorIds, string(d.FollowUserId))
 		}
-		query = query.Where("author_id IN ?", options)
+		query = query.Where("author_id IN ?", authorIds)
 	}
 	if len(hashtags) > 0 {
 		formattedHashtags := make([]string, 0)
