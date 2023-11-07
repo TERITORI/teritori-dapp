@@ -139,7 +139,5 @@ func (s *FollowService) FollowUser(ctx context.Context, req *followpb.FollowUser
 		}
 	}
 
-	return &followpb.FollowUserResponse{
-		Ok: true,
-	}, nil
+	return &followpb.FollowUserResponse{}, nil
 }

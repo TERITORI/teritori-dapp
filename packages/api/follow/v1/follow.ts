@@ -13,7 +13,6 @@ export interface FollowUserRequest {
 }
 
 export interface FollowUserResponse {
-  ok: boolean;
 }
 
 /** Followers */
@@ -108,14 +107,11 @@ export const FollowUserRequest = {
 };
 
 function createBaseFollowUserResponse(): FollowUserResponse {
-  return { ok: false };
+  return {};
 }
 
 export const FollowUserResponse = {
-  encode(message: FollowUserResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.ok === true) {
-      writer.uint32(8).bool(message.ok);
-    }
+  encode(_: FollowUserResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
@@ -126,9 +122,6 @@ export const FollowUserResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.ok = reader.bool();
-          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -137,19 +130,17 @@ export const FollowUserResponse = {
     return message;
   },
 
-  fromJSON(object: any): FollowUserResponse {
-    return { ok: isSet(object.ok) ? Boolean(object.ok) : false };
+  fromJSON(_: any): FollowUserResponse {
+    return {};
   },
 
-  toJSON(message: FollowUserResponse): unknown {
+  toJSON(_: FollowUserResponse): unknown {
     const obj: any = {};
-    message.ok !== undefined && (obj.ok = message.ok);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<FollowUserResponse>, I>>(object: I): FollowUserResponse {
+  fromPartial<I extends Exact<DeepPartial<FollowUserResponse>, I>>(_: I): FollowUserResponse {
     const message = createBaseFollowUserResponse();
-    message.ok = object.ok ?? false;
     return message;
   },
 };

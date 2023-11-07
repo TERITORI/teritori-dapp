@@ -16,7 +16,7 @@ message FollowUserRequest {
   string follow_user_id = 2;
 }
 message FollowUserResponse {
-  bool ok = 1;
+
 }
 // --
 
