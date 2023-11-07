@@ -42,286 +42,279 @@ import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPub
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const screenTitle = (title: string) => "Teritori - " + title;
 
 export const Navigator: React.FC = () => {
   return (
-    <>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ header: () => null, title: screenTitle("Home") }}
-        />
-        <Stack.Screen
-          name="MyCollection"
-          component={MyCollectionScreen}
-          options={{ header: () => null, title: screenTitle("My Collection") }}
-        />
-        <Stack.Screen
-          name="Guardians"
-          component={GuardiansScreen}
-          options={{ header: () => null, title: screenTitle("Guardians") }}
-        />
-        <Stack.Screen
-          name="RiotGame"
-          component={RiotGameScreen}
-          options={{ header: () => null }}
-        />
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ header: () => null, title: screenTitle("Home") }}
+      />
+      <Stack.Screen
+        name="MyCollection"
+        component={MyCollectionScreen}
+        options={{ header: () => null, title: screenTitle("My Collection") }}
+      />
+      <Stack.Screen
+        name="Guardians"
+        component={GuardiansScreen}
+        options={{ header: () => null, title: screenTitle("Guardians") }}
+      />
+      <Stack.Screen
+        name="RiotGame"
+        component={RiotGameScreen}
+        options={{ header: () => null }}
+      />
 
-        <Stack.Screen
-          name="Marketplace"
-          component={MarketplaceScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("NFT Marketplace - Popular Collections"),
-          }}
-        />
-        <Stack.Screen
-          name="Governance"
-          component={GovernanceScreen}
-          options={{ header: () => null, title: screenTitle("Governance") }}
-        />
-        <Stack.Screen
-          name="UserPublicProfile"
-          component={UserPublicProfileScreen}
-          options={{ header: () => null }}
-        />
-        <Stack.Screen
-          name="RiotersFooter"
-          component={RiotersFooterScreen}
-          options={{ header: () => null, title: screenTitle("Rioters Footer") }}
-        />
+      <Stack.Screen
+        name="Marketplace"
+        component={MarketplaceScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("NFT Marketplace - Popular Collections"),
+        }}
+      />
+      <Stack.Screen
+        name="Governance"
+        component={GovernanceScreen}
+        options={{ header: () => null, title: screenTitle("Governance") }}
+      />
+      <Stack.Screen
+        name="UserPublicProfile"
+        component={UserPublicProfileScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="RiotersFooter"
+        component={RiotersFooterScreen}
+        options={{ header: () => null, title: screenTitle("Rioters Footer") }}
+      />
 
-        {/* === Riot Game */}
-        <Stack.Screen
-          name="RiotGameEnroll"
-          component={RiotGameEnrollScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("Riot Game Enroll"),
-          }}
-        />
-        <Stack.Screen
-          name="RiotGameFight"
-          component={RiotGameFightScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("Riot Game Fight"),
-          }}
-        />
-        <Stack.Screen
-          name="RiotGameBreeding"
-          component={RiotGameBreedingScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("Riot Game Breeding"),
-          }}
-        />
-        <Stack.Screen
-          name="RiotGameMarketplace"
-          component={RiotGameMarketplaceScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("Riot Game Marketplace"),
-          }}
-        />
-        <Stack.Screen
-          name="RiotGameMemories"
-          component={RiotGameMemoriesScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("Riot Game Memories"),
-          }}
-        />
-        <Stack.Screen
-          name="RiotGameLeaderboard"
-          component={RiotGameLeaderboardScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("Riot Game Leaderboard"),
-          }}
-        />
-        <Stack.Screen
-          name="RiotGameInventory"
-          component={RiotGameInventoryScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("Riot Game Inventory"),
-          }}
-        />
+      {/* === Riot Game */}
+      <Stack.Screen
+        name="RiotGameEnroll"
+        component={RiotGameEnrollScreen}
+        options={{ header: () => null, title: screenTitle("Riot Game Enroll") }}
+      />
+      <Stack.Screen
+        name="RiotGameFight"
+        component={RiotGameFightScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Fight"),
+        }}
+      />
+      <Stack.Screen
+        name="RiotGameBreeding"
+        component={RiotGameBreedingScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Breeding"),
+        }}
+      />
+      <Stack.Screen
+        name="RiotGameMarketplace"
+        component={RiotGameMarketplaceScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Marketplace"),
+        }}
+      />
+      <Stack.Screen
+        name="RiotGameMemories"
+        component={RiotGameMemoriesScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Memories"),
+        }}
+      />
+      <Stack.Screen
+        name="RiotGameLeaderboard"
+        component={RiotGameLeaderboardScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Leaderboard"),
+        }}
+      />
+      <Stack.Screen
+        name="RiotGameInventory"
+        component={RiotGameInventoryScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Inventory"),
+        }}
+      />
 
-        {/* ==== Wallet Manager */}
-        <Stack.Screen
-          name="WalletManager"
-          component={WalletManagerScreen}
-          options={{ header: () => null, title: screenTitle("Wallet Manager") }}
-        />
-        <Stack.Screen
-          name="WalletManagerWallets"
-          component={WalletManagerWalletsScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("Wallet Manager (Wallets)"),
-          }}
-        />
-        <Stack.Screen
-          name="WalletManagerChains"
-          component={WalletManagerWalletsScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("Wallet Manager (Chains)"),
-          }}
-        />
+      {/* ==== Wallet Manager */}
+      <Stack.Screen
+        name="WalletManager"
+        component={WalletManagerScreen}
+        options={{ header: () => null, title: screenTitle("Wallet Manager") }}
+      />
+      <Stack.Screen
+        name="WalletManagerWallets"
+        component={WalletManagerWalletsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Wallet Manager (Wallets)"),
+        }}
+      />
+      <Stack.Screen
+        name="WalletManagerChains"
+        component={WalletManagerWalletsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Wallet Manager (Chains)"),
+        }}
+      />
 
-        {/* ==== Launchpad */}
-        <Stack.Screen
-          name="Launchpad"
-          component={LaunchpadScreen}
-          options={{ header: () => null, title: screenTitle("Launchpad") }}
-        />
-        <Stack.Screen
-          name="LaunchpadApply"
-          component={LaunchpadApplyScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("Launchpad (Apply)"),
-          }}
-        />
-        <Stack.Screen
-          name="MintCollection"
-          component={MintCollectionScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("Mint Collection"),
-          }}
-        />
+      {/* ==== Launchpad */}
+      <Stack.Screen
+        name="Launchpad"
+        component={LaunchpadScreen}
+        options={{ header: () => null, title: screenTitle("Launchpad") }}
+      />
+      <Stack.Screen
+        name="LaunchpadApply"
+        component={LaunchpadApplyScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad (Apply)"),
+        }}
+      />
+      <Stack.Screen
+        name="MintCollection"
+        component={MintCollectionScreen}
+        options={{ header: () => null, title: screenTitle("Mint Collection") }}
+      />
 
-        {/* ==== Multisig */}
-        <Stack.Screen
-          name="Multisig"
-          component={MultisigScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("Multisig Wallets"),
-          }}
-        />
-        <Stack.Screen
-          name="MultisigCreate"
-          component={MultisigCreateScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("Create Multisig Wallet"),
-          }}
-        />
-        <Stack.Screen
-          name="MultisigWalletDashboard"
-          component={MultisigWalletDashboardScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("Multisig Wallet Dashboard"),
-          }}
-        />
+      {/* ==== Multisig */}
+      <Stack.Screen
+        name="Multisig"
+        component={MultisigScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Multisig Wallets"),
+        }}
+      />
+      <Stack.Screen
+        name="MultisigCreate"
+        component={MultisigCreateScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Create Multisig Wallet"),
+        }}
+      />
+      <Stack.Screen
+        name="MultisigWalletDashboard"
+        component={MultisigWalletDashboardScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Multisig Wallet Dashboard"),
+        }}
+      />
 
-        {/* ==== Organization */}
+      {/* ==== Organization */}
 
-        <Stack.Screen
-          name="OrganizationDeployer"
-          component={OrganizationDeployerScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("Organization Deployer"),
-          }}
-        />
-        <Stack.Screen
-          name="Organizations"
-          component={OrganizationsScreen}
-          options={{
-            header: () => null,
-            title: screenTitle("Organizations"),
-          }}
-        />
+      <Stack.Screen
+        name="OrganizationDeployer"
+        component={OrganizationDeployerScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Organization Deployer"),
+        }}
+      />
+      <Stack.Screen
+        name="Organizations"
+        component={OrganizationsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Organizations"),
+        }}
+      />
 
-        {/* ==== Teritori Name Service*/}
-        <Stack.Screen
-          name="TNSHome"
-          component={TNSHomeScreen}
-          options={{ header: () => null, title: screenTitle("Name Service") }}
-        />
-        <Stack.Screen
-          name="Collection"
-          component={CollectionScreen}
-          options={{ header: () => null, title: screenTitle("Collection") }}
-        />
-        <Stack.Screen
-          name="NFTDetail"
-          component={NFTDetailScreen}
-          options={{ header: () => null, title: screenTitle("NFT") }}
-        />
-        <Stack.Screen
-          name="Staking"
-          component={StakeScreen}
-          options={{ header: () => null, title: screenTitle("Staking") }}
-        />
-        {/* ==== Swap*/}
-        <Stack.Screen
-          name="Swap"
-          component={SwapScreen}
-          options={{ header: () => null, title: screenTitle("Swap") }}
-        />
-        <Stack.Screen
-          name="ComingSoon"
-          component={ComingSoonScreen}
-          options={{ header: () => null }}
-        />
-        <Stack.Screen
-          name="CollectionTools"
-          component={CollectionToolsScreen}
-          options={{ header: () => null }}
-        />
-        <Stack.Screen
-          name="Settings"
-          component={SettingsScreen}
-          options={{ header: () => null }}
-        />
-        <Stack.Screen
-          name="FeedNewArticle"
-          component={FeedNewArticleScreen}
-          options={{ header: () => null, title: screenTitle("New Article") }}
-        />
+      {/* ==== Teritori Name Service*/}
+      <Stack.Screen
+        name="TNSHome"
+        component={TNSHomeScreen}
+        options={{ header: () => null, title: screenTitle("Name Service") }}
+      />
+      <Stack.Screen
+        name="Collection"
+        component={CollectionScreen}
+        options={{ header: () => null, title: screenTitle("Collection") }}
+      />
+      <Stack.Screen
+        name="NFTDetail"
+        component={NFTDetailScreen}
+        options={{ header: () => null, title: screenTitle("NFT") }}
+      />
+      <Stack.Screen
+        name="Staking"
+        component={StakeScreen}
+        options={{ header: () => null, title: screenTitle("Staking") }}
+      />
+      {/* ==== Swap*/}
+      <Stack.Screen
+        name="Swap"
+        component={SwapScreen}
+        options={{ header: () => null, title: screenTitle("Swap") }}
+      />
+      <Stack.Screen
+        name="ComingSoon"
+        component={ComingSoonScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="CollectionTools"
+        component={CollectionToolsScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="FeedNewArticle"
+        component={FeedNewArticleScreen}
+        options={{ header: () => null, title: screenTitle("New Article") }}
+      />
 
-        <Stack.Screen
-          name="FeedPostView"
-          component={FeedPostViewScreen}
-          options={{ header: () => null, title: "Teritori" }}
-        />
-        <Stack.Screen
-          name="Feed"
-          component={FeedScreen}
-          options={{ header: () => null, title: screenTitle("Feed") }}
-        />
-        <Stack.Screen
-          name="HashtagFeed"
-          component={HashtagFeedScreen}
-          options={{ header: () => null, title: screenTitle("") }}
-        />
-        <Stack.Screen
-          name="ToriPunks"
-          component={ToriPunks}
-          options={{ header: () => null, title: screenTitle("ToriPunks") }}
-        />
-        <Stack.Screen
-          name="DAppStore"
-          component={DAppStoreScreen}
-          options={{ header: () => null, title: screenTitle("dApp Store") }}
-        />
-        <Stack.Screen
-          name="CoreDAO"
-          component={CoreDAOScreen}
-          options={{ header: () => null, title: screenTitle("Core DAO") }}
-        />
-      </Stack.Navigator>
-    </>
+      <Stack.Screen
+        name="FeedPostView"
+        component={FeedPostViewScreen}
+        options={{ header: () => null, title: "Teritori" }}
+      />
+      <Stack.Screen
+        name="Feed"
+        component={FeedScreen}
+        options={{ header: () => null, title: screenTitle("Feed") }}
+      />
+      <Stack.Screen
+        name="HashtagFeed"
+        component={HashtagFeedScreen}
+        options={{ header: () => null, title: screenTitle("") }}
+      />
+      <Stack.Screen
+        name="ToriPunks"
+        component={ToriPunks}
+        options={{ header: () => null, title: screenTitle("ToriPunks") }}
+      />
+      <Stack.Screen
+        name="DAppStore"
+        component={DAppStoreScreen}
+        options={{ header: () => null, title: screenTitle("dApp Store") }}
+      />
+      <Stack.Screen
+        name="CoreDAO"
+        component={CoreDAOScreen}
+        options={{ header: () => null, title: screenTitle("Core DAO") }}
+      />
+    </Stack.Navigator>
   );
 };
