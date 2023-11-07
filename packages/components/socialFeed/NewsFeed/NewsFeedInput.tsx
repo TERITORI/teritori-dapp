@@ -31,7 +31,7 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useDAOMakeProposal } from "../../../hooks/dao/useDAOMakeProposal";
 import { useBotPost } from "../../../hooks/feed/useBotPost";
 import { useCreatePost } from "../../../hooks/feed/useCreatePost";
-import { useGetPostFee } from "../../../hooks/feed/useGetPostFee";
+import { useFeedPostFee } from "../../../hooks/feed/useFeedPostFee";
 import { useUpdateAvailableFreePost } from "../../../hooks/feed/useUpdateAvailableFreePost";
 import { useBalances } from "../../../hooks/useBalances";
 import { useIsMobile } from "../../../hooks/useIsMobile";
@@ -191,7 +191,7 @@ export const NewsFeedInput = React.forwardRef<
     );
     const formValues = watch();
     const userIPFSKey = useSelector(selectNFTStorageAPI);
-    const { postFee } = useGetPostFee(
+    const { postFee } = useFeedPostFee(
       selectedNetworkId,
       getPostCategory(formValues)
     );
