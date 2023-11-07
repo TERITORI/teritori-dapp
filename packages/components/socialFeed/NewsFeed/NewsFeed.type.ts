@@ -13,7 +13,6 @@ export enum PostCategory {
   Question,
   BriefForStableDiffusion,
   Flagged,
-  MusicAlbum,
 }
 
 export interface NewPostFormValues {

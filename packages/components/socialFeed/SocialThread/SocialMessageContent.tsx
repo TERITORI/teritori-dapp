@@ -8,7 +8,6 @@ import {
   convertGIFToLocalFileType,
   SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
 } from "../../../utils/social-feed";
-import { BrandText } from "../../BrandText";
 import { AudioView } from "../../FilePreview/AudioView";
 import { ImagesViews } from "../../FilePreview/ImagesViews";
 import { VideoView } from "../../FilePreview/VideoView";
@@ -69,8 +68,6 @@ export const SocialMessageContent: React.FC<Props> = ({
           />
         </View>
       );
-    } else if (postCategory === PostCategory.MusicAlbum) {
-      return <BrandText>TODO: Music album</BrandText>;
     } else {
       return (
         <>
