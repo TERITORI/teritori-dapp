@@ -36,7 +36,6 @@ type CosmosNetwork struct {
 	RiotersFooterContractAddress      string `json:"riotersFooterContractAddress"`
 	SocialFeedContractAddress         string `json:"socialFeedContractAddress"`
 	DaoFactoryContractAddress         string `json:"daoFactoryContractAddress"`
-	VideoContractAddress              string `json:"videoContractAddress"`
 }
 
 var _ Network = &CosmosNetwork{}
