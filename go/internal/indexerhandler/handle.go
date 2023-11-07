@@ -289,7 +289,8 @@ func (h *Handler) handleExecute(e *Message) error {
 		if err := h.handleExecuteDAOExecute(e, &executeMsg); err != nil {
 			return errors.Wrap(err, "failed to handle dao execute")
 		}
-  }
+	}
+
 	return nil
 }
 
