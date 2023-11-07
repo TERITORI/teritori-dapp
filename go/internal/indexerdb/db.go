@@ -60,19 +60,9 @@ var allModels = []interface{}{
 	&DAO{},
 	&DAOMember{},
 	&DAOProposal{},
-	&Video{},
-	&VideoLibrary{},
 
 	// names
 	&Name{},
-
-	// music/video
-	&Video{},
-	&VideoLibrary{},
-	&VideoViewCount{},
-  &VideoLike{},
-  &VideoDislike{},
-  &VideoComment{},
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {

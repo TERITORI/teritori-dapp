@@ -289,39 +289,7 @@ func (h *Handler) handleExecute(e *Message) error {
 		if err := h.handleExecuteDAOExecute(e, &executeMsg); err != nil {
 			return errors.Wrap(err, "failed to handle dao execute")
 		}
-	// Video actions
-	case "create_video":
-		if executeMsg.Contract == h.config.Network.VideoContractAddress {
-			if err := h.handleExecuteCreateVideo(e, &executeMsg); err != nil {
-				return errors.Wrap(err, "failed to handle create video execute")
-			}
-		}
-	case "delete_video":
-		if executeMsg.Contract == h.config.Network.VideoContractAddress {
-			if err := h.handleExecuteDeleteVideo(e, &executeMsg); err != nil {
-				return errors.Wrap(err, "failed to handle delete video execute")
-			}
-		}
-	case "add_to_library":
-		if executeMsg.Contract == h.config.Network.VideoContractAddress {
-			if err := h.handleExecuteAddToLibrary(e, &executeMsg); err != nil {
-				return errors.Wrap(err, "failed to handle add to library execute")
-			}
-		}
-	case "remove_from_library":
-		if executeMsg.Contract == h.config.Network.VideoContractAddress {
-			if err := h.handleExecuteRemoveFromLibrary(e, &executeMsg); err != nil {
-				return errors.Wrap(err, "failed to handle remove from library execute")
-			}
-		}
-	case "create_video_comment":
-		if executeMsg.Contract == h.config.Network.VideoContractAddress {
-			if err := h.handleExecuteCreateComment(e, &executeMsg); err != nil {
-				return errors.Wrap(err, "failed to handle create comment for video")
-			}
-		}
-	}
-
+  }
 	return nil
 }
 

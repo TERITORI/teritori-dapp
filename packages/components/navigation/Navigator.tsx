@@ -39,8 +39,6 @@ import { StakeScreen } from "../../screens/Stake";
 import { SwapScreen } from "../../screens/Swap/SwapScreen";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
 import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
-import { VideosScreen } from "../../screens/Video/VideosScreen";
-import { VideoDetailScreen } from "../../screens/VideoDetail/VideoDetailScreen";
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
@@ -316,16 +314,6 @@ export const Navigator: React.FC = () => {
         name="CoreDAO"
         component={CoreDAOScreen}
         options={{ header: () => null, title: screenTitle("Core DAO") }}
-      />
-      <Stack.Screen
-        name="Video"
-        component={VideosScreen}
-        options={{ header: () => null, title: screenTitle("Video") }}
-      />
-      <Stack.Screen
-        name="VideoDetail"
-        component={VideoDetailScreen}
-        options={{ header: () => null, title: screenTitle("Video Detail") }}
       />
     </Stack.Navigator>
   );

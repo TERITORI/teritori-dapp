@@ -27,7 +27,7 @@ export const TimerSliderMobile: FC<{
           height: 0,
         }}
         thumbTintColor={secondaryColor}
-        maximumValue={media?.duration}
+        maximumValue={playbackStatus?.durationMillis || media?.duration}
         minimumTrackTintColor={secondaryColor}
         maximumTrackTintColor={neutral55}
         //TODO: Increase bar height is isSliding. By extension, change style, remove borderRadius etc. But this style prop doesn't allow to style the bar :'(
