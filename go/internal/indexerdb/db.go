@@ -61,10 +61,6 @@ var allModels = []interface{}{
 	&DAOMember{},
 	&DAOProposal{},
 
-	//music player
-	&MusicAlbum{},
-	&MusicLibrary{},
-
 	// names
 	&Name{},
 }
