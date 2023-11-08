@@ -241,7 +241,7 @@ func (h *Handler) handleExecuteTipPost(e *Message, execMsg *wasmtypes.MsgExecute
 		UserId:    post.AuthorId,
 		TriggerBy: h.config.Network.UserID(execMsg.Sender),
 		Body:      fmt.Sprintf("%s:%s:%s:%s", h.config.Network.ChainID, execMsg.Funds[0].Amount.Int64(), h.config.Network.Currencies[0].Currency.GetDenom(), createdAt.Unix()),
-		Action:    post.Identifier,
+		Action:    fmt.Sprintf("%s", post.Identifier),
 		Category:  "tip",
 		CreatedAt: createdAt.Unix(),
 	}
