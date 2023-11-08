@@ -2,6 +2,7 @@ package indexerhandler
 
 import (
 	"encoding/json"
+	"fmt"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
@@ -98,7 +99,7 @@ func (h *Handler) handleExecuteReactPost(e *Message, execMsg *wasmtypes.MsgExecu
 	reactPost := execReactPostMsg.ReactPost
 
 	post := indexerdb.Post{}
-	if err := h.db.Where("identifier = ?", reactPost.Identifier).First(&post).Error; err != nil {
+	if err := h.db.Where("identifier = ?", h.config.Network.PostID(reactPost.Identifier)).First(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to get post to react")
 	}
 
@@ -180,8 +181,8 @@ func (h *Handler) createPost(
 	}
 
 	post := indexerdb.Post{
-		Identifier:           createPostMsg.Identifier,
-		ParentPostIdentifier: createPostMsg.ParentPostIdentifier,
+		Identifier:           h.config.Network.PostID(createPostMsg.Identifier),
+		ParentPostIdentifier: h.config.Network.PostID(createPostMsg.ParentPostIdentifier),
 		Category:             createPostMsg.Category,
 		Metadata:             metadataJSON,
 		UserReactions:        map[string]interface{}{},
@@ -206,7 +207,10 @@ func (h *Handler) createPost(
 	}
 
 	if !isBot {
-		h.handleQuests(execMsg, createPostMsg) // FIXME: handle error
+		err := h.handleQuests(execMsg, createPostMsg)
+		if err != nil {
+			return errors.Wrap(err, "failed when trying to handle quests")
+		}
 	}
 
 	return nil
@@ -219,7 +223,7 @@ func (h *Handler) handleExecuteTipPost(e *Message, execMsg *wasmtypes.MsgExecute
 	}
 
 	post := indexerdb.Post{
-		Identifier: execTipPostMsg.TipPost.Identifier,
+		Identifier: h.config.Network.PostID(execTipPostMsg.TipPost.Identifier),
 	}
 
 	if err := h.db.First(&post).Error; err != nil {
@@ -291,8 +295,8 @@ func createCommentNotification(post *indexerdb.Post, userId networks.UserID, h *
 		notification := indexerdb.Notification{
 			UserId:    parentPost.AuthorId, // notify parent author
 			TriggerBy: userId,              // user X has commented in your post
-			Body:      "comment-" + parentPost.ParentPostIdentifier + "-" + parentPost.Identifier,
-			Action:    parentPost.ParentPostIdentifier,
+			Body:      fmt.Sprintf("comment:%s:%s", parentPost.ParentPostIdentifier, parentPost.Identifier),
+			Action:    fmt.Sprintf("%s", parentPost.ParentPostIdentifier),
 			Category:  "comment",
 			CreatedAt: parentPost.CreatedAt,
 		}
@@ -327,7 +331,7 @@ func createReactionNotification(post *indexerdb.Post, h *Handler) error {
 				UserId:    post.AuthorId,
 				TriggerBy: user,
 				Body:      emoji,
-				Action:    post.Identifier,
+				Action:    fmt.Sprintf("%s", post.Identifier),
 				Category:  "reaction",
 				CreatedAt: post.CreatedAt,
 			}

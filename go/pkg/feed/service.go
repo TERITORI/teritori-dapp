@@ -164,9 +164,9 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		posts[idx] = &feedpb.Post{
 			Category:             dbPost.Category,
 			IsDeleted:            dbPost.IsDeleted,
-			Identifier:           dbPost.Identifier,
+			Identifier:           string(dbPost.Identifier),
 			Metadata:             string(metadata),
-			ParentPostIdentifier: dbPost.ParentPostIdentifier,
+			ParentPostIdentifier: string(dbPost.ParentPostIdentifier),
 			SubPostLength:        dbPost.SubPostLength,
 			AuthorId:             string(dbPost.AuthorId),
 			CreatedAt:            dbPost.CreatedAt,
