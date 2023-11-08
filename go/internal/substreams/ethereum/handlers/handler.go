@@ -80,7 +80,7 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	// 60806040 is special method where tx sent to minter and it will initialize nft contract
 	// we have to process it differently: we process the internal call of that tx sent to nft contract
 	methodHex := hex.EncodeToString(tx.Info.Input[:4])
-	if methodHex == "60806040" {
+	if methodHex == "60806040" || methodHex == "60c06040" {
 		if strings.EqualFold(tx.Info.To, h.network.RiotContractAddressGen0) {
 			return h.handleInitialize(tx)
 		}
