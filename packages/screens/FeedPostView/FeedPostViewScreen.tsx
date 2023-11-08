@@ -41,11 +41,7 @@ import { usePost } from "../../hooks/feed/usePost";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import {
-  getNetworkObjectId,
-  parseNetworkObjectId,
-  parseUserId,
-} from "../../networks";
+import { parseNetworkObjectId, parseUserId } from "../../networks";
 import { gnoTeritoriNetwork } from "../../networks/gno-teritori";
 import { teritoriNetwork } from "../../networks/teritori";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
@@ -202,10 +198,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
       onBackPress={() =>
         postResult?.parentPostIdentifier
           ? navigation.navigate("FeedPostView", {
-              id: getNetworkObjectId(
-                networkId,
-                postResult?.parentPostIdentifier || ""
-              ),
+              id: postResult?.parentPostIdentifier || "",
             })
           : navigation.canGoBack()
           ? navigation.goBack()

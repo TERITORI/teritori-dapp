@@ -47,42 +47,48 @@ export const SocialMessageContent: React.FC<Props> = ({
     );
   }, [metadata.gifs]);
 
-  if (
-    postCategory === PostCategory.Article ||
-    metadata?.message.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-  ) {
-    return (
-      <View>
-        <ArticleRenderer
-          metadata={metadata}
-          audioFiles={audioFiles}
-          isPreview={isPreview}
-        />
-      </View>
-    );
-  } else {
-    return (
-      <>
-        <TextRenderer
-          isPreview={isPreview}
-          text={metadata.message.replace(HTML_TAG_REGEXP, "")}
-        />
+  try {
+    if (
+      postCategory === PostCategory.Article ||
+      metadata?.message.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+    ) {
+      return (
+        <View>
+          <ArticleRenderer
+            metadata={metadata}
+            audioFiles={audioFiles}
+            isPreview={isPreview}
+          />
+        </View>
+      );
+    } else {
+      return (
+        <>
+          <TextRenderer
+            isPreview={isPreview}
+            text={metadata.message.replace(HTML_TAG_REGEXP, "")}
+          />
 
-        {gifsFiles?.length || imageFiles?.length ? (
-          <ImagesViews files={[...(gifsFiles || []), ...(imageFiles || [])]} />
-        ) : null}
+          {gifsFiles?.length || imageFiles?.length ? (
+            <ImagesViews
+              files={[...(gifsFiles || []), ...(imageFiles || [])]}
+            />
+          ) : null}
 
-        {videoFiles?.map((file, index) => (
-          <VideoView key={index} file={file} />
-        ))}
+          {videoFiles?.map((file, index) => (
+            <VideoView key={index} file={file} />
+          ))}
 
-        {audioFiles?.map((file, index) => (
-          <Fragment key={index}>
-            {metadata.message && <SpacerColumn size={2} />}
-            <AudioView file={file} />
-          </Fragment>
-        ))}
-      </>
-    );
+          {audioFiles?.map((file, index) => (
+            <Fragment key={index}>
+              {metadata.message && <SpacerColumn size={2} />}
+              <AudioView file={file} />
+            </Fragment>
+          ))}
+        </>
+      );
+    }
+  } catch {
+    return null;
   }
 };

@@ -114,7 +114,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		query = query.Where("category IN ?", categories)
 	}
 	if user != "" {
-		query = query.Where("created_by = ?", user)
+		query = query.Where("author_id = ?", user)
 	}
 	if len(hashtags) > 0 {
 		formattedHashtags := make([]string, 0)
@@ -164,9 +164,9 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		posts[idx] = &feedpb.Post{
 			Category:             dbPost.Category,
 			IsDeleted:            dbPost.IsDeleted,
-			Identifier:           dbPost.Identifier,
+			Identifier:           string(dbPost.Identifier),
 			Metadata:             string(metadata),
-			ParentPostIdentifier: dbPost.ParentPostIdentifier,
+			ParentPostIdentifier: string(dbPost.ParentPostIdentifier),
 			SubPostLength:        dbPost.SubPostLength,
 			AuthorId:             string(dbPost.AuthorId),
 			CreatedAt:            dbPost.CreatedAt,

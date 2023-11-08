@@ -166,7 +166,7 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 		// to be the one creating the "TriggerBy" another option is to use:
 		// h.config.Network.UserID(execMsg.Contract),
 		TriggerBy: ownerId,
-		Body:      fmt.Sprintf("%s:%s", stakedTokenIds, endTime),
+		Body:      fmt.Sprintf("%s:%d", stakedTokenIds, endTime),
 		Action:    stakedTokenIds,
 		Category:  "p2e-riot-squad-staking",
 		CreatedAt: int64(endTime),

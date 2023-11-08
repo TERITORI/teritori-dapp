@@ -1,3 +1,4 @@
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import moment from "moment/moment";
 import React, { useRef, useState } from "react";
 import {
@@ -9,7 +10,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { BellIcon } from "react-native-heroicons/outline";
+import { BellAlertIcon, BellIcon } from "react-native-heroicons/outline";
 import { XMarkIcon } from "react-native-heroicons/solid";
 
 import { TOP_MENU_BUTTON_HEIGHT } from "./TopMenu";
@@ -20,9 +21,12 @@ import {
 } from "../../api/notification/v1/notification";
 import { useDropdowns } from "../../context/DropdownsProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useNotifications } from "../../hooks/useNotifications";
+import {
+  notificationsQueryKey,
+  useNotifications,
+} from "../../hooks/useNotifications";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { parseNetworkObjectId } from "../../networks";
+import { parseUserId } from "../../networks";
 import { mustGetNotificationClient } from "../../utils/backend";
 import { prettyPrice } from "../../utils/coins";
 import {
@@ -32,7 +36,11 @@ import {
   primaryColor,
   secondaryColor,
 } from "../../utils/style/colors";
-import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
+import {
+  fontSemibold12,
+  fontSemibold14,
+  fontSemibold8,
+} from "../../utils/style/fonts";
 import { headerHeight, layout, topMenuWidth } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
@@ -42,8 +50,11 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const NotificationDrawer: React.FC = () => {
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
-
   const dropdownRef = useRef<View>(null);
+  const selectedWallet = useSelectedWallet();
+  const notifications = useNotifications({
+    userId: selectedWallet?.userId,
+  });
 
   return (
     <View ref={dropdownRef}>
@@ -63,13 +74,49 @@ export const NotificationDrawer: React.FC = () => {
           }}
           height={TOP_MENU_BUTTON_HEIGHT}
         >
-          <BellIcon
-            color={isDropdownOpen(dropdownRef) ? primaryColor : secondaryColor}
-          />
+          {notifications && notifications.length > 0 ? (
+            <>
+              <View
+                style={{
+                  position: "absolute",
+                  top: 6,
+                  right: 4,
+                  borderRadius: 9999,
+                  width: 8,
+                  height: 8,
+                  backgroundColor: primaryColor,
+                }}
+              >
+                <BrandText
+                  style={[
+                    fontSemibold8,
+                    {
+                      position: "absolute",
+                      right: 2.3,
+                    },
+                  ]}
+                >
+                  {notifications.length > 9 ? "♾️" : notifications.length}
+                </BrandText>
+              </View>
+              <BellAlertIcon
+                color={
+                  isDropdownOpen(dropdownRef) ? primaryColor : secondaryColor
+                }
+              />
+            </>
+          ) : (
+            <BellIcon
+              color={
+                isDropdownOpen(dropdownRef) ? primaryColor : secondaryColor
+              }
+            />
+          )}
         </TertiaryBox>
       </TouchableOpacity>
 
       <NotificationList
+        notifications={notifications}
         style={[
           {
             position: "absolute",
@@ -83,14 +130,11 @@ export const NotificationDrawer: React.FC = () => {
   );
 };
 
-const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
-  style,
-}) => {
+const NotificationList: React.FC<{
+  style: StyleProp<ViewStyle>;
+  notifications: Notification[] | undefined;
+}> = ({ style, notifications }) => {
   const { height: windowHeight } = useWindowDimensions();
-  const selectedWallet = useSelectedWallet();
-  const notifications = useNotifications({
-    userId: selectedWallet?.userId,
-  });
 
   return (
     <TertiaryBox
@@ -115,10 +159,7 @@ const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
               item={item}
             />
           )}
-          ListHeaderComponent={
-            // @ts-ignore
-            notifications?.length > 0 ? <Controls /> : null
-          }
+          ListHeaderComponent={notifications?.length ? <Controls /> : null}
           ListEmptyComponent={<NoNotifications />}
         />
       </ScrollView>
@@ -128,27 +169,27 @@ const NotificationList: React.FC<{ style: StyleProp<ViewStyle> }> = ({
 
 const DismissNotificationButton: React.FC<{
   id: number;
-  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ id, setVisible }) => {
+  onPress?: () => void;
+}> = ({ id, onPress }) => {
   const selectedWallet = useSelectedWallet();
+  const queryClient = useQueryClient();
 
   return (
     <TouchableOpacity
-      onPress={() => {
-        setVisible(false);
-        clearNotification({
+      onPress={async () => {
+        onPress?.();
+        await clearNotification(queryClient, {
           userId: selectedWallet?.userId,
           notificationId: id,
         });
       }}
     >
       <XMarkIcon
-        // @ts-ignore
         style={{
           justifyContent: "flex-end",
           alignSelf: "flex-end",
-          fill: secondaryColor,
         }}
+        fill={secondaryColor}
       />
     </TouchableOpacity>
   );
@@ -231,7 +272,10 @@ const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
             alignSelf: "center",
           }}
         >
-          <DismissNotificationButton id={item.id} setVisible={setVisible} />
+          <DismissNotificationButton
+            id={item.id}
+            onPress={() => setVisible(false)}
+          />
         </View>
       </View>
     </View>
@@ -250,6 +294,7 @@ const NoNotifications: React.FC = () => (
 
 const Controls: React.FC = () => {
   const selectedWallet = useSelectedWallet();
+  const queryClient = useQueryClient();
 
   return (
     <View
@@ -264,8 +309,8 @@ const Controls: React.FC = () => {
         style={{
           alignSelf: "flex-end",
         }}
-        onPress={() => {
-          clearAllNotifications({
+        onPress={async () => {
+          await clearAllNotifications(queryClient, {
             userId: selectedWallet?.userId,
           });
         }}
@@ -371,30 +416,32 @@ const getPrettyPrice = (item: Notification): string => {
   return prettyPrice(values[0], values[1], values[2]);
 };
 
-const clearAllNotifications = (req: Partial<NotificationsRequest>) => {
-  (async () => {
-    const networkId = parseNetworkObjectId(req?.userId);
+const clearAllNotifications = async (
+  queryClient: QueryClient,
+  req: Partial<NotificationsRequest>
+) => {
+  const [network] = parseUserId(req?.userId);
 
-    if (!networkId) {
-      return [];
-    }
+  if (!network) {
+    return false;
+  }
 
-    const notificationService = mustGetNotificationClient(networkId[0]?.id);
-    const { ok } = await notificationService.DismissAllNotifications(req);
-    return ok;
-  })();
+  const notificationService = mustGetNotificationClient(network.id);
+  await notificationService.DismissAllNotifications(req);
+  await queryClient.invalidateQueries(notificationsQueryKey(req?.userId));
 };
 
-const clearNotification = (req: Partial<DismissNotificationRequest>) => {
-  (async () => {
-    const networkId = parseNetworkObjectId(req?.userId);
+const clearNotification = async (
+  queryClient: QueryClient,
+  req: Partial<DismissNotificationRequest>
+) => {
+  const [network] = parseUserId(req?.userId);
 
-    if (!networkId) {
-      return [];
-    }
+  if (!network) {
+    return false;
+  }
 
-    const notificationService = mustGetNotificationClient(networkId[0]?.id);
-    const { ok } = await notificationService.DismissNotification(req);
-    return ok;
-  })();
+  const notificationService = mustGetNotificationClient(network.id);
+  await notificationService.DismissNotification(req);
+  await queryClient.invalidateQueries(notificationsQueryKey(req?.userId));
 };

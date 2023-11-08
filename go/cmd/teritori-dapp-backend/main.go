@@ -37,8 +37,8 @@ func main() {
 		dbHost                   = fs.String("db-dapp-host", "", "host postgreSQL database")
 		dbPort                   = fs.String("db-dapp-port", "", "port for postgreSQL database")
 		dbPass                   = fs.String("postgres-password", "", "password for postgreSQL database")
+		dbName                   = fs.String("database-name", "", "database name for postgreSQL")
 		dbUser                   = fs.String("postgres-user", "", "username for postgreSQL")
-		dbNameIndexer            = fs.String("database-name", "", "indexer database name for postgreSQL")
 		whitelistString          = fs.String("teritori-collection-whitelist", "", "whitelist of collections to return")
 		airtableAPIKey           = fs.String("airtable-api-key", "", "api key of airtable for home and launchpad")
 		airtableAPIKeydappsStore = fs.String("airtable-api-key-dapps-store", "", "api key of airtable for the dapps store")
@@ -81,11 +81,11 @@ func main() {
 		panic(errors.Wrap(err, "failed to unmarshal networks config"))
 	}
 
-	if dbHost == nil || dbUser == nil || dbPass == nil || dbNameIndexer == nil || dbPort == nil {
+	if dbHost == nil || dbUser == nil || dbPass == nil || dbName == nil || dbPort == nil {
 		panic(errors.New("missing Database configuration"))
 	}
 	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
-		*dbHost, *dbUser, *dbPass, *dbNameIndexer, *dbPort)
+		*dbHost, *dbUser, *dbPass, *dbName, *dbPort)
 	indexerDB, err := indexerdb.NewPostgresDB(dataConnexion)
 	if err != nil {
 		panic(errors.Wrap(err, "failed to access db"))
