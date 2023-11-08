@@ -1,3 +1,4 @@
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import moment from "moment/moment";
 import React, { useRef, useState } from "react";
 import {
@@ -20,7 +21,10 @@ import {
 } from "../../api/notification/v1/notification";
 import { useDropdowns } from "../../context/DropdownsProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useNotifications } from "../../hooks/useNotifications";
+import {
+  notificationsQueryKey,
+  useNotifications,
+} from "../../hooks/useNotifications";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseUserId } from "../../networks";
 import { mustGetNotificationClient } from "../../utils/backend";
@@ -165,15 +169,16 @@ const NotificationList: React.FC<{
 
 const DismissNotificationButton: React.FC<{
   id: number;
-  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ id, setVisible }) => {
+  onPress?: () => void;
+}> = ({ id, onPress }) => {
   const selectedWallet = useSelectedWallet();
+  const queryClient = useQueryClient();
 
   return (
     <TouchableOpacity
       onPress={async () => {
-        setVisible(false);
-        await clearNotification({
+        onPress?.();
+        await clearNotification(queryClient, {
           userId: selectedWallet?.userId,
           notificationId: id,
         });
@@ -272,7 +277,10 @@ const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
             alignSelf: "center",
           }}
         >
-          <DismissNotificationButton id={item.id} setVisible={setVisible} />
+          <DismissNotificationButton
+            id={item.id}
+            onPress={() => setVisible(false)}
+          />
         </View>
       </View>
     </View>
@@ -291,6 +299,7 @@ const NoNotifications: React.FC = () => (
 
 const Controls: React.FC = () => {
   const selectedWallet = useSelectedWallet();
+  const queryClient = useQueryClient();
 
   return (
     <View
@@ -306,7 +315,7 @@ const Controls: React.FC = () => {
           alignSelf: "flex-end",
         }}
         onPress={async () => {
-          await clearAllNotifications({
+          await clearAllNotifications(queryClient, {
             userId: selectedWallet?.userId,
           });
         }}
@@ -330,7 +339,10 @@ const useBuildBodyText = (item: Notification) => {
   }
 };
 
-const clearAllNotifications = async (req: Partial<NotificationsRequest>) => {
+const clearAllNotifications = async (
+  queryClient: QueryClient,
+  req: Partial<NotificationsRequest>
+) => {
   const [network] = parseUserId(req?.userId);
 
   if (!network) {
@@ -339,9 +351,13 @@ const clearAllNotifications = async (req: Partial<NotificationsRequest>) => {
 
   const notificationService = mustGetNotificationClient(network.id);
   await notificationService.DismissAllNotifications(req);
+  await queryClient.invalidateQueries(notificationsQueryKey(req?.userId));
 };
 
-const clearNotification = async (req: Partial<DismissNotificationRequest>) => {
+const clearNotification = async (
+  queryClient: QueryClient,
+  req: Partial<DismissNotificationRequest>
+) => {
   const [network] = parseUserId(req?.userId);
 
   if (!network) {
@@ -350,4 +366,5 @@ const clearNotification = async (req: Partial<DismissNotificationRequest>) => {
 
   const notificationService = mustGetNotificationClient(network.id);
   await notificationService.DismissNotification(req);
+  await queryClient.invalidateQueries(notificationsQueryKey(req?.userId));
 };
