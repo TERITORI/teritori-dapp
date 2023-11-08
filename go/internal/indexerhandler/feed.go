@@ -3,11 +3,13 @@ package indexerhandler
 import (
 	"encoding/json"
 	"fmt"
+
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+	"gorm.io/gorm/clause"
 )
 
 type Reaction struct {
@@ -97,7 +99,7 @@ func (h *Handler) handleExecuteReactPost(e *Message, execMsg *wasmtypes.MsgExecu
 	reactPost := execReactPostMsg.ReactPost
 
 	post := indexerdb.Post{}
-	if err := h.db.Where("identifier = ?", reactPost.Identifier).First(&post).Error; err != nil {
+	if err := h.db.Where("identifier = ?", h.config.Network.PostID(reactPost.Identifier)).First(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to get post to react")
 	}
 
@@ -131,6 +133,9 @@ func (h *Handler) handleExecuteReactPost(e *Message, execMsg *wasmtypes.MsgExecu
 
 	if err := h.db.Save(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to update reactions")
+	}
+	if err := createReactionNotification(&post, h); err != nil {
+		return errors.Wrap(err, "failed to create reaction notification")
 	}
 
 	return nil
@@ -176,8 +181,8 @@ func (h *Handler) createPost(
 	}
 
 	post := indexerdb.Post{
-		Identifier:           createPostMsg.Identifier,
-		ParentPostIdentifier: createPostMsg.ParentPostIdentifier,
+		Identifier:           h.config.Network.PostID(createPostMsg.Identifier),
+		ParentPostIdentifier: h.config.Network.PostID(createPostMsg.ParentPostIdentifier),
 		Category:             createPostMsg.Category,
 		Metadata:             metadataJSON,
 		UserReactions:        map[string]interface{}{},
@@ -190,13 +195,22 @@ func (h *Handler) createPost(
 		return errors.Wrap(err, "failed to create post")
 	}
 
-	err = createNotifications(string(h.config.Network.UserID(execMsg.Sender)), h)
+	// is comment
+	if createPostMsg.ParentPostIdentifier != "" {
+		if err := createCommentNotification(&post, h.config.Network.UserID(execMsg.Sender), h); err != nil {
+			return errors.Wrap(err, "failed to create comment notification")
+		}
+	}
+
 	if err != nil {
 		return errors.Wrap(err, "Problems when trying to create notifications")
 	}
 
 	if !isBot {
-		h.handleQuests(execMsg, createPostMsg)
+		err := h.handleQuests(execMsg, createPostMsg)
+		if err != nil {
+			return errors.Wrap(err, "failed when trying to handle quests")
+		}
 	}
 
 	return nil
@@ -209,7 +223,7 @@ func (h *Handler) handleExecuteTipPost(e *Message, execMsg *wasmtypes.MsgExecute
 	}
 
 	post := indexerdb.Post{
-		Identifier: execTipPostMsg.TipPost.Identifier,
+		Identifier: h.config.Network.PostID(execTipPostMsg.TipPost.Identifier),
 	}
 
 	if err := h.db.First(&post).Error; err != nil {
@@ -287,59 +301,60 @@ func (h *Handler) handleQuests(
 	return nil
 }
 
-func createNotifications(userId string, h *Handler) error {
-
-	query := h.db
-
-	var post []*indexerdb.Post
-	if err := query.Where("author_id = ?", userId).Find(&post).Error; err != nil {
-		return errors.Wrap(err, "failed to find user posts")
+func createCommentNotification(post *indexerdb.Post, userId networks.UserID, h *Handler) error {
+	var parentPost indexerdb.Post
+	if err := h.db.Where("identifier = ?", post.ParentPostIdentifier).First(&parentPost).Error; err != nil {
+		return errors.Wrap(err, "failed to query for parent post")
 	}
 
-	for _, d := range post {
-		createComment(d, userId, h)
-		createReaction(d, userId, h)
+	if parentPost.AuthorId != userId { // don't notify on my own parentPosts
+		notification := indexerdb.Notification{
+			UserId:    parentPost.AuthorId, // notify parent author
+			TriggerBy: userId,              // user X has commented in your post
+			Body:      fmt.Sprintf("comment:%s:%s", parentPost.ParentPostIdentifier, parentPost.Identifier),
+			Action:    fmt.Sprintf("%s", parentPost.ParentPostIdentifier),
+			Category:  "comment",
+			CreatedAt: parentPost.CreatedAt,
+		}
+		if err := h.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&notification).Error; err != nil {
+			return errors.Wrap(err, "failed to create notification")
+		}
 	}
 
 	return nil
 }
 
-func createComment(d *indexerdb.Post, userId string, h *Handler) {
+func createReactionNotification(post *indexerdb.Post, h *Handler) error {
+	userReactions := post.UserReactions
+	for emoji, jb := range userReactions {
+		var users []networks.UserID
+		var ok bool
 
-	query := h.db
-	var comments []*indexerdb.Post
-	query.Where("parent_post_identifier = ? and author_id != ?", d.Identifier, userId).Find(&comments)
-
-	for _, d := range comments {
-
-		notification := indexerdb.Notification{
-			UserId:    networks.UserID(userId),
-			TriggerBy: d.AuthorId,
-			Body:      "comment-" + d.ParentPostIdentifier + "-" + d.Identifier,
-			Action:    d.ParentPostIdentifier,
-			Category:  "comment",
-			CreatedAt: d.CreatedAt,
-		}
-		h.db.Create(&notification)
-
-	}
-}
-
-func createReaction(d *indexerdb.Post, userId string, h *Handler) {
-	userReactions := d.UserReactions
-	for emoji, users := range userReactions {
-
-		for _, user := range users.([]interface{}) {
-			notification := indexerdb.Notification{
-				UserId:    networks.UserID(userId),
-				TriggerBy: networks.UserID(user.(string)),
-				Body:      emoji,
-				Action:    d.Identifier,
-				Category:  "reaction",
-				CreatedAt: d.CreatedAt,
+		users, ok = jb.([]networks.UserID)
+		if !ok {
+			iuser, ok := jb.([]interface{})
+			if !ok {
+				return errors.New("failed to cast jsonb users")
 			}
-			h.db.Create(&notification)
+			users = make([]networks.UserID, 0)
+			for _, user := range iuser {
+				users = append(users, networks.UserID(user.(string)))
+			}
 		}
 
+		for _, user := range users {
+			notification := indexerdb.Notification{
+				UserId:    post.AuthorId,
+				TriggerBy: user,
+				Body:      emoji,
+				Action:    fmt.Sprintf("%s", post.Identifier),
+				Category:  "reaction",
+				CreatedAt: post.CreatedAt,
+			}
+			if err := h.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&notification).Error; err != nil {
+				return errors.Wrap(err, "failed to create notification")
+			}
+		}
 	}
+	return nil
 }

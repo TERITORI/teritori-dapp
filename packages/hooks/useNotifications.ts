@@ -4,9 +4,15 @@ import { NotificationsRequest } from "../api/notification/v1/notification";
 import { parseUserId } from "../networks";
 import { getNotificationClient } from "../utils/backend";
 
+export const notificationsQueryKey = (userId: string | undefined) => [
+  "notifications",
+  userId,
+];
+
 export const useNotifications = (req: Partial<NotificationsRequest>) => {
+  const { userId, ...rest } = req;
   const { data } = useQuery(
-    ["notifications", req],
+    [...notificationsQueryKey(userId), rest],
     async () => {
       const [network] = parseUserId(req?.userId);
       if (!network) {
@@ -21,7 +27,7 @@ export const useNotifications = (req: Partial<NotificationsRequest>) => {
       const { notifications } = await notificationClient.Notifications(req);
       return notifications;
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity, refetchInterval: 10000 }
   );
   return data;
 };

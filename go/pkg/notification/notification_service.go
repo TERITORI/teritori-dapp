@@ -11,6 +11,8 @@ import (
 	"gorm.io/gorm"
 )
 
+// FIXME: auth
+
 type NotificationService struct {
 	notificationpb.UnimplementedNotificationServiceServer
 	conf *Config

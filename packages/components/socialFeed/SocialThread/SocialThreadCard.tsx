@@ -13,12 +13,7 @@ import { useGetBanPostProposals } from "../../../hooks/feed/useBanPostProposals"
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import {
-  getNetworkObjectId,
-  mustGetGnoNetwork,
-  NetworkKind,
-  parseUserId,
-} from "../../../networks";
+import { mustGetGnoNetwork, NetworkKind, parseUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { adenaDoContract, adenaVMCall } from "../../../utils/gno";
 import {
@@ -356,7 +351,7 @@ export const SocialThreadCard: React.FC<{
         disabled={isPostConsultation}
         onPress={() =>
           navigation.navigate("FeedPostView", {
-            id: getNetworkObjectId(selectedNetworkId, localPost.identifier),
+            id: localPost.identifier,
           })
         }
       >
@@ -422,10 +417,8 @@ export const SocialThreadCard: React.FC<{
                 <BrandText
                   onPress={() => {
                     navigation.navigate("FeedPostView", {
-                      id: getNetworkObjectId(
-                        selectedNetworkId,
-                        localPost.parentPostIdentifier || localPost.identifier
-                      ),
+                      id:
+                        localPost.parentPostIdentifier || localPost.identifier,
                     });
                   }}
                   style={fontSemibold13}

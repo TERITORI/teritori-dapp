@@ -23,12 +23,7 @@ import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { usePrevious } from "../../../hooks/usePrevious";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import {
-  getNetworkObjectId,
-  mustGetGnoNetwork,
-  NetworkKind,
-  parseUserId,
-} from "../../../networks";
+import { mustGetGnoNetwork, NetworkKind, parseUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { adenaDoContract } from "../../../utils/gno";
 import { useAppNavigation } from "../../../utils/navigation";
@@ -249,7 +244,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
       disabled={!!localComment.isInLocal}
       onPress={() =>
         navigation.navigate("FeedPostView", {
-          id: getNetworkObjectId(selectedNetworkId, localComment.identifier),
+          id: localComment.identifier,
         })
       }
       style={{ width: cardWidth }}
