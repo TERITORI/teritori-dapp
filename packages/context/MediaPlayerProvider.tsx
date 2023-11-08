@@ -42,7 +42,7 @@ interface DefaultValue {
   onChangeVolume: (value: number) => void;
   onToggleLoop: () => void;
   playbackStatus?: AVPlaybackStatusSuccess;
-  onVideoStatusUpdate: (status: AVPlaybackStatusSuccess) => Promise<void>;
+  onVideoStatusUpdate: (status: AVPlaybackStatusSuccess) => void;
   firstPlayVideo: (video: Video, media: Media) => void;
   triggerVideoFullscreen: () => void;
 }
@@ -63,7 +63,7 @@ const defaultValue: DefaultValue = {
   onChangeVolume: () => {},
   onToggleLoop: () => {},
   playbackStatus: undefined,
-  onVideoStatusUpdate: async () => {},
+  onVideoStatusUpdate: () => {},
   firstPlayVideo: () => {},
   triggerVideoFullscreen: () => {},
 };
@@ -131,7 +131,7 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
                 status.error
               );
               setToastError({
-                title: "Error while playbackStatus update",
+                title: "Error while playbackStatus update: ",
                 message: status.error || "",
               });
             }
@@ -139,37 +139,47 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
         );
         setAv(createdSound);
         // ------- Autoplay createdSound
-        await av?.unloadAsync();
+        if (playbackStatus?.isLoaded) {
+          await av?.stopAsync();
+          await av?.unloadAsync();
+        }
         await createdSound?.playAsync();
         setIsMediaPlayerOpen(true);
         // -------
       } catch (e) {
+        console.error("Error loading sound: ", e.message);
         setToastError({
-          title: "Error loading sound",
+          title: "Error loading sound: ",
           message: e.message,
         });
       }
     },
-    [setToastError, av]
+    [setToastError, av, playbackStatus?.isLoaded]
   );
 
   const firstPlayVideo = async (video: Video, media: Media) => {
-    console.log(
-      "navigation.getState()navigation.getState()",
-      navigation.getState()
-    );
     setVideoLastRoute(
       navigation.getState().routes[navigation.getState().routes.length - 1]
     );
     setMedia(media);
-    await av?.pauseAsync();
-    await av?.unloadAsync();
-    setAv(video);
-    await video.playAsync();
+    try {
+      if (playbackStatus?.isLoaded) {
+        await av?.stopAsync()
+        await av?.unloadAsync();
+      }
+      setAv(video);
+      await video.playAsync();
+    } catch (e) {
+      console.error("Error while first playing video: ", e.message);
+      setToastError({
+        title: "Error while first playing video: ",
+        message: e.message,
+      });
+    }
     setIsMediaPlayerOpen(true);
   };
 
-  const onVideoStatusUpdate = async (status: AVPlaybackStatusSuccess) => {
+  const onVideoStatusUpdate = (status: AVPlaybackStatusSuccess) => {
     setPlaybackStatus(status);
   };
 
@@ -204,7 +214,15 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
       }
     }
     if (av && "_setFullscreen" in av) {
-      await av._setFullscreen(true);
+      try {
+        await av._setFullscreen(true);
+      } catch (e) {
+        console.error("Error setting full screen: ", e.message);
+        setToastError({
+          title: "Error setting full screen: ",
+          message: e.message,
+        });
+      }
     }
   };
 
@@ -213,9 +231,25 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
       return;
     }
     if (playbackStatus.isPlaying) {
-      await av.pauseAsync();
+      try {
+        await av.pauseAsync();
+      } catch (e) {
+        console.error("Error pausing media: ", e.message);
+        setToastError({
+          title: "Error pausing media: ",
+          message: e.message,
+        });
+      }
     } else {
-      await av.playAsync();
+      try {
+        await av.playAsync();
+      } catch (e) {
+        console.error("Error playing media: ", e.message);
+        setToastError({
+          title: "Error playing media: ",
+          message: e.message,
+        });
+      }
     }
   };
 

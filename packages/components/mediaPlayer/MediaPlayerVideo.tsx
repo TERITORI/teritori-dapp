@@ -137,7 +137,7 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
     if ("uri" in status && status.isLoaded) {
       setLocalStatus(status);
       if (isInMediaPlayer) {
-        await onVideoStatusUpdate(status);
+        onVideoStatusUpdate(status);
       }
       // Sync with MediaProvider, if not synced, if the video is played for the first time, on fullscreen
       else if (
