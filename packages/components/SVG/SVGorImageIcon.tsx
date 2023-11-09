@@ -8,15 +8,23 @@ export function SVGorImageIcon({
   icon,
   iconSize,
   style,
+  color,
 }: {
   icon: React.FC<SvgProps> | string;
   iconSize: number;
   style?: StyleProp<ImageStyle>;
+  color?: string;
 }) {
   return (
     <>
       {typeof icon === "function" ? (
-        <SVG source={icon} height={iconSize} width={iconSize} style={style} />
+        <SVG
+          color={color}
+          source={icon}
+          height={iconSize}
+          width={iconSize}
+          style={style}
+        />
       ) : (
         <Image
           source={{ uri: icon }}
