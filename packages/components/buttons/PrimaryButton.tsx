@@ -6,13 +6,19 @@ import {
   ViewStyle,
 } from "react-native";
 import { SvgProps } from "react-native-svg";
+import { useSelector } from "react-redux";
 
+import { selectIsLightTheme } from "../../store/slices/settings";
 import {
   borderRadiusButton,
   ButtonsSize,
   heightButton,
 } from "../../utils/style/buttons";
-import { primaryColor, primaryTextColor } from "../../utils/style/colors";
+import {
+  primaryColor,
+  primaryTextColor,
+  secondaryColor,
+} from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -54,6 +60,7 @@ export const PrimaryButton: React.FC<{
   noBrokenCorners = false,
   isLoading,
 }) => {
+  const isLightTheme = useSelector(selectIsLightTheme);
   const [isLocalLoading, setIsLocalLoading] = useState(false);
 
   const handlePress = useCallback(async () => {
@@ -114,7 +121,7 @@ export const PrimaryButton: React.FC<{
             style={[
               fontSemibold14,
               {
-                color: primaryTextColor,
+                color: isLightTheme ? secondaryColor : primaryTextColor,
                 textAlign: "center",
               },
             ]}
