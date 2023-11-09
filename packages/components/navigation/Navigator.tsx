@@ -25,6 +25,7 @@ import { MultisigWalletDashboardScreen } from "../../screens/Multisig/MultisigWa
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
+import { RWAHome } from "../../screens/RWA/RWAHome";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
@@ -42,7 +43,6 @@ import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPub
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
-import { RWAHome } from "../../screens/RWA/RWAHome";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const screenTitle = (title: string) => "Teritori - " + title;
