@@ -1,6 +1,5 @@
 import React from "react";
 import { View } from "react-native";
-import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../../components/BrandText";
 import { SecondaryButton } from "../../../../components/buttons/SecondaryButton";
@@ -8,8 +7,7 @@ import { ConnectWalletModal } from "../../../../components/connectWallet/Connect
 import { BackButton } from "../../../../components/navigation/components/BackButton";
 import { SpacerRow } from "../../../../components/spacer";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
-import { useTheme } from "../../../../hooks/useTheme";
-import { selectIsLightTheme } from "../../../../store/slices/settings";
+import { useIsLightTheme, useTheme } from "../../../../hooks/useTheme";
 import { headerHeight, layout } from "../../../../utils/style/layout";
 
 export type HeaderProps = {
@@ -19,7 +17,7 @@ export type HeaderProps = {
 
 export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
   const theme = useTheme();
-  const isLightTheme = useSelector(selectIsLightTheme);
+  const isLightTheme = useIsLightTheme();
   const [isConnectWalletVisible, setIsConnectWalletVisible] =
     React.useState(false);
   const selectedWallet = useSelectedWallet();
