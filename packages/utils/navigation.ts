@@ -72,13 +72,11 @@ export type RootStackParamList = {
   DAppStore: undefined;
   ToriPunks: { route: string };
   Metrics: undefined;
-<<<<<<< HEAD
   Message: { view: string; tab?: string } | undefined;
   ChatSection: Conversation;
   FriendshipManager: { tab?: MessageFriendsTabItem } | undefined;
-=======
+
   RWAHome: undefined;
->>>>>>> 1aecbc7d (feat: add RWA Home screen in navigation)
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;

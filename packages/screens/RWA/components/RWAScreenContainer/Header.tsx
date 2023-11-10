@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { BrandText } from "../../../../components/BrandText";
 import { SecondaryButton } from "../../../../components/buttons/SecondaryButton";
 import { ConnectWalletModal } from "../../../../components/connectWallet/ConnectWalletModal";
+import { BackButton } from "../../../../components/navigation/components/BackButton";
 import { SpacerRow } from "../../../../components/spacer";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
 import { selectIsLightTheme } from "../../../../store/slices/settings";
@@ -12,9 +13,10 @@ import { headerHeight, layout } from "../../../../utils/style/layout";
 
 export type HeaderProps = {
   headerTitle: string;
+  onBackPress?: () => void;
 };
 
-export const Header: React.FC<HeaderProps> = ({ headerTitle }) => {
+export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
   const isLightTheme = useSelector(selectIsLightTheme);
   const [isConnectWalletVisible, setIsConnectWalletVisible] =
     React.useState(false);
@@ -43,10 +45,11 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle }) => {
           marginLeft: layout.contentSpacing,
         }}
       >
-        <View>
-          <SpacerRow size={1.5} />
+        <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+          <SpacerRow size={8} />
+          {onBackPress && <BackButton onPress={onBackPress} />}
           <BrandText
-            style={{ letterSpacing: -1, marginLeft: 85, fontSize: 20 }}
+            style={{ letterSpacing: -1, marginLeft: 20, fontSize: 20 }}
           >
             {headerTitle}
           </BrandText>
