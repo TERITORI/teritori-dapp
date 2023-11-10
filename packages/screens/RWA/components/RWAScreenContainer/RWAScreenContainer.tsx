@@ -16,6 +16,7 @@ type RWAScreenContainerProps = HeaderProps & {
 export const RWAScreenContainer: React.FC<RWAScreenContainerProps> = ({
   children,
   headerTitle,
+  onBackPress,
 }) => {
   const { height } = useWindowDimensions();
   return (
@@ -25,12 +26,12 @@ export const RWAScreenContainer: React.FC<RWAScreenContainerProps> = ({
           flex: 1,
           flexDirection: "row",
           width: "100%",
-          backgroundColor: "#FFF",
+          backgroundColor: "#FDFDFF",
         }}
       >
         <SideBar />
         <View style={{ flex: 1, width: "100%" }}>
-          <Header headerTitle={headerTitle} />
+          <Header onBackPress={onBackPress} headerTitle={headerTitle} />
           <View
             style={{ width: "100%", flexDirection: "row", flex: 1, height }}
           >
@@ -47,6 +48,8 @@ export const RWAScreenContainer: React.FC<RWAScreenContainerProps> = ({
                 style={{
                   width: "100%",
                   flex: 1,
+                }}
+                contentContainerStyle={{
                   marginHorizontal: 50,
                   marginVertical: 30,
                 }}
