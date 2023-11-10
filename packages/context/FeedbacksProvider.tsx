@@ -34,11 +34,11 @@ interface FeedbacksProviderValue {
   setToastSuccess: (info: ToastMessage) => void;
   loadingFullScreen: boolean;
   setLoadingFullScreen: (loading: boolean) => void;
-  wrapWithFeedback: (
-    cb: () => Promise<void>,
+  wrapWithFeedback: <T extends any[]>(
+    cb: (...args: T) => Promise<void>,
     success?: { title: string; message?: string },
     errorTransform?: (err: unknown) => { title: string; message?: string }
-  ) => () => Promise<void>;
+  ) => (...args: T) => Promise<void>;
 }
 const defaultValue: FeedbacksProviderValue = {
   toastError: initialToastError,
@@ -79,9 +79,9 @@ export const FeedbacksContextProvider: React.FC = ({ children }) => {
           };
         }
       ) => {
-        return async () => {
+        return async (...args) => {
           try {
-            await cb();
+            await cb(...args);
             setToastSuccess({ message: "", ...success });
           } catch (err) {
             setToastError({ message: "", ...errorTransform(err) });

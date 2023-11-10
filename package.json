@@ -109,7 +109,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@babel/plugin-proposal-numeric-separator": "^7.18.6",
-    "@cosmwasm/ts-codegen": "^0.16.3",
+    "@cosmwasm/ts-codegen": "^0.35.3",
     "@expo/electron-adapter": "^0.0.55",
     "@expo/webpack-config": "^0.16.25",
     "@svgr/webpack": "^5.5.0",
@@ -124,6 +124,7 @@
     "@typescript-eslint/parser": "^5.30.5",
     "babel-loader": "^8.2.5",
     "babel-plugin-react-inline-svg-unique-id": "^1.3.1",
+    "cli-select": "^1.1.2",
     "cors-anywhere": "^0.4.4",
     "electron": "^19.0.8",
     "electron-builder": "^23.1.0",

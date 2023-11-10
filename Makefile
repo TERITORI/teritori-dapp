@@ -200,6 +200,16 @@ $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
 	go fmt ./go/pkg/contracts/vault_types
 	rm -fr $(VAULT_REPO)
 
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/arena
+$(CONTRACTS_CLIENTS_DIR)/arena: node_modules
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema ~/Code/teritori_game/arena/schema \
+		--out $@ \
+		--name arena \
+		--no-bundle
+
 .PHONY: publish.backend
 publish.backend:
 	docker build -f go/cmd/teritori-dapp-backend/Dockerfile .  --platform linux/amd64 -t $(BACKEND_DOCKER_IMAGE)

@@ -1,4 +1,5 @@
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
+import fs from "fs";
 
 import {
   GrpcWebImpl,
@@ -18,4 +19,13 @@ export const mustGetNodeMarketplaceClient = (networkId: string) => {
   });
 
   return new MarketplaceServiceClientImpl(rpc);
+};
+
+export const readJSONSync = (filePath: string) => {
+  const data = fs.readFileSync(filePath, "utf-8");
+  return JSON.parse(data);
+};
+
+export const writeJSONSync = (filePath: string, data: any) => {
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 };
