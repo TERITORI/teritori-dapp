@@ -48,6 +48,13 @@ export const getEstateCardList: (
   ];
 };
 
+export const getEstateCardById: (id: string) => EstateCardProps = (id) => {
+  const estateCards = getEstateCardList();
+  const estateCard = estateCards.find((item) => item.card.id === id);
+
+  return estateCard || estateCards[0];
+};
+
 export const EstateCardList: React.FC<EstateCardListProps> = ({
   cards,
   title,
