@@ -2,13 +2,10 @@ import React from "react";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
 
+import { EstateCardImageProps } from "./types";
 import { OptimizedImage } from "../../../../components/OptimizedImage";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
 import { selectIsLightTheme } from "../../../../store/slices/settings";
-
-type EstateCardImageProps = {
-  sourceURI: string;
-};
 
 export const EstateCardImage: React.FC<EstateCardImageProps> = ({
   sourceURI,
