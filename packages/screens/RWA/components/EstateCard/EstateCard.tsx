@@ -3,20 +3,14 @@ import { View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { EstateCardImage } from "./EstateCardImage";
-import {
-  EstateCardInformations,
-  EstateCardInformationsProps,
-} from "./EstateCardInformations";
+import { EstateCardInformations } from "./EstateCardInformations";
+import { EstateCardProps, EstateCardTagsProps } from "./types";
 import EstatePlaceholder from "../../../../../assets/default-images/estate-placeholder.png";
 import { BrandText } from "../../../../components/BrandText";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
 import { selectIsLightTheme } from "../../../../store/slices/settings";
 
-type EstateCardTagsProps = {
-  tags: string[];
-};
-
-const EstateCardTags: React.FC<EstateCardTagsProps> = ({ tags }) => {
+export const EstateCardTags: React.FC<EstateCardTagsProps> = ({ tags }) => {
   return (
     <View
       style={{
@@ -28,7 +22,7 @@ const EstateCardTags: React.FC<EstateCardTagsProps> = ({ tags }) => {
         return (
           <View
             style={{
-              marginLeft: index !== 0 ? 12 : 0,
+              marginLeft: index !== 0 ? 6 : 0,
               height: 28,
               backgroundColor: "#F5F5F7",
               borderRadius: 10,
@@ -54,8 +48,6 @@ const EstateCardTags: React.FC<EstateCardTagsProps> = ({ tags }) => {
     </View>
   );
 };
-
-export type EstateCardProps = EstateCardTagsProps & EstateCardInformationsProps;
 
 export const EstateCard: React.FC<EstateCardProps> = ({ tags, card }) => {
   const isLightTheme = useSelector(selectIsLightTheme);
