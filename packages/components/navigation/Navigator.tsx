@@ -26,6 +26,7 @@ import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScree
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
 import { RWAHomeScreen } from "../../screens/RWA/RWAHomeScreen/RWAHomeScreen";
+import { RWAMintPage } from "../../screens/RWA/RWAMintPage";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
@@ -316,10 +317,16 @@ export const Navigator: React.FC = () => {
         component={CoreDAOScreen}
         options={{ header: () => null, title: screenTitle("Core DAO") }}
       />
+      {/* ==== RWA */}
       <Stack.Screen
         name="RWAHome"
         component={RWAHomeScreen}
         options={{ header: () => null, title: screenTitle("RWA Home") }}
+      />
+      <Stack.Screen
+        name="RWAMintPage"
+        component={RWAMintPage}
+        options={{ header: () => null, title: screenTitle("RWA Mint Page") }}
       />
     </Stack.Navigator>
   );

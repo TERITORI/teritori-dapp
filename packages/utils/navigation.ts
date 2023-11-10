@@ -65,7 +65,9 @@ export type RootStackParamList = {
 
   DAppStore: undefined;
   ToriPunks: { route: string };
+
   RWAHome: undefined;
+  RWAMintPage: { id: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -150,7 +152,9 @@ const navConfig: {
     DAppStore: "dapp-store",
     // === DApps
     ToriPunks: "dapp/tori-punks/:route?",
+    // === RWA
     RWAHome: "rwa-home",
+    RWAMintPage: "rwa-mint-page/:id",
   },
 };
 
