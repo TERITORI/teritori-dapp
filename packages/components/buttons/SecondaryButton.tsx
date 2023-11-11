@@ -28,6 +28,7 @@ export const SecondaryButton: React.FC<{
   width?: number;
   onPress?: (() => Promise<void>) | (() => void);
   squaresBackgroundColor?: string;
+  borderColor?: string;
   backgroundColor?: string;
   paddingHorizontal?: number;
   color?: string;
@@ -47,6 +48,7 @@ export const SecondaryButton: React.FC<{
   text,
   onPress,
   squaresBackgroundColor,
+  borderColor,
   backgroundColor = neutral30,
   paddingHorizontal = 20,
   color = primaryColor,
@@ -96,11 +98,14 @@ export const SecondaryButton: React.FC<{
           flexDirection: "row",
           borderRadius: borderRadiusButton(size),
           backgroundColor,
+          borderColor,
+          borderWidth: borderColor ? 1 : 0,
           paddingHorizontal,
           opacity: disabled ? 0.5 : 1,
           width: "100%",
         }}
         {...boxProps}
+        squaresBorderColor={borderColor}
       >
         {loader && isLoading ? (
           <ActivityIndicator />

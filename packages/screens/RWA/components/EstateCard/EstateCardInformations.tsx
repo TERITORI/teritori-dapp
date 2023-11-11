@@ -1,6 +1,5 @@
 import React from "react";
 import { View } from "react-native";
-import { useSelector } from "react-redux";
 
 import { EstateCardViewProperty, EstateCardWailistInput } from "./EstateSubmit";
 import {
@@ -9,12 +8,27 @@ import {
 } from "./types";
 import { BrandText } from "../../../../components/BrandText";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
-import { selectIsLightTheme } from "../../../../store/slices/settings";
+import { useIsLightTheme, useTheme } from "../../../../hooks/useTheme";
+import { neutral77, neutralA3 } from "../../../../utils/style/colors";
 
-export const EstateCardInformationBox: React.FC<
-  EstateCardInformationBoxProps
-> = ({ label, value, secondary = false, style }) => {
-  const isLightTheme = useSelector(selectIsLightTheme);
+const EstateCardInformationBox: React.FC<EstateCardInformationBoxProps> = ({
+  label,
+  value,
+  secondary = false,
+  style,
+}) => {
+  const theme = useTheme();
+  const isLightTheme = useIsLightTheme();
+  const backgroundColor = secondary
+    ? theme.headerBackgroundColor
+    : isLightTheme
+    ? "#F9F9F9"
+    : theme.headerBackgroundColor;
+  const labelColor = secondary
+    ? neutral77
+    : isLightTheme
+    ? neutralA3
+    : neutral77;
 
   return (
     <TertiaryBox
@@ -24,13 +38,18 @@ export const EstateCardInformationBox: React.FC<
           flex: 1,
           paddingLeft: 10,
           flexDirection: "column",
-          backgroundColor: secondary ? "#FFF" : "#F9F9F9",
-          borderColor: secondary ? "#EBEBF0" : "#F9F9F9",
-          borderWidth: 1.5,
+          backgroundColor,
+          borderColor: secondary
+            ? theme.borderColor
+            : !isLightTheme
+            ? theme.borderColor
+            : undefined,
+          borderWidth: secondary ? 1 : !isLightTheme ? 1 : 0,
           alignItems: "flex-start",
         },
       ]}
-      squaresBackgroundColor={isLightTheme ? "#FFFFFF" : "#000000"}
+      noBrokenCorners={isLightTheme}
+      squaresBackgroundColor={theme.backgroundColor}
       height={66}
       width={136}
     >
@@ -38,7 +57,7 @@ export const EstateCardInformationBox: React.FC<
         style={{
           fontSize: 11,
           fontWeight: "200",
-          color: secondary ? "#777777" : "#A3A3A3",
+          color: labelColor,
           letterSpacing: -1,
           lineHeight: 25,
         }}

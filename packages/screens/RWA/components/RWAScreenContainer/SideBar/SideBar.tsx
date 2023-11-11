@@ -14,8 +14,10 @@ import Animated, {
 
 import { SideBarButton } from "./SideBarButton";
 import chevronRightSVG from "../../../../../../assets/icons/chevron-right.svg";
-import launchpadSVG from "../../../../../../assets/icons/launchpad-rwa.svg";
-import RWALogo from "../../../../../../assets/logos/rwa-logo.svg";
+import RWAlaunchpadSVG from "../../../../../../assets/icons/launchpad-rwa.svg";
+import launchpadSVG from "../../../../../../assets/icons/launchpad.svg";
+import RWADarkLogo from "../../../../../../assets/logos/rwa-dark-logo.svg";
+import RWALightLogo from "../../../../../../assets/logos/rwa-light-logo.svg";
 import { SVG } from "../../../../../components/SVG";
 import { Separator } from "../../../../../components/Separator";
 import {
@@ -25,9 +27,9 @@ import {
 import { SpacerColumn } from "../../../../../components/spacer";
 import { useSidebar } from "../../../../../context/SidebarProvider";
 import { useSelectedNetworkInfo } from "../../../../../hooks/useSelectedNetwork";
+import { useIsLightTheme, useTheme } from "../../../../../hooks/useTheme";
 import { NetworkKind } from "../../../../../networks";
 import { useAppNavigation } from "../../../../../utils/navigation";
-import { secondaryColor } from "../../../../../utils/style/colors";
 import {
   fullSidebarWidth,
   headerHeight,
@@ -37,6 +39,7 @@ import {
 
 const RWATopLogo = () => {
   const navigation = useAppNavigation();
+  const isLightTheme = useIsLightTheme();
 
   return (
     <View
@@ -51,7 +54,11 @@ const RWATopLogo = () => {
         }}
         onPress={() => navigation.navigate("RWAHome")}
       >
-        <SVG width={68} height={68} source={RWALogo} />
+        <SVG
+          width={68}
+          height={68}
+          source={isLightTheme ? RWALightLogo : RWADarkLogo}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -63,22 +70,27 @@ const SpringConfig: WithSpringConfig = {
   restDisplacementThreshold: 0.2,
 };
 
-const RWA_SIDEBAR_LIST: SidebarRecordType = {
-  launchpad: {
-    title: "Home",
-    route: "RWAHome",
-    id: "RWAHome",
-    icon: launchpadSVG,
-  },
+const getRWASideBarList: (isLightTheme: boolean) => SidebarRecordType = (
+  isLightTheme
+) => {
+  return {
+    launchpad: {
+      title: "Home",
+      route: "RWAHome",
+      id: "RWAHome",
+      icon: isLightTheme ? RWAlaunchpadSVG : launchpadSVG,
+    },
+  };
 };
 
 const SidebarSeparator: React.FC = () => {
+  const theme = useTheme();
   return (
     <View
       style={{
         height: 1,
         marginHorizontal: layout.spacing_x2,
-        backgroundColor: "#EBEBF0",
+        backgroundColor: theme.borderColor,
         marginBottom: layout.spacing_x1,
       }}
     />
@@ -90,6 +102,9 @@ export const SideBar: React.FC = () => {
   const selectedNetworkKind = selectedNetworkInfo?.kind;
   const navigation = useAppNavigation();
   const { isSidebarExpanded, toggleSidebar } = useSidebar();
+  const theme = useTheme();
+  const isLightTheme = useIsLightTheme();
+  const sideBarDatas = getRWASideBarList(isLightTheme);
 
   const layoutStyle = useAnimatedStyle(
     () => ({
@@ -121,21 +136,33 @@ export const SideBar: React.FC = () => {
   };
 
   return (
-    <Animated.View style={[containerCStyle, layoutStyle]}>
+    <Animated.View
+      style={[
+        containerCStyle,
+        layoutStyle,
+        {
+          borderColor: theme.borderColor,
+          backgroundColor: theme.headerBackgroundColor,
+        },
+      ]}
+    >
       <View style={{ height: headerHeight }}>
         <RWATopLogo />
 
         <Animated.View style={[toggleButtonContainerCStyle, toggleButtonStyle]}>
-          <Pressable style={[toggleButtonCStyle]} onPress={toggleSidebar}>
-            <SVG color="#000" source={chevronRightSVG} />
+          <Pressable
+            style={[toggleButtonCStyle, { borderColor: theme.borderColor }]}
+            onPress={toggleSidebar}
+          >
+            <SVG color={theme.chevronIconColor} source={chevronRightSVG} />
           </Pressable>
         </Animated.View>
 
-        <Separator color="#EBEBF0" />
+        <Separator color={theme.borderColor} />
       </View>
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={Object.values(RWA_SIDEBAR_LIST)}
+        data={Object.values(sideBarDatas)}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           let { route } = item;
@@ -165,9 +192,7 @@ export const SideBar: React.FC = () => {
 
 const containerCStyle: ViewStyle = {
   borderRightWidth: 1,
-  borderColor: "#EBEBF0",
   zIndex: 100,
-  backgroundColor: secondaryColor,
 };
 
 const toggleButtonContainerCStyle: ViewStyle = {
@@ -180,7 +205,6 @@ const toggleButtonContainerCStyle: ViewStyle = {
 };
 
 const toggleButtonCStyle: ViewStyle = {
-  borderColor: "#EBEBF0",
   borderWidth: 1,
   alignSelf: "center",
   height: 28,
