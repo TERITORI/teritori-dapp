@@ -1,19 +1,19 @@
 import React from "react";
 import { TextInput, View } from "react-native";
-import { useSelector } from "react-redux";
 
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
-import { selectIsLightTheme } from "../../../../store/slices/settings";
+import { useTheme } from "../../../../hooks/useTheme";
+import { neutralA3 } from "../../../../utils/style/colors";
 
 export const EstateCardViewProperty: React.FC = () => {
-  const isLightTheme = useSelector(selectIsLightTheme);
+  const theme = useTheme();
 
   return (
     <PrimaryButton
-      color="#3063D3"
+      color={theme.primaryButtonColor}
       text="View Property"
       width={284}
-      squaresBackgroundColor={isLightTheme ? "#FFFFFF" : "#000000"}
+      squaresBackgroundColor={theme.backgroundColor}
       style={{ flex: 1 }}
     />
   );
@@ -21,6 +21,8 @@ export const EstateCardViewProperty: React.FC = () => {
 
 export const EstateCardWailistInput: React.FC = () => {
   const [value, onChangeValue] = React.useState<string>("");
+  const theme = useTheme();
+
   return (
     <View style={{ top: 3 }}>
       <View style={{ flex: 1, flexDirection: "row" }}>
@@ -31,17 +33,17 @@ export const EstateCardWailistInput: React.FC = () => {
             width: 150,
             flex: 1,
             padding: 10,
-            color: "#000",
-            borderWidth: 0.5,
-            borderColor: "#A3A3A3",
+            color: theme.textColor,
+            borderWidth: 1,
+            borderColor: theme.borderColor,
             borderRadius: 10,
             fontSize: 12,
           }}
           placeholder="mail@teritori.com"
-          placeholderTextColor="#A3A3A3"
+          placeholderTextColor={neutralA3}
         />
         <PrimaryButton
-          color="#3063D3"
+          color={theme.primaryButtonColor}
           text="Join the Waitlist"
           style={{ flex: 1, right: 18 }}
           noBrokenCorners

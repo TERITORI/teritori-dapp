@@ -1,9 +1,8 @@
 import React from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
-import { useSelector } from "react-redux";
 
 import backSVG from "../../../../assets/icons/back.svg";
-import { selectIsLightTheme } from "../../../store/slices/settings";
+import { useIsLightTheme, useTheme } from "../../../hooks/useTheme";
 import { useAppNavigation } from "../../../utils/navigation";
 import { neutral22 } from "../../../utils/style/colors";
 import { SVG } from "../../SVG";
@@ -13,7 +12,8 @@ export const BackButton: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ onPress, style }) => {
   const navigation = useAppNavigation();
-  const isLightTheme = useSelector(selectIsLightTheme);
+  const theme = useTheme();
+  const isLightTheme = useIsLightTheme();
 
   const handleOnPress = () => {
     if (onPress) onPress();
@@ -29,16 +29,13 @@ export const BackButton: React.FC<{
           alignItems: "center",
           width: 32,
           height: 32,
-          backgroundColor: isLightTheme ? "#E5E5E8" : neutral22,
+          backgroundColor: isLightTheme
+            ? theme.secondaryButtonColor
+            : neutral22,
           borderRadius: 999,
         }}
       >
-        <SVG
-          width={24}
-          height={24}
-          source={backSVG}
-          color={isLightTheme ? "#000" : "#FFF"}
-        />
+        <SVG width={24} height={24} source={backSVG} color={theme.textColor} />
       </View>
     </TouchableOpacity>
   );

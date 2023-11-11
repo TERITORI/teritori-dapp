@@ -1,6 +1,5 @@
 import React from "react";
 import { View } from "react-native";
-import { useSelector } from "react-redux";
 
 import { EstateCardImage } from "./EstateCardImage";
 import { EstateCardInformations } from "./EstateCardInformations";
@@ -8,9 +7,10 @@ import { EstateCardProps, EstateCardTagsProps } from "./types";
 import EstatePlaceholder from "../../../../../assets/default-images/estate-placeholder.png";
 import { BrandText } from "../../../../components/BrandText";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
-import { selectIsLightTheme } from "../../../../store/slices/settings";
+import { useTheme } from "../../../../hooks/useTheme";
 
 export const EstateCardTags: React.FC<EstateCardTagsProps> = ({ tags }) => {
+  const theme = useTheme();
   return (
     <View
       style={{
@@ -24,7 +24,7 @@ export const EstateCardTags: React.FC<EstateCardTagsProps> = ({ tags }) => {
             style={{
               marginLeft: index !== 0 ? 6 : 0,
               height: 28,
-              backgroundColor: "#F5F5F7",
+              backgroundColor: theme.tagsBackgroundColor,
               borderRadius: 10,
               justifyContent: "center",
               alignItems: "center",
@@ -34,7 +34,7 @@ export const EstateCardTags: React.FC<EstateCardTagsProps> = ({ tags }) => {
           >
             <BrandText
               style={{
-                color: "#777777",
+                color: theme.textColor,
                 fontWeight: "200",
                 fontSize: 13,
                 letterSpacing: -1,
@@ -50,16 +50,16 @@ export const EstateCardTags: React.FC<EstateCardTagsProps> = ({ tags }) => {
 };
 
 export const EstateCard: React.FC<EstateCardProps> = ({ tags, card }) => {
-  const isLightTheme = useSelector(selectIsLightTheme);
+  const theme = useTheme();
   return (
     <TertiaryBox
       mainContainerStyle={{
-        borderColor: isLightTheme ? "#EBEBF0" : "#000000",
-        backgroundColor: isLightTheme ? "#FFFFFF" : "#000000",
+        borderColor: theme.borderColor,
+        backgroundColor: theme.backgroundColor,
         padding: 20,
       }}
       style={{ marginLeft: 20 }}
-      squaresBackgroundColor={isLightTheme ? "#FFFFFF" : "#000000"}
+      squaresBackgroundColor={theme.backgroundColor}
       width={580}
       height={327}
     >

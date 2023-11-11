@@ -8,6 +8,7 @@ import { ConnectWalletModal } from "../../../../components/connectWallet/Connect
 import { BackButton } from "../../../../components/navigation/components/BackButton";
 import { SpacerRow } from "../../../../components/spacer";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
+import { useTheme } from "../../../../hooks/useTheme";
 import { selectIsLightTheme } from "../../../../store/slices/settings";
 import { headerHeight, layout } from "../../../../utils/style/layout";
 
@@ -17,6 +18,7 @@ export type HeaderProps = {
 };
 
 export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
+  const theme = useTheme();
   const isLightTheme = useSelector(selectIsLightTheme);
   const [isConnectWalletVisible, setIsConnectWalletVisible] =
     React.useState(false);
@@ -29,9 +31,9 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
         height: headerHeight,
         width: "100%",
         maxHeight: headerHeight,
-        backgroundColor: "#FFF",
+        backgroundColor: theme.headerBackgroundColor,
         flexDirection: "row",
-        borderBottomColor: "#EBEBF0",
+        borderBottomColor: theme.borderColor,
         borderBottomWidth: 1,
       }}
     >
@@ -49,6 +51,7 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
           <SpacerRow size={8} />
           {onBackPress && <BackButton onPress={onBackPress} />}
           <BrandText
+            numberOfLines={1}
             style={{ letterSpacing: -1, marginLeft: 20, fontSize: 20 }}
           >
             {headerTitle}
@@ -58,10 +61,10 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
           <View style={{ marginRight: 18 }}>
             <SecondaryButton
               textStyle={{ fontWeight: "200" }}
-              backgroundColor="#000"
-              color="#FFF"
+              backgroundColor={theme.tertiaryButtonColor}
+              color={isLightTheme ? theme.secondaryTextColor : theme.textColor}
               text="My Account"
-              squaresBackgroundColor={isLightTheme ? "#FFFFFF" : "#000000"}
+              squaresBackgroundColor={theme.headerSquaresBackgroundColor}
               size="SM"
               width={188}
             />
@@ -71,10 +74,11 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
             <View style={{ marginRight: 18 }}>
               <SecondaryButton
                 textStyle={{ fontWeight: "200" }}
-                backgroundColor="#E5E5E8"
-                color="#000"
+                borderColor={!isLightTheme ? theme.borderColor : undefined}
+                backgroundColor={theme.secondaryButtonColor}
+                color={theme.textColor}
                 text="Register"
-                squaresBackgroundColor={isLightTheme ? "#FFFFFF" : "#000000"}
+                squaresBackgroundColor={theme.headerSquaresBackgroundColor}
                 size="SM"
                 width={188}
               />
@@ -82,10 +86,10 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
             <View style={{ marginRight: 18 }}>
               <SecondaryButton
                 textStyle={{ fontWeight: "200" }}
-                backgroundColor="#3063D3"
-                color="#FFF"
-                text="Sign in"
-                squaresBackgroundColor={isLightTheme ? "#FFFFFF" : "#000000"}
+                backgroundColor={theme.primaryButtonColor}
+                color={theme.secondaryTextColor}
+                text="Connect Wallet"
+                squaresBackgroundColor={theme.headerSquaresBackgroundColor}
                 size="SM"
                 width={188}
                 onPress={() => setIsConnectWalletVisible(true)}

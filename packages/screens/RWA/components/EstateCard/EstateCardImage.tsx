@@ -1,26 +1,25 @@
 import React from "react";
 import { View } from "react-native";
-import { useSelector } from "react-redux";
 
 import { EstateCardImageProps } from "./types";
 import { OptimizedImage } from "../../../../components/OptimizedImage";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
-import { selectIsLightTheme } from "../../../../store/slices/settings";
+import { useTheme } from "../../../../hooks/useTheme";
 
 export const EstateCardImage: React.FC<EstateCardImageProps> = ({
   sourceURI,
 }) => {
-  const isLightTheme = useSelector(selectIsLightTheme);
+  const theme = useTheme();
   const imageSize = 247;
 
   return (
     <View style={{ flex: 1, alignItems: "flex-end", marginLeft: 10 }}>
       <TertiaryBox
         mainContainerStyle={{
-          borderColor: isLightTheme ? "#FFFFFF" : "#000000",
-          backgroundColor: isLightTheme ? "#FFFFFF" : "#000000",
+          borderColor: theme.borderColor,
+          backgroundColor: theme.backgroundColor,
         }}
-        squaresBackgroundColor={isLightTheme ? "#FFFFFF" : "#000000"}
+        squaresBackgroundColor={theme.backgroundColor}
         height={imageSize}
         width={imageSize}
       >

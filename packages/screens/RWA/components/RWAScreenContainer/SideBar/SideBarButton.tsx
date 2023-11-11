@@ -12,6 +12,7 @@ import { SideNotch } from "../../../../../components/navigation/components/SideN
 import { SidebarType } from "../../../../../components/navigation/types";
 import { SpacerRow } from "../../../../../components/spacer";
 import { useSidebar } from "../../../../../context/SidebarProvider";
+import { useTheme } from "../../../../../hooks/useTheme";
 import { useAppRoute } from "../../../../../utils/navigation";
 import { fontSemibold12 } from "../../../../../utils/style/fonts";
 import { layout } from "../../../../../utils/style/layout";
@@ -35,6 +36,7 @@ export const SideBarButton: React.FC<SideBarButtonProps> = ({
     () => route === currentRouteName,
     [currentRouteName, route],
   );
+  const theme = useTheme();
 
   const opacityStyle = useAnimatedStyle(
     () => ({
@@ -60,7 +62,13 @@ export const SideBarButton: React.FC<SideBarButtonProps> = ({
           <View style={titleContainerCStyle}>
             {isSelected && <SideNotch style={{ left: -layout.spacing_x2 }} />}
             <View
-              style={[svgContainerCStyle, isComingSoon && { opacity: 0.5 }]}
+              style={[
+                svgContainerCStyle,
+                { borderColor: theme.borderColor },
+                isComingSoon && {
+                  opacity: 0.5,
+                },
+              ]}
             >
               <SVGorImageIcon color="#3063D3" icon={icon} iconSize={iconSize} />
             </View>
@@ -69,7 +77,7 @@ export const SideBarButton: React.FC<SideBarButtonProps> = ({
               <BrandText
                 style={[
                   fontSemibold12,
-                  (isSelected || isComingSoon) && { color: "#000" },
+                  (isSelected || isComingSoon) && { color: theme.textColor },
                 ]}
               >
                 {isComingSoon && hovered ? "Coming Soon" : title}
@@ -102,11 +110,10 @@ const rowCenterCStyle: ViewStyle = {
 };
 
 const svgContainerCStyle: ViewStyle = {
-  borderWidth: 2,
+  borderWidth: 1,
   height: 40,
   width: 40,
   justifyContent: "center",
   alignItems: "center",
-  borderColor: "#ECECEC",
   borderRadius: 20,
 };

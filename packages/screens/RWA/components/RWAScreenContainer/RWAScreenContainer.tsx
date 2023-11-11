@@ -8,6 +8,7 @@ import {
 
 import { Header, HeaderProps } from "./Header";
 import { SideBar } from "./SideBar/SideBar";
+import { useTheme } from "../../../../hooks/useTheme";
 
 type RWAScreenContainerProps = HeaderProps & {
   children: React.ReactNode;
@@ -19,6 +20,7 @@ export const RWAScreenContainer: React.FC<RWAScreenContainerProps> = ({
   onBackPress,
 }) => {
   const { height } = useWindowDimensions();
+  const theme = useTheme();
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
       <View
@@ -26,7 +28,7 @@ export const RWAScreenContainer: React.FC<RWAScreenContainerProps> = ({
           flex: 1,
           flexDirection: "row",
           width: "100%",
-          backgroundColor: "#FDFDFF",
+          backgroundColor: theme.backgroundColor,
         }}
       >
         <SideBar />
@@ -45,14 +47,8 @@ export const RWAScreenContainer: React.FC<RWAScreenContainerProps> = ({
               }}
             >
               <ScrollView
-                style={{
-                  width: "100%",
-                  flex: 1,
-                }}
-                contentContainerStyle={{
-                  marginHorizontal: 50,
-                  marginVertical: 30,
-                }}
+                style={{ width: "100%", flex: 1 }}
+                contentContainerStyle={{ paddingVertical: 40 }}
               >
                 <View
                   style={{
