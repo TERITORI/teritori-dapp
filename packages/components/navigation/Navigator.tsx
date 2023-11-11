@@ -23,6 +23,8 @@ import { MetricsScreen } from "../../screens/Metrics/MetricsScreen";
 import { MultisigCreateScreen } from "../../screens/Multisig/MultisigCreateScreen";
 import { MultisigScreen } from "../../screens/Multisig/MultisigScreen";
 import { MultisigWalletDashboardScreen } from "../../screens/Multisig/MultisigWalletDashboardScreen";
+import { MusicScreen } from "../../screens/Music/MusicScreen";
+import { MusicTrackScreen } from "../../screens/MusicTrack/MusicTrackScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
@@ -316,6 +318,18 @@ export const Navigator: React.FC = () => {
         component={CoreDAOScreen}
         options={{ header: () => null, title: screenTitle("Core DAO") }}
       />
+      {/* ==== Music */}
+      <Stack.Screen
+        name="Music"
+        component={MusicScreen}
+        options={{ header: () => null, title: screenTitle("Music") }}
+      />
+      <Stack.Screen
+        name="MusicTrack"
+        component={MusicTrackScreen}
+        options={{ header: () => null, title: screenTitle("Album Name") }}
+      />
+
       <Stack.Screen
         name="Metrics"
         component={MetricsScreen}

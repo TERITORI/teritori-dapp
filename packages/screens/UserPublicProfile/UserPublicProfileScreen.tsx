@@ -22,6 +22,7 @@ import { DAOProposals } from "../../components/dao/DAOProposals";
 import { DAOsList } from "../../components/dao/DAOsList";
 import { GnoDemo } from "../../components/dao/GnoDemo";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
+import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
@@ -54,7 +55,7 @@ const SelectedTabContent: React.FC<{
   const { isDAO } = useIsDAO(userId);
   const { isDAOMember } = useIsDAOMember(userId, selectedWallet?.userId, isDAO);
 
-  const feedRequestUser: PostsRequest = useMemo(() => {
+  const feedRequestUserPosts: PostsRequest = useMemo(() => {
     return {
       filter: {
         user: userId,
@@ -84,6 +85,19 @@ const SelectedTabContent: React.FC<{
     };
   }, [userInfo?.metadata.tokenId, userAddress]);
 
+  const feedRequestUserTracks: PostsRequest = useMemo(() => {
+    return {
+      filter: {
+        user: userId,
+        mentions: [],
+        categories: [PostCategory.ArtisticAudio],
+        hashtags: [],
+      },
+      limit: 10,
+      offset: 0,
+    };
+  }, [userId]);
+
   const Header = useCallback(() => {
     return (
       <UserPublicProfileScreenHeader
@@ -110,7 +124,7 @@ const SelectedTabContent: React.FC<{
                 ? userInfo?.metadata.tokenId || userAddress
                 : undefined
           }
-          req={feedRequestUser}
+          req={feedRequestUserPosts}
         />
       );
     case "mentionsPosts":
@@ -126,6 +140,24 @@ const SelectedTabContent: React.FC<{
               : undefined
           }
           req={feedRequestMentions}
+        />
+      );
+    case "userTracks":
+      return (
+        <NewsFeed
+          disablePosting={
+            isDAO ? !isDAOMember : selectedWallet?.userId !== userId
+          }
+          daoId={isDAO ? userId : undefined}
+          Header={Header}
+          additionalMention={
+            isDAO
+              ? undefined
+              : selectedWallet?.address !== userAddress
+              ? userInfo?.metadata.tokenId || userAddress
+              : undefined
+          }
+          req={feedRequestUserTracks}
         />
       );
     case "nfts":
