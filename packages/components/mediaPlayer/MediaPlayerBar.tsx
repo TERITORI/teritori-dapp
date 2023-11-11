@@ -25,8 +25,6 @@ import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerRow } from "../spacer";
-import {MediaPlayerVideo} from "./MediaPlayerVideo";
-import {ResizeMode} from "expo-av";
 
 export const MediaPlayerBar: FC<{
   style?: StyleProp<ViewStyle>;

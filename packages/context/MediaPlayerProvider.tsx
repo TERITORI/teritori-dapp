@@ -45,6 +45,7 @@ interface DefaultValue {
   onVideoStatusUpdate: (status: AVPlaybackStatusSuccess) => void;
   firstPlayVideo: (video: Video, media: Media) => void;
   triggerVideoFullscreen: () => void;
+  onLayoutPlayerVideo: (video: Video) => Promise<void>;
 }
 
 const defaultValue: DefaultValue = {
@@ -66,6 +67,7 @@ const defaultValue: DefaultValue = {
   onVideoStatusUpdate: () => {},
   firstPlayVideo: () => {},
   triggerVideoFullscreen: () => {},
+  onLayoutPlayerVideo: async () => {},
 };
 
 const MediaPlayerContext = createContext(defaultValue);
@@ -90,22 +92,22 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
     useState<AVPlaybackStatusSuccess>();
 
   const loadAndPlaySound = useCallback(
-    async (media: Media, queue: Media[], isRandom?: boolean) => {
-      if (!queue || !media) return;
+    async (mediaToSet: Media, queue: Media[], isRandom?: boolean) => {
+      if (!queue || !mediaToSet) return;
       // ------- Randomizing queue
       if (isRandom) {
         const randomQueue = [
-          media,
-          ...shuffle(queue).filter((m) => m.fileUrl !== media.fileUrl),
+          mediaToSet,
+          ...shuffle(queue).filter((m) => m.fileUrl !== mediaToSet.fileUrl),
         ];
         setRandomQueue(randomQueue);
         queue = randomQueue;
-        media = randomQueue[0];
+        mediaToSet = randomQueue[0];
       }
-      setMedia(media);
+      setMedia(mediaToSet);
       try {
         const { sound: createdSound } = await Audio.Sound.createAsync(
-          { uri: ipfsURLToHTTPURL(media.fileUrl) },
+          { uri: ipfsURLToHTTPURL(mediaToSet.fileUrl) },
           undefined,
           async (status: AVPlaybackStatus) => {
             if ("uri" in status && status.isLoaded) {
@@ -113,7 +115,7 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
 
               if (status.didJustFinish && !status?.isLooping) {
                 // ------- Autoplay queue
-                const queueCurrentIndex = queue.indexOf(media);
+                const queueCurrentIndex = queue.indexOf(mediaToSet);
                 if (
                   queueCurrentIndex === -1 ||
                   queue.length < 2 ||
@@ -137,13 +139,14 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
             }
           }
         );
-        setAv(createdSound);
         // ------- Autoplay createdSound
-        if (playbackStatus?.isLoaded) {
+        // FIXME: Got error if "Video not loaded yet", so, have to control this
+        if (av && "_nativeRef" in av && av._nativeRef.current) {
           await av?.stopAsync();
           await av?.unloadAsync();
         }
         await createdSound?.playAsync();
+        setAv(createdSound);
         setIsMediaPlayerOpen(true);
         // -------
       } catch (e) {
@@ -154,7 +157,7 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
         });
       }
     },
-    [setToastError, av, playbackStatus?.isLoaded]
+    [setToastError, av]
   );
 
   const firstPlayVideo = async (video: Video, media: Media) => {
@@ -163,10 +166,8 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
     );
     setMedia(media);
     try {
-      if (playbackStatus?.isLoaded) {
-        await av?.stopAsync()
-        await av?.unloadAsync();
-      }
+      await av?.stopAsync();
+      await av?.unloadAsync();
       setAv(video);
       await video.playAsync();
     } catch (e) {
@@ -177,6 +178,14 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
       });
     }
     setIsMediaPlayerOpen(true);
+  };
+
+  // Used to restore videoRef.current (av) after the current Video has been reloaded.
+  // (If not, the playbackStatus is sync correctly, but not the av, and an error occurs "Video has not been loaded yet")
+  const onLayoutPlayerVideo = async (video: Video) => {
+    await video.pauseAsync();
+    await video.setPositionAsync(playbackStatus?.positionMillis || 0);
+    setAv(video);
   };
 
   const onVideoStatusUpdate = (status: AVPlaybackStatusSuccess) => {
@@ -227,7 +236,12 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
   };
 
   const handlePlayPause = async () => {
-    if (!av || !playbackStatus?.isLoaded) {
+    if (
+      !av ||
+      !playbackStatus?.isLoaded ||
+      // FIXME: Got error if "Video not loaded yet", so, have to control this
+      (av && "_nativeRef" in av && !av._nativeRef.current)
+    ) {
       return;
     }
     if (playbackStatus.isPlaying) {
@@ -309,6 +323,7 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
         onVideoStatusUpdate,
         firstPlayVideo,
         triggerVideoFullscreen,
+        onLayoutPlayerVideo,
       }}
     >
       {children}

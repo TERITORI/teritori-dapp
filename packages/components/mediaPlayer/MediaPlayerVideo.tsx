@@ -70,6 +70,7 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
     nextMedia,
     firstPlayVideo,
     triggerVideoFullscreen,
+    onLayoutPlayerVideo,
   } = useMediaPlayer();
   const [localStatus, setLocalStatus] = useState<AVPlaybackStatusSuccess>();
   const isInMediaPlayer = useMemo(
@@ -136,7 +137,7 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   const onLocalPlaybackStatusUpdate = async (status: AVPlaybackStatus) => {
     if ("uri" in status && status.isLoaded) {
       setLocalStatus(status);
-      if (isInMediaPlayer) {
+      if (isInMediaPlayer && status.positionMillis > 0) {
         onVideoStatusUpdate(status);
       }
       // Sync with MediaProvider, if not synced, if the video is played for the first time, on fullscreen
@@ -178,7 +179,11 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
     <View
       ref={containerRef}
       style={{ width: "100%" }}
-      onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
+      onLayout={(e) => {
+        if (isInMediaPlayer && videoRef.current)
+          onLayoutPlayerVideo(videoRef.current);
+        setContainerWidth(e.nativeEvent.layout.width);
+      }}
     >
       {/*---- expo-av Video */}
       <CustomPressable
