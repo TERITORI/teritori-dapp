@@ -3,10 +3,10 @@ import { View } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { useSelector } from "react-redux";
 
-import RealEstatePlaceholder from "../../../../../assets/default-images/real-estate-placeholder.png";
-import { OptimizedImage } from "../../../../components/OptimizedImage";
-import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
-import { selectIsLightTheme } from "../../../../store/slices/settings";
+import RealEstatePlaceholder from "../../../../../../assets/default-images/real-estate-placeholder.png";
+import { OptimizedImage } from "../../../../../components/OptimizedImage";
+import { TertiaryBox } from "../../../../../components/boxes/TertiaryBox";
+import { selectIsLightTheme } from "../../../../../store/slices/settings";
 
 const data: string[] = [
   RealEstatePlaceholder,

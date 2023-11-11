@@ -1,17 +1,17 @@
 import React from "react";
 import { View } from "react-native";
 
+import { HomeProposals } from "./components/HomeProposals/HomeProposals";
+import { setIsLightTheme } from "../../../store/slices/settings";
+import { useAppDispatch } from "../../../store/store";
+import { ScreenFC } from "../../../utils/navigation";
 import {
   EstateCardList,
   getEstateCardList,
-} from "./components/EstateCard/EstateCardList";
-import { HomeProposals } from "./components/HomeProposals/HomeProposals";
-import { RWAScreenContainer } from "./components/RWAScreenContainer/RWAScreenContainer";
-import { setIsLightTheme } from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
-import { ScreenFC } from "../../utils/navigation";
+} from "../components/EstateCard/EstateCardList";
+import { RWAScreenContainer } from "../components/RWAScreenContainer/RWAScreenContainer";
 
-export const RWAHome: ScreenFC<"RWAHome"> = () => {
+export const RWAHomeScreen: ScreenFC<"RWAHome"> = () => {
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
