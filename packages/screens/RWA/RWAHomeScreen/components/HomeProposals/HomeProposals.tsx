@@ -1,14 +1,16 @@
 import React from "react";
 import { View } from "react-native";
-import { useSelector } from "react-redux";
 
 import { RWACarousel } from "./RWACarousel";
 import { BrandText } from "../../../../../components/BrandText";
-import { PrimaryButton } from "../../../../../components/buttons/PrimaryButton";
-import { selectIsLightTheme } from "../../../../../store/slices/settings";
+import { SecondaryButton } from "../../../../../components/buttons/SecondaryButton";
+import { GradientText } from "../../../../../components/gradientText";
+import { useIsLightTheme, useTheme } from "../../../../../hooks/useTheme";
 
 export const HomeProposals: React.FC = () => {
-  const isLightTheme = useSelector(selectIsLightTheme);
+  const isLightTheme = useIsLightTheme();
+  const theme = useTheme();
+  const label = "REAL ESTATE PROPERTY";
 
   return (
     <View style={{ flex: 1, flexDirection: "row" }}>
@@ -28,15 +30,29 @@ export const HomeProposals: React.FC = () => {
           >
             7519 Wykes St, Detroit, MI 48210
           </BrandText>
-          <BrandText
-            style={{ fontSize: 12, color: "#3063D3", letterSpacing: 1 }}
-          >
-            REAL ESTATE PROPERTY
-          </BrandText>
-          <PrimaryButton
-            color="#3063D3"
+          {isLightTheme ? (
+            <BrandText
+              style={{
+                fontSize: 12,
+                color: theme.primaryButtonColor,
+                letterSpacing: 1,
+              }}
+            >
+              {label}
+            </BrandText>
+          ) : (
+            <GradientText
+              style={{ fontSize: 12, letterSpacing: 1 }}
+              gradientType="blueExtended"
+            >
+              {label}
+            </GradientText>
+          )}
+          <SecondaryButton
+            color={theme.secondaryTextColor}
+            backgroundColor={theme.primaryButtonColor}
             text="View Property"
-            squaresBackgroundColor={isLightTheme ? "#FFFFFF" : "#000000"}
+            squaresBackgroundColor={theme.squaresBackgroundColor}
             size="XL"
             style={{ marginTop: 35 }}
           />

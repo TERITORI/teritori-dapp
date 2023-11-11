@@ -48,13 +48,6 @@ export const getEstateCardList: (
   ];
 };
 
-export const getEstateCardById: (id: string) => EstateCardProps = (id) => {
-  const estateCards = getEstateCardList();
-  const estateCard = estateCards.find((item) => item.card.id === id);
-
-  return estateCard || estateCards[0];
-};
-
 export const EstateCardList: React.FC<EstateCardListProps> = ({
   cards,
   title,
@@ -63,8 +56,8 @@ export const EstateCardList: React.FC<EstateCardListProps> = ({
     <View>
       <BrandText
         style={{
-          marginLeft: 20,
           marginBottom: 15,
+          marginLeft: 60,
           marginTop: 50,
           letterSpacing: -1,
           fontSize: 20,
@@ -73,6 +66,7 @@ export const EstateCardList: React.FC<EstateCardListProps> = ({
         {title}
       </BrandText>
       <FlatList
+        contentContainerStyle={{ paddingHorizontal: 40 }}
         data={cards}
         renderItem={({ item }) => <EstateCard key={item.card.id} {...item} />}
         horizontal

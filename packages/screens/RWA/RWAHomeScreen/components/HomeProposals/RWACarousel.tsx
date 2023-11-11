@@ -1,12 +1,12 @@
 import React from "react";
 import { View } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
-import { useSelector } from "react-redux";
 
 import RealEstatePlaceholder from "../../../../../../assets/default-images/real-estate-placeholder.png";
 import { OptimizedImage } from "../../../../../components/OptimizedImage";
 import { TertiaryBox } from "../../../../../components/boxes/TertiaryBox";
-import { selectIsLightTheme } from "../../../../../store/slices/settings";
+import { useIsLightTheme, useTheme } from "../../../../../hooks/useTheme";
+import { neutral44 } from "../../../../../utils/style/colors";
 
 const data: string[] = [
   RealEstatePlaceholder,
@@ -16,17 +16,17 @@ const data: string[] = [
 
 export const RWACarousel: React.FC = () => {
   const [index, handleIndex] = React.useState<number>(0);
-  const isLightTheme = useSelector(selectIsLightTheme);
+  const theme = useTheme();
+  const isLightTheme = useIsLightTheme();
   const imageSize = 464;
   const carouselRef = React.useRef<ICarouselInstance | null>(null);
+  const selectedBackgroundColor = isLightTheme ? "#000" : "#FFF";
+  const unselectedBackgroundColor = isLightTheme ? "#C5C5C5" : neutral44;
 
   return (
     <View style={{ width: "100%", flex: 1 }}>
       <TertiaryBox
         mainContainerStyle={{
-          borderColor: isLightTheme ? "#FFFFFF" : "#000000",
-          backgroundColor: isLightTheme ? "#FFFFFF" : "#000000",
-
           shadowColor: "#000",
           shadowOffset: {
             width: 0,
@@ -38,7 +38,6 @@ export const RWACarousel: React.FC = () => {
           elevation: 19,
         }}
         noBrokenCorners
-        squaresBackgroundColor={isLightTheme ? "#FFFFFF" : "#000000"}
         height={imageSize}
         width={imageSize}
       >
@@ -73,7 +72,7 @@ export const RWACarousel: React.FC = () => {
             justifyContent: "space-evenly",
             padding: 7,
             top: -30,
-            backgroundColor: "#FFF",
+            backgroundColor: theme.headerBackgroundColor,
             borderRadius: 10,
           }}
         >
@@ -82,7 +81,10 @@ export const RWACarousel: React.FC = () => {
               <View
                 key={`Index-${indexData}`}
                 style={{
-                  backgroundColor: index === indexData ? "#000" : "#C5C5C5",
+                  backgroundColor:
+                    index === indexData
+                      ? selectedBackgroundColor
+                      : unselectedBackgroundColor,
                   borderRadius: 4,
                   width: index === indexData ? 16 : 8,
                   height: 4,
