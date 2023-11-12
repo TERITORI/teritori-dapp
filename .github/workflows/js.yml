@@ -29,6 +29,9 @@ jobs:
       - name: Validate expo config
         run: npx expo-doctor
 
+      - name: Check for unused environment variables
+        run: npx ts-node packages/scripts/unusedEnv.ts
+
       - name: Build web app
         run: yarn expo export:web
 
