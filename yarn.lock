@@ -13919,31 +13919,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-dev-client@npm:^2.4.11":
-  version: 2.4.11
-  resolution: "expo-dev-client@npm:2.4.11"
+"expo-dev-client@npm:~2.4.12":
+  version: 2.4.12
+  resolution: "expo-dev-client@npm:2.4.12"
   dependencies:
-    expo-dev-launcher: 2.4.13
-    expo-dev-menu: 3.2.1
+    expo-dev-launcher: 2.4.14
+    expo-dev-menu: 3.2.2
     expo-dev-menu-interface: 1.3.0
     expo-manifests: ~0.7.0
     expo-updates-interface: ~0.10.0
   peerDependencies:
     expo: "*"
-  checksum: 21ca1cb1af75db1dea9d241629167283bddd42077d44c537649cc05c62b3805223b00218201ccb13655bba007a28d9c7d9625a0df1cef25f19c9017be891380f
+  checksum: 08d67234cc2c38a4fb69828d2e27edd9b3b8f206d01e9a667e752e7e537d0cd27726e3d66b5789978ce7cba8b2d81bb2e9bdf272c101b64fba28c12fcd3bc73d
   languageName: node
   linkType: hard
 
-"expo-dev-launcher@npm:2.4.13":
-  version: 2.4.13
-  resolution: "expo-dev-launcher@npm:2.4.13"
+"expo-dev-launcher@npm:2.4.14":
+  version: 2.4.14
+  resolution: "expo-dev-launcher@npm:2.4.14"
   dependencies:
-    expo-dev-menu: 3.2.1
+    expo-dev-menu: 3.2.2
     resolve-from: ^5.0.0
     semver: ^7.5.3
   peerDependencies:
     expo: "*"
-  checksum: 9985306aa0b6730354ef6b08cf64f0e2619771ca23b1daab1ca51f09459465502dafa3b8aff9d6e6320609b575d6085ccc1e2f3c31431f6350b92120150f3b1d
+  checksum: 577ca5b74475c7d4180b9ac8aa86a78f4cbe60019d91b7181da0f2106101d0d9d9e022ab4fe16b7bdd54f03af7fd46cf46b54ab94de1e268b9af92024254118a
   languageName: node
   linkType: hard
 
@@ -13956,15 +13956,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-dev-menu@npm:3.2.1":
-  version: 3.2.1
-  resolution: "expo-dev-menu@npm:3.2.1"
+"expo-dev-menu@npm:3.2.2":
+  version: 3.2.2
+  resolution: "expo-dev-menu@npm:3.2.2"
   dependencies:
     expo-dev-menu-interface: 1.3.0
     semver: ^7.5.3
   peerDependencies:
     expo: "*"
-  checksum: 48c19a5fca34a861b3243e30754e2f9dde0f0c5b60e43162302218504256e8ddc8f5695e54fde328f96c8cfe344ce9386f13474dac138b1e93a07c3dd688af5a
+  checksum: 72f15549a2b8b79b2dd5415556f893041f850628c24bf2fb0fd7f007c527f85b8f360b794b6afa3267c780a0d174b72862f05fae88e6396729febea6e0ea83c8
+  languageName: node
+  linkType: hard
+
+"expo-doctor@npm:^1.1.3":
+  version: 1.1.3
+  resolution: "expo-doctor@npm:1.1.3"
+  bin:
+    expo-doctor: build/index.js
+  checksum: b1f02e899e0158e2d8626f31521d9410201665add12a462236a6142e836ca216a0a9599d0dfd849aff509ec55ec8cdfc90172e8f6cbde5793575c5ed66c68c72
   languageName: node
   linkType: hard
 
@@ -24183,7 +24192,8 @@ __metadata:
     expo: ^49.0.16
     expo-av: ~13.4.1
     expo-checkbox: ~2.4.0
-    expo-dev-client: ^2.4.11
+    expo-dev-client: ~2.4.12
+    expo-doctor: ^1.1.3
     expo-font: ~11.4.0
     expo-linear-gradient: ~12.3.0
     expo-optimize: ^0.2.19
