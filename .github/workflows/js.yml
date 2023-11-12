@@ -26,6 +26,9 @@ jobs:
       - name: Validate networks
         run: make validate-networks
 
+      - name: Validate expo config
+        run: npx expo-doctor
+
       - name: Build web app
         run: yarn expo export:web
 
