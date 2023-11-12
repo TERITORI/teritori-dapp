@@ -3,6 +3,8 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { Post, PostsRequest } from "../../api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
+import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
+import { isValidMusicAudioPost } from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
 import { TERITORI_FEED_ID } from "../../components/socialFeed/const";
 import { decodeGnoPost } from "../../components/socialFeed/utils";
 import {
@@ -133,8 +135,22 @@ const getPosts = async (networkId: string, req: PostsRequest) => {
     // ===== We use FeedService to be able to fetch filtered posts
     const feedClient = mustGetFeedClient(networkId);
     const response = await feedClient.Posts(req);
+
+    // ===== Controls that MusicAudio posts have valid metadata (Track)
+    const filteredPosts = response.posts.filter((post) => {
+      if (
+        post.category === PostCategory.MusicAudio &&
+        isValidMusicAudioPost(post)
+      ) {
+        return true;
+      }
+      if (post.category !== PostCategory.MusicAudio) {
+        return true;
+      }
+    });
+
     // ---- We sort by creation date
-    return response.posts.sort((a, b) => b.createdAt - a.createdAt);
+    return filteredPosts.sort((a, b) => b.createdAt - a.createdAt);
   } catch (err) {
     console.log("initData err", err);
     return [] as Post[];

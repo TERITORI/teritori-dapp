@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { View, ViewStyle, TextStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { UploadMusicButton } from "./UploadMusicButton";
 import { UploadMusicModal } from "./UploadMusicModal";
 import { BrandText } from "../../../components/BrandText";
-import { neutral30, primaryColor } from "../../../utils/style/colors";
-import { fontSemibold20, fontSemibold14 } from "../../../utils/style/fonts";
+import { fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 // const FLAT_LIST_SEPARATOR_WIDTH = 20;

@@ -1,6 +1,6 @@
 import { coin } from "@cosmjs/amino";
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
@@ -14,6 +14,7 @@ import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import { FileUploader } from "../../../../components/fileUploader";
 import { TextInputCustom } from "../../../../components/inputs/TextInputCustom";
 import { PostCategory } from "../../../../components/socialFeed/NewsFeed/NewsFeed.type";
+import { NotEnoughFundModal } from "../../../../components/socialFeed/NewsFeed/NotEnoughFundModal";
 import { TERITORI_FEED_ID } from "../../../../components/socialFeed/const";
 import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
 import { useFeedbacks } from "../../../../context/FeedbacksProvider";
@@ -33,7 +34,7 @@ import {
 import { selectNFTStorageAPI } from "../../../../store/slices/settings";
 import { defaultSocialFeedFee } from "../../../../utils/fee";
 import { adenaDoContract } from "../../../../utils/gno";
-import { generateIpfsKey, uploadFileToIPFS } from "../../../../utils/ipfs";
+import { generateIpfsKey, uploadFilesToPinata } from "../../../../utils/ipfs";
 import { AUDIO_MIME_TYPES } from "../../../../utils/mime";
 import {
   neutral30,
@@ -69,103 +70,32 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
   });
   const { postFee } = useUpdatePostFee(
     selectedNetwork?.id || "",
-    PostCategory.ArtisticAudio
+    PostCategory.MusicAudio
   );
   const { freePostCount } = useUpdateAvailableFreePost(
     selectedNetwork?.id || "",
-    PostCategory.ArtisticAudio,
+    PostCategory.MusicAudio,
     selectedWallet
   );
 
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const userIPFSKey = useSelector(selectNFTStorageAPI);
-  const [track, setTrack] = useState<Track>({
-    title: "",
-    description: "",
-    imageURI: "",
-    audioURI: "",
-  });
-  const [audioFile, setAudioFile] = useState<LocalFileData>();
-  // const [imageFile, setImageFile] = useState<LocalFileData>()
 
-  // const onUploadImage = async (files: LocalFileData[]) => {
-  //   setIsUploading(true);
-  //   const uploadedFile = await uploadFileToIPFS({
-  //     userKey: userIPFSKey,
-  //     file: files[0],
-  //     networkId: selectedNetwork?.id || "",
-  //     userId,
-  //   });
-  //   if (!uploadedFile?.url) {
-  //     console.error("upload file err : Fail to pin to IPFS");
-  //     setToastError({
-  //       title: "File upload failed",
-  //       message: "Fail to pin to IPFS, please try to Publish again",
-  //     });
-  //     return;
-  //   }
-  //   setTrack({ ...track, imageURI: uploadedFile.url });
-  //   setImageFile(files[0])
-  //   setIsUploading(false);
-  // };
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [localAudioFile, setLocalAudioFile] = useState<LocalFileData>();
 
-  const onUploadAudio = async (files: LocalFileData[]) => {
-    setIsUploading(true);
-    const pinataJWTKey =
-      userIPFSKey || (await generateIpfsKey(selectedNetwork?.id || "", userId));
-    if (!pinataJWTKey) {
-      console.error("upload file err : No Pinata JWT");
-      setToastError({
-        title: "File upload failed",
-        message: "No Pinata JWT",
-      });
-      return;
-    }
-    const uploadedFile = await uploadFileToIPFS({
-      userKey: userIPFSKey,
-      file: files[0],
-      networkId: selectedNetwork?.id || "",
-      userId,
-    });
-    if (!uploadedFile?.url) {
-      console.error("upload file err : Fail to pin to IPFS");
-      setToastError({
-        title: "File upload failed",
-        message: "Fail to pin to IPFS, please try to Publish again",
-      });
-      return;
-    }
-    setTrack({ ...track, audioURI: uploadedFile.url });
-    setAudioFile(files[0]);
-    setIsUploading(false);
-  };
-
-  const handleTitleTextChange = (text: string) => {
-    setTrack({ ...track, title: text.trim() });
-  };
-
-  const handleDescriptionTextChange = (text: string) => {
-    setTrack({ ...track, description: text.trim() });
-  };
-
-  // const handleRemoveAudio = () => {
-  //   setTrack({ ...track, audioURI: "" });
-  // };
-
-  const processCreatePost = async () => {
+  const processCreatePost = async (track: Track) => {
     const denom = selectedNetwork?.currencies[0].denom;
-
     const currentBalance = balances.find((bal) => bal.denom === denom);
-
     if (postFee > Number(currentBalance?.amount) && !freePostCount) {
       return setNotEnoughFundModal(true);
     }
-
     try {
       const identifier = uuidv4();
       const msg = {
-        category: PostCategory.ArtisticAudio,
+        category: PostCategory.MusicAudio,
         identifier,
         metadata: JSON.stringify(track),
       };
@@ -242,68 +172,80 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
         message: err instanceof Error ? err.message : `${err}`,
       });
     }
+    setIsUploading(false);
   };
 
   const onPressUpload = async () => {
     setIsLoading(true);
-    if (!selectedWallet?.connected || !selectedWallet.address) {
+    if (
+      !selectedWallet?.connected ||
+      !selectedWallet.address ||
+      !localAudioFile
+    ) {
       return;
     }
-    await processCreatePost();
+    const pinataJWTKey =
+      userIPFSKey || (await generateIpfsKey(selectedNetwork?.id || "", userId));
+    if (!pinataJWTKey) {
+      console.error("upload file err : No Pinata JWT");
+      setToastError({
+        title: "File upload failed",
+        message: "No Pinata JWT",
+      });
+      return;
+    }
+    const uploadedFiles = await uploadFilesToPinata({
+      pinataJWTKey,
+      files: localAudioFile.thumbnailFileData
+        ? [localAudioFile, localAudioFile.thumbnailFileData]
+        : [localAudioFile],
+    });
+    if (!uploadedFiles.find((file) => file.url)) {
+      console.error("upload file err : Fail to pin to IPFS");
+      setToastError({
+        title: "File upload failed",
+        message: "Fail to pin to IPFS, please try to Publish again",
+      });
+      return;
+    }
+    const audio =
+      uploadedFiles[0].fileType === "audio"
+        ? uploadedFiles[0]
+        : uploadedFiles[1];
+    const image =
+      uploadedFiles[0].fileType === "image"
+        ? uploadedFiles[0]
+        : uploadedFiles[1];
+    await processCreatePost({
+      title,
+      description,
+      audioURI: audio.url,
+      imageURI: image.url,
+      waveform: audio.audioMetadata?.waveform || [],
+      duration: audio.audioMetadata?.duration || 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
     setIsLoading(false);
     onUploadDone();
   };
 
-  useEffect(() => {
-    setTrack({
-      ...track,
-      audioURI: audioFile?.url || "",
-      imageURI: audioFile?.thumbnailFileData?.url || "",
-    });
-  }, [audioFile, track]);
-
   return (
     <>
+      {isNotEnoughFundModal && (
+        <NotEnoughFundModal
+          visible
+          onClose={() => setNotEnoughFundModal(false)}
+        />
+      )}
+
       <View style={inputBoxStyle}>
-        {/*<View*/}
-        {/*  style={[imgBoxStyle, (isUploading || isLoading) && { opacity: 0.5 }]}*/}
-        {/*>*/}
-        {/*  <Image*/}
-        {/*    source={*/}
-        {/*      track.imageURI === ""*/}
-        {/*        ? DefaultTrackImage*/}
-        {/*        : ipfsURLToHTTPURL(track.imageURI)*/}
-        {/*    }*/}
-        {/*    style={imgStyle}*/}
-        {/*  />*/}
-        {/*  <View style={uploadImgStyle}>*/}
-        {/*    <FileUploader*/}
-        {/*      onUpload={onUploadImage}*/}
-        {/*      style={uploadButtonStyle}*/}
-        {/*      mimeTypes={IMAGE_MIME_TYPES}*/}
-        {/*      maxUpload={1}*/}
-        {/*      setIsLoading={setIsLoading}*/}
-        {/*    >*/}
-        {/*      {({ onPress }) => (*/}
-        {/*        <TouchableOpacity*/}
-        {/*          style={uploadButtonStyle}*/}
-        {/*          onPress={onPress}*/}
-        {/*          disabled={isUploading || isLoading}*/}
-        {/*        >*/}
-        {/*          <SVG source={Img} width={16} height={16} />*/}
-        {/*          <SpacerRow size={1} />*/}
-        {/*          <BrandText style={fontSemibold14}>upload image</BrandText>*/}
-        {/*        </TouchableOpacity>*/}
-        {/*      )}*/}
-        {/*    </FileUploader>*/}
-        {/*  </View>*/}
-        {/*</View>*/}
         <View style={textBoxStyle}>
           <TextInputCustom
             rules={{ required: true }}
             noBrokenCorners
             variant="labelOutside"
-            onChangeText={handleTitleTextChange}
+            onChangeText={(text) => setTitle(text)}
             label="Track name"
             name="trackName"
           />
@@ -313,7 +255,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
             rules={{ required: true }}
             noBrokenCorners
             variant="labelOutside"
-            onChangeText={handleDescriptionTextChange}
+            onChangeText={(text) => setDescription(text)}
             label="Track description"
             name="trackDescription"
           />
@@ -321,29 +263,15 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       </View>
 
       <SpacerColumn size={2} />
-      {audioFile?.url ? (
+      {localAudioFile?.url ? (
         <EditableAudioPreview
-          file={audioFile}
-          onDelete={() => setAudioFile(undefined)}
-          onUploadThumbnail={(updatedFile) => setAudioFile(updatedFile)}
+          file={localAudioFile}
+          onDelete={() => setLocalAudioFile(undefined)}
+          onUploadThumbnail={(updatedFile) => setLocalAudioFile(updatedFile)}
         />
       ) : (
-        // <View style={unitBoxStyle}>
-        //   <View style={oneLineStyle}>
-        //     <TouchableOpacity>
-        //       <SVG source={List} width={16} height={16} />
-        //     </TouchableOpacity>
-        //     <SpacerRow size={1.5} />
-        //     <BrandText style={fontSemibold14}>{track.title}</BrandText>
-        //   </View>
-        //   <View style={oneLineStyle}>
-        //     <TouchableOpacity onPress={handleRemoveAudio}>
-        //       <SVG source={TrashCircle} width={24} height={24} />
-        //     </TouchableOpacity>
-        //   </View>
-        // </View>
         <FileUploader
-          onUpload={onUploadAudio}
+          onUpload={(files) => setLocalAudioFile(files[0])}
           style={uploadButtonStyle}
           mimeTypes={AUDIO_MIME_TYPES}
           setIsLoading={setIsLoading}
@@ -388,15 +316,16 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
         <PrimaryButton
           text="Upload"
           disabled={
-            !track.title ||
-            !track.imageURI ||
-            !track.audioURI ||
+            !localAudioFile?.url ||
+            !title ||
+            !description ||
             isUploading ||
+            isMutateLoading ||
             isLoading
           }
           size="SM"
           onPress={onPressUpload}
-          isLoading={isUploading || isLoading}
+          isLoading={isUploading || isLoading || isMutateLoading}
         />
       </View>
     </>
@@ -436,46 +365,14 @@ const footerTextStyle: TextStyle = {
   color: neutral77,
   width: "55%",
 };
-
-// const unitBoxStyle: ViewStyle = {
-//   backgroundColor: neutral17,
-//   paddingHorizontal: layout.spacing_x1_5,
-//   flexDirection: "row",
-//   alignItems: "center",
-//   justifyContent: "space-between",
-//   borderRadius: 8,
-//   height: 40,
-// };
-// const oneLineStyle: ViewStyle = {
-//   flexDirection: "row",
-//   alignItems: "center",
-// };
 const inputBoxStyle: ViewStyle = {
   flexDirection: "row",
   alignItems: "flex-start",
   justifyContent: "space-between",
 };
-// const imgBoxStyle: ViewStyle = {
-//   position: "relative",
-// };
-// const imgStyle: ImageStyle = {
-//   width: 172,
-//   height: 172,
-//   borderRadius: 8,
-// };
 const textBoxStyle: ViewStyle = {
   width: "100%",
 };
-
-// const uploadImgStyle: ViewStyle = {
-//   width: "100%",
-//   position: "absolute",
-//   left: 0,
-//   bottom: layout.spacing_x1,
-//   flexDirection: "column",
-//   alignItems: "center",
-//   justifyContent: "center",
-// };
 const uploadButtonStyle: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",

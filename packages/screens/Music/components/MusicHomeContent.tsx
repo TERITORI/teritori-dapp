@@ -14,7 +14,6 @@ import {
 } from "../../../hooks/feed/useFetchFeed";
 import { fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { Track, ZodTrack } from "../../../utils/types/music";
 
 const FLAT_LIST_SEPARATOR_WIDTH = 20;
 export const MusicHomeContent: React.FC = () => {
@@ -22,7 +21,7 @@ export const MusicHomeContent: React.FC = () => {
 
   const tracksFeedRequest: PostsRequest = {
     filter: {
-      categories: [PostCategory.ArtisticAudio],
+      categories: [PostCategory.MusicAudio],
       user: "",
       mentions: [],
       hashtags: [],
@@ -31,17 +30,15 @@ export const MusicHomeContent: React.FC = () => {
     offset: 0,
   };
 
+  // ======= Getting MusicAudio posts as single tracks
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed(tracksFeedRequest);
-  const tracks: Track[] = useMemo(
-    () =>
-      data
-        ? combineFetchFeedPages(data.pages).map((post) =>
-            ZodTrack.parse(JSON.parse(post.metadata))
-          )
-        : [],
+  const posts = useMemo(
+    () => (data ? combineFetchFeedPages(data.pages) : []),
     [data]
   );
+
+  // ======= TODO: Getting ??? as albums
 
   const [flatListWidth, setFlatListWidth] = useState(0);
   const elemsPerRow =
@@ -70,11 +67,11 @@ export const MusicHomeContent: React.FC = () => {
           keyExtractor={(item, index) => `track-${index}`}
           key={`music-home-flat-list-${elemsPerRow}`}
           scrollEventThrottle={0.1}
-          data={tracks}
+          data={posts}
           numColumns={elemsPerRow}
           renderItem={({ item, index }) => (
             <>
-              <TrackCard track={item} />
+              <TrackCard post={item} />
               {index !== elemsPerRow - 1 && (
                 <SpacerRow size={FLAT_LIST_SEPARATOR_WIDTH / 8} />
               )}

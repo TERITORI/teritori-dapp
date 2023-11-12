@@ -1,23 +1,10 @@
 import React from "react";
-import { ImageStyle, TextStyle, ViewStyle } from "react-native";
-
-import {
-  neutral17,
-  neutral30,
-  neutral33,
-  neutral77,
-  primaryColor,
-} from "../../../../utils/style/colors";
-import { fontSemibold14 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
 
 interface Props {
   onUploadDone: () => void;
 }
 
-const UPLOAD_ALBUM_MODAL_WIDTH = 564;
-
-export const UploadAlbum: React.FC<Props> = ({ onUploadDone }) => {
+export const UploadAlbum: React.FC<Props> = () => {
   // const { setToastError, setToastSuccess } = useFeedbacks();
   // const selectedNetworkId = useSelectedNetworkId();
   // const wallet = useSelectedWallet();

@@ -182,7 +182,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
       return `Comment by ${authorDisplayName}`;
     }
 
-    if (postResult.category === PostCategory.ArtisticAudio) {
+    if (postResult.category === PostCategory.MusicAudio) {
       return `Track by ${authorDisplayName}`;
     }
 

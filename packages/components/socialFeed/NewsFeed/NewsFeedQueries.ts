@@ -8,6 +8,7 @@ import {
   SocialFeedPostMetadata,
   ZodSocialFeedPostMetadata,
 } from "./NewsFeed.type";
+import { Post } from "../../../api/feed/v1/feed";
 import {
   nonSigningSocialFeedClient,
   signingSocialFeedClient,
@@ -18,6 +19,7 @@ import { defaultSocialFeedFee } from "../../../utils/fee";
 import { adenaDoContract } from "../../../utils/gno";
 import { ipfsURLToHTTPURL, uploadFilesToPinata } from "../../../utils/ipfs";
 import { RemoteFileData } from "../../../utils/types/files";
+import { Track, ZodTrack } from "../../../utils/types/music";
 import { TERITORI_FEED_ID } from "../const";
 
 interface GetAvailableFreePostParams {
@@ -257,3 +259,12 @@ export const generatePostMetadata = ({
     updatedAt: new Date().toISOString(),
   });
 };
+
+export const isValidMusicAudioPost = (post: Post) =>
+  post.category === PostCategory.MusicAudio &&
+  ZodTrack.safeParse(JSON.parse(post.metadata)).success;
+
+export const getMusicAudioPostTrack = (post: Post): Track | undefined =>
+  isValidMusicAudioPost(post)
+    ? ZodTrack.parse(JSON.parse(post.metadata))
+    : undefined;

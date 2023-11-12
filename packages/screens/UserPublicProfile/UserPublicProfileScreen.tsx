@@ -90,7 +90,7 @@ const SelectedTabContent: React.FC<{
       filter: {
         user: userId,
         mentions: [],
-        categories: [PostCategory.ArtisticAudio],
+        categories: [PostCategory.MusicAudio],
         hashtags: [],
       },
       limit: 10,

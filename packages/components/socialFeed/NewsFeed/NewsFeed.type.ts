@@ -19,7 +19,7 @@ export enum PostCategory {
   Question,
   BriefForStableDiffusion,
   Flagged,
-  ArtisticAudio,
+  MusicAudio,
 }
 
 export interface NewPostFormValues {

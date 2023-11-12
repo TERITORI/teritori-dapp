@@ -68,8 +68,8 @@ export const AudioView: React.FC<{
   };
 
   const hasThumbnail = useMemo(
-    () => typeof file?.thumbnailFileData?.url === "string",
-    [file?.thumbnailFileData?.url],
+    () => typeof thumbnailUrl === "string",
+    [thumbnailUrl]
   );
 
   const positionPercent = useMemo(
@@ -84,7 +84,7 @@ export const AudioView: React.FC<{
     ],
   );
 
-  if (!file?.url)
+  if (!fileUrl)
     return (
       <BrandText style={[fontSemibold13, { color: errorColor }]}>
         Audio not found
@@ -156,7 +156,7 @@ export const AudioView: React.FC<{
                 )}
               </BrandText>
               <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                {duration}
+                {prettyDuration}
               </BrandText>
             </View>
             <View
@@ -165,7 +165,7 @@ export const AudioView: React.FC<{
               }}
             >
               <AudioWaveform
-                waveform={file.audioMetadata?.waveform || []}
+                waveform={waveform}
                 positionPercent={positionPercent}
                 duration={file.audioMetadata?.duration || 1}
               />
@@ -175,7 +175,7 @@ export const AudioView: React.FC<{
           {hasThumbnail && (
             <Image
               source={{
-                uri: ipfsURLToHTTPURL(file?.thumbnailFileData?.url || ""),
+                uri: ipfsURLToHTTPURL(thumbnailUrl || ""),
               }}
               resizeMode="cover"
               style={{
