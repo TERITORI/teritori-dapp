@@ -35,6 +35,8 @@ import {
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
   parseUserId,
+  getNonSigningStargateClient,
+  getUserId,
 } from "../../../networks";
 import { AppRouteType, useAppNavigation } from "../../../utils/navigation";
 import {
@@ -64,6 +66,9 @@ export const MultisigRightSection: React.FC = () => {
     useState(false);
   const selectedWallet = useSelectedWallet();
   const authToken = useMultisigAuthToken(selectedWallet?.userId);
+  const multisigClient = useMultisigClient(network?.id);
+  const { wrapWithFeedback } = useFeedbacks();
+  const queryClient = useQueryClient();
 
   const [modalNameFinderVisible, setModalNameFinderVisible] = useState(false);
   const [burnModalVisible, setBurnModalVisible] = useState(false);
@@ -200,6 +205,44 @@ export const MultisigRightSection: React.FC = () => {
           </>,
         );
       }
+
+      // TODO: add warning modal
+      actions.push(
+        <PrimaryButton
+          size="M"
+          text="Clear signatures"
+          fullWidth
+          loader
+          onPress={wrapWithFeedback(async () => {
+            const network = getCosmosNetworkByChainId(multisig.chainId);
+            if (!network) {
+              throw new Error("Invalid multisig network");
+            }
+            const stargateClient = await getNonSigningStargateClient(
+              network.id
+            );
+            if (!stargateClient) {
+              throw new Error("Invalid multisig network");
+            }
+            const account = await stargateClient.getAccount(multisig.address);
+            await multisigClient.ClearSignatures({
+              authToken,
+              multisigChainId: multisig.chainId,
+              multisigAddress: multisig.address,
+              sequence: account?.sequence || 0,
+            });
+            await queryClient.invalidateQueries(
+              multisigTransactionsQueryKey(
+                network.id,
+                getUserId(network.id, multisig.address)
+              )
+            );
+            await queryClient.invalidateQueries(
+              multisigTransactionsQueryKey(network.id, undefined)
+            );
+          })}
+        />
+      );
     }
   }
 

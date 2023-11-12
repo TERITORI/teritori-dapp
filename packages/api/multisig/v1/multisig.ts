@@ -229,6 +229,16 @@ export interface CompleteTransactionRequest {
 export interface CompleteTransactionResponse {
 }
 
+export interface ClearSignaturesRequest {
+  authToken: Token | undefined;
+  multisigChainId: string;
+  multisigAddress: string;
+  sequence: number;
+}
+
+export interface ClearSignaturesResponse {
+}
+
 export interface GetChallengeRequest {
 }
 
@@ -2421,6 +2431,124 @@ export const CompleteTransactionResponse = {
   },
 };
 
+function createBaseClearSignaturesRequest(): ClearSignaturesRequest {
+  return { authToken: undefined, multisigChainId: "", multisigAddress: "", sequence: 0 };
+}
+
+export const ClearSignaturesRequest = {
+  encode(message: ClearSignaturesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.authToken !== undefined) {
+      Token.encode(message.authToken, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.multisigChainId !== "") {
+      writer.uint32(18).string(message.multisigChainId);
+    }
+    if (message.multisigAddress !== "") {
+      writer.uint32(26).string(message.multisigAddress);
+    }
+    if (message.sequence !== 0) {
+      writer.uint32(32).uint32(message.sequence);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ClearSignaturesRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseClearSignaturesRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.authToken = Token.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.multisigChainId = reader.string();
+          break;
+        case 3:
+          message.multisigAddress = reader.string();
+          break;
+        case 4:
+          message.sequence = reader.uint32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ClearSignaturesRequest {
+    return {
+      authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined,
+      multisigChainId: isSet(object.multisigChainId) ? String(object.multisigChainId) : "",
+      multisigAddress: isSet(object.multisigAddress) ? String(object.multisigAddress) : "",
+      sequence: isSet(object.sequence) ? Number(object.sequence) : 0,
+    };
+  },
+
+  toJSON(message: ClearSignaturesRequest): unknown {
+    const obj: any = {};
+    message.authToken !== undefined &&
+      (obj.authToken = message.authToken ? Token.toJSON(message.authToken) : undefined);
+    message.multisigChainId !== undefined && (obj.multisigChainId = message.multisigChainId);
+    message.multisigAddress !== undefined && (obj.multisigAddress = message.multisigAddress);
+    message.sequence !== undefined && (obj.sequence = Math.round(message.sequence));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ClearSignaturesRequest>, I>>(object: I): ClearSignaturesRequest {
+    const message = createBaseClearSignaturesRequest();
+    message.authToken = (object.authToken !== undefined && object.authToken !== null)
+      ? Token.fromPartial(object.authToken)
+      : undefined;
+    message.multisigChainId = object.multisigChainId ?? "";
+    message.multisigAddress = object.multisigAddress ?? "";
+    message.sequence = object.sequence ?? 0;
+    return message;
+  },
+};
+
+function createBaseClearSignaturesResponse(): ClearSignaturesResponse {
+  return {};
+}
+
+export const ClearSignaturesResponse = {
+  encode(_: ClearSignaturesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ClearSignaturesResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseClearSignaturesResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): ClearSignaturesResponse {
+    return {};
+  },
+
+  toJSON(_: ClearSignaturesResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ClearSignaturesResponse>, I>>(_: I): ClearSignaturesResponse {
+    const message = createBaseClearSignaturesResponse();
+    return message;
+  },
+};
+
 function createBaseGetChallengeRequest(): GetChallengeRequest {
   return {};
 }
@@ -3164,6 +3292,10 @@ export interface MultisigService {
     request: DeepPartial<CompleteTransactionRequest>,
     metadata?: grpc.Metadata,
   ): Promise<CompleteTransactionResponse>;
+  ClearSignatures(
+    request: DeepPartial<ClearSignaturesRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<ClearSignaturesResponse>;
   /** Auth */
   GetChallenge(request: DeepPartial<GetChallengeRequest>, metadata?: grpc.Metadata): Promise<GetChallengeResponse>;
   GetToken(request: DeepPartial<GetTokenRequest>, metadata?: grpc.Metadata): Promise<GetTokenResponse>;
@@ -3184,6 +3316,7 @@ export class MultisigServiceClientImpl implements MultisigService {
     this.CreateTransaction = this.CreateTransaction.bind(this);
     this.SignTransaction = this.SignTransaction.bind(this);
     this.CompleteTransaction = this.CompleteTransaction.bind(this);
+    this.ClearSignatures = this.ClearSignatures.bind(this);
     this.GetChallenge = this.GetChallenge.bind(this);
     this.GetToken = this.GetToken.bind(this);
     this.ValidateToken = this.ValidateToken.bind(this);
@@ -3254,6 +3387,13 @@ export class MultisigServiceClientImpl implements MultisigService {
       CompleteTransactionRequest.fromPartial(request),
       metadata,
     );
+  }
+
+  ClearSignatures(
+    request: DeepPartial<ClearSignaturesRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<ClearSignaturesResponse> {
+    return this.rpc.unary(MultisigServiceClearSignaturesDesc, ClearSignaturesRequest.fromPartial(request), metadata);
   }
 
   GetChallenge(request: DeepPartial<GetChallengeRequest>, metadata?: grpc.Metadata): Promise<GetChallengeResponse> {
@@ -3472,6 +3612,28 @@ export const MultisigServiceCompleteTransactionDesc: UnaryMethodDefinitionish = 
         ...value,
         toObject() {
           return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MultisigServiceClearSignaturesDesc: UnaryMethodDefinitionish = {
+  methodName: "ClearSignatures",
+  service: MultisigServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return ClearSignaturesRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...ClearSignaturesResponse.decode(data),
+        toObject() {
+          return this;
         },
       };
     },
