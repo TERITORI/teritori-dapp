@@ -18,6 +18,7 @@ service MultisigService {
   rpc CreateTransaction(CreateTransactionRequest) returns (CreateTransactionResponse);
   rpc SignTransaction(SignTransactionRequest) returns (SignTransactionResponse);
   rpc CompleteTransaction(CompleteTransactionRequest) returns (CompleteTransactionResponse);
+  rpc ClearSignatures(ClearSignaturesRequest) returns (ClearSignaturesResponse);
 
   // Auth
   rpc GetChallenge(GetChallengeRequest) returns (GetChallengeResponse);
@@ -178,6 +179,17 @@ message CompleteTransactionRequest {
 }
 
 message CompleteTransactionResponse {
+
+}
+
+message ClearSignaturesRequest {
+  Token auth_token = 1;
+  string multisig_chain_id = 2;
+  string multisig_address = 3;
+  uint32 sequence = 4;
+}
+
+message ClearSignaturesResponse {
 
 }
 

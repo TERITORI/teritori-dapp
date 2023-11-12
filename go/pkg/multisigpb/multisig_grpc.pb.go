@@ -33,6 +33,7 @@ type MultisigServiceClient interface {
 	CreateTransaction(ctx context.Context, in *CreateTransactionRequest, opts ...grpc.CallOption) (*CreateTransactionResponse, error)
 	SignTransaction(ctx context.Context, in *SignTransactionRequest, opts ...grpc.CallOption) (*SignTransactionResponse, error)
 	CompleteTransaction(ctx context.Context, in *CompleteTransactionRequest, opts ...grpc.CallOption) (*CompleteTransactionResponse, error)
+	ClearSignatures(ctx context.Context, in *ClearSignaturesRequest, opts ...grpc.CallOption) (*ClearSignaturesResponse, error)
 	// Auth
 	GetChallenge(ctx context.Context, in *GetChallengeRequest, opts ...grpc.CallOption) (*GetChallengeResponse, error)
 	GetToken(ctx context.Context, in *GetTokenRequest, opts ...grpc.CallOption) (*GetTokenResponse, error)
@@ -128,6 +129,15 @@ func (c *multisigServiceClient) CompleteTransaction(ctx context.Context, in *Com
 	return out, nil
 }
 
+func (c *multisigServiceClient) ClearSignatures(ctx context.Context, in *ClearSignaturesRequest, opts ...grpc.CallOption) (*ClearSignaturesResponse, error) {
+	out := new(ClearSignaturesResponse)
+	err := c.cc.Invoke(ctx, "/multisig.v1.MultisigService/ClearSignatures", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *multisigServiceClient) GetChallenge(ctx context.Context, in *GetChallengeRequest, opts ...grpc.CallOption) (*GetChallengeResponse, error) {
 	out := new(GetChallengeResponse)
 	err := c.cc.Invoke(ctx, "/multisig.v1.MultisigService/GetChallenge", in, out, opts...)
@@ -170,6 +180,7 @@ type MultisigServiceServer interface {
 	CreateTransaction(context.Context, *CreateTransactionRequest) (*CreateTransactionResponse, error)
 	SignTransaction(context.Context, *SignTransactionRequest) (*SignTransactionResponse, error)
 	CompleteTransaction(context.Context, *CompleteTransactionRequest) (*CompleteTransactionResponse, error)
+	ClearSignatures(context.Context, *ClearSignaturesRequest) (*ClearSignaturesResponse, error)
 	// Auth
 	GetChallenge(context.Context, *GetChallengeRequest) (*GetChallengeResponse, error)
 	GetToken(context.Context, *GetTokenRequest) (*GetTokenResponse, error)
@@ -207,6 +218,9 @@ func (UnimplementedMultisigServiceServer) SignTransaction(context.Context, *Sign
 }
 func (UnimplementedMultisigServiceServer) CompleteTransaction(context.Context, *CompleteTransactionRequest) (*CompleteTransactionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CompleteTransaction not implemented")
+}
+func (UnimplementedMultisigServiceServer) ClearSignatures(context.Context, *ClearSignaturesRequest) (*ClearSignaturesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ClearSignatures not implemented")
 }
 func (UnimplementedMultisigServiceServer) GetChallenge(context.Context, *GetChallengeRequest) (*GetChallengeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetChallenge not implemented")
@@ -392,6 +406,24 @@ func _MultisigService_CompleteTransaction_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MultisigService_ClearSignatures_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ClearSignaturesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MultisigServiceServer).ClearSignatures(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/multisig.v1.MultisigService/ClearSignatures",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MultisigServiceServer).ClearSignatures(ctx, req.(*ClearSignaturesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _MultisigService_GetChallenge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetChallengeRequest)
 	if err := dec(in); err != nil {
@@ -488,6 +520,10 @@ var MultisigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CompleteTransaction",
 			Handler:    _MultisigService_CompleteTransaction_Handler,
+		},
+		{
+			MethodName: "ClearSignatures",
+			Handler:    _MultisigService_ClearSignatures_Handler,
 		},
 		{
 			MethodName: "GetChallenge",
