@@ -219,7 +219,7 @@ export const MultisigRightSection: React.FC = () => {
               throw new Error("Invalid multisig network");
             }
             const stargateClient = await getNonSigningStargateClient(
-              network.id
+              network.id,
             );
             if (!stargateClient) {
               throw new Error("Invalid multisig network");
@@ -234,14 +234,14 @@ export const MultisigRightSection: React.FC = () => {
             await queryClient.invalidateQueries(
               multisigTransactionsQueryKey(
                 network.id,
-                getUserId(network.id, multisig.address)
-              )
+                getUserId(network.id, multisig.address),
+              ),
             );
             await queryClient.invalidateQueries(
-              multisigTransactionsQueryKey(network.id, undefined)
+              multisigTransactionsQueryKey(network.id, undefined),
             );
           })}
-        />
+        />,
       );
     }
   }

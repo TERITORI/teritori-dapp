@@ -2453,28 +2453,45 @@ export const ClearSignaturesRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ClearSignaturesRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseClearSignaturesRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authToken = Token.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.multisigChainId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.multisigAddress = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.sequence = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2482,22 +2499,32 @@ export const ClearSignaturesRequest = {
   fromJSON(object: any): ClearSignaturesRequest {
     return {
       authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined,
-      multisigChainId: isSet(object.multisigChainId) ? String(object.multisigChainId) : "",
-      multisigAddress: isSet(object.multisigAddress) ? String(object.multisigAddress) : "",
-      sequence: isSet(object.sequence) ? Number(object.sequence) : 0,
+      multisigChainId: isSet(object.multisigChainId) ? globalThis.String(object.multisigChainId) : "",
+      multisigAddress: isSet(object.multisigAddress) ? globalThis.String(object.multisigAddress) : "",
+      sequence: isSet(object.sequence) ? globalThis.Number(object.sequence) : 0,
     };
   },
 
   toJSON(message: ClearSignaturesRequest): unknown {
     const obj: any = {};
-    message.authToken !== undefined &&
-      (obj.authToken = message.authToken ? Token.toJSON(message.authToken) : undefined);
-    message.multisigChainId !== undefined && (obj.multisigChainId = message.multisigChainId);
-    message.multisigAddress !== undefined && (obj.multisigAddress = message.multisigAddress);
-    message.sequence !== undefined && (obj.sequence = Math.round(message.sequence));
+    if (message.authToken !== undefined) {
+      obj.authToken = Token.toJSON(message.authToken);
+    }
+    if (message.multisigChainId !== "") {
+      obj.multisigChainId = message.multisigChainId;
+    }
+    if (message.multisigAddress !== "") {
+      obj.multisigAddress = message.multisigAddress;
+    }
+    if (message.sequence !== 0) {
+      obj.sequence = Math.round(message.sequence);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ClearSignaturesRequest>, I>>(base?: I): ClearSignaturesRequest {
+    return ClearSignaturesRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ClearSignaturesRequest>, I>>(object: I): ClearSignaturesRequest {
     const message = createBaseClearSignaturesRequest();
     message.authToken = (object.authToken !== undefined && object.authToken !== null)
@@ -2520,16 +2547,17 @@ export const ClearSignaturesResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ClearSignaturesResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseClearSignaturesResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2543,6 +2571,9 @@ export const ClearSignaturesResponse = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ClearSignaturesResponse>, I>>(base?: I): ClearSignaturesResponse {
+    return ClearSignaturesResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ClearSignaturesResponse>, I>>(_: I): ClearSignaturesResponse {
     const message = createBaseClearSignaturesResponse();
     return message;
@@ -3630,10 +3661,11 @@ export const MultisigServiceClearSignaturesDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ClearSignaturesResponse.decode(data);
       return {
-        ...ClearSignaturesResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
