@@ -98,5 +98,8 @@ module.exports = async function (env, argv) {
     use: [],
   });
 
+  // Disable warnings because source maps spam warnings, see https://github.com/expo/expo/issues/21276#issuecomment-1445420455
+  config.stats = "none";
+
   return config;
 };
