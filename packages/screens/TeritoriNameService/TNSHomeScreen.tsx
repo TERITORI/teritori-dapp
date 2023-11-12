@@ -55,7 +55,7 @@ const TNSPathMap = {
 export type TNSCloseHandler = (
   modalName?: TNSModals,
   navigateTo?: TNSModals,
-  name?: string
+  name?: string,
 ) => void;
 
 export interface TNSModalCommonProps {
@@ -81,7 +81,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
   const collectionId = getCollectionId(
     selectedNetwork?.id,
-    selectedNetwork?.nameServiceContractAddress
+    selectedNetwork?.nameServiceContractAddress,
   );
 
   const isKeplrConnected = useIsKeplrConnected();
@@ -90,7 +90,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   const handleModalClose: TNSCloseHandler = (
     modalName,
     navigateBackTo,
-    _name = name
+    _name = name,
   ) => {
     if (modalName) {
       navigation.navigate("TNSHome", {
@@ -114,7 +114,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
       //@ts-ignore
       const routeName = Object.keys(TNSPathMap).find(
         //@ts-ignore
-        (key) => TNSPathMap[key] === modal
+        (key) => TNSPathMap[key] === modal,
       );
       //@ts-ignore
 

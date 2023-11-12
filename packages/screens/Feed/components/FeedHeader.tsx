@@ -30,7 +30,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
   const selectedNetworkKind = selectedNetworkInfo?.kind;
   const selectedWallet = useSelectedWallet();
   const isModerationDAOMember = useIsModerationDAOMember(
-    selectedWallet?.userId
+    selectedWallet?.userId,
   );
 
   const req = {

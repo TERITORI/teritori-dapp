@@ -40,8 +40,8 @@ export const FileUploader: FC<FileUploaderProps> = ({
 
   const handleFiles = async (files: File[]) => {
     const _files = multiple ? files : [files[0]];
-    let supportedFiles = [...files].filter((file) =>
-      mimeTypes?.includes(file.type)
+    let supportedFiles = [...files].filter(
+      (file) => mimeTypes?.includes(file.type),
     );
 
     if (maxUpload && supportedFiles.length) {
@@ -65,7 +65,7 @@ export const FileUploader: FC<FileUploaderProps> = ({
     }
 
     const formattedFiles = await Promise.all(
-      supportedFiles.map(async (file) => await formatFile(file))
+      supportedFiles.map(async (file) => await formatFile(file)),
     );
 
     onUpload(formattedFiles);

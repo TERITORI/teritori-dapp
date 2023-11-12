@@ -10,8 +10,8 @@ export const useKeybaseAvatarURL = (identity: string) => {
       const keybaseData = await (
         await fetch(
           `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${encodeURIComponent(
-            identity
-          )}&fields=pictures`
+            identity,
+          )}&fields=pictures`,
         )
       ).json();
       if (!Array.isArray(keybaseData.them) || !keybaseData.them.length) {
@@ -21,7 +21,7 @@ export const useKeybaseAvatarURL = (identity: string) => {
     },
     {
       staleTime: Infinity,
-    }
+    },
   );
   return data;
 };

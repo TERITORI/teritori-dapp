@@ -15,7 +15,7 @@ import { getMarketplaceClient } from "../utils/backend";
 
 export const useCollections = (
   req: CollectionsRequest,
-  filter?: (c: Collection) => boolean
+  filter?: (c: Collection) => boolean,
 ): {
   fetchNextPage: (options?: FetchNextPageOptions) => Promise<
     InfiniteQueryObserverResult<
@@ -62,19 +62,22 @@ export const useCollections = (
             return addCollectionMetadata(c);
           }
           return c;
-        })
+        }),
       );
 
       return { nextCursor: pageParam + req.limit, collections };
     },
-    { staleTime: Infinity, getNextPageParam: (lastPage) => lastPage.nextCursor }
+    {
+      staleTime: Infinity,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    },
   );
 
   const collections = useMemo(() => {
     const pages = data?.pages || [];
     return pages.reduce(
       (acc: Collection[], page) => [...acc, ...page.collections],
-      []
+      [],
     );
   }, [data?.pages]);
 
@@ -89,7 +92,7 @@ export const useCollections = (
     async (index: number) => {
       await fetchNextPage({ pageParam: index });
     },
-    [fetchNextPage]
+    [fetchNextPage],
   );
 
   return {

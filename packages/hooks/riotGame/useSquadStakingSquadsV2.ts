@@ -22,6 +22,6 @@ export const useSquadStakingSquadsV2 = (userId: string | undefined) => {
         }
       }
     },
-    { initialData: [] }
+    { initialData: [] },
   );
 };

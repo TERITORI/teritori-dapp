@@ -122,12 +122,12 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
       }
 
       const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
-        selectedWallet?.networkId || ""
+        selectedWallet?.networkId || "",
       );
 
       const client = new TeritoriNameServiceQueryClient(
         cosmwasmClient,
-        network.nameServiceContractAddress
+        network.nameServiceContractAddress,
       );
 
       // If this query fails it means that the token does not exist.
@@ -255,7 +255,7 @@ export const TNSMintNameModal: React.FC<
     }
 
     await queryClient.invalidateQueries(
-      nsNameInfoQueryKey(networkId, normalizedTokenId)
+      nsNameInfoQueryKey(networkId, normalizedTokenId),
     );
   };
 
@@ -288,7 +288,7 @@ export const TNSMintNameModal: React.FC<
           {prettyPrice(
             network?.id || "",
             balance?.amount || "0",
-            price?.denom || ""
+            price?.denom || "",
           )}
         </BrandText>
         <NameNFT

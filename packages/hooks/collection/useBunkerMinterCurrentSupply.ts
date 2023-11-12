@@ -6,7 +6,7 @@ import { mustGetNonSigningCosmWasmClient } from "../../networks";
 export const useBunkerMinterCurrentSupply = (
   networkId: string | undefined,
   contractAddress: string | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   const { data, ...other } = useQuery(
     ["bunkerMinterCurrentSupply", networkId, contractAddress],
@@ -17,11 +17,11 @@ export const useBunkerMinterCurrentSupply = (
       const cosmwasm = await mustGetNonSigningCosmWasmClient(networkId);
       const minterClient = new TeritoriBunkerMinterQueryClient(
         cosmwasm,
-        contractAddress
+        contractAddress,
       );
       return await minterClient.currentSupply();
     },
-    { staleTime: Infinity, enabled }
+    { staleTime: Infinity, enabled },
   );
   return { bunkerMinterCurrentSupply: data, ...other };
 };

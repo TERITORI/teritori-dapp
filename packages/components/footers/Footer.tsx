@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import {
   Linking,
   StyleProp,
@@ -118,6 +118,7 @@ const FooterLogo: React.FC = () => {
 
 export const Footer: React.FC<{
   style?: StyleProp<ViewStyle>;
+  children?: ReactNode;
 }> = ({ style, children }) => {
   return (
     <View

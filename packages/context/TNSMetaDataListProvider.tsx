@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { ReactNode, createContext, useState } from "react";
 
 import { Metadata } from "../contracts-clients/teritori-name-service/TeritoriNameService.types";
 
@@ -18,7 +18,9 @@ const defaultValue: DefaultValue = {
 
 const TNSMetaDataListContext = createContext(defaultValue);
 
-export const TNSMetaDataListContextProvider: React.FC = ({ children }) => {
+export const TNSMetaDataListContextProvider: React.FC<{
+  children: ReactNode;
+}> = ({ children }) => {
   // The entered name
   const [metaDataList, setMetaDataList] = useState<
     DefaultValue["metaDataList"]

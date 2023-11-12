@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 
 import { neutral77 } from "../../utils/style/colors";
@@ -13,6 +13,7 @@ export const TopMenuSection: React.FC<{
   title: string;
   style?: StyleProp<ViewStyle>;
   isCarousel?: boolean;
+  children: ReactNode;
 }> = ({ title, style, isCarousel, children }) => {
   return (
     <>

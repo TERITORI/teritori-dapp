@@ -1,12 +1,18 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
-import { View, ViewStyle, StyleProp, StyleSheet } from "react-native";
+import React, { ReactNode } from "react";
+import {
+  View,
+  ViewStyle,
+  StyleProp,
+  StyleSheet,
+  DimensionValue,
+} from "react-native";
 
 import { neutral11, neutral33, neutral44 } from "../../utils/style/colors";
 
 export const TertiaryBox: React.FC<{
-  width?: number;
-  height?: number;
+  width?: DimensionValue;
+  height?: DimensionValue;
   fullWidth?: boolean;
   squaresBackgroundColor?: string;
   disabled?: boolean;
@@ -16,6 +22,7 @@ export const TertiaryBox: React.FC<{
   disabledBorderColor?: string;
   noBrokenCorners?: boolean;
   noRightBrokenBorder?: boolean;
+  children: ReactNode;
 }> = ({
   width,
   height,
@@ -80,7 +87,8 @@ export const TertiaryBox: React.FC<{
                   left: 0,
                   width: "100%",
                   height: "100%",
-                  borderRadius: borderRadius - 1,
+                  borderRadius:
+                    (typeof borderRadius === "number" ? borderRadius : 8) - 1,
                   zIndex: -1,
                 }}
                 colors={["#9C4CEA", "#336AFF", "#26C5FB"]}

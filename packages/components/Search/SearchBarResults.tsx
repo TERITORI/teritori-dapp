@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, ReactNode } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import { MintState } from "../../api/marketplace/v1/marketplace";
@@ -95,6 +95,7 @@ const SearchResultsSection: React.FC<{
   title: string;
   style: StyleProp<ViewStyle>;
   isFirstSection?: boolean;
+  children: ReactNode;
 }> = ({ children, title, isFirstSection, style }) => {
   const isMobile = useIsMobile();
   return (

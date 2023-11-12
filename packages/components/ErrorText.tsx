@@ -29,7 +29,7 @@ export const ErrorText: React.FC<ErrorTextProps> = ({
       height: isExpandable ? withTiming(heightRef.current) : withTiming(0),
       opacity: isExpandable ? withTiming(1) : withTiming(0),
     }),
-    [isExpandable]
+    [isExpandable],
   );
 
   // hooks

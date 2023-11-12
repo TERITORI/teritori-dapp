@@ -51,7 +51,7 @@ const DAOManager: React.FC = () => {
   const balances = useBalances(networkId, network?.coreDAOAddress);
   const selectedWallet = useSelectedWallet();
   const makeProposal = useDAOMakeProposal(
-    getUserId(networkId, network?.coreDAOAddress)
+    getUserId(networkId, network?.coreDAOAddress),
   );
   return (
     <View>
@@ -72,13 +72,13 @@ const DAOManager: React.FC = () => {
             return;
           }
           const client = await getKeplrSigningStargateClient(
-            selectedWallet.networkId
+            selectedWallet.networkId,
           );
           const burnMsg: MsgBurnTokens = {
             sender: selectedWallet?.address,
             amount: [
               Buffer.from(
-                Coin.encode({ amount: "1000000", denom: "utori" }).finish()
+                Coin.encode({ amount: "1000000", denom: "utori" }).finish(),
               ).toString(),
             ],
           };
@@ -90,7 +90,7 @@ const DAOManager: React.FC = () => {
                 value: burnMsg,
               },
             ],
-            "auto"
+            "auto",
           );
         }}
       />
@@ -110,7 +110,7 @@ const DAOManager: React.FC = () => {
             sender: network.coreDAOAddress,
             amount: [
               Buffer.from(
-                Coin.encode({ amount: "1000000", denom: "utori" }).finish()
+                Coin.encode({ amount: "1000000", denom: "utori" }).finish(),
               ).toString(),
             ],
           };
@@ -123,7 +123,7 @@ const DAOManager: React.FC = () => {
                 stargate: {
                   type_url: "/teritori.mint.v1beta1.MsgBurnTokens",
                   value: Buffer.from(
-                    MsgBurnTokens.encode(burnMsg).finish()
+                    MsgBurnTokens.encode(burnMsg).finish(),
                   ).toString("base64"),
                 },
               },
@@ -142,7 +142,7 @@ const VaultManager: React.FC<{ networkId: string }> = ({ networkId }) => {
   const { wrapWithFeedback } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
   const makeProposal = useDAOMakeProposal(
-    getUserId(networkId, network?.vaultContractAddress)
+    getUserId(networkId, network?.vaultContractAddress),
   );
 
   return (
@@ -202,12 +202,12 @@ const NameServiceManager: React.FC<{ networkId: string }> = ({ networkId }) => {
       }
       const client = new TeritoriNameServiceQueryClient(
         await mustGetNonSigningCosmWasmClient(networkId),
-        network.nameServiceContractAddress
+        network.nameServiceContractAddress,
       );
 
       const res = await client.adminAddress();
       return res.minter;
-    }
+    },
   );
   return (
     <View>
@@ -229,7 +229,7 @@ const SocialFeedManager: React.FC<{ networkId: string }> = ({ networkId }) => {
   const { feedConfig } = useFeedConfig(networkId);
   const feedBalances = useBalances(
     networkId,
-    network?.socialFeedContractAddress
+    network?.socialFeedContractAddress,
   );
   const { wrapWithFeedback } = useFeedbacks();
   return (
@@ -263,7 +263,7 @@ const BreedingManager: React.FC<{ networkId: string }> = ({ networkId }) => {
   const { breedingConfig } = useBreedingConfig(networkId);
   const breedingBalances = useBalances(
     networkId,
-    network?.riotContractAddressGen1
+    network?.riotContractAddressGen1,
   );
   const { wrapWithFeedback } = useFeedbacks();
   return (

@@ -13,7 +13,7 @@ import {
 
 export const useDAOMakeProposal = (
   daoId: string | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   const [network] = parseUserId(daoId);
   const { daoFirstProposalModule } = useDAOFirstProposalModule(daoId, enabled);
@@ -26,7 +26,7 @@ export const useDAOMakeProposal = (
         description: string;
         msgs: CosmosMsgForEmpty[];
         title: string;
-      }
+      },
     ) => {
       if (!enabled) {
         throw new Error("Hook is not enabled");
@@ -43,7 +43,7 @@ export const useDAOMakeProposal = (
       const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
       const proposalClient = new DaoProposalSingleQueryClient(
         cosmwasmClient,
-        daoFirstProposalModule?.address
+        daoFirstProposalModule?.address,
       );
 
       const proposalCreationPolicy =
@@ -57,7 +57,7 @@ export const useDAOMakeProposal = (
       const preProposeClient = new DaoPreProposeSingleClient(
         signingClient,
         senderAddress,
-        proposalCreationPolicy.module.addr
+        proposalCreationPolicy.module.addr,
       );
 
       const res = await preProposeClient.propose({
@@ -79,6 +79,6 @@ export const useDAOMakeProposal = (
       invalidateDAOProposals,
       network?.id,
       enabled,
-    ]
+    ],
   );
 };

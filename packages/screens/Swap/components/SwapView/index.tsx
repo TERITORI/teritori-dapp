@@ -164,10 +164,10 @@ export const SwapView: React.FC = () => {
   const { setToastError, setToastSuccess } = useFeedbacks();
 
   const cosmosNetwork = allNetworks.find(
-    (networkInfo) => networkInfo.id === "cosmos-hub"
+    (networkInfo) => networkInfo.id === "cosmos-hub",
   ) as CosmosNetworkInfo;
   const teritoriNetwork = allNetworks.find(
-    (networkInfo) => networkInfo.id === "teritori"
+    (networkInfo) => networkInfo.id === "teritori",
   ) as CosmosNetworkInfo;
 
   // ---- Default currencies
@@ -176,26 +176,26 @@ export const SwapView: React.FC = () => {
       selectedNetwork?.currencies.find(
         (currencyInfo: CurrencyInfo) =>
           getNativeCurrency(selectedNetworkId, currencyInfo?.denom)?.denom ===
-          cosmosNetwork?.stakeCurrency
+          cosmosNetwork?.stakeCurrency,
       ),
     [
       selectedNetwork?.currencies,
       cosmosNetwork?.stakeCurrency,
       selectedNetworkId,
-    ]
+    ],
   );
   const toriCurrency = useMemo(
     () =>
       selectedNetwork?.currencies.find(
         (currencyInfo: CurrencyInfo) =>
           getNativeCurrency(selectedNetworkId, currencyInfo?.denom)?.denom ===
-          teritoriNetwork?.stakeCurrency
+          teritoriNetwork?.stakeCurrency,
       ),
     [
       selectedNetwork?.currencies,
       teritoriNetwork?.stakeCurrency,
       selectedNetworkId,
-    ]
+    ],
   );
 
   useEffect(() => {
@@ -205,18 +205,18 @@ export const SwapView: React.FC = () => {
 
   // ---- The two current currencies
   const [currencyIn, setCurrencyIn] = useState<CurrencyInfo | undefined>(
-    atomCurrency
+    atomCurrency,
   );
   const [currencyOut, setCurrencyOut] = useState<CurrencyInfo | undefined>(
-    toriCurrency
+    toriCurrency,
   );
   const currencyInNative: NativeCurrencyInfo | undefined = useMemo(
     () => getNativeCurrency(selectedNetworkId, currencyIn?.denom),
-    [currencyIn?.denom, selectedNetworkId]
+    [currencyIn?.denom, selectedNetworkId],
   );
   const currencyOutNative: NativeCurrencyInfo | undefined = useMemo(
     () => getNativeCurrency(selectedNetworkId, currencyOut?.denom),
-    [currencyOut?.denom, selectedNetworkId]
+    [currencyOut?.denom, selectedNetworkId],
   );
   // ---- Displayed and selectable currencies
   const selectableCurrencies = useMemo(
@@ -226,20 +226,20 @@ export const SwapView: React.FC = () => {
           currencyIn?.denom !== currencyInfo.denom &&
           currencyOut?.denom !== currencyInfo.denom &&
           ((currencyInfo.kind === "ibc" && !currencyInfo.deprecated) ||
-            currencyInfo.kind === "native")
+            currencyInfo.kind === "native"),
       ),
-    [currencyIn?.denom, currencyOut?.denom, selectedNetwork?.currencies]
+    [currencyIn?.denom, currencyOut?.denom, selectedNetwork?.currencies],
   );
   // ---- The user's amount of the first currency
   const currencyInBalance: Balance | undefined = useMemo(
     () => balances.find((bal) => bal.denom === currencyIn?.denom),
-    [currencyIn?.denom, balances]
+    [currencyIn?.denom, balances],
   );
   const currencyInAmount: string = useMemo(() => {
     if (!currencyInNative || !currencyInBalance) return "0";
     return Decimal.fromAtomics(
       currencyInBalance.amount,
-      currencyInNative.decimals
+      currencyInNative.decimals,
     ).toString();
   }, [currencyInBalance, currencyInNative]);
   // ---- Current amounts (The user enters amountIn)
@@ -268,10 +268,10 @@ export const SwapView: React.FC = () => {
   // ---- Dropdowns
   const { isDropdownOpen, closeOpenedDropdown } = useDropdowns();
   const [dropdownOutRef, setDropdownOutRef] = useState<RefObject<any> | null>(
-    null
+    null,
   );
   const [dropdownInRef, setDropdownInRef] = useState<RefObject<any> | null>(
-    null
+    null,
   );
 
   const onChangeAmountIn = (text: string) => {
@@ -327,7 +327,7 @@ export const SwapView: React.FC = () => {
 
   const amountOutWithFee: number = useMemo(
     () => amountOut - amountOut * fee,
-    [amountOut, fee]
+    [amountOut, fee],
   );
 
   const feeAmountOutUsd: number = useMemo(() => {

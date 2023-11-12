@@ -55,7 +55,7 @@ export const AvatarWithFrame: React.FC<{
   const fallbackURI = isDAO
     ? daoIconDataURI
     : [NetworkKind.Cosmos, NetworkKind.Gno].includes(
-        network?.kind || NetworkKind.Unknown
+        network?.kind || NetworkKind.Unknown,
       )
     ? (network as CosmosNetworkInfo | GnoNetworkInfo).nameServiceDefaultImage
     : undefined;

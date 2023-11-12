@@ -54,8 +54,8 @@ export const useBroadcastTransaction = () => {
             currentSignatures.map((s) => [
               s.userAddress,
               Buffer.from(s.value, "base64"),
-            ])
-          )
+            ]),
+          ),
         );
 
         const network = getCosmosNetworkByChainId(tx.chainId);
@@ -89,14 +89,14 @@ export const useBroadcastTransaction = () => {
         await queryClient.invalidateQueries(
           multisigTransactionsQueryKey(
             network.id,
-            getUserId(network.id, tx.multisigAddress)
-          )
+            getUserId(network.id, tx.multisigAddress),
+          ),
         );
         await queryClient.invalidateQueries(
-          multisigTransactionsQueryKey(network.id, undefined)
+          multisigTransactionsQueryKey(network.id, undefined),
         );
         await queryClient.invalidateQueries(
-          multisigTransactionsCountsQueryKey(network.id)
+          multisigTransactionsCountsQueryKey(network.id),
         );
 
         return result.transactionHash;
@@ -106,6 +106,6 @@ export const useBroadcastTransaction = () => {
           setToastError({ title: "Something went wrong!", message: e.message });
         }
       }
-    }
+    },
   );
 };

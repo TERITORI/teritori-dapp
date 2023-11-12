@@ -39,7 +39,7 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
       ]),
       {
         iterations: 5,
-      }
+      },
     ).start();
   }, []);
 

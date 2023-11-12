@@ -49,14 +49,14 @@ const dAppsStorePersisted = createSlice({
       action: PayloadAction<{
         draggableId: string;
         isChecked: boolean;
-      }>
+      }>,
     ) => {
       const newValues = Array.from(state.selectedApps);
       if (action.payload.isChecked) {
         newValues.push(action.payload.draggableId);
       } else {
         const index = state.selectedApps.findIndex(
-          (element) => element === action.payload.draggableId
+          (element) => element === action.payload.draggableId,
         );
         if (index !== -1) {
           newValues.splice(index, 1);

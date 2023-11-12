@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, ReactNode } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -49,6 +49,7 @@ export const ScreenContainerMobile: FC<{
   forceNetworkFeatures?: NetworkFeature[];
   mobileTitle?: string;
   onBackPress?: () => void;
+  children: ReactNode;
 }> = ({
   children,
   networkFilter,

@@ -48,7 +48,7 @@ const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
       ${conf.initialMembers
         .map(
           (member) =>
-            `groups.AddMember(groupID, "${member.address}", ${member.weight}, "");`
+            `groups.AddMember(groupID, "${member.address}", ${member.weight}, "");`,
         )
         .join("\n\t")}
       return voting_group.NewVotingGroup(groupID)
@@ -59,10 +59,10 @@ const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
     proposalModulesFactories := []dao_interfaces.ProposalModuleFactory{
       func(core dao_interfaces.IDAOCore) dao_interfaces.IProposalModule {
         tt := proposal_single.PercentageThresholdPercent(${Math.ceil(
-          conf.thresholdPercent * 100
+          conf.thresholdPercent * 100,
         )}) // ${Math.ceil(conf.thresholdPercent * 100) / 100}%
         tq := proposal_single.PercentageThresholdPercent(${Math.ceil(
-          conf.quorumPercent * 100
+          conf.quorumPercent * 100,
         )}) // ${Math.ceil(conf.quorumPercent * 100) / 100}%
         return proposal_single.NewDAOProposalSingle(core, &proposal_single.DAOProposalSingleOpts{
           MaxVotingPeriod: time.Second * ${conf.maxVotingPeriodSeconds},
@@ -97,8 +97,8 @@ const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
     daoCore = dao_core.NewDAOCore(votingModuleFactory, proposalModulesFactories, messageHandlersFactories)
 
     dao_registry.Register(${JSON.stringify(conf.displayName)}, ${JSON.stringify(
-    conf.description
-  )}, ${JSON.stringify(conf.imageURI)})
+      conf.description,
+    )}, ${JSON.stringify(conf.imageURI)})
   }
   
   func Render(path string) string {
@@ -143,7 +143,7 @@ const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
 export const adenaDeployGnoDAO = async (
   networkId: string,
   creator: string,
-  conf: GnoDAOConfig
+  conf: GnoDAOConfig,
 ) => {
   const source = generateDAORealmSource(networkId, conf);
   const pkgPath = `gno.land/r/demo/${conf.name}`;
@@ -158,7 +158,7 @@ export const adenaDeployGnoDAO = async (
         Files: [{ Name: `${conf.name}.gno`, Body: source }],
       },
     },
-    { gasWanted: 10000000 }
+    { gasWanted: 10000000 },
   );
   return pkgPath;
 };

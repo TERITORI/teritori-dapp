@@ -25,7 +25,7 @@ export const CollectionContent: React.FC<{
   const wallet = useSelectedWallet();
 
   const selectedFilters = useSelector((state: RootState) =>
-    selectAllSelectedAttributeDataByCollectionId(state, id)
+    selectAllSelectedAttributeDataByCollectionId(state, id),
   );
   const isBuyNow = useSelector(selectBuyNow);
   const priceRange = useSelector(selectPriceRange);

@@ -9,7 +9,7 @@ export interface ToolbarChildrenProps {
   getEditorState: () => EditorState;
   setEditorState: (editorState: EditorState) => void;
   onOverrideContent: (
-    content: ComponentType<ToolbarChildrenProps> | undefined
+    content: ComponentType<ToolbarChildrenProps> | undefined,
   ) => void;
 }
 interface ToolbarProps {

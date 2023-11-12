@@ -46,7 +46,7 @@ export const MenuLink = () => {
   const changeSelectedSection = () => {
     const target = event?.target as HTMLElement;
     const selectedIndex = Object.values(ListSection).findIndex(
-      (sect) => sect === target.textContent
+      (sect) => sect === target.textContent,
     );
     setSelectedSectionHandler(Object.keys(ListSection)[selectedIndex]);
   };
@@ -86,11 +86,12 @@ export const MenuLink = () => {
                 {index !== Object.keys(ListSection).length - 1 && Separator()}
               </View>
             );
-          }
+          },
         )}
       </View>
       {selectedSection !== "welcome" && (
         <View
+          // @ts-expect-error
           style={{
             display: "flex",
             position: "relative",

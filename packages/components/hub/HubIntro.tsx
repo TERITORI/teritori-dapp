@@ -98,7 +98,7 @@ const FaucetButton: React.FC = () => {
               throw new Error("No faucet for this network");
             }
             const res = await axios.get(
-              network.faucetURL.replace("$addr", selectedWallet.address)
+              network.faucetURL.replace("$addr", selectedWallet.address),
             );
             if (res.status !== 200 || res.data !== "faucet success") {
               throw new Error(res.data || "Unexpected error");
@@ -107,7 +107,7 @@ const FaucetButton: React.FC = () => {
           {
             title: "Success",
             message: "500 GNOTs have been sent to your address",
-          }
+          },
         )}
       />
     </>

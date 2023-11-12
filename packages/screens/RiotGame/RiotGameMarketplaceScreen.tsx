@@ -33,13 +33,13 @@ export const RiotGameMarketplaceScreen: ScreenFC<"RiotGameMarketplace"> = ({
           <CollectionThumb
             collectionId={getCollectionId(
               network?.id,
-              network?.riotContractAddressGen0
+              network?.riotContractAddressGen0,
             )}
           />
           <CollectionThumb
             collectionId={getCollectionId(
               network?.id,
-              network?.riotContractAddressGen1
+              network?.riotContractAddressGen1,
             )}
           />
         </View>

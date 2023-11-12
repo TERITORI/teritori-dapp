@@ -9,7 +9,7 @@ export const useNSUserInfo = (userId: string | undefined) => {
   const { nsInfo, isLoading, isError } = useNSNameInfo(
     network?.id,
     primaryAlias,
-    isSuccess
+    isSuccess,
   );
   return {
     loading: isLoading,

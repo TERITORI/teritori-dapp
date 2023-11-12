@@ -26,7 +26,7 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
   const SwapView = React.lazy(() =>
     import("./components/SwapView").then((module) => ({
       default: module.SwapView,
-    }))
+    })),
   );
 
   const swapNetworkConnected =

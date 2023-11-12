@@ -23,7 +23,7 @@ interface AdenaDoContractOpts {
 export const adenaDoContract = async (
   networkId: string,
   messages: AdenaDoContractMessage[],
-  opts?: AdenaDoContractOpts
+  opts?: AdenaDoContractOpts,
 ) => {
   const adena = (window as any).adena;
   const network = mustGetGnoNetwork(networkId);
@@ -42,7 +42,7 @@ export const adenaDoContract = async (
   const hash: string = res.data.hash;
   const { height: txHeight, index } = await client.waitForTransaction(
     hash,
-    height
+    height,
   );
   const blockResult = await client.getBlockResult(txHeight);
   const deliverResults = blockResult.results.deliver_tx || [];
@@ -68,12 +68,12 @@ export interface VmCall {
 export const adenaVMCall = async (
   networkId: string,
   vmCall: VmCall,
-  opts?: AdenaDoContractOpts
+  opts?: AdenaDoContractOpts,
 ) => {
   await adenaDoContract(
     networkId,
     [{ type: "/vm.m_call", value: vmCall }],
-    opts
+    opts,
   );
 };
 
@@ -97,14 +97,14 @@ interface VmAddPackage {
 export const adenaAddPkg = async (
   networkId: string,
   vmAddPackage: VmAddPackage,
-  opts?: AdenaDoContractOpts
+  opts?: AdenaDoContractOpts,
 ) => {
   await adenaDoContract(
     networkId,
     [{ type: "/vm.m_addpkg", value: vmAddPackage }],
     {
       ...opts,
-    }
+    },
   );
 };
 

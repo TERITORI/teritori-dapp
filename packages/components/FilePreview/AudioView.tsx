@@ -30,7 +30,7 @@ export const AudioView: React.FC<{
   const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatus>();
   const duration = useMemo(
     () => getAudioDuration(file.audioMetadata?.duration),
-    [file]
+    [file],
   );
 
   const handlePlayPause = async () => {
@@ -54,7 +54,7 @@ export const AudioView: React.FC<{
       const { sound } = await Audio.Sound.createAsync(
         { uri: ipfsURLToHTTPURL(file.url) },
         { progressUpdateIntervalMillis: 400 },
-        (status) => setPlaybackStatus(status)
+        (status) => setPlaybackStatus(status),
       );
       setSound(sound);
     };
@@ -63,14 +63,14 @@ export const AudioView: React.FC<{
 
   const hasThumbnail = useMemo(
     () => typeof file?.thumbnailFileData?.url === "string",
-    [file?.thumbnailFileData?.url]
+    [file?.thumbnailFileData?.url],
   );
 
   const positionPercent = useMemo(
     () =>
       ((playbackStatus?.isLoaded && playbackStatus?.positionMillis) || 0) /
       ((playbackStatus?.isLoaded && playbackStatus?.durationMillis) || 1),
-    [playbackStatus]
+    [playbackStatus],
   );
 
   if (!file?.url)
@@ -147,7 +147,7 @@ export const AudioView: React.FC<{
                 {getAudioDuration(
                   (playbackStatus?.isLoaded &&
                     playbackStatus?.positionMillis) ||
-                    0
+                    0,
                 )}
               </BrandText>
               <BrandText style={[fontSemibold14, { color: neutral77 }]}>

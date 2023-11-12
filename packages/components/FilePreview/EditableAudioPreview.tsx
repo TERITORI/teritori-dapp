@@ -49,7 +49,7 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
       const { sound } = await Audio.Sound.createAsync(
         { uri: file.url },
         { progressUpdateIntervalMillis: 400 },
-        (status) => setPlaybackStatus(status)
+        (status) => setPlaybackStatus(status),
       );
       setSound(sound);
       setThumbnailFile(file.thumbnailFileData);

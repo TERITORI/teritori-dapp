@@ -7,7 +7,7 @@ import { getCosmosNetwork, mustGetNonSigningCosmWasmClient } from "../networks";
 
 export const useNSMintPrice = (
   networkId: string | undefined,
-  tokenId: string
+  tokenId: string,
 ) => {
   const { data } = useQuery(
     ["nsMintPrice", networkId, tokenId],
@@ -24,7 +24,7 @@ export const useNSMintPrice = (
 
       const tnsClient = new TeritoriNameServiceQueryClient(
         client,
-        network.nameServiceContractAddress
+        network.nameServiceContractAddress,
       );
 
       const info = await tnsClient.contractInfo();
@@ -33,7 +33,7 @@ export const useNSMintPrice = (
 
       return { denom: info.native_denom, amount: amount?.toString() || "0" };
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
 
   return data;

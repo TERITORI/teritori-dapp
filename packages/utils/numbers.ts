@@ -2,7 +2,7 @@ import { trimRight } from "./strings";
 
 // Returns your given number (string or number), but with comma as a thousand separator (string)
 export const numberWithThousandsSeparator = (
-  yourBigNumber: string | number
+  yourBigNumber: string | number,
 ): string => {
   if (typeof yourBigNumber === "number") {
     return yourBigNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

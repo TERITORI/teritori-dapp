@@ -53,7 +53,7 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 
 export const NFTView: React.FC<{
   data: NFT;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<Omit<ViewStyle, "width"> & { width?: number }>;
 }> = memo(({ data: nft, style }) => {
   const isMobile = useIsMobile();
   const cardWidth = isMobile ? 220 : 250;
@@ -105,8 +105,7 @@ export const NFTView: React.FC<{
     return <View style={{ width }} />;
   }
 
-  const widthNumber =
-    typeof width === "number" ? width : parseInt(width || "0", 10) || cardWidth;
+  const widthNumber = width || cardWidth;
 
   return (
     <>

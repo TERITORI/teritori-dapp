@@ -8,13 +8,13 @@ const initialData = Decimal.fromAtomics("0", 0);
 
 export const useCosmosValidatorBondedAmount = (
   userId: string | undefined,
-  validatorAddress: string | undefined
+  validatorAddress: string | undefined,
 ) => {
   const { data: delegations, refetch } = useCosmosDelegations(userId);
   const amount = useMemo(() => {
     try {
       const validatorDeleg = delegations?.find(
-        (deleg) => deleg.delegation.validator_address === validatorAddress
+        (deleg) => deleg.delegation.validator_address === validatorAddress,
       );
       if (!validatorDeleg) {
         return initialData;
@@ -29,7 +29,7 @@ export const useCosmosValidatorBondedAmount = (
       }
       return Decimal.fromAtomics(
         validatorDeleg.balance.amount,
-        nativeCurrency.decimals
+        nativeCurrency.decimals,
       );
     } catch (err) {
       console.warn("failed to get validator bonded amount:", err);

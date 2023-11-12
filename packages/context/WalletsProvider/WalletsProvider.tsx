@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo } from "react";
+import React, { ReactNode, createContext, useContext, useMemo } from "react";
 
 import { useAdena } from "./adena";
 import { useKeplr } from "./keplr";
@@ -24,19 +24,20 @@ const WalletsContext = createContext<WalletsContextValue>({
 
 export const useWallets = () => useContext(WalletsContext);
 
-export const WalletsProvider: React.FC = React.memo(({ children }) => {
-  // const [hasPhantom, phantomIsReady, phantomWallet] = usePhantom();
-  const [hasKeplr, keplrIsReady, keplrWallets] = useKeplr();
-  const [hasLeap, leapIsReady, leapWallets] = useLeap();
-  const [hasMetamask, metamaskIsReady, metamaskWallets] = useMetamask();
-  const [hasAdena, adenaIsReady, adenaWallets] = useAdena();
+export const WalletsProvider: React.FC<{ children: ReactNode }> = React.memo(
+  ({ children }) => {
+    // const [hasPhantom, phantomIsReady, phantomWallet] = usePhantom();
+    const [hasKeplr, keplrIsReady, keplrWallets] = useKeplr();
+    const [hasLeap, leapIsReady, leapWallets] = useLeap();
+    const [hasMetamask, metamaskIsReady, metamaskWallets] = useMetamask();
+    const [hasAdena, adenaIsReady, adenaWallets] = useAdena();
 
-  // const storeWallets = useSelector(selectStoreWallets);
+    // const storeWallets = useSelector(selectStoreWallets);
 
-  const value = useMemo(() => {
-    const wallets: Wallet[] = [];
+    const value = useMemo(() => {
+      const wallets: Wallet[] = [];
 
-    /*
+      /*
     const wallets = storeWallets.map((storeWallet) => {
       const wallet: Wallet = {
         id: storeWalletId(storeWallet),
@@ -64,7 +65,7 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
     }
     */
 
-    /*
+      /*
     if (hasKeplr && keplrWallets) {
       if (keplrWallets.length === 1 && !keplrWallets[0].connected) {
         wallets.unshift(keplrWallets[0]);
@@ -84,60 +85,63 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
     }
     */
 
-    const walletProviders: WalletProvider[] = [];
+      const walletProviders: WalletProvider[] = [];
 
-    if (hasKeplr) {
-      walletProviders.push(WalletProvider.Keplr);
+      if (hasKeplr) {
+        walletProviders.push(WalletProvider.Keplr);
 
-      if (keplrWallets?.[0]?.connected) {
-        wallets.push(keplrWallets[0]);
+        if (keplrWallets?.[0]?.connected) {
+          wallets.push(keplrWallets[0]);
+        }
       }
-    }
 
-    if (hasLeap) {
-      walletProviders.push(WalletProvider.Leap);
+      if (hasLeap) {
+        walletProviders.push(WalletProvider.Leap);
 
-      if (leapWallets?.[0]?.connected) {
-        wallets.push(leapWallets[0]);
+        if (leapWallets?.[0]?.connected) {
+          wallets.push(leapWallets[0]);
+        }
       }
-    }
 
-    if (hasMetamask) {
-      walletProviders.push(WalletProvider.Metamask);
+      if (hasMetamask) {
+        walletProviders.push(WalletProvider.Metamask);
 
-      if (metamaskWallets?.[0]?.connected) {
-        wallets.push(metamaskWallets[0]);
+        if (metamaskWallets?.[0]?.connected) {
+          wallets.push(metamaskWallets[0]);
+        }
       }
-    }
 
-    if (hasAdena) {
-      walletProviders.push(WalletProvider.Adena);
-      if (adenaWallets?.[0]?.connected) {
-        wallets.push(adenaWallets[0]);
+      if (hasAdena) {
+        walletProviders.push(WalletProvider.Adena);
+        if (adenaWallets?.[0]?.connected) {
+          wallets.push(adenaWallets[0]);
+        }
       }
-    }
 
-    return {
-      wallets,
-      walletProviders,
-      ready: keplrIsReady && metamaskIsReady && adenaIsReady && leapIsReady,
-    };
-  }, [
-    hasKeplr,
-    hasLeap,
-    hasMetamask,
-    hasAdena,
-    keplrIsReady,
-    metamaskIsReady,
-    adenaIsReady,
-    leapIsReady,
-    keplrWallets,
-    leapWallets,
-    metamaskWallets,
-    adenaWallets,
-  ]);
+      return {
+        wallets,
+        walletProviders,
+        ready: keplrIsReady && metamaskIsReady && adenaIsReady && leapIsReady,
+      };
+    }, [
+      hasKeplr,
+      hasLeap,
+      hasMetamask,
+      hasAdena,
+      keplrIsReady,
+      metamaskIsReady,
+      adenaIsReady,
+      leapIsReady,
+      keplrWallets,
+      leapWallets,
+      metamaskWallets,
+      adenaWallets,
+    ]);
 
-  return (
-    <WalletsContext.Provider value={value}>{children}</WalletsContext.Provider>
-  );
-});
+    return (
+      <WalletsContext.Provider value={value}>
+        {children}
+      </WalletsContext.Provider>
+    );
+  },
+);

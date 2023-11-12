@@ -59,7 +59,7 @@ export const SendModal: React.FC<SendModalProps> = ({
       : selectedDAOId || userId;
   const runOrProposeTransaction = useRunOrProposeTransaction(
     selectedUserId,
-    selectedUserKind
+    selectedUserKind,
   );
   const [userNetwork, userAddress] = parseUserId(selectedUserId);
   const networkId = userNetwork?.id;
@@ -73,14 +73,14 @@ export const SendModal: React.FC<SendModalProps> = ({
         <BrandText>{`Send ${nativeCurrency?.displayName}`}</BrandText>
       </FlexRow>
     ),
-    [networkId, nativeCurrency?.displayName]
+    [networkId, nativeCurrency?.displayName],
   );
 
   const maxAtomics =
     balances.find((bal) => bal.denom === nativeCurrency?.denom)?.amount || "0";
   const max = Decimal.fromAtomics(
     maxAtomics,
-    nativeCurrency?.decimals || 0
+    nativeCurrency?.decimals || 0,
   ).toString();
 
   const onPressSend = async (formData: TransactionForm) => {
@@ -100,7 +100,7 @@ export const SendModal: React.FC<SendModalProps> = ({
 
       const amount = Decimal.fromUserInput(
         formData.amount,
-        nativeCurrency.decimals
+        nativeCurrency.decimals,
       ).atomics;
 
       if (userNetwork?.kind === NetworkKind.Gno) {
@@ -136,7 +136,7 @@ export const SendModal: React.FC<SendModalProps> = ({
           title: `Send ${prettyPrice(
             networkId,
             amount,
-            nativeCurrency.denom
+            nativeCurrency.denom,
           )} to ${receiver}`,
         });
       }
@@ -146,7 +146,7 @@ export const SendModal: React.FC<SendModalProps> = ({
         } ${prettyPrice(
           networkId,
           amount,
-          nativeCurrency.denom
+          nativeCurrency.denom,
         )} to ${receiver}`,
         message: "",
       });

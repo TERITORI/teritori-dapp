@@ -5,7 +5,7 @@ import { BrandTextBase } from "./BrandTextBase";
 import { exoFontFamilyFromFontWeight } from "../../utils/style/fonts";
 
 export const BrandText: React.FC<TextProps & { isTicker?: boolean }> = (
-  props
+  props,
 ) => {
   const { style, ...otherProps } = props;
   const flatStyle = style ? StyleSheet.flatten(style) : undefined;

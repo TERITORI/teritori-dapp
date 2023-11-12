@@ -2,7 +2,6 @@ import { useLinkProps } from "@react-navigation/native";
 import React, { ReactNode } from "react";
 import {
   Platform,
-  StyleProp,
   TouchableOpacity,
   TouchableOpacityProps,
   View,
@@ -18,7 +17,7 @@ export const OmniLink: React.FC<{
   to: OmniLinkToType;
   action?: any | undefined;
   children: ReactNode | undefined;
-  style?: StyleProp<ViewStyle | TouchableOpacityProps>;
+  style?: TouchableOpacityProps["style"];
   disabled?: boolean;
 }> = ({ to, action, children, style, disabled }) => {
   // @ts-ignore
@@ -45,8 +44,6 @@ export const OmniLink: React.FC<{
     // You can add hover effects using `onMouseEnter` and `onMouseLeave`
     return (
       <View
-        // is required to ignore the following to fix a problem with the linter
-        // and allow to use onClick in this special case
         // @ts-expect-error
         onClick={!disabled ? handlePress : null}
         onMouseEnter={() => setIsHovered(true)}

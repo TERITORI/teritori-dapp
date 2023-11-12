@@ -13,7 +13,7 @@ export const useComicHistoryData = ({
     async () => {
       if (addr) {
         const response = await fetch(
-          `https://api.roulette.aaa-metahuahua.com/comic/books/history?addr=${addr}`
+          `https://api.roulette.aaa-metahuahua.com/comic/books/history?addr=${addr}`,
         );
         return response.json();
       }
@@ -29,7 +29,7 @@ export const useComicHistoryData = ({
       ],
       refetchOnMount: false,
       enabled: false,
-    }
+    },
   );
   return { data, refetch };
 };

@@ -25,7 +25,7 @@ export const DAppStoreData: React.FC = memo(() => {
     },
     {
       cacheTime: 5 * 60 * 1000,
-    }
+    },
   );
   const { data: dAppsGroups } = useQuery(
     ["DAppsGroups", networkId],
@@ -34,7 +34,7 @@ export const DAppStoreData: React.FC = memo(() => {
     },
     {
       cacheTime: 5 * 60 * 1000,
-    }
+    },
   );
 
   const dispatch = useAppDispatch();

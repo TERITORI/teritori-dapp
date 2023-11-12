@@ -61,7 +61,7 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
         </View>
       </>
     ),
-    [data, imageURL]
+    [data, imageURL],
   );
 
   const Footer = useCallback(
@@ -91,7 +91,7 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
         </View>
       </>
     ),
-    [onClose, onPressDelegate, onPressRedelegate, onPressUndelegate]
+    [onClose, onPressDelegate, onPressRedelegate, onPressUndelegate],
   );
 
   return (

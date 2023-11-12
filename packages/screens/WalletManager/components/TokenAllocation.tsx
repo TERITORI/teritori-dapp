@@ -18,12 +18,12 @@ export const TokenAllocation: React.FC<TokenAllocationProps> = ({ style }) => {
   const selectedNetWorkId = selectedWallet?.networkId || "";
   const allBalances = useBalances(selectedNetWorkId, selectedWallet?.address);
   const balances = allBalances.filter(
-    (bal) => bal.usdAmount && bal.usdAmount > 0
+    (bal) => bal.usdAmount && bal.usdAmount > 0,
   );
 
   const usdSum = balances.reduce(
     (total, bal) => total + (bal.usdAmount || 0),
-    0
+    0,
   );
 
   return (

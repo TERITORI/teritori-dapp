@@ -70,7 +70,7 @@ export const useRewards = (userId: string | undefined, userKind: UserKind) => {
 
   const claimReward = async (
     validatorAddress: string,
-    callback?: () => void
+    callback?: () => void,
   ) => {
     try {
       if (!userAddress || !networkId) return;
@@ -101,7 +101,7 @@ export const useRewards = (userId: string | undefined, userKind: UserKind) => {
       }
       return getNetworkRewards(networkId, userAddress);
     },
-    { initialData, refetchInterval: 5000 }
+    { initialData, refetchInterval: 5000 },
   );
 
   // ---- Get all denoms used for these rewards
@@ -176,7 +176,7 @@ export const useRewards = (userId: string | undefined, userKind: UserKind) => {
 // Returns the rewards from cosmos API. You can specify a validator address
 const getNetworkRewards = async (
   networkId: string,
-  address: string
+  address: string,
 ): Promise<CosmosRewardsResponse> => {
   const network = getNetwork(networkId);
   if (!network) {
@@ -189,7 +189,7 @@ const getNetworkRewards = async (
   }
 
   const response = await fetch(
-    `${network.restEndpoint}/cosmos/distribution/v1beta1/delegators/${address}/rewards`
+    `${network.restEndpoint}/cosmos/distribution/v1beta1/delegators/${address}/rewards`,
   );
   return await response.json();
 };

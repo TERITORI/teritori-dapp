@@ -113,7 +113,7 @@ export const MultisigRightSection: React.FC = () => {
               multisigId={id}
               userId={selectedWallet?.userId}
             />
-          </>
+          </>,
         );
       }
 
@@ -134,7 +134,7 @@ export const MultisigRightSection: React.FC = () => {
               nativeCurrency={getStakingCurrency(network.id)}
             />
           )}
-        </>
+        </>,
       );
 
       actions.push(
@@ -143,7 +143,7 @@ export const MultisigRightSection: React.FC = () => {
           text="Delegate"
           fullWidth
           onPress={() => navigation.navigate("Staking", { multisigId: id })}
-        />
+        />,
       );
 
       if (network?.features.includes(NetworkFeature.NameService)) {
@@ -179,7 +179,7 @@ export const MultisigRightSection: React.FC = () => {
                 navigateBackTo="TNSManage" // FIXME: this is weird
               />
             )}
-          </>
+          </>,
         );
       }
 
@@ -202,7 +202,7 @@ export const MultisigRightSection: React.FC = () => {
               userKind={UserKind.Multisig}
               denom={stakingCurrency?.denom}
             />
-          </>
+          </>,
         );
       }
 
@@ -219,7 +219,7 @@ export const MultisigRightSection: React.FC = () => {
               throw new Error("Invalid multisig network");
             }
             const stargateClient = await getNonSigningStargateClient(
-              network.id
+              network.id,
             );
             if (!stargateClient) {
               throw new Error("Invalid multisig network");
@@ -234,14 +234,14 @@ export const MultisigRightSection: React.FC = () => {
             await queryClient.invalidateQueries(
               multisigTransactionsQueryKey(
                 network.id,
-                getUserId(network.id, multisig.address)
-              )
+                getUserId(network.id, multisig.address),
+              ),
             );
             await queryClient.invalidateQueries(
-              multisigTransactionsQueryKey(network.id, undefined)
+              multisigTransactionsQueryKey(network.id, undefined),
             );
           })}
-        />
+        />,
       );
     }
   }
@@ -283,7 +283,7 @@ const BurnModal: React.FC<{
   const balance = balances.find((b) => b.denom === nativeCurrency?.denom);
   const max = Decimal.fromAtomics(
     balance?.amount || "0",
-    nativeCurrency?.decimals || 0
+    nativeCurrency?.decimals || 0,
   ).toString();
   const runOrProposeBurn = wrapWithFeedback(async () => {
     if (!nativeCurrency) {
@@ -297,7 +297,7 @@ const BurnModal: React.FC<{
           Coin.encode({
             amount: amount.atomics,
             denom: nativeCurrency?.denom,
-          }).finish()
+          }).finish(),
         ).toString(),
       ],
     };
@@ -347,7 +347,7 @@ const BurnModal: React.FC<{
 
 export const joinElements = <ElementType, SeparatorType>(
   elements: ElementType[],
-  separator: SeparatorType
+  separator: SeparatorType,
 ) => {
   const result: (ElementType | SeparatorType)[] = [];
   elements.forEach((e, i) => {
@@ -418,15 +418,15 @@ const JoinMultisigModal: React.FC<{
               bech32Prefix: cosmosNetwork.addressPrefix,
             });
             await queryClient.invalidateQueries(
-              multisigInfoQueryKey(multisigId)
+              multisigInfoQueryKey(multisigId),
             );
             await queryClient.invalidateQueries(
-              multisigTransactionsQueryKey(cosmosNetwork.id, undefined)
+              multisigTransactionsQueryKey(cosmosNetwork.id, undefined),
             );
             await queryClient.invalidateQueries(userMultisigsQueryKey(userId));
             onClose?.();
           },
-          { title: "Joined multisig!" }
+          { title: "Joined multisig!" },
         )}
       />
       <SpacerColumn size={2.5} />

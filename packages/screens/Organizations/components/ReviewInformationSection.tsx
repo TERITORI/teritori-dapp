@@ -46,7 +46,7 @@ export const ReviewInformationSection: React.FC<
         <BrandText style={fontSemibold14}>{balance}</BrandText>
       </View>
     ),
-    []
+    [],
   );
 
   const AddressWeightValue = useCallback(
@@ -59,7 +59,7 @@ export const ReviewInformationSection: React.FC<
         <BrandText style={fontSemibold14}>{weight}</BrandText>
       </View>
     ),
-    []
+    [],
   );
 
   let associateName = organizationData?.associatedTeritoriNameService
