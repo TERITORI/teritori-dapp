@@ -78,11 +78,11 @@ export const RiotGameEnrollScreen: React.FC = () => {
 
   const { data: squadStakingConfig } = useSquadStakingConfig(networkId);
   const { data: squads, isInitialLoading } = useSquadStakingSquads(
-    selectedWallet?.userId
+    selectedWallet?.userId,
   );
 
   const { data: squadSeason1 } = useSquadStakingSquadsV1(
-    selectedWallet?.userId
+    selectedWallet?.userId,
   );
 
   // Stop video when changing screen through react-navigation
@@ -161,7 +161,7 @@ export const RiotGameEnrollScreen: React.FC = () => {
       });
     } finally {
       await queryClient.invalidateQueries(
-        getSquadStakingSquadsV1QueryKey(selectedWallet.userId)
+        getSquadStakingSquadsV1QueryKey(selectedWallet.userId),
       );
       setIsUnstaking(false);
     }
@@ -238,7 +238,7 @@ export const RiotGameEnrollScreen: React.FC = () => {
       persistSquadPreset({
         squadPresetId,
         ripperIds: selectedRippers.map((r) => r.id),
-      })
+      }),
     );
 
     setToastSuccess({

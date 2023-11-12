@@ -20,8 +20,8 @@ import { layout } from "../../utils/style/layout";
 import { getTxInfo } from "../../utils/transactions/getTxInfo";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { Separator } from "../Separator";
 import { CustomPressable } from "../buttons/CustomPressable";
+import { Separator } from "../separators/Separator";
 import { SpacerRow } from "../spacer";
 import { Username } from "../user/Username";
 
@@ -31,7 +31,7 @@ export interface MultisigTransactionItemProps extends ParsedTransaction {
 }
 
 export const MultisigTransactionItem: React.FC<MultisigTransactionItemProps> = (
-  props
+  props,
 ) => {
   const {
     chainId,
@@ -119,7 +119,7 @@ export const MultisigTransactionItem: React.FC<MultisigTransactionItemProps> = (
               {prettyPrice(
                 network?.id,
                 fee.amount[0]?.amount,
-                fee.amount[0]?.denom
+                fee.amount[0]?.denom,
               )}
             </BrandText>
           </View>

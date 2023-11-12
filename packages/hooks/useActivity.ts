@@ -47,7 +47,7 @@ export const useActivity = (req: ActivityRequest) => {
     },
     {
       initialData,
-    }
+    },
   );
 
   return { ...data, refetch };

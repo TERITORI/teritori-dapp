@@ -66,7 +66,7 @@ export const OrganizationDeployerScreen = () => {
   const getDuration = (
     days: string | undefined,
     hours: string | undefined,
-    minutes: string | undefined
+    minutes: string | undefined,
   ): number => {
     const num_days = !days ? 0 : parseInt(days, 10);
     const num_hours = !hours ? 0 : parseInt(hours, 10);
@@ -95,7 +95,7 @@ export const OrganizationDeployerScreen = () => {
                 (member) => ({
                   address: member.addr,
                   weight: parseInt(member.weight, 10),
-                })
+                }),
               ),
               thresholdPercent:
                 step2ConfigureVotingFormData?.minimumApprovalPercent!,
@@ -103,7 +103,7 @@ export const OrganizationDeployerScreen = () => {
               displayName: step1DaoInfoFormData?.organizationName!,
               description: step1DaoInfoFormData?.organizationDescription!,
               imageURI: step1DaoInfoFormData?.imageUrl!,
-            }
+            },
           );
           setLaunchingStep(1);
           setDAOAddress(pkgPath);
@@ -147,19 +147,19 @@ export const OrganizationDeployerScreen = () => {
                 tokenHolders: step3TokenSettingFormData.tokenHolders.map(
                   (item) => {
                     return { address: item.address, amount: item.balance };
-                  }
+                  },
                 ),
                 quorum: getPercent(step2ConfigureVotingFormData.supportPercent),
                 threshold: getPercent(
-                  step2ConfigureVotingFormData.minimumApprovalPercent
+                  step2ConfigureVotingFormData.minimumApprovalPercent,
                 ),
                 maxVotingPeriod: getDuration(
                   step2ConfigureVotingFormData.days,
                   step2ConfigureVotingFormData.hours,
-                  step2ConfigureVotingFormData.minutes
+                  step2ConfigureVotingFormData.minutes,
                 ),
               },
-              "auto"
+              "auto",
             );
           } else if (step1DaoInfoFormData.structure === DaoType.MEMBER_BASED) {
             if (!step3MemberSettingFormData) return false;
@@ -183,16 +183,16 @@ export const OrganizationDeployerScreen = () => {
                 })),
                 quorum: getPercent(step2ConfigureVotingFormData.supportPercent),
                 threshold: getPercent(
-                  step2ConfigureVotingFormData.minimumApprovalPercent
+                  step2ConfigureVotingFormData.minimumApprovalPercent,
                 ),
                 maxVotingPeriod: getDuration(
                   step2ConfigureVotingFormData.days,
                   step2ConfigureVotingFormData.hours,
-                  step2ConfigureVotingFormData.minutes
+                  step2ConfigureVotingFormData.minutes,
                 ),
                 onStepChange: setLaunchingStep,
               },
-              "auto"
+              "auto",
             );
             createDaoRes = executeResult;
             setDAOAddress(daoAddress);

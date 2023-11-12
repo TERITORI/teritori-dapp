@@ -46,7 +46,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   const { name: currentRouteName } = useAppRoute();
   const allNestedRoutes = useMemo(
     () => (nested ? Object.values(nested).map((d) => d.route) : []),
-    [nested]
+    [nested],
   );
   const [isNestedBarExpanded, setIsNestedBarExpanded] =
     useState<boolean>(false);
@@ -78,7 +78,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
 
   const toggleNestedSidebar = useCallback(
     () => setIsNestedBarExpanded((isNestedBarExpanded) => !isNestedBarExpanded),
-    []
+    [],
   );
 
   const opacityStyle = useAnimatedStyle(
@@ -91,7 +91,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
             duration: 100,
           }),
     }),
-    [isSidebarExpanded]
+    [isSidebarExpanded],
   );
 
   return (

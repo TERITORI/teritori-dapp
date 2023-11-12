@@ -126,7 +126,7 @@ const useNFTPriceHistory = (nftId: string) => {
 
       return data;
     },
-    { initialData: [] }
+    { initialData: [] },
   );
   return data;
 };

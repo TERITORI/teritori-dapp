@@ -2,7 +2,7 @@ import { BigNumber } from "ethers";
 import Long from "long";
 
 import { prettyPrice } from "./coins";
-import { ipfsURLToHTTPURL } from "./ipfs";
+import { nameServiceDefaultImage } from "./tns";
 import { ConfigResponse } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.types";
 import {
   CosmosNetworkInfo,
@@ -91,7 +91,7 @@ export const getCollectionMetadata = (umetadata: unknown): CollectionInfo => {
   }
 
   if ("image" in metadata && typeof metadata.image === "string")
-    info.image = ipfsURLToHTTPURL(metadata.image);
+    info.image = metadata.image;
   if ("description" in metadata && typeof metadata.description === "string")
     info.description = metadata.description;
   if ("discord" in metadata && typeof metadata.discord === "string")
@@ -101,17 +101,17 @@ export const getCollectionMetadata = (umetadata: unknown): CollectionInfo => {
   if ("website" in metadata && typeof metadata.website === "string")
     info.website = metadata.website;
   if ("banner" in metadata && typeof metadata.banner === "string")
-    info.bannerImage = ipfsURLToHTTPURL(metadata.banner);
+    info.bannerImage = metadata.banner;
 
   return info;
 };
 
 export const getTnsCollectionInfo = (
-  network: CosmosNetworkInfo
+  network: CosmosNetworkInfo,
 ): CollectionInfo => {
   return {
     name: `${network.displayName} Name Service`, // FIXME: should fetch from contract or be in env
-    image: ipfsURLToHTTPURL(network?.nameServiceDefaultImage || ""),
+    image: nameServiceDefaultImage(false, network),
     mintPhases: [],
   };
 };
@@ -119,7 +119,7 @@ export const getTnsCollectionInfo = (
 export const expandCosmosBunkerConfig = (
   networkId: string | undefined,
   conf: ConfigResponse,
-  mintedAmount: string | undefined
+  mintedAmount: string | undefined,
 ) => {
   const secondsSinceEpoch = Date.now() / 1000;
 
@@ -169,7 +169,7 @@ export const expandEthereumBunkerConfig = (
     BigNumber,
     BigNumber,
     BigNumber,
-    BigNumber
+    BigNumber,
   ] & {
     maxSupply: BigNumber;
     mintToken: string;
@@ -179,13 +179,13 @@ export const expandEthereumBunkerConfig = (
     publicMintMax: BigNumber;
   },
   whitelists: MintPhase[],
-  currentSupply: BigNumber
+  currentSupply: BigNumber,
 ) => {
   const secondsSinceEpoch = Long.fromNumber(Date.now() / 1000);
   const priceDenom = getEthereumNetwork(networkId)?.currencies[0].denom;
 
   const mintStartedAt = Long.fromString(
-    minterConfig.mintStartTime.toString() || "0"
+    minterConfig.mintStartTime.toString() || "0",
   );
   const mintStarted = secondsSinceEpoch.greaterThanOrEqual(mintStartedAt);
 

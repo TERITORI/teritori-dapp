@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { View, ViewStyle } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
@@ -26,6 +26,7 @@ interface MultisigSectionProps {
   toriText?: boolean;
   isLoading?: boolean;
   isCollapsable?: boolean;
+  children: ReactNode;
 }
 
 export const MultisigSection: React.FC<MultisigSectionProps> = ({

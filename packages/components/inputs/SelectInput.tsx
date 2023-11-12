@@ -84,11 +84,11 @@ export const SelectInput: React.FC<Props> = ({
       allowSearchValue && searchValue
         ? // selectableData depends on searchValue
           data.filter((d) =>
-            d.label.toLowerCase().includes(searchValue.toLowerCase())
+            d.label.toLowerCase().includes(searchValue.toLowerCase()),
           )
         : // Or selectableData is just the given data
           data,
-    [allowSearchValue, data, searchValue]
+    [allowSearchValue, data, searchValue],
   );
 
   // It obliges the user to select a value from the list to trigger a valid selectItem. The searchValue will not be used as selectedItem.

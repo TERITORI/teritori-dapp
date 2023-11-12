@@ -20,7 +20,7 @@ export const useNameSearch = (req: Partial<SearchNamesRequest>) => {
     {
       staleTime: Infinity,
       enabled: !!(req.networkId && req.input),
-    }
+    },
   );
   return { names, ...other };
 };

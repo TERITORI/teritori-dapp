@@ -5,6 +5,6 @@ import { WalletProvider } from "../utils/walletProvider";
 export const useIsLeapConnected = () => {
   const { wallets } = useWallets();
   return !!wallets.find(
-    (wallet) => wallet.provider === WalletProvider.Leap && wallet.connected
+    (wallet) => wallet.provider === WalletProvider.Leap && wallet.connected,
   );
 };

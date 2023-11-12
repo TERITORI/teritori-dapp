@@ -6,11 +6,11 @@ import { Pressable, StyleSheet, View } from "react-native";
 
 import { WarningBox } from "./WarningBox";
 import { BrandText } from "../../../components/BrandText";
-import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
+import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useCosmosValidatorBondedAmount } from "../../../hooks/useCosmosValidatorBondedAmount";
@@ -57,7 +57,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
   const networkId = network?.id;
   const { bondedTokens, refreshBondedTokens } = useCosmosValidatorBondedAmount(
     userId,
-    validator?.address
+    validator?.address,
   );
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
@@ -111,7 +111,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
 
         const amount = Decimal.fromUserInput(
           formData.amount,
-          stakingCurrency.decimals
+          stakingCurrency.decimals,
         ).atomics;
         const msg: MsgUndelegateEncodeObject = {
           typeUrl: "/cosmos.staking.v1beta1.MsgUndelegate",
@@ -138,7 +138,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
           message: `${prettyPrice(
             networkId,
             amount,
-            stakingCurrency.denom
+            stakingCurrency.denom,
           )} from ${validator.moniker}`,
         });
 
@@ -167,7 +167,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
       userAddress,
       userKind,
       validator,
-    ]
+    ],
   );
 
   const Header = useCallback(
@@ -180,7 +180,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
         </BrandText>
       </View>
     ),
-    [stakingCurrency?.displayName]
+    [stakingCurrency?.displayName],
   );
 
   const Footer = useCallback(
@@ -205,7 +205,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
         </View>
       </>
     ),
-    [handleSubmit, onClose, onSubmit]
+    [handleSubmit, onClose, onSubmit],
   );
 
   return (
@@ -260,7 +260,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
           {prettyPrice(
             networkId,
             bondedTokens.atomics,
-            stakingCurrency?.denom || ""
+            stakingCurrency?.denom || "",
           )}
         </BrandText>
         <SpacerColumn size={2.5} />

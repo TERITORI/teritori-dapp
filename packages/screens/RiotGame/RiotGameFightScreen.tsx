@@ -36,16 +36,16 @@ export const RiotGameFightScreen = () => {
 
   const isCompleted = useCallback(
     (squad: SquadInfo) => now - squad.endTime * 1000 >= 0,
-    [now]
+    [now],
   );
 
   const ongoingSquads = useMemo(
     () => squads.filter((m) => !isCompleted(m)),
-    [isCompleted, squads]
+    [isCompleted, squads],
   );
   const completedSquads = useMemo(
     () => squads.filter(isCompleted),
-    [isCompleted, squads]
+    [isCompleted, squads],
   );
 
   const gotoMarketplace = () => {

@@ -17,11 +17,11 @@ export const useRippers = () => {
 
   const riotCollectionIdGen0 = getCollectionId(
     networkId,
-    network?.riotContractAddressGen0
+    network?.riotContractAddressGen0,
   );
   const breedingCollectionId = getCollectionId(
     networkId,
-    network?.riotContractAddressGen1
+    network?.riotContractAddressGen1,
   );
 
   const nftReq: Omit<NFTsRequest, "collectionId"> = {
@@ -52,7 +52,7 @@ export const useRippers = () => {
 
   const myAvailableRippers = useMemo(() => {
     return [...myRippers, ...myRipperChilds].filter(
-      (r) => !r.isListed && (!r.lockedOn || isNFTStaked(r))
+      (r) => !r.isListed && (!r.lockedOn || isNFTStaked(r)),
     );
   }, [myRipperChilds, myRippers]);
 

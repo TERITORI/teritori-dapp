@@ -63,7 +63,7 @@ export const NetworkSelectorMenu: FC<{
     dispatch(setSelectedNetworkId(networkId));
 
     const selectedWallet = wallets.find(
-      (w) => w.connected && w.provider === walletProvider
+      (w) => w.connected && w.provider === walletProvider,
     );
 
     dispatch(setSelectedWalletId(selectedWallet?.id || ""));
@@ -98,7 +98,7 @@ export const NetworkSelectorMenu: FC<{
             (!forceNetworkKind || network.kind === forceNetworkKind) && // check that it's the correct network kind if forced to
             (!forceNetworkFeatures ||
               forceNetworkFeatures.every((feature) =>
-                network.features.includes(feature)
+                network.features.includes(feature),
               )) &&
             selectedNetworkInfo?.id !== network.id // check that it's not already selected
           );

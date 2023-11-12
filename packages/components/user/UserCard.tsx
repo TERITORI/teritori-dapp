@@ -49,7 +49,7 @@ export const UserCard: React.FC<{
   const { wrapWithFeedback } = useFeedbacks();
   const { isDAOMember: selectedWalletIsMember } = useIsDAOMember(
     daoId,
-    selectedWallet?.userId
+    selectedWallet?.userId,
   );
   const proposeToRemoveMember = useProposeToRemoveMember(daoId);
 
@@ -167,10 +167,10 @@ export const UserCard: React.FC<{
                 async () => {
                   await proposeToRemoveMember(
                     selectedWallet?.address,
-                    userAddress
+                    userAddress,
                   );
                 },
-                { title: "Created proposal" }
+                { title: "Created proposal" },
               ),
             },
           ]}
@@ -194,7 +194,7 @@ const CardActions: React.FC<{
 
   const filteredActions = actions.filter(
     (a): a is ComponentProps<typeof DropdownOption> =>
-      typeof a !== "boolean" && !!a
+      typeof a !== "boolean" && !!a,
   );
   if (!filteredActions.length) {
     return null;
@@ -272,7 +272,7 @@ const useProposeToRemoveMember = (daoId: string | undefined) => {
   return useCallback(
     async (
       senderAddress: string | undefined,
-      memberToRemoveAddress: string
+      memberToRemoveAddress: string,
     ) => {
       if (!senderAddress) {
         throw new Error("Invalid sender");
@@ -295,7 +295,7 @@ const useProposeToRemoveMember = (daoId: string | undefined) => {
                 msg: Buffer.from(
                   JSON.stringify({
                     update_members: updateMembersReq,
-                  })
+                  }),
                 ).toString("base64"),
                 funds: [],
               },
@@ -304,6 +304,6 @@ const useProposeToRemoveMember = (daoId: string | undefined) => {
         ],
       });
     },
-    [groupAddress, makeProposal]
+    [groupAddress, makeProposal],
   );
 };

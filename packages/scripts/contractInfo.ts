@@ -29,7 +29,7 @@ const main = async () => {
         __this_should_not_exist: {},
       });
       all["interfaceQueryError"] = new Error(
-        "query should have failed"
+        "query should have failed",
       ).toString();
     } catch (err: any) {
       if (err instanceof Error) {
@@ -48,11 +48,11 @@ const main = async () => {
           queries.push(...(parts || []).map((s) => s.slice(1, s.length - 1)));
         } else {
           all["interfaceQueryError"] = new Error(
-            "unexpected message shape: `" + message + "`"
+            "unexpected message shape: `" + message + "`",
           ).toString();
         }
       } else {
-        all["interfaceQueryError"] = err.toString();
+        all["interfaceQueryError"] = `${err}`;
       }
     }
     all["queries"] = queries;

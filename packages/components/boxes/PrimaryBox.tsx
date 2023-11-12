@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import React, { ReactNode } from "react";
 import { View, ViewStyle, StyleProp, StyleSheet } from "react-native";
 
 import { neutral11, neutral67 } from "../../utils/style/colors";
@@ -15,6 +15,7 @@ export const PrimaryBox: React.FC<{
   noBrokenCorners?: boolean;
   colors?: string[];
   noRightBrokenBorder?: boolean;
+  children: ReactNode;
 }> = ({
   width,
   height,

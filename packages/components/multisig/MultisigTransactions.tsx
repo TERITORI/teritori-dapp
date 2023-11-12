@@ -33,7 +33,7 @@ export const MultisigTransactions: FC<{
 
   const { transactionsCounts: counts } = useMultisigTransactionsCounts(
     userId,
-    multisigUserId
+    multisigUserId,
   );
 
   const tabs = useMemo(
@@ -55,7 +55,7 @@ export const MultisigTransactions: FC<{
         ...filteredTabValues(
           counts?.byType || [],
           ExecutionState.EXECUTION_STATE_UNSPECIFIED,
-          ["/cosmos.bank.v1beta1.MsgSend"]
+          ["/cosmos.bank.v1beta1.MsgSend"],
         ),
       },
       stake: {
@@ -68,7 +68,7 @@ export const MultisigTransactions: FC<{
             "/cosmos.staking.v1beta1.MsgUndelegate",
             "/cosmos.staking.v1beta1.MsgBeginRedelegate",
             "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
-          ]
+          ],
         ),
       },
       contracts: {
@@ -79,11 +79,11 @@ export const MultisigTransactions: FC<{
           [
             "/cosmwasm.wasm.v1.MsgInstantiateContract",
             "/cosmwasm.wasm.v1.MsgExecuteContract",
-          ]
+          ],
         ),
       },
     }),
-    [counts]
+    [counts],
   );
 
   const {
@@ -94,14 +94,14 @@ export const MultisigTransactions: FC<{
     userId,
     multisigUserId,
     tabs[selectedTab].types,
-    tabs[selectedTab].state
+    tabs[selectedTab].state,
   );
 
   const list = useMemo(() => {
     if (data)
       return data.pages.reduce(
         (r, p) => [...r, ...p.data],
-        [] as (typeof data)["pages"][0]["data"]
+        [] as (typeof data)["pages"][0]["data"],
       );
     return [];
   }, [data]);
@@ -150,7 +150,7 @@ export const MultisigTransactions: FC<{
 const filteredTabValues = (
   counts: TransactionsCount[],
   state: ExecutionState,
-  types: string[]
+  types: string[],
 ) => {
   const result = {
     badgeCount: 0,

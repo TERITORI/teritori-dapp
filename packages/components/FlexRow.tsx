@@ -1,22 +1,12 @@
-import {
-  FlexAlignType,
-  useWindowDimensions,
-  View,
-  ViewProps,
-} from "react-native";
+import { useWindowDimensions, View, ViewProps, ViewStyle } from "react-native";
+
+// TODO: remove this bloat
 
 type FlexRowProps = ViewProps & {
   breakpoint?: number;
-  width?: string;
-  alignItems?: FlexAlignType | undefined;
-  justifyContent?:
-    | "flex-start"
-    | "flex-end"
-    | "center"
-    | "space-between"
-    | "space-around"
-    | "space-evenly"
-    | undefined;
+  width?: ViewStyle["width"];
+  alignItems?: ViewStyle["alignItems"];
+  justifyContent?: ViewStyle["justifyContent"];
 };
 
 type Direction =

@@ -55,11 +55,11 @@ export const useLeap: () => UseLeapResult = () => {
         return;
       }
       const offlineSigner = await leap.getOfflineSignerAuto(
-        selectedNetworkInfo.chainId
+        selectedNetworkInfo.chainId,
       );
       const accounts = await offlineSigner.getAccounts();
       setAddresses(
-        accounts.map((account: { address: any }) => account.address)
+        accounts.map((account: { address: any }) => account.address),
       );
     };
     window.addEventListener("leap_keystorechange", handleKeyChange);
@@ -96,7 +96,7 @@ export const useLeap: () => UseLeapResult = () => {
         const offlineSigner = await leap.getOfflineSignerAuto(chainId);
         const accounts = await offlineSigner.getAccounts();
         setAddresses(
-          accounts.map((account: { address: any }) => account.address)
+          accounts.map((account: { address: any }) => account.address),
         );
       } catch (err) {
         console.warn("failed to connect to leap", err);

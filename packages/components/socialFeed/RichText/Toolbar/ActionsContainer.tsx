@@ -1,8 +1,11 @@
+import { ReactNode } from "react";
 import { View, useWindowDimensions } from "react-native";
 
 import { SOCIAL_FEED_BREAKPOINT_M } from "../../../../utils/style/layout";
 
-export const ActionsContainer: React.FC = ({ children }) => {
+export const ActionsContainer: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const { width: windowWidth } = useWindowDimensions();
 
   return (

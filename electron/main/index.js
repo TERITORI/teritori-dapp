@@ -21,7 +21,7 @@ function createMainWindow() {
 
   if (isDevelopment) {
     browserWindow.loadURL(
-      `http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`
+      `http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`,
     );
   } else {
     browserWindow.loadURL(
@@ -29,7 +29,7 @@ function createMainWindow() {
         pathname: path.join(__dirname, "index.html"),
         protocol: "file",
         slashes: true,
-      })
+      }),
     );
   }
 

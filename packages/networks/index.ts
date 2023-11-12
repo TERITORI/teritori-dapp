@@ -94,7 +94,7 @@ export const defaultEnabledNetworks = [
 export const allNetworks = [
   ...packageNetworks,
   ...networksFromCosmosRegistry().filter(
-    (rn) => !packageNetworks.some((pn) => pn.overrides === rn.id)
+    (rn) => !packageNetworks.some((pn) => pn.overrides === rn.id),
   ),
 ].sort((a, b) => a.displayName.localeCompare(b.displayName));
 
@@ -126,7 +126,7 @@ const cosmosAminoTypes = new AminoTypes({
 
 export const getCurrency = (
   networkId: string | undefined,
-  denom: string | undefined
+  denom: string | undefined,
 ) => {
   if (!networkId || !denom) {
     return undefined;
@@ -136,7 +136,7 @@ export const getCurrency = (
 
 export const getIBCCurrency = (
   networkId: string | undefined,
-  denom: string | undefined
+  denom: string | undefined,
 ) => {
   const currency = getCurrency(networkId, denom);
   if (currency?.kind !== "ibc") {
@@ -147,13 +147,13 @@ export const getIBCCurrency = (
 
 export const getNativeCurrency = (
   networkId: string | undefined,
-  denom: string | undefined
+  denom: string | undefined,
 ) => {
   const currency = getCurrency(networkId, denom);
   if (currency?.kind === "ibc") {
     const ibcNativeCurrency = getCurrency(
       currency.sourceNetwork,
-      currency.sourceDenom
+      currency.sourceDenom,
     );
     if (ibcNativeCurrency?.kind !== "native") {
       return undefined;
@@ -194,7 +194,7 @@ export const getNetworkByIdPrefix = (idPrefix: string | undefined) => {
 };
 
 export const parseNetworkObjectId = (
-  id: string | undefined
+  id: string | undefined,
 ): [NetworkInfo | undefined, string] => {
   if (!id) {
     return [undefined, ""];
@@ -208,7 +208,7 @@ export const parseNetworkObjectId = (
 };
 
 export const parseNftId = (
-  id: string | undefined
+  id: string | undefined,
 ): [NetworkInfo | undefined, string, string] => {
   const [network, subId] = parseNetworkObjectId(id);
   if (!network) {
@@ -222,7 +222,7 @@ export const parseNftId = (
 };
 
 export const parseUserId = (
-  id: string | undefined
+  id: string | undefined,
 ): [NetworkInfo | undefined, string] => {
   const [network, rest] = parseNetworkObjectId(id);
   if (network?.kind === NetworkKind.Gno) {
@@ -236,13 +236,13 @@ export const parseUserId = (
 };
 
 export const parseCollectionId = (
-  id: string | undefined
+  id: string | undefined,
 ): [NetworkInfo | undefined, string] => {
   return parseNetworkObjectId(id);
 };
 
 export const parseActivityId = (
-  id: string | undefined
+  id: string | undefined,
 ): [NetworkInfo | undefined, string, string] => {
   const [network, subId] = parseNetworkObjectId(id);
   if (!network) {
@@ -257,7 +257,7 @@ export const parseActivityId = (
 
 export const getNetworkObjectId = (
   networkId: string | null | undefined,
-  subId: string | null | undefined
+  subId: string | null | undefined,
 ) => {
   if (!networkId || !subId) {
     return "";
@@ -268,7 +268,7 @@ export const getNetworkObjectId = (
 
 export const getUserId = (
   networkId: string | null | undefined,
-  address: string | null | undefined
+  address: string | null | undefined,
 ) => {
   if (!networkId || !address) {
     return "";
@@ -282,7 +282,7 @@ export const getUserId = (
 
 export const getCollectionId = (
   networkId: string | undefined,
-  address: string | undefined
+  address: string | undefined,
 ) => {
   if (!networkId || !address) {
     return "";
@@ -292,7 +292,7 @@ export const getCollectionId = (
 };
 
 export const getCosmosNetwork = (
-  networkId: string | undefined
+  networkId: string | undefined,
 ): CosmosNetworkInfo | undefined => {
   const network = getNetwork(networkId);
   if (network === undefined) {
@@ -314,7 +314,7 @@ export const getCosmosNetworkByChainId = (chainId: string | undefined) => {
 };
 
 export const mustGetCosmosNetwork = (
-  networkId: string | undefined
+  networkId: string | undefined,
 ): CosmosNetworkInfo => {
   const network = getNetwork(networkId);
   if (network === undefined) {
@@ -327,7 +327,7 @@ export const mustGetCosmosNetwork = (
 };
 
 export const getGnoNetwork = (
-  networkId: string | undefined
+  networkId: string | undefined,
 ): GnoNetworkInfo | undefined => {
   const network = getNetwork(networkId);
   if (network?.kind !== NetworkKind.Gno) {
@@ -337,7 +337,7 @@ export const getGnoNetwork = (
 };
 
 export const mustGetGnoNetwork = (
-  networkId: string | undefined
+  networkId: string | undefined,
 ): GnoNetworkInfo => {
   const network = mustGetNetwork(networkId);
   if (network.kind !== NetworkKind.Gno) {
@@ -351,12 +351,13 @@ export const getGnoNetworkFromChainId = (chainId: string | undefined) => {
     return undefined;
   }
   return allNetworks.find(
-    (network) => network.kind === NetworkKind.Gno && network.chainId === chainId
+    (network) =>
+      network.kind === NetworkKind.Gno && network.chainId === chainId,
   );
 };
 
 export const getEthereumNetwork = (
-  networkId: string | undefined
+  networkId: string | undefined,
 ): EthereumNetworkInfo | undefined => {
   const network = getNetwork(networkId);
   if (network === undefined) {
@@ -369,7 +370,7 @@ export const getEthereumNetwork = (
 };
 
 export const mustGetEthereumNetwork = (
-  networkId: string | undefined
+  networkId: string | undefined,
 ): EthereumNetworkInfo => {
   const network = getNetwork(networkId);
   if (network === undefined) {
@@ -382,7 +383,7 @@ export const mustGetEthereumNetwork = (
 };
 
 export const keplrCurrencyFromNativeCurrencyInfo = (
-  nativeCurrency: NativeCurrencyInfo | undefined
+  nativeCurrency: NativeCurrencyInfo | undefined,
 ): KeplrCurrency | undefined => {
   if (!nativeCurrency) {
     return undefined;
@@ -398,10 +399,10 @@ export const keplrCurrencyFromNativeCurrencyInfo = (
 // FIXME: consider directly using ChainInfo in NetworkInfo
 
 export const keplrChainInfoFromNetworkInfo = (
-  network: CosmosNetworkInfo
+  network: CosmosNetworkInfo,
 ): ChainInfo => {
   const stakeCurrency = keplrCurrencyFromNativeCurrencyInfo(
-    getNativeCurrency(network.id, network.stakeCurrency)
+    getNativeCurrency(network.id, network.stakeCurrency),
   );
   if (!stakeCurrency) {
     throw new Error("stake currency not found");
@@ -433,7 +434,7 @@ export const keplrChainInfoFromNetworkInfo = (
 
 const cosmosNetworkGasPrice = (
   network: CosmosNetworkInfo,
-  kind: "low" | "average" | "high"
+  kind: "low" | "average" | "high",
 ) => {
   const feeCurrency = getStakingCurrency(network.id);
   if (!feeCurrency) {
@@ -442,7 +443,7 @@ const cosmosNetworkGasPrice = (
   const floatGasPrice = network.gasPriceStep[kind];
   const decimalGasPrice = Decimal.fromUserInput(
     floatGasPrice.toString(),
-    feeCurrency.decimals
+    feeCurrency.decimals,
   );
   return new GasPrice(decimalGasPrice, feeCurrency.denom);
 };
@@ -473,7 +474,7 @@ const getKeplrOnlyAminoSigner = async (networkId: string) => {
 
 export const getKeplrSigningStargateClient = async (
   networkId: string,
-  gasPriceKind: "low" | "average" | "high" = "average"
+  gasPriceKind: "low" | "average" | "high" = "average",
 ) => {
   const network = mustGetCosmosNetwork(networkId);
 
@@ -491,13 +492,13 @@ export const getKeplrSigningStargateClient = async (
       gasPrice,
       registry: cosmosTypesRegistry,
       aminoTypes: cosmosAminoTypes,
-    }
+    },
   );
 };
 
 export const getKeplrOnlyAminoStargateClient = async (
   networkId: string,
-  gasPriceKind: "low" | "average" | "high" = "average"
+  gasPriceKind: "low" | "average" | "high" = "average",
 ) => {
   const network = mustGetCosmosNetwork(networkId);
 
@@ -515,13 +516,13 @@ export const getKeplrOnlyAminoStargateClient = async (
       gasPrice,
       registry: cosmosTypesRegistry,
       aminoTypes: cosmosAminoTypes,
-    }
+    },
   );
 };
 
 export const getKeplrSigningCosmWasmClient = async (
   networkId: string,
-  gasPriceKind: "low" | "average" | "high" = "average"
+  gasPriceKind: "low" | "average" | "high" = "average",
 ) => {
   const network = mustGetCosmosNetwork(networkId);
 
@@ -549,7 +550,7 @@ export const getNonSigningStargateClient = async (networkId: string) => {
 
 export const txExplorerLink = (
   networkId: string | undefined,
-  txHash: string
+  txHash: string,
 ) => {
   const network = getNetwork(networkId);
   if (!network?.txExplorer) {
@@ -560,7 +561,7 @@ export const txExplorerLink = (
 
 export const accountExplorerLink = (
   networkId: string | undefined,
-  address: string
+  address: string,
 ) => {
   const network = getNetwork(networkId);
   if (!network?.accountExplorer) {
@@ -571,7 +572,7 @@ export const accountExplorerLink = (
 
 export const contractExplorerLink = (
   networkId: string | undefined,
-  address: string
+  address: string,
 ) => {
   const network = getNetwork(networkId);
   if (!network?.contractExplorer) {

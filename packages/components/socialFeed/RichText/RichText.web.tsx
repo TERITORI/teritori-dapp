@@ -134,6 +134,8 @@ export const RichText: React.FC<RichTextProps> = ({
   onPublish,
   loading,
   publishDisabled,
+  authorId,
+  postId,
 }) => {
   const compositeDecorator = {
     decorators: [
@@ -169,7 +171,7 @@ export const RichText: React.FC<RichTextProps> = ({
   const { width: windowWidth } = useWindowDimensions();
   const editorRef = useRef<Editor>(null);
   const [editorState, setEditorState] = useState(
-    createStateFromHTML(initialValue)
+    createStateFromHTML(initialValue),
   );
   // const { mutate: openGraphMutate, data: openGraphData } = useOpenGraph();
   const [uploadedAudios, setUploadedAudios] = useState<LocalFileData[]>([]);
@@ -179,15 +181,15 @@ export const RichText: React.FC<RichTextProps> = ({
   const [html, setHtml] = useState(initialValue);
   const isGIFSelectorDisabled = useMemo(
     () => uploadedGIFs.length + uploadedImages.length >= MAX_IMAGES,
-    [uploadedGIFs.length, uploadedImages.length]
+    [uploadedGIFs.length, uploadedImages.length],
   );
   const isAudioUploadDisabled = useMemo(
     () => uploadedAudios.length >= MAX_AUDIOS,
-    [uploadedAudios.length]
+    [uploadedAudios.length],
   );
   const isVideoUploadDisabled = useMemo(
     () => uploadedVideos.length >= MAX_VIDEOS,
-    [uploadedVideos.length]
+    [uploadedVideos.length],
   );
 
   // Truncate using initialValue, only if isPreview
@@ -232,7 +234,7 @@ export const RichText: React.FC<RichTextProps> = ({
     const state = Modifier.insertText(
       editorState.getCurrentContent(),
       editorState.getSelection(),
-      emoji
+      emoji,
     );
     setEditorState(EditorState.createWithContent(state));
   };
@@ -448,7 +450,7 @@ export const RichText: React.FC<RichTextProps> = ({
         audioFiles.map((file, index) => (
           <View key={index}>
             <SpacerColumn size={2} />
-            <AudioView file={file} />
+            <AudioView file={file} postId={postId} authorId={authorId} />
             <SpacerColumn size={2} />
           </View>
         ))}
@@ -542,12 +544,12 @@ const createStateFromHTML = (html: string) => {
         };
         return value;
       }
-    }
+    },
   );
   const { contentBlocks, entityMap } = blocksFromHTML;
   const contentState = ContentState.createFromBlockArray(
     contentBlocks,
-    entityMap
+    entityMap,
   );
   return EditorState.createWithContent(contentState);
 };
@@ -556,7 +558,7 @@ const createHTMLFromState = (state: ContentState) =>
   convertToHTML({
     entityToHTML: (entity, originalText) => {
       if (entity.type === VIDEOTYPE || entity.type === "VIDEO") {
-        return <video src={entity.data.src} controls />;
+        return <video src={entity.data.src} controls style={{ height: 400 }} />;
       }
       if (entity.type === "IMAGE") {
         return <img src={entity.data.src} />;
@@ -571,21 +573,21 @@ const createHTMLFromState = (state: ContentState) =>
 
 const mentionStrategy = (
   contentBlock: ContentBlock,
-  callback: (start: number, end: number) => void
+  callback: (start: number, end: number) => void,
 ) => {
   findWithRegex(MENTION_REGEX, contentBlock, callback);
 };
 
 const urlStrategy = (
   contentBlock: ContentBlock,
-  callback: (start: number, end: number) => void
+  callback: (start: number, end: number) => void,
 ) => {
   findWithRegex(URL_REGEX, contentBlock, callback);
 };
 
 const hashtagStrategy = (
   contentBlock: ContentBlock,
-  callback: (start: number, end: number) => void
+  callback: (start: number, end: number) => void,
 ) => {
   findWithRegex(HASHTAG_REGEX, contentBlock, callback);
 };
@@ -594,7 +596,7 @@ const hashtagStrategy = (
 const findWithRegex = (
   regex: RegExp,
   contentBlock: ContentBlock,
-  callback: (start: number, end: number) => void
+  callback: (start: number, end: number) => void,
 ) => {
   const text = contentBlock.getText();
 
@@ -603,7 +605,7 @@ const findWithRegex = (
       !a[0].toLowerCase().includes(DEFAULT_USERNAME.toLowerCase()) &&
       a.index !== undefined
         ? [a.index, a.index + a[0].length]
-        : null
+        : null,
     )
     .forEach((v) => v && callback(v[0], v[1]));
 };
@@ -625,7 +627,7 @@ const getCurrentText = (editorState: EditorState) => {
 // Get Draft entity by type
 const getEntities = (
   editorState: EditorState,
-  entityType?: DraftEntityType
+  entityType?: DraftEntityType,
 ) => {
   const contentState = editorState.getCurrentContent();
   const entities: FoundEntity[] = [];
@@ -649,7 +651,7 @@ const getEntities = (
       },
       (start, end) => {
         entities.push({ ...selectedEntity, start, end });
-      }
+      },
     );
   });
   return entities;
@@ -660,7 +662,7 @@ const getEntities = (
 const getFilesToPublish = (
   editorState: EditorState,
   files: LocalFileData[],
-  entityType?: DraftEntityType
+  entityType?: DraftEntityType,
 ) => {
   const entities = getEntities(editorState, entityType);
   const filesToPublish: LocalFileData[] = [];

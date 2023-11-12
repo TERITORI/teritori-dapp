@@ -85,7 +85,7 @@ const Toolbar = function Toolbar(_ref) {
       const parentWindow =
         editorRoot.ownerDocument && editorRoot.ownerDocument.defaultView;
       const selectionRect = draftJs.getVisibleSelectionRect(
-        parentWindow || window
+        parentWindow || window,
       );
       if (!selectionRect) return;
 
@@ -172,7 +172,7 @@ const Toolbar = function Toolbar(_ref) {
     return function () {
       toolbarPropsState.store.unsubscribeFromItem(
         "selection",
-        onSelectionChanged
+        onSelectionChanged,
       );
     };
   }, []);
@@ -187,7 +187,7 @@ const Toolbar = function Toolbar(_ref) {
     OverrideContent
       ? /*#__PURE__*/ React__default["default"].createElement(
           OverrideContent,
-          childrenProps
+          childrenProps,
         )
       : /*#__PURE__*/ React__default["default"].createElement(
           React__default["default"].Fragment,
@@ -199,22 +199,22 @@ const Toolbar = function Toolbar(_ref) {
                 null,
                 /*#__PURE__*/ React__default["default"].createElement(
                   buttons.ItalicButton,
-                  childrenProps
+                  childrenProps,
                 ),
                 /*#__PURE__*/ React__default["default"].createElement(
                   buttons.BoldButton,
-                  childrenProps
+                  childrenProps,
                 ),
                 /*#__PURE__*/ React__default["default"].createElement(
                   buttons.UnderlineButton,
-                  childrenProps
+                  childrenProps,
                 ),
                 /*#__PURE__*/ React__default["default"].createElement(
                   buttons.CodeButton,
-                  childrenProps
-                )
-              )
-        )
+                  childrenProps,
+                ),
+              ),
+        ),
   );
 };
 const Toolbar$1 = Toolbar;
@@ -257,7 +257,7 @@ const index = function (config) {
       _extends({}, props, {
         store,
         theme,
-      })
+      }),
     );
   };
   return {

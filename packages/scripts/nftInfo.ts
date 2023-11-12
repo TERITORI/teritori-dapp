@@ -34,7 +34,7 @@ const main = async () => {
     console.log("Fetching minter config...");
     const minterClient = new TeritoriBunkerMinterQueryClient(
       cosmwasmClient,
-      minterContractAddress
+      minterContractAddress,
     );
     const config = await minterClient.config();
     nftContractAddress = config.nft_addr;
@@ -42,7 +42,7 @@ const main = async () => {
   console.log("NFT contract address:", nftContractAddress);
   const nftClient = new TeritoriNftQueryClient(
     cosmwasmClient,
-    nftContractAddress
+    nftContractAddress,
   );
 
   console.log("Fetching NFT info...");
@@ -56,7 +56,7 @@ const main = async () => {
   console.log("Fetching owner contract info...");
   const ownerContractInfo = await cosmwasmClient.getContract(ownerInfo.owner);
   console.log(
-    `Owner contract info:\n${JSON.stringify(ownerContractInfo, null, 2)}`
+    `Owner contract info:\n${JSON.stringify(ownerContractInfo, null, 2)}`,
   );
 
   console.log("Fetching backend NFT info...");

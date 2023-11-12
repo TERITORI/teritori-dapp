@@ -40,19 +40,19 @@ export const ProposalActions: React.FC<{
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { isDAOMember: selectedWalletIsDAOMember } = useIsDAOMember(
     daoId,
-    selectedWallet?.userId
+    selectedWallet?.userId,
   );
   const invalidateDAOProposals = useInvalidateDAOProposals(daoId);
   const invalidateDAOVoteInfo = useInvalidateDAOVoteInfo(
     daoId,
     selectedWallet?.userId,
-    proposal.id
+    proposal.id,
   );
   const { daoFirstProposalModule } = useDAOFirstProposalModule(daoId);
   const { daoVoteInfo: ownVote } = useDAOVoteInfo(
     daoId,
     selectedWallet?.userId,
-    proposal.id
+    proposal.id,
   );
 
   const vote = async (v: Vote) => {
@@ -72,11 +72,11 @@ export const ProposalActions: React.FC<{
           const daoProposalClient = new DaoProposalSingleClient(
             signingClient,
             walletAddress,
-            daoFirstProposalModule?.address
+            daoFirstProposalModule?.address,
           );
           await daoProposalClient.vote(
             { proposalId: proposal.id, vote: v },
-            "auto"
+            "auto",
           );
           break;
         }
@@ -149,7 +149,7 @@ export const ProposalActions: React.FC<{
           const daoProposalClient = new DaoProposalSingleClient(
             signingClient,
             walletAddress,
-            daoFirstProposalModule?.address
+            daoFirstProposalModule?.address,
           );
           const res = await daoProposalClient.execute({
             proposalId: proposal.id,
@@ -159,8 +159,8 @@ export const ProposalActions: React.FC<{
               ev.attributes.find(
                 (attr) =>
                   attr.key === "proposal_execution_failed" &&
-                  attr.value === proposal.id.toString()
-              )
+                  attr.value === proposal.id.toString(),
+              ),
             )
           ) {
             console.error("failed to execute", res);
@@ -181,7 +181,7 @@ export const ProposalActions: React.FC<{
               func: "Execute",
               args: ["0", proposal.id.toString()],
             },
-            { gasWanted: 10000000 }
+            { gasWanted: 10000000 },
           );
           break;
         }

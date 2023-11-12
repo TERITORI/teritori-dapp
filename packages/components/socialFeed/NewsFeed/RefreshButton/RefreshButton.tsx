@@ -40,7 +40,7 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
             duration: 500,
             easing: Easing.linear,
           }),
-          -1
+          -1,
         )
       : withTiming(0, {
           duration: 500,
@@ -54,7 +54,7 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
         ? withTiming(LOADING_WIDTH)
         : withTiming(WIDTH),
     }),
-    [isRefreshingAnim.value]
+    [isRefreshingAnim.value],
   );
 
   const animatedStyles = useAnimatedStyle(() => {
@@ -73,7 +73,7 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
         ? withTiming(0, { duration: 100 })
         : withTiming(1, { duration: 800 }),
     }),
-    [isRefreshingAnim.value]
+    [isRefreshingAnim.value],
   );
 
   return (

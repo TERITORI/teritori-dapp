@@ -19,7 +19,7 @@ const proms: {
 } = {};
 
 export const getMetaMaskEthereumProvider = async (
-  network: ethers.providers.Networkish
+  network: ethers.providers.Networkish,
 ) => {
   let provider;
   try {
@@ -57,7 +57,7 @@ export const getMetaMaskEthereumProvider = async (
         const test = await p.getNetwork();
         if (test.chainId !== network) {
           throw new Error(
-            `wrong network, expected '${network}' got '${test.chainId}'`
+            `wrong network, expected '${network}' got '${test.chainId}'`,
           );
         }
       } catch (err) {
@@ -78,12 +78,12 @@ const alchemyProviders: { [key: string]: ethers.providers.AlchemyProvider } =
 
 export const getEthereumProvider = async (
   network: EthereumNetworkInfo,
-  forceAlchemyProvider: boolean = false
+  forceAlchemyProvider: boolean = false,
 ) => {
   if (!forceAlchemyProvider) {
     try {
       const metamaskProvider = await getMetaMaskEthereumProvider(
-        network.chainId
+        network.chainId,
       );
       if (metamaskProvider) {
         return metamaskProvider;
@@ -98,7 +98,7 @@ export const getEthereumProvider = async (
     console.log("falling back to alchemy as ethereum provider");
     alchemyProviders[cacheKey] = new ethers.providers.AlchemyProvider(
       network.chainId,
-      network.alchemyApiKey
+      network.alchemyApiKey,
     );
   }
   return alchemyProviders[cacheKey];
@@ -106,7 +106,7 @@ export const getEthereumProvider = async (
 
 export const getMetaMaskEthereumSigner = async (
   network: EthereumNetworkInfo | undefined,
-  address: string | undefined
+  address: string | undefined,
 ) => {
   if (!network?.chainId) {
     return null;

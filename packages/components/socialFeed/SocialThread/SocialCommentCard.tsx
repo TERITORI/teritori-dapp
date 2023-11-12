@@ -118,7 +118,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
       onSuccess(_data, variables) {
         const reactions = getUpdatedReactions(
           localComment.reactions,
-          variables.msg.icon
+          variables.msg.icon,
         );
         setLocalComment({
           ...localComment,
@@ -129,7 +129,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
 
   const comments = useMemo(
     () => (data ? combineFetchCommentPages(data.pages) : []),
-    [data]
+    [data],
   );
   const moreCommentsCount = localComment.subPostLength - comments.length;
   const metadata = JSON.parse(localComment.metadata);
@@ -155,7 +155,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     if (oldIsFetching === true && !isFetching) {
       onScrollTo &&
         onScrollTo(
-          replyListYOffset.reduce((acc, cur) => acc + cur, parentOffsetValue)
+          replyListYOffset.reduce((acc, cur) => acc + cur, parentOffsetValue),
         );
     }
   }, [
@@ -208,7 +208,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
       [{ type: "/vm.m_call", value: vmCall }],
       {
         gasWanted: 2_000_000,
-      }
+      },
     );
 
     const provider = new GnoJSONRPCProvider(rpcEndpoint);
@@ -292,6 +292,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
 
               {/*====== Card Content */}
               <SocialMessageContent
+                authorId={localComment.authorId}
+                postId={localComment.identifier}
                 metadata={metadata}
                 postCategory={localComment.category}
               />

@@ -10,7 +10,7 @@ import {
 
 const cosmosGetSquads = async (
   networkId: string,
-  user: string
+  user: string,
 ): Promise<SquadInfo[]> => {
   const queryClient = await getCosmosSquadStakingQueryClient(networkId);
   const res = await queryClient.getSquad({ owner: user });
@@ -28,7 +28,7 @@ const cosmosGetSquads = async (
 
 const ethereumGetSquads = async (
   networkId: string,
-  user: string
+  user: string,
 ): Promise<SquadInfo[]> => {
   const queryClient = await getEthereumSquadStakingQueryClient(networkId);
   const res = await queryClient.callStatic.userSquadInfo(user);
@@ -71,6 +71,6 @@ export const useSquadStakingSquads = (userId: string | undefined) => {
         throw e;
       }
     },
-    { initialData: [] }
+    { initialData: [] },
   );
 };

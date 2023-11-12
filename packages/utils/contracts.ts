@@ -15,7 +15,7 @@ import {
 } from "../networks";
 
 export const getCosmosNameServiceQueryClient = async (
-  networkId: string | undefined
+  networkId: string | undefined,
 ) => {
   const network = getCosmosNetwork(networkId);
   if (!network?.nameServiceContractAddress) {
@@ -28,19 +28,19 @@ export const getCosmosNameServiceQueryClient = async (
   } catch (err) {
     console.warn(
       `failed to get non signing cosmwasm client for network '${network.id}':`,
-      err
+      err,
     );
     return undefined;
   }
 
   return new TeritoriNameServiceQueryClient(
     cosmWasmClient,
-    network.nameServiceContractAddress
+    network.nameServiceContractAddress,
   );
 };
 
 export const getEthereumSquadStakingQueryClient = async (
-  networkId: string | undefined
+  networkId: string | undefined,
 ) => {
   const network = getEthereumNetwork(networkId);
   const contractAddress = network?.riotSquadStakingContractAddress;
@@ -56,7 +56,7 @@ export const getEthereumSquadStakingQueryClient = async (
 };
 
 export const getCosmosSquadStakingQueryClient = async (
-  networkId: string | undefined
+  networkId: string | undefined,
 ) => {
   const network = getCosmosNetwork(networkId);
   const contractAddress = network?.riotSquadStakingContractAddressV2;
@@ -68,7 +68,7 @@ export const getCosmosSquadStakingQueryClient = async (
 };
 
 export const getKeplrSquadStakingClient = async (
-  userId: string | undefined
+  userId: string | undefined,
 ) => {
   const [network, userAddress] = parseUserId(userId);
   const cosmosNetwork = mustGetCosmosNetwork(network?.id);
@@ -80,6 +80,6 @@ export const getKeplrSquadStakingClient = async (
   return new TeritoriSquadStakingClient(
     cosmWasmClient,
     userAddress,
-    contractAddress
+    contractAddress,
   );
 };

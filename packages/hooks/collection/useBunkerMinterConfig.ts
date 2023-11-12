@@ -6,7 +6,7 @@ import { mustGetNonSigningCosmWasmClient } from "../../networks";
 export const useBunkerMinterConfig = (
   networkId: string | undefined,
   contractAddress: string | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   if (enabled === undefined) {
     enabled = true;
@@ -20,14 +20,14 @@ export const useBunkerMinterConfig = (
       const cosmwasm = await mustGetNonSigningCosmWasmClient(networkId);
       const minterClient = new TeritoriBunkerMinterQueryClient(
         cosmwasm,
-        contractAddress
+        contractAddress,
       );
       return await minterClient.config();
     },
     {
       staleTime: Infinity,
       enabled: !!networkId && !!contractAddress && enabled,
-    }
+    },
   );
   return { bunkerMinterConfig: data, ...other };
 };

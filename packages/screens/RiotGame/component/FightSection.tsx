@@ -31,7 +31,7 @@ import { RipperLightInfo, SquadInfo } from "../types";
 
 const cosmosNFTInfos = async (
   network: NetworkInfo,
-  squad: SquadInfo
+  squad: SquadInfo,
 ): Promise<RipperLightInfo[]> => {
   const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
 
@@ -39,10 +39,10 @@ const cosmosNFTInfos = async (
     squad.nfts.map(async (nft) => {
       const nftClient = new TeritoriNftQueryClient(
         cosmwasmClient,
-        nft.contract
+        nft.contract,
       );
       return await nftClient.nftInfo({ tokenId: nft.tokenId });
-    })
+    }),
   );
 
   const stakedRippers: RipperLightInfo[] = nftInfos.map(({ extension }) => ({
@@ -55,11 +55,11 @@ const cosmosNFTInfos = async (
 
 const ethereumNFTInfos = async (
   network: NetworkInfo,
-  squad: SquadInfo
+  squad: SquadInfo,
 ): Promise<RipperLightInfo[]> => {
   const ethereumNetwork = mustGetEthereumNetwork(network.id);
   const metamaskProvider = await getMetaMaskEthereumProvider(
-    ethereumNetwork.chainId
+    ethereumNetwork.chainId,
   );
   if (!metamaskProvider) {
     throw Error("unable to get ethereum provider");
@@ -92,7 +92,7 @@ const ethereumNFTInfos = async (
 
       const nftClient = TeritoriNft__factory.connect(nftContract, ethProvider);
       return await nftClient.nftInfo(nft.tokenId);
-    })
+    }),
   );
 
   const stakedRippers: RipperLightInfo[] = nftInfos.map((nft) => ({
@@ -144,7 +144,7 @@ export const FightSection: React.FC<FightSectionProps> = ({
           return [];
       }
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
 
   const unstake = async () => {

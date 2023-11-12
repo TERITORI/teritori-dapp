@@ -33,7 +33,7 @@ export const MessagesPreviewList: React.FC<{
           const { MessagePreview } = getTxInfo(
             [message],
             navigation,
-            getNetwork(networkId)
+            getNetwork(networkId),
           );
           content = <MessagePreview />;
         }

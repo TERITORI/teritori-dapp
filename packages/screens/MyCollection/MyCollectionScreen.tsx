@@ -24,7 +24,7 @@ export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
         <BrandText>My Collection</BrandText>
       </View>
     ),
-    []
+    [],
   );
 
   return (

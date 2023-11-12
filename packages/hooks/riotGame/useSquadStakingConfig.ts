@@ -57,10 +57,10 @@ export const useSquadStakingConfig = (networkId: string | undefined) => {
           return getEthereumSquadStakingConfig(networkId);
         default:
           throw Error(
-            `network ${networkId} does not support get staking config`
+            `network ${networkId} does not support get staking config`,
           );
       }
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
 };

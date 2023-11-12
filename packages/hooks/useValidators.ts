@@ -32,7 +32,7 @@ export const useValidators = (networkId: string | undefined) => {
         throw new Error("unknown staking currency");
       }
       const httpResponse = await fetch(
-        `${network.restEndpoint}/cosmos/staking/v1beta1/params`
+        `${network.restEndpoint}/cosmos/staking/v1beta1/params`,
       );
       const response = await httpResponse.json();
       const params: StakingParams = response.params;
@@ -42,7 +42,7 @@ export const useValidators = (networkId: string | undefined) => {
         const response = await fetch(
           network.restEndpoint +
             "/cosmos/staking/v1beta1/validators?pagination.limit=1000&pagination.key=" +
-            encodeURIComponent(key)
+            encodeURIComponent(key),
         );
         const payload = await response.json();
 
@@ -56,7 +56,7 @@ export const useValidators = (networkId: string | undefined) => {
               address: v.operator_address,
               votingPower: Decimal.fromAtomics(
                 v.tokens,
-                stakingCurrency.decimals
+                stakingCurrency.decimals,
               )
                 .toFloatApproximation()
                 .toFixed()
@@ -69,14 +69,14 @@ export const useValidators = (networkId: string | undefined) => {
               consensusPubKey: v.consensus_pubkey,
             };
             return info;
-          })
+          }),
         );
         key = payload.pagination.next_key as string | null;
       }
 
       const tendermintActiveValidators = await getTendermintActiveValidators(
         network.restEndpoint,
-        params.max_validators
+        params.max_validators,
       );
 
       // TODO: optimize with map lookup instead of find
@@ -86,8 +86,8 @@ export const useValidators = (networkId: string | undefined) => {
           tendermintActiveValidators.find(
             (tv: any) =>
               tv.pub_key.key === v.consensusPubKey.key &&
-              tv.pub_key.type === v.consensusPubKey.type
-          )
+              tv.pub_key.type === v.consensusPubKey.type,
+          ),
       );
 
       activeValidators.sort(sortByVotingPower);
@@ -104,7 +104,7 @@ export const useValidators = (networkId: string | undefined) => {
     },
     {
       staleTime: Infinity,
-    }
+    },
   );
 
   return { isFetching, data: data || initialData };
@@ -116,11 +116,11 @@ const prettyPercent = (val: number) => {
 
 const getTendermintActiveValidators = async (
   restProvider: string,
-  limit: number
+  limit: number,
 ): Promise<any[]> => {
   const activeValidators = await (
     await fetch(
-      `${restProvider}/cosmos/base/tendermint/v1beta1/validatorsets/latest?pagination.limit=${limit}&pagination.offset=0`
+      `${restProvider}/cosmos/base/tendermint/v1beta1/validatorsets/latest?pagination.limit=${limit}&pagination.offset=0`,
     )
   ).json();
   return activeValidators.validators;

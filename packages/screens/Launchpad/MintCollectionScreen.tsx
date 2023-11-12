@@ -179,7 +179,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         totalBulkMint,
         {
           value: userState.mintPrice.mul(totalBulkMint),
-        }
+        },
       );
 
       const tx = await minterClient.requestMint(address, totalBulkMint, {
@@ -190,7 +190,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
       });
       await tx.wait();
     },
-    [mintAddress, totalBulkMint]
+    [mintAddress, totalBulkMint],
   );
 
   const cosmosMint = useCallback(
@@ -218,7 +218,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 request_mint: {
                   addr: sender,
                 },
-              })
+              }),
             ),
             contract: mintAddress,
             funds,
@@ -234,7 +234,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         throw Error(tx.transactionHash);
       }
     },
-    [info?.priceDenom, info?.unitPrice, mintAddress, totalBulkMint]
+    [info?.priceDenom, info?.unitPrice, mintAddress, totalBulkMint],
   );
 
   const mint = useCallback(async () => {
@@ -432,7 +432,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                           ? prettyPrice(
                               network?.id,
                               +(info?.unitPrice || "0") * totalBulkMint + "",
-                              info?.priceDenom || ""
+                              info?.priceDenom || "",
                             )
                           : "0"}
                       </BrandText>
@@ -467,7 +467,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                         {prettyPrice(
                           network?.id || "",
                           balance?.amount || "0",
-                          balance?.denom || ""
+                          balance?.denom || "",
                         )}
                       </BrandText>
                     </View>

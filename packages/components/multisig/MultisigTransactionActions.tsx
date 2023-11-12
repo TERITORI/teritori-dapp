@@ -50,7 +50,7 @@ export const MultisigTransactionActions: React.FC<
 
   const hasSigned = useMemo(
     () => signatures?.some((sig) => sig.userAddress === wallet?.address),
-    [signatures, wallet?.address]
+    [signatures, wallet?.address],
   );
 
   const isCompletedSignature = signatures.length >= threshold;
@@ -129,7 +129,7 @@ export const MultisigTransactionActions: React.FC<
           <Pressable
             onPress={() =>
               Linking.openURL(
-                txExplorerLink(selectedNetworkId, txHash || resTxHash || "")
+                txExplorerLink(selectedNetworkId, txHash || resTxHash || ""),
               )
             }
           >

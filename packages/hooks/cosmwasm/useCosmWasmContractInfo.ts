@@ -11,7 +11,7 @@ import {
 
 const useCosmWasmContractVersion = (
   networkId: string | undefined,
-  address: string | undefined
+  address: string | undefined,
 ) => {
   return useQuery(
     ["cosmwasmContractVersion", networkId, address],
@@ -29,7 +29,7 @@ const useCosmWasmContractVersion = (
       const { info } = await client.queryContractSmart(address, { info: {} });
       return info as ContractVersion;
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
 };
 
@@ -37,7 +37,7 @@ export const useIsDAO = (userId: string | undefined) => {
   const [network, address] = parseUserId(userId);
   const { data: contractVersion } = useCosmWasmContractVersion(
     network?.id,
-    address
+    address,
   );
   if (network?.kind === NetworkKind.Gno) {
     try {
@@ -48,7 +48,7 @@ export const useIsDAO = (userId: string | undefined) => {
   }
   return {
     isDAO: ["crates.io:dao-core", "crates.io:cw-core"].includes(
-      contractVersion?.contract || ""
+      contractVersion?.contract || "",
     ),
   };
 };

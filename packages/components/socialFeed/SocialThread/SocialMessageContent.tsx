@@ -18,32 +18,36 @@ interface Props {
   metadata: SocialFeedMetadata;
   postCategory: PostCategory;
   isPreview?: boolean;
+  authorId?: string;
+  postId?: string;
 }
 
 export const SocialMessageContent: React.FC<Props> = ({
   metadata,
   postCategory,
   isPreview,
+  authorId,
+  postId,
 }) => {
   const audioFiles = useMemo(
     () => metadata.files?.filter((file) => file.fileType === "audio"),
-    [metadata.files]
+    [metadata.files],
   );
   const imageFiles = useMemo(
     () =>
       metadata.files?.filter(
-        (file) => file.fileType === "image" || file.fileType === "base64"
+        (file) => file.fileType === "image" || file.fileType === "base64",
       ),
-    [metadata.files]
+    [metadata.files],
   );
   const videoFiles = useMemo(
     () => metadata.files?.filter((file) => file.fileType === "video"),
-    [metadata.files]
+    [metadata.files],
   );
   const gifsFiles = useMemo(() => {
     const fileName = "GIF-" + uuidv4();
     return metadata.gifs?.map((gif) =>
-      convertGIFToLocalFileType(gif, fileName)
+      convertGIFToLocalFileType(gif, fileName),
     );
   }, [metadata.gifs]);
 
@@ -58,6 +62,8 @@ export const SocialMessageContent: React.FC<Props> = ({
             metadata={metadata}
             audioFiles={audioFiles}
             isPreview={isPreview}
+            postId={postId || ""}
+            authorId={authorId || ""}
           />
         </View>
       );
@@ -76,13 +82,22 @@ export const SocialMessageContent: React.FC<Props> = ({
           ) : null}
 
           {videoFiles?.map((file, index) => (
-            <VideoView key={index} file={file} />
+            <VideoView
+              key={index}
+              file={file}
+              authorId={authorId || ""}
+              postId={postId || ""}
+            />
           ))}
 
           {audioFiles?.map((file, index) => (
             <Fragment key={index}>
               {metadata.message && <SpacerColumn size={2} />}
-              <AudioView file={file} />
+              <AudioView
+                file={file}
+                authorId={authorId || ""}
+                postId={postId || ""}
+              />
             </Fragment>
           ))}
         </>

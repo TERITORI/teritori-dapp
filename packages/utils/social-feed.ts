@@ -89,7 +89,7 @@ export const urlMatch = (text: string) =>
 
 export const postResultToPost = (
   networkId: string,
-  postResult: PostResultExtra | PostResult
+  postResult: PostResultExtra | PostResult,
 ) => {
   const post: Post = {
     category: postResult.category,
@@ -111,7 +111,7 @@ export const postResultToPost = (
 
 export const replaceFileInArray = (
   files: LocalFileData[],
-  newFile: LocalFileData
+  newFile: LocalFileData,
 ) => {
   const oldFile = files.find((file) => file.url === newFile.url);
   if (!oldFile) return;
@@ -123,14 +123,14 @@ export const replaceFileInArray = (
 
 export const removeFileFromArray = (
   files: LocalFileData[],
-  damnedFile: LocalFileData
+  damnedFile: LocalFileData,
 ) => {
   return files.filter((file) => file.url !== damnedFile.url);
 };
 
 export const convertGIFToLocalFileType = (
   gif: string,
-  fileName: string
+  fileName: string,
 ): LocalFileData => ({
   file: new File([], fileName),
   fileName,

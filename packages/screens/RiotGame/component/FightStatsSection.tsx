@@ -41,7 +41,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
       "" + claimableAmount,
       selectedNetwork.kind === NetworkKind.Ethereum
         ? selectedNetwork.currencies[0].denom
-        : teritoriCurrencies[0].denom
+        : teritoriCurrencies[0].denom,
     );
     return res;
   }, [
@@ -59,7 +59,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
           flexDirection: isMobile ? "column" : "row",
           margin: layout.spacing_x1_5,
           alignItems: "center",
-          height: isMobile ? 200 : "inherit",
+          height: isMobile ? 200 : "auto",
           justifyContent: isMobile ? "space-between" : undefined,
         },
       ]}

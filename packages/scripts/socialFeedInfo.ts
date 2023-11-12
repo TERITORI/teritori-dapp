@@ -12,7 +12,7 @@ const main = async () => {
 
   const client = new TeritoriSocialFeedQueryClient(
     await mustGetNonSigningCosmWasmClient(network.id),
-    network.socialFeedContractAddress
+    network.socialFeedContractAddress,
   );
 
   const config = await client.config();

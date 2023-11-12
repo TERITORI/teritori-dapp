@@ -112,7 +112,7 @@ export const WalletManagerWalletsScreen: ScreenFC<
   // TODO: Handle multiple wallets addresses
   const { totalsRewards, claimReward } = useRewards(
     selectedWallet?.userId,
-    UserKind.Single
+    UserKind.Single,
   );
 
   const title = walletProviderToNetworkKind(selectedWallet?.provider);

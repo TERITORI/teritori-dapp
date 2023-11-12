@@ -28,7 +28,7 @@ export const useMintEnded = (collectionId: string, enabled: boolean = true) => {
 
         const minterClient = new TeritoriBunkerMinterQueryClient(
           cosmwasm,
-          mintAddress
+          mintAddress,
         );
         const conf = await minterClient.config();
 
@@ -44,7 +44,7 @@ export const useMintEnded = (collectionId: string, enabled: boolean = true) => {
 
         const minterClient = TeritoriMinter__factory.connect(
           mintAddress,
-          provider
+          provider,
         );
         const minterConfig = await minterClient.callStatic.config();
         const mintedAmount = (await minterClient.currentSupply()).toNumber();
@@ -54,7 +54,7 @@ export const useMintEnded = (collectionId: string, enabled: boolean = true) => {
       console.error(`unknown collectionId ${collectionId}`);
       return false;
     },
-    { enabled, staleTime: Infinity }
+    { enabled, staleTime: Infinity },
   );
   return data;
 };

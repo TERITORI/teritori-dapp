@@ -1,9 +1,11 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 import { useAppNavigation } from "../../../../utils/navigation";
+import { getReactNodeStringProp } from "../../../../utils/react";
 import { primaryColor } from "../../../../utils/style/colors";
+
 export const RichHashtagRendererConsultation = (props: {
-  children: { props: { text: string } }[];
+  children: ReactNode;
 }) => {
   const navigation = useAppNavigation();
 
@@ -12,7 +14,10 @@ export const RichHashtagRendererConsultation = (props: {
       style={{ color: primaryColor, cursor: "pointer" }}
       onClick={() =>
         navigation.navigate("HashtagFeed", {
-          hashtag: props.children[0].props.text.replace("#", ""),
+          hashtag: getReactNodeStringProp(props.children, "text").replace(
+            "#",
+            "",
+          ),
         })
       }
     >

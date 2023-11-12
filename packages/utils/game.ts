@@ -69,9 +69,8 @@ export const durationToXP = (duration: number) => {
 export const getRipperRarity = (ripper: NFT): RipperRarity => {
   let rarity: RipperRarity;
 
-  const ripperSkin = ripper.attributes.find(
-    (attr) => attr.traitType === "Skin"
-  )?.value;
+  const ripperSkin = ripper.attributes.find((attr) => attr.traitType === "Skin")
+    ?.value;
 
   switch (ripperSkin) {
     case "Pure Gold":
@@ -107,11 +106,10 @@ export const getRipperRarity = (ripper: NFT): RipperRarity => {
 
 export const getRipperTraitValue = (
   ripper: NFT,
-  traitType: RipperTraitType
+  traitType: RipperTraitType,
 ) => {
-  let res: any = ripper.attributes.find(
-    (attr) => attr.traitType === traitType
-  )?.value;
+  let res: any = ripper.attributes.find((attr) => attr.traitType === traitType)
+    ?.value;
 
   if (res === undefined || res === "None") {
     res = null;
@@ -138,7 +136,7 @@ export const buildApproveNFTMsg = (
   sender: string,
   spender: string,
   tokenId: string,
-  nftContractAddress: string
+  nftContractAddress: string,
 ) => {
   return {
     typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
@@ -150,7 +148,7 @@ export const buildApproveNFTMsg = (
             spender,
             token_id: tokenId,
           },
-        })
+        }),
       ),
       contract: nftContractAddress,
       funds: [],
@@ -163,7 +161,7 @@ export const buildBreedingMsg = (
   breedingPrice: Coin,
   tokenId1: string,
   tokeId2: string,
-  contractAddress: string
+  contractAddress: string,
 ) => {
   return {
     typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
@@ -175,7 +173,7 @@ export const buildBreedingMsg = (
             nft_token_id1: tokenId1,
             nft_token_id2: tokeId2,
           },
-        })
+        }),
       ),
       contract: contractAddress,
       funds: [breedingPrice],
@@ -186,7 +184,7 @@ export const buildBreedingMsg = (
 const buildStakingMsg = (
   sender: string,
   nfts: SquadStakeNFT[],
-  contractAddress: string
+  contractAddress: string,
 ) => {
   return {
     typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
@@ -197,7 +195,7 @@ const buildStakingMsg = (
           stake: {
             nfts,
           },
-        })
+        }),
       ),
       contract: contractAddress,
       funds: [],
@@ -408,7 +406,7 @@ export const squadWithdrawSeason1 = async (userId: string | undefined) => {
   const client = new TeritoriSquadStakingClient(
     signingClient,
     userAddress,
-    contractAddress
+    contractAddress,
   );
   return await client.withdraw();
 };
@@ -422,7 +420,7 @@ const cosmosSquadWithdraw = async (userId: string) => {
 const ethereumSquadWithdraw = async (
   networkId: string,
   userAddress: string,
-  squadIndex: number
+  squadIndex: number,
 ) => {
   const ethereumNetwork = mustGetEthereumNetwork(networkId);
   const signer = await getMetaMaskEthereumSigner(ethereumNetwork, userAddress);
@@ -432,7 +430,7 @@ const ethereumSquadWithdraw = async (
 
   const squadStakingClient = SquadStakingV3__factory.connect(
     ethereumNetwork.riotSquadStakingContractAddress,
-    signer
+    signer,
   );
 
   const tx = await squadStakingClient.unstake(squadIndex);
@@ -442,7 +440,7 @@ const ethereumSquadWithdraw = async (
 
 export const squadWithdraw = async (
   userId: string | undefined,
-  squadIndex: number
+  squadIndex: number,
 ) => {
   if (!userId) return;
 
@@ -460,7 +458,7 @@ export const squadWithdraw = async (
 
 export const estimateStakingDuration = (
   rippers: NFT[],
-  squadStakingConfig: SquadConfig
+  squadStakingConfig: SquadConfig,
 ) => {
   const bonusMultiplier = squadStakingConfig.bonusMultiplier;
 
@@ -479,7 +477,7 @@ export const estimateStakingDuration = (
 
 export const getSquadPresetId = (
   userId: string | undefined,
-  squadId: number | undefined
+  squadId: number | undefined,
 ) => {
   if (!userId || !squadId) return undefined;
   return `${userId}-${squadId}`;
@@ -488,7 +486,7 @@ export const getSquadPresetId = (
 const ethereumSquadStake = async (
   network: NetworkInfo,
   sender: string,
-  selectedRippers: NFT[]
+  selectedRippers: NFT[],
 ): Promise<string> => {
   const ethereumNetwork = mustGetEthereumNetwork(network.id);
   const squadContract = ethereumNetwork.riotSquadStakingContractAddress;
@@ -526,7 +524,7 @@ const ethereumSquadStake = async (
 
     const isApprovedForAll = await nftClient.isApprovedForAll(
       sender,
-      squadContract
+      squadContract,
     );
 
     if (!isApprovedForAll) {
@@ -550,7 +548,7 @@ const ethereumSquadStake = async (
 const cosmosSquadStake = async (
   network: NetworkInfo,
   sender: string,
-  selectedRippers: NFT[]
+  selectedRippers: NFT[],
 ): Promise<string> => {
   const cosmosNetwork = mustGetCosmosNetwork(network.id);
   const contractAddress = cosmosNetwork.riotSquadStakingContractAddressV2;
@@ -577,7 +575,7 @@ const cosmosSquadStake = async (
       sender,
       contractAddress,
       selectedNft.token_id,
-      selectedNft.contract_addr
+      selectedNft.contract_addr,
     );
     approveMsgs.push(msg);
   }
@@ -596,7 +594,7 @@ const cosmosSquadStake = async (
 
 export const squadStake = async (
   userId: string | undefined,
-  selectedRippers: NFT[]
+  selectedRippers: NFT[],
 ) => {
   const [network, sender] = parseUserId(userId);
   if (!network || !sender) {

@@ -23,12 +23,12 @@ import useSelectedWallet from "../useSelectedWallet";
 const cosmosGetClaimableAmount = async (
   network: CosmosNetworkInfo,
   distributorContractAddress: string,
-  userAddress: string
+  userAddress: string,
 ) => {
   const nonSigningClient = await mustGetNonSigningCosmWasmClient(network.id);
   const distributorQueryClient = new TeritoriDistributorQueryClient(
     nonSigningClient,
-    distributorContractAddress
+    distributorContractAddress,
   );
   return await distributorQueryClient.userClaimable({
     addr: userAddress,
@@ -37,7 +37,7 @@ const cosmosGetClaimableAmount = async (
 
 const ethereumGetClaimableAmount = async (
   network: EthereumNetworkInfo,
-  userAddress: string
+  userAddress: string,
 ) => {
   const p2eClient = mustGetP2eClient(network?.id);
   const data = await p2eClient.MerkleData({
@@ -51,13 +51,13 @@ const ethereumGetClaimableAmount = async (
 const cosmosClaim = async (
   networkId: string,
   userAddress: string,
-  distributorContractAddress: string
+  distributorContractAddress: string,
 ) => {
   const signingClient = await getKeplrSigningCosmWasmClient(networkId);
   const distributorClient = new TeritoriDistributorClient(
     signingClient,
     userAddress,
-    distributorContractAddress
+    distributorContractAddress,
   );
 
   await distributorClient.claim();
@@ -66,7 +66,7 @@ const cosmosClaim = async (
 const ethereumClaim = async (
   network: EthereumNetworkInfo,
   userAddress: string,
-  distributorContractAddress: string
+  distributorContractAddress: string,
 ) => {
   const TOKEN = network.toriBridgedTokenAddress;
   if (!TOKEN) {
@@ -88,7 +88,7 @@ const ethereumClaim = async (
 
   const distributorClient = Distributor__factory.connect(
     distributorContractAddress,
-    signer
+    signer,
   );
 
   const claimableAmount = BigNumber.from(allocation);
@@ -97,7 +97,7 @@ const ethereumClaim = async (
   const estimatedGasLimit = await distributorClient.estimateGas.claim(
     TOKEN,
     claimableAmount,
-    resp.proof
+    resp.proof,
   );
   const tx = await distributorClient.claim(TOKEN, claimableAmount, resp.proof, {
     maxFeePerGas: maxFeePerGas?.toNumber(),
@@ -130,19 +130,19 @@ export const useGameRewards = () => {
         return await cosmosGetClaimableAmount(
           network,
           distributorContractAddress,
-          userAddress
+          userAddress,
         );
       } else if (network?.kind === NetworkKind.Ethereum) {
         const claimable = await ethereumGetClaimableAmount(
           network,
-          userAddress
+          userAddress,
         );
         return claimable;
       } else {
         throw Error("failed to get claimable amount: unknown network");
       }
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
   const claimableAmount = data || 0;
 
@@ -159,13 +159,13 @@ export const useGameRewards = () => {
         await cosmosClaim(
           network.id,
           userAddress,
-          network.distributorContractAddress
+          network.distributorContractAddress,
         );
       } else if (network?.kind === NetworkKind.Ethereum) {
         await ethereumClaim(
           network,
           userAddress,
-          network.distributorContractAddress
+          network.distributorContractAddress,
         );
       } else {
         throw Error("Unknown network");

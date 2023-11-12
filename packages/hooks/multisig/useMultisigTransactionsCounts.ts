@@ -6,12 +6,12 @@ import { getCosmosNetwork, parseUserId } from "../../networks";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const multisigTransactionsCountsQueryKey = (
-  networkId: string | undefined
+  networkId: string | undefined,
 ) => ["multisig-transactions-counts", networkId];
 
 export const useMultisigTransactionsCounts = (
   userId: string | undefined,
-  multisigUserId: string | undefined
+  multisigUserId: string | undefined,
 ) => {
   const walletAccount = useSelectedWallet();
   const authToken = useMultisigAuthToken(walletAccount?.userId);
@@ -38,7 +38,7 @@ export const useMultisigTransactionsCounts = (
       });
       return counts;
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
 
   return { transactionsCounts, ...others };

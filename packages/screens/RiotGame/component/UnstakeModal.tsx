@@ -51,10 +51,10 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
     const twitterShareMessage = `Join The R!ot now ⛩️\nI played and earned ${decimalFromAtomics(
       networkId,
       "" + claimableAmount,
-      "utori"
+      "utori",
     )} $TORI!\nSee you on the battlefield: https://app.teritori.com/riot-game`;
     const twitterShareLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      twitterShareMessage
+      twitterShareMessage,
     )}`;
     Linking.openURL(twitterShareLink);
   };
@@ -99,7 +99,7 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
 
         <BrandText style={fontSemibold20}>
           {tinyAddress(
-            userInfo.metadata?.tokenId || selectedWallet?.address || ""
+            userInfo.metadata?.tokenId || selectedWallet?.address || "",
           )}
         </BrandText>
 

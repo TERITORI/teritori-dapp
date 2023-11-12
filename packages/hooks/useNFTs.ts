@@ -41,7 +41,7 @@ export const useNFTs = (req: NFTsRequest) => {
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
       enabled: !!req.collectionId,
-    }
+    },
   );
 
   const nfts = useMemo(() => {

@@ -18,7 +18,7 @@ export const useSeasonRank = () => {
       }
       return await client.CurrentSeason({ networkId });
     },
-    { refetchInterval: 300000, staleTime: 300000 }
+    { refetchInterval: 300000, staleTime: 300000 },
   );
 
   const { data: userRank } = useQuery(
@@ -35,7 +35,7 @@ export const useSeasonRank = () => {
         userId: selectedWallet?.userId, // FIXME: is it safe to change this id shape mid-season?
       });
     },
-    { refetchInterval: 300000, staleTime: 300000 }
+    { refetchInterval: 300000, staleTime: 300000 },
   );
 
   const prettyUserRank = `${userRank?.userScore?.rank || 0}/${

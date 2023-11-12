@@ -16,7 +16,7 @@ const initialData = { delegation_responses: [] };
 
 export const useDelegations = (
   networkId: string | undefined,
-  address: string | undefined
+  address: string | undefined,
 ) => {
   const { data: networkDelegations } = useQuery(
     ["delegations", networkId, address],
@@ -34,7 +34,7 @@ export const useDelegations = (
       }
       return getNetworkDelegations(networkId, address);
     },
-    { initialData, refetchInterval: 30000 }
+    { initialData, refetchInterval: 30000 },
   );
 
   const delegations =
@@ -44,7 +44,7 @@ export const useDelegations = (
     delegations.map((deleg) => ({
       networkId,
       denom: deleg.balance.denom,
-    }))
+    })),
   );
 
   // Same pattern as useBalances
@@ -55,7 +55,7 @@ export const useDelegations = (
         currency &&
         Decimal.fromAtomics(
           deleg.balance.amount,
-          currency.decimals
+          currency.decimals,
         ).toFloatApproximation() * (prices[currency.coingeckoId]?.usd || 0);
       const balance: Balance = {
         amount: deleg.balance.amount,
@@ -74,14 +74,14 @@ export const useDelegations = (
 // Returns the delegations from cosmos API
 const getNetworkDelegations = async (
   networkId: string,
-  address: string
+  address: string,
 ): Promise<CosmosDelegationsResponse> => {
   const network = getCosmosNetwork(networkId);
   if (!network) {
     return initialData;
   }
   const response = await fetch(
-    `${network.restEndpoint}/cosmos/staking/v1beta1/delegations/${address}`
+    `${network.restEndpoint}/cosmos/staking/v1beta1/delegations/${address}`,
   );
   return await response.json();
 };

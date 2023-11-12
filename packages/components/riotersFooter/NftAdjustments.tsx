@@ -25,7 +25,7 @@ const NftAdjustments: React.FC<{
   setNftDroped: (nftDroped: NFT | undefined) => void;
   nftDropedAdjustment: NFTDropedAdjustmentType;
   setNftDropedAdjustment: (
-    nftDropedAdjustment: SetStateAction<NFTDropedAdjustmentType | undefined>
+    nftDropedAdjustment: SetStateAction<NFTDropedAdjustmentType | undefined>,
   ) => void;
   price: number | undefined;
   setTransactionPaymentModalVisible: (visible: boolean) => void;
@@ -51,7 +51,7 @@ const NftAdjustments: React.FC<{
           nftDropedAdjustment && {
             ...nftDropedAdjustment,
             borderRadius: percentage,
-          }
+          },
       );
     }, [nftDropedAdjustment, percentage, setNftDropedAdjustment]);
 
@@ -120,7 +120,7 @@ const NftAdjustments: React.FC<{
             {prettyPrice(
               networkId,
               price?.toString() || "",
-              "utori" // FIXME: don't hardcode
+              "utori", // FIXME: don't hardcode
             )}
           </BrandText>
         </View>
@@ -160,7 +160,7 @@ const NftAdjustments: React.FC<{
         </View>
       </ScrollView>
     );
-  }
+  },
 );
 
 export default NftAdjustments;

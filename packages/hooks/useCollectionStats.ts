@@ -35,7 +35,7 @@ export const useCollectionStats = (collectionId: string, ownerId?: string) => {
 
       return stats;
     },
-    { staleTime: Infinity, keepPreviousData: true }
+    { staleTime: Infinity, keepPreviousData: true },
   );
 
   const usdPrice = prices["ethereum"]?.["usd"] || 0;
@@ -45,7 +45,7 @@ export const useCollectionStats = (collectionId: string, ownerId?: string) => {
 
     // FIXME: fix from backend to not send nil
     const ether = ethers.utils.formatEther(
-      BigNumber.from(data.totalVolume !== "<nil>" ? data.totalVolume || 0 : 0)
+      BigNumber.from(data.totalVolume !== "<nil>" ? data.totalVolume || 0 : 0),
     );
     return {
       ...data,

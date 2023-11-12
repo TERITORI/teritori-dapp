@@ -6,12 +6,12 @@ import { StyleSheet, View } from "react-native";
 
 import { WarningBox } from "./WarningBox";
 import { BrandText } from "../../../components/BrandText";
-import { Separator } from "../../../components/Separator";
 import { MaxButton } from "../../../components/buttons/MaxButton";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
+import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useBalances } from "../../../hooks/useBalances";
@@ -61,7 +61,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     balances.find((bal) => bal.denom === stakingCurrency.denom);
   const stakingCurrencyBalanceDecimal = Decimal.fromAtomics(
     stakingCurrencyBalance?.amount || "0",
-    stakingCurrency?.decimals || 0
+    stakingCurrency?.decimals || 0,
   );
   const { control, setValue, handleSubmit, reset } =
     useForm<StakeFormValuesType>();
@@ -94,7 +94,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
         }
         const amount = Decimal.fromUserInput(
           formData.amount,
-          stakingCurrency.decimals
+          stakingCurrency.decimals,
         ).atomics;
         const msg: MsgDelegateEncodeObject = {
           typeUrl: "/cosmos.staking.v1beta1.MsgDelegate",
@@ -120,7 +120,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           message: `${prettyPrice(
             networkId,
             amount,
-            stakingCurrency.denom
+            stakingCurrency.denom,
           )} to ${validator.moniker}`,
         });
         onClose && onClose();
@@ -139,7 +139,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
       userAddress,
       userKind,
       validator,
-    ]
+    ],
   );
 
   const Header = useCallback(
@@ -153,7 +153,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
         </BrandText>
       </View>
     ),
-    [stakingCurrency?.displayName]
+    [stakingCurrency?.displayName],
   );
 
   const Footer = useCallback(
@@ -178,7 +178,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
         </View>
       </>
     ),
-    [handleSubmit, onClose, onSubmit, userKind]
+    [handleSubmit, onClose, onSubmit, userKind],
   );
 
   return (
@@ -234,7 +234,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           {prettyPrice(
             networkId,
             stakingCurrencyBalance?.amount,
-            stakingCurrency?.denom
+            stakingCurrency?.denom,
           )}
         </BrandText>
         <SpacerColumn size={2.5} />

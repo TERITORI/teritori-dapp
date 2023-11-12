@@ -34,7 +34,7 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
 
     const twitterShareMessage = `Another one ⛩️️\nI just recruited this new Ripper ${tokenInfo.id} in my squad!\nJoin the fight: https://app.teritori.com/riot-game`;
     const twitterShareLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      twitterShareMessage
+      twitterShareMessage,
     )}`;
     Linking.openURL(twitterShareLink);
   };

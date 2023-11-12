@@ -21,6 +21,7 @@ import {
 } from "../networks";
 import { getEthereumProvider } from "../utils/ethereum";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
+import { nameServiceDefaultImage } from "../utils/tns";
 import { NFTAttribute, NFTInfo } from "../utils/types/nft";
 
 export const useNFTInfo = (nftId: string, userId?: string | undefined) => {
@@ -41,7 +42,7 @@ export const useNFTInfo = (nftId: string, userId?: string | undefined) => {
             network,
             minterContractAddress,
             tokenId,
-            userId
+            userId,
           );
         }
         case NetworkKind.Cosmos: {
@@ -51,7 +52,7 @@ export const useNFTInfo = (nftId: string, userId?: string | undefined) => {
                 network,
                 minterContractAddress,
                 tokenId,
-                userId
+                userId,
               );
             }
             case network.riotContractAddressGen1: {
@@ -59,7 +60,7 @@ export const useNFTInfo = (nftId: string, userId?: string | undefined) => {
                 network,
                 minterContractAddress,
                 tokenId,
-                userId
+                userId,
               );
             }
             default: {
@@ -68,7 +69,7 @@ export const useNFTInfo = (nftId: string, userId?: string | undefined) => {
                 minterContractAddress,
                 tokenId,
                 userId,
-                breedingConfig
+                breedingConfig,
               );
             }
           }
@@ -78,7 +79,7 @@ export const useNFTInfo = (nftId: string, userId?: string | undefined) => {
         }
       }
     },
-    { enabled: breedingConfig !== undefined }
+    { enabled: breedingConfig !== undefined },
   );
 
   return {
@@ -93,7 +94,7 @@ const getTNSNFTInfo = async (
   network: CosmosNetworkInfo,
   contractAddress: string,
   tokenId: string,
-  userId: string | undefined
+  userId: string | undefined,
 ) => {
   if (!network.vaultContractAddress) {
     throw new Error("network not supported");
@@ -104,7 +105,7 @@ const getTNSNFTInfo = async (
 
   const tnsClient = new TeritoriNameServiceQueryClient(
     cosmwasmClient,
-    contractAddress
+    contractAddress,
   );
   // ======== Getting contract info (For collection name)
   const contractInfo = await tnsClient.contractInfo();
@@ -115,7 +116,7 @@ const getTNSNFTInfo = async (
   // ======== Getting vault stuff (For selling)
   const vaultClient = new TeritoriNftVaultQueryClient(
     cosmwasmClient,
-    network.vaultContractAddress
+    network.vaultContractAddress,
   );
   let vaultOwnerAddress;
   let vaultInfo;
@@ -144,9 +145,8 @@ const getTNSNFTInfo = async (
     attributes: [],
     nftAddress: contractAddress,
     mintAddress: contractAddress,
-    imageURL: nftInfo.extension.image
-      ? nftInfo.extension.image
-      : network?.nameServiceDefaultImage || "",
+    imageURL:
+      nftInfo.extension.image || nameServiceDefaultImage(false, network) || "",
     tokenId,
     ownerAddress: vaultOwnerAddress || owner,
     isSeller: isListed && isOwner,
@@ -157,7 +157,7 @@ const getTNSNFTInfo = async (
     priceDenom: vaultInfo?.denom || "",
     collectionName: contractInfo.name,
     textInsert: tokenId,
-    collectionImageURL: network?.nameServiceDefaultImage || "",
+    collectionImageURL: nameServiceDefaultImage(false, network) || "",
     mintDenom: contractInfo.native_denom,
     networkId: network.id,
     royalty: 0,
@@ -171,7 +171,7 @@ const getEthereumStandardNFTInfo = async (
   network: EthereumNetworkInfo,
   minterContractAddress: string,
   tokenId: string,
-  userId: string | undefined
+  userId: string | undefined,
 ) => {
   const provider = await getEthereumProvider(network);
   if (!provider) {
@@ -179,7 +179,7 @@ const getEthereumStandardNFTInfo = async (
   }
   const minterClient = TeritoriMinter__factory.connect(
     minterContractAddress,
-    provider
+    provider,
   );
 
   const nftAddress = await minterClient.callStatic.nft();
@@ -187,7 +187,7 @@ const getEthereumStandardNFTInfo = async (
   const collectionName = await nftClient.callStatic.name();
   const contractURI = await nftClient.callStatic.contractURI();
   const collectionMetadata = await fetch(contractURI).then((data) =>
-    data.json()
+    data.json(),
   );
   const tokenURI = await nftClient.tokenURI(tokenId);
   const metadataURL = ipfsURLToHTTPURL(tokenURI);
@@ -199,7 +199,7 @@ const getEthereumStandardNFTInfo = async (
 
   const vaultClient = NFTVault__factory.connect(
     network.vaultContractAddress,
-    provider
+    provider,
   );
 
   const feeNumerator = await vaultClient.callStatic.feeNumerator();
@@ -255,7 +255,7 @@ const getTeritoriBunkerNFTInfo = async (
   minterContractAddress: string,
   tokenId: string,
   userId: string | undefined,
-  breedingConfig: BreedingConfigResponse | null | undefined
+  breedingConfig: BreedingConfigResponse | null | undefined,
 ) => {
   if (!network.vaultContractAddress || !network.riotContractAddressGen1) {
     throw new Error("network not supported");
@@ -267,7 +267,7 @@ const getTeritoriBunkerNFTInfo = async (
   // ======== Getting minter client
   const minterClient = new TeritoriBunkerMinterQueryClient(
     cosmwasmClient,
-    minterContractAddress
+    minterContractAddress,
   );
   const minterConfig = await minterClient.config();
 
@@ -276,7 +276,7 @@ const getTeritoriBunkerNFTInfo = async (
   if (breedingConfig?.parent_contract_addr === minterConfig.nft_addr) {
     const breedingClient = new TeritoriBreedingQueryClient(
       cosmwasmClient,
-      network.riotContractAddressGen1
+      network.riotContractAddressGen1,
     );
 
     const breededCount = await breedingClient.breededCount({
@@ -285,7 +285,7 @@ const getTeritoriBunkerNFTInfo = async (
 
     breedingsAvailable = Math.max(
       (breedingConfig.breed_count_limit || 0) - breededCount,
-      0
+      0,
     );
   }
 
@@ -296,7 +296,7 @@ const getTeritoriBunkerNFTInfo = async (
   // ======== Getting NFT client
   const nftClient = new TeritoriNftQueryClient(
     cosmwasmClient,
-    minterConfig.nft_addr
+    minterConfig.nft_addr,
   );
   // ======== Getting contract info (For collection name)
   const contractInfo = await nftClient.contractInfo();
@@ -329,7 +329,7 @@ const getTeritoriBunkerNFTInfo = async (
   // ======== Getting vault stuff (For selling)
   const vaultClient = new TeritoriNftVaultQueryClient(
     cosmwasmClient,
-    network.vaultContractAddress
+    network.vaultContractAddress,
   );
   let vaultOwnerAddress;
   let vaultInfo;
@@ -383,7 +383,7 @@ const getTeritoriRiotBreedingNFTInfo = async (
   network: CosmosNetworkInfo,
   minterContractAddress: string,
   tokenId: string,
-  userId: string | undefined
+  userId: string | undefined,
 ) => {
   if (!network.vaultContractAddress) {
     throw new Error("network not supported");
@@ -395,7 +395,7 @@ const getTeritoriRiotBreedingNFTInfo = async (
   // ======== Getting breeding client
   const breedingClient = new TeritoriBreedingQueryClient(
     cosmwasmClient,
-    minterContractAddress
+    minterContractAddress,
   );
   const breedingConfig = await breedingClient.config();
 
@@ -406,7 +406,7 @@ const getTeritoriRiotBreedingNFTInfo = async (
   // ======== Getting NFT client
   const nftClient = new TeritoriNftQueryClient(
     cosmwasmClient,
-    breedingConfig.child_contract_addr
+    breedingConfig.child_contract_addr,
   );
   // ======== Getting contract info (For collection name)
   const contractInfo = await nftClient.contractInfo();
@@ -439,7 +439,7 @@ const getTeritoriRiotBreedingNFTInfo = async (
   // ======== Getting vault stuff (For selling)
   const vaultClient = new TeritoriNftVaultQueryClient(
     cosmwasmClient,
-    network.vaultContractAddress
+    network.vaultContractAddress,
   );
   let vaultOwnerAddress;
   let vaultInfo;

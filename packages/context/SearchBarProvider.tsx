@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { createContext, useContext, useState } from "react";
+import React, { ReactNode, createContext, useContext, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { Collection } from "../api/marketplace/v1/marketplace";
@@ -28,10 +28,12 @@ const defaultValue: SearchBarContextValue = {
 
 const SearchBarContext = createContext(defaultValue);
 
-export const SearchBarContextProvider: React.FC = ({ children }) => {
+export const SearchBarContextProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   // The entered isSidebarExpanded
   const [isSearchModalMobileOpen, setSearchModalMobileOpen] = useState<boolean>(
-    defaultValue.isSearchModalMobileOpen
+    defaultValue.isSearchModalMobileOpen,
   );
   const selectedNetworkId = useSelectedNetworkId();
   const text = useSelector(selectSearchText);
@@ -61,7 +63,7 @@ export const SearchBarContextProvider: React.FC = ({ children }) => {
     },
     {
       staleTime: Infinity,
-    }
+    },
   );
   const hasCollections = !!collections.length;
 

@@ -33,6 +33,7 @@ export const FileUploader: FC<FileUploaderProps> = ({
   maxUpload,
   isImageCover,
   fileHeight = 256,
+  setIsLoading,
 }) => {
   const { setToastError } = useFeedbacks();
   const hiddenFileInput = useRef<HTMLInputElement>(null);
@@ -40,8 +41,8 @@ export const FileUploader: FC<FileUploaderProps> = ({
 
   const handleFiles = async (files: File[]) => {
     const _files = multiple ? files : [files[0]];
-    let supportedFiles = [...files].filter((file) =>
-      mimeTypes?.includes(file.type)
+    let supportedFiles = [...files].filter(
+      (file) => mimeTypes?.includes(file.type),
     );
 
     if (maxUpload && supportedFiles.length) {
@@ -65,34 +66,38 @@ export const FileUploader: FC<FileUploaderProps> = ({
     }
 
     const formattedFiles = await Promise.all(
-      supportedFiles.map(async (file) => await formatFile(file))
+      supportedFiles.map(async (file) => await formatFile(file)),
     );
 
     onUpload(formattedFiles);
   };
 
-  const handleChange = (event: SyntheticEvent) => {
+  const handleChange = async (event: SyntheticEvent) => {
+    setIsLoading?.(true);
     const targetEvent = event.target as HTMLInputElement;
+
     if (targetEvent.files && targetEvent.files[0]) {
-      handleFiles(targetEvent?.files as unknown as File[]);
+      await handleFiles(targetEvent?.files as unknown as File[]);
     }
+    setIsLoading?.(false);
   };
 
   const handleClick = () => {
     hiddenFileInput?.current?.click?.();
   };
 
-  const dropHandler = (ev: any) => {
+  const dropHandler = async (ev: any) => {
+    setIsLoading?.(true);
     ev.preventDefault();
-
     if (ev.dataTransfer.items) {
       const files = [...ev.dataTransfer.items]
         .filter((item: any) => item.kind === "file")
         .map((item: any) => item.getAsFile());
-      handleFiles(files);
+      await handleFiles(files);
     } else {
-      handleFiles(ev.dataTransfer.files);
+      await handleFiles(ev.dataTransfer.files);
     }
+    setIsLoading?.(false);
   };
 
   const dragOverHandler = (ev: SyntheticEvent) => {

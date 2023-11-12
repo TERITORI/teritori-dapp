@@ -52,7 +52,7 @@ export const OptimizedImage: React.FC<
 const transformURI = (
   uri: string | undefined,
   width: number,
-  height: number
+  height: number,
 ) => {
   if (!uri) {
     return "";
@@ -64,7 +64,7 @@ const transformURI = (
   }
 
   const knownScheme = ["https://", "http://", "ipfs://"].find((scheme) =>
-    uri.startsWith(scheme)
+    uri.startsWith(scheme),
   );
   if (!knownScheme) {
     return uri;
@@ -73,7 +73,7 @@ const transformURI = (
   const params = resolveParams(width, height);
 
   return `${process.env.IMG_PROXY_URL}${params}/plain/${encodeURIComponent(
-    uri
+    uri,
   )}`;
 };
 

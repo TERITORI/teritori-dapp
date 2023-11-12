@@ -23,14 +23,14 @@ import { AppNavigationProp, useAppNavigation } from "../utils/navigation";
 
 export const useRunOrProposeTransaction = (
   userId: string | undefined,
-  userKind: UserKind
+  userKind: UserKind,
 ) => {
   const wallet = useSelectedWallet();
   const multisigAuthToken = useMultisigAuthToken(wallet?.userId);
   const multisigClient = useMultisigClient(wallet?.networkId);
   const makeDAOProposal = useDAOMakeProposal(
     userId,
-    userKind === UserKind.Organization
+    userKind === UserKind.Organization,
   );
   const queryClient = useQueryClient();
   const navigation = useAppNavigation();
@@ -70,7 +70,7 @@ export const useRunOrProposeTransaction = (
       userId,
       userKind,
       wallet?.address,
-    ]
+    ],
   );
 };
 
@@ -120,7 +120,7 @@ const runOrProposeTransaction = async ({
         userAddress,
         msgs,
         "auto",
-        memo
+        memo,
       );
       if (isDeliverTxFailure(txResponse)) {
         throw new Error(txResponse.rawLog);
@@ -141,7 +141,7 @@ const runOrProposeTransaction = async ({
         amount: [
           {
             amount: (gasEstimate * cosmosNetwork.gasPriceStep.average).toFixed(
-              0
+              0,
             ),
             denom: stakingCurrency.denom,
           },
@@ -185,7 +185,7 @@ const runOrProposeTransaction = async ({
         stargate: {
           type_url: msg.typeUrl,
           value: Buffer.from(cosmosTypesRegistry.encode(msg)).toString(
-            "base64"
+            "base64",
           ),
         },
       }));

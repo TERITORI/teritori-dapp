@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { neutral17, neutral77 } from "../../utils/style/colors";
@@ -31,7 +31,7 @@ export const NameDataForm: React.FC<{
   const [validator_operator_address, setValidatorOperatorAddress] =
     useState("");
 
-  const inputStyle = { marginBottom: 12, width: "100%" };
+  const inputStyle: ViewStyle = { marginBottom: 12, width: "100%" };
   const profileDataTextStyle = { color: neutral77, fontSize: 16 };
 
   // Sending the input values
