@@ -24,7 +24,9 @@ export const ShareButton = ({ postId }: ShareButtonProps) => {
 #Teritori`;
 
         Linking.openURL(
-          `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`
+          `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+            message,
+          )}`,
         );
         setIsModalVisible(false);
       },

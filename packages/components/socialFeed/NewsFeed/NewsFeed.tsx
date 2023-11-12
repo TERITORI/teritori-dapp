@@ -65,7 +65,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   const isGoingUp = useSharedValue(false);
   const posts = useMemo(
     () => (data ? combineFetchFeedPages(data.pages) : []),
-    [data]
+    [data],
   );
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
@@ -157,7 +157,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       isMobile,
       refetch,
       width,
-    ]
+    ],
   );
 
   // FIXME: remove StyleSheet.create

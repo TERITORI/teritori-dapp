@@ -6,7 +6,7 @@ import { mustGetNonSigningCosmWasmClient, parseUserId } from "../../networks";
 
 const useDAOProposalModules = (
   daoId: string | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   const { data, ...other } = useQuery(
     ["daoProposalModules", daoId],
@@ -23,18 +23,18 @@ const useDAOProposalModules = (
       const proposalModules = await coreClient.proposalModules({}); // FIXME: pagination
       return proposalModules;
     },
-    { staleTime: Infinity, enabled: (enabled ?? true) && !!daoId }
+    { staleTime: Infinity, enabled: (enabled ?? true) && !!daoId },
   );
   return { daoProposalModules: data, ...other };
 };
 
 export const useDAOFirstProposalModule = (
   daoId: string | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   const { daoProposalModules, ...other } = useDAOProposalModules(
     daoId,
-    enabled
+    enabled,
   );
   return {
     daoFirstProposalModule: firstProposalModule(daoProposalModules),
@@ -43,7 +43,7 @@ export const useDAOFirstProposalModule = (
 };
 
 const firstProposalModule = (
-  proposalModules: ArrayOfProposalModule | null | undefined
+  proposalModules: ArrayOfProposalModule | null | undefined,
 ) => {
   if (proposalModules === undefined) {
     return undefined;

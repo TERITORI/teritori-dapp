@@ -75,12 +75,12 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   const [localStatus, setLocalStatus] = useState<AVPlaybackStatusSuccess>();
   const isInMediaPlayer = useMemo(
     () => media?.fileUrl === videoMetaInfo.url,
-    [videoMetaInfo.url, media?.fileUrl]
+    [videoMetaInfo.url, media?.fileUrl],
   );
   // Plug or not the playbackStatus from MediaPLayerProvider
   const statusToUse = useMemo(
     () => (isInMediaPlayer ? playbackStatus : localStatus),
-    [isInMediaPlayer, playbackStatus, localStatus]
+    [isInMediaPlayer, playbackStatus, localStatus],
   );
   const containerRef = useRef<View>(null);
   const videoRef = useRef<Video>(null);
@@ -129,7 +129,7 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
         setTimeout(() => {
           onPressPlayPause();
           setExtraPressCount(0);
-        }, 500) // 500ms to consider it's a double press
+        }, 500), // 500ms to consider it's a double press
       );
     }
   };
@@ -286,7 +286,7 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
                 {/* Display time */}
                 <BrandText style={fontSemibold13}>
                   {`${prettyMediaDuration(
-                    statusToUse?.positionMillis
+                    statusToUse?.positionMillis,
                   )} / ${prettyMediaDuration(statusToUse?.durationMillis)}`}
                 </BrandText>
               </View>

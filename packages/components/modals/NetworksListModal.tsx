@@ -80,7 +80,7 @@ const NetworksSettings: FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => {
           results.map((n) => (
             <NetworkSettingsItem key={n.id} networkId={n.id} />
           )),
-          <SpacerColumn size={1.5} />
+          <SpacerColumn size={1.5} />,
         )
       ) : (
         <EmptyList text="No result" />
@@ -91,7 +91,7 @@ const NetworksSettings: FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => {
 
 const NetworkSettingsItem: FC<{ networkId: string }> = memo(({ networkId }) => {
   const state = useSelector((state: RootState) =>
-    selectNetworkEnabled(state, networkId)
+    selectNetworkEnabled(state, networkId),
   );
   const dispatch = useAppDispatch();
   const n = getNetwork(networkId);

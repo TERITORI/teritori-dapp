@@ -8,7 +8,7 @@ export const useGiganticLastReward = () => {
     async () => {
       try {
         const response = await fetch(
-          `https://api.roulette.aaa-metahuahua.com/gigantic/lottery/history/last/rewards`
+          `https://api.roulette.aaa-metahuahua.com/gigantic/lottery/history/last/rewards`,
         );
         return response.json();
       } catch (e) {
@@ -21,7 +21,7 @@ export const useGiganticLastReward = () => {
       },
       refetchOnMount: false,
       enabled: false,
-    }
+    },
   );
   return { data: data.last_rewards, refetch };
 };
@@ -37,7 +37,7 @@ export const useGiganticHistoryData = ({
     async () => {
       if (addr) {
         const response = await fetch(
-          `https://api.roulette.aaa-metahuahua.com/gigantic/lottery/history?addr=${addr}`
+          `https://api.roulette.aaa-metahuahua.com/gigantic/lottery/history?addr=${addr}`,
         );
         return response.json();
       }
@@ -52,7 +52,7 @@ export const useGiganticHistoryData = ({
       ],
       refetchOnMount: false,
       enabled: false,
-    }
+    },
   );
   return { data, refetch };
 };

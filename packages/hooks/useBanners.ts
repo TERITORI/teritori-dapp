@@ -17,7 +17,7 @@ export const useBanners = (networkId: string) => {
       });
       return banners;
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
   return data;
 };

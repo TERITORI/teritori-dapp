@@ -18,12 +18,12 @@ export const isNSToken = (str: string) => !isNSPath(str);
 
 export const nameServiceDefaultImage = (
   isDAO: boolean,
-  network?: NetworkInfo
+  network?: NetworkInfo,
 ) =>
   isDAO
     ? daoIconDataURI
     : [NetworkKind.Cosmos, NetworkKind.Gno].includes(
-        network?.kind || NetworkKind.Unknown
+        network?.kind || NetworkKind.Unknown,
       )
     ? (network as CosmosNetworkInfo | GnoNetworkInfo).nameServiceDefaultImage
     : undefined;

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 import Animated, {
   useAnimatedRef,
@@ -8,6 +8,7 @@ import Animated, {
 
 interface FadeInProps {
   style?: StyleProp<ViewStyle>;
+  children: ReactNode;
 }
 
 export const AnimationExpand: React.FC<FadeInProps> = ({ style, children }) => {

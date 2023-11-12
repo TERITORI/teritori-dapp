@@ -41,7 +41,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
 
   const { multisigs: invitations } = useUserMultisigs(
     selectedWallet?.userId,
-    JoinState.JOIN_STATE_OUT
+    JoinState.JOIN_STATE_OUT,
   );
 
   return (
@@ -142,7 +142,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                           navigation.navigate("MultisigWalletDashboard", {
                             id: getUserId(
                               selectedWallet?.networkId,
-                              item.address
+                              item.address,
                             ),
                           })
                         }

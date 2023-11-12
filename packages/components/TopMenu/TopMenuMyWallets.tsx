@@ -46,29 +46,29 @@ const TokenBalance: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const { delegationsBalances } = useDelegations(
     selectedNetworkId,
-    selectedWallet?.address
+    selectedWallet?.address,
   );
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
   const GAUGE_WIDTH = 300;
 
   const availableUSDBalance = useMemo(
     () => balances.reduce((total, bal) => total + (bal.usdAmount || 0), 0),
-    [balances]
+    [balances],
   );
   const delegationsUsdBalance = useMemo(
     () =>
       delegationsBalances.reduce(
         (total, bal) => total + (bal.usdAmount || 0),
-        0
+        0,
       ),
-    [delegationsBalances]
+    [delegationsBalances],
   );
 
   const gaugeStakedWidth = useMemo(
     () =>
       (GAUGE_WIDTH * delegationsUsdBalance) /
       (delegationsUsdBalance + availableUSDBalance),
-    [delegationsUsdBalance, availableUSDBalance]
+    [delegationsUsdBalance, availableUSDBalance],
   );
 
   return (
@@ -160,7 +160,7 @@ const TokenBalance: React.FC = () => {
             <BrandText style={fontSemibold12}>Available</BrandText>
           </FlexRow>
           <BrandText style={fontBold12}>{`$${availableUSDBalance.toFixed(
-            2
+            2,
           )}`}</BrandText>
         </FlexRow>
 
@@ -178,7 +178,7 @@ const TokenBalance: React.FC = () => {
             <BrandText style={fontSemibold12}>Staked</BrandText>
           </FlexRow>
           <BrandText style={fontBold12}>{`$${delegationsUsdBalance.toFixed(
-            2
+            2,
           )}`}</BrandText>
         </FlexRow>
       </FlexCol>
@@ -195,7 +195,7 @@ export const TopMenuMyWallets: React.FC = () => {
   const atomIbcCurrency = useMemo(() => {
     return selectedNetworkInfo?.currencies.find(
       (currencyInfo: CurrencyInfo) =>
-        currencyInfo.kind === "ibc" && currencyInfo.sourceDenom === "uatom"
+        currencyInfo.kind === "ibc" && currencyInfo.sourceDenom === "uatom",
     );
   }, [selectedNetworkInfo]);
 
@@ -226,7 +226,7 @@ export const TopMenuMyWallets: React.FC = () => {
           <SecondaryButton
             disabled={
               ![NetworkKind.Cosmos, NetworkKind.Gno].includes(
-                selectedNetworkInfo?.kind || NetworkKind.Unknown
+                selectedNetworkInfo?.kind || NetworkKind.Unknown,
               )
             }
             paddingHorizontal={layout.spacing_x2}

@@ -9,6 +9,8 @@ import { shuffle } from "lodash";
 import React, {
   createContext,
   Dispatch,
+  FC,
+  ReactNode,
   SetStateAction,
   useCallback,
   useContext,
@@ -19,6 +21,7 @@ import React, {
 import { useFeedbacks } from "./FeedbacksProvider";
 import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
 import { getNetworkObjectId } from "../networks";
+import { errorMessage } from "../utils/errors";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { useAppNavigation } from "../utils/navigation";
 import { Media } from "../utils/types/mediaPlayer";
@@ -32,7 +35,7 @@ interface DefaultValue {
   setIsMediaPlayerOpen: Dispatch<SetStateAction<boolean>>;
   loadAndPlaySoundsQueue: (
     queue: Media[],
-    mediaToStart?: Media
+    mediaToStart?: Media,
   ) => Promise<void>;
   canNext: boolean;
   canPrev: boolean;
@@ -72,13 +75,15 @@ const defaultValue: DefaultValue = {
 
 const MediaPlayerContext = createContext(defaultValue);
 
-export const MediaPlayerContextProvider: React.FC = ({ children }) => {
+export const MediaPlayerContextProvider: FC<{
+  children: ReactNode;
+}> = ({ children }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
   const [videoLastRoute, setVideoLastRoute] = useState<Route<any>>();
   // ------- Only used in UI
   const [isMediaPlayerOpen, setIsMediaPlayerOpen] = useState(
-    defaultValue.isMediaPlayerOpen
+    defaultValue.isMediaPlayerOpen,
   );
   const [queue, setQueue] = useState<Media[]>([]);
   const [randomQueue, setRandomQueue] = useState<Media[]>([]);
@@ -130,14 +135,14 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
             if ("error" in status) {
               console.error(
                 "Error while playbackStatus update: ",
-                status.error
+                status.error,
               );
               setToastError({
                 title: "Error while playbackStatus update: ",
                 message: status.error || "",
               });
             }
-          }
+          },
         );
         // ------- Autoplay createdSound
         // FIXME: Got error if "Video not loaded yet", so, have to control this
@@ -150,19 +155,20 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
         setIsMediaPlayerOpen(true);
         // -------
       } catch (e) {
-        console.error("Error loading sound: ", e.message);
+        const msg = errorMessage(e);
+        console.error("Error loading sound: ", msg);
         setToastError({
           title: "Error loading sound: ",
-          message: e.message,
+          message: msg,
         });
       }
     },
-    [setToastError, av]
+    [setToastError, av],
   );
 
   const firstPlayVideo = async (video: Video, media: Media) => {
     setVideoLastRoute(
-      navigation.getState().routes[navigation.getState().routes.length - 1]
+      navigation.getState().routes[navigation.getState().routes.length - 1],
     );
     setMedia(media);
     try {
@@ -171,10 +177,11 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
       setAv(video);
       await video.playAsync();
     } catch (e) {
-      console.error("Error while first playing video: ", e.message);
+      const msg = errorMessage(e);
+      console.error("Error while first playing video: ", msg);
       setToastError({
         title: "Error while first playing video: ",
-        message: e.message,
+        message: msg,
       });
     }
     setIsMediaPlayerOpen(true);
@@ -195,14 +202,14 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
   // ============== Only used in UI
   const loadAndPlaySoundsQueue = async (
     queue: Media[],
-    mediaToStart?: Media
+    mediaToStart?: Media,
   ) => {
     setQueue(queue);
     const randomMedia = queue[Math.floor(Math.random() * queue.length)];
     await loadAndPlaySound(
       mediaToStart ? mediaToStart : isRandom ? randomMedia : queue[0],
       queue,
-      isRandom
+      isRandom,
     );
   };
 
@@ -226,10 +233,11 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
       try {
         await av._setFullscreen(true);
       } catch (e) {
-        console.error("Error setting full screen: ", e.message);
+        const msg = errorMessage(e);
+        console.error("Error setting full screen: ", msg);
         setToastError({
           title: "Error setting full screen: ",
-          message: e.message,
+          message: msg,
         });
       }
     }
@@ -248,20 +256,22 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
       try {
         await av.pauseAsync();
       } catch (e) {
-        console.error("Error pausing media: ", e.message);
+        const msg = errorMessage(e);
+        console.error("Error pausing media: ", msg);
         setToastError({
           title: "Error pausing media: ",
-          message: e.message,
+          message: msg,
         });
       }
     } else {
       try {
         await av.playAsync();
       } catch (e) {
-        console.error("Error playing media: ", e.message);
+        const msg = errorMessage(e);
+        console.error("Error playing media: ", msg);
         setToastError({
           title: "Error playing media: ",
-          message: e.message,
+          message: msg,
         });
       }
     }
@@ -269,7 +279,7 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
 
   const queueToUse = useMemo(
     () => (isRandom && randomQueue.length ? randomQueue : queue),
-    [isRandom, randomQueue, queue]
+    [isRandom, randomQueue, queue],
   );
 
   const queueCurrentIndex = media ? queueToUse.indexOf(media) : -1;

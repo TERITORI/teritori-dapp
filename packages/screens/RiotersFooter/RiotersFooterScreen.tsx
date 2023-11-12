@@ -81,7 +81,7 @@ export const RiotersFooterScreen: React.FC = () => {
     useState(false);
   const [transactionHash, setTransactionHash] = useState("");
   const [client, setClient] = useState<RioterFooterNftQueryClient | undefined>(
-    undefined
+    undefined,
   );
   const [mapSize, setMapsize] = useState<{ height: Uint128; width: Uint128 }>({
     height: "552",
@@ -117,13 +117,12 @@ export const RiotersFooterScreen: React.FC = () => {
 
   useEffect(() => {
     const effect = async () => {
-      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
-        selectedNetworkId
-      );
+      const cosmwasmClient =
+        await mustGetNonSigningCosmWasmClient(selectedNetworkId);
       const network = getCosmosNetwork(selectedNetworkId);
       const rioterFooterClient = new RioterFooterNftQueryClient(
         cosmwasmClient,
-        network?.riotersFooterContractAddress || ""
+        network?.riotersFooterContractAddress || "",
       );
       setClient(rioterFooterClient);
       setMapsize(await rioterFooterClient.queryMapSize());
@@ -138,9 +137,8 @@ export const RiotersFooterScreen: React.FC = () => {
       }
       try {
         const nftCount = await client.queryNftCount();
-        const cosmwasmClient = await getKeplrSigningCosmWasmClient(
-          selectedNetworkId
-        );
+        const cosmwasmClient =
+          await getKeplrSigningCosmWasmClient(selectedNetworkId);
         const allNfts: FooterNftData[] = [];
         for (let i = 0; i < nftCount; i += 11) {
           const nfts = await client.queryNfts({
@@ -151,7 +149,7 @@ export const RiotersFooterScreen: React.FC = () => {
           for (const nft of nfts) {
             const nftClient = new TeritoriNftQueryClient(
               cosmwasmClient,
-              nft.contract_address
+              nft.contract_address,
             );
             const nftInfo = await nftClient.nftInfo({
               tokenId: nft.token_id,
@@ -192,7 +190,7 @@ export const RiotersFooterScreen: React.FC = () => {
 
   useEffect(() => {
     const current: Collection | undefined = collections.find(
-      (collection) => collection.id === nftCollectionId
+      (collection) => collection.id === nftCollectionId,
     );
     setCurrentCollection(current);
   }, [collections, nftCollectionId]);
@@ -214,31 +212,29 @@ export const RiotersFooterScreen: React.FC = () => {
     setTransactionPaymentModalVisible(false);
     const finalPrice = await getPrice();
     if (!nftDropedAdjustment || finalPrice === undefined || !wallet) return;
-    const cosmwasmClientSignIn = await getKeplrSigningCosmWasmClient(
-      selectedNetworkId
-    );
+    const cosmwasmClientSignIn =
+      await getKeplrSigningCosmWasmClient(selectedNetworkId);
     const network = getCosmosNetwork(selectedNetworkId);
     const rioterFooterClient = new RioterFooterNftClient(
       cosmwasmClientSignIn,
       wallet.address,
-      network?.riotersFooterContractAddress || ""
+      network?.riotersFooterContractAddress || "",
     );
     if (!rioterFooterClient) return;
     setTransactionPendingModalVisible(true);
     try {
       const [, nftMinterContractAddress, nftTokenId] = parseNftId(
-        nftDroped?.id
+        nftDroped?.id,
       );
       if (!nftMinterContractAddress || !nftTokenId) {
         console.log("nftMinterContractAddress or nftTokenId is undefined");
         return;
       }
-      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
-        selectedNetworkId
-      );
+      const cosmwasmClient =
+        await mustGetNonSigningCosmWasmClient(selectedNetworkId);
       const minterClient = new TeritoriBunkerMinterQueryClient(
         cosmwasmClient,
-        nftMinterContractAddress.toString()
+        nftMinterContractAddress.toString(),
       );
       const nftContractAddress = (await minterClient.config()).nft_addr;
       const response = await rioterFooterClient.addMyNft(
@@ -262,7 +258,7 @@ export const RiotersFooterScreen: React.FC = () => {
             amount: finalPrice.toString(),
             denom: "utori", // FIXME: don't harcode
           },
-        ]
+        ],
       );
       setTransactionHash(response.transactionHash);
       setTransactionPendingModalVisible(false);
@@ -281,7 +277,7 @@ export const RiotersFooterScreen: React.FC = () => {
         contentSize.height - paddingToBottom
       );
     },
-    []
+    [],
   );
 
   const renderContent = useCallback(
@@ -294,11 +290,11 @@ export const RiotersFooterScreen: React.FC = () => {
           nftDropedAdjustment={nftDropedAdjustment}
         />
       ),
-    [oldNftPositions, nftDroped, nftDropedAdjustment]
+    [oldNftPositions, nftDroped, nftDropedAdjustment],
   );
 
   const onReceiveDragDrop = useCallback(
-    (event) => {
+    (event: any) => {
       const nft: NFT = JSON.parse(event.dragged.payload);
       if (
         !nftDroped ||
@@ -317,7 +313,7 @@ export const RiotersFooterScreen: React.FC = () => {
         y: event.receiver.receiveOffset.y - event.dragged.grabOffset.y,
       });
     },
-    [nftDroped, nftDropedAdjustment]
+    [nftDroped, nftDropedAdjustment],
   );
 
   return (

@@ -33,17 +33,17 @@ export const useGameRewards = () => {
       }
 
       const nonSigningClient = await mustGetNonSigningCosmWasmClient(
-        network.id
+        network.id,
       );
       const distributorQueryClient = new TeritoriDistributorQueryClient(
         nonSigningClient,
-        network.distributorContractAddress
+        network.distributorContractAddress,
       );
       return await distributorQueryClient.userClaimable({
         addr: userAddress,
       });
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
   const claimableAmount = data || 0;
 
@@ -64,7 +64,7 @@ export const useGameRewards = () => {
       const distributorClient = new TeritoriDistributorClient(
         signingClient,
         userAddress,
-        network.distributorContractAddress
+        network.distributorContractAddress,
       );
 
       await distributorClient.claim();

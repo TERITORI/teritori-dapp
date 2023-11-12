@@ -24,14 +24,14 @@ export type ParsedTransaction = Omit<
 
 export const multisigTransactionsQueryKey = (
   networkId: string | undefined,
-  multisigUserId: string | undefined
+  multisigUserId: string | undefined,
 ) => ["multisig-transactions", networkId, multisigUserId];
 
 export const useMultisigTransactions = (
   userId: string | undefined,
   multisigUserId: string | undefined,
   types: string[],
-  executionState: ExecutionState
+  executionState: ExecutionState,
 ) => {
   const authToken = useMultisigAuthToken(userId);
   const [network] = parseUserId(userId);
@@ -92,6 +92,6 @@ export const useMultisigTransactions = (
     {
       getNextPageParam: (lastPage) => lastPage.next,
       staleTime: Infinity,
-    }
+    },
   );
 };

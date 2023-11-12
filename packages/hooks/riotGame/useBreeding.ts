@@ -33,7 +33,7 @@ export const useBreeding = (networkId: string | undefined) => {
     const nonSigningClient = await mustGetNonSigningCosmWasmClient(networkId);
     return new TeritoriBreedingQueryClient(
       nonSigningClient,
-      breedingContractAddress
+      breedingContractAddress,
     );
   }, [breedingContractAddress, networkId]);
 
@@ -43,7 +43,7 @@ export const useBreeding = (networkId: string | undefined) => {
       breedDuration: number,
       tokenId1: string,
       tokenId2: string,
-      parentContract: string
+      parentContract: string,
     ) => {
       if (!networkId) {
         throw new Error("no network id");
@@ -68,8 +68,8 @@ export const useBreeding = (networkId: string | undefined) => {
             sender,
             breedingContractAddress,
             tokenId,
-            parentContract
-          )
+            parentContract,
+          ),
         );
         msgs = [...msgs, ...approveMsgs];
       }
@@ -79,7 +79,7 @@ export const useBreeding = (networkId: string | undefined) => {
         breedingPrice,
         tokenId1,
         tokenId2,
-        breedingContractAddress
+        breedingContractAddress,
       );
 
       msgs = [...msgs, breedMsg];
@@ -92,7 +92,7 @@ export const useBreeding = (networkId: string | undefined) => {
 
       return tx;
     },
-    [breedingContractAddress, networkId, selectedWallet?.address]
+    [breedingContractAddress, networkId, selectedWallet?.address],
   );
 
   const getChildTokenIds = useCallback(
@@ -109,7 +109,7 @@ export const useBreeding = (networkId: string | undefined) => {
 
       return tokens;
     },
-    [networkId]
+    [networkId],
   );
 
   const fetchRemainingTokens = useCallback(
@@ -122,11 +122,11 @@ export const useBreeding = (networkId: string | undefined) => {
         breedingConfig.child_contract_addr,
         {
           num_tokens: {},
-        }
+        },
       );
       setRemainingTokens(breedingConfig.child_nft_max_supply - count);
     },
-    [networkId]
+    [networkId],
   );
 
   const getTokenInfo = useCallback(
@@ -147,7 +147,7 @@ export const useBreeding = (networkId: string | undefined) => {
       const tokenInfo = { id: tokenId, imageUri: ipfsURLToHTTPURL(image) };
       return tokenInfo;
     },
-    [networkId]
+    [networkId],
   );
 
   const getBreedingsLefts = useCallback(
@@ -158,7 +158,7 @@ export const useBreeding = (networkId: string | undefined) => {
       });
       return (breedingConfig?.breed_count_limit || 0) - breededCount;
     },
-    [breedingConfig?.breed_count_limit, getBreedingQueryClient]
+    [breedingConfig?.breed_count_limit, getBreedingQueryClient],
   );
 
   useEffect(() => {

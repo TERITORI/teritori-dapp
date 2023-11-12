@@ -2,7 +2,7 @@ import { neutral00, purpleDark, yellowDefault } from "../../utils/style/colors";
 
 export const resolveColor = (
   type: "backgroundColor" | "color",
-  rareRatio: number
+  rareRatio: number,
 ) => {
   switch (type) {
     case "backgroundColor":

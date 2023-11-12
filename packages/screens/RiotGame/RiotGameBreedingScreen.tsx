@@ -67,7 +67,7 @@ export const RiotGameBreedingScreen = () => {
     fetchRemainingTokens,
   } = useBreeding(selectedNetworkId);
 
-  const intervalRef = useRef<NodeJS.Timer>();
+  const intervalRef = useRef<NodeJS.Timeout>();
 
   const availableForBreedRippers = useMemo(() => {
     // Only original Rioter can breed
@@ -90,7 +90,7 @@ export const RiotGameBreedingScreen = () => {
 
       const gen0CollectionId = getCollectionId(
         network?.id,
-        network.riotContractAddressGen0
+        network.riotContractAddressGen0,
       );
       if (!gen0CollectionId) {
         return false;
@@ -107,14 +107,14 @@ export const RiotGameBreedingScreen = () => {
   const fetchNewToken = async (
     currentChildTokenIds: string[],
     owner: string,
-    breedingConfig: ConfigResponse
+    breedingConfig: ConfigResponse,
   ) => {
     const updatedTokens = await getChildTokenIds(
       owner,
-      breedingConfig.child_contract_addr
+      breedingConfig.child_contract_addr,
     );
     const newTokenIds = updatedTokens.filter(
-      (id: string) => !(currentChildTokenIds || []).includes(id)
+      (id: string) => !(currentChildTokenIds || []).includes(id),
     );
 
     const newTokenId = newTokenIds[0];
@@ -126,7 +126,7 @@ export const RiotGameBreedingScreen = () => {
     intervalRef.current && clearInterval(intervalRef.current);
     const newTokenInfo = await getTokenInfo(
       newTokenId,
-      breedingConfig.child_contract_addr
+      breedingConfig.child_contract_addr,
     );
 
     setNewTokenInfo(newTokenInfo);
@@ -161,19 +161,19 @@ export const RiotGameBreedingScreen = () => {
 
     const currentChildTokenIds = await getChildTokenIds(
       selectedWallet.address,
-      breedingConfig.child_contract_addr
+      breedingConfig.child_contract_addr,
     );
 
     try {
       await breed(
         coin(
           breedingConfig.breed_price_amount,
-          breedingConfig.breed_price_denom
+          breedingConfig.breed_price_denom,
         ),
         breedingConfig.breed_duration,
         getRipperTokenId(selectedRippers[0].ripper),
         getRipperTokenId(selectedRippers[1].ripper),
-        breedingConfig.parent_contract_addr
+        breedingConfig.parent_contract_addr,
       );
 
       intervalRef.current = setInterval(
@@ -181,9 +181,9 @@ export const RiotGameBreedingScreen = () => {
           fetchNewToken(
             currentChildTokenIds,
             selectedWallet.address,
-            breedingConfig
+            breedingConfig,
           ),
-        2000
+        2000,
       );
     } catch (e) {
       setIsBreeding(false);
@@ -254,7 +254,7 @@ export const RiotGameBreedingScreen = () => {
           breakpoint={MOBILE_MAX_WIDTH}
           style={{
             marginTop: layout.spacing_x4,
-            height: isMobile ? 280 : "inherit",
+            height: isMobile ? 280 : "auto",
             justifyContent: isMobile ? "space-between" : undefined,
           }}
         >
@@ -264,7 +264,7 @@ export const RiotGameBreedingScreen = () => {
             content={prettyPrice(
               selectedWallet?.networkId || "",
               breedingConfig?.breed_price_amount || "",
-              breedingConfig?.breed_price_denom || ""
+              breedingConfig?.breed_price_denom || "",
             )}
             width={180}
           />

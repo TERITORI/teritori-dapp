@@ -57,7 +57,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
   // hooks
   useEffect(() => {
     setUnlockedSteps((u) =>
-      !u.includes(currentStep) ? [...u, currentStep] : u
+      !u.includes(currentStep) ? [...u, currentStep] : u,
     );
   }, [currentStep]);
 
@@ -105,7 +105,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
         </View>
       </View>
     ),
-    []
+    [],
   );
 
   return (
@@ -135,7 +135,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
                   {...launchStep}
                   isComplete={index < launchingCompleteStep}
                 />
-              )
+              ),
             )
           : steps.map((step, index) => (
               <Pressable

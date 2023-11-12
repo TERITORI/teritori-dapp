@@ -32,13 +32,13 @@ export const ConnectMetamaskButton: React.FC<{
 
       if (!ethereum) {
         Linking.openURL(
-          "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn"
+          "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn",
         );
         return;
       }
 
       const selectableEthereumNetworks = enabledNetworks.filter(
-        (n): n is EthereumNetworkInfo => n.kind === NetworkKind.Ethereum
+        (n): n is EthereumNetworkInfo => n.kind === NetworkKind.Ethereum,
       );
 
       let network = getEthereumNetwork(selectedNetworkId);

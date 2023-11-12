@@ -1,16 +1,13 @@
-import { FlexAlignType, View, ViewProps } from "react-native";
+import { ReactNode } from "react";
+import { View, ViewProps, ViewStyle } from "react-native";
+
+// TODO: remove this bloat
 
 type FlexColProps = ViewProps & {
-  width?: string | number;
-  alignItems?: FlexAlignType | undefined;
-  justifyContent?:
-    | "flex-start"
-    | "flex-end"
-    | "center"
-    | "space-between"
-    | "space-around"
-    | "space-evenly"
-    | undefined;
+  width?: ViewStyle["width"];
+  alignItems?: ViewStyle["alignItems"];
+  justifyContent?: ViewStyle["justifyContent"];
+  children?: ReactNode;
 };
 
 const FlexCol: React.FC<FlexColProps> = ({

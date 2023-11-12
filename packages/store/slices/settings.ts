@@ -58,7 +58,7 @@ const initialState: Settings = {
     defaultEnabledNetworks.map((nid) => ({
       networkId: nid,
       enabled: true,
-    }))
+    })),
   ),
   isLightTheme: false,
 };
@@ -89,14 +89,14 @@ export const selectNFTStorageAPI = (state: RootState) =>
 
 export const selectNetworkEnabled = (
   state: RootState,
-  networkId: string | undefined
+  networkId: string | undefined,
 ) => {
   if (!networkId) {
     return false;
   }
   const networkSettings = networkSettingsSelectors.selectById(
     state.settings.networkSettings,
-    networkId
+    networkId,
   );
   return !!networkSettings?.enabled;
 };
@@ -111,7 +111,7 @@ const universalUserAddress = (userAddress: string) => {
 
 export const selectMultisigToken = (
   state: RootState,
-  userAddress: string | undefined
+  userAddress: string | undefined,
 ) => {
   if (!userAddress) {
     return undefined;
@@ -125,7 +125,7 @@ export const selectMultisigToken = (
   }
   const token = multisigTokensSelectors.selectById(
     state.settings.multisigTokens,
-    addr
+    addr,
   );
   if (!token || Date.parse(token.expiration) <= Date.now()) {
     return undefined;
@@ -168,7 +168,7 @@ const settingsSlice = createSlice({
       action: PayloadAction<{
         userAddress: string;
         token: MultisigToken | undefined;
-      }>
+      }>,
     ) => {
       if (!action.payload.token) {
         let addr;
@@ -183,13 +183,13 @@ const settingsSlice = createSlice({
       }
       state.multisigTokens = multisigTokensAdapter.setOne(
         state.multisigTokens,
-        action.payload.token
+        action.payload.token,
       );
     },
     toggleNetwork: (state, action: PayloadAction<{ networkId: string }>) => {
       const networkSettings = networkSettingsSelectors.selectById(
         state.networkSettings,
-        action.payload.networkId
+        action.payload.networkId,
       );
       if (!networkSettings) {
         networkSettingsAdapter.addOne(state.networkSettings, {

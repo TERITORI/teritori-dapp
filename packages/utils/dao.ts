@@ -64,7 +64,7 @@ export const createDaoTokenBased = async (
   },
   fee: number | StdFee | "auto" = "auto",
   memo?: string,
-  funds?: Coin[]
+  funds?: Coin[],
 ): Promise<ExecuteResult> => {
   const dao_pre_propose_single_msg = {
     deposit_info: null,
@@ -92,7 +92,7 @@ export const createDaoTokenBased = async (
         info: {
           code_id: daoPreProposeSingleCodeId,
           msg: Buffer.from(JSON.stringify(dao_pre_propose_single_msg)).toString(
-            "base64"
+            "base64",
           ),
           admin: { core_module: {} },
           label: `DAO_${name}_pre-propose-DaoProposalSingle`,
@@ -106,7 +106,7 @@ export const createDaoTokenBased = async (
       code_id: daoProposalSingleCodeId,
       label: `DAO_${name}_DAOProposalSingle`,
       msg: Buffer.from(JSON.stringify(dao_proposal_single_msg)).toString(
-        "base64"
+        "base64",
       ),
     },
   ];
@@ -132,7 +132,7 @@ export const createDaoTokenBased = async (
     code_id: daoVotingCw20StakedCodeId,
     label: `DAO_${name}_DaoVotingCw20Staked`,
     msg: Buffer.from(JSON.stringify(dao_voting_cw20_staked_msg)).toString(
-      "base64"
+      "base64",
     ),
   };
 
@@ -148,7 +148,7 @@ export const createDaoTokenBased = async (
     voting_module_instantiate_info,
   };
   const instantiate_msg = Buffer.from(
-    JSON.stringify(dao_core_instantiate_msg)
+    JSON.stringify(dao_core_instantiate_msg),
   ).toString("base64");
 
   return await client.execute(
@@ -163,7 +163,7 @@ export const createDaoTokenBased = async (
     },
     fee,
     memo,
-    funds
+    funds,
   );
 };
 
@@ -207,7 +207,7 @@ export const createDaoMemberBased = async (
   },
   fee: number | StdFee | "auto" = "auto",
   memo?: string,
-  funds?: Coin[]
+  funds?: Coin[],
 ) => {
   await onStepChange?.(0);
 
@@ -237,7 +237,7 @@ export const createDaoMemberBased = async (
         info: {
           code_id: daoPreProposeSingleCodeId,
           msg: Buffer.from(JSON.stringify(dao_pre_propose_single_msg)).toString(
-            "base64"
+            "base64",
           ),
           admin: { core_module: {} },
           label: `DAO_${name}_pre-propose-DaoProposalSingle`,
@@ -251,7 +251,7 @@ export const createDaoMemberBased = async (
       code_id: daoProposalSingleCodeId,
       label: `DAO_${name}_DAOProposalSingle`,
       msg: Buffer.from(JSON.stringify(dao_proposal_single_msg)).toString(
-        "base64"
+        "base64",
       ),
     },
   ];
@@ -279,7 +279,7 @@ export const createDaoMemberBased = async (
     voting_module_instantiate_info,
   };
   const instantiate_msg = Buffer.from(
-    JSON.stringify(dao_core_instantiate_msg)
+    JSON.stringify(dao_core_instantiate_msg),
   ).toString("base64");
 
   const network = mustGetCosmosNetwork(networkId);
@@ -293,7 +293,7 @@ export const createDaoMemberBased = async (
   const nameServiceClient = new TeritoriNameServiceClient(
     client,
     sender,
-    network.nameServiceContractAddress
+    network.nameServiceContractAddress,
   );
   const amount = await nameServiceClient.mintPrice({
     tokenId: tns,
@@ -311,7 +311,7 @@ export const createDaoMemberBased = async (
     },
     "auto",
     undefined,
-    amount && denom ? [{ denom, amount }] : []
+    amount && denom ? [{ denom, amount }] : [],
   );
 
   const executeResult = await client.execute(
@@ -326,7 +326,7 @@ export const createDaoMemberBased = async (
     },
     fee,
     memo,
-    funds
+    funds,
   );
   const daoAddress = executeResult.logs
     .find((l) => l.events.find((e) => e.type === "instantiate"))

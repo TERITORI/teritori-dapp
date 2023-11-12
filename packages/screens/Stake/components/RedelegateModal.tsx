@@ -61,7 +61,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
   const networkId = network?.id;
   const { bondedTokens, refreshBondedTokens } = useCosmosValidatorBondedAmount(
     userId,
-    validator?.address
+    validator?.address,
   );
   const [selectedValidator, setSelectedValidator] = useState<ValidatorInfo>();
   const { setToastError, setToastSuccess } = useFeedbacks();
@@ -88,7 +88,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
     let currentValidators = allValidators;
     if (bondedTokens.atomics && bondedTokens.atomics !== "0") {
       currentValidators = currentValidators.filter(
-        (d) => d.moniker !== validator.moniker
+        (d) => d.moniker !== validator.moniker,
       );
     }
     return currentValidators;
@@ -122,7 +122,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
 
         const amount = Decimal.fromUserInput(
           formData.amount,
-          stakingCurrency.decimals
+          stakingCurrency.decimals,
         ).atomics;
         const msg: MsgBeginRedelegateEncodeObject = {
           typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
@@ -151,7 +151,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           message: `${prettyPrice(
             networkId,
             amount,
-            stakingCurrency.denom
+            stakingCurrency.denom,
           )} from ${validator.moniker} to ${selectedValidator.moniker}`,
         });
 
@@ -180,7 +180,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       userAddress,
       userKind,
       validator,
-    ]
+    ],
   );
 
   const Header = useCallback(
@@ -193,7 +193,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
         </BrandText>
       </View>
     ),
-    [stakingCurrency?.displayName]
+    [stakingCurrency?.displayName],
   );
 
   const Footer = useCallback(
@@ -218,7 +218,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
         </View>
       </>
     ),
-    [handleSubmit, onClose, onSubmit]
+    [handleSubmit, onClose, onSubmit],
   );
 
   return (
@@ -300,7 +300,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           {prettyPrice(
             networkId,
             bondedTokens.atomics,
-            stakingCurrency?.denom || ""
+            stakingCurrency?.denom || "",
           )}
         </BrandText>
         <SpacerColumn size={2.5} />

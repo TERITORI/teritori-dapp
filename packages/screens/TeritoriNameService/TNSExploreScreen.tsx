@@ -29,7 +29,7 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
   const tokenId = (name + network?.nameServiceTLD || "").toLowerCase();
   const { nameAvailable, nameError, loading } = useNSNameAvailability(
     networkId,
-    tokenId
+    tokenId,
   );
 
   return (

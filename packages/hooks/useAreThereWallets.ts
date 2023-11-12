@@ -8,6 +8,6 @@ export const useAreThereWallets = () => {
   return !!wallets.find(
     (wallet) =>
       (wallet.connected || wallet.provider === WalletProvider.Store) &&
-      wallet.networkId === selectedNetworkId
+      wallet.networkId === selectedNetworkId,
   );
 };

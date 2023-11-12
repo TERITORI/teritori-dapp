@@ -26,10 +26,10 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
   const selectedWallet = useSelectedWallet();
   const [selectedDAOId, setSelectedDAOId] = useState("");
   const { tokens } = useNSTokensByOwner(
-    selectedDAOId || selectedWallet?.userId
+    selectedDAOId || selectedWallet?.userId,
   );
   const { primaryAlias } = useNSPrimaryAlias(
-    selectedDAOId || selectedWallet?.userId
+    selectedDAOId || selectedWallet?.userId,
   );
 
   const { setName } = useTNS();
@@ -87,7 +87,7 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
                   onClose(
                     "TNSConsultName",
                     "TNSManage",
-                    nsTokenWithoutTLD(token)
+                    nsTokenWithoutTLD(token),
                   );
                 }}
               />

@@ -26,7 +26,7 @@ export const NFTSellCard: React.FC<{
   const currency = getNativeCurrency(nftInfo?.networkId, nftInfo?.mintDenom);
   const handleSell: SubmitHandler<SellNFTForm> = useCallback(
     (formValues) => onSell(formValues.price, nftInfo?.mintDenom),
-    [onSell, nftInfo?.mintDenom]
+    [onSell, nftInfo?.mintDenom],
   );
   if (!currency) {
     return null;

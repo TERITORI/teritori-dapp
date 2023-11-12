@@ -14,7 +14,7 @@ export const useMyHistoryData = ({
     async () => {
       if (addr) {
         const response = await fetch(
-          `https://api.roulette.aaa-metahuahua.com/tickets?addr=${addr}&date=${date}`
+          `https://api.roulette.aaa-metahuahua.com/tickets?addr=${addr}&date=${date}`,
         );
         return response.json();
       }
@@ -33,7 +33,7 @@ export const useMyHistoryData = ({
       ],
       refetchOnMount: false,
       enabled: false,
-    }
+    },
   );
   return { data, refetch };
 };

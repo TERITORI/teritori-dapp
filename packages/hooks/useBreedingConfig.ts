@@ -5,7 +5,7 @@ import { getCosmosNetwork, mustGetNonSigningCosmWasmClient } from "../networks";
 
 export const useBreedingConfig = (
   networkId: string | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   if (enabled === undefined) {
     enabled = true;
@@ -28,14 +28,14 @@ export const useBreedingConfig = (
 
       const breedingClient = new TeritoriBreedingQueryClient(
         cosmwasmClient,
-        breedingContractAddress
+        breedingContractAddress,
       );
 
       const conf = await breedingClient.config();
 
       return conf;
     },
-    { staleTime: Infinity, enabled: enabled && !!networkId }
+    { staleTime: Infinity, enabled: enabled && !!networkId },
   );
   return { breedingConfig: data, ...other };
 };

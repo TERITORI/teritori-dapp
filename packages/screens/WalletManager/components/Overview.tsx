@@ -16,7 +16,7 @@ export const Overview: React.FC = () => {
   const TokenAllocation = React.lazy(() =>
     import("./TokenAllocation").then((module) => ({
       default: module.TokenAllocation,
-    }))
+    })),
   );
 
   return (

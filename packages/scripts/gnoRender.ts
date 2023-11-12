@@ -8,7 +8,7 @@ const main = async () => {
     .option(
       "-n, --node [string]",
       "gnoland rpc endpoint",
-      "http://localhost:26657"
+      "http://localhost:26657",
     )
     .parse();
   const [realmPkgPath, renderPath] = program.args;

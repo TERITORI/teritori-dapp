@@ -35,7 +35,7 @@ export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
     () => ({
       opacity: isSidebarExpanded ? withSpring(1) : withSpring(0),
     }),
-    [isSidebarExpanded]
+    [isSidebarExpanded],
   );
 
   return (

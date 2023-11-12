@@ -65,7 +65,7 @@ const styles = react_native_1.StyleSheet.create({
       web: {
         overflowY: "hidden",
       },
-    })
+    }),
   ),
   scroller: {
     flexDirection: "column",
@@ -147,9 +147,9 @@ class EmojiGroup extends react_1.PureComponent {
               key: e,
               onPress: () => this.props.onEmojiSelected(e),
             },
-            e
-          )
-        )
+            e,
+          ),
+        ),
     );
   }
 }
@@ -175,7 +175,7 @@ class EmojiCategory extends react_1.PureComponent {
       (0, react_1.createElement)(
         react_native_1.Text,
         { style: [styles.headerText, headerStyle] },
-        categoryText
+        categoryText,
       ),
       (0, react_1.createElement)(EmojiGroup, {
         emojis,
@@ -183,7 +183,7 @@ class EmojiCategory extends react_1.PureComponent {
         emojiSize,
         emojiStyle,
         columns,
-      })
+      }),
     );
   }
 }
@@ -201,7 +201,7 @@ class SearchField extends react_1.PureComponent {
         multiline: false,
         returnKeyType: "search",
         underlineColorAndroid: "transparent",
-      })
+      }),
     );
   }
 }
@@ -232,7 +232,7 @@ class EmojiModal extends react_1.PureComponent {
           EmojiGroup,
           Object.assign(Object.assign({}, this.props), {
             emojis: searchResults,
-          })
+          }),
         );
       } else {
         const category = item;
@@ -242,7 +242,7 @@ class EmojiModal extends react_1.PureComponent {
             emojisByCategory: this.emojisByCategory,
             category,
             key: category,
-          })
+          }),
         );
       }
     };
@@ -333,10 +333,10 @@ class EmojiModal extends react_1.PureComponent {
     });
     const groupedEmojis = groupBy(
       this.filteredEmojis,
-      (emoji) => emoji.category
+      (emoji) => emoji.category,
     );
     this.emojisByCategory = mapValues(groupedEmojis, (group) =>
-      group.map(charFromEmojiObj)
+      group.map(charFromEmojiObj),
     );
   }
   calculateLayouts(props) {
@@ -400,16 +400,16 @@ class EmojiModal extends react_1.PureComponent {
             onViewableItemsChanged: this.onViewableItemsChanged,
             viewabilityConfig: this.viewabilityConfig,
             renderItem: this.renderItem,
-          })
-        )
+          }),
+        ),
       ),
       (0, react_1.createElement)(
         react_native_1.TouchableWithoutFeedback,
         { onPress: this.onPressBackground },
         (0, react_1.createElement)(react_native_1.View, {
           style: [styles.background, backgroundStyle],
-        })
-      )
+        }),
+      ),
     );
   }
 }

@@ -19,7 +19,7 @@ const generateReducedWaveformArray = (waveform: WaveformData) => {
     const sum = maxArray
       .slice(
         x * DATA_LENGTH_PER_BAR,
-        x * DATA_LENGTH_PER_BAR + DATA_LENGTH_PER_BAR + 1
+        x * DATA_LENGTH_PER_BAR + DATA_LENGTH_PER_BAR + 1,
       )
       .reduce((a, b) => a + b, 0);
 

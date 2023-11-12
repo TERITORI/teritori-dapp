@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { FlatList, StyleProp, TextStyle, View, ViewStyle } from "react-native";
 
 import { PrettyPrint } from "./types";
@@ -93,13 +93,15 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
       ...tabs,
       [network.id]: { name: network.displayName },
     }),
-    {} as Record<string, { name: string }>
+    {} as Record<string, { name: string }>,
   );
 
   const tabsKeys = Object.keys(tabs);
 
   const [selectedTab, setSelectedTab] = useState(
-    arrayIncludes(tabsKeys, selectedNetworkId) ? selectedNetworkId : tabsKeys[0]
+    arrayIncludes(tabsKeys, selectedNetworkId)
+      ? selectedNetworkId
+      : tabsKeys[0],
   );
 
   const req = {
@@ -197,8 +199,9 @@ const CollectionTable: React.FC<{
   const [pageIndex, setPageIndex] = useState(0);
   const isMobile = useIsMobile();
 
-  const filteredCollections = rows.filter(({ collectionName }) =>
-    collectionName?.toLowerCase().includes(filterText.toLowerCase())
+  const filteredCollections = rows.filter(
+    ({ collectionName }) =>
+      collectionName?.toLowerCase().includes(filterText.toLowerCase()),
   );
 
   const maxPage = Math.max(Math.ceil(rows.length / itemsPerPage), 1);
@@ -369,6 +372,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
 const InnerCell: React.FC<{
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  children: ReactNode;
 }> = ({ children, style, textStyle }) => {
   const isMobile = useIsMobile();
   return (
@@ -435,11 +439,11 @@ const useRowData = (collection: Collection, rank: number): RowData => {
     },
     owners: numFormatter(
       collection.numOwners,
-      collection.numOwners.toString().length
+      collection.numOwners.toString().length,
     ),
     supply: numFormatter(
       collection.maxSupply,
-      collection.maxSupply.toString().length
+      collection.maxSupply.toString().length,
     ),
   };
 };

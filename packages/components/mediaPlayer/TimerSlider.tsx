@@ -80,7 +80,7 @@ export const TimerSlider: FC<{
             {(!!playbackStatus?.durationMillis || !!media?.duration) && (
               <BrandText style={timeTextStyle}>
                 {prettyMediaDuration(
-                  playbackStatus?.durationMillis || media?.duration
+                  playbackStatus?.durationMillis || media?.duration,
                 )}
               </BrandText>
             )}

@@ -615,7 +615,8 @@ func (s *multisigService) CompleteTransaction(_ context.Context, req *multisigpb
 			return errors.Wrap(err, "failed to find transaction")
 		}
 
-		if err := tx.First(&UserMultisig{}, "multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", transaction.MultisigChainID, userAddress, transaction.MultisigAddress).Error; err != nil {
+		var userMultisig UserMultisig
+		if err := tx.First(&userMultisig, "multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", transaction.MultisigChainID, userAddress, transaction.MultisigAddress).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return errors.New("user is not a member of the multisig")
 			}
@@ -628,15 +629,19 @@ func (s *multisigService) CompleteTransaction(_ context.Context, req *multisigpb
 
 		if err := tx.Exec(`
       DELETE FROM signatures AS s
-      WHERE s.transaction_id  IN (
+      WHERE s.transaction_id IN (
         SELECT s.transaction_id FROM signatures s
-        JOIN transactions t ON s.transaction_id = t.id AND t.final_hash IS NULL
+        JOIN transactions t
+          ON s.transaction_id = t.id
+          AND t.final_hash IS NULL
+          AND t.multisig_address = ?
+          AND t.multisig_chain_id = ?
       )
-    `).Error; err != nil {
+    `, userMultisig.MultisigAddress, userMultisig.MultisigChainID).Error; err != nil {
 			return errors.Wrap(err, "failed to delete signatures")
 		}
 
-		if err := tx.Model(&Transaction{}).Where("final_hash IS NULL").UpdateColumn("sequence", transaction.Sequence+1).Error; err != nil {
+		if err := tx.Model(&Transaction{}).Where("final_hash IS NULL AND multisig_address = ? AND multisig_chain_id = ?", userMultisig.MultisigAddress, userMultisig.MultisigChainID).UpdateColumn("sequence", transaction.Sequence+1).Error; err != nil {
 			return errors.Wrap(err, "failed to update sequence")
 		}
 
@@ -646,6 +651,56 @@ func (s *multisigService) CompleteTransaction(_ context.Context, req *multisigpb
 	}
 
 	return &multisigpb.CompleteTransactionResponse{}, nil
+}
+
+func (s *multisigService) ClearSignatures(_ context.Context, req *multisigpb.ClearSignaturesRequest) (*multisigpb.ClearSignaturesResponse, error) {
+	userAddress, err := s.authenticate(s.db, req.GetAuthToken())
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to authenticate")
+	}
+
+	multisigChainID := req.GetMultisigChainId()
+	if multisigChainID == "" {
+		return nil, errors.New("multisig chain id is required")
+	}
+	multisigAddress := req.GetMultisigAddress()
+	if multisigAddress == "" {
+		return nil, errors.New("multisig address is required")
+	}
+	sequence := req.GetSequence()
+
+	if err := s.db.Transaction(func(tx *gorm.DB) error {
+		var userMultisig UserMultisig
+		if err := tx.First(&userMultisig, "multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", multisigChainID, userAddress, multisigAddress).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return errors.New("user is not a member of the multisig")
+			}
+			return errors.Wrap(err, "failed to find user multisig")
+		}
+
+		if err := tx.Exec(`
+      DELETE FROM signatures AS s
+      WHERE s.transaction_id IN (
+        SELECT s.transaction_id FROM signatures s
+        JOIN transactions t
+          ON s.transaction_id = t.id
+          AND t.final_hash IS NULL
+          AND t.multisig_address = ?
+          AND t.multisig_chain_id = ?
+      )
+    `, userMultisig.MultisigAddress, userMultisig.MultisigChainID).Error; err != nil {
+			return errors.Wrap(err, "failed to delete signatures")
+		}
+
+		if err := tx.Model(&Transaction{}).Where("final_hash IS NULL AND multisig_address = ? AND multisig_chain_id = ?", userMultisig.MultisigAddress, userMultisig.MultisigChainID).UpdateColumn("sequence", sequence).Error; err != nil {
+			return errors.Wrap(err, "failed to update sequence")
+		}
+
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+	return &multisigpb.ClearSignaturesResponse{}, nil
 }
 
 // Auth

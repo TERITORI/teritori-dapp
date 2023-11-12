@@ -20,20 +20,20 @@ export const useGetBanPostProposals = (networkId: string | undefined) => {
       const proposals = extractGnoJSONString(
         await provider.evaluateExpression(
           network?.socialFeedsDAOPkgPath,
-          `getProposalsJSON(0, 42, "", false)`
-        )
+          `getProposalsJSON(0, 42, "", false)`,
+        ),
       );
 
       return proposals;
     },
-    { initialData: [] }
+    { initialData: [] },
   );
   return { banPostProposals, ...other };
 };
 
 export const useGetBanPostProposalById = (
   networkId: string | undefined,
-  proposalId: string
+  proposalId: string,
 ) => {
   const { banPostProposals } = useGetBanPostProposals(networkId);
 

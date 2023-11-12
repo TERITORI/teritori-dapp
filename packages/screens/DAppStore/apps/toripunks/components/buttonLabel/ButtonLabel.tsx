@@ -28,6 +28,7 @@ export const ButtonLabel: React.FC<ButtonLabelType> = ({
   return (
     <View
       style={[
+        // @ts-expect-error
         {
           width: size === "Mobile" ? 160 : 238,
           height: "fit-content",

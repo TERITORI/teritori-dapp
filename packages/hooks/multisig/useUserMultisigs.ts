@@ -13,7 +13,7 @@ export const userMultisigsQueryKey = (userId: string | undefined) => {
 
 export const useUserMultisigs = (
   userId: string | undefined,
-  joinState?: JoinState
+  joinState?: JoinState,
 ) => {
   const [network] = parseUserId(userId);
   const authToken = useMultisigAuthToken(userId);
@@ -35,7 +35,7 @@ export const useUserMultisigs = (
       });
       return multisigs;
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
   return { multisigs: data || [], ...other };
 };

@@ -29,7 +29,7 @@ import {
 // NOTE: consider using the indexer for this
 export const useCollectionInfo = (
   id: string,
-  forceInterval?: number
+  forceInterval?: number,
 ): {
   collectionInfo: CollectionInfo;
   notFound: boolean;
@@ -44,7 +44,7 @@ export const useCollectionInfo = (
     refetch: breedingRefetch,
   } = useTeritoriBreedingCollectionInfo(
     network?.id,
-    contractKind === CollectionContractKind.CosmwasmBreedingV0
+    contractKind === CollectionContractKind.CosmwasmBreedingV0,
   );
   const {
     info: bunkerCollectionInfo,
@@ -53,7 +53,7 @@ export const useCollectionInfo = (
   } = useCosmosBunkerCollectionInfo(
     network?.id,
     mintAddress,
-    contractKind === CollectionContractKind.CosmwasmBunkerV0
+    contractKind === CollectionContractKind.CosmwasmBunkerV0,
   );
   const {
     info: ethereumCollectionInfo,
@@ -62,7 +62,7 @@ export const useCollectionInfo = (
   } = useEthereumTeritoriBunkerCollectionInfo(
     network?.id,
     mintAddress,
-    contractKind === CollectionContractKind.EthereumBunkerV0
+    contractKind === CollectionContractKind.EthereumBunkerV0,
   );
 
   return useMemo(() => {
@@ -123,7 +123,7 @@ export const useCollectionInfo = (
 
 const useTeritoriBreedingCollectionInfo = (
   networkId: string | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   const {
     breedingConfig: conf,
@@ -133,7 +133,7 @@ const useTeritoriBreedingCollectionInfo = (
   const { cw721ContractInfo: nftInfo, refetch: refetchContractInfo } =
     useCW721ContractInfo(networkId, conf?.child_contract_addr);
   const { data: metadata, refetch: reftechMetadata } = useRemoteJSON(
-    conf?.child_base_uri
+    conf?.child_base_uri,
   );
 
   const info = useMemo(() => {
@@ -154,7 +154,7 @@ const useTeritoriBreedingCollectionInfo = (
 const useCosmosBunkerCollectionInfo = (
   networkId: string | undefined,
   mintAddress: string,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   const {
     bunkerMinterConfig: conf,
@@ -237,7 +237,7 @@ const useCosmosBunkerCollectionInfo = (
 const useEthereumTeritoriBunkerCollectionInfo = (
   networkId: string | undefined,
   mintAddress: string,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   const {
     data: minterConfig,
@@ -247,12 +247,12 @@ const useEthereumTeritoriBunkerCollectionInfo = (
   const { data: nftAddress } = useEthMinterNFTAddress(
     networkId,
     mintAddress,
-    enabled
+    enabled,
   );
   const { data: isPaused, refetch: refetchIsPaused } = useEthMinterIsPaused(
     networkId,
     mintAddress,
-    enabled
+    enabled,
   );
   const { data: whitelists, refetch: refetchWhitelists } =
     useEthMinterWhitelists(networkId, mintAddress, enabled);
@@ -283,7 +283,7 @@ const useEthereumTeritoriBunkerCollectionInfo = (
       networkId,
       minterConfig,
       whitelists,
-      currentSupply
+      currentSupply,
     );
 
     const info = getCollectionMetadata(metadata);

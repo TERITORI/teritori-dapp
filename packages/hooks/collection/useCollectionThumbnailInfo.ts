@@ -20,12 +20,12 @@ export const useCollectionThumbnailInfo = (id: string) => {
   const cosmwasmBunkerInfo = useCosmosBunkerCollectionThumbnailInfo(
     network?.id,
     mintAddress,
-    contractKind === CollectionContractKind.CosmwasmBunkerV0
+    contractKind === CollectionContractKind.CosmwasmBunkerV0,
   );
   const ethereumBunkerInfo = useEthereumBunkerCollectionThumbnailInfo(
     network?.id,
     mintAddress,
-    contractKind === CollectionContractKind.EthereumBunkerV0
+    contractKind === CollectionContractKind.EthereumBunkerV0,
   );
   return useMemo(() => {
     switch (contractKind) {
@@ -41,12 +41,12 @@ export const useCollectionThumbnailInfo = (id: string) => {
 const useCosmosBunkerCollectionThumbnailInfo = (
   networkId: string | undefined,
   mintAddress: string | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   const { bunkerMinterConfig: conf } = useBunkerMinterConfig(
     networkId,
     mintAddress,
-    enabled
+    enabled,
   );
   const { bunkerMinterCurrentSupply: mintedAmount } =
     useBunkerMinterCurrentSupply(networkId, mintAddress, enabled);
@@ -59,7 +59,7 @@ const useCosmosBunkerCollectionThumbnailInfo = (
     const { prettyUnitPrice } = expandCosmosBunkerConfig(
       networkId,
       conf,
-      mintedAmount
+      mintedAmount,
     );
 
     const maxSupply = parseInt(conf.nft_max_supply, 10);
@@ -67,7 +67,7 @@ const useCosmosBunkerCollectionThumbnailInfo = (
       prettyUnitPrice,
       maxSupply,
       percentageMinted: Math.round(
-        (parseInt(mintedAmount || "0", 10) * 100) / maxSupply
+        (parseInt(mintedAmount || "0", 10) * 100) / maxSupply,
       ),
     };
     return info;
@@ -77,22 +77,22 @@ const useCosmosBunkerCollectionThumbnailInfo = (
 const useEthereumBunkerCollectionThumbnailInfo = (
   networkId: string | undefined,
   mintAddress: string | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   const { data: minterConfig } = useEthMinterConfig(
     networkId,
     mintAddress,
-    enabled
+    enabled,
   );
   const { data: whitelists } = useEthMinterWhitelists(
     networkId,
     mintAddress,
-    enabled
+    enabled,
   );
   const { data: currentSupply } = useEthMinterCurrentSupply(
     networkId,
     mintAddress,
-    enabled
+    enabled,
   );
   return useMemo(() => {
     if (!whitelists || !minterConfig || !currentSupply) {
@@ -103,7 +103,7 @@ const useEthereumBunkerCollectionThumbnailInfo = (
       networkId,
       minterConfig,
       whitelists,
-      currentSupply
+      currentSupply,
     );
     const maxSupply = minterConfig.maxSupply.toNumber();
     const info: CollectionThumbnailInfo = {

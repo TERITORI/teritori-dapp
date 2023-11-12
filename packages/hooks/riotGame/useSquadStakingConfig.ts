@@ -6,11 +6,10 @@ export const useSquadStakingConfig = (networkId: string | undefined) => {
   return useQuery(
     ["squadStakingConfig", networkId],
     async () => {
-      const squadStakingQueryClient = await getSquadStakingQueryClient(
-        networkId
-      );
+      const squadStakingQueryClient =
+        await getSquadStakingQueryClient(networkId);
       return await squadStakingQueryClient.getConfig();
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
 };

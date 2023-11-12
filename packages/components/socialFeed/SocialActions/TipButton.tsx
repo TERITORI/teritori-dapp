@@ -34,14 +34,14 @@ const TeritoriTipAmount: React.FC<TipAmountProps> = ({ amount }) => {
         denom,
       },
     ],
-    [selectedNetworkId]
+    [selectedNetworkId],
   );
 
   const { prices } = useCoingeckoPrices(coins);
   const price = useMemo(
     () =>
       getCoingeckoPrice(selectedNetworkId, denom, amount.toString(), prices),
-    [selectedNetworkId, amount, prices]
+    [selectedNetworkId, amount, prices],
   );
 
   return <>{`$${price ? price.toFixed(2) : "0"}`}</>;

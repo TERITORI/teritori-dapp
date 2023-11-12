@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { LayoutChangeEvent, StyleProp, ViewStyle } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -12,6 +12,7 @@ interface AnimationFadeInOutProps {
   style?: StyleProp<ViewStyle>;
   duration?: number;
   onLayout?: ((event: LayoutChangeEvent) => void) | undefined;
+  children: ReactNode;
 }
 
 export const AnimationFadeInOut: React.FC<AnimationFadeInOutProps> = ({
@@ -24,7 +25,7 @@ export const AnimationFadeInOut: React.FC<AnimationFadeInOutProps> = ({
   const opacity = useSharedValue(0);
   const zIndex = useDerivedValue(
     () => (opacity.value === 0 ? -1000 : 1000),
-    [opacity.value]
+    [opacity.value],
   );
 
   const animationStyle = useAnimatedStyle(
@@ -32,7 +33,7 @@ export const AnimationFadeInOut: React.FC<AnimationFadeInOutProps> = ({
       opacity: opacity.value,
       zIndex: zIndex.value,
     }),
-    [opacity.value, zIndex.value]
+    [opacity.value, zIndex.value],
   );
 
   // hooks

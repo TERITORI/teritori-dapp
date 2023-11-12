@@ -1,9 +1,8 @@
-import React, { ComponentType, useEffect } from "react";
+import React, { ComponentType, ReactNode, useEffect } from "react";
 import {
   Modal,
   View,
   ScrollView,
-  ViewComponent,
   ViewStyle,
   useWindowDimensions,
   StyleProp,
@@ -27,7 +26,7 @@ import { SpacerColumn } from "../spacer";
 
 type ModalBaseProps = {
   label?: string;
-  labelComponent?: React.FC | ViewComponent | JSX.Element;
+  labelComponent?: ReactNode;
   onClose?: () => void;
   onBackPress?: () => void;
   width?: number;
@@ -44,6 +43,7 @@ type ModalBaseProps = {
   closeButtonStyle?: StyleProp<ViewStyle>;
   verticalPosition?: "center" | "top" | "bottom";
   closeOnBlur?: boolean;
+  children: ReactNode;
 };
 
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)

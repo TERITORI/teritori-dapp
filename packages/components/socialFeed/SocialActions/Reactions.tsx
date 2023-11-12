@@ -34,19 +34,19 @@ export const Reactions: React.FC<{
   const [isMoreReactionShown, setMoreReactionsShown] = useState(false);
   const sortedReactions = useMemo(
     () => reactions.sort((a, b) => b.count - a.count),
-    [reactions]
+    [reactions],
   );
   const shownReactions = useMemo(
     () => sortedReactions.slice(0, nbShown),
-    [sortedReactions, nbShown]
+    [sortedReactions, nbShown],
   );
   const hiddenReactions = useMemo(
     () => sortedReactions.slice(nbShown, -1),
-    [sortedReactions, nbShown]
+    [sortedReactions, nbShown],
   );
   const moreReactionsButtonLabel = useMemo(
     () => (isMoreReactionShown ? "Hide" : `+ ${hiddenReactions.length}`),
-    [hiddenReactions, isMoreReactionShown]
+    [hiddenReactions, isMoreReactionShown],
   );
 
   return (

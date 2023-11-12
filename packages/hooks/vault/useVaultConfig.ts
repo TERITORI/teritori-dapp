@@ -17,11 +17,11 @@ export const useVaultConfig = (networkId: string) => {
       const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
       const client = new TeritoriNftVaultQueryClient(
         cosmwasmClient,
-        network.vaultContractAddress
+        network.vaultContractAddress,
       );
       return await client.config();
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
   return { vaultConfig, ...other };
 };

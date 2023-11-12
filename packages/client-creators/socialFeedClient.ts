@@ -30,13 +30,12 @@ export const signingSocialFeedClient = async ({
   if (cachedSigningClients[cacheKey]) {
     return cachedSigningClients[cacheKey];
   } else {
-    const signingComswasmClient = await getKeplrSigningCosmWasmClient(
-      networkId
-    );
+    const signingComswasmClient =
+      await getKeplrSigningCosmWasmClient(networkId);
     const client = new TeritoriSocialFeedClient(
       signingComswasmClient,
       walletAddress,
-      socialFeedContractAddress
+      socialFeedContractAddress,
     );
 
     cachedSigningClients[cacheKey] = client;
@@ -50,12 +49,11 @@ export const nonSigningSocialFeedClient = async ({
   const network = mustGetCosmosNetwork(networkId);
   const socialFeedContractAddress = network.socialFeedContractAddress || "";
 
-  const nonSigningCosmWasmClient = await mustGetNonSigningCosmWasmClient(
-    networkId
-  );
+  const nonSigningCosmWasmClient =
+    await mustGetNonSigningCosmWasmClient(networkId);
 
   return new TeritoriSocialFeedQueryClient(
     nonSigningCosmWasmClient,
-    socialFeedContractAddress
+    socialFeedContractAddress,
   );
 };

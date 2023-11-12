@@ -12,7 +12,7 @@ const main = async () => {
 
   const client = new TeritoriNftVaultQueryClient(
     await mustGetNonSigningCosmWasmClient(network.id),
-    network.vaultContractAddress
+    network.vaultContractAddress,
   );
 
   const config = await client.config();

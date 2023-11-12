@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "./BrandText";
@@ -10,7 +10,8 @@ import { layout } from "../utils/style/layout";
 export const Section: React.FC<{
   title: string;
   subtitle?: string;
-  topRightChild?: React.ReactNode;
+  topRightChild?: ReactNode;
+  children: ReactNode;
 }> = ({ children, title, subtitle, topRightChild }) => {
   const fontSize = 20;
   const { width } = useMaxResolution();

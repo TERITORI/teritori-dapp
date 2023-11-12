@@ -90,7 +90,7 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
   const { wrapWithFeedback } = useFeedbacks();
   const addressParts = daoAddress.split("/");
   const [name, setName] = useState(
-    addressParts.length > 0 ? addressParts[addressParts.length - 1] : ""
+    addressParts.length > 0 ? addressParts[addressParts.length - 1] : "",
   );
   const [threadId, setThreadId] = useState("1");
   const [postId, setPostId] = useState("1");
@@ -105,7 +105,7 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
       const client = new GnoJSONRPCProvider(network.endpoint);
       const boardIdRes = await client.evaluateExpression(
         network.modboardsPkgPath,
-        `GetBoardIDFromName("${name}")`
+        `GetBoardIDFromName("${name}")`,
       );
       const boardIdNum = extractGnoNumber(boardIdRes);
       if (!boardIdNum) {
@@ -114,10 +114,10 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
       return extractGnoNumber(
         await client.evaluateExpression(
           network.modboardsPkgPath,
-          `getBoard(${boardIdNum}).flags.GetFlagCount(getFlagID(${threadId}, ${postId}))`
-        )
+          `getBoard(${boardIdNum}).flags.GetFlagCount(getFlagID(${threadId}, ${postId}))`,
+        ),
       );
-    }
+    },
   );
 
   if (network?.kind !== NetworkKind.Gno || !wallet) return null;
@@ -169,7 +169,7 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
           const client = new GnoJSONRPCProvider(network.endpoint);
           const boardIdRes = await client.evaluateExpression(
             network.modboardsPkgPath,
-            `GetBoardIDFromName("${name}")`
+            `GetBoardIDFromName("${name}")`,
           );
           console.log(boardIdRes);
           const boardIdNum = extractGnoNumber(boardIdRes);
@@ -201,7 +201,7 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
               send: "",
               args: ["0", JSON.stringify(propReq)],
             },
-            { gasWanted: 10000000 }
+            { gasWanted: 10000000 },
           );
         })}
       />
@@ -252,7 +252,7 @@ const CreateBoard: React.FC<{ daoId: string }> = ({ daoId }) => {
               send: "",
               args: ["0", JSON.stringify(propReq)],
             },
-            { gasWanted: 10000000 }
+            { gasWanted: 10000000 },
           );
         })}
       />
@@ -380,12 +380,12 @@ const GnoCreateProposal: React.FC<{ daoId: string | undefined }> = ({
                   func: "ProposeJSON",
                   args: ["0", JSON.stringify(propReq)],
                 },
-                { gasWanted: 10000000 }
+                { gasWanted: 10000000 },
               );
               setModalVisible(false);
               await invalidateDAOProposals();
             },
-            { title: "Success", message: "Proposal created" }
+            { title: "Success", message: "Proposal created" },
           )}
         />
       </ModalBase>

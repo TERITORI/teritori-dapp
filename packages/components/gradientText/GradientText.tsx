@@ -1,6 +1,6 @@
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import React, { ReactNode } from "react";
 import { StyleProp, StyleSheet, TextStyle } from "react-native";
 
 import {
@@ -44,6 +44,7 @@ export interface GradientTextProps {
   gradientType: GradientType;
   ellipsizeMode?: string;
   numberOfLines?: number;
+  children: ReactNode;
 }
 
 const gradient = (type: GradientType) => {

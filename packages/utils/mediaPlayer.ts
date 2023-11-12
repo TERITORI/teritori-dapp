@@ -8,7 +8,7 @@ export const prettyMediaDuration = (millis: number | undefined) => {
   let hours: string | number = Math.floor(totalSec / 3600);
   let minutes: string | number = Math.floor((totalSec - hours * 3600) / 60);
   let seconds: string | number = Math.floor(
-    totalSec - hours * 3600 - minutes * 60
+    totalSec - hours * 3600 - minutes * 60,
   );
 
   if (hours < 10) {

@@ -12,7 +12,7 @@ const main = async () => {
 
   const client = new TeritoriNameServiceQueryClient(
     await mustGetNonSigningCosmWasmClient(network.id),
-    network.nameServiceContractAddress
+    network.nameServiceContractAddress,
   );
 
   const admin = await client.adminAddress();

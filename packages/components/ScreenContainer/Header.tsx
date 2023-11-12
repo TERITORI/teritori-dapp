@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { View, ViewStyle, StyleProp } from "react-native";
 
 import { neutral33 } from "../../utils/style/colors";
@@ -9,6 +9,7 @@ import { SpacerRow } from "../spacer";
 export const Header: React.FC<{
   style?: StyleProp<ViewStyle>;
   onBackPress?: () => void;
+  children: ReactNode;
 }> = ({ children, style, onBackPress }) => {
   return (
     <View

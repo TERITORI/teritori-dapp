@@ -8,7 +8,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
-import React, { memo, useEffect } from "react";
+import React, { ReactNode, memo, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform, View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
@@ -109,7 +109,7 @@ export default function App() {
   );
 }
 
-class ErrorBoundary extends React.Component {
+class ErrorBoundary extends React.Component<{ children: ReactNode }> {
   state: {
     hasError: boolean;
     error?: unknown;
@@ -117,7 +117,7 @@ class ErrorBoundary extends React.Component {
     catchInfo?: React.ErrorInfo;
   };
 
-  constructor(props: object) {
+  constructor(props: { children: ReactNode }) {
     super(props);
     this.state = { hasError: false };
   }
@@ -161,8 +161,8 @@ const WalletSyncer: React.FC = memo(() => {
     if (!selectedWallet || selectedWallet.networkId !== selectedNetworkId) {
       dispatch(
         setSelectedWalletId(
-          wallets.find((w) => w.networkId === selectedNetworkId)?.id
-        )
+          wallets.find((w) => w.networkId === selectedNetworkId)?.id,
+        ),
       );
     }
   }, [dispatch, selectedNetworkId, selectedWallet, wallets]);

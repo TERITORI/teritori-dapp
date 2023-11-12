@@ -54,22 +54,22 @@ export const FightSection: React.FC<FightSectionProps> = ({
         squad.nfts.map(async (nft) => {
           const nftClient = new TeritoriNftQueryClient(
             cosmwasmClient,
-            nft.contract_addr
+            nft.contract_addr,
           );
           return await nftClient.nftInfo({ tokenId: nft.token_id });
-        })
+        }),
       );
 
       const stakedRippers: RipperLightInfo[] = nftInfos.map(
         ({ extension }) => ({
           imageUri: ipfsURLToHTTPURL(`${extension?.image}`),
           name: `${extension?.name}`,
-        })
+        }),
       );
 
       return stakedRippers;
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
 
   const unstake = async () => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import {
   ImageBackground,
   ImageSourcePropType,
@@ -18,6 +18,7 @@ type GameContentViewProps = {
   bgImage?: ImageSourcePropType;
   hideStats?: boolean;
   loading?: boolean;
+  children: ReactNode;
 };
 
 export const GameContentView: React.FC<GameContentViewProps> = ({

@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 
 import {
   gradientColorBlue,
@@ -8,7 +8,7 @@ import {
 import { layout } from "../../../../utils/style/layout";
 import { PrimaryBox } from "../../../boxes/PrimaryBox";
 
-export const ToolbarContainer: FC = ({ children }) => {
+export const ToolbarContainer: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <PrimaryBox
       fullWidth

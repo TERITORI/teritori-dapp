@@ -5,7 +5,7 @@ import { getPostFee } from "../../components/socialFeed/NewsFeed/NewsFeedQueries
 
 export const useFeedPostFee = (
   networkId: string,
-  postCategory: PostCategory
+  postCategory: PostCategory,
 ) => {
   const { data } = useQuery(
     ["getPostFee", networkId, postCategory],
@@ -22,7 +22,7 @@ export const useFeedPostFee = (
         return 0;
       }
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
   return { postFee: data || 0 };
 };

@@ -21,13 +21,13 @@ export const useDAOGroup = (daoId: string | undefined, enabled?: boolean) => {
       const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
       const votingClient = new DaoVotingCw4QueryClient(
         cosmwasmClient,
-        daoVotingModule
+        daoVotingModule,
       );
       return await votingClient.groupContract();
     },
     {
       staleTime: Infinity,
       enabled: (enabled ?? true) && !!(networkId && daoVotingModule),
-    }
+    },
   );
 };

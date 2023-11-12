@@ -8,7 +8,7 @@ export const isFloatText = (value: string) => {
 
 export const tinyAddress = (
   fullAddress: string = "",
-  totalCount: number = 10
+  totalCount: number = 10,
 ) => {
   if (fullAddress.length <= 13) {
     return fullAddress;
@@ -21,7 +21,7 @@ export const tinyAddress = (
 
   return `${fullAddress.substring(
     0,
-    startingCharLength + chainIdName.length
+    startingCharLength + chainIdName.length,
   )}...${fullAddress.substring(fullAddress.length - endingCharLength)}`;
 };
 
@@ -29,7 +29,7 @@ export const replaceBetweenString = (
   origin: string,
   startIndex: number,
   endIndex: number,
-  insertion: string
+  insertion: string,
 ) =>
   `${origin.substring(0, startIndex)}${insertion}${origin.substring(endIndex)}`;
 
@@ -38,7 +38,7 @@ export const pluralOrNot = (word: string, quantity: number) =>
 
 export function numFormatter(
   num: number | undefined | string,
-  digits: number | undefined
+  digits: number | undefined,
 ) {
   const lookup = [
     { value: 1, symbol: "" },
