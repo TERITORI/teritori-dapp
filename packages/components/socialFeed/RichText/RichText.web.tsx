@@ -134,6 +134,8 @@ export const RichText: React.FC<RichTextProps> = ({
   onPublish,
   loading,
   publishDisabled,
+  authorId,
+  postId,
 }) => {
   const compositeDecorator = {
     decorators: [
@@ -448,7 +450,7 @@ export const RichText: React.FC<RichTextProps> = ({
         audioFiles.map((file, index) => (
           <View key={index}>
             <SpacerColumn size={2} />
-            <AudioView file={file} />
+            <AudioView file={file} postId={postId} authorId={authorId} />
             <SpacerColumn size={2} />
           </View>
         ))}
@@ -556,7 +558,7 @@ const createHTMLFromState = (state: ContentState) =>
   convertToHTML({
     entityToHTML: (entity, originalText) => {
       if (entity.type === VIDEOTYPE || entity.type === "VIDEO") {
-        return <video src={entity.data.src} controls />;
+        return <video src={entity.data.src} controls style={{ height: 400 }} />;
       }
       if (entity.type === "IMAGE") {
         return <img src={entity.data.src} />;

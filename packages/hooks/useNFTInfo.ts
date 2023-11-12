@@ -22,6 +22,7 @@ import {
 } from "../networks";
 import { getEthereumProvider } from "../utils/ethereum";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
+import { nameServiceDefaultImage } from "../utils/tns";
 import { NFTAttribute, NFTInfo } from "../utils/types/nft";
 
 export const useNFTInfo = (nftId: string, userId?: string | undefined) => {
@@ -145,9 +146,8 @@ const getTNSNFTInfo = async (
     attributes: [],
     nftAddress: contractAddress,
     mintAddress: contractAddress,
-    imageURL: nftInfo.extension.image
-      ? nftInfo.extension.image
-      : network?.nameServiceDefaultImage || "",
+    imageURL:
+      nftInfo.extension.image || nameServiceDefaultImage(false, network) || "",
     tokenId,
     ownerAddress: vaultOwnerAddress || owner,
     isSeller: isListed && isOwner,
@@ -158,7 +158,7 @@ const getTNSNFTInfo = async (
     priceDenom: vaultInfo?.denom || "",
     collectionName: contractInfo.name,
     textInsert: tokenId,
-    collectionImageURL: network?.nameServiceDefaultImage || "",
+    collectionImageURL: nameServiceDefaultImage(false, network) || "",
     mintDenom: contractInfo.native_denom,
     networkId: network.id,
     royalty: 0,

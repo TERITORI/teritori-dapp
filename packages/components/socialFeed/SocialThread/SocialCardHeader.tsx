@@ -12,6 +12,7 @@ import FlexRow from "../../FlexRow";
 import { OmniLink } from "../../OmniLink";
 import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { UserAvatarWithFrame } from "../../images/AvatarWithFrame";
+import { DotSeparator } from "../../separators/DotSeparator";
 import { SpacerRow } from "../../spacer";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 
@@ -83,16 +84,7 @@ export const SocialCardHeader: FC<{
                   : tinyAddress(authorAddress, 19)}
               </BrandText>
             </OmniLink>
-            {/* A dot separator */}
-            <View
-              style={{
-                backgroundColor: neutral77,
-                height: 2,
-                width: 2,
-                borderRadius: 999,
-                marginHorizontal: layout.spacing_x0_75,
-              }}
-            />
+            <DotSeparator style={{ marginHorizontal: layout.spacing_x0_75 }} />
             {/*---- Date */}
             <DateTime
               date={postMetadata.createdAt}
