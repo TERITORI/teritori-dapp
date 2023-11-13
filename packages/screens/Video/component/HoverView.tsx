@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { Pressable, ViewStyle } from "react-native";
 
 interface HoverViewProps {
   normalStyle: ViewStyle;
   hoverStyle: ViewStyle;
   onPress?: () => void;
+  children: ReactNode;
 }
 
 export const HoverView: React.FC<HoverViewProps> = ({
