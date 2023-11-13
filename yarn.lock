@@ -5988,30 +5988,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/slider@npm:^4.4.3":
-  version: 4.4.3
-  resolution: "@react-native-community/slider@npm:4.4.3"
-  checksum: e02416e763a05bee54967aae1e14ff9c7d76395416dc4ff7c0595a71c9866db35ac0bca8305fa1c7feca3568a327d563f6f14e14d342536257e91d3d4b6d5f3e
+"@react-native-community/slider@npm:4.4.2":
+  version: 4.4.2
+  resolution: "@react-native-community/slider@npm:4.4.2"
+  checksum: 1ae613f594a8ea9d7243b3125d26b36aab4e4c2dd9eba1bf66c4f31878e74fae055cd35a1babc46b262240885bb61fa321610417bb2a6d9f77a330136ff33293
   languageName: node
   linkType: hard
 
-"@react-native-masked-view/masked-view@npm:0.2.6":
-  version: 0.2.6
-  resolution: "@react-native-masked-view/masked-view@npm:0.2.6"
+"@react-native-masked-view/masked-view@npm:0.2.9":
+  version: 0.2.9
+  resolution: "@react-native-masked-view/masked-view@npm:0.2.9"
   peerDependencies:
-    react: 16 || 17
+    react: ">=16"
     react-native: ">=0.57"
-  checksum: 1f8f51ced0396b4d57e3b8c8f5324dfe936e39cef6fd93ab6a0b557e27cccf262502035bedd0c88038414fd8eae4b96bfa36ea38166538e640ed4038370b5574
+  checksum: 7eb6c370f000f630bf13ce9177964c430eda7057eb7036460d4e5d2bf2153ebd6a29bec0fb8dc6cd58bb5f9bbc8d1a3e0f13d40c798914a9224f164d4d46f896
   languageName: node
   linkType: hard
 
-"@react-native-picker/picker@npm:2.4.0":
-  version: 2.4.0
-  resolution: "@react-native-picker/picker@npm:2.4.0"
+"@react-native-picker/picker@npm:2.4.10":
+  version: 2.4.10
+  resolution: "@react-native-picker/picker@npm:2.4.10"
   peerDependencies:
-    react: 16 || 17
+    react: ">=16"
     react-native: ">=0.57"
-  checksum: ccec86aaa54b8011479b7aa3e062534ccbe146c696ecefa456f1540da5de3d3b84c422beeaf499f3d1166898996d88186155432b7c51fbbdb5d576dc4f2c379f
+  checksum: 905631e60ffb1aa3f6b378dc03cf2b6736487258f21d74145181185f225937b870ba1cec9f3e6deed1615ecb05e7cfd6b7b33082f169b811eed57ca6c64980d5
   languageName: node
   linkType: hard
 
@@ -24619,9 +24619,9 @@ __metadata:
     "@pinata/sdk": ^2.1.0
     "@react-native-async-storage/async-storage": 1.18.2
     "@react-native-clipboard/clipboard": ^1.10.0
-    "@react-native-community/slider": ^4.4.3
-    "@react-native-masked-view/masked-view": 0.2.6
-    "@react-native-picker/picker": 2.4.0
+    "@react-native-community/slider": 4.4.2
+    "@react-native-masked-view/masked-view": 0.2.9
+    "@react-native-picker/picker": 2.4.10
     "@react-navigation/native": ^6.0.11
     "@react-navigation/native-stack": ^6.7.0
     "@reduxjs/toolkit": ^1.8.3
