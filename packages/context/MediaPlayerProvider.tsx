@@ -9,6 +9,7 @@ import { shuffle } from "lodash";
 import React, {
   createContext,
   Dispatch,
+  ReactNode,
   SetStateAction,
   useCallback,
   useContext,
@@ -32,7 +33,7 @@ interface DefaultValue {
   setIsMediaPlayerOpen: Dispatch<SetStateAction<boolean>>;
   loadAndPlaySoundsQueue: (
     queue: Media[],
-    mediaToStart?: Media
+    mediaToStart?: Media,
   ) => Promise<void>;
   canNext: boolean;
   canPrev: boolean;
@@ -72,13 +73,15 @@ const defaultValue: DefaultValue = {
 
 const MediaPlayerContext = createContext(defaultValue);
 
-export const MediaPlayerContextProvider: React.FC = ({ children }) => {
+export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
   const [videoLastRoute, setVideoLastRoute] = useState<Route<any>>();
   // ------- Only used in UI
   const [isMediaPlayerOpen, setIsMediaPlayerOpen] = useState(
-    defaultValue.isMediaPlayerOpen
+    defaultValue.isMediaPlayerOpen,
   );
   const [queue, setQueue] = useState<Media[]>([]);
   const [randomQueue, setRandomQueue] = useState<Media[]>([]);
@@ -130,14 +133,14 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
             if ("error" in status) {
               console.error(
                 "Error while playbackStatus update: ",
-                status.error
+                status.error,
               );
               setToastError({
                 title: "Error while playbackStatus update: ",
                 message: status.error || "",
               });
             }
-          }
+          },
         );
         // ------- Autoplay createdSound
         // FIXME: Got error when playing video, then playing sound ("Video not loaded yet"), so, have to control this (Video have _nativeRef, but not Sound)
@@ -149,7 +152,7 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
         setAv(createdSound);
         setIsMediaPlayerOpen(true);
         // -------
-      } catch (e) {
+      } catch (e: any) {
         console.error("Error loading sound: ", e.message);
         setToastError({
           title: "Error loading sound: ",
@@ -157,12 +160,12 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
         });
       }
     },
-    [setToastError, av]
+    [setToastError, av],
   );
 
   const firstPlayVideo = async (video: Video, media: Media) => {
     setVideoLastRoute(
-      navigation.getState().routes[navigation.getState().routes.length - 1]
+      navigation.getState().routes[navigation.getState().routes.length - 1],
     );
     setMedia(media);
     try {
@@ -170,7 +173,7 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
       await av?.unloadAsync();
       setAv(video);
       await video.playAsync();
-    } catch (e) {
+    } catch (e: any) {
       console.error("Error while first playing video: ", e.message);
       setToastError({
         title: "Error while first playing video: ",
@@ -195,14 +198,14 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
   // ============== Only used in UI
   const loadAndPlaySoundsQueue = async (
     queue: Media[],
-    mediaToStart?: Media
+    mediaToStart?: Media,
   ) => {
     setQueue(queue);
     const randomMedia = queue[Math.floor(Math.random() * queue.length)];
     await loadAndPlaySound(
       mediaToStart ? mediaToStart : isRandom ? randomMedia : queue[0],
       queue,
-      isRandom
+      isRandom,
     );
   };
 
@@ -225,7 +228,7 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
     if (av && "_setFullscreen" in av) {
       try {
         await av._setFullscreen(true);
-      } catch (e) {
+      } catch (e: any) {
         console.error("Error setting full screen: ", e.message);
         setToastError({
           title: "Error setting full screen: ",
@@ -247,7 +250,7 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
     if (playbackStatus.isPlaying) {
       try {
         await av.pauseAsync();
-      } catch (e) {
+      } catch (e: any) {
         console.error("Error pausing media: ", e.message);
         setToastError({
           title: "Error pausing media: ",
@@ -257,7 +260,7 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
     } else {
       try {
         await av.playAsync();
-      } catch (e) {
+      } catch (e: any) {
         console.error("Error playing media: ", e.message);
         setToastError({
           title: "Error playing media: ",
@@ -269,7 +272,7 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
 
   const queueToUse = useMemo(
     () => (isRandom && randomQueue.length ? randomQueue : queue),
-    [isRandom, randomQueue, queue]
+    [isRandom, randomQueue, queue],
   );
 
   const queueCurrentIndex = media ? queueToUse.indexOf(media) : -1;

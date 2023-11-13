@@ -25,7 +25,7 @@ export const useMaxResolution = ({
   const contentWidth = useMemo(
     () =>
       windowWidth - (isSidebarExpanded ? fullSidebarWidth : smallSidebarWidth),
-    [windowWidth, isSidebarExpanded]
+    [windowWidth, isSidebarExpanded],
   );
 
   const width = useMemo(() => {
@@ -49,8 +49,8 @@ export const useMaxResolution = ({
         ? screenContentMaxWidthLarge
         : width
       : width > screenContentMaxWidth
-      ? screenContentMaxWidth
-      : width,
+        ? screenContentMaxWidth
+        : width,
     height: windowHeight - headerHeight,
     contentWidth,
   };
