@@ -29,7 +29,7 @@ export const TopMenuMobile: FC = () => {
           source={{
             uri: ipfsURLToHTTPURL(
               userInfo?.metadata?.image ||
-                nameServiceDefaultImage(isDAO, network)
+                nameServiceDefaultImage(isDAO, network),
             ),
           }}
         />

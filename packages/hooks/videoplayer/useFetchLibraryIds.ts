@@ -15,7 +15,7 @@ export const useFetchLibraryIds = () => {
       try {
         if (!userId) return [];
         const res = await mustGetVideoClient(
-          selectedNetworkId
+          selectedNetworkId,
         ).GetVideoListForLibrary({
           user: userId,
         });
@@ -27,7 +27,7 @@ export const useFetchLibraryIds = () => {
       } catch {
         return [];
       }
-    }
+    },
   );
   return { data, isFetching, isLoading };
 };

@@ -14,7 +14,7 @@ export const useIncreaseViewCount = (req: IncreaseViewCountRequest) => {
       return {
         res: response.res,
       };
-    }
+    },
   );
   return { data, isFetching, isLoading };
 };

@@ -62,8 +62,8 @@ export const VolumeSlider: FC<{
                 ? VolumeAltIcon
                 : VolumeIcon
               : useAltStyle
-              ? VolumeOffAltIcon
-              : VolumeOffIcon
+                ? VolumeOffAltIcon
+                : VolumeOffIcon
           }
           height={20}
           width={20}
@@ -71,8 +71,8 @@ export const VolumeSlider: FC<{
             useAltStyle
               ? secondaryColor
               : isSliding || isHovered
-              ? secondaryColor
-              : neutralA3
+                ? secondaryColor
+                : neutralA3
           }
         />
       </CustomPressable>

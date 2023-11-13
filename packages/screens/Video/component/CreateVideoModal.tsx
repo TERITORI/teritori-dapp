@@ -188,7 +188,7 @@ export const CreateVideoModal: React.FC<UploadAlbumModalProps> = ({
         },
         defaultSocialFeedFee,
         "",
-        [{ amount: postFee.toString(), denom: "utori" }]
+        [{ amount: postFee.toString(), denom: "utori" }],
       );
 
       if (res.transactionHash) {

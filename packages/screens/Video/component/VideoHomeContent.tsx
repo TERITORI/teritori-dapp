@@ -38,12 +38,12 @@ export const VideoHomeContent: React.FC = () => {
   const [flatListWidth, setFlatListWidth] = useState(0);
   const elemsPerRow =
     Math.floor(
-      flatListWidth / (VIDEO_CARD_WIDTH + FLAT_LIST_SEPARATOR_WIDTH)
+      flatListWidth / (VIDEO_CARD_WIDTH + FLAT_LIST_SEPARATOR_WIDTH),
     ) || 1;
 
   const videos = useMemo(
     () => (data ? combineFetchVideoPages(data.pages) : []),
-    [data]
+    [data],
   );
 
   const scrollHandler = useAnimatedScrollHandler({

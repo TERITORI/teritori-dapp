@@ -39,16 +39,16 @@ export const MediaNameImage: FC<{
               params: { id: media.albumId },
             }
           : media.videoId
-          ? {
-              screen: "VideoDetail",
-              params: { id: media.videoId },
-            }
-          : {
-              screen: "FeedPostView",
-              params: {
-                id: getNetworkObjectId(network?.id, media?.postId) || "",
-              },
-            }
+            ? {
+                screen: "VideoDetail",
+                params: { id: media.videoId },
+              }
+            : {
+                screen: "FeedPostView",
+                params: {
+                  id: getNetworkObjectId(network?.id, media?.postId) || "",
+                },
+              }
       }
     >
       <View

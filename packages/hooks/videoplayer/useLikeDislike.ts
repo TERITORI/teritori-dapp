@@ -2,7 +2,7 @@ import { LikeRequest, DislikeRequest } from "../../api/video/v1/video";
 import { mustGetVideoClient } from "../../utils/backend";
 export const increaseLike = async (
   req: LikeRequest,
-  networkId: string
+  networkId: string,
 ): Promise<number> => {
   const videoClient = mustGetVideoClient(networkId);
   const response = await videoClient.Like(req);
@@ -11,7 +11,7 @@ export const increaseLike = async (
 
 export const increaseDislike = async (
   req: DislikeRequest,
-  networkId: string
+  networkId: string,
 ): Promise<number> => {
   const videoClient = mustGetVideoClient(networkId);
   const response = await videoClient.Dislike(req);

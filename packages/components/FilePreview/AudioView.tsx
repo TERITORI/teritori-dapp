@@ -39,11 +39,11 @@ export const AudioView: React.FC<{
     useMediaPlayer();
   const isInMediaPlayer = useMemo(
     () => media?.postId === postId,
-    [media?.postId, postId]
+    [media?.postId, postId],
   );
   const duration = useMemo(
     () => prettyMediaDuration(file.audioMetadata?.duration),
-    [file]
+    [file],
   );
 
   const onPressPlayPause = async () => {
@@ -81,7 +81,7 @@ export const AudioView: React.FC<{
       file.audioMetadata?.duration,
       playbackStatus?.positionMillis,
       isInMediaPlayer,
-    ]
+    ],
   );
 
   if (!file?.url)
@@ -152,7 +152,7 @@ export const AudioView: React.FC<{
                 {prettyMediaDuration(
                   isInMediaPlayer && playbackStatus?.positionMillis
                     ? playbackStatus.positionMillis
-                    : 0
+                    : 0,
                 )}
               </BrandText>
               <BrandText style={[fontSemibold14, { color: neutral77 }]}>

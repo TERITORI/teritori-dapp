@@ -44,7 +44,7 @@ export const useFetchVideo = (req: GetVideoRequest) => {
         //TODO: error handling/feedback
         return null;
       }
-    }
+    },
   );
   return { data, isFetching, isLoading };
 };

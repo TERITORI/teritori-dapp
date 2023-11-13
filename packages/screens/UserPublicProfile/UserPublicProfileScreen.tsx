@@ -107,8 +107,8 @@ const SelectedTabContent: React.FC<{
             isDAO
               ? undefined
               : selectedWallet?.address !== userAddress
-              ? userInfo?.metadata.tokenId || userAddress
-              : undefined
+                ? userInfo?.metadata.tokenId || userAddress
+                : undefined
           }
           req={feedRequestUser}
         />

@@ -114,7 +114,7 @@ export const VideoDetailScreen: ScreenFC<"VideoDetail"> = ({
 
   const moreVideos = useMemo(
     () => (userVideos ? combineFetchVideoPages(userVideos.pages) : []),
-    [userVideos]
+    [userVideos],
   );
 
   const videoLike = async () => {
@@ -170,7 +170,7 @@ export const VideoDetailScreen: ScreenFC<"VideoDetail"> = ({
         },
         defaultSocialFeedFee,
         "",
-        [{ amount: postFee.toString(), denom: "utori" }]
+        [{ amount: postFee.toString(), denom: "utori" }],
       );
       console.log("resresresres", res);
 

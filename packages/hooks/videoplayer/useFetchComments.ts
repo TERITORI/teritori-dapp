@@ -15,7 +15,7 @@ export const useFetchComments = (req: GetCommentListRequest) => {
         console.error("initData err", err);
         return [];
       }
-    }
+    },
   );
   return { data, isFetching, isLoading };
 };

@@ -22,13 +22,12 @@ export const signingVideoPlayerClient = async ({
   if (cachedSigningClients[cacheKey]) {
     return cachedSigningClients[cacheKey];
   } else {
-    const signingComswasmClient = await getKeplrSigningCosmWasmClient(
-      networkId
-    );
+    const signingComswasmClient =
+      await getKeplrSigningCosmWasmClient(networkId);
     const client = new TeritoriVideoPlayerClient(
       signingComswasmClient,
       walletAddress,
-      videoContractAddress
+      videoContractAddress,
     );
 
     cachedSigningClients[cacheKey] = client;

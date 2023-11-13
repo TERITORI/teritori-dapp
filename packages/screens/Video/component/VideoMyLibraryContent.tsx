@@ -49,11 +49,11 @@ export const VideoMyLibraryContent: React.FC = () => {
   const [flatListOthersWidth, setFlatListOthersWidth] = useState(0);
   const elemsPerRow =
     Math.floor(
-      flatListWidth / (VIDEO_CARD_WIDTH + FLAT_LIST_SEPARATOR_WIDTH)
+      flatListWidth / (VIDEO_CARD_WIDTH + FLAT_LIST_SEPARATOR_WIDTH),
     ) || 1;
   const elemsOthersPerRow =
     Math.floor(
-      flatListOthersWidth / (VIDEO_CARD_WIDTH + FLAT_LIST_SEPARATOR_WIDTH)
+      flatListOthersWidth / (VIDEO_CARD_WIDTH + FLAT_LIST_SEPARATOR_WIDTH),
     ) || 1;
   const { data, isFetching, hasNextPage, fetchNextPage, isLoading } =
     useFetchUserVideos({
@@ -64,7 +64,7 @@ export const VideoMyLibraryContent: React.FC = () => {
 
   const myVideos = useMemo(
     () => (data ? combineFetchVideoPages(data.pages) : []),
-    [data]
+    [data],
   );
 
   const {
@@ -81,7 +81,7 @@ export const VideoMyLibraryContent: React.FC = () => {
   });
   const otherAlbums = useMemo(
     () => (dataOther ? combineFetchVideoPages(dataOther.pages) : []),
-    [dataOther]
+    [dataOther],
   );
 
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);

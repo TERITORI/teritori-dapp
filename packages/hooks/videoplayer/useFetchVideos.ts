@@ -13,7 +13,7 @@ export type VideosList = {
 export const combineFetchVideoPages = (pages: VideosList[]) =>
   pages.reduce(
     (acc: VideoInfoWithMeta[], page) => [...acc, ...(page?.list || [])],
-    []
+    [],
   );
 
 export const useFetchVideos = (req: GetVideoListRequest) => {
@@ -157,14 +157,14 @@ export const useFetchVideos = (req: GetVideoListRequest) => {
         getNextPageParam: (lastPage, pages) => {},
         staleTime: Infinity,
         refetchOnWindowFocus: false,
-      }
+      },
     );
   return { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading };
 };
 
 const getVideos = async (
   networkId: string,
-  req: GetVideoListRequest
+  req: GetVideoListRequest,
 ): Promise<VideoInfo[]> => {
   try {
     // ===== We use FeedService to be able to fetch filtered posts

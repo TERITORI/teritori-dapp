@@ -12,7 +12,7 @@ import { useSelectedNetworkId } from "../useSelectedNetwork";
 export const combineFetchVideoPages = (pages: VideosList[]) =>
   pages.reduce(
     (acc: VideoInfoWithMeta[], page) => [...acc, ...(page?.list || [])],
-    []
+    [],
   );
 
 export const useFetchOtherVideos = (req: GetVideoListForLibraryRequest) => {
@@ -51,14 +51,14 @@ export const useFetchOtherVideos = (req: GetVideoListForLibraryRequest) => {
         getNextPageParam: (lastPage, pages) => {},
         staleTime: Infinity,
         refetchOnWindowFocus: false,
-      }
+      },
     );
   return { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading };
 };
 
 const getVideos = async (
   networkId: string,
-  req: GetVideoListForLibraryRequest
+  req: GetVideoListForLibraryRequest,
 ): Promise<VideoInfo[]> => {
   try {
     // ===== We use FeedService to be able to fetch filtered posts

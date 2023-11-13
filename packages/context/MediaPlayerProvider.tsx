@@ -9,6 +9,7 @@ import { shuffle } from "lodash";
 import React, {
   createContext,
   Dispatch,
+  ReactNode,
   SetStateAction,
   useCallback,
   useContext,
@@ -32,7 +33,7 @@ interface DefaultValue {
   setIsMediaPlayerOpen: Dispatch<SetStateAction<boolean>>;
   loadAndPlaySoundsQueue: (
     queue: Media[],
-    mediaToStart?: Media
+    mediaToStart?: Media,
   ) => Promise<void>;
   canNext: boolean;
   canPrev: boolean;
@@ -70,13 +71,15 @@ const defaultValue: DefaultValue = {
 
 const MediaPlayerContext = createContext(defaultValue);
 
-export const MediaPlayerContextProvider: React.FC = ({ children }) => {
+export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
   const [videoLastRoute, setVideoLastRoute] = useState<Route<any>>();
   // ------- Only used in UI
   const [isMediaPlayerOpen, setIsMediaPlayerOpen] = useState(
-    defaultValue.isMediaPlayerOpen
+    defaultValue.isMediaPlayerOpen,
   );
   const [queue, setQueue] = useState<Media[]>([]);
   const [randomQueue, setRandomQueue] = useState<Media[]>([]);
@@ -128,14 +131,14 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
             if ("error" in status) {
               console.error(
                 "Error while playbackStatus update: ",
-                status.error
+                status.error,
               );
               setToastError({
                 title: "Error while playbackStatus update",
                 message: status.error || "",
               });
             }
-          }
+          },
         );
         setAv(createdSound);
         // ------- Autoplay createdSound
@@ -143,23 +146,23 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
         await createdSound?.playAsync();
         setIsMediaPlayerOpen(true);
         // -------
-      } catch (e) {
+      } catch (e: any) {
         setToastError({
           title: "Error loading sound",
           message: e.message,
         });
       }
     },
-    [setToastError, av]
+    [setToastError, av],
   );
 
   const firstPlayVideo = async (video: Video, media: Media) => {
     console.log(
       "navigation.getState()navigation.getState()",
-      navigation.getState()
+      navigation.getState(),
     );
     setVideoLastRoute(
-      navigation.getState().routes[navigation.getState().routes.length - 1]
+      navigation.getState().routes[navigation.getState().routes.length - 1],
     );
     setMedia(media);
     await av?.pauseAsync();
@@ -176,14 +179,14 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
   // ============== Only used in UI
   const loadAndPlaySoundsQueue = async (
     queue: Media[],
-    mediaToStart?: Media
+    mediaToStart?: Media,
   ) => {
     setQueue(queue);
     const randomMedia = queue[Math.floor(Math.random() * queue.length)];
     await loadAndPlaySound(
       mediaToStart ? mediaToStart : isRandom ? randomMedia : queue[0],
       queue,
-      isRandom
+      isRandom,
     );
   };
 
@@ -220,7 +223,7 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
 
   const queueToUse = useMemo(
     () => (isRandom && randomQueue.length ? randomQueue : queue),
-    [isRandom, randomQueue, queue]
+    [isRandom, randomQueue, queue],
   );
 
   const queueCurrentIndex = media ? queueToUse.indexOf(media) : -1;
