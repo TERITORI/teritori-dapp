@@ -23,6 +23,9 @@ import { convertToHTML } from "draft-convert";
 import {
   ContentBlock,
   ContentState,
+  convertFromHTML,
+  convertFromRaw,
+  convertToRaw,
   DraftEntityType,
   EditorCommand,
   EditorState,
@@ -60,6 +63,11 @@ import {
 import { ActionsContainer } from "./Toolbar/ActionsContainer";
 import { ToolbarContainer } from "./Toolbar/ToolbarContainer";
 import createInlineToolbarPlugin from "./inline-toolbar";
+import {
+  markdownToDraft,
+  markdownToHTML,
+  parseMarkdown,
+} from "./markdownToDraft";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
@@ -88,6 +96,7 @@ import { EditableAudioPreview } from "../../FilePreview/EditableAudioPreview";
 import { IconBox } from "../../IconBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { FileUploader } from "../../fileUploader";
+import { TextInputCustom } from "../../inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
@@ -165,6 +174,8 @@ export const RichText: React.FC<RichTextProps> = ({
     imagePlugin,
     videoPlugin,
   ];
+
+  const [markdown, setMarkdown] = React.useState("");
 
   const { width: windowWidth } = useWindowDimensions();
   const editorRef = useRef<Editor>(null);
@@ -419,6 +430,32 @@ export const RichText: React.FC<RichTextProps> = ({
       <ScrollView
         contentContainerStyle={isTruncateNeeded && { overflow: "hidden" }}
       >
+        {!isPostConsultation && (
+          <>
+            <TextInputCustom
+              label="Markdown"
+              name="markdown"
+              onChangeText={setMarkdown}
+              value={markdown}
+              multiline
+              numberOfLines={markdown.split("\n").length + 1}
+            />
+            <SpacerColumn size={1} />
+            <PrimaryButton
+              text="Import markdown"
+              loader
+              onPress={async () => {
+                const html = markdownToHTML(markdown);
+                console.log("found html", html);
+
+                const editorState = createStateFromHTML(html);
+                console.log("editorState", editorState);
+                setEditorState(editorState);
+              }}
+            />
+            <SpacerColumn size={3} />
+          </>
+        )}
         <Editor
           editorState={editorState}
           handleKeyCommand={handleKeyCommand}
@@ -552,8 +589,10 @@ const createStateFromHTML = (html: string) => {
   return EditorState.createWithContent(contentState);
 };
 
-const createHTMLFromState = (state: ContentState) =>
-  convertToHTML({
+const createHTMLFromState = (state: ContentState) => {
+  const rawState = convertToRaw(state);
+  console.log("found raw state before convert html", rawState);
+  return convertToHTML({
     entityToHTML: (entity, originalText) => {
       if (entity.type === VIDEOTYPE || entity.type === "VIDEO") {
         return <video src={entity.data.src} controls />;
@@ -568,6 +607,7 @@ const createHTMLFromState = (state: ContentState) =>
       return originalText;
     },
   })(state);
+};
 
 const mentionStrategy = (
   contentBlock: ContentBlock,
@@ -694,3 +734,5 @@ const getGIFsToPublish = (editorState: EditorState, gifsUrls: string[]) => {
   });
   return gifsToPublish;
 };
+
+const ImageRegexp = /^!\[([^\]]*)]\s*\(([^)"]+)( "([^)"]+)")?\)/;
