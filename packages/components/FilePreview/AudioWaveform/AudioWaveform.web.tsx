@@ -5,8 +5,8 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { AudioWaveformProps } from "./AudioWaveform.type";
-import { BAR_LENGTH, generateBars } from "../../../utils/audio";
 import { neutral55, secondaryColor } from "../../../utils/style/colors";
+import { BAR_LENGTH, generateBars } from "../../../utils/waveform";
 
 const BAR_WIDTH = 3;
 export const AUDIO_WAVEFORM_MAX_WIDTH = 600;

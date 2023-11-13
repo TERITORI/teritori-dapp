@@ -388,8 +388,6 @@ export const SocialThreadCard: React.FC<{
 
           {/*====== Card Content */}
           <SocialMessageContent
-            authorId={localPost.authorId}
-            postId={localPost.identifier}
             metadata={metadata}
             postCategory={localPost.category}
             isPreview={isPreview}

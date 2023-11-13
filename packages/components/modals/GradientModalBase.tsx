@@ -3,6 +3,7 @@ import React, { ComponentType } from "react";
 import {
   Modal,
   Pressable,
+  StyleProp,
   View,
   ViewStyle,
   ScrollView,
@@ -22,7 +23,6 @@ import {
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { SeparatorGradient } from "../separators/SeparatorGradient";
 
 const getModalColors = (status?: ModalBaseProps["modalStatus"]) => {
   switch (status) {
@@ -36,6 +36,22 @@ const getModalColors = (status?: ModalBaseProps["modalStatus"]) => {
       return [neutral00];
   }
 };
+
+// Just an horizontal gradient separator
+const SeparatorGradient: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
+  style,
+}) => (
+  <View style={[{ height: 1, width: "100%" }, style]}>
+    {/* Background gradient */}
+    <LinearGradient
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={{ height: "100%", width: "100%" }}
+      colors={["#2AF598", "#009EFD"]}
+    />
+  </View>
+);
+
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
 type ModalBaseProps = {

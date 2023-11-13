@@ -37,7 +37,6 @@ export const Header: React.FC<{
           marginLeft: layout.contentSpacing,
         }}
       >
-        {/*If you want to add buttons or something in the Header in desktop mode, refer to ScreenContainer/index.tsx for now*/}
         {onBackPress && <BackButton onPress={onBackPress} />}
         {children && (
           <>

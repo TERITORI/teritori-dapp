@@ -23,7 +23,7 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { parseUserId } from "../../networks";
+import { getCosmosNetwork, parseUserId } from "../../networks";
 import {
   addSelected,
   removeSelected,
@@ -45,10 +45,10 @@ import { DropdownOption } from "../DropdownOption";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { NetworkIcon } from "../NetworkIcon";
 import { OmniLink } from "../OmniLink";
+import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButton } from "../buttons/SecondaryButton";
-import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
 export const NFTView: React.FC<{
@@ -62,6 +62,7 @@ export const NFTView: React.FC<{
   const flatStyle = StyleSheet.flatten(style);
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(nft.ownerId);
+  const cosmosNetwork = getCosmosNetwork(nft.networkId);
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
@@ -156,10 +157,15 @@ export const NFTView: React.FC<{
                     zIndex: 1000,
                   }}
                 >
-                  <UserAvatarWithFrame
-                    userId={nft.ownerId}
-                    size="XXS"
+                  <OptimizedImage
+                    sourceURI={userInfo.metadata.image}
+                    fallbackURI={cosmosNetwork?.nameServiceDefaultImage}
+                    width={32}
+                    height={32}
                     style={{
+                      height: 32,
+                      width: 32,
+                      borderRadius: 18,
                       marginRight: 6,
                     }}
                   />

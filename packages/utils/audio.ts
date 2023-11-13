@@ -1,4 +1,4 @@
-export const prettyMediaDuration = (millis: number | undefined) => {
+export const getAudioDuration = (millis: number | undefined) => {
   if (!millis) {
     return "00:00";
   }

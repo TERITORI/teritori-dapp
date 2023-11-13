@@ -5823,13 +5823,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/slider@npm:4.4.2":
-  version: 4.4.2
-  resolution: "@react-native-community/slider@npm:4.4.2"
-  checksum: 1ae613f594a8ea9d7243b3125d26b36aab4e4c2dd9eba1bf66c4f31878e74fae055cd35a1babc46b262240885bb61fa321610417bb2a6d9f77a330136ff33293
-  languageName: node
-  linkType: hard
-
 "@react-native-masked-view/masked-view@npm:0.2.9":
   version: 0.2.9
   resolution: "@react-native-masked-view/masked-view@npm:0.2.9"
@@ -24165,7 +24158,6 @@ __metadata:
     "@pinata/sdk": ^2.1.0
     "@react-native-async-storage/async-storage": 1.18.2
     "@react-native-clipboard/clipboard": ^1.10.0
-    "@react-native-community/slider": 4.4.2
     "@react-native-masked-view/masked-view": 0.2.9
     "@react-native-picker/picker": 2.4.10
     "@react-navigation/native": ^6.0.11

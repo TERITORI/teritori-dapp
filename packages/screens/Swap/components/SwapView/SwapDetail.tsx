@@ -5,8 +5,8 @@ import chevronDownSVG from "../../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
+import { Separator } from "../../../../components/Separator";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
-import { Separator } from "../../../../components/separators/Separator";
 import { SpacerColumn } from "../../../../components/spacer";
 import {
   neutral77,

@@ -5,11 +5,11 @@ import validatorIconSVG from "../../../../assets/default-images/validator-icon.s
 import { Avatar } from "../../../components/Avatar";
 import { BrandText } from "../../../components/BrandText";
 import { ExternalLink } from "../../../components/ExternalLink";
+import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { GradientText } from "../../../components/gradientText";
 import ModalBase from "../../../components/modals/ModalBase";
-import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useKeybaseAvatarURL } from "../../../hooks/useKeybaseAvatarURL";
 import { neutral77 } from "../../../utils/style/colors";

@@ -4,9 +4,6 @@ export interface AudioFileMetadata {
   waveform: number[];
   duration: number;
 }
-export interface VideoFileMetadata {
-  duration: number;
-}
 
 interface BaseFileData {
   file: File;
@@ -16,7 +13,6 @@ interface BaseFileData {
   url: string;
   fileType: FileType;
   audioMetadata?: AudioFileMetadata;
-  videoMetadata?: VideoFileMetadata;
   isCoverImage?: boolean;
   base64Image?: string;
 }

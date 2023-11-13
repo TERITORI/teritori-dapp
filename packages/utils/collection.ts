@@ -2,7 +2,7 @@ import { BigNumber } from "ethers";
 import Long from "long";
 
 import { prettyPrice } from "./coins";
-import { nameServiceDefaultImage } from "./tns";
+import { ipfsURLToHTTPURL } from "./ipfs";
 import { ConfigResponse } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.types";
 import {
   CosmosNetworkInfo,
@@ -91,7 +91,7 @@ export const getCollectionMetadata = (umetadata: unknown): CollectionInfo => {
   }
 
   if ("image" in metadata && typeof metadata.image === "string")
-    info.image = metadata.image;
+    info.image = ipfsURLToHTTPURL(metadata.image);
   if ("description" in metadata && typeof metadata.description === "string")
     info.description = metadata.description;
   if ("discord" in metadata && typeof metadata.discord === "string")
@@ -101,7 +101,7 @@ export const getCollectionMetadata = (umetadata: unknown): CollectionInfo => {
   if ("website" in metadata && typeof metadata.website === "string")
     info.website = metadata.website;
   if ("banner" in metadata && typeof metadata.banner === "string")
-    info.bannerImage = metadata.banner;
+    info.bannerImage = ipfsURLToHTTPURL(metadata.banner);
 
   return info;
 };
@@ -111,7 +111,7 @@ export const getTnsCollectionInfo = (
 ): CollectionInfo => {
   return {
     name: `${network.displayName} Name Service`, // FIXME: should fetch from contract or be in env
-    image: nameServiceDefaultImage(false, network),
+    image: ipfsURLToHTTPURL(network?.nameServiceDefaultImage || ""),
     mintPhases: [],
   };
 };

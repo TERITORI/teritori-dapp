@@ -13,16 +13,12 @@ interface Props {
   metadata: SocialFeedMetadata;
   audioFiles?: RemoteFileData[];
   isPreview?: boolean;
-  postId: string;
-  authorId: string;
 }
 
 export const ArticleRenderer: React.FC<Props> = ({
   metadata,
   audioFiles,
   isPreview,
-  postId,
-  authorId,
 }) => {
   const coverImage = metadata.files?.find((file) => file.isCoverImage);
 
@@ -50,8 +46,6 @@ export const ArticleRenderer: React.FC<Props> = ({
         isPostConsultation
         isPreview={isPreview}
         audioFiles={audioFiles}
-        postId={postId}
-        authorId={authorId}
       />
     </>
   );
