@@ -22,14 +22,14 @@ import {
 } from "../../api/p2e/v1/p2e";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
+import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { UserAvatarWithFrame } from "../../components/images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
-import { parseUserId } from "../../networks";
+import { getCosmosNetwork, parseUserId } from "../../networks";
 import { mustGetP2eClient } from "../../utils/backend";
 import { parseUserScoreInfo } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
@@ -56,7 +56,8 @@ type PlayerNameProps = {
 
 const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
   const navigation = useAppNavigation();
-  const [, address] = parseUserId(userId);
+  const [network, address] = parseUserId(userId);
+  const cosmosNetwork = getCosmosNetwork(network?.id);
   const userInfo = useNSUserInfo(userId);
 
   const name = userInfo.metadata?.tokenId || address || "";
@@ -71,7 +72,18 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
           });
         }}
       >
-        <UserAvatarWithFrame userId={userId} size="XXS" />
+        <OptimizedImage
+          sourceURI={userInfo.metadata?.image}
+          fallbackURI={cosmosNetwork?.nameServiceDefaultImage}
+          width={32}
+          height={32}
+          style={{
+            borderRadius: 999,
+            width: 32,
+            height: 32,
+            aspectRatio: 1,
+          }}
+        />
 
         <BrandText
           style={[styles.colData, { marginLeft: layout.spacing_x1 }]}

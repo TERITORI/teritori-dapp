@@ -1,16 +1,14 @@
-import React, { useMemo } from "react";
+import { Audio, AVPlaybackStatus } from "expo-av";
+import React, { useEffect, useMemo, useState } from "react";
 import { View, Image, TouchableOpacity } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 
 import { AudioWaveform } from "./AudioWaveform";
 import { AUDIO_WAVEFORM_MAX_WIDTH } from "./AudioWaveform/AudioWaveform.web";
 import pauseSVG from "../../../assets/icons/pause.svg";
 import playSVG from "../../../assets/icons/play.svg";
-import { useMediaPlayer } from "../../context/MediaPlayerProvider";
-import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import { getAudioDuration } from "../../utils/audio";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { prettyMediaDuration } from "../../utils/mediaPlayer";
 import {
   errorColor,
   neutral00,
@@ -19,9 +17,7 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { nameServiceDefaultImage } from "../../utils/tns";
 import { RemoteFileData } from "../../utils/types/files";
-import { Media } from "../../utils/types/mediaPlayer";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 
@@ -29,43 +25,41 @@ const THUMBNAIL_SIZE = 140;
 
 export const AudioView: React.FC<{
   file: RemoteFileData;
-  authorId: string;
-  postId: string;
-}> = ({ file, authorId, postId }) => {
-  const selectedNetwork = useSelectedNetworkInfo();
-  const userInfo = useNSUserInfo(authorId);
-  const { isDAO } = useIsDAO(authorId);
-  const { media, handlePlayPause, loadAndPlaySoundsQueue, playbackStatus } =
-    useMediaPlayer();
-  const isInMediaPlayer = useMemo(
-    () => media?.postId === postId,
-    [media?.postId, postId],
-  );
+}> = ({ file }) => {
+  const [sound, setSound] = useState<Audio.Sound>();
+  const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatus>();
   const duration = useMemo(
-    () => prettyMediaDuration(file.audioMetadata?.duration),
+    () => getAudioDuration(file.audioMetadata?.duration),
     [file],
   );
 
-  const onPressPlayPause = async () => {
-    if (isInMediaPlayer) {
-      await handlePlayPause();
+  const handlePlayPause = async () => {
+    if (playbackStatus?.isLoaded && playbackStatus?.isPlaying) {
+      await sound?.pauseAsync();
     } else {
-      const songToPlay: Media = {
-        imageUrl:
-          file?.thumbnailFileData?.url ||
-          userInfo.metadata.image ||
-          nameServiceDefaultImage(isDAO, selectedNetwork),
-        name: "Song from Social Feed",
-        createdBy: authorId,
-        fileUrl: file.url,
-        duration: file.audioMetadata?.duration,
-        // postId is used to difference audios from Social Feed (News feed or Article consultation)
-        postId: postId || Math.floor(Math.random() * 200000).toString(),
-      };
-      // TODO: Play songs of social feed: Add songs of next posts in queue
-      await loadAndPlaySoundsQueue([songToPlay]);
+      await sound?.playAsync();
     }
   };
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
+
+  useEffect(() => {
+    const loadSound = async () => {
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: ipfsURLToHTTPURL(file.url) },
+        { progressUpdateIntervalMillis: 400 },
+        (status) => setPlaybackStatus(status),
+      );
+      setSound(sound);
+    };
+    loadSound();
+  }, [file.url]);
 
   const hasThumbnail = useMemo(
     () => typeof file?.thumbnailFileData?.url === "string",
@@ -74,14 +68,9 @@ export const AudioView: React.FC<{
 
   const positionPercent = useMemo(
     () =>
-      (isInMediaPlayer && playbackStatus?.positionMillis
-        ? playbackStatus.positionMillis
-        : 0) / (file.audioMetadata?.duration || 1),
-    [
-      file.audioMetadata?.duration,
-      playbackStatus?.positionMillis,
-      isInMediaPlayer,
-    ],
+      ((playbackStatus?.isLoaded && playbackStatus?.positionMillis) || 0) /
+      ((playbackStatus?.isLoaded && playbackStatus?.durationMillis) || 1),
+    [playbackStatus],
   );
 
   if (!file?.url)
@@ -98,11 +87,11 @@ export const AudioView: React.FC<{
       }}
     >
       <TouchableOpacity
-        onPress={onPressPlayPause}
+        onPress={handlePlayPause}
         activeOpacity={0.9}
         style={{
           backgroundColor:
-            isInMediaPlayer && playbackStatus?.isPlaying
+            playbackStatus?.isLoaded && playbackStatus?.isPlaying
               ? secondaryColor
               : neutral00,
           height: 40,
@@ -112,18 +101,24 @@ export const AudioView: React.FC<{
           justifyContent: "center",
         }}
       >
-        <SVG
-          source={
-            isInMediaPlayer && playbackStatus?.isPlaying ? pauseSVG : playSVG
-          }
-          width={24}
-          height={24}
-          color={
-            isInMediaPlayer && playbackStatus?.isPlaying
-              ? neutral00
-              : secondaryColor
-          }
-        />
+        {playbackStatus?.isLoaded && playbackStatus?.isBuffering ? (
+          <ActivityIndicator size={14} color={secondaryColor} />
+        ) : (
+          <SVG
+            source={
+              playbackStatus?.isLoaded && playbackStatus?.isPlaying
+                ? pauseSVG
+                : playSVG
+            }
+            width={24}
+            height={24}
+            color={
+              playbackStatus?.isLoaded && playbackStatus?.isPlaying
+                ? neutral00
+                : secondaryColor
+            }
+          />
+        )}
       </TouchableOpacity>
 
       <View
@@ -149,10 +144,10 @@ export const AudioView: React.FC<{
               }}
             >
               <BrandText style={[fontSemibold14]}>
-                {prettyMediaDuration(
-                  isInMediaPlayer && playbackStatus?.positionMillis
-                    ? playbackStatus.positionMillis
-                    : 0,
+                {getAudioDuration(
+                  (playbackStatus?.isLoaded &&
+                    playbackStatus?.positionMillis) ||
+                    0,
                 )}
               </BrandText>
               <BrandText style={[fontSemibold14, { color: neutral77 }]}>
@@ -167,7 +162,11 @@ export const AudioView: React.FC<{
               <AudioWaveform
                 waveform={file.audioMetadata?.waveform || []}
                 positionPercent={positionPercent}
-                duration={file.audioMetadata?.duration || 1}
+                duration={
+                  playbackStatus?.isLoaded
+                    ? playbackStatus?.durationMillis || 0
+                    : 1
+                }
               />
             </View>
           </View>

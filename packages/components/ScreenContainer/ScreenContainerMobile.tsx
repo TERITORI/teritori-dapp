@@ -18,7 +18,6 @@ import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SearchModalMobile } from "../Search/SearchModalMobile";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
-import { MediaPlayerBar } from "../mediaPlayer/MediaPlayerBar";
 import { SidebarMobile } from "../navigation/SidebarMobile";
 
 export const MobileTitle: FC<{ title: string }> = ({ title }) => {
@@ -61,7 +60,7 @@ export const ScreenContainerMobile: FC<{
   mobileTitle,
   onBackPress,
 }) => {
-  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+  const { height: windowHeight } = useWindowDimensions();
   const { width } = useMaxResolution();
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
 
@@ -105,14 +104,6 @@ export const ScreenContainerMobile: FC<{
             </>
             // TODO: Put here Riotters Footer ?
           )}
-          <MediaPlayerBar
-            style={{
-              position: "absolute",
-              bottom: 0,
-              right: 0,
-              width: windowWidth,
-            }}
-          />
         </SelectedNetworkGate>
       </View>
     </SafeAreaView>

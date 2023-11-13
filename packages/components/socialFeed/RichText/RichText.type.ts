@@ -30,6 +30,4 @@ export interface RichTextProps {
   onPublish?: (publishValues: PublishValues) => void;
   publishDisabled?: boolean;
   loading?: boolean;
-  authorId: string;
-  postId: string;
 }

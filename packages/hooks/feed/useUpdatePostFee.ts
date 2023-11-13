@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { getPostFee } from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
 
-export const useFeedPostFee = (
+export const useUpdatePostFee = (
   networkId: string,
   postCategory: PostCategory,
 ) => {

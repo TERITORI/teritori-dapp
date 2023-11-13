@@ -20,8 +20,8 @@ import { layout } from "../../utils/style/layout";
 import { getTxInfo } from "../../utils/transactions/getTxInfo";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { Separator } from "../Separator";
 import { CustomPressable } from "../buttons/CustomPressable";
-import { Separator } from "../separators/Separator";
 import { SpacerRow } from "../spacer";
 import { Username } from "../user/Username";
 

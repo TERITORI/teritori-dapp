@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
-import { neutral44 } from "../../utils/style/colors";
+import { neutral44 } from "../utils/style/colors";
 
 type SeparatorProps = {
   style?: ViewStyle;

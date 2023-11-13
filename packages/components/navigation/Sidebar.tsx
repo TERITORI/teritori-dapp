@@ -30,7 +30,7 @@ import {
   smallSidebarWidth,
 } from "../../utils/style/layout";
 import { SVG } from "../SVG";
-import { Separator } from "../separators/Separator";
+import { Separator } from "../Separator";
 import { SpacerColumn } from "../spacer";
 
 const SpringConfig: WithSpringConfig = {

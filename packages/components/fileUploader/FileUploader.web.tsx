@@ -33,7 +33,6 @@ export const FileUploader: FC<FileUploaderProps> = ({
   maxUpload,
   isImageCover,
   fileHeight = 256,
-  setIsLoading,
 }) => {
   const { setToastError } = useFeedbacks();
   const hiddenFileInput = useRef<HTMLInputElement>(null);
@@ -72,32 +71,28 @@ export const FileUploader: FC<FileUploaderProps> = ({
     onUpload(formattedFiles);
   };
 
-  const handleChange = async (event: SyntheticEvent) => {
-    setIsLoading?.(true);
+  const handleChange = (event: SyntheticEvent) => {
     const targetEvent = event.target as HTMLInputElement;
-
     if (targetEvent.files && targetEvent.files[0]) {
-      await handleFiles(targetEvent?.files as unknown as File[]);
+      handleFiles(targetEvent?.files as unknown as File[]);
     }
-    setIsLoading?.(false);
   };
 
   const handleClick = () => {
     hiddenFileInput?.current?.click?.();
   };
 
-  const dropHandler = async (ev: any) => {
-    setIsLoading?.(true);
+  const dropHandler = (ev: any) => {
     ev.preventDefault();
+
     if (ev.dataTransfer.items) {
       const files = [...ev.dataTransfer.items]
         .filter((item: any) => item.kind === "file")
         .map((item: any) => item.getAsFile());
-      await handleFiles(files);
+      handleFiles(files);
     } else {
-      await handleFiles(ev.dataTransfer.files);
+      handleFiles(ev.dataTransfer.files);
     }
-    setIsLoading?.(false);
   };
 
   const dragOverHandler = (ev: SyntheticEvent) => {
