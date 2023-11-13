@@ -95,5 +95,5 @@ func main() {
 		panic(fmt.Errorf("failed to exec sql: %w", err))
 	}
 
-	fmt.Printf("Data has been cleaned - Mode: %s - NetworkID: %s", *mode, networkID)
+	fmt.Printf("Data has been cleaned - Mode: %s - NetworkID: %s\n", *mode, networkID)
 }
