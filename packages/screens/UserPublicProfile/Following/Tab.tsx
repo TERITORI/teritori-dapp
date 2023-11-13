@@ -9,8 +9,20 @@ import { UserNameInline } from "../../../components/UserNameInline";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { useFollowingUserNotifications } from "../../../hooks/useNotifications";
 import { prettyPrice } from "../../../utils/coins";
-import { neutral44 } from "../../../utils/style/colors";
-import { fontSemibold12, fontSemibold14 } from "../../../utils/style/fonts";
+import {
+  neutral00,
+  neutral33,
+  neutral44,
+  purpleDark,
+  secondaryColor,
+  yellowDefault,
+} from "../../../utils/style/colors";
+import {
+  fontBold11,
+  fontBold12,
+  fontSemibold12,
+  fontSemibold14,
+} from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
 
@@ -108,19 +120,33 @@ const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
                 <BrandText style={fontSemibold12}>
                   {moment.unix(item.createdAt).fromNow()}
                 </BrandText>
-                <BrandText
-                  style={[
-                    fontSemibold12,
-                    {
-                      textTransform: "capitalize",
-                    },
-                  ]}
-                >
-                  {item.category}
-                </BrandText>
               </View>
             </View>
           </OmniLink>
+        </View>
+        <View
+          style={{ flex: 1, alignItems: "flex-end", justifyContent: "center" }}
+        >
+          <BrandText
+            style={[
+              {
+                backgroundColor: resolveColor("backgroundColor", item.category),
+                borderStyle: "solid",
+                borderWidth: 1,
+                borderRadius: 32,
+                height: 25,
+                color: resolveColor("color", item.category),
+                paddingTop: 4,
+                paddingRight: 8,
+                paddingBottom: 4,
+                paddingLeft: 8,
+                textTransform: "capitalize",
+              },
+              fontBold12,
+            ]}
+          >
+            {item.category}
+          </BrandText>
         </View>
       </View>
     </View>
@@ -191,5 +217,22 @@ const useBuildBodyText = (item: Notification) => {
         ? `has finished ${moment.unix(item.createdAt).fromNow()}`
         : `will finish in ${moment.unix(item.createdAt).fromNow()}`
     }`;
+  }
+};
+
+const resolveColor = (type: "backgroundColor" | "color", category: string) => {
+  switch (type) {
+    case "backgroundColor":
+      return category.includes("nft")
+        ? "rgba(22, 187, 255, 0.16)"
+        : category.includes("dao")
+        ? purpleDark
+        : neutral33;
+    case "color":
+      return category.includes("nft")
+        ? "white"
+        : category.includes("dao")
+        ? yellowDefault
+        : secondaryColor;
   }
 };
