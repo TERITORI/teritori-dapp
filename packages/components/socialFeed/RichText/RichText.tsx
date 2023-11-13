@@ -1,3 +1,4 @@
+import { stateFromMarkdown } from "draft-js-import-markdown";
 import React, { useRef } from "react";
 import {
   View,
@@ -16,6 +17,7 @@ import { ActionsContainer } from "./Toolbar/ActionsContainer";
 import { ToolbarContainer } from "./Toolbar/ToolbarContainer";
 import { SOCIAL_FEED_BREAKPOINT_M } from "../../../utils/style/layout";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
+import { TextInputCustom } from "../../inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 
 // /!\ It will not fully work on mobile
@@ -28,7 +30,8 @@ export const RichText: React.FC<RichTextProps> = ({
   isPostConsultation,
 }) => {
   const { width: windowWidth } = useWindowDimensions();
-  const richText = useRef(null);
+  const richText = useRef<RichEditor>(null);
+  const [markdown, setMarkdown] = React.useState("");
   return (
     <View>
       <KeyboardAvoidingView
@@ -45,6 +48,20 @@ export const RichText: React.FC<RichTextProps> = ({
           ) : (
             <SpacerRow size={3} />
           )}
+          <TextInputCustom
+            label="Markdown"
+            name="markdown"
+            onChangeText={setMarkdown}
+            value={markdown}
+          />
+          <PrimaryButton
+            text="Import markdown"
+            loader
+            onPress={() => {
+              const contentState = stateFromMarkdown(markdown);
+              richText.current?.setContentHTML(contentState.toHTML());
+            }}
+          />
           <ActionsContainer>
             <ToolbarContainer>
               <RichToolbar
