@@ -133,7 +133,7 @@ const NoNotifications: React.FC = () => (
       padding: layout.spacing_x3,
     }}
   >
-    <BrandText>No new Notifications 🥺</BrandText>
+    <BrandText>Follow more Teritorians</BrandText>
   </View>
 );
 
