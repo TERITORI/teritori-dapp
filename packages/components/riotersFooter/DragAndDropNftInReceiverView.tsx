@@ -15,14 +15,14 @@ const DragAndDropNftInReceiverView: React.FC<{
     nftDropedAdjustment.width <= 10
       ? 10
       : nftDropedAdjustment.width >= 200
-      ? 200
-      : nftDropedAdjustment.width;
+        ? 200
+        : nftDropedAdjustment.width;
   const height =
     nftDropedAdjustment.height <= 10
       ? 10
       : nftDropedAdjustment.height >= 200
-      ? 200
-      : nftDropedAdjustment.height;
+        ? 200
+        : nftDropedAdjustment.height;
 
   let borderRadius = 0;
 

@@ -49,8 +49,8 @@ export const useMaxResolution = ({
         ? screenContentMaxWidthLarge
         : width
       : width > screenContentMaxWidth
-      ? screenContentMaxWidth
-      : width,
+        ? screenContentMaxWidth
+        : width,
     height: windowHeight - headerHeight,
     contentWidth,
   };

@@ -264,10 +264,10 @@ class EmojiModal extends react_1.PureComponent {
             shortName === query
               ? 3
               : shortName.startsWith(query)
-              ? 2
-              : shortName.includes(query)
-              ? 1
-              : 0;
+                ? 2
+                : shortName.includes(query)
+                  ? 1
+                  : 0;
           emoji._score = score;
           return emoji;
         })

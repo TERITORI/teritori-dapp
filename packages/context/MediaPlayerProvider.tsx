@@ -9,7 +9,6 @@ import { shuffle } from "lodash";
 import React, {
   createContext,
   Dispatch,
-  FC,
   ReactNode,
   SetStateAction,
   useCallback,
@@ -21,7 +20,6 @@ import React, {
 import { useFeedbacks } from "./FeedbacksProvider";
 import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
 import { getNetworkObjectId } from "../networks";
-import { errorMessage } from "../utils/errors";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { useAppNavigation } from "../utils/navigation";
 import { Media } from "../utils/types/mediaPlayer";
@@ -75,9 +73,9 @@ const defaultValue: DefaultValue = {
 
 const MediaPlayerContext = createContext(defaultValue);
 
-export const MediaPlayerContextProvider: FC<{
-  children: ReactNode;
-}> = ({ children }) => {
+export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
   const [videoLastRoute, setVideoLastRoute] = useState<Route<any>>();
@@ -145,8 +143,8 @@ export const MediaPlayerContextProvider: FC<{
           },
         );
         // ------- Autoplay createdSound
-        // FIXME: Got error if "Video not loaded yet", so, have to control this
-        if (av && "_nativeRef" in av && av._nativeRef.current) {
+        // FIXME: Got error when playing video, then playing sound ("Video not loaded yet"), so, have to control this (Video have _nativeRef, but not Sound)
+        if (av && !("_nativeRef" in av)) {
           await av?.stopAsync();
           await av?.unloadAsync();
         }
@@ -154,12 +152,11 @@ export const MediaPlayerContextProvider: FC<{
         setAv(createdSound);
         setIsMediaPlayerOpen(true);
         // -------
-      } catch (e) {
-        const msg = errorMessage(e);
-        console.error("Error loading sound: ", msg);
+      } catch (e: any) {
+        console.error("Error loading sound: ", e.message);
         setToastError({
           title: "Error loading sound: ",
-          message: msg,
+          message: e.message,
         });
       }
     },
@@ -176,12 +173,11 @@ export const MediaPlayerContextProvider: FC<{
       await av?.unloadAsync();
       setAv(video);
       await video.playAsync();
-    } catch (e) {
-      const msg = errorMessage(e);
-      console.error("Error while first playing video: ", msg);
+    } catch (e: any) {
+      console.error("Error while first playing video: ", e.message);
       setToastError({
         title: "Error while first playing video: ",
-        message: msg,
+        message: e.message,
       });
     }
     setIsMediaPlayerOpen(true);
@@ -232,12 +228,11 @@ export const MediaPlayerContextProvider: FC<{
     if (av && "_setFullscreen" in av) {
       try {
         await av._setFullscreen(true);
-      } catch (e) {
-        const msg = errorMessage(e);
-        console.error("Error setting full screen: ", msg);
+      } catch (e: any) {
+        console.error("Error setting full screen: ", e.message);
         setToastError({
           title: "Error setting full screen: ",
-          message: msg,
+          message: e.message,
         });
       }
     }
@@ -247,7 +242,7 @@ export const MediaPlayerContextProvider: FC<{
     if (
       !av ||
       !playbackStatus?.isLoaded ||
-      // FIXME: Got error if "Video not loaded yet", so, have to control this
+      // FIXME: Got error when plying video, then playing sound ("Video not loaded yet"), so, have to control this
       (av && "_nativeRef" in av && !av._nativeRef.current)
     ) {
       return;
@@ -255,23 +250,21 @@ export const MediaPlayerContextProvider: FC<{
     if (playbackStatus.isPlaying) {
       try {
         await av.pauseAsync();
-      } catch (e) {
-        const msg = errorMessage(e);
-        console.error("Error pausing media: ", msg);
+      } catch (e: any) {
+        console.error("Error pausing media: ", e.message);
         setToastError({
           title: "Error pausing media: ",
-          message: msg,
+          message: e.message,
         });
       }
     } else {
       try {
         await av.playAsync();
-      } catch (e) {
-        const msg = errorMessage(e);
-        console.error("Error playing media: ", msg);
+      } catch (e: any) {
+        console.error("Error playing media: ", e.message);
         setToastError({
           title: "Error playing media: ",
-          message: msg,
+          message: e.message,
         });
       }
     }
