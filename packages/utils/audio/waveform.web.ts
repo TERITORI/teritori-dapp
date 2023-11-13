@@ -53,7 +53,7 @@ export const generateWaveForm = async (buffer: ArrayBuffer) => {
 };
 
 export const getAudioDurationFromBuffer = (
-  buffer: ArrayBuffer
+  buffer: ArrayBuffer,
 ): Promise<number> => {
   return new Promise((resolve, reject) => {
     audioContext.decodeAudioData(buffer.slice(0), (buffer) => {

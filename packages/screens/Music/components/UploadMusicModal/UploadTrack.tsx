@@ -70,12 +70,12 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
   });
   const { postFee } = useUpdatePostFee(
     selectedNetwork?.id || "",
-    PostCategory.MusicAudio
+    PostCategory.MusicAudio,
   );
   const { freePostCount } = useUpdateAvailableFreePost(
     selectedNetwork?.id || "",
     PostCategory.MusicAudio,
-    selectedWallet
+    selectedWallet,
   );
 
   const [isLoading, setIsLoading] = useState(false);
@@ -118,7 +118,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
                 execute: {
                   contract_addr: network.socialFeedContractAddress,
                   msg: Buffer.from(
-                    JSON.stringify({ create_post: msg })
+                    JSON.stringify({ create_post: msg }),
                   ).toString("base64"),
                   funds: [{ amount: postFee.toString(), denom: "utori" }],
                 },
@@ -144,7 +144,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
           const txHash = await adenaDoContract(
             selectedNetwork.id,
             [{ type: "/vm.m_call", value: vmCall }],
-            { gasWanted: 2_000_000 }
+            { gasWanted: 2_000_000 },
           );
 
           const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);

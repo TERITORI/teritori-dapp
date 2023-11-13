@@ -69,7 +69,7 @@ export const AudioView: React.FC<{
 
   const hasThumbnail = useMemo(
     () => typeof thumbnailUrl === "string",
-    [thumbnailUrl]
+    [thumbnailUrl],
   );
 
   const positionPercent = useMemo(

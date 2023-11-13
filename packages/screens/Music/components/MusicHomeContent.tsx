@@ -35,7 +35,7 @@ export const MusicHomeContent: React.FC = () => {
     useFetchFeed(tracksFeedRequest);
   const posts = useMemo(
     () => (data ? combineFetchFeedPages(data.pages) : []),
-    [data]
+    [data],
   );
 
   // ======= TODO: Getting ??? as albums
@@ -43,7 +43,7 @@ export const MusicHomeContent: React.FC = () => {
   const [flatListWidth, setFlatListWidth] = useState(0);
   const elemsPerRow =
     Math.floor(
-      flatListWidth / (TRACK_CARD_WIDTH + FLAT_LIST_SEPARATOR_WIDTH)
+      flatListWidth / (TRACK_CARD_WIDTH + FLAT_LIST_SEPARATOR_WIDTH),
     ) || 1;
   const onEndReached = () => {
     if (!isLoading && hasNextPage && !isFetching) {

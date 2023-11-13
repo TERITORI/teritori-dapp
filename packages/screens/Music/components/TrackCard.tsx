@@ -33,7 +33,7 @@ export const TrackCard: React.FC<{
 }> = ({ post, hideAuthor }) => {
   const track: Track | undefined = useMemo(
     () => getMusicAudioPostTrack(post),
-    [post]
+    [post],
   );
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const authorNSInfo = useNSUserInfo(post.authorId);
@@ -55,7 +55,7 @@ export const TrackCard: React.FC<{
           navigation.navigate("FeedPostView", {
             id: getNetworkObjectId(
               selectedNetworkInfo?.id || "",
-              post.identifier
+              post.identifier,
             ),
           })
         }
