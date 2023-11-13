@@ -1,5 +1,6 @@
 import React from "react";
 import { View } from "react-native";
+import { enableLegacyWebImplementation } from "react-native-gesture-handler";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 
 import RealEstatePlaceholder from "../../../../../../assets/default-images/real-estate-placeholder.png";
@@ -22,6 +23,7 @@ export const RWACarousel: React.FC = () => {
   const carouselRef = React.useRef<ICarouselInstance | null>(null);
   const selectedBackgroundColor = isLightTheme ? "#000" : "#FFF";
   const unselectedBackgroundColor = isLightTheme ? "#C5C5C5" : neutral44;
+  enableLegacyWebImplementation(true);
 
   return (
     <View style={{ width: "100%", flex: 1 }}>
