@@ -287,6 +287,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                   errors?.message?.type === "required" ||
                   !formValues.message ||
                   !formValues.title ||
+                  !formValues.files?.find(file => file.isCoverImage) ||
                   !wallet
                 }
                 onPublish={onPublish}

@@ -193,22 +193,11 @@ export const RichText: React.FC<RichTextProps> = ({
   );
 
   // Truncate using initialValue, only if isPreview
-  const isTruncateNeeded = useMemo(() => {
-    const contentState = createStateFromHTML(initialValue).getCurrentContent();
-    return (
-      isPreview &&
-      contentState.getBlocksAsArray().length >= NB_ROWS_SHOWN_IN_PREVIEW
-    );
-  }, [initialValue, isPreview]);
+  const isTruncateNeeded = useMemo(() => isArticleHTMLNeedsTruncate(initialValue, isPreview)
+  , [initialValue, isPreview]);
   useEffect(() => {
-    if (isTruncateNeeded) {
-      const contentState =
-        createStateFromHTML(initialValue).getCurrentContent();
-      const truncatedBlocks = contentState
-        .getBlocksAsArray()
-        .slice(0, NB_ROWS_SHOWN_IN_PREVIEW);
-      const truncatedState = ContentState.createFromBlockArray(truncatedBlocks);
-      const truncatedHtml = createHTMLFromState(truncatedState);
+    if (isArticleHTMLNeedsTruncate(initialValue, isPreview)) {
+      const {truncatedState, truncatedHtml} = getTruncatedArticleHTML(initialValue)
       setEditorState(EditorState.createWithContent(truncatedState));
       setHtml(truncatedHtml);
     }
@@ -696,3 +685,26 @@ const getGIFsToPublish = (editorState: EditorState, gifsUrls: string[]) => {
   });
   return gifsToPublish;
 };
+
+
+export const isArticleHTMLNeedsTruncate = (html: string, isPreview = false) => {
+  const contentState = createStateFromHTML(html).getCurrentContent();
+  console.log('contentState.getBlocksAsArray()contentState.getBlocksAsArray()', contentState.getBlocksAsArray().length >= NB_ROWS_SHOWN_IN_PREVIEW)
+  return (
+    isPreview &&
+    contentState.getBlocksAsArray().length >= NB_ROWS_SHOWN_IN_PREVIEW
+  );
+}
+
+export const getTruncatedArticleHTML = (html: string) => {
+  const contentState =
+    createStateFromHTML(html).getCurrentContent();
+  const truncatedBlocks = contentState
+    .getBlocksAsArray()
+    .slice(0, NB_ROWS_SHOWN_IN_PREVIEW);
+  const truncatedState = ContentState.createFromBlockArray(truncatedBlocks);
+  const truncatedHtml = createHTMLFromState(truncatedState);
+  return {truncatedState, truncatedHtml}
+}
+
+
