@@ -1,5 +1,6 @@
 import React from "react";
 import { View } from "react-native";
+import { enableLegacyWebImplementation } from "react-native-gesture-handler";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { useSelector } from "react-redux";
 
@@ -19,6 +20,7 @@ export const RWACarousel: React.FC = () => {
   const isLightTheme = useSelector(selectIsLightTheme);
   const imageSize = 464;
   const carouselRef = React.useRef<ICarouselInstance | null>(null);
+  enableLegacyWebImplementation(true);
 
   return (
     <View style={{ width: "100%", flex: 1 }}>
