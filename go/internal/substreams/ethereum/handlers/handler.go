@@ -81,6 +81,11 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	// we have to process it differently: we process the internal call of that tx sent to nft contract
 	methodHex := hex.EncodeToString(tx.Info.Input[:4])
 	if methodHex == "60806040" || methodHex == "60c06040" {
+		// don't try to create collection in p2e mode to prevent conflict, maybe we should ignore if collection exists instead
+		if h.indexerMode == indexerdb.IndexerModeP2E {
+			return nil
+		}
+
 		if strings.EqualFold(tx.Info.To, h.network.RiotContractAddressGen0) {
 			return h.handleInitialize(tx)
 		}
