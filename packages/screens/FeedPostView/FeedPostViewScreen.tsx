@@ -11,10 +11,12 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
+import { signingSocialFeedClient } from "../../client-creators/socialFeedClient";
 import { BrandText } from "../../components/BrandText";
 import { NotFound } from "../../components/NotFound";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { MobileTitle } from "../../components/ScreenContainer/ScreenContainerMobile";
+import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import {
   CommentsContainer,
   LINES_HORIZONTAL_SPACE,
@@ -33,6 +35,7 @@ import { RefreshButton } from "../../components/socialFeed/NewsFeed/RefreshButto
 import { RefreshButtonRound } from "../../components/socialFeed/NewsFeed/RefreshButton/RefreshButtonRound";
 import { SocialThreadCard } from "../../components/socialFeed/SocialThread/SocialThreadCard";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import {
   combineFetchCommentPages,
   useFetchComments,
@@ -66,6 +69,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   },
 }) => {
   const navigation = useAppNavigation();
+  const { wrapWithFeedback } = useFeedbacks();
 
   let [network, postId] = parseNetworkObjectId(id);
   if (!network) {
@@ -224,6 +228,17 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         <NotFound label="Post" />
       ) : (
         <>
+          <PrimaryButton
+            text="Delete post"
+            loader
+            onPress={wrapWithFeedback(async () => {
+              const socialFeedClient = await signingSocialFeedClient({
+                networkId,
+                walletAddress: authorAddress,
+              });
+              await socialFeedClient.deletePost({ identifier: postId });
+            })}
+          />
           <Animated.ScrollView
             ref={aref}
             contentContainerStyle={styles.contentContainer}
