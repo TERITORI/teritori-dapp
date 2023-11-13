@@ -292,6 +292,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
 
               {/*====== Card Content */}
               <SocialMessageContent
+                authorId={localComment.authorId}
+                postId={localComment.identifier}
                 metadata={metadata}
                 postCategory={localComment.category}
               />

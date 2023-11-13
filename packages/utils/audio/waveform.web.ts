@@ -60,8 +60,8 @@ export const getAudioDuration = (buffer: ArrayBuffer): Promise<number> => {
   });
 };
 
-export const getAudioData = async (audio: any): Promise<AudioFileMetadata> => {
-  const buffer: ArrayBuffer = await audio.arrayBuffer();
+export const getAudioData = async (file: File): Promise<AudioFileMetadata> => {
+  const buffer: ArrayBuffer = await file.arrayBuffer();
   const duration = (await getAudioDuration(buffer)) * 1000;
   const waveform = await generateWaveForm(buffer);
 

@@ -24,8 +24,8 @@ import { RichText } from "../../components/socialFeed/RichText";
 import { PublishValues } from "../../components/socialFeed/RichText/RichText.type";
 import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useFeedPostFee } from "../../hooks/feed/useFeedPostFee";
 import { useUpdateAvailableFreePost } from "../../hooks/feed/useUpdateAvailableFreePost";
-import { useUpdatePostFee } from "../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../hooks/useBalances";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
@@ -54,7 +54,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const selectNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkId = selectNetworkInfo?.id || "";
   const wallet = useSelectedWallet();
-  const { postFee } = useUpdatePostFee(selectedNetworkId, PostCategory.Article);
+  const { postFee } = useFeedPostFee(selectedNetworkId, PostCategory.Article);
   const { freePostCount } = useUpdateAvailableFreePost(
     selectedNetworkId,
     PostCategory.Article,
@@ -290,6 +290,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                   !wallet
                 }
                 onPublish={onPublish}
+                authorId={userId}
+                postId=""
               />
             )}
           />

@@ -9,13 +9,13 @@ export const resolveColor = (
       return rareRatio > 5
         ? "rgba(22, 187, 255, 0.16)"
         : rareRatio < 1
-        ? purpleDark
-        : yellowDefault;
+          ? purpleDark
+          : yellowDefault;
     case "color":
       return rareRatio > 5
         ? "white"
         : rareRatio < 1
-        ? yellowDefault
-        : neutral00;
+          ? yellowDefault
+          : neutral00;
   }
 };
