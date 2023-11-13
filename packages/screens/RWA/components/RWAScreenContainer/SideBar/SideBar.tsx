@@ -97,7 +97,7 @@ export const SideBar: React.FC = () => {
         ? withSpring(fullSidebarWidth, SpringConfig)
         : withSpring(smallSidebarWidth, SpringConfig),
     }),
-    [isSidebarExpanded]
+    [isSidebarExpanded],
   );
 
   const toggleButtonStyle = useAnimatedStyle(
@@ -112,7 +112,7 @@ export const SideBar: React.FC = () => {
             { translateX: withSpring(0, SpringConfig) },
           ],
     }),
-    [isSidebarExpanded]
+    [isSidebarExpanded],
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
@@ -141,7 +141,7 @@ export const SideBar: React.FC = () => {
           let { route } = item;
           if (
             item.disabledOn?.includes(
-              selectedNetworkKind || NetworkKind.Unknown
+              selectedNetworkKind || NetworkKind.Unknown,
             )
           ) {
             route = "ComingSoon";

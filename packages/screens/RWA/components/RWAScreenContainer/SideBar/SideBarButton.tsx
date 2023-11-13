@@ -33,7 +33,7 @@ export const SideBarButton: React.FC<SideBarButtonProps> = ({
   const isComingSoon = route === "ComingSoon";
   const isSelected = useMemo(
     () => route === currentRouteName,
-    [currentRouteName, route]
+    [currentRouteName, route],
   );
 
   const opacityStyle = useAnimatedStyle(
@@ -46,7 +46,7 @@ export const SideBarButton: React.FC<SideBarButtonProps> = ({
             duration: 100,
           }),
     }),
-    [isSidebarExpanded]
+    [isSidebarExpanded],
   );
 
   return (
