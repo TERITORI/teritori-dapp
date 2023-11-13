@@ -11,12 +11,9 @@ import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
 import { useIsLightTheme, useTheme } from "../../../../hooks/useTheme";
 import { neutral77, neutralA3 } from "../../../../utils/style/colors";
 
-const EstateCardInformationBox: React.FC<EstateCardInformationBoxProps> = ({
-  label,
-  value,
-  secondary = false,
-  style,
-}) => {
+export const EstateCardInformationBox: React.FC<
+  EstateCardInformationBoxProps
+> = ({ label, value, secondary = false, style }) => {
   const theme = useTheme();
   const isLightTheme = useIsLightTheme();
   const backgroundColor = secondary

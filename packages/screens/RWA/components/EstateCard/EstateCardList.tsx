@@ -6,7 +6,7 @@ import { EstateCardListProps, EstateCardProps } from "./types";
 import { BrandText } from "../../../../components/BrandText";
 
 export const getEstateCardList: (
-  isComingSoon?: boolean
+  isComingSoon?: boolean,
 ) => EstateCardProps[] = (isComingSoon = false) => {
   return [
     {

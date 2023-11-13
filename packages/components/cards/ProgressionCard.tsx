@@ -77,7 +77,7 @@ type ProgressionProps = ProgressionBaseProps & {
 };
 
 export const ProgressionCardWithoutBox: React.FC<ProgressionProps> = (
-  props
+  props,
 ) => {
   return (
     <View style={props.style}>
