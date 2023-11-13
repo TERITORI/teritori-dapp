@@ -140,8 +140,8 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
           }
         );
         // ------- Autoplay createdSound
-        // FIXME: Got error if "Video not loaded yet", so, have to control this
-        if (av && "_nativeRef" in av && av._nativeRef.current) {
+        // FIXME: Got error when playing video, then playing sound ("Video not loaded yet"), so, have to control this (Video have _nativeRef, but not Sound)
+        if (av && !("_nativeRef" in av)) {
           await av?.stopAsync();
           await av?.unloadAsync();
         }
@@ -239,7 +239,7 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
     if (
       !av ||
       !playbackStatus?.isLoaded ||
-      // FIXME: Got error if "Video not loaded yet", so, have to control this
+      // FIXME: Got error when plying video, then playing sound ("Video not loaded yet"), so, have to control this
       (av && "_nativeRef" in av && !av._nativeRef.current)
     ) {
       return;
