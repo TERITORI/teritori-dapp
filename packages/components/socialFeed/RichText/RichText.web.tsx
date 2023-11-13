@@ -432,6 +432,32 @@ export const RichText: React.FC<RichTextProps> = ({
       <ScrollView
         contentContainerStyle={isTruncateNeeded && { overflow: "hidden" }}
       >
+        {!isPostConsultation && (
+          <>
+            <TextInputCustom
+              label="Markdown"
+              name="markdown"
+              onChangeText={setMarkdown}
+              value={markdown}
+              multiline
+              numberOfLines={markdown.split("\n").length + 1}
+            />
+            <SpacerColumn size={1} />
+            <PrimaryButton
+              text="Import markdown"
+              loader
+              onPress={async () => {
+                const html = markdownToHTML(markdown);
+                console.log("found html", html);
+
+                const editorState = createStateFromHTML(html);
+                console.log("editorState", editorState);
+                setEditorState(editorState);
+              }}
+            />
+            <SpacerColumn size={3} />
+          </>
+        )}
         <Editor
           editorState={editorState}
           handleKeyCommand={handleKeyCommand}
@@ -481,26 +507,6 @@ export const RichText: React.FC<RichTextProps> = ({
       {!isPostConsultation && (
         <>
           <SpacerColumn size={3} />
-          <TextInputCustom
-            label="Markdown"
-            name="markdown"
-            onChangeText={setMarkdown}
-            value={markdown}
-            multiline
-            numberOfLines={markdown.split("\n").length + 1}
-          />
-          <PrimaryButton
-            text="Import markdown"
-            loader
-            onPress={async () => {
-              const html = markdownToHTML(markdown);
-              console.log("found html", html);
-
-              const editorState = createStateFromHTML(html);
-              console.log("editorState", editorState);
-              setEditorState(editorState);
-            }}
-          />
           <ActionsContainer>
             <ToolbarContainer>
               <Toolbar>
