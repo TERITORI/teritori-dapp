@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, ReactNode } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -16,11 +16,11 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
-import { neutral33 } from "../../utils/style/colors";
 import {
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
   headerMarginHorizontal,
+  layout,
   screenContainerContentMarginHorizontal,
 } from "../../utils/style/layout";
 import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
@@ -28,8 +28,11 @@ import { SearchBar } from "../Search/SearchBar";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
 import { Footer } from "../footers/Footer";
+import { MediaPlayerBar } from "../mediaPlayer/MediaPlayerBar";
+import { TogglePlayerButton } from "../mediaPlayer/TogglePlayerButton";
 import { Sidebar } from "../navigation/Sidebar";
 import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
+import { Separator } from "../separators/Separator";
 
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;
@@ -46,6 +49,7 @@ export const ScreenContainer: React.FC<{
   isLarge?: boolean;
   onBackPress?: () => void;
   maxWidth?: number;
+  children?: ReactNode;
 }> = ({
   children,
   headerChildren,
@@ -67,7 +71,7 @@ export const ScreenContainer: React.FC<{
 
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
-  const { width: screenWidth } = useMaxResolution({
+  const { width: screenWidth, contentWidth } = useMaxResolution({
     responsive,
     noMargin,
     isLarge,
@@ -76,7 +80,7 @@ export const ScreenContainer: React.FC<{
 
   const calculatedWidth = useMemo(
     () => (maxWidth ? Math.min(maxWidth, screenWidth) : screenWidth),
-    [screenWidth, maxWidth]
+    [screenWidth, maxWidth],
   );
 
   const marginStyle = hasMargin && {
@@ -98,7 +102,7 @@ export const ScreenContainer: React.FC<{
       }
       return !(forceNetworkKind && n?.kind !== forceNetworkKind);
     },
-    [forceNetworkId, forceNetworkKind]
+    [forceNetworkId, forceNetworkKind],
   );
 
   /////////////// mobile returns
@@ -164,7 +168,7 @@ export const ScreenContainer: React.FC<{
               </SelectedNetworkGate>
             </View>
           </View>
-          {/*
+          {/*-----
             We render the wallet selector here with absolute position to make sure
             the popup is on top of everything else, otherwise it's unusable
             TODO: Fix that and put this in Header.tsx
@@ -179,27 +183,37 @@ export const ScreenContainer: React.FC<{
               alignItems: "center",
             }}
           >
-            <SearchBar />
-            <View
-              style={{
-                height: "100%",
-                backgroundColor: neutral33,
-                marginHorizontal: 16,
-                width: 1,
-              }}
+            <TogglePlayerButton />
+            <Separator
+              horizontal
+              style={{ height: "100%", marginHorizontal: layout.spacing_x2 }}
             />
-            <CartIconButtonBadge style={{ marginRight: 12 }} />
+            <SearchBar />
+            <Separator
+              horizontal
+              style={{ height: "100%", marginHorizontal: layout.spacing_x2 }}
+            />
+            <CartIconButtonBadge style={{ marginRight: layout.spacing_x1_5 }} />
             <NetworkSelector
               forceNetworkId={forceNetworkId}
               forceNetworkKind={forceNetworkKind}
               forceNetworkFeatures={forceNetworkFeatures}
-              style={{ marginRight: 12 }}
+              style={{ marginRight: layout.spacing_x1_5 }}
             />
             <ConnectWalletButton
               style={{ marginRight: headerMarginHorizontal }}
             />
           </View>
         </View>
+        {/*-----END TODO*/}
+        <MediaPlayerBar
+          style={{
+            position: "absolute",
+            bottom: 0,
+            right: 0,
+            width: contentWidth,
+          }}
+        />
       </View>
     </SafeAreaView>
   );
@@ -212,6 +226,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000000",
     flexDirection: "row",
+    zIndex: 999,
   },
   childrenContainer: {
     height: "100%",

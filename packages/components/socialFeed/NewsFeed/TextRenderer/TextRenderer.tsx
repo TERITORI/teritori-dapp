@@ -49,11 +49,11 @@ export const TextRenderer = ({
 }) => {
   const refText = useMemo(
     () => text.replace("/generate", "🖼️").replace("/question", "❓"),
-    [text]
+    [text],
   );
   const isTruncateNeeded = useMemo(
     () => isPreview && refText.split("\n").length >= NB_ROWS_SHOWN_IN_PREVIEW,
-    [refText, isPreview]
+    [refText, isPreview],
   );
 
   const formattedText = useMemo(() => {

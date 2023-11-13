@@ -1,15 +1,15 @@
+import { ReactNode } from "react";
 import { Linking } from "react-native";
 
+import { getReactNodeStringProp } from "../../../../utils/react";
 import { primaryColor } from "../../../../utils/style/colors";
 
-export const RichURLRendererConsultation = (props: {
-  children: { props: { text: string } }[];
-}) => {
+export const RichURLRendererConsultation = (props: { children: ReactNode }) => {
   return (
     <span
       style={{ color: primaryColor, cursor: "pointer" }}
       onClick={() => {
-        let linkText = props.children[0].props.text;
+        let linkText = getReactNodeStringProp(props.children, "text");
         if (linkText[0] === "@") {
           linkText = linkText.substring(1);
         }

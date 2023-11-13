@@ -38,7 +38,7 @@ export const useMultisigInfo = (id: string | undefined) => {
         throw err;
       }
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
   return { multisig: data, ...other };
 };

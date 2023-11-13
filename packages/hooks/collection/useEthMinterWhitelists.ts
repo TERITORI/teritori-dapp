@@ -10,7 +10,7 @@ import { getEthereumProvider } from "../../utils/ethereum";
 export const useEthMinterWhitelists = (
   networkId: string | undefined,
   mintAddress: string | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   if (enabled === undefined) {
     enabled = true;
@@ -34,7 +34,7 @@ export const useEthMinterWhitelists = (
 
       const minterClient = TeritoriMinter__factory.connect(
         mintAddress,
-        provider
+        provider,
       );
       const whitelistPhases: MintPhase[] = [];
       let isLastPhase = false;
@@ -66,6 +66,6 @@ export const useEthMinterWhitelists = (
 
       return whitelistPhases;
     },
-    { staleTime: Infinity, enabled: enabled && !!networkId && !!mintAddress }
+    { staleTime: Infinity, enabled: enabled && !!networkId && !!mintAddress },
   );
 };

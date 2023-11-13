@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { TextInput, View, ViewStyle } from "react-native";
 
 import searchSVG from "../../../assets/icons/search.svg";
@@ -20,6 +20,7 @@ export const TextInputCustomBorder: React.FC<{
   onlyNumbers?: boolean;
   disabled?: boolean;
   regexp?: RegExp;
+  children?: ReactNode;
 }> = ({
   value,
   placeHolder,

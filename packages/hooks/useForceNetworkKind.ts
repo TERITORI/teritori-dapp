@@ -14,7 +14,7 @@ export const useForceNetworkKind = (networkKind: NetworkKind | undefined) => {
   const effect = useCallback(() => {
     if (networkKind && networkKind !== selectedNetworkKind) {
       const newNetwork = enabledNetworks.find(
-        (network) => network.kind === networkKind
+        (network) => network.kind === networkKind,
       );
       if (newNetwork) {
         dispatch(setSelectedNetworkId(newNetwork.id));

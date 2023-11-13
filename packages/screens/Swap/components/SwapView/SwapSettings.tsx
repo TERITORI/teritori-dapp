@@ -1,5 +1,6 @@
 import React, {
   Dispatch,
+  ReactNode,
   RefObject,
   SetStateAction,
   useEffect,
@@ -34,6 +35,7 @@ const SelectableItem: React.FC<{
   item?: SlippageItem;
   onPress: () => void;
   isSelected?: boolean;
+  children: ReactNode;
 }> = ({ onPress, isSelected, children }) => {
   return (
     <Pressable

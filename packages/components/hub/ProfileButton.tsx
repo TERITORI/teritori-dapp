@@ -148,7 +148,7 @@ const RegisterGnoNameModal: React.FC<{
   const denom = stakingCurrency?.denom;
   const bal = denom ? balances?.find((b) => b.denom === denom) : undefined;
   const notEnoughFunds = Long.fromString(bal?.amount || "0").lessThan(
-    Long.fromNumber(gnoNameCost)
+    Long.fromNumber(gnoNameCost),
   );
   const buttonDisabled = !name || !!nsInfo || isLoading || notEnoughFunds;
   const queryClient = useQueryClient();
@@ -213,10 +213,10 @@ const RegisterGnoNameModal: React.FC<{
             await adenaVMCall(network.id, req, { gasWanted: 2_000_000 });
           })();
           queryClient.invalidateQueries(
-            nsNameInfoQueryKey(networkId, nameWithTLD)
+            nsNameInfoQueryKey(networkId, nameWithTLD),
           );
           queryClient.invalidateQueries(
-            nsPrimaryAliasQueryKey(selectedWallet?.userId)
+            nsPrimaryAliasQueryKey(selectedWallet?.userId),
           );
           onClose?.();
         }}

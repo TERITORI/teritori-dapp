@@ -2,7 +2,7 @@ import { WalletProvider } from "./walletProvider";
 import { NetworkKind } from "../networks";
 
 export const walletProviderToNetworkKind = (
-  walletProvider: WalletProvider | undefined
+  walletProvider: WalletProvider | undefined,
 ) => {
   switch (walletProvider) {
     case WalletProvider.Metamask:

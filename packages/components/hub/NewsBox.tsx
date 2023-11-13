@@ -33,7 +33,7 @@ export const NewsBox: React.FC<{
       }
       Linking.openURL(to);
     },
-    [linkTo]
+    [linkTo],
   );
 
   return (

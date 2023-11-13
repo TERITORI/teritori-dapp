@@ -1,7 +1,7 @@
 import { Decimal } from "@cosmjs/math";
 import { EntityId } from "@reduxjs/toolkit";
 import { groupBy } from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import {
   FlatList,
   StyleProp,
@@ -30,8 +30,8 @@ import { AttributeRarityFloor } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { CurrencyIcon } from "../../components/CurrencyIcon";
 import { SVG } from "../../components/SVG";
-import { Separator } from "../../components/Separator";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { Separator } from "../../components/separators/Separator";
 import { SearchInput } from "../../components/sorts/SearchInput";
 import { useCollectionStats } from "../../hooks/useCollectionStats";
 import {
@@ -168,7 +168,7 @@ const AccordionItem: React.FC<{
           />
           {attributes
             .filter((value) =>
-              value.value.toLowerCase().includes(searchValue.toLowerCase())
+              value.value.toLowerCase().includes(searchValue.toLowerCase()),
             )
             .map((value) => (
               <FilterItems
@@ -237,8 +237,8 @@ const FilterItems: React.FC<{
     } else {
       dispatch(
         removeSelected(
-          `${attribute.collectionId}-${attribute.traitType}-${attribute.value}`
-        )
+          `${attribute.collectionId}-${attribute.traitType}-${attribute.value}`,
+        ),
       );
     }
   };
@@ -308,7 +308,7 @@ const FilterItems: React.FC<{
               {
                 backgroundColor: resolveColor(
                   "backgroundColor",
-                  attribute.rareRatio
+                  attribute.rareRatio,
                 ),
                 borderStyle: "solid",
                 borderWidth: 1,
@@ -338,14 +338,14 @@ export const AppliedFilters: React.FC<{ collectionId: string }> = ({
   const filterIsShown = useShowFilters();
 
   const selected = useSelector((state: RootState) =>
-    selectAllSelectedAttributeDataByCollectionId(state, collectionId)
+    selectAllSelectedAttributeDataByCollectionId(state, collectionId),
   );
 
   const clearAll = () => {
     const idsToRemove: EntityId[] = [];
     selected.map((attribute) => {
       idsToRemove.push(
-        `${attribute.collectionId}-${attribute.traitType}-${attribute.value}`
+        `${attribute.collectionId}-${attribute.traitType}-${attribute.value}`,
       );
     });
 
@@ -354,8 +354,8 @@ export const AppliedFilters: React.FC<{ collectionId: string }> = ({
   const removeFilter = (attribute: AttributeRarityFloor) => {
     dispatch(
       removeSelected(
-        `${attribute.collectionId}-${attribute.traitType}-${attribute.value}`
-      )
+        `${attribute.collectionId}-${attribute.traitType}-${attribute.value}`,
+      ),
     );
   };
 
@@ -399,10 +399,10 @@ export const AppliedFilters: React.FC<{ collectionId: string }> = ({
   ) : null;
 };
 
-const FilterContainer: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
-  children,
-  style,
-}) => (
+const FilterContainer: React.FC<{
+  style?: StyleProp<ViewStyle>;
+  children: ReactNode;
+}> = ({ children, style }) => (
   <View
     style={[
       {
@@ -452,7 +452,7 @@ const PriceFilter: React.FC<{ currency: NativeCurrencyInfo }> = ({
       setPriceRange({
         min: Decimal.fromUserInput(min, currency.decimals).atomics,
         max: Decimal.fromUserInput(max, currency.decimals).atomics,
-      })
+      }),
     );
   };
   return (
@@ -526,7 +526,7 @@ export const SideFilters: React.FC<{
           if (allAtributes) {
             setAttributes(allAtributes);
           }
-        }
+        },
       );
     } catch (err) {
       console.error(err);
@@ -585,6 +585,6 @@ const useShowFilters = () => {
 const useAttributeIsSelected = (attribute: AttributeRarityFloor) => {
   const selected = new Set(useSelector(selectSelectedAttributeIds));
   return selected.has(
-    `${attribute.collectionId}-${attribute.traitType}-${attribute.value}`
+    `${attribute.collectionId}-${attribute.traitType}-${attribute.value}`,
   );
 };

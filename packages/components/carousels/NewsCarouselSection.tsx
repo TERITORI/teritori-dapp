@@ -77,7 +77,7 @@ const useNews = (networkId: string) => {
     },
     {
       staleTime: Infinity,
-    }
+    },
   );
   return data;
 };

@@ -103,7 +103,7 @@ const ProposalRow: React.FC<{
     proposal.proposal.msgs,
     navigation,
     network,
-    { textStyle: [fontSemibold13, { lineHeight: 13 }] }
+    { textStyle: [fontSemibold13, { lineHeight: 13 }] },
   );
 
   return (

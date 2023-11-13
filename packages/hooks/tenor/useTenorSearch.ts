@@ -40,7 +40,7 @@ export const useTenorSearch = ({
       refetchOnWindowFocus: false,
       staleTime: Infinity,
       enabled,
-    }
+    },
   );
 
   return request;

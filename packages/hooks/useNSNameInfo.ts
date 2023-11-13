@@ -12,13 +12,13 @@ import { extractGnoJSONString, extractGnoString } from "../utils/gno";
 
 export const nsNameInfoQueryKey = (
   networkId: string | undefined,
-  tokenId: string | null | undefined
+  tokenId: string | null | undefined,
 ) => ["nsNameInfo", networkId, tokenId];
 
 export const useNSNameInfo = (
   networkId: string | undefined,
   tokenId: string | null | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   const { data: nsInfo, ...other } = useQuery(
     nsNameInfoQueryKey(networkId, tokenId),
@@ -58,7 +58,7 @@ export const useNSNameInfo = (
           if (!tokenId.startsWith("gno.land/") && tokenId.endsWith(".gno")) {
             const address = await gnoGetAddressByUsername(
               network,
-              tokenId.slice(0, -".gno".length)
+              tokenId.slice(0, -".gno".length),
             );
             if (!address) {
               return null;
@@ -77,7 +77,10 @@ export const useNSNameInfo = (
           const provider = new GnoJSONRPCProvider(network.endpoint);
           const query = `GetJSON(${JSON.stringify(tokenId)})`;
           const res: GnoDAORegistration = extractGnoJSONString(
-            await provider.evaluateExpression(network.daoRegistryPkgPath, query)
+            await provider.evaluateExpression(
+              network.daoRegistryPkgPath,
+              query,
+            ),
           );
           const data: Metadata = {
             public_name: res.name,
@@ -91,14 +94,14 @@ export const useNSNameInfo = (
         }
       }
     },
-    { staleTime: Infinity, enabled }
+    { staleTime: Infinity, enabled },
   );
   return { nsInfo, notFound: nsInfo === null, ...other };
 };
 
 const gnoGetAddressByUsername = async (
   network: GnoNetworkInfo,
-  name: string
+  name: string,
 ) => {
   if (!name) return null;
 
@@ -107,7 +110,7 @@ const gnoGetAddressByUsername = async (
   try {
     const res = await provider.evaluateExpression(
       network.nameServiceContractAddress,
-      `GetUserByName(${JSON.stringify(name)}).address`
+      `GetUserByName(${JSON.stringify(name)}).address`,
     );
     const address = extractGnoString(res);
     return address;

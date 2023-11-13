@@ -42,7 +42,7 @@ export const useApproveTransaction = () => {
     }) => {
       try {
         const prevSigMatch = currentSignatures.findIndex(
-          (signature) => signature.userAddress === walletAccount?.address
+          (signature) => signature.userAddress === walletAccount?.address,
         );
         if (prevSigMatch > -1) {
           setToastError({
@@ -73,7 +73,7 @@ export const useApproveTransaction = () => {
           tx.msgs,
           tx.fee,
           tx.memo,
-          signerData
+          signerData,
         );
 
         const bases64EncodedSignature = toBase64(signatures[0]);
@@ -88,11 +88,11 @@ export const useApproveTransaction = () => {
         await queryClient.invalidateQueries(
           multisigTransactionsQueryKey(
             selectedNetworkId,
-            getUserId(selectedNetworkId, tx.multisigAddress)
-          )
+            getUserId(selectedNetworkId, tx.multisigAddress),
+          ),
         );
         await queryClient.invalidateQueries(
-          multisigTransactionsQueryKey(selectedNetworkId, undefined)
+          multisigTransactionsQueryKey(selectedNetworkId, undefined),
         );
       } catch (err: any) {
         console.error(err);
@@ -102,6 +102,6 @@ export const useApproveTransaction = () => {
         });
       }
     },
-    [authToken, multisigClient, queryClient, setToastError, walletAccount]
+    [authToken, multisigClient, queryClient, setToastError, walletAccount],
   );
 };

@@ -14,7 +14,7 @@ export const useMultisigClient = (networkId: string | undefined) => {
         "https://multisig.testnet.teritori.com",
       {
         debug: false,
-      }
+      },
     );
     return new MultisigServiceClientImpl(rpc);
   } else {
@@ -23,7 +23,7 @@ export const useMultisigClient = (networkId: string | undefined) => {
         "https://multisig.mainnet.teritori.com",
       {
         debug: false,
-      }
+      },
     );
     return new MultisigServiceClientImpl(rpc);
   }

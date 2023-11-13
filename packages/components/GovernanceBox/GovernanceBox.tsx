@@ -1,6 +1,12 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React, { Suspense, useState } from "react";
-import { ColorValue, ScrollView, TouchableOpacity, View } from "react-native";
+import {
+  ColorValue,
+  DimensionValue,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { BrandText } from "../../components/BrandText/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
@@ -51,14 +57,16 @@ export const GovernanceBox: React.FC<{
     useState(false);
 
   const test = "%";
-  let percentageYes = ((percentageYesValue / totalUsers) * 100)
-    .toFixed(2)
-    .toString();
-  percentageYes = percentageYes.substring(0, 5) + test;
-  let percentageNo = ((percentageNoValue / totalUsers) * 100)
-    .toFixed(2)
-    .toString();
-  percentageNo = percentageNo.substring(0, 5) + test;
+  const percentageYes =
+    ((percentageYesValue / totalUsers) * 100)
+      .toFixed(2)
+      .toString()
+      .substring(0, 5) + test;
+  const percentageNo =
+    ((percentageNoValue / totalUsers) * 100)
+      .toFixed(2)
+      .toString()
+      .substring(0, 5) + test;
 
   const percentageNoWithVeto = ((percentageNoWithVetoValue / totalUsers) * 100)
     .toFixed(2)
@@ -84,7 +92,7 @@ export const GovernanceBox: React.FC<{
       const GovernanceDetails = React.lazy(() =>
         import("../../screens/Governance/GovernanceDetails").then((module) => ({
           default: module.GovernanceDetails,
-        }))
+        })),
       );
 
       return (
@@ -143,8 +151,6 @@ export const GovernanceBox: React.FC<{
                   justifyContent: "center",
                   backgroundColor: "#171717",
                   borderRadius: 100,
-                  height: "fit-content",
-                  width: "fit-content",
                 }}
               >
                 <BrandText
@@ -168,8 +174,6 @@ export const GovernanceBox: React.FC<{
                   justifyContent: "center",
                   backgroundColor: "#171717",
                   borderRadius: 100,
-                  height: "fit-content",
-                  width: "fit-content",
                 }}
               >
                 <BrandText
@@ -193,8 +197,6 @@ export const GovernanceBox: React.FC<{
                   justifyContent: "center",
                   backgroundColor: "#171717",
                   borderRadius: 100,
-                  height: "fit-content",
-                  width: "fit-content",
                 }}
               >
                 <BrandText
@@ -271,7 +273,7 @@ export const GovernanceBox: React.FC<{
               >
                 <View
                   style={{
-                    width: percentageYes,
+                    width: percentageYes as DimensionValue, // FIXME: properly type this
                     height: 3,
                     borderRadius: 10,
                     position: "absolute",
@@ -289,12 +291,12 @@ export const GovernanceBox: React.FC<{
 
                 <View
                   style={{
-                    width: percentageNo,
+                    width: percentageNo as DimensionValue, // FIXME: properly type this
                     height: 3,
                     backgroundColor: tulipTree,
                     borderRadius: 10,
                     position: "absolute",
-                    left: percentageYes, //percentage of the width of the first view
+                    left: percentageYes as DimensionValue, //percentage of the width of the first view  // FIXME: properly type this
                     zIndex: 2,
                   }}
                 />

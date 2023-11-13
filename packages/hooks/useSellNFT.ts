@@ -23,7 +23,7 @@ const teritoriSellNFT = async (
   nftContractAddress: string,
   tokenId: string,
   price: string,
-  denom: string | undefined
+  denom: string | undefined,
 ) => {
   const network = mustGetCosmosNetwork(wallet.networkId);
   if (!network.vaultContractAddress) {
@@ -33,7 +33,7 @@ const teritoriSellNFT = async (
   const nftClient = new TeritoriNftClient(
     cosmwasmClient,
     wallet.address,
-    nftContractAddress
+    nftContractAddress,
   );
   const currency = getNativeCurrency(network.id, denom);
   if (!currency) {
@@ -50,7 +50,7 @@ const teritoriSellNFT = async (
           denom,
           amount,
         },
-      })
+      }),
     ).toString("base64"),
   });
   return reply.transactionHash;
@@ -61,7 +61,7 @@ const ethereumSellNFT = async (
   nftContractAddress: string,
   tokenId: string,
   price: string,
-  denom: string | undefined
+  denom: string | undefined,
 ) => {
   const network = mustGetEthereumNetwork(wallet.networkId);
 
@@ -82,13 +82,13 @@ const ethereumSellNFT = async (
   const approveTx = await nftClient.approve(
     network.vaultContractAddress,
     tokenId,
-    txFeeData
+    txFeeData,
   );
   await approveTx.wait();
 
   const vaultClient = NFTVault__factory.connect(
     network.vaultContractAddress,
-    signer
+    signer,
   );
 
   const sellTx = await vaultClient.listNFT(
@@ -98,7 +98,7 @@ const ethereumSellNFT = async (
       token: WEI_TOKEN_ADDRESS,
       amount: ethers.utils.parseEther(price),
     },
-    txFeeData
+    txFeeData,
   );
 
   await sellTx.wait();
@@ -115,7 +115,7 @@ export const useSellNFT = (networkKind: NetworkKind | undefined) => {
       nftContractAddress: string,
       tokenId: string,
       price: string,
-      denom: string | undefined
+      denom: string | undefined,
     ) => {
       try {
         if (!wallet?.address || !wallet.connected) {
@@ -144,7 +144,7 @@ export const useSellNFT = (networkKind: NetworkKind | undefined) => {
           nftContractAddress,
           tokenId,
           price,
-          denom
+          denom,
         );
 
         return txHash;
@@ -158,6 +158,6 @@ export const useSellNFT = (networkKind: NetworkKind | undefined) => {
         }
       }
     },
-    [wallet, setToastError, networkKind]
+    [wallet, setToastError, networkKind],
   );
 };

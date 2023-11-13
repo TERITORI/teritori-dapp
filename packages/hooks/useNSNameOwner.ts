@@ -8,7 +8,7 @@ import { extractGnoString } from "../utils/gno";
 export const useNSNameOwner = (
   networkId: string | undefined,
   tokenId: string | null | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   const { data, ...other } = useQuery(
     ["nsNameOwner", networkId, tokenId],
@@ -32,9 +32,9 @@ export const useNSNameOwner = (
             network.nameServiceContractAddress,
             `string(GetUserByName("${tokenId.substring(
               0,
-              tokenId.length - ".gno".length
-            )}").address)`
-          )
+              tokenId.length - ".gno".length,
+            )}").address)`,
+          ),
         );
         return addr;
       }
@@ -59,7 +59,7 @@ export const useNSNameOwner = (
 
       return ownerInfo.owner;
     },
-    { staleTime: Infinity, enabled }
+    { staleTime: Infinity, enabled },
   );
   return { nameOwner: data, notFound: data === null, ...other };
 };

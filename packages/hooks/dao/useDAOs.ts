@@ -15,7 +15,7 @@ export const useDAOs = (req: Partial<DAOsRequest>) => {
       const { daos } = await daoClient.DAOs(req || {});
       return daos;
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
   return { daos: data, ...other };
 };

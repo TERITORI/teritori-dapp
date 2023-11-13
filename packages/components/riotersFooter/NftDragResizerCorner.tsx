@@ -110,7 +110,7 @@ const NftDragResizerCorner: React.FC<{
         />
       </PanGestureHandler>
     );
-  }
+  },
 );
 
 export default NftDragResizerCorner;

@@ -15,7 +15,7 @@ import { CosmosBalancesResponse } from "../utils/teritori";
 
 export const useBalances = (
   networkId: string | undefined,
-  address: string | undefined
+  address: string | undefined,
 ) => {
   const { data: networkBalances } = useQuery(
     ["balances", networkId, address],
@@ -34,11 +34,11 @@ export const useBalances = (
 
       return await getNetworkBalances(networkId, address);
     },
-    { initialData: [], refetchInterval: 30000 }
+    { initialData: [], refetchInterval: 30000 },
   );
 
   const { prices } = useCoingeckoPrices(
-    networkBalances.map((bal) => ({ networkId, denom: bal.denom }))
+    networkBalances.map((bal) => ({ networkId, denom: bal.denom })),
   );
 
   const finalBalances = useMemo(() => {
@@ -48,7 +48,7 @@ export const useBalances = (
         currency &&
         Decimal.fromAtomics(
           bal.amount,
-          currency.decimals
+          currency.decimals,
         ).toFloatApproximation() * (prices[currency.coingeckoId]?.usd || 0);
       const balance: Balance = {
         amount: bal.amount,
@@ -68,7 +68,7 @@ export const useBalances = (
 
 const getNetworkBalances = async (
   networkId: string,
-  address: string
+  address: string,
 ): Promise<{ amount: string; denom: string }[]> => {
   const network = getNetwork(networkId);
   if (!network) {
@@ -91,7 +91,7 @@ const getNetworkBalances = async (
 
     case NetworkKind.Cosmos: {
       const response = await fetch(
-        `${network.restEndpoint}/cosmos/bank/v1beta1/balances/${address}`
+        `${network.restEndpoint}/cosmos/bank/v1beta1/balances/${address}`,
       );
       const responseJSON: CosmosBalancesResponse = await response.json();
       return responseJSON.balances || [];

@@ -42,7 +42,7 @@ export function useNSTokensByOwner(userId: string | undefined) {
       }
 
       return tokens;
-    }
+    },
   );
 
   const [tokens, paths] = useMemo(() => {

@@ -14,7 +14,7 @@ export const tenorRequest = axios.create({
 export const combineTenorFetchPages = (pages: TenorFetchResponse[]) =>
   pages.reduce(
     (acc: TenorItemType[], page) => [...acc, ...(page?.list || [])],
-    []
+    [],
   );
 
 export const useTenorFetchFeatured = () => {
@@ -45,7 +45,7 @@ export const useTenorFetchFeatured = () => {
       getNextPageParam: (lastPage) => lastPage?.after,
       refetchOnWindowFocus: false,
       staleTime: Infinity,
-    }
+    },
   );
 
   return request;

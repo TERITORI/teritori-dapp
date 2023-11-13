@@ -425,40 +425,56 @@ export const Attribute = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Attribute {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAttribute();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.traitType = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.value = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Attribute {
     return {
-      traitType: isSet(object.traitType) ? String(object.traitType) : "",
-      value: isSet(object.value) ? String(object.value) : "",
+      traitType: isSet(object.traitType) ? globalThis.String(object.traitType) : "",
+      value: isSet(object.value) ? globalThis.String(object.value) : "",
     };
   },
 
   toJSON(message: Attribute): unknown {
     const obj: any = {};
-    message.traitType !== undefined && (obj.traitType = message.traitType);
-    message.value !== undefined && (obj.value = message.value);
+    if (message.traitType !== "") {
+      obj.traitType = message.traitType;
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Attribute>, I>>(base?: I): Attribute {
+    return Attribute.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<Attribute>, I>>(object: I): Attribute {
     const message = createBaseAttribute();
     message.traitType = object.traitType ?? "";
@@ -483,37 +499,56 @@ export const PriceRange = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PriceRange {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePriceRange();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.min = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.max = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): PriceRange {
-    return { min: isSet(object.min) ? String(object.min) : "", max: isSet(object.max) ? String(object.max) : "" };
+    return {
+      min: isSet(object.min) ? globalThis.String(object.min) : "",
+      max: isSet(object.max) ? globalThis.String(object.max) : "",
+    };
   },
 
   toJSON(message: PriceRange): unknown {
     const obj: any = {};
-    message.min !== undefined && (obj.min = message.min);
-    message.max !== undefined && (obj.max = message.max);
+    if (message.min !== "") {
+      obj.min = message.min;
+    }
+    if (message.max !== "") {
+      obj.max = message.max;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<PriceRange>, I>>(base?: I): PriceRange {
+    return PriceRange.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<PriceRange>, I>>(object: I): PriceRange {
     const message = createBasePriceRange();
     message.min = object.min ?? "";
@@ -589,104 +624,190 @@ export const NFT = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NFT {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNFT();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 14:
+          if (tag !== 114) {
+            break;
+          }
+
           message.networkId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.imageUri = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.name = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.mintAddress = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.price = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 64) {
+            break;
+          }
+
           message.isListed = reader.bool();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.textInsert = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.collectionName = reader.string();
-          break;
+          continue;
         case 13:
+          if (tag !== 106) {
+            break;
+          }
+
           message.ownerId = reader.string();
-          break;
+          continue;
         case 15:
+          if (tag !== 122) {
+            break;
+          }
+
           message.nftContractAddress = reader.string();
-          break;
+          continue;
         case 16:
+          if (tag !== 130) {
+            break;
+          }
+
           message.lockedOn = reader.string();
-          break;
+          continue;
         case 17:
+          if (tag !== 138) {
+            break;
+          }
+
           message.attributes.push(Attribute.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): NFT {
     return {
-      id: isSet(object.id) ? String(object.id) : "",
-      networkId: isSet(object.networkId) ? String(object.networkId) : "",
-      imageUri: isSet(object.imageUri) ? String(object.imageUri) : "",
-      name: isSet(object.name) ? String(object.name) : "",
-      mintAddress: isSet(object.mintAddress) ? String(object.mintAddress) : "",
-      price: isSet(object.price) ? String(object.price) : "",
-      denom: isSet(object.denom) ? String(object.denom) : "",
-      isListed: isSet(object.isListed) ? Boolean(object.isListed) : false,
-      textInsert: isSet(object.textInsert) ? String(object.textInsert) : "",
-      collectionName: isSet(object.collectionName) ? String(object.collectionName) : "",
-      ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
-      nftContractAddress: isSet(object.nftContractAddress) ? String(object.nftContractAddress) : "",
-      lockedOn: isSet(object.lockedOn) ? String(object.lockedOn) : "",
-      attributes: Array.isArray(object?.attributes) ? object.attributes.map((e: any) => Attribute.fromJSON(e)) : [],
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      imageUri: isSet(object.imageUri) ? globalThis.String(object.imageUri) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      mintAddress: isSet(object.mintAddress) ? globalThis.String(object.mintAddress) : "",
+      price: isSet(object.price) ? globalThis.String(object.price) : "",
+      denom: isSet(object.denom) ? globalThis.String(object.denom) : "",
+      isListed: isSet(object.isListed) ? globalThis.Boolean(object.isListed) : false,
+      textInsert: isSet(object.textInsert) ? globalThis.String(object.textInsert) : "",
+      collectionName: isSet(object.collectionName) ? globalThis.String(object.collectionName) : "",
+      ownerId: isSet(object.ownerId) ? globalThis.String(object.ownerId) : "",
+      nftContractAddress: isSet(object.nftContractAddress) ? globalThis.String(object.nftContractAddress) : "",
+      lockedOn: isSet(object.lockedOn) ? globalThis.String(object.lockedOn) : "",
+      attributes: globalThis.Array.isArray(object?.attributes)
+        ? object.attributes.map((e: any) => Attribute.fromJSON(e))
+        : [],
     };
   },
 
   toJSON(message: NFT): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.networkId !== undefined && (obj.networkId = message.networkId);
-    message.imageUri !== undefined && (obj.imageUri = message.imageUri);
-    message.name !== undefined && (obj.name = message.name);
-    message.mintAddress !== undefined && (obj.mintAddress = message.mintAddress);
-    message.price !== undefined && (obj.price = message.price);
-    message.denom !== undefined && (obj.denom = message.denom);
-    message.isListed !== undefined && (obj.isListed = message.isListed);
-    message.textInsert !== undefined && (obj.textInsert = message.textInsert);
-    message.collectionName !== undefined && (obj.collectionName = message.collectionName);
-    message.ownerId !== undefined && (obj.ownerId = message.ownerId);
-    message.nftContractAddress !== undefined && (obj.nftContractAddress = message.nftContractAddress);
-    message.lockedOn !== undefined && (obj.lockedOn = message.lockedOn);
-    if (message.attributes) {
-      obj.attributes = message.attributes.map((e) => e ? Attribute.toJSON(e) : undefined);
-    } else {
-      obj.attributes = [];
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    if (message.imageUri !== "") {
+      obj.imageUri = message.imageUri;
+    }
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.mintAddress !== "") {
+      obj.mintAddress = message.mintAddress;
+    }
+    if (message.price !== "") {
+      obj.price = message.price;
+    }
+    if (message.denom !== "") {
+      obj.denom = message.denom;
+    }
+    if (message.isListed === true) {
+      obj.isListed = message.isListed;
+    }
+    if (message.textInsert !== "") {
+      obj.textInsert = message.textInsert;
+    }
+    if (message.collectionName !== "") {
+      obj.collectionName = message.collectionName;
+    }
+    if (message.ownerId !== "") {
+      obj.ownerId = message.ownerId;
+    }
+    if (message.nftContractAddress !== "") {
+      obj.nftContractAddress = message.nftContractAddress;
+    }
+    if (message.lockedOn !== "") {
+      obj.lockedOn = message.lockedOn;
+    }
+    if (message.attributes?.length) {
+      obj.attributes = message.attributes.map((e) => Attribute.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<NFT>, I>>(base?: I): NFT {
+    return NFT.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<NFT>, I>>(object: I): NFT {
     const message = createBaseNFT();
     message.id = object.id ?? "";
@@ -723,40 +844,56 @@ export const Amount = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Amount {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAmount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.quantity = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Amount {
     return {
-      denom: isSet(object.denom) ? String(object.denom) : "",
-      quantity: isSet(object.quantity) ? String(object.quantity) : "",
+      denom: isSet(object.denom) ? globalThis.String(object.denom) : "",
+      quantity: isSet(object.quantity) ? globalThis.String(object.quantity) : "",
     };
   },
 
   toJSON(message: Amount): unknown {
     const obj: any = {};
-    message.denom !== undefined && (obj.denom = message.denom);
-    message.quantity !== undefined && (obj.quantity = message.quantity);
+    if (message.denom !== "") {
+      obj.denom = message.denom;
+    }
+    if (message.quantity !== "") {
+      obj.quantity = message.quantity;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Amount>, I>>(base?: I): Amount {
+    return Amount.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<Amount>, I>>(object: I): Amount {
     const message = createBaseAmount();
     message.denom = object.denom ?? "";
@@ -860,135 +997,265 @@ export const Collection = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Collection {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCollection();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.imageUri = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.collectionName = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.creatorName = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.verified = reader.bool();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.mintAddress = reader.string();
-          break;
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.networkId = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.volume = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.volumeDenom = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.creatorId = reader.string();
-          break;
+          continue;
         case 12:
+          if (tag !== 96) {
+            break;
+          }
+
           message.secondaryDuringMint = reader.bool();
-          break;
+          continue;
         case 13:
+          if (tag !== 106) {
+            break;
+          }
+
           message.websiteUrl = reader.string();
-          break;
+          continue;
         case 14:
+          if (tag !== 114) {
+            break;
+          }
+
           message.twitterUrl = reader.string();
-          break;
+          continue;
         case 15:
+          if (tag !== 120) {
+            break;
+          }
+
           message.floorPrice = longToNumber(reader.uint64() as Long);
-          break;
+          continue;
         case 16:
+          if (tag !== 128) {
+            break;
+          }
+
           message.maxSupply = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 17:
+          if (tag !== 138) {
+            break;
+          }
+
           message.mintPrice = reader.string();
-          break;
+          continue;
         case 18:
+          if (tag !== 149) {
+            break;
+          }
+
           message.totalVolume = reader.float();
-          break;
+          continue;
         case 19:
+          if (tag !== 152) {
+            break;
+          }
+
           message.numTrades = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 20:
+          if (tag !== 160) {
+            break;
+          }
+
           message.numOwners = reader.int32();
-          break;
+          continue;
         case 21:
+          if (tag !== 170) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 22:
+          if (tag !== 181) {
+            break;
+          }
+
           message.volumeCompare = reader.float();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Collection {
     return {
-      id: isSet(object.id) ? String(object.id) : "",
-      imageUri: isSet(object.imageUri) ? String(object.imageUri) : "",
-      collectionName: isSet(object.collectionName) ? String(object.collectionName) : "",
-      creatorName: isSet(object.creatorName) ? String(object.creatorName) : "",
-      verified: isSet(object.verified) ? Boolean(object.verified) : false,
-      mintAddress: isSet(object.mintAddress) ? String(object.mintAddress) : "",
-      networkId: isSet(object.networkId) ? String(object.networkId) : "",
-      volume: isSet(object.volume) ? String(object.volume) : "",
-      volumeDenom: isSet(object.volumeDenom) ? String(object.volumeDenom) : "",
-      creatorId: isSet(object.creatorId) ? String(object.creatorId) : "",
-      secondaryDuringMint: isSet(object.secondaryDuringMint) ? Boolean(object.secondaryDuringMint) : false,
-      websiteUrl: isSet(object.websiteUrl) ? String(object.websiteUrl) : "",
-      twitterUrl: isSet(object.twitterUrl) ? String(object.twitterUrl) : "",
-      floorPrice: isSet(object.floorPrice) ? Number(object.floorPrice) : 0,
-      maxSupply: isSet(object.maxSupply) ? Number(object.maxSupply) : 0,
-      mintPrice: isSet(object.mintPrice) ? String(object.mintPrice) : "",
-      totalVolume: isSet(object.totalVolume) ? Number(object.totalVolume) : 0,
-      numTrades: isSet(object.numTrades) ? Number(object.numTrades) : 0,
-      numOwners: isSet(object.numOwners) ? Number(object.numOwners) : 0,
-      denom: isSet(object.denom) ? String(object.denom) : "",
-      volumeCompare: isSet(object.volumeCompare) ? Number(object.volumeCompare) : 0,
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      imageUri: isSet(object.imageUri) ? globalThis.String(object.imageUri) : "",
+      collectionName: isSet(object.collectionName) ? globalThis.String(object.collectionName) : "",
+      creatorName: isSet(object.creatorName) ? globalThis.String(object.creatorName) : "",
+      verified: isSet(object.verified) ? globalThis.Boolean(object.verified) : false,
+      mintAddress: isSet(object.mintAddress) ? globalThis.String(object.mintAddress) : "",
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      volume: isSet(object.volume) ? globalThis.String(object.volume) : "",
+      volumeDenom: isSet(object.volumeDenom) ? globalThis.String(object.volumeDenom) : "",
+      creatorId: isSet(object.creatorId) ? globalThis.String(object.creatorId) : "",
+      secondaryDuringMint: isSet(object.secondaryDuringMint) ? globalThis.Boolean(object.secondaryDuringMint) : false,
+      websiteUrl: isSet(object.websiteUrl) ? globalThis.String(object.websiteUrl) : "",
+      twitterUrl: isSet(object.twitterUrl) ? globalThis.String(object.twitterUrl) : "",
+      floorPrice: isSet(object.floorPrice) ? globalThis.Number(object.floorPrice) : 0,
+      maxSupply: isSet(object.maxSupply) ? globalThis.Number(object.maxSupply) : 0,
+      mintPrice: isSet(object.mintPrice) ? globalThis.String(object.mintPrice) : "",
+      totalVolume: isSet(object.totalVolume) ? globalThis.Number(object.totalVolume) : 0,
+      numTrades: isSet(object.numTrades) ? globalThis.Number(object.numTrades) : 0,
+      numOwners: isSet(object.numOwners) ? globalThis.Number(object.numOwners) : 0,
+      denom: isSet(object.denom) ? globalThis.String(object.denom) : "",
+      volumeCompare: isSet(object.volumeCompare) ? globalThis.Number(object.volumeCompare) : 0,
     };
   },
 
   toJSON(message: Collection): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.imageUri !== undefined && (obj.imageUri = message.imageUri);
-    message.collectionName !== undefined && (obj.collectionName = message.collectionName);
-    message.creatorName !== undefined && (obj.creatorName = message.creatorName);
-    message.verified !== undefined && (obj.verified = message.verified);
-    message.mintAddress !== undefined && (obj.mintAddress = message.mintAddress);
-    message.networkId !== undefined && (obj.networkId = message.networkId);
-    message.volume !== undefined && (obj.volume = message.volume);
-    message.volumeDenom !== undefined && (obj.volumeDenom = message.volumeDenom);
-    message.creatorId !== undefined && (obj.creatorId = message.creatorId);
-    message.secondaryDuringMint !== undefined && (obj.secondaryDuringMint = message.secondaryDuringMint);
-    message.websiteUrl !== undefined && (obj.websiteUrl = message.websiteUrl);
-    message.twitterUrl !== undefined && (obj.twitterUrl = message.twitterUrl);
-    message.floorPrice !== undefined && (obj.floorPrice = Math.round(message.floorPrice));
-    message.maxSupply !== undefined && (obj.maxSupply = Math.round(message.maxSupply));
-    message.mintPrice !== undefined && (obj.mintPrice = message.mintPrice);
-    message.totalVolume !== undefined && (obj.totalVolume = message.totalVolume);
-    message.numTrades !== undefined && (obj.numTrades = Math.round(message.numTrades));
-    message.numOwners !== undefined && (obj.numOwners = Math.round(message.numOwners));
-    message.denom !== undefined && (obj.denom = message.denom);
-    message.volumeCompare !== undefined && (obj.volumeCompare = message.volumeCompare);
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.imageUri !== "") {
+      obj.imageUri = message.imageUri;
+    }
+    if (message.collectionName !== "") {
+      obj.collectionName = message.collectionName;
+    }
+    if (message.creatorName !== "") {
+      obj.creatorName = message.creatorName;
+    }
+    if (message.verified === true) {
+      obj.verified = message.verified;
+    }
+    if (message.mintAddress !== "") {
+      obj.mintAddress = message.mintAddress;
+    }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    if (message.volume !== "") {
+      obj.volume = message.volume;
+    }
+    if (message.volumeDenom !== "") {
+      obj.volumeDenom = message.volumeDenom;
+    }
+    if (message.creatorId !== "") {
+      obj.creatorId = message.creatorId;
+    }
+    if (message.secondaryDuringMint === true) {
+      obj.secondaryDuringMint = message.secondaryDuringMint;
+    }
+    if (message.websiteUrl !== "") {
+      obj.websiteUrl = message.websiteUrl;
+    }
+    if (message.twitterUrl !== "") {
+      obj.twitterUrl = message.twitterUrl;
+    }
+    if (message.floorPrice !== 0) {
+      obj.floorPrice = Math.round(message.floorPrice);
+    }
+    if (message.maxSupply !== 0) {
+      obj.maxSupply = Math.round(message.maxSupply);
+    }
+    if (message.mintPrice !== "") {
+      obj.mintPrice = message.mintPrice;
+    }
+    if (message.totalVolume !== 0) {
+      obj.totalVolume = message.totalVolume;
+    }
+    if (message.numTrades !== 0) {
+      obj.numTrades = Math.round(message.numTrades);
+    }
+    if (message.numOwners !== 0) {
+      obj.numOwners = Math.round(message.numOwners);
+    }
+    if (message.denom !== "") {
+      obj.denom = message.denom;
+    }
+    if (message.volumeCompare !== 0) {
+      obj.volumeCompare = message.volumeCompare;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Collection>, I>>(base?: I): Collection {
+    return Collection.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<Collection>, I>>(object: I): Collection {
     const message = createBaseCollection();
     message.id = object.id ?? "";
@@ -1047,69 +1314,113 @@ export const CollectionStats = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CollectionStats {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCollectionStats();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.floorPrice.push(Amount.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.totalVolume = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.owners = reader.int32();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.listed = reader.int32();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.totalSupply = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.owned = reader.int32();
-          break;
+          continue;
         case 7:
+          if (tag !== 61) {
+            break;
+          }
+
           message.avgPricePeriod = reader.float();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CollectionStats {
     return {
-      floorPrice: Array.isArray(object?.floorPrice) ? object.floorPrice.map((e: any) => Amount.fromJSON(e)) : [],
-      totalVolume: isSet(object.totalVolume) ? String(object.totalVolume) : "",
-      owners: isSet(object.owners) ? Number(object.owners) : 0,
-      listed: isSet(object.listed) ? Number(object.listed) : 0,
-      totalSupply: isSet(object.totalSupply) ? Number(object.totalSupply) : 0,
-      owned: isSet(object.owned) ? Number(object.owned) : 0,
-      avgPricePeriod: isSet(object.avgPricePeriod) ? Number(object.avgPricePeriod) : 0,
+      floorPrice: globalThis.Array.isArray(object?.floorPrice)
+        ? object.floorPrice.map((e: any) => Amount.fromJSON(e))
+        : [],
+      totalVolume: isSet(object.totalVolume) ? globalThis.String(object.totalVolume) : "",
+      owners: isSet(object.owners) ? globalThis.Number(object.owners) : 0,
+      listed: isSet(object.listed) ? globalThis.Number(object.listed) : 0,
+      totalSupply: isSet(object.totalSupply) ? globalThis.Number(object.totalSupply) : 0,
+      owned: isSet(object.owned) ? globalThis.Number(object.owned) : 0,
+      avgPricePeriod: isSet(object.avgPricePeriod) ? globalThis.Number(object.avgPricePeriod) : 0,
     };
   },
 
   toJSON(message: CollectionStats): unknown {
     const obj: any = {};
-    if (message.floorPrice) {
-      obj.floorPrice = message.floorPrice.map((e) => e ? Amount.toJSON(e) : undefined);
-    } else {
-      obj.floorPrice = [];
+    if (message.floorPrice?.length) {
+      obj.floorPrice = message.floorPrice.map((e) => Amount.toJSON(e));
     }
-    message.totalVolume !== undefined && (obj.totalVolume = message.totalVolume);
-    message.owners !== undefined && (obj.owners = Math.round(message.owners));
-    message.listed !== undefined && (obj.listed = Math.round(message.listed));
-    message.totalSupply !== undefined && (obj.totalSupply = Math.round(message.totalSupply));
-    message.owned !== undefined && (obj.owned = Math.round(message.owned));
-    message.avgPricePeriod !== undefined && (obj.avgPricePeriod = message.avgPricePeriod);
+    if (message.totalVolume !== "") {
+      obj.totalVolume = message.totalVolume;
+    }
+    if (message.owners !== 0) {
+      obj.owners = Math.round(message.owners);
+    }
+    if (message.listed !== 0) {
+      obj.listed = Math.round(message.listed);
+    }
+    if (message.totalSupply !== 0) {
+      obj.totalSupply = Math.round(message.totalSupply);
+    }
+    if (message.owned !== 0) {
+      obj.owned = Math.round(message.owned);
+    }
+    if (message.avgPricePeriod !== 0) {
+      obj.avgPricePeriod = message.avgPricePeriod;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<CollectionStats>, I>>(base?: I): CollectionStats {
+    return CollectionStats.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<CollectionStats>, I>>(object: I): CollectionStats {
     const message = createBaseCollectionStats();
     message.floorPrice = object.floorPrice?.map((e) => Amount.fromPartial(e)) || [];
@@ -1154,65 +1465,111 @@ export const AttributeRarityFloor = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AttributeRarityFloor {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAttributeRarityFloor();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.traitType = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.value = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.counta = reader.int32();
-          break;
+          continue;
         case 4:
+          if (tag !== 37) {
+            break;
+          }
+
           message.floor = reader.float();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.collectionId = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 53) {
+            break;
+          }
+
           message.rareRatio = reader.float();
-          break;
+          continue;
         case 7:
+          if (tag !== 56) {
+            break;
+          }
+
           message.collectionSize = reader.int32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AttributeRarityFloor {
     return {
-      traitType: isSet(object.traitType) ? String(object.traitType) : "",
-      value: isSet(object.value) ? String(object.value) : "",
-      counta: isSet(object.counta) ? Number(object.counta) : 0,
-      floor: isSet(object.floor) ? Number(object.floor) : 0,
-      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
-      rareRatio: isSet(object.rareRatio) ? Number(object.rareRatio) : 0,
-      collectionSize: isSet(object.collectionSize) ? Number(object.collectionSize) : 0,
+      traitType: isSet(object.traitType) ? globalThis.String(object.traitType) : "",
+      value: isSet(object.value) ? globalThis.String(object.value) : "",
+      counta: isSet(object.counta) ? globalThis.Number(object.counta) : 0,
+      floor: isSet(object.floor) ? globalThis.Number(object.floor) : 0,
+      collectionId: isSet(object.collectionId) ? globalThis.String(object.collectionId) : "",
+      rareRatio: isSet(object.rareRatio) ? globalThis.Number(object.rareRatio) : 0,
+      collectionSize: isSet(object.collectionSize) ? globalThis.Number(object.collectionSize) : 0,
     };
   },
 
   toJSON(message: AttributeRarityFloor): unknown {
     const obj: any = {};
-    message.traitType !== undefined && (obj.traitType = message.traitType);
-    message.value !== undefined && (obj.value = message.value);
-    message.counta !== undefined && (obj.counta = Math.round(message.counta));
-    message.floor !== undefined && (obj.floor = message.floor);
-    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
-    message.rareRatio !== undefined && (obj.rareRatio = message.rareRatio);
-    message.collectionSize !== undefined && (obj.collectionSize = Math.round(message.collectionSize));
+    if (message.traitType !== "") {
+      obj.traitType = message.traitType;
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
+    if (message.counta !== 0) {
+      obj.counta = Math.round(message.counta);
+    }
+    if (message.floor !== 0) {
+      obj.floor = message.floor;
+    }
+    if (message.collectionId !== "") {
+      obj.collectionId = message.collectionId;
+    }
+    if (message.rareRatio !== 0) {
+      obj.rareRatio = message.rareRatio;
+    }
+    if (message.collectionSize !== 0) {
+      obj.collectionSize = Math.round(message.collectionSize);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<AttributeRarityFloor>, I>>(base?: I): AttributeRarityFloor {
+    return AttributeRarityFloor.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<AttributeRarityFloor>, I>>(object: I): AttributeRarityFloor {
     const message = createBaseAttributeRarityFloor();
     message.traitType = object.traitType ?? "";
@@ -1239,19 +1596,24 @@ export const NFTCollectionAttributesResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NFTCollectionAttributesResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNFTCollectionAttributesResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.attributes = AttributeRarityFloor.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1262,11 +1624,15 @@ export const NFTCollectionAttributesResponse = {
 
   toJSON(message: NFTCollectionAttributesResponse): unknown {
     const obj: any = {};
-    message.attributes !== undefined &&
-      (obj.attributes = message.attributes ? AttributeRarityFloor.toJSON(message.attributes) : undefined);
+    if (message.attributes !== undefined) {
+      obj.attributes = AttributeRarityFloor.toJSON(message.attributes);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<NFTCollectionAttributesResponse>, I>>(base?: I): NFTCollectionAttributesResponse {
+    return NFTCollectionAttributesResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<NFTCollectionAttributesResponse>, I>>(
     object: I,
   ): NFTCollectionAttributesResponse {
@@ -1337,90 +1703,166 @@ export const Activity = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Activity {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseActivity();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.transactionKind = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.targetName = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.targetImageUri = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.contractName = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.time = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.transactionId = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.buyerId = reader.string();
-          break;
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.sellerId = reader.string();
-          break;
+          continue;
         case 12:
+          if (tag !== 97) {
+            break;
+          }
+
           message.usdPrice = reader.double();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Activity {
     return {
-      id: isSet(object.id) ? String(object.id) : "",
-      transactionKind: isSet(object.transactionKind) ? String(object.transactionKind) : "",
-      targetName: isSet(object.targetName) ? String(object.targetName) : "",
-      targetImageUri: isSet(object.targetImageUri) ? String(object.targetImageUri) : "",
-      contractName: isSet(object.contractName) ? String(object.contractName) : "",
-      time: isSet(object.time) ? String(object.time) : "",
-      amount: isSet(object.amount) ? String(object.amount) : "",
-      denom: isSet(object.denom) ? String(object.denom) : "",
-      transactionId: isSet(object.transactionId) ? String(object.transactionId) : "",
-      buyerId: isSet(object.buyerId) ? String(object.buyerId) : "",
-      sellerId: isSet(object.sellerId) ? String(object.sellerId) : "",
-      usdPrice: isSet(object.usdPrice) ? Number(object.usdPrice) : 0,
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      transactionKind: isSet(object.transactionKind) ? globalThis.String(object.transactionKind) : "",
+      targetName: isSet(object.targetName) ? globalThis.String(object.targetName) : "",
+      targetImageUri: isSet(object.targetImageUri) ? globalThis.String(object.targetImageUri) : "",
+      contractName: isSet(object.contractName) ? globalThis.String(object.contractName) : "",
+      time: isSet(object.time) ? globalThis.String(object.time) : "",
+      amount: isSet(object.amount) ? globalThis.String(object.amount) : "",
+      denom: isSet(object.denom) ? globalThis.String(object.denom) : "",
+      transactionId: isSet(object.transactionId) ? globalThis.String(object.transactionId) : "",
+      buyerId: isSet(object.buyerId) ? globalThis.String(object.buyerId) : "",
+      sellerId: isSet(object.sellerId) ? globalThis.String(object.sellerId) : "",
+      usdPrice: isSet(object.usdPrice) ? globalThis.Number(object.usdPrice) : 0,
     };
   },
 
   toJSON(message: Activity): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.transactionKind !== undefined && (obj.transactionKind = message.transactionKind);
-    message.targetName !== undefined && (obj.targetName = message.targetName);
-    message.targetImageUri !== undefined && (obj.targetImageUri = message.targetImageUri);
-    message.contractName !== undefined && (obj.contractName = message.contractName);
-    message.time !== undefined && (obj.time = message.time);
-    message.amount !== undefined && (obj.amount = message.amount);
-    message.denom !== undefined && (obj.denom = message.denom);
-    message.transactionId !== undefined && (obj.transactionId = message.transactionId);
-    message.buyerId !== undefined && (obj.buyerId = message.buyerId);
-    message.sellerId !== undefined && (obj.sellerId = message.sellerId);
-    message.usdPrice !== undefined && (obj.usdPrice = message.usdPrice);
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.transactionKind !== "") {
+      obj.transactionKind = message.transactionKind;
+    }
+    if (message.targetName !== "") {
+      obj.targetName = message.targetName;
+    }
+    if (message.targetImageUri !== "") {
+      obj.targetImageUri = message.targetImageUri;
+    }
+    if (message.contractName !== "") {
+      obj.contractName = message.contractName;
+    }
+    if (message.time !== "") {
+      obj.time = message.time;
+    }
+    if (message.amount !== "") {
+      obj.amount = message.amount;
+    }
+    if (message.denom !== "") {
+      obj.denom = message.denom;
+    }
+    if (message.transactionId !== "") {
+      obj.transactionId = message.transactionId;
+    }
+    if (message.buyerId !== "") {
+      obj.buyerId = message.buyerId;
+    }
+    if (message.sellerId !== "") {
+      obj.sellerId = message.sellerId;
+    }
+    if (message.usdPrice !== 0) {
+      obj.usdPrice = message.usdPrice;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Activity>, I>>(base?: I): Activity {
+    return Activity.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<Activity>, I>>(object: I): Activity {
     const message = createBaseActivity();
     message.id = object.id ?? "";
@@ -1458,45 +1900,67 @@ export const Quest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Quest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQuest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.title = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.completed = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Quest {
     return {
-      id: isSet(object.id) ? String(object.id) : "",
-      title: isSet(object.title) ? String(object.title) : "",
-      completed: isSet(object.completed) ? Boolean(object.completed) : false,
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      title: isSet(object.title) ? globalThis.String(object.title) : "",
+      completed: isSet(object.completed) ? globalThis.Boolean(object.completed) : false,
     };
   },
 
   toJSON(message: Quest): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.title !== undefined && (obj.title = message.title);
-    message.completed !== undefined && (obj.completed = message.completed);
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.title !== "") {
+      obj.title = message.title;
+    }
+    if (message.completed === true) {
+      obj.completed = message.completed;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Quest>, I>>(base?: I): Quest {
+    return Quest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<Quest>, I>>(object: I): Quest {
     const message = createBaseQuest();
     message.id = object.id ?? "";
@@ -1522,40 +1986,56 @@ export const PriceDatum = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PriceDatum {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePriceDatum();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.price = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.time = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): PriceDatum {
     return {
-      price: isSet(object.price) ? String(object.price) : "",
-      time: isSet(object.time) ? String(object.time) : "",
+      price: isSet(object.price) ? globalThis.String(object.price) : "",
+      time: isSet(object.time) ? globalThis.String(object.time) : "",
     };
   },
 
   toJSON(message: PriceDatum): unknown {
     const obj: any = {};
-    message.price !== undefined && (obj.price = message.price);
-    message.time !== undefined && (obj.time = message.time);
+    if (message.price !== "") {
+      obj.price = message.price;
+    }
+    if (message.time !== "") {
+      obj.time = message.time;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<PriceDatum>, I>>(base?: I): PriceDatum {
+    return PriceDatum.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<PriceDatum>, I>>(object: I): PriceDatum {
     const message = createBasePriceDatum();
     message.price = object.price ?? "";
@@ -1595,65 +2075,111 @@ export const CollectionsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CollectionsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCollectionsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.limit = reader.int32();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.offset = reader.int32();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.sort = reader.int32() as any;
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.sortDirection = reader.int32() as any;
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.upcoming = reader.bool();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.networkId = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 64) {
+            break;
+          }
+
           message.mintState = reader.int32() as any;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CollectionsRequest {
     return {
-      limit: isSet(object.limit) ? Number(object.limit) : 0,
-      offset: isSet(object.offset) ? Number(object.offset) : 0,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+      offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
       sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
       sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
-      upcoming: isSet(object.upcoming) ? Boolean(object.upcoming) : false,
-      networkId: isSet(object.networkId) ? String(object.networkId) : "",
+      upcoming: isSet(object.upcoming) ? globalThis.Boolean(object.upcoming) : false,
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
       mintState: isSet(object.mintState) ? mintStateFromJSON(object.mintState) : 0,
     };
   },
 
   toJSON(message: CollectionsRequest): unknown {
     const obj: any = {};
-    message.limit !== undefined && (obj.limit = Math.round(message.limit));
-    message.offset !== undefined && (obj.offset = Math.round(message.offset));
-    message.sort !== undefined && (obj.sort = sortToJSON(message.sort));
-    message.sortDirection !== undefined && (obj.sortDirection = sortDirectionToJSON(message.sortDirection));
-    message.upcoming !== undefined && (obj.upcoming = message.upcoming);
-    message.networkId !== undefined && (obj.networkId = message.networkId);
-    message.mintState !== undefined && (obj.mintState = mintStateToJSON(message.mintState));
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.offset !== 0) {
+      obj.offset = Math.round(message.offset);
+    }
+    if (message.sort !== 0) {
+      obj.sort = sortToJSON(message.sort);
+    }
+    if (message.sortDirection !== 0) {
+      obj.sortDirection = sortDirectionToJSON(message.sortDirection);
+    }
+    if (message.upcoming === true) {
+      obj.upcoming = message.upcoming;
+    }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    if (message.mintState !== 0) {
+      obj.mintState = mintStateToJSON(message.mintState);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<CollectionsRequest>, I>>(base?: I): CollectionsRequest {
+    return CollectionsRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<CollectionsRequest>, I>>(object: I): CollectionsRequest {
     const message = createBaseCollectionsRequest();
     message.limit = object.limit ?? 0;
@@ -1683,40 +2209,56 @@ export const CollectionStatsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CollectionStatsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCollectionStatsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.collectionId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.ownerId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CollectionStatsRequest {
     return {
-      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
-      ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
+      collectionId: isSet(object.collectionId) ? globalThis.String(object.collectionId) : "",
+      ownerId: isSet(object.ownerId) ? globalThis.String(object.ownerId) : "",
     };
   },
 
   toJSON(message: CollectionStatsRequest): unknown {
     const obj: any = {};
-    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
-    message.ownerId !== undefined && (obj.ownerId = message.ownerId);
+    if (message.collectionId !== "") {
+      obj.collectionId = message.collectionId;
+    }
+    if (message.ownerId !== "") {
+      obj.ownerId = message.ownerId;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<CollectionStatsRequest>, I>>(base?: I): CollectionStatsRequest {
+    return CollectionStatsRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<CollectionStatsRequest>, I>>(object: I): CollectionStatsRequest {
     const message = createBaseCollectionStatsRequest();
     message.collectionId = object.collectionId ?? "";
@@ -1741,30 +2283,39 @@ export const NFTCollectionAttributesRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NFTCollectionAttributesRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNFTCollectionAttributesRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.collectionId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.whereAttributes.push(Attribute.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): NFTCollectionAttributesRequest {
     return {
-      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
-      whereAttributes: Array.isArray(object?.whereAttributes)
+      collectionId: isSet(object.collectionId) ? globalThis.String(object.collectionId) : "",
+      whereAttributes: globalThis.Array.isArray(object?.whereAttributes)
         ? object.whereAttributes.map((e: any) => Attribute.fromJSON(e))
         : [],
     };
@@ -1772,15 +2323,18 @@ export const NFTCollectionAttributesRequest = {
 
   toJSON(message: NFTCollectionAttributesRequest): unknown {
     const obj: any = {};
-    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
-    if (message.whereAttributes) {
-      obj.whereAttributes = message.whereAttributes.map((e) => e ? Attribute.toJSON(e) : undefined);
-    } else {
-      obj.whereAttributes = [];
+    if (message.collectionId !== "") {
+      obj.collectionId = message.collectionId;
+    }
+    if (message.whereAttributes?.length) {
+      obj.whereAttributes = message.whereAttributes.map((e) => Attribute.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<NFTCollectionAttributesRequest>, I>>(base?: I): NFTCollectionAttributesRequest {
+    return NFTCollectionAttributesRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<NFTCollectionAttributesRequest>, I>>(
     object: I,
   ): NFTCollectionAttributesRequest {
@@ -1804,19 +2358,24 @@ export const CollectionStatsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CollectionStatsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCollectionStatsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.stats = CollectionStats.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1827,10 +2386,15 @@ export const CollectionStatsResponse = {
 
   toJSON(message: CollectionStatsResponse): unknown {
     const obj: any = {};
-    message.stats !== undefined && (obj.stats = message.stats ? CollectionStats.toJSON(message.stats) : undefined);
+    if (message.stats !== undefined) {
+      obj.stats = CollectionStats.toJSON(message.stats);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<CollectionStatsResponse>, I>>(base?: I): CollectionStatsResponse {
+    return CollectionStatsResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<CollectionStatsResponse>, I>>(object: I): CollectionStatsResponse {
     const message = createBaseCollectionStatsResponse();
     message.stats = (object.stats !== undefined && object.stats !== null)
@@ -1853,19 +2417,24 @@ export const CollectionsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CollectionsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCollectionsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.collection = Collection.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1876,11 +2445,15 @@ export const CollectionsResponse = {
 
   toJSON(message: CollectionsResponse): unknown {
     const obj: any = {};
-    message.collection !== undefined &&
-      (obj.collection = message.collection ? Collection.toJSON(message.collection) : undefined);
+    if (message.collection !== undefined) {
+      obj.collection = Collection.toJSON(message.collection);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<CollectionsResponse>, I>>(base?: I): CollectionsResponse {
+    return CollectionsResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<CollectionsResponse>, I>>(object: I): CollectionsResponse {
     const message = createBaseCollectionsResponse();
     message.collection = (object.collection !== undefined && object.collection !== null)
@@ -1937,80 +2510,135 @@ export const NFTsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NFTsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNFTsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.limit = reader.int32();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.offset = reader.int32();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.collectionId = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.ownerId = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.sort = reader.int32() as any;
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.sortDirection = reader.int32() as any;
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.attributes.push(Attribute.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 8:
+          if (tag !== 64) {
+            break;
+          }
+
           message.isListed = reader.bool();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.priceRange = PriceRange.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): NFTsRequest {
     return {
-      limit: isSet(object.limit) ? Number(object.limit) : 0,
-      offset: isSet(object.offset) ? Number(object.offset) : 0,
-      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
-      ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+      offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
+      collectionId: isSet(object.collectionId) ? globalThis.String(object.collectionId) : "",
+      ownerId: isSet(object.ownerId) ? globalThis.String(object.ownerId) : "",
       sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
       sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
-      attributes: Array.isArray(object?.attributes) ? object.attributes.map((e: any) => Attribute.fromJSON(e)) : [],
-      isListed: isSet(object.isListed) ? Boolean(object.isListed) : false,
+      attributes: globalThis.Array.isArray(object?.attributes)
+        ? object.attributes.map((e: any) => Attribute.fromJSON(e))
+        : [],
+      isListed: isSet(object.isListed) ? globalThis.Boolean(object.isListed) : false,
       priceRange: isSet(object.priceRange) ? PriceRange.fromJSON(object.priceRange) : undefined,
     };
   },
 
   toJSON(message: NFTsRequest): unknown {
     const obj: any = {};
-    message.limit !== undefined && (obj.limit = Math.round(message.limit));
-    message.offset !== undefined && (obj.offset = Math.round(message.offset));
-    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
-    message.ownerId !== undefined && (obj.ownerId = message.ownerId);
-    message.sort !== undefined && (obj.sort = sortToJSON(message.sort));
-    message.sortDirection !== undefined && (obj.sortDirection = sortDirectionToJSON(message.sortDirection));
-    if (message.attributes) {
-      obj.attributes = message.attributes.map((e) => e ? Attribute.toJSON(e) : undefined);
-    } else {
-      obj.attributes = [];
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
     }
-    message.isListed !== undefined && (obj.isListed = message.isListed);
-    message.priceRange !== undefined &&
-      (obj.priceRange = message.priceRange ? PriceRange.toJSON(message.priceRange) : undefined);
+    if (message.offset !== 0) {
+      obj.offset = Math.round(message.offset);
+    }
+    if (message.collectionId !== "") {
+      obj.collectionId = message.collectionId;
+    }
+    if (message.ownerId !== "") {
+      obj.ownerId = message.ownerId;
+    }
+    if (message.sort !== 0) {
+      obj.sort = sortToJSON(message.sort);
+    }
+    if (message.sortDirection !== 0) {
+      obj.sortDirection = sortDirectionToJSON(message.sortDirection);
+    }
+    if (message.attributes?.length) {
+      obj.attributes = message.attributes.map((e) => Attribute.toJSON(e));
+    }
+    if (message.isListed === true) {
+      obj.isListed = message.isListed;
+    }
+    if (message.priceRange !== undefined) {
+      obj.priceRange = PriceRange.toJSON(message.priceRange);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<NFTsRequest>, I>>(base?: I): NFTsRequest {
+    return NFTsRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<NFTsRequest>, I>>(object: I): NFTsRequest {
     const message = createBaseNFTsRequest();
     message.limit = object.limit ?? 0;
@@ -2041,19 +2669,24 @@ export const NFTsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NFTsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNFTsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.nft = NFT.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2064,10 +2697,15 @@ export const NFTsResponse = {
 
   toJSON(message: NFTsResponse): unknown {
     const obj: any = {};
-    message.nft !== undefined && (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
+    if (message.nft !== undefined) {
+      obj.nft = NFT.toJSON(message.nft);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<NFTsResponse>, I>>(base?: I): NFTsResponse {
+    return NFTsResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<NFTsResponse>, I>>(object: I): NFTsResponse {
     const message = createBaseNFTsResponse();
     message.nft = (object.nft !== undefined && object.nft !== null) ? NFT.fromPartial(object.nft) : undefined;
@@ -2094,45 +2732,67 @@ export const QuestsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QuestsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQuestsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.limit = reader.int32();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.offset = reader.int32();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.userId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QuestsRequest {
     return {
-      limit: isSet(object.limit) ? Number(object.limit) : 0,
-      offset: isSet(object.offset) ? Number(object.offset) : 0,
-      userId: isSet(object.userId) ? String(object.userId) : "",
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+      offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
+      userId: isSet(object.userId) ? globalThis.String(object.userId) : "",
     };
   },
 
   toJSON(message: QuestsRequest): unknown {
     const obj: any = {};
-    message.limit !== undefined && (obj.limit = Math.round(message.limit));
-    message.offset !== undefined && (obj.offset = Math.round(message.offset));
-    message.userId !== undefined && (obj.userId = message.userId);
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.offset !== 0) {
+      obj.offset = Math.round(message.offset);
+    }
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<QuestsRequest>, I>>(base?: I): QuestsRequest {
+    return QuestsRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<QuestsRequest>, I>>(object: I): QuestsRequest {
     const message = createBaseQuestsRequest();
     message.limit = object.limit ?? 0;
@@ -2155,19 +2815,24 @@ export const QuestsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QuestsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQuestsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.quest = Quest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2178,10 +2843,15 @@ export const QuestsResponse = {
 
   toJSON(message: QuestsResponse): unknown {
     const obj: any = {};
-    message.quest !== undefined && (obj.quest = message.quest ? Quest.toJSON(message.quest) : undefined);
+    if (message.quest !== undefined) {
+      obj.quest = Quest.toJSON(message.quest);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<QuestsResponse>, I>>(base?: I): QuestsResponse {
+    return QuestsResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<QuestsResponse>, I>>(object: I): QuestsResponse {
     const message = createBaseQuestsResponse();
     message.quest = (object.quest !== undefined && object.quest !== null) ? Quest.fromPartial(object.quest) : undefined;
@@ -2211,50 +2881,78 @@ export const ActivityRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ActivityRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseActivityRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.collectionId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.nftId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.limit = reader.int32();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.offset = reader.int32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ActivityRequest {
     return {
-      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
-      nftId: isSet(object.nftId) ? String(object.nftId) : "",
-      limit: isSet(object.limit) ? Number(object.limit) : 0,
-      offset: isSet(object.offset) ? Number(object.offset) : 0,
+      collectionId: isSet(object.collectionId) ? globalThis.String(object.collectionId) : "",
+      nftId: isSet(object.nftId) ? globalThis.String(object.nftId) : "",
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+      offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
     };
   },
 
   toJSON(message: ActivityRequest): unknown {
     const obj: any = {};
-    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
-    message.nftId !== undefined && (obj.nftId = message.nftId);
-    message.limit !== undefined && (obj.limit = Math.round(message.limit));
-    message.offset !== undefined && (obj.offset = Math.round(message.offset));
+    if (message.collectionId !== "") {
+      obj.collectionId = message.collectionId;
+    }
+    if (message.nftId !== "") {
+      obj.nftId = message.nftId;
+    }
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.offset !== 0) {
+      obj.offset = Math.round(message.offset);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ActivityRequest>, I>>(base?: I): ActivityRequest {
+    return ActivityRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ActivityRequest>, I>>(object: I): ActivityRequest {
     const message = createBaseActivityRequest();
     message.collectionId = object.collectionId ?? "";
@@ -2281,22 +2979,31 @@ export const ActivityResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ActivityResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseActivityResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.activity = Activity.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.total = longToNumber(reader.int64() as Long);
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2304,17 +3011,24 @@ export const ActivityResponse = {
   fromJSON(object: any): ActivityResponse {
     return {
       activity: isSet(object.activity) ? Activity.fromJSON(object.activity) : undefined,
-      total: isSet(object.total) ? Number(object.total) : 0,
+      total: isSet(object.total) ? globalThis.Number(object.total) : 0,
     };
   },
 
   toJSON(message: ActivityResponse): unknown {
     const obj: any = {};
-    message.activity !== undefined && (obj.activity = message.activity ? Activity.toJSON(message.activity) : undefined);
-    message.total !== undefined && (obj.total = Math.round(message.total));
+    if (message.activity !== undefined) {
+      obj.activity = Activity.toJSON(message.activity);
+    }
+    if (message.total !== 0) {
+      obj.total = Math.round(message.total);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ActivityResponse>, I>>(base?: I): ActivityResponse {
+    return ActivityResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ActivityResponse>, I>>(object: I): ActivityResponse {
     const message = createBaseActivityResponse();
     message.activity = (object.activity !== undefined && object.activity !== null)
@@ -2338,33 +3052,43 @@ export const NFTPriceHistoryRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NFTPriceHistoryRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNFTPriceHistoryRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): NFTPriceHistoryRequest {
-    return { id: isSet(object.id) ? String(object.id) : "" };
+    return { id: isSet(object.id) ? globalThis.String(object.id) : "" };
   },
 
   toJSON(message: NFTPriceHistoryRequest): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<NFTPriceHistoryRequest>, I>>(base?: I): NFTPriceHistoryRequest {
+    return NFTPriceHistoryRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<NFTPriceHistoryRequest>, I>>(object: I): NFTPriceHistoryRequest {
     const message = createBaseNFTPriceHistoryRequest();
     message.id = object.id ?? "";
@@ -2385,37 +3109,43 @@ export const NFTPriceHistoryResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NFTPriceHistoryResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNFTPriceHistoryResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.data.push(PriceDatum.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): NFTPriceHistoryResponse {
-    return { data: Array.isArray(object?.data) ? object.data.map((e: any) => PriceDatum.fromJSON(e)) : [] };
+    return { data: globalThis.Array.isArray(object?.data) ? object.data.map((e: any) => PriceDatum.fromJSON(e)) : [] };
   },
 
   toJSON(message: NFTPriceHistoryResponse): unknown {
     const obj: any = {};
-    if (message.data) {
-      obj.data = message.data.map((e) => e ? PriceDatum.toJSON(e) : undefined);
-    } else {
-      obj.data = [];
+    if (message.data?.length) {
+      obj.data = message.data.map((e) => PriceDatum.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<NFTPriceHistoryResponse>, I>>(base?: I): NFTPriceHistoryResponse {
+    return NFTPriceHistoryResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<NFTPriceHistoryResponse>, I>>(object: I): NFTPriceHistoryResponse {
     const message = createBaseNFTPriceHistoryResponse();
     message.data = object.data?.map((e) => PriceDatum.fromPartial(e)) || [];
@@ -2439,37 +3169,56 @@ export const Action = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Action {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAction();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.label = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.url = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Action {
-    return { label: isSet(object.label) ? String(object.label) : "", url: isSet(object.url) ? String(object.url) : "" };
+    return {
+      label: isSet(object.label) ? globalThis.String(object.label) : "",
+      url: isSet(object.url) ? globalThis.String(object.url) : "",
+    };
   },
 
   toJSON(message: Action): unknown {
     const obj: any = {};
-    message.label !== undefined && (obj.label = message.label);
-    message.url !== undefined && (obj.url = message.url);
+    if (message.label !== "") {
+      obj.label = message.label;
+    }
+    if (message.url !== "") {
+      obj.url = message.url;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Action>, I>>(base?: I): Action {
+    return Action.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<Action>, I>>(object: I): Action {
     const message = createBaseAction();
     message.label = object.label ?? "";
@@ -2503,59 +3252,89 @@ export const News = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): News {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNews();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.title = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.subtitle = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.text = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.image = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.actions.push(Action.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): News {
     return {
-      title: isSet(object.title) ? String(object.title) : "",
-      subtitle: isSet(object.subtitle) ? String(object.subtitle) : "",
-      text: isSet(object.text) ? String(object.text) : "",
-      image: isSet(object.image) ? String(object.image) : "",
-      actions: Array.isArray(object?.actions) ? object.actions.map((e: any) => Action.fromJSON(e)) : [],
+      title: isSet(object.title) ? globalThis.String(object.title) : "",
+      subtitle: isSet(object.subtitle) ? globalThis.String(object.subtitle) : "",
+      text: isSet(object.text) ? globalThis.String(object.text) : "",
+      image: isSet(object.image) ? globalThis.String(object.image) : "",
+      actions: globalThis.Array.isArray(object?.actions) ? object.actions.map((e: any) => Action.fromJSON(e)) : [],
     };
   },
 
   toJSON(message: News): unknown {
     const obj: any = {};
-    message.title !== undefined && (obj.title = message.title);
-    message.subtitle !== undefined && (obj.subtitle = message.subtitle);
-    message.text !== undefined && (obj.text = message.text);
-    message.image !== undefined && (obj.image = message.image);
-    if (message.actions) {
-      obj.actions = message.actions.map((e) => e ? Action.toJSON(e) : undefined);
-    } else {
-      obj.actions = [];
+    if (message.title !== "") {
+      obj.title = message.title;
+    }
+    if (message.subtitle !== "") {
+      obj.subtitle = message.subtitle;
+    }
+    if (message.text !== "") {
+      obj.text = message.text;
+    }
+    if (message.image !== "") {
+      obj.image = message.image;
+    }
+    if (message.actions?.length) {
+      obj.actions = message.actions.map((e) => Action.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<News>, I>>(base?: I): News {
+    return News.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<News>, I>>(object: I): News {
     const message = createBaseNews();
     message.title = object.title ?? "";
@@ -2589,54 +3368,78 @@ export const DAppGroup = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DAppGroup {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDAppGroup();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.groupName = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.icon = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.options.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DAppGroup {
     return {
-      id: isSet(object.id) ? String(object.id) : "",
-      groupName: isSet(object.groupName) ? String(object.groupName) : "",
-      icon: isSet(object.icon) ? String(object.icon) : "",
-      options: Array.isArray(object?.options) ? object.options.map((e: any) => String(e)) : [],
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      groupName: isSet(object.groupName) ? globalThis.String(object.groupName) : "",
+      icon: isSet(object.icon) ? globalThis.String(object.icon) : "",
+      options: globalThis.Array.isArray(object?.options) ? object.options.map((e: any) => globalThis.String(e)) : [],
     };
   },
 
   toJSON(message: DAppGroup): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.groupName !== undefined && (obj.groupName = message.groupName);
-    message.icon !== undefined && (obj.icon = message.icon);
-    if (message.options) {
-      obj.options = message.options.map((e) => e);
-    } else {
-      obj.options = [];
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.groupName !== "") {
+      obj.groupName = message.groupName;
+    }
+    if (message.icon !== "") {
+      obj.icon = message.icon;
+    }
+    if (message.options?.length) {
+      obj.options = message.options;
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<DAppGroup>, I>>(base?: I): DAppGroup {
+    return DAppGroup.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<DAppGroup>, I>>(object: I): DAppGroup {
     const message = createBaseDAppGroup();
     message.id = object.id ?? "";
@@ -2694,75 +3497,133 @@ export const DApp = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DApp {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDApp();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.title = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.description = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.icon = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.route = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.groupKey = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.linkingId = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 64) {
+            break;
+          }
+
           message.selectedByDefault = reader.bool();
-          break;
+          continue;
         case 9:
+          if (tag !== 72) {
+            break;
+          }
+
           message.alwaysOn = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DApp {
     return {
-      id: isSet(object.id) ? String(object.id) : "",
-      title: isSet(object.title) ? String(object.title) : "",
-      description: isSet(object.description) ? String(object.description) : "",
-      icon: isSet(object.icon) ? String(object.icon) : "",
-      route: isSet(object.route) ? String(object.route) : "",
-      groupKey: isSet(object.groupKey) ? String(object.groupKey) : "",
-      linkingId: isSet(object.linkingId) ? String(object.linkingId) : "",
-      selectedByDefault: isSet(object.selectedByDefault) ? Boolean(object.selectedByDefault) : false,
-      alwaysOn: isSet(object.alwaysOn) ? Boolean(object.alwaysOn) : false,
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      title: isSet(object.title) ? globalThis.String(object.title) : "",
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
+      icon: isSet(object.icon) ? globalThis.String(object.icon) : "",
+      route: isSet(object.route) ? globalThis.String(object.route) : "",
+      groupKey: isSet(object.groupKey) ? globalThis.String(object.groupKey) : "",
+      linkingId: isSet(object.linkingId) ? globalThis.String(object.linkingId) : "",
+      selectedByDefault: isSet(object.selectedByDefault) ? globalThis.Boolean(object.selectedByDefault) : false,
+      alwaysOn: isSet(object.alwaysOn) ? globalThis.Boolean(object.alwaysOn) : false,
     };
   },
 
   toJSON(message: DApp): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.title !== undefined && (obj.title = message.title);
-    message.description !== undefined && (obj.description = message.description);
-    message.icon !== undefined && (obj.icon = message.icon);
-    message.route !== undefined && (obj.route = message.route);
-    message.groupKey !== undefined && (obj.groupKey = message.groupKey);
-    message.linkingId !== undefined && (obj.linkingId = message.linkingId);
-    message.selectedByDefault !== undefined && (obj.selectedByDefault = message.selectedByDefault);
-    message.alwaysOn !== undefined && (obj.alwaysOn = message.alwaysOn);
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.title !== "") {
+      obj.title = message.title;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.icon !== "") {
+      obj.icon = message.icon;
+    }
+    if (message.route !== "") {
+      obj.route = message.route;
+    }
+    if (message.groupKey !== "") {
+      obj.groupKey = message.groupKey;
+    }
+    if (message.linkingId !== "") {
+      obj.linkingId = message.linkingId;
+    }
+    if (message.selectedByDefault === true) {
+      obj.selectedByDefault = message.selectedByDefault;
+    }
+    if (message.alwaysOn === true) {
+      obj.alwaysOn = message.alwaysOn;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<DApp>, I>>(base?: I): DApp {
+    return DApp.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<DApp>, I>>(object: I): DApp {
     const message = createBaseDApp();
     message.id = object.id ?? "";
@@ -2794,37 +3655,56 @@ export const Banner = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Banner {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseBanner();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.image = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.url = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Banner {
-    return { image: isSet(object.image) ? String(object.image) : "", url: isSet(object.url) ? String(object.url) : "" };
+    return {
+      image: isSet(object.image) ? globalThis.String(object.image) : "",
+      url: isSet(object.url) ? globalThis.String(object.url) : "",
+    };
   },
 
   toJSON(message: Banner): unknown {
     const obj: any = {};
-    message.image !== undefined && (obj.image = message.image);
-    message.url !== undefined && (obj.url = message.url);
+    if (message.image !== "") {
+      obj.image = message.image;
+    }
+    if (message.url !== "") {
+      obj.url = message.url;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Banner>, I>>(base?: I): Banner {
+    return Banner.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<Banner>, I>>(object: I): Banner {
     const message = createBaseBanner();
     message.image = object.image ?? "";
@@ -2846,33 +3726,43 @@ export const BannersRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): BannersRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseBannersRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.testnet = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): BannersRequest {
-    return { testnet: isSet(object.testnet) ? Boolean(object.testnet) : false };
+    return { testnet: isSet(object.testnet) ? globalThis.Boolean(object.testnet) : false };
   },
 
   toJSON(message: BannersRequest): unknown {
     const obj: any = {};
-    message.testnet !== undefined && (obj.testnet = message.testnet);
+    if (message.testnet === true) {
+      obj.testnet = message.testnet;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<BannersRequest>, I>>(base?: I): BannersRequest {
+    return BannersRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<BannersRequest>, I>>(object: I): BannersRequest {
     const message = createBaseBannersRequest();
     message.testnet = object.testnet ?? false;
@@ -2893,37 +3783,45 @@ export const BannersResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): BannersResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseBannersResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.banners.push(Banner.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): BannersResponse {
-    return { banners: Array.isArray(object?.banners) ? object.banners.map((e: any) => Banner.fromJSON(e)) : [] };
+    return {
+      banners: globalThis.Array.isArray(object?.banners) ? object.banners.map((e: any) => Banner.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: BannersResponse): unknown {
     const obj: any = {};
-    if (message.banners) {
-      obj.banners = message.banners.map((e) => e ? Banner.toJSON(e) : undefined);
-    } else {
-      obj.banners = [];
+    if (message.banners?.length) {
+      obj.banners = message.banners.map((e) => Banner.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<BannersResponse>, I>>(base?: I): BannersResponse {
+    return BannersResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<BannersResponse>, I>>(object: I): BannersResponse {
     const message = createBaseBannersResponse();
     message.banners = object.banners?.map((e) => Banner.fromPartial(e)) || [];
@@ -2944,33 +3842,43 @@ export const NewsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NewsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNewsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.testnet = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): NewsRequest {
-    return { testnet: isSet(object.testnet) ? Boolean(object.testnet) : false };
+    return { testnet: isSet(object.testnet) ? globalThis.Boolean(object.testnet) : false };
   },
 
   toJSON(message: NewsRequest): unknown {
     const obj: any = {};
-    message.testnet !== undefined && (obj.testnet = message.testnet);
+    if (message.testnet === true) {
+      obj.testnet = message.testnet;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<NewsRequest>, I>>(base?: I): NewsRequest {
+    return NewsRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<NewsRequest>, I>>(object: I): NewsRequest {
     const message = createBaseNewsRequest();
     message.testnet = object.testnet ?? false;
@@ -2991,37 +3899,43 @@ export const NewsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NewsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNewsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.news.push(News.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): NewsResponse {
-    return { news: Array.isArray(object?.news) ? object.news.map((e: any) => News.fromJSON(e)) : [] };
+    return { news: globalThis.Array.isArray(object?.news) ? object.news.map((e: any) => News.fromJSON(e)) : [] };
   },
 
   toJSON(message: NewsResponse): unknown {
     const obj: any = {};
-    if (message.news) {
-      obj.news = message.news.map((e) => e ? News.toJSON(e) : undefined);
-    } else {
-      obj.news = [];
+    if (message.news?.length) {
+      obj.news = message.news.map((e) => News.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<NewsResponse>, I>>(base?: I): NewsResponse {
+    return NewsResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<NewsResponse>, I>>(object: I): NewsResponse {
     const message = createBaseNewsResponse();
     message.news = object.news?.map((e) => News.fromPartial(e)) || [];
@@ -3039,16 +3953,17 @@ export const DAppsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DAppsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDAppsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -3062,6 +3977,9 @@ export const DAppsRequest = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<DAppsRequest>, I>>(base?: I): DAppsRequest {
+    return DAppsRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<DAppsRequest>, I>>(_: I): DAppsRequest {
     const message = createBaseDAppsRequest();
     return message;
@@ -3081,37 +3999,43 @@ export const DAppsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DAppsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDAppsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.group.push(DApp.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DAppsResponse {
-    return { group: Array.isArray(object?.group) ? object.group.map((e: any) => DApp.fromJSON(e)) : [] };
+    return { group: globalThis.Array.isArray(object?.group) ? object.group.map((e: any) => DApp.fromJSON(e)) : [] };
   },
 
   toJSON(message: DAppsResponse): unknown {
     const obj: any = {};
-    if (message.group) {
-      obj.group = message.group.map((e) => e ? DApp.toJSON(e) : undefined);
-    } else {
-      obj.group = [];
+    if (message.group?.length) {
+      obj.group = message.group.map((e) => DApp.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<DAppsResponse>, I>>(base?: I): DAppsResponse {
+    return DAppsResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<DAppsResponse>, I>>(object: I): DAppsResponse {
     const message = createBaseDAppsResponse();
     message.group = object.group?.map((e) => DApp.fromPartial(e)) || [];
@@ -3129,16 +4053,17 @@ export const DAppsGroupsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DAppsGroupsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDAppsGroupsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -3152,6 +4077,9 @@ export const DAppsGroupsRequest = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<DAppsGroupsRequest>, I>>(base?: I): DAppsGroupsRequest {
+    return DAppsGroupsRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<DAppsGroupsRequest>, I>>(_: I): DAppsGroupsRequest {
     const message = createBaseDAppsGroupsRequest();
     return message;
@@ -3171,37 +4099,45 @@ export const DAppsGroupsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DAppsGroupsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDAppsGroupsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.group.push(DAppGroup.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DAppsGroupsResponse {
-    return { group: Array.isArray(object?.group) ? object.group.map((e: any) => DAppGroup.fromJSON(e)) : [] };
+    return {
+      group: globalThis.Array.isArray(object?.group) ? object.group.map((e: any) => DAppGroup.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: DAppsGroupsResponse): unknown {
     const obj: any = {};
-    if (message.group) {
-      obj.group = message.group.map((e) => e ? DAppGroup.toJSON(e) : undefined);
-    } else {
-      obj.group = [];
+    if (message.group?.length) {
+      obj.group = message.group.map((e) => DAppGroup.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<DAppsGroupsResponse>, I>>(base?: I): DAppsGroupsResponse {
+    return DAppsGroupsResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<DAppsGroupsResponse>, I>>(object: I): DAppsGroupsResponse {
     const message = createBaseDAppsGroupsResponse();
     message.group = object.group?.map((e) => DAppGroup.fromPartial(e)) || [];
@@ -3228,45 +4164,67 @@ export const SearchNamesRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SearchNamesRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSearchNamesRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.networkId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.input = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.limit = reader.int32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SearchNamesRequest {
     return {
-      networkId: isSet(object.networkId) ? String(object.networkId) : "",
-      input: isSet(object.input) ? String(object.input) : "",
-      limit: isSet(object.limit) ? Number(object.limit) : 0,
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      input: isSet(object.input) ? globalThis.String(object.input) : "",
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
     };
   },
 
   toJSON(message: SearchNamesRequest): unknown {
     const obj: any = {};
-    message.networkId !== undefined && (obj.networkId = message.networkId);
-    message.input !== undefined && (obj.input = message.input);
-    message.limit !== undefined && (obj.limit = Math.round(message.limit));
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    if (message.input !== "") {
+      obj.input = message.input;
+    }
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<SearchNamesRequest>, I>>(base?: I): SearchNamesRequest {
+    return SearchNamesRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<SearchNamesRequest>, I>>(object: I): SearchNamesRequest {
     const message = createBaseSearchNamesRequest();
     message.networkId = object.networkId ?? "";
@@ -3289,37 +4247,43 @@ export const SearchNamesResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SearchNamesResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSearchNamesResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.names.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SearchNamesResponse {
-    return { names: Array.isArray(object?.names) ? object.names.map((e: any) => String(e)) : [] };
+    return { names: globalThis.Array.isArray(object?.names) ? object.names.map((e: any) => globalThis.String(e)) : [] };
   },
 
   toJSON(message: SearchNamesResponse): unknown {
     const obj: any = {};
-    if (message.names) {
-      obj.names = message.names.map((e) => e);
-    } else {
-      obj.names = [];
+    if (message.names?.length) {
+      obj.names = message.names;
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<SearchNamesResponse>, I>>(base?: I): SearchNamesResponse {
+    return SearchNamesResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<SearchNamesResponse>, I>>(object: I): SearchNamesResponse {
     const message = createBaseSearchNamesResponse();
     message.names = object.names?.map((e) => e) || [];
@@ -3343,40 +4307,56 @@ export const SearchCollectionsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SearchCollectionsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSearchCollectionsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.input = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.limit = reader.int32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SearchCollectionsRequest {
     return {
-      input: isSet(object.input) ? String(object.input) : "",
-      limit: isSet(object.limit) ? Number(object.limit) : 0,
+      input: isSet(object.input) ? globalThis.String(object.input) : "",
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
     };
   },
 
   toJSON(message: SearchCollectionsRequest): unknown {
     const obj: any = {};
-    message.input !== undefined && (obj.input = message.input);
-    message.limit !== undefined && (obj.limit = Math.round(message.limit));
+    if (message.input !== "") {
+      obj.input = message.input;
+    }
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<SearchCollectionsRequest>, I>>(base?: I): SearchCollectionsRequest {
+    return SearchCollectionsRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<SearchCollectionsRequest>, I>>(object: I): SearchCollectionsRequest {
     const message = createBaseSearchCollectionsRequest();
     message.input = object.input ?? "";
@@ -3398,39 +4378,47 @@ export const SearchCollectionsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SearchCollectionsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSearchCollectionsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.collections.push(Collection.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SearchCollectionsResponse {
     return {
-      collections: Array.isArray(object?.collections) ? object.collections.map((e: any) => Collection.fromJSON(e)) : [],
+      collections: globalThis.Array.isArray(object?.collections)
+        ? object.collections.map((e: any) => Collection.fromJSON(e))
+        : [],
     };
   },
 
   toJSON(message: SearchCollectionsResponse): unknown {
     const obj: any = {};
-    if (message.collections) {
-      obj.collections = message.collections.map((e) => e ? Collection.toJSON(e) : undefined);
-    } else {
-      obj.collections = [];
+    if (message.collections?.length) {
+      obj.collections = message.collections.map((e) => Collection.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<SearchCollectionsResponse>, I>>(base?: I): SearchCollectionsResponse {
+    return SearchCollectionsResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<SearchCollectionsResponse>, I>>(object: I): SearchCollectionsResponse {
     const message = createBaseSearchCollectionsResponse();
     message.collections = object.collections?.map((e) => Collection.fromPartial(e)) || [];
@@ -3573,10 +4561,11 @@ export const MarketplaceServiceCollectionsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = CollectionsResponse.decode(data);
       return {
-        ...CollectionsResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -3595,10 +4584,11 @@ export const MarketplaceServiceCollectionStatsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = CollectionStatsResponse.decode(data);
       return {
-        ...CollectionStatsResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -3617,10 +4607,11 @@ export const MarketplaceServiceNFTsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = NFTsResponse.decode(data);
       return {
-        ...NFTsResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -3639,10 +4630,11 @@ export const MarketplaceServiceNFTCollectionAttributesDesc: UnaryMethodDefinitio
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = NFTCollectionAttributesResponse.decode(data);
       return {
-        ...NFTCollectionAttributesResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -3661,10 +4653,11 @@ export const MarketplaceServiceQuestsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = QuestsResponse.decode(data);
       return {
-        ...QuestsResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -3683,10 +4676,11 @@ export const MarketplaceServiceActivityDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ActivityResponse.decode(data);
       return {
-        ...ActivityResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -3705,10 +4699,11 @@ export const MarketplaceServiceNFTPriceHistoryDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = NFTPriceHistoryResponse.decode(data);
       return {
-        ...NFTPriceHistoryResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -3727,10 +4722,11 @@ export const MarketplaceServiceBannersDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = BannersResponse.decode(data);
       return {
-        ...BannersResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -3749,10 +4745,11 @@ export const MarketplaceServiceNewsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = NewsResponse.decode(data);
       return {
-        ...NewsResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -3771,10 +4768,11 @@ export const MarketplaceServiceDAppsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = DAppsResponse.decode(data);
       return {
-        ...DAppsResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -3793,10 +4791,11 @@ export const MarketplaceServiceDAppsGroupsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = DAppsGroupsResponse.decode(data);
       return {
-        ...DAppsGroupsResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -3815,10 +4814,11 @@ export const MarketplaceServiceSearchNamesDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = SearchNamesResponse.decode(data);
       return {
-        ...SearchNamesResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -3837,10 +4837,11 @@ export const MarketplaceServiceSearchCollectionsDesc: UnaryMethodDefinitionish =
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = SearchCollectionsResponse.decode(data);
       return {
-        ...SearchCollectionsResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -3899,17 +4900,17 @@ export class GrpcWebImpl {
     const request = { ..._request, ...methodDesc.requestType };
     const maybeCombinedMetadata = metadata && this.options.metadata
       ? new BrowserHeaders({ ...this.options?.metadata.headersMap, ...metadata?.headersMap })
-      : metadata || this.options.metadata;
+      : metadata ?? this.options.metadata;
     return new Promise((resolve, reject) => {
       grpc.unary(methodDesc, {
         request,
         host: this.host,
-        metadata: maybeCombinedMetadata,
-        transport: this.options.transport,
-        debug: this.options.debug,
+        metadata: maybeCombinedMetadata ?? {},
+        ...(this.options.transport !== undefined ? { transport: this.options.transport } : {}),
+        debug: this.options.debug ?? false,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
-            resolve(response.message);
+            resolve(response.message!.toObject());
           } else {
             const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
@@ -3924,20 +4925,21 @@ export class GrpcWebImpl {
     _request: any,
     metadata: grpc.Metadata | undefined,
   ): Observable<any> {
-    const upStreamCodes = this.options.upStreamRetryCodes || [];
+    const upStreamCodes = this.options.upStreamRetryCodes ?? [];
     const DEFAULT_TIMEOUT_TIME: number = 3_000;
     const request = { ..._request, ...methodDesc.requestType };
+    const transport = this.options.streamingTransport ?? this.options.transport;
     const maybeCombinedMetadata = metadata && this.options.metadata
       ? new BrowserHeaders({ ...this.options?.metadata.headersMap, ...metadata?.headersMap })
-      : metadata || this.options.metadata;
+      : metadata ?? this.options.metadata;
     return new Observable((observer) => {
-      const upStream = (() => {
+      const upStream = () => {
         const client = grpc.invoke(methodDesc, {
           host: this.host,
           request,
-          transport: this.options.streamingTransport || this.options.transport,
-          metadata: maybeCombinedMetadata,
-          debug: this.options.debug,
+          ...(transport !== undefined ? { transport } : {}),
+          metadata: maybeCombinedMetadata ?? {},
+          debug: this.options.debug ?? false,
           onMessage: (next) => observer.next(next),
           onEnd: (code: grpc.Code, message: string, trailers: grpc.Metadata) => {
             if (code === 0) {
@@ -3952,36 +4954,20 @@ export class GrpcWebImpl {
             }
           },
         });
-        observer.add(() => client.close());
-      });
+        observer.add(() => {
+          return client.close();
+        });
+      };
       upStream();
     }).pipe(share());
   }
 }
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") {
-    return globalThis;
-  }
-  if (typeof self !== "undefined") {
-    return self;
-  }
-  if (typeof window !== "undefined") {
-    return window;
-  }
-  if (typeof global !== "undefined") {
-    return global;
-  }
-  throw "Unable to locate global object";
-})();
-
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -3990,7 +4976,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function longToNumber(long: Long): number {
-  if (long.gt(Number.MAX_SAFE_INTEGER)) {
+  if (long.gt(globalThis.Number.MAX_SAFE_INTEGER)) {
     throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
   }
   return long.toNumber();
@@ -4005,7 +4991,7 @@ function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-export class GrpcWebError extends Error {
+export class GrpcWebError extends globalThis.Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }

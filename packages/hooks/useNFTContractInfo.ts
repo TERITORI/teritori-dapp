@@ -5,7 +5,7 @@ import { mustGetNonSigningCosmWasmClient } from "../networks";
 
 export const useCW721ContractInfo = (
   networkId: string | undefined,
-  contractAddress: string | undefined
+  contractAddress: string | undefined,
 ) => {
   const { data: cw721ContractInfo, ...other } = useQuery(
     ["nftContractInfo", networkId, contractAddress],
@@ -17,7 +17,7 @@ export const useCW721ContractInfo = (
       const nftClient = new TeritoriNftQueryClient(cosmwasm, contractAddress);
       return await nftClient.contractInfo();
     },
-    { enabled: !!contractAddress && !!networkId }
+    { enabled: !!contractAddress && !!networkId },
   );
 
   return { cw721ContractInfo, ...other };

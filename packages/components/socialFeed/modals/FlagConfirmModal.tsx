@@ -77,7 +77,7 @@ export const FlagConfirmModal: React.FC<FlagConfirmModalProps> = ({
         [{ type: "/vm.m_call", value: vmCall }],
         {
           gasWanted: 2_000_000,
-        }
+        },
       );
 
       const provider = new GnoJSONRPCProvider(gnoNetwork.endpoint);

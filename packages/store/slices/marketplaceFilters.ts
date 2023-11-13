@@ -78,7 +78,7 @@ export const selectSelectedAttributeIds = (state: RootState) =>
 
 export const selectAllSelectedAttributeDataByCollectionId = (
   state: RootState,
-  collectionId: string
+  collectionId: string,
 ) =>
   selectors.selectAll(state.marketplaceFilters).filter((filter) => {
     return filter.collectionId === collectionId;

@@ -38,7 +38,7 @@ export const NFTAttributeCard: React.FC<{
           alignItems: "flex-start",
           backgroundColor: resolveColor(
             "backgroundColor",
-            nftAttribute.rareRatio
+            nftAttribute.rareRatio,
           ),
         }}
       >
@@ -80,7 +80,7 @@ export const NFTAttributeCard: React.FC<{
             {prettyPrice(
               nftInfo.networkId,
               nftAttribute.floor + "",
-              nftInfo.mintDenom
+              nftInfo.mintDenom,
             )}
           </BrandText>
           <BrandText

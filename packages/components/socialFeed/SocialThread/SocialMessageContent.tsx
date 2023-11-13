@@ -18,71 +18,92 @@ interface Props {
   metadata: SocialFeedMetadata;
   postCategory: PostCategory;
   isPreview?: boolean;
+  authorId?: string;
+  postId?: string;
 }
 
 export const SocialMessageContent: React.FC<Props> = ({
   metadata,
   postCategory,
   isPreview,
+  authorId,
+  postId,
 }) => {
   const audioFiles = useMemo(
     () => metadata.files?.filter((file) => file.fileType === "audio"),
-    [metadata.files]
+    [metadata.files],
   );
   const imageFiles = useMemo(
     () =>
       metadata.files?.filter(
-        (file) => file.fileType === "image" || file.fileType === "base64"
+        (file) => file.fileType === "image" || file.fileType === "base64",
       ),
-    [metadata.files]
+    [metadata.files],
   );
   const videoFiles = useMemo(
     () => metadata.files?.filter((file) => file.fileType === "video"),
-    [metadata.files]
+    [metadata.files],
   );
   const gifsFiles = useMemo(() => {
     const fileName = "GIF-" + uuidv4();
     return metadata.gifs?.map((gif) =>
-      convertGIFToLocalFileType(gif, fileName)
+      convertGIFToLocalFileType(gif, fileName),
     );
   }, [metadata.gifs]);
 
-  if (
-    postCategory === PostCategory.Article ||
-    metadata?.message.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-  ) {
-    return (
-      <View>
-        <ArticleRenderer
-          metadata={metadata}
-          audioFiles={audioFiles}
-          isPreview={isPreview}
-        />
-      </View>
-    );
-  } else {
-    return (
-      <>
-        <TextRenderer
-          isPreview={isPreview}
-          text={metadata.message.replace(HTML_TAG_REGEXP, "")}
-        />
+  try {
+    if (
+      postCategory === PostCategory.Article ||
+      metadata?.message.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+    ) {
+      return (
+        <View>
+          <ArticleRenderer
+            metadata={metadata}
+            audioFiles={audioFiles}
+            isPreview={isPreview}
+            postId={postId || ""}
+            authorId={authorId || ""}
+          />
+        </View>
+      );
+    } else {
+      return (
+        <>
+          <TextRenderer
+            isPreview={isPreview}
+            text={metadata.message.replace(HTML_TAG_REGEXP, "")}
+          />
 
-        {gifsFiles?.length || imageFiles?.length ? (
-          <ImagesViews files={[...(gifsFiles || []), ...(imageFiles || [])]} />
-        ) : null}
+          {gifsFiles?.length || imageFiles?.length ? (
+            <ImagesViews
+              files={[...(gifsFiles || []), ...(imageFiles || [])]}
+            />
+          ) : null}
 
-        {videoFiles?.map((file, index) => (
-          <VideoView key={index} file={file} />
-        ))}
+          {videoFiles?.map((file, index) => (
+            <VideoView
+              key={index}
+              file={file}
+              authorId={authorId || ""}
+              postId={postId || ""}
+            />
+          ))}
 
-        {audioFiles?.map((file, index) => (
-          <Fragment key={index}>
-            {metadata.message && <SpacerColumn size={2} />}
-            <AudioView file={file} />
-          </Fragment>
-        ))}
-      </>
-    );
+          {audioFiles?.map((file, index) => (
+            <Fragment key={index}>
+              {metadata.message && <SpacerColumn size={2} />}
+              <AudioView
+                file={file}
+                authorId={authorId || ""}
+                postId={postId || ""}
+              />
+            </Fragment>
+          ))}
+        </>
+      );
+    }
+  } catch {
+    return null;
   }
 };

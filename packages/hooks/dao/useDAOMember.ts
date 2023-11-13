@@ -14,7 +14,7 @@ import { extractGnoNumber } from "../../utils/gno";
 const useDAOMember = (
   daoId: string | undefined,
   userId: string | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   const { data: groupAddress } = useDAOGroup(daoId);
   const [network] = parseUserId(daoId);
@@ -37,7 +37,7 @@ const useDAOMember = (
         groupAddress &&
         userId
       ),
-    }
+    },
   );
   const { data: gnoData } = useQuery(
     ["gnoDAOMember", daoId, userId],
@@ -52,8 +52,8 @@ const useDAOMember = (
         await provider.evaluateExpression(
           packagePath,
           `daoCore.VotingModule().VotingPowerAtHeight("${userAddress}", 0)`,
-          0
-        )
+          0,
+        ),
       );
       const res: MemberResponse = {
         weight: power,
@@ -68,7 +68,7 @@ const useDAOMember = (
         daoId &&
         userId
       ),
-    }
+    },
   );
   return {
     data: network?.kind === NetworkKind.Gno ? gnoData : cosmWasmData,
@@ -79,7 +79,7 @@ const useDAOMember = (
 export const useIsDAOMember = (
   daoId: string | undefined,
   userId: string | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   const { data: member, ...other } = useDAOMember(daoId, userId, enabled);
   return {

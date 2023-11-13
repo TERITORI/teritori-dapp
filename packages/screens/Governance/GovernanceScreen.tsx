@@ -23,7 +23,7 @@ export const GovernanceScreen: React.FC = () => {
       try {
         const network = mustGetCosmosNetwork(selectedNetworkId);
         const res = await fetch(
-          `${network.restEndpoint}/cosmos/gov/v1beta1/proposals`
+          `${network.restEndpoint}/cosmos/gov/v1beta1/proposals`,
         );
         const data = await res.json();
 
@@ -37,7 +37,7 @@ export const GovernanceScreen: React.FC = () => {
 
   const filteredProposals = useMemo(
     () => (filter ? proposals.filter((p) => p.status === filter) : proposals),
-    [filter, proposals]
+    [filter, proposals],
   );
 
   return (
@@ -51,6 +51,7 @@ export const GovernanceScreen: React.FC = () => {
           marginTop: layout.spacing_x4,
         }}
       >
+
         <BrandText style={fontSemibold28}>Decentralized Governance</BrandText>
 
         <NavBarGovernance onChange={setFilter} />

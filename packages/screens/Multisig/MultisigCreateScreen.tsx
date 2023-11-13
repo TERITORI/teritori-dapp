@@ -74,7 +74,7 @@ export const MultisigCreateScreen = () => {
 
   const defaultNbSignaturesRequired = useMemo(
     () => addressIndexes.length.toString(),
-    [addressIndexes.length]
+    [addressIndexes.length],
   );
 
   const selectedNetwork = useSelectedNetworkInfo();
@@ -104,7 +104,7 @@ export const MultisigCreateScreen = () => {
     }
 
     const compressedPubkeys = addressIndexes.map(
-      (item) => item.compressedPubkey
+      (item) => item.compressedPubkey,
     );
     const pubkeys = compressedPubkeys.map((compressedPubkey) => {
       return {
@@ -114,7 +114,7 @@ export const MultisigCreateScreen = () => {
     });
     const multisigPubkey = createMultisigThresholdPubkey(
       pubkeys,
-      parseInt(signatureRequired, 10)
+      parseInt(signatureRequired, 10),
     );
 
     const res = await multisigClient.CreateOrJoinMultisig({
@@ -144,7 +144,7 @@ export const MultisigCreateScreen = () => {
 
     const tempPubkeys = [...addressIndexes];
     const account = await getCosmosAccount(
-      getUserId(selectedNetwork?.id, address)
+      getUserId(selectedNetwork?.id, address),
     );
     if (!account?.pubkey) {
       return "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig.";
@@ -348,7 +348,7 @@ export const MultisigCreateScreen = () => {
               size="XL"
               text="Create Multisig"
               onPress={handleSubmit((arg) =>
-                wrapWithFeedback(() => onSubmit(arg))()
+                wrapWithFeedback(() => onSubmit(arg))(),
               )}
               loader
             />

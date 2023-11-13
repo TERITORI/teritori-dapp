@@ -67,7 +67,7 @@ export const NFTMainInfo: React.FC<{
   showMarketplace: boolean;
   sell: (
     price: string,
-    denom: string | undefined
+    denom: string | undefined,
   ) => Promise<string | undefined>;
   cancelListing: () => Promise<string | undefined>;
 }> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
@@ -116,7 +116,7 @@ export const NFTMainInfo: React.FC<{
           if (allAtributes) {
             setAttributes(allAtributes);
           }
-        }
+        },
       );
     } catch (err) {
       console.error(err);
@@ -217,7 +217,7 @@ export const NFTMainInfo: React.FC<{
   const CollapsablePriceHistory = React.lazy(() =>
     import("./components/CollapsablePriceHistory").then((module) => ({
       default: module.CollapsablePriceHistory,
-    }))
+    })),
   );
 
   return (

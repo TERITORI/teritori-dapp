@@ -58,7 +58,7 @@ export const RightRail = ({ searchInput }: { searchInput: string }) => {
                     .filter((option: dAppType) =>
                       option.title
                         .toLowerCase()
-                        .includes(searchInput.toLowerCase())
+                        .includes(searchInput.toLowerCase()),
                     )
                     .map((option: dAppType, index: React.Key) => {
                       return (
