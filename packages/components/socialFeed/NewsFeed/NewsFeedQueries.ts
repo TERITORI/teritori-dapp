@@ -141,12 +141,16 @@ export const createPost = async ({
 
   let files: RemoteFileData[] = [];
 
+  console.log("form values", formValues);
+
   if (formValues.files?.length && pinataJWTKey) {
     files = await uploadFilesToPinata({
       files: formValues.files,
       pinataJWTKey,
     });
   }
+
+  console.log("form values distributed files", files);
 
   // If the user uploaded files but they are not pinned to IPFS, it returns files with empty url, so this is an error.
   if (formValues.files?.length && !files.find((file) => file.url)) {

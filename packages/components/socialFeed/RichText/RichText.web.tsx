@@ -63,7 +63,11 @@ import {
 import { ActionsContainer } from "./Toolbar/ActionsContainer";
 import { ToolbarContainer } from "./Toolbar/ToolbarContainer";
 import createInlineToolbarPlugin from "./inline-toolbar";
-import { markdownToDraft, markdownToHTML } from "./markdownToDraft";
+import {
+  markdownToDraft,
+  markdownToHTML,
+  parseMarkdown,
+} from "./markdownToDraft";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
@@ -491,6 +495,7 @@ export const RichText: React.FC<RichTextProps> = ({
             onPress={async () => {
               const html = markdownToHTML(markdown);
               console.log("found html", html);
+
               const editorState = createStateFromHTML(html);
               console.log("editorState", editorState);
               setEditorState(editorState);
@@ -725,3 +730,5 @@ const getGIFsToPublish = (editorState: EditorState, gifsUrls: string[]) => {
   });
   return gifsToPublish;
 };
+
+const ImageRegexp = /^!\[([^\]]*)]\s*\(([^)"]+)( "([^)"]+)")?\)/;
