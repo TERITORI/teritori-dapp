@@ -110,45 +110,67 @@ export const GetUserVideoListRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetUserVideoListRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetUserVideoListRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.createdBy = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.limit = reader.uint32();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.offset = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GetUserVideoListRequest {
     return {
-      createdBy: isSet(object.createdBy) ? String(object.createdBy) : "",
-      limit: isSet(object.limit) ? Number(object.limit) : 0,
-      offset: isSet(object.offset) ? Number(object.offset) : 0,
+      createdBy: isSet(object.createdBy) ? globalThis.String(object.createdBy) : "",
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+      offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
     };
   },
 
   toJSON(message: GetUserVideoListRequest): unknown {
     const obj: any = {};
-    message.createdBy !== undefined && (obj.createdBy = message.createdBy);
-    message.limit !== undefined && (obj.limit = Math.round(message.limit));
-    message.offset !== undefined && (obj.offset = Math.round(message.offset));
+    if (message.createdBy !== "") {
+      obj.createdBy = message.createdBy;
+    }
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.offset !== 0) {
+      obj.offset = Math.round(message.offset);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GetUserVideoListRequest>, I>>(base?: I): GetUserVideoListRequest {
+    return GetUserVideoListRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<GetUserVideoListRequest>, I>>(object: I): GetUserVideoListRequest {
     const message = createBaseGetUserVideoListRequest();
     message.createdBy = object.createdBy ?? "";
@@ -171,39 +193,47 @@ export const GetUserVideoListResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetUserVideoListResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetUserVideoListResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.videoInfos.push(VideoInfo.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GetUserVideoListResponse {
     return {
-      videoInfos: Array.isArray(object?.videoInfos) ? object.videoInfos.map((e: any) => VideoInfo.fromJSON(e)) : [],
+      videoInfos: globalThis.Array.isArray(object?.videoInfos)
+        ? object.videoInfos.map((e: any) => VideoInfo.fromJSON(e))
+        : [],
     };
   },
 
   toJSON(message: GetUserVideoListResponse): unknown {
     const obj: any = {};
-    if (message.videoInfos) {
-      obj.videoInfos = message.videoInfos.map((e) => e ? VideoInfo.toJSON(e) : undefined);
-    } else {
-      obj.videoInfos = [];
+    if (message.videoInfos?.length) {
+      obj.videoInfos = message.videoInfos.map((e) => VideoInfo.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GetUserVideoListResponse>, I>>(base?: I): GetUserVideoListResponse {
+    return GetUserVideoListResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<GetUserVideoListResponse>, I>>(object: I): GetUserVideoListResponse {
     const message = createBaseGetUserVideoListResponse();
     message.videoInfos = object.videoInfos?.map((e) => VideoInfo.fromPartial(e)) || [];
@@ -224,33 +254,43 @@ export const GetVideoRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetVideoRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetVideoRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.identifier = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GetVideoRequest {
-    return { identifier: isSet(object.identifier) ? String(object.identifier) : "" };
+    return { identifier: isSet(object.identifier) ? globalThis.String(object.identifier) : "" };
   },
 
   toJSON(message: GetVideoRequest): unknown {
     const obj: any = {};
-    message.identifier !== undefined && (obj.identifier = message.identifier);
+    if (message.identifier !== "") {
+      obj.identifier = message.identifier;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GetVideoRequest>, I>>(base?: I): GetVideoRequest {
+    return GetVideoRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<GetVideoRequest>, I>>(object: I): GetVideoRequest {
     const message = createBaseGetVideoRequest();
     message.identifier = object.identifier ?? "";
@@ -271,19 +311,24 @@ export const GetVideoResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetVideoResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetVideoResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.videoInfo = VideoInfo.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -294,11 +339,15 @@ export const GetVideoResponse = {
 
   toJSON(message: GetVideoResponse): unknown {
     const obj: any = {};
-    message.videoInfo !== undefined &&
-      (obj.videoInfo = message.videoInfo ? VideoInfo.toJSON(message.videoInfo) : undefined);
+    if (message.videoInfo !== undefined) {
+      obj.videoInfo = VideoInfo.toJSON(message.videoInfo);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GetVideoResponse>, I>>(base?: I): GetVideoResponse {
+    return GetVideoResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<GetVideoResponse>, I>>(object: I): GetVideoResponse {
     const message = createBaseGetVideoResponse();
     message.videoInfo = (object.videoInfo !== undefined && object.videoInfo !== null)
@@ -324,40 +373,56 @@ export const GetVideoListRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetVideoListRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetVideoListRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.limit = reader.uint32();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.offset = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GetVideoListRequest {
     return {
-      limit: isSet(object.limit) ? Number(object.limit) : 0,
-      offset: isSet(object.offset) ? Number(object.offset) : 0,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+      offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
     };
   },
 
   toJSON(message: GetVideoListRequest): unknown {
     const obj: any = {};
-    message.limit !== undefined && (obj.limit = Math.round(message.limit));
-    message.offset !== undefined && (obj.offset = Math.round(message.offset));
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.offset !== 0) {
+      obj.offset = Math.round(message.offset);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GetVideoListRequest>, I>>(base?: I): GetVideoListRequest {
+    return GetVideoListRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<GetVideoListRequest>, I>>(object: I): GetVideoListRequest {
     const message = createBaseGetVideoListRequest();
     message.limit = object.limit ?? 0;
@@ -379,39 +444,47 @@ export const GetVideoListResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetVideoListResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetVideoListResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.videoInfos.push(VideoInfo.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GetVideoListResponse {
     return {
-      videoInfos: Array.isArray(object?.videoInfos) ? object.videoInfos.map((e: any) => VideoInfo.fromJSON(e)) : [],
+      videoInfos: globalThis.Array.isArray(object?.videoInfos)
+        ? object.videoInfos.map((e: any) => VideoInfo.fromJSON(e))
+        : [],
     };
   },
 
   toJSON(message: GetVideoListResponse): unknown {
     const obj: any = {};
-    if (message.videoInfos) {
-      obj.videoInfos = message.videoInfos.map((e) => e ? VideoInfo.toJSON(e) : undefined);
-    } else {
-      obj.videoInfos = [];
+    if (message.videoInfos?.length) {
+      obj.videoInfos = message.videoInfos.map((e) => VideoInfo.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GetVideoListResponse>, I>>(base?: I): GetVideoListResponse {
+    return GetVideoListResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<GetVideoListResponse>, I>>(object: I): GetVideoListResponse {
     const message = createBaseGetVideoListResponse();
     message.videoInfos = object.videoInfos?.map((e) => VideoInfo.fromPartial(e)) || [];
@@ -432,33 +505,43 @@ export const GetVideoListForLibraryRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetVideoListForLibraryRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetVideoListForLibraryRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.user = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GetVideoListForLibraryRequest {
-    return { user: isSet(object.user) ? String(object.user) : "" };
+    return { user: isSet(object.user) ? globalThis.String(object.user) : "" };
   },
 
   toJSON(message: GetVideoListForLibraryRequest): unknown {
     const obj: any = {};
-    message.user !== undefined && (obj.user = message.user);
+    if (message.user !== "") {
+      obj.user = message.user;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GetVideoListForLibraryRequest>, I>>(base?: I): GetVideoListForLibraryRequest {
+    return GetVideoListForLibraryRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<GetVideoListForLibraryRequest>, I>>(
     object: I,
   ): GetVideoListForLibraryRequest {
@@ -481,39 +564,47 @@ export const GetVideoListForLibraryResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetVideoListForLibraryResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetVideoListForLibraryResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.videoInfos.push(VideoInfo.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GetVideoListForLibraryResponse {
     return {
-      videoInfos: Array.isArray(object?.videoInfos) ? object.videoInfos.map((e: any) => VideoInfo.fromJSON(e)) : [],
+      videoInfos: globalThis.Array.isArray(object?.videoInfos)
+        ? object.videoInfos.map((e: any) => VideoInfo.fromJSON(e))
+        : [],
     };
   },
 
   toJSON(message: GetVideoListForLibraryResponse): unknown {
     const obj: any = {};
-    if (message.videoInfos) {
-      obj.videoInfos = message.videoInfos.map((e) => e ? VideoInfo.toJSON(e) : undefined);
-    } else {
-      obj.videoInfos = [];
+    if (message.videoInfos?.length) {
+      obj.videoInfos = message.videoInfos.map((e) => VideoInfo.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GetVideoListForLibraryResponse>, I>>(base?: I): GetVideoListForLibraryResponse {
+    return GetVideoListForLibraryResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<GetVideoListForLibraryResponse>, I>>(
     object: I,
   ): GetVideoListForLibraryResponse {
@@ -554,65 +645,111 @@ export const VideoInfo = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): VideoInfo {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseVideoInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.identifier = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.metadata = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.createdBy = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.createdAt = reader.uint32();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.viewCount = reader.uint32();
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.like = reader.uint32();
-          break;
+          continue;
         case 7:
+          if (tag !== 56) {
+            break;
+          }
+
           message.dislike = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): VideoInfo {
     return {
-      identifier: isSet(object.identifier) ? String(object.identifier) : "",
-      metadata: isSet(object.metadata) ? String(object.metadata) : "",
-      createdBy: isSet(object.createdBy) ? String(object.createdBy) : "",
-      createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
-      viewCount: isSet(object.viewCount) ? Number(object.viewCount) : 0,
-      like: isSet(object.like) ? Number(object.like) : 0,
-      dislike: isSet(object.dislike) ? Number(object.dislike) : 0,
+      identifier: isSet(object.identifier) ? globalThis.String(object.identifier) : "",
+      metadata: isSet(object.metadata) ? globalThis.String(object.metadata) : "",
+      createdBy: isSet(object.createdBy) ? globalThis.String(object.createdBy) : "",
+      createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
+      viewCount: isSet(object.viewCount) ? globalThis.Number(object.viewCount) : 0,
+      like: isSet(object.like) ? globalThis.Number(object.like) : 0,
+      dislike: isSet(object.dislike) ? globalThis.Number(object.dislike) : 0,
     };
   },
 
   toJSON(message: VideoInfo): unknown {
     const obj: any = {};
-    message.identifier !== undefined && (obj.identifier = message.identifier);
-    message.metadata !== undefined && (obj.metadata = message.metadata);
-    message.createdBy !== undefined && (obj.createdBy = message.createdBy);
-    message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
-    message.viewCount !== undefined && (obj.viewCount = Math.round(message.viewCount));
-    message.like !== undefined && (obj.like = Math.round(message.like));
-    message.dislike !== undefined && (obj.dislike = Math.round(message.dislike));
+    if (message.identifier !== "") {
+      obj.identifier = message.identifier;
+    }
+    if (message.metadata !== "") {
+      obj.metadata = message.metadata;
+    }
+    if (message.createdBy !== "") {
+      obj.createdBy = message.createdBy;
+    }
+    if (message.createdAt !== 0) {
+      obj.createdAt = Math.round(message.createdAt);
+    }
+    if (message.viewCount !== 0) {
+      obj.viewCount = Math.round(message.viewCount);
+    }
+    if (message.like !== 0) {
+      obj.like = Math.round(message.like);
+    }
+    if (message.dislike !== 0) {
+      obj.dislike = Math.round(message.dislike);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<VideoInfo>, I>>(base?: I): VideoInfo {
+    return VideoInfo.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<VideoInfo>, I>>(object: I): VideoInfo {
     const message = createBaseVideoInfo();
     message.identifier = object.identifier ?? "";
@@ -645,45 +782,67 @@ export const CommentInfo = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CommentInfo {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCommentInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.comment = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.createdBy = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.createdAt = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CommentInfo {
     return {
-      comment: isSet(object.comment) ? String(object.comment) : "",
-      createdBy: isSet(object.createdBy) ? String(object.createdBy) : "",
-      createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
+      comment: isSet(object.comment) ? globalThis.String(object.comment) : "",
+      createdBy: isSet(object.createdBy) ? globalThis.String(object.createdBy) : "",
+      createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
     };
   },
 
   toJSON(message: CommentInfo): unknown {
     const obj: any = {};
-    message.comment !== undefined && (obj.comment = message.comment);
-    message.createdBy !== undefined && (obj.createdBy = message.createdBy);
-    message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
+    if (message.comment !== "") {
+      obj.comment = message.comment;
+    }
+    if (message.createdBy !== "") {
+      obj.createdBy = message.createdBy;
+    }
+    if (message.createdAt !== 0) {
+      obj.createdAt = Math.round(message.createdAt);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<CommentInfo>, I>>(base?: I): CommentInfo {
+    return CommentInfo.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<CommentInfo>, I>>(object: I): CommentInfo {
     const message = createBaseCommentInfo();
     message.comment = object.comment ?? "";
@@ -709,40 +868,56 @@ export const IncreaseViewCountRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): IncreaseViewCountRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseIncreaseViewCountRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.identifier = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.user = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): IncreaseViewCountRequest {
     return {
-      identifier: isSet(object.identifier) ? String(object.identifier) : "",
-      user: isSet(object.user) ? String(object.user) : "",
+      identifier: isSet(object.identifier) ? globalThis.String(object.identifier) : "",
+      user: isSet(object.user) ? globalThis.String(object.user) : "",
     };
   },
 
   toJSON(message: IncreaseViewCountRequest): unknown {
     const obj: any = {};
-    message.identifier !== undefined && (obj.identifier = message.identifier);
-    message.user !== undefined && (obj.user = message.user);
+    if (message.identifier !== "") {
+      obj.identifier = message.identifier;
+    }
+    if (message.user !== "") {
+      obj.user = message.user;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<IncreaseViewCountRequest>, I>>(base?: I): IncreaseViewCountRequest {
+    return IncreaseViewCountRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<IncreaseViewCountRequest>, I>>(object: I): IncreaseViewCountRequest {
     const message = createBaseIncreaseViewCountRequest();
     message.identifier = object.identifier ?? "";
@@ -764,33 +939,43 @@ export const IncreaseViewCountResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): IncreaseViewCountResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseIncreaseViewCountResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.res = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): IncreaseViewCountResponse {
-    return { res: isSet(object.res) ? Number(object.res) : 0 };
+    return { res: isSet(object.res) ? globalThis.Number(object.res) : 0 };
   },
 
   toJSON(message: IncreaseViewCountResponse): unknown {
     const obj: any = {};
-    message.res !== undefined && (obj.res = Math.round(message.res));
+    if (message.res !== 0) {
+      obj.res = Math.round(message.res);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<IncreaseViewCountResponse>, I>>(base?: I): IncreaseViewCountResponse {
+    return IncreaseViewCountResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<IncreaseViewCountResponse>, I>>(object: I): IncreaseViewCountResponse {
     const message = createBaseIncreaseViewCountResponse();
     message.res = object.res ?? 0;
@@ -814,40 +999,56 @@ export const LikeRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LikeRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLikeRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.identifier = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.user = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): LikeRequest {
     return {
-      identifier: isSet(object.identifier) ? String(object.identifier) : "",
-      user: isSet(object.user) ? String(object.user) : "",
+      identifier: isSet(object.identifier) ? globalThis.String(object.identifier) : "",
+      user: isSet(object.user) ? globalThis.String(object.user) : "",
     };
   },
 
   toJSON(message: LikeRequest): unknown {
     const obj: any = {};
-    message.identifier !== undefined && (obj.identifier = message.identifier);
-    message.user !== undefined && (obj.user = message.user);
+    if (message.identifier !== "") {
+      obj.identifier = message.identifier;
+    }
+    if (message.user !== "") {
+      obj.user = message.user;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<LikeRequest>, I>>(base?: I): LikeRequest {
+    return LikeRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<LikeRequest>, I>>(object: I): LikeRequest {
     const message = createBaseLikeRequest();
     message.identifier = object.identifier ?? "";
@@ -869,33 +1070,43 @@ export const LikeResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LikeResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLikeResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.res = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): LikeResponse {
-    return { res: isSet(object.res) ? Number(object.res) : 0 };
+    return { res: isSet(object.res) ? globalThis.Number(object.res) : 0 };
   },
 
   toJSON(message: LikeResponse): unknown {
     const obj: any = {};
-    message.res !== undefined && (obj.res = Math.round(message.res));
+    if (message.res !== 0) {
+      obj.res = Math.round(message.res);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<LikeResponse>, I>>(base?: I): LikeResponse {
+    return LikeResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<LikeResponse>, I>>(object: I): LikeResponse {
     const message = createBaseLikeResponse();
     message.res = object.res ?? 0;
@@ -919,40 +1130,56 @@ export const DislikeRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DislikeRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDislikeRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.identifier = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.user = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DislikeRequest {
     return {
-      identifier: isSet(object.identifier) ? String(object.identifier) : "",
-      user: isSet(object.user) ? String(object.user) : "",
+      identifier: isSet(object.identifier) ? globalThis.String(object.identifier) : "",
+      user: isSet(object.user) ? globalThis.String(object.user) : "",
     };
   },
 
   toJSON(message: DislikeRequest): unknown {
     const obj: any = {};
-    message.identifier !== undefined && (obj.identifier = message.identifier);
-    message.user !== undefined && (obj.user = message.user);
+    if (message.identifier !== "") {
+      obj.identifier = message.identifier;
+    }
+    if (message.user !== "") {
+      obj.user = message.user;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<DislikeRequest>, I>>(base?: I): DislikeRequest {
+    return DislikeRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<DislikeRequest>, I>>(object: I): DislikeRequest {
     const message = createBaseDislikeRequest();
     message.identifier = object.identifier ?? "";
@@ -974,33 +1201,43 @@ export const DislikeResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DislikeResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDislikeResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.res = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DislikeResponse {
-    return { res: isSet(object.res) ? Number(object.res) : 0 };
+    return { res: isSet(object.res) ? globalThis.Number(object.res) : 0 };
   },
 
   toJSON(message: DislikeResponse): unknown {
     const obj: any = {};
-    message.res !== undefined && (obj.res = Math.round(message.res));
+    if (message.res !== 0) {
+      obj.res = Math.round(message.res);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<DislikeResponse>, I>>(base?: I): DislikeResponse {
+    return DislikeResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<DislikeResponse>, I>>(object: I): DislikeResponse {
     const message = createBaseDislikeResponse();
     message.res = object.res ?? 0;
@@ -1021,33 +1258,43 @@ export const GetCommentListRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetCommentListRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetCommentListRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.identifier = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GetCommentListRequest {
-    return { identifier: isSet(object.identifier) ? String(object.identifier) : "" };
+    return { identifier: isSet(object.identifier) ? globalThis.String(object.identifier) : "" };
   },
 
   toJSON(message: GetCommentListRequest): unknown {
     const obj: any = {};
-    message.identifier !== undefined && (obj.identifier = message.identifier);
+    if (message.identifier !== "") {
+      obj.identifier = message.identifier;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GetCommentListRequest>, I>>(base?: I): GetCommentListRequest {
+    return GetCommentListRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<GetCommentListRequest>, I>>(object: I): GetCommentListRequest {
     const message = createBaseGetCommentListRequest();
     message.identifier = object.identifier ?? "";
@@ -1068,26 +1315,31 @@ export const GetCommentListResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetCommentListResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetCommentListResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.commentInfos.push(CommentInfo.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GetCommentListResponse {
     return {
-      commentInfos: Array.isArray(object?.commentInfos)
+      commentInfos: globalThis.Array.isArray(object?.commentInfos)
         ? object.commentInfos.map((e: any) => CommentInfo.fromJSON(e))
         : [],
     };
@@ -1095,14 +1347,15 @@ export const GetCommentListResponse = {
 
   toJSON(message: GetCommentListResponse): unknown {
     const obj: any = {};
-    if (message.commentInfos) {
-      obj.commentInfos = message.commentInfos.map((e) => e ? CommentInfo.toJSON(e) : undefined);
-    } else {
-      obj.commentInfos = [];
+    if (message.commentInfos?.length) {
+      obj.commentInfos = message.commentInfos.map((e) => CommentInfo.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GetCommentListResponse>, I>>(base?: I): GetCommentListResponse {
+    return GetCommentListResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<GetCommentListResponse>, I>>(object: I): GetCommentListResponse {
     const message = createBaseGetCommentListResponse();
     message.commentInfos = object.commentInfos?.map((e) => CommentInfo.fromPartial(e)) || [];
@@ -1211,10 +1464,11 @@ export const VideoServiceGetVideoListDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = GetVideoListResponse.decode(data);
       return {
-        ...GetVideoListResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -1233,10 +1487,11 @@ export const VideoServiceGetUserVideoListDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = GetUserVideoListResponse.decode(data);
       return {
-        ...GetUserVideoListResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -1255,10 +1510,11 @@ export const VideoServiceGetVideoDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = GetVideoResponse.decode(data);
       return {
-        ...GetVideoResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -1277,10 +1533,11 @@ export const VideoServiceGetVideoListForLibraryDesc: UnaryMethodDefinitionish = 
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = GetVideoListForLibraryResponse.decode(data);
       return {
-        ...GetVideoListForLibraryResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -1299,10 +1556,11 @@ export const VideoServiceGetCommentListDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = GetCommentListResponse.decode(data);
       return {
-        ...GetCommentListResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -1321,10 +1579,11 @@ export const VideoServiceIncreaseViewCountDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = IncreaseViewCountResponse.decode(data);
       return {
-        ...IncreaseViewCountResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -1343,10 +1602,11 @@ export const VideoServiceLikeDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = LikeResponse.decode(data);
       return {
-        ...LikeResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -1365,10 +1625,11 @@ export const VideoServiceDislikeDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = DislikeResponse.decode(data);
       return {
-        ...DislikeResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -1422,17 +1683,17 @@ export class GrpcWebImpl {
     const request = { ..._request, ...methodDesc.requestType };
     const maybeCombinedMetadata = metadata && this.options.metadata
       ? new BrowserHeaders({ ...this.options?.metadata.headersMap, ...metadata?.headersMap })
-      : metadata || this.options.metadata;
+      : metadata ?? this.options.metadata;
     return new Promise((resolve, reject) => {
       grpc.unary(methodDesc, {
         request,
         host: this.host,
-        metadata: maybeCombinedMetadata,
-        transport: this.options.transport,
-        debug: this.options.debug,
+        metadata: maybeCombinedMetadata ?? {},
+        ...(this.options.transport !== undefined ? { transport: this.options.transport } : {}),
+        debug: this.options.debug ?? false,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
-            resolve(response.message);
+            resolve(response.message!.toObject());
           } else {
             const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
@@ -1446,7 +1707,8 @@ export class GrpcWebImpl {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -1458,7 +1720,7 @@ function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-export class GrpcWebError extends Error {
+export class GrpcWebError extends globalThis.Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }
