@@ -30,7 +30,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
           flexDirection: isMobile ? "column" : "row",
           margin: layout.spacing_x1_5,
           alignItems: "center",
-          height: isMobile ? 200 : "inherit",
+          height: isMobile ? 200 : "auto",
           justifyContent: isMobile ? "space-between" : undefined,
         },
       ]}
@@ -67,7 +67,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
               : `Claim available rewards: ${decimalFromAtomics(
                   selectedWallet?.networkId,
                   "" + claimableAmount,
-                  "utori" // FIXME: don't hardcode denom and use prettyPrice
+                  "utori", // FIXME: don't hardcode denom and use prettyPrice
                 )} TORI`
           }
           touchableStyle={{ marginLeft: layout.spacing_x1 }}

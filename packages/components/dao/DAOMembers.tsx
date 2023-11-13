@@ -166,7 +166,7 @@ const AddMembersModal: React.FC<{
         onPress={wrapWithFeedback(async () => {
           await proposeToAddMembers(
             selectedWallet?.address,
-            ids.map((n) => parseUserId(n)[1])
+            ids.map((n) => parseUserId(n)[1]),
           );
           onClose();
         })}
@@ -249,7 +249,7 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
                     msg: Buffer.from(
                       JSON.stringify({
                         update_members: updateMembersReq,
-                      })
+                      }),
                     ).toString("base64"),
                     funds: [],
                   },
@@ -265,8 +265,8 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
           const moduleConfig: VotingGroupConfig = extractGnoJSONString(
             await client.evaluateExpression(
               daoAddress,
-              "daoCore.VotingModule().ConfigJSON()"
-            )
+              "daoCore.VotingModule().ConfigJSON()",
+            ),
           );
           const { groupId } = moduleConfig;
 
@@ -296,13 +296,13 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
               func: "ProposeJSON",
               args: ["0", JSON.stringify(propReq)],
             },
-            { gasWanted: 2000000 }
+            { gasWanted: 2000000 },
           );
           break;
         }
       }
       invalidateDAOProposals();
     },
-    [daoId, groupAddress, invalidateDAOProposals, makeProposal]
+    [daoId, groupAddress, invalidateDAOProposals, makeProposal],
   );
 };

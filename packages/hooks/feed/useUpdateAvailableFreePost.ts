@@ -7,7 +7,7 @@ import { Wallet } from "../../context/WalletsProvider";
 export const useUpdateAvailableFreePost = (
   networkId: string,
   postCategory: PostCategory,
-  wallet?: Wallet
+  wallet?: Wallet,
 ) => {
   const { data } = useQuery(
     ["getAvailableFreePost", networkId, postCategory, wallet?.address],
@@ -24,7 +24,7 @@ export const useUpdateAvailableFreePost = (
         return 0;
       }
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
   return { freePostCount: data || 0 };
 };

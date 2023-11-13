@@ -4,12 +4,10 @@ import { StyleProp, TextStyle } from "react-native";
 import { BrandText } from "./BrandText";
 import FlexRow from "./FlexRow";
 import { OmniLink } from "./OmniLink";
-import {
-  RoundedGradientImage,
-  RoundedGradientImageSize,
-} from "./images/RoundedGradientImage";
+import { UserAvatarWithFrame } from "./images/AvatarWithFrame";
+import { RoundedGradientImageSize } from "./images/RoundedGradientImage";
 import { useNSUserInfo } from "../hooks/useNSUserInfo";
-import { getCosmosNetwork, parseUserId } from "../networks";
+import { parseUserId } from "../networks";
 import { fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 import { tinyAddress } from "../utils/text";
@@ -28,10 +26,8 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
   showText = true,
   size = "XXS",
 }) => {
-  const [userNetwork, userAddress] = parseUserId(userId);
+  const [, userAddress] = parseUserId(userId);
   const userInfo = useNSUserInfo(userId);
-  const networkId = userNetwork?.id;
-  const network = getCosmosNetwork(networkId);
   const name =
     userInfo?.metadata?.tokenId || tinyAddress(userAddress, 30) || "";
 
@@ -41,11 +37,7 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
         to={{ screen: "UserPublicProfile", params: { id: userId } }}
         style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
       >
-        <RoundedGradientImage
-          size={size}
-          sourceURI={userInfo?.metadata?.image}
-          fallbackURI={network?.nameServiceDefaultImage}
-        />
+        <UserAvatarWithFrame size={size} userId={userId} />
         {showText && (
           <BrandText
             style={[{ marginLeft: layout.spacing_x1_5 }, fontSemibold14]}

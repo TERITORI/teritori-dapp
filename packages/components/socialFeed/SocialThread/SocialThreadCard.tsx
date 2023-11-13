@@ -93,7 +93,7 @@ export const SocialThreadCard: React.FC<{
       onSuccess(_data, variables) {
         const reactions = getUpdatedReactions(
           post.reactions,
-          variables.msg.icon
+          variables.msg.icon,
         );
 
         setLocalPost({ ...localPost, reactions });
@@ -166,7 +166,7 @@ export const SocialThreadCard: React.FC<{
       [{ type: "/vm.m_call", value: vmCall }],
       {
         gasWanted: 2_000_000,
-      }
+      },
     );
 
     const provider = new GnoJSONRPCProvider(rpcEndpoint);
@@ -231,7 +231,7 @@ export const SocialThreadCard: React.FC<{
           send: "",
           args: [moduleIndex, proposalId],
         },
-        { gasWanted: 10000000 }
+        { gasWanted: 10000000 },
       );
 
       await refetchFeed?.();
@@ -288,7 +288,7 @@ export const SocialThreadCard: React.FC<{
           send: "",
           args: ["0", JSON.stringify(propReq)],
         },
-        { gasWanted: 10000000 }
+        { gasWanted: 10000000 },
       );
 
       await refetchFeed?.();
@@ -383,6 +383,8 @@ export const SocialThreadCard: React.FC<{
 
           {/*====== Card Content */}
           <SocialMessageContent
+            authorId={localPost.authorId}
+            postId={localPost.identifier}
             metadata={metadata}
             postCategory={localPost.category}
             isPreview={isPreview}

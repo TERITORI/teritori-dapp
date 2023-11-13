@@ -13,10 +13,10 @@ import postJobSVG from "../../../assets/icons/organization/post-job.svg";
 import { JoinState } from "../../api/multisig/v1/multisig";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { Separator } from "../../components/Separator";
 import { AnimationFadeIn } from "../../components/animations/AnimationFadeIn";
 import { LoginButton } from "../../components/multisig/LoginButton";
 import { MultisigTransactions } from "../../components/multisig/MultisigTransactions";
+import { Separator } from "../../components/separators/Separator";
 import { SpacerColumn } from "../../components/spacer";
 import { useMultisigAuthToken } from "../../hooks/multisig/useMultisigAuthToken";
 import { useUserMultisigs } from "../../hooks/multisig/useUserMultisigs";
@@ -41,7 +41,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
 
   const { multisigs: invitations } = useUserMultisigs(
     selectedWallet?.userId,
-    JoinState.JOIN_STATE_OUT
+    JoinState.JOIN_STATE_OUT,
   );
 
   return (
@@ -142,7 +142,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                           navigation.navigate("MultisigWalletDashboard", {
                             id: getUserId(
                               selectedWallet?.networkId,
-                              item.address
+                              item.address,
                             ),
                           })
                         }

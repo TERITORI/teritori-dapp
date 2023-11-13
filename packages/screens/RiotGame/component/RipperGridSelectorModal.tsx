@@ -73,7 +73,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
 
   const centerFlex = useMemo(
     () => (currentWidth > breakPoint ? 2 : 1),
-    [breakPoint, currentWidth]
+    [breakPoint, currentWidth],
   );
 
   const selectRipper = async (ripper: NFT) => {

@@ -153,7 +153,7 @@ export const Assets: React.FC<{
                   {prettyPrice(
                     network.id,
                     balance?.amount || "0",
-                    currency.denom
+                    currency.denom,
                   )}
                 </BrandText>
                 <BrandText

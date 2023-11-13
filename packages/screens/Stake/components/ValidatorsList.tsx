@@ -74,7 +74,7 @@ export const ValidatorsTable: React.FC<{
             userId={userId}
             actions={actions}
             pendingRewards={rewards.filter(
-              (reward) => reward.validator === item.address
+              (reward) => reward.validator === item.address,
             )}
             claimReward={claimReward}
           />
@@ -215,7 +215,7 @@ const ValidatorRow: React.FC<{
                 text={action.label || ""}
                 size="XS"
               />
-            )
+            ),
           )}
         </View>
       )}

@@ -23,7 +23,7 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getCosmosNetwork, parseUserId } from "../../networks";
+import { parseUserId } from "../../networks";
 import {
   addSelected,
   removeSelected,
@@ -45,15 +45,15 @@ import { DropdownOption } from "../DropdownOption";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { NetworkIcon } from "../NetworkIcon";
 import { OmniLink } from "../OmniLink";
-import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButton } from "../buttons/SecondaryButton";
+import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
 export const NFTView: React.FC<{
   data: NFT;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<Omit<ViewStyle, "width"> & { width?: number }>;
 }> = memo(({ data: nft, style }) => {
   const isMobile = useIsMobile();
   const cardWidth = isMobile ? 220 : 250;
@@ -62,7 +62,6 @@ export const NFTView: React.FC<{
   const flatStyle = StyleSheet.flatten(style);
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(nft.ownerId);
-  const cosmosNetwork = getCosmosNetwork(nft.networkId);
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
@@ -105,8 +104,7 @@ export const NFTView: React.FC<{
     return <View style={{ width }} />;
   }
 
-  const widthNumber =
-    typeof width === "number" ? width : parseInt(width || "0", 10) || cardWidth;
+  const widthNumber = width || cardWidth;
 
   return (
     <>
@@ -158,15 +156,10 @@ export const NFTView: React.FC<{
                     zIndex: 1000,
                   }}
                 >
-                  <OptimizedImage
-                    sourceURI={userInfo.metadata.image}
-                    fallbackURI={cosmosNetwork?.nameServiceDefaultImage}
-                    width={32}
-                    height={32}
+                  <UserAvatarWithFrame
+                    userId={nft.ownerId}
+                    size="XXS"
                     style={{
-                      height: 32,
-                      width: 32,
-                      borderRadius: 18,
                       marginRight: 6,
                     }}
                   />

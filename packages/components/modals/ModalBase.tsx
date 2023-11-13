@@ -1,9 +1,8 @@
-import React, { ComponentType, useEffect } from "react";
+import React, { ComponentType, ReactNode, useEffect } from "react";
 import {
   Modal,
   View,
   ScrollView,
-  ViewComponent,
   ViewStyle,
   useWindowDimensions,
   StyleProp,
@@ -19,15 +18,15 @@ import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { SeparatorGradient } from "../SeparatorGradient";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+import { SeparatorGradient } from "../separators/SeparatorGradient";
 import { SpacerColumn } from "../spacer";
 
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
 type ModalBaseProps = {
   label?: string;
-  labelComponent?: React.FC | ViewComponent | JSX.Element;
+  labelComponent?: ReactNode;
   onClose?: () => void;
   onBackPress?: () => void;
   width?: number;
@@ -44,6 +43,7 @@ type ModalBaseProps = {
   closeButtonStyle?: StyleProp<ViewStyle>;
   verticalPosition?: "center" | "top" | "bottom";
   closeOnBlur?: boolean;
+  children: ReactNode;
 };
 
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)

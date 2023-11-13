@@ -53,7 +53,7 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
     tokenId: string,
     sender: string,
     receiver: string,
-    networkInfo: CosmosNetworkInfo
+    networkInfo: CosmosNetworkInfo,
   ) => {
     // validate address
     const address = bech32.decode(receiver);
@@ -64,12 +64,12 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
 
     // create client
     const signingComswasmClient = await getKeplrSigningCosmWasmClient(
-      networkInfo.id
+      networkInfo.id,
     );
     const nftClient = new TeritoriNftClient(
       signingComswasmClient,
       sender,
-      nftContractAddress
+      nftContractAddress,
     );
 
     // transfer
@@ -84,7 +84,7 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
     nftContractAddress: string,
     tokenId: string,
     sender: string,
-    receiver: string
+    receiver: string,
   ) => {
     const signer = await getMetaMaskEthereumSigner(network, sender);
     if (!signer) {
@@ -93,7 +93,7 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
 
     const nftClient = await TeritoriNft__factory.connect(
       nftContractAddress,
-      signer
+      signer,
     );
 
     const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
@@ -115,7 +115,7 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
 
       if (
         ![NetworkKind.Ethereum, NetworkKind.Cosmos].includes(
-          network?.kind || NetworkKind.Unknown
+          network?.kind || NetworkKind.Unknown,
         )
       ) {
         throw Error(`Network not supported`);
@@ -139,7 +139,7 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
             tokenId,
             sender,
             formValues.receiverAddress,
-            network
+            network,
           );
           break;
         case NetworkKind.Ethereum:
@@ -148,7 +148,7 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
             nft.nftContractAddress,
             tokenId,
             sender,
-            formValues.receiverAddress
+            formValues.receiverAddress,
           );
           break;
         default:

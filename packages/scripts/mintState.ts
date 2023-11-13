@@ -28,14 +28,14 @@ const main = async () => {
           throw new Error("collection network not found");
         }
         const comswasmClient = await mustGetNonSigningCosmWasmClient(
-          network.id
+          network.id,
         );
         const bunkerClient = new TeritoriBunkerMinterQueryClient(
           comswasmClient,
-          mintAddress
+          mintAddress,
         );
         const requestsCount = Long.fromString(
-          await bunkerClient.tokenRequestsCount()
+          await bunkerClient.tokenRequestsCount(),
         );
         const minted = Long.fromString(await bunkerClient.currentSupply());
         if (minted.lessThan(requestsCount)) {
@@ -43,7 +43,7 @@ const main = async () => {
             "missing",
             requestsCount.sub(minted).toString(),
             "in",
-            collectionId
+            collectionId,
           );
         }
         return;

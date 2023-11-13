@@ -105,14 +105,14 @@ export const GovernanceDetails: React.FC<{
 
     try {
       const client = await getKeplrSigningStargateClient(
-        selectedWallet.networkId
+        selectedWallet.networkId,
       );
 
       const vote: MsgVoteEncodeObject = {
         typeUrl: "/cosmos.gov.v1beta1.MsgVote",
         value: {
           proposalId: Long.fromNumber(
-            parseInt(numberProposal.substring(1), 10)
+            parseInt(numberProposal.substring(1), 10),
           ),
           voter: String(selectedWallet.address),
           option: voteOption,
@@ -121,7 +121,7 @@ export const GovernanceDetails: React.FC<{
       const result = await client.signAndBroadcast(
         selectedWallet.address,
         [vote],
-        "auto"
+        "auto",
       );
       if (isDeliverTxFailure(result)) {
         setToastError({

@@ -188,7 +188,7 @@ export const TextInputCustom = <T extends FieldValues>({
     if (currency) {
       const reg = new RegExp(`^\\d+\\.?\\d{0,${currency.coinDecimals}}$`);
 
-      if (rules?.max && parseFloat(value) > rules.max) {
+      if (typeof rules?.max === "number" && parseFloat(value) > rules.max) {
         return;
       }
 

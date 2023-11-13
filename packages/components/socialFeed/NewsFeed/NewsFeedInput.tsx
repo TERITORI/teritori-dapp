@@ -31,8 +31,8 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useDAOMakeProposal } from "../../../hooks/dao/useDAOMakeProposal";
 import { useBotPost } from "../../../hooks/feed/useBotPost";
 import { useCreatePost } from "../../../hooks/feed/useCreatePost";
+import { useFeedPostFee } from "../../../hooks/feed/useFeedPostFee";
 import { useUpdateAvailableFreePost } from "../../../hooks/feed/useUpdateAvailableFreePost";
-import { useUpdatePostFee } from "../../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../../hooks/useBalances";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
@@ -139,7 +139,7 @@ export const NewsFeedInput = React.forwardRef<
       additionalMention,
       daoId,
     },
-    forwardRef
+    forwardRef,
   ) => {
     const { width: windowWidth } = useWindowDimensions();
     const { width } = useMaxResolution();
@@ -187,18 +187,18 @@ export const NewsFeedInput = React.forwardRef<
           files: [],
           gifs: [],
         },
-      }
+      },
     );
     const formValues = watch();
     const userIPFSKey = useSelector(selectNFTStorageAPI);
-    const { postFee } = useUpdatePostFee(
+    const { postFee } = useFeedPostFee(
       selectedNetworkId,
-      getPostCategory(formValues)
+      getPostCategory(formValues),
     );
     const { freePostCount } = useUpdateAvailableFreePost(
       selectedNetworkId,
       getPostCategory(formValues),
-      selectedWallet
+      selectedWallet,
     );
 
     const processSubmit = async () => {
@@ -298,7 +298,7 @@ export const NewsFeedInput = React.forwardRef<
                   execute: {
                     contract_addr: network.socialFeedContractAddress,
                     msg: Buffer.from(
-                      JSON.stringify({ create_post: msg })
+                      JSON.stringify({ create_post: msg }),
                     ).toString("base64"),
                     funds: [{ amount: postFee.toString(), denom: "utori" }],
                   },
@@ -333,7 +333,7 @@ export const NewsFeedInput = React.forwardRef<
             const txHash = await adenaDoContract(
               selectedNetworkId,
               [{ type: "/vm.m_call", value: vmCall }],
-              { gasWanted: 2_000_000 }
+              { gasWanted: 2_000_000 },
             );
 
             const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
@@ -366,7 +366,7 @@ export const NewsFeedInput = React.forwardRef<
               },
               {
                 onSuccess: onPostCreationSuccess,
-              }
+              },
             );
           }
         }
@@ -400,7 +400,7 @@ export const NewsFeedInput = React.forwardRef<
           copiedValue,
           selection.start,
           selection.end,
-          emoji
+          emoji,
         );
         setValue("message", copiedValue);
       }
@@ -526,21 +526,21 @@ export const NewsFeedInput = React.forwardRef<
                 "files",
                 removeFileFromArray(
                   formValues?.files || [],
-                  file as LocalFileData
-                )
+                  file as LocalFileData,
+                ),
               );
             }}
             onDeleteGIF={(url) =>
               setValue(
                 "gifs",
-                (formValues?.gifs || [])?.filter((gif) => gif !== url)
+                (formValues?.gifs || [])?.filter((gif) => gif !== url),
               )
             }
             onAudioUpdate={(updatedFile) => {
               if (formValues?.files?.length) {
                 setValue(
                   "files",
-                  replaceFileInArray(formValues?.files, updatedFile)
+                  replaceFileInArray(formValues?.files, updatedFile),
                 );
               }
             }}
@@ -591,7 +591,7 @@ export const NewsFeedInput = React.forwardRef<
                 : `The cost for this ${type} is ${prettyPrice(
                     selectedNetworkId,
                     postFee.toString(),
-                    selectedNetwork?.currencies?.[0].denom || "utori"
+                    selectedNetwork?.currencies?.[0].denom || "utori",
                   )}`}
             </BrandText>
           </View>
@@ -671,7 +671,7 @@ export const NewsFeedInput = React.forwardRef<
                   // Don't add if already added
                   if (
                     formValues.files?.find(
-                      (file) => file.fileName === files[0].fileName
+                      (file) => file.fileName === files[0].fileName,
                     )
                   )
                     return;
@@ -760,5 +760,5 @@ export const NewsFeedInput = React.forwardRef<
         </View>
       </View>
     );
-  }
+  },
 );

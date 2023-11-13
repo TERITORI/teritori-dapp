@@ -31,13 +31,13 @@ export const ConnectKeplrButton: React.FC<{
       const keplr = (window as KeplrWindow)?.keplr;
       if (!keplr) {
         Linking.openURL(
-          "https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap"
+          "https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap",
         );
         return;
       }
 
       const selectableCosmosNetworks = enabledNetworks.filter(
-        (n): n is CosmosNetworkInfo => n.kind === NetworkKind.Cosmos
+        (n): n is CosmosNetworkInfo => n.kind === NetworkKind.Cosmos,
       );
 
       let network = getCosmosNetwork(networkId);
@@ -51,7 +51,7 @@ export const ConnectKeplrButton: React.FC<{
       }
 
       await keplr.experimentalSuggestChain(
-        keplrChainInfoFromNetworkInfo(network)
+        keplrChainInfoFromNetworkInfo(network),
       );
 
       await keplr.enable(network.chainId);

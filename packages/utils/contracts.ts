@@ -12,7 +12,7 @@ import {
 } from "../networks";
 
 export const getCosmosNameServiceQueryClient = async (
-  networkId: string | undefined
+  networkId: string | undefined,
 ) => {
   const network = getCosmosNetwork(networkId);
   if (!network?.nameServiceContractAddress) {
@@ -25,21 +25,21 @@ export const getCosmosNameServiceQueryClient = async (
   } catch (err) {
     console.warn(
       `failed to get non signing cosmwasm client for network '${network.id}':`,
-      err
+      err,
     );
     return undefined;
   }
 
   const nsClient = new TeritoriNameServiceQueryClient(
     cosmWasmClient,
-    network.nameServiceContractAddress
+    network.nameServiceContractAddress,
   );
 
   return nsClient;
 };
 
 export const getSquadStakingQueryClient = async (
-  networkId: string | undefined
+  networkId: string | undefined,
 ) => {
   const network = mustGetCosmosNetwork(networkId);
   const contractAddress = network.riotSquadStakingContractAddressV2;
@@ -51,7 +51,7 @@ export const getSquadStakingQueryClient = async (
 };
 
 export const getKeplrSquadStakingClient = async (
-  userId: string | undefined
+  userId: string | undefined,
 ) => {
   const [network, userAddress] = parseUserId(userId);
   const cosmosNetwork = mustGetCosmosNetwork(network?.id);
@@ -63,6 +63,6 @@ export const getKeplrSquadStakingClient = async (
   return new TeritoriSquadStakingClient(
     cosmWasmClient,
     userAddress,
-    contractAddress
+    contractAddress,
   );
 };

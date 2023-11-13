@@ -9,7 +9,7 @@ declare type LocalizedCategories = [
   string,
   string,
   string,
-  string
+  string,
 ];
 export default class EmojiModal extends PureComponent<
   {
@@ -47,7 +47,7 @@ export default class EmojiModal extends PureComponent<
   private onPressBackground;
   getItemLayout: (
     data: unknown[] | null | undefined,
-    index: number
+    index: number,
   ) => {
     length: number;
     offset: number;

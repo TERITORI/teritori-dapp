@@ -62,7 +62,7 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
       const nsClient = new TeritoriNameServiceClient(
         signingClient,
         walletAddress,
-        network.nameServiceContractAddress
+        network.nameServiceContractAddress,
       );
 
       await nsClient.burn({ tokenId: normalizedTokenId });
@@ -85,7 +85,7 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
     }
 
     await queryClient.invalidateQueries(
-      nsNameInfoQueryKey(selectedWallet?.networkId, normalizedTokenId)
+      nsNameInfoQueryKey(selectedWallet?.networkId, normalizedTokenId),
     );
   };
 

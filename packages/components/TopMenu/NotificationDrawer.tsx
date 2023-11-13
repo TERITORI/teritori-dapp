@@ -341,7 +341,7 @@ const useBuildBodyText = (item: Notification) => {
 
 const clearAllNotifications = async (
   queryClient: QueryClient,
-  req: Partial<NotificationsRequest>
+  req: Partial<NotificationsRequest>,
 ) => {
   const [network] = parseUserId(req?.userId);
 
@@ -356,7 +356,7 @@ const clearAllNotifications = async (
 
 const clearNotification = async (
   queryClient: QueryClient,
-  req: Partial<DismissNotificationRequest>
+  req: Partial<DismissNotificationRequest>,
 ) => {
   const [network] = parseUserId(req?.userId);
 

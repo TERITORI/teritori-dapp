@@ -7,7 +7,7 @@ import { RightRail } from "./components/RightRail";
 import { BrandText } from "../../components/BrandText";
 import { FullWidthSeparator } from "../../components/FullWidthSeparator";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { Separator } from "../../components/Separator";
+import { Separator } from "../../components/separators/Separator";
 import { ScreenFC } from "../../utils/navigation";
 
 export const DAppStoreScreen: ScreenFC<"DAppStore"> = () => {
@@ -26,7 +26,6 @@ export const DAppStoreScreen: ScreenFC<"DAppStore"> = () => {
       <View
         style={{
           flexDirection: isMobile ? "column" : "row",
-          minHeight: "inherit",
         }}
       >
         <LeftRail />

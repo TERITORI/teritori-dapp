@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { ReactNode, createContext, useContext, useState } from "react";
 
 interface DefaultValue {
   name: string;
@@ -11,7 +11,9 @@ const defaultValue: DefaultValue = {
 
 const TNSContext = createContext(defaultValue);
 
-export const TNSContextProvider: React.FC = ({ children }) => {
+export const TNSContextProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   // The entered name
   const [name, setName] = useState("");
 

@@ -62,7 +62,7 @@ export const TipModal: React.FC<{
   const { setToastError, setToastSuccess } = useFeedbacks();
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
   const currencyBalance = balances.find(
-    (bal) => bal.denom === nativeCurrency?.denom
+    (bal) => bal.denom === nativeCurrency?.denom,
   );
   const formValues = watch();
 
@@ -77,7 +77,7 @@ export const TipModal: React.FC<{
 
     const amount = Decimal.fromUserInput(
       fieldValues.amount,
-      nativeCurrency.decimals
+      nativeCurrency.decimals,
     ).atomics;
 
     if (selectedNetworkInfo?.kind === NetworkKind.Gno) {
@@ -96,7 +96,7 @@ export const TipModal: React.FC<{
           [{ type: "/vm.m_call", value: vmCall }],
           {
             gasWanted: 1_000_000,
-          }
+          },
         );
 
         onClose(+amount);
@@ -129,7 +129,7 @@ export const TipModal: React.FC<{
     balances.find((bal) => bal.denom === nativeCurrency?.denom)?.amount || "0";
   const max = Decimal.fromAtomics(
     maxAtomics,
-    nativeCurrency?.decimals || 0
+    nativeCurrency?.decimals || 0,
   ).toString();
 
   return (
@@ -140,7 +140,7 @@ export const TipModal: React.FC<{
       label={`Your wallet has ${prettyPrice(
         selectedWallet?.networkId || "",
         currencyBalance?.amount || "0",
-        currencyBalance?.denom || ""
+        currencyBalance?.denom || "",
       )}`}
     >
       <View

@@ -56,7 +56,7 @@ export const FlagModal: React.FC<FlagModalProps> = ({
         [{ type: "/vm.m_call", value: vmCall }],
         {
           gasWanted: 2_000_000,
-        }
+        },
       );
 
       await refetchFeed?.();

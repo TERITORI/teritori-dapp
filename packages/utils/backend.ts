@@ -133,7 +133,7 @@ export const mustGetNotificationClient = (networkId: string | undefined) => {
   const client = getNotificationClient(networkId);
   if (!client) {
     throw new Error(
-      `failed to get notification client for network '${networkId}'`
+      `failed to get notification client for network '${networkId}'`,
     );
   }
   return client;

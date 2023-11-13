@@ -30,58 +30,55 @@ export const NavBarGovernance: React.FC<{
   const [selected, setSelected] = useState<keyof typeof def>("all");
 
   return (
-    <View
-      style={{
-        top: 15,
-        display: "flex",
-        flexWrap: "wrap",
-        alignContent: "center",
-        justifyContent: "space-between",
-        width: "fit-content",
-        borderWidth: 1,
-        borderColor: neutral33,
-        flexDirection: "row",
-        height: 32,
-        borderRadius: 18,
-        overflow: "hidden",
-      }}
-    >
-      {getKeys(def).map((key) => {
-        return (
-          <TouchableOpacity
-            key={key}
-            onPress={() => {
-              onChange(def[key].filter as any); // FIXME: typing
-              setSelected(key);
-            }}
-            style={{
-              height: "100%",
-              borderRightColor: neutral33,
-              borderRightWidth: 1,
-            }}
-          >
-            <View
+    <View>
+      <View
+        style={{
+          marginTop: 15,
+          borderWidth: 1,
+          borderColor: neutral33,
+          flexDirection: "row",
+          borderRadius: 18,
+          overflow: "hidden",
+          alignSelf: "flex-start",
+          height: 32,
+        }}
+      >
+        {getKeys(def).map((key) => {
+          return (
+            <TouchableOpacity
+              key={key}
+              onPress={() => {
+                onChange(def[key].filter as any); // FIXME: typing
+                setSelected(key);
+              }}
               style={{
-                backgroundColor: selected === key ? "#16BBFF" : "black",
                 height: "100%",
-                justifyContent: "center",
+                borderRightColor: neutral33,
+                borderRightWidth: 1,
               }}
             >
-              <BrandText
+              <View
                 style={{
-                  color: selected === key ? "black" : "white",
-                  fontSize: 14,
-                  paddingHorizontal: 12,
-                  textAlign: "center",
-                  top: 6,
+                  backgroundColor: selected === key ? "#16BBFF" : "black",
+                  height: "100%",
+                  justifyContent: "center",
                 }}
               >
-                {def[key].name}
-              </BrandText>
-            </View>
-          </TouchableOpacity>
-        );
-      })}
+                <BrandText
+                  style={{
+                    color: selected === key ? "black" : "white",
+                    fontSize: 14,
+                    paddingHorizontal: 12,
+                    textAlign: "center",
+                  }}
+                >
+                  {def[key].name}
+                </BrandText>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
     </View>
   );
 };

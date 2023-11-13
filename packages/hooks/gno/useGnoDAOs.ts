@@ -21,8 +21,8 @@ export const useGnoDAOs = (networkId: string | undefined) => {
     const res: GnoDAORegistration[] = extractGnoJSONString(
       await client.evaluateExpression(
         network.daoRegistryPkgPath,
-        'ListJSON("", "", 0, true)'
-      )
+        'ListJSON("", "", 0, true)',
+      ),
     );
     return res;
   });

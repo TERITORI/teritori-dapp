@@ -17,12 +17,12 @@ export const useFeedConfig = (networkId: string) => {
       const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
       const client = new TeritoriSocialFeedQueryClient(
         cosmwasmClient,
-        network.socialFeedContractAddress
+        network.socialFeedContractAddress,
       );
       const conf = await client.config();
       return conf;
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
   return { feedConfig, ...other };
 };

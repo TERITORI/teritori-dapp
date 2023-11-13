@@ -27,7 +27,7 @@ export const combineFetchFeedPages = (pages: PostsList[]) =>
 const fetchTeritoriFeed = async (
   selectedNetwork: NetworkInfo,
   req: PostsRequest,
-  pageParam: number
+  pageParam: number,
 ) => {
   try {
     // ===== We use social-feed contract to get the total posts count
@@ -51,7 +51,7 @@ const fetchGnoFeed = async (
   selectedNetwork: GnoNetworkInfo,
   callerAddress: string | undefined,
   req: PostsRequest,
-  pageParam: number
+  pageParam: number,
 ) => {
   if (!selectedNetwork.socialFeedsPkgPath) return { list: [], totalCount: 0 };
   callerAddress = callerAddress || "";
@@ -69,7 +69,7 @@ const fetchGnoFeed = async (
     const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
     const output = await provider.evaluateExpression(
       selectedNetwork.socialFeedsPkgPath,
-      `GetPostsWithCaller(${TERITORI_FEED_ID}, ${parentId}, "${callerAddress}", "${userAddress}", ${categoriesStr}, ${offset}, ${limit})`
+      `GetPostsWithCaller(${TERITORI_FEED_ID}, ${parentId}, "${callerAddress}", "${userAddress}", ${categoriesStr}, ${offset}, ${limit})`,
     );
 
     const posts: Post[] = [];
@@ -123,7 +123,7 @@ export const useFetchFeed = (req: PostsRequest) => {
         },
         staleTime: Infinity,
         refetchOnWindowFocus: false,
-      }
+      },
     );
   return { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading };
 };

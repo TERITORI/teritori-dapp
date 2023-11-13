@@ -88,6 +88,6 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
 
 const filter = (c: Collection) => {
   return !(getNetwork(c.networkId)?.excludeFromLaunchpadList || []).includes(
-    c.mintAddress
+    c.mintAddress,
   );
 };

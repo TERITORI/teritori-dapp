@@ -25,7 +25,9 @@ Alpha v0.1 is live 🔥
 ${window.location.origin}/user/tori-${selectedWallet?.address}
 #Teritori #Alpha #SocialHub #Cosmos #IBCGang`;
         Linking.openURL(
-          `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`
+          `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+            message,
+          )}`,
         );
       },
     },

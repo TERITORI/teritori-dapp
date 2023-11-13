@@ -38,7 +38,7 @@ export const getTxInfo = (
   msgs: any[],
   navigation: AppNavigationProp,
   network: NetworkInfo | undefined,
-  opts?: { textStyle?: StyleProp<TextStyle> }
+  opts?: { textStyle?: StyleProp<TextStyle> },
 ): {
   name: string;
   small1: React.ReactElement;
@@ -336,7 +336,9 @@ export const getTxInfo = (
         let execMsg: any = {};
         try {
           execMsg = JSON.parse(
-            Buffer.from(new Uint8Array(Object.values(msg.value.msg))).toString()
+            Buffer.from(
+              new Uint8Array(Object.values(msg.value.msg)),
+            ).toString(),
           );
         } catch (err) {
           console.error("olol failed to parse msg", err, msg);

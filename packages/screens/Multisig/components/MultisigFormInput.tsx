@@ -15,7 +15,8 @@ import { SpacerRow } from "../../../components/spacer";
 import { neutral55, neutral77, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 
-interface MultisigFormInputProps<T> extends TextInputCustomProps<T> {
+interface MultisigFormInputProps<T extends FieldValues>
+  extends TextInputCustomProps<T> {
   isCopiable?: boolean;
   tiker?: string;
   isDisabled?: boolean;

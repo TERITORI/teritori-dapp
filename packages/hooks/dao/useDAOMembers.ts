@@ -35,11 +35,11 @@ export const useDAOMembers = (daoId: string | undefined) => {
             return null;
           }
           const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
-            network.id
+            network.id,
           );
           const cw4Client = new Cw4GroupQueryClient(
             cosmwasmClient,
-            daoGroupAddress
+            daoGroupAddress,
           );
           const { members } = await cw4Client.listMembers({ limit: 100 });
           return members;
@@ -52,15 +52,15 @@ export const useDAOMembers = (daoId: string | undefined) => {
           const moduleConfig: VotingGroupConfig = extractGnoJSONString(
             await provider.evaluateExpression(
               daoAddress,
-              "daoCore.VotingModule().ConfigJSON()"
-            )
+              "daoCore.VotingModule().ConfigJSON()",
+            ),
           );
           const { groupId } = moduleConfig;
           const res: GnoDAOMember[] = extractGnoJSONString(
             await provider.evaluateExpression(
               network.groupsPkgPath,
-              `GetMembersJSON(${groupId})`
-            )
+              `GetMembersJSON(${groupId})`,
+            ),
           );
           return res.map((member) => ({
             addr: member.address,
@@ -69,7 +69,7 @@ export const useDAOMembers = (daoId: string | undefined) => {
         }
       }
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
   return { members, ...other };
 };

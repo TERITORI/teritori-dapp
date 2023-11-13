@@ -21,7 +21,7 @@ export const useAdena: () => UseAdenaResult = () => {
   const selectedNetworkInfo = useSelectedNetworkInfo();
 
   const [state, setState] = useState<{ addresses: string[]; chainId?: string }>(
-    { addresses: [] }
+    { addresses: [] },
   );
   const [ready, setReady] = useState(false);
 
@@ -97,7 +97,7 @@ export const useAdena: () => UseAdenaResult = () => {
 
   const wallets = useMemo(() => {
     const network = allNetworks.find(
-      (n) => n.kind === NetworkKind.Gno && n.chainId === state.chainId
+      (n) => n.kind === NetworkKind.Gno && n.chainId === state.chainId,
     );
     if (!network) {
       return [];

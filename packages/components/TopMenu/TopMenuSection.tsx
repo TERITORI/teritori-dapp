@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 
 import { neutral77 } from "../../utils/style/colors";
@@ -7,12 +7,13 @@ import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import FlexCol from "../FlexCol";
 import FlexRow from "../FlexRow";
-import { Separator } from "../Separator";
+import { Separator } from "../separators/Separator";
 
 export const TopMenuSection: React.FC<{
   title: string;
   style?: StyleProp<ViewStyle>;
   isCarousel?: boolean;
+  children: ReactNode;
 }> = ({ title, style, isCarousel, children }) => {
   return (
     <>

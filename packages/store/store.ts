@@ -34,7 +34,7 @@ const migrations = {
           defaultEnabledNetworks.map((nid) => ({
             networkId: nid,
             enabled: true,
-          }))
+          })),
         ),
       },
     };

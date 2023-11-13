@@ -12,7 +12,7 @@ export interface Balance {
 export const decimalFromAtomics = (
   networkId: string | undefined,
   value: string,
-  denom: string
+  denom: string,
 ) => {
   const currency = getNativeCurrency(networkId, denom);
   if (currency) {
@@ -30,7 +30,7 @@ export const prettyPrice = (
   networkId: string | undefined,
   value: string | undefined,
   denom: string | undefined,
-  noDenom?: boolean
+  noDenom?: boolean,
 ) => {
   if (!value) {
     value = "0";
@@ -43,7 +43,7 @@ export const prettyPrice = (
     const decval = Decimal.fromAtomics(value || "0", currency.decimals);
     if (
       !decval.isGreaterThanOrEqual(
-        Decimal.fromUserInput("10", currency.decimals)
+        Decimal.fromUserInput("10", currency.decimals),
       )
     ) {
       if (noDenom) return `${decval.toString()}`;

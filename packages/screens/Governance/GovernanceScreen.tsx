@@ -21,7 +21,7 @@ export const GovernanceScreen: React.FC = () => {
       try {
         const network = mustGetCosmosNetwork(selectedNetworkId);
         const res = await fetch(
-          `${network.restEndpoint}/cosmos/gov/v1beta1/proposals`
+          `${network.restEndpoint}/cosmos/gov/v1beta1/proposals`,
         );
         const data = await res.json();
 
@@ -35,7 +35,7 @@ export const GovernanceScreen: React.FC = () => {
 
   const filteredProposals = useMemo(
     () => (filter ? proposals.filter((p) => p.status === filter) : proposals),
-    [filter, proposals]
+    [filter, proposals],
   );
 
   return (
@@ -68,10 +68,10 @@ export const GovernanceScreen: React.FC = () => {
             percentageNoValue={parseFloat(proposals.final_tally_result.no)}
             percentageYesValue={parseFloat(proposals.final_tally_result.yes)}
             percentageNoWithVetoValue={parseFloat(
-              proposals.final_tally_result.no_with_veto
+              proposals.final_tally_result.no_with_veto,
             )}
             percentageAbstainValue={parseFloat(
-              proposals.final_tally_result.abstain
+              proposals.final_tally_result.abstain,
             )}
             status={proposals.status}
           />

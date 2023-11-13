@@ -165,7 +165,7 @@ const Toolbar = function Toolbar(_ref) {
     return function () {
       toolbarPropsState.store.unsubscribeFromItem(
         "selection",
-        onSelectionChanged
+        onSelectionChanged,
       );
     };
   }, []);
@@ -191,11 +191,11 @@ const Toolbar = function Toolbar(_ref) {
                 /*#__PURE__*/ React.createElement(BoldButton, childrenProps),
                 /*#__PURE__*/ React.createElement(
                   UnderlineButton,
-                  childrenProps
+                  childrenProps,
                 ),
-                /*#__PURE__*/ React.createElement(CodeButton, childrenProps)
-              )
-        )
+                /*#__PURE__*/ React.createElement(CodeButton, childrenProps),
+              ),
+        ),
   );
 };
 const Toolbar$1 = Toolbar;
@@ -238,7 +238,7 @@ const index = function (config) {
       _extends({}, props, {
         store,
         theme,
-      })
+      }),
     );
   };
   return {

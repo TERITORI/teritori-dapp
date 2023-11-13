@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, ReactNode } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import { useNameSearch } from "../../hooks/search/useNameSearch";
@@ -11,6 +11,7 @@ export const SearchNSInputContainer: FC<{
   searchText: string;
   onPressName: (userId: string) => void;
   style?: StyleProp<ViewStyle>;
+  children: ReactNode;
 }> = ({ searchText, onPressName, style, children }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const { names } = useNameSearch({

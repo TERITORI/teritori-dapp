@@ -49,7 +49,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
   });
   const { nameOwner } = useNSNameOwner(
     selectedWallet?.networkId,
-    network?.nameServiceTLD ? name + network.nameServiceTLD : ""
+    network?.nameServiceTLD ? name + network.nameServiceTLD : "",
   );
   const ownerDAO = daos?.find((dao) => dao.contractAddress === nameOwner);
   const makeProposal = useDAOMakeProposal(ownerDAO?.id);
@@ -65,7 +65,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
 
       const client = new TeritoriNameServiceQueryClient(
         cosmwasmClient,
-        network.nameServiceContractAddress
+        network.nameServiceContractAddress,
       );
 
       // If this query fails it means that the token does not exist.
@@ -164,7 +164,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
           walletAddress,
           network.nameServiceContractAddress,
           msg,
-          "auto"
+          "auto",
         );
         if (updatedToken) {
           console.log(normalizedTokenId + " successfully updated"); //TODO: redirect to the token
@@ -190,7 +190,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
       });
     }
     await queryClient.invalidateQueries(
-      nsNameInfoQueryKey(selectedWallet?.networkId, normalizedTokenId)
+      nsNameInfoQueryKey(selectedWallet?.networkId, normalizedTokenId),
     );
   };
 

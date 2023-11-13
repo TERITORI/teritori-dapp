@@ -41,7 +41,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
   const { setToastSuccess } = useFeedbacks();
   const { claimAllRewards } = useRewards(
     getUserId(item.networkId, item.address),
-    UserKind.Single
+    UserKind.Single,
   );
 
   // Total rewards price with all denoms
@@ -199,7 +199,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               onPress: () => {
                 console.log("item", item);
                 Linking.openURL(
-                  accountExplorerLink(item.networkId, item.address)
+                  accountExplorerLink(item.networkId, item.address),
                 );
               },
             },

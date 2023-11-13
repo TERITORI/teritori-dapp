@@ -229,6 +229,16 @@ export interface CompleteTransactionRequest {
 export interface CompleteTransactionResponse {
 }
 
+export interface ClearSignaturesRequest {
+  authToken: Token | undefined;
+  multisigChainId: string;
+  multisigAddress: string;
+  sequence: number;
+}
+
+export interface ClearSignaturesResponse {
+}
+
 export interface GetChallengeRequest {
 }
 
@@ -325,74 +335,124 @@ export const Multisig = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Multisig {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultisig();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.createdAt = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.chainId = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.joined = reader.bool();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.name = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.pubkeyJson = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.usersAddresses.push(reader.string());
-          break;
+          continue;
         case 9:
+          if (tag !== 72) {
+            break;
+          }
+
           message.threshold = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Multisig {
     return {
-      createdAt: isSet(object.createdAt) ? String(object.createdAt) : "",
-      chainId: isSet(object.chainId) ? String(object.chainId) : "",
-      address: isSet(object.address) ? String(object.address) : "",
-      joined: isSet(object.joined) ? Boolean(object.joined) : false,
-      name: isSet(object.name) ? String(object.name) : "",
-      pubkeyJson: isSet(object.pubkeyJson) ? String(object.pubkeyJson) : "",
-      usersAddresses: Array.isArray(object?.usersAddresses) ? object.usersAddresses.map((e: any) => String(e)) : [],
-      threshold: isSet(object.threshold) ? Number(object.threshold) : 0,
+      createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : "",
+      chainId: isSet(object.chainId) ? globalThis.String(object.chainId) : "",
+      address: isSet(object.address) ? globalThis.String(object.address) : "",
+      joined: isSet(object.joined) ? globalThis.Boolean(object.joined) : false,
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      pubkeyJson: isSet(object.pubkeyJson) ? globalThis.String(object.pubkeyJson) : "",
+      usersAddresses: globalThis.Array.isArray(object?.usersAddresses)
+        ? object.usersAddresses.map((e: any) => globalThis.String(e))
+        : [],
+      threshold: isSet(object.threshold) ? globalThis.Number(object.threshold) : 0,
     };
   },
 
   toJSON(message: Multisig): unknown {
     const obj: any = {};
-    message.createdAt !== undefined && (obj.createdAt = message.createdAt);
-    message.chainId !== undefined && (obj.chainId = message.chainId);
-    message.address !== undefined && (obj.address = message.address);
-    message.joined !== undefined && (obj.joined = message.joined);
-    message.name !== undefined && (obj.name = message.name);
-    message.pubkeyJson !== undefined && (obj.pubkeyJson = message.pubkeyJson);
-    if (message.usersAddresses) {
-      obj.usersAddresses = message.usersAddresses.map((e) => e);
-    } else {
-      obj.usersAddresses = [];
+    if (message.createdAt !== "") {
+      obj.createdAt = message.createdAt;
     }
-    message.threshold !== undefined && (obj.threshold = Math.round(message.threshold));
+    if (message.chainId !== "") {
+      obj.chainId = message.chainId;
+    }
+    if (message.address !== "") {
+      obj.address = message.address;
+    }
+    if (message.joined === true) {
+      obj.joined = message.joined;
+    }
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.pubkeyJson !== "") {
+      obj.pubkeyJson = message.pubkeyJson;
+    }
+    if (message.usersAddresses?.length) {
+      obj.usersAddresses = message.usersAddresses;
+    }
+    if (message.threshold !== 0) {
+      obj.threshold = Math.round(message.threshold);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Multisig>, I>>(base?: I): Multisig {
+    return Multisig.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<Multisig>, I>>(object: I): Multisig {
     const message = createBaseMultisig();
     message.createdAt = object.createdAt ?? "";
@@ -408,7 +468,7 @@ export const Multisig = {
 };
 
 function createBaseSignature(): Signature {
-  return { value: "", userAddress: "", bodyBytes: new Uint8Array() };
+  return { value: "", userAddress: "", bodyBytes: new Uint8Array(0) };
 }
 
 export const Signature = {
@@ -426,51 +486,72 @@ export const Signature = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Signature {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSignature();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.value = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.userAddress = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.bodyBytes = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Signature {
     return {
-      value: isSet(object.value) ? String(object.value) : "",
-      userAddress: isSet(object.userAddress) ? String(object.userAddress) : "",
-      bodyBytes: isSet(object.bodyBytes) ? bytesFromBase64(object.bodyBytes) : new Uint8Array(),
+      value: isSet(object.value) ? globalThis.String(object.value) : "",
+      userAddress: isSet(object.userAddress) ? globalThis.String(object.userAddress) : "",
+      bodyBytes: isSet(object.bodyBytes) ? bytesFromBase64(object.bodyBytes) : new Uint8Array(0),
     };
   },
 
   toJSON(message: Signature): unknown {
     const obj: any = {};
-    message.value !== undefined && (obj.value = message.value);
-    message.userAddress !== undefined && (obj.userAddress = message.userAddress);
-    message.bodyBytes !== undefined &&
-      (obj.bodyBytes = base64FromBytes(message.bodyBytes !== undefined ? message.bodyBytes : new Uint8Array()));
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
+    if (message.userAddress !== "") {
+      obj.userAddress = message.userAddress;
+    }
+    if (message.bodyBytes.length !== 0) {
+      obj.bodyBytes = base64FromBytes(message.bodyBytes);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Signature>, I>>(base?: I): Signature {
+    return Signature.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<Signature>, I>>(object: I): Signature {
     const message = createBaseSignature();
     message.value = object.value ?? "";
     message.userAddress = object.userAddress ?? "";
-    message.bodyBytes = object.bodyBytes ?? new Uint8Array();
+    message.bodyBytes = object.bodyBytes ?? new Uint8Array(0);
     return message;
   },
 };
@@ -546,113 +627,201 @@ export const Transaction = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Transaction {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTransaction();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.createdAt = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.finalHash = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.multisigAddress = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.chainId = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.msgs.push(Any.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.feeJson = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 56) {
+            break;
+          }
+
           message.accountNumber = reader.uint32();
-          break;
+          continue;
         case 8:
+          if (tag !== 64) {
+            break;
+          }
+
           message.sequence = reader.uint32();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.creatorAddress = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 80) {
+            break;
+          }
+
           message.threshold = reader.uint32();
-          break;
+          continue;
         case 11:
+          if (tag !== 88) {
+            break;
+          }
+
           message.membersCount = reader.uint32();
-          break;
+          continue;
         case 12:
+          if (tag !== 98) {
+            break;
+          }
+
           message.memo = reader.string();
-          break;
+          continue;
         case 13:
+          if (tag !== 106) {
+            break;
+          }
+
           message.signatures.push(Signature.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 14:
+          if (tag !== 114) {
+            break;
+          }
+
           message.multisigPubkeyJson = reader.string();
-          break;
+          continue;
         case 15:
+          if (tag !== 120) {
+            break;
+          }
+
           message.id = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Transaction {
     return {
-      createdAt: isSet(object.createdAt) ? String(object.createdAt) : "",
-      finalHash: isSet(object.finalHash) ? String(object.finalHash) : "",
-      multisigAddress: isSet(object.multisigAddress) ? String(object.multisigAddress) : "",
-      chainId: isSet(object.chainId) ? String(object.chainId) : "",
-      msgs: Array.isArray(object?.msgs) ? object.msgs.map((e: any) => Any.fromJSON(e)) : [],
-      feeJson: isSet(object.feeJson) ? String(object.feeJson) : "",
-      accountNumber: isSet(object.accountNumber) ? Number(object.accountNumber) : 0,
-      sequence: isSet(object.sequence) ? Number(object.sequence) : 0,
-      creatorAddress: isSet(object.creatorAddress) ? String(object.creatorAddress) : "",
-      threshold: isSet(object.threshold) ? Number(object.threshold) : 0,
-      membersCount: isSet(object.membersCount) ? Number(object.membersCount) : 0,
-      memo: isSet(object.memo) ? String(object.memo) : "",
-      signatures: Array.isArray(object?.signatures) ? object.signatures.map((e: any) => Signature.fromJSON(e)) : [],
-      multisigPubkeyJson: isSet(object.multisigPubkeyJson) ? String(object.multisigPubkeyJson) : "",
-      id: isSet(object.id) ? Number(object.id) : 0,
+      createdAt: isSet(object.createdAt) ? globalThis.String(object.createdAt) : "",
+      finalHash: isSet(object.finalHash) ? globalThis.String(object.finalHash) : "",
+      multisigAddress: isSet(object.multisigAddress) ? globalThis.String(object.multisigAddress) : "",
+      chainId: isSet(object.chainId) ? globalThis.String(object.chainId) : "",
+      msgs: globalThis.Array.isArray(object?.msgs) ? object.msgs.map((e: any) => Any.fromJSON(e)) : [],
+      feeJson: isSet(object.feeJson) ? globalThis.String(object.feeJson) : "",
+      accountNumber: isSet(object.accountNumber) ? globalThis.Number(object.accountNumber) : 0,
+      sequence: isSet(object.sequence) ? globalThis.Number(object.sequence) : 0,
+      creatorAddress: isSet(object.creatorAddress) ? globalThis.String(object.creatorAddress) : "",
+      threshold: isSet(object.threshold) ? globalThis.Number(object.threshold) : 0,
+      membersCount: isSet(object.membersCount) ? globalThis.Number(object.membersCount) : 0,
+      memo: isSet(object.memo) ? globalThis.String(object.memo) : "",
+      signatures: globalThis.Array.isArray(object?.signatures)
+        ? object.signatures.map((e: any) => Signature.fromJSON(e))
+        : [],
+      multisigPubkeyJson: isSet(object.multisigPubkeyJson) ? globalThis.String(object.multisigPubkeyJson) : "",
+      id: isSet(object.id) ? globalThis.Number(object.id) : 0,
     };
   },
 
   toJSON(message: Transaction): unknown {
     const obj: any = {};
-    message.createdAt !== undefined && (obj.createdAt = message.createdAt);
-    message.finalHash !== undefined && (obj.finalHash = message.finalHash);
-    message.multisigAddress !== undefined && (obj.multisigAddress = message.multisigAddress);
-    message.chainId !== undefined && (obj.chainId = message.chainId);
-    if (message.msgs) {
-      obj.msgs = message.msgs.map((e) => e ? Any.toJSON(e) : undefined);
-    } else {
-      obj.msgs = [];
+    if (message.createdAt !== "") {
+      obj.createdAt = message.createdAt;
     }
-    message.feeJson !== undefined && (obj.feeJson = message.feeJson);
-    message.accountNumber !== undefined && (obj.accountNumber = Math.round(message.accountNumber));
-    message.sequence !== undefined && (obj.sequence = Math.round(message.sequence));
-    message.creatorAddress !== undefined && (obj.creatorAddress = message.creatorAddress);
-    message.threshold !== undefined && (obj.threshold = Math.round(message.threshold));
-    message.membersCount !== undefined && (obj.membersCount = Math.round(message.membersCount));
-    message.memo !== undefined && (obj.memo = message.memo);
-    if (message.signatures) {
-      obj.signatures = message.signatures.map((e) => e ? Signature.toJSON(e) : undefined);
-    } else {
-      obj.signatures = [];
+    if (message.finalHash !== "") {
+      obj.finalHash = message.finalHash;
     }
-    message.multisigPubkeyJson !== undefined && (obj.multisigPubkeyJson = message.multisigPubkeyJson);
-    message.id !== undefined && (obj.id = Math.round(message.id));
+    if (message.multisigAddress !== "") {
+      obj.multisigAddress = message.multisigAddress;
+    }
+    if (message.chainId !== "") {
+      obj.chainId = message.chainId;
+    }
+    if (message.msgs?.length) {
+      obj.msgs = message.msgs.map((e) => Any.toJSON(e));
+    }
+    if (message.feeJson !== "") {
+      obj.feeJson = message.feeJson;
+    }
+    if (message.accountNumber !== 0) {
+      obj.accountNumber = Math.round(message.accountNumber);
+    }
+    if (message.sequence !== 0) {
+      obj.sequence = Math.round(message.sequence);
+    }
+    if (message.creatorAddress !== "") {
+      obj.creatorAddress = message.creatorAddress;
+    }
+    if (message.threshold !== 0) {
+      obj.threshold = Math.round(message.threshold);
+    }
+    if (message.membersCount !== 0) {
+      obj.membersCount = Math.round(message.membersCount);
+    }
+    if (message.memo !== "") {
+      obj.memo = message.memo;
+    }
+    if (message.signatures?.length) {
+      obj.signatures = message.signatures.map((e) => Signature.toJSON(e));
+    }
+    if (message.multisigPubkeyJson !== "") {
+      obj.multisigPubkeyJson = message.multisigPubkeyJson;
+    }
+    if (message.id !== 0) {
+      obj.id = Math.round(message.id);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Transaction>, I>>(base?: I): Transaction {
+    return Transaction.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<Transaction>, I>>(object: I): Transaction {
     const message = createBaseTransaction();
     message.createdAt = object.createdAt ?? "";
@@ -696,50 +865,78 @@ export const Token = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Token {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseToken();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.nonce = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.expiration = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.userAddress = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.serverSignature = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Token {
     return {
-      nonce: isSet(object.nonce) ? String(object.nonce) : "",
-      expiration: isSet(object.expiration) ? String(object.expiration) : "",
-      userAddress: isSet(object.userAddress) ? String(object.userAddress) : "",
-      serverSignature: isSet(object.serverSignature) ? String(object.serverSignature) : "",
+      nonce: isSet(object.nonce) ? globalThis.String(object.nonce) : "",
+      expiration: isSet(object.expiration) ? globalThis.String(object.expiration) : "",
+      userAddress: isSet(object.userAddress) ? globalThis.String(object.userAddress) : "",
+      serverSignature: isSet(object.serverSignature) ? globalThis.String(object.serverSignature) : "",
     };
   },
 
   toJSON(message: Token): unknown {
     const obj: any = {};
-    message.nonce !== undefined && (obj.nonce = message.nonce);
-    message.expiration !== undefined && (obj.expiration = message.expiration);
-    message.userAddress !== undefined && (obj.userAddress = message.userAddress);
-    message.serverSignature !== undefined && (obj.serverSignature = message.serverSignature);
+    if (message.nonce !== "") {
+      obj.nonce = message.nonce;
+    }
+    if (message.expiration !== "") {
+      obj.expiration = message.expiration;
+    }
+    if (message.userAddress !== "") {
+      obj.userAddress = message.userAddress;
+    }
+    if (message.serverSignature !== "") {
+      obj.serverSignature = message.serverSignature;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Token>, I>>(base?: I): Token {
+    return Token.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<Token>, I>>(object: I): Token {
     const message = createBaseToken();
     message.nonce = object.nonce ?? "";
@@ -751,7 +948,7 @@ export const Token = {
 };
 
 function createBaseChallenge(): Challenge {
-  return { nonce: new Uint8Array(), expiration: "", serverSignature: new Uint8Array() };
+  return { nonce: new Uint8Array(0), expiration: "", serverSignature: new Uint8Array(0) };
 }
 
 export const Challenge = {
@@ -769,54 +966,72 @@ export const Challenge = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Challenge {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseChallenge();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.nonce = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.expiration = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.serverSignature = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Challenge {
     return {
-      nonce: isSet(object.nonce) ? bytesFromBase64(object.nonce) : new Uint8Array(),
-      expiration: isSet(object.expiration) ? String(object.expiration) : "",
-      serverSignature: isSet(object.serverSignature) ? bytesFromBase64(object.serverSignature) : new Uint8Array(),
+      nonce: isSet(object.nonce) ? bytesFromBase64(object.nonce) : new Uint8Array(0),
+      expiration: isSet(object.expiration) ? globalThis.String(object.expiration) : "",
+      serverSignature: isSet(object.serverSignature) ? bytesFromBase64(object.serverSignature) : new Uint8Array(0),
     };
   },
 
   toJSON(message: Challenge): unknown {
     const obj: any = {};
-    message.nonce !== undefined &&
-      (obj.nonce = base64FromBytes(message.nonce !== undefined ? message.nonce : new Uint8Array()));
-    message.expiration !== undefined && (obj.expiration = message.expiration);
-    message.serverSignature !== undefined &&
-      (obj.serverSignature = base64FromBytes(
-        message.serverSignature !== undefined ? message.serverSignature : new Uint8Array(),
-      ));
+    if (message.nonce.length !== 0) {
+      obj.nonce = base64FromBytes(message.nonce);
+    }
+    if (message.expiration !== "") {
+      obj.expiration = message.expiration;
+    }
+    if (message.serverSignature.length !== 0) {
+      obj.serverSignature = base64FromBytes(message.serverSignature);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Challenge>, I>>(base?: I): Challenge {
+    return Challenge.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<Challenge>, I>>(object: I): Challenge {
     const message = createBaseChallenge();
-    message.nonce = object.nonce ?? new Uint8Array();
+    message.nonce = object.nonce ?? new Uint8Array(0);
     message.expiration = object.expiration ?? "";
-    message.serverSignature = object.serverSignature ?? new Uint8Array();
+    message.serverSignature = object.serverSignature ?? new Uint8Array(0);
     return message;
   },
 };
@@ -846,31 +1061,52 @@ export const MultisigsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultisigsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultisigsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authToken = Token.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.limit = reader.uint32();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.startAfter = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.chainId = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.joinState = reader.int32() as any;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -878,24 +1114,36 @@ export const MultisigsRequest = {
   fromJSON(object: any): MultisigsRequest {
     return {
       authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined,
-      limit: isSet(object.limit) ? Number(object.limit) : 0,
-      startAfter: isSet(object.startAfter) ? String(object.startAfter) : "",
-      chainId: isSet(object.chainId) ? String(object.chainId) : "",
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+      startAfter: isSet(object.startAfter) ? globalThis.String(object.startAfter) : "",
+      chainId: isSet(object.chainId) ? globalThis.String(object.chainId) : "",
       joinState: isSet(object.joinState) ? joinStateFromJSON(object.joinState) : 0,
     };
   },
 
   toJSON(message: MultisigsRequest): unknown {
     const obj: any = {};
-    message.authToken !== undefined &&
-      (obj.authToken = message.authToken ? Token.toJSON(message.authToken) : undefined);
-    message.limit !== undefined && (obj.limit = Math.round(message.limit));
-    message.startAfter !== undefined && (obj.startAfter = message.startAfter);
-    message.chainId !== undefined && (obj.chainId = message.chainId);
-    message.joinState !== undefined && (obj.joinState = joinStateToJSON(message.joinState));
+    if (message.authToken !== undefined) {
+      obj.authToken = Token.toJSON(message.authToken);
+    }
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.startAfter !== "") {
+      obj.startAfter = message.startAfter;
+    }
+    if (message.chainId !== "") {
+      obj.chainId = message.chainId;
+    }
+    if (message.joinState !== 0) {
+      obj.joinState = joinStateToJSON(message.joinState);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<MultisigsRequest>, I>>(base?: I): MultisigsRequest {
+    return MultisigsRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<MultisigsRequest>, I>>(object: I): MultisigsRequest {
     const message = createBaseMultisigsRequest();
     message.authToken = (object.authToken !== undefined && object.authToken !== null)
@@ -922,39 +1170,47 @@ export const MultisigsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultisigsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultisigsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.multisigs.push(Multisig.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MultisigsResponse {
     return {
-      multisigs: Array.isArray(object?.multisigs) ? object.multisigs.map((e: any) => Multisig.fromJSON(e)) : [],
+      multisigs: globalThis.Array.isArray(object?.multisigs)
+        ? object.multisigs.map((e: any) => Multisig.fromJSON(e))
+        : [],
     };
   },
 
   toJSON(message: MultisigsResponse): unknown {
     const obj: any = {};
-    if (message.multisigs) {
-      obj.multisigs = message.multisigs.map((e) => e ? Multisig.toJSON(e) : undefined);
-    } else {
-      obj.multisigs = [];
+    if (message.multisigs?.length) {
+      obj.multisigs = message.multisigs.map((e) => Multisig.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<MultisigsResponse>, I>>(base?: I): MultisigsResponse {
+    return MultisigsResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<MultisigsResponse>, I>>(object: I): MultisigsResponse {
     const message = createBaseMultisigsResponse();
     message.multisigs = object.multisigs?.map((e) => Multisig.fromPartial(e)) || [];
@@ -981,25 +1237,38 @@ export const MultisigInfoRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultisigInfoRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultisigInfoRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authToken = Token.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.multisigAddress = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.chainId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1007,20 +1276,28 @@ export const MultisigInfoRequest = {
   fromJSON(object: any): MultisigInfoRequest {
     return {
       authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined,
-      multisigAddress: isSet(object.multisigAddress) ? String(object.multisigAddress) : "",
-      chainId: isSet(object.chainId) ? String(object.chainId) : "",
+      multisigAddress: isSet(object.multisigAddress) ? globalThis.String(object.multisigAddress) : "",
+      chainId: isSet(object.chainId) ? globalThis.String(object.chainId) : "",
     };
   },
 
   toJSON(message: MultisigInfoRequest): unknown {
     const obj: any = {};
-    message.authToken !== undefined &&
-      (obj.authToken = message.authToken ? Token.toJSON(message.authToken) : undefined);
-    message.multisigAddress !== undefined && (obj.multisigAddress = message.multisigAddress);
-    message.chainId !== undefined && (obj.chainId = message.chainId);
+    if (message.authToken !== undefined) {
+      obj.authToken = Token.toJSON(message.authToken);
+    }
+    if (message.multisigAddress !== "") {
+      obj.multisigAddress = message.multisigAddress;
+    }
+    if (message.chainId !== "") {
+      obj.chainId = message.chainId;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<MultisigInfoRequest>, I>>(base?: I): MultisigInfoRequest {
+    return MultisigInfoRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<MultisigInfoRequest>, I>>(object: I): MultisigInfoRequest {
     const message = createBaseMultisigInfoRequest();
     message.authToken = (object.authToken !== undefined && object.authToken !== null)
@@ -1045,19 +1322,24 @@ export const MultisigInfoResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultisigInfoResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultisigInfoResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.multisig = Multisig.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1068,10 +1350,15 @@ export const MultisigInfoResponse = {
 
   toJSON(message: MultisigInfoResponse): unknown {
     const obj: any = {};
-    message.multisig !== undefined && (obj.multisig = message.multisig ? Multisig.toJSON(message.multisig) : undefined);
+    if (message.multisig !== undefined) {
+      obj.multisig = Multisig.toJSON(message.multisig);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<MultisigInfoResponse>, I>>(base?: I): MultisigInfoResponse {
+    return MultisigInfoResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<MultisigInfoResponse>, I>>(object: I): MultisigInfoResponse {
     const message = createBaseMultisigInfoResponse();
     message.multisig = (object.multisig !== undefined && object.multisig !== null)
@@ -1120,37 +1407,66 @@ export const TransactionsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TransactionsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTransactionsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authToken = Token.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.limit = reader.uint32();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.startAfter = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.multisigAddress = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.chainId = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.types.push(reader.string());
-          break;
+          continue;
         case 7:
+          if (tag !== 56) {
+            break;
+          }
+
           message.executionState = reader.int32() as any;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1158,32 +1474,44 @@ export const TransactionsRequest = {
   fromJSON(object: any): TransactionsRequest {
     return {
       authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined,
-      limit: isSet(object.limit) ? Number(object.limit) : 0,
-      startAfter: isSet(object.startAfter) ? String(object.startAfter) : "",
-      multisigAddress: isSet(object.multisigAddress) ? String(object.multisigAddress) : "",
-      chainId: isSet(object.chainId) ? String(object.chainId) : "",
-      types: Array.isArray(object?.types) ? object.types.map((e: any) => String(e)) : [],
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+      startAfter: isSet(object.startAfter) ? globalThis.String(object.startAfter) : "",
+      multisigAddress: isSet(object.multisigAddress) ? globalThis.String(object.multisigAddress) : "",
+      chainId: isSet(object.chainId) ? globalThis.String(object.chainId) : "",
+      types: globalThis.Array.isArray(object?.types) ? object.types.map((e: any) => globalThis.String(e)) : [],
       executionState: isSet(object.executionState) ? executionStateFromJSON(object.executionState) : 0,
     };
   },
 
   toJSON(message: TransactionsRequest): unknown {
     const obj: any = {};
-    message.authToken !== undefined &&
-      (obj.authToken = message.authToken ? Token.toJSON(message.authToken) : undefined);
-    message.limit !== undefined && (obj.limit = Math.round(message.limit));
-    message.startAfter !== undefined && (obj.startAfter = message.startAfter);
-    message.multisigAddress !== undefined && (obj.multisigAddress = message.multisigAddress);
-    message.chainId !== undefined && (obj.chainId = message.chainId);
-    if (message.types) {
-      obj.types = message.types.map((e) => e);
-    } else {
-      obj.types = [];
+    if (message.authToken !== undefined) {
+      obj.authToken = Token.toJSON(message.authToken);
     }
-    message.executionState !== undefined && (obj.executionState = executionStateToJSON(message.executionState));
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.startAfter !== "") {
+      obj.startAfter = message.startAfter;
+    }
+    if (message.multisigAddress !== "") {
+      obj.multisigAddress = message.multisigAddress;
+    }
+    if (message.chainId !== "") {
+      obj.chainId = message.chainId;
+    }
+    if (message.types?.length) {
+      obj.types = message.types;
+    }
+    if (message.executionState !== 0) {
+      obj.executionState = executionStateToJSON(message.executionState);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<TransactionsRequest>, I>>(base?: I): TransactionsRequest {
+    return TransactionsRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<TransactionsRequest>, I>>(object: I): TransactionsRequest {
     const message = createBaseTransactionsRequest();
     message.authToken = (object.authToken !== undefined && object.authToken !== null)
@@ -1212,26 +1540,31 @@ export const TransactionsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TransactionsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTransactionsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.transactions.push(Transaction.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): TransactionsResponse {
     return {
-      transactions: Array.isArray(object?.transactions)
+      transactions: globalThis.Array.isArray(object?.transactions)
         ? object.transactions.map((e: any) => Transaction.fromJSON(e))
         : [],
     };
@@ -1239,14 +1572,15 @@ export const TransactionsResponse = {
 
   toJSON(message: TransactionsResponse): unknown {
     const obj: any = {};
-    if (message.transactions) {
-      obj.transactions = message.transactions.map((e) => e ? Transaction.toJSON(e) : undefined);
-    } else {
-      obj.transactions = [];
+    if (message.transactions?.length) {
+      obj.transactions = message.transactions.map((e) => Transaction.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<TransactionsResponse>, I>>(base?: I): TransactionsResponse {
+    return TransactionsResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<TransactionsResponse>, I>>(object: I): TransactionsResponse {
     const message = createBaseTransactionsResponse();
     message.transactions = object.transactions?.map((e) => Transaction.fromPartial(e)) || [];
@@ -1279,56 +1613,89 @@ export const CreateOrJoinMultisigRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CreateOrJoinMultisigRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCreateOrJoinMultisigRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.chainId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.multisigPubkeyJson = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.authToken = Token.decode(reader, reader.uint32());
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.name = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.bech32Prefix = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CreateOrJoinMultisigRequest {
     return {
-      chainId: isSet(object.chainId) ? String(object.chainId) : "",
-      multisigPubkeyJson: isSet(object.multisigPubkeyJson) ? String(object.multisigPubkeyJson) : "",
+      chainId: isSet(object.chainId) ? globalThis.String(object.chainId) : "",
+      multisigPubkeyJson: isSet(object.multisigPubkeyJson) ? globalThis.String(object.multisigPubkeyJson) : "",
       authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined,
-      name: isSet(object.name) ? String(object.name) : "",
-      bech32Prefix: isSet(object.bech32Prefix) ? String(object.bech32Prefix) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      bech32Prefix: isSet(object.bech32Prefix) ? globalThis.String(object.bech32Prefix) : "",
     };
   },
 
   toJSON(message: CreateOrJoinMultisigRequest): unknown {
     const obj: any = {};
-    message.chainId !== undefined && (obj.chainId = message.chainId);
-    message.multisigPubkeyJson !== undefined && (obj.multisigPubkeyJson = message.multisigPubkeyJson);
-    message.authToken !== undefined &&
-      (obj.authToken = message.authToken ? Token.toJSON(message.authToken) : undefined);
-    message.name !== undefined && (obj.name = message.name);
-    message.bech32Prefix !== undefined && (obj.bech32Prefix = message.bech32Prefix);
+    if (message.chainId !== "") {
+      obj.chainId = message.chainId;
+    }
+    if (message.multisigPubkeyJson !== "") {
+      obj.multisigPubkeyJson = message.multisigPubkeyJson;
+    }
+    if (message.authToken !== undefined) {
+      obj.authToken = Token.toJSON(message.authToken);
+    }
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.bech32Prefix !== "") {
+      obj.bech32Prefix = message.bech32Prefix;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<CreateOrJoinMultisigRequest>, I>>(base?: I): CreateOrJoinMultisigRequest {
+    return CreateOrJoinMultisigRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<CreateOrJoinMultisigRequest>, I>>(object: I): CreateOrJoinMultisigRequest {
     const message = createBaseCreateOrJoinMultisigRequest();
     message.chainId = object.chainId ?? "";
@@ -1361,45 +1728,67 @@ export const CreateOrJoinMultisigResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CreateOrJoinMultisigResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCreateOrJoinMultisigResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.created = reader.bool();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.joined = reader.bool();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.multisigAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CreateOrJoinMultisigResponse {
     return {
-      created: isSet(object.created) ? Boolean(object.created) : false,
-      joined: isSet(object.joined) ? Boolean(object.joined) : false,
-      multisigAddress: isSet(object.multisigAddress) ? String(object.multisigAddress) : "",
+      created: isSet(object.created) ? globalThis.Boolean(object.created) : false,
+      joined: isSet(object.joined) ? globalThis.Boolean(object.joined) : false,
+      multisigAddress: isSet(object.multisigAddress) ? globalThis.String(object.multisigAddress) : "",
     };
   },
 
   toJSON(message: CreateOrJoinMultisigResponse): unknown {
     const obj: any = {};
-    message.created !== undefined && (obj.created = message.created);
-    message.joined !== undefined && (obj.joined = message.joined);
-    message.multisigAddress !== undefined && (obj.multisigAddress = message.multisigAddress);
+    if (message.created === true) {
+      obj.created = message.created;
+    }
+    if (message.joined === true) {
+      obj.joined = message.joined;
+    }
+    if (message.multisigAddress !== "") {
+      obj.multisigAddress = message.multisigAddress;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<CreateOrJoinMultisigResponse>, I>>(base?: I): CreateOrJoinMultisigResponse {
+    return CreateOrJoinMultisigResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<CreateOrJoinMultisigResponse>, I>>(object: I): CreateOrJoinMultisigResponse {
     const message = createBaseCreateOrJoinMultisigResponse();
     message.created = object.created ?? false;
@@ -1428,46 +1817,67 @@ export const LeaveMultisigRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LeaveMultisigRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLeaveMultisigRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.multisigAddress = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.authToken = Token.decode(reader, reader.uint32());
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.chainId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): LeaveMultisigRequest {
     return {
-      multisigAddress: isSet(object.multisigAddress) ? String(object.multisigAddress) : "",
+      multisigAddress: isSet(object.multisigAddress) ? globalThis.String(object.multisigAddress) : "",
       authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined,
-      chainId: isSet(object.chainId) ? String(object.chainId) : "",
+      chainId: isSet(object.chainId) ? globalThis.String(object.chainId) : "",
     };
   },
 
   toJSON(message: LeaveMultisigRequest): unknown {
     const obj: any = {};
-    message.multisigAddress !== undefined && (obj.multisigAddress = message.multisigAddress);
-    message.authToken !== undefined &&
-      (obj.authToken = message.authToken ? Token.toJSON(message.authToken) : undefined);
-    message.chainId !== undefined && (obj.chainId = message.chainId);
+    if (message.multisigAddress !== "") {
+      obj.multisigAddress = message.multisigAddress;
+    }
+    if (message.authToken !== undefined) {
+      obj.authToken = Token.toJSON(message.authToken);
+    }
+    if (message.chainId !== "") {
+      obj.chainId = message.chainId;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<LeaveMultisigRequest>, I>>(base?: I): LeaveMultisigRequest {
+    return LeaveMultisigRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<LeaveMultisigRequest>, I>>(object: I): LeaveMultisigRequest {
     const message = createBaseLeaveMultisigRequest();
     message.multisigAddress = object.multisigAddress ?? "";
@@ -1492,33 +1902,43 @@ export const LeaveMultisigResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LeaveMultisigResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLeaveMultisigResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.left = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): LeaveMultisigResponse {
-    return { left: isSet(object.left) ? Boolean(object.left) : false };
+    return { left: isSet(object.left) ? globalThis.Boolean(object.left) : false };
   },
 
   toJSON(message: LeaveMultisigResponse): unknown {
     const obj: any = {};
-    message.left !== undefined && (obj.left = message.left);
+    if (message.left === true) {
+      obj.left = message.left;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<LeaveMultisigResponse>, I>>(base?: I): LeaveMultisigResponse {
+    return LeaveMultisigResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<LeaveMultisigResponse>, I>>(object: I): LeaveMultisigResponse {
     const message = createBaseLeaveMultisigResponse();
     message.left = object.left ?? false;
@@ -1565,37 +1985,66 @@ export const CreateTransactionRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CreateTransactionRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCreateTransactionRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authToken = Token.decode(reader, reader.uint32());
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.multisigAddress = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.accountNumber = reader.uint32();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.sequence = reader.uint32();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.msgs.push(Any.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.feeJson = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.chainId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1603,32 +2052,44 @@ export const CreateTransactionRequest = {
   fromJSON(object: any): CreateTransactionRequest {
     return {
       authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined,
-      multisigAddress: isSet(object.multisigAddress) ? String(object.multisigAddress) : "",
-      accountNumber: isSet(object.accountNumber) ? Number(object.accountNumber) : 0,
-      sequence: isSet(object.sequence) ? Number(object.sequence) : 0,
-      msgs: Array.isArray(object?.msgs) ? object.msgs.map((e: any) => Any.fromJSON(e)) : [],
-      feeJson: isSet(object.feeJson) ? String(object.feeJson) : "",
-      chainId: isSet(object.chainId) ? String(object.chainId) : "",
+      multisigAddress: isSet(object.multisigAddress) ? globalThis.String(object.multisigAddress) : "",
+      accountNumber: isSet(object.accountNumber) ? globalThis.Number(object.accountNumber) : 0,
+      sequence: isSet(object.sequence) ? globalThis.Number(object.sequence) : 0,
+      msgs: globalThis.Array.isArray(object?.msgs) ? object.msgs.map((e: any) => Any.fromJSON(e)) : [],
+      feeJson: isSet(object.feeJson) ? globalThis.String(object.feeJson) : "",
+      chainId: isSet(object.chainId) ? globalThis.String(object.chainId) : "",
     };
   },
 
   toJSON(message: CreateTransactionRequest): unknown {
     const obj: any = {};
-    message.authToken !== undefined &&
-      (obj.authToken = message.authToken ? Token.toJSON(message.authToken) : undefined);
-    message.multisigAddress !== undefined && (obj.multisigAddress = message.multisigAddress);
-    message.accountNumber !== undefined && (obj.accountNumber = Math.round(message.accountNumber));
-    message.sequence !== undefined && (obj.sequence = Math.round(message.sequence));
-    if (message.msgs) {
-      obj.msgs = message.msgs.map((e) => e ? Any.toJSON(e) : undefined);
-    } else {
-      obj.msgs = [];
+    if (message.authToken !== undefined) {
+      obj.authToken = Token.toJSON(message.authToken);
     }
-    message.feeJson !== undefined && (obj.feeJson = message.feeJson);
-    message.chainId !== undefined && (obj.chainId = message.chainId);
+    if (message.multisigAddress !== "") {
+      obj.multisigAddress = message.multisigAddress;
+    }
+    if (message.accountNumber !== 0) {
+      obj.accountNumber = Math.round(message.accountNumber);
+    }
+    if (message.sequence !== 0) {
+      obj.sequence = Math.round(message.sequence);
+    }
+    if (message.msgs?.length) {
+      obj.msgs = message.msgs.map((e) => Any.toJSON(e));
+    }
+    if (message.feeJson !== "") {
+      obj.feeJson = message.feeJson;
+    }
+    if (message.chainId !== "") {
+      obj.chainId = message.chainId;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<CreateTransactionRequest>, I>>(base?: I): CreateTransactionRequest {
+    return CreateTransactionRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<CreateTransactionRequest>, I>>(object: I): CreateTransactionRequest {
     const message = createBaseCreateTransactionRequest();
     message.authToken = (object.authToken !== undefined && object.authToken !== null)
@@ -1654,16 +2115,17 @@ export const CreateTransactionResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CreateTransactionResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCreateTransactionResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1677,6 +2139,9 @@ export const CreateTransactionResponse = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<CreateTransactionResponse>, I>>(base?: I): CreateTransactionResponse {
+    return CreateTransactionResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<CreateTransactionResponse>, I>>(_: I): CreateTransactionResponse {
     const message = createBaseCreateTransactionResponse();
     return message;
@@ -1684,7 +2149,7 @@ export const CreateTransactionResponse = {
 };
 
 function createBaseSignTransactionRequest(): SignTransactionRequest {
-  return { authToken: undefined, signature: "", transactionId: 0, bodyBytes: new Uint8Array() };
+  return { authToken: undefined, signature: "", transactionId: 0, bodyBytes: new Uint8Array(0) };
 }
 
 export const SignTransactionRequest = {
@@ -1705,28 +2170,45 @@ export const SignTransactionRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SignTransactionRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSignTransactionRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authToken = Token.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.signature = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.transactionId = reader.uint32();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.bodyBytes = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1734,23 +2216,32 @@ export const SignTransactionRequest = {
   fromJSON(object: any): SignTransactionRequest {
     return {
       authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined,
-      signature: isSet(object.signature) ? String(object.signature) : "",
-      transactionId: isSet(object.transactionId) ? Number(object.transactionId) : 0,
-      bodyBytes: isSet(object.bodyBytes) ? bytesFromBase64(object.bodyBytes) : new Uint8Array(),
+      signature: isSet(object.signature) ? globalThis.String(object.signature) : "",
+      transactionId: isSet(object.transactionId) ? globalThis.Number(object.transactionId) : 0,
+      bodyBytes: isSet(object.bodyBytes) ? bytesFromBase64(object.bodyBytes) : new Uint8Array(0),
     };
   },
 
   toJSON(message: SignTransactionRequest): unknown {
     const obj: any = {};
-    message.authToken !== undefined &&
-      (obj.authToken = message.authToken ? Token.toJSON(message.authToken) : undefined);
-    message.signature !== undefined && (obj.signature = message.signature);
-    message.transactionId !== undefined && (obj.transactionId = Math.round(message.transactionId));
-    message.bodyBytes !== undefined &&
-      (obj.bodyBytes = base64FromBytes(message.bodyBytes !== undefined ? message.bodyBytes : new Uint8Array()));
+    if (message.authToken !== undefined) {
+      obj.authToken = Token.toJSON(message.authToken);
+    }
+    if (message.signature !== "") {
+      obj.signature = message.signature;
+    }
+    if (message.transactionId !== 0) {
+      obj.transactionId = Math.round(message.transactionId);
+    }
+    if (message.bodyBytes.length !== 0) {
+      obj.bodyBytes = base64FromBytes(message.bodyBytes);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<SignTransactionRequest>, I>>(base?: I): SignTransactionRequest {
+    return SignTransactionRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<SignTransactionRequest>, I>>(object: I): SignTransactionRequest {
     const message = createBaseSignTransactionRequest();
     message.authToken = (object.authToken !== undefined && object.authToken !== null)
@@ -1758,7 +2249,7 @@ export const SignTransactionRequest = {
       : undefined;
     message.signature = object.signature ?? "";
     message.transactionId = object.transactionId ?? 0;
-    message.bodyBytes = object.bodyBytes ?? new Uint8Array();
+    message.bodyBytes = object.bodyBytes ?? new Uint8Array(0);
     return message;
   },
 };
@@ -1773,16 +2264,17 @@ export const SignTransactionResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SignTransactionResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSignTransactionResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1796,6 +2288,9 @@ export const SignTransactionResponse = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<SignTransactionResponse>, I>>(base?: I): SignTransactionResponse {
+    return SignTransactionResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<SignTransactionResponse>, I>>(_: I): SignTransactionResponse {
     const message = createBaseSignTransactionResponse();
     return message;
@@ -1821,25 +2316,38 @@ export const CompleteTransactionRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CompleteTransactionRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCompleteTransactionRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authToken = Token.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.transactionId = reader.uint32();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.finalHash = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1847,20 +2355,28 @@ export const CompleteTransactionRequest = {
   fromJSON(object: any): CompleteTransactionRequest {
     return {
       authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined,
-      transactionId: isSet(object.transactionId) ? Number(object.transactionId) : 0,
-      finalHash: isSet(object.finalHash) ? String(object.finalHash) : "",
+      transactionId: isSet(object.transactionId) ? globalThis.Number(object.transactionId) : 0,
+      finalHash: isSet(object.finalHash) ? globalThis.String(object.finalHash) : "",
     };
   },
 
   toJSON(message: CompleteTransactionRequest): unknown {
     const obj: any = {};
-    message.authToken !== undefined &&
-      (obj.authToken = message.authToken ? Token.toJSON(message.authToken) : undefined);
-    message.transactionId !== undefined && (obj.transactionId = Math.round(message.transactionId));
-    message.finalHash !== undefined && (obj.finalHash = message.finalHash);
+    if (message.authToken !== undefined) {
+      obj.authToken = Token.toJSON(message.authToken);
+    }
+    if (message.transactionId !== 0) {
+      obj.transactionId = Math.round(message.transactionId);
+    }
+    if (message.finalHash !== "") {
+      obj.finalHash = message.finalHash;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<CompleteTransactionRequest>, I>>(base?: I): CompleteTransactionRequest {
+    return CompleteTransactionRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<CompleteTransactionRequest>, I>>(object: I): CompleteTransactionRequest {
     const message = createBaseCompleteTransactionRequest();
     message.authToken = (object.authToken !== undefined && object.authToken !== null)
@@ -1882,16 +2398,17 @@ export const CompleteTransactionResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CompleteTransactionResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCompleteTransactionResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1905,8 +2422,160 @@ export const CompleteTransactionResponse = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<CompleteTransactionResponse>, I>>(base?: I): CompleteTransactionResponse {
+    return CompleteTransactionResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<CompleteTransactionResponse>, I>>(_: I): CompleteTransactionResponse {
     const message = createBaseCompleteTransactionResponse();
+    return message;
+  },
+};
+
+function createBaseClearSignaturesRequest(): ClearSignaturesRequest {
+  return { authToken: undefined, multisigChainId: "", multisigAddress: "", sequence: 0 };
+}
+
+export const ClearSignaturesRequest = {
+  encode(message: ClearSignaturesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.authToken !== undefined) {
+      Token.encode(message.authToken, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.multisigChainId !== "") {
+      writer.uint32(18).string(message.multisigChainId);
+    }
+    if (message.multisigAddress !== "") {
+      writer.uint32(26).string(message.multisigAddress);
+    }
+    if (message.sequence !== 0) {
+      writer.uint32(32).uint32(message.sequence);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ClearSignaturesRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseClearSignaturesRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.authToken = Token.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.multisigChainId = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.multisigAddress = reader.string();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.sequence = reader.uint32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ClearSignaturesRequest {
+    return {
+      authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined,
+      multisigChainId: isSet(object.multisigChainId) ? globalThis.String(object.multisigChainId) : "",
+      multisigAddress: isSet(object.multisigAddress) ? globalThis.String(object.multisigAddress) : "",
+      sequence: isSet(object.sequence) ? globalThis.Number(object.sequence) : 0,
+    };
+  },
+
+  toJSON(message: ClearSignaturesRequest): unknown {
+    const obj: any = {};
+    if (message.authToken !== undefined) {
+      obj.authToken = Token.toJSON(message.authToken);
+    }
+    if (message.multisigChainId !== "") {
+      obj.multisigChainId = message.multisigChainId;
+    }
+    if (message.multisigAddress !== "") {
+      obj.multisigAddress = message.multisigAddress;
+    }
+    if (message.sequence !== 0) {
+      obj.sequence = Math.round(message.sequence);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ClearSignaturesRequest>, I>>(base?: I): ClearSignaturesRequest {
+    return ClearSignaturesRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ClearSignaturesRequest>, I>>(object: I): ClearSignaturesRequest {
+    const message = createBaseClearSignaturesRequest();
+    message.authToken = (object.authToken !== undefined && object.authToken !== null)
+      ? Token.fromPartial(object.authToken)
+      : undefined;
+    message.multisigChainId = object.multisigChainId ?? "";
+    message.multisigAddress = object.multisigAddress ?? "";
+    message.sequence = object.sequence ?? 0;
+    return message;
+  },
+};
+
+function createBaseClearSignaturesResponse(): ClearSignaturesResponse {
+  return {};
+}
+
+export const ClearSignaturesResponse = {
+  encode(_: ClearSignaturesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ClearSignaturesResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseClearSignaturesResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): ClearSignaturesResponse {
+    return {};
+  },
+
+  toJSON(_: ClearSignaturesResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ClearSignaturesResponse>, I>>(base?: I): ClearSignaturesResponse {
+    return ClearSignaturesResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ClearSignaturesResponse>, I>>(_: I): ClearSignaturesResponse {
+    const message = createBaseClearSignaturesResponse();
     return message;
   },
 };
@@ -1921,16 +2590,17 @@ export const GetChallengeRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetChallengeRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetChallengeRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1944,6 +2614,9 @@ export const GetChallengeRequest = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GetChallengeRequest>, I>>(base?: I): GetChallengeRequest {
+    return GetChallengeRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<GetChallengeRequest>, I>>(_: I): GetChallengeRequest {
     const message = createBaseGetChallengeRequest();
     return message;
@@ -1963,19 +2636,24 @@ export const GetChallengeResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetChallengeResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetChallengeResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.challenge = Challenge.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1986,11 +2664,15 @@ export const GetChallengeResponse = {
 
   toJSON(message: GetChallengeResponse): unknown {
     const obj: any = {};
-    message.challenge !== undefined &&
-      (obj.challenge = message.challenge ? Challenge.toJSON(message.challenge) : undefined);
+    if (message.challenge !== undefined) {
+      obj.challenge = Challenge.toJSON(message.challenge);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GetChallengeResponse>, I>>(base?: I): GetChallengeResponse {
+    return GetChallengeResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<GetChallengeResponse>, I>>(object: I): GetChallengeResponse {
     const message = createBaseGetChallengeResponse();
     message.challenge = (object.challenge !== undefined && object.challenge !== null)
@@ -2022,51 +2704,78 @@ export const TokenRequestInfo = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TokenRequestInfo {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTokenRequestInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.kind = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.challenge = Challenge.decode(reader, reader.uint32());
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.userBech32Prefix = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.userPubkeyJson = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): TokenRequestInfo {
     return {
-      kind: isSet(object.kind) ? String(object.kind) : "",
+      kind: isSet(object.kind) ? globalThis.String(object.kind) : "",
       challenge: isSet(object.challenge) ? Challenge.fromJSON(object.challenge) : undefined,
-      userBech32Prefix: isSet(object.userBech32Prefix) ? String(object.userBech32Prefix) : "",
-      userPubkeyJson: isSet(object.userPubkeyJson) ? String(object.userPubkeyJson) : "",
+      userBech32Prefix: isSet(object.userBech32Prefix) ? globalThis.String(object.userBech32Prefix) : "",
+      userPubkeyJson: isSet(object.userPubkeyJson) ? globalThis.String(object.userPubkeyJson) : "",
     };
   },
 
   toJSON(message: TokenRequestInfo): unknown {
     const obj: any = {};
-    message.kind !== undefined && (obj.kind = message.kind);
-    message.challenge !== undefined &&
-      (obj.challenge = message.challenge ? Challenge.toJSON(message.challenge) : undefined);
-    message.userBech32Prefix !== undefined && (obj.userBech32Prefix = message.userBech32Prefix);
-    message.userPubkeyJson !== undefined && (obj.userPubkeyJson = message.userPubkeyJson);
+    if (message.kind !== "") {
+      obj.kind = message.kind;
+    }
+    if (message.challenge !== undefined) {
+      obj.challenge = Challenge.toJSON(message.challenge);
+    }
+    if (message.userBech32Prefix !== "") {
+      obj.userBech32Prefix = message.userBech32Prefix;
+    }
+    if (message.userPubkeyJson !== "") {
+      obj.userPubkeyJson = message.userPubkeyJson;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<TokenRequestInfo>, I>>(base?: I): TokenRequestInfo {
+    return TokenRequestInfo.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<TokenRequestInfo>, I>>(object: I): TokenRequestInfo {
     const message = createBaseTokenRequestInfo();
     message.kind = object.kind ?? "";
@@ -2095,40 +2804,56 @@ export const GetTokenRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetTokenRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetTokenRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.infoJson = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.userSignature = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GetTokenRequest {
     return {
-      infoJson: isSet(object.infoJson) ? String(object.infoJson) : "",
-      userSignature: isSet(object.userSignature) ? String(object.userSignature) : "",
+      infoJson: isSet(object.infoJson) ? globalThis.String(object.infoJson) : "",
+      userSignature: isSet(object.userSignature) ? globalThis.String(object.userSignature) : "",
     };
   },
 
   toJSON(message: GetTokenRequest): unknown {
     const obj: any = {};
-    message.infoJson !== undefined && (obj.infoJson = message.infoJson);
-    message.userSignature !== undefined && (obj.userSignature = message.userSignature);
+    if (message.infoJson !== "") {
+      obj.infoJson = message.infoJson;
+    }
+    if (message.userSignature !== "") {
+      obj.userSignature = message.userSignature;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GetTokenRequest>, I>>(base?: I): GetTokenRequest {
+    return GetTokenRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<GetTokenRequest>, I>>(object: I): GetTokenRequest {
     const message = createBaseGetTokenRequest();
     message.infoJson = object.infoJson ?? "";
@@ -2150,19 +2875,24 @@ export const GetTokenResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetTokenResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetTokenResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authToken = Token.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2173,11 +2903,15 @@ export const GetTokenResponse = {
 
   toJSON(message: GetTokenResponse): unknown {
     const obj: any = {};
-    message.authToken !== undefined &&
-      (obj.authToken = message.authToken ? Token.toJSON(message.authToken) : undefined);
+    if (message.authToken !== undefined) {
+      obj.authToken = Token.toJSON(message.authToken);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GetTokenResponse>, I>>(base?: I): GetTokenResponse {
+    return GetTokenResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<GetTokenResponse>, I>>(object: I): GetTokenResponse {
     const message = createBaseGetTokenResponse();
     message.authToken = (object.authToken !== undefined && object.authToken !== null)
@@ -2206,25 +2940,38 @@ export const TransactionsCountsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TransactionsCountsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTransactionsCountsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authToken = Token.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.multisigAddress = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.chainId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2232,20 +2979,28 @@ export const TransactionsCountsRequest = {
   fromJSON(object: any): TransactionsCountsRequest {
     return {
       authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined,
-      multisigAddress: isSet(object.multisigAddress) ? String(object.multisigAddress) : "",
-      chainId: isSet(object.chainId) ? String(object.chainId) : "",
+      multisigAddress: isSet(object.multisigAddress) ? globalThis.String(object.multisigAddress) : "",
+      chainId: isSet(object.chainId) ? globalThis.String(object.chainId) : "",
     };
   },
 
   toJSON(message: TransactionsCountsRequest): unknown {
     const obj: any = {};
-    message.authToken !== undefined &&
-      (obj.authToken = message.authToken ? Token.toJSON(message.authToken) : undefined);
-    message.multisigAddress !== undefined && (obj.multisigAddress = message.multisigAddress);
-    message.chainId !== undefined && (obj.chainId = message.chainId);
+    if (message.authToken !== undefined) {
+      obj.authToken = Token.toJSON(message.authToken);
+    }
+    if (message.multisigAddress !== "") {
+      obj.multisigAddress = message.multisigAddress;
+    }
+    if (message.chainId !== "") {
+      obj.chainId = message.chainId;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<TransactionsCountsRequest>, I>>(base?: I): TransactionsCountsRequest {
+    return TransactionsCountsRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<TransactionsCountsRequest>, I>>(object: I): TransactionsCountsRequest {
     const message = createBaseTransactionsCountsRequest();
     message.authToken = (object.authToken !== undefined && object.authToken !== null)
@@ -2279,50 +3034,78 @@ export const TransactionsCount = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TransactionsCount {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTransactionsCount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.total = reader.uint32();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.pending = reader.uint32();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.executed = reader.uint32();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): TransactionsCount {
     return {
-      total: isSet(object.total) ? Number(object.total) : 0,
-      pending: isSet(object.pending) ? Number(object.pending) : 0,
-      executed: isSet(object.executed) ? Number(object.executed) : 0,
-      type: isSet(object.type) ? String(object.type) : "",
+      total: isSet(object.total) ? globalThis.Number(object.total) : 0,
+      pending: isSet(object.pending) ? globalThis.Number(object.pending) : 0,
+      executed: isSet(object.executed) ? globalThis.Number(object.executed) : 0,
+      type: isSet(object.type) ? globalThis.String(object.type) : "",
     };
   },
 
   toJSON(message: TransactionsCount): unknown {
     const obj: any = {};
-    message.total !== undefined && (obj.total = Math.round(message.total));
-    message.pending !== undefined && (obj.pending = Math.round(message.pending));
-    message.executed !== undefined && (obj.executed = Math.round(message.executed));
-    message.type !== undefined && (obj.type = message.type);
+    if (message.total !== 0) {
+      obj.total = Math.round(message.total);
+    }
+    if (message.pending !== 0) {
+      obj.pending = Math.round(message.pending);
+    }
+    if (message.executed !== 0) {
+      obj.executed = Math.round(message.executed);
+    }
+    if (message.type !== "") {
+      obj.type = message.type;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<TransactionsCount>, I>>(base?: I): TransactionsCount {
+    return TransactionsCount.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<TransactionsCount>, I>>(object: I): TransactionsCount {
     const message = createBaseTransactionsCount();
     message.total = object.total ?? 0;
@@ -2349,22 +3132,31 @@ export const TransactionsCountsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TransactionsCountsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTransactionsCountsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.all = TransactionsCount.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.byType.push(TransactionsCount.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2372,21 +3164,26 @@ export const TransactionsCountsResponse = {
   fromJSON(object: any): TransactionsCountsResponse {
     return {
       all: isSet(object.all) ? TransactionsCount.fromJSON(object.all) : undefined,
-      byType: Array.isArray(object?.byType) ? object.byType.map((e: any) => TransactionsCount.fromJSON(e)) : [],
+      byType: globalThis.Array.isArray(object?.byType)
+        ? object.byType.map((e: any) => TransactionsCount.fromJSON(e))
+        : [],
     };
   },
 
   toJSON(message: TransactionsCountsResponse): unknown {
     const obj: any = {};
-    message.all !== undefined && (obj.all = message.all ? TransactionsCount.toJSON(message.all) : undefined);
-    if (message.byType) {
-      obj.byType = message.byType.map((e) => e ? TransactionsCount.toJSON(e) : undefined);
-    } else {
-      obj.byType = [];
+    if (message.all !== undefined) {
+      obj.all = TransactionsCount.toJSON(message.all);
+    }
+    if (message.byType?.length) {
+      obj.byType = message.byType.map((e) => TransactionsCount.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<TransactionsCountsResponse>, I>>(base?: I): TransactionsCountsResponse {
+    return TransactionsCountsResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<TransactionsCountsResponse>, I>>(object: I): TransactionsCountsResponse {
     const message = createBaseTransactionsCountsResponse();
     message.all = (object.all !== undefined && object.all !== null)
@@ -2410,19 +3207,24 @@ export const ValidateTokenRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ValidateTokenRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseValidateTokenRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authToken = Token.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2433,11 +3235,15 @@ export const ValidateTokenRequest = {
 
   toJSON(message: ValidateTokenRequest): unknown {
     const obj: any = {};
-    message.authToken !== undefined &&
-      (obj.authToken = message.authToken ? Token.toJSON(message.authToken) : undefined);
+    if (message.authToken !== undefined) {
+      obj.authToken = Token.toJSON(message.authToken);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ValidateTokenRequest>, I>>(base?: I): ValidateTokenRequest {
+    return ValidateTokenRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ValidateTokenRequest>, I>>(object: I): ValidateTokenRequest {
     const message = createBaseValidateTokenRequest();
     message.authToken = (object.authToken !== undefined && object.authToken !== null)
@@ -2457,16 +3263,17 @@ export const ValidateTokenResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ValidateTokenResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseValidateTokenResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2480,6 +3287,9 @@ export const ValidateTokenResponse = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ValidateTokenResponse>, I>>(base?: I): ValidateTokenResponse {
+    return ValidateTokenResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ValidateTokenResponse>, I>>(_: I): ValidateTokenResponse {
     const message = createBaseValidateTokenResponse();
     return message;
@@ -2513,6 +3323,10 @@ export interface MultisigService {
     request: DeepPartial<CompleteTransactionRequest>,
     metadata?: grpc.Metadata,
   ): Promise<CompleteTransactionResponse>;
+  ClearSignatures(
+    request: DeepPartial<ClearSignaturesRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<ClearSignaturesResponse>;
   /** Auth */
   GetChallenge(request: DeepPartial<GetChallengeRequest>, metadata?: grpc.Metadata): Promise<GetChallengeResponse>;
   GetToken(request: DeepPartial<GetTokenRequest>, metadata?: grpc.Metadata): Promise<GetTokenResponse>;
@@ -2533,6 +3347,7 @@ export class MultisigServiceClientImpl implements MultisigService {
     this.CreateTransaction = this.CreateTransaction.bind(this);
     this.SignTransaction = this.SignTransaction.bind(this);
     this.CompleteTransaction = this.CompleteTransaction.bind(this);
+    this.ClearSignatures = this.ClearSignatures.bind(this);
     this.GetChallenge = this.GetChallenge.bind(this);
     this.GetToken = this.GetToken.bind(this);
     this.ValidateToken = this.ValidateToken.bind(this);
@@ -2605,6 +3420,13 @@ export class MultisigServiceClientImpl implements MultisigService {
     );
   }
 
+  ClearSignatures(
+    request: DeepPartial<ClearSignaturesRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<ClearSignaturesResponse> {
+    return this.rpc.unary(MultisigServiceClearSignaturesDesc, ClearSignaturesRequest.fromPartial(request), metadata);
+  }
+
   GetChallenge(request: DeepPartial<GetChallengeRequest>, metadata?: grpc.Metadata): Promise<GetChallengeResponse> {
     return this.rpc.unary(MultisigServiceGetChallengeDesc, GetChallengeRequest.fromPartial(request), metadata);
   }
@@ -2632,10 +3454,11 @@ export const MultisigServiceMultisigsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = MultisigsResponse.decode(data);
       return {
-        ...MultisigsResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -2654,10 +3477,11 @@ export const MultisigServiceMultisigInfoDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = MultisigInfoResponse.decode(data);
       return {
-        ...MultisigInfoResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -2676,10 +3500,11 @@ export const MultisigServiceTransactionsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = TransactionsResponse.decode(data);
       return {
-        ...TransactionsResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -2698,10 +3523,11 @@ export const MultisigServiceTransactionsCountsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = TransactionsCountsResponse.decode(data);
       return {
-        ...TransactionsCountsResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -2720,10 +3546,11 @@ export const MultisigServiceCreateOrJoinMultisigDesc: UnaryMethodDefinitionish =
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = CreateOrJoinMultisigResponse.decode(data);
       return {
-        ...CreateOrJoinMultisigResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -2742,10 +3569,11 @@ export const MultisigServiceLeaveMultisigDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = LeaveMultisigResponse.decode(data);
       return {
-        ...LeaveMultisigResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -2764,10 +3592,11 @@ export const MultisigServiceCreateTransactionDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = CreateTransactionResponse.decode(data);
       return {
-        ...CreateTransactionResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -2786,10 +3615,11 @@ export const MultisigServiceSignTransactionDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = SignTransactionResponse.decode(data);
       return {
-        ...SignTransactionResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -2808,10 +3638,34 @@ export const MultisigServiceCompleteTransactionDesc: UnaryMethodDefinitionish = 
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = CompleteTransactionResponse.decode(data);
       return {
-        ...CompleteTransactionResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MultisigServiceClearSignaturesDesc: UnaryMethodDefinitionish = {
+  methodName: "ClearSignatures",
+  service: MultisigServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return ClearSignaturesRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = ClearSignaturesResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
         },
       };
     },
@@ -2830,10 +3684,11 @@ export const MultisigServiceGetChallengeDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = GetChallengeResponse.decode(data);
       return {
-        ...GetChallengeResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -2852,10 +3707,11 @@ export const MultisigServiceGetTokenDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = GetTokenResponse.decode(data);
       return {
-        ...GetTokenResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -2874,10 +3730,11 @@ export const MultisigServiceValidateTokenDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ValidateTokenResponse.decode(data);
       return {
-        ...ValidateTokenResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -2931,17 +3788,17 @@ export class GrpcWebImpl {
     const request = { ..._request, ...methodDesc.requestType };
     const maybeCombinedMetadata = metadata && this.options.metadata
       ? new BrowserHeaders({ ...this.options?.metadata.headersMap, ...metadata?.headersMap })
-      : metadata || this.options.metadata;
+      : metadata ?? this.options.metadata;
     return new Promise((resolve, reject) => {
       grpc.unary(methodDesc, {
         request,
         host: this.host,
-        metadata: maybeCombinedMetadata,
-        transport: this.options.transport,
-        debug: this.options.debug,
+        metadata: maybeCombinedMetadata ?? {},
+        ...(this.options.transport !== undefined ? { transport: this.options.transport } : {}),
+        debug: this.options.debug ?? false,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
-            resolve(response.message);
+            resolve(response.message!.toObject());
           } else {
             const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
@@ -2951,25 +3808,6 @@ export class GrpcWebImpl {
     });
   }
 }
-
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") {
-    return globalThis;
-  }
-  if (typeof self !== "undefined") {
-    return self;
-  }
-  if (typeof window !== "undefined") {
-    return window;
-  }
-  if (typeof global !== "undefined") {
-    return global;
-  }
-  throw "Unable to locate global object";
-})();
 
 function bytesFromBase64(b64: string): Uint8Array {
   if (globalThis.Buffer) {
@@ -2990,7 +3828,7 @@ function base64FromBytes(arr: Uint8Array): string {
   } else {
     const bin: string[] = [];
     arr.forEach((byte) => {
-      bin.push(String.fromCharCode(byte));
+      bin.push(globalThis.String.fromCharCode(byte));
     });
     return globalThis.btoa(bin.join(""));
   }
@@ -2999,7 +3837,8 @@ function base64FromBytes(arr: Uint8Array): string {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -3011,7 +3850,7 @@ function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-export class GrpcWebError extends Error {
+export class GrpcWebError extends globalThis.Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }

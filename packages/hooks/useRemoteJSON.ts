@@ -12,6 +12,6 @@ export const useRemoteJSON = (uri: string | undefined) => {
       const reply = await fetch(ipfsURLToHTTPURL(uri));
       return (await reply.json()) as unknown;
     },
-    { staleTime: Infinity, enabled: !!uri }
+    { staleTime: Infinity, enabled: !!uri },
   );
 };

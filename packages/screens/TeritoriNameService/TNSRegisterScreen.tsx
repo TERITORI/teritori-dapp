@@ -23,7 +23,7 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
   const tokenId = name + network?.nameServiceTLD || "";
   const { nameAvailable, nameError, loading } = useNSNameAvailability(
     networkId,
-    tokenId
+    tokenId,
   );
 
   return (

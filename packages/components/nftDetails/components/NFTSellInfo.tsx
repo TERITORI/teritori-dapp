@@ -39,13 +39,13 @@ export const NFTSellInfo: React.FC<{
   try {
     const decPrice = Decimal.fromUserInput(price, currency.decimals);
     const foo = (decPrice.toFloatApproximation() * (1 - feeGain)).toFixed(
-      currency.decimals
+      currency.decimals,
     );
     const willReceiveDec = Decimal.fromUserInput(foo, currency.decimals);
     willReceive = prettyPrice(
       networkId,
       willReceiveDec.atomics,
-      nftInfo.mintDenom
+      nftInfo.mintDenom,
     );
   } catch {}
 
@@ -80,13 +80,13 @@ const useVaultConfig = (networkId: string | undefined) => {
       const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
       const vaultClient = new TeritoriNftVaultQueryClient(
         cosmwasmClient,
-        network.vaultContractAddress
+        network.vaultContractAddress,
       );
       return await vaultClient.config();
     },
     {
       staleTime: Infinity,
-    }
+    },
   );
   return data;
 };

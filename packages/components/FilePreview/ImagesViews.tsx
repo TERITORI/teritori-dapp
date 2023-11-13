@@ -55,7 +55,7 @@ export const ImagesViews: React.FC<ImagePreviewProps> = ({
             };
           }
           return file;
-        })
+        }),
       );
       setFormattedFiles(formattedData);
     };
@@ -75,7 +75,7 @@ export const ImagesViews: React.FC<ImagePreviewProps> = ({
         files={formattedFiles.map((file) =>
           file.fileType === "image"
             ? ipfsURLToHTTPURL(file.url)
-            : file.base64Image || ""
+            : file.base64Image || "",
         )}
         activeIndex={activeIndex}
         isVisible={isFullView}

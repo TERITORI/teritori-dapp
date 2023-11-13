@@ -39,49 +39,67 @@ export const PricesRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PricesRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePricesRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.time = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.vsIds.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): PricesRequest {
     return {
-      id: isSet(object.id) ? String(object.id) : "",
-      time: isSet(object.time) ? String(object.time) : "",
-      vsIds: Array.isArray(object?.vsIds) ? object.vsIds.map((e: any) => String(e)) : [],
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      time: isSet(object.time) ? globalThis.String(object.time) : "",
+      vsIds: globalThis.Array.isArray(object?.vsIds) ? object.vsIds.map((e: any) => globalThis.String(e)) : [],
     };
   },
 
   toJSON(message: PricesRequest): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.time !== undefined && (obj.time = message.time);
-    if (message.vsIds) {
-      obj.vsIds = message.vsIds.map((e) => e);
-    } else {
-      obj.vsIds = [];
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.time !== "") {
+      obj.time = message.time;
+    }
+    if (message.vsIds?.length) {
+      obj.vsIds = message.vsIds;
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<PricesRequest>, I>>(base?: I): PricesRequest {
+    return PricesRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<PricesRequest>, I>>(object: I): PricesRequest {
     const message = createBasePricesRequest();
     message.id = object.id ?? "";
@@ -107,37 +125,56 @@ export const Price = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Price {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePrice();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 17) {
+            break;
+          }
+
           message.value = reader.double();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Price {
-    return { id: isSet(object.id) ? String(object.id) : "", value: isSet(object.value) ? Number(object.value) : 0 };
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      value: isSet(object.value) ? globalThis.Number(object.value) : 0,
+    };
   },
 
   toJSON(message: Price): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.value !== undefined && (obj.value = message.value);
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.value !== 0) {
+      obj.value = message.value;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Price>, I>>(base?: I): Price {
+    return Price.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<Price>, I>>(object: I): Price {
     const message = createBasePrice();
     message.id = object.id ?? "";
@@ -159,37 +196,43 @@ export const PricesResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PricesResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePricesResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.prices.push(Price.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): PricesResponse {
-    return { prices: Array.isArray(object?.prices) ? object.prices.map((e: any) => Price.fromJSON(e)) : [] };
+    return { prices: globalThis.Array.isArray(object?.prices) ? object.prices.map((e: any) => Price.fromJSON(e)) : [] };
   },
 
   toJSON(message: PricesResponse): unknown {
     const obj: any = {};
-    if (message.prices) {
-      obj.prices = message.prices.map((e) => e ? Price.toJSON(e) : undefined);
-    } else {
-      obj.prices = [];
+    if (message.prices?.length) {
+      obj.prices = message.prices.map((e) => Price.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<PricesResponse>, I>>(base?: I): PricesResponse {
+    return PricesResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<PricesResponse>, I>>(object: I): PricesResponse {
     const message = createBasePricesResponse();
     message.prices = object.prices?.map((e) => Price.fromPartial(e)) || [];
@@ -228,10 +271,11 @@ export const PricesServicePricesDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = PricesResponse.decode(data);
       return {
-        ...PricesResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -285,17 +329,17 @@ export class GrpcWebImpl {
     const request = { ..._request, ...methodDesc.requestType };
     const maybeCombinedMetadata = metadata && this.options.metadata
       ? new BrowserHeaders({ ...this.options?.metadata.headersMap, ...metadata?.headersMap })
-      : metadata || this.options.metadata;
+      : metadata ?? this.options.metadata;
     return new Promise((resolve, reject) => {
       grpc.unary(methodDesc, {
         request,
         host: this.host,
-        metadata: maybeCombinedMetadata,
-        transport: this.options.transport,
-        debug: this.options.debug,
+        metadata: maybeCombinedMetadata ?? {},
+        ...(this.options.transport !== undefined ? { transport: this.options.transport } : {}),
+        debug: this.options.debug ?? false,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
-            resolve(response.message);
+            resolve(response.message!.toObject());
           } else {
             const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
@@ -309,7 +353,8 @@ export class GrpcWebImpl {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -321,7 +366,7 @@ function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-export class GrpcWebError extends Error {
+export class GrpcWebError extends globalThis.Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }

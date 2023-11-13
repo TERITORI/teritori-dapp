@@ -58,8 +58,8 @@ export const useDAOProposals = (daoId: string | undefined) => {
       const gnoProposals: GnoDAOProposal[] = extractGnoJSONString(
         await provider.evaluateExpression(
           daoAddress,
-          `getProposalsJSON(0, 0, "", false)`
-        )
+          `getProposalsJSON(0, 0, "", false)`,
+        ),
       );
 
       const proposals: AppProposalResponse[] = [];
@@ -110,7 +110,7 @@ export const useDAOProposals = (daoId: string | undefined) => {
       }
       return proposals;
     },
-    { staleTime: Infinity, enabled: !!daoId }
+    { staleTime: Infinity, enabled: !!daoId },
   );
   if (network?.kind === NetworkKind.Gno) {
     return {
@@ -139,7 +139,7 @@ const useCosmWasmDAOProposals = (daoId: string | undefined) => {
       const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
       const daoProposalClient = new DaoProposalSingleQueryClient(
         cosmwasmClient,
-        proposalModuleAddress
+        proposalModuleAddress,
       );
 
       const allProposals: AppProposalResponse[] = [];
@@ -158,14 +158,14 @@ const useCosmWasmDAOProposals = (daoId: string | undefined) => {
               ...p.proposal,
               actions: [] as string[],
             },
-          }))
+          })),
         );
         startAfter += listProposals.proposals.length;
       }
 
       return allProposals;
     },
-    { staleTime: Infinity, enabled: !!(networkId && proposalModuleAddress) }
+    { staleTime: Infinity, enabled: !!(networkId && proposalModuleAddress) },
   );
   return { daoProposals: data, ...other };
 };
@@ -174,6 +174,6 @@ export const useInvalidateDAOProposals = (daoId: string | undefined) => {
   const queryClient = useQueryClient();
   return useCallback(
     () => queryClient.invalidateQueries(daoProposalsQueryKey(daoId)),
-    [queryClient, daoId]
+    [queryClient, daoId],
   );
 };

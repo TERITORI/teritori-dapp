@@ -68,10 +68,10 @@ const SelectNewNft: React.FC<{
           </BrandText>
         </View>
       ),
-      []
+      [],
     );
 
-    const keyExtractor = useCallback(({ name }) => name, []);
+    const keyExtractor = useCallback(({ name }: NFT) => name, []);
 
     const getItemLayout = useCallback(
       (_: any, index: number) => ({
@@ -79,7 +79,7 @@ const SelectNewNft: React.FC<{
         offset: (130 + 12) * index,
         index,
       }),
-      []
+      [],
     );
 
     return (
@@ -149,7 +149,7 @@ const SelectNewNft: React.FC<{
         />
       </View>
     );
-  }
+  },
 );
 
 export default SelectNewNft;

@@ -27,7 +27,7 @@ export const useNotifications = (req: Partial<NotificationsRequest>) => {
       const { notifications } = await notificationClient.Notifications(req);
       return notifications;
     },
-    { staleTime: Infinity, refetchInterval: 10000 }
+    { staleTime: Infinity, refetchInterval: 10000 },
   );
   return data;
 };

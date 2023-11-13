@@ -4,8 +4,8 @@ import { Image, ScrollView, StyleSheet, View } from "react-native";
 import { ReviewCollapsable } from "./ReviewCollapsable";
 import { ReviewCollapsableItem } from "./ReviewCollapsableItem";
 import { BrandText } from "../../../components/BrandText";
-import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { neutral00, primaryColor } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
@@ -46,7 +46,7 @@ export const ReviewInformationSection: React.FC<
         <BrandText style={fontSemibold14}>{balance}</BrandText>
       </View>
     ),
-    []
+    [],
   );
 
   const AddressWeightValue = useCallback(
@@ -59,7 +59,7 @@ export const ReviewInformationSection: React.FC<
         <BrandText style={fontSemibold14}>{weight}</BrandText>
       </View>
     ),
-    []
+    [],
   );
 
   let associateName = organizationData?.associatedTeritoriNameService

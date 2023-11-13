@@ -5,7 +5,7 @@ import TextTicker from "react-native-text-ticker";
 import { useTheme } from "../../hooks/useTheme";
 
 export const BrandTextBase: React.FC<TextProps & { isTicker?: boolean }> = (
-  props
+  props,
 ) => {
   const { style, isTicker, ...otherProps } = props;
   const theme = useTheme();

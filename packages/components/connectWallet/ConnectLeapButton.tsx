@@ -31,13 +31,13 @@ export const ConnectLeapButton: React.FC<{
       const leap = window.leap;
       if (!leap) {
         Linking.openURL(
-          "https://chrome.google.com/webstore/detail/leap-cosmos-wallet/fcfcfllfndlomdhbehjjcoimbgofdncg"
+          "https://chrome.google.com/webstore/detail/leap-cosmos-wallet/fcfcfllfndlomdhbehjjcoimbgofdncg",
         );
         return;
       }
 
       const selectableCosmosNetworks = enabledNetworks.filter(
-        (n): n is CosmosNetworkInfo => n.kind === NetworkKind.Cosmos
+        (n): n is CosmosNetworkInfo => n.kind === NetworkKind.Cosmos,
       );
 
       let network = getCosmosNetwork(networkId);
@@ -51,7 +51,7 @@ export const ConnectLeapButton: React.FC<{
       }
 
       await leap.experimentalSuggestChain(
-        keplrChainInfoFromNetworkInfo(network)
+        keplrChainInfoFromNetworkInfo(network),
       );
 
       await leap.enable(network.chainId);

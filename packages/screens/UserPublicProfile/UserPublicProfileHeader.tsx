@@ -81,27 +81,33 @@ export const UserPublicProfileScreenHeader = ({
   const [network] = parseUserId(userId);
 
   // TODO: refactor this to use network features filter defined on tab
-  const items = Object.entries(screenTabItems).reduce((o, [key, item]) => {
-    if (
-      network?.kind === NetworkKind.Gno &&
-      ["nfts", "quests", "mentionsPosts", "funds"].includes(key)
-    ) {
-      return o;
-    }
-    if (network?.kind !== NetworkKind.Gno && ["gnoDemo"].includes(key)) {
-      return o;
-    }
-    if (
-      (isDAO || network?.kind === NetworkKind.Gno) &&
-      ["daos"].includes(key)
-    ) {
-      return o;
-    }
-    if (!isDAO && ["members", "proposals", "funds", "gnoDemo"].includes(key)) {
-      return o;
-    }
-    return { ...o, [key]: item };
-  }, {} as { [key in keyof typeof screenTabItems]: { name: string } });
+  const items = Object.entries(screenTabItems).reduce(
+    (o, [key, item]) => {
+      if (
+        network?.kind === NetworkKind.Gno &&
+        ["nfts", "quests", "mentionsPosts", "funds"].includes(key)
+      ) {
+        return o;
+      }
+      if (network?.kind !== NetworkKind.Gno && ["gnoDemo"].includes(key)) {
+        return o;
+      }
+      if (
+        (isDAO || network?.kind === NetworkKind.Gno) &&
+        ["daos"].includes(key)
+      ) {
+        return o;
+      }
+      if (
+        !isDAO &&
+        ["members", "proposals", "funds", "gnoDemo"].includes(key)
+      ) {
+        return o;
+      }
+      return { ...o, [key]: item };
+    },
+    {} as { [key in keyof typeof screenTabItems]: { name: string } },
+  );
 
   // TODO: refactor the way we handle the tabs to better support dynamic list of tabs
   const forcedSelection = items[selectedTab]

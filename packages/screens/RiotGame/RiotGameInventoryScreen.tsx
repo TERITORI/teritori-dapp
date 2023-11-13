@@ -79,7 +79,7 @@ export const RiotGameInventoryScreen = () => {
           />
         </View>
 
-        <View style={{ minWidth: "500px", marginTop: layout.spacing_x4 }}>
+        <View style={{ minWidth: 500, marginTop: layout.spacing_x4 }}>
           <FlexRow
             breakpoint={MOBILE_MAX_WIDTH}
             style={{ justifyContent: "space-between", alignItems: "center" }}

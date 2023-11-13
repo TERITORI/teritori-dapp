@@ -17,14 +17,14 @@ const main = async () => {
   const client = mustGetNodeMarketplaceClient(network.id);
   const listByOwner = await snapshotCollectionOwnersWithIds(
     collectionId,
-    client
+    client,
   );
   fs.writeFileSync(
     "owners-details.json",
     JSON.stringify(listByOwner, null, 2),
     {
       encoding: "utf-8",
-    }
+    },
   );
 };
 

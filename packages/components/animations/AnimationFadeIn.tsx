@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { ReactNode, useEffect, useRef } from "react";
 import {
   Animated,
   LayoutChangeEvent,
@@ -11,6 +11,7 @@ interface FadeInProps {
   duration?: number;
   delay?: number;
   onLayout?: ((event: LayoutChangeEvent) => void) | undefined;
+  children: ReactNode;
 }
 
 export const AnimationFadeIn: React.FC<FadeInProps> = ({
