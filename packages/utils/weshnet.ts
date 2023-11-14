@@ -1,6 +1,7 @@
-import { ProtocolServiceClientImpl, GrpcWebImpl } from "./protocoltypes";
-
-export * from "./protocoltypes";
+import {
+  GrpcWebImpl,
+  ProtocolServiceClientImpl,
+} from "../api/weshnet/protocoltypes";
 
 export const createWeshClient = (url: string) => {
   const rpc = new GrpcWebImpl(url, {

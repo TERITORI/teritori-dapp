@@ -109,75 +109,133 @@ export const ReplicatedGroup = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicatedGroup {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicatedGroup();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.publicKey = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.signPub = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.linkKey = reader.string();
-          break;
+          continue;
         case 100:
+          if (tag !== 800) {
+            break;
+          }
+
           message.createdAt = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 101:
+          if (tag !== 808) {
+            break;
+          }
+
           message.updatedAt = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 102:
+          if (tag !== 816) {
+            break;
+          }
+
           message.metadataEntriesCount = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 103:
+          if (tag !== 826) {
+            break;
+          }
+
           message.metadataLatestHead = reader.string();
-          break;
+          continue;
         case 104:
+          if (tag !== 832) {
+            break;
+          }
+
           message.messageEntriesCount = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 105:
+          if (tag !== 842) {
+            break;
+          }
+
           message.messageLatestHead = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ReplicatedGroup {
     return {
-      publicKey: isSet(object.publicKey) ? String(object.publicKey) : "",
-      signPub: isSet(object.signPub) ? String(object.signPub) : "",
-      linkKey: isSet(object.linkKey) ? String(object.linkKey) : "",
-      createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
-      updatedAt: isSet(object.updatedAt) ? Number(object.updatedAt) : 0,
-      metadataEntriesCount: isSet(object.metadataEntriesCount) ? Number(object.metadataEntriesCount) : 0,
-      metadataLatestHead: isSet(object.metadataLatestHead) ? String(object.metadataLatestHead) : "",
-      messageEntriesCount: isSet(object.messageEntriesCount) ? Number(object.messageEntriesCount) : 0,
-      messageLatestHead: isSet(object.messageLatestHead) ? String(object.messageLatestHead) : "",
+      publicKey: isSet(object.publicKey) ? globalThis.String(object.publicKey) : "",
+      signPub: isSet(object.signPub) ? globalThis.String(object.signPub) : "",
+      linkKey: isSet(object.linkKey) ? globalThis.String(object.linkKey) : "",
+      createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
+      updatedAt: isSet(object.updatedAt) ? globalThis.Number(object.updatedAt) : 0,
+      metadataEntriesCount: isSet(object.metadataEntriesCount) ? globalThis.Number(object.metadataEntriesCount) : 0,
+      metadataLatestHead: isSet(object.metadataLatestHead) ? globalThis.String(object.metadataLatestHead) : "",
+      messageEntriesCount: isSet(object.messageEntriesCount) ? globalThis.Number(object.messageEntriesCount) : 0,
+      messageLatestHead: isSet(object.messageLatestHead) ? globalThis.String(object.messageLatestHead) : "",
     };
   },
 
   toJSON(message: ReplicatedGroup): unknown {
     const obj: any = {};
-    message.publicKey !== undefined && (obj.publicKey = message.publicKey);
-    message.signPub !== undefined && (obj.signPub = message.signPub);
-    message.linkKey !== undefined && (obj.linkKey = message.linkKey);
-    message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
-    message.updatedAt !== undefined && (obj.updatedAt = Math.round(message.updatedAt));
-    message.metadataEntriesCount !== undefined && (obj.metadataEntriesCount = Math.round(message.metadataEntriesCount));
-    message.metadataLatestHead !== undefined && (obj.metadataLatestHead = message.metadataLatestHead);
-    message.messageEntriesCount !== undefined && (obj.messageEntriesCount = Math.round(message.messageEntriesCount));
-    message.messageLatestHead !== undefined && (obj.messageLatestHead = message.messageLatestHead);
+    if (message.publicKey !== "") {
+      obj.publicKey = message.publicKey;
+    }
+    if (message.signPub !== "") {
+      obj.signPub = message.signPub;
+    }
+    if (message.linkKey !== "") {
+      obj.linkKey = message.linkKey;
+    }
+    if (message.createdAt !== 0) {
+      obj.createdAt = Math.round(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      obj.updatedAt = Math.round(message.updatedAt);
+    }
+    if (message.metadataEntriesCount !== 0) {
+      obj.metadataEntriesCount = Math.round(message.metadataEntriesCount);
+    }
+    if (message.metadataLatestHead !== "") {
+      obj.metadataLatestHead = message.metadataLatestHead;
+    }
+    if (message.messageEntriesCount !== 0) {
+      obj.messageEntriesCount = Math.round(message.messageEntriesCount);
+    }
+    if (message.messageLatestHead !== "") {
+      obj.messageLatestHead = message.messageLatestHead;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ReplicatedGroup>, I>>(base?: I): ReplicatedGroup {
+    return ReplicatedGroup.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ReplicatedGroup>, I>>(object: I): ReplicatedGroup {
     const message = createBaseReplicatedGroup();
     message.publicKey = object.publicKey ?? "";
@@ -218,56 +276,91 @@ export const ReplicatedGroupToken = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicatedGroupToken {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicatedGroupToken();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.replicatedGroupPublicKey = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.replicatedGroup = ReplicatedGroup.decode(reader, reader.uint32());
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.tokenIssuer = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.tokenId = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.createdAt = longToNumber(reader.int64() as Long);
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ReplicatedGroupToken {
     return {
-      replicatedGroupPublicKey: isSet(object.replicatedGroupPublicKey) ? String(object.replicatedGroupPublicKey) : "",
+      replicatedGroupPublicKey: isSet(object.replicatedGroupPublicKey)
+        ? globalThis.String(object.replicatedGroupPublicKey)
+        : "",
       replicatedGroup: isSet(object.replicatedGroup) ? ReplicatedGroup.fromJSON(object.replicatedGroup) : undefined,
-      tokenIssuer: isSet(object.tokenIssuer) ? String(object.tokenIssuer) : "",
-      tokenId: isSet(object.tokenId) ? String(object.tokenId) : "",
-      createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
+      tokenIssuer: isSet(object.tokenIssuer) ? globalThis.String(object.tokenIssuer) : "",
+      tokenId: isSet(object.tokenId) ? globalThis.String(object.tokenId) : "",
+      createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
     };
   },
 
   toJSON(message: ReplicatedGroupToken): unknown {
     const obj: any = {};
-    message.replicatedGroupPublicKey !== undefined && (obj.replicatedGroupPublicKey = message.replicatedGroupPublicKey);
-    message.replicatedGroup !== undefined &&
-      (obj.replicatedGroup = message.replicatedGroup ? ReplicatedGroup.toJSON(message.replicatedGroup) : undefined);
-    message.tokenIssuer !== undefined && (obj.tokenIssuer = message.tokenIssuer);
-    message.tokenId !== undefined && (obj.tokenId = message.tokenId);
-    message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
+    if (message.replicatedGroupPublicKey !== "") {
+      obj.replicatedGroupPublicKey = message.replicatedGroupPublicKey;
+    }
+    if (message.replicatedGroup !== undefined) {
+      obj.replicatedGroup = ReplicatedGroup.toJSON(message.replicatedGroup);
+    }
+    if (message.tokenIssuer !== "") {
+      obj.tokenIssuer = message.tokenIssuer;
+    }
+    if (message.tokenId !== "") {
+      obj.tokenId = message.tokenId;
+    }
+    if (message.createdAt !== 0) {
+      obj.createdAt = Math.round(message.createdAt);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ReplicatedGroupToken>, I>>(base?: I): ReplicatedGroupToken {
+    return ReplicatedGroupToken.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ReplicatedGroupToken>, I>>(object: I): ReplicatedGroupToken {
     const message = createBaseReplicatedGroupToken();
     message.replicatedGroupPublicKey = object.replicatedGroupPublicKey ?? "";
@@ -291,16 +384,17 @@ export const ReplicationServiceReplicateGroup = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicationServiceReplicateGroup {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicationServiceReplicateGroup();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -314,6 +408,11 @@ export const ReplicationServiceReplicateGroup = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup>, I>>(
+    base?: I,
+  ): ReplicationServiceReplicateGroup {
+    return ReplicationServiceReplicateGroup.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup>, I>>(
     _: I,
   ): ReplicationServiceReplicateGroup {
@@ -335,19 +434,24 @@ export const ReplicationServiceReplicateGroup_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicationServiceReplicateGroup_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicationServiceReplicateGroup_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.group = Group.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -358,10 +462,17 @@ export const ReplicationServiceReplicateGroup_Request = {
 
   toJSON(message: ReplicationServiceReplicateGroup_Request): unknown {
     const obj: any = {};
-    message.group !== undefined && (obj.group = message.group ? Group.toJSON(message.group) : undefined);
+    if (message.group !== undefined) {
+      obj.group = Group.toJSON(message.group);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup_Request>, I>>(
+    base?: I,
+  ): ReplicationServiceReplicateGroup_Request {
+    return ReplicationServiceReplicateGroup_Request.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup_Request>, I>>(
     object: I,
   ): ReplicationServiceReplicateGroup_Request {
@@ -384,33 +495,45 @@ export const ReplicationServiceReplicateGroup_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicationServiceReplicateGroup_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicationServiceReplicateGroup_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.ok = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ReplicationServiceReplicateGroup_Reply {
-    return { ok: isSet(object.ok) ? Boolean(object.ok) : false };
+    return { ok: isSet(object.ok) ? globalThis.Boolean(object.ok) : false };
   },
 
   toJSON(message: ReplicationServiceReplicateGroup_Reply): unknown {
     const obj: any = {};
-    message.ok !== undefined && (obj.ok = message.ok);
+    if (message.ok === true) {
+      obj.ok = message.ok;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup_Reply>, I>>(
+    base?: I,
+  ): ReplicationServiceReplicateGroup_Reply {
+    return ReplicationServiceReplicateGroup_Reply.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup_Reply>, I>>(
     object: I,
   ): ReplicationServiceReplicateGroup_Reply {
@@ -430,16 +553,17 @@ export const ReplicateGlobalStats = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicateGlobalStats {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicateGlobalStats();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -453,6 +577,9 @@ export const ReplicateGlobalStats = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ReplicateGlobalStats>, I>>(base?: I): ReplicateGlobalStats {
+    return ReplicateGlobalStats.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ReplicateGlobalStats>, I>>(_: I): ReplicateGlobalStats {
     const message = createBaseReplicateGlobalStats();
     return message;
@@ -469,16 +596,17 @@ export const ReplicateGlobalStats_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicateGlobalStats_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicateGlobalStats_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -492,6 +620,9 @@ export const ReplicateGlobalStats_Request = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ReplicateGlobalStats_Request>, I>>(base?: I): ReplicateGlobalStats_Request {
+    return ReplicateGlobalStats_Request.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ReplicateGlobalStats_Request>, I>>(_: I): ReplicateGlobalStats_Request {
     const message = createBaseReplicateGlobalStats_Request();
     return message;
@@ -520,50 +651,78 @@ export const ReplicateGlobalStats_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicateGlobalStats_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicateGlobalStats_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.startedAt = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.replicatedGroups = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.totalMetadataEntries = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.totalMessageEntries = longToNumber(reader.int64() as Long);
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ReplicateGlobalStats_Reply {
     return {
-      startedAt: isSet(object.startedAt) ? Number(object.startedAt) : 0,
-      replicatedGroups: isSet(object.replicatedGroups) ? Number(object.replicatedGroups) : 0,
-      totalMetadataEntries: isSet(object.totalMetadataEntries) ? Number(object.totalMetadataEntries) : 0,
-      totalMessageEntries: isSet(object.totalMessageEntries) ? Number(object.totalMessageEntries) : 0,
+      startedAt: isSet(object.startedAt) ? globalThis.Number(object.startedAt) : 0,
+      replicatedGroups: isSet(object.replicatedGroups) ? globalThis.Number(object.replicatedGroups) : 0,
+      totalMetadataEntries: isSet(object.totalMetadataEntries) ? globalThis.Number(object.totalMetadataEntries) : 0,
+      totalMessageEntries: isSet(object.totalMessageEntries) ? globalThis.Number(object.totalMessageEntries) : 0,
     };
   },
 
   toJSON(message: ReplicateGlobalStats_Reply): unknown {
     const obj: any = {};
-    message.startedAt !== undefined && (obj.startedAt = Math.round(message.startedAt));
-    message.replicatedGroups !== undefined && (obj.replicatedGroups = Math.round(message.replicatedGroups));
-    message.totalMetadataEntries !== undefined && (obj.totalMetadataEntries = Math.round(message.totalMetadataEntries));
-    message.totalMessageEntries !== undefined && (obj.totalMessageEntries = Math.round(message.totalMessageEntries));
+    if (message.startedAt !== 0) {
+      obj.startedAt = Math.round(message.startedAt);
+    }
+    if (message.replicatedGroups !== 0) {
+      obj.replicatedGroups = Math.round(message.replicatedGroups);
+    }
+    if (message.totalMetadataEntries !== 0) {
+      obj.totalMetadataEntries = Math.round(message.totalMetadataEntries);
+    }
+    if (message.totalMessageEntries !== 0) {
+      obj.totalMessageEntries = Math.round(message.totalMessageEntries);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ReplicateGlobalStats_Reply>, I>>(base?: I): ReplicateGlobalStats_Reply {
+    return ReplicateGlobalStats_Reply.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ReplicateGlobalStats_Reply>, I>>(object: I): ReplicateGlobalStats_Reply {
     const message = createBaseReplicateGlobalStats_Reply();
     message.startedAt = object.startedAt ?? 0;
@@ -584,16 +743,17 @@ export const ReplicateGroupStats = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicateGroupStats {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicateGroupStats();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -607,6 +767,9 @@ export const ReplicateGroupStats = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ReplicateGroupStats>, I>>(base?: I): ReplicateGroupStats {
+    return ReplicateGroupStats.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ReplicateGroupStats>, I>>(_: I): ReplicateGroupStats {
     const message = createBaseReplicateGroupStats();
     return message;
@@ -626,33 +789,43 @@ export const ReplicateGroupStats_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicateGroupStats_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicateGroupStats_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPublicKey = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ReplicateGroupStats_Request {
-    return { groupPublicKey: isSet(object.groupPublicKey) ? String(object.groupPublicKey) : "" };
+    return { groupPublicKey: isSet(object.groupPublicKey) ? globalThis.String(object.groupPublicKey) : "" };
   },
 
   toJSON(message: ReplicateGroupStats_Request): unknown {
     const obj: any = {};
-    message.groupPublicKey !== undefined && (obj.groupPublicKey = message.groupPublicKey);
+    if (message.groupPublicKey !== "") {
+      obj.groupPublicKey = message.groupPublicKey;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ReplicateGroupStats_Request>, I>>(base?: I): ReplicateGroupStats_Request {
+    return ReplicateGroupStats_Request.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ReplicateGroupStats_Request>, I>>(object: I): ReplicateGroupStats_Request {
     const message = createBaseReplicateGroupStats_Request();
     message.groupPublicKey = object.groupPublicKey ?? "";
@@ -673,19 +846,24 @@ export const ReplicateGroupStats_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicateGroupStats_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicateGroupStats_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.group = ReplicatedGroup.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -696,10 +874,15 @@ export const ReplicateGroupStats_Reply = {
 
   toJSON(message: ReplicateGroupStats_Reply): unknown {
     const obj: any = {};
-    message.group !== undefined && (obj.group = message.group ? ReplicatedGroup.toJSON(message.group) : undefined);
+    if (message.group !== undefined) {
+      obj.group = ReplicatedGroup.toJSON(message.group);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ReplicateGroupStats_Reply>, I>>(base?: I): ReplicateGroupStats_Reply {
+    return ReplicateGroupStats_Reply.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ReplicateGroupStats_Reply>, I>>(object: I): ReplicateGroupStats_Reply {
     const message = createBaseReplicateGroupStats_Reply();
     message.group = (object.group !== undefined && object.group !== null)
@@ -784,10 +967,11 @@ export const ReplicationServiceReplicateGroupDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ReplicationServiceReplicateGroup_Reply.decode(data);
       return {
-        ...ReplicationServiceReplicateGroup_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -806,10 +990,11 @@ export const ReplicationServiceReplicateGlobalStatsDesc: UnaryMethodDefinitionis
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ReplicateGlobalStats_Reply.decode(data);
       return {
-        ...ReplicateGlobalStats_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -828,10 +1013,11 @@ export const ReplicationServiceReplicateGroupStatsDesc: UnaryMethodDefinitionish
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ReplicateGroupStats_Reply.decode(data);
       return {
-        ...ReplicateGroupStats_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -885,17 +1071,17 @@ export class GrpcWebImpl {
     const request = { ..._request, ...methodDesc.requestType };
     const maybeCombinedMetadata = metadata && this.options.metadata
       ? new BrowserHeaders({ ...this.options?.metadata.headersMap, ...metadata?.headersMap })
-      : metadata || this.options.metadata;
+      : metadata ?? this.options.metadata;
     return new Promise((resolve, reject) => {
       grpc.unary(methodDesc, {
         request,
         host: this.host,
-        metadata: maybeCombinedMetadata,
-        transport: this.options.transport,
-        debug: this.options.debug,
+        metadata: maybeCombinedMetadata ?? {},
+        ...(this.options.transport !== undefined ? { transport: this.options.transport } : {}),
+        debug: this.options.debug ?? false,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
-            resolve(response.message);
+            resolve(response.message!.toObject());
           } else {
             const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
@@ -906,29 +1092,11 @@ export class GrpcWebImpl {
   }
 }
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") {
-    return globalThis;
-  }
-  if (typeof self !== "undefined") {
-    return self;
-  }
-  if (typeof window !== "undefined") {
-    return window;
-  }
-  if (typeof global !== "undefined") {
-    return global;
-  }
-  throw "Unable to locate global object";
-})();
-
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -937,7 +1105,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function longToNumber(long: Long): number {
-  if (long.gt(Number.MAX_SAFE_INTEGER)) {
+  if (long.gt(globalThis.Number.MAX_SAFE_INTEGER)) {
     throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
   }
   return long.toNumber();
@@ -952,7 +1120,7 @@ function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-export class GrpcWebError extends Error {
+export class GrpcWebError extends globalThis.Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }

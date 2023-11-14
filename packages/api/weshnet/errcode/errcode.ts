@@ -569,44 +569,53 @@ export const ErrDetails = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ErrDetails {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseErrDetails();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if ((tag & 7) === 2) {
+          if (tag === 8) {
+            message.codes.push(reader.int32() as any);
+
+            continue;
+          }
+
+          if (tag === 10) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.codes.push(reader.int32() as any);
             }
-          } else {
-            message.codes.push(reader.int32() as any);
+
+            continue;
           }
-          break;
-        default:
-          reader.skipType(tag & 7);
+
           break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ErrDetails {
-    return { codes: Array.isArray(object?.codes) ? object.codes.map((e: any) => errCodeFromJSON(e)) : [] };
+    return { codes: globalThis.Array.isArray(object?.codes) ? object.codes.map((e: any) => errCodeFromJSON(e)) : [] };
   },
 
   toJSON(message: ErrDetails): unknown {
     const obj: any = {};
-    if (message.codes) {
+    if (message.codes?.length) {
       obj.codes = message.codes.map((e) => errCodeToJSON(e));
-    } else {
-      obj.codes = [];
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ErrDetails>, I>>(base?: I): ErrDetails {
+    return ErrDetails.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<ErrDetails>, I>>(object: I): ErrDetails {
     const message = createBaseErrDetails();
     message.codes = object.codes?.map((e) => e) || [];
@@ -617,7 +626,8 @@ export const ErrDetails = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

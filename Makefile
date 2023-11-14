@@ -45,7 +45,7 @@ generate.weshnet: node_modules
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 	buf generate buf.build/berty/weshnet -o .weshgen
-	cp -r .weshgen/packages/api/ packages/weshnet/
+	cp -r .weshgen/packages/api/ packages/api/weshnet/
 	rm -fr .weshgen
 
 .PHONY: generate.graphql
@@ -260,4 +260,4 @@ networks.json: node_modules validate-networks
 .PHONY: unused-exports
 unused-exports: node_modules
 	## TODO unexclude all paths except packages/api;packages/contracts-clients;packages/evm-contracts-clients
-	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\.web|.electron|.d.ts" --ignoreTestFiles 
+	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/utils/weshnet.ts;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\.web|.electron|.d.ts" --ignoreTestFiles 
