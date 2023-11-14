@@ -6,7 +6,7 @@ export const polygonMumbaiNetwork: NetworkInfo = {
   kind: NetworkKind.Ethereum,
   displayName: "Polygon Mumbai",
   icon: "icons/networks/polygon.svg",
-  features: [NetworkFeature.RiotP2E],
+  features: [NetworkFeature.RiotP2E, NetworkFeature.NFTMarketplace],
   currencies: polygonMumbaiCurrencies,
   idPrefix: "mumbai",
   endpoint: "https://polygon-mumbai.blockpi.network/v1/rpc/public",
@@ -14,8 +14,7 @@ export const polygonMumbaiNetwork: NetworkInfo = {
   accountExplorer: "https://mumbai.polygonscan.com/address/$address",
   contractExplorer: "https://mumbai.polygonscan.com/address/$address",
   testnet: true,
-  // backendEndpoint: "https://dapp-backend.testnet.teritori.com",
-  backendEndpoint: "http://localhost:9090",
+  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   chainId: 80001,
   alchemyApiKey: "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
   theGraphEndpoint:
