@@ -5,7 +5,8 @@ import { Assets } from "./Assets";
 import { MyNFTs } from "./MyNFTs";
 import { WalletDashboardHeader } from "./WalletDashboardHeader";
 import { WalletHeader } from "./WalletHeader";
-import { Wallets } from "./Wallets";
+import { WalletItem } from "./WalletItem";
+import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
@@ -39,7 +40,19 @@ export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
               paddingTop: 40,
             }}
           />
-          <Wallets />
+          <View
+            style={{
+              paddingTop: 40,
+              borderTopWidth: 1,
+              borderColor: neutral33,
+              zIndex: 99,
+            }}
+          >
+            <BrandText style={{ marginRight: 20, fontSize: 20 }}>
+              Wallet
+            </BrandText>
+            {selectedWallet && <WalletItem item={selectedWallet} zIndex={10} />}
+          </View>
           <MyNFTs />
         </View>
       ) : (

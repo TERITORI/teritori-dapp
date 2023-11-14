@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { TextStyle, ViewStyle } from "react-native";
 
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -11,30 +11,24 @@ import FlexRow from "../FlexRow";
 import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
 import { UserNameInline } from "../UserNameInline";
-import { CustomPressable } from "../buttons/CustomPressable";
 
 export const TopMenuAccount: React.FC = () => {
   const selectedWallet = useSelectedWallet();
 
   return (
-    <FlexCol style={styles.container}>
+    <FlexCol style={containerCStyle}>
       <UserNameInline
         userId={selectedWallet?.userId || ""}
-        style={styles.userImageLine}
+        style={userImageLineCStyle}
       />
 
       <FlexRow alignItems="center" justifyContent="space-between">
-        {/*TODO: Replace CustomPressable by TouchableOpacity when the Multisig feature is available*/}
-        <CustomPressable>
-          {({ hovered }) => (
-            <FlexRow alignItems="center">
-              <BrandText style={styles.switchAccount}>
-                {hovered ? "Coming Soon" : "Switch Account"}
-              </BrandText>
-              <SVG source={chevronRightSVG} width={16} height={16} />
-            </FlexRow>
-          )}
-        </CustomPressable>
+        <OmniLink to={{ screen: "WalletManagerWallets" }}>
+          <FlexRow alignItems="center">
+            <BrandText style={switchAccountCStyle}>Change Wallet</BrandText>
+            <SVG source={chevronRightSVG} width={16} height={16} />
+          </FlexRow>
+        </OmniLink>
 
         <OmniLink
           to={{
@@ -42,29 +36,28 @@ export const TopMenuAccount: React.FC = () => {
             params: { id: selectedWallet?.userId || "" },
           }}
         >
-          <BrandText style={styles.manageProfile}>Manage Profile</BrandText>
+          <BrandText style={manageProfileCStyle}>Manage Profile</BrandText>
         </OmniLink>
       </FlexRow>
     </FlexCol>
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    padding: layout.spacing_x2,
-  },
-  userImageLine: {
-    width: "100%",
-    marginBottom: layout.spacing_x1_5,
-  },
-  switchAccount: {
-    ...(fontSemibold14 as object),
-    marginRight: layout.spacing_x0_5,
-  },
-  manageProfile: {
-    ...(fontSemibold14 as object),
-    color: purpleLight,
-  },
-});
+const containerCStyle: ViewStyle = {
+  padding: layout.spacing_x2,
+};
+
+const userImageLineCStyle: ViewStyle = {
+  width: "100%",
+  marginBottom: layout.spacing_x1_5,
+};
+
+const switchAccountCStyle: TextStyle = {
+  ...fontSemibold14,
+  marginRight: layout.spacing_x0_5,
+};
+
+const manageProfileCStyle: TextStyle = {
+  ...fontSemibold14,
+  color: purpleLight,
+};

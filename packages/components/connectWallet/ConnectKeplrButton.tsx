@@ -16,6 +16,7 @@ import {
 import {
   setIsKeplrConnected,
   setSelectedNetworkId,
+  setSelectedWalletId,
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 
@@ -56,7 +57,13 @@ export const ConnectKeplrButton: React.FC<{
 
       await keplr.enable(network.chainId);
 
+      const offlineSigner = await keplr.getOfflineSignerAuto(network.chainId);
+      const accounts = await offlineSigner.getAccounts();
+
       dispatch(setSelectedNetworkId(network.id));
+      if (accounts.length) {
+        dispatch(setSelectedWalletId("keplr-" + accounts[0].address));
+      }
       dispatch(setIsKeplrConnected(true));
 
       onDone && onDone();
