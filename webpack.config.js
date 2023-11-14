@@ -91,6 +91,17 @@ module.exports = async function (env, argv) {
     }
   });
 
+  config.module.rules = config.module.rules.map((rule) => {
+    if (rule.oneOf instanceof Array) {
+      rule.oneOf[rule.oneOf.length - 1].exclude = [
+        /\.(js|mjs|jsx|cjs|ts|tsx)$/,
+        /\.html$/,
+        /\.json$/,
+      ];
+    }
+    return rule;
+  });
+
   // needed by solana libs
   config.module.rules.unshift({
     type: "javascript/auto",
