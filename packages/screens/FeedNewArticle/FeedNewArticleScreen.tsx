@@ -82,6 +82,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       gifs: [],
       hashtags: [],
       mentions: [],
+      coverImage: undefined,
+      shortDescription: ""
     },
     mode: "onBlur",
   });
@@ -245,10 +247,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
             width: "100%",
           }}
           onUpload={(files) =>
-            setValue("files", [
-              ...(formValues.files || []),
-              { ...files[0], isCoverImage: true },
-            ])
+            setValue("coverImage", files[0])
           }
           mimeTypes={IMAGE_MIME_TYPES}
         />
@@ -268,6 +267,24 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
             borderRadius: 12,
           }}
         />
+
+        <TextInputCustom<NewPostFormValues>
+          noBrokenCorners
+          rules={{ required: true }}
+          maxLength={300}
+          multiline
+          label="Give a short description to make an Article"
+          placeHolder="Type short description here"
+          name="shortDescription"
+          control={control}
+          variant="labelOutside"
+          containerStyle={{ marginBottom: layout.spacing_x3 }}
+          boxMainContainerStyle={{
+            backgroundColor: neutral00,
+            borderRadius: 12,
+          }}
+        />
+
         <View>
           <Label>Article content</Label>
           <SpacerColumn size={1} />
@@ -287,7 +304,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                   errors?.message?.type === "required" ||
                   !formValues.message ||
                   !formValues.title ||
-                  !formValues.files?.find(file => file.isCoverImage) ||
+                  !formValues.shortDescription ||
+                  !formValues.coverImage ||
                   !wallet
                 }
                 onPublish={onPublish}

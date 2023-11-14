@@ -40,9 +40,8 @@ import React, {
 } from "react";
 import {
   ScrollView,
-  StyleSheet,
   useWindowDimensions,
-  View,
+  View, ViewStyle,
 } from "react-native";
 
 import { RichHashtagRenderer } from "./RichRenderer/RichHashtagRenderer";
@@ -314,17 +313,17 @@ export const RichText: React.FC<RichTextProps> = ({
 
   /////////////// TOOLBAR BUTTONS ////////////////
   const Buttons: React.FC<{ externalProps: any }> = ({ externalProps }) => (
-    <View style={styles.toolbarButtonsWrapper}>
+    <View style={toolbarButtonsWrapperCStyle}>
       <EmojiSelector
         onEmojiSelected={(emoji) => addEmoji(emoji)}
-        buttonStyle={styles.toolbarCustomButton}
-        iconStyle={styles.toolbarCustomButtonIcon}
+        buttonStyle={toolbarCustomButtonCStyle}
+        iconStyle={toolbarCustomButtonIconCStyle}
       />
 
       <GIFSelector
         onGIFSelected={(url) => (url ? addGIF(url) : undefined)}
-        buttonStyle={styles.toolbarCustomButton}
-        iconStyle={styles.toolbarCustomButtonIcon}
+        buttonStyle={toolbarCustomButtonCStyle}
+        iconStyle={toolbarCustomButtonIconCStyle}
         disabled={isGIFSelectorDisabled}
       />
 
@@ -336,7 +335,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={audioSVG}
             onPress={onPress}
-            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
+            style={[toolbarCustomButtonIconCStyle, toolbarCustomButtonCStyle]}
             disabled={isAudioUploadDisabled}
           />
         )}
@@ -350,7 +349,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={videoSVG}
             onPress={onPress}
-            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
+            style={[toolbarCustomButtonIconCStyle, toolbarCustomButtonCStyle]}
             disabled={isVideoUploadDisabled}
           />
         )}
@@ -364,7 +363,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={cameraSVG}
             onPress={onPress}
-            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
+            style={[toolbarCustomButtonIconCStyle, toolbarCustomButtonCStyle]}
             iconProps={{
               width: 18,
               height: 18,
@@ -488,28 +487,24 @@ export const RichText: React.FC<RichTextProps> = ({
 };
 
 /////////////// STYLES ////////////////
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  toolbarCustomButton: {
+ const toolbarCustomButtonCStyle: ViewStyle = {
     margin: layout.spacing_x0_5,
-  },
-  toolbarCustomButtonIcon: {
-    borderRadius: 4,
-    height: 30,
-    width: 30,
-  },
-  toolbarButtonsWrapper: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    flexWrap: "wrap",
-  },
-});
+  }
+const toolbarCustomButtonIconCStyle: ViewStyle = {
+  borderRadius: 4,
+  height: 30,
+  width: 30,
+}
+const toolbarButtonsWrapperCStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "100%",
+  flexWrap: "wrap",
+}
 
 /////////////// SOME FUNCTIONS ////////////////
-const createStateFromHTML = (html: string) => {
+export const createStateFromHTML = (html: string) => {
   // We use htmlToDraft with a customChunkRenderer function because the default convertFromHTML from draft-js doesn't handle videos
   //TODO: Maybe we can use this pattern to handling audio in RichText (Instead of adding audios under the RichText)
   const blocksFromHTML = htmlToDraft(
@@ -689,7 +684,6 @@ const getGIFsToPublish = (editorState: EditorState, gifsUrls: string[]) => {
 
 export const isArticleHTMLNeedsTruncate = (html: string, isPreview = false) => {
   const contentState = createStateFromHTML(html).getCurrentContent();
-  console.log('contentState.getBlocksAsArray()contentState.getBlocksAsArray()', contentState.getBlocksAsArray().length >= NB_ROWS_SHOWN_IN_PREVIEW)
   return (
     isPreview &&
     contentState.getBlocksAsArray().length >= NB_ROWS_SHOWN_IN_PREVIEW
