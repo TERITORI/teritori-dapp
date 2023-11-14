@@ -11,6 +11,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+	"gorm.io/gorm/clause"
 )
 
 type TransferInput struct {
@@ -115,7 +116,7 @@ func (h *Handler) handleInitialize(tx *pb.Tx) error {
 		},
 	}
 
-	if err := h.dbTransaction.Create(newCollection).Error; err != nil {
+	if err := h.dbTransaction.Clauses(clause.OnConflict{DoNothing: true}).Create(newCollection).Error; err != nil {
 		return errors.Wrap(err, "failed to create collection")
 	}
 	h.logger.Info("created collection", zap.String("id", string(collectionId)))
