@@ -10,7 +10,6 @@ import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { useFollowingUserNotifications } from "../../../hooks/useNotifications";
 import { prettyPrice } from "../../../utils/coins";
 import {
-  neutral00,
   neutral33,
   neutral44,
   purpleDark,
@@ -18,7 +17,6 @@ import {
   yellowDefault,
 } from "../../../utils/style/colors";
 import {
-  fontBold11,
   fontBold12,
   fontSemibold12,
   fontSemibold14,
