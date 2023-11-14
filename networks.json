@@ -7450,7 +7450,8 @@
     "displayName": "Polygon Mumbai",
     "icon": "icons/networks/polygon.svg",
     "features": [
-      "RiotP2E"
+      "RiotP2E",
+      "NFTMarketplace"
     ],
     "currencies": [
       {
@@ -7469,7 +7470,7 @@
     "accountExplorer": "https://mumbai.polygonscan.com/address/$address",
     "contractExplorer": "https://mumbai.polygonscan.com/address/$address",
     "testnet": true,
-    "backendEndpoint": "http://localhost:9090",
+    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
     "chainId": 80001,
     "alchemyApiKey": "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
     "theGraphEndpoint": "https://api.studio.thegraph.com/query/40379/teritori-goerli-indexer/v-test-01",
