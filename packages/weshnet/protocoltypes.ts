@@ -5,7 +5,6 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Observable } from "rxjs";
 import { share } from "rxjs/operators";
-import { PushServiceTokenType, pushServiceTokenTypeFromJSON, pushServiceTokenTypeToJSON } from "./pushtypes/pushtypes";
 
 export const protobufPackage = "weshnet.protocol.v1";
 
@@ -75,15 +74,15 @@ export enum EventType {
   EventTypeAccountContactRequestEnabled = 104,
   /** EventTypeAccountContactRequestReferenceReset - EventTypeAccountContactRequestReferenceReset indicates the payload includes that the account has a new contact request rendezvous seed */
   EventTypeAccountContactRequestReferenceReset = 105,
-  /** EventTypeAccountContactRequestOutgoingEnqueued - EventTypeAccountContactRequestEnqueued indicates the payload includes that the account will attempt to send a new contact request */
+  /** EventTypeAccountContactRequestOutgoingEnqueued - EventTypeAccountContactRequestOutgoingEnqueued indicates the payload includes that the account will attempt to send a new contact request */
   EventTypeAccountContactRequestOutgoingEnqueued = 106,
-  /** EventTypeAccountContactRequestOutgoingSent - EventTypeAccountContactRequestSent indicates the payload includes that the account has sent a contact request */
+  /** EventTypeAccountContactRequestOutgoingSent - EventTypeAccountContactRequestOutgoingSent indicates the payload includes that the account has sent a contact request */
   EventTypeAccountContactRequestOutgoingSent = 107,
-  /** EventTypeAccountContactRequestIncomingReceived - EventTypeAccountContactRequestReceived indicates the payload includes that the account has received a contact request */
+  /** EventTypeAccountContactRequestIncomingReceived - EventTypeAccountContactRequestIncomingReceived indicates the payload includes that the account has received a contact request */
   EventTypeAccountContactRequestIncomingReceived = 108,
   /** EventTypeAccountContactRequestIncomingDiscarded - EventTypeAccountContactRequestIncomingDiscarded indicates the payload includes that the account has ignored a contact request */
   EventTypeAccountContactRequestIncomingDiscarded = 109,
-  /** EventTypeAccountContactRequestIncomingAccepted - EventTypeAccountContactRequestAccepted indicates the payload includes that the account has accepted a contact request */
+  /** EventTypeAccountContactRequestIncomingAccepted - EventTypeAccountContactRequestIncomingAccepted indicates the payload includes that the account has accepted a contact request */
   EventTypeAccountContactRequestIncomingAccepted = 110,
   /** EventTypeAccountContactBlocked - EventTypeAccountContactBlocked indicates the payload includes that the account has blocked a contact */
   EventTypeAccountContactBlocked = 111,
@@ -97,18 +96,8 @@ export enum EventType {
   EventTypeMultiMemberGroupInitialMemberAnnounced = 302,
   /** EventTypeMultiMemberGroupAdminRoleGranted - EventTypeMultiMemberGroupAdminRoleGranted indicates the payload includes that an admin of the group granted another member as an admin */
   EventTypeMultiMemberGroupAdminRoleGranted = 303,
-  /** EventTypeAccountServiceTokenAdded - EventTypeAccountServiceTokenAdded indicates that a new service provider has been registered for this account */
-  EventTypeAccountServiceTokenAdded = 401,
-  /** EventTypeAccountServiceTokenRemoved - EventTypeAccountServiceTokenRemoved indicates that a service provider is not available anymore */
-  EventTypeAccountServiceTokenRemoved = 402,
   /** EventTypeGroupReplicating - EventTypeGroupReplicating indicates that the group has been registered for replication on a server */
   EventTypeGroupReplicating = 403,
-  /** EventTypePushMemberTokenUpdate - EventTypePushMemberTokenUpdate */
-  EventTypePushMemberTokenUpdate = 404,
-  /** EventTypePushDeviceTokenRegistered - EventTypePushDeviceTokenRegistered */
-  EventTypePushDeviceTokenRegistered = 405,
-  /** EventTypePushDeviceServerRegistered - EventTypePushDeviceServerRegistered */
-  EventTypePushDeviceServerRegistered = 406,
   /** EventTypeAccountVerifiedCredentialRegistered - EventTypeAccountVerifiedCredentialRegistered */
   EventTypeAccountVerifiedCredentialRegistered = 500,
   /** EventTypeGroupMetadataPayloadSent - EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key */
@@ -175,24 +164,9 @@ export function eventTypeFromJSON(object: any): EventType {
     case 303:
     case "EventTypeMultiMemberGroupAdminRoleGranted":
       return EventType.EventTypeMultiMemberGroupAdminRoleGranted;
-    case 401:
-    case "EventTypeAccountServiceTokenAdded":
-      return EventType.EventTypeAccountServiceTokenAdded;
-    case 402:
-    case "EventTypeAccountServiceTokenRemoved":
-      return EventType.EventTypeAccountServiceTokenRemoved;
     case 403:
     case "EventTypeGroupReplicating":
       return EventType.EventTypeGroupReplicating;
-    case 404:
-    case "EventTypePushMemberTokenUpdate":
-      return EventType.EventTypePushMemberTokenUpdate;
-    case 405:
-    case "EventTypePushDeviceTokenRegistered":
-      return EventType.EventTypePushDeviceTokenRegistered;
-    case 406:
-    case "EventTypePushDeviceServerRegistered":
-      return EventType.EventTypePushDeviceServerRegistered;
     case 500:
     case "EventTypeAccountVerifiedCredentialRegistered":
       return EventType.EventTypeAccountVerifiedCredentialRegistered;
@@ -246,18 +220,8 @@ export function eventTypeToJSON(object: EventType): string {
       return "EventTypeMultiMemberGroupInitialMemberAnnounced";
     case EventType.EventTypeMultiMemberGroupAdminRoleGranted:
       return "EventTypeMultiMemberGroupAdminRoleGranted";
-    case EventType.EventTypeAccountServiceTokenAdded:
-      return "EventTypeAccountServiceTokenAdded";
-    case EventType.EventTypeAccountServiceTokenRemoved:
-      return "EventTypeAccountServiceTokenRemoved";
     case EventType.EventTypeGroupReplicating:
       return "EventTypeGroupReplicating";
-    case EventType.EventTypePushMemberTokenUpdate:
-      return "EventTypePushMemberTokenUpdate";
-    case EventType.EventTypePushDeviceTokenRegistered:
-      return "EventTypePushDeviceTokenRegistered";
-    case EventType.EventTypePushDeviceServerRegistered:
-      return "EventTypePushDeviceServerRegistered";
     case EventType.EventTypeAccountVerifiedCredentialRegistered:
       return "EventTypeAccountVerifiedCredentialRegistered";
     case EventType.EventTypeGroupMetadataPayloadSent:
@@ -528,16 +492,16 @@ export interface EventContext {
   groupPk: Uint8Array;
 }
 
-/** AppMetadata is an app defined message, accessible to future group members */
-export interface AppMetadata {
+/** GroupMetadataPayloadSent is an app defined message, accessible to future group members */
+export interface GroupMetadataPayloadSent {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
   /** message is the payload */
   message: Uint8Array;
 }
 
-/** ContactAddAliasKey is an event type where ones shares their alias public key */
-export interface ContactAddAliasKey {
+/** ContactAliasKeyAdded is an event type where ones shares their alias public key */
+export interface ContactAliasKeyAdded {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
   /** alias_pk is the alias key which will be used to verify a contact identity */
@@ -545,10 +509,10 @@ export interface ContactAddAliasKey {
 }
 
 /**
- * GroupAddMemberDevice is an event which indicates to a group a new device (and eventually a new member) is joining it
- * When added on AccountGroup, this event should be followed by appropriate GroupAddMemberDevice and GroupAddDeviceChainKey events
+ * GroupMemberDeviceAdded is an event which indicates to a group a new device (and eventually a new member) is joining it
+ * When added on AccountGroup, this event should be followed by appropriate GroupMemberDeviceAdded and GroupDeviceChainKeyAdded events
  */
-export interface GroupAddMemberDevice {
+export interface GroupMemberDeviceAdded {
   /** member_pk is the member sending the event */
   memberPk: Uint8Array;
   /** device_pk is the device sending the event, signs the message */
@@ -565,8 +529,8 @@ export interface DeviceChainKey {
   counter: number;
 }
 
-/** GroupAddDeviceChainKey is an event which indicates to a group member a device chain key */
-export interface GroupAddDeviceChainKey {
+/** GroupDeviceChainKeyAdded is an event which indicates to a group member a device chain key */
+export interface GroupDeviceChainKeyAdded {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
   /** dest_member_pk is the member who should receive the secret */
@@ -575,8 +539,8 @@ export interface GroupAddDeviceChainKey {
   payload: Uint8Array;
 }
 
-/** MultiMemberGroupAddAliasResolver indicates that a group member want to disclose their presence in the group to their contacts */
-export interface MultiMemberGroupAddAliasResolver {
+/** MultiMemberGroupAliasResolverAdded indicates that a group member want to disclose their presence in the group to their contacts */
+export interface MultiMemberGroupAliasResolverAdded {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
   /**
@@ -591,16 +555,16 @@ export interface MultiMemberGroupAddAliasResolver {
   aliasProof: Uint8Array;
 }
 
-/** MultiMemberGrantAdminRole indicates that a group admin allows another group member to act as an admin */
-export interface MultiMemberGrantAdminRole {
+/** MultiMemberGroupAdminRoleGranted indicates that a group admin allows another group member to act as an admin */
+export interface MultiMemberGroupAdminRoleGranted {
   /** device_pk is the device sending the event, signs the message, must be the device of an admin of the group */
   devicePk: Uint8Array;
   /** grantee_member_pk is the member public key of the member granted of the admin role */
   granteeMemberPk: Uint8Array;
 }
 
-/** MultiMemberInitialMember indicates that a member is the group creator, this event is signed using the group ID private key */
-export interface MultiMemberInitialMember {
+/** MultiMemberGroupInitialMemberAnnounced indicates that a member is the group creator, this event is signed using the group ID private key */
+export interface MultiMemberGroupInitialMemberAnnounced {
   /** member_pk is the public key of the member who is the group creator */
   memberPk: Uint8Array;
 }
@@ -629,7 +593,7 @@ export interface AccountGroupJoined {
   group: Group | undefined;
 }
 
-/** AccountGroupJoined indicates that the account has left a group */
+/** AccountGroupLeft indicates that the account has left a group */
 export interface AccountGroupLeft {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
@@ -643,13 +607,13 @@ export interface AccountContactRequestDisabled {
   devicePk: Uint8Array;
 }
 
-/** AccountContactRequestDisabled indicates that the account should be advertised on a public rendezvous point */
+/** AccountContactRequestEnabled indicates that the account should be advertised on a public rendezvous point */
 export interface AccountContactRequestEnabled {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
 }
 
-/** AccountContactRequestDisabled indicates that the account should be advertised on different public rendezvous points */
+/** AccountContactRequestReferenceReset indicates that the account should be advertised on different public rendezvous points */
 export interface AccountContactRequestReferenceReset {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
@@ -659,11 +623,11 @@ export interface AccountContactRequestReferenceReset {
 
 /**
  * This event should be followed by an AccountGroupJoined event
- * This event should be followed by a GroupAddMemberDevice event within the AccountGroup
- * This event should be followed by a GroupAddDeviceChainKey event within the AccountGroup
- * AccountContactRequestEnqueued indicates that the account will attempt to send a contact request when a matching peer is discovered
+ * This event should be followed by a GroupMemberDeviceAdded event within the AccountGroup
+ * This event should be followed by a GroupDeviceChainKeyAdded event within the AccountGroup
+ * AccountContactRequestOutgoingEnqueued indicates that the account will attempt to send a contact request when a matching peer is discovered
  */
-export interface AccountContactRequestEnqueued {
+export interface AccountContactRequestOutgoingEnqueued {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
   /** group_pk is the 1to1 group with the requested user */
@@ -676,16 +640,16 @@ export interface AccountContactRequestEnqueued {
   ownMetadata: Uint8Array;
 }
 
-/** AccountContactRequestSent indicates that the account has sent a contact request */
-export interface AccountContactRequestSent {
+/** AccountContactRequestOutgoingSent indicates that the account has sent a contact request */
+export interface AccountContactRequestOutgoingSent {
   /** device_pk is the device sending the account event, signs the message */
   devicePk: Uint8Array;
   /** contact_pk is the contacted account */
   contactPk: Uint8Array;
 }
 
-/** AccountContactRequestReceived indicates that the account has received a new contact request */
-export interface AccountContactRequestReceived {
+/** AccountContactRequestIncomingReceived indicates that the account has received a new contact request */
+export interface AccountContactRequestIncomingReceived {
   /** device_pk is the device sending the account event (which received the contact request), signs the message */
   devicePk: Uint8Array;
   /** contact_pk is the account sending the request */
@@ -702,8 +666,8 @@ export interface AccountContactRequestReceived {
   contactMetadata: Uint8Array;
 }
 
-/** AccountContactRequestDiscarded indicates that a contact request has been refused */
-export interface AccountContactRequestDiscarded {
+/** AccountContactRequestIncomingDiscarded indicates that a contact request has been refused */
+export interface AccountContactRequestIncomingDiscarded {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
   /** contact_pk is the contact whom request is refused */
@@ -712,10 +676,10 @@ export interface AccountContactRequestDiscarded {
 
 /**
  * This event should be followed by an AccountGroupJoined event
- * This event should be followed by GroupAddMemberDevice and GroupAddDeviceChainKey events within the AccountGroup
- * AccountContactRequestAccepted indicates that a contact request has been accepted
+ * This event should be followed by GroupMemberDeviceAdded and GroupDeviceChainKeyAdded events within the AccountGroup
+ * AccountContactRequestIncomingAccepted indicates that a contact request has been accepted
  */
-export interface AccountContactRequestAccepted {
+export interface AccountContactRequestIncomingAccepted {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
   /** contact_pk is the contact whom request is accepted */
@@ -738,20 +702,6 @@ export interface AccountContactUnblocked {
   devicePk: Uint8Array;
   /** contact_pk is the contact unblocked */
   contactPk: Uint8Array;
-}
-
-/** AccountServiceTokenAdded indicates a token has been added to the account */
-export interface AccountServiceTokenAdded {
-  /** device_pk is the device sending the event, signs the message */
-  devicePk: Uint8Array;
-  serviceToken: ServiceToken | undefined;
-}
-
-/** AccountServiceTokenRemoved indicates a token has removed */
-export interface AccountServiceTokenRemoved {
-  /** device_pk is the device sending the event, signs the message */
-  devicePk: Uint8Array;
-  tokenId: string;
 }
 
 export interface GroupReplicating {
@@ -840,8 +790,6 @@ export interface ServiceGetConfiguration_Reply {
   wifiP2pEnabled: ServiceGetConfiguration_SettingState;
   mdnsEnabled: ServiceGetConfiguration_SettingState;
   relayEnabled: ServiceGetConfiguration_SettingState;
-  devicePushToken: PushServiceReceiver | undefined;
-  devicePushServer: PushServer | undefined;
 }
 
 export interface ContactRequestReference {
@@ -923,6 +871,30 @@ export interface ContactRequestDiscard_Request {
 }
 
 export interface ContactRequestDiscard_Reply {
+}
+
+export interface ShareContact {
+}
+
+export interface ShareContact_Request {
+}
+
+export interface ShareContact_Reply {
+  /** encoded_contact is the Protobuf encoding of the ShareableContact. You can further encode the bytes for sharing, such as base58 or QR code. */
+  encodedContact: Uint8Array;
+}
+
+export interface DecodeContact {
+}
+
+export interface DecodeContact_Request {
+  /** encoded_contact is the Protobuf encoding of the shareable contact (as returned by ShareContact). */
+  encodedContact: Uint8Array;
+}
+
+export interface DecodeContact_Reply {
+  /** shareable_contact is the decoded shareable contact. */
+  contact: ShareableContact | undefined;
 }
 
 export interface ContactBlock {
@@ -1363,30 +1335,6 @@ export interface DebugGroup_Reply {
   peerIds: string[];
 }
 
-export interface AuthExchangeResponse {
-  accessToken: string;
-  scope: string;
-  error: string;
-  errorDescription: string;
-  services: { [key: string]: string };
-}
-
-export interface AuthExchangeResponse_ServicesEntry {
-  key: string;
-  value: string;
-}
-
-export interface DebugAuthServiceSetToken {
-}
-
-export interface DebugAuthServiceSetToken_Request {
-  token: AuthExchangeResponse | undefined;
-  authenticationUrl: string;
-}
-
-export interface DebugAuthServiceSetToken_Reply {
-}
-
 export interface ShareableContact {
   /** pk is the account to send a contact request to */
   pk: Uint8Array;
@@ -1406,30 +1354,6 @@ export interface ServiceToken {
   authenticationUrl: string;
   supportedServices: ServiceTokenSupportedService[];
   expiration: number;
-}
-
-export interface AuthServiceCompleteFlow {
-}
-
-export interface AuthServiceCompleteFlow_Request {
-  callbackUrl: string;
-}
-
-export interface AuthServiceCompleteFlow_Reply {
-  tokenId: string;
-}
-
-export interface AuthServiceInitFlow {
-}
-
-export interface AuthServiceInitFlow_Request {
-  authUrl: string;
-  services: string[];
-}
-
-export interface AuthServiceInitFlow_Reply {
-  url: string;
-  secureUrl: boolean;
 }
 
 export interface CredentialVerificationServiceInitFlow {
@@ -1470,29 +1394,14 @@ export interface VerifiedCredentialsList_Reply {
   credential: AccountVerifiedCredentialRegistered | undefined;
 }
 
-export interface ServicesTokenList {
-}
-
-export interface ServicesTokenList_Request {
-}
-
-export interface ServicesTokenList_Reply {
-  tokenId: string;
-  service: ServiceToken | undefined;
-}
-
-export interface ServicesTokenCode {
-  services: string[];
-  codeChallenge: string;
-  tokenId: string;
-}
-
 export interface ReplicationServiceRegisterGroup {
 }
 
 export interface ReplicationServiceRegisterGroup_Request {
-  tokenId: string;
   groupPk: Uint8Array;
+  token: string;
+  authenticationUrl: string;
+  replicationServer: string;
 }
 
 export interface ReplicationServiceRegisterGroup_Reply {
@@ -1674,11 +1583,6 @@ export interface Progress {
   delay: number;
 }
 
-export interface MemberWithDevices {
-  memberPk: Uint8Array;
-  devicesPks: Uint8Array[];
-}
-
 export interface OutOfStoreMessage {
   cid: Uint8Array;
   devicePk: Uint8Array;
@@ -1689,54 +1593,10 @@ export interface OutOfStoreMessage {
   nonce: Uint8Array;
 }
 
-export interface PushServiceReceiver {
-  /** token_type is the type of the token used, it allows us to act as a proxy to the appropriate push server */
-  tokenType: PushServiceTokenType;
-  /** bundle_id is the app identifier */
-  bundleId: string;
-  /** token is the device identifier used */
-  token: Uint8Array;
-  /** recipient_public_key is the public key which will be used to encrypt the payload */
-  recipientPublicKey: Uint8Array;
-}
-
-export interface PushServer {
-  serverKey: Uint8Array;
-  serviceAddr: string;
-}
-
-export interface PushDeviceTokenRegistered {
-  token:
-    | PushServiceReceiver
-    | undefined;
-  /** device_pk is the public key of the device sending the message */
-  devicePk: Uint8Array;
-}
-
-export interface PushDeviceServerRegistered {
-  server:
-    | PushServer
-    | undefined;
-  /** device_pk is the public key of the device sending the message */
-  devicePk: Uint8Array;
-}
-
-export interface AccountVerifiedCredentialRegistered {
-  /** device_pk is the public key of the device sending the message */
-  devicePk: Uint8Array;
-  signedIdentityPublicKey: Uint8Array;
-  verifiedCredential: string;
-  registrationDate: number;
-  expirationDate: number;
-  identifier: string;
-  issuer: string;
-}
-
-export interface PushMemberTokenUpdate {
-  server: PushServer | undefined;
-  token: Uint8Array;
-  /** device_pk is the public key of the device sending the message */
-  devicePk: Uint8Array;
+export interface OutOfStoreMessageEnvelope {
+  nonce: Uint8Array;
+  box: Uint8Array;
+  groupReference: Uint8Array;
 }
 
 export interface OutOfStoreReceive {
@@ -1763,6 +1623,17 @@ export interface OutOfStoreSeal_Request {
 
 export interface OutOfStoreSeal_Reply {
   encrypted: Uint8Array;
+}
+
+export interface AccountVerifiedCredentialRegistered {
+  /** device_pk is the public key of the device sending the message */
+  devicePk: Uint8Array;
+  signedIdentityPublicKey: Uint8Array;
+  verifiedCredential: string;
+  registrationDate: number;
+  expirationDate: number;
+  identifier: string;
+  issuer: string;
 }
 
 export interface FirstLastCounters {
@@ -2662,12 +2533,12 @@ export const EventContext = {
   },
 };
 
-function createBaseAppMetadata(): AppMetadata {
+function createBaseGroupMetadataPayloadSent(): GroupMetadataPayloadSent {
   return { devicePk: new Uint8Array(), message: new Uint8Array() };
 }
 
-export const AppMetadata = {
-  encode(message: AppMetadata, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const GroupMetadataPayloadSent = {
+  encode(message: GroupMetadataPayloadSent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -2677,10 +2548,10 @@ export const AppMetadata = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): AppMetadata {
+  decode(input: _m0.Reader | Uint8Array, length?: number): GroupMetadataPayloadSent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAppMetadata();
+    const message = createBaseGroupMetadataPayloadSent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2698,14 +2569,14 @@ export const AppMetadata = {
     return message;
   },
 
-  fromJSON(object: any): AppMetadata {
+  fromJSON(object: any): GroupMetadataPayloadSent {
     return {
       devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
       message: isSet(object.message) ? bytesFromBase64(object.message) : new Uint8Array(),
     };
   },
 
-  toJSON(message: AppMetadata): unknown {
+  toJSON(message: GroupMetadataPayloadSent): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
       (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
@@ -2714,20 +2585,20 @@ export const AppMetadata = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AppMetadata>, I>>(object: I): AppMetadata {
-    const message = createBaseAppMetadata();
+  fromPartial<I extends Exact<DeepPartial<GroupMetadataPayloadSent>, I>>(object: I): GroupMetadataPayloadSent {
+    const message = createBaseGroupMetadataPayloadSent();
     message.devicePk = object.devicePk ?? new Uint8Array();
     message.message = object.message ?? new Uint8Array();
     return message;
   },
 };
 
-function createBaseContactAddAliasKey(): ContactAddAliasKey {
+function createBaseContactAliasKeyAdded(): ContactAliasKeyAdded {
   return { devicePk: new Uint8Array(), aliasPk: new Uint8Array() };
 }
 
-export const ContactAddAliasKey = {
-  encode(message: ContactAddAliasKey, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const ContactAliasKeyAdded = {
+  encode(message: ContactAliasKeyAdded, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -2737,10 +2608,10 @@ export const ContactAddAliasKey = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): ContactAddAliasKey {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ContactAliasKeyAdded {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseContactAddAliasKey();
+    const message = createBaseContactAliasKeyAdded();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2758,14 +2629,14 @@ export const ContactAddAliasKey = {
     return message;
   },
 
-  fromJSON(object: any): ContactAddAliasKey {
+  fromJSON(object: any): ContactAliasKeyAdded {
     return {
       devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
       aliasPk: isSet(object.aliasPk) ? bytesFromBase64(object.aliasPk) : new Uint8Array(),
     };
   },
 
-  toJSON(message: ContactAddAliasKey): unknown {
+  toJSON(message: ContactAliasKeyAdded): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
       (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
@@ -2774,20 +2645,20 @@ export const ContactAddAliasKey = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ContactAddAliasKey>, I>>(object: I): ContactAddAliasKey {
-    const message = createBaseContactAddAliasKey();
+  fromPartial<I extends Exact<DeepPartial<ContactAliasKeyAdded>, I>>(object: I): ContactAliasKeyAdded {
+    const message = createBaseContactAliasKeyAdded();
     message.devicePk = object.devicePk ?? new Uint8Array();
     message.aliasPk = object.aliasPk ?? new Uint8Array();
     return message;
   },
 };
 
-function createBaseGroupAddMemberDevice(): GroupAddMemberDevice {
+function createBaseGroupMemberDeviceAdded(): GroupMemberDeviceAdded {
   return { memberPk: new Uint8Array(), devicePk: new Uint8Array(), memberSig: new Uint8Array() };
 }
 
-export const GroupAddMemberDevice = {
-  encode(message: GroupAddMemberDevice, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const GroupMemberDeviceAdded = {
+  encode(message: GroupMemberDeviceAdded, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.memberPk.length !== 0) {
       writer.uint32(10).bytes(message.memberPk);
     }
@@ -2800,10 +2671,10 @@ export const GroupAddMemberDevice = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): GroupAddMemberDevice {
+  decode(input: _m0.Reader | Uint8Array, length?: number): GroupMemberDeviceAdded {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseGroupAddMemberDevice();
+    const message = createBaseGroupMemberDeviceAdded();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2824,7 +2695,7 @@ export const GroupAddMemberDevice = {
     return message;
   },
 
-  fromJSON(object: any): GroupAddMemberDevice {
+  fromJSON(object: any): GroupMemberDeviceAdded {
     return {
       memberPk: isSet(object.memberPk) ? bytesFromBase64(object.memberPk) : new Uint8Array(),
       devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
@@ -2832,7 +2703,7 @@ export const GroupAddMemberDevice = {
     };
   },
 
-  toJSON(message: GroupAddMemberDevice): unknown {
+  toJSON(message: GroupMemberDeviceAdded): unknown {
     const obj: any = {};
     message.memberPk !== undefined &&
       (obj.memberPk = base64FromBytes(message.memberPk !== undefined ? message.memberPk : new Uint8Array()));
@@ -2843,8 +2714,8 @@ export const GroupAddMemberDevice = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GroupAddMemberDevice>, I>>(object: I): GroupAddMemberDevice {
-    const message = createBaseGroupAddMemberDevice();
+  fromPartial<I extends Exact<DeepPartial<GroupMemberDeviceAdded>, I>>(object: I): GroupMemberDeviceAdded {
+    const message = createBaseGroupMemberDeviceAdded();
     message.memberPk = object.memberPk ?? new Uint8Array();
     message.devicePk = object.devicePk ?? new Uint8Array();
     message.memberSig = object.memberSig ?? new Uint8Array();
@@ -2911,12 +2782,12 @@ export const DeviceChainKey = {
   },
 };
 
-function createBaseGroupAddDeviceChainKey(): GroupAddDeviceChainKey {
+function createBaseGroupDeviceChainKeyAdded(): GroupDeviceChainKeyAdded {
   return { devicePk: new Uint8Array(), destMemberPk: new Uint8Array(), payload: new Uint8Array() };
 }
 
-export const GroupAddDeviceChainKey = {
-  encode(message: GroupAddDeviceChainKey, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const GroupDeviceChainKeyAdded = {
+  encode(message: GroupDeviceChainKeyAdded, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -2929,10 +2800,10 @@ export const GroupAddDeviceChainKey = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): GroupAddDeviceChainKey {
+  decode(input: _m0.Reader | Uint8Array, length?: number): GroupDeviceChainKeyAdded {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseGroupAddDeviceChainKey();
+    const message = createBaseGroupDeviceChainKeyAdded();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2953,7 +2824,7 @@ export const GroupAddDeviceChainKey = {
     return message;
   },
 
-  fromJSON(object: any): GroupAddDeviceChainKey {
+  fromJSON(object: any): GroupDeviceChainKeyAdded {
     return {
       devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
       destMemberPk: isSet(object.destMemberPk) ? bytesFromBase64(object.destMemberPk) : new Uint8Array(),
@@ -2961,7 +2832,7 @@ export const GroupAddDeviceChainKey = {
     };
   },
 
-  toJSON(message: GroupAddDeviceChainKey): unknown {
+  toJSON(message: GroupDeviceChainKeyAdded): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
       (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
@@ -2974,8 +2845,8 @@ export const GroupAddDeviceChainKey = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GroupAddDeviceChainKey>, I>>(object: I): GroupAddDeviceChainKey {
-    const message = createBaseGroupAddDeviceChainKey();
+  fromPartial<I extends Exact<DeepPartial<GroupDeviceChainKeyAdded>, I>>(object: I): GroupDeviceChainKeyAdded {
+    const message = createBaseGroupDeviceChainKeyAdded();
     message.devicePk = object.devicePk ?? new Uint8Array();
     message.destMemberPk = object.destMemberPk ?? new Uint8Array();
     message.payload = object.payload ?? new Uint8Array();
@@ -2983,12 +2854,12 @@ export const GroupAddDeviceChainKey = {
   },
 };
 
-function createBaseMultiMemberGroupAddAliasResolver(): MultiMemberGroupAddAliasResolver {
+function createBaseMultiMemberGroupAliasResolverAdded(): MultiMemberGroupAliasResolverAdded {
   return { devicePk: new Uint8Array(), aliasResolver: new Uint8Array(), aliasProof: new Uint8Array() };
 }
 
-export const MultiMemberGroupAddAliasResolver = {
-  encode(message: MultiMemberGroupAddAliasResolver, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MultiMemberGroupAliasResolverAdded = {
+  encode(message: MultiMemberGroupAliasResolverAdded, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -3001,10 +2872,10 @@ export const MultiMemberGroupAddAliasResolver = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupAddAliasResolver {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupAliasResolverAdded {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMultiMemberGroupAddAliasResolver();
+    const message = createBaseMultiMemberGroupAliasResolverAdded();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3025,7 +2896,7 @@ export const MultiMemberGroupAddAliasResolver = {
     return message;
   },
 
-  fromJSON(object: any): MultiMemberGroupAddAliasResolver {
+  fromJSON(object: any): MultiMemberGroupAliasResolverAdded {
     return {
       devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
       aliasResolver: isSet(object.aliasResolver) ? bytesFromBase64(object.aliasResolver) : new Uint8Array(),
@@ -3033,7 +2904,7 @@ export const MultiMemberGroupAddAliasResolver = {
     };
   },
 
-  toJSON(message: MultiMemberGroupAddAliasResolver): unknown {
+  toJSON(message: MultiMemberGroupAliasResolverAdded): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
       (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
@@ -3046,10 +2917,10 @@ export const MultiMemberGroupAddAliasResolver = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MultiMemberGroupAddAliasResolver>, I>>(
+  fromPartial<I extends Exact<DeepPartial<MultiMemberGroupAliasResolverAdded>, I>>(
     object: I,
-  ): MultiMemberGroupAddAliasResolver {
-    const message = createBaseMultiMemberGroupAddAliasResolver();
+  ): MultiMemberGroupAliasResolverAdded {
+    const message = createBaseMultiMemberGroupAliasResolverAdded();
     message.devicePk = object.devicePk ?? new Uint8Array();
     message.aliasResolver = object.aliasResolver ?? new Uint8Array();
     message.aliasProof = object.aliasProof ?? new Uint8Array();
@@ -3057,12 +2928,12 @@ export const MultiMemberGroupAddAliasResolver = {
   },
 };
 
-function createBaseMultiMemberGrantAdminRole(): MultiMemberGrantAdminRole {
+function createBaseMultiMemberGroupAdminRoleGranted(): MultiMemberGroupAdminRoleGranted {
   return { devicePk: new Uint8Array(), granteeMemberPk: new Uint8Array() };
 }
 
-export const MultiMemberGrantAdminRole = {
-  encode(message: MultiMemberGrantAdminRole, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MultiMemberGroupAdminRoleGranted = {
+  encode(message: MultiMemberGroupAdminRoleGranted, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -3072,10 +2943,10 @@ export const MultiMemberGrantAdminRole = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGrantAdminRole {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupAdminRoleGranted {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMultiMemberGrantAdminRole();
+    const message = createBaseMultiMemberGroupAdminRoleGranted();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3093,14 +2964,14 @@ export const MultiMemberGrantAdminRole = {
     return message;
   },
 
-  fromJSON(object: any): MultiMemberGrantAdminRole {
+  fromJSON(object: any): MultiMemberGroupAdminRoleGranted {
     return {
       devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
       granteeMemberPk: isSet(object.granteeMemberPk) ? bytesFromBase64(object.granteeMemberPk) : new Uint8Array(),
     };
   },
 
-  toJSON(message: MultiMemberGrantAdminRole): unknown {
+  toJSON(message: MultiMemberGroupAdminRoleGranted): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
       (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
@@ -3111,30 +2982,32 @@ export const MultiMemberGrantAdminRole = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MultiMemberGrantAdminRole>, I>>(object: I): MultiMemberGrantAdminRole {
-    const message = createBaseMultiMemberGrantAdminRole();
+  fromPartial<I extends Exact<DeepPartial<MultiMemberGroupAdminRoleGranted>, I>>(
+    object: I,
+  ): MultiMemberGroupAdminRoleGranted {
+    const message = createBaseMultiMemberGroupAdminRoleGranted();
     message.devicePk = object.devicePk ?? new Uint8Array();
     message.granteeMemberPk = object.granteeMemberPk ?? new Uint8Array();
     return message;
   },
 };
 
-function createBaseMultiMemberInitialMember(): MultiMemberInitialMember {
+function createBaseMultiMemberGroupInitialMemberAnnounced(): MultiMemberGroupInitialMemberAnnounced {
   return { memberPk: new Uint8Array() };
 }
 
-export const MultiMemberInitialMember = {
-  encode(message: MultiMemberInitialMember, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MultiMemberGroupInitialMemberAnnounced = {
+  encode(message: MultiMemberGroupInitialMemberAnnounced, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.memberPk.length !== 0) {
       writer.uint32(10).bytes(message.memberPk);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberInitialMember {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupInitialMemberAnnounced {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMultiMemberInitialMember();
+    const message = createBaseMultiMemberGroupInitialMemberAnnounced();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3149,19 +3022,21 @@ export const MultiMemberInitialMember = {
     return message;
   },
 
-  fromJSON(object: any): MultiMemberInitialMember {
+  fromJSON(object: any): MultiMemberGroupInitialMemberAnnounced {
     return { memberPk: isSet(object.memberPk) ? bytesFromBase64(object.memberPk) : new Uint8Array() };
   },
 
-  toJSON(message: MultiMemberInitialMember): unknown {
+  toJSON(message: MultiMemberGroupInitialMemberAnnounced): unknown {
     const obj: any = {};
     message.memberPk !== undefined &&
       (obj.memberPk = base64FromBytes(message.memberPk !== undefined ? message.memberPk : new Uint8Array()));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MultiMemberInitialMember>, I>>(object: I): MultiMemberInitialMember {
-    const message = createBaseMultiMemberInitialMember();
+  fromPartial<I extends Exact<DeepPartial<MultiMemberGroupInitialMemberAnnounced>, I>>(
+    object: I,
+  ): MultiMemberGroupInitialMemberAnnounced {
+    const message = createBaseMultiMemberGroupInitialMemberAnnounced();
     message.memberPk = object.memberPk ?? new Uint8Array();
     return message;
   },
@@ -3574,12 +3449,12 @@ export const AccountContactRequestReferenceReset = {
   },
 };
 
-function createBaseAccountContactRequestEnqueued(): AccountContactRequestEnqueued {
+function createBaseAccountContactRequestOutgoingEnqueued(): AccountContactRequestOutgoingEnqueued {
   return { devicePk: new Uint8Array(), groupPk: new Uint8Array(), contact: undefined, ownMetadata: new Uint8Array() };
 }
 
-export const AccountContactRequestEnqueued = {
-  encode(message: AccountContactRequestEnqueued, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const AccountContactRequestOutgoingEnqueued = {
+  encode(message: AccountContactRequestOutgoingEnqueued, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -3595,10 +3470,10 @@ export const AccountContactRequestEnqueued = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestEnqueued {
+  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestOutgoingEnqueued {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAccountContactRequestEnqueued();
+    const message = createBaseAccountContactRequestOutgoingEnqueued();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3622,7 +3497,7 @@ export const AccountContactRequestEnqueued = {
     return message;
   },
 
-  fromJSON(object: any): AccountContactRequestEnqueued {
+  fromJSON(object: any): AccountContactRequestOutgoingEnqueued {
     return {
       devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
       groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(),
@@ -3631,7 +3506,7 @@ export const AccountContactRequestEnqueued = {
     };
   },
 
-  toJSON(message: AccountContactRequestEnqueued): unknown {
+  toJSON(message: AccountContactRequestOutgoingEnqueued): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
       (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
@@ -3644,10 +3519,10 @@ export const AccountContactRequestEnqueued = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AccountContactRequestEnqueued>, I>>(
+  fromPartial<I extends Exact<DeepPartial<AccountContactRequestOutgoingEnqueued>, I>>(
     object: I,
-  ): AccountContactRequestEnqueued {
-    const message = createBaseAccountContactRequestEnqueued();
+  ): AccountContactRequestOutgoingEnqueued {
+    const message = createBaseAccountContactRequestOutgoingEnqueued();
     message.devicePk = object.devicePk ?? new Uint8Array();
     message.groupPk = object.groupPk ?? new Uint8Array();
     message.contact = (object.contact !== undefined && object.contact !== null)
@@ -3658,12 +3533,12 @@ export const AccountContactRequestEnqueued = {
   },
 };
 
-function createBaseAccountContactRequestSent(): AccountContactRequestSent {
+function createBaseAccountContactRequestOutgoingSent(): AccountContactRequestOutgoingSent {
   return { devicePk: new Uint8Array(), contactPk: new Uint8Array() };
 }
 
-export const AccountContactRequestSent = {
-  encode(message: AccountContactRequestSent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const AccountContactRequestOutgoingSent = {
+  encode(message: AccountContactRequestOutgoingSent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -3673,10 +3548,10 @@ export const AccountContactRequestSent = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestSent {
+  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestOutgoingSent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAccountContactRequestSent();
+    const message = createBaseAccountContactRequestOutgoingSent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3694,14 +3569,14 @@ export const AccountContactRequestSent = {
     return message;
   },
 
-  fromJSON(object: any): AccountContactRequestSent {
+  fromJSON(object: any): AccountContactRequestOutgoingSent {
     return {
       devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
       contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(),
     };
   },
 
-  toJSON(message: AccountContactRequestSent): unknown {
+  toJSON(message: AccountContactRequestOutgoingSent): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
       (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
@@ -3710,15 +3585,17 @@ export const AccountContactRequestSent = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AccountContactRequestSent>, I>>(object: I): AccountContactRequestSent {
-    const message = createBaseAccountContactRequestSent();
+  fromPartial<I extends Exact<DeepPartial<AccountContactRequestOutgoingSent>, I>>(
+    object: I,
+  ): AccountContactRequestOutgoingSent {
+    const message = createBaseAccountContactRequestOutgoingSent();
     message.devicePk = object.devicePk ?? new Uint8Array();
     message.contactPk = object.contactPk ?? new Uint8Array();
     return message;
   },
 };
 
-function createBaseAccountContactRequestReceived(): AccountContactRequestReceived {
+function createBaseAccountContactRequestIncomingReceived(): AccountContactRequestIncomingReceived {
   return {
     devicePk: new Uint8Array(),
     contactPk: new Uint8Array(),
@@ -3727,8 +3604,8 @@ function createBaseAccountContactRequestReceived(): AccountContactRequestReceive
   };
 }
 
-export const AccountContactRequestReceived = {
-  encode(message: AccountContactRequestReceived, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const AccountContactRequestIncomingReceived = {
+  encode(message: AccountContactRequestIncomingReceived, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -3744,10 +3621,10 @@ export const AccountContactRequestReceived = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestReceived {
+  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestIncomingReceived {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAccountContactRequestReceived();
+    const message = createBaseAccountContactRequestIncomingReceived();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3771,7 +3648,7 @@ export const AccountContactRequestReceived = {
     return message;
   },
 
-  fromJSON(object: any): AccountContactRequestReceived {
+  fromJSON(object: any): AccountContactRequestIncomingReceived {
     return {
       devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
       contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(),
@@ -3782,7 +3659,7 @@ export const AccountContactRequestReceived = {
     };
   },
 
-  toJSON(message: AccountContactRequestReceived): unknown {
+  toJSON(message: AccountContactRequestIncomingReceived): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
       (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
@@ -3799,10 +3676,10 @@ export const AccountContactRequestReceived = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AccountContactRequestReceived>, I>>(
+  fromPartial<I extends Exact<DeepPartial<AccountContactRequestIncomingReceived>, I>>(
     object: I,
-  ): AccountContactRequestReceived {
-    const message = createBaseAccountContactRequestReceived();
+  ): AccountContactRequestIncomingReceived {
+    const message = createBaseAccountContactRequestIncomingReceived();
     message.devicePk = object.devicePk ?? new Uint8Array();
     message.contactPk = object.contactPk ?? new Uint8Array();
     message.contactRendezvousSeed = object.contactRendezvousSeed ?? new Uint8Array();
@@ -3811,12 +3688,12 @@ export const AccountContactRequestReceived = {
   },
 };
 
-function createBaseAccountContactRequestDiscarded(): AccountContactRequestDiscarded {
+function createBaseAccountContactRequestIncomingDiscarded(): AccountContactRequestIncomingDiscarded {
   return { devicePk: new Uint8Array(), contactPk: new Uint8Array() };
 }
 
-export const AccountContactRequestDiscarded = {
-  encode(message: AccountContactRequestDiscarded, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const AccountContactRequestIncomingDiscarded = {
+  encode(message: AccountContactRequestIncomingDiscarded, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -3826,10 +3703,10 @@ export const AccountContactRequestDiscarded = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestDiscarded {
+  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestIncomingDiscarded {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAccountContactRequestDiscarded();
+    const message = createBaseAccountContactRequestIncomingDiscarded();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3847,14 +3724,14 @@ export const AccountContactRequestDiscarded = {
     return message;
   },
 
-  fromJSON(object: any): AccountContactRequestDiscarded {
+  fromJSON(object: any): AccountContactRequestIncomingDiscarded {
     return {
       devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
       contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(),
     };
   },
 
-  toJSON(message: AccountContactRequestDiscarded): unknown {
+  toJSON(message: AccountContactRequestIncomingDiscarded): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
       (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
@@ -3863,22 +3740,22 @@ export const AccountContactRequestDiscarded = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AccountContactRequestDiscarded>, I>>(
+  fromPartial<I extends Exact<DeepPartial<AccountContactRequestIncomingDiscarded>, I>>(
     object: I,
-  ): AccountContactRequestDiscarded {
-    const message = createBaseAccountContactRequestDiscarded();
+  ): AccountContactRequestIncomingDiscarded {
+    const message = createBaseAccountContactRequestIncomingDiscarded();
     message.devicePk = object.devicePk ?? new Uint8Array();
     message.contactPk = object.contactPk ?? new Uint8Array();
     return message;
   },
 };
 
-function createBaseAccountContactRequestAccepted(): AccountContactRequestAccepted {
+function createBaseAccountContactRequestIncomingAccepted(): AccountContactRequestIncomingAccepted {
   return { devicePk: new Uint8Array(), contactPk: new Uint8Array(), groupPk: new Uint8Array() };
 }
 
-export const AccountContactRequestAccepted = {
-  encode(message: AccountContactRequestAccepted, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const AccountContactRequestIncomingAccepted = {
+  encode(message: AccountContactRequestIncomingAccepted, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -3891,10 +3768,10 @@ export const AccountContactRequestAccepted = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestAccepted {
+  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestIncomingAccepted {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAccountContactRequestAccepted();
+    const message = createBaseAccountContactRequestIncomingAccepted();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3915,7 +3792,7 @@ export const AccountContactRequestAccepted = {
     return message;
   },
 
-  fromJSON(object: any): AccountContactRequestAccepted {
+  fromJSON(object: any): AccountContactRequestIncomingAccepted {
     return {
       devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
       contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(),
@@ -3923,7 +3800,7 @@ export const AccountContactRequestAccepted = {
     };
   },
 
-  toJSON(message: AccountContactRequestAccepted): unknown {
+  toJSON(message: AccountContactRequestIncomingAccepted): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
       (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
@@ -3934,10 +3811,10 @@ export const AccountContactRequestAccepted = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AccountContactRequestAccepted>, I>>(
+  fromPartial<I extends Exact<DeepPartial<AccountContactRequestIncomingAccepted>, I>>(
     object: I,
-  ): AccountContactRequestAccepted {
-    const message = createBaseAccountContactRequestAccepted();
+  ): AccountContactRequestIncomingAccepted {
+    const message = createBaseAccountContactRequestIncomingAccepted();
     message.devicePk = object.devicePk ?? new Uint8Array();
     message.contactPk = object.contactPk ?? new Uint8Array();
     message.groupPk = object.groupPk ?? new Uint8Array();
@@ -4061,127 +3938,6 @@ export const AccountContactUnblocked = {
     const message = createBaseAccountContactUnblocked();
     message.devicePk = object.devicePk ?? new Uint8Array();
     message.contactPk = object.contactPk ?? new Uint8Array();
-    return message;
-  },
-};
-
-function createBaseAccountServiceTokenAdded(): AccountServiceTokenAdded {
-  return { devicePk: new Uint8Array(), serviceToken: undefined };
-}
-
-export const AccountServiceTokenAdded = {
-  encode(message: AccountServiceTokenAdded, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.devicePk.length !== 0) {
-      writer.uint32(10).bytes(message.devicePk);
-    }
-    if (message.serviceToken !== undefined) {
-      ServiceToken.encode(message.serviceToken, writer.uint32(18).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AccountServiceTokenAdded {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAccountServiceTokenAdded();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.devicePk = reader.bytes();
-          break;
-        case 2:
-          message.serviceToken = ServiceToken.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): AccountServiceTokenAdded {
-    return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      serviceToken: isSet(object.serviceToken) ? ServiceToken.fromJSON(object.serviceToken) : undefined,
-    };
-  },
-
-  toJSON(message: AccountServiceTokenAdded): unknown {
-    const obj: any = {};
-    message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
-    message.serviceToken !== undefined &&
-      (obj.serviceToken = message.serviceToken ? ServiceToken.toJSON(message.serviceToken) : undefined);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<AccountServiceTokenAdded>, I>>(object: I): AccountServiceTokenAdded {
-    const message = createBaseAccountServiceTokenAdded();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.serviceToken = (object.serviceToken !== undefined && object.serviceToken !== null)
-      ? ServiceToken.fromPartial(object.serviceToken)
-      : undefined;
-    return message;
-  },
-};
-
-function createBaseAccountServiceTokenRemoved(): AccountServiceTokenRemoved {
-  return { devicePk: new Uint8Array(), tokenId: "" };
-}
-
-export const AccountServiceTokenRemoved = {
-  encode(message: AccountServiceTokenRemoved, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.devicePk.length !== 0) {
-      writer.uint32(10).bytes(message.devicePk);
-    }
-    if (message.tokenId !== "") {
-      writer.uint32(18).string(message.tokenId);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AccountServiceTokenRemoved {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAccountServiceTokenRemoved();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.devicePk = reader.bytes();
-          break;
-        case 2:
-          message.tokenId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): AccountServiceTokenRemoved {
-    return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      tokenId: isSet(object.tokenId) ? String(object.tokenId) : "",
-    };
-  },
-
-  toJSON(message: AccountServiceTokenRemoved): unknown {
-    const obj: any = {};
-    message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
-    message.tokenId !== undefined && (obj.tokenId = message.tokenId);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<AccountServiceTokenRemoved>, I>>(object: I): AccountServiceTokenRemoved {
-    const message = createBaseAccountServiceTokenRemoved();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.tokenId = object.tokenId ?? "";
     return message;
   },
 };
@@ -4471,8 +4227,6 @@ function createBaseServiceGetConfiguration_Reply(): ServiceGetConfiguration_Repl
     wifiP2pEnabled: 0,
     mdnsEnabled: 0,
     relayEnabled: 0,
-    devicePushToken: undefined,
-    devicePushServer: undefined,
   };
 }
 
@@ -4504,12 +4258,6 @@ export const ServiceGetConfiguration_Reply = {
     }
     if (message.relayEnabled !== 0) {
       writer.uint32(72).int32(message.relayEnabled);
-    }
-    if (message.devicePushToken !== undefined) {
-      PushServiceReceiver.encode(message.devicePushToken, writer.uint32(82).fork()).ldelim();
-    }
-    if (message.devicePushServer !== undefined) {
-      PushServer.encode(message.devicePushServer, writer.uint32(90).fork()).ldelim();
     }
     return writer;
   },
@@ -4548,12 +4296,6 @@ export const ServiceGetConfiguration_Reply = {
         case 9:
           message.relayEnabled = reader.int32() as any;
           break;
-        case 10:
-          message.devicePushToken = PushServiceReceiver.decode(reader, reader.uint32());
-          break;
-        case 11:
-          message.devicePushServer = PushServer.decode(reader, reader.uint32());
-          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -4575,8 +4317,6 @@ export const ServiceGetConfiguration_Reply = {
         : 0,
       mdnsEnabled: isSet(object.mdnsEnabled) ? serviceGetConfiguration_SettingStateFromJSON(object.mdnsEnabled) : 0,
       relayEnabled: isSet(object.relayEnabled) ? serviceGetConfiguration_SettingStateFromJSON(object.relayEnabled) : 0,
-      devicePushToken: isSet(object.devicePushToken) ? PushServiceReceiver.fromJSON(object.devicePushToken) : undefined,
-      devicePushServer: isSet(object.devicePushServer) ? PushServer.fromJSON(object.devicePushServer) : undefined,
     };
   },
 
@@ -4604,10 +4344,6 @@ export const ServiceGetConfiguration_Reply = {
       (obj.mdnsEnabled = serviceGetConfiguration_SettingStateToJSON(message.mdnsEnabled));
     message.relayEnabled !== undefined &&
       (obj.relayEnabled = serviceGetConfiguration_SettingStateToJSON(message.relayEnabled));
-    message.devicePushToken !== undefined &&
-      (obj.devicePushToken = message.devicePushToken ? PushServiceReceiver.toJSON(message.devicePushToken) : undefined);
-    message.devicePushServer !== undefined &&
-      (obj.devicePushServer = message.devicePushServer ? PushServer.toJSON(message.devicePushServer) : undefined);
     return obj;
   },
 
@@ -4624,12 +4360,6 @@ export const ServiceGetConfiguration_Reply = {
     message.wifiP2pEnabled = object.wifiP2pEnabled ?? 0;
     message.mdnsEnabled = object.mdnsEnabled ?? 0;
     message.relayEnabled = object.relayEnabled ?? 0;
-    message.devicePushToken = (object.devicePushToken !== undefined && object.devicePushToken !== null)
-      ? PushServiceReceiver.fromPartial(object.devicePushToken)
-      : undefined;
-    message.devicePushServer = (object.devicePushServer !== undefined && object.devicePushServer !== null)
-      ? PushServer.fromPartial(object.devicePushServer)
-      : undefined;
     return message;
   },
 };
@@ -5552,6 +5282,273 @@ export const ContactRequestDiscard_Reply = {
 
   fromPartial<I extends Exact<DeepPartial<ContactRequestDiscard_Reply>, I>>(_: I): ContactRequestDiscard_Reply {
     const message = createBaseContactRequestDiscard_Reply();
+    return message;
+  },
+};
+
+function createBaseShareContact(): ShareContact {
+  return {};
+}
+
+export const ShareContact = {
+  encode(_: ShareContact, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ShareContact {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseShareContact();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): ShareContact {
+    return {};
+  },
+
+  toJSON(_: ShareContact): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ShareContact>, I>>(_: I): ShareContact {
+    const message = createBaseShareContact();
+    return message;
+  },
+};
+
+function createBaseShareContact_Request(): ShareContact_Request {
+  return {};
+}
+
+export const ShareContact_Request = {
+  encode(_: ShareContact_Request, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ShareContact_Request {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseShareContact_Request();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): ShareContact_Request {
+    return {};
+  },
+
+  toJSON(_: ShareContact_Request): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ShareContact_Request>, I>>(_: I): ShareContact_Request {
+    const message = createBaseShareContact_Request();
+    return message;
+  },
+};
+
+function createBaseShareContact_Reply(): ShareContact_Reply {
+  return { encodedContact: new Uint8Array() };
+}
+
+export const ShareContact_Reply = {
+  encode(message: ShareContact_Reply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.encodedContact.length !== 0) {
+      writer.uint32(10).bytes(message.encodedContact);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ShareContact_Reply {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseShareContact_Reply();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.encodedContact = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ShareContact_Reply {
+    return { encodedContact: isSet(object.encodedContact) ? bytesFromBase64(object.encodedContact) : new Uint8Array() };
+  },
+
+  toJSON(message: ShareContact_Reply): unknown {
+    const obj: any = {};
+    message.encodedContact !== undefined &&
+      (obj.encodedContact = base64FromBytes(
+        message.encodedContact !== undefined ? message.encodedContact : new Uint8Array(),
+      ));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ShareContact_Reply>, I>>(object: I): ShareContact_Reply {
+    const message = createBaseShareContact_Reply();
+    message.encodedContact = object.encodedContact ?? new Uint8Array();
+    return message;
+  },
+};
+
+function createBaseDecodeContact(): DecodeContact {
+  return {};
+}
+
+export const DecodeContact = {
+  encode(_: DecodeContact, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DecodeContact {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDecodeContact();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): DecodeContact {
+    return {};
+  },
+
+  toJSON(_: DecodeContact): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DecodeContact>, I>>(_: I): DecodeContact {
+    const message = createBaseDecodeContact();
+    return message;
+  },
+};
+
+function createBaseDecodeContact_Request(): DecodeContact_Request {
+  return { encodedContact: new Uint8Array() };
+}
+
+export const DecodeContact_Request = {
+  encode(message: DecodeContact_Request, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.encodedContact.length !== 0) {
+      writer.uint32(10).bytes(message.encodedContact);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DecodeContact_Request {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDecodeContact_Request();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.encodedContact = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DecodeContact_Request {
+    return { encodedContact: isSet(object.encodedContact) ? bytesFromBase64(object.encodedContact) : new Uint8Array() };
+  },
+
+  toJSON(message: DecodeContact_Request): unknown {
+    const obj: any = {};
+    message.encodedContact !== undefined &&
+      (obj.encodedContact = base64FromBytes(
+        message.encodedContact !== undefined ? message.encodedContact : new Uint8Array(),
+      ));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DecodeContact_Request>, I>>(object: I): DecodeContact_Request {
+    const message = createBaseDecodeContact_Request();
+    message.encodedContact = object.encodedContact ?? new Uint8Array();
+    return message;
+  },
+};
+
+function createBaseDecodeContact_Reply(): DecodeContact_Reply {
+  return { contact: undefined };
+}
+
+export const DecodeContact_Reply = {
+  encode(message: DecodeContact_Reply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.contact !== undefined) {
+      ShareableContact.encode(message.contact, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DecodeContact_Reply {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDecodeContact_Reply();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.contact = ShareableContact.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DecodeContact_Reply {
+    return { contact: isSet(object.contact) ? ShareableContact.fromJSON(object.contact) : undefined };
+  },
+
+  toJSON(message: DecodeContact_Reply): unknown {
+    const obj: any = {};
+    message.contact !== undefined &&
+      (obj.contact = message.contact ? ShareableContact.toJSON(message.contact) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DecodeContact_Reply>, I>>(object: I): DecodeContact_Reply {
+    const message = createBaseDecodeContact_Reply();
+    message.contact = (object.contact !== undefined && object.contact !== null)
+      ? ShareableContact.fromPartial(object.contact)
+      : undefined;
     return message;
   },
 };
@@ -8711,306 +8708,6 @@ export const DebugGroup_Reply = {
   },
 };
 
-function createBaseAuthExchangeResponse(): AuthExchangeResponse {
-  return { accessToken: "", scope: "", error: "", errorDescription: "", services: {} };
-}
-
-export const AuthExchangeResponse = {
-  encode(message: AuthExchangeResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.accessToken !== "") {
-      writer.uint32(10).string(message.accessToken);
-    }
-    if (message.scope !== "") {
-      writer.uint32(18).string(message.scope);
-    }
-    if (message.error !== "") {
-      writer.uint32(26).string(message.error);
-    }
-    if (message.errorDescription !== "") {
-      writer.uint32(34).string(message.errorDescription);
-    }
-    Object.entries(message.services).forEach(([key, value]) => {
-      AuthExchangeResponse_ServicesEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).ldelim();
-    });
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AuthExchangeResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAuthExchangeResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.accessToken = reader.string();
-          break;
-        case 2:
-          message.scope = reader.string();
-          break;
-        case 3:
-          message.error = reader.string();
-          break;
-        case 4:
-          message.errorDescription = reader.string();
-          break;
-        case 5:
-          const entry5 = AuthExchangeResponse_ServicesEntry.decode(reader, reader.uint32());
-          if (entry5.value !== undefined) {
-            message.services[entry5.key] = entry5.value;
-          }
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): AuthExchangeResponse {
-    return {
-      accessToken: isSet(object.accessToken) ? String(object.accessToken) : "",
-      scope: isSet(object.scope) ? String(object.scope) : "",
-      error: isSet(object.error) ? String(object.error) : "",
-      errorDescription: isSet(object.errorDescription) ? String(object.errorDescription) : "",
-      services: isObject(object.services)
-        ? Object.entries(object.services).reduce<{ [key: string]: string }>((acc, [key, value]) => {
-          acc[key] = String(value);
-          return acc;
-        }, {})
-        : {},
-    };
-  },
-
-  toJSON(message: AuthExchangeResponse): unknown {
-    const obj: any = {};
-    message.accessToken !== undefined && (obj.accessToken = message.accessToken);
-    message.scope !== undefined && (obj.scope = message.scope);
-    message.error !== undefined && (obj.error = message.error);
-    message.errorDescription !== undefined && (obj.errorDescription = message.errorDescription);
-    obj.services = {};
-    if (message.services) {
-      Object.entries(message.services).forEach(([k, v]) => {
-        obj.services[k] = v;
-      });
-    }
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<AuthExchangeResponse>, I>>(object: I): AuthExchangeResponse {
-    const message = createBaseAuthExchangeResponse();
-    message.accessToken = object.accessToken ?? "";
-    message.scope = object.scope ?? "";
-    message.error = object.error ?? "";
-    message.errorDescription = object.errorDescription ?? "";
-    message.services = Object.entries(object.services ?? {}).reduce<{ [key: string]: string }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = String(value);
-      }
-      return acc;
-    }, {});
-    return message;
-  },
-};
-
-function createBaseAuthExchangeResponse_ServicesEntry(): AuthExchangeResponse_ServicesEntry {
-  return { key: "", value: "" };
-}
-
-export const AuthExchangeResponse_ServicesEntry = {
-  encode(message: AuthExchangeResponse_ServicesEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== "") {
-      writer.uint32(18).string(message.value);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AuthExchangeResponse_ServicesEntry {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAuthExchangeResponse_ServicesEntry();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.key = reader.string();
-          break;
-        case 2:
-          message.value = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): AuthExchangeResponse_ServicesEntry {
-    return { key: isSet(object.key) ? String(object.key) : "", value: isSet(object.value) ? String(object.value) : "" };
-  },
-
-  toJSON(message: AuthExchangeResponse_ServicesEntry): unknown {
-    const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<AuthExchangeResponse_ServicesEntry>, I>>(
-    object: I,
-  ): AuthExchangeResponse_ServicesEntry {
-    const message = createBaseAuthExchangeResponse_ServicesEntry();
-    message.key = object.key ?? "";
-    message.value = object.value ?? "";
-    return message;
-  },
-};
-
-function createBaseDebugAuthServiceSetToken(): DebugAuthServiceSetToken {
-  return {};
-}
-
-export const DebugAuthServiceSetToken = {
-  encode(_: DebugAuthServiceSetToken, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): DebugAuthServiceSetToken {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDebugAuthServiceSetToken();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): DebugAuthServiceSetToken {
-    return {};
-  },
-
-  toJSON(_: DebugAuthServiceSetToken): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<DebugAuthServiceSetToken>, I>>(_: I): DebugAuthServiceSetToken {
-    const message = createBaseDebugAuthServiceSetToken();
-    return message;
-  },
-};
-
-function createBaseDebugAuthServiceSetToken_Request(): DebugAuthServiceSetToken_Request {
-  return { token: undefined, authenticationUrl: "" };
-}
-
-export const DebugAuthServiceSetToken_Request = {
-  encode(message: DebugAuthServiceSetToken_Request, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.token !== undefined) {
-      AuthExchangeResponse.encode(message.token, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.authenticationUrl !== "") {
-      writer.uint32(18).string(message.authenticationUrl);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): DebugAuthServiceSetToken_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDebugAuthServiceSetToken_Request();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.token = AuthExchangeResponse.decode(reader, reader.uint32());
-          break;
-        case 2:
-          message.authenticationUrl = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): DebugAuthServiceSetToken_Request {
-    return {
-      token: isSet(object.token) ? AuthExchangeResponse.fromJSON(object.token) : undefined,
-      authenticationUrl: isSet(object.authenticationUrl) ? String(object.authenticationUrl) : "",
-    };
-  },
-
-  toJSON(message: DebugAuthServiceSetToken_Request): unknown {
-    const obj: any = {};
-    message.token !== undefined && (obj.token = message.token ? AuthExchangeResponse.toJSON(message.token) : undefined);
-    message.authenticationUrl !== undefined && (obj.authenticationUrl = message.authenticationUrl);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<DebugAuthServiceSetToken_Request>, I>>(
-    object: I,
-  ): DebugAuthServiceSetToken_Request {
-    const message = createBaseDebugAuthServiceSetToken_Request();
-    message.token = (object.token !== undefined && object.token !== null)
-      ? AuthExchangeResponse.fromPartial(object.token)
-      : undefined;
-    message.authenticationUrl = object.authenticationUrl ?? "";
-    return message;
-  },
-};
-
-function createBaseDebugAuthServiceSetToken_Reply(): DebugAuthServiceSetToken_Reply {
-  return {};
-}
-
-export const DebugAuthServiceSetToken_Reply = {
-  encode(_: DebugAuthServiceSetToken_Reply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): DebugAuthServiceSetToken_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDebugAuthServiceSetToken_Reply();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): DebugAuthServiceSetToken_Reply {
-    return {};
-  },
-
-  toJSON(_: DebugAuthServiceSetToken_Reply): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<DebugAuthServiceSetToken_Reply>, I>>(_: I): DebugAuthServiceSetToken_Reply {
-    const message = createBaseDebugAuthServiceSetToken_Reply();
-    return message;
-  },
-};
-
 function createBaseShareableContact(): ShareableContact {
   return { pk: new Uint8Array(), publicRendezvousSeed: new Uint8Array(), metadata: new Uint8Array() };
 }
@@ -9222,302 +8919,6 @@ export const ServiceToken = {
     message.authenticationUrl = object.authenticationUrl ?? "";
     message.supportedServices = object.supportedServices?.map((e) => ServiceTokenSupportedService.fromPartial(e)) || [];
     message.expiration = object.expiration ?? 0;
-    return message;
-  },
-};
-
-function createBaseAuthServiceCompleteFlow(): AuthServiceCompleteFlow {
-  return {};
-}
-
-export const AuthServiceCompleteFlow = {
-  encode(_: AuthServiceCompleteFlow, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AuthServiceCompleteFlow {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAuthServiceCompleteFlow();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): AuthServiceCompleteFlow {
-    return {};
-  },
-
-  toJSON(_: AuthServiceCompleteFlow): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<AuthServiceCompleteFlow>, I>>(_: I): AuthServiceCompleteFlow {
-    const message = createBaseAuthServiceCompleteFlow();
-    return message;
-  },
-};
-
-function createBaseAuthServiceCompleteFlow_Request(): AuthServiceCompleteFlow_Request {
-  return { callbackUrl: "" };
-}
-
-export const AuthServiceCompleteFlow_Request = {
-  encode(message: AuthServiceCompleteFlow_Request, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.callbackUrl !== "") {
-      writer.uint32(10).string(message.callbackUrl);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AuthServiceCompleteFlow_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAuthServiceCompleteFlow_Request();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.callbackUrl = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): AuthServiceCompleteFlow_Request {
-    return { callbackUrl: isSet(object.callbackUrl) ? String(object.callbackUrl) : "" };
-  },
-
-  toJSON(message: AuthServiceCompleteFlow_Request): unknown {
-    const obj: any = {};
-    message.callbackUrl !== undefined && (obj.callbackUrl = message.callbackUrl);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<AuthServiceCompleteFlow_Request>, I>>(
-    object: I,
-  ): AuthServiceCompleteFlow_Request {
-    const message = createBaseAuthServiceCompleteFlow_Request();
-    message.callbackUrl = object.callbackUrl ?? "";
-    return message;
-  },
-};
-
-function createBaseAuthServiceCompleteFlow_Reply(): AuthServiceCompleteFlow_Reply {
-  return { tokenId: "" };
-}
-
-export const AuthServiceCompleteFlow_Reply = {
-  encode(message: AuthServiceCompleteFlow_Reply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.tokenId !== "") {
-      writer.uint32(10).string(message.tokenId);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AuthServiceCompleteFlow_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAuthServiceCompleteFlow_Reply();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.tokenId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): AuthServiceCompleteFlow_Reply {
-    return { tokenId: isSet(object.tokenId) ? String(object.tokenId) : "" };
-  },
-
-  toJSON(message: AuthServiceCompleteFlow_Reply): unknown {
-    const obj: any = {};
-    message.tokenId !== undefined && (obj.tokenId = message.tokenId);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<AuthServiceCompleteFlow_Reply>, I>>(
-    object: I,
-  ): AuthServiceCompleteFlow_Reply {
-    const message = createBaseAuthServiceCompleteFlow_Reply();
-    message.tokenId = object.tokenId ?? "";
-    return message;
-  },
-};
-
-function createBaseAuthServiceInitFlow(): AuthServiceInitFlow {
-  return {};
-}
-
-export const AuthServiceInitFlow = {
-  encode(_: AuthServiceInitFlow, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AuthServiceInitFlow {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAuthServiceInitFlow();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): AuthServiceInitFlow {
-    return {};
-  },
-
-  toJSON(_: AuthServiceInitFlow): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<AuthServiceInitFlow>, I>>(_: I): AuthServiceInitFlow {
-    const message = createBaseAuthServiceInitFlow();
-    return message;
-  },
-};
-
-function createBaseAuthServiceInitFlow_Request(): AuthServiceInitFlow_Request {
-  return { authUrl: "", services: [] };
-}
-
-export const AuthServiceInitFlow_Request = {
-  encode(message: AuthServiceInitFlow_Request, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.authUrl !== "") {
-      writer.uint32(10).string(message.authUrl);
-    }
-    for (const v of message.services) {
-      writer.uint32(26).string(v!);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AuthServiceInitFlow_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAuthServiceInitFlow_Request();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.authUrl = reader.string();
-          break;
-        case 3:
-          message.services.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): AuthServiceInitFlow_Request {
-    return {
-      authUrl: isSet(object.authUrl) ? String(object.authUrl) : "",
-      services: Array.isArray(object?.services) ? object.services.map((e: any) => String(e)) : [],
-    };
-  },
-
-  toJSON(message: AuthServiceInitFlow_Request): unknown {
-    const obj: any = {};
-    message.authUrl !== undefined && (obj.authUrl = message.authUrl);
-    if (message.services) {
-      obj.services = message.services.map((e) => e);
-    } else {
-      obj.services = [];
-    }
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<AuthServiceInitFlow_Request>, I>>(object: I): AuthServiceInitFlow_Request {
-    const message = createBaseAuthServiceInitFlow_Request();
-    message.authUrl = object.authUrl ?? "";
-    message.services = object.services?.map((e) => e) || [];
-    return message;
-  },
-};
-
-function createBaseAuthServiceInitFlow_Reply(): AuthServiceInitFlow_Reply {
-  return { url: "", secureUrl: false };
-}
-
-export const AuthServiceInitFlow_Reply = {
-  encode(message: AuthServiceInitFlow_Reply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.url !== "") {
-      writer.uint32(10).string(message.url);
-    }
-    if (message.secureUrl === true) {
-      writer.uint32(16).bool(message.secureUrl);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AuthServiceInitFlow_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAuthServiceInitFlow_Reply();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.url = reader.string();
-          break;
-        case 2:
-          message.secureUrl = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): AuthServiceInitFlow_Reply {
-    return {
-      url: isSet(object.url) ? String(object.url) : "",
-      secureUrl: isSet(object.secureUrl) ? Boolean(object.secureUrl) : false,
-    };
-  },
-
-  toJSON(message: AuthServiceInitFlow_Reply): unknown {
-    const obj: any = {};
-    message.url !== undefined && (obj.url = message.url);
-    message.secureUrl !== undefined && (obj.secureUrl = message.secureUrl);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<AuthServiceInitFlow_Reply>, I>>(object: I): AuthServiceInitFlow_Reply {
-    const message = createBaseAuthServiceInitFlow_Reply();
-    message.url = object.url ?? "";
-    message.secureUrl = object.secureUrl ?? false;
     return message;
   },
 };
@@ -10004,215 +9405,6 @@ export const VerifiedCredentialsList_Reply = {
   },
 };
 
-function createBaseServicesTokenList(): ServicesTokenList {
-  return {};
-}
-
-export const ServicesTokenList = {
-  encode(_: ServicesTokenList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ServicesTokenList {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseServicesTokenList();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): ServicesTokenList {
-    return {};
-  },
-
-  toJSON(_: ServicesTokenList): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<ServicesTokenList>, I>>(_: I): ServicesTokenList {
-    const message = createBaseServicesTokenList();
-    return message;
-  },
-};
-
-function createBaseServicesTokenList_Request(): ServicesTokenList_Request {
-  return {};
-}
-
-export const ServicesTokenList_Request = {
-  encode(_: ServicesTokenList_Request, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ServicesTokenList_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseServicesTokenList_Request();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): ServicesTokenList_Request {
-    return {};
-  },
-
-  toJSON(_: ServicesTokenList_Request): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<ServicesTokenList_Request>, I>>(_: I): ServicesTokenList_Request {
-    const message = createBaseServicesTokenList_Request();
-    return message;
-  },
-};
-
-function createBaseServicesTokenList_Reply(): ServicesTokenList_Reply {
-  return { tokenId: "", service: undefined };
-}
-
-export const ServicesTokenList_Reply = {
-  encode(message: ServicesTokenList_Reply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.tokenId !== "") {
-      writer.uint32(10).string(message.tokenId);
-    }
-    if (message.service !== undefined) {
-      ServiceToken.encode(message.service, writer.uint32(18).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ServicesTokenList_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseServicesTokenList_Reply();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.tokenId = reader.string();
-          break;
-        case 2:
-          message.service = ServiceToken.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ServicesTokenList_Reply {
-    return {
-      tokenId: isSet(object.tokenId) ? String(object.tokenId) : "",
-      service: isSet(object.service) ? ServiceToken.fromJSON(object.service) : undefined,
-    };
-  },
-
-  toJSON(message: ServicesTokenList_Reply): unknown {
-    const obj: any = {};
-    message.tokenId !== undefined && (obj.tokenId = message.tokenId);
-    message.service !== undefined && (obj.service = message.service ? ServiceToken.toJSON(message.service) : undefined);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<ServicesTokenList_Reply>, I>>(object: I): ServicesTokenList_Reply {
-    const message = createBaseServicesTokenList_Reply();
-    message.tokenId = object.tokenId ?? "";
-    message.service = (object.service !== undefined && object.service !== null)
-      ? ServiceToken.fromPartial(object.service)
-      : undefined;
-    return message;
-  },
-};
-
-function createBaseServicesTokenCode(): ServicesTokenCode {
-  return { services: [], codeChallenge: "", tokenId: "" };
-}
-
-export const ServicesTokenCode = {
-  encode(message: ServicesTokenCode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.services) {
-      writer.uint32(10).string(v!);
-    }
-    if (message.codeChallenge !== "") {
-      writer.uint32(18).string(message.codeChallenge);
-    }
-    if (message.tokenId !== "") {
-      writer.uint32(26).string(message.tokenId);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ServicesTokenCode {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseServicesTokenCode();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.services.push(reader.string());
-          break;
-        case 2:
-          message.codeChallenge = reader.string();
-          break;
-        case 3:
-          message.tokenId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ServicesTokenCode {
-    return {
-      services: Array.isArray(object?.services) ? object.services.map((e: any) => String(e)) : [],
-      codeChallenge: isSet(object.codeChallenge) ? String(object.codeChallenge) : "",
-      tokenId: isSet(object.tokenId) ? String(object.tokenId) : "",
-    };
-  },
-
-  toJSON(message: ServicesTokenCode): unknown {
-    const obj: any = {};
-    if (message.services) {
-      obj.services = message.services.map((e) => e);
-    } else {
-      obj.services = [];
-    }
-    message.codeChallenge !== undefined && (obj.codeChallenge = message.codeChallenge);
-    message.tokenId !== undefined && (obj.tokenId = message.tokenId);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<ServicesTokenCode>, I>>(object: I): ServicesTokenCode {
-    const message = createBaseServicesTokenCode();
-    message.services = object.services?.map((e) => e) || [];
-    message.codeChallenge = object.codeChallenge ?? "";
-    message.tokenId = object.tokenId ?? "";
-    return message;
-  },
-};
-
 function createBaseReplicationServiceRegisterGroup(): ReplicationServiceRegisterGroup {
   return {};
 }
@@ -10253,16 +9445,22 @@ export const ReplicationServiceRegisterGroup = {
 };
 
 function createBaseReplicationServiceRegisterGroup_Request(): ReplicationServiceRegisterGroup_Request {
-  return { tokenId: "", groupPk: new Uint8Array() };
+  return { groupPk: new Uint8Array(), token: "", authenticationUrl: "", replicationServer: "" };
 }
 
 export const ReplicationServiceRegisterGroup_Request = {
   encode(message: ReplicationServiceRegisterGroup_Request, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.tokenId !== "") {
-      writer.uint32(10).string(message.tokenId);
-    }
     if (message.groupPk.length !== 0) {
-      writer.uint32(18).bytes(message.groupPk);
+      writer.uint32(10).bytes(message.groupPk);
+    }
+    if (message.token !== "") {
+      writer.uint32(18).string(message.token);
+    }
+    if (message.authenticationUrl !== "") {
+      writer.uint32(26).string(message.authenticationUrl);
+    }
+    if (message.replicationServer !== "") {
+      writer.uint32(34).string(message.replicationServer);
     }
     return writer;
   },
@@ -10275,10 +9473,16 @@ export const ReplicationServiceRegisterGroup_Request = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.tokenId = reader.string();
+          message.groupPk = reader.bytes();
           break;
         case 2:
-          message.groupPk = reader.bytes();
+          message.token = reader.string();
+          break;
+        case 3:
+          message.authenticationUrl = reader.string();
+          break;
+        case 4:
+          message.replicationServer = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -10290,16 +9494,20 @@ export const ReplicationServiceRegisterGroup_Request = {
 
   fromJSON(object: any): ReplicationServiceRegisterGroup_Request {
     return {
-      tokenId: isSet(object.tokenId) ? String(object.tokenId) : "",
       groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(),
+      token: isSet(object.token) ? String(object.token) : "",
+      authenticationUrl: isSet(object.authenticationUrl) ? String(object.authenticationUrl) : "",
+      replicationServer: isSet(object.replicationServer) ? String(object.replicationServer) : "",
     };
   },
 
   toJSON(message: ReplicationServiceRegisterGroup_Request): unknown {
     const obj: any = {};
-    message.tokenId !== undefined && (obj.tokenId = message.tokenId);
     message.groupPk !== undefined &&
       (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+    message.token !== undefined && (obj.token = message.token);
+    message.authenticationUrl !== undefined && (obj.authenticationUrl = message.authenticationUrl);
+    message.replicationServer !== undefined && (obj.replicationServer = message.replicationServer);
     return obj;
   },
 
@@ -10307,8 +9515,10 @@ export const ReplicationServiceRegisterGroup_Request = {
     object: I,
   ): ReplicationServiceRegisterGroup_Request {
     const message = createBaseReplicationServiceRegisterGroup_Request();
-    message.tokenId = object.tokenId ?? "";
     message.groupPk = object.groupPk ?? new Uint8Array();
+    message.token = object.token ?? "";
+    message.authenticationUrl = object.authenticationUrl ?? "";
+    message.replicationServer = object.replicationServer ?? "";
     return message;
   },
 };
@@ -11583,69 +10793,6 @@ export const Progress = {
   },
 };
 
-function createBaseMemberWithDevices(): MemberWithDevices {
-  return { memberPk: new Uint8Array(), devicesPks: [] };
-}
-
-export const MemberWithDevices = {
-  encode(message: MemberWithDevices, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.memberPk.length !== 0) {
-      writer.uint32(10).bytes(message.memberPk);
-    }
-    for (const v of message.devicesPks) {
-      writer.uint32(18).bytes(v!);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MemberWithDevices {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMemberWithDevices();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.memberPk = reader.bytes();
-          break;
-        case 2:
-          message.devicesPks.push(reader.bytes());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MemberWithDevices {
-    return {
-      memberPk: isSet(object.memberPk) ? bytesFromBase64(object.memberPk) : new Uint8Array(),
-      devicesPks: Array.isArray(object?.devicesPks) ? object.devicesPks.map((e: any) => bytesFromBase64(e)) : [],
-    };
-  },
-
-  toJSON(message: MemberWithDevices): unknown {
-    const obj: any = {};
-    message.memberPk !== undefined &&
-      (obj.memberPk = base64FromBytes(message.memberPk !== undefined ? message.memberPk : new Uint8Array()));
-    if (message.devicesPks) {
-      obj.devicesPks = message.devicesPks.map((e) => base64FromBytes(e !== undefined ? e : new Uint8Array()));
-    } else {
-      obj.devicesPks = [];
-    }
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<MemberWithDevices>, I>>(object: I): MemberWithDevices {
-    const message = createBaseMemberWithDevices();
-    message.memberPk = object.memberPk ?? new Uint8Array();
-    message.devicesPks = object.devicesPks?.map((e) => e) || [];
-    return message;
-  },
-};
-
 function createBaseOutOfStoreMessage(): OutOfStoreMessage {
   return {
     cid: new Uint8Array(),
@@ -11764,45 +10911,39 @@ export const OutOfStoreMessage = {
   },
 };
 
-function createBasePushServiceReceiver(): PushServiceReceiver {
-  return { tokenType: 0, bundleId: "", token: new Uint8Array(), recipientPublicKey: new Uint8Array() };
+function createBaseOutOfStoreMessageEnvelope(): OutOfStoreMessageEnvelope {
+  return { nonce: new Uint8Array(), box: new Uint8Array(), groupReference: new Uint8Array() };
 }
 
-export const PushServiceReceiver = {
-  encode(message: PushServiceReceiver, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.tokenType !== 0) {
-      writer.uint32(8).int32(message.tokenType);
+export const OutOfStoreMessageEnvelope = {
+  encode(message: OutOfStoreMessageEnvelope, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.nonce.length !== 0) {
+      writer.uint32(10).bytes(message.nonce);
     }
-    if (message.bundleId !== "") {
-      writer.uint32(18).string(message.bundleId);
+    if (message.box.length !== 0) {
+      writer.uint32(18).bytes(message.box);
     }
-    if (message.token.length !== 0) {
-      writer.uint32(26).bytes(message.token);
-    }
-    if (message.recipientPublicKey.length !== 0) {
-      writer.uint32(34).bytes(message.recipientPublicKey);
+    if (message.groupReference.length !== 0) {
+      writer.uint32(26).bytes(message.groupReference);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): PushServiceReceiver {
+  decode(input: _m0.Reader | Uint8Array, length?: number): OutOfStoreMessageEnvelope {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePushServiceReceiver();
+    const message = createBaseOutOfStoreMessageEnvelope();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.tokenType = reader.int32() as any;
+          message.nonce = reader.bytes();
           break;
         case 2:
-          message.bundleId = reader.string();
+          message.box = reader.bytes();
           break;
         case 3:
-          message.token = reader.bytes();
-          break;
-        case 4:
-          message.recipientPublicKey = reader.bytes();
+          message.groupReference = reader.bytes();
           break;
         default:
           reader.skipType(tag & 7);
@@ -11812,407 +10953,32 @@ export const PushServiceReceiver = {
     return message;
   },
 
-  fromJSON(object: any): PushServiceReceiver {
+  fromJSON(object: any): OutOfStoreMessageEnvelope {
     return {
-      tokenType: isSet(object.tokenType) ? pushServiceTokenTypeFromJSON(object.tokenType) : 0,
-      bundleId: isSet(object.bundleId) ? String(object.bundleId) : "",
-      token: isSet(object.token) ? bytesFromBase64(object.token) : new Uint8Array(),
-      recipientPublicKey: isSet(object.recipientPublicKey)
-        ? bytesFromBase64(object.recipientPublicKey)
-        : new Uint8Array(),
+      nonce: isSet(object.nonce) ? bytesFromBase64(object.nonce) : new Uint8Array(),
+      box: isSet(object.box) ? bytesFromBase64(object.box) : new Uint8Array(),
+      groupReference: isSet(object.groupReference) ? bytesFromBase64(object.groupReference) : new Uint8Array(),
     };
   },
 
-  toJSON(message: PushServiceReceiver): unknown {
+  toJSON(message: OutOfStoreMessageEnvelope): unknown {
     const obj: any = {};
-    message.tokenType !== undefined && (obj.tokenType = pushServiceTokenTypeToJSON(message.tokenType));
-    message.bundleId !== undefined && (obj.bundleId = message.bundleId);
-    message.token !== undefined &&
-      (obj.token = base64FromBytes(message.token !== undefined ? message.token : new Uint8Array()));
-    message.recipientPublicKey !== undefined &&
-      (obj.recipientPublicKey = base64FromBytes(
-        message.recipientPublicKey !== undefined ? message.recipientPublicKey : new Uint8Array(),
+    message.nonce !== undefined &&
+      (obj.nonce = base64FromBytes(message.nonce !== undefined ? message.nonce : new Uint8Array()));
+    message.box !== undefined &&
+      (obj.box = base64FromBytes(message.box !== undefined ? message.box : new Uint8Array()));
+    message.groupReference !== undefined &&
+      (obj.groupReference = base64FromBytes(
+        message.groupReference !== undefined ? message.groupReference : new Uint8Array(),
       ));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PushServiceReceiver>, I>>(object: I): PushServiceReceiver {
-    const message = createBasePushServiceReceiver();
-    message.tokenType = object.tokenType ?? 0;
-    message.bundleId = object.bundleId ?? "";
-    message.token = object.token ?? new Uint8Array();
-    message.recipientPublicKey = object.recipientPublicKey ?? new Uint8Array();
-    return message;
-  },
-};
-
-function createBasePushServer(): PushServer {
-  return { serverKey: new Uint8Array(), serviceAddr: "" };
-}
-
-export const PushServer = {
-  encode(message: PushServer, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.serverKey.length !== 0) {
-      writer.uint32(10).bytes(message.serverKey);
-    }
-    if (message.serviceAddr !== "") {
-      writer.uint32(18).string(message.serviceAddr);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): PushServer {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePushServer();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.serverKey = reader.bytes();
-          break;
-        case 2:
-          message.serviceAddr = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): PushServer {
-    return {
-      serverKey: isSet(object.serverKey) ? bytesFromBase64(object.serverKey) : new Uint8Array(),
-      serviceAddr: isSet(object.serviceAddr) ? String(object.serviceAddr) : "",
-    };
-  },
-
-  toJSON(message: PushServer): unknown {
-    const obj: any = {};
-    message.serverKey !== undefined &&
-      (obj.serverKey = base64FromBytes(message.serverKey !== undefined ? message.serverKey : new Uint8Array()));
-    message.serviceAddr !== undefined && (obj.serviceAddr = message.serviceAddr);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<PushServer>, I>>(object: I): PushServer {
-    const message = createBasePushServer();
-    message.serverKey = object.serverKey ?? new Uint8Array();
-    message.serviceAddr = object.serviceAddr ?? "";
-    return message;
-  },
-};
-
-function createBasePushDeviceTokenRegistered(): PushDeviceTokenRegistered {
-  return { token: undefined, devicePk: new Uint8Array() };
-}
-
-export const PushDeviceTokenRegistered = {
-  encode(message: PushDeviceTokenRegistered, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.token !== undefined) {
-      PushServiceReceiver.encode(message.token, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.devicePk.length !== 0) {
-      writer.uint32(18).bytes(message.devicePk);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): PushDeviceTokenRegistered {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePushDeviceTokenRegistered();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.token = PushServiceReceiver.decode(reader, reader.uint32());
-          break;
-        case 2:
-          message.devicePk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): PushDeviceTokenRegistered {
-    return {
-      token: isSet(object.token) ? PushServiceReceiver.fromJSON(object.token) : undefined,
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-    };
-  },
-
-  toJSON(message: PushDeviceTokenRegistered): unknown {
-    const obj: any = {};
-    message.token !== undefined && (obj.token = message.token ? PushServiceReceiver.toJSON(message.token) : undefined);
-    message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<PushDeviceTokenRegistered>, I>>(object: I): PushDeviceTokenRegistered {
-    const message = createBasePushDeviceTokenRegistered();
-    message.token = (object.token !== undefined && object.token !== null)
-      ? PushServiceReceiver.fromPartial(object.token)
-      : undefined;
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    return message;
-  },
-};
-
-function createBasePushDeviceServerRegistered(): PushDeviceServerRegistered {
-  return { server: undefined, devicePk: new Uint8Array() };
-}
-
-export const PushDeviceServerRegistered = {
-  encode(message: PushDeviceServerRegistered, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.server !== undefined) {
-      PushServer.encode(message.server, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.devicePk.length !== 0) {
-      writer.uint32(18).bytes(message.devicePk);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): PushDeviceServerRegistered {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePushDeviceServerRegistered();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.server = PushServer.decode(reader, reader.uint32());
-          break;
-        case 2:
-          message.devicePk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): PushDeviceServerRegistered {
-    return {
-      server: isSet(object.server) ? PushServer.fromJSON(object.server) : undefined,
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-    };
-  },
-
-  toJSON(message: PushDeviceServerRegistered): unknown {
-    const obj: any = {};
-    message.server !== undefined && (obj.server = message.server ? PushServer.toJSON(message.server) : undefined);
-    message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<PushDeviceServerRegistered>, I>>(object: I): PushDeviceServerRegistered {
-    const message = createBasePushDeviceServerRegistered();
-    message.server = (object.server !== undefined && object.server !== null)
-      ? PushServer.fromPartial(object.server)
-      : undefined;
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    return message;
-  },
-};
-
-function createBaseAccountVerifiedCredentialRegistered(): AccountVerifiedCredentialRegistered {
-  return {
-    devicePk: new Uint8Array(),
-    signedIdentityPublicKey: new Uint8Array(),
-    verifiedCredential: "",
-    registrationDate: 0,
-    expirationDate: 0,
-    identifier: "",
-    issuer: "",
-  };
-}
-
-export const AccountVerifiedCredentialRegistered = {
-  encode(message: AccountVerifiedCredentialRegistered, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.devicePk.length !== 0) {
-      writer.uint32(10).bytes(message.devicePk);
-    }
-    if (message.signedIdentityPublicKey.length !== 0) {
-      writer.uint32(18).bytes(message.signedIdentityPublicKey);
-    }
-    if (message.verifiedCredential !== "") {
-      writer.uint32(26).string(message.verifiedCredential);
-    }
-    if (message.registrationDate !== 0) {
-      writer.uint32(32).int64(message.registrationDate);
-    }
-    if (message.expirationDate !== 0) {
-      writer.uint32(40).int64(message.expirationDate);
-    }
-    if (message.identifier !== "") {
-      writer.uint32(50).string(message.identifier);
-    }
-    if (message.issuer !== "") {
-      writer.uint32(58).string(message.issuer);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AccountVerifiedCredentialRegistered {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAccountVerifiedCredentialRegistered();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.devicePk = reader.bytes();
-          break;
-        case 2:
-          message.signedIdentityPublicKey = reader.bytes();
-          break;
-        case 3:
-          message.verifiedCredential = reader.string();
-          break;
-        case 4:
-          message.registrationDate = longToNumber(reader.int64() as Long);
-          break;
-        case 5:
-          message.expirationDate = longToNumber(reader.int64() as Long);
-          break;
-        case 6:
-          message.identifier = reader.string();
-          break;
-        case 7:
-          message.issuer = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): AccountVerifiedCredentialRegistered {
-    return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      signedIdentityPublicKey: isSet(object.signedIdentityPublicKey)
-        ? bytesFromBase64(object.signedIdentityPublicKey)
-        : new Uint8Array(),
-      verifiedCredential: isSet(object.verifiedCredential) ? String(object.verifiedCredential) : "",
-      registrationDate: isSet(object.registrationDate) ? Number(object.registrationDate) : 0,
-      expirationDate: isSet(object.expirationDate) ? Number(object.expirationDate) : 0,
-      identifier: isSet(object.identifier) ? String(object.identifier) : "",
-      issuer: isSet(object.issuer) ? String(object.issuer) : "",
-    };
-  },
-
-  toJSON(message: AccountVerifiedCredentialRegistered): unknown {
-    const obj: any = {};
-    message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
-    message.signedIdentityPublicKey !== undefined &&
-      (obj.signedIdentityPublicKey = base64FromBytes(
-        message.signedIdentityPublicKey !== undefined ? message.signedIdentityPublicKey : new Uint8Array(),
-      ));
-    message.verifiedCredential !== undefined && (obj.verifiedCredential = message.verifiedCredential);
-    message.registrationDate !== undefined && (obj.registrationDate = Math.round(message.registrationDate));
-    message.expirationDate !== undefined && (obj.expirationDate = Math.round(message.expirationDate));
-    message.identifier !== undefined && (obj.identifier = message.identifier);
-    message.issuer !== undefined && (obj.issuer = message.issuer);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<AccountVerifiedCredentialRegistered>, I>>(
-    object: I,
-  ): AccountVerifiedCredentialRegistered {
-    const message = createBaseAccountVerifiedCredentialRegistered();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.signedIdentityPublicKey = object.signedIdentityPublicKey ?? new Uint8Array();
-    message.verifiedCredential = object.verifiedCredential ?? "";
-    message.registrationDate = object.registrationDate ?? 0;
-    message.expirationDate = object.expirationDate ?? 0;
-    message.identifier = object.identifier ?? "";
-    message.issuer = object.issuer ?? "";
-    return message;
-  },
-};
-
-function createBasePushMemberTokenUpdate(): PushMemberTokenUpdate {
-  return { server: undefined, token: new Uint8Array(), devicePk: new Uint8Array() };
-}
-
-export const PushMemberTokenUpdate = {
-  encode(message: PushMemberTokenUpdate, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.server !== undefined) {
-      PushServer.encode(message.server, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.token.length !== 0) {
-      writer.uint32(18).bytes(message.token);
-    }
-    if (message.devicePk.length !== 0) {
-      writer.uint32(26).bytes(message.devicePk);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): PushMemberTokenUpdate {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePushMemberTokenUpdate();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.server = PushServer.decode(reader, reader.uint32());
-          break;
-        case 2:
-          message.token = reader.bytes();
-          break;
-        case 3:
-          message.devicePk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): PushMemberTokenUpdate {
-    return {
-      server: isSet(object.server) ? PushServer.fromJSON(object.server) : undefined,
-      token: isSet(object.token) ? bytesFromBase64(object.token) : new Uint8Array(),
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-    };
-  },
-
-  toJSON(message: PushMemberTokenUpdate): unknown {
-    const obj: any = {};
-    message.server !== undefined && (obj.server = message.server ? PushServer.toJSON(message.server) : undefined);
-    message.token !== undefined &&
-      (obj.token = base64FromBytes(message.token !== undefined ? message.token : new Uint8Array()));
-    message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<PushMemberTokenUpdate>, I>>(object: I): PushMemberTokenUpdate {
-    const message = createBasePushMemberTokenUpdate();
-    message.server = (object.server !== undefined && object.server !== null)
-      ? PushServer.fromPartial(object.server)
-      : undefined;
-    message.token = object.token ?? new Uint8Array();
-    message.devicePk = object.devicePk ?? new Uint8Array();
+  fromPartial<I extends Exact<DeepPartial<OutOfStoreMessageEnvelope>, I>>(object: I): OutOfStoreMessageEnvelope {
+    const message = createBaseOutOfStoreMessageEnvelope();
+    message.nonce = object.nonce ?? new Uint8Array();
+    message.box = object.box ?? new Uint8Array();
+    message.groupReference = object.groupReference ?? new Uint8Array();
     return message;
   },
 };
@@ -12532,6 +11298,125 @@ export const OutOfStoreSeal_Reply = {
   fromPartial<I extends Exact<DeepPartial<OutOfStoreSeal_Reply>, I>>(object: I): OutOfStoreSeal_Reply {
     const message = createBaseOutOfStoreSeal_Reply();
     message.encrypted = object.encrypted ?? new Uint8Array();
+    return message;
+  },
+};
+
+function createBaseAccountVerifiedCredentialRegistered(): AccountVerifiedCredentialRegistered {
+  return {
+    devicePk: new Uint8Array(),
+    signedIdentityPublicKey: new Uint8Array(),
+    verifiedCredential: "",
+    registrationDate: 0,
+    expirationDate: 0,
+    identifier: "",
+    issuer: "",
+  };
+}
+
+export const AccountVerifiedCredentialRegistered = {
+  encode(message: AccountVerifiedCredentialRegistered, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.devicePk.length !== 0) {
+      writer.uint32(10).bytes(message.devicePk);
+    }
+    if (message.signedIdentityPublicKey.length !== 0) {
+      writer.uint32(18).bytes(message.signedIdentityPublicKey);
+    }
+    if (message.verifiedCredential !== "") {
+      writer.uint32(26).string(message.verifiedCredential);
+    }
+    if (message.registrationDate !== 0) {
+      writer.uint32(32).int64(message.registrationDate);
+    }
+    if (message.expirationDate !== 0) {
+      writer.uint32(40).int64(message.expirationDate);
+    }
+    if (message.identifier !== "") {
+      writer.uint32(50).string(message.identifier);
+    }
+    if (message.issuer !== "") {
+      writer.uint32(58).string(message.issuer);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): AccountVerifiedCredentialRegistered {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAccountVerifiedCredentialRegistered();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.devicePk = reader.bytes();
+          break;
+        case 2:
+          message.signedIdentityPublicKey = reader.bytes();
+          break;
+        case 3:
+          message.verifiedCredential = reader.string();
+          break;
+        case 4:
+          message.registrationDate = longToNumber(reader.int64() as Long);
+          break;
+        case 5:
+          message.expirationDate = longToNumber(reader.int64() as Long);
+          break;
+        case 6:
+          message.identifier = reader.string();
+          break;
+        case 7:
+          message.issuer = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AccountVerifiedCredentialRegistered {
+    return {
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
+      signedIdentityPublicKey: isSet(object.signedIdentityPublicKey)
+        ? bytesFromBase64(object.signedIdentityPublicKey)
+        : new Uint8Array(),
+      verifiedCredential: isSet(object.verifiedCredential) ? String(object.verifiedCredential) : "",
+      registrationDate: isSet(object.registrationDate) ? Number(object.registrationDate) : 0,
+      expirationDate: isSet(object.expirationDate) ? Number(object.expirationDate) : 0,
+      identifier: isSet(object.identifier) ? String(object.identifier) : "",
+      issuer: isSet(object.issuer) ? String(object.issuer) : "",
+    };
+  },
+
+  toJSON(message: AccountVerifiedCredentialRegistered): unknown {
+    const obj: any = {};
+    message.devicePk !== undefined &&
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+    message.signedIdentityPublicKey !== undefined &&
+      (obj.signedIdentityPublicKey = base64FromBytes(
+        message.signedIdentityPublicKey !== undefined ? message.signedIdentityPublicKey : new Uint8Array(),
+      ));
+    message.verifiedCredential !== undefined && (obj.verifiedCredential = message.verifiedCredential);
+    message.registrationDate !== undefined && (obj.registrationDate = Math.round(message.registrationDate));
+    message.expirationDate !== undefined && (obj.expirationDate = Math.round(message.expirationDate));
+    message.identifier !== undefined && (obj.identifier = message.identifier);
+    message.issuer !== undefined && (obj.issuer = message.issuer);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<AccountVerifiedCredentialRegistered>, I>>(
+    object: I,
+  ): AccountVerifiedCredentialRegistered {
+    const message = createBaseAccountVerifiedCredentialRegistered();
+    message.devicePk = object.devicePk ?? new Uint8Array();
+    message.signedIdentityPublicKey = object.signedIdentityPublicKey ?? new Uint8Array();
+    message.verifiedCredential = object.verifiedCredential ?? "";
+    message.registrationDate = object.registrationDate ?? 0;
+    message.expirationDate = object.expirationDate ?? 0;
+    message.identifier = object.identifier ?? "";
+    message.issuer = object.issuer ?? "";
     return message;
   },
 };
@@ -13000,6 +11885,14 @@ export interface ProtocolService {
     request: DeepPartial<ContactRequestDiscard_Request>,
     metadata?: grpc.Metadata,
   ): Promise<ContactRequestDiscard_Reply>;
+  /**
+   * ShareContact uses ContactRequestReference to get the contact information for the current account and
+   * returns the Protobuf encoding of a shareable contact which you can further encode and share. If needed, this
+   * will reset the contact request reference and enable contact requests. To decode the result, see DecodeContact.
+   */
+  ShareContact(request: DeepPartial<ShareContact_Request>, metadata?: grpc.Metadata): Promise<ShareContact_Reply>;
+  /** DecodeContact decodes the Protobuf encoding of a shareable contact which was returned by ShareContact. */
+  DecodeContact(request: DeepPartial<DecodeContact_Request>, metadata?: grpc.Metadata): Promise<DecodeContact_Reply>;
   /** ContactBlock blocks a contact from sending requests */
   ContactBlock(request: DeepPartial<ContactBlock_Request>, metadata?: grpc.Metadata): Promise<ContactBlock_Reply>;
   /** ContactUnblock unblocks a contact from sending requests */
@@ -13079,21 +11972,7 @@ export interface ProtocolService {
     metadata?: grpc.Metadata,
   ): Observable<DebugInspectGroupStore_Reply>;
   DebugGroup(request: DeepPartial<DebugGroup_Request>, metadata?: grpc.Metadata): Promise<DebugGroup_Reply>;
-  DebugAuthServiceSetToken(
-    request: DeepPartial<DebugAuthServiceSetToken_Request>,
-    metadata?: grpc.Metadata,
-  ): Promise<DebugAuthServiceSetToken_Reply>;
   SystemInfo(request: DeepPartial<SystemInfo_Request>, metadata?: grpc.Metadata): Promise<SystemInfo_Reply>;
-  /** AuthServiceInitFlow Initialize an authentication flow */
-  AuthServiceInitFlow(
-    request: DeepPartial<AuthServiceInitFlow_Request>,
-    metadata?: grpc.Metadata,
-  ): Promise<AuthServiceInitFlow_Reply>;
-  /** AuthServiceCompleteFlow Completes an authentication flow */
-  AuthServiceCompleteFlow(
-    request: DeepPartial<AuthServiceCompleteFlow_Request>,
-    metadata?: grpc.Metadata,
-  ): Promise<AuthServiceCompleteFlow_Reply>;
   /** CredentialVerificationServiceInitFlow Initialize a credential verification flow */
   CredentialVerificationServiceInitFlow(
     request: DeepPartial<CredentialVerificationServiceInitFlow_Request>,
@@ -13109,11 +11988,6 @@ export interface ProtocolService {
     request: DeepPartial<VerifiedCredentialsList_Request>,
     metadata?: grpc.Metadata,
   ): Observable<VerifiedCredentialsList_Reply>;
-  /** ServicesTokenList Retrieves the list of services tokens */
-  ServicesTokenList(
-    request: DeepPartial<ServicesTokenList_Request>,
-    metadata?: grpc.Metadata,
-  ): Observable<ServicesTokenList_Reply>;
   /** ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents */
   ReplicationServiceRegisterGroup(
     request: DeepPartial<ReplicationServiceRegisterGroup_Request>,
@@ -13149,6 +12023,8 @@ export class ProtocolServiceClientImpl implements ProtocolService {
     this.ContactRequestSend = this.ContactRequestSend.bind(this);
     this.ContactRequestAccept = this.ContactRequestAccept.bind(this);
     this.ContactRequestDiscard = this.ContactRequestDiscard.bind(this);
+    this.ShareContact = this.ShareContact.bind(this);
+    this.DecodeContact = this.DecodeContact.bind(this);
     this.ContactBlock = this.ContactBlock.bind(this);
     this.ContactUnblock = this.ContactUnblock.bind(this);
     this.ContactAliasKeySend = this.ContactAliasKeySend.bind(this);
@@ -13169,14 +12045,10 @@ export class ProtocolServiceClientImpl implements ProtocolService {
     this.DebugListGroups = this.DebugListGroups.bind(this);
     this.DebugInspectGroupStore = this.DebugInspectGroupStore.bind(this);
     this.DebugGroup = this.DebugGroup.bind(this);
-    this.DebugAuthServiceSetToken = this.DebugAuthServiceSetToken.bind(this);
     this.SystemInfo = this.SystemInfo.bind(this);
-    this.AuthServiceInitFlow = this.AuthServiceInitFlow.bind(this);
-    this.AuthServiceCompleteFlow = this.AuthServiceCompleteFlow.bind(this);
     this.CredentialVerificationServiceInitFlow = this.CredentialVerificationServiceInitFlow.bind(this);
     this.CredentialVerificationServiceCompleteFlow = this.CredentialVerificationServiceCompleteFlow.bind(this);
     this.VerifiedCredentialsList = this.VerifiedCredentialsList.bind(this);
-    this.ServicesTokenList = this.ServicesTokenList.bind(this);
     this.ReplicationServiceRegisterGroup = this.ReplicationServiceRegisterGroup.bind(this);
     this.PeerList = this.PeerList.bind(this);
     this.OutOfStoreReceive = this.OutOfStoreReceive.bind(this);
@@ -13281,6 +12153,14 @@ export class ProtocolServiceClientImpl implements ProtocolService {
       ContactRequestDiscard_Request.fromPartial(request),
       metadata,
     );
+  }
+
+  ShareContact(request: DeepPartial<ShareContact_Request>, metadata?: grpc.Metadata): Promise<ShareContact_Reply> {
+    return this.rpc.unary(ProtocolServiceShareContactDesc, ShareContact_Request.fromPartial(request), metadata);
+  }
+
+  DecodeContact(request: DeepPartial<DecodeContact_Request>, metadata?: grpc.Metadata): Promise<DecodeContact_Reply> {
+    return this.rpc.unary(ProtocolServiceDecodeContactDesc, DecodeContact_Request.fromPartial(request), metadata);
   }
 
   ContactBlock(request: DeepPartial<ContactBlock_Request>, metadata?: grpc.Metadata): Promise<ContactBlock_Reply> {
@@ -13455,41 +12335,8 @@ export class ProtocolServiceClientImpl implements ProtocolService {
     return this.rpc.unary(ProtocolServiceDebugGroupDesc, DebugGroup_Request.fromPartial(request), metadata);
   }
 
-  DebugAuthServiceSetToken(
-    request: DeepPartial<DebugAuthServiceSetToken_Request>,
-    metadata?: grpc.Metadata,
-  ): Promise<DebugAuthServiceSetToken_Reply> {
-    return this.rpc.unary(
-      ProtocolServiceDebugAuthServiceSetTokenDesc,
-      DebugAuthServiceSetToken_Request.fromPartial(request),
-      metadata,
-    );
-  }
-
   SystemInfo(request: DeepPartial<SystemInfo_Request>, metadata?: grpc.Metadata): Promise<SystemInfo_Reply> {
     return this.rpc.unary(ProtocolServiceSystemInfoDesc, SystemInfo_Request.fromPartial(request), metadata);
-  }
-
-  AuthServiceInitFlow(
-    request: DeepPartial<AuthServiceInitFlow_Request>,
-    metadata?: grpc.Metadata,
-  ): Promise<AuthServiceInitFlow_Reply> {
-    return this.rpc.unary(
-      ProtocolServiceAuthServiceInitFlowDesc,
-      AuthServiceInitFlow_Request.fromPartial(request),
-      metadata,
-    );
-  }
-
-  AuthServiceCompleteFlow(
-    request: DeepPartial<AuthServiceCompleteFlow_Request>,
-    metadata?: grpc.Metadata,
-  ): Promise<AuthServiceCompleteFlow_Reply> {
-    return this.rpc.unary(
-      ProtocolServiceAuthServiceCompleteFlowDesc,
-      AuthServiceCompleteFlow_Request.fromPartial(request),
-      metadata,
-    );
   }
 
   CredentialVerificationServiceInitFlow(
@@ -13521,17 +12368,6 @@ export class ProtocolServiceClientImpl implements ProtocolService {
     return this.rpc.invoke(
       ProtocolServiceVerifiedCredentialsListDesc,
       VerifiedCredentialsList_Request.fromPartial(request),
-      metadata,
-    );
-  }
-
-  ServicesTokenList(
-    request: DeepPartial<ServicesTokenList_Request>,
-    metadata?: grpc.Metadata,
-  ): Observable<ServicesTokenList_Reply> {
-    return this.rpc.invoke(
-      ProtocolServiceServicesTokenListDesc,
-      ServicesTokenList_Request.fromPartial(request),
       metadata,
     );
   }
@@ -13773,6 +12609,50 @@ export const ProtocolServiceContactRequestDiscardDesc: UnaryMethodDefinitionish 
     deserializeBinary(data: Uint8Array) {
       return {
         ...ContactRequestDiscard_Reply.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const ProtocolServiceShareContactDesc: UnaryMethodDefinitionish = {
+  methodName: "ShareContact",
+  service: ProtocolServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return ShareContact_Request.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...ShareContact_Reply.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const ProtocolServiceDecodeContactDesc: UnaryMethodDefinitionish = {
+  methodName: "DecodeContact",
+  service: ProtocolServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return DecodeContact_Request.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...DecodeContact_Reply.decode(data),
         toObject() {
           return this;
         },
@@ -14221,28 +13101,6 @@ export const ProtocolServiceDebugGroupDesc: UnaryMethodDefinitionish = {
   } as any,
 };
 
-export const ProtocolServiceDebugAuthServiceSetTokenDesc: UnaryMethodDefinitionish = {
-  methodName: "DebugAuthServiceSetToken",
-  service: ProtocolServiceDesc,
-  requestStream: false,
-  responseStream: false,
-  requestType: {
-    serializeBinary() {
-      return DebugAuthServiceSetToken_Request.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      return {
-        ...DebugAuthServiceSetToken_Reply.decode(data),
-        toObject() {
-          return this;
-        },
-      };
-    },
-  } as any,
-};
-
 export const ProtocolServiceSystemInfoDesc: UnaryMethodDefinitionish = {
   methodName: "SystemInfo",
   service: ProtocolServiceDesc,
@@ -14257,50 +13115,6 @@ export const ProtocolServiceSystemInfoDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...SystemInfo_Reply.decode(data),
-        toObject() {
-          return this;
-        },
-      };
-    },
-  } as any,
-};
-
-export const ProtocolServiceAuthServiceInitFlowDesc: UnaryMethodDefinitionish = {
-  methodName: "AuthServiceInitFlow",
-  service: ProtocolServiceDesc,
-  requestStream: false,
-  responseStream: false,
-  requestType: {
-    serializeBinary() {
-      return AuthServiceInitFlow_Request.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      return {
-        ...AuthServiceInitFlow_Reply.decode(data),
-        toObject() {
-          return this;
-        },
-      };
-    },
-  } as any,
-};
-
-export const ProtocolServiceAuthServiceCompleteFlowDesc: UnaryMethodDefinitionish = {
-  methodName: "AuthServiceCompleteFlow",
-  service: ProtocolServiceDesc,
-  requestStream: false,
-  responseStream: false,
-  requestType: {
-    serializeBinary() {
-      return AuthServiceCompleteFlow_Request.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      return {
-        ...AuthServiceCompleteFlow_Reply.decode(data),
         toObject() {
           return this;
         },
@@ -14367,28 +13181,6 @@ export const ProtocolServiceVerifiedCredentialsListDesc: UnaryMethodDefinitionis
     deserializeBinary(data: Uint8Array) {
       return {
         ...VerifiedCredentialsList_Reply.decode(data),
-        toObject() {
-          return this;
-        },
-      };
-    },
-  } as any,
-};
-
-export const ProtocolServiceServicesTokenListDesc: UnaryMethodDefinitionish = {
-  methodName: "ServicesTokenList",
-  service: ProtocolServiceDesc,
-  requestStream: false,
-  responseStream: true,
-  requestType: {
-    serializeBinary() {
-      return ServicesTokenList_Request.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      return {
-        ...ServicesTokenList_Reply.decode(data),
         toObject() {
           return this;
         },

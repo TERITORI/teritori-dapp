@@ -82,3 +82,7 @@ buck-out/
 
 # codegen
 /.weshgen/
+
+
+# weshnet
+temp/

@@ -8,4 +8,4 @@ lint:
   ignore:
     - node_modules
 deps:
-  - buf.build/berty/weshnet:c7889cd7301e48d0a88b5cbd269e6add
+  - buf.build/berty/weshnet:76462de2ba05418f8a07bd8926b744b1
