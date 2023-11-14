@@ -5,10 +5,10 @@ import { useSelector } from "react-redux";
 import { useSelectedNetworkInfo } from "./../../hooks/useSelectedNetwork";
 import { Wallet } from "./wallet";
 import { NetworkKind, getUserId } from "../../networks";
+import { teritoriNetwork } from "../../networks/teritori";
 import {
   selectIsKeplrConnected,
   setIsKeplrConnected,
-  setSelectedWalletId,
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
@@ -77,11 +77,11 @@ export const useKeplr: () => UseKeplrResult = () => {
           console.error("no keplr");
           return;
         }
-        if (selectedNetworkInfo?.kind !== NetworkKind.Cosmos) {
-          setReady(true);
-          return;
-        }
-        const chainId = selectedNetworkInfo.chainId;
+        const targetNetwork =
+          selectedNetworkInfo?.kind === NetworkKind.Cosmos
+            ? selectedNetworkInfo
+            : teritoriNetwork;
+        const chainId = targetNetwork.chainId;
         if (!chainId) {
           setReady(true);
           console.error("missing chain id");
@@ -102,7 +102,7 @@ export const useKeplr: () => UseKeplrResult = () => {
   }, [hasKeplr, isKeplrConnected, dispatch, selectedNetworkInfo]);
 
   const wallets = useMemo(() => {
-    let networkId = "";
+    let networkId = teritoriNetwork.id;
     if (selectedNetworkInfo?.kind === NetworkKind.Cosmos) {
       networkId = selectedNetworkInfo.id;
     }
@@ -120,10 +120,7 @@ export const useKeplr: () => UseKeplrResult = () => {
       return [wallet];
     }
     const wallets = addresses.map((address, index) => {
-      let userId = "";
-      if (selectedNetworkInfo?.kind === NetworkKind.Cosmos) {
-        userId = getUserId(networkId, address);
-      }
+      const userId = getUserId(networkId, address);
 
       const wallet: Wallet = {
         address,
@@ -140,13 +137,6 @@ export const useKeplr: () => UseKeplrResult = () => {
 
     return wallets;
   }, [addresses, selectedNetworkInfo]);
-
-  useEffect(() => {
-    const selectedWallet = wallets.find((w) => w.connected);
-    if (selectedWallet && selectedNetworkInfo?.kind === NetworkKind.Cosmos) {
-      dispatch(setSelectedWalletId(selectedWallet.id));
-    }
-  }, [dispatch, selectedNetworkInfo?.kind, wallets]);
 
   return hasKeplr ? [true, ready, wallets] : [false, ready, undefined];
 };
