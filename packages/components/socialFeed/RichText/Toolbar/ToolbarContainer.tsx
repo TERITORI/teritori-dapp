@@ -11,6 +11,7 @@ import { PrimaryBox } from "../../../boxes/PrimaryBox";
 export const ToolbarContainer: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <PrimaryBox
+      noBrokenCorners
       fullWidth
       colors={[
         gradientColorDarkerBlue,

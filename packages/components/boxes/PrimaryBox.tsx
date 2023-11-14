@@ -71,8 +71,8 @@ export const PrimaryBox: React.FC<{
               disabled
                 ? [neutral67, "#B7B7B7"]
                 : colors
-                  ? colors
-                  : ["#01B7C5", "#782C96"]
+                ? colors
+                : ["#01B7C5", "#782C96"]
             }
           >
             {/* ---- Content container */}
@@ -82,8 +82,8 @@ export const PrimaryBox: React.FC<{
                 width
                   ? { width: width - 2 }
                   : fullWidth
-                    ? { width: "100%" }
-                    : null,
+                  ? { width: "100%" }
+                  : null,
                 {
                   backgroundColor,
                   borderRadius,
@@ -133,8 +133,8 @@ export const PrimaryBox: React.FC<{
                     disabled
                       ? [neutral67, "#666666"]
                       : colors
-                        ? [colors[0], colors[0]]
-                        : ["#04B4C4", "#04B3C3"]
+                      ? [colors[0], colors[0]]
+                      : ["#04B4C4", "#04B3C3"]
                   }
                 />
 
@@ -174,11 +174,11 @@ export const PrimaryBox: React.FC<{
                         disabled
                           ? ["#B7B7B7", "#bebbbb"]
                           : colors
-                            ? [
-                                colors[colors.length - 1],
-                                colors[colors.length - 1],
-                              ]
-                            : ["#7c31a0", "#7c2fa2"]
+                          ? [
+                              colors[colors.length - 1],
+                              colors[colors.length - 1],
+                            ]
+                          : ["#7c31a0", "#7c2fa2"]
                       }
                     />
                   </>

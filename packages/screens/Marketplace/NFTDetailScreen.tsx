@@ -234,8 +234,8 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
         navigation.canGoBack()
           ? navigation.goBack()
           : info?.collectionId
-            ? navigation.navigate("Collection", { id: info?.collectionId })
-            : navigation.navigate("Marketplace")
+          ? navigation.navigate("Collection", { id: info?.collectionId })
+          : navigation.navigate("Marketplace")
       }
     >
       <Content key={id} id={id} />

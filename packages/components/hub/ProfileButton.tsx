@@ -60,14 +60,14 @@ export const ProfileButton: React.FC<{
                 },
               }
             : metadata.tokenId
-              ? {
-                  screen: "TNSHome",
-                  params: {
-                    modal: "update-name",
-                    name: metadata.tokenId.replace(".tori", ""),
-                  },
-                }
-              : { screen: "ComingSoon" }
+            ? {
+                screen: "TNSHome",
+                params: {
+                  modal: "update-name",
+                  name: metadata.tokenId.replace(".tori", ""),
+                },
+              }
+            : { screen: "ComingSoon" }
         }
       >
         <SecondaryButtonOutline
@@ -192,8 +192,8 @@ const RegisterGnoNameModal: React.FC<{
           nsInfo
             ? "Already taken"
             : notEnoughFunds
-              ? "Not enough funds"
-              : "Register"
+            ? "Not enough funds"
+            : "Register"
         }
         disabled={buttonDisabled}
         fullWidth

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import priceSVG from "../../../assets/icons/price.svg";
@@ -44,12 +44,18 @@ import {
   secondaryColor,
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold20 } from "../../utils/style/fonts";
-import { layout, screenContentMaxWidth } from "../../utils/style/layout";
+import {
+  layout,
+  screenContentMaxWidth,
+  SOCIAL_FEED_BREAKPOINT_M,
+  SOCIAL_FEED_BREAKPOINT_S,
+} from "../../utils/style/layout";
 import { pluralOrNot } from "../../utils/text";
 
 //TODO: In mobile : Make ActionsContainer accessible (floating button ?)
 
 export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const isMobile = useIsMobile();
   const selectNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkId = selectNetworkInfo?.id || "";
@@ -63,6 +69,12 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const userIPFSKey = useSelector(selectNFTStorageAPI);
+
+  const [
+    screenContainerScrollViewContentOffsetY,
+    setScreenContainerScrollViewContentOffsetY,
+  ] = useState(0);
+  const [topContainerHeight, setTopContainerHeight] = useState(0);
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
@@ -185,6 +197,12 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       headerChildren={<BrandText style={fontSemibold20}>New Article</BrandText>}
       onBackPress={navigateBack}
       footerChildren
+      onScroll={(e) =>
+        setScreenContainerScrollViewContentOffsetY(
+          e.nativeEvent.contentOffset.y,
+        )
+      }
+      alwaysScrollToEnd
     >
       <NotEnoughFundModal
         onClose={() => setNotEnoughFundModal(false)}
@@ -196,78 +214,85 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           marginTop: isMobile ? layout.spacing_x2 : layout.contentSpacing,
         }}
       >
-        <WalletStatusBox />
-        <SpacerColumn size={3} />
-
-        <TertiaryBox
-          fullWidth
-          mainContainerStyle={{
-            paddingVertical: layout.spacing_x1,
-            paddingHorizontal: layout.spacing_x1_5,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            height: 48,
-            backgroundColor: neutral11,
-          }}
+        {/*---- Article title, cover image, ... (Top container) */}
+        <View
+          onLayout={(e) => setTopContainerHeight(e.nativeEvent.layout.height)}
         >
-          <SVG
-            source={priceSVG}
-            height={24}
-            width={24}
-            color={secondaryColor}
-          />
-          <BrandText
-            style={[
-              fontSemibold13,
-              { color: neutral77, marginLeft: layout.spacing_x1 },
-            ]}
+          <WalletStatusBox />
+          <SpacerColumn size={3} />
+
+          <TertiaryBox
+            fullWidth
+            mainContainerStyle={{
+              paddingVertical: layout.spacing_x1,
+              paddingHorizontal: layout.spacing_x1_5,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "flex-start",
+              height: 48,
+              backgroundColor: neutral11,
+            }}
           >
-            {freePostCount
-              ? `You have ${freePostCount} free ${pluralOrNot(
-                  "Article",
-                  freePostCount,
-                )} left`
-              : `The cost for this Article is ${prettyPrice(
-                  selectedNetworkId,
-                  postFee.toString(),
-                  selectNetworkInfo?.currencies?.[0].denom || "utori",
-                )}`}
-          </BrandText>
-        </TertiaryBox>
+            <SVG
+              source={priceSVG}
+              height={24}
+              width={24}
+              color={secondaryColor}
+            />
+            <BrandText
+              style={[
+                fontSemibold13,
+                { color: neutral77, marginLeft: layout.spacing_x1 },
+              ]}
+            >
+              {freePostCount
+                ? `You have ${freePostCount} free ${pluralOrNot(
+                    "Article",
+                    freePostCount,
+                  )} left`
+                : `The cost for this Article is ${prettyPrice(
+                    selectedNetworkId,
+                    postFee.toString(),
+                    selectNetworkInfo?.currencies?.[0].denom || "utori",
+                  )}`}
+            </BrandText>
+          </TertiaryBox>
 
-        <FileUploader
-          label="Cover image"
-          fileHeight={ARTICLE_COVER_IMAGE_HEIGHT}
-          isImageCover
-          style={{
-            marginTop: layout.spacing_x3,
-            width: "100%",
-          }}
-          onUpload={(files) =>
-            setValue("files", [
-              ...(formValues.files || []),
-              { ...files[0], isCoverImage: true },
-            ])
-          }
-          mimeTypes={IMAGE_MIME_TYPES}
-        />
+          <FileUploader
+            label="Cover image"
+            fileHeight={ARTICLE_COVER_IMAGE_HEIGHT}
+            isImageCover
+            style={{
+              marginTop: layout.spacing_x3,
+              width: "100%",
+            }}
+            onUpload={(files) =>
+              setValue("files", [
+                ...(formValues.files || []),
+                { ...files[0], isCoverImage: true },
+              ])
+            }
+            mimeTypes={IMAGE_MIME_TYPES}
+          />
 
-        <TextInputCustom<NewPostFormValues>
-          noBrokenCorners
-          rules={{ required: true }}
-          height={48}
-          label="Give a title to make an Article"
-          placeHolder="Type title here"
-          name="title"
-          control={control}
-          variant="labelOutside"
-          containerStyle={{ marginVertical: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
-        />
+          <TextInputCustom<NewPostFormValues>
+            noBrokenCorners
+            rules={{ required: true }}
+            height={48}
+            label="Give a title to make an Article"
+            placeHolder="Type title here"
+            name="title"
+            control={control}
+            variant="labelOutside"
+            containerStyle={{ marginVertical: layout.spacing_x3 }}
+            boxMainContainerStyle={{
+              backgroundColor: neutral00,
+              borderRadius: 12,
+            }}
+          />
+        </View>
+
+        {/*---- Article message */}
         <View>
           <Label>Article content</Label>
           <SpacerColumn size={1} />
@@ -292,6 +317,16 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                 onPublish={onPublish}
                 authorId={userId}
                 postId=""
+                toolbarTopPosition={
+                  windowHeight -
+                  topContainerHeight -
+                  (windowWidth < SOCIAL_FEED_BREAKPOINT_S
+                    ? 310
+                    : windowWidth < SOCIAL_FEED_BREAKPOINT_M
+                    ? 275
+                    : 215) +
+                  screenContainerScrollViewContentOffsetY
+                }
               />
             )}
           />

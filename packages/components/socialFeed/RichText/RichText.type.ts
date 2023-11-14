@@ -32,4 +32,5 @@ export interface RichTextProps {
   loading?: boolean;
   authorId: string;
   postId: string;
+  toolbarTopPosition?: number;
 }

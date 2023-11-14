@@ -222,8 +222,8 @@ export const SwapSettings: React.FC<{
                     color: manualSlippageSelected
                       ? primaryTextColor
                       : manualSlippage
-                        ? secondaryColor
-                        : neutralA3,
+                      ? secondaryColor
+                      : neutralA3,
                   },
                 ]}
               >

@@ -38,12 +38,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { ScrollView, useWindowDimensions, View, ViewStyle } from "react-native";
 
 import { RichHashtagRenderer } from "./RichRenderer/RichHashtagRenderer";
 import { RichHashtagRendererConsultation } from "./RichRenderer/RichHashtagRendererConsultation";
@@ -80,7 +75,11 @@ import {
 } from "../../../utils/social-feed";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout, SOCIAL_FEED_BREAKPOINT_M } from "../../../utils/style/layout";
+import {
+  layout,
+  SOCIAL_FEED_BREAKPOINT_M,
+  SOCIAL_FEED_BREAKPOINT_S,
+} from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/files";
 import { BrandText } from "../../BrandText";
 import { AudioView } from "../../FilePreview/AudioView";
@@ -122,7 +121,7 @@ const imagePlugin = createImagePlugin();
 const videoPlugin = createVideoPlugin();
 
 const { Toolbar } = staticToolbarPlugin;
-const { InlineToolbar } = inlineToolbarPlugin;
+// const { InlineToolbar } = inlineToolbarPlugin;
 
 export const RichText: React.FC<RichTextProps> = ({
   onChange = () => {},
@@ -136,6 +135,7 @@ export const RichText: React.FC<RichTextProps> = ({
   publishDisabled,
   authorId,
   postId,
+  toolbarTopPosition,
 }) => {
   const compositeDecorator = {
     decorators: [
@@ -325,17 +325,17 @@ export const RichText: React.FC<RichTextProps> = ({
 
   /////////////// TOOLBAR BUTTONS ////////////////
   const Buttons: React.FC<{ externalProps: any }> = ({ externalProps }) => (
-    <View style={styles.toolbarButtonsWrapper}>
+    <View style={toolbarButtonsWrapperCStyle}>
       <EmojiSelector
         onEmojiSelected={(emoji) => addEmoji(emoji)}
-        buttonStyle={styles.toolbarCustomButton}
-        iconStyle={styles.toolbarCustomButtonIcon}
+        buttonStyle={toolbarCustomButtonCStyle}
+        iconStyle={toolbarCustomButtonIconCStyle}
       />
 
       <GIFSelector
         onGIFSelected={(url) => (url ? addGIF(url) : undefined)}
-        buttonStyle={styles.toolbarCustomButton}
-        iconStyle={styles.toolbarCustomButtonIcon}
+        buttonStyle={toolbarCustomButtonCStyle}
+        iconStyle={toolbarCustomButtonIconCStyle}
         disabled={isGIFSelectorDisabled}
       />
 
@@ -347,7 +347,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={audioSVG}
             onPress={onPress}
-            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
+            style={[toolbarCustomButtonIconCStyle, toolbarCustomButtonCStyle]}
             disabled={isAudioUploadDisabled}
           />
         )}
@@ -361,7 +361,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={videoSVG}
             onPress={onPress}
-            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
+            style={[toolbarCustomButtonIconCStyle, toolbarCustomButtonCStyle]}
             disabled={isVideoUploadDisabled}
           />
         )}
@@ -375,7 +375,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={cameraSVG}
             onPress={onPress}
-            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
+            style={[toolbarCustomButtonIconCStyle, toolbarCustomButtonCStyle]}
             iconProps={{
               width: 18,
               height: 18,
@@ -388,7 +388,7 @@ export const RichText: React.FC<RichTextProps> = ({
       {/*<IconBox*/}
       {/*  icon={embedSVG}*/}
       {/*  onPress={() => addEmbedded("https://www.youtube.com/watch?v=jNQXAC9IVRw")}*/}
-      {/*  style={styles.toolbarCustomButton}*/}
+      {/*  style={styles.toolbarCustomButtonCStyle}*/}
       {/*  iconProps={{*/}
       {/*    width: 18,*/}
       {/*    height: 18,*/}
@@ -439,9 +439,18 @@ export const RichText: React.FC<RichTextProps> = ({
           </BrandText>
         )}
 
-        <InlineToolbar>
-          {(externalProps) => <Buttons externalProps={externalProps} />}
-        </InlineToolbar>
+        {/*---- Vertical space Added since Toolbar position is absolute (See above)*/}
+        {!isPostConsultation && (
+          <SpacerColumn
+            size={
+              windowWidth < SOCIAL_FEED_BREAKPOINT_S
+                ? 20
+                : windowWidth < SOCIAL_FEED_BREAKPOINT_M
+                ? 16
+                : 9
+            }
+          />
+        )}
       </ScrollView>
 
       {/* ==== Audio files */}
@@ -468,8 +477,14 @@ export const RichText: React.FC<RichTextProps> = ({
         ))}
 
       {!isPostConsultation && (
-        <>
-          <SpacerColumn size={3} />
+        <View
+          style={{
+            width: "100%",
+            position: "absolute",
+            zIndex: 999999,
+            top: toolbarTopPosition || 0,
+          }}
+        >
           <ActionsContainer>
             <ToolbarContainer>
               <Toolbar>
@@ -491,33 +506,28 @@ export const RichText: React.FC<RichTextProps> = ({
               onPress={handlePublish}
             />
           </ActionsContainer>
-          <SpacerColumn size={2} />
-        </>
+        </View>
       )}
     </View>
   );
 };
 
 /////////////// STYLES ////////////////
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  toolbarCustomButton: {
-    margin: layout.spacing_x0_5,
-  },
-  toolbarCustomButtonIcon: {
-    borderRadius: 4,
-    height: 30,
-    width: 30,
-  },
-  toolbarButtonsWrapper: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    flexWrap: "wrap",
-  },
-});
+const toolbarCustomButtonCStyle: ViewStyle = {
+  margin: layout.spacing_x0_5,
+};
+const toolbarCustomButtonIconCStyle: ViewStyle = {
+  borderRadius: 4,
+  height: 30,
+  width: 30,
+};
+const toolbarButtonsWrapperCStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "100%",
+  flexWrap: "wrap",
+};
 
 /////////////// SOME FUNCTIONS ////////////////
 const createStateFromHTML = (html: string) => {

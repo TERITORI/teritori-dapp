@@ -497,15 +497,15 @@ export const NewsFeedInput = React.forwardRef<
                   color: !formValues?.message
                     ? neutral77
                     : formValues?.message?.length >
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
-                            CHARS_LIMIT_WARNING_MULTIPLIER &&
-                        formValues?.message?.length <
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                      ? yellowDefault
-                      : formValues?.message?.length >=
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                        ? errorColor
-                        : primaryColor,
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
+                          CHARS_LIMIT_WARNING_MULTIPLIER &&
+                      formValues?.message?.length <
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                    ? yellowDefault
+                    : formValues?.message?.length >=
+                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                    ? errorColor
+                    : primaryColor,
                   marginTop: layout.spacing_x0_5,
                   alignSelf: "flex-end",
                 },

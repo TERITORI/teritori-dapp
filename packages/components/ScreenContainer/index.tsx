@@ -1,10 +1,12 @@
-import React, { useMemo, useCallback, ReactNode } from "react";
+import React, { useMemo, useCallback, ReactNode, useRef } from "react";
 import {
   SafeAreaView,
   ScrollView,
   View,
-  StyleSheet,
   useWindowDimensions,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+  ViewStyle,
 } from "react-native";
 
 import { Header } from "./Header";
@@ -50,6 +52,8 @@ export const ScreenContainer: React.FC<{
   onBackPress?: () => void;
   maxWidth?: number;
   children?: ReactNode;
+  onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  alwaysScrollToEnd?: boolean;
 }> = ({
   children,
   headerChildren,
@@ -66,7 +70,10 @@ export const ScreenContainer: React.FC<{
   forceNetworkId,
   forceNetworkKind,
   forceNetworkFeatures,
+  onScroll,
+  alwaysScrollToEnd,
 }) => {
+  const scrollViewRef = useRef<ScrollView>(null);
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
@@ -115,6 +122,7 @@ export const ScreenContainer: React.FC<{
         forceNetworkId={forceNetworkId}
         forceNetworkKind={forceNetworkKind}
         mobileTitle={mobileTitle}
+        onScroll={onScroll}
       />
     );
   /////////////// default returns
@@ -123,7 +131,7 @@ export const ScreenContainer: React.FC<{
       <DAppStoreData />
       {/*FIXME: Too many containers levels*/}
 
-      <View style={styles.container}>
+      <View style={containerCStyle}>
         {!hideSidebar ? <Sidebar /> : null}
 
         <View style={{ width: "100%", flex: 1 }}>
@@ -138,6 +146,13 @@ export const ScreenContainer: React.FC<{
               <SelectedNetworkGate filter={networkFilter}>
                 {hasScroll ? (
                   <ScrollView
+                    ref={scrollViewRef}
+                    onContentSizeChange={
+                      alwaysScrollToEnd
+                        ? () => scrollViewRef.current?.scrollToEnd()
+                        : undefined
+                    }
+                    onScroll={onScroll}
                     style={{ width: "100%", flex: 1 }}
                     contentContainerStyle={[
                       {
@@ -147,7 +162,7 @@ export const ScreenContainer: React.FC<{
                   >
                     <View
                       style={[
-                        styles.childrenContainer,
+                        childrenContainerCStyle,
                         marginStyle,
                         { width, flex: 1 },
                       ]}
@@ -158,7 +173,7 @@ export const ScreenContainer: React.FC<{
                   </ScrollView>
                 ) : (
                   <View
-                    style={[styles.childrenContainer, marginStyle, { width }]}
+                    style={[childrenContainerCStyle, marginStyle, { width }]}
                   >
                     {children}
                     {footerChildren ? footerChildren : <Footer />}
@@ -218,17 +233,13 @@ export const ScreenContainer: React.FC<{
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000000",
-    flexDirection: "row",
-    zIndex: 999,
-  },
-  childrenContainer: {
-    height: "100%",
-    alignSelf: "center",
-  },
-});
+const containerCStyle: ViewStyle = {
+  flex: 1,
+  backgroundColor: "#000000",
+  flexDirection: "row",
+  zIndex: 999,
+};
+const childrenContainerCStyle: ViewStyle = {
+  height: "100%",
+  alignSelf: "center",
+};

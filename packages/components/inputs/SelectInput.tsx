@@ -202,8 +202,8 @@ export const SelectInput: React.FC<Props> = ({
                 !selectableData.length || disabled
                   ? lockSVG
                   : openMenu
-                    ? chevronUpSVG
-                    : chevronDownSVG
+                  ? chevronUpSVG
+                  : chevronDownSVG
               }
               width={16}
               height={16}

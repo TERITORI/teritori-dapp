@@ -13,6 +13,7 @@ export const MOBILE_SIDEBAR_MAX_WIDTH = 500;
 export const MOBILE_MAX_WIDTH = 1024;
 export const RESPONSIVE_BREAKPOINT_S = 512;
 export const SOCIAL_FEED_BREAKPOINT_M = 800;
+export const SOCIAL_FEED_BREAKPOINT_S = 650;
 
 export const getResponsiveScreenContainerMarginHorizontal = (width: number) => {
   if (width >= 992) {

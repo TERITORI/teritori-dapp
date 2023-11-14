@@ -208,8 +208,8 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
               ),
             })
           : navigation.canGoBack()
-            ? navigation.goBack()
-            : navigation.navigate("Feed")
+          ? navigation.goBack()
+          : navigation.navigate("Feed")
       }
       footerChildren
       noScroll

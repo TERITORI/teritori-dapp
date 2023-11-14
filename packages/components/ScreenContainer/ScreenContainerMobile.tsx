@@ -1,5 +1,7 @@
-import React, { FC, ReactNode } from "react";
+import React, { FC, ReactNode, useRef } from "react";
 import {
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -51,6 +53,8 @@ export const ScreenContainerMobile: FC<{
   mobileTitle?: string;
   onBackPress?: () => void;
   children: ReactNode;
+  onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  alwaysScrollToEnd?: boolean;
 }> = ({
   children,
   networkFilter,
@@ -60,7 +64,10 @@ export const ScreenContainerMobile: FC<{
   forceNetworkFeatures,
   mobileTitle,
   onBackPress,
+  onScroll,
+  alwaysScrollToEnd,
 }) => {
+  const scrollViewRef = useRef<ScrollView>(null);
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
@@ -85,6 +92,13 @@ export const ScreenContainerMobile: FC<{
         <SelectedNetworkGate filter={networkFilter}>
           {hasScroll ? (
             <ScrollView
+              ref={scrollViewRef}
+              onContentSizeChange={
+                alwaysScrollToEnd
+                  ? () => scrollViewRef.current?.scrollToEnd()
+                  : undefined
+              }
+              onScroll={onScroll}
               contentContainerStyle={[
                 {
                   minHeight: windowHeight - MOBILE_HEADER_HEIGHT,
