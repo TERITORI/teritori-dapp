@@ -1,13 +1,15 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { View } from "react-native";
+import { FlatList, View } from "react-native";
 
 import { NavBarGovernance } from "./NavBarGovernance";
 import { Proposal, ProposalStatus } from "./types";
-import { BrandText } from "../../components/BrandText/BrandText";
+import { BrandText } from "../../components/BrandText";
 import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { NetworkKind, mustGetCosmosNetwork } from "../../networks";
+import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 
 // FIXME: properly handle pagination
 
@@ -39,43 +41,57 @@ export const GovernanceScreen: React.FC = () => {
   );
 
   return (
-    <ScreenContainer forceNetworkKind={NetworkKind.Cosmos}>
-      <BrandText style={{ fontSize: 28 }}>Decentralized Governance</BrandText>
-
-      <NavBarGovernance onChange={setFilter} />
-
+    <ScreenContainer
+      headerChildren={<BrandText style={fontSemibold20}>Governance</BrandText>}
+      responsive
+      forceNetworkKind={NetworkKind.Cosmos}
+    >
       <View
         style={{
-          display: "flex",
-          flexDirection: "row",
-          flexWrap: "wrap",
-          marginTop: 110,
-          marginLeft: -70,
-          marginRight: -60,
+          marginTop: layout.spacing_x4,
         }}
       >
-        {filteredProposals.map((proposals, index) => (
-          <GovernanceBox
-            key={index}
-            numberProposal={proposals.proposal_id}
-            titleProposal={proposals.content.title}
-            descriptionProposal={proposals.content.description}
-            votingEndTime={proposals.voting_end_time}
-            votingStartTime={proposals.voting_start_time}
-            votingSubmitTime={proposals.submit_time}
-            votingDepositEndTime={proposals.deposit_end_time}
-            colorMostVoted="#16BBFF"
-            percentageNoValue={parseFloat(proposals.final_tally_result.no)}
-            percentageYesValue={parseFloat(proposals.final_tally_result.yes)}
-            percentageNoWithVetoValue={parseFloat(
-              proposals.final_tally_result.no_with_veto,
+        <BrandText style={fontSemibold28}>Decentralized Governance</BrandText>
+
+        <NavBarGovernance onChange={setFilter} />
+
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            marginTop: layout.spacing_x4,
+          }}
+        >
+          <FlatList
+            data={filteredProposals}
+            columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
+            numColumns={99} // needed to deal with wrap via css
+            renderItem={({ item: proposals, index }) => (
+              <GovernanceBox
+                key={index}
+                numberProposal={proposals.proposal_id}
+                titleProposal={proposals.content.title}
+                descriptionProposal={proposals.content.description}
+                votingEndTime={proposals.voting_end_time}
+                votingStartTime={proposals.voting_start_time}
+                votingSubmitTime={proposals.submit_time}
+                votingDepositEndTime={proposals.deposit_end_time}
+                colorMostVoted="#16BBFF"
+                percentageNoValue={parseFloat(proposals.final_tally_result.no)}
+                percentageYesValue={parseFloat(
+                  proposals.final_tally_result.yes,
+                )}
+                percentageNoWithVetoValue={parseFloat(
+                  proposals.final_tally_result.no_with_veto,
+                )}
+                percentageAbstainValue={parseFloat(
+                  proposals.final_tally_result.abstain,
+                )}
+                status={proposals.status}
+              />
             )}
-            percentageAbstainValue={parseFloat(
-              proposals.final_tally_result.abstain,
-            )}
-            status={proposals.status}
           />
-        ))}
+        </View>
       </View>
     </ScreenContainer>
   );

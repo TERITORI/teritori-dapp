@@ -8,10 +8,11 @@ import {
   View,
 } from "react-native";
 
-import { BrandText } from "../../components/BrandText/BrandText";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { ProposalStatus } from "../../screens/Governance/types";
 import { tulipTree } from "../../utils/style/colors";
+import { layout } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 // FIXME: code dedup
 
@@ -56,16 +57,14 @@ export const GovernanceBox: React.FC<{
     useState(false);
 
   const test = "%";
-  const percentageYes =
-    ((percentageYesValue / totalUsers) * 100)
-      .toFixed(2)
-      .toString()
-      .substring(0, 5) + test;
-  const percentageNo =
-    ((percentageNoValue / totalUsers) * 100)
-      .toFixed(2)
-      .toString()
-      .substring(0, 5) + test;
+  let percentageYes = ((percentageYesValue / totalUsers) * 100)
+    .toFixed(2)
+    .toString();
+  percentageYes = percentageYes.substring(0, 5) + test;
+  let percentageNo = ((percentageNoValue / totalUsers) * 100)
+    .toFixed(2)
+    .toString();
+  percentageNo = percentageNo.substring(0, 5) + test;
 
   const percentageNoWithVeto = ((percentageNoWithVetoValue / totalUsers) * 100)
     .toFixed(2)
@@ -121,7 +120,13 @@ export const GovernanceBox: React.FC<{
   }
 
   return (
-    <View style={{ width: "50%", marginBottom: 20 }}>
+    <View
+      style={{
+        width: "50%",
+        marginBottom: layout.spacing_x2_5,
+        marginRight: layout.spacing_x3,
+      }}
+    >
       <TouchableOpacity
         onPress={() => {
           activePopup();
@@ -134,7 +139,6 @@ export const GovernanceBox: React.FC<{
             style={{
               flexDirection: "column",
               top: 20,
-              width: "96%",
               height: "100%",
             }}
           >
@@ -267,7 +271,7 @@ export const GovernanceBox: React.FC<{
               >
                 <View
                   style={{
-                    width: percentageYes as DimensionValue, // FIXME: properly type this
+                    width: percentageYes as DimensionValue,
                     height: 3,
                     borderRadius: 10,
                     position: "absolute",
@@ -285,12 +289,12 @@ export const GovernanceBox: React.FC<{
 
                 <View
                   style={{
-                    width: percentageNo as DimensionValue, // FIXME: properly type this
+                    width: percentageNo as DimensionValue,
                     height: 3,
                     backgroundColor: tulipTree,
                     borderRadius: 10,
                     position: "absolute",
-                    left: percentageYes as DimensionValue, //percentage of the width of the first view  // FIXME: properly type this
+                    left: percentageYes as DimensionValue, //percentage of the width of the first view
                     zIndex: 2,
                   }}
                 />

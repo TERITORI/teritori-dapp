@@ -14,9 +14,12 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getKeplrSigningStargateClient } from "../../networks";
-import { neutral44, tulipTree } from "../../utils/style/colors";
+import { neutral33, neutral44, tulipTree } from "../../utils/style/colors";
+import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
   <View
@@ -65,6 +68,7 @@ export const GovernanceDetails: React.FC<{
   const [checked, setChecked] = useState("nothingChecked");
   const [displayPopup] = useState(visible);
   const { setToastError } = useFeedbacks();
+  const isMobile = useIsMobile();
 
   function activeVotePopup() {
     onClose();
@@ -180,7 +184,7 @@ export const GovernanceDetails: React.FC<{
       }}
       label="Governance Details"
       visible={displayPopup}
-      width={1300}
+      width={isMobile ? 800 : 460}
     >
       <View
         style={{
@@ -278,14 +282,12 @@ export const GovernanceDetails: React.FC<{
 
       <View
         style={{
-          flexDirection: "row",
           display: "flex",
           width: "70%",
           paddingTop: 20,
           right: "0.5%",
           justifyContent: "space-evenly",
           alignContent: "center",
-          flexWrap: "wrap",
         }}
       >
         <View>
@@ -308,16 +310,6 @@ export const GovernanceDetails: React.FC<{
             {"\u00A0"} UTC
           </BrandText>
         </View>
-        <View
-          style={{
-            width: 35,
-            height: 0,
-            borderWidth: 0.5,
-            borderColor: "#808080",
-            transform: [{ rotate: "90deg" }],
-            marginTop: 15,
-          }}
-        />
 
         <View>
           <BrandText
@@ -339,16 +331,6 @@ export const GovernanceDetails: React.FC<{
             {"\u00A0"} UTC
           </BrandText>
         </View>
-        <View
-          style={{
-            width: 35,
-            height: 0,
-            borderWidth: 0.5,
-            borderColor: "#808080",
-            transform: [{ rotate: "90deg" }],
-            marginTop: 15,
-          }}
-        />
 
         <View>
           <BrandText
@@ -370,16 +352,6 @@ export const GovernanceDetails: React.FC<{
             {"\u00A0"} UTC
           </BrandText>
         </View>
-        <View
-          style={{
-            width: 35,
-            height: 0,
-            borderWidth: 0.5,
-            borderColor: "#808080",
-            transform: [{ rotate: "90deg" }],
-            marginTop: 15,
-          }}
-        />
 
         <View>
           <BrandText
@@ -404,67 +376,42 @@ export const GovernanceDetails: React.FC<{
       </View>
 
       <TertiaryBox
-        width={1240}
-        height={196}
-        style={{ right: "-0.5%", marginTop: 25 }}
+        fullWidth
+        style={{ paddingVertical: layout.spacing_x1 }}
+        mainContainerStyle={{
+          paddingVertical: layout.spacing_x1_5,
+        }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            display: "flex",
-            width: "23%",
-            paddingTop: 0,
-            right: "22%",
-            bottom: 35,
-            justifyContent: "space-evenly",
-            alignContent: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <View>
-            <BrandText
-              style={{
-                fontSize: 20,
+        <View>
+          <BrandText
+            style={[
+              fontSemibold20,
+              {
                 color: "#808080",
-              }}
-            >
-              Total
-            </BrandText>
-          </View>
-          <View>
-            <BrandText
-              style={{
-                fontSize: 20,
-              }}
-            >
-              {totalParticipant}
-            </BrandText>
-          </View>
+              },
+            ]}
+          >
+            Total
+          </BrandText>
+        </View>
+        <View>
+          <BrandText style={fontSemibold20}>{totalParticipant}</BrandText>
         </View>
 
-        <View
-          style={{
-            width: 210,
-            position: "absolute",
-            left: 5,
-          }}
-        >
-          <VictoryPie
-            innerRadius={70}
-            colorScale={["#16BBFF", tulipTree, "#808080"]}
-            data={[
-              { x: "Pourcentage Yes", y: valueChartYes },
-              { x: "Pourcentage No", y: valueChartNo },
-              { x: "Pourcentage Abstain", y: valueChartAbstain },
-            ]}
-            labels={() => null}
-          />
-        </View>
+        <VictoryPie
+          innerRadius={70}
+          colorScale={["#16BBFF", tulipTree, "#808080"]}
+          data={[
+            { x: "Pourcentage Yes", y: valueChartYes },
+            { x: "Pourcentage No", y: valueChartNo },
+            { x: "Pourcentage Abstain", y: valueChartAbstain },
+          ]}
+          labels={() => null}
+        />
 
         <View
           style={{
             flexDirection: "row",
-            display: "flex",
             justifyContent: "space-evenly",
             alignItems: "center",
             backgroundColor: "#171717",
@@ -472,7 +419,6 @@ export const GovernanceDetails: React.FC<{
             height: 27,
             width: 125,
             bottom: 25,
-            right: "28%",
           }}
         >
           <BrandText
@@ -495,10 +441,7 @@ export const GovernanceDetails: React.FC<{
         <View
           style={{
             flexDirection: "row",
-            display: "flex",
-            width: "60%",
-            top: 20,
-            right: "4%",
+            width: "100%",
             justifyContent: "space-evenly",
             alignContent: "center",
             flexWrap: "wrap",
@@ -506,100 +449,101 @@ export const GovernanceDetails: React.FC<{
         >
           <View
             style={{
-              width: 12,
-              height: 12,
-              backgroundColor: "#16BBFF",
-              borderRadius: 12,
-            }}
-          />
-          <BrandText
-            style={{
-              fontSize: 14,
+              flexDirection: "row",
             }}
           >
-            Yes {percentageYes}
-          </BrandText>
-
+            <View
+              style={{
+                width: 12,
+                height: 12,
+                backgroundColor: "#16BBFF",
+                borderRadius: 12,
+              }}
+            />
+            <BrandText
+              style={[
+                fontSemibold14,
+                {
+                  marginLeft: layout.spacing_x1,
+                },
+              ]}
+            >
+              Yes {percentageYes}
+            </BrandText>
+          </View>
           <View
             style={{
-              width: 40,
-              height: 0,
-              borderWidth: 0.5,
-              borderColor: "#808080",
-              transform: [{ rotate: "90deg" }],
-              top: 10,
-            }}
-          />
-
-          <View
-            style={{
-              width: 12,
-              height: 12,
-              backgroundColor: tulipTree,
-              borderRadius: 12,
-            }}
-          />
-          <BrandText
-            style={{
-              fontSize: 14,
+              flexDirection: "row",
             }}
           >
-            Yes {percentageNo}
-          </BrandText>
-
+            <View
+              style={{
+                width: 12,
+                height: 12,
+                backgroundColor: tulipTree,
+                borderRadius: 12,
+              }}
+            />
+            <BrandText
+              style={[
+                fontSemibold14,
+                {
+                  marginLeft: layout.spacing_x1,
+                },
+              ]}
+            >
+              Abstain {percentageNo}
+            </BrandText>
+          </View>
           <View
             style={{
-              width: 40,
-              height: 0,
-              borderWidth: 0.5,
-              borderColor: "#808080",
-              transform: [{ rotate: "90deg" }],
-              top: 10,
-            }}
-          />
-
-          <View
-            style={{
-              width: 12,
-              height: 12,
-              backgroundColor: "#F46F76",
-              borderRadius: 12,
-            }}
-          />
-          <BrandText
-            style={{
-              fontSize: 14,
+              flexDirection: "row",
             }}
           >
-            NoWithVeto {percentageNoWithVeto}
-          </BrandText>
+            <View
+              style={{
+                width: 12,
+                height: 12,
+                backgroundColor: "#F46F76",
+                borderRadius: 12,
+              }}
+            />
+            <BrandText
+              style={[
+                fontSemibold14,
+                {
+                  marginLeft: layout.spacing_x1,
+                },
+              ]}
+            >
+              No {percentageNo}
+            </BrandText>
+          </View>
 
           <View
             style={{
-              width: 40,
-              height: 0,
-              borderWidth: 0.5,
-              borderColor: "#808080",
-              transform: [{ rotate: "90deg" }],
-              top: 10,
-            }}
-          />
-
-          <View
-            style={{
-              width: 12,
-              height: 12,
-              backgroundColor: "#333333",
-              borderRadius: 12,
-            }}
-          />
-          <BrandText
-            style={{
-              fontSize: 14,
+              flexDirection: "row",
             }}
           >
-            NoWithVeto {percentageNoWithVeto}
-          </BrandText>
+            <View
+              style={{
+                width: 12,
+                height: 12,
+                backgroundColor: neutral33,
+                borderRadius: 12,
+              }}
+            />
+            <BrandText
+              style={[
+                fontSemibold14,
+                {
+                  marginLeft: layout.spacing_x1,
+                },
+              ]}
+            >
+              NoWithVeto {percentageNoWithVeto}
+            </BrandText>
+          </View>
         </View>
 
         {canVoteDeposit() && (
@@ -660,10 +604,12 @@ export const GovernanceDetails: React.FC<{
         }
       >
         <BrandText
-          style={{
-            fontSize: 14,
-            color: "#777777",
-          }}
+          style={[
+            fontSemibold14,
+            {
+              color: "#777777",
+            },
+          ]}
         >
           {numberProposal}
         </BrandText>
@@ -797,7 +743,7 @@ export const GovernanceDetails: React.FC<{
       </ModalBase>
 
       <ScrollView style={{ height: 260, marginBottom: 50 }}>
-        <View style={{ width: 1200, marginTop: 50 }}>
+        <View style={{ width: "100%", marginTop: 50 }}>
           <BrandText
             style={{
               fontSize: 16,
