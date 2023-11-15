@@ -1,6 +1,10 @@
-import { ProtocolServiceClient } from "../api/weshnet/ProtocoltypesServiceClientPb";
+import {
+  GrpcWebImpl,
+  ProtocolServiceClientImpl,
+} from "../api/weshnet/protocoltypes";
 
 export const createWeshClient = (url: string) => {
-  const client = new ProtocolServiceClient("http://localhost:8080");
+  const rpc = new GrpcWebImpl(url, { debug: false });
+  const client = new ProtocolServiceClientImpl(rpc);
   return client;
 };

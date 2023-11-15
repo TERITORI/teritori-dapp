@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"net"
 	"net/http"
 	"os"
 	"strings"
@@ -25,7 +24,6 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
 
 func main() {
@@ -135,22 +133,10 @@ func main() {
 	p2epb.RegisterP2EServiceServer(server, p2eSvc)
 	daopb.RegisterDAOServiceServer(server, daoSvc)
 	feedpb.RegisterFeedServiceServer(server, feedSvc)
-	reflection.Register(server)
-
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 9042))
-	if err != nil {
-		panic(errors.Wrap(err, "failed to listen"))
-	}
-	go func() {
-		if err := server.Serve(lis); err != nil {
-			panic(err)
-		}
-	}()
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),
-		grpcweb.WithWebsocketOriginFunc(func(*http.Request) bool { return true }),
-	)
+		grpcweb.WithWebsocketOriginFunc(func(*http.Request) bool { return true }))
 
 	handler := func(resp http.ResponseWriter, req *http.Request) {
 		resp.Header().Set("Access-Control-Allow-Origin", "*")

@@ -8,12 +8,6 @@ import { SettingItem } from "./components/SettingItem";
 import { useCommonStyles } from "./components/commonStyles";
 import { SettingItemType } from "./types";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
-import {
-  ContactRequestEnable,
-  ContactRequestReference,
-  ContactRequestResetReference,
-  SystemInfo,
-} from "../../api/weshnet/protocoltypes_pb";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -192,29 +186,21 @@ const TestWeshnetButton: React.FC = () => {
         loader
         fullWidth
         onPress={wrapWithFeedback(async () => {
-          const client = createWeshClient("http://localhost:8080");
-          await client.contactRequestEnable(new ContactRequestEnable.Request());
-          const res = await client.contactRequestReference(
-            new ContactRequestReference.Request(),
-          );
-          let rdvSeed = res.getPublicRendezvousSeed();
+          const client = createWeshClient("http://localhost:4242");
+          await client.ContactRequestEnable({});
+          const res = await client.ContactRequestReference({});
+          let rdvSeed = res.publicRendezvousSeed;
           if (rdvSeed.length === 0) {
-            const res = await client.contactRequestResetReference(
-              new ContactRequestResetReference.Request(),
-            );
-            if (res.getPublicRendezvousSeed().length === 0) {
+            const res = await client.ContactRequestResetReference({});
+            if (res.publicRendezvousSeed.length === 0) {
               throw new Error("No rendezvous seed");
             }
-            rdvSeed = res.getPublicRendezvousSeed();
+            rdvSeed = res.publicRendezvousSeed;
           }
-          const seed =
-            typeof rdvSeed === "string"
-              ? rdvSeed
-              : Buffer.from(rdvSeed).toString("base64");
-          setRDVSeed(seed);
+          setRDVSeed(Buffer.from(rdvSeed).toString("base64"));
           try {
-            const info = await client.systemInfo(new SystemInfo.Request());
-            setSystemInfo(JSON.stringify(info.toObject(), null, 4));
+            const info = await client.SystemInfo({});
+            setSystemInfo(JSON.stringify(info, null, 4));
           } catch (e) {
             setSystemInfo(`${e}`);
           }

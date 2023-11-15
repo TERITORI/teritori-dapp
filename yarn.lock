@@ -15495,13 +15495,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"grpc-web@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "grpc-web@npm:1.5.0"
-  checksum: 84d3ba37aa9acaae4598c382a8c78eef75e602507584b1310b6c83abddc583bd7a5cfc2e5a2f932e1f303016978322e93aa2e1e78db7f96d0a87eb8df9db376d
-  languageName: node
-  linkType: hard
-
 "gzip-size@npm:^6.0.0":
   version: 6.0.0
   resolution: "gzip-size@npm:6.0.0"
@@ -24683,7 +24676,6 @@ __metadata:
     expo-optimize: ^0.2.19
     expo-status-bar: ~1.6.0
     google-protobuf: ^3.21.2
-    grpc-web: ^1.5.0
     html-to-draftjs: ^1.5.0
     lodash: ^4.17.21
     long: ^5.2.1

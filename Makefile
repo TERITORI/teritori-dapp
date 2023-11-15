@@ -46,9 +46,6 @@ packages/api/weshnet: node_modules
 	buf generate --template ./weshnet.buf.gen.yaml buf.build/berty/weshnet -o .weshgen
 	cp -r .weshgen/packages/api $@
 	rm -fr .weshgen
-	buf generate --template ./weshnet.buf.gen.yaml buf.build/gogo/protobuf -o .gogogen
-	cp -r .gogogen/packages/api/gogoproto $@/gogoproto
-	rm -fr .gogogen
 
 .PHONY: generate.graphql
 generate.graphql:
@@ -262,4 +259,4 @@ networks.json: node_modules validate-networks
 .PHONY: unused-exports
 unused-exports: node_modules
 	## TODO unexclude all paths except packages/api;packages/contracts-clients;packages/evm-contracts-clients
-	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/utils/weshnet.ts;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\.web|.electron|.d.ts" --ignoreTestFiles 
+	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\.web|.electron|.d.ts" --ignoreTestFiles 
