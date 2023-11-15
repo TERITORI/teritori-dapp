@@ -20,6 +20,25 @@ services:
       - prices-data:/var/lib/postgresql/data/ # persist data even if container shuts down  
     ports:
       - "5433:5432"
+  envoy:
+    image: envoyproxy/envoy:v1.28.0
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+    depends_on:
+      - weshd
+    ports:
+      - "8080:8080"
+      - "8042:8042"
+      - "9901:9901"
+  weshd:
+    build:
+      context: .
+      dockerfile: ./go/cmd/weshd/Dockerfile
+      platforms:
+        - linux/amd64
+    ports:
+      - "4242:4242"
+    
 
 volumes:
   teritori-data: # named volumes can be managed easier using docker-compose

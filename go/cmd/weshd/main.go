@@ -4,12 +4,13 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"net"
 	"os/signal"
 	"strconv"
+	"sync"
 	"syscall"
 
 	mrand "math/rand"
-	"net/http"
 	"os"
 
 	"berty.tech/weshnet"
@@ -24,8 +25,8 @@ import (
 	"github.com/peterbourgon/ff/v3"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 
-	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/pkg/errors"
 )
 
@@ -60,19 +61,19 @@ func checkAndProcessDir() {
 	fmt.Printf("Directory '%s' and its parent directories have been created.\n", weshDir)
 }
 
-func startHTTPServer() {
+func startServer() func() error {
 
-	fmt.Printf("Using port: %d\n", port)
+	logger, err := zap.NewDevelopment()
+	if err != nil {
+		panic(errors.Wrap(err, "failed to create logger"))
+	}
+
+	logger.Info("server config", zap.Int("port", port))
 
 	fs := flag.NewFlagSet("weshd", flag.ContinueOnError)
 
 	if err := ff.Parse(fs, os.Args[1:]); err != nil {
 		panic(errors.Wrap(err, "failed to parse flags"))
-	}
-
-	logger, err := zap.NewDevelopment()
-	if err != nil {
-		panic(errors.Wrap(err, "failed to create logger"))
 	}
 
 	logger.Info("weshd", zap.Int("port", port))
@@ -132,29 +133,28 @@ func startHTTPServer() {
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create weshnet server"))
 	}
-	defer svc.Close()
 
 	protocoltypes.RegisterProtocolServiceServer(grpcServer, svc)
-	wrappedServer := grpcweb.WrapServer(grpcServer,
-		grpcweb.WithOriginFunc(func(string) bool { return true }), // @FIXME: this is very insecure
-		grpcweb.WithWebsockets(true),
-	)
-	handler := func(resp http.ResponseWriter, req *http.Request) {
-		resp.Header().Set("Access-Control-Allow-Origin", "*")
-		resp.Header().Set("Access-Control-Allow-Headers", "*")
-		logger.Debug(fmt.Sprintf("Request: %v", req))
-		wrappedServer.ServeHTTP(resp, req)
+	reflection.Register(grpcServer)
+
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	if err != nil {
+		panic(errors.Wrap(err, "failed to listen"))
 	}
 
-	httpServer := http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
-		Handler: http.HandlerFunc(handler),
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	go func() {
+		if err := grpcServer.Serve(lis); err != nil {
+			panic(err)
+		}
+		wg.Done()
+	}()
+	return func() error {
+		grpcServer.GracefulStop()
+		wg.Wait()
+		return svc.Close()
 	}
-
-	if err := httpServer.ListenAndServe(); err != nil {
-		panic(errors.Wrap(err, "failed to start http server"))
-	}
-
 }
 
 func main() {
@@ -162,21 +162,18 @@ func main() {
 	checkAndUpdatePortFromArgs()
 	checkAndProcessDir()
 
-	stopHTTPServer := make(chan struct{})
-
-	go func() {
-		startHTTPServer()
-		close(stopHTTPServer)
-	}()
+	stopServer := startServer()
 
 	interruptChannel := make(chan os.Signal, 1)
 	signal.Notify(interruptChannel, os.Interrupt, syscall.SIGTERM)
 
 	<-interruptChannel
 
-	fmt.Println("Ctrl+C received. Stopping the program.")
+	fmt.Println("Termination signal received. Stopping the program.")
 
-	close(stopHTTPServer)
+	if err := stopServer(); err != nil {
+		panic(err)
+	}
 
-	fmt.Println("Program has exited.")
+	fmt.Println("Server stopped gracefully.")
 }

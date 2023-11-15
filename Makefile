@@ -42,9 +42,12 @@ generate.protobuf: node_modules
 
 .PHONY: generate.weshnet
 generate.weshnet: node_modules
-	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
-	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
-	buf generate buf.build/berty/weshnet -o .weshgen
+	rm -fr packages/api/weshnet
+	mkdir -p packages/api/weshnet
+	buf generate --template ./weshnet.buf.gen.yaml buf.build/gogo/protobuf -o .gogogen
+	cp -r .gogogen/packages/api/gogoproto packages/api/weshnet/gogoproto
+	rm -fr .gogogen
+	buf generate --template ./weshnet.buf.gen.yaml buf.build/berty/weshnet -o .weshgen
 	cp -r .weshgen/packages/api/ packages/api/weshnet/
 	rm -fr .weshgen
 

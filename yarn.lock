@@ -15421,6 +15421,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"google-protobuf@npm:^3.21.2":
+  version: 3.21.2
+  resolution: "google-protobuf@npm:3.21.2"
+  checksum: 3caa2e1e2654714cc1a201ac5e5faabcaa48f5fba3d8ff9b64ca66fe19e4e0506b94053f32eddc77bf3a7a47ac1660315c6744185c1e2bb27654fd76fe91b988
+  languageName: node
+  linkType: hard
+
 "gopd@npm:^1.0.1":
   version: 1.0.1
   resolution: "gopd@npm:1.0.1"
@@ -15485,6 +15492,13 @@ __metadata:
   version: 15.8.0
   resolution: "graphql@npm:15.8.0"
   checksum: 423325271db8858428641b9aca01699283d1fe5b40ef6d4ac622569ecca927019fce8196208b91dd1d8eb8114f00263fe661d241d0eb40c10e5bfd650f86ec5e
+  languageName: node
+  linkType: hard
+
+"grpc-web@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "grpc-web@npm:1.5.0"
+  checksum: 84d3ba37aa9acaae4598c382a8c78eef75e602507584b1310b6c83abddc583bd7a5cfc2e5a2f932e1f303016978322e93aa2e1e78db7f96d0a87eb8df9db376d
   languageName: node
   linkType: hard
 
@@ -24668,6 +24682,8 @@ __metadata:
     expo-linear-gradient: ~12.3.0
     expo-optimize: ^0.2.19
     expo-status-bar: ~1.6.0
+    google-protobuf: ^3.21.2
+    grpc-web: ^1.5.0
     html-to-draftjs: ^1.5.0
     lodash: ^4.17.21
     long: ^5.2.1

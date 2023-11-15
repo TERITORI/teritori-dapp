@@ -9,3 +9,4 @@ lint:
     - node_modules
 deps:
   - buf.build/berty/weshnet:a01c754f0f5441d4b4400796c7d170a2
+  - buf.build/gogo/protobuf:5461a3dfa9d941da82028ab185dc2a0e

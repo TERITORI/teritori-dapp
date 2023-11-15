@@ -8,6 +8,12 @@ import { SettingItem } from "./components/SettingItem";
 import { useCommonStyles } from "./components/commonStyles";
 import { SettingItemType } from "./types";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
+import {
+  ContactRequestEnable,
+  ContactRequestReference,
+  ContactRequestResetReference,
+  SystemInfo,
+} from "../../api/weshnet/protocoltypes_pb";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -177,6 +183,7 @@ const TestWeshnetButton: React.FC = () => {
   const [rdvSeed, setRDVSeed] = React.useState<string>("");
   const { wrapWithFeedback } = useFeedbacks();
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [systemInfo, setSystemInfo] = React.useState<string>("");
   return (
     <>
       <PrimaryButton
@@ -185,17 +192,32 @@ const TestWeshnetButton: React.FC = () => {
         loader
         fullWidth
         onPress={wrapWithFeedback(async () => {
-          const client = createWeshClient("http://localhost:4242");
-          await client.ContactRequestEnable({});
-          const res = await client.ContactRequestReference({});
-          const rdvSeed = res.publicRendezvousSeed;
+          const client = createWeshClient("http://localhost:8080");
+          await client.contactRequestEnable(new ContactRequestEnable.Request());
+          const res = await client.contactRequestReference(
+            new ContactRequestReference.Request(),
+          );
+          let rdvSeed = res.getPublicRendezvousSeed();
           if (rdvSeed.length === 0) {
-            const res = await client.ContactRequestResetReference({});
-            if (res.publicRendezvousSeed.length === 0) {
+            const res = await client.contactRequestResetReference(
+              new ContactRequestResetReference.Request(),
+            );
+            if (res.getPublicRendezvousSeed().length === 0) {
               throw new Error("No rendezvous seed");
             }
+            rdvSeed = res.getPublicRendezvousSeed();
           }
-          setRDVSeed(Buffer.from(rdvSeed).toString("base64"));
+          const seed =
+            typeof rdvSeed === "string"
+              ? rdvSeed
+              : Buffer.from(rdvSeed).toString("base64");
+          setRDVSeed(seed);
+          try {
+            const info = await client.systemInfo(new SystemInfo.Request());
+            setSystemInfo(JSON.stringify(info.toObject(), null, 4));
+          } catch (e) {
+            setSystemInfo(`${e}`);
+          }
           setModalVisible(true);
         })}
       />
@@ -203,9 +225,12 @@ const TestWeshnetButton: React.FC = () => {
         label="Weshnet"
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
+        scrollable
       >
+        <BrandText>RDV Seed: {rdvSeed}</BrandText>
+        <BrandText>System Info:</BrandText>
         <BrandText style={{ marginBottom: modalMarginPadding }}>
-          RDV Seed: {rdvSeed}
+          {systemInfo}
         </BrandText>
       </ModalBase>
     </>
