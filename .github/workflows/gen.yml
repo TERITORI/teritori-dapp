@@ -23,7 +23,7 @@ jobs:
 
       - uses: bufbuild/buf-setup-action@v1
         with:
-          version: 1.19.0
+          version: 1.28.0
 
       - name: Install node modules
         run: yarn
