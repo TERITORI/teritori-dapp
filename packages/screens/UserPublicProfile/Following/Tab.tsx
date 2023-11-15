@@ -12,6 +12,7 @@ import { prettyPrice } from "../../../utils/coins";
 import {
   neutral33,
   neutral44,
+  neutral77,
   purpleDark,
   secondaryColor,
   yellowDefault,
@@ -67,9 +68,11 @@ const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
     <View
       style={{
         display: "flex",
-        padding: layout.spacing_x1,
-        borderBottomWidth: 1,
-        borderBottomColor: neutral44,
+        padding: layout.spacing_x2,
+        borderWidth: 1,
+        borderRadius: layout.borderRadius,
+        borderColor: neutral44,
+        marginBottom: layout.spacing_x1_5,
       }}
     >
       <View
@@ -115,7 +118,7 @@ const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
                   justifyContent: "space-between",
                 }}
               >
-                <BrandText style={fontSemibold12}>
+                <BrandText style={[fontSemibold12, { color: neutral77 }]}>
                   {moment.unix(item.createdAt).fromNow()}
                 </BrandText>
               </View>
@@ -173,7 +176,7 @@ const useBuildBodyText = (item: Notification) => {
     triggerBy?.metadata?.tokenId || tinyAddress(item.triggerBy, 30) || "";
   const userInfo = useNSUserInfo(item.userId);
   const name =
-    userInfo?.metadata?.tokenId || tinyAddress(item.triggerBy, 30) || "";
+    userInfo?.metadata?.tokenId || tinyAddress(item.userId, 30) || "";
 
   if (item.category === "reaction") {
     return `${triggerByName} ${item.body} ${name}'s post.`;
