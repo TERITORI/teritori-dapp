@@ -32,24 +32,23 @@ node_modules: package.json yarn.lock
 	touch $@
 
 .PHONY: generate
-generate: generate.protobuf generate.weshnet generate.graphql generate.contracts-clients generate.go-networks networks.json
+generate: generate.protobuf generate.graphql generate.contracts-clients generate.go-networks networks.json
 
 .PHONY: generate.protobuf
-generate.protobuf: node_modules
+generate.protobuf: node_modules packages/api/weshnet
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 	buf generate api
 
-.PHONY: generate.weshnet
-generate.weshnet: node_modules
-	rm -fr packages/api/weshnet
-	mkdir -p packages/api/weshnet
-	buf generate --template ./weshnet.buf.gen.yaml buf.build/gogo/protobuf -o .gogogen
-	cp -r .gogogen/packages/api/gogoproto packages/api/weshnet/gogoproto
-	rm -fr .gogogen
+.PHONY: packages/api/weshnet
+packages/api/weshnet: node_modules
+	rm -fr $@
 	buf generate --template ./weshnet.buf.gen.yaml buf.build/berty/weshnet -o .weshgen
-	cp -r .weshgen/packages/api/ packages/api/weshnet/
+	cp -r .weshgen/packages/api $@
 	rm -fr .weshgen
+	buf generate --template ./weshnet.buf.gen.yaml buf.build/gogo/protobuf -o .gogogen
+	cp -r .gogogen/packages/api/gogoproto $@/gogoproto
+	rm -fr .gogogen
 
 .PHONY: generate.graphql
 generate.graphql:
