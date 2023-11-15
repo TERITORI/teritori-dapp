@@ -616,11 +616,11 @@ export const NewsFeedInput = React.forwardRef<
             >
               <EmojiSelector
                 onEmojiSelected={onEmojiSelected}
-                buttonStyle={{ marginRight: layout.spacing_x2_5 }}
+                buttonStyle={{ marginRight: layout.spacing_x2 }}
               />
 
               <GIFSelector
-                buttonStyle={{ marginRight: layout.spacing_x2_5 }}
+                buttonStyle={{ marginRight: layout.spacing_x2 }}
                 onGIFSelected={(url) => {
                   // Don't add if already added
                   if (formValues.gifs?.find((gif) => gif === url)) return;
@@ -643,7 +643,7 @@ export const NewsFeedInput = React.forwardRef<
                   <IconBox
                     icon={audioSVG}
                     onPress={onPress}
-                    style={{ marginRight: layout.spacing_x2_5 }}
+                    style={{ marginRight: layout.spacing_x2 }}
                     disabled={
                       !!formValues.files?.length || !!formValues.gifs?.length
                     }
@@ -658,7 +658,7 @@ export const NewsFeedInput = React.forwardRef<
                   <IconBox
                     icon={videoSVG}
                     onPress={onPress}
-                    style={{ marginRight: layout.spacing_x2_5 }}
+                    style={{ marginRight: layout.spacing_x2 }}
                     disabled={
                       !!formValues.files?.length || !!formValues.gifs?.length
                     }
@@ -723,7 +723,7 @@ export const NewsFeedInput = React.forwardRef<
                     }
                     borderColor={primaryColor}
                     touchableStyle={{
-                      marginRight: layout.spacing_x2_5,
+                      marginRight: layout.spacing_x2,
                     }}
                     backgroundColor={
                       formValues?.message.length >

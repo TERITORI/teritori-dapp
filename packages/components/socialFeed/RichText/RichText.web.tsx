@@ -38,11 +38,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  ScrollView,
-  useWindowDimensions,
-  View, ViewStyle,
-} from "react-native";
+import { ScrollView, useWindowDimensions, View, ViewStyle } from "react-native";
 
 import { RichHashtagRenderer } from "./RichRenderer/RichHashtagRenderer";
 import { RichHashtagRendererConsultation } from "./RichRenderer/RichHashtagRendererConsultation";
@@ -192,15 +188,18 @@ export const RichText: React.FC<RichTextProps> = ({
   );
 
   // Truncate using initialValue, only if isPreview
-  const isTruncateNeeded = useMemo(() => isArticleHTMLNeedsTruncate(initialValue, isPreview)
-  , [initialValue, isPreview]);
+  const isTruncateNeeded = useMemo(
+    () => isArticleHTMLNeedsTruncate(initialValue, isPreview),
+    [initialValue, isPreview],
+  );
   useEffect(() => {
     if (isArticleHTMLNeedsTruncate(initialValue, isPreview)) {
-      const {truncatedState, truncatedHtml} = getTruncatedArticleHTML(initialValue)
+      const { truncatedState, truncatedHtml } =
+        getTruncatedArticleHTML(initialValue);
       setEditorState(EditorState.createWithContent(truncatedState));
       setHtml(truncatedHtml);
     }
-  }, [initialValue, isTruncateNeeded]);
+  }, [initialValue, isTruncateNeeded, isPreview]);
 
   const addImage = (file: LocalFileData) => {
     const state = imagePlugin.addImage(editorState, file.url, {});
@@ -487,21 +486,21 @@ export const RichText: React.FC<RichTextProps> = ({
 };
 
 /////////////// STYLES ////////////////
- const toolbarCustomButtonCStyle: ViewStyle = {
-    margin: layout.spacing_x0_5,
-  }
+const toolbarCustomButtonCStyle: ViewStyle = {
+  margin: layout.spacing_x0_5,
+};
 const toolbarCustomButtonIconCStyle: ViewStyle = {
   borderRadius: 4,
   height: 30,
   width: 30,
-}
+};
 const toolbarButtonsWrapperCStyle: ViewStyle = {
   flexDirection: "row",
   justifyContent: "center",
   alignItems: "center",
   width: "100%",
   flexWrap: "wrap",
-}
+};
 
 /////////////// SOME FUNCTIONS ////////////////
 export const createStateFromHTML = (html: string) => {
@@ -681,24 +680,20 @@ const getGIFsToPublish = (editorState: EditorState, gifsUrls: string[]) => {
   return gifsToPublish;
 };
 
-
 export const isArticleHTMLNeedsTruncate = (html: string, isPreview = false) => {
   const contentState = createStateFromHTML(html).getCurrentContent();
   return (
     isPreview &&
     contentState.getBlocksAsArray().length >= NB_ROWS_SHOWN_IN_PREVIEW
   );
-}
+};
 
 export const getTruncatedArticleHTML = (html: string) => {
-  const contentState =
-    createStateFromHTML(html).getCurrentContent();
+  const contentState = createStateFromHTML(html).getCurrentContent();
   const truncatedBlocks = contentState
     .getBlocksAsArray()
     .slice(0, NB_ROWS_SHOWN_IN_PREVIEW);
   const truncatedState = ContentState.createFromBlockArray(truncatedBlocks);
   const truncatedHtml = createHTMLFromState(truncatedState);
-  return {truncatedState, truncatedHtml}
-}
-
-
+  return { truncatedState, truncatedHtml };
+};

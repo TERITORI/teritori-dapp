@@ -1,7 +1,8 @@
+import { z } from "zod";
+
 import { Post } from "../../../api/feed/v1/feed";
 import { PostResult } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
-import {z} from "zod";
 
 export enum PostCategory {
   Reaction,
@@ -24,7 +25,7 @@ export interface NewPostFormValues {
   files?: LocalFileData[];
   gifs?: string[];
   nftStorageApiToken?: string;
-  coverImage?: LocalFileData;
+  thumbnailImage?: LocalFileData;
   shortDescription: string;
 }
 
@@ -50,7 +51,7 @@ export interface SocialFeedMetadata {
 export const ZodSocialFeedArticleMetadata = z.object({
   title: z.string(),
   shortDescription: z.string(),
-  coverImage: z.custom<RemoteFileData>().optional(),
+  thumbnailImage: z.custom<RemoteFileData>().optional(),
   message: z.string(),
   files: z.custom<RemoteFileData[]>().optional(),
   gifs: z.array(z.string()).optional(),
@@ -59,8 +60,9 @@ export const ZodSocialFeedArticleMetadata = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
 });
-export type SocialFeedArticleMetadata = z.infer<typeof  ZodSocialFeedArticleMetadata>;
-
+export type SocialFeedArticleMetadata = z.infer<
+  typeof ZodSocialFeedArticleMetadata
+>;
 
 export type ReplyToType = {
   username: string;

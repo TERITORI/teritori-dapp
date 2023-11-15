@@ -24,7 +24,7 @@ export const ArticleRenderer: React.FC<Props> = ({
   postId,
   authorId,
 }) => {
-  const coverImage = metadata.files?.find((file) => file.isCoverImage);
+  const thumbnailImage = metadata.files?.find((file) => file.isCoverImage);
 
   return (
     <>
@@ -33,9 +33,9 @@ export const ArticleRenderer: React.FC<Props> = ({
           {metadata.title}
         </BrandText>
       )}
-      {!!coverImage && (
+      {!!thumbnailImage && (
         <Image
-          source={{ uri: ipfsURLToHTTPURL(coverImage.url) }}
+          source={{ uri: ipfsURLToHTTPURL(thumbnailImage.url) }}
           resizeMode="cover"
           style={{
             width: "100%",

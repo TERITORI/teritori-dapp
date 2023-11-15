@@ -16,6 +16,7 @@ import { DotSeparator } from "../../separators/DotSeparator";
 import { SpacerRow } from "../../spacer";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 
+// ====== Handle author image and username, date
 export const SocialCardHeader: FC<{
   authorId: string;
   authorAddress: string;
@@ -26,7 +27,7 @@ export const SocialCardHeader: FC<{
   const { width } = useWindowDimensions();
   return (
     <FlexRow justifyContent="space-between">
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
         <OmniLink
           to={{ screen: "UserPublicProfile", params: { id: authorId } }}
         >
@@ -36,16 +37,16 @@ export const SocialCardHeader: FC<{
               marginRight:
                 width < RESPONSIVE_BREAKPOINT_S
                   ? layout.spacing_x1
-                  : layout.spacing_x2,
+                  : layout.spacing_x1_5,
             }}
             userId={authorId}
-            size={width < RESPONSIVE_BREAKPOINT_S ? "S" : "M"}
+            size={width < RESPONSIVE_BREAKPOINT_S ? "XS" : "S"}
           />
         </OmniLink>
         <View
           style={{
             flexDirection: width < RESPONSIVE_BREAKPOINT_S ? "column" : "row",
-            justifyContent: "space-between",
+            flex: 1,
           }}
         >
           <OmniLink
@@ -53,7 +54,7 @@ export const SocialCardHeader: FC<{
           >
             {/*---- User name */}
             <AnimationFadeIn>
-              <BrandText style={fontSemibold16}>
+              <BrandText style={fontSemibold16} numberOfLines={1}>
                 {authorMetadata?.public_name ||
                   (!authorMetadata?.tokenId
                     ? DEFAULT_NAME
@@ -64,27 +65,33 @@ export const SocialCardHeader: FC<{
           </OmniLink>
           {width >= RESPONSIVE_BREAKPOINT_S && <SpacerRow size={1.5} />}
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            {/*---- User TNS name */}
-            <OmniLink
-              to={{ screen: "UserPublicProfile", params: { id: authorId } }}
-            >
-              <BrandText
-                style={[
-                  fontSemibold14,
-                  {
-                    color: neutral77,
-                  },
-                ]}
-                numberOfLines={1}
-              >
-                {" "}
-                @
-                {authorMetadata?.tokenId
-                  ? authorMetadata.tokenId
-                  : tinyAddress(authorAddress, 19)}
-              </BrandText>
-            </OmniLink>
-            <DotSeparator style={{ marginHorizontal: layout.spacing_x0_75 }} />
+            {width >= RESPONSIVE_BREAKPOINT_S && (
+              <>
+                {/* ---- User TNS name*/}
+                <OmniLink
+                  to={{ screen: "UserPublicProfile", params: { id: authorId } }}
+                >
+                  <BrandText
+                    style={[
+                      fontSemibold14,
+                      {
+                        color: neutral77,
+                      },
+                    ]}
+                    numberOfLines={1}
+                  >
+                    {" "}
+                    @
+                    {authorMetadata?.tokenId
+                      ? authorMetadata.tokenId
+                      : tinyAddress(authorAddress, 19)}
+                  </BrandText>
+                </OmniLink>
+                <DotSeparator
+                  style={{ marginHorizontal: layout.spacing_x0_75 }}
+                />
+              </>
+            )}
             {/*---- Date */}
             <DateTime
               date={postMetadata.createdAt}

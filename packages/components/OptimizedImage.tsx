@@ -27,8 +27,10 @@ export const OptimizedImage: React.FC<
           width,
           height,
           borderRadius: StyleSheet.flatten(other.style).borderRadius,
-          borderTopLeftRadius: StyleSheet.flatten(other.style).borderTopLeftRadius,
-          borderBottomLeftRadius: StyleSheet.flatten(other.style).borderBottomLeftRadius,
+          borderTopLeftRadius: StyleSheet.flatten(other.style)
+            .borderTopLeftRadius,
+          borderBottomLeftRadius: StyleSheet.flatten(other.style)
+            .borderBottomLeftRadius,
           backgroundColor: neutral33,
         }}
       />

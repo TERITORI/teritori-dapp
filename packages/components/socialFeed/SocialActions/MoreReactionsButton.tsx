@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
+import { TouchableOpacity } from "react-native";
 
 import { neutral11, neutral22 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
@@ -9,26 +9,24 @@ import { BrandText } from "../../BrandText";
 export const MoreReactionsButton: React.FC<{
   label: string;
   onPress: () => void;
-  style?: StyleProp<ViewStyle>;
-}> = ({ label, onPress, style }) => {
+}> = ({ label, onPress }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[
-        {
-          height: 28,
-          width: 43,
-          paddingRight: layout.spacing_x1,
-          paddingLeft: layout.spacing_x0_75,
-          backgroundColor: neutral11,
-          borderColor: neutral22,
-          borderWidth: 1,
-          borderRadius: 6,
-          justifyContent: "center",
-          alignItems: "center",
-        },
-        style,
-      ]}
+      style={{
+        marginHorizontal: layout.spacing_x0_25,
+        marginVertical: layout.spacing_x0_25,
+        height: 28,
+        width: 43,
+        paddingRight: layout.spacing_x1,
+        paddingLeft: layout.spacing_x0_75,
+        backgroundColor: neutral11,
+        borderColor: neutral22,
+        borderWidth: 1,
+        borderRadius: 6,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
     >
       <BrandText style={fontSemibold13}>{label}</BrandText>
     </TouchableOpacity>

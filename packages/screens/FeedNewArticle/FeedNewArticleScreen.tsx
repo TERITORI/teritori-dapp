@@ -36,7 +36,11 @@ import { prettyPrice } from "../../utils/coins";
 import { generateIpfsKey } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { ARTICLE_COVER_IMAGE_HEIGHT } from "../../utils/social-feed";
+import {
+  ARTICLE_THUMBNAIL_IMAGE_HEIGHT,
+  SOCIAL_FEED_ARTICLE_SHORT_DESC_MAX_CHARS,
+  SOCIAL_FEED_ARTICLE_TITLE_MAX_CHARS,
+} from "../../utils/social-feed";
 import {
   neutral00,
   neutral11,
@@ -82,8 +86,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       gifs: [],
       hashtags: [],
       mentions: [],
-      coverImage: undefined,
-      shortDescription: ""
+      thumbnailImage: undefined,
+      shortDescription: "",
     },
     mode: "onBlur",
   });
@@ -239,24 +243,23 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         </TertiaryBox>
 
         <FileUploader
-          label="Cover image"
-          fileHeight={ARTICLE_COVER_IMAGE_HEIGHT}
+          label="Thumbnail image"
+          fileHeight={ARTICLE_THUMBNAIL_IMAGE_HEIGHT}
           isImageCover
           style={{
             marginTop: layout.spacing_x3,
-            width: "100%",
+            width: 364,
           }}
-          onUpload={(files) =>
-            setValue("coverImage", files[0])
-          }
+          onUpload={(files) => setValue("thumbnailImage", files[0])}
           mimeTypes={IMAGE_MIME_TYPES}
         />
 
         <TextInputCustom<NewPostFormValues>
           noBrokenCorners
           rules={{ required: true }}
+          maxLength={SOCIAL_FEED_ARTICLE_TITLE_MAX_CHARS}
           height={48}
-          label="Give a title to make an Article"
+          label="Title"
           placeHolder="Type title here"
           name="title"
           control={control}
@@ -271,9 +274,9 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         <TextInputCustom<NewPostFormValues>
           noBrokenCorners
           rules={{ required: true }}
-          maxLength={300}
+          maxLength={SOCIAL_FEED_ARTICLE_SHORT_DESC_MAX_CHARS}
           multiline
-          label="Give a short description to make an Article"
+          label="Short description"
           placeHolder="Type short description here"
           name="shortDescription"
           control={control}
@@ -305,7 +308,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                   !formValues.message ||
                   !formValues.title ||
                   !formValues.shortDescription ||
-                  !formValues.coverImage ||
+                  !formValues.thumbnailImage ||
                   !wallet
                 }
                 onPublish={onPublish}

@@ -65,7 +65,7 @@ export const TipButton: React.FC<{
         disabled={disabled}
       >
         <SVG source={tipSVG} width={20} height={20} />
-        <SpacerRow size={1.5} />
+        <SpacerRow size={0.75} />
         <BrandText style={[fontSemibold14, disabled && { color: neutral77 }]}>
           {selectedNetworkInfo?.kind === NetworkKind.Gno ? (
             <GnoTipAmount

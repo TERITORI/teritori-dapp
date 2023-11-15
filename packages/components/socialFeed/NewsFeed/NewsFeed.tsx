@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   LayoutChangeEvent,
   View,
-  useWindowDimensions, ViewStyle,
+  useWindowDimensions,
+  ViewStyle,
 } from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
@@ -12,6 +13,7 @@ import Animated, {
 import { CreateShortPostButton } from "./CreateShortPost/CreateShortPostButton";
 import { CreateShortPostButtonRound } from "./CreateShortPost/CreateShortPostButtonRound";
 import { CreateShortPostModal } from "./CreateShortPost/CreateShortPostModal";
+import { PostCategory } from "./NewsFeed.type";
 import { NewsFeedInput } from "./NewsFeedInput";
 import { RefreshButton } from "./RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "./RefreshButton/RefreshButtonRound";
@@ -28,9 +30,8 @@ import {
   screenContentMaxWidth,
 } from "../../../utils/style/layout";
 import { SpacerColumn, SpacerRow } from "../../spacer";
-import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
-import {PostCategory} from "./NewsFeed.type";
-import {SocialArticleCard} from "../SocialThread/SocialArticleCard";
+import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
+import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
 
 const OFFSET_Y_LIMIT_FLOATING = 224;
 export const ROUND_BUTTON_WIDTH_L = 60;
@@ -161,15 +162,26 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     ],
   );
 
-  const RenderItem = useCallback((post: Post ) =>
+  const RenderItem = useCallback(
+    (post: Post) => (
       <View
         style={{
-          width:
-            windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
+          width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
           maxWidth: screenContentMaxWidth,
         }}
       >
-        {post.category === PostCategory.Article ? <SocialArticleCard post={post}/> :
+        {post.category === PostCategory.Article ? (
+          <SocialArticleCard
+            post={post}
+            style={
+              windowWidth < RESPONSIVE_BREAKPOINT_S && {
+                borderRadius: 0,
+                borderLeftWidth: 0,
+                borderRightWidth: 0,
+              }
+            }
+          />
+        ) : (
           <SocialThreadCard
             post={post}
             refetchFeed={refetch}
@@ -183,10 +195,12 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
               }
             }
           />
-        }
-        <SpacerColumn size={2}/>
+        )}
+        <SpacerColumn size={2} />
       </View>
-  , [windowWidth, width, screenContentMaxWidth])
+    ),
+    [windowWidth, width, isFlagged, refetch],
+  );
 
   return (
     <>
@@ -234,11 +248,11 @@ const contentCStyle: ViewStyle = {
   alignItems: "center",
   alignSelf: "center",
   width: "100%",
-}
+};
 const floatingActions: ViewStyle = {
   position: "absolute",
   justifyContent: "center",
   alignItems: "center",
   right: 24,
   bottom: 32,
-}
+};
