@@ -11,6 +11,7 @@ import {
   borderRadiusButton,
   ButtonsSize,
   heightButton,
+  horizontalPaddingButton,
 } from "../../utils/style/buttons";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
@@ -73,7 +74,7 @@ export const PrimaryButtonOutline: React.FC<{
           flexDirection: "row",
           borderRadius: borderRadiusButton(size),
           backgroundColor: "#000000",
-          paddingHorizontal: 20,
+          paddingHorizontal: horizontalPaddingButton(size),
           borderColor: color,
         }}
         {...boxProps}
