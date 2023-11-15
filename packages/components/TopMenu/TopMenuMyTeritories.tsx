@@ -15,7 +15,6 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SmallCarousel } from "../carousels/SmallCarousel";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
-//TODO: Make SmallCarousel with items auto sized instead of fix widths
 const ORG_CARD_WIDTH = 164;
 const ORG_CARD_TAG_WIDTH = 94;
 
@@ -68,22 +67,20 @@ export const TopMenuMyTeritories: React.FC = () => {
   if (!daos?.length) return null;
   return (
     <TopMenuSection title="My Teritories" isCarousel>
-      {daos && (
-        <SmallCarousel
-          style={{
-            width: topMenuWidth - 2,
-          }}
-          width={ORG_CARD_WIDTH + layout.spacing_x1_5}
-          data={daos}
-          height={48}
-          loop={false}
-          renderItem={({ item }) => (
-            <View style={{ alignItems: "flex-end" }}>
-              <OrgCard organization={item} />
-            </View>
-          )}
-        />
-      )}
+      <SmallCarousel
+        style={{
+          width: topMenuWidth - 2,
+        }}
+        width={ORG_CARD_WIDTH + layout.spacing_x1_5}
+        data={daos}
+        height={48}
+        loop={false}
+        renderItem={({ item }) => (
+          <View style={{ alignItems: "flex-end" }}>
+            <OrgCard organization={item} />
+          </View>
+        )}
+      />
     </TopMenuSection>
   );
 };
