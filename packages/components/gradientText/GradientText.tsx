@@ -8,13 +8,16 @@ import {
   gradientColorDarkBlue,
   gradientColorDarkerBlue,
   gradientColorGray,
+  gradientColorGreen,
   gradientColorLavender,
   gradientColorLightBlue,
   gradientColorLighterGray,
   gradientColorLightGray,
   gradientColorLightLavender,
+  gradientColorOrange,
   gradientColorPink,
   gradientColorPurple,
+  gradientColorRed,
   gradientColorSalmon,
   gradientColorTurquoise,
 } from "../../utils/style/colors";
@@ -27,7 +30,9 @@ export type GradientType =
   | "purple"
   | "pink"
   | "gray"
-  | "grayLight";
+  | "grayLight"
+  | "red"
+  | "green";
 
 export interface GradientTextProps {
   style?: StyleProp<
@@ -95,6 +100,18 @@ const gradient = (type: GradientType) => {
     case "grayLight":
       return {
         colors: [gradientColorLighterGray, gradientColorLightLavender],
+        start,
+        end,
+      };
+    case "red":
+      return {
+        colors: [gradientColorRed, gradientColorOrange],
+        start,
+        end,
+      };
+    case "green":
+      return {
+        colors: [gradientColorGreen, gradientColorBlue],
         start,
         end,
       };

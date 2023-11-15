@@ -48,7 +48,7 @@ export const EstateCardInformationBox: React.FC<
       noBrokenCorners={isLightTheme}
       squaresBackgroundColor={theme.backgroundColor}
       height={66}
-      width={136}
+      width={secondary ? 132 : 136}
     >
       <BrandText
         style={{

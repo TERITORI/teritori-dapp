@@ -1,13 +1,20 @@
 import React from "react";
-import { View } from "react-native";
+import { TextStyle, View, ViewStyle } from "react-native";
 
+import { MintPageActivity } from "./components/MintPageActivity";
+import { MintPageContractInformations } from "./components/MintPageContractInformations";
+import { MintPageEstateImages } from "./components/MintPageEstateImages";
+import { MintPageInformationsBoxes } from "./components/MintPageInformationsBoxes";
+import { MintPageTabs } from "./components/MintPageTabs/MintPageTabs";
+import { LogInBox } from "./components/MintableBox/LogInBox";
+import { MintableBox } from "./components/MintableBox/MintableBox";
 import { BrandText } from "../../../components/BrandText";
-import { ProgressionCardWithoutBox } from "../../../components/cards/ProgressionCard";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { setIsLightTheme } from "../../../store/slices/settings";
 import { useAppDispatch } from "../../../store/store";
 import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
+import { layout } from "../../../utils/style/layout";
 import { EstateCardTags } from "../components/EstateCard/EstateCard";
-import { EstateCardInformationBox } from "../components/EstateCard/EstateCardInformations";
 import { getEstateCardById } from "../components/EstateCard/EstateCardList";
 import { RWAScreenContainer } from "../components/RWAScreenContainer/RWAScreenContainer";
 
@@ -19,6 +26,7 @@ export const RWAMintPageScreen: ScreenFC<"RWAMintPage"> = ({
   const dispatch = useAppDispatch();
   const { goBack } = useAppNavigation();
   const { tags, card } = getEstateCardById(id);
+  const selectedWallet = useSelectedWallet();
 
   React.useEffect(() => {
     dispatch(setIsLightTheme(true));
@@ -27,94 +35,67 @@ export const RWAMintPageScreen: ScreenFC<"RWAMintPage"> = ({
 
   return (
     <RWAScreenContainer onBackPress={goBack} headerTitle={card.title}>
-      <View
-        style={{
-          marginHorizontal: 115,
-          marginTop: 50,
-          flex: 1,
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <View style={{ flex: 10, borderColor: "blue", borderWidth: 1 }}>
-          <EstateCardTags tags={tags} />
-          <BrandText
-            style={{
-              fontSize: 28,
-              letterSpacing: -2,
-              fontWeight: "300",
-              marginTop: 10,
-              marginBottom: 10,
-            }}
-          >
-            {card.title}
-          </BrandText>
-          <View
-            style={{
-              margin: -6,
-              flexWrap: "wrap",
-              flexDirection: "row",
-            }}
-          >
-            <View style={{ margin: 6 }}>
-              <EstateCardInformationBox
-                secondary
-                label="Total Investment"
-                value="96,600 USDC"
-              />
-            </View>
-            <View style={{ margin: 6 }}>
-              <EstateCardInformationBox
-                secondary
-                label="Target APY"
-                value="11.39%"
-              />
-            </View>
-            <View style={{ margin: 6 }}>
-              <EstateCardInformationBox
-                secondary
-                label="Target ROI per Token"
-                value="5.69 USDC"
-              />
-            </View>
-            <View style={{ margin: 6 }}>
-              <EstateCardInformationBox
-                secondary
-                label="Token Supply"
-                value="1,932"
-              />
-            </View>
-            <View style={{ margin: 6 }}>
-              <EstateCardInformationBox
-                secondary
-                label="Token Price"
-                value="50 USDC"
-              />
-            </View>
-            <View style={{ margin: 6 }}>
-              <EstateCardInformationBox
-                secondary
-                label="Max Token Buy"
-                value="50 by address"
-              />
+      <View style={{ alignItems: "center" }}>
+        <View style={containerCStyle}>
+          {/* Left section */}
+          <View style={[sectionCStyle, { marginRight: 20 }]}>
+            {/* Tags */}
+            <EstateCardTags tags={tags} />
+            <BrandText numberOfLines={1} style={cardTitleCStyle}>
+              {card.title}
+            </BrandText>
+            <View style={{ width: 420 }}>
+              <MintPageInformationsBoxes />
+              <MintPageContractInformations />
+              {/* MintableBox or LogInBox */}
+              <View style={{ marginTop: 30 }}>
+                {selectedWallet ? (
+                  <MintableBox
+                    isMintable
+                    totalPrice="150 USDC"
+                    availableBalance="0"
+                    onPressMint={() => {}}
+                  />
+                ) : (
+                  <LogInBox />
+                )}
+              </View>
+              {/* Tabs */}
+              <View style={{ marginVertical: 40 }}>
+                <MintPageTabs />
+              </View>
             </View>
           </View>
-          <ProgressionCardWithoutBox
-            label="Minted Tokens"
-            valueCurrent={1294}
-            valueMax={1732}
-          />
-        </View>
-        <View style={{ flex: 4 }} />
-        <View style={{ flex: 10, borderWidth: 1, borderColor: "red" }}>
-          <EstateCardTags tags={tags} />
-          <BrandText
-            style={{ fontSize: 28, letterSpacing: -2, fontWeight: "300" }}
-          >
-            {card.title}
-          </BrandText>
+          {/* Right section */}
+          <View style={[sectionCStyle, { marginLeft: 20 }]}>
+            <MintPageEstateImages />
+            <MintPageActivity />
+          </View>
         </View>
       </View>
     </RWAScreenContainer>
   );
+};
+
+const containerCStyle: ViewStyle = {
+  marginTop: 50,
+  flexDirection: "row",
+  justifyContent: "center",
+  flexWrap: "wrap",
+  width: "100%",
+};
+
+const sectionCStyle: ViewStyle = {
+  justifyContent: "flex-start",
+  width: "100%",
+  maxWidth: 534,
+  margin: layout.spacing_x2,
+};
+
+const cardTitleCStyle: TextStyle = {
+  fontSize: 28,
+  letterSpacing: -2,
+  fontWeight: "300",
+  marginTop: 10,
+  marginBottom: 10,
 };

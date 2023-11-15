@@ -5,12 +5,11 @@ import { EstateCardImage } from "./EstateCardImage";
 import { EstateCardInformations } from "./EstateCardInformations";
 import { EstateCardProps, EstateCardTagsProps } from "./types";
 import EstatePlaceholder from "../../../../../assets/default-images/estate-placeholder.png";
-import { BrandText } from "../../../../components/BrandText";
+import { TertiaryBadge } from "../../../../components/badges/TertiaryBadge";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
 import { useTheme } from "../../../../hooks/useTheme";
 
 export const EstateCardTags: React.FC<EstateCardTagsProps> = ({ tags }) => {
-  const theme = useTheme();
   return (
     <View
       style={{
@@ -20,29 +19,12 @@ export const EstateCardTags: React.FC<EstateCardTagsProps> = ({ tags }) => {
     >
       {tags.map((value, index) => {
         return (
-          <View
+          <TertiaryBadge
+            label={value}
             style={{
               marginLeft: index !== 0 ? 6 : 0,
-              height: 28,
-              backgroundColor: theme.tagsBackgroundColor,
-              borderRadius: 10,
-              justifyContent: "center",
-              alignItems: "center",
-              paddingHorizontal: 12,
             }}
-            key={index}
-          >
-            <BrandText
-              style={{
-                color: theme.textColor,
-                fontWeight: "200",
-                fontSize: 13,
-                letterSpacing: -1,
-              }}
-            >
-              {value}
-            </BrandText>
-          </View>
+          />
         );
       })}
     </View>

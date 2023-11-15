@@ -55,6 +55,10 @@ export const gradientColorPink = "#F46FBF";
 export const gradientColorGray = "#676767";
 export const gradientColorLightGray = "#B7B7B7";
 export const gradientColorLighterGray = "#F5F7FA";
+// RWA
+export const gradientColorRed = "#F9447B";
+export const gradientColorOrange = "#FBAE19";
+export const gradientColorGreen = "#4DD881";
 
 export const currencyTORIcolor = primaryColor;
 export const currencyETHcolor = "#232731";

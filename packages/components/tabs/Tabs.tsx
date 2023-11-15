@@ -12,11 +12,11 @@ import {
   ViewStyle,
 } from "react-native";
 
+import { useTheme } from "../../hooks/useTheme";
 import {
   gradientColorBlue,
   gradientColorDarkerBlue,
   gradientColorTurquoise,
-  neutral33,
   neutral77,
   secondaryColor,
 } from "../../utils/style/colors";
@@ -72,6 +72,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
       animated: false,
     });
   };
+  const theme = useTheme();
 
   return (
     // styles are applied weirdly to ScrollView, so it's better to apply them to a constraining view
@@ -79,7 +80,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
       <View
         style={[
           !noUnderline && {
-            borderBottomColor: neutral33,
+            borderBottomColor: theme.borderColor,
             borderBottomWidth: 1,
           },
           style,

@@ -6,13 +6,16 @@ import {
   gradientColorDarkBlue,
   gradientColorDarkerBlue,
   gradientColorGray,
+  gradientColorGreen,
   gradientColorLavender,
   gradientColorLightBlue,
   gradientColorLighterGray,
   gradientColorLightGray,
   gradientColorLightLavender,
+  gradientColorOrange,
   gradientColorPink,
   gradientColorPurple,
+  gradientColorRed,
   gradientColorSalmon,
   gradientColorTurquoise,
 } from "../../utils/style/colors";
@@ -34,6 +37,10 @@ const gradient = (type: GradientType) => {
       return `90deg, ${gradientColorGray} 0%, ${gradientColorLightGray} 100%`;
     case "grayLight":
       return `90deg, ${gradientColorLighterGray} 0%, ${gradientColorLightLavender} 100%`;
+    case "red":
+      return `90deg, ${gradientColorRed} 0%, ${gradientColorOrange} 100%`;
+    case "green":
+      return `90deg, ${gradientColorGreen} 0%, ${gradientColorBlue} 100%`;
   }
 };
 

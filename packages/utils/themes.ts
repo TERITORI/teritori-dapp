@@ -2,6 +2,7 @@ import {
   neutral00,
   neutral33,
   neutral55,
+  neutral77,
   primaryColor,
   primaryTextColor,
 } from "./style/colors";
@@ -21,12 +22,9 @@ export interface Theme {
   // chevron icon in sidebar
   chevronIconColor: string;
 
-  // boxes
-  headerSquaresBackgroundColor: string;
-  squaresBackgroundColor: string;
-
-  // tags
-  tagsBackgroundColor: string;
+  // badge
+  badgeBackgroundColor: string;
+  badgeTextColor: string;
 }
 
 export const lightTheme: Theme = {
@@ -44,12 +42,9 @@ export const lightTheme: Theme = {
   // chevron icon in sidebar
   chevronIconColor: "black",
 
-  // boxes
-  headerSquaresBackgroundColor: "white",
-  squaresBackgroundColor: "#FDFDFF",
-
-  // tags
-  tagsBackgroundColor: "#F5F5F7",
+  // badge
+  badgeBackgroundColor: "#F5F5F7",
+  badgeTextColor: neutral77,
 };
 
 export const darkTheme: Theme = {
@@ -67,10 +62,7 @@ export const darkTheme: Theme = {
   // chevron icon in sidebar
   chevronIconColor: "white",
 
-  // boxes
-  headerSquaresBackgroundColor: neutral00,
-  squaresBackgroundColor: neutral00,
-
-  // tags
-  tagsBackgroundColor: neutral55,
+  // badge
+  badgeBackgroundColor: neutral55,
+  badgeTextColor: "white",
 };

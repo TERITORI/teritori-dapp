@@ -52,7 +52,7 @@ export const HomeProposals: React.FC = () => {
             color={theme.secondaryTextColor}
             backgroundColor={theme.primaryButtonColor}
             text="View Property"
-            squaresBackgroundColor={theme.squaresBackgroundColor}
+            squaresBackgroundColor={theme.backgroundColor}
             size="XL"
             style={{ marginTop: 35 }}
           />
