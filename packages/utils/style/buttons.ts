@@ -1,4 +1,4 @@
-export type ButtonsSize = "XL" | "M" | "SM" | "XS";
+export type ButtonsSize = "XL" | "M" | "SM" | "XS" | "XXS";
 
 export const heightButton = (format: ButtonsSize) => {
   switch (format) {
@@ -10,6 +10,8 @@ export const heightButton = (format: ButtonsSize) => {
       return 40;
     case "XS":
       return 36;
+    case "XXS":
+      return 28;
   }
 };
 
@@ -37,5 +39,14 @@ export const cornerWidthDropdownButton = (format: ButtonsSize) => {
       return 5;
     default:
       return 8;
+  }
+};
+
+export const horizontalPaddingButton = (format: ButtonsSize) => {
+  switch (format) {
+    case "XXS":
+      return 10;
+    default:
+      return 20;
   }
 };
