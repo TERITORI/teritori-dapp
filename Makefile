@@ -35,10 +35,17 @@ node_modules: package.json yarn.lock
 generate: generate.protobuf generate.graphql generate.contracts-clients generate.go-networks networks.json
 
 .PHONY: generate.protobuf
-generate.protobuf: node_modules
+generate.protobuf: node_modules packages/api/weshnet
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 	buf generate api
+
+.PHONY: packages/api/weshnet
+packages/api/weshnet: node_modules
+	rm -fr $@
+	buf generate --template ./weshnet.buf.gen.yaml buf.build/berty/weshnet -o .weshgen
+	cp -r .weshgen/packages/api $@
+	rm -fr .weshgen
 
 .PHONY: generate.graphql
 generate.graphql:

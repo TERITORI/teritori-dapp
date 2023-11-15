@@ -15421,6 +15421,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"google-protobuf@npm:^3.21.2":
+  version: 3.21.2
+  resolution: "google-protobuf@npm:3.21.2"
+  checksum: 3caa2e1e2654714cc1a201ac5e5faabcaa48f5fba3d8ff9b64ca66fe19e4e0506b94053f32eddc77bf3a7a47ac1660315c6744185c1e2bb27654fd76fe91b988
+  languageName: node
+  linkType: hard
+
 "gopd@npm:^1.0.1":
   version: 1.0.1
   resolution: "gopd@npm:1.0.1"
@@ -24668,6 +24675,7 @@ __metadata:
     expo-linear-gradient: ~12.3.0
     expo-optimize: ^0.2.19
     expo-status-bar: ~1.6.0
+    google-protobuf: ^3.21.2
     html-to-draftjs: ^1.5.0
     lodash: ^4.17.21
     long: ^5.2.1

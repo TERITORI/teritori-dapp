@@ -7,3 +7,5 @@ lint:
     - DEFAULT
   ignore:
     - node_modules
+deps:
+  - buf.build/berty/weshnet:a01c754f0f5441d4b4400796c7d170a2
