@@ -40,5 +40,8 @@ jobs:
       - name: Regenerate
         run: make generate
 
+      - name: Debug
+        run: ls packages/api/weshnet
+
       - name: Check diff
         run: git diff --exit-code
