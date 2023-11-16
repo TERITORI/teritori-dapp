@@ -35,12 +35,19 @@ type Message struct {
 }
 
 type Config struct {
-	MinterCodeIDs    []uint64
-	TendermintClient *tmws.Client
-	BlockTimeCache   *bigcache.BigCache
-	PricesClient     pricespb.PricesServiceClient
-	Network          *networks.CosmosNetwork
-	NetworkStore     networks.NetworkStore
+	TNSContractAddress             string
+	MinterCodeIDs                  []uint64
+	VaultContractAddress           string
+	SquadStakingContractAddressV1  string
+	SquadStakingContractAddressV2  string
+	TheRiotCollectionAddress       string
+	TheRiotBreedingContractAddress string
+	TNSDefaultImageURL             string
+	TendermintClient               *tmws.Client
+	BlockTimeCache                 *bigcache.BigCache
+	PricesClient                   pricespb.PricesServiceClient
+	Network                        *networks.CosmosNetwork
+	NetworkStore                   networks.NetworkStore
 }
 
 type Handler struct {
@@ -165,6 +172,7 @@ type ExecutePayload map[string]json.RawMessage
 
 func (h *Handler) handleExecute(e *Message) error {
 	var executeMsg wasmtypes.MsgExecuteContract
+
 	if err := cosmosproto.Unmarshal(e.Msg.Value, &executeMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal execute msg")
 	}
@@ -247,6 +255,74 @@ func (h *Handler) handleExecute(e *Message) error {
 				return errors.Wrap(err, "failed to handle squad stake")
 			}
 		}
+	// seller_contract
+	case "update_seller_profile":
+		if executeMsg.Contract == h.config.Network.FreelanceSellerContractAddress {
+			if err := h.handleExecuteUpdateSellerProfile(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle update_seller_profile")
+			}
+		}
+	case "create_gig":
+		if executeMsg.Contract == h.config.Network.FreelanceSellerContractAddress {
+			if err := h.handleExecuteCreateGig(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle add_seller_gig")
+			}
+		}
+	case "delete_gig":
+		if executeMsg.Contract == h.config.Network.FreelanceSellerContractAddress {
+			if err := h.handleExecuteDeleteGig(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle remove_seller_gig")
+			}
+		}
+	//escrow_contract
+	case "create_contract":
+		if executeMsg.Contract == h.config.Network.FreelanceEscrowContractAddress {
+			if err := h.handleExecuteEscrowCreateContract(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle escrow_create_contract")
+			}
+		}
+	case "accept_contract":
+		if executeMsg.Contract == h.config.Network.FreelanceEscrowContractAddress {
+			if err := h.handleExecuteEscrowAcceptContract(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle escrow_accept_contract")
+			}
+		}
+	case "cancel_contract":
+		if executeMsg.Contract == h.config.Network.FreelanceEscrowContractAddress {
+			if err := h.handleExecuteEscrowCancelContract(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle escrow_cancel_contract")
+			}
+		}
+	case "pause_contract":
+		if executeMsg.Contract == h.config.Network.FreelanceEscrowContractAddress {
+			if err := h.handleExecuteEscrowPauseContract(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle escrow_pause_contract")
+			}
+		}
+	case "resume_contract":
+		if executeMsg.Contract == h.config.Network.FreelanceEscrowContractAddress {
+			if err := h.handleExecuteEscrowResumeContract(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle escrow_resume_contract")
+			}
+		}
+	case "complete_contract":
+		if executeMsg.Contract == h.config.Network.FreelanceEscrowContractAddress {
+			if err := h.handleExecuteEscrowCompleteContract(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle escrow_complete_contract")
+			}
+		}
+	case "complete_contract_by_dao":
+		if executeMsg.Contract == h.config.Network.FreelanceEscrowContractAddress {
+			if err := h.handleExecuteEscrowCompleteContractByDao(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle escrow_complete_contract_by_dao")
+			}
+		}
+	case "seller_report":
+		if executeMsg.Contract == h.config.Network.FreelanceReportContractAddress {
+			if err := h.handleExecuteSellerReport(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle report_contract")
+			}
+		}
 	// Feeds actions
 	case "create_post":
 		if err := h.handleExecuteCreatePost(e, &executeMsg); err != nil {
@@ -290,7 +366,6 @@ func (h *Handler) handleExecute(e *Message) error {
 			return errors.Wrap(err, "failed to handle dao execute")
 		}
 	}
-
 	return nil
 }
 

@@ -9,6 +9,11 @@ import {
   GrpcWebImpl as FeedGrpcWebImpl,
 } from "../api/feed/v1/feed";
 import {
+  FreelanceServiceClientImpl,
+  GrpcWebImpl as FreelanceGrpcWebImpl,
+  FreelanceService,
+} from "../api/freelance/v1/freelance";
+import {
   MarketplaceServiceClientImpl,
   GrpcWebImpl as MarketplaceGrpcWebImpl,
   MarketplaceService,
@@ -104,6 +109,34 @@ export const mustGetFeedClient = (networkId: string | undefined) => {
   const client = getFeedClient(networkId);
   if (!client) {
     throw new Error(`failed to get feed client for network '${networkId}'`);
+  }
+  return client;
+};
+
+const freelanceClients: { [key: string]: FreelanceService } = {};
+
+export const getFreelanceClient = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  if (!network) {
+    return undefined;
+  }
+  if (!freelanceClients[network.id]) {
+    const rpc = new FreelanceGrpcWebImpl("http://localhost:9090", {
+      debug: false,
+    });
+    // const rpc = new FreelanceGrpcWebImpl(network.backendEndpoint, {
+    //   debug: false,
+    // });
+    freelanceClients[network.id] = new FreelanceServiceClientImpl(rpc);
+  }
+  return freelanceClients[network.id];
+};
+export const mustGetFreelanceClient = (networkId: string | undefined) => {
+  const client = getFreelanceClient(networkId);
+  if (!client) {
+    throw new Error(
+      `failed to get freelance client for network '${networkId}'`
+    );
   }
   return client;
 };

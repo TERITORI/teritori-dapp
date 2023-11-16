@@ -8,6 +8,16 @@ import { ToriPunks } from "../../screens/DAppStore/apps/toripunks/HomeScreen";
 import { FeedScreen } from "../../screens/Feed/FeedScreen";
 import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
 import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
+import { FreelanceGigDetailScreen } from "../../screens/FreelanceServices/FreelanceGigDetailScreen";
+import { FreelanceSellerDetailsScreen } from "../../screens/FreelanceServices/FreelanceSellerDetailsScreen";
+import { FreelanceServicesCategoryScreen } from "../../screens/FreelanceServices/FreelanceServicesCategoryScreen";
+import { FreelanceServicesEscrowScreen } from "../../screens/FreelanceServices/FreelanceServicesEscrowScreen";
+import { FreelanceServicesGigCreationScreen } from "../../screens/FreelanceServices/FreelanceServicesGigCreationScreen";
+import { FreelanceServicesHomeBuyerScreen } from "../../screens/FreelanceServices/FreelanceServicesHomeBuyerScreen";
+import { FreelanceServicesHomeSellerScreen } from "../../screens/FreelanceServices/FreelanceServicesHomeSellerScreen";
+import { FreelanceServicesOrderDetailsScreen } from "../../screens/FreelanceServices/FreelanceServicesOrderDetailsScreen";
+import { FreelanceServicesProfileSellerScreen } from "../../screens/FreelanceServices/FreelanceServicesProfileSellerScreen";
+import { FreelanceServicesSubCategoryScreen } from "../../screens/FreelanceServices/FreelanceServicesSubCategoryScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
 import { HashtagFeedScreen } from "../../screens/HashtagFeed/HashtagFeedScreen";
@@ -273,6 +283,78 @@ export const Navigator: React.FC = () => {
         name="CollectionTools"
         component={CollectionToolsScreen}
         options={{ header: () => null }}
+      />
+      {/* ==== Freelance Services */}
+
+      <Stack.Screen
+        name="FreelanceServicesHomeBuyer"
+        component={FreelanceServicesHomeBuyerScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Freelance Services"),
+        }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesHomeSeller"
+        component={FreelanceServicesHomeSellerScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Freelance Services"),
+        }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesCategory"
+        component={FreelanceServicesCategoryScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Freelance Services"),
+        }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesSubCategory"
+        component={FreelanceServicesSubCategoryScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Freelance Services"),
+        }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesProfileSeller"
+        component={FreelanceServicesProfileSellerScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Freelance Services"),
+        }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesGigCreation"
+        component={FreelanceServicesGigCreationScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Gig Creation"),
+        }}
+      />
+
+      <Stack.Screen
+        name="FreelanceServicesGigDetail"
+        component={FreelanceGigDetailScreen}
+        options={{ header: () => null, title: screenTitle("Logo & Design") }}
+      />
+
+      <Stack.Screen
+        name="FreelanceServicesSellerDetails"
+        component={FreelanceSellerDetailsScreen}
+        options={{ header: () => null, title: screenTitle("Seller Details") }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesOrder"
+        component={FreelanceServicesOrderDetailsScreen}
+        options={{ header: () => null, title: screenTitle("Order Details") }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesEscrow"
+        component={FreelanceServicesEscrowScreen}
+        options={{ header: () => null, title: screenTitle("Escrow List") }}
       />
       <Stack.Screen
         name="Settings"

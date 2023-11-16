@@ -2,7 +2,6 @@ package indexerdb
 
 import (
 	"database/sql"
-
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 )
 

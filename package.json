@@ -84,6 +84,7 @@
     "osmojs": "15.0.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-drag-drop-files": "^2.3.9",
     "react-hook-form": "^7.36.1",
     "react-hotkeys-hook": "^4.0.4",
     "react-native": "0.72.6",

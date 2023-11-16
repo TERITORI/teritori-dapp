@@ -68,7 +68,7 @@ export const useSidebar = () => {
             icon: option.icon,
           };
     });
-
+    dynamicAppsSelection["freelance"] = SIDEBAR_LIST["freelance"];
     dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
 
     return dynamicAppsSelection;

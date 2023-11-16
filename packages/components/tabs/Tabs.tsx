@@ -1,6 +1,7 @@
 import { useScrollTo } from "@nandorojo/anchor";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useRef } from "react";
+import { cloneDeep } from "lodash";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import {
   LayoutChangeEvent,
   ScrollView,
