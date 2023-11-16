@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, memo, useEffect, useState } from "react";
 import {
   Image,
   StyleProp,
@@ -58,7 +58,7 @@ export const SocialArticleCard: FC<{
   style?: StyleProp<ViewStyle>;
   refetchFeed?: () => Promise<any>;
   isFlagged?: boolean;
-}> = ({ post, isPostConsultation, refetchFeed, style, isFlagged }) => {
+}> = memo(({ post, isPostConsultation, refetchFeed, style, isFlagged }) => {
   const navigation = useAppNavigation();
   const [localPost, setLocalPost] = useState<Post>(post);
   const [viewWidth, setViewWidth] = useState(0);
@@ -225,4 +225,4 @@ export const SocialArticleCard: FC<{
       </CustomPressable>
     </SocialCardWrapper>
   );
-};
+});

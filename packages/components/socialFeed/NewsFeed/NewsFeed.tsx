@@ -162,44 +162,44 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     ],
   );
 
+  const mobileMode = windowWidth < RESPONSIVE_BREAKPOINT_S;
+  const cardStyle = useMemo(() => {
+    return (
+      mobileMode && {
+        borderRadius: 0,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+      }
+    );
+  }, [mobileMode]);
+
   const RenderItem = useCallback(
-    (post: Post) => (
-      <View
-        style={{
-          width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-          maxWidth: screenContentMaxWidth,
-        }}
-      >
-        {post.category === PostCategory.Article ? (
-          <SocialArticleCard
-            post={post}
-            style={
-              windowWidth < RESPONSIVE_BREAKPOINT_S && {
-                borderRadius: 0,
-                borderLeftWidth: 0,
-                borderRightWidth: 0,
-              }
-            }
-          />
-        ) : (
-          <SocialThreadCard
-            post={post}
-            refetchFeed={refetch}
-            isPreview
-            isFlagged={isFlagged}
-            style={
-              windowWidth < RESPONSIVE_BREAKPOINT_S && {
-                borderRadius: 0,
-                borderLeftWidth: 0,
-                borderRightWidth: 0,
-              }
-            }
-          />
-        )}
-        <SpacerColumn size={2} />
-      </View>
-    ),
-    [windowWidth, width, isFlagged, refetch],
+    (post: Post) => {
+      // NOTE: if you edit this, make sure that this is not too CPU expensive
+      // Heavy components like SocialThreadCard, SocialArticleCard, etc. should be properly memoized
+      return (
+        <View
+          style={{
+            width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
+            maxWidth: screenContentMaxWidth,
+          }}
+        >
+          {post.category === PostCategory.Article ? (
+            <SocialArticleCard post={post} style={cardStyle} />
+          ) : (
+            <SocialThreadCard
+              post={post}
+              refetchFeed={refetch}
+              isPreview
+              isFlagged={isFlagged}
+              style={cardStyle}
+            />
+          )}
+          <SpacerColumn size={2} />
+        </View>
+      );
+    },
+    [windowWidth, width, isFlagged, refetch, cardStyle],
   );
 
   return (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 
 import { Post } from "../../../../api/feed/v1/feed";
@@ -36,104 +36,106 @@ export const SocialThreadCard: React.FC<{
   isPreview?: boolean;
   isFlagged?: boolean;
   refetchFeed?: () => Promise<any>;
-}> = ({
-  post,
-  style,
-  isPostConsultation,
-  onPressReply,
-  isGovernance,
-  isPreview,
-  isFlagged,
-  refetchFeed,
-}) => {
-  const [localPost, setLocalPost] = useState<Post>(post);
-  const [viewWidth, setViewWidth] = useState(0);
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-  const selectedNetworkId = selectedNetworkInfo?.id || "";
-  const authorNSInfo = useNSUserInfo(localPost.authorId);
-  const [, authorAddress] = parseUserId(localPost.authorId);
-  const navigation = useAppNavigation();
-  const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
-  const username = authorNSInfo?.metadata?.tokenId || authorAddress;
-  const handleReply = () =>
-    onPressReply?.({
-      username,
-    });
+}> = memo(
+  ({
+    post,
+    style,
+    isPostConsultation,
+    onPressReply,
+    isGovernance,
+    isPreview,
+    isFlagged,
+    refetchFeed,
+  }) => {
+    const [localPost, setLocalPost] = useState<Post>(post);
+    const [viewWidth, setViewWidth] = useState(0);
+    const selectedNetworkInfo = useSelectedNetworkInfo();
+    const selectedNetworkId = selectedNetworkInfo?.id || "";
+    const authorNSInfo = useNSUserInfo(localPost.authorId);
+    const [, authorAddress] = parseUserId(localPost.authorId);
+    const navigation = useAppNavigation();
+    const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
+    const username = authorNSInfo?.metadata?.tokenId || authorAddress;
+    const handleReply = () =>
+      onPressReply?.({
+        username,
+      });
 
-  useEffect(() => {
-    setLocalPost(post);
-  }, [post]);
+    useEffect(() => {
+      setLocalPost(post);
+    }, [post]);
 
-  return (
-    <SocialCardWrapper
-      post={localPost}
-      isFlagged={isFlagged}
-      refetchFeed={refetchFeed}
-    >
-      <CustomPressable
-        onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
-        disabled={isPostConsultation}
-        onPress={() =>
-          navigation.navigate("FeedPostView", {
-            id: getNetworkObjectId(selectedNetworkId, localPost.identifier),
-          })
-        }
-        style={[
-          {
-            borderWidth: isPostConsultation ? 4 : 1,
-            borderColor: isPostConsultation
-              ? withAlpha(neutral33, 0.5)
-              : neutral33,
-            borderRadius: SOCIAl_CARD_BORDER_RADIUS,
-            paddingVertical: layout.spacing_x2,
-            paddingHorizontal: layout.spacing_x2_5,
-            backgroundColor: neutral00,
-          },
-          style,
-        ]}
+    return (
+      <SocialCardWrapper
+        post={localPost}
+        isFlagged={isFlagged}
+        refetchFeed={refetchFeed}
       >
-        {/*====== Card Header */}
-        <SocialCardHeader
-          authorAddress={authorAddress}
-          authorId={localPost.authorId}
-          postMetadata={metadata}
-          authorMetadata={authorNSInfo?.metadata}
-        />
-
-        <SpacerColumn size={1.5} />
-
-        {/*====== Card Content */}
-        <SocialMessageContent
-          authorId={localPost.authorId}
-          postId={localPost.identifier}
-          metadata={metadata}
-          postCategory={localPost.category}
-          isPreview={isPreview}
-        />
-        <SpacerColumn size={1.5} />
-
-        {/*====== Card Actions */}
-        {isGovernance ? (
-          <FlexRow justifyContent="flex-end" style={{ height: 48 }}>
-            <SocialThreadGovernance
-              squaresBackgroundColor={
-                isPostConsultation ? neutral17 : neutral00
-              }
-            />
-          </FlexRow>
-        ) : isFlagged ? (
-          <FlaggedCardFooter post={localPost} />
-        ) : (
-          <SocialCardFooter
-            cardWidth={viewWidth}
-            isPostConsultation={isPostConsultation}
-            post={localPost}
-            handleReply={handleReply}
-            refetchFeed={refetchFeed}
-            setLocalPost={setLocalPost}
+        <CustomPressable
+          onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
+          disabled={isPostConsultation}
+          onPress={() =>
+            navigation.navigate("FeedPostView", {
+              id: getNetworkObjectId(selectedNetworkId, localPost.identifier),
+            })
+          }
+          style={[
+            {
+              borderWidth: isPostConsultation ? 4 : 1,
+              borderColor: isPostConsultation
+                ? withAlpha(neutral33, 0.5)
+                : neutral33,
+              borderRadius: SOCIAl_CARD_BORDER_RADIUS,
+              paddingVertical: layout.spacing_x2,
+              paddingHorizontal: layout.spacing_x2_5,
+              backgroundColor: neutral00,
+            },
+            style,
+          ]}
+        >
+          {/*====== Card Header */}
+          <SocialCardHeader
+            authorAddress={authorAddress}
+            authorId={localPost.authorId}
+            postMetadata={metadata}
+            authorMetadata={authorNSInfo?.metadata}
           />
-        )}
-      </CustomPressable>
-    </SocialCardWrapper>
-  );
-};
+
+          <SpacerColumn size={1.5} />
+
+          {/*====== Card Content */}
+          <SocialMessageContent
+            authorId={localPost.authorId}
+            postId={localPost.identifier}
+            metadata={metadata}
+            postCategory={localPost.category}
+            isPreview={isPreview}
+          />
+          <SpacerColumn size={1.5} />
+
+          {/*====== Card Actions */}
+          {isGovernance ? (
+            <FlexRow justifyContent="flex-end" style={{ height: 48 }}>
+              <SocialThreadGovernance
+                squaresBackgroundColor={
+                  isPostConsultation ? neutral17 : neutral00
+                }
+              />
+            </FlexRow>
+          ) : isFlagged ? (
+            <FlaggedCardFooter post={localPost} />
+          ) : (
+            <SocialCardFooter
+              cardWidth={viewWidth}
+              isPostConsultation={isPostConsultation}
+              post={localPost}
+              handleReply={handleReply}
+              refetchFeed={refetchFeed}
+              setLocalPost={setLocalPost}
+            />
+          )}
+        </CustomPressable>
+      </SocialCardWrapper>
+    );
+  },
+);
