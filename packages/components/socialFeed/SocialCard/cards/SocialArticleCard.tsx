@@ -1,12 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React, { FC, memo, useEffect, useState } from "react";
-import {
-  Image,
-  StyleProp,
-  useWindowDimensions,
-  View,
-  ViewStyle,
-} from "react-native";
+import React, { FC, memo, useEffect, useMemo, useState } from "react";
+import { StyleProp, useWindowDimensions, View, ViewStyle } from "react-native";
 
 import { SOCIAl_CARD_BORDER_RADIUS } from "./SocialThreadCard";
 import defaultThumbnailImage from "../../../../../assets/default-images/default-article-thumbnail.png";
@@ -14,8 +8,8 @@ import { Post } from "../../../../api/feed/v1/feed";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
-import { ipfsURLToHTTPURL } from "../../../../utils/ipfs";
 import { useAppNavigation } from "../../../../utils/navigation";
+import { safeJSONParse, zodTryParse } from "../../../../utils/sanitize";
 import {
   neutral00,
   neutral33,
@@ -31,12 +25,12 @@ import {
   SOCIAL_FEED_BREAKPOINT_M,
 } from "../../../../utils/style/layout";
 import { BrandText } from "../../../BrandText";
+import { OptimizedImage } from "../../../OptimizedImage";
 import { CustomPressable } from "../../../buttons/CustomPressable";
 import { SpacerColumn } from "../../../spacer";
 import {
-  SocialFeedArticleMetadata,
-  SocialFeedMetadata,
   ZodSocialFeedArticleMetadata,
+  ZodSocialFeedPostMetadata,
 } from "../../NewsFeed/NewsFeed.type";
 import {
   createStateFromHTML,
@@ -70,38 +64,45 @@ export const SocialArticleCard: FC<{
   const articleCardHeight = windowWidth < SOCIAL_FEED_BREAKPOINT_M ? 214 : 254;
   const thumbnailImageWidth = viewWidth / 3;
 
-  // TODO: Remove oldMetadata usage after feed indexer reroll
-  const [shortDescription, setShortDescription] = useState("");
-  const metadata: SocialFeedArticleMetadata | null =
-    ZodSocialFeedArticleMetadata.safeParse(JSON.parse(localPost.metadata))
-      .success
-      ? ZodSocialFeedArticleMetadata.parse(localPost.metadata)
-      : null;
-  const oldMetadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
+  const postMetadata = safeJSONParse(localPost.metadata);
+  const metadata = zodTryParse(ZodSocialFeedArticleMetadata, postMetadata);
+  const oldMetadata = zodTryParse(ZodSocialFeedPostMetadata, postMetadata);
   const thumbnailImage =
     metadata?.thumbnailImage ||
     // Old articles doesn't have thumbnailImage, but they have a file thumbnailImage = true
     oldMetadata?.files?.find((file) => file.isCoverImage);
+  const simplePostMetadata = metadata || oldMetadata;
+  const message = simplePostMetadata?.message;
 
-  // Truncate the article html
-  useEffect(() => {
-    if (isArticleHTMLNeedsTruncate((metadata || oldMetadata).message, true)) {
-      const { truncatedHtml } = getTruncatedArticleHTML(
-        (metadata || oldMetadata).message,
-      );
+  const shortDescription = useMemo(() => {
+    if (metadata?.shortDescription) {
+      return metadata.shortDescription;
+    }
+    if (!message) return "";
+    if (isArticleHTMLNeedsTruncate(message, true)) {
+      const { truncatedHtml } = getTruncatedArticleHTML(message);
       const contentState =
         createStateFromHTML(truncatedHtml).getCurrentContent();
-      setShortDescription(
+      return (
         metadata?.shortDescription ||
-          // Old articles doesn't have shortDescription, so we use the start of the html content
-          contentState.getPlainText(),
+        // Old articles doesn't have shortDescription, so we use the start of the html content
+        contentState.getPlainText()
       );
     }
-  }, [metadata?.message, metadata, oldMetadata]);
+    return "";
+  }, [message, metadata?.shortDescription]);
 
   useEffect(() => {
     setLocalPost(post);
   }, [post]);
+
+  const thumbnailURI = thumbnailImage?.url
+    ? thumbnailImage.url.includes("://")
+      ? thumbnailImage.url
+      : "ipfs://" + thumbnailImage.url // we need this hack because ipfs "urls" in feed are raw CIDs
+    : defaultThumbnailImage;
+
+  const title = simplePostMetadata?.title;
 
   return (
     <SocialCardWrapper
@@ -143,7 +144,7 @@ export const SocialArticleCard: FC<{
             <SocialCardHeader
               authorId={localPost.authorId}
               authorAddress={authorAddress}
-              postMetadata={metadata || oldMetadata}
+              postMetadata={simplePostMetadata}
               authorMetadata={authorNSInfo?.metadata}
             />
 
@@ -156,7 +157,7 @@ export const SocialArticleCard: FC<{
                   : fontSemibold20
               }
             >
-              {(metadata || oldMetadata).title.trim().replace("\n", "")}
+              {title?.trim().replace("\n", " ")}
             </BrandText>
 
             <SpacerColumn size={1} />
@@ -164,7 +165,7 @@ export const SocialArticleCard: FC<{
               style={[fontSemibold14, { color: neutralA3 }]}
               numberOfLines={windowWidth < SOCIAL_FEED_BREAKPOINT_M ? 2 : 3}
             >
-              {shortDescription.trim().replace("\n", "")}
+              {shortDescription.trim().replace("\n", " ")}
             </BrandText>
           </View>
         </View>
@@ -202,12 +203,11 @@ export const SocialArticleCard: FC<{
           )}
         </LinearGradient>
 
-        <Image
+        <OptimizedImage
           width={thumbnailImageWidth}
           height={articleCardHeight - 2}
-          source={{
-            uri: ipfsURLToHTTPURL(thumbnailImage?.url) || defaultThumbnailImage,
-          }}
+          sourceURI={thumbnailURI}
+          fallbackURI={defaultThumbnailImage}
           style={{
             zIndex: -1,
             width: thumbnailImageWidth,

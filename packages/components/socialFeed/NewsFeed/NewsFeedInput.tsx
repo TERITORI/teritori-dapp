@@ -13,12 +13,7 @@ import Animated, { useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
-import {
-  NewPostFormValues,
-  PostCategory,
-  ReplyToType,
-  SocialFeedMetadata,
-} from "./NewsFeed.type";
+import { NewPostFormValues, PostCategory, ReplyToType } from "./NewsFeed.type";
 import { generatePostMetadata, getPostCategory } from "./NewsFeedQueries";
 import { NotEnoughFundModal } from "./NotEnoughFundModal";
 import audioSVG from "../../../../assets/icons/audio.svg";
@@ -262,7 +257,7 @@ export const NewsFeedInput = React.forwardRef<
         }
         const postCategory = getPostCategory(formValues);
 
-        const metadata: SocialFeedMetadata = generatePostMetadata({
+        const metadata = generatePostMetadata({
           title: formValues.title || "",
           message: finalMessage,
           files,

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { Post } from "../../../api/feed/v1/feed";
 import { PostResult } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
+import { LocalFileData, ZodRemoteFileData } from "../../../utils/types/files";
 
 export enum PostCategory {
   Reaction,
@@ -36,24 +36,24 @@ export interface PostExtra extends Post {
   isInLocal?: boolean;
 }
 
-export interface SocialFeedMetadata {
-  title: string;
-  message: string;
-  files?: RemoteFileData[];
-  gifs?: string[];
-  hashtags: string[];
-  mentions: string[];
-  createdAt: string;
-  updatedAt: string;
-  // openGraph?: OpenGraphType;
-}
+export const ZodSocialFeedPostMetadata = z.object({
+  title: z.string(),
+  message: z.string(),
+  files: z.array(ZodRemoteFileData).optional(),
+  gifs: z.array(z.string()).optional(),
+  hashtags: z.array(z.string()),
+  mentions: z.array(z.string()),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+export type SocialFeedPostMetadata = z.infer<typeof ZodSocialFeedPostMetadata>;
 
 export const ZodSocialFeedArticleMetadata = z.object({
   title: z.string(),
   shortDescription: z.string(),
-  thumbnailImage: z.custom<RemoteFileData>().optional(),
+  thumbnailImage: ZodRemoteFileData.optional(),
   message: z.string(),
-  files: z.custom<RemoteFileData[]>().optional(),
+  files: z.array(ZodRemoteFileData).optional(),
   gifs: z.array(z.string()).optional(),
   hashtags: z.array(z.string()),
   mentions: z.array(z.string()),

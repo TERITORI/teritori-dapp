@@ -7,6 +7,7 @@ import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
 import { OnPressReplyType } from "../../../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../../../utils/navigation";
+import { zodTryParseJSON } from "../../../../utils/sanitize";
 import {
   neutral00,
   neutral17,
@@ -17,7 +18,7 @@ import { layout } from "../../../../utils/style/layout";
 import FlexRow from "../../../FlexRow";
 import { CustomPressable } from "../../../buttons/CustomPressable";
 import { SpacerColumn } from "../../../spacer";
-import { SocialFeedMetadata } from "../../NewsFeed/NewsFeed.type";
+import { ZodSocialFeedPostMetadata } from "../../NewsFeed/NewsFeed.type";
 import { SocialThreadGovernance } from "../../SocialActions/SocialThreadGovernance";
 import { FlaggedCardFooter } from "../FlaggedCardFooter";
 import { SocialCardFooter } from "../SocialCardFooter";
@@ -54,7 +55,10 @@ export const SocialThreadCard: React.FC<{
     const authorNSInfo = useNSUserInfo(localPost.authorId);
     const [, authorAddress] = parseUserId(localPost.authorId);
     const navigation = useAppNavigation();
-    const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
+    const metadata = zodTryParseJSON(
+      ZodSocialFeedPostMetadata,
+      localPost.metadata,
+    );
     const username = authorNSInfo?.metadata?.tokenId || authorAddress;
     const handleReply = () =>
       onPressReply?.({
@@ -104,13 +108,15 @@ export const SocialThreadCard: React.FC<{
           <SpacerColumn size={1.5} />
 
           {/*====== Card Content */}
-          <SocialMessageContent
-            authorId={localPost.authorId}
-            postId={localPost.identifier}
-            metadata={metadata}
-            postCategory={localPost.category}
-            isPreview={isPreview}
-          />
+          {!!metadata && (
+            <SocialMessageContent
+              authorId={localPost.authorId}
+              postId={localPost.identifier}
+              metadata={metadata}
+              postCategory={localPost.category}
+              isPreview={isPreview}
+            />
+          )}
           <SpacerColumn size={1.5} />
 
           {/*====== Card Actions */}

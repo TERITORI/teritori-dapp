@@ -14,13 +14,13 @@ import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { UserAvatarWithFrame } from "../../images/AvatarWithFrame";
 import { DotSeparator } from "../../separators/DotSeparator";
 import { SpacerRow } from "../../spacer";
-import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
+import { SocialFeedPostMetadata } from "../NewsFeed/NewsFeed.type";
 
 // ====== Handle author image and username, date
 export const SocialCardHeader: FC<{
   authorId: string;
   authorAddress: string;
-  postMetadata: SocialFeedMetadata;
+  postMetadata: SocialFeedPostMetadata | undefined;
   authorMetadata?: any;
   loading?: boolean;
 }> = ({ authorId, authorAddress, authorMetadata, postMetadata, loading }) => {
@@ -93,10 +93,12 @@ export const SocialCardHeader: FC<{
               </>
             )}
             {/*---- Date */}
-            <DateTime
-              date={postMetadata.createdAt}
-              textStyle={{ color: neutral77 }}
-            />
+            {!!postMetadata && (
+              <DateTime
+                date={postMetadata.createdAt}
+                textStyle={{ color: neutral77 }}
+              />
+            )}
           </View>
         </View>
       </View>
