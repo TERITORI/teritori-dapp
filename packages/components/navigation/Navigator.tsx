@@ -24,7 +24,6 @@ import { MultisigCreateScreen } from "../../screens/Multisig/MultisigCreateScree
 import { MultisigScreen } from "../../screens/Multisig/MultisigScreen";
 import { MultisigWalletDashboardScreen } from "../../screens/Multisig/MultisigWalletDashboardScreen";
 import { MusicScreen } from "../../screens/Music/MusicScreen";
-import { MusicTrackScreen } from "../../screens/MusicTrack/MusicTrackScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
@@ -323,11 +322,6 @@ export const Navigator: React.FC = () => {
         name="Music"
         component={MusicScreen}
         options={{ header: () => null, title: screenTitle("Music") }}
-      />
-      <Stack.Screen
-        name="MusicTrack"
-        component={MusicTrackScreen}
-        options={{ header: () => null, title: screenTitle("Album Name") }}
       />
 
       <Stack.Screen

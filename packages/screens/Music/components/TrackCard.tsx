@@ -1,17 +1,25 @@
 import React, { useMemo, useState } from "react";
-import { View, Image, ViewStyle, TextStyle, ImageStyle } from "react-native";
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  ViewStyle,
+  TextStyle,
+  ImageStyle,
+} from "react-native";
 
+import NormalPlay from "../../../../assets/icons/music/normal-play.svg";
+import ThreeDotsCircleWhite from "../../../../assets/icons/music/three-dot-circle-white.svg";
 import { Post } from "../../../api/feed/v1/feed";
 import { BrandText } from "../../../components/BrandText";
-import { AudioView } from "../../../components/FilePreview/AudioView";
 import { OmniLink } from "../../../components/OmniLink";
+import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { DotSeparator } from "../../../components/separators/DotSeparator";
 import { getMusicAudioPostTrack } from "../../../components/socialFeed/NewsFeed/NewsFeedQueries";
-import { DateTime } from "../../../components/socialFeed/SocialThread/DateTime";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { SpacerColumn } from "../../../components/spacer";
+import { useMediaPlayer } from "../../../context/MediaPlayerProvider";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../networks";
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { useAppNavigation } from "../../../utils/navigation";
@@ -23,10 +31,12 @@ import {
 import { fontSemibold14, fontMedium13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
+import { Media } from "../../../utils/types/mediaPlayer";
 import { Track } from "../../../utils/types/music";
 
-const IMAGE_HEIGHT = 116;
-export const TRACK_CARD_WIDTH = 666;
+const IMAGE_HEIGHT = 218;
+const BUTTONS_HEIGHT = 28;
+export const TRACK_CARD_WIDTH = 242;
 export const TrackCard: React.FC<{
   post: Post;
   hideAuthor?: boolean;
@@ -35,96 +45,88 @@ export const TrackCard: React.FC<{
     () => getMusicAudioPostTrack(post),
     [post],
   );
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-  const authorNSInfo = useNSUserInfo(post.authorId);
-  const [, userAddress] = parseUserId(post.authorId);
+  console.log("-- tracktracktracktracktracktracktrack", track);
+  const authorNSInfo = useNSUserInfo(track?.authorId);
+  const [, userAddress] = parseUserId(track?.authorId);
   const [isHovered, setIsHovered] = useState(false);
   const navigation = useAppNavigation();
+  const selectedNetworkId = useSelectedNetworkId();
 
+  const { loadAndPlaySoundsQueue } = useMediaPlayer();
   const username = authorNSInfo?.metadata?.tokenId
     ? authorNSInfo?.metadata?.tokenId
     : tinyAddress(userAddress, 16);
 
+  const onPressPlayTrack = async () => {
+    if (!track) return;
+    const mediaToPlay: Media = {
+      imageUrl: track.imageURI,
+      name: track.title,
+      createdBy: track.authorId,
+      fileUrl: track.audioURI,
+      duration: track.duration,
+      postId: post.identifier,
+    };
+    await loadAndPlaySoundsQueue([mediaToPlay]);
+  };
+
   if (!track) return null;
   return (
     <View style={unitCardStyle}>
-      <CustomPressable
-        onHoverOut={() => setIsHovered(false)}
-        onHoverIn={() => setIsHovered(true)}
-        onPress={() =>
-          navigation.navigate("FeedPostView", {
-            id: getNetworkObjectId(
-              selectedNetworkInfo?.id || "",
-              post.identifier,
-            ),
-          })
-        }
-      >
-        <Image
-          source={{ uri: ipfsURLToHTTPURL(track.imageURI) }}
-          style={[isHovered && { opacity: 0.5 }, contentImgStyle]}
-        />
-      </CustomPressable>
-      <SpacerRow size={1.5} />
+      <View>
+        <CustomPressable
+          onHoverIn={() => setIsHovered(true)}
+          onHoverOut={() => setIsHovered(false)}
+          style={imgBoxStyle}
+          onPress={() => {
+            navigation.navigate("FeedPostView", {
+              id: getNetworkObjectId(selectedNetworkId, post.identifier),
+            });
+          }}
+        >
+          <Image
+            source={{ uri: ipfsURLToHTTPURL(track.imageURI) }}
+            style={[isHovered && { opacity: 0.5 }, contentImgStyle]}
+          />
+          <SpacerColumn size={1.5} />
 
-      <View style={{ justifyContent: "space-between", width: "100%", flex: 1 }}>
-        <View style={{ flex: 1 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "flex-start",
-              justifyContent: "space-between",
+          <View style={imgButtonsBoxStyle}>
+            <TouchableOpacity onPress={onPressPlayTrack}>
+              <SVG
+                source={NormalPlay}
+                width={BUTTONS_HEIGHT}
+                height={BUTTONS_HEIGHT}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity>
+              <SVG
+                source={ThreeDotsCircleWhite}
+                width={BUTTONS_HEIGHT}
+                height={BUTTONS_HEIGHT}
+              />
+            </TouchableOpacity>
+          </View>
+        </CustomPressable>
+        <BrandText style={contentTitleStyle}>{track.title}</BrandText>
+        <SpacerColumn size={0.5} />
+        <BrandText style={contentDescriptionStyle} numberOfLines={2}>
+          {track.description}
+        </BrandText>
+      </View>
+      {!hideAuthor && (
+        <>
+          <SpacerColumn size={1} />
+          <OmniLink
+            to={{
+              screen: "UserPublicProfile",
+              params: { id: track.authorId },
             }}
           >
-            <BrandText style={contentTitleStyle} numberOfLines={1}>
-              {track.title}
-            </BrandText>
-            <SpacerRow size={1.5} />
-            {/*Author and date*/}
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {!hideAuthor && (
-                <>
-                  <SpacerColumn size={1} />
-                  <OmniLink
-                    to={{
-                      screen: "UserPublicProfile",
-                      params: { id: post.authorId },
-                    }}
-                  >
-                    <BrandText style={contentNameStyle}>@{username}</BrandText>
-                  </OmniLink>
-                </>
-              )}
-              <DotSeparator />
-              <DateTime
-                date={track.createdAt}
-                textStyle={{ color: neutral77 }}
-              />
-            </View>
-          </View>
-          <SpacerColumn size={0.5} />
-
-          <BrandText style={contentDescriptionStyle} numberOfLines={2}>
-            {track.description.trim()}
-          </BrandText>
-        </View>
-
-        <AudioView
-          duration={track.duration}
-          fileUrl={track.audioURI}
-          waveform={track.waveform}
-        />
-      </View>
-
-      {/*TODO: Nb COMMENTS=> click redirects to post view*/}
-
-      {/*TODO: REACTIONS*/}
-      {/*<Reactions*/}
-      {/*  nbShown={nbReactionsShown(viewWidth)}*/}
-      {/*  reactions={localPost.reactions}*/}
-      {/*  onPressReaction={handleReaction}*/}
-      {/*  isLoading={isPostMutationLoading}*/}
-      {/*/>*/}
+            <BrandText style={contentNameStyle}>@{username}</BrandText>
+          </OmniLink>
+        </>
+      )}
     </View>
   );
 };
@@ -134,7 +136,19 @@ const unitCardStyle: ViewStyle = {
   padding: layout.spacing_x1_5,
   backgroundColor: neutral17,
   borderRadius: 12,
+  justifyContent: "space-between",
+};
+const imgBoxStyle: ViewStyle = {
+  position: "relative",
+};
+const imgButtonsBoxStyle: ViewStyle = {
+  position: "absolute",
+  paddingHorizontal: layout.spacing_x1_5,
   flexDirection: "row",
+  width: "100%",
+  top: IMAGE_HEIGHT - BUTTONS_HEIGHT - layout.spacing_x1_5,
+  right: 0,
+  justifyContent: "space-between",
 };
 const contentTitleStyle: TextStyle = { ...fontSemibold14 };
 const contentDescriptionStyle: TextStyle = {
@@ -143,6 +157,7 @@ const contentDescriptionStyle: TextStyle = {
   color: neutral77,
 };
 const contentImgStyle: ImageStyle = {
+  width: "100%",
   borderRadius: 8,
   aspectRatio: 1,
   height: IMAGE_HEIGHT,

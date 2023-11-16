@@ -1,16 +1,29 @@
 import React, { useState } from "react";
-import { View } from "react-native";
 
 import { MusicHomeContent } from "./components/MusicHomeContent";
 import { MusicMyLibraryContent } from "./components/MusicMyLibraryContent";
-import { MusicTabs } from "./components/MusicTabs";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { TabDefinition, Tabs } from "../../components/tabs/Tabs";
 import { ScreenFC } from "../../utils/navigation";
 
+const musicTabItems: { [key: string]: TabDefinition } = {
+  // TODO: Add icons when the Tabs component will be fixed
+  home: {
+    name: "Home",
+  },
+  myLibrary: {
+    name: "My Library",
+  },
+  // TODO: Later
+  // search: {
+  //   name: "Search",
+  // }
+};
+
 export const MusicScreen: ScreenFC<"Music"> = () => {
-  const tabData: string[] = ["Home", "My Library"];
-  const [tab, setTab] = useState<string>(tabData[0]);
+  const [selectedTab, setSelectedTab] =
+    useState<keyof typeof musicTabItems>("home");
 
   return (
     <ScreenContainer
@@ -18,16 +31,22 @@ export const MusicScreen: ScreenFC<"Music"> = () => {
       isLarge
       responsive
     >
-      <View
+      <Tabs
+        items={musicTabItems}
+        selected={selectedTab}
+        onSelect={setSelectedTab}
         style={{
+          alignSelf: "center",
+          height: 64,
+          zIndex: 9,
+          elevation: 9,
           width: "100%",
         }}
-      >
-        <MusicTabs tab={tab} setTab={setTab} />
+        tabContainerStyle={{ height: 64 }}
+      />
 
-        {tab === tabData[0] && <MusicHomeContent />}
-        {tab === tabData[1] && <MusicMyLibraryContent />}
-      </View>
+      {selectedTab === "home" && <MusicHomeContent />}
+      {selectedTab === "myLibrary" && <MusicMyLibraryContent />}
     </ScreenContainer>
   );
 };

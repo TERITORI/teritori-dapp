@@ -260,11 +260,23 @@ export const generatePostMetadata = ({
   });
 };
 
-export const isValidMusicAudioPost = (post: Post) =>
-  post.category === PostCategory.MusicAudio &&
-  ZodTrack.safeParse(JSON.parse(post.metadata)).success;
+export const isValidMusicAudioPost = (post: Post) => {
+  try {
+    return (
+      post.category === PostCategory.MusicAudio &&
+      ZodTrack.safeParse(JSON.parse(post.metadata)).success
+    );
+  } catch {
+    return false;
+  }
+};
 
-export const getMusicAudioPostTrack = (post: Post): Track | undefined =>
-  isValidMusicAudioPost(post)
-    ? ZodTrack.parse(JSON.parse(post.metadata))
-    : undefined;
+export const getMusicAudioPostTrack = (post: Post): Track | undefined => {
+  try {
+    return isValidMusicAudioPost(post)
+      ? ZodTrack.parse(JSON.parse(post.metadata))
+      : undefined;
+  } catch {
+    return undefined;
+  }
+};

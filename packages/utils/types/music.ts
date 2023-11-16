@@ -7,6 +7,7 @@ export const ZodTrack = z.object({
   audioURI: z.string(),
   waveform: z.array(z.number()),
   duration: z.number(),
+  authorId: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });

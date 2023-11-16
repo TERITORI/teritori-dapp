@@ -392,15 +392,18 @@ export const SocialThreadCard: React.FC<{
 
           {/*====== Card Content */}
           {post.category === PostCategory.MusicAudio && track ? (
-            <MusicPostTrackContent track={track} />
+            <MusicPostTrackContent
+              track={track}
+              postId={localPost.identifier}
+            />
           ) : (
-          <SocialMessageContent
-            authorId={localPost.authorId}
-            postId={localPost.identifier}
-            metadata={metadata}
-            postCategory={localPost.category}
-            isPreview={isPreview}
-          />
+            <SocialMessageContent
+              authorId={localPost.authorId}
+              postId={localPost.identifier}
+              metadata={metadata}
+              postCategory={localPost.category}
+              isPreview={isPreview}
+            />
           )}
           <SpacerColumn size={2} />
 

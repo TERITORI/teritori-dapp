@@ -19,7 +19,7 @@ const FLAT_LIST_SEPARATOR_WIDTH = 20;
 export const MusicHomeContent: React.FC = () => {
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
 
-  const tracksFeedRequest: PostsRequest = {
+  const musicFeedRequest: PostsRequest = {
     filter: {
       categories: [PostCategory.MusicAudio],
       user: "",
@@ -32,7 +32,7 @@ export const MusicHomeContent: React.FC = () => {
 
   // ======= Getting MusicAudio posts as single tracks
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
-    useFetchFeed(tracksFeedRequest);
+    useFetchFeed(musicFeedRequest);
   const posts = useMemo(
     () => (data ? combineFetchFeedPages(data.pages) : []),
     [data],

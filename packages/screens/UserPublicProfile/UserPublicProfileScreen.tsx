@@ -85,7 +85,7 @@ const SelectedTabContent: React.FC<{
     };
   }, [userInfo?.metadata.tokenId, userAddress]);
 
-  const feedRequestUserTracks: PostsRequest = useMemo(() => {
+  const feedRequestUserMusic: PostsRequest = useMemo(() => {
     return {
       filter: {
         user: userId,
@@ -142,12 +142,10 @@ const SelectedTabContent: React.FC<{
           req={feedRequestMentions}
         />
       );
-    case "userTracks":
+    case "userMusic":
       return (
         <NewsFeed
-          disablePosting={
-            isDAO ? !isDAOMember : selectedWallet?.userId !== userId
-          }
+          disablePosting
           daoId={isDAO ? userId : undefined}
           Header={Header}
           additionalMention={
@@ -157,7 +155,7 @@ const SelectedTabContent: React.FC<{
                 ? userInfo?.metadata.tokenId || userAddress
                 : undefined
           }
-          req={feedRequestUserTracks}
+          req={feedRequestUserMusic}
         />
       );
     case "nfts":
@@ -198,6 +196,13 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
 }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>(initialTab);
+  const isSocialTabSelected = useMemo(
+    () =>
+      selectedTab === "userPosts" ||
+      selectedTab === "mentionsPosts" ||
+      selectedTab === "userMusic",
+    [selectedTab],
+  );
 
   const prevId = usePrevious(id);
   useEffect(() => {
@@ -220,7 +225,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       <NotFound label="User" />
     ) : (
       <>
-        {selectedTab !== "userPosts" && selectedTab !== "mentionsPosts" ? (
+        {!isSocialTabSelected ? (
           <TabContainer>
             <UserPublicProfileScreenHeader
               userId={id}
@@ -249,7 +254,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       forceNetworkId={network?.id}
       responsive
       fullWidth
-      noScroll={selectedTab === "userPosts" || selectedTab === "mentionsPosts"}
+      noScroll={isSocialTabSelected}
       footerChildren={<></>}
       headerChildren={
         <BrandText style={fontSemibold20}>

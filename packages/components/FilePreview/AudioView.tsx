@@ -20,7 +20,6 @@ import {
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { nameServiceDefaultImage } from "../../utils/tns";
-import { RemoteFileData } from "../../utils/types/files";
 import { Media } from "../../utils/types/mediaPlayer";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -28,10 +27,13 @@ import { SVG } from "../SVG";
 const THUMBNAIL_SIZE = 140;
 
 export const AudioView: React.FC<{
-  file: RemoteFileData;
+  fileUrl: string;
+  thumbnailUrl?: string;
+  duration: number;
+  waveform: number[];
   authorId: string;
   postId: string;
-}> = ({ file, authorId, postId }) => {
+}> = ({ fileUrl, thumbnailUrl, duration, waveform, authorId, postId }) => {
   const selectedNetwork = useSelectedNetworkInfo();
   const userInfo = useNSUserInfo(authorId);
   const { isDAO } = useIsDAO(authorId);
@@ -41,10 +43,6 @@ export const AudioView: React.FC<{
     () => media?.postId === postId,
     [media?.postId, postId],
   );
-  const duration = useMemo(
-    () => prettyMediaDuration(file.audioMetadata?.duration),
-    [file],
-  );
 
   const onPressPlayPause = async () => {
     if (isInMediaPlayer) {
@@ -52,13 +50,13 @@ export const AudioView: React.FC<{
     } else {
       const songToPlay: Media = {
         imageUrl:
-          file?.thumbnailFileData?.url ||
+          thumbnailUrl ||
           userInfo.metadata.image ||
           nameServiceDefaultImage(isDAO, selectedNetwork),
         name: "Song from Social Feed",
         createdBy: authorId,
-        fileUrl: file.url,
-        duration: file.audioMetadata?.duration,
+        fileUrl,
+        duration,
         // postId is used to difference audios from Social Feed (News feed or Article consultation)
         postId: postId || Math.floor(Math.random() * 200000).toString(),
       };
@@ -76,12 +74,8 @@ export const AudioView: React.FC<{
     () =>
       (isInMediaPlayer && playbackStatus?.positionMillis
         ? playbackStatus.positionMillis
-        : 0) / (file.audioMetadata?.duration || 1),
-    [
-      file.audioMetadata?.duration,
-      playbackStatus?.positionMillis,
-      isInMediaPlayer,
-    ],
+        : 0) / (duration || 1),
+    [duration, playbackStatus?.positionMillis, isInMediaPlayer],
   );
 
   if (!fileUrl)
@@ -156,7 +150,7 @@ export const AudioView: React.FC<{
                 )}
               </BrandText>
               <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                {prettyDuration}
+                {prettyMediaDuration(duration)}
               </BrandText>
             </View>
             <View
@@ -167,7 +161,7 @@ export const AudioView: React.FC<{
               <AudioWaveform
                 waveform={waveform}
                 positionPercent={positionPercent}
-                duration={file.audioMetadata?.duration || 1}
+                duration={duration || 1}
               />
             </View>
           </View>

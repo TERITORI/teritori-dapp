@@ -7,12 +7,17 @@ import { BrandText } from "../../BrandText";
 import { AudioView } from "../../FilePreview/AudioView";
 import { SpacerColumn } from "../../spacer";
 
-export const MusicPostTrackContent: FC<{ track?: Track }> = ({ track }) => {
+export const MusicPostTrackContent: FC<{ track?: Track; postId: string }> = ({
+  track,
+  postId,
+}) => {
   if (!track) return null;
   return (
     <>
+      <BrandText>{track.title}</BrandText>
+      <SpacerColumn size={1} />
       <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
-        {track.title}
+        {track.description}
       </BrandText>
       <SpacerColumn size={2} />
       <AudioView
@@ -20,6 +25,8 @@ export const MusicPostTrackContent: FC<{ track?: Track }> = ({ track }) => {
         fileUrl={track.audioURI}
         waveform={track.waveform}
         thumbnailUrl={track.imageURI}
+        authorId={track.authorId}
+        postId={postId}
       />
     </>
   );

@@ -21,8 +21,8 @@ import { useFeedbacks } from "../../../../context/FeedbacksProvider";
 import { useIsDAO } from "../../../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useDAOMakeProposal } from "../../../../hooks/dao/useDAOMakeProposal";
 import { useCreatePost } from "../../../../hooks/feed/useCreatePost";
+import { useFeedPostFee } from "../../../../hooks/feed/useFeedPostFee";
 import { useUpdateAvailableFreePost } from "../../../../hooks/feed/useUpdateAvailableFreePost";
-import { useUpdatePostFee } from "../../../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../../../hooks/useBalances";
 import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
@@ -68,7 +68,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       onUploadDone();
     },
   });
-  const { postFee } = useUpdatePostFee(
+  const { postFee } = useFeedPostFee(
     selectedNetwork?.id || "",
     PostCategory.MusicAudio,
   );
@@ -86,7 +86,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
   const [description, setDescription] = useState("");
   const [localAudioFile, setLocalAudioFile] = useState<LocalFileData>();
 
-  const processCreatePost = async (track: Track) => {
+  const processCreateMusicAudioPost = async (track: Track) => {
     const denom = selectedNetwork?.currencies[0].denom;
     const currentBalance = balances.find((bal) => bal.denom === denom);
     if (postFee > Number(currentBalance?.amount) && !freePostCount) {
@@ -216,16 +216,19 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       uploadedFiles[0].fileType === "image"
         ? uploadedFiles[0]
         : uploadedFiles[1];
-    await processCreatePost({
+    const track: Track = {
       title,
       description,
       audioURI: audio.url,
       imageURI: image.url,
       waveform: audio.audioMetadata?.waveform || [],
       duration: audio.audioMetadata?.duration || 0,
+      authorId: userId,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    });
+    };
+    console.log("tracktracktracktracktrack", track);
+    await processCreateMusicAudioPost(track);
     setIsLoading(false);
     onUploadDone();
   };
@@ -253,6 +256,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
 
           <TextInputCustom
             rules={{ required: true }}
+            multiline
             noBrokenCorners
             variant="labelOutside"
             onChangeText={(text) => setDescription(text)}
