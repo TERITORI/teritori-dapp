@@ -25,6 +25,18 @@ export const useKeplr: () => UseKeplrResult = () => {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    // NOTE: we check twice, right away and on load
+    // because some browsers will have keplr ready right away and not trigger the load event here
+    // while other browsers will trigger the load event and not have keplr ready right away
+
+    const keplr = (window as KeplrWindow)?.keplr;
+    const hasKeplr = !!keplr;
+    if (hasKeplr) {
+      setHasKeplr(hasKeplr);
+      console.log("keplr installed");
+      return;
+    }
+
     const handleLoad = () => {
       const keplr = (window as KeplrWindow)?.keplr;
       const hasKeplr = !!keplr;
