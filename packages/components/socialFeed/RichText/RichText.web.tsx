@@ -193,12 +193,11 @@ export const RichText: React.FC<RichTextProps> = ({
     [initialValue, isPreview],
   );
   useEffect(() => {
-    if (isArticleHTMLNeedsTruncate(initialValue, isPreview)) {
-      const { truncatedState, truncatedHtml } =
-        getTruncatedArticleHTML(initialValue);
-      setEditorState(EditorState.createWithContent(truncatedState));
-      setHtml(truncatedHtml);
-    }
+    if (!isTruncateNeeded) return;
+    const { truncatedState, truncatedHtml } =
+      getTruncatedArticleHTML(initialValue);
+    setEditorState(EditorState.createWithContent(truncatedState));
+    setHtml(truncatedHtml);
   }, [initialValue, isTruncateNeeded, isPreview]);
 
   const addImage = (file: LocalFileData) => {

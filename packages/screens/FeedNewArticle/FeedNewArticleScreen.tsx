@@ -36,11 +36,7 @@ import { prettyPrice } from "../../utils/coins";
 import { generateIpfsKey } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import {
-  ARTICLE_THUMBNAIL_IMAGE_HEIGHT,
-  SOCIAL_FEED_ARTICLE_SHORT_DESC_MAX_CHARS,
-  SOCIAL_FEED_ARTICLE_TITLE_MAX_CHARS,
-} from "../../utils/social-feed";
+import { ARTICLE_THUMBNAIL_IMAGE_HEIGHT } from "../../utils/social-feed";
 import {
   neutral00,
   neutral11,
@@ -257,7 +253,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         <TextInputCustom<NewPostFormValues>
           noBrokenCorners
           rules={{ required: true }}
-          maxLength={SOCIAL_FEED_ARTICLE_TITLE_MAX_CHARS}
           height={48}
           label="Title"
           placeHolder="Type title here"
@@ -274,7 +269,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         <TextInputCustom<NewPostFormValues>
           noBrokenCorners
           rules={{ required: true }}
-          maxLength={SOCIAL_FEED_ARTICLE_SHORT_DESC_MAX_CHARS}
           multiline
           label="Short description"
           placeHolder="Type short description here"
