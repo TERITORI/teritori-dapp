@@ -757,7 +757,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.13.16, @babel/core@npm:^7.20.0, @babel/core@npm:^7.20.2, @babel/core@npm:^7.21.3, @babel/core@npm:^7.23.2":
+"@babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.13.16, @babel/core@npm:^7.20.0, @babel/core@npm:^7.20.2, @babel/core@npm:^7.21.3, @babel/core@npm:^7.23.3":
   version: 7.23.3
   resolution: "@babel/core@npm:7.23.3"
   dependencies:
@@ -1325,7 +1325,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-proposal-optional-chaining@npm:^7.13.12, @babel/plugin-proposal-optional-chaining@npm:^7.18.9, @babel/plugin-proposal-optional-chaining@npm:^7.20.0":
+"@babel/plugin-proposal-optional-chaining@npm:^7.13.12, @babel/plugin-proposal-optional-chaining@npm:^7.18.9, @babel/plugin-proposal-optional-chaining@npm:^7.20.0, @babel/plugin-proposal-optional-chaining@npm:^7.21.0":
   version: 7.21.0
   resolution: "@babel/plugin-proposal-optional-chaining@npm:7.21.0"
   dependencies:
@@ -7744,6 +7744,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^20.9.1":
+  version: 20.9.1
+  resolution: "@types/node@npm:20.9.1"
+  dependencies:
+    undici-types: ~5.26.4
+  checksum: bb893c6790733dac32818c1ca170fa466622dec39a0ade4639463e1358cb811771e242accbd065e7a1bfe59adc989c0ee59be65e462d3a0ab49043426f0b7637
+  languageName: node
+  linkType: hard
+
 "@types/normalize-package-data@npm:^2.4.0":
   version: 2.4.4
   resolution: "@types/normalize-package-data@npm:2.4.4"
@@ -11318,6 +11327,17 @@ __metadata:
     strip-ansi: ^6.0.0
     wrap-ansi: ^6.2.0
   checksum: 4fcfd26d292c9f00238117f39fc797608292ae36bac2168cfee4c85923817d0607fe21b3329a8621e01aedf512c99b7eaa60e363a671ffd378df6649fb48ae42
+  languageName: node
+  linkType: hard
+
+"cliui@npm:^7.0.2":
+  version: 7.0.4
+  resolution: "cliui@npm:7.0.4"
+  dependencies:
+    string-width: ^4.2.0
+    strip-ansi: ^6.0.0
+    wrap-ansi: ^7.0.0
+  checksum: ce2e8f578a4813806788ac399b9e866297740eecd4ad1823c27fd344d78b22c5f8597d548adbcc46f0573e43e21e751f39446c5a5e804a12aace402b7a315d7f
   languageName: node
   linkType: hard
 
@@ -16051,6 +16071,13 @@ __metadata:
   version: 9.0.21
   resolution: "immer@npm:9.0.21"
   checksum: 70e3c274165995352f6936695f0ef4723c52c92c92dd0e9afdfe008175af39fa28e76aafb3a2ca9d57d1fb8f796efc4dd1e1cc36f18d33fa5b74f3dfb0375432
+  languageName: node
+  linkType: hard
+
+"immutable@npm:^4.0.0":
+  version: 4.3.4
+  resolution: "immutable@npm:4.3.4"
+  checksum: de3edd964c394bab83432429d3fb0b4816b42f56050f2ca913ba520bd3068ec3e504230d0800332d3abc478616e8f55d3787424a90d0952e6aba864524f1afc3
   languageName: node
   linkType: hard
 
@@ -22253,6 +22280,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-vector-icons@npm:^10.0.2":
+  version: 10.0.2
+  resolution: "react-native-vector-icons@npm:10.0.2"
+  dependencies:
+    prop-types: ^15.7.2
+    yargs: ^16.1.1
+  bin:
+    fa-upgrade.sh: bin/fa-upgrade.sh
+    fa5-upgrade: bin/fa5-upgrade.sh
+    fa6-upgrade: bin/fa6-upgrade.sh
+    generate-icon: bin/generate-icon.js
+  checksum: 4ea424fa98c25cdf3e33c590f6e370e0ce0762051a139beb425410eba6e87627e2a68963a025db27130a94d28fbe44299c30471d62555af1654c8c6e4918afb6
+  languageName: node
+  linkType: hard
+
 "react-native-web@npm:~0.19.6":
   version: 0.19.9
   resolution: "react-native-web@npm:0.19.9"
@@ -24597,8 +24639,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "teritori-dapp@workspace:."
   dependencies:
-    "@babel/core": ^7.23.2
+    "@babel/core": ^7.23.3
+    "@babel/plugin-proposal-nullish-coalescing-operator": ^7.18.6
     "@babel/plugin-proposal-numeric-separator": ^7.18.6
+    "@babel/plugin-proposal-optional-chaining": ^7.21.0
+    "@babel/plugin-transform-arrow-functions": ^7.23.3
+    "@babel/plugin-transform-shorthand-properties": ^7.23.3
+    "@babel/plugin-transform-template-literals": ^7.23.3
     "@cosmjs/amino": 0.29.3
     "@cosmjs/cosmwasm-stargate": 0.29.3
     "@cosmjs/encoding": ^0.30.1
@@ -24637,6 +24684,7 @@ __metadata:
     "@types/draft-convert": ^2.1.4
     "@types/draft-js": ^0.11.9
     "@types/html-to-draftjs": ^1.4.0
+    "@types/node": ^20.9.1
     "@types/react": ~18.2.14
     "@types/react-native-countdown-component": ^2.7.0
     "@types/react-native-svg-charts": ^5.0.12
@@ -24677,6 +24725,7 @@ __metadata:
     expo-status-bar: ~1.6.0
     google-protobuf: ^3.21.2
     html-to-draftjs: ^1.5.0
+    immutable: ^4.0.0
     lodash: ^4.17.21
     long: ^5.2.1
     lottie-ios: 3.4.0
@@ -24716,9 +24765,11 @@ __metadata:
     react-native-svg-transformer: ^1.0.0
     react-native-text-ticker: ^1.14.0
     react-native-toast-message: ^2.1.5
+    react-native-vector-icons: ^10.0.2
     react-native-web: ~0.19.6
     react-native-webview: 13.2.2
     react-redux: ^8.0.2
+    redux: ^4.2.1
     redux-persist: ^6.0.0
     stream-browserify: ^3.0.0
     ts-node: ^10.9.1
@@ -24728,6 +24779,7 @@ __metadata:
     uuid: ^9.0.0
     victory-native: ^36.6.8
     waveform-data: ^4.3.0
+    webpack: ^5.89.0
     webpack-bundle-analyzer: ^4.9.1
     webpack-deduplication-plugin: ^0.0.8
     zod: ^3.22.4
@@ -26667,7 +26719,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.64.4":
+"webpack@npm:^5.64.4, webpack@npm:^5.89.0":
   version: 5.89.0
   resolution: "webpack@npm:5.89.0"
   dependencies:
@@ -27112,7 +27164,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs-parser@npm:^20.2.3":
+"yargs-parser@npm:^20.2.2, yargs-parser@npm:^20.2.3":
   version: 20.2.9
   resolution: "yargs-parser@npm:20.2.9"
   checksum: 8bb69015f2b0ff9e17b2c8e6bfe224ab463dd00ca211eece72a4cd8a906224d2703fb8a326d36fdd0e68701e201b2a60ed7cf81ce0fd9b3799f9fe7745977ae3
@@ -27160,6 +27212,21 @@ __metadata:
     y18n: ^4.0.0
     yargs-parser: ^18.1.2
   checksum: 40b974f508d8aed28598087720e086ecd32a5fd3e945e95ea4457da04ee9bdb8bdd17fd91acff36dc5b7f0595a735929c514c40c402416bbb87c03f6fb782373
+  languageName: node
+  linkType: hard
+
+"yargs@npm:^16.1.1":
+  version: 16.2.0
+  resolution: "yargs@npm:16.2.0"
+  dependencies:
+    cliui: ^7.0.2
+    escalade: ^3.1.1
+    get-caller-file: ^2.0.5
+    require-directory: ^2.1.1
+    string-width: ^4.2.0
+    y18n: ^5.0.5
+    yargs-parser: ^20.2.2
+  checksum: b14afbb51e3251a204d81937c86a7e9d4bdbf9a2bcee38226c900d00f522969ab675703bee2a6f99f8e20103f608382936034e64d921b74df82b63c07c5e8f59
   languageName: node
   linkType: hard
 
