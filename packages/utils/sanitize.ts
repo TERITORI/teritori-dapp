@@ -16,6 +16,7 @@ export const zodTryParse = <T extends z.ZodType>(
   if (result.success) {
     return result.data;
   }
+  console.log("zodTryParse error", result.error, data);
   return undefined;
 };
 

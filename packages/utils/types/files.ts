@@ -31,7 +31,7 @@ const ZodBaseFileData = z.object({
   isCoverImage: z.boolean().optional(),
   base64Image: z.string().optional(),
 });
-export type BaseFileData = z.infer<typeof ZodBaseFileData>;
+type BaseFileData = z.infer<typeof ZodBaseFileData>;
 
 export interface LocalFileData extends BaseFileData {
   file: File;

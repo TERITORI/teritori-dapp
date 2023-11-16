@@ -2,7 +2,11 @@ import { z } from "zod";
 
 import { Post } from "../../../api/feed/v1/feed";
 import { PostResult } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import { LocalFileData, ZodRemoteFileData } from "../../../utils/types/files";
+import {
+  LocalFileData,
+  RemoteFileData,
+  ZodRemoteFileData,
+} from "../../../utils/types/files";
 
 export enum PostCategory {
   Reaction,
@@ -36,10 +40,19 @@ export interface PostExtra extends Post {
   isInLocal?: boolean;
 }
 
+// some files are malformed, we use this filter to get only valid file data
+const MaybeFiles = z
+  .array(z.any())
+  .transform((as) =>
+    as.filter(
+      (a): a is RemoteFileData => ZodRemoteFileData.safeParse(a).success,
+    ),
+  );
+
 export const ZodSocialFeedPostMetadata = z.object({
   title: z.string(),
   message: z.string(),
-  files: z.array(ZodRemoteFileData).optional(),
+  files: MaybeFiles.optional(),
   gifs: z.array(z.string()).optional(),
   hashtags: z.array(z.string()),
   mentions: z.array(z.string()),
@@ -53,16 +66,18 @@ export const ZodSocialFeedArticleMetadata = z.object({
   shortDescription: z.string(),
   thumbnailImage: ZodRemoteFileData.optional(),
   message: z.string(),
-  files: z.array(ZodRemoteFileData).optional(),
+  files: MaybeFiles.optional(),
   gifs: z.array(z.string()).optional(),
   hashtags: z.array(z.string()),
   mentions: z.array(z.string()),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
+/*
 export type SocialFeedArticleMetadata = z.infer<
   typeof ZodSocialFeedArticleMetadata
 >;
+*/
 
 export type ReplyToType = {
   username: string;
