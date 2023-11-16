@@ -12,10 +12,13 @@ import { AudioView } from "../../FilePreview/AudioView";
 import { ImagesViews } from "../../FilePreview/ImagesViews";
 import { VideoView } from "../../FilePreview/VideoView";
 import { SpacerColumn } from "../../spacer";
-import { SocialFeedMetadata, PostCategory } from "../NewsFeed/NewsFeed.type";
+import {
+  SocialFeedPostMetadata,
+  PostCategory,
+} from "../NewsFeed/NewsFeed.type";
 import { TextRenderer } from "../NewsFeed/TextRenderer/TextRenderer";
 interface Props {
-  metadata: SocialFeedMetadata;
+  metadata: SocialFeedPostMetadata;
   postCategory: PostCategory;
   isPreview?: boolean;
   authorId?: string;

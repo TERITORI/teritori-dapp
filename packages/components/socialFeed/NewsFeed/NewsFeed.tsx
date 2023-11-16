@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   LayoutChangeEvent,
-  StyleSheet,
   View,
   useWindowDimensions,
+  ViewStyle,
 } from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
@@ -13,6 +13,7 @@ import Animated, {
 import { CreateShortPostButton } from "./CreateShortPost/CreateShortPostButton";
 import { CreateShortPostButtonRound } from "./CreateShortPost/CreateShortPostButtonRound";
 import { CreateShortPostModal } from "./CreateShortPost/CreateShortPostModal";
+import { PostCategory } from "./NewsFeed.type";
 import { NewsFeedInput } from "./NewsFeedInput";
 import { RefreshButton } from "./RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "./RefreshButton/RefreshButtonRound";
@@ -29,7 +30,8 @@ import {
   screenContentMaxWidth,
 } from "../../../utils/style/layout";
 import { SpacerColumn, SpacerRow } from "../../spacer";
-import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
+import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
+import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
 
 const OFFSET_Y_LIMIT_FLOATING = 224;
 export const ROUND_BUTTON_WIDTH_L = 60;
@@ -160,52 +162,52 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     ],
   );
 
-  // FIXME: remove StyleSheet.create
-  // eslint-disable-next-line no-restricted-syntax
-  const styles = StyleSheet.create({
-    content: {
-      alignItems: "center",
-      alignSelf: "center",
-      width: "100%",
+  const mobileMode = windowWidth < RESPONSIVE_BREAKPOINT_S;
+  const cardStyle = useMemo(() => {
+    return (
+      mobileMode && {
+        borderRadius: 0,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+      }
+    );
+  }, [mobileMode]);
+
+  const RenderItem = useCallback(
+    (post: Post) => {
+      // NOTE: if you edit this, make sure that this is not too CPU expensive
+      // Heavy components like SocialThreadCard, SocialArticleCard, etc. should be properly memoized
+      return (
+        <View
+          style={{
+            width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
+            maxWidth: screenContentMaxWidth,
+          }}
+        >
+          {post.category === PostCategory.Article ? (
+            <SocialArticleCard post={post} style={cardStyle} />
+          ) : (
+            <SocialThreadCard
+              post={post}
+              refetchFeed={refetch}
+              isPreview
+              isFlagged={isFlagged}
+              style={cardStyle}
+            />
+          )}
+          <SpacerColumn size={2} />
+        </View>
+      );
     },
-    floatingActions: {
-      position: "absolute",
-      justifyContent: "center",
-      alignItems: "center",
-      right: 24,
-      bottom: 32,
-    },
-  });
+    [windowWidth, width, isFlagged, refetch, cardStyle],
+  );
 
   return (
     <>
       <Animated.FlatList
         scrollEventThrottle={0.1}
         data={posts}
-        renderItem={({ item: post }) => (
-          <View
-            style={{
-              width:
-                windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-              maxWidth: screenContentMaxWidth,
-            }}
-          >
-            <SocialThreadCard
-              post={post}
-              refetchFeed={refetch}
-              isPreview
-              isFlagged={isFlagged}
-              style={
-                windowWidth < RESPONSIVE_BREAKPOINT_S && {
-                  borderRadius: 0,
-                  borderLeftWidth: 0,
-                  borderRightWidth: 0,
-                }
-              }
-            />
-            <SpacerColumn size={2} />
-          </View>
-        )}
+        renderItem={({ item: post }) => RenderItem(post)}
         ListHeaderComponentStyle={{
           zIndex: 1,
           width: windowWidth,
@@ -214,13 +216,13 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         ListHeaderComponent={ListHeaderComponent}
         keyExtractor={(post: Post) => post.identifier}
         onScroll={scrollHandler}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={contentCStyle}
         onEndReachedThreshold={1}
         onEndReached={onEndReached}
       />
 
       {flatListContentOffsetY >= OFFSET_Y_LIMIT_FLOATING + headerHeight && (
-        <View style={styles.floatingActions}>
+        <View style={floatingActionsCStyle}>
           <CreateShortPostButtonRound
             onPress={() => setCreateModalVisible(true)}
             style={{ marginBottom: layout.spacing_x1_5 }}
@@ -240,4 +242,17 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       />
     </>
   );
+};
+
+const contentCStyle: ViewStyle = {
+  alignItems: "center",
+  alignSelf: "center",
+  width: "100%",
+};
+const floatingActionsCStyle: ViewStyle = {
+  position: "absolute",
+  justifyContent: "center",
+  alignItems: "center",
+  right: 24,
+  bottom: 32,
 };

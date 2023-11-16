@@ -17,7 +17,7 @@ import tnsWhiteSVG from "../../../assets/icons/tns-service_white.svg";
 import walletWhiteSVG from "../../../assets/icons/wallet_white.svg";
 import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
 import { BrandText } from "../../components/BrandText";
-import { SocialMessageContent } from "../../components/socialFeed/SocialThread/SocialMessageContent";
+import { SocialMessageContent } from "../../components/socialFeed/SocialCard/SocialMessageContent";
 import { SpacerColumn } from "../../components/spacer";
 import { Username } from "../../components/user/Username";
 import {

@@ -6,11 +6,11 @@ import { ARTICLE_COVER_IMAGE_HEIGHT } from "../../../utils/social-feed";
 import { layout } from "../../../utils/style/layout";
 import { RemoteFileData } from "../../../utils/types/files";
 import { BrandText } from "../../BrandText";
-import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
+import { SocialFeedPostMetadata } from "../NewsFeed/NewsFeed.type";
 import { RichText } from "../RichText";
 
 interface Props {
-  metadata: SocialFeedMetadata;
+  metadata: SocialFeedPostMetadata;
   audioFiles?: RemoteFileData[];
   isPreview?: boolean;
   postId: string;
@@ -24,7 +24,7 @@ export const ArticleRenderer: React.FC<Props> = ({
   postId,
   authorId,
 }) => {
-  const coverImage = metadata.files?.find((file) => file.isCoverImage);
+  const thumbnailImage = metadata.files?.find((file) => file.isCoverImage);
 
   return (
     <>
@@ -33,9 +33,9 @@ export const ArticleRenderer: React.FC<Props> = ({
           {metadata.title}
         </BrandText>
       )}
-      {!!coverImage && (
+      {!!thumbnailImage && (
         <Image
-          source={{ uri: ipfsURLToHTTPURL(coverImage.url) }}
+          source={{ uri: ipfsURLToHTTPURL(thumbnailImage.url) }}
           resizeMode="cover"
           style={{
             width: "100%",

@@ -1,6 +1,12 @@
+import { z } from "zod";
+
 import { Post } from "../../../api/feed/v1/feed";
 import { PostResult } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
+import {
+  LocalFileData,
+  RemoteFileData,
+  ZodRemoteFileData,
+} from "../../../utils/types/files";
 
 export enum PostCategory {
   Reaction,
@@ -16,13 +22,15 @@ export enum PostCategory {
 }
 
 export interface NewPostFormValues {
-  title?: string;
+  title: string;
   hashtags: string[];
   mentions: string[];
   message: string;
   files?: LocalFileData[];
   gifs?: string[];
   nftStorageApiToken?: string;
+  thumbnailImage?: LocalFileData;
+  shortDescription: string;
 }
 
 export interface PostResultExtra extends PostResult {
@@ -32,17 +40,44 @@ export interface PostExtra extends Post {
   isInLocal?: boolean;
 }
 
-export interface SocialFeedMetadata {
-  title: string;
-  message: string;
-  files?: RemoteFileData[];
-  gifs?: string[];
-  hashtags: string[];
-  mentions: string[];
-  createdAt: string;
-  updatedAt: string;
-  // openGraph?: OpenGraphType;
-}
+// some files are malformed, we use this filter to get only valid file data
+const MaybeFiles = z
+  .array(z.any())
+  .transform((as) =>
+    as.filter(
+      (a): a is RemoteFileData => ZodRemoteFileData.safeParse(a).success,
+    ),
+  );
+
+export const ZodSocialFeedPostMetadata = z.object({
+  title: z.string(),
+  message: z.string(),
+  files: MaybeFiles.optional(),
+  gifs: z.array(z.string()).optional(),
+  hashtags: z.array(z.string()),
+  mentions: z.array(z.string()),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+export type SocialFeedPostMetadata = z.infer<typeof ZodSocialFeedPostMetadata>;
+
+export const ZodSocialFeedArticleMetadata = z.object({
+  title: z.string(),
+  shortDescription: z.string(),
+  thumbnailImage: ZodRemoteFileData.optional(),
+  message: z.string(),
+  files: MaybeFiles.optional(),
+  gifs: z.array(z.string()).optional(),
+  hashtags: z.array(z.string()),
+  mentions: z.array(z.string()),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+/*
+export type SocialFeedArticleMetadata = z.infer<
+  typeof ZodSocialFeedArticleMetadata
+>;
+*/
 
 export type ReplyToType = {
   username: string;

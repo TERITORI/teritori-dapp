@@ -36,7 +36,7 @@ import { prettyPrice } from "../../utils/coins";
 import { generateIpfsKey } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { ARTICLE_COVER_IMAGE_HEIGHT } from "../../utils/social-feed";
+import { ARTICLE_THUMBNAIL_IMAGE_HEIGHT } from "../../utils/social-feed";
 import {
   neutral00,
   neutral11,
@@ -82,6 +82,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       gifs: [],
       hashtags: [],
       mentions: [],
+      thumbnailImage: undefined,
+      shortDescription: "",
     },
     mode: "onBlur",
   });
@@ -237,19 +239,14 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         </TertiaryBox>
 
         <FileUploader
-          label="Cover image"
-          fileHeight={ARTICLE_COVER_IMAGE_HEIGHT}
+          label="Thumbnail image"
+          fileHeight={ARTICLE_THUMBNAIL_IMAGE_HEIGHT}
           isImageCover
           style={{
             marginTop: layout.spacing_x3,
-            width: "100%",
+            width: 364,
           }}
-          onUpload={(files) =>
-            setValue("files", [
-              ...(formValues.files || []),
-              { ...files[0], isCoverImage: true },
-            ])
-          }
+          onUpload={(files) => setValue("thumbnailImage", files[0])}
           mimeTypes={IMAGE_MIME_TYPES}
         />
 
@@ -257,7 +254,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           noBrokenCorners
           rules={{ required: true }}
           height={48}
-          label="Give a title to make an Article"
+          label="Title"
           placeHolder="Type title here"
           name="title"
           control={control}
@@ -268,6 +265,23 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
             borderRadius: 12,
           }}
         />
+
+        <TextInputCustom<NewPostFormValues>
+          noBrokenCorners
+          rules={{ required: true }}
+          multiline
+          label="Short description"
+          placeHolder="Type short description here"
+          name="shortDescription"
+          control={control}
+          variant="labelOutside"
+          containerStyle={{ marginBottom: layout.spacing_x3 }}
+          boxMainContainerStyle={{
+            backgroundColor: neutral00,
+            borderRadius: 12,
+          }}
+        />
+
         <View>
           <Label>Article content</Label>
           <SpacerColumn size={1} />
@@ -287,6 +301,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                   errors?.message?.type === "required" ||
                   !formValues.message ||
                   !formValues.title ||
+                  !formValues.shortDescription ||
+                  !formValues.thumbnailImage ||
                   !wallet
                 }
                 onPublish={onPublish}

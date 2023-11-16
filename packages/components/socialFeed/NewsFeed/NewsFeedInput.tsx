@@ -13,12 +13,7 @@ import Animated, { useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
-import {
-  NewPostFormValues,
-  PostCategory,
-  ReplyToType,
-  SocialFeedMetadata,
-} from "./NewsFeed.type";
+import { NewPostFormValues, PostCategory, ReplyToType } from "./NewsFeed.type";
 import { generatePostMetadata, getPostCategory } from "./NewsFeedQueries";
 import { NotEnoughFundModal } from "./NotEnoughFundModal";
 import audioSVG from "../../../../assets/icons/audio.svg";
@@ -262,7 +257,7 @@ export const NewsFeedInput = React.forwardRef<
         }
         const postCategory = getPostCategory(formValues);
 
-        const metadata: SocialFeedMetadata = generatePostMetadata({
+        const metadata = generatePostMetadata({
           title: formValues.title || "",
           message: finalMessage,
           files,
@@ -616,11 +611,11 @@ export const NewsFeedInput = React.forwardRef<
             >
               <EmojiSelector
                 onEmojiSelected={onEmojiSelected}
-                buttonStyle={{ marginRight: layout.spacing_x2_5 }}
+                buttonStyle={{ marginRight: layout.spacing_x2 }}
               />
 
               <GIFSelector
-                buttonStyle={{ marginRight: layout.spacing_x2_5 }}
+                buttonStyle={{ marginRight: layout.spacing_x2 }}
                 onGIFSelected={(url) => {
                   // Don't add if already added
                   if (formValues.gifs?.find((gif) => gif === url)) return;
@@ -643,7 +638,7 @@ export const NewsFeedInput = React.forwardRef<
                   <IconBox
                     icon={audioSVG}
                     onPress={onPress}
-                    style={{ marginRight: layout.spacing_x2_5 }}
+                    style={{ marginRight: layout.spacing_x2 }}
                     disabled={
                       !!formValues.files?.length || !!formValues.gifs?.length
                     }
@@ -658,7 +653,7 @@ export const NewsFeedInput = React.forwardRef<
                   <IconBox
                     icon={videoSVG}
                     onPress={onPress}
-                    style={{ marginRight: layout.spacing_x2_5 }}
+                    style={{ marginRight: layout.spacing_x2 }}
                     disabled={
                       !!formValues.files?.length || !!formValues.gifs?.length
                     }
@@ -723,7 +718,7 @@ export const NewsFeedInput = React.forwardRef<
                     }
                     borderColor={primaryColor}
                     touchableStyle={{
-                      marginRight: layout.spacing_x2_5,
+                      marginRight: layout.spacing_x2,
                     }}
                     backgroundColor={
                       formValues?.message.length >

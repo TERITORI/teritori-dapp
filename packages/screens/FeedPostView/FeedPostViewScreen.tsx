@@ -31,7 +31,7 @@ import {
 } from "../../components/socialFeed/NewsFeed/NewsFeedInput";
 import { RefreshButton } from "../../components/socialFeed/NewsFeed/RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "../../components/socialFeed/NewsFeed/RefreshButton/RefreshButtonRound";
-import { SocialThreadCard } from "../../components/socialFeed/SocialThread/SocialThreadCard";
+import { SocialThreadCard } from "../../components/socialFeed/SocialCard/cards/SocialThreadCard";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import {
   combineFetchCommentPages,

@@ -1,6 +1,5 @@
 import { ViewStyle, TouchableOpacity, View, StyleProp } from "react-native";
 
-import { neutral22 } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -22,7 +21,6 @@ export const SocialStat: React.FC<{
           paddingRight: layout.spacing_x1,
           paddingLeft: layout.spacing_x0_5,
           height: socialStatHeight,
-          backgroundColor: neutral22,
           borderRadius: 6,
           flexDirection: "row",
           alignItems: "center",
