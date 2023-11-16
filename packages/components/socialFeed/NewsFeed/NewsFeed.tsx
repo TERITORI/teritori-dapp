@@ -222,7 +222,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       />
 
       {flatListContentOffsetY >= OFFSET_Y_LIMIT_FLOATING + headerHeight && (
-        <View style={floatingActions}>
+        <View style={floatingActionsCStyle}>
           <CreateShortPostButtonRound
             onPress={() => setCreateModalVisible(true)}
             style={{ marginBottom: layout.spacing_x1_5 }}
@@ -249,7 +249,7 @@ const contentCStyle: ViewStyle = {
   alignSelf: "center",
   width: "100%",
 };
-const floatingActions: ViewStyle = {
+const floatingActionsCStyle: ViewStyle = {
   position: "absolute",
   justifyContent: "center",
   alignItems: "center",
