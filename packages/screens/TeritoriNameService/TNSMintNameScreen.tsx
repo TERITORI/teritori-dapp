@@ -187,7 +187,7 @@ export const TNSMintNameModal: React.FC<
   const isLeapConnected = useIsLeapConnected();
 
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const price = useNSMintPrice(networkId, normalizedTokenId);
+  const { nsMintPrice: price } = useNSMintPrice(networkId, normalizedTokenId);
   const balance = balances.find((bal) => bal.denom === price?.denom);
 
   const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);
