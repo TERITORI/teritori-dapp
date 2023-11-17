@@ -1,6 +1,6 @@
 import { useNSNameInfo } from "./useNSNameInfo";
 
-export const useNSNameAvailability = (
+export const useNSMintAvailability = (
   networkId: string | undefined,
   tokenId: string | undefined,
 ) => {

@@ -21,7 +21,7 @@ export const decimalFromAtomics = (
   return Decimal.fromAtomics("0", 0);
 };
 
-const units = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
+const units = ["", "K", "M", "B", "T", "P", "E", "Z", "Y"];
 
 // FIXME: rename to prettyAmount
 

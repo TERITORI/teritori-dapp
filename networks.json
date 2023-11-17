@@ -9167,7 +9167,7 @@
     "socialFeedContractAddress": "tori1umsk53n6rf5j2lam80zuz50sz9sdw2vdpr0vvd2xaaryprfa7ryslyvm69",
     "daoCw20CodeId": 99,
     "daoFactoryCodeId": 100,
-    "daoCoreCodeId": 101,
+    "daoCoreCodeId": 176,
     "daoPreProposeSingleCodeId": 102,
     "daoProposalSingleCodeId": 103,
     "daoVotingCw20StakedCodeId": 104,
