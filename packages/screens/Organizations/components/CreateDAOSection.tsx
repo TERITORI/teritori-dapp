@@ -8,10 +8,22 @@ import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useNSAvailability } from "../../../hooks/useNSAvailability";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import { NetworkKind } from "../../../networks";
-import { neutral33, neutral77 } from "../../../utils/style/colors";
-import { fontSemibold20, fontSemibold28 } from "../../../utils/style/fonts";
+import { prettyPrice } from "../../../utils/coins";
+import {
+  neutral33,
+  neutral77,
+  primaryColor,
+  primaryTextColor,
+  redDefault,
+} from "../../../utils/style/colors";
+import {
+  fontSemibold14,
+  fontSemibold20,
+  fontSemibold28,
+} from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
 import { CreateDaoFormType, DaoType } from "../types";
@@ -41,6 +53,57 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   const selectedRadioStructure = watch("structure");
   const uri = watch("imageUrl");
   const name = watch("associatedTeritoriNameService");
+  const nameAvailability = useNSAvailability(
+    selectedNetwork?.id,
+    name + ".tori",
+  ); // todo: proper suffix
+
+  let availabilityInfo = <></>;
+  if (name) {
+    switch (nameAvailability.availability) {
+      case "invalid": {
+        availabilityInfo = (
+          <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
+            Invalid
+          </BrandText>
+        );
+        break;
+      }
+      case "mint":
+      case "market": {
+        availabilityInfo = (
+          <View style={{ flexDirection: "row" }}>
+            {!!nameAvailability?.usdPrice && (
+              <>
+                <BrandText style={{ color: neutral77, ...fontSemibold14 }}>
+                  ${nameAvailability.usdPrice?.toFixed(2)}
+                </BrandText>
+                <BrandText style={{ color: neutral33, ...fontSemibold14 }}>
+                  {" - "}
+                </BrandText>
+              </>
+            )}
+            <BrandText style={{ color: primaryColor, ...fontSemibold14 }}>
+              {prettyPrice(
+                selectedNetwork?.id,
+                nameAvailability.price.amount,
+                nameAvailability.price.denom,
+              )}
+            </BrandText>
+          </View>
+        );
+        break;
+      }
+      case "none": {
+        availabilityInfo = (
+          <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
+            Taken
+          </BrandText>
+        );
+        break;
+      }
+    }
+  }
 
   // functions
   const onErrorImageLoading = () =>
@@ -78,6 +141,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
               <View style={styles.fill}>
                 <TextInputCustom<CreateDaoFormType>
                   noBrokenCorners
+                  isLoading={nameAvailability.availability === "loading"}
                   variant="labelOutside"
                   control={control}
                   label={`Associated Handle${
@@ -96,7 +160,9 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                   }
                   name="associatedTeritoriNameService"
                   rules={{ required: true }}
-                />
+                >
+                  {availabilityInfo}
+                </TextInputCustom>
               </View>
             </View>
 
@@ -156,7 +222,10 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
           size="M"
           text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[1]}`}
           onPress={handleSubmit(onSubmit)}
-          disabled={!isValid}
+          disabled={
+            !isValid ||
+            !["market", "mint"].includes(nameAvailability.availability)
+          }
         />
       </View>
     </View>
