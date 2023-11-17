@@ -30,22 +30,22 @@ export const EstateCardWailistInput: React.FC = () => {
           value={value}
           onChangeText={onChangeValue}
           style={{
-            width: 150,
-            flex: 1,
+            width: 136,
             padding: 10,
             color: theme.textColor,
             borderWidth: 1,
             borderColor: theme.borderColor,
-            borderRadius: 10,
+            borderRadius: 6,
             fontSize: 12,
           }}
           placeholder="mail@teritori.com"
           placeholderTextColor={neutralA3}
         />
         <PrimaryButton
+          width={136}
           color={theme.primaryButtonColor}
-          text="Join the Waitlist"
-          style={{ flex: 1, right: 18 }}
+          text="Join Waitlist"
+          style={{ flex: 1, marginLeft: 10 }}
           noBrokenCorners
         />
       </View>

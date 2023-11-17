@@ -22,13 +22,13 @@ const EstateCardInformationBox: React.FC<EstateCardInformationBoxProps> = ({
   const backgroundColor = secondary
     ? theme.headerBackgroundColor
     : isLightTheme
-    ? "#F9F9F9"
-    : theme.headerBackgroundColor;
+      ? "#F9F9F9"
+      : theme.headerBackgroundColor;
   const labelColor = secondary
     ? neutral77
     : isLightTheme
-    ? neutralA3
-    : neutral77;
+      ? neutralA3
+      : neutral77;
 
   return (
     <TertiaryBox
@@ -42,8 +42,8 @@ const EstateCardInformationBox: React.FC<EstateCardInformationBoxProps> = ({
           borderColor: secondary
             ? theme.borderColor
             : !isLightTheme
-            ? theme.borderColor
-            : undefined,
+              ? theme.borderColor
+              : undefined,
           borderWidth: secondary ? 1 : !isLightTheme ? 1 : 0,
           alignItems: "flex-start",
         },
