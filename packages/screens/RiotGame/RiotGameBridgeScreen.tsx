@@ -368,7 +368,6 @@ export const RiotGameBridgeScreen: React.FC = () => {
                             )}
                         />
                     </ScrollView>
-
                     <BridgeSide
                         style={{
                             position: "absolute",
