@@ -32,6 +32,9 @@ jobs:
       - name: Check for unused environment variables
         run: npx ts-node packages/scripts/unusedEnv.ts
 
+      - name: Check dependencies
+        run: npx depcheck
+
       - name: Build web app
         run: yarn expo export:web
 
