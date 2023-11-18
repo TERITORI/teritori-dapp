@@ -33,6 +33,7 @@ import { RiotGameLeaderboardScreen } from "../../screens/RiotGame/RiotGameLeader
 import { RiotGameMarketplaceScreen } from "../../screens/RiotGame/RiotGameMarketplaceScreen";
 import { RiotGameMemoriesScreen } from "../../screens/RiotGame/RiotGameMemoriesScreen";
 import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen";
+import { RiotGameBridgeScreen } from "../../screens/RiotGame/RiotGameBridgeScreen";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { SettingsScreen } from "../../screens/Settings/SettingsScreen";
 import { StakeScreen } from "../../screens/Stake";
