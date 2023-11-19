@@ -32,7 +32,7 @@ import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutralA3, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { modalMarginPadding } from "../../utils/style/modals";
-import { createWeshClient } from "../../utils/weshnet";
+import { createWeshClient } from "../../weshnet";
 
 const NFTAPIKeyInput: React.FC = () => {
   const userIPFSKey = useSelector(selectNFTStorageAPI);
