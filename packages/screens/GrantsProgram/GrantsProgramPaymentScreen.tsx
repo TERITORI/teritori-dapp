@@ -11,12 +11,12 @@ import websiteSVG from "../../../assets/icons/website.svg";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { Separator } from "../../components/Separator";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SocialButton } from "../../components/buttons/SocialButton";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
+import { Separator } from "../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { ScreenFC } from "../../utils/navigation";
 import {

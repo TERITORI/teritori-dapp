@@ -2,8 +2,8 @@ import React from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
-import { Separator } from "../../../components/Separator";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
+import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutral55, neutral77, neutralA3 } from "../../../utils/style/colors";
 import {

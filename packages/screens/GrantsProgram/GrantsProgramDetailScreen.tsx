@@ -16,10 +16,10 @@ import { FlexRow } from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SearchBarInput } from "../../components/Search/SearchBarInput";
-import { Separator } from "../../components/Separator";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SocialButton } from "../../components/buttons/SocialButton";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
+import { Separator } from "../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { ScreenFC } from "../../utils/navigation";
 import {

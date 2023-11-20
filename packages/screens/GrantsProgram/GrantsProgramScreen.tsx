@@ -6,9 +6,9 @@ import { BrandText } from "../../components/BrandText";
 import { FlexRow } from "../../components/FlexRow";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SearchBarInput } from "../../components/Search/SearchBarInput";
-import { Separator } from "../../components/Separator";
 import { IconButton } from "../../components/buttons/IconButton";
 import { SimpleButton } from "../../components/buttons/SimpleButton";
+import { Separator } from "../../components/separators/Separator";
 import { SpacerRow } from "../../components/spacer";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {

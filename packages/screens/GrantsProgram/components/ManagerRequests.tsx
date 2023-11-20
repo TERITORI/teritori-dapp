@@ -5,9 +5,9 @@ import { Tag } from "./Tag";
 import githubSVG from "../../../../assets/icons/github.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { Separator } from "../../../components/Separator";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SocialButton } from "../../../components/buttons/SocialButton";
+import { Separator } from "../../../components/separators/Separator";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
