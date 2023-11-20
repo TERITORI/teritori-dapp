@@ -1,9 +1,9 @@
 import { View } from "react-native";
 
 import { BrandText } from "../../../../components/BrandText";
-import { Separator } from "../../../../components/Separator";
 import { TertiaryBadge } from "../../../../components/badges/TertiaryBadge";
 import { GradientText } from "../../../../components/gradientText";
+import { Separator } from "../../../../components/separators/Separator";
 import { useIsLightTheme, useTheme } from "../../../../hooks/useTheme";
 import { neutral77, yellowDefault } from "../../../../utils/style/colors";
 import { fontSemibold16, fontSemibold20 } from "../../../../utils/style/fonts";

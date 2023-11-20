@@ -1,8 +1,8 @@
 import { View } from "react-native";
 
 import { BrandText } from "../../../../components/BrandText";
-import { Separator } from "../../../../components/Separator";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
+import { Separator } from "../../../../components/separators/Separator";
 import { useTheme } from "../../../../hooks/useTheme";
 import { fontSemibold14 } from "../../../../utils/style/fonts";
 

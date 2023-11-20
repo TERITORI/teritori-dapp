@@ -19,11 +19,11 @@ import launchpadSVG from "../../../../../../assets/icons/launchpad.svg";
 import RWADarkLogo from "../../../../../../assets/logos/rwa-dark-logo.svg";
 import RWALightLogo from "../../../../../../assets/logos/rwa-light-logo.svg";
 import { SVG } from "../../../../../components/SVG";
-import { Separator } from "../../../../../components/Separator";
 import {
   SidebarRecordType,
   SidebarType,
 } from "../../../../../components/navigation/types";
+import { Separator } from "../../../../../components/separators/Separator";
 import { SpacerColumn } from "../../../../../components/spacer";
 import { useSidebar } from "../../../../../context/SidebarProvider";
 import { useSelectedNetworkInfo } from "../../../../../hooks/useSelectedNetwork";
