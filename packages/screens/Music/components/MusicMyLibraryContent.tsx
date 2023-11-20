@@ -1,123 +1,89 @@
-import React, { useState } from "react";
-import { View, ViewStyle } from "react-native";
+import React, { useMemo, useState } from "react";
+import { FlatList, View, ViewStyle } from "react-native";
 
+import { TRACK_CARD_WIDTH, TrackCard } from "./TrackCard";
 import { UploadMusicButton } from "./UploadMusicButton";
 import { UploadMusicModal } from "./UploadMusicModal";
+import { PostsRequest } from "../../../api/feed/v1/feed";
 import { BrandText } from "../../../components/BrandText";
+import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import {
+  combineFetchFeedPages,
+  useFetchFeed,
+} from "../../../hooks/feed/useFetchFeed";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
-// const FLAT_LIST_SEPARATOR_WIDTH = 20;
+const FLAT_LIST_SEPARATOR_WIDTH = 20;
 export const MusicMyLibraryContent: React.FC = () => {
-  // const { data: libraryIds } = useFetchLibraryIds();
-  // const libraryIdList = useMemo(
-  //   () => (libraryIds ? libraryIds : []),
-  //   [libraryIds]
-  // );
-  // const isLoadingValue = useSharedValue(false);
-  // const isGoingUp = useSharedValue(false);
-  //
-  // const isLoadingValueOther = useSharedValue(false);
-  // const isGoingUpOther = useSharedValue(false);
-  //
-  // const selectedNetworkId = useSelectedNetworkId();
-  // const wallet = useSelectedWallet();
-  // const userId = getUserId(selectedNetworkId, wallet?.address);
-  //
-  // const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
-  // const { data, isFetching, hasNextPage, fetchNextPage, isLoading, refetch } =
-  //   useFetchUserAlbums({
-  //     limit: 10,
-  //     offset: 0,
-  //     createdBy: userId,
-  //   });
-  //
-  // const albums = useMemo(
-  //   () => (data ? combineFetchAlbumPages(data.pages) : []),
-  //   [data]
-  // );
-  //
-  // const {
-  //   data: dataOther,
-  //   isFetching: isFetchingOther,
-  //   hasNextPage: hasNextPageOther,
-  //   fetchNextPage: fetchNextPageOther,
-  //   isLoading: isLoadingOther,
-  //   refetch: refetchOther,
-  // } = useFetchOtherAlbums({
+  const selectedWallet = useSelectedWallet();
+  const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
+
+  // ======= Getting MusicAudio posts as single tracks
+  const myMusicFeedRequest: PostsRequest = {
+    filter: {
+      categories: [PostCategory.MusicAudio],
+      user: selectedWallet?.userId || "",
+      mentions: [],
+      hashtags: [],
+    },
+    limit: 10,
+    offset: 0,
+  };
+  const {
+    data: myMusicData,
+    isFetching: myMusicIsFetching,
+    refetch: myMusicRefetch,
+    hasNextPage: myMusicHasNextPage,
+    fetchNextPage: myMusicFetchNextPage,
+    isLoading: myMusicIsLoading,
+  } = useFetchFeed(myMusicFeedRequest);
+  const myMusicPosts = useMemo(
+    () => (myMusicData ? combineFetchFeedPages(myMusicData.pages) : []),
+    [myMusicData],
+  );
+  const onEndReachedMyMusic = () => {
+    if (!myMusicIsLoading && myMusicHasNextPage && !myMusicIsFetching) {
+      myMusicFetchNextPage();
+    }
+  };
+
+  // TODO: Uncomment  this after "add/remove to library" integration
+  // const otherMusicFeedRequest: PostsRequest = {
+  //   filter: {
+  //     categories: [PostCategory.MusicAudio],
+  //     user: "",
+  //     mentions: [],
+  //     hashtags: [],
+  //   },
   //   limit: 10,
   //   offset: 0,
-  //   idList: libraryIdList,
-  // });
-  // const otherAlbums = useMemo(
-  //   () => (dataOther ? combineFetchAlbumPagesOther(dataOther.pages) : []),
-  //   [dataOther]
+  // };
+  // const {
+  //   data: otherMusicData, isFetching: otherMusicIsFetching,
+  //   refetch: otherMusicRefetch, hasNextPage: otherMusicHasNextPage, fetchNextPage: otherMusicFetchNextPage, isLoading:
+  //     otherMusicIsLoading
+  // } =
+  //   useFetchFeed(otherMusicFeedRequest);
+  // const otherMusicPosts = useMemo(
+  //   () => (otherMusicData ? combineFetchFeedPages(otherMusicData.pages) : []),
+  //   [otherMusicData],
   // );
-  const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
-  // const [flatListWidth, setFlatListWidth] = useState(0);
-  // const [flatListOthersWidth, setFlatListOthersWidth] = useState(0);
-  // const elemsPerRow =
-  //   Math.floor(
-  //     flatListWidth / (ALBUM_CARD_WIDTH + FLAT_LIST_SEPARATOR_WIDTH)
-  //   ) || 1;
-  // const elemsOthersPerRow =
-  //   Math.floor(
-  //     flatListOthersWidth / (ALBUM_CARD_WIDTH + FLAT_LIST_SEPARATOR_WIDTH)
-  //   ) || 1;
-  //
-  // useEffect(() => {
-  //   if (isFetching || isLoading) {
-  //     isGoingUp.value = false;
-  //     isLoadingValue.value = true;
-  //   } else {
-  //     isLoadingValue.value = false;
-  //   }
-  // }, [isFetching, isLoading, isGoingUp, isLoadingValue]);
-  //
-  // useEffect(() => {
-  //   if (isFetchingOther || isLoadingOther) {
-  //     isGoingUpOther.value = false;
-  //     isLoadingValueOther.value = true;
-  //   } else {
-  //     isLoadingValueOther.value = false;
-  //   }
-  // }, [isFetchingOther, isLoadingOther, isGoingUpOther, isLoadingValueOther]);
-  //
-  // const scrollHandler = useAnimatedScrollHandler({
-  //   onScroll: (event) => {
-  //     setFlatListContentOffsetY(event.contentOffset.y);
-  //     if (flatListContentOffsetY > event.contentOffset.y) {
-  //       isGoingUp.value = true;
-  //     } else if (flatListContentOffsetY < event.contentOffset.y) {
-  //       isGoingUp.value = false;
-  //     }
-  //     setFlatListContentOffsetY(event.contentOffset.y);
-  //   },
-  // });
-  //
-  // const scrollHandlerOther = useAnimatedScrollHandler({
-  //   onScroll: (event) => {
-  //     setFlatListContentOffsetY(event.contentOffset.y);
-  //     if (flatListContentOffsetY > event.contentOffset.y) {
-  //       isGoingUpOther.value = true;
-  //     } else if (flatListContentOffsetY < event.contentOffset.y) {
-  //       isGoingUpOther.value = false;
-  //     }
-  //     setFlatListContentOffsetY(event.contentOffset.y);
-  //   },
-  // });
-  //
-  // const onEndReached = () => {
-  //   if (!isLoading && hasNextPage && !isFetching) {
-  //     fetchNextPage();
+  // const onEndReachedOtherMusic = () => {
+  //   if (!otherMusicIsLoading && otherMusicHasNextPage && !otherMusicIsFetching) {
+  //     otherMusicFetchNextPage();
   //   }
   // };
-  //
-  // const onEndReachedOther = () => {
-  //   if (!isLoadingOther && hasNextPageOther && !isFetchingOther) {
-  //     fetchNextPageOther();
-  //   }
-  // };
+
+  // ======= TODO: Getting ??? as albums
+
+  const [flatListWidth, setFlatListWidth] = useState(0);
+  const elemsPerRow =
+    Math.floor(
+      flatListWidth / (TRACK_CARD_WIDTH + FLAT_LIST_SEPARATOR_WIDTH),
+    ) || 1;
 
   return (
     <View style={containerStyle}>
@@ -130,61 +96,63 @@ export const MusicMyLibraryContent: React.FC = () => {
         </View>
       </View>
       <View style={contentGroupStyle}>
-        {/*<Animated.FlatList*/}
-        {/*  onLayout={(e) => setFlatListWidth(e.nativeEvent.layout.width)}*/}
-        {/*  key={`music-library-flat-list-${elemsPerRow}`}*/}
-        {/*  scrollEventThrottle={0.1}*/}
-        {/*  data={albums}*/}
-        {/*  numColumns={elemsPerRow}*/}
-        {/*  renderItem={({ item: albumInfo, index }) => (*/}
-        {/*    <>*/}
-        {/*      <AlbumCard album={albumInfo} hideAuthor />*/}
-        {/*      {index !== elemsPerRow - 1 && (*/}
-        {/*        <SpacerRow size={FLAT_LIST_SEPARATOR_WIDTH / 8} />*/}
-        {/*      )}*/}
-        {/*    </>*/}
-        {/*  )}*/}
-        {/*  onScroll={scrollHandler}*/}
-        {/*  onEndReachedThreshold={1}*/}
-        {/*  onEndReached={onEndReached}*/}
-        {/*  ItemSeparatorComponent={() => (*/}
-        {/*    <SpacerColumn size={FLAT_LIST_SEPARATOR_WIDTH / 8} />*/}
-        {/*  )}*/}
-        {/*/>*/}
+        <FlatList
+          onLayout={(e) => setFlatListWidth(e.nativeEvent.layout.width)}
+          keyExtractor={(item, index) => `track-${index}`}
+          key={`my-music-flat-list-${elemsPerRow}`}
+          scrollEventThrottle={0.1}
+          data={myMusicPosts}
+          numColumns={elemsPerRow}
+          renderItem={({ item, index }) => (
+            <>
+              <TrackCard post={item} />
+              {index !== elemsPerRow - 1 && (
+                <SpacerRow size={FLAT_LIST_SEPARATOR_WIDTH / 8} />
+              )}
+            </>
+          )}
+          onEndReachedThreshold={1}
+          onEndReached={onEndReachedMyMusic}
+          ItemSeparatorComponent={() => (
+            <SpacerColumn size={FLAT_LIST_SEPARATOR_WIDTH / 8} />
+          )}
+        />
       </View>
 
-      <View style={oneLineStyle}>
-        <BrandText style={fontSemibold20}>Other Music</BrandText>
-      </View>
-      <View style={contentGroupStyle}>
-        {/*<Animated.FlatList*/}
-        {/*  onLayout={(e) => setFlatListOthersWidth(e.nativeEvent.layout.width)}*/}
-        {/*  key={`music-library-others-flat-list-${elemsOthersPerRow}`}*/}
-        {/*  scrollEventThrottle={0.1}*/}
-        {/*  data={otherAlbums}*/}
-        {/*  numColumns={elemsOthersPerRow}*/}
-        {/*  renderItem={({ item: albumInfo, index }) => (*/}
-        {/*    <>*/}
-        {/*      <AlbumCard album={albumInfo} />*/}
-        {/*      {index !== elemsOthersPerRow - 1 && (*/}
-        {/*        <SpacerRow size={FLAT_LIST_SEPARATOR_WIDTH / 8} />*/}
-        {/*      )}*/}
-        {/*    </>*/}
-        {/*  )}*/}
-        {/*  onScroll={scrollHandlerOther}*/}
-        {/*  onEndReachedThreshold={1}*/}
-        {/*  onEndReached={onEndReachedOther}*/}
-        {/*  ItemSeparatorComponent={() => (*/}
-        {/*    <SpacerColumn size={FLAT_LIST_SEPARATOR_WIDTH / 8} />*/}
-        {/*  )}*/}
-        {/*/>*/}
-      </View>
+      {/*TODO: Uncomment  this after "add/remove to library" integration*/}
+      {/*<View style={oneLineStyle}>*/}
+      {/*  <BrandText style={fontSemibold20}>Other Music</BrandText>*/}
+      {/*</View>*/}
+      {/*<View style={contentGroupStyle}>*/}
+      {/*  <FlatList*/}
+      {/*    onLayout={(e) => setFlatListWidth(e.nativeEvent.layout.width)}*/}
+      {/*    keyExtractor={(item, index) => `track-${index}`}*/}
+      {/*    key={`other-music-flat-list-${elemsPerRow}`}*/}
+      {/*    scrollEventThrottle={0.1}*/}
+      {/*    data={otherMusicPosts}*/}
+      {/*    numColumns={elemsPerRow}*/}
+      {/*    renderItem={({ item, index }) => (*/}
+      {/*      <>*/}
+      {/*        <TrackCard post={item} />*/}
+      {/*        {index !== elemsPerRow - 1 && (*/}
+      {/*          <SpacerRow size={FLAT_LIST_SEPARATOR_WIDTH / 8} />*/}
+      {/*        )}*/}
+      {/*      </>*/}
+      {/*    )}*/}
+      {/*    onEndReachedThreshold={1}*/}
+      {/*    onEndReached={onEndReachedOtherMusic}*/}
+      {/*    ItemSeparatorComponent={() => (*/}
+      {/*      <SpacerColumn size={FLAT_LIST_SEPARATOR_WIDTH / 8} />*/}
+      {/*    )}*/}
+      {/*  />*/}
+      {/*</View>*/}
 
       <UploadMusicModal
         isVisible={openUploadModal}
         onClose={() => {
           setOpenUploadModal(false);
-          // refetch();
+          myMusicRefetch();
+          // otherMusicRefetch()
         }}
       />
     </View>
@@ -211,17 +179,3 @@ const buttonGroupStyle: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
 };
-// const buttonContainerStyle: ViewStyle = {
-//   flexDirection: "row",
-//   alignItems: "center",
-//   paddingLeft: layout.spacing_x1,
-//   paddingRight: layout.spacing_x1_5,
-//   paddingVertical: layout.spacing_x1,
-//   backgroundColor: neutral30,
-//   borderRadius: layout.spacing_x4,
-// };
-// const buttonTextStyle: TextStyle = {
-//   ...fontSemibold14,
-//
-//   color: primaryColor,
-// };

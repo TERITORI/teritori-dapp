@@ -1,15 +1,9 @@
-import React, { useState } from "react";
-import { TouchableOpacity, ViewStyle } from "react-native";
+import { FC, useState } from "react";
 
 import { UploadAlbum } from "./UploadAlbum";
 import { UploadTrack } from "./UploadTrack";
-import { BrandText } from "../../../../components/BrandText";
-import FlexRow from "../../../../components/FlexRow";
 import ModalBase from "../../../../components/modals/ModalBase";
-import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
-import { neutral30 } from "../../../../utils/style/colors";
-import { fontSemibold12 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
+import { SpacerColumn } from "../../../../components/spacer";
 
 interface UploadAlbumModalProps {
   onClose: () => void;
@@ -23,11 +17,11 @@ enum UploadMode {
 
 const UPLOAD_ALBUM_MODAL_WIDTH = 564;
 
-export const UploadMusicModal: React.FC<UploadAlbumModalProps> = ({
+export const UploadMusicModal: FC<UploadAlbumModalProps> = ({
   onClose,
   isVisible,
 }) => {
-  const [uploadMode, setUploadMode] = useState(UploadMode.SINGLE_TRACK);
+  const [uploadMode] = useState(UploadMode.SINGLE_TRACK);
   return (
     <ModalBase
       label={
@@ -39,29 +33,30 @@ export const UploadMusicModal: React.FC<UploadAlbumModalProps> = ({
       onClose={onClose}
       width={UPLOAD_ALBUM_MODAL_WIDTH}
     >
-      <FlexRow justifyContent="flex-end">
-        <TouchableOpacity
-          style={[
-            uploadModeButtonCStyle,
-            uploadMode === UploadMode.SINGLE_TRACK && { opacity: 0.6 },
-          ]}
-          onPress={() => setUploadMode(UploadMode.SINGLE_TRACK)}
-          disabled={uploadMode === UploadMode.SINGLE_TRACK}
-        >
-          <BrandText style={fontSemibold12}>Upload single track</BrandText>
-        </TouchableOpacity>
-        <SpacerRow size={1} />
-        <TouchableOpacity
-          style={[
-            uploadModeButtonCStyle,
-            uploadMode === UploadMode.ALBUM && { opacity: 0.6 },
-          ]}
-          onPress={() => setUploadMode(UploadMode.ALBUM)}
-          disabled={uploadMode === UploadMode.ALBUM}
-        >
-          <BrandText style={fontSemibold12}>Upload album</BrandText>
-        </TouchableOpacity>
-      </FlexRow>
+      {/*TODO: Uncomment this after album stuff integration*/}
+      {/*<FlexRow justifyContent="flex-end">*/}
+      {/*  <TouchableOpacity*/}
+      {/*    style={[*/}
+      {/*      uploadModeButtonCStyle,*/}
+      {/*      uploadMode === UploadMode.SINGLE_TRACK && { opacity: 0.6 },*/}
+      {/*    ]}*/}
+      {/*    onPress={() => setUploadMode(UploadMode.SINGLE_TRACK)}*/}
+      {/*    disabled={uploadMode === UploadMode.SINGLE_TRACK}*/}
+      {/*  >*/}
+      {/*    <BrandText style={fontSemibold12}>Upload single track</BrandText>*/}
+      {/*  </TouchableOpacity>*/}
+      {/*  <SpacerRow size={1} />*/}
+      {/*  <TouchableOpacity*/}
+      {/*    style={[*/}
+      {/*      uploadModeButtonCStyle,*/}
+      {/*      uploadMode === UploadMode.ALBUM && { opacity: 0.6 },*/}
+      {/*    ]}*/}
+      {/*    onPress={() => setUploadMode(UploadMode.ALBUM)}*/}
+      {/*    disabled={uploadMode === UploadMode.ALBUM}*/}
+      {/*  >*/}
+      {/*    <BrandText style={fontSemibold12}>Upload album</BrandText>*/}
+      {/*  </TouchableOpacity>*/}
+      {/*</FlexRow>*/}
 
       <SpacerColumn size={2} />
       {uploadMode === UploadMode.SINGLE_TRACK ? (
@@ -73,11 +68,11 @@ export const UploadMusicModal: React.FC<UploadAlbumModalProps> = ({
   );
 };
 
-const uploadModeButtonCStyle: ViewStyle = {
-  height: 24,
-  alignItems: "center",
-  justifyContent: "center",
-  paddingHorizontal: layout.spacing_x1,
-  borderRadius: 6,
-  backgroundColor: neutral30,
-};
+// const uploadModeButtonCStyle: ViewStyle = {
+//   height: 24,
+//   alignItems: "center",
+//   justifyContent: "center",
+//   paddingHorizontal: layout.spacing_x1,
+//   borderRadius: 6,
+//   backgroundColor: neutral30,
+// };

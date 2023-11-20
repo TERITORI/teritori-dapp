@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Image,
@@ -8,6 +8,7 @@ import {
   ImageStyle,
 } from "react-native";
 
+import defaultThumbnailImage from "../../../../assets/default-images/default-track-thumbnail.png";
 import NormalPlay from "../../../../assets/icons/music/normal-play.svg";
 import ThreeDotsCircleWhite from "../../../../assets/icons/music/three-dot-circle-white.svg";
 import { Post } from "../../../api/feed/v1/feed";
@@ -15,7 +16,7 @@ import { BrandText } from "../../../components/BrandText";
 import { OmniLink } from "../../../components/OmniLink";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { getMusicAudioPostTrack } from "../../../components/socialFeed/NewsFeed/NewsFeedQueries";
+import { ZodSocialFeedTrackMetadata } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn } from "../../../components/spacer";
 import { useMediaPlayer } from "../../../context/MediaPlayerProvider";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
@@ -23,6 +24,7 @@ import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../networks";
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { useAppNavigation } from "../../../utils/navigation";
+import { zodTryParseJSON } from "../../../utils/sanitize";
 import {
   neutral17,
   neutral77,
@@ -32,7 +34,6 @@ import { fontSemibold14, fontMedium13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
 import { Media } from "../../../utils/types/mediaPlayer";
-import { Track } from "../../../utils/types/music";
 
 const IMAGE_HEIGHT = 218;
 const BUTTONS_HEIGHT = 28;
@@ -41,11 +42,7 @@ export const TrackCard: React.FC<{
   post: Post;
   hideAuthor?: boolean;
 }> = ({ post, hideAuthor }) => {
-  const track: Track | undefined = useMemo(
-    () => getMusicAudioPostTrack(post),
-    [post],
-  );
-  console.log("-- tracktracktracktracktracktracktrack", track);
+  const track = zodTryParseJSON(ZodSocialFeedTrackMetadata, post.metadata);
   const authorNSInfo = useNSUserInfo(track?.authorId);
   const [, userAddress] = parseUserId(track?.authorId);
   const [isHovered, setIsHovered] = useState(false);
@@ -60,11 +57,11 @@ export const TrackCard: React.FC<{
   const onPressPlayTrack = async () => {
     if (!track) return;
     const mediaToPlay: Media = {
-      imageUrl: track.imageURI,
+      imageUrl: track.audioFile.thumbnailFileData?.url,
       name: track.title,
       createdBy: track.authorId,
-      fileUrl: track.audioURI,
-      duration: track.duration,
+      fileUrl: track.audioFile.url,
+      duration: track.audioFile.audioMetadata?.duration,
       postId: post.identifier,
     };
     await loadAndPlaySoundsQueue([mediaToPlay]);
@@ -85,7 +82,15 @@ export const TrackCard: React.FC<{
           }}
         >
           <Image
-            source={{ uri: ipfsURLToHTTPURL(track.imageURI) }}
+            source={
+              track.audioFile.thumbnailFileData?.url
+                ? {
+                    uri: ipfsURLToHTTPURL(
+                      track.audioFile.thumbnailFileData?.url,
+                    ),
+                  }
+                : defaultThumbnailImage
+            }
             style={[isHovered && { opacity: 0.5 }, contentImgStyle]}
           />
           <SpacerColumn size={1.5} />
@@ -108,7 +113,9 @@ export const TrackCard: React.FC<{
             </TouchableOpacity>
           </View>
         </CustomPressable>
-        <BrandText style={contentTitleStyle}>{track.title}</BrandText>
+        <BrandText style={contentTitleStyle} numberOfLines={2}>
+          {track.title}
+        </BrandText>
         <SpacerColumn size={0.5} />
         <BrandText style={contentDescriptionStyle} numberOfLines={2}>
           {track.description}

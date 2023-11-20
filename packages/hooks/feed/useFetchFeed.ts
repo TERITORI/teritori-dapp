@@ -3,8 +3,10 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { Post, PostsRequest } from "../../api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
-import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { isValidMusicAudioPost } from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
+import {
+  PostCategory,
+  ZodSocialFeedTrackMetadata,
+} from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { TERITORI_FEED_ID } from "../../components/socialFeed/const";
 import { decodeGnoPost } from "../../components/socialFeed/utils";
 import {
@@ -136,11 +138,17 @@ const getPosts = async (networkId: string, req: PostsRequest) => {
     const feedClient = mustGetFeedClient(networkId);
     const response = await feedClient.Posts(req);
 
-    // ===== Controls that MusicAudio posts have valid metadata (Track)
     const filteredPosts = response.posts.filter((post) => {
+      if (post.category === PostCategory.MusicAudio) {
+        console.log(
+          "ZodSocialFeedTrackMetadata.safeParse(JSON.parse(post.metadata)).success",
+          ZodSocialFeedTrackMetadata.safeParse(JSON.parse(post.metadata))
+            .success,
+        );
+      }
       if (
         post.category === PostCategory.MusicAudio &&
-        isValidMusicAudioPost(post)
+        ZodSocialFeedTrackMetadata.safeParse(JSON.parse(post.metadata)).success
       ) {
         return true;
       }
@@ -148,6 +156,15 @@ const getPosts = async (networkId: string, req: PostsRequest) => {
         return true;
       }
     });
+
+    // const filteredPosts = response.posts.filter((post) => {
+    //   // For MusicAudio, we control that posts have valid metadata (Track)
+    //   (post.category === PostCategory.MusicAudio &&
+    //   ZodSocialFeedTrackMetadata.safeParse(JSON.parse(post.metadata)).success)
+    //   || post.category !== PostCategory.MusicAudio
+    // );
+
+    console.log("filteredPostsfilteredPosts", filteredPosts);
 
     // ---- We sort by creation date
     return filteredPosts.sort((a, b) => b.createdAt - a.createdAt);

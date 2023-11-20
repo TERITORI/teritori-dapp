@@ -13,7 +13,10 @@ import { SVG } from "../../../../components/SVG";
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import { FileUploader } from "../../../../components/fileUploader";
 import { TextInputCustom } from "../../../../components/inputs/TextInputCustom";
-import { PostCategory } from "../../../../components/socialFeed/NewsFeed/NewsFeed.type";
+import {
+  PostCategory,
+  SocialFeedTrackMetadata,
+} from "../../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { NotEnoughFundModal } from "../../../../components/socialFeed/NewsFeed/NotEnoughFundModal";
 import { TERITORI_FEED_ID } from "../../../../components/socialFeed/const";
 import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
@@ -45,7 +48,6 @@ import {
 import { fontSemibold14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { LocalFileData } from "../../../../utils/types/files";
-import { Track } from "../../../../utils/types/music";
 
 interface Props {
   onUploadDone: () => void;
@@ -86,7 +88,9 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
   const [description, setDescription] = useState("");
   const [localAudioFile, setLocalAudioFile] = useState<LocalFileData>();
 
-  const processCreateMusicAudioPost = async (track: Track) => {
+  const processCreateMusicAudioPost = async (
+    track: SocialFeedTrackMetadata,
+  ) => {
     const denom = selectedNetwork?.currencies[0].denom;
     const currentBalance = balances.find((bal) => bal.denom === denom);
     if (postFee > Number(currentBalance?.amount) && !freePostCount) {
@@ -196,9 +200,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
     }
     const uploadedFiles = await uploadFilesToPinata({
       pinataJWTKey,
-      files: localAudioFile.thumbnailFileData
-        ? [localAudioFile, localAudioFile.thumbnailFileData]
-        : [localAudioFile],
+      files: [localAudioFile],
     });
     if (!uploadedFiles.find((file) => file.url)) {
       console.error("upload file err : Fail to pin to IPFS");
@@ -208,26 +210,19 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       });
       return;
     }
-    const audio =
-      uploadedFiles[0].fileType === "audio"
-        ? uploadedFiles[0]
-        : uploadedFiles[1];
-    const image =
-      uploadedFiles[0].fileType === "image"
-        ? uploadedFiles[0]
-        : uploadedFiles[1];
-    const track: Track = {
+    const track: SocialFeedTrackMetadata = {
       title,
       description,
-      audioURI: audio.url,
-      imageURI: image.url,
-      waveform: audio.audioMetadata?.waveform || [],
-      duration: audio.audioMetadata?.duration || 0,
+      audioFile: uploadedFiles[0],
+      // audioURI: audio,
+      // imageURI: image.url,
+      // waveform: audio.audioMetadata?.waveform || [],
+      // duration: audio.audioMetadata?.duration || 0,
       authorId: userId,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    console.log("tracktracktracktracktrack", track);
+    console.log("========= track", track);
     await processCreateMusicAudioPost(track);
     setIsLoading(false);
     onUploadDone();

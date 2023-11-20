@@ -80,6 +80,23 @@ export type SocialFeedArticleMetadata = z.infer<
 >;
 */
 
+export const ZodSocialFeedTrackMetadata = z.object({
+  title: z.string(),
+  description: z.string(),
+  audioFile: ZodRemoteFileData,
+  // imageURI: z.string(),
+  // audioURI: z.string(),
+  // waveform: z.array(z.number()),
+  // duration: z.number(),
+  authorId: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export type SocialFeedTrackMetadata = z.infer<
+  typeof ZodSocialFeedTrackMetadata
+>;
+
 export type ReplyToType = {
   username: string;
   yOffsetValue?: number;

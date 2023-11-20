@@ -1,5 +1,11 @@
 import React, { useMemo } from "react";
-import { View, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  ImageSourcePropType,
+  ImageStyle,
+} from "react-native";
 
 import { AudioWaveform } from "./AudioWaveform";
 import { AUDIO_WAVEFORM_MAX_WIDTH } from "./AudioWaveform/AudioWaveform.web";
@@ -33,7 +39,16 @@ export const AudioView: React.FC<{
   waveform: number[];
   authorId: string;
   postId: string;
-}> = ({ fileUrl, thumbnailUrl, duration, waveform, authorId, postId }) => {
+  fallbackImageSource?: ImageSourcePropType;
+}> = ({
+  fileUrl,
+  thumbnailUrl,
+  duration,
+  waveform,
+  authorId,
+  postId,
+  fallbackImageSource,
+}) => {
   const selectedNetwork = useSelectedNetworkInfo();
   const userInfo = useNSUserInfo(authorId);
   const { isDAO } = useIsDAO(authorId);
@@ -172,16 +187,26 @@ export const AudioView: React.FC<{
                 uri: ipfsURLToHTTPURL(thumbnailUrl || ""),
               }}
               resizeMode="cover"
-              style={{
-                height: THUMBNAIL_SIZE,
-                width: THUMBNAIL_SIZE,
-                marginLeft: layout.spacing_x1,
-                borderRadius: 4,
-              }}
+              style={imageCStyle}
+            />
+          )}
+
+          {!hasThumbnail && fallbackImageSource && (
+            <Image
+              source={fallbackImageSource}
+              resizeMode="cover"
+              style={imageCStyle}
             />
           )}
         </View>
       </View>
     </View>
   );
+};
+
+const imageCStyle: ImageStyle = {
+  height: THUMBNAIL_SIZE,
+  width: THUMBNAIL_SIZE,
+  marginLeft: layout.spacing_x1,
+  borderRadius: 4,
 };

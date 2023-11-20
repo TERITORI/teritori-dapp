@@ -69,7 +69,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     () => (data ? combineFetchFeedPages(data.pages) : []),
     [data],
   );
-  console.log("postspostspostsposts", posts);
 
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);

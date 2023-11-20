@@ -4,7 +4,7 @@ interface Props {
   onUploadDone: () => void;
 }
 
-//TODO
+//TODO: After album stuff integration
 
 export const UploadAlbum: React.FC<Props> = () => {
   // const { setToastError, setToastSuccess } = useFeedbacks();
