@@ -38,12 +38,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { ScrollView, useWindowDimensions, View, ViewStyle } from "react-native";
 
 import { RichHashtagRenderer } from "./RichRenderer/RichHashtagRenderer";
 import { RichHashtagRendererConsultation } from "./RichRenderer/RichHashtagRendererConsultation";
@@ -134,6 +129,8 @@ export const RichText: React.FC<RichTextProps> = ({
   onPublish,
   loading,
   publishDisabled,
+  authorId,
+  postId,
 }) => {
   const compositeDecorator = {
     decorators: [
@@ -169,7 +166,7 @@ export const RichText: React.FC<RichTextProps> = ({
   const { width: windowWidth } = useWindowDimensions();
   const editorRef = useRef<Editor>(null);
   const [editorState, setEditorState] = useState(
-    createStateFromHTML(initialValue)
+    createStateFromHTML(initialValue),
   );
   // const { mutate: openGraphMutate, data: openGraphData } = useOpenGraph();
   const [uploadedAudios, setUploadedAudios] = useState<LocalFileData[]>([]);
@@ -179,38 +176,29 @@ export const RichText: React.FC<RichTextProps> = ({
   const [html, setHtml] = useState(initialValue);
   const isGIFSelectorDisabled = useMemo(
     () => uploadedGIFs.length + uploadedImages.length >= MAX_IMAGES,
-    [uploadedGIFs.length, uploadedImages.length]
+    [uploadedGIFs.length, uploadedImages.length],
   );
   const isAudioUploadDisabled = useMemo(
     () => uploadedAudios.length >= MAX_AUDIOS,
-    [uploadedAudios.length]
+    [uploadedAudios.length],
   );
   const isVideoUploadDisabled = useMemo(
     () => uploadedVideos.length >= MAX_VIDEOS,
-    [uploadedVideos.length]
+    [uploadedVideos.length],
   );
 
   // Truncate using initialValue, only if isPreview
-  const isTruncateNeeded = useMemo(() => {
-    const contentState = createStateFromHTML(initialValue).getCurrentContent();
-    return (
-      isPreview &&
-      contentState.getBlocksAsArray().length >= NB_ROWS_SHOWN_IN_PREVIEW
-    );
-  }, [initialValue, isPreview]);
+  const isTruncateNeeded = useMemo(
+    () => isArticleHTMLNeedsTruncate(initialValue, isPreview),
+    [initialValue, isPreview],
+  );
   useEffect(() => {
-    if (isTruncateNeeded) {
-      const contentState =
-        createStateFromHTML(initialValue).getCurrentContent();
-      const truncatedBlocks = contentState
-        .getBlocksAsArray()
-        .slice(0, NB_ROWS_SHOWN_IN_PREVIEW);
-      const truncatedState = ContentState.createFromBlockArray(truncatedBlocks);
-      const truncatedHtml = createHTMLFromState(truncatedState);
-      setEditorState(EditorState.createWithContent(truncatedState));
-      setHtml(truncatedHtml);
-    }
-  }, [initialValue, isTruncateNeeded]);
+    if (!isTruncateNeeded) return;
+    const { truncatedState, truncatedHtml } =
+      getTruncatedArticleHTML(initialValue);
+    setEditorState(EditorState.createWithContent(truncatedState));
+    setHtml(truncatedHtml);
+  }, [initialValue, isTruncateNeeded, isPreview]);
 
   const addImage = (file: LocalFileData) => {
     const state = imagePlugin.addImage(editorState, file.url, {});
@@ -232,7 +220,7 @@ export const RichText: React.FC<RichTextProps> = ({
     const state = Modifier.insertText(
       editorState.getCurrentContent(),
       editorState.getSelection(),
-      emoji
+      emoji,
     );
     setEditorState(EditorState.createWithContent(state));
   };
@@ -323,17 +311,17 @@ export const RichText: React.FC<RichTextProps> = ({
 
   /////////////// TOOLBAR BUTTONS ////////////////
   const Buttons: React.FC<{ externalProps: any }> = ({ externalProps }) => (
-    <View style={styles.toolbarButtonsWrapper}>
+    <View style={toolbarButtonsWrapperCStyle}>
       <EmojiSelector
         onEmojiSelected={(emoji) => addEmoji(emoji)}
-        buttonStyle={styles.toolbarCustomButton}
-        iconStyle={styles.toolbarCustomButtonIcon}
+        buttonStyle={toolbarCustomButtonCStyle}
+        iconStyle={toolbarCustomButtonIconCStyle}
       />
 
       <GIFSelector
         onGIFSelected={(url) => (url ? addGIF(url) : undefined)}
-        buttonStyle={styles.toolbarCustomButton}
-        iconStyle={styles.toolbarCustomButtonIcon}
+        buttonStyle={toolbarCustomButtonCStyle}
+        iconStyle={toolbarCustomButtonIconCStyle}
         disabled={isGIFSelectorDisabled}
       />
 
@@ -345,7 +333,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={audioSVG}
             onPress={onPress}
-            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
+            style={[toolbarCustomButtonIconCStyle, toolbarCustomButtonCStyle]}
             disabled={isAudioUploadDisabled}
           />
         )}
@@ -359,7 +347,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={videoSVG}
             onPress={onPress}
-            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
+            style={[toolbarCustomButtonIconCStyle, toolbarCustomButtonCStyle]}
             disabled={isVideoUploadDisabled}
           />
         )}
@@ -373,7 +361,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={cameraSVG}
             onPress={onPress}
-            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
+            style={[toolbarCustomButtonIconCStyle, toolbarCustomButtonCStyle]}
             iconProps={{
               width: 18,
               height: 18,
@@ -448,7 +436,7 @@ export const RichText: React.FC<RichTextProps> = ({
         audioFiles.map((file, index) => (
           <View key={index}>
             <SpacerColumn size={2} />
-            <AudioView file={file} />
+            <AudioView file={file} postId={postId} authorId={authorId} />
             <SpacerColumn size={2} />
           </View>
         ))}
@@ -497,28 +485,24 @@ export const RichText: React.FC<RichTextProps> = ({
 };
 
 /////////////// STYLES ////////////////
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  toolbarCustomButton: {
-    margin: layout.spacing_x0_5,
-  },
-  toolbarCustomButtonIcon: {
-    borderRadius: 4,
-    height: 30,
-    width: 30,
-  },
-  toolbarButtonsWrapper: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    flexWrap: "wrap",
-  },
-});
+const toolbarCustomButtonCStyle: ViewStyle = {
+  margin: layout.spacing_x0_5,
+};
+const toolbarCustomButtonIconCStyle: ViewStyle = {
+  borderRadius: 4,
+  height: 30,
+  width: 30,
+};
+const toolbarButtonsWrapperCStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "100%",
+  flexWrap: "wrap",
+};
 
 /////////////// SOME FUNCTIONS ////////////////
-const createStateFromHTML = (html: string) => {
+export const createStateFromHTML = (html: string) => {
   // We use htmlToDraft with a customChunkRenderer function because the default convertFromHTML from draft-js doesn't handle videos
   //TODO: Maybe we can use this pattern to handling audio in RichText (Instead of adding audios under the RichText)
   const blocksFromHTML = htmlToDraft(
@@ -542,12 +526,12 @@ const createStateFromHTML = (html: string) => {
         };
         return value;
       }
-    }
+    },
   );
   const { contentBlocks, entityMap } = blocksFromHTML;
   const contentState = ContentState.createFromBlockArray(
     contentBlocks,
-    entityMap
+    entityMap,
   );
   return EditorState.createWithContent(contentState);
 };
@@ -556,7 +540,7 @@ const createHTMLFromState = (state: ContentState) =>
   convertToHTML({
     entityToHTML: (entity, originalText) => {
       if (entity.type === VIDEOTYPE || entity.type === "VIDEO") {
-        return <video src={entity.data.src} controls />;
+        return <video src={entity.data.src} controls style={{ height: 400 }} />;
       }
       if (entity.type === "IMAGE") {
         return <img src={entity.data.src} />;
@@ -571,21 +555,21 @@ const createHTMLFromState = (state: ContentState) =>
 
 const mentionStrategy = (
   contentBlock: ContentBlock,
-  callback: (start: number, end: number) => void
+  callback: (start: number, end: number) => void,
 ) => {
   findWithRegex(MENTION_REGEX, contentBlock, callback);
 };
 
 const urlStrategy = (
   contentBlock: ContentBlock,
-  callback: (start: number, end: number) => void
+  callback: (start: number, end: number) => void,
 ) => {
   findWithRegex(URL_REGEX, contentBlock, callback);
 };
 
 const hashtagStrategy = (
   contentBlock: ContentBlock,
-  callback: (start: number, end: number) => void
+  callback: (start: number, end: number) => void,
 ) => {
   findWithRegex(HASHTAG_REGEX, contentBlock, callback);
 };
@@ -594,7 +578,7 @@ const hashtagStrategy = (
 const findWithRegex = (
   regex: RegExp,
   contentBlock: ContentBlock,
-  callback: (start: number, end: number) => void
+  callback: (start: number, end: number) => void,
 ) => {
   const text = contentBlock.getText();
 
@@ -603,7 +587,7 @@ const findWithRegex = (
       !a[0].toLowerCase().includes(DEFAULT_USERNAME.toLowerCase()) &&
       a.index !== undefined
         ? [a.index, a.index + a[0].length]
-        : null
+        : null,
     )
     .forEach((v) => v && callback(v[0], v[1]));
 };
@@ -625,7 +609,7 @@ const getCurrentText = (editorState: EditorState) => {
 // Get Draft entity by type
 const getEntities = (
   editorState: EditorState,
-  entityType?: DraftEntityType
+  entityType?: DraftEntityType,
 ) => {
   const contentState = editorState.getCurrentContent();
   const entities: FoundEntity[] = [];
@@ -649,7 +633,7 @@ const getEntities = (
       },
       (start, end) => {
         entities.push({ ...selectedEntity, start, end });
-      }
+      },
     );
   });
   return entities;
@@ -660,7 +644,7 @@ const getEntities = (
 const getFilesToPublish = (
   editorState: EditorState,
   files: LocalFileData[],
-  entityType?: DraftEntityType
+  entityType?: DraftEntityType,
 ) => {
   const entities = getEntities(editorState, entityType);
   const filesToPublish: LocalFileData[] = [];
@@ -693,4 +677,22 @@ const getGIFsToPublish = (editorState: EditorState, gifsUrls: string[]) => {
     }
   });
   return gifsToPublish;
+};
+
+export const isArticleHTMLNeedsTruncate = (html: string, isPreview = false) => {
+  const contentState = createStateFromHTML(html).getCurrentContent();
+  return (
+    isPreview &&
+    contentState.getBlocksAsArray().length >= NB_ROWS_SHOWN_IN_PREVIEW
+  );
+};
+
+export const getTruncatedArticleHTML = (html: string) => {
+  const contentState = createStateFromHTML(html).getCurrentContent();
+  const truncatedBlocks = contentState
+    .getBlocksAsArray()
+    .slice(0, NB_ROWS_SHOWN_IN_PREVIEW);
+  const truncatedState = ContentState.createFromBlockArray(truncatedBlocks);
+  const truncatedHtml = createHTMLFromState(truncatedState);
+  return { truncatedState, truncatedHtml };
 };

@@ -62,33 +62,43 @@ export const IPFSKeyRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): IPFSKeyRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseIPFSKeyRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.userId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): IPFSKeyRequest {
-    return { userId: isSet(object.userId) ? String(object.userId) : "" };
+    return { userId: isSet(object.userId) ? globalThis.String(object.userId) : "" };
   },
 
   toJSON(message: IPFSKeyRequest): unknown {
     const obj: any = {};
-    message.userId !== undefined && (obj.userId = message.userId);
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<IPFSKeyRequest>, I>>(base?: I): IPFSKeyRequest {
+    return IPFSKeyRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<IPFSKeyRequest>, I>>(object: I): IPFSKeyRequest {
     const message = createBaseIPFSKeyRequest();
     message.userId = object.userId ?? "";
@@ -109,33 +119,43 @@ export const IPFSKeyResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): IPFSKeyResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseIPFSKeyResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.jwt = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): IPFSKeyResponse {
-    return { jwt: isSet(object.jwt) ? String(object.jwt) : "" };
+    return { jwt: isSet(object.jwt) ? globalThis.String(object.jwt) : "" };
   },
 
   toJSON(message: IPFSKeyResponse): unknown {
     const obj: any = {};
-    message.jwt !== undefined && (obj.jwt = message.jwt);
+    if (message.jwt !== "") {
+      obj.jwt = message.jwt;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<IPFSKeyResponse>, I>>(base?: I): IPFSKeyResponse {
+    return IPFSKeyResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<IPFSKeyResponse>, I>>(object: I): IPFSKeyResponse {
     const message = createBaseIPFSKeyResponse();
     message.jwt = object.jwt ?? "";
@@ -159,40 +179,56 @@ export const Reaction = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Reaction {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReaction();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.icon = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.count = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Reaction {
     return {
-      icon: isSet(object.icon) ? String(object.icon) : "",
-      count: isSet(object.count) ? Number(object.count) : 0,
+      icon: isSet(object.icon) ? globalThis.String(object.icon) : "",
+      count: isSet(object.count) ? globalThis.Number(object.count) : 0,
     };
   },
 
   toJSON(message: Reaction): unknown {
     const obj: any = {};
-    message.icon !== undefined && (obj.icon = message.icon);
-    message.count !== undefined && (obj.count = Math.round(message.count));
+    if (message.icon !== "") {
+      obj.icon = message.icon;
+    }
+    if (message.count !== 0) {
+      obj.count = Math.round(message.count);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Reaction>, I>>(base?: I): Reaction {
+    return Reaction.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<Reaction>, I>>(object: I): Reaction {
     const message = createBaseReaction();
     message.icon = object.icon ?? "";
@@ -252,84 +288,146 @@ export const Post = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Post {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePost();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.category = reader.uint32();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.isDeleted = reader.bool();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.identifier = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.metadata = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.parentPostIdentifier = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.subPostLength = reader.uint32();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.authorId = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 64) {
+            break;
+          }
+
           message.createdAt = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 10:
+          if (tag !== 80) {
+            break;
+          }
+
           message.tipAmount = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.reactions.push(Reaction.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Post {
     return {
-      category: isSet(object.category) ? Number(object.category) : 0,
-      isDeleted: isSet(object.isDeleted) ? Boolean(object.isDeleted) : false,
-      identifier: isSet(object.identifier) ? String(object.identifier) : "",
-      metadata: isSet(object.metadata) ? String(object.metadata) : "",
-      parentPostIdentifier: isSet(object.parentPostIdentifier) ? String(object.parentPostIdentifier) : "",
-      subPostLength: isSet(object.subPostLength) ? Number(object.subPostLength) : 0,
-      authorId: isSet(object.authorId) ? String(object.authorId) : "",
-      createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
-      tipAmount: isSet(object.tipAmount) ? Number(object.tipAmount) : 0,
-      reactions: Array.isArray(object?.reactions) ? object.reactions.map((e: any) => Reaction.fromJSON(e)) : [],
+      category: isSet(object.category) ? globalThis.Number(object.category) : 0,
+      isDeleted: isSet(object.isDeleted) ? globalThis.Boolean(object.isDeleted) : false,
+      identifier: isSet(object.identifier) ? globalThis.String(object.identifier) : "",
+      metadata: isSet(object.metadata) ? globalThis.String(object.metadata) : "",
+      parentPostIdentifier: isSet(object.parentPostIdentifier) ? globalThis.String(object.parentPostIdentifier) : "",
+      subPostLength: isSet(object.subPostLength) ? globalThis.Number(object.subPostLength) : 0,
+      authorId: isSet(object.authorId) ? globalThis.String(object.authorId) : "",
+      createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
+      tipAmount: isSet(object.tipAmount) ? globalThis.Number(object.tipAmount) : 0,
+      reactions: globalThis.Array.isArray(object?.reactions)
+        ? object.reactions.map((e: any) => Reaction.fromJSON(e))
+        : [],
     };
   },
 
   toJSON(message: Post): unknown {
     const obj: any = {};
-    message.category !== undefined && (obj.category = Math.round(message.category));
-    message.isDeleted !== undefined && (obj.isDeleted = message.isDeleted);
-    message.identifier !== undefined && (obj.identifier = message.identifier);
-    message.metadata !== undefined && (obj.metadata = message.metadata);
-    message.parentPostIdentifier !== undefined && (obj.parentPostIdentifier = message.parentPostIdentifier);
-    message.subPostLength !== undefined && (obj.subPostLength = Math.round(message.subPostLength));
-    message.authorId !== undefined && (obj.authorId = message.authorId);
-    message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
-    message.tipAmount !== undefined && (obj.tipAmount = Math.round(message.tipAmount));
-    if (message.reactions) {
-      obj.reactions = message.reactions.map((e) => e ? Reaction.toJSON(e) : undefined);
-    } else {
-      obj.reactions = [];
+    if (message.category !== 0) {
+      obj.category = Math.round(message.category);
+    }
+    if (message.isDeleted === true) {
+      obj.isDeleted = message.isDeleted;
+    }
+    if (message.identifier !== "") {
+      obj.identifier = message.identifier;
+    }
+    if (message.metadata !== "") {
+      obj.metadata = message.metadata;
+    }
+    if (message.parentPostIdentifier !== "") {
+      obj.parentPostIdentifier = message.parentPostIdentifier;
+    }
+    if (message.subPostLength !== 0) {
+      obj.subPostLength = Math.round(message.subPostLength);
+    }
+    if (message.authorId !== "") {
+      obj.authorId = message.authorId;
+    }
+    if (message.createdAt !== 0) {
+      obj.createdAt = Math.round(message.createdAt);
+    }
+    if (message.tipAmount !== 0) {
+      obj.tipAmount = Math.round(message.tipAmount);
+    }
+    if (message.reactions?.length) {
+      obj.reactions = message.reactions.map((e) => Reaction.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Post>, I>>(base?: I): Post {
+    return Post.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<Post>, I>>(object: I): Post {
     const message = createBasePost();
     message.category = object.category ?? 0;
@@ -370,69 +468,90 @@ export const PostFilter = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PostFilter {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePostFilter();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.user = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.mentions.push(reader.string());
-          break;
+          continue;
         case 3:
-          if ((tag & 7) === 2) {
+          if (tag === 24) {
+            message.categories.push(reader.uint32());
+
+            continue;
+          }
+
+          if (tag === 26) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.categories.push(reader.uint32());
             }
-          } else {
-            message.categories.push(reader.uint32());
+
+            continue;
           }
+
           break;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.hashtags.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): PostFilter {
     return {
-      user: isSet(object.user) ? String(object.user) : "",
-      mentions: Array.isArray(object?.mentions) ? object.mentions.map((e: any) => String(e)) : [],
-      categories: Array.isArray(object?.categories) ? object.categories.map((e: any) => Number(e)) : [],
-      hashtags: Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => String(e)) : [],
+      user: isSet(object.user) ? globalThis.String(object.user) : "",
+      mentions: globalThis.Array.isArray(object?.mentions) ? object.mentions.map((e: any) => globalThis.String(e)) : [],
+      categories: globalThis.Array.isArray(object?.categories)
+        ? object.categories.map((e: any) => globalThis.Number(e))
+        : [],
+      hashtags: globalThis.Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => globalThis.String(e)) : [],
     };
   },
 
   toJSON(message: PostFilter): unknown {
     const obj: any = {};
-    message.user !== undefined && (obj.user = message.user);
-    if (message.mentions) {
-      obj.mentions = message.mentions.map((e) => e);
-    } else {
-      obj.mentions = [];
+    if (message.user !== "") {
+      obj.user = message.user;
     }
-    if (message.categories) {
+    if (message.mentions?.length) {
+      obj.mentions = message.mentions;
+    }
+    if (message.categories?.length) {
       obj.categories = message.categories.map((e) => Math.round(e));
-    } else {
-      obj.categories = [];
     }
-    if (message.hashtags) {
-      obj.hashtags = message.hashtags.map((e) => e);
-    } else {
-      obj.hashtags = [];
+    if (message.hashtags?.length) {
+      obj.hashtags = message.hashtags;
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<PostFilter>, I>>(base?: I): PostFilter {
+    return PostFilter.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<PostFilter>, I>>(object: I): PostFilter {
     const message = createBasePostFilter();
     message.user = object.user ?? "";
@@ -462,25 +581,38 @@ export const PostsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PostsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePostsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.filter = PostFilter.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.limit = reader.uint32();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.offset = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -488,19 +620,28 @@ export const PostsRequest = {
   fromJSON(object: any): PostsRequest {
     return {
       filter: isSet(object.filter) ? PostFilter.fromJSON(object.filter) : undefined,
-      limit: isSet(object.limit) ? Number(object.limit) : 0,
-      offset: isSet(object.offset) ? Number(object.offset) : 0,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+      offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
     };
   },
 
   toJSON(message: PostsRequest): unknown {
     const obj: any = {};
-    message.filter !== undefined && (obj.filter = message.filter ? PostFilter.toJSON(message.filter) : undefined);
-    message.limit !== undefined && (obj.limit = Math.round(message.limit));
-    message.offset !== undefined && (obj.offset = Math.round(message.offset));
+    if (message.filter !== undefined) {
+      obj.filter = PostFilter.toJSON(message.filter);
+    }
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.offset !== 0) {
+      obj.offset = Math.round(message.offset);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<PostsRequest>, I>>(base?: I): PostsRequest {
+    return PostsRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<PostsRequest>, I>>(object: I): PostsRequest {
     const message = createBasePostsRequest();
     message.filter = (object.filter !== undefined && object.filter !== null)
@@ -525,37 +666,43 @@ export const PostsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PostsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePostsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.posts.push(Post.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): PostsResponse {
-    return { posts: Array.isArray(object?.posts) ? object.posts.map((e: any) => Post.fromJSON(e)) : [] };
+    return { posts: globalThis.Array.isArray(object?.posts) ? object.posts.map((e: any) => Post.fromJSON(e)) : [] };
   },
 
   toJSON(message: PostsResponse): unknown {
     const obj: any = {};
-    if (message.posts) {
-      obj.posts = message.posts.map((e) => e ? Post.toJSON(e) : undefined);
-    } else {
-      obj.posts = [];
+    if (message.posts?.length) {
+      obj.posts = message.posts.map((e) => Post.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<PostsResponse>, I>>(base?: I): PostsResponse {
+    return PostsResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<PostsResponse>, I>>(object: I): PostsResponse {
     const message = createBasePostsResponse();
     message.posts = object.posts?.map((e) => Post.fromPartial(e)) || [];
@@ -600,10 +747,11 @@ export const FeedServicePostsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = PostsResponse.decode(data);
       return {
-        ...PostsResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -622,10 +770,11 @@ export const FeedServiceIPFSKeyDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = IPFSKeyResponse.decode(data);
       return {
-        ...IPFSKeyResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -679,17 +828,17 @@ export class GrpcWebImpl {
     const request = { ..._request, ...methodDesc.requestType };
     const maybeCombinedMetadata = metadata && this.options.metadata
       ? new BrowserHeaders({ ...this.options?.metadata.headersMap, ...metadata?.headersMap })
-      : metadata || this.options.metadata;
+      : metadata ?? this.options.metadata;
     return new Promise((resolve, reject) => {
       grpc.unary(methodDesc, {
         request,
         host: this.host,
-        metadata: maybeCombinedMetadata,
-        transport: this.options.transport,
-        debug: this.options.debug,
+        metadata: maybeCombinedMetadata ?? {},
+        ...(this.options.transport !== undefined ? { transport: this.options.transport } : {}),
+        debug: this.options.debug ?? false,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
-            resolve(response.message);
+            resolve(response.message!.toObject());
           } else {
             const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
@@ -700,29 +849,11 @@ export class GrpcWebImpl {
   }
 }
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") {
-    return globalThis;
-  }
-  if (typeof self !== "undefined") {
-    return self;
-  }
-  if (typeof window !== "undefined") {
-    return window;
-  }
-  if (typeof global !== "undefined") {
-    return global;
-  }
-  throw "Unable to locate global object";
-})();
-
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -731,7 +862,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function longToNumber(long: Long): number {
-  if (long.gt(Number.MAX_SAFE_INTEGER)) {
+  if (long.gt(globalThis.Number.MAX_SAFE_INTEGER)) {
     throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
   }
   return long.toNumber();
@@ -746,7 +877,7 @@ function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-export class GrpcWebError extends Error {
+export class GrpcWebError extends globalThis.Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }

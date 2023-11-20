@@ -19,6 +19,8 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { SecondaryBox } from "../boxes/SecondaryBox";
 
+// TODO: fix size changing on loading, like in SecondaryButtonOutline
+
 // Same as _PrimaryButtonTest but with customizable color and backgroundColor
 export const SecondaryButton: React.FC<{
   size: ButtonsSize;

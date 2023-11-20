@@ -9,10 +9,9 @@ import { WalletProvider } from "../../utils/walletProvider";
 // import { useAppDispatch } from "../../store/store";
 // import { Network } from "../../networks";
 
-export type UsePhantomResult =
-  | [true, boolean, Wallet]
-  | [false, true, undefined];
+type UsePhantomResult = [true, boolean, Wallet] | [false, true, undefined];
 
+// ts-unused-exports:disable-next-line
 export const usePhantom: () => UsePhantomResult = () => {
   const [publicKey, setPublicKey] = useState("");
   const [ready, setReady] = useState(false);

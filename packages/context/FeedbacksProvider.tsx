@@ -1,4 +1,5 @@
 import React, {
+  ReactNode,
   createContext,
   useCallback,
   useContext,
@@ -21,7 +22,7 @@ export const initialToastError: ToastMessage = {
   message: "",
   duration: 8000,
 };
-export const initialToastSuccess: ToastMessage = {
+const initialToastSuccess: ToastMessage = {
   title: "",
   message: "",
   duration: 8000,
@@ -37,7 +38,7 @@ interface FeedbacksProviderValue {
   wrapWithFeedback: (
     cb: () => Promise<void>,
     success?: { title: string; message?: string },
-    errorTransform?: (err: unknown) => { title: string; message?: string }
+    errorTransform?: (err: unknown) => { title: string; message?: string },
   ) => () => Promise<void>;
 }
 const defaultValue: FeedbacksProviderValue = {
@@ -50,18 +51,23 @@ const defaultValue: FeedbacksProviderValue = {
   wrapWithFeedback: () => async () => {},
 };
 
-export const FeedbacksContext = createContext(defaultValue);
+const FeedbacksContext = createContext(defaultValue);
 
-export const FeedbacksContextProvider: React.FC = ({ children }) => {
+export const FeedbacksContextProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [loadingFullScreen, setLoadingFullScreen] = useState(false);
   const [toastError, setToastError] = useState(initialToastError);
   const [toastSuccess, setToastSuccess] = useState(initialToastSuccess);
 
   useEffect(() => {
-    const timeoutID = setTimeout(() => {
-      setToastError(initialToastError);
-      setToastSuccess(initialToastSuccess);
-    }, toastError.duration || toastSuccess.duration || 8000);
+    const timeoutID = setTimeout(
+      () => {
+        setToastError(initialToastError);
+        setToastSuccess(initialToastSuccess);
+      },
+      toastError.duration || toastSuccess.duration || 8000,
+    );
 
     return () => clearTimeout(timeoutID);
   }, [toastError, toastSuccess]);
@@ -77,7 +83,7 @@ export const FeedbacksContextProvider: React.FC = ({ children }) => {
             title: "Error",
             message: err instanceof Error ? err.message : `${err}`,
           };
-        }
+        },
       ) => {
         return async () => {
           try {
@@ -88,7 +94,7 @@ export const FeedbacksContextProvider: React.FC = ({ children }) => {
           }
         };
       },
-      []
+      [],
     );
 
   return (

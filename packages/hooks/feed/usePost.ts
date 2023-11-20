@@ -20,7 +20,7 @@ export const usePost = (id: string, networkId: string | undefined) => {
         const provider = new GnoJSONRPCProvider(network.endpoint);
         const output = await provider.evaluateExpression(
           network.socialFeedsPkgPath || "",
-          `GetPost(1, ${id})`
+          `GetPost(1, ${id})`,
         );
 
         const gnoPost = extractGnoJSONString(output);
@@ -46,7 +46,7 @@ export const usePost = (id: string, networkId: string | undefined) => {
         return post;
       }
     },
-    { enabled: !!networkId }
+    { enabled: !!networkId },
   );
   return { post: data, ...other };
 };

@@ -4,17 +4,16 @@ import { StyleProp, TextStyle } from "react-native";
 import { BrandText } from "./BrandText";
 import FlexRow from "./FlexRow";
 import { OmniLink } from "./OmniLink";
-import { RoundedGradientImage } from "./images/RoundedGradientImage";
+import { UserAvatarWithFrame } from "./images/AvatarWithFrame";
 import { useNSUserInfo } from "../hooks/useNSUserInfo";
-import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
-import useSelectedWallet from "../hooks/useSelectedWallet";
-import { getCosmosNetwork } from "../networks";
+import { parseUserId } from "../networks";
 import { fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 import { tinyAddress } from "../utils/text";
 
 type PlayerNameProps = {
-  userId: string;
+  userId: string | undefined;
+  multisignWalletAddres?: string | null;
   style?: StyleProp<TextStyle>;
 };
 
@@ -22,14 +21,10 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
   userId,
   style,
 }) => {
-  const selectedWallet = useSelectedWallet();
-  const userInfo = useNSUserInfo(selectedWallet?.userId);
-  const selectedNetworkId = useSelectedNetworkId();
-  const network = getCosmosNetwork(selectedNetworkId);
+  const [, userAddress] = parseUserId(userId);
+  const userInfo = useNSUserInfo(userId);
   const name =
-    userInfo?.metadata?.tokenId ||
-    tinyAddress(selectedWallet?.address, 30) ||
-    "";
+    userInfo?.metadata?.tokenId || tinyAddress(userAddress, 30) || "";
 
   return (
     <FlexRow alignItems="center" style={style}>
@@ -37,11 +32,7 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
         to={{ screen: "UserPublicProfile", params: { id: userId } }}
         style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
       >
-        <RoundedGradientImage
-          size="XXS"
-          sourceURI={userInfo?.metadata?.image}
-          fallbackURI={network?.nameServiceDefaultImage}
-        />
+        <UserAvatarWithFrame size="XXS" userId={userId} />
         <BrandText
           style={[{ marginLeft: layout.spacing_x1_5 }, fontSemibold14]}
           ellipsizeMode="middle"

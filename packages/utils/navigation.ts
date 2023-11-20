@@ -47,9 +47,15 @@ export type RootStackParamList = {
   RiotGameInventory: undefined;
 
   Swap: undefined;
-  Staking: undefined;
+  Staking: { multisigId?: string; daoId?: string } | undefined;
 
   ComingSoon: undefined;
+
+  OrganizationGetStarted: undefined;
+
+  Multisig: undefined;
+  MultisigCreate: undefined;
+  MultisigWalletDashboard: { id: string };
 
   Settings: undefined;
 
@@ -73,6 +79,11 @@ export type ScreenFC<T extends keyof RootStackParamList> = React.FC<{
   navigation: NativeStackNavigationProp<RootStackParamList, T>;
   route: RouteProp<RootStackParamList, T>;
 }>;
+
+export type AppRouteType<T extends keyof RootStackParamList> = RouteProp<
+  RootStackParamList,
+  T
+>;
 
 export const useAppNavigation = () => useNavigation<AppNavigationProp>();
 
@@ -132,6 +143,14 @@ const navConfig: {
     GrantsProgramManager: "grants-program/manager",
     GrantsProgramMakeRequest: "grants-program/make-request",
     GrantsProgramDetail: "grants-program/:id",
+    // === Organization
+
+    OrganizationGetStarted: "organization-get-started",
+
+    // === Multisig
+    Multisig: "multisig",
+    MultisigCreate: "multisig/create",
+    MultisigWalletDashboard: "multisig/:id",
 
     // ==== Swap
     Swap: "swap",

@@ -12,9 +12,7 @@ import {
 import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
 
-export type UseAdenaResult =
-  | [true, boolean, Wallet[]]
-  | [false, boolean, undefined];
+type UseAdenaResult = [true, boolean, Wallet[]] | [false, boolean, undefined];
 
 export const useAdena: () => UseAdenaResult = () => {
   const isAdenaConnected = useSelector(selectIsAdenaConnected);
@@ -23,7 +21,7 @@ export const useAdena: () => UseAdenaResult = () => {
   const selectedNetworkInfo = useSelectedNetworkInfo();
 
   const [state, setState] = useState<{ addresses: string[]; chainId?: string }>(
-    { addresses: [] }
+    { addresses: [] },
   );
   const [ready, setReady] = useState(false);
 
@@ -99,7 +97,7 @@ export const useAdena: () => UseAdenaResult = () => {
 
   const wallets = useMemo(() => {
     const network = allNetworks.find(
-      (n) => n.kind === NetworkKind.Gno && n.chainId === state.chainId
+      (n) => n.kind === NetworkKind.Gno && n.chainId === state.chainId,
     );
     if (!network) {
       return [];

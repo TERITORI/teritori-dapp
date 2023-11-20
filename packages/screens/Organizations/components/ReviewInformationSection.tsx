@@ -1,12 +1,21 @@
 import React, { useCallback } from "react";
-import { Image, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Image,
+  ImageStyle,
+  ScrollView,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import { ReviewCollapsable } from "./ReviewCollapsable";
 import { ReviewCollapsableItem } from "./ReviewCollapsableItem";
 import { BrandText } from "../../../components/BrandText";
-import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
+import { NetworkKind } from "../../../networks";
 import { neutral00, primaryColor } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -36,41 +45,54 @@ export const ReviewInformationSection: React.FC<
   memberSettingData,
   onSubmit,
 }) => {
+  const network = useSelectedNetworkInfo();
+
   const AddressBalanceValue = useCallback(
     ({ address, balance }: { address: string; balance: string }) => (
-      <View style={styles.row}>
-        <BrandText style={styles.addressText}>
+      <View style={rowCStyle}>
+        <BrandText style={addressTextCStyle}>
           {tinyAddress(address, 16)}
         </BrandText>
         <SpacerRow size={1.5} />
         <BrandText style={fontSemibold14}>{balance}</BrandText>
       </View>
     ),
-    []
+    [],
   );
 
   const AddressWeightValue = useCallback(
     ({ address, weight }: { address: string; weight: string }) => (
-      <View style={styles.row}>
-        <BrandText style={styles.addressText}>
+      <View style={rowCStyle}>
+        <BrandText style={addressTextCStyle}>
           {tinyAddress(address, 16)}
         </BrandText>
         <SpacerRow size={1.5} />
         <BrandText style={fontSemibold14}>{weight}</BrandText>
       </View>
     ),
-    []
+    [],
   );
 
-  let associateName = organizationData?.associatedTeritoriNameService
-    ? organizationData?.associatedTeritoriNameService
-    : "";
-  associateName = associateName.includes(".tori")
-    ? associateName
-    : associateName + ".tori";
+  let associateName = "";
+  if (network?.kind === NetworkKind.Gno) {
+    associateName = "gno.land/r/demo/" + organizationData?.associatedHandle;
+  } else if (network?.kind === NetworkKind.Cosmos) {
+    associateName =
+      organizationData?.associatedHandle || "" + network.nameServiceTLD;
+  }
+
+  let price = "0";
+  const availability = organizationData?.nameAvailability;
+  if (
+    availability &&
+    (availability.availability === "mint" ||
+      availability.availability === "market")
+  ) {
+    price = availability.prettyPrice;
+  }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={containerCStyle}>
       <BrandText style={fontSemibold28}>Review information</BrandText>
       <SpacerColumn size={3} />
 
@@ -80,7 +102,7 @@ export const ReviewInformationSection: React.FC<
           value={() => (
             <Image
               source={{ uri: organizationData?.imageUrl }}
-              style={styles.image}
+              style={imageCStyle}
             />
           )}
         />
@@ -96,7 +118,7 @@ export const ReviewInformationSection: React.FC<
         />
         <SpacerColumn size={1} />
         <ReviewCollapsableItem
-          title="Associated Teritori Name Service"
+          title="Associated Handle"
           value={associateName}
         />
         <SpacerColumn size={1} />
@@ -144,7 +166,7 @@ export const ReviewInformationSection: React.FC<
             />
             <SpacerColumn size={1} />
             {tokenSettingData?.tokenHolders.map((holder, index) => (
-              <View key={holder.address} style={styles.fill}>
+              <View key={holder.address} style={fillCStyle}>
                 <ReviewCollapsableItem
                   title={`TOKENHOLDER #${index + 1}`}
                   value={() => (
@@ -165,7 +187,7 @@ export const ReviewInformationSection: React.FC<
         organizationData.structure === DaoType.MEMBER_BASED && (
           <ReviewCollapsable title="Member settings">
             {memberSettingData?.members.map((member, index) => (
-              <View key={member.addr} style={styles.fill}>
+              <View key={member.addr} style={fillCStyle}>
                 <ReviewCollapsableItem
                   title={`MEMBER #${index + 1}`}
                   value={() => (
@@ -185,9 +207,9 @@ export const ReviewInformationSection: React.FC<
 
       <SpacerColumn size={4} />
 
-      <View style={styles.rowSB}>
-        <View style={styles.footerRowInside}>
-          <BrandText style={fontSemibold14}>Associated TNS:</BrandText>
+      <View style={rowSBCStyle}>
+        <View style={footerRowInsideCStyle}>
+          <BrandText style={fontSemibold14}>Associated Handle:</BrandText>
           <SpacerRow size={1} />
           <BrandText style={[fontSemibold14, { color: primaryColor }]}>
             {associateName}
@@ -202,7 +224,7 @@ export const ReviewInformationSection: React.FC<
           </BrandText>
           <SpacerRow size={1} />
           <BrandText style={[fontSemibold14, { color: primaryColor }]}>
-            5 TORI
+            {price}
           </BrandText>
         </View>
 
@@ -216,35 +238,43 @@ export const ReviewInformationSection: React.FC<
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    padding: layout.contentSpacing,
-    paddingRight: layout.spacing_x2_5,
-    paddingTop: layout.topContentSpacingWithHeading,
-  },
-  row: { flexDirection: "row", alignItems: "center", flexWrap: "wrap" },
-  rowSB: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
-  },
-  image: {
-    width: 140,
-    height: 140,
-    borderRadius: 12,
-  },
-  footerRowInside: {
-    flexDirection: "row",
-    alignItems: "center",
-    height: 24,
-    flexWrap: "wrap",
-  },
-  addressText: StyleSheet.flatten([
-    fontSemibold14,
-    { padding: layout.spacing_x1, backgroundColor: neutral00, borderRadius: 8 },
-  ]),
-  fill: { flex: 1 },
-});
+const containerCStyle: ViewStyle = {
+  padding: layout.contentSpacing,
+  paddingRight: layout.spacing_x2_5,
+  paddingTop: layout.topContentSpacingWithHeading,
+};
+
+const rowCStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  flexWrap: "wrap",
+};
+
+const rowSBCStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  flexWrap: "wrap",
+};
+
+const imageCStyle: ImageStyle = {
+  width: 140,
+  height: 140,
+  borderRadius: 12,
+};
+
+const footerRowInsideCStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  height: 24,
+  flexWrap: "wrap",
+};
+
+const addressTextCStyle: TextStyle = {
+  ...fontSemibold14,
+  padding: layout.spacing_x1,
+  backgroundColor: neutral00,
+  borderRadius: 8,
+};
+
+const fillCStyle: ViewStyle = { flex: 1 };

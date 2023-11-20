@@ -12,17 +12,17 @@ import {
 } from "../../networks";
 import { extractGnoNumber } from "../../utils/gno";
 
-export const daoVoteInfoQueryKey = (
+const daoVoteInfoQueryKey = (
   daoId: string | undefined,
   userId: string | undefined,
-  proposalId: number | undefined
+  proposalId: number | undefined,
 ) => ["daoVoteInfo", daoId, userId, proposalId];
 
 export const useDAOVoteInfo = (
   daoId: string | undefined,
   userId: string | undefined,
   proposalId: number | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   const { daoFirstProposalModule } = useDAOFirstProposalModule(daoId);
   const proposalModuleAddress = daoFirstProposalModule?.address;
@@ -47,12 +47,11 @@ export const useDAOVoteInfo = (
             return null;
           }
 
-          const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
-            networkId
-          );
+          const cosmwasmClient =
+            await mustGetNonSigningCosmWasmClient(networkId);
           const daoClient = new DaoProposalSingleQueryClient(
             cosmwasmClient,
-            proposalModuleAddress
+            proposalModuleAddress,
           );
           const res = await daoClient.getVote({
             proposalId,
@@ -66,8 +65,8 @@ export const useDAOVoteInfo = (
           const power = extractGnoNumber(
             await client.evaluateExpression(
               daoAddress,
-              `GetCore().ProposalModules()[0].GetBallot(${proposalId}, "${userAddress}").Power`
-            )
+              `GetCore().ProposalModules()[0].GetBallot(${proposalId}, "${userAddress}").Power`,
+            ),
           );
           const v: { vote: Exclude<VoteResponse["vote"], null | undefined> } = {
             vote: { vote: "yes", power: `${power}`, voter: userAddress },
@@ -76,8 +75,8 @@ export const useDAOVoteInfo = (
           const vote = extractGnoNumber(
             await client.evaluateExpression(
               daoAddress,
-              `GetCore().ProposalModules()[0].GetBallot(${proposalId}, "${userAddress}").Vote`
-            )
+              `GetCore().ProposalModules()[0].GetBallot(${proposalId}, "${userAddress}").Vote`,
+            ),
           );
           console.log("got vote", vote);
           switch (vote) {
@@ -108,7 +107,7 @@ export const useDAOVoteInfo = (
       staleTime: Infinity,
       enabled:
         (enabled ?? true) && !!(daoId && userId && proposalId !== undefined),
-    }
+    },
   );
   return { daoVoteInfo: data, ...other };
 };
@@ -116,12 +115,12 @@ export const useDAOVoteInfo = (
 export const useInvalidateDAOVoteInfo = (
   daoId: string | undefined,
   userId: string | undefined,
-  proposalId: number | undefined
+  proposalId: number | undefined,
 ) => {
   const queryClient = useQueryClient();
   return useCallback(() => {
     return queryClient.invalidateQueries(
-      daoVoteInfoQueryKey(daoId, userId, proposalId)
+      daoVoteInfoQueryKey(daoId, userId, proposalId),
     );
   }, [daoId, proposalId, queryClient, userId]);
 };

@@ -13,7 +13,7 @@ import {
 
 import priceHistorySVG from "../../../../assets/icons/price-history.svg";
 import { parseNetworkObjectId, NetworkKind } from "../../../networks";
-import { mustGetMarketplaceClient } from "../../../utils/backend";
+import { getMarketplaceClient } from "../../../utils/backend";
 import {
   neutral33,
   neutral77,
@@ -102,7 +102,10 @@ const useNFTPriceHistory = (nftId: string) => {
   const { data } = useQuery(
     ["nftPriceHistory", nftId],
     async () => {
-      const marketplaceClient = mustGetMarketplaceClient(network?.id);
+      const marketplaceClient = getMarketplaceClient(network?.id);
+      if (!marketplaceClient) {
+        return [];
+      }
 
       const { data } = await marketplaceClient.NFTPriceHistory({
         id: nftId,
@@ -121,10 +124,9 @@ const useNFTPriceHistory = (nftId: string) => {
         time: new Date().toISOString(),
       });
 
-      console.log("data", data);
       return data;
     },
-    { initialData: [] }
+    { initialData: [] },
   );
   return data;
 };

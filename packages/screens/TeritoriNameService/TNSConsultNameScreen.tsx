@@ -68,7 +68,7 @@ const NotOwnerActions: React.FC<{
       )}
       <PrimaryButton
         size="XL"
-        disabled={!isKeplrConnected || !isLeapConnected}
+        disabled={!isKeplrConnected && !isLeapConnected}
         text="Send funds"
         // TODO: if no signed, connectKeplr, then, open modal
         onPress={() => setSendFundsModalVisible(true)}
@@ -149,7 +149,7 @@ const OwnerActions: React.FC<{
               const client = new TeritoriNameServiceClient(
                 await getKeplrSigningCosmWasmClient(network.id),
                 wallet?.address || "",
-                network.nameServiceContractAddress
+                network.nameServiceContractAddress,
               );
               await client.updatePrimaryAlias({
                 tokenId,
@@ -165,7 +165,7 @@ const OwnerActions: React.FC<{
               }
             }
             await queryClient.invalidateQueries(
-              nsPrimaryAliasQueryKey(wallet?.userId)
+              nsPrimaryAliasQueryKey(wallet?.userId),
             );
           }}
         />
@@ -187,7 +187,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
   const { nsInfo: token, notFound } = useNSNameInfo(
     networkId,
     tokenId,
-    !!network?.nameServiceTLD
+    !!network?.nameServiceTLD,
   );
   const { nameOwner } = useNSNameOwner(networkId, tokenId);
   const ownerId = getUserId(networkId, nameOwner);
@@ -196,7 +196,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
   const isOwnedByUser = useMemo(
     () =>
       ownerId === wallet?.userId || !!daos?.find((dao) => dao.id === ownerId),
-    [daos, ownerId, wallet?.userId]
+    [daos, ownerId, wallet?.userId],
   );
 
   const { primaryAlias } = useNSPrimaryAlias(ownerId);

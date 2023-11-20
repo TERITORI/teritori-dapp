@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { Activity, ActivityRequest } from "../api/marketplace/v1/marketplace";
 import { parseNetworkObjectId } from "../networks";
-import { mustGetMarketplaceClient } from "../utils/backend";
+import { getMarketplaceClient } from "../utils/backend";
 
 const initialData = {
   activities: [],
@@ -16,7 +16,10 @@ export const useActivity = (req: ActivityRequest) => {
       try {
         const objectId = req.collectionId || req.nftId;
         const [network] = parseNetworkObjectId(objectId);
-        const backendClient = mustGetMarketplaceClient(network?.id);
+        const backendClient = getMarketplaceClient(network?.id);
+        if (!backendClient) {
+          return initialData;
+        }
 
         let totalCount = 0;
         const activities: Activity[] = [];
@@ -44,7 +47,7 @@ export const useActivity = (req: ActivityRequest) => {
     },
     {
       initialData,
-    }
+    },
   );
 
   return { ...data, refetch };

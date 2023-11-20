@@ -30,7 +30,7 @@ import {
   smallSidebarWidth,
 } from "../../utils/style/layout";
 import { SVG } from "../SVG";
-import { Separator } from "../Separator";
+import { Separator } from "../separators/Separator";
 import { SpacerColumn } from "../spacer";
 
 const SpringConfig: WithSpringConfig = {
@@ -68,7 +68,7 @@ export const Sidebar: React.FC = () => {
         ? withSpring(fullSidebarWidth, SpringConfig)
         : withSpring(smallSidebarWidth, SpringConfig),
     }),
-    [isSidebarExpanded]
+    [isSidebarExpanded],
   );
 
   const toggleButtonStyle = useAnimatedStyle(
@@ -83,7 +83,7 @@ export const Sidebar: React.FC = () => {
             { translateX: withSpring(0, SpringConfig) },
           ],
     }),
-    [isSidebarExpanded]
+    [isSidebarExpanded],
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
@@ -115,7 +115,7 @@ export const Sidebar: React.FC = () => {
           let { route } = item;
           if (
             item.disabledOn?.includes(
-              selectedNetworkKind || NetworkKind.Unknown
+              selectedNetworkKind || NetworkKind.Unknown,
             )
           ) {
             route = "ComingSoon";
@@ -136,11 +136,11 @@ export const Sidebar: React.FC = () => {
             <SidebarButton
               icon={addSVG}
               iconSize={36}
-              route="ComingSoon"
+              route="DAppStore"
               key="ComingSoon2"
               id="ComingSoon2"
               title=""
-              onPress={() => navigation.navigate("ComingSoon")}
+              onPress={() => navigation.navigate("DAppStore")}
             />
             <SpacerColumn size={1} />
           </>

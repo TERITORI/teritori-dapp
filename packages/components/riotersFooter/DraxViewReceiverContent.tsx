@@ -14,7 +14,7 @@ const DraxViewReceiverContent: React.FC<{
   nftDroped: NFT | undefined;
   nftDropedAdjustment: NFTDropedAdjustmentType | undefined;
   setNftDropedAdjustment: (
-    nftDropedAdjustment: SetStateAction<NFTDropedAdjustmentType | undefined>
+    nftDropedAdjustment: SetStateAction<NFTDropedAdjustmentType | undefined>,
   ) => void;
 }> = memo(
   ({
@@ -35,10 +35,10 @@ const DraxViewReceiverContent: React.FC<{
             nftDropedAdjustment && {
               ...nftDropedAdjustment,
               ...adjustment,
-            }
+            },
         );
       },
-      [setNftDropedAdjustment]
+      [setNftDropedAdjustment],
     );
 
     return (
@@ -128,7 +128,7 @@ const DraxViewReceiverContent: React.FC<{
         )}
       </View>
     );
-  }
+  },
 );
 
 export default DraxViewReceiverContent;

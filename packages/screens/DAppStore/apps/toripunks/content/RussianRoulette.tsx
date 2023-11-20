@@ -54,7 +54,7 @@ export const Russian = () => {
   const [remaningTicket, setRemaningTicket] = useState<number>(0);
   const balance = useBalances(
     selectedWallet?.networkId,
-    selectedWallet?.address
+    selectedWallet?.address,
   );
   const {
     data: userToriPunksList,

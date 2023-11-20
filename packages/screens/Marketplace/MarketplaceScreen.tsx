@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { FlatList, StyleProp, TextStyle, View, ViewStyle } from "react-native";
-import { useSelector } from "react-redux";
 
 import { PrettyPrint } from "./types";
 import {
@@ -17,13 +16,13 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
 import { SearchInput } from "../../components/sorts/SearchInput";
 import { SpacerColumn } from "../../components/spacer";
-import { TableRow } from "../../components/table";
+import { TableRow } from "../../components/table/TableRow";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useCollections } from "../../hooks/useCollections";
+import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { NetworkFeature, selectableNetworks } from "../../networks";
-import { selectAreTestnetsEnabled } from "../../store/slices/settings";
+import { NetworkFeature } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
@@ -83,26 +82,26 @@ const TABLE_ROWS = {
 export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
-  const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
+  const enabledNetworks = useEnabledNetworks();
 
-  const marketplaceNetworks = selectableNetworks.filter(
-    (network) =>
-      (areTestnetsEnabled || !network.testnet) &&
-      network.features.includes(NetworkFeature.NFTMarketplace)
-  );
+  const marketplaceNetworks = enabledNetworks.filter((network) => {
+    return network.features.includes(NetworkFeature.NFTMarketplace);
+  });
 
   const tabs = marketplaceNetworks.reduce(
     (tabs, network) => ({
       ...tabs,
       [network.id]: { name: network.displayName },
     }),
-    {} as Record<string, { name: string }>
+    {} as Record<string, { name: string }>,
   );
 
   const tabsKeys = Object.keys(tabs);
 
   const [selectedTab, setSelectedTab] = useState(
-    arrayIncludes(tabsKeys, selectedNetworkId) ? selectedNetworkId : tabsKeys[0]
+    arrayIncludes(tabsKeys, selectedNetworkId)
+      ? selectedNetworkId
+      : tabsKeys[0],
   );
 
   const req = {
@@ -200,8 +199,9 @@ const CollectionTable: React.FC<{
   const [pageIndex, setPageIndex] = useState(0);
   const isMobile = useIsMobile();
 
-  const filteredCollections = rows.filter(({ collectionName }) =>
-    collectionName?.toLowerCase().includes(filterText.toLowerCase())
+  const filteredCollections = rows.filter(
+    ({ collectionName }) =>
+      collectionName?.toLowerCase().includes(filterText.toLowerCase()),
   );
 
   const maxPage = Math.max(Math.ceil(rows.length / itemsPerPage), 1);
@@ -372,6 +372,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
 const InnerCell: React.FC<{
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  children: ReactNode;
 }> = ({ children, style, textStyle }) => {
   const isMobile = useIsMobile();
   return (
@@ -438,11 +439,11 @@ const useRowData = (collection: Collection, rank: number): RowData => {
     },
     owners: numFormatter(
       collection.numOwners,
-      collection.numOwners.toString().length
+      collection.numOwners.toString().length,
     ),
     supply: numFormatter(
       collection.maxSupply,
-      collection.maxSupply.toString().length
+      collection.maxSupply.toString().length,
     ),
   };
 };

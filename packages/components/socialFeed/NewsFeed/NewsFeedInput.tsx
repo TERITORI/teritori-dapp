@@ -13,12 +13,7 @@ import Animated, { useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
-import {
-  NewPostFormValues,
-  PostCategory,
-  ReplyToType,
-  SocialFeedMetadata,
-} from "./NewsFeed.type";
+import { NewPostFormValues, PostCategory, ReplyToType } from "./NewsFeed.type";
 import { generatePostMetadata, getPostCategory } from "./NewsFeedQueries";
 import { NotEnoughFundModal } from "./NotEnoughFundModal";
 import audioSVG from "../../../../assets/icons/audio.svg";
@@ -31,8 +26,8 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useDAOMakeProposal } from "../../../hooks/dao/useDAOMakeProposal";
 import { useBotPost } from "../../../hooks/feed/useBotPost";
 import { useCreatePost } from "../../../hooks/feed/useCreatePost";
+import { useFeedPostFee } from "../../../hooks/feed/useFeedPostFee";
 import { useUpdateAvailableFreePost } from "../../../hooks/feed/useUpdateAvailableFreePost";
-import { useUpdatePostFee } from "../../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../../hooks/useBalances";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
@@ -139,7 +134,7 @@ export const NewsFeedInput = React.forwardRef<
       additionalMention,
       daoId,
     },
-    forwardRef
+    forwardRef,
   ) => {
     const { width: windowWidth } = useWindowDimensions();
     const { width } = useMaxResolution();
@@ -148,7 +143,6 @@ export const NewsFeedInput = React.forwardRef<
     const inputMaxHeight = 400;
     const inputMinHeight = 20;
     const inputHeight = useSharedValue(20);
-    const wallet = useSelectedWallet();
     const selectedNetwork = useSelectedNetworkInfo();
     const selectedNetworkId = selectedNetwork?.id || "teritori";
     const selectedWallet = useSelectedWallet();
@@ -177,8 +171,7 @@ export const NewsFeedInput = React.forwardRef<
       onSubmitSuccess?.();
       onCloseCreateModal?.();
     };
-
-    const balances = useBalances(selectedNetworkId, wallet?.address);
+    const balances = useBalances(selectedNetwork?.id, selectedWallet?.address);
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
@@ -189,18 +182,18 @@ export const NewsFeedInput = React.forwardRef<
           files: [],
           gifs: [],
         },
-      }
+      },
     );
     const formValues = watch();
     const userIPFSKey = useSelector(selectNFTStorageAPI);
-    const { postFee } = useUpdatePostFee(
+    const { postFee } = useFeedPostFee(
       selectedNetworkId,
-      getPostCategory(formValues)
+      getPostCategory(formValues),
     );
     const { freePostCount } = useUpdateAvailableFreePost(
       selectedNetworkId,
       getPostCategory(formValues),
-      wallet
+      selectedWallet,
     );
 
     const processSubmit = async () => {
@@ -264,7 +257,7 @@ export const NewsFeedInput = React.forwardRef<
         }
         const postCategory = getPostCategory(formValues);
 
-        const metadata: SocialFeedMetadata = generatePostMetadata({
+        const metadata = generatePostMetadata({
           title: formValues.title || "",
           message: finalMessage,
           files,
@@ -288,10 +281,10 @@ export const NewsFeedInput = React.forwardRef<
           if (!network.socialFeedContractAddress) {
             throw new Error("Social feed contract address not found");
           }
-          if (!wallet?.address) {
+          if (!selectedWallet?.address) {
             throw new Error("Invalid sender");
           }
-          await makeProposal(wallet?.address, {
+          await makeProposal(selectedWallet?.address, {
             title: "Post on feed",
             description: "",
             msgs: [
@@ -300,7 +293,7 @@ export const NewsFeedInput = React.forwardRef<
                   execute: {
                     contract_addr: network.socialFeedContractAddress,
                     msg: Buffer.from(
-                      JSON.stringify({ create_post: msg })
+                      JSON.stringify({ create_post: msg }),
                     ).toString("base64"),
                     funds: [{ amount: postFee.toString(), denom: "utori" }],
                   },
@@ -335,7 +328,7 @@ export const NewsFeedInput = React.forwardRef<
             const txHash = await adenaDoContract(
               selectedNetworkId,
               [{ type: "/vm.m_call", value: vmCall }],
-              { gasWanted: 2_000_000 }
+              { gasWanted: 2_000_000 },
             );
 
             const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
@@ -344,7 +337,7 @@ export const NewsFeedInput = React.forwardRef<
           } else {
             const client = await signingSocialFeedClient({
               networkId: selectedNetworkId,
-              walletAddress: wallet?.address || "",
+              walletAddress: selectedWallet?.address || "",
             });
             await mutateAsync({
               client,
@@ -368,7 +361,7 @@ export const NewsFeedInput = React.forwardRef<
               },
               {
                 onSuccess: onPostCreationSuccess,
-              }
+              },
             );
           }
         }
@@ -402,7 +395,7 @@ export const NewsFeedInput = React.forwardRef<
           copiedValue,
           selection.start,
           selection.end,
-          emoji
+          emoji,
         );
         setValue("message", copiedValue);
       }
@@ -499,15 +492,15 @@ export const NewsFeedInput = React.forwardRef<
                   color: !formValues?.message
                     ? neutral77
                     : formValues?.message?.length >
-                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
-                          CHARS_LIMIT_WARNING_MULTIPLIER &&
-                      formValues?.message?.length <
-                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                    ? yellowDefault
-                    : formValues?.message?.length >=
-                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                    ? errorColor
-                    : primaryColor,
+                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
+                            CHARS_LIMIT_WARNING_MULTIPLIER &&
+                        formValues?.message?.length <
+                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                      ? yellowDefault
+                      : formValues?.message?.length >=
+                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                        ? errorColor
+                        : primaryColor,
                   marginTop: layout.spacing_x0_5,
                   alignSelf: "flex-end",
                 },
@@ -528,21 +521,21 @@ export const NewsFeedInput = React.forwardRef<
                 "files",
                 removeFileFromArray(
                   formValues?.files || [],
-                  file as LocalFileData
-                )
+                  file as LocalFileData,
+                ),
               );
             }}
             onDeleteGIF={(url) =>
               setValue(
                 "gifs",
-                (formValues?.gifs || [])?.filter((gif) => gif !== url)
+                (formValues?.gifs || [])?.filter((gif) => gif !== url),
               )
             }
             onAudioUpdate={(updatedFile) => {
               if (formValues?.files?.length) {
                 setValue(
                   "files",
-                  replaceFileInArray(formValues?.files, updatedFile)
+                  replaceFileInArray(formValues?.files, updatedFile),
                 );
               }
             }}
@@ -593,7 +586,7 @@ export const NewsFeedInput = React.forwardRef<
                 : `The cost for this ${type} is ${prettyPrice(
                     selectedNetworkId,
                     postFee.toString(),
-                    selectedNetwork?.currencies?.[0].denom || "utori"
+                    selectedNetwork?.currencies?.[0].denom || "utori",
                   )}`}
             </BrandText>
           </View>
@@ -618,11 +611,11 @@ export const NewsFeedInput = React.forwardRef<
             >
               <EmojiSelector
                 onEmojiSelected={onEmojiSelected}
-                buttonStyle={{ marginRight: layout.spacing_x2_5 }}
+                buttonStyle={{ marginRight: layout.spacing_x2 }}
               />
 
               <GIFSelector
-                buttonStyle={{ marginRight: layout.spacing_x2_5 }}
+                buttonStyle={{ marginRight: layout.spacing_x2 }}
                 onGIFSelected={(url) => {
                   // Don't add if already added
                   if (formValues.gifs?.find((gif) => gif === url)) return;
@@ -645,7 +638,7 @@ export const NewsFeedInput = React.forwardRef<
                   <IconBox
                     icon={audioSVG}
                     onPress={onPress}
-                    style={{ marginRight: layout.spacing_x2_5 }}
+                    style={{ marginRight: layout.spacing_x2 }}
                     disabled={
                       !!formValues.files?.length || !!formValues.gifs?.length
                     }
@@ -660,7 +653,7 @@ export const NewsFeedInput = React.forwardRef<
                   <IconBox
                     icon={videoSVG}
                     onPress={onPress}
-                    style={{ marginRight: layout.spacing_x2_5 }}
+                    style={{ marginRight: layout.spacing_x2 }}
                     disabled={
                       !!formValues.files?.length || !!formValues.gifs?.length
                     }
@@ -673,7 +666,7 @@ export const NewsFeedInput = React.forwardRef<
                   // Don't add if already added
                   if (
                     formValues.files?.find(
-                      (file) => file.fileName === files[0].fileName
+                      (file) => file.fileName === files[0].fileName,
                     )
                   )
                     return;
@@ -725,7 +718,7 @@ export const NewsFeedInput = React.forwardRef<
                     }
                     borderColor={primaryColor}
                     touchableStyle={{
-                      marginRight: layout.spacing_x2_5,
+                      marginRight: layout.spacing_x2,
                     }}
                     backgroundColor={
                       formValues?.message.length >
@@ -746,7 +739,7 @@ export const NewsFeedInput = React.forwardRef<
                     !formValues?.gifs?.length) ||
                   formValues?.message.length >
                     SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
-                  !wallet
+                  !selectedWallet
                 }
                 isLoading={isLoading || isMutateLoading}
                 loader
@@ -762,5 +755,5 @@ export const NewsFeedInput = React.forwardRef<
         </View>
       </View>
     );
-  }
+  },
 );

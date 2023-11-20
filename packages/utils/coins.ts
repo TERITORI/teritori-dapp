@@ -12,7 +12,7 @@ export interface Balance {
 export const decimalFromAtomics = (
   networkId: string | undefined,
   value: string,
-  denom: string
+  denom: string,
 ) => {
   const currency = getNativeCurrency(networkId, denom);
   if (currency) {
@@ -21,7 +21,7 @@ export const decimalFromAtomics = (
   return Decimal.fromAtomics("0", 0);
 };
 
-const units = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
+const units = ["", "K", "M", "B", "T", "P", "E", "Z", "Y"];
 
 // FIXME: rename to prettyAmount
 
@@ -30,7 +30,7 @@ export const prettyPrice = (
   networkId: string | undefined,
   value: string | undefined,
   denom: string | undefined,
-  noDenom?: boolean
+  noDenom?: boolean,
 ) => {
   if (!value) {
     value = "0";
@@ -40,10 +40,10 @@ export const prettyPrice = (
   }
   const currency = getNativeCurrency(networkId, denom);
   if (currency) {
-    const decval = Decimal.fromAtomics(value, currency.decimals);
+    const decval = Decimal.fromAtomics(value || "0", currency.decimals);
     if (
       !decval.isGreaterThanOrEqual(
-        Decimal.fromUserInput("10", currency.decimals)
+        Decimal.fromUserInput("10", currency.decimals),
       )
     ) {
       if (noDenom) return `${decval.toString()}`;

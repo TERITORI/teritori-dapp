@@ -12,6 +12,7 @@ import { useDelegations } from "../../hooks/useDelegations";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { rewardsPrice, useRewards } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { UserKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
@@ -95,21 +96,24 @@ export const WalletDashboardHeader: React.FC = () => {
   const navigation = useAppNavigation();
   const { delegationsBalances } = useDelegations(
     selectedNetworkId,
-    selectedWallet?.address
+    selectedWallet?.address,
   );
   const availableUSDBalance = useMemo(
     () => balances.reduce((total, bal) => total + (bal.usdAmount || 0), 0),
-    [balances]
+    [balances],
   );
   const delegationsUsdBalance = useMemo(
     () =>
       delegationsBalances.reduce(
         (total, bal) => total + (bal.usdAmount || 0),
-        0
+        0,
       ),
-    [delegationsBalances]
+    [delegationsBalances],
   );
-  const { totalsRewards, claimAllRewards } = useRewards(selectedWallet?.userId);
+  const { totalsRewards, claimAllRewards } = useRewards(
+    selectedWallet?.userId,
+    UserKind.Single,
+  );
   // Total rewards price with all denoms
   const claimablePrice = rewardsPrice(totalsRewards);
 
@@ -179,7 +183,7 @@ export const WalletDashboardHeader: React.FC = () => {
           {...{
             title: "Total Balance",
             data: `$${(availableUSDBalance + delegationsUsdBalance).toFixed(
-              2
+              2,
             )}`,
           }}
         />

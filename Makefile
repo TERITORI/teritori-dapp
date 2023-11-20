@@ -25,6 +25,7 @@ PRICES_SERVICE_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-service:$(shell git rev-pa
 PRICES_OHLC_REFRESH_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-ohlc-refresh:$(shell git rev-parse --short HEAD)
 P2E_DOCKER_IMAGE=$(DOCKER_REGISTRY)/p2e-update-leaderboard:$(shell git rev-parse --short HEAD)
 FEED_DOCKER_IMAGE=$(DOCKER_REGISTRY)/feed-clean-pinata-keys:$(shell git rev-parse --short HEAD)
+MULTISIG_DOCKER_IMAGE=$(DOCKER_REGISTRY)/cosmos-multisig-backend:$(shell git rev-parse --short HEAD)
 
 node_modules: package.json yarn.lock
 	yarn
@@ -34,10 +35,17 @@ node_modules: package.json yarn.lock
 generate: generate.protobuf generate.graphql generate.contracts-clients generate.go-networks networks.json
 
 .PHONY: generate.protobuf
-generate.protobuf: node_modules
+generate.protobuf: node_modules packages/api/weshnet
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 	buf generate api
+
+.PHONY: packages/api/weshnet
+packages/api/weshnet: node_modules
+	rm -fr $@
+	buf generate --template ./weshnet.buf.gen.yaml buf.build/berty/weshnet -o .weshgen
+	cp -r .weshgen/packages/api $@
+	rm -fr .weshgen
 
 .PHONY: generate.graphql
 generate.graphql:
@@ -235,6 +243,11 @@ publish.feed-clean-pinata-keys:
 	docker build -f go/cmd/feed-clean-pinata-keys/Dockerfile . --platform linux/amd64 -t $(FEED_DOCKER_IMAGE)
 	docker push $(FEED_DOCKER_IMAGE)
 
+.PHONY: publish.multisig-backend
+publish.multisig-backend:
+	docker build -f go/cmd/multisig-backend/Dockerfile . --platform linux/amd64 -t $(MULTISIG_DOCKER_IMAGE)
+	docker push $(MULTISIG_DOCKER_IMAGE)
+
 .PHONY: validate-networks
 validate-networks: node_modules
 	npx ts-node packages/scripts/validateNetworks.ts
@@ -246,4 +259,4 @@ networks.json: node_modules validate-networks
 .PHONY: unused-exports
 unused-exports: node_modules
 	## TODO unexclude all paths except packages/api;packages/contracts-clients;packages/evm-contracts-clients
-	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components;packages/hooks;packages/context;packages/screens;packages/utils;packages/store;packages/networks;./App.tsx" --ignoreTestFiles
+	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\.web|.electron|.d.ts" --ignoreTestFiles 

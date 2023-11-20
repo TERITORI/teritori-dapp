@@ -1,9 +1,8 @@
-import React, { ComponentType } from "react";
+import React, { ComponentType, ReactNode, useEffect } from "react";
 import {
   Modal,
   View,
   ScrollView,
-  ViewComponent,
   ViewStyle,
   useWindowDimensions,
   StyleProp,
@@ -12,21 +11,22 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../assets/icons/hamburger-button-cross.svg";
+import { useAppNavigation } from "../../utils/navigation";
 import { neutral77, neutral22 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { SeparatorGradient } from "../SeparatorGradient";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+import { SeparatorGradient } from "../separators/SeparatorGradient";
 import { SpacerColumn } from "../spacer";
 
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
 type ModalBaseProps = {
   label?: string;
-  labelComponent?: React.FC | ViewComponent | JSX.Element;
+  labelComponent?: ReactNode;
   onClose?: () => void;
   onBackPress?: () => void;
   width?: number;
@@ -42,10 +42,12 @@ type ModalBaseProps = {
   childrenContainerStyle?: StyleProp<ViewStyle>;
   closeButtonStyle?: StyleProp<ViewStyle>;
   verticalPosition?: "center" | "top" | "bottom";
+  closeOnBlur?: boolean;
+  children: ReactNode;
 };
 
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
-export const ModalBase: React.FC<ModalBaseProps> = ({
+const ModalBase: React.FC<ModalBaseProps> = ({
   label,
   labelComponent,
   visible,
@@ -64,8 +66,19 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
   noBrokenCorners,
   closeButtonStyle,
   verticalPosition = "center",
+  closeOnBlur,
 }) => {
   const { width: windowWidth } = useWindowDimensions();
+  const navigation = useAppNavigation();
+
+  useEffect(() => {
+    if (closeOnBlur !== true) return;
+    const unsubscribe = navigation.addListener("blur", () => {
+      onClose?.();
+    });
+
+    return unsubscribe;
+  }, [onClose, navigation, closeOnBlur]);
 
   return (
     <Modal

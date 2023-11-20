@@ -23,6 +23,9 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
+import { MultisigCreateScreen } from "../../screens/Multisig/MultisigCreateScreen";
+import { MultisigScreen } from "../../screens/Multisig/MultisigScreen";
+import { MultisigWalletDashboardScreen } from "../../screens/Multisig/MultisigWalletDashboardScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
@@ -33,7 +36,7 @@ import { RiotGameInventoryScreen } from "../../screens/RiotGame/RiotGameInventor
 import { RiotGameLeaderboardScreen } from "../../screens/RiotGame/RiotGameLeaderboardScreen";
 import { RiotGameMarketplaceScreen } from "../../screens/RiotGame/RiotGameMarketplaceScreen";
 import { RiotGameMemoriesScreen } from "../../screens/RiotGame/RiotGameMemoriesScreen";
-import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
+import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { SettingsScreen } from "../../screens/Settings/SettingsScreen";
 import { StakeScreen } from "../../screens/Stake";
@@ -45,7 +48,7 @@ import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsS
 import { RootStackParamList } from "../../utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-export const screenTitle = (title: string) => "Teritori - " + title;
+const screenTitle = (title: string) => "Teritori - " + title;
 
 export const Navigator: React.FC = () => {
   return (
@@ -186,6 +189,32 @@ export const Navigator: React.FC = () => {
         name="MintCollection"
         component={MintCollectionScreen}
         options={{ header: () => null, title: screenTitle("Mint Collection") }}
+      />
+
+      {/* ==== Multisig */}
+      <Stack.Screen
+        name="Multisig"
+        component={MultisigScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Multisig Wallets"),
+        }}
+      />
+      <Stack.Screen
+        name="MultisigCreate"
+        component={MultisigCreateScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Create Multisig Wallet"),
+        }}
+      />
+      <Stack.Screen
+        name="MultisigWalletDashboard"
+        component={MultisigWalletDashboardScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Multisig Wallet Dashboard"),
+        }}
       />
 
       {/* ==== Organization */}

@@ -34,14 +34,14 @@ const TeritoriTipAmount: React.FC<TipAmountProps> = ({ amount }) => {
         denom,
       },
     ],
-    [selectedNetworkId]
+    [selectedNetworkId],
   );
 
   const { prices } = useCoingeckoPrices(coins);
   const price = useMemo(
     () =>
       getCoingeckoPrice(selectedNetworkId, denom, amount.toString(), prices),
-    [selectedNetworkId, amount, prices]
+    [selectedNetworkId, amount, prices],
   );
 
   return <>{`$${price ? price.toFixed(2) : "0"}`}</>;
@@ -65,7 +65,7 @@ export const TipButton: React.FC<{
         disabled={disabled}
       >
         <SVG source={tipSVG} width={20} height={20} />
-        <SpacerRow size={1.5} />
+        <SpacerRow size={0.75} />
         <BrandText style={[fontSemibold14, disabled && { color: neutral77 }]}>
           {selectedNetworkInfo?.kind === NetworkKind.Gno ? (
             <GnoTipAmount

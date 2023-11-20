@@ -21,8 +21,8 @@ export const NameStatus: React.FC<{
         borderColor: hasError
           ? errorColor
           : available
-          ? successColor
-          : errorColor,
+            ? successColor
+            : errorColor,
       }}
       height={48}
       fullWidth

@@ -17,8 +17,8 @@ const proms: {
   [key: string]: Promise<ethers.providers.Web3Provider | null> | undefined;
 } = {};
 
-export const getMetaMaskEthereumProvider = async (
-  network: ethers.providers.Networkish
+const getMetaMaskEthereumProvider = async (
+  network: ethers.providers.Networkish,
 ) => {
   let provider;
   try {
@@ -56,7 +56,7 @@ export const getMetaMaskEthereumProvider = async (
         const test = await p.getNetwork();
         if (test.chainId !== network) {
           throw new Error(
-            `wrong network, expected '${network}' got '${test.chainId}'`
+            `wrong network, expected '${network}' got '${test.chainId}'`,
           );
         }
       } catch (err) {
@@ -90,7 +90,7 @@ export const getEthereumProvider = async (network: EthereumNetworkInfo) => {
     console.log("falling back to alchemy as ethereum provider");
     alchemyProviders[cacheKey] = new ethers.providers.AlchemyProvider(
       network.chainId,
-      network.alchemyApiKey
+      network.alchemyApiKey,
     );
   }
   return alchemyProviders[cacheKey];
@@ -98,7 +98,7 @@ export const getEthereumProvider = async (network: EthereumNetworkInfo) => {
 
 export const getMetaMaskEthereumSigner = async (
   network: EthereumNetworkInfo | undefined,
-  address: string | undefined
+  address: string | undefined,
 ) => {
   if (!network?.chainId) {
     return null;
@@ -128,7 +128,7 @@ const addNftMetadata = async (nft: NFT) => {
 
   const nftClient = TeritoriNft__factory.connect(
     nft.nftContractAddress,
-    provider
+    provider,
   );
 
   const tokenURI = await nftClient.callStatic.tokenURI(nftTokenId);
@@ -159,7 +159,7 @@ export const addNftListMetadata = async (nfts: NFT[]) => {
   return await Promise.all(queries);
 };
 
-export const getCollectionMetadata = async (collectionId: string) => {
+const getCollectionMetadata = async (collectionId: string) => {
   const [network, minter] = parseNetworkObjectId(collectionId);
   if (network?.kind !== NetworkKind.Ethereum) {
     return;

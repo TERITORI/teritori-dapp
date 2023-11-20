@@ -1,0 +1,2 @@
+[build]
+command = 'npx expo-optimize && npx expo export:web && echo "/* /index.html 200" >> web-build/_redirects'

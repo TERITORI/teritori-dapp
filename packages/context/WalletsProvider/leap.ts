@@ -4,17 +4,15 @@ import { useSelector } from "react-redux";
 import { useSelectedNetworkInfo } from "./../../hooks/useSelectedNetwork";
 import { Wallet } from "./wallet";
 import { NetworkKind, getUserId } from "../../networks";
+import { teritoriNetwork } from "../../networks/teritori";
 import {
   selectIsLeapConnected,
   setIsLeapConnected,
-  setSelectedWalletId,
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
 
-export type UseLeapResult =
-  | [true, boolean, Wallet[]]
-  | [false, boolean, undefined];
+type UseLeapResult = [true, boolean, Wallet[]] | [false, boolean, undefined];
 
 export const useLeap: () => UseLeapResult = () => {
   const isLeapConnected = useSelector(selectIsLeapConnected);
@@ -57,11 +55,11 @@ export const useLeap: () => UseLeapResult = () => {
         return;
       }
       const offlineSigner = await leap.getOfflineSignerAuto(
-        selectedNetworkInfo.chainId
+        selectedNetworkInfo.chainId,
       );
       const accounts = await offlineSigner.getAccounts();
       setAddresses(
-        accounts.map((account: { address: any }) => account.address)
+        accounts.map((account: { address: any }) => account.address),
       );
     };
     window.addEventListener("leap_keystorechange", handleKeyChange);
@@ -84,11 +82,11 @@ export const useLeap: () => UseLeapResult = () => {
           console.error("no leap");
           return;
         }
-        if (selectedNetworkInfo?.kind !== NetworkKind.Cosmos) {
-          setReady(true);
-          return;
-        }
-        const chainId = selectedNetworkInfo.chainId;
+        const targetNetwork =
+          selectedNetworkInfo?.kind === NetworkKind.Cosmos
+            ? selectedNetworkInfo
+            : teritoriNetwork;
+        const chainId = targetNetwork.chainId;
         if (!chainId) {
           setReady(true);
           console.error("missing chain id");
@@ -98,7 +96,7 @@ export const useLeap: () => UseLeapResult = () => {
         const offlineSigner = await leap.getOfflineSignerAuto(chainId);
         const accounts = await offlineSigner.getAccounts();
         setAddresses(
-          accounts.map((account: { address: any }) => account.address)
+          accounts.map((account: { address: any }) => account.address),
         );
       } catch (err) {
         console.warn("failed to connect to leap", err);
@@ -111,7 +109,7 @@ export const useLeap: () => UseLeapResult = () => {
   }, [hasLeap, isLeapConnected, dispatch, selectedNetworkInfo]);
 
   const wallets = useMemo(() => {
-    let networkId = "";
+    let networkId = teritoriNetwork.id;
     if (selectedNetworkInfo?.kind === NetworkKind.Cosmos) {
       networkId = selectedNetworkInfo.id;
     }
@@ -129,10 +127,7 @@ export const useLeap: () => UseLeapResult = () => {
       return [wallet];
     }
     const wallets = addresses.map((address, index) => {
-      let userId = "";
-      if (selectedNetworkInfo?.kind === NetworkKind.Cosmos) {
-        userId = getUserId(networkId, address);
-      }
+      const userId = getUserId(networkId, address);
 
       const wallet: Wallet = {
         address,
@@ -143,19 +138,12 @@ export const useLeap: () => UseLeapResult = () => {
         connected: true,
         id: `leap-${address}`,
       };
-      console.log("leap", index, wallet);
+
       return wallet;
     });
 
     return wallets;
   }, [addresses, selectedNetworkInfo]);
-
-  useEffect(() => {
-    const selectedWallet = wallets.find((w) => w.connected);
-    if (selectedWallet && selectedNetworkInfo?.kind === NetworkKind.Cosmos) {
-      dispatch(setSelectedWalletId(selectedWallet.id));
-    }
-  }, [dispatch, selectedNetworkInfo?.kind, wallets]);
 
   return hasLeap ? [true, ready, wallets] : [false, ready, undefined];
 };

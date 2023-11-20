@@ -31,7 +31,7 @@ export const TopMenuLiveMint: React.FC = () => {
       offset: 0,
       mintState: MintState.MINT_STATE_RUNNING,
     },
-    launchpadCollectionsFilter
+    launchpadCollectionsFilter,
   );
   return (
     <TopMenuSection title="Live Mint" isCarousel>
@@ -58,6 +58,6 @@ export const TopMenuLiveMint: React.FC = () => {
 
 const launchpadCollectionsFilter = (c: Collection) => {
   return !(getNetwork(c.networkId)?.excludeFromLaunchpadList || []).includes(
-    c.mintAddress
+    c.mintAddress,
   );
 };

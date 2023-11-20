@@ -1,26 +1,45 @@
-export type FileType = "audio" | "video" | "image" | "file" | "base64";
+import { z } from "zod";
 
-export interface AudioFileMetadata {
-  waveform: number[];
-  duration: number;
-}
+const ZodFileType = z.union([
+  z.literal("audio"),
+  z.literal("video"),
+  z.literal("image"),
+  z.literal("file"),
+  z.literal("base64"),
+]);
+export type FileType = z.infer<typeof ZodFileType>;
 
-export interface BaseFileData {
-  file: File;
-  fileName: string;
-  mimeType: string;
-  size: number;
-  url: string;
-  fileType: FileType;
-  audioMetadata?: AudioFileMetadata;
-  isCoverImage?: boolean;
-  base64Image?: string;
-}
+const ZodAudioFileMetadata = z.object({
+  waveform: z.array(z.number()),
+  duration: z.number(),
+});
+export type AudioFileMetadata = z.infer<typeof ZodAudioFileMetadata>;
+
+const ZodVideoFileMetadata = z.object({
+  duration: z.number(),
+});
+export type VideoFileMetadata = z.infer<typeof ZodVideoFileMetadata>;
+
+const ZodBaseFileData = z.object({
+  fileName: z.string(),
+  mimeType: z.string(),
+  size: z.number(),
+  url: z.string(),
+  fileType: ZodFileType,
+  audioMetadata: ZodAudioFileMetadata.optional(),
+  videoMetadata: ZodVideoFileMetadata.optional(),
+  isCoverImage: z.boolean().optional(),
+  base64Image: z.string().optional(),
+});
+type BaseFileData = z.infer<typeof ZodBaseFileData>;
 
 export interface LocalFileData extends BaseFileData {
-  thumbnailFileData?: BaseFileData;
+  file: File;
+  thumbnailFileData?: BaseFileData & { file: File };
 }
 
-export interface RemoteFileData extends Omit<BaseFileData, "file"> {
-  thumbnailFileData?: Omit<BaseFileData, "file">;
-}
+export const ZodRemoteFileData = z.object({
+  ...ZodBaseFileData.shape,
+  thumbnailFileData: ZodBaseFileData.optional(),
+});
+export type RemoteFileData = z.infer<typeof ZodRemoteFileData>;

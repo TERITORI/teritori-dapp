@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           cache: "yarn"
-          node-version: 16
+          node-version: 18
 
       - name: Install node modules
         run: yarn
@@ -26,8 +26,17 @@ jobs:
       - name: Validate networks
         run: make validate-networks
 
+      - name: Validate expo config
+        run: npx expo-doctor
+
+      - name: Check for unused environment variables
+        run: npx ts-node packages/scripts/unusedEnv.ts
+
+      - name: Check dependencies
+        run: npx depcheck
+
       - name: Build web app
-        run: yarn expo build:web
+        run: yarn expo export:web
 
       - name: Check that there is no diff
         run: git diff --exit-code

@@ -1,3 +1,4 @@
+import daoSVG from "../../assets/icons/dao.svg";
 import dappStoreSVG from "../../assets/icons/dapp-store.svg";
 import feedSVG from "../../assets/icons/feed.svg";
 import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
@@ -52,6 +53,12 @@ export const SIDEBAR_LIST: SidebarRecordType = {
       },
     },
   },
+  "multisig-wallet": {
+    id: "Multisig",
+    title: "Multisigs",
+    route: "Multisig",
+    icon: multisigSVG,
+  },
   namespace: {
     title: "Name Service",
     id: "Name Service",
@@ -90,7 +97,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     title: "Organizations",
     id: "Organizations",
     route: "Organizations",
-    icon: multisigSVG,
+    icon: daoSVG,
   },
   governance: {
     title: "Governance",

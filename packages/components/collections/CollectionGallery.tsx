@@ -35,7 +35,7 @@ export const CollectionGallery: React.FC<{
         />
       </View>
     ),
-    [linkToMint, req.mintState]
+    [linkToMint, req.mintState],
   );
   const handleEndReached = useCallback(() => {
     fetchNextPage();

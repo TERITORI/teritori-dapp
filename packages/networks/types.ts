@@ -1,3 +1,5 @@
+import { IBCCurrencyInfo } from "./ibc";
+
 export enum NetworkKind {
   Unknown = "Unknown",
   Ethereum = "Ethereum",
@@ -6,7 +8,7 @@ export enum NetworkKind {
   Gno = "Gno",
 }
 
-export interface NetworkInfoBase {
+interface NetworkInfoBase {
   id: string;
   displayName: string;
   kind: NetworkKind;
@@ -21,6 +23,7 @@ export interface NetworkInfoBase {
   backendEndpoint: string;
   secondaryDuringMintList?: string[];
   excludeFromLaunchpadList?: string[];
+  overrides?: string;
 }
 
 export type CosmosNetworkInfo = NetworkInfoBase & {
@@ -71,12 +74,6 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
   riotContractAddress: string;
 };
 
-export type SolanaNetworkInfo = NetworkInfoBase & {
-  kind: NetworkKind.Solana;
-  holaplexGraphqlEndpoint: string;
-  vaultContractAddress: string;
-};
-
 export type GnoNetworkInfo = NetworkInfoBase & {
   kind: NetworkKind.Gno;
   chainId: string;
@@ -90,16 +87,18 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   modboardsPkgPath?: string;
   socialFeedsPkgPath?: string;
   socialFeedsDAOPkgPath?: string;
+  votingGroupPkgPath?: string;
+  daoProposalSinglePkgPath?: string;
+  daoInterfacesPkgPath?: string;
+  daoCorePkgPath?: string;
   groupsPkgPath?: string;
+  faucetURL?: string;
 };
 
 export type NetworkInfo =
   | CosmosNetworkInfo
   | EthereumNetworkInfo
-  | SolanaNetworkInfo
   | GnoNetworkInfo;
-
-export type CurrencyKind = "native" | "ibc";
 
 export type NativeCurrencyInfo = {
   kind: "native";
@@ -111,18 +110,6 @@ export type NativeCurrencyInfo = {
   color: string;
 };
 
-export type IBCCurrencyInfo = {
-  kind: "ibc";
-  denom: string;
-  sourceNetwork: string;
-  sourceDenom: string;
-  sourceChannelPort: string;
-  sourceChannelId: string;
-  destinationChannelPort: string;
-  destinationChannelId: string;
-  deprecated?: boolean;
-};
-
 export type CurrencyInfo = NativeCurrencyInfo | IBCCurrencyInfo;
 
 export enum NetworkFeature {
@@ -130,8 +117,16 @@ export enum NetworkFeature {
   NFTLaunchpad = "NFTLaunchpad",
   NameService = "NameService",
   Swap = "Swap",
+  BurnTokens = "BurnTokens",
   Organizations = "Organizations",
   SocialFeed = "SocialFeed",
   UPP = "UPP",
   GrantsProgram = "GrantsProgram",
+  RiotP2E = "RiotP2E",
+}
+
+export enum UserKind {
+  Single = "Single",
+  Multisig = "Multisig",
+  Organization = "Organization",
 }

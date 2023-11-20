@@ -9,14 +9,12 @@ import {
 
 import { DAOProposalModal } from "./DAOProposalModal";
 import { ProposalActions } from "./ProposalActions";
-import orgSVG from "../../../assets/icons/multisig.svg";
 import {
   AppProposalResponse,
   useDAOProposals,
 } from "../../hooks/dao/useDAOProposals";
-import { useDAOTotalVotingPower } from "../../hooks/dao/useDAOTotalVotingPower";
-import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
 import { getUserId, parseUserId } from "../../networks";
+import { useAppNavigation } from "../../utils/navigation";
 import {
   neutral33,
   neutral55,
@@ -25,10 +23,10 @@ import {
   errorColor,
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
-import { tinyAddress } from "../../utils/text";
+import { getTxInfo } from "../../utils/transactions/getTxInfo";
 import { BrandText } from "../BrandText";
-import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
+import { Username } from "../user/Username";
 
 export const DAOProposals: React.FC<{
   daoId: string | undefined;
@@ -52,7 +50,6 @@ const ProposalRow: React.FC<{
   proposal: AppProposalResponse;
 }> = ({ daoId, proposal }) => {
   const [network] = parseUserId(daoId);
-  const { daoTotalVotingPower } = useDAOTotalVotingPower(daoId);
 
   const halfGap = 24;
   const elemStyle: ViewStyle = {
@@ -70,7 +67,8 @@ const ProposalRow: React.FC<{
   };
   weights.voted = weights.approved + weights.declined + weights.abstained;
 
-  const totalWeight = parseFloat(daoTotalVotingPower?.power || "0");
+  const totalWeight = parseFloat(proposal.proposal.total_power);
+  const totalMeaningfulWeight = totalWeight - weights.abstained;
 
   let thresholdGain = 0;
   let quorumGain = 0;
@@ -88,12 +86,9 @@ const ProposalRow: React.FC<{
     }
   }
 
-  const quorumWeight =
-    proposal.proposal.status === "open"
-      ? quorumGain * totalWeight
-      : quorumGain * weights.voted;
-  const targetWeight = Math.max(weights.voted, quorumWeight);
-  const thresholdWeight = thresholdGain * targetWeight;
+  const quorumWeight = quorumGain * totalMeaningfulWeight;
+
+  const thresholdWeight = thresholdGain * Math.max(weights.voted, quorumWeight);
 
   const [displayProposalModal, setDisplayProposalModal] =
     useState<boolean>(false);
@@ -102,7 +97,14 @@ const ProposalRow: React.FC<{
 
   const proposerId = getUserId(network?.id, proposal.proposal.proposer);
 
-  const { primaryAlias: proposerAlias } = useNSPrimaryAlias(proposerId);
+  const navigation = useAppNavigation();
+
+  const { name, icon } = getTxInfo(
+    proposal.proposal.msgs,
+    navigation,
+    network,
+    { textStyle: [fontSemibold13, { lineHeight: 13 }] },
+  );
 
   return (
     <View
@@ -131,7 +133,7 @@ const ProposalRow: React.FC<{
             }}
           >
             <SVG
-              source={orgSVG}
+              source={icon}
               width={32}
               height={32}
               style={{ marginRight: 12 }}
@@ -148,27 +150,21 @@ const ProposalRow: React.FC<{
                   style={[fontSemibold14, { lineHeight: 14 }]}
                   numberOfLines={1}
                 >
-                  #{proposal.id}: {proposal.proposal.title}
+                  #{proposal.id}: {proposal.proposal.title || name}
                 </BrandText>
               </TouchableOpacity>
-              <BrandText
-                style={[fontSemibold13, { lineHeight: 13, color: neutral77 }]}
-                numberOfLines={1}
-              >
-                Created by{" "}
-                <OmniLink
-                  to={{
-                    screen: "UserPublicProfile",
-                    params: { id: proposerId },
-                  }}
+              <View>
+                <BrandText
+                  style={[fontSemibold13, { lineHeight: 13, color: neutral77 }]}
+                  numberOfLines={1}
                 >
-                  <Text style={{ color: "#16BBFF" }}>
-                    {proposerAlias
-                      ? `@${proposerAlias}`
-                      : tinyAddress(proposal.proposal.proposer, 10)}
-                  </Text>
-                </OmniLink>
-              </BrandText>
+                  Created by{" "}
+                  <Username
+                    userId={proposerId}
+                    textStyle={[fontSemibold13, { lineHeight: 13 }]}
+                  />
+                </BrandText>
+              </View>
             </View>
           </View>
         </View>
@@ -182,36 +178,27 @@ const ProposalRow: React.FC<{
               justifyContent: "space-between",
             }}
           >
-            {proposal.proposal.status === "open" && (
-              <>
-                <BrandText
-                  style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
-                  numberOfLines={1}
-                >
-                  Voted:{" "}
-                  <Text style={{ color: "white" }}>
-                    {Math.ceil(weights.voted)}
-                  </Text>
-                  /
-                  <Text style={{ color: "white" }}>
-                    {Math.ceil(quorumWeight)}
-                  </Text>
-                </BrandText>
-                <BrandText
-                  style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
-                  numberOfLines={1}
-                >
-                  Yes:{" "}
-                  <Text style={{ color: "white" }}>
-                    {Math.ceil(weights.approved)}
-                  </Text>
-                  /
-                  <Text style={{ color: "white" }}>
-                    {Math.ceil(thresholdWeight)}
-                  </Text>
-                </BrandText>
-              </>
-            )}
+            <BrandText
+              style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
+              numberOfLines={1}
+            >
+              Voted:{" "}
+              <Text style={{ color: "white" }}>{Math.ceil(weights.voted)}</Text>
+              /<Text style={{ color: "white" }}>{Math.ceil(quorumWeight)}</Text>
+            </BrandText>
+            <BrandText
+              style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
+              numberOfLines={1}
+            >
+              Yes:{" "}
+              <Text style={{ color: "white" }}>
+                {Math.ceil(weights.approved)}
+              </Text>
+              /
+              <Text style={{ color: "white" }}>
+                {Math.ceil(thresholdWeight)}
+              </Text>
+            </BrandText>
           </View>
           <View
             style={{
@@ -227,7 +214,7 @@ const ProposalRow: React.FC<{
                   flexDirection: "row",
                   backgroundColor: successColor,
                   height: progressBarHeight,
-                  flex: weights.approved / targetWeight,
+                  flex: weights.approved / totalWeight,
                 }}
               />
               <View
@@ -235,7 +222,7 @@ const ProposalRow: React.FC<{
                   flexDirection: "row",
                   backgroundColor: "white",
                   height: progressBarHeight,
-                  flex: weights.abstained / targetWeight,
+                  flex: weights.abstained / totalWeight,
                 }}
               />
               <View
@@ -243,7 +230,7 @@ const ProposalRow: React.FC<{
                   flexDirection: "row",
                   backgroundColor: errorColor,
                   height: progressBarHeight,
-                  flex: weights.declined / targetWeight,
+                  flex: weights.declined / totalWeight,
                 }}
               />
               <View
@@ -251,7 +238,7 @@ const ProposalRow: React.FC<{
                   flexDirection: "row",
                   backgroundColor: neutral55,
                   height: progressBarHeight,
-                  flex: (targetWeight - weights.voted) / targetWeight,
+                  flex: (totalWeight - weights.voted) / totalWeight,
                 }}
               />
             </View>
@@ -261,7 +248,7 @@ const ProposalRow: React.FC<{
                 backgroundColor: "black",
                 height: progressBarHeight,
                 position: "absolute",
-                left: `${thresholdGain * 100}%`,
+                left: `${(thresholdWeight / totalWeight) * 100}%`,
                 width: 1,
               }}
             />

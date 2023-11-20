@@ -33,7 +33,7 @@ export const MoreReactionsMenu: React.FC<{
         position: "absolute",
         left: -3,
         right: -3,
-        top: -layout.spacing_x0_5 - 1,
+        top: -1,
         zIndex: -1,
       }}
     >
@@ -43,23 +43,15 @@ export const MoreReactionsMenu: React.FC<{
             key={index}
             label={moreReactionsButtonLabel}
             onPress={onPressMore}
-            style={{
-              marginHorizontal: layout.spacing_x0_25,
-              marginVertical: layout.spacing_x0_25,
-            }}
           />
         ) : (
           <SocialStat
             key={index}
-            style={{
-              marginHorizontal: layout.spacing_x0_25,
-              marginVertical: layout.spacing_x0_25,
-            }}
             label={String(reaction.count)}
             emoji={reaction.icon}
             onPress={() => onPressReaction(reaction.icon)}
           />
-        )
+        ),
       )}
     </View>
   );

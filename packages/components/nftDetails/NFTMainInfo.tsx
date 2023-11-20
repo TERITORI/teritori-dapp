@@ -13,7 +13,7 @@ import { useTransactionModals } from "../../context/TransactionModalsProvider";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { parseNetworkObjectId } from "../../networks";
-import { mustGetMarketplaceClient } from "../../utils/backend";
+import { getMarketplaceClient } from "../../utils/backend";
 import { RootStackParamList } from "../../utils/navigation";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import {
@@ -67,7 +67,7 @@ export const NFTMainInfo: React.FC<{
   showMarketplace: boolean;
   sell: (
     price: string,
-    denom: string | undefined
+    denom: string | undefined,
   ) => Promise<string | undefined>;
   cancelListing: () => Promise<string | undefined>;
 }> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
@@ -85,10 +85,14 @@ export const NFTMainInfo: React.FC<{
   const [network] = parseNetworkObjectId(nftInfo?.collectionId);
   const [attributes, setAttributes] = useState<AttributeRarityFloor[]>([]);
 
+  // FIXME: transform this in a react-query hook
   useEffect(() => {
     try {
       setAttributes([]);
-      const backendClient = mustGetMarketplaceClient(network?.id);
+      const backendClient = getMarketplaceClient(network?.id);
+      if (!backendClient) {
+        return;
+      }
       const allAtributes: AttributeRarityFloor[] = [];
       const stream = backendClient.NFTCollectionAttributes({
         collectionId: nftInfo?.collectionId,
@@ -112,7 +116,7 @@ export const NFTMainInfo: React.FC<{
           if (allAtributes) {
             setAttributes(allAtributes);
           }
-        }
+        },
       );
     } catch (err) {
       console.error(err);
@@ -213,7 +217,7 @@ export const NFTMainInfo: React.FC<{
   const CollapsablePriceHistory = React.lazy(() =>
     import("./components/CollapsablePriceHistory").then((module) => ({
       default: module.CollapsablePriceHistory,
-    }))
+    })),
   );
 
   return (

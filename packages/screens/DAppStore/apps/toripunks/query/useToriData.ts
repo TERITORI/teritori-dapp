@@ -16,7 +16,7 @@ export const useList = ({ selectedWallet }: { selectedWallet?: Wallet }) => {
       try {
         if (addr) {
           const response = await fetch(
-            `https://api.roulette.aaa-metahuahua.com/toripunks?addr=${addr}`
+            `https://api.roulette.aaa-metahuahua.com/toripunks?addr=${addr}`,
           );
           return (await response.json()) as unknown;
         }
@@ -29,7 +29,7 @@ export const useList = ({ selectedWallet }: { selectedWallet?: Wallet }) => {
       initialData: [],
       refetchOnMount: false,
       enabled: false,
-    }
+    },
   );
   let result = [];
   let error = null;
@@ -81,7 +81,7 @@ export const useBuyTicket = ({
         });
         return await res.json();
       }
-    }
+    },
   );
   return { data, mutate, isError, isLoading };
 };
@@ -110,7 +110,7 @@ export const useProof = ({
         });
         return await res.json();
       }
-    }
+    },
   );
   return { data, mutate, isError, isLoading };
 };
@@ -125,7 +125,7 @@ export const sendKeplarTx = async ({
   const network = getNetworkByIdPrefix("tori");
   if (network) {
     const signingComswasmClient = await getKeplrSigningCosmWasmClient(
-      network?.id
+      network?.id,
     );
     if (selectedWallet) {
       const tx = signingComswasmClient
@@ -138,7 +138,7 @@ export const sendKeplarTx = async ({
               amount,
             },
           ],
-          "auto"
+          "auto",
         )
         .catch(() => {
           return undefined;
@@ -154,7 +154,7 @@ export const useLastReward = () => {
     async () => {
       try {
         const response = await fetch(
-          `https://api.roulette.aaa-metahuahua.com/tickets/last/rewards`
+          `https://api.roulette.aaa-metahuahua.com/tickets/last/rewards`,
         );
         return response.json();
       } catch (e) {
@@ -167,7 +167,7 @@ export const useLastReward = () => {
       },
       refetchOnMount: false,
       enabled: false,
-    }
+    },
   );
   return { data: data.last_rewards, refetch };
 };

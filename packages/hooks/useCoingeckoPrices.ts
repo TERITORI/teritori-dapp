@@ -17,18 +17,18 @@ export const useCoingeckoPrices = (coins: CoingeckoCoin[]) => {
 
       const response = await fetch(
         `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(
-          ids.join(",")
-        )}&vs_currencies=usd`
+          ids.join(","),
+        )}&vs_currencies=usd`,
       );
       const prices: CoingeckoPrices = await response.json();
       return prices;
     },
     {
       initialData: {},
-      refetchInterval: 20000,
+      refetchInterval: 60000,
       staleTime: Infinity,
       initialDataUpdatedAt: 0,
-    }
+    },
   );
 
   return { prices: data };

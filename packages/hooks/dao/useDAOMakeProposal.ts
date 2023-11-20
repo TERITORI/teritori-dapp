@@ -11,9 +11,12 @@ import {
   parseUserId,
 } from "../../networks";
 
-export const useDAOMakeProposal = (daoId: string | undefined) => {
+export const useDAOMakeProposal = (
+  daoId: string | undefined,
+  enabled?: boolean,
+) => {
   const [network] = parseUserId(daoId);
-  const { daoFirstProposalModule } = useDAOFirstProposalModule(daoId);
+  const { daoFirstProposalModule } = useDAOFirstProposalModule(daoId, enabled);
   const invalidateDAOProposals = useInvalidateDAOProposals(daoId);
 
   return useCallback(
@@ -23,8 +26,12 @@ export const useDAOMakeProposal = (daoId: string | undefined) => {
         description: string;
         msgs: CosmosMsgForEmpty[];
         title: string;
-      }
+      },
     ) => {
+      if (!enabled) {
+        throw new Error("Hook is not enabled");
+      }
+
       if (!network?.id) {
         throw new Error("Invalid DAO id");
       }
@@ -36,7 +43,7 @@ export const useDAOMakeProposal = (daoId: string | undefined) => {
       const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
       const proposalClient = new DaoProposalSingleQueryClient(
         cosmwasmClient,
-        daoFirstProposalModule?.address
+        daoFirstProposalModule?.address,
       );
 
       const proposalCreationPolicy =
@@ -50,7 +57,7 @@ export const useDAOMakeProposal = (daoId: string | undefined) => {
       const preProposeClient = new DaoPreProposeSingleClient(
         signingClient,
         senderAddress,
-        proposalCreationPolicy.module.addr
+        proposalCreationPolicy.module.addr,
       );
 
       const res = await preProposeClient.propose({
@@ -67,6 +74,11 @@ export const useDAOMakeProposal = (daoId: string | undefined) => {
 
       return res;
     },
-    [daoFirstProposalModule?.address, invalidateDAOProposals, network?.id]
+    [
+      daoFirstProposalModule?.address,
+      invalidateDAOProposals,
+      network?.id,
+      enabled,
+    ],
   );
 };

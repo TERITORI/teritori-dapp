@@ -24,17 +24,23 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { ConfigResponse } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 import { useBreeding } from "../../hooks/riotGame/useBreeding";
 import { useRippers } from "../../hooks/riotGame/useRippers";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, getCollectionId, parseNftId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { getRipperTokenId } from "../../utils/game";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
-import { fontMedium14, fontMedium48 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import {
+  fontMedium14,
+  fontMedium32,
+  fontMedium48,
+} from "../../utils/style/fonts";
+import { layout, MOBILE_MAX_WIDTH } from "../../utils/style/layout";
 
 export const RiotGameBreedingScreen = () => {
   const { myAvailableRippers } = useRippers();
+  const isMobile = useIsMobile();
   const [isShowBreedingResultModal, setIsShowBreedingResultModal] =
     useState(false);
   const [selectedSlot, setSelectedSlot] = useState<number>();
@@ -61,7 +67,7 @@ export const RiotGameBreedingScreen = () => {
     fetchRemainingTokens,
   } = useBreeding(selectedNetworkId);
 
-  const intervalRef = useRef<NodeJS.Timer>();
+  const intervalRef = useRef<NodeJS.Timeout>();
 
   const availableForBreedRippers = useMemo(() => {
     // Only original Rioter can breed
@@ -84,7 +90,7 @@ export const RiotGameBreedingScreen = () => {
 
       const gen0CollectionId = getCollectionId(
         network?.id,
-        network.riotContractAddressGen0
+        network.riotContractAddressGen0,
       );
       if (!gen0CollectionId) {
         return false;
@@ -101,14 +107,14 @@ export const RiotGameBreedingScreen = () => {
   const fetchNewToken = async (
     currentChildTokenIds: string[],
     owner: string,
-    breedingConfig: ConfigResponse
+    breedingConfig: ConfigResponse,
   ) => {
     const updatedTokens = await getChildTokenIds(
       owner,
-      breedingConfig.child_contract_addr
+      breedingConfig.child_contract_addr,
     );
     const newTokenIds = updatedTokens.filter(
-      (id: string) => !(currentChildTokenIds || []).includes(id)
+      (id: string) => !(currentChildTokenIds || []).includes(id),
     );
 
     const newTokenId = newTokenIds[0];
@@ -120,7 +126,7 @@ export const RiotGameBreedingScreen = () => {
     intervalRef.current && clearInterval(intervalRef.current);
     const newTokenInfo = await getTokenInfo(
       newTokenId,
-      breedingConfig.child_contract_addr
+      breedingConfig.child_contract_addr,
     );
 
     setNewTokenInfo(newTokenInfo);
@@ -155,19 +161,19 @@ export const RiotGameBreedingScreen = () => {
 
     const currentChildTokenIds = await getChildTokenIds(
       selectedWallet.address,
-      breedingConfig.child_contract_addr
+      breedingConfig.child_contract_addr,
     );
 
     try {
       await breed(
         coin(
           breedingConfig.breed_price_amount,
-          breedingConfig.breed_price_denom
+          breedingConfig.breed_price_denom,
         ),
         breedingConfig.breed_duration,
         getRipperTokenId(selectedRippers[0].ripper),
         getRipperTokenId(selectedRippers[1].ripper),
-        breedingConfig.parent_contract_addr
+        breedingConfig.parent_contract_addr,
       );
 
       intervalRef.current = setInterval(
@@ -175,9 +181,9 @@ export const RiotGameBreedingScreen = () => {
           fetchNewToken(
             currentChildTokenIds,
             selectedWallet.address,
-            breedingConfig
+            breedingConfig,
           ),
-        2000
+        2000,
       );
     } catch (e) {
       setIsBreeding(false);
@@ -224,7 +230,9 @@ export const RiotGameBreedingScreen = () => {
           alignSelf: "center",
         }}
       >
-        <BrandText style={[fontMedium48]}>Breeding</BrandText>
+        <BrandText style={[isMobile ? fontMedium32 : fontMedium48]}>
+          Breeding
+        </BrandText>
 
         <FlexRow
           style={{ justifyContent: "center", marginTop: layout.spacing_x4 }}
@@ -242,14 +250,21 @@ export const RiotGameBreedingScreen = () => {
           />
         </FlexRow>
 
-        <FlexRow style={{ marginTop: layout.spacing_x4 }}>
+        <FlexRow
+          breakpoint={MOBILE_MAX_WIDTH}
+          style={{
+            marginTop: layout.spacing_x4,
+            height: isMobile ? 280 : "auto",
+            justifyContent: isMobile ? "space-between" : undefined,
+          }}
+        >
           <InfoBox
             size="LG"
             title="Price"
             content={prettyPrice(
               selectedWallet?.networkId || "",
               breedingConfig?.breed_price_amount || "",
-              breedingConfig?.breed_price_denom || ""
+              breedingConfig?.breed_price_denom || "",
             )}
             width={180}
           />
@@ -272,12 +287,16 @@ export const RiotGameBreedingScreen = () => {
           onPress={doBreed}
           color={yellowDefault}
           size="M"
+          style={{
+            marginBottom: layout.spacing_x1,
+          }}
           text={isBreeding ? "Breeding..." : "Breed my Rippers"}
           iconSVG={breedSVG}
           touchableStyle={{ marginTop: layout.spacing_x2 }}
         />
 
         <FlexRow
+          breakpoint={MOBILE_MAX_WIDTH}
           width="auto"
           alignItems="center"
           style={{ marginTop: layout.spacing_x2 }}

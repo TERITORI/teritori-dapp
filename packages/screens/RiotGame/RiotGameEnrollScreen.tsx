@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ResizeMode, Video } from "expo-av";
 import moment from "moment";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import { FlatList, Pressable, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
 import { EnrollSlot } from "./component/EnrollSlot";
@@ -25,6 +25,7 @@ import {
   useSquadStakingSquadsV1,
 } from "../../hooks/riotGame/useSquadStakingSquadsV1";
 import { useSquadStakingSquadsV2 } from "../../hooks/riotGame/useSquadStakingSquadsV2";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
@@ -47,8 +48,10 @@ import {
   yellowDefault,
 } from "../../utils/style/colors";
 import {
+  fontMedium24,
   fontMedium32,
   fontMedium48,
+  fontSemibold20,
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -59,7 +62,8 @@ const EMBEDDED_VIDEO_URI =
 const embeddedVideoHeight = 267;
 const embeddedVideoWidth = 468;
 
-export const RiotGameEnrollScreen = () => {
+export const RiotGameEnrollScreen: React.FC = () => {
+  const isMobile = useIsMobile();
   const navigation = useAppNavigation();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const [activeSquadId, setActiveSquadId] = useState<number>(1);
@@ -74,10 +78,10 @@ export const RiotGameEnrollScreen = () => {
 
   const { data: squadStakingConfig } = useSquadStakingConfig(networkId);
   const { data: squads, isInitialLoading } = useSquadStakingSquadsV2(
-    selectedWallet?.userId
+    selectedWallet?.userId,
   );
   const { data: squadSeason1 } = useSquadStakingSquadsV1(
-    selectedWallet?.userId
+    selectedWallet?.userId,
   );
 
   // Stop video when changing screen through react-navigation
@@ -156,7 +160,7 @@ export const RiotGameEnrollScreen = () => {
       });
     } finally {
       await queryClient.invalidateQueries(
-        getSquadStakingSquadsV1QueryKey(selectedWallet.userId)
+        getSquadStakingSquadsV1QueryKey(selectedWallet.userId),
       );
       setIsUnstaking(false);
     }
@@ -233,7 +237,7 @@ export const RiotGameEnrollScreen = () => {
       persistSquadPreset({
         squadPresetId,
         ripperIds: selectedRippers.map((r) => r.id),
-      })
+      }),
     );
 
     setToastSuccess({
@@ -265,11 +269,27 @@ export const RiotGameEnrollScreen = () => {
   return (
     <GameContentView>
       <View>
-        <BrandText style={styles.pageTitle}>Send to fight</BrandText>
+        <BrandText
+          style={[
+            {
+              alignSelf: "center",
+            },
+            isMobile ? fontSemibold28 : fontMedium48,
+          ]}
+        >
+          Send to fight
+        </BrandText>
       </View>
 
-      <View style={styles.enrollContainer}>
-        <View style={[styles.col, { maxWidth: 575 }]}>
+      <View
+        style={{
+          justifyContent: "space-around",
+          margin: layout.spacing_x1_5,
+          flexDirection: "row",
+          flexWrap: "wrap",
+        }}
+      >
+        <View style={[colStyles, { maxWidth: 575 }]}>
           <View
             style={{
               marginTop: layout.spacing_x1,
@@ -278,13 +298,15 @@ export const RiotGameEnrollScreen = () => {
               justifyContent: "space-between",
             }}
           >
-            <BrandText style={fontMedium32}>Enroll your Ripper(s)</BrandText>
+            <BrandText style={isMobile ? fontMedium24 : fontMedium32}>
+              Enroll your Ripper(s)
+            </BrandText>
 
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                marginRight: layout.spacing_x2_5,
+                marginRight: layout.spacing_x3,
               }}
             >
               <SimpleButton
@@ -309,7 +331,8 @@ export const RiotGameEnrollScreen = () => {
           <FlatList
             scrollEnabled={false}
             data={RIPPER_SLOTS}
-            numColumns={3}
+            key={`squad-selector-col-buster-${isMobile}`}
+            numColumns={isMobile ? 2 : 3}
             keyExtractor={(item, index) => "" + index}
             ListFooterComponent={
               activeSquadId ? (
@@ -322,10 +345,20 @@ export const RiotGameEnrollScreen = () => {
               ) : null
             }
             renderItem={({ item: slotId }) => (
-              <View style={styles.ripperSlot}>
+              <View
+                style={{
+                  marginRight: layout.spacing_x2_5,
+                  marginTop: layout.spacing_x2_5,
+                }}
+              >
                 {selectedRippers[slotId] && (
                   <Pressable
-                    style={styles.clearIcon}
+                    style={{
+                      position: "absolute",
+                      right: layout.spacing_x1,
+                      top: layout.spacing_x1,
+                      zIndex: 1,
+                    }}
                     onPress={() => clearSlot(slotId)}
                   >
                     <SVG width={20} height={20} source={closeSVG} />
@@ -342,9 +375,11 @@ export const RiotGameEnrollScreen = () => {
           />
         </View>
 
-        <View style={[styles.col, { maxWidth: 540 }]}>
+        <View style={[colStyles, { maxWidth: 540 }]}>
           <View style={{ marginTop: layout.spacing_x1, width: "100%" }}>
-            <BrandText style={fontMedium32}>Staking duration</BrandText>
+            <BrandText style={isMobile ? fontMedium24 : fontMedium32}>
+              Staking duration
+            </BrandText>
           </View>
 
           <TertiaryBox
@@ -356,14 +391,21 @@ export const RiotGameEnrollScreen = () => {
             fullWidth
             height={148}
           >
-            <BrandText style={fontSemibold28}>
+            <BrandText style={isMobile ? fontSemibold20 : fontSemibold28}>
               {moment
                 .utc(stakingDuration)
                 .format("HH [hours] mm [minutes] ss [seconds]")}
             </BrandText>
           </TertiaryBox>
 
-          <View style={styles.videoContainer}>
+          <View
+            style={{
+              marginTop: layout.spacing_x2_5,
+              alignSelf: "center",
+              width: embeddedVideoWidth,
+              height: embeddedVideoHeight,
+            }}
+          >
             <Video
               ref={videoRef}
               style={{ borderRadius: 25 }}
@@ -424,38 +466,8 @@ export const RiotGameEnrollScreen = () => {
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  pageTitle: {
-    alignSelf: "center",
-    ...(fontMedium48 as object),
-  },
-  enrollContainer: {
-    justifyContent: "space-around",
-    marginTop: layout.spacing_x1,
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  col: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-  },
-  ripperSlot: {
-    marginRight: layout.spacing_x2_5,
-    marginTop: layout.spacing_x2_5,
-  },
-  videoContainer: {
-    marginTop: layout.spacing_x2_5,
-    alignSelf: "center",
-    width: embeddedVideoWidth,
-    height: embeddedVideoHeight,
-  },
-  clearIcon: {
-    position: "absolute",
-    right: layout.spacing_x1,
-    top: layout.spacing_x1,
-    zIndex: 1,
-  },
-});
+const colStyles: ViewStyle = {
+  justifyContent: "center",
+  alignItems: "center",
+  width: "100%",
+};

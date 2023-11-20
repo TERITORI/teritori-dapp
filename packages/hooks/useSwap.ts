@@ -32,7 +32,7 @@ interface PoolAsset {
   weight: string;
 }
 
-export type SwapResult = {
+type SwapResult = {
   title: string;
   message: string;
   isError?: boolean;
@@ -40,7 +40,7 @@ export type SwapResult = {
 
 export const useSwap = (
   currencyIn?: CurrencyInfo,
-  currencyOut?: CurrencyInfo
+  currencyOut?: CurrencyInfo,
 ) => {
   const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
@@ -156,7 +156,7 @@ export const useSwap = (
       if (
         parseFloat(
           lcdPoolIn.poolAssets.find((asset) => asset.token.denom === "uosmo")
-            ?.token.amount || "1"
+            ?.token.amount || "1",
         ) /
           1000000 <
         1
@@ -169,7 +169,7 @@ export const useSwap = (
         if (
           parseFloat(
             lcdPoolOut.poolAssets.find((asset) => asset.token.denom === "uosmo")
-              ?.token.amount || "1"
+              ?.token.amount || "1",
           ) /
             1000000 <
           1
@@ -297,7 +297,7 @@ export const useSwap = (
                 // base asset is the no currencyIn (Certainly OSMO)
                 baseAssetDenom:
                   lcdPool.poolAssets.find(
-                    (asset) => asset.token.denom !== currencyIn.denom
+                    (asset) => asset.token.denom !== currencyIn.denom,
                   )?.token.denom || "",
               };
             }
@@ -307,7 +307,7 @@ export const useSwap = (
                 // quote asset is the no currencyIn (Certainly OSMO)
                 quoteAssetDenom:
                   lcdPool.poolAssets.find(
-                    (asset) => asset.token.denom !== currencyOut.denom
+                    (asset) => asset.token.denom !== currencyOut.denom,
                   )?.token.denom || "",
                 // base asset is the currencyIn
                 baseAssetDenom: currencyOut.denom,
@@ -345,25 +345,25 @@ export const useSwap = (
 
       setLoading(false);
       return "0";
-    }
+    },
   );
 
   const swap = async (
     amountIn: number,
     amountOut: number,
-    slippage: number
+    slippage: number,
   ) => {
     if (!currencyIn || !currencyOut || !selectedWallet || !selectedNetwork)
       return;
     const amountInMicro = amountToCurrencyMicro(
       amountIn,
       selectedNetworkId,
-      currencyIn.denom
+      currencyIn.denom,
     );
     const amountOutMicro = amountToCurrencyMicro(
       amountOut,
       selectedNetworkId,
-      currencyOut.denom
+      currencyOut.denom,
     );
 
     const { swapExactAmountIn } =
@@ -398,7 +398,7 @@ export const useSwap = (
       }
 
       const amountOutMicroWithSlippage = Math.round(
-        parseFloat(calculateAmountWithSlippage(amountOutMicro, slippage))
+        parseFloat(calculateAmountWithSlippage(amountOutMicro, slippage)),
       ).toString();
 
       // ==== Make a trade between two currencies
@@ -419,7 +419,7 @@ export const useSwap = (
       const txResponse = await client.signAndBroadcast(
         selectedWallet.address || "",
         [msg],
-        stdFee
+        stdFee,
       );
       if (isDeliverTxFailure(txResponse)) {
         console.error("tx failed", txResponse);
@@ -446,10 +446,10 @@ export const useSwap = (
   return { swap, spotPrice, fee, loading };
 };
 
-export const amountToCurrencyMicro = (
+const amountToCurrencyMicro = (
   amount: number,
   networkId: string,
-  denom: string
+  denom: string,
 ) => {
   let multiplier = 1;
   for (

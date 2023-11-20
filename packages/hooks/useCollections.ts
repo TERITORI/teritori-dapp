@@ -11,11 +11,11 @@ import {
   CollectionsRequest,
 } from "../api/marketplace/v1/marketplace";
 import { getNetwork, NetworkKind } from "../networks";
-import { mustGetMarketplaceClient } from "../utils/backend";
+import { getMarketplaceClient } from "../utils/backend";
 
 export const useCollections = (
   req: CollectionsRequest,
-  filter?: (c: Collection) => boolean
+  filter?: (c: Collection) => boolean,
 ): {
   fetchNextPage: (options?: FetchNextPageOptions) => Promise<
     InfiniteQueryObserverResult<
@@ -37,11 +37,10 @@ export const useCollections = (
     async ({ pageParam = 0 }) => {
       let collections: Collection[] = [];
 
-      if (!req.networkId) {
+      const marketplaceClient = getMarketplaceClient(req.networkId);
+      if (!marketplaceClient) {
         return { nextCursor: pageParam + req.limit, collections };
       }
-
-      const marketplaceClient = mustGetMarketplaceClient(req.networkId);
 
       const pageReq = {
         ...req,
@@ -63,19 +62,22 @@ export const useCollections = (
             return addCollectionMetadata(c);
           }
           return c;
-        })
+        }),
       );
 
       return { nextCursor: pageParam + req.limit, collections };
     },
-    { staleTime: Infinity, getNextPageParam: (lastPage) => lastPage.nextCursor }
+    {
+      staleTime: Infinity,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    },
   );
 
   const collections = useMemo(() => {
     const pages = data?.pages || [];
     return pages.reduce(
       (acc: Collection[], page) => [...acc, ...page.collections],
-      []
+      [],
     );
   }, [data?.pages]);
 
@@ -90,7 +92,7 @@ export const useCollections = (
     async (index: number) => {
       await fetchNextPage({ pageParam: index });
     },
-    [fetchNextPage]
+    [fetchNextPage],
   );
 
   return {

@@ -69,7 +69,7 @@ const NewNftType: React.FC<{
         ))}
       </View>
     );
-  }
+  },
 );
 
 export default NewNftType;

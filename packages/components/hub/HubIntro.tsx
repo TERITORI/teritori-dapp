@@ -1,10 +1,13 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { View } from "react-native";
 
 import { ProfileButton } from "./ProfileButton";
 import logoSVG from "../../../assets/logos/logo.svg";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getNetwork, NetworkKind } from "../../networks";
 import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
 import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
 import { Overview } from "../../screens/WalletManager/components/Overview";
@@ -14,8 +17,10 @@ import { FullWidthSeparator } from "../FullWidthSeparator";
 import { Quests } from "../Quests";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
+import { PrimaryButton } from "../buttons/PrimaryButton";
 import { MainConnectWalletButton } from "../connectWallet/MainConnectWalletButton";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
+import { SpacerColumn } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
 
 const walletsManagerTabItems = {
@@ -45,6 +50,8 @@ const ConnectedIntro: React.FC = () => {
 
       <ProfileButton style={{ marginTop: 40 }} />
 
+      <FaucetButton />
+
       <Section title="Quests">
         <FullWidthSeparator />
         <View style={{ marginTop: 20 }}>
@@ -65,6 +72,45 @@ const ConnectedIntro: React.FC = () => {
         {selectedTab === "nfts" && <MyNFTs />}
       </Section>
     </View>
+  );
+};
+
+const FaucetButton: React.FC = () => {
+  const selectedWallet = useSelectedWallet();
+  const network = getNetwork(selectedWallet?.networkId);
+  const { wrapWithFeedback } = useFeedbacks();
+  if (
+    network?.kind !== NetworkKind.Gno ||
+    !network.faucetURL ||
+    !selectedWallet
+  ) {
+    return null;
+  }
+  return (
+    <>
+      <SpacerColumn size={4} />
+      <PrimaryButton
+        text="Get test tokens"
+        loader
+        onPress={wrapWithFeedback(
+          async () => {
+            if (!network.faucetURL) {
+              throw new Error("No faucet for this network");
+            }
+            const res = await axios.get(
+              network.faucetURL.replace("$addr", selectedWallet.address),
+            );
+            if (res.status !== 200 || res.data !== "faucet success") {
+              throw new Error(res.data || "Unexpected error");
+            }
+          },
+          {
+            title: "Success",
+            message: "500 GNOTs have been sent to your address",
+          },
+        )}
+      />
+    </>
   );
 };
 

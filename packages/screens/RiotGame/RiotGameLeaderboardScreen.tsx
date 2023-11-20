@@ -22,13 +22,14 @@ import {
 } from "../../api/p2e/v1/p2e";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
-import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { UserAvatarWithFrame } from "../../components/images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
-import { getCosmosNetwork, parseUserId } from "../../networks";
+import { parseUserId } from "../../networks";
 import { mustGetP2eClient } from "../../utils/backend";
 import { parseUserScoreInfo } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
@@ -55,8 +56,7 @@ type PlayerNameProps = {
 
 const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
   const navigation = useAppNavigation();
-  const [network, address] = parseUserId(userId);
-  const cosmosNetwork = getCosmosNetwork(network?.id);
+  const [, address] = parseUserId(userId);
   const userInfo = useNSUserInfo(userId);
 
   const name = userInfo.metadata?.tokenId || address || "";
@@ -71,18 +71,7 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
           });
         }}
       >
-        <OptimizedImage
-          sourceURI={userInfo.metadata?.image}
-          fallbackURI={cosmosNetwork?.nameServiceDefaultImage}
-          width={32}
-          height={32}
-          style={{
-            borderRadius: 999,
-            width: 32,
-            height: 32,
-            aspectRatio: 1,
-          }}
-        />
+        <UserAvatarWithFrame userId={userId} size="XXS" />
 
         <BrandText
           style={[styles.colData, { marginLeft: layout.spacing_x1 }]}
@@ -130,6 +119,7 @@ const Rank: React.FC<RankProps> = ({ changes }) => {
 };
 
 export const RiotGameLeaderboardScreen = () => {
+  const isMobile = useIsMobile();
   const [userScores, setUserScores] = useState<UserScore[]>([]);
   const [currentSeason, setCurrentSeason] = useState<CurrentSeasonResponse>();
   const selectedNetwork = useSelectedNetworkInfo();
@@ -181,7 +171,7 @@ export const RiotGameLeaderboardScreen = () => {
               Rank
             </BrandText>
           </View>
-          <View style={{ flex: 5 }}>
+          <View style={{ flex: isMobile ? 1 : 5 }}>
             <BrandText style={styles.colHeaderTitle}>Player</BrandText>
           </View>
           <View style={{ flex: 2 }}>
@@ -194,9 +184,13 @@ export const RiotGameLeaderboardScreen = () => {
               Time spent in Fight
             </BrandText>
           </View>
-          <View style={{ flex: 1 }}>
-            <BrandText style={styles.colHeaderTitle}>24 hours Change</BrandText>
-          </View>
+          {!isMobile && (
+            <View style={{ flex: 1 }}>
+              <BrandText style={styles.colHeaderTitle}>
+                24 hours Change
+              </BrandText>
+            </View>
+          )}
         </FlexRow>
       </TertiaryBox>
 
@@ -215,7 +209,7 @@ export const RiotGameLeaderboardScreen = () => {
                   {userScore.rank}
                 </BrandText>
               </View>
-              <View style={{ flex: 5 }}>
+              <View style={{ flex: isMobile ? 1 : 5 }}>
                 <PlayerName userId={userScore.userId} />
               </View>
               <View
@@ -236,9 +230,11 @@ export const RiotGameLeaderboardScreen = () => {
 
                 <BrandText style={styles.colData}>{hours} hours</BrandText>
               </View>
-              <View style={{ flex: 1 }}>
-                <Rank changes={rankChanges} />
-              </View>
+              {!isMobile && (
+                <View style={{ flex: 1 }}>
+                  <Rank changes={rankChanges} />
+                </View>
+              )}
             </FlexRow>
           );
         }}

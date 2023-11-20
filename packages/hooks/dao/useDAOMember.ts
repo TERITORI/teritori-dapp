@@ -11,10 +11,10 @@ import {
 } from "../../networks";
 import { extractGnoNumber } from "../../utils/gno";
 
-export const useDAOMember = (
+const useDAOMember = (
   daoId: string | undefined,
   userId: string | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   const { data: groupAddress } = useDAOGroup(daoId);
   const [network] = parseUserId(daoId);
@@ -37,7 +37,7 @@ export const useDAOMember = (
         groupAddress &&
         userId
       ),
-    }
+    },
   );
   const { data: gnoData } = useQuery(
     ["gnoDAOMember", daoId, userId],
@@ -51,8 +51,9 @@ export const useDAOMember = (
       const power = extractGnoNumber(
         await provider.evaluateExpression(
           packagePath,
-          `GetCore().VotingModule().VotingPower("${userAddress}")`
-        )
+          `daoCore.VotingModule().VotingPowerAtHeight("${userAddress}", 0)`,
+          0,
+        ),
       );
       const res: MemberResponse = {
         weight: power,
@@ -67,7 +68,7 @@ export const useDAOMember = (
         daoId &&
         userId
       ),
-    }
+    },
   );
   return {
     data: network?.kind === NetworkKind.Gno ? gnoData : cosmWasmData,
@@ -78,7 +79,7 @@ export const useDAOMember = (
 export const useIsDAOMember = (
   daoId: string | undefined,
   userId: string | undefined,
-  enabled?: boolean
+  enabled?: boolean,
 ) => {
   const { data: member, ...other } = useDAOMember(daoId, userId, enabled);
   return {

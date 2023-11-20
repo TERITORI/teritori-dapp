@@ -7,11 +7,12 @@ import { layout } from "../../../utils/style/layout";
 import { IconBox } from "../../IconBox";
 import { SocialButton } from "../../buttons/SocialButton";
 import ModalBase from "../../modals/ModalBase";
-interface FeedPostShareModalProps {
+
+interface ShareButtonProps {
   postId: string;
 }
 
-export const ShareButton = ({ postId }: FeedPostShareModalProps) => {
+export const ShareButton = ({ postId }: ShareButtonProps) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const SOCIAL_BUTTONS = [
@@ -23,7 +24,9 @@ export const ShareButton = ({ postId }: FeedPostShareModalProps) => {
 #Teritori`;
 
         Linking.openURL(
-          `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`
+          `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+            message,
+          )}`,
         );
         setIsModalVisible(false);
       },

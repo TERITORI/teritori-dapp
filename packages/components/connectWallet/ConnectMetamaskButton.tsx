@@ -5,8 +5,13 @@ import { Linking } from "react-native";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import metamaskSVG from "../../../assets/icons/metamask.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getEthereumNetwork, selectableEthereumNetworks } from "../../networks";
+import {
+  EthereumNetworkInfo,
+  getEthereumNetwork,
+  NetworkKind,
+} from "../../networks";
 import { setSelectedNetworkId } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 
@@ -17,6 +22,7 @@ export const ConnectMetamaskButton: React.FC<{
   const dispatch = useAppDispatch();
   const { status, connect } = useMetaMask();
   const selectedNetworkId = useSelectedNetworkId();
+  const enabledNetworks = useEnabledNetworks();
 
   const isConnected = status === "connected";
 
@@ -26,10 +32,15 @@ export const ConnectMetamaskButton: React.FC<{
 
       if (!ethereum) {
         Linking.openURL(
-          "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn"
+          "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn",
         );
         return;
       }
+
+      const selectableEthereumNetworks = enabledNetworks.filter(
+        (n): n is EthereumNetworkInfo => n.kind === NetworkKind.Ethereum,
+      );
+
       let network = getEthereumNetwork(selectedNetworkId);
       if (!network) {
         if (selectableEthereumNetworks.length) {

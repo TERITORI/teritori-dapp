@@ -36,11 +36,11 @@ export const TNSSendFundsModal: React.FC<{
   const { setToastError, setToastSuccess } = useFeedbacks();
   const balances = useBalances(networkId, selectedWallet?.address);
   const currencyBalance = balances.find(
-    (bal) => bal.denom === nativeCurrency?.denom
+    (bal) => bal.denom === nativeCurrency?.denom,
   );
 
   const handleSubmit: SubmitHandler<TNSSendFundsFormType> = async (
-    fieldValues
+    fieldValues,
   ) => {
     try {
       if (!nativeCurrency) {
@@ -92,7 +92,7 @@ export const TNSSendFundsModal: React.FC<{
       const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
       const tnsClient = new TeritoriNameServiceQueryClient(
         cosmwasmClient,
-        contractAddress
+        contractAddress,
       );
 
       // get recipient address
@@ -110,12 +110,12 @@ export const TNSSendFundsModal: React.FC<{
             denom: nativeCurrency.denom,
             amount: Decimal.fromUserInput(
               fieldValues.amount,
-              nativeCurrency.decimals
+              nativeCurrency.decimals,
             ).atomics,
           },
         ],
         "auto",
-        fieldValues.comment
+        fieldValues.comment,
       );
       if (isDeliverTxFailure(response)) {
         setToastError({ title: "Send failed", message: response.rawLog || "" });
@@ -142,7 +142,7 @@ export const TNSSendFundsModal: React.FC<{
       label={`Your wallet has ${prettyPrice(
         selectedWallet?.networkId || "",
         currencyBalance?.amount || "0",
-        currencyBalance?.denom || ""
+        currencyBalance?.denom || "",
       )}`}
     >
       <View
@@ -167,7 +167,7 @@ export const TNSSendFundsModal: React.FC<{
           rules={{
             max: Decimal.fromAtomics(
               currencyBalance?.amount || "0",
-              nativeCurrency?.decimals || 0
+              nativeCurrency?.decimals || 0,
             ).toString(),
             required: true,
           }}

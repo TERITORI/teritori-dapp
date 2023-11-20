@@ -188,7 +188,7 @@ export const TextInputCustom = <T extends FieldValues>({
     if (currency) {
       const reg = new RegExp(`^\\d+\\.?\\d{0,${currency.coinDecimals}}$`);
 
-      if (rules?.max && parseFloat(value) > rules.max) {
+      if (typeof rules?.max === "number" && parseFloat(value) > rules.max) {
         return;
       }
 
@@ -294,7 +294,7 @@ export const TextInputCustom = <T extends FieldValues>({
           </View>
 
           {isLoading ? (
-            <ActivityIndicator color={secondaryColor} />
+            <ActivityIndicator color={secondaryColor} size="small" />
           ) : (
             <>{children}</>
           )}
@@ -312,6 +312,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     paddingHorizontal: 12,
     paddingVertical: 10,
+    minHeight: 50,
     backgroundColor: neutral22,
   },
   noCropBorderBg: {

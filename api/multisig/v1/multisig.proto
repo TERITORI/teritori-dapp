@@ -1,0 +1,244 @@
+syntax = "proto3";
+
+package multisig.v1;
+option go_package = "./multisigpb";
+
+import "google/protobuf/any.proto";
+
+service MultisigService {
+  // Read
+  rpc Multisigs(MultisigsRequest) returns (MultisigsResponse);
+  rpc MultisigInfo(MultisigInfoRequest) returns (MultisigInfoResponse);
+  rpc Transactions(TransactionsRequest) returns (TransactionsResponse);
+  rpc TransactionsCounts(TransactionsCountsRequest) returns (TransactionsCountsResponse);
+
+  // Write
+  rpc CreateOrJoinMultisig(CreateOrJoinMultisigRequest) returns (CreateOrJoinMultisigResponse);
+  rpc LeaveMultisig(LeaveMultisigRequest) returns (LeaveMultisigResponse);
+  rpc CreateTransaction(CreateTransactionRequest) returns (CreateTransactionResponse);
+  rpc SignTransaction(SignTransactionRequest) returns (SignTransactionResponse);
+  rpc CompleteTransaction(CompleteTransactionRequest) returns (CompleteTransactionResponse);
+  rpc ClearSignatures(ClearSignaturesRequest) returns (ClearSignaturesResponse);
+
+  // Auth
+  rpc GetChallenge(GetChallengeRequest) returns (GetChallengeResponse);
+  rpc GetToken(GetTokenRequest) returns (GetTokenResponse);
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+}
+
+message Multisig {
+  string created_at = 1;
+  string chain_id = 2;
+  string address = 4;
+  bool joined = 5;
+  string name = 6;
+  string pubkey_json = 7;
+  repeated string users_addresses = 8;
+  uint32 threshold = 9;
+}
+
+message Signature {
+  string value = 1;
+  string user_address = 2;
+  bytes body_bytes = 3;
+}
+
+message Transaction {
+  string created_at = 1;
+  string final_hash = 2;
+  string multisig_address = 3;
+  string chain_id = 4;
+  repeated google.protobuf.Any msgs = 5;
+  string fee_json = 6;
+  uint32 account_number = 7;
+  uint32 sequence = 8;
+  string creator_address = 9;
+  uint32 threshold = 10;
+  uint32 members_count = 11;
+  string memo = 12;
+  repeated Signature signatures = 13;
+  string multisig_pubkey_json = 14;
+  uint32 id = 15;
+}
+
+// we use string here because browser storage poorly supports bytes
+message Token {
+	string nonce = 1; // base64
+	string expiration = 2;
+  string user_address = 4;
+  string server_signature = 5; // base64 signature by server of protobuf encoding of Token with server_signature field zeroed out
+}
+
+message Challenge {
+  bytes nonce = 1;
+  string expiration = 2;
+  bytes server_signature = 3; // signature by server of protobuf encoding of Challenge with server_signature field zeroed out
+}
+
+enum JoinState {
+  JOIN_STATE_UNSPECIFIED = 0;
+  JOIN_STATE_IN = 1;
+  JOIN_STATE_OUT = 2;
+}
+
+message MultisigsRequest {
+  Token auth_token = 1;
+  uint32 limit = 2;
+  string start_after = 3;
+  string chain_id = 4;
+  JoinState join_state = 5;
+}
+
+message MultisigsResponse {
+  repeated Multisig multisigs = 1;
+}
+
+message MultisigInfoRequest {
+  Token auth_token = 1;
+  string multisig_address = 2;
+  string chain_id = 3;
+}
+
+message MultisigInfoResponse {
+  Multisig multisig = 1;
+}
+
+enum ExecutionState {
+  EXECUTION_STATE_UNSPECIFIED = 0;
+  EXECUTION_STATE_PENDING = 1;
+  EXECUTION_STATE_EXECUTED = 2;
+}
+
+message TransactionsRequest {
+  Token auth_token = 1;
+  uint32 limit = 2;
+  string start_after = 3;
+  string multisig_address = 4; // if unspecified, return transactions for all multisigs of this user
+  string chain_id = 5;
+  repeated string types = 6;
+  ExecutionState execution_state = 7;
+}
+
+message TransactionsResponse {
+  repeated Transaction transactions = 1;
+}
+
+message CreateOrJoinMultisigRequest {
+  string chain_id = 1;
+  string multisig_pubkey_json = 2;
+  Token auth_token = 3;
+  string name = 4;
+  string bech32_prefix = 5;
+}
+
+message CreateOrJoinMultisigResponse {
+  bool created = 1;
+  bool joined = 2;
+  string multisig_address = 3;
+}
+
+message LeaveMultisigRequest {
+  string multisig_address = 1;
+  Token auth_token = 2;
+  string chain_id = 3;
+}
+
+message LeaveMultisigResponse {
+  bool left = 1;
+}
+
+message CreateTransactionRequest {
+  Token auth_token = 1;
+	string multisig_address= 3;
+  uint32 account_number = 4;
+  uint32 sequence = 5;
+  repeated google.protobuf.Any msgs = 6;
+  string fee_json = 7;
+  string chain_id = 8;
+}
+
+message CreateTransactionResponse {
+
+}
+
+message SignTransactionRequest {
+  Token auth_token = 1;
+  string signature = 2;
+  uint32 transaction_id = 3;
+  bytes body_bytes = 4;
+}
+
+message SignTransactionResponse {
+  
+}
+
+message CompleteTransactionRequest {
+  Token auth_token = 1;
+  uint32 transaction_id = 2;
+  string final_hash = 3;
+}
+
+message CompleteTransactionResponse {
+
+}
+
+message ClearSignaturesRequest {
+  Token auth_token = 1;
+  string multisig_chain_id = 2;
+  string multisig_address = 3;
+  uint32 sequence = 4;
+}
+
+message ClearSignaturesResponse {
+
+}
+
+message GetChallengeRequest {
+
+}
+
+message GetChallengeResponse {
+  Challenge challenge = 1;
+}
+
+message TokenRequestInfo {
+  string kind = 1;
+  Challenge challenge = 2;
+  string user_bech32_prefix = 3;
+  string user_pubkey_json = 4;
+}
+
+message GetTokenRequest {
+  string info_json = 1; // protojson encoding of TokenRequestInfo
+  string user_signature = 2; // signature by client of info_json
+}
+
+message GetTokenResponse {
+  Token auth_token = 1;
+}
+
+message TransactionsCountsRequest {
+  Token auth_token = 1;
+  string multisig_address = 2; // if unspecified, return transactions for all multisigs of this user
+  string chain_id = 3;
+}
+
+message TransactionsCount {
+  uint32 total = 1;
+  uint32 pending = 2;
+  uint32 executed = 3;
+  string type = 4;
+}
+
+message TransactionsCountsResponse {
+  TransactionsCount all = 1;
+  repeated TransactionsCount by_type = 2;
+}
+
+message ValidateTokenRequest {
+  Token auth_token = 1;
+}
+
+message ValidateTokenResponse {
+  
+}

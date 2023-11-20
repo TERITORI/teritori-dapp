@@ -24,8 +24,8 @@ import { RichText } from "../../components/socialFeed/RichText";
 import { PublishValues } from "../../components/socialFeed/RichText/RichText.type";
 import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useFeedPostFee } from "../../hooks/feed/useFeedPostFee";
 import { useUpdateAvailableFreePost } from "../../hooks/feed/useUpdateAvailableFreePost";
-import { useUpdatePostFee } from "../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../hooks/useBalances";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
@@ -36,7 +36,7 @@ import { prettyPrice } from "../../utils/coins";
 import { generateIpfsKey } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { ARTICLE_COVER_IMAGE_HEIGHT } from "../../utils/social-feed";
+import { ARTICLE_THUMBNAIL_IMAGE_HEIGHT } from "../../utils/social-feed";
 import {
   neutral00,
   neutral11,
@@ -54,11 +54,11 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const selectNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkId = selectNetworkInfo?.id || "";
   const wallet = useSelectedWallet();
-  const { postFee } = useUpdatePostFee(selectedNetworkId, PostCategory.Article);
+  const { postFee } = useFeedPostFee(selectedNetworkId, PostCategory.Article);
   const { freePostCount } = useUpdateAvailableFreePost(
     selectedNetworkId,
     PostCategory.Article,
-    wallet
+    wallet,
   );
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -67,10 +67,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
   const userId = getUserId(selectedNetworkId, wallet?.address);
-  const balances = useBalances(
-    process.env.TERITORI_NETWORK_ID,
-    wallet?.address
-  );
+  const balances = useBalances(selectedNetworkId, wallet?.address);
   const {
     control,
     setValue,
@@ -85,6 +82,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       gifs: [],
       hashtags: [],
       mentions: [],
+      thumbnailImage: undefined,
+      shortDescription: "",
     },
     mode: "onBlur",
   });
@@ -229,30 +228,25 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
             {freePostCount
               ? `You have ${freePostCount} free ${pluralOrNot(
                   "Article",
-                  freePostCount
+                  freePostCount,
                 )} left`
               : `The cost for this Article is ${prettyPrice(
                   selectedNetworkId,
                   postFee.toString(),
-                  selectNetworkInfo?.currencies?.[0].denom || "utori"
+                  selectNetworkInfo?.currencies?.[0].denom || "utori",
                 )}`}
           </BrandText>
         </TertiaryBox>
 
         <FileUploader
-          label="Cover image"
-          fileHeight={ARTICLE_COVER_IMAGE_HEIGHT}
+          label="Thumbnail image"
+          fileHeight={ARTICLE_THUMBNAIL_IMAGE_HEIGHT}
           isImageCover
           style={{
             marginTop: layout.spacing_x3,
-            width: "100%",
+            width: 364,
           }}
-          onUpload={(files) =>
-            setValue("files", [
-              ...(formValues.files || []),
-              { ...files[0], isCoverImage: true },
-            ])
-          }
+          onUpload={(files) => setValue("thumbnailImage", files[0])}
           mimeTypes={IMAGE_MIME_TYPES}
         />
 
@@ -260,7 +254,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           noBrokenCorners
           rules={{ required: true }}
           height={48}
-          label="Give a title to make an Article"
+          label="Title"
           placeHolder="Type title here"
           name="title"
           control={control}
@@ -271,6 +265,23 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
             borderRadius: 12,
           }}
         />
+
+        <TextInputCustom<NewPostFormValues>
+          noBrokenCorners
+          rules={{ required: true }}
+          multiline
+          label="Short description"
+          placeHolder="Type short description here"
+          name="shortDescription"
+          control={control}
+          variant="labelOutside"
+          containerStyle={{ marginBottom: layout.spacing_x3 }}
+          boxMainContainerStyle={{
+            backgroundColor: neutral00,
+            borderRadius: 12,
+          }}
+        />
+
         <View>
           <Label>Article content</Label>
           <SpacerColumn size={1} />
@@ -290,9 +301,13 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                   errors?.message?.type === "required" ||
                   !formValues.message ||
                   !formValues.title ||
+                  !formValues.shortDescription ||
+                  !formValues.thumbnailImage ||
                   !wallet
                 }
                 onPublish={onPublish}
+                authorId={userId}
+                postId=""
               />
             )}
           />

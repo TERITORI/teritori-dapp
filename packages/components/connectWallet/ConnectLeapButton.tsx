@@ -1,18 +1,22 @@
+import { OfflineSigner } from "@cosmjs/proto-signing";
 import React from "react";
 import { Linking } from "react-native";
 
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import leapSVG from "../../../assets/icons/leap-cosmos-logo.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import {
+  CosmosNetworkInfo,
   getCosmosNetwork,
   keplrChainInfoFromNetworkInfo,
-  selectableCosmosNetworks,
+  NetworkKind,
 } from "../../networks";
 import {
   setIsLeapConnected,
   setSelectedNetworkId,
+  setSelectedWalletId,
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 
@@ -22,16 +26,21 @@ export const ConnectLeapButton: React.FC<{
   const { setToastError } = useFeedbacks();
   const dispatch = useAppDispatch();
   const networkId = useSelectedNetworkId();
+  const enabledNetworks = useEnabledNetworks();
   const handlePress = async () => {
     try {
       // @ts-ignore
       const leap = window.leap;
       if (!leap) {
         Linking.openURL(
-          "https://chrome.google.com/webstore/detail/leap-cosmos-wallet/fcfcfllfndlomdhbehjjcoimbgofdncg"
+          "https://chrome.google.com/webstore/detail/leap-cosmos-wallet/fcfcfllfndlomdhbehjjcoimbgofdncg",
         );
         return;
       }
+
+      const selectableCosmosNetworks = enabledNetworks.filter(
+        (n): n is CosmosNetworkInfo => n.kind === NetworkKind.Cosmos,
+      );
 
       let network = getCosmosNetwork(networkId);
       if (!network) {
@@ -44,12 +53,20 @@ export const ConnectLeapButton: React.FC<{
       }
 
       await leap.experimentalSuggestChain(
-        keplrChainInfoFromNetworkInfo(network)
+        keplrChainInfoFromNetworkInfo(network),
       );
 
       await leap.enable(network.chainId);
 
+      const offlineSigner: OfflineSigner = await leap.getOfflineSignerAuto(
+        network.chainId,
+      );
+      const accounts = await offlineSigner.getAccounts();
+
       dispatch(setSelectedNetworkId(network.id));
+      if (accounts.length) {
+        dispatch(setSelectedWalletId("leap-" + accounts[0].address));
+      }
       dispatch(setIsLeapConnected(true));
 
       onDone && onDone();

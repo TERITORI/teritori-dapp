@@ -8,17 +8,20 @@ import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
-import React, { memo, useEffect } from "react";
+import React, { ReactNode, memo, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform, View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
 import { BrandText } from "./packages/components/BrandText";
+import { MultisigDeauth } from "./packages/components/multisig/MultisigDeauth";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
+import { MediaPlayerContextProvider } from "./packages/context/MediaPlayerProvider";
 import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
@@ -30,7 +33,7 @@ import {
 import { useSelectedNetworkId } from "./packages/hooks/useSelectedNetwork";
 import useSelectedWallet from "./packages/hooks/useSelectedWallet";
 import { setSelectedWalletId } from "./packages/store/slices/settings";
-import { store, useAppDispatch } from "./packages/store/store";
+import { persistor, store, useAppDispatch } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
 
 const queryClient = new QueryClient();
@@ -55,42 +58,58 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <FormProvider<DefaultForm> {...methods}>
-          <MetaMaskProvider>
-            <NavigationContainer linking={linking}>
-              <SafeAreaProvider>
-                <ReduxProvider store={store}>
-                  <FeedbacksContextProvider>
-                    <DropdownsContextProvider>
-                      <WalletsProvider>
-                        <WalletSyncer />
-                        <SearchBarContextProvider>
-                          <TransactionModalsProvider>
-                            <TNSContextProvider>
-                              <TNSMetaDataListContextProvider>
-                                <MenuProvider>
-                                  <StatusBar style="inverted" />
-                                  <Navigator />
-                                </MenuProvider>
-                              </TNSMetaDataListContextProvider>
-                            </TNSContextProvider>
-                          </TransactionModalsProvider>
-                        </SearchBarContextProvider>
-                      </WalletsProvider>
-                    </DropdownsContextProvider>
-                  </FeedbacksContextProvider>
-                </ReduxProvider>
-              </SafeAreaProvider>
-            </NavigationContainer>
-          </MetaMaskProvider>
-        </FormProvider>
-      </QueryClientProvider>
+      <ReduxProvider store={store}>
+        <PersistGate
+          loading={
+            <View
+              style={{
+                width: "100%",
+                height: "100%",
+                backgroundColor: "black",
+              }}
+            />
+          }
+          persistor={persistor}
+        >
+          <QueryClientProvider client={queryClient}>
+            <FormProvider<DefaultForm> {...methods}>
+              <MetaMaskProvider>
+                <NavigationContainer linking={linking}>
+                  <SafeAreaProvider>
+                    <FeedbacksContextProvider>
+                      <DropdownsContextProvider>
+                        <WalletsProvider>
+                          <WalletSyncer />
+                          <MultisigDeauth />
+                          <SearchBarContextProvider>
+                            <TransactionModalsProvider>
+                              <TNSContextProvider>
+                                <TNSMetaDataListContextProvider>
+                                  <MenuProvider>
+                                    <MediaPlayerContextProvider>
+                                      <StatusBar style="inverted" />
+                                      <Navigator />
+                                    </MediaPlayerContextProvider>
+                                  </MenuProvider>
+                                </TNSMetaDataListContextProvider>
+                              </TNSContextProvider>
+                            </TransactionModalsProvider>
+                          </SearchBarContextProvider>
+                        </WalletsProvider>
+                      </DropdownsContextProvider>
+                    </FeedbacksContextProvider>
+                  </SafeAreaProvider>
+                </NavigationContainer>
+              </MetaMaskProvider>
+            </FormProvider>
+          </QueryClientProvider>
+        </PersistGate>
+      </ReduxProvider>
     </ErrorBoundary>
   );
 }
 
-class ErrorBoundary extends React.Component {
+class ErrorBoundary extends React.Component<{ children: ReactNode }> {
   state: {
     hasError: boolean;
     error?: unknown;
@@ -98,7 +117,7 @@ class ErrorBoundary extends React.Component {
     catchInfo?: React.ErrorInfo;
   };
 
-  constructor(props: object) {
+  constructor(props: { children: ReactNode }) {
     super(props);
     this.state = { hasError: false };
   }
@@ -140,11 +159,9 @@ const WalletSyncer: React.FC = memo(() => {
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (!selectedWallet || selectedWallet.networkId !== selectedNetworkId) {
-      dispatch(
-        setSelectedWalletId(
-          wallets.find((w) => w.networkId === selectedNetworkId)?.id
-        )
-      );
+      const newWallet = wallets.find((w) => w.networkId === selectedNetworkId);
+      console.log("syncing wallet", newWallet);
+      dispatch(setSelectedWalletId(newWallet?.id));
     }
   }, [dispatch, selectedNetworkId, selectedWallet, wallets]);
   return null;

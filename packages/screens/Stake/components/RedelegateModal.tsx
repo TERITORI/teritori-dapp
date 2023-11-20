@@ -1,6 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import { isDeliverTxFailure } from "@cosmjs/stargate";
-import { MsgBeginRedelegate } from "osmojs/types/codegen/cosmos/staking/v1beta1/tx";
+import { MsgBeginRedelegateEncodeObject } from "@cosmjs/stargate";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
@@ -9,21 +8,22 @@ import { ValidatorsTable } from "./ValidatorsList";
 import checkSVG from "../../../../assets/icons/check.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
+import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useCosmosValidatorBondedAmount } from "../../../hooks/useCosmosValidatorBondedAmount";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useRunOrProposeTransaction } from "../../../hooks/useRunOrProposeTransaction";
 import { useValidators } from "../../../hooks/useValidators";
 import {
-  getKeplrSigningStargateClient,
+  UserKind,
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
+  parseUserId,
 } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import {
@@ -45,18 +45,23 @@ interface RedelegateModalProps {
   onClose?: () => void;
   visible?: boolean;
   validator?: ValidatorInfo;
+  userId: string | undefined;
+  userKind: UserKind;
 }
 
 export const RedelegateModal: React.FC<RedelegateModalProps> = ({
   onClose,
   visible,
   validator,
+  userId,
+  userKind,
 }) => {
-  const wallet = useSelectedWallet();
-  const networkId = wallet?.networkId || "";
+  const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);
+  const [network, userAddress] = parseUserId(userId);
+  const networkId = network?.id;
   const { bondedTokens, refreshBondedTokens } = useCosmosValidatorBondedAmount(
-    wallet?.userId,
-    validator?.address
+    userId,
+    validator?.address,
   );
   const [selectedValidator, setSelectedValidator] = useState<ValidatorInfo>();
   const { setToastError, setToastSuccess } = useFeedbacks();
@@ -68,7 +73,6 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
     useForm<StakeFormValuesType>();
   const stakingCurrency = getStakingCurrency(networkId);
 
-  // hooks
   useEffect(() => {
     reset();
   }, [reset, visible]);
@@ -84,13 +88,12 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
     let currentValidators = allValidators;
     if (bondedTokens.atomics && bondedTokens.atomics !== "0") {
       currentValidators = currentValidators.filter(
-        (d) => d.moniker !== validator.moniker
+        (d) => d.moniker !== validator.moniker,
       );
     }
     return currentValidators;
   }, [allValidators, bondedTokens.atomics, validator?.moniker]);
 
-  // functions
   const onSubmit = useCallback(
     async (formData: StakeFormValuesType) => {
       try {
@@ -98,14 +101,6 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           console.warn("staking currency not found");
           setToastError({
             title: "Staking currency not found",
-            message: "",
-          });
-          return;
-        }
-        if (!wallet?.connected || !wallet.address) {
-          console.warn("invalid wallet", wallet);
-          setToastError({
-            title: "Invalid wallet",
             message: "",
           });
           return;
@@ -124,43 +119,46 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           });
           return;
         }
-        const client = await getKeplrSigningStargateClient(wallet.networkId);
-        const msg: MsgBeginRedelegate = {
-          delegatorAddress: wallet.address,
-          validatorSrcAddress: validator.address,
-          validatorDstAddress: selectedValidator.address,
-          amount: {
-            amount: Decimal.fromUserInput(
-              formData.amount,
-              stakingCurrency.decimals
-            ).atomics,
-            denom: stakingCurrency.denom,
+
+        const amount = Decimal.fromUserInput(
+          formData.amount,
+          stakingCurrency.decimals,
+        ).atomics;
+        const msg: MsgBeginRedelegateEncodeObject = {
+          typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
+          value: {
+            delegatorAddress: userAddress,
+            validatorSrcAddress: validator.address,
+            validatorDstAddress: selectedValidator.address,
+            amount: {
+              amount,
+              denom: stakingCurrency.denom,
+            },
           },
         };
 
-        const txResponse = await client.signAndBroadcast(
-          wallet.address,
-          [
-            {
-              typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
-              value: msg,
-            },
-          ],
-          "auto"
-        );
-        if (isDeliverTxFailure(txResponse)) {
-          onClose && onClose();
-          console.error("tx failed", txResponse);
-          setToastError({
-            title: "Transaction failed",
-            message: txResponse.rawLog || "",
-          });
-          return;
-        }
+        await runOrProposeTransaction({
+          msgs: [msg],
+          navigateToProposals: true,
+        });
 
-        setToastSuccess({ title: "Redelegation success", message: "" });
-        refreshBondedTokens();
-        onClose && onClose();
+        const toastTitle =
+          userKind === UserKind.Single
+            ? "Redelegation success"
+            : "Proposed to redelegate";
+        setToastSuccess({
+          title: toastTitle,
+          message: `${prettyPrice(
+            networkId,
+            amount,
+            stakingCurrency.denom,
+          )} from ${validator.moniker} to ${selectedValidator.moniker}`,
+        });
+
+        if (userKind === UserKind.Single) {
+          refreshBondedTokens();
+        }
+        onClose?.();
       } catch (error) {
         triggerError({
           title: "Redelegation failed!",
@@ -170,16 +168,19 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       }
     },
     [
-      validator,
+      networkId,
       onClose,
       refreshBondedTokens,
+      runOrProposeTransaction,
       selectedValidator,
       setToastError,
       setToastSuccess,
       stakingCurrency,
       triggerError,
-      wallet,
-    ]
+      userAddress,
+      userKind,
+      validator,
+    ],
   );
 
   const Header = useCallback(
@@ -192,7 +193,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
         </BrandText>
       </View>
     ),
-    [stakingCurrency?.displayName]
+    [stakingCurrency?.displayName],
   );
 
   const Footer = useCallback(
@@ -217,7 +218,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
         </View>
       </>
     ),
-    [handleSubmit, onClose, onSubmit]
+    [handleSubmit, onClose, onSubmit],
   );
 
   return (
@@ -249,6 +250,8 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
         <ValidatorsTable
           validators={modifiedValidators}
           style={{ height: 200 }}
+          userId={userId}
+          userKind={userKind}
           actions={(validator) => {
             if (validator.address === selectedValidator?.address) {
               return [
@@ -297,7 +300,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           {prettyPrice(
             networkId,
             bondedTokens.atomics,
-            stakingCurrency?.denom || ""
+            stakingCurrency?.denom || "",
           )}
         </BrandText>
         <SpacerColumn size={2.5} />

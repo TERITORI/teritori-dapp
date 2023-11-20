@@ -1,28 +1,26 @@
-import React, { useMemo } from "react";
-import { StyleProp, View, ViewStyle, StyleSheet } from "react-native";
+import React from "react";
+import { StyleProp, View, ViewStyle } from "react-native";
 
 import emptyCircleFrameSVG from "../../../assets/empty-circle-frame.svg";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import {
-  CosmosNetworkInfo,
-  GnoNetworkInfo,
-  NetworkKind,
-  getNetwork,
-  parseUserId,
-} from "../../networks";
+import { getNetwork, parseUserId } from "../../networks";
 import { primaryColor } from "../../utils/style/colors";
+import { nameServiceDefaultImage } from "../../utils/tns";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { AnimationFadeIn } from "../animations/AnimationFadeIn";
 
-type AvatarWithFrameSize = "XL" | "L" | "M" | "S" | "XS";
+type AvatarWithFrameSize = "XL" | "L" | "M" | "S" | "XS" | "XXS";
+
+const frameToAvatarRatio = 0.7;
 
 export const UserAvatarWithFrame: React.FC<{
   userId: string | undefined;
   size?: AvatarWithFrameSize;
+  noFrame?: boolean;
   style?: StyleProp<ViewStyle>;
-}> = ({ userId, size = "M", style }) => {
+}> = ({ userId, size = "M", noFrame, style }) => {
   const [network] = parseUserId(userId);
   const {
     metadata: { image },
@@ -36,6 +34,7 @@ export const UserAvatarWithFrame: React.FC<{
       isDAO={isDAO}
       size={size}
       style={style}
+      noFrame={noFrame}
     />
   );
 };
@@ -45,41 +44,53 @@ export const AvatarWithFrame: React.FC<{
   image: string | null | undefined;
   size?: AvatarWithFrameSize;
   isDAO: boolean;
+  noFrame?: boolean;
   style?: StyleProp<ViewStyle>;
-}> = ({ networkId, image, isDAO, size = "M", style }) => {
+}> = ({ networkId, image, isDAO, size = "M", noFrame, style }) => {
   const network = getNetwork(networkId);
-  const sizedStyles = useMemo(
-    () => StyleSheet.flatten(flatStyles[size]),
-    [size]
-  );
+  const frameSize = getSize(size);
+  const imageSize = frameSize * (noFrame ? 1 : frameToAvatarRatio);
   return (
-    <View style={[styles.container, style]}>
-      <SVG
-        source={emptyCircleFrameSVG}
-        width={sizedStyles.frame.width}
-        height={sizedStyles.frame.height}
-      />
+    <View
+      style={[
+        {
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        style,
+      ]}
+    >
+      {!noFrame && (
+        <SVG
+          source={emptyCircleFrameSVG}
+          width={frameSize}
+          height={frameSize}
+          style={{ position: "relative", left: "-0.65%", top: "0.4%" }} // we need this adjustments to properly center the frame around the avatar, FIXME: this should be done in the avatar image
+        />
+      )}
 
-      <AnimationFadeIn style={styles.absolute}>
-        <OptimizedImage
-          width={sizedStyles.image.width}
-          height={sizedStyles.image.height}
-          sourceURI={image}
-          fallbackURI={
-            [NetworkKind.Cosmos, NetworkKind.Gno].includes(
-              network?.kind || NetworkKind.Unknown
-            )
-              ? (network as CosmosNetworkInfo | GnoNetworkInfo)
-                  .nameServiceDefaultImage
-              : undefined
+      <AnimationFadeIn
+        style={
+          !noFrame && {
+            position: "absolute",
+            zIndex: 2,
           }
+        }
+      >
+        <OptimizedImage
+          width={imageSize}
+          height={imageSize}
+          sourceURI={image}
+          fallbackURI={nameServiceDefaultImage(isDAO, network)}
           style={[
-            sizedStyles.image,
-            isDAO && {
-              borderRadius: sizedStyles.image.width * 0.05,
-              borderWidth: sizedStyles.image.width * 0.02,
-              borderColor: primaryColor,
-            },
+            { width: imageSize, height: imageSize, backgroundColor: "black" },
+            isDAO
+              ? {
+                  borderRadius: imageSize * 0.05,
+                  borderWidth: imageSize * 0.02,
+                  borderColor: primaryColor,
+                }
+              : { borderRadius: imageSize * 0.5 },
           ]}
         />
       </AnimationFadeIn>
@@ -87,87 +98,19 @@ export const AvatarWithFrame: React.FC<{
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  absolute: {
-    position: "absolute",
-    zIndex: 2,
-  },
-});
-
-const flatStyles = {
-  XL: {
-    image: {
-      height: 138,
-      width: 138,
-      left: 1,
-      top: -1,
-      borderRadius: 999,
-    },
-    frame: {
-      width: 196,
-      height: 196,
-    },
-  },
-
-  L: {
-    image: {
-      height: 64,
-      width: 64,
-      left: 0.5,
-      top: -0.5,
-      borderRadius: 999,
-    },
-    frame: {
-      width: 92,
-      height: 92,
-    },
-  },
-
-  M: {
-    image: {
-      height: 48,
-      left: 0.5,
-      top: -0.5,
-      width: 48,
-      borderRadius: 999,
-    },
-    frame: {
-      width: 68,
-      height: 68,
-    },
-  },
-
-  S: {
-    image: {
-      height: 34,
-      left: 0.25,
-      top: -0.5,
-      width: 34,
-      borderRadius: 999,
-    },
-    frame: {
-      width: 48,
-      height: 48,
-    },
-  },
-
-  XS: {
-    image: {
-      height: 25,
-      left: 0.25,
-      top: -0.5,
-      width: 25,
-      borderRadius: 999,
-    },
-    frame: {
-      width: 38,
-      height: 38,
-    },
-  },
+const getSize = (size: AvatarWithFrameSize) => {
+  switch (size) {
+    case "XL":
+      return 196;
+    case "L":
+      return 92;
+    case "M":
+      return 68;
+    case "S":
+      return 48;
+    case "XS":
+      return 38;
+    case "XXS":
+      return 32;
+  }
 };

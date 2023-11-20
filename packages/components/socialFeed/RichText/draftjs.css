@@ -7,11 +7,18 @@
   margin: 10px auto;
 }
 
-/*TODO: Style .DraftEditor-editorContainer figure video ?*/
+.DraftEditor-editorContainer figure video {
+  max-height: 400px;
+}
+
+.DraftEditor-editorContainer figure video {
+  max-height: 400px;
+}
 
 .DraftEditor-editorContainer figure img {
   width: auto;
   max-width: 100%;
+  max-height: 400px;
 }
 
 .public-DraftEditor-content {
@@ -20,8 +27,8 @@
   font-size: 14px;
   font-family: Exo_500Medium;
   min-height: 60px;
+  max-height: 400px;
 }
-
 
 .public-DraftEditor-content h1 {
   line-height: 37px;

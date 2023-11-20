@@ -17,7 +17,8 @@ export const DEFAULT_NAME = "Anon";
 export const DEFAULT_USERNAME = "anonymous";
 export const SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT = 2500;
 export const NB_ROWS_SHOWN_IN_PREVIEW = 5;
-export const ARTICLE_COVER_IMAGE_HEIGHT = 240;
+export const ARTICLE_COVER_IMAGE_HEIGHT = 300;
+export const ARTICLE_THUMBNAIL_IMAGE_HEIGHT = 252;
 
 export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
   const hasIcon = reactions.find((r) => r.icon === icon);
@@ -89,7 +90,7 @@ export const urlMatch = (text: string) =>
 
 export const postResultToPost = (
   networkId: string,
-  postResult: PostResultExtra | PostResult
+  postResult: PostResultExtra | PostResult,
 ) => {
   const post: Post = {
     category: postResult.category,
@@ -111,7 +112,7 @@ export const postResultToPost = (
 
 export const replaceFileInArray = (
   files: LocalFileData[],
-  newFile: LocalFileData
+  newFile: LocalFileData,
 ) => {
   const oldFile = files.find((file) => file.url === newFile.url);
   if (!oldFile) return;
@@ -123,14 +124,14 @@ export const replaceFileInArray = (
 
 export const removeFileFromArray = (
   files: LocalFileData[],
-  damnedFile: LocalFileData
+  damnedFile: LocalFileData,
 ) => {
   return files.filter((file) => file.url !== damnedFile.url);
 };
 
 export const convertGIFToLocalFileType = (
   gif: string,
-  fileName: string
+  fileName: string,
 ): LocalFileData => ({
   file: new File([], fileName),
   fileName,

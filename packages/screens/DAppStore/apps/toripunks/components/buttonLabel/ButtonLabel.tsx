@@ -2,7 +2,7 @@ import { StyleProp, View, ViewStyle, Text } from "react-native";
 
 import { useContentContext } from "../../context/ContentProvider";
 
-export interface ButtonLabelType {
+interface ButtonLabelType {
   text: string;
   size: "S" | "Mobile";
   style?: StyleProp<ViewStyle>;
@@ -28,6 +28,7 @@ export const ButtonLabel: React.FC<ButtonLabelType> = ({
   return (
     <View
       style={[
+        // @ts-expect-error
         {
           width: size === "Mobile" ? 160 : 238,
           height: "fit-content",

@@ -38,7 +38,7 @@ interface PrettyTokenData {
 }
 
 export const imageDisplayLabel = "Image URL";
-export const publicNameDisplayLabel = "Public Name";
+const publicNameDisplayLabel = "Public Name";
 
 // From a token data, returns an array with these data ordered and containing a pretty label
 // FIXME: type this properly

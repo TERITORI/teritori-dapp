@@ -11,6 +11,7 @@ export const Welcome = () => {
 
   return (
     <View
+      // @ts-expect-error
       style={{
         height: "74vh",
         justifyContent: isMinimunWindowWidth ? "flex-end" : "space-between",

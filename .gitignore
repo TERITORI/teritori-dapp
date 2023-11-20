@@ -14,6 +14,9 @@ web-build/
 # macOS
 .DS_Store
 
+# dbs
+/multisig.db
+
 # @generated: @expo/electron-adapter@0.0.55
 /.expo/*
 # Expo Web
@@ -75,3 +78,11 @@ buck-out/
 .expo/
 
 # @end expo-cli
+
+
+# codegen
+/.weshgen/
+
+
+# weshnet
+temp/

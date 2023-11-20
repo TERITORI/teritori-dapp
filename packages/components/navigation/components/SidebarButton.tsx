@@ -1,11 +1,8 @@
 import { useIsFocused } from "@react-navigation/native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, View, ViewStyle } from "react-native";
 import Animated, {
-  // Extrapolate,
-  // interpolate,
   useAnimatedStyle,
-  // withSpring,
   withTiming,
 } from "react-native-reanimated";
 
@@ -49,7 +46,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   const { name: currentRouteName } = useAppRoute();
   const allNestedRoutes = useMemo(
     () => (nested ? Object.values(nested).map((d) => d.route) : []),
-    [nested]
+    [nested],
   );
   const [isNestedBarExpanded, setIsNestedBarExpanded] =
     useState<boolean>(false);
@@ -65,7 +62,6 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
     }
   }, [nested, allNestedRoutes, currentRouteName, isNestedBarExpanded, route]);
 
-  // hooks
   useEffect(() => {
     setIsNestedBarExpanded((isNestedBarExpanded) => {
       if (
@@ -80,13 +76,11 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
     });
   }, [allNestedRoutes, currentRouteName, isFocused]);
 
-  // functions
   const toggleNestedSidebar = useCallback(
     () => setIsNestedBarExpanded((isNestedBarExpanded) => !isNestedBarExpanded),
-    []
+    [],
   );
 
-  // animations
   const opacityStyle = useAnimatedStyle(
     () => ({
       opacity: isSidebarExpanded
@@ -97,47 +91,22 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
             duration: 100,
           }),
     }),
-    [isSidebarExpanded]
+    [isSidebarExpanded],
   );
-
-  // const nestedBarStyle = useAnimatedStyle(
-  //   () => ({
-  //     height: isNestedBarExpanded
-  //       ? withSpring(
-  //           32 * (allNestedRoutes?.length || 1) + layout.spacing_x0_5 * 2
-  //         )
-  //       : withTiming(0),
-  //     opacity: isNestedBarExpanded ? withSpring(1) : withTiming(0),
-  //   }),
-  //   [isNestedBarExpanded]
-  // );
-
-  // const rotateStyle = useAnimatedStyle(() => {
-  //   const rotate = interpolate(
-  //     isNestedBarExpanded ? 1 : 0,
-  //     [0, 1],
-  //     [0, 180],
-  //     Extrapolate.CLAMP
-  //   );
-
-  //   return {
-  //     transform: [{ rotate: `${rotate}deg` }],
-  //   };
-  // }, [isNestedBarExpanded]);
 
   return (
     <CustomPressable
       onPress={isComingSoon ? () => {} : onPress && (() => onPress(route))}
       disabled={isSelected}
-      style={styles.container}
+      style={containerCStyle}
     >
       {({ hovered }) => (
         <View>
-          <View style={styles.titleContainer}>
+          <View style={titleContainerCStyle}>
             {isSelected && <SideNotch style={{ left: -layout.spacing_x2 }} />}
             <View
               style={[
-                styles.svgContainer,
+                svgContainerCStyle,
                 isSelected && { borderColor: primaryColor },
                 isComingSoon && { opacity: 0.5 },
               ]}
@@ -145,7 +114,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
               <SVGorImageIcon icon={icon} iconSize={iconSize} />
             </View>
             <SpacerRow size={2} />
-            <Animated.View style={[styles.rowCenter, opacityStyle]}>
+            <Animated.View style={[rowCenterCStyle, opacityStyle]}>
               <BrandText
                 style={[
                   fontSemibold12,
@@ -155,10 +124,9 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
                 {isComingSoon && hovered ? "Coming Soon" : title}
               </BrandText>
               {nested && (
-                // <Animated.View style={rotateStyle}>
                 <Animated.View>
                   <Pressable
-                    style={styles.chevron}
+                    style={chevronCStyle}
                     onPress={toggleNestedSidebar}
                   >
                     <SVG
@@ -176,9 +144,8 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
           </View>
 
           {nested && isNestedBarExpanded && (
-            // <Animated.View style={nestedBarStyle}>
             <Animated.View>
-              <View style={styles.nestedContainer}>
+              <View style={nestedContainerCStyle}>
                 {Object.values(nested).map((n) => (
                   <SidebarNestedButton
                     key={n.title}
@@ -199,46 +166,47 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    paddingHorizontal: layout.spacing_x2,
-  },
-  titleContainer: {
-    paddingVertical: layout.spacing_x1,
-    alignItems: "center",
-    flexDirection: "row",
-  },
-  rowCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    flex: 1,
-    maxWidth: 120,
-  },
-  svgContainer: {
-    borderWidth: 2,
-    height: 40,
-    width: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    borderColor: neutral33,
-    borderRadius: 20,
-  },
-  chevron: {
-    height: 20,
-    width: 20,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: neutral17,
-  },
-  nestedContainer: {
-    flex: 1,
-    paddingVertical: layout.spacing_x0_5,
-    backgroundColor: neutral17,
-    borderRadius: 8,
-  },
-});
+const containerCStyle: ViewStyle = {
+  width: "100%",
+  paddingHorizontal: layout.spacing_x2,
+};
+
+const titleContainerCStyle: ViewStyle = {
+  paddingVertical: layout.spacing_x1,
+  alignItems: "center",
+  flexDirection: "row",
+};
+
+const rowCenterCStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  flex: 1,
+  maxWidth: 120,
+};
+
+const svgContainerCStyle: ViewStyle = {
+  borderWidth: 2,
+  height: 40,
+  width: 40,
+  justifyContent: "center",
+  alignItems: "center",
+  borderColor: neutral33,
+  borderRadius: 20,
+};
+
+const chevronCStyle: ViewStyle = {
+  height: 20,
+  width: 20,
+  borderRadius: 10,
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: neutral17,
+};
+
+const nestedContainerCStyle: ViewStyle = {
+  flex: 1,
+  paddingVertical: layout.spacing_x0_5,
+  backgroundColor: neutral17,
+  borderRadius: 8,
+};

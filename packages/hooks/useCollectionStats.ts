@@ -8,7 +8,7 @@ import {
   WEI_TOKEN_ADDRESS,
   NetworkKind,
 } from "../networks";
-import { mustGetMarketplaceClient } from "../utils/backend";
+import { getMarketplaceClient } from "../utils/backend";
 
 export const useCollectionStats = (collectionId: string, ownerId?: string) => {
   const [network] = parseNetworkObjectId(collectionId);
@@ -25,7 +25,10 @@ export const useCollectionStats = (collectionId: string, ownerId?: string) => {
   const { data } = useQuery(
     ["collectionStats", collectionId, ownerId],
     async () => {
-      const marketplaceClient = mustGetMarketplaceClient(networkId);
+      const marketplaceClient = getMarketplaceClient(networkId);
+      if (!marketplaceClient) {
+        return null;
+      }
 
       const req = {
         collectionId,
@@ -36,7 +39,7 @@ export const useCollectionStats = (collectionId: string, ownerId?: string) => {
 
       return stats;
     },
-    { staleTime: Infinity, keepPreviousData: true }
+    { staleTime: Infinity, keepPreviousData: true },
   );
 
   const usdPrice = prices["ethereum"]?.["usd"] || 0;
@@ -46,7 +49,7 @@ export const useCollectionStats = (collectionId: string, ownerId?: string) => {
 
     // FIXME: fix from backend to not send nil
     const ether = ethers.utils.formatEther(
-      BigNumber.from(data.totalVolume !== "<nil>" ? data.totalVolume || 0 : 0)
+      BigNumber.from(data.totalVolume !== "<nil>" ? data.totalVolume || 0 : 0),
     );
     return {
       ...data,

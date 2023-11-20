@@ -1,4 +1,3 @@
-import { Decimal } from "@cosmjs/math";
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -9,8 +8,14 @@ import { useInvalidateDAOProposals } from "../../hooks/dao/useDAOProposals";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, parseUserId } from "../../networks";
 import { ConfigureVotingSection } from "../../screens/Organizations/components/ConfigureVotingSection";
-import { toRawURLBase64String } from "../../utils/buffer";
 import { adenaVMCall, extractGnoNumber } from "../../utils/gno";
+import {
+  GnoDAOUpdateSettings,
+  GnoSingleChoiceProposal,
+  GnoModboardsDeletePostMessage,
+  GnoModboardsCreateMessage,
+  GnoMintToriMessage,
+} from "../../utils/gnodao/messages";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
@@ -18,6 +23,10 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import ModalBase from "../modals/ModalBase";
 import { SpacerColumn } from "../spacer";
+
+const toFixed4 = (n: number) => {
+  return Math.round(n * 100);
+};
 
 export const GnoDemo: React.FC<{
   daoId: string;
@@ -38,18 +47,32 @@ export const GnoDemo: React.FC<{
       <ConfigureVotingSection
         onSubmit={async (form) =>
           wrapWithFeedback(async () => {
-            const msg = toRawURLBase64String(
-              encodeUpdateSettings(
-                form.supportPercent,
-                form.minimumApprovalPercent
-              )
-            );
+            const msg: GnoDAOUpdateSettings = {
+              type: "gno.land/p/demo/teritori/dao_proposal_single.UpdateSettings",
+              payload: {
+                threshold: {
+                  thresholdQuorum: {
+                    threshold: {
+                      percent: toFixed4(form.supportPercent),
+                    },
+                    quorum: {
+                      percent: toFixed4(form.minimumApprovalPercent),
+                    },
+                  },
+                },
+              },
+            };
+            const propReq: GnoSingleChoiceProposal = {
+              title: "Update settings",
+              description: "",
+              messages: [msg],
+            };
             await adenaVMCall(network.id, {
               pkg_path: daoAddress,
-              func: "Propose",
+              func: "ProposeJSON",
               caller: wallet.address,
               send: "",
-              args: ["0", "Update settings", "", msg],
+              args: ["0", JSON.stringify(propReq)],
             });
           })()
         }
@@ -67,7 +90,7 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
   const { wrapWithFeedback } = useFeedbacks();
   const addressParts = daoAddress.split("/");
   const [name, setName] = useState(
-    addressParts.length > 0 ? addressParts[addressParts.length - 1] : ""
+    addressParts.length > 0 ? addressParts[addressParts.length - 1] : "",
   );
   const [threadId, setThreadId] = useState("1");
   const [postId, setPostId] = useState("1");
@@ -82,7 +105,7 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
       const client = new GnoJSONRPCProvider(network.endpoint);
       const boardIdRes = await client.evaluateExpression(
         network.modboardsPkgPath,
-        `GetBoardIDFromName("${name}")`
+        `GetBoardIDFromName("${name}")`,
       );
       const boardIdNum = extractGnoNumber(boardIdRes);
       if (!boardIdNum) {
@@ -91,10 +114,10 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
       return extractGnoNumber(
         await client.evaluateExpression(
           network.modboardsPkgPath,
-          `getBoard(${boardIdNum}).flags.GetFlagCount(getFlagID(${threadId}, ${postId}))`
-        )
+          `getBoard(${boardIdNum}).flags.GetFlagCount(getFlagID(${threadId}, ${postId}))`,
+        ),
       );
-    }
+    },
   );
 
   if (network?.kind !== NetworkKind.Gno || !wallet) return null;
@@ -146,7 +169,7 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
           const client = new GnoJSONRPCProvider(network.endpoint);
           const boardIdRes = await client.evaluateExpression(
             network.modboardsPkgPath,
-            `GetBoardIDFromName("${name}")`
+            `GetBoardIDFromName("${name}")`,
           );
           console.log(boardIdRes);
           const boardIdNum = extractGnoNumber(boardIdRes);
@@ -155,24 +178,30 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
           }
           const threadIdNum = parseInt(threadId, 10);
           const postIdNum = parseInt(postId, 10);
-          const msg = toRawURLBase64String(
-            encodeDeletePost(boardIdNum, threadIdNum, postIdNum, reason)
-          );
+          const payload: GnoModboardsDeletePostMessage = {
+            type: "gno.land/r/demo/teritori/modboards.DeletePost",
+            payload: {
+              boardId: boardIdNum,
+              threadId: threadIdNum,
+              postId: postIdNum,
+              reason,
+            },
+          };
+          const propReq: GnoSingleChoiceProposal = {
+            title: threadIdNum === postIdNum ? "Delete thread" : "Delete post",
+            description: "",
+            messages: [payload],
+          };
           await adenaVMCall(
             network.id,
             {
               pkg_path: daoAddress,
-              func: "Propose",
+              func: "ProposeJSON",
               caller: wallet.address,
               send: "",
-              args: [
-                "0",
-                threadIdNum === postIdNum ? "Delete thread" : "Delete post",
-                "",
-                msg,
-              ],
+              args: ["0", JSON.stringify(propReq)],
             },
-            { gasWanted: 10000000 }
+            { gasWanted: 10000000 },
           );
         })}
       />
@@ -203,17 +232,27 @@ const CreateBoard: React.FC<{ daoId: string }> = ({ daoId }) => {
         text="Propose creation"
         loader
         onPress={wrapWithFeedback(async () => {
-          const msg = toRawURLBase64String(encodeCreateBoard(name));
+          const payload: GnoModboardsCreateMessage = {
+            type: "gno.land/r/demo/teritori/modboards.CreateBoard",
+            payload: {
+              name,
+            },
+          };
+          const propReq: GnoSingleChoiceProposal = {
+            title: `Create board ${name}`,
+            description: "",
+            messages: [payload],
+          };
           await adenaVMCall(
             network.id,
             {
               pkg_path: daoAddress,
-              func: "Propose",
+              func: "ProposeJSON",
               caller: wallet.address,
               send: "",
-              args: ["0", "Create moderated board", "", msg],
+              args: ["0", JSON.stringify(propReq)],
             },
-            { gasWanted: 10000000 }
+            { gasWanted: 10000000 },
           );
         })}
       />
@@ -253,13 +292,24 @@ const MintTori: React.FC<{ daoId: string }> = ({ daoId }) => {
         text="Propose mint"
         loader
         onPress={wrapWithFeedback(async () => {
-          const msg = toRawURLBase64String(encodeMintTori(amount, recipient));
+          const payload: GnoMintToriMessage = {
+            type: "gno.land/r/demo/teritori/tori.Mint",
+            payload: {
+              amount: parseInt(amount, 10),
+              address: recipient,
+            },
+          };
+          const msg: GnoSingleChoiceProposal = {
+            title: `Mint ${amount} utori to ${recipient}`,
+            description: "",
+            messages: [payload],
+          };
           await adenaVMCall(network.id, {
             pkg_path: daoAddress,
-            func: "Propose",
+            func: "ProposeJSON",
             caller: wallet.address,
             send: "",
-            args: ["0", `Mint ${amount} Tori to ${recipient}`, "", msg],
+            args: ["0", JSON.stringify(msg)],
           });
         })}
       />
@@ -267,7 +317,7 @@ const MintTori: React.FC<{ daoId: string }> = ({ daoId }) => {
   );
 };
 
-export const GnoCreateProposal: React.FC<{ daoId: string | undefined }> = ({
+const GnoCreateProposal: React.FC<{ daoId: string | undefined }> = ({
   daoId,
 }) => {
   const [title, setTitle] = useState("");
@@ -316,123 +366,29 @@ export const GnoCreateProposal: React.FC<{ daoId: string | undefined }> = ({
           style={{ marginBottom: modalMarginPadding }}
           onPress={wrapWithFeedback(
             async () => {
-              await adenaVMCall(network.id, {
-                caller: selectedWallet.address,
-                send: "",
-                pkg_path: daoAddress,
-                func: "Propose",
-                args: ["0", title, description, ""],
-              });
+              const propReq: GnoSingleChoiceProposal = {
+                title,
+                description,
+                messages: [],
+              };
+              await adenaVMCall(
+                network.id,
+                {
+                  caller: selectedWallet.address,
+                  send: "",
+                  pkg_path: daoAddress,
+                  func: "ProposeJSON",
+                  args: ["0", JSON.stringify(propReq)],
+                },
+                { gasWanted: 10000000 },
+              );
               setModalVisible(false);
               await invalidateDAOProposals();
             },
-            { title: "Success", message: "Proposal created" }
+            { title: "Success", message: "Proposal created" },
           )}
         />
       </ModalBase>
     </>
   );
-};
-
-const encodeCreateBoard = (name: string) => {
-  const b = Buffer.alloc(16000); // TODO: compute size or concat
-  let offset = 0;
-
-  const t = "CreateBoard";
-  b.writeUInt16BE(t.length, offset);
-  offset += 2;
-  b.write(t, offset);
-  offset += t.length;
-
-  b.writeUInt16BE(name.length, offset);
-  offset += 2;
-  b.write(name, offset);
-  offset += name.length;
-
-  return Buffer.from(b.subarray(0, offset));
-};
-
-const encodeDeletePost = (
-  boardId: number,
-  threadId: number,
-  postId: number,
-  reason: string
-) => {
-  const b = Buffer.alloc(16000); // TODO: compute size or concat
-  let offset = 0;
-
-  const t = "DeletePost";
-  b.writeUInt16BE(t.length, offset);
-  offset += 2;
-  b.write(t, offset);
-  offset += t.length;
-
-  b.writeUInt32BE(0, offset);
-  offset += 4;
-  b.writeUInt32BE(boardId, offset);
-  offset += 4;
-
-  b.writeUInt32BE(0, offset);
-  offset += 4;
-  b.writeUInt32BE(threadId, offset);
-  offset += 4;
-
-  b.writeUInt32BE(0, offset);
-  offset += 4;
-  b.writeUInt32BE(postId, offset);
-  offset += 4;
-
-  b.writeUInt16BE(reason.length, offset);
-  offset += 2;
-  b.write(reason, offset);
-  offset += reason.length;
-
-  return Buffer.from(b.subarray(0, offset));
-};
-
-const encodeUpdateSettings = (threshold: number, quorum: number) => {
-  const b = Buffer.alloc(16000); // TODO: compute size or concat
-  let offset = 0;
-
-  const t = "UpdateSettings";
-  b.writeUInt16BE(t.length, offset);
-  offset += 2;
-  b.write(t, offset);
-  offset += t.length;
-
-  b.writeUInt8(1, offset);
-  offset += 1;
-
-  b.writeUInt16BE(threshold * 100, offset);
-  offset += 2;
-
-  b.writeUInt16BE(quorum * 100, offset);
-  offset += 2;
-
-  return Buffer.from(b.subarray(0, offset));
-};
-
-const encodeMintTori = (amount: string, recipient: string) => {
-  const b = Buffer.alloc(16000); // TODO: compute size or concat
-  let offset = 0;
-
-  const t = "MintTori";
-  b.writeUInt16BE(t.length, offset);
-  offset += 2;
-  b.write(t, offset);
-  offset += t.length;
-
-  b.writeUInt16BE(recipient.length, offset);
-  offset += 2;
-  b.write(recipient, offset);
-  offset += recipient.length;
-
-  const amountDec = Decimal.fromUserInput(amount, 6);
-  const amountNumber = parseInt(amountDec.atomics, 10);
-  b.writeUInt32BE(0, offset);
-  offset += 4;
-  b.writeUInt32BE(amountNumber, offset);
-  offset += 4;
-
-  return Buffer.from(b.subarray(0, offset));
 };

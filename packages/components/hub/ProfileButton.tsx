@@ -15,6 +15,7 @@ import {
   getStakingCurrency,
   mustGetGnoNetwork,
   parseUserId,
+  NetworkFeature,
 } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { VmCall, adenaVMCall } from "../../utils/gno";
@@ -41,6 +42,9 @@ export const ProfileButton: React.FC<{
   const selectedWallet = useSelectedWallet();
   const network = getNetwork(selectedWallet?.networkId);
   const { metadata } = useNSUserInfo(selectedWallet?.userId);
+  if (!network?.features.includes(NetworkFeature.NameService)) {
+    return null;
+  }
 
   if (selectedWallet && metadata?.tokenId)
     return (
@@ -56,14 +60,14 @@ export const ProfileButton: React.FC<{
                 },
               }
             : metadata.tokenId
-            ? {
-                screen: "TNSHome",
-                params: {
-                  modal: "update-name",
-                  name: metadata.tokenId.replace(".tori", ""),
-                },
-              }
-            : { screen: "ComingSoon" }
+              ? {
+                  screen: "TNSHome",
+                  params: {
+                    modal: "update-name",
+                    name: metadata.tokenId.replace(".tori", ""),
+                  },
+                }
+              : { screen: "ComingSoon" }
         }
       >
         <SecondaryButtonOutline
@@ -78,7 +82,7 @@ export const ProfileButton: React.FC<{
   return <RegisterButton networkId={network?.id} style={style} />;
 };
 
-export const RegisterButton: React.FC<{
+const RegisterButton: React.FC<{
   style?: StyleProp<ViewStyle>;
   networkId: string | undefined;
 }> = ({ networkId, style }) => {
@@ -128,7 +132,7 @@ export const RegisterButton: React.FC<{
 
 const gnoNameCost = 200_000_000; // MAYBE TODO: fetch min fee from contract https://testnet.gno.teritori.com/r/demo/users/users.gno
 
-export const RegisterGnoNameModal: React.FC<{
+const RegisterGnoNameModal: React.FC<{
   visible: boolean;
   networkId: string | undefined;
   onClose?: () => void;
@@ -144,7 +148,7 @@ export const RegisterGnoNameModal: React.FC<{
   const denom = stakingCurrency?.denom;
   const bal = denom ? balances?.find((b) => b.denom === denom) : undefined;
   const notEnoughFunds = Long.fromString(bal?.amount || "0").lessThan(
-    Long.fromNumber(gnoNameCost)
+    Long.fromNumber(gnoNameCost),
   );
   const buttonDisabled = !name || !!nsInfo || isLoading || notEnoughFunds;
   const queryClient = useQueryClient();
@@ -188,8 +192,8 @@ export const RegisterGnoNameModal: React.FC<{
           nsInfo
             ? "Already taken"
             : notEnoughFunds
-            ? "Not enough funds"
-            : "Register"
+              ? "Not enough funds"
+              : "Register"
         }
         disabled={buttonDisabled}
         fullWidth
@@ -209,10 +213,10 @@ export const RegisterGnoNameModal: React.FC<{
             await adenaVMCall(network.id, req, { gasWanted: 2_000_000 });
           })();
           queryClient.invalidateQueries(
-            nsNameInfoQueryKey(networkId, nameWithTLD)
+            nsNameInfoQueryKey(networkId, nameWithTLD),
           );
           queryClient.invalidateQueries(
-            nsPrimaryAliasQueryKey(selectedWallet?.userId)
+            nsPrimaryAliasQueryKey(selectedWallet?.userId),
           );
           onClose?.();
         }}

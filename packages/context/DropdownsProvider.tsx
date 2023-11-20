@@ -1,5 +1,6 @@
 import React, {
   createContext,
+  ReactNode,
   RefObject,
   useCallback,
   useContext,
@@ -21,9 +22,11 @@ const defaultValue: DefaultValue = {
   openDropdown: () => {},
 };
 
-export const DropdownsContext = createContext(defaultValue);
+const DropdownsContext = createContext(defaultValue);
 
-export const DropdownsContextProvider: React.FC = ({ children }) => {
+export const DropdownsContextProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [openedDropdownRef, setOpenedDropdownRef] = useState<RefObject<any>>();
 
   const closeOpenedDropdown = useCallback(() => {
@@ -42,14 +45,14 @@ export const DropdownsContextProvider: React.FC = ({ children }) => {
         setOpenedDropdownRef(dropdownRef);
       }
     },
-    [closeOpenedDropdown, openedDropdownRef]
+    [closeOpenedDropdown, openedDropdownRef],
   );
 
   const isDropdownOpen = useCallback(
     (dropdownRef: RefObject<any>) => {
       return dropdownRef === openedDropdownRef;
     },
-    [openedDropdownRef]
+    [openedDropdownRef],
   );
 
   const handlePressOut = useCallback(
@@ -62,7 +65,7 @@ export const DropdownsContextProvider: React.FC = ({ children }) => {
         closeOpenedDropdown();
       }
     },
-    [closeOpenedDropdown, openedDropdownRef]
+    [closeOpenedDropdown, openedDropdownRef],
   );
 
   return (

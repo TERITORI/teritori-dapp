@@ -1,21 +1,20 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 
-import { Status } from "../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
 import { mustGetGnoNetwork } from "../networks";
 
-export interface AdenaDoContractMessage {
+interface AdenaDoContractMessage {
   type: string;
   value: { [key in string]: any };
 }
 
-export interface RequestDocontractMessage {
+interface RequestDocontractMessage {
   messages: AdenaDoContractMessage[];
   gasFee: number;
   gasWanted: number;
   memo?: string;
 }
 
-export interface AdenaDoContractOpts {
+interface AdenaDoContractOpts {
   gasFee?: number;
   gasWanted?: number;
   memo?: string;
@@ -24,7 +23,7 @@ export interface AdenaDoContractOpts {
 export const adenaDoContract = async (
   networkId: string,
   messages: AdenaDoContractMessage[],
-  opts?: AdenaDoContractOpts
+  opts?: AdenaDoContractOpts,
 ) => {
   const adena = (window as any).adena;
   const network = mustGetGnoNetwork(networkId);
@@ -32,8 +31,8 @@ export const adenaDoContract = async (
   const height = await client.getBlockNumber();
   const req: RequestDocontractMessage = {
     messages,
-    gasFee: opts?.gasFee === undefined ? 1000000 : opts.gasFee,
-    gasWanted: opts?.gasWanted === undefined ? 1000000 : opts.gasWanted,
+    gasFee: opts?.gasFee === undefined ? 1 : opts.gasFee,
+    gasWanted: opts?.gasWanted === undefined ? 10000000 : opts.gasWanted,
     memo: opts?.memo,
   };
   const res = await adena.DoContract(req);
@@ -43,7 +42,7 @@ export const adenaDoContract = async (
   const hash: string = res.data.hash;
   const { height: txHeight, index } = await client.waitForTransaction(
     hash,
-    height
+    height,
   );
   const blockResult = await client.getBlockResult(txHeight);
   const deliverResults = blockResult.results.deliver_tx || [];
@@ -52,6 +51,7 @@ export const adenaDoContract = async (
   }
   const err = deliverResults[index].ResponseBase.Error;
   if (err) {
+    console.error(deliverResults[index]);
     throw new Error(JSON.stringify(err));
   }
   return hash;
@@ -68,27 +68,27 @@ export interface VmCall {
 export const adenaVMCall = async (
   networkId: string,
   vmCall: VmCall,
-  opts?: AdenaDoContractOpts
+  opts?: AdenaDoContractOpts,
 ) => {
   await adenaDoContract(
     networkId,
     [{ type: "/vm.m_call", value: vmCall }],
-    opts
+    opts,
   );
 };
 
-export interface Package {
+interface Package {
   Name: string;
   Path: string;
   Files: PackageFile[];
 }
 
-export interface PackageFile {
+interface PackageFile {
   Name: string;
   Body: string;
 }
 
-export interface VmAddPackage {
+interface VmAddPackage {
   creator: string;
   package?: Package;
   deposit: string;
@@ -97,16 +97,14 @@ export interface VmAddPackage {
 export const adenaAddPkg = async (
   networkId: string,
   vmAddPackage: VmAddPackage,
-  opts?: AdenaDoContractOpts
+  opts?: AdenaDoContractOpts,
 ) => {
   await adenaDoContract(
     networkId,
     [{ type: "/vm.m_addpkg", value: vmAddPackage }],
     {
-      gasFee: 1,
-      gasWanted: 5000000,
       ...opts,
-    }
+    },
   );
 };
 
@@ -120,15 +118,4 @@ export const extractGnoString = (str: string) => {
 };
 export const extractGnoJSONString = (str: string) => {
   return JSON.parse(extractGnoString(str));
-};
-export const proposalStatusFromNumber = (status: number): Status => {
-  switch (status) {
-    case 0:
-      return "open";
-    case 1:
-      return "passed";
-    case 2:
-      return "executed";
-  }
-  return "open";
 };

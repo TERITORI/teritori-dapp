@@ -20,14 +20,14 @@ export type FetchCommentResponse = {
   list: PostResult[];
 } | null;
 
-export type PostResultWithCreatedAt = PostResult & {
+type PostResultWithCreatedAt = PostResult & {
   created_at: number;
 };
 
 export const combineFetchCommentPages = (pages: FetchCommentResponse[]) =>
   pages.reduce(
     (acc: PostResult[], page) => [...acc, ...(page?.list || [])],
-    []
+    [],
   );
 
 type ConfigType = {
@@ -39,7 +39,7 @@ type ConfigType = {
 const fetchTeritoriComments = async (
   networkId: string,
   pageParam: number,
-  parentId?: string
+  parentId?: string,
 ) => {
   const client = await nonSigningSocialFeedClient({
     networkId,
@@ -57,7 +57,7 @@ const fetchTeritoriComments = async (
 
 const fetchGnoComments = async (
   selectedNetwork: GnoNetworkInfo,
-  parentId: string
+  parentId: string,
 ): Promise<FetchCommentResponse> => {
   const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
 
@@ -66,7 +66,7 @@ const fetchGnoComments = async (
 
   const output = await provider.evaluateExpression(
     selectedNetwork.socialFeedsPkgPath || "",
-    `GetComments(${TERITORI_FEED_ID}, ${parentId}, ${offset}, ${limit})`
+    `GetComments(${TERITORI_FEED_ID}, ${parentId}, ${offset}, ${limit})`,
   );
 
   const posts: PostResultWithCreatedAt[] = [];
@@ -114,7 +114,7 @@ export const useFetchComments = ({
         comments = await fetchTeritoriComments(
           selectedNetwork?.id || "",
           pageParam,
-          parentId
+          parentId,
         );
       }
       return comments;
@@ -131,7 +131,7 @@ export const useFetchComments = ({
       staleTime: Infinity,
       refetchOnWindowFocus: false,
       enabled: !!(enabled && parentId),
-    }
+    },
   );
 
   return data;

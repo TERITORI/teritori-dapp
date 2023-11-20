@@ -3,7 +3,7 @@ import { useMemo, useRef } from "react";
 
 import { NFTsRequest, NFT } from "../api/marketplace/v1/marketplace";
 import { parseNetworkObjectId } from "../networks";
-import { mustGetMarketplaceClient } from "../utils/backend";
+import { getMarketplaceClient } from "../utils/backend";
 import { addNftListMetadata } from "../utils/ethereum";
 
 export const useNFTs = (req: NFTsRequest) => {
@@ -17,11 +17,10 @@ export const useNFTs = (req: NFTsRequest) => {
       const objectId = req.ownerId || req.collectionId;
       const [network] = parseNetworkObjectId(objectId);
 
-      if (!network) {
+      const marketplaceClient = getMarketplaceClient(network?.id);
+      if (!marketplaceClient) {
         return { nextCursor: pageParam + req.limit, nfts };
       }
-
-      const marketplaceClient = mustGetMarketplaceClient(network.id);
 
       const pageReq = {
         ...req,
@@ -39,7 +38,7 @@ export const useNFTs = (req: NFTsRequest) => {
 
       return { nextCursor: pageParam + req.limit, nfts };
     },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor }
+    { getNextPageParam: (lastPage) => lastPage.nextCursor },
   );
 
   const nfts = useMemo(() => {

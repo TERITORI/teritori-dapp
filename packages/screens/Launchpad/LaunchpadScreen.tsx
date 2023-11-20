@@ -11,7 +11,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { CollectionsCarouselHeader } from "../../components/carousels/CollectionsCarouselHeader";
 import { CollectionGallery } from "../../components/collections/CollectionGallery";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getNetwork } from "../../networks";
+import { getNetwork, NetworkFeature } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 
@@ -19,7 +19,7 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
   const selectedNetworkId = useSelectedNetworkId();
 
   return (
-    <ScreenContainer>
+    <ScreenContainer forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}>
       <View
         style={{
           paddingBottom: layout.contentSpacing,
@@ -88,6 +88,6 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
 
 const filter = (c: Collection) => {
   return !(getNetwork(c.networkId)?.excludeFromLaunchpadList || []).includes(
-    c.mintAddress
+    c.mintAddress,
   );
 };

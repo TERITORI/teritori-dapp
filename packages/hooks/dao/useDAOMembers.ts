@@ -8,9 +8,17 @@ import {
   NetworkKind,
   parseUserId,
 } from "../../networks";
-import { extractGnoString } from "../../utils/gno";
+import { extractGnoJSONString } from "../../utils/gno";
+import { VotingGroupConfig } from "../../utils/gnodao/configs";
 
 // FIXME: pagination
+
+type GnoDAOMember = {
+  address: string;
+  id: number;
+  metadata: string;
+  weight: number;
+};
 
 export const useDAOMembers = (daoId: string | undefined) => {
   const { data: daoGroupAddress } = useDAOGroup(daoId);
@@ -27,49 +35,41 @@ export const useDAOMembers = (daoId: string | undefined) => {
             return null;
           }
           const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
-            network.id
+            network.id,
           );
           const cw4Client = new Cw4GroupQueryClient(
             cosmwasmClient,
-            daoGroupAddress
+            daoGroupAddress,
           );
           const { members } = await cw4Client.listMembers({ limit: 100 });
           return members;
         }
         case NetworkKind.Gno: {
-          const provider = new GnoJSONRPCProvider(network.endpoint);
-          const res = extractGnoString(
-            await provider.evaluateExpression(daoAddress, `GetBinaryMembers()`)
-          );
-          const membersB64 = res.split(",");
-          const members: { addr: string; weight: number }[] = [];
-          for (const memberB64 of membersB64) {
-            members.push(decodeGnoMember(Buffer.from(memberB64, "base64")));
+          if (!network.groupsPkgPath) {
+            return [];
           }
-          return members;
+          const provider = new GnoJSONRPCProvider(network.endpoint);
+          const moduleConfig: VotingGroupConfig = extractGnoJSONString(
+            await provider.evaluateExpression(
+              daoAddress,
+              "daoCore.VotingModule().ConfigJSON()",
+            ),
+          );
+          const { groupId } = moduleConfig;
+          const res: GnoDAOMember[] = extractGnoJSONString(
+            await provider.evaluateExpression(
+              network.groupsPkgPath,
+              `GetMembersJSON(${groupId})`,
+            ),
+          );
+          return res.map((member) => ({
+            addr: member.address,
+            weight: member.weight,
+          }));
         }
       }
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
   return { members, ...other };
-};
-
-const decodeGnoMember = (buf: Buffer): { addr: string; weight: number } => {
-  let offset = 0;
-
-  // const id = buf.readBigUint64BE(offset);
-  offset += 8;
-
-  const addrLen = buf.readUInt16BE(offset);
-  offset += 2;
-  const addr = buf.slice(offset, offset + addrLen).toString();
-  offset += addrLen;
-
-  // const weightHighBits = buf.readUInt32BE(offset);
-  offset += 4;
-  const weight = buf.readUInt32BE(offset);
-  // offset += 4;
-
-  return { addr, weight };
 };

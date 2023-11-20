@@ -22,9 +22,9 @@ import { BrandText } from "../../components/BrandText";
 import { CurrencyIcon } from "../../components/CurrencyIcon";
 import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
-import { Separator } from "../../components/Separator";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { shortUserAddressFromID } from "../../components/nfts/NFTView";
+import { Separator } from "../../components/separators/Separator";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { Wallet } from "../../context/WalletsProvider";
 import { useBalances } from "../../hooks/useBalances";
@@ -132,7 +132,7 @@ const Header: React.FC<{
 
 const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
   const nft = useSelector((state: RootState) =>
-    selectSelectedNFTDataById(state, id)
+    selectSelectedNFTDataById(state, id),
   );
   const userInfo = useNSUserInfo(nft?.ownerId);
 
@@ -304,7 +304,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
                   nft_contract_addr: nft.nftContractAddress,
                   nft_token_id: tokenId,
                 },
-              })
+              }),
             ),
             contract: network.vaultContractAddress,
             funds,
@@ -320,7 +320,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
           const tx = await cosmwasmClient.signAndBroadcast(
             sender,
             msgs,
-            "auto"
+            "auto",
           );
           if (isDeliverTxFailure(tx)) {
             throw Error(tx.transactionHash);
@@ -340,7 +340,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
         } catch (e) {
           setToastError({
             title: "Error",
-            message: e.toString() || "",
+            message: `${e}`,
             duration: 30000,
           });
         }
@@ -352,7 +352,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
       setLoadingFullScreen,
       setToastError,
       setToastSuccess,
-    ]
+    ],
   );
 
   const onBuyButtonPress = async () => {
@@ -363,12 +363,12 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
   const getTotal = (selectedNFTData: NFT[]) => {
     const sum = selectedNFTData.reduce(
       (partialSum, nft) => partialSum + Number.parseFloat(nft.price),
-      0
+      0,
     );
     return prettyPrice(
       selectedNFTData[0].networkId,
       sum.toString(10),
-      selectedNFTData[0].denom
+      selectedNFTData[0].denom,
     );
   };
   const grouped = groupBy(selectedNFTData, (e) => {

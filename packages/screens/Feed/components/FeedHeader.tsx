@@ -1,23 +1,21 @@
-import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { cloneDeep } from "lodash";
-import React, { useEffect, useMemo, useState } from "react";
-import { StyleSheet } from "react-native";
+import React, { useMemo } from "react";
 
 import { BrandText } from "../../../components/BrandText";
 import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn } from "../../../components/spacer";
 import { Tabs } from "../../../components/tabs/Tabs";
+import { useIsDAOMember } from "../../../hooks/dao/useDAOMember";
 import { useFetchFeed } from "../../../hooks/feed/useFetchFeed";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { NetworkKind } from "../../../networks";
-import { extractGnoNumber } from "../../../utils/gno";
+import { getUserId, NetworkKind, parseUserId } from "../../../networks";
 import { feedsTabItems } from "../../../utils/social-feed";
 import { primaryColor } from "../../../utils/style/colors";
 import { fontSemibold16 } from "../../../utils/style/fonts";
 
-export type FeedHeaderProps = {
+type FeedHeaderProps = {
   selectedTab: keyof typeof feedsTabItems;
   onTabChange: (value: keyof typeof feedsTabItems) => void;
 };
@@ -31,7 +29,9 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkKind = selectedNetworkInfo?.kind;
   const selectedWallet = useSelectedWallet();
-  const [isDAOMember, setIsDAOMember] = useState(false);
+  const isModerationDAOMember = useIsModerationDAOMember(
+    selectedWallet?.userId,
+  );
 
   const req = {
     filter: {
@@ -60,41 +60,12 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
       res.moderationDAO.iconSVG = null;
     }
 
-    if (selectedNetworkKind !== NetworkKind.Gno || !isDAOMember) {
+    if (selectedNetworkKind !== NetworkKind.Gno || !isModerationDAOMember) {
       delete res["moderationDAO"];
     }
 
     return res;
-  }, [hasFlaggedPosts, isDAOMember, selectedNetworkKind]);
-
-  useEffect(() => {
-    if (selectedNetworkInfo?.kind !== NetworkKind.Gno) {
-      return;
-    }
-
-    if (!selectedWallet?.address) {
-      return;
-    }
-
-    if (!selectedNetworkInfo.groupsPkgPath) {
-      console.error("groupsPkgPath is not provided");
-      return;
-    }
-
-    const client = new GnoJSONRPCProvider(selectedNetworkInfo?.endpoint);
-    const socialFeedsDAOGGroupId = "1"; // 0000000001
-
-    client
-      .evaluateExpression(
-        selectedNetworkInfo.groupsPkgPath,
-        `GetMemberWeightByAddress(${socialFeedsDAOGGroupId}, "${selectedWallet.address}")`
-      )
-      .then((result) => {
-        const value = extractGnoNumber(result);
-        setIsDAOMember(value > 0);
-      })
-      .catch((e) => console.error(e));
-  }, [selectedNetworkInfo, selectedWallet?.address]);
+  }, [hasFlaggedPosts, isModerationDAOMember, selectedNetworkKind]);
 
   return (
     <>
@@ -102,7 +73,13 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
         items={adjustedTabItems}
         selected={selectedTab}
         onSelect={onTabChange}
-        style={[styles.header, { width }]}
+        style={{
+          alignSelf: "center",
+          height: 64,
+          zIndex: 9,
+          elevation: 9,
+          width,
+        }}
         borderColorTabSelected={primaryColor}
         gradientText
         tabTextStyle={fontSemibold16}
@@ -122,13 +99,12 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  header: {
-    alignSelf: "center",
-    height: 64,
-    zIndex: 9,
-    elevation: 9,
-  },
-});
+const useIsModerationDAOMember = (userId: string | undefined) => {
+  const [network] = parseUserId(userId);
+  let daoId;
+  switch (network?.kind) {
+    case NetworkKind.Gno:
+      daoId = getUserId(network.id, network.socialFeedsDAOPkgPath);
+  }
+  return useIsDAOMember(daoId, userId);
+};

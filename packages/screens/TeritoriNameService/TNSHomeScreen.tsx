@@ -24,11 +24,16 @@ import { useIsLeapConnected } from "../../hooks/useIsLeapConnected";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind, getCollectionId, getCosmosNetwork } from "../../networks";
+import {
+  NetworkKind,
+  getCollectionId,
+  getCosmosNetwork,
+  NetworkFeature,
+} from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 
-export type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
-export type TNSModals =
+type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
+type TNSModals =
   | "TNSManage"
   | "TNSRegister"
   | "TNSExplore"
@@ -50,7 +55,7 @@ const TNSPathMap = {
 export type TNSCloseHandler = (
   modalName?: TNSModals,
   navigateTo?: TNSModals,
-  name?: string
+  name?: string,
 ) => void;
 
 export interface TNSModalCommonProps {
@@ -76,7 +81,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
   const collectionId = getCollectionId(
     selectedNetwork?.id,
-    selectedNetwork?.nameServiceContractAddress
+    selectedNetwork?.nameServiceContractAddress,
   );
 
   const isKeplrConnected = useIsKeplrConnected();
@@ -85,7 +90,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   const handleModalClose: TNSCloseHandler = (
     modalName,
     navigateBackTo,
-    _name = name
+    _name = name,
   ) => {
     if (modalName) {
       navigation.navigate("TNSHome", {
@@ -109,7 +114,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
       //@ts-ignore
       const routeName = Object.keys(TNSPathMap).find(
         //@ts-ignore
-        (key) => TNSPathMap[key] === modal
+        (key) => TNSPathMap[key] === modal,
       );
       //@ts-ignore
 
@@ -142,6 +147,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
     <ScreenContainer
       noMargin={width <= 1600}
       headerChildren={<BrandText>Name Service</BrandText>}
+      forceNetworkFeatures={[NetworkFeature.NameService]}
       forceNetworkKind={NetworkKind.Cosmos}
     >
       <View
@@ -161,7 +167,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
           }}
         >
           <FlowCard
-            disabled={!isKeplrConnected || !isLeapConnected}
+            disabled={!isKeplrConnected && !isLeapConnected}
             label="Register"
             description="Register and configure a new name"
             iconSVG={registerSVG}
@@ -170,7 +176,9 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
             }
           />
           <FlowCard
-            disabled={!isKeplrConnected || !isLeapConnected || !tokens?.length}
+            disabled={
+              (!isKeplrConnected && !isLeapConnected) || !tokens?.length
+            }
             label="Manage"
             description="Transfer, edit, or burn a name that you own"
             iconSVG={penSVG}

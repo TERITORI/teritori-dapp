@@ -2,14 +2,13 @@ import { useLinkProps } from "@react-navigation/native";
 import React, { ReactNode } from "react";
 import {
   Platform,
-  StyleProp,
   TouchableOpacity,
   TouchableOpacityProps,
   View,
   ViewStyle,
 } from "react-native";
 
-export interface OmniLinkToType {
+interface OmniLinkToType {
   screen: string | never;
   params?: object;
 }
@@ -18,13 +17,25 @@ export const OmniLink: React.FC<{
   to: OmniLinkToType;
   action?: any | undefined;
   children: ReactNode | undefined;
-  style?: StyleProp<ViewStyle | TouchableOpacityProps>;
+  style?: TouchableOpacityProps["style"];
   disabled?: boolean;
 }> = ({ to, action, children, style, disabled }) => {
   // @ts-ignore
   const { onPress, ...props } = useLinkProps({ to, action });
 
   const [isHovered, setIsHovered] = React.useState(false);
+
+  const handlePress = (e: any) => {
+    if (Platform.OS === "web") {
+      e.stopPropagation();
+      // we prevent default action only if it's not a middle click, a right click, or a ctrl/cmd click
+      if (!(e.which === 2 || e.metaKey || e.ctrlKey)) {
+        // see https://stackoverflow.com/q/20087368
+        e.preventDefault();
+        return onPress();
+      }
+    }
+  };
 
   if (Platform.OS === "web") {
     // It's important to use a `View` or `Text` on web instead of `TouchableX`
@@ -33,10 +44,8 @@ export const OmniLink: React.FC<{
     // You can add hover effects using `onMouseEnter` and `onMouseLeave`
     return (
       <View
-        // is required to ignore the following to fix a problem with the linter
-        // and allow to use onClick in this special case
         // @ts-expect-error
-        onClick={!disabled ? onPress : null}
+        onClick={!disabled ? handlePress : null}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         style={[

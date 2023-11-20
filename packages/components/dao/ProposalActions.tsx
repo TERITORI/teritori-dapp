@@ -22,6 +22,7 @@ import {
   parseUserId,
 } from "../../networks";
 import { adenaVMCall } from "../../utils/gno";
+import { GnoDAOVoteRequest } from "../../utils/gnodao/messages";
 import { neutral77, primaryColor, errorColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -39,19 +40,19 @@ export const ProposalActions: React.FC<{
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { isDAOMember: selectedWalletIsDAOMember } = useIsDAOMember(
     daoId,
-    selectedWallet?.userId
+    selectedWallet?.userId,
   );
   const invalidateDAOProposals = useInvalidateDAOProposals(daoId);
   const invalidateDAOVoteInfo = useInvalidateDAOVoteInfo(
     daoId,
     selectedWallet?.userId,
-    proposal.id
+    proposal.id,
   );
   const { daoFirstProposalModule } = useDAOFirstProposalModule(daoId);
   const { daoVoteInfo: ownVote } = useDAOVoteInfo(
     daoId,
     selectedWallet?.userId,
-    proposal.id
+    proposal.id,
   );
 
   const vote = async (v: Vote) => {
@@ -71,11 +72,11 @@ export const ProposalActions: React.FC<{
           const daoProposalClient = new DaoProposalSingleClient(
             signingClient,
             walletAddress,
-            daoFirstProposalModule?.address
+            daoFirstProposalModule?.address,
           );
           await daoProposalClient.vote(
             { proposalId: proposal.id, vote: v },
-            "auto"
+            "auto",
           );
           break;
         }
@@ -85,26 +86,30 @@ export const ProposalActions: React.FC<{
           let gnoVote;
           switch (v) {
             case "yes": {
-              gnoVote = "0";
+              gnoVote = 0;
               break;
             }
             case "no": {
-              gnoVote = "1";
+              gnoVote = 1;
               break;
             }
             case "abstain": {
-              gnoVote = "2";
+              gnoVote = 2;
               break;
             }
             default:
               throw new Error("invalid vote");
           }
+          const msg: GnoDAOVoteRequest = {
+            vote: gnoVote,
+            rationale: "Me like it",
+          };
           await adenaVMCall(networkId, {
             caller: walletAddress,
             send: "",
             pkg_path: pkgPath,
-            func: "Vote",
-            args: ["0", proposal.id.toString(), gnoVote, "Me like it"],
+            func: "VoteJSON",
+            args: ["0", proposal.id.toString(), JSON.stringify(msg)],
           });
           break;
         }
@@ -144,7 +149,7 @@ export const ProposalActions: React.FC<{
           const daoProposalClient = new DaoProposalSingleClient(
             signingClient,
             walletAddress,
-            daoFirstProposalModule?.address
+            daoFirstProposalModule?.address,
           );
           const res = await daoProposalClient.execute({
             proposalId: proposal.id,
@@ -154,8 +159,8 @@ export const ProposalActions: React.FC<{
               ev.attributes.find(
                 (attr) =>
                   attr.key === "proposal_execution_failed" &&
-                  attr.value === proposal.id.toString()
-              )
+                  attr.value === proposal.id.toString(),
+              ),
             )
           ) {
             console.error("failed to execute", res);
@@ -176,7 +181,7 @@ export const ProposalActions: React.FC<{
               func: "Execute",
               args: ["0", proposal.id.toString()],
             },
-            { gasWanted: 10000000 }
+            { gasWanted: 10000000 },
           );
           break;
         }

@@ -4,7 +4,7 @@ import { useMintEnded } from "./useMintEnded";
 import { parseNetworkObjectId } from "../networks";
 import { useAppNavigation } from "../utils/navigation";
 
-export interface NavigateToCollectionOpts {
+interface NavigateToCollectionOpts {
   forceSecondaryDuringMint?: boolean;
   forceLinkToMint?: boolean;
 }
@@ -13,14 +13,14 @@ const noop = () => {};
 
 export const useNavigateToCollection = (
   id: string,
-  opts?: NavigateToCollectionOpts
+  opts?: NavigateToCollectionOpts,
 ) => {
   const navigation = useAppNavigation();
 
   const [network, contractAddress] = parseNetworkObjectId(id);
 
   const secondaryDuringMint = (network?.secondaryDuringMintList || []).includes(
-    contractAddress
+    contractAddress,
   );
 
   const noFetch = secondaryDuringMint || !!opts?.forceLinkToMint;
@@ -29,11 +29,11 @@ export const useNavigateToCollection = (
 
   const navToMint = useCallback(
     () => navigation.navigate("MintCollection", { id }),
-    [navigation, id]
+    [navigation, id],
   );
   const navToMarketplace = useCallback(
     () => navigation.navigate("Collection", { id }),
-    [navigation, id]
+    [navigation, id],
   );
 
   if (opts?.forceLinkToMint) {

@@ -5,7 +5,7 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import GradientModalBase from "../../components/modals/GradientModalBase";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
 import { useTNS } from "../../context/TNSProvider";
-import { useNSNameAvailability } from "../../hooks/useNSNameAvailability";
+import { useNSMintAvailability } from "../../hooks/useNSMintAvailability";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork } from "../../networks";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
@@ -21,9 +21,9 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
   const { name, setName } = useTNS();
   const network = getCosmosNetwork(networkId);
   const tokenId = name + network?.nameServiceTLD || "";
-  const { nameAvailable, nameError, loading } = useNSNameAvailability(
+  const { nameAvailable, nameError, loading } = useNSMintAvailability(
     networkId,
-    tokenId
+    tokenId,
   );
 
   return (

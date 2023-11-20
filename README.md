@@ -22,7 +22,7 @@ See it working [Here](https://app.teritori.com/)
 ❯ yarn --version
 3.5.0
 ❯ node --version
-v16.17.0
+v18.1.0
 ❯ npx --version
 8.15.0
 ```
@@ -40,7 +40,7 @@ Then press `w` to open the page in your browser
 ### Build web app
 
 ```
-yarn && npx expo-optimize && npx expo build:web
+yarn && npx expo-optimize && npx expo export:web
 ```
 
 The site is in `web-build/`

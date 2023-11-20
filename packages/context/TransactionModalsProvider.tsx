@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import React, {
+  ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 
 type TransactionModalsContextValue = {
   visible: boolean;
@@ -11,7 +17,9 @@ const transactionModalContext =
     setVisible: () => {},
   });
 
-export const TransactionModalsProvider: React.FC = ({ children }) => {
+export const TransactionModalsProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [visible, setVisible] = useState(false);
   const value = useMemo(() => {
     return {

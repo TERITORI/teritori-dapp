@@ -5,10 +5,9 @@ import { FlatList } from "react-native-gesture-handler";
 import { MoreReactionsButton } from "./MoreReactionsButton";
 import { MoreReactionsMenu } from "./MoreReactionsMenu";
 import { Reaction } from "../../../api/feed/v1/feed";
-import { layout } from "../../../utils/style/layout";
 import { SocialStat } from "../SocialStat";
 
-const DEFAULT_NB_EMOJI_SHOWN = 12;
+const DEFAULT_NB_EMOJI_SHOWN = 6;
 
 export const Reactions: React.FC<{
   reactions: Reaction[];
@@ -34,19 +33,19 @@ export const Reactions: React.FC<{
   const [isMoreReactionShown, setMoreReactionsShown] = useState(false);
   const sortedReactions = useMemo(
     () => reactions.sort((a, b) => b.count - a.count),
-    [reactions]
+    [reactions],
   );
   const shownReactions = useMemo(
     () => sortedReactions.slice(0, nbShown),
-    [sortedReactions, nbShown]
+    [sortedReactions, nbShown],
   );
   const hiddenReactions = useMemo(
     () => sortedReactions.slice(nbShown, -1),
-    [sortedReactions, nbShown]
+    [sortedReactions, nbShown],
   );
   const moreReactionsButtonLabel = useMemo(
     () => (isMoreReactionShown ? "Hide" : `+ ${hiddenReactions.length}`),
-    [hiddenReactions, isMoreReactionShown]
+    [hiddenReactions, isMoreReactionShown],
   );
 
   return (
@@ -92,7 +91,6 @@ export const Reactions: React.FC<{
                 label={String(reaction.count)}
                 emoji={reaction.icon}
                 onPress={() => onPressReaction(reaction.icon)}
-                style={{ marginHorizontal: layout.spacing_x0_25 }}
               />
             )}
             keyExtractor={(reaction: Reaction) => reaction.icon}
@@ -101,7 +99,6 @@ export const Reactions: React.FC<{
           {!!hiddenReactions.length && (
             <MoreReactionsButton
               label={moreReactionsButtonLabel}
-              style={{ marginHorizontal: layout.spacing_x0_25 }}
               onPress={() => setMoreReactionsShown((shown) => !shown)}
             />
           )}
@@ -125,8 +122,7 @@ export const Reactions: React.FC<{
 
 // Number of SocialStat displayed depending on a width (A Social Card width)
 export const nbReactionsShown = (viewWidth: number) => {
-  if (viewWidth >= 700) return DEFAULT_NB_EMOJI_SHOWN;
-  else if (viewWidth >= 650) return 7;
+  if (viewWidth >= 650) return DEFAULT_NB_EMOJI_SHOWN;
   else if (viewWidth >= 600) return 5;
   else if (viewWidth >= 580) return 4;
   else return 3;

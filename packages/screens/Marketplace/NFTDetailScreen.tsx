@@ -125,13 +125,13 @@ const Content: React.FC<{
       refresh();
       return txHash;
     },
-    [info, sell, refresh]
+    [info, sell, refresh],
   );
 
   const cancelListing = useCancelNFTListing(
     network?.id,
     info?.nftAddress || "",
-    info?.tokenId || ""
+    info?.tokenId || "",
   );
 
   const handleCancelListing = useCallback(async () => {
@@ -143,7 +143,7 @@ const Content: React.FC<{
 
   if (
     ![NetworkKind.Cosmos, NetworkKind.Ethereum].includes(
-      network?.kind || NetworkKind.Unknown
+      network?.kind || NetworkKind.Unknown,
     )
   ) {
     return (
@@ -234,8 +234,8 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
         navigation.canGoBack()
           ? navigation.goBack()
           : info?.collectionId
-          ? navigation.navigate("Collection", { id: info?.collectionId })
-          : navigation.navigate("Marketplace")
+            ? navigation.navigate("Collection", { id: info?.collectionId })
+            : navigation.navigate("Marketplace")
       }
     >
       <Content key={id} id={id} />
@@ -252,7 +252,7 @@ const teritoriBuy = async (wallet: Wallet, info: NFTInfo) => {
   const signingVaultClient = new TeritoriNftVaultClient(
     signingCosmwasmClient,
     wallet.address,
-    network.vaultContractAddress
+    network.vaultContractAddress,
   );
   const tx = await signingVaultClient.buy(
     { nftContractAddr: info.nftAddress, nftTokenId: info.tokenId },
@@ -263,7 +263,7 @@ const teritoriBuy = async (wallet: Wallet, info: NFTInfo) => {
         amount: info.price,
         denom: info.priceDenom,
       },
-    ]
+    ],
   );
   return tx.transactionHash;
 };
@@ -277,7 +277,7 @@ const ethereumBuy = async (wallet: Wallet, nftInfo: NFTInfo) => {
 
   const vaultClient = NFTVault__factory.connect(
     network.vaultContractAddress,
-    signer
+    signer,
   );
 
   const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();

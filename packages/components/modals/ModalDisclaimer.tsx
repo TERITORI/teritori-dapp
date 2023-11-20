@@ -1,29 +1,15 @@
-import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { Modal, StyleProp, View, ViewStyle } from "react-native";
+import { Modal, View } from "react-native";
 
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-
-// Just an horizontal gradient separator
-const SeparatorGradient: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
-  style,
-}) => (
-  <View style={[{ height: 1, width: "100%" }, style]}>
-    <LinearGradient
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      style={{ height: "100%", width: "100%" }}
-      colors={["#2AF598", "#009EFD"]}
-    />
-  </View>
-);
+import { SeparatorGradient } from "../separators/SeparatorGradient";
 
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
-export const ModalBaseTest: React.FC<{
+const ModalBaseTest: React.FC<{
   label: string;
   onClose?: () => void;
   width?: number;

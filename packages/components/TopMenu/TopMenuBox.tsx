@@ -19,8 +19,8 @@ import { headerHeight, layout, topMenuWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import FlexCol from "../FlexCol";
 import { OmniLink } from "../OmniLink";
-import { Separator } from "../Separator";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+import { Separator } from "../separators/Separator";
 
 export const TopMenuBox: FC<{
   style?: StyleProp<ViewStyle>;

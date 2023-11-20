@@ -40,11 +40,11 @@ export const SidebarMobile: FC = () => {
             windowWidth < MOBILE_SIDEBAR_MAX_WIDTH
               ? windowWidth
               : MOBILE_SIDEBAR_MAX_WIDTH,
-            SpringConfig
+            SpringConfig,
           )
         : withSpring(0, SpringConfig),
     }),
-    [isSidebarExpanded, windowWidth]
+    [isSidebarExpanded, windowWidth],
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
@@ -69,7 +69,7 @@ export const SidebarMobile: FC = () => {
           let { route } = item;
           if (
             item.disabledOn?.includes(
-              selectedNetworkKind || NetworkKind.Unknown
+              selectedNetworkKind || NetworkKind.Unknown,
             )
           ) {
             route = "ComingSoon";
@@ -93,11 +93,11 @@ export const SidebarMobile: FC = () => {
             <SidebarButton
               icon={addSVG}
               iconSize={36}
-              route="ComingSoon"
+              route="DAppStore"
               key="ComingSoon2"
               id="ComingSoon2"
               title=""
-              onPress={() => navigation.navigate("ComingSoon")}
+              onPress={() => navigation.navigate("DAppStore")}
             />
             <SpacerColumn size={1} />
           </>

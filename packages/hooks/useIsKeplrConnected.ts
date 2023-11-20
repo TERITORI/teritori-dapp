@@ -5,6 +5,6 @@ import { WalletProvider } from "../utils/walletProvider";
 export const useIsKeplrConnected = () => {
   const { wallets } = useWallets();
   return !!wallets.find(
-    (wallet) => wallet.provider === WalletProvider.Keplr && wallet.connected
+    (wallet) => wallet.provider === WalletProvider.Keplr && wallet.connected,
   );
 };

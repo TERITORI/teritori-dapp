@@ -5,7 +5,8 @@ import { v4 as uuidv4 } from "uuid";
 import {
   NewPostFormValues,
   PostCategory,
-  SocialFeedMetadata,
+  SocialFeedPostMetadata,
+  ZodSocialFeedPostMetadata,
 } from "./NewsFeed.type";
 import {
   nonSigningSocialFeedClient,
@@ -201,7 +202,7 @@ export const createPost = async ({
       [{ type: "/vm.m_call", value: vmCall }],
       {
         gasWanted: 2_000_000,
-      }
+      },
     );
 
     const provider = new GnoJSONRPCProvider(network.endpoint);
@@ -221,7 +222,7 @@ export const createPost = async ({
       },
       defaultSocialFeedFee,
       "",
-      freePostCount ? undefined : [coin(fee, "utori")]
+      freePostCount ? undefined : [coin(fee, "utori")],
     );
   }
 
@@ -244,8 +245,8 @@ export const generatePostMetadata = ({
   hashtags,
   mentions,
   gifs,
-}: GeneratePostMetadataParams): SocialFeedMetadata => {
-  return {
+}: GeneratePostMetadataParams): SocialFeedPostMetadata => {
+  return ZodSocialFeedPostMetadata.parse({
     title: title || "",
     message: message || "",
     files,
@@ -254,5 +255,5 @@ export const generatePostMetadata = ({
     gifs: gifs || [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-  };
+  });
 };

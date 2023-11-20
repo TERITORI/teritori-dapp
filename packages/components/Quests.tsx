@@ -1,35 +1,16 @@
-import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import React from "react";
 import { View } from "react-native";
 
 import { QuestCard } from "./cards/QuestCard";
 import { Quest } from "../api/marketplace/v1/marketplace";
-import { parseNetworkObjectId } from "../networks";
-import { mustGetMarketplaceClient } from "../utils/backend";
-export const Quests: React.FC<{
-  userId?: string;
-}> = ({ userId }) => {
-  const [quests, setQuests] = useState<Quest[]>([]);
-  const [network] = parseNetworkObjectId(userId);
+import { parseUserId } from "../networks";
+import { getMarketplaceClient } from "../utils/backend";
 
-  useEffect(() => {
-    try {
-      setQuests([]);
-      const backendClient = mustGetMarketplaceClient(network?.id);
-      const stream = backendClient.Quests({
-        limit: 100,
-        offset: 0,
-        userId,
-      });
-      stream.forEach(({ quest }) => {
-        if (!quest) {
-          return;
-        }
-        setQuests((qs) => [...qs, quest]);
-      });
-    } catch (err) {
-      console.warn("failed to fetch quests", err);
-    }
-  }, [network?.id, userId]);
+export const Quests: React.FC<{
+  userId: string | undefined;
+}> = ({ userId }) => {
+  const { data: quests } = useQuests(userId);
 
   const questCardStyle = {
     marginTop: 20,
@@ -45,7 +26,7 @@ export const Quests: React.FC<{
         marginRight: -16,
       }}
     >
-      {quests.map((quest) => (
+      {(quests || []).map((quest) => (
         <QuestCard
           key={quest.id}
           label={quest.title}
@@ -54,5 +35,32 @@ export const Quests: React.FC<{
         />
       ))}
     </View>
+  );
+};
+
+const useQuests = (userId: string | undefined) => {
+  return useQuery(
+    ["quests", userId],
+    async () => {
+      const [network] = parseUserId(userId);
+      const backendClient = getMarketplaceClient(network?.id);
+      if (!backendClient) {
+        return [];
+      }
+      const stream = backendClient.Quests({
+        limit: 100,
+        offset: 0,
+        userId,
+      });
+      const quests: Quest[] = [];
+      await stream.forEach(({ quest }) => {
+        if (!quest) {
+          return;
+        }
+        quests.push(quest);
+      });
+      return quests;
+    },
+    { staleTime: Infinity },
   );
 };

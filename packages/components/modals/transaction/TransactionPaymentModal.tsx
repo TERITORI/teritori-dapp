@@ -123,7 +123,7 @@ export const TransactionPaymentModal: React.FC<{
           // Can buy if only the funds are sufficient
           price &&
           decimalFromAtomics(nftNetworkId, balance, priceDenom).isLessThan(
-            decimalFromAtomics(nftNetworkId, price, priceDenom)
+            decimalFromAtomics(nftNetworkId, price, priceDenom),
           ) ? (
             <View style={{ alignItems: "center", width: "100%" }}>
               <BrandText style={[fontSemibold14, { color: neutral77 }]}>

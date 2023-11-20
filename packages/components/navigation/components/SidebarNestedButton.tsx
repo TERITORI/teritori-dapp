@@ -16,7 +16,7 @@ import { SVG } from "../../SVG";
 import { CustomPressable } from "../../buttons/CustomPressable";
 import { SpacerRow } from "../../spacer";
 
-export type SidebarNestedButtonProps = Omit<SidebarButtonProps, "nested">;
+type SidebarNestedButtonProps = Omit<SidebarButtonProps, "nested">;
 
 export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
   icon,
@@ -35,7 +35,7 @@ export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
     () => ({
       opacity: isSidebarExpanded ? withSpring(1) : withSpring(0),
     }),
-    [isSidebarExpanded]
+    [isSidebarExpanded],
   );
 
   return (

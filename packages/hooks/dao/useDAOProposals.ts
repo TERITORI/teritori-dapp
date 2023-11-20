@@ -13,13 +13,9 @@ import {
   mustGetNonSigningCosmWasmClient,
   parseUserId,
 } from "../../networks";
-import {
-  extractGnoJSONString,
-  extractGnoNumber,
-  extractGnoString,
-} from "../../utils/gno";
+import { extractGnoJSONString } from "../../utils/gno";
 
-export const daoProposalsQueryKey = (daoId: string | undefined) => [
+const daoProposalsQueryKey = (daoId: string | undefined) => [
   "dao-proposals",
   daoId,
 ];
@@ -40,7 +36,10 @@ type GnoDAOProposal = {
   description: string;
   proposer: string;
   status: "Open" | "Passed" | "Executed"; // can also be Unknown($value)
-  messages: unknown[]; // TODO: type
+  threshold: any; // TODO: type
+  totalPower: number;
+  startHeight: number;
+  messages: { type: string; payload: unknown }[]; // TODO: type
   // Ballots     *avl.Tree // dev
   votes: GnoProposalVotes;
   // Status ProposalStatus
@@ -57,7 +56,10 @@ export const useDAOProposals = (daoId: string | undefined) => {
       const provider = new GnoJSONRPCProvider(network.endpoint);
 
       const gnoProposals: GnoDAOProposal[] = extractGnoJSONString(
-        await provider.evaluateExpression(daoAddress, "GetProposalsJSON(0)")
+        await provider.evaluateExpression(
+          daoAddress,
+          `getProposalsJSON(0, 0, "", false)`,
+        ),
       );
 
       const proposals: AppProposalResponse[] = [];
@@ -71,40 +73,10 @@ export const useDAOProposals = (daoId: string | undefined) => {
         const yesVotes = prop.votes.yes;
         const noVotes = prop.votes.no;
         const abstainVotes = prop.votes.abstain;
-
-        // TODO: threshold should be stored in the proposal for executed proposals (maybe passed too)
         const threshold =
-          extractGnoNumber(
-            await provider.evaluateExpression(
-              daoAddress,
-              `uint64(*GetCore().ProposalModules()[0].Threshold().ThresholdQuorum.Threshold.Percent)`
-            )
-          ) / 10000;
-        const quorum =
-          extractGnoNumber(
-            await provider.evaluateExpression(
-              daoAddress,
-              `uint64(*GetCore().ProposalModules()[0].Threshold().ThresholdQuorum.Quorum.Percent)`
-            )
-          ) / 10000;
-
-        const numActions = prop.messages.length;
-        const actions: string[] = [];
-        for (let m = 0; m < numActions; m++) {
-          // TODO: don't do one request per message
-          try {
-            const action = extractGnoString(
-              await provider.evaluateExpression(
-                daoAddress,
-                `GetCore().ProposalModules()[0].Proposals()[${i}].Messages[${m}].String()`
-              )
-            );
-            actions.push(action);
-          } catch (e) {
-            console.error("failed to fetch action", e);
-            actions.push(`${e}`);
-          }
-        }
+          prop.threshold.thresholdQuorum.threshold.percent / 10000;
+        const quorum = prop.threshold.thresholdQuorum.quorum.percent / 10000;
+        const actions = prop.messages.map((m) => JSON.stringify(m));
         // TODO: render actions
         proposals.push({
           id: i,
@@ -118,10 +90,13 @@ export const useDAOProposals = (daoId: string | undefined) => {
             },
             allow_revoting: false,
             expiration: "TODO" as any,
-            msgs: [],
+            msgs: prop.messages.map((m) => ({
+              ...m,
+              gno: true,
+            })),
             actions,
             proposer,
-            start_height: 42,
+            start_height: prop.startHeight,
             status,
             threshold: {
               threshold_quorum: {
@@ -129,13 +104,13 @@ export const useDAOProposals = (daoId: string | undefined) => {
                 quorum: { percent: `${quorum}` },
               },
             },
-            total_power: "0",
+            total_power: prop.totalPower.toString(),
           },
         });
       }
       return proposals;
     },
-    { staleTime: Infinity, enabled: !!daoId }
+    { staleTime: Infinity, enabled: !!daoId },
   );
   if (network?.kind === NetworkKind.Gno) {
     return {
@@ -149,7 +124,7 @@ export const useDAOProposals = (daoId: string | undefined) => {
   };
 };
 
-export const useCosmWasmDAOProposals = (daoId: string | undefined) => {
+const useCosmWasmDAOProposals = (daoId: string | undefined) => {
   const [network] = parseUserId(daoId);
   const networkId = network?.id;
 
@@ -164,7 +139,7 @@ export const useCosmWasmDAOProposals = (daoId: string | undefined) => {
       const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
       const daoProposalClient = new DaoProposalSingleQueryClient(
         cosmwasmClient,
-        proposalModuleAddress
+        proposalModuleAddress,
       );
 
       const allProposals: AppProposalResponse[] = [];
@@ -183,14 +158,14 @@ export const useCosmWasmDAOProposals = (daoId: string | undefined) => {
               ...p.proposal,
               actions: [] as string[],
             },
-          }))
+          })),
         );
         startAfter += listProposals.proposals.length;
       }
 
       return allProposals;
     },
-    { staleTime: Infinity, enabled: !!(networkId && proposalModuleAddress) }
+    { staleTime: Infinity, enabled: !!(networkId && proposalModuleAddress) },
   );
   return { daoProposals: data, ...other };
 };
@@ -199,6 +174,6 @@ export const useInvalidateDAOProposals = (daoId: string | undefined) => {
   const queryClient = useQueryClient();
   return useCallback(
     () => queryClient.invalidateQueries(daoProposalsQueryKey(daoId)),
-    [queryClient, daoId]
+    [queryClient, daoId],
   );
 };

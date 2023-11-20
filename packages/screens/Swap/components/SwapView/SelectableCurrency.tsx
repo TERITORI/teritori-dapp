@@ -5,7 +5,7 @@ import { TouchableOpacity, View } from "react-native";
 import { CurrencyAmount } from "./CurrencyAmount";
 import { BrandText } from "../../../../components/BrandText";
 import { CurrencyIcon } from "../../../../components/CurrencyIcon";
-import { Separator } from "../../../../components/Separator";
+import { Separator } from "../../../../components/separators/Separator";
 import { SpacerColumn } from "../../../../components/spacer";
 import { useBalances } from "../../../../hooks/useBalances";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
@@ -32,19 +32,19 @@ export const SelectableCurrency: React.FC<{
 
   const currencyBalance: Balance | undefined = useMemo(
     () => balances.find((bal) => bal.denom === currency?.denom),
-    [currency?.denom, balances]
+    [currency?.denom, balances],
   );
 
   const currencyNative: NativeCurrencyInfo | undefined = useMemo(
     () => getNativeCurrency(networkId, currency?.denom),
-    [currency?.denom, networkId]
+    [currency?.denom, networkId],
   );
   const currencyNetwork: CosmosNetworkInfo | undefined = useMemo(() => {
     const cosmosNetworks = allNetworks.filter(
-      (networkInfo) => networkInfo.kind === NetworkKind.Cosmos
+      (networkInfo) => networkInfo.kind === NetworkKind.Cosmos,
     ) as CosmosNetworkInfo[];
     return cosmosNetworks.find(
-      (networkInfo) => networkInfo.stakeCurrency === currencyNative?.denom
+      (networkInfo) => networkInfo.stakeCurrency === currencyNative?.denom,
     );
   }, [currencyNative?.denom]);
 
@@ -52,7 +52,7 @@ export const SelectableCurrency: React.FC<{
     if (!currencyNative || !currencyBalance) return 0;
     return Decimal.fromAtomics(
       currencyBalance.amount,
-      currencyNative.decimals
+      currencyNative.decimals,
     ).toFloatApproximation();
   }, [currencyBalance, currencyNative]);
 

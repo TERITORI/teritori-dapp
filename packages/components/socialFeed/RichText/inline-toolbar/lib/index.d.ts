@@ -30,7 +30,7 @@ export interface StoreItemMap {
 }
 export declare type InlineToolbarPluginStore = Store<StoreItemMap>;
 declare const _default: (
-  config?: InlineToolbarPluginConfig
+  config?: InlineToolbarPluginConfig,
 ) => InlineToolBarPlugin;
 export default _default;
 export { Separator };

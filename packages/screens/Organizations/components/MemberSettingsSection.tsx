@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
@@ -10,6 +10,7 @@ import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { patternOnlyNumbers, validateAddress } from "../../../utils/formRules";
 import { neutral33, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
@@ -24,8 +25,25 @@ interface MemberSettingsSectionProps {
 export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
   onSubmit,
 }) => {
-  // const { handleSubmit, control, unregister } = useForm<MemberSettingFormType>();
-  const { handleSubmit, control } = useForm<MemberSettingFormType>();
+  const { handleSubmit, control, resetField } =
+    useForm<MemberSettingFormType>();
+
+  // this effect put the selected wallet address in the first field only on initial load
+  const selectedWallet = useSelectedWallet();
+  const [initialReset, setInitialReset] = useState(false);
+  useEffect(() => {
+    if (initialReset) {
+      return;
+    }
+    if (!selectedWallet?.address) {
+      return;
+    }
+    resetField("members.0.addr", {
+      defaultValue: selectedWallet?.address,
+    });
+    setInitialReset(true);
+  }, [selectedWallet?.address, resetField, initialReset]);
+
   const [addressIndexes, setAddressIndexes] = useState<number[]>([0]);
 
   // functions
@@ -33,7 +51,6 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
     if (addressIndexes.length > 1) {
       const copyIndex = [...addressIndexes].filter((i) => i !== id);
       setAddressIndexes(copyIndex);
-      // unregister(`members.${id}`);
     }
   };
 
@@ -44,7 +61,7 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
   return (
     <View style={styles.fill}>
       <ScrollView contentContainerStyle={styles.container}>
-        <BrandText style={fontSemibold28}>Add member</BrandText>
+        <BrandText style={fontSemibold28}>Members</BrandText>
         <SpacerColumn size={2.5} />
 
         {addressIndexes.map((id, index) => (
@@ -75,6 +92,7 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
                 noBrokenCorners
                 label="Weight"
                 hideLabel={index > 0}
+                defaultValue="1"
                 control={control}
                 rules={{ required: true, pattern: patternOnlyNumbers }}
                 placeHolder="1"

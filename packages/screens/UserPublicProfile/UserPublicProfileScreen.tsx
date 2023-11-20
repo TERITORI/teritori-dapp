@@ -1,5 +1,11 @@
 import { bech32 } from "bech32";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { View } from "react-native";
 
 import {
@@ -28,7 +34,7 @@ import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { Assets } from "../WalletManager/Assets";
 
-const TabContainer: React.FC = ({ children }) => {
+const TabContainer: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { width } = useMaxResolution();
   return (
     <View style={{ flex: 1, alignItems: "center" }}>
@@ -101,8 +107,8 @@ const SelectedTabContent: React.FC<{
             isDAO
               ? undefined
               : selectedWallet?.address !== userAddress
-              ? userInfo?.metadata.tokenId || userAddress
-              : undefined
+                ? userInfo?.metadata.tokenId || userAddress
+                : undefined
           }
           req={feedRequestUser}
         />

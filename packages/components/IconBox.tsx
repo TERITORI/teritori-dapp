@@ -4,7 +4,7 @@ import { SvgProps } from "react-native-svg";
 
 import { SVG } from "./SVG";
 import { CustomPressable } from "./buttons/CustomPressable";
-import { neutral33, neutral77, secondaryColor } from "../utils/style/colors";
+import { neutral77, secondaryColor } from "../utils/style/colors";
 
 interface IconBoxProps {
   onPress: () => void;
@@ -32,10 +32,6 @@ export const IconBox = ({
     <CustomPressable
       style={[
         {
-          height: 32,
-          width: 32,
-          borderRadius: 24,
-          backgroundColor: neutral33,
           alignItems: "center",
           justifyContent: "center",
         },
