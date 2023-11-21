@@ -68,6 +68,7 @@ export type RootStackParamList = {
 
   RWAHome: undefined;
   RWAMintPage: { id: string };
+  RWAPortfolio: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -155,6 +156,7 @@ const navConfig: {
     // === RWA
     RWAHome: "rwa-home",
     RWAMintPage: "rwa-mint-page/:id",
+    RWAPortfolio: "rwa-portfolio",
   },
 };
 

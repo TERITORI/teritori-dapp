@@ -27,6 +27,7 @@ import { OrganizationDeployerScreen } from "../../screens/Organizations/Organiza
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
 import { RWAHomeScreen } from "../../screens/RWA/RWAHomeScreen/RWAHomeScreen";
 import { RWAMintPageScreen } from "../../screens/RWA/RWAMintPage/RWAMintPageScreen";
+import { RWAPortfolioScreen } from "../../screens/RWA/RWAPortfolioScreen/RWAPortfolioScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
@@ -327,6 +328,11 @@ export const Navigator: React.FC = () => {
         name="RWAMintPage"
         component={RWAMintPageScreen}
         options={{ header: () => null, title: screenTitle("RWA Mint Page") }}
+      />
+      <Stack.Screen
+        name="RWAPortfolio"
+        component={RWAPortfolioScreen}
+        options={{ header: () => null, title: screenTitle("RWA My Porfolio") }}
       />
     </Stack.Navigator>
   );
