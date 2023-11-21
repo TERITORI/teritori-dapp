@@ -19,7 +19,7 @@ export const UploadMusicButton: FC<{ onPress: () => void }> = ({ onPress }) => {
           height={layout.spacing_x2}
         />
         <SpacerRow size={1} />
-        <BrandText style={buttonTextStyle}>Upload your music</BrandText>
+        <BrandText style={buttonTextStyle}>Publish as artist</BrandText>
       </TouchableOpacity>
     </>
   );
