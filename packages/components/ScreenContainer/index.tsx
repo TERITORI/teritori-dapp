@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, ReactNode } from "react";
+import React, { useMemo, useCallback, ReactNode, useEffect } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -15,7 +15,9 @@ import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
-import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
+import { getAvailableApps } from "../../screens/DAppStore/query/getFromFile";
+import { setAvailableApps } from "../../store/slices/dapps-store";
+import { useAppDispatch } from "../../store/store";
 import {
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
@@ -67,6 +69,14 @@ export const ScreenContainer: React.FC<{
   forceNetworkKind,
   forceNetworkFeatures,
 }) => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const dAppStoreValues = getAvailableApps();
+
+    dispatch(setAvailableApps(dAppStoreValues));
+  }, [dispatch]);
+
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
@@ -120,7 +130,6 @@ export const ScreenContainer: React.FC<{
   /////////////// default returns
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
-      <DAppStoreData />
       {/*FIXME: Too many containers levels*/}
 
       <View style={styles.container}>

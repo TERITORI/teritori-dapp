@@ -6,6 +6,7 @@ export interface dAppType {
   description: string;
   icon: React.FC<SvgProps> | string;
   route: string;
+  url?: string;
   groupKey: string;
   selectedByDefault: boolean;
   alwaysOn: boolean;
