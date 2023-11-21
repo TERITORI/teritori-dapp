@@ -1,4 +1,4 @@
-import React, {memo, useRef, useState} from "react";
+import React, { memo, useRef, useState } from "react";
 import {
   ViewStyle,
   View,
@@ -7,8 +7,8 @@ import {
   Pressable,
 } from "react-native";
 
-import {NFTTransferModal} from "./NFTTransferModal";
-import {minNFTWidth} from "./NFTs";
+import { NFTTransferModal } from "./NFTTransferModal";
+import { minNFTWidth } from "./NFTs";
 import checkMark from "../../../assets/icons/checkmark-marketplace.svg";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import footerSVG from "../../../assets/icons/footer-regular.svg";
@@ -16,46 +16,45 @@ import gridSVG from "../../../assets/icons/grid.svg";
 import octagonSVG from "../../../assets/icons/octagon.svg";
 import raffleSVG from "../../../assets/icons/raffle.svg";
 import sendSVG from "../../../assets/icons/send.svg";
-import {NFT} from "../../api/marketplace/v1/marketplace";
-import {useDropdowns} from "../../context/DropdownsProvider";
-import {useIsMobile} from "../../hooks/useIsMobile";
-import {useMaxResolution} from "../../hooks/useMaxResolution";
-import {useNSUserInfo} from "../../hooks/useNSUserInfo";
+import { NFT } from "../../api/marketplace/v1/marketplace";
+import { useDropdowns } from "../../context/DropdownsProvider";
+import { useIsMobile } from "../../hooks/useIsMobile";
+// import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {getCosmosNetwork, parseUserId} from "../../networks";
+import { getCosmosNetwork, parseUserId } from "../../networks";
 import {
   neutral00,
   neutral22,
   neutral33,
   neutral77,
 } from "../../utils/style/colors";
-import {layout} from "../../utils/style/layout";
-import {BrandText} from "../BrandText";
-import {DropdownOption} from "../DropdownOption";
-import {ImageWithTextInsert} from "../ImageWithTextInsert";
-import {NetworkIcon} from "../NetworkIcon";
-import {OmniLink} from "../OmniLink";
-import {OptimizedImage} from "../OptimizedImage";
-import {SVG} from "../SVG";
-import {TertiaryBox} from "../boxes/TertiaryBox";
-import {SpacerColumn} from "../spacer";
+import { layout } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
+import { DropdownOption } from "../DropdownOption";
+import { ImageWithTextInsert } from "../ImageWithTextInsert";
+import { NetworkIcon } from "../NetworkIcon";
+import { OmniLink } from "../OmniLink";
+import { OptimizedImage } from "../OptimizedImage";
+import { SVG } from "../SVG";
+import { TertiaryBox } from "../boxes/TertiaryBox";
+import { SpacerColumn } from "../spacer";
 
 export const NFTBridge: React.FC<{
   data: NFT;
-  selected: boolean,
+  selected: boolean;
   onPress?(): void;
   style?: StyleProp<ViewStyle>;
-}> = memo(({data: nft, selected, onPress, style}) => {
-
+}> = memo(({ data: nft, selected, onPress, style }) => {
   const isMobile = useIsMobile();
   const cardWidth = isMobile ? 220 : 250;
-  const {width: maxWidth} = useMaxResolution({isLarge: true});
+  // const { width: maxWidth } = useMaxResolution({ isLarge: true });
   const insideMargin = layout.spacing_x2;
   const flatStyle = StyleSheet.flatten(style);
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(nft.ownerId);
   const cosmosNetwork = getCosmosNetwork(nft.networkId);
-  const {onPressDropdownButton, isDropdownOpen, closeOpenedDropdown} =
+  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
     useState<boolean>(false);
@@ -81,11 +80,13 @@ export const NFTBridge: React.FC<{
     setIsTransferNFTVisible(!isTransferNFTVisible);
 
   if (nft.id.startsWith("padded-")) {
-    return <View style={{width}}/>;
+    return <View style={{ width }} />;
   }
 
   const widthNumber =
-    typeof width === "number" ? width : parseInt(width || "0", 10) || cardWidth;
+    typeof width === "number"
+      ? width
+      : parseInt(width ? width.toString() : "0", 10) || cardWidth;
   return (
     <>
       <View
@@ -106,7 +107,7 @@ export const NFTBridge: React.FC<{
           width={widthNumber}
           style={styleWithoutMargins}
         >
-          <View style={{width: "100%"}}>
+          <View style={{ width: "100%" }}>
             <Pressable
               // disabled={!nft.isListed || isOwner}
               style={{
@@ -152,7 +153,7 @@ export const NFTBridge: React.FC<{
                   <OmniLink
                     to={{
                       screen: "UserPublicProfile",
-                      params: {id: nft.ownerId},
+                      params: { id: nft.ownerId },
                     }}
                   >
                     <BrandText
@@ -175,16 +176,16 @@ export const NFTBridge: React.FC<{
                   </OmniLink>
                 </View>
                 {selected && (
-                  <View style={{position: "relative", zIndex: 1000}}>
-                    <SVG source={checkMark} height={32} width={32}/>
+                  <View style={{ position: "relative", zIndex: 1000 }}>
+                    <SVG source={checkMark} height={32} width={32} />
                   </View>
                 )}
                 {isOwnerAndNotListed && (
-                  <View style={{position: "relative", zIndex: 1000}}>
+                  <View style={{ position: "relative", zIndex: 1000 }}>
                     <Pressable
                       onPress={() => onPressDropdownButton(dropdownRef)}
                     >
-                      <SVG source={dotsCircleSVG} height={32} width={32}/>
+                      <SVG source={dotsCircleSVG} height={32} width={32} />
                     </Pressable>
                     {isDropdownOpen(dropdownRef) && (
                       <View
@@ -207,11 +208,11 @@ export const NFTBridge: React.FC<{
                           isComingSoon
                           label="Set as Avatar"
                         />
-                        <SpacerColumn size={0.5}/>
+                        <SpacerColumn size={0.5} />
                         <OmniLink
                           to={{
                             screen: "NFTDetail",
-                            params: {id: nft.id},
+                            params: { id: nft.id },
                           }}
                         >
                           <DropdownOption
@@ -219,14 +220,14 @@ export const NFTBridge: React.FC<{
                             label="List this NFT"
                           />
                         </OmniLink>
-                        <SpacerColumn size={0.5}/>
+                        <SpacerColumn size={0.5} />
                         <DropdownOption
                           onPress={closeOpenedDropdown}
                           icon={raffleSVG}
                           isComingSoon
                           label="Create Raffle with this NFT"
                         />
-                        <SpacerColumn size={0.5}/>
+                        <SpacerColumn size={0.5} />
                         <DropdownOption
                           onPress={() => {
                             closeOpenedDropdown();
@@ -235,7 +236,7 @@ export const NFTBridge: React.FC<{
                           icon={sendSVG}
                           label="Send & Transfer this NFT"
                         />
-                        <SpacerColumn size={0.5}/>
+                        <SpacerColumn size={0.5} />
                         <DropdownOption
                           onPress={closeOpenedDropdown}
                           icon={footerSVG}
@@ -282,7 +283,7 @@ export const NFTBridge: React.FC<{
                     flex: 1,
                   }}
                 >
-                  <NetworkIcon size={12} networkId={nft.networkId}/>
+                  <NetworkIcon size={12} networkId={nft.networkId} />
                   <BrandText
                     numberOfLines={1}
                     style={{

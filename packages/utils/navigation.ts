@@ -102,6 +102,7 @@ const navConfig: {
     RiotGameFight: "riot-game/fight",
     RiotGameBreeding: "riot-game/breeding",
     RiotGameMemories: "riot-game/memories",
+    RiotGameBridge: "riot-game/bridge",
     RiotGameMarketplace: "riot-game/marketplace",
     RiotGameLeaderboard: "riot-game/leaderboard",
     RiotGameInventory: "riot-game/inventory",

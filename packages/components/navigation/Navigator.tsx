@@ -26,6 +26,7 @@ import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScree
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
+import { RiotGameBridgeScreen } from "../../screens/RiotGame/RiotGameBridgeScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
 import { RiotGameInventoryScreen } from "../../screens/RiotGame/RiotGameInventoryScreen";
@@ -33,7 +34,6 @@ import { RiotGameLeaderboardScreen } from "../../screens/RiotGame/RiotGameLeader
 import { RiotGameMarketplaceScreen } from "../../screens/RiotGame/RiotGameMarketplaceScreen";
 import { RiotGameMemoriesScreen } from "../../screens/RiotGame/RiotGameMemoriesScreen";
 import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen";
-import { RiotGameBridgeScreen } from "../../screens/RiotGame/RiotGameBridgeScreen";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { SettingsScreen } from "../../screens/Settings/SettingsScreen";
 import { StakeScreen } from "../../screens/Stake";
@@ -147,6 +147,14 @@ export const Navigator: React.FC = () => {
         options={{
           header: () => null,
           title: screenTitle("Riot Game Inventory"),
+        }}
+      />
+      <Stack.Screen
+        name="RiotGameBridge"
+        component={RiotGameBridgeScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Bridge"),
         }}
       />
 
