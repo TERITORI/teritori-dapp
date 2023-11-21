@@ -8,6 +8,7 @@ import EstatePlaceholder from "../../../../../assets/default-images/estate-place
 import { TertiaryBadge } from "../../../../components/badges/TertiaryBadge";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
 import { useTheme } from "../../../../hooks/useTheme";
+import { fontSemibold13 } from "../../../../utils/style/fonts";
 
 export const EstateCardTags: React.FC<EstateCardTagsProps> = ({ tags }) => {
   return (
@@ -24,6 +25,7 @@ export const EstateCardTags: React.FC<EstateCardTagsProps> = ({ tags }) => {
             style={{
               marginLeft: index !== 0 ? 6 : 0,
             }}
+            textStyle={[fontSemibold13, { fontWeight: "300" }]}
           />
         );
       })}

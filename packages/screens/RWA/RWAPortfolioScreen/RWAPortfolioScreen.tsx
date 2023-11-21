@@ -12,7 +12,7 @@ export const RWAPortfolioScreen: ScreenFC<"RWAPortfolio"> = () => {
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
-    dispatch(setIsLightTheme(true));
+    dispatch(setIsLightTheme(false));
   }, [dispatch]);
 
   return (

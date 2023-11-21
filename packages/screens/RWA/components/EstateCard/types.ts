@@ -4,6 +4,11 @@ export type EstateCardTagsProps = {
   tags: string[];
 };
 
+export enum RentalStatusEnum {
+  RENTED = "RENTED",
+  NOT_RENTED = "NOT_RENTED",
+}
+
 type EstateInformations = {
   id: string;
   title: string;
@@ -12,7 +17,13 @@ type EstateInformations = {
   estAPYPerToken: string;
   rentalStartDate: string;
 
+  totalTokens?: number;
+  rentalStatus?: RentalStatusEnum;
   isComingSoon?: boolean;
+
+  myTokens?: number;
+  myTargetROI?: string;
+  myCollectedROI?: string;
 };
 export type EstateCardInformationsProps = {
   card: EstateInformations;
@@ -35,3 +46,7 @@ export type EstateCardListProps = {
   cards: EstateCardProps[];
   title: string;
 };
+
+export type PortfolioEstateCardProps = { cards: EstateCardProps[] };
+
+// TODO: refracto after contract integration, types will probably be wrong
