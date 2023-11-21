@@ -101,6 +101,8 @@ export const postResultToPost = (
     subPostLength: postResult.sub_post_length,
     reactions: postResult.reactions,
     authorId: getUserId(networkId, postResult.post_by),
+    // FIXME: sanitize
+    // eslint-disable-next-line no-restricted-syntax
     createdAt: JSON.parse(postResult.metadata).createdAt,
     tipAmount: parseFloat(postResult.tip_amount),
   };

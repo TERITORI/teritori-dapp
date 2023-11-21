@@ -93,6 +93,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     [data],
   );
   const moreCommentsCount = localComment.subPostLength - comments.length;
+  // FIXME: sanitize
+  // eslint-disable-next-line no-restricted-syntax
   const metadata = JSON.parse(localComment.metadata);
   const authorNSInfo = useNSUserInfo(localComment.authorId);
   const username = authorNSInfo?.metadata?.tokenId

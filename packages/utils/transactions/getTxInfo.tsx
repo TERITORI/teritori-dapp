@@ -335,6 +335,8 @@ export const getTxInfo = (
         const contractAddress = msg.value.contract;
         let execMsg: any = {};
         try {
+          // FIXME: sanitize
+          // eslint-disable-next-line no-restricted-syntax
           execMsg = JSON.parse(
             Buffer.from(
               new Uint8Array(Object.values(msg.value.msg)),
@@ -394,6 +396,8 @@ export const getTxInfo = (
                 <SpacerColumn size={2.5} />
                 <SocialMessageContent
                   postCategory={execMsg.create_post.category}
+                  // FIXME: sanitize
+                  // eslint-disable-next-line no-restricted-syntax
                   metadata={JSON.parse(execMsg.create_post.metadata)}
                   isPreview
                 />

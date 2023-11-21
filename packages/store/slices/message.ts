@@ -1,11 +1,15 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSlice,
+  EntityState,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import { uniqBy } from "lodash";
 import moment from "moment";
 
 import {
   ContactRequest,
   Conversation,
-  MessageList,
   Message,
   CONVERSATION_TYPES,
   PeerItem,
@@ -14,23 +18,44 @@ import { weshConfig } from "../../weshnet/config";
 import { stringFromBytes } from "../../weshnet/utils";
 import { RootState } from "../store";
 
+const contactRequestEntityAdapter = createEntityAdapter<ContactRequest>();
+const contactRequestSelectors = contactRequestEntityAdapter.getSelectors();
+
+const peerEntityAdapter = createEntityAdapter<PeerItem>();
+const peerSelectors = peerEntityAdapter.getSelectors();
+
+const conversationEntityAdapter = createEntityAdapter<Conversation>();
+const conversationSelectors = conversationEntityAdapter.getSelectors();
+
+interface KVItem<T> {
+  id: string;
+  value: T;
+}
+const kvEntityAdapter = createEntityAdapter<KVItem<string>>();
+const kvSelectors = kvEntityAdapter.getSelectors();
+
+const messageEntityAdapter = createEntityAdapter<Message>({
+  sortComparer: (a, b) =>
+    moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf(),
+});
+const messageSelectors = messageEntityAdapter.getSelectors();
+
+const groupEntityAdapter = createEntityAdapter<KVItem<EntityState<Message>>>();
+const groupSelectors = groupEntityAdapter.getSelectors();
+
 export interface MessageState {
   isWeshConnected: boolean;
-  peerList: PeerItem[];
+  peers: EntityState<PeerItem>;
   contactInfo: {
     name: string;
     avatar: string;
     publicRendezvousSeed: string;
     shareLink: string;
   };
-  contactRequestList: ContactRequest[];
-  messageList: MessageList;
-  conversationList: {
-    [key: string]: Conversation;
-  };
-  lastIds: {
-    [key: string]: string;
-  };
+  contactRequests: EntityState<ContactRequest>;
+  messages: EntityState<KVItem<EntityState<Message>>>;
+  conversations: EntityState<Conversation>;
+  lastIds: EntityState<KVItem<string>>;
 }
 
 const initialState: MessageState = {
@@ -41,11 +66,11 @@ const initialState: MessageState = {
     publicRendezvousSeed: "",
     shareLink: "",
   },
-  messageList: {},
-  contactRequestList: [],
-  conversationList: {},
-  lastIds: {},
-  peerList: [],
+  messages: groupEntityAdapter.getInitialState(),
+  contactRequests: contactRequestEntityAdapter.getInitialState(),
+  conversations: conversationEntityAdapter.getInitialState(),
+  lastIds: kvEntityAdapter.getInitialState(),
+  peers: peerEntityAdapter.getInitialState(),
 };
 
 export const selectIsWeshConnected = (state: RootState) =>
@@ -54,65 +79,71 @@ export const selectIsWeshConnected = (state: RootState) =>
 export const selectContactInfo = (state: RootState) =>
   state.message.contactInfo;
 
-export const selectMessageList = (groupPk: string) => (state: RootState) =>
-  state.message.messageList[groupPk] || [];
+export const selectGroup = (state: RootState, groupPk: string) =>
+  groupSelectors.selectById(state.message.messages, groupPk)?.value;
 
-export const selectPeerList = (state: RootState) => state.message.peerList;
+export const selectMessageList = (state: RootState, groupPk: string) => {
+  const group = selectGroup(state, groupPk);
+  if (!group) return [];
+  return messageSelectors.selectAll(group);
+};
 
-export const selectPeerListById = (id: string) => (state: RootState) =>
-  state.message.peerList.find((item) => item.id === id);
+export const selectPeerList = (state: RootState) =>
+  peerSelectors.selectAll(state.message.peers);
 
-export const selectLastIdByKey = (key: string) => (state: RootState) =>
-  state.message.lastIds[key];
+export const selectPeerById = (state: RootState, id: string) =>
+  peerSelectors.selectById(state.message.peers, id);
 
-export const selectMessageListByGroupPk =
-  (groupPk: string) =>
-  (state: RootState): Message[] =>
-    Object.values(state.message.messageList[groupPk] || {})
-      .filter((item) => item.id)
-      .sort(
-        (a: Message, b: Message) =>
-          moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf(),
-      );
+export const selectLastIdByKey = (state: RootState, key: string) =>
+  kvSelectors.selectById(state.message.lastIds, key)?.value;
 
-export const selectLastMessageByGroupPk =
-  (groupPk: string) => (state: RootState) =>
-    selectMessageListByGroupPk(groupPk)(state)[0];
+export const selectLastMessageByGroupPk = (
+  state: RootState,
+  groupPk: string,
+) => {
+  const messages = selectMessageList(state, groupPk);
+  if (!messages.length) return undefined;
+  return messages[0];
+};
 
-export const selectLastContactMessageByGroupPk =
-  (groupPk: string) => (state: RootState) =>
-    selectMessageListByGroupPk(groupPk)(state).filter(
-      (item) =>
-        item.senderId !== stringFromBytes(weshConfig?.config?.accountPk),
-    )[0];
+// TODO: optimize
+export const selectLastContactMessageByGroupPk = (
+  state: RootState,
+  groupPk: string,
+) => {
+  const messages = selectMessageList(state, groupPk);
+  const filtered = messages.filter(
+    (item) => item.senderId !== stringFromBytes(weshConfig?.config?.accountPk),
+  );
+  if (!filtered.length) return undefined;
+  return filtered[0];
+};
 
 export const selectContactRequestList = (state: RootState) =>
-  state.message.contactRequestList;
+  contactRequestSelectors.selectAll(state.message.contactRequests);
 
-export const selectConversationList =
-  (conversationType: CONVERSATION_TYPES = CONVERSATION_TYPES.ACTIVE) =>
-  (state: RootState): Conversation[] => {
-    switch (conversationType) {
-      case CONVERSATION_TYPES.ALL: {
-        return Object.values(state.message.conversationList);
-      }
-      case CONVERSATION_TYPES.ARCHIVED: {
-        return Object.values(state.message.conversationList).filter(
-          (conv) => conv.status === "archived",
-        );
-      }
-      case CONVERSATION_TYPES.ACTIVE:
-      default:
-        return Object.values(state.message.conversationList).filter(
-          (conv) => conv.status === "active",
-        );
+export const selectConversationList = (
+  state: RootState,
+  conversationType: CONVERSATION_TYPES = CONVERSATION_TYPES.ACTIVE,
+) => {
+  const conversations = conversationSelectors.selectAll(
+    state.message.conversations,
+  );
+  switch (conversationType) {
+    case CONVERSATION_TYPES.ALL: {
+      return conversations;
     }
-  };
+    case CONVERSATION_TYPES.ARCHIVED: {
+      return conversations.filter((conv) => conv.status === "archived");
+    }
+    case CONVERSATION_TYPES.ACTIVE:
+    default:
+      return conversations.filter((conv) => conv.status === "active");
+  }
+};
 
-export const selectConversationById =
-  (id: string) =>
-  (state: RootState): Conversation =>
-    state.message.conversationList[id];
+export const selectConversationById = (state: RootState, id: string) =>
+  conversationSelectors.selectById(state.message.conversations, id);
 
 const messageSlice = createSlice({
   name: "message",
@@ -121,73 +152,77 @@ const messageSlice = createSlice({
     setIsWeshConnected: (state, action: PayloadAction<boolean>) => {
       state.isWeshConnected = action.payload;
     },
-    setMessageList: (
+    setMessage: (
       state,
       action: PayloadAction<{ groupPk: string; data: Message }>,
     ) => {
-      if (!state.messageList[action.payload.groupPk]) {
-        state.messageList[action.payload.groupPk] = {};
+      let group = groupSelectors.selectById(
+        state.messages,
+        action.payload.groupPk,
+      );
+      if (!group) {
+        group = {
+          id: action.payload.groupPk,
+          value: messageEntityAdapter.getInitialState(),
+        };
       }
-      state.messageList[action.payload.groupPk][action.payload.data.id] =
-        action.payload.data;
+      group.value = messageEntityAdapter.setOne(
+        group.value,
+        action.payload.data,
+      );
+      groupEntityAdapter.setOne(state.messages, group);
     },
     setPeerList: (state, action: PayloadAction<PeerItem[]>) => {
-      state.peerList = action.payload;
+      peerEntityAdapter.setAll(state.peers, action.payload);
     },
-    updateMessageReaction: (
+    updateMessageReactions: (
       state,
       action: PayloadAction<{ groupPk: string; data: Message }>,
     ) => {
       if (action.payload.data.parentId) {
-        try {
-          state.messageList[action.payload.groupPk][
-            action.payload.data?.parentId
-          ].reactions = uniqBy(
-            [
-              ...(state.messageList[action.payload.groupPk][
-                action.payload.data.parentId
-              ].reactions || []),
-              action.payload.data,
-            ],
-            "id",
-          );
-        } catch (err) {
-          console.error("update reaction failed", err);
-        }
+        const group = groupSelectors.selectById(
+          state.messages,
+          action.payload.groupPk,
+        );
+        if (!group) return;
+        const message = messageSelectors.selectById(
+          group.value,
+          action.payload.data.parentId,
+        );
+        if (!message) return;
+        messageEntityAdapter.updateOne(group.value, {
+          id: action.payload.data?.parentId,
+          changes: {
+            reactions: uniqBy(
+              [...(message.reactions || []), action.payload.data], // TODO: normalize
+              "id",
+            ),
+          },
+        });
       }
     },
-    setContactRequestList: (
-      state,
-      action: PayloadAction<ContactRequest | ContactRequest[]>,
-    ) => {
-      if (Array.isArray(action.payload)) {
-        state.contactRequestList = action.payload;
-      } else {
-        state.contactRequestList = [
-          action.payload,
-          ...state.contactRequestList,
-        ];
-      }
+    setContactRequestList: (state, action: PayloadAction<ContactRequest[]>) => {
+      contactRequestEntityAdapter.setAll(state.contactRequests, action.payload);
+    },
+    setContactRequest: (state, action: PayloadAction<ContactRequest>) => {
+      contactRequestEntityAdapter.setOne(state.contactRequests, action.payload);
     },
     setConversationList: (state, action: PayloadAction<Conversation>) => {
-      state.conversationList[action.payload.id] = action.payload;
+      conversationEntityAdapter.setOne(state.conversations, action.payload);
     },
     updateConversationById: (
       state,
       action: PayloadAction<Partial<Conversation>>,
     ) => {
       if (action.payload.id) {
-        state.conversationList[action.payload.id] = {
-          ...(state.conversationList[action.payload.id] || {}),
-          ...action.payload,
-        };
+        conversationEntityAdapter.updateOne(state.conversations, {
+          id: action.payload.id,
+          changes: action.payload,
+        });
       }
     },
-    setLastId: (
-      state,
-      action: PayloadAction<{ key: string; value: string }>,
-    ) => {
-      state.lastIds[action.payload.key] = action.payload.value;
+    setLastId: (state, action: PayloadAction<KVItem<string>>) => {
+      kvEntityAdapter.setOne(state.lastIds, action.payload);
     },
 
     setContactInfo: (
@@ -200,10 +235,11 @@ const messageSlice = createSlice({
 });
 
 export const {
-  setMessageList,
+  setMessage,
   setContactRequestList,
+  setContactRequest,
   setConversationList,
-  updateMessageReaction,
+  updateMessageReactions,
   setLastId,
   setContactInfo,
   updateConversationById,

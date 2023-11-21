@@ -12,7 +12,7 @@ import { bytesFromString, stringFromBytes } from "../utils";
 
 export const subscribeMessages = async (groupPk: string) => {
   try {
-    const lastId = selectLastIdByKey(groupPk)(store.getState());
+    const lastId = selectLastIdByKey(store.getState(), groupPk);
 
     const config: Partial<GroupMessageList_Request> = {
       groupPk: bytesFromString(groupPk),
@@ -29,12 +29,14 @@ export const subscribeMessages = async (groupPk: string) => {
       await weshClient.client.ActivateGroup({
         groupPk: bytesFromString(groupPk),
       });
-      const messages = await weshClient.client.GroupMessageList(config);
+      const messages = weshClient.client.GroupMessageList(config);
       let isLastIdSet = false;
 
       const observer = {
         next: (data: GroupMessageEvent) => {
           try {
+            // FIXME: messages should be dispatched as actions and processed inside a reducer
+
             const id = stringFromBytes(data.eventContext?.id);
 
             if (lastId === id) {
@@ -43,7 +45,7 @@ export const subscribeMessages = async (groupPk: string) => {
             if (!lastId && !isLastIdSet) {
               store.dispatch(
                 setLastId({
-                  key: groupPk,
+                  id: groupPk,
                   value: id,
                 }),
               );
@@ -53,7 +55,7 @@ export const subscribeMessages = async (groupPk: string) => {
             if (lastId) {
               store.dispatch(
                 setLastId({
-                  key: groupPk,
+                  id: groupPk,
                   value: id,
                 }),
               );
@@ -68,7 +70,7 @@ export const subscribeMessages = async (groupPk: string) => {
           console.error("get message err", e);
         },
         complete: async () => {
-          const lastId = selectLastIdByKey(groupPk)(store.getState());
+          const lastId = selectLastIdByKey(store.getState(), groupPk);
           if (Platform.OS === "web" && lastId) {
             subscribeMessages(groupPk);
           } else {

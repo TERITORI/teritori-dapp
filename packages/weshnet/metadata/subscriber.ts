@@ -15,7 +15,7 @@ import { bytesFromString, stringFromBytes } from "../utils";
 
 export const subscribeMessages = async (groupPk: string) => {
   try {
-    const lastId = selectLastIdByKey(groupPk)(store.getState());
+    const lastId = selectLastIdByKey(store.getState(), groupPk);
 
     const config: Partial<GroupMessageList_Request> = {
       groupPk: bytesFromString(groupPk),
@@ -32,7 +32,7 @@ export const subscribeMessages = async (groupPk: string) => {
       await weshClient.client.ActivateGroup({
         groupPk: bytesFromString(groupPk),
       });
-      const messages = await weshClient.client.GroupMessageList(config);
+      const messages = weshClient.client.GroupMessageList(config);
       let isLastIdSet = false;
 
       const observer = {
@@ -46,7 +46,7 @@ export const subscribeMessages = async (groupPk: string) => {
             if (!lastId && !isLastIdSet) {
               store.dispatch(
                 setLastId({
-                  key: groupPk,
+                  id: groupPk,
                   value: id,
                 }),
               );
@@ -56,7 +56,7 @@ export const subscribeMessages = async (groupPk: string) => {
             if (lastId) {
               store.dispatch(
                 setLastId({
-                  key: groupPk,
+                  id: groupPk,
                   value: id,
                 }),
               );
@@ -71,7 +71,7 @@ export const subscribeMessages = async (groupPk: string) => {
           console.error("get message err", e);
         },
         complete: async () => {
-          const lastId = selectLastIdByKey(groupPk)(store.getState());
+          const lastId = selectLastIdByKey(store.getState(), groupPk);
           if (Platform.OS === "web" && lastId) {
             subscribeMessages(groupPk);
           } else {
@@ -95,9 +95,7 @@ export const subscribeMetadata = async (
   if (!groupPk) {
     return;
   }
-  let lastId: undefined | string = selectLastIdByKey("metadata")(
-    store.getState(),
-  );
+  let lastId = selectLastIdByKey(store.getState(), "metadata");
   const config: Partial<GroupMetadataList_Request> = {
     groupPk,
   };
@@ -113,7 +111,7 @@ export const subscribeMetadata = async (
   }
 
   try {
-    const metadata = await weshClient.client.GroupMetadataList(config);
+    const metadata = weshClient.client.GroupMetadataList(config);
     let isLastIdSet = false;
 
     const myObserver = {
@@ -125,7 +123,7 @@ export const subscribeMetadata = async (
         if (!lastId && !isLastIdSet) {
           store.dispatch(
             setLastId({
-              key: "metadata",
+              id: "metadata",
               value: id,
             }),
           );
@@ -135,7 +133,7 @@ export const subscribeMetadata = async (
         if (lastId) {
           store.dispatch(
             setLastId({
-              key: "metadata",
+              id: "metadata",
               value: id,
             }),
           );

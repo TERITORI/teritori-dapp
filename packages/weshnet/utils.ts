@@ -1,3 +1,5 @@
+import { safeParseJSON } from "../utils/sanitize";
+
 export const bytesFromString = (str: string = ""): Uint8Array => {
   const bin = atob(decodeURIComponent(str));
   const arr = new Uint8Array(bin.length);
@@ -31,7 +33,7 @@ export const decode = (arr: Uint8Array) => {
 };
 
 export const decodeJSON = (arr: Uint8Array) => {
-  return JSON.parse(decode(arr));
+  return safeParseJSON(decode(arr));
 };
 
 export const encodeJSON = (obj: object) => {

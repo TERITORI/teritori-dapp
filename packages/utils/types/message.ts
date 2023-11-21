@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import { RemoteFileData } from "./files";
 
 export type MessageType =
@@ -20,29 +22,32 @@ export interface MessageFileData extends RemoteFileData {
   type: string;
 }
 
-interface MessagePayload {
-  files: MessageFileData[];
-  message: string;
-  metadata?: {
-    groupName?: string;
-    group?: any;
-    contact?: Contact;
-    lastReadId?: string;
-    lastReadBy?: string;
-  };
-}
+const ZodMessagePayload = z.object({
+  files: z.array(z.any()),
+  message: z.string(),
+  metadata: z.object({
+    groupName: z.string().optional(),
+    group: z.any().optional(),
+    contact: z.any().optional(),
+    lastReadId: z.string().optional(),
+    lastReadBy: z.string().optional(),
+  }),
+});
 
-export interface Message {
-  id: string;
-  senderId: string;
-  groupId: string;
-  type: MessageType;
-  payload?: MessagePayload;
-  timestamp: string;
-  parentId?: string;
-  reactions?: any[];
-  isRead?: boolean;
-}
+export const ZodMessage = z.object({
+  senderId: z.string(),
+  groupId: z.string(),
+  type: z.string(),
+  payload: ZodMessagePayload.optional(),
+  timestamp: z.string(),
+  parentId: z.string().optional(),
+  reactions: z.any().optional(),
+  isRead: z.boolean().optional(),
+});
+
+export type Message = z.infer<typeof ZodMessage>;
+
+export type StoreMessage = Message & { id: string };
 
 export interface Contact {
   id: string;
@@ -62,14 +67,6 @@ export interface Conversation {
   status: "active" | "archived" | "deleted" | "blocked";
   lastReadIdByMe?: string;
   lastReadIdByContact?: string;
-}
-
-export interface MessageList {
-  [key: string]: { [key: string]: Message };
-}
-
-export interface ConversationList {
-  [key: string]: Conversation[];
 }
 
 export interface ContactRequest {

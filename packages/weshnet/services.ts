@@ -87,8 +87,9 @@ export const bootWeshnet = async () => {
 };
 
 const bootSubscribeMessages = () => {
-  const conversations = selectConversationList(CONVERSATION_TYPES.ACTIVE)(
+  const conversations = selectConversationList(
     store.getState(),
+    CONVERSATION_TYPES.ACTIVE,
   );
 
   conversations.forEach((item) => {

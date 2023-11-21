@@ -8,6 +8,7 @@ import {
 } from "../../api/weshnet/protocoltypes";
 import {
   selectContactRequestList,
+  setContactRequest,
   setContactRequestList,
   setConversationList,
 } from "../../store/slices/message";
@@ -82,7 +83,7 @@ export const processMetadata = async (data: GroupMetadataEvent) => {
         );
 
         store.dispatch(
-          setContactRequestList({
+          setContactRequest({
             id: stringFromBytes(parsedData.payload.contactPk),
             contactId: stringFromBytes(parsedData.payload.contactPk),
             rdvSeed: stringFromBytes(parsedData.payload.contactRendezvousSeed),
