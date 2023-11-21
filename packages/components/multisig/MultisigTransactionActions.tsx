@@ -85,6 +85,8 @@ export const MultisigTransactionActions: React.FC<
         multisigAddress,
       },
       currentSignatures: signatures,
+      // FIXME: sanitize
+      // eslint-disable-next-line no-restricted-syntax
       pubkey: JSON.parse(multisigPubkeyJson),
       transactionId: id,
     });

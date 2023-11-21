@@ -165,6 +165,8 @@ export const RiotersFooterScreen: React.FC = () => {
               imageUri: responseJSON.image.startsWith("ipfs://")
                 ? ipfsURLToHTTPURL(responseJSON.image)
                 : responseJSON.image,
+              // FIXME: sanitize
+              // eslint-disable-next-line no-restricted-syntax
               borderRadius: JSON.parse(nft.additional).borderRadius || 0,
             });
           }
@@ -295,6 +297,8 @@ export const RiotersFooterScreen: React.FC = () => {
 
   const onReceiveDragDrop = useCallback(
     (event: any) => {
+      // FIXME: sanitize
+      // eslint-disable-next-line no-restricted-syntax
       const nft: NFT = JSON.parse(event.dragged.payload);
       if (
         !nftDroped ||

@@ -114,8 +114,12 @@ export const extractGnoNumber = (str: string) => {
 };
 export const extractGnoString = (str: string) => {
   const jsonStr = str.slice(str.indexOf(`"`), str.lastIndexOf(`"`) + 1);
+  // FIXME: sanitize
+  // eslint-disable-next-line no-restricted-syntax
   return JSON.parse(jsonStr) as string;
 };
 export const extractGnoJSONString = (str: string) => {
+  // FIXME: sanitize
+  // eslint-disable-next-line no-restricted-syntax
   return JSON.parse(extractGnoString(str));
 };

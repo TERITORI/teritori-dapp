@@ -36,6 +36,8 @@ const main = async () => {
   const statusCmd = `teritorid status --node '${endpoint}'`;
   const res = child_process.spawnSync(statusCmd, { shell: true });
   const statusJSON = res.stderr.toString();
+  // FIXME: sanitize
+  // eslint-disable-next-line no-restricted-syntax
   const status = JSON.parse(statusJSON);
   const latestBlockHeight: string = status.SyncInfo.latest_block_height; // FIXME: sanitize
 
@@ -45,6 +47,8 @@ const main = async () => {
   while (true) {
     const cmd = `teritorid query txs --height ${latestBlockHeight} --events message.action=/teritori.mint.v1beta1.MsgBurnTokens --node '${endpoint}' --limit ${batchSize} --page ${page} -o json`;
     const burnTxsJSON = child_process.execSync(cmd).toString();
+    // FIXME: sanitize
+    // eslint-disable-next-line no-restricted-syntax
     const txs = JSON.parse(burnTxsJSON);
 
     for (const tx of txs.txs) {

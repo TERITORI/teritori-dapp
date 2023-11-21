@@ -1,8 +1,14 @@
 import { z } from "zod";
 
-const safeJSONParse = (json: string): unknown => {
+const parseJSON = (json: string): unknown => {
+  // this is the only exception we want to allow
+  // eslint-disable-next-line no-restricted-syntax
+  return JSON.parse(json);
+};
+
+export const safeJSONParse = (json: string): unknown => {
   try {
-    return JSON.parse(json);
+    return parseJSON(json);
   } catch {
     return undefined;
   }

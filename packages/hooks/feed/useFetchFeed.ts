@@ -17,6 +17,7 @@ import {
 } from "../../networks";
 import { mustGetFeedClient } from "../../utils/backend";
 import { extractGnoJSONString } from "../../utils/gno";
+import { safeJSONParse } from "../../utils/sanitize";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
 
@@ -141,7 +142,7 @@ const getPosts = async (networkId: string, req: PostsRequest) => {
     const filteredPosts = response.posts.filter(
       (post) =>
         (post.category === PostCategory.MusicAudio &&
-          ZodSocialFeedTrackMetadata.safeParse(JSON.parse(post.metadata))
+          ZodSocialFeedTrackMetadata.safeParse(safeJSONParse(post.metadata))
             .success) ||
         post.category !== PostCategory.MusicAudio,
     );
