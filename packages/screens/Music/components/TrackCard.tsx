@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   View,
-  Image,
   TouchableOpacity,
   ViewStyle,
   TextStyle,
@@ -14,6 +13,7 @@ import ThreeDotsCircleWhite from "../../../../assets/icons/music/three-dot-circl
 import { Post } from "../../../api/feed/v1/feed";
 import { BrandText } from "../../../components/BrandText";
 import { OmniLink } from "../../../components/OmniLink";
+import { OptimizedImage } from "../../../components/OptimizedImage";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { ZodSocialFeedTrackMetadata } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
@@ -22,7 +22,6 @@ import { useMediaPlayer } from "../../../context/MediaPlayerProvider";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../networks";
-import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { useAppNavigation } from "../../../utils/navigation";
 import { zodTryParseJSON } from "../../../utils/sanitize";
 import {
@@ -67,6 +66,10 @@ export const TrackCard: React.FC<{
     await loadAndPlaySoundsQueue([mediaToPlay]);
   };
 
+  const imageStyle = useMemo(() => {
+    return [isHovered && { opacity: 0.5 }, contentImgCStyle];
+  }, [isHovered]);
+
   if (!track) return null;
   return (
     <View style={unitCardStyle}>
@@ -81,17 +84,12 @@ export const TrackCard: React.FC<{
             });
           }}
         >
-          <Image
-            source={
-              track.audioFile.thumbnailFileData?.url
-                ? {
-                    uri: ipfsURLToHTTPURL(
-                      track.audioFile.thumbnailFileData?.url,
-                    ),
-                  }
-                : defaultThumbnailImage
-            }
-            style={[isHovered && { opacity: 0.5 }, contentImgStyle]}
+          <OptimizedImage
+            sourceURI={track.audioFile.thumbnailFileData?.url}
+            fallbackURI={defaultThumbnailImage}
+            width={IMAGE_HEIGHT}
+            height={IMAGE_HEIGHT}
+            style={imageStyle}
           />
           <SpacerColumn size={1.5} />
 
@@ -168,7 +166,7 @@ const contentDescriptionStyle: TextStyle = {
 
   color: neutral77,
 };
-const contentImgStyle: ImageStyle = {
+const contentImgCStyle: ImageStyle = {
   width: "100%",
   borderRadius: 8,
   aspectRatio: 1,

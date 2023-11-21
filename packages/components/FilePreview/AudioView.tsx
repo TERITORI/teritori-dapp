@@ -15,7 +15,6 @@ import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { prettyMediaDuration } from "../../utils/mediaPlayer";
 import {
   errorColor,
@@ -28,6 +27,7 @@ import { layout } from "../../utils/style/layout";
 import { nameServiceDefaultImage } from "../../utils/tns";
 import { Media } from "../../utils/types/mediaPlayer";
 import { BrandText } from "../BrandText";
+import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 
 const THUMBNAIL_SIZE = 140;
@@ -182,11 +182,11 @@ export const AudioView: React.FC<{
           </View>
 
           {hasThumbnail && (
-            <Image
-              source={{
-                uri: ipfsURLToHTTPURL(thumbnailUrl || ""),
-              }}
+            <OptimizedImage
+              sourceURI={thumbnailUrl}
               resizeMode="cover"
+              width={THUMBNAIL_SIZE}
+              height={THUMBNAIL_SIZE}
               style={imageCStyle}
             />
           )}

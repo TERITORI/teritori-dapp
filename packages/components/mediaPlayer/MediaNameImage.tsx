@@ -1,11 +1,10 @@
 import { ResizeMode } from "expo-av";
 import { FC } from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { ImageStyle, StyleProp, View, ViewStyle } from "react-native";
 
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { getNetworkObjectId, parseUserId } from "../../networks";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { tinyAddress } from "../../utils/text";
@@ -56,8 +55,8 @@ export const MediaNameImage: FC<{
         }}
       >
         <OptimizedImage
-          sourceURI={ipfsURLToHTTPURL(media.imageUrl)}
-          style={{ height: IMAGE_SIZE, width: IMAGE_SIZE }}
+          sourceURI={media.imageUrl}
+          style={imageCStyle}
           height={IMAGE_SIZE}
           width={IMAGE_SIZE}
           resizeMode={ResizeMode.CONTAIN}
@@ -86,3 +85,5 @@ export const MediaNameImage: FC<{
     </OmniLink>
   );
 };
+
+const imageCStyle: ImageStyle = { height: IMAGE_SIZE, width: IMAGE_SIZE };
