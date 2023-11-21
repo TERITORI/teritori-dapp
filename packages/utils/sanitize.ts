@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const safeJSONParse = (json: string): unknown => {
+const safeJSONParse = (json: string): unknown => {
   try {
     return JSON.parse(json);
   } catch {
@@ -8,7 +8,7 @@ export const safeJSONParse = (json: string): unknown => {
   }
 };
 
-export const zodTryParse = <T extends z.ZodType>(
+const zodTryParse = <T extends z.ZodType>(
   zodType: T,
   data: unknown,
 ): z.infer<T> | undefined => {
