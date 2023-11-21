@@ -348,7 +348,6 @@ const footerStyle: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "space-between",
-  paddingHorizontal: layout.spacing_x2_5,
   paddingVertical: layout.spacing_x2,
 };
 const footerTextStyle: TextStyle = {
