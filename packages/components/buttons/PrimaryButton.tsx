@@ -13,7 +13,7 @@ import {
   ButtonsSize,
   heightButton,
 } from "../../utils/style/buttons";
-import { primaryColor, primaryTextColor } from "../../utils/style/colors";
+import { primaryTextColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -51,11 +51,18 @@ export const PrimaryButton: React.FC<{
   touchableStyle = {},
   RightComponent,
   iconColor,
-  color = primaryColor,
+  color,
   noBrokenCorners = false,
   isLoading,
 }) => {
   const theme = useTheme();
+  if (!color) {
+    color = theme.primaryButtonColor;
+  }
+  if (!squaresBackgroundColor) {
+    squaresBackgroundColor = theme.headerBackgroundColor;
+  }
+
   const [isLocalLoading, setIsLocalLoading] = useState(false);
 
   const handlePress = useCallback(async () => {
