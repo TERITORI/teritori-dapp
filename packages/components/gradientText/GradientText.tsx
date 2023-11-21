@@ -39,6 +39,7 @@ export interface GradientTextProps {
       | "letterSpacing"
       | "lineHeight"
       | "textDecorationLine"
+      | "textTransform"
     >
   >;
   gradientType: GradientType;
