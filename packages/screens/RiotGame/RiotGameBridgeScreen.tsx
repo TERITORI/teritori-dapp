@@ -1,17 +1,10 @@
 import { useIsFocused } from "@react-navigation/native";
 import { Video } from "expo-av";
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  FlatList,
-  Pressable,
-  StyleSheet,
-  View,
-  ViewStyle,
-  StyleProp,
-} from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import { TrashIcon } from "react-native-heroicons/outline";
+import React, { useEffect, useState } from "react";
+import { FlatList, Pressable, View, ViewStyle, StyleProp, useWindowDimensions } from "react-native";
+
 import { GameContentView } from "./component/GameContentView";
+import trashSVG from "../../../assets/icons/trash.svg";
 import {
   NFT,
   NFTsRequest,
@@ -19,19 +12,18 @@ import {
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
+import FlexRow from "../../components/FlexRow";
 import { OptimizedImage } from "../../components/OptimizedImage";
+import { SVG } from "../../components/SVG";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { NFTBridge } from "../../components/nfts/NFTBridge";
-import { minNFTWidth } from "../../components/nfts/NFTs";
 import { Separator } from "../../components/separators/Separator";
 import { SpacerColumn } from "../../components/spacer";
 import { useIsMobile } from "../../hooks/useIsMobile";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNFTs } from "../../hooks/useNFTs";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-// import { useAppNavigation } from "../../utils/navigation";
 import { getCollectionId, getNetwork } from "../../networks";
 import {
   codGrayColor,
@@ -44,25 +36,18 @@ import {
 } from "../../utils/style/colors";
 import {
   fontMedium10,
+  fontMedium32,
   fontMedium48,
   fontSemibold12,
   fontSemibold14,
   fontSemibold20,
-  fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-// const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
-// const EMBEDDED_VIDEO_URI ="https://bafybeihfkmpunve47w4avfnuv3mfnsgoqclahpx54zj4b2ypve52iqmxsa.ipfs.nftstorage.link/";
-// const embeddedVideoHeight = 267;
-// const embeddedVideoWidth = 468;
-
 export const RiotGameBridgeScreen: React.FC = () => {
-  const isMobile = useIsMobile();
+  const {width} = useWindowDimensions();
   const selectedWallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
-  const videoRef = React.useRef<Video>(null);
-  const isScreenFocused = useIsFocused();
   const [isBridgeApproved, setIsBridgeApproved] = useState(false);
   const [selectedNfts, setSelectedNfts] = useState<NFT[]>([]);
   const network = getNetwork(networkId);
@@ -88,23 +73,10 @@ export const RiotGameBridgeScreen: React.FC = () => {
     ...nftReq,
   };
 
-  const { nfts } = useNFTs(myBridgeRequest);
-  const SideCartWidth = 245 + 10;
+  const { nfts: data, isLoading } = useNFTs(myBridgeRequest);
 
-  const { height } = useMaxResolution({ isLarge: true });
-  const halfGap = layout.spacing_x1;
-  const [containerWidth, setContainerWidth] = useState(0);
-  const elemsPerRow = Math.floor(containerWidth / minNFTWidth) || 1;
-  const elemSize = elemsPerRow
-    ? (containerWidth - halfGap * (elemsPerRow - 1) * 2) / elemsPerRow
-    : nfts?.length || 0;
+  const nfts = [...data, ...data, ...data, ...data, ...data, ...data];
 
-  // Stop video when changing screen through react-navigation
-  useEffect(() => {
-    if (!isScreenFocused && videoRef.current) {
-      videoRef.current.pauseAsync();
-    }
-  }, [isScreenFocused]);
   // Check is the Bridge Is already Approved
   useEffect(() => {
     const get_bridge = false;
@@ -112,19 +84,6 @@ export const RiotGameBridgeScreen: React.FC = () => {
       setIsBridgeApproved(false);
     }
   }, [isBridgeApproved]);
-
-  // const cartIsShown = useShowCart();
-  const { width } = useMaxResolution({
-    responsive: true,
-    noMargin: false,
-    isLarge: true,
-  });
-
-  const nftViewStyle = useMemo(() => {
-    return {
-      width: elemSize,
-    };
-  }, [elemSize]);
 
   // Approve
   const approveTheBridge = () => {
@@ -139,101 +98,75 @@ export const RiotGameBridgeScreen: React.FC = () => {
     }
   };
 
-  return (
-    <GameContentView>
-      <View>
-        <BrandText
-          style={[
-            {
-              alignSelf: "center",
-            },
-            isMobile ? fontSemibold28 : fontMedium48,
-          ]}
-        >
-          NFT Bridge
-        </BrandText>
-      </View>
+  const BREAK_POINT = 600;
+  const shouldRestructure = width < 600;
 
+  return (
+    <GameContentView hideStats>
       <View
         style={{
-          justifyContent: "space-around",
-          // margin: layout.spacing_x1_5,
-          // flexDirection: "row",
-          flexWrap: "wrap",
           marginTop: layout.spacing_x4,
+          alignItems: "center",
+          alignSelf: "center",
         }}
       >
-        <View style={[styles.childrenContainer, { width, flex: 1 }]}>
-          <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "nowrap",
-            }}
-          >
-            <ScrollView
+        <BrandText style={[shouldRestructure ? fontMedium32 : fontMedium48]}>
+          NFT Bridge
+        </BrandText>
+
+        <FlexRow
+          style={{ marginTop: layout.spacing_x4, alignItems: "flex-start" }}
+          breakpoint={BREAK_POINT}
+        >
+          <View style={{ flexGrow: 1, marginBottom: layout.spacing_x2 }}>
+            <FlatList
+              style={{ height: shouldRestructure ? 400 : 600 }}
+              showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{
-                alignItems: "center",
-                width: width - SideCartWidth,
+              numColumns={width < 960 ? 1 : 3}
+              ItemSeparatorComponent={() => <SpacerColumn size={2} />}
+              data={nfts}
+              ListEmptyComponent={
+                <BrandText style={fontSemibold20}>
+                  {isLoading ? "Loading ..." : "No results found"}
+                </BrandText>
+              }
+              renderItem={({ item, index }: { item: NFT; index: number }) => {
+                const selected = selectedNfts.includes(item);
+                return (
+                  <View
+                    style={{
+                      marginHorizontal: layout.spacing_x1,
+                    }}
+                  >
+                    <NFTBridge
+                      key={item.id}
+                      data={item}
+                      selected={selected}
+                      onPress={() => handleSelectItem(index)}
+                    />
+                  </View>
+                );
               }}
-            >
-              <FlatList
-                onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
-                style={{ width: "100%" }}
-                contentContainerStyle={{ maxHeight: height }}
-                columnWrapperStyle={
-                  elemsPerRow < 2
-                    ? undefined
-                    : { flex: 1, justifyContent: "space-between" }
-                }
-                numColumns={elemsPerRow}
-                key={`nft-flat-list-${elemsPerRow}`}
-                ItemSeparatorComponent={() => <SpacerColumn size={2} />}
-                data={nfts}
-                onEndReachedThreshold={4}
-                ListEmptyComponent={
-                  <BrandText style={fontSemibold20}>
-                    No results found.
-                  </BrandText>
-                }
-                renderItem={({ item, index }: { item: NFT; index: number }) => {
-                  const selected = selectedNfts.includes(item);
-                  return (
-                    <>
-                      <NFTBridge
-                        key={item.id}
-                        data={item}
-                        style={nftViewStyle}
-                        selected={selected}
-                        onPress={() => handleSelectItem(index)}
-                      />
-                    </>
-                  );
-                }}
-              />
-            </ScrollView>
-            <SideBridge
-              style={{
-                position: "absolute",
-                right: -10,
-                flexDirection: "column",
-                width: 245,
-                marginBottom: layout.spacing_x2_5,
-                backgroundColor: neutral00,
-                borderRadius: layout.spacing_x2,
-                borderColor: neutral33,
-                borderWidth: 1,
-                paddingVertical: layout.spacing_x1,
-                // paddingHorizontal: layout.spacing_x1_5,
-                borderStyle: "solid",
-              }}
-              onApproveTheBridge={() => approveTheBridge()}
-              isBridgeApproved={isBridgeApproved}
-              selected={selectedNfts}
-              setSelected={setSelectedNfts}
             />
           </View>
-        </View>
+
+          <SideBridge
+            style={{
+              width: 245,
+              backgroundColor: neutral00,
+              borderRadius: layout.spacing_x2,
+              borderColor: neutral33,
+              borderWidth: 1,
+              paddingVertical: layout.spacing_x1,
+              marginHorizontal: layout.spacing_x4,
+            }}
+            onApproveTheBridge={() => approveTheBridge()}
+            isBridgeApproved={isBridgeApproved}
+            selected={selectedNfts}
+            setSelected={setSelectedNfts}
+          />
+        </FlexRow>
       </View>
     </GameContentView>
   );
@@ -358,7 +291,7 @@ const SideBridge: React.FC<{
                       />
                       <BrandText style={fontSemibold12}>{item?.name}</BrandText>
                       <Pressable onPress={() => handleRemoveCartItem(index)}>
-                        <TrashIcon size={14} color={neutralA3} />
+                        <SVG source={trashSVG} color={neutralA3} width={14} />
                       </Pressable>
                     </View>
                   </View>
@@ -386,7 +319,7 @@ const SideBridge: React.FC<{
         >
           {isBridgeApproved ? (
             <PrimaryButton
-              fullWidth={true}
+              fullWidth
               color={yellowDefault}
               size="SM"
               text="Bridge your NFT"
@@ -406,23 +339,3 @@ const SideBridge: React.FC<{
     </View>
   );
 };
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const colStyles: ViewStyle = {
-  justifyContent: "center",
-  alignItems: "center",
-  width: "100%",
-};
-
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000000",
-    flexDirection: "row",
-  },
-  childrenContainer: {
-    height: "100%",
-    alignSelf: "center",
-  },
-});

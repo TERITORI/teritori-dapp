@@ -9,7 +9,7 @@ import { addNftListMetadata } from "../utils/ethereum";
 export const useNFTs = (req: NFTsRequest) => {
   const baseOffset = useRef(req.offset);
 
-  const { data, fetchNextPage } = useInfiniteQuery(
+  const { data, fetchNextPage, isLoading } = useInfiniteQuery(
     ["nfts", { ...req, offset: baseOffset.current }],
     async ({ pageParam = 0 }) => {
       let nfts: NFT[] = [];
@@ -55,5 +55,5 @@ export const useNFTs = (req: NFTsRequest) => {
     return flat;
   }, [data?.pages]);
 
-  return { nfts, fetchMore: fetchNextPage };
+  return { nfts, isLoading, fetchMore: fetchNextPage };
 };

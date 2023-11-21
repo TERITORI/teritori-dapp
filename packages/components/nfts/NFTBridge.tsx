@@ -47,7 +47,7 @@ export const NFTBridge: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = memo(({ data: nft, selected, onPress, style }) => {
   const isMobile = useIsMobile();
-  const cardWidth = isMobile ? 220 : 250;
+  const cardWidth = isMobile ? 200 : 240;
   // const { width: maxWidth } = useMaxResolution({ isLarge: true });
   const insideMargin = layout.spacing_x2;
   const flatStyle = StyleSheet.flatten(style);
