@@ -442,7 +442,7 @@ export const RichText: React.FC<RichTextProps> = ({
               duration={file.audioMetadata?.duration || 0}
               fileUrl={file.url}
               waveform={file.audioMetadata?.waveform || []}
-              thumbnailUrl={file.thumbnailFileData?.url}
+              imageURI={file.thumbnailFileData?.url}
             />
             <SpacerColumn size={2} />
           </View>

@@ -1,11 +1,5 @@
 import React, { useMemo } from "react";
-import {
-  View,
-  Image,
-  TouchableOpacity,
-  ImageSourcePropType,
-  ImageStyle,
-} from "react-native";
+import { View, TouchableOpacity, ImageStyle } from "react-native";
 
 import { AudioWaveform } from "./AudioWaveform";
 import { AUDIO_WAVEFORM_MAX_WIDTH } from "./AudioWaveform/AudioWaveform.web";
@@ -34,20 +28,20 @@ const THUMBNAIL_SIZE = 140;
 
 export const AudioView: React.FC<{
   fileUrl: string;
-  thumbnailUrl?: string;
+  imageURI?: string;
   duration: number;
   waveform: number[];
   authorId: string;
   postId: string;
-  fallbackImageSource?: ImageSourcePropType;
+  fallbackImageURI?: string;
 }> = ({
   fileUrl,
-  thumbnailUrl,
+  imageURI,
   duration,
   waveform,
   authorId,
   postId,
-  fallbackImageSource,
+  fallbackImageURI: fallbackImageSource,
 }) => {
   const selectedNetwork = useSelectedNetworkInfo();
   const userInfo = useNSUserInfo(authorId);
@@ -65,7 +59,7 @@ export const AudioView: React.FC<{
     } else {
       const songToPlay: Media = {
         imageUrl:
-          thumbnailUrl ||
+          imageURI ||
           userInfo.metadata.image ||
           nameServiceDefaultImage(isDAO, selectedNetwork),
         name: "Song from Social Feed",
@@ -79,11 +73,6 @@ export const AudioView: React.FC<{
       await loadAndPlaySoundsQueue([songToPlay]);
     }
   };
-
-  const hasThumbnail = useMemo(
-    () => typeof thumbnailUrl === "string",
-    [thumbnailUrl],
-  );
 
   const positionPercent = useMemo(
     () =>
@@ -181,23 +170,14 @@ export const AudioView: React.FC<{
             </View>
           </View>
 
-          {hasThumbnail && (
-            <OptimizedImage
-              sourceURI={thumbnailUrl}
-              resizeMode="cover"
-              width={THUMBNAIL_SIZE}
-              height={THUMBNAIL_SIZE}
-              style={imageCStyle}
-            />
-          )}
-
-          {!hasThumbnail && fallbackImageSource && (
-            <Image
-              source={fallbackImageSource}
-              resizeMode="cover"
-              style={imageCStyle}
-            />
-          )}
+          <OptimizedImage
+            sourceURI={imageURI}
+            fallbackURI={fallbackImageSource}
+            resizeMode="cover"
+            width={THUMBNAIL_SIZE}
+            height={THUMBNAIL_SIZE}
+            style={imageCStyle}
+          />
         </View>
       </View>
     </View>

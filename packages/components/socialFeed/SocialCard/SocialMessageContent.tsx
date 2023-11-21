@@ -102,7 +102,7 @@ export const SocialMessageContent: React.FC<Props> = ({
                 duration={file.audioMetadata?.duration || 0}
                 fileUrl={file.url}
                 waveform={file.audioMetadata?.waveform || []}
-                thumbnailUrl={file.thumbnailFileData?.url}
+                imageURI={file.thumbnailFileData?.url}
               />
             </Fragment>
           ))}
