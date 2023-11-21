@@ -214,15 +214,10 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       title,
       description,
       audioFile: uploadedFiles[0],
-      // audioURI: audio,
-      // imageURI: image.url,
-      // waveform: audio.audioMetadata?.waveform || [],
-      // duration: audio.audioMetadata?.duration || 0,
       authorId: userId,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    console.log("========= track", track);
     await processCreateMusicAudioPost(track);
     setIsLoading(false);
     onUploadDone();
@@ -250,7 +245,6 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
           <SpacerColumn size={2.5} />
 
           <TextInputCustom
-            rules={{ required: true }}
             multiline
             noBrokenCorners
             variant="labelOutside"
@@ -317,7 +311,6 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
           disabled={
             !localAudioFile?.url ||
             !title ||
-            !description ||
             isUploading ||
             isMutateLoading ||
             isLoading

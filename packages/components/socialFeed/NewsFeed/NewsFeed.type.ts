@@ -82,12 +82,8 @@ export type SocialFeedArticleMetadata = z.infer<
 
 export const ZodSocialFeedTrackMetadata = z.object({
   title: z.string(),
-  description: z.string(),
+  description: z.string().optional(),
   audioFile: ZodRemoteFileData,
-  // imageURI: z.string(),
-  // audioURI: z.string(),
-  // waveform: z.array(z.number()),
-  // duration: z.number(),
   authorId: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),

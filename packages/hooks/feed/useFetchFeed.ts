@@ -138,33 +138,13 @@ const getPosts = async (networkId: string, req: PostsRequest) => {
     const feedClient = mustGetFeedClient(networkId);
     const response = await feedClient.Posts(req);
 
-    const filteredPosts = response.posts.filter((post) => {
-      if (post.category === PostCategory.MusicAudio) {
-        console.log(
-          "ZodSocialFeedTrackMetadata.safeParse(JSON.parse(post.metadata)).success",
+    const filteredPosts = response.posts.filter(
+      (post) =>
+        (post.category === PostCategory.MusicAudio &&
           ZodSocialFeedTrackMetadata.safeParse(JSON.parse(post.metadata))
-            .success,
-        );
-      }
-      if (
-        post.category === PostCategory.MusicAudio &&
-        ZodSocialFeedTrackMetadata.safeParse(JSON.parse(post.metadata)).success
-      ) {
-        return true;
-      }
-      if (post.category !== PostCategory.MusicAudio) {
-        return true;
-      }
-    });
-
-    // const filteredPosts = response.posts.filter((post) => {
-    //   // For MusicAudio, we control that posts have valid metadata (Track)
-    //   (post.category === PostCategory.MusicAudio &&
-    //   ZodSocialFeedTrackMetadata.safeParse(JSON.parse(post.metadata)).success)
-    //   || post.category !== PostCategory.MusicAudio
-    // );
-
-    console.log("filteredPostsfilteredPosts", filteredPosts);
+            .success) ||
+        post.category !== PostCategory.MusicAudio,
+    );
 
     // ---- We sort by creation date
     return filteredPosts.sort((a, b) => b.createdAt - a.createdAt);

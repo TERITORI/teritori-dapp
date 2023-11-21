@@ -116,10 +116,15 @@ export const TrackCard: React.FC<{
         <BrandText style={contentTitleStyle} numberOfLines={2}>
           {track.title}
         </BrandText>
-        <SpacerColumn size={0.5} />
-        <BrandText style={contentDescriptionStyle} numberOfLines={2}>
-          {track.description}
-        </BrandText>
+
+        {track.description && (
+          <>
+            <SpacerColumn size={0.5} />
+            <BrandText style={contentDescriptionStyle} numberOfLines={2}>
+              {track.description}
+            </BrandText>
+          </>
+        )}
       </View>
       {!hideAuthor && (
         <>

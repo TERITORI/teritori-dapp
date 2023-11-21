@@ -16,10 +16,16 @@ export const MusicPostTrackContent: FC<{
   return (
     <>
       <BrandText>{track.title}</BrandText>
-      <SpacerColumn size={1} />
-      <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
-        {track.description}
-      </BrandText>
+
+      {track.description && (
+        <>
+          <SpacerColumn size={1} />
+          <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
+            {track.description}
+          </BrandText>
+        </>
+      )}
+
       <SpacerColumn size={2} />
       <AudioView
         duration={track.audioFile.audioMetadata?.duration || 0}
