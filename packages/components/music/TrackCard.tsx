@@ -1,52 +1,54 @@
-import React, { useMemo, useState } from "react";
+import React, { memo, useMemo, useState } from "react";
 import {
   View,
   TouchableOpacity,
   ViewStyle,
   TextStyle,
-  ImageStyle,
+  StyleProp,
+  StyleSheet,
 } from "react-native";
 
-import defaultThumbnailImage from "../../../../assets/default-images/default-track-thumbnail.png";
-import NormalPlay from "../../../../assets/icons/music/normal-play.svg";
-import ThreeDotsCircleWhite from "../../../../assets/icons/music/three-dot-circle-white.svg";
-import { Post } from "../../../api/feed/v1/feed";
-import { BrandText } from "../../../components/BrandText";
-import { OmniLink } from "../../../components/OmniLink";
-import { OptimizedImage } from "../../../components/OptimizedImage";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { ZodSocialFeedTrackMetadata } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { SpacerColumn } from "../../../components/spacer";
-import { useMediaPlayer } from "../../../context/MediaPlayerProvider";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
-import { getNetworkObjectId, parseUserId } from "../../../networks";
-import { useAppNavigation } from "../../../utils/navigation";
-import { zodTryParseJSON } from "../../../utils/sanitize";
-import {
-  neutral17,
-  neutral77,
-  primaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold14, fontMedium13 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
-import { Media } from "../../../utils/types/mediaPlayer";
+import defaultThumbnailImage from "../../../assets/default-images/default-track-thumbnail.png";
+import NormalPlay from "../../../assets/icons/music/normal-play.svg";
+import ThreeDotsCircleWhite from "../../../assets/icons/music/three-dot-circle-white.svg";
+import { Post } from "../../api/feed/v1/feed";
+import { useMediaPlayer } from "../../context/MediaPlayerProvider";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { getNetworkObjectId, parseUserId } from "../../networks";
+import { useAppNavigation } from "../../utils/navigation";
+import { zodTryParseJSON } from "../../utils/sanitize";
+import { neutral17, neutral77, primaryColor } from "../../utils/style/colors";
+import { fontSemibold14, fontMedium13 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { tinyAddress } from "../../utils/text";
+import { Media } from "../../utils/types/mediaPlayer";
+import { BrandText } from "../BrandText";
+import { OmniLink } from "../OmniLink";
+import { OptimizedImage } from "../OptimizedImage";
+import { SVG } from "../SVG";
+import { CustomPressable } from "../buttons/CustomPressable";
+import { ZodSocialFeedTrackMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
+import { SpacerColumn } from "../spacer";
 
-const IMAGE_HEIGHT = 218;
 const BUTTONS_HEIGHT = 28;
 export const TRACK_CARD_WIDTH = 242;
 export const TrackCard: React.FC<{
   post: Post;
   hideAuthor?: boolean;
-}> = ({ post, hideAuthor }) => {
+  style?: StyleProp<ViewStyle>;
+}> = memo(({ post, hideAuthor, style }) => {
   const track = zodTryParseJSON(ZodSocialFeedTrackMetadata, post.metadata);
   const authorNSInfo = useNSUserInfo(track?.authorId);
   const [, userAddress] = parseUserId(track?.authorId);
   const [isHovered, setIsHovered] = useState(false);
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
+  let cardWidth = StyleSheet.flatten(style)?.width;
+  if (typeof cardWidth !== "number") {
+    cardWidth = TRACK_CARD_WIDTH;
+  }
+  const imageSize = cardWidth - layout.spacing_x1_5 * 2;
 
   const { loadAndPlaySoundsQueue } = useMediaPlayer();
   const username = authorNSInfo?.metadata?.tokenId
@@ -67,12 +69,15 @@ export const TrackCard: React.FC<{
   };
 
   const imageStyle = useMemo(() => {
-    return [isHovered && { opacity: 0.5 }, contentImgCStyle];
+    return [isHovered && { opacity: 0.5 }];
   }, [isHovered]);
 
-  if (!track) return null;
+  if (post.identifier.startsWith("padded-")) {
+    return <View style={{ width: cardWidth, height: 381 }} />;
+  }
+
   return (
-    <View style={unitCardStyle}>
+    <View style={[unitCardStyle, style]}>
       <View>
         <CustomPressable
           onHoverIn={() => setIsHovered(true)}
@@ -85,11 +90,14 @@ export const TrackCard: React.FC<{
           }}
         >
           <OptimizedImage
-            sourceURI={track.audioFile.thumbnailFileData?.url}
+            sourceURI={track?.audioFile.thumbnailFileData?.url}
             fallbackURI={defaultThumbnailImage}
-            width={IMAGE_HEIGHT}
-            height={IMAGE_HEIGHT}
-            style={imageStyle}
+            width={250}
+            height={250}
+            style={[
+              imageStyle,
+              { width: imageSize, height: imageSize, borderRadius: 8 },
+            ]}
           />
           <SpacerColumn size={1.5} />
 
@@ -111,18 +119,13 @@ export const TrackCard: React.FC<{
             </TouchableOpacity>
           </View>
         </CustomPressable>
-        <BrandText style={contentTitleStyle} numberOfLines={2}>
-          {track.title}
+        <BrandText style={[fontSemibold14, { height: 40 }]} numberOfLines={2}>
+          {track?.title || ""}
         </BrandText>
-
-        {track.description && (
-          <>
-            <SpacerColumn size={0.5} />
-            <BrandText style={contentDescriptionStyle} numberOfLines={2}>
-              {track.description}
-            </BrandText>
-          </>
-        )}
+        <SpacerColumn size={0.5} />
+        <BrandText style={contentDescriptionStyle} numberOfLines={2}>
+          {track?.description || "No description"}
+        </BrandText>
       </View>
       {!hideAuthor && (
         <>
@@ -130,7 +133,7 @@ export const TrackCard: React.FC<{
           <OmniLink
             to={{
               screen: "UserPublicProfile",
-              params: { id: track.authorId },
+              params: { id: track?.authorId },
             }}
           >
             <BrandText style={contentNameStyle}>@{username}</BrandText>
@@ -139,41 +142,37 @@ export const TrackCard: React.FC<{
       )}
     </View>
   );
-};
+});
 
 const unitCardStyle: ViewStyle = {
   width: TRACK_CARD_WIDTH,
-  padding: layout.spacing_x1_5,
   backgroundColor: neutral17,
+  padding: layout.spacing_x1_5,
   borderRadius: 12,
   justifyContent: "space-between",
+  height: 381,
 };
+
 const imgBoxStyle: ViewStyle = {
   position: "relative",
 };
+
 const imgButtonsBoxStyle: ViewStyle = {
   position: "absolute",
   paddingHorizontal: layout.spacing_x1_5,
   flexDirection: "row",
   width: "100%",
-  top: IMAGE_HEIGHT - BUTTONS_HEIGHT - layout.spacing_x1_5,
+  bottom: layout.spacing_x1_5 * 2,
   right: 0,
   justifyContent: "space-between",
 };
-const contentTitleStyle: TextStyle = { ...fontSemibold14 };
+
 const contentDescriptionStyle: TextStyle = {
   ...fontMedium13,
-
   color: neutral77,
 };
-const contentImgCStyle: ImageStyle = {
-  width: "100%",
-  borderRadius: 8,
-  aspectRatio: 1,
-  height: IMAGE_HEIGHT,
-};
+
 const contentNameStyle: TextStyle = {
   ...fontSemibold14,
-
   color: primaryColor,
 };

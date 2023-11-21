@@ -3,10 +3,6 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { Post, PostsRequest } from "../../api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
-import {
-  PostCategory,
-  ZodSocialFeedTrackMetadata,
-} from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { TERITORI_FEED_ID } from "../../components/socialFeed/const";
 import { decodeGnoPost } from "../../components/socialFeed/utils";
 import {
@@ -17,7 +13,6 @@ import {
 } from "../../networks";
 import { mustGetFeedClient } from "../../utils/backend";
 import { extractGnoJSONString } from "../../utils/gno";
-import { safeJSONParse } from "../../utils/sanitize";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
 
@@ -139,16 +134,8 @@ const getPosts = async (networkId: string, req: PostsRequest) => {
     const feedClient = mustGetFeedClient(networkId);
     const response = await feedClient.Posts(req);
 
-    const filteredPosts = response.posts.filter(
-      (post) =>
-        (post.category === PostCategory.MusicAudio &&
-          ZodSocialFeedTrackMetadata.safeParse(safeJSONParse(post.metadata))
-            .success) ||
-        post.category !== PostCategory.MusicAudio,
-    );
-
     // ---- We sort by creation date
-    return filteredPosts.sort((a, b) => b.createdAt - a.createdAt);
+    return response.posts.sort((a, b) => b.createdAt - a.createdAt);
   } catch (err) {
     console.log("initData err", err);
     return [] as Post[];

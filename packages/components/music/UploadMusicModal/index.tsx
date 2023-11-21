@@ -2,8 +2,8 @@ import { FC, useState } from "react";
 
 import { UploadAlbum } from "./UploadAlbum";
 import { UploadTrack } from "./UploadTrack";
-import ModalBase from "../../../../components/modals/ModalBase";
-import { SpacerColumn } from "../../../../components/spacer";
+import ModalBase from "../../modals/ModalBase";
+import { SpacerColumn } from "../../spacer";
 
 interface UploadAlbumModalProps {
   onClose: () => void;

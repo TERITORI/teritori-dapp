@@ -21,8 +21,8 @@ import { DAOMembers } from "../../components/dao/DAOMembers";
 import { DAOProposals } from "../../components/dao/DAOProposals";
 import { DAOsList } from "../../components/dao/DAOsList";
 import { GnoDemo } from "../../components/dao/GnoDemo";
+import { MusicList } from "../../components/music/MusicList";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
-import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
@@ -54,6 +54,9 @@ const SelectedTabContent: React.FC<{
   const [network, userAddress] = parseUserId(userId);
   const { isDAO } = useIsDAO(userId);
   const { isDAOMember } = useIsDAOMember(userId, selectedWallet?.userId, isDAO);
+  const isCurrentUser = userId === selectedWallet?.userId;
+  const userName =
+    userInfo?.metadata.public_name || userInfo?.metadata.tokenId || userAddress;
 
   const feedRequestUserPosts: PostsRequest = useMemo(() => {
     return {
@@ -84,19 +87,6 @@ const SelectedTabContent: React.FC<{
       offset: 0,
     };
   }, [userInfo?.metadata.tokenId, userAddress]);
-
-  const feedRequestUserMusic: PostsRequest = useMemo(() => {
-    return {
-      filter: {
-        user: userId,
-        mentions: [],
-        categories: [PostCategory.MusicAudio],
-        hashtags: [],
-      },
-      limit: 10,
-      offset: 0,
-    };
-  }, [userId]);
 
   const Header = useCallback(() => {
     return (
@@ -144,18 +134,10 @@ const SelectedTabContent: React.FC<{
       );
     case "userMusic":
       return (
-        <NewsFeed
-          disablePosting
-          daoId={isDAO ? userId : undefined}
-          Header={Header}
-          additionalMention={
-            isDAO
-              ? undefined
-              : selectedWallet?.address !== userAddress
-                ? userInfo?.metadata.tokenId || userAddress
-                : undefined
-          }
-          req={feedRequestUserMusic}
+        <MusicList
+          title={isCurrentUser ? "Your music" : "Music by " + userName}
+          authorId={userId}
+          allowUpload={isCurrentUser}
         />
       );
     case "nfts":
@@ -197,10 +179,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>(initialTab);
   const isSocialTabSelected = useMemo(
-    () =>
-      selectedTab === "userPosts" ||
-      selectedTab === "mentionsPosts" ||
-      selectedTab === "userMusic",
+    () => selectedTab === "userPosts" || selectedTab === "mentionsPosts",
     [selectedTab],
   );
 

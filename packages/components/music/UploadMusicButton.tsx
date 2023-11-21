@@ -1,18 +1,25 @@
 import React, { FC } from "react";
 import { TextStyle, TouchableOpacity, ViewStyle } from "react-native";
 
-import Upload from "../../../../assets/icons/upload_alt.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { SpacerRow } from "../../../components/spacer";
-import { neutral30, primaryColor } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import Upload from "../../../assets/icons/upload_alt.svg";
+import { neutral30, primaryColor } from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
+import { SpacerRow } from "../spacer";
 
-export const UploadMusicButton: FC<{ onPress: () => void }> = ({ onPress }) => {
+export const UploadMusicButton: FC<{
+  onPress: () => void;
+  disabled?: boolean;
+}> = ({ onPress, disabled }) => {
   return (
     <>
-      <TouchableOpacity style={buttonContainerStyle} onPress={onPress}>
+      <TouchableOpacity
+        style={[buttonContainerStyle, { opacity: disabled ? 0.5 : 1 }]}
+        onPress={onPress}
+        disabled={disabled}
+      >
         <SVG
           source={Upload}
           width={layout.spacing_x2}

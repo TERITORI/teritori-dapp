@@ -5,49 +5,49 @@ import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
-import Add from "../../../../../assets/icons/add-primary.svg";
-import { signingSocialFeedClient } from "../../../../client-creators/socialFeedClient";
-import { BrandText } from "../../../../components/BrandText";
-import { EditableAudioPreview } from "../../../../components/FilePreview/EditableAudioPreview";
-import { SVG } from "../../../../components/SVG";
-import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
-import { FileUploader } from "../../../../components/fileUploader";
-import { TextInputCustom } from "../../../../components/inputs/TextInputCustom";
-import {
-  PostCategory,
-  SocialFeedTrackMetadata,
-} from "../../../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { NotEnoughFundModal } from "../../../../components/socialFeed/NewsFeed/NotEnoughFundModal";
-import { TERITORI_FEED_ID } from "../../../../components/socialFeed/const";
-import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
-import { useFeedbacks } from "../../../../context/FeedbacksProvider";
-import { useIsDAO } from "../../../../hooks/cosmwasm/useCosmWasmContractInfo";
-import { useDAOMakeProposal } from "../../../../hooks/dao/useDAOMakeProposal";
-import { useCreatePost } from "../../../../hooks/feed/useCreatePost";
-import { useFeedPostFee } from "../../../../hooks/feed/useFeedPostFee";
-import { useUpdateAvailableFreePost } from "../../../../hooks/feed/useUpdateAvailableFreePost";
-import { useBalances } from "../../../../hooks/useBalances";
-import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../../../hooks/useSelectedWallet";
+import Add from "../../../../assets/icons/add-primary.svg";
+import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useIsDAO } from "../../../hooks/cosmwasm/useCosmWasmContractInfo";
+import { useDAOMakeProposal } from "../../../hooks/dao/useDAOMakeProposal";
+import { useCreatePost } from "../../../hooks/feed/useCreatePost";
+import { useFeedPostFee } from "../../../hooks/feed/useFeedPostFee";
+import { useUpdateAvailableFreePost } from "../../../hooks/feed/useUpdateAvailableFreePost";
+import { useBalances } from "../../../hooks/useBalances";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
   getUserId,
   mustGetCosmosNetwork,
   NetworkKind,
-} from "../../../../networks";
-import { selectNFTStorageAPI } from "../../../../store/slices/settings";
-import { defaultSocialFeedFee } from "../../../../utils/fee";
-import { adenaDoContract } from "../../../../utils/gno";
-import { generateIpfsKey, uploadFilesToPinata } from "../../../../utils/ipfs";
-import { AUDIO_MIME_TYPES } from "../../../../utils/mime";
+} from "../../../networks";
+import { selectNFTStorageAPI } from "../../../store/slices/settings";
+import { defaultSocialFeedFee } from "../../../utils/fee";
+import { adenaDoContract } from "../../../utils/gno";
+import { generateIpfsKey, uploadFilesToPinata } from "../../../utils/ipfs";
+import { AUDIO_MIME_TYPES } from "../../../utils/mime";
 import {
   neutral30,
   neutral33,
   neutral77,
   primaryColor,
-} from "../../../../utils/style/colors";
-import { fontSemibold14 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import { LocalFileData } from "../../../../utils/types/files";
+} from "../../../utils/style/colors";
+import { fontSemibold14 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { LocalFileData } from "../../../utils/types/files";
+import { BrandText } from "../../BrandText";
+import { EditableAudioPreview } from "../../FilePreview/EditableAudioPreview";
+import { SVG } from "../../SVG";
+import { PrimaryButton } from "../../buttons/PrimaryButton";
+import { FileUploader } from "../../fileUploader";
+import { TextInputCustom } from "../../inputs/TextInputCustom";
+import {
+  PostCategory,
+  SocialFeedTrackMetadata,
+} from "../../socialFeed/NewsFeed/NewsFeed.type";
+import { NotEnoughFundModal } from "../../socialFeed/NewsFeed/NotEnoughFundModal";
+import { TERITORI_FEED_ID } from "../../socialFeed/const";
+import { SpacerColumn, SpacerRow } from "../../spacer";
 
 interface Props {
   onUploadDone: () => void;
