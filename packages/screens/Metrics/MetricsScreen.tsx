@@ -1,9 +1,9 @@
-import { Video } from "expo-av";
 import React from "react";
 import { Linking, Pressable, View } from "react-native";
 
-import video from "../../../assets/videos/teritori-os-anim-burnhalving-sm.mp4";
+import statsLogo from "../../../assets/logos/stats.svg";
 import { BrandText } from "../../components/BrandText";
+import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { GradientText } from "../../components/gradientText";
 import { TopLogo } from "../../components/navigation/components/TopLogo";
@@ -63,17 +63,11 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
           height: "100%",
         }}
       >
-        <Video
-          source={{ uri: video }}
-          shouldPlay
-          isLooping
-          style={{
-            height: 400,
-            width: 400,
-            marginTop: layout.spacing_x2,
-            marginBottom: layout.spacing_x2,
-            borderRadius: 150,
-          }}
+        <SVG
+          source={statsLogo}
+          width={800}
+          height={800}
+          style={{ margin: -200 }}
         />
         <View
           style={{
@@ -100,7 +94,7 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
               { textTransform: "uppercase", color: secondaryColor },
             ]}
           >
-            ESTI️MATED HALVING DATE:
+            ESTIMATED HALVING DATE:
           </BrandText>
           <GradientText
             style={[
