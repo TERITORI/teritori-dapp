@@ -86,9 +86,6 @@ export const ZodSocialFeedVideoMetadata = z.object({
   title: z.string(),
   description: z.string().optional(),
   videoFile: ZodRemoteFileData,
-  authorId: z.string(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
 });
 
 export type SocialFeedVideoMetadata = z.infer<

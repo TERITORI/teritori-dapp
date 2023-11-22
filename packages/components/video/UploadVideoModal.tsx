@@ -110,12 +110,19 @@ export const UploadVideoModal: FC<{
     if (postFee > Number(currentBalance?.amount) && !freePostCount) {
       return setNotEnoughFundModal(true);
     }
+
+    // we need this hack until the createdAt field is properly provided by the contract
+    const videoWithCreationDate = {
+      ...video,
+      createdAt: new Date(),
+    };
+
     try {
       const identifier = uuidv4();
       const msg = {
         category: PostCategory.Video,
         identifier,
-        metadata: JSON.stringify(video),
+        metadata: JSON.stringify(videoWithCreationDate),
       };
 
       if (isDAO) {
@@ -234,9 +241,6 @@ export const UploadVideoModal: FC<{
       title,
       description,
       videoFile: uploadedFiles[0],
-      authorId: userId,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
     };
     await processCreateVideoPost(video);
     setIsLoading(false);
@@ -353,12 +357,13 @@ export const UploadVideoModal: FC<{
             resizeMode={ResizeMode.COVER}
             useNativeControls
             style={{
+              width: "100%",
               height: VIDEO_HEIGHT,
               marginTop: layout.spacing_x2,
               marginBottom: layout.spacing_x2,
             }}
             videoStyle={{
-              height: VIDEO_HEIGHT,
+              width: "100%",
             }}
           />
         </View>

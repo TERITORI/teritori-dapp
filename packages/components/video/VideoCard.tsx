@@ -35,8 +35,8 @@ export const VideoCard: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ post, hideAuthor, style }) => {
   const video = zodTryParseJSON(ZodSocialFeedVideoMetadata, post.metadata);
-  const authorNSInfo = useNSUserInfo(video?.authorId);
-  const [, userAddress] = parseUserId(video?.authorId);
+  const authorNSInfo = useNSUserInfo(post.authorId);
+  const [, userAddress] = parseUserId(post.authorId);
   const [isHovered, setIsHovered] = useState(false);
 
   let cardWidth = StyleSheet.flatten(style)?.width;
@@ -101,7 +101,7 @@ export const VideoCard: React.FC<{
           <OmniLink
             to={{
               screen: "UserPublicProfile",
-              params: { id: video.authorId },
+              params: { id: post.authorId },
             }}
             style={{
               flexDirection: "row",
@@ -109,21 +109,21 @@ export const VideoCard: React.FC<{
             }}
           >
             {/*---- User image */}
-            <UserAvatarWithFrame userId={video.authorId} size="XXS" noFrame />
+            <UserAvatarWithFrame userId={post.authorId} size="XXS" noFrame />
             <SpacerRow size={1} />
             <BrandText style={contentNameStyle}>@{username}</BrandText>
           </OmniLink>
         </>
       )}
 
-      {/*TODO: viewCount*/}
       <SpacerColumn size={1} />
       <View style={{ flexDirection: "row", alignItems: "center" }}>
+        {/*TODO: viewCount*/}
         {/*  <BrandText*/}
         {/*    style={videoStatsTextStyle}*/}
         {/*  >{`${video.viewCount} views`}</BrandText>*/}
         {/*  <DotSeparator style={{ marginHorizontal: layout.spacing_x0_75 }} />*/}
-        <DateTime date={video.createdAt} textStyle={{ color: neutral77 }} />
+        <DateTime date={post.createdAt * 1000} textStyle={{ color: neutral77 }} />
       </View>
     </View>
   );
