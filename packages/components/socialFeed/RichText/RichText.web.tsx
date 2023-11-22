@@ -436,7 +436,14 @@ export const RichText: React.FC<RichTextProps> = ({
         audioFiles.map((file, index) => (
           <View key={index}>
             <SpacerColumn size={2} />
-            <AudioView file={file} postId={postId} authorId={authorId} />
+            <AudioView
+              authorId={authorId}
+              postId={postId}
+              duration={file.audioMetadata?.duration || 0}
+              fileUrl={file.url}
+              waveform={file.audioMetadata?.waveform || []}
+              imageURI={file.thumbnailFileData?.url}
+            />
             <SpacerColumn size={2} />
           </View>
         ))}

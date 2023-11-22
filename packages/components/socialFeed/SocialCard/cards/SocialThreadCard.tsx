@@ -18,9 +18,13 @@ import { layout } from "../../../../utils/style/layout";
 import FlexRow from "../../../FlexRow";
 import { CustomPressable } from "../../../buttons/CustomPressable";
 import { SpacerColumn } from "../../../spacer";
-import { ZodSocialFeedPostMetadata } from "../../NewsFeed/NewsFeed.type";
+import {
+  PostCategory,
+  ZodSocialFeedPostMetadata,
+} from "../../NewsFeed/NewsFeed.type";
 import { SocialThreadGovernance } from "../../SocialActions/SocialThreadGovernance";
 import { FlaggedCardFooter } from "../FlaggedCardFooter";
+import { MusicPostTrackContent } from "../MusicPostTrackContent";
 import { SocialCardFooter } from "../SocialCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";
 import { SocialCardWrapper } from "../SocialCardWrapper";
@@ -55,7 +59,7 @@ export const SocialThreadCard: React.FC<{
     const authorNSInfo = useNSUserInfo(localPost.authorId);
     const [, authorAddress] = parseUserId(localPost.authorId);
     const navigation = useAppNavigation();
-    const metadata = zodTryParseJSON(
+    const postMetadata = zodTryParseJSON(
       ZodSocialFeedPostMetadata,
       localPost.metadata,
     );
@@ -101,22 +105,24 @@ export const SocialThreadCard: React.FC<{
           <SocialCardHeader
             authorAddress={authorAddress}
             authorId={localPost.authorId}
-            postMetadata={metadata}
+            createdAt={post.createdAt}
             authorMetadata={authorNSInfo?.metadata}
           />
 
           <SpacerColumn size={1.5} />
 
           {/*====== Card Content */}
-          {!!metadata && (
+          {post.category === PostCategory.MusicAudio ? (
+            <MusicPostTrackContent post={localPost} />
+          ) : postMetadata ? (
             <SocialMessageContent
               authorId={localPost.authorId}
               postId={localPost.identifier}
-              metadata={metadata}
+              metadata={postMetadata}
               postCategory={localPost.category}
               isPreview={isPreview}
             />
-          )}
+          ) : null}
           <SpacerColumn size={1.5} />
 
           {/*====== Card Actions */}

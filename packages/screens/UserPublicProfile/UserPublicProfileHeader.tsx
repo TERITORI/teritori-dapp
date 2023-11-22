@@ -27,6 +27,9 @@ export const screenTabItems = {
   mentionsPosts: {
     name: "Mentions Posts",
   },
+  userMusic: {
+    name: "Music",
+  },
   daos: {
     name: "Organizations",
   },

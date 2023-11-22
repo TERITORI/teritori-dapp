@@ -14,16 +14,15 @@ import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { UserAvatarWithFrame } from "../../images/AvatarWithFrame";
 import { DotSeparator } from "../../separators/DotSeparator";
 import { SpacerRow } from "../../spacer";
-import { SocialFeedPostMetadata } from "../NewsFeed/NewsFeed.type";
 
 // ====== Handle author image and username, date
 export const SocialCardHeader: FC<{
   authorId: string;
   authorAddress: string;
-  postMetadata: SocialFeedPostMetadata | undefined;
+  createdAt?: number;
   authorMetadata?: any;
   loading?: boolean;
-}> = ({ authorId, authorAddress, authorMetadata, postMetadata, loading }) => {
+}> = ({ authorId, authorAddress, authorMetadata, createdAt, loading }) => {
   const { width } = useWindowDimensions();
   return (
     <FlexRow justifyContent="space-between">
@@ -93,9 +92,9 @@ export const SocialCardHeader: FC<{
               </>
             )}
             {/*---- Date */}
-            {!!postMetadata && (
+            {!!createdAt && (
               <DateTime
-                date={postMetadata.createdAt}
+                date={createdAt * 1000}
                 textStyle={{ color: neutral77 }}
               />
             )}

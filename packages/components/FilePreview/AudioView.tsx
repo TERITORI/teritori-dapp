@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { View, Image, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, ImageStyle } from "react-native";
 
 import { AudioWaveform } from "./AudioWaveform";
 import { AUDIO_WAVEFORM_MAX_WIDTH } from "./AudioWaveform/AudioWaveform.web";
@@ -9,7 +9,6 @@ import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { prettyMediaDuration } from "../../utils/mediaPlayer";
 import {
   errorColor,
@@ -20,18 +19,30 @@ import {
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { nameServiceDefaultImage } from "../../utils/tns";
-import { RemoteFileData } from "../../utils/types/files";
 import { Media } from "../../utils/types/mediaPlayer";
 import { BrandText } from "../BrandText";
+import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 
 const THUMBNAIL_SIZE = 140;
 
 export const AudioView: React.FC<{
-  file: RemoteFileData;
+  fileUrl: string;
+  imageURI?: string;
+  duration: number;
+  waveform: number[];
   authorId: string;
   postId: string;
-}> = ({ file, authorId, postId }) => {
+  fallbackImageURI?: string;
+}> = ({
+  fileUrl,
+  imageURI,
+  duration,
+  waveform,
+  authorId,
+  postId,
+  fallbackImageURI: fallbackImageSource,
+}) => {
   const selectedNetwork = useSelectedNetworkInfo();
   const userInfo = useNSUserInfo(authorId);
   const { isDAO } = useIsDAO(authorId);
@@ -41,10 +52,6 @@ export const AudioView: React.FC<{
     () => media?.postId === postId,
     [media?.postId, postId],
   );
-  const duration = useMemo(
-    () => prettyMediaDuration(file.audioMetadata?.duration),
-    [file],
-  );
 
   const onPressPlayPause = async () => {
     if (isInMediaPlayer) {
@@ -52,13 +59,13 @@ export const AudioView: React.FC<{
     } else {
       const songToPlay: Media = {
         imageUrl:
-          file?.thumbnailFileData?.url ||
+          imageURI ||
           userInfo.metadata.image ||
           nameServiceDefaultImage(isDAO, selectedNetwork),
         name: "Song from Social Feed",
         createdBy: authorId,
-        fileUrl: file.url,
-        duration: file.audioMetadata?.duration,
+        fileUrl,
+        duration,
         // postId is used to difference audios from Social Feed (News feed or Article consultation)
         postId: postId || Math.floor(Math.random() * 200000).toString(),
       };
@@ -67,24 +74,15 @@ export const AudioView: React.FC<{
     }
   };
 
-  const hasThumbnail = useMemo(
-    () => typeof file?.thumbnailFileData?.url === "string",
-    [file?.thumbnailFileData?.url],
-  );
-
   const positionPercent = useMemo(
     () =>
       (isInMediaPlayer && playbackStatus?.positionMillis
         ? playbackStatus.positionMillis
-        : 0) / (file.audioMetadata?.duration || 1),
-    [
-      file.audioMetadata?.duration,
-      playbackStatus?.positionMillis,
-      isInMediaPlayer,
-    ],
+        : 0) / (duration || 1),
+    [duration, playbackStatus?.positionMillis, isInMediaPlayer],
   );
 
-  if (!file?.url)
+  if (!fileUrl)
     return (
       <BrandText style={[fontSemibold13, { color: errorColor }]}>
         Audio not found
@@ -156,7 +154,7 @@ export const AudioView: React.FC<{
                 )}
               </BrandText>
               <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                {duration}
+                {prettyMediaDuration(duration)}
               </BrandText>
             </View>
             <View
@@ -165,29 +163,30 @@ export const AudioView: React.FC<{
               }}
             >
               <AudioWaveform
-                waveform={file.audioMetadata?.waveform || []}
+                waveform={waveform}
                 positionPercent={positionPercent}
-                duration={file.audioMetadata?.duration || 1}
+                duration={duration || 1}
               />
             </View>
           </View>
 
-          {hasThumbnail && (
-            <Image
-              source={{
-                uri: ipfsURLToHTTPURL(file?.thumbnailFileData?.url || ""),
-              }}
-              resizeMode="cover"
-              style={{
-                height: THUMBNAIL_SIZE,
-                width: THUMBNAIL_SIZE,
-                marginLeft: layout.spacing_x1,
-                borderRadius: 4,
-              }}
-            />
-          )}
+          <OptimizedImage
+            sourceURI={imageURI}
+            fallbackURI={fallbackImageSource}
+            resizeMode="cover"
+            width={THUMBNAIL_SIZE}
+            height={THUMBNAIL_SIZE}
+            style={imageCStyle}
+          />
         </View>
       </View>
     </View>
   );
+};
+
+const imageCStyle: ImageStyle = {
+  height: THUMBNAIL_SIZE,
+  width: THUMBNAIL_SIZE,
+  marginLeft: layout.spacing_x1,
+  borderRadius: 4,
 };

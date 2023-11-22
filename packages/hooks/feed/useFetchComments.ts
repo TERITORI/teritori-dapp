@@ -52,6 +52,8 @@ const fetchTeritoriComments = async (
     identifier: parentId || "",
   });
 
+  console.log("comment", subComment);
+
   return { list: subComment };
 };
 
