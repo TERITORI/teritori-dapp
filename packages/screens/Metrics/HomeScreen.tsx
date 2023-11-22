@@ -92,7 +92,7 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
               { textTransform: "uppercase", color: errorColor },
             ]}
           >
-            🔥 352790 $TORI 🔥
+            🔥 118.55K $TORI 🔥
           </BrandText>
           <BrandText
             style={[
