@@ -7,6 +7,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { MobileTitle } from "../../components/ScreenContainer/ScreenContainerMobile";
 import { MusicList } from "../../components/music/MusicList";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
+import { VideosList } from "../../components/video/VideosList";
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { NetworkFeature } from "../../networks";
@@ -49,6 +50,14 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
         <>
           {header}
           <MusicList title="All music" allowUpload />
+        </>
+      );
+      break;
+    case "videos":
+      content = (
+        <>
+          {header}
+          <VideosList title="All videos" allowUpload />
         </>
       );
       break;

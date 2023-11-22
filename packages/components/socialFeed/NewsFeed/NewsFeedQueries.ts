@@ -97,7 +97,7 @@ export const getPostCategory = ({
     } else if (files[0].fileType === "audio") {
       category = PostCategory.Audio;
     } else {
-      category = PostCategory.Video;
+      category = PostCategory.VideoNote;
     }
   } else if (title) {
     category = PostCategory.Article;

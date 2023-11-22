@@ -24,6 +24,7 @@ import { GnoDemo } from "../../components/dao/GnoDemo";
 import { MusicList } from "../../components/music/MusicList";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
+import { VideosList } from "../../components/video/VideosList";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
@@ -136,6 +137,14 @@ const SelectedTabContent: React.FC<{
       return (
         <MusicList
           title={isCurrentUser ? "Your music" : "Music by " + userName}
+          authorId={userId}
+          allowUpload={isCurrentUser}
+        />
+      );
+    case "userVideos":
+      return (
+        <VideosList
+          title={isCurrentUser ? "Your videos" : "Videos by " + userName}
           authorId={userId}
           allowUpload={isCurrentUser}
         />

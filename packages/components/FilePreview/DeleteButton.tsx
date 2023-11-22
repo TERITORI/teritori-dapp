@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, ViewStyle } from "react-native";
+import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
 
 import bucketSVG from "../../../assets/icons/bucket.svg";
 import { redDefault } from "../../utils/style/colors";
@@ -7,14 +7,16 @@ import { SVG } from "../SVG";
 
 interface Props {
   onPress: () => void;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
+  disabled?: boolean;
 }
 
-export const DeleteButton: React.FC<Props> = ({ onPress, style }) => {
+export const DeleteButton: React.FC<Props> = ({ onPress, style, disabled }) => {
   return (
     <TouchableOpacity
       activeOpacity={1}
       onPress={onPress}
+      disabled={disabled}
       style={[
         {
           backgroundColor: redDefault,
