@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { Linking, Pressable, View } from "react-native";
+import { Linking, Pressable, View, useWindowDimensions } from "react-native";
 
 import statsLogo from "../../../assets/logos/stats.svg";
 import { BrandText } from "../../components/BrandText";
@@ -8,6 +8,8 @@ import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { GradientText } from "../../components/gradientText";
 import { TopLogo } from "../../components/navigation/components/TopLogo";
+import { SpacerColumn } from "../../components/spacer";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { getNonSigningStargateClient } from "../../networks";
 import { teritoriNetwork } from "../../networks/teritori";
 import { ScreenFC } from "../../utils/navigation";
@@ -19,6 +21,8 @@ const targetBlock = 6307200;
 
 export const MetricsScreen: ScreenFC<"Metrics"> = () => {
   const { data: currentHeight } = useCosmosHeight(teritoriNetwork.id);
+  const { width: windowWidth } = useWindowDimensions();
+  const mobileMode = useIsMobile();
 
   const blocksValues = [
     {
@@ -35,6 +39,11 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
     },
   ];
 
+  let imageSize = 800;
+  if (mobileMode) {
+    imageSize = windowWidth;
+  }
+
   return (
     <ScreenContainer
       fullWidth
@@ -50,23 +59,25 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
           height: "100%",
         }}
       >
+        {mobileMode && <SpacerColumn size={3} />}
         <SVG
           source={statsLogo}
-          width={800}
-          height={800}
-          style={{ margin: -200 }}
+          width={imageSize}
+          height={imageSize}
+          style={{ margin: -(imageSize / 4) }}
         />
+        {mobileMode && <SpacerColumn size={3} />}
         <View
           style={{
             justifyContent: "space-evenly",
-            alignItems: "center",
-            flexWrap: "wrap",
-            height: 150,
+            alignItems: mobileMode ? "flex-start" : "center",
+            paddingHorizontal: layout.spacing_x3,
           }}
         >
           <BrandText style={[fontSemibold28, { textTransform: "uppercase" }]}>
             Total Burned $Tori tokens:
           </BrandText>
+          {mobileMode && <SpacerColumn size={2} />}
           <BrandText
             style={[
               fontSemibold28,
@@ -75,6 +86,7 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
           >
             🔥 118.55K $TORI 🔥
           </BrandText>
+          {mobileMode && <SpacerColumn size={2} />}
           <BrandText
             style={[
               fontSemibold28,
@@ -83,6 +95,7 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
           >
             ESTIMATED HALVING DATE:
           </BrandText>
+          {mobileMode && <SpacerColumn size={2} />}
           <BrandText style={fontSemibold28}>
             📅{"  "}
             <GradientText
@@ -99,7 +112,7 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
         <View
           style={{
             flexDirection: "row",
-            flexWrap: "nowrap",
+            flexWrap: "wrap",
           }}
         >
           {blocksValues.map((item, index) => {
