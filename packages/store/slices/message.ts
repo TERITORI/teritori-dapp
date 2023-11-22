@@ -165,12 +165,22 @@ const messageSlice = createSlice({
           id: action.payload.groupPk,
           value: messageEntityAdapter.getInitialState(),
         };
+        group.value = messageEntityAdapter.setOne(
+          group.value,
+          action.payload.data,
+        );
+        groupEntityAdapter.setOne(state.messages, group);
+      } else {
+        groupEntityAdapter.updateOne(state.messages, {
+          id: action.payload.groupPk,
+          changes: {
+            value: messageEntityAdapter.setOne(
+              group.value,
+              action.payload.data,
+            ),
+          },
+        });
       }
-      group.value = messageEntityAdapter.setOne(
-        group.value,
-        action.payload.data,
-      );
-      groupEntityAdapter.setOne(state.messages, group);
     },
     setPeerList: (state, action: PayloadAction<PeerItem[]>) => {
       peerEntityAdapter.setAll(state.peers, action.payload);
