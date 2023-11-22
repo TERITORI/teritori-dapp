@@ -1,4 +1,4 @@
-import React, { memo, useRef, useState } from "react";
+import React, { memo } from "react";
 import {
   ViewStyle,
   View,
@@ -7,38 +7,21 @@ import {
   Pressable,
 } from "react-native";
 
-import { NFTTransferModal } from "./NFTTransferModal";
 import { minNFTWidth } from "./NFTs";
 import checkMark from "../../../assets/icons/checkmark-marketplace.svg";
-import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
-import footerSVG from "../../../assets/icons/footer-regular.svg";
-import gridSVG from "../../../assets/icons/grid.svg";
-import octagonSVG from "../../../assets/icons/octagon.svg";
-import raffleSVG from "../../../assets/icons/raffle.svg";
-import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
-import { useDropdowns } from "../../context/DropdownsProvider";
-import { useIsMobile } from "../../hooks/useIsMobile";
-// import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getCosmosNetwork, parseUserId } from "../../networks";
-import {
-  neutral00,
-  neutral22,
-  neutral33,
-  neutral77,
-} from "../../utils/style/colors";
+import { parseUserId } from "../../networks";
+import { neutral00, neutral22, neutral77 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
-import { DropdownOption } from "../DropdownOption";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { NetworkIcon } from "../NetworkIcon";
 import { OmniLink } from "../OmniLink";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { SpacerColumn } from "../spacer";
+import { SpacerRow } from "../spacer";
 
 export const NFTBridge: React.FC<{
   data: NFT;
@@ -46,21 +29,11 @@ export const NFTBridge: React.FC<{
   onPress?(): void;
   style?: StyleProp<ViewStyle>;
 }> = memo(({ data: nft, selected, onPress, style }) => {
-  const isMobile = useIsMobile();
-  const cardWidth = isMobile ? 200 : 240;
+  const cardWidth = 250;
   // const { width: maxWidth } = useMaxResolution({ isLarge: true });
   const insideMargin = layout.spacing_x2;
   const flatStyle = StyleSheet.flatten(style);
-  const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(nft.ownerId);
-  const cosmosNetwork = getCosmosNetwork(nft.networkId);
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
-  const [isTransferNFTVisible, setIsTransferNFTVisible] =
-    useState<boolean>(false);
-  const dropdownRef = useRef<View>(null);
-  const isOwner = nft.ownerId === selectedWallet?.userId;
-  const isOwnerAndNotListed = isOwner && !nft.isListed;
 
   // put margins on touchable opacity
   const {
@@ -75,10 +48,6 @@ export const NFTBridge: React.FC<{
     ...styleWithoutMargins
   } = flatStyle || {};
 
-  // functions
-  const toggleTransferNFT = () =>
-    setIsTransferNFTVisible(!isTransferNFTVisible);
-
   if (nft.id.startsWith("padded-")) {
     return <View style={{ width }} />;
   }
@@ -90,7 +59,6 @@ export const NFTBridge: React.FC<{
   return (
     <>
       <View
-        ref={dropdownRef}
         style={{
           margin,
           marginBottom,
@@ -109,7 +77,6 @@ export const NFTBridge: React.FC<{
         >
           <View style={{ width: "100%" }}>
             <Pressable
-              // disabled={!nft.isListed || isOwner}
               style={{
                 paddingTop: insideMargin,
                 paddingBottom: 12,
@@ -119,9 +86,6 @@ export const NFTBridge: React.FC<{
                 backgroundColor: selected ? neutral22 : neutral00,
               }}
               onPress={() => onPress?.()}
-              // onPress={() => {
-              //     handleClick(nft, localSelected);
-              // }}
             >
               <View
                 style={{
@@ -140,16 +104,17 @@ export const NFTBridge: React.FC<{
                 >
                   <OptimizedImage
                     sourceURI={userInfo.metadata.image}
-                    fallbackURI={cosmosNetwork?.nameServiceDefaultImage}
                     width={32}
                     height={32}
                     style={{
                       height: 32,
                       width: 32,
                       borderRadius: 18,
-                      marginRight: 6,
                     }}
                   />
+
+                  <SpacerRow size={1} />
+
                   <OmniLink
                     to={{
                       screen: "UserPublicProfile",
@@ -178,73 +143,6 @@ export const NFTBridge: React.FC<{
                 {selected && (
                   <View style={{ position: "relative", zIndex: 1000 }}>
                     <SVG source={checkMark} height={32} width={32} />
-                  </View>
-                )}
-                {isOwnerAndNotListed && (
-                  <View style={{ position: "relative", zIndex: 1000 }}>
-                    <Pressable
-                      onPress={() => onPressDropdownButton(dropdownRef)}
-                    >
-                      <SVG source={dotsCircleSVG} height={32} width={32} />
-                    </Pressable>
-                    {isDropdownOpen(dropdownRef) && (
-                      <View
-                        style={{
-                          position: "absolute",
-                          zIndex: 2,
-                          top: layout.iconButton + layout.spacing_x0_5,
-                          backgroundColor: neutral00,
-                          padding: layout.spacing_x0_5,
-                          borderColor: neutral33,
-                          borderWidth: 1,
-                          borderRadius: 8,
-                          right: -layout.spacing_x1_5,
-                          minWidth: 250,
-                        }}
-                      >
-                        <DropdownOption
-                          onPress={closeOpenedDropdown}
-                          icon={octagonSVG}
-                          isComingSoon
-                          label="Set as Avatar"
-                        />
-                        <SpacerColumn size={0.5} />
-                        <OmniLink
-                          to={{
-                            screen: "NFTDetail",
-                            params: { id: nft.id },
-                          }}
-                        >
-                          <DropdownOption
-                            icon={gridSVG}
-                            label="List this NFT"
-                          />
-                        </OmniLink>
-                        <SpacerColumn size={0.5} />
-                        <DropdownOption
-                          onPress={closeOpenedDropdown}
-                          icon={raffleSVG}
-                          isComingSoon
-                          label="Create Raffle with this NFT"
-                        />
-                        <SpacerColumn size={0.5} />
-                        <DropdownOption
-                          onPress={() => {
-                            closeOpenedDropdown();
-                            toggleTransferNFT();
-                          }}
-                          icon={sendSVG}
-                          label="Send & Transfer this NFT"
-                        />
-                        <SpacerColumn size={0.5} />
-                        <DropdownOption
-                          onPress={closeOpenedDropdown}
-                          icon={footerSVG}
-                          isComingSoon
-                          label="Put this NFT in the Rioters Footer"
-                        />
-                      </View>
-                    )}
                   </View>
                 )}
               </View>
@@ -299,12 +197,6 @@ export const NFTBridge: React.FC<{
           </View>
         </TertiaryBox>
       </View>
-      <NFTTransferModal
-        nft={nft}
-        isVisible={isTransferNFTVisible}
-        onClose={() => toggleTransferNFT()}
-        onSubmit={() => toggleTransferNFT()}
-      />
     </>
   );
 });

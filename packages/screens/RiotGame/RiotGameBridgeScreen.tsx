@@ -1,7 +1,12 @@
-import { useIsFocused } from "@react-navigation/native";
-import { Video } from "expo-av";
-import React, { useEffect, useState } from "react";
-import { FlatList, Pressable, View, ViewStyle, StyleProp, useWindowDimensions } from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  FlatList,
+  Pressable,
+  View,
+  ViewStyle,
+  StyleProp,
+  useWindowDimensions,
+} from "react-native";
 
 import { GameContentView } from "./component/GameContentView";
 import trashSVG from "../../../assets/icons/trash.svg";
@@ -12,6 +17,7 @@ import {
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
+import { ExternalLink } from "../../components/ExternalLink";
 import FlexRow from "../../components/FlexRow";
 import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
@@ -20,11 +26,21 @@ import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { NFTBridge } from "../../components/nfts/NFTBridge";
 import { Separator } from "../../components/separators/Separator";
 import { SpacerColumn } from "../../components/spacer";
-import { useIsMobile } from "../../hooks/useIsMobile";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { RiotBridgeEth__factory } from "../../evm-contracts-clients/axelar-eth-polygon-bridge/RiotBridgeEth__factory";
+import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { TeritoriNft__factory } from "../../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import { useNFTs } from "../../hooks/useNFTs";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getCollectionId, getNetwork } from "../../networks";
+import {
+  EthereumNetworkInfo,
+  getCollectionId,
+  getEthereumNetwork,
+  parseNftId,
+  txExplorerLink,
+} from "../../networks";
+import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import {
   codGrayColor,
   errorColor,
@@ -36,6 +52,7 @@ import {
 } from "../../utils/style/colors";
 import {
   fontMedium10,
+  fontMedium14,
   fontMedium32,
   fontMedium48,
   fontSemibold12,
@@ -44,13 +61,48 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
+const getNFTClient = async (
+  network: EthereumNetworkInfo | undefined,
+  address: string | undefined,
+) => {
+  if (!network) {
+    throw Error("Network must be given");
+  }
+
+  if (!address) {
+    throw Error("Sender must be provided");
+  }
+
+  const signer = await getMetaMaskEthereumSigner(network, address);
+  if (!signer) {
+    throw Error("Unable to get signer");
+  }
+
+  const minterClient = TeritoriMinter__factory.connect(
+    network?.riotContractAddressGen0 || "",
+    signer,
+  );
+
+  const nftAddress = await minterClient.callStatic.nft();
+  const nftClient = TeritoriNft__factory.connect(nftAddress, signer);
+  return { nftClient, signer };
+};
+
 export const RiotGameBridgeScreen: React.FC = () => {
-  const {width} = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const selectedWallet = useSelectedWallet();
-  const networkId = useSelectedNetworkId();
   const [isBridgeApproved, setIsBridgeApproved] = useState(false);
-  const [selectedNfts, setSelectedNfts] = useState<NFT[]>([]);
-  const network = getNetwork(networkId);
+  const [selectedNFT, setSelectedNFT] = useState<NFT>();
+  const { setToastError } = useFeedbacks();
+  const [isCheckingNFT, setIsCheckingNFT] = useState(true);
+  const [isApproving, setIsApproving] = useState(false);
+  const [isBridging, setIsBridging] = useState(false);
+  const [estimatedGas, setEstimatedGas] = useState(0);
+  const [isEstimating, setIsEstimating] = useState(false);
+  const [txHash, setTxHash] = useState("");
+
+  const networkId = useSelectedNetworkId();
+  const network = getEthereumNetwork(networkId);
 
   const ethCollectionId = getCollectionId(
     networkId,
@@ -75,7 +127,11 @@ export const RiotGameBridgeScreen: React.FC = () => {
 
   const { nfts: data, isLoading } = useNFTs(myBridgeRequest);
 
-  const nfts = [...data, ...data, ...data, ...data, ...data, ...data];
+  // Get only not locked NFTs
+  const nfts = useMemo(() => {
+    const res = data.filter((data) => !data.lockedOn);
+    return res;
+  }, [data]);
 
   // Check is the Bridge Is already Approved
   useEffect(() => {
@@ -85,21 +141,109 @@ export const RiotGameBridgeScreen: React.FC = () => {
     }
   }, [isBridgeApproved]);
 
-  // Approve
-  const approveTheBridge = () => {
-    setIsBridgeApproved(true);
+  const bridgeNFT = async () => {
+    if (!selectedNFT) return;
+    if (!network) return;
+
+    const address = selectedWallet?.address || "";
+
+    const signer = await getMetaMaskEthereumSigner(network, address);
+    if (!signer) {
+      throw Error("Unable to get signer");
+    }
+
+    setIsBridging(true);
+
+    const bridgeClient = RiotBridgeEth__factory.connect(
+      network?.riotBridgeAddressGen0 || "",
+      signer,
+    );
+
+    const [, , tokenId] = parseNftId(selectedNFT.id);
+
+    const tx = await bridgeClient.bridgeNft(tokenId);
+    setTxHash(tx.hash);
+
+    await tx.wait();
+
+    setIsBridging(false);
   };
 
-  const handleSelectItem = (index: number) => {
-    const temp = [...nfts];
-    const getSelected = temp.at(index);
-    if (getSelected) {
-      setSelectedNfts([getSelected]);
+  const approveTheBridge = async () => {
+    if (!selectedNFT) return;
+    if (!network) return;
+
+    const { nftClient, signer } = await getNFTClient(
+      network,
+      selectedWallet?.address,
+    );
+
+    const [, , tokenId] = parseNftId(selectedNFT.id);
+    const { maxFeePerGas: maxFee, maxPriorityFeePerGas: maxPrio } =
+      await signer.getFeeData();
+    const maxFeePerGas = maxFee?.toNumber();
+    const maxPriorityFeePerGas = maxPrio?.toNumber();
+    const txFeeData = {
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+    };
+
+    const approveTx = await nftClient.approve(
+      network?.riotBridgeAddressGen0 || "",
+      tokenId,
+      txFeeData,
+    );
+
+    try {
+      setIsApproving(true);
+
+      await approveTx.wait();
+      setIsBridgeApproved(true);
+    } catch (e: any) {
+      setToastError({ title: "Error", message: e.message });
     }
+
+    setIsApproving(false);
+  };
+
+  const onSelectNFT = async (nft: NFT) => {
+    setIsCheckingNFT(true);
+    setSelectedNFT(nft);
+    setEstimatedGas(0);
+    setIsEstimating(true);
+    setTxHash("");
+
+    const { nftClient, signer } = await getNFTClient(
+      network,
+      selectedWallet?.address,
+    );
+    const [, , tokenId] = parseNftId(nft.id);
+
+    const approvedFor = await nftClient.callStatic.getApproved(tokenId);
+    const isApproved =
+      approvedFor.toLowerCase() === network?.riotBridgeAddressGen0;
+    setIsBridgeApproved(isApproved);
+    setIsCheckingNFT(false);
+
+    // Estimated gas
+    const bridgeClient = RiotBridgeEth__factory.connect(
+      network?.riotBridgeAddressGen0 || "",
+      signer,
+    );
+
+    const res = await bridgeClient.estimateGas.bridgeNft(tokenId);
+
+    const { maxFeePerGas } = await signer.getFeeData();
+    if (maxFeePerGas) {
+      const gasInWei = maxFeePerGas.mul(res).toNumber();
+      setEstimatedGas(Math.round(gasInWei / 10 ** 10) / 10 ** 8);
+    }
+    setIsEstimating(false);
   };
 
   const BREAK_POINT = 600;
-  const shouldRestructure = width < 600;
+  const shouldRestructure = width < BREAK_POINT;
+  const numCols = width < 1200 ? (width < 900 ? 1 : 2) : 3;
 
   return (
     <GameContentView hideStats>
@@ -115,7 +259,7 @@ export const RiotGameBridgeScreen: React.FC = () => {
         </BrandText>
 
         <FlexRow
-          style={{ marginTop: layout.spacing_x4, alignItems: "flex-start" }}
+          style={{ marginTop: layout.spacing_x4, alignItems: "center" }}
           breakpoint={BREAK_POINT}
         >
           <View style={{ flexGrow: 1, marginBottom: layout.spacing_x2 }}>
@@ -123,7 +267,8 @@ export const RiotGameBridgeScreen: React.FC = () => {
               style={{ height: shouldRestructure ? 400 : 600 }}
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}
-              numColumns={width < 960 ? 1 : 3}
+              numColumns={numCols}
+              key={numCols}
               ItemSeparatorComponent={() => <SpacerColumn size={2} />}
               data={nfts}
               ListEmptyComponent={
@@ -132,7 +277,6 @@ export const RiotGameBridgeScreen: React.FC = () => {
                 </BrandText>
               }
               renderItem={({ item, index }: { item: NFT; index: number }) => {
-                const selected = selectedNfts.includes(item);
                 return (
                   <View
                     style={{
@@ -142,8 +286,8 @@ export const RiotGameBridgeScreen: React.FC = () => {
                     <NFTBridge
                       key={item.id}
                       data={item}
-                      selected={selected}
-                      onPress={() => handleSelectItem(index)}
+                      selected={selectedNFT?.id === item.id}
+                      onPress={() => onSelectNFT(item)}
                     />
                   </View>
                 );
@@ -151,21 +295,49 @@ export const RiotGameBridgeScreen: React.FC = () => {
             />
           </View>
 
-          <SideBridge
-            style={{
-              width: 245,
-              backgroundColor: neutral00,
-              borderRadius: layout.spacing_x2,
-              borderColor: neutral33,
-              borderWidth: 1,
-              paddingVertical: layout.spacing_x1,
-              marginHorizontal: layout.spacing_x4,
-            }}
-            onApproveTheBridge={() => approveTheBridge()}
-            isBridgeApproved={isBridgeApproved}
-            selected={selectedNfts}
-            setSelected={setSelectedNfts}
-          />
+          <View style={{ marginHorizontal: layout.spacing_x4 }}>
+            <SideBridge
+              style={{
+                width: 245,
+                backgroundColor: neutral00,
+                borderRadius: layout.spacing_x2,
+                borderColor: neutral33,
+                borderWidth: 1,
+                paddingVertical: layout.spacing_x1,
+              }}
+              onApproveTheBridge={() => approveTheBridge()}
+              onBridge={() => bridgeNFT()}
+              isBridgeApproved={isBridgeApproved}
+              selected={selectedNFT}
+              setSelected={setSelectedNFT}
+              isCheckingNFT={isCheckingNFT}
+              isApproving={isApproving}
+              estimatedGas={estimatedGas}
+              isEstimating={isEstimating}
+            />
+
+            <SpacerColumn size={2} />
+
+            <ExternalLink
+              externalUrl={txExplorerLink(network?.id, txHash)}
+              style={[fontMedium14, { width: "100%" }]}
+              ellipsizeMode="middle"
+              numberOfLines={1}
+            >
+              View the transaction on Explorer
+            </ExternalLink>
+
+            <SpacerColumn size={2} />
+
+            <ExternalLink
+              externalUrl={`https://testnet.axelarscan.io/gmp/${txHash}`}
+              style={[fontMedium14, { width: "100%" }]}
+              ellipsizeMode="middle"
+              numberOfLines={1}
+            >
+              View the transaction on Axelar Bridge
+            </ExternalLink>
+          </View>
         </FlexRow>
       </View>
     </GameContentView>
@@ -175,20 +347,28 @@ export const RiotGameBridgeScreen: React.FC = () => {
 const SideBridge: React.FC<{
   style?: StyleProp<ViewStyle>;
   onApproveTheBridge: () => void;
-  selected: NFT[];
+  onBridge: () => void;
+  selected: NFT | undefined;
   setSelected: any;
   isBridgeApproved: boolean;
+  isCheckingNFT: boolean;
+  isApproving: boolean;
+  estimatedGas: number;
+  isEstimating: boolean;
 }> = ({
   style,
   onApproveTheBridge,
+  onBridge,
   selected,
   setSelected,
   isBridgeApproved,
+  isCheckingNFT,
+  isApproving,
+  estimatedGas,
+  isEstimating,
 }) => {
-  const handleRemoveCartItem = (index: number) => {
-    const temp = [...selected];
-    temp.splice(index, 1);
-    setSelected(temp);
+  const handleRemoveCartItem = () => {
+    setSelected();
   };
   const handleEmptyCart = () => {
     setSelected([]);
@@ -240,65 +420,40 @@ const SideBridge: React.FC<{
       </View>
       {selected ? (
         <View style={{ paddingHorizontal: layout.spacing_x1_5 }}>
-          <FlatList
-            data={selected}
-            ListEmptyComponent={() => {
-              return (
-                <>
-                  <View
-                    style={{
-                      borderRadius: 8,
-                      padding: layout.spacing_x1,
-                      marginBottom: layout.spacing_x1,
-                      height: 60,
-                    }}
-                  >
-                    None
-                  </View>
-                </>
-              );
+          <View
+            style={{
+              backgroundColor: codGrayColor,
+              borderRadius: 8,
+              padding: layout.spacing_x1,
+              marginBottom: layout.spacing_x1,
             }}
-            renderItem={({ item, index }) => {
-              return (
-                <>
-                  <View
-                    style={{
-                      backgroundColor: codGrayColor,
-                      borderRadius: 8,
-                      padding: layout.spacing_x1,
-                      marginBottom: layout.spacing_x1,
-                    }}
-                  >
-                    <View
-                      style={{
-                        justifyContent: "space-between",
-                        flexDirection: "row",
-                        flexWrap: "nowrap",
-                        alignItems: "center",
-                        marginBottom: layout.spacing_x0_5,
-                      }}
-                    >
-                      <OptimizedImage
-                        sourceURI={item?.imageUri}
-                        width={40}
-                        height={40}
-                        style={{
-                          height: 40,
-                          width: 40,
-                          borderRadius: 4,
-                          marginRight: 6,
-                        }}
-                      />
-                      <BrandText style={fontSemibold12}>{item?.name}</BrandText>
-                      <Pressable onPress={() => handleRemoveCartItem(index)}>
-                        <SVG source={trashSVG} color={neutralA3} width={14} />
-                      </Pressable>
-                    </View>
-                  </View>
-                </>
-              );
-            }}
-          />
+          >
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row",
+                flexWrap: "nowrap",
+                alignItems: "center",
+                marginBottom: layout.spacing_x0_5,
+              }}
+            >
+              <OptimizedImage
+                sourceURI={selected?.imageUri}
+                width={40}
+                height={40}
+                style={{
+                  height: 40,
+                  width: 40,
+                  borderRadius: 4,
+                  marginRight: 6,
+                }}
+              />
+              <BrandText style={fontSemibold12}>{selected?.name}</BrandText>
+              <Pressable onPress={() => handleRemoveCartItem()}>
+                <SVG source={trashSVG} color={neutralA3} width={14} />
+              </Pressable>
+            </View>
+          </View>
         </View>
       ) : null}
       <Separator />
@@ -307,7 +462,11 @@ const SideBridge: React.FC<{
       <View style={{ paddingHorizontal: layout.spacing_x1_5 }}>
         <View style={{ paddingVertical: layout.spacing_x1 }}>
           <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
-            Price:
+            Estimated Gas: {isEstimating ? "estimating..." : estimatedGas}
+          </BrandText>
+
+          <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
+            Duration: {isEstimating ? "estimating..." : "~ 30m"}
           </BrandText>
         </View>
 
@@ -323,15 +482,17 @@ const SideBridge: React.FC<{
               color={yellowDefault}
               size="SM"
               text="Bridge your NFT"
-              disabled={selected.length <= 0}
+              disabled={!selected}
+              onPress={onBridge}
             />
           ) : (
             <SecondaryButton
               fullWidth
               color={yellowDefault}
               size="SM"
-              text="Approve Bridge"
+              text={isApproving ? "Approving..." : "Approve Bridge"}
               onPress={onApproveTheBridge}
+              disabled={isCheckingNFT || isApproving}
             />
           )}
         </View>
