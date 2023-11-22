@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { Linking, Pressable, View } from "react-native";
 
@@ -7,50 +8,36 @@ import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { GradientText } from "../../components/gradientText";
 import { TopLogo } from "../../components/navigation/components/TopLogo";
+import { getNonSigningStargateClient } from "../../networks";
+import { teritoriNetwork } from "../../networks/teritori";
 import { ScreenFC } from "../../utils/navigation";
 import { errorColor, secondaryColor } from "../../utils/style/colors";
 import { fontBold16, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
+const targetBlock = 6307200;
+
 export const MetricsScreen: ScreenFC<"Metrics"> = () => {
-  // const selectedNetwork = getCosmosNetwork("teritori");
-  // const { data: burned } = useQuery([selectedNetwork?.id], async () => {
-  //   if (
-  //     !currencyIn ||
-  //     !currencyOut ||
-  //     !selectedNetwork ||
-  //     ((!multihopPools[0] || !multihopPools[1]) && !directPool)
-  //   )
-  //     return "0";
-  //
-  //   setLoading(true);
-  //
-  //   const { createRPCQueryClient } = teritori.ClientFactory;
-  //   const clientRPC = await createRPCQueryClient({
-  //     rpcEndpoint: selectedNetwork.rpcEndpoint,
-  //   });
-  //   clientRPC.teritori.tx.v1beta1.getTx({});
-  // });
+  const { data: currentHeight } = useCosmosHeight(teritoriNetwork.id);
 
   const blocksValues = [
     {
       label: "Target Block",
-      blockNumber: "#6307200",
+      blockNumber: `#${targetBlock}`,
     },
     {
       label: "Current Block",
-      blockNumber: "Click here",
+      blockNumber: currentHeight ? `#${currentHeight}` : "?",
     },
     {
       label: "Remaining Blocks",
-      blockNumber: "Click here",
+      blockNumber: currentHeight ? `${targetBlock - currentHeight}` : "?",
     },
   ];
 
   return (
     <ScreenContainer
       fullWidth
-      hideSidebar
       headerChildren={<TopLogo />}
       footerChildren={<div />}
       forceNetworkId="teritori"
@@ -106,34 +93,65 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
             Nov 30th, 2023, 10:38:26 UTC
           </GradientText>
         </View>
-        <Pressable
+        <View
           style={{
             flexDirection: "row",
             flexWrap: "nowrap",
           }}
-          onPress={() =>
-            Linking.openURL("https://www.mintscan.io/teritori/blocks/6307200")
-          }
         >
-          {blocksValues.map((item) => (
-            <View
-              style={{
-                padding: layout.spacing_x3,
-                alignContent: "center",
-                justifyContent: "space-between",
-                height: 110,
-              }}
-            >
-              <BrandText style={[fontBold16, { color: secondaryColor }]}>
-                {item.label}
-              </BrandText>
+          {blocksValues.map((item, index) => {
+            const blockNumberText = (
               <BrandText style={[fontBold16, { color: secondaryColor }]}>
                 {item.blockNumber}
               </BrandText>
-            </View>
-          ))}
-        </Pressable>
+            );
+            let blockNumber;
+            if (item.blockNumber.startsWith("#")) {
+              blockNumber = (
+                <Pressable
+                  onPress={() =>
+                    Linking.openURL(
+                      "https://www.mintscan.io/teritori/blocks/" +
+                        item.blockNumber.substring(1),
+                    )
+                  }
+                >
+                  {blockNumberText}
+                </Pressable>
+              );
+            } else {
+              blockNumber = blockNumberText;
+            }
+            return (
+              <View
+                key={index}
+                style={{
+                  padding: layout.spacing_x3,
+                  alignContent: "center",
+                  justifyContent: "space-between",
+                  height: 110,
+                }}
+              >
+                <BrandText style={[fontBold16, { color: secondaryColor }]}>
+                  {item.label}
+                </BrandText>
+                {blockNumber}
+              </View>
+            );
+          })}
+        </View>
       </View>
     </ScreenContainer>
   );
 };
+
+function useCosmosHeight(networkId: string) {
+  return useQuery(
+    ["cosmosStatus", networkId],
+    async () => {
+      const client = await getNonSigningStargateClient(networkId);
+      return await client.getHeight();
+    },
+    { staleTime: Infinity, refetchInterval: 7000 },
+  );
+}
