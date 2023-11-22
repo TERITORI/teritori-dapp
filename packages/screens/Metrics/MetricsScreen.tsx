@@ -83,15 +83,18 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
           >
             ESTIMATED HALVING DATE:
           </BrandText>
-          <GradientText
-            style={[
-              fontSemibold28,
-              { textTransform: "uppercase", color: secondaryColor },
-            ]}
-            gradientType="blueExtended"
-          >
-            Nov 30th, 2023, 10:38:26 UTC
-          </GradientText>
+          <BrandText style={fontSemibold28}>
+            📅{"  "}
+            <GradientText
+              style={[
+                fontSemibold28,
+                { textTransform: "uppercase", color: secondaryColor },
+              ]}
+              gradientType="blueExtended"
+            >
+              Nov 30th, 2023, 15:51:00 UTC
+            </GradientText>
+          </BrandText>
         </View>
         <View
           style={{
