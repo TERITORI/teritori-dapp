@@ -1,3 +1,10 @@
+import {
+  AxelarQueryAPI,
+  Environment,
+  EvmChain,
+  GasToken,
+} from "@axelar-network/axelarjs-sdk";
+import { BigNumber } from "ethers";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   FlatList,
@@ -40,6 +47,8 @@ import {
   parseNftId,
   txExplorerLink,
 } from "../../networks";
+import { polygonNetwork } from "../../networks/polygon";
+import { polygonMumbaiNetwork } from "../../networks/polygon-mumbai";
 import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import {
   codGrayColor,
@@ -98,7 +107,8 @@ export const RiotGameBridgeScreen: React.FC = () => {
   const [isApproving, setIsApproving] = useState(false);
   const [isBridging, setIsBridging] = useState(false);
   const [estimatedGas, setEstimatedGas] = useState(0);
-  const [isEstimating, setIsEstimating] = useState(false);
+  const [isEstimatingGas, setIsEstimatingGas] = useState(false);
+  const [axelarGas, setAxelarGas] = useState(0);
   const [txHash, setTxHash] = useState("");
 
   const networkId = useSelectedNetworkId();
@@ -141,6 +151,56 @@ export const RiotGameBridgeScreen: React.FC = () => {
     }
   }, [isBridgeApproved]);
 
+  const getAxelarGas = async () => {
+    if (!network?.riotBridgeAddressGen0) {
+      throw Error("Bridge is undefined");
+    }
+
+    let destNetwork: EthereumNetworkInfo;
+    let axelarEnv;
+    if (network.id === "ethereum-goerli") {
+      destNetwork = polygonMumbaiNetwork;
+      axelarEnv = Environment.TESTNET;
+    } else if (network.id === "ethereum") {
+      destNetwork = polygonNetwork;
+      axelarEnv = Environment.MAINNET;
+    } else {
+      throw Error("Network is not supported for bridging");
+    }
+
+    if (!destNetwork?.riotBridgedNFTAddressGen0) {
+      throw Error("Destination NFT is undefined");
+    }
+
+    const GMPGasFee = {
+      showDetailedFees: false,
+      destinationContractAddress: destNetwork.riotBridgedNFTAddressGen0,
+      sourceContractAddress: network.riotBridgeAddressGen0,
+      tokenSymbol: "matic",
+    };
+
+    const axelarSdk = new AxelarQueryAPI({
+      environment: axelarEnv,
+    });
+
+    const srcChainId = "ethereum-2"; // NOTE: don't know it does not work with Evm.ETH
+    const destChainId = EvmChain.POLYGON;
+    const srcChainTokenSymbol = GasToken.ETH;
+    const gasLimit = 700_000;
+
+    const res = await axelarSdk.estimateGasFee(
+      srcChainId,
+      destChainId,
+      srcChainTokenSymbol,
+      gasLimit,
+      1.1,
+      "0",
+      GMPGasFee,
+    );
+
+    return res;
+  };
+
   const bridgeNFT = async () => {
     if (!selectedNFT) return;
     if (!network) return;
@@ -161,7 +221,7 @@ export const RiotGameBridgeScreen: React.FC = () => {
 
     const [, , tokenId] = parseNftId(selectedNFT.id);
 
-    const tx = await bridgeClient.bridgeNft(tokenId);
+    const tx = await bridgeClient.bridgeNft(tokenId, { value: axelarGas });
     setTxHash(tx.hash);
 
     await tx.wait();
@@ -210,7 +270,7 @@ export const RiotGameBridgeScreen: React.FC = () => {
     setIsCheckingNFT(true);
     setSelectedNFT(nft);
     setEstimatedGas(0);
-    setIsEstimating(true);
+    setIsEstimatingGas(true);
     setTxHash("");
 
     const { nftClient, signer } = await getNFTClient(
@@ -231,14 +291,19 @@ export const RiotGameBridgeScreen: React.FC = () => {
       signer,
     );
 
-    const res = await bridgeClient.estimateGas.bridgeNft(tokenId);
-
     const { maxFeePerGas } = await signer.getFeeData();
-    if (maxFeePerGas) {
-      const gasInWei = maxFeePerGas.mul(res).toNumber();
-      setEstimatedGas(Math.round(gasInWei / 10 ** 10) / 10 ** 8);
-    }
-    setIsEstimating(false);
+
+    const estimatedGas = bridgeClient.estimateGas.bridgeNft(tokenId);
+    const axelarGas = getAxelarGas();
+
+    const gasData = await Promise.all([estimatedGas, axelarGas]);
+
+    const gas = (maxFeePerGas || BigNumber.from(0)).mul(gasData[0]).toNumber();
+
+    setEstimatedGas(gas);
+    setAxelarGas(+gasData[1].toString());
+
+    setIsEstimatingGas(false);
   };
 
   const BREAK_POINT = 600;
@@ -246,7 +311,7 @@ export const RiotGameBridgeScreen: React.FC = () => {
   const numCols = width < 1200 ? (width < 900 ? 1 : 2) : 3;
 
   return (
-    <GameContentView hideStats>
+    <GameContentView>
       <View
         style={{
           marginTop: layout.spacing_x4,
@@ -313,7 +378,9 @@ export const RiotGameBridgeScreen: React.FC = () => {
               isCheckingNFT={isCheckingNFT}
               isApproving={isApproving}
               estimatedGas={estimatedGas}
-              isEstimating={isEstimating}
+              axelarGas={axelarGas}
+              isEstimatingGas={isEstimatingGas}
+              isBridging={isBridging}
             />
 
             <SpacerColumn size={2} />
@@ -353,8 +420,10 @@ const SideBridge: React.FC<{
   isBridgeApproved: boolean;
   isCheckingNFT: boolean;
   isApproving: boolean;
+  isBridging: boolean;
   estimatedGas: number;
-  isEstimating: boolean;
+  axelarGas: number;
+  isEstimatingGas: boolean;
 }> = ({
   style,
   onApproveTheBridge,
@@ -364,8 +433,10 @@ const SideBridge: React.FC<{
   isBridgeApproved,
   isCheckingNFT,
   isApproving,
+  isBridging,
   estimatedGas,
-  isEstimating,
+  axelarGas,
+  isEstimatingGas,
 }) => {
   const handleRemoveCartItem = () => {
     setSelected();
@@ -462,15 +533,40 @@ const SideBridge: React.FC<{
       <View style={{ paddingHorizontal: layout.spacing_x1_5 }}>
         <View style={{ paddingVertical: layout.spacing_x1 }}>
           <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
-            Estimated Gas: {isEstimating ? "estimating..." : estimatedGas}
+            Estimated Gas:{" "}
+            {isEstimatingGas
+              ? "estimating..."
+              : Math.round(estimatedGas / 10 ** 10) / 10 ** 8}
           </BrandText>
 
           <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
-            Duration: {isEstimating ? "estimating..." : "~ 30m"}
+            Estimated Axelar Gas:{" "}
+            {isEstimatingGas
+              ? "estimating..."
+              : Math.round(axelarGas / 10 ** 10) / 10 ** 8}
+          </BrandText>
+
+          <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
+            Duration: {isEstimatingGas ? "estimating..." : "~ 30m"}
           </BrandText>
         </View>
 
         <Separator />
+
+        <BrandText
+          style={[
+            fontSemibold12,
+            { color: neutralA3, marginVertical: layout.spacing_x1 },
+          ]}
+        >
+          You pay:{" "}
+          {isEstimatingGas
+            ? "estimating..."
+            : Math.round((axelarGas + estimatedGas) / 10 ** 10) / 10 ** 8}
+        </BrandText>
+
+        <Separator />
+
         <View
           style={{
             marginTop: layout.spacing_x1,
@@ -482,7 +578,7 @@ const SideBridge: React.FC<{
               color={yellowDefault}
               size="SM"
               text="Bridge your NFT"
-              disabled={!selected}
+              disabled={!selected || isBridging}
               onPress={onBridge}
             />
           ) : (

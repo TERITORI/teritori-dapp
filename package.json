@@ -14,6 +14,7 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@axelar-network/axelarjs-sdk": "^0.13.6",
     "@cosmjs/amino": "0.29.3",
     "@cosmjs/cosmwasm-stargate": "0.29.3",
     "@cosmjs/encoding": "^0.30.1",

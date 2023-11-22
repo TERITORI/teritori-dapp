@@ -1,9 +1,9 @@
 import { polygonCurrencies } from "./currencies";
-import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
+import { EthereumNetworkInfo, NetworkFeature, NetworkKind } from "../types";
 
 const riotContractAddressGen1 = "";
 
-export const polygonNetwork: NetworkInfo = {
+export const polygonNetwork: EthereumNetworkInfo = {
   id: "polygon",
   kind: NetworkKind.Ethereum,
   displayName: "Polygon",

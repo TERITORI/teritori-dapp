@@ -1,9 +1,9 @@
 import { ethereumGoerliCurrencies } from "./currencies";
-import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
+import { EthereumNetworkInfo, NetworkFeature, NetworkKind } from "../types";
 
 const riotContractAddressGen1 = "0xdfff431d4c2275201dEd83dAd613A3DbDA1D11A7";
 
-export const ethereumGoerliNetwork: NetworkInfo = {
+export const ethereumGoerliNetwork: EthereumNetworkInfo = {
   id: "ethereum-goerli",
   kind: NetworkKind.Ethereum,
   displayName: "Ethereum Goerli",

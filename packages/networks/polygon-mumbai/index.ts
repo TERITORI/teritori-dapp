@@ -1,7 +1,7 @@
 import { polygonMumbaiCurrencies } from "./currencies";
-import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
+import { EthereumNetworkInfo, NetworkFeature, NetworkKind } from "../types";
 
-export const polygonMumbaiNetwork: NetworkInfo = {
+export const polygonMumbaiNetwork: EthereumNetworkInfo = {
   id: "polygon-mumbai",
   kind: NetworkKind.Ethereum,
   displayName: "Polygon Mumbai",

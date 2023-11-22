@@ -1,7 +1,7 @@
 import { ethereumCurrencies } from "./currencies";
-import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
+import { EthereumNetworkInfo, NetworkFeature, NetworkKind } from "../types";
 
-export const ethereumNetwork: NetworkInfo = {
+export const ethereumNetwork: EthereumNetworkInfo = {
   id: "ethereum",
   kind: NetworkKind.Ethereum,
   displayName: "Ethereum",

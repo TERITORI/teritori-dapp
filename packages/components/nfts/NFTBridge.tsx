@@ -12,7 +12,12 @@ import checkMark from "../../../assets/icons/checkmark-marketplace.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
-import { neutral00, neutral22, neutral77 } from "../../utils/style/colors";
+import {
+  neutral00,
+  neutral22,
+  neutral77,
+  yellowDefault,
+} from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
@@ -142,7 +147,12 @@ export const NFTBridge: React.FC<{
                 </View>
                 {selected && (
                   <View style={{ position: "relative", zIndex: 1000 }}>
-                    <SVG source={checkMark} height={32} width={32} />
+                    <SVG
+                      source={checkMark}
+                      color={yellowDefault}
+                      height={32}
+                      width={32}
+                    />
                   </View>
                 )}
               </View>
