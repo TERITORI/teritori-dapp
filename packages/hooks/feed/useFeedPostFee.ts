@@ -4,12 +4,13 @@ import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type
 import { getPostFee } from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
 
 export const useFeedPostFee = (
-  networkId: string,
+  networkId: string | undefined,
   postCategory: PostCategory,
 ) => {
   const { data } = useQuery(
     ["getPostFee", networkId, postCategory],
     async () => {
+      if (!networkId) return 0;
       try {
         return (
           (await getPostFee({

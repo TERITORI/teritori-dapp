@@ -17,11 +17,13 @@ import { useBalances } from "../../../hooks/useBalances";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
+  getStakingCurrency,
   getUserId,
   mustGetCosmosNetwork,
   NetworkKind,
 } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
+import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import { adenaDoContract } from "../../../utils/gno";
 import { generateIpfsKey, uploadFilesToPinata } from "../../../utils/ipfs";
@@ -71,14 +73,19 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
     },
   });
   const { postFee } = useFeedPostFee(
-    selectedNetwork?.id || "",
+    selectedNetwork?.id,
     PostCategory.MusicAudio,
   );
+  const feeCurrency = getStakingCurrency(selectedNetwork?.id);
+  const feeBalance = balances.find((bal) => bal.denom === feeCurrency?.denom);
   const { freePostCount } = useUpdateAvailableFreePost(
     selectedNetwork?.id || "",
     PostCategory.MusicAudio,
     selectedWallet,
   );
+
+  const canPayForPost =
+    freePostCount > 0 || postFee <= Number(feeBalance?.amount || "0");
 
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -305,8 +312,36 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
 
       <View style={divideLineStyle} />
 
-      <View style={footerStyle}>
-        <BrandText style={footerTextStyle} numberOfLines={2}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          width: "100%",
+        }}
+      >
+        <BrandText style={[footerTextStyle, { marginTop: layout.spacing_x2 }]}>
+          Publishing fee:{" "}
+          {prettyPrice(
+            selectedNetwork?.id,
+            postFee.toString(),
+            feeCurrency?.denom,
+          )}
+        </BrandText>
+        <BrandText style={[footerTextStyle, { marginTop: layout.spacing_x2 }]}>
+          Balance:{" "}
+          {prettyPrice(
+            selectedNetwork?.id,
+            feeBalance?.amount || "0",
+            feeCurrency?.denom,
+          )}
+        </BrandText>
+      </View>
+
+      <View style={footerBottomCStyle}>
+        <BrandText
+          style={[footerTextStyle, { width: "55%" }]}
+          numberOfLines={2}
+        >
           By uploading, you confirm that your sounds comply with our Terms of
           Use.
         </BrandText>
@@ -317,7 +352,8 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
             !title ||
             isUploading ||
             isMutateLoading ||
-            isLoading
+            isLoading ||
+            !canPayForPost
           }
           size="SM"
           onPress={onPressUpload}
@@ -348,17 +384,17 @@ const divideLineStyle: ViewStyle = {
   marginLeft: -layout.spacing_x2_5,
   backgroundColor: neutral33,
 };
-const footerStyle: ViewStyle = {
+const footerBottomCStyle: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "space-between",
-  paddingVertical: layout.spacing_x2,
+  marginTop: layout.spacing_x1,
+  marginBottom: layout.spacing_x2,
 };
 const footerTextStyle: TextStyle = {
   ...fontSemibold14,
 
   color: neutral77,
-  width: "55%",
 };
 const inputBoxStyle: ViewStyle = {
   flexDirection: "row",
