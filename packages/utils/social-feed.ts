@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import { GIF_MIME_TYPE } from "./mime";
 import { HASHTAG_REGEX, MENTION_REGEX, URL_REGEX } from "./regex";
 import { zodTryParseJSON } from "./sanitize";
@@ -9,7 +11,6 @@ import {
   PostCategory,
   PostExtra,
   PostResultExtra,
-  ZodSocialFeedPostMetadata,
 } from "../components/socialFeed/NewsFeed/NewsFeed.type";
 import { TabDefinition } from "../components/tabs/Tabs";
 import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
@@ -100,9 +101,10 @@ export const postResultToPost = (
   postResult: PostResultExtra | PostResult,
 ) => {
   const metadata = zodTryParseJSON(
-    ZodSocialFeedPostMetadata,
+    z.object({ createdAt: z.string() }),
     postResult.metadata,
   );
+
   const post: Post = {
     category: postResult.category,
     isDeleted: postResult.deleted,
@@ -112,12 +114,15 @@ export const postResultToPost = (
     subPostLength: postResult.sub_post_length,
     reactions: postResult.reactions,
     authorId: getUserId(networkId, postResult.post_by),
-    createdAt: parseInt(metadata?.createdAt || "0", 10),
+    createdAt: metadata ? Date.parse(metadata.createdAt) / 1000 : 0,
     tipAmount: parseFloat(postResult.tip_amount),
   };
   if ("isInLocal" in postResult) {
     return { ...post, isInLocal: postResult.isInLocal } as PostExtra;
   }
+
+  console.log("postResultToPost", postResult, post);
+
   return post;
 };
 

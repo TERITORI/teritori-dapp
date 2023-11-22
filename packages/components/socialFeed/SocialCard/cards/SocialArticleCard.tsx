@@ -53,6 +53,8 @@ export const SocialArticleCard: FC<{
   refetchFeed?: () => Promise<any>;
   isFlagged?: boolean;
 }> = memo(({ post, isPostConsultation, refetchFeed, style, isFlagged }) => {
+  console.log("post", post);
+
   const navigation = useAppNavigation();
   const [localPost, setLocalPost] = useState<Post>(post);
   const [viewWidth, setViewWidth] = useState(0);
@@ -149,7 +151,7 @@ export const SocialArticleCard: FC<{
             <SocialCardHeader
               authorId={localPost.authorId}
               authorAddress={authorAddress}
-              createdAt={simplePostMetadata?.createdAt || ""}
+              createdAt={localPost.createdAt}
               authorMetadata={authorNSInfo?.metadata}
             />
 

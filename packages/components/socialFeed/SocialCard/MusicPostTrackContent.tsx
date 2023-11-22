@@ -1,17 +1,19 @@
 import React, { FC } from "react";
 
 import defaultThumbnailImage from "../../../../assets/default-images/default-track-thumbnail.png";
+import { Post } from "../../../api/feed/v1/feed";
+import { zodTryParseJSON } from "../../../utils/sanitize";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
 import { AudioView } from "../../FilePreview/AudioView";
 import { SpacerColumn } from "../../spacer";
-import { SocialFeedTrackMetadata } from "../NewsFeed/NewsFeed.type";
+import { ZodSocialFeedTrackMetadata } from "../NewsFeed/NewsFeed.type";
 
 export const MusicPostTrackContent: FC<{
-  track?: SocialFeedTrackMetadata;
-  postId: string;
-}> = ({ track, postId }) => {
+  post: Post;
+}> = ({ post }) => {
+  const track = zodTryParseJSON(ZodSocialFeedTrackMetadata, post.metadata);
   if (!track) return null;
   return (
     <>
@@ -33,8 +35,8 @@ export const MusicPostTrackContent: FC<{
         waveform={track.audioFile.audioMetadata?.waveform || []}
         fallbackImageURI={defaultThumbnailImage}
         imageURI={track.audioFile.thumbnailFileData?.url}
-        authorId={track.authorId}
-        postId={postId}
+        authorId={post.authorId}
+        postId={post.identifier}
       />
     </>
   );

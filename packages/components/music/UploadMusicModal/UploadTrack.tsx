@@ -214,9 +214,6 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       title,
       description,
       audioFile: uploadedFiles[0],
-      authorId: userId,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
     };
     await processCreateMusicAudioPost(track);
     setIsLoading(false);

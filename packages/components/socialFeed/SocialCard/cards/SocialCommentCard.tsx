@@ -192,7 +192,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
               <SocialCardHeader
                 authorAddress={authorAddress}
                 authorId={localComment.authorId}
-                createdAt={metadata?.createdAt}
+                createdAt={localComment.createdAt}
                 authorMetadata={authorNSInfo?.metadata}
               />
 

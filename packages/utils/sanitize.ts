@@ -6,7 +6,7 @@ const parseJSON = (json: string): unknown => {
   return JSON.parse(json);
 };
 
-const safeJSONParse = (json: string): unknown => {
+export const safeJSONParse = (json: string): unknown => {
   try {
     return parseJSON(json);
   } catch {

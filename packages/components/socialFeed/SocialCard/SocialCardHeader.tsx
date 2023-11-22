@@ -19,7 +19,7 @@ import { SpacerRow } from "../../spacer";
 export const SocialCardHeader: FC<{
   authorId: string;
   authorAddress: string;
-  createdAt?: string;
+  createdAt?: number;
   authorMetadata?: any;
   loading?: boolean;
 }> = ({ authorId, authorAddress, authorMetadata, createdAt, loading }) => {
@@ -93,7 +93,10 @@ export const SocialCardHeader: FC<{
             )}
             {/*---- Date */}
             {!!createdAt && (
-              <DateTime date={createdAt} textStyle={{ color: neutral77 }} />
+              <DateTime
+                date={createdAt * 1000}
+                textStyle={{ color: neutral77 }}
+              />
             )}
           </View>
         </View>

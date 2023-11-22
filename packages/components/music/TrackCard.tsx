@@ -39,8 +39,8 @@ export const TrackCard: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = memo(({ post, hideAuthor, style }) => {
   const track = zodTryParseJSON(ZodSocialFeedTrackMetadata, post.metadata);
-  const authorNSInfo = useNSUserInfo(track?.authorId);
-  const [, userAddress] = parseUserId(track?.authorId);
+  const authorNSInfo = useNSUserInfo(post.authorId);
+  const [, userAddress] = parseUserId(post.authorId);
   const [isHovered, setIsHovered] = useState(false);
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
@@ -60,7 +60,7 @@ export const TrackCard: React.FC<{
     const mediaToPlay: Media = {
       imageUrl: track.audioFile.thumbnailFileData?.url,
       name: track.title,
-      createdBy: track.authorId,
+      createdBy: post.authorId,
       fileUrl: track.audioFile.url,
       duration: track.audioFile.audioMetadata?.duration,
       postId: post.identifier,
@@ -133,7 +133,7 @@ export const TrackCard: React.FC<{
           <OmniLink
             to={{
               screen: "UserPublicProfile",
-              params: { id: track?.authorId },
+              params: { id: post.authorId },
             }}
           >
             <BrandText style={contentNameStyle}>@{username}</BrandText>

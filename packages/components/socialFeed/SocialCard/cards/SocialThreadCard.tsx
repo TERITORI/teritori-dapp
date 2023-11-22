@@ -20,7 +20,6 @@ import { CustomPressable } from "../../../buttons/CustomPressable";
 import { SpacerColumn } from "../../../spacer";
 import {
   PostCategory,
-  ZodSocialFeedTrackMetadata,
   ZodSocialFeedPostMetadata,
 } from "../../NewsFeed/NewsFeed.type";
 import { SocialThreadGovernance } from "../../SocialActions/SocialThreadGovernance";
@@ -64,11 +63,6 @@ export const SocialThreadCard: React.FC<{
       ZodSocialFeedPostMetadata,
       localPost.metadata,
     );
-    const trackMetadata = zodTryParseJSON(
-      ZodSocialFeedTrackMetadata,
-      localPost.metadata,
-    );
-    const metadata = postMetadata || trackMetadata;
     const username = authorNSInfo?.metadata?.tokenId || authorAddress;
     const handleReply = () =>
       onPressReply?.({
@@ -111,18 +105,15 @@ export const SocialThreadCard: React.FC<{
           <SocialCardHeader
             authorAddress={authorAddress}
             authorId={localPost.authorId}
-            createdAt={metadata?.createdAt || ""}
+            createdAt={post.createdAt}
             authorMetadata={authorNSInfo?.metadata}
           />
 
           <SpacerColumn size={1.5} />
 
           {/*====== Card Content */}
-          {post.category === PostCategory.MusicAudio && trackMetadata ? (
-            <MusicPostTrackContent
-              track={trackMetadata}
-              postId={localPost.identifier}
-            />
+          {post.category === PostCategory.MusicAudio ? (
+            <MusicPostTrackContent post={localPost} />
           ) : postMetadata ? (
             <SocialMessageContent
               authorId={localPost.authorId}
