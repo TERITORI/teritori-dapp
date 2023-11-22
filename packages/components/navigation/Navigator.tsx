@@ -19,6 +19,7 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
+import { MetricsScreen } from "../../screens/Metrics/MetricsScreen";
 import { MultisigCreateScreen } from "../../screens/Multisig/MultisigCreateScreen";
 import { MultisigScreen } from "../../screens/Multisig/MultisigScreen";
 import { MultisigWalletDashboardScreen } from "../../screens/Multisig/MultisigWalletDashboardScreen";
@@ -314,6 +315,11 @@ export const Navigator: React.FC = () => {
         name="CoreDAO"
         component={CoreDAOScreen}
         options={{ header: () => null, title: screenTitle("Core DAO") }}
+      />
+      <Stack.Screen
+        name="Metrics"
+        component={MetricsScreen}
+        options={{ header: () => null, title: screenTitle("Metrics") }}
       />
     </Stack.Navigator>
   );
