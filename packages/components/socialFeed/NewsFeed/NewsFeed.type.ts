@@ -70,11 +70,6 @@ export const ZodSocialFeedArticleMetadata = z.object({
   hashtags: z.array(z.string()),
   mentions: z.array(z.string()),
 });
-/*
-export type SocialFeedArticleMetadata = z.infer<
-  typeof ZodSocialFeedArticleMetadata
->;
-*/
 
 export const ZodSocialFeedTrackMetadata = z.object({
   title: z.string(),
@@ -85,12 +80,6 @@ export const ZodSocialFeedTrackMetadata = z.object({
 export type SocialFeedTrackMetadata = z.infer<
   typeof ZodSocialFeedTrackMetadata
 >;
-
-export type LocalSocialFeedTrackMetadata = SocialFeedTrackMetadata & {
-  authorId: string;
-  createdAt: string;
-  updatedAt: string;
-};
 
 export type ReplyToType = {
   username: string;
