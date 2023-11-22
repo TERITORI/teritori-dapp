@@ -7,7 +7,6 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { GradientText } from "../../components/gradientText";
-import { TopLogo } from "../../components/navigation/components/TopLogo";
 import { SpacerColumn } from "../../components/spacer";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { getNonSigningStargateClient } from "../../networks";
@@ -47,7 +46,6 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
   return (
     <ScreenContainer
       fullWidth
-      headerChildren={<TopLogo />}
       footerChildren={<div />}
       forceNetworkId="teritori"
     >
