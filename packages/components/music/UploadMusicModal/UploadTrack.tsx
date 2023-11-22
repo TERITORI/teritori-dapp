@@ -96,12 +96,19 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
     if (postFee > Number(currentBalance?.amount) && !freePostCount) {
       return setNotEnoughFundModal(true);
     }
+
+    // we need this hack until the createdAt field is properly provided by the contract
+    const trackWithCreationDate = {
+      ...track,
+      createdAt: new Date().toISOString(),
+    };
+
     try {
       const identifier = uuidv4();
       const msg = {
         category: PostCategory.MusicAudio,
         identifier,
-        metadata: JSON.stringify(track),
+        metadata: JSON.stringify(trackWithCreationDate),
       };
 
       if (isDAO) {
