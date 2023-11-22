@@ -10,6 +10,7 @@ export const ethereumNetwork: EthereumNetworkInfo = {
     NetworkFeature.NFTMarketplace,
     NetworkFeature.RiotP2E,
     NetworkFeature.NFTLaunchpad,
+    NetworkFeature.NFTBridge,
   ],
   currencies: ethereumCurrencies,
   idPrefix: "eth",

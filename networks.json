@@ -3026,7 +3026,8 @@
     "features": [
       "NFTMarketplace",
       "RiotP2E",
-      "NFTLaunchpad"
+      "NFTLaunchpad",
+      "NFTBridge"
     ],
     "currencies": [
       {
@@ -3067,7 +3068,8 @@
     "features": [
       "NFTMarketplace",
       "RiotP2E",
-      "NFTLaunchpad"
+      "NFTLaunchpad",
+      "NFTBridge"
     ],
     "currencies": [
       {

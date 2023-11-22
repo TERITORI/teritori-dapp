@@ -12,6 +12,7 @@ export const ethereumGoerliNetwork: EthereumNetworkInfo = {
     NetworkFeature.NFTMarketplace,
     NetworkFeature.RiotP2E,
     NetworkFeature.NFTLaunchpad,
+    NetworkFeature.NFTBridge,
   ],
   currencies: ethereumGoerliCurrencies,
   idPrefix: "testeth",

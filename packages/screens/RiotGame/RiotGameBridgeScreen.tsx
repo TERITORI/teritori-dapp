@@ -42,6 +42,7 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   EthereumNetworkInfo,
+  NetworkFeature,
   getCollectionId,
   getEthereumNetwork,
   parseNftId,
@@ -311,7 +312,7 @@ export const RiotGameBridgeScreen: React.FC = () => {
   const numCols = width < 1200 ? (width < 900 ? 1 : 2) : 3;
 
   return (
-    <GameContentView>
+    <GameContentView forceNetworkFeatures={[NetworkFeature.NFTBridge]}>
       <View
         style={{
           marginTop: layout.spacing_x4,
@@ -360,7 +361,12 @@ export const RiotGameBridgeScreen: React.FC = () => {
             />
           </View>
 
-          <View style={{ marginHorizontal: layout.spacing_x4 }}>
+          <View
+            style={{
+              marginHorizontal: layout.spacing_x4,
+              alignSelf: "flex-start",
+            }}
+          >
             <SideBridge
               style={{
                 width: 245,
@@ -385,25 +391,28 @@ export const RiotGameBridgeScreen: React.FC = () => {
 
             <SpacerColumn size={2} />
 
-            <ExternalLink
-              externalUrl={txExplorerLink(network?.id, txHash)}
-              style={[fontMedium14, { width: "100%" }]}
-              ellipsizeMode="middle"
-              numberOfLines={1}
-            >
-              View the transaction on Explorer
-            </ExternalLink>
-
+            {txHash && (
+              <ExternalLink
+                externalUrl={txExplorerLink(network?.id, txHash)}
+                style={[fontMedium14, { width: "100%" }]}
+                ellipsizeMode="middle"
+                numberOfLines={1}
+              >
+                View the transaction on Explorer
+              </ExternalLink>
+            )}
             <SpacerColumn size={2} />
 
-            <ExternalLink
-              externalUrl={`https://testnet.axelarscan.io/gmp/${txHash}`}
-              style={[fontMedium14, { width: "100%" }]}
-              ellipsizeMode="middle"
-              numberOfLines={1}
-            >
-              View the transaction on Axelar Bridge
-            </ExternalLink>
+            {txHash && (
+              <ExternalLink
+                externalUrl={`https://testnet.axelarscan.io/gmp/${txHash}`}
+                style={[fontMedium14, { width: "100%" }]}
+                ellipsizeMode="middle"
+                numberOfLines={1}
+              >
+                View the transaction on Axelar Bridge
+              </ExternalLink>
+            )}
           </View>
         </FlexRow>
       </View>
