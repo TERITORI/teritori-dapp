@@ -316,13 +316,6 @@ export const Navigator: React.FC = () => {
         component={CoreDAOScreen}
         options={{ header: () => null, title: screenTitle("Core DAO") }}
       />
-      {/* ==== Music */}
-      <Stack.Screen
-        name="Music"
-        component={MusicScreen}
-        options={{ header: () => null, title: screenTitle("Music") }}
-      />
-
       <Stack.Screen
         name="Metrics"
         component={MetricsScreen}

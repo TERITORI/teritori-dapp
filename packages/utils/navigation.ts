@@ -66,8 +66,6 @@ export type RootStackParamList = {
   DAppStore: undefined;
   ToriPunks: { route: string };
 
-  Music: undefined;
-
   Metrics: undefined;
 };
 
@@ -153,8 +151,6 @@ const navConfig: {
     DAppStore: "dapp-store",
     // === DApps
     ToriPunks: "dapp/tori-punks/:route?",
-    // ==== Music
-    Music: "music",
     // === Metrics
     Metrics: "stats",
   },
