@@ -61,6 +61,7 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 		metaData = abiGo.TeritoriVaultMetaData
 	case strings.EqualFold(tx.Info.To, h.network.DistributorContractAddress):
 		metaData = abiGo.DistributorMetaData
+	// Bridge
 	case strings.EqualFold(tx.Info.To, h.network.RiotBridgeAddressGen0), strings.EqualFold(tx.Info.To, h.network.RiotBridgeAddressGen1):
 		metaData = abiGo.AxelarBridgeETHMetaData
 	// If not matching with known handlers continue

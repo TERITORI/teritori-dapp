@@ -145,13 +145,23 @@ func (h *Handler) handleBridgeNFT(contractABI *abi.ABI, tx *pb.Tx, args map[stri
 	}
 
 	var mintAddress string
+	var srcNFTAddr string
+
 	switch tx.Info.To {
 	case h.network.RiotBridgeAddressGen0:
 		mintAddress = h.network.RiotContractAddressGen0
+		srcNFTAddr = h.network.RiotNFTAddressGen0
 	case h.network.RiotBridgeAddressGen1:
 		mintAddress = h.network.RiotContractAddressGen1
+		srcNFTAddr = h.network.RiotNFTAddressGen1
 	default:
 		return errors.New("Unknown Bridge address: " + tx.Info.To)
+	}
+
+	// Dont process the bridge where source NFT address is not our NFT collection
+	transferedNFTAddress := tx.Receipt.Logs[0].Address
+	if transferedNFTAddress != srcNFTAddr {
+		return nil
 	}
 
 	nftID := h.network.GetBase().NFTID(mintAddress, input.TokenID.String())
