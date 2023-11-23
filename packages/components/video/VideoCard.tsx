@@ -194,6 +194,9 @@ export const VideoCard: React.FC<{
 const imgBoxStyle: ViewStyle = {
   position: "relative",
 };
+const imgBoxStyle: ViewStyle = {
+  position: "relative",
+};
 const contentDescriptionStyle: TextStyle = {
   ...fontMedium13,
   color: neutral77,
