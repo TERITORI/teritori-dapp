@@ -125,8 +125,6 @@ export const MultisigCreateScreen = () => {
       name,
     });
 
-    console.log("res", res);
-
     navigation.navigate("MultisigWalletDashboard", {
       id: getUserId(selectedNetwork?.id, res.multisigAddress),
     });

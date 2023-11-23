@@ -133,6 +133,7 @@ const getPosts = async (networkId: string, req: PostsRequest) => {
     // ===== We use FeedService to be able to fetch filtered posts
     const feedClient = mustGetFeedClient(networkId);
     const response = await feedClient.Posts(req);
+
     // ---- We sort by creation date
     return response.posts.sort((a, b) => b.createdAt - a.createdAt);
   } catch (err) {

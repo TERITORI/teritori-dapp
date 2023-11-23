@@ -34,7 +34,7 @@ export const decodeGnoPost = (networkId: string, gnoPost: GnoPost): Post => {
     parentPostIdentifier: gnoPost.parentID ? "" + gnoPost.parentID : "",
     subPostLength: gnoPost.commentsCount,
     authorId: getUserId(networkId, gnoPost.creator),
-    createdAt: gnoPost.createdAt * 1000,
+    createdAt: gnoPost.createdAt,
     tipAmount: gnoPost.tipAmount,
     reactions,
   };

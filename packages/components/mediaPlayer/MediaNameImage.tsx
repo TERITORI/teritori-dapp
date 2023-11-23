@@ -1,6 +1,6 @@
 import { ResizeMode } from "expo-av";
 import { FC } from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { ImageStyle, StyleProp, View, ViewStyle } from "react-native";
 
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
@@ -56,7 +56,7 @@ export const MediaNameImage: FC<{
       >
         <OptimizedImage
           sourceURI={media.imageUrl}
-          style={{ height: IMAGE_SIZE, width: IMAGE_SIZE }}
+          style={imageCStyle}
           height={IMAGE_SIZE}
           width={IMAGE_SIZE}
           resizeMode={ResizeMode.CONTAIN}
@@ -85,3 +85,5 @@ export const MediaNameImage: FC<{
     </OmniLink>
   );
 };
+
+const imageCStyle: ImageStyle = { height: IMAGE_SIZE, width: IMAGE_SIZE };

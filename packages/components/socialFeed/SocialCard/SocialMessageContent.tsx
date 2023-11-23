@@ -97,9 +97,12 @@ export const SocialMessageContent: React.FC<Props> = ({
             <Fragment key={index}>
               {metadata.message && <SpacerColumn size={2} />}
               <AudioView
-                file={file}
                 authorId={authorId || ""}
                 postId={postId || ""}
+                duration={file.audioMetadata?.duration || 0}
+                fileUrl={file.url}
+                waveform={file.audioMetadata?.waveform || []}
+                imageURI={file.thumbnailFileData?.url}
               />
             </Fragment>
           ))}

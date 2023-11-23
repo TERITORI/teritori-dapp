@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 import { DraxList, DraxProvider } from "react-native-drax";
-import { enableLegacyWebImplementation } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 
 import { SelectedDraggable } from "./SelectedDraggable";
@@ -21,7 +20,6 @@ export const LeftRail = () => {
   const selectedApps = useSelector(selectCheckedApps);
   const availableApps = useSelector(selectAvailableApps);
   const [isDraggable, setIsDraggable] = useState(true);
-  enableLegacyWebImplementation(true);
   return (
     <View
       style={{

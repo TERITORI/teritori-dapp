@@ -187,7 +187,7 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
               <>
                 <BrandText style={[fontMedium32]}>+</BrandText>
                 <BrandText style={[fontSemibold12, { textAlign: "center" }]}>
-                  Thumbnail
+                  Image
                 </BrandText>
               </>
             )}

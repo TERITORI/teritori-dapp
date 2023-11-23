@@ -14,7 +14,7 @@ export const safeParseJSON = (json: string): unknown => {
   }
 };
 
-export const zodTryParse = <T extends z.ZodType>(
+const zodTryParse = <T extends z.ZodType>(
   zodType: T,
   data: unknown,
 ): z.infer<T> | undefined => {

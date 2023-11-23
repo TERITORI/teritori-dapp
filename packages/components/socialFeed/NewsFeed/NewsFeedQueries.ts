@@ -246,14 +246,16 @@ export const generatePostMetadata = ({
   mentions,
   gifs,
 }: GeneratePostMetadataParams): SocialFeedPostMetadata => {
-  return ZodSocialFeedPostMetadata.parse({
+  const m = ZodSocialFeedPostMetadata.parse({
     title: title || "",
     message: message || "",
     files,
     hashtags: hashtags || [],
     mentions: mentions || [],
     gifs: gifs || [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
   });
+  // we need this hack until the createdAt field is properly provided by the contract
+  // @ts-expect-error
+  m.createdAt = new Date().toISOString();
+  return m;
 };

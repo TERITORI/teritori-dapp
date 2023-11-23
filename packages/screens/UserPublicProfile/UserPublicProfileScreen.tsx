@@ -21,6 +21,7 @@ import { DAOMembers } from "../../components/dao/DAOMembers";
 import { DAOProposals } from "../../components/dao/DAOProposals";
 import { DAOsList } from "../../components/dao/DAOsList";
 import { GnoDemo } from "../../components/dao/GnoDemo";
+import { MusicList } from "../../components/music/MusicList";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
@@ -53,8 +54,11 @@ const SelectedTabContent: React.FC<{
   const [network, userAddress] = parseUserId(userId);
   const { isDAO } = useIsDAO(userId);
   const { isDAOMember } = useIsDAOMember(userId, selectedWallet?.userId, isDAO);
+  const isCurrentUser = userId === selectedWallet?.userId;
+  const userName =
+    userInfo?.metadata.public_name || userInfo?.metadata.tokenId || userAddress;
 
-  const feedRequestUser: PostsRequest = useMemo(() => {
+  const feedRequestUserPosts: PostsRequest = useMemo(() => {
     return {
       filter: {
         user: userId,
@@ -110,7 +114,7 @@ const SelectedTabContent: React.FC<{
                 ? userInfo?.metadata.tokenId || userAddress
                 : undefined
           }
-          req={feedRequestUser}
+          req={feedRequestUserPosts}
         />
       );
     case "mentionsPosts":
@@ -126,6 +130,14 @@ const SelectedTabContent: React.FC<{
               : undefined
           }
           req={feedRequestMentions}
+        />
+      );
+    case "userMusic":
+      return (
+        <MusicList
+          title={isCurrentUser ? "Your music" : "Music by " + userName}
+          authorId={userId}
+          allowUpload={isCurrentUser}
         />
       );
     case "nfts":
@@ -166,6 +178,10 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
 }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>(initialTab);
+  const isSocialTabSelected = useMemo(
+    () => selectedTab === "userPosts" || selectedTab === "mentionsPosts",
+    [selectedTab],
+  );
 
   const prevId = usePrevious(id);
   useEffect(() => {
@@ -188,7 +204,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       <NotFound label="User" />
     ) : (
       <>
-        {selectedTab !== "userPosts" && selectedTab !== "mentionsPosts" ? (
+        {!isSocialTabSelected ? (
           <TabContainer>
             <UserPublicProfileScreenHeader
               userId={id}
@@ -217,7 +233,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       forceNetworkId={network?.id}
       responsive
       fullWidth
-      noScroll={selectedTab === "userPosts" || selectedTab === "mentionsPosts"}
+      noScroll={isSocialTabSelected}
       footerChildren={<></>}
       headerChildren={
         <BrandText style={fontSemibold20}>

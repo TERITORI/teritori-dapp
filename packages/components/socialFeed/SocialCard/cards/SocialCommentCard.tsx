@@ -19,6 +19,7 @@ import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
 import { OnPressReplyType } from "../../../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../../../utils/navigation";
+import { zodTryParseJSON } from "../../../../utils/sanitize";
 import { DEFAULT_USERNAME } from "../../../../utils/social-feed";
 import {
   neutral00,
@@ -39,7 +40,10 @@ import {
   LINES_HORIZONTAL_SPACE,
 } from "../../../cards/CommentsContainer";
 import { SpacerColumn } from "../../../spacer";
-import { PostExtra } from "../../NewsFeed/NewsFeed.type";
+import {
+  PostExtra,
+  ZodSocialFeedPostMetadata,
+} from "../../NewsFeed/NewsFeed.type";
 import { SocialCardFooter } from "../SocialCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";
 import { SocialMessageContent } from "../SocialMessageContent";
@@ -93,9 +97,10 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     [data],
   );
   const moreCommentsCount = localComment.subPostLength - comments.length;
-  // FIXME: sanitize
-  // eslint-disable-next-line no-restricted-syntax
-  const metadata = JSON.parse(localComment.metadata);
+  const metadata = zodTryParseJSON(
+    ZodSocialFeedPostMetadata,
+    localComment.metadata,
+  );
   const authorNSInfo = useNSUserInfo(localComment.authorId);
   const username = authorNSInfo?.metadata?.tokenId
     ? tinyAddress(authorNSInfo?.metadata?.tokenId || "", 19)
@@ -187,19 +192,21 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
               <SocialCardHeader
                 authorAddress={authorAddress}
                 authorId={localComment.authorId}
-                postMetadata={metadata}
+                createdAt={localComment.createdAt}
                 authorMetadata={authorNSInfo?.metadata}
               />
 
               <SpacerColumn size={1.5} />
 
               {/*====== Card Content */}
-              <SocialMessageContent
-                authorId={localComment.authorId}
-                postId={localComment.identifier}
-                metadata={metadata}
-                postCategory={localComment.category}
-              />
+              {!!metadata && (
+                <SocialMessageContent
+                  authorId={localComment.authorId}
+                  postId={localComment.identifier}
+                  metadata={metadata}
+                  postCategory={localComment.category}
+                />
+              )}
 
               <SpacerColumn size={1.5} />
 

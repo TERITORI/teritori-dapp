@@ -1,5 +1,8 @@
+import { z } from "zod";
+
 import { GIF_MIME_TYPE } from "./mime";
 import { HASHTAG_REGEX, MENTION_REGEX, URL_REGEX } from "./regex";
+import { zodTryParseJSON } from "./sanitize";
 import { redDefault } from "./style/colors";
 import { LocalFileData } from "./types/files";
 import flagSVG from "../../assets/icons/notification.svg";
@@ -43,6 +46,9 @@ export const feedsTabItems: { [key: string]: TabDefinition } = {
   sounds: {
     name: "Sounds Feed",
   },
+  music: {
+    name: "Music Feed",
+  },
   pics: {
     name: "Pics Feed",
   },
@@ -68,6 +74,8 @@ export const feedTabToCategories = (tab: keyof typeof feedsTabItems) => {
   switch (tab) {
     case "sounds":
       return [PostCategory.Audio];
+    case "music":
+      return [PostCategory.MusicAudio];
     case "pics":
       return [PostCategory.Picture];
     case "videos":
@@ -92,6 +100,11 @@ export const postResultToPost = (
   networkId: string,
   postResult: PostResultExtra | PostResult,
 ) => {
+  const metadata = zodTryParseJSON(
+    z.object({ createdAt: z.string() }),
+    postResult.metadata,
+  );
+
   const post: Post = {
     category: postResult.category,
     isDeleted: postResult.deleted,
@@ -101,14 +114,15 @@ export const postResultToPost = (
     subPostLength: postResult.sub_post_length,
     reactions: postResult.reactions,
     authorId: getUserId(networkId, postResult.post_by),
-    // FIXME: sanitize
-    // eslint-disable-next-line no-restricted-syntax
-    createdAt: JSON.parse(postResult.metadata).createdAt,
+    createdAt: metadata ? Date.parse(metadata.createdAt) / 1000 : 0,
     tipAmount: parseFloat(postResult.tip_amount),
   };
   if ("isInLocal" in postResult) {
     return { ...post, isInLocal: postResult.isInLocal } as PostExtra;
   }
+
+  console.log("postResultToPost", postResult, post);
+
   return post;
 };
 
