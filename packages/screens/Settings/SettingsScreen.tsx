@@ -27,12 +27,12 @@ import {
   setIsLightTheme,
   setNFTStorageAPI,
 } from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
+import { RootState, useAppDispatch } from "../../store/store";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutralA3, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { modalMarginPadding } from "../../utils/style/modals";
-import { createWeshClient } from "../../weshnet";
+import { weshClient } from "../../weshnet";
 
 const NFTAPIKeyInput: React.FC = () => {
   const userIPFSKey = useSelector(selectNFTStorageAPI);
@@ -161,6 +161,8 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
         <SpacerColumn size={4} />
 
         <TestWeshnetButton />
+        <SpacerColumn size={2} />
+        <WeshnetStateButton />
 
         {/*Please note that the "user profile customization" part of this task was changed to navigate to the TNS manage page.*/}
         {/*I left the files ( committed to the repo UserProfileModal.tsx) as by the previous developer.*/}
@@ -186,7 +188,7 @@ const TestWeshnetButton: React.FC = () => {
         loader
         fullWidth
         onPress={wrapWithFeedback(async () => {
-          const client = createWeshClient("http://localhost:4242");
+          const client = weshClient.client;
           await client.ContactRequestEnable({});
           const res = await client.ContactRequestReference({});
           let rdvSeed = res.publicRendezvousSeed;
@@ -218,6 +220,29 @@ const TestWeshnetButton: React.FC = () => {
         <BrandText style={{ marginBottom: modalMarginPadding }}>
           {systemInfo}
         </BrandText>
+      </ModalBase>
+    </>
+  );
+};
+
+const WeshnetStateButton: React.FC = () => {
+  const state = useSelector((state: RootState) => state.message);
+  const [modalVisible, setModalVisible] = React.useState(false);
+  return (
+    <>
+      <PrimaryButton
+        size="M"
+        text="Weshnet State"
+        fullWidth
+        onPress={() => setModalVisible(true)}
+      />
+      <ModalBase
+        label="Weshnet"
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        scrollable
+      >
+        <BrandText>{JSON.stringify(state, null, 2)}</BrandText>
       </ModalBase>
     </>
   );
