@@ -11,6 +11,7 @@ import { MetaMaskProvider } from "metamask-react";
 import React, { ReactNode, memo, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform, View } from "react-native";
+import { enableLegacyWebImplementation } from "react-native-gesture-handler";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
@@ -42,6 +43,9 @@ const queryClient = new QueryClient();
 type DefaultForm = {
   novalue: string;
 };
+// this is required for react-native-gesture-handler to work on web
+enableLegacyWebImplementation(true);
+// ^ required for drog and drop on the dAppStore
 
 export default function App() {
   const methods = useForm<DefaultForm>();
