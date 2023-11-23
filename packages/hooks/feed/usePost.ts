@@ -7,7 +7,7 @@ import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClie
 import { decodeGnoPost } from "../../components/socialFeed/utils";
 import { NetworkKind, getNetwork, getUserId } from "../../networks";
 import { extractGnoJSONString } from "../../utils/gno";
-import { safeJSONParse } from "../../utils/sanitize";
+import { safeParseJSON } from "../../utils/sanitize";
 
 // FIXME: this is not typed
 export const usePost = (id: string, networkId: string | undefined) => {
@@ -38,7 +38,7 @@ export const usePost = (id: string, networkId: string | undefined) => {
         // FIXME: fix social feed contract and remove this
         // we should not trust the client to put correct date
         let createdAt = 0;
-        const metadata = safeJSONParse(res.metadata);
+        const metadata = safeParseJSON(res.metadata);
         if (
           typeof metadata === "object" &&
           metadata !== null &&

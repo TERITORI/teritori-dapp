@@ -1,12 +1,12 @@
 import { z } from "zod";
 
-const parseJSON = (json: string): unknown => {
-  // this is the only exception we want to allow
+const parseJSON = (s: string): unknown => {
+  // this is the only exception we allow
   // eslint-disable-next-line no-restricted-syntax
-  return JSON.parse(json);
+  return JSON.parse(s);
 };
 
-export const safeJSONParse = (json: string): unknown => {
+export const safeParseJSON = (json: string): unknown => {
   try {
     return parseJSON(json);
   } catch {
@@ -22,7 +22,6 @@ const zodTryParse = <T extends z.ZodType>(
   if (result.success) {
     return result.data;
   }
-  console.log("zodTryParse error", result.error, data);
   return undefined;
 };
 
@@ -30,5 +29,5 @@ export const zodTryParseJSON = <T extends z.ZodType>(
   zodType: T,
   data: string,
 ): z.infer<T> | undefined => {
-  return zodTryParse(zodType, safeJSONParse(data));
+  return zodTryParse(zodType, safeParseJSON(data));
 };
