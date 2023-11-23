@@ -1,17 +1,8 @@
 import { Decimal } from "@cosmjs/math";
-import React, {
-  Dispatch,
-  RefObject,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
 import {
   StyleSheet,
   TextInput,
-  TouchableOpacity,
   View,
   Animated,
   LayoutChangeEvent,
@@ -20,12 +11,11 @@ import {
 import { CurrencyAmount } from "./CurrencyAmount";
 import { SelectedCurrency } from "./SelectedCurrency";
 import { SwapDetail } from "./SwapDetail";
+import { SwapHeader } from "./SwapHeader";
 import { SwapSettings } from "./SwapSettings";
 import { SwapTokensList } from "./SwapTokensList";
 import chevronCircleDown from "../../../../../assets/icons/chevron-circle-down.svg";
 import chevronCircleUp from "../../../../../assets/icons/chevron-circle-up.svg";
-import osmosisLogo from "../../../../../assets/icons/networks/osmosis.svg";
-import settingsSVG from "../../../../../assets/icons/settings.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
@@ -53,7 +43,6 @@ import {
 } from "../../../../networks";
 import { Balance } from "../../../../utils/coins";
 import {
-  neutral00,
   neutral77,
   neutralA3,
   primaryColor,
@@ -65,29 +54,6 @@ import { isFloatText } from "../../../../utils/text";
 
 const INVERT_ANIMATION_DURATION = 200;
 const MAX_WIDTH = 600;
-
-export const SwapHeader: React.FC<{
-  setSettingsOpened?: Dispatch<SetStateAction<boolean>>;
-  networkDisplayName?: string;
-}> = ({ setSettingsOpened, networkDisplayName }) => {
-  return (
-    <View style={styles.headerContainer}>
-      <View style={styles.headerLogoTitle}>
-        <SVG source={osmosisLogo} height={32} width={32} />
-        <BrandText style={styles.headerTitle}>
-          Swap on {networkDisplayName || "Osmosis"}
-        </BrandText>
-      </View>
-      {setSettingsOpened && (
-        <TouchableOpacity
-          onPress={() => setSettingsOpened((isOpened) => !isOpened)}
-        >
-          <SVG source={settingsSVG} height={20} width={20} />
-        </TouchableOpacity>
-      )}
-    </View>
-  );
-};
 
 /////////////////// SWAP VIEW
 export const SwapView: React.FC = () => {
@@ -371,16 +337,36 @@ export const SwapView: React.FC = () => {
 
         <View style={{ width: "100%", paddingHorizontal: layout.spacing_x2_5 }}>
           <SeparatorGradient style={{ marginBottom: layout.spacing_x2_5 }} />
-          <View style={styles.childrenContainer}>
-            <View style={styles.currencies}>
+          <View
+            style={{
+              alignItems: "center",
+              paddingBottom: layout.spacing_x2_5,
+            }}
+          >
+            <View style={{ width: "100%" }}>
               {/*======= First currency */}
               <TertiaryBox
                 fullWidth
-                mainContainerStyle={styles.currencyBoxMainContainer}
+                mainContainerStyle={{
+                  padding: layout.spacing_x2,
+                }}
               >
                 {/*----- Selected currencyIn available amount */}
-                <View style={styles.counts}>
-                  <BrandText style={styles.availableAmount}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "100%",
+                    marginBottom: layout.spacing_x2,
+                  }}
+                >
+                  <BrandText
+                    style={{
+                      color: neutral77,
+                      ...StyleSheet.flatten(fontSemibold14),
+                    }}
+                  >
                     Available{" "}
                     <BrandText style={{ color: primaryColor }}>
                       {currencyInAmount}
@@ -409,7 +395,14 @@ export const SwapView: React.FC = () => {
                     transform: [{ translateY: translateRangeToBottom }],
                   }}
                 >
-                  <View style={styles.currency}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      width: "100%",
+                    }}
+                  >
                     <SelectedCurrency
                       currency={currencyInNative}
                       selectedNetworkId={selectedNetworkId}
@@ -418,13 +411,25 @@ export const SwapView: React.FC = () => {
                     {/*----- Desired amount for swap */}
                     <View>
                       <TextInput
-                        style={styles.inputAmount}
+                        style={{
+                          height: "100%",
+                          color: secondaryColor,
+                          maxWidth: 200,
+                          textAlign: "right",
+                          ...StyleSheet.flatten(fontSemibold20),
+                        }}
                         value={amountIn}
                         placeholder="0"
                         placeholderTextColor={neutralA3}
                         onChangeText={onChangeAmountIn}
                       />
-                      <BrandText style={styles.amountUsd}>
+                      <BrandText
+                        style={{
+                          color: neutralA3,
+                          textAlign: "right",
+                          ...StyleSheet.flatten(fontSemibold14),
+                        }}
+                      >
                         ≈ ${parseFloat(amountInUsd.toFixed(2).toString())}
                       </BrandText>
                     </View>
@@ -436,13 +441,19 @@ export const SwapView: React.FC = () => {
               <SpacerColumn size={1.5} />
               <TertiaryBox
                 fullWidth
-                mainContainerStyle={styles.currencyBoxMainContainer}
+                mainContainerStyle={{
+                  padding: layout.spacing_x2,
+                }}
               >
                 <>
                   {/*----- Invert button */}
                   <CustomPressable
                     onPress={onPressInvert}
-                    style={styles.invertButton}
+                    style={{
+                      position: "absolute",
+                      zIndex: 20,
+                      top: -24,
+                    }}
                   >
                     {({ hovered }) => (
                       <SVG
@@ -461,7 +472,14 @@ export const SwapView: React.FC = () => {
                       transform: [{ translateY: translateRangeToTop }],
                     }}
                   >
-                    <View style={styles.currency}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        width: "100%",
+                      }}
+                    >
                       <SelectedCurrency
                         currency={currencyOutNative}
                         selectedNetworkId={selectedNetworkId}
@@ -541,94 +559,3 @@ export const SwapView: React.FC = () => {
     </TertiaryBox>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  loaderContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loaderBackground: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    backgroundColor: neutral00,
-    opacity: 0.6,
-    width: "100%",
-    height: "100%",
-  },
-  loader: {
-    position: "absolute",
-  },
-
-  headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    flex: 1,
-  },
-  headerLogoTitle: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  headerTitle: {
-    marginLeft: layout.spacing_x2,
-  },
-
-  childrenContainer: {
-    alignItems: "center",
-    paddingBottom: layout.spacing_x2_5,
-  },
-  currencyBoxMainContainer: {
-    padding: layout.spacing_x2,
-  },
-
-  counts: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    marginBottom: layout.spacing_x2,
-  },
-  currencies: {
-    width: "100%",
-  },
-
-  currency: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-  },
-  invertButton: {
-    position: "absolute",
-    zIndex: 20,
-    top: -24,
-  },
-  availableAmount: {
-    color: neutral77,
-    ...StyleSheet.flatten(fontSemibold14),
-  },
-  inputAmount: {
-    height: "100%",
-    outlineStyle: "none",
-    color: secondaryColor,
-    maxWidth: 200,
-    textAlign: "right",
-    ...StyleSheet.flatten(fontSemibold20),
-  },
-  amount: {
-    textAlign: "right",
-  },
-  amountUsd: {
-    color: neutralA3,
-    textAlign: "right",
-    ...StyleSheet.flatten(fontSemibold14),
-  },
-});

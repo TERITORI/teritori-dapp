@@ -24,7 +24,7 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
   const [connectModalVisible, setConnectModalVisible] = useState(false);
   const isScreenFocused = useIsFocused();
   const SwapView = React.lazy(() =>
-    import("./components/SwapView").then((module) => ({
+    import("./components/SwapView/SwapView").then((module) => ({
       default: module.SwapView,
     })),
   );
