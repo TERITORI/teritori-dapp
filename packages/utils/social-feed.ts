@@ -8,7 +8,6 @@ import { LocalFileData } from "./types/files";
 import flagSVG from "../../assets/icons/notification.svg";
 import { Post, Reaction } from "../api/feed/v1/feed";
 import {
-  filteredPostCategories,
   PostCategory,
   PostExtra,
   PostResultExtra,
@@ -91,10 +90,7 @@ export const feedTabToCategories = (tab: keyof typeof feedsTabItems) => {
     case "moderationDAO":
       return [PostCategory.Flagged];
     default:
-      return filteredPostCategories([
-        PostCategory.Video,
-        PostCategory.MusicAudio,
-      ]);
+      return [];
   }
 };
 

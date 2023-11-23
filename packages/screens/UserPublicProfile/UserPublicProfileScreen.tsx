@@ -23,10 +23,6 @@ import { DAOsList } from "../../components/dao/DAOsList";
 import { GnoDemo } from "../../components/dao/GnoDemo";
 import { MusicList } from "../../components/music/MusicList";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
-import {
-  filteredPostCategories,
-  PostCategory,
-} from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { VideosList } from "../../components/video/VideosList";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
@@ -68,10 +64,7 @@ const SelectedTabContent: React.FC<{
       filter: {
         user: userId,
         mentions: [],
-        categories: filteredPostCategories([
-          PostCategory.Video,
-          PostCategory.MusicAudio,
-        ]),
+        categories: [],
         hashtags: [],
       },
       limit: 10,
