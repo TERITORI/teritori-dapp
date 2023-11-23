@@ -39,6 +39,6 @@ export const ethereumGoerliNetwork: EthereumNetworkInfo = {
   indexLiveBlockProgress: 1,
   substreamsManifest: "go/internal/substreams/ethereum/ethereum_goerli.yaml",
   distributorContractAddress: "0x750070a76a3444f27e3fccabe4d423105cfa3e72",
-  riotBridgeAddressGen0: "0x3dd675fb4cbea98cf1abf2540b79f12626581324",
+  riotBridgeAddressGen0: "0x1e582d29a533d8934d5b5fd60eb71b34b76f0e75",
   riotNFTAddressGen0: "0x7a9e5dbe7d3946ce4ea2f2396549c349635ebf2f",
 };
