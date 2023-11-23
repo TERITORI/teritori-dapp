@@ -225,6 +225,7 @@ export const UploadVideoModal: FC<{
       files: [
         {
           ...localVideoFile,
+          //TODO: If !localImageFile => Generate thumbnail from video and use it as thumbnailFileData
           thumbnailFileData: localImageFile,
         },
       ],

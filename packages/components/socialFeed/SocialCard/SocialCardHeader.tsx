@@ -21,8 +21,8 @@ export const SocialCardHeader: FC<{
   authorAddress: string;
   createdAt?: number;
   authorMetadata?: any;
-  loading?: boolean;
-}> = ({ authorId, authorAddress, authorMetadata, createdAt, loading }) => {
+  isWrapped?: boolean;
+}> = ({ authorId, authorAddress, authorMetadata, createdAt, isWrapped }) => {
   const { width } = useWindowDimensions();
   return (
     <FlexRow justifyContent="space-between">
@@ -44,7 +44,8 @@ export const SocialCardHeader: FC<{
         </OmniLink>
         <View
           style={{
-            flexDirection: width < RESPONSIVE_BREAKPOINT_S ? "column" : "row",
+            flexDirection:
+              width < RESPONSIVE_BREAKPOINT_S && isWrapped ? "column" : "row",
             flex: 1,
           }}
         >
@@ -62,7 +63,11 @@ export const SocialCardHeader: FC<{
               </BrandText>
             </AnimationFadeIn>
           </OmniLink>
-          {width >= RESPONSIVE_BREAKPOINT_S && <SpacerRow size={1.5} />}
+
+          {(width >= RESPONSIVE_BREAKPOINT_S || !isWrapped) && (
+            <SpacerRow size={1.5} />
+          )}
+
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             {width >= RESPONSIVE_BREAKPOINT_S && (
               <>

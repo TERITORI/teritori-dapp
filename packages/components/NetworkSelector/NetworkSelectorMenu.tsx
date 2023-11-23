@@ -3,6 +3,7 @@ import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import { useDropdowns } from "../../context/DropdownsProvider";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useWallets } from "../../context/WalletsProvider";
 import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
 import { useIsMobile } from "../../hooks/useIsMobile";
@@ -30,6 +31,7 @@ export const NetworkSelectorMenu: FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ forceNetworkId, forceNetworkKind, forceNetworkFeatures, style }) => {
   const { closeOpenedDropdown } = useDropdowns();
+  const { resetMediaPlayer } = useMediaPlayer();
   const dispatch = useAppDispatch();
   const { wallets } = useWallets();
   const { setToastError } = useFeedbacks();
@@ -69,6 +71,7 @@ export const NetworkSelectorMenu: FC<{
     dispatch(setSelectedWalletId(selectedWallet?.id || ""));
 
     closeOpenedDropdown();
+    resetMediaPlayer();
   };
 
   return (

@@ -7,14 +7,14 @@ import {
   ViewStyle,
 } from "react-native";
 
-import DefaultVideoImage from "../../../assets/default-images/default-video-thumbnail.jpg";
+import defaultThumbnailImage from "../../../assets/default-images/default-video-thumbnail.jpg";
 import { Post } from "../../api/feed/v1/feed";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { prettyMediaDuration } from "../../utils/mediaPlayer";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import {
+  errorColor,
   neutral00,
   neutral22,
   neutral77,
@@ -62,26 +62,36 @@ export const VideoCard: React.FC<{
     return <View style={{ width: cardWidth, height: VIDEO_CARD_HEIGHT }} />;
   }
 
-  if (!video) return null;
+  const thumbnailURI = video?.videoFile.thumbnailFileData?.url
+    ? video.videoFile.thumbnailFileData.url.includes("://")
+      ? video.videoFile.thumbnailFileData.url
+      : "ipfs://" + video.videoFile.thumbnailFileData?.url // we need this hack because ipfs "urls" in feed are raw CIDs
+    : defaultThumbnailImage;
+
+  if (!video)
+    return (
+      <BrandText style={[fontSemibold13, { color: errorColor }]}>
+        Video not found
+      </BrandText>
+    );
   return (
-    <View style={unitCardStyle}>
+    <View style={[unitCardStyle, style]}>
       <View>
         <CustomPressable
           style={imgBoxStyle}
           onHoverIn={() => setIsHovered(true)}
           onHoverOut={() => setIsHovered(false)}
-          // TODO:
-          // onPress={() => {
+          // TODO: Make a FeedVideoViewScreen
+          // onPress={() =>
           //   navigation.navigate("FeedVideoView", {
           //     id: getNetworkObjectId(selectedNetworkId, post.identifier),
-          //   });
-          // }}
+          //   })
+          // }
         >
           <OptimizedImage
-            // TODO: Generate thumbnail from video
-            sourceURI={ipfsURLToHTTPURL(video.videoFile.thumbnailFileData?.url)}
-            fallbackURI={DefaultVideoImage}
-            width={VIDEO_CARD_WIDTH}
+            sourceURI={thumbnailURI}
+            fallbackURI={defaultThumbnailImage}
+            width={cardWidth}
             height={IMAGE_HEIGHT}
             style={[
               isHovered && { opacity: 0.5 },
@@ -156,12 +166,12 @@ const unitCardStyle: ViewStyle = {
   justifyContent: "space-between",
   borderRadius: 12,
 };
+const imgBoxStyle: ViewStyle = {
+  position: "relative",
+};
 const contentDescriptionStyle: TextStyle = {
   ...fontMedium13,
   color: neutral77,
-};
-const imgBoxStyle: ViewStyle = {
-  position: "relative",
 };
 const imgDurationBoxStyle: ViewStyle = {
   justifyContent: "center",

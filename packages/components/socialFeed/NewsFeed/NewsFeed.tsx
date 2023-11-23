@@ -33,6 +33,7 @@ import {
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
 import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
+import { SocialVideoCard } from "../SocialCard/cards/SocialVideoCard";
 
 const OFFSET_Y_LIMIT_FLOATING = 224;
 export const ROUND_BUTTON_WIDTH_L = 60;
@@ -190,6 +191,8 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         >
           {post.category === PostCategory.Article ? (
             <SocialArticleCard post={post} style={cardStyle} />
+          ) : post.category === PostCategory.Video ? (
+            <SocialVideoCard post={post} style={cardStyle} />
           ) : (
             <SocialThreadCard
               post={post}
