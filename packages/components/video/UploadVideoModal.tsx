@@ -244,6 +244,10 @@ export const UploadVideoModal: FC<{
     };
     await processCreateVideoPost(video);
     setIsLoading(false);
+    setLocalImageFile(undefined);
+    setLocalVideoFile(undefined);
+    setDescription("");
+    setTitle("");
     onClose();
   };
 

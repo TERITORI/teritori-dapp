@@ -43,7 +43,6 @@ export const VideoCard: React.FC<{
   if (typeof cardWidth !== "number") {
     cardWidth = VIDEO_CARD_WIDTH;
   }
-  const imageSize = cardWidth - layout.spacing_x1_5 * 2;
 
   const username = authorNSInfo?.metadata?.tokenId
     ? authorNSInfo?.metadata?.tokenId
@@ -77,7 +76,7 @@ export const VideoCard: React.FC<{
             isHovered && { opacity: 0.5 },
             {
               height: IMAGE_HEIGHT,
-              width: imageSize,
+              width: cardWidth,
               borderRadius: 12,
             },
           ]}
@@ -123,7 +122,10 @@ export const VideoCard: React.FC<{
         {/*    style={videoStatsTextStyle}*/}
         {/*  >{`${video.viewCount} views`}</BrandText>*/}
         {/*  <DotSeparator style={{ marginHorizontal: layout.spacing_x0_75 }} />*/}
-        <DateTime date={post.createdAt * 1000} textStyle={{ color: neutral77 }} />
+        <DateTime
+          date={post.createdAt * 1000}
+          textStyle={{ color: neutral77 }}
+        />
       </View>
     </View>
   );

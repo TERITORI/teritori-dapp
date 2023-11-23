@@ -23,6 +23,17 @@ export enum PostCategory {
   Video,
 }
 
+export const filteredPostCategories = (
+  excludedCategories: PostCategory[],
+): PostCategory[] => {
+  const filteredCategories = Object.values(PostCategory).filter(
+    (category) =>
+      !isNaN(Number(category)) &&
+      !excludedCategories.includes(category as PostCategory),
+  );
+  return filteredCategories as PostCategory[];
+};
+
 export interface NewPostFormValues {
   title: string;
   hashtags: string[];
