@@ -28,7 +28,12 @@ func (h *Handler) handleExecute(contractABI *abi.ABI, tx *pb.Tx, args map[string
 
 	tokenID, err := DecodeTopicToInt(tx.Receipt.Logs[1].Data)
 	if err != nil {
-		return errors.Wrap(err, "failed to decode tokenID")
+		// Try to decode from 2nd log entry
+		tokenID, err = DecodeTopicToInt(tx.Receipt.Logs[2].Data)
+
+		if err != nil {
+			return errors.Wrap(err, "failed to decode tokenID")
+		}
 	}
 
 	var targetMint string
@@ -101,7 +106,11 @@ func (h *Handler) handleExecute(contractABI *abi.ABI, tx *pb.Tx, args map[string
 	var sourceNFT indexerdb.NFT
 	sourceNftID := sourceNetwork.GetBase().NftID(sourceMint, tokenID)
 	if err := h.dbTransaction.First(&sourceNFT, &indexerdb.NFT{ID: sourceNftID}).Error; err != nil {
-		return errors.Wrap(err, "failed to get source teritori_nft")
+		// NOTE: When testing, we bridged from different collections which are not our NFT collection
+		// so they have not been indexed, so we will not be able to get the source NFT here. In that case, we just ignore this NFT
+		// return errors.Wrap(err, "failed to get source teritori_nft")
+		h.logger.Warn(fmt.Sprintf("NFT %d does not exist from source collection, maybe it's related to a test", tokenID))
+		return nil
 	}
 
 	// 7. Create target teritori_nft

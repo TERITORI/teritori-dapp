@@ -234,28 +234,28 @@ export const RiotGameBridgeScreen: React.FC = () => {
     if (!selectedNFT) return;
     if (!network) return;
 
-    const { nftClient, signer } = await getNFTClient(
-      network,
-      selectedWallet?.address,
-    );
-
-    const [, , tokenId] = parseNftId(selectedNFT.id);
-    const { maxFeePerGas: maxFee, maxPriorityFeePerGas: maxPrio } =
-      await signer.getFeeData();
-    const maxFeePerGas = maxFee?.toNumber();
-    const maxPriorityFeePerGas = maxPrio?.toNumber();
-    const txFeeData = {
-      maxFeePerGas,
-      maxPriorityFeePerGas,
-    };
-
-    const approveTx = await nftClient.approve(
-      network?.riotBridgeAddressGen0 || "",
-      tokenId,
-      txFeeData,
-    );
-
     try {
+      const { nftClient, signer } = await getNFTClient(
+        network,
+        selectedWallet?.address,
+      );
+
+      const [, , tokenId] = parseNftId(selectedNFT.id);
+      const { maxFeePerGas: maxFee, maxPriorityFeePerGas: maxPrio } =
+        await signer.getFeeData();
+      const maxFeePerGas = maxFee?.toNumber();
+      const maxPriorityFeePerGas = maxPrio?.toNumber();
+      const txFeeData = {
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+      };
+
+      const approveTx = await nftClient.approve(
+        network?.riotBridgeAddressGen0 || "",
+        tokenId,
+        txFeeData,
+      );
+
       setIsApproving(true);
 
       await approveTx.wait();

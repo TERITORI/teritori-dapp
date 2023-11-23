@@ -26,6 +26,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   const { id } = route.params;
   const [selectedTab, setSelectedTab] = useState<TabsListType>("collections");
   const { collectionInfo: info } = useCollectionInfo(id);
+
   const [sortDirection, setSortDirection] = useState(
     SortDirection.SORT_DIRECTION_ASCENDING,
   );
