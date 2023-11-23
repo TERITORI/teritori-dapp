@@ -2,6 +2,7 @@ import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
+import "../../weshnet/client";
 
 import { Notifications } from "./components/Notifications";
 import { SettingItem } from "./components/SettingItem";
