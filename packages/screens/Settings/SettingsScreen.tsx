@@ -17,7 +17,6 @@ import { TertiaryButton } from "../../components/buttons/TertiaryButton";
 import ModalBase from "../../components/modals/ModalBase";
 import { NetworksListModal } from "../../components/modals/NetworksListModal";
 import { SpacerColumn } from "../../components/spacer";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import {
   selectAreTestnetsEnabled,
@@ -31,8 +30,6 @@ import { RootState, useAppDispatch } from "../../store/store";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutralA3, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { modalMarginPadding } from "../../utils/style/modals";
-import { weshClient } from "../../weshnet";
 
 const NFTAPIKeyInput: React.FC = () => {
   const userIPFSKey = useSelector(selectNFTStorageAPI);
@@ -160,8 +157,6 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
 
         <SpacerColumn size={4} />
 
-        <TestWeshnetButton />
-        <SpacerColumn size={2} />
         <WeshnetStateButton />
 
         {/*Please note that the "user profile customization" part of this task was changed to navigate to the TNS manage page.*/}
@@ -172,56 +167,6 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
         {/*/>*/}
       </View>
     </ScreenContainer>
-  );
-};
-
-const TestWeshnetButton: React.FC = () => {
-  const [rdvSeed, setRDVSeed] = React.useState<string>("");
-  const { wrapWithFeedback } = useFeedbacks();
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [systemInfo, setSystemInfo] = React.useState<string>("");
-  return (
-    <>
-      <PrimaryButton
-        size="M"
-        text="Test Weshnet"
-        loader
-        fullWidth
-        onPress={wrapWithFeedback(async () => {
-          const client = weshClient.client;
-          await client.ContactRequestEnable({});
-          const res = await client.ContactRequestReference({});
-          let rdvSeed = res.publicRendezvousSeed;
-          if (rdvSeed.length === 0) {
-            const res = await client.ContactRequestResetReference({});
-            if (res.publicRendezvousSeed.length === 0) {
-              throw new Error("No rendezvous seed");
-            }
-            rdvSeed = res.publicRendezvousSeed;
-          }
-          setRDVSeed(Buffer.from(rdvSeed).toString("base64"));
-          try {
-            const info = await client.SystemInfo({});
-            setSystemInfo(JSON.stringify(info, null, 4));
-          } catch (e) {
-            setSystemInfo(`${e}`);
-          }
-          setModalVisible(true);
-        })}
-      />
-      <ModalBase
-        label="Weshnet"
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        scrollable
-      >
-        <BrandText>RDV Seed: {rdvSeed}</BrandText>
-        <BrandText>System Info:</BrandText>
-        <BrandText style={{ marginBottom: modalMarginPadding }}>
-          {systemInfo}
-        </BrandText>
-      </ModalBase>
-    </>
   );
 };
 
