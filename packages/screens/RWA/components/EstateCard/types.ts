@@ -1,6 +1,6 @@
 import { ViewStyle } from "react-native";
 
-export type EstateCardTagsProps = {
+export type EstateCardBadgesProps = {
   tags: string[];
 };
 
@@ -18,7 +18,8 @@ export type EstateCardInformationsProps = {
   card: EstateInformations;
 };
 
-export type EstateCardProps = EstateCardTagsProps & EstateCardInformationsProps;
+export type EstateCardProps = EstateCardBadgesProps &
+  EstateCardInformationsProps & { style?: ViewStyle };
 
 export type EstateCardImageProps = {
   sourceURI: string;
@@ -34,4 +35,5 @@ export type EstateCardInformationBoxProps = {
 export type EstateCardListProps = {
   cards: EstateCardProps[];
   title: string;
+  style?: ViewStyle;
 };

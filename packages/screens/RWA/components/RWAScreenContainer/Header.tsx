@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../../components/BrandText";
@@ -27,26 +27,12 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
   return (
     <View
       style={{
-        flex: 1,
-        height: headerHeight,
-        width: "100%",
-        maxHeight: headerHeight,
+        ...HeaderContainerCStyle,
         backgroundColor: theme.headerBackgroundColor,
-        flexDirection: "row",
         borderBottomColor: theme.borderColor,
-        borderBottomWidth: 1,
       }}
     >
-      <View
-        style={{
-          width: "100%",
-          flex: 1,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginLeft: layout.contentSpacing,
-        }}
-      >
+      <View style={HeaderRowCStyle}>
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
           <SpacerRow size={8} />
           {onBackPress && <BackButton onPress={onBackPress} />}
@@ -61,6 +47,7 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
           <View style={{ marginRight: 18 }}>
             <SecondaryButton
               textStyle={{ fontWeight: "200" }}
+              borderColor={!isLightTheme ? theme.borderColor : undefined}
               backgroundColor={theme.tertiaryButtonColor}
               color={isLightTheme ? theme.secondaryTextColor : theme.textColor}
               text="My Account"
@@ -104,4 +91,22 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
       </View>
     </View>
   );
+};
+
+const HeaderContainerCStyle: ViewStyle = {
+  flex: 1,
+  height: headerHeight,
+  width: "100%",
+  maxHeight: headerHeight,
+  flexDirection: "row",
+  borderBottomWidth: 1,
+};
+
+const HeaderRowCStyle: ViewStyle = {
+  width: "100%",
+  flex: 1,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  marginLeft: layout.contentSpacing,
 };

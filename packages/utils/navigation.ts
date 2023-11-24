@@ -72,6 +72,7 @@ export type RootStackParamList = {
   DAppStore: undefined;
   ToriPunks: { route: string };
   Metrics: undefined;
+
   Message: { view: string; tab?: string } | undefined;
   ChatSection: Conversation;
   FriendshipManager: { tab?: MessageFriendsTabItem } | undefined;

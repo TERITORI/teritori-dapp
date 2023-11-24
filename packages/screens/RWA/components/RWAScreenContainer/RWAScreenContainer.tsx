@@ -4,6 +4,7 @@ import {
   ScrollView,
   useWindowDimensions,
   View,
+  ViewStyle,
 } from "react-native";
 
 import { Header, HeaderProps } from "./Header";
@@ -25,9 +26,7 @@ export const RWAScreenContainer: React.FC<RWAScreenContainerProps> = ({
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
       <View
         style={{
-          flex: 1,
-          flexDirection: "row",
-          width: "100%",
+          ...ScreenContainerCStyle,
           backgroundColor: theme.backgroundColor,
         }}
       >
@@ -37,29 +36,12 @@ export const RWAScreenContainer: React.FC<RWAScreenContainerProps> = ({
           <View
             style={{ width: "100%", flexDirection: "row", flex: 1, height }}
           >
-            <View
-              style={{
-                flex: 1,
-                width: "100%",
-                height: "100%",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
+            <View style={ScrollViewContainerCStyle}>
               <ScrollView
                 style={{ width: "100%", flex: 1 }}
                 contentContainerStyle={{ paddingVertical: 40 }}
               >
-                <View
-                  style={{
-                    flex: 1,
-                    width: "100%",
-                    height: "100%",
-                    alignSelf: "center",
-                  }}
-                >
-                  {children}
-                </View>
+                <View style={ChildrenContainerCStyle}>{children}</View>
               </ScrollView>
             </View>
           </View>
@@ -67,4 +49,25 @@ export const RWAScreenContainer: React.FC<RWAScreenContainerProps> = ({
       </View>
     </SafeAreaView>
   );
+};
+
+const ScreenContainerCStyle: ViewStyle = {
+  flex: 1,
+  flexDirection: "row",
+  width: "100%",
+};
+
+const ScrollViewContainerCStyle: ViewStyle = {
+  flex: 1,
+  width: "100%",
+  height: "100%",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+const ChildrenContainerCStyle: ViewStyle = {
+  flex: 1,
+  width: "100%",
+  height: "100%",
+  alignSelf: "center",
 };

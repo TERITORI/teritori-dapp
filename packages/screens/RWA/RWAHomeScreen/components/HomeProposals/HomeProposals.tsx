@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { TextStyle, View, ViewStyle } from "react-native";
 
 import { RWACarousel } from "./RWACarousel";
 import { BrandText } from "../../../../../components/BrandText";
@@ -13,55 +13,55 @@ export const HomeProposals: React.FC = () => {
   const label = "REAL ESTATE PROPERTY";
 
   return (
-    <View style={{ flex: 1, flexDirection: "row" }}>
-      <View style={{ flex: 1 }} />
-      <View
-        style={{
-          flexDirection: "row",
-          flex: 9,
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <View style={{ marginLeft: 50 }}>
+    <View style={HomeProposalsContainerCStyle}>
+      <View style={{ marginLeft: 160 }}>
+        <BrandText
+          numberOfLines={1}
+          style={{ fontSize: 28, lineHeight: 45, letterSpacing: -1 }}
+        >
+          7519 Wykes St, Detroit, MI 48210
+        </BrandText>
+        {isLightTheme ? (
           <BrandText
-            numberOfLines={1}
-            style={{ fontSize: 28, lineHeight: 45, letterSpacing: -1 }}
+            style={[
+              HomeProposalsLabelCStyle,
+              { color: theme.primaryButtonColor },
+            ]}
           >
-            7519 Wykes St, Detroit, MI 48210
+            {label}
           </BrandText>
-          {isLightTheme ? (
-            <BrandText
-              style={{
-                fontSize: 12,
-                color: theme.primaryButtonColor,
-                letterSpacing: 1,
-              }}
-            >
-              {label}
-            </BrandText>
-          ) : (
-            <GradientText
-              style={{ fontSize: 12, letterSpacing: 1 }}
-              gradientType="blueExtended"
-            >
-              {label}
-            </GradientText>
-          )}
-          <SecondaryButton
-            color={theme.secondaryTextColor}
-            backgroundColor={theme.primaryButtonColor}
-            text="View Property"
-            squaresBackgroundColor={theme.squaresBackgroundColor}
-            size="XL"
-            style={{ marginTop: 35 }}
-          />
-        </View>
-        <View>
-          <RWACarousel />
-        </View>
+        ) : (
+          <GradientText
+            style={HomeProposalsLabelCStyle}
+            gradientType="blueExtended"
+          >
+            {label}
+          </GradientText>
+        )}
+        <SecondaryButton
+          color={theme.secondaryTextColor}
+          backgroundColor={theme.primaryButtonColor}
+          text="View Property"
+          squaresBackgroundColor={theme.squaresBackgroundColor}
+          size="XL"
+          style={{ marginTop: 35 }}
+        />
       </View>
-      <View style={{ flex: 1 }} />
+      <RWACarousel />
     </View>
   );
+};
+
+const HomeProposalsContainerCStyle: ViewStyle = {
+  width: "100%",
+  justifyContent: "flex-start",
+  alignItems: "center",
+  gap: 120,
+  flex: 1,
+  flexDirection: "row",
+};
+
+const HomeProposalsLabelCStyle: TextStyle = {
+  fontSize: 12,
+  letterSpacing: 1,
 };
