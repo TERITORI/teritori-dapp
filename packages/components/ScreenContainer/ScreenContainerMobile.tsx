@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useEffect } from "react";
+import React, { FC, ReactNode } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -11,9 +11,6 @@ import { HeaderMobile } from "./HeaderMobile";
 import { useSearchBar } from "../../context/SearchBarProvider";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
-import { getAvailableApps } from "../../screens/DAppStore/query/getFromFile";
-import { setAvailableApps } from "../../store/slices/dapps-store";
-import { useAppDispatch } from "../../store/store";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
 import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
@@ -63,13 +60,6 @@ export const ScreenContainerMobile: FC<{
   mobileTitle,
   onBackPress,
 }) => {
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    const dAppStoreValues = getAvailableApps();
-
-    dispatch(setAvailableApps(dAppStoreValues));
-  }, [dispatch]);
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();

@@ -1,10 +1,10 @@
-import React, { useMemo, useCallback, ReactNode, useEffect } from "react";
+import React, { ReactNode, useCallback, useMemo } from "react";
 import {
   SafeAreaView,
   ScrollView,
-  View,
   StyleSheet,
   useWindowDimensions,
+  View,
 } from "react-native";
 
 import { Header } from "./Header";
@@ -15,9 +15,6 @@ import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
-import { getAvailableApps } from "../../screens/DAppStore/query/getFromFile";
-import { setAvailableApps } from "../../store/slices/dapps-store";
-import { useAppDispatch } from "../../store/store";
 import {
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
@@ -69,14 +66,6 @@ export const ScreenContainer: React.FC<{
   forceNetworkKind,
   forceNetworkFeatures,
 }) => {
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    const dAppStoreValues = getAvailableApps();
-
-    dispatch(setAvailableApps(dAppStoreValues));
-  }, [dispatch]);
-
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
