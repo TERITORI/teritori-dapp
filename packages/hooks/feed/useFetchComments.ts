@@ -78,12 +78,19 @@ const fetchGnoComments = async (
     const post = decodeGnoPost(selectedNetwork.id, gnoPost);
     const [, creatorAddress] = parseNetworkObjectId(post.authorId);
 
+    const chainReactions = post.reactions;
+    const postReactions: Reaction[] = chainReactions.map((reaction) => ({
+      icon: reaction.icon,
+      count: reaction.count,
+      ownState: false, // FIXME: find a way to get the user's reaction state from on-chain post
+    }));
+
     posts.push({
       identifier: post.identifier,
       parent_post_identifier: post.parentPostIdentifier,
       category: post.category,
       metadata: post.metadata,
-      reactions: post.reactions as Reaction[],
+      reactions: postReactions,
       user_reactions: [],
       post_by: creatorAddress,
       deleted: post.isDeleted,

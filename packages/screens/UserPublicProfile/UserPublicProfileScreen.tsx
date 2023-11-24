@@ -58,7 +58,7 @@ const SelectedTabContent: React.FC<{
   const userName =
     userInfo?.metadata.public_name || userInfo?.metadata.tokenId || userAddress;
 
-  const feedRequestUserPosts: PostsRequest = useMemo(() => {
+  const feedRequestUserPosts: Partial<PostsRequest> = useMemo(() => {
     return {
       filter: {
         user: userId,
@@ -71,7 +71,7 @@ const SelectedTabContent: React.FC<{
     };
   }, [userId]);
 
-  const feedRequestMentions: PostsRequest = useMemo(() => {
+  const feedRequestMentions: Partial<PostsRequest> = useMemo(() => {
     return {
       filter: {
         user: "",

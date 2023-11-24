@@ -85,4 +85,7 @@ buck-out/
 
 
 # weshnet
-temp/
+/temp/
+
+# eslint
+/.eslintcache

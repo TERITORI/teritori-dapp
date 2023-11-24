@@ -9,8 +9,8 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "build:web": "expo export:web",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx . && tsc",
-    "lint-fix": "eslint --ext .js,.jsx,.ts,.tsx . --fix",
+    "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx . && tsc",
+    "lint-fix": "eslint --cache --ext .js,.jsx,.ts,.tsx . --fix",
     "postinstall": "patch-package"
   },
   "engines": {
