@@ -89,7 +89,7 @@ const SelectedTabContent: React.FC<{
     };
   }, [userInfo?.metadata.tokenId, userAddress]);
 
-  const videoFeedRequest: PostsRequest = {
+  const videoFeedRequest: Partial<PostsRequest> = {
     filter: {
       categories: [PostCategory.Video],
       user: userId,
@@ -98,6 +98,7 @@ const SelectedTabContent: React.FC<{
     },
     limit: 10,
     offset: 0,
+    queryUserId: selectedWallet?.userId,
   };
 
   const Header = useCallback(() => {
