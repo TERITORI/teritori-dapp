@@ -23,6 +23,7 @@ import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
 import { MediaPlayerContextProvider } from "./packages/context/MediaPlayerProvider";
+import { MessageContextProvider } from "./packages/context/MessageProvider";
 import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
@@ -63,8 +64,8 @@ export default function App() {
   }
 
   return (
-    <ErrorBoundary>
-      <ReduxProvider store={store}>
+    <ReduxProvider store={store}>
+      <ErrorBoundary>
         <PersistGate
           loading={
             <View
@@ -93,10 +94,12 @@ export default function App() {
                               <TNSContextProvider>
                                 <TNSMetaDataListContextProvider>
                                   <MenuProvider>
-                                    <MediaPlayerContextProvider>
-                                      <StatusBar style="inverted" />
-                                      <Navigator />
-                                    </MediaPlayerContextProvider>
+                                    <MessageContextProvider>
+                                      <MediaPlayerContextProvider>
+                                        <StatusBar style="inverted" />
+                                        <Navigator />
+                                      </MediaPlayerContextProvider>
+                                    </MessageContextProvider>
                                   </MenuProvider>
                                 </TNSMetaDataListContextProvider>
                               </TNSContextProvider>
@@ -111,8 +114,8 @@ export default function App() {
             </FormProvider>
           </QueryClientProvider>
         </PersistGate>
-      </ReduxProvider>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </ReduxProvider>
   );
 }
 

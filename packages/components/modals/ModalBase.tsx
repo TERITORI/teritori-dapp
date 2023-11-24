@@ -1,4 +1,9 @@
-import React, { ComponentType, ReactNode, useEffect } from "react";
+import React, {
+  ComponentType,
+  ReactNode,
+  useEffect,
+  PropsWithChildren,
+} from "react";
 import {
   Modal,
   View,
@@ -8,6 +13,7 @@ import {
   StyleProp,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../assets/icons/hamburger-button-cross.svg";
@@ -46,6 +52,21 @@ type ModalBaseProps = {
   children: ReactNode;
 };
 
+const ScrollableComponent = ({
+  scrollable,
+  ...props
+}: PropsWithChildren<{
+  scrollable?: boolean;
+  style: StyleProp<ViewStyle>;
+  contentContainerStyle: StyleProp<ViewStyle>;
+}>) => {
+  if (scrollable) {
+    return <ScrollView {...props} />;
+  } else {
+    return <View {...props} />;
+  }
+};
+
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
 const ModalBase: React.FC<ModalBaseProps> = ({
   label,
@@ -68,8 +89,10 @@ const ModalBase: React.FC<ModalBaseProps> = ({
   verticalPosition = "center",
   closeOnBlur,
 }) => {
-  const { width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const navigation = useAppNavigation();
+
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     if (closeOnBlur !== true) return;
@@ -89,20 +112,28 @@ const ModalBase: React.FC<ModalBaseProps> = ({
       onRequestClose={onClose}
     >
       {/*------ Modal background */}
-      <ScrollView
-        scrollEnabled={scrollable}
+      <ScrollableComponent
+        scrollable={scrollable}
         style={[
           {
             height: "100%",
             width: "100%",
             backgroundColor: "rgba(0, 0, 0, .8)",
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom,
+            maxHeight: windowHeight,
           },
           containerStyle,
+          !scrollable && {
+            alignItems: "center",
+            justifyContent: "center",
+          },
         ]}
         contentContainerStyle={[
           {
-            alignItems: "center",
-            justifyContent: "center",
+            padding: layout.spacing_x0_5,
+            flex: 1,
+            height: windowHeight,
           },
           !scrollable && {
             height: "100%",
@@ -233,7 +264,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
           {/*------- Modal bottom content */}
           {childrenBottom}
         </TertiaryBox>
-      </ScrollView>
+      </ScrollableComponent>
     </Modal>
   );
 };

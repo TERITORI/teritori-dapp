@@ -23,3 +23,4 @@ declare module "*.mp4" {
 }
 
 declare module "react-native-smooth-slider";
+declare module "react-native-keyboard-aware-scrollview";

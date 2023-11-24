@@ -22,11 +22,11 @@ export const stringFromBytes = (
   return btoa(bin.join(""));
 };
 
-export const encode = (str: string) => {
+const encode = (str: string) => {
   return new TextEncoder().encode(encodeURIComponent(str));
 };
 
-export const decode = (arr: Uint8Array) => {
+const decode = (arr: Uint8Array) => {
   return decodeURIComponent(
     new TextDecoder().decode(arr).replace(/(\r\n|\n|\r)/gm, ""),
   );

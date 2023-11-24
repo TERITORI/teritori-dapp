@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { GestureResponderEvent, Pressable, StyleSheet } from "react-native";
 
-interface DefaultValue {
+export interface DefaultValue {
   onPressDropdownButton: (dropdownRef: RefObject<any>) => void;
   closeOpenedDropdown: () => void;
   isDropdownOpen: (dropdownRef: RefObject<any>) => boolean;
