@@ -1,3 +1,4 @@
+import BookMarkIcon from "../../../../assets/icons/bookmark.svg";
 import dao from "../../../../assets/icons/dao.svg";
 import socialFeed from "../../../../assets/icons/feed.svg";
 import freelance from "../../../../assets/icons/freelanceservice.svg";
@@ -170,7 +171,7 @@ export function getAvailableApps(): dAppGroup {
     bookmarks: {
       id: "bookmarks",
       groupName: "External Apps",
-      icon: otherAppsIcon,
+      icon: BookMarkIcon,
       active: true,
       options: {
         astroport: {
