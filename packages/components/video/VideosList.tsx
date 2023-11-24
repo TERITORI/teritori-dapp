@@ -9,6 +9,7 @@ import {
   combineFetchFeedPages,
   useFetchFeed,
 } from "../../hooks/feed/useFetchFeed";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import { fontSemibold16 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
