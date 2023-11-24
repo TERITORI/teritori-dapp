@@ -33,6 +33,8 @@ import {
 } from "./packages/context/WalletsProvider";
 import { useSelectedNetworkId } from "./packages/hooks/useSelectedNetwork";
 import useSelectedWallet from "./packages/hooks/useSelectedWallet";
+import { getAvailableApps } from "./packages/screens/DAppStore/query/getFromFile";
+import { setAvailableApps } from "./packages/store/slices/dapps-store";
 import { setSelectedWalletId } from "./packages/store/slices/settings";
 import { persistor, store, useAppDispatch } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
@@ -84,6 +86,7 @@ export default function App() {
                       <DropdownsContextProvider>
                         <WalletsProvider>
                           <WalletSyncer />
+                          <DappStoreApps />
                           <MultisigDeauth />
                           <SearchBarContextProvider>
                             <TransactionModalsProvider>
@@ -170,3 +173,15 @@ const WalletSyncer: React.FC = memo(() => {
   }, [dispatch, selectedNetworkId, selectedWallet, wallets]);
   return null;
 });
+
+const DappStoreApps: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const dAppStoreValues = getAvailableApps();
+
+    dispatch(setAvailableApps(dAppStoreValues));
+  }, [dispatch]);
+
+  return null;
+};

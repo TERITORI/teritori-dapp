@@ -943,22 +943,6 @@ func (s *MarkteplaceService) News(ctx context.Context, req *marketplacepb.NewsRe
 	return &marketplacepb.NewsResponse{News: s.homeProvider.GetNews()}, nil
 }
 
-func (s *MarkteplaceService) DAppsGroups(ctx context.Context, req *marketplacepb.DAppsGroupsRequest) (*marketplacepb.DAppsGroupsResponse, error) {
-	if s.dAppStoreProvider == nil {
-		return &marketplacepb.DAppsGroupsResponse{}, nil
-	}
-
-	return &marketplacepb.DAppsGroupsResponse{Group: s.dAppStoreProvider.GetDappsGroups()}, nil
-}
-
-func (s *MarkteplaceService) DApps(ctx context.Context, req *marketplacepb.DAppsRequest) (*marketplacepb.DAppsResponse, error) {
-	if s.dAppStoreProvider == nil {
-		return &marketplacepb.DAppsResponse{}, nil
-	}
-
-	return &marketplacepb.DAppsResponse{Group: s.dAppStoreProvider.GetDapps()}, nil
-}
-
 func (s *MarkteplaceService) SearchNames(ctx context.Context, req *marketplacepb.SearchNamesRequest) (*marketplacepb.SearchNamesResponse, error) {
 	const maxLimit = 21
 	limit := req.Limit
