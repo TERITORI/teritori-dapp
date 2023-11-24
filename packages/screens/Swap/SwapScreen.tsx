@@ -3,6 +3,7 @@ import React, { Suspense, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { ConnectModal } from "./components/ConnectModal";
+import { HowToBuy } from "./components/HowToBuy/HowToBuy";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
@@ -15,6 +16,7 @@ import { osmosisTestnetNetwork } from "../../networks/osmosis-testnet";
 import { setSelectedNetworkId } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { ScreenFC } from "../../utils/navigation";
+import { layout } from "../../utils/style/layout";
 import { Assets } from "../WalletManager/Assets";
 
 export const SwapScreen: ScreenFC<"Swap"> = () => {
@@ -55,6 +57,8 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
           <>
             <Suspense fallback={<BrandText>Loading...</BrandText>}>
               <SwapView />
+              <View style={{ marginVertical: layout.spacing_x3 }} />
+              <HowToBuy />
             </Suspense>
             <Assets userId={selectedWallet.userId} style={styles.assets} />
           </>
