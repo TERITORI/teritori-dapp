@@ -24,6 +24,7 @@ import {
 } from "../../../hooks/feed/useFetchFeed";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
   layout,
   RESPONSIVE_BREAKPOINT_S,
@@ -39,7 +40,7 @@ export const ROUND_BUTTON_WIDTH_S = 42;
 
 interface NewsFeedProps {
   Header: React.ComponentType;
-  req: PostsRequest;
+  req: Partial<PostsRequest>;
   // Receive this if the post is created from HashFeedScreen
   additionalHashtag?: string;
   // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
@@ -61,8 +62,10 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   const isMobile = useIsMobile();
   const { width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
+  const selectedWallet = useSelectedWallet();
+  const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
-    useFetchFeed(req);
+    useFetchFeed(reqWithQueryUser);
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
   const posts = useMemo(

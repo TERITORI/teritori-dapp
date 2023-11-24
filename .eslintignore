@@ -5,7 +5,14 @@
 /node_modules
 /go
 /web-build
+/.yarn
 
 # generated packages
 /packages/contracts-clients
 /packages/api
+/temp
+/assets
+/.expo-shared
+/.github
+/cache
+/.git

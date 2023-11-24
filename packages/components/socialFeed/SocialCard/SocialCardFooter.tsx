@@ -100,6 +100,7 @@ export const SocialCardFooter: FC<{
       reactions.push({
         icon: emoji,
         count: 1,
+        ownState: true,
       });
     }
     setLocalPost({ ...post, reactions });

@@ -18,6 +18,7 @@ message IPFSKeyResponse {
 message Reaction {
   string icon = 1;
   uint32 count = 2;
+  bool own_state = 3;
 }
 
 message Post {
@@ -44,6 +45,7 @@ message PostsRequest {
     PostFilter filter = 1;
     uint32 limit = 2;
     uint32 offset = 3;
+    string query_user_id = 4;
 }
 
 

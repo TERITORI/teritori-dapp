@@ -19,7 +19,7 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof feedsTabItems>("all");
 
-  const feedRequest: PostsRequest = useMemo(() => {
+  const feedRequest: Partial<PostsRequest> = useMemo(() => {
     return {
       filter: {
         categories: feedTabToCategories(selectedTab),

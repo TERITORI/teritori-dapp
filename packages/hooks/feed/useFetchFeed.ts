@@ -26,7 +26,7 @@ export const combineFetchFeedPages = (pages: PostsList[]) =>
 
 const fetchTeritoriFeed = async (
   selectedNetwork: NetworkInfo,
-  req: PostsRequest,
+  req: Partial<PostsRequest>,
   pageParam: number,
 ) => {
   try {
@@ -37,7 +37,10 @@ const fetchTeritoriFeed = async (
     const mainPostsCount = await client.queryMainPostsCount();
 
     // Overriding the posts request with the current pageParam as offset
-    const postsRequest: PostsRequest = { ...req, offset: pageParam || 0 };
+    const postsRequest: Partial<PostsRequest> = {
+      ...req,
+      offset: pageParam || 0,
+    };
     // Getting posts
     const list = await getPosts(selectedNetwork.id, postsRequest);
     return { list, totalCount: mainPostsCount } as PostsList;
@@ -50,7 +53,7 @@ const fetchTeritoriFeed = async (
 const fetchGnoFeed = async (
   selectedNetwork: GnoNetworkInfo,
   callerAddress: string | undefined,
-  req: PostsRequest,
+  req: Partial<PostsRequest>,
   pageParam: number,
 ) => {
   if (!selectedNetwork.socialFeedsPkgPath) return { list: [], totalCount: 0 };
@@ -90,7 +93,7 @@ const fetchGnoFeed = async (
   }
 };
 
-export const useFetchFeed = (req: PostsRequest) => {
+export const useFetchFeed = (req: Partial<PostsRequest>) => {
   const selectedNetwork = useSelectedNetworkInfo();
   const wallet = useSelectedWallet();
 
@@ -128,7 +131,7 @@ export const useFetchFeed = (req: PostsRequest) => {
   return { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading };
 };
 
-const getPosts = async (networkId: string, req: PostsRequest) => {
+const getPosts = async (networkId: string, req: Partial<PostsRequest>) => {
   try {
     // ===== We use FeedService to be able to fetch filtered posts
     const feedClient = mustGetFeedClient(networkId);

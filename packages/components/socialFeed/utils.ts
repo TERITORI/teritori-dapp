@@ -23,7 +23,7 @@ export const decodeGnoPost = (networkId: string, gnoPost: GnoPost): Post => {
   const reactions: Reaction[] = [];
 
   for (const [icon, count] of Object.entries(gnoPost.reactions)) {
-    reactions.push({ icon, count });
+    reactions.push({ icon, count, ownState: false }); // FIXME: find a way to get the user's reaction state from on-chain post
   }
 
   const post: Post = {

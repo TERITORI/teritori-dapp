@@ -28,12 +28,12 @@ export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
   if (hasIcon) {
     reactions = reactions.map((rect) => {
       if (rect.icon === icon) {
-        return { icon, count: ++rect.count };
+        return { icon, count: ++rect.count, ownState: true };
       }
       return rect;
     });
   } else {
-    reactions = [...reactions, { icon, count: 1 }];
+    reactions = [...reactions, { icon, count: 1, ownState: true }];
   }
 
   return reactions;
@@ -105,6 +105,13 @@ export const postResultToPost = (
     postResult.metadata,
   );
 
+  const chainReactions = postResult.reactions;
+  const postReactions: Reaction[] = chainReactions.map((reaction) => ({
+    icon: reaction.icon,
+    count: reaction.count,
+    ownState: false, // FIXME: find a way to get the user's reaction state from on-chain post
+  }));
+
   const post: Post = {
     category: postResult.category,
     isDeleted: postResult.deleted,
@@ -112,7 +119,7 @@ export const postResultToPost = (
     metadata: postResult.metadata,
     parentPostIdentifier: postResult.parent_post_identifier || "",
     subPostLength: postResult.sub_post_length,
-    reactions: postResult.reactions,
+    reactions: postReactions,
     authorId: getUserId(networkId, postResult.post_by),
     createdAt: metadata ? Date.parse(metadata.createdAt) / 1000 : 0,
     tipAmount: parseFloat(postResult.tip_amount),

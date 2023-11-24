@@ -33,7 +33,7 @@ export const MusicList: React.FC<{
 
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
 
-  const musicFeedRequest: PostsRequest = {
+  const musicFeedRequest: Partial<PostsRequest> = {
     filter: {
       categories: [PostCategory.MusicAudio],
       user: authorId || "",
@@ -42,6 +42,7 @@ export const MusicList: React.FC<{
     },
     limit: 10,
     offset: 0,
+    queryUserId: selectedWallet?.userId,
   };
 
   // ======= Getting MusicAudio posts as single tracks
