@@ -154,18 +154,21 @@ const SelectedTabContent: React.FC<{
       );
     case "userVideos":
       return (
-        <NewsFeed
-          disablePosting={
-            !selectedWallet?.connected || selectedWallet?.userId === userId
-          }
-          Header={Header}
-          additionalMention={
-            selectedWallet?.address !== userAddress
-              ? userInfo?.metadata.tokenId || userAddress
-              : undefined
-          }
-          req={videoFeedRequest}
-        />
+        <>
+          <NewsFeed
+            isVideos
+            disablePosting={
+              !selectedWallet?.connected || selectedWallet?.userId === userId
+            }
+            Header={Header}
+            additionalMention={
+              selectedWallet?.address !== userAddress
+                ? userInfo?.metadata.tokenId || userAddress
+                : undefined
+            }
+            req={videoFeedRequest}
+          />
+        </>
       );
     case "nfts":
       return <UPPNFTs userId={userId} />;

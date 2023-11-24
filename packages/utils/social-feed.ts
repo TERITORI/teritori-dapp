@@ -52,8 +52,8 @@ export const feedsTabItems: { [key: string]: TabDefinition } = {
   pics: {
     name: "Pics Feed",
   },
-  videosNotes: {
-    name: "Videos Notes Feed",
+  videoNotes: {
+    name: "Video Notes Feed",
   },
   videos: {
     name: "Videos Feed",
@@ -81,7 +81,7 @@ export const feedTabToCategories = (tab: keyof typeof feedsTabItems) => {
       return [PostCategory.MusicAudio];
     case "pics":
       return [PostCategory.Picture];
-    case "videosNotes":
+    case "videoNotes":
       return [PostCategory.VideoNote];
     case "videos":
       return [PostCategory.Video];

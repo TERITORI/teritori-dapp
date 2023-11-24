@@ -1,7 +1,9 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { TextStyle, TouchableOpacity, ViewStyle } from "react-native";
 
+import { UploadVideoModal } from "./UploadVideoModal";
 import Upload from "../../../assets/icons/upload_alt.svg";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutral30, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -10,15 +12,20 @@ import { SVG } from "../SVG";
 import { SpacerRow } from "../spacer";
 
 export const UploadVideoButton: FC<{
-  onPress: () => void;
-  disabled?: boolean;
-}> = ({ onPress, disabled }) => {
+  refetch: () => void;
+}> = ({ refetch }) => {
+  const wallet = useSelectedWallet();
+  const [openUploadModal, setOpenUploadModal] = useState(false);
+
   return (
     <>
       <TouchableOpacity
-        style={[buttonContainerStyle, { opacity: disabled ? 0.5 : 1 }]}
-        onPress={onPress}
-        disabled={disabled}
+        style={[
+          buttonContainerStyle,
+          { opacity: !wallet?.connected ? 0.5 : 1 },
+        ]}
+        onPress={() => setOpenUploadModal(true)}
+        disabled={!wallet?.connected}
       >
         <SVG
           source={Upload}
@@ -28,6 +35,14 @@ export const UploadVideoButton: FC<{
         <SpacerRow size={1} />
         <BrandText style={buttonTextStyle}>Publish as creator</BrandText>
       </TouchableOpacity>
+
+      <UploadVideoModal
+        isVisible={openUploadModal}
+        onClose={() => {
+          setOpenUploadModal(false);
+          refetch();
+        }}
+      />
     </>
   );
 };

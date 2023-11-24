@@ -31,6 +31,7 @@ import {
   screenContentMaxWidth,
 } from "../../../utils/style/layout";
 import { SpacerColumn, SpacerRow } from "../../spacer";
+import { UploadVideoButton } from "../../video/UploadVideoButton";
 import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
 import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
 import { SocialVideoCard } from "../SocialCard/cards/SocialVideoCard";
@@ -49,6 +50,7 @@ interface NewsFeedProps {
   daoId?: string;
   disablePosting?: boolean;
   isFlagged?: boolean;
+  isVideos?: boolean;
 }
 
 export const NewsFeed: React.FC<NewsFeedProps> = ({
@@ -59,6 +61,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   daoId,
   disablePosting,
   isFlagged,
+  isVideos,
 }) => {
   const isMobile = useIsMobile();
   const { width: windowWidth } = useWindowDimensions();
@@ -117,6 +120,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           style={{ width, alignSelf: "center", alignItems: "center" }}
         >
           <Header />
+          {isVideos && <UploadVideoButton refetch={refetch} />}
         </View>
         {!disablePosting && (
           <Animated.View
@@ -164,6 +168,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       isMobile,
       refetch,
       width,
+      isVideos,
     ],
   );
 

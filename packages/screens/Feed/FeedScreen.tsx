@@ -52,6 +52,27 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
         </>
       );
       break;
+    case "videos":
+      autoMargins = false;
+      allowScroll = false;
+      content = (
+        <NewsFeed
+          isVideos
+          req={feedRequest}
+          disablePosting
+          Header={() => (
+            <>
+              {/* ScreenContainer has noScroll, so we need to add MobileTitle here */}
+              {isMobile && <MobileTitle title="NEWS FEED" />}
+              <FeedHeader
+                selectedTab={selectedTab}
+                onTabChange={setSelectedTab}
+              />
+            </>
+          )}
+        />
+      );
+      break;
     default:
       autoMargins = false;
       allowScroll = false;
