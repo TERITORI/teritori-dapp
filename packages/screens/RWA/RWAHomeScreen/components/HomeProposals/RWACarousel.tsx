@@ -1,6 +1,5 @@
 import React from "react";
-import { View } from "react-native";
-import { enableLegacyWebImplementation } from "react-native-gesture-handler";
+import { View, ViewStyle } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 
 import RealEstatePlaceholder from "../../../../../../assets/default-images/real-estate-placeholder.png";
@@ -23,22 +22,11 @@ export const RWACarousel: React.FC = () => {
   const carouselRef = React.useRef<ICarouselInstance | null>(null);
   const selectedBackgroundColor = isLightTheme ? "#000" : "#FFF";
   const unselectedBackgroundColor = isLightTheme ? "#C5C5C5" : neutral44;
-  enableLegacyWebImplementation(true);
 
   return (
-    <View style={{ width: "100%", flex: 1 }}>
+    <View style={{ width: "100%" }}>
       <TertiaryBox
-        mainContainerStyle={{
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 9,
-          },
-          shadowOpacity: 0.5,
-          shadowRadius: 12.35,
-
-          elevation: 19,
-        }}
+        mainContainerStyle={BoxContainerCStyle}
         noBrokenCorners
         height={imageSize}
         width={imageSize}
@@ -68,15 +56,10 @@ export const RWACarousel: React.FC = () => {
       </TertiaryBox>
       <View style={{ width: imageSize }}>
         <View
-          style={{
-            flexDirection: "row",
-            alignSelf: "center",
-            justifyContent: "space-evenly",
-            padding: 7,
-            top: -30,
-            backgroundColor: theme.headerBackgroundColor,
-            borderRadius: 10,
-          }}
+          style={[
+            CarouselRowCStyle,
+            { backgroundColor: theme.headerBackgroundColor },
+          ]}
         >
           {data.map((_, indexData) => {
             return (
@@ -99,4 +82,26 @@ export const RWACarousel: React.FC = () => {
       </View>
     </View>
   );
+};
+
+const BoxContainerCStyle: ViewStyle = {
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 9,
+  },
+  shadowOpacity: 0.5,
+  shadowRadius: 12.35,
+
+  elevation: 19,
+};
+
+const CarouselRowCStyle: ViewStyle = {
+  flexDirection: "row",
+  alignSelf: "center",
+  justifyContent: "space-evenly",
+  padding: 7,
+  top: -30,
+  position: "absolute",
+  borderRadius: 10,
 };

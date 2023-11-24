@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { TextStyle, View, ViewStyle } from "react-native";
 
 import { EstateCardViewProperty, EstateCardWailistInput } from "./EstateSubmit";
 import {
@@ -34,10 +34,8 @@ const EstateCardInformationBox: React.FC<EstateCardInformationBoxProps> = ({
     <TertiaryBox
       mainContainerStyle={[
         style,
+        InformationsBoxCStyle,
         {
-          flex: 1,
-          paddingLeft: 10,
-          flexDirection: "column",
           backgroundColor,
           borderColor: secondary
             ? theme.borderColor
@@ -45,7 +43,6 @@ const EstateCardInformationBox: React.FC<EstateCardInformationBoxProps> = ({
               ? theme.borderColor
               : undefined,
           borderWidth: secondary ? 1 : !isLightTheme ? 1 : 0,
-          alignItems: "flex-start",
         },
       ]}
       noBrokenCorners={isLightTheme}
@@ -53,22 +50,14 @@ const EstateCardInformationBox: React.FC<EstateCardInformationBoxProps> = ({
       height={66}
       width={136}
     >
-      <BrandText
-        style={{
-          fontSize: 11,
-          fontWeight: "200",
-          color: labelColor,
-          letterSpacing: -1,
-          lineHeight: 25,
-        }}
-      >
+      <BrandText style={{ ...InformationsBoxLabelCStyle, color: labelColor }}>
         {label}
       </BrandText>
       <BrandText
         style={{
           fontSize: 13,
           fontWeight: secondary ? "200" : "300",
-          letterSpacing: -1,
+          letterSpacing: -0.5,
         }}
       >
         {value}
@@ -125,4 +114,18 @@ export const EstateCardInformations: React.FC<EstateCardInformationsProps> = ({
       )}
     </View>
   );
+};
+
+const InformationsBoxCStyle: ViewStyle = {
+  flex: 1,
+  paddingLeft: 10,
+  flexDirection: "column",
+  alignItems: "flex-start",
+};
+
+const InformationsBoxLabelCStyle: TextStyle = {
+  fontSize: 11,
+  fontWeight: "200",
+  letterSpacing: -1,
+  lineHeight: 25,
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { TextInput, View } from "react-native";
+import { StyleProp, TextInput, TextStyle, View } from "react-native";
 
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import { useTheme } from "../../../../hooks/useTheme";
@@ -29,15 +29,10 @@ export const EstateCardWailistInput: React.FC = () => {
         <TextInput
           value={value}
           onChangeText={onChangeValue}
-          style={{
-            width: 136,
-            padding: 10,
-            color: theme.textColor,
-            borderWidth: 1,
-            borderColor: theme.borderColor,
-            borderRadius: 6,
-            fontSize: 12,
-          }}
+          style={[
+            TextInputCStyle,
+            { color: theme.textColor, borderColor: theme.borderColor },
+          ]}
           placeholder="mail@teritori.com"
           placeholderTextColor={neutralA3}
         />
@@ -51,4 +46,12 @@ export const EstateCardWailistInput: React.FC = () => {
       </View>
     </View>
   );
+};
+
+const TextInputCStyle: StyleProp<TextStyle> = {
+  width: 136,
+  padding: 10,
+  borderWidth: 1,
+  borderRadius: 6,
+  fontSize: 12,
 };

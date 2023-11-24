@@ -15,16 +15,30 @@ export const RWAHomeScreen: ScreenFC<"RWAHome"> = () => {
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
-    dispatch(setIsLightTheme(false));
+    dispatch(setIsLightTheme(true));
   }, [dispatch]);
 
   return (
     <RWAScreenContainer headerTitle="Fractionalized Real State Launchpad">
-      <HomeProposals />
       <View>
-        <EstateCardList title="Available" cards={getEstateCardList()} />
-        <EstateCardList title="Coming soon" cards={getEstateCardList(true)} />
-        <EstateCardList title="Sold out" cards={getEstateCardList()} />
+        <HomeProposals />
+      </View>
+      <View>
+        <EstateCardList
+          title="Available"
+          cards={getEstateCardList()}
+          style={{ marginTop: 24 }}
+        />
+        <EstateCardList
+          title="Coming soon"
+          cards={getEstateCardList(true)}
+          style={{ marginTop: 64 }}
+        />
+        <EstateCardList
+          title="Sold out"
+          cards={getEstateCardList()}
+          style={{ marginTop: 64 }}
+        />
       </View>
     </RWAScreenContainer>
   );

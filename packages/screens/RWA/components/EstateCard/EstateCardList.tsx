@@ -1,9 +1,11 @@
 import React from "react";
-import { View, FlatList } from "react-native";
+import { View, FlatList, TextStyle } from "react-native";
 
 import { EstateCard } from "./EstateCard";
 import { EstateCardListProps, EstateCardProps } from "./types";
 import { BrandText } from "../../../../components/BrandText";
+import { fontSemibold20 } from "../../../../utils/style/fonts";
+import { layout } from "../../../../utils/style/layout";
 
 export const getEstateCardList: (
   isComingSoon?: boolean,
@@ -51,27 +53,40 @@ export const getEstateCardList: (
 export const EstateCardList: React.FC<EstateCardListProps> = ({
   cards,
   title,
+  style,
 }) => {
   return (
-    <View>
-      <BrandText
-        style={{
-          marginBottom: 15,
-          marginLeft: 60,
-          marginTop: 50,
-          letterSpacing: -1,
-          fontSize: 20,
-        }}
-      >
-        {title}
-      </BrandText>
+    <View
+      style={{
+        ...style,
+      }}
+    >
+      <BrandText style={ListTitleCStyle}>{title}</BrandText>
       <FlatList
-        contentContainerStyle={{ paddingHorizontal: 40 }}
+        contentContainerStyle={{
+          paddingHorizontal: 40,
+          flex: 1,
+          width: "100%",
+          alignSelf: "center",
+          // alignItems: "center",
+        }}
         data={cards}
-        renderItem={({ item }) => <EstateCard key={item.card.id} {...item} />}
+        renderItem={({ item, index }) => (
+          <EstateCard
+            style={{ marginLeft: index === 0 ? 20 : 24 }}
+            key={item.card.id}
+            {...item}
+          />
+        )}
         horizontal
         showsHorizontalScrollIndicator={false}
       />
     </View>
   );
+};
+
+const ListTitleCStyle: TextStyle = {
+  marginBottom: layout.spacing_x3,
+  marginLeft: 60,
+  ...fontSemibold20,
 };

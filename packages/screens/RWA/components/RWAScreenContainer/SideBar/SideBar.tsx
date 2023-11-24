@@ -42,16 +42,9 @@ const RWATopLogo = () => {
   const isLightTheme = useIsLightTheme();
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-      }}
-    >
+    <View style={{ flex: 1, justifyContent: "center" }}>
       <TouchableOpacity
-        style={{
-          marginHorizontal: layout.spacing_x0_5,
-        }}
+        style={{ marginHorizontal: layout.spacing_x0_5 }}
         onPress={() => navigation.navigate("RWAHome")}
       >
         <SVG

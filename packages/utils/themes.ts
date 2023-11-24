@@ -1,7 +1,9 @@
 import {
   neutral00,
+  neutral22,
   neutral33,
   neutral55,
+  neutral77,
   primaryColor,
   primaryTextColor,
   secondaryColor,
@@ -18,6 +20,7 @@ export interface Theme {
   primaryButtonColor: string;
   secondaryButtonColor: string;
   tertiaryButtonColor: string;
+  backButtonColor: string;
 
   // chevron icon in sidebar
   chevronIconColor: string;
@@ -26,8 +29,9 @@ export interface Theme {
   headerSquaresBackgroundColor: string;
   squaresBackgroundColor: string;
 
-  // tags
-  tagsBackgroundColor: string;
+  // badges
+  badgeBackgroundColor: string;
+  badgeColor: string;
 }
 
 export const lightTheme: Theme = {
@@ -41,6 +45,7 @@ export const lightTheme: Theme = {
   primaryButtonColor: "#3063D3",
   secondaryButtonColor: "#E5E5E8",
   tertiaryButtonColor: neutral00,
+  backButtonColor: "#E5E5E8",
 
   // chevron icon in sidebar
   chevronIconColor: neutral00,
@@ -49,8 +54,9 @@ export const lightTheme: Theme = {
   headerSquaresBackgroundColor: secondaryColor,
   squaresBackgroundColor: "#FDFDFF",
 
-  // tags
-  tagsBackgroundColor: "#F5F5F7",
+  // badges
+  badgeBackgroundColor: "#F5F5F7",
+  badgeColor: neutral77,
 };
 
 export const darkTheme: Theme = {
@@ -64,6 +70,7 @@ export const darkTheme: Theme = {
   primaryButtonColor: primaryColor,
   secondaryButtonColor: neutral00,
   tertiaryButtonColor: neutral00,
+  backButtonColor: neutral22,
 
   // chevron icon in sidebar
   chevronIconColor: secondaryColor,
@@ -72,6 +79,7 @@ export const darkTheme: Theme = {
   headerSquaresBackgroundColor: neutral00,
   squaresBackgroundColor: neutral00,
 
-  // tags
-  tagsBackgroundColor: neutral55,
+  // badges
+  badgeBackgroundColor: neutral55,
+  badgeColor: secondaryColor,
 };

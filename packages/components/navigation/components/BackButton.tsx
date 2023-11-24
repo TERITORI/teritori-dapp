@@ -2,9 +2,8 @@ import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import backSVG from "../../../../assets/icons/back.svg";
-import { useIsLightTheme, useTheme } from "../../../hooks/useTheme";
+import { useTheme } from "../../../hooks/useTheme";
 import { useAppNavigation } from "../../../utils/navigation";
-import { neutral22 } from "../../../utils/style/colors";
 import { SVG } from "../../SVG";
 
 export const BackButton: React.FC<{
@@ -12,7 +11,6 @@ export const BackButton: React.FC<{
 }> = ({ onPress }) => {
   const navigation = useAppNavigation();
   const theme = useTheme();
-  const isLightTheme = useIsLightTheme();
 
   const handleOnPress = () => {
     if (onPress) onPress();
@@ -28,9 +26,7 @@ export const BackButton: React.FC<{
           alignItems: "center",
           width: 32,
           height: 32,
-          backgroundColor: isLightTheme
-            ? theme.secondaryButtonColor
-            : neutral22,
+          backgroundColor: theme.backButtonColor,
           borderRadius: 999,
         }}
       >
