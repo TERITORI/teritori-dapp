@@ -8,9 +8,10 @@ import {
 } from "react-native";
 
 import { LegalFooter } from "./LegalFooter";
+import coingecko from "../../../assets/icons/coingecko_logo.svg";
 import discordSVG from "../../../assets/icons/discord.svg";
 import mediumSVG from "../../../assets/icons/medium.svg";
-import twitterSVG from "../../../assets/icons/twitter.svg";
+import XtwitterSVG from "../../../assets/icons/x-logo.svg";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
@@ -25,7 +26,9 @@ const FooterSocialNetworks: React.FC = () => {
     >
       <TouchableOpacity
         style={{ marginRight: layout.spacing_x1 }}
-        onPress={() => Linking.openURL("https://medium.com/teritori/")}
+        onPress={() =>
+          Linking.openURL("https://www.coingecko.com/en/coins/teritori")
+        }
       >
         <TertiaryBox
           mainContainerStyle={{
@@ -34,7 +37,7 @@ const FooterSocialNetworks: React.FC = () => {
             padding: layout.spacing_x1_5,
           }}
         >
-          <SVG source={mediumSVG} width={20} height={20} />
+          <SVG source={coingecko} width={20} height={20} />
         </TertiaryBox>
       </TouchableOpacity>
 
@@ -49,11 +52,12 @@ const FooterSocialNetworks: React.FC = () => {
             padding: layout.spacing_x1_5,
           }}
         >
-          <SVG source={twitterSVG} width={20} height={20} />
+          <SVG source={XtwitterSVG} width={20} height={20} />
         </TertiaryBox>
       </TouchableOpacity>
 
       <TouchableOpacity
+        style={{ marginRight: layout.spacing_x1 }}
         onPress={() => Linking.openURL("https://discord.gg/teritori")}
       >
         <TertiaryBox
@@ -64,6 +68,20 @@ const FooterSocialNetworks: React.FC = () => {
           }}
         >
           <SVG source={discordSVG} width={20} height={20} />
+        </TertiaryBox>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => Linking.openURL("https://medium.com/teritori/")}
+      >
+        <TertiaryBox
+          mainContainerStyle={{
+            borderColor: secondaryColor,
+            borderRadius: 12,
+            padding: layout.spacing_x1_5,
+          }}
+        >
+          <SVG source={mediumSVG} width={20} height={20} />
         </TertiaryBox>
       </TouchableOpacity>
     </TertiaryBox>
