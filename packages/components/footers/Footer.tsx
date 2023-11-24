@@ -10,7 +10,7 @@ import {
 import { LegalFooter } from "./LegalFooter";
 import discordSVG from "../../../assets/icons/discord.svg";
 import mediumSVG from "../../../assets/icons/medium.svg";
-import twitterSVG from "../../../assets/icons/twitter.svg";
+import XtwitterSVG from "../../../assets/icons/x-logo.svg";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
@@ -49,7 +49,7 @@ const FooterSocialNetworks: React.FC = () => {
             padding: layout.spacing_x1_5,
           }}
         >
-          <SVG source={twitterSVG} width={20} height={20} />
+          <SVG source={XtwitterSVG} width={20} height={20} />
         </TertiaryBox>
       </TouchableOpacity>
 
