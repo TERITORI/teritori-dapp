@@ -205,7 +205,7 @@ export const SocialArticleCard: FC<{
               isPostConsultation={isPostConsultation}
               post={localPost}
               refetchFeed={refetchFeed}
-              setLocalPost={setLocalPost}
+              setPost={setLocalPost}
             />
           )}
         </LinearGradient>

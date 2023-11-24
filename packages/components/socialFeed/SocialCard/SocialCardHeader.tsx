@@ -8,7 +8,6 @@ import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
 import { BrandText } from "../../BrandText";
-import FlexRow from "../../FlexRow";
 import { OmniLink } from "../../OmniLink";
 import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { UserAvatarWithFrame } from "../../images/AvatarWithFrame";
@@ -25,7 +24,13 @@ export const SocialCardHeader: FC<{
 }> = ({ authorId, authorAddress, authorMetadata, createdAt, isWrapped }) => {
   const { width } = useWindowDimensions();
   return (
-    <FlexRow justifyContent="space-between">
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
       <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
         <OmniLink
           to={{ screen: "UserPublicProfile", params: { id: authorId } }}
@@ -117,6 +122,6 @@ export const SocialCardHeader: FC<{
       {/*    }}*/}
       {/*  />*/}
       {/*)}*/}
-    </FlexRow>
+    </View>
   );
 };

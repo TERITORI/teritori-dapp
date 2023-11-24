@@ -1,12 +1,14 @@
 import { ResizeMode } from "expo-av";
-import React, { FC, memo, useEffect, useMemo, useState } from "react";
+import React, { FC, memo, useEffect, useState } from "react";
 import { StyleProp, useWindowDimensions, View, ViewStyle } from "react-native";
 
 import { SOCIAl_CARD_BORDER_RADIUS } from "./SocialThreadCard";
 import defaultThumbnailImage from "../../../../../assets/default-images/default-video-thumbnail.jpg";
 import { Post } from "../../../../api/feed/v1/feed";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
-import { parseUserId } from "../../../../networks";
+import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../../../hooks/useSelectedWallet";
+import { NetworkKind, parseUserId } from "../../../../networks";
 import { zodTryParseJSON } from "../../../../utils/sanitize";
 import {
   errorColor,
@@ -27,37 +29,37 @@ import {
 import { BrandText } from "../../../BrandText";
 import { CustomPressable } from "../../../buttons/CustomPressable";
 import { MediaPlayerVideo } from "../../../mediaPlayer/MediaPlayerVideo";
-import { SpacerColumn } from "../../../spacer";
+import { SpacerColumn, SpacerRow } from "../../../spacer";
 import {
   ZodSocialFeedPostMetadata,
   ZodSocialFeedVideoMetadata,
 } from "../../NewsFeed/NewsFeed.type";
-import {
-  createStateFromHTML,
-  getTruncatedArticleHTML,
-  isArticleHTMLNeedsTruncate,
-} from "../../RichText/RichText.web";
+import { DislikeButton } from "../../SocialActions/DislikeButton";
+import { LikeButton } from "../../SocialActions/LikeButton";
+import { ReportButton } from "../../SocialActions/ReportButton";
+import { ShareButton } from "../../SocialActions/ShareButton";
+import { TipButton } from "../../SocialActions/TipButton";
 import { FlaggedCardFooter } from "../FlaggedCardFooter";
-import { SocialCardFooter } from "../SocialCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";
 import { SocialCardWrapper } from "../SocialCardWrapper";
 
-const ARTICLE_CARD_PADDING_VERTICAL = layout.spacing_x2;
-const ARTICLE_CARD_PADDING_HORIZONTAL = layout.spacing_x2_5;
+const VIDEO_CARD_PADDING_VERTICAL = layout.spacing_x2;
+const VIDEO_CARD_PADDING_HORIZONTAL = layout.spacing_x2_5;
 
 export const SocialVideoCard: FC<{
   post: Post;
-  isPostConsultation?: boolean;
   style?: StyleProp<ViewStyle>;
   refetchFeed?: () => Promise<any>;
   isFlagged?: boolean;
-}> = memo(({ post, isPostConsultation, refetchFeed, style, isFlagged }) => {
+}> = memo(({ post, refetchFeed, style, isFlagged }) => {
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const wallet = useSelectedWallet();
   const [localPost, setLocalPost] = useState<Post>(post);
   const [viewWidth, setViewWidth] = useState(0);
   const { width: windowWidth } = useWindowDimensions();
   const [, authorAddress] = parseUserId(localPost.authorId);
   const authorNSInfo = useNSUserInfo(localPost.authorId);
-  const articleCardHeight = windowWidth < SOCIAL_FEED_BREAKPOINT_M ? 214 : 254;
+  const username = authorNSInfo?.metadata?.tokenId || authorAddress;
 
   const metadata = zodTryParseJSON(
     ZodSocialFeedVideoMetadata,
@@ -71,30 +73,17 @@ export const SocialVideoCard: FC<{
     metadata?.videoFile.thumbnailFileData ||
     oldMetadata?.files?.find((file) => file.isCoverImage);
   const title = oldMetadata?.title || metadata?.title || "";
-
-  const shortDescription = useMemo(() => {
-    if (metadata?.description) return metadata.description;
-    if (
-      oldMetadata?.message &&
-      isArticleHTMLNeedsTruncate(oldMetadata.message, true)
-    ) {
-      const { truncatedHtml } = getTruncatedArticleHTML(oldMetadata.message);
-      const contentState =
-        createStateFromHTML(truncatedHtml).getCurrentContent();
-      return contentState.getPlainText();
-    }
-    return "";
-  }, [metadata?.description, oldMetadata?.message]);
-
-  useEffect(() => {
-    setLocalPost(post);
-  }, [post]);
+  const description = oldMetadata?.message || metadata?.description || "";
 
   const thumbnailURI = thumbnailImage?.url
     ? thumbnailImage.url.includes("://")
       ? thumbnailImage.url
       : "ipfs://" + thumbnailImage.url // we need this hack because ipfs "urls" in feed are raw CIDs
     : defaultThumbnailImage;
+
+  useEffect(() => {
+    setLocalPost(post);
+  }, [post]);
 
   if (!metadata)
     return (
@@ -117,7 +106,6 @@ export const SocialVideoCard: FC<{
             borderRadius: SOCIAl_CARD_BORDER_RADIUS,
             backgroundColor: neutral00,
             width: "100%",
-            height: articleCardHeight,
             flex: 1,
           },
           style,
@@ -146,8 +134,8 @@ export const SocialVideoCard: FC<{
           // }
           style={{
             flex: 1,
-            paddingBottom: ARTICLE_CARD_PADDING_VERTICAL,
-            paddingHorizontal: ARTICLE_CARD_PADDING_HORIZONTAL,
+            paddingBottom: VIDEO_CARD_PADDING_VERTICAL,
+            paddingHorizontal: VIDEO_CARD_PADDING_HORIZONTAL,
           }}
         >
           <BrandText
@@ -162,32 +150,68 @@ export const SocialVideoCard: FC<{
           </BrandText>
 
           <SpacerColumn size={1} />
-          <SocialCardHeader
-            authorId={localPost.authorId}
-            authorAddress={authorAddress}
-            createdAt={localPost.createdAt}
-            authorMetadata={authorNSInfo?.metadata}
-          />
+          <View
+            style={[
+              windowWidth >= SOCIAL_FEED_BREAKPOINT_M && {
+                flexDirection: "row",
+                alignItems: "center",
+                width: "100%",
+                justifyContent: "space-between",
+              },
+            ]}
+          >
+            <SocialCardHeader
+              authorId={localPost.authorId}
+              authorAddress={authorAddress}
+              createdAt={localPost.createdAt}
+              authorMetadata={authorNSInfo?.metadata}
+            />
+            {windowWidth < SOCIAL_FEED_BREAKPOINT_M && (
+              <SpacerColumn size={0.5} />
+            )}
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <LikeButton post={localPost} setPost={setLocalPost} />
+              <SpacerRow size={1.5} />
+              <DislikeButton post={localPost} setPost={setLocalPost} />
+
+              <SpacerRow size={1.5} />
+              <TipButton
+                disabled={localPost.authorId === wallet?.userId}
+                amount={localPost.tipAmount}
+                author={username}
+                postId={localPost.identifier}
+                useAltStyle
+              />
+
+              <SpacerRow size={1.5} />
+              <ShareButton postId={localPost.identifier} useAltStyle />
+
+              {selectedNetworkInfo?.kind === NetworkKind.Gno && (
+                <>
+                  <SpacerRow size={1.5} />
+                  <ReportButton
+                    refetchFeed={refetchFeed}
+                    postId={localPost.identifier}
+                    useAltStyle
+                  />
+                </>
+              )}
+            </View>
+          </View>
 
           <SpacerColumn size={1.5} />
           <BrandText
             style={[fontSemibold14, { color: neutralA3 }]}
             numberOfLines={windowWidth < SOCIAL_FEED_BREAKPOINT_M ? 2 : 3}
           >
-            {shortDescription.trim()}
+            {description.trim()}
           </BrandText>
 
-          <SpacerColumn size={1.5} />
-          {isFlagged ? (
-            <FlaggedCardFooter post={localPost} />
-          ) : (
-            <SocialCardFooter
-              cardWidth={viewWidth}
-              isPostConsultation={isPostConsultation}
-              post={localPost}
-              refetchFeed={refetchFeed}
-              setLocalPost={setLocalPost}
-            />
+          {isFlagged && (
+            <>
+              <SpacerColumn size={1.5} />
+              <FlaggedCardFooter post={localPost} />
+            </>
           )}
         </CustomPressable>
       </View>
