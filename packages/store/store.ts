@@ -22,6 +22,7 @@ import {
 import { squadPresetsReducer } from "./slices/squadPresets";
 import { walletsReducer } from "./slices/wallets";
 import { defaultEnabledNetworks } from "../networks";
+import { isElectron } from "../utils/isElectron";
 
 const migrations = {
   0: (state: any) => {
@@ -51,9 +52,20 @@ const migrations = {
   },
 };
 
+let storage = AsyncStorage;
+
+if (isElectron()) {
+  const createElectronStorage = require("redux-persist-electron-storage");
+  storage = createElectronStorage({
+    electronStoreOpts: {
+      projectName: "Teritori",
+    },
+  });
+}
+
 const persistConfig = {
   key: "root",
-  storage: AsyncStorage,
+  storage,
   version: 0,
   migrate: createMigrate(migrations, { debug: false }),
   whitelist: [

@@ -1,0 +1,14 @@
+{
+  "name": "teritori-electron",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {},
+  "dependencies": {
+    "portfinder": "^1.0.32"
+  },
+  "devDependencies": {
+    "electron": "^26.2.4",
+    "electron-builder": "^24.6.4"
+  },
+  "private": true
+}

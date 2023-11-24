@@ -7,6 +7,10 @@ const { WebpackDeduplicationPlugin } = require("webpack-deduplication-plugin");
 module.exports = async function (env, argv) {
   const config = await createExpoWebpackConfigAsync(env, argv);
 
+  if (process.env.isElectron) {
+    config.target = "electron-renderer";
+    config.output.publicPath = "./";
+  }
   // since webpack5, node libs are not polyfilled automatically
   config.resolve.fallback = {
     ...config.resolve.fallback,
