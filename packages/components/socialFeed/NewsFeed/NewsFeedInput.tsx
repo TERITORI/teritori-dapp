@@ -1,5 +1,3 @@
-import { coin } from "@cosmjs/amino";
-import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import React, { useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -11,9 +9,8 @@ import {
 } from "react-native";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
 
-import { NewPostFormValues, PostCategory, ReplyToType } from "./NewsFeed.type";
+import { NewPostFormValues, ReplyToType } from "./NewsFeed.type";
 import { generatePostMetadata, getPostCategory } from "./NewsFeedQueries";
 import { NotEnoughFundModal } from "./NotEnoughFundModal";
 import audioSVG from "../../../../assets/icons/audio.svg";
@@ -21,27 +18,14 @@ import cameraSVG from "../../../../assets/icons/camera.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
 import priceSVG from "../../../../assets/icons/price.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
-import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useDAOMakeProposal } from "../../../hooks/dao/useDAOMakeProposal";
-import { useBotPost } from "../../../hooks/feed/useBotPost";
-import { useCreatePost } from "../../../hooks/feed/useCreatePost";
-import { useFeedPostFee } from "../../../hooks/feed/useFeedPostFee";
-import { useUpdateAvailableFreePost } from "../../../hooks/feed/useUpdateAvailableFreePost";
-import { useBalances } from "../../../hooks/useBalances";
+import { useFeedPosting } from "../../../hooks/feed/useFeedPosting";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import {
-  NetworkKind,
-  getUserId,
-  mustGetCosmosNetwork,
-} from "../../../networks";
+import { getUserId } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
-import { prettyPrice } from "../../../utils/coins";
-import { defaultSocialFeedFee } from "../../../utils/fee";
-import { adenaDoContract } from "../../../utils/gno";
 import { generateIpfsKey, uploadFilesToPinata } from "../../../utils/ipfs";
 import {
   AUDIO_MIME_TYPES,
@@ -90,7 +74,6 @@ import { FileUploader } from "../../fileUploader";
 import { SpacerColumn } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
-import { TERITORI_FEED_ID } from "../const";
 
 interface NewsFeedInputProps {
   type: "comment" | "post";
@@ -155,23 +138,12 @@ export const NewsFeedInput = React.forwardRef<
       start: 10,
       end: 10,
     });
-    const { mutateAsync: botPostMutate } = useBotPost();
-    const { mutateAsync, isLoading: isMutateLoading } = useCreatePost({
-      onMutate: () => {
-        onSubmitInProgress && onSubmitInProgress();
-      },
-      onSuccess: () => {
-        onPostCreationSuccess();
-      },
-    });
-    const makeProposal = useDAOMakeProposal(daoId);
 
     const onPostCreationSuccess = () => {
       reset();
       onSubmitSuccess?.();
       onCloseCreateModal?.();
     };
-    const balances = useBalances(selectedNetwork?.id, selectedWallet?.address);
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
@@ -185,24 +157,21 @@ export const NewsFeedInput = React.forwardRef<
       },
     );
     const formValues = watch();
+    const {
+      makePost,
+      canPayForPost,
+      isProcessing,
+      prettyPublishingFee,
+      freePostCount,
+    } = useFeedPosting(userId, getPostCategory(formValues), () => {
+      onPostCreationSuccess();
+    });
     const userIPFSKey = useSelector(selectNFTStorageAPI);
-    const { postFee } = useFeedPostFee(
-      selectedNetworkId,
-      getPostCategory(formValues),
-    );
-    const { freePostCount } = useUpdateAvailableFreePost(
-      selectedNetworkId,
-      getPostCategory(formValues),
-      selectedWallet,
-    );
 
     const processSubmit = async () => {
-      const denom = selectedNetwork?.currencies[0].denom;
-
-      const currentBalance = balances.find((bal) => bal.denom === denom);
-
-      if (postFee > Number(currentBalance?.amount) && !freePostCount) {
-        return setNotEnoughFundModal(true);
+      if (!canPayForPost) {
+        setNotEnoughFundModal(true);
+        return;
       }
 
       setLoading(true);
@@ -255,7 +224,6 @@ export const NewsFeedInput = React.forwardRef<
           });
           return;
         }
-        const postCategory = getPostCategory(formValues);
 
         const metadata = generatePostMetadata({
           title: formValues.title || "",
@@ -266,105 +234,10 @@ export const NewsFeedInput = React.forwardRef<
           gifs: formValues?.gifs || [],
         });
 
-        const identifier = uuidv4();
-
-        const msg = {
-          category: postCategory,
-          identifier,
-          metadata: JSON.stringify(metadata),
-          parentPostIdentifier: hasUsername ? replyTo?.parentId : parentId,
-        };
-
-        if (daoId) {
-          const network = mustGetCosmosNetwork(selectedNetworkId);
-
-          if (!network.socialFeedContractAddress) {
-            throw new Error("Social feed contract address not found");
-          }
-          if (!selectedWallet?.address) {
-            throw new Error("Invalid sender");
-          }
-          await makeProposal(selectedWallet?.address, {
-            title: "Post on feed",
-            description: "",
-            msgs: [
-              {
-                wasm: {
-                  execute: {
-                    contract_addr: network.socialFeedContractAddress,
-                    msg: Buffer.from(
-                      JSON.stringify({ create_post: msg }),
-                    ).toString("base64"),
-                    funds: [{ amount: postFee.toString(), denom: "utori" }],
-                  },
-                },
-              },
-            ],
-          });
-        } else {
-          if (selectedNetwork?.kind === NetworkKind.Gno) {
-            // const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
-
-            const msg = {
-              category: postCategory,
-              identifier,
-              metadata: JSON.stringify(metadata),
-              parentPostIdentifier: hasUsername ? replyTo?.parentId : parentId,
-            };
-
-            const vmCall = {
-              caller: selectedWallet?.address || "",
-              send: "",
-              pkg_path: selectedNetwork.socialFeedsPkgPath,
-              func: "CreatePost",
-              args: [
-                TERITORI_FEED_ID,
-                msg.parentPostIdentifier || "0",
-                msg.category.toString(),
-                msg.metadata,
-              ],
-            };
-
-            const txHash = await adenaDoContract(
-              selectedNetworkId,
-              [{ type: "/vm.m_call", value: vmCall }],
-              { gasWanted: 2_000_000 },
-            );
-
-            const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
-            await provider.waitForTransaction(txHash);
-            onPostCreationSuccess();
-          } else {
-            const client = await signingSocialFeedClient({
-              networkId: selectedNetworkId,
-              walletAddress: selectedWallet?.address || "",
-            });
-            await mutateAsync({
-              client,
-              msg,
-              args: {
-                fee: defaultSocialFeedFee,
-                memo: "",
-                funds: [coin(postFee, "utori")],
-              },
-            });
-          }
-
-          if (
-            postCategory === PostCategory.Question ||
-            postCategory === PostCategory.BriefForStableDiffusion
-          ) {
-            await botPostMutate(
-              {
-                identifier,
-                category: postCategory,
-              },
-              {
-                onSuccess: onPostCreationSuccess,
-              },
-            );
-          }
-        }
+        await makePost(
+          JSON.stringify(metadata),
+          hasUsername ? replyTo?.parentId : parentId,
+        );
       } catch (err) {
         console.error("post submit err", err);
         setToastError({
@@ -583,11 +456,7 @@ export const NewsFeedInput = React.forwardRef<
             >
               {freePostCount
                 ? `You have ${freePostCount} free ${type} left`
-                : `The cost for this ${type} is ${prettyPrice(
-                    selectedNetworkId,
-                    postFee.toString(),
-                    selectedNetwork?.currencies?.[0].denom || "utori",
-                  )}`}
+                : `The cost for this ${type} is ${prettyPublishingFee}`}
             </BrandText>
           </View>
           <View
@@ -741,7 +610,7 @@ export const NewsFeedInput = React.forwardRef<
                     SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
                   !selectedWallet
                 }
-                isLoading={isLoading || isMutateLoading}
+                isLoading={isLoading || isProcessing}
                 loader
                 size="M"
                 text={

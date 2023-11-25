@@ -1,5 +1,3 @@
-import { coin } from "@cosmjs/amino";
-import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { ResizeMode, Video } from "expo-av";
 import { FC, useState } from "react";
 import {
@@ -10,24 +8,14 @@ import {
   ViewStyle,
 } from "react-native";
 import { useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
 
 import Add from "../../../assets/icons/add-primary.svg";
 import Img from "../../../assets/icons/img.svg";
-import { signingSocialFeedClient } from "../../client-creators/socialFeedClient";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
-import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
-import { useCreatePost } from "../../hooks/feed/useCreatePost";
-import { useFeedPostFee } from "../../hooks/feed/useFeedPostFee";
-import { useUpdateAvailableFreePost } from "../../hooks/feed/useUpdateAvailableFreePost";
-import { useBalances } from "../../hooks/useBalances";
+import { useFeedPosting } from "../../hooks/feed/useFeedPosting";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { mustGetCosmosNetwork, NetworkKind } from "../../networks";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
-import { defaultSocialFeedFee } from "../../utils/fee";
-import { adenaDoContract } from "../../utils/gno";
 import {
   generateIpfsKey,
   ipfsURLToHTTPURL,
@@ -53,12 +41,12 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { FileUploader } from "../fileUploader";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import ModalBase from "../modals/ModalBase";
+import { FeedFeeText } from "../socialFeed/FeedFeeText";
 import {
   PostCategory,
   SocialFeedVideoMetadata,
 } from "../socialFeed/NewsFeed/NewsFeed.type";
 import { NotEnoughFundModal } from "../socialFeed/NewsFeed/NotEnoughFundModal";
-import { TERITORI_FEED_ID } from "../socialFeed/const";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
 const UPLOAD_VIDEO_MODAL_WIDTH = 590;
@@ -72,24 +60,11 @@ export const UploadVideoModal: FC<{
   const selectedNetwork = useSelectedNetworkInfo();
   const selectedWallet = useSelectedWallet();
   const userId = selectedWallet?.userId || "";
-  const { isDAO } = useIsDAO(userId);
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
-  const balances = useBalances(selectedNetwork?.id, selectedWallet?.address);
 
-  const makeProposal = useDAOMakeProposal(isDAO ? userId : undefined);
-  const { mutateAsync, isLoading: isMutateLoading } = useCreatePost({
-    onSuccess: () => {
-      onClose();
-    },
-  });
-  const { postFee } = useFeedPostFee(
-    selectedNetwork?.id || "",
+  const { makePost, canPayForPost, isProcessing } = useFeedPosting(
+    userId,
     PostCategory.Video,
-  );
-  const { freePostCount } = useUpdateAvailableFreePost(
-    selectedNetwork?.id || "",
-    PostCategory.Video,
-    selectedWallet,
   );
 
   const [isThumbnailContainerHovered, setThumbnailContainerHovered] =
@@ -105,10 +80,9 @@ export const UploadVideoModal: FC<{
   const [localImageFile, setLocalImageFile] = useState<LocalFileData>();
 
   const processCreateVideoPost = async (video: SocialFeedVideoMetadata) => {
-    const denom = selectedNetwork?.currencies[0].denom;
-    const currentBalance = balances.find((bal) => bal.denom === denom);
-    if (postFee > Number(currentBalance?.amount) && !freePostCount) {
-      return setNotEnoughFundModal(true);
+    if (!canPayForPost) {
+      setNotEnoughFundModal(true);
+      return;
     }
 
     // we need this hack until the createdAt field is properly provided by the contract
@@ -118,78 +92,7 @@ export const UploadVideoModal: FC<{
     };
 
     try {
-      const identifier = uuidv4();
-      const msg = {
-        category: PostCategory.Video,
-        identifier,
-        metadata: JSON.stringify(videoWithCreationDate),
-      };
-
-      if (isDAO) {
-        const network = mustGetCosmosNetwork(selectedNetwork?.id);
-
-        if (!network.socialFeedContractAddress) {
-          throw new Error("Social feed contract address not found");
-        }
-        if (!selectedWallet?.address) {
-          throw new Error("Invalid sender");
-        }
-        await makeProposal(selectedWallet?.address, {
-          title: "Post on feed",
-          description: "",
-          msgs: [
-            {
-              wasm: {
-                execute: {
-                  contract_addr: network.socialFeedContractAddress,
-                  msg: Buffer.from(
-                    JSON.stringify({ create_post: msg }),
-                  ).toString("base64"),
-                  funds: [{ amount: postFee.toString(), denom: "utori" }],
-                },
-              },
-            },
-          ],
-        });
-      } else {
-        if (selectedNetwork?.kind === NetworkKind.Gno) {
-          const vmCall = {
-            caller: selectedWallet?.address || "",
-            send: "",
-            pkg_path: selectedNetwork.socialFeedsPkgPath,
-            func: "CreatePost",
-            args: [
-              TERITORI_FEED_ID,
-              "0",
-              msg.category.toString(),
-              msg.metadata,
-            ],
-          };
-
-          const txHash = await adenaDoContract(
-            selectedNetwork.id,
-            [{ type: "/vm.m_call", value: vmCall }],
-            { gasWanted: 2_000_000 },
-          );
-
-          const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
-          await provider.waitForTransaction(txHash);
-        } else {
-          const client = await signingSocialFeedClient({
-            networkId: selectedNetwork?.id || "",
-            walletAddress: selectedWallet?.address || "",
-          });
-          await mutateAsync({
-            client,
-            msg,
-            args: {
-              fee: defaultSocialFeedFee,
-              memo: "",
-              funds: [coin(postFee, "utori")],
-            },
-          });
-        }
-      }
+      await makePost(JSON.stringify(videoWithCreationDate));
     } catch (err) {
       console.error("post submit err", err);
       setToastError({
@@ -411,6 +314,12 @@ export const UploadVideoModal: FC<{
 
       <View style={divideLineStyle} />
 
+      <FeedFeeText
+        userId={selectedWallet?.userId}
+        category={PostCategory.Video}
+        style={{ marginTop: layout.spacing_x2 }}
+      />
+
       <View style={footerStyle}>
         <BrandText style={footerTextStyle} numberOfLines={2}>
           By uploading, you confirm that your video complies with our Terms of
@@ -422,12 +331,13 @@ export const UploadVideoModal: FC<{
             !localVideoFile?.url ||
             !title ||
             isUploading ||
-            isMutateLoading ||
-            isLoading
+            isProcessing ||
+            isLoading ||
+            !canPayForPost
           }
           size="SM"
           onPress={onPressUpload}
-          isLoading={isUploading || isLoading || isMutateLoading}
+          isLoading={isUploading || isLoading || isProcessing}
         />
       </View>
 

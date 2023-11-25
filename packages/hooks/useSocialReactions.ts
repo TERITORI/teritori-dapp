@@ -75,6 +75,7 @@ export const useSocialReactions = ({
       reactions.push({
         icon: emoji,
         count: 1,
+        ownState: true,
       });
     }
     setPost({ ...post, reactions });

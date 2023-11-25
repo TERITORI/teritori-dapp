@@ -25,11 +25,13 @@ import {
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { fontSemibold20 } from "../../../utils/style/fonts";
 import {
   layout,
   RESPONSIVE_BREAKPOINT_S,
   screenContentMaxWidth,
 } from "../../../utils/style/layout";
+import { BrandText } from "../../BrandText";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { UploadVideoButton } from "../../video/UploadVideoButton";
 import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
@@ -120,7 +122,22 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           style={{ width, alignSelf: "center", alignItems: "center" }}
         >
           <Header />
-          {isVideos && <UploadVideoButton refetch={refetch} />}
+          {isVideos && (
+            <>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  alignItems: "center",
+                }}
+              >
+                <BrandText style={fontSemibold20}>All Videos</BrandText>
+                <UploadVideoButton refetch={refetch} />
+              </View>{" "}
+              <SpacerColumn size={1.5} />
+            </>
+          )}
         </View>
         {!disablePosting && (
           <Animated.View
