@@ -30,6 +30,9 @@ export const screenTabItems = {
   userMusic: {
     name: "Music",
   },
+  userVideos: {
+    name: "Videos",
+  },
   daos: {
     name: "Organizations",
   },

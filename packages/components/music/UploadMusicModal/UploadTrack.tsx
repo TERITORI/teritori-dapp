@@ -1,31 +1,13 @@
-import { coin } from "@cosmjs/amino";
-import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import React, { useState } from "react";
 import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
 
 import Add from "../../../../assets/icons/add-primary.svg";
-import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useIsDAO } from "../../../hooks/cosmwasm/useCosmWasmContractInfo";
-import { useDAOMakeProposal } from "../../../hooks/dao/useDAOMakeProposal";
-import { useCreatePost } from "../../../hooks/feed/useCreatePost";
-import { useFeedPostFee } from "../../../hooks/feed/useFeedPostFee";
-import { useUpdateAvailableFreePost } from "../../../hooks/feed/useUpdateAvailableFreePost";
-import { useBalances } from "../../../hooks/useBalances";
+import { useFeedPosting } from "../../../hooks/feed/useFeedPosting";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import {
-  getStakingCurrency,
-  getUserId,
-  mustGetCosmosNetwork,
-  NetworkKind,
-} from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
-import { prettyPrice } from "../../../utils/coins";
-import { defaultSocialFeedFee } from "../../../utils/fee";
-import { adenaDoContract } from "../../../utils/gno";
 import { generateIpfsKey, uploadFilesToPinata } from "../../../utils/ipfs";
 import { AUDIO_MIME_TYPES } from "../../../utils/mime";
 import {
@@ -43,12 +25,12 @@ import { SVG } from "../../SVG";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { FileUploader } from "../../fileUploader";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
+import { FeedFeeText } from "../../socialFeed/FeedFeeText";
 import {
   PostCategory,
   SocialFeedTrackMetadata,
 } from "../../socialFeed/NewsFeed/NewsFeed.type";
 import { NotEnoughFundModal } from "../../socialFeed/NewsFeed/NotEnoughFundModal";
-import { TERITORI_FEED_ID } from "../../socialFeed/const";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 
 interface Props {
@@ -61,31 +43,13 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
   const { setToastError } = useFeedbacks();
   const selectedNetwork = useSelectedNetworkInfo();
   const selectedWallet = useSelectedWallet();
-  const userId = getUserId(selectedNetwork?.id, selectedWallet?.address);
-  const { isDAO } = useIsDAO(userId);
+  const userId = selectedWallet?.userId;
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
-  const balances = useBalances(selectedNetwork?.id, selectedWallet?.address);
-
-  const makeProposal = useDAOMakeProposal(isDAO ? userId : undefined);
-  const { mutateAsync, isLoading: isMutateLoading } = useCreatePost({
-    onSuccess: () => {
-      onUploadDone();
-    },
-  });
-  const { postFee } = useFeedPostFee(
-    selectedNetwork?.id,
+  const { makePost, canPayForPost, isProcessing } = useFeedPosting(
+    userId,
     PostCategory.MusicAudio,
+    onUploadDone,
   );
-  const feeCurrency = getStakingCurrency(selectedNetwork?.id);
-  const feeBalance = balances.find((bal) => bal.denom === feeCurrency?.denom);
-  const { freePostCount } = useUpdateAvailableFreePost(
-    selectedNetwork?.id || "",
-    PostCategory.MusicAudio,
-    selectedWallet,
-  );
-
-  const canPayForPost =
-    freePostCount > 0 || postFee <= Number(feeBalance?.amount || "0");
 
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -98,10 +62,9 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
   const processCreateMusicAudioPost = async (
     track: SocialFeedTrackMetadata,
   ) => {
-    const denom = selectedNetwork?.currencies[0].denom;
-    const currentBalance = balances.find((bal) => bal.denom === denom);
-    if (postFee > Number(currentBalance?.amount) && !freePostCount) {
-      return setNotEnoughFundModal(true);
+    if (!canPayForPost) {
+      setNotEnoughFundModal(true);
+      return;
     }
 
     // we need this hack until the createdAt field is properly provided by the contract
@@ -111,78 +74,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
     };
 
     try {
-      const identifier = uuidv4();
-      const msg = {
-        category: PostCategory.MusicAudio,
-        identifier,
-        metadata: JSON.stringify(trackWithCreationDate),
-      };
-
-      if (isDAO) {
-        const network = mustGetCosmosNetwork(selectedNetwork?.id);
-
-        if (!network.socialFeedContractAddress) {
-          throw new Error("Social feed contract address not found");
-        }
-        if (!selectedWallet?.address) {
-          throw new Error("Invalid sender");
-        }
-        await makeProposal(selectedWallet?.address, {
-          title: "Post on feed",
-          description: "",
-          msgs: [
-            {
-              wasm: {
-                execute: {
-                  contract_addr: network.socialFeedContractAddress,
-                  msg: Buffer.from(
-                    JSON.stringify({ create_post: msg }),
-                  ).toString("base64"),
-                  funds: [{ amount: postFee.toString(), denom: "utori" }],
-                },
-              },
-            },
-          ],
-        });
-      } else {
-        if (selectedNetwork?.kind === NetworkKind.Gno) {
-          const vmCall = {
-            caller: selectedWallet?.address || "",
-            send: "",
-            pkg_path: selectedNetwork.socialFeedsPkgPath,
-            func: "CreatePost",
-            args: [
-              TERITORI_FEED_ID,
-              "0",
-              msg.category.toString(),
-              msg.metadata,
-            ],
-          };
-
-          const txHash = await adenaDoContract(
-            selectedNetwork.id,
-            [{ type: "/vm.m_call", value: vmCall }],
-            { gasWanted: 2_000_000 },
-          );
-
-          const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
-          await provider.waitForTransaction(txHash);
-        } else {
-          const client = await signingSocialFeedClient({
-            networkId: selectedNetwork?.id || "",
-            walletAddress: selectedWallet?.address || "",
-          });
-          await mutateAsync({
-            client,
-            msg,
-            args: {
-              fee: defaultSocialFeedFee,
-              memo: "",
-              funds: [coin(postFee, "utori")],
-            },
-          });
-        }
-      }
+      await makePost(JSON.stringify(trackWithCreationDate));
     } catch (err) {
       console.error("post submit err", err);
       setToastError({
@@ -312,30 +204,11 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
 
       <View style={divideLineStyle} />
 
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          width: "100%",
-        }}
-      >
-        <BrandText style={[footerTextStyle, { marginTop: layout.spacing_x2 }]}>
-          Publishing fee:{" "}
-          {prettyPrice(
-            selectedNetwork?.id,
-            postFee.toString(),
-            feeCurrency?.denom,
-          )}
-        </BrandText>
-        <BrandText style={[footerTextStyle, { marginTop: layout.spacing_x2 }]}>
-          Balance:{" "}
-          {prettyPrice(
-            selectedNetwork?.id,
-            feeBalance?.amount || "0",
-            feeCurrency?.denom,
-          )}
-        </BrandText>
-      </View>
+      <FeedFeeText
+        userId={selectedWallet?.userId}
+        category={PostCategory.MusicAudio}
+        style={{ marginTop: layout.spacing_x2 }}
+      />
 
       <View style={footerBottomCStyle}>
         <BrandText
@@ -351,13 +224,13 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
             !localAudioFile?.url ||
             !title ||
             isUploading ||
-            isMutateLoading ||
+            isProcessing ||
             isLoading ||
             !canPayForPost
           }
           size="SM"
           onPress={onPressUpload}
-          isLoading={isUploading || isLoading || isMutateLoading}
+          isLoading={isUploading || isLoading || isProcessing}
         />
       </View>
     </>

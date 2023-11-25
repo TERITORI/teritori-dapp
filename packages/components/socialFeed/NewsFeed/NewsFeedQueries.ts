@@ -13,46 +13,35 @@ import {
   signingSocialFeedClient,
 } from "../../../client-creators/socialFeedClient";
 import { Wallet } from "../../../context/WalletsProvider";
-import { getNetwork, mustGetNetwork, NetworkKind } from "../../../networks";
+import {
+  getNetwork,
+  mustGetNetwork,
+  NetworkKind,
+  parseUserId,
+} from "../../../networks";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import { adenaDoContract } from "../../../utils/gno";
 import { ipfsURLToHTTPURL, uploadFilesToPinata } from "../../../utils/ipfs";
 import { RemoteFileData } from "../../../utils/types/files";
 import { TERITORI_FEED_ID } from "../const";
 
-interface GetAvailableFreePostParams {
-  networkId: string;
-  wallet?: Wallet;
-}
+export const getAvailableFreePost = async (userId: string) => {
+  const [network, userAddress] = parseUserId(userId);
 
-export const getAvailableFreePost = async ({
-  networkId,
-  wallet,
-}: GetAvailableFreePostParams) => {
-  try {
-    const network = getNetwork(networkId);
-
-    if (
-      !wallet?.connected ||
-      !wallet.address ||
-      network?.kind !== NetworkKind.Cosmos
-    ) {
-      return;
-    }
-
-    const client = await signingSocialFeedClient({
-      networkId,
-      walletAddress: wallet.address,
-    });
-
-    const freePostCount = await client.queryAvailableFreePosts({
-      wallet: wallet.address,
-    });
-
-    return Number(freePostCount);
-  } catch (err) {
-    console.error("getAvailableFreePost err", err);
+  if (!userAddress || network?.kind !== NetworkKind.Cosmos) {
+    return;
   }
+
+  const client = await signingSocialFeedClient({
+    networkId: network.id,
+    walletAddress: userAddress,
+  });
+
+  const freePostCount = await client.queryAvailableFreePosts({
+    wallet: userAddress,
+  });
+
+  return Number(freePostCount);
 };
 
 interface GetPostFeeParams {
@@ -97,7 +86,7 @@ export const getPostCategory = ({
     } else if (files[0].fileType === "audio") {
       category = PostCategory.Audio;
     } else {
-      category = PostCategory.Video;
+      category = PostCategory.VideoNote;
     }
   } else if (title) {
     category = PostCategory.Article;

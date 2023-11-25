@@ -8,8 +8,13 @@ import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import { NetworkKind } from "../../../networks";
 import { CoingeckoCoin, getCoingeckoPrice } from "../../../utils/coingecko";
 import { prettyPrice } from "../../../utils/coins";
-import { neutral77 } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
+import {
+  neutral22,
+  neutral77,
+  secondaryColor,
+} from "../../../utils/style/colors";
+import { fontSemibold13 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { SpacerRow } from "../../spacer";
@@ -52,7 +57,8 @@ export const TipButton: React.FC<{
   author: string;
   amount: number;
   disabled?: boolean;
-}> = ({ postId, author, amount, disabled }) => {
+  useAltStyle?: boolean;
+}> = ({ postId, author, amount, disabled, useAltStyle }) => {
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const [tipModalVisible, setTipModalVisible] = useState(false);
   const [tipAmountLocal, setTipAmountLocal] = useState(amount);
@@ -60,13 +66,22 @@ export const TipButton: React.FC<{
   return (
     <>
       <TouchableOpacity
-        style={{ flexDirection: "row", alignItems: "center" }}
+        style={[
+          { flexDirection: "row", alignItems: "center" },
+          useAltStyle && {
+            paddingVertical: layout.spacing_x0_75,
+            paddingRight: layout.spacing_x1_5,
+            paddingLeft: layout.spacing_x1,
+            borderRadius: 999,
+            backgroundColor: neutral22,
+          },
+        ]}
         onPress={() => setTipModalVisible(true)}
         disabled={disabled}
       >
-        <SVG source={tipSVG} width={20} height={20} />
+        <SVG source={tipSVG} width={20} height={20} color={secondaryColor} />
         <SpacerRow size={0.75} />
-        <BrandText style={[fontSemibold14, disabled && { color: neutral77 }]}>
+        <BrandText style={[fontSemibold13, disabled && { color: neutral77 }]}>
           {selectedNetworkInfo?.kind === NetworkKind.Gno ? (
             <GnoTipAmount
               networkId={selectedNetworkInfo.id}

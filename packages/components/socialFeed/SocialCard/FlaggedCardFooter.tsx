@@ -8,7 +8,6 @@ import { neutral22, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
-import FlexRow from "../../FlexRow";
 import { SVG } from "../../SVG";
 import { SpacerRow } from "../../spacer";
 
@@ -18,9 +17,11 @@ export const FlaggedCardFooter: FC<{
   const [, authorAddress] = parseUserId(post.authorId);
 
   return (
-    <FlexRow
-      justifyContent="space-between"
+    <View
       style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
         borderTopWidth: 0.5,
         borderTopColor: neutral22,
         paddingTop: layout.spacing_x2,
@@ -36,6 +37,6 @@ export const FlaggedCardFooter: FC<{
 
         <BrandText style={fontSemibold13}>Open the thread</BrandText>
       </View>
-    </FlexRow>
+    </View>
   );
 };

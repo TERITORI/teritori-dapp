@@ -24,15 +24,12 @@ import { RichText } from "../../components/socialFeed/RichText";
 import { PublishValues } from "../../components/socialFeed/RichText/RichText.type";
 import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useFeedPostFee } from "../../hooks/feed/useFeedPostFee";
-import { useUpdateAvailableFreePost } from "../../hooks/feed/useUpdateAvailableFreePost";
-import { useBalances } from "../../hooks/useBalances";
+import { useFeedPosting } from "../../hooks/feed/useFeedPosting";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId, NetworkFeature } from "../../networks";
+import { NetworkFeature } from "../../networks";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
-import { prettyPrice } from "../../utils/coins";
 import { generateIpfsKey } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
@@ -54,20 +51,16 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const selectNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkId = selectNetworkInfo?.id || "";
   const wallet = useSelectedWallet();
-  const { postFee } = useFeedPostFee(selectedNetworkId, PostCategory.Article);
-  const { freePostCount } = useUpdateAvailableFreePost(
-    selectedNetworkId,
-    PostCategory.Article,
-    wallet,
-  );
+  const userId = wallet?.userId;
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const userIPFSKey = useSelector(selectNFTStorageAPI);
+  const { canPayForPost, freePostCount, publishingFee, prettyPublishingFee } =
+    useFeedPosting(userId, PostCategory.Article);
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
-  const userId = getUserId(selectedNetworkId, wallet?.address);
-  const balances = useBalances(selectedNetworkId, wallet?.address);
+
   const {
     control,
     setValue,
@@ -101,7 +94,10 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     audios,
     videos,
   }: PublishValues) => {
-    const toriBalance = balances.find((bal) => bal.denom === "utori");
+    if (!canPayForPost) {
+      return setNotEnoughFundModal(true);
+    }
+
     const files = [
       ...(formValues.files || []),
       ...images,
@@ -109,21 +105,19 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       ...videos,
     ];
 
-    if (postFee > Number(toriBalance?.amount) && !freePostCount) {
-      return setNotEnoughFundModal(true);
-    }
     let pinataJWTKey = undefined;
     if (files?.length) {
       pinataJWTKey =
         userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
     }
 
+    // TODO: refactor to use useFeedPosting's makePost
     const result = await createPost({
       networkId: selectedNetworkId,
       wallet,
       freePostCount,
       category: PostCategory.Article,
-      fee: postFee,
+      fee: publishingFee.amount,
       formValues: {
         ...formValues,
         gifs,
@@ -230,11 +224,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                   "Article",
                   freePostCount,
                 )} left`
-              : `The cost for this Article is ${prettyPrice(
-                  selectedNetworkId,
-                  postFee.toString(),
-                  selectNetworkInfo?.currencies?.[0].denom || "utori",
-                )}`}
+              : `The cost for this Article is ${prettyPublishingFee}`}
           </BrandText>
         </TertiaryBox>
 
@@ -306,7 +296,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                   !wallet
                 }
                 onPublish={onPublish}
-                authorId={userId}
+                authorId={userId || ""}
                 postId=""
               />
             )}

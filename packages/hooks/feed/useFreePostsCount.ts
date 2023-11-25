@@ -2,23 +2,20 @@ import { useQuery } from "@tanstack/react-query";
 
 import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { getAvailableFreePost } from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
-import { Wallet } from "../../context/WalletsProvider";
 
-export const useUpdateAvailableFreePost = (
-  networkId: string,
+export const useFreePostsCount = (
+  userId: string | undefined,
   postCategory: PostCategory,
-  wallet?: Wallet,
 ) => {
-  const { data } = useQuery(
-    ["getAvailableFreePost", networkId, postCategory, wallet?.address],
+  const { data, ...other } = useQuery(
+    ["getAvailableFreePost", userId, postCategory],
     async () => {
+      if (!userId) {
+        return 0;
+      }
       try {
-        return (
-          (await getAvailableFreePost({
-            networkId,
-            wallet,
-          })) || 0
-        );
+        const fee = await getAvailableFreePost(userId);
+        return fee;
       } catch (e) {
         console.error("getAvailableFreePost failed :", e);
         return 0;
@@ -26,5 +23,5 @@ export const useUpdateAvailableFreePost = (
     },
     { staleTime: Infinity },
   );
-  return { freePostCount: data || 0 };
+  return { freePostCount: data || 0, ...other };
 };

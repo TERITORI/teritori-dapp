@@ -8,7 +8,6 @@ import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
 import { BrandText } from "../../BrandText";
-import FlexRow from "../../FlexRow";
 import { OmniLink } from "../../OmniLink";
 import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { UserAvatarWithFrame } from "../../images/AvatarWithFrame";
@@ -21,11 +20,17 @@ export const SocialCardHeader: FC<{
   authorAddress: string;
   createdAt?: number;
   authorMetadata?: any;
-  loading?: boolean;
-}> = ({ authorId, authorAddress, authorMetadata, createdAt, loading }) => {
+  isWrapped?: boolean;
+}> = ({ authorId, authorAddress, authorMetadata, createdAt, isWrapped }) => {
   const { width } = useWindowDimensions();
   return (
-    <FlexRow justifyContent="space-between">
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
       <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
         <OmniLink
           to={{ screen: "UserPublicProfile", params: { id: authorId } }}
@@ -44,7 +49,8 @@ export const SocialCardHeader: FC<{
         </OmniLink>
         <View
           style={{
-            flexDirection: width < RESPONSIVE_BREAKPOINT_S ? "column" : "row",
+            flexDirection:
+              width < RESPONSIVE_BREAKPOINT_S && isWrapped ? "column" : "row",
             flex: 1,
           }}
         >
@@ -62,7 +68,11 @@ export const SocialCardHeader: FC<{
               </BrandText>
             </AnimationFadeIn>
           </OmniLink>
-          {width >= RESPONSIVE_BREAKPOINT_S && <SpacerRow size={1.5} />}
+
+          {(width >= RESPONSIVE_BREAKPOINT_S || !isWrapped) && (
+            <SpacerRow size={1.5} />
+          )}
+
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             {width >= RESPONSIVE_BREAKPOINT_S && (
               <>
@@ -112,6 +122,6 @@ export const SocialCardHeader: FC<{
       {/*    }}*/}
       {/*  />*/}
       {/*)}*/}
-    </FlexRow>
+    </View>
   );
 };

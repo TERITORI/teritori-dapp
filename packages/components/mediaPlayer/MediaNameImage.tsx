@@ -34,11 +34,11 @@ export const MediaNameImage: FC<{
               screen: "MusicAlbum",
               params: { id: media.albumId },
             }
-          : // TODO: Uncomment this after video stuff integration
-            // : media.videoId
+          : // TODO: Make a FeedVideoViewScreen
+            // : media.isVideo
             // ? {
-            //     screen: "VideoDetail",
-            //     params: { id: media.videoId },
+            //     screen: "FeedVideoView",
+            //     params: { id: getNetworkObjectId(network?.id, media?.postId) || "", },
             //   }
             {
               screen: "FeedPostView",

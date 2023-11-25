@@ -3,7 +3,7 @@ import { TouchableOpacity, View } from "react-native";
 
 import replySVG from "../../../../assets/icons/reply.svg";
 import { secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
+import { fontSemibold13 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { SpacerRow } from "../../spacer";
@@ -30,7 +30,7 @@ export const ReplyButton: React.FC<{
         <SVG source={replySVG} color={secondaryColor} width={12} height={12} />
       </View>
       <SpacerRow size={1.5} />
-      <BrandText style={fontSemibold14}>Mention</BrandText>
+      <BrandText style={fontSemibold13}>Mention</BrandText>
     </TouchableOpacity>
   );
 };

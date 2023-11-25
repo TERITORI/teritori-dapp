@@ -25,14 +25,18 @@ import {
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { fontSemibold20 } from "../../../utils/style/fonts";
 import {
   layout,
   RESPONSIVE_BREAKPOINT_S,
   screenContentMaxWidth,
 } from "../../../utils/style/layout";
+import { BrandText } from "../../BrandText";
 import { SpacerColumn, SpacerRow } from "../../spacer";
+import { UploadVideoButton } from "../../video/UploadVideoButton";
 import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
 import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
+import { SocialVideoCard } from "../SocialCard/cards/SocialVideoCard";
 
 const OFFSET_Y_LIMIT_FLOATING = 224;
 export const ROUND_BUTTON_WIDTH_L = 60;
@@ -48,6 +52,7 @@ interface NewsFeedProps {
   daoId?: string;
   disablePosting?: boolean;
   isFlagged?: boolean;
+  isVideos?: boolean;
 }
 
 export const NewsFeed: React.FC<NewsFeedProps> = ({
@@ -58,6 +63,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   daoId,
   disablePosting,
   isFlagged,
+  isVideos,
 }) => {
   const isMobile = useIsMobile();
   const { width: windowWidth } = useWindowDimensions();
@@ -116,6 +122,22 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           style={{ width, alignSelf: "center", alignItems: "center" }}
         >
           <Header />
+          {isVideos && (
+            <>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  alignItems: "center",
+                }}
+              >
+                <BrandText style={fontSemibold20}>All Videos</BrandText>
+                <UploadVideoButton refetch={refetch} />
+              </View>{" "}
+              <SpacerColumn size={1.5} />
+            </>
+          )}
         </View>
         {!disablePosting && (
           <Animated.View
@@ -163,6 +185,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       isMobile,
       refetch,
       width,
+      isVideos,
     ],
   );
 
@@ -190,6 +213,8 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         >
           {post.category === PostCategory.Article ? (
             <SocialArticleCard post={post} style={cardStyle} />
+          ) : post.category === PostCategory.Video ? (
+            <SocialVideoCard post={post} style={cardStyle} />
           ) : (
             <SocialThreadCard
               post={post}

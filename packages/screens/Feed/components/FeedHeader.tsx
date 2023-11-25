@@ -66,6 +66,8 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
       delete res["moderationDAO"];
     }
 
+    delete res["videoNotes"];
+    delete res["sounds"];
     return res;
   }, [hasFlaggedPosts, isModerationDAOMember, selectedNetworkKind]);
 

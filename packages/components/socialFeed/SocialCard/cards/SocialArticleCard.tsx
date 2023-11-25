@@ -48,7 +48,6 @@ const ARTICLE_CARD_PADDING_HORIZONTAL = layout.spacing_x2_5;
 export const SocialArticleCard: FC<{
   post: Post;
   isPostConsultation?: boolean;
-  isSmall?: boolean;
   style?: StyleProp<ViewStyle>;
   refetchFeed?: () => Promise<any>;
   isFlagged?: boolean;
@@ -149,6 +148,7 @@ export const SocialArticleCard: FC<{
         >
           <View>
             <SocialCardHeader
+              isWrapped
               authorId={localPost.authorId}
               authorAddress={authorAddress}
               createdAt={localPost.createdAt}
@@ -205,7 +205,7 @@ export const SocialArticleCard: FC<{
               isPostConsultation={isPostConsultation}
               post={localPost}
               refetchFeed={refetchFeed}
-              setLocalPost={setLocalPost}
+              setPost={setLocalPost}
             />
           )}
         </LinearGradient>
