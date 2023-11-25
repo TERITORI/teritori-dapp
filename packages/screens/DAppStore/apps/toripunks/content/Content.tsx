@@ -12,14 +12,10 @@ export const Content = () => {
   const { selectedSection, isMinimunWindowWidth, loadingGame } =
     useContentContext();
 
-  const [fontsLoaded] = useFonts({
+  useFonts({
     "Bebas Neue": require("../assets/font/Bebas_Neue/BebasNeue-Regular.ttf"),
     "Dafter Harder Better Stronger": require("../assets/font/Dafter_Harder_Better_Stronger/Dafter Harder Better Stronger.ttf"),
   });
-
-  if (!fontsLoaded) {
-    return null;
-  }
 
   // CSS for Responsive WEB/Mobile
   const containerStyle = isMinimunWindowWidth
