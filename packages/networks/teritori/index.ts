@@ -32,8 +32,8 @@ export const teritoriNetwork: CosmosNetworkInfo = {
   testnet: false,
   backendEndpoint: "https://dapp-backend.mainnet.teritori.com",
   addressPrefix: "tori",
-  restEndpoint: "https://rest-cache.mainnet.teritori.com",
-  rpcEndpoint: "https://rpc-cache.mainnet.teritori.com",
+  restEndpoint: "https://rest.mainnet.teritori.com",
+  rpcEndpoint: "https://rpc.mainnet.teritori.com",
   stakeCurrency: "utori",
   gasPriceStep: {
     low: 0.0,
