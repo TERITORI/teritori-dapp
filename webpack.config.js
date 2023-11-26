@@ -14,7 +14,10 @@ module.exports = async function (env, argv) {
   // since webpack5, node libs are not polyfilled automatically
   config.resolve.fallback = {
     ...config.resolve.fallback,
+    assert: require.resolve("assert/"),
     crypto: require.resolve("crypto-browserify"),
+    fs: false,
+    os: require.resolve("os-browserify/browser"),
     stream: require.resolve("stream-browserify"),
   };
   config.plugins.push(
