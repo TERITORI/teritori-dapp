@@ -21,6 +21,9 @@ ignores: [
   "@pinata/sdk",
   "expo-optimize",
   "sharp-cli",
+  "cross-env",
+  "electron",
+  "rimraf",
 ]
 ignorePatterns: [
   "/cache", 
