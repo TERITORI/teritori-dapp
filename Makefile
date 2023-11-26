@@ -1,5 +1,6 @@
 CANDYMACHINE_REPO=teritori-nfts
 BUNKER_MINTER_PACKAGE=teritori-bunker-minter
+GO?=go
 
 TOKEN_REPO=teritori-nfts
 TOKEN_PACKAGE=teritori-nft
@@ -275,7 +276,7 @@ prepare-electron: node_modules
 build-electron-mac:
 	yarn rimraf ./electron/dist
 	yarn rimraf ./electron/build
-	cd ./electron && GOOS=darwin GOARCH=arm64 go1.20 build -o ./build/mac ./prod.go
+	cd ./electron && GOOS=darwin GOARCH=arm64 $(GO) build -o ./build/mac ./prod.go
 	cd ./electron && node ./builder/mac.js
 
 # requires prepare-electron
@@ -283,7 +284,7 @@ build-electron-mac:
 build-electron-win:
 	yarn rimraf ./electron/dist
 	yarn rimraf ./electron/build
-	cd ./electron && GOOS=windows GOARCH=amd64 go1.20 build -o ./build/win.exe ./prod.go
+	cd ./electron && GOOS=windows GOARCH=amd64 $(GO) build -o ./build/win.exe ./prod.go
 	cd ./electron && node ./builder/win.js
 
 # requires prepare-electron
@@ -291,6 +292,6 @@ build-electron-win:
 build-electron-linux:
 	yarn rimraf ./electron/dist
 	yarn rimraf ./electron/build
-	cd ./electron && GOOS=linux GOARCH=amd64 go1.20 build -o ./build/linux ./prod.go
+	cd ./electron && GOOS=linux GOARCH=amd64 $(GO) build -o ./build/linux ./prod.go
 	cd ./electron && node ./builder/linux.js
 	 
