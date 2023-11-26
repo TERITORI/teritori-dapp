@@ -2,6 +2,11 @@
   "name": "teritori-electron",
   "version": "1.0.0",
   "main": "main.js",
+  "author": {
+    "name": "Teritori",
+    "email": "author@teritori.com"
+  },
+  "homepage": "https://teritori.com/",
   "scripts": {},
   "dependencies": {
     "portfinder": "^1.0.32"

@@ -14,7 +14,7 @@ const options = {
   compression: "normal",
   removePackageScripts: true,
   files: [
-    "build/**/*",
+    "build/mac",
     "web-build/**/*",
     "node_modules/**/*",
     "package.json",
@@ -35,6 +35,8 @@ const options = {
 
   mac: {
     target: "dmg",
+    asar: true,
+    asarUnpack: ["build/*"],
     hardenedRuntime: true,
     gatekeeperAssess: true,
     icon: "./icon.icns",

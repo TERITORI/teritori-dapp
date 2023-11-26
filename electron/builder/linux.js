@@ -14,8 +14,7 @@ const options = {
   compression: "normal",
   removePackageScripts: true,
   files: [
-    "dist/**/*",
-    "build/linus",
+    "build/linux",
     "web-build/**/*",
     "node_modules/**/*",
     "package.json",
@@ -39,6 +38,8 @@ const options = {
       MimeType: "x-scheme-handler/deeplink",
     },
     target: ["AppImage", "rpm", "deb"],
+    asar: true,
+    asarUnpack: ["build/*"],
   },
   deb: {
     priority: "optional",

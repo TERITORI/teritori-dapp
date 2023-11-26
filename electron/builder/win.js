@@ -15,7 +15,6 @@ const options = {
   compression: "normal",
   removePackageScripts: true,
   files: [
-    "dist/**/*",
     "build/win.exe",
     "web-build/**/*",
     "node_modules/**/*",
@@ -37,6 +36,8 @@ const options = {
 
   win: {
     target: "nsis",
+    asar: true,
+    asarUnpack: ["build/*"],
   },
   nsis: {
     deleteAppDataOnUninstall: true,

@@ -3,6 +3,7 @@ const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const portfinder = require("portfinder");
 const url = require("url");
+const os = require("os");
 
 let mainWindow;
 let splashWindow;
@@ -10,11 +11,32 @@ let forceQuit = false;
 let port = 4242;
 let weshSpawn;
 
+function getWeshnetPlatformBin() {
+  const platform = os.platform();
+
+  switch (platform) {
+    case "win32":
+      return "app.asar.unpacked/build/win.exe";
+
+    case "linux":
+      return "app.asar.unpacked/build/linux";
+
+    case "darwin":
+      return "app.asar.unpacked/build/mac";
+
+    default:
+      return "";
+  }
+}
+
 async function bootWeshnet() {
   try {
     port = await portfinder.getPortPromise();
 
-    weshSpawn = spawn(path.join(__dirname, "build/mac"), [port]);
+    weshSpawn = spawn(
+      path.join(process.resourcesPath, getWeshnetPlatformBin()),
+      [port],
+    );
 
     weshSpawn.stdout.on("data", (data) => {
       console.log(`Output: ${data}`);
