@@ -34,4 +34,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: teritori-desktop-mac-amd64
-          path: electron/dist/artifacts/local/Teritori-1.0.0-amd64.dmg
+          path: electron/dist/artifacts/local/Teritori-1.0.0.dmg
