@@ -338,7 +338,7 @@ export function getAvailableApps(): dAppGroup {
           title: "Messages",
           description: "Messages",
           icon: messages,
-          route: "ComingSoon",
+          route: "Message",
           groupKey: "coming-soon",
           selectedByDefault: false,
           alwaysOn: false,
