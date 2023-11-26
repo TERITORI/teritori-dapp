@@ -1,0 +1,95 @@
+name: Build Desktop App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-mac-amd64:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: "yarn"
+          node-version: 18
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.19"
+
+      - name: Install node modules
+        run: yarn
+
+      - name: Prepare
+        run: make prepare-electron
+
+      - name: Build
+        run: make build-electron-mac-amd64
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: teritori-desktop-mac-amd64
+          path: electron/dist/artifacts/local/Teritori-1.0.0.dmg
+
+  build-windows-amd64:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: "yarn"
+          node-version: 18
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.19"
+
+      - name: Install node modules
+        run: yarn
+
+      - name: Prepare
+        run: make prepare-electron
+
+      - name: Build
+        run: make build-electron-win
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: teritori-desktop-windows-amd64
+          path: electron/dist/artifacts/local/Teritori-1.0.0.dmg
+
+  build-linux-amd64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: "yarn"
+          node-version: 18
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.19"
+
+      - name: Install node modules
+        run: yarn
+
+      - name: Prepare
+        run: make prepare-electron
+
+      - name: Build
+        run: make build-electron-linux
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: teritori-desktop-linux-amd64
+          path: electron/dist/artifacts/local/Teritori-1.0.0.dmg
