@@ -9035,8 +9035,8 @@
     "testnet": false,
     "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
     "addressPrefix": "tori",
-    "restEndpoint": "https://rest.mainnet.teritori.com",
-    "rpcEndpoint": "https://rpc.mainnet.teritori.com",
+    "restEndpoint": "https://rest-cache.mainnet.teritori.com",
+    "rpcEndpoint": "https://rpc-cache.mainnet.teritori.com",
     "stakeCurrency": "utori",
     "gasPriceStep": {
       "low": 0,
@@ -9133,7 +9133,7 @@
     "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
     "addressPrefix": "tori",
     "restEndpoint": "https://rest.testnet.teritori.com",
-    "rpcEndpoint": "https://rpc.testnet.teritori.com",
+    "rpcEndpoint": "https://rpc-cache.testnet.teritori.com",
     "stakeCurrency": "utori",
     "gasPriceStep": {
       "low": 0,
