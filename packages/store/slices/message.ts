@@ -79,7 +79,7 @@ export const selectIsWeshConnected = (state: RootState) =>
 export const selectContactInfo = (state: RootState) =>
   state.message.contactInfo;
 
-export const selectGroup = (state: RootState, groupPk: string) =>
+const selectGroup = (state: RootState, groupPk: string) =>
   groupSelectors.selectById(state.message.messages, groupPk)?.value;
 
 export const selectMessageList = (state: RootState, groupPk: string) => {
@@ -88,8 +88,10 @@ export const selectMessageList = (state: RootState, groupPk: string) => {
   return messageSelectors.selectAll(group);
 };
 
+/*
 export const selectPeerList = (state: RootState) =>
   peerSelectors.selectAll(state.message.peers);
+*/
 
 export const selectPeerById = (state: RootState, id: string) =>
   peerSelectors.selectById(state.message.peers, id);

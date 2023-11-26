@@ -22,7 +22,11 @@ export const processMessage = async (
 ) => {
   try {
     const conversation = selectConversationById(store.getState(), groupPk);
-    const decodedMessage = ZodMessage.parse(decodeJSON(data.message));
+
+    const decodedMessage = ZodMessage.omit({ id: true }).parse({
+      ...(decodeJSON(data.message) as object),
+      groupId: groupPk,
+    });
 
     const message: StoreMessage = {
       id: stringFromBytes(data.eventContext?.id),

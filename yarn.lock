@@ -9355,6 +9355,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dijkstrajs@npm:^1.0.1":
+  version: 1.0.3
+  resolution: "dijkstrajs@npm:1.0.3"
+  checksum: 82ff2c6633f235dd5e6bed04ec62cdfb1f327b4d7534557bd52f18991313f864ee50654543072fff4384a92b643ada4d5452f006b7098dbdfad6c8744a8c9e08
+  languageName: node
+  linkType: hard
+
 "dir-glob@npm:^3.0.1":
   version: 3.0.1
   resolution: "dir-glob@npm:3.0.1"
@@ -9653,6 +9660,13 @@ __metadata:
   version: 3.0.0
   resolution: "emojis-list@npm:3.0.0"
   checksum: ddaaa02542e1e9436c03970eeed445f4ed29a5337dfba0fe0c38dfdd2af5da2429c2a0821304e8a8d1cadf27fdd5b22ff793571fa803ae16852a6975c65e8e70
+  languageName: node
+  linkType: hard
+
+"encode-utf8@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "encode-utf8@npm:1.0.3"
+  checksum: 550224bf2a104b1d355458c8a82e9b4ea07f9fc78387bc3a49c151b940ad26473de8dc9e121eefc4e84561cb0b46de1e4cd2bc766f72ee145e9ea9541482817f
   languageName: node
   linkType: hard
 
@@ -10494,6 +10508,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-barcode-scanner@npm:~12.5.3":
+  version: 12.5.3
+  resolution: "expo-barcode-scanner@npm:12.5.3"
+  dependencies:
+    expo-image-loader: ~4.3.0
+  peerDependencies:
+    expo: "*"
+  checksum: 10923168c29620c64935f9b171c37e2a22d86bedc7dd263460683c2e27c9620c857b3f852194f58cc7109a68380174a4c0faa502e715445aacec95f622d38e54
+  languageName: node
+  linkType: hard
+
 "expo-constants@npm:~14.4.2":
   version: 14.4.2
   resolution: "expo-constants@npm:14.4.2"
@@ -10583,6 +10608,15 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 3eff92ba5c62de5f37cfdfd86a5daf1d448e4f3e82a9ff401b4c4da1c4e5a7241da26edf32fb049763147e442d74ae8b4575b7e5a4ae0d935750c6d3f70f4355
+  languageName: node
+  linkType: hard
+
+"expo-image-loader@npm:~4.3.0":
+  version: 4.3.0
+  resolution: "expo-image-loader@npm:4.3.0"
+  peerDependencies:
+    expo: "*"
+  checksum: 0440ac80a7b2331cdfd0db88aac0ba2fe61689e6347e2c6bedba6bf3220b95410c724ac9004252486870b582fc36d47d4bff008bba7052dcee2830256950974f
   languageName: node
   linkType: hard
 
@@ -16079,6 +16113,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pngjs@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "pngjs@npm:5.0.0"
+  checksum: 04e912cc45fb9601564e2284efaf0c5d20d131d9b596244f8a6789fc6cdb6b18d2975a6bbf7a001858d7e159d5c5c5dd7b11592e97629b7137f7f5cef05904c8
+  languageName: node
+  linkType: hard
+
 "postcss-calc@npm:^8.2.3":
   version: 8.2.4
   resolution: "postcss-calc@npm:8.2.4"
@@ -16624,7 +16665,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:*, prop-types@npm:^15.5.6, prop-types@npm:^15.5.8, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:*, prop-types@npm:^15.5.6, prop-types@npm:^15.5.8, prop-types@npm:^15.7.2, prop-types@npm:^15.8.0, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -16795,6 +16836,20 @@ __metadata:
   bin:
     qrcode-terminal: ./bin/qrcode-terminal.js
   checksum: ad146ea1e339e1745402a3ea131631f64f40f0d1ff9cc6bd9c21677feaa1ca6dcd32eadf188fd3febdab8bf6191b3d24d533454903a72543645a72820e4d324c
+  languageName: node
+  linkType: hard
+
+"qrcode@npm:^1.5.1":
+  version: 1.5.3
+  resolution: "qrcode@npm:1.5.3"
+  dependencies:
+    dijkstrajs: ^1.0.1
+    encode-utf8: ^1.0.3
+    pngjs: ^5.0.0
+    yargs: ^15.3.1
+  bin:
+    qrcode: bin/qrcode
+  checksum: 9a8a20a0a9cb1d15de8e7b3ffa214e8b6d2a8b07655f25bd1b1d77f4681488f84d7bae569870c0652872d829d5f8ac4922c27a6bd14c13f0e197bf07b28dead7
   languageName: node
   linkType: hard
 
@@ -17052,6 +17107,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-keyboard-aware-scrollview@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "react-native-keyboard-aware-scrollview@npm:2.1.0"
+  peerDependencies:
+    react: ">=0.14.5"
+    react-native: ">=0.25.1"
+  checksum: 070c6b15154608228214df4b9511d316181da38b95061c00752caa0890d428680bd00f25586467006e96673de96d4900db6e94adfcc3df17973eed3cb385589e
+  languageName: node
+  linkType: hard
+
 "react-native-paper@npm:^4.12.5":
   version: 4.12.5
   resolution: "react-native-paper@npm:4.12.5"
@@ -17094,6 +17159,20 @@ __metadata:
   version: 0.16.1
   resolution: "react-native-popup-menu@npm:0.16.1"
   checksum: 4a4cfdfdcd7ee0a2515dbd4fa427dd38af89121e375ea452a470091456ecb8fc35fd24d6a79936703ebc4a84905352e8df0de24d58b036f56d2a9ba61449a7d5
+  languageName: node
+  linkType: hard
+
+"react-native-qrcode-svg@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "react-native-qrcode-svg@npm:6.2.0"
+  dependencies:
+    prop-types: ^15.8.0
+    qrcode: ^1.5.1
+  peerDependencies:
+    react: "*"
+    react-native: ">=0.63.4"
+    react-native-svg: ^13.2.0
+  checksum: e4e8a709900e16cf0116e9c5edd8ff7150cfbbb2c9763a5a7b171ba6efb1f84d8b93b919dedb915d16686d7a8b0c49c905c62dcbd86f98d471b1c0bcec6f1ae3
   languageName: node
   linkType: hard
 
@@ -19324,6 +19403,7 @@ __metadata:
     ethers: ^5.7.2
     expo: ^49.0.16
     expo-av: ~13.4.1
+    expo-barcode-scanner: ~12.5.3
     expo-dev-client: ~2.4.12
     expo-doctor: ^1.1.3
     expo-font: ~11.4.0
@@ -19356,10 +19436,12 @@ __metadata:
     react-native-gesture-handler: ~2.12.0
     react-native-heroicons: ^3.2.0
     react-native-hoverable: ^0.2.0
+    react-native-keyboard-aware-scrollview: ^2.1.0
     react-native-paper: ^4.12.5
     react-native-pell-rich-editor: ^1.8.8
     react-native-pie-chart: ^3.0.1
     react-native-popup-menu: ^0.16.1
+    react-native-qrcode-svg: ^6.2.0
     react-native-reanimated: ~3.3.0
     react-native-reanimated-carousel: ^3.0.3
     react-native-redash: ^18.0.0
@@ -21387,7 +21469,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^15.1.0":
+"yargs@npm:^15.1.0, yargs@npm:^15.3.1":
   version: 15.4.1
   resolution: "yargs@npm:15.4.1"
   dependencies:

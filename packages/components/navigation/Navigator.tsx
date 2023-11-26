@@ -19,6 +19,9 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
+import { MessageScreen } from "../../screens/Message/MessageScreen";
+import { ChatSectionScreen } from "../../screens/Message/components/ChatSection";
+import { FriendshipManagerScreen } from "../../screens/Message/components/FriendshipManager";
 import { MetricsScreen } from "../../screens/Metrics/MetricsScreen";
 import { MultisigCreateScreen } from "../../screens/Multisig/MultisigCreateScreen";
 import { MultisigScreen } from "../../screens/Multisig/MultisigScreen";
@@ -320,6 +323,27 @@ export const Navigator: React.FC = () => {
         name="Metrics"
         component={MetricsScreen}
         options={{ header: () => null, title: screenTitle("Metrics") }}
+      />
+      <Stack.Screen
+        name="Message"
+        component={MessageScreen}
+        options={{ header: () => null, title: screenTitle("Message") }}
+      />
+      <Stack.Screen
+        name="ChatSection"
+        component={ChatSectionScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Chat Message"),
+        }}
+      />
+      <Stack.Screen
+        name="FriendshipManager"
+        component={FriendshipManagerScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Friends Add"),
+        }}
       />
     </Stack.Navigator>
   );

@@ -1,8 +1,7 @@
 import { z } from "zod";
 
-import { RemoteFileData } from "./files";
-
-export type MessageType =
+/*
+type MessageType =
   | "message"
   | "accept-contact"
   | "reject-contact"
@@ -13,28 +12,34 @@ export type MessageType =
   | "reaction"
   | "contact-request"
   | "read";
+*/
 
 export type MessageFriendsTabItem = "friends" | "request" | "addFriend";
 
-export type ConversationType = "contact" | "group";
+type ConversationType = "contact" | "group";
 
-export interface MessageFileData extends RemoteFileData {
+/*
+interface MessageFileData extends RemoteFileData {
   type: string;
 }
+*/
 
 const ZodMessagePayload = z.object({
   files: z.array(z.any()),
   message: z.string(),
-  metadata: z.object({
-    groupName: z.string().optional(),
-    group: z.any().optional(),
-    contact: z.any().optional(),
-    lastReadId: z.string().optional(),
-    lastReadBy: z.string().optional(),
-  }),
+  metadata: z
+    .object({
+      groupName: z.string().optional(),
+      group: z.any().optional(),
+      contact: z.any().optional(),
+      lastReadId: z.string().optional(),
+      lastReadBy: z.string().optional(),
+    })
+    .optional(),
 });
 
 export const ZodMessage = z.object({
+  id: z.string(),
   senderId: z.string(),
   groupId: z.string(),
   type: z.string(),
@@ -55,7 +60,7 @@ export interface Contact {
   name: string;
   avatar: string;
   rdvSeed: string;
-  peerId?: string;
+  peerId: string;
   hasLeft?: boolean;
 }
 
@@ -75,7 +80,7 @@ export interface ContactRequest {
   rdvSeed: string;
   avatar: string;
   name: string;
-  peerId?: string;
+  peerId: string;
 }
 
 export interface ReplyTo {

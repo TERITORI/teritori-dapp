@@ -1,11 +1,4 @@
-import { Conversation, Message } from "../utils/types/message";
-
-export const getLineTextByMessageType = ({ message }: { message: Message }) => {
-  switch (message.type) {
-    case "contact-request":
-      return `Anon has sent a contact`;
-  }
-};
+import { Conversation } from "../utils/types/message";
 
 export const getNewConversationText = (conversation: Conversation) => {
   if (conversation.type === "contact") {
