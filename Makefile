@@ -262,7 +262,7 @@ unused-exports: node_modules
 	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\.web|.electron|.d.ts" --ignoreTestFiles 
 
 .PHONY: prepare-electron
-prepare-electron:
+prepare-electron: node_modules
 	yarn rimraf ./web-build
 	yarn cross-env isElectron=prod expo export:web
 	yarn rimraf ./electron/web-build
@@ -270,24 +270,27 @@ prepare-electron:
 	cp -r ./web-build/* ./electron/web-build
 	cd ./electron && npm i
 
+# requires prepare-electron
 .PHONY: build-electron-mac
 build-electron-mac:
 	yarn rimraf ./electron/dist
 	yarn rimraf ./electron/build
-	cd ./electron && GOOS=darwin GOARCH=amd64 go build -o ./build/mac ./prod.go
+	cd ./electron && GOOS=darwin GOARCH=arm64 go1.20 build -o ./build/mac ./prod.go
 	cd ./electron && node ./builder/mac.js
 
+# requires prepare-electron
 .PHONY: build-electron-win
 build-electron-win:
 	yarn rimraf ./electron/dist
 	yarn rimraf ./electron/build
-	cd ./electron && GOOS=windows GOARCH=amd64 go build -o ./build/win.exe ./prod.go
+	cd ./electron && GOOS=windows GOARCH=amd64 go1.20 build -o ./build/win.exe ./prod.go
 	cd ./electron && node ./builder/win.js
 
+# requires prepare-electron
 .PHONY: build-electron-linux
 build-electron-linux:
 	yarn rimraf ./electron/dist
 	yarn rimraf ./electron/build
-	cd ./electron && GOOS=linux GOARCH=amd64 go build -o ./build/linux ./prod.go
+	cd ./electron && GOOS=linux GOARCH=amd64 go1.20 build -o ./build/linux ./prod.go
 	cd ./electron && node ./builder/linux.js
 	 

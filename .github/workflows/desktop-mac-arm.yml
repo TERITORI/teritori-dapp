@@ -1,0 +1,33 @@
+name: Desktop Mac ARM
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: "yarn"
+          node-version: 18
+
+      - name: Install node modules
+        run: yarn
+
+      - name: Prepare
+        run: make prepare-electron
+
+      - name: Build
+        run: make build-electron-mac
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: teritori-desktop-mac-arm
+          path: electron/dist/artifacts/local/Teritori-1.0.0-arm64.dmg
