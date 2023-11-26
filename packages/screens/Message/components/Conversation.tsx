@@ -76,6 +76,7 @@ export const Conversation = ({
       .map((value, key) => ({
         icon: value?.[0]?.payload?.message || "",
         count: value.length,
+        ownState: false,
       }))
       .value();
   }, [message?.payload?.message, message?.reactions]);

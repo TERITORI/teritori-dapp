@@ -1,8 +1,7 @@
 import { z } from "zod";
 
-import { RemoteFileData } from "./files";
-
-export type MessageType =
+/*
+type MessageType =
   | "message"
   | "accept-contact"
   | "reject-contact"
@@ -13,14 +12,17 @@ export type MessageType =
   | "reaction"
   | "contact-request"
   | "read";
+*/
 
 export type MessageFriendsTabItem = "friends" | "request" | "addFriend";
 
-export type ConversationType = "contact" | "group";
+type ConversationType = "contact" | "group";
 
-export interface MessageFileData extends RemoteFileData {
+/*
+interface MessageFileData extends RemoteFileData {
   type: string;
 }
+*/
 
 const ZodMessagePayload = z.object({
   files: z.array(z.any()),
