@@ -10,14 +10,13 @@ import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
 import React, { ReactNode, memo, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { Platform, View } from "react-native";
+import { Platform, View, Text, TextStyle } from "react-native";
 import { enableLegacyWebImplementation } from "react-native-gesture-handler";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
-import { BrandText } from "./packages/components/BrandText";
 import { MultisigDeauth } from "./packages/components/multisig/MultisigDeauth";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
@@ -64,8 +63,8 @@ export default function App() {
   }
 
   return (
-    <ReduxProvider store={store}>
-      <ErrorBoundary>
+    <ErrorBoundary>
+      <ReduxProvider store={store}>
         <PersistGate
           loading={
             <View
@@ -114,8 +113,8 @@ export default function App() {
             </FormProvider>
           </QueryClientProvider>
         </PersistGate>
-      </ErrorBoundary>
-    </ReduxProvider>
+      </ReduxProvider>
+    </ErrorBoundary>
   );
 }
 
@@ -149,11 +148,15 @@ class ErrorBoundary extends React.Component<{ children: ReactNode }> {
       // You can render any custom fallback UI
       return (
         <View style={{ backgroundColor: "black", height: "100%" }}>
-          <BrandText>{`${this.state.error}`}</BrandText>
+          <Text style={errorBoundaryTextCStyle}>{`${this.state.error}`}</Text>
           {this.state.error !== this.state.catchError && (
-            <BrandText>{`${this.state.catchError}`}</BrandText>
+            <Text
+              style={errorBoundaryTextCStyle}
+            >{`${this.state.catchError}`}</Text>
           )}
-          <BrandText>{this.state.catchInfo?.componentStack}</BrandText>
+          <Text style={errorBoundaryTextCStyle}>
+            {this.state.catchInfo?.componentStack}
+          </Text>
         </View>
       );
     }
@@ -161,6 +164,8 @@ class ErrorBoundary extends React.Component<{ children: ReactNode }> {
     return this.props.children;
   }
 }
+
+const errorBoundaryTextCStyle: TextStyle = { color: "white" };
 
 const WalletSyncer: React.FC = memo(() => {
   const selectedWallet = useSelectedWallet();
