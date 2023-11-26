@@ -1,4 +1,4 @@
-name: Desktop Mac ARM
+name: Desktop Mac AMD64
 
 on:
   push:
@@ -33,5 +33,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: teritori-desktop-mac-arm
-          path: electron/dist/artifacts/local/Teritori-1.0.0-arm64.dmg
+          name: teritori-desktop-mac-amd64
+          path: electron/dist/artifacts/local/Teritori-1.0.0-amd64.dmg
