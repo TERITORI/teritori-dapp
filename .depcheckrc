@@ -24,6 +24,7 @@ ignores: [
   "cross-env",
   "electron",
   "rimraf",
+  "assert",
 ]
 ignorePatterns: [
   "/cache", 
