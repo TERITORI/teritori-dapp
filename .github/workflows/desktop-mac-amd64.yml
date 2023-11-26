@@ -28,7 +28,7 @@ jobs:
         run: make prepare-electron
 
       - name: Build
-        run: make build-electron-mac
+        run: make build-electron-mac-amd64
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
