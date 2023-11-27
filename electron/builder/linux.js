@@ -37,16 +37,12 @@ const options = {
       Encoding: "UTF-8",
       MimeType: "x-scheme-handler/deeplink",
     },
-    target: ["AppImage", "rpm", "deb"],
+    target: ["AppImage", "deb"],
     asar: true,
     asarUnpack: ["build/*"],
   },
   deb: {
     priority: "optional",
-    afterInstall: "installer/linux/after-install.tpl",
-  },
-  rpm: {
-    fpm: ["--before-install", "installer/linux/before-install.tpl"],
     afterInstall: "installer/linux/after-install.tpl",
   },
 };

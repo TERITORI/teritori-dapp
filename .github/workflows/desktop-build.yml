@@ -7,11 +7,24 @@ on:
   pull_request:
 
 jobs:
-  build-mac:
-    runs-on: macos-12
+  build:
     strategy:
       matrix:
-        arch: [amd64, arm64]
+        include:
+          # - os: windows
+          #   runner: windows-latest
+          #   arch: amd64
+          - os: macos
+            runner: macos-12
+            arch: arm64
+          - os: macos
+            runner: macos-12
+            arch: amd64
+          - os: linux
+            runner: ubuntu-latest
+            arch: amd64
+    runs-on: ${{ matrix.runner }}
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v3
 
@@ -30,12 +43,21 @@ jobs:
       - name: Prepare
         run: make prepare-electron
 
-      - name: Build amd64
-        run: make build-electron-mac-${{ matrix.arch }}
+      - name: Build
+        run: make build-electron-${{ matrix.os }}-${{ matrix.arch }}
 
-      - name: Upload artifacts
+      - name: Upload dmg
         uses: actions/upload-artifact@v3
         with:
-          name: teritori-desktop-mac-${{ matrix.arch }}
-          path: electron/dist/artifacts/local/Teritori-*.dmg
-          if-no-files-found: error
+          name: teritori-desktop-${{ matrix.os }}-${{ matrix.arch }}-dmg
+          path: electron/dist/artifacts/local/*.dmg
+      - name: Upload deb
+        uses: actions/upload-artifact@v3
+        with:
+          name: teritori-desktop-${{ matrix.os }}-${{ matrix.arch }}-deb
+          path: electron/dist/artifacts/local/*.deb
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v3
+        with:
+          name: teritori-desktop-${{ matrix.os }}-${{ matrix.arch }}-AppImage
+          path: electron/dist/artifacts/local/*.AppImage

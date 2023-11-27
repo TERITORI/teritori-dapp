@@ -389,7 +389,7 @@ require (
 )
 
 replace (
-	berty.tech/weshnet => github.com/TERITORI/weshnet v0.0.0-20231127125754-3b980f74af98
+	berty.tech/weshnet => github.com/TERITORI/weshnet v0.0.0-20231127151743-abee97f5abd4
 	github.com/cosmos/iavl => github.com/cosmos/iavl v0.17.3
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 )
