@@ -51,15 +51,12 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          cache: "yarn"
+          cache: "npm"
           node-version: 18
 
       - uses: actions/setup-go@v3
         with:
           go-version: "1.19"
-
-      - name: Install node modules
-        run: yarn
 
       - name: Download web build
         uses: actions/download-artifact@v3
