@@ -1,28 +1,34 @@
 import React from "react";
-import { StyleProp, ViewStyle } from "react-native";
-import { Avatar as PaperAvatar } from "react-native-paper";
+import { ImageStyle, View } from "react-native";
 
 import logoSVG from "../../../../assets/logos/logo.svg";
+import { SVG } from "../../../components/SVG";
+import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
 import { neutral22 } from "../../../utils/style/colors";
 
 type AvatarProps = {
   source: string;
   size?: number;
-  style?: StyleProp<ViewStyle>;
+  style?: ImageStyle;
 };
 
-export const Avatar = ({ source, size = 40, style }: AvatarProps) => {
-  return (
-    <PaperAvatar.Image
-      style={[
-        {
+export const Avatar = ({ source, size = 40, style = {} }: AvatarProps) => {
+  if (!source) {
+    return (
+      <View
+        style={{
           backgroundColor: neutral22,
-          padding: source ? 0 : size * 0.14,
-        },
-        style,
-      ]}
-      size={size}
-      source={source ? { uri: source } : logoSVG}
-    />
+          padding: source ? 0 : size * 0.15,
+          borderRadius: size,
+          height: size,
+          width: size,
+        }}
+      >
+        <SVG source={logoSVG} />
+      </View>
+    );
+  }
+  return (
+    <SVGorImageIcon style={style} iconSize={size} icon={source || logoSVG} />
   );
 };
