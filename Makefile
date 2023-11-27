@@ -308,6 +308,20 @@ build-electron-linux-amd64:
 	 
 .PHONY: sign-macos-app
 sign-macos-app:
+	rm -fr electron/dist/artifacts/local/signed
+	mkdir -p electron/dist/artifacts/local/signed
 	hdiutil attach $(wildcard electron/dist/artifacts/local/Teritori-*.dmg) -mountpoint ./volume
-	cp -r ./volume/Teritori.app ./electron/dist/artifacts/local
-	codesign -s - ./electron/dist/artifacts/local/Teritori.app
+	cp -r ./volume/Teritori.app electron/dist/artifacts/local/signed/Teritori.app
+	codesign -s - electron/dist/artifacts/local/signed/Teritori.app
+	create-dmg \
+		--volname "Teritori" \
+		--volicon "electron/dist/artifacts/local/signed/Teritori.app/Contents/Resources/icon.icns" \
+		--window-pos 200 120 \
+		--window-size 800 400 \
+		--icon-size 100 \
+		--icon "Application.app" 200 190 \
+		--hide-extension "Application.app" \
+		--app-drop-link 600 185 \
+		--skip-jenkins \
+		"Teritori.dmg" \
+		"electron/dist/artifacts/local/signed"
