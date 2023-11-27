@@ -89,7 +89,3 @@ buck-out/
 
 # eslint
 /.eslintcache
-
-# build
-/volume
-/Teritori.dmg

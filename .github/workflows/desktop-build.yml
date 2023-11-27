@@ -44,9 +44,6 @@ jobs:
           - os: macos
             runner: macos-latest
             arch: amd64
-          - os: macos
-            runner: macos-latest
-            arch: arm64
     runs-on: ${{ matrix.runner }}
     continue-on-error: true
     steps:
@@ -88,26 +85,8 @@ jobs:
 
       - name: Upload dmg
         uses: actions/upload-artifact@v3
-        if: matrix.os == 'macos' && matrix.arch == 'amd64'
+        if: matrix.os == 'macos'
         with:
           name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-dmg
           path: electron/dist/artifacts/local/*.dmg
-          if-no-files-found: error
-
-      - name: Set up Homebrew
-        if: matrix.os == 'macos' && matrix.arch == 'arm64'
-        uses: Homebrew/actions/setup-homebrew@master
-
-      - name: Extract and sign app
-        if: matrix.os == 'macos' && matrix.arch == 'arm64'
-        run: |
-          brew install create-dmg
-          make sign-macos-app
-
-      - name: Upload signed dmg
-        uses: actions/upload-artifact@v3
-        if: matrix.os == 'macos' && matrix.arch == 'arm64'
-        with:
-          name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-dmg
-          path: Teritori.dmg
           if-no-files-found: error
