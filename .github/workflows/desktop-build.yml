@@ -69,18 +69,24 @@ jobs:
 
       - name: Upload AppImage
         uses: actions/upload-artifact@v3
+        if: matrix.os == 'linux'
         with:
           name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-AppImage
           path: electron/dist/artifacts/local/*.AppImage
+          if-no-files-found: error
 
       - name: Upload deb
         uses: actions/upload-artifact@v3
+        if: matrix.os == 'linux'
         with:
           name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-deb
           path: electron/dist/artifacts/local/*.deb
+          if-no-files-found: error
 
       - name: Upload dmg
         uses: actions/upload-artifact@v3
+        if: matrix.os == 'macos'
         with:
           name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-dmg
           path: electron/dist/artifacts/local/*.dmg
+          if-no-files-found: error
