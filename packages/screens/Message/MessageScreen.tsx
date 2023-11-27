@@ -40,13 +40,13 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
   const { activeConversation, setActiveConversation } = useMessage();
 
   const navigation = useAppNavigation();
-  // const contactInfo = useSelector(selectContactInfo);
 
   const HEADER_CONFIG = [
     {
       id: 1,
       title: "Create a conversation",
       icon: chat,
+      isActive: true,
       onPress: () => {
         navigation.navigate("Message", { view: "CreateConversation" });
       },
@@ -55,6 +55,7 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
       id: 2,
       title: "Create a group",
       icon: group,
+      isActive: true,
       onPress() {
         navigation.navigate("Message", { view: "CreateGroup" });
       },
@@ -63,6 +64,7 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
       id: 3,
       title: "Add a friend",
       icon: friend,
+      isActive: true,
       onPress() {
         if (["android", "ios"].includes(Platform.OS)) {
           navigation.navigate("FriendshipManager");
@@ -75,6 +77,7 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
       id: 4,
       title: "Join a group",
       icon: group,
+      isActive: true,
       onPress() {
         navigation.navigate("Message", { view: "JoinGroup" });
       },
@@ -83,6 +86,7 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
       id: 5,
       title: "Create a Teritori space",
       icon: space,
+      isActive: false,
       subtitle: "coming soon",
       onPress() {},
     },
@@ -152,6 +156,7 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
                     text={item.title}
                     icon={item.icon}
                     subtext={item?.subtitle || ""}
+                    isActive={item.isActive}
                   />
                 </TouchableOpacity>
                 <SpacerRow size={2} />

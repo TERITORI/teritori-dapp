@@ -1,8 +1,8 @@
 import moment from "moment";
 import React from "react";
 import { View, TouchableOpacity, Image } from "react-native";
-import { Avatar } from "react-native-paper";
 
+import { Avatar } from "./Avatar";
 import { FileRenderer } from "./FileRenderer";
 import { BrandText } from "../../../components/BrandText";
 import FlexCol from "../../../components/FlexCol";
@@ -57,10 +57,7 @@ export const SearchConversation = ({
             marginRight: layout.spacing_x1,
           }}
         >
-          <Avatar.Image
-            source={{ uri: getConversationAvatar(conversation) }}
-            size={30}
-          />
+          <Avatar source={getConversationAvatar(conversation)} size={30} />
         </View>
 
         <FlexCol style={{}} alignItems="flex-start">

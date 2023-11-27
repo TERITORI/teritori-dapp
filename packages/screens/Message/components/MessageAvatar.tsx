@@ -1,8 +1,9 @@
 import React from "react";
 import { View } from "react-native";
-import { Avatar, Badge } from "react-native-paper";
+import { Badge } from "react-native-paper";
 import { useSelector } from "react-redux";
 
+import { Avatar } from "./Avatar";
 import { selectPeerById } from "../../../store/slices/message";
 import { RootState } from "../../../store/store";
 import { Contact } from "../../../utils/types/message";
@@ -23,7 +24,7 @@ export const MessageAvatar = ({
   );
   return (
     <View>
-      <Avatar.Image size={size} source={{ uri: item?.avatar || "" }} />
+      <Avatar size={size} source={item?.avatar} />
       {!disableStatus && (
         <Badge
           style={{

@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
-import { Avatar } from "react-native-paper";
 
+import { Avatar } from "./Avatar";
 import { layout } from "../../../utils/style/layout";
 import { Conversation } from "../../../utils/types/message";
 import { getConversationAvatar } from "../../../weshnet/messageHelpers";
@@ -25,8 +25,8 @@ export const ConversationAvatar = ({
         }}
       >
         {conversation.members.map((_, index) => (
-          <Avatar.Image
-            source={{ uri: getConversationAvatar(conversation, index) }}
+          <Avatar
+            source={getConversationAvatar(conversation, index)}
             size={size}
             style={{
               marginLeft: -layout.spacing_x0_5,
@@ -36,12 +36,5 @@ export const ConversationAvatar = ({
       </View>
     );
   }
-  return (
-    <>
-      <Avatar.Image
-        source={{ uri: getConversationAvatar(conversation) }}
-        size={size}
-      />
-    </>
-  );
+  return <Avatar source={getConversationAvatar(conversation)} size={size} />;
 };
