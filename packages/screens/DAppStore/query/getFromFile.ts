@@ -28,6 +28,7 @@ import subdao from "../../../../assets/logos/subdao.png";
 import theGraph from "../../../../assets/logos/theGraph.png";
 import toripunks from "../../../../assets/logos/toniPunks.png";
 import uniswap from "../../../../assets/logos/uniswap.png";
+import { isElectron } from "../../../utils/isElectron";
 import { dAppGroup } from "../types";
 
 export function getAvailableApps(): dAppGroup {
@@ -333,16 +334,20 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: false,
           alwaysOn: false,
         },
-        messages: {
-          id: "messages",
-          title: "Messages",
-          description: "Messages",
-          icon: messages,
-          route: "Message",
-          groupKey: "coming-soon",
-          selectedByDefault: false,
-          alwaysOn: false,
-        },
+        ...(isElectron()
+          ? {
+              messages: {
+                id: "messages",
+                title: "Messages",
+                description: "Messages",
+                icon: messages,
+                route: "Message",
+                groupKey: "coming-soon",
+                selectedByDefault: false,
+                alwaysOn: false,
+              },
+            }
+          : {}),
       },
     },
   };

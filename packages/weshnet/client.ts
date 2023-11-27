@@ -87,8 +87,8 @@ if (Platform.OS === "web") {
 
   if (port) {
     fixWeshPortURLParams();
+    weshClient.createClient(Number(port) || 4242);
   }
-  weshClient.createClient(Number(port) || 4242);
 }
 
 export { weshClient };
