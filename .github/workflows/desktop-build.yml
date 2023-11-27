@@ -8,23 +8,7 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        include:
-          # - os: windows
-          #   runner: windows-latest
-          #   arch: amd64
-          - os: macos
-            runner: macos-12
-            arch: arm64
-          - os: macos
-            runner: macos-12
-            arch: amd64
-          - os: linux
-            runner: ubuntu-latest
-            arch: amd64
-    runs-on: ${{ matrix.runner }}
-    continue-on-error: true
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v3
 
@@ -43,21 +27,39 @@ jobs:
       - name: Prepare
         run: make prepare-electron
 
-      - name: Build
-        run: make build-electron-${{ matrix.os }}-${{ matrix.arch }}
+      - name: Build linux amd64
+        run: make build-electron-linux-amd64
 
-      - name: Upload dmg
+      - name: Upload linux amd64 deb
         uses: actions/upload-artifact@v3
         with:
-          name: teritori-desktop-${{ matrix.os }}-${{ matrix.arch }}-dmg
-          path: electron/dist/artifacts/local/*.dmg
-      - name: Upload deb
-        uses: actions/upload-artifact@v3
-        with:
-          name: teritori-desktop-${{ matrix.os }}-${{ matrix.arch }}-deb
+          name: teritori-desktop-${{ github.sha }}-linux-amd64-deb
           path: electron/dist/artifacts/local/*.deb
-      - name: Upload AppImage
+          if-no-files-found: error
+
+      - name: Upload linux amd64 AppImage
         uses: actions/upload-artifact@v3
         with:
-          name: teritori-desktop-${{ matrix.os }}-${{ matrix.arch }}-AppImage
+          name: teritori-desktop-${{ github.sha }}-linux-amd64-AppImage
           path: electron/dist/artifacts/local/*.AppImage
+          if-no-files-found: error
+
+      - name: Build macos amd64
+        run: make build-electron-macos-amd64
+
+      - name: Upload macos amd64 dmg
+        uses: actions/upload-artifact@v3
+        with:
+          name: teritori-desktop-${{ github.sha }}-macos-amd64-dmg
+          path: electron/dist/artifacts/local/*.dmg
+          if-no-files-found: error
+
+      - name: Build macos arm64
+        run: make build-electron-macos-arm64
+
+      - name: Upload macos arm64 dmg
+        uses: actions/upload-artifact@v3
+        with:
+          name: teritori-desktop-${{ github.sha }}-macos-arm64-dmg
+          path: electron/dist/artifacts/local/*.dmg
+          if-no-files-found: error

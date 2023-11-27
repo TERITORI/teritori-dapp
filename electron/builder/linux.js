@@ -49,7 +49,7 @@ const options = {
 
 builder
   .build({
-    targets: Platform.LINUX.createTarget(),
+    targets: Platform.LINUX.createTarget(undefined, builder.Arch.x64),
     config: options,
   })
   .then((result) => {

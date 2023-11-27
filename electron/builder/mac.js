@@ -82,7 +82,7 @@ const options = {
 
 builder
   .build({
-    targets: Platform.MAC.createTarget("dmg", arch),
+    targets: Platform.MAC.createTarget(undefined, arch),
     config: options,
   })
   .then((result) => {

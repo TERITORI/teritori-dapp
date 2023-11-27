@@ -276,7 +276,7 @@ prepare-electron: node_modules
 build-electron-macos-amd64:
 	yarn rimraf ./electron/dist
 	yarn rimraf ./electron/build
-	cd ./electron && GOOS=darwin GOARCH=amd64 $(GO) build -tags crossCompile -o ./build/mac ./prod.go
+	cd ./electron && GOOS=darwin GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/mac ./prod.go
 	cd ./electron && node ./builder/mac.js amd64
 
 # requires prepare-electron
@@ -284,7 +284,7 @@ build-electron-macos-amd64:
 build-electron-macos-arm64:
 	yarn rimraf ./electron/dist
 	yarn rimraf ./electron/build
-	cd ./electron && GOOS=darwin GOARCH=arm64 $(GO) build -tags crossCompile -o ./build/mac ./prod.go
+	cd ./electron && GOOS=darwin GOARCH=arm64 $(GO) build -tags noNativeLogger -o ./build/mac ./prod.go
 	cd ./electron && node ./builder/mac.js arm64
 
 # requires prepare-electron
@@ -292,7 +292,7 @@ build-electron-macos-arm64:
 build-electron-windows-amd64:
 	yarn rimraf ./electron/dist
 	yarn rimraf ./electron/build
-	cd ./electron && GOOS=windows GOARCH=amd64 $(GO) build -tags crossCompile -o ./build/win.exe ./prod.go
+	cd ./electron && GOOS=windows GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/win.exe ./prod.go
 	cd ./electron && node ./builder/win.js
 
 # requires prepare-electron
@@ -300,6 +300,6 @@ build-electron-windows-amd64:
 build-electron-linux-amd64:
 	yarn rimraf ./electron/dist
 	yarn rimraf ./electron/build
-	cd ./electron && GOOS=linux GOARCH=amd64 $(GO) build -tags crossCompile -o ./build/linux ./prod.go
+	cd ./electron && GOOS=linux GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/linux ./prod.go
 	cd ./electron && node ./builder/linux.js
 	 
