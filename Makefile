@@ -1,5 +1,6 @@
 CANDYMACHINE_REPO=teritori-nfts
 BUNKER_MINTER_PACKAGE=teritori-bunker-minter
+GO?=go
 
 TOKEN_REPO=teritori-nfts
 TOKEN_PACKAGE=teritori-nft
@@ -259,4 +260,46 @@ networks.json: node_modules validate-networks
 .PHONY: unused-exports
 unused-exports: node_modules
 	## TODO unexclude all paths except packages/api;packages/contracts-clients;packages/evm-contracts-clients
-	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/weshnet;packages/store/slices/message.ts;packages/utils/types/message.ts;packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\.web|.electron|.d.ts" --ignoreTestFiles 
+	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\.web|.electron|.d.ts" --ignoreTestFiles 
+
+.PHONY: prepare-electron
+prepare-electron: node_modules
+	yarn rimraf ./web-build
+	yarn cross-env isElectron=prod expo export:web
+	yarn rimraf ./electron/web-build
+	mkdir ./electron/web-build
+	cp -r ./web-build/* ./electron/web-build
+	cd ./electron && npm i
+
+# requires prepare-electron
+.PHONY: build-electron-mac-amd64
+build-electron-mac-amd64:
+	yarn rimraf ./electron/dist
+	yarn rimraf ./electron/build
+	cd ./electron && GOOS=darwin GOARCH=amd64 $(GO) build -o ./build/mac ./prod.go
+	cd ./electron && node ./builder/mac.js
+
+# requires prepare-electron
+.PHONY: build-electron-mac-arm64
+build-electron-mac-arm64:
+	yarn rimraf ./electron/dist
+	yarn rimraf ./electron/build
+	cd ./electron && GOOS=darwin GOARCH=arm64 $(GO) build -o ./build/mac ./prod.go
+	cd ./electron && node ./builder/mac.js
+
+# requires prepare-electron
+.PHONY: build-electron-win
+build-electron-win:
+	yarn rimraf ./electron/dist
+	yarn rimraf ./electron/build
+	cd ./electron && GOOS=windows GOARCH=amd64 $(GO) build -o ./build/win.exe ./prod.go
+	cd ./electron && node ./builder/win.js
+
+# requires prepare-electron
+.PHONY: build-electron-linux
+build-electron-linux:
+	yarn rimraf ./electron/dist
+	yarn rimraf ./electron/build
+	cd ./electron && GOOS=linux GOARCH=amd64 $(GO) build -o ./build/linux ./prod.go
+	cd ./electron && node ./builder/linux.js
+	 

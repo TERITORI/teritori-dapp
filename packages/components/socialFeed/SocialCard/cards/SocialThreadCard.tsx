@@ -143,7 +143,7 @@ export const SocialThreadCard: React.FC<{
               post={localPost}
               handleReply={handleReply}
               refetchFeed={refetchFeed}
-              setLocalPost={setLocalPost}
+              setPost={setLocalPost}
             />
           )}
         </CustomPressable>

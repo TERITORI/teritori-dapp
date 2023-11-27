@@ -15,11 +15,12 @@ export enum PostCategory {
   Article,
   Picture,
   Audio,
-  Video,
+  VideoNote,
   Question,
   BriefForStableDiffusion,
   Flagged,
   MusicAudio,
+  Video,
 }
 
 export interface NewPostFormValues {
@@ -79,6 +80,16 @@ export const ZodSocialFeedTrackMetadata = z.object({
 
 export type SocialFeedTrackMetadata = z.infer<
   typeof ZodSocialFeedTrackMetadata
+>;
+
+export const ZodSocialFeedVideoMetadata = z.object({
+  title: z.string(),
+  description: z.string().optional(),
+  videoFile: ZodRemoteFileData,
+});
+
+export type SocialFeedVideoMetadata = z.infer<
+  typeof ZodSocialFeedVideoMetadata
 >;
 
 export type ReplyToType = {

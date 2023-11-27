@@ -85,12 +85,15 @@ export const SocialMessageContent: React.FC<Props> = ({
           ) : null}
 
           {videoFiles?.map((file, index) => (
-            <VideoView
-              key={index}
-              file={file}
-              authorId={authorId || ""}
-              postId={postId || ""}
-            />
+            <>
+              <SpacerColumn size={2} />
+              <VideoView
+                key={index}
+                file={file}
+                authorId={authorId || ""}
+                postId={postId || ""}
+              />
+            </>
           ))}
 
           {audioFiles?.map((file, index) => (

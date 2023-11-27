@@ -92,7 +92,9 @@ export const MediaPlayerBar: FC<{
                 color={isRandom ? secondaryColor : neutralA3}
               />
             </CustomPressable>
+
             <SpacerRow size={2.5} />
+            {/*TODO: handle Prev for audios*/}
             <CustomPressable onPress={prevMedia} disabled={!canPrev}>
               <SVG
                 source={PreviousIcon}
@@ -117,8 +119,9 @@ export const MediaPlayerBar: FC<{
             color={media ? secondaryColor : neutralA3}
           />
         </CustomPressable>
-        <SpacerRow size={2.5} />
 
+        <SpacerRow size={2.5} />
+        {/*TODO: handle Prev and Next for audios and videos*/}
         <CustomPressable onPress={nextMedia} disabled={!canNext}>
           <SVG
             source={NextIcon}

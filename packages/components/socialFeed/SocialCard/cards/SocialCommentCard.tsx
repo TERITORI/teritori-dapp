@@ -217,7 +217,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                 post={localComment}
                 handleReply={handleReply}
                 refetchFeed={refetchFeed}
-                setLocalPost={setLocalComment}
+                setPost={setLocalComment}
               />
             </View>
           </View>

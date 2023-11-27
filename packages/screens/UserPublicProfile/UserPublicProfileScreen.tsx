@@ -9,8 +9,8 @@ import React, {
 import { View } from "react-native";
 
 import {
-  UserPublicProfileScreenHeader,
   screenTabItems,
+  UserPublicProfileScreenHeader,
 } from "./UserPublicProfileHeader";
 import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
@@ -23,6 +23,7 @@ import { DAOsList } from "../../components/dao/DAOsList";
 import { GnoDemo } from "../../components/dao/GnoDemo";
 import { MusicList } from "../../components/music/MusicList";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
+import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
@@ -88,6 +89,18 @@ const SelectedTabContent: React.FC<{
     };
   }, [userInfo?.metadata.tokenId, userAddress]);
 
+  const videoFeedRequest: Partial<PostsRequest> = {
+    filter: {
+      categories: [PostCategory.Video],
+      user: userId,
+      mentions: [],
+      hashtags: [],
+    },
+    limit: 10,
+    offset: 0,
+    queryUserId: selectedWallet?.userId,
+  };
+
   const Header = useCallback(() => {
     return (
       <UserPublicProfileScreenHeader
@@ -140,6 +153,24 @@ const SelectedTabContent: React.FC<{
           allowUpload={isCurrentUser}
         />
       );
+    case "userVideos":
+      return (
+        <>
+          <NewsFeed
+            isVideos
+            disablePosting={
+              !selectedWallet?.connected || selectedWallet?.userId === userId
+            }
+            Header={Header}
+            additionalMention={
+              selectedWallet?.address !== userAddress
+                ? userInfo?.metadata.tokenId || userAddress
+                : undefined
+            }
+            req={videoFeedRequest}
+          />
+        </>
+      );
     case "nfts":
       return <UPPNFTs userId={userId} />;
     // case "activity":
@@ -179,7 +210,10 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>(initialTab);
   const isSocialTabSelected = useMemo(
-    () => selectedTab === "userPosts" || selectedTab === "mentionsPosts",
+    () =>
+      selectedTab === "userPosts" ||
+      selectedTab === "mentionsPosts" ||
+      selectedTab === "userVideos",
     [selectedTab],
   );
 
