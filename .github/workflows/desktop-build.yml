@@ -103,5 +103,5 @@ jobs:
         if: matrix.os == 'macos' && matrix.arch == 'arm64'
         with:
           name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-app
-          path: electron/dist/artifacts/local/*.app
+          path: electron/dist/artifacts/local/Teritori.app
           if-no-files-found: error
