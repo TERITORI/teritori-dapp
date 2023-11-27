@@ -94,9 +94,15 @@ jobs:
           path: electron/dist/artifacts/local/*.dmg
           if-no-files-found: error
 
+      - name: Set up Homebrew
+        if: matrix.os == 'macos' && matrix.arch == 'arm64'
+        uses: Homebrew/actions/setup-homebrew@master
+
       - name: Extract and sign app
         if: matrix.os == 'macos' && matrix.arch == 'arm64'
-        run: make sign-macos-app
+        run: |
+          brew install create-dmg
+          make sign-macos-app
 
       - name: Upload app
         uses: actions/upload-artifact@v3
