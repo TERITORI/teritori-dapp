@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { TimerSlider } from "./TimerSlider";
 import { VolumeSlider } from "./VolumeSlider";
+import defaultThumbnailImage from "../../../assets/default-images/default-video-thumbnail.jpg";
 import FullScreenIcon from "../../../assets/icons/media-player/full-screen.svg";
 import NextIcon from "../../../assets/icons/media-player/next.svg";
 import PauseIcon from "../../../assets/icons/pause.svg";
@@ -44,7 +45,6 @@ interface MediaPlayerVideoProps {
   postId?: string;
   resizeMode?: ResizeMode;
   style?: StyleProp<ViewStyle>;
-  thumbnailURI?: string;
 }
 
 const CONTROLS_HEIGHT = 68;
@@ -57,7 +57,6 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   postId,
   resizeMode,
   style,
-  thumbnailURI,
 }) => {
   const { setToastError } = useFeedbacks();
   const selectedNetwork = useSelectedNetworkInfo();
@@ -93,12 +92,19 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   const [isControlsShown, setControlsShown] = useState(false);
   const [isThumbnailShown, setThumbnailShown] = useState(true);
 
+  const thumbnailURI =
+    videoMetadata.videoFile.thumbnailFileData?.url ||
+    userInfo.metadata.image ||
+    nameServiceDefaultImage(isDAO, selectedNetwork);
+  const fixedThumbnailURI = thumbnailURI
+    ? thumbnailURI.includes("://")
+      ? thumbnailURI
+      : "ipfs://" + thumbnailURI // we need this hack because ipfs "urls" in feed are raw CIDs
+    : defaultThumbnailImage;
+
   const mediaToSet: Media = {
     id,
-    imageUrl:
-      videoMetadata.videoFile.thumbnailFileData?.url ||
-      userInfo.metadata.image ||
-      nameServiceDefaultImage(isDAO, selectedNetwork),
+    imageUrl: fixedThumbnailURI,
     name: videoMetadata.title,
     createdBy: authorId,
     fileUrl: videoMetadata.videoFile.url,
@@ -200,9 +206,9 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
           height: "100%",
         }}
       >
-        {thumbnailURI && isThumbnailShown && (
+        {fixedThumbnailURI && isThumbnailShown && (
           <OptimizedImage
-            sourceURI={thumbnailURI}
+            sourceURI={fixedThumbnailURI}
             width={containerWidth}
             height={containerHeight}
             style={{

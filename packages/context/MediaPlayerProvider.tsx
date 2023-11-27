@@ -218,12 +218,6 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
       videoLastRoute?.key !==
       navigation.getState().routes[navigation.getState().routes.length - 1].key
     ) {
-      // TODO: Make a FeedVideoViewScreen
-      // if(media?.isVideo) {
-      //   navigation.navigate("FeedVideoView", {
-      //     id: getNetworkObjectId(selectedNetworkId, media.postId),
-      //   });
-      // }
       if (media?.postId) {
         navigation.navigate("FeedPostView", {
           id: getNetworkObjectId(selectedNetworkId, media.postId),
