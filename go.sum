@@ -6,8 +6,6 @@ berty.tech/go-ipfs-repo-encrypted v1.3.0 h1:k7whfA58pFaFF1AGtqCmT878QpvQXkLSAlZQ
 berty.tech/go-ipfs-repo-encrypted v1.3.0/go.mod h1:lbWggsc67nM48IPP5K9vDLNPT3yYELP7Q6Sni9cufQs=
 berty.tech/go-orbit-db v1.22.0 h1:BiUGk9ukOKJMQ2YlQV/e9gjR9TOedIa9LUDfjp9CVHA=
 berty.tech/go-orbit-db v1.22.0/go.mod h1:RC3/C/igfM7b2RuT7WIloOHbFz9zZTJxB3jOEqC6UWA=
-berty.tech/weshnet v1.14.0 h1:IIBZ4bQABwwHDSTPgPWBMS0PTBMaBAm4uUs/jJxzEdo=
-berty.tech/weshnet v1.14.0/go.mod h1:BNV2f0xxLFIPwNJNf8KprEAGfIqvzGh8uu7QGhRxe7w=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.31.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
@@ -146,6 +144,8 @@ github.com/Shopify/toxiproxy v2.1.4+incompatible/go.mod h1:OXgGpZ6Cli1/URJOF1DMx
 github.com/Shopify/toxiproxy/v2 v2.1.6-0.20210914104332-15ea381dcdae/go.mod h1:/cvHQkZ1fst0EmZnA5dFtiQdWCNCFYzb+uE2vqVgvx0=
 github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6/go.mod h1:3eOhrUMpNV+6aFIbp5/iudMxNCF27Vw2OZgy4xEx0Fg=
 github.com/Stebalien/go-bitfield v0.0.1/go.mod h1:GNjFpasyUVkHMsfEOk8EFLJ9syQ6SI+XWrX9Wf2XH0s=
+github.com/TERITORI/weshnet v0.0.0-20231127125754-3b980f74af98 h1:m6qjjR4KEah33Ms4D4/kUIEgd6eilz90YaB8k+BIuHI=
+github.com/TERITORI/weshnet v0.0.0-20231127125754-3b980f74af98/go.mod h1:BNV2f0xxLFIPwNJNf8KprEAGfIqvzGh8uu7QGhRxe7w=
 github.com/VictoriaMetrics/fastcache v1.5.7 h1:4y6y0G8PRzszQUYIQHHssv/jgPHAb5qQuuDNdCbyAgw=
 github.com/VictoriaMetrics/fastcache v1.5.7/go.mod h1:ptDBkNMQI4RtmVo8VS/XwRY6RoTu1dAWCbrk+6WsEM8=
 github.com/VividCortex/gohistogram v1.0.0 h1:6+hBz+qvs0JOrrNhhmR7lFxo5sINxBCGXrdtl/UvroE=

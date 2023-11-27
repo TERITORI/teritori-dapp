@@ -1,7 +1,23 @@
 "use strict";
 
 const builder = require("electron-builder");
+const { program } = require("commander");
 const Platform = builder.Platform;
+
+program.argument("<arch>", "target architecture");
+program.parse();
+let arch
+const [archStr] = program.args;
+switch (archStr) {
+  case "amd64":
+    arch = builder.Arch.x64;
+    break;
+  case "arm64":
+    arch = builder.Arch.arm64;
+    break;
+  default:
+    throw new Error(`Unsupported architecture ${archStr}`);
+}
 
 // Let's get that intellisense working
 /**
@@ -66,7 +82,7 @@ const options = {
 
 builder
   .build({
-    targets: Platform.MAC.createTarget(),
+    targets: Platform.MAC.createTarget("dmg", arch),
     config: options,
   })
   .then((result) => {

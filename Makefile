@@ -277,7 +277,7 @@ build-electron-mac-amd64:
 	yarn rimraf ./electron/dist
 	yarn rimraf ./electron/build
 	cd ./electron && GOOS=darwin GOARCH=amd64 $(GO) build -o ./build/mac ./prod.go
-	cd ./electron && node ./builder/mac.js
+	cd ./electron && node ./builder/mac.js amd64
 
 # requires prepare-electron
 .PHONY: build-electron-mac-arm64
@@ -285,7 +285,7 @@ build-electron-mac-arm64:
 	yarn rimraf ./electron/dist
 	yarn rimraf ./electron/build
 	cd ./electron && GOOS=darwin GOARCH=arm64 $(GO) build -o ./build/mac ./prod.go
-	cd ./electron && node ./builder/mac.js
+	cd ./electron && node ./builder/mac.js arm64
 
 # requires prepare-electron
 .PHONY: build-electron-win

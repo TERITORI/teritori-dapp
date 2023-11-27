@@ -7,8 +7,11 @@ on:
   pull_request:
 
 jobs:
-  build-mac-amd64:
+  build-mac:
     runs-on: macos-12
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
     steps:
       - uses: actions/checkout@v3
 
@@ -27,11 +30,12 @@ jobs:
       - name: Prepare
         run: make prepare-electron
 
-      - name: Build
-        run: make build-electron-mac-amd64
+      - name: Build amd64
+        run: make build-electron-mac-${{ matrix.arch }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: teritori-desktop-mac-amd64
+          name: teritori-desktop-mac-${{ matrix.arch }}
           path: electron/dist/artifacts/local/Teritori-*.dmg
+          if-no-files-found: error
