@@ -7,6 +7,7 @@ import { NetworkKind, getUserId } from "../../networks";
 import { teritoriNetwork } from "../../networks/teritori";
 import {
   selectIsLeapConnected,
+  selectSelectedWalletId,
   setIsLeapConnected,
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
@@ -22,23 +23,31 @@ export const useLeap: () => UseLeapResult = () => {
 
   const [addresses, setAddresses] = useState<string[]>([]);
   const [ready, setReady] = useState(false);
+  const selectedWalletId = useSelector(selectSelectedWalletId);
+
+  const handleLoad = () => {
+    // @ts-ignore
+    const leap = window?.leap;
+    const hasLeap = !!leap;
+    if (hasLeap) {
+      console.log("leap installed");
+    }
+    setHasLeap(hasLeap);
+    if (!hasLeap) {
+      setReady(true);
+    }
+  };
 
   useEffect(() => {
-    const handleLoad = () => {
-      // @ts-ignore
-      const leap = window?.leap;
-      const hasLeap = !!leap;
-      if (hasLeap) {
-        console.log("leap installed");
-      }
-      setHasLeap(hasLeap);
-      if (!hasLeap) {
-        setReady(true);
-      }
-    };
     window.addEventListener("load", handleLoad);
-    return () => window.removeEventListener("load", handleLoad);
+    return () => {
+      window.removeEventListener("load", handleLoad);
+    };
   }, []);
+
+  useEffect(() => {
+    handleLoad();
+  }, [selectedWalletId]);
 
   useEffect(() => {
     if (!hasLeap) {
