@@ -306,3 +306,8 @@ build-electron-linux-amd64:
 	cd ./electron && GOOS=linux GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/linux ./prod.go
 	cd ./electron && node ./builder/linux.js
 	 
+.PHONY: sign-macos-app
+sign-macos-app:
+	hdiutil attach $(wildcard electron/dist/artifacts/local/Teritori-*.dmg) -mountpoint ./volume
+	cp -r ./volume/Teritori.app ./electron/dist/artifacts/local
+	codesign -s - ./electron/dist/artifacts/local/Teritori.app

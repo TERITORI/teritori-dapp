@@ -44,6 +44,9 @@ jobs:
           - os: macos
             runner: macos-latest
             arch: amd64
+          - os: macos
+            runner: macos-latest
+            arch: arm64
     runs-on: ${{ matrix.runner }}
     continue-on-error: true
     steps:
@@ -85,8 +88,20 @@ jobs:
 
       - name: Upload dmg
         uses: actions/upload-artifact@v3
-        if: matrix.os == 'macos'
+        if: matrix.os == 'macos' && matrix.arch == 'amd64'
         with:
           name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-dmg
           path: electron/dist/artifacts/local/*.dmg
+          if-no-files-found: error
+
+      - name: Extract and sign app
+        if: matrix.os == 'macos' && matrix.arch == 'arm64'
+        run: make sign-macos-app
+
+      - name: Upload app
+        uses: actions/upload-artifact@v3
+        if: matrix.os == 'macos' && matrix.arch == 'arm64'
+        with:
+          name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-app
+          path: electron/dist/artifacts/local/*.app
           if-no-files-found: error
