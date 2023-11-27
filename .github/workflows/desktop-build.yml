@@ -104,10 +104,10 @@ jobs:
           brew install create-dmg
           make sign-macos-app
 
-      - name: Upload app
+      - name: Upload signed dmg
         uses: actions/upload-artifact@v3
         if: matrix.os == 'macos' && matrix.arch == 'arm64'
         with:
-          name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-app
-          path: electron/dist/artifacts/local/Teritori.app
+          name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-dmg
+          path: Teritori.dmg
           if-no-files-found: error
