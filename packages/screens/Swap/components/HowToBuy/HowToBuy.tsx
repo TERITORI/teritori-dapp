@@ -1,17 +1,24 @@
 import React from "react";
 import { Image, Linking, TouchableOpacity, View } from "react-native";
 import { CreditCardIcon } from "react-native-heroicons/solid";
+import { useSelector } from "react-redux";
 
 import binanceLogo from "../../../../../assets/icons/Binance_Logo.svg";
+import chevronDownSVG from "../../../../../assets/icons/chevron-down.svg";
+import chevronUpSVG from "../../../../../assets/icons/chevron-up.svg";
 import teritoriLogo from "../../../../../assets/icons/networks/teritori-circle.svg";
 import squidRouter from "../../../../../assets/icons/squidrouter.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
-import { DiscordButton } from "../../../../components/footers/Footer";
 import { GradientText } from "../../../../components/gradientText";
 import { SeparatorGradient } from "../../../../components/separators/SeparatorGradient";
+import {
+  selectIsHowToBuyExpanded,
+  setHowToBuyExpanded,
+} from "../../../../store/slices/settings";
+import { useAppDispatch } from "../../../../store/store";
 import { primaryColor, secondaryColor } from "../../../../utils/style/colors";
 import { fontSemibold16, fontSemibold24 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
@@ -21,6 +28,9 @@ interface Method {
   icon: React.ReactNode;
 }
 export const HowToBuy: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const isHowToBuyExpanded = useSelector(selectIsHowToBuyExpanded);
+
   return (
     <TertiaryBox fullWidth style={{ maxWidth: 600, alignSelf: "center" }}>
       <View style={{ width: "100%" }}>
@@ -55,10 +65,29 @@ export const HowToBuy: React.FC = () => {
                 How to buy
               </BrandText>
             </View>
+            <TouchableOpacity
+              onPress={() => dispatch(setHowToBuyExpanded(!isHowToBuyExpanded))}
+            >
+              <SVG
+                style={{
+                  justifyContent: "flex-end",
+                }}
+                source={isHowToBuyExpanded ? chevronUpSVG : chevronDownSVG}
+                width={16}
+                height={16}
+                color={secondaryColor}
+              />
+            </TouchableOpacity>
           </View>
         </View>
 
-        <View style={{ width: "100%", paddingHorizontal: layout.spacing_x2_5 }}>
+        <View
+          style={{
+            width: "100%",
+            paddingHorizontal: layout.spacing_x2_5,
+            display: isHowToBuyExpanded ? "flex" : "none",
+          }}
+        >
           <SeparatorGradient style={{ marginBottom: layout.spacing_x2_5 }} />
           <View
             style={{
@@ -153,10 +182,19 @@ const BuyingStep: React.FC<{ selectedMethod: string }> = ({
               marginVertical: layout.spacing_x2_5,
             }}
             text="Buy with KADO"
-            onPress={() => alert("todo load iframe")}
+            onPress={() => Linking.openURL("https://app.kado.money/")}
           />
           <Paragraph>
-            If you have any questions, please join our Discord <DiscordButton />{" "}
+            If you have any questions, please join our{" "}
+            <BrandText
+              style={[
+                fontSemibold16,
+                { textDecorationLine: "underline", color: primaryColor },
+              ]}
+              onPress={() => Linking.openURL("https://discord.gg/teritori")}
+            >
+              Discord
+            </BrandText>{" "}
             and ask in the #support channel.
           </Paragraph>
         </Container>
@@ -190,7 +228,7 @@ const BuyingStep: React.FC<{ selectedMethod: string }> = ({
               marginVertical: layout.spacing_x2_5,
             }}
             text="Bridge with Squid Router"
-            onPress={() => Linking.openURL("https://squidrouter.com/")}
+            onPress={() => Linking.openURL("https://app.squidrouter.com/")}
           />
         </Container>
       );
