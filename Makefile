@@ -293,6 +293,7 @@ build-electron-macos-arm64:
 build-electron-windows-amd64:
 	yarn rimraf ./electron/dist
 	yarn rimraf ./electron/build
+	cd ./electron && npm i
 	cd ./electron && GOOS=windows GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/win.exe ./prod.go
 	cd ./electron && node ./builder/win.js
 
