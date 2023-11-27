@@ -47,7 +47,7 @@ const options = {
 
 builder
   .build({
-    targets: Platform.WINDOWS.createTarget(),
+    targets: Platform.WINDOWS.createTarget(undefined, builder.Arch.x64),
     config: options,
   })
   .then((result) => {

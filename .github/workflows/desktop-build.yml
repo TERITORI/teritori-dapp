@@ -7,8 +7,8 @@ on:
   pull_request:
 
 jobs:
-  build-mac-amd64:
-    runs-on: macos-12
+  prepare:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
@@ -27,11 +27,66 @@ jobs:
       - name: Prepare
         run: make prepare-electron
 
-      - name: Build
-        run: make build-electron-mac-amd64
-
-      - name: Upload artifacts
+      - name: Upload web build
         uses: actions/upload-artifact@v3
         with:
-          name: teritori-desktop-mac-amd64
-          path: electron/dist/artifacts/local/Teritori-*.dmg
+          name: electron-web-build
+          path: electron/web-build
+          if-no-files-found: error
+  build:
+    needs: prepare
+    strategy:
+      matrix:
+        include:
+          - os: linux
+            runner: ubuntu-latest
+            arch: amd64
+          - os: macos
+            runner: macos-latest
+            arch: amd64
+    runs-on: ${{ matrix.runner }}
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: "npm"
+          node-version: 18
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.19"
+
+      - name: Download web build
+        uses: actions/download-artifact@v3
+        with:
+          name: electron-web-build
+          path: electron/web-build
+
+      - name: Build ${{ matrix.os }}-${{ matrix.arch }}
+        run: make build-electron-${{ matrix.os }}-${{ matrix.arch }}
+
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v3
+        if: matrix.os == 'linux'
+        with:
+          name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-AppImage
+          path: electron/dist/artifacts/local/*.AppImage
+          if-no-files-found: error
+
+      - name: Upload deb
+        uses: actions/upload-artifact@v3
+        if: matrix.os == 'linux'
+        with:
+          name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-deb
+          path: electron/dist/artifacts/local/*.deb
+          if-no-files-found: error
+
+      - name: Upload dmg
+        uses: actions/upload-artifact@v3
+        if: matrix.os == 'macos'
+        with:
+          name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-dmg
+          path: electron/dist/artifacts/local/*.dmg
+          if-no-files-found: error

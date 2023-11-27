@@ -269,37 +269,39 @@ prepare-electron: node_modules
 	yarn rimraf ./electron/web-build
 	mkdir ./electron/web-build
 	cp -r ./web-build/* ./electron/web-build
-	cd ./electron && npm i
 
 # requires prepare-electron
 .PHONY: build-electron-mac-amd64
-build-electron-mac-amd64:
-	yarn rimraf ./electron/dist
-	yarn rimraf ./electron/build
-	cd ./electron && GOOS=darwin GOARCH=amd64 $(GO) build -o ./build/mac ./prod.go
-	cd ./electron && node ./builder/mac.js
+build-electron-macos-amd64:
+	rm -fr ./electron/dist
+	rm -fr ./electron/build
+	cd ./electron && npm i
+	cd ./electron && GOOS=darwin GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/mac ./prod.go
+	cd ./electron && node ./builder/mac.js amd64
 
 # requires prepare-electron
 .PHONY: build-electron-mac-arm64
-build-electron-mac-arm64:
-	yarn rimraf ./electron/dist
-	yarn rimraf ./electron/build
-	cd ./electron && GOOS=darwin GOARCH=arm64 $(GO) build -o ./build/mac ./prod.go
-	cd ./electron && node ./builder/mac.js
+build-electron-macos-arm64:
+	rm -fr ./electron/dist
+	rm -fr ./electron/build
+	cd ./electron && npm i
+	cd ./electron && GOOS=darwin GOARCH=arm64 $(GO) build -tags noNativeLogger -o ./build/mac ./prod.go
+	cd ./electron && node ./builder/mac.js arm64
 
 # requires prepare-electron
 .PHONY: build-electron-win
-build-electron-win:
-	yarn rimraf ./electron/dist
-	yarn rimraf ./electron/build
-	cd ./electron && GOOS=windows GOARCH=amd64 $(GO) build -o ./build/win.exe ./prod.go
+build-electron-windows-amd64:
+	rm -fr ./electron/dist
+	rm -fr ./electron/build
+	cd ./electron && npm i
+	cd ./electron && GOOS=windows GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/win.exe ./prod.go
 	cd ./electron && node ./builder/win.js
 
 # requires prepare-electron
 .PHONY: build-electron-linux
-build-electron-linux:
-	yarn rimraf ./electron/dist
-	yarn rimraf ./electron/build
-	cd ./electron && GOOS=linux GOARCH=amd64 $(GO) build -o ./build/linux ./prod.go
+build-electron-linux-amd64:
+	rm -fr ./electron/dist
+	rm -fr ./electron/build
+	cd ./electron && npm i
+	cd ./electron && GOOS=linux GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/linux ./prod.go
 	cd ./electron && node ./builder/linux.js
-	 

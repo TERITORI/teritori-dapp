@@ -37,7 +37,7 @@ const options = {
       Encoding: "UTF-8",
       MimeType: "x-scheme-handler/deeplink",
     },
-    target: ["AppImage", "rpm", "deb"],
+    target: ["AppImage", "deb"],
     asar: true,
     asarUnpack: ["build/*"],
   },
@@ -45,15 +45,11 @@ const options = {
     priority: "optional",
     afterInstall: "installer/linux/after-install.tpl",
   },
-  rpm: {
-    fpm: ["--before-install", "installer/linux/before-install.tpl"],
-    afterInstall: "installer/linux/after-install.tpl",
-  },
 };
 
 builder
   .build({
-    targets: Platform.LINUX.createTarget(),
+    targets: Platform.LINUX.createTarget(undefined, builder.Arch.x64),
     config: options,
   })
   .then((result) => {

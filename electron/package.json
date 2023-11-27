@@ -1,5 +1,5 @@
 {
-  "name": "teritori-electron",
+  "name": "Teritori",
   "version": "1.0.0",
   "main": "main.js",
   "author": {
@@ -12,6 +12,7 @@
     "portfinder": "^1.0.32"
   },
   "devDependencies": {
+    "commander": "^11.1.0",
     "electron": "^26.2.4",
     "electron-builder": "^24.6.4"
   },
