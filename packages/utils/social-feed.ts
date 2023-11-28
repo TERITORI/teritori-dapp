@@ -22,6 +22,18 @@ export const SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT = 2500;
 export const NB_ROWS_SHOWN_IN_PREVIEW = 5;
 export const ARTICLE_COVER_IMAGE_HEIGHT = 300;
 export const ARTICLE_THUMBNAIL_IMAGE_HEIGHT = 252;
+export const BASE_POST: Post = {
+  identifier: "",
+  category: 0,
+  authorId: "",
+  metadata: "",
+  isDeleted: false,
+  parentPostIdentifier: "",
+  subPostLength: 0,
+  createdAt: 0,
+  tipAmount: 0,
+  reactions: [],
+};
 
 export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
   const hasIcon = reactions.find((r) => r.icon === icon);

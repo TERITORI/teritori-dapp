@@ -212,9 +212,17 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           }}
         >
           {post.category === PostCategory.Article ? (
-            <SocialArticleCard post={post} style={cardStyle} />
+            <SocialArticleCard
+              post={post}
+              style={cardStyle}
+              refetchFeed={refetch}
+            />
           ) : post.category === PostCategory.Video ? (
-            <SocialVideoCard post={post} style={cardStyle} />
+            <SocialVideoCard
+              post={post}
+              style={cardStyle}
+              refetchFeed={refetch}
+            />
           ) : (
             <SocialThreadCard
               post={post}

@@ -3,13 +3,18 @@ import React, { FC, memo, useEffect, useState } from "react";
 import { StyleProp, useWindowDimensions, View, ViewStyle } from "react-native";
 
 import { SOCIAl_CARD_BORDER_RADIUS } from "./SocialThreadCard";
-import defaultThumbnailImage from "../../../../../assets/default-images/default-video-thumbnail.jpg";
 import { Post } from "../../../../api/feed/v1/feed";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
-import { NetworkKind, parseUserId } from "../../../../networks";
+import {
+  getNetworkObjectId,
+  NetworkKind,
+  parseUserId,
+} from "../../../../networks";
+import { useAppNavigation } from "../../../../utils/navigation";
 import { zodTryParseJSON } from "../../../../utils/sanitize";
+import { DEFAULT_USERNAME } from "../../../../utils/social-feed";
 import {
   errorColor,
   neutral00,
@@ -52,6 +57,7 @@ export const SocialVideoCard: FC<{
   refetchFeed?: () => Promise<any>;
   isFlagged?: boolean;
 }> = memo(({ post, refetchFeed, style, isFlagged }) => {
+  const navigation = useAppNavigation();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const wallet = useSelectedWallet();
   const [localPost, setLocalPost] = useState<Post>(post);
@@ -59,7 +65,8 @@ export const SocialVideoCard: FC<{
   const { width: windowWidth } = useWindowDimensions();
   const [, authorAddress] = parseUserId(localPost.authorId);
   const authorNSInfo = useNSUserInfo(localPost.authorId);
-  const username = authorNSInfo?.metadata?.tokenId || authorAddress;
+  const username =
+    authorNSInfo?.metadata?.tokenId || authorAddress || DEFAULT_USERNAME;
 
   const metadata = zodTryParseJSON(
     ZodSocialFeedVideoMetadata,
@@ -69,17 +76,8 @@ export const SocialVideoCard: FC<{
     ZodSocialFeedPostMetadata,
     localPost.metadata,
   );
-  const thumbnailImage =
-    metadata?.videoFile.thumbnailFileData ||
-    oldMetadata?.files?.find((file) => file.isCoverImage);
   const title = oldMetadata?.title || metadata?.title || "";
   const description = oldMetadata?.message || metadata?.description || "";
-
-  const thumbnailURI = thumbnailImage?.url
-    ? thumbnailImage.url.includes("://")
-      ? thumbnailImage.url
-      : "ipfs://" + thumbnailImage.url // we need this hack because ipfs "urls" in feed are raw CIDs
-    : defaultThumbnailImage;
 
   useEffect(() => {
     setLocalPost(post);
@@ -112,7 +110,6 @@ export const SocialVideoCard: FC<{
         ]}
       >
         <MediaPlayerVideo
-          thumbnailURI={thumbnailURI}
           videoMetadata={metadata}
           style={{
             height: 400,
@@ -125,13 +122,16 @@ export const SocialVideoCard: FC<{
           postId={localPost.identifier}
         />
 
+        <SpacerColumn size={1} />
         <CustomPressable
-          // TODO: Make a FeedVideoViewScreen
-          // onPress={() =>
-          //   navigation.navigate("FeedVideoView", {
-          //     id: getNetworkObjectId(selectedNetworkId, localPost.identifier),
-          //   })
-          // }
+          onPress={() =>
+            navigation.navigate("FeedPostView", {
+              id: getNetworkObjectId(
+                selectedNetworkInfo?.id,
+                localPost.identifier,
+              ),
+            })
+          }
           style={{
             flex: 1,
             paddingBottom: VIDEO_CARD_PADDING_VERTICAL,

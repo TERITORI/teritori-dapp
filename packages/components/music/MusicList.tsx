@@ -17,6 +17,7 @@ import {
 } from "../../hooks/feed/useFetchFeed";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { zodTryParseJSON } from "../../utils/sanitize";
+import { BASE_POST } from "../../utils/social-feed";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
@@ -79,16 +80,9 @@ export const MusicList: React.FC<{
       .fill(undefined)
       .map((_, i) => {
         const n: Post = {
+          ...BASE_POST,
           identifier: `padded-${i}`,
           category: PostCategory.MusicAudio,
-          authorId: "",
-          metadata: "",
-          isDeleted: false,
-          parentPostIdentifier: "",
-          subPostLength: 0,
-          createdAt: 0,
-          tipAmount: 0,
-          reactions: [],
         };
         return n;
       });
@@ -126,7 +120,7 @@ export const MusicList: React.FC<{
             <TrackCard post={item} style={{ width: elemSize }} />
           )}
           ListEmptyComponent={
-            <BrandText style={fontSemibold20}>No results found.</BrandText>
+            <BrandText style={fontSemibold20}>No result found</BrandText>
           }
           onEndReachedThreshold={1}
           onEndReached={onEndReached}
