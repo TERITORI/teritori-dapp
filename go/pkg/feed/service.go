@@ -116,7 +116,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		query = query.Where("category IN ?", categories)
 	}
 	if user != "" {
-		query = query.Where("created_by = ?", user)
+		query = query.Where("author_id = ?", user)
 	}
 	if len(hashtags) > 0 {
 		formattedHashtags := make([]string, 0)
