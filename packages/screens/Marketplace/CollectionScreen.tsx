@@ -53,11 +53,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
       isLarge
       key={`Collection ${id}`} // this key is to reset the screen state when the id changes
       footerChildren={<></>}
-      headerChildren={
-        <BrandText style={fontSemibold20}>
-          {info.name && `${info.name} Collection Profile`}
-        </BrandText>
-      }
+      headerChildren={<BrandText style={fontSemibold20}>{info.name}</BrandText>}
       responsive
       onBackPress={() => navigation.navigate("Marketplace")}
       forceNetworkId={network?.id}
