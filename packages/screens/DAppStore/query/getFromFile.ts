@@ -18,6 +18,7 @@ import staking from "../../../../assets/icons/staking.svg";
 import tnsService from "../../../../assets/icons/tns-service.svg";
 import wallet from "../../../../assets/icons/wallet.svg";
 import axelarLogo from "../../../../assets/logos/Axelar-logo.svg";
+import mapOfZones from "../../../../assets/logos/MoZ-icon.svg";
 import astroportLogo from "../../../../assets/logos/astroport.svg";
 import coinHallLogo from "../../../../assets/logos/coinhall.svg";
 import daodao from "../../../../assets/logos/daodao.png";
@@ -25,6 +26,7 @@ import pulsarLogo from "../../../../assets/logos/pulsar-logo.svg";
 import radyium from "../../../../assets/logos/raydium.png";
 import skip from "../../../../assets/logos/skip.png";
 import subdao from "../../../../assets/logos/subdao.png";
+import tfm from "../../../../assets/logos/tfm-logo.png";
 import theGraph from "../../../../assets/logos/theGraph.png";
 import toripunks from "../../../../assets/logos/toniPunks.png";
 import uniswap from "../../../../assets/logos/uniswap.png";
@@ -175,18 +177,6 @@ export function getAvailableApps(): dAppGroup {
       icon: BookMarkIcon,
       active: true,
       options: {
-        astroport: {
-          id: "astroport",
-          title: "Astroport",
-          description: "Powerful DEX",
-          icon: astroportLogo,
-
-          route: "External",
-          url: "https://app.astroport.fi/swap",
-          groupKey: "bookmarks",
-          selectedByDefault: false,
-          alwaysOn: false,
-        },
         pulsar: {
           id: "pulsar",
           title: "Pulsar",
@@ -206,6 +196,28 @@ export function getAvailableApps(): dAppGroup {
 
           route: "External",
           url: "https://satellite.money/",
+          groupKey: "bookmarks",
+          selectedByDefault: false,
+          alwaysOn: false,
+        },
+        tfm: {
+          id: "tfm",
+          title: "TFM",
+          description: "DEX/NFT aggregation across Cosmos",
+          icon: tfm,
+          route: "External",
+          url: "https://tfm.com/osmosis/trade/protrade?from=uosmo&to=ibc%2FEB7FB9C8B425F289B63703413327C2051030E848CE4EAAEA2E51199D6D39D3EC&market=Osmosis",
+          groupKey: "bookmarks",
+          selectedByDefault: false,
+          alwaysOn: false,
+        },
+        mapofzones: {
+          id: "mapofzones",
+          title: "Map Of Zones",
+          description: "Cosmos network explorer",
+          icon: mapOfZones,
+          route: "External",
+          url: "https://mapofzones.com/zones/teritori-1/overview",
           groupKey: "bookmarks",
           selectedByDefault: false,
           alwaysOn: false,
@@ -254,6 +266,18 @@ export function getAvailableApps(): dAppGroup {
 
           route: "External",
           url: "https://www.subdao.network/",
+          groupKey: "bookmarks",
+          selectedByDefault: false,
+          alwaysOn: false,
+        },
+        astroport: {
+          id: "astroport",
+          title: "Astroport",
+          description: "Powerful DEX",
+          icon: astroportLogo,
+
+          route: "External",
+          url: "https://app.astroport.fi/swap",
           groupKey: "bookmarks",
           selectedByDefault: false,
           alwaysOn: false,
