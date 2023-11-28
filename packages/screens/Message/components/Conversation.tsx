@@ -2,8 +2,8 @@ import { chain } from "lodash";
 import moment from "moment";
 import React, { useMemo, useState } from "react";
 import { View, TouchableOpacity } from "react-native";
-import { Avatar } from "react-native-paper";
 
+import { Avatar } from "./Avatar";
 import { FileRenderer } from "./FileRenderer";
 import { GroupInvitationAction } from "./GroupInvitationAction";
 import { MessagePopup } from "./MessagePopup";
@@ -28,6 +28,7 @@ import {
   fontBold9,
   fontMedium10,
   fontSemibold11,
+  fontSemibold13,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import {
@@ -120,10 +121,7 @@ export const Conversation = ({
           }}
         >
           {!isMessageChain && (
-            <Avatar.Image
-              source={{ uri: getConversationAvatar(conversation) }}
-              size={30}
-            />
+            <Avatar source={getConversationAvatar(conversation)} size={30} />
           )}
         </View>
       )}
@@ -210,7 +208,7 @@ export const Conversation = ({
 
           {["message", "group-invite"].includes(message.type) && (
             <>
-              <BrandText style={[fontSemibold11, { color: secondaryColor }]}>
+              <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
                 {message?.payload?.message}
               </BrandText>
               {!!message?.payload?.files?.length && (

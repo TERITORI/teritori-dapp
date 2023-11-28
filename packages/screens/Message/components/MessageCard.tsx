@@ -17,9 +17,10 @@ interface CardProps {
   icon: React.FC<SvgProps>;
   text: string;
   subtext: string;
+  isActive: boolean;
 }
 
-const MessageCard: FC<CardProps> = ({ icon, text, subtext }) => {
+const MessageCard: FC<CardProps> = ({ icon, text, subtext, isActive }) => {
   return (
     <FlexRow
       style={{
@@ -33,7 +34,12 @@ const MessageCard: FC<CardProps> = ({ icon, text, subtext }) => {
     >
       <SVG source={icon} />
 
-      <BrandText style={[fontSemibold14, { color: neutral55 }]}>
+      <BrandText
+        style={[
+          fontSemibold14,
+          { color: isActive ? secondaryColor : neutral55 },
+        ]}
+      >
         {text}
       </BrandText>
       <SpacerRow size={1} />
