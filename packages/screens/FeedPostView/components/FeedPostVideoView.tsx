@@ -394,7 +394,7 @@ export const FeedPostVideoView: FC<{
               }}
             >
               <UserAvatarWithFrame
-                userId={localPost.authorId}
+                userId={wallet?.userId}
                 size={windowWidth < RESPONSIVE_BREAKPOINT_S ? "XS" : "S"}
               />
               <SpacerRow size={2} />
