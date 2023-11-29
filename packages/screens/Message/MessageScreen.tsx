@@ -5,6 +5,7 @@ import {
   ScrollView,
   ActivityIndicator,
   useWindowDimensions,
+  Platform,
 } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -44,8 +45,8 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
   const { width } = useWindowDimensions();
 
   const isMobileChatView = useMemo(() => {
-    return isMobile && activeConversation;
-  }, [isMobile, activeConversation]);
+    return isMobile && (activeConversation || activeView === "AddFriend");
+  }, [isMobile, activeConversation, activeView]);
 
   const HEADER_CONFIG = [
     {
@@ -72,7 +73,7 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
       icon: friend,
       isActive: true,
       onPress() {
-        if (isMobile) {
+        if (Platform.OS !== "web") {
           navigation.navigate("FriendshipManager");
         } else {
           navigation.navigate("Message", { view: "AddFriend" });

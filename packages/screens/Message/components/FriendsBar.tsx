@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Platform } from "react-native";
 import { useSelector } from "react-redux";
 
 import forwardSVG from "../../../../assets/icons/forward.svg";
@@ -9,7 +9,6 @@ import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBadge } from "../../../components/badges/TertiaryBadge";
 import { SpacerRow } from "../../../components/spacer";
-import { useIsMobile } from "../../../hooks/useIsMobile";
 import {
   selectConversationList,
   selectContactRequestList,
@@ -26,7 +25,7 @@ export const FriendsBar = () => {
   const contactRequests = useSelector(selectContactRequestList);
   const conversations = useSelector(selectConversationList);
   const { navigate } = useAppNavigation();
-  const isMobile = useIsMobile();
+
   return (
     <View
       style={{
@@ -53,7 +52,7 @@ export const FriendsBar = () => {
             {!!contactRequests?.length && (
               <TouchableOpacity
                 onPress={() => {
-                  if (isMobile) {
+                  if (Platform.OS !== "web") {
                     navigate("FriendshipManager", { tab: "request" });
                   } else {
                     navigate("Message", { view: "AddFriend", tab: "request" });
@@ -73,7 +72,7 @@ export const FriendsBar = () => {
                 alignItems: "center",
               }}
               onPress={() => {
-                if (isMobile) {
+                if (Platform.OS !== "web") {
                   navigate("FriendshipManager", { tab: "friends" });
                 } else {
                   navigate("Message", { view: "AddFriend", tab: "friends" });

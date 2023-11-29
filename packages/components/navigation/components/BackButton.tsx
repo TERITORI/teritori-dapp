@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import backSVG from "../../../../assets/icons/back.svg";
 import { useAppNavigation } from "../../../utils/navigation";
@@ -8,7 +8,8 @@ import { SVG } from "../../SVG";
 
 export const BackButton: React.FC<{
   onPress?: () => void;
-}> = ({ onPress }) => {
+  style?: StyleProp<ViewStyle>;
+}> = ({ onPress, style }) => {
   const navigation = useAppNavigation();
 
   const handleOnPress = () => {
@@ -17,7 +18,7 @@ export const BackButton: React.FC<{
   };
 
   return (
-    <TouchableOpacity onPress={handleOnPress}>
+    <TouchableOpacity onPress={handleOnPress} style={style}>
       <View
         style={{
           flexDirection: "row",
