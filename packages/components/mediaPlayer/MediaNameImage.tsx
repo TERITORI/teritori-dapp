@@ -1,6 +1,6 @@
 import { ResizeMode } from "expo-av";
 import { FC } from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { ImageStyle, StyleProp, View, ViewStyle } from "react-native";
 
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
@@ -28,25 +28,12 @@ export const MediaNameImage: FC<{
   return (
     <OmniLink
       style={[{ alignSelf: "flex-start" }, style]}
-      to={
-        media?.albumId
-          ? {
-              screen: "MusicAlbum",
-              params: { id: media.albumId },
-            }
-          : // TODO: Uncomment this after video stuff integration
-            // : media.videoId
-            // ? {
-            //     screen: "VideoDetail",
-            //     params: { id: media.videoId },
-            //   }
-            {
-              screen: "FeedPostView",
-              params: {
-                id: getNetworkObjectId(network?.id, media?.postId) || "",
-              },
-            }
-      }
+      to={{
+        screen: "FeedPostView",
+        params: {
+          id: getNetworkObjectId(network?.id, media?.postId) || "",
+        },
+      }}
     >
       <View
         style={{
@@ -56,7 +43,7 @@ export const MediaNameImage: FC<{
       >
         <OptimizedImage
           sourceURI={media.imageUrl}
-          style={{ height: IMAGE_SIZE, width: IMAGE_SIZE }}
+          style={imageCStyle}
           height={IMAGE_SIZE}
           width={IMAGE_SIZE}
           resizeMode={ResizeMode.CONTAIN}
@@ -85,3 +72,5 @@ export const MediaNameImage: FC<{
     </OmniLink>
   );
 };
+
+const imageCStyle: ImageStyle = { height: IMAGE_SIZE, width: IMAGE_SIZE };

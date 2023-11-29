@@ -23,7 +23,7 @@ export const decodeGnoPost = (networkId: string, gnoPost: GnoPost): Post => {
   const reactions: Reaction[] = [];
 
   for (const [icon, count] of Object.entries(gnoPost.reactions)) {
-    reactions.push({ icon, count });
+    reactions.push({ icon, count, ownState: false }); // FIXME: find a way to get the user's reaction state from on-chain post
   }
 
   const post: Post = {
@@ -34,7 +34,7 @@ export const decodeGnoPost = (networkId: string, gnoPost: GnoPost): Post => {
     parentPostIdentifier: gnoPost.parentID ? "" + gnoPost.parentID : "",
     subPostLength: gnoPost.commentsCount,
     authorId: getUserId(networkId, gnoPost.creator),
-    createdAt: gnoPost.createdAt * 1000,
+    createdAt: gnoPost.createdAt,
     tipAmount: gnoPost.tipAmount,
     reactions,
   };

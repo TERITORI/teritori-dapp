@@ -17,6 +17,7 @@ export interface IPFSKeyResponse {
 export interface Reaction {
   icon: string;
   count: number;
+  ownState: boolean;
 }
 
 export interface Post {
@@ -43,6 +44,7 @@ export interface PostsRequest {
   filter: PostFilter | undefined;
   limit: number;
   offset: number;
+  queryUserId: string;
 }
 
 export interface PostsResponse {
@@ -164,7 +166,7 @@ export const IPFSKeyResponse = {
 };
 
 function createBaseReaction(): Reaction {
-  return { icon: "", count: 0 };
+  return { icon: "", count: 0, ownState: false };
 }
 
 export const Reaction = {
@@ -174,6 +176,9 @@ export const Reaction = {
     }
     if (message.count !== 0) {
       writer.uint32(16).uint32(message.count);
+    }
+    if (message.ownState === true) {
+      writer.uint32(24).bool(message.ownState);
     }
     return writer;
   },
@@ -199,6 +204,13 @@ export const Reaction = {
 
           message.count = reader.uint32();
           continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.ownState = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -212,6 +224,7 @@ export const Reaction = {
     return {
       icon: isSet(object.icon) ? globalThis.String(object.icon) : "",
       count: isSet(object.count) ? globalThis.Number(object.count) : 0,
+      ownState: isSet(object.ownState) ? globalThis.Boolean(object.ownState) : false,
     };
   },
 
@@ -223,6 +236,9 @@ export const Reaction = {
     if (message.count !== 0) {
       obj.count = Math.round(message.count);
     }
+    if (message.ownState === true) {
+      obj.ownState = message.ownState;
+    }
     return obj;
   },
 
@@ -233,6 +249,7 @@ export const Reaction = {
     const message = createBaseReaction();
     message.icon = object.icon ?? "";
     message.count = object.count ?? 0;
+    message.ownState = object.ownState ?? false;
     return message;
   },
 };
@@ -563,7 +580,7 @@ export const PostFilter = {
 };
 
 function createBasePostsRequest(): PostsRequest {
-  return { filter: undefined, limit: 0, offset: 0 };
+  return { filter: undefined, limit: 0, offset: 0, queryUserId: "" };
 }
 
 export const PostsRequest = {
@@ -576,6 +593,9 @@ export const PostsRequest = {
     }
     if (message.offset !== 0) {
       writer.uint32(24).uint32(message.offset);
+    }
+    if (message.queryUserId !== "") {
+      writer.uint32(34).string(message.queryUserId);
     }
     return writer;
   },
@@ -608,6 +628,13 @@ export const PostsRequest = {
 
           message.offset = reader.uint32();
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.queryUserId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -622,6 +649,7 @@ export const PostsRequest = {
       filter: isSet(object.filter) ? PostFilter.fromJSON(object.filter) : undefined,
       limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
       offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
+      queryUserId: isSet(object.queryUserId) ? globalThis.String(object.queryUserId) : "",
     };
   },
 
@@ -636,6 +664,9 @@ export const PostsRequest = {
     if (message.offset !== 0) {
       obj.offset = Math.round(message.offset);
     }
+    if (message.queryUserId !== "") {
+      obj.queryUserId = message.queryUserId;
+    }
     return obj;
   },
 
@@ -649,6 +680,7 @@ export const PostsRequest = {
       : undefined;
     message.limit = object.limit ?? 0;
     message.offset = object.offset ?? 0;
+    message.queryUserId = object.queryUserId ?? "";
     return message;
   },
 };

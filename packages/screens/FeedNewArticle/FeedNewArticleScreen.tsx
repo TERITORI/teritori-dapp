@@ -24,19 +24,16 @@ import { RichText } from "../../components/socialFeed/RichText";
 import { PublishValues } from "../../components/socialFeed/RichText/RichText.type";
 import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useFeedPostFee } from "../../hooks/feed/useFeedPostFee";
-import { useUpdateAvailableFreePost } from "../../hooks/feed/useUpdateAvailableFreePost";
-import { useBalances } from "../../hooks/useBalances";
+import { useFeedPosting } from "../../hooks/feed/useFeedPosting";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId, NetworkFeature } from "../../networks";
+import { NetworkFeature } from "../../networks";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
-import { prettyPrice } from "../../utils/coins";
 import { generateIpfsKey } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { ARTICLE_COVER_IMAGE_HEIGHT } from "../../utils/social-feed";
+import { ARTICLE_THUMBNAIL_IMAGE_HEIGHT } from "../../utils/social-feed";
 import {
   neutral00,
   neutral11,
@@ -54,20 +51,16 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const selectNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkId = selectNetworkInfo?.id || "";
   const wallet = useSelectedWallet();
-  const { postFee } = useFeedPostFee(selectedNetworkId, PostCategory.Article);
-  const { freePostCount } = useUpdateAvailableFreePost(
-    selectedNetworkId,
-    PostCategory.Article,
-    wallet,
-  );
+  const userId = wallet?.userId;
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const userIPFSKey = useSelector(selectNFTStorageAPI);
+  const { canPayForPost, freePostCount, publishingFee, prettyPublishingFee } =
+    useFeedPosting(userId, PostCategory.Article);
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
-  const userId = getUserId(selectedNetworkId, wallet?.address);
-  const balances = useBalances(selectedNetworkId, wallet?.address);
+
   const {
     control,
     setValue,
@@ -82,6 +75,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       gifs: [],
       hashtags: [],
       mentions: [],
+      thumbnailImage: undefined,
+      shortDescription: "",
     },
     mode: "onBlur",
   });
@@ -99,7 +94,10 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     audios,
     videos,
   }: PublishValues) => {
-    const toriBalance = balances.find((bal) => bal.denom === "utori");
+    if (!canPayForPost) {
+      return setNotEnoughFundModal(true);
+    }
+
     const files = [
       ...(formValues.files || []),
       ...images,
@@ -107,21 +105,19 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       ...videos,
     ];
 
-    if (postFee > Number(toriBalance?.amount) && !freePostCount) {
-      return setNotEnoughFundModal(true);
-    }
     let pinataJWTKey = undefined;
     if (files?.length) {
       pinataJWTKey =
         userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
     }
 
+    // TODO: refactor to use useFeedPosting's makePost
     const result = await createPost({
       networkId: selectedNetworkId,
       wallet,
       freePostCount,
       category: PostCategory.Article,
-      fee: postFee,
+      fee: publishingFee.amount,
       formValues: {
         ...formValues,
         gifs,
@@ -228,28 +224,19 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                   "Article",
                   freePostCount,
                 )} left`
-              : `The cost for this Article is ${prettyPrice(
-                  selectedNetworkId,
-                  postFee.toString(),
-                  selectNetworkInfo?.currencies?.[0].denom || "utori",
-                )}`}
+              : `The cost for this Article is ${prettyPublishingFee}`}
           </BrandText>
         </TertiaryBox>
 
         <FileUploader
-          label="Cover image"
-          fileHeight={ARTICLE_COVER_IMAGE_HEIGHT}
+          label="Thumbnail image"
+          fileHeight={ARTICLE_THUMBNAIL_IMAGE_HEIGHT}
           isImageCover
           style={{
             marginTop: layout.spacing_x3,
-            width: "100%",
+            width: 364,
           }}
-          onUpload={(files) =>
-            setValue("files", [
-              ...(formValues.files || []),
-              { ...files[0], isCoverImage: true },
-            ])
-          }
+          onUpload={(files) => setValue("thumbnailImage", files[0])}
           mimeTypes={IMAGE_MIME_TYPES}
         />
 
@@ -257,7 +244,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           noBrokenCorners
           rules={{ required: true }}
           height={48}
-          label="Give a title to make an Article"
+          label="Title"
           placeHolder="Type title here"
           name="title"
           control={control}
@@ -268,6 +255,23 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
             borderRadius: 12,
           }}
         />
+
+        <TextInputCustom<NewPostFormValues>
+          noBrokenCorners
+          rules={{ required: true }}
+          multiline
+          label="Short description"
+          placeHolder="Type short description here"
+          name="shortDescription"
+          control={control}
+          variant="labelOutside"
+          containerStyle={{ marginBottom: layout.spacing_x3 }}
+          boxMainContainerStyle={{
+            backgroundColor: neutral00,
+            borderRadius: 12,
+          }}
+        />
+
         <View>
           <Label>Article content</Label>
           <SpacerColumn size={1} />
@@ -287,10 +291,12 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                   errors?.message?.type === "required" ||
                   !formValues.message ||
                   !formValues.title ||
+                  !formValues.shortDescription ||
+                  !formValues.thumbnailImage ||
                   !wallet
                 }
                 onPublish={onPublish}
-                authorId={userId}
+                authorId={userId || ""}
                 postId=""
               />
             )}

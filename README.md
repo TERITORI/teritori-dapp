@@ -22,7 +22,7 @@ See it working [Here](https://app.teritori.com/)
 ❯ yarn --version
 3.5.0
 ❯ node --version
-v16.17.0
+v18.1.0
 ❯ npx --version
 8.15.0
 ```

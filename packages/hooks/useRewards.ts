@@ -16,7 +16,8 @@ export type Reward = {
   amount: string;
   price: number;
 };
-export type TotalRewards = {
+
+type TotalRewards = {
   denom: string;
   amount: string;
   price: number;

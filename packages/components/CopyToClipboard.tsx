@@ -26,14 +26,16 @@ export const useCopyToClipboard = () => {
 export const CopyToClipboard: React.FC<{
   text: string;
   squaresBackgroundColor?: string;
-}> = ({ text, squaresBackgroundColor }) => {
+  fullWidth?: boolean;
+}> = ({ text, squaresBackgroundColor, fullWidth }) => {
   const { copyToClipboard } = useCopyToClipboard();
 
   return (
     <TouchableOpacity onPress={() => copyToClipboard(text)}>
       <TertiaryBox
         height={40}
-        width={332}
+        width={fullWidth ? undefined : 332}
+        fullWidth={fullWidth}
         mainContainerStyle={{
           justifyContent: "space-between",
           flexDirection: "row",

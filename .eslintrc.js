@@ -16,6 +16,11 @@ module.exports = {
         selector:
           "MemberExpression[object.name='StyleSheet'][property.name='create']",
       },
+      {
+        message:
+          "Do not use JSON.parse, it breaks type safety, use sanitization utils instead",
+        selector: "MemberExpression[object.name='JSON'][property.name='parse']",
+      },
     ],
   },
   overrides: [

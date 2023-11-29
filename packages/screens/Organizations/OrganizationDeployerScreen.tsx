@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -19,6 +20,7 @@ import {
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   NetworkKind,
@@ -55,6 +57,7 @@ export const OrganizationDeployerScreen = () => {
     useState<TokenSettingFormType>();
   const [step3MemberSettingFormData, setStep3MemberSettingFormData] =
     useState<MemberSettingFormType>();
+  const queryClient = useQueryClient();
   const [launchingStep, setLaunchingStep] = useState(0);
   const getPercent = (num: number | undefined): string => {
     let ret_num = 0;
@@ -80,7 +83,7 @@ export const OrganizationDeployerScreen = () => {
     try {
       switch (network?.kind) {
         case NetworkKind.Gno: {
-          const name = step1DaoInfoFormData?.associatedTeritoriNameService!;
+          const name = step1DaoInfoFormData?.associatedHandle!;
           const pkgPath = await adenaDeployGnoDAO(
             network.id,
             selectedWallet?.address!,
@@ -140,7 +143,7 @@ export const OrganizationDeployerScreen = () => {
                 daoCoreCodeId: network.daoCoreCodeId!,
                 name: step1DaoInfoFormData.organizationName,
                 description: step1DaoInfoFormData.organizationDescription,
-                tns: step1DaoInfoFormData.associatedTeritoriNameService,
+                tns: step1DaoInfoFormData.associatedHandle,
                 imageUrl: step1DaoInfoFormData.imageUrl,
                 tokenName: step3TokenSettingFormData.tokenName,
                 tokenSymbol: step3TokenSettingFormData.tokenSymbol,
@@ -175,7 +178,7 @@ export const OrganizationDeployerScreen = () => {
                 daoVotingCw4CodeId: network.daoVotingCw4CodeId!,
                 name: step1DaoInfoFormData.organizationName,
                 description: step1DaoInfoFormData.organizationDescription,
-                tns: step1DaoInfoFormData.associatedTeritoriNameService,
+                tns: step1DaoInfoFormData.associatedHandle,
                 imageUrl: step1DaoInfoFormData.imageUrl,
                 members: step3MemberSettingFormData.members.map((value) => ({
                   addr: value.addr,
@@ -311,6 +314,25 @@ export const OrganizationDeployerScreen = () => {
             <LaunchingOrganizationSection
               id={getUserId(selectedWallet?.networkId, daoAddress)}
               isLaunched={launchingStep === LAUNCHING_PROCESS_STEPS.length}
+              resetForm={async () => {
+                let tokenId = step1DaoInfoFormData?.associatedHandle;
+                const network = getNetwork(selectedWallet?.networkId);
+                if (network?.kind === NetworkKind.Gno) {
+                  tokenId += ".gno";
+                } else if (network?.kind === NetworkKind.Cosmos) {
+                  tokenId += network.nameServiceTLD || "";
+                }
+                await queryClient.invalidateQueries(
+                  nsNameInfoQueryKey(selectedWallet?.networkId, tokenId),
+                );
+                setStep1DaoInfoFormData(undefined);
+                setStep2ConfigureVotingFormData(undefined);
+                setStep3MemberSettingFormData(undefined);
+                setStep3TokenSettingFormData(undefined);
+                setCurrentStep(0);
+                setDAOAddress("");
+                setLaunchingStep(0);
+              }}
             />
           </View>
         </View>

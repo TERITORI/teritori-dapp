@@ -295,14 +295,16 @@ export const createDaoMemberBased = async (
     sender,
     network.nameServiceContractAddress,
   );
+  const tokenId = (tns + network.nameServiceTLD).toLowerCase();
   const amount = await nameServiceClient.mintPrice({
-    tokenId: tns,
+    tokenId,
   });
   const denom = getStakingCurrency(networkId)?.denom;
+
   await nameServiceClient.mint(
     {
       owner: sender,
-      tokenId: tns,
+      tokenId,
       extension: {
         public_name: dao_core_instantiate_msg.name,
         image: dao_core_instantiate_msg.image_url,
@@ -338,10 +340,12 @@ export const createDaoMemberBased = async (
 
   await nameServiceClient.transferNft({
     recipient: daoAddress,
-    tokenId: tns,
+    tokenId,
   });
 
   await onStepChange?.(1);
+
+  // TODO: invalidate name info
 
   return { daoAddress, executeResult };
 };

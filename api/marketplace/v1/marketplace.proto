@@ -13,8 +13,6 @@ service MarketplaceService {
   rpc NFTPriceHistory(NFTPriceHistoryRequest) returns (NFTPriceHistoryResponse);
   rpc Banners(BannersRequest) returns (BannersResponse);
   rpc News(NewsRequest) returns (NewsResponse);
-  rpc DApps(DAppsRequest) returns (DAppsResponse);
-  rpc DAppsGroups(DAppsGroupsRequest) returns (DAppsGroupsResponse);
   rpc SearchNames(SearchNamesRequest) returns (SearchNamesResponse);
   rpc SearchCollections(SearchCollectionsRequest) returns (SearchCollectionsResponse);
 }
@@ -238,24 +236,6 @@ message News {
   repeated Action actions = 5;
 }
 
-message DAppGroup {
-  string id = 1;
-  string group_name = 2;
-  string icon = 3;
-  repeated string options = 4;
-}
-
-message DApp {
-  string id = 1;
-  string title = 2;
-  string description = 3;
-  string icon = 4;
-  string route = 5;
-  string group_key = 6;
-  string linking_id = 7;
-  bool selected_by_default = 8;
-  bool always_on = 9;
-}
 
 message Banner {
   string image = 1;
@@ -281,15 +261,7 @@ message NewsResponse {
 message DAppsRequest {
 }
 
-message DAppsResponse {
-  repeated DApp group = 1;
-}
-
 message DAppsGroupsRequest {
-}
-
-message DAppsGroupsResponse {
-  repeated DAppGroup group = 1;
 }
 
 message SearchNamesRequest {

@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   LayoutChangeEvent,
-  StyleSheet,
   View,
   useWindowDimensions,
+  ViewStyle,
 } from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
@@ -13,6 +13,7 @@ import Animated, {
 import { CreateShortPostButton } from "./CreateShortPost/CreateShortPostButton";
 import { CreateShortPostButtonRound } from "./CreateShortPost/CreateShortPostButtonRound";
 import { CreateShortPostModal } from "./CreateShortPost/CreateShortPostModal";
+import { PostCategory } from "./NewsFeed.type";
 import { NewsFeedInput } from "./NewsFeedInput";
 import { RefreshButton } from "./RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "./RefreshButton/RefreshButtonRound";
@@ -23,13 +24,19 @@ import {
 } from "../../../hooks/feed/useFetchFeed";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { fontSemibold20 } from "../../../utils/style/fonts";
 import {
   layout,
   RESPONSIVE_BREAKPOINT_S,
   screenContentMaxWidth,
 } from "../../../utils/style/layout";
+import { BrandText } from "../../BrandText";
 import { SpacerColumn, SpacerRow } from "../../spacer";
-import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
+import { UploadVideoButton } from "../../video/UploadVideoButton";
+import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
+import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
+import { SocialVideoCard } from "../SocialCard/cards/SocialVideoCard";
 
 const OFFSET_Y_LIMIT_FLOATING = 224;
 export const ROUND_BUTTON_WIDTH_L = 60;
@@ -37,7 +44,7 @@ export const ROUND_BUTTON_WIDTH_S = 42;
 
 interface NewsFeedProps {
   Header: React.ComponentType;
-  req: PostsRequest;
+  req: Partial<PostsRequest>;
   // Receive this if the post is created from HashFeedScreen
   additionalHashtag?: string;
   // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
@@ -45,6 +52,7 @@ interface NewsFeedProps {
   daoId?: string;
   disablePosting?: boolean;
   isFlagged?: boolean;
+  isVideos?: boolean;
 }
 
 export const NewsFeed: React.FC<NewsFeedProps> = ({
@@ -55,18 +63,22 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   daoId,
   disablePosting,
   isFlagged,
+  isVideos,
 }) => {
   const isMobile = useIsMobile();
   const { width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
+  const selectedWallet = useSelectedWallet();
+  const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
-    useFetchFeed(req);
+    useFetchFeed(reqWithQueryUser);
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
   const posts = useMemo(
     () => (data ? combineFetchFeedPages(data.pages) : []),
     [data],
   );
+
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -110,6 +122,22 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           style={{ width, alignSelf: "center", alignItems: "center" }}
         >
           <Header />
+          {isVideos && (
+            <>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: "100%",
+                  alignItems: "center",
+                }}
+              >
+                <BrandText style={fontSemibold20}>All Videos</BrandText>
+                <UploadVideoButton refetch={refetch} />
+              </View>{" "}
+              <SpacerColumn size={1.5} />
+            </>
+          )}
         </View>
         {!disablePosting && (
           <Animated.View
@@ -157,55 +185,66 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       isMobile,
       refetch,
       width,
+      isVideos,
     ],
   );
 
-  // FIXME: remove StyleSheet.create
-  // eslint-disable-next-line no-restricted-syntax
-  const styles = StyleSheet.create({
-    content: {
-      alignItems: "center",
-      alignSelf: "center",
-      width: "100%",
+  const mobileMode = windowWidth < RESPONSIVE_BREAKPOINT_S;
+  const cardStyle = useMemo(() => {
+    return (
+      mobileMode && {
+        borderRadius: 0,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+      }
+    );
+  }, [mobileMode]);
+
+  const RenderItem = useCallback(
+    (post: Post) => {
+      // NOTE: if you edit this, make sure that this is not too CPU expensive
+      // Heavy components like SocialThreadCard, SocialArticleCard, etc. should be properly memoized
+      return (
+        <View
+          style={{
+            width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
+            maxWidth: screenContentMaxWidth,
+          }}
+        >
+          {post.category === PostCategory.Article ? (
+            <SocialArticleCard
+              post={post}
+              style={cardStyle}
+              refetchFeed={refetch}
+            />
+          ) : post.category === PostCategory.Video ? (
+            <SocialVideoCard
+              post={post}
+              style={cardStyle}
+              refetchFeed={refetch}
+            />
+          ) : (
+            <SocialThreadCard
+              post={post}
+              refetchFeed={refetch}
+              isPreview
+              isFlagged={isFlagged}
+              style={cardStyle}
+            />
+          )}
+          <SpacerColumn size={2} />
+        </View>
+      );
     },
-    floatingActions: {
-      position: "absolute",
-      justifyContent: "center",
-      alignItems: "center",
-      right: 24,
-      bottom: 32,
-    },
-  });
+    [windowWidth, width, isFlagged, refetch, cardStyle],
+  );
 
   return (
     <>
       <Animated.FlatList
         scrollEventThrottle={0.1}
         data={posts}
-        renderItem={({ item: post }) => (
-          <View
-            style={{
-              width:
-                windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-              maxWidth: screenContentMaxWidth,
-            }}
-          >
-            <SocialThreadCard
-              post={post}
-              refetchFeed={refetch}
-              isPreview
-              isFlagged={isFlagged}
-              style={
-                windowWidth < RESPONSIVE_BREAKPOINT_S && {
-                  borderRadius: 0,
-                  borderLeftWidth: 0,
-                  borderRightWidth: 0,
-                }
-              }
-            />
-            <SpacerColumn size={2} />
-          </View>
-        )}
+        renderItem={({ item: post }) => RenderItem(post)}
         ListHeaderComponentStyle={{
           zIndex: 1,
           width: windowWidth,
@@ -214,13 +253,13 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         ListHeaderComponent={ListHeaderComponent}
         keyExtractor={(post: Post) => post.identifier}
         onScroll={scrollHandler}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={contentCStyle}
         onEndReachedThreshold={1}
         onEndReached={onEndReached}
       />
 
       {flatListContentOffsetY >= OFFSET_Y_LIMIT_FLOATING + headerHeight && (
-        <View style={styles.floatingActions}>
+        <View style={floatingActionsCStyle}>
           <CreateShortPostButtonRound
             onPress={() => setCreateModalVisible(true)}
             style={{ marginBottom: layout.spacing_x1_5 }}
@@ -240,4 +279,17 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       />
     </>
   );
+};
+
+const contentCStyle: ViewStyle = {
+  alignItems: "center",
+  alignSelf: "center",
+  width: "100%",
+};
+const floatingActionsCStyle: ViewStyle = {
+  position: "absolute",
+  justifyContent: "center",
+  alignItems: "center",
+  right: 24,
+  bottom: 32,
 };

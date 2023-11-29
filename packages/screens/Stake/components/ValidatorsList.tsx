@@ -36,7 +36,7 @@ const TABLE_ROWS: { [key in string]: TableRowHeading } = {
     flex: 2,
   },
   claimable: {
-    label: "Claimable reward",
+    label: "Claimable Reward",
     flex: 3,
   },
   actions: {
@@ -169,7 +169,7 @@ const ValidatorRow: React.FC<{
         style={{
           flex: TABLE_ROWS.claimable.flex,
           paddingRight: actions ? layout.spacing_x1 : 0,
-          flexDirection: "row",
+          flexDirection: isMobile ? "column" : "row",
           alignItems: "center",
         }}
       >
@@ -180,8 +180,12 @@ const ValidatorRow: React.FC<{
         )}
         {pendingRewards.length && (
           <PrimaryButtonOutline
-            size="XS"
-            style={{ paddingLeft: layout.spacing_x2 }}
+            size={isMobile ? "XXS" : "XS"}
+            style={
+              isMobile
+                ? { paddingTop: layout.spacing_x1 }
+                : { paddingLeft: layout.spacing_x2 }
+            }
             text="Claim"
             disabled={!userAddress}
             onPress={() => {
@@ -213,7 +217,7 @@ const ValidatorRow: React.FC<{
                   action.onPress(validator);
                 }}
                 text={action.label || ""}
-                size="XS"
+                size={isMobile ? "XXS" : "XS"}
               />
             ),
           )}

@@ -11,7 +11,8 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const TogglePlayerButton: FC = () => {
   const isMobile = useIsMobile();
-  const { setIsMediaPlayerOpen, isMediaPlayerOpen } = useMediaPlayer();
+  const { setIsMediaPlayerOpen, isMediaPlayerOpen, media } = useMediaPlayer();
+  if (!media) return null;
   return (
     <TouchableOpacity
       onPress={() =>

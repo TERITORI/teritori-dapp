@@ -78,3 +78,14 @@ buck-out/
 .expo/
 
 # @end expo-cli
+
+
+# codegen
+/.weshgen/
+
+
+# weshnet
+/temp/
+
+# eslint
+/.eslintcache

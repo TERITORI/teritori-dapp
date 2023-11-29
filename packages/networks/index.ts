@@ -261,6 +261,21 @@ export const getNetworkObjectId = (
   return `${network?.idPrefix}-${subId}`;
 };
 
+export const getNftId = (
+  networkId: string | null | undefined,
+  nftContractAddress: string | null | undefined,
+  tokenId: string | null | undefined,
+) => {
+  if (!networkId || !nftContractAddress || !tokenId) {
+    return "";
+  }
+  const network = getNetwork(networkId);
+  if (!network) {
+    return "";
+  }
+  return `${network.idPrefix}-${nftContractAddress}-${tokenId}`;
+};
+
 export const getUserId = (
   networkId: string | null | undefined,
   address: string | null | undefined,

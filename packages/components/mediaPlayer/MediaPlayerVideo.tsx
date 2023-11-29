@@ -8,9 +8,11 @@ import { VideoFullscreenUpdate } from "expo-av/src/Video.types";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { FC, useMemo, useRef, useState } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
+import { v4 as uuidv4 } from "uuid";
 
 import { TimerSlider } from "./TimerSlider";
 import { VolumeSlider } from "./VolumeSlider";
+import defaultThumbnailImage from "../../../assets/default-images/default-video-thumbnail.jpg";
 import FullScreenIcon from "../../../assets/icons/media-player/full-screen.svg";
 import NextIcon from "../../../assets/icons/media-player/next.svg";
 import PauseIcon from "../../../assets/icons/pause.svg";
@@ -24,20 +26,21 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { prettyMediaDuration } from "../../utils/mediaPlayer";
-import { secondaryColor } from "../../utils/style/colors";
+import { neutralA3, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { nameServiceDefaultImage } from "../../utils/tns";
 import { Media } from "../../utils/types/mediaPlayer";
-import { VideoMetaInfo } from "../../utils/types/video";
 import { BrandText } from "../BrandText";
+import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { CustomPressable } from "../buttons/CustomPressable";
+import { SocialFeedVideoMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
+import { SOCIAl_CARD_BORDER_RADIUS } from "../socialFeed/SocialCard/cards/SocialThreadCard";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
 interface MediaPlayerVideoProps {
-  videoMetaInfo: VideoMetaInfo;
-  videoId?: string;
+  videoMetadata: SocialFeedVideoMetadata;
   authorId: string;
   postId?: string;
   resizeMode?: ResizeMode;
@@ -45,10 +48,11 @@ interface MediaPlayerVideoProps {
 }
 
 const CONTROLS_HEIGHT = 68;
+const CONTROLS_PADDING_HORIZONTAL = layout.spacing_x2;
+
 // expo-av Video component plugged to MediaPlayerContext
 export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
-  videoMetaInfo,
-  videoId,
+  videoMetadata,
   authorId,
   postId,
   resizeMode,
@@ -59,9 +63,6 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   const userInfo = useNSUserInfo(authorId);
   const { isDAO } = useIsDAO(authorId);
   const isMobile = useIsMobile();
-  const controlsPaddingHorizontal = isMobile
-    ? layout.spacing_x1
-    : layout.spacing_x2;
   const {
     media,
     onVideoStatusUpdate,
@@ -72,11 +73,9 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
     triggerVideoFullscreen,
     onLayoutPlayerVideo,
   } = useMediaPlayer();
+  const id = useMemo(() => uuidv4(), []);
   const [localStatus, setLocalStatus] = useState<AVPlaybackStatusSuccess>();
-  const isInMediaPlayer = useMemo(
-    () => media?.fileUrl === videoMetaInfo.url,
-    [videoMetaInfo.url, media?.fileUrl],
-  );
+  const isInMediaPlayer = useMemo(() => media?.id === id, [media?.id, id]);
   // Plug or not the playbackStatus from MediaPLayerProvider
   const statusToUse = useMemo(
     () => (isInMediaPlayer ? playbackStatus : localStatus),
@@ -85,28 +84,38 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   const containerRef = useRef<View>(null);
   const videoRef = useRef<Video>(null);
   const [containerWidth, setContainerWidth] = useState(0);
+  const [containerHeight, setContainerHeight] = useState(0);
   const [extraPressCount, setExtraPressCount] = useState(0);
   const [pressTimer, setPressTimer] = useState<NodeJS.Timeout>();
   const [fullScreenUpdate, setFullScreenUpdate] =
     useState<VideoFullscreenUpdate>();
   const [isControlsShown, setControlsShown] = useState(false);
+  const [isThumbnailShown, setThumbnailShown] = useState(true);
+
+  const thumbnailURI =
+    videoMetadata.videoFile.thumbnailFileData?.url ||
+    userInfo.metadata.image ||
+    nameServiceDefaultImage(isDAO, selectedNetwork);
+  const fixedThumbnailURI = thumbnailURI
+    ? thumbnailURI.includes("://")
+      ? thumbnailURI
+      : "ipfs://" + thumbnailURI // we need this hack because ipfs "urls" in feed are raw CIDs
+    : defaultThumbnailImage;
 
   const mediaToSet: Media = {
-    imageUrl:
-      videoMetaInfo.image ||
-      userInfo.metadata.image ||
-      nameServiceDefaultImage(isDAO, selectedNetwork),
-    name: videoMetaInfo.title,
+    id,
+    imageUrl: fixedThumbnailURI,
+    name: videoMetadata.title,
     createdBy: authorId,
-    fileUrl: videoMetaInfo.url,
-    duration: videoMetaInfo.duration,
+    fileUrl: videoMetadata.videoFile.url,
+    duration: videoMetadata.videoFile.videoMetadata?.duration,
     // postId is used to difference videos from Social Feed (News feed or Article consultation)
     postId: postId || Math.floor(Math.random() * 200000).toString(),
-    videoId: videoId || "",
     isVideo: true,
   };
 
   const onPressPlayPause = async () => {
+    setThumbnailShown(false);
     if (isInMediaPlayer || !videoRef.current) {
       await handlePlayPause();
     } else {
@@ -116,6 +125,7 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
 
   // Handle play/pause and trigger fullscreen on double press
   const onPressVideoWrapper = () => {
+    setThumbnailShown(false);
     setExtraPressCount((backCount) => backCount + 1);
     if (extraPressCount === 1) {
       if (isInMediaPlayer) {
@@ -178,11 +188,13 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   return (
     <View
       ref={containerRef}
-      style={{ width: "100%" }}
+      style={[{ width: "100%" }, style]}
       onLayout={(e) => {
-        if (isInMediaPlayer && videoRef.current)
+        if (isInMediaPlayer && videoRef.current) {
           onLayoutPlayerVideo(videoRef.current);
+        }
         setContainerWidth(e.nativeEvent.layout.width);
+        setContainerHeight(e.nativeEvent.layout.height);
       }}
     >
       {/*---- expo-av Video */}
@@ -190,8 +202,24 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
         onPress={onPressVideoWrapper}
         style={{
           zIndex: 0,
+          width: "100%",
+          height: "100%",
         }}
       >
+        {fixedThumbnailURI && isThumbnailShown && (
+          <OptimizedImage
+            sourceURI={fixedThumbnailURI}
+            width={containerWidth}
+            height={containerHeight}
+            style={{
+              width: containerWidth,
+              height: containerHeight,
+              borderRadius: SOCIAl_CARD_BORDER_RADIUS,
+              position: "absolute",
+              zIndex: 1,
+            }}
+          />
+        )}
         <Video
           ref={videoRef}
           status={statusToUse}
@@ -199,9 +227,15 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
           onPlaybackStatusUpdate={onLocalPlaybackStatusUpdate}
           useNativeControls={false}
           source={{
-            uri: ipfsURLToHTTPURL(videoMetaInfo.url),
+            uri: ipfsURLToHTTPURL(videoMetadata.videoFile.url),
           }}
-          style={style}
+          style={{ width: "100%", height: "100%" }}
+          posterStyle={{ width: "100%", height: "100%" }}
+          videoStyle={{
+            width: "100%",
+            height: "100%",
+            borderRadius: SOCIAl_CARD_BORDER_RADIUS,
+          }}
           resizeMode={resizeMode}
         />
       </CustomPressable>
@@ -226,18 +260,18 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
               width: "100%",
               borderBottomRightRadius: 8,
               borderBottomLeftRadius: 8,
-              zIndex: 1,
+              zIndex: 2,
             }}
           />
 
           {/*---- Custom controls*/}
           <View
             style={{
-              zIndex: 2,
+              zIndex: 3,
               position: "absolute",
               left: 0,
               bottom: 0,
-              paddingHorizontal: controlsPaddingHorizontal,
+              paddingHorizontal: CONTROLS_PADDING_HORIZONTAL,
               width: containerWidth,
               height: CONTROLS_HEIGHT,
             }}
@@ -263,15 +297,17 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
                 </CustomPressable>
 
                 <SpacerRow size={1.5} />
+                {/*TODO: handle Next for Videos */}
                 <CustomPressable
                   style={{ alignItems: "center", justifyContent: "center" }}
                   onPress={nextMedia}
+                  disabled
                 >
                   <SVG
                     source={NextIcon}
                     height={20}
                     width={20}
-                    color={secondaryColor}
+                    color={neutralA3}
                   />
                 </CustomPressable>
                 <SpacerRow size={isMobile ? 1.5 : 0.5} />
@@ -308,7 +344,7 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
 
             <SpacerColumn size={1} />
             <TimerSlider
-              width={containerWidth - controlsPaddingHorizontal * 2}
+              width={containerWidth - CONTROLS_PADDING_HORIZONTAL * 2}
               hideDuration
               playbackStatus={statusToUse}
             />

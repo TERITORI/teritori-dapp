@@ -5,53 +5,43 @@ import { v4 as uuidv4 } from "uuid";
 import {
   NewPostFormValues,
   PostCategory,
-  SocialFeedMetadata,
+  SocialFeedPostMetadata,
+  ZodSocialFeedPostMetadata,
 } from "./NewsFeed.type";
 import {
   nonSigningSocialFeedClient,
   signingSocialFeedClient,
 } from "../../../client-creators/socialFeedClient";
 import { Wallet } from "../../../context/WalletsProvider";
-import { getNetwork, mustGetNetwork, NetworkKind } from "../../../networks";
+import {
+  getNetwork,
+  mustGetNetwork,
+  NetworkKind,
+  parseUserId,
+} from "../../../networks";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import { adenaDoContract } from "../../../utils/gno";
 import { ipfsURLToHTTPURL, uploadFilesToPinata } from "../../../utils/ipfs";
 import { RemoteFileData } from "../../../utils/types/files";
 import { TERITORI_FEED_ID } from "../const";
 
-interface GetAvailableFreePostParams {
-  networkId: string;
-  wallet?: Wallet;
-}
+export const getAvailableFreePost = async (userId: string) => {
+  const [network, userAddress] = parseUserId(userId);
 
-export const getAvailableFreePost = async ({
-  networkId,
-  wallet,
-}: GetAvailableFreePostParams) => {
-  try {
-    const network = getNetwork(networkId);
-
-    if (
-      !wallet?.connected ||
-      !wallet.address ||
-      network?.kind !== NetworkKind.Cosmos
-    ) {
-      return;
-    }
-
-    const client = await signingSocialFeedClient({
-      networkId,
-      walletAddress: wallet.address,
-    });
-
-    const freePostCount = await client.queryAvailableFreePosts({
-      wallet: wallet.address,
-    });
-
-    return Number(freePostCount);
-  } catch (err) {
-    console.error("getAvailableFreePost err", err);
+  if (!userAddress || network?.kind !== NetworkKind.Cosmos) {
+    return;
   }
+
+  const client = await signingSocialFeedClient({
+    networkId: network.id,
+    walletAddress: userAddress,
+  });
+
+  const freePostCount = await client.queryAvailableFreePosts({
+    wallet: userAddress,
+  });
+
+  return Number(freePostCount);
 };
 
 interface GetPostFeeParams {
@@ -96,7 +86,7 @@ export const getPostCategory = ({
     } else if (files[0].fileType === "audio") {
       category = PostCategory.Audio;
     } else {
-      category = PostCategory.Video;
+      category = PostCategory.VideoNote;
     }
   } else if (title) {
     category = PostCategory.Article;
@@ -244,15 +234,17 @@ export const generatePostMetadata = ({
   hashtags,
   mentions,
   gifs,
-}: GeneratePostMetadataParams): SocialFeedMetadata => {
-  return {
+}: GeneratePostMetadataParams): SocialFeedPostMetadata => {
+  const m = ZodSocialFeedPostMetadata.parse({
     title: title || "",
     message: message || "",
     files,
     hashtags: hashtags || [],
     mentions: mentions || [],
     gifs: gifs || [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
+  });
+  // we need this hack until the createdAt field is properly provided by the contract
+  // @ts-expect-error
+  m.createdAt = new Date().toISOString();
+  return m;
 };

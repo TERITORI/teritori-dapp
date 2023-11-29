@@ -89,6 +89,8 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		mentions = filter.Mentions
 	}
 
+	queryUserID := req.GetQueryUserId()
+
 	limit := req.GetLimit()
 	if limit <= 0 {
 		limit = 10
@@ -150,9 +152,20 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	for idx, dbPost := range dbPostWithExtras {
 		var reactions []*feedpb.Reaction
 		for icon, users := range dbPost.UserReactions {
+			ownState := false
+			if queryUserID != "" {
+				// TODO: create a reactions table to store user reactions and have performant query
+				for _, user := range users.([]interface{}) {
+					if user.(string) == queryUserID {
+						ownState = true
+						break
+					}
+				}
+			}
 			reactions = append(reactions, &feedpb.Reaction{
-				Icon:  icon,
-				Count: uint32(len(users.([]interface{}))),
+				Icon:     icon,
+				Count:    uint32(len(users.([]interface{}))),
+				OwnState: ownState,
 			})
 		}
 

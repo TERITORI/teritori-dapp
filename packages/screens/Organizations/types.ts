@@ -1,3 +1,5 @@
+import { NSAvailability } from "../../hooks/useNSAvailability";
+
 export enum DaoType {
   MEMBER_BASED = 0,
   TOKEN_BASED = 1,
@@ -5,10 +7,11 @@ export enum DaoType {
 
 export type CreateDaoFormType = {
   organizationName: string;
-  associatedTeritoriNameService: string;
+  associatedHandle: string;
   organizationDescription: string;
   structure: DaoType;
   imageUrl: string;
+  nameAvailability: NSAvailability;
 };
 
 export type ConfigureVotingFormType = {

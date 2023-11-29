@@ -1,5 +1,6 @@
 CANDYMACHINE_REPO=teritori-nfts
 BUNKER_MINTER_PACKAGE=teritori-bunker-minter
+GO?=go
 
 TOKEN_REPO=teritori-nfts
 TOKEN_PACKAGE=teritori-nft
@@ -35,10 +36,17 @@ node_modules: package.json yarn.lock
 generate: generate.protobuf generate.graphql generate.contracts-clients generate.go-networks networks.json
 
 .PHONY: generate.protobuf
-generate.protobuf: node_modules
+generate.protobuf: node_modules packages/api/weshnet
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 	buf generate api
+
+.PHONY: packages/api/weshnet
+packages/api/weshnet: node_modules
+	rm -fr $@
+	buf generate --template ./weshnet.buf.gen.yaml buf.build/berty/weshnet -o .weshgen
+	cp -r .weshgen/packages/api $@
+	rm -fr .weshgen
 
 .PHONY: generate.graphql
 generate.graphql:
@@ -253,3 +261,47 @@ networks.json: node_modules validate-networks
 unused-exports: node_modules
 	## TODO unexclude all paths except packages/api;packages/contracts-clients;packages/evm-contracts-clients
 	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\.web|.electron|.d.ts" --ignoreTestFiles 
+
+.PHONY: prepare-electron
+prepare-electron: node_modules
+	yarn rimraf ./web-build
+	yarn cross-env isElectron=prod expo export:web
+	yarn rimraf ./electron/web-build
+	mkdir ./electron/web-build
+	cp -r ./web-build/* ./electron/web-build
+
+# requires prepare-electron
+.PHONY: build-electron-mac-amd64
+build-electron-macos-amd64:
+	rm -fr ./electron/dist
+	rm -fr ./electron/build
+	cd ./electron && npm i
+	cd ./electron && GOOS=darwin GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/mac ./prod.go
+	cd ./electron && node ./builder/mac.js amd64
+
+# requires prepare-electron
+.PHONY: build-electron-mac-arm64
+build-electron-macos-arm64:
+	rm -fr ./electron/dist
+	rm -fr ./electron/build
+	cd ./electron && npm i
+	cd ./electron && GOOS=darwin GOARCH=arm64 $(GO) build -tags noNativeLogger -o ./build/mac ./prod.go
+	cd ./electron && node ./builder/mac.js arm64
+
+# requires prepare-electron
+.PHONY: build-electron-win
+build-electron-windows-amd64:
+	rm -fr ./electron/dist
+	rm -fr ./electron/build
+	cd ./electron && npm i
+	cd ./electron && GOOS=windows GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/win.exe ./prod.go
+	cd ./electron && node ./builder/win.js
+
+# requires prepare-electron
+.PHONY: build-electron-linux
+build-electron-linux-amd64:
+	rm -fr ./electron/dist
+	rm -fr ./electron/build
+	cd ./electron && npm i
+	cd ./electron && GOOS=linux GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/linux ./prod.go
+	cd ./electron && node ./builder/linux.js

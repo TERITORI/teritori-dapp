@@ -1,6 +1,7 @@
 import { cloneDeep } from "lodash";
 import React, { useMemo } from "react";
 
+import { PostsRequest } from "../../../api/feed/v1/feed";
 import { BrandText } from "../../../components/BrandText";
 import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn } from "../../../components/spacer";
@@ -33,7 +34,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
     selectedWallet?.userId,
   );
 
-  const req = {
+  const req: Partial<PostsRequest> = {
     filter: {
       categories: [PostCategory.Flagged],
       user: "",
@@ -42,6 +43,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
     },
     limit: 1,
     offset: 0,
+    queryUserId: selectedWallet?.userId,
   };
   const { data } = useFetchFeed(req);
 
@@ -64,6 +66,8 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
       delete res["moderationDAO"];
     }
 
+    delete res["videoNotes"];
+    delete res["sounds"];
     return res;
   }, [hasFlaggedPosts, isModerationDAOMember, selectedNetworkKind]);
 

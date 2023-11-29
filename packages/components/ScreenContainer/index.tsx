@@ -1,10 +1,10 @@
-import React, { useMemo, useCallback, ReactNode } from "react";
+import React, { ReactNode, useCallback, useMemo } from "react";
 import {
   SafeAreaView,
   ScrollView,
-  View,
   StyleSheet,
   useWindowDimensions,
+  View,
 } from "react-native";
 
 import { Header } from "./Header";
@@ -16,7 +16,6 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
-import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
 import {
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
@@ -123,7 +122,6 @@ export const ScreenContainer: React.FC<{
   /////////////// default returns
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
-      <DAppStoreData />
       {/*FIXME: Too many containers levels*/}
 
       <View style={styles.container}>

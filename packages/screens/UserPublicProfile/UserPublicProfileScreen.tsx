@@ -9,8 +9,8 @@ import React, {
 import { View } from "react-native";
 
 import {
-  UserPublicProfileScreenHeader,
   screenTabItems,
+  UserPublicProfileScreenHeader,
 } from "./UserPublicProfileHeader";
 import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
@@ -21,7 +21,9 @@ import { DAOMembers } from "../../components/dao/DAOMembers";
 import { DAOProposals } from "../../components/dao/DAOProposals";
 import { DAOsList } from "../../components/dao/DAOsList";
 import { GnoDemo } from "../../components/dao/GnoDemo";
+import { MusicList } from "../../components/music/MusicList";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
+import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
@@ -53,8 +55,11 @@ const SelectedTabContent: React.FC<{
   const [network, userAddress] = parseUserId(userId);
   const { isDAO } = useIsDAO(userId);
   const { isDAOMember } = useIsDAOMember(userId, selectedWallet?.userId, isDAO);
+  const isCurrentUser = userId === selectedWallet?.userId;
+  const userName =
+    userInfo?.metadata.public_name || userInfo?.metadata.tokenId || userAddress;
 
-  const feedRequestUser: PostsRequest = useMemo(() => {
+  const feedRequestUserPosts: Partial<PostsRequest> = useMemo(() => {
     return {
       filter: {
         user: userId,
@@ -67,7 +72,7 @@ const SelectedTabContent: React.FC<{
     };
   }, [userId]);
 
-  const feedRequestMentions: PostsRequest = useMemo(() => {
+  const feedRequestMentions: Partial<PostsRequest> = useMemo(() => {
     return {
       filter: {
         user: "",
@@ -83,6 +88,18 @@ const SelectedTabContent: React.FC<{
       offset: 0,
     };
   }, [userInfo?.metadata.tokenId, userAddress]);
+
+  const videoFeedRequest: Partial<PostsRequest> = {
+    filter: {
+      categories: [PostCategory.Video],
+      user: userId,
+      mentions: [],
+      hashtags: [],
+    },
+    limit: 10,
+    offset: 0,
+    queryUserId: selectedWallet?.userId,
+  };
 
   const Header = useCallback(() => {
     return (
@@ -107,10 +124,10 @@ const SelectedTabContent: React.FC<{
             isDAO
               ? undefined
               : selectedWallet?.address !== userAddress
-              ? userInfo?.metadata.tokenId || userAddress
-              : undefined
+                ? userInfo?.metadata.tokenId || userAddress
+                : undefined
           }
-          req={feedRequestUser}
+          req={feedRequestUserPosts}
         />
       );
     case "mentionsPosts":
@@ -127,6 +144,32 @@ const SelectedTabContent: React.FC<{
           }
           req={feedRequestMentions}
         />
+      );
+    case "userMusic":
+      return (
+        <MusicList
+          title={isCurrentUser ? "Your music" : "Music by " + userName}
+          authorId={userId}
+          allowUpload={isCurrentUser}
+        />
+      );
+    case "userVideos":
+      return (
+        <>
+          <NewsFeed
+            isVideos
+            disablePosting={
+              !selectedWallet?.connected || selectedWallet?.userId === userId
+            }
+            Header={Header}
+            additionalMention={
+              selectedWallet?.address !== userAddress
+                ? userInfo?.metadata.tokenId || userAddress
+                : undefined
+            }
+            req={videoFeedRequest}
+          />
+        </>
       );
     case "nfts":
       return <UPPNFTs userId={userId} />;
@@ -166,6 +209,13 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
 }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>(initialTab);
+  const isSocialTabSelected = useMemo(
+    () =>
+      selectedTab === "userPosts" ||
+      selectedTab === "mentionsPosts" ||
+      selectedTab === "userVideos",
+    [selectedTab],
+  );
 
   const prevId = usePrevious(id);
   useEffect(() => {
@@ -188,7 +238,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       <NotFound label="User" />
     ) : (
       <>
-        {selectedTab !== "userPosts" && selectedTab !== "mentionsPosts" ? (
+        {!isSocialTabSelected ? (
           <TabContainer>
             <UserPublicProfileScreenHeader
               userId={id}
@@ -217,7 +267,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       forceNetworkId={network?.id}
       responsive
       fullWidth
-      noScroll={selectedTab === "userPosts" || selectedTab === "mentionsPosts"}
+      noScroll={isSocialTabSelected}
       footerChildren={<></>}
       headerChildren={
         <BrandText style={fontSemibold20}>

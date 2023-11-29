@@ -115,7 +115,7 @@ export const NFTs: React.FC<{
           keyExtractor={keyExtractor}
           onEndReachedThreshold={4}
           ListEmptyComponent={
-            <BrandText style={fontSemibold20}>No results found.</BrandText>
+            <BrandText style={fontSemibold20}>No result found</BrandText>
           }
           renderItem={(info) => (
             <NFTView key={info.item.id} data={info.item} style={nftViewStyle} />

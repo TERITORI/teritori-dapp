@@ -13,7 +13,8 @@ import { layout } from "../../../utils/style/layout";
 export const LaunchingOrganizationSection: React.FC<{
   isLaunched: boolean;
   id: string | undefined;
-}> = ({ isLaunched, id }) => {
+  resetForm: () => Promise<void>;
+}> = ({ isLaunched, id, resetForm }) => {
   const { navigate } = useAppNavigation();
   const successAnimateValue = useRef(new Animated.Value(0)).current;
   const lottieRef = useRef<LottieRefCurrentProps>(null);
@@ -50,7 +51,11 @@ export const LaunchingOrganizationSection: React.FC<{
           <View style={styles.row}>
             <PrimaryButton
               text="Get Started"
-              onPress={() => navigate("UserPublicProfile", { id })}
+              loader
+              onPress={async () => {
+                await resetForm();
+                navigate("UserPublicProfile", { id });
+              }}
             />
           </View>
         </View>
