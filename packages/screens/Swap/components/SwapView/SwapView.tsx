@@ -1,12 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
-import {
-  StyleSheet,
-  TextInput,
-  View,
-  Animated,
-  LayoutChangeEvent,
-} from "react-native";
+import { TextInput, View, Animated, LayoutChangeEvent } from "react-native";
 
 import { CurrencyAmount } from "./CurrencyAmount";
 import { SelectedCurrency } from "./SelectedCurrency";
@@ -364,7 +358,7 @@ export const SwapView: React.FC = () => {
                   <BrandText
                     style={{
                       color: neutral77,
-                      ...StyleSheet.flatten(fontSemibold14),
+                      ...fontSemibold14,
                     }}
                   >
                     Available{" "}
@@ -416,7 +410,7 @@ export const SwapView: React.FC = () => {
                           color: secondaryColor,
                           maxWidth: 200,
                           textAlign: "right",
-                          ...StyleSheet.flatten(fontSemibold20),
+                          ...fontSemibold20,
                         }}
                         value={amountIn}
                         placeholder="0"
@@ -427,7 +421,7 @@ export const SwapView: React.FC = () => {
                         style={{
                           color: neutralA3,
                           textAlign: "right",
-                          ...StyleSheet.flatten(fontSemibold14),
+                          ...fontSemibold14,
                         }}
                       >
                         ≈ ${parseFloat(amountInUsd.toFixed(2).toString())}
