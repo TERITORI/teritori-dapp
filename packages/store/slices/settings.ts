@@ -37,6 +37,7 @@ interface Settings {
   alreadyVisited: boolean;
   areTestnetsEnabled: boolean;
   sideBarExpanded: boolean;
+  howToBuyExapanded: boolean;
   multisigTokens: EntityState<MultisigToken>;
   networkSettings: EntityState<NetworkSettings>;
   isLightTheme: boolean;
@@ -49,6 +50,7 @@ const initialState: Settings = {
   isKeplrConnected: false,
   isLeapConnected: false,
   isAdenaConnected: false,
+  howToBuyExapanded: true,
   alreadyVisited: false,
   areTestnetsEnabled: false,
   sideBarExpanded: true,
@@ -83,6 +85,9 @@ export const selectAreTestnetsEnabled = (state: RootState) =>
 
 export const selectSidebarExpanded = (state: RootState) =>
   state.settings.sideBarExpanded;
+
+export const selectIsHowToBuyExpanded = (state: RootState) =>
+  state.settings.howToBuyExapanded;
 
 export const selectNFTStorageAPI = (state: RootState) =>
   state.settings.NFTStorageAPI;
@@ -160,6 +165,9 @@ const settingsSlice = createSlice({
     setSidebarExpanded: (state, action: PayloadAction<boolean>) => {
       state.sideBarExpanded = action.payload;
     },
+    setHowToBuyExpanded: (state, action: PayloadAction<boolean>) => {
+      state.howToBuyExapanded = action.payload;
+    },
     setNFTStorageAPI: (state, action: PayloadAction<string>) => {
       state.NFTStorageAPI = action.payload;
     },
@@ -219,6 +227,7 @@ export const {
   setIsAdenaConnected,
   setAreTestnetsEnabled,
   setSidebarExpanded,
+  setHowToBuyExpanded,
   setNFTStorageAPI,
   setMultisigToken,
   toggleNetwork,
