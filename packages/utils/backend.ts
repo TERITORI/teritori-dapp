@@ -9,6 +9,11 @@ import {
   GrpcWebImpl as FeedGrpcWebImpl,
 } from "../api/feed/v1/feed";
 import {
+  FollowServiceClientImpl,
+  GrpcWebImpl as FollowGrpcWebImpl,
+  FollowService,
+} from "../api/follow/v1/follow";
+import {
   MarketplaceServiceClientImpl,
   GrpcWebImpl as MarketplaceGrpcWebImpl,
   MarketplaceService,
@@ -135,6 +140,30 @@ export const mustGetNotificationClient = (networkId: string | undefined) => {
     throw new Error(
       `failed to get notification client for network '${networkId}'`,
     );
+  }
+  return client;
+};
+
+const followClients: { [key: string]: FollowService } = {};
+
+export const getFollowClient = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  if (!network) {
+    return undefined;
+  }
+  if (!followClients[network.id]) {
+    const rpc = new FollowGrpcWebImpl(network.backendEndpoint, {
+      debug: false,
+    });
+    followClients[network.id] = new FollowServiceClientImpl(rpc);
+  }
+  return followClients[network.id];
+};
+
+export const mustGetFollowClient = (networkId: string | undefined) => {
+  const client = getFollowClient(networkId);
+  if (!client) {
+    throw new Error(`failed to get follow client for network '${networkId}'`);
   }
   return client;
 };

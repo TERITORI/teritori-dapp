@@ -43,6 +43,14 @@ export interface Notification {
   id: number;
 }
 
+export interface FollowingUsersRequest {
+  userId: string;
+}
+
+export interface FollowingUsersResponse {
+  notifications: Notification[];
+}
+
 function createBaseDismissNotificationRequest(): DismissNotificationRequest {
   return { userId: "", notificationId: 0 };
 }
@@ -544,6 +552,124 @@ export const Notification = {
   },
 };
 
+function createBaseFollowingUsersRequest(): FollowingUsersRequest {
+  return { userId: "" };
+}
+
+export const FollowingUsersRequest = {
+  encode(message: FollowingUsersRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FollowingUsersRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFollowingUsersRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FollowingUsersRequest {
+    return { userId: isSet(object.userId) ? globalThis.String(object.userId) : "" };
+  },
+
+  toJSON(message: FollowingUsersRequest): unknown {
+    const obj: any = {};
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<FollowingUsersRequest>, I>>(base?: I): FollowingUsersRequest {
+    return FollowingUsersRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<FollowingUsersRequest>, I>>(object: I): FollowingUsersRequest {
+    const message = createBaseFollowingUsersRequest();
+    message.userId = object.userId ?? "";
+    return message;
+  },
+};
+
+function createBaseFollowingUsersResponse(): FollowingUsersResponse {
+  return { notifications: [] };
+}
+
+export const FollowingUsersResponse = {
+  encode(message: FollowingUsersResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.notifications) {
+      Notification.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FollowingUsersResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFollowingUsersResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.notifications.push(Notification.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FollowingUsersResponse {
+    return {
+      notifications: globalThis.Array.isArray(object?.notifications)
+        ? object.notifications.map((e: any) => Notification.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: FollowingUsersResponse): unknown {
+    const obj: any = {};
+    if (message.notifications?.length) {
+      obj.notifications = message.notifications.map((e) => Notification.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<FollowingUsersResponse>, I>>(base?: I): FollowingUsersResponse {
+    return FollowingUsersResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<FollowingUsersResponse>, I>>(object: I): FollowingUsersResponse {
+    const message = createBaseFollowingUsersResponse();
+    message.notifications = object.notifications?.map((e) => Notification.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 export interface NotificationService {
   Notifications(request: DeepPartial<NotificationsRequest>, metadata?: grpc.Metadata): Promise<NotificationsResponse>;
   DismissNotification(
@@ -554,6 +680,10 @@ export interface NotificationService {
     request: DeepPartial<DismissAllNotificationsRequest>,
     metadata?: grpc.Metadata,
   ): Promise<DismissAllNotificationsResponse>;
+  FollowingUsers(
+    request: DeepPartial<FollowingUsersRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<FollowingUsersResponse>;
 }
 
 export class NotificationServiceClientImpl implements NotificationService {
@@ -564,6 +694,7 @@ export class NotificationServiceClientImpl implements NotificationService {
     this.Notifications = this.Notifications.bind(this);
     this.DismissNotification = this.DismissNotification.bind(this);
     this.DismissAllNotifications = this.DismissAllNotifications.bind(this);
+    this.FollowingUsers = this.FollowingUsers.bind(this);
   }
 
   Notifications(request: DeepPartial<NotificationsRequest>, metadata?: grpc.Metadata): Promise<NotificationsResponse> {
@@ -590,6 +721,13 @@ export class NotificationServiceClientImpl implements NotificationService {
       DismissAllNotificationsRequest.fromPartial(request),
       metadata,
     );
+  }
+
+  FollowingUsers(
+    request: DeepPartial<FollowingUsersRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<FollowingUsersResponse> {
+    return this.rpc.unary(NotificationServiceFollowingUsersDesc, FollowingUsersRequest.fromPartial(request), metadata);
   }
 }
 
@@ -654,6 +792,29 @@ export const NotificationServiceDismissAllNotificationsDesc: UnaryMethodDefiniti
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = DismissAllNotificationsResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const NotificationServiceFollowingUsersDesc: UnaryMethodDefinitionish = {
+  methodName: "FollowingUsers",
+  service: NotificationServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return FollowingUsersRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = FollowingUsersResponse.decode(data);
       return {
         ...value,
         toObject() {

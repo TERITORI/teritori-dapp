@@ -25,6 +25,7 @@ type NotificationServiceClient interface {
 	Notifications(ctx context.Context, in *NotificationsRequest, opts ...grpc.CallOption) (*NotificationsResponse, error)
 	DismissNotification(ctx context.Context, in *DismissNotificationRequest, opts ...grpc.CallOption) (*DismissNotificationResponse, error)
 	DismissAllNotifications(ctx context.Context, in *DismissAllNotificationsRequest, opts ...grpc.CallOption) (*DismissAllNotificationsResponse, error)
+	FollowingUsers(ctx context.Context, in *FollowingUsersRequest, opts ...grpc.CallOption) (*FollowingUsersResponse, error)
 }
 
 type notificationServiceClient struct {
@@ -62,6 +63,15 @@ func (c *notificationServiceClient) DismissAllNotifications(ctx context.Context,
 	return out, nil
 }
 
+func (c *notificationServiceClient) FollowingUsers(ctx context.Context, in *FollowingUsersRequest, opts ...grpc.CallOption) (*FollowingUsersResponse, error) {
+	out := new(FollowingUsersResponse)
+	err := c.cc.Invoke(ctx, "/notification.v1.NotificationService/FollowingUsers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NotificationServiceServer is the server API for NotificationService service.
 // All implementations must embed UnimplementedNotificationServiceServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type NotificationServiceServer interface {
 	Notifications(context.Context, *NotificationsRequest) (*NotificationsResponse, error)
 	DismissNotification(context.Context, *DismissNotificationRequest) (*DismissNotificationResponse, error)
 	DismissAllNotifications(context.Context, *DismissAllNotificationsRequest) (*DismissAllNotificationsResponse, error)
+	FollowingUsers(context.Context, *FollowingUsersRequest) (*FollowingUsersResponse, error)
 	mustEmbedUnimplementedNotificationServiceServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedNotificationServiceServer) DismissNotification(context.Contex
 }
 func (UnimplementedNotificationServiceServer) DismissAllNotifications(context.Context, *DismissAllNotificationsRequest) (*DismissAllNotificationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DismissAllNotifications not implemented")
+}
+func (UnimplementedNotificationServiceServer) FollowingUsers(context.Context, *FollowingUsersRequest) (*FollowingUsersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FollowingUsers not implemented")
 }
 func (UnimplementedNotificationServiceServer) mustEmbedUnimplementedNotificationServiceServer() {}
 
@@ -152,6 +166,24 @@ func _NotificationService_DismissAllNotifications_Handler(srv interface{}, ctx c
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NotificationService_FollowingUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FollowingUsersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotificationServiceServer).FollowingUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/notification.v1.NotificationService/FollowingUsers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotificationServiceServer).FollowingUsers(ctx, req.(*FollowingUsersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NotificationService_ServiceDesc is the grpc.ServiceDesc for NotificationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var NotificationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DismissAllNotifications",
 			Handler:    _NotificationService_DismissAllNotifications_Handler,
+		},
+		{
+			MethodName: "FollowingUsers",
+			Handler:    _NotificationService_FollowingUsers_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

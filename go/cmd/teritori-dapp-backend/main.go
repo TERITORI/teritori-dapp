@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/TERITORI/teritori-dapp/go/pkg/followpb"
 	"net/http"
 	"os"
 	"strings"
@@ -14,6 +15,7 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/daopb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/feed"
 	"github.com/TERITORI/teritori-dapp/go/pkg/feedpb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/follow"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplace"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
@@ -136,12 +138,19 @@ func main() {
 		NetStore:  &netstore,
 	})
 
+	followpSvc := follow.NewFollowService(context.Background(), &follow.Config{
+		Logger:    logger,
+		IndexerDB: indexerDB,
+		NetStore:  &netstore,
+	})
+
 	server := grpc.NewServer()
 	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
 	p2epb.RegisterP2EServiceServer(server, p2eSvc)
 	daopb.RegisterDAOServiceServer(server, daoSvc)
 	feedpb.RegisterFeedServiceServer(server, feedSvc)
 	notificationpb.RegisterNotificationServiceServer(server, notificationSvc)
+	followpb.RegisterFollowServiceServer(server, followpSvc)
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),

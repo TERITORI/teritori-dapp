@@ -9,6 +9,7 @@ import { MusicList } from "../../components/music/MusicList";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useIsMobile } from "../../hooks/useIsMobile";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
 import { feedTabToCategories, feedsTabItems } from "../../utils/social-feed";
@@ -16,6 +17,7 @@ import { feedTabToCategories, feedsTabItems } from "../../utils/social-feed";
 export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
   useForceNetworkSelection(params?.network);
   const isMobile = useIsMobile();
+  const selectedWallet = useSelectedWallet();
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof feedsTabItems>("all");
 
@@ -26,11 +28,16 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
         user: "",
         mentions: [],
         hashtags: [],
+        followedBy: selectedWallet
+          ? selectedTab === "following"
+            ? selectedWallet.userId
+            : ""
+          : "",
       },
       limit: 10,
       offset: 0,
     };
-  }, [selectedTab]);
+  }, [selectedWallet, selectedTab]);
 
   const header = (
     <>

@@ -1,5 +1,7 @@
 import { Post, Reaction } from "../../api/feed/v1/feed";
-import { getUserId } from "../../networks";
+import { FollowUserRequest } from "../../api/follow/v1/follow";
+import { getUserId, parseNetworkObjectId } from "../../networks";
+import { mustGetFollowClient } from "../../utils/backend";
 
 type GnoPost = {
   id: number;
@@ -40,4 +42,17 @@ export const decodeGnoPost = (networkId: string, gnoPost: GnoPost): Post => {
   };
 
   return post;
+};
+
+export const toggleFollow = (req: Partial<FollowUserRequest>) => {
+  (async () => {
+    const networkId = parseNetworkObjectId(req?.userId);
+
+    if (!networkId) {
+      return [];
+    }
+
+    const svc = mustGetFollowClient(networkId[0]?.id);
+    await svc.FollowUser(req);
+  })();
 };
