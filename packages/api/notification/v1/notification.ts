@@ -565,33 +565,43 @@ export const FollowingUsersRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): FollowingUsersRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFollowingUsersRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.userId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): FollowingUsersRequest {
-    return { userId: isSet(object.userId) ? String(object.userId) : "" };
+    return { userId: isSet(object.userId) ? globalThis.String(object.userId) : "" };
   },
 
   toJSON(message: FollowingUsersRequest): unknown {
     const obj: any = {};
-    message.userId !== undefined && (obj.userId = message.userId);
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<FollowingUsersRequest>, I>>(base?: I): FollowingUsersRequest {
+    return FollowingUsersRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<FollowingUsersRequest>, I>>(object: I): FollowingUsersRequest {
     const message = createBaseFollowingUsersRequest();
     message.userId = object.userId ?? "";
@@ -612,26 +622,31 @@ export const FollowingUsersResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): FollowingUsersResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFollowingUsersResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.notifications.push(Notification.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): FollowingUsersResponse {
     return {
-      notifications: Array.isArray(object?.notifications)
+      notifications: globalThis.Array.isArray(object?.notifications)
         ? object.notifications.map((e: any) => Notification.fromJSON(e))
         : [],
     };
@@ -639,14 +654,15 @@ export const FollowingUsersResponse = {
 
   toJSON(message: FollowingUsersResponse): unknown {
     const obj: any = {};
-    if (message.notifications) {
-      obj.notifications = message.notifications.map((e) => e ? Notification.toJSON(e) : undefined);
-    } else {
-      obj.notifications = [];
+    if (message.notifications?.length) {
+      obj.notifications = message.notifications.map((e) => Notification.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<FollowingUsersResponse>, I>>(base?: I): FollowingUsersResponse {
+    return FollowingUsersResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<FollowingUsersResponse>, I>>(object: I): FollowingUsersResponse {
     const message = createBaseFollowingUsersResponse();
     message.notifications = object.notifications?.map((e) => Notification.fromPartial(e)) || [];
@@ -798,10 +814,11 @@ export const NotificationServiceFollowingUsersDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = FollowingUsersResponse.decode(data);
       return {
-        ...FollowingUsersResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },

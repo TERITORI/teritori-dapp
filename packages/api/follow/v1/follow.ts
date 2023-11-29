@@ -64,40 +64,56 @@ export const FollowUserRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): FollowUserRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFollowUserRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.userId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.followUserId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): FollowUserRequest {
     return {
-      userId: isSet(object.userId) ? String(object.userId) : "",
-      followUserId: isSet(object.followUserId) ? String(object.followUserId) : "",
+      userId: isSet(object.userId) ? globalThis.String(object.userId) : "",
+      followUserId: isSet(object.followUserId) ? globalThis.String(object.followUserId) : "",
     };
   },
 
   toJSON(message: FollowUserRequest): unknown {
     const obj: any = {};
-    message.userId !== undefined && (obj.userId = message.userId);
-    message.followUserId !== undefined && (obj.followUserId = message.followUserId);
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
+    if (message.followUserId !== "") {
+      obj.followUserId = message.followUserId;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<FollowUserRequest>, I>>(base?: I): FollowUserRequest {
+    return FollowUserRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<FollowUserRequest>, I>>(object: I): FollowUserRequest {
     const message = createBaseFollowUserRequest();
     message.userId = object.userId ?? "";
@@ -116,16 +132,17 @@ export const FollowUserResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): FollowUserResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFollowUserResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -139,6 +156,9 @@ export const FollowUserResponse = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<FollowUserResponse>, I>>(base?: I): FollowUserResponse {
+    return FollowUserResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<FollowUserResponse>, I>>(_: I): FollowUserResponse {
     const message = createBaseFollowUserResponse();
     return message;
@@ -158,33 +178,43 @@ export const FollowersRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): FollowersRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFollowersRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.userId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): FollowersRequest {
-    return { userId: isSet(object.userId) ? String(object.userId) : "" };
+    return { userId: isSet(object.userId) ? globalThis.String(object.userId) : "" };
   },
 
   toJSON(message: FollowersRequest): unknown {
     const obj: any = {};
-    message.userId !== undefined && (obj.userId = message.userId);
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<FollowersRequest>, I>>(base?: I): FollowersRequest {
+    return FollowersRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<FollowersRequest>, I>>(object: I): FollowersRequest {
     const message = createBaseFollowersRequest();
     message.userId = object.userId ?? "";
@@ -205,39 +235,47 @@ export const FollowersResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): FollowersResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFollowersResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.followers.push(Follower.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): FollowersResponse {
     return {
-      followers: Array.isArray(object?.followers) ? object.followers.map((e: any) => Follower.fromJSON(e)) : [],
+      followers: globalThis.Array.isArray(object?.followers)
+        ? object.followers.map((e: any) => Follower.fromJSON(e))
+        : [],
     };
   },
 
   toJSON(message: FollowersResponse): unknown {
     const obj: any = {};
-    if (message.followers) {
-      obj.followers = message.followers.map((e) => e ? Follower.toJSON(e) : undefined);
-    } else {
-      obj.followers = [];
+    if (message.followers?.length) {
+      obj.followers = message.followers.map((e) => Follower.toJSON(e));
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<FollowersResponse>, I>>(base?: I): FollowersResponse {
+    return FollowersResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<FollowersResponse>, I>>(object: I): FollowersResponse {
     const message = createBaseFollowersResponse();
     message.followers = object.followers?.map((e) => Follower.fromPartial(e)) || [];
@@ -258,33 +296,43 @@ export const Follower = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Follower {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFollower();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.userId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Follower {
-    return { userId: isSet(object.userId) ? String(object.userId) : "" };
+    return { userId: isSet(object.userId) ? globalThis.String(object.userId) : "" };
   },
 
   toJSON(message: Follower): unknown {
     const obj: any = {};
-    message.userId !== undefined && (obj.userId = message.userId);
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Follower>, I>>(base?: I): Follower {
+    return Follower.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<Follower>, I>>(object: I): Follower {
     const message = createBaseFollower();
     message.userId = object.userId ?? "";
@@ -305,33 +353,43 @@ export const UserFollowStatsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UserFollowStatsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUserFollowStatsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.userId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UserFollowStatsRequest {
-    return { userId: isSet(object.userId) ? String(object.userId) : "" };
+    return { userId: isSet(object.userId) ? globalThis.String(object.userId) : "" };
   },
 
   toJSON(message: UserFollowStatsRequest): unknown {
     const obj: any = {};
-    message.userId !== undefined && (obj.userId = message.userId);
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<UserFollowStatsRequest>, I>>(base?: I): UserFollowStatsRequest {
+    return UserFollowStatsRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<UserFollowStatsRequest>, I>>(object: I): UserFollowStatsRequest {
     const message = createBaseUserFollowStatsRequest();
     message.userId = object.userId ?? "";
@@ -355,40 +413,56 @@ export const UserFollowStatsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UserFollowStatsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUserFollowStatsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.followers = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.following = longToNumber(reader.int64() as Long);
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UserFollowStatsResponse {
     return {
-      followers: isSet(object.followers) ? Number(object.followers) : 0,
-      following: isSet(object.following) ? Number(object.following) : 0,
+      followers: isSet(object.followers) ? globalThis.Number(object.followers) : 0,
+      following: isSet(object.following) ? globalThis.Number(object.following) : 0,
     };
   },
 
   toJSON(message: UserFollowStatsResponse): unknown {
     const obj: any = {};
-    message.followers !== undefined && (obj.followers = Math.round(message.followers));
-    message.following !== undefined && (obj.following = Math.round(message.following));
+    if (message.followers !== 0) {
+      obj.followers = Math.round(message.followers);
+    }
+    if (message.following !== 0) {
+      obj.following = Math.round(message.following);
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<UserFollowStatsResponse>, I>>(base?: I): UserFollowStatsResponse {
+    return UserFollowStatsResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<UserFollowStatsResponse>, I>>(object: I): UserFollowStatsResponse {
     const message = createBaseUserFollowStatsResponse();
     message.followers = object.followers ?? 0;
@@ -413,40 +487,56 @@ export const UserFollowsUserRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UserFollowsUserRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUserFollowsUserRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.userId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.followUserId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UserFollowsUserRequest {
     return {
-      userId: isSet(object.userId) ? String(object.userId) : "",
-      followUserId: isSet(object.followUserId) ? String(object.followUserId) : "",
+      userId: isSet(object.userId) ? globalThis.String(object.userId) : "",
+      followUserId: isSet(object.followUserId) ? globalThis.String(object.followUserId) : "",
     };
   },
 
   toJSON(message: UserFollowsUserRequest): unknown {
     const obj: any = {};
-    message.userId !== undefined && (obj.userId = message.userId);
-    message.followUserId !== undefined && (obj.followUserId = message.followUserId);
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
+    if (message.followUserId !== "") {
+      obj.followUserId = message.followUserId;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<UserFollowsUserRequest>, I>>(base?: I): UserFollowsUserRequest {
+    return UserFollowsUserRequest.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<UserFollowsUserRequest>, I>>(object: I): UserFollowsUserRequest {
     const message = createBaseUserFollowsUserRequest();
     message.userId = object.userId ?? "";
@@ -468,33 +558,43 @@ export const UserFollowsUserResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UserFollowsUserResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUserFollowsUserResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.status = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UserFollowsUserResponse {
-    return { status: isSet(object.status) ? Boolean(object.status) : false };
+    return { status: isSet(object.status) ? globalThis.Boolean(object.status) : false };
   },
 
   toJSON(message: UserFollowsUserResponse): unknown {
     const obj: any = {};
-    message.status !== undefined && (obj.status = message.status);
+    if (message.status === true) {
+      obj.status = message.status;
+    }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<UserFollowsUserResponse>, I>>(base?: I): UserFollowsUserResponse {
+    return UserFollowsUserResponse.fromPartial(base ?? ({} as any));
+  },
   fromPartial<I extends Exact<DeepPartial<UserFollowsUserResponse>, I>>(object: I): UserFollowsUserResponse {
     const message = createBaseUserFollowsUserResponse();
     message.status = object.status ?? false;
@@ -563,10 +663,11 @@ export const FollowServiceFollowUserDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = FollowUserResponse.decode(data);
       return {
-        ...FollowUserResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -585,10 +686,11 @@ export const FollowServiceFollowersDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = FollowersResponse.decode(data);
       return {
-        ...FollowersResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -607,10 +709,11 @@ export const FollowServiceUserFollowStatsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = UserFollowStatsResponse.decode(data);
       return {
-        ...UserFollowStatsResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -629,10 +732,11 @@ export const FollowServiceUserFollowsUserDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = UserFollowsUserResponse.decode(data);
       return {
-        ...UserFollowsUserResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -686,17 +790,17 @@ export class GrpcWebImpl {
     const request = { ..._request, ...methodDesc.requestType };
     const maybeCombinedMetadata = metadata && this.options.metadata
       ? new BrowserHeaders({ ...this.options?.metadata.headersMap, ...metadata?.headersMap })
-      : metadata || this.options.metadata;
+      : metadata ?? this.options.metadata;
     return new Promise((resolve, reject) => {
       grpc.unary(methodDesc, {
         request,
         host: this.host,
-        metadata: maybeCombinedMetadata,
-        transport: this.options.transport,
-        debug: this.options.debug,
+        metadata: maybeCombinedMetadata ?? {},
+        ...(this.options.transport !== undefined ? { transport: this.options.transport } : {}),
+        debug: this.options.debug ?? false,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
-            resolve(response.message);
+            resolve(response.message!.toObject());
           } else {
             const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
@@ -707,29 +811,11 @@ export class GrpcWebImpl {
   }
 }
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") {
-    return globalThis;
-  }
-  if (typeof self !== "undefined") {
-    return self;
-  }
-  if (typeof window !== "undefined") {
-    return window;
-  }
-  if (typeof global !== "undefined") {
-    return global;
-  }
-  throw "Unable to locate global object";
-})();
-
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -738,7 +824,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function longToNumber(long: Long): number {
-  if (long.gt(Number.MAX_SAFE_INTEGER)) {
+  if (long.gt(globalThis.Number.MAX_SAFE_INTEGER)) {
     throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
   }
   return long.toNumber();
@@ -753,7 +839,7 @@ function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-export class GrpcWebError extends Error {
+export class GrpcWebError extends globalThis.Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }
