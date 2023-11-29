@@ -6,10 +6,10 @@ import {
   Sort,
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
+import { NFTs } from "../../components/nfts/NFTs";
+import { Tabs } from "../../components/tabs/Tabs";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { alignDown } from "../../utils/align";
-import { NFTs } from "../nfts/NFTs";
-import { Tabs } from "../tabs/Tabs";
 
 const tabItemsNFTs = {
   collected: { name: "Collected" },
@@ -50,7 +50,7 @@ const SelectedTabContent: React.FC<{
   }
 });
 
-export const UPPNFTs: React.FC<{ userId: string }> = ({ userId }) => {
+export const MyNfts: React.FC<{ userId: string }> = ({ userId }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof tabItemsNFTs>("collected");
 

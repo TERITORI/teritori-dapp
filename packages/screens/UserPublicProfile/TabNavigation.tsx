@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
+import { Top } from "./Top";
 import { Tabs } from "../../components/tabs/Tabs";
-import { UPPIntro } from "../../components/userPublicProfile/UPPIntro";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -76,7 +76,7 @@ interface UserPublicProfileScreenHeaderProps {
   setSelectedTab: (tab: keyof typeof screenTabItems) => void;
 }
 
-export const UserPublicProfileScreenHeader = ({
+export const TabNavigation = ({
   userId,
   selectedTab,
   setSelectedTab,
@@ -127,10 +127,7 @@ export const UserPublicProfileScreenHeader = ({
 
   return (
     <>
-      <UPPIntro
-        userId={userId}
-        isUserOwner={selectedWallet?.userId === userId}
-      />
+      <Top userId={userId} isUserOwner={selectedWallet?.userId === userId} />
       <Tabs
         items={items}
         selected={selectedTab}

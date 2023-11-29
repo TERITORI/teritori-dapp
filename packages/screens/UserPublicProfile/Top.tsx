@@ -6,6 +6,16 @@ import discordSVG from "../../../assets/icons/discord.svg";
 import shareSVG from "../../../assets/icons/share.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
+import { BrandText } from "../../components/BrandText";
+import { useCopyToClipboard } from "../../components/CopyToClipboard";
+import { CopyToClipboardSecondary } from "../../components/CopyToClipboardSecondary";
+import { OptimizedImage } from "../../components/OptimizedImage";
+import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { SecondaryButtonOutline } from "../../components/buttons/SecondaryButtonOutline";
+import { SocialButton } from "../../components/buttons/SocialButton";
+import { SocialButtonSecondary } from "../../components/buttons/SocialButtonSecondary";
+import { ProfileButton } from "../../components/hub/ProfileButton";
+import { UserAvatarWithFrame } from "../../components/images/AvatarWithFrame";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
@@ -18,18 +28,8 @@ import {
 } from "../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
-import { BrandText } from "../BrandText";
-import { useCopyToClipboard } from "../CopyToClipboard";
-import { CopyToClipboardSecondary } from "../CopyToClipboardSecondary";
-import { OptimizedImage } from "../OptimizedImage";
-import { TertiaryBox } from "../boxes/TertiaryBox";
-import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
-import { SocialButton } from "../buttons/SocialButton";
-import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
-import { ProfileButton } from "../hub/ProfileButton";
-import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
-export const UPPIntro: React.FC<{
+export const Top: React.FC<{
   userId: string;
   isUserOwner?: boolean;
 }> = ({ userId, isUserOwner }) => {

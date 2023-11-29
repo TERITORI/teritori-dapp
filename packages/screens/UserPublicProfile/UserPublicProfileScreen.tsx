@@ -8,10 +8,8 @@ import React, {
 } from "react";
 import { View } from "react-native";
 
-import {
-  screenTabItems,
-  UserPublicProfileScreenHeader,
-} from "./UserPublicProfileHeader";
+import { MyNfts } from "./MyNfts";
+import { screenTabItems, TabNavigation } from "./TabNavigation";
 import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
 import { NotFound } from "../../components/NotFound";
@@ -24,7 +22,6 @@ import { GnoDemo } from "../../components/dao/GnoDemo";
 import { MusicList } from "../../components/music/MusicList";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
@@ -103,7 +100,7 @@ const SelectedTabContent: React.FC<{
 
   const Header = useCallback(() => {
     return (
-      <UserPublicProfileScreenHeader
+      <TabNavigation
         userId={userId}
         selectedTab={selectedTab}
         setSelectedTab={setSelectedTab}
@@ -172,7 +169,7 @@ const SelectedTabContent: React.FC<{
         </>
       );
     case "nfts":
-      return <UPPNFTs userId={userId} />;
+      return <MyNfts userId={userId} />;
     // case "activity":
     //   return <UPPActivity />;
     case "quests":
@@ -232,35 +229,6 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
     });
   }, [navigation, userAddress, metadata.tokenId]);
 
-  const content =
-    network?.kind !== NetworkKind.Gno &&
-    (notFound || !userAddress || !bech32.decodeUnsafe(userAddress)) ? (
-      <NotFound label="User" />
-    ) : (
-      <>
-        {!isSocialTabSelected ? (
-          <TabContainer>
-            <UserPublicProfileScreenHeader
-              userId={id}
-              selectedTab={selectedTab}
-              setSelectedTab={setSelectedTab}
-            />
-            <SelectedTabContent
-              selectedTab={selectedTab}
-              userId={id}
-              setSelectedTab={setSelectedTab}
-            />
-          </TabContainer>
-        ) : (
-          <SelectedTabContent
-            selectedTab={selectedTab}
-            userId={id}
-            setSelectedTab={setSelectedTab}
-          />
-        )}
-      </>
-    );
-
   return (
     <ScreenContainer
       key={`UserPublicProfile ${id}`} // this key is to reset the screen state when the id changes
@@ -280,7 +248,33 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
           : navigation.navigate("Home")
       }
     >
-      {content}
+      {network?.kind !== NetworkKind.Gno &&
+      (notFound || !userAddress || !bech32.decodeUnsafe(userAddress)) ? (
+        <NotFound label="User" />
+      ) : (
+        <>
+          {!isSocialTabSelected ? (
+            <TabContainer>
+              <TabNavigation
+                userId={id}
+                selectedTab={selectedTab}
+                setSelectedTab={setSelectedTab}
+              />
+              <SelectedTabContent
+                selectedTab={selectedTab}
+                userId={id}
+                setSelectedTab={setSelectedTab}
+              />
+            </TabContainer>
+          ) : (
+            <SelectedTabContent
+              selectedTab={selectedTab}
+              userId={id}
+              setSelectedTab={setSelectedTab}
+            />
+          )}
+        </>
+      )}
     </ScreenContainer>
   );
 };
