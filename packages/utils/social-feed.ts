@@ -8,7 +8,6 @@ import { LocalFileData } from "./types/files";
 import flagSVG from "../../assets/icons/notification.svg";
 import { Post, Reaction } from "../api/feed/v1/feed";
 import {
-  PostCategory,
   PostExtra,
   PostResultExtra,
 } from "../components/socialFeed/NewsFeed/NewsFeed.type";
@@ -84,28 +83,6 @@ export const feedsTabItems: { [key: string]: TabDefinition } = {
   },
 };
 
-// The Social Feed tabs doesn't fully correspond to the Posts categories, so we need to parse like this
-export const feedTabToCategories = (tab: keyof typeof feedsTabItems) => {
-  switch (tab) {
-    case "sounds":
-      return [PostCategory.Audio];
-    case "music":
-      return [PostCategory.MusicAudio];
-    case "pics":
-      return [PostCategory.Picture];
-    case "videoNotes":
-      return [PostCategory.VideoNote];
-    case "videos":
-      return [PostCategory.Video];
-    case "articles":
-      return [PostCategory.Article];
-    case "moderationDAO":
-      return [PostCategory.Flagged];
-    default:
-      return [];
-  }
-};
-
 export const mentionMatch = (text: string) =>
   text.match(new RegExp(MENTION_REGEX, "g"));
 export const hashtagMatch = (text: string) =>
@@ -144,9 +121,6 @@ export const postResultToPost = (
   if ("isInLocal" in postResult) {
     return { ...post, isInLocal: postResult.isInLocal } as PostExtra;
   }
-
-  console.log("postResultToPost", postResult, post);
-
   return post;
 };
 
