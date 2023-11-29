@@ -227,13 +227,13 @@ const resolveColor = (type: "backgroundColor" | "color", category: string) => {
       return category.includes("nft")
         ? "rgba(22, 187, 255, 0.16)"
         : category.includes("dao")
-        ? purpleDark
-        : neutral33;
+          ? purpleDark
+          : neutral33;
     case "color":
       return category.includes("nft")
         ? "white"
         : category.includes("dao")
-        ? yellowDefault
-        : secondaryColor;
+          ? yellowDefault
+          : secondaryColor;
   }
 };

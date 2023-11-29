@@ -1,19 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { NotificationsRequest } from "../api/notification/v1/notification";
-import { parseUserId } from "../networks";
-import { getNotificationClient } from "../utils/backend";
+import {
+  FollowingUsersRequest,
+  NotificationsRequest,
+} from "../api/notification/v1/notification";
+import { parseNetworkObjectId, parseUserId } from "../networks";
+import {
+  getNotificationClient,
+  mustGetNotificationClient,
+} from "../utils/backend";
 
 export const notificationsQueryKey = (userId: string | undefined) => [
   "notifications",
   userId,
 ];
-import {
-  FollowingUsersRequest,
-  NotificationsRequest,
-} from "../api/notification/v1/notification";
-import { parseNetworkObjectId } from "../networks";
-import { mustGetNotificationClient } from "../utils/backend";
 
 export const useNotifications = (req: Partial<NotificationsRequest>) => {
   const { userId, ...rest } = req;
@@ -39,7 +39,7 @@ export const useNotifications = (req: Partial<NotificationsRequest>) => {
 };
 
 export const useFollowingUserNotifications = (
-  req: Partial<FollowingUsersRequest>
+  req: Partial<FollowingUsersRequest>,
 ) => {
   const { data } = useQuery(
     ["followingUserNotifications", req],
@@ -54,7 +54,7 @@ export const useFollowingUserNotifications = (
       const { notifications } = await notificationService.FollowingUsers(req);
       return notifications;
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity, refetchInterval: 10000 },
   );
   return data;
 };
