@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Platform } from "react-native";
+import { Platform, View } from "react-native";
 
 import FriendList from "./FriendsList";
 import { MessageBlankFiller } from "./MessageBlankFiller";
@@ -37,11 +37,11 @@ export const Friends = ({ items, setActiveConversation }: FriendsProps) => {
             key={item.id}
             item={item}
             handleChatPress={() => {
-              if (Platform.OS === "web") {
-                setActiveConversation?.(item);
-                navigate("Message");
-              } else {
+              setActiveConversation?.(item);
+              if (Platform.OS !== "web") {
                 navigate("ChatSection", item);
+              } else {
+                navigate("Message");
               }
               setActiveConversation?.(item);
             }}

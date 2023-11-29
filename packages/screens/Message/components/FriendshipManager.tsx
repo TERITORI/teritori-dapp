@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { View, Platform } from "react-native";
+import { View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { Friends } from "./Friends";
@@ -9,6 +9,7 @@ import { ScreenContainer } from "../../../components/ScreenContainer";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
 import { Tabs } from "../../../components/tabs/Tabs";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import {
   selectContactRequestList,
   selectConversationList,
@@ -32,6 +33,8 @@ export const FriendshipManager = ({
   const conversations = useSelector(selectConversationList);
   const contactRequests = useSelector(selectContactRequestList);
   const { navigate } = useAppNavigation();
+
+  const isMobile = useIsMobile();
 
   const contactConversations = useMemo(() => {
     return conversations.filter((item) => item.type === "contact");
@@ -61,10 +64,10 @@ export const FriendshipManager = ({
       <Tabs
         items={tabs}
         onSelect={(tab) => {
-          if (Platform.OS === "web") {
-            navigate("Message", { view: "AddFriend", tab });
-          } else {
+          if (isMobile) {
             navigate("FriendshipManager", { tab });
+          } else {
+            navigate("Message", { view: "AddFriend", tab });
           }
         }}
         selected={activeTab as MessageFriendsTabItem}
@@ -86,19 +89,19 @@ export const FriendshipManager = ({
       {activeTab === "request" && <Requests items={contactRequests} />}
     </>
   );
-  if (Platform.OS === "web") {
+  if (isMobile) {
     return (
-      <View style={{ paddingHorizontal: layout.spacing_x2 }}>
-        {renderContentWeb()}
-      </View>
+      <ScreenContainer onBackPress={() => navigate("Message")}>
+        <View style={{ paddingHorizontal: layout.spacing_x0_5 }}>
+          {renderContentWeb()}
+        </View>
+      </ScreenContainer>
     );
   }
   return (
-    <ScreenContainer onBackPress={() => navigate("Message")}>
-      <View style={{ paddingHorizontal: layout.spacing_x0_5 }}>
-        {renderContentWeb()}
-      </View>
-    </ScreenContainer>
+    <View style={{ paddingHorizontal: layout.spacing_x2 }}>
+      {renderContentWeb()}
+    </View>
   );
 };
 

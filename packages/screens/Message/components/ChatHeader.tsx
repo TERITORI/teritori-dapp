@@ -12,6 +12,7 @@ import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { BackButton } from "../../../components/navigation/components/BackButton";
 import { SpacerRow } from "../../../components/spacer";
 import { useDropdowns } from "../../../context/DropdownsProvider";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
@@ -30,12 +31,14 @@ interface ChatHeaderProps {
   searchInput: string;
   setSearchInput: (input: string) => void;
   conversation: Conversation;
+  onBackPress?: () => void;
 }
 
 export const ChatHeader = ({
   searchInput,
   setSearchInput,
   conversation,
+  onBackPress,
 }: ChatHeaderProps) => {
   const dispatch = useDispatch();
   const { setToastSuccess } = useFeedbacks();
@@ -145,6 +148,12 @@ export const ChatHeader = ({
         ref={dropdownRef}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
+          {onBackPress && (
+            <>
+              <BackButton onPress={onBackPress} />
+              <SpacerRow size={2} />
+            </>
+          )}
           <ConversationAvatar conversation={conversation} size={20} />
           <SpacerRow size={1} />
           <View>
