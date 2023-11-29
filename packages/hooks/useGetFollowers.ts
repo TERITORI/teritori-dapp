@@ -22,7 +22,7 @@ export const useGetFollowers = (req: Partial<FollowersRequest>) => {
       const { followers } = await svc.Followers(req);
       return followers;
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
   return data;
 };
@@ -44,7 +44,7 @@ export const useGetFollowersStats = (req: Partial<UserFollowStatsRequest>) => {
       const { followers, following } = await svc.UserFollowStats(req);
       return { followers, following };
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
   return data
     ? data
@@ -68,7 +68,7 @@ export const useUserFollowsUser = (req: Partial<UserFollowsUserRequest>) => {
       const { status } = await svc.UserFollowsUser(req);
       return status;
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity },
   );
   return data;
 };
