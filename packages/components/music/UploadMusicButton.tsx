@@ -35,11 +35,11 @@ export const UploadMusicButton: FC<{
 const buttonContainerStyle: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
+  height: 32,
   paddingLeft: layout.spacing_x1,
   paddingRight: layout.spacing_x1_5,
-  paddingVertical: layout.spacing_x1,
   backgroundColor: neutral30,
-  borderRadius: layout.spacing_x4,
+  borderRadius: 999,
 };
 const buttonTextStyle: TextStyle = {
   ...fontSemibold14,

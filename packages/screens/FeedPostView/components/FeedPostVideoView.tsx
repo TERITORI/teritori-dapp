@@ -138,7 +138,6 @@ export const FeedPostVideoView: FC<{
     },
     limit: 10,
     offset: 0,
-    queryUserId: wallet?.userId,
   };
   const userVideosFeedRequest: Partial<PostsRequest> = {
     filter: {
@@ -149,7 +148,6 @@ export const FeedPostVideoView: FC<{
     },
     limit: 10,
     offset: 0,
-    queryUserId: wallet?.userId,
   };
   const [otherVideosRequest, setOtherVideosRequest] = useState(
     userVideosFeedRequest,
@@ -458,7 +456,7 @@ export const FeedPostVideoView: FC<{
                 consultedPostId={localPost.identifier}
                 title={
                   otherVideosRequest.filter?.user
-                    ? `More videos from @${username}`
+                    ? `More videos from ${username}`
                     : "More videos from Social Feed"
                 }
                 style={{ width: "100%", marginTop: layout.spacing_x3 }}
@@ -474,7 +472,7 @@ export const FeedPostVideoView: FC<{
               consultedPostId={localPost.identifier}
               title={
                 otherVideosRequest.filter?.user
-                  ? `More videos from @${username}`
+                  ? `More videos from ${username}`
                   : "More videos from Social Feed"
               }
               style={{

@@ -21,10 +21,11 @@ import { DAOMembers } from "../../components/dao/DAOMembers";
 import { DAOProposals } from "../../components/dao/DAOProposals";
 import { DAOsList } from "../../components/dao/DAOsList";
 import { GnoDemo } from "../../components/dao/GnoDemo";
-import { MusicList } from "../../components/music/MusicList";
+import { FeedMusicList } from "../../components/music/FeedMusicList";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
+import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
-import { VideosList } from "../../components/video/VideosList";
+import { FeedVideosList } from "../../components/video/FeedVideosList";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
@@ -65,6 +66,19 @@ const SelectedTabContent: React.FC<{
         user: userId,
         mentions: [],
         categories: [],
+        hashtags: [],
+      },
+      limit: 10,
+      offset: 0,
+    };
+  }, [userId]);
+
+  const feedRequestUserVideos: Partial<PostsRequest> = useMemo(() => {
+    return {
+      filter: {
+        user: userId,
+        mentions: [],
+        categories: [PostCategory.Video],
         hashtags: [],
       },
       limit: 10,
@@ -135,7 +149,7 @@ const SelectedTabContent: React.FC<{
       );
     case "userMusic":
       return (
-        <MusicList
+        <FeedMusicList
           title={isCurrentUser ? "Your music" : "Music by " + userName}
           authorId={userId}
           allowUpload={isCurrentUser}
@@ -143,10 +157,10 @@ const SelectedTabContent: React.FC<{
       );
     case "userVideos":
       return (
-        <VideosList
+        <FeedVideosList
           title={isCurrentUser ? "Your videos" : "Videos by " + userName}
-          authorId={userId}
           allowUpload={isCurrentUser}
+          req={feedRequestUserVideos}
         />
       );
     case "nfts":
