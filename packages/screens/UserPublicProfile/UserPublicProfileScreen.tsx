@@ -98,6 +98,7 @@ const SelectedTabContent: React.FC<{
       user: userId,
       mentions: [],
       hashtags: [],
+      followedBy: "",
     },
     limit: 10,
     offset: 0,

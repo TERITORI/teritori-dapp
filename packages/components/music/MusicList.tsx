@@ -5,11 +5,6 @@ import { TrackCard } from "./TrackCard";
 import { UploadMusicButton } from "./UploadMusicButton";
 import { UploadMusicModal } from "./UploadMusicModal";
 import { Post, PostsRequest } from "../../api/feed/v1/feed";
-import { BrandText } from "../../components/BrandText";
-import {
-  PostCategory,
-  ZodSocialFeedTrackMetadata,
-} from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn } from "../../components/spacer";
 import {
   combineFetchFeedPages,
@@ -20,6 +15,11 @@ import { zodTryParseJSON } from "../../utils/sanitize";
 import { BASE_POST } from "../../utils/social-feed";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
+import {
+  PostCategory,
+  ZodSocialFeedTrackMetadata,
+} from "../socialFeed/NewsFeed/NewsFeed.type";
 
 const minCardWidth = 250;
 const halfGap = layout.spacing_x1;
@@ -40,6 +40,7 @@ export const MusicList: React.FC<{
       user: authorId || "",
       mentions: [],
       hashtags: [],
+      followedBy: "",
     },
     limit: 10,
     offset: 0,
