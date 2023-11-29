@@ -42,13 +42,14 @@ export const HowToBuy: React.FC = () => {
             padding: layout.spacing_x2_5,
           }}
         >
-          <View
+          <TouchableOpacity
             style={{
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
               flex: 1,
             }}
+            onPress={() => dispatch(setHowToBuyExpanded(!isHowToBuyExpanded))}
           >
             <View
               style={{
@@ -65,20 +66,16 @@ export const HowToBuy: React.FC = () => {
                 How to buy
               </BrandText>
             </View>
-            <TouchableOpacity
-              onPress={() => dispatch(setHowToBuyExpanded(!isHowToBuyExpanded))}
-            >
-              <SVG
-                style={{
-                  justifyContent: "flex-end",
-                }}
-                source={isHowToBuyExpanded ? chevronUpSVG : chevronDownSVG}
-                width={16}
-                height={16}
-                color={secondaryColor}
-              />
-            </TouchableOpacity>
-          </View>
+            <SVG
+              style={{
+                justifyContent: "flex-end",
+              }}
+              source={isHowToBuyExpanded ? chevronUpSVG : chevronDownSVG}
+              width={16}
+              height={16}
+              color={secondaryColor}
+            />
+          </TouchableOpacity>
         </View>
 
         <View
