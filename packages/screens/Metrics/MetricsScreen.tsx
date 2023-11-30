@@ -16,7 +16,7 @@ import { errorColor, secondaryColor } from "../../utils/style/colors";
 import { fontBold16, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-const targetBlock = 6307200;
+const targetBlock = 12614400;
 
 export const MetricsScreen: ScreenFC<"Metrics"> = () => {
   const { data: currentHeight } = useCosmosHeight(teritoriNetwork.id);
@@ -103,7 +103,7 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
               ]}
               gradientType="blueExtended"
             >
-              Nov 30th, 2023, 15:51:00 UTC
+              Jan 26th, 2025, 17:30:00 UTC
             </GradientText>
           </BrandText>
         </View>
