@@ -25,6 +25,11 @@ ignores: [
   "electron",
   "rimraf",
   "assert",
+  "@dotlottie/react-player",
+  "@lottiefiles/react-lottie-player",
+  "crypto",
+  "expo-constants",
+  "metro-config"
 ]
 ignorePatterns: [
   "/cache", 
