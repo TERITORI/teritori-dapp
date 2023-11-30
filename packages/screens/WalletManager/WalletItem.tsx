@@ -1,4 +1,4 @@
-import Clipboard from "@react-native-clipboard/clipboard";
+import * as Clipboard from "expo-clipboard";
 import React, { useMemo, useState } from "react";
 import {
   View,
@@ -128,7 +128,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               </BrandText>
               <TouchableOpacity
                 onPress={() => {
-                  Clipboard.setString(item.address);
+                  Clipboard.setStringAsync(item.address);
                   setToastSuccess({
                     title: "Copied",
                     message: "",

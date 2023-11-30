@@ -19,7 +19,7 @@ export function SVGorImageIcon({
         <SVG source={icon} height={iconSize} width={iconSize} style={style} />
       ) : (
         <Image
-          source={{ uri: icon }}
+          source={typeof icon == "string" ? { uri: icon } : icon}
           style={[
             {
               width: iconSize,

@@ -5,7 +5,7 @@ export const ethereumGoerliNetwork: NetworkInfo = {
   id: "ethereum-goerli",
   kind: NetworkKind.Ethereum,
   displayName: "Ethereum Goerli",
-  icon: "icons/networks/ethereum.svg",
+  icon: "ethereum.svg",
   features: [NetworkFeature.NFTMarketplace, NetworkFeature.NFTLaunchpad],
   currencies: ethereumGoerliCurrencies,
   idPrefix: "testeth",

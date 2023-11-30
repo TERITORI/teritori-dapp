@@ -6,7 +6,7 @@ export const cosmosNetwork: NetworkInfo = {
   kind: NetworkKind.Cosmos,
   chainId: "cosmoshub-4",
   displayName: "Cosmos Hub",
-  icon: "icons/networks/cosmos-hub.svg",
+  icon: "cosmos-hub.svg",
   features: [],
   currencies: cosmosHubCurrencies,
   overrides: "cosmos-registry:cosmoshub",

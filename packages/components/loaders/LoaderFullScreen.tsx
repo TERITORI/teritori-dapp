@@ -1,4 +1,4 @@
-import Lottie from "lottie-react";
+import Lottie from "lottie-react-native";
 import * as React from "react";
 import { View, Modal } from "react-native";
 
@@ -25,7 +25,7 @@ export const LoaderFullScreen: React.FC<{ visible: boolean }> = ({
           }}
         >
           <Lottie
-            animationData={require("./animation-full-screen.json")}
+            source={require("./animation-full-screen.json")}
             autoPlay
             loop
           />

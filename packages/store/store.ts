@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { persistStore, persistReducer, createMigrate } from "redux-persist";
@@ -21,8 +20,8 @@ import {
 } from "./slices/settings";
 import { squadPresetsReducer } from "./slices/squadPresets";
 import { walletsReducer } from "./slices/wallets";
+import { storage } from "./storage";
 import { defaultEnabledNetworks } from "../networks";
-import { isElectron } from "../utils/isElectron";
 
 const migrations = {
   0: (state: any) => {
@@ -51,17 +50,6 @@ const migrations = {
     };
   },
 };
-
-let storage = AsyncStorage;
-
-if (isElectron()) {
-  const createElectronStorage = require("redux-persist-electron-storage");
-  storage = createElectronStorage({
-    electronStoreOpts: {
-      projectName: "Teritori",
-    },
-  });
-}
 
 const persistConfig = {
   key: "root",

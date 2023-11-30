@@ -1,4 +1,4 @@
-import Clipboard from "@react-native-clipboard/clipboard";
+import * as Clipboard from "expo-clipboard";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 
@@ -17,7 +17,7 @@ export const useCopyToClipboard = () => {
       title: successText || "Copied",
       message: "",
     });
-    Clipboard.setString(text);
+    Clipboard.setStringAsync(text);
   };
 
   return { copyToClipboard };

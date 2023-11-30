@@ -36,7 +36,7 @@ import {
   createStateFromHTML,
   getTruncatedArticleHTML,
   isArticleHTMLNeedsTruncate,
-} from "../../RichText/RichText.web";
+} from "../../RichText";
 import { FlaggedCardFooter } from "../FlaggedCardFooter";
 import { SocialCardFooter } from "../SocialCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";

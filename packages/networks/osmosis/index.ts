@@ -6,7 +6,7 @@ export const osmosisNetwork: NetworkInfo = {
   kind: NetworkKind.Cosmos,
   chainId: "osmosis-1",
   displayName: "Osmosis",
-  icon: "icons/networks/osmosis.svg",
+  icon: "osmosis.svg",
   features: [NetworkFeature.Swap],
   overrides: "cosmos-registry:osmosis",
   currencies: osmosisCurrencies,

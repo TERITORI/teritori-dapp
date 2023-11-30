@@ -19,7 +19,7 @@ export const ToriPunks: ScreenFC<"ToriPunks"> = ({ route }) => {
       fullWidth
       hideSidebar
       headerChildren={<TopLogo />}
-      footerChildren={<div />}
+      footerChildren={<></>}
       forceNetworkId="teritori"
     >
       <ContentContextProvider screen={screen}>

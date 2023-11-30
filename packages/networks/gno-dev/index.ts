@@ -5,7 +5,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   id: "gno-dev",
   kind: NetworkKind.Gno,
   displayName: "Gno Dev",
-  icon: "icons/networks/gno.svg",
+  icon: "gno.svg",
   features: [
     NetworkFeature.Organizations,
     NetworkFeature.SocialFeed,

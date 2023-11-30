@@ -1,4 +1,3 @@
-import { CID } from "multiformats";
 import React, { memo } from "react";
 import { Image, ImageProps, View, StyleSheet, PixelRatio } from "react-native";
 
@@ -65,6 +64,10 @@ const transformURI = (
     return "";
   }
 
+  if (typeof uri !== "string") {
+    return uri;
+  }
+
   const isRelative = uri.startsWith("/");
   if (isRelative) {
     return uri;
@@ -72,6 +75,7 @@ const transformURI = (
 
   // detect if raw CID
   try {
+    const { CID } = require("multiformats");
     CID.parse(uri);
     uri = "ipfs://" + uri;
   } catch {}
