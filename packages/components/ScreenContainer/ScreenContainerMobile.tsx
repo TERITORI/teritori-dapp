@@ -2,7 +2,6 @@ import React, { FC, ReactNode } from "react";
 import {
   SafeAreaView,
   ScrollView,
-  StyleSheet,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -65,69 +64,71 @@ export const ScreenContainerMobile: FC<{
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <SearchModalMobile
-        onClose={() => setSearchModalMobileOpen(false)}
-        visible={isSearchModalMobileOpen}
-      />
-      <HeaderMobile
-        onBackPress={onBackPress}
-        forceNetworkId={forceNetworkId}
-        forceNetworkKind={forceNetworkKind}
-        forceNetworkFeatures={forceNetworkFeatures}
-      />
-      <SidebarMobile />
+    <SafeAreaView
+      style={{
+        flex: 1,
+        width: "100%",
+        backgroundColor: "#000000",
+      }}
+    >
+      <View
+        style={[
+          {
+            flex: 1,
+            paddingTop: MOBILE_HEADER_HEIGHT,
+          },
+        ]}
+      >
+        <SearchModalMobile
+          onClose={() => setSearchModalMobileOpen(false)}
+          visible={isSearchModalMobileOpen}
+        />
+        <HeaderMobile
+          onBackPress={onBackPress}
+          forceNetworkId={forceNetworkId}
+          forceNetworkKind={forceNetworkKind}
+          forceNetworkFeatures={forceNetworkFeatures}
+        />
+        <SidebarMobile />
 
-      {/*==== Scrollable screen content*/}
-      <View style={{ flex: 1, width: "100%", height: windowHeight }}>
-        <SelectedNetworkGate filter={networkFilter}>
-          {hasScroll ? (
-            <ScrollView
-              contentContainerStyle={[
-                {
-                  minHeight: windowHeight - MOBILE_HEADER_HEIGHT,
-                },
-              ]}
-            >
-              {mobileTitle ? <MobileTitle title={mobileTitle} /> : null}
-              <View style={[styles.childrenContainer, { flex: 1, width }]}>
-                {children}
-              </View>
-              {/*TODO: Put here Riotters Footer ?*/}
-            </ScrollView>
-          ) : (
-            <>
-              <View style={[styles.childrenContainer, { flex: 1 }]}>
-                {children}
-              </View>
-            </>
-            // TODO: Put here Riotters Footer ?
-          )}
-          <MediaPlayerBar
-            style={{
-              position: "absolute",
-              bottom: 0,
-              right: 0,
-              width: windowWidth,
-            }}
-          />
-        </SelectedNetworkGate>
+        {/*==== Scrollable screen content*/}
+        <View style={{ flex: 1, width: "100%", height: windowHeight }}>
+          <SelectedNetworkGate filter={networkFilter}>
+            {hasScroll ? (
+              <ScrollView
+                contentContainerStyle={[
+                  {
+                    minHeight: windowHeight - MOBILE_HEADER_HEIGHT,
+                  },
+                ]}
+              >
+                {mobileTitle ? <MobileTitle title={mobileTitle} /> : null}
+                <View style={[{ flex: 1, width, height: "100%" }]}>
+                  {children}
+                </View>
+                {/*TODO: Put here Riotters Footer ?*/}
+              </ScrollView>
+            ) : (
+              <>
+                <View
+                  style={[{ flex: 1, height: "100%", alignSelf: "center" }]}
+                >
+                  {children}
+                </View>
+              </>
+              // TODO: Put here Riotters Footer ?
+            )}
+            <MediaPlayerBar
+              style={{
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                width: windowWidth,
+              }}
+            />
+          </SelectedNetworkGate>
+        </View>
       </View>
     </SafeAreaView>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: "100%",
-    backgroundColor: "#000000",
-    paddingTop: MOBILE_HEADER_HEIGHT,
-  },
-  childrenContainer: {
-    height: "100%",
-    alignSelf: "center",
-  },
-});

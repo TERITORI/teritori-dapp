@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { Wallet } from "./wallet";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
-import { NetworkKind, allNetworks, getUserId } from "../../networks";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
+import { NetworkKind, allNetworks, getUserId } from "../../../networks";
 import {
   selectIsAdenaConnected,
   setIsAdenaConnected,
   setSelectedWalletId,
-} from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
-import { WalletProvider } from "../../utils/walletProvider";
+} from "../../../store/slices/settings";
+import { useAppDispatch } from "../../../store/store";
+import { WalletProvider } from "../../../utils/walletProvider";
+import { Wallet } from "../wallet";
 
 type UseAdenaResult = [true, boolean, Wallet[]] | [false, boolean, undefined];
 

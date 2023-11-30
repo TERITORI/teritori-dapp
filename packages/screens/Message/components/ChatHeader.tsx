@@ -1,4 +1,4 @@
-import Clipboard from "@react-native-clipboard/clipboard";
+import Clipboard from "expo-clipboard";
 import React, { useRef, useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
@@ -78,7 +78,7 @@ export const ChatHeader = ({
           groupInfo?.group,
           conversation.name,
         );
-        Clipboard.setString(groupLink || "");
+        Clipboard.setStringAsync(groupLink || "");
         setToastSuccess({
           title: "Group link copied!",
           message: "",

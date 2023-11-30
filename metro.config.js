@@ -1,4 +1,5 @@
 const { getDefaultConfig } = require("expo/metro-config");
+const blacklist = require("metro-config/src/defaults/exclusionList");
 
 module.exports = (() => {
   const config = getDefaultConfig(__dirname);
@@ -13,6 +14,12 @@ module.exports = (() => {
     ...resolver,
     assetExts: resolver.assetExts.filter((ext) => ext !== "svg"),
     sourceExts: [...resolver.sourceExts, "svg", "cjs"],
+    extraNodeModules: require("node-libs-react-native"),
+    blacklistRE: blacklist([
+      /node_modules\/redux-persist-electron-storage\/.*/,
+      /node_modules\/electron\/.*/,
+      /node_modules\/electron-store\/.*/,
+    ]),
   };
 
   return config;

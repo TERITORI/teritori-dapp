@@ -79,6 +79,10 @@ const transformURI = (
     return "";
   }
 
+  if (typeof uri !== "string") {
+    return uri;
+  }
+
   const isRelative = uri.startsWith("/");
   if (isRelative) {
     return uri;

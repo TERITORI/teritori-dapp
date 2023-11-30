@@ -245,7 +245,7 @@ const ValidatorRow: React.FC<{
         </>
       )}
 
-      {actions && (
+      {!!actions && (
         <View
           style={{
             flex: TABLE_ROWS.actions.flex,

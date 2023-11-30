@@ -12,7 +12,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   chainId: "teritori-test-5",
   displayName: "Teritori Testnet",
   registryName: "teritoritestnet",
-  icon: "icons/networks/teritori.svg",
+  icon: "teritori.svg",
   features: [
     NetworkFeature.NFTMarketplace,
     NetworkFeature.Organizations,
