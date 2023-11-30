@@ -12,7 +12,7 @@ ignores: [
   "@types/node",
   "@improbable-eng/grpc-web-node-http-transport",
   "babel-loader",
-  "react-native-web", 
+  "react-native-web",
   "cors-anywhere",
   "depcheck",
   "dotenv",
@@ -27,10 +27,15 @@ ignores: [
   "assert",
   "listr2",
   "typescript",
-]
+  "@dotlottie/react-player",
+  "@lottiefiles/react-lottie-player",
+  "crypto",
+  "expo-constants",
+  "metro-config",
+];
 ignorePatterns: [
-  "/cache", 
+  "/cache",
   "/.yarn",
   "/electron-webpack.js",
   "/electron/webpack.config.js",
-]
+];
