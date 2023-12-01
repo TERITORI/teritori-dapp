@@ -1,5 +1,5 @@
 import React from "react";
-import { View, FlatList, TextStyle } from "react-native";
+import { View, FlatList, TextStyle, useWindowDimensions } from "react-native";
 
 import { EstateCard } from "./EstateCard";
 import { EstateCardListProps, EstateCardProps } from "./types";
@@ -55,32 +55,34 @@ export const EstateCardList: React.FC<EstateCardListProps> = ({
   title,
   style,
 }) => {
+  const { width: windowWidth } = useWindowDimensions();
+  const [flatListWidth, setFlatListWidth] = React.useState<number>(0);
+
   return (
     <View
       style={{
         ...style,
+        // center content to fit with large screens
+        alignItems: flatListWidth < windowWidth ? "center" : undefined,
       }}
     >
-      <BrandText style={ListTitleCStyle}>{title}</BrandText>
-      <FlatList
-        contentContainerStyle={{
-          paddingHorizontal: 40,
-          flex: 1,
-          width: "100%",
-          alignSelf: "center",
-          // alignItems: "center",
-        }}
-        data={cards}
-        renderItem={({ item, index }) => (
-          <EstateCard
-            style={{ marginLeft: index === 0 ? 20 : 24 }}
-            key={item.card.id}
-            {...item}
-          />
-        )}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      />
+      <View>
+        <BrandText style={ListTitleCStyle}>{title}</BrandText>
+        <FlatList
+          contentContainerStyle={{ paddingHorizontal: 40 }}
+          data={cards}
+          renderItem={({ item, index }) => (
+            <EstateCard
+              style={{ marginLeft: index === 0 ? 20 : 24 }}
+              key={item.card.id}
+              {...item}
+            />
+          )}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          onContentSizeChange={(width) => setFlatListWidth(width)}
+        />
+      </View>
     </View>
   );
 };

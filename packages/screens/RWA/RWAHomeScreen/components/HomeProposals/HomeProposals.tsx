@@ -14,7 +14,7 @@ export const HomeProposals: React.FC = () => {
 
   return (
     <View style={HomeProposalsContainerCStyle}>
-      <View style={{ marginLeft: 160 }}>
+      <View>
         <BrandText
           numberOfLines={1}
           style={{ fontSize: 28, lineHeight: 45, letterSpacing: -1 }}
@@ -53,11 +53,8 @@ export const HomeProposals: React.FC = () => {
 };
 
 const HomeProposalsContainerCStyle: ViewStyle = {
-  width: "100%",
-  justifyContent: "flex-start",
   alignItems: "center",
   gap: 120,
-  flex: 1,
   flexDirection: "row",
 };
 

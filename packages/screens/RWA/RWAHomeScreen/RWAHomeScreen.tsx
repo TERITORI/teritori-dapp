@@ -20,25 +20,27 @@ export const RWAHomeScreen: ScreenFC<"RWAHome"> = () => {
 
   return (
     <RWAScreenContainer headerTitle="Fractionalized Real State Launchpad">
-      <View>
-        <HomeProposals />
-      </View>
-      <View>
-        <EstateCardList
-          title="Available"
-          cards={getEstateCardList()}
-          style={{ marginTop: 24 }}
-        />
-        <EstateCardList
-          title="Coming soon"
-          cards={getEstateCardList(true)}
-          style={{ marginTop: 64 }}
-        />
-        <EstateCardList
-          title="Sold out"
-          cards={getEstateCardList()}
-          style={{ marginTop: 64 }}
-        />
+      <View style={{ flex: 1, width: "100%" }}>
+        <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
+          <HomeProposals />
+        </View>
+        <View>
+          <EstateCardList
+            title="Available"
+            cards={getEstateCardList()}
+            style={{ marginTop: 24 }}
+          />
+          <EstateCardList
+            title="Coming soon"
+            cards={getEstateCardList(true)}
+            style={{ marginTop: 64 }}
+          />
+          <EstateCardList
+            title="Sold out"
+            cards={getEstateCardList()}
+            style={{ marginTop: 64 }}
+          />
+        </View>
       </View>
     </RWAScreenContainer>
   );

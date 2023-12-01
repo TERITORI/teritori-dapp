@@ -38,7 +38,7 @@ export const RWAScreenContainer: React.FC<RWAScreenContainerProps> = ({
           >
             <View style={ScrollViewContainerCStyle}>
               <ScrollView
-                style={{ width: "100%", flex: 1 }}
+                style={{ width: "100%" }}
                 contentContainerStyle={{ paddingVertical: 40 }}
               >
                 <View style={ChildrenContainerCStyle}>{children}</View>
@@ -61,13 +61,10 @@ const ScrollViewContainerCStyle: ViewStyle = {
   flex: 1,
   width: "100%",
   height: "100%",
-  alignItems: "center",
-  justifyContent: "center",
 };
 
 const ChildrenContainerCStyle: ViewStyle = {
   flex: 1,
   width: "100%",
   height: "100%",
-  alignSelf: "center",
 };
