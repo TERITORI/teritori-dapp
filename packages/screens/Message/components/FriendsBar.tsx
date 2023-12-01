@@ -25,6 +25,7 @@ export const FriendsBar = () => {
   const contactRequests = useSelector(selectContactRequestList);
   const conversations = useSelector(selectConversationList);
   const { navigate } = useAppNavigation();
+
   return (
     <View
       style={{
@@ -51,10 +52,10 @@ export const FriendsBar = () => {
             {!!contactRequests?.length && (
               <TouchableOpacity
                 onPress={() => {
-                  if (Platform.OS === "web") {
-                    navigate("Message", { view: "AddFriend", tab: "request" });
-                  } else {
+                  if (Platform.OS !== "web") {
                     navigate("FriendshipManager", { tab: "request" });
+                  } else {
+                    navigate("Message", { view: "AddFriend", tab: "request" });
                   }
                 }}
               >
@@ -71,10 +72,10 @@ export const FriendsBar = () => {
                 alignItems: "center",
               }}
               onPress={() => {
-                if (Platform.OS === "web") {
-                  navigate("Message", { view: "AddFriend", tab: "friends" });
-                } else {
+                if (Platform.OS !== "web") {
                   navigate("FriendshipManager", { tab: "friends" });
+                } else {
+                  navigate("Message", { view: "AddFriend", tab: "friends" });
                 }
               }}
             >

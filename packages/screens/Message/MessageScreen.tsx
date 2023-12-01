@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   View,
   TouchableOpacity,
-  Platform,
   ScrollView,
   ActivityIndicator,
+  useWindowDimensions,
+  Platform,
 } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -22,11 +23,11 @@ import friend from "../../../assets/icons/friend.svg";
 import group from "../../../assets/icons/group.svg";
 import space from "../../../assets/icons/space.svg";
 import { BrandText } from "../../components/BrandText";
-import FlexRow from "../../components/FlexRow";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useMessage } from "../../context/MessageProvider";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { selectIsWeshConnected } from "../../store/slices/message";
 import { useAppNavigation, ScreenFC } from "../../utils/navigation";
 import { fontSemibold14 } from "../../utils/style/fonts";
@@ -40,6 +41,12 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
   const { activeConversation, setActiveConversation } = useMessage();
 
   const navigation = useAppNavigation();
+  const isMobile = useIsMobile();
+  const { width } = useWindowDimensions();
+
+  const isMobileChatView = useMemo(() => {
+    return isMobile && (activeConversation || activeView === "AddFriend");
+  }, [isMobile, activeConversation, activeView]);
 
   const HEADER_CONFIG = [
     {
@@ -66,7 +73,7 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
       icon: friend,
       isActive: true,
       onPress() {
-        if (["android", "ios"].includes(Platform.OS)) {
+        if (Platform.OS !== "web") {
           navigation.navigate("FriendshipManager");
         } else {
           navigation.navigate("Message", { view: "AddFriend" });
@@ -132,21 +139,16 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
       footerChildren={<></>}
       noScroll
     >
-      <View
-        style={{
-          width: "100%",
-          flex: 1,
-        }}
-      >
-        <SpacerColumn size={3} />
-        <FlexRow>
+      {(!isMobile || !isMobileChatView) && (
+        <View>
+          <SpacerColumn size={3} />
           <ScrollView
             horizontal
             style={{
-              paddingHorizontal:
-                Platform.OS === "web"
-                  ? layout.spacing_x1_5
-                  : layout.spacing_x0_5,
+              paddingHorizontal: isMobile
+                ? layout.spacing_x0_5
+                : layout.spacing_x1_5,
+              maxWidth: width,
             }}
           >
             {HEADER_CONFIG.map((item) => (
@@ -163,55 +165,49 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
               </React.Fragment>
             ))}
           </ScrollView>
-        </FlexRow>
-        <SpacerColumn size={3} />
-
-        {Platform.OS === "web" && <Separator />}
-
-        {["android", "ios"].includes(Platform.OS) ? (
-          <SideBarChats />
-        ) : (
-          <View
-            style={{
-              flexDirection: "row",
-              flex: 1,
-            }}
-          >
-            <SideBarChats />
-            <Separator horizontal />
-
-            <View style={{ flex: 1 }}>
-              {activeView === "AddFriend" ? (
-                <FriendshipManager
-                  activeTab={activeTab}
-                  setActiveConversation={(conv) => {
-                    setActiveConversation(conv);
-                    navigation.navigate("Message");
-                  }}
-                />
-              ) : (
-                <>
-                  {activeConversation ? (
-                    <ChatSection conversation={activeConversation} />
-                  ) : (
-                    <MessageBlankFiller />
-                  )}
-                </>
-              )}
-            </View>
-          </View>
-        )}
-
-        {activeView === "CreateGroup" && (
-          <CreateGroup onClose={() => navigation.navigate("Message")} />
-        )}
-        {activeView === "CreateConversation" && (
-          <CreateConversation onClose={() => navigation.navigate("Message")} />
-        )}
-        {activeView === "JoinGroup" && (
-          <JoinGroup onClose={() => navigation.navigate("Message")} />
+          <SpacerColumn size={3} />
+          <Separator />
+        </View>
+      )}
+      <View
+        style={{
+          flexDirection: isMobile ? "column" : "row",
+          flex: 1,
+        }}
+      >
+        {(!isMobile || !isMobileChatView) && <SideBarChats />}
+        {(!isMobile || isMobileChatView) && (
+          <>
+            {!isMobileChatView && <Separator horizontal />}
+            {activeView === "AddFriend" ? (
+              <FriendshipManager
+                activeTab={activeTab}
+                setActiveConversation={(conv) => {
+                  setActiveConversation(conv);
+                  navigation.navigate("Message");
+                }}
+              />
+            ) : (
+              <>
+                {activeConversation ? (
+                  <ChatSection conversation={activeConversation} />
+                ) : (
+                  <MessageBlankFiller />
+                )}
+              </>
+            )}
+          </>
         )}
       </View>
+      {activeView === "CreateGroup" && (
+        <CreateGroup onClose={() => navigation.navigate("Message")} />
+      )}
+      {activeView === "CreateConversation" && (
+        <CreateConversation onClose={() => navigation.navigate("Message")} />
+      )}
+      {activeView === "JoinGroup" && (
+        <JoinGroup onClose={() => navigation.navigate("Message")} />
+      )}
     </ScreenContainer>
   );
 };

@@ -1,19 +1,19 @@
 import moment from "moment";
 import React, { useMemo } from "react";
-import { Platform, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { MessageAvatar } from "./MessageAvatar";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import {
   selectConversationById,
   selectLastContactMessageByGroupPk,
   selectLastMessageByGroupPk,
 } from "../../../store/slices/message";
 import { RootState } from "../../../store/store";
-import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
   neutral22,
@@ -41,7 +41,7 @@ export const ChatItem = ({
   isActive,
   isLastItem,
 }: ChatItemProps) => {
-  const navigation = useAppNavigation();
+  const isMobile = useIsMobile();
   const lastMessage = useSelector((state: RootState) =>
     selectLastMessageByGroupPk(state, data.id),
   );
@@ -61,20 +61,14 @@ export const ChatItem = ({
     <TouchableOpacity
       activeOpacity={0.9}
       style={{
-        backgroundColor:
-          isActive && Platform.OS === "web" ? neutral22 : neutral00,
+        backgroundColor: isActive && isMobile ? neutral00 : neutral22,
         padding: layout.spacing_x1,
         borderRadius: 4,
-        borderBottomWidth:
-          ["android", "ios"].includes(Platform.OS) && !isLastItem ? 1 : 0,
+        borderBottomWidth: isMobile && !isLastItem ? 1 : 0,
         borderBottomColor: neutral22,
         width: "100%",
       }}
-      onPress={() =>
-        ["android", "ios"].includes(Platform.OS)
-          ? navigation.navigate("ChatSection", data)
-          : onPress()
-      }
+      onPress={onPress}
     >
       {!isAllMessageRead && (
         <View
