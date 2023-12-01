@@ -60,7 +60,7 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
               <>
                 {/* ScreenContainer has noScroll, so we need to add MobileTitle here */}
                 {isMobile && <MobileTitle title="SOCIAL FEED" />}
-                <FeedHeader selectedTab="all" />
+                <FeedHeader selectedTab="" />
               </>
             )}
           />

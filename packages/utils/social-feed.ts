@@ -51,7 +51,7 @@ export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
 };
 
 export const feedsTabItems: { [key: string]: TabDefinition } = {
-  all: {
+  "": {
     name: "Jungle News Feed",
   },
   sounds: {
