@@ -10,7 +10,6 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/pb"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/pkg/errors"
-	"gorm.io/gorm"
 )
 
 type ExecuteInput struct {
@@ -37,75 +36,25 @@ func (h *Handler) handleExecute(contractABI *abi.ABI, tx *pb.Tx, args map[string
 	}
 
 	var targetMint string
+	var originalCollectionID string
 	switch tx.Info.To {
 	case h.network.RiotBridgedNFTAddressGen0:
 		targetMint = h.network.RiotContractAddressGen0
+		originalCollectionID = h.network.RiotOriginalCollectionIdGen0
 	case h.network.RiotBridgedNFTAddressGen1:
 		targetMint = h.network.RiotContractAddressGen1
+		originalCollectionID = h.network.RiotOriginalCollectionIdGen1
 	default:
 		return errors.New("Unknown NFT address: " + tx.Info.To)
 	}
 
-	splittedMint := strings.Split(targetMint, ":")
-	sourceMint, sourceNetworkIDPrefix := splittedMint[0], splittedMint[1]
-	sourceNetwork, err := h.networkStore.GetNetworkFromIDPrefix(sourceNetworkIDPrefix)
-	if err != nil {
-		return errors.Wrap(err, "failed to get source network")
-	}
+	// NOTE: The collection should exist already at this step
+	// Logically, minter should deploy before the NFT can be minted
 
-	// Check if target collection exists
-	var targetTeritoriCollection indexerdb.TeritoriCollection
-	if err := h.dbTransaction.First(&targetTeritoriCollection, &indexerdb.TeritoriCollection{MintContractAddress: targetMint}).Error; err != nil {
-		if !errors.Is(err, gorm.ErrRecordNotFound) {
-			return errors.Wrap(err, "failed to get target mint")
-		}
-
-		// Target teritori collection does not exist then we create it =========================
-		// 1. Get source collection
-		var sourceCollection indexerdb.Collection
-		if err := h.dbTransaction.First(&sourceCollection, &indexerdb.Collection{ID: sourceNetwork.GetBase().CollectionID(sourceMint)}).Error; err != nil {
-			return errors.Wrap(err, "failed to get source collection")
-		}
-
-		// 2. Create target collection
-		targetCollection := indexerdb.Collection{
-			ID:        h.network.GetBase().CollectionID(targetMint),
-			NetworkID: h.network.ID,
-			Name:      sourceCollection.Name,
-			ImageURI:  sourceCollection.ImageURI,
-			Time:      sourceCollection.Time,
-		}
-
-		if err := h.dbTransaction.FirstOrCreate(&targetCollection).Error; err != nil {
-			return errors.Wrap(err, "failed to create target collection")
-		}
-
-		// 3. Get the source teritori_collection
-		var sourceTeritoriCollection indexerdb.TeritoriCollection
-		if err := h.dbTransaction.First(&sourceTeritoriCollection, &indexerdb.TeritoriCollection{CollectionID: sourceCollection.ID}).Error; err != nil {
-			return errors.Wrap(err, "failed to get source teritori_collection")
-		}
-
-		// 4. Create the source teritori_collection
-		targetCollectionID := h.network.GetBase().CollectionID(targetMint)
-
-		targetTeritoriCollection = indexerdb.TeritoriCollection{
-			CollectionID:        targetCollectionID,
-			MintContractAddress: targetMint,
-			NFTContractAddress:  fmt.Sprintf("%s:%s", tx.Info.To, sourceTeritoriCollection.NFTContractAddress),
-			CreatorAddress:      fmt.Sprintf("%s:%s", sourceTeritoriCollection.CreatorAddress, sourceNetworkIDPrefix),
-			NetworkID:           h.network.ID,
-		}
-		if err := h.dbTransaction.FirstOrCreate(&targetTeritoriCollection).Error; err != nil {
-			return errors.Wrap(err, "failed to create bridged collection")
-		}
-
-	}
-
-	// 6. Get source teritori_nft
+	// Get source teritori_nft
 	var sourceNFT indexerdb.NFT
-	sourceNftID := sourceNetwork.GetBase().NftID(sourceMint, tokenID)
-	if err := h.dbTransaction.First(&sourceNFT, &indexerdb.NFT{ID: sourceNftID}).Error; err != nil {
+	sourceNftID := h.network.StringToNFTID(fmt.Sprintf("%s-%d", originalCollectionID, tokenID))
+	if err := h.indexerDB.First(&sourceNFT, &indexerdb.NFT{ID: sourceNftID}).Error; err != nil {
 		// NOTE: When testing, we bridged from different collections which are not our NFT collection
 		// so they have not been indexed, so we will not be able to get the source NFT here. In that case, we just ignore this NFT
 		// return errors.Wrap(err, "failed to get source teritori_nft")
@@ -113,7 +62,8 @@ func (h *Handler) handleExecute(contractABI *abi.ABI, tx *pb.Tx, args map[string
 		return nil
 	}
 
-	// 7. Create target teritori_nft
+	targetCollectionID := h.network.CollectionID(h.network.RiotContractAddressGen0)
+	// Create target nft
 	targetNFT := indexerdb.NFT{
 		ID:           h.network.GetBase().NftID(targetMint, tokenID),
 		Name:         sourceNFT.Name,
@@ -121,7 +71,7 @@ func (h *Handler) handleExecute(contractABI *abi.ABI, tx *pb.Tx, args map[string
 		OwnerID:      h.network.UserID(strings.Split(string(sourceNFT.OwnerID), "-")[1]),
 		IsListed:     sourceNFT.IsListed,
 		Attributes:   sourceNFT.Attributes,
-		CollectionID: targetTeritoriCollection.CollectionID,
+		CollectionID: targetCollectionID,
 		NetworkID:    h.network.ID,
 	}
 
@@ -138,7 +88,6 @@ func (h *Handler) handleExecute(contractABI *abi.ABI, tx *pb.Tx, args map[string
 	if err := h.dbTransaction.FirstOrCreate(&teritoriNFT).Error; err != nil {
 		return errors.Wrap(err, "failed to create teritori_nft")
 	}
-
 	return nil
 }
 

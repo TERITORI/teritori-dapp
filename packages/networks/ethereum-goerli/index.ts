@@ -21,7 +21,8 @@ export const ethereumGoerliNetwork: EthereumNetworkInfo = {
   accountExplorer: "https://goerli.etherscan.io/address/$address",
   contractExplorer: "https://goerli.etherscan.io/address/$address",
   testnet: true,
-  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
+  // backendEndpoint: "https://dapp-backend.testnet.teritori.com",
+  backendEndpoint: "http://localhost:9090",
   chainId: 5,
   alchemyApiKey: "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
   theGraphEndpoint:

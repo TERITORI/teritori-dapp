@@ -13,6 +13,10 @@ type UserID string
 type NFTID string
 type ActivityID string
 
+func (n *NetworkBase) StringToNFTID(nftIDString string) NFTID {
+	return NFTID(nftIDString)
+}
+
 func (n *NetworkBase) CollectionID(mintContractAddress string) CollectionID {
 	return CollectionID(fmt.Sprintf("%s-%s", n.IDPrefix, mintContractAddress))
 }

@@ -31,7 +31,7 @@ var (
 
 // AxelarTeritoriNFTMetaData contains all meta data concerning the AxelarTeritoriNFT contract.
 var AxelarTeritoriNFTMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"gateway_\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"InvalidAddress\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotApprovedByGateway\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"approved\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"approved\",\"type\":\"bool\"}],\"name\":\"ApprovalForAll\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_fromTokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_toTokenId\",\"type\":\"uint256\"}],\"name\":\"BatchMetadataUpdate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"MetadataUpdate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"commandId\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"sourceChain\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"sourceAddress\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"payload\",\"type\":\"bytes\"}],\"name\":\"execute\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"commandId\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"sourceChain\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"sourceAddress\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"payload\",\"type\":\"bytes\"},{\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"executeWithToken\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"gateway\",\"outputs\":[{\"internalType\":\"contractIAxelarGateway\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"getApproved\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"isApprovedForAll\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"ownerOf\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"approved\",\"type\":\"bool\"}],\"name\":\"setApprovalForAll\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"tokenURI\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"gateway_\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"sourceChainName_\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"sourceAddressBridge_\",\"type\":\"string\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"InvalidAddress\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotApprovedByGateway\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"approved\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"approved\",\"type\":\"bool\"}],\"name\":\"ApprovalForAll\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_fromTokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_toTokenId\",\"type\":\"uint256\"}],\"name\":\"BatchMetadataUpdate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"version\",\"type\":\"uint8\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"MetadataUpdate\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"commandId\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"sourceChain\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"sourceAddress\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"payload\",\"type\":\"bytes\"}],\"name\":\"execute\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"commandId\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"sourceChain\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"sourceAddress\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"payload\",\"type\":\"bytes\"},{\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"executeWithToken\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"gateway\",\"outputs\":[{\"internalType\":\"contractIAxelarGateway\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"getApproved\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_symbol\",\"type\":\"string\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"isApprovedForAll\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"ownerOf\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"salePrice\",\"type\":\"uint256\"}],\"name\":\"royaltyInfo\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"approved\",\"type\":\"bool\"}],\"name\":\"setApprovalForAll\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"sourceAddress_\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"sourceChain_\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"tokenByIndex\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"tokenOfOwnerByIndex\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"tokenURI\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // AxelarTeritoriNFTABI is the input ABI used to generate the binding from.
@@ -335,37 +335,6 @@ func (_AxelarTeritoriNFT *AxelarTeritoriNFTCallerSession) Name() (string, error)
 	return _AxelarTeritoriNFT.Contract.Name(&_AxelarTeritoriNFT.CallOpts)
 }
 
-// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() view returns(address)
-func (_AxelarTeritoriNFT *AxelarTeritoriNFTCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
-	var out []interface{}
-	err := _AxelarTeritoriNFT.contract.Call(opts, &out, "owner")
-
-	if err != nil {
-		return *new(common.Address), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
-
-	return out0, err
-
-}
-
-// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() view returns(address)
-func (_AxelarTeritoriNFT *AxelarTeritoriNFTSession) Owner() (common.Address, error) {
-	return _AxelarTeritoriNFT.Contract.Owner(&_AxelarTeritoriNFT.CallOpts)
-}
-
-// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
-//
-// Solidity: function owner() view returns(address)
-func (_AxelarTeritoriNFT *AxelarTeritoriNFTCallerSession) Owner() (common.Address, error) {
-	return _AxelarTeritoriNFT.Contract.Owner(&_AxelarTeritoriNFT.CallOpts)
-}
-
 // OwnerOf is a free data retrieval call binding the contract method 0x6352211e.
 //
 // Solidity: function ownerOf(uint256 tokenId) view returns(address)
@@ -395,6 +364,100 @@ func (_AxelarTeritoriNFT *AxelarTeritoriNFTSession) OwnerOf(tokenId *big.Int) (c
 // Solidity: function ownerOf(uint256 tokenId) view returns(address)
 func (_AxelarTeritoriNFT *AxelarTeritoriNFTCallerSession) OwnerOf(tokenId *big.Int) (common.Address, error) {
 	return _AxelarTeritoriNFT.Contract.OwnerOf(&_AxelarTeritoriNFT.CallOpts, tokenId)
+}
+
+// RoyaltyInfo is a free data retrieval call binding the contract method 0x2a55205a.
+//
+// Solidity: function royaltyInfo(uint256 tokenId, uint256 salePrice) view returns(address, uint256)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTCaller) RoyaltyInfo(opts *bind.CallOpts, tokenId *big.Int, salePrice *big.Int) (common.Address, *big.Int, error) {
+	var out []interface{}
+	err := _AxelarTeritoriNFT.contract.Call(opts, &out, "royaltyInfo", tokenId, salePrice)
+
+	if err != nil {
+		return *new(common.Address), *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+	out1 := *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
+
+	return out0, out1, err
+
+}
+
+// RoyaltyInfo is a free data retrieval call binding the contract method 0x2a55205a.
+//
+// Solidity: function royaltyInfo(uint256 tokenId, uint256 salePrice) view returns(address, uint256)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTSession) RoyaltyInfo(tokenId *big.Int, salePrice *big.Int) (common.Address, *big.Int, error) {
+	return _AxelarTeritoriNFT.Contract.RoyaltyInfo(&_AxelarTeritoriNFT.CallOpts, tokenId, salePrice)
+}
+
+// RoyaltyInfo is a free data retrieval call binding the contract method 0x2a55205a.
+//
+// Solidity: function royaltyInfo(uint256 tokenId, uint256 salePrice) view returns(address, uint256)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTCallerSession) RoyaltyInfo(tokenId *big.Int, salePrice *big.Int) (common.Address, *big.Int, error) {
+	return _AxelarTeritoriNFT.Contract.RoyaltyInfo(&_AxelarTeritoriNFT.CallOpts, tokenId, salePrice)
+}
+
+// SourceAddress is a free data retrieval call binding the contract method 0x464c3c2b.
+//
+// Solidity: function sourceAddress_() view returns(string)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTCaller) SourceAddress(opts *bind.CallOpts) (string, error) {
+	var out []interface{}
+	err := _AxelarTeritoriNFT.contract.Call(opts, &out, "sourceAddress_")
+
+	if err != nil {
+		return *new(string), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(string)).(*string)
+
+	return out0, err
+
+}
+
+// SourceAddress is a free data retrieval call binding the contract method 0x464c3c2b.
+//
+// Solidity: function sourceAddress_() view returns(string)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTSession) SourceAddress() (string, error) {
+	return _AxelarTeritoriNFT.Contract.SourceAddress(&_AxelarTeritoriNFT.CallOpts)
+}
+
+// SourceAddress is a free data retrieval call binding the contract method 0x464c3c2b.
+//
+// Solidity: function sourceAddress_() view returns(string)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTCallerSession) SourceAddress() (string, error) {
+	return _AxelarTeritoriNFT.Contract.SourceAddress(&_AxelarTeritoriNFT.CallOpts)
+}
+
+// SourceChain is a free data retrieval call binding the contract method 0x47c948dd.
+//
+// Solidity: function sourceChain_() view returns(string)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTCaller) SourceChain(opts *bind.CallOpts) (string, error) {
+	var out []interface{}
+	err := _AxelarTeritoriNFT.contract.Call(opts, &out, "sourceChain_")
+
+	if err != nil {
+		return *new(string), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(string)).(*string)
+
+	return out0, err
+
+}
+
+// SourceChain is a free data retrieval call binding the contract method 0x47c948dd.
+//
+// Solidity: function sourceChain_() view returns(string)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTSession) SourceChain() (string, error) {
+	return _AxelarTeritoriNFT.Contract.SourceChain(&_AxelarTeritoriNFT.CallOpts)
+}
+
+// SourceChain is a free data retrieval call binding the contract method 0x47c948dd.
+//
+// Solidity: function sourceChain_() view returns(string)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTCallerSession) SourceChain() (string, error) {
+	return _AxelarTeritoriNFT.Contract.SourceChain(&_AxelarTeritoriNFT.CallOpts)
 }
 
 // SupportsInterface is a free data retrieval call binding the contract method 0x01ffc9a7.
@@ -459,6 +522,68 @@ func (_AxelarTeritoriNFT *AxelarTeritoriNFTCallerSession) Symbol() (string, erro
 	return _AxelarTeritoriNFT.Contract.Symbol(&_AxelarTeritoriNFT.CallOpts)
 }
 
+// TokenByIndex is a free data retrieval call binding the contract method 0x4f6ccce7.
+//
+// Solidity: function tokenByIndex(uint256 index) view returns(uint256)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTCaller) TokenByIndex(opts *bind.CallOpts, index *big.Int) (*big.Int, error) {
+	var out []interface{}
+	err := _AxelarTeritoriNFT.contract.Call(opts, &out, "tokenByIndex", index)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// TokenByIndex is a free data retrieval call binding the contract method 0x4f6ccce7.
+//
+// Solidity: function tokenByIndex(uint256 index) view returns(uint256)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTSession) TokenByIndex(index *big.Int) (*big.Int, error) {
+	return _AxelarTeritoriNFT.Contract.TokenByIndex(&_AxelarTeritoriNFT.CallOpts, index)
+}
+
+// TokenByIndex is a free data retrieval call binding the contract method 0x4f6ccce7.
+//
+// Solidity: function tokenByIndex(uint256 index) view returns(uint256)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTCallerSession) TokenByIndex(index *big.Int) (*big.Int, error) {
+	return _AxelarTeritoriNFT.Contract.TokenByIndex(&_AxelarTeritoriNFT.CallOpts, index)
+}
+
+// TokenOfOwnerByIndex is a free data retrieval call binding the contract method 0x2f745c59.
+//
+// Solidity: function tokenOfOwnerByIndex(address owner, uint256 index) view returns(uint256)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTCaller) TokenOfOwnerByIndex(opts *bind.CallOpts, owner common.Address, index *big.Int) (*big.Int, error) {
+	var out []interface{}
+	err := _AxelarTeritoriNFT.contract.Call(opts, &out, "tokenOfOwnerByIndex", owner, index)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// TokenOfOwnerByIndex is a free data retrieval call binding the contract method 0x2f745c59.
+//
+// Solidity: function tokenOfOwnerByIndex(address owner, uint256 index) view returns(uint256)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTSession) TokenOfOwnerByIndex(owner common.Address, index *big.Int) (*big.Int, error) {
+	return _AxelarTeritoriNFT.Contract.TokenOfOwnerByIndex(&_AxelarTeritoriNFT.CallOpts, owner, index)
+}
+
+// TokenOfOwnerByIndex is a free data retrieval call binding the contract method 0x2f745c59.
+//
+// Solidity: function tokenOfOwnerByIndex(address owner, uint256 index) view returns(uint256)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTCallerSession) TokenOfOwnerByIndex(owner common.Address, index *big.Int) (*big.Int, error) {
+	return _AxelarTeritoriNFT.Contract.TokenOfOwnerByIndex(&_AxelarTeritoriNFT.CallOpts, owner, index)
+}
+
 // TokenURI is a free data retrieval call binding the contract method 0xc87b56dd.
 //
 // Solidity: function tokenURI(uint256 tokenId) view returns(string)
@@ -488,6 +613,37 @@ func (_AxelarTeritoriNFT *AxelarTeritoriNFTSession) TokenURI(tokenId *big.Int) (
 // Solidity: function tokenURI(uint256 tokenId) view returns(string)
 func (_AxelarTeritoriNFT *AxelarTeritoriNFTCallerSession) TokenURI(tokenId *big.Int) (string, error) {
 	return _AxelarTeritoriNFT.Contract.TokenURI(&_AxelarTeritoriNFT.CallOpts, tokenId)
+}
+
+// TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
+//
+// Solidity: function totalSupply() view returns(uint256)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTCaller) TotalSupply(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _AxelarTeritoriNFT.contract.Call(opts, &out, "totalSupply")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
+//
+// Solidity: function totalSupply() view returns(uint256)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTSession) TotalSupply() (*big.Int, error) {
+	return _AxelarTeritoriNFT.Contract.TotalSupply(&_AxelarTeritoriNFT.CallOpts)
+}
+
+// TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
+//
+// Solidity: function totalSupply() view returns(uint256)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTCallerSession) TotalSupply() (*big.Int, error) {
+	return _AxelarTeritoriNFT.Contract.TotalSupply(&_AxelarTeritoriNFT.CallOpts)
 }
 
 // Approve is a paid mutator transaction binding the contract method 0x095ea7b3.
@@ -553,25 +709,25 @@ func (_AxelarTeritoriNFT *AxelarTeritoriNFTTransactorSession) ExecuteWithToken(c
 	return _AxelarTeritoriNFT.Contract.ExecuteWithToken(&_AxelarTeritoriNFT.TransactOpts, commandId, sourceChain, sourceAddress, payload, tokenSymbol, amount)
 }
 
-// RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
+// Initialize is a paid mutator transaction binding the contract method 0x4cd88b76.
 //
-// Solidity: function renounceOwnership() returns()
-func (_AxelarTeritoriNFT *AxelarTeritoriNFTTransactor) RenounceOwnership(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _AxelarTeritoriNFT.contract.Transact(opts, "renounceOwnership")
+// Solidity: function initialize(string _name, string _symbol) returns()
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTTransactor) Initialize(opts *bind.TransactOpts, _name string, _symbol string) (*types.Transaction, error) {
+	return _AxelarTeritoriNFT.contract.Transact(opts, "initialize", _name, _symbol)
 }
 
-// RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
+// Initialize is a paid mutator transaction binding the contract method 0x4cd88b76.
 //
-// Solidity: function renounceOwnership() returns()
-func (_AxelarTeritoriNFT *AxelarTeritoriNFTSession) RenounceOwnership() (*types.Transaction, error) {
-	return _AxelarTeritoriNFT.Contract.RenounceOwnership(&_AxelarTeritoriNFT.TransactOpts)
+// Solidity: function initialize(string _name, string _symbol) returns()
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTSession) Initialize(_name string, _symbol string) (*types.Transaction, error) {
+	return _AxelarTeritoriNFT.Contract.Initialize(&_AxelarTeritoriNFT.TransactOpts, _name, _symbol)
 }
 
-// RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
+// Initialize is a paid mutator transaction binding the contract method 0x4cd88b76.
 //
-// Solidity: function renounceOwnership() returns()
-func (_AxelarTeritoriNFT *AxelarTeritoriNFTTransactorSession) RenounceOwnership() (*types.Transaction, error) {
-	return _AxelarTeritoriNFT.Contract.RenounceOwnership(&_AxelarTeritoriNFT.TransactOpts)
+// Solidity: function initialize(string _name, string _symbol) returns()
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTTransactorSession) Initialize(_name string, _symbol string) (*types.Transaction, error) {
+	return _AxelarTeritoriNFT.Contract.Initialize(&_AxelarTeritoriNFT.TransactOpts, _name, _symbol)
 }
 
 // SafeTransferFrom is a paid mutator transaction binding the contract method 0x42842e0e.
@@ -656,27 +812,6 @@ func (_AxelarTeritoriNFT *AxelarTeritoriNFTSession) TransferFrom(from common.Add
 // Solidity: function transferFrom(address from, address to, uint256 tokenId) returns()
 func (_AxelarTeritoriNFT *AxelarTeritoriNFTTransactorSession) TransferFrom(from common.Address, to common.Address, tokenId *big.Int) (*types.Transaction, error) {
 	return _AxelarTeritoriNFT.Contract.TransferFrom(&_AxelarTeritoriNFT.TransactOpts, from, to, tokenId)
-}
-
-// TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
-//
-// Solidity: function transferOwnership(address newOwner) returns()
-func (_AxelarTeritoriNFT *AxelarTeritoriNFTTransactor) TransferOwnership(opts *bind.TransactOpts, newOwner common.Address) (*types.Transaction, error) {
-	return _AxelarTeritoriNFT.contract.Transact(opts, "transferOwnership", newOwner)
-}
-
-// TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
-//
-// Solidity: function transferOwnership(address newOwner) returns()
-func (_AxelarTeritoriNFT *AxelarTeritoriNFTSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
-	return _AxelarTeritoriNFT.Contract.TransferOwnership(&_AxelarTeritoriNFT.TransactOpts, newOwner)
-}
-
-// TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
-//
-// Solidity: function transferOwnership(address newOwner) returns()
-func (_AxelarTeritoriNFT *AxelarTeritoriNFTTransactorSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
-	return _AxelarTeritoriNFT.Contract.TransferOwnership(&_AxelarTeritoriNFT.TransactOpts, newOwner)
 }
 
 // AxelarTeritoriNFTApprovalIterator is returned from FilterApproval and is used to iterate over the raw logs and unpacked data for Approval events raised by the AxelarTeritoriNFT contract.
@@ -1130,6 +1265,140 @@ func (_AxelarTeritoriNFT *AxelarTeritoriNFTFilterer) ParseBatchMetadataUpdate(lo
 	return event, nil
 }
 
+// AxelarTeritoriNFTInitializedIterator is returned from FilterInitialized and is used to iterate over the raw logs and unpacked data for Initialized events raised by the AxelarTeritoriNFT contract.
+type AxelarTeritoriNFTInitializedIterator struct {
+	Event *AxelarTeritoriNFTInitialized // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *AxelarTeritoriNFTInitializedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(AxelarTeritoriNFTInitialized)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(AxelarTeritoriNFTInitialized)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *AxelarTeritoriNFTInitializedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *AxelarTeritoriNFTInitializedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// AxelarTeritoriNFTInitialized represents a Initialized event raised by the AxelarTeritoriNFT contract.
+type AxelarTeritoriNFTInitialized struct {
+	Version uint8
+	Raw     types.Log // Blockchain specific contextual infos
+}
+
+// FilterInitialized is a free log retrieval operation binding the contract event 0x7f26b83ff96e1f2b6a682f133852f6798a09c465da95921460cefb3847402498.
+//
+// Solidity: event Initialized(uint8 version)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTFilterer) FilterInitialized(opts *bind.FilterOpts) (*AxelarTeritoriNFTInitializedIterator, error) {
+
+	logs, sub, err := _AxelarTeritoriNFT.contract.FilterLogs(opts, "Initialized")
+	if err != nil {
+		return nil, err
+	}
+	return &AxelarTeritoriNFTInitializedIterator{contract: _AxelarTeritoriNFT.contract, event: "Initialized", logs: logs, sub: sub}, nil
+}
+
+// WatchInitialized is a free log subscription operation binding the contract event 0x7f26b83ff96e1f2b6a682f133852f6798a09c465da95921460cefb3847402498.
+//
+// Solidity: event Initialized(uint8 version)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTFilterer) WatchInitialized(opts *bind.WatchOpts, sink chan<- *AxelarTeritoriNFTInitialized) (event.Subscription, error) {
+
+	logs, sub, err := _AxelarTeritoriNFT.contract.WatchLogs(opts, "Initialized")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(AxelarTeritoriNFTInitialized)
+				if err := _AxelarTeritoriNFT.contract.UnpackLog(event, "Initialized", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseInitialized is a log parse operation binding the contract event 0x7f26b83ff96e1f2b6a682f133852f6798a09c465da95921460cefb3847402498.
+//
+// Solidity: event Initialized(uint8 version)
+func (_AxelarTeritoriNFT *AxelarTeritoriNFTFilterer) ParseInitialized(log types.Log) (*AxelarTeritoriNFTInitialized, error) {
+	event := new(AxelarTeritoriNFTInitialized)
+	if err := _AxelarTeritoriNFT.contract.UnpackLog(event, "Initialized", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
 // AxelarTeritoriNFTMetadataUpdateIterator is returned from FilterMetadataUpdate and is used to iterate over the raw logs and unpacked data for MetadataUpdate events raised by the AxelarTeritoriNFT contract.
 type AxelarTeritoriNFTMetadataUpdateIterator struct {
 	Event *AxelarTeritoriNFTMetadataUpdate // Event containing the contract specifics and raw log
@@ -1258,159 +1527,6 @@ func (_AxelarTeritoriNFT *AxelarTeritoriNFTFilterer) WatchMetadataUpdate(opts *b
 func (_AxelarTeritoriNFT *AxelarTeritoriNFTFilterer) ParseMetadataUpdate(log types.Log) (*AxelarTeritoriNFTMetadataUpdate, error) {
 	event := new(AxelarTeritoriNFTMetadataUpdate)
 	if err := _AxelarTeritoriNFT.contract.UnpackLog(event, "MetadataUpdate", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// AxelarTeritoriNFTOwnershipTransferredIterator is returned from FilterOwnershipTransferred and is used to iterate over the raw logs and unpacked data for OwnershipTransferred events raised by the AxelarTeritoriNFT contract.
-type AxelarTeritoriNFTOwnershipTransferredIterator struct {
-	Event *AxelarTeritoriNFTOwnershipTransferred // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *AxelarTeritoriNFTOwnershipTransferredIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(AxelarTeritoriNFTOwnershipTransferred)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(AxelarTeritoriNFTOwnershipTransferred)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *AxelarTeritoriNFTOwnershipTransferredIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *AxelarTeritoriNFTOwnershipTransferredIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// AxelarTeritoriNFTOwnershipTransferred represents a OwnershipTransferred event raised by the AxelarTeritoriNFT contract.
-type AxelarTeritoriNFTOwnershipTransferred struct {
-	PreviousOwner common.Address
-	NewOwner      common.Address
-	Raw           types.Log // Blockchain specific contextual infos
-}
-
-// FilterOwnershipTransferred is a free log retrieval operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
-//
-// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
-func (_AxelarTeritoriNFT *AxelarTeritoriNFTFilterer) FilterOwnershipTransferred(opts *bind.FilterOpts, previousOwner []common.Address, newOwner []common.Address) (*AxelarTeritoriNFTOwnershipTransferredIterator, error) {
-
-	var previousOwnerRule []interface{}
-	for _, previousOwnerItem := range previousOwner {
-		previousOwnerRule = append(previousOwnerRule, previousOwnerItem)
-	}
-	var newOwnerRule []interface{}
-	for _, newOwnerItem := range newOwner {
-		newOwnerRule = append(newOwnerRule, newOwnerItem)
-	}
-
-	logs, sub, err := _AxelarTeritoriNFT.contract.FilterLogs(opts, "OwnershipTransferred", previousOwnerRule, newOwnerRule)
-	if err != nil {
-		return nil, err
-	}
-	return &AxelarTeritoriNFTOwnershipTransferredIterator{contract: _AxelarTeritoriNFT.contract, event: "OwnershipTransferred", logs: logs, sub: sub}, nil
-}
-
-// WatchOwnershipTransferred is a free log subscription operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
-//
-// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
-func (_AxelarTeritoriNFT *AxelarTeritoriNFTFilterer) WatchOwnershipTransferred(opts *bind.WatchOpts, sink chan<- *AxelarTeritoriNFTOwnershipTransferred, previousOwner []common.Address, newOwner []common.Address) (event.Subscription, error) {
-
-	var previousOwnerRule []interface{}
-	for _, previousOwnerItem := range previousOwner {
-		previousOwnerRule = append(previousOwnerRule, previousOwnerItem)
-	}
-	var newOwnerRule []interface{}
-	for _, newOwnerItem := range newOwner {
-		newOwnerRule = append(newOwnerRule, newOwnerItem)
-	}
-
-	logs, sub, err := _AxelarTeritoriNFT.contract.WatchLogs(opts, "OwnershipTransferred", previousOwnerRule, newOwnerRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(AxelarTeritoriNFTOwnershipTransferred)
-				if err := _AxelarTeritoriNFT.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseOwnershipTransferred is a log parse operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
-//
-// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
-func (_AxelarTeritoriNFT *AxelarTeritoriNFTFilterer) ParseOwnershipTransferred(log types.Log) (*AxelarTeritoriNFTOwnershipTransferred, error) {
-	event := new(AxelarTeritoriNFTOwnershipTransferred)
-	if err := _AxelarTeritoriNFT.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
