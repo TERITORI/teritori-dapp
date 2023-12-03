@@ -5,8 +5,8 @@ import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { MobileTitle } from "../../components/ScreenContainer/ScreenContainerMobile";
-import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
+import { FeedVideosList } from "../../components/video/FeedVideosList";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { NetworkFeature } from "../../networks";
 
@@ -25,26 +25,15 @@ export const VideosFeedScreen: FC = () => {
 
   return (
     <ScreenContainer
-      fullWidth
       responsive
-      noMargin
-      noScroll
       footerChildren={<></>}
       forceNetworkFeatures={[NetworkFeature.SocialFeed]}
       headerChildren={<BrandText>Social Feed</BrandText>}
     >
-      <NewsFeed
-        isVideos
-        req={feedRequest}
-        disablePosting
-        Header={() => (
-          <>
-            {/* ScreenContainer has noScroll, so we need to add MobileTitle here */}
-            {isMobile && <MobileTitle title="SOCIAL FEED" />}
-            <FeedHeader selectedTab="videos" />
-          </>
-        )}
-      />
+      {/* ScreenContainer has noScroll, so we need to add MobileTitle here */}
+      {isMobile && <MobileTitle title="SOCIAL FEED" />}
+      <FeedHeader selectedTab="music" />
+      <FeedVideosList allowUpload title="All videos" req={feedRequest} />
     </ScreenContainer>
   );
 };
