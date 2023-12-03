@@ -20,9 +20,10 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
-interface RiotBridgeEthInterface extends ethers.utils.Interface {
+interface AxelarBridgeETHInterface extends ethers.utils.Interface {
   functions: {
     "bridgeNft(uint256)": FunctionFragment;
+    "enableUnlock()": FunctionFragment;
     "execute(bytes32,string,string,bytes)": FunctionFragment;
     "executeWithToken(bytes32,string,string,bytes,string,uint256)": FunctionFragment;
     "gasService()": FunctionFragment;
@@ -31,15 +32,21 @@ interface RiotBridgeEthInterface extends ethers.utils.Interface {
     "renounceOwnership()": FunctionFragment;
     "riotNftEthAddress()": FunctionFragment;
     "riotNftPolyAddress()": FunctionFragment;
-    "setRiotNftEthAddress(address)": FunctionFragment;
-    "setRiotNftPolyAddress(string)": FunctionFragment;
+    "setDisableUnlock()": FunctionFragment;
+    "setRiotEth(address)": FunctionFragment;
+    "setRiotPolygon(string)": FunctionFragment;
+    "tokenIdAddress(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "unlockRiotNft(uint256,address)": FunctionFragment;
+    "unlockRiotNft(uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "bridgeNft",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "enableUnlock",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "execute",
@@ -68,12 +75,17 @@ interface RiotBridgeEthInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "setRiotNftEthAddress",
+    functionFragment: "setDisableUnlock",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "setRiotEth", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "setRiotPolygon",
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "setRiotNftPolyAddress",
-    values: [string]
+    functionFragment: "tokenIdAddress",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
@@ -81,10 +93,14 @@ interface RiotBridgeEthInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "unlockRiotNft",
-    values: [BigNumberish, string]
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: "bridgeNft", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "enableUnlock",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "execute", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "executeWithToken",
@@ -106,11 +122,16 @@ interface RiotBridgeEthInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setRiotNftEthAddress",
+    functionFragment: "setDisableUnlock",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "setRiotEth", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setRiotPolygon",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setRiotNftPolyAddress",
+    functionFragment: "tokenIdAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -133,7 +154,7 @@ export type OwnershipTransferredEvent = TypedEvent<
   [string, string] & { previousOwner: string; newOwner: string }
 >;
 
-export class RiotBridgeEth extends BaseContract {
+export class AxelarBridgeETH extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -174,13 +195,15 @@ export class RiotBridgeEth extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: RiotBridgeEthInterface;
+  interface: AxelarBridgeETHInterface;
 
   functions: {
     bridgeNft(
       _tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    enableUnlock(overrides?: CallOverrides): Promise<[boolean]>;
 
     execute(
       commandId: BytesLike,
@@ -214,15 +237,24 @@ export class RiotBridgeEth extends BaseContract {
 
     riotNftPolyAddress(overrides?: CallOverrides): Promise<[string]>;
 
-    setRiotNftEthAddress(
-      _riotNftEth: string,
+    setDisableUnlock(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setRiotNftPolyAddress(
-      _riotNftPoly: string,
+    setRiotEth(
+      _riotNftEthAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    setRiotPolygon(
+      _riotNftPolyAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    tokenIdAddress(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     transferOwnership(
       newOwner: string,
@@ -231,7 +263,6 @@ export class RiotBridgeEth extends BaseContract {
 
     unlockRiotNft(
       _tokenId: BigNumberish,
-      _walletAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -240,6 +271,8 @@ export class RiotBridgeEth extends BaseContract {
     _tokenId: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  enableUnlock(overrides?: CallOverrides): Promise<boolean>;
 
   execute(
     commandId: BytesLike,
@@ -273,15 +306,24 @@ export class RiotBridgeEth extends BaseContract {
 
   riotNftPolyAddress(overrides?: CallOverrides): Promise<string>;
 
-  setRiotNftEthAddress(
-    _riotNftEth: string,
+  setDisableUnlock(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setRiotNftPolyAddress(
-    _riotNftPoly: string,
+  setRiotEth(
+    _riotNftEthAddress: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  setRiotPolygon(
+    _riotNftPolyAddress: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  tokenIdAddress(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   transferOwnership(
     newOwner: string,
@@ -290,12 +332,13 @@ export class RiotBridgeEth extends BaseContract {
 
   unlockRiotNft(
     _tokenId: BigNumberish,
-    _walletAddress: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
     bridgeNft(_tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    enableUnlock(overrides?: CallOverrides): Promise<boolean>;
 
     execute(
       commandId: BytesLike,
@@ -327,15 +370,22 @@ export class RiotBridgeEth extends BaseContract {
 
     riotNftPolyAddress(overrides?: CallOverrides): Promise<string>;
 
-    setRiotNftEthAddress(
-      _riotNftEth: string,
+    setDisableUnlock(overrides?: CallOverrides): Promise<void>;
+
+    setRiotEth(
+      _riotNftEthAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setRiotNftPolyAddress(
-      _riotNftPoly: string,
+    setRiotPolygon(
+      _riotNftPolyAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    tokenIdAddress(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     transferOwnership(
       newOwner: string,
@@ -344,7 +394,6 @@ export class RiotBridgeEth extends BaseContract {
 
     unlockRiotNft(
       _tokenId: BigNumberish,
-      _walletAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -372,6 +421,8 @@ export class RiotBridgeEth extends BaseContract {
       _tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    enableUnlock(overrides?: CallOverrides): Promise<BigNumber>;
 
     execute(
       commandId: BytesLike,
@@ -405,14 +456,23 @@ export class RiotBridgeEth extends BaseContract {
 
     riotNftPolyAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
-    setRiotNftEthAddress(
-      _riotNftEth: string,
+    setDisableUnlock(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setRiotNftPolyAddress(
-      _riotNftPoly: string,
+    setRiotEth(
+      _riotNftEthAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setRiotPolygon(
+      _riotNftPolyAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    tokenIdAddress(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     transferOwnership(
@@ -422,7 +482,6 @@ export class RiotBridgeEth extends BaseContract {
 
     unlockRiotNft(
       _tokenId: BigNumberish,
-      _walletAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -432,6 +491,8 @@ export class RiotBridgeEth extends BaseContract {
       _tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    enableUnlock(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     execute(
       commandId: BytesLike,
@@ -467,14 +528,23 @@ export class RiotBridgeEth extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    setRiotNftEthAddress(
-      _riotNftEth: string,
+    setDisableUnlock(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setRiotNftPolyAddress(
-      _riotNftPoly: string,
+    setRiotEth(
+      _riotNftEthAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setRiotPolygon(
+      _riotNftPolyAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    tokenIdAddress(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     transferOwnership(
@@ -484,7 +554,6 @@ export class RiotBridgeEth extends BaseContract {
 
     unlockRiotNft(
       _tokenId: BigNumberish,
-      _walletAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

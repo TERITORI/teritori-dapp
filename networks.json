@@ -3088,7 +3088,7 @@
     "accountExplorer": "https://goerli.etherscan.io/address/$address",
     "contractExplorer": "https://goerli.etherscan.io/address/$address",
     "testnet": true,
-    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "backendEndpoint": "http://localhost:9090",
     "chainId": 5,
     "alchemyApiKey": "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
     "theGraphEndpoint": "https://api.studio.thegraph.com/query/40379/teritori-goerli-indexer/v-test-01",
@@ -3106,7 +3106,7 @@
     "indexLiveBlockProgress": 1,
     "substreamsManifest": "go/internal/substreams/ethereum/ethereum_goerli.yaml",
     "distributorContractAddress": "0x750070a76a3444f27e3fccabe4d423105cfa3e72",
-    "riotBridgeAddressGen0": "0x1e582d29a533d8934d5b5fd60eb71b34b76f0e75",
+    "riotBridgeAddressGen0": "0xf7e1268364168328c0445b8da152581f96f49780",
     "riotNFTAddressGen0": "0x7a9e5dbe7d3946ce4ea2f2396549c349635ebf2f"
   },
   {
@@ -7476,7 +7476,7 @@
     "chainId": 80001,
     "alchemyApiKey": "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
     "theGraphEndpoint": "https://api.studio.thegraph.com/query/40379/teritori-goerli-indexer/v-test-01",
-    "vaultContractAddress": "0xab30d7379ebfd146b77b0b4d6f3eb09bd725e4ef",
+    "vaultContractAddress": "0xffc71bf3aca1355dc29b06c12bc8ef32f8f20c51",
     "excludeFromLaunchpadList": [],
     "riotSquadStakingContractAddress": "0xb080380ccb801d4a4c2e75d3aee7728f97cf4608",
     "firehoseEndpoint": "mumbai.streamingfast.io:443",

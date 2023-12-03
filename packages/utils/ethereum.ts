@@ -10,7 +10,6 @@ import {
   parseNetworkObjectId,
   parseNftId,
   NetworkKind,
-  getNetworkByIdPrefix,
 } from "../networks";
 
 // this is used to block all calls to the provider getter while we wait for network switch auth
@@ -127,29 +126,15 @@ export const addCollectionMetadata = async (collection: Collection) => {
 };
 
 const addNftMetadata = async (nft: NFT) => {
-  let [network, minter, nftTokenId] = parseNftId(nft.id);
-  let isBridged = false;
-
-  // Handle the bridged nft
-  if (minter.includes(":")) {
-    isBridged = true;
-    const networkIdPrefix = minter.split(":")[1];
-    network = getNetworkByIdPrefix(networkIdPrefix);
-  }
+  const [network, , nftTokenId] = parseNftId(nft.id);
 
   if (network?.kind !== NetworkKind.Ethereum) {
     return nft;
   }
 
-  const forceAlchemyProvider = isBridged;
-  const provider = await getEthereumProvider(network, forceAlchemyProvider);
+  const provider = await getEthereumProvider(network);
 
-  let nftContractAddress = nft.nftContractAddress;
-
-  // Handle the bridged nft
-  if (nftContractAddress.includes(":")) {
-    nftContractAddress = nftContractAddress.split(":")[1];
-  }
+  const nftContractAddress = nft.nftContractAddress;
   const nftClient = TeritoriNft__factory.connect(nftContractAddress, provider);
 
   const tokenURI = await nftClient.callStatic.tokenURI(nftTokenId);

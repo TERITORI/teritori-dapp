@@ -29,7 +29,7 @@ func (h *Handler) handleTransferFrom(contractABI *abi.ABI, tx *pb.Tx, args map[s
 	}
 
 	var collection indexerdb.TeritoriCollection
-	if err := h.indexerDB.First(&collection).Where("nft_contract_address", nftContract).Error; err != nil {
+	if err := h.indexerDB.Where("nft_contract_address = ? AND network_id = ?", nftContract, h.network.ID).First(&collection).Error; err != nil {
 		return errors.Wrap(err, "failed to get collection")
 	}
 

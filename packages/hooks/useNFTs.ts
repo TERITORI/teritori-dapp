@@ -26,6 +26,7 @@ export const useNFTs = (req: NFTsRequest) => {
         ...req,
         offset: baseOffset.current + pageParam,
       };
+
       const stream = marketplaceClient.NFTs(pageReq);
       await stream.forEach((response) => {
         if (!response.nft) {

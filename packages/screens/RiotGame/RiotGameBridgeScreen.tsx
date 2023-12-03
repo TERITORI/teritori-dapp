@@ -4,7 +4,7 @@ import {
   EvmChain,
   GasToken,
 } from "@axelar-network/axelarjs-sdk";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   FlatList,
@@ -34,7 +34,7 @@ import { NFTBridge } from "../../components/nfts/NFTBridge";
 import { Separator } from "../../components/separators/Separator";
 import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { RiotBridgeEth__factory } from "../../evm-contracts-clients/axelar-eth-polygon-bridge/RiotBridgeEth__factory";
+import { AxelarBridgeETH__factory } from "../../evm-contracts-clients/axelar-bridge-eth/AxelarBridgeETH__factory";
 import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { TeritoriNft__factory } from "../../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import { useNFTs } from "../../hooks/useNFTs";
@@ -152,7 +152,22 @@ export const RiotGameBridgeScreen: React.FC = () => {
     }
   }, [isBridgeApproved]);
 
-  const getAxelarGas = async () => {
+  const fetchAxelarGas = async (
+    signer: ethers.providers.JsonRpcSigner,
+    tokenId: string,
+  ) => {
+    setIsEstimatingGas(true);
+
+    // Estimated gas
+    const bridgeClient = AxelarBridgeETH__factory.connect(
+      network?.riotBridgeAddressGen0 || "",
+      signer,
+    );
+
+    const { maxFeePerGas } = await signer.getFeeData();
+
+    const estimatedGas = bridgeClient.estimateGas.bridgeNft(tokenId);
+
     if (!network?.riotBridgeAddressGen0) {
       throw Error("Bridge is undefined");
     }
@@ -189,7 +204,7 @@ export const RiotGameBridgeScreen: React.FC = () => {
     const srcChainTokenSymbol = GasToken.ETH;
     const gasLimit = 700_000;
 
-    const res = await axelarSdk.estimateGasFee(
+    const axelarGas = await axelarSdk.estimateGasFee(
       srcChainId,
       destChainId,
       srcChainTokenSymbol,
@@ -199,12 +214,24 @@ export const RiotGameBridgeScreen: React.FC = () => {
       GMPGasFee,
     );
 
-    return res;
+    const gasData = await Promise.all([estimatedGas, axelarGas]);
+    const gas = (maxFeePerGas || BigNumber.from(0)).mul(gasData[0]).toNumber();
+
+    setEstimatedGas(gas);
+    setAxelarGas(+gasData[1].toString());
+    setIsEstimatingGas(false);
   };
 
   const bridgeNFT = async () => {
     if (!selectedNFT) return;
     if (!network) return;
+
+    if (axelarGas + estimatedGas === 0) {
+      return setToastError({
+        title: "Warning",
+        message: "Unable to estimate gas",
+      });
+    }
 
     const address = selectedWallet?.address || "";
 
@@ -215,7 +242,7 @@ export const RiotGameBridgeScreen: React.FC = () => {
 
     setIsBridging(true);
 
-    const bridgeClient = RiotBridgeEth__factory.connect(
+    const bridgeClient = AxelarBridgeETH__factory.connect(
       network?.riotBridgeAddressGen0 || "",
       signer,
     );
@@ -260,6 +287,8 @@ export const RiotGameBridgeScreen: React.FC = () => {
 
       await approveTx.wait();
       setIsBridgeApproved(true);
+
+      await fetchAxelarGas(signer, tokenId);
     } catch (e: any) {
       setToastError({ title: "Error", message: e.message });
     }
@@ -271,7 +300,6 @@ export const RiotGameBridgeScreen: React.FC = () => {
     setIsCheckingNFT(true);
     setSelectedNFT(nft);
     setEstimatedGas(0);
-    setIsEstimatingGas(true);
     setTxHash("");
 
     const { nftClient, signer } = await getNFTClient(
@@ -286,25 +314,9 @@ export const RiotGameBridgeScreen: React.FC = () => {
     setIsBridgeApproved(isApproved);
     setIsCheckingNFT(false);
 
-    // Estimated gas
-    const bridgeClient = RiotBridgeEth__factory.connect(
-      network?.riotBridgeAddressGen0 || "",
-      signer,
-    );
-
-    const { maxFeePerGas } = await signer.getFeeData();
-
-    const estimatedGas = bridgeClient.estimateGas.bridgeNft(tokenId);
-    const axelarGas = getAxelarGas();
-
-    const gasData = await Promise.all([estimatedGas, axelarGas]);
-
-    const gas = (maxFeePerGas || BigNumber.from(0)).mul(gasData[0]).toNumber();
-
-    setEstimatedGas(gas);
-    setAxelarGas(+gasData[1].toString());
-
-    setIsEstimatingGas(false);
+    if (isApproved) {
+      fetchAxelarGas(signer, tokenId);
+    }
   };
 
   const BREAK_POINT = 600;

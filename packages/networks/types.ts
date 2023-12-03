@@ -73,7 +73,6 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
   alchemyApiKey: string;
   theGraphEndpoint: string;
   vaultContractAddress: string;
-  riotContractAddressGen0: string;
   riotSquadStakingContractAddress: string;
   firehoseEndpoint?: string;
   indexStartBlock?: string;
@@ -81,12 +80,19 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
   indexBlockProgress?: number;
   indexLiveBlockProgress?: number;
   substreamsManifest?: string;
+  toriBridgedTokenAddress?: string;
+
+  riotContractAddressGen0: string;
+  riotOriginalCollectionIdGen0?: string;
   riotBridgeAddressGen0?: string;
   riotNFTAddressGen0?: string;
   riotBridgedNFTAddressGen0?: string;
-  toriBridgedTokenAddress?: string;
-  riotOriginalCollectionIdGen0?: string;
+
+  riotContractAddressGen1?: string;
   riotOriginalCollectionIdGen1?: string;
+  riotBridgeAddressGen1?: string;
+  riotNFTAddressGen1?: string;
+  riotBridgedNFTAddressGen1?: string;
 };
 
 export type GnoNetworkInfo = NetworkInfoBase & {
