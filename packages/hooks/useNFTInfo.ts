@@ -246,7 +246,7 @@ const getEthereumStandardNFTInfo = async (
     name: metadata.name,
     description: metadata.description,
     attributes,
-    nftAddress,
+    nftAddress: deployedNFT,
     mintAddress: minterContractAddress,
     imageURL: metadata.image,
     tokenId,

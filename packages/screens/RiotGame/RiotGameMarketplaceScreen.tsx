@@ -6,7 +6,7 @@ import { CollectionView } from "./component/CollectionView";
 import { GameContentView } from "./component/GameContentView";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getCollectionId, getCosmosNetwork } from "../../networks";
+import { getCollectionId, getNetwork } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
 
 export const RiotGameMarketplaceScreen: ScreenFC<"RiotGameMarketplace"> = ({
@@ -15,7 +15,7 @@ export const RiotGameMarketplaceScreen: ScreenFC<"RiotGameMarketplace"> = ({
   const isMobile = useIsMobile();
   const collectionId = route.params?.collectionId || "";
   const networkId = useSelectedNetworkId();
-  const network = getCosmosNetwork(networkId);
+  const network = getNetwork(networkId);
 
   return (
     <GameContentView>
@@ -30,18 +30,23 @@ export const RiotGameMarketplaceScreen: ScreenFC<"RiotGameMarketplace"> = ({
             flexWrap: "wrap",
           }}
         >
-          <CollectionThumb
-            collectionId={getCollectionId(
-              network?.id,
-              network?.riotContractAddressGen0,
-            )}
-          />
-          <CollectionThumb
-            collectionId={getCollectionId(
-              network?.id,
-              network?.riotContractAddressGen1,
-            )}
-          />
+          {network?.riotContractAddressGen0 && (
+            <CollectionThumb
+              collectionId={getCollectionId(
+                network?.id,
+                network?.riotContractAddressGen0,
+              )}
+            />
+          )}
+
+          {network?.riotContractAddressGen1 && (
+            <CollectionThumb
+              collectionId={getCollectionId(
+                network?.id,
+                network?.riotContractAddressGen1,
+              )}
+            />
+          )}
         </View>
       )}
     </GameContentView>
