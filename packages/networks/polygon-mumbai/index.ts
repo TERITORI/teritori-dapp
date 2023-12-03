@@ -14,8 +14,8 @@ export const polygonMumbaiNetwork: EthereumNetworkInfo = {
   accountExplorer: "https://mumbai.polygonscan.com/address/$address",
   contractExplorer: "https://mumbai.polygonscan.com/address/$address",
   testnet: true,
-  // backendEndpoint: "https://dapp-backend.testnet.teritori.com",
-  backendEndpoint: "http://localhost:9090",
+  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
+  // backendEndpoint: "http://localhost:9090",
   chainId: 80001,
   alchemyApiKey: "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
   theGraphEndpoint:
