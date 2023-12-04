@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 
 import { GnoDAORegistration } from "../../hooks/gno/useGnoDAOs";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
@@ -71,7 +71,19 @@ const DAOCardView: React.FC<{
   return (
     <OmniLink
       to={{ screen: "UserPublicProfile", params: { id: daoId } }}
-      style={[styles.container, style]}
+      style={[
+        {
+          width: 250,
+          height: 300,
+          flexDirection: "column",
+          paddingVertical: layout.spacing_x2_5,
+          paddingHorizontal: layout.spacing_x2_5,
+          borderWidth: 1,
+          borderColor: neutral33,
+          borderRadius: 12,
+        },
+        style,
+      ]}
     >
       <View style={{ alignItems: "center" }}>
         {avatar}
@@ -95,18 +107,3 @@ const DAOCardView: React.FC<{
     </OmniLink>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    width: 250,
-    height: 300,
-    flexDirection: "column",
-    paddingVertical: layout.spacing_x2_5,
-    paddingHorizontal: layout.spacing_x2_5,
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: 12,
-  },
-});

@@ -1,3 +1,4 @@
+import { isEqual } from "lodash";
 import React, { memo, useMemo, useState } from "react";
 import {
   View,
@@ -72,10 +73,6 @@ export const TrackCard: React.FC<{
     return [isHovered && { opacity: 0.5 }];
   }, [isHovered]);
 
-  if (post.identifier.startsWith("padded-")) {
-    return <View style={{ width: cardWidth, height: 381 }} />;
-  }
-
   return (
     <View style={[unitCardStyle, style]}>
       <View>
@@ -142,7 +139,7 @@ export const TrackCard: React.FC<{
       )}
     </View>
   );
-});
+}, isEqual);
 
 const unitCardStyle: ViewStyle = {
   width: TRACK_CARD_WIDTH,
@@ -150,7 +147,6 @@ const unitCardStyle: ViewStyle = {
   padding: layout.spacing_x1_5,
   borderRadius: 12,
   justifyContent: "space-between",
-  height: 381,
 };
 
 const imgBoxStyle: ViewStyle = {

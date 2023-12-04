@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { isEqual } from "lodash";
+import React, { memo, useState } from "react";
 import {
   StyleProp,
   StyleSheet,
@@ -46,7 +47,7 @@ export const VideoCard: React.FC<{
   hideAuthor?: boolean;
   hideDescription?: boolean;
   style?: StyleProp<ViewStyle>;
-}> = ({ post, hideAuthor, hideDescription, style }) => {
+}> = memo(({ post, hideAuthor, hideDescription, style }) => {
   const { width: windowWidth } = useWindowDimensions();
   const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
@@ -54,9 +55,6 @@ export const VideoCard: React.FC<{
   const authorNSInfo = useNSUserInfo(post.authorId);
   const [, userAddress] = parseUserId(post.authorId);
   const [isHovered, setIsHovered] = useState(false);
-  const noDescription = hideDescription || !video?.description;
-  const videoCardHeight =
-    hideAuthor && noDescription ? 249 : hideAuthor || noDescription ? 289 : 329;
 
   let cardWidth = StyleSheet.flatten(style)?.width;
   if (typeof cardWidth !== "number") {
@@ -67,22 +65,21 @@ export const VideoCard: React.FC<{
     ? authorNSInfo?.metadata?.tokenId
     : tinyAddress(userAddress, 16);
 
-  if (post.identifier.startsWith("padded-")) {
-    return (
-      <View
-        style={{
-          width: cardWidth,
-          height: videoCardHeight,
-        }}
-      />
-    );
-  }
-
   const thumbnailURI = video?.videoFile.thumbnailFileData?.url
     ? video.videoFile.thumbnailFileData.url.includes("://")
       ? video.videoFile.thumbnailFileData.url
       : "ipfs://" + video.videoFile.thumbnailFileData?.url // we need this hack because ipfs "urls" in feed are raw CIDs
     : defaultThumbnailImage;
+
+  if (post.identifier.startsWith("padded-")) {
+    return (
+      <View
+        style={{
+          width: cardWidth,
+        }}
+      />
+    );
+  }
 
   if (!video)
     return (
@@ -96,8 +93,8 @@ export const VideoCard: React.FC<{
         {
           width: VIDEO_CARD_WIDTH,
           backgroundColor: neutral00,
-          height: videoCardHeight,
           borderRadius: 12,
+          justifyContent: "space-between",
         },
         style,
       ]}
@@ -136,13 +133,23 @@ export const VideoCard: React.FC<{
         </CustomPressable>
 
         <SpacerColumn size={1.5} />
-        <BrandText style={[fontSemibold14]} numberOfLines={2}>
+        <BrandText style={[fontSemibold14, { height: 40 }]} numberOfLines={2}>
           {video?.title.trim()}
         </BrandText>
+
         {!hideDescription && video?.description && (
           <>
             <SpacerColumn size={0.5} />
-            <BrandText style={contentDescriptionStyle} numberOfLines={2}>
+            <BrandText
+              style={[
+                fontMedium13,
+                {
+                  color: neutral77,
+                  height: 36,
+                },
+              ]}
+              numberOfLines={2}
+            >
               {video?.description?.trim()}
             </BrandText>
           </>
@@ -151,31 +158,35 @@ export const VideoCard: React.FC<{
 
       <View>
         {!hideAuthor && (
-          <>
-            <SpacerColumn size={1} />
-            <OmniLink
-              to={{
-                screen: "UserPublicProfile",
-                params: { id: post.authorId },
-              }}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              {/*---- User image */}
-              <UserAvatarWithFrame
-                userId={post.authorId}
-                size={windowWidth < RESPONSIVE_BREAKPOINT_S ? "XS" : "S"}
-              />
-              <SpacerRow size={1} />
-              <BrandText style={contentNameStyle}>@{username}</BrandText>
-            </OmniLink>
-          </>
+          <OmniLink
+            to={{
+              screen: "UserPublicProfile",
+              params: { id: post.authorId },
+            }}
+            style={{
+              marginTop: layout.spacing_x1,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            {/*---- User image */}
+            <UserAvatarWithFrame
+              userId={post.authorId}
+              size={windowWidth < RESPONSIVE_BREAKPOINT_S ? "XS" : "S"}
+            />
+
+            <SpacerRow size={1} />
+            <BrandText style={contentNameStyle}>@{username}</BrandText>
+          </OmniLink>
         )}
 
-        <SpacerColumn size={1} />
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: layout.spacing_x1,
+          }}
+        >
           {/*TODO: viewCount*/}
           {/*  <BrandText*/}
           {/*    style={videoStatsTextStyle}*/}
@@ -189,14 +200,10 @@ export const VideoCard: React.FC<{
       </View>
     </View>
   );
-};
+}, isEqual);
 
 const imgBoxStyle: ViewStyle = {
   position: "relative",
-};
-const contentDescriptionStyle: TextStyle = {
-  ...fontMedium13,
-  color: neutral77,
 };
 const imgDurationBoxStyle: ViewStyle = {
   justifyContent: "center",

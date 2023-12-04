@@ -19,16 +19,6 @@ import { ScreenFC } from "../../utils/navigation";
 export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
   useForceNetworkSelection(params?.network);
   const isMobile = useIsMobile();
-  const defaultFeedRequest: Partial<PostsRequest> = {
-    filter: {
-      categories: [],
-      user: "",
-      mentions: [],
-      hashtags: [],
-    },
-    limit: 10,
-    offset: 0,
-  };
 
   switch (params?.tab) {
     case "music":
@@ -67,4 +57,15 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
         </ScreenContainer>
       );
   }
+};
+
+const defaultFeedRequest: Partial<PostsRequest> = {
+  filter: {
+    categories: [],
+    user: "",
+    mentions: [],
+    hashtags: [],
+  },
+  limit: 10,
+  offset: 0,
 };

@@ -1,4 +1,5 @@
-import React from "react";
+import { isEqual } from "lodash";
+import React, { memo } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 
 import burnSVG from "../../../assets/icons/burn.svg";
@@ -7,17 +8,17 @@ import { fontSemibold12 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+import { SpacerColumn } from "../spacer";
 
 export const QuestCard: React.FC<{
   label: string;
   completed?: boolean;
   style?: StyleProp<ViewStyle>;
-}> = ({ label, completed = false, style }) => {
+  width?: number;
+}> = memo(({ label, completed = false, style, width = 140 }) => {
   return (
     <TertiaryBox
-      // highlightable
-      height={116}
-      width={140}
+      width={width}
       style={style}
       hasGradientBackground={completed}
       mainContainerStyle={{
@@ -28,7 +29,19 @@ export const QuestCard: React.FC<{
       }}
     >
       <SVG width={32} height={32} source={burnSVG} />
-      <BrandText style={fontSemibold12}>{label}</BrandText>
+      <SpacerColumn size={1} />
+      <BrandText
+        style={[
+          fontSemibold12,
+          {
+            height: (fontSemibold12.lineHeight || 0) * 3,
+            verticalAlign: "bottom",
+          },
+        ]}
+        numberOfLines={3}
+      >
+        {label}
+      </BrandText>
     </TertiaryBox>
   );
-};
+}, isEqual);

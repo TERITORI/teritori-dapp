@@ -39,10 +39,17 @@ export const VideoComment: FC<{
           alignItems: "flex-start",
         }}
       >
-        <UserAvatarWithFrame
-          userId={comment.authorId}
-          size={windowWidth < RESPONSIVE_BREAKPOINT_S ? "XS" : "S"}
-        />
+        <OmniLink
+          to={{
+            screen: "UserPublicProfile",
+            params: { id: comment.authorId },
+          }}
+        >
+          <UserAvatarWithFrame
+            userId={comment.authorId}
+            size={windowWidth < RESPONSIVE_BREAKPOINT_S ? "XS" : "S"}
+          />
+        </OmniLink>
         <SpacerRow size={1.5} />
 
         <View style={{ flex: 1 }}>

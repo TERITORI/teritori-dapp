@@ -27,10 +27,9 @@ export const OrganizationsScreen: ScreenFC<"Organizations"> = ({
       footerChildren={<></>}
       noMargin
       fullWidth
-      noScroll
       forceNetworkFeatures={[NetworkFeature.Organizations]}
     >
-      <ScrollView>
+      <ScrollView contentContainerStyle={{ width: "100%" }}>
         <DAOsSection
           req={{ networkId }}
           title="All DAOs"
@@ -54,11 +53,18 @@ const DAOsSection: React.FC<{
   return (
     <View
       style={{
-        padding: layout.contentSpacing,
+        paddingHorizontal: layout.contentSpacing,
         paddingTop: layout.topContentSpacingWithHeading,
+        width: "100%",
       }}
     >
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "flex-end",
+        }}
+      >
         <BrandText style={fontSemibold28}>{title}</BrandText>
         {topRight}
       </View>

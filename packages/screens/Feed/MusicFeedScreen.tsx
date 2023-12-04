@@ -4,7 +4,7 @@ import { FeedHeader } from "./components/FeedHeader";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { MobileTitle } from "../../components/ScreenContainer/ScreenContainerMobile";
-import { MusicList } from "../../components/music/MusicList";
+import { FeedMusicList } from "../../components/music/FeedMusicList";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { NetworkFeature } from "../../networks";
 
@@ -20,7 +20,7 @@ export const MusicFeedScreen: FC = () => {
       {/* ScreenContainer has noScroll, so we need to add MobileTitle here */}
       {isMobile && <MobileTitle title="SOCIAL FEED" />}
       <FeedHeader selectedTab="music" />
-      <MusicList title="All music" allowUpload />
+      <FeedMusicList title="All music" allowUpload />
     </ScreenContainer>
   );
 };

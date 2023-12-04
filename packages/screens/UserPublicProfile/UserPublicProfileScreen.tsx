@@ -21,10 +21,11 @@ import { DAOMembers } from "../../components/dao/DAOMembers";
 import { DAOProposals } from "../../components/dao/DAOProposals";
 import { DAOsList } from "../../components/dao/DAOsList";
 import { GnoDemo } from "../../components/dao/GnoDemo";
-import { MusicList } from "../../components/music/MusicList";
+import { FeedMusicList } from "../../components/music/FeedMusicList";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
+import { FeedVideosList } from "../../components/video/FeedVideosList";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
@@ -72,6 +73,19 @@ const SelectedTabContent: React.FC<{
     };
   }, [userId]);
 
+  const feedRequestUserVideos: Partial<PostsRequest> = useMemo(() => {
+    return {
+      filter: {
+        user: userId,
+        mentions: [],
+        categories: [PostCategory.Video],
+        hashtags: [],
+      },
+      limit: 10,
+      offset: 0,
+    };
+  }, [userId]);
+
   const feedRequestMentions: Partial<PostsRequest> = useMemo(() => {
     return {
       filter: {
@@ -88,18 +102,6 @@ const SelectedTabContent: React.FC<{
       offset: 0,
     };
   }, [userInfo?.metadata.tokenId, userAddress]);
-
-  const videoFeedRequest: Partial<PostsRequest> = {
-    filter: {
-      categories: [PostCategory.Video],
-      user: userId,
-      mentions: [],
-      hashtags: [],
-    },
-    limit: 10,
-    offset: 0,
-    queryUserId: selectedWallet?.userId,
-  };
 
   const Header = useCallback(() => {
     return (
@@ -147,7 +149,7 @@ const SelectedTabContent: React.FC<{
       );
     case "userMusic":
       return (
-        <MusicList
+        <FeedMusicList
           title={isCurrentUser ? "Your music" : "Music by " + userName}
           authorId={userId}
           allowUpload={isCurrentUser}
@@ -155,21 +157,11 @@ const SelectedTabContent: React.FC<{
       );
     case "userVideos":
       return (
-        <>
-          <NewsFeed
-            isVideos
-            disablePosting={
-              !selectedWallet?.connected || selectedWallet?.userId === userId
-            }
-            Header={Header}
-            additionalMention={
-              selectedWallet?.address !== userAddress
-                ? userInfo?.metadata.tokenId || userAddress
-                : undefined
-            }
-            req={videoFeedRequest}
-          />
-        </>
+        <FeedVideosList
+          title={isCurrentUser ? "Your videos" : "Videos by " + userName}
+          allowUpload={isCurrentUser}
+          req={feedRequestUserVideos}
+        />
       );
     case "nfts":
       return <UPPNFTs userId={userId} />;
@@ -210,10 +202,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>(initialTab);
   const isSocialTabSelected = useMemo(
-    () =>
-      selectedTab === "userPosts" ||
-      selectedTab === "mentionsPosts" ||
-      selectedTab === "userVideos",
+    () => selectedTab === "userPosts" || selectedTab === "mentionsPosts",
     [selectedTab],
   );
 
