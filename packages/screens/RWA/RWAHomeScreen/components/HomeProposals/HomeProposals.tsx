@@ -5,19 +5,33 @@ import { RWACarousel } from "./RWACarousel";
 import { BrandText } from "../../../../../components/BrandText";
 import { SecondaryButton } from "../../../../../components/buttons/SecondaryButton";
 import { GradientText } from "../../../../../components/gradientText";
+import { useIsMobile } from "../../../../../hooks/useIsMobile";
 import { useIsLightTheme, useTheme } from "../../../../../hooks/useTheme";
 
 export const HomeProposals: React.FC = () => {
   const isLightTheme = useIsLightTheme();
   const theme = useTheme();
   const label = "REAL ESTATE PROPERTY";
+  const isMobile = useIsMobile();
 
   return (
-    <View style={HomeProposalsContainerCStyle}>
-      <View>
+    <View
+      style={[
+        HomeProposalsContainerCStyle,
+        {
+          flexDirection: isMobile ? "column" : "row",
+          gap: isMobile ? 40 : 120,
+        },
+      ]}
+    >
+      <View style={{ marginHorizontal: isMobile ? 10 : 0 }}>
         <BrandText
           numberOfLines={1}
-          style={{ fontSize: 28, lineHeight: 45, letterSpacing: -1 }}
+          style={{
+            fontSize: isMobile ? 20 : 28,
+            lineHeight: 45,
+            letterSpacing: -1,
+          }}
         >
           7519 Wykes St, Detroit, MI 48210
         </BrandText>
@@ -54,8 +68,6 @@ export const HomeProposals: React.FC = () => {
 
 const HomeProposalsContainerCStyle: ViewStyle = {
   alignItems: "center",
-  gap: 120,
-  flexDirection: "row",
 };
 
 const HomeProposalsLabelCStyle: TextStyle = {

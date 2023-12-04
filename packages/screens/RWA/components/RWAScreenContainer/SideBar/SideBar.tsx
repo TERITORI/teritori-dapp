@@ -26,6 +26,7 @@ import {
 import { Separator } from "../../../../../components/separators/Separator";
 import { SpacerColumn } from "../../../../../components/spacer";
 import { useSidebar } from "../../../../../context/SidebarProvider";
+import { useIsMobile } from "../../../../../hooks/useIsMobile";
 import { useSelectedNetworkInfo } from "../../../../../hooks/useSelectedNetwork";
 import { useIsLightTheme, useTheme } from "../../../../../hooks/useTheme";
 import { NetworkKind } from "../../../../../networks";
@@ -98,6 +99,7 @@ export const SideBar: React.FC = () => {
   const theme = useTheme();
   const isLightTheme = useIsLightTheme();
   const sideBarDatas = getRWASideBarList(isLightTheme);
+  const isMobile = useIsMobile();
 
   const layoutStyle = useAnimatedStyle(
     () => ({
@@ -128,7 +130,7 @@ export const SideBar: React.FC = () => {
     navigation.navigate(name);
   };
 
-  return (
+  return isMobile ? null : (
     <Animated.View
       style={[
         containerCStyle,

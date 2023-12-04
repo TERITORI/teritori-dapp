@@ -5,6 +5,7 @@ import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import RealEstatePlaceholder from "../../../../../../assets/default-images/real-estate-placeholder.png";
 import { OptimizedImage } from "../../../../../components/OptimizedImage";
 import { TertiaryBox } from "../../../../../components/boxes/TertiaryBox";
+import { useIsMobile } from "../../../../../hooks/useIsMobile";
 import { useIsLightTheme, useTheme } from "../../../../../hooks/useTheme";
 import { neutral44 } from "../../../../../utils/style/colors";
 
@@ -18,7 +19,8 @@ export const RWACarousel: React.FC = () => {
   const [index, handleIndex] = React.useState<number>(0);
   const theme = useTheme();
   const isLightTheme = useIsLightTheme();
-  const imageSize = 464;
+  const isMobile = useIsMobile();
+  const imageSize = isMobile ? 300 : 464;
   const carouselRef = React.useRef<ICarouselInstance | null>(null);
   const selectedBackgroundColor = isLightTheme ? "#000" : "#FFF";
   const unselectedBackgroundColor = isLightTheme ? "#C5C5C5" : neutral44;
@@ -28,8 +30,8 @@ export const RWACarousel: React.FC = () => {
       <TertiaryBox
         mainContainerStyle={BoxContainerCStyle}
         noBrokenCorners
-        height={imageSize}
-        width={imageSize}
+        height={imageSize - 2}
+        width={imageSize - 2}
       >
         <Carousel
           ref={carouselRef}

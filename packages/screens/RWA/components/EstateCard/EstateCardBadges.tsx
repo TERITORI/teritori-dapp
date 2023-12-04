@@ -3,13 +3,19 @@ import { View, ViewStyle } from "react-native";
 
 import { EstateCardBadgesProps } from "./types";
 import { BrandText } from "../../../../components/BrandText";
+import { useIsMobile } from "../../../../hooks/useIsMobile";
 import { useTheme } from "../../../../hooks/useTheme";
 
 export const EstateCardBadges: React.FC<EstateCardBadgesProps> = ({ tags }) => {
   const theme = useTheme();
+  const isMobile = useIsMobile();
   return (
     <View style={{ flexDirection: "row", marginBottom: 10 }}>
       {tags.map((value, index) => {
+        // Limit to 2 tags on mobile
+        if (isMobile && index > 1) {
+          return;
+        }
         return (
           <View
             style={{

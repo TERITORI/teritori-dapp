@@ -8,6 +8,7 @@ import {
 } from "./types";
 import { BrandText } from "../../../../components/BrandText";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
+import { useIsMobile } from "../../../../hooks/useIsMobile";
 import { useIsLightTheme, useTheme } from "../../../../hooks/useTheme";
 import { neutral77, neutralA3 } from "../../../../utils/style/colors";
 
@@ -19,6 +20,7 @@ const EstateCardInformationBox: React.FC<EstateCardInformationBoxProps> = ({
 }) => {
   const theme = useTheme();
   const isLightTheme = useIsLightTheme();
+  const isMobile = useIsMobile();
   const backgroundColor = secondary
     ? theme.headerBackgroundColor
     : isLightTheme
@@ -43,17 +45,23 @@ const EstateCardInformationBox: React.FC<EstateCardInformationBoxProps> = ({
               ? theme.borderColor
               : undefined,
           borderWidth: secondary ? 1 : !isLightTheme ? 1 : 0,
+          justifyContent: isMobile ? "center" : undefined,
+          gap: isMobile ? 0 : 6,
         },
       ]}
       noBrokenCorners={isLightTheme}
       squaresBackgroundColor={theme.backgroundColor}
-      height={66}
-      width={136}
+      height={isMobile ? 35 : 66}
+      width={isMobile ? 80 : 136}
     >
-      <BrandText style={{ ...InformationsBoxLabelCStyle, color: labelColor }}>
+      <BrandText
+        numberOfLines={1}
+        style={{ ...InformationsBoxLabelCStyle, color: labelColor }}
+      >
         {label}
       </BrandText>
       <BrandText
+        numberOfLines={1}
         style={{
           fontSize: 13,
           fontWeight: secondary ? "200" : "300",
@@ -69,13 +77,14 @@ const EstateCardInformationBox: React.FC<EstateCardInformationBoxProps> = ({
 export const EstateCardInformations: React.FC<EstateCardInformationsProps> = ({
   card,
 }) => {
+  const isMobile = useIsMobile();
   return (
     <View style={{ flex: 1 }}>
       <BrandText
         numberOfLines={1}
         style={{
           fontSize: 18,
-          maxWidth: 284,
+          maxWidth: isMobile ? 165 : 284,
           fontWeight: "300",
           letterSpacing: -1,
         }}
@@ -127,5 +136,4 @@ const InformationsBoxLabelCStyle: TextStyle = {
   fontSize: 11,
   fontWeight: "200",
   letterSpacing: -1,
-  lineHeight: 25,
 };
