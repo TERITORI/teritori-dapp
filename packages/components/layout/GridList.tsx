@@ -102,7 +102,12 @@ export function GridList<T>({
       onEndReached={onEndReached}
       keyExtractor={keyExtractorWithPadding}
       onEndReachedThreshold={4}
-      ListEmptyComponent={<EmptyList text="No result found" />}
+      ListEmptyComponent={
+        <EmptyList
+          text="No result found"
+          size={Math.min(height, containerWidth) / 3}
+        />
+      }
       renderItem={renderItemWithFixedWidth}
     />
   );
