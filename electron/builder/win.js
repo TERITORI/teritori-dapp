@@ -20,7 +20,7 @@ const options = {
     "node_modules/**/*",
     "package.json",
     "main.js",
-    "icon.icns",
+    "icon.png",
     "splash.html",
     "splash.png",
     "preload.js",
@@ -38,10 +38,10 @@ const options = {
     target: "nsis",
     asar: true,
     asarUnpack: ["build/*"],
+    icon: "./icon.png",
   },
   nsis: {
     deleteAppDataOnUninstall: true,
-    include: "installer/win/nsis-installer.nsh",
   },
 };
 

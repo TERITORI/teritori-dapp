@@ -19,7 +19,7 @@ const options = {
     "node_modules/**/*",
     "package.json",
     "main.js",
-    "icon.icns",
+    "icon.png",
     "splash.html",
     "splash.png",
     "preload.js",
@@ -40,6 +40,7 @@ const options = {
     target: ["AppImage", "deb"],
     asar: true,
     asarUnpack: ["build/*"],
+    icon: "./icon.png",
   },
   deb: {
     priority: "optional",
