@@ -54,17 +54,11 @@ export const feedsTabItems: { [key: string]: TabDefinition } = {
   "": {
     name: "Jungle News Feed",
   },
-  sounds: {
-    name: "Sounds Feed",
-  },
   music: {
     name: "Music Feed",
   },
   pics: {
     name: "Pics Feed",
-  },
-  videoNotes: {
-    name: "Video Notes Feed",
   },
   videos: {
     name: "Videos Feed",

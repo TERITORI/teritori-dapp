@@ -2,9 +2,8 @@ import React, { ComponentProps, useCallback, useMemo, useState } from "react";
 import { FlatList, ListRenderItemInfo, View } from "react-native";
 
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { BrandText } from "../BrandText";
+import { EmptyList } from "../EmptyList";
 
 type GridListType<T> = React.FC<{
   data: T[];
@@ -47,7 +46,7 @@ export function GridList<T>({
       ? containerWidth
       : Math.floor((containerWidth - gap * (elemsPerRow - 1)) / elemsPerRow);
 
-  const padded: ItemWrapper<T>[] = useMemo(() => {
+  let padded: ItemWrapper<T>[] = useMemo(() => {
     const wrappedData: ItemWrapper<T>[] = data.map((d) => ({
       value: d,
       filler: false,
@@ -83,6 +82,10 @@ export function GridList<T>({
     [elemWidth, renderItem],
   );
 
+  if (containerWidth === 0) {
+    padded = emptyList;
+  }
+
   return (
     <FlatList<ItemWrapper<T>>
       onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
@@ -99,10 +102,10 @@ export function GridList<T>({
       onEndReached={onEndReached}
       keyExtractor={keyExtractorWithPadding}
       onEndReachedThreshold={4}
-      ListEmptyComponent={
-        <BrandText style={fontSemibold20}>No result found</BrandText>
-      }
+      ListEmptyComponent={<EmptyList text="No result found" />}
       renderItem={renderItemWithFixedWidth}
     />
   );
 }
+
+const emptyList: [] = [];

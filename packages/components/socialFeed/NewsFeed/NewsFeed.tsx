@@ -231,7 +231,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         keyExtractor={(post: Post) => post.identifier}
         onScroll={scrollHandler}
         contentContainerStyle={contentCStyle}
-        onEndReachedThreshold={1}
+        onEndReachedThreshold={4}
         onEndReached={onEndReached}
       />
 

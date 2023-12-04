@@ -12,17 +12,6 @@ import { NetworkFeature } from "../../networks";
 
 export const VideosFeedScreen: FC = () => {
   const isMobile = useIsMobile();
-  const feedRequest: Partial<PostsRequest> = {
-    filter: {
-      categories: [PostCategory.Video],
-      user: "",
-      mentions: [],
-      hashtags: [],
-    },
-    limit: 10,
-    offset: 0,
-  };
-
   return (
     <ScreenContainer
       responsive
@@ -32,8 +21,19 @@ export const VideosFeedScreen: FC = () => {
     >
       {/* ScreenContainer has noScroll, so we need to add MobileTitle here */}
       {isMobile && <MobileTitle title="SOCIAL FEED" />}
-      <FeedHeader selectedTab="music" />
+      <FeedHeader selectedTab="videos" />
       <FeedVideosList allowUpload title="All videos" req={feedRequest} />
     </ScreenContainer>
   );
+};
+
+const feedRequest: Partial<PostsRequest> = {
+  filter: {
+    categories: [PostCategory.Video],
+    user: "",
+    mentions: [],
+    hashtags: [],
+  },
+  limit: 10,
+  offset: 0,
 };
