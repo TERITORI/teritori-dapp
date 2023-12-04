@@ -52,8 +52,6 @@ export const SocialArticleCard: FC<{
   refetchFeed?: () => Promise<any>;
   isFlagged?: boolean;
 }> = memo(({ post, isPostConsultation, refetchFeed, style, isFlagged }) => {
-  console.log("post", post);
-
   const navigation = useAppNavigation();
   const [localPost, setLocalPost] = useState<Post>(post);
   const [viewWidth, setViewWidth] = useState(0);
