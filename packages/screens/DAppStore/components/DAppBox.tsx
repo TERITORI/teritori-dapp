@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
+  Pressable,
   StyleProp,
-  TouchableHighlight,
   useWindowDimensions,
   View,
   ViewStyle,
@@ -51,7 +51,7 @@ export const DAppBox: React.FC<{
   const isMobile = width < 760;
 
   return (
-    <TouchableHighlight onPress={handleClick} disabled={alwaysOn}>
+    <Pressable onPress={handleClick} disabled={alwaysOn}>
       <TertiaryBox
         height={88}
         width={isMobile ? width * 0.8 : 306}
@@ -106,6 +106,6 @@ export const DAppBox: React.FC<{
 
         {!alwaysOn && <CheckboxDappStore isChecked={isChecked} />}
       </TertiaryBox>
-    </TouchableHighlight>
+    </Pressable>
   );
 };

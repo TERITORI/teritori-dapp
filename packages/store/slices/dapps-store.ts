@@ -24,9 +24,8 @@ const initialStatePersisted: DappsStoragePersisted = {
 export const selectAvailableApps = (state: RootState) =>
   state.dAppsStore.availableApps;
 
-export const selectCheckedApps = (state: RootState) => [
-  ...new Set(state.dAppsStorePersisted.selectedApps),
-];
+export const selectCheckedApps = (state: RootState) =>
+  state.dAppsStorePersisted.selectedApps;
 
 const dAppsStore = createSlice({
   name: "dapps-storage",
