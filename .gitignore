@@ -10,6 +10,7 @@ web-build/
 .idea/
 .vscode/
 /cache/
+/ios
 
 # macOS
 .DS_Store
