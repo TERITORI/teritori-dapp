@@ -1,3 +1,4 @@
+import { isEqual } from "lodash";
 import React, { memo, useRef, useState } from "react";
 import {
   ViewStyle,
@@ -9,7 +10,6 @@ import {
 import { useSelector } from "react-redux";
 
 import { NFTTransferModal } from "./NFTTransferModal";
-import { minNFTWidth } from "./NFTs";
 import checkMark from "../../../assets/icons/checkmark-marketplace.svg";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import footerSVG from "../../../assets/icons/footer-regular.svg";
@@ -268,7 +268,7 @@ export const NFTView: React.FC<{
                 }}
               >
                 <ImageWithTextInsert
-                  size={minNFTWidth}
+                  size={250}
                   imageURL={nft.imageUri}
                   textInsert={nft.textInsert}
                   style={{
@@ -400,7 +400,7 @@ export const NFTView: React.FC<{
       />
     </>
   );
-});
+}, isEqual);
 
 // using this because ellipizeMode seems broken
 export const shortUserAddressFromID = (id: string, size: number) => {

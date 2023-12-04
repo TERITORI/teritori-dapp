@@ -220,7 +220,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   return (
     <>
       <Animated.FlatList
-        scrollEventThrottle={0.1}
         data={posts}
         renderItem={({ item: post }) => RenderItem(post)}
         ListHeaderComponentStyle={{

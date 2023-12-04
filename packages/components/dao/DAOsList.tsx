@@ -1,63 +1,76 @@
-import { useState } from "react";
-import { View } from "react-native";
-
 import { DAOCard, GnoDAOCard } from "./DAOCard";
-import { DAOsRequest } from "../../api/dao/v1/dao";
+import { DAO, DAOsRequest } from "../../api/dao/v1/dao";
 import { useDAOs } from "../../hooks/dao/useDAOs";
-import { useGnoDAOs } from "../../hooks/gno/useGnoDAOs";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getUserId } from "../../networks";
+import { GnoDAORegistration, useGnoDAOs } from "../../hooks/gno/useGnoDAOs";
+import {
+  useSelectedNetworkId,
+  useSelectedNetworkInfo,
+} from "../../hooks/useSelectedNetwork";
+import { NetworkKind, getUserId } from "../../networks";
 import { layout } from "../../utils/style/layout";
+import { GridList } from "../layout/GridList";
 
-const halfGap = layout.spacing_x1;
+const gap = layout.spacing_x2;
 
-const maxElemWidth = 250;
+const minElemWidth = 250;
 
 export const DAOsList: React.FC<{
   req: Partial<DAOsRequest>;
 }> = ({ req }) => {
+  const network = useSelectedNetworkInfo();
+  switch (network?.kind) {
+    case NetworkKind.Cosmos: {
+      return <CosmosDAOsList req={req} />;
+    }
+    case NetworkKind.Gno: {
+      return <GnoDAOsList />;
+    }
+    default: {
+      return null;
+    }
+  }
+};
+
+const cosmosKeyExtractor = (item: DAO) => item.id;
+
+const CosmosDAOsList: React.FC<{
+  req: Partial<DAOsRequest>;
+}> = ({ req }) => {
   const { daos } = useDAOs(req);
+  return (
+    <GridList<DAO>
+      data={daos || []}
+      gap={gap}
+      minElemWidth={minElemWidth}
+      keyExtractor={cosmosKeyExtractor}
+      renderItem={(info, elemWidth) => (
+        <DAOCard daoId={info.item.id} style={{ width: elemWidth }} />
+      )}
+    />
+  );
+};
+
+const gnoKeyExtractor = (item: GnoDAORegistration) => item.pkgPath;
+
+const GnoDAOsList: React.FC = () => {
   const networkId = useSelectedNetworkId();
   const { gnoDAOs } = useGnoDAOs(networkId);
-  const [containerWidth, setContainerWidth] = useState(0);
-  const elemsPerRow = Math.floor(containerWidth / maxElemWidth) || 1;
-  const elemSize = elemsPerRow
-    ? (containerWidth - halfGap * elemsPerRow * 2) / elemsPerRow
-    : daos?.length || 0;
   return (
-    <View
-      onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
-      style={{
-        flex: 1,
-        flexDirection: "row",
-        flexWrap: "wrap",
-        marginHorizontal: -halfGap,
-        marginVertical: -halfGap,
-      }}
-    >
-      {(daos || []).map((item) => (
-        <DAOCard
-          key={item.id}
-          daoId={item.id}
-          style={{
-            width: elemSize,
-            marginHorizontal: halfGap,
-            marginVertical: halfGap,
-          }}
-        />
-      ))}
-      {(gnoDAOs || []).map((item) => (
+    <GridList<GnoDAORegistration>
+      data={gnoDAOs || []}
+      gap={gap}
+      minElemWidth={minElemWidth}
+      keyExtractor={gnoKeyExtractor}
+      renderItem={(info, elemWidth) => (
         <GnoDAOCard
-          key={item.pkgPath}
-          daoId={getUserId(networkId, item.pkgPath)}
-          registration={item}
+          key={info.item.pkgPath}
+          daoId={getUserId(networkId, info.item.pkgPath)}
+          registration={info.item}
           style={{
-            width: elemSize,
-            marginHorizontal: halfGap,
-            marginVertical: halfGap,
+            width: elemWidth,
           }}
         />
-      ))}
-    </View>
+      )}
+    />
   );
 };

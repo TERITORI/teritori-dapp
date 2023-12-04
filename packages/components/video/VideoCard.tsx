@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { isEqual } from "lodash";
+import React, { memo, useState } from "react";
 import {
   StyleProp,
   StyleSheet,
@@ -46,7 +47,7 @@ export const VideoCard: React.FC<{
   hideAuthor?: boolean;
   hideDescription?: boolean;
   style?: StyleProp<ViewStyle>;
-}> = ({ post, hideAuthor, hideDescription, style }) => {
+}> = memo(({ post, hideAuthor, hideDescription, style }) => {
   const { width: windowWidth } = useWindowDimensions();
   const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
@@ -199,7 +200,7 @@ export const VideoCard: React.FC<{
       </View>
     </View>
   );
-};
+}, isEqual);
 
 const imgBoxStyle: ViewStyle = {
   position: "relative",

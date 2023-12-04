@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { View, ViewStyle, FlatList } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { UploadVideoButton } from "./UploadVideoButton";
 import { UploadVideoModal } from "./UploadVideoModal";
@@ -14,14 +14,10 @@ import { zodTryParseJSON } from "../../utils/sanitize";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
-import {
-  PostCategory,
-  ZodSocialFeedVideoMetadata,
-} from "../socialFeed/NewsFeed/NewsFeed.type";
-import { SpacerColumn } from "../spacer";
+import { GridList } from "../layout/GridList";
+import { ZodSocialFeedVideoMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
 
 const minCardWidth = 261;
-const halfGap = layout.spacing_x1;
 
 export const FeedVideosList: React.FC<{
   title: string;
@@ -48,38 +44,11 @@ export const FeedVideosList: React.FC<{
     [data?.pages],
   );
 
-  const [containerWidth, setContainerWidth] = useState(0);
-  const elemsPerRow = Math.floor(containerWidth / minCardWidth) || 1;
-  const elemSize = elemsPerRow
-    ? (containerWidth - halfGap * (elemsPerRow - 1) * 2) / elemsPerRow
-    : videos?.length || 0;
   const onEndReached = () => {
     if (!isLoading && hasNextPage && !isFetching) {
       fetchNextPage();
     }
   };
-
-  let padded: Post[] = videos;
-  if (videos.length % elemsPerRow !== 0 && elemsPerRow > 1) {
-    const padding = Array(elemsPerRow - (videos.length % elemsPerRow))
-      .fill(undefined)
-      .map((_, i) => {
-        const n: Post = {
-          identifier: `padded-${i}`,
-          category: PostCategory.Video,
-          authorId: "",
-          metadata: "",
-          isDeleted: false,
-          parentPostIdentifier: "",
-          subPostLength: 0,
-          createdAt: 0,
-          tipAmount: 0,
-          reactions: [],
-        };
-        return n;
-      });
-    padded = videos.concat(padding);
-  }
 
   if (!data && (isLoading || isFetching))
     return <View style={{ minWidth: minCardWidth }} />;
@@ -95,27 +64,17 @@ export const FeedVideosList: React.FC<{
         )}
       </View>
       <View style={[contentGroupCStyle]}>
-        <FlatList
-          onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
+        <GridList<Post>
           keyExtractor={(item) => `video-${item.identifier}`}
-          style={{ width: "100%" }}
-          key={`videos-feed-flat-list-${elemsPerRow}`}
-          columnWrapperStyle={
-            elemsPerRow < 2
-              ? undefined
-              : { flex: 1, justifyContent: "space-between" }
-          }
-          ItemSeparatorComponent={() => <SpacerColumn size={2} />}
-          data={padded}
-          numColumns={elemsPerRow}
-          renderItem={({ item }) => (
+          data={videos}
+          minElemWidth={minCardWidth}
+          renderItem={({ item }, elemSize) => (
             <VideoCard
               post={item}
               style={{ width: elemSize }}
               hideAuthor={item.authorId === req.filter?.user}
             />
           )}
-          onEndReachedThreshold={1}
           onEndReached={onEndReached}
         />
       </View>
