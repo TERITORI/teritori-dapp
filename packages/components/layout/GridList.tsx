@@ -102,6 +102,7 @@ export function GridList<T>({
       onEndReached={onEndReached}
       keyExtractor={keyExtractorWithPadding}
       onEndReachedThreshold={4}
+      showsVerticalScrollIndicator={false}
       ListEmptyComponent={
         <EmptyList
           text="No result found"
