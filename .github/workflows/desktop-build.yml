@@ -44,6 +44,9 @@ jobs:
           - os: macos
             runner: macos-latest
             arch: amd64
+          - os: windows
+            runner: macos-latest
+            arch: amd64
     runs-on: ${{ matrix.runner }}
     continue-on-error: true
     steps:
@@ -89,4 +92,12 @@ jobs:
         with:
           name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-dmg
           path: electron/dist/artifacts/local/*.dmg
+          if-no-files-found: error
+
+      - name: Upload exe
+        uses: actions/upload-artifact@v3
+        if: matrix.os == 'windows'
+        with:
+          name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-exe
+          path: electron/dist/artifacts/local/*.exe
           if-no-files-found: error
