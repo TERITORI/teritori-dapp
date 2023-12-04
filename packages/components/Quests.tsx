@@ -26,6 +26,7 @@ export const Quests: React.FC<{
       data={quests || []}
       minElemWidth={140}
       keyExtractor={(item) => item.id}
+      noFixedHeight
     />
   );
 };
