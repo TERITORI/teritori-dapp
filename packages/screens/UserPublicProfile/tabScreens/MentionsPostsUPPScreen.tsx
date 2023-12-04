@@ -1,20 +1,19 @@
 import React, { FC, useCallback, useMemo } from "react";
 
-import { UPPHeader } from "./components/UPPHeader";
-import { PostsRequest } from "../../api/feed/v1/feed";
-import {
-  ScreenContainer,
-  ScreenContainerProps,
-} from "../../components/ScreenContainer";
-import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { parseUserId } from "../../networks";
+import { PostsRequest } from "../../../api/feed/v1/feed";
+import { ScreenContainer } from "../../../components/ScreenContainer";
+import { NewsFeed } from "../../../components/socialFeed/NewsFeed/NewsFeed";
+import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { parseUserId } from "../../../networks";
+import { UppTabKeys } from "../../../utils/upp";
+import { UppTabScreenProps } from "../UserPublicProfileScreen";
+import { UPPHeader } from "../components/UPPHeader";
 
-export const FeedMentionsPostsUPPScreen: FC<{
-  userId: string;
-  screenContainerOtherProps: Partial<ScreenContainerProps>;
-}> = ({ userId, screenContainerOtherProps }) => {
+export const MentionsPostsUPPScreen: FC<UppTabScreenProps> = ({
+  userId,
+  screenContainerOtherProps,
+}) => {
   const [, userAddress] = parseUserId(userId);
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(userId);
@@ -37,13 +36,13 @@ export const FeedMentionsPostsUPPScreen: FC<{
   }, [userInfo?.metadata.tokenId, userAddress]);
 
   const Header = useCallback(
-    () => <UPPHeader userId={userId} selectedTab="feedMentionsPosts" />,
+    () => <UPPHeader userId={userId} selectedTab={UppTabKeys.mentionsPosts} />,
     [userId],
   );
 
   return (
     <ScreenContainer
-      key={`FeedMentionsPostsUPP ${userId}`} // this key is to reset the screen state when the id changes
+      key={`${UppTabKeys.mentionsPosts} ${userId}`} // this key is to reset the screen state when the id changes
       noScroll
       {...screenContainerOtherProps}
     >

@@ -1,21 +1,20 @@
 import React, { FC, useCallback } from "react";
 
-import { UPPHeader } from "./components/UPPHeader";
-import { PostsRequest } from "../../api/feed/v1/feed";
-import {
-  ScreenContainer,
-  ScreenContainerProps,
-} from "../../components/ScreenContainer";
-import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
-import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { parseUserId } from "../../networks";
+import { PostsRequest } from "../../../api/feed/v1/feed";
+import { ScreenContainer } from "../../../components/ScreenContainer";
+import { NewsFeed } from "../../../components/socialFeed/NewsFeed/NewsFeed";
+import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
+import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { parseUserId } from "../../../networks";
+import { UppTabKeys } from "../../../utils/upp";
+import { UppTabScreenProps } from "../UserPublicProfileScreen";
+import { UPPHeader } from "../components/UPPHeader";
 
-export const FeedVideosUPPScreen: FC<{
-  userId: string;
-  screenContainerOtherProps: Partial<ScreenContainerProps>;
-}> = ({ userId, screenContainerOtherProps }) => {
+export const VideosUPPScreen: FC<UppTabScreenProps> = ({
+  userId,
+  screenContainerOtherProps,
+}) => {
   const [, userAddress] = parseUserId(userId);
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(userId);
@@ -33,13 +32,13 @@ export const FeedVideosUPPScreen: FC<{
   };
 
   const Header = useCallback(
-    () => <UPPHeader userId={userId} selectedTab="feedVideos" />,
+    () => <UPPHeader userId={userId} selectedTab={UppTabKeys.videos} />,
     [userId],
   );
 
   return (
     <ScreenContainer
-      key={`FeedVideosUPP ${userId}`} // this key is to reset the screen state when the id changes
+      key={`${UppTabKeys.videos} ${userId}`} // this key is to reset the screen state when the id changes
       noScroll
       {...screenContainerOtherProps}
     >

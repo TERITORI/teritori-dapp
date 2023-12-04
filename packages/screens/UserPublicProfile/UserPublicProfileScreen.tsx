@@ -1,17 +1,17 @@
 import { bech32 } from "bech32";
 import React, { useEffect, useMemo } from "react";
 
-import { DAOMembersUPPScreen } from "./DAOMembersUPPScreen";
-import { DAOProposalsUPPScreen } from "./DAOProposalsUPPScreen";
-import { DAOsUPPScreen } from "./DAOsUPPScreen";
-import { FeedMentionsPostsUPPScreen } from "./FeedMentionsPostsUPPScreen";
-import { FeedMusicUPPScreen } from "./FeedMusicUPPScreen";
-import { FeedPostsUPPScreen } from "./FeedPostsUPPScreen";
-import { FeedVideosUPPScreen } from "./FeedVideosUPPScreen";
-import { FundsUPPScreen } from "./FundsUPPScreen";
-import { GnoDemoUPPScreen } from "./GnoDemoUPPScreen";
-import { NFTsUPPScreen } from "./NFTsUPPScreen";
-import { QuestsUPPScreen } from "./QuestsUPPScreen";
+import { DAOsUPPScreen } from "./tabScreens/DAOsUPPScreen";
+import { FundsUPPScreen } from "./tabScreens/FundsUPPScreen";
+import { GnoDemoUPPScreen } from "./tabScreens/GnoDemoUPPScreen";
+import { MembersUPPScreen } from "./tabScreens/MembersUPPScreen";
+import { MentionsPostsUPPScreen } from "./tabScreens/MentionsPostsUPPScreen";
+import { MusicUPPScreen } from "./tabScreens/MusicUPPScreen";
+import { NFTsUPPScreen } from "./tabScreens/NFTsUPPScreen";
+import { PostsUPPScreen } from "./tabScreens/PostsUPPScreen";
+import { ProposalsUPPScreen } from "./tabScreens/ProposalsUPPScreen";
+import { QuestsUPPScreen } from "./tabScreens/QuestsUPPScreen";
+import { VideosUPPScreen } from "./tabScreens/VideosUPPScreen";
 import { BrandText } from "../../components/BrandText";
 import { NotFound } from "../../components/NotFound";
 import {
@@ -23,11 +23,16 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { NetworkKind, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
-import { DEFAULT_UPP_TAB } from "../../utils/upp";
+import { DEFAULT_UPP_TAB_KEY, UppTabKeys } from "../../utils/upp";
+
+export interface UppTabScreenProps {
+  userId: string;
+  screenContainerOtherProps: Partial<ScreenContainerProps>;
+}
 
 export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   route: {
-    params: { id, tab, network: routeNetwork },
+    params: { id, tab: tabKey, network: routeNetwork },
   },
 }) => {
   const navigation = useAppNavigation();
@@ -60,9 +65,10 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   }, [navigation, userAddress, metadata.tokenId]);
 
   useEffect(() => {
-    if (!tab)
-      navigation.replace("UserPublicProfile", { id, tab: DEFAULT_UPP_TAB });
-  }, [tab, id, navigation]);
+    if (!tabKey) {
+      navigation.replace("UserPublicProfile", { id, tab: DEFAULT_UPP_TAB_KEY });
+    }
+  }, [tabKey, id, navigation]);
 
   if (
     network?.kind !== NetworkKind.Gno &&
@@ -80,90 +86,87 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       </ScreenContainer>
     );
   }
-  switch (tab) {
-    case "feedPosts":
+  switch (tabKey) {
+    case UppTabKeys.posts:
       return (
-        <FeedPostsUPPScreen
+        <PostsUPPScreen
           userId={id}
           screenContainerOtherProps={screenContainerOtherProps}
         />
       );
-    case "feedMentionsPosts":
+    case UppTabKeys.mentionsPosts:
       return (
-        <FeedMentionsPostsUPPScreen
+        <MentionsPostsUPPScreen
           userId={id}
           screenContainerOtherProps={screenContainerOtherProps}
         />
       );
-    case "feedMusic":
+    case UppTabKeys.music:
       return (
-        <FeedMusicUPPScreen
+        <MusicUPPScreen
           userId={id}
           screenContainerOtherProps={screenContainerOtherProps}
         />
       );
-    case "feedVideos":
+    case UppTabKeys.videos:
       return (
-        <FeedVideosUPPScreen
+        <VideosUPPScreen
           userId={id}
           screenContainerOtherProps={screenContainerOtherProps}
         />
       );
-
-    case "daos":
+    case UppTabKeys.daos:
       return (
         <DAOsUPPScreen
           userId={id}
           screenContainerOtherProps={screenContainerOtherProps}
         />
       );
-    case "daosMembers":
+    case UppTabKeys.members:
       return (
-        <DAOMembersUPPScreen
+        <MembersUPPScreen
           userId={id}
           screenContainerOtherProps={screenContainerOtherProps}
         />
       );
-    case "daosProposals":
+    case UppTabKeys.proposals:
       return (
-        <DAOProposalsUPPScreen
+        <ProposalsUPPScreen
           userId={id}
           screenContainerOtherProps={screenContainerOtherProps}
         />
       );
-
-    case "quests":
+    case UppTabKeys.quests:
       return (
         <QuestsUPPScreen
           userId={id}
           screenContainerOtherProps={screenContainerOtherProps}
         />
       );
-    case "nfts":
+    case UppTabKeys.nfts:
       return (
         <NFTsUPPScreen
           userId={id}
           screenContainerOtherProps={screenContainerOtherProps}
         />
       );
-    case "funds":
+    case UppTabKeys.funds:
       return (
         <FundsUPPScreen
           userId={id}
           screenContainerOtherProps={screenContainerOtherProps}
         />
       );
-    case "gnoDemo":
+    case UppTabKeys.gnoDemo:
       return (
         <GnoDemoUPPScreen
           userId={id}
           screenContainerOtherProps={screenContainerOtherProps}
         />
       );
-
     default:
       return (
-        <FeedPostsUPPScreen
+        <PostsUPPScreen
           userId={id}
           screenContainerOtherProps={screenContainerOtherProps}
         />
