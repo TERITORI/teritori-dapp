@@ -36,8 +36,6 @@ export const ethereumGoerliNetwork: EthereumNetworkInfo = {
   firehoseEndpoint: "goerli.eth.streamingfast.io:443",
   indexStartBlock: "8218450", //  Stake: "8694034", Mint: "8218450", Bridge: "9817776"
   indexStopBlock: "-1",
-  indexBlockProgress: 1000,
-  indexLiveBlockProgress: 1,
   substreamsManifest: "go/internal/substreams/ethereum/ethereum_goerli.yaml",
   distributorContractAddress: "0x750070a76a3444f27e3fccabe4d423105cfa3e72",
   riotBridgeAddressGen0: "0xf7e1268364168328c0445b8da152581f96f49780",

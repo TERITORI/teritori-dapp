@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { ethers } from "ethers";
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 
@@ -67,31 +66,13 @@ const ethereumNFTInfos = async (
 
   const nftInfos = await Promise.all(
     squad.nfts.map(async (nft) => {
-      // If nft is bridged then use the original contract to query info
-      let nftContract = nft.contract;
-      let ethProvider:
-        | ethers.providers.Web3Provider
-        | ethers.providers.AlchemyProvider = metamaskProvider;
-
-      if (
-        nft.contract.toLowerCase() === ethereumNetwork.riotBridgedNFTAddressGen0
-      ) {
-        let originalNetwork;
-
-        if (network.id === "polygon") {
-          originalNetwork = mustGetEthereumNetwork("ethereum");
-        } else if (network.id === "polygon-mumbai") {
-          originalNetwork = mustGetEthereumNetwork("ethereum-goerli");
-        } else {
-          throw Error(`unsupported networkId: ${network.id}`);
-        }
-
-        nftContract = originalNetwork.riotNFTAddressGen0 || "";
-        ethProvider = await getEthereumProvider(originalNetwork, true);
-      }
+      const nftContract = nft.contract;
+      const ethProvider = await getEthereumProvider(ethereumNetwork);
 
       const nftClient = TeritoriNft__factory.connect(nftContract, ethProvider);
-      return await nftClient.nftInfo(nft.tokenId);
+      const tokenURI = await nftClient.callStatic.tokenURI(nft.tokenId);
+      const res = (await fetch(tokenURI)).json();
+      return res;
     }),
   );
 

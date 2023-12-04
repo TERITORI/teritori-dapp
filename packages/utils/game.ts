@@ -21,7 +21,6 @@ import { NFT } from "../api/marketplace/v1/marketplace";
 import { UserScore } from "../api/p2e/v1/p2e";
 import { TeritoriSquadStakingClient } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.client";
 import { Nft as SquadStakeNFT } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
-import { AxelarTeritoriNft__factory } from "../evm-contracts-clients/axelar-teritori-nft/AxelarTeritoriNft__factory";
 import { TeritoriNft__factory } from "../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import { SquadStakingV3__factory } from "../evm-contracts-clients/teritori-squad-staking/SquadStakingV3__factory";
 import {
@@ -505,22 +504,9 @@ const ethereumSquadStake = async (
   for (const selectedRipper of selectedRippers) {
     const tokenId = getRipperTokenId(selectedRipper);
 
-    let nftFactory;
-    let nftContractAddress;
     // Set approveForAll for each NFT contract
-
-    if (
-      ethereumNetwork.id === "polygon-mumbai" ||
-      ethereumNetwork.id === "polygon"
-    ) {
-      nftFactory = AxelarTeritoriNft__factory;
-      nftContractAddress = selectedRipper.nftContractAddress.split(":")[0];
-    } else {
-      nftFactory = TeritoriNft__factory;
-      nftContractAddress = selectedRipper.nftContractAddress;
-    }
-
-    const nftClient = nftFactory.connect(nftContractAddress, signer);
+    const nftContractAddress = selectedRipper.nftContractAddress;
+    const nftClient = TeritoriNft__factory.connect(nftContractAddress, signer);
 
     const isApprovedForAll = await nftClient.isApprovedForAll(
       sender,

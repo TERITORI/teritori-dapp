@@ -31,7 +31,7 @@ var (
 
 // AxelarBridgeETHMetaData contains all meta data concerning the AxelarBridgeETH contract.
 var AxelarBridgeETHMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"gateway_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"gasService_\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"InvalidAddress\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotApprovedByGateway\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"OwnableInvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"OwnableUnauthorizedAccount\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"bridgeNft\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"commandId\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"sourceChain\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"sourceAddress\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"payload\",\"type\":\"bytes\"}],\"name\":\"execute\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"commandId\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"sourceChain\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"sourceAddress\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"payload\",\"type\":\"bytes\"},{\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"executeWithToken\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"gasService\",\"outputs\":[{\"internalType\":\"contractIAxelarGasService\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"gateway\",\"outputs\":[{\"internalType\":\"contractIAxelarGateway\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"riotNftEthAddress\",\"outputs\":[{\"internalType\":\"contractriotNftEth\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"riotNftPolyAddress\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_riotNftEth\",\"type\":\"address\"}],\"name\":\"setRiotNftEthAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_riotNftPoly\",\"type\":\"string\"}],\"name\":\"setRiotNftPolyAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_walletAddress\",\"type\":\"address\"}],\"name\":\"unlockRiotNft\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"gateway_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"gasService_\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"InvalidAddress\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotApprovedByGateway\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"OwnableInvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"OwnableUnauthorizedAccount\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"bridgeNft\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"enableUnlock\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"commandId\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"sourceChain\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"sourceAddress\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"payload\",\"type\":\"bytes\"}],\"name\":\"execute\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"commandId\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"sourceChain\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"sourceAddress\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"payload\",\"type\":\"bytes\"},{\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"executeWithToken\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"gasService\",\"outputs\":[{\"internalType\":\"contractIAxelarGasService\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"gateway\",\"outputs\":[{\"internalType\":\"contractIAxelarGateway\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"riotNftEthAddress\",\"outputs\":[{\"internalType\":\"contractriotNftEth\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"riotNftPolyAddress\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"setDisableUnlock\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contractriotNftEth\",\"name\":\"_riotNftEthAddress\",\"type\":\"address\"}],\"name\":\"setRiotEth\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_riotNftPolyAddress\",\"type\":\"string\"}],\"name\":\"setRiotPolygon\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"tokenIdAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"unlockRiotNft\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // AxelarBridgeETHABI is the input ABI used to generate the binding from.
@@ -178,6 +178,37 @@ func (_AxelarBridgeETH *AxelarBridgeETHTransactorRaw) Transfer(opts *bind.Transa
 // Transact invokes the (paid) contract method with params as input values.
 func (_AxelarBridgeETH *AxelarBridgeETHTransactorRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
 	return _AxelarBridgeETH.Contract.contract.Transact(opts, method, params...)
+}
+
+// EnableUnlock is a free data retrieval call binding the contract method 0xce2cb1e3.
+//
+// Solidity: function enableUnlock() view returns(bool)
+func (_AxelarBridgeETH *AxelarBridgeETHCaller) EnableUnlock(opts *bind.CallOpts) (bool, error) {
+	var out []interface{}
+	err := _AxelarBridgeETH.contract.Call(opts, &out, "enableUnlock")
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
+}
+
+// EnableUnlock is a free data retrieval call binding the contract method 0xce2cb1e3.
+//
+// Solidity: function enableUnlock() view returns(bool)
+func (_AxelarBridgeETH *AxelarBridgeETHSession) EnableUnlock() (bool, error) {
+	return _AxelarBridgeETH.Contract.EnableUnlock(&_AxelarBridgeETH.CallOpts)
+}
+
+// EnableUnlock is a free data retrieval call binding the contract method 0xce2cb1e3.
+//
+// Solidity: function enableUnlock() view returns(bool)
+func (_AxelarBridgeETH *AxelarBridgeETHCallerSession) EnableUnlock() (bool, error) {
+	return _AxelarBridgeETH.Contract.EnableUnlock(&_AxelarBridgeETH.CallOpts)
 }
 
 // GasService is a free data retrieval call binding the contract method 0x6a22d8cc.
@@ -335,6 +366,37 @@ func (_AxelarBridgeETH *AxelarBridgeETHCallerSession) RiotNftPolyAddress() (stri
 	return _AxelarBridgeETH.Contract.RiotNftPolyAddress(&_AxelarBridgeETH.CallOpts)
 }
 
+// TokenIdAddress is a free data retrieval call binding the contract method 0xa16e9dcc.
+//
+// Solidity: function tokenIdAddress(uint256 ) view returns(address)
+func (_AxelarBridgeETH *AxelarBridgeETHCaller) TokenIdAddress(opts *bind.CallOpts, arg0 *big.Int) (common.Address, error) {
+	var out []interface{}
+	err := _AxelarBridgeETH.contract.Call(opts, &out, "tokenIdAddress", arg0)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// TokenIdAddress is a free data retrieval call binding the contract method 0xa16e9dcc.
+//
+// Solidity: function tokenIdAddress(uint256 ) view returns(address)
+func (_AxelarBridgeETH *AxelarBridgeETHSession) TokenIdAddress(arg0 *big.Int) (common.Address, error) {
+	return _AxelarBridgeETH.Contract.TokenIdAddress(&_AxelarBridgeETH.CallOpts, arg0)
+}
+
+// TokenIdAddress is a free data retrieval call binding the contract method 0xa16e9dcc.
+//
+// Solidity: function tokenIdAddress(uint256 ) view returns(address)
+func (_AxelarBridgeETH *AxelarBridgeETHCallerSession) TokenIdAddress(arg0 *big.Int) (common.Address, error) {
+	return _AxelarBridgeETH.Contract.TokenIdAddress(&_AxelarBridgeETH.CallOpts, arg0)
+}
+
 // BridgeNft is a paid mutator transaction binding the contract method 0x365301fe.
 //
 // Solidity: function bridgeNft(uint256 _tokenId) payable returns()
@@ -419,46 +481,67 @@ func (_AxelarBridgeETH *AxelarBridgeETHTransactorSession) RenounceOwnership() (*
 	return _AxelarBridgeETH.Contract.RenounceOwnership(&_AxelarBridgeETH.TransactOpts)
 }
 
-// SetRiotNftEthAddress is a paid mutator transaction binding the contract method 0x6c790c76.
+// SetDisableUnlock is a paid mutator transaction binding the contract method 0xaaf22369.
 //
-// Solidity: function setRiotNftEthAddress(address _riotNftEth) returns()
-func (_AxelarBridgeETH *AxelarBridgeETHTransactor) SetRiotNftEthAddress(opts *bind.TransactOpts, _riotNftEth common.Address) (*types.Transaction, error) {
-	return _AxelarBridgeETH.contract.Transact(opts, "setRiotNftEthAddress", _riotNftEth)
+// Solidity: function setDisableUnlock() returns()
+func (_AxelarBridgeETH *AxelarBridgeETHTransactor) SetDisableUnlock(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _AxelarBridgeETH.contract.Transact(opts, "setDisableUnlock")
 }
 
-// SetRiotNftEthAddress is a paid mutator transaction binding the contract method 0x6c790c76.
+// SetDisableUnlock is a paid mutator transaction binding the contract method 0xaaf22369.
 //
-// Solidity: function setRiotNftEthAddress(address _riotNftEth) returns()
-func (_AxelarBridgeETH *AxelarBridgeETHSession) SetRiotNftEthAddress(_riotNftEth common.Address) (*types.Transaction, error) {
-	return _AxelarBridgeETH.Contract.SetRiotNftEthAddress(&_AxelarBridgeETH.TransactOpts, _riotNftEth)
+// Solidity: function setDisableUnlock() returns()
+func (_AxelarBridgeETH *AxelarBridgeETHSession) SetDisableUnlock() (*types.Transaction, error) {
+	return _AxelarBridgeETH.Contract.SetDisableUnlock(&_AxelarBridgeETH.TransactOpts)
 }
 
-// SetRiotNftEthAddress is a paid mutator transaction binding the contract method 0x6c790c76.
+// SetDisableUnlock is a paid mutator transaction binding the contract method 0xaaf22369.
 //
-// Solidity: function setRiotNftEthAddress(address _riotNftEth) returns()
-func (_AxelarBridgeETH *AxelarBridgeETHTransactorSession) SetRiotNftEthAddress(_riotNftEth common.Address) (*types.Transaction, error) {
-	return _AxelarBridgeETH.Contract.SetRiotNftEthAddress(&_AxelarBridgeETH.TransactOpts, _riotNftEth)
+// Solidity: function setDisableUnlock() returns()
+func (_AxelarBridgeETH *AxelarBridgeETHTransactorSession) SetDisableUnlock() (*types.Transaction, error) {
+	return _AxelarBridgeETH.Contract.SetDisableUnlock(&_AxelarBridgeETH.TransactOpts)
 }
 
-// SetRiotNftPolyAddress is a paid mutator transaction binding the contract method 0xf58cda74.
+// SetRiotEth is a paid mutator transaction binding the contract method 0x5081a1f9.
 //
-// Solidity: function setRiotNftPolyAddress(string _riotNftPoly) returns()
-func (_AxelarBridgeETH *AxelarBridgeETHTransactor) SetRiotNftPolyAddress(opts *bind.TransactOpts, _riotNftPoly string) (*types.Transaction, error) {
-	return _AxelarBridgeETH.contract.Transact(opts, "setRiotNftPolyAddress", _riotNftPoly)
+// Solidity: function setRiotEth(address _riotNftEthAddress) returns()
+func (_AxelarBridgeETH *AxelarBridgeETHTransactor) SetRiotEth(opts *bind.TransactOpts, _riotNftEthAddress common.Address) (*types.Transaction, error) {
+	return _AxelarBridgeETH.contract.Transact(opts, "setRiotEth", _riotNftEthAddress)
 }
 
-// SetRiotNftPolyAddress is a paid mutator transaction binding the contract method 0xf58cda74.
+// SetRiotEth is a paid mutator transaction binding the contract method 0x5081a1f9.
 //
-// Solidity: function setRiotNftPolyAddress(string _riotNftPoly) returns()
-func (_AxelarBridgeETH *AxelarBridgeETHSession) SetRiotNftPolyAddress(_riotNftPoly string) (*types.Transaction, error) {
-	return _AxelarBridgeETH.Contract.SetRiotNftPolyAddress(&_AxelarBridgeETH.TransactOpts, _riotNftPoly)
+// Solidity: function setRiotEth(address _riotNftEthAddress) returns()
+func (_AxelarBridgeETH *AxelarBridgeETHSession) SetRiotEth(_riotNftEthAddress common.Address) (*types.Transaction, error) {
+	return _AxelarBridgeETH.Contract.SetRiotEth(&_AxelarBridgeETH.TransactOpts, _riotNftEthAddress)
 }
 
-// SetRiotNftPolyAddress is a paid mutator transaction binding the contract method 0xf58cda74.
+// SetRiotEth is a paid mutator transaction binding the contract method 0x5081a1f9.
 //
-// Solidity: function setRiotNftPolyAddress(string _riotNftPoly) returns()
-func (_AxelarBridgeETH *AxelarBridgeETHTransactorSession) SetRiotNftPolyAddress(_riotNftPoly string) (*types.Transaction, error) {
-	return _AxelarBridgeETH.Contract.SetRiotNftPolyAddress(&_AxelarBridgeETH.TransactOpts, _riotNftPoly)
+// Solidity: function setRiotEth(address _riotNftEthAddress) returns()
+func (_AxelarBridgeETH *AxelarBridgeETHTransactorSession) SetRiotEth(_riotNftEthAddress common.Address) (*types.Transaction, error) {
+	return _AxelarBridgeETH.Contract.SetRiotEth(&_AxelarBridgeETH.TransactOpts, _riotNftEthAddress)
+}
+
+// SetRiotPolygon is a paid mutator transaction binding the contract method 0xa4109647.
+//
+// Solidity: function setRiotPolygon(string _riotNftPolyAddress) returns()
+func (_AxelarBridgeETH *AxelarBridgeETHTransactor) SetRiotPolygon(opts *bind.TransactOpts, _riotNftPolyAddress string) (*types.Transaction, error) {
+	return _AxelarBridgeETH.contract.Transact(opts, "setRiotPolygon", _riotNftPolyAddress)
+}
+
+// SetRiotPolygon is a paid mutator transaction binding the contract method 0xa4109647.
+//
+// Solidity: function setRiotPolygon(string _riotNftPolyAddress) returns()
+func (_AxelarBridgeETH *AxelarBridgeETHSession) SetRiotPolygon(_riotNftPolyAddress string) (*types.Transaction, error) {
+	return _AxelarBridgeETH.Contract.SetRiotPolygon(&_AxelarBridgeETH.TransactOpts, _riotNftPolyAddress)
+}
+
+// SetRiotPolygon is a paid mutator transaction binding the contract method 0xa4109647.
+//
+// Solidity: function setRiotPolygon(string _riotNftPolyAddress) returns()
+func (_AxelarBridgeETH *AxelarBridgeETHTransactorSession) SetRiotPolygon(_riotNftPolyAddress string) (*types.Transaction, error) {
+	return _AxelarBridgeETH.Contract.SetRiotPolygon(&_AxelarBridgeETH.TransactOpts, _riotNftPolyAddress)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
@@ -482,25 +565,25 @@ func (_AxelarBridgeETH *AxelarBridgeETHTransactorSession) TransferOwnership(newO
 	return _AxelarBridgeETH.Contract.TransferOwnership(&_AxelarBridgeETH.TransactOpts, newOwner)
 }
 
-// UnlockRiotNft is a paid mutator transaction binding the contract method 0x6b109aff.
+// UnlockRiotNft is a paid mutator transaction binding the contract method 0x3bb4d0a5.
 //
-// Solidity: function unlockRiotNft(uint256 _tokenId, address _walletAddress) returns()
-func (_AxelarBridgeETH *AxelarBridgeETHTransactor) UnlockRiotNft(opts *bind.TransactOpts, _tokenId *big.Int, _walletAddress common.Address) (*types.Transaction, error) {
-	return _AxelarBridgeETH.contract.Transact(opts, "unlockRiotNft", _tokenId, _walletAddress)
+// Solidity: function unlockRiotNft(uint256 _tokenId) returns()
+func (_AxelarBridgeETH *AxelarBridgeETHTransactor) UnlockRiotNft(opts *bind.TransactOpts, _tokenId *big.Int) (*types.Transaction, error) {
+	return _AxelarBridgeETH.contract.Transact(opts, "unlockRiotNft", _tokenId)
 }
 
-// UnlockRiotNft is a paid mutator transaction binding the contract method 0x6b109aff.
+// UnlockRiotNft is a paid mutator transaction binding the contract method 0x3bb4d0a5.
 //
-// Solidity: function unlockRiotNft(uint256 _tokenId, address _walletAddress) returns()
-func (_AxelarBridgeETH *AxelarBridgeETHSession) UnlockRiotNft(_tokenId *big.Int, _walletAddress common.Address) (*types.Transaction, error) {
-	return _AxelarBridgeETH.Contract.UnlockRiotNft(&_AxelarBridgeETH.TransactOpts, _tokenId, _walletAddress)
+// Solidity: function unlockRiotNft(uint256 _tokenId) returns()
+func (_AxelarBridgeETH *AxelarBridgeETHSession) UnlockRiotNft(_tokenId *big.Int) (*types.Transaction, error) {
+	return _AxelarBridgeETH.Contract.UnlockRiotNft(&_AxelarBridgeETH.TransactOpts, _tokenId)
 }
 
-// UnlockRiotNft is a paid mutator transaction binding the contract method 0x6b109aff.
+// UnlockRiotNft is a paid mutator transaction binding the contract method 0x3bb4d0a5.
 //
-// Solidity: function unlockRiotNft(uint256 _tokenId, address _walletAddress) returns()
-func (_AxelarBridgeETH *AxelarBridgeETHTransactorSession) UnlockRiotNft(_tokenId *big.Int, _walletAddress common.Address) (*types.Transaction, error) {
-	return _AxelarBridgeETH.Contract.UnlockRiotNft(&_AxelarBridgeETH.TransactOpts, _tokenId, _walletAddress)
+// Solidity: function unlockRiotNft(uint256 _tokenId) returns()
+func (_AxelarBridgeETH *AxelarBridgeETHTransactorSession) UnlockRiotNft(_tokenId *big.Int) (*types.Transaction, error) {
+	return _AxelarBridgeETH.Contract.UnlockRiotNft(&_AxelarBridgeETH.TransactOpts, _tokenId)
 }
 
 // AxelarBridgeETHOwnershipTransferredIterator is returned from FilterOwnershipTransferred and is used to iterate over the raw logs and unpacked data for OwnershipTransferred events raised by the AxelarBridgeETH contract.

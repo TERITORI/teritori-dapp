@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/hex"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
@@ -10,6 +11,7 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/pb"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -79,6 +81,30 @@ func (h *Handler) handleMintWithMetadata(contractABI *abi.ABI, tx *pb.Tx, args m
 		}).Error; err != nil {
 			return errors.Wrap(err, "failed to create mint activity")
 		}
+	}
+
+	return nil
+}
+
+type SetNftInput struct {
+	NewNftAddress common.Address `json:"newNftAddress"`
+}
+
+func (h *Handler) handleSetNft(contractABI *abi.ABI, tx *pb.Tx, args map[string]interface{}) error {
+	var data SetNftInput
+	if err := ArgsToStruct(args, &data); err != nil {
+		return errors.Wrap(err, "failed to parse mint data")
+	}
+
+	var teritoriCollection indexerdb.TeritoriCollection
+	if err := h.dbTransaction.Where("mint_contract_address = ?", tx.Info.To).First(&teritoriCollection).Error; err != nil {
+		return errors.Wrap(err, "failed to get collection")
+	}
+
+	teritoriCollection.NFTContractAddress = strings.ToLower(data.NewNftAddress.String())
+
+	if err := h.dbTransaction.Save(&teritoriCollection).Error; err != nil {
+		return errors.Wrap(err, "failed to update collection nft contract")
 	}
 
 	return nil

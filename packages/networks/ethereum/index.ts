@@ -31,7 +31,5 @@ export const ethereumNetwork: EthereumNetworkInfo = {
   firehoseEndpoint: "<must_fill>",
   indexStartBlock: "<must_fill>",
   indexStopBlock: "<must_fill>",
-  indexBlockProgress: 0,
-  indexLiveBlockProgress: 0,
   substreamsManifest: "<must_fill>",
 };

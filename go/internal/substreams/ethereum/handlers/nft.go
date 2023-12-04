@@ -85,24 +85,7 @@ func (h *Handler) handleInitialize(tx *pb.Tx) error {
 	collectionName := args["_name"].(string)
 
 	minterAddress := tx.Calls[2].Caller
-
-	// If we are on bridged network
-	// Eth => polygon
-	// Goerli => mumbai
-	// then the address is riotBridgedNFTAddressGen corresponding to the minter
-	var nftAddress string
-	if h.network.IDPrefix == "polygon" || h.network.IDPrefix == "mumbai" {
-		if minterAddress == h.network.RiotContractAddressGen0 {
-			nftAddress = h.network.RiotBridgedNFTAddressGen0
-		} else if minterAddress == h.network.RiotContractAddressGen1 {
-			nftAddress = h.network.RiotBridgedNFTAddressGen1
-		} else {
-			return errors.New("Unknown minter: " + minterAddress)
-		}
-
-	} else {
-		nftAddress = tx.Calls[2].Address
-	}
+	nftAddress := tx.Calls[2].Address
 
 	// try to fetch collection metadata
 	metadataURI := contractURI

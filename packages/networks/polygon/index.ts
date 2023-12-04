@@ -30,8 +30,6 @@ export const polygonNetwork: EthereumNetworkInfo = {
   firehoseEndpoint: "mumbai.streamingfast.io:443",
   indexStartBlock: "40567872",
   indexStopBlock: "-1",
-  indexBlockProgress: 1000,
-  indexLiveBlockProgress: 1,
   substreamsManifest: "go/internal/substreams/ethereum/polygon_mumbai.yaml",
   distributorContractAddress: "0x750070a76A3444F27E3fccabe4D423105cfa3e72",
 };

@@ -77,8 +77,6 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
   firehoseEndpoint?: string;
   indexStartBlock?: string;
   indexStopBlock?: string;
-  indexBlockProgress?: number;
-  indexLiveBlockProgress?: number;
   substreamsManifest?: string;
   toriBridgedTokenAddress?: string;
 

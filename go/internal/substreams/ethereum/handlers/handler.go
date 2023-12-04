@@ -81,7 +81,7 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	// 60806040 is special method where tx sent to minter and it will initialize nft contract
 	// we have to process it differently: we process the internal call of that tx sent to nft contract
 	methodHex := hex.EncodeToString(tx.Info.Input[:4])
-	if methodHex == "60806040" || methodHex == "60c06040" {
+	if methodHex == "60806040" || methodHex == "60c06040" || methodHex == "60a06040" || methodHex == "a6487c53" {
 		if strings.EqualFold(tx.Info.To, h.network.RiotContractAddressGen0) {
 			return h.handleInitialize(tx)
 		}
@@ -125,6 +125,11 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 		case "execute":
 			if err := h.handleExecute(contractABI, tx, args); err != nil {
 				return errors.Wrap(err, "failed to handle execute axelar NFT")
+			}
+		// Minter
+		case "setNft":
+			if err := h.handleSetNft(contractABI, tx, args); err != nil {
+				return errors.Wrap(err, "failed to handle setNft")
 			}
 		case "bridgeNft":
 			if err := h.handleBridgeNFT(contractABI, tx, args); err != nil {

@@ -220,6 +220,15 @@
     "type": "function"
   },
   {
+    "inputs": [
+      { "internalType": "address", "name": "newNftAddress", "type": "address" }
+    ],
+    "name": "setNft",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "minterFee",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
