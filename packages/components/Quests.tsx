@@ -6,6 +6,7 @@ import { GridList } from "./layout/GridList";
 import { Quest } from "../api/marketplace/v1/marketplace";
 import { parseUserId } from "../networks";
 import { getMarketplaceClient } from "../utils/backend";
+import { layout } from "../utils/style/layout";
 
 export const Quests: React.FC<{
   userId: string | undefined;
@@ -25,6 +26,7 @@ export const Quests: React.FC<{
       }}
       data={quests || []}
       minElemWidth={140}
+      gap={layout.spacing_x1}
       keyExtractor={(item) => item.id}
       noFixedHeight
     />
