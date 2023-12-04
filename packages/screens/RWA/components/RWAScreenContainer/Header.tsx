@@ -7,6 +7,7 @@ import { SecondaryButton } from "../../../../components/buttons/SecondaryButton"
 import { ConnectWalletModal } from "../../../../components/connectWallet/ConnectWalletModal";
 import { BackButton } from "../../../../components/navigation/components/BackButton";
 import { SpacerRow } from "../../../../components/spacer";
+import { useIsMobile } from "../../../../hooks/useIsMobile";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
 import { useTheme } from "../../../../hooks/useTheme";
 import { selectIsLightTheme } from "../../../../store/slices/settings";
@@ -23,6 +24,7 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
   const [isConnectWalletVisible, setIsConnectWalletVisible] =
     React.useState(false);
   const selectedWallet = useSelectedWallet();
+  const isMobile = useIsMobile();
 
   return (
     <View
@@ -34,11 +36,11 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
     >
       <View style={HeaderRowCStyle}>
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-          <SpacerRow size={8} />
+          {!isMobile && <SpacerRow size={8} />}
           {onBackPress && <BackButton onPress={onBackPress} />}
           <BrandText
             numberOfLines={1}
-            style={{ letterSpacing: -1, marginLeft: 20, fontSize: 20 }}
+            style={{ letterSpacing: -1, fontSize: 20 }}
           >
             {headerTitle}
           </BrandText>

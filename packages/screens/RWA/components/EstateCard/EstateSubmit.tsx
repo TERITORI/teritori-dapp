@@ -2,6 +2,7 @@ import React from "react";
 import { StyleProp, TextInput, TextStyle, View } from "react-native";
 
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
+import { useIsMobile } from "../../../../hooks/useIsMobile";
 import { useTheme } from "../../../../hooks/useTheme";
 import { neutralA3 } from "../../../../utils/style/colors";
 
@@ -12,7 +13,7 @@ export const EstateCardViewProperty: React.FC = () => {
     <PrimaryButton
       color={theme.primaryButtonColor}
       text="View Property"
-      width={284}
+      fullWidth
       squaresBackgroundColor={theme.backgroundColor}
       style={{ flex: 1 }}
     />
@@ -22,6 +23,7 @@ export const EstateCardViewProperty: React.FC = () => {
 export const EstateCardWailistInput: React.FC = () => {
   const [value, onChangeValue] = React.useState<string>("");
   const theme = useTheme();
+  const isMobile = useIsMobile();
 
   return (
     <View style={{ top: 3 }}>
@@ -31,15 +33,19 @@ export const EstateCardWailistInput: React.FC = () => {
           onChangeText={onChangeValue}
           style={[
             TextInputCStyle,
-            { color: theme.textColor, borderColor: theme.borderColor },
+            {
+              width: isMobile ? 100 : 136,
+              color: theme.textColor,
+              borderColor: theme.borderColor,
+            },
           ]}
           placeholder="mail@teritori.com"
           placeholderTextColor={neutralA3}
         />
         <PrimaryButton
-          width={136}
+          width={isMobile ? 65 : 136}
           color={theme.primaryButtonColor}
-          text="Join Waitlist"
+          text={isMobile ? "Join..." : "Join Waitlist"}
           style={{ flex: 1, marginLeft: 10 }}
           noBrokenCorners
         />
@@ -49,7 +55,6 @@ export const EstateCardWailistInput: React.FC = () => {
 };
 
 const TextInputCStyle: StyleProp<TextStyle> = {
-  width: 136,
   padding: 10,
   borderWidth: 1,
   borderRadius: 6,
