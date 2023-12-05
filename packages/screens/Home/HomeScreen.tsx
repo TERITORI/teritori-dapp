@@ -11,7 +11,7 @@ export const HomeScreen: ScreenFC<"Home"> = ({ route: { params } }) => {
   return (
     <ScreenContainer mobileTitle="HOME">
       <HubIntro />
-      {/*<HubLanding />*/}
+      <HubLanding />
     </ScreenContainer>
   );
 };

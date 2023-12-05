@@ -41,7 +41,7 @@ export const TextInputOutsideLabel: React.FC<TextInputLabelProps> = ({
           </>
         )}
       </View>
-      {subtitle && <BrandText style={fontSemibold13}>{subtitle}</BrandText>}
+      {!!subtitle && <BrandText style={fontSemibold13}>{subtitle}</BrandText>}
     </View>
     <SpacerColumn size={1} />
   </>

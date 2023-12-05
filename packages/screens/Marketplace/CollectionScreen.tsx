@@ -64,7 +64,13 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
           flexWrap: "nowrap",
         }}
       >
-        <View>
+        <ScrollView
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            alignItems: "center",
+            width: cartIsShown ? width - SideCartWidth : width,
+          }}
+        >
           <CollectionHeader
             collectionId={id}
             collectionInfo={info}
@@ -79,7 +85,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
             selectedTab={selectedTab}
             sortDirection={sortDirection}
           />
-        </View>
+        </ScrollView>
         <SideCart
           style={{
             position: "absolute",
