@@ -3,79 +3,77 @@ import { View } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
 import { ArticleRenderer } from "./ArticleRenderer";
+import { Post } from "../../../api/feed/v1/feed";
 import { HTML_TAG_REGEXP } from "../../../utils/regex";
-import {
-  convertGIFToLocalFileType,
-  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
-} from "../../../utils/social-feed";
+import { zodTryParseJSON } from "../../../utils/sanitize";
+import { convertGIFToLocalFileType } from "../../../utils/social-feed";
 import { AudioView } from "../../FilePreview/AudioView";
 import { ImagesViews } from "../../FilePreview/ImagesViews";
 import { VideoView } from "../../FilePreview/VideoView";
 import { SpacerColumn } from "../../spacer";
 import {
-  SocialFeedPostMetadata,
   PostCategory,
+  ZodSocialFeedPostMetadata,
+  ZodSocialFeedArticleMetadata,
 } from "../NewsFeed/NewsFeed.type";
 import { TextRenderer } from "../NewsFeed/TextRenderer/TextRenderer";
 interface Props {
-  metadata: SocialFeedPostMetadata;
-  postCategory: PostCategory;
+  post: Post;
   isPreview?: boolean;
-  authorId?: string;
-  postId?: string;
 }
 
-export const SocialMessageContent: React.FC<Props> = ({
-  metadata,
-  postCategory,
-  isPreview,
-  authorId,
-  postId,
-}) => {
+export const SocialMessageContent: React.FC<Props> = ({ post, isPreview }) => {
+  const postMetadata = zodTryParseJSON(
+    ZodSocialFeedPostMetadata,
+    post.metadata,
+  );
+  const articleMetadata = zodTryParseJSON(
+    ZodSocialFeedArticleMetadata,
+    post.metadata,
+  );
+  const metadataToUse =
+    post.category === PostCategory.Article ? articleMetadata : postMetadata;
+
   const audioFiles = useMemo(
-    () => metadata.files?.filter((file) => file.fileType === "audio"),
-    [metadata.files],
+    () => metadataToUse?.files?.filter((file) => file.fileType === "audio"),
+    [metadataToUse?.files],
   );
   const imageFiles = useMemo(
     () =>
-      metadata.files?.filter(
+      metadataToUse?.files?.filter(
         (file) => file.fileType === "image" || file.fileType === "base64",
       ),
-    [metadata.files],
+    [metadataToUse?.files],
   );
   const videoFiles = useMemo(
-    () => metadata.files?.filter((file) => file.fileType === "video"),
-    [metadata.files],
+    () => metadataToUse?.files?.filter((file) => file.fileType === "video"),
+    [metadataToUse?.files],
   );
   const gifsFiles = useMemo(() => {
     const fileName = "GIF-" + uuidv4();
-    return metadata.gifs?.map((gif) =>
+    return metadataToUse?.gifs?.map((gif) =>
       convertGIFToLocalFileType(gif, fileName),
     );
-  }, [metadata.gifs]);
+  }, [metadataToUse?.gifs]);
 
   try {
-    if (
-      postCategory === PostCategory.Article ||
-      metadata?.message.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-    ) {
+    if (post.category === PostCategory.Article && articleMetadata) {
       return (
         <View>
           <ArticleRenderer
-            metadata={metadata}
-            audioFiles={audioFiles}
+            metadata={articleMetadata}
             isPreview={isPreview}
-            postId={postId || ""}
-            authorId={authorId || ""}
+            postId={post.identifier || ""}
+            authorId={post.authorId || ""}
           />
         </View>
       );
-    } else {
+    } else if (postMetadata) {
       return (
         <>
           <TextRenderer
             isPreview={isPreview}
-            text={metadata.message.replace(HTML_TAG_REGEXP, "")}
+            text={postMetadata.message.replace(HTML_TAG_REGEXP, "")}
           />
 
           {gifsFiles?.length || imageFiles?.length ? (
@@ -90,18 +88,18 @@ export const SocialMessageContent: React.FC<Props> = ({
               <VideoView
                 key={index}
                 file={file}
-                authorId={authorId || ""}
-                postId={postId || ""}
+                authorId={post.authorId || ""}
+                postId={post.identifier || ""}
               />
             </>
           ))}
 
           {audioFiles?.map((file, index) => (
             <Fragment key={index}>
-              {metadata.message && <SpacerColumn size={2} />}
+              {postMetadata.message && <SpacerColumn size={2} />}
               <AudioView
-                authorId={authorId || ""}
-                postId={postId || ""}
+                authorId={post.authorId || ""}
+                postId={post.identifier || ""}
                 duration={file.audioMetadata?.duration || 0}
                 fileUrl={file.url}
                 waveform={file.audioMetadata?.waveform || []}
@@ -111,6 +109,8 @@ export const SocialMessageContent: React.FC<Props> = ({
           ))}
         </>
       );
+    } else {
+      return null;
     }
   } catch {
     return null;

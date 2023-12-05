@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
-import { useSelector } from "react-redux";
 
 import priceSVG from "../../../assets/icons/price.svg";
 import { BrandText } from "../../components/BrandText";
@@ -15,10 +14,11 @@ import {
   TextInputCustom,
 } from "../../components/inputs/TextInputCustom";
 import {
+  NewArticleFormValues,
   NewPostFormValues,
   PostCategory,
 } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { createPost } from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
+import { generateArticleMetadata } from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
 import { NotEnoughFundModal } from "../../components/socialFeed/NewsFeed/NotEnoughFundModal";
 import { RichText } from "../../components/socialFeed/RichText";
 import { PublishValues } from "../../components/socialFeed/RichText/RichText.type";
@@ -26,11 +26,8 @@ import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useFeedPosting } from "../../hooks/feed/useFeedPosting";
 import { useIsMobile } from "../../hooks/useIsMobile";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature } from "../../networks";
-import { selectNFTStorageAPI } from "../../store/slices/settings";
-import { generateIpfsKey } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { ARTICLE_THUMBNAIL_IMAGE_HEIGHT } from "../../utils/social-feed";
@@ -43,20 +40,27 @@ import {
 import { fontSemibold13, fontSemibold20 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { pluralOrNot } from "../../utils/text";
+import {useSelectedNetworkId} from "../../hooks/useSelectedNetwork";
 
 //TODO: In mobile : Make ActionsContainer accessible (floating button ?)
 
 export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const isMobile = useIsMobile();
-  const selectNetworkInfo = useSelectedNetworkInfo();
-  const selectedNetworkId = selectNetworkInfo?.id || "";
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
   const userId = wallet?.userId;
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const userIPFSKey = useSelector(selectNFTStorageAPI);
-  const { canPayForPost, freePostCount, publishingFee, prettyPublishingFee } =
-    useFeedPosting(selectedNetworkId, userId, PostCategory.Article);
+  const {
+    makePost,
+    isProcessing,
+    canPayForPost,
+    freePostCount,
+    prettyPublishingFee,
+  } = useFeedPosting(selectedNetworkId, userId, PostCategory.Article, () => {
+    setToastSuccess({ title: "Post submitted successfully.", message: "" });
+    navigateBack();
+    reset();
+  });
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
@@ -67,7 +71,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     reset,
     watch,
     formState: { errors },
-  } = useForm<NewPostFormValues>({
+  } = useForm<NewArticleFormValues>({
     defaultValues: {
       title: "",
       message: "",
@@ -85,72 +89,30 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
 
   const formValues = watch();
 
-  const initSubmit = async ({
-    html,
-    hashtags,
-    mentions,
-    images,
-    gifs,
-    audios,
-    videos,
-  }: PublishValues) => {
-    if (!canPayForPost) {
-      return setNotEnoughFundModal(true);
-    }
-
-    const files = [
-      ...(formValues.files || []),
-      ...images,
-      ...audios,
-      ...videos,
-    ];
-
-    let pinataJWTKey = undefined;
-    if (files?.length) {
-      pinataJWTKey =
-        userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
-    }
-
-    // TODO: refactor to use useFeedPosting's makePost
-    const result = await createPost({
-      networkId: selectedNetworkId,
-      wallet,
-      freePostCount,
-      category: PostCategory.Article,
-      fee: publishingFee.amount,
-      formValues: {
-        ...formValues,
-        gifs,
-        files,
-        mentions,
-        hashtags,
-        message: html,
-      },
-      // TODO: We need this in backend, since opengraph card must be added for each written url ?
-      // openGraph: undefined,
-      pinataJWTKey,
-    });
-    return result;
-  };
-
   //TODO: Keep short post formValues when returning to short post
   const navigateBack = () => navigation.navigate("Feed");
 
   const onPublish = async (values: PublishValues) => {
-    setLoading(true);
     try {
-      const result = await initSubmit(values);
-      if (!result) {
-        console.error("upload file err : Fail to pin to IPFS");
-        setToastError({
-          title: "File upload failed",
-          message: "Fail to pin to IPFS, please try to Publish again",
-        });
-      } else {
-        setToastSuccess({ title: "Post submitted successfully.", message: "" });
-        navigateBack();
-        reset();
+      if (!canPayForPost) {
+        return setNotEnoughFundModal(true);
       }
+      const files = [
+        ...(formValues.files || []),
+        ...values.images,
+        ...values.audios,
+        ...values.videos,
+      ];
+      const newPostFormValues: NewPostFormValues = {
+        ...formValues,
+        gifs: values.gifs,
+        files,
+        mentions: values.mentions,
+        hashtags: values.hashtags,
+        message: values.html,
+      };
+      const metadata = generateArticleMetadata(newPostFormValues);
+      await makePost(JSON.stringify(metadata));
     } catch (err) {
       setToastError({
         title: "Something went wrong.",
@@ -158,8 +120,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       });
       console.error("post submit error", err);
     }
-
-    setLoading(false);
   };
 
   // // OpenGraph URL preview
@@ -240,7 +200,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           mimeTypes={IMAGE_MIME_TYPES}
         />
 
-        <TextInputCustom<NewPostFormValues>
+        <TextInputCustom<NewArticleFormValues>
           noBrokenCorners
           rules={{ required: true }}
           height={48}
@@ -256,7 +216,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           }}
         />
 
-        <TextInputCustom<NewPostFormValues>
+        <TextInputCustom<NewArticleFormValues>
           noBrokenCorners
           rules={{ required: true }}
           multiline
@@ -286,7 +246,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                 onChange={onChange}
                 onBlur={onBlur}
                 initialValue={formValues.message}
-                loading={loading}
+                loading={isProcessing}
                 publishDisabled={
                   errors?.message?.type === "required" ||
                   !formValues.message ||

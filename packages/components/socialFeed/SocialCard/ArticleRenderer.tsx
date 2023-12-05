@@ -6,11 +6,11 @@ import { ARTICLE_COVER_IMAGE_HEIGHT } from "../../../utils/social-feed";
 import { layout } from "../../../utils/style/layout";
 import { RemoteFileData } from "../../../utils/types/files";
 import { BrandText } from "../../BrandText";
-import { SocialFeedPostMetadata } from "../NewsFeed/NewsFeed.type";
+import { SocialFeedArticleMetadata } from "../NewsFeed/NewsFeed.type";
 import { RichText } from "../RichText";
 
 interface Props {
-  metadata: SocialFeedPostMetadata;
+  metadata: SocialFeedArticleMetadata;
   audioFiles?: RemoteFileData[];
   isPreview?: boolean;
   postId: string;

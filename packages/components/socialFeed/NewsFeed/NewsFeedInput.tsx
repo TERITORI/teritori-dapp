@@ -148,7 +148,6 @@ export const NewsFeedInput = React.forwardRef<
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
         defaultValues: {
-          nftStorageApiToken: "",
           title: "",
           message: "",
           files: [],
@@ -233,7 +232,7 @@ export const NewsFeedInput = React.forwardRef<
         const metadata = generatePostMetadata({
           title: formValues.title || "",
           message: finalMessage,
-          files,
+          files: formValues.files,
           hashtags,
           mentions,
           gifs: formValues?.gifs || [],

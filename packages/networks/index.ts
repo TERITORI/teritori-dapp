@@ -173,7 +173,7 @@ export const getNetwork = (networkId: string | undefined) => {
   return allNetworks.find((n) => n.id === networkId);
 };
 
-export const mustGetNetwork = (networkId: string | undefined) => {
+const mustGetNetwork = (networkId: string | undefined) => {
   const network = getNetwork(networkId);
   if (!network) {
     throw new Error(`unknown network '${networkId}'`);
