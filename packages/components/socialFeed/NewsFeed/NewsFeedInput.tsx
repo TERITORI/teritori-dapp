@@ -67,7 +67,7 @@ import FlexRow from "../../FlexRow";
 import { IconBox } from "../../IconBox";
 import { OmniLink } from "../../OmniLink";
 import { SVG } from "../../SVG";
-import { PrimaryBox } from "../../boxes/PrimaryBox";
+import { LegacyPrimaryBox } from "../../boxes/LegacyPrimaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { FileUploader } from "../../fileUploader";
@@ -291,7 +291,7 @@ export const NewsFeedInput = React.forwardRef<
             onClose={() => setNotEnoughFundModal(false)}
           />
         )}
-        <PrimaryBox
+        <LegacyPrimaryBox
           fullWidth
           style={{
             zIndex: 9,
@@ -417,7 +417,7 @@ export const NewsFeedInput = React.forwardRef<
               }
             }}
           />
-        </PrimaryBox>
+        </LegacyPrimaryBox>
         <View
           style={{
             backgroundColor: neutral17,
@@ -620,7 +620,6 @@ export const NewsFeedInput = React.forwardRef<
                 text={
                   daoId ? "Propose" : type === "comment" ? "Comment" : "Publish"
                 }
-                squaresBackgroundColor={neutral17}
                 onPress={handleSubmit(processSubmit)}
               />
             </View>

@@ -5,7 +5,7 @@ import { neutral17, neutral77 } from "../../utils/style/colors";
 import { imageDisplayLabel, prettyTokenData } from "../../utils/teritori";
 import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 export const NameData: React.FC<{
   token: any;
@@ -15,7 +15,7 @@ export const NameData: React.FC<{
   const width = 396;
 
   return (
-    <TertiaryBox
+    <LegacyTertiaryBox
       width={width}
       mainContainerStyle={[
         {
@@ -82,6 +82,6 @@ export const NameData: React.FC<{
       ) : (
         <BrandText>Loading</BrandText>
       )}
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 };

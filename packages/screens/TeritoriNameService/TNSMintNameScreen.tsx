@@ -272,7 +272,7 @@ export const TNSMintNameModal: React.FC<
       scrollable
       label={name}
       hideMainSeparator
-      contentStyle={{
+      boxStyle={{
         backgroundColor: neutral17,
       }}
     >

@@ -18,7 +18,7 @@ export const TopMenuHighlightedNews: React.FC = () => {
     <TopMenuSection title="Highlighted News">
       <FlexCol>
         <Link to={banner?.url || ""}>
-          <PrimaryBox noBrokenCorners>
+          <PrimaryBox>
             <Image
               source={{
                 uri: ipfsURLToHTTPURL(banner?.image),

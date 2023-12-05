@@ -21,7 +21,7 @@ import { BrandText } from "../BrandText";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { GradientText } from "../gradientText";
 
@@ -88,7 +88,7 @@ const CarouselCollectionItem: React.FC<{
       </View>
 
       {/* Right container */}
-      <TertiaryBox style={{ marginBottom: 40 }}>
+      <LegacyTertiaryBox style={{ marginBottom: 40 }}>
         {collection.imageUri ? (
           <OptimizedImage
             sourceURI={collection.imageUri}
@@ -103,7 +103,7 @@ const CarouselCollectionItem: React.FC<{
         ) : (
           <ActivityIndicator size="large" style={{ margin: 40 }} />
         )}
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </View>
   );
 };

@@ -16,11 +16,11 @@ import logoSVG from "../../../assets/logos/logo.svg";
 import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 const FooterSocialNetworks: React.FC = () => {
   return (
-    <TertiaryBox
+    <LegacyTertiaryBox
       mainContainerStyle={{ padding: layout.spacing_x1, flexDirection: "row" }}
       style={{ marginBottom: layout.contentSpacing }}
     >
@@ -30,7 +30,7 @@ const FooterSocialNetworks: React.FC = () => {
           Linking.openURL("https://www.coingecko.com/en/coins/teritori")
         }
       >
-        <TertiaryBox
+        <LegacyTertiaryBox
           mainContainerStyle={{
             borderColor: secondaryColor,
             borderRadius: 12,
@@ -38,14 +38,14 @@ const FooterSocialNetworks: React.FC = () => {
           }}
         >
           <SVG source={coingecko} width={20} height={20} />
-        </TertiaryBox>
+        </LegacyTertiaryBox>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={{ marginRight: layout.spacing_x1 }}
         onPress={() => Linking.openURL("https://twitter.com/TeritoriNetwork")}
       >
-        <TertiaryBox
+        <LegacyTertiaryBox
           mainContainerStyle={{
             borderColor: secondaryColor,
             borderRadius: 12,
@@ -53,14 +53,14 @@ const FooterSocialNetworks: React.FC = () => {
           }}
         >
           <SVG source={XtwitterSVG} width={20} height={20} />
-        </TertiaryBox>
+        </LegacyTertiaryBox>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={{ marginRight: layout.spacing_x1 }}
         onPress={() => Linking.openURL("https://discord.gg/teritori")}
       >
-        <TertiaryBox
+        <LegacyTertiaryBox
           mainContainerStyle={{
             borderColor: secondaryColor,
             borderRadius: 12,
@@ -68,13 +68,13 @@ const FooterSocialNetworks: React.FC = () => {
           }}
         >
           <SVG source={discordSVG} width={20} height={20} />
-        </TertiaryBox>
+        </LegacyTertiaryBox>
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={() => Linking.openURL("https://medium.com/teritori/")}
       >
-        <TertiaryBox
+        <LegacyTertiaryBox
           mainContainerStyle={{
             borderColor: secondaryColor,
             borderRadius: 12,
@@ -82,9 +82,9 @@ const FooterSocialNetworks: React.FC = () => {
           }}
         >
           <SVG source={mediumSVG} width={20} height={20} />
-        </TertiaryBox>
+        </LegacyTertiaryBox>
       </TouchableOpacity>
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 };
 

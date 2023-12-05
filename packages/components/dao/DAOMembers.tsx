@@ -125,7 +125,6 @@ const AddMembersModal: React.FC<{
       label="Add members to DAO"
       onClose={onClose}
       scrollable
-      noBrokenCorners
     >
       <View
         style={{

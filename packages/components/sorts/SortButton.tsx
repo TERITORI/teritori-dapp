@@ -9,7 +9,7 @@ import { neutral11, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 export const SortButton: React.FC<{
   sortDirection: SortDirection;
@@ -34,7 +34,7 @@ export const SortButton: React.FC<{
 
   return (
     <TouchableOpacity onPress={handlePress} style={style}>
-      <TertiaryBox
+      <LegacyTertiaryBox
         fullWidth
         mainContainerStyle={[
           {
@@ -74,7 +74,7 @@ export const SortButton: React.FC<{
           style={{ marginLeft: 8 }}
           color={secondaryColor}
         />
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </TouchableOpacity>
   );
 };

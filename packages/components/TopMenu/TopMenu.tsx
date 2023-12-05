@@ -15,7 +15,7 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 export const TOP_MENU_BUTTON_HEIGHT = 40;
 
@@ -27,7 +27,7 @@ export const TopMenu: FC = () => {
   return (
     <View ref={dropdownRef}>
       <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
-        <TertiaryBox
+        <LegacyTertiaryBox
           width={220}
           mainContainerStyle={[
             styles.buttonBoxMainContainer,
@@ -46,7 +46,7 @@ export const TopMenu: FC = () => {
             height={16}
             color={secondaryColor}
           />
-        </TertiaryBox>
+        </LegacyTertiaryBox>
       </TouchableOpacity>
 
       <TopMenuBox

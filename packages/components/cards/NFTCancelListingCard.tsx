@@ -6,7 +6,7 @@ import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { NFTInfo } from "../../utils/types/nft";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { GradientText } from "../gradientText";
 
@@ -16,7 +16,7 @@ export const NFTCancelListingCard: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ nftInfo, onPressCancel, style }) => {
   return (
-    <TertiaryBox
+    <LegacyTertiaryBox
       fullWidth
       height={88}
       style={style}
@@ -50,6 +50,6 @@ export const NFTCancelListingCard: React.FC<{
         loader
         onPress={onPressCancel}
       />
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 };

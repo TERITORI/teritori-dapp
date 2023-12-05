@@ -4,7 +4,7 @@ import { Linking, Pressable, StyleSheet, View } from "react-native";
 import ChevronRightSvg from "../../../../assets/icons/chevron-right.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   neutral22,
@@ -33,7 +33,7 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
       onPress={url ? () => Linking.openURL(url) : undefined}
       style={styles.fill}
     >
-      <TertiaryBox
+      <LegacyTertiaryBox
         style={styles.fill}
         fullWidth
         mainContainerStyle={styles.container}
@@ -50,7 +50,7 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
             <SVG source={ChevronRightSvg} />
           </View>
         </View>
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </Pressable>
   );
 };

@@ -341,7 +341,6 @@ const GnoCreateProposal: React.FC<{ daoId: string | undefined }> = ({
       <ModalBase
         label={`Create proposal on ${daoAddress}`}
         visible={modalVisible}
-        noBrokenCorners
         onClose={() => setModalVisible(false)}
       >
         <TextInputCustom

@@ -5,7 +5,7 @@ import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
 import { SpacerRow } from "../../../components/spacer";
 import { useDropdowns } from "../../../context/DropdownsProvider";
 import { useMessage } from "../../../context/MessageProvider";
@@ -59,7 +59,7 @@ export const ConversationSelector: React.FC<{
       </TouchableOpacity>
 
       {isDropdownOpen(dropdownRef) && (
-        <TertiaryBox
+        <LegacyTertiaryBox
           width={172}
           style={{ position: "absolute", top: 30 }}
           mainContainerStyle={{
@@ -92,7 +92,7 @@ export const ConversationSelector: React.FC<{
               </TouchableOpacity>
             );
           })}
-        </TertiaryBox>
+        </LegacyTertiaryBox>
       )}
     </View>
   );
