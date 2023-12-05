@@ -7,7 +7,7 @@ import { neutral17 } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { SpacerColumn } from "../spacer";
 
 export const QuestCard: React.FC<{
@@ -17,7 +17,7 @@ export const QuestCard: React.FC<{
   width?: number;
 }> = memo(({ label, completed = false, style, width = 140 }) => {
   return (
-    <TertiaryBox
+    <LegacyTertiaryBox
       width={width}
       style={style}
       hasGradientBackground={completed}
@@ -42,6 +42,6 @@ export const QuestCard: React.FC<{
       >
         {label}
       </BrandText>
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 }, isEqual);

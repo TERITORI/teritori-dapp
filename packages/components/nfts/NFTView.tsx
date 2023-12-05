@@ -1,12 +1,6 @@
 import { isEqual } from "lodash";
 import React, { RefObject, memo, useMemo, useRef, useState } from "react";
-import {
-  ViewStyle,
-  View,
-  StyleProp,
-  StyleSheet,
-  Pressable,
-} from "react-native";
+import { View, StyleProp, StyleSheet, Pressable } from "react-native";
 import { useSelector } from "react-redux";
 
 import { NFTTransferModal } from "./NFTTransferModal";
@@ -45,6 +39,7 @@ import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { NetworkIcon } from "../NetworkIcon";
 import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
+import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
@@ -54,7 +49,7 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 
 export const NFTView: React.FC<{
   data: NFT;
-  style?: StyleProp<Omit<ViewStyle, "width"> & { width?: number }>;
+  style?: StyleProp<Omit<BoxStyle, "width"> & { width?: number }>;
 }> = memo(({ data: nft, style }) => {
   const isMobile = useIsMobile();
   const cardWidth = isMobile ? 220 : 250;
@@ -77,6 +72,12 @@ export const NFTView: React.FC<{
 
   const widthNumber = width || cardWidth;
 
+  const selectedNfts = useSelector(selectSelectedNFTIds);
+  const localSelected = useMemo(
+    () => new Set(selectedNfts).has(nft.id),
+    [nft.id, selectedNfts],
+  );
+
   return (
     <>
       <View
@@ -93,13 +94,22 @@ export const NFTView: React.FC<{
       >
         <TertiaryBox
           key={nft.name}
-          width={widthNumber}
-          style={styleWithoutMargins}
+          notched
+          style={[
+            styleWithoutMargins,
+            {
+              width: widthNumber,
+            },
+            localSelected && {
+              backgroundColor: neutral22,
+            },
+          ]}
         >
           <NFTViewContent
             nft={nft}
             dropdownRef={dropdownRef}
             mobileMode={isMobile}
+            localSelected={localSelected}
           />
         </TertiaryBox>
       </View>
@@ -111,14 +121,10 @@ const NFTViewContent: React.FC<{
   nft: NFT;
   dropdownRef: RefObject<View>;
   mobileMode: boolean;
-}> = memo(({ nft, dropdownRef, mobileMode }) => {
+  localSelected: boolean;
+}> = memo(({ nft, dropdownRef, mobileMode, localSelected }) => {
   const insideMargin = layout.spacing_x2;
   const selectedWallet = useSelectedWallet();
-  const selectedNfts = useSelector(selectSelectedNFTIds);
-  const localSelected = useMemo(
-    () => new Set(selectedNfts).has(nft.id),
-    [nft.id, selectedNfts],
-  );
   const dispatch = useAppDispatch();
   const handleClick = (nft: NFT, selected: boolean) => {
     if (mobileMode) return; // disable cart on mobile
@@ -141,7 +147,6 @@ const NFTViewContent: React.FC<{
           paddingHorizontal: insideMargin,
           zIndex: 1000,
           borderTopRightRadius: 7,
-          backgroundColor: localSelected ? neutral22 : neutral00,
         }}
         onPress={() => {
           handleClick(nft, localSelected);
@@ -360,7 +365,6 @@ const NFTViewFooter: React.FC<{ nft: NFT; localSelected: boolean }> = memo(
         style={{
           borderTopWidth: 1,
           borderTopColor: neutral33,
-          backgroundColor: localSelected ? neutral22 : neutral00,
           height: 69,
           paddingHorizontal: 16,
           flexDirection: "row",

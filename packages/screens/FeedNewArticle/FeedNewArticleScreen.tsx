@@ -8,7 +8,7 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { WalletStatusBox } from "../../components/WalletStatusBox";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
 import { FileUploader } from "../../components/fileUploader";
 import {
   Label,
@@ -195,7 +195,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         <WalletStatusBox />
         <SpacerColumn size={3} />
 
-        <TertiaryBox
+        <LegacyTertiaryBox
           fullWidth
           mainContainerStyle={{
             paddingVertical: layout.spacing_x1,
@@ -226,7 +226,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                 )} left`
               : `The cost for this Article is ${prettyPublishingFee}`}
           </BrandText>
-        </TertiaryBox>
+        </LegacyTertiaryBox>
 
         <FileUploader
           label="Thumbnail image"

@@ -24,6 +24,7 @@ import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SeparatorGradient } from "../separators/SeparatorGradient";
 import { SpacerColumn } from "../spacer";
@@ -41,9 +42,8 @@ type ModalBaseProps = {
   childrenBottom?: JSX.Element | JSX.Element[];
   hideMainSeparator?: boolean;
   description?: string;
-  noBrokenCorners?: boolean;
   scrollable?: boolean;
-  contentStyle?: StyleProp<ViewStyle>;
+  boxStyle?: StyleProp<BoxStyle>;
   containerStyle?: StyleProp<ViewStyle>;
   childrenContainerStyle?: StyleProp<ViewStyle>;
   closeButtonStyle?: StyleProp<ViewStyle>;
@@ -80,11 +80,10 @@ const ModalBase: React.FC<ModalBaseProps> = ({
   hideMainSeparator,
   description,
   scrollable,
-  contentStyle,
+  boxStyle,
   containerStyle,
   childrenContainerStyle,
   onBackPress,
-  noBrokenCorners,
   closeButtonStyle,
   verticalPosition = "center",
   closeOnBlur,
@@ -105,7 +104,12 @@ const ModalBase: React.FC<ModalBaseProps> = ({
 
   return (
     <Modal
-      style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        margin: 0,
+      }}
       animationType="fade"
       transparent
       visible={visible}
@@ -143,31 +147,17 @@ const ModalBase: React.FC<ModalBaseProps> = ({
       >
         {/*------ Modal main container */}
         <TertiaryBox
-          fullWidth={windowWidth < RESPONSIVE_BREAKPOINT_S}
-          width={windowWidth < RESPONSIVE_BREAKPOINT_S ? undefined : width}
+          notched
           style={[
-            { margin: "auto" },
+            {
+              margin: "auto",
+              width: windowWidth < RESPONSIVE_BREAKPOINT_S ? "100%" : width,
+              alignItems: "flex-start",
+            },
             verticalPosition === "top" && { marginTop: 0 },
             verticalPosition === "bottom" && { marginBottom: 0 },
+            boxStyle,
           ]}
-          mainContainerStyle={[
-            {
-              alignItems: "flex-start",
-              backgroundColor: "#000000",
-            },
-            verticalPosition === "top" && {
-              borderTopEndRadius: 0,
-              borderTopStartRadius: 0,
-              borderTopWidth: 0,
-            },
-            verticalPosition === "bottom" && {
-              borderBottomEndRadius: 0,
-              borderBottomStartRadius: 0,
-              borderBottomWidth: 0,
-            },
-            contentStyle,
-          ]}
-          noBrokenCorners={noBrokenCorners}
         >
           {/*------ Modal header */}
           <View

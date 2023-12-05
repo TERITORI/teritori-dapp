@@ -16,7 +16,7 @@ import { primaryColor, primaryTextColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { SecondaryBox } from "../boxes/SecondaryBox";
+import { LegacySecondaryBox } from "../boxes/LegacySecondaryBox";
 
 export const PrimaryButton: React.FC<{
   size?: ButtonsSize;
@@ -86,7 +86,7 @@ export const PrimaryButton: React.FC<{
       disabled={isDisabled}
       style={[{ width: fullWidth ? "100%" : width }, touchableStyle]}
     >
-      <SecondaryBox
+      <LegacySecondaryBox
         height={heightButton(size)}
         mainContainerStyle={{
           flexDirection: "row",
@@ -123,7 +123,7 @@ export const PrimaryButton: React.FC<{
           </BrandText>
         )}
         {!(isLocalLoading || isLoading) && RightComponent && <RightComponent />}
-      </SecondaryBox>
+      </LegacySecondaryBox>
     </TouchableOpacity>
   );
 };

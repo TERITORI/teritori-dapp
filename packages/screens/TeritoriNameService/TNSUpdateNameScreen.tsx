@@ -199,7 +199,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
       onClose={() => onClose()}
       scrollable
       width={457}
-      contentStyle={{
+      boxStyle={{
         backgroundColor: neutral17,
       }}
     >

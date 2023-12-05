@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  Pressable,
-  StyleProp,
-  useWindowDimensions,
-  View,
-  ViewStyle,
-} from "react-native";
+import { Pressable, StyleProp, useWindowDimensions, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { CheckboxDappStore } from "./CheckboxDappStore";
 import { BrandText } from "../../../components/BrandText";
 import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
+import { BoxStyle } from "../../../components/boxes/Box";
 import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import {
@@ -26,7 +21,7 @@ import { dAppType } from "../types";
 
 export const DAppBox: React.FC<{
   option: dAppType;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<BoxStyle>;
 }> = ({
   option: { description, groupKey, icon, id, title, alwaysOn },
   style,
@@ -53,32 +48,32 @@ export const DAppBox: React.FC<{
   return (
     <Pressable onPress={handleClick} disabled={alwaysOn}>
       <TertiaryBox
-        height={88}
-        width={isMobile ? width * 0.8 : 306}
-        noBrokenCorners
-        style={style}
-        mainContainerStyle={{
-          alignItems: "center",
-          justifyContent: "space-between",
-          flex: 1,
-          flexDirection: "row",
-          paddingVertical: layout.spacing_x1_5,
-          paddingLeft: layout.spacing_x1_5,
-          paddingRight: layout.spacing_x2_5,
-          borderRadius: 20,
-          backgroundColor: isChecked ? neutral17 : neutral00,
-        }}
+        style={[
+          {
+            alignItems: "center",
+            justifyContent: "space-between",
+            flex: 1,
+            flexDirection: "row",
+            paddingVertical: layout.spacing_x1_5,
+            paddingLeft: layout.spacing_x1_5,
+            paddingRight: layout.spacing_x2_5,
+            borderRadius: 20,
+            backgroundColor: isChecked ? neutral17 : neutral00,
+            height: 88,
+            width: isMobile ? width * 0.8 : 306,
+          },
+          style,
+        ]}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <SecondaryBox
-            noBrokenCorners
-            mainContainerStyle={{
+            style={{
               backgroundColor: neutral17,
               borderRadius: 12,
               padding: layout.spacing_x1,
+              width: 64,
+              height: 64,
             }}
-            width={64}
-            height={64}
           >
             <SVGorImageIcon icon={icon} iconSize={48} />
           </SecondaryBox>

@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { StyleProp, TextInput, ViewStyle, StyleSheet } from "react-native";
+import { StyleProp, TextInput, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 
 import searchSVG from "../../../assets/icons/search.svg";
@@ -8,13 +8,14 @@ import { useAppDispatch } from "../../store/store";
 import { neutral17 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { SVG } from "../SVG";
+import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const SEARCH_BAR_INPUT_HEIGHT = 40;
 
 export const SearchBarInputGlobal: React.FC<{
   onInteraction?: () => void;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<BoxStyle>;
 }> = (props) => {
   const text = useSelector(selectSearchText);
   const dispatch = useAppDispatch();
@@ -31,21 +32,24 @@ export const SearchBarInput: React.FC<{
   text: string;
   onChangeText: (text: string) => void;
   onInteraction?: () => void;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<BoxStyle>;
 }> = ({ onInteraction, text, onChangeText, style }) => {
   const ref = useRef<TextInput>(null);
   const fullWidth = StyleSheet.flatten(style)?.width === "100%";
   return (
     <TertiaryBox
-      style={style}
-      mainContainerStyle={{
-        flexDirection: "row",
-        paddingHorizontal: 12,
-        backgroundColor: neutral17,
-        width: fullWidth ? undefined : 250,
-      }}
-      fullWidth={fullWidth}
-      height={SEARCH_BAR_INPUT_HEIGHT}
+      notched
+      style={[
+        {
+          flexDirection: "row",
+          paddingHorizontal: 12,
+          backgroundColor: neutral17,
+          width: fullWidth ? "100%" : 250,
+          height: SEARCH_BAR_INPUT_HEIGHT,
+          alignItems: "center",
+        },
+        style,
+      ]}
     >
       <SVG source={searchSVG} width={16} height={16} />
       <TextInput

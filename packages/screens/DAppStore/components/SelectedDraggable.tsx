@@ -5,8 +5,8 @@ import { Hoverable } from "react-native-hoverable";
 
 import { BrandText } from "../../../components/BrandText";
 import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
-import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { LegacySecondaryBox } from "../../../components/boxes/LegacySecondaryBox";
+import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
 import { setCheckedApp } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
 import {
@@ -62,7 +62,7 @@ export const SelectedDraggable: React.FC<{
         }}
       >
         <TouchableOpacity onPress={deleteFromList} disabled={alwaysOn}>
-          <SecondaryBox
+          <LegacySecondaryBox
             noBrokenCorners
             mainContainerStyle={{
               backgroundColor: !showTrashIcon
@@ -78,11 +78,11 @@ export const SelectedDraggable: React.FC<{
             >
               {showTrashIcon ? <TrashIcon size={14} fill="red" /> : index + 1}
             </BrandText>
-          </SecondaryBox>
+          </LegacySecondaryBox>
         </TouchableOpacity>
       </Hoverable>
 
-      <TertiaryBox
+      <LegacyTertiaryBox
         height={48}
         width={256}
         noBrokenCorners
@@ -115,7 +115,7 @@ export const SelectedDraggable: React.FC<{
         </View>
 
         <Bars3Icon size={24} fill={neutral44} />
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </Hoverable>
   );
 };

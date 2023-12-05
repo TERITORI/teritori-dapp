@@ -209,7 +209,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
       hideMainSeparator
       label={name}
       width={457}
-      contentStyle={{
+      boxStyle={{
         backgroundColor: neutral17,
         borderWidth: 1,
         borderColor: neutral33,

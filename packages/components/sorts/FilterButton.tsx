@@ -13,7 +13,7 @@ import { useAppDispatch } from "../../store/store";
 import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 export const FilterButton: React.FC<{
   style?: StyleProp<ViewStyle>;
@@ -28,7 +28,7 @@ export const FilterButton: React.FC<{
 
   return (
     <TouchableOpacity onPress={handlePress} style={style}>
-      <TertiaryBox
+      <LegacyTertiaryBox
         noBrokenCorners
         height={48}
         width={showChevron ? undefined : 48}
@@ -50,7 +50,7 @@ export const FilterButton: React.FC<{
             color={secondaryColor}
           />
         )}
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </TouchableOpacity>
   );
 };

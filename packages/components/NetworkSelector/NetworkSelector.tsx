@@ -29,12 +29,14 @@ export const NetworkSelector: React.FC<{
     <View style={style} ref={dropdownRef}>
       <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
         <TertiaryBox
-          mainContainerStyle={{
+          notched
+          style={{
             flexDirection: "row",
             paddingHorizontal: 12,
             backgroundColor: neutral17,
+            alignItems: "center",
+            height: 40,
           }}
-          height={40}
         >
           <NetworkIcon networkId={selectedNetworkInfo?.id || ""} size={16} />
           <SpacerRow size={1} />
