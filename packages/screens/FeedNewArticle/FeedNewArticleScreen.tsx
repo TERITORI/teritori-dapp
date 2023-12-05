@@ -47,7 +47,7 @@ import {
 import { fontSemibold13, fontSemibold20 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { pluralOrNot } from "../../utils/text";
-import {RemoteFileData} from "../../utils/types/files";
+import { RemoteFileData } from "../../utils/types/files";
 
 //TODO: In mobile : Make ActionsContainer accessible (floating button ?)
 
