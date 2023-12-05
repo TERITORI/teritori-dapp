@@ -24,7 +24,8 @@ export const ArticleRenderer: React.FC<Props> = ({
   postId,
   authorId,
 }) => {
-  const thumbnailImage = metadata.files?.find((file) => file.isCoverImage);
+  // TODO: Add a field coverImage (like thumbnailImage) at Article creation. Then remove isCoverImage prop from ZodBaseFileData
+  const coverImage = metadata.files?.find((file) => file.isCoverImage);
 
   return (
     <>
@@ -33,9 +34,9 @@ export const ArticleRenderer: React.FC<Props> = ({
           {metadata.title}
         </BrandText>
       )}
-      {!!thumbnailImage && (
+      {!!coverImage && (
         <Image
-          source={{ uri: ipfsURLToHTTPURL(thumbnailImage.url) }}
+          source={{ uri: ipfsURLToHTTPURL(coverImage.url) }}
           resizeMode="cover"
           style={{
             width: "100%",

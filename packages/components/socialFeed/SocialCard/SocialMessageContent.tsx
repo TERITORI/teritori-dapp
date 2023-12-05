@@ -62,6 +62,7 @@ export const SocialMessageContent: React.FC<Props> = ({ post, isPreview }) => {
         <View>
           <ArticleRenderer
             metadata={articleMetadata}
+            audioFiles={audioFiles}
             isPreview={isPreview}
             postId={post.identifier || ""}
             authorId={post.authorId || ""}

@@ -58,6 +58,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const userId = wallet?.userId;
   const userIPFSKey = useSelector(selectNFTStorageAPI);
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const {
     makePost,
     isProcessing,
@@ -101,6 +102,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const navigateBack = () => navigation.navigate("Feed");
 
   const onPublish = async (values: PublishValues) => {
+    setLoading(true);
     try {
       if (!canPayForPost) {
         return setNotEnoughFundModal(true);
@@ -114,13 +116,23 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       ];
 
       let pinataJWTKey = undefined;
-      if (localFiles?.length) {
+      if (localFiles?.length || formValues.thumbnailImage) {
         pinataJWTKey =
           userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
       }
 
-      let remoteFiles: RemoteFileData[] = [];
+      // Upload thumbnail to IPFS
+      let thumbnailImageRemoteFile: RemoteFileData | undefined;
+      if (formValues.thumbnailImage && pinataJWTKey) {
+        const remoteFiles = await uploadFilesToPinata({
+          files: [formValues.thumbnailImage],
+          pinataJWTKey,
+        });
+        thumbnailImageRemoteFile = remoteFiles[0];
+      }
 
+      // Upload other files to IPFS
+      let remoteFiles: RemoteFileData[] = [];
       if (localFiles?.length && pinataJWTKey) {
         remoteFiles = await uploadFilesToPinata({
           files: localFiles,
@@ -129,7 +141,16 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       }
 
       // If the user uploaded files, but they are not pinned to IPFS, it returns files with empty url, so this is an error.
-      if (localFiles?.length && !remoteFiles.find((file) => file.url)) {
+      if (
+        (localFiles?.length && !remoteFiles.find((file) => file.url)) ||
+        (formValues.thumbnailImage && !thumbnailImageRemoteFile)
+      ) {
+        console.error("upload file err : Fail to pin to IPFS");
+        setToastError({
+          title: "File upload failed",
+          message: "Fail to pin to IPFS, please try to Publish again",
+        });
+        setLoading(false);
         return;
       }
 
@@ -149,6 +170,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
 
       const metadata = generateArticleMetadata({
         ...formValues,
+        thumbnailImage: thumbnailImageRemoteFile,
         gifs: values.gifs,
         files: remoteFiles,
         mentions: values.mentions,
@@ -289,7 +311,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                 onChange={onChange}
                 onBlur={onBlur}
                 initialValue={formValues.message}
-                loading={isProcessing}
+                loading={isProcessing || isLoading}
                 publishDisabled={
                   errors?.message?.type === "required" ||
                   !formValues.message ||
