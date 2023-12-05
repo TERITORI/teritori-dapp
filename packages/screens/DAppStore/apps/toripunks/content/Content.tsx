@@ -1,8 +1,8 @@
-import { useFonts } from "expo-font";
 import { View, ViewStyle } from "react-native";
 
 import { LoadingGame } from "./Loading";
 import { Route } from "./Route";
+import { useToriPunksFonts } from "../assets/font/useToriPunksFonts";
 import { Background } from "../components/background/Background";
 import { Footer } from "../components/footer/Footer";
 import { MenuLink } from "../components/menu-link/MenuLink";
@@ -12,10 +12,10 @@ export const Content = () => {
   const { selectedSection, isMinimunWindowWidth, loadingGame } =
     useContentContext();
 
-  useFonts({
-    "Bebas Neue": require("../assets/font/Bebas_Neue/BebasNeue-Regular.ttf"),
-    "Dafter Harder Better Stronger": require("../assets/font/Dafter_Harder_Better_Stronger/Dafter Harder Better Stronger.ttf"),
-  });
+  const [fontsLoaded] = useToriPunksFonts();
+  if (!fontsLoaded) {
+    return null;
+  }
 
   // CSS for Responsive WEB/Mobile
   const containerStyle = isMinimunWindowWidth
