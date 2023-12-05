@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Platform, TouchableOpacity, View } from "react-native";
+import { Platform, Pressable, TouchableOpacity, View } from "react-native";
 import { TrashIcon, Bars3Icon } from "react-native-heroicons/solid";
-import { Hoverable } from "react-native-hoverable";
 
 import { BrandText } from "../../../components/BrandText";
 import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
@@ -40,9 +39,9 @@ export const SelectedDraggable: React.FC<{
   };
 
   return (
-    <Hoverable
-      onMouseEnter={() => setShowTrashIcon(true)}
-      onMouseLeave={() => setShowTrashIcon(false)}
+    <Pressable
+      onHoverIn={() => setShowTrashIcon(true)}
+      onHoverOut={() => setShowTrashIcon(false)}
       style={{
         display: "flex",
         flexDirection: "row",
@@ -50,14 +49,14 @@ export const SelectedDraggable: React.FC<{
         marginBottom: layout.spacing_x1,
       }}
     >
-      <Hoverable
-        onMouseEnter={() => {
+      <Pressable
+        onHoverIn={() => {
           if (!alwaysOn) {
             setShowTrashIcon(true);
           }
           dragHandler(false);
         }}
-        onMouseLeave={() => {
+        onHoverOut={() => {
           dragHandler(true);
         }}
       >
@@ -80,7 +79,7 @@ export const SelectedDraggable: React.FC<{
             </BrandText>
           </SecondaryBox>
         </TouchableOpacity>
-      </Hoverable>
+      </Pressable>
 
       <TertiaryBox
         height={48}
@@ -116,6 +115,6 @@ export const SelectedDraggable: React.FC<{
 
         <Bars3Icon size={24} fill={neutral44} />
       </TertiaryBox>
-    </Hoverable>
+    </Pressable>
   );
 };

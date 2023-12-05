@@ -1,4 +1,4 @@
-// import { CID } from "multiformats";
+import { CID } from "multiformats";
 import React, { memo } from "react";
 import { Image, ImageProps, View, StyleSheet, PixelRatio } from "react-native";
 
@@ -65,16 +65,17 @@ const transformURI = (
     return "";
   }
 
-  const isRelative = false; //uri.startsWith("/");
+  const isRelative = uri.startsWith("/");
   if (isRelative) {
     return uri;
   }
 
   // detect if raw CID
   try {
-    // CID.parse(uri);
+    CID.parse(uri);
     uri = "ipfs://" + uri;
   } catch {}
+
   const knownScheme = ["https://", "http://", "ipfs://"].find(
     (scheme) => uri?.startsWith(scheme),
   );

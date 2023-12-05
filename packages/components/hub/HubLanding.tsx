@@ -1,7 +1,6 @@
 import React from "react";
-import { View, Image, Linking } from "react-native";
+import { View, Linking } from "react-native";
 
-import defaultNewsBanner from "../../../assets/default-images/default-news-banner.png";
 import airdropSVG from "../../../assets/icons/airdrop.svg";
 import labsSVG from "../../../assets/icons/labs.svg";
 import launchpadSVG from "../../../assets/icons/launchpad.svg";
@@ -13,12 +12,11 @@ import {
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import { useBanners } from "../../hooks/useBanners";
-import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
 import { Link } from "../Link";
+import { OptimizedImage } from "../OptimizedImage";
 import { Section } from "../Section";
 import { DAppCard } from "../cards/DAppCard";
 import { LabelCard } from "../cards/LabelCard";
@@ -30,11 +28,7 @@ const gridHalfGutter = 12;
 
 export const HubLanding: React.FC = () => {
   const navigation = useAppNavigation();
-  const { width: maxWidth } = useMaxResolution();
-  const { width, height } = useImageResizer({
-    image: defaultNewsBanner,
-    maxSize: { width: maxWidth },
-  });
+  const { width } = useMaxResolution();
   const networkId = useSelectedNetworkId();
   const banners = useBanners(networkId);
   const banner = banners?.length ? banners[0] : undefined;
@@ -42,19 +36,21 @@ export const HubLanding: React.FC = () => {
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
       <View style={{ flex: 1 }}>
-        <Link to={banner?.url || ""}>
-          <Image
-            source={{
-              uri: ipfsURLToHTTPURL(banner?.image),
-            }}
-            style={{
-              height,
-              width,
-              borderRadius: 20,
-              marginTop: 56,
-            }}
-          />
-        </Link>
+        {!!banner && (
+          <Link to={banner?.url || ""}>
+            <OptimizedImage
+              sourceURI={banner?.image}
+              width={width}
+              height={350}
+              style={{
+                height: 350,
+                width,
+                borderRadius: 20,
+                marginTop: 56,
+              }}
+            />
+          </Link>
+        )}
 
         <NewsCarouselSection />
 
