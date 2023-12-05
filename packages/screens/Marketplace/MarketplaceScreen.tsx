@@ -87,6 +87,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const enabledNetworks = useEnabledNetworks();
   const timePeriod = useSelector(selectTimePeriod);
+  const isMobile = useIsMobile();
 
   const marketplaceNetworks = enabledNetworks.filter((network) => {
     return network.features.includes(NetworkFeature.NFTMarketplace);
@@ -159,7 +160,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
       >
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: isMobile ? "column" : "row",
             flexWrap: "nowrap",
             justifyContent: "space-between",
             alignItems: "center",

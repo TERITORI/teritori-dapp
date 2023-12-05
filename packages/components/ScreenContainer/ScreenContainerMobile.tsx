@@ -98,15 +98,13 @@ export const ScreenContainerMobile: FC<{
               <ScrollView
                 contentContainerStyle={[
                   {
+                    marginHorizontal: layout.spacing_x2,
                     minHeight: windowHeight - MOBILE_HEADER_HEIGHT,
                   },
                 ]}
               >
                 {mobileTitle ? <MobileTitle title={mobileTitle} /> : null}
-                <View style={[{ flex: 1, width, height: "100%" }]}>
-                  {children}
-                </View>
-                {/*TODO: Put here Riotters Footer ?*/}
+                <View style={[{ height: "100%" }]}>{children}</View>
               </ScrollView>
             ) : (
               <>
@@ -116,7 +114,6 @@ export const ScreenContainerMobile: FC<{
                   {children}
                 </View>
               </>
-              // TODO: Put here Riotters Footer ?
             )}
             <MediaPlayerBar
               style={{

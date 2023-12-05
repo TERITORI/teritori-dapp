@@ -79,7 +79,7 @@ const transformURI = (
     return "";
   }
 
-  const isRelative = false; //uri.startsWith("/");
+  const isRelative = uri.startsWith("/");
   if (isRelative) {
     return uri;
   }
@@ -89,6 +89,7 @@ const transformURI = (
     CID.parse(uri);
     uri = "ipfs://" + uri;
   } catch {}
+
   const knownScheme = ["https://", "http://", "ipfs://"].find(
     (scheme) => uri?.startsWith(scheme),
   );

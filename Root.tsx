@@ -180,7 +180,6 @@ const WalletSyncer: React.FC = memo(() => {
   useEffect(() => {
     if (!selectedWallet || selectedWallet.networkId !== selectedNetworkId) {
       const newWallet = wallets.find((w) => w.networkId === selectedNetworkId);
-      console.log("syncing wallet", newWallet);
       dispatch(setSelectedWalletId(newWallet?.id));
     }
   }, [dispatch, selectedNetworkId, selectedWallet, wallets]);
