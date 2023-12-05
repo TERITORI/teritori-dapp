@@ -558,7 +558,7 @@ export const SideFilters: React.FC<{
           alignItems: "flex-start",
         }}
       >
-        {currency && <PriceFilter currency={currency} />}
+        {!!currency && <PriceFilter currency={currency} />}
       </FilterContainer>
       {stats && network && (
         <FlatList

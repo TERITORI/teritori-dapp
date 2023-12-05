@@ -77,7 +77,7 @@ export const MultisigFormInput = <T extends FieldValues>({
           </BrandText>
         </>
       )}
-      {onPressMax && <MaxButton onPress={onPressMax} />}
+      {!!onPressMax && <MaxButton onPress={onPressMax} />}
     </TextInputCustom>
   );
 };

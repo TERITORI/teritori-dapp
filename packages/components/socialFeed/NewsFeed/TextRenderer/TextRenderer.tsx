@@ -97,7 +97,7 @@ export const TextRenderer = ({
       // Then, display each text part with its associated matchText if exists
       return (
         <React.Fragment key={index}>
-          {itemMatch.matchText && <Component {...itemMatch.matchText} />}
+          {!!itemMatch.matchText && <Component {...itemMatch.matchText} />}
           {itemMatch.item}
         </React.Fragment>
       );

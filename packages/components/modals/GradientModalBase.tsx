@@ -168,7 +168,7 @@ const GradientModalBase: React.FC<ModalBaseProps> = ({
               )}
             </View>
 
-            {Header && <Header />}
+            {!!Header && <Header />}
 
             <Pressable onPress={onClose}>
               <SVG

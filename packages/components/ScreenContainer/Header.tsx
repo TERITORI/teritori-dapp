@@ -38,7 +38,7 @@ export const Header: React.FC<{
         }}
       >
         {/*If you want to add buttons or something in the Header in desktop mode, refer to ScreenContainer/index.tsx for now*/}
-        {onBackPress && <BackButton onPress={onBackPress} />}
+        {!!onBackPress && <BackButton onPress={onBackPress} />}
         {children && (
           <>
             <SpacerRow size={1.5} />
