@@ -163,9 +163,14 @@ export const NewsFeedInput = React.forwardRef<
       isProcessing,
       prettyPublishingFee,
       freePostCount,
-    } = useFeedPosting(userId, getPostCategory(formValues), () => {
-      onPostCreationSuccess();
-    });
+    } = useFeedPosting(
+      selectedNetwork?.id,
+      userId,
+      getPostCategory(formValues),
+      () => {
+        onPostCreationSuccess();
+      },
+    );
     const userIPFSKey = useSelector(selectNFTStorageAPI);
 
     const processSubmit = async () => {

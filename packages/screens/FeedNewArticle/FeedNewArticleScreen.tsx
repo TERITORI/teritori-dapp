@@ -56,7 +56,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const [loading, setLoading] = useState(false);
   const userIPFSKey = useSelector(selectNFTStorageAPI);
   const { canPayForPost, freePostCount, publishingFee, prettyPublishingFee } =
-    useFeedPosting(userId, PostCategory.Article);
+    useFeedPosting(selectedNetworkId, userId, PostCategory.Article);
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();

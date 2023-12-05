@@ -46,6 +46,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
   const userId = selectedWallet?.userId;
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const { makePost, canPayForPost, isProcessing } = useFeedPosting(
+    selectedNetwork?.id,
     userId,
     PostCategory.MusicAudio,
     onUploadDone,
@@ -205,6 +206,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       <View style={divideLineStyle} />
 
       <FeedFeeText
+        networkId={selectedNetwork?.id}
         userId={selectedWallet?.userId}
         category={PostCategory.MusicAudio}
         style={{ marginTop: layout.spacing_x2 }}
