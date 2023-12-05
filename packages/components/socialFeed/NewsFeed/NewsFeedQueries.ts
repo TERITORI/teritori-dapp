@@ -12,6 +12,7 @@ import {
   signingSocialFeedClient,
 } from "../../../client-creators/socialFeedClient";
 import { getNetwork, NetworkKind, parseUserId } from "../../../networks";
+import { RemoteFileData } from "../../../utils/types/files";
 
 export const getAvailableFreePost = async (userId: string) => {
   const [network, userAddress] = parseUserId(userId);
@@ -88,6 +89,16 @@ export const getPostCategory = ({
   return category;
 };
 
+interface GeneratePostMetadataParams extends Omit<NewPostFormValues, "files"> {
+  files: RemoteFileData[];
+}
+
+interface GenerateArticleMetadataParams
+  extends Omit<NewArticleFormValues, "files" | "thumbnailImage"> {
+  files: RemoteFileData[];
+  thumbnailImage?: RemoteFileData;
+}
+
 export const generatePostMetadata = ({
   title,
   message,
@@ -95,7 +106,7 @@ export const generatePostMetadata = ({
   hashtags,
   mentions,
   gifs,
-}: NewPostFormValues): SocialFeedPostMetadata => {
+}: GeneratePostMetadataParams): SocialFeedPostMetadata => {
   const m = ZodSocialFeedPostMetadata.parse({
     title,
     message,
@@ -120,7 +131,7 @@ export const generateArticleMetadata = ({
   nftStorageApiToken,
   thumbnailImage,
   shortDescription,
-}: NewArticleFormValues): SocialFeedArticleMetadata => {
+}: GenerateArticleMetadataParams): SocialFeedArticleMetadata => {
   const m = ZodSocialFeedArticleMetadata.parse({
     title,
     message,

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import priceSVG from "../../../assets/icons/price.svg";
 import { BrandText } from "../../components/BrandText";
@@ -15,7 +16,6 @@ import {
 } from "../../components/inputs/TextInputCustom";
 import {
   NewArticleFormValues,
-  NewPostFormValues,
   PostCategory,
 } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { generateArticleMetadata } from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
@@ -26,8 +26,15 @@ import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useFeedPosting } from "../../hooks/feed/useFeedPosting";
 import { useIsMobile } from "../../hooks/useIsMobile";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature } from "../../networks";
+import { selectNFTStorageAPI } from "../../store/slices/settings";
+import {
+  generateIpfsKey,
+  ipfsURLToHTTPURL,
+  uploadFilesToPinata,
+} from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { ARTICLE_THUMBNAIL_IMAGE_HEIGHT } from "../../utils/social-feed";
@@ -40,7 +47,7 @@ import {
 import { fontSemibold13, fontSemibold20 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { pluralOrNot } from "../../utils/text";
-import {useSelectedNetworkId} from "../../hooks/useSelectedNetwork";
+import {RemoteFileData} from "../../utils/types/files";
 
 //TODO: In mobile : Make ActionsContainer accessible (floating button ?)
 
@@ -49,6 +56,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
   const userId = wallet?.userId;
+  const userIPFSKey = useSelector(selectNFTStorageAPI);
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const {
     makePost,
@@ -97,21 +105,56 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       if (!canPayForPost) {
         return setNotEnoughFundModal(true);
       }
-      const files = [
+
+      const localFiles = [
         ...(formValues.files || []),
         ...values.images,
         ...values.audios,
         ...values.videos,
       ];
-      const newPostFormValues: NewPostFormValues = {
+
+      let pinataJWTKey = undefined;
+      if (localFiles?.length) {
+        pinataJWTKey =
+          userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
+      }
+
+      let remoteFiles: RemoteFileData[] = [];
+
+      if (localFiles?.length && pinataJWTKey) {
+        remoteFiles = await uploadFilesToPinata({
+          files: localFiles,
+          pinataJWTKey,
+        });
+      }
+
+      // If the user uploaded files, but they are not pinned to IPFS, it returns files with empty url, so this is an error.
+      if (localFiles?.length && !remoteFiles.find((file) => file.url)) {
+        return;
+      }
+
+      let message = formValues.message || "";
+
+      if (remoteFiles.length) {
+        localFiles?.map((file, index) => {
+          // Audio are not in the HTML for now
+          if (remoteFiles[index]?.fileType !== "audio") {
+            message = message.replace(
+              file.url,
+              ipfsURLToHTTPURL(remoteFiles[index].url),
+            );
+          }
+        });
+      }
+
+      const metadata = generateArticleMetadata({
         ...formValues,
         gifs: values.gifs,
-        files,
+        files: remoteFiles,
         mentions: values.mentions,
         hashtags: values.hashtags,
         message: values.html,
-      };
-      const metadata = generateArticleMetadata(newPostFormValues);
+      });
       await makePost(JSON.stringify(metadata));
     } catch (err) {
       setToastError({
