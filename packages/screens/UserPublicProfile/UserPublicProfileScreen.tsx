@@ -32,12 +32,12 @@ export interface UppTabScreenProps {
 
 export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   route: {
-    params: { id, tab: tabKey, network: routeNetwork },
+    params: { id, tab: tabKey },
   },
 }) => {
   const navigation = useAppNavigation();
   const [network, userAddress] = parseUserId(id);
-  useForceNetworkSelection(routeNetwork || network?.id);
+  useForceNetworkSelection(network?.id);
   const { metadata, notFound } = useNSUserInfo(id);
   const screenContainerOtherProps: Partial<ScreenContainerProps> =
     useMemo(() => {

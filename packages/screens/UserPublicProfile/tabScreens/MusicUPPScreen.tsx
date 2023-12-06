@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 
 import { ScreenContainer } from "../../../components/ScreenContainer";
-import { MusicList } from "../../../components/music/MusicList";
+import { FeedMusicList } from "../../../components/music/FeedMusicList";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { parseUserId } from "../../../networks";
@@ -28,7 +28,7 @@ export const MusicUPPScreen: FC<UppTabScreenProps> = ({
     >
       <UPPScreenContentWrapper>
         <UPPHeader userId={userId} selectedTab={UppTabKeys.music} />
-        <MusicList
+        <FeedMusicList
           title={isCurrentUser ? "Your music" : "Music by " + userName}
           authorId={userId}
           allowUpload={isCurrentUser}

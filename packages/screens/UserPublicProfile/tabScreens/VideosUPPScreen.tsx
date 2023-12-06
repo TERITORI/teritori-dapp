@@ -43,7 +43,6 @@ export const VideosUPPScreen: FC<UppTabScreenProps> = ({
       {...screenContainerOtherProps}
     >
       <NewsFeed
-        isVideos
         disablePosting={
           !selectedWallet?.connected || selectedWallet?.userId === userId
         }

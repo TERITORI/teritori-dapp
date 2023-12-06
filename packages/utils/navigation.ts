@@ -21,7 +21,6 @@ export type RootStackParamList = {
   UserPublicProfile: {
     id: string;
     tab?: keyof typeof uppTabItems;
-    network?: string;
   };
   RiotersFooter: undefined;
 
