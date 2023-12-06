@@ -148,7 +148,6 @@ export const NewsFeedInput = React.forwardRef<
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
         defaultValues: {
-          nftStorageApiToken: "",
           title: "",
           message: "",
           files: [],
@@ -209,19 +208,19 @@ export const NewsFeedInput = React.forwardRef<
           hashtags.push(`#${additionalHashtag}`);
         }
 
-        let files: RemoteFileData[] = [];
+        let remoteFiles: RemoteFileData[] = [];
 
         if (formValues.files?.length) {
           const pinataJWTKey =
             userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
           if (pinataJWTKey) {
-            files = await uploadFilesToPinata({
+            remoteFiles = await uploadFilesToPinata({
               files: formValues.files,
               pinataJWTKey,
             });
           }
         }
-        if (formValues.files?.length && !files.find((file) => file.url)) {
+        if (formValues.files?.length && !remoteFiles.find((file) => file.url)) {
           console.error("upload file err : Fail to pin to IPFS");
           setToastError({
             title: "File upload failed",
@@ -233,7 +232,7 @@ export const NewsFeedInput = React.forwardRef<
         const metadata = generatePostMetadata({
           title: formValues.title || "",
           message: finalMessage,
-          files,
+          files: remoteFiles,
           hashtags,
           mentions,
           gifs: formValues?.gifs || [],
