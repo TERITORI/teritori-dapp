@@ -10,6 +10,7 @@ export type RouteName = keyof RootStackParamList;
 
 export type RootStackParamList = {
   Home?: { network?: string };
+  ButtonTest: undefined;
   MyCollection: undefined;
   Activity: undefined;
   Guardians: undefined;
@@ -92,7 +93,7 @@ const navConfig: {
   screens: { [Name in keyof RootStackParamList]: string };
 } = {
   screens: {
-    Home: "",
+    ButtonTest: "",
     MyCollection: "my-collection",
     Activity: "activity",
     Guardians: "guardians",

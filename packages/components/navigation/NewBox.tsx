@@ -21,7 +21,7 @@ export type GradientBoxStyle = Pick<
   | "padding"
 > & { borderRadius?: number; backgroundColor?: string };
 
-export const GradientBox: React.FC<{
+export const NewBox: React.FC<{
   children: ReactNode;
   borderProps: LinearGradientProps;
   fillProps: LinearGradientProps;
@@ -64,12 +64,9 @@ export const GradientBox: React.FC<{
         marginVertical,
         width,
         height,
-        position: "relative",
-        borderTopLeftRadius: 50,
-        backgroundColor,
       }}
     >
-      {/* {borderWidth > 0 && (
+      {borderWidth > 0 && (
         <LinearGradient
           style={{
             width: "100%",
@@ -79,8 +76,8 @@ export const GradientBox: React.FC<{
           }}
           {...borderProps}
         />
-      )} */}
-      {/* <LinearGradient
+      )}
+      <LinearGradient
         style={{
           left: borderWidth,
           top: borderWidth,
@@ -91,39 +88,6 @@ export const GradientBox: React.FC<{
         }}
         colors={fillColors}
         {...fillPropsRest}
-      /> */}
-
-      <View
-        style={{
-          height: 40,
-          width: 24.65,
-          backgroundColor,
-          position: "absolute",
-          top: 3,
-          left: 10.7,
-          transform: "rotate(-45deg)",
-        }}
-      />
-      <View
-        style={{
-          height: 40,
-          width: 10,
-          backgroundColor,
-          position: "absolute",
-          top: 17.65,
-          left: 0,
-          transform: "rotate(180deg)",
-        }}
-      />
-      <View
-        style={{
-          height: 20,
-          width: 50,
-          backgroundColor,
-          position: "absolute",
-          top: 0,
-          left: 17.65,
-        }}
       />
       <View
         style={[

@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
+import { ButtonTest } from "./ButtonTest";
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { CoreDAOScreen } from "../../screens/CoreDAO/CoreDAOScreen";
 import { DAppStoreScreen } from "../../screens/DAppStore/DAppStoreScreen";
@@ -53,6 +54,11 @@ const screenTitle = (title: string) => "Teritori - " + title;
 export const Navigator: React.FC = () => {
   return (
     <Stack.Navigator>
+      <Stack.Screen
+        name="ButtonTest"
+        component={ButtonTest}
+        options={{ header: () => null, title: screenTitle("Home") }}
+      />
       <Stack.Screen
         name="Home"
         component={HomeScreen}
