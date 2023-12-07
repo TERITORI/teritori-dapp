@@ -4,7 +4,6 @@ import { StyleProp, ViewStyle } from "react-native";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
   neutral17,
@@ -15,6 +14,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { useMakeRequestState } from "../GrantsProgramMakeRequestScreen/useMakeRequestHook";
 
 const Step: React.FC<{
   indice: number;
@@ -34,8 +34,8 @@ const Step: React.FC<{
             backgroundColor: active
               ? primaryColor
               : disabled
-              ? neutral22
-              : neutralFF,
+                ? neutral22
+                : neutralFF,
             borderRadius: 100,
             width: 32,
             height: 32,
@@ -50,6 +50,7 @@ const Step: React.FC<{
       </BrandText>
 
       <BrandText
+        onPress={() => onPress(indice)}
         numberOfLines={1}
         style={[
           fontSemibold14,
@@ -89,10 +90,16 @@ export const Breadcrumb: React.FC<{
   stepIndice?: number;
   containerStyle?: StyleProp<ViewStyle>;
 }> = ({ stepIndice = 1, containerStyle }) => {
-  const navigation = useAppNavigation();
+  const {
+    stepIndice: currentStepIndice,
+    actions: { gotoStep },
+  } = useMakeRequestState();
 
-  const selectStep = (stepIndice: number) => {
-    navigation.navigate("GrantsProgramMakeRequest", { step: 2 });
+  // We can only goto passed steps
+  const gotoValidStep = (targetStepIndice: number) => {
+    if (targetStepIndice <= currentStepIndice) {
+      gotoStep(targetStepIndice);
+    }
   };
 
   return (
@@ -113,7 +120,7 @@ export const Breadcrumb: React.FC<{
           return (
             <>
               <Step
-                onPress={selectStep}
+                onPress={gotoValidStep}
                 indice={idx + 1}
                 text={step}
                 active={stepIndice === idx + 1}

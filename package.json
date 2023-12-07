@@ -72,6 +72,7 @@
     "expo-linear-gradient": "~12.3.0",
     "expo-optimize": "^0.2.20",
     "expo-status-bar": "~1.6.0",
+    "formik": "^2.4.5",
     "google-protobuf": "^3.21.2",
     "html-to-draftjs": "^1.5.0",
     "immutable": "^4.0.0",
@@ -117,7 +118,8 @@
     "victory": "^36.6.12",
     "victory-native": "^36.6.8",
     "waveform-data": "^4.3.0",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@babel/core": "^7.23.3",

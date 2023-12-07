@@ -1,18 +1,14 @@
 import { useRoute } from "@react-navigation/native";
 import React, { useMemo } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 
 import { Milestones } from "./Milestones";
 import { Preview } from "./Preview";
 import { ShortPresentation } from "./ShortPresentation";
 import { TeamAndLinks } from "./TeamAndLinks";
-import FlexRow from "../../../components/FlexRow";
 import { ScreenContainer } from "../../../components/ScreenContainer";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
-import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
+import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
 import { Breadcrumb } from "../components/Breadcrumb";
 import { HeaderBackButton } from "../components/HeaderBackButton";
@@ -20,8 +16,6 @@ import { HeaderBackButton } from "../components/HeaderBackButton";
 export const GrantsProgramMakeRequestScreen: ScreenFC<
   "GrantsProgramMakeRequest"
 > = () => {
-  const navigation = useAppNavigation();
-  const { width } = useWindowDimensions();
   const route = useRoute();
   const step = !route.params ? 1 : (route.params as any).step;
   const stepIndice = useMemo(() => {
@@ -47,38 +41,6 @@ export const GrantsProgramMakeRequestScreen: ScreenFC<
         {stepIndice === 3 && <Milestones />}
         {stepIndice === 4 && <Preview />}
       </View>
-
-      <Separator
-        style={{
-          // NOTE: trick to get full width on responsible/large ScreenContainer
-          marginLeft: -140,
-          width: width + 140,
-          marginVertical: layout.spacing_x2,
-        }}
-      />
-
-      <FlexRow style={{ justifyContent: "space-between" }}>
-        <SecondaryButton
-          onPress={() =>
-            navigation.navigate("GrantsProgramMakeRequest", {
-              step: Math.max(stepIndice - 1, 1),
-            })
-          }
-          text="Back"
-          size="SM"
-          width={120}
-        />
-        <PrimaryButton
-          onPress={() =>
-            navigation.navigate("GrantsProgramMakeRequest", {
-              step: Math.min(stepIndice + 1, 5),
-            })
-          }
-          text="Next"
-          size="SM"
-          width={120}
-        />
-      </FlexRow>
     </ScreenContainer>
   );
 };
