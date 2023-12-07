@@ -3,7 +3,7 @@ import { Modal, View } from "react-native";
 
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { SeparatorGradient } from "../separators/SeparatorGradient";
 
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
@@ -34,7 +34,7 @@ const ModalBaseTest: React.FC<{
         }}
       >
         {/*------ Modal main container */}
-        <TertiaryBox
+        <LegacyTertiaryBox
           width={width}
           style={{ margin: "auto" }}
           mainContainerStyle={{
@@ -76,7 +76,7 @@ const ModalBaseTest: React.FC<{
           )}
           {/*------- Modal bottom content */}
           {childrenBottom}
-        </TertiaryBox>
+        </LegacyTertiaryBox>
       </View>
     </Modal>
   );

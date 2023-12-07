@@ -12,7 +12,7 @@ import {
   selectConversationList,
 } from "../../../store/slices/message";
 import { RootState } from "../../../store/store";
-import { purpleDark, successColor } from "../../../utils/style/colors";
+import { successColor } from "../../../utils/style/colors";
 import { fontMedium10 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { CONVERSATION_TYPES, Message } from "../../../utils/types/message";
@@ -111,12 +111,7 @@ export const GroupInvitationAction = ({
     <>
       <SpacerColumn size={1} />
       <FlexRow>
-        <PrimaryButton
-          text="Accept"
-          size="SM"
-          squaresBackgroundColor={purpleDark}
-          onPress={handleAcceptGroup}
-        />
+        <PrimaryButton text="Accept" size="SM" onPress={handleAcceptGroup} />
         <SpacerRow size={1} />
       </FlexRow>
     </>

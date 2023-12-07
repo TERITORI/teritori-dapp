@@ -7,7 +7,7 @@ import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { NFTInfo } from "../../utils/types/nft";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { GradientText } from "../gradientText";
 
@@ -21,7 +21,7 @@ export const NFTPriceBuyCard: React.FC<{
   const isMobile = useIsMobile();
 
   return (
-    <TertiaryBox
+    <LegacyTertiaryBox
       fullWidth
       height={88}
       style={style}
@@ -54,6 +54,6 @@ export const NFTPriceBuyCard: React.FC<{
         text="Buy this NFT"
         onPress={onPressBuy}
       />
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 };

@@ -214,7 +214,6 @@ export const NameDataForm: React.FC<{
         disabled={disabled}
         onPress={handlePressBtn}
         style={{ marginTop: 8, alignSelf: "center" }}
-        squaresBackgroundColor={neutral17}
         loader
       />
     </View>

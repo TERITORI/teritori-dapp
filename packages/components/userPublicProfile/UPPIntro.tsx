@@ -22,7 +22,7 @@ import { BrandText } from "../BrandText";
 import { useCopyToClipboard } from "../CopyToClipboard";
 import { CopyToClipboardSecondary } from "../CopyToClipboardSecondary";
 import { OptimizedImage } from "../OptimizedImage";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 import { SocialButton } from "../buttons/SocialButton";
 import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
@@ -42,7 +42,7 @@ export const UPPIntro: React.FC<{
 
   return (
     <>
-      <TertiaryBox
+      <LegacyTertiaryBox
         height={320}
         noBrokenCorners={windowWidth < RESPONSIVE_BREAKPOINT_S}
         mainContainerStyle={
@@ -129,7 +129,7 @@ export const UPPIntro: React.FC<{
           }}
           size="XL"
         />
-      </TertiaryBox>
+      </LegacyTertiaryBox>
       <View
         style={{
           width: "100%",
@@ -173,7 +173,7 @@ export const UPPIntro: React.FC<{
           </BrandText>
         </View>
         {/* Stats and public address */}
-        <TertiaryBox mainContainerStyle={{ padding: 16 }}>
+        <LegacyTertiaryBox mainContainerStyle={{ padding: 16 }}>
           <View
             style={{
               flexDirection: "row",
@@ -206,7 +206,7 @@ export const UPPIntro: React.FC<{
             text={userAddress}
             networkIcon={network?.id}
           />
-        </TertiaryBox>
+        </LegacyTertiaryBox>
       </View>
     </>
   );

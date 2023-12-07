@@ -94,9 +94,8 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
       hideMainSeparator
       onClose={() => onClose()}
       width={457}
-      contentStyle={{
+      boxStyle={{
         backgroundColor: neutral17,
-        borderRadius: 8,
       }}
     >
       <View

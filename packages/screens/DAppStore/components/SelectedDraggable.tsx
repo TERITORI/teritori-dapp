@@ -5,8 +5,7 @@ import { Hoverable } from "react-native-hoverable";
 
 import { BrandText } from "../../../components/BrandText";
 import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
-import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { Box } from "../../../components/boxes/Box";
 import { setCheckedApp } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
 import {
@@ -62,15 +61,16 @@ export const SelectedDraggable: React.FC<{
         }}
       >
         <TouchableOpacity onPress={deleteFromList} disabled={alwaysOn}>
-          <SecondaryBox
-            noBrokenCorners
-            mainContainerStyle={{
+          <Box
+            style={{
               backgroundColor: !showTrashIcon
                 ? withAlpha(neutral33, 0.64)
                 : withAlpha(errorColor, 0.14),
+              width: 32,
+              height: 48,
+              alignItems: "center",
+              justifyContent: "center",
             }}
-            width={32}
-            height={48}
           >
             <BrandText
               style={[fontBold12, { color: neutral67 }]}
@@ -78,29 +78,28 @@ export const SelectedDraggable: React.FC<{
             >
               {showTrashIcon ? <TrashIcon size={14} fill="red" /> : index + 1}
             </BrandText>
-          </SecondaryBox>
+          </Box>
         </TouchableOpacity>
       </Hoverable>
 
-      <TertiaryBox
-        height={48}
-        width={256}
-        noBrokenCorners
+      <Box
         style={{
           marginLeft: layout.spacing_x1,
-          ...Platform.select({
-            web: {
-              cursor: "grab",
-            },
-          }),
-        }}
-        mainContainerStyle={{
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
           paddingVertical: layout.spacing_x1_5,
           paddingLeft: layout.spacing_x1_5,
           paddingRight: layout.spacing_x2,
+          width: 256,
+          height: 48,
+          borderWidth: 1,
+          borderColor: neutral33,
+          ...Platform.select({
+            web: {
+              cursor: "grab",
+            },
+          }),
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -115,7 +114,7 @@ export const SelectedDraggable: React.FC<{
         </View>
 
         <Bars3Icon size={24} fill={neutral44} />
-      </TertiaryBox>
+      </Box>
     </Hoverable>
   );
 };

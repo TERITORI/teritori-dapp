@@ -6,11 +6,11 @@ import {
   gradientColorTurquoise,
 } from "../../../../utils/style/colors";
 import { layout } from "../../../../utils/style/layout";
-import { PrimaryBox } from "../../../boxes/PrimaryBox";
+import { LegacyPrimaryBox } from "../../../boxes/LegacyPrimaryBox";
 
 export const ToolbarContainer: FC<{ children: ReactNode }> = ({ children }) => {
   return (
-    <PrimaryBox
+    <LegacyPrimaryBox
       fullWidth
       colors={[
         gradientColorDarkerBlue,
@@ -26,6 +26,6 @@ export const ToolbarContainer: FC<{ children: ReactNode }> = ({ children }) => {
       }}
     >
       {children}
-    </PrimaryBox>
+    </LegacyPrimaryBox>
   );
 };
