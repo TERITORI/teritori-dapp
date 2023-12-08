@@ -12,11 +12,7 @@ import {
   ButtonsSize,
   heightButton,
 } from "../../utils/style/buttons";
-import {
-  neutral11,
-  primaryColor,
-  primaryTextColor,
-} from "../../utils/style/colors";
+import { primaryColor, primaryTextColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -89,7 +85,7 @@ export const PrimaryButton: React.FC<{
           {
             flexDirection: "row",
             borderRadius: borderRadiusButton(size),
-            backgroundColor: disabled ? neutral11 : color,
+            backgroundColor: color,
             padding: 0,
             paddingHorizontal: 20,
             opacity: isDisabled ? 0.5 : 1,
