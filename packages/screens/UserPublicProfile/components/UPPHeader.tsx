@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { memo } from "react";
+import React, { memo, useCallback } from "react";
 
 import { UPPIntro } from "./UPPIntro";
 import { Tabs } from "../../../components/tabs/Tabs";
@@ -57,14 +57,15 @@ export const UPPHeader = memo(
       ? selectedTabKey
       : objectKeys(items)[0];
 
-    useFocusEffect(() => {
+    const focusEffect = useCallback(() => {
       if (forcedTabKey && selectedTabKey !== forcedTabKey) {
         navigation.replace("UserPublicProfile", {
           id: userId,
           tab: forcedTabKey,
         });
       }
-    });
+    }, [userId, forcedTabKey, selectedTabKey, navigation]);
+    useFocusEffect(focusEffect);
 
     return (
       <>
