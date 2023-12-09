@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
 import { ArticleRenderer } from "./ArticleRenderer";
+import defaultThumbnailImage from "../../../../assets/default-images/default-track-thumbnail.png";
 import { Post } from "../../../api/feed/v1/feed";
 import { HTML_TAG_REGEXP } from "../../../utils/regex";
 import { zodTryParseJSON } from "../../../utils/sanitize";
@@ -105,6 +106,7 @@ export const SocialMessageContent: React.FC<Props> = ({ post, isPreview }) => {
                 fileUrl={file.url}
                 waveform={file.audioMetadata?.waveform || []}
                 imageURI={file.thumbnailFileData?.url}
+                fallbackImageURI={defaultThumbnailImage}
               />
             </Fragment>
           ))}
