@@ -2,7 +2,7 @@ import { ExpoConfig } from "expo/config";
 
 const config: { expo: ExpoConfig } = {
   expo: {
-    name: "teritori-dapp",
+    name: "Teritori",
     slug: "teritori-dapp",
     version: "1.0.0",
     orientation: "portrait",
@@ -26,6 +26,7 @@ const config: { expo: ExpoConfig } = {
         foregroundImage: "./assets/icon.png",
         backgroundColor: "#FFFFFF",
       },
+      package: "com.teritori",
     },
     web: {
       favicon: "./assets/favicon.png",

@@ -322,3 +322,56 @@ build-electron-linux-amd64:
 	cd ./electron && npm i
 	cd ./electron && GOOS=linux GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/linux ./prod.go
 	cd ./electron && node ./builder/linux.js
+
+.PHONY: build-ios
+build-ios: check-ios-weshframework
+	@npx expo prebuild --clean
+	@npx expo run:ios
+
+.PHONY: check-ios-weshframework
+check-ios-weshframework:
+	@if [ ! -e ./modules/wesh/ios/WeshFramework.xcframework ]; then \
+		echo "WeshFramework does not exist. Running a command to create it."; \
+		$(MAKE) build-ios-weshframework; \
+	fi
+
+.PHONY: build-ios-weshframework
+build-ios-weshframework:
+	go mod tidy
+	go get golang.org/x/mobile/cmd/gobind
+	go get golang.org/x/mobile/cmd/gomobile
+	gomobile init
+	CGO_CPPFLAGS="-Wno-error -Wno-nullability-completeness -Wno-expansion-to-defined -DHAVE_GETHOSTUUID=0"
+	gomobile bind \
+	-o ./modules/wesh/ios/WeshFramework.xcframework \
+	-tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target ios -iosversion 13.0 \
+	./go/cmd/weshd-app/
+
+
+.PHONY: build-android
+build-android: check-android-weshframework
+	@npx expo prebuild --clean
+	@npx expo run:android
+
+.PHONY: check-android-weshframework
+check-android-weshframework:
+	@if [ ! -e ./modules/weshd/android/libs/WeshFramework.aar ]; then \
+		echo "WeshFramework does not exist. Running a command to create it."; \
+		$(MAKE) build-android-weshframework; \
+	fi
+
+.PHONY: build-android-weshframework
+build-android-weshframework:
+	mkdir -p ./modules/weshd/android/libs
+	go mod tidy
+	go get golang.org/x/mobile/cmd/gobind
+	go get golang.org/x/mobile/cmd/gomobile
+	gomobile init
+	CGO_CPPFLAGS="-Wno-error -Wno-nullability-completeness -Wno-expansion-to-defined -DHAVE_GETHOSTUUID=0"
+	gomobile bind \
+	-javapkg=com.weshnet \
+	-o ./modules/weshd/android/libs/WeshFramework.aar \
+	-tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target android -androidapi 21 \
+	./go/cmd/weshd-app/
+
+

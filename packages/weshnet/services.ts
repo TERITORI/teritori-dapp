@@ -45,8 +45,11 @@ export const bootWeshModule = async () => {
     if (isElectron()) {
       weshClient.watchPort();
     } else {
+      const WeshnetModule = require("../../modules/weshd");
+      const port = await WeshnetModule.getPort();
+      WeshnetModule.boot();
       setTimeout(() => {
-        weshClient.createClient(4242);
+        weshClient.createClient(port);
       }, 15 * 1000);
     }
   } catch (err) {

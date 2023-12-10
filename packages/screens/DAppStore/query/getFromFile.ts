@@ -1,3 +1,5 @@
+import { Platform } from "react-native";
+
 import BookMarkIcon from "../../../../assets/icons/bookmark.svg";
 import dao from "../../../../assets/icons/dao.svg";
 import socialFeed from "../../../../assets/icons/feed.svg";
@@ -122,6 +124,20 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: true,
           alwaysOn: false,
         },
+        ...(isElectron() || ["android", "ios"].includes(Platform.OS)
+          ? {
+              messages: {
+                id: "messages",
+                title: "Messages",
+                description: "Messages",
+                icon: messages,
+                route: "Message",
+                groupKey: "teritori-core-apps",
+                selectedByDefault: true,
+                alwaysOn: true,
+              },
+            }
+          : {}),
       },
     },
     "top-apps": {
@@ -370,20 +386,6 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: false,
           alwaysOn: false,
         },
-        ...(isElectron()
-          ? {
-              messages: {
-                id: "messages",
-                title: "Messages",
-                description: "Messages",
-                icon: messages,
-                route: "Message",
-                groupKey: "coming-soon",
-                selectedByDefault: false,
-                alwaysOn: false,
-              },
-            }
-          : {}),
       },
     },
   };

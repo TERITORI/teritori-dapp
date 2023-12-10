@@ -149,6 +149,7 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
                 ? layout.spacing_x0_5
                 : layout.spacing_x1_5,
               maxWidth: width,
+              maxHeight: 60,
             }}
           >
             {HEADER_CONFIG.map((item) => (
