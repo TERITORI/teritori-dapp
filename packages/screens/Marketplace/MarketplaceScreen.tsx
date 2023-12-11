@@ -1,5 +1,12 @@
 import React, { ReactNode, useState } from "react";
-import { FlatList, StyleProp, TextStyle, View, ViewStyle } from "react-native";
+import {
+  FlatList,
+  Platform,
+  StyleProp,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import { PrettyPrint } from "./types";
 import {
@@ -222,6 +229,7 @@ const CollectionTable: React.FC<{
         }
       />
       <FlatList
+        scrollEnabled={Platform.OS === "web"}
         data={filteredCollections}
         renderItem={({ item, index }) => (
           <CollectionRow collection={item} rank={index} />

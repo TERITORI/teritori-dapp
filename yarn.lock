@@ -18676,16 +18676,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-hoverable@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "react-native-hoverable@npm:0.2.0"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 9ca468d07c660ea30013da3921e09fdb42b479ce9f69e867e60bd56dbb49cb407998e07d3aa2ab6662e55f7b1cec9bc806ba9517ca9fd31839c1ebcbd4a7d26f
-  languageName: node
-  linkType: hard
-
 "react-native-iphone-x-helper@npm:^1.3.1":
   version: 1.3.1
   resolution: "react-native-iphone-x-helper@npm:1.3.1"
@@ -21292,7 +21282,6 @@ __metadata:
     react-native-gesture-handler: ~2.12.0
     react-native-get-random-values: ~1.9.0
     react-native-heroicons: ^3.2.0
-    react-native-hoverable: ^0.2.0
     react-native-keyboard-aware-scrollview: ^2.1.0
     react-native-paper: ^4.12.5
     react-native-pell-rich-editor: ^1.8.8
