@@ -1,0 +1,12 @@
+diff --git a/package.json b/package.json
+index 3843b15fe499bc682d81ad0680ec364b820406d6..b17cdccd376126cfdcbaa44976655964f094ecc7 100644
+--- a/package.json
++++ b/package.json
+@@ -5,6 +5,7 @@
+   "author": "Mikeal Rogers <mikeal.rogers@gmail.com> (https://www.mikealrogers.com/)",
+   "license": "Apache-2.0 OR MIT",
+   "homepage": "https://github.com/multiformats/js-multiformats#readme",
++  "main": "dist/index.min.js",
+   "repository": {
+     "type": "git",
+     "url": "git+https://github.com/multiformats/js-multiformats.git"

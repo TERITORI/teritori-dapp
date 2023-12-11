@@ -16290,10 +16290,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multiformats@npm:^12.1.3":
+"multiformats@npm:12.1.3":
   version: 12.1.3
   resolution: "multiformats@npm:12.1.3"
   checksum: 1060488612f8e6729c600f47a8741b91aa6e7b807ce165eca3c8cf07ab7465d2d9b212415a9c18886938b9e35b30ea7b9ae19b5ab5122589c65063440643e6bb
+  languageName: node
+  linkType: hard
+
+"multiformats@patch:multiformats@npm%3A12.1.3#./.yarn/patches/multiformats-npm-12.1.3-dbaa26037a.patch::locator=teritori-dapp%40workspace%3A.":
+  version: 12.1.3
+  resolution: "multiformats@patch:multiformats@npm%3A12.1.3#./.yarn/patches/multiformats-npm-12.1.3-dbaa26037a.patch::version=12.1.3&hash=b53f0b&locator=teritori-dapp%40workspace%3A."
+  checksum: 7891e6f41f2104a6f25dc29b359366e1540b3b02cd877226c5e7b1c0208b597d550d79a5180eb3f8b9900efb7ab92bede4b6739c15fbeccee67a85de59bdf892
   languageName: node
   linkType: hard
 
