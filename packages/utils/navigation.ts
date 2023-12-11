@@ -1,10 +1,11 @@
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { RouteProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
 import { feedsTabItems } from "./social-feed";
 import { Conversation, MessageFriendsTabItem } from "./types/message";
 import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.type";
+import { useRoute } from "../hooks/useRoute";
 
 export type RouteName = keyof RootStackParamList;
 

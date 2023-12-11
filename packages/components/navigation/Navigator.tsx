@@ -1,6 +1,9 @@
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
+import { Platform } from "react-native";
 
+import { Sidebar } from "./Sidebar";
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { CoreDAOScreen } from "../../screens/CoreDAO/CoreDAOScreen";
 import { DAppStoreScreen } from "../../screens/DAppStore/DAppStoreScreen";
@@ -46,13 +49,23 @@ import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPub
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
+import { neutral00 } from "../../utils/style/colors";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+const Drawer = createDrawerNavigator();
 const screenTitle = (title: string) => "Teritori - " + title;
 
 export const Navigator: React.FC = () => {
   return (
-    <Stack.Navigator>
+    <Drawer.Navigator
+      initialRouteName="Home"
+      drawerContent={() => (Platform.OS === "web" ? null : <Sidebar />)}
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: neutral00,
+        },
+      }}
+    >
       <Stack.Screen
         name="Home"
         component={HomeScreen}
@@ -345,6 +358,6 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Friends Add"),
         }}
       />
-    </Stack.Navigator>
+    </Drawer.Navigator>
   );
 };

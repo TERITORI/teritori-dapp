@@ -1,5 +1,6 @@
 import React, { FC, ReactNode } from "react";
 import {
+  Platform,
   SafeAreaView,
   ScrollView,
   useWindowDimensions,
@@ -8,7 +9,6 @@ import {
 
 import { HeaderMobile } from "./HeaderMobile";
 import { useSearchBar } from "../../context/SearchBarProvider";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
@@ -60,7 +60,7 @@ export const ScreenContainerMobile: FC<{
   onBackPress,
 }) => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
-  const { width } = useMaxResolution();
+
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
 
   return (
@@ -89,7 +89,7 @@ export const ScreenContainerMobile: FC<{
           forceNetworkKind={forceNetworkKind}
           forceNetworkFeatures={forceNetworkFeatures}
         />
-        <SidebarMobile />
+        {Platform.OS === "web" && <SidebarMobile />}
 
         {/*==== Scrollable screen content*/}
         <View style={{ flex: 1, width: "100%", height: windowHeight }}>

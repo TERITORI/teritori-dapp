@@ -1,4 +1,3 @@
-import { useRoute } from "@react-navigation/native";
 import React from "react";
 import { Linking, StyleSheet, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -21,6 +20,7 @@ import { Separator } from "../../../components/separators/Separator";
 import { SpacerRow } from "../../../components/spacer";
 import { useForceNetworkFeatures } from "../../../hooks/useForceNetworkFeatures";
 import { useIsMobile } from "../../../hooks/useIsMobile";
+import { useRoute } from "../../../hooks/useRoute";
 import { NetworkFeature } from "../../../networks";
 import {
   RootStackParamList,

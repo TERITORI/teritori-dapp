@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react";
+import { Platform } from "react-native";
 import { useSelector } from "react-redux";
 
 import { useIsMobile } from "../hooks/useIsMobile";
@@ -80,7 +81,7 @@ export const useSidebar = () => {
   };
 
   return {
-    isSidebarExpanded,
+    isSidebarExpanded: Platform.OS === "web" ? isSidebarExpanded : true,
     toggleSidebar,
     dynamicSidebar,
   };
