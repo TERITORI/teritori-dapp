@@ -17,7 +17,7 @@ export const useKeybaseAvatarURL = (identity: string) => {
       if (!Array.isArray(keybaseData.them) || !keybaseData.them.length) {
         return "";
       }
-      return (keybaseData.them[0].pictures.primary.url as string) || "";
+      return (keybaseData.them[0].pictures?.primary?.url as string) || "";
     },
     {
       staleTime: Infinity,

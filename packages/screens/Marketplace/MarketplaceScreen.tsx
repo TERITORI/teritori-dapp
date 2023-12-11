@@ -1,5 +1,12 @@
 import React, { ReactNode, useState } from "react";
-import { FlatList, StyleProp, TextStyle, View, ViewStyle } from "react-native";
+import {
+  FlatList,
+  StyleProp,
+  TextStyle,
+  View,
+  ViewStyle,
+  Platform,
+} from "react-native";
 import { useSelector } from "react-redux";
 
 import { PeriodFilter } from "./PeriodFilter";
@@ -233,6 +240,7 @@ const CollectionTable: React.FC<{
         }
       />
       <FlatList
+        scrollEnabled={Platform.OS === "web"}
         data={filteredCollections}
         renderItem={({ item, index }) => (
           <CollectionRow collection={item} rank={index} />
