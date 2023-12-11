@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 
+import { Avatar } from "./components/Avatar";
 import { ChatSection } from "./components/ChatSection";
 import { CreateConversation } from "./components/CreateConversation";
 import { CreateGroup } from "./components/CreateGroup";
@@ -17,6 +18,7 @@ import { JoinGroup } from "./components/JoinGroup";
 import { MessageBlankFiller } from "./components/MessageBlankFiller";
 import MessageCard from "./components/MessageCard";
 import { MessageHeader } from "./components/MessageHeader";
+import { Profile } from "./components/Profile";
 import { SideBarChats } from "./components/SideBarChats";
 import chat from "../../../assets/icons/add-chat.svg";
 import friend from "../../../assets/icons/friend.svg";
@@ -28,15 +30,29 @@ import { Separator } from "../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useMessage } from "../../context/MessageProvider";
 import { useIsMobile } from "../../hooks/useIsMobile";
-import { selectIsWeshConnected } from "../../store/slices/message";
+import {
+  selectContactInfo,
+  selectIsWeshConnected,
+} from "../../store/slices/message";
 import { useAppNavigation, ScreenFC } from "../../utils/navigation";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import {
+  neutral00,
+  neutral33,
+  neutralA3,
+  secondaryColor,
+} from "../../utils/style/colors";
+import {
+  fontMedium10,
+  fontSemibold13,
+  fontSemibold14,
+} from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
   const activeView = route?.params?.view;
   const activeTab = route?.params?.tab;
   const isWeshConnected = useSelector(selectIsWeshConnected);
+  const contactInfo = useSelector(selectContactInfo);
 
   const { activeConversation, setActiveConversation } = useMessage();
 
@@ -152,9 +168,44 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
               maxHeight: 60,
             }}
           >
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("Message", { view: "MyProfile" })
+              }
+              activeOpacity={0.9}
+              style={{
+                paddingHorizontal: layout.spacing_x1,
+                borderRadius: 12,
+                backgroundColor: neutral00,
+                borderColor: neutral33,
+                borderWidth: 1,
+                height: 56,
+                width: 140,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Avatar source={contactInfo?.avatar} size={30} />
+              <SpacerRow size={1} />
+              <View>
+                <BrandText
+                  style={[fontSemibold13, { color: secondaryColor, width: 80 }]}
+                  numberOfLines={1}
+                >
+                  {contactInfo?.name}
+                </BrandText>
+                <SpacerColumn size={0.5} />
+                <BrandText style={[fontMedium10, { color: neutralA3 }]}>
+                  My Profile
+                </BrandText>
+              </View>
+            </TouchableOpacity>
+            <SpacerRow size={2} />
+
             {HEADER_CONFIG.map((item) => (
               <React.Fragment key={item.title}>
-                <TouchableOpacity onPress={item.onPress}>
+                <TouchableOpacity onPress={item.onPress} activeOpacity={0.9}>
                   <MessageCard
                     text={item.title}
                     icon={item.icon}
@@ -198,6 +249,9 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
               </>
             )}
           </>
+        )}
+        {activeView === "MyProfile" && (
+          <Profile onClose={() => navigation.navigate("Message")} />
         )}
       </View>
       {activeView === "CreateGroup" && (

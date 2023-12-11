@@ -134,7 +134,7 @@ export function getAvailableApps(): dAppGroup {
                 route: "Message",
                 groupKey: "teritori-core-apps",
                 selectedByDefault: true,
-                alwaysOn: true,
+                alwaysOn: false,
               },
             }
           : {}),

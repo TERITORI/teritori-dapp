@@ -1,4 +1,4 @@
-import Clipboard from "expo-clipboard";
+import * as Clipboard from "expo-clipboard";
 import React, { useRef, useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";

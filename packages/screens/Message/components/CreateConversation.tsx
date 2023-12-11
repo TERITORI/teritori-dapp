@@ -1,32 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Platform, View } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
-import QRCode from "react-native-qrcode-svg";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
-import logoHexagonPNG from "../../../../assets/logos/logo-hexagon.png";
 import { BrandText } from "../../../components/BrandText";
-import { CopyToClipboard } from "../../../components/CopyToClipboard";
 import { ErrorText } from "../../../components/ErrorText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { QRCodeScannerModal } from "../../../components/modals/QRCodeScannerModal";
-import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useIsMobile } from "../../../hooks/useIsMobile";
+import { selectContactInfo } from "../../../store/slices/message";
 import {
-  MessageState,
-  selectContactInfo,
-  setContactInfo,
-} from "../../../store/slices/message";
-import { neutral00, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold16 } from "../../../utils/style/fonts";
+  neutral00,
+  neutral22,
+  neutralA3,
+  secondaryColor,
+} from "../../../utils/style/colors";
+import { fontSemibold13, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { weshServices } from "../../../weshnet";
-import { createSharableLink } from "../../../weshnet/services";
+
 interface CreateConversationProps {
   onClose: () => void;
 }
@@ -39,8 +35,6 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
   const [error, setError] = useState("");
   const [isScan, setIsScan] = useState(false);
   const isMobile = useIsMobile();
-
-  const dispatch = useDispatch();
 
   const handleAddContact = async (link = contactLink) => {
     setAddContactLoading(true);
@@ -64,30 +58,6 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
     setAddContactLoading(false);
   };
 
-  const handleContactInfoChange = (
-    key: keyof MessageState["contactInfo"],
-    value: string,
-  ) => {
-    dispatch(
-      setContactInfo({
-        [key]: value,
-      }),
-    );
-  };
-
-  useEffect(() => {
-    const shareLink = createSharableLink({
-      ...contactInfo,
-    });
-    dispatch(
-      setContactInfo({
-        shareLink,
-      }),
-    );
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
-
   const handleScan = async (link?: string) => {
     if (link) {
       await handleAddContact(link);
@@ -107,139 +77,96 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
       onClose={onClose}
       visible
       width={590}
-      scrollable
     >
-      <KeyboardAwareScrollView>
+      <SpacerColumn size={3} />
+      <View>
+        <BrandText
+          style={[fontSemibold16, { marginBottom: layout.spacing_x1 }]}
+        >
+          Add contact
+        </BrandText>
         <View
           style={{
+            flexDirection: isMobile ? "column" : "row",
             alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          <SpacerColumn size={2} />
-          {!!contactInfo.shareLink && (
-            <QRCode
-              size={Platform.OS === "web" ? 180 : 140}
-              value={contactInfo.shareLink}
-              logo={logoHexagonPNG}
-              logoSize={40}
+          <View style={{ height: 50, width: isMobile ? "100%" : 460 }}>
+            <TextInputCustom
+              name="contactLink"
+              label=""
+              placeHolder="Paste the contact link here"
+              height={50}
+              fullWidth
+              onChangeText={setContactLink}
+              value={contactLink}
+              containerStyle={{
+                flex: 1,
+              }}
+              placeholderTextColor={secondaryColor}
+              squaresBackgroundColor={neutral00}
             />
-          )}
-        </View>
-        <SpacerColumn size={2} />
-        {Platform.OS !== "web" && (
-          <SecondaryButton
-            text="Scan QR"
+          </View>
+          <SpacerRow size={2} />
+          {isMobile && <SpacerColumn size={2} />}
+          <PrimaryButton
+            loader
+            isLoading={addContactLoading}
             size="M"
-            onPress={() => setIsScan(true)}
-          />
-        )}
-        <SpacerColumn size={2} />
-        <BrandText
-          style={[fontSemibold16, { marginBottom: layout.spacing_x1 }]}
-        >
-          Name
-        </BrandText>
-        <View style={{ height: 50 }}>
-          <TextInputCustom
-            name="name"
-            label=""
-            placeHolder="Add name here"
-            height={50}
-            fullWidth
-            onChangeText={(text) => handleContactInfoChange("name", text)}
-            value={contactInfo.name}
-            containerStyle={{
-              flex: 1,
-            }}
-            placeholderTextColor={secondaryColor}
-            squaresBackgroundColor={neutral00}
-          />
-        </View>
-        <SpacerColumn size={2} />
-        <BrandText
-          style={[fontSemibold16, { marginBottom: layout.spacing_x1 }]}
-        >
-          Avatar
-        </BrandText>
-        <View style={{ height: 50 }}>
-          <TextInputCustom
-            name="avatar"
-            label=""
-            placeHolder="Paste avatar URL here"
-            height={50}
-            fullWidth
-            onChangeText={(text) => handleContactInfoChange("avatar", text)}
-            value={contactInfo.avatar}
-            containerStyle={{
-              flex: 1,
-            }}
-            placeholderTextColor={secondaryColor}
-            squaresBackgroundColor={neutral00}
+            text="Add"
+            onPress={handleAddContact}
+            fullWidth={isMobile}
           />
         </View>
 
-        <SpacerColumn size={2} />
-        <View>
-          <BrandText
-            style={[fontSemibold16, { marginBottom: layout.spacing_x1 }]}
-          >
-            Share my contact
-          </BrandText>
-          <CopyToClipboard fullWidth text={contactInfo.shareLink} />
-        </View>
-        <SpacerColumn size={3} />
-        <Separator />
-        <SpacerColumn size={3} />
-        <View>
-          <BrandText
-            style={[fontSemibold16, { marginBottom: layout.spacing_x1 }]}
-          >
-            Add contact
-          </BrandText>
-          <View
-            style={{
-              flexDirection: isMobile ? "column" : "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flex: 1,
-            }}
-          >
-            <View style={{ height: 50, width: isMobile ? "100%" : 460 }}>
-              <TextInputCustom
-                name="contactLink"
-                label=""
-                placeHolder="Paste the contact link here"
-                height={50}
-                fullWidth
-                onChangeText={setContactLink}
-                value={contactLink}
-                containerStyle={{
-                  flex: 1,
+        {Platform.OS !== "web" && (
+          <View>
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginVertical: layout.spacing_x1_5,
+              }}
+            >
+              <BrandText
+                style={[
+                  fontSemibold13,
+                  { color: neutralA3, zIndex: 2, backgroundColor: neutral00 },
+                ]}
+              >
+                OR
+              </BrandText>
+              <View
+                style={{
+                  height: 1,
+                  backgroundColor: neutral22,
+                  position: "absolute",
+                  top: 8,
+                  width: "100%",
                 }}
-                placeholderTextColor={secondaryColor}
-                squaresBackgroundColor={neutral00}
               />
             </View>
-            <SpacerRow size={2} />
-            {isMobile && <SpacerColumn size={2} />}
-            <PrimaryButton
-              loader
-              isLoading={addContactLoading}
+            <SecondaryButton
+              text="Scan QR"
               size="M"
-              text="Add"
-              onPress={handleAddContact}
-              fullWidth={isMobile}
+              onPress={() => setIsScan(true)}
+              touchableStyle={{
+                alignSelf: "center",
+              }}
             />
           </View>
-          {!!error && (
-            <>
-              <SpacerColumn size={2} />
-              <ErrorText>{error}</ErrorText>
-            </>
-          )}
-          <SpacerColumn size={3} />
-        </View>
-      </KeyboardAwareScrollView>
+        )}
+
+        {!!error && (
+          <>
+            <SpacerColumn size={2} />
+            <ErrorText>{error}</ErrorText>
+          </>
+        )}
+        <SpacerColumn size={3} />
+      </View>
     </ModalBase>
   );
 };
