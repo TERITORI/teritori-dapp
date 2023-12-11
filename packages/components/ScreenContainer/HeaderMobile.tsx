@@ -1,5 +1,6 @@
+import { useNavigation } from "@react-navigation/native";
 import React, { FC } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Platform } from "react-native";
 import { useSelector } from "react-redux";
 
 import hamburgerCrossSVG from "../../../assets/icons/hamburger-button-cross.svg";
@@ -32,6 +33,7 @@ export const HeaderMobile: FC<{
 }) => {
   const { isSidebarExpanded, toggleSidebar } = useSidebar();
   const selectedNFTDataInCart = useSelector(selectAllSelectedNFTData);
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -64,9 +66,22 @@ export const HeaderMobile: FC<{
         <SpacerRow size={1} />
         <ConnectWalletButtonMobile />
         <SpacerRow size={1} />
-        <TouchableOpacity onPress={toggleSidebar}>
+        <TouchableOpacity
+          onPress={() => {
+            if (Platform.OS === "web") {
+              toggleSidebar();
+            } else {
+              //@ts-ignore
+              navigation.openDrawer();
+            }
+          }}
+        >
           <SVG
-            source={isSidebarExpanded ? hamburgerCrossSVG : hamburgerSVG}
+            source={
+              Platform.OS === "web" && isSidebarExpanded
+                ? hamburgerCrossSVG
+                : hamburgerSVG
+            }
             width={32}
             height={32}
           />

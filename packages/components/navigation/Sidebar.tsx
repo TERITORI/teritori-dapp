@@ -1,6 +1,13 @@
-import { useRoute } from "@react-navigation/native";
 import React from "react";
-import { FlatList, Linking, Pressable, StyleSheet, View } from "react-native";
+import {
+  FlatList,
+  Linking,
+  Platform,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -17,6 +24,7 @@ import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useRoute } from "../../hooks/useRoute";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature, NetworkKind } from "../../networks";
@@ -92,84 +100,88 @@ export const Sidebar: React.FC = () => {
   };
 
   return (
-    <Animated.View style={[styles.container, layoutStyle]}>
-      <View style={styles.headerContainer}>
-        {currentRouteName === "Home" && <SideNotch />}
+    <SafeAreaView>
+      <Animated.View style={[styles.container, layoutStyle]}>
+        {Platform.OS === "web" && (
+          <View style={styles.headerContainer}>
+            {currentRouteName === "Home" && <SideNotch />}
 
-        <TopLogo />
-        <Animated.View
-          style={[styles.toggleButtonContainer, toggleButtonStyle]}
-        >
-          <Pressable style={styles.toggleButton} onPress={toggleSidebar}>
-            <SVG source={chevronRightSVG} />
-          </Pressable>
-        </Animated.View>
+            <TopLogo />
+            <Animated.View
+              style={[styles.toggleButtonContainer, toggleButtonStyle]}
+            >
+              <Pressable style={styles.toggleButton} onPress={toggleSidebar}>
+                <SVG source={chevronRightSVG} />
+              </Pressable>
+            </Animated.View>
 
-        <Separator color={neutral33} />
-      </View>
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        data={Object.values(dynamicSidebar)}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          let { route } = item;
-          if (
-            item.disabledOn?.includes(
-              selectedNetworkKind || NetworkKind.Unknown,
-            )
-          ) {
-            route = "ComingSoon";
+            <Separator color={neutral33} />
+          </View>
+        )}
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={Object.values(dynamicSidebar)}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => {
+            let { route } = item;
+            if (
+              item.disabledOn?.includes(
+                selectedNetworkKind || NetworkKind.Unknown,
+              )
+            ) {
+              route = "ComingSoon";
+            }
+
+            return (
+              <SidebarButton
+                key={item.id}
+                onPress={
+                  route === "External"
+                    ? () => {
+                        Linking.openURL(item.url);
+                      }
+                    : onRouteChange
+                }
+                {...item}
+                route={route}
+              />
+            );
+          }}
+          ListHeaderComponent={<SpacerColumn size={1} />}
+          ListFooterComponent={
+            <>
+              <SidebarButton
+                icon={addSVG}
+                iconSize={36}
+                route="DAppStore"
+                key="ComingSoon2"
+                id="ComingSoon2"
+                title=""
+                onPress={() => navigation.navigate("DAppStore")}
+              />
+              <SpacerColumn size={1} />
+            </>
           }
-
-          return (
-            <SidebarButton
-              key={item.id}
-              onPress={
-                route === "External"
-                  ? () => {
-                      Linking.openURL(item.url);
-                    }
-                  : onRouteChange
-              }
-              {...item}
-              route={route}
-            />
-          );
-        }}
-        ListHeaderComponent={<SpacerColumn size={1} />}
-        ListFooterComponent={
-          <>
-            <SidebarButton
-              icon={addSVG}
-              iconSize={36}
-              route="DAppStore"
-              key="ComingSoon2"
-              id="ComingSoon2"
-              title=""
-              onPress={() => navigation.navigate("DAppStore")}
-            />
-            <SpacerColumn size={1} />
-          </>
-        }
-      />
-      <View>
-        <SidebarSeparator />
-        <BuyTokens
-          flexDirection={isSidebarExpanded ? "row" : "column"}
-          textStyle={isSidebarExpanded ? fontBold16 : fontBold9}
         />
-        <SidebarSeparator />
+        <View>
+          <SidebarSeparator />
+          <BuyTokens
+            flexDirection={isSidebarExpanded ? "row" : "column"}
+            textStyle={isSidebarExpanded ? fontBold16 : fontBold9}
+          />
+          <SidebarSeparator />
 
-        {selectedNetworkInfo?.features.includes(NetworkFeature.UPP) &&
-          connected &&
-          userInfo.metadata && (
-            <SidebarProfileButton
-              userId={selectedWallet?.userId || ""}
-              isExpanded={isSidebarExpanded}
-            />
-          )}
-      </View>
-    </Animated.View>
+          {selectedNetworkInfo?.features.includes(NetworkFeature.UPP) &&
+            connected &&
+            userInfo.metadata && (
+              <SidebarProfileButton
+                userId={selectedWallet?.userId || ""}
+                isExpanded={isSidebarExpanded}
+              />
+            )}
+        </View>
+      </Animated.View>
+    </SafeAreaView>
   );
 };
 
