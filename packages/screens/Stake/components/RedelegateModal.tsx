@@ -1,5 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { MsgBeginRedelegateEncodeObject } from "@cosmjs/stargate";
+import { shuffle } from "lodash";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
@@ -248,7 +249,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           <SpacerColumn size={1} />
         </View>
         <ValidatorsTable
-          validators={modifiedValidators}
+          validators={shuffle(modifiedValidators)}
           style={{ height: 200 }}
           userId={userId}
           userKind={userKind}
