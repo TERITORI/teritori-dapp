@@ -4,6 +4,7 @@ import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
+  runOnJS,
 } from "react-native-reanimated";
 
 import { Post } from "../../../api/feed/v1/feed";
@@ -132,7 +133,7 @@ export const FeedPostDefaultView: FC<{
         } else if (flatListContentOffsetY < event.contentOffset.y) {
           isGoingUp.value = false;
         }
-        setFlatListContentOffsetY(event.contentOffset.y);
+        runOnJS(setFlatListContentOffsetY)(event.contentOffset.y);
       },
     },
     [post?.identifier],

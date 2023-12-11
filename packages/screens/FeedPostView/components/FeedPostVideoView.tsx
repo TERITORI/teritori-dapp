@@ -5,6 +5,7 @@ import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
+  runOnJS,
 } from "react-native-reanimated";
 
 import { VideoComment } from "./VideoComment";
@@ -225,7 +226,7 @@ export const FeedPostVideoView: FC<{
         } else if (flatListContentOffsetY < event.contentOffset.y) {
           isGoingUp.value = false;
         }
-        setFlatListContentOffsetY(event.contentOffset.y);
+        runOnJS(setFlatListContentOffsetY)(event.contentOffset.y);
       },
     },
     [post?.identifier],
