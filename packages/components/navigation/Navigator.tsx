@@ -50,6 +50,7 @@ import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerSc
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
 import { neutral00 } from "../../utils/style/colors";
+import { fullSidebarWidth } from "../../utils/style/layout";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator();
@@ -63,6 +64,7 @@ export const Navigator: React.FC = () => {
       screenOptions={{
         drawerStyle: {
           backgroundColor: neutral00,
+          width: fullSidebarWidth,
         },
       }}
     >
