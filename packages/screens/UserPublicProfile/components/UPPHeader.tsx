@@ -32,20 +32,22 @@ export const UPPHeader = memo(
     const items: typeof uppTabItems = Object.entries(uppTabItems).reduce(
       (o, [key, item]) => {
         if (!network) return o;
-        if (!item.networkKinds?.includes(network.kind)) {
+        if (item.networkKinds && !item.networkKinds.includes(network.kind)) {
           return o;
         }
         if (
-          !item.networkFeatures?.find((networkFeature) =>
-            network.features.includes(networkFeature),
-          )
+          item.userKinds &&
+          ((item.userKinds.includes(UserKind.Organization) && !isDAO) ||
+            (item.userKinds.includes(UserKind.Single) && isDAO))
         ) {
           return o;
         }
-        if (!item.userKinds?.includes(UserKind.Single) && !isDAO) {
-          return o;
-        }
-        if (!item.userKinds?.includes(UserKind.Organization) && isDAO) {
+        if (
+          item.networkFeatures &&
+          !item.networkFeatures.find((networkFeature) =>
+            network.features.includes(networkFeature),
+          )
+        ) {
           return o;
         }
         return { ...o, [key]: item };
