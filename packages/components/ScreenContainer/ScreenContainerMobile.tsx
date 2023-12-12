@@ -1,11 +1,6 @@
 import React, { FC, ReactNode } from "react";
-import {
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { Platform, ScrollView, useWindowDimensions, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { HeaderMobile } from "./HeaderMobile";
 import { useSearchBar } from "../../context/SearchBarProvider";
@@ -60,15 +55,18 @@ export const ScreenContainerMobile: FC<{
   onBackPress,
 }) => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
 
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
         width: "100%",
         backgroundColor: "#000000",
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
       }}
     >
       <View
@@ -126,6 +124,6 @@ export const ScreenContainerMobile: FC<{
           </SelectedNetworkGate>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };

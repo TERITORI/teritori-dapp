@@ -13,6 +13,7 @@ import Animated, {
   withSpring,
   WithSpringConfig,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BuyTokens } from "./BuyTokens";
 import { SideNotch } from "./components/SideNotch";
@@ -29,7 +30,7 @@ import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature, NetworkKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
-import { neutral17, neutral33 } from "../../utils/style/colors";
+import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
 import { fontBold16, fontBold9 } from "../../utils/style/fonts";
 import {
   fullSidebarWidth,
@@ -67,6 +68,7 @@ export const Sidebar: React.FC = () => {
   const selectedNetworkKind = selectedNetworkInfo?.kind;
   const connected = selectedWallet?.connected;
   const navigation = useAppNavigation();
+  const insets = useSafeAreaInsets();
   const { name: currentRouteName } = useRoute();
   const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
 
@@ -100,7 +102,14 @@ export const Sidebar: React.FC = () => {
   };
 
   return (
-    <SafeAreaView>
+    <View
+      style={{
+        backgroundColor: neutral00,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        flex: 1,
+      }}
+    >
       <Animated.View style={[styles.container, layoutStyle]}>
         {Platform.OS === "web" && (
           <View style={styles.headerContainer}>
@@ -119,6 +128,9 @@ export const Sidebar: React.FC = () => {
           </View>
         )}
         <FlatList
+          style={{
+            flex: 1,
+          }}
           showsVerticalScrollIndicator={false}
           data={Object.values(dynamicSidebar)}
           keyExtractor={(item) => item.id}
@@ -181,7 +193,7 @@ export const Sidebar: React.FC = () => {
             )}
         </View>
       </Animated.View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -192,6 +204,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderColor: neutral33,
     zIndex: 100,
+    flex: 1,
   },
   headerContainer: {
     height: headerHeight,
