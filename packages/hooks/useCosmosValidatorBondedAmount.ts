@@ -2,9 +2,7 @@ import { Decimal } from "@cosmjs/math";
 import { useMemo } from "react";
 
 import { useCosmosDelegations } from "./useCosmosDelegations";
-import { getStakingCurrency, parseUserId } from "../networks";
-
-const initialData = Decimal.fromAtomics("0", 0);
+import { getCurrency, getNativeCurrency, parseUserId } from "../networks";
 
 export const useCosmosValidatorBondedAmount = (
   userId: string | undefined,
@@ -17,23 +15,34 @@ export const useCosmosValidatorBondedAmount = (
         (deleg) => deleg.delegation.validator_address === validatorAddress,
       );
       if (!validatorDeleg) {
-        return initialData;
+        return null;
       }
       const [network] = parseUserId(userId);
       if (!network) {
-        return initialData;
+        return null;
       }
-      const nativeCurrency = getStakingCurrency(network.id);
-      if (!nativeCurrency) {
-        return initialData;
-      }
-      return Decimal.fromAtomics(
-        validatorDeleg.balance.amount,
-        nativeCurrency.decimals,
+      const nativeCurrency = getNativeCurrency(
+        network.id,
+        validatorDeleg.balance.denom,
       );
+      if (!nativeCurrency) {
+        return null;
+      }
+      const currency = getCurrency(network.id, validatorDeleg.balance.denom);
+      if (!currency) {
+        return null;
+      }
+      return {
+        amount: Decimal.fromAtomics(
+          validatorDeleg.balance.amount,
+          nativeCurrency.decimals,
+        ),
+        currency,
+        nativeCurrency,
+      };
     } catch (err) {
       console.warn("failed to get validator bonded amount:", err);
-      return initialData;
+      return null;
     }
   }, [delegations, userId, validatorAddress]);
 
