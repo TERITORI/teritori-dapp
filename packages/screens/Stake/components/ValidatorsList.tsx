@@ -1,3 +1,4 @@
+import { Decimal } from "@cosmjs/math";
 import React from "react";
 import { FlatList, StyleProp, View, ViewStyle } from "react-native";
 
@@ -7,42 +8,47 @@ import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryBut
 import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
 import { SpacerRow } from "../../../components/spacer";
 import { TableRow, TableRowHeading } from "../../../components/table/TableRow";
+import { useCosmosValidatorBondedAmount } from "../../../hooks/useCosmosValidatorBondedAmount";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useKeybaseAvatarURL } from "../../../hooks/useKeybaseAvatarURL";
 import { Reward, rewardsPrice, useRewards } from "../../../hooks/useRewards";
-import { UserKind, parseUserId } from "../../../networks";
-import { removeObjectKey } from "../../../utils/object";
+import { UserKind, getStakingCurrency, parseUserId } from "../../../networks";
+import { prettyPrice } from "../../../utils/coins";
+import { removeObjectKey, removeObjectKeys } from "../../../utils/object";
 import { mineShaftColor } from "../../../utils/style/colors";
 import { fontSemibold11, fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { numFormatter } from "../../../utils/text";
 import { ValidatorInfo } from "../types";
 
-const TABLE_ROWS: { [key in string]: TableRowHeading } = {
+const TABLE_ROWS = {
   rank: {
     label: "Rank",
     flex: 1,
-  },
+  } as TableRowHeading,
   name: {
     label: "Name",
     flex: 4,
-  },
+  } as TableRowHeading,
   votingPower: {
     label: "Voting Power",
     flex: 3,
-  },
+  } as TableRowHeading,
   commission: {
     label: "Commission",
     flex: 2,
-  },
+  } as TableRowHeading,
+  staked: {
+    label: "Staked",
+    flex: 2,
+  } as TableRowHeading,
   claimable: {
     label: "Claimable Reward",
     flex: 3,
-  },
+  } as TableRowHeading,
   actions: {
     label: "",
     flex: 2,
-  },
+  } as TableRowHeading,
 };
 
 interface ValidatorsListAction {
@@ -58,7 +64,12 @@ export const ValidatorsTable: React.FC<{
   userId: string | undefined;
   userKind: UserKind;
 }> = ({ validators, actions, style, userId, userKind }) => {
-  const ROWS = actions ? TABLE_ROWS : removeObjectKey(TABLE_ROWS, "actions");
+  const ROWS_TMP = actions
+    ? TABLE_ROWS
+    : removeObjectKey(TABLE_ROWS, "actions");
+  const ROWS = userId
+    ? ROWS_TMP
+    : removeObjectKeys(ROWS_TMP, ["staked", "claimable"]);
   const { rewards, claimReward } = useRewards(userId, userKind);
 
   return (
@@ -93,9 +104,14 @@ const ValidatorRow: React.FC<{
 }> = ({ validator, claimReward, pendingRewards, actions, userId }) => {
   const isMobile = useIsMobile();
   const imageURL = useKeybaseAvatarURL(validator.identity);
-  const [, userAddress] = parseUserId(userId);
+  const [network, userAddress] = parseUserId(userId);
   // Rewards price with all denoms
   const claimablePrice = rewardsPrice(pendingRewards);
+  const stakingCurrency = getStakingCurrency(network?.id);
+  const { bondedTokens } = useCosmosValidatorBondedAmount(
+    userId,
+    validator?.address,
+  );
 
   return (
     <View
@@ -151,49 +167,83 @@ const ValidatorRow: React.FC<{
           },
         ]}
       >
-        {numFormatter(validator.votingPower, 2)}
+        {validator.votingPowerPercent.toFixed(2)}%
+        {!!stakingCurrency &&
+          " - " +
+            prettyPrice(
+              network?.id,
+              Decimal.fromUserInput(
+                validator.votingPower,
+                stakingCurrency?.decimals,
+              ).atomics,
+              stakingCurrency?.denom,
+            )}
       </BrandText>
       <BrandText
         style={[
           fontSemibold13,
           {
             flex: TABLE_ROWS.commission.flex,
-            paddingRight: layout.spacing_x1,
+            paddingRight: actions || userId ? layout.spacing_x1 : 0,
           },
         ]}
       >
         {validator.commission}
       </BrandText>
-
-      <View
-        style={{
-          flex: TABLE_ROWS.claimable.flex,
-          paddingRight: actions ? layout.spacing_x1 : 0,
-          flexDirection: isMobile ? "column" : "row",
-          alignItems: "center",
-        }}
-      >
-        {claimablePrice && (
-          <BrandText style={[isMobile ? fontSemibold11 : fontSemibold13]}>
-            {`$${claimablePrice.toFixed(2)}`}
-          </BrandText>
-        )}
-        {pendingRewards.length && (
-          <PrimaryButtonOutline
-            size={isMobile ? "XXS" : "XS"}
-            style={
-              isMobile
-                ? { paddingTop: layout.spacing_x1 }
-                : { paddingLeft: layout.spacing_x2 }
-            }
-            text="Claim"
-            disabled={!userAddress}
-            onPress={() => {
-              claimReward(validator.address);
+      {!!userId && (
+        <>
+          <View
+            style={{
+              flex: TABLE_ROWS.staked.flex,
+              paddingRight: layout.spacing_x1,
+              flexDirection: isMobile ? "column" : "row",
+              alignItems: "center",
+              justifyContent: "flex-start",
             }}
-          />
-        )}
-      </View>
+          >
+            {!!bondedTokens &&
+              (bondedTokens.amount.toFloatApproximation() || 0) > 0 && (
+                <BrandText style={[isMobile ? fontSemibold11 : fontSemibold13]}>
+                  {prettyPrice(
+                    network?.id,
+                    bondedTokens.amount.atomics,
+                    bondedTokens.currency.denom,
+                  )}
+                </BrandText>
+              )}
+          </View>
+
+          <View
+            style={{
+              flex: TABLE_ROWS.claimable.flex,
+              paddingRight: actions ? layout.spacing_x1 : 0,
+              flexDirection: isMobile ? "column" : "row",
+              alignItems: "center",
+            }}
+          >
+            {claimablePrice && (
+              <BrandText style={[isMobile ? fontSemibold11 : fontSemibold13]}>
+                {`$${claimablePrice.toFixed(2)}`}
+              </BrandText>
+            )}
+            {pendingRewards.length && (
+              <PrimaryButtonOutline
+                size={isMobile ? "XXS" : "XS"}
+                style={
+                  isMobile
+                    ? { paddingTop: layout.spacing_x1 }
+                    : { paddingLeft: layout.spacing_x2 }
+                }
+                text="Claim"
+                disabled={!userAddress}
+                onPress={() => {
+                  claimReward(validator.address);
+                }}
+              />
+            )}
+          </View>
+        </>
+      )}
 
       {actions && (
         <View
