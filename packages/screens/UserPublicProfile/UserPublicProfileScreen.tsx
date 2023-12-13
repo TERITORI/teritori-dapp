@@ -23,7 +23,7 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { NetworkKind, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
-import { DEFAULT_UPP_TAB_KEY, UppTabKeys } from "../../utils/upp";
+import { uppTabItems, UppTabKeys } from "../../utils/upp";
 
 export interface UppTabScreenProps {
   userId: string;
@@ -64,25 +64,20 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
     });
   }, [navigation, userAddress, metadata.tokenId]);
 
-  useEffect(() => {
-    if (!tabKey) {
-      navigation.replace("UserPublicProfile", { id, tab: DEFAULT_UPP_TAB_KEY });
-    }
-  }, [tabKey, id, navigation]);
-
   if (
-    network?.kind !== NetworkKind.Gno &&
-    (notFound || !userAddress || !bech32.decodeUnsafe(userAddress))
+    (tabKey && !uppTabItems[tabKey]) ||
+    (network?.kind !== NetworkKind.Gno &&
+      (notFound || !userAddress || !bech32.decodeUnsafe(userAddress)))
   ) {
     return (
       <ScreenContainer
-        key={`NotFoundUPP ${id}`} // this key is to reset the screen state when the id changes
+        key={`NotFoundUPP ${id}-${tabKey}`} // this key is to reset the screen state when the id changes
         {...screenContainerOtherProps}
         headerChildren={
-          <BrandText style={fontSemibold20}>User not found</BrandText>
+          <BrandText style={fontSemibold20}>Page not found</BrandText>
         }
       >
-        <NotFound label="User" />
+        <NotFound label="Page" />
       </ScreenContainer>
     );
   }

@@ -2,64 +2,61 @@ import { TabDefinition } from "../components/tabs/Tabs";
 import { NetworkFeature, NetworkKind, UserKind } from "../networks";
 
 export enum UppTabKeys {
-  posts = "posts",
+  posts = "",
   nfts = "nfts",
   quests = "quests",
-  mentionsPosts = "mentionsPosts",
+  mentionsPosts = "mentions-posts",
   music = "music",
   videos = "videos",
   daos = "daos",
   proposals = "proposals",
   members = "members",
   funds = "funds",
-  gnoDemo = "gnoDemo",
+  gnoDemo = "gno-demo",
 }
-
-export const DEFAULT_UPP_TAB_KEY: keyof typeof uppTabItems = UppTabKeys.posts;
 
 export const uppTabItems: { [key: string]: TabDefinition } = {
   [UppTabKeys.posts]: {
     name: "Posts",
+    networkFeatures: [NetworkFeature.SocialFeed],
   },
   [UppTabKeys.nfts]: {
     name: "NFTs",
     networkFeatures: [NetworkFeature.NFTMarketplace],
   },
-  // activity: {
-  //   name: "Activity",
-  //   disabled: true,
-  // },
   [UppTabKeys.quests]: {
     name: "Quests",
     networkKinds: [NetworkKind.Cosmos],
   },
   [UppTabKeys.mentionsPosts]: {
     name: "Mentions Posts",
-    networkKinds: [NetworkKind.Cosmos],
-
+    networkFeatures: [NetworkFeature.SocialFeed],
   },
   [UppTabKeys.music]: {
     name: "Music",
+    networkFeatures: [NetworkFeature.SocialFeed],
   },
   [UppTabKeys.videos]: {
     name: "Videos",
+    networkFeatures: [NetworkFeature.SocialFeed],
   },
   [UppTabKeys.daos]: {
     name: "Organizations",
-    networkKinds: [NetworkKind.Cosmos],
     userKinds: [UserKind.Single],
+    networkFeatures: [NetworkFeature.Organizations],
   },
   [UppTabKeys.proposals]: {
     name: "Proposals",
     userKinds: [UserKind.Organization],
+    networkFeatures: [NetworkFeature.Organizations],
   },
   [UppTabKeys.members]: {
     name: "Members",
     userKinds: [UserKind.Organization],
+    networkFeatures: [NetworkFeature.Organizations],
   },
   [UppTabKeys.funds]: {
     name: "Funds",
-    networkKinds: [NetworkKind.Cosmos],
     userKinds: [UserKind.Organization],
   },
   [UppTabKeys.gnoDemo]: {
@@ -67,24 +64,4 @@ export const uppTabItems: { [key: string]: TabDefinition } = {
     networkKinds: [NetworkKind.Gno],
     userKinds: [UserKind.Organization],
   },
-  // pathwar: {
-  //   name: "Pathwar Challenges",
-  //   disabled: true,
-  // },
-  // gig: {
-  //   name: "Gig Services",
-  //   disabled: true,
-  // },
-  // votes: {
-  //   name: "Governance Votes",
-  //   disabled: true,
-  // },
-  // footer: {
-  //   name: "Putted NFT to Rioters Footer",
-  //   disabled: true,
-  // },
-  // servers: {
-  //   name: "Shared servers",
-  //   disabled: true,
-  // },
 };

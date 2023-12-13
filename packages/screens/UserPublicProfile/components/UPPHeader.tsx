@@ -1,5 +1,4 @@
-import { useFocusEffect } from "@react-navigation/native";
-import React, { memo, useCallback } from "react";
+import React, { memo } from "react";
 
 import { UPPIntro } from "./UPPIntro";
 import { Tabs } from "../../../components/tabs/Tabs";
@@ -10,7 +9,6 @@ import { parseUserId, UserKind } from "../../../networks";
 import { useAppNavigation } from "../../../utils/navigation";
 import { primaryColor } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
-import { objectKeys } from "../../../utils/typescript";
 import { uppTabItems } from "../../../utils/upp";
 
 interface UserPublicProfileScreenHeaderProps {
@@ -54,20 +52,6 @@ export const UPPHeader = memo(
       },
       {} as { [key in keyof typeof uppTabItems]: { name: string } },
     );
-
-    const forcedTabKey = items[selectedTabKey]
-      ? selectedTabKey
-      : objectKeys(items)[0];
-
-    const focusEffect = useCallback(() => {
-      if (forcedTabKey && selectedTabKey !== forcedTabKey) {
-        navigation.replace("UserPublicProfile", {
-          id: userId,
-          tab: forcedTabKey,
-        });
-      }
-    }, [userId, forcedTabKey, selectedTabKey, navigation]);
-    useFocusEffect(focusEffect);
 
     return (
       <>
