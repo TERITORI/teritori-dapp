@@ -190,7 +190,7 @@ const ValidatorRow: React.FC<{
       >
         {validator.commission}
       </BrandText>
-       {!!userId && (
+      {!!userId && (
         <>
           <View
             style={{
@@ -212,7 +212,6 @@ const ValidatorRow: React.FC<{
                 </BrandText>
               )}
           </View>
-
           <View
             style={{
               flex: TABLE_ROWS.claimable.flex,

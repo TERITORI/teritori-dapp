@@ -5,6 +5,7 @@ import { TrashIcon, Bars3Icon } from "react-native-heroicons/solid";
 import { BrandText } from "../../../components/BrandText";
 import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
 import { Box } from "../../../components/boxes/Box";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { setCheckedApp } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
 import {
@@ -80,7 +81,6 @@ export const SelectedDraggable: React.FC<{
           </Box>
         </TouchableOpacity>
       </Pressable>
-
       <TertiaryBox
         height={48}
         width={256}
