@@ -1,33 +1,33 @@
 import React from "react";
 import { Linking, useWindowDimensions, View } from "react-native";
 
-import defaultUserProfileBannerPNG from "../../../assets/default-images/default-user-profile-banner.png";
-import discordSVG from "../../../assets/icons/discord.svg";
-import shareSVG from "../../../assets/icons/share.svg";
-import twitterSVG from "../../../assets/icons/twitter.svg";
-import websiteSVG from "../../../assets/icons/website.svg";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { parseUserId } from "../../networks";
-import { DEFAULT_NAME } from "../../utils/social-feed";
-import { neutral00, neutral55, neutral77 } from "../../utils/style/colors";
+import defaultUserProfileBannerPNG from "../../../../assets/default-images/default-user-profile-banner.png";
+import discordSVG from "../../../../assets/icons/discord.svg";
+import shareSVG from "../../../../assets/icons/share.svg";
+import twitterSVG from "../../../../assets/icons/twitter.svg";
+import websiteSVG from "../../../../assets/icons/website.svg";
+import { BrandText } from "../../../components/BrandText";
+import { useCopyToClipboard } from "../../../components/CopyToClipboard";
+import { CopyToClipboardSecondary } from "../../../components/CopyToClipboardSecondary";
+import { OptimizedImage } from "../../../components/OptimizedImage";
+import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
+import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
+import { SocialButton } from "../../../components/buttons/SocialButton";
+import { SocialButtonSecondary } from "../../../components/buttons/SocialButtonSecondary";
+import { ProfileButton } from "../../../components/hub/ProfileButton";
+import { UserAvatarWithFrame } from "../../../components/images/AvatarWithFrame";
+import { useMaxResolution } from "../../../hooks/useMaxResolution";
+import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
+import { parseUserId } from "../../../networks";
+import { DEFAULT_NAME } from "../../../utils/social-feed";
+import { neutral00, neutral55, neutral77 } from "../../../utils/style/colors";
 import {
   fontBold16,
   fontMedium14,
   fontSemibold14,
-} from "../../utils/style/fonts";
-import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
-import { tinyAddress } from "../../utils/text";
-import { BrandText } from "../BrandText";
-import { useCopyToClipboard } from "../CopyToClipboard";
-import { CopyToClipboardSecondary } from "../CopyToClipboardSecondary";
-import { OptimizedImage } from "../OptimizedImage";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
-import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
-import { SocialButton } from "../buttons/SocialButton";
-import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
-import { ProfileButton } from "../hub/ProfileButton";
-import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
+} from "../../../utils/style/fonts";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
+import { tinyAddress } from "../../../utils/text";
 
 export const UPPIntro: React.FC<{
   userId: string;
