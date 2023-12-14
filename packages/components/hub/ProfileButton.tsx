@@ -197,7 +197,7 @@ const RegisterGnoNameModal: React.FC<{
         disabled={buttonDisabled}
         fullWidth
         loader
-        style={{ marginBottom: modalMarginPadding }}
+        boxStyle={{ marginBottom: modalMarginPadding }}
         onPress={async () => {
           await wrapWithFeedback(async () => {
             if (!selectedWallet) throw new Error("No wallet selected");

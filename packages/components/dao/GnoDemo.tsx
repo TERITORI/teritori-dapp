@@ -362,7 +362,7 @@ const GnoCreateProposal: React.FC<{ daoId: string | undefined }> = ({
         <PrimaryButton
           text="Propose"
           loader
-          style={{ marginBottom: modalMarginPadding }}
+          boxStyle={{ marginBottom: modalMarginPadding }}
           onPress={wrapWithFeedback(
             async () => {
               const propReq: GnoSingleChoiceProposal = {

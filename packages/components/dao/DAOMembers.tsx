@@ -159,7 +159,7 @@ const AddMembersModal: React.FC<{
         disabled={!ids.length}
         text="Propose to add members"
         size="XS"
-        style={{ alignSelf: "center" }}
+        boxStyle={{ alignSelf: "center" }}
         loader
         fullWidth
         onPress={wrapWithFeedback(async () => {

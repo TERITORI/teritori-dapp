@@ -174,7 +174,7 @@ const BuyingStep: React.FC<{ selectedMethod: string }> = ({
             website, you can do it there too.
           </Paragraph>
           <PrimaryButton
-            style={{
+            boxStyle={{
               alignSelf: "center",
               marginVertical: layout.spacing_x2_5,
             }}
@@ -220,7 +220,7 @@ const BuyingStep: React.FC<{ selectedMethod: string }> = ({
             Leap Wallet, you can download it on your phone or computer.
           </Paragraph>
           <PrimaryButton
-            style={{
+            boxStyle={{
               alignSelf: "center",
               marginVertical: layout.spacing_x2_5,
             }}
