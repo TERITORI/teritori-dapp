@@ -14,10 +14,10 @@ import {
 import { Wallet } from "../../context/WalletsProvider";
 import { TeritoriNftVaultClient } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { NFTVault__factory } from "../../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
+import { useMintEnded } from "../../hooks/collection/useMintEnded";
 import { useCancelNFTListing } from "../../hooks/useCancelNFTListing";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { useMintEnded } from "../../hooks/useMintEnded";
 import { useNFTInfo } from "../../hooks/useNFTInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";

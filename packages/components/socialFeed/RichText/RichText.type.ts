@@ -2,7 +2,7 @@ import { EntityInstance } from "draft-js";
 
 import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
 
-export type PublishValues = {
+export type RichTextPublishValues = {
   hashtags: string[];
   mentions: string[];
   images: LocalFileData[];
@@ -27,7 +27,7 @@ export interface RichTextProps {
   onBlur?: () => void;
   isPostConsultation?: boolean;
   isPreview?: boolean;
-  onPublish?: (publishValues: PublishValues) => void;
+  onPublish?: (publishValues: RichTextPublishValues) => void;
   publishDisabled?: boolean;
   loading?: boolean;
   authorId: string;

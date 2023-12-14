@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import { useMintEnded } from "./useMintEnded";
+import { useMintEnded } from "./collection/useMintEnded";
 import { parseNetworkObjectId } from "../networks";
 import { useAppNavigation } from "../utils/navigation";
 

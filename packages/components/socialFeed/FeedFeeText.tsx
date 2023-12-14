@@ -1,22 +1,40 @@
 import { StyleProp, TextStyle, View, ViewStyle } from "react-native";
 
 import { PostCategory } from "./NewsFeed/NewsFeed.type";
-import { useFeedPosting } from "../../hooks/feed/useFeedPosting";
+import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
+import { useCanPay } from "../../hooks/feed/useCanPay";
+import { useFeedPostFee } from "../../hooks/feed/useFeedPostFee";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTheme } from "../../hooks/useTheme";
+import { getStakingCurrency } from "../../networks";
+import { prettyPrice } from "../../utils/coins";
 import { errorColor, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 
 export const FeedFeeText: React.FC<{
-  networkId: string | undefined;
-  userId: string | undefined;
   category: PostCategory;
   style?: StyleProp<ViewStyle>;
-}> = ({ networkId, userId, category, style }) => {
+}> = ({ category, style }) => {
+  const networkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const userId = selectedWallet?.userId;
   const theme = useTheme();
-  const { canPayForPost, prettyPublishingFee, prettyFeeBalance } =
-    useFeedPosting(networkId, userId, category);
-  const balanceColor = canPayForPost ? theme.textColor : errorColor;
+  const { prettyPostFee } = useFeedPostFee(networkId, category);
+  const { postFee } = useFeedPostFee(networkId, category);
+  const feeCurrency = getStakingCurrency(networkId);
+  const cost: Coin = {
+    amount: postFee.toString(),
+    denom: feeCurrency?.denom || "",
+  };
+  const canPay = useCanPay({ userId, cost });
+  const balanceColor = canPay ? theme.textColor : errorColor;
+  const prettyFeeBalance = prettyPrice(
+    networkId,
+    postFee.toString(),
+    feeCurrency?.denom,
+  );
   return (
     <View
       style={[
@@ -31,7 +49,7 @@ export const FeedFeeText: React.FC<{
       <BrandText style={testCStyle}>
         Publishing fee:{" "}
         <BrandText style={[testCStyle, { color: theme.textColor }]}>
-          {prettyPublishingFee}
+          {prettyPostFee}
         </BrandText>
       </BrandText>
       <BrandText style={testCStyle}>

@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
-import { useSelector } from "react-redux";
 
 import Add from "../../../../assets/icons/add-primary.svg";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useFeedPosting } from "../../../hooks/feed/useFeedPosting";
-import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
+import { Coin } from "../../../api/teritori-chain/cosmos/base/v1beta1/coin";
+import { useCanPay } from "../../../hooks/feed/useCanPay";
+import { useFeedPostFee } from "../../../hooks/feed/useFeedPostFee";
+import { useMakeTrack } from "../../../hooks/feed/useMakeTrack";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { selectNFTStorageAPI } from "../../../store/slices/settings";
-import { generateIpfsKey, uploadFilesToPinata } from "../../../utils/ipfs";
+import { getStakingCurrency } from "../../../networks";
 import { AUDIO_MIME_TYPES } from "../../../utils/mime";
 import {
   neutral30,
@@ -26,11 +26,7 @@ import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { FileUploader } from "../../fileUploader";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import { FeedFeeText } from "../../socialFeed/FeedFeeText";
-import {
-  PostCategory,
-  SocialFeedTrackMetadata,
-} from "../../socialFeed/NewsFeed/NewsFeed.type";
-import { NotEnoughFundModal } from "../../socialFeed/NewsFeed/NotEnoughFundModal";
+import { PostCategory } from "../../socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 
 interface Props {
@@ -40,102 +36,33 @@ interface Props {
 const UPLOAD_ALBUM_MODAL_WIDTH = 564;
 
 export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
-  const { setToastError } = useFeedbacks();
-  const selectedNetwork = useSelectedNetworkInfo();
   const selectedWallet = useSelectedWallet();
   const userId = selectedWallet?.userId;
-  const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
-  const { makePost, canPayForPost, isProcessing } = useFeedPosting(
-    selectedNetwork?.id,
+  const networkId = useSelectedNetworkId();
+  const { postFee } = useFeedPostFee(networkId, PostCategory.MusicAudio);
+  const feeCurrency = getStakingCurrency(networkId);
+  const cost: Coin = {
+    amount: postFee.toString(),
+    denom: feeCurrency?.denom || "",
+  };
+  const canPay = useCanPay({ userId, cost });
+  const { makeTrack, isProcessing, isLoading } = useMakeTrack({
     userId,
-    PostCategory.MusicAudio,
-    onUploadDone,
-  );
-
-  const [isLoading, setIsLoading] = useState(false);
+    onSuccess: onUploadDone,
+  });
   const [isUploading, setIsUploading] = useState(false);
-  const userIPFSKey = useSelector(selectNFTStorageAPI);
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [localAudioFile, setLocalAudioFile] = useState<LocalFileData>();
 
-  const processCreateMusicAudioPost = async (
-    track: SocialFeedTrackMetadata,
-  ) => {
-    if (!canPayForPost) {
-      setNotEnoughFundModal(true);
-      return;
-    }
-
-    // we need this hack until the createdAt field is properly provided by the contract
-    const trackWithCreationDate = {
-      ...track,
-      createdAt: new Date().toISOString(),
-    };
-
-    try {
-      await makePost(JSON.stringify(trackWithCreationDate));
-    } catch (err) {
-      console.error("post submit err", err);
-      setToastError({
-        title: "Post creation failed",
-        message: err instanceof Error ? err.message : `${err}`,
-      });
-    }
-    setIsUploading(false);
-  };
-
   const onPressUpload = async () => {
-    setIsLoading(true);
-    if (
-      !selectedWallet?.connected ||
-      !selectedWallet.address ||
-      !localAudioFile
-    ) {
-      return;
-    }
-    const pinataJWTKey =
-      userIPFSKey || (await generateIpfsKey(selectedNetwork?.id || "", userId));
-    if (!pinataJWTKey) {
-      console.error("upload file err : No Pinata JWT");
-      setToastError({
-        title: "File upload failed",
-        message: "No Pinata JWT",
-      });
-      return;
-    }
-    const uploadedFiles = await uploadFilesToPinata({
-      pinataJWTKey,
-      files: [localAudioFile],
-    });
-    if (!uploadedFiles.find((file) => file.url)) {
-      console.error("upload file err : Fail to pin to IPFS");
-      setToastError({
-        title: "File upload failed",
-        message: "Fail to pin to IPFS, please try to Publish again",
-      });
-      return;
-    }
-    const track: SocialFeedTrackMetadata = {
-      title,
-      description,
-      audioFile: uploadedFiles[0],
-    };
-    await processCreateMusicAudioPost(track);
-    setIsLoading(false);
+    if (!localAudioFile) return;
+    await makeTrack({ title, description, localAudioFile });
     onUploadDone();
   };
 
   return (
     <>
-      {isNotEnoughFundModal && (
-        <NotEnoughFundModal
-          visible
-          onClose={() => setNotEnoughFundModal(false)}
-        />
-      )}
-
       <View style={inputBoxStyle}>
         <View style={textBoxStyle}>
           <TextInputCustom
@@ -171,16 +98,13 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
           onUpload={(files) => setLocalAudioFile(files[0])}
           style={uploadButtonStyle}
           mimeTypes={AUDIO_MIME_TYPES}
-          setIsLoading={setIsLoading}
+          setIsLoading={setIsUploading}
         >
           {({ onPress }) => (
             <TouchableOpacity
-              style={[
-                buttonContainerStyle,
-                (isUploading || isLoading) && { opacity: 0.5 },
-              ]}
+              style={[buttonContainerStyle, isLoading && { opacity: 0.5 }]}
               onPress={onPress}
-              disabled={isUploading || isLoading}
+              disabled={isLoading}
             >
               <SVG source={Add} width={20} height={20} stroke={primaryColor} />
               <SpacerRow size={1} />
@@ -206,8 +130,6 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       <View style={divideLineStyle} />
 
       <FeedFeeText
-        networkId={selectedNetwork?.id}
-        userId={selectedWallet?.userId}
         category={PostCategory.MusicAudio}
         style={{ marginTop: layout.spacing_x2 }}
       />
@@ -221,18 +143,18 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
           Use.
         </BrandText>
         <PrimaryButton
-          text="Upload"
+          text={!canPay ? "Not enough funds" : "Upload"}
           disabled={
             !localAudioFile?.url ||
             !title ||
             isUploading ||
             isProcessing ||
             isLoading ||
-            !canPayForPost
+            !canPay
           }
           size="SM"
           onPress={onPressUpload}
-          isLoading={isUploading || isLoading || isProcessing}
+          isLoading={isLoading || isProcessing}
         />
       </View>
     </>

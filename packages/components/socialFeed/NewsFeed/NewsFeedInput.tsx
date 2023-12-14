@@ -1,43 +1,40 @@
 import React, { useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
+  Pressable,
   TextInput,
+  useWindowDimensions,
   View,
   ViewStyle,
-  Pressable,
-  useWindowDimensions,
 } from "react-native";
 import Animated, { useSharedValue } from "react-native-reanimated";
-import { useSelector } from "react-redux";
 
 import { NewPostFormValues, ReplyToType } from "./NewsFeed.type";
-import { generatePostMetadata, getPostCategory } from "./NewsFeedQueries";
-import { NotEnoughFundModal } from "./NotEnoughFundModal";
+import { getPostCategory } from "./NewsFeedQueries";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
 import priceSVG from "../../../../assets/icons/price.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useFeedPosting } from "../../../hooks/feed/useFeedPosting";
+import { useFeedPostFee } from "../../../hooks/feed/useFeedPostFee";
+import { useFreePostsCount } from "../../../hooks/feed/useFreePostsCount";
+import { useMakePost } from "../../../hooks/feed/useMakePost";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
-import { selectNFTStorageAPI } from "../../../store/slices/settings";
-import { generateIpfsKey, uploadFilesToPinata } from "../../../utils/ipfs";
 import {
   AUDIO_MIME_TYPES,
   IMAGE_MIME_TYPES,
   VIDEO_MIME_TYPES,
 } from "../../../utils/mime";
 import {
-  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
   hashtagMatch,
   mentionMatch,
-  replaceFileInArray,
   removeFileFromArray,
+  replaceFileInArray,
+  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
 } from "../../../utils/social-feed";
 import {
   errorColor,
@@ -60,7 +57,7 @@ import {
   SOCIAL_FEED_BREAKPOINT_M,
 } from "../../../utils/style/layout";
 import { replaceBetweenString } from "../../../utils/text";
-import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
+import { LocalFileData } from "../../../utils/types/files";
 import { BrandText } from "../../BrandText";
 import { FilesPreviewsContainer } from "../../FilePreview/FilesPreviewsContainer";
 import FlexRow from "../../FlexRow";
@@ -131,9 +128,6 @@ export const NewsFeedInput = React.forwardRef<
     const selectedWallet = useSelectedWallet();
     const userId = getUserId(selectedNetworkId, selectedWallet?.address);
     const inputRef = useRef<TextInput>(null);
-    const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
-    const { setToastError } = useFeedbacks();
-    const [isLoading, setLoading] = useState(false);
     const [selection, setSelection] = useState<{ start: number; end: number }>({
       start: 10,
       end: 10,
@@ -156,101 +150,63 @@ export const NewsFeedInput = React.forwardRef<
       },
     );
     const formValues = watch();
-    const {
-      makePost,
-      canPayForPost,
-      isProcessing,
-      prettyPublishingFee,
-      freePostCount,
-    } = useFeedPosting(
-      selectedNetwork?.id,
+    const { freePostCount } = useFreePostsCount(
       userId,
       getPostCategory(formValues),
-      () => {
+    );
+    const { prettyPostFee } = useFeedPostFee(
+      userId,
+      getPostCategory(formValues),
+    );
+    const { makeSimplePost, isProcessing, isLoading } = useMakePost({
+      networkId: selectedNetwork?.id,
+      userId,
+      postCategory: getPostCategory(formValues),
+      onSuccess: () => {
         onPostCreationSuccess();
       },
-    );
-    const userIPFSKey = useSelector(selectNFTStorageAPI);
+    });
+    const processSubmit = () => {
+      onSubmitInProgress && onSubmitInProgress();
 
-    const processSubmit = async () => {
-      if (!canPayForPost) {
-        setNotEnoughFundModal(true);
-        return;
+      const isReplyToValid =
+        replyTo &&
+        replyTo.parentId &&
+        formValues.message.includes(`@${replyTo.username}`);
+
+      // ---- Adding hashtag texts or mentioned texts to the metadata
+      const mentions: string[] = [];
+      mentionMatch(formValues.message)?.map((item) => {
+        //TODO: Check NS token id before sending mentioned text ?
+
+        mentions.push(item);
+      });
+      const hashtags: string[] = [];
+      hashtagMatch(formValues.message)?.map((item) => {
+        hashtags.push(item);
+      });
+
+      // ---- Adding hashtag or mentioned user at the end of the message and to the metadata
+      let finalMessage = formValues.message || "";
+      if (additionalMention) {
+        finalMessage += `\n@${additionalMention}`;
+        mentions.push(`@${additionalMention}`);
+      }
+      if (additionalHashtag) {
+        finalMessage += `\n#${additionalHashtag}`;
+        hashtags.push(`#${additionalHashtag}`);
       }
 
-      setLoading(true);
-      onSubmitInProgress && onSubmitInProgress();
-      try {
-        const isReplyToValid =
-          replyTo &&
-          replyTo.parentId &&
-          formValues.message.includes(`@${replyTo.username}`);
-
-        // ---- Adding hashtag texts or mentioned texts to the metadata
-        const mentions: string[] = [];
-        mentionMatch(formValues.message)?.map((item) => {
-          //TODO: Check NS token id before sending mentioned text ?
-
-          mentions.push(item);
-        });
-        const hashtags: string[] = [];
-        hashtagMatch(formValues.message)?.map((item) => {
-          hashtags.push(item);
-        });
-
-        // ---- Adding hashtag or mentioned user at the end of the message and to the metadata
-        let finalMessage = formValues.message || "";
-        if (additionalMention) {
-          finalMessage += `\n@${additionalMention}`;
-          mentions.push(`@${additionalMention}`);
-        }
-        if (additionalHashtag) {
-          finalMessage += `\n#${additionalHashtag}`;
-          hashtags.push(`#${additionalHashtag}`);
-        }
-
-        let remoteFiles: RemoteFileData[] = [];
-
-        if (formValues.files?.length) {
-          const pinataJWTKey =
-            userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
-          if (pinataJWTKey) {
-            remoteFiles = await uploadFilesToPinata({
-              files: formValues.files,
-              pinataJWTKey,
-            });
-          }
-        }
-        if (formValues.files?.length && !remoteFiles.find((file) => file.url)) {
-          console.error("upload file err : Fail to pin to IPFS");
-          setToastError({
-            title: "File upload failed",
-            message: "Fail to pin to IPFS, please try to Publish again",
-          });
-          return;
-        }
-
-        const metadata = generatePostMetadata({
-          title: formValues.title || "",
+      makeSimplePost({
+        formValues: {
+          ...formValues,
           message: finalMessage,
-          files: remoteFiles,
           hashtags,
           mentions,
           gifs: formValues?.gifs || [],
-        });
-
-        await makePost(
-          JSON.stringify(metadata),
-          isReplyToValid ? replyTo.parentId : parentId,
-        );
-      } catch (err) {
-        console.error("post submit err", err);
-        setToastError({
-          title: "Post creation failed",
-          message: err instanceof Error ? err.message : `${err}`,
-        });
-      }
-      setLoading(false);
+        },
+        parentPostIdentifier: isReplyToValid ? replyTo?.parentId : parentId,
+      });
     };
 
     useImperativeHandle(forwardRef, () => ({
@@ -286,12 +242,6 @@ export const NewsFeedInput = React.forwardRef<
         style={[{ width }, style]}
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       >
-        {isNotEnoughFundModal && (
-          <NotEnoughFundModal
-            visible
-            onClose={() => setNotEnoughFundModal(false)}
-          />
-        )}
         <LegacyPrimaryBox
           fullWidth
           style={{
@@ -461,7 +411,7 @@ export const NewsFeedInput = React.forwardRef<
             >
               {freePostCount
                 ? `You have ${freePostCount} free ${type} left`
-                : `The cost for this ${type} is ${prettyPublishingFee}`}
+                : `The cost for this ${type} is ${prettyPostFee}`}
             </BrandText>
           </View>
           <View
@@ -612,8 +562,7 @@ export const NewsFeedInput = React.forwardRef<
                     !formValues?.files?.length &&
                     !formValues?.gifs?.length) ||
                   formValues?.message.length >
-                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
-                  !selectedWallet
+                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                 }
                 isLoading={isLoading || isProcessing}
                 loader

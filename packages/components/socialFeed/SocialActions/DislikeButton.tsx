@@ -4,7 +4,8 @@ import { ActivityIndicator } from "react-native-paper";
 
 import thumbDownSVG from "../../../../assets/icons/thumb-down.svg";
 import { Post } from "../../../api/feed/v1/feed";
-import { useSocialReactions } from "../../../hooks/useSocialReactions";
+import { useSocialReactions } from "../../../hooks/feed/useSocialReactions";
+import { DISLIKE_EMOJI } from "../../../utils/social-feed";
 import { neutral22, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -25,7 +26,7 @@ export const DislikeButton: FC<{
     return <ActivityIndicator animating color={secondaryColor} size={32} />;
   return (
     <TouchableOpacity
-      onPress={() => handleReaction("👎")}
+      onPress={() => handleReaction(DISLIKE_EMOJI)}
       style={{
         flexDirection: "row",
         alignItems: "center",

@@ -48,7 +48,7 @@ import { RichURLRenderer } from "./RichRenderer/RichURLRenderer";
 import { RichURLRendererConsultation } from "./RichRenderer/RichURLRendererConsultation";
 import {
   FoundEntity,
-  PublishValues,
+  RichTextPublishValues,
   RichTextProps,
   SelectedEntity,
 } from "./RichText.type";
@@ -298,7 +298,7 @@ export const RichText: React.FC<RichTextProps> = ({
   // Fired when pressing "Publish"
   const handlePublish = () => {
     const contentState = editorState.getCurrentContent();
-    const publishValues: PublishValues = {
+    const publishValues: RichTextPublishValues = {
       hashtags: hashtagMatch(contentState.getPlainText()) || [],
       mentions: mentionMatch(contentState.getPlainText()) || [],
       images: getFilesToPublish(editorState, uploadedImages, "IMAGE"),

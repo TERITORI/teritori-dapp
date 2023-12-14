@@ -137,11 +137,15 @@ export const TipModal: React.FC<{
       visible={isVisible}
       onClose={onClose}
       width={400}
-      label={`Your wallet has ${prettyPrice(
-        selectedWallet?.networkId || "",
-        currencyBalance?.amount || "0",
-        currencyBalance?.denom || "",
-      )}`}
+      label={`Your wallet has ${
+        !currencyBalance
+          ? `0 ${nativeCurrency?.displayName}`
+          : prettyPrice(
+              selectedWallet?.networkId || "",
+              currencyBalance.amount || "0",
+              currencyBalance.denom || "",
+            )
+      }`}
     >
       <View
         style={{

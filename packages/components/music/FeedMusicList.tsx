@@ -5,20 +5,22 @@ import { TrackCard } from "./TrackCard";
 import { UploadMusicButton } from "./UploadMusicButton";
 import { UploadMusicModal } from "./UploadMusicModal";
 import { Post, PostsRequest } from "../../api/feed/v1/feed";
-import { BrandText } from "../../components/BrandText";
-import {
-  PostCategory,
-  ZodSocialFeedTrackMetadata,
-} from "../../components/socialFeed/NewsFeed/NewsFeed.type";
+import { useWalletControl } from "../../context/WalletControlProvider";
 import {
   combineFetchFeedPages,
   useFetchFeed,
 } from "../../hooks/feed/useFetchFeed";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkFeature } from "../../networks";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
 import { GridList } from "../layout/GridList";
+import {
+  PostCategory,
+  ZodSocialFeedTrackMetadata,
+} from "../socialFeed/NewsFeed/NewsFeed.type";
 
 const minCardWidth = 250;
 const gap = layout.spacing_x2;
@@ -30,7 +32,7 @@ export const FeedMusicList: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ title, authorId, allowUpload, style }) => {
   const selectedWallet = useSelectedWallet();
-
+  const { showConnectWalletModal } = useWalletControl();
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
 
   const musicFeedRequest: Partial<PostsRequest> = {
@@ -68,6 +70,17 @@ export const FeedMusicList: React.FC<{
     }
   };
 
+  const onPressUploadMusic = async () => {
+    if (!selectedWallet?.address || !selectedWallet.connected) {
+      showConnectWalletModal({
+        forceNetworkFeature: NetworkFeature.SocialFeed,
+        action: "Publish Music",
+      });
+      return;
+    }
+    setOpenUploadModal(true);
+  };
+
   if (!data && (isLoading || isFetching))
     return <View style={[{ minWidth: minCardWidth }, style]} />;
   return (
@@ -75,12 +88,7 @@ export const FeedMusicList: React.FC<{
       <View style={oneLineCStyle}>
         <BrandText style={fontSemibold20}>{title}</BrandText>
         <View style={buttonGroupCStyle}>
-          {allowUpload && (
-            <UploadMusicButton
-              disabled={!selectedWallet?.connected}
-              onPress={() => setOpenUploadModal(true)}
-            />
-          )}
+          {allowUpload && <UploadMusicButton onPress={onPressUploadMusic} />}
         </View>
       </View>
       <View style={[contentGroupCStyle]}>

@@ -7,20 +7,17 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { useSelector } from "react-redux";
 
 import Add from "../../../assets/icons/add-primary.svg";
 import Img from "../../../assets/icons/img.svg";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useFeedPosting } from "../../hooks/feed/useFeedPosting";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
+import { useCanPay } from "../../hooks/feed/useCanPay";
+import { useFeedPostFee } from "../../hooks/feed/useFeedPostFee";
+import { useMakeVideo } from "../../hooks/feed/useMakeVideo";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { selectNFTStorageAPI } from "../../store/slices/settings";
-import {
-  generateIpfsKey,
-  web3ToWeb2URI,
-  uploadFilesToPinata,
-} from "../../utils/ipfs";
+import { getStakingCurrency } from "../../networks";
+import { web3ToWeb2URI } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES, VIDEO_MIME_TYPES } from "../../utils/mime";
 import {
   neutral30,
@@ -42,11 +39,7 @@ import { FileUploader } from "../fileUploader";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import ModalBase from "../modals/ModalBase";
 import { FeedFeeText } from "../socialFeed/FeedFeeText";
-import {
-  PostCategory,
-  SocialFeedVideoMetadata,
-} from "../socialFeed/NewsFeed/NewsFeed.type";
-import { NotEnoughFundModal } from "../socialFeed/NewsFeed/NotEnoughFundModal";
+import { PostCategory } from "../socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
 const UPLOAD_VIDEO_MODAL_WIDTH = 590;
@@ -56,56 +49,30 @@ export const UploadVideoModal: FC<{
   onClose: () => void;
   isVisible: boolean;
 }> = ({ onClose, isVisible }) => {
-  const { setToastError } = useFeedbacks();
-  const selectedNetwork = useSelectedNetworkInfo();
   const selectedWallet = useSelectedWallet();
   const userId = selectedWallet?.userId || "";
-  const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
+  const networkId = useSelectedNetworkId();
+  const { postFee } = useFeedPostFee(networkId, PostCategory.Video);
+  const feeCurrency = getStakingCurrency(networkId);
+  const cost: Coin = {
+    amount: postFee.toString(),
+    denom: feeCurrency?.denom || "",
+  };
+  const canPay = useCanPay({ userId, cost });
 
-  const { makePost, canPayForPost, isProcessing } = useFeedPosting(
-    selectedNetwork?.id,
+  const { makeVideo, isProcessing, isLoading } = useMakeVideo({
     userId,
-    PostCategory.Video,
-  );
-
+  });
   const [isThumbnailContainerHovered, setThumbnailContainerHovered] =
     useState(false);
-
-  const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const userIPFSKey = useSelector(selectNFTStorageAPI);
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [localVideoFile, setLocalVideoFile] = useState<LocalFileData>();
-  const [localImageFile, setLocalImageFile] = useState<LocalFileData>();
-
-  const processCreateVideoPost = async (video: SocialFeedVideoMetadata) => {
-    if (!canPayForPost) {
-      setNotEnoughFundModal(true);
-      return;
-    }
-
-    // we need this hack until the createdAt field is properly provided by the contract
-    const videoWithCreationDate = {
-      ...video,
-      createdAt: new Date(),
-    };
-
-    try {
-      await makePost(JSON.stringify(videoWithCreationDate));
-    } catch (err) {
-      console.error("post submit err", err);
-      setToastError({
-        title: "Post creation failed",
-        message: err instanceof Error ? err.message : `${err}`,
-      });
-    }
-    setIsUploading(false);
-  };
+  const [localThumbnailImageFile, setLocalThumbnailImageFile] =
+    useState<LocalFileData>();
 
   const onPressUpload = async () => {
-    setIsLoading(true);
     if (
       !selectedWallet?.connected ||
       !selectedWallet.address ||
@@ -113,43 +80,14 @@ export const UploadVideoModal: FC<{
     ) {
       return;
     }
-    const pinataJWTKey =
-      userIPFSKey || (await generateIpfsKey(selectedNetwork?.id || "", userId));
-    if (!pinataJWTKey) {
-      console.error("upload file err : No Pinata JWT");
-      setToastError({
-        title: "File upload failed",
-        message: "No Pinata JWT",
-      });
-      return;
-    }
-
-    const uploadedFiles = await uploadFilesToPinata({
-      pinataJWTKey,
-      files: [
-        {
-          ...localVideoFile,
-          //TODO: If !localImageFile => Generate thumbnail from video and use it as thumbnailFileData
-          thumbnailFileData: localImageFile,
-        },
-      ],
-    });
-    if (!uploadedFiles.find((file) => file.url)) {
-      console.error("upload file err : Fail to pin to IPFS");
-      setToastError({
-        title: "File upload failed",
-        message: "Fail to pin to IPFS, please try to Publish again",
-      });
-      return;
-    }
-    const video: SocialFeedVideoMetadata = {
+    await makeVideo({
       title,
       description,
-      videoFile: uploadedFiles[0],
-    };
-    await processCreateVideoPost(video);
-    setIsLoading(false);
-    setLocalImageFile(undefined);
+      localVideoFile,
+      localThumbnailImageFile,
+    });
+
+    setLocalThumbnailImageFile(undefined);
     setLocalVideoFile(undefined);
     setDescription("");
     setTitle("");
@@ -165,10 +103,10 @@ export const UploadVideoModal: FC<{
     >
       <View style={inputBoxStyle}>
         <FileUploader
-          onUpload={(files) => setLocalImageFile(files[0])}
+          onUpload={(files) => setLocalThumbnailImageFile(files[0])}
           mimeTypes={IMAGE_MIME_TYPES}
           maxUpload={1}
-          setIsLoading={setIsLoading}
+          setIsLoading={setIsUploading}
         >
           {({ onPress }) => (
             <CustomPressable
@@ -184,15 +122,15 @@ export const UploadVideoModal: FC<{
               onPress={onPress}
               disabled={isUploading || isLoading}
             >
-              {localImageFile?.url ? (
+              {localThumbnailImageFile?.url ? (
                 <>
                   <DeleteButton
                     disabled={isUploading || isLoading}
-                    onPress={() => setLocalImageFile(undefined)}
+                    onPress={() => setLocalThumbnailImageFile(undefined)}
                     style={{ top: 12, right: 12 }}
                   />
                   <OptimizedImage
-                    sourceURI={localImageFile?.url}
+                    sourceURI={localThumbnailImageFile?.url}
                     style={imgStyle}
                     width={THUMBNAIL_SIZE}
                     height={THUMBNAIL_SIZE}
@@ -281,7 +219,7 @@ export const UploadVideoModal: FC<{
           onUpload={(files) => setLocalVideoFile(files[0])}
           style={uploadButtonStyle}
           mimeTypes={VIDEO_MIME_TYPES}
-          setIsLoading={setIsLoading}
+          setIsLoading={setIsUploading}
         >
           {({ onPress }) => (
             <TouchableOpacity
@@ -316,8 +254,6 @@ export const UploadVideoModal: FC<{
       <View style={divideLineStyle} />
 
       <FeedFeeText
-        networkId={selectedNetwork?.id}
-        userId={selectedWallet?.userId}
         category={PostCategory.Video}
         style={{ marginTop: layout.spacing_x2 }}
       />
@@ -328,27 +264,20 @@ export const UploadVideoModal: FC<{
           Use.
         </BrandText>
         <PrimaryButton
-          text="Upload"
+          text={!canPay ? "Not enough funds" : "Upload"}
           disabled={
             !localVideoFile?.url ||
             !title ||
             isUploading ||
             isProcessing ||
             isLoading ||
-            !canPayForPost
+            !canPay
           }
           size="SM"
           onPress={onPressUpload}
           isLoading={isUploading || isLoading || isProcessing}
         />
       </View>
-
-      {isNotEnoughFundModal && (
-        <NotEnoughFundModal
-          visible
-          onClose={() => setNotEnoughFundModal(false)}
-        />
-      )}
     </ModalBase>
   );
 };

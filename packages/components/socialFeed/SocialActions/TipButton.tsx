@@ -3,9 +3,11 @@ import { TouchableOpacity } from "react-native";
 
 import { TipModal } from "./TipModal";
 import tipSVG from "../../../../assets/icons/tip.svg";
+import { useWalletControl } from "../../../context/WalletControlProvider";
 import { useCoingeckoPrices } from "../../../hooks/useCoingeckoPrices";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
-import { NetworkKind } from "../../../networks";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { NetworkFeature, NetworkKind } from "../../../networks";
 import { CoingeckoCoin, getCoingeckoPrice } from "../../../utils/coingecko";
 import { prettyPrice } from "../../../utils/coins";
 import {
@@ -59,9 +61,22 @@ export const TipButton: React.FC<{
   disabled?: boolean;
   useAltStyle?: boolean;
 }> = ({ postId, author, amount, disabled, useAltStyle }) => {
+  const selectedWallet = useSelectedWallet();
   const selectedNetworkInfo = useSelectedNetworkInfo();
+  const { showConnectWalletModal } = useWalletControl();
   const [tipModalVisible, setTipModalVisible] = useState(false);
   const [tipAmountLocal, setTipAmountLocal] = useState(amount);
+
+  const onPress = async () => {
+    if (!selectedWallet?.address || !selectedWallet.connected) {
+      showConnectWalletModal({
+        forceNetworkFeature: NetworkFeature.SocialFeed,
+        action: "Tip",
+      });
+      return;
+    }
+    setTipModalVisible(true);
+  };
 
   return (
     <>
@@ -76,7 +91,7 @@ export const TipButton: React.FC<{
             backgroundColor: neutral22,
           },
         ]}
-        onPress={() => setTipModalVisible(true)}
+        onPress={onPress}
         disabled={disabled}
       >
         <SVG source={tipSVG} width={20} height={20} color={secondaryColor} />
