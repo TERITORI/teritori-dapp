@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
+  Pressable,
   StyleProp,
-  TouchableOpacity,
+  View,
   ViewStyle,
 } from "react-native";
 import { SvgProps } from "react-native-svg";
@@ -16,6 +17,7 @@ import { primaryColor, primaryTextColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { BoxStyle } from "../boxes/Box";
 import { SecondaryBox } from "../boxes/SecondaryBox";
 
 export const PrimaryButton: React.FC<{
@@ -23,8 +25,7 @@ export const PrimaryButton: React.FC<{
   text: string;
   width?: number;
   onPress?: (() => Promise<void>) | (() => void);
-  squaresBackgroundColor?: string;
-  style?: StyleProp<ViewStyle>;
+  boxStyle?: StyleProp<BoxStyle>;
   iconSVG?: React.FC<SvgProps>;
   iconColor?: string;
   disabled?: boolean;
@@ -33,7 +34,6 @@ export const PrimaryButton: React.FC<{
   touchableStyle?: StyleProp<ViewStyle>;
   RightComponent?: React.FC;
   color?: string;
-  noBrokenCorners?: boolean;
   isLoading?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
@@ -41,8 +41,7 @@ export const PrimaryButton: React.FC<{
   size = "M",
   text,
   onPress,
-  squaresBackgroundColor,
-  style,
+  boxStyle: style,
   iconSVG,
   disabled = false,
   fullWidth = false,
@@ -51,10 +50,10 @@ export const PrimaryButton: React.FC<{
   RightComponent,
   iconColor,
   color = primaryColor,
-  noBrokenCorners = false,
-  isLoading,
+  isLoading: isLoadingProp,
 }) => {
   const [isLocalLoading, setIsLocalLoading] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   const handlePress = useCallback(async () => {
     if (isLocalLoading || !onPress) {
@@ -69,47 +68,62 @@ export const PrimaryButton: React.FC<{
     setIsLocalLoading(false);
   }, [onPress, isLocalLoading]);
 
-  const isDisabled = !!(disabled || (loader && (isLocalLoading || isLoading)));
+  const isLoading = !!(loader && (isLocalLoading || isLoadingProp));
 
-  const boxProps = {
-    style,
-    disabled,
-    squaresBackgroundColor,
-    width,
-    fullWidth,
-    noBrokenCorners,
-  };
+  const isDisabled = !!(disabled || isLoading);
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={onPress ? handlePress : undefined}
       disabled={isDisabled}
-      style={[{ width: fullWidth ? "100%" : width }, touchableStyle]}
+      style={[
+        {
+          width: fullWidth ? "100%" : width,
+          flexDirection: "row",
+        },
+        touchableStyle,
+      ]}
+      onHoverIn={() => {
+        setHovered(true);
+      }}
+      onHoverOut={() => {
+        setHovered(false);
+      }}
     >
       <SecondaryBox
-        height={heightButton(size)}
-        mainContainerStyle={{
-          flexDirection: "row",
-          borderRadius: borderRadiusButton(size),
-          backgroundColor: color,
-          paddingHorizontal: 20,
-          opacity: isDisabled ? 0.5 : 1,
-        }}
-        {...boxProps}
+        style={[
+          {
+            borderRadius: borderRadiusButton(size),
+            backgroundColor: color,
+            padding: 0,
+            paddingHorizontal: 20,
+            opacity: isDisabled ? 0.5 : 1,
+            height: heightButton(size),
+            alignItems: "center",
+            justifyContent: "center",
+            width: fullWidth ? "100%" : width,
+            borderColor: hovered ? "white" : color,
+            borderWidth: 1,
+          },
+          style,
+        ]}
       >
-        {iconSVG ? (
-          <SVG
-            source={iconSVG}
-            width={16}
-            height={16}
-            style={{ marginRight: 8 }}
-            color={iconColor}
-          />
-        ) : null}
+        <View
+          style={{
+            flexDirection: "row",
+            opacity: isLoading ? 0 : 1,
+          }}
+        >
+          {iconSVG ? (
+            <SVG
+              source={iconSVG}
+              width={16}
+              height={16}
+              style={{ marginRight: 8 }}
+              color={iconColor}
+            />
+          ) : null}
 
-        {(loader && isLocalLoading) || isLoading ? (
-          <ActivityIndicator color={primaryTextColor} />
-        ) : (
           <BrandText
             style={[
               fontSemibold14,
@@ -121,9 +135,24 @@ export const PrimaryButton: React.FC<{
           >
             {text}
           </BrandText>
+          {!!RightComponent && <RightComponent />}
+        </View>
+        {isLoading && (
+          <View
+            style={{
+              position: "absolute",
+              alignItems: "center",
+              justifyContent: "center",
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+            }}
+          >
+            <ActivityIndicator />
+          </View>
         )}
-        {!(isLocalLoading || isLoading) && RightComponent && <RightComponent />}
       </SecondaryBox>
-    </TouchableOpacity>
+    </Pressable>
   );
 };

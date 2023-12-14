@@ -63,6 +63,7 @@ export const UploadVideoModal: FC<{
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
 
   const { makePost, canPayForPost, isProcessing } = useFeedPosting(
+    selectedNetwork?.id,
     userId,
     PostCategory.Video,
   );
@@ -315,6 +316,7 @@ export const UploadVideoModal: FC<{
       <View style={divideLineStyle} />
 
       <FeedFeeText
+        networkId={selectedNetwork?.id}
         userId={selectedWallet?.userId}
         category={PostCategory.Video}
         style={{ marginTop: layout.spacing_x2 }}

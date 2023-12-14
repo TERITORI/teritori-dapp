@@ -3,7 +3,7 @@ import { FlatList, TouchableOpacity } from "react-native";
 
 import { RipperAvatar } from "./RipperAvatar";
 import { NFT } from "../../../api/marketplace/v1/marketplace";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
 import { getRipperRarity, isNFTStaked } from "../../../utils/game";
 import { secondaryColor } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
@@ -40,7 +40,7 @@ export const AvailableRippersGrid: React.FC<AvailableRippersGridProps> = ({
             activeOpacity={0.6}
             onPress={() => selectRipper && selectRipper(ripper)}
           >
-            <TertiaryBox
+            <LegacyTertiaryBox
               style={{ margin: layout.spacing_x1 }}
               width={THUMB_CONTAINER_WIDTH}
               height={THUMB_CONTAINER_HEIGHT}
@@ -57,7 +57,7 @@ export const AvailableRippersGrid: React.FC<AvailableRippersGridProps> = ({
                 rarity={getRipperRarity(ripper)}
                 isStaked={isNFTStaked(ripper)}
               />
-            </TertiaryBox>
+            </LegacyTertiaryBox>
           </TouchableOpacity>
         );
       }}

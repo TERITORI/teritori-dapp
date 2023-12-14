@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
+  Pressable,
   StyleProp,
   TextStyle,
-  TouchableOpacity,
+  View,
   ViewStyle,
 } from "react-native";
 import { SvgProps } from "react-native-svg";
@@ -17,6 +18,7 @@ import { neutral30, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { BoxStyle } from "../boxes/Box";
 import { SecondaryBox } from "../boxes/SecondaryBox";
 
 // TODO: fix size changing on loading, like in SecondaryButtonOutline
@@ -27,17 +29,15 @@ export const SecondaryButton: React.FC<{
   text: string;
   width?: number;
   onPress?: (() => Promise<void>) | (() => void);
-  squaresBackgroundColor?: string;
   backgroundColor?: string;
   paddingHorizontal?: number;
   color?: string;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<BoxStyle>;
   touchableStyle?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
   fullWidth?: boolean;
   numberOfLines?: number;
-  activeOpacity?: number | undefined;
   loader?: boolean;
   textStyle?: TextStyle;
 }> = ({
@@ -46,7 +46,6 @@ export const SecondaryButton: React.FC<{
   size,
   text,
   onPress,
-  squaresBackgroundColor,
   backgroundColor = neutral30,
   paddingHorizontal = 20,
   color = primaryColor,
@@ -56,11 +55,11 @@ export const SecondaryButton: React.FC<{
   disabled = false,
   fullWidth = false,
   numberOfLines,
-  activeOpacity,
   loader,
   textStyle,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   const handlePress = useCallback(async () => {
     if (isLoading || !onPress) {
@@ -75,59 +74,74 @@ export const SecondaryButton: React.FC<{
     setIsLoading(false);
   }, [onPress, isLoading]);
 
-  const boxProps = {
-    style,
-    disabled,
-    squaresBackgroundColor,
-    width,
-    fullWidth,
-  };
+  const isDisabled = !!(disabled || (loader && isLoading));
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={handlePress}
-      disabled={disabled}
+      disabled={isDisabled}
       style={[{ width: fullWidth ? "100%" : width }, touchableStyle]}
-      activeOpacity={activeOpacity}
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
     >
       <SecondaryBox
-        height={heightButton(size)}
-        mainContainerStyle={{
-          flexDirection: "row",
-          borderRadius: borderRadiusButton(size),
-          backgroundColor,
-          paddingHorizontal,
-          opacity: disabled ? 0.5 : 1,
-          width: "100%",
-        }}
-        {...boxProps}
+        style={[
+          {
+            borderRadius: borderRadiusButton(size),
+            backgroundColor,
+            paddingHorizontal,
+            opacity: isDisabled ? 0.5 : 1,
+            width: fullWidth ? "100%" : width,
+            borderWidth: 1,
+            borderColor: hovered ? "white" : backgroundColor,
+            height: heightButton(size),
+            alignItems: "center",
+            justifyContent: "center",
+          },
+          style,
+        ]}
       >
-        {loader && isLoading ? (
-          <ActivityIndicator />
-        ) : (
-          <>
-            {iconSVG ? (
-              <SVG
-                source={iconSVG}
-                width={16}
-                height={16}
-                style={{ marginRight: 8 }}
-              />
-            ) : null}
+        <View style={{ flexDirection: "row", opacity: isLoading ? 0 : 1 }}>
+          {iconSVG ? (
+            <SVG
+              source={iconSVG}
+              width={16}
+              height={16}
+              style={{ marginRight: 8 }}
+            />
+          ) : null}
 
-            <BrandText
-              style={[
-                fontSemibold14,
-                { color, textAlign: "center", width: "100%" },
-                textStyle,
-              ]}
-              numberOfLines={numberOfLines}
-            >
-              {text}
-            </BrandText>
-          </>
+          <BrandText
+            style={[
+              fontSemibold14,
+              {
+                color,
+                textAlign: "center",
+                width: "100%",
+              },
+              textStyle,
+            ]}
+            numberOfLines={numberOfLines}
+          >
+            {text}
+          </BrandText>
+        </View>
+        {!!(loader && isLoading) && (
+          <View
+            style={{
+              position: "absolute",
+              alignItems: "center",
+              justifyContent: "center",
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+            }}
+          >
+            <ActivityIndicator />
+          </View>
         )}
       </SecondaryBox>
-    </TouchableOpacity>
+    </Pressable>
   );
 };

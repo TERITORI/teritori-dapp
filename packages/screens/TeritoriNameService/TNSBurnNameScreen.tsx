@@ -94,9 +94,8 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
       hideMainSeparator
       onClose={() => onClose()}
       width={457}
-      contentStyle={{
+      boxStyle={{
         backgroundColor: neutral17,
-        borderRadius: 8,
       }}
     >
       <View
@@ -147,7 +146,6 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
               text="I understand, burn it"
               onPress={onSubmit}
               style={{ marginBottom: 80 }}
-              squaresBackgroundColor={neutral17}
               loader
             />
           </View>

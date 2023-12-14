@@ -4,8 +4,7 @@ import { TrashIcon, Bars3Icon } from "react-native-heroicons/solid";
 
 import { BrandText } from "../../../components/BrandText";
 import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
-import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { Box } from "../../../components/boxes/Box";
 import { setCheckedApp } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
 import {
@@ -61,15 +60,16 @@ export const SelectedDraggable: React.FC<{
         }}
       >
         <TouchableOpacity onPress={deleteFromList} disabled={alwaysOn}>
-          <SecondaryBox
-            noBrokenCorners
-            mainContainerStyle={{
+          <Box
+            style={{
               backgroundColor: !showTrashIcon
                 ? withAlpha(neutral33, 0.64)
                 : withAlpha(errorColor, 0.14),
+              width: 32,
+              height: 48,
+              alignItems: "center",
+              justifyContent: "center",
             }}
-            width={32}
-            height={48}
           >
             <BrandText
               style={[fontBold12, { color: neutral67 }]}
@@ -77,7 +77,7 @@ export const SelectedDraggable: React.FC<{
             >
               {showTrashIcon ? <TrashIcon size={14} fill="red" /> : index + 1}
             </BrandText>
-          </SecondaryBox>
+          </Box>
         </TouchableOpacity>
       </Pressable>
 

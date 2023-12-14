@@ -67,7 +67,7 @@ import FlexRow from "../../FlexRow";
 import { IconBox } from "../../IconBox";
 import { OmniLink } from "../../OmniLink";
 import { SVG } from "../../SVG";
-import { PrimaryBox } from "../../boxes/PrimaryBox";
+import { LegacyPrimaryBox } from "../../boxes/LegacyPrimaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { FileUploader } from "../../fileUploader";
@@ -148,7 +148,6 @@ export const NewsFeedInput = React.forwardRef<
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
         defaultValues: {
-          nftStorageApiToken: "",
           title: "",
           message: "",
           files: [],
@@ -163,9 +162,14 @@ export const NewsFeedInput = React.forwardRef<
       isProcessing,
       prettyPublishingFee,
       freePostCount,
-    } = useFeedPosting(userId, getPostCategory(formValues), () => {
-      onPostCreationSuccess();
-    });
+    } = useFeedPosting(
+      selectedNetwork?.id,
+      userId,
+      getPostCategory(formValues),
+      () => {
+        onPostCreationSuccess();
+      },
+    );
     const userIPFSKey = useSelector(selectNFTStorageAPI);
 
     const processSubmit = async () => {
@@ -204,19 +208,19 @@ export const NewsFeedInput = React.forwardRef<
           hashtags.push(`#${additionalHashtag}`);
         }
 
-        let files: RemoteFileData[] = [];
+        let remoteFiles: RemoteFileData[] = [];
 
         if (formValues.files?.length) {
           const pinataJWTKey =
             userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
           if (pinataJWTKey) {
-            files = await uploadFilesToPinata({
+            remoteFiles = await uploadFilesToPinata({
               files: formValues.files,
               pinataJWTKey,
             });
           }
         }
-        if (formValues.files?.length && !files.find((file) => file.url)) {
+        if (formValues.files?.length && !remoteFiles.find((file) => file.url)) {
           console.error("upload file err : Fail to pin to IPFS");
           setToastError({
             title: "File upload failed",
@@ -228,7 +232,7 @@ export const NewsFeedInput = React.forwardRef<
         const metadata = generatePostMetadata({
           title: formValues.title || "",
           message: finalMessage,
-          files,
+          files: remoteFiles,
           hashtags,
           mentions,
           gifs: formValues?.gifs || [],
@@ -287,7 +291,7 @@ export const NewsFeedInput = React.forwardRef<
             onClose={() => setNotEnoughFundModal(false)}
           />
         )}
-        <PrimaryBox
+        <LegacyPrimaryBox
           fullWidth
           style={{
             zIndex: 9,
@@ -413,7 +417,7 @@ export const NewsFeedInput = React.forwardRef<
               }
             }}
           />
-        </PrimaryBox>
+        </LegacyPrimaryBox>
         <View
           style={{
             backgroundColor: neutral17,
@@ -616,7 +620,6 @@ export const NewsFeedInput = React.forwardRef<
                 text={
                   daoId ? "Propose" : type === "comment" ? "Comment" : "Publish"
                 }
-                squaresBackgroundColor={neutral17}
                 onPress={handleSubmit(processSubmit)}
               />
             </View>

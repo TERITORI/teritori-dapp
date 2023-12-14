@@ -121,6 +121,7 @@ export const FeedPostVideoView: FC<{
   );
 
   const { makePost, canPayForPost, isProcessing } = useFeedPosting(
+    networkId,
     wallet?.userId,
     PostCategory.Comment,
     () => {

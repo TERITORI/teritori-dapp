@@ -23,7 +23,7 @@ import {
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
 import { UserAvatarWithFrame } from "../../components/images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useIsMobile } from "../../hooks/useIsMobile";
@@ -162,7 +162,7 @@ export const RiotGameLeaderboardScreen = () => {
         <BrandText style={fontMedium16}>{currentSeason?.id}</BrandText>
       </ImageBackground>
 
-      <TertiaryBox fullWidth style={{ marginTop: layout.spacing_x2 }}>
+      <LegacyTertiaryBox fullWidth style={{ marginTop: layout.spacing_x2 }}>
         <FlexRow>
           <View style={{ flex: 1 }}>
             <BrandText
@@ -192,7 +192,7 @@ export const RiotGameLeaderboardScreen = () => {
             </View>
           )}
         </FlexRow>
-      </TertiaryBox>
+      </LegacyTertiaryBox>
 
       <FlatList
         data={userScores}

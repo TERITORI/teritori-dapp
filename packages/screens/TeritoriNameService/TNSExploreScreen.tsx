@@ -70,7 +70,6 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
               onPress={() => {
                 onClose("TNSConsultName");
               }}
-              squaresBackgroundColor={neutral17}
             />
             <PrimaryButtonOutline
               size="XL"

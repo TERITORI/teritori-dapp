@@ -23,12 +23,15 @@ import { useDAOMakeProposal } from "../dao/useDAOMakeProposal";
 import { useBalances } from "../useBalances";
 
 export const useFeedPosting = (
+  networkId: string | undefined,
   userId: string | undefined,
   category: PostCategory,
   onSuccess?: () => void,
 ) => {
   const [network, userAddress] = parseUserId(userId);
-  const networkId = network?.id;
+  if (network) {
+    networkId = network.id;
+  }
 
   const balances = useBalances(networkId, userAddress);
   const { postFee } = useFeedPostFee(networkId, category);

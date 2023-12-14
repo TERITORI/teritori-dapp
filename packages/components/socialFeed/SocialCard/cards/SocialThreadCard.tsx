@@ -7,7 +7,6 @@ import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
 import { OnPressReplyType } from "../../../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../../../utils/navigation";
-import { zodTryParseJSON } from "../../../../utils/sanitize";
 import {
   neutral00,
   neutral17,
@@ -18,10 +17,7 @@ import { layout } from "../../../../utils/style/layout";
 import FlexRow from "../../../FlexRow";
 import { CustomPressable } from "../../../buttons/CustomPressable";
 import { SpacerColumn } from "../../../spacer";
-import {
-  PostCategory,
-  ZodSocialFeedPostMetadata,
-} from "../../NewsFeed/NewsFeed.type";
+import { PostCategory } from "../../NewsFeed/NewsFeed.type";
 import { SocialThreadGovernance } from "../../SocialActions/SocialThreadGovernance";
 import { FlaggedCardFooter } from "../FlaggedCardFooter";
 import { MusicPostTrackContent } from "../MusicPostTrackContent";
@@ -59,11 +55,8 @@ export const SocialThreadCard: React.FC<{
     const authorNSInfo = useNSUserInfo(localPost.authorId);
     const [, authorAddress] = parseUserId(localPost.authorId);
     const navigation = useAppNavigation();
-    const postMetadata = zodTryParseJSON(
-      ZodSocialFeedPostMetadata,
-      localPost.metadata,
-    );
     const username = authorNSInfo?.metadata?.tokenId || authorAddress;
+
     const handleReply = () =>
       onPressReply?.({
         username,
@@ -114,15 +107,9 @@ export const SocialThreadCard: React.FC<{
           {/*====== Card Content */}
           {post.category === PostCategory.MusicAudio ? (
             <MusicPostTrackContent post={localPost} />
-          ) : postMetadata ? (
-            <SocialMessageContent
-              authorId={localPost.authorId}
-              postId={localPost.identifier}
-              metadata={postMetadata}
-              postCategory={localPost.category}
-              isPreview={isPreview}
-            />
-          ) : null}
+          ) : (
+            <SocialMessageContent post={localPost} isPreview={isPreview} />
+          )}
           <SpacerColumn size={1.5} />
 
           {/*====== Card Actions */}
