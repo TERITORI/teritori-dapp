@@ -2190,7 +2190,7 @@
     "kind": "Cosmos",
     "chainId": "cosmoshub-4",
     "displayName": "Cosmos Hub",
-    "icon": "icons/networks/cosmos-hub.svg",
+    "icon": "cosmos-hub.svg",
     "features": [],
     "currencies": [
       {
@@ -2198,7 +2198,7 @@
         "displayName": "ATOM",
         "decimals": 6,
         "coingeckoId": "cosmos",
-        "icon": "icons/networks/cosmos-hub-circle.svg",
+        "icon": "cosmos-hub-circle.svg",
         "kind": "native",
         "color": "#5C26F5"
       }
@@ -2232,7 +2232,7 @@
     "kind": "Cosmos",
     "chainId": "theta-testnet-001",
     "displayName": "Cosmos Hub Theta Testnet",
-    "icon": "icons/networks/cosmos-hub.svg",
+    "icon": "cosmos-hub.svg",
     "features": [],
     "overrides": "cosmos-registry:cosmoshubtestnet",
     "currencies": [
@@ -2241,7 +2241,7 @@
         "displayName": "ATOM",
         "decimals": 6,
         "coingeckoId": "cosmos",
-        "icon": "icons/networks/cosmos-hub-circle.svg",
+        "icon": "cosmos-hub-circle.svg",
         "kind": "native",
         "color": "#5C26F5"
       }
@@ -3022,7 +3022,7 @@
     "id": "ethereum",
     "kind": "Ethereum",
     "displayName": "Ethereum",
-    "icon": "icons/networks/ethereum.svg",
+    "icon": "ethereum.svg",
     "features": [
       "NFTMarketplace",
       "NFTLaunchpad"
@@ -3033,7 +3033,7 @@
         "displayName": "ETH",
         "decimals": 18,
         "coingeckoId": "ethereum",
-        "icon": "icons/networks/ethereum-circle.svg",
+        "icon": "ethereum-circle.svg",
         "kind": "native",
         "color": "#232731"
       }
@@ -3055,7 +3055,7 @@
     "id": "ethereum-goerli",
     "kind": "Ethereum",
     "displayName": "Ethereum Goerli",
-    "icon": "icons/networks/ethereum.svg",
+    "icon": "ethereum.svg",
     "features": [
       "NFTMarketplace",
       "NFTLaunchpad"
@@ -3066,7 +3066,7 @@
         "displayName": "GoerliETH",
         "decimals": 18,
         "coingeckoId": "ethereum",
-        "icon": "icons/networks/ethereum-circle.svg",
+        "icon": "ethereum-circle.svg",
         "kind": "native",
         "color": "#232731"
       }
@@ -3497,7 +3497,7 @@
     "id": "gno-dev",
     "kind": "Gno",
     "displayName": "Gno Dev",
-    "icon": "icons/networks/gno.svg",
+    "icon": "gno.svg",
     "features": [
       "Organizations",
       "SocialFeed",
@@ -3509,7 +3509,7 @@
         "displayName": "GNOT",
         "decimals": 6,
         "coingeckoId": "gno",
-        "icon": "icons/networks/gno.svg",
+        "icon": "gno.svg",
         "kind": "native",
         "color": "#232800"
       }
@@ -3541,7 +3541,7 @@
     "id": "gno-teritori",
     "kind": "Gno",
     "displayName": "Gno Teritori",
-    "icon": "icons/networks/gno.svg",
+    "icon": "gno.svg",
     "features": [
       "Organizations",
       "SocialFeed",
@@ -3553,7 +3553,7 @@
         "displayName": "GNOT",
         "decimals": 6,
         "coingeckoId": "gno",
-        "icon": "icons/networks/gno.svg",
+        "icon": "gno.svg",
         "kind": "native",
         "color": "#232800"
       }
@@ -3586,7 +3586,7 @@
     "id": "gno-test3",
     "kind": "Gno",
     "displayName": "Gno Test3",
-    "icon": "icons/networks/gno.svg",
+    "icon": "gno.svg",
     "features": [],
     "currencies": [
       {
@@ -3594,7 +3594,7 @@
         "displayName": "GNOT",
         "decimals": 6,
         "coingeckoId": "gno",
-        "icon": "icons/networks/gno.svg",
+        "icon": "gno.svg",
         "kind": "native",
         "color": "#232800"
       }
@@ -6914,7 +6914,7 @@
     "kind": "Cosmos",
     "chainId": "osmosis-1",
     "displayName": "Osmosis",
-    "icon": "icons/networks/osmosis.svg",
+    "icon": "osmosis.svg",
     "features": [
       "Swap"
     ],
@@ -6925,7 +6925,7 @@
         "displayName": "OSMO",
         "decimals": 6,
         "coingeckoId": "osmosis",
-        "icon": "icons/networks/osmosis-circle.svg",
+        "icon": "osmosis-circle.svg",
         "kind": "native",
         "color": "#A401D4"
       },
@@ -6990,7 +6990,7 @@
     "chainId": "osmo-test-5",
     "overrides": "cosmos-registry:osmosistestnet",
     "displayName": "Osmosis Latest Testnet",
-    "icon": "icons/networks/osmosis.svg",
+    "icon": "osmosis.svg",
     "features": [
       "Swap"
     ],
@@ -7000,7 +7000,7 @@
         "displayName": "OSMO",
         "decimals": 6,
         "coingeckoId": "osmosis",
-        "icon": "icons/networks/osmosis-circle.svg",
+        "icon": "osmosis-circle.svg",
         "kind": "native",
         "color": "#A401D4"
       },
@@ -8994,7 +8994,7 @@
     "kind": "Cosmos",
     "chainId": "teritori-1",
     "displayName": "Teritori",
-    "icon": "icons/networks/teritori.svg",
+    "icon": "teritori.svg",
     "features": [
       "NFTMarketplace",
       "Organizations",
@@ -9013,7 +9013,7 @@
         "displayName": "TORI",
         "decimals": 6,
         "coingeckoId": "teritori",
-        "icon": "icons/networks/teritori-circle.svg",
+        "icon": "teritori-circle.svg",
         "kind": "native",
         "color": "#16BBFF"
       },
@@ -9082,7 +9082,7 @@
     "kind": "Cosmos",
     "chainId": "teritori-testnet-v3",
     "displayName": "Teritori Testnet",
-    "icon": "icons/networks/teritori.svg",
+    "icon": "teritori.svg",
     "features": [
       "NFTMarketplace",
       "Organizations",
@@ -9099,7 +9099,7 @@
         "displayName": "TORI",
         "decimals": 6,
         "coingeckoId": "teritori",
-        "icon": "icons/networks/teritori-circle.svg",
+        "icon": "teritori-circle.svg",
         "kind": "native",
         "color": "#16BBFF"
       },
