@@ -113,12 +113,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   const ListHeaderComponent = useCallback(
     () => (
       <>
-        <View
-          onLayout={onHeaderLayout}
-          style={{ width, alignSelf: "center", alignItems: "center" }}
-        >
-          <Header />
-        </View>
         {!disablePosting && (
           <Animated.View
             style={[
@@ -156,7 +150,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       </>
     ),
     [
-      Header,
       additionalHashtag,
       additionalMention,
       daoId,
@@ -164,7 +157,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       isLoadingValue,
       isMobile,
       refetch,
-      width,
     ],
   );
 
@@ -228,7 +220,17 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           width: windowWidth,
           maxWidth: screenContentMaxWidth,
         }}
-        ListHeaderComponent={ListHeaderComponent}
+        ListHeaderComponent={
+          <>
+            <View
+              onLayout={onHeaderLayout}
+              style={{ width, alignSelf: "center", alignItems: "center" }}
+            >
+              <Header />
+            </View>
+            <ListHeaderComponent />
+          </>
+        }
         keyExtractor={(post: Post) => post.identifier}
         onScroll={scrollHandler}
         contentContainerStyle={contentCStyle}
