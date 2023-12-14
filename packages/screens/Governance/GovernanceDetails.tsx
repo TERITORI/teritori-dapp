@@ -606,7 +606,7 @@ export const GovernanceDetails: React.FC<{
           <PrimaryButton
             width={150}
             size="XL"
-            style={{ position: "absolute", left: 510, bottom: -40 }}
+            boxStyle={{ position: "absolute", left: 510, bottom: -40 }}
             text="Vote"
             onPress={() => activeVote()}
           />

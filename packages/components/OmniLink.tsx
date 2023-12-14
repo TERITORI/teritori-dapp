@@ -19,7 +19,8 @@ export const OmniLink: React.FC<{
   children: ReactNode | undefined;
   style?: TouchableOpacityProps["style"];
   disabled?: boolean;
-}> = ({ to, action, children, style, disabled }) => {
+  noHoverEffect?: boolean;
+}> = ({ to, action, children, style, disabled, noHoverEffect }) => {
   // @ts-ignore
   const { onPress, ...props } = useLinkProps({ to, action });
 
@@ -50,7 +51,7 @@ export const OmniLink: React.FC<{
         onMouseLeave={() => setIsHovered(false)}
         style={[
           {
-            opacity: isHovered && !disabled ? 0.5 : 1,
+            opacity: isHovered && !disabled && !noHoverEffect ? 0.5 : 1,
           },
           { transitionDuration: "150ms" } as ViewStyle, // browser specific
           style,
