@@ -4,7 +4,6 @@ import {
   Linking,
   Platform,
   Pressable,
-  SafeAreaView,
   StyleSheet,
   View,
 } from "react-native";
