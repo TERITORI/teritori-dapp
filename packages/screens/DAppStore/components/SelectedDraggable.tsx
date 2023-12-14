@@ -82,24 +82,15 @@ export const SelectedDraggable: React.FC<{
         </TouchableOpacity>
       </Pressable>
       <TertiaryBox
-        height={48}
-        width={256}
-        noBrokenCorners
         style={{
           marginLeft: layout.spacing_x1,
+          width: 256,
+          height: 48,
           ...Platform.select({
             web: {
               cursor: "grab",
             },
           }),
-        }}
-        mainContainerStyle={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          paddingVertical: layout.spacing_x1_5,
-          paddingLeft: layout.spacing_x1_5,
-          paddingRight: layout.spacing_x2,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
