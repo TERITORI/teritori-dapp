@@ -87,6 +87,7 @@
     "multiformats": "^12.1.3",
     "os-browserify": "^0.3.0",
     "osmojs": "15.0.5",
+    "plausible-tracker": "^0.3.8",
     "protobufjs": "^7.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",

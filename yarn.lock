@@ -16188,6 +16188,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"plausible-tracker@npm:^0.3.8":
+  version: 0.3.8
+  resolution: "plausible-tracker@npm:0.3.8"
+  checksum: 066dd51586922fabbd70e4cfdeff77356669bf57852cd3cbc00d813938ed6637669ee615a1d7b865090550de61fc58bffb6e7c3e6d99f361ec7312d316033194
+  languageName: node
+  linkType: hard
+
 "please-upgrade-node@npm:^3.2.0":
   version: 3.2.0
   resolution: "please-upgrade-node@npm:3.2.0"
@@ -19549,6 +19556,7 @@ __metadata:
     os-browserify: ^0.3.0
     osmojs: 15.0.5
     patch-package: ^7.0.2
+    plausible-tracker: ^0.3.8
     postinstall-postinstall: ^2.1.0
     prettier: ^3.0.3
     protobufjs: ^7.2.5
