@@ -8,6 +8,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
+import Plausible from "plausible-tracker";
 import React, { ReactNode, memo, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform, View, Text, TextStyle } from "react-native";
@@ -41,6 +42,11 @@ import { setAvailableApps } from "./packages/store/slices/dapps-store";
 import { setSelectedWalletId } from "./packages/store/slices/settings";
 import { persistor, store, useAppDispatch } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
+
+const plausible = Plausible({
+  domain: "app.teritori.com",
+});
+plausible.enableAutoPageviews();
 
 const queryClient = new QueryClient();
 
