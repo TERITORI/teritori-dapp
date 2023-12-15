@@ -95,8 +95,8 @@ export const ScreenContainerMobile: FC<{
         <View style={{ flex: 1, width: "100%", height: windowHeight }}>
           <SelectedNetworkGate filter={networkFilter}>
             {hasScroll ? (
-              <ScrollView
-                contentContainerStyle={[
+              <View
+                style={[
                   {
                     marginHorizontal: layout.spacing_x2,
                     minHeight: windowHeight - MOBILE_HEADER_HEIGHT,
@@ -105,7 +105,7 @@ export const ScreenContainerMobile: FC<{
               >
                 {mobileTitle ? <MobileTitle title={mobileTitle} /> : null}
                 <View style={[{ height: "100%" }]}>{children}</View>
-              </ScrollView>
+              </View>
             ) : (
               <>
                 <View

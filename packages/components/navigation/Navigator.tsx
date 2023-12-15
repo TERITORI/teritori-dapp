@@ -43,6 +43,7 @@ import { StakeScreen } from "../../screens/Stake";
 import { SwapScreen } from "../../screens/Swap/SwapScreen";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
 import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
+import { CreateScreen } from "../../screens/Wallet/CreateScreen";
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
@@ -344,6 +345,12 @@ export const Navigator: React.FC = () => {
           header: () => null,
           title: screenTitle("Friends Add"),
         }}
+      />
+
+      <Stack.Screen
+        name="Wallet"
+        component={CreateScreen}
+        options={{ header: () => null, title: screenTitle("Wallet Create") }}
       />
     </Stack.Navigator>
   );

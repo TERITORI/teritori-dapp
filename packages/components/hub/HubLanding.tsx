@@ -36,21 +36,21 @@ export const HubLanding: React.FC = () => {
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
       <View style={{ flex: 1 }}>
-        {!!banner && (
-          <Link to={banner?.url || ""}>
-            <OptimizedImage
-              sourceURI={banner?.image}
-              width={width}
-              height={350}
-              style={{
-                height: 350,
-                width,
-                borderRadius: 20,
-                marginTop: 56,
-              }}
-            />
-          </Link>
-        )}
+        {/*{!!banner && (*/}
+        {/*  <Link to={banner?.url || ""}>*/}
+        {/*    <OptimizedImage*/}
+        {/*      sourceURI={banner?.image}*/}
+        {/*      width={width}*/}
+        {/*      height={350}*/}
+        {/*      style={{*/}
+        {/*        height: 350,*/}
+        {/*        width,*/}
+        {/*        borderRadius: 20,*/}
+        {/*        marginTop: 56,*/}
+        {/*      }}*/}
+        {/*    />*/}
+        {/*  </Link>*/}
+        {/*)}*/}
 
         <NewsCarouselSection />
 
