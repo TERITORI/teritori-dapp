@@ -17,6 +17,9 @@ RIOTER_FOOTER_PACKAGE=rioter-footer-nft
 VAULT_REPO=teritori-vault
 VAULT_PACKAGE=teritori-nft-vault
 
+ADDR_LIST_REPO=cw_addr_list
+ADDR_LIST_PACKAGE=cw-address-list
+
 CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
 DOCKER_REGISTRY=rg.nl-ams.scw.cloud/teritori
@@ -207,6 +210,20 @@ $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
 	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(VAULT_REPO)/contracts/nft-vault/schema/execute_msg.json -o go/pkg/contracts/vault_types/execute_msg.go -p vault_types
 	go fmt ./go/pkg/contracts/vault_types
 	rm -fr $(VAULT_REPO)
+
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(ADDR_LIST_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(ADDR_LIST_PACKAGE): node_modules
+	rm -fr $(ADDR_LIST_REPO)
+	git clone git@github.com:TERITORI/cw_addr_list.git
+	cd $(ADDR_LIST_REPO) && git checkout 01dad8e4ec2998c74145f7be0901630b3720787b
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(ADDR_LIST_REPO)/schema \
+		--out $@ \
+		--name $(ADDR_LIST_PACKAGE) \
+		--no-bundle
+	rm -fr $(ADDR_LIST_REPO)
 
 .PHONY: publish.backend
 publish.backend:
