@@ -4,6 +4,7 @@ import React from "react";
 
 import { feedsTabItems } from "./social-feed";
 import { Conversation, MessageFriendsTabItem } from "./types/message";
+import { uppTabItems } from "./upp";
 import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.type";
 
 export type RouteName = keyof RootStackParamList;
@@ -17,7 +18,10 @@ export type RootStackParamList = {
   WalletManagerWallets: undefined;
   WalletManagerChains: undefined;
   Governance: undefined;
-  UserPublicProfile: { id: string };
+  UserPublicProfile: {
+    id: string;
+    tab?: keyof typeof uppTabItems;
+  };
   RiotersFooter: undefined;
 
   Launchpad: undefined;
@@ -106,7 +110,7 @@ const navConfig: {
     WalletManagerWallets: "wallet-manager/wallets",
     WalletManagerChains: "wallet-manager/chains",
     Governance: "governance",
-    UserPublicProfile: "user/:id",
+    UserPublicProfile: "user/:id/:tab?",
     RiotersFooter: "rioters-footer",
     // === RiotGame
     RiotGame: "riot-game",

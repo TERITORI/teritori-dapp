@@ -3,6 +3,7 @@ export type ValidatorInfo = {
   moniker: string;
   imageURL: string;
   votingPower: string;
+  votingPowerPercent: number;
   commission: string;
   description: string;
   website: string;

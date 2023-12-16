@@ -416,14 +416,13 @@ const NFTViewFooter: React.FC<{ nft: NFT; localSelected: boolean }> = memo(
                 screen: "NFTDetail",
                 params: { id: nft.id, openBuy: !isOwner },
               }}
+              noHoverEffect
             >
               <SecondaryButton
                 size="XS"
-                squaresBackgroundColor={localSelected ? neutral22 : neutral00}
                 text={prettyPrice(nft.networkId, nft.price, nft.denom)}
                 fullWidth
                 numberOfLines={1}
-                activeOpacity={1}
               />
             </OmniLink>
           </View>

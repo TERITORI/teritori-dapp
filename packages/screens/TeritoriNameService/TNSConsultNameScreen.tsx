@@ -58,7 +58,7 @@ const NotOwnerActions: React.FC<{
         <PrimaryButton
           size="XL"
           text="Profile"
-          style={{ marginRight: 24 }}
+          boxStyle={{ marginRight: 24 }}
           onPress={() => {
             onClose();
             navigation.navigate("UserPublicProfile", { id: ownerId });
@@ -108,7 +108,6 @@ const OwnerActions: React.FC<{
           onPress={() => {
             navigation.navigate("UserPublicProfile", { id: ownerId });
           }}
-          squaresBackgroundColor={neutral17}
         />
       )}
       <SecondaryButton
@@ -117,7 +116,6 @@ const OwnerActions: React.FC<{
         onPress={() => {
           onClose("TNSUpdateName");
         }}
-        squaresBackgroundColor={neutral17}
       />
       <SecondaryButton
         size="M"
@@ -126,7 +124,6 @@ const OwnerActions: React.FC<{
         onPress={() => {
           onClose("TNSBurnName");
         }}
-        squaresBackgroundColor={neutral17}
       />
       {!isPrimary && (
         <SecondaryButton
@@ -134,7 +131,6 @@ const OwnerActions: React.FC<{
           text="Set as Primary"
           loader
           style={{ marginLeft: 24 }}
-          squaresBackgroundColor={neutral17}
           onPress={async () => {
             try {
               const network = mustGetCosmosNetwork(wallet?.networkId);

@@ -24,7 +24,6 @@ export const SocialThreadGovernance: React.FC<{
       {isGovernanceAction && (
         <View style={{ flexDirection: "row", marginRight: 12 }}>
           <SecondaryButton
-            squaresBackgroundColor={squaresBackgroundColor}
             text="Yes!"
             size="SM"
             backgroundColor={additionalGreen}
@@ -32,7 +31,6 @@ export const SocialThreadGovernance: React.FC<{
           />
           <SpacerRow size={1.5} />
           <SecondaryButton
-            squaresBackgroundColor={squaresBackgroundColor}
             text="No!"
             size="SM"
             backgroundColor={orangeDefault}
@@ -40,7 +38,6 @@ export const SocialThreadGovernance: React.FC<{
           />
           <SpacerRow size={1.5} />
           <SecondaryButton
-            squaresBackgroundColor={squaresBackgroundColor}
             text="NoWithVeto!"
             size="SM"
             backgroundColor={redDefault}
@@ -48,7 +45,6 @@ export const SocialThreadGovernance: React.FC<{
           />
           <SpacerRow size={1.5} />
           <SecondaryButton
-            squaresBackgroundColor={squaresBackgroundColor}
             text="Abstain"
             size="SM"
             backgroundColor={neutral44}

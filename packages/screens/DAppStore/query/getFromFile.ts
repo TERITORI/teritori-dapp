@@ -23,6 +23,7 @@ import mapOfZones from "../../../../assets/logos/MoZ-icon.svg";
 import astroportLogo from "../../../../assets/logos/astroport.svg";
 import coinHallLogo from "../../../../assets/logos/coinhall.svg";
 import daodao from "../../../../assets/logos/daodao.png";
+import kjnodes from "../../../../assets/logos/kjnodes-logo.svg";
 import pulsarLogo from "../../../../assets/logos/pulsar-logo.svg";
 import radyium from "../../../../assets/logos/raydium.png";
 import skip from "../../../../assets/logos/skip.png";
@@ -219,6 +220,17 @@ export function getAvailableApps(): dAppGroup {
           icon: mapOfZones,
           route: "External",
           url: "https://mapofzones.com/zones/teritori-1/overview",
+          groupKey: "bookmarks",
+          selectedByDefault: false,
+          alwaysOn: false,
+        },
+        slashboard: {
+          id: "slashboard",
+          title: "KJnodes: Slashboard",
+          description: "Find the perfect validator",
+          icon: kjnodes,
+          route: "External",
+          url: "https://services.kjnodes.com/mainnet/teritori/slashboard/",
           groupKey: "bookmarks",
           selectedByDefault: false,
           alwaysOn: false,

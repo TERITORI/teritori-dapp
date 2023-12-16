@@ -19,3 +19,21 @@ export const mustGetNodeMarketplaceClient = (networkId: string) => {
 
   return new MarketplaceServiceClientImpl(rpc);
 };
+
+export const retry = async <T>(
+  retries: number,
+  fn: () => Promise<T>,
+): Promise<T> => {
+  let lastError;
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await fn();
+    } catch (e) {
+      lastError = e;
+    }
+  }
+  if (lastError) {
+    throw lastError;
+  }
+  throw new Error("unreachable");
+};

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import { DeleteButton } from "./DeleteButton";
 import { ImagesFullViewModal } from "./ImagesFullViewModal";
@@ -9,6 +9,7 @@ import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { LocalFileData, RemoteFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
+import { OptimizedImage } from "../OptimizedImage";
 
 interface ImagePreviewProps {
   files: LocalFileData[] | RemoteFileData[];
@@ -113,13 +114,12 @@ export const ImagesViews: React.FC<ImagePreviewProps> = ({
                 }}
               />
             )}
-            <Image
-              source={{
-                uri:
-                  file.fileType === "image"
-                    ? ipfsURLToHTTPURL(file.url)
-                    : file.base64Image || "",
-              }}
+            <OptimizedImage
+              sourceURI={
+                file.fileType === "image" ? file.url : file.base64Image || ""
+              }
+              height={400}
+              width={800}
               resizeMode="contain"
               style={{
                 height: "100%",
