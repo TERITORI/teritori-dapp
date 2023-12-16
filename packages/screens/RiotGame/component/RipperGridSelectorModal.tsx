@@ -20,7 +20,7 @@ import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
 import { SimpleButton } from "../../../components/buttons/SimpleButton";
 import { SpacerRow } from "../../../components/spacer";
 import { useIsMobile } from "../../../hooks/useIsMobile";
@@ -170,7 +170,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                           activeOpacity={0.7}
                           onPress={() => selectRipper(item)}
                         >
-                          <TertiaryBox
+                          <LegacyTertiaryBox
                             noBrokenCorners
                             mainContainerStyle={[
                               {
@@ -215,7 +215,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                                 }}
                               />
                             )}
-                          </TertiaryBox>
+                          </LegacyTertiaryBox>
                         </TouchableOpacity>
                       );
                     }}

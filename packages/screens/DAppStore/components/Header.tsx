@@ -1,10 +1,11 @@
 import React from "react";
-import { useWindowDimensions, View } from "react-native";
+import { Linking, Pressable, useWindowDimensions, View } from "react-native";
+import { SparklesIcon } from "react-native-heroicons/outline";
 
 import { DropdownDappsStoreFilter } from "./Dropdown";
 import { BrandText } from "../../../components/BrandText";
 import { SearchInput } from "../../../components/sorts/SearchInput";
-import { fontSemibold28 } from "../../../utils/style/fonts";
+import { fontSemibold11, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 export function Header({
@@ -30,6 +31,25 @@ export function Header({
       }}
     >
       <BrandText style={fontSemibold28}>dApp Store</BrandText>
+      <Pressable
+        style={{
+          marginTop: layout.spacing_x3,
+          flexDirection: "row",
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+        onPress={() =>
+          Linking.openURL(
+            "https://github.com/TERITORI/teritori-dapp/issues/564",
+          )
+        }
+      >
+        <SparklesIcon width={32} color="white" />
+
+        <BrandText style={fontSemibold11}>
+          To be listed, submit PR on Github
+        </BrandText>
+      </Pressable>
 
       <SearchInput
         style={{

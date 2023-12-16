@@ -9,8 +9,8 @@ import React, {
 import { View } from "react-native";
 
 import {
-  UserPublicProfileScreenHeader,
   screenTabItems,
+  UserPublicProfileScreenHeader,
 } from "./UserPublicProfileHeader";
 import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
@@ -21,8 +21,11 @@ import { DAOMembers } from "../../components/dao/DAOMembers";
 import { DAOProposals } from "../../components/dao/DAOProposals";
 import { DAOsList } from "../../components/dao/DAOsList";
 import { GnoDemo } from "../../components/dao/GnoDemo";
+import { FeedMusicList } from "../../components/music/FeedMusicList";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
+import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
+import { FeedVideosList } from "../../components/video/FeedVideosList";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
@@ -53,8 +56,11 @@ const SelectedTabContent: React.FC<{
   const [network, userAddress] = parseUserId(userId);
   const { isDAO } = useIsDAO(userId);
   const { isDAOMember } = useIsDAOMember(userId, selectedWallet?.userId, isDAO);
+  const isCurrentUser = userId === selectedWallet?.userId;
+  const userName =
+    userInfo?.metadata.public_name || userInfo?.metadata.tokenId || userAddress;
 
-  const feedRequestUser: PostsRequest = useMemo(() => {
+  const feedRequestUserPosts: Partial<PostsRequest> = useMemo(() => {
     return {
       filter: {
         user: userId,
@@ -67,7 +73,20 @@ const SelectedTabContent: React.FC<{
     };
   }, [userId]);
 
-  const feedRequestMentions: PostsRequest = useMemo(() => {
+  const feedRequestUserVideos: Partial<PostsRequest> = useMemo(() => {
+    return {
+      filter: {
+        user: userId,
+        mentions: [],
+        categories: [PostCategory.Video],
+        hashtags: [],
+      },
+      limit: 10,
+      offset: 0,
+    };
+  }, [userId]);
+
+  const feedRequestMentions: Partial<PostsRequest> = useMemo(() => {
     return {
       filter: {
         user: "",
@@ -110,7 +129,7 @@ const SelectedTabContent: React.FC<{
                 ? userInfo?.metadata.tokenId || userAddress
                 : undefined
           }
-          req={feedRequestUser}
+          req={feedRequestUserPosts}
         />
       );
     case "mentionsPosts":
@@ -126,6 +145,22 @@ const SelectedTabContent: React.FC<{
               : undefined
           }
           req={feedRequestMentions}
+        />
+      );
+    case "userMusic":
+      return (
+        <FeedMusicList
+          title={isCurrentUser ? "Your music" : "Music by " + userName}
+          authorId={userId}
+          allowUpload={isCurrentUser}
+        />
+      );
+    case "userVideos":
+      return (
+        <FeedVideosList
+          title={isCurrentUser ? "Your videos" : "Videos by " + userName}
+          allowUpload={isCurrentUser}
+          req={feedRequestUserVideos}
         />
       );
     case "nfts":
@@ -166,6 +201,10 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
 }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>(initialTab);
+  const isSocialTabSelected = useMemo(
+    () => selectedTab === "userPosts" || selectedTab === "mentionsPosts",
+    [selectedTab],
+  );
 
   const prevId = usePrevious(id);
   useEffect(() => {
@@ -188,7 +227,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       <NotFound label="User" />
     ) : (
       <>
-        {selectedTab !== "userPosts" && selectedTab !== "mentionsPosts" ? (
+        {!isSocialTabSelected ? (
           <TabContainer>
             <UserPublicProfileScreenHeader
               userId={id}
@@ -217,7 +256,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       forceNetworkId={network?.id}
       responsive
       fullWidth
-      noScroll={selectedTab === "userPosts" || selectedTab === "mentionsPosts"}
+      noScroll={isSocialTabSelected}
       footerChildren={<></>}
       headerChildren={
         <BrandText style={fontSemibold20}>

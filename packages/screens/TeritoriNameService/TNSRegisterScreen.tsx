@@ -8,7 +8,7 @@ import { useTNS } from "../../context/TNSProvider";
 import { useNSMintAvailability } from "../../hooks/useNSMintAvailability";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork } from "../../networks";
-import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
+import { neutral00, neutral33 } from "../../utils/style/colors";
 
 interface TNSRegisterScreenProps {
   onClose: TNSCloseHandler;
@@ -55,7 +55,6 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
           <PrimaryButton
             size="XL"
             width={280}
-            squaresBackgroundColor={neutral17}
             text="Register your Username"
             onPress={() => {
               setName(name);
@@ -72,7 +71,6 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
             onPress={() => {
               onClose("TNSConsultName");
             }}
-            squaresBackgroundColor={neutral17}
           />
         )}
       </FindAName>

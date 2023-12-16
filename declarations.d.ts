@@ -17,4 +17,10 @@ declare module "*.jpg" {
   export = value;
 }
 
+declare module "*.mp4" {
+  const src: string;
+  export default src;
+}
+
 declare module "react-native-smooth-slider";
+declare module "react-native-keyboard-aware-scrollview";

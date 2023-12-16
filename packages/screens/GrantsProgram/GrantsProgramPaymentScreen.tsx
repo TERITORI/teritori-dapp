@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { HeaderBackButton } from "./components/HeaderBackButton";
-import { Tag } from "./components/Tag";
+import { Tag } from "./components/Milestone";
 import discordSVG from "../../../assets/icons/discord.svg";
 import githubSVG from "../../../assets/icons/github.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
@@ -66,9 +66,7 @@ export const GrantsProgramPaymentScreen: ScreenFC<
         {/* Left Col ==========================================================*/}
         <View style={{ flex: 1 }}>
           <TertiaryBox
-            fullWidth
-            noBrokenCorners
-            mainContainerStyle={{
+            style={{
               backgroundColor: neutral17,
               borderWidth: 0,
               padding: layout.spacing_x2,
@@ -99,9 +97,7 @@ export const GrantsProgramPaymentScreen: ScreenFC<
           <SpacerColumn size={2} />
 
           <TertiaryBox
-            noBrokenCorners
-            fullWidth
-            mainContainerStyle={{
+            style={{
               backgroundColor: neutral17,
               padding: layout.spacing_x2,
               borderWidth: 0,
@@ -129,9 +125,7 @@ export const GrantsProgramPaymentScreen: ScreenFC<
           <SpacerColumn size={2} />
 
           <TertiaryBox
-            noBrokenCorners
-            fullWidth
-            mainContainerStyle={{
+            style={{
               backgroundColor: neutral17,
               padding: layout.spacing_x2,
               borderWidth: 0,
@@ -166,9 +160,7 @@ export const GrantsProgramPaymentScreen: ScreenFC<
         {/* Right Col =========================================================*/}
         <View style={{ maxWidth: 264 }}>
           <TertiaryBox
-            fullWidth
-            noBrokenCorners
-            mainContainerStyle={{
+            style={{
               padding: layout.spacing_x2,
               backgroundColor: neutral17,
               borderWidth: 0,
@@ -206,9 +198,7 @@ export const GrantsProgramPaymentScreen: ScreenFC<
           <SpacerColumn size={2} />
 
           <TertiaryBox
-            fullWidth
-            noBrokenCorners
-            mainContainerStyle={{
+            style={{
               padding: layout.spacing_x2,
               backgroundColor: neutral17,
               borderWidth: 0,
@@ -225,11 +215,7 @@ export const GrantsProgramPaymentScreen: ScreenFC<
 
           <SpacerColumn size={2} />
 
-          <PrimaryButton
-            noBrokenCorners
-            fullWidth
-            text="Proceed to Payment Proposal"
-          />
+          <PrimaryButton fullWidth text="Proceed to Payment Proposal" />
         </View>
       </FlexRow>
     </ScreenContainer>

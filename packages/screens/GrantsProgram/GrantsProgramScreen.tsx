@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { GrantBox } from "./components/GrantBox";
+import { useGrantContracts } from "./hooks/useGrantContracts";
+import { Project } from "./types";
 import filterSVG from "../../../assets/icons/filter.svg";
 import { BrandText } from "../../components/BrandText";
 import { FlexRow } from "../../components/FlexRow";
@@ -10,6 +12,7 @@ import { IconButton } from "../../components/buttons/IconButton";
 import { SimpleButton } from "../../components/buttons/SimpleButton";
 import { Separator } from "../../components/separators/Separator";
 import { SpacerRow } from "../../components/spacer";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
   neutral00,
@@ -22,6 +25,9 @@ import { layout } from "../../utils/style/layout";
 
 export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
   const [searchText, setSearchText] = useState("");
+  const networkId = useSelectedNetworkId();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const { getContracts } = useGrantContracts(networkId);
 
   const navigation = useAppNavigation();
 
@@ -32,6 +38,14 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
   const gotoGrantsProgramManager = () => {
     navigation.navigate("GrantsProgramManager");
   };
+
+  const gotoCreateGrant = () => {
+    navigation.navigate("GrantsProgramMakeRequest", { step: 1 });
+  };
+
+  useEffect(() => {
+    getContracts(0, 10).then(setProjects);
+  }, []);
 
   return (
     <ScreenContainer
@@ -59,6 +73,7 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
           text="Create a Grant"
           color={primaryColor}
           size="SM"
+          onPress={gotoCreateGrant}
         />
       </FlexRow>
 
@@ -122,10 +137,12 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
           justifyContent: "space-between",
         }}
       >
-        {[1, 2, 3, 4, 5, 6, 7].map((id) => {
+        {projects.map((project) => {
           return (
             <GrantBox
-              onPress={() => gotoGrantsProgramDetail(String(id))}
+              key={"" + project.id}
+              project={project}
+              onPress={() => gotoGrantsProgramDetail("" + project.id)}
               containerStyle={{
                 marginTop: layout.spacing_x2,
                 marginRight: layout.spacing_x2,

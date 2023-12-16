@@ -65,6 +65,7 @@ export const useSidebar = () => {
             id: option.id,
             title: option.title,
             route: option.route,
+            url: option.url,
             icon: option.icon,
           };
     });

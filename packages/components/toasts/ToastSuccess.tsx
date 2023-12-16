@@ -3,6 +3,7 @@ import { Dimensions, TouchableOpacity, View } from "react-native";
 
 import { neutral11, neutral77, successColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
+import { Box } from "../boxes/Box";
 
 export const ToastSuccess: React.FC<{
   title: string;
@@ -16,13 +17,6 @@ export const ToastSuccess: React.FC<{
     <TouchableOpacity
       onPress={onPress}
       style={{
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: neutral11,
-        borderColor: successColor,
-        borderRadius: 8,
-        borderWidth: 1,
-        borderStyle: "solid",
         width,
         maxWidth: width,
         height: "auto",
@@ -32,29 +26,42 @@ export const ToastSuccess: React.FC<{
         zIndex: 999,
       }}
     >
-      <View
+      <Box
+        notched
         style={{
-          width: width - marginHorizontal * 2,
-          marginVertical: 12,
-          marginHorizontal,
+          flexDirection: "row",
+          alignItems: "center",
+          backgroundColor: neutral11,
+          borderColor: successColor,
+          borderWidth: 1,
+          width: "100%",
+          height: "100%",
         }}
       >
-        <BrandText style={{ fontSize: 13, lineHeight: 20, width: "100%" }}>
-          {title}
-        </BrandText>
-        {message ? (
-          <BrandText
-            style={{
-              fontSize: 13,
-              lineHeight: 15,
-              color: neutral77,
-              width: "100%",
-            }}
-          >
-            {message}
+        <View
+          style={{
+            width: width - marginHorizontal * 2,
+            marginVertical: 12,
+            marginHorizontal,
+          }}
+        >
+          <BrandText style={{ fontSize: 13, lineHeight: 20, width: "100%" }}>
+            {title}
           </BrandText>
-        ) : null}
-      </View>
+          {message ? (
+            <BrandText
+              style={{
+                fontSize: 13,
+                lineHeight: 15,
+                color: neutral77,
+                width: "100%",
+              }}
+            >
+              {message}
+            </BrandText>
+          ) : null}
+        </View>
+      </Box>
     </TouchableOpacity>
   );
 };

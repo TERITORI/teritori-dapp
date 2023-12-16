@@ -93,7 +93,6 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     [data],
   );
   const moreCommentsCount = localComment.subPostLength - comments.length;
-  const metadata = JSON.parse(localComment.metadata);
   const authorNSInfo = useNSUserInfo(localComment.authorId);
   const username = authorNSInfo?.metadata?.tokenId
     ? tinyAddress(authorNSInfo?.metadata?.tokenId || "", 19)
@@ -185,20 +184,14 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
               <SocialCardHeader
                 authorAddress={authorAddress}
                 authorId={localComment.authorId}
-                postMetadata={metadata}
+                createdAt={localComment.createdAt}
                 authorMetadata={authorNSInfo?.metadata}
               />
 
               <SpacerColumn size={1.5} />
 
               {/*====== Card Content */}
-              <SocialMessageContent
-                authorId={localComment.authorId}
-                postId={localComment.identifier}
-                metadata={metadata}
-                postCategory={localComment.category}
-              />
-
+              <SocialMessageContent post={localComment} />
               <SpacerColumn size={1.5} />
 
               {/*====== Card Actions */}
@@ -208,7 +201,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                 post={localComment}
                 handleReply={handleReply}
                 refetchFeed={refetchFeed}
-                setLocalPost={setLocalComment}
+                setPost={setLocalComment}
               />
             </View>
           </View>

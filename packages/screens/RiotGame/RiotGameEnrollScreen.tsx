@@ -14,8 +14,7 @@ import closeSVG from "../../../assets/icons/close.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { SimpleButton } from "../../components/buttons/SimpleButton";
+import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
 import { TertiaryButton } from "../../components/buttons/TertiaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
@@ -55,6 +54,7 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { SimpleButton } from "../../components/buttons/SimpleButton";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 const EMBEDDED_VIDEO_URI =
@@ -382,7 +382,7 @@ export const RiotGameEnrollScreen: React.FC = () => {
             </BrandText>
           </View>
 
-          <TertiaryBox
+          <LegacyTertiaryBox
             mainContainerStyle={{
               padding: layout.spacing_x4,
               alignItems: "flex-start",
@@ -396,7 +396,7 @@ export const RiotGameEnrollScreen: React.FC = () => {
                 .utc(stakingDuration)
                 .format("HH [hours] mm [minutes] ss [seconds]")}
             </BrandText>
-          </TertiaryBox>
+          </LegacyTertiaryBox>
 
           <View
             style={{

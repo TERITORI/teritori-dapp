@@ -1,5 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React from "react";
 
+import { ArticlesFeedScreen } from "./ArticlesFeedScreen";
+import { ModerationFeedScreen } from "./ModerationFeedScreen";
+import { MusicFeedScreen } from "./MusicFeedScreen";
+import { PicsFeedScreen } from "./PicsFeedScreen";
+import { VideosFeedScreen } from "./VideosFeedScreen";
 import { FeedHeader } from "./components/FeedHeader";
 import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
@@ -10,52 +15,57 @@ import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { NetworkFeature } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
-import { feedTabToCategories, feedsTabItems } from "../../utils/social-feed";
 
 export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
   useForceNetworkSelection(params?.network);
   const isMobile = useIsMobile();
-  const [selectedTab, setSelectedTab] =
-    useState<keyof typeof feedsTabItems>("all");
 
-  const feedRequest: PostsRequest = useMemo(() => {
-    return {
-      filter: {
-        categories: feedTabToCategories(selectedTab),
-        user: "",
-        mentions: [],
-        hashtags: [],
-      },
-      limit: 10,
-      offset: 0,
-    };
-  }, [selectedTab]);
+  switch (params?.tab) {
+    case "music":
+      return <MusicFeedScreen />;
+    case "pics":
+      return <PicsFeedScreen />;
+    case "videos":
+      return <VideosFeedScreen />;
+    case "articles":
+      return <ArticlesFeedScreen />;
+    case "moderationDAO":
+      return <ModerationFeedScreen />;
+    default:
+      return (
+        <ScreenContainer
+          fullWidth
+          responsive
+          noMargin
+          noScroll
+          footerChildren={<></>}
+          forceNetworkFeatures={[NetworkFeature.SocialFeed]}
+          headerChildren={<BrandText>Social Feed</BrandText>}
+        >
+          <NewsFeed
+            req={defaultFeedRequest}
+            isFlagged={params?.tab === "moderationDAO"}
+            disablePosting={params?.tab === "moderationDAO"}
+            Header={() => (
+              <>
+                {/* ScreenContainer has noScroll, so we need to add MobileTitle here */}
+                {isMobile && <MobileTitle title="SOCIAL FEED" />}
+                <FeedHeader selectedTab="" />
+              </>
+            )}
+          />
+        </ScreenContainer>
+      );
+  }
+};
 
-  return (
-    <ScreenContainer
-      fullWidth
-      responsive
-      noMargin
-      noScroll
-      footerChildren={<></>}
-      forceNetworkFeatures={[NetworkFeature.SocialFeed]}
-      headerChildren={<BrandText>Social Feed</BrandText>}
-    >
-      <NewsFeed
-        req={feedRequest}
-        isFlagged={selectedTab === "moderationDAO"}
-        disablePosting={selectedTab === "moderationDAO"}
-        Header={() => (
-          <>
-            {/* ScreenContainer has noScroll, so we need to add MobileTitle here */}
-            {isMobile && <MobileTitle title="NEWS FEED" />}
-            <FeedHeader
-              selectedTab={selectedTab}
-              onTabChange={setSelectedTab}
-            />
-          </>
-        )}
-      />
-    </ScreenContainer>
-  );
+const defaultFeedRequest: Partial<PostsRequest> = {
+  filter: {
+    categories: [],
+    user: "",
+    mentions: [],
+    hashtags: [],
+  },
+  limit: 10,
+  offset: 0,
 };

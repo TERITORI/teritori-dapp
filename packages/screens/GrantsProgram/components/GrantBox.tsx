@@ -1,7 +1,7 @@
 import React from "react";
-import { TouchableOpacity, View, ViewStyle } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
-import { Tag } from "./Tag";
+import { Tag } from "./Milestone";
 import discordSVG from "../../../../assets/icons/discord.svg";
 import githubSVG from "../../../../assets/icons/github.svg";
 import gnoSVG from "../../../../assets/icons/networks/gno.svg";
@@ -10,7 +10,9 @@ import twitterSVG from "../../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../../assets/icons/website.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
+import { Link } from "../../../components/Link";
 import { SVG } from "../../../components/SVG";
+import { BoxStyle } from "../../../components/boxes/Box";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SimpleButton } from "../../../components/buttons/SimpleButton";
 import { SocialButton } from "../../../components/buttons/SocialButton";
@@ -24,13 +26,19 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { Project } from "../types";
 
 export const GrantBox: React.FC<{
   onPress?: () => void;
-  containerStyle?: ViewStyle;
-}> = ({ containerStyle, onPress }) => {
+  containerStyle?: BoxStyle;
+  project: Project;
+}> = ({ containerStyle, onPress, project }) => {
+  if (!project) {
+    return null;
+  }
+
   return (
-    <TertiaryBox width={400} noBrokenCorners style={containerStyle}>
+    <TertiaryBox style={[containerStyle, { width: 400 }]}>
       {/* Body ============================================================== */}
       <View style={{ margin: layout.spacing_x2 }}>
         <FlexRow>
@@ -41,22 +49,16 @@ export const GrantBox: React.FC<{
           <View style={{ marginLeft: layout.spacing_x2 }}>
             <TouchableOpacity onPress={onPress}>
               <BrandText style={fontSemibold20}>
-                Create a web Game using Gnolang
+                {project.metadata.shortDescData.name}
               </BrandText>
             </TouchableOpacity>
             <FlexRow style={{ marginTop: layout.spacing_x0_75 }}>
-              <Tag
-                text="2005.12.4"
-                containerStyle={{ marginRight: layout.spacing_x1 }}
-              />
-              <Tag
-                text="dapp"
-                containerStyle={{ marginRight: layout.spacing_x1 }}
-              />
-              <Tag
-                text="Structure"
-                containerStyle={{ marginRight: layout.spacing_x1 }}
-              />
+              {project.metadata.shortDescData.tags.split(",").map((tag) => (
+                <Tag
+                  text={tag}
+                  containerStyle={{ marginRight: layout.spacing_x1 }}
+                />
+              ))}
             </FlexRow>
           </View>
         </FlexRow>
@@ -67,9 +69,7 @@ export const GrantBox: React.FC<{
             { color: neutral77, marginTop: layout.spacing_x2 },
           ]}
         >
-          Build a simple but creative browser based game using Gnolang,
-          interacting with various custom realms, and providing a great user
-          experience. Free your creativity!
+          {project.metadata.shortDescData.desc}
         </BrandText>
       </View>
 
@@ -90,14 +90,16 @@ export const GrantBox: React.FC<{
               { flexGrow: 1, marginLeft: layout.spacing_x2 },
             ]}
           >
-            @Community-Grants-DAO.gno
+            @{project.metadata.shortDescData.paymentAddr}
           </BrandText>
 
           <FlexRow style={{ width: "auto" }}>
             <BrandText style={[fontSemibold13, { color: neutral77 }]}>
               Grant:
             </BrandText>
-            <BrandText style={fontSemibold13}> $50K</BrandText>
+            <BrandText style={fontSemibold13}>
+              ${project.metadata.shortDescData.budget}
+            </BrandText>
           </FlexRow>
         </FlexRow>
 
@@ -110,18 +112,34 @@ export const GrantBox: React.FC<{
               iconSvg={shareSVG}
               iconColor={secondaryColor}
             />
+
             <SpacerRow size={1} />
-            <SocialButton text="" iconSvg={discordSVG} />
+
+            <Link to={project.metadata.teamAndLinkData.discordLink}>
+              <SocialButton text="" iconSvg={discordSVG} />
+            </Link>
+
             <SpacerRow size={1} />
-            <SocialButton text="" iconSvg={websiteSVG} />
+
+            <Link to={project.metadata.teamAndLinkData.websiteLink}>
+              <SocialButton text="" iconSvg={websiteSVG} />
+            </Link>
+
             <SpacerRow size={1} />
-            <SocialButton text="" iconSvg={githubSVG} />
+
+            <Link to={project.metadata.teamAndLinkData.githubLink}>
+              <SocialButton text="" iconSvg={githubSVG} />
+            </Link>
+
             <SpacerRow size={1} />
-            <SocialButton text="" iconSvg={twitterSVG} />
+
+            <Link to={project.metadata.teamAndLinkData.twitterProfile}>
+              <SocialButton text="" iconSvg={twitterSVG} />
+            </Link>
           </FlexRow>
 
           <SimpleButton
-            text="Open"
+            text={project.status}
             size="SM"
             bgColor="#C8FFAE1A"
             color="#C8FFAE"

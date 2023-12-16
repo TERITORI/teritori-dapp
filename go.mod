@@ -19,6 +19,7 @@ require (
 	github.com/ipfs/go-ds-badger v0.3.0
 	github.com/jackc/pgx/v5 v5.3.0
 	github.com/mehanizm/airtable v0.2.8
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/peterbourgon/ff/v3 v3.3.0
 	github.com/pkg/errors v0.9.1
 	github.com/rubenv/sql-migrate v1.2.0
@@ -299,7 +300,6 @@ require (
 	github.com/mikioh/tcpopt v0.0.0-20190314235656-172688c1accc // indirect
 	github.com/minio/highwayhash v1.0.2 // indirect
 	github.com/minio/sha256-simd v1.0.0 // indirect
-	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mr-tron/base58 v1.2.0 // indirect
 	github.com/mtibben/percent v0.2.1 // indirect
 	github.com/multiformats/go-base32 v0.1.0 // indirect
@@ -389,6 +389,7 @@ require (
 )
 
 replace (
+	berty.tech/weshnet => github.com/TERITORI/weshnet v0.0.0-20231127151743-abee97f5abd4
 	github.com/cosmos/iavl => github.com/cosmos/iavl v0.17.3
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 )

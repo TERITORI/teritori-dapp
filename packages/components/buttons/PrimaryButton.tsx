@@ -16,6 +16,7 @@ import { primaryColor, primaryTextColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { BoxStyle } from "../boxes/Box";
 import { SecondaryBox } from "../boxes/SecondaryBox";
 
 export const PrimaryButton: React.FC<{
@@ -23,8 +24,7 @@ export const PrimaryButton: React.FC<{
   text: string;
   width?: number;
   onPress?: (() => Promise<void>) | (() => void);
-  squaresBackgroundColor?: string;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<BoxStyle>;
   iconSVG?: React.FC<SvgProps>;
   iconColor?: string;
   disabled?: boolean;
@@ -33,7 +33,6 @@ export const PrimaryButton: React.FC<{
   touchableStyle?: StyleProp<ViewStyle>;
   RightComponent?: React.FC;
   color?: string;
-  noBrokenCorners?: boolean;
   isLoading?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
@@ -41,7 +40,6 @@ export const PrimaryButton: React.FC<{
   size = "M",
   text,
   onPress,
-  squaresBackgroundColor,
   style,
   iconSVG,
   disabled = false,
@@ -51,7 +49,6 @@ export const PrimaryButton: React.FC<{
   RightComponent,
   iconColor,
   color = primaryColor,
-  noBrokenCorners = false,
   isLoading,
 }) => {
   const [isLocalLoading, setIsLocalLoading] = useState(false);
@@ -71,31 +68,34 @@ export const PrimaryButton: React.FC<{
 
   const isDisabled = !!(disabled || (loader && (isLocalLoading || isLoading)));
 
-  const boxProps = {
-    style,
-    disabled,
-    squaresBackgroundColor,
-    width,
-    fullWidth,
-    noBrokenCorners,
-  };
-
   return (
     <TouchableOpacity
       onPress={onPress ? handlePress : undefined}
       disabled={isDisabled}
-      style={[{ width: fullWidth ? "100%" : width }, touchableStyle]}
+      style={[
+        {
+          width: fullWidth ? "100%" : width,
+          flexDirection: "row",
+        },
+        touchableStyle,
+      ]}
     >
       <SecondaryBox
-        height={heightButton(size)}
-        mainContainerStyle={{
-          flexDirection: "row",
-          borderRadius: borderRadiusButton(size),
-          backgroundColor: color,
-          paddingHorizontal: 20,
-          opacity: isDisabled ? 0.5 : 1,
-        }}
-        {...boxProps}
+        style={[
+          {
+            flexDirection: "row",
+            borderRadius: borderRadiusButton(size),
+            backgroundColor: color,
+            padding: 0,
+            paddingHorizontal: 20,
+            opacity: isDisabled ? 0.5 : 1,
+            height: heightButton(size),
+            alignItems: "center",
+            justifyContent: "center",
+            width: fullWidth ? "100%" : width,
+          },
+          style,
+        ]}
       >
         {iconSVG ? (
           <SVG

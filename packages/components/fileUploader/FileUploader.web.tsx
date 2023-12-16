@@ -18,7 +18,7 @@ import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { DeleteButton } from "../FilePreview/DeleteButton";
 import { SVG } from "../SVG";
-import { PrimaryBox } from "../boxes/PrimaryBox";
+import { LegacyPrimaryBox } from "../boxes/LegacyPrimaryBox";
 import { GradientText } from "../gradientText";
 import { Label } from "../inputs/TextInputCustom";
 
@@ -164,7 +164,7 @@ export const FileUploader: FC<FileUploaderProps> = ({
                 />
               </>
             ) : (
-              <PrimaryBox
+              <LegacyPrimaryBox
                 noBrokenCorners
                 fullWidth
                 colors={[
@@ -218,7 +218,7 @@ export const FileUploader: FC<FileUploaderProps> = ({
                     accept={mimeTypes?.join(",")}
                   />
                 </View>
-              </PrimaryBox>
+              </LegacyPrimaryBox>
             )}
           </div>
         </TouchableOpacity>

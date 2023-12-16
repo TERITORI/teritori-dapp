@@ -75,6 +75,8 @@ export const useMultisigTransactions = (
           const t: ParsedTransaction = {
             ...tx,
             msgs,
+            // FIXME: sanitize
+            // eslint-disable-next-line no-restricted-syntax
             fee: JSON.parse(tx.feeJson),
             createdAt: new Date(tx.createdAt),
           };

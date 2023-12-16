@@ -21,7 +21,7 @@ import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { SpacerRow } from "../spacer";
 
 type CollapsableSectionProps = {
@@ -75,7 +75,7 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
   };
 
   return (
-    <TertiaryBox fullWidth>
+    <LegacyTertiaryBox fullWidth>
       <Pressable onPress={toggleExpansion} style={styles.header}>
         <View style={styles.rowWithCenter}>
           <SVG source={icon} width={14} height={14} color={secondaryColor} />
@@ -107,7 +107,7 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
           {children}
         </View>
       </Animated.View>
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 };
 

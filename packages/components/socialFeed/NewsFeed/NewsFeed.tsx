@@ -24,6 +24,7 @@ import {
 } from "../../../hooks/feed/useFetchFeed";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
   layout,
   RESPONSIVE_BREAKPOINT_S,
@@ -32,6 +33,7 @@ import {
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
 import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
+import { SocialVideoCard } from "../SocialCard/cards/SocialVideoCard";
 
 const OFFSET_Y_LIMIT_FLOATING = 224;
 export const ROUND_BUTTON_WIDTH_L = 60;
@@ -39,7 +41,7 @@ export const ROUND_BUTTON_WIDTH_S = 42;
 
 interface NewsFeedProps {
   Header: React.ComponentType;
-  req: PostsRequest;
+  req: Partial<PostsRequest>;
   // Receive this if the post is created from HashFeedScreen
   additionalHashtag?: string;
   // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
@@ -61,14 +63,17 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   const isMobile = useIsMobile();
   const { width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
+  const selectedWallet = useSelectedWallet();
+  const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
-    useFetchFeed(req);
+    useFetchFeed(reqWithQueryUser);
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
   const posts = useMemo(
     () => (data ? combineFetchFeedPages(data.pages) : []),
     [data],
   );
+
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -185,7 +190,17 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           }}
         >
           {post.category === PostCategory.Article ? (
-            <SocialArticleCard post={post} style={cardStyle} />
+            <SocialArticleCard
+              post={post}
+              style={cardStyle}
+              refetchFeed={refetch}
+            />
+          ) : post.category === PostCategory.Video ? (
+            <SocialVideoCard
+              post={post}
+              style={cardStyle}
+              refetchFeed={refetch}
+            />
           ) : (
             <SocialThreadCard
               post={post}
@@ -205,7 +220,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   return (
     <>
       <Animated.FlatList
-        scrollEventThrottle={0.1}
         data={posts}
         renderItem={({ item: post }) => RenderItem(post)}
         ListHeaderComponentStyle={{
@@ -217,7 +231,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         keyExtractor={(post: Post) => post.identifier}
         onScroll={scrollHandler}
         contentContainerStyle={contentCStyle}
-        onEndReachedThreshold={1}
+        onEndReachedThreshold={4}
         onEndReached={onEndReached}
       />
 

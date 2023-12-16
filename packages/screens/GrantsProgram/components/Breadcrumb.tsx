@@ -14,7 +14,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { useMakeRequestState } from "../GrantsProgramMakeRequestScreen/useMakeRequestHook";
+import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 
 const Step: React.FC<{
   indice: number;
@@ -104,16 +104,12 @@ export const Breadcrumb: React.FC<{
 
   return (
     <TertiaryBox
-      noBrokenCorners
-      fullWidth
-      mainContainerStyle={[
-        {
-          backgroundColor: neutral17,
-          borderWidth: 0,
-          padding: layout.spacing_x1_5,
-        },
-        containerStyle,
-      ]}
+      style={{
+        backgroundColor: neutral17,
+        borderWidth: 0,
+        padding: layout.spacing_x1_5,
+        marginTop: layout.spacing_x2,
+      }}
     >
       <FlexRow style={{ width: "auto" }}>
         {STEPS.map((step, idx) => {

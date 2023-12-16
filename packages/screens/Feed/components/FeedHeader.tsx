@@ -1,6 +1,7 @@
 import { cloneDeep } from "lodash";
 import React, { useMemo } from "react";
 
+import { PostsRequest } from "../../../api/feed/v1/feed";
 import { BrandText } from "../../../components/BrandText";
 import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn } from "../../../components/spacer";
@@ -11,21 +12,18 @@ import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId, NetworkKind, parseUserId } from "../../../networks";
+import { useAppNavigation } from "../../../utils/navigation";
 import { feedsTabItems } from "../../../utils/social-feed";
 import { primaryColor } from "../../../utils/style/colors";
 import { fontSemibold16 } from "../../../utils/style/fonts";
 
 type FeedHeaderProps = {
   selectedTab: keyof typeof feedsTabItems;
-  onTabChange: (value: keyof typeof feedsTabItems) => void;
 };
 
-export const FeedHeader: React.FC<FeedHeaderProps> = ({
-  selectedTab,
-  onTabChange,
-}) => {
+export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
   const { width } = useMaxResolution();
-
+  const navigation = useAppNavigation();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkKind = selectedNetworkInfo?.kind;
   const selectedWallet = useSelectedWallet();
@@ -33,7 +31,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
     selectedWallet?.userId,
   );
 
-  const req = {
+  const req: Partial<PostsRequest> = {
     filter: {
       categories: [PostCategory.Flagged],
       user: "",
@@ -42,6 +40,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
     },
     limit: 1,
     offset: 0,
+    queryUserId: selectedWallet?.userId,
   };
   const { data } = useFetchFeed(req);
 
@@ -64,6 +63,8 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
       delete res["moderationDAO"];
     }
 
+    delete res["videoNotes"];
+    delete res["sounds"];
     return res;
   }, [hasFlaggedPosts, isModerationDAOMember, selectedNetworkKind]);
 
@@ -72,7 +73,9 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
       <Tabs
         items={adjustedTabItems}
         selected={selectedTab}
-        onSelect={onTabChange}
+        onSelect={(key) => {
+          navigation.navigate("Feed", { tab: key });
+        }}
         style={{
           alignSelf: "center",
           height: 64,

@@ -1,14 +1,20 @@
 import React from "react";
 import { View } from "react-native";
 
+import { MakeRequestFooter } from "./Footer";
 import { neutral17 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
-import { TaskBoard } from "../components/TaskBoard";
+import { MilestoneBoard } from "../components/MilestoneBoard";
+import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 
 export const Milestones: React.FC = () => {
+  const {
+    actions: { goNextStep },
+  } = useMakeRequestState();
+
   return (
     <View>
-      <TaskBoard
+      <MilestoneBoard
         editable
         containerStyle={{
           backgroundColor: neutral17,
@@ -16,6 +22,8 @@ export const Milestones: React.FC = () => {
           borderRadius: 8,
         }}
       />
+
+      <MakeRequestFooter disableNext={false} onSubmit={goNextStep} />
     </View>
   );
 };

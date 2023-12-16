@@ -22,7 +22,7 @@ import {
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 export const TransparentButtonOutline: React.FC<{
   size: ButtonsSize;
@@ -70,7 +70,7 @@ export const TransparentButtonOutline: React.FC<{
       disabled={disabled}
       style={{ width: fullWidth ? "100%" : width }}
     >
-      <TertiaryBox
+      <LegacyTertiaryBox
         disabledBorderColor={neutral22}
         height={heightButton(size)}
         mainContainerStyle={{
@@ -101,7 +101,7 @@ export const TransparentButtonOutline: React.FC<{
             <RightComponent />
           </View>
         )}
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </TouchableOpacity>
   );
 };

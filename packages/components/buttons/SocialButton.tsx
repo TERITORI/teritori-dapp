@@ -11,7 +11,7 @@ import {
 import { fontMedium14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { SecondaryBox } from "../boxes/SecondaryBox";
+import { LegacySecondaryBox } from "../boxes/LegacySecondaryBox";
 
 export const SocialButton: React.FC<{
   text?: string;
@@ -36,7 +36,7 @@ export const SocialButton: React.FC<{
 }) => {
   return (
     <TouchableOpacity onPress={onPress} style={style}>
-      <SecondaryBox
+      <LegacySecondaryBox
         // We don't handle broken corners for now, because this button can be used on an image
         noBrokenCorners={noBrokenCorners}
         mainContainerStyle={{
@@ -45,30 +45,26 @@ export const SocialButton: React.FC<{
         height={height === undefined ? 44 : height}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <SecondaryBox
+          <LegacySecondaryBox
             noBrokenCorners={noBrokenCorners}
-            style={{ marginLeft: 6 }}
+            style={{ marginLeft: text ? 6 : 0 }}
             mainContainerStyle={{ backgroundColor: neutral33, borderRadius: 6 }}
             width={32}
             height={32}
             squaresBackgroundColor={withAlpha(neutral22, 0.64)}
             cornerWidth={5.5}
           >
-            <SVG source={iconSvg} height={20} width={20} color={iconColor} />
-          </SecondaryBox>
-
+            <SVG source={iconSvg} height={20} width={20} />
+          </LegacySecondaryBox>
           {text && (
             <BrandText
-              style={[
-                fontMedium14,
-                { marginLeft: 8, marginRight: 16, color: textColor },
-              ]}
+              style={[fontMedium14, { marginLeft: 8, marginRight: 16 }]}
             >
               {text}
             </BrandText>
           )}
         </View>
-      </SecondaryBox>
+      </LegacySecondaryBox>
     </TouchableOpacity>
   );
 };

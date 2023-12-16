@@ -63,7 +63,6 @@ const NotOwnerActions: React.FC<{
             onClose();
             navigation.navigate("UserPublicProfile", { id: ownerId });
           }}
-          squaresBackgroundColor={neutral17}
         />
       )}
       <PrimaryButton
@@ -72,7 +71,6 @@ const NotOwnerActions: React.FC<{
         text="Send funds"
         // TODO: if no signed, connectKeplr, then, open modal
         onPress={() => setSendFundsModalVisible(true)}
-        squaresBackgroundColor={neutral17}
       />
       <TNSSendFundsModal
         onClose={() => setSendFundsModalVisible(false)}
@@ -209,7 +207,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
       hideMainSeparator
       label={name}
       width={457}
-      contentStyle={{
+      boxStyle={{
         backgroundColor: neutral17,
         borderWidth: 1,
         borderColor: neutral33,

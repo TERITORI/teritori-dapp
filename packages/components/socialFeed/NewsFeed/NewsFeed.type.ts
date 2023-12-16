@@ -15,10 +15,24 @@ export enum PostCategory {
   Article,
   Picture,
   Audio,
-  Video,
+  VideoNote,
   Question,
   BriefForStableDiffusion,
   Flagged,
+  MusicAudio,
+  Video,
+}
+
+export interface NewArticleFormValues {
+  title: string;
+  hashtags: string[];
+  mentions: string[];
+  message: string;
+  files?: LocalFileData[];
+  gifs?: string[];
+  nftStorageApiToken?: string;
+  thumbnailImage?: LocalFileData;
+  shortDescription?: string;
 }
 
 export interface NewPostFormValues {
@@ -28,9 +42,6 @@ export interface NewPostFormValues {
   message: string;
   files?: LocalFileData[];
   gifs?: string[];
-  nftStorageApiToken?: string;
-  thumbnailImage?: LocalFileData;
-  shortDescription: string;
 }
 
 export interface PostResultExtra extends PostResult {
@@ -42,7 +53,7 @@ export interface PostExtra extends Post {
 
 // some files are malformed, we use this filter to get only valid file data
 const MaybeFiles = z
-  .array(z.any())
+  .array(z.unknown())
   .transform((as) =>
     as.filter(
       (a): a is RemoteFileData => ZodRemoteFileData.safeParse(a).success,
@@ -56,8 +67,6 @@ export const ZodSocialFeedPostMetadata = z.object({
   gifs: z.array(z.string()).optional(),
   hashtags: z.array(z.string()),
   mentions: z.array(z.string()),
-  createdAt: z.string(),
-  updatedAt: z.string(),
 });
 export type SocialFeedPostMetadata = z.infer<typeof ZodSocialFeedPostMetadata>;
 
@@ -70,14 +79,30 @@ export const ZodSocialFeedArticleMetadata = z.object({
   gifs: z.array(z.string()).optional(),
   hashtags: z.array(z.string()),
   mentions: z.array(z.string()),
-  createdAt: z.string(),
-  updatedAt: z.string(),
 });
-/*
 export type SocialFeedArticleMetadata = z.infer<
   typeof ZodSocialFeedArticleMetadata
 >;
-*/
+
+export const ZodSocialFeedTrackMetadata = z.object({
+  title: z.string(),
+  description: z.string().optional(),
+  audioFile: ZodRemoteFileData,
+});
+
+export type SocialFeedTrackMetadata = z.infer<
+  typeof ZodSocialFeedTrackMetadata
+>;
+
+export const ZodSocialFeedVideoMetadata = z.object({
+  title: z.string(),
+  description: z.string().optional(),
+  videoFile: ZodRemoteFileData,
+});
+
+export type SocialFeedVideoMetadata = z.infer<
+  typeof ZodSocialFeedVideoMetadata
+>;
 
 export type ReplyToType = {
   username: string;

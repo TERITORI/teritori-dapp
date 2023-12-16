@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import { HeaderBackButton } from "./components/HeaderBackButton";
-import { Tag } from "./components/Tag";
-import { TaskBoard } from "./components/TaskBoard";
+import { Tag } from "./components/Milestone";
+import { MilestoneBoard } from "./components/MilestoneBoard";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import discordSVG from "../../../assets/icons/discord.svg";
 import githubSVG from "../../../assets/icons/github.svg";
@@ -44,10 +44,10 @@ export const GrantsProgramDetailScreen: ScreenFC<
 > = () => {
   const [searchText, setSearchText] = useState("");
   const [isHideInfo, setIsHideInfo] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<number>();
+  const [selectedMilestone, setSelectedMilestone] = useState<number>();
 
-  const selectTask = (taskId: number) => {
-    setSelectedTask(taskId === selectedTask ? undefined : taskId);
+  const selectMilestone = (milestoneId: number) => {
+    setSelectedMilestone(milestoneId === selectedMilestone ? undefined : milestoneId);
   };
 
   return (
@@ -220,7 +220,7 @@ export const GrantsProgramDetailScreen: ScreenFC<
             </>
           )}
 
-          {/* Tasks block ======================================================= */}
+          {/* Milestones block ======================================================= */}
           <View
             style={{
               // NOTE: trick to get will width background on responsible/large ScreenContainer
@@ -235,7 +235,7 @@ export const GrantsProgramDetailScreen: ScreenFC<
                 onPress={() => setIsHideInfo(!isHideInfo)}
                 style={fontSemibold20}
               >
-                All Tasks:
+                All Milestones:
               </BrandText>
               <SpacerRow size={1} />
               <BrandText
@@ -261,12 +261,12 @@ export const GrantsProgramDetailScreen: ScreenFC<
               }}
             />
 
-            <TaskBoard selectTask={selectTask} />
+            <MilestoneBoard selectMilestone={selectMilestone} />
           </View>
         </View>
 
         {/* Detail view ======================================================= */}
-        {selectedTask != null && (
+        {selectedMilestone != null && (
           <View
             style={{
               width: 300,
@@ -338,7 +338,7 @@ export const GrantsProgramDetailScreen: ScreenFC<
                   { flexGrow: 1, marginLeft: layout.spacing_x0_5 },
                 ]}
               >
-                Github task link
+                Github milestone link
               </BrandText>
               <SVG source={chevronRightSVG} width={24} height={24} />
             </TertiaryBox>

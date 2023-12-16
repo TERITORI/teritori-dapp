@@ -9,7 +9,7 @@ import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
 import { useAppNavigation } from "../../../../utils/navigation";
-import { safeJSONParse, zodTryParse } from "../../../../utils/sanitize";
+import { zodTryParseJSON } from "../../../../utils/sanitize";
 import {
   neutral00,
   neutral33,
@@ -48,7 +48,6 @@ const ARTICLE_CARD_PADDING_HORIZONTAL = layout.spacing_x2_5;
 export const SocialArticleCard: FC<{
   post: Post;
   isPostConsultation?: boolean;
-  isSmall?: boolean;
   style?: StyleProp<ViewStyle>;
   refetchFeed?: () => Promise<any>;
   isFlagged?: boolean;
@@ -64,9 +63,14 @@ export const SocialArticleCard: FC<{
   const articleCardHeight = windowWidth < SOCIAL_FEED_BREAKPOINT_M ? 214 : 254;
   const thumbnailImageWidth = viewWidth / 3;
 
-  const postMetadata = safeJSONParse(localPost.metadata);
-  const metadata = zodTryParse(ZodSocialFeedArticleMetadata, postMetadata);
-  const oldMetadata = zodTryParse(ZodSocialFeedPostMetadata, postMetadata);
+  const metadata = zodTryParseJSON(
+    ZodSocialFeedArticleMetadata,
+    localPost.metadata,
+  );
+  const oldMetadata = zodTryParseJSON(
+    ZodSocialFeedPostMetadata,
+    localPost.metadata,
+  );
   const thumbnailImage =
     metadata?.thumbnailImage ||
     // Old articles doesn't have thumbnailImage, but they have a file thumbnailImage = true
@@ -142,9 +146,10 @@ export const SocialArticleCard: FC<{
         >
           <View>
             <SocialCardHeader
+              isWrapped
               authorId={localPost.authorId}
               authorAddress={authorAddress}
-              postMetadata={simplePostMetadata}
+              createdAt={localPost.createdAt}
               authorMetadata={authorNSInfo?.metadata}
             />
 
@@ -198,7 +203,7 @@ export const SocialArticleCard: FC<{
               isPostConsultation={isPostConsultation}
               post={localPost}
               refetchFeed={refetchFeed}
-              setLocalPost={setLocalPost}
+              setPost={setLocalPost}
             />
           )}
         </LinearGradient>

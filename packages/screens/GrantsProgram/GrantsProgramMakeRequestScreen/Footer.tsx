@@ -1,7 +1,7 @@
 import React from "react";
-import { View, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 
-import { useMakeRequestState } from "./useMakeRequestHook";
+import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 import FlexRow from "../../../components/FlexRow";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
@@ -12,7 +12,6 @@ export const MakeRequestFooter: React.FC<{
   onSubmit: () => void;
   disableNext: boolean;
 }> = (props) => {
-  const { width } = useWindowDimensions();
   const {
     actions: { goPrevStep },
   } = useMakeRequestState();
@@ -21,9 +20,6 @@ export const MakeRequestFooter: React.FC<{
     <View>
       <Separator
         style={{
-          // NOTE: trick to get full width on responsible/large ScreenContainer
-          marginLeft: -140,
-          width: width + 140,
           marginVertical: layout.spacing_x2,
         }}
       />

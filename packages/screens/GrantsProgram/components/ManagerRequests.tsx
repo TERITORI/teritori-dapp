@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import { Tag } from "./Tag";
+import { Tag } from "./Milestone";
 import githubSVG from "../../../../assets/icons/github.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";

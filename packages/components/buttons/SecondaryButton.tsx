@@ -17,7 +17,7 @@ import { neutral30, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { SecondaryBox } from "../boxes/SecondaryBox";
+import { LegacySecondaryBox } from "../boxes/LegacySecondaryBox";
 
 // TODO: fix size changing on loading, like in SecondaryButtonOutline
 
@@ -90,7 +90,7 @@ export const SecondaryButton: React.FC<{
       style={[{ width: fullWidth ? "100%" : width }, touchableStyle]}
       activeOpacity={activeOpacity}
     >
-      <SecondaryBox
+      <LegacySecondaryBox
         height={heightButton(size)}
         mainContainerStyle={{
           flexDirection: "row",
@@ -127,7 +127,7 @@ export const SecondaryButton: React.FC<{
             </BrandText>
           </>
         )}
-      </SecondaryBox>
+      </LegacySecondaryBox>
     </TouchableOpacity>
   );
 };

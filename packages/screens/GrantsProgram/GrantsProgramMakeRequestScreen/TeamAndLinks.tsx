@@ -1,10 +1,11 @@
 import { Formik } from "formik";
 import React from "react";
 import { View } from "react-native";
+import { object, string } from "yup";
 
 import { MakeRequestFooter } from "./Footer";
 import { TeamAndLinkData } from "./types";
-import { useMakeRequestState } from "./useMakeRequestHook";
+import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 import { BrandText } from "../../../components/BrandText";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { Separator } from "../../../components/separators/Separator";
@@ -25,21 +26,19 @@ const emptyValues: TeamAndLinkData = {
   teamDesc: "",
 };
 
+const teamAndLinkSchema = object({
+  websiteLink: string().required().url(),
+  twitterProfile: string().required().url(),
+  discordLink: string().required().url(),
+  githubLink: string().required().url(),
+  teamDesc: string().required(),
+});
+
 export const TeamAndLinks: React.FC = () => {
   const {
     actions: { goNextStep, setTeamAndLink },
     teamAndLinkData,
   } = useMakeRequestState();
-
-  const validate = (values: TeamAndLinkData) => {
-    const errors: any = {};
-    if (!values.websiteLink) {
-      errors.websiteLink = "Website Link is required";
-    } else if (!values.twitterProfile) {
-      errors.twitterProfile = "Twitter Profile is required";
-    }
-    return errors;
-  };
 
   return (
     <View style={{ width: "100%", maxWidth: 480, margin: "auto" }}>
@@ -55,7 +54,7 @@ export const TeamAndLinks: React.FC = () => {
 
       <Formik
         initialValues={teamAndLinkData || emptyValues}
-        validate={validate}
+        validationSchema={teamAndLinkSchema}
         onSubmit={(values) => {
           setTeamAndLink(values);
           goNextStep();

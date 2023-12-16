@@ -57,7 +57,7 @@ export const MediaPlayerBarMobile: FC<{
           borderTopColor: neutral22,
         }}
       >
-        {/*TODO: Test this on mobile*/}
+        {/*TODO: Handle Prev for audios and Prev + Next for audios and videos */}
         <GestureHandlerRootView style={{ flex: 1 }}>
           <Swipeable
             containerStyle={{

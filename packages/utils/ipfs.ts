@@ -48,8 +48,14 @@ export const uploadFilesToPinata = async ({
   return await Promise.all(queries);
 };
 
-export const generateIpfsKey = async (networkId: string, userId: string) => {
+export const generateIpfsKey = async (
+  networkId: string,
+  userId: string | undefined,
+) => {
   try {
+    if (!userId) {
+      throw new Error("Invalid userId");
+    }
     const backendClient = mustGetFeedClient(networkId);
     const response = await backendClient.IPFSKey({ userId });
     return response.jwt;

@@ -1,10 +1,11 @@
 import { Formik } from "formik";
 import React from "react";
 import { View } from "react-native";
+import { object, string, number } from "yup";
 
 import { MakeRequestFooter } from "./Footer";
 import { ShortDescData } from "./types";
-import { useMakeRequestState } from "./useMakeRequestHook";
+import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 import { BrandText } from "../../../components/BrandText";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
@@ -20,21 +21,20 @@ const emptyValues: ShortDescData = {
   tags: "",
 };
 
+const shortDescSchema = object({
+  name: string().required().min(3),
+  desc: string().required().min(10),
+  budget: number().required().positive().integer(),
+  paymentAddr: string().required().min(32),
+  coverImg: string().required().url(),
+  tags: string().nullable(),
+});
+
 export const ShortPresentation: React.FC = () => {
   const {
     actions: { goNextStep, setShortDesc },
     shortDescData,
   } = useMakeRequestState();
-
-  const validate = (values: ShortDescData) => {
-    const errors: any = {};
-    if (!values.name || values.name.length < 3) {
-      errors.name = "Name is required and must have atleast 3 chars.";
-    } else if (!values.desc || values.desc.length < 20) {
-      errors.desc = "Description is required and must have atleast 20 chars.";
-    }
-    return errors;
-  };
 
   return (
     <View style={{ width: "100%", maxWidth: 480, margin: "auto" }}>
@@ -50,7 +50,7 @@ export const ShortPresentation: React.FC = () => {
 
       <Formik
         initialValues={shortDescData || emptyValues}
-        validate={validate}
+        validationSchema={shortDescSchema}
         onSubmit={(values) => {
           setShortDesc(values);
           goNextStep();

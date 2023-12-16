@@ -6,7 +6,7 @@ import { fontSemibold12 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
 
 interface Props {
-  date: string;
+  date: number;
   textStyle?: StyleProp<TextStyle>;
 }
 export const DateTime = ({ date, textStyle }: Props) => {
