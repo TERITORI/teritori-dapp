@@ -40,15 +40,15 @@ const STATUSES: Status[] = [
 ];
 
 export const MilestoneBoard: React.FC<{
+  milestones: Milestone[];
   containerStyle?: StyleProp<ViewStyle>;
-  selectMilestone?: (milestone: Milestone) => void;
+  onSelectMilestone?: (milestone: Milestone) => void;
   editable?: boolean;
-}> = ({ selectMilestone, containerStyle, editable }) => {
+}> = ({ onSelectMilestone, containerStyle, editable, milestones }) => {
   const [hoveredMilestone, setHoveredMilestone] = useState<Milestone>();
   const [isShowMilestoneForm, showMilestoneForm] = useState(false);
 
   const {
-    milestones,
     actions: { addMilestone, removeMilestone },
   } = useMakeRequestState();
 
@@ -74,13 +74,14 @@ export const MilestoneBoard: React.FC<{
       ]}
     >
       {STATUSES.map((step, idx) => {
-        const listItems = milestones.filter(
+        const listItems = (milestones || []).filter(
           (milestone) => milestone.statusId === step.id,
         );
         const isBacklogItem = idx === 0;
 
         return (
           <MilestoneList
+            key={idx}
             text={step.text}
             count={step.count}
             iconSVG={step.iconSVG}
@@ -89,6 +90,7 @@ export const MilestoneBoard: React.FC<{
               const isHovered = hoveredMilestone?.id === milestone.id;
               return (
                 <Hoverable
+                  key={milestone.id}
                   onMouseEnter={() =>
                     isBacklogItem && editable && setHoveredMilestone(milestone)
                   }
@@ -98,7 +100,7 @@ export const MilestoneBoard: React.FC<{
                 >
                   <MilestoneItem
                     milestone={milestone}
-                    onPress={selectMilestone}
+                    onPress={onSelectMilestone}
                     onDelete={removeHoveredMilestone}
                     isHovered={isHovered}
                   />
@@ -113,6 +115,7 @@ export const MilestoneBoard: React.FC<{
                   backgroundColor: neutral00,
                   borderRadius: 8,
                   padding: layout.spacing_x1_5,
+                  marginBottom: layout.spacing_x2,
                 }}
               >
                 <SVG source={noMilestonesSVG} width={18} height={18} />

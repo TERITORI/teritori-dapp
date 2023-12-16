@@ -9,12 +9,14 @@ import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 
 export const Milestones: React.FC = () => {
   const {
+    milestones,
     actions: { goNextStep },
   } = useMakeRequestState();
 
   return (
     <View>
       <MilestoneBoard
+        milestones={milestones}
         editable
         containerStyle={{
           backgroundColor: neutral17,

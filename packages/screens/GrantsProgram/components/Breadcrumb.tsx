@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
@@ -114,7 +114,7 @@ export const Breadcrumb: React.FC<{
       <FlexRow style={{ width: "auto" }}>
         {STEPS.map((step, idx) => {
           return (
-            <>
+            <Fragment key={idx}>
               <Step
                 onPress={gotoValidStep}
                 indice={idx + 1}
@@ -123,7 +123,7 @@ export const Breadcrumb: React.FC<{
                 disabled={stepIndice < idx + 1}
               />
               {idx + 1 < STEPS.length && <Seperator />}
-            </>
+            </Fragment>
           );
         })}
       </FlexRow>

@@ -28,6 +28,10 @@ import { fontSemibold13, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { Project } from "../types";
 
+const STATUSES_MAP: { [key: string]: string } = {
+  CREATED: "Open",
+};
+
 export const GrantBox: React.FC<{
   onPress?: () => void;
   containerStyle?: BoxStyle;
@@ -139,7 +143,7 @@ export const GrantBox: React.FC<{
           </FlexRow>
 
           <SimpleButton
-            text={project.status}
+            text={STATUSES_MAP[project.status]}
             size="SM"
             bgColor="#C8FFAE1A"
             color="#C8FFAE"

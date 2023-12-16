@@ -46,9 +46,9 @@ export type TeamAndLinkData = {
 
 export type ProjectMetadata = {
   shortDescData: ShortDescData;
-  mileStones: Milestone[];
+  milestones: Milestone[];
   teamAndLinkData: TeamAndLinkData;
-}
+};
 
 export type ProjectMileStone = {
   title: string;
@@ -58,7 +58,7 @@ export type ProjectMileStone = {
   status: string;
   funded: boolean;
   link: string;
-}
+};
 
 export type Project = {
   id: number;

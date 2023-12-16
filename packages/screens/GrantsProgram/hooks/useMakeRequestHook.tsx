@@ -7,16 +7,12 @@ import {
   TeamAndLinkData,
   STATUS_OPEN,
   PRIORITY_HIGH,
-  STATUS_REVIEW,
-  PRIORITY_MEDIUM,
-  STATUS_COMPLETED,
-  STATUS_INPROGRESS,
 } from "../types";
 
 type MakeRequestState = {
   stepIndice: number;
-  shortDescData: ShortDescData | undefined;
-  teamAndLinkData: TeamAndLinkData | undefined;
+  shortDescData: ShortDescData;
+  teamAndLinkData: TeamAndLinkData;
   milestones: Milestone[];
   actions: {
     setStepIndice: (stepIndice: number) => void;
@@ -29,6 +25,33 @@ type MakeRequestState = {
 };
 
 const TOTAL_STEPS = 5;
+
+export const EMPTY_SHORT_DESC = {
+  name: "",
+  desc: "",
+  budget: "0",
+  paymentAddr: "",
+  coverImg: "",
+  tags: "",
+};
+
+export const EMPTY_TEAM_AND_LINK = {
+  websiteLink: "",
+  twitterProfile: "",
+  discordLink: "",
+  githubLink: "",
+  teamDesc: "",
+};
+
+export const EMPTY_MILESTONE = {
+  id: -1,
+  name: "",
+  desc: "",
+  statusId: STATUS_OPEN,
+  priority: PRIORITY_HIGH,
+  budget: 0,
+  githubLink: "",
+};
 
 export const fakeShortDesc: ShortDescData = {
   name: "This is name",
@@ -57,30 +80,6 @@ const fakeMilestones: Milestone[] = [
     budget: 10_000_000,
     githubLink: "https://github.com",
   },
-  // {
-  //   id: 3,
-  //   text: "Community Docs Platform 3",
-  //   statusId: STATUS_REVIEW,
-  //   priority: PRIORITY_MEDIUM,
-  //   budget: 10,
-  //   github: "https://github.com",
-  // },
-  // {
-  //   id: 4,
-  //   text: "Community Docs Platform 5",
-  //   statusId: STATUS_COMPLETED,
-  //   priority: PRIORITY_MEDIUM,
-  //   budget: 10,
-  //   github: "https://github.com",
-  // },
-  // {
-  //   id: 5,
-  //   text: "Community Docs Platform 6",
-  //   statusId: STATUS_INPROGRESS,
-  //   priority: PRIORITY_HIGH,
-  //   budget: 10,
-  //   github: "https://github.com",
-  // },
 ];
 
 export const useMakeRequestStore = create<MakeRequestState>((set, get) => ({

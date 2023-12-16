@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { GrantBox } from "./components/GrantBox";
-import { useGrantContracts } from "./hooks/useGrantContracts";
+import { useProjects } from "./hooks/useProjects";
 import { Project } from "./types";
 import filterSVG from "../../../assets/icons/filter.svg";
 import { BrandText } from "../../components/BrandText";
@@ -27,7 +27,8 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
   const [searchText, setSearchText] = useState("");
   const networkId = useSelectedNetworkId();
   const [projects, setProjects] = useState<Project[]>([]);
-  const { getContracts } = useGrantContracts(networkId);
+  const { getProjects } = useProjects(networkId);
+  const [filterStatus, setFilterStatus] = useState<string>();
 
   const navigation = useAppNavigation();
 
@@ -43,9 +44,14 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
     navigation.navigate("GrantsProgramMakeRequest", { step: 1 });
   };
 
+  const filteredProjects = useMemo(() => {
+    if (!filterStatus) return projects;
+    return projects.filter((p: Project) => p.status === filterStatus);
+  }, [filterStatus, projects]);
+
   useEffect(() => {
-    getContracts(0, 10).then(setProjects);
-  }, []);
+    getProjects(0, 10).then(setProjects);
+  }, [getProjects]);
 
   return (
     <ScreenContainer
@@ -82,34 +88,40 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
       <FlexRow style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
         <FlexRow style={{ width: "auto", marginTop: layout.spacing_x2 }}>
           <SimpleButton
+            onPress={() => setFilterStatus("")}
             text="All"
-            color={neutral00}
-            bgColor={secondaryColor}
+            color={!filterStatus ? neutral00 : secondaryColor}
+            bgColor={!filterStatus ? secondaryColor : neutral00}
             size="SM"
             style={{ borderWidth: 0 }}
           />
           <SpacerRow size={2} />
           <SimpleButton
+            onPress={() => setFilterStatus("CREATED")}
             text="Open"
             size="SM"
-            bgColor="#C8FFAE1A"
-            color="#C8FFAE"
+            bgColor={filterStatus === "CREATED" ? secondaryColor : "#C8FFAE1A"}
+            color={filterStatus === "CREATED" ? neutral00 : "#C8FFAE"}
             style={{ borderWidth: 0 }}
           />
           <SpacerRow size={2} />
           <SimpleButton
+            onPress={() => setFilterStatus("IN_PROGRESS")}
             text="In Progress"
             size="SM"
-            bgColor="#EAA54B1A"
-            color="#EAA54B"
+            bgColor={
+              filterStatus === "IN_PROGRESS" ? secondaryColor : "#EAA54B1A"
+            }
+            color={filterStatus === "IN_PROGRESS" ? neutral00 : "#EAA54B"}
             style={{ borderWidth: 0 }}
           />
           <SpacerRow size={2} />
           <SimpleButton
+            onPress={() => setFilterStatus("PASS")}
             text="Past Grants"
             size="SM"
-            bgColor="#171717"
-            color={secondaryColor}
+            bgColor={filterStatus === "PASS" ? secondaryColor : "#171717"}
+            color={filterStatus === "PASS" ? neutral00 : secondaryColor}
             style={{ borderWidth: 0 }}
           />
         </FlexRow>
@@ -137,7 +149,7 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
           justifyContent: "space-between",
         }}
       >
-        {projects.map((project) => {
+        {filteredProjects.map((project) => {
           return (
             <GrantBox
               key={"" + project.id}
