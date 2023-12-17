@@ -10,6 +10,7 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { TeritoriNftVaultClient } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
 import { useFeedConfig } from "../../hooks/feed/useFeedConfig";
 import { useBalances } from "../../hooks/useBalances";
@@ -19,6 +20,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useVaultConfig } from "../../hooks/vault/useVaultConfig";
 import {
   getCosmosNetwork,
+  getKeplrSigningCosmWasmClient,
   getKeplrSigningStargateClient,
   getUserId,
   mustGetNonSigningCosmWasmClient,
@@ -141,9 +143,6 @@ const VaultManager: React.FC<{ networkId: string }> = ({ networkId }) => {
   const vaultBalances = useBalances(networkId, network?.vaultContractAddress);
   const { wrapWithFeedback } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
-  const makeProposal = useDAOMakeProposal(
-    getUserId(networkId, network?.vaultContractAddress),
-  );
 
   return (
     <View>
@@ -163,29 +162,29 @@ const VaultManager: React.FC<{ networkId: string }> = ({ networkId }) => {
       })}
       <PrimaryButton
         text="Propose to withdraw marketplace fees"
+        disabled={!selectedWallet?.connected}
         onPress={wrapWithFeedback(async () => {
           if (!selectedWallet?.address) {
-            return;
+            throw new Error("No wallet connected");
           }
           if (!network?.vaultContractAddress) {
-            throw new Error("no vault contract address");
+            throw new Error(
+              "This network has no vault contract address configured",
+            );
           }
-          const msg = { withdraw_fee: {} };
-          await makeProposal(selectedWallet?.address, {
-            title: "Withdraw marketplace fees",
-            description: "",
-            msgs: [
-              {
-                wasm: {
-                  execute: {
-                    contract_addr: network?.vaultContractAddress,
-                    funds: [],
-                    msg: Buffer.from(JSON.stringify(msg)).toString("base64"),
-                  },
-                },
-              },
-            ],
-          });
+          const cosmWasmClient = await getKeplrSigningCosmWasmClient(
+            selectedWallet.networkId,
+          );
+          const vaultClient = new TeritoriNftVaultClient(
+            cosmWasmClient,
+            selectedWallet.address,
+            network.vaultContractAddress,
+          );
+          const vaultInfo = await vaultClient.config();
+          if (vaultInfo.owner !== selectedWallet.address) {
+            throw new Error("You are not the owner of the vault");
+          }
+          await vaultClient.withdrawFee();
         })}
       />
     </View>
