@@ -32,8 +32,7 @@ export const SocialMessageContent: React.FC<Props> = ({ post, isPreview }) => {
     ZodSocialFeedArticleMetadata,
     post.metadata,
   );
-  const metadataToUse =
-    post.category === PostCategory.Article ? articleMetadata : postMetadata;
+  const metadataToUse = articleMetadata || postMetadata;
 
   const audioFiles = useMemo(
     () => metadataToUse?.files?.filter((file) => file.fileType === "audio"),
@@ -58,11 +57,11 @@ export const SocialMessageContent: React.FC<Props> = ({ post, isPreview }) => {
   }, [metadataToUse?.gifs]);
 
   try {
-    if (post.category === PostCategory.Article && articleMetadata) {
+    if (metadataToUse && post.category === PostCategory.Article) {
       return (
         <View>
           <ArticleRenderer
-            metadata={articleMetadata}
+            metadata={metadataToUse}
             audioFiles={audioFiles}
             isPreview={isPreview}
             postId={post.identifier || ""}
