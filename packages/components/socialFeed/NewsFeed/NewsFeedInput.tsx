@@ -67,7 +67,7 @@ import FlexRow from "../../FlexRow";
 import { IconBox } from "../../IconBox";
 import { OmniLink } from "../../OmniLink";
 import { SVG } from "../../SVG";
-import { LegacyPrimaryBox } from "../../boxes/LegacyPrimaryBox";
+import { PrimaryBox } from "../../boxes/PrimaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { FileUploader } from "../../fileUploader";
@@ -291,15 +291,17 @@ export const NewsFeedInput = React.forwardRef<
             onClose={() => setNotEnoughFundModal(false)}
           />
         )}
-        <LegacyPrimaryBox
-          fullWidth
-          style={{
-            zIndex: 9,
-          }}
-          mainContainerStyle={{
-            backgroundColor: neutral22,
-          }}
-          noRightBrokenBorder
+        <PrimaryBox
+          // fullWidth
+          style={
+            {
+              // zIndex: 9,
+            }
+          }
+          // mainContainerStyle={{
+          //   backgroundColor: neutral22,
+          // }}
+          // noRightBrokenBorder
         >
           <Pressable
             onPress={focusInput}
@@ -417,7 +419,7 @@ export const NewsFeedInput = React.forwardRef<
               }
             }}
           />
-        </LegacyPrimaryBox>
+        </PrimaryBox>
         <View
           style={{
             backgroundColor: neutral17,

@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
-import { LegacySecondaryBox } from "./boxes/LegacySecondaryBox";
+import { SecondaryBox } from "./boxes/SecondaryBox";
 import { LegacyTertiaryBox } from "./boxes/LegacyTertiaryBox";
 import { SpacerRow } from "./spacer";
 import chevronDownSVG from "../../assets/icons/chevron-down.svg";
@@ -114,16 +114,16 @@ export const Pagination = ({
         </LegacyTertiaryBox>
 
         {isDropdownOpen(dropdownRef) && (
-          <LegacySecondaryBox
-            noBrokenCorners
-            width={80}
+          <SecondaryBox
+            // noBrokenCorners
+            // width={80}
             style={{ position: "absolute", top: 46, right: 0 }}
-            mainContainerStyle={{
-              paddingHorizontal: layout.spacing_x1_5,
-              paddingTop: layout.spacing_x1_5,
-              backgroundColor: neutral33,
-              alignItems: "flex-start",
-            }}
+            // mainContainerStyle={{
+            //   paddingHorizontal: layout.spacing_x1_5,
+            //   paddingTop: layout.spacing_x1_5,
+            //   backgroundColor: neutral33,
+            //   alignItems: "flex-start",
+            // }}
           >
             {dropdownOptions.map((item, index) => (
               <TouchableOpacity
@@ -147,7 +147,7 @@ export const Pagination = ({
                 </BrandText>
               </TouchableOpacity>
             ))}
-          </LegacySecondaryBox>
+          </SecondaryBox>
         )}
       </View>
     </View>

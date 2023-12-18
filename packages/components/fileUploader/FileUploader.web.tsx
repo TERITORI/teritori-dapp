@@ -18,7 +18,7 @@ import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { DeleteButton } from "../FilePreview/DeleteButton";
 import { SVG } from "../SVG";
-import { LegacyPrimaryBox } from "../boxes/LegacyPrimaryBox";
+import { PrimaryBox } from "../boxes/PrimaryBox";
 import { GradientText } from "../gradientText";
 import { Label } from "../inputs/TextInputCustom";
 
@@ -164,21 +164,21 @@ export const FileUploader: FC<FileUploaderProps> = ({
                 />
               </>
             ) : (
-              <LegacyPrimaryBox
-                noBrokenCorners
-                fullWidth
-                colors={[
-                  withAlpha(gradientColorDarkerBlue, 0.5),
-                  withAlpha(gradientColorBlue, 0.5),
-                  withAlpha(gradientColorTurquoise, 0.5),
-                ]}
+              <PrimaryBox
+                // noBrokenCorners
+                // fullWidth
+                // colors={[
+                //   withAlpha(gradientColorDarkerBlue, 0.5),
+                //   withAlpha(gradientColorBlue, 0.5),
+                //   withAlpha(gradientColorTurquoise, 0.5),
+                // ]}
                 style={{ flex: 1 }}
-                mainContainerStyle={{
-                  height: file ? fileHeight : 80,
-                  alignItems: "center",
-                  padding: layout.spacing_x2_5,
-                  borderRadius: 12,
-                }}
+                // mainContainerStyle={{
+                //   height: file ? fileHeight : 80,
+                //   alignItems: "center",
+                //   padding: layout.spacing_x2_5,
+                //   borderRadius: 12,
+                // }}
               >
                 <View
                   style={{
@@ -218,7 +218,7 @@ export const FileUploader: FC<FileUploaderProps> = ({
                     accept={mimeTypes?.join(",")}
                   />
                 </View>
-              </LegacyPrimaryBox>
+              </PrimaryBox>
             )}
           </div>
         </TouchableOpacity>

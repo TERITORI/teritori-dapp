@@ -9,7 +9,7 @@ import {
 } from "../../utils/style/buttons";
 import { primaryColor } from "../../utils/style/colors";
 import { SVG } from "../SVG";
-import { LegacySecondaryBox } from "../boxes/LegacySecondaryBox";
+import { SecondaryBox } from "../boxes/SecondaryBox";
 
 export const IconButton: React.FC<{
   width?: number;
@@ -55,19 +55,19 @@ export const IconButton: React.FC<{
       onPress={onPress}
       style={{ width: fullWidth ? "100%" : width }}
     >
-      <LegacySecondaryBox
-        height={heightButton(size)}
-        mainContainerStyle={[
-          {
-            flexDirection: "row",
-            borderRadius: borderRadiusButton(size),
-            backgroundColor,
-            paddingHorizontal: 20,
-          },
-          borderColor ? { borderWidth: 1, borderColor } : {},
-        ]}
-        squaresBorderColor={squaresBorderColor}
-        {...boxProps}
+      <SecondaryBox
+      // height={heightButton(size)}
+      // mainContainerStyle={[
+      //   {
+      //     flexDirection: "row",
+      //     borderRadius: borderRadiusButton(size),
+      //     backgroundColor,
+      //     paddingHorizontal: 20,
+      //   },
+      //   borderColor ? { borderWidth: 1, borderColor } : {},
+      // ]}
+      // squaresBorderColor={squaresBorderColor}
+      // {...boxProps}
       >
         <SVG
           source={iconSVG}
@@ -75,7 +75,7 @@ export const IconButton: React.FC<{
           height={iconSize}
           color={iconColor}
         />
-      </LegacySecondaryBox>
+      </SecondaryBox>
     </TouchableOpacity>
   );
 };

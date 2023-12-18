@@ -7,7 +7,7 @@ import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { LegacySecondaryBox } from "../../../components/boxes/LegacySecondaryBox";
+import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
 import { useDropdowns } from "../../../context/DropdownsProvider";
 import {
   selectAvailableApps,
@@ -98,16 +98,16 @@ export const DropdownDappsStoreFilter: React.FC = () => {
       </TouchableOpacity>
 
       {isDropdownOpen(dropdownRef) && (
-        <LegacySecondaryBox
-          noBrokenCorners
-          width={248}
+        <SecondaryBox
+          // noBrokenCorners
+          // width={248}
           style={{ position: "absolute", top: 29, right: -14 }}
-          mainContainerStyle={{
-            paddingHorizontal: layout.spacing_x1_5,
-            paddingTop: layout.spacing_x1_5,
-            backgroundColor: neutral33,
-            alignItems: "flex-start",
-          }}
+          // mainContainerStyle={{
+          //   paddingHorizontal: layout.spacing_x1_5,
+          //   paddingTop: layout.spacing_x1_5,
+          //   backgroundColor: neutral33,
+          //   alignItems: "flex-start",
+          // }}
         >
           {options.map((option) => (
             <SelectableOption
@@ -117,7 +117,7 @@ export const DropdownDappsStoreFilter: React.FC = () => {
               id={option.id}
             />
           ))}
-        </LegacySecondaryBox>
+        </SecondaryBox>
       )}
     </View>
   );

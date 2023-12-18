@@ -12,7 +12,7 @@ import { neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { LegacySecondaryBox } from "../boxes/LegacySecondaryBox";
+import { SecondaryBox } from "../boxes/SecondaryBox";
 
 // Same as _PrimaryButtonTest but with customizable color and backgroundColor
 export const ToggleableButton: React.FC<{
@@ -44,17 +44,17 @@ export const ToggleableButton: React.FC<{
 
   return (
     <TouchableOpacity onPress={onPress}>
-      <LegacySecondaryBox
-        cornerWidth={cornerWidthDropdownButton(size)}
-        height={heightDropdownButton(size)}
-        mainContainerStyle={{
-          flexDirection: "row",
-          borderRadius: 6,
-          backgroundColor: neutral33,
-          paddingRight: 6,
-          paddingLeft: 8,
-        }}
-        {...boxProps}
+      <SecondaryBox
+      // cornerWidth={cornerWidthDropdownButton(size)}
+      // height={heightDropdownButton(size)}
+      // mainContainerStyle={{
+      //   flexDirection: "row",
+      //   borderRadius: 6,
+      //   backgroundColor: neutral33,
+      //   paddingRight: 6,
+      //   paddingLeft: 8,
+      // }}
+      // {...boxProps}
       >
         <BrandText
           style={[
@@ -71,7 +71,7 @@ export const ToggleableButton: React.FC<{
           height={16}
           color={secondaryColor}
         />
-      </LegacySecondaryBox>
+      </SecondaryBox>
     </TouchableOpacity>
   );
 };
