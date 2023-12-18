@@ -78,7 +78,7 @@ import FlexRow from "../../FlexRow";
 import { IconBox } from "../../IconBox";
 import { OmniLink } from "../../OmniLink";
 import { SVG } from "../../SVG";
-import { LegacyPrimaryBox } from "../../boxes/LegacyPrimaryBox";
+import { PrimaryBox } from "../../boxes/PrimaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { FileUploader } from "../../fileUploader";
@@ -340,15 +340,12 @@ export const NewsFeedInput = React.forwardRef<
         style={[{ width }, style]}
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       >
-        <LegacyPrimaryBox
-          fullWidth
+        <PrimaryBox
           style={{
             zIndex: 9,
-          }}
-          mainContainerStyle={{
             backgroundColor: appMode === "mini" ? neutral00 : neutral22,
+            width: "100%",
           }}
-          noRightBrokenBorder
         >
           <Pressable
             onPress={focusInput}
@@ -466,7 +463,7 @@ export const NewsFeedInput = React.forwardRef<
               }
             }}
           />
-        </LegacyPrimaryBox>
+        </PrimaryBox>
         <View
           style={{
             backgroundColor: appMode === "mini" ? neutral00 : neutral17,
