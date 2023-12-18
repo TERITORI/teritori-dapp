@@ -1,6 +1,7 @@
 import React from "react";
 import { ActivityIndicator } from "react-native";
 
+import { FeedPostArticleView } from "./components/FeedPostArticleView";
 import { FeedPostDefaultView } from "./components/FeedPostDefaultView";
 import { FeedPostVideoView } from "./components/FeedPostVideoView";
 import { BrandText } from "../../components/BrandText";
@@ -100,6 +101,15 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         networkId={networkId}
         post={post}
         refetchPost={refetch}
+      />
+    );
+  } else if (post.category === PostCategory.Article) {
+    return (
+      <FeedPostArticleView
+        networkId={networkId}
+        post={post}
+        refetchPost={refetch}
+        isLoadingPost={isLoading}
       />
     );
   } else

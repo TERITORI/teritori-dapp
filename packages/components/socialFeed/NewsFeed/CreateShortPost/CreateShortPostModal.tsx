@@ -8,6 +8,7 @@ import { NewsFeedInput } from "../NewsFeedInput";
 
 export const CreateShortPostModal: React.FC<{
   onClose: () => void;
+  label: string;
   isVisible?: boolean;
   additionalMention?: string;
   additionalHashtag?: string;
@@ -15,6 +16,7 @@ export const CreateShortPostModal: React.FC<{
   daoId?: string;
 }> = ({
   onClose,
+  label,
   isVisible,
   additionalMention,
   additionalHashtag,
@@ -27,7 +29,7 @@ export const CreateShortPostModal: React.FC<{
       visible={isVisible}
       onClose={onClose}
       width={windowWidth}
-      label="Create a Post"
+      label={label}
     >
       <MenuProvider>
         <NewsFeedInput
