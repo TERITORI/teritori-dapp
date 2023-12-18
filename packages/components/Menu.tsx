@@ -2,7 +2,7 @@ import React from "react";
 import { View, TouchableOpacity } from "react-native";
 
 import { BrandText } from "./BrandText";
-import { LegacyPrimaryBox } from "./boxes/LegacyPrimaryBox";
+import { PrimaryBox } from "./boxes/PrimaryBox";
 import { useDropdowns } from "../hooks/useDropdowns";
 import { neutral33 } from "../utils/style/colors";
 import { fontSemibold13 } from "../utils/style/fonts";
@@ -34,11 +34,12 @@ export const Menu: React.FC<MenuProps> = ({
       </TouchableOpacity>
       {isDropdownOpen && (
         <View ref={dropdownRef} collapsable={false}>
-          <LegacyPrimaryBox
-            width={width}
-            style={{ position: "absolute", right: 0, bottom: -20 }}
-            mainContainerStyle={{
+          <PrimaryBox
+            style={{
               position: "absolute",
+              right: 0,
+              bottom: -20,
+              width,
               paddingHorizontal: layout.spacing_x1_5,
             }}
           >
@@ -66,7 +67,7 @@ export const Menu: React.FC<MenuProps> = ({
                 </BrandText>
               </TouchableOpacity>
             ))}
-          </LegacyPrimaryBox>
+          </PrimaryBox>
         </View>
       )}
     </View>
