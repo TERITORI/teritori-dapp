@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { View, ViewStyle } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 
 import { UploadVideoButton } from "./UploadVideoButton";
 import { UploadVideoModal } from "./UploadVideoModal";
@@ -23,7 +23,8 @@ export const FeedVideosList: React.FC<{
   title: string;
   req: Partial<PostsRequest>;
   allowUpload?: boolean;
-}> = ({ title, req, allowUpload }) => {
+  style?: StyleProp<ViewStyle>;
+}> = ({ title, req, allowUpload, style }) => {
   const selectedWallet = useSelectedWallet();
   const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
@@ -53,7 +54,7 @@ export const FeedVideosList: React.FC<{
   if (!data && (isLoading || isFetching))
     return <View style={{ minWidth: minCardWidth }} />;
   return (
-    <View style={containerCStyle}>
+    <View style={[containerCStyle, style]}>
       <View style={oneLineCStyle}>
         <BrandText style={fontSemibold20} numberOfLines={1}>
           {title}

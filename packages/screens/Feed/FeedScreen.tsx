@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useCallback } from "react";
 
-import { ArticlesFeedScreen } from "./ArticlesFeedScreen";
-import { ModerationFeedScreen } from "./ModerationFeedScreen";
-import { MusicFeedScreen } from "./MusicFeedScreen";
-import { PicsFeedScreen } from "./PicsFeedScreen";
-import { VideosFeedScreen } from "./VideosFeedScreen";
+import { ArticlesFeed } from "./components/ArticlesFeed";
 import { FeedHeader } from "./components/FeedHeader";
+import { ModerationFeed } from "./components/ModerationFeed";
+import { MusicFeed } from "./components/MusicFeed";
+import { PicsFeed } from "./components/PicsFeed";
+import { VideosFeed } from "./components/VideosFeed";
 import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -20,43 +20,49 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
   useForceNetworkSelection(params?.network);
   const isMobile = useIsMobile();
 
-  switch (params?.tab) {
-    case "music":
-      return <MusicFeedScreen />;
-    case "pics":
-      return <PicsFeedScreen />;
-    case "videos":
-      return <VideosFeedScreen />;
-    case "articles":
-      return <ArticlesFeedScreen />;
-    case "moderationDAO":
-      return <ModerationFeedScreen />;
-    default:
-      return (
-        <ScreenContainer
-          fullWidth
-          responsive
-          noMargin
-          noScroll
-          footerChildren={<></>}
-          forceNetworkFeatures={[NetworkFeature.SocialFeed]}
-          headerChildren={<BrandText>Social Feed</BrandText>}
-        >
+  const FeedContent = useCallback(() => {
+    switch (params?.tab) {
+      case "music":
+        return <MusicFeed />;
+      case "pics":
+        return <PicsFeed />;
+      case "videos":
+        return <VideosFeed />;
+      case "articles":
+        return <ArticlesFeed />;
+      case "moderationDAO":
+        return <ModerationFeed />;
+      default:
+        return (
           <NewsFeed
             req={defaultFeedRequest}
             isFlagged={params?.tab === "moderationDAO"}
             disablePosting={params?.tab === "moderationDAO"}
             Header={() => (
               <>
-                {/* ScreenContainer has noScroll, so we need to add MobileTitle here */}
+                {/* ScreenContainer in FeedScreen has noScroll, so we need to add MobileTitle here */}
                 {isMobile && <MobileTitle title="SOCIAL FEED" />}
                 <FeedHeader selectedTab="" />
               </>
             )}
           />
-        </ScreenContainer>
-      );
-  }
+        );
+    }
+  }, [params?.tab, isMobile]);
+
+  return (
+    <ScreenContainer
+      fullWidth
+      responsive
+      noMargin
+      noScroll
+      footerChildren={<></>}
+      forceNetworkFeatures={[NetworkFeature.SocialFeed]}
+      headerChildren={<BrandText>Social Feed</BrandText>}
+    >
+      <FeedContent />
+    </ScreenContainer>
+  );
 };
 
 const defaultFeedRequest: Partial<PostsRequest> = {
