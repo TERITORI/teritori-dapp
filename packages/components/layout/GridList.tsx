@@ -1,7 +1,6 @@
 import React, { ComponentProps, useCallback, useMemo, useState } from "react";
 import { FlatList, ListRenderItemInfo, View } from "react-native";
 
-import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { layout } from "../../utils/style/layout";
 import { EmptyList } from "../EmptyList";
 
@@ -14,8 +13,8 @@ type GridListType<T> = React.FC<{
     elemWidth: number,
   ) => React.ReactElement | null;
   gap?: number;
-  noFixedHeight?: boolean;
   onEndReached?: ComponentProps<typeof FlatList<T>>["onEndReached"];
+  scrollEnabled?: boolean;
 }>;
 
 type ItemWrapper<T> =
@@ -33,11 +32,10 @@ export function GridList<T>({
   minElemWidth,
   gap = layout.spacing_x2,
   onEndReached,
-  noFixedHeight,
   keyExtractor,
   renderItem,
+  scrollEnabled,
 }: ComponentProps<GridListType<T>>): ReturnType<GridListType<T>> {
-  const { height } = useMaxResolution({ isLarge: true });
   const [containerWidth, setContainerWidth] = useState(0);
   const elemsPerRow = Math.floor(containerWidth / minElemWidth) || 1;
   const elemsCount = data?.length || 0;
@@ -89,7 +87,6 @@ export function GridList<T>({
   return (
     <FlatList<ItemWrapper<T>>
       onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
-      contentContainerStyle={!noFixedHeight && { height }}
       columnWrapperStyle={
         elemsPerRow < 2
           ? undefined
@@ -104,12 +101,10 @@ export function GridList<T>({
       onEndReachedThreshold={4}
       showsVerticalScrollIndicator={false}
       ListEmptyComponent={
-        <EmptyList
-          text="No result found"
-          size={Math.min(height, containerWidth) / 3}
-        />
+        <EmptyList text="No result found" size={containerWidth / 3} />
       }
       renderItem={renderItemWithFixedWidth}
+      scrollEnabled={scrollEnabled}
     />
   );
 }

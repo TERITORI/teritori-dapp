@@ -28,7 +28,6 @@ export const Quests: React.FC<{
       minElemWidth={140}
       gap={layout.spacing_x1}
       keyExtractor={(item) => item.id}
-      noFixedHeight
     />
   );
 };

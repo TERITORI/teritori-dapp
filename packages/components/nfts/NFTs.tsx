@@ -3,7 +3,6 @@ import { View } from "react-native";
 
 import { NFTView } from "./NFTView";
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNFTs } from "../../hooks/useNFTs";
 import {
   AppliedFilters,
@@ -21,8 +20,6 @@ export const NFTs: React.FC<{
 }> = ({ req, hideFilters = false }) => {
   const { nfts, fetchMore } = useNFTs(req);
 
-  const { height } = useMaxResolution({ isLarge: true });
-
   const handleEndReached = useCallback(() => {
     fetchMore();
   }, [fetchMore]);
@@ -32,12 +29,12 @@ export const NFTs: React.FC<{
       style={{
         alignItems: "center",
         width: "100%",
-        height,
       }}
     >
       {!hideFilters && <AppliedFilters collectionId={req.collectionId} />}
       <View style={{ flexDirection: "row", width: "100%" }}>
         {!hideFilters && (
+          // TODO: Filters on Top on mobile
           <SideFilters
             collectionId={req.collectionId}
             style={{
@@ -48,7 +45,6 @@ export const NFTs: React.FC<{
               borderRadius: layout.spacing_x2,
               borderColor: neutral33,
               borderWidth: 1,
-              height,
               padding: layout.spacing_x2,
               borderStyle: "solid",
               marginRight: layout.spacing_x1_5,

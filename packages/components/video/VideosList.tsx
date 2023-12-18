@@ -87,7 +87,6 @@ export const VideosList: React.FC<{
             />
           )}
           onEndReached={onEndReached}
-          noFixedHeight
         />
       </View>
       <UploadVideoModal
