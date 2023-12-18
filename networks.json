@@ -6898,7 +6898,7 @@
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/oraichain/images/orai.svg",
     "testnet": false,
     "backendEndpoint": "",
-    "restEndpoint": "http://lcd.orai.io",
+    "restEndpoint": "https://lcd.orai.io",
     "rpcEndpoint": "https://rpc.orai.io",
     "stakeCurrency": "orai",
     "gasPriceStep": {
