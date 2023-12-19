@@ -2086,12 +2086,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chain-registry/types@npm:^0.17.0":
-  version: 0.17.0
-  resolution: "@chain-registry/types@npm:0.17.0"
+"@chain-registry/types@npm:^0.17.1":
+  version: 0.17.1
+  resolution: "@chain-registry/types@npm:0.17.1"
   dependencies:
     "@babel/runtime": ^7.21.0
-  checksum: 4a36ecb2b50da88af79bdb825fcfef9f6acebb4dd02cc4d09caacd10741006f9aebbf0672284caa5519261221b2736ab52e4ed16a126a68f4f64cbb931872661
+  checksum: be3c52d22e0b835aead431718f2282e722632e626d84402ab55fef8227392ae155125a6b3002a9a2dcb7438602b14da2a241423a9a8e28fab5552d0a496eb2ab
   languageName: node
   linkType: hard
 
@@ -7847,23 +7847,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chain-registry@npm:1.20.0":
-  version: 1.20.0
-  resolution: "chain-registry@npm:1.20.0"
+"chain-registry@npm:^1.20.0":
+  version: 1.24.1
+  resolution: "chain-registry@npm:1.24.1"
   dependencies:
     "@babel/runtime": ^7.21.0
-    "@chain-registry/types": ^0.17.0
-  checksum: 0b28cea3503a9a0f3028bdeb9dd5922fc6be10d112aa0b45218d0167e1d1c68d736d14d26110b33321ba99aa5abe4a3cc6473758307a149aceeea51f768ba5d3
-  languageName: node
-  linkType: hard
-
-"chain-registry@patch:chain-registry@npm%3A1.20.0#./.yarn/patches/chain-registry-npm-1.20.0-e290300d1b.patch::locator=teritori-dapp%40workspace%3A.":
-  version: 1.20.0
-  resolution: "chain-registry@patch:chain-registry@npm%3A1.20.0#./.yarn/patches/chain-registry-npm-1.20.0-e290300d1b.patch::version=1.20.0&hash=e664f8&locator=teritori-dapp%40workspace%3A."
-  dependencies:
-    "@babel/runtime": ^7.21.0
-    "@chain-registry/types": ^0.17.0
-  checksum: e60cf0654aad27910e4d238bcd7fb718a50151c3b3518cf4d9b293aa207c4a35f7585068429c5abb55dca530d0806659f10127438ca07161c264bd4250d6fe57
+    "@chain-registry/types": ^0.17.1
+  checksum: c7ba03f3b7e6581b565b4f326430511bd73477755fee5fd1e4d07a55f9a15bcdc346c92b105f99ad48d5b797330bd016abb818356cbaf8428843f5c0761752d2
   languageName: node
   linkType: hard
 
