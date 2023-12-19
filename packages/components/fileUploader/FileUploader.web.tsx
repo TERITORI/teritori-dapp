@@ -6,12 +6,12 @@ import { formatFile } from "./formatFile";
 import uploadSVG from "../../../assets/icons/upload.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import {
-  gradientColorBlue,
-  gradientColorDarkerBlue,
-  gradientColorTurquoise,
+  // gradientColorBlue,
+  // gradientColorDarkerBlue,
+  // gradientColorTurquoise,
   neutral17,
   neutral77,
-  withAlpha,
+  // withAlpha,
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -172,7 +172,13 @@ export const FileUploader: FC<FileUploaderProps> = ({
                 //   withAlpha(gradientColorBlue, 0.5),
                 //   withAlpha(gradientColorTurquoise, 0.5),
                 // ]}
-                style={{ flex: 1 }}
+                style={{
+                  flex: 1,
+                  height: file ? fileHeight : 80,
+                  alignItems: "center",
+                  padding: layout.spacing_x2_5,
+                  borderRadius: 12,
+                }}
                 // mainContainerStyle={{
                 //   height: file ? fileHeight : 80,
                 //   alignItems: "center",

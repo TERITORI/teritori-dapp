@@ -293,11 +293,10 @@ export const NewsFeedInput = React.forwardRef<
         )}
         <PrimaryBox
           // fullWidth
-          style={
-            {
-              // zIndex: 9,
-            }
-          }
+          style={{
+            // zIndex: 9,
+            backgroundColor: neutral22,
+          }}
           // mainContainerStyle={{
           //   backgroundColor: neutral22,
           // }}

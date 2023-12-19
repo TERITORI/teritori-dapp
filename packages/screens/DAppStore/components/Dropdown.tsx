@@ -101,7 +101,15 @@ export const DropdownDappsStoreFilter: React.FC = () => {
         <SecondaryBox
           // noBrokenCorners
           // width={248}
-          style={{ position: "absolute", top: 29, right: -14 }}
+          style={{
+            position: "absolute",
+            top: 29,
+            right: -14,
+            paddingHorizontal: layout.spacing_x1_5,
+            paddingTop: layout.spacing_x1_5,
+            backgroundColor: neutral33,
+            alignItems: "flex-start",
+          }}
           // mainContainerStyle={{
           //   paddingHorizontal: layout.spacing_x1_5,
           //   paddingTop: layout.spacing_x1_5,

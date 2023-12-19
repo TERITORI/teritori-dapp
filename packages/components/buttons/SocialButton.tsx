@@ -2,7 +2,11 @@ import React from "react";
 import { ViewStyle, View, StyleProp, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { neutral22, neutral33, withAlpha } from "../../utils/style/colors";
+import {
+  // neutral22,
+  neutral33,
+  // withAlpha
+} from "../../utils/style/colors";
 import { fontMedium14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -26,7 +30,11 @@ export const SocialButton: React.FC<{
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <SecondaryBox
             // noBrokenCorners={noBrokenCorners}
-            style={{ marginLeft: 6 }}
+            style={{
+              marginLeft: 6,
+              backgroundColor: neutral33,
+              borderRadius: 6,
+            }}
             // mainContainerStyle={{ backgroundColor: neutral33, borderRadius: 6 }}
             // width={32}
             // height={32}

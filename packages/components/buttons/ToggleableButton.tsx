@@ -5,8 +5,8 @@ import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import {
   ButtonsSize,
-  cornerWidthDropdownButton,
-  heightDropdownButton,
+  // cornerWidthDropdownButton,
+  // heightDropdownButton,
 } from "../../utils/style/buttons";
 import { neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
@@ -36,25 +36,32 @@ export const ToggleableButton: React.FC<{
   isExpanded = false,
   style,
 }) => {
-  const boxProps = {
-    style,
-    squaresBackgroundColor,
-    width,
-  };
+  // const boxProps = {
+  //   style,
+  //   squaresBackgroundColor,
+  //   width,
+  // };
 
   return (
     <TouchableOpacity onPress={onPress}>
       <SecondaryBox
-      // cornerWidth={cornerWidthDropdownButton(size)}
-      // height={heightDropdownButton(size)}
-      // mainContainerStyle={{
-      //   flexDirection: "row",
-      //   borderRadius: 6,
-      //   backgroundColor: neutral33,
-      //   paddingRight: 6,
-      //   paddingLeft: 8,
-      // }}
-      // {...boxProps}
+        style={{
+          flexDirection: "row",
+          borderRadius: 6,
+          backgroundColor: neutral33,
+          paddingRight: 6,
+          paddingLeft: 8,
+        }}
+        // cornerWidth={cornerWidthDropdownButton(size)}
+        // height={heightDropdownButton(size)}
+        // mainContainerStyle={{
+        //   flexDirection: "row",
+        //   borderRadius: 6,
+        //   backgroundColor: neutral33,
+        //   paddingRight: 6,
+        //   paddingLeft: 8,
+        // }}
+        // {...boxProps}
       >
         <BrandText
           style={[

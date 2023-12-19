@@ -117,7 +117,15 @@ export const Pagination = ({
           <SecondaryBox
             // noBrokenCorners
             // width={80}
-            style={{ position: "absolute", top: 46, right: 0 }}
+            style={{
+              position: "absolute",
+              top: 46,
+              right: 0,
+              paddingHorizontal: layout.spacing_x1_5,
+              paddingTop: layout.spacing_x1_5,
+              backgroundColor: neutral33,
+              alignItems: "flex-start",
+            }}
             // mainContainerStyle={{
             //   paddingHorizontal: layout.spacing_x1_5,
             //   paddingTop: layout.spacing_x1_5,

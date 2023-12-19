@@ -4,12 +4,12 @@ import { View, Image, TouchableOpacity } from "react-native";
 import { FileUploaderProps } from "./FileUploader.type";
 import uploadSVG from "../../../assets/icons/upload.svg";
 import {
-  gradientColorBlue,
-  gradientColorDarkerBlue,
-  gradientColorTurquoise,
+  // gradientColorBlue,
+  // gradientColorDarkerBlue,
+  // gradientColorTurquoise,
   neutral17,
   neutral77,
-  withAlpha,
+  // withAlpha,
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -73,7 +73,13 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
               //   withAlpha(gradientColorBlue, 0.5),
               //   withAlpha(gradientColorTurquoise, 0.5),
               // ]}
-              style={{ flex: 1 }}
+              style={{
+                flex: 1,
+                height: files?.length ? fileHeight : 80,
+                alignItems: "center",
+                padding: layout.spacing_x2_5,
+                borderRadius: 12,
+              }}
               // mainContainerStyle={{
               //   height: files?.length ? fileHeight : 80,
               //   alignItems: "center",

@@ -3,10 +3,10 @@ import { ViewStyle, View, StyleProp, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import {
-  neutral1A,
+  // neutral1A,
   primaryColor,
   primaryTextColor,
-  withAlpha,
+  // withAlpha,
 } from "../../utils/style/colors";
 import { fontMedium14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
