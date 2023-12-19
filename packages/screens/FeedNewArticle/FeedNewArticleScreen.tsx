@@ -154,8 +154,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         return;
       }
 
-      let message = formValues.message || "";
-
+      let message = values.html;
       if (remoteFiles.length) {
         localFiles?.map((file, index) => {
           // Audio are not in the HTML for now
@@ -175,7 +174,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         files: remoteFiles,
         mentions: values.mentions,
         hashtags: values.hashtags,
-        message: values.html,
+        message,
       });
       await makePost(JSON.stringify(metadata));
     } catch (err) {
