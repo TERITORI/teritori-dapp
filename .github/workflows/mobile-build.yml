@@ -9,9 +9,6 @@ on:
 jobs:
   prepare:
     runs-on: macos-latest
-    strategy:
-      matrix:
-        command: ["check-ios-weshframework", "check-android-weshframework"]
     steps:
       - uses: actions/checkout@v3
 
@@ -23,8 +20,8 @@ jobs:
         with:
           xcode-version: latest-stable
 
-      - name: Prepare
-        run: make ${{ matrix.command }}
+      - name: Prepare ios
+        run: make check-ios-weshframework
 
       - name: Upload ios weshframework
         uses: actions/upload-artifact@v3
@@ -32,6 +29,9 @@ jobs:
           name: ios-weshframework
           path: weshd/ios/Frameworks/WeshFramework.xcframework
           if-no-files-found: error
+
+      - name: Prepare android
+        run: make check-android-weshframework
 
       - name: Upload android weshframework
         uses: actions/upload-artifact@v3
