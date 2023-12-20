@@ -7,8 +7,9 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { Header, HeaderProps } from "./Header";
-import { SideBar } from "./SideBar/SideBar";
+import { Header, HeaderMobile, HeaderProps } from "./Header";
+import { SideBar, SideBarMobile } from "./SideBar/SideBar";
+import { useIsMobile } from "../../../../hooks/useIsMobile";
 import { useTheme } from "../../../../hooks/useTheme";
 
 type RWAScreenContainerProps = HeaderProps & {
@@ -22,6 +23,8 @@ export const RWAScreenContainer: React.FC<RWAScreenContainerProps> = ({
 }) => {
   const { height } = useWindowDimensions();
   const theme = useTheme();
+  const isMobile = useIsMobile();
+
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
       <View
@@ -30,9 +33,13 @@ export const RWAScreenContainer: React.FC<RWAScreenContainerProps> = ({
           backgroundColor: theme.backgroundColor,
         }}
       >
-        <SideBar />
+        {isMobile ? <SideBarMobile /> : <SideBar />}
         <View style={{ flex: 1, width: "100%" }}>
-          <Header onBackPress={onBackPress} headerTitle={headerTitle} />
+          {isMobile ? (
+            <HeaderMobile onBackPress={onBackPress} headerTitle={headerTitle} />
+          ) : (
+            <Header onBackPress={onBackPress} headerTitle={headerTitle} />
+          )}
           <View
             style={{ width: "100%", flexDirection: "row", flex: 1, height }}
           >

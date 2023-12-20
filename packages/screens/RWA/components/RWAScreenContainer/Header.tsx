@@ -1,13 +1,17 @@
 import React from "react";
-import { View, ViewStyle } from "react-native";
+import { Pressable, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
+import contactsSVG from "../../../../../assets/icons/contacts.svg";
+import hamburgerCrossSVG from "../../../../../assets/icons/hamburger-button-cross.svg";
+import hamburgerSVG from "../../../../../assets/icons/hamburger-button.svg";
 import { BrandText } from "../../../../components/BrandText";
+import { SVG } from "../../../../components/SVG";
 import { SecondaryButton } from "../../../../components/buttons/SecondaryButton";
 import { ConnectWalletModal } from "../../../../components/connectWallet/ConnectWalletModal";
 import { BackButton } from "../../../../components/navigation/components/BackButton";
 import { SpacerRow } from "../../../../components/spacer";
-import { useIsMobile } from "../../../../hooks/useIsMobile";
+import { useRWASideBar } from "../../../../context/SidebarProvider";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
 import { useTheme } from "../../../../hooks/useTheme";
 import { selectIsLightTheme } from "../../../../store/slices/settings";
@@ -18,13 +22,18 @@ export type HeaderProps = {
   onBackPress?: () => void;
 };
 
-export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
+export const HeaderMobile: React.FC<HeaderProps> = ({
+  headerTitle,
+  onBackPress,
+}) => {
   const theme = useTheme();
-  const isLightTheme = useSelector(selectIsLightTheme);
   const [isConnectWalletVisible, setIsConnectWalletVisible] =
     React.useState(false);
   const selectedWallet = useSelectedWallet();
-  const isMobile = useIsMobile();
+  const { toggleSidebar, isSidebarExpanded } = useRWASideBar();
+
+  const toggleConnectWallet = () =>
+    setIsConnectWalletVisible(!isConnectWalletVisible);
 
   return (
     <View
@@ -36,7 +45,67 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
     >
       <View style={HeaderRowCStyle}>
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-          {!isMobile && <SpacerRow size={8} />}
+          {onBackPress && <BackButton onPress={onBackPress} />}
+          <BrandText
+            numberOfLines={1}
+            style={{ letterSpacing: -1, maxWidth: "75%", fontSize: 20 }}
+          >
+            {headerTitle}
+          </BrandText>
+        </View>
+        <Pressable onPress={selectedWallet && toggleConnectWallet}>
+          <View
+            style={[
+              ConnectWalletButtonMobileCStyle,
+              {
+                backgroundColor: theme.headerBackgroundColor,
+                borderColor: theme.borderColor,
+              },
+            ]}
+          >
+            <SVG
+              width={16}
+              height={16}
+              source={contactsSVG}
+              color={theme.textColor}
+            />
+          </View>
+        </Pressable>
+        <Pressable style={{ marginRight: 20 }} onPress={toggleSidebar}>
+          <SVG
+            width={32}
+            height={32}
+            source={isSidebarExpanded ? hamburgerCrossSVG : hamburgerSVG}
+            color={theme.textColor}
+          />
+        </Pressable>
+        <ConnectWalletModal
+          visible={isConnectWalletVisible}
+          onClose={toggleConnectWallet}
+        />
+      </View>
+    </View>
+  );
+};
+
+export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
+  const theme = useTheme();
+  const isLightTheme = useSelector(selectIsLightTheme);
+  const [isConnectWalletVisible, setIsConnectWalletVisible] =
+    React.useState(false);
+  const selectedWallet = useSelectedWallet();
+
+  return (
+    <View
+      style={{
+        ...HeaderContainerCStyle,
+        backgroundColor: theme.headerBackgroundColor,
+        borderBottomColor: theme.borderColor,
+      }}
+    >
+      <View style={HeaderRowCStyle}>
+        <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+          <SpacerRow size={8} />
           {onBackPress && <BackButton onPress={onBackPress} />}
           <BrandText
             numberOfLines={1}
@@ -111,4 +180,13 @@ const HeaderRowCStyle: ViewStyle = {
   alignItems: "center",
   justifyContent: "space-between",
   marginLeft: layout.contentSpacing,
+};
+
+const ConnectWalletButtonMobileCStyle: ViewStyle = {
+  alignItems: "center",
+  justifyContent: "center",
+  borderRadius: 999,
+  width: 32,
+  height: 32,
+  borderWidth: 1,
 };

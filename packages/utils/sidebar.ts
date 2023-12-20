@@ -7,6 +7,10 @@ import gridSVG from "../../assets/icons/grid.svg";
 import launchpadApplySVG from "../../assets/icons/launchpad-apply.svg";
 import launchpadLaunchpadSVG from "../../assets/icons/launchpad-launchpad.svg";
 import launchpadSVG from "../../assets/icons/launchpad.svg";
+import lightLaunchpadSVG from "../../assets/icons/light-launchpad.svg";
+import lightMarketplaceSVG from "../../assets/icons/light-marketplace.svg";
+import lightWalletSVG from "../../assets/icons/light-wallet-sidebar.svg";
+import marketplaceSVG from "../../assets/icons/marketplace.svg";
 import messagesSVG from "../../assets/icons/messages.svg";
 import multisigSVG from "../../assets/icons/multisig.svg";
 import osmosisCircleSVG from "../../assets/icons/networks/osmosis-circle.svg";
@@ -18,6 +22,33 @@ import walletRegSVG from "../../assets/icons/wallet-regular.svg";
 import walletSVG from "../../assets/icons/wallet-sidebar.svg";
 import { SidebarRecordType } from "../components/navigation/types";
 import { NetworkKind } from "../networks";
+
+// TODO: Maybe handle lightTheme directly in a future icons system
+export const RWA_SIDEBAR_LIST: (isLightTheme: boolean) => SidebarRecordType = (
+  isLightTheme,
+) => {
+  return {
+    "rwa-home": {
+      title: "RWA Home",
+      route: "RWAHome",
+      id: "RWAHome",
+      icon: isLightTheme ? lightLaunchpadSVG : launchpadSVG,
+    },
+
+    "rwa-portfolio": {
+      title: "RWA Portfolio",
+      route: "RWAHome",
+      id: "RWAPortfolio",
+      icon: isLightTheme ? lightMarketplaceSVG : marketplaceSVG,
+    },
+    "rwa-wallet": {
+      title: "RWA Wallet",
+      route: "RWAHome",
+      id: "RWAWallet",
+      icon: isLightTheme ? lightWalletSVG : walletSVG,
+    },
+  };
+};
 
 export const SIDEBAR_LIST: SidebarRecordType = {
   feed: {
