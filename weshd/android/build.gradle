@@ -35,11 +35,19 @@ buildscript {
   }
 }
 
+// Creating sources with comments
+task androidSourcesJar(type: Jar) {
+  archiveClassifier = 'sources'
+  from android.sourceSets.main.java.srcDirs
+}
+
 afterEvaluate {
   publishing {
     publications {
       release(MavenPublication) {
         from components.release
+         // Add additional sourcesJar to artifacts
+        artifact(androidSourcesJar)
       }
     }
     repositories {
@@ -84,7 +92,8 @@ repositories {
 }
 
 dependencies {
-   implementation fileTree(dir: './libs', include: ['*.aar', '*.jar'], exclude: [])
-  implementation project(':expo-modules-core')
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${getKotlinVersion()}"
+   implementation project(':expo-modules-core')
+   implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude:[])
+   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${getKotlinVersion()}"
+  
 }

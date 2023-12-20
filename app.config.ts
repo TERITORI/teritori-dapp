@@ -3,8 +3,9 @@ import { ExpoConfig } from "expo/config";
 const config: { expo: ExpoConfig } = {
   expo: {
     name: "Teritori",
-    slug: "teritori-dapp",
+    slug: "teritori",
     version: "1.0.0",
+    owner: "teritori",
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
@@ -34,6 +35,9 @@ const config: { expo: ExpoConfig } = {
     },
     extra: {
       env: process.env,
+      eas: {
+        projectId: "9ce165de-0199-478c-b3bd-8688e5ce03eb",
+      },
     },
   },
 };

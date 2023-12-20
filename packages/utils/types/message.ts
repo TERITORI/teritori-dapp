@@ -1,32 +1,26 @@
 import { z } from "zod";
 
-/*
-type MessageType =
-  | "message"
-  | "accept-contact"
-  | "reject-contact"
-  | "group-invite"
-  | "group-join"
-  | "group-leave"
-  | "group-create"
-  | "reaction"
-  | "contact-request"
-  | "read";
-*/
+const MessageType = z.enum([
+  "message",
+  "accept-contact",
+  "reject-contact",
+  "group-invite",
+  "group-join",
+  "group-leave",
+  "group-create",
+  "reaction",
+  "contact-request",
+  "read",
+]);
 
 export type MessageFriendsTabItem = "friends" | "request" | "addFriend";
 
 type ConversationType = "contact" | "group";
 
-/*
-interface MessageFileData extends RemoteFileData {
-  type: string;
-}
-*/
-
 const ZodMessagePayload = z.object({
   files: z.array(z.any()),
   message: z.string(),
+  type: MessageType,
   metadata: z
     .object({
       groupName: z.string().optional(),

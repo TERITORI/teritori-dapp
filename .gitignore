@@ -12,14 +12,9 @@ web-build/
 /cache/
 /ios
 /android
-/modules/wesh/ios/WeshFramework.xcframework
-/modules/weshd/android/libs
-
-
-/ios
-/android
-/modules/wesh/ios/WeshFramework.xcframework
-/modules/weshd/android/libs
+/weshd/ios/Frameworks/WeshFramework.xcframework
+/weshd/android/libs
+/app-build/
 
 # macOS
 .DS_Store

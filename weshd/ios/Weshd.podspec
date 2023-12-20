@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.static_framework = true
 
   s.dependency 'ExpoModulesCore'
-  s.dependency "WeshFramework"
+  # s.dependency "WeshFramework"
 
   # Swift/Objective-C compatibility
   s.pod_target_xcconfig = {
@@ -18,5 +18,11 @@ Pod::Spec.new do |s|
     'SWIFT_COMPILATION_MODE' => 'wholemodule'
   }
   
-  s.source_files = "**/*.{h,m,mm,swift,hpp,cpp}"
+ 
+  s.libraries = 'resolv'
+  s.frameworks = 'CoreBluetooth', 'MultipeerConnectivity'
+  s.source_files = 'src/**/*.{h,m,mm,swift}'
+  s.vendored_frameworks = 'Frameworks/WeshFramework.xcframework'
+  s.preserve_paths = 'Frameworks/WeshFramework.xcframework'
+
 end

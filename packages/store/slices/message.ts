@@ -88,11 +88,6 @@ export const selectMessageList = (state: RootState, groupPk: string) => {
   return messageSelectors.selectAll(group);
 };
 
-/*
-export const selectPeerList = (state: RootState) =>
-  peerSelectors.selectAll(state.message.peers);
-*/
-
 export const selectPeerById = (state: RootState, id: string) =>
   peerSelectors.selectById(state.message.peers, id);
 

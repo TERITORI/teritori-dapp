@@ -1,0 +1,98 @@
+name: Build Mobile App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        command: ["build-android", "build-ios"]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.19"
+
+      - name: Prepare
+        run: make ${{ matrix.command }}
+
+      - name: Upload ios weshframework
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-weshframework
+          path: weshd/ios/Frameworks/WeshFramework.xcframework
+          if-no-files-found: error
+
+      - name: Upload android weshframework
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-weshframework
+          path: weshd/android/libs
+          if-no-files-found: error
+  build:
+    needs: prepare
+    strategy:
+      matrix:
+        include:
+          - platform: android
+            runner: ubuntu-latest
+            download-name: android-weshframework
+            framework-path: weshd/android/libs
+            build-cmd: eas build --local --non-interactive --output=./app-build/app.apk --platform=android
+          - platform: ios
+            runner: macos-latest
+            download-name: ios-weshframework
+            framework-path: weshd/ios/Frameworks/WeshFramework.xcframework
+            build-cmd: eas build --local --non-interactive --output=./app-build/app.ipa --platform=ios
+    runs-on: ${{ matrix.runner }}
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: "yarn"
+          node-version: 18
+
+      - name: Install node modules
+        run: yarn
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Download framework
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{matrix.download-name}}
+          path: ${{matrix.framework-path}}
+
+      - name: Prebuild
+        run: npx expo prebuild --clean
+
+      - name: Build ${{ matrix.platform }}
+        run: ${{ matrix.build-cmd }}
+
+      - name: Upload apk
+        uses: actions/upload-artifact@v3
+        if: matrix.platform == 'android'
+        with:
+          name: teritori-${{ github.sha }}-${{ matrix.os }}
+          path: app-build/app.apk
+          if-no-files-found: error
+
+      - name: Upload ipa
+        uses: actions/upload-artifact@v3
+        if: matrix.os == 'ios'
+        with:
+          name: teritori-${{ github.sha }}-${{ matrix.os }}
+          path: app-build/app.ipa
+          if-no-files-found: error
