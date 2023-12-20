@@ -3,8 +3,8 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
-import { SecondaryBox } from "./boxes/SecondaryBox";
 import { LegacyTertiaryBox } from "./boxes/LegacyTertiaryBox";
+import { SecondaryBox } from "./boxes/SecondaryBox";
 import { SpacerRow } from "./spacer";
 import chevronDownSVG from "../../assets/icons/chevron-down.svg";
 import chevronLeftDoubleSVG from "../../assets/icons/chevron-left-double.svg";
