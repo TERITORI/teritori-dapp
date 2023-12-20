@@ -7,38 +7,6 @@ on:
   pull_request:
 
 jobs:
-  prepare:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-go@v3
-        with:
-          go-version: "1.19"
-
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: latest-stable
-
-      - name: Prepare ios
-        run: make check-ios-weshframework
-
-      - name: Upload ios weshframework
-        uses: actions/upload-artifact@v3
-        with:
-          name: ios-weshframework
-          path: weshd/ios/Frameworks/WeshFramework.xcframework
-          if-no-files-found: error
-
-      - name: Prepare android
-        run: make check-android-weshframework
-
-      - name: Upload android weshframework
-        uses: actions/upload-artifact@v3
-        with:
-          name: android-weshframework
-          path: weshd/android/libs
-          if-no-files-found: error
   build:
     needs: prepare
     strategy:
@@ -46,13 +14,13 @@ jobs:
         include:
           - platform: android
             runner: ubuntu-latest
-            download-name: android-weshframework
-            framework-path: weshd/android/libs
+            folder-id: https://drive.google.com/drive/folders/1NHG4yH-LMXwBnvgmwDnYKWdoIizfh3Ed
+            framework-path: weshd/android/
             build-cmd: eas build --local --non-interactive --output=./app-build/app.apk --platform=android
           - platform: ios
             runner: macos-latest
-            download-name: ios-weshframework
-            framework-path: weshd/ios/Frameworks/WeshFramework.xcframework
+            folder-id: https://drive.google.com/drive/folders/1UiIZ913lh_mrv7oKnI_u9418b5m8xttl
+            framework-path: weshd/ios/
             build-cmd: eas build --local --non-interactive --output=./app-build/app.ipa --platform=ios
     runs-on: ${{ matrix.runner }}
     continue-on-error: true
@@ -74,10 +42,9 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Download framework
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{matrix.download-name}}
-          path: ${{matrix.framework-path}}
+        run: |
+          pip install gdown
+          gdown ${{matrix.folder-id}} -O ${{matrix.framework-path}} --folder
 
       - name: Prebuild
         run: npx expo prebuild --clean
