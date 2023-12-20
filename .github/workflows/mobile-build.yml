@@ -8,7 +8,7 @@ on:
 
 jobs:
   prepare:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     strategy:
       matrix:
         command: ["check-ios-weshframework", "check-android-weshframework"]
@@ -18,6 +18,10 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: "1.19"
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
 
       - name: Prepare
         run: make ${{ matrix.command }}
