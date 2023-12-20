@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import hamburgerCrossSVG from "../../../assets/icons/hamburger-button-cross.svg";
 import hamburgerSVG from "../../../assets/icons/hamburger-button.svg";
 import { useSidebar } from "../../context/SidebarProvider";
+import { useTheme } from "../../hooks/useTheme";
 import { NetworkFeature, NetworkKind } from "../../networks";
 import { selectAllSelectedNFTData } from "../../store/slices/marketplaceCartItems";
 import { neutral00, neutral33 } from "../../utils/style/colors";
@@ -32,6 +33,7 @@ export const HeaderMobile: FC<{
 }) => {
   const { isSidebarExpanded, toggleSidebar } = useSidebar();
   const selectedNFTDataInCart = useSelector(selectAllSelectedNFTData);
+  const theme = useTheme();
 
   return (
     <View style={styles.container}>
@@ -69,6 +71,7 @@ export const HeaderMobile: FC<{
             source={isSidebarExpanded ? hamburgerCrossSVG : hamburgerSVG}
             width={32}
             height={32}
+            color={theme.textColor}
           />
         </TouchableOpacity>
       </View>

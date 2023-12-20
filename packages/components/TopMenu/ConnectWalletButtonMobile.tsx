@@ -4,6 +4,7 @@ import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 import { TopMenuMobile } from "./TopMenuMobile";
 import contactsSVG from "../../../assets/icons/contacts.svg";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useTheme } from "../../hooks/useTheme";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import { SVG } from "../SVG";
 import { ConnectWalletModal } from "../connectWallet/ConnectWalletModal";
@@ -13,6 +14,7 @@ export const ConnectWalletButtonMobile: FC<{
 }> = ({ style }) => {
   const selectedWallet = useSelectedWallet();
   const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
+  const theme = useTheme();
 
   // functions
   const toggleConnectWallet = () =>
@@ -37,7 +39,12 @@ export const ConnectWalletButtonMobile: FC<{
                 borderWidth: 1,
               }}
             >
-              <SVG width={16} height={16} source={contactsSVG} />
+              <SVG
+                width={16}
+                height={16}
+                source={contactsSVG}
+                color={theme.textColor}
+              />
             </View>
           </TouchableOpacity>
         )}

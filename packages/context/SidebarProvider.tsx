@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 
 import { useIsMobile } from "../hooks/useIsMobile";
+import { useIsLightTheme } from "../hooks/useTheme";
 import { getValuesFromId, SEPARATOR } from "../screens/DAppStore/query/util";
 import {
   selectAvailableApps,
@@ -13,7 +14,40 @@ import {
   setSidebarExpanded,
 } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
-import { SIDEBAR_LIST } from "../utils/sidebar";
+import { RWA_SIDEBAR_LIST, SIDEBAR_LIST } from "../utils/sidebar";
+
+export const useRWASideBar = () => {
+  const isSidebarExpanded = useSelector(selectSidebarExpanded);
+  const dispatch = useAppDispatch();
+  // on mobile sidebar is not expanded on load
+  const isMobile = useIsMobile();
+  const isLightTheme = useIsLightTheme();
+
+  useEffect(() => {
+    if (isMobile) {
+      dispatch(setSidebarExpanded(false));
+    }
+  }, [dispatch, isMobile]);
+
+  const dynamicSidebar = useMemo(() => {
+    let dynamicAppsSelection = [] as {
+      [key: string]: any;
+    };
+
+    dynamicAppsSelection = RWA_SIDEBAR_LIST(isLightTheme);
+    return dynamicAppsSelection;
+  }, [isLightTheme]);
+
+  const toggleSidebar = () => {
+    dispatch(setSidebarExpanded(!isSidebarExpanded));
+  };
+
+  return {
+    isSidebarExpanded,
+    toggleSidebar,
+    dynamicSidebar,
+  };
+};
 
 export const useSidebar = () => {
   const isSidebarExpanded = useSelector(selectSidebarExpanded);

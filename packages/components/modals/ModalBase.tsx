@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../assets/icons/hamburger-button-cross.svg";
+import { useTheme } from "../../hooks/useTheme";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral77, neutral22 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
@@ -91,6 +92,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
 }) => {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const navigation = useAppNavigation();
+  const theme = useTheme();
 
   const insets = useSafeAreaInsets();
 
@@ -242,7 +244,12 @@ const ModalBase: React.FC<ModalBaseProps> = ({
               style={{ justifyContent: "center" }}
               onPress={onClose}
             >
-              <SVG width={32} height={32} source={closeSVG} />
+              <SVG
+                width={32}
+                height={32}
+                source={closeSVG}
+                color={theme.textColor}
+              />
             </TouchableOpacity>
           </View>
           {children && (

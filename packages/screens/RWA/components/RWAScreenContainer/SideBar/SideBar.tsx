@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   ViewStyle,
+  useWindowDimensions,
 } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -14,24 +15,19 @@ import Animated, {
 
 import { SideBarButton } from "./SideBarButton";
 import chevronRightSVG from "../../../../../../assets/icons/chevron-right.svg";
-import RWAlaunchpadSVG from "../../../../../../assets/icons/launchpad-rwa.svg";
-import launchpadSVG from "../../../../../../assets/icons/launchpad.svg";
 import RWADarkLogo from "../../../../../../assets/logos/rwa-dark-logo.svg";
 import RWALightLogo from "../../../../../../assets/logos/rwa-light-logo.svg";
 import { SVG } from "../../../../../components/SVG";
-import {
-  SidebarRecordType,
-  SidebarType,
-} from "../../../../../components/navigation/types";
+import { SidebarType } from "../../../../../components/navigation/types";
 import { Separator } from "../../../../../components/separators/Separator";
 import { SpacerColumn } from "../../../../../components/spacer";
-import { useSidebar } from "../../../../../context/SidebarProvider";
+import { useRWASideBar } from "../../../../../context/SidebarProvider";
 import { useIsMobile } from "../../../../../hooks/useIsMobile";
-import { useSelectedNetworkInfo } from "../../../../../hooks/useSelectedNetwork";
 import { useIsLightTheme, useTheme } from "../../../../../hooks/useTheme";
-import { NetworkKind } from "../../../../../networks";
 import { useAppNavigation } from "../../../../../utils/navigation";
 import {
+  MOBILE_HEADER_HEIGHT,
+  MOBILE_SIDEBAR_MAX_WIDTH,
   fullSidebarWidth,
   headerHeight,
   layout,
@@ -64,19 +60,6 @@ const SpringConfig: WithSpringConfig = {
   restDisplacementThreshold: 0.2,
 };
 
-const getRWASideBarList: (isLightTheme: boolean) => SidebarRecordType = (
-  isLightTheme,
-) => {
-  return {
-    launchpad: {
-      title: "Home",
-      route: "RWAHome",
-      id: "RWAHome",
-      icon: isLightTheme ? RWAlaunchpadSVG : launchpadSVG,
-    },
-  };
-};
-
 const SidebarSeparator: React.FC = () => {
   const theme = useTheme();
   return (
@@ -91,14 +74,69 @@ const SidebarSeparator: React.FC = () => {
   );
 };
 
-export const SideBar: React.FC = () => {
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-  const selectedNetworkKind = selectedNetworkInfo?.kind;
-  const navigation = useAppNavigation();
-  const { isSidebarExpanded, toggleSidebar } = useSidebar();
+export const SideBarMobile: React.FC = () => {
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+  // const navigation = useAppNavigation();
+  const { isSidebarExpanded, dynamicSidebar } = useRWASideBar();
   const theme = useTheme();
-  const isLightTheme = useIsLightTheme();
-  const sideBarDatas = getRWASideBarList(isLightTheme);
+
+  const layoutStyle = useAnimatedStyle(
+    () => ({
+      width: isSidebarExpanded
+        ? withSpring(
+            windowWidth < MOBILE_SIDEBAR_MAX_WIDTH
+              ? windowWidth
+              : MOBILE_SIDEBAR_MAX_WIDTH,
+            SpringConfig,
+          )
+        : withSpring(0, SpringConfig),
+    }),
+    [isSidebarExpanded, windowWidth],
+  );
+
+  const onRouteChange = (name: SidebarType["route"]) => {
+    // @ts-expect-error
+    navigation.navigate(name);
+  };
+
+  return (
+    <Animated.View
+      style={[
+        SideBarMobileContainerCStyle,
+        layoutStyle,
+        {
+          height: windowHeight - MOBILE_HEADER_HEIGHT,
+          backgroundColor: theme.headerBackgroundColor,
+          borderColor: theme.borderColor,
+        },
+        !isSidebarExpanded && { borderRightWidth: 0 },
+      ]}
+    >
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        data={Object.values(dynamicSidebar)}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <SideBarButton key={item.id} onPress={onRouteChange} {...item} />
+        )}
+        ListHeaderComponent={<SpacerColumn size={1} />}
+        ListFooterComponent={<SidebarSeparator />}
+      />
+    </Animated.View>
+  );
+};
+
+const SideBarMobileContainerCStyle: ViewStyle = {
+  borderRightWidth: 1,
+  position: "absolute",
+  top: MOBILE_HEADER_HEIGHT,
+  zIndex: 9999,
+};
+
+export const SideBar: React.FC = () => {
+  const navigation = useAppNavigation();
+  const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useRWASideBar();
+  const theme = useTheme();
   const isMobile = useIsMobile();
 
   const layoutStyle = useAnimatedStyle(
@@ -157,27 +195,11 @@ export const SideBar: React.FC = () => {
       </View>
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={Object.values(sideBarDatas)}
+        data={Object.values(dynamicSidebar)}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          let { route } = item;
-          if (
-            item.disabledOn?.includes(
-              selectedNetworkKind || NetworkKind.Unknown,
-            )
-          ) {
-            route = "ComingSoon";
-          }
-
-          return (
-            <SideBarButton
-              key={item.id}
-              onPress={onRouteChange}
-              {...item}
-              route={route}
-            />
-          );
-        }}
+        renderItem={({ item }) => (
+          <SideBarButton key={item.id} onPress={onRouteChange} {...item} />
+        )}
         ListHeaderComponent={<SpacerColumn size={1} />}
         ListFooterComponent={<SidebarSeparator />}
       />
