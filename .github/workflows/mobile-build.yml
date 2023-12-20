@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        command: ["build-android", "build-ios"]
+        command: ["check-ios-weshframework", "check-android-weshframework"]
     steps:
       - uses: actions/checkout@v3
 

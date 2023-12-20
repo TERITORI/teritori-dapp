@@ -340,6 +340,8 @@ build-ios-weshframework:
 	go mod tidy
 	go get golang.org/x/mobile/cmd/gobind
 	go get golang.org/x/mobile/cmd/gomobile
+	go install golang.org/x/mobile/cmd/gobind
+	go install golang.org/x/mobile/cmd/gomobile
 	gomobile init
 	CGO_CPPFLAGS="-Wno-error -Wno-nullability-completeness -Wno-expansion-to-defined -DHAVE_GETHOSTUUID=0"
 	gomobile bind \
@@ -366,6 +368,8 @@ build-android-weshframework:
 	go mod tidy
 	go get golang.org/x/mobile/cmd/gobind
 	go get golang.org/x/mobile/cmd/gomobile
+	go install golang.org/x/mobile/cmd/gobind
+	go install golang.org/x/mobile/cmd/gomobile
 	gomobile init
 	CGO_CPPFLAGS="-Wno-error -Wno-nullability-completeness -Wno-expansion-to-defined -DHAVE_GETHOSTUUID=0"
 	gomobile bind \
