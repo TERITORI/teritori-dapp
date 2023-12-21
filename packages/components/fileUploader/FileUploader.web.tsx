@@ -137,7 +137,6 @@ export const FileUploader: FC<FileUploaderProps> = ({
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              // height: file ? fileHeight : 80,
               borderRadius: 12,
             }}
           >
