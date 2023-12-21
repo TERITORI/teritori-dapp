@@ -32,6 +32,7 @@ export interface NewArticleFormValues {
   gifs?: string[];
   nftStorageApiToken?: string;
   thumbnailImage?: LocalFileData;
+  coverImage?: LocalFileData;
   shortDescription?: string;
 }
 
@@ -74,6 +75,7 @@ export const ZodSocialFeedArticleMetadata = z.object({
   title: z.string(),
   shortDescription: z.string(),
   thumbnailImage: ZodRemoteFileData.optional(),
+  coverImage: ZodRemoteFileData.optional(),
   message: z.string(),
   files: MaybeFiles.optional(),
   gifs: z.array(z.string()).optional(),
