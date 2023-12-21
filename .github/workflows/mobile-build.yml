@@ -66,14 +66,14 @@ jobs:
       - name: EAS Submit iOS IPA
         if: matrix.os == 'ios'
         run: |
-          export IPA_FILE=$(find ./ -name 'build-*.ipa' -type f)
+          IPA_FILE=$(find ./ -name 'build-*.ipa' -type f)
           if [ -z "$IPA_FILE" ]; then
             echo "Error: IPA file not found."
             exit 1
           fi
 
           eas submit --platform=ios --path=$IPA_FILE
-          echo "::set-env name=IPA_FILE::$IPA_FILE"
+          echo "IPA_FILE=$IPA_FILE" >> $GITHUB_ENV
 
       - name: Upload IPA
         uses: actions/upload-artifact@v3
@@ -93,7 +93,7 @@ jobs:
           fi
 
           eas submit --platform=ios --path=$AAB_FILE
-          echo "::set-env name=IPA_FILE::$IPA_FILE"
+          echo "AAB_FILE=$AAB_FILE" >> $GITHUB_ENV
 
       - name: Upload aab
         uses: actions/upload-artifact@v3
