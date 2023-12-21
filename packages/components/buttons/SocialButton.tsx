@@ -20,14 +20,29 @@ export const SocialButton: React.FC<{
       <Box
         // We don't handle broken corners for now, because this button can be used on an image
         notched={!noBrokenCorners}
-        style={{ backgroundColor: withAlpha(neutral22, 0.64), height: 44, justifyContent: 'center' }}
+        style={{
+          backgroundColor: withAlpha(neutral22, 0.64),
+          height: 44,
+          justifyContent: "center",
+        }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: 'center' }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <Box
             notched={!noBrokenCorners}
             style={{
-              marginLeft: 6, backgroundColor: neutral33, borderRadius: 6,
-              width: 32, height: 32, justifyContent: 'center', alignItems: 'center'
+              marginLeft: 6,
+              backgroundColor: neutral33,
+              borderRadius: 6,
+              width: 32,
+              height: 32,
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
             <SVG source={iconSvg} height={20} width={20} />

@@ -12,9 +12,9 @@ import {
 } from "./SearchBarResults";
 import { useDropdowns } from "../../context/DropdownsProvider";
 import { useSearchBar } from "../../context/SearchBarProvider";
+import { neutral33 } from "../../utils/style/colors";
 import { COLLECTION_VIEW_SM_WIDTH } from "../CollectionView";
 import { Box } from "../boxes/Box";
-import { neutral33 } from "../../utils/style/colors";
 
 export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
   style,

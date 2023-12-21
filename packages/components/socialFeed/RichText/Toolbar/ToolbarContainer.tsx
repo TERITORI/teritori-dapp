@@ -6,7 +6,6 @@ import {
   gradientColorTurquoise,
 } from "../../../../utils/style/colors";
 import { layout } from "../../../../utils/style/layout";
-import { TertiaryBox } from "../../../boxes/TertiaryBox";
 import { Box } from "../../../boxes/Box";
 
 export const ToolbarContainer: FC<{ children: ReactNode }> = ({ children }) => {

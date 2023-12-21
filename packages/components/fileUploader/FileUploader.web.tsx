@@ -18,10 +18,9 @@ import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { DeleteButton } from "../FilePreview/DeleteButton";
 import { SVG } from "../SVG";
+import { Box } from "../boxes/Box";
 import { GradientText } from "../gradientText";
 import { Label } from "../inputs/TextInputCustom";
-import { Box } from "../boxes/Box";
-
 
 export const FileUploader: FC<FileUploaderProps> = ({
   label,

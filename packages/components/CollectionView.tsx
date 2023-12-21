@@ -3,15 +3,14 @@ import { StyleSheet, Linking, View, Pressable } from "react-native";
 
 import { BrandText } from "./BrandText";
 import { OptimizedImage } from "./OptimizedImage";
-import { LegacyTertiaryBox } from "./boxes/LegacyTertiaryBox";
+import { Box } from "./boxes/Box";
 import { GradientText } from "./gradientText";
 import { Collection, MintState } from "../api/marketplace/v1/marketplace";
 import { useCollectionThumbnailInfo } from "../hooks/collection/useCollectionThumbnailInfo";
 import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
+import { neutral33 } from "../utils/style/colors";
 import { fontBold11, fontMedium10, fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
-import { Box } from "./boxes/Box";
-import { neutral33 } from "../utils/style/colors";
 
 type CollectionViewSize = "XL" | "XS";
 export const COLLECTION_VIEW_SM_WIDTH = 124;
@@ -49,11 +48,14 @@ export const CollectionView: React.FC<{
     >
       <Box
         notched={size !== "XS"}
-        style={[sizedStyles.boxMainContainer, {
-          width: sizedStyles.box.width, height: sizedStyles.box.height,
-          borderWidth: 1,
-          borderColor: neutral33,
-        },
+        style={[
+          sizedStyles.boxMainContainer,
+          {
+            width: sizedStyles.box.width,
+            height: sizedStyles.box.height,
+            borderWidth: 1,
+            borderColor: neutral33,
+          },
         ]}
       >
         <OptimizedImage
@@ -112,8 +114,8 @@ export const CollectionView: React.FC<{
             }}
           >
             {info &&
-              mintState !== MintState.MINT_STATE_UNSPECIFIED &&
-              info.maxSupply !== 0 ? (
+            mintState !== MintState.MINT_STATE_UNSPECIFIED &&
+            info.maxSupply !== 0 ? (
               <>
                 <GradientText
                   style={sizedStyles.creatorName}
