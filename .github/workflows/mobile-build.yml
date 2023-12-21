@@ -72,7 +72,7 @@ jobs:
             exit 1
           fi
 
-          eas submit --platform=ios --path=$IPA_FILE
+          eas submit --platform=ios --path=$IPA_FILE 
           echo "IPA_FILE=$IPA_FILE" >> $GITHUB_ENV
 
       - name: Upload IPA
@@ -80,7 +80,7 @@ jobs:
         if: matrix.os == 'ios'
         with:
           name: teritori-${{ github.sha }}-${{ matrix.os }}
-          path: ${{ IPA_FILE }}
+          path: ${{ env.IPA_FILE }}
           if-no-files-found: error
 
       - name: EAS Submit aab
@@ -100,5 +100,5 @@ jobs:
         if: matrix.platform == 'android'
         with:
           name: teritori-${{ github.sha }}-${{ matrix.os }}
-          path: ${{ AAB_FILE }}
+          path: ${{ env.AAB_FILE }}
           if-no-files-found: error
