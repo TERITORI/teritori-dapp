@@ -90,11 +90,14 @@ android {
 
 repositories {
   mavenCentral()
+     flatDir {
+      dirs project(':expo-weshnet').file('libs')
+    }
 }
 
 dependencies {
    implementation project(':expo-modules-core')
-   implementation fileTree(dir: './libs', include: ['*.aar', '*.jar'], exclude:[])
+   implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude:[])
    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${getKotlinVersion()}"
   
 }
