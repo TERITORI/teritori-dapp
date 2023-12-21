@@ -30,11 +30,7 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature } from "../../networks";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
-import {
-  generateIpfsKey,
-  web3ToWeb2URI,
-  uploadFilesToPinata,
-} from "../../utils/ipfs";
+import { generateIpfsKey, uploadFilesToPinata } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { ARTICLE_THUMBNAIL_IMAGE_HEIGHT } from "../../utils/social-feed";
@@ -159,10 +155,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         localFiles?.map((file, index) => {
           // Audio are not in the HTML for now
           if (remoteFiles[index]?.fileType !== "audio") {
-            message = message.replace(
-              file.url,
-              web3ToWeb2URI(remoteFiles[index].url),
-            );
+            message = message.replace(file.url, remoteFiles[index].url);
           }
         });
       }
