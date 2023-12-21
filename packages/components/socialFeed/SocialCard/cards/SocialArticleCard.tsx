@@ -10,6 +10,7 @@ import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
 import { useAppNavigation } from "../../../../utils/navigation";
 import { zodTryParseJSON } from "../../../../utils/sanitize";
+import { ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH } from "../../../../utils/social-feed";
 import {
   neutral00,
   neutral33,
@@ -73,7 +74,7 @@ export const SocialArticleCard: FC<{
   );
   const thumbnailImage =
     metadata?.thumbnailImage ||
-    // Old articles doesn't have thumbnailImage, but they have a file thumbnailImage = true
+    // Old articles doesn't have thumbnailImage, but they have a file with a isCoverImage flag
     oldMetadata?.files?.find((file) => file.isCoverImage);
   const simplePostMetadata = metadata || oldMetadata;
   const message = simplePostMetadata?.message;
@@ -190,6 +191,7 @@ export const SocialArticleCard: FC<{
             paddingVertical: ARTICLE_CARD_PADDING_VERTICAL,
             borderBottomRightRadius: SOCIAl_CARD_BORDER_RADIUS,
             borderBottomLeftRadius: SOCIAl_CARD_BORDER_RADIUS,
+            maxWidth: ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH,
           }}
           start={{ x: 0, y: 1 }}
           end={{ x: 0, y: 0 }}
