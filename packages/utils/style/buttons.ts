@@ -23,24 +23,25 @@ export const borderRadiusButton = (format: ButtonsSize) => {
       return 6;
   }
 };
+// TODO: [Thom Arnauld] - This export is commented out because it's currently unused.
+// export const heightDropdownButton = (format: ButtonsSize) => {
+//   switch (format) {
+//     case "SM":
+//       return 40;
+//     case "XS":
+//       return 24;
+//   }
+// };
 
-export const heightDropdownButton = (format: ButtonsSize) => {
-  switch (format) {
-    case "SM":
-      return 40;
-    case "XS":
-      return 24;
-  }
-};
-
-export const cornerWidthDropdownButton = (format: ButtonsSize) => {
-  switch (format) {
-    case "XS":
-      return 5;
-    default:
-      return 8;
-  }
-};
+// TODO: [Thom Arnauld] - This export is commented out because it's currently unused.
+// export const cornerWidthDropdownButton = (format: ButtonsSize) => {
+//   switch (format) {
+//     case "XS":
+//       return 5;
+//     default:
+//       return 8;
+//   }
+// };
 
 export const horizontalPaddingButton = (format: ButtonsSize) => {
   switch (format) {
