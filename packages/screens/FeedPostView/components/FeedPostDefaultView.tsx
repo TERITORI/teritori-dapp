@@ -309,8 +309,8 @@ export const FeedPostDefaultView: FC<{
           style={{ alignSelf: "center" }}
           ref={feedInputRef}
           type="comment"
-          parentId={postId}
           replyTo={replyTo}
+          parentId={post.identifier}
           onSubmitInProgress={handleSubmitInProgress}
           onSubmitSuccess={() => {
             setReplyTo(undefined);
@@ -327,6 +327,8 @@ export const FeedPostDefaultView: FC<{
           setReplyTo(undefined);
           refetchComments();
         }}
+        replyTo={replyTo}
+        parentId={post.identifier}
       />
     </ScreenContainer>
   );
