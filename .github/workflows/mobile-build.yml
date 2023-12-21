@@ -21,12 +21,12 @@ jobs:
             runner: ubuntu-latest
             folder-id: https://drive.google.com/drive/folders/1NHG4yH-LMXwBnvgmwDnYKWdoIizfh3Ed
             framework-path: ./weshd/android/
-            build-cmd: eas build --local --non-interactive --output=./app-build/app.apk --platform=android --profile androidAPK
+            build-cmd: eas build --local --non-interactive --platform=android
           - platform: ios
             runner: macos-latest
             folder-id: https://drive.google.com/drive/folders/1UiIZ913lh_mrv7oKnI_u9418b5m8xttl
             framework-path: ./weshd/ios/
-            build-cmd: eas build --local --non-interactive --output=./app-build/app.ipa --platform=ios
+            build-cmd: eas build --local --non-interactive --platform=ios
     runs-on: ${{ matrix.runner }}
     continue-on-error: true
     steps:
@@ -63,22 +63,40 @@ jobs:
       - name: Build ${{ matrix.platform }}
         run: ${{ matrix.build-cmd }}
 
-      - name: Upload apk
+      - name: EAS Submit iOS IPA
+        if: matrix.os == 'ios'
+        run: |
+          ipa_file=$(find ./ -name 'build-*.ipa' -type f)
+          if [ -z "$ipa_file" ]; then
+            echo "Error: IPA file not found."
+            exit 1
+          fi
+
+          eas submit --platform=ios --path=$ipa_file
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v3
+        if: matrix.os == 'ios'
+        with:
+          name: teritori-${{ github.sha }}-${{ matrix.os }}
+          path: ${{ ipa_file }}
+          if-no-files-found: error
+
+      - name: EAS Submit aab
+        if: matrix.os == 'android'
+        run: |
+          aab_file=$(find ./ -name 'build-*.aab' -type f)
+          if [ -z "$aab_file" ]; then
+            echo "Error: apk file not found."
+            exit 1
+          fi
+
+          eas submit --platform=ios --path=$aab_file
+
+      - name: Upload aab
         uses: actions/upload-artifact@v3
         if: matrix.platform == 'android'
         with:
           name: teritori-${{ github.sha }}-${{ matrix.os }}
-          path: app-build/app.apk
+          path: ${{ aab_file }}
           if-no-files-found: error
-
-      - name: Upload ipa
-        uses: actions/upload-artifact@v3
-        if: matrix.os == 'ios'
-        with:
-          name: teritori-${{ github.sha }}-${{ matrix.os }}
-          path: app-build/app.ipa
-          if-no-files-found: error
-
-      - name: EAS Submit iOS IPA
-        if: matrix.os == 'ios'
-        run: eas submit --platform=ios --path=./app.ipa
