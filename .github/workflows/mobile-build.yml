@@ -77,7 +77,7 @@ jobs:
             exit 1
           fi
 
-          eas submit --platform=ios --path=$IPA_FILE 
+          # eas submit --platform=ios --path=$IPA_FILE 
           echo "IPA_FILE=$IPA_FILE" >> $GITHUB_ENV
 
       - name: Upload IPA
@@ -97,7 +97,7 @@ jobs:
             exit 1
           fi
 
-          eas submit --platform=android --path=$AAB_FILE
+          # eas submit --platform=android --path=$AAB_FILE
           echo "AAB_FILE=$AAB_FILE" >> $GITHUB_ENV
 
       - name: Upload aab
