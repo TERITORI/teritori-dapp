@@ -64,7 +64,7 @@ jobs:
         run: ${{ matrix.build-cmd }}
 
       - name: EAS Submit iOS IPA
-        if: matrix.os == 'ios'
+        if: matrix.platform == 'ios'
         run: |
           IPA_FILE=$(find ./ -name 'build-*.ipa' -type f)
           if [ -z "$IPA_FILE" ]; then
@@ -77,14 +77,14 @@ jobs:
 
       - name: Upload IPA
         uses: actions/upload-artifact@v3
-        if: matrix.os == 'ios'
+        if: matrix.platform == 'ios'
         with:
-          name: teritori-${{ github.sha }}-${{ matrix.os }}
+          name: teritori-${{ github.sha }}-${{ matrix.platform }}
           path: ${{ env.IPA_FILE }}
           if-no-files-found: error
 
       - name: EAS Submit aab
-        if: matrix.os == 'android'
+        if: matrix.platform == 'android'
         run: |
           AAB_FILE=$(find ./ -name 'build-*.aab' -type f)
           if [ -z "$AAB_FILE" ]; then
@@ -99,6 +99,6 @@ jobs:
         uses: actions/upload-artifact@v3
         if: matrix.platform == 'android'
         with:
-          name: teritori-${{ github.sha }}-${{ matrix.os }}
+          name: teritori-${{ github.sha }}-${{ matrix.platform }}
           path: ${{ env.AAB_FILE }}
           if-no-files-found: error
