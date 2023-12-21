@@ -345,7 +345,6 @@ export const FeedPostArticleView: FC<{
         {!isMobile && (
           <>
             <SpacerColumn size={2.5} />
-
             <NewsFeedInput
               style={{ alignSelf: "center" }}
               ref={feedInputRef}

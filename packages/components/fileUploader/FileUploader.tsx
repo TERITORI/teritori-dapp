@@ -29,7 +29,6 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ label, style }) => {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
-            height: 80,
             borderRadius: 12,
           }}
         >
