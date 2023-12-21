@@ -10,6 +10,8 @@ import { useCollectionThumbnailInfo } from "../hooks/collection/useCollectionThu
 import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
 import { fontBold11, fontMedium10, fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
+import { Box } from "./boxes/Box";
+import { neutral33 } from "../utils/style/colors";
 
 type CollectionViewSize = "XL" | "XS";
 export const COLLECTION_VIEW_SM_WIDTH = 124;
@@ -45,11 +47,14 @@ export const CollectionView: React.FC<{
       }}
       disabled={item.id === "" && item.twitterUrl === ""}
     >
-      <LegacyTertiaryBox
-        noBrokenCorners={size === "XS"}
-        mainContainerStyle={sizedStyles.boxMainContainer}
-        width={sizedStyles.box.width}
-        height={sizedStyles.box.height}
+      <Box
+        notched={size !== "XS"}
+        style={[sizedStyles.boxMainContainer, {
+          width: sizedStyles.box.width, height: sizedStyles.box.height,
+          borderWidth: 1,
+          borderColor: neutral33,
+        },
+        ]}
       >
         <OptimizedImage
           sourceURI={item.imageUri}
@@ -107,8 +112,8 @@ export const CollectionView: React.FC<{
             }}
           >
             {info &&
-            mintState !== MintState.MINT_STATE_UNSPECIFIED &&
-            info.maxSupply !== 0 ? (
+              mintState !== MintState.MINT_STATE_UNSPECIFIED &&
+              info.maxSupply !== 0 ? (
               <>
                 <GradientText
                   style={sizedStyles.creatorName}
@@ -139,7 +144,7 @@ export const CollectionView: React.FC<{
             )}
           </View>
         </View>
-      </LegacyTertiaryBox>
+      </Box>
     </Pressable>
   );
 };

@@ -21,6 +21,8 @@ import {
 } from "../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
+import { TertiaryBox } from "./boxes/TertiaryBox";
+import { Box } from "./boxes/Box";
 
 interface PaginationProps {
   currentPage: number;
@@ -63,32 +65,33 @@ export const Pagination = ({
 
       <View style={styles.section}>
         <TouchableOpacity onPress={() => handleChangePage(0)}>
-          <LegacyTertiaryBox height={42} width={56}>
+          <TertiaryBox style={{ height: 42, width: 56, justifyContent: 'center', alignItems: 'center' }}>
             <SVG source={chevronLeftDoubleSVG} height={16} width={16} />
-          </LegacyTertiaryBox>
+          </TertiaryBox>
         </TouchableOpacity>
         <SpacerRow size={1} />
         <TouchableOpacity onPress={() => handleChangePage(currentPage - 1)}>
-          <LegacyTertiaryBox height={42} width={56}>
+          <TertiaryBox style={{ height: 42, width: 56, justifyContent: 'center', alignItems: 'center' }}>
             <SVG source={chevronLeftSVG} height={16} width={16} />
-          </LegacyTertiaryBox>
+          </TertiaryBox>
         </TouchableOpacity>
         <SpacerRow size={2} />
         <TouchableOpacity onPress={() => handleChangePage(currentPage + 1)}>
-          <LegacyTertiaryBox height={42} width={56}>
+          <TertiaryBox style={{ height: 42, width: 56, justifyContent: 'center', alignItems: 'center' }}>
             <SVG source={chevronRightSVG} height={16} width={16} />
-          </LegacyTertiaryBox>
+          </TertiaryBox>
         </TouchableOpacity>
         <SpacerRow size={1} />
         <TouchableOpacity onPress={() => handleChangePage(maxPage - 1)}>
-          <LegacyTertiaryBox height={42} width={56}>
+          <TertiaryBox style={{ height: 42, width: 56, justifyContent: 'center', alignItems: 'center' }}>
             <SVG source={chevronRightDoubleSVG} height={16} width={16} />
-          </LegacyTertiaryBox>
+          </TertiaryBox>
         </TouchableOpacity>
       </View>
 
       <View style={[styles.section, { justifyContent: "flex-end" }]}>
-        <LegacyTertiaryBox height={42} width={80}>
+        <TertiaryBox style={{ height: 42, width: 80, justifyContent: 'center', alignItems: 'center' }}>
+
           <TouchableOpacity
             style={{
               flexDirection: "row",
@@ -111,19 +114,17 @@ export const Pagination = ({
               color={secondaryColor}
             />
           </TouchableOpacity>
-        </LegacyTertiaryBox>
+        </TertiaryBox>
 
         {isDropdownOpen(dropdownRef) && (
-          <LegacySecondaryBox
-            noBrokenCorners
-            width={80}
-            style={{ position: "absolute", top: 46, right: 0 }}
-            mainContainerStyle={{
-              paddingHorizontal: layout.spacing_x1_5,
+          <Box
+            style={{
+              position: "absolute", top: 46, right: 0, width: 80, paddingHorizontal: layout.spacing_x1_5,
               paddingTop: layout.spacing_x1_5,
               backgroundColor: neutral33,
               alignItems: "flex-start",
             }}
+           
           >
             {dropdownOptions.map((item, index) => (
               <TouchableOpacity
@@ -147,7 +148,7 @@ export const Pagination = ({
                 </BrandText>
               </TouchableOpacity>
             ))}
-          </LegacySecondaryBox>
+          </Box>
         )}
       </View>
     </View>

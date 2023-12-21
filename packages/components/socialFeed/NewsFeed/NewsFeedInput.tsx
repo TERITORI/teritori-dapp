@@ -67,7 +67,7 @@ import FlexRow from "../../FlexRow";
 import { IconBox } from "../../IconBox";
 import { OmniLink } from "../../OmniLink";
 import { SVG } from "../../SVG";
-import { LegacyPrimaryBox } from "../../boxes/LegacyPrimaryBox";
+import { Box } from "../../boxes/Box";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { FileUploader } from "../../fileUploader";
@@ -292,15 +292,16 @@ export const NewsFeedInput = React.forwardRef<
             onClose={() => setNotEnoughFundModal(false)}
           />
         )}
-        <LegacyPrimaryBox
-          fullWidth
+        <Box
+          notched
           style={{
-            zIndex: 9,
-          }}
-          mainContainerStyle={{
+            borderWidth: 1,
             backgroundColor: neutral22,
+            width: "100%",
+            borderColor: "#01B7C5" // not supported Gradient with notche
           }}
-          noRightBrokenBorder
+        // below param still not supported in Box, if we want to use then modify NotchedRectangle into Box component
+        // noRightBrokenBorder
         >
           <Pressable
             onPress={focusInput}
@@ -332,11 +333,9 @@ export const NewsFeedInput = React.forwardRef<
                   onSelectionChange={(event) =>
                     setSelection(event.nativeEvent.selection)
                   }
-                  placeholder={`Hey yo! ${
-                    type === "post" ? "Post something" : "Write your comment"
-                  } ${
-                    windowWidth < RESPONSIVE_BREAKPOINT_S ? "" : "here! _____"
-                  }`}
+                  placeholder={`Hey yo! ${type === "post" ? "Post something" : "Write your comment"
+                    } ${windowWidth < RESPONSIVE_BREAKPOINT_S ? "" : "here! _____"
+                    }`}
                   placeholderTextColor={neutral77}
                   onChangeText={handleTextChange}
                   multiline
@@ -370,13 +369,13 @@ export const NewsFeedInput = React.forwardRef<
                   color: !formValues?.message
                     ? neutral77
                     : formValues?.message?.length >
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
-                            CHARS_LIMIT_WARNING_MULTIPLIER &&
-                        formValues?.message?.length <
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
+                      CHARS_LIMIT_WARNING_MULTIPLIER &&
+                      formValues?.message?.length <
+                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                       ? yellowDefault
                       : formValues?.message?.length >=
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                         ? errorColor
                         : primaryColor,
                   marginTop: layout.spacing_x0_5,
@@ -418,7 +417,7 @@ export const NewsFeedInput = React.forwardRef<
               }
             }}
           />
-        </LegacyPrimaryBox>
+        </Box>
         <View
           style={{
             backgroundColor: neutral17,
@@ -499,8 +498,8 @@ export const NewsFeedInput = React.forwardRef<
                   (formValues.files?.[0] &&
                     formValues.files[0].fileType !== "image") ||
                   (formValues.files || []).length +
-                    (formValues.gifs || [])?.length >=
-                    MAX_IMAGES
+                  (formValues.gifs || [])?.length >=
+                  MAX_IMAGES
                 }
               />
 
@@ -554,8 +553,8 @@ export const NewsFeedInput = React.forwardRef<
                       (formValues.files?.[0] &&
                         formValues.files[0].fileType !== "image") ||
                       (formValues.files || []).length +
-                        (formValues.gifs || [])?.length >=
-                        MAX_IMAGES
+                      (formValues.gifs || [])?.length >=
+                      MAX_IMAGES
                     }
                     icon={cameraSVG}
                     onPress={onPress}
@@ -586,7 +585,7 @@ export const NewsFeedInput = React.forwardRef<
                     size="M"
                     color={
                       formValues?.message.length >
-                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                         ? primaryTextColor
                         : primaryColor
                     }
@@ -596,7 +595,7 @@ export const NewsFeedInput = React.forwardRef<
                     }}
                     backgroundColor={
                       formValues?.message.length >
-                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                         ? primaryColor
                         : neutral17
                     }
@@ -612,7 +611,7 @@ export const NewsFeedInput = React.forwardRef<
                     !formValues?.files?.length &&
                     !formValues?.gifs?.length) ||
                   formValues?.message.length >
-                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
+                  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
                   !selectedWallet
                 }
                 isLoading={isLoading || isProcessing}

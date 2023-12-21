@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react";
+import React, { FC, ReactNode } from "react";
 
 import {
   gradientColorBlue,
@@ -6,19 +6,27 @@ import {
   gradientColorTurquoise,
 } from "../../../../utils/style/colors";
 import { layout } from "../../../../utils/style/layout";
-import { LegacyPrimaryBox } from "../../../boxes/LegacyPrimaryBox";
+import { TertiaryBox } from "../../../boxes/TertiaryBox";
+import { Box } from "../../../boxes/Box";
 
 export const ToolbarContainer: FC<{ children: ReactNode }> = ({ children }) => {
   return (
-    <LegacyPrimaryBox
-      fullWidth
-      colors={[
-        gradientColorDarkerBlue,
-        gradientColorBlue,
-        gradientColorTurquoise,
-      ]}
-      style={{ flex: 1 }}
-      mainContainerStyle={{
+    <Box
+      notched
+      borderGradient={{
+        start: { x: 0, y: 0 },
+        end: { x: 1, y: 1 },
+        locations: [0.7, 0.8],
+        colors: [
+          gradientColorDarkerBlue,
+          gradientColorBlue,
+          gradientColorTurquoise,
+        ],
+      }}
+      style={{
+        flex: 1,
+        width: "100%",
+        borderWidth: 1,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
@@ -26,6 +34,6 @@ export const ToolbarContainer: FC<{ children: ReactNode }> = ({ children }) => {
       }}
     >
       {children}
-    </LegacyPrimaryBox>
+    </Box>
   );
 };

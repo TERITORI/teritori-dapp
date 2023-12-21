@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { StyleProp } from "react-native";
 
 import { BoxStyle, Box, GradientParams } from "./Box";
