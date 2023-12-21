@@ -20,12 +20,12 @@ jobs:
           - platform: android
             runner: ubuntu-latest
             folder-id: https://drive.google.com/drive/folders/1NHG4yH-LMXwBnvgmwDnYKWdoIizfh3Ed
-            framework-path: ./modules/weshd/android/
+            framework-path: ./weshd/android/
             build-cmd: eas build --local --non-interactive --output=./app-build/app.apk --platform=android --profile androidAPK
           - platform: ios
             runner: macos-latest
             folder-id: https://drive.google.com/drive/folders/1UiIZ913lh_mrv7oKnI_u9418b5m8xttl
-            framework-path: ./modules/weshd/ios/
+            framework-path: ./weshd/ios/
             build-cmd: eas build --local --non-interactive --output=./app-build/app.ipa --platform=ios
     runs-on: ${{ matrix.runner }}
     continue-on-error: true
@@ -36,6 +36,9 @@ jobs:
         with:
           cache: "yarn"
           node-version: 18
+
+      - name: Fix gitignore
+        run: node ./cmd/fix-app-build.js
 
       - name: Fix package.json
         run: yarn remove @lottiefiles/react-lottie-player
@@ -53,9 +56,6 @@ jobs:
         run: |
           pip install gdown
           gdown ${{matrix.folder-id}} -O ${{matrix.framework-path}} --folder
-
-      - name: Fix gitignore
-        run: node ./cmd/fix-app-build.js
 
       - name: Prebuild
         run: npx expo prebuild --clean
@@ -78,3 +78,7 @@ jobs:
           name: teritori-${{ github.sha }}-${{ matrix.os }}
           path: app-build/app.ipa
           if-no-files-found: error
+
+      - name: EAS Submit iOS IPA
+        if: matrix.os == 'ios'
+        run: eas submit --platform=ios --path=./app.ipa

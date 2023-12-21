@@ -28,7 +28,9 @@ buildscript {
 
   repositories {
     mavenCentral()
-    
+     flatDir {
+      dirs project(':expo-weshnet').file('libs')
+    }
   }
 
   dependencies {

@@ -12,8 +12,8 @@ fs.readFile(filePath, "utf8", (err, data) => {
   // Define the regular expression to match the line you want to remove
 
   // Remove the matched line using replace
-  let updatedData = data.replace("/modules/weshd/ios/Frameworks/", "");
-  updatedData = data.replace("/modules/weshd/android/libs/", "");
+  let updatedData = data.replace("/weshd/ios/Frameworks/", "");
+  updatedData = data.replace("/weshd/android/libs/", "");
 
   // Write the updated content back to package.json
   fs.writeFile(filePath, updatedData, "utf8", (err) => {

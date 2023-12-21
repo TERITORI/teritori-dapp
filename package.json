@@ -26,7 +26,6 @@
     "@cosmjs/stargate": "0.29.3",
     "@cosmjs/tendermint-rpc": "^0.31.3",
     "@cosmology/core": "1.20.0",
-    
     "@draft-js-plugins/anchor": "^4.2.0",
     "@draft-js-plugins/buttons": "^4.3.3",
     "@draft-js-plugins/editor": "^4.1.3",
