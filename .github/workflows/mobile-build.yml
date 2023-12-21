@@ -30,6 +30,10 @@ jobs:
     runs-on: ${{ matrix.runner }}
     continue-on-error: true
     steps:
+      - name: View xcode
+        if: matrix.platform == 'ios'
+        run: ls -n /Applications/ | grep Xcode*
+
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
@@ -41,6 +45,10 @@ jobs:
         if: matrix.platform == 'ios'
         with:
           xcode-version: latest-stable
+
+      - name: View xcode
+        if: matrix.platform == 'ios'
+        run: ls -n /Applications/ | grep Xcode*
 
       - name: Fix gitignore
         run: node ./cmd/fix-app-build.js
