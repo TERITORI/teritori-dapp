@@ -30,9 +30,13 @@ jobs:
     runs-on: ${{ matrix.runner }}
     continue-on-error: true
     steps:
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "15.0"
+
       - name: Select xcode
         if: matrix.platform == 'ios'
-        run: sudo xcode-select -s /Applications/Xcode.app
+        run: sudo xcode-select -s /Applications/Xcode_15.0.app
 
       - uses: actions/checkout@v3
 
@@ -83,7 +87,7 @@ jobs:
         uses: actions/upload-artifact@v3
         if: matrix.platform == 'ios'
         with:
-          name: teritori-${{ github.sha }}-${{ matrix.platform }}
+          name: teritori-${{ github.sha }}-${{ matrix.platform }}.ipa
           path: ${{ env.IPA_FILE }}
           if-no-files-found: error
 
@@ -103,6 +107,6 @@ jobs:
         uses: actions/upload-artifact@v3
         if: matrix.platform == 'android'
         with:
-          name: teritori-${{ github.sha }}-${{ matrix.platform }}
+          name: teritori-${{ github.sha }}-${{ matrix.platform }}.aab
           path: ${{ env.AAB_FILE }}
           if-no-files-found: error
