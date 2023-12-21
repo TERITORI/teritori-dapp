@@ -37,6 +37,11 @@ jobs:
           cache: "yarn"
           node-version: 18
 
+      - uses: maxim-lobanov/setup-xcode@v1
+        if: matrix.platform == 'ios'
+        with:
+          xcode-version: latest-stable
+
       - name: Fix gitignore
         run: node ./cmd/fix-app-build.js
 
