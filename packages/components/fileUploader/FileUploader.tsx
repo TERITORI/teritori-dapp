@@ -15,12 +15,7 @@ import { Label } from "../inputs/TextInputCustom";
 
 //FIXME: Doesn't work for now =>  Only the .web version is used
 
-export const FileUploader: React.FC<FileUploaderProps> = ({
-  label,
-  style,
-  isImageCover,
-  fileHeight = 256,
-}) => {
+export const FileUploader: React.FC<FileUploaderProps> = ({ label, style }) => {
   const [files, setFiles] = useState<File[] | FileList>([]);
 
   return (
@@ -34,7 +29,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
-            height: files?.length ? fileHeight : 80,
+            height: 80,
             borderRadius: 12,
           }}
         >
@@ -51,9 +46,8 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                 source={{ uri: files?.[0]?.path }}
                 style={[
                   {
-                    height: fileHeight,
+                    height: 256,
                   },
-                  isImageCover && { width: "100%" },
                 ]}
               />
             </>
@@ -61,11 +55,16 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
             <PrimaryBox
               style={{
                 flex: 1,
-                height: files?.length ? fileHeight : 80,
+                height: 80,
                 alignItems: "center",
                 padding: layout.spacing_x2_5,
                 borderRadius: 12,
               }}
+              // colors={[
+              //   withAlpha(gradientColorDarkerBlue, 0.5),
+              //   withAlpha(gradientColorBlue, 0.5),
+              //   withAlpha(gradientColorTurquoise, 0.5),
+              // ]}
             >
               <View
                 style={{

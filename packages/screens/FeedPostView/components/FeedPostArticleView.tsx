@@ -47,6 +47,7 @@ import { useAppNavigation } from "../../../utils/navigation";
 import { zodTryParseJSON } from "../../../utils/sanitize";
 import {
   ARTICLE_COVER_IMAGE_MAX_HEIGHT,
+  ARTICLE_COVER_IMAGE_RATIO,
   ARTICLE_MAX_WIDTH,
   DEFAULT_USERNAME,
 } from "../../../utils/social-feed";
@@ -60,7 +61,7 @@ import {
 import { tinyAddress } from "../../../utils/text";
 import { OnPressReplyType } from "../FeedPostViewScreen";
 
-const contentPaddingHorizontal = layout.spacing_x2_5;
+const contentPaddingHorizontal = layout.spacing_x2;
 
 export const FeedPostArticleView: FC<{
   networkId: string;
@@ -257,10 +258,12 @@ export const FeedPostArticleView: FC<{
                     resizeMode="cover"
                     style={{
                       width: "100%",
-                      height: ARTICLE_COVER_IMAGE_MAX_HEIGHT,
+                      aspectRatio: ARTICLE_COVER_IMAGE_RATIO,
+                      // height: ARTICLE_COVER_IMAGE_MAX_HEIGHT/1.6,
+                      maxHeight: ARTICLE_COVER_IMAGE_MAX_HEIGHT,
                     }}
                   />
-                  <SpacerColumn size={4} />
+                  <SpacerColumn size={3} />
                 </>
               )}
 
