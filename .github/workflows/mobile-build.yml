@@ -20,12 +20,12 @@ jobs:
           - platform: android
             runner: ubuntu-latest
             folder-id: https://drive.google.com/drive/folders/1NHG4yH-LMXwBnvgmwDnYKWdoIizfh3Ed
-            framework-path: weshd/android/
-            build-cmd: eas build --local --non-interactive --output=./app-build/app.apk --platform=android
+            framework-path: ./modules/weshd/android/
+            build-cmd: eas build --local --non-interactive --output=./app-build/app.apk --platform=android --profile androidAPK
           - platform: ios
             runner: macos-latest
             folder-id: https://drive.google.com/drive/folders/1UiIZ913lh_mrv7oKnI_u9418b5m8xttl
-            framework-path: weshd/ios/
+            framework-path: ./modules/weshd/ios/
             build-cmd: eas build --local --non-interactive --output=./app-build/app.ipa --platform=ios
     runs-on: ${{ matrix.runner }}
     continue-on-error: true
@@ -49,10 +49,13 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Download framework
+      - name: Download frameworks
         run: |
           pip install gdown
           gdown ${{matrix.folder-id}} -O ${{matrix.framework-path}} --folder
+
+      - name: Fix gitignore
+        run: node ./cmd/fix-app-build.js
 
       - name: Prebuild
         run: npx expo prebuild --clean

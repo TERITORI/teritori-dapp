@@ -330,7 +330,7 @@ build-ios: check-ios-weshframework
 
 .PHONY: check-ios-weshframework
 check-ios-weshframework:
-	@if [ ! -e ./weshd/ios/Frameworks/WeshFramework.xcframework ]; then \
+	@if [ ! -e ./modules/weshd/ios/Frameworks/WeshFramework.xcframework ]; then \
 		echo "WeshFramework does not exist. Running a command to create it."; \
 		$(MAKE) build-ios-weshframework; \
 	fi
@@ -345,7 +345,7 @@ build-ios-weshframework:
 	gomobile init
 	CGO_CPPFLAGS="-Wno-error -Wno-nullability-completeness -Wno-expansion-to-defined -DHAVE_GETHOSTUUID=0"
 	gomobile bind \
-	-o ./weshd/ios/Frameworks/WeshFramework.xcframework \
+	-o ./modules/weshd/ios/Frameworks/WeshFramework.xcframework \
 	-tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target ios -iosversion 13.0 \
 	./go/cmd/weshd-app/
 
@@ -357,14 +357,14 @@ build-android: check-android-weshframework
 
 .PHONY: check-android-weshframework
 check-android-weshframework:
-	@if [ ! -e ./weshd/android/libs/WeshFramework.aar ]; then \
+	@if [ ! -e ./modules/weshd/android/libs/WeshFramework.aar ]; then \
 		echo "WeshFramework does not exist. Running a command to create it."; \
 		$(MAKE) build-android-weshframework; \
 	fi
 
 .PHONY: build-android-weshframework
 build-android-weshframework:
-	mkdir -p ./weshd/android/libs
+	mkdir -p ./modules/weshd/android/libs
 	go mod tidy
 	go get golang.org/x/mobile/cmd/gobind
 	go get golang.org/x/mobile/cmd/gomobile
@@ -374,8 +374,12 @@ build-android-weshframework:
 	CGO_CPPFLAGS="-Wno-error -Wno-nullability-completeness -Wno-expansion-to-defined -DHAVE_GETHOSTUUID=0"
 	gomobile bind \
 	-javapkg=com.weshnet \
-	-o ./weshd/android/libs/WeshFramework.aar \
+	-o ./modules/weshd/android/libs/WeshFramework.aar \
 	-tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target android -androidapi 21 \
 	./go/cmd/weshd-app/
 
-
+.PHONY: load-wesh-frameworks
+load-wesh-frameworks:
+	pip install gdown
+	gdown https://drive.google.com/drive/folders/1NHG4yH-LMXwBnvgmwDnYKWdoIizfh3Ed -O ./modules/weshd/android/ --folder
+	gdown https://drive.google.com/drive/folders/1UiIZ913lh_mrv7oKnI_u9418b5m8xttl -O ./modules/weshd/ios/ --folder
