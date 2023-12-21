@@ -35,6 +35,11 @@ jobs:
         with:
           xcode-version: "15.1.0"
 
+      - uses: actions/setup-go@v3
+        if: matrix.platform == 'ios'
+        with:
+          go-version: "1.19"
+
       - name: Select xcode
         if: matrix.platform == 'ios'
         run: sudo xcode-select -s /Applications/Xcode_15.1.app
@@ -55,6 +60,10 @@ jobs:
       - name: Install node modules
         run: yarn install
 
+      - name: Build weshframework
+        if: matrix.platform == 'ios'
+        run: make check-ios-weshframework
+
       - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
@@ -62,12 +71,10 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Download frameworks
+        if: matrix.platform == 'android'
         run: |
           pip install gdown
           gdown ${{matrix.folder-id}} -O ${{matrix.framework-path}} --folder
-
-      - name: Prebuild
-        run: npx expo prebuild --clean
 
       - name: Build ${{ matrix.platform }}
         run: ${{ matrix.build-cmd }}
