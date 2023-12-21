@@ -16,7 +16,7 @@ import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { DeleteButton } from "../FilePreview/DeleteButton";
 import { SVG } from "../SVG";
-import { LegacyPrimaryBox } from "../boxes/LegacyPrimaryBox";
+import { Box } from "../boxes/Box";
 import { GradientText } from "../gradientText";
 import { Label } from "../inputs/TextInputCustom";
 
@@ -65,20 +65,25 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
               />
             </>
           ) : (
-            <LegacyPrimaryBox
-              noBrokenCorners
-              fullWidth
-              colors={[
-                withAlpha(gradientColorDarkerBlue, 0.5),
-                withAlpha(gradientColorBlue, 0.5),
-                withAlpha(gradientColorTurquoise, 0.5),
-              ]}
-              style={{ flex: 1 }}
-              mainContainerStyle={{
+            <Box
+              borderGradient={{
+                start: { x: 0, y: 0 },
+                end: { x: 1, y: 1 },
+                locations: [0.7, 0.8],
+                colors: [
+                  withAlpha(gradientColorDarkerBlue, 0.5),
+                  withAlpha(gradientColorBlue, 0.5),
+                  withAlpha(gradientColorTurquoise, 0.5),
+                ],
+              }}
+              style={{
+                flex: 1,
+                width: "100%",
                 height: files?.length ? fileHeight : 80,
                 alignItems: "center",
                 padding: layout.spacing_x2_5,
                 borderRadius: 12,
+                borderWidth: 1,
               }}
             >
               <View
@@ -111,7 +116,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                   </BrandText>
                 </View>
               </View>
-            </LegacyPrimaryBox>
+            </Box>
           )}
         </div>
       </TouchableOpacity>
