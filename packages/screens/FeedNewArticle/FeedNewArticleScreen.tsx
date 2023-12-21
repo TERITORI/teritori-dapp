@@ -35,6 +35,7 @@ import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
   ARTICLE_COVER_IMAGE_MAX_HEIGHT,
+  ARTICLE_COVER_IMAGE_RATIO,
   ARTICLE_MAX_WIDTH,
   ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT,
   ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH,
@@ -267,11 +268,13 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
 
         <FileUploader
           label="Thumbnail image"
-          fileHeight={ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT}
-          isImageCover
           style={{
             marginTop: layout.spacing_x3,
-            width: ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH,
+          }}
+          fileImageStyle={{
+            objectFit: "cover",
+            height: ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT,
+            maxWidth: ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH,
           }}
           onUpload={(files) => setValue("thumbnailImage", files[0])}
           mimeTypes={IMAGE_MIME_TYPES}
@@ -279,11 +282,16 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
 
         <FileUploader
           label="Cover image"
-          fileHeight={ARTICLE_COVER_IMAGE_MAX_HEIGHT}
-          isImageCover
           style={{
             marginTop: layout.spacing_x3,
             width: "100%",
+          }}
+          fileImageStyle={{
+            objectFit: "cover",
+            height: "100%",
+            width: "100%",
+            maxHeight: ARTICLE_COVER_IMAGE_MAX_HEIGHT,
+            aspectRatio: ARTICLE_COVER_IMAGE_RATIO,
           }}
           onUpload={(files) => setValue("coverImage", files[0])}
           mimeTypes={IMAGE_MIME_TYPES}
