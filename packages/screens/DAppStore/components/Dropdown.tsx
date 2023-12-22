@@ -99,8 +99,6 @@ export const DropdownDappsStoreFilter: React.FC = () => {
 
       {isDropdownOpen(dropdownRef) && (
         <SecondaryBox
-          // noBrokenCorners
-          // width={248}
           style={{
             position: "absolute",
             top: 29,
@@ -110,12 +108,6 @@ export const DropdownDappsStoreFilter: React.FC = () => {
             backgroundColor: neutral33,
             alignItems: "flex-start",
           }}
-          // mainContainerStyle={{
-          //   paddingHorizontal: layout.spacing_x1_5,
-          //   paddingTop: layout.spacing_x1_5,
-          //   backgroundColor: neutral33,
-          //   alignItems: "flex-start",
-          // }}
         >
           {options.map((option) => (
             <SelectableOption

@@ -115,8 +115,6 @@ export const Pagination = ({
 
         {isDropdownOpen(dropdownRef) && (
           <SecondaryBox
-            // noBrokenCorners
-            // width={80}
             style={{
               position: "absolute",
               top: 46,
@@ -126,12 +124,6 @@ export const Pagination = ({
               backgroundColor: neutral33,
               alignItems: "flex-start",
             }}
-            // mainContainerStyle={{
-            //   paddingHorizontal: layout.spacing_x1_5,
-            //   paddingTop: layout.spacing_x1_5,
-            //   backgroundColor: neutral33,
-            //   alignItems: "flex-start",
-            // }}
           >
             {dropdownOptions.map((item, index) => (
               <TouchableOpacity

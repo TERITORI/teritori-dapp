@@ -36,14 +36,7 @@ export const Menu: React.FC<MenuProps> = ({
       </TouchableOpacity>
       {isDropdownOpen(dropdownRef) && (
         <View ref={dropdownRef}>
-          <PrimaryBox
-            // width={width}
-            style={{ position: "absolute", right: 0, bottom: -20 }}
-            // mainContainerStyle={{
-            //   position: "absolute",
-            //   paddingHorizontal: layout.spacing_x1_5,
-            // }}
-          >
+          <PrimaryBox style={{ position: "absolute", right: 0, bottom: -20 }}>
             {items.map((item, index) => (
               <TouchableOpacity
                 disabled={item.disabled}

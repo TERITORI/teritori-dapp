@@ -292,15 +292,9 @@ export const NewsFeedInput = React.forwardRef<
           />
         )}
         <PrimaryBox
-          // fullWidth
           style={{
-            // zIndex: 9,
             backgroundColor: neutral22,
           }}
-          // mainContainerStyle={{
-          //   backgroundColor: neutral22,
-          // }}
-          // noRightBrokenBorder
         >
           <Pressable
             onPress={focusInput}

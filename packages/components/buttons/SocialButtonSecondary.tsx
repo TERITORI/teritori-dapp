@@ -3,10 +3,10 @@ import { ViewStyle, View, StyleProp, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import {
-  // neutral1A,
+  neutral1A,
   primaryColor,
   primaryTextColor,
-  // withAlpha,
+  withAlpha,
 } from "../../utils/style/colors";
 import { fontMedium14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -21,23 +21,14 @@ export const SocialButtonSecondary: React.FC<{
 }> = ({ text, onPress, iconSvg, style }) => {
   return (
     <TouchableOpacity onPress={onPress} style={style}>
-      <SecondaryBox
-      // noBrokenCorners
-      // mainContainerStyle={{ backgroundColor: withAlpha(neutral1A, 0.64) }}
-      // height={44}
-      >
+      <SecondaryBox style={{ backgroundColor: withAlpha(neutral1A, 0.64) }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <SecondaryBox
-            // noBrokenCorners
-            style={{ marginLeft: 6 }}
-            // mainContainerStyle={{
-            //   backgroundColor: primaryColor,
-            //   borderRadius: 6,
-            // }}
-            // width={32}
-            // height={32}
-            // squaresBackgroundColor={withAlpha(neutral1A, 0.64)}
-            // cornerWidth={5.5}
+            style={{
+              backgroundColor: primaryColor,
+              borderRadius: 6,
+              marginLeft: 6,
+            }}
           >
             <SVG
               source={iconSvg}
