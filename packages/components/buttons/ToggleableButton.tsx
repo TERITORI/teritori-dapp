@@ -36,12 +36,6 @@ export const ToggleableButton: React.FC<{
   isExpanded = false,
   style,
 }) => {
-  // const boxProps = {
-  //   style,
-  //   squaresBackgroundColor,
-  //   width,
-  // };
-
   return (
     <TouchableOpacity onPress={onPress}>
       <SecondaryBox
@@ -52,16 +46,6 @@ export const ToggleableButton: React.FC<{
           paddingRight: 6,
           paddingLeft: 8,
         }}
-        // cornerWidth={cornerWidthDropdownButton(size)}
-        // height={heightDropdownButton(size)}
-        // mainContainerStyle={{
-        //   flexDirection: "row",
-        //   borderRadius: 6,
-        //   backgroundColor: neutral33,
-        //   paddingRight: 6,
-        //   paddingLeft: 8,
-        // }}
-        // {...boxProps}
       >
         <BrandText
           style={[

@@ -24,8 +24,7 @@ export const neutral00 = "#000000";
 export const neutral17 = "#171717";
 export const neutral11 = "#111111";
 export const neutral15 = "#151515";
-// TODO: [Thom Arnauld] - This export is commented out because it's currently unused.
-// export const neutral1A = "#1A1B26";
+export const neutral1A = "#1A1B26";
 export const neutral22 = "#222222";
 export const neutral30 = "#2B2B33";
 export const neutral33 = "#333333";

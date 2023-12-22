@@ -29,17 +29,11 @@ export const SocialButton: React.FC<{
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <SecondaryBox
-            // noBrokenCorners={noBrokenCorners}
             style={{
               marginLeft: 6,
               backgroundColor: neutral33,
               borderRadius: 6,
             }}
-            // mainContainerStyle={{ backgroundColor: neutral33, borderRadius: 6 }}
-            // width={32}
-            // height={32}
-            // squaresBackgroundColor={withAlpha(neutral22, 0.64)}
-            // cornerWidth={5.5}
           >
             <SVG source={iconSvg} height={20} width={20} />
           </SecondaryBox>

@@ -5,14 +5,7 @@ import { FileUploaderProps } from "./FileUploader.type";
 import { formatFile } from "./formatFile";
 import uploadSVG from "../../../assets/icons/upload.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import {
-  // gradientColorBlue,
-  // gradientColorDarkerBlue,
-  // gradientColorTurquoise,
-  neutral17,
-  neutral77,
-  // withAlpha,
-} from "../../utils/style/colors";
+import { neutral17, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -165,13 +158,6 @@ export const FileUploader: FC<FileUploaderProps> = ({
               </>
             ) : (
               <PrimaryBox
-                // noBrokenCorners
-                // fullWidth
-                // colors={[
-                //   withAlpha(gradientColorDarkerBlue, 0.5),
-                //   withAlpha(gradientColorBlue, 0.5),
-                //   withAlpha(gradientColorTurquoise, 0.5),
-                // ]}
                 style={{
                   flex: 1,
                   height: file ? fileHeight : 80,
@@ -179,12 +165,6 @@ export const FileUploader: FC<FileUploaderProps> = ({
                   padding: layout.spacing_x2_5,
                   borderRadius: 12,
                 }}
-                // mainContainerStyle={{
-                //   height: file ? fileHeight : 80,
-                //   alignItems: "center",
-                //   padding: layout.spacing_x2_5,
-                //   borderRadius: 12,
-                // }}
               >
                 <View
                   style={{

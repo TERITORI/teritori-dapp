@@ -42,14 +42,6 @@ export const IconButton: React.FC<{
   squaresBorderColor,
   noBrokenCorners,
 }) => {
-  // const boxProps = {
-  //   style,
-  //   disabled,
-  //   width,
-  //   fullWidth,
-  //   noBrokenCorners,
-  // };
-
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -62,18 +54,6 @@ export const IconButton: React.FC<{
           backgroundColor,
           paddingHorizontal: 20,
         }}
-        // height={heightButton(size)}
-        // mainContainerStyle={[
-        //   {
-        //     flexDirection: "row",
-        //     borderRadius: borderRadiusButton(size),
-        //     backgroundColor,
-        //     paddingHorizontal: 20,
-        //   },
-        //   borderColor ? { borderWidth: 1, borderColor } : {},
-        // ]}
-        // squaresBorderColor={squaresBorderColor}
-        // {...boxProps}
       >
         <SVG
           source={iconSVG}
