@@ -417,9 +417,6 @@ export const FeedPostVideoView: FC<{
                         : INPUT_MIN_HEIGHT,
                       width: "100%",
                       color: secondaryColor,
-                      //@ts-ignore
-                      outlineStyle: "none",
-                      outlineWidth: 0,
                     },
                   ]}
                 />

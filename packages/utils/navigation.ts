@@ -73,7 +73,8 @@ export type RootStackParamList = {
   ChatSection: Conversation;
   FriendshipManager: { tab?: MessageFriendsTabItem } | undefined;
 
-  Wallet: undefined;
+  NativeWallet: undefined;
+  ViewSeed: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -166,8 +167,9 @@ const navConfig: {
     ChatSection: "message/chat",
     FriendshipManager: "/friends",
 
-    // ==== Wallet
-    Wallet: "wallet",
+    // ==== Native Wallet
+    NativeWallet: "native-wallet",
+    ViewSeed: "native-wallet/view-seed",
   },
 };
 

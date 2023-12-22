@@ -2,22 +2,13 @@ import { Slip10, Slip10Curve, stringToPath } from "@cosmjs/crypto";
 import { toHex } from "@cosmjs/encoding";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import * as bip39 from "bip39";
-import { Video } from "expo-av";
-import { ResizeMode } from "expo-av/src/Video.types";
-import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { useState } from "react";
 
-import { importLedgerAccount } from "./libs/ledger";
-import videoios from "../../../assets/videos/teritori-os-anim-ios.mp4";
-import { BrandText } from "../../components/BrandText";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SpacerColumn } from "../../components/spacer";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { getValueFor, save } from "../../hooks/useMobileSecureStore";
-import { ScreenFC } from "../../utils/navigation";
-import { neutral77 } from "../../utils/style/colors";
-import { fontSemibold16, fontSemibold28 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { getValueFor, save } from "../../../hooks/useMobileSecureStore";
+import { ScreenFC } from "../../../utils/navigation";
+import { importLedgerAccount } from "../libs/ledger";
+
 export function createMnemonic(numberOfWords: 12 | 24 = 24): string {
   if (numberOfWords === 12) return bip39.generateMnemonic(128);
   return bip39.generateMnemonic(256);
@@ -83,7 +74,7 @@ const getLedgerAccountDetails = async () => {
   // setAddresses(addresses);
 };
 
-export const CreateScreen: ScreenFC<"Wallet"> = () => {
+export const ViewSeed: ScreenFC<"ViewSeed"> = () => {
   const { wrapWithFeedback } = useFeedbacks();
 
   const [seed, setSeed] = useState<Seed>();
@@ -111,72 +102,6 @@ export const CreateScreen: ScreenFC<"Wallet"> = () => {
   const saveWallet = async () => {
     await save("wallet", (myWallet?.mnemonic || "").toString());
   };
-  const videoref = React.useRef(null);
-  return (
-    <View style={styles.container}>
-      <Video
-        ref={videoref}
-        source={{ uri: videoios }}
-        shouldPlay
-        isLooping
-        resizeMode={ResizeMode.COVER}
-        style={{
-          height: 400,
-          width: 400,
-          marginTop: layout.spacing_x2,
-          marginBottom: layout.spacing_x2,
-          // borderRadius: 150,
-        }}
-      />
-      <BrandText style={styles.title}>Create Wallet</BrandText>
-      <BrandText style={styles.description}>
-        Create a new wallet to start using Teritori_
-      </BrandText>
-      <SpacerColumn size={3} />
-      <PrimaryButton
-        text="Create Wallet"
-        onPress={wrapWithFeedback(createWallet)}
-      />
-      <SpacerColumn size={3} />
-      <PrimaryButton
-        text="Save Wallet"
-        onPress={wrapWithFeedback(saveWallet)}
-      />
-      <PrimaryButton
-        text="Connect Ledger"
-        onPress={wrapWithFeedback(getLedgerAccountDetails)}
-      />
-      <SpacerColumn size={3} />
-      <BrandText style={styles.description}>
-        {seed && JSON.stringify(seed)}
-      </BrandText>
-      <SpacerColumn size={3} />
-      <BrandText style={styles.description}>
-        {myAddress && JSON.stringify(myAddress)}
-      </BrandText>
-      <SpacerColumn size={3} />
-      <BrandText style={styles.description}>
-        {myWallet && JSON.stringify(myWallet)}
-      </BrandText>
-      <SpacerColumn size={3} />
-      <BrandText style={styles.description}>
-        {mySigner && JSON.stringify(mySigner)}
-      </BrandText>
-    </View>
-  );
+
+  return null;
 };
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: layout.contentSpacing,
-  },
-  title: {
-    ...fontSemibold28,
-    color: neutral77,
-  },
-  description: {
-    ...fontSemibold16,
-    color: neutral77,
-  },
-});

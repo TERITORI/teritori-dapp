@@ -56,7 +56,7 @@ export function getAvailableApps(): dAppGroup {
           title: "Tori Wallet",
           description: "Wallet",
           icon: pathwar,
-          route: "Wallet",
+          route: "NativeWallet",
           groupKey: "teritori-core-apps",
           selectedByDefault: true,
           alwaysOn: false,
