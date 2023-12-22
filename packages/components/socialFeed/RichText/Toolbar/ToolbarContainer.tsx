@@ -31,6 +31,7 @@ export const ToolbarContainer: FC<{ children: ReactNode }> = ({ children }) => {
         borderWidth: 1,
       }}
       notched
+      notchedBorderGradient
     >
       {children}
     </Box>
