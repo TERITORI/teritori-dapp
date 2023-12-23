@@ -162,7 +162,6 @@ export const Box: React.FC<{
             }}
             notchRadius={notchRadius}
             color={borderColors[0]}
-            endColor={borderColors[borderColors.length - 1]}
           />
         ) : (
           <LinearGradient
@@ -176,20 +175,6 @@ export const Box: React.FC<{
             {...borderPropsRest}
           />
         ))}
-      <LinearGradient
-        style={{
-          width: "100%",
-          height: "100%",
-          position: "absolute",
-          borderTopLeftRadius: notchRadius * 1.7,
-          borderBottomRightRadius: notchRadius * 1.7,
-          borderTopRightRadius: borderRadius,
-          borderBottomLeftRadius: borderRadius,
-          // backgroundColor: borderColors[0],
-        }}
-        colors={borderColors}
-        {...borderPropsRest}
-      />
       {notched ? (
         <NotchedRectangle
           style={{
@@ -241,8 +226,7 @@ const NotchedRectangle: React.FC<{
   color: string;
   style?: StyleProp<ViewStyle>;
   notchRadius: number;
-  endColor: any;
-}> = ({ color, style, notchRadius, endColor }) => {
+}> = ({ color, style, notchRadius }) => {
   // mathed
   const centerBlockSize = notchRadius * sqrt2;
   const centerBlockInset = notchRadius * centerBlockInsetGain;
@@ -251,7 +235,6 @@ const NotchedRectangle: React.FC<{
   const brokenRadius = notchRadius * 1.7;
   const fillersHeight = brokenRadius - notchRadius;
   const fillersWidth = notchRadius * 0.505;
-
   return (
     <View
       style={[
@@ -301,8 +284,6 @@ const NotchedRectangle: React.FC<{
           height: fillersHeight,
           width: fillersWidth,
           backgroundColor: color,
-          borderColor: endColor,
-          borderWidth: 1,
           position: "absolute",
           bottom: notchRadius,
           right: 0,
@@ -313,8 +294,6 @@ const NotchedRectangle: React.FC<{
           height: fillersWidth,
           width: fillersHeight,
           backgroundColor: color,
-          borderColor: endColor,
-          borderWidth: 1,
           position: "absolute",
           bottom: 0,
           right: notchRadius,
@@ -325,8 +304,6 @@ const NotchedRectangle: React.FC<{
           height: centerBlockSize,
           width: centerBlockSize,
           backgroundColor: color,
-          borderColor: endColor,
-          borderWidth: 1,
           position: "absolute",
           transform: [
             { translateX: -centerBlockInset },
