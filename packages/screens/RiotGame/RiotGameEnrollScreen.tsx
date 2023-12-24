@@ -58,7 +58,7 @@ import { layout } from "../../utils/style/layout";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 const EMBEDDED_VIDEO_URI =
-  "https://bafybeihfkmpunve47w4avfnuv3mfnsgoqclahpx54zj4b2ypve52iqmxsa.ipfs.nftstorage.link/";
+  "https://bafybeihfkmpunve47w4avfnuv3mfnsgoqclahpx54zj4b2ypve52iqmxsa.ipfs.cf-ipfs.com/";
 const embeddedVideoHeight = 267;
 const embeddedVideoWidth = 468;
 
