@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { useWindowDimensions } from "react-native";
+import { ScrollView, useWindowDimensions } from "react-native";
 
 import { FeedHeader } from "./FeedHeader";
 import { MobileTitle } from "../../../components/ScreenContainer/ScreenContainerMobile";
@@ -13,10 +13,10 @@ import {
 
 export const MusicFeed: FC = () => {
   const { width: windowWidth } = useWindowDimensions();
-  const { width } = useMaxResolution();
+  const { width, height } = useMaxResolution();
   const isMobile = useIsMobile();
   return (
-    <>
+    <ScrollView style={{ height }}>
       {/* ScreenContainer in FeedScreen has noScroll, so we need to add MobileTitle here */}
       {isMobile && <MobileTitle title="SOCIAL FEED" />}
       <FeedHeader selectedTab="music" />
@@ -29,6 +29,6 @@ export const MusicFeed: FC = () => {
           maxWidth: screenContentMaxWidth,
         }}
       />
-    </>
+    </ScrollView>
   );
 };
