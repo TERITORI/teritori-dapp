@@ -1,4 +1,5 @@
 import { omit } from "lodash";
+import { CID } from "multiformats";
 
 import { mustGetFeedClient } from "./backend";
 import { LocalFileData, RemoteFileData } from "./types/files";
@@ -65,16 +66,17 @@ export const generateIpfsKey = async (
   }
 };
 
-// Used to get a correct image URL for displaying or storing
+/** Get the gateway web2 url for an ipfs url or passthrough if not an ipfs url */
 export const ipfsURLToHTTPURL = (ipfsURL: string | undefined) => {
   if (!ipfsURL) {
     return "";
   }
-  if (ipfsURL.startsWith("https://") || ipfsURL.startsWith("blob:")) {
-    return ipfsURL;
-  }
   if (ipfsURL.startsWith("ipfs://")) {
-    return ipfsURL.replace("ipfs://", "https://nftstorage.link/ipfs/");
+    return ipfsURL.replace("ipfs://", "https://cf-ipfs.com/ipfs/");
   }
-  return "https://nftstorage.link/ipfs/" + ipfsURL;
+  try {
+    const cid = CID.parse(ipfsURL);
+    return `https://cf-ipfs.com/ipfs/${cid.toString()}`;
+  } catch {}
+  return ipfsURL;
 };
