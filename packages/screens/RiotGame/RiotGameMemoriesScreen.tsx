@@ -26,7 +26,7 @@ const seasonVideoUri =
 const episodes = [
   {
     videoUri:
-      "https://bafybeieid23jjpzug42y6u5au2noc6hpyayqd56udgvh7pfd45jeksykoe.ipfs.nftstorage.link/",
+      "https://bafybeieid23jjpzug42y6u5au2noc6hpyayqd56udgvh7pfd45jeksykoe.ipfs.cf-ipfs.com/",
   },
   { videoUri: "" },
   { videoUri: "" },
