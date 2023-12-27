@@ -32,7 +32,7 @@ import { NetworkFeature } from "../../networks";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
 import {
   generateIpfsKey,
-  ipfsURLToHTTPURL,
+  web3ToWeb2URI,
   uploadFilesToPinata,
 } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
@@ -154,15 +154,14 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         return;
       }
 
-      let message = formValues.message || "";
-
+      let message = values.html;
       if (remoteFiles.length) {
         localFiles?.map((file, index) => {
           // Audio are not in the HTML for now
           if (remoteFiles[index]?.fileType !== "audio") {
             message = message.replace(
               file.url,
-              ipfsURLToHTTPURL(remoteFiles[index].url),
+              web3ToWeb2URI(remoteFiles[index].url),
             );
           }
         });
@@ -175,7 +174,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         files: remoteFiles,
         mentions: values.mentions,
         hashtags: values.hashtags,
-        message: values.html,
+        message,
       });
       await makePost(JSON.stringify(metadata));
     } catch (err) {

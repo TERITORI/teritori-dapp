@@ -3,7 +3,7 @@ import React, { useCallback } from "react";
 import { Image, Linking, useWindowDimensions, View } from "react-native";
 
 import { News } from "../../api/marketplace/v1/marketplace";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { web3ToWeb2URI } from "../../utils/ipfs";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import {
   fontSemibold14,
@@ -112,7 +112,7 @@ export const NewsBox: React.FC<{
           }
         >
           <Image
-            source={{ uri: ipfsURLToHTTPURL(news.image) }}
+            source={{ uri: web3ToWeb2URI(news.image) }}
             style={{
               height: 342,
               width: 342,

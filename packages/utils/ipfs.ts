@@ -1,4 +1,5 @@
 import { omit } from "lodash";
+import { CID } from "multiformats";
 
 import { mustGetFeedClient } from "./backend";
 import { LocalFileData, RemoteFileData } from "./types/files";
@@ -65,16 +66,33 @@ export const generateIpfsKey = async (
   }
 };
 
-// Used to get a correct image URL for displaying or storing
-export const ipfsURLToHTTPURL = (ipfsURL: string | undefined) => {
-  if (!ipfsURL) {
+const gatewayBase = "cf-ipfs.com";
+
+const ipfsPathToWeb2URL = (path: string) => {
+  const separatorIndex = path.indexOf("/");
+  const cidString =
+    separatorIndex === -1 ? path : path.substring(0, separatorIndex);
+  const subpath =
+    separatorIndex === -1 ? "" : path.substring(separatorIndex + 1);
+  const cid = CID.parse(cidString);
+  const finalPath = subpath ? `/${subpath}` : "";
+  const finalCIDString = cid.toV1().toString();
+  const gatewayURL = `https://${finalCIDString}.ipfs.${gatewayBase}${finalPath}`;
+  return gatewayURL;
+};
+
+/** Get the web2 url for a web3 uri or passthrough if not a web3 uri
+ * Only supports ipfs for now
+ */
+export const web3ToWeb2URI = (web3URI: string | undefined) => {
+  if (!web3URI) {
     return "";
   }
-  if (ipfsURL.startsWith("https://") || ipfsURL.startsWith("blob:")) {
-    return ipfsURL;
+  if (web3URI.startsWith("ipfs://")) {
+    web3URI = web3URI.substring("ipfs://".length);
   }
-  if (ipfsURL.startsWith("ipfs://")) {
-    return ipfsURL.replace("ipfs://", "https://nftstorage.link/ipfs/");
-  }
-  return "https://nftstorage.link/ipfs/" + ipfsURL;
+  try {
+    return ipfsPathToWeb2URL(web3URI);
+  } catch {}
+  return web3URI;
 };

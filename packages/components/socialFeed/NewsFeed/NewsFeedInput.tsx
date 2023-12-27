@@ -181,8 +181,9 @@ export const NewsFeedInput = React.forwardRef<
       setLoading(true);
       onSubmitInProgress && onSubmitInProgress();
       try {
-        const hasUsername =
-          replyTo?.parentId &&
+        const isReplyToValid =
+          replyTo &&
+          replyTo.parentId &&
           formValues.message.includes(`@${replyTo.username}`);
 
         // ---- Adding hashtag texts or mentioned texts to the metadata
@@ -240,7 +241,7 @@ export const NewsFeedInput = React.forwardRef<
 
         await makePost(
           JSON.stringify(metadata),
-          hasUsername ? replyTo?.parentId : parentId,
+          isReplyToValid ? replyTo.parentId : parentId,
         );
       } catch (err) {
         console.error("post submit err", err);

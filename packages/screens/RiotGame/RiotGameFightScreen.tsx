@@ -17,7 +17,7 @@ import { yellowDefault } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 
 const FIGHT_BG_URI =
-  "https://bafybeigv6eunkzlb4a7je6c5ezrcxgr2bv2guuwogin6mbsmdl2i6mgvwq.ipfs.nftstorage.link/";
+  "https://bafybeigv6eunkzlb4a7je6c5ezrcxgr2bv2guuwogin6mbsmdl2i6mgvwq.ipfs.cf-ipfs.com/";
 
 export const RiotGameFightScreen = () => {
   const navigation = useAppNavigation();

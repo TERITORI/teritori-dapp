@@ -3,7 +3,7 @@ import React from "react";
 import { View } from "react-native";
 
 import { DeleteButton } from "./DeleteButton";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { web3ToWeb2URI } from "../../utils/ipfs";
 import { errorColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { LocalFileData, RemoteFileData } from "../../utils/types/files";
@@ -50,7 +50,7 @@ export const VideoView: React.FC<VideoPreviewProps> = ({
       {isEditable ? (
         <Video
           useNativeControls
-          source={{ uri: ipfsURLToHTTPURL(videoMetadata.videoFile.url) }}
+          source={{ uri: web3ToWeb2URI(videoMetadata.videoFile.url) }}
           resizeMode={ResizeMode.CONTAIN}
           style={{
             height: 400,

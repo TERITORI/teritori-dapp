@@ -250,6 +250,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       )}
 
       <CreateShortPostModal
+        label="Create a Post"
         daoId={daoId}
         isVisible={isCreateModalVisible}
         onClose={() => setCreateModalVisible(false)}

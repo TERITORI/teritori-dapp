@@ -1,10 +1,9 @@
 import React, { FC, useEffect, useMemo, useRef, useState } from "react";
-import { useWindowDimensions, View, ViewStyle } from "react-native";
+import { Image, useWindowDimensions, View, ViewStyle } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
-  runOnJS,
 } from "react-native-reanimated";
 
 import { Post } from "../../../api/feed/v1/feed";
@@ -20,6 +19,8 @@ import { CreateShortPostModal } from "../../../components/socialFeed/NewsFeed/Cr
 import {
   PostCategory,
   ReplyToType,
+  ZodSocialFeedArticleMetadata,
+  ZodSocialFeedPostMetadata,
 } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import {
   NewsFeedInput,
@@ -27,7 +28,11 @@ import {
 } from "../../../components/socialFeed/NewsFeed/NewsFeedInput";
 import { RefreshButton } from "../../../components/socialFeed/NewsFeed/RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "../../../components/socialFeed/NewsFeed/RefreshButton/RefreshButtonRound";
-import { SocialThreadCard } from "../../../components/socialFeed/SocialCard/cards/SocialThreadCard";
+import { RichText } from "../../../components/socialFeed/RichText";
+import { SocialCardFooter } from "../../../components/socialFeed/SocialCard/SocialCardFooter";
+import { SocialCardHeader } from "../../../components/socialFeed/SocialCard/SocialCardHeader";
+import { SocialCardWrapper } from "../../../components/socialFeed/SocialCard/SocialCardWrapper";
+import { SOCIAl_CARD_BORDER_RADIUS } from "../../../components/socialFeed/SocialCard/cards/SocialThreadCard";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   combineFetchCommentPages,
@@ -37,8 +42,15 @@ import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { getNetworkObjectId, parseUserId } from "../../../networks";
+import { web3ToWeb2URI } from "../../../utils/ipfs";
 import { useAppNavigation } from "../../../utils/navigation";
-import { DEFAULT_USERNAME } from "../../../utils/social-feed";
+import { zodTryParseJSON } from "../../../utils/sanitize";
+import {
+  ARTICLE_COVER_IMAGE_HEIGHT,
+  ARTICLE_MAX_WIDTH,
+  DEFAULT_USERNAME,
+} from "../../../utils/social-feed";
+import { neutral33 } from "../../../utils/style/colors";
 import { fontSemibold20 } from "../../../utils/style/fonts";
 import {
   layout,
@@ -48,40 +60,35 @@ import {
 import { tinyAddress } from "../../../utils/text";
 import { OnPressReplyType } from "../FeedPostViewScreen";
 
-export const FeedPostDefaultView: FC<{
+const contentPaddingHorizontal = layout.spacing_x2_5;
+
+export const FeedPostArticleView: FC<{
   networkId: string;
   post: Post;
   refetchPost: () => Promise<any>;
   isLoadingPost?: boolean;
 }> = ({ post, networkId, refetchPost, isLoadingPost }) => {
   const navigation = useAppNavigation();
-
   const { width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
   const isMobile = useIsMobile();
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
 
   const postId = post.identifier;
-
-  useEffect(() => {
-    if (post?.category === PostCategory.Video)
-      navigation.replace("FeedPostView", {
-        id: postId,
-      });
-  }, [post?.category, postId, navigation]);
-
   const authorId = post?.authorId;
   const authorNSInfo = useNSUserInfo(authorId);
-
   const [, authorAddress] = parseUserId(post?.authorId);
+  const username = authorNSInfo?.metadata?.tokenId || authorAddress;
 
+  const [localPost, setLocalPost] = useState(post);
   const feedInputRef = useRef<NewsFeedInputHandle>(null);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
   const aref = useAnimatedRef<Animated.ScrollView>();
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
-  const [threadCardOffsetY, setThreadCardOffsetY] = useState(0);
-  const [threadCardWidth, setThreadCardWidth] = useState(0);
+  const [articleOffsetY, setArticleOffsetY] = useState(0);
+  const [articleWidth, setArticleWidth] = useState(0);
   const isGoingUp = useSharedValue(false);
+  const isLoadingSharedValue = useSharedValue(true);
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const {
     data,
@@ -99,22 +106,41 @@ export const FeedPostDefaultView: FC<{
     () => (data ? combineFetchCommentPages(data.pages) : []),
     [data],
   );
-  const isLoadingSharedValue = useSharedValue(true);
-  useEffect(() => {
-    isLoadingSharedValue.value = isLoadingPost || isLoadingComments;
-  }, [isLoadingPost, isLoadingComments, isLoadingSharedValue]);
+
+  const postMetadata = zodTryParseJSON(
+    ZodSocialFeedPostMetadata,
+    post.metadata,
+  );
+  const articleMetadata = zodTryParseJSON(
+    ZodSocialFeedArticleMetadata,
+    post.metadata,
+  );
+  const metadataToUse = articleMetadata || postMetadata;
+  const audioFiles = useMemo(
+    () => metadataToUse?.files?.filter((file) => file.fileType === "audio"),
+    [metadataToUse?.files],
+  );
+  const coverImage = metadataToUse?.files?.find((file) => file.isCoverImage);
+  const headerLabel = useMemo(() => {
+    const authorDisplayName =
+      authorNSInfo?.metadata?.tokenId ||
+      tinyAddress(authorAddress) ||
+      DEFAULT_USERNAME;
+    return `Article by ${authorDisplayName}`;
+  }, [authorNSInfo?.metadata?.tokenId, authorAddress]);
 
   const onPressReply: OnPressReplyType = (data) => {
     feedInputRef.current?.resetForm();
     setReplyTo(data);
-    feedInputRef.current?.setValue(`@${data.username} `);
+    feedInputRef.current?.setValue(`@${username} `);
     feedInputRef.current?.focusInput();
   };
 
-  useEffect(() => {
-    // HECK: updated state was not showing up in scrollhander
-    isNextPageAvailable.value = hasNextPage;
-  }, [hasNextPage, isNextPageAvailable]);
+  const handleSubmitInProgress = () => {
+    if (replyTo?.parentId && replyTo.yOffsetValue)
+      aref.current?.scrollTo(replyTo.yOffsetValue);
+    else aref.current?.scrollTo(0);
+  };
 
   const scrollHandler = useAnimatedScrollHandler(
     {
@@ -133,35 +159,29 @@ export const FeedPostDefaultView: FC<{
         } else if (flatListContentOffsetY < event.contentOffset.y) {
           isGoingUp.value = false;
         }
-        runOnJS(setFlatListContentOffsetY)(event.contentOffset.y);
+        setFlatListContentOffsetY(event.contentOffset.y);
       },
     },
     [post?.identifier],
   );
 
-  const handleSubmitInProgress = () => {
-    if (replyTo?.parentId && replyTo.yOffsetValue)
-      aref.current?.scrollTo(replyTo.yOffsetValue);
-    else aref.current?.scrollTo(0);
-  };
+  useEffect(() => {
+    isLoadingSharedValue.value = isLoadingPost || isLoadingComments;
+  }, [isLoadingPost, isLoadingComments, isLoadingSharedValue]);
 
-  const headerLabel = useMemo(() => {
-    const authorDisplayName =
-      authorNSInfo?.metadata?.tokenId ||
-      tinyAddress(authorAddress) ||
-      DEFAULT_USERNAME;
+  useEffect(() => {
+    if (post?.category === PostCategory.Video)
+      navigation.replace("FeedPostView", {
+        id: postId,
+      });
+  }, [post?.category, postId, navigation]);
 
-    if (post?.parentPostIdentifier) {
-      return `Comment by ${authorDisplayName}`;
-    }
+  useEffect(() => {
+    // HECK: updated state was not showing up in scrollhander
+    isNextPageAvailable.value = hasNextPage;
+  }, [hasNextPage, isNextPageAvailable]);
 
-    if (post.category === PostCategory.MusicAudio) {
-      return `Track by ${authorDisplayName}`;
-    }
-
-    return `Post by ${authorDisplayName}`;
-  }, [post, authorNSInfo?.metadata?.tokenId, authorAddress]);
-
+  if (!metadataToUse) return null;
   return (
     <ScreenContainer
       forceNetworkId={networkId}
@@ -202,40 +222,85 @@ export const FeedPostDefaultView: FC<{
             paddingVertical: layout.spacing_x2,
           }}
         >
-          {!!post && (
-            <View
-              onLayout={({
-                nativeEvent: {
-                  layout: { height, width },
-                },
-              }) => {
-                setThreadCardOffsetY(height);
-                setThreadCardWidth(width);
-              }}
-              style={{ width: "100%" }}
-            >
-              <SocialThreadCard
-                refetchFeed={refetchPost}
-                style={
-                  windowWidth < RESPONSIVE_BREAKPOINT_S && {
-                    borderRadius: 0,
-                    borderLeftWidth: 0,
-                    borderRightWidth: 0,
-                  }
-                }
-                post={post}
-                isPostConsultation
-                onPressReply={onPressReply}
+          <View
+            onLayout={({
+              nativeEvent: {
+                layout: { height, width },
+              },
+            }) => {
+              setArticleOffsetY(height);
+              setArticleWidth(width);
+            }}
+            style={{
+              width: "100%",
+              maxWidth: ARTICLE_MAX_WIDTH + contentPaddingHorizontal * 2,
+              borderBottomWidth: 1,
+              borderBottomColor: neutral33,
+              borderRadius:
+                windowWidth < RESPONSIVE_BREAKPOINT_S
+                  ? 0
+                  : SOCIAl_CARD_BORDER_RADIUS,
+              paddingHorizontal: contentPaddingHorizontal,
+              paddingBottom: layout.spacing_x2,
+            }}
+          >
+            <SocialCardWrapper post={localPost} refetchFeed={refetchPost}>
+              <SocialCardHeader
+                authorAddress={authorAddress}
+                authorId={localPost.authorId}
+                createdAt={post.createdAt}
+                authorMetadata={authorNSInfo?.metadata}
               />
-            </View>
-          )}
+
+              <SpacerColumn size={1.5} />
+
+              {/*====== Card Content */}
+              <View>
+                {!!metadataToUse?.title && (
+                  <BrandText style={{ marginBottom: layout.spacing_x1 }}>
+                    {metadataToUse.title}
+                  </BrandText>
+                )}
+                {!!coverImage && (
+                  <Image
+                    source={{ uri: web3ToWeb2URI(coverImage.url) }}
+                    resizeMode="cover"
+                    style={{
+                      width: "100%",
+                      height: ARTICLE_COVER_IMAGE_HEIGHT,
+                      marginBottom: layout.spacing_x1_5,
+                    }}
+                  />
+                )}
+
+                <RichText
+                  initialValue={metadataToUse.message}
+                  isPostConsultation
+                  audioFiles={audioFiles}
+                  postId={postId}
+                  authorId={authorId}
+                />
+              </View>
+              <SpacerColumn size={1.5} />
+
+              {/*====== Card Actions */}
+              <SocialCardFooter
+                cardWidth={articleWidth}
+                isPostConsultation
+                post={localPost}
+                handleReply={() => onPressReply({ username })}
+                refetchFeed={refetchPost}
+                setPost={setLocalPost}
+              />
+            </SocialCardWrapper>
+          </View>
           {/*========== Refresh button no mobile */}
           {!isMobile && (
             <Animated.View
               style={[
                 {
                   position: "absolute",
-                  top: threadCardOffsetY + 6,
+                  top: articleOffsetY + 6,
                   flexDirection: "row",
                   width: "100%",
                   alignItems: "center",
@@ -259,9 +324,7 @@ export const FeedPostDefaultView: FC<{
           >
             <CommentsContainer
               cardWidth={
-                isMobile
-                  ? threadCardWidth
-                  : threadCardWidth - LINES_HORIZONTAL_SPACE
+                isMobile ? articleWidth : articleWidth - LINES_HORIZONTAL_SPACE
               }
               comments={comments}
               onPressReply={onPressReply}
@@ -269,9 +332,28 @@ export const FeedPostDefaultView: FC<{
             />
           </View>
         </View>
+
+        {!isMobile && (
+          <>
+            <SpacerColumn size={2.5} />
+
+            <NewsFeedInput
+              style={{ alignSelf: "center" }}
+              ref={feedInputRef}
+              type="comment"
+              replyTo={replyTo}
+              parentId={post.identifier}
+              onSubmitInProgress={handleSubmitInProgress}
+              onSubmitSuccess={() => {
+                setReplyTo(undefined);
+                refetchComments();
+              }}
+            />
+          </>
+        )}
       </Animated.ScrollView>
 
-      {flatListContentOffsetY >= threadCardOffsetY + 66 && !isMobile && (
+      {flatListContentOffsetY >= articleOffsetY + 66 && !isMobile && (
         <View style={floatingActionsCStyle}>
           <RefreshButtonRound
             isRefreshing={isLoadingSharedValue}
@@ -281,7 +363,7 @@ export const FeedPostDefaultView: FC<{
       )}
 
       {/*========== Refresh button and Comment button mobile */}
-      {isMobile ? (
+      {isMobile && (
         <>
           <SpacerColumn size={2} />
           <View
@@ -305,19 +387,6 @@ export const FeedPostDefaultView: FC<{
           </View>
           <SpacerColumn size={2} />
         </>
-      ) : (
-        <NewsFeedInput
-          style={{ alignSelf: "center" }}
-          ref={feedInputRef}
-          type="comment"
-          replyTo={replyTo}
-          parentId={post.identifier}
-          onSubmitInProgress={handleSubmitInProgress}
-          onSubmitSuccess={() => {
-            setReplyTo(undefined);
-            refetchComments();
-          }}
-        />
       )}
 
       <CreateShortPostModal
