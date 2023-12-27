@@ -43,7 +43,10 @@ import { StakeScreen } from "../../screens/Stake";
 import { SwapScreen } from "../../screens/Swap/SwapScreen";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
 import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
+import { CreatePassword } from "../../screens/Wallet/Screens/CreatePassword";
 import { CreateScreen } from "../../screens/Wallet/Screens/CreateScreen";
+import { ImportWallet } from "../../screens/Wallet/Screens/ImportWallet";
+import { SuccessScreen } from "../../screens/Wallet/Screens/SucessScreen";
 import { ViewSeed } from "../../screens/Wallet/Screens/ViewSeed";
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
@@ -357,6 +360,30 @@ export const Navigator: React.FC = () => {
         name="ViewSeed"
         component={ViewSeed}
         options={{ header: () => null, title: screenTitle("View Seed") }}
+      />
+      <Stack.Screen
+        name="ImportWallet"
+        component={ImportWallet}
+        options={{
+          header: () => null,
+          title: screenTitle("Import Wallet with Seed"),
+        }}
+      />
+      <Stack.Screen
+        name="CreatePassword"
+        component={CreatePassword}
+        options={{
+          header: () => null,
+          title: screenTitle("Create Password"),
+        }}
+      />
+      <Stack.Screen
+        name="SuccessScreen"
+        component={SuccessScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("All Set"),
+        }}
       />
     </Stack.Navigator>
   );

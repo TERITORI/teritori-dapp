@@ -63,9 +63,9 @@ export const CreateScreen: ScreenFC<"NativeWallet"> = () => {
           alignItems: "center",
         }}
       >
-        <Button text="Create Wallet" navigate="NativeWallet" />
-        <Button text="Import Wallet" navigate="NativeWallet" />
-        <Button text="Connect Ledger" navigate="NativeWallet" />
+        <Button text="Create Wallet" navigateTo="NativeWallet" />
+        <Button text="Import Wallet" navigateTo="ImportWallet" />
+        <Button text="Connect Ledger" navigateTo="NativeWallet" />
         {Platform.OS === "web" && <Connect3rdPartyWallet />}
       </View>
 

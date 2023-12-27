@@ -73,8 +73,12 @@ export type RootStackParamList = {
   ChatSection: Conversation;
   FriendshipManager: { tab?: MessageFriendsTabItem } | undefined;
 
+  // native wallet screens
   NativeWallet: undefined;
   ViewSeed: undefined;
+  ImportWallet: undefined;
+  CreatePassword: undefined;
+  SuccessScreen: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -170,6 +174,9 @@ const navConfig: {
     // ==== Native Wallet
     NativeWallet: "native-wallet",
     ViewSeed: "native-wallet/view-seed",
+    ImportWallet: "native-wallet/import",
+    CreatePassword: "native-wallet/create-password",
+    SuccessScreen: "native-wallet/success",
   },
 };
 

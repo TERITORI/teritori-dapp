@@ -7,13 +7,15 @@ import { fontSemibold15 } from "../../../utils/style/fonts";
 
 export const Button: React.FC<{
   text: string;
-  navigate: RouteName;
-}> = ({ text, navigate }) => {
+  navigateTo: RouteName;
+  disabled?: boolean;
+}> = ({ text, navigateTo, disabled = false }) => {
   const navigation = useAppNavigation();
   return (
     <Pressable
       onPress={() => {
-        navigation.navigate("Marketplace");
+        // @ts-ignore
+        navigation.navigate(navigateTo);
       }}
       style={{
         width: 361,
@@ -24,7 +26,9 @@ export const Button: React.FC<{
         gap: 8,
         borderRadius: 100,
         backgroundColor: "#007AFF",
+        opacity: disabled ? 0.5 : 1,
       }}
+      disabled={disabled}
     >
       <BrandText
         style={{

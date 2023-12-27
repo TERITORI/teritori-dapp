@@ -11,7 +11,7 @@ export const WalletContainer: React.FC<{ children: ReactNode }> = ({
       style={{
         padding: layout.spacing_x3,
         backgroundColor: "black",
-        flex: 5,
+        flex: 10,
       }}
     >
       {children}

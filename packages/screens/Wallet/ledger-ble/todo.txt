@@ -1,0 +1,1 @@
+https://developers.ledger.com/docs/connectivity/ledgerJS/integration-walkthrough/mobile-application/react-native-bluetooth-ios

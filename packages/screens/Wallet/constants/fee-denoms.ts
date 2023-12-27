@@ -2,10 +2,10 @@
  * TODO - Delete this file once all the platforms are using useFeeDenoms hook
  */
 
-import { SupportedChain } from './chain-infos';
-import { denoms, NativeDenom } from './denoms';
+import { SupportedChain } from "./chain-infos";
+import { denoms, NativeDenom } from "./denoms";
 
-type Network = 'mainnet' | 'testnet';
+type Network = "mainnet" | "testnet";
 type FeeDenom = Record<SupportedChain, NativeDenom>;
 
 type FeeDenoms = Record<Network, FeeDenom>;
@@ -56,7 +56,10 @@ export const feeDenoms: FeeDenoms = {
     omniflix: denoms.uflix,
     passage: denoms.upasg,
     terra: denoms.uluna,
-    quasar: denoms['ibc/0471F1C4E7AFD3F07702BEF6DC365268D64570F7C1FDC98EA6098DD6DE59817B'],
+    quasar:
+      denoms[
+        "ibc/0471F1C4E7AFD3F07702BEF6DC365268D64570F7C1FDC98EA6098DD6DE59817B"
+      ],
     neutron: denoms.untrn,
     coreum: denoms.utestcore,
     mainCoreum: denoms.ucore,

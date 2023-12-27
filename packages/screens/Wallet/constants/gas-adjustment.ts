@@ -1,4 +1,4 @@
-import { SupportedChain } from './chain-infos';
+import { SupportedChain } from "./chain-infos";
 
 /**
  * Gas adjustment for each network
