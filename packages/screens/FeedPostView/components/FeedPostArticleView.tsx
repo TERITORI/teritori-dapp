@@ -42,7 +42,7 @@ import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { getNetworkObjectId, parseUserId } from "../../../networks";
-import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
+import { web3ToWeb2URI } from "../../../utils/ipfs";
 import { useAppNavigation } from "../../../utils/navigation";
 import { zodTryParseJSON } from "../../../utils/sanitize";
 import {
@@ -263,7 +263,7 @@ export const FeedPostArticleView: FC<{
                 )}
                 {!!coverImage && (
                   <Image
-                    source={{ uri: ipfsURLToHTTPURL(coverImage.url) }}
+                    source={{ uri: web3ToWeb2URI(coverImage.url) }}
                     resizeMode="cover"
                     style={{
                       width: "100%",

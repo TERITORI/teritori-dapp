@@ -11,7 +11,7 @@ import {
   mustGetNonSigningCosmWasmClient,
 } from "../../networks";
 import { buildApproveNFTMsg, buildBreedingMsg } from "../../utils/game";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { web3ToWeb2URI } from "../../utils/ipfs";
 import { useBreedingConfig } from "../useBreedingConfig";
 import useSelectedWallet from "../useSelectedWallet";
 
@@ -144,7 +144,7 @@ export const useBreeding = (networkId: string | undefined) => {
         },
       });
 
-      const tokenInfo = { id: tokenId, imageUri: ipfsURLToHTTPURL(image) };
+      const tokenInfo = { id: tokenId, imageUri: web3ToWeb2URI(image) };
       return tokenInfo;
     },
     [networkId],
