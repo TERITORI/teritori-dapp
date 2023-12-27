@@ -1,7 +1,6 @@
 import { FC, ReactNode } from "react";
 import { View } from "react-native";
 
-import { Footer } from "../../../components/footers/Footer";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 
 // Layout and Footer for UPP Screens.  Ex in DAOsUPPScreen.tsx
@@ -13,8 +12,6 @@ export const UPPScreenContentWrapper: FC<{
   return (
     <View style={{ flex: 1, alignItems: "center" }}>
       <View style={{ width }}>{children}</View>
-
-      <Footer />
     </View>
   );
 };
