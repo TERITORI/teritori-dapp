@@ -16,7 +16,7 @@ import { useBanners } from "../../hooks/useBanners";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { web3ToWeb2URI } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
 import { Link } from "../Link";
 import { Section } from "../Section";
@@ -45,7 +45,7 @@ export const HubLanding: React.FC = () => {
         <Link to={banner?.url || ""}>
           <Image
             source={{
-              uri: ipfsURLToHTTPURL(banner?.image),
+              uri: web3ToWeb2URI(banner?.image),
             }}
             style={{
               height,

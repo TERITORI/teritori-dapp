@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 
 import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import { ipfsURLToHTTPURL } from "./ipfs";
+import { web3ToWeb2URI } from "./ipfs";
 import { Attribute, Collection, NFT } from "../api/marketplace/v1/marketplace";
 import {
   EthereumNetworkInfo,
@@ -132,7 +132,7 @@ const addNftMetadata = async (nft: NFT) => {
   );
 
   const tokenURI = await nftClient.callStatic.tokenURI(nftTokenId);
-  const metadataURL = ipfsURLToHTTPURL(tokenURI);
+  const metadataURL = web3ToWeb2URI(tokenURI);
   const infoReply = await fetch(metadataURL);
   const info = await infoReply.json();
 

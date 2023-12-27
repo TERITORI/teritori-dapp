@@ -18,7 +18,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
 import {
   generateIpfsKey,
-  ipfsURLToHTTPURL,
+  web3ToWeb2URI,
   uploadFilesToPinata,
 } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES, VIDEO_MIME_TYPES } from "../../utils/mime";
@@ -261,7 +261,7 @@ export const UploadVideoModal: FC<{
           />
           <Video
             source={{
-              uri: ipfsURLToHTTPURL(localVideoFile.url),
+              uri: web3ToWeb2URI(localVideoFile.url),
             }}
             resizeMode={ResizeMode.COVER}
             useNativeControls

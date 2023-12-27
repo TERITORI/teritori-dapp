@@ -66,17 +66,33 @@ export const generateIpfsKey = async (
   }
 };
 
-/** Get the gateway web2 url for an ipfs url or passthrough if not an ipfs url */
-export const ipfsURLToHTTPURL = (ipfsURL: string | undefined) => {
-  if (!ipfsURL) {
+const gatewayBase = "cf-ipfs.com";
+
+const ipfsPathToWeb2URL = (path: string) => {
+  const separatorIndex = path.indexOf("/");
+  const cidString =
+    separatorIndex === -1 ? path : path.substring(0, separatorIndex);
+  const subpath =
+    separatorIndex === -1 ? "" : path.substring(separatorIndex + 1);
+  const cid = CID.parse(cidString);
+  const finalPath = subpath ? `/${subpath}` : "";
+  const finalCIDString = cid.toV1().toString();
+  const gatewayURL = `https://${finalCIDString}.ipfs.${gatewayBase}${finalPath}`;
+  return gatewayURL;
+};
+
+/** Get the web2 url for a web3 uri or passthrough if not a web3 uri
+ * Only supports ipfs for now
+ */
+export const web3ToWeb2URI = (web3URI: string | undefined) => {
+  if (!web3URI) {
     return "";
   }
-  if (ipfsURL.startsWith("ipfs://")) {
-    return ipfsURL.replace("ipfs://", "https://cf-ipfs.com/ipfs/");
+  if (web3URI.startsWith("ipfs://")) {
+    web3URI = web3URI.substring("ipfs://".length);
   }
   try {
-    const cid = CID.parse(ipfsURL);
-    return `https://cf-ipfs.com/ipfs/${cid.toString()}`;
+    return ipfsPathToWeb2URL(web3URI);
   } catch {}
-  return ipfsURL;
+  return web3URI;
 };

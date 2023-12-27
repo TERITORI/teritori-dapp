@@ -4,7 +4,7 @@ import { Image, StyleSheet, View } from "react-native";
 import dorgSVG from "../../../../assets/icons/dorg-icon.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
+import { web3ToWeb2URI } from "../../../utils/ipfs";
 import { neutral22, neutral33, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -23,7 +23,7 @@ export const ImagePreviewer: React.FC<ImagePreviewerProps> = ({
       <View style={styles.imagePreviewer}>
         {uri ? (
           <Image
-            source={{ uri: ipfsURLToHTTPURL(uri) }}
+            source={{ uri: web3ToWeb2URI(uri) }}
             style={styles.image}
             onError={onError}
           />

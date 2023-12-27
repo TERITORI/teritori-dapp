@@ -3,7 +3,7 @@ import { TouchableOpacity, View } from "react-native";
 
 import { DeleteButton } from "./DeleteButton";
 import { ImagesFullViewModal } from "./ImagesFullViewModal";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { web3ToWeb2URI } from "../../utils/ipfs";
 import { errorColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -48,7 +48,7 @@ export const ImagesViews: React.FC<ImagePreviewProps> = ({
       const formattedData = await Promise.all(
         files.map(async (file) => {
           if (file.fileType === "base64") {
-            const response = await fetch(ipfsURLToHTTPURL(file.url));
+            const response = await fetch(web3ToWeb2URI(file.url));
             const content = await response.text();
             return {
               ...file,
@@ -75,7 +75,7 @@ export const ImagesViews: React.FC<ImagePreviewProps> = ({
       <ImagesFullViewModal
         files={formattedFiles.map((file) =>
           file.fileType === "image"
-            ? ipfsURLToHTTPURL(file.url)
+            ? web3ToWeb2URI(file.url)
             : file.base64Image || "",
         )}
         activeIndex={activeIndex}

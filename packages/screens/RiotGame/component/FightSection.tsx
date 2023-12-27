@@ -13,7 +13,7 @@ import { Squad } from "../../../contracts-clients/teritori-squad-staking/Teritor
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { mustGetNonSigningCosmWasmClient } from "../../../networks";
 import { squadWithdraw } from "../../../utils/game";
-import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
+import { web3ToWeb2URI } from "../../../utils/ipfs";
 import { fontMedium48 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { RipperLightInfo } from "../types";
@@ -62,7 +62,7 @@ export const FightSection: React.FC<FightSectionProps> = ({
 
       const stakedRippers: RipperLightInfo[] = nftInfos.map(
         ({ extension }) => ({
-          imageUri: ipfsURLToHTTPURL(`${extension?.image}`),
+          imageUri: web3ToWeb2URI(`${extension?.image}`),
           name: `${extension?.name}`,
         }),
       );
