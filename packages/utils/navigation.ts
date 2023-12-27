@@ -79,6 +79,9 @@ export type RootStackParamList = {
   ImportWallet: undefined;
   CreatePassword: undefined;
   SuccessScreen: undefined;
+
+  //Mini Screens
+  MiniTabs: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -177,6 +180,9 @@ const navConfig: {
     ImportWallet: "native-wallet/import",
     CreatePassword: "native-wallet/create-password",
     SuccessScreen: "native-wallet/success",
+
+    // ==== Mini nav
+    MiniTabs: "min-tabs",
   },
 };
 

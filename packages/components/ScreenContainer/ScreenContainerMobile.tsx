@@ -1,14 +1,9 @@
 import React, { FC, ReactNode } from "react";
-import {
-  SafeAreaView,
-  ScrollView,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { SafeAreaView, useWindowDimensions, View } from "react-native";
 
+import { HeaderMini } from "./HeaderMini";
 import { HeaderMobile } from "./HeaderMobile";
 import { useSearchBar } from "../../context/SearchBarProvider";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
@@ -21,7 +16,6 @@ import { SidebarMobile } from "../navigation/SidebarMobile";
 
 export const MobileTitle: FC<{ title: string }> = ({ title }) => {
   const { width: windowWidth } = useWindowDimensions();
-
   return (
     <View
       style={{
@@ -60,9 +54,19 @@ export const ScreenContainerMobile: FC<{
   onBackPress,
 }) => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
-  const { width } = useMaxResolution();
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
+  // const [appType, setAppType] = useState<AppType>("normal");
 
+  // useEffect(() => {
+  //   const getAppType = async () => {
+  //     const savedAppType = await AsyncStorage.getItem("app-type");
+  //     if (savedAppType && ["normal", "mini"].includes(savedAppType)) {
+  //       setAppType("mini");
+  //     }
+  //   };
+  //   getAppType();
+  // }, []);
+  const appType = "mini";
   return (
     <SafeAreaView
       style={{
@@ -83,12 +87,17 @@ export const ScreenContainerMobile: FC<{
           onClose={() => setSearchModalMobileOpen(false)}
           visible={isSearchModalMobileOpen}
         />
-        <HeaderMobile
-          onBackPress={onBackPress}
-          forceNetworkId={forceNetworkId}
-          forceNetworkKind={forceNetworkKind}
-          forceNetworkFeatures={forceNetworkFeatures}
-        />
+        {appType === "mini" ? (
+          <HeaderMini title={mobileTitle || ""} />
+        ) : (
+          <HeaderMobile
+            onBackPress={onBackPress}
+            forceNetworkId={forceNetworkId}
+            forceNetworkKind={forceNetworkKind}
+            forceNetworkFeatures={forceNetworkFeatures}
+          />
+        )}
+
         <SidebarMobile />
 
         {/*==== Scrollable screen content*/}

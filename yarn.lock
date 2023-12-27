@@ -5279,6 +5279,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-navigation/bottom-tabs@npm:^6.5.11":
+  version: 6.5.11
+  resolution: "@react-navigation/bottom-tabs@npm:6.5.11"
+  dependencies:
+    "@react-navigation/elements": ^1.3.21
+    color: ^4.2.3
+    warn-once: ^0.1.0
+  peerDependencies:
+    "@react-navigation/native": ^6.0.0
+    react: "*"
+    react-native: "*"
+    react-native-safe-area-context: ">= 3.0.0"
+    react-native-screens: ">= 3.0.0"
+  checksum: 40719f03d926ddf046f395e1e3007b8e3b64b82ecdf33a397b7b2eb9b0387fdd00ece2089db670e6d339838bd0658ee279b9409873bbeb28df89ad86f8f09140
+  languageName: node
+  linkType: hard
+
 "@react-navigation/core@npm:^6.4.10":
   version: 6.4.10
   resolution: "@react-navigation/core@npm:6.4.10"
@@ -21280,6 +21297,7 @@ __metadata:
     "@react-native-async-storage/async-storage": 1.18.2
     "@react-native-community/slider": 4.4.2
     "@react-native-masked-view/masked-view": 0.2.9
+    "@react-navigation/bottom-tabs": ^6.5.11
     "@react-navigation/native": ^6.0.11
     "@react-navigation/native-stack": ^6.7.0
     "@reduxjs/toolkit": ^1.8.3

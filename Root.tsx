@@ -1,16 +1,17 @@
 import {
-  useFonts,
-  Exo_600SemiBold,
   Exo_500Medium,
+  Exo_600SemiBold,
   Exo_700Bold,
+  useFonts,
 } from "@expo-google-fonts/exo";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
-import React, { ReactNode, memo, useEffect } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { Platform, View, Text, TextStyle } from "react-native";
+import React, { memo, ReactNode, useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { Platform, Text, TextStyle, View } from "react-native";
 import {
   enableLegacyWebImplementation,
   GestureHandlerRootView,
@@ -21,6 +22,7 @@ import { Provider as ReduxProvider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
 import { MultisigDeauth } from "./packages/components/multisig/MultisigDeauth";
+import { MiniNavigator } from "./packages/components/navigation/MiniNavigator";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
@@ -31,8 +33,8 @@ import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataLi
 import { TNSContextProvider } from "./packages/context/TNSProvider";
 import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
 import {
-  WalletsProvider,
   useWallets,
+  WalletsProvider,
 } from "./packages/context/WalletsProvider";
 import { useSelectedNetworkId } from "./packages/hooks/useSelectedNetwork";
 import useSelectedWallet from "./packages/hooks/useSelectedWallet";
@@ -51,6 +53,7 @@ type DefaultForm = {
 // this is required for react-native-gesture-handler to work on web
 enableLegacyWebImplementation(true);
 // ^ required for drog and drop on the dAppStore
+export type AppType = "normal" | "mini";
 
 export default function App() {
   const methods = useForm<DefaultForm>();
@@ -59,10 +62,25 @@ export default function App() {
     Exo_600SemiBold,
     Exo_700Bold,
   });
+  const [appType, setAppType] = useState<AppType>("normal");
+
+  useEffect(() => {
+    const getAppType = async () => {
+      const savedAppType = await AsyncStorage.getItem("app-type");
+      if (savedAppType && ["normal", "mini"].includes(savedAppType)) {
+        setAppType("mini");
+      }
+    };
+    getAppType();
+  }, []);
 
   // FIXME: Fonts don't load on electron
   if (Platform.OS !== "web" && !fontsLoaded) {
     return null;
+  }
+
+  if (Platform.OS !== "web") {
+    AsyncStorage.setItem("app-type", "mini");
   }
 
   return (
@@ -100,7 +118,11 @@ export default function App() {
                                       <MessageContextProvider>
                                         <MediaPlayerContextProvider>
                                           <StatusBar style="inverted" />
-                                          <Navigator />
+                                          {appType === "mini" ? (
+                                            <MiniNavigator />
+                                          ) : (
+                                            <Navigator />
+                                          )}
                                         </MediaPlayerContextProvider>
                                       </MessageContextProvider>
                                     </MenuProvider>
