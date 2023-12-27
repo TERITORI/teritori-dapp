@@ -8,30 +8,26 @@ import React, {
 } from "react";
 
 import { LoaderFullScreen } from "../components/loaders/LoaderFullScreen";
-import { ToastError } from "../components/toasts/ToastError";
-import { ToastSuccess } from "../components/toasts/ToastSuccess";
+import { Toast, ToastType } from "../components/toasts/Toast";
 
 interface ToastMessage {
   title: string;
   message: string;
   duration?: number;
   onPress?: () => void;
+  type: ToastType;
 }
-export const initialToastError: ToastMessage = {
+
+const initialToast: ToastMessage = {
   title: "",
   message: "",
   duration: 8000,
-};
-const initialToastSuccess: ToastMessage = {
-  title: "",
-  message: "",
-  duration: 8000,
+  type: "error",
 };
 
 interface FeedbacksProviderValue {
-  toastError: ToastMessage;
+  toast: ToastMessage;
   setToastError: (error: ToastMessage) => void;
-  toastSuccess: ToastMessage;
   setToastSuccess: (info: ToastMessage) => void;
   loadingFullScreen: boolean;
   setLoadingFullScreen: (loading: boolean) => void;
@@ -42,9 +38,8 @@ interface FeedbacksProviderValue {
   ) => () => Promise<void>;
 }
 const defaultValue: FeedbacksProviderValue = {
-  toastError: initialToastError,
+  toast: initialToast,
   setToastError: () => {},
-  toastSuccess: initialToastSuccess,
   setToastSuccess: () => {},
   loadingFullScreen: false,
   setLoadingFullScreen: () => {},
@@ -57,20 +52,15 @@ export const FeedbacksContextProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [loadingFullScreen, setLoadingFullScreen] = useState(false);
-  const [toastError, setToastError] = useState(initialToastError);
-  const [toastSuccess, setToastSuccess] = useState(initialToastSuccess);
+  const [toast, setToast] = useState(initialToast);
 
   useEffect(() => {
-    const timeoutID = setTimeout(
-      () => {
-        setToastError(initialToastError);
-        setToastSuccess(initialToastSuccess);
-      },
-      toastError.duration || toastSuccess.duration || 8000,
-    );
+    const timeoutID = setTimeout(() => {
+      setToast(initialToast);
+    }, toast.duration || 8000);
 
     return () => clearTimeout(timeoutID);
-  }, [toastError, toastSuccess]);
+  }, [toast]);
 
   const wrapWithFeedback: FeedbacksProviderValue["wrapWithFeedback"] =
     useCallback(
@@ -88,9 +78,9 @@ export const FeedbacksContextProvider: React.FC<{ children: ReactNode }> = ({
         return async () => {
           try {
             await cb();
-            setToastSuccess({ message: "", ...success });
+            setToast({ message: "", ...success, type: "success" });
           } catch (err) {
-            setToastError({ message: "", ...errorTransform(err) });
+            setToast({ message: "", ...errorTransform(err), type: "error" });
           }
         };
       },
@@ -100,36 +90,26 @@ export const FeedbacksContextProvider: React.FC<{ children: ReactNode }> = ({
   return (
     <FeedbacksContext.Provider
       value={{
+        toast,
         loadingFullScreen,
         setLoadingFullScreen,
-        toastError,
-        setToastError,
-        toastSuccess,
-        setToastSuccess,
+        setToastError: (params) => setToast({ ...params, type: "error" }),
+        setToastSuccess: (params) => setToast({ ...params, type: "success" }),
         wrapWithFeedback,
       }}
     >
       {/*==== Loader full screen*/}
       <LoaderFullScreen visible={loadingFullScreen} />
       {/*==== Toasts*/}
-      {toastError && toastError.title ? (
-        <ToastError
-          onPress={() => setToastError(initialToastError)}
-          title={toastError.title}
-          message={toastError.message}
+      {toast && toast.title ? (
+        <Toast
+          onPress={() => setToast(initialToast)}
+          title={toast.title}
+          message={toast.message}
+          type={toast.type}
         />
       ) : null}
-      {toastSuccess && toastSuccess.title ? (
-        <ToastSuccess
-          onPress={() => {
-            return toastSuccess.onPress
-              ? toastSuccess.onPress()
-              : setToastSuccess(initialToastSuccess);
-          }}
-          title={toastSuccess.title}
-          message={toastSuccess.message}
-        />
-      ) : null}
+
       {/*==== Page content*/}
       {children}
     </FeedbacksContext.Provider>

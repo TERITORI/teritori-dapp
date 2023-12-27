@@ -1,19 +1,42 @@
 import React from "react";
-import { TouchableOpacity, View, Dimensions } from "react-native";
+import { TouchableOpacity, View, useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import warningSVG from "../../../assets/icons/warning.svg";
-import { errorColor, neutral11, neutral77 } from "../../utils/style/colors";
+import {
+  errorColor,
+  neutral11,
+  neutral77,
+  successColor,
+} from "../../utils/style/colors";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { Box } from "../boxes/Box";
 import { SpacerRow } from "../spacer";
 
-export const ToastError: React.FC<{
+const TOAST_WIDTH = 432;
+
+export type ToastType = "error" | "success";
+
+const getColorByType = (type: ToastType) => {
+  switch (type) {
+    case "success":
+      return successColor;
+    case "error":
+      return errorColor;
+  }
+};
+
+export const Toast: React.FC<{
   title: string;
   message?: string;
   onPress: () => void;
-}> = ({ title, message, onPress }) => {
-  const width = 432;
+  type: ToastType;
+}> = ({ title, message, onPress, type }) => {
+  const { width } = useWindowDimensions();
+
+  const insets = useSafeAreaInsets();
 
   return (
     <TouchableOpacity
@@ -23,8 +46,8 @@ export const ToastError: React.FC<{
         width,
         height: "auto",
         position: "absolute",
-        top: 24,
-        left: Dimensions.get("window").width / 2 - width / 2,
+        top: insets.top + layout.spacing_x1,
+        left: width / 2 - Math.min(TOAST_WIDTH, width) / 2,
         zIndex: 999,
       }}
     >
@@ -36,12 +59,12 @@ export const ToastError: React.FC<{
           flexDirection: "row",
           alignItems: "center",
           backgroundColor: neutral11,
-          borderColor: errorColor,
+          borderColor: getColorByType(type),
           borderWidth: 1,
         }}
       >
         <SpacerRow size={3} />
-        <SVG width={24} height={24} source={warningSVG} />
+        {type === "error" && <SVG width={24} height={24} source={warningSVG} />}
         <SpacerRow size={3} />
         <View style={{ maxWidth: 287, marginVertical: 12 }}>
           <BrandText style={{ fontSize: 13, lineHeight: 20 }}>
