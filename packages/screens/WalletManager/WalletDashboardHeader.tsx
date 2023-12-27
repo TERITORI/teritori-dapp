@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import penSVG from "../../../assets/icons/manage.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
+import { Box } from "../../components/boxes/Box";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { useBalances } from "../../hooks/useBalances";
 import { useDelegations } from "../../hooks/useDelegations";
@@ -14,7 +14,12 @@ import { rewardsPrice, useRewards } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { UserKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
-import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
+import {
+  neutral17,
+  neutral22,
+  neutral44,
+  neutralA3,
+} from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 
@@ -34,15 +39,16 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
   actionButton,
 }) => {
   return (
-    <LegacyTertiaryBox
-      height={116}
-      width={200}
-      mainContainerStyle={{
-        backgroundColor: neutral17,
-      }}
+    <Box
       style={{
+        height: 116,
+        width: 200,
         marginLeft: 16,
+        backgroundColor: neutral17,
+        borderWidth: 1,
+        borderColor: neutral44,
       }}
+      notched
     >
       <View
         style={{
@@ -83,7 +89,7 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
           />
         )}
       </View>
-    </LegacyTertiaryBox>
+    </Box>
   );
 };
 

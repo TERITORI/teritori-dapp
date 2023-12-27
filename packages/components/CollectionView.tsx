@@ -3,11 +3,12 @@ import { StyleSheet, Linking, View, Pressable } from "react-native";
 
 import { BrandText } from "./BrandText";
 import { OptimizedImage } from "./OptimizedImage";
-import { LegacyTertiaryBox } from "./boxes/LegacyTertiaryBox";
+import { Box } from "./boxes/Box";
 import { GradientText } from "./gradientText";
 import { Collection, MintState } from "../api/marketplace/v1/marketplace";
 import { useCollectionThumbnailInfo } from "../hooks/collection/useCollectionThumbnailInfo";
 import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
+import { neutral44 } from "../utils/style/colors";
 import { fontBold11, fontMedium10, fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 
@@ -45,11 +46,17 @@ export const CollectionView: React.FC<{
       }}
       disabled={item.id === "" && item.twitterUrl === ""}
     >
-      <LegacyTertiaryBox
-        noBrokenCorners={size === "XS"}
-        mainContainerStyle={sizedStyles.boxMainContainer}
-        width={sizedStyles.box.width}
-        height={sizedStyles.box.height}
+      <Box
+        notched={size !== "XS"}
+        style={[
+          {
+            width: sizedStyles.box.width,
+            height: sizedStyles.box.height,
+            borderWidth: 1,
+            borderColor: neutral44,
+          },
+          sizedStyles.boxMainContainer,
+        ]}
       >
         <OptimizedImage
           sourceURI={item.imageUri}
@@ -139,7 +146,7 @@ export const CollectionView: React.FC<{
             )}
           </View>
         </View>
-      </LegacyTertiaryBox>
+      </Box>
     </Pressable>
   );
 };

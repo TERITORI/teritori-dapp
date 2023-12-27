@@ -4,10 +4,10 @@ import { View, useWindowDimensions } from "react-native";
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";
 import { SuccessBadge } from "./badges/SuccessBadge";
-import { LegacyTertiaryBox } from "./boxes/LegacyTertiaryBox";
+import { Box } from "./boxes/Box";
 import { useSelectedNetworkInfo } from "../hooks/useSelectedNetwork";
 import useSelectedWallet from "../hooks/useSelectedWallet";
-import { neutral11, neutral77 } from "../utils/style/colors";
+import { neutral11, neutral44, neutral77 } from "../utils/style/colors";
 import {
   fontSemibold12,
   fontSemibold13,
@@ -22,9 +22,9 @@ export const WalletStatusBox: React.FC = () => {
   const selectedNetworkInfo = useSelectedNetworkInfo();
 
   return (
-    <LegacyTertiaryBox
-      fullWidth
-      mainContainerStyle={{
+    <Box
+      style={{
+        width: "100%",
         paddingVertical: layout.spacing_x1,
         paddingHorizontal: layout.spacing_x1_5,
         flexDirection: "row",
@@ -32,7 +32,10 @@ export const WalletStatusBox: React.FC = () => {
         justifyContent: "space-between",
         height: 48,
         backgroundColor: neutral11,
+        borderWidth: 1,
+        borderColor: neutral44,
       }}
+      notched
     >
       {selectedWallet ? (
         <>
@@ -60,6 +63,6 @@ export const WalletStatusBox: React.FC = () => {
       ) : (
         <BrandText style={fontSemibold14}>Wallet is not connected</BrandText>
       )}
-    </LegacyTertiaryBox>
+    </Box>
   );
 };

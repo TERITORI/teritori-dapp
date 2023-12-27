@@ -8,7 +8,7 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { WalletStatusBox } from "../../components/WalletStatusBox";
-import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
+import { Box } from "../../components/boxes/Box";
 import { FileUploader } from "../../components/fileUploader";
 import {
   Label,
@@ -41,6 +41,7 @@ import { ARTICLE_THUMBNAIL_IMAGE_HEIGHT } from "../../utils/social-feed";
 import {
   neutral00,
   neutral11,
+  neutral44,
   neutral77,
   secondaryColor,
 } from "../../utils/style/colors";
@@ -219,9 +220,9 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         <WalletStatusBox />
         <SpacerColumn size={3} />
 
-        <LegacyTertiaryBox
-          fullWidth
-          mainContainerStyle={{
+        <Box
+          style={{
+            width: "100%",
             paddingVertical: layout.spacing_x1,
             paddingHorizontal: layout.spacing_x1_5,
             flexDirection: "row",
@@ -229,7 +230,10 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
             justifyContent: "flex-start",
             height: 48,
             backgroundColor: neutral11,
+            borderWidth: 1,
+            borderColor: neutral44,
           }}
+          notched
         >
           <SVG
             source={priceSVG}
@@ -250,7 +254,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                 )} left`
               : `The cost for this Article is ${prettyPublishingFee}`}
           </BrandText>
-        </LegacyTertiaryBox>
+        </Box>
 
         <FileUploader
           label="Thumbnail image"

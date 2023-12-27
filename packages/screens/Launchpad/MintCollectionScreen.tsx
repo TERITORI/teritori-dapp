@@ -9,7 +9,6 @@ import {
   StyleProp,
   TextStyle,
   View,
-  ViewStyle,
   useWindowDimensions,
   TextInput,
 } from "react-native";
@@ -27,6 +26,7 @@ import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
+import { Box, BoxStyle } from "../../components/boxes/Box";
 import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
@@ -70,6 +70,7 @@ import {
   primaryColor,
   yellowDefault,
   secondaryColor,
+  neutral44,
 } from "../../utils/style/colors";
 import {
   fontMedium14,
@@ -398,7 +399,13 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 }}
               />
 
-              <LegacyTertiaryBox noBrokenCorners fullWidth>
+              <Box
+                style={{
+                  width: "100%",
+                  borderWidth: 1,
+                  borderColor: neutral44,
+                }}
+              >
                 {/* Upper section */}
                 <FlexRow
                   style={{
@@ -592,7 +599,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     )}
                   </View>
                 </FlexRow>
-              </LegacyTertiaryBox>
+              </Box>
 
               {mintTermsConditionsURL && (
                 <View
@@ -726,20 +733,25 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
 };
 
 const AttributesCard: React.FC<{
-  style?: StyleProp<ViewStyle>;
+  style: StyleProp<BoxStyle>;
   label: string;
   value: string;
 }> = ({ style, label, value }) => {
   return (
-    <LegacyTertiaryBox
-      style={style}
-      width={132}
-      height={62}
-      mainContainerStyle={{
-        alignItems: "flex-start",
-        paddingHorizontal: 12,
-        paddingVertical: 14,
-      }}
+    <Box
+      style={[
+        {
+          alignItems: "flex-start",
+          paddingHorizontal: 12,
+          paddingVertical: 14,
+          width: 132,
+          height: 62,
+          borderWidth: 1,
+          borderColor: neutral44,
+        },
+        style,
+      ]}
+      notched
     >
       <BrandText
         style={[fontSemibold12, { color: neutral77, marginBottom: 6 }]}
@@ -747,7 +759,7 @@ const AttributesCard: React.FC<{
         {label}
       </BrandText>
       <BrandText style={fontMedium14}>{value}</BrandText>
-    </LegacyTertiaryBox>
+    </Box>
   );
 };
 

@@ -1,14 +1,14 @@
 import React from "react";
-import { ViewStyle, View, StyleProp } from "react-native";
+import { View, StyleProp } from "react-native";
 
 import { neutral44, neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { Box, BoxStyle } from "../boxes/Box";
 import { GradientText } from "../gradientText";
 
 export const ProgressionCard: React.FC<{
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<BoxStyle>;
   label: string;
   valueCurrent: number;
   valueMax: number;
@@ -16,15 +16,19 @@ export const ProgressionCard: React.FC<{
   const percent = Math.round((valueCurrent * 100) / valueMax);
 
   return (
-    <LegacyTertiaryBox
-      style={style}
-      height={100}
-      fullWidth
-      mainContainerStyle={{
-        paddingHorizontal: 16,
-        paddingVertical: 16,
-        width: "100%",
-      }}
+    <Box
+      style={[
+        {
+          paddingHorizontal: 16,
+          paddingVertical: 16,
+          width: "100%",
+          height: 100,
+          borderWidth: 1,
+          borderColor: neutral44,
+        },
+        style,
+      ]}
+      notched
     >
       <View style={{ zIndex: 2, width: "100%" }}>
         <BrandText style={[fontSemibold12, { marginBottom: 8 }]}>
@@ -71,6 +75,6 @@ export const ProgressionCard: React.FC<{
           />
         </View>
       </View>
-    </LegacyTertiaryBox>
+    </Box>
   );
 };
