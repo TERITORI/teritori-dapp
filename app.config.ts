@@ -19,6 +19,7 @@ const config: { expo: ExpoConfig } = {
     assetBundlePatterns: ["**/*"],
     ios: {
       supportsTablet: true,
+      bundleIdentifier: "com.teritori.dapp",
     },
     android: {
       adaptiveIcon: {

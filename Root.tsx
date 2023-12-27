@@ -43,10 +43,12 @@ import { setSelectedWalletId } from "./packages/store/slices/settings";
 import { persistor, store, useAppDispatch } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
 
-const plausible = Plausible({
-  domain: "app.teritori.com",
-});
-plausible.enableAutoPageviews();
+if (Platform.OS === "web") {
+  const plausible = Plausible({
+    domain: "app.teritori.com",
+  });
+  plausible.enableAutoPageviews();
+}
 
 const queryClient = new QueryClient();
 
