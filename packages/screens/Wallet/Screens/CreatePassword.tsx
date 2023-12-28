@@ -29,11 +29,15 @@ export const CreatePassword: ScreenFC<"CreatePassword"> = () => {
           alignItems: "flex-start",
         }}
       >
-        <BrandText style={[fontSemibold28]}>Create a Password</BrandText>
+        <BrandText
+          style={[fontSemibold28, { marginBottom: layout.spacing_x1_5 }]}
+        >
+          Create a Password
+        </BrandText>
         <BrandText
           style={[
             fontSemibold16,
-            { color: neutral77, marginTop: layout.spacing_x1 },
+            { color: neutral77, marginBottom: layout.spacing_x3 },
           ]}
         >
           This will be used to unlock your wallet.
@@ -45,15 +49,20 @@ export const CreatePassword: ScreenFC<"CreatePassword"> = () => {
           label="Password"
           placeHolder="Password"
           value={password}
+          textContentType="newPassword"
+          autoComplete="off"
           onChangeText={setPassword}
           squaresBackgroundColor={neutral00}
         />
         <TextInputCustom<Metadata>
-          name="password"
+          name="confirm-password"
           style={inputStyle}
           label="Password"
           placeHolder="Confirm Password"
           value={confirmPassword}
+          textContentType="newPassword"
+          autoComplete="off"
+          autoCapitalize="none"
           onChangeText={setConfirmPassword}
           squaresBackgroundColor={neutral00}
         />
