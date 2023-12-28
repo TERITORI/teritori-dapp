@@ -24,7 +24,7 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMousePosition } from "../../hooks/useMousePosition";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { web3ToWeb2URI } from "../../utils/ipfs";
 import { prettyMediaDuration } from "../../utils/mediaPlayer";
 import { neutralA3, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
@@ -227,7 +227,7 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
           onPlaybackStatusUpdate={onLocalPlaybackStatusUpdate}
           useNativeControls={false}
           source={{
-            uri: ipfsURLToHTTPURL(videoMetadata.videoFile.url),
+            uri: web3ToWeb2URI(videoMetadata.videoFile.url),
           }}
           style={{ width: "100%", height: "100%" }}
           posterStyle={{ width: "100%", height: "100%" }}

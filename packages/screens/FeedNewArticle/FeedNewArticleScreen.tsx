@@ -32,7 +32,7 @@ import { NetworkFeature } from "../../networks";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
 import {
   generateIpfsKey,
-  ipfsURLToHTTPURL,
+  web3ToWeb2URI,
   uploadFilesToPinata,
 } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
@@ -162,7 +162,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           if (remoteFiles[index]?.fileType !== "audio") {
             message = message.replace(
               file.url,
-              ipfsURLToHTTPURL(remoteFiles[index].url),
+              web3ToWeb2URI(remoteFiles[index].url),
             );
           }
         });
