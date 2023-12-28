@@ -17,7 +17,7 @@ import {
 import { fontMedium14, fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
-import { LegacyTertiaryBox } from "../../boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { SpacerRow } from "../../spacer";
 
 export const CartIconButtonBadge: React.FC<{
@@ -40,16 +40,15 @@ export const CartIconButtonBadge: React.FC<{
   return selected.length > 0 ? (
     <View style={style}>
       <TouchableOpacity onPress={handleShowCart}>
-        <LegacyTertiaryBox
-          noBrokenCorners={isMobile}
-          mainContainerStyle={{
+        <TertiaryBox
+          style={{
             flexDirection: "row",
             paddingHorizontal: isMobile
               ? layout.spacing_x1
               : layout.spacing_x1_5,
             backgroundColor: isMobile ? neutral00 : neutral17,
+            height: isMobile ? 32 : 40,
           }}
-          height={isMobile ? 32 : 40}
         >
           <ShoppingCartIcon width={16} height={16} color={secondaryColor} />
 
@@ -64,7 +63,7 @@ export const CartIconButtonBadge: React.FC<{
           >
             {selected.length}
           </BrandText>
-        </LegacyTertiaryBox>
+        </TertiaryBox>
       </TouchableOpacity>
     </View>
   ) : null;

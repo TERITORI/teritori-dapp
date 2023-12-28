@@ -44,7 +44,7 @@ import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
 import { SVG } from "../SVG";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
@@ -248,18 +248,14 @@ export const TextInputCustom = <T extends FieldValues>({
           <SpacerColumn size={1.5} />
         </>
       )}
-      <LegacyTertiaryBox
-        squaresBackgroundColor={squaresBackgroundColor}
-        style={style}
-        mainContainerStyle={[
-          styles.mainContainer,
-          noBrokenCorners && styles.noCropBorderBg,
-          hovered && { borderColor: secondaryColor },
-        ]}
-        width={width}
-        fullWidth={!width}
-        height={height}
-        noBrokenCorners={noBrokenCorners}
+      <TertiaryBox
+        style={{
+          ...styles.mainContainer,
+          ...(noBrokenCorners ? styles.noCropBorderBg : {}),
+          ...(hovered ? { borderColor: secondaryColor } : {}),
+          ...(width ? { width } : {}),
+          ...(height ? { height } : {}),
+        }}
       >
         <View style={styles.innerContainer}>
           {iconSVG && (
@@ -299,7 +295,7 @@ export const TextInputCustom = <T extends FieldValues>({
             <>{children}</>
           )}
         </View>
-      </LegacyTertiaryBox>
+      </TertiaryBox>
       <ErrorText>{error || fieldError}</ErrorText>
     </CustomPressable>
   );

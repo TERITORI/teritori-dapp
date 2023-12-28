@@ -11,7 +11,7 @@ import { BrandText } from "../BrandText";
 import FlexCol from "../FlexCol";
 import FlexRow from "../FlexRow";
 import { OmniLink } from "../OmniLink";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SmallCarousel } from "../carousels/SmallCarousel";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
@@ -23,10 +23,10 @@ const OrgCard: React.FC<{ organization: DAO }> = ({ organization }) => {
     <OmniLink
       to={{ screen: "UserPublicProfile", params: { id: organization.id } }}
     >
-      <LegacyTertiaryBox
-        height={48}
-        width={ORG_CARD_WIDTH}
-        mainContainerStyle={{
+      <TertiaryBox
+        style={{
+          height: 48,
+          width: ORG_CARD_WIDTH,
           paddingVertical: layout.spacing_x1,
           paddingLeft: layout.spacing_x1,
           paddingRight: layout.spacing_x1_5,
@@ -53,7 +53,7 @@ const OrgCard: React.FC<{ organization: DAO }> = ({ organization }) => {
             </BrandText>
           </FlexCol>
         </FlexRow>
-      </LegacyTertiaryBox>
+      </TertiaryBox>
     </OmniLink>
   );
 };

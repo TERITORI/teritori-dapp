@@ -10,14 +10,13 @@ import { SvgProps } from "react-native-svg";
 import {
   borderRadiusButton,
   ButtonsSize,
-  heightButton,
   horizontalPaddingButton,
 } from "../../utils/style/buttons";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const PrimaryButtonOutline: React.FC<{
   size: ButtonsSize;
@@ -49,16 +48,6 @@ export const PrimaryButtonOutline: React.FC<{
   noBrokenCorners = false,
   isLoading,
 }) => {
-  const boxProps = {
-    style,
-    disabled,
-    squaresBackgroundColor,
-    width,
-    fullWidth,
-    noBrokenCorners,
-    disabledBorderColor: color,
-  };
-
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -68,16 +57,14 @@ export const PrimaryButtonOutline: React.FC<{
         touchableStyle,
       ]}
     >
-      <LegacyTertiaryBox
-        height={heightButton(size)}
-        mainContainerStyle={{
+      <TertiaryBox
+        style={{
           flexDirection: "row",
           borderRadius: borderRadiusButton(size),
           backgroundColor: "#000000",
           paddingHorizontal: horizontalPaddingButton(size),
           borderColor: color,
         }}
-        {...boxProps}
       >
         {isLoading ? (
           <ActivityIndicator color={primaryColor} />
@@ -98,7 +85,7 @@ export const PrimaryButtonOutline: React.FC<{
             </BrandText>
           </>
         )}
-      </LegacyTertiaryBox>
+      </TertiaryBox>
     </TouchableOpacity>
   );
 };

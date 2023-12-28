@@ -21,7 +21,7 @@ import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SpacerRow } from "../../../components/spacer";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { getRipperRarity, isNFTStaked } from "../../../utils/game";
@@ -170,9 +170,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                           activeOpacity={0.7}
                           onPress={() => selectRipper(item)}
                         >
-                          <LegacyTertiaryBox
-                            noBrokenCorners
-                            mainContainerStyle={[
+                          <TertiaryBox
+                            style={[
                               {
                                 alignItems: "center",
                                 width: THUMB_CONTAINER_SIZE,
@@ -215,7 +214,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                                 }}
                               />
                             )}
-                          </LegacyTertiaryBox>
+                          </TertiaryBox>
                         </TouchableOpacity>
                       );
                     }}

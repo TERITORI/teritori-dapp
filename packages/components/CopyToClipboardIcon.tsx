@@ -3,7 +3,7 @@ import React from "react";
 import { TouchableOpacity } from "react-native";
 
 import { SVG } from "./SVG";
-import { LegacyTertiaryBox } from "./boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "./boxes/TertiaryBox";
 import copySVG from "../../assets/icons/copy.svg";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { neutral22 } from "../utils/style/colors";
@@ -27,17 +27,17 @@ export const CopyToClipboardIcon: React.FC<{
 
   return (
     <TouchableOpacity onPress={copyToClipboard}>
-      <LegacyTertiaryBox
-        height={size}
-        width={size}
-        mainContainerStyle={{
+      <TertiaryBox
+        style={{
           backgroundColor: neutral22,
+          justifyContent: "space-between",
+          alignItems: "center",
+          height: size,
+          width: size,
         }}
-        style={{ justifyContent: "space-between", alignItems: "center" }}
-        squaresBackgroundColor={squaresBackgroundColor}
       >
         <SVG width={iconSize} height={iconSize} source={copySVG} />
-      </LegacyTertiaryBox>
+      </TertiaryBox>
     </TouchableOpacity>
   );
 };

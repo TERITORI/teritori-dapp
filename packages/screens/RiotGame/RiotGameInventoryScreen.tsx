@@ -8,7 +8,7 @@ import defaultInventoryItemPNG from "../../../assets/game/default-inventory-item
 import addCircleFilledSVG from "../../../assets/icons/add-circle-filled.svg";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
-import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { CustomPressable } from "../../components/buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { useRippers } from "../../hooks/riotGame/useRippers";
@@ -64,16 +64,18 @@ export const RiotGameInventoryScreen = () => {
             keyExtractor={(item, index) => "" + index}
             renderItem={() => {
               return (
-                <LegacyTertiaryBox
-                  style={{ margin: layout.spacing_x1 }}
-                  width={150}
-                  height={150}
+                <TertiaryBox
+                  style={{
+                    width: 150,
+                    height: 150,
+                    margin: layout.spacing_x1,
+                  }}
                 >
                   <Image
                     style={{ width: 60, height: 90 }}
                     source={defaultInventoryItemPNG}
                   />
-                </LegacyTertiaryBox>
+                </TertiaryBox>
               );
             }}
           />
@@ -106,17 +108,15 @@ export const RiotGameInventoryScreen = () => {
             keyExtractor={(ripper) => ripper.id}
             renderItem={({ item: ripper }) => {
               return (
-                <LegacyTertiaryBox
-                  style={{ margin: layout.spacing_x1 }}
-                  width={150}
-                  height={150}
+                <TertiaryBox
+                  style={{ width: 150, height: 150, margin: layout.spacing_x1 }}
                 >
                   <RipperAvatar
                     size={132}
                     source={ripper.imageUri}
                     isStaked={isNFTStaked(ripper)}
                   />
-                </LegacyTertiaryBox>
+                </TertiaryBox>
               );
             }}
           />

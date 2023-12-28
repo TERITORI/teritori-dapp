@@ -20,7 +20,7 @@ import { layout } from "../../utils/style/layout";
 import { WalletProvider } from "../../utils/walletProvider";
 import { BrandText } from "../BrandText";
 import { NetworkIcon } from "../NetworkIcon";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 import { TertiaryButton } from "../buttons/TertiaryButton";
 import { NetworksListModal } from "../modals/NetworksListModal";
 
@@ -75,24 +75,23 @@ export const NetworkSelectorMenu: FC<{
   };
 
   return (
-    <LegacyTertiaryBox
-      width={172}
-      noBrokenCorners
-      style={style}
-      mainContainerStyle={[
-        {
-          paddingHorizontal: layout.spacing_x2,
-          paddingTop: layout.spacing_x2,
-          backgroundColor: neutral17,
-          alignItems: "flex-start",
-        },
-        isMobile && {
-          borderTopWidth: 0,
-          borderRightWidth: 0,
-          borderTopRightRadius: 0,
-          borderBottomRightRadius: 0,
-        },
-      ]}
+    <TertiaryBox
+      style={{
+        ...[style],
+        paddingHorizontal: layout.spacing_x2,
+        paddingTop: layout.spacing_x2,
+        backgroundColor: neutral17,
+        alignItems: "flex-start",
+        ...(isMobile
+          ? {
+              borderTopWidth: 0,
+              borderRightWidth: 0,
+              borderTopRightRadius: 0,
+              borderBottomRightRadius: 0,
+            }
+          : {}),
+        width: 172,
+      }}
     >
       {enabledNetworks
         .filter((network) => {
@@ -145,6 +144,6 @@ export const NetworkSelectorMenu: FC<{
           setNetworksModalVisible(false);
         }}
       />
-    </LegacyTertiaryBox>
+    </TertiaryBox>
   );
 };

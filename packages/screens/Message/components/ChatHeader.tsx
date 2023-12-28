@@ -11,7 +11,7 @@ import searchSVG from "../../../../assets/icons/search.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { BackButton } from "../../../components/navigation/components/BackButton";
 import { SpacerRow } from "../../../components/spacer";
 import { useDropdowns } from "../../../context/DropdownsProvider";
@@ -201,17 +201,17 @@ export const ChatHeader = ({
                   <SVG source={dots} />
                 </TouchableOpacity>
                 {isDropdownOpen(dropdownRef) && (
-                  <LegacyTertiaryBox
-                    width={140}
-                    style={{ position: "absolute", top: 30, right: 10 }}
-                    mainContainerStyle={{
+                  <TertiaryBox
+                    style={{
+                      width: 140,
+                      position: "absolute",
+                      top: 30,
+                      right: 10,
                       paddingHorizontal: layout.spacing_x2,
                       paddingTop: layout.spacing_x2,
                       backgroundColor: neutral17,
                       alignItems: "flex-start",
                     }}
-                    squaresBackgroundColor={neutral17}
-                    noRightBrokenBorder
                   >
                     {LIST_ITEMS.map((item) => {
                       return (
@@ -240,7 +240,7 @@ export const ChatHeader = ({
                         </TouchableOpacity>
                       );
                     })}
-                  </LegacyTertiaryBox>
+                  </TertiaryBox>
                 )}
 
                 <SpacerRow size={1} />

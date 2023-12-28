@@ -10,7 +10,7 @@ import teritoriLogo from "../../../../../assets/icons/networks/teritori-circle.s
 import squidRouter from "../../../../../assets/icons/squidrouter.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import { GradientText } from "../../../../components/gradientText";
 import { SeparatorGradient } from "../../../../components/separators/SeparatorGradient";
@@ -32,7 +32,7 @@ export const HowToBuy: React.FC = () => {
   const isHowToBuyExpanded = useSelector(selectIsHowToBuyExpanded);
 
   return (
-    <LegacyTertiaryBox fullWidth style={{ maxWidth: 600, alignSelf: "center" }}>
+    <TertiaryBox style={{ maxWidth: 600, alignSelf: "center" }}>
       <View style={{ width: "100%" }}>
         <View
           style={{
@@ -96,7 +96,7 @@ export const HowToBuy: React.FC = () => {
           </View>
         </View>
       </View>
-    </LegacyTertiaryBox>
+    </TertiaryBox>
   );
 };
 
@@ -320,8 +320,8 @@ const BuyingMethod: React.FC<{
       }}
       onPress={() => setSelectedMethod(method.name)}
     >
-      <LegacyTertiaryBox
-        mainContainerStyle={{
+      <TertiaryBox
+        style={{
           borderColor:
             method.name === selectedMethod ? primaryColor : secondaryColor,
           borderRadius: 12,
@@ -339,7 +339,7 @@ const BuyingMethod: React.FC<{
         </BrandText>
 
         {method.icon}
-      </LegacyTertiaryBox>
+      </TertiaryBox>
     </TouchableOpacity>
   );
 };

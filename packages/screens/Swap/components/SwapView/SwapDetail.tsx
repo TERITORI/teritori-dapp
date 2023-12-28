@@ -5,7 +5,7 @@ import chevronDownSVG from "../../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
 import { Separator } from "../../../../components/separators/Separator";
 import { SpacerColumn } from "../../../../components/spacer";
 import {
@@ -46,10 +46,7 @@ export const SwapDetail: React.FC<{
       onPress={() => setIsOpen((isOpen) => !isOpen && !!amountIn)}
       style={{ width: "100%" }}
     >
-      <LegacyTertiaryBox
-        fullWidth
-        mainContainerStyle={{ padding: layout.spacing_x2 }}
-      >
+      <TertiaryBox style={{ padding: layout.spacing_x2 }}>
         <View style={styles.row}>
           <BrandText
             style={[fontSemibold14, !amountIn && { color: neutralA3 }]}
@@ -122,7 +119,7 @@ export const SwapDetail: React.FC<{
             </View>
           </>
         )}
-      </LegacyTertiaryBox>
+      </TertiaryBox>
     </Pressable>
   );
 };

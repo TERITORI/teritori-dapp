@@ -6,7 +6,7 @@ import { BrandText } from "./BrandText";
 import { useCopyToClipboard } from "./CopyToClipboard";
 import { NetworkIcon } from "./NetworkIcon";
 import { SVG } from "./SVG";
-import { LegacyTertiaryBox } from "./boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "./boxes/TertiaryBox";
 import copySVG from "../../assets/icons/copy.svg";
 import { fontMedium14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
@@ -21,13 +21,13 @@ export const CopyToClipboardSecondary: React.FC<{
 
   return (
     <TouchableOpacity onPress={() => copyToClipboard(text)}>
-      <LegacyTertiaryBox
-        height={40}
-        width={216}
-        mainContainerStyle={{
+      <TertiaryBox
+        style={{
           paddingHorizontal: layout.spacing_x1_5,
           justifyContent: "space-between",
           flexDirection: "row",
+          height: 40,
+          width: 216,
         }}
       >
         {networkIcon && <NetworkIcon size={16} networkId={networkIcon} />}
@@ -42,7 +42,7 @@ export const CopyToClipboardSecondary: React.FC<{
           {displayedText}
         </BrandText>
         <SVG width={16} height={16} source={copySVG} />
-      </LegacyTertiaryBox>
+      </TertiaryBox>
     </TouchableOpacity>
   );
 };

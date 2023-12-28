@@ -5,7 +5,7 @@ import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SpacerRow } from "../../../components/spacer";
 import { useDropdowns } from "../../../context/DropdownsProvider";
 import { useMessage } from "../../../context/MessageProvider";
@@ -59,16 +59,16 @@ export const ConversationSelector: React.FC<{
       </TouchableOpacity>
 
       {isDropdownOpen(dropdownRef) && (
-        <LegacyTertiaryBox
-          width={172}
-          style={{ position: "absolute", top: 30 }}
-          mainContainerStyle={{
+        <TertiaryBox
+          style={{
+            width: 172,
+            position: "absolute",
+            top: 30,
             paddingHorizontal: layout.spacing_x2,
             paddingTop: layout.spacing_x2,
             backgroundColor: neutral17,
             alignItems: "flex-start",
           }}
-          noRightBrokenBorder
         >
           {Object.values(CONVERSATION_TYPES).map((type, index) => {
             return (
@@ -92,7 +92,7 @@ export const ConversationSelector: React.FC<{
               </TouchableOpacity>
             );
           })}
-        </LegacyTertiaryBox>
+        </TertiaryBox>
       )}
     </View>
   );

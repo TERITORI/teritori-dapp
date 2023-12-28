@@ -7,7 +7,7 @@ import { neutral00, neutral22, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const FlowCard: React.FC<{
   label: string;
@@ -23,17 +23,15 @@ export const FlowCard: React.FC<{
       disabled={disabled}
       style={[{ flex: 1 }, style]}
     >
-      <LegacyTertiaryBox
-        height={224}
-        fullWidth
-        mainContainerStyle={{
+      <TertiaryBox
+        style={{
+          height: 224,
           paddingVertical: 20,
           paddingHorizontal: 20,
           alignItems: "flex-start",
           justifyContent: "space-between",
           backgroundColor: disabled ? neutral22 : neutral00,
         }}
-        disabled={disabled}
       >
         <SVG width={40} height={40} source={iconSVG} />
         <View>
@@ -65,7 +63,7 @@ export const FlowCard: React.FC<{
         >
           <SVG source={chevronRightSVG} width={16} />
         </View>
-      </LegacyTertiaryBox>
+      </TertiaryBox>
     </TouchableOpacity>
   );
 };

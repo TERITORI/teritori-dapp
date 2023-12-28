@@ -15,7 +15,7 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { SVG } from "../SVG";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const TOP_MENU_BUTTON_HEIGHT = 40;
 
@@ -27,17 +27,15 @@ export const TopMenu: FC = () => {
   return (
     <View ref={dropdownRef}>
       <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
-        <LegacyTertiaryBox
-          width={220}
-          mainContainerStyle={[
-            styles.buttonBoxMainContainer,
-            {
-              backgroundColor: isDropdownOpen(dropdownRef)
-                ? neutral33
-                : neutral00,
-            },
-          ]}
-          height={TOP_MENU_BUTTON_HEIGHT}
+        <TertiaryBox
+          style={{
+            width: 220,
+            height: TOP_MENU_BUTTON_HEIGHT,
+            ...styles.buttonBoxMainContainer,
+            backgroundColor: isDropdownOpen(dropdownRef)
+              ? neutral33
+              : neutral00,
+          }}
         >
           <WalletView wallet={selectedWallet} style={styles.walletView} />
           <SVG
@@ -46,7 +44,7 @@ export const TopMenu: FC = () => {
             height={16}
             color={secondaryColor}
           />
-        </LegacyTertiaryBox>
+        </TertiaryBox>
       </TouchableOpacity>
 
       <TopMenuBox

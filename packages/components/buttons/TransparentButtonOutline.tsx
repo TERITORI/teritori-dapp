@@ -14,7 +14,6 @@ import {
   heightButton,
 } from "../../utils/style/buttons";
 import {
-  neutral22,
   neutral44,
   secondaryColor,
   transparentColor,
@@ -22,7 +21,7 @@ import {
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const TransparentButtonOutline: React.FC<{
   size: ButtonsSize;
@@ -56,24 +55,14 @@ export const TransparentButtonOutline: React.FC<{
   RightComponent,
   iconSize = 16,
 }) => {
-  const boxProps = {
-    style,
-    disabled,
-    squaresBackgroundColor,
-    width,
-    fullWidth,
-  };
-
   return (
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
       style={{ width: fullWidth ? "100%" : width }}
     >
-      <LegacyTertiaryBox
-        disabledBorderColor={neutral22}
-        height={heightButton(size)}
-        mainContainerStyle={{
+      <TertiaryBox
+        style={{
           flexDirection: "row",
           borderRadius: borderRadiusButton(size),
           backgroundColor,
@@ -81,8 +70,8 @@ export const TransparentButtonOutline: React.FC<{
           borderColor,
           justifyContent: "flex-start",
           opacity: disabled ? 0.5 : 1,
+          height: heightButton(size),
         }}
-        {...boxProps}
       >
         {iconSVG ? (
           <SVG
@@ -101,7 +90,7 @@ export const TransparentButtonOutline: React.FC<{
             <RightComponent />
           </View>
         )}
-      </LegacyTertiaryBox>
+      </TertiaryBox>
     </TouchableOpacity>
   );
 };

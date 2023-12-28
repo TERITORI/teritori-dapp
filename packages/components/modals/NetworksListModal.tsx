@@ -29,7 +29,7 @@ import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { EmptyList } from "../EmptyList";
 import { NetworkIcon } from "../NetworkIcon";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
@@ -97,10 +97,7 @@ const NetworkSettingsItem: FC<{ networkId: string }> = memo(({ networkId }) => {
   const n = getNetwork(networkId);
   if (!n) return null;
   return (
-    <LegacyTertiaryBox
-      fullWidth
-      mainContainerStyle={{ padding: layout.spacing_x1 }}
-    >
+    <TertiaryBox style={{ padding: layout.spacing_x1 }}>
       <TouchableOpacity
         onPress={() => {
           dispatch(toggleNetwork({ networkId }));
@@ -133,6 +130,6 @@ const NetworkSettingsItem: FC<{ networkId: string }> = memo(({ networkId }) => {
           value={state}
         />
       </TouchableOpacity>
-    </LegacyTertiaryBox>
+    </TertiaryBox>
   );
 });
