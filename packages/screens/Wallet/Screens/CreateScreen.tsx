@@ -68,41 +68,6 @@ export const CreateScreen: ScreenFC<"NativeWallet"> = () => {
         <Button text="Connect Ledger" navigateTo="NativeWallet" />
         {Platform.OS === "web" && <Connect3rdPartyWallet />}
       </View>
-
-      {/*<BrandText style={styles.title}>Create Wallet</BrandText>*/}
-      {/*<BrandText style={styles.description}>*/}
-      {/*  Create a new wallet to start using Teritori_*/}
-      {/*</BrandText>*/}
-      {/*<SpacerColumn size={3} />*/}
-      {/*<PrimaryButton*/}
-      {/*  text="Create Wallet"*/}
-      {/*  onPress={wrapWithFeedback(createWallet)}*/}
-      {/*/>*/}
-      {/*<SpacerColumn size={3} />*/}
-      {/*<PrimaryButton*/}
-      {/*  text="Save Wallet"*/}
-      {/*  onPress={wrapWithFeedback(saveWallet)}*/}
-      {/*/>*/}
-      {/*<PrimaryButton*/}
-      {/*  text="Connect Ledger"*/}
-      {/*  onPress={wrapWithFeedback(getLedgerAccountDetails)}*/}
-      {/*/>*/}
-      {/*<SpacerColumn size={3} />*/}
-      {/*<BrandText style={styles.description}>*/}
-      {/*  {seed && JSON.stringify(seed)}*/}
-      {/*</BrandText>*/}
-      {/*<SpacerColumn size={3} />*/}
-      {/*<BrandText style={styles.description}>*/}
-      {/*  {myAddress && JSON.stringify(myAddress)}*/}
-      {/*</BrandText>*/}
-      {/*<SpacerColumn size={3} />*/}
-      {/*<BrandText style={styles.description}>*/}
-      {/*  {myWallet && JSON.stringify(myWallet)}*/}
-      {/*</BrandText>*/}
-      {/*<SpacerColumn size={3} />*/}
-      {/*<BrandText style={styles.description}>*/}
-      {/*  {mySigner && JSON.stringify(mySigner)}*/}
-      {/*</BrandText>*/}
     </WalletContainer>
   );
 };
