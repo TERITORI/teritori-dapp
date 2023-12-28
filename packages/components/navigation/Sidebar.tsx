@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  FlatList,
-  Linking,
-  Platform,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
+import { FlatList, Linking, Platform, View, ViewStyle } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -21,7 +14,6 @@ import { SidebarProfileButton } from "./components/SidebarProfileButton";
 import { TopLogo } from "./components/TopLogo";
 import { SidebarType } from "./types";
 import addSVG from "../../../assets/icons/add-circle.svg";
-import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useRoute } from "../../hooks/useRoute";
@@ -29,7 +21,7 @@ import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature, NetworkKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
-import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
+import { neutral00, neutral33 } from "../../utils/style/colors";
 import { fontBold16, fontBold9 } from "../../utils/style/fonts";
 import {
   fullSidebarWidth,
@@ -37,7 +29,6 @@ import {
   layout,
   smallSidebarWidth,
 } from "../../utils/style/layout";
-import { SVG } from "../SVG";
 import { Separator } from "../separators/Separator";
 import { SpacerColumn } from "../spacer";
 
@@ -69,28 +60,13 @@ export const Sidebar: React.FC = () => {
   const navigation = useAppNavigation();
   const insets = useSafeAreaInsets();
   const { name: currentRouteName } = useRoute();
-  const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
+  const { isSidebarExpanded, dynamicSidebar } = useSidebar();
 
   const layoutStyle = useAnimatedStyle(
     () => ({
       width: isSidebarExpanded
         ? withSpring(fullSidebarWidth, SpringConfig)
         : withSpring(smallSidebarWidth, SpringConfig),
-    }),
-    [isSidebarExpanded],
-  );
-
-  const toggleButtonStyle = useAnimatedStyle(
-    () => ({
-      transform: isSidebarExpanded
-        ? [
-            { rotateY: withSpring("180deg", SpringConfig) },
-            { translateX: withSpring(20, SpringConfig) },
-          ]
-        : [
-            { rotateY: withSpring("0deg", SpringConfig) },
-            { translateX: withSpring(0, SpringConfig) },
-          ],
     }),
     [isSidebarExpanded],
   );
@@ -106,22 +82,15 @@ export const Sidebar: React.FC = () => {
         backgroundColor: neutral00,
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        flex: 1,
+        flex: Platform.OS === "web" ? undefined : 1,
       }}
     >
-      <Animated.View style={[styles.container, layoutStyle]}>
+      <Animated.View style={[containerCStyle, layoutStyle]}>
         {Platform.OS === "web" && (
-          <View style={styles.headerContainer}>
+          <View style={headerContainerCStyle}>
             {currentRouteName === "Home" && <SideNotch />}
 
             <TopLogo />
-            <Animated.View
-              style={[styles.toggleButtonContainer, toggleButtonStyle]}
-            >
-              <Pressable style={styles.toggleButton} onPress={toggleSidebar}>
-                <SVG source={chevronRightSVG} />
-              </Pressable>
-            </Animated.View>
 
             <Separator color={neutral33} />
           </View>
@@ -196,40 +165,13 @@ export const Sidebar: React.FC = () => {
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    borderRightWidth: 1,
-    borderColor: neutral33,
-    zIndex: 100,
-    flex: 1,
-  },
-  headerContainer: {
-    height: headerHeight,
-  },
-  toggleButtonContainer: {
-    position: "absolute",
-    flex: 1,
-    flexDirection: "row",
-    right: -20,
-    top: 0,
-    bottom: 0,
-  },
-  toggleButton: {
-    borderColor: neutral33,
-    borderWidth: 1,
-    backgroundColor: neutral17,
-    alignSelf: "center",
-    height: 28,
-    width: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    borderTopRightRadius: 6,
-    borderBottomRightRadius: 6,
-  },
-  bottomSeperatorContainer: {
-    width: 40,
-    marginLeft: layout.spacing_x2,
-  },
-});
+const containerCStyle: ViewStyle = {
+  borderRightWidth: 1,
+  borderColor: neutral33,
+  zIndex: 100,
+  flex: 1,
+};
+
+const headerContainerCStyle: ViewStyle = {
+  height: headerHeight,
+};
