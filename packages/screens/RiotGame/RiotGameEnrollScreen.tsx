@@ -15,7 +15,7 @@ import closeSVG from "../../../assets/icons/close.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { TertiaryButton } from "../../components/buttons/TertiaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
@@ -382,21 +382,20 @@ export const RiotGameEnrollScreen: React.FC = () => {
             </BrandText>
           </View>
 
-          <LegacyTertiaryBox
-            mainContainerStyle={{
+          <TertiaryBox
+            style={{
+              height: 148,
               padding: layout.spacing_x4,
               alignItems: "flex-start",
+              marginTop: layout.spacing_x2,
             }}
-            style={{ marginTop: layout.spacing_x2 }}
-            fullWidth
-            height={148}
           >
             <BrandText style={isMobile ? fontSemibold20 : fontSemibold28}>
               {moment
                 .utc(stakingDuration)
                 .format("HH [hours] mm [minutes] ss [seconds]")}
             </BrandText>
-          </LegacyTertiaryBox>
+          </TertiaryBox>
 
           <View
             style={{

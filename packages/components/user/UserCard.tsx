@@ -35,7 +35,7 @@ import { BrandText } from "../BrandText";
 import { DropdownOption } from "../DropdownOption";
 import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
 export const UserCard: React.FC<{
@@ -58,17 +58,15 @@ export const UserCard: React.FC<{
   const padding = 16;
   const width = typeof flatStyle.width === "number" ? flatStyle.width : 325;
   return (
-    <LegacyTertiaryBox
-      style={style}
-      mainContainerStyle={[
-        {
-          width,
-          height: 287,
-          padding,
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-        },
-      ]}
+    <TertiaryBox
+      style={{
+        ...[style],
+        ...{ width },
+        height: 287,
+        ...{ padding },
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+      }}
     >
       <OmniLink to={{ screen: "UserPublicProfile", params: { id: userId } }}>
         <UserAvatarWithFrame
@@ -83,7 +81,7 @@ export const UserCard: React.FC<{
         <BrandText
           style={[
             fontSemibold12,
-            { lineHeight: 14, marginBottom: 8, width: width - 2 * padding }, // FIXME: we have to set a fixed width because LegacyTertiaryBox is broken
+            { lineHeight: 14, marginBottom: 8, width: width - 2 * padding }, // FIXME: we have to set a fixed width because TertiaryBox is broken
           ]}
           numberOfLines={1}
         >
@@ -176,7 +174,7 @@ export const UserCard: React.FC<{
           ]}
         />
       </View>
-    </LegacyTertiaryBox>
+    </TertiaryBox>
   );
 };
 

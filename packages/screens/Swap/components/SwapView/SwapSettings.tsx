@@ -11,7 +11,7 @@ import { Pressable, View } from "react-native";
 import infoSVG from "../../../../../assets/icons/info.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { TextInputCustom } from "../../../../components/inputs/TextInputCustom";
 import {
@@ -130,13 +130,12 @@ export const SwapSettings: React.FC<{
   if (settingsOpened)
     return (
       <FadeInView style={{ position: "absolute", right: 20, top: 55 }}>
-        <LegacyTertiaryBox
-          mainContainerStyle={{
+        <TertiaryBox
+          style={{
+            width: 306,
             padding: layout.spacing_x2_5,
             alignItems: "flex-start",
           }}
-          width={306}
-          noBrokenCorners
         >
           <BrandText style={fontSemibold16}>Transaction Settings</BrandText>
 
@@ -164,13 +163,11 @@ export const SwapSettings: React.FC<{
             </CustomPressable>
           </View>
 
-          <LegacyTertiaryBox
-            mainContainerStyle={{
+          <TertiaryBox
+            style={{
               padding: layout.spacing_x0_5,
               flexDirection: "row",
             }}
-            fullWidth
-            noBrokenCorners
           >
             {slippageItems.map((item, index) => (
               <SelectableItem
@@ -230,22 +227,25 @@ export const SwapSettings: React.FC<{
                 %
               </BrandText>
             </SelectableItem>
-          </LegacyTertiaryBox>
+          </TertiaryBox>
 
           {/*====== Info box */}
           {infoVisible && (
-            <LegacyTertiaryBox
-              mainContainerStyle={{ padding: layout.spacing_x2 }}
-              style={{ position: "absolute", left: -36, top: -26 }}
-              noBrokenCorners
+            <TertiaryBox
+              style={{
+                padding: layout.spacing_x2,
+                position: "absolute",
+                left: -36,
+                top: -26,
+              }}
             >
               <BrandText style={fontSemibold14}>
                 Your transaction will revert if the price changes {"\n"}
                 unfavorably by more than this percentage.
               </BrandText>
-            </LegacyTertiaryBox>
+            </TertiaryBox>
           )}
-        </LegacyTertiaryBox>
+        </TertiaryBox>
       </FadeInView>
     );
   return <></>;

@@ -13,7 +13,7 @@ import { GameContentView } from "./component/GameContentView";
 import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
 import { BrandText } from "../../components/BrandText";
 import { EmbeddedWeb } from "../../components/EmbeddedWeb";
-import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn } from "../../components/spacer";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { fontMedium32 } from "../../utils/style/fonts";
@@ -81,7 +81,9 @@ export const RiotGameMemoriesScreen = () => {
         <BrandText style={[fontMedium32, titleStyles]}>
           The R!ot Season I
         </BrandText>
-        <LegacyTertiaryBox height={seasonVideoHeight} width={seasonVideoWidth}>
+        <TertiaryBox
+          style={{ height: seasonVideoHeight, width: seasonVideoWidth }}
+        >
           {displayYT && (
             <EmbeddedWeb
               uri={seasonVideoUri}
@@ -89,7 +91,7 @@ export const RiotGameMemoriesScreen = () => {
               height={seasonVideoHeight - 2}
             />
           )}
-        </LegacyTertiaryBox>
+        </TertiaryBox>
 
         <SpacerColumn size={8} />
 
@@ -102,11 +104,11 @@ export const RiotGameMemoriesScreen = () => {
           numColumns={numCol}
           key={numCol}
           renderItem={({ item, index }) => (
-            <LegacyTertiaryBox
+            <TertiaryBox
               key={index}
-              height={episodeVideoSmHeight - 2}
-              width={episodeVideoSmWidth}
               style={{
+                height: episodeVideoSmHeight - 2,
+                width: episodeVideoSmWidth,
                 marginRight: layout.spacing_x2_5,
                 marginBottom: layout.spacing_x2_5,
               }}
@@ -135,7 +137,7 @@ export const RiotGameMemoriesScreen = () => {
                   source={defaultSendToFightPNG}
                 />
               )}
-            </LegacyTertiaryBox>
+            </TertiaryBox>
           )}
         />
       </View>

@@ -5,7 +5,7 @@ import searchSVG from "../../../assets/icons/search.svg";
 import { fontMedium14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const SearchInput: React.FC<{
   style?: StyleProp<ViewStyle>;
@@ -13,16 +13,15 @@ export const SearchInput: React.FC<{
   handleChangeText?: (e: string) => void;
 }> = ({ handleChangeText, borderRadius, style }) => {
   return (
-    <LegacyTertiaryBox
-      style={style}
-      height={40}
-      mainContainerStyle={{
+    <TertiaryBox
+      style={{
+        ...[style],
+        height: 40,
         padding: 12,
         flexDirection: "row",
         alignItems: "center",
         borderRadius,
       }}
-      fullWidth
     >
       <SVG
         style={{ marginRight: layout.spacing_x1, maxWidth: 22 }}
@@ -34,7 +33,7 @@ export const SearchInput: React.FC<{
         placeholderTextColor="#FFFFFF"
         style={textInputStyle}
       />
-    </LegacyTertiaryBox>
+    </TertiaryBox>
   );
 };
 

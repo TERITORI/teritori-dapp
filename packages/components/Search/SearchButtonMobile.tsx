@@ -5,23 +5,22 @@ import searchSVG from "../../../assets/icons/search.svg";
 import { useSearchBar } from "../../context/SearchBarProvider";
 import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const SearchButtonMobile: React.FC = () => {
   const { setSearchModalMobileOpen } = useSearchBar();
   return (
     <TouchableOpacity onPress={() => setSearchModalMobileOpen(true)}>
-      <LegacyTertiaryBox
-        noBrokenCorners
-        mainContainerStyle={{
+      <TertiaryBox
+        style={{
+          height: 32,
+          width: 32,
           flexDirection: "row",
           paddingHorizontal: layout.spacing_x1,
         }}
-        height={32}
-        width={32}
       >
         <SVG source={searchSVG} width={16} height={16} />
-      </LegacyTertiaryBox>
+      </TertiaryBox>
     </TouchableOpacity>
   );
 };

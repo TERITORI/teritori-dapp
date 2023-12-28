@@ -3,7 +3,7 @@ import { FlatList, TouchableOpacity } from "react-native";
 
 import { RipperAvatar } from "./RipperAvatar";
 import { NFT } from "../../../api/marketplace/v1/marketplace";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { getRipperRarity, isNFTStaked } from "../../../utils/game";
 import { secondaryColor } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
@@ -40,16 +40,18 @@ export const AvailableRippersGrid: React.FC<AvailableRippersGridProps> = ({
             activeOpacity={0.6}
             onPress={() => selectRipper && selectRipper(ripper)}
           >
-            <LegacyTertiaryBox
-              style={{ margin: layout.spacing_x1 }}
-              width={THUMB_CONTAINER_WIDTH}
-              height={THUMB_CONTAINER_HEIGHT}
-              mainContainerStyle={[
-                isSelected && {
-                  borderColor: secondaryColor,
-                  borderWidth: 1,
-                },
-              ]}
+            <TertiaryBox
+              style={{
+                margin: layout.spacing_x1,
+                width: THUMB_CONTAINER_WIDTH,
+                height: THUMB_CONTAINER_HEIGHT,
+                ...(isSelected
+                  ? {
+                      borderColor: secondaryColor,
+                      borderWidth: 1,
+                    }
+                  : {}),
+              }}
             >
               <RipperAvatar
                 size={THUMB_SIZE}
@@ -57,7 +59,7 @@ export const AvailableRippersGrid: React.FC<AvailableRippersGridProps> = ({
                 rarity={getRipperRarity(ripper)}
                 isStaked={isNFTStaked(ripper)}
               />
-            </LegacyTertiaryBox>
+            </TertiaryBox>
           </TouchableOpacity>
         );
       }}

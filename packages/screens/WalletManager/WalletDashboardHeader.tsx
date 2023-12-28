@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import penSVG from "../../../assets/icons/manage.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { useBalances } from "../../hooks/useBalances";
 import { useDelegations } from "../../hooks/useDelegations";
@@ -34,13 +34,11 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
   actionButton,
 }) => {
   return (
-    <LegacyTertiaryBox
-      height={116}
-      width={200}
-      mainContainerStyle={{
-        backgroundColor: neutral17,
-      }}
+    <TertiaryBox
       style={{
+        height: 116,
+        width: 200,
+        backgroundColor: neutral17,
         marginLeft: 16,
       }}
     >
@@ -83,7 +81,7 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
           />
         )}
       </View>
-    </LegacyTertiaryBox>
+    </TertiaryBox>
   );
 };
 

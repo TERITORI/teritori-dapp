@@ -27,7 +27,7 @@ import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
-import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { ProgressionCard } from "../../components/cards/ProgressionCard";
@@ -398,7 +398,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 }}
               />
 
-              <LegacyTertiaryBox noBrokenCorners fullWidth>
+              <TertiaryBox style={{}}>
                 {/* Upper section */}
                 <FlexRow
                   style={{
@@ -592,7 +592,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     )}
                   </View>
                 </FlexRow>
-              </LegacyTertiaryBox>
+              </TertiaryBox>
 
               {mintTermsConditionsURL && (
                 <View
@@ -663,7 +663,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 margin: layout.spacing_x2,
               }}
             >
-              <LegacyTertiaryBox style={{ marginBottom: 40 }}>
+              <TertiaryBox style={{ marginBottom: 40 }}>
                 {info.image ? (
                   <OptimizedImage
                     sourceURI={info.image}
@@ -687,7 +687,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     <ActivityIndicator size="large" style={{ margin: 40 }} />
                   </View>
                 )}
-              </LegacyTertiaryBox>
+              </TertiaryBox>
 
               <BrandText style={[fontSemibold20, { marginBottom: 24 }]}>
                 Activity
@@ -731,11 +731,11 @@ const AttributesCard: React.FC<{
   value: string;
 }> = ({ style, label, value }) => {
   return (
-    <LegacyTertiaryBox
-      style={style}
-      width={132}
-      height={62}
-      mainContainerStyle={{
+    <TertiaryBox
+      style={{
+        ...[style],
+        width: 132,
+        height: 62,
         alignItems: "flex-start",
         paddingHorizontal: 12,
         paddingVertical: 14,
@@ -747,7 +747,7 @@ const AttributesCard: React.FC<{
         {label}
       </BrandText>
       <BrandText style={fontMedium14}>{value}</BrandText>
-    </LegacyTertiaryBox>
+    </TertiaryBox>
   );
 };
 

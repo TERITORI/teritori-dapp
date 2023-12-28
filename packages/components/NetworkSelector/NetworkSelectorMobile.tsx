@@ -11,7 +11,7 @@ import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { NetworkIcon } from "../NetworkIcon";
 import { SVG } from "../SVG";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SpacerRow } from "../spacer";
 
 export const NetworkSelectorMobile: React.FC<{
@@ -27,13 +27,12 @@ export const NetworkSelectorMobile: React.FC<{
   return (
     <View style={style} ref={dropdownRef}>
       <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
-        <LegacyTertiaryBox
-          noBrokenCorners
-          mainContainerStyle={{
+        <TertiaryBox
+          style={{
             flexDirection: "row",
             paddingHorizontal: layout.spacing_x1,
+            height: 32,
           }}
-          height={32}
         >
           <NetworkIcon networkId={selectedNetworkInfo?.id || ""} size={16} />
           <SpacerRow size={0.5} />
@@ -43,7 +42,7 @@ export const NetworkSelectorMobile: React.FC<{
             height={16}
             color={secondaryColor}
           />
-        </LegacyTertiaryBox>
+        </TertiaryBox>
       </TouchableOpacity>
 
       {isDropdownOpen(dropdownRef) && (

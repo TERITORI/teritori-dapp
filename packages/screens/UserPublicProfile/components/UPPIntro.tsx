@@ -10,7 +10,7 @@ import { BrandText } from "../../../components/BrandText";
 import { useCopyToClipboard } from "../../../components/CopyToClipboard";
 import { CopyToClipboardSecondary } from "../../../components/CopyToClipboardSecondary";
 import { OptimizedImage } from "../../../components/OptimizedImage";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
 import { SocialButton } from "../../../components/buttons/SocialButton";
 import { SocialButtonSecondary } from "../../../components/buttons/SocialButtonSecondary";
@@ -42,13 +42,12 @@ export const UPPIntro: React.FC<{
 
   return (
     <>
-      <LegacyTertiaryBox
-        height={320}
-        noBrokenCorners={windowWidth < RESPONSIVE_BREAKPOINT_S}
-        mainContainerStyle={
-          windowWidth < RESPONSIVE_BREAKPOINT_S && { borderRadius: 0 }
-        }
-        width={windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width}
+      <TertiaryBox
+        style={{
+          height: 320,
+          width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
+          ...(windowWidth < RESPONSIVE_BREAKPOINT_S && { borderRadius: 0 }),
+        }}
       >
         {/* Banner */}
         <OptimizedImage
@@ -129,7 +128,7 @@ export const UPPIntro: React.FC<{
           }}
           size="XL"
         />
-      </LegacyTertiaryBox>
+      </TertiaryBox>
       <View
         style={{
           width: "100%",
@@ -173,7 +172,7 @@ export const UPPIntro: React.FC<{
           </BrandText>
         </View>
         {/* Stats and public address */}
-        <LegacyTertiaryBox mainContainerStyle={{ padding: 16 }}>
+        <TertiaryBox style={{ padding: 16 }}>
           <View
             style={{
               flexDirection: "row",
@@ -206,7 +205,7 @@ export const UPPIntro: React.FC<{
             text={userAddress}
             networkIcon={network?.id}
           />
-        </LegacyTertiaryBox>
+        </TertiaryBox>
       </View>
     </>
   );

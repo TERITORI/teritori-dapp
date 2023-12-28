@@ -13,7 +13,7 @@ import {
 import { useDropdowns } from "../../context/DropdownsProvider";
 import { useSearchBar } from "../../context/SearchBarProvider";
 import { COLLECTION_VIEW_SM_WIDTH } from "../CollectionView";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
   style,
@@ -30,14 +30,11 @@ export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
     >
       <SearchBarInputGlobal onInteraction={() => openDropdown(dropdownRef)} />
       {isDropdownOpen(dropdownRef) && hasSomething && (
-        <LegacyTertiaryBox
-          noBrokenCorners
+        <TertiaryBox
           style={{
             position: "absolute",
             top: SEARCH_BAR_INPUT_HEIGHT + 4,
             right: 0,
-          }}
-          mainContainerStyle={{
             // make the results fit 3 collections horizontally
             width:
               3 * COLLECTION_VIEW_SM_WIDTH +
@@ -47,7 +44,7 @@ export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
           }}
         >
           <SearchBarResults />
-        </LegacyTertiaryBox>
+        </TertiaryBox>
       )}
     </View>
   );

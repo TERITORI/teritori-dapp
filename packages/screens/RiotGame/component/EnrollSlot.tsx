@@ -7,7 +7,7 @@ import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
 import { OptimizedImage } from "../../../components/OptimizedImage";
 import { SVG } from "../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { isNFTStaked } from "../../../utils/game";
 import {
   yellowDefault,
@@ -36,10 +36,10 @@ export const EnrollSlot: React.FC<EnrollSlotProps> = ({
 
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
-      <LegacyTertiaryBox
-        width={172}
-        height={148}
-        mainContainerStyle={{
+      <TertiaryBox
+        style={{
+          width: 172,
+          height: 148,
           padding: layout.spacing_x2,
           borderRadius: layout.spacing_x1,
           borderColor: isLeader ? yellowDefault : neutral33,
@@ -71,7 +71,7 @@ export const EnrollSlot: React.FC<EnrollSlotProps> = ({
         {isLeader && (
           <BrandText style={styles.leaderTitle}>Squad Leader</BrandText>
         )}
-      </LegacyTertiaryBox>
+      </TertiaryBox>
     </TouchableOpacity>
   );
 };

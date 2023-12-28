@@ -11,7 +11,7 @@ import { neutral33, neutral44 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const TertiaryButton: React.FC<{
   size: ButtonsSize;
@@ -35,31 +35,22 @@ export const TertiaryButton: React.FC<{
   disabled = false,
   fullWidth = false,
 }) => {
-  const boxProps = {
-    style,
-    disabled,
-    squaresBackgroundColor,
-    width,
-    fullWidth,
-  };
-
   return (
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
       style={{ width: fullWidth ? "100%" : width }}
     >
-      <LegacyTertiaryBox
-        height={heightButton(size)}
-        mainContainerStyle={{
+      <TertiaryBox
+        style={{
           flexDirection: "row",
           borderRadius: borderRadiusButton(size),
           backgroundColor: neutral33,
           paddingHorizontal: 20,
           borderColor: neutral44,
           opacity: disabled ? 0.5 : 1,
+          height: heightButton(size),
         }}
-        {...boxProps}
       >
         {iconSVG ? (
           <SVG
@@ -75,7 +66,7 @@ export const TertiaryButton: React.FC<{
         >
           {text}
         </BrandText>
-      </LegacyTertiaryBox>
+      </TertiaryBox>
     </TouchableOpacity>
   );
 };

@@ -1,7 +1,7 @@
 import React from "react";
 
 import { BrandText } from "../../../components/BrandText";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { neutralA3 } from "../../../utils/style/colors";
 import {
   fontMedium10,
@@ -47,21 +47,18 @@ export const InfoBox: React.FC<InfoBoxProps> = ({
   }
 
   return (
-    <LegacyTertiaryBox
-      width={width}
-      height={height}
+    <TertiaryBox
       style={{
+        ...{ width },
+        ...{ height },
         borderRadius: 5,
         marginHorizontal: layout.spacing_x1,
-      }}
-      noBrokenCorners
-      mainContainerStyle={{
         padding: layout.spacing_x1_5,
         alignItems: "flex-start",
       }}
     >
       <BrandText style={[titleFont, { color: neutralA3 }]}>{title}</BrandText>
       <BrandText style={[contentFont, { marginTop: 5 }]}>{content}</BrandText>
-    </LegacyTertiaryBox>
+    </TertiaryBox>
   );
 };

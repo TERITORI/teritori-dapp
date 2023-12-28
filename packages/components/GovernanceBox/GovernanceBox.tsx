@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 import { BrandText } from "../../components/BrandText/BrandText";
-import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { ProposalStatus } from "../../screens/Governance/types";
 import { tulipTree } from "../../utils/style/colors";
 
@@ -129,7 +129,7 @@ export const GovernanceBox: React.FC<{
       >
         {activeGovernanceDetailsPopup()}
 
-        <LegacyTertiaryBox width={600} height={300}>
+        <TertiaryBox style={{ width: 600, height: 300 }}>
           <View
             style={{
               flexDirection: "column",
@@ -393,7 +393,7 @@ export const GovernanceBox: React.FC<{
               </View>
             </View>
           </View>
-        </LegacyTertiaryBox>
+        </TertiaryBox>
       </TouchableOpacity>
     </View>
   );

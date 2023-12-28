@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { SelectableCurrency } from "./SelectableCurrency";
 import chevronUpSVG from "../../../../../assets/icons/chevron-up.svg";
 import { SVG } from "../../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../../components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
 import { CurrencyInfo } from "../../../../networks";
 import { layout } from "../../../../utils/style/layout";
 import { FadeInView } from "../FadeInView";
@@ -28,13 +28,12 @@ export const SwapTokensList: React.FC<{
     return (
       <View style={styles.modalContainer}>
         <FadeInView style={{ position: "absolute", left: 20, top: 50 }}>
-          <LegacyTertiaryBox
-            mainContainerStyle={{
+          <TertiaryBox
+            style={{
+              width: width - 40,
               padding: layout.spacing_x2_5,
               alignItems: "flex-start",
             }}
-            width={width - 40}
-            noBrokenCorners
           >
             <View
               style={{
@@ -69,7 +68,7 @@ export const SwapTokensList: React.FC<{
                 />
               ))}
             </View>
-          </LegacyTertiaryBox>
+          </TertiaryBox>
         </FadeInView>
       </View>
     );

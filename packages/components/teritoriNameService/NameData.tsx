@@ -1,11 +1,11 @@
 import React from "react";
 import { View, ViewStyle } from "react-native";
 
-import { neutral17, neutral77 } from "../../utils/style/colors";
+import { neutral77 } from "../../utils/style/colors";
 import { imageDisplayLabel, prettyTokenData } from "../../utils/teritori";
 import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const NameData: React.FC<{
   token: any;
@@ -15,18 +15,15 @@ export const NameData: React.FC<{
   const width = 396;
 
   return (
-    <LegacyTertiaryBox
-      width={width}
-      mainContainerStyle={[
-        {
-          alignItems: "flex-start",
-          justifyContent: "flex-start",
-          paddingHorizontal: 24,
-          paddingVertical: 24,
-        },
-      ]}
-      style={style}
-      squaresBackgroundColor={neutral17}
+    <TertiaryBox
+      style={{
+        ...{ width },
+        ...[style],
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
+        paddingHorizontal: 24,
+        paddingVertical: 24,
+      }}
     >
       {token ? (
         <>
@@ -82,6 +79,6 @@ export const NameData: React.FC<{
       ) : (
         <BrandText>Loading</BrandText>
       )}
-    </LegacyTertiaryBox>
+    </TertiaryBox>
   );
 };
