@@ -1,20 +1,20 @@
-import { FC, useRef } from "react";
+import { FC } from "react";
 import { View, TouchableOpacity } from "react-native";
 
 import { TopMenuBox } from "./TopMenuBox";
-import { useDropdowns } from "../../context/DropdownsProvider";
+import { useClickOutside } from "../../hooks/useClickOutside";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutral00 } from "../../utils/style/colors";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
 export const TopMenuMobile: FC = () => {
-  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
+
   const selectedWallet = useSelectedWallet();
 
   return (
-    <View ref={dropdownRef}>
-      <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
+    <View ref={dropdownRef} collapsable={false}>
+      <TouchableOpacity onPress={() => setDropdownState(false)}>
         <UserAvatarWithFrame size="XXS" userId={selectedWallet?.userId} />
       </TouchableOpacity>
 
@@ -26,7 +26,7 @@ export const TopMenuMobile: FC = () => {
             top: 48,
             right: -60,
           },
-          !isDropdownOpen(dropdownRef) && { display: "none" },
+          !isDropdownOpen && { display: "none" },
         ]}
         mainContainerStyle={{
           borderTopWidth: 0,

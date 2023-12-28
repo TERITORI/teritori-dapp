@@ -17385,6 +17385,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-click-outside@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "react-native-click-outside@npm:0.1.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: c0d4bb538da25334c124d94c6761b361f5b2a8e9a16fd2735a4f86cb47636c6e4e370fea48b67c5ac1e65e51097a92b3964f0e21ccd8860639d3b7b04e9eb3f6
+  languageName: node
+  linkType: hard
+
 "react-native-confetti-cannon@npm:^1.5.2":
   version: 1.5.2
   resolution: "react-native-confetti-cannon@npm:1.5.2"
@@ -19897,6 +19907,7 @@ __metadata:
     react-dom: 18.2.0
     react-hook-form: ^7.36.1
     react-native: 0.72.6
+    react-native-click-outside: ^0.1.1
     react-native-confetti-cannon: ^1.5.2
     react-native-countdown-component: ^2.7.1
     react-native-drax: ^0.10.2

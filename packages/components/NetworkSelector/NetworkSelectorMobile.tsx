@@ -1,10 +1,10 @@
-import React, { useRef } from "react";
+import React from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import { NetworkSelectorMenu } from "./NetworkSelectorMenu";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
-import { useDropdowns } from "../../context/DropdownsProvider";
+import { useClickOutside } from "../../hooks/useClickOutside";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { NetworkFeature, NetworkKind } from "../../networks";
 import { secondaryColor } from "../../utils/style/colors";
@@ -20,13 +20,12 @@ export const NetworkSelectorMobile: React.FC<{
   forceNetworkKind?: NetworkKind;
   forceNetworkFeatures?: NetworkFeature[];
 }> = ({ style, forceNetworkId, forceNetworkKind, forceNetworkFeatures }) => {
-  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
-  const dropdownRef = useRef<View>(null);
   const selectedNetworkInfo = useSelectedNetworkInfo();
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
 
   return (
-    <View style={style} ref={dropdownRef}>
-      <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
+    <View style={style} ref={dropdownRef} collapsable={false}>
+      <TouchableOpacity onPress={() => setDropdownState(true)}>
         <LegacyTertiaryBox
           noBrokenCorners
           mainContainerStyle={{
@@ -38,7 +37,7 @@ export const NetworkSelectorMobile: React.FC<{
           <NetworkIcon networkId={selectedNetworkInfo?.id || ""} size={16} />
           <SpacerRow size={0.5} />
           <SVG
-            source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
+            source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
             width={16}
             height={16}
             color={secondaryColor}
@@ -46,7 +45,7 @@ export const NetworkSelectorMobile: React.FC<{
         </LegacyTertiaryBox>
       </TouchableOpacity>
 
-      {isDropdownOpen(dropdownRef) && (
+      {isDropdownOpen && (
         <NetworkSelectorMenu
           style={{ position: "absolute", top: 48, right: -93 }}
           forceNetworkId={forceNetworkId}

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { BrandText } from "./BrandText";
@@ -12,7 +12,7 @@ import chevronLeftSVG from "../../assets/icons/chevron-left.svg";
 import chevronRightDoubleSVG from "../../assets/icons/chevron-right-double.svg";
 import chevronRightSVG from "../../assets/icons/chevron-right.svg";
 import chevronUpSVG from "../../assets/icons/chevron-up.svg";
-import { useDropdowns } from "../context/DropdownsProvider";
+import { useClickOutside } from "../hooks/useClickOutside";
 import {
   neutral33,
   neutral77,
@@ -49,9 +49,8 @@ export const Pagination = ({
       onChangePage(pageIndex);
     }
   };
-  const dropdownRef = useRef<View>(null);
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
+
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
 
   return (
     <View style={styles.container}>
@@ -87,7 +86,11 @@ export const Pagination = ({
         </TouchableOpacity>
       </View>
 
-      <View style={[styles.section, { justifyContent: "flex-end" }]}>
+      <View
+        style={[styles.section, { justifyContent: "flex-end" }]}
+        ref={dropdownRef}
+        collapsable={false}
+      >
         <LegacyTertiaryBox height={42} width={80}>
           <TouchableOpacity
             style={{
@@ -95,7 +98,7 @@ export const Pagination = ({
               alignItems: "center",
             }}
             activeOpacity={1}
-            onPress={() => onPressDropdownButton(dropdownRef)}
+            onPress={() => setDropdownState(true)}
           >
             <BrandText
               style={[fontSemibold14, { marginRight: layout.spacing_x1 }]}
@@ -103,9 +106,7 @@ export const Pagination = ({
               {itemsPerPage}
             </BrandText>
             <SVG
-              source={
-                isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG
-              }
+              source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
               width={16}
               height={16}
               color={secondaryColor}
@@ -113,7 +114,7 @@ export const Pagination = ({
           </TouchableOpacity>
         </LegacyTertiaryBox>
 
-        {isDropdownOpen(dropdownRef) && (
+        {isDropdownOpen && (
           <LegacySecondaryBox
             noBrokenCorners
             width={80}
@@ -129,7 +130,7 @@ export const Pagination = ({
               <TouchableOpacity
                 onPress={() => {
                   setItemsPerPage(item);
-                  closeOpenedDropdown();
+                  setDropdownState(false);
                 }}
                 key={index}
                 style={[

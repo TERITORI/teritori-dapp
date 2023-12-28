@@ -12,6 +12,7 @@ import Plausible from "plausible-tracker";
 import React, { ReactNode, memo, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform, View, Text, TextStyle } from "react-native";
+import { ClickOutsideProvider } from "react-native-click-outside";
 import {
   enableLegacyWebImplementation,
   GestureHandlerRootView,
@@ -23,7 +24,6 @@ import { PersistGate } from "redux-persist/integration/react";
 
 import { MultisigDeauth } from "./packages/components/multisig/MultisigDeauth";
 import { Navigator } from "./packages/components/navigation/Navigator";
-import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
 import { MediaPlayerContextProvider } from "./packages/context/MediaPlayerProvider";
 import { MessageContextProvider } from "./packages/context/MessageProvider";
@@ -95,7 +95,7 @@ export default function App() {
                   <NavigationContainer linking={linking}>
                     <SafeAreaProvider>
                       <FeedbacksContextProvider>
-                        <DropdownsContextProvider>
+                        <ClickOutsideProvider>
                           <WalletsProvider>
                             <WalletSyncer />
                             <DappStoreApps />
@@ -117,7 +117,7 @@ export default function App() {
                               </TransactionModalsProvider>
                             </SearchBarContextProvider>
                           </WalletsProvider>
-                        </DropdownsContextProvider>
+                        </ClickOutsideProvider>
                       </FeedbacksContextProvider>
                     </SafeAreaProvider>
                   </NavigationContainer>

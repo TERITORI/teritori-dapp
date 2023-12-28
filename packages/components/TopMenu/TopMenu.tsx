@@ -1,11 +1,11 @@
-import { FC, useRef } from "react";
+import { FC } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 
 import { TopMenuBox } from "./TopMenuBox";
 import { WalletView } from "./WalletView";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
-import { useDropdowns } from "../../context/DropdownsProvider";
+import { useClickOutside } from "../../hooks/useClickOutside";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   neutral00,
@@ -21,27 +21,25 @@ export const TOP_MENU_BUTTON_HEIGHT = 40;
 
 export const TopMenu: FC = () => {
   const selectedWallet = useSelectedWallet();
-  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
-  const dropdownRef = useRef<View>(null);
+
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
 
   return (
-    <View ref={dropdownRef}>
-      <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
+    <View ref={dropdownRef} collapsable={false}>
+      <TouchableOpacity onPress={() => setDropdownState(true)}>
         <LegacyTertiaryBox
           width={220}
           mainContainerStyle={[
             styles.buttonBoxMainContainer,
             {
-              backgroundColor: isDropdownOpen(dropdownRef)
-                ? neutral33
-                : neutral00,
+              backgroundColor: isDropdownOpen ? neutral33 : neutral00,
             },
           ]}
           height={TOP_MENU_BUTTON_HEIGHT}
         >
           <WalletView wallet={selectedWallet} style={styles.walletView} />
           <SVG
-            source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
+            source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
             width={16}
             height={16}
             color={secondaryColor}
@@ -50,10 +48,7 @@ export const TopMenu: FC = () => {
       </TouchableOpacity>
 
       <TopMenuBox
-        style={[
-          styles.menuBox,
-          !isDropdownOpen(dropdownRef) && { display: "none" },
-        ]}
+        style={[styles.menuBox, !isDropdownOpen && { display: "none" }]}
       />
     </View>
   );

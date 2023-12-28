@@ -1,10 +1,10 @@
-import React, { useRef } from "react";
+import React from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import { NetworkSelectorMenu } from "./NetworkSelectorMenu";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
-import { useDropdowns } from "../../context/DropdownsProvider";
+import { useClickOutside } from "../../hooks/useClickOutside";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { NetworkFeature, NetworkKind } from "../../networks";
 import { neutral17, secondaryColor } from "../../utils/style/colors";
@@ -21,13 +21,12 @@ export const NetworkSelector: React.FC<{
   forceNetworkKind?: NetworkKind;
   forceNetworkFeatures?: NetworkFeature[];
 }> = ({ style, forceNetworkId, forceNetworkKind, forceNetworkFeatures }) => {
-  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
   const selectedNetworkInfo = useSelectedNetworkInfo();
 
   return (
-    <View style={style} ref={dropdownRef}>
-      <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
+    <View style={style} ref={dropdownRef} collapsable={false}>
+      <TouchableOpacity onPress={() => setDropdownState(true)}>
         <TertiaryBox
           style={{
             flexDirection: "row",
@@ -51,7 +50,7 @@ export const NetworkSelector: React.FC<{
           </BrandText>
           <SpacerRow size={1} />
           <SVG
-            source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
+            source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
             width={16}
             height={16}
             color={secondaryColor}
@@ -59,7 +58,7 @@ export const NetworkSelector: React.FC<{
         </TertiaryBox>
       </TouchableOpacity>
 
-      {isDropdownOpen(dropdownRef) && (
+      {isDropdownOpen && (
         <NetworkSelectorMenu
           style={{ position: "absolute", top: 44 }}
           forceNetworkId={forceNetworkId}

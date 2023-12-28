@@ -99,6 +99,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.36.1",
     "react-native": "0.72.6",
+    "react-native-click-outside": "^0.1.1",
     "react-native-confetti-cannon": "^1.5.2",
     "react-native-countdown-component": "^2.7.1",
     "react-native-drax": "^0.10.2",

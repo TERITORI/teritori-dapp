@@ -1,5 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { TextInput, View, Animated, LayoutChangeEvent } from "react-native";
 
 import { CurrencyAmount } from "./CurrencyAmount";
@@ -18,9 +18,9 @@ import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../../components/buttons/SecondaryButton";
 import { SeparatorGradient } from "../../../../components/separators/SeparatorGradient";
 import { SpacerColumn } from "../../../../components/spacer";
-import { useDropdowns } from "../../../../context/DropdownsProvider";
 import { useFeedbacks } from "../../../../context/FeedbacksProvider";
 import { useBalances } from "../../../../hooks/useBalances";
+import { useClickOutside } from "../../../../hooks/useClickOutside";
 import { useCoingeckoPrices } from "../../../../hooks/useCoingeckoPrices";
 import {
   useSelectedNetworkId,
@@ -226,14 +226,15 @@ export const SwapView: React.FC = () => {
   const [slippage, setSlippage] = useState(1);
 
   // ---- Dropdowns
-  const { isDropdownOpen, closeOpenedDropdown } = useDropdowns();
-  const [dropdownOutRef, setDropdownOutRef] = useState<RefObject<any> | null>(
-    null,
-  );
-  const [dropdownInRef, setDropdownInRef] = useState<RefObject<any> | null>(
-    null,
-  );
+  const [isDropdownInOpen, setDropdownInState, dropdownInRef] =
+    useClickOutside();
+  const [isDropdownOutOpen, setDropdownOutState, dropdownOutRef] =
+    useClickOutside();
 
+  const closeOpenedDropdown = () => {
+    setDropdownInState(false);
+    setDropdownOutState(false);
+  };
   const onChangeAmountIn = (text: string) => {
     if (!text) {
       setAmountIn("");
@@ -403,7 +404,9 @@ export const SwapView: React.FC = () => {
                     <SelectedCurrency
                       currency={currencyInNative}
                       selectedNetworkId={selectedNetworkId}
-                      setRef={setDropdownInRef}
+                      ref={dropdownInRef}
+                      isDropdownOpen={isDropdownInOpen}
+                      setDropdownState={setDropdownInState}
                     />
                     {/*----- Desired amount for swap */}
                     <View>
@@ -480,7 +483,9 @@ export const SwapView: React.FC = () => {
                       <SelectedCurrency
                         currency={currencyOutNative}
                         selectedNetworkId={selectedNetworkId}
-                        setRef={setDropdownOutRef}
+                        ref={dropdownOutRef}
+                        isDropdownOpen={isDropdownOutOpen}
+                        setDropdownState={setDropdownOutState}
                       />
 
                       {/*----- Amount earned after swap */}
@@ -537,7 +542,7 @@ export const SwapView: React.FC = () => {
         {/*======= Selectable currencies in */}
         <SwapTokensList
           width={viewWidth}
-          isOpened={!!dropdownOutRef && isDropdownOpen(dropdownOutRef)}
+          isOpened={isDropdownOutOpen}
           close={closeOpenedDropdown}
           currencies={selectableCurrencies}
           selectedNetworkId={selectedNetworkId}
@@ -546,7 +551,7 @@ export const SwapView: React.FC = () => {
         {/*======= Selectable currencies out */}
         <SwapTokensList
           width={viewWidth}
-          isOpened={!!dropdownInRef && isDropdownOpen(dropdownInRef)}
+          isOpened={isDropdownInOpen}
           close={closeOpenedDropdown}
           currencies={selectableCurrencies}
           selectedNetworkId={selectedNetworkId}

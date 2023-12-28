@@ -1,5 +1,5 @@
 import * as Clipboard from "expo-clipboard";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
 
@@ -14,8 +14,8 @@ import { SVG } from "../../../components/SVG";
 import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
 import { BackButton } from "../../../components/navigation/components/BackButton";
 import { SpacerRow } from "../../../components/spacer";
-import { useDropdowns } from "../../../context/DropdownsProvider";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useClickOutside } from "../../../hooks/useClickOutside";
 import { updateConversationById } from "../../../store/slices/message";
 import { neutral17, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold12 } from "../../../utils/style/fonts";
@@ -46,9 +46,8 @@ export const ChatHeader = ({
   const [showTextInput, setShowTextInput] = useState(false);
   const [showGroupDetails, setShowGroupDetails] = useState(false);
 
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
+
   const handleSearchIconPress = () => {
     setShowTextInput(true);
   };
@@ -60,7 +59,7 @@ export const ChatHeader = ({
         await weshClient.client.MultiMemberGroupLeave({
           groupPk: bytesFromString(conversation.id),
         });
-        closeOpenedDropdown();
+        setDropdownState(false);
       },
     },
     conversation.type === "group" && {
@@ -89,7 +88,7 @@ export const ChatHeader = ({
       label: "View Details",
       onPress: async () => {
         setShowGroupDetails(true);
-        closeOpenedDropdown();
+        setDropdownState(false);
       },
     },
     conversation.status === "archived" && {
@@ -102,7 +101,7 @@ export const ChatHeader = ({
           }),
         );
         subscribeMessages(conversation.id);
-        closeOpenedDropdown();
+        setDropdownState(false);
       },
     },
     conversation.status === "active" && {
@@ -114,7 +113,7 @@ export const ChatHeader = ({
             status: "archived",
           }),
         );
-        closeOpenedDropdown();
+        setDropdownState(false);
       },
     },
     conversation.status === "archived" && {
@@ -126,7 +125,7 @@ export const ChatHeader = ({
             status: "active",
           }),
         );
-        closeOpenedDropdown();
+        setDropdownState(false);
       },
     },
   ].filter(Boolean) as {
@@ -196,11 +195,11 @@ export const ChatHeader = ({
                   style={{
                     padding: layout.spacing_x0_75,
                   }}
-                  onPress={() => onPressDropdownButton(dropdownRef)}
+                  onPress={() => setDropdownState(false)}
                 >
                   <SVG source={dots} />
                 </TouchableOpacity>
-                {isDropdownOpen(dropdownRef) && (
+                {isDropdownOpen && (
                   <LegacyTertiaryBox
                     width={140}
                     style={{ position: "absolute", top: 30, right: 10 }}

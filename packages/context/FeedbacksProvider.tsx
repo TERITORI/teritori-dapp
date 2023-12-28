@@ -27,8 +27,8 @@ const initialToast: ToastMessage = {
 
 interface FeedbacksProviderValue {
   toast: ToastMessage;
-  setToastError: (error: ToastMessage) => void;
-  setToastSuccess: (info: ToastMessage) => void;
+  setToastError: (error: Omit<ToastMessage, "type">) => void;
+  setToastSuccess: (info: Omit<ToastMessage, "type">) => void;
   loadingFullScreen: boolean;
   setLoadingFullScreen: (loading: boolean) => void;
   wrapWithFeedback: (

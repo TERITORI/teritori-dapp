@@ -1,6 +1,6 @@
 import { camelCase } from "lodash";
 import React from "react";
-import { Image, View } from "react-native";
+import { View } from "react-native";
 
 import { SVG } from "./SVG";
 import { icons } from "../../assets";
@@ -30,12 +30,14 @@ export const CurrencyIcon: React.FC<{
     return (
       <SVG
         source={
-          icons.networks[
-            camelCase(iconToUse.replace(".svg", "")).replace(
-              / /g,
-              "",
-            ) as keyof typeof icons.networks
-          ] || iconToUse
+          iconToUse.startsWith("http")
+            ? iconToUse
+            : icons.networks[
+                camelCase(iconToUse.replace(".svg", "")).replace(
+                  / /g,
+                  "",
+                ) as keyof typeof icons.networks
+              ]
         }
         width={size}
         height={size}
@@ -43,10 +45,4 @@ export const CurrencyIcon: React.FC<{
       />
     );
   }
-  return (
-    <Image
-      source={{ uri: iconToUse }}
-      style={{ width: size, height: size, borderRadius: size / 2 }}
-    /> // this might be broken on mobile with svgs
-  );
 };
