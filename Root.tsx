@@ -62,12 +62,12 @@ export default function App() {
     Exo_600SemiBold,
     Exo_700Bold,
   });
-  const [appType, setAppType] = useState<AppType>("normal");
+  const [appType, setAppType] = useState<AppType>("mini");
 
   useEffect(() => {
     const getAppType = async () => {
       const savedAppType = await AsyncStorage.getItem("app-type");
-      if (savedAppType && ["normal", "mini"].includes(savedAppType)) {
+      if (savedAppType && ["web3Addict", "mini"].includes(savedAppType)) {
         setAppType("mini");
       }
     };
