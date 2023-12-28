@@ -9,6 +9,11 @@ import React from "react";
 import { MiniChatScreen } from "../../screens/Mini/Chat/MiniChatScreen";
 import { MiniFeedScreen } from "../../screens/Mini/Feed/MiniFeedScreen";
 import { MiniWalletScreen } from "../../screens/Mini/Wallet/MiniWalletScreen";
+import { CreatePassword } from "../../screens/Wallet/Screens/CreatePassword";
+import { CreateScreen } from "../../screens/Wallet/Screens/CreateScreen";
+import { ImportWallet } from "../../screens/Wallet/Screens/ImportWallet";
+import { SuccessScreen } from "../../screens/Wallet/Screens/SucessScreen";
+import { ViewSeed } from "../../screens/Wallet/Screens/ViewSeed";
 import { RootStackParamList } from "../../utils/navigation";
 import { neutral00, secondaryColor } from "../../utils/style/colors";
 import { TabBarIcon } from "../TabBarIcon";
@@ -71,9 +76,44 @@ export const MiniNavigator: React.FC = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
+        name="NativeWallet"
+        component={CreateScreen}
+        options={{ header: () => null, title: "Wallet Create" }}
+      />
+      <Stack.Screen
         name="MiniTabs"
         options={{ header: () => null }}
         component={MainTab}
+      />
+
+      <Stack.Screen
+        name="ViewSeed"
+        component={ViewSeed}
+        options={{ header: () => null, title: "View Seed" }}
+      />
+      <Stack.Screen
+        name="ImportWallet"
+        component={ImportWallet}
+        options={{
+          header: () => null,
+          title: "Import Wallet with Seed",
+        }}
+      />
+      <Stack.Screen
+        name="CreatePassword"
+        component={CreatePassword}
+        options={{
+          header: () => null,
+          title: "Create Password",
+        }}
+      />
+      <Stack.Screen
+        name="SuccessScreen"
+        component={SuccessScreen}
+        options={{
+          header: () => null,
+          title: "All Set",
+        }}
       />
     </Stack.Navigator>
   );

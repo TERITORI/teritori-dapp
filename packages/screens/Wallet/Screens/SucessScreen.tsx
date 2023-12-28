@@ -32,7 +32,7 @@ export const SuccessScreen: ScreenFC<"SuccessScreen"> = () => {
           Click on the Start button to launch Teritori.
         </BrandText>
       </View>
-      <Button text="Start" navigateTo="Marketplace" />
+      <Button text="Start" navigateTo="MiniTabs" />
     </WalletContainer>
   );
 };
