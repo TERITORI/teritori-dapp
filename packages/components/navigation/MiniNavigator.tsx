@@ -74,7 +74,7 @@ const MainTab = () => {
 
 export const MiniNavigator: React.FC = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="MiniTabs">
       <Stack.Screen
         name="NativeWallet"
         component={CreateScreen}

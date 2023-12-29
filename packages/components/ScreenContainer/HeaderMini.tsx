@@ -1,13 +1,12 @@
 import React from "react";
 import { GestureResponderEvent, Image, Pressable, View } from "react-native";
 
-import AddSVG from "../../../assets/icons/add-new.svg";
 import NotificationSVG from "../../../assets/icons/notification-new.svg";
 import { BrandText } from "../../components/BrandText";
+import { AddChatDropdownMenu } from "../../screens/Mini/Chat/AddChatDropdownMenu";
 import { neutral00, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold18 } from "../../utils/style/fonts";
 import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
-
 interface HeaderMiniProps {
   title: string;
   onPressNotification?: (event: GestureResponderEvent) => void;
@@ -60,12 +59,7 @@ export const HeaderMini = ({
         >
           <NotificationSVG />
         </Pressable>
-        <Pressable
-          onPress={onPressAdd}
-          style={{ paddingHorizontal: layout.spacing_x2 }}
-        >
-          <AddSVG />
-        </Pressable>
+        <AddChatDropdownMenu />
       </View>
     </View>
   );

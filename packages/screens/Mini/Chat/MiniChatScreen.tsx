@@ -142,6 +142,7 @@ export const MiniChatScreen: MiniScreenFC<"MiniChats"> = ({
             Get Started by messaging a friend.
           </BrandText>
         </View>
+
         <View>
           <BrandText
             style={[
