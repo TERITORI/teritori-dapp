@@ -12,7 +12,8 @@ web-build/
 /cache/
 /ios
 /android
- 
+/weshd/ios/Frameworks/
+/weshd/android/libs/
 /app-build/
 
 # macOS

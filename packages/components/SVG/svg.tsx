@@ -1,6 +1,6 @@
 import React from "react";
-import { Platform, Image } from "react-native";
-import { ImageProps, SvgFromUri, SvgProps } from "react-native-svg";
+import { Platform, Image, ImageProps } from "react-native";
+import { SvgFromUri, SvgProps } from "react-native-svg";
 
 export const SVG: React.FC<
   SvgProps & { source: React.FC<SvgProps> | string }
@@ -11,7 +11,7 @@ export const SVG: React.FC<
 
   if (typeof source === "string" && source.startsWith("http")) {
     if (Platform.OS === "web") {
-      return <Image source={{ uri: source }} {...(svgProps as ImageProps)} />;
+      return <Image {...(svgProps as ImageProps)} source={{ uri: source }} />;
     }
     return <SvgFromUri uri={source} {...svgProps} />;
   }

@@ -34,10 +34,7 @@ import { ProgressionCard } from "../../components/cards/ProgressionCard";
 import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
 import { GradientText } from "../../components/gradientText";
 import { SpacerRow } from "../../components/spacer";
-import {
-  initialToastError,
-  useFeedbacks,
-} from "../../context/FeedbacksProvider";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { Wallet } from "../../context/WalletsProvider";
 import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { useBalances } from "../../hooks/useBalances";
@@ -249,7 +246,6 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
 
   const mint = useCallback(async () => {
     try {
-      setToastError(initialToastError);
       if (!wallet) {
         setToastError({
           title: "Error",

@@ -7,10 +7,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { NFTMainInfo } from "../../components/nftDetails/NFTMainInfo";
 import { SpacerColumn } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
-import {
-  initialToastError,
-  useFeedbacks,
-} from "../../context/FeedbacksProvider";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { Wallet } from "../../context/WalletsProvider";
 import { TeritoriNftVaultClient } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { NFTVault__factory } from "../../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
@@ -94,7 +91,6 @@ const Content: React.FC<{
       return;
     }
 
-    setToastError(initialToastError);
     try {
       const txHash = await buyFunc(wallet, info);
 

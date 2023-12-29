@@ -25,7 +25,6 @@ import {
   fontSemibold11,
   fontSemibold13,
 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { Conversation } from "../../../utils/types/message";
 import { getConversationName } from "../../../weshnet/messageHelpers";
 interface ChatItemProps {

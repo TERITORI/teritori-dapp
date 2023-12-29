@@ -5,9 +5,9 @@ const config: { expo: ExpoConfig } = {
     name: "Teritori",
     slug: "teritori",
     version: "1.0.0",
-    owner: "teritori",
     orientation: "portrait",
     icon: "./assets/icon.png",
+    owner: "teritori",
     userInterfaceStyle: "light",
     splash: {
       image: "./assets/splash.png",
@@ -20,7 +20,7 @@ const config: { expo: ExpoConfig } = {
     assetBundlePatterns: ["**/*"],
     ios: {
       supportsTablet: true,
-      bundleIdentifier: "com.teritori.dapp",
+      bundleIdentifier: "com.teritori",
     },
     android: {
       adaptiveIcon: {

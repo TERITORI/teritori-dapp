@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import { Avatar, Badge } from "react-native-paper";
 
 import { MessageAvatar } from "./MessageAvatar";
 import { BrandText } from "../../../components/BrandText";
@@ -30,8 +29,6 @@ type Props = {
 const RequestList = ({ isOnline, data }: Props) => {
   const { setToastError } = useFeedbacks();
   const [addLoading, setAddLoading] = useState(false);
-
-  const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
 
   const handleAddFriend = async () => {
     setAddLoading(true);

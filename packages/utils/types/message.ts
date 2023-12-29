@@ -20,7 +20,6 @@ type ConversationType = "contact" | "group";
 const ZodMessagePayload = z.object({
   files: z.array(z.any()),
   message: z.string(),
-  type: MessageType,
   metadata: z
     .object({
       groupName: z.string().optional(),
@@ -36,7 +35,7 @@ export const ZodMessage = z.object({
   id: z.string(),
   senderId: z.string(),
   groupId: z.string(),
-  type: z.string(),
+  type: MessageType,
   payload: ZodMessagePayload.optional(),
   timestamp: z.string(),
   parentId: z.string().optional(),
