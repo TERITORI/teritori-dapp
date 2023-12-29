@@ -4,6 +4,7 @@ import React from "react";
 import { Platform } from "react-native";
 
 import { Sidebar } from "./Sidebar";
+import { AdministrationDashboardScreen } from "../../screens/AdministrationDashboard/AdministrationDashboardScreen";
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { CoreDAOScreen } from "../../screens/CoreDAO/CoreDAOScreen";
 import { DAppStoreScreen } from "../../screens/DAppStore/DAppStoreScreen";
@@ -129,6 +130,14 @@ export const Navigator: React.FC = () => {
         name="RiotersFooter"
         component={RiotersFooterScreen}
         options={{ header: () => null, title: screenTitle("Rioters Footer") }}
+      />
+      <Stack.Screen
+        name="AdministrationDashboard"
+        component={AdministrationDashboardScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Administration Dashboard"),
+        }}
       />
 
       {/* === Riot Game */}
