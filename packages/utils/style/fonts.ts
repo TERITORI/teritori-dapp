@@ -61,6 +61,13 @@ export const fontSemibold24: TextStyle = {
   fontFamily: "Exo_600SemiBold",
   fontWeight: "600",
 };
+export const fontSemibold22: TextStyle = {
+  fontSize: 22,
+  letterSpacing: -(22 * 0.04),
+  lineHeight: 28,
+  fontFamily: "Exo_600SemiBold",
+  fontWeight: "600",
+};
 export const fontSemibold20: TextStyle = {
   fontSize: 20,
   letterSpacing: -(20 * 0.04),
