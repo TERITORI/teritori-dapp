@@ -23,6 +23,7 @@ export type RootStackParamList = {
     tab?: keyof typeof uppTabItems;
   };
   RiotersFooter: undefined;
+  AdministrationDashboard: undefined;
 
   Launchpad: undefined;
   LaunchpadApply: undefined;
@@ -106,6 +107,7 @@ const navConfig: {
     Governance: "governance",
     UserPublicProfile: "user/:id/:tab?",
     RiotersFooter: "rioters-footer",
+    AdministrationDashboard: "administration-dashboard",
     // === RiotGame
     RiotGame: "riot-game",
     RiotGameEnroll: "riot-game/enroll",
