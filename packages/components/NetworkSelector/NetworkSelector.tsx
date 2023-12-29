@@ -64,6 +64,7 @@ export const NetworkSelector: React.FC<{
           forceNetworkId={forceNetworkId}
           forceNetworkKind={forceNetworkKind}
           forceNetworkFeatures={forceNetworkFeatures}
+          onSelect={() => setDropdownState(false)}
         />
       )}
     </View>

@@ -28,7 +28,14 @@ export const NetworkSelectorMenu: FC<{
   forceNetworkKind?: NetworkKind;
   forceNetworkFeatures?: NetworkFeature[];
   style?: StyleProp<ViewStyle>;
-}> = ({ forceNetworkId, forceNetworkKind, forceNetworkFeatures, style }) => {
+  onSelect: () => void;
+}> = ({
+  forceNetworkId,
+  forceNetworkKind,
+  forceNetworkFeatures,
+  style,
+  onSelect,
+}) => {
   const { resetMediaPlayer } = useMediaPlayer();
   const dispatch = useAppDispatch();
   const { wallets } = useWallets();
@@ -39,6 +46,7 @@ export const NetworkSelectorMenu: FC<{
   const isMobile = useIsMobile();
 
   const onPressNetwork = (networkId: string) => {
+    onSelect();
     let walletProvider: WalletProvider | null = null;
 
     const network = getNetwork(networkId);

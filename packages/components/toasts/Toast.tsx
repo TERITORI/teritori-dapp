@@ -42,8 +42,8 @@ export const Toast: React.FC<{
     <TouchableOpacity
       onPress={onPress}
       style={{
-        maxWidth: width,
-        width,
+        maxWidth: Math.min(TOAST_WIDTH, width),
+        width: Math.min(TOAST_WIDTH, width),
         height: "auto",
         position: "absolute",
         top: insets.top + layout.spacing_x1,
