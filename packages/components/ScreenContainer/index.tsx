@@ -123,6 +123,8 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
       {/*FIXME: Too many containers levels*/}
 
+      <View style={{ height: 10, width: 10, backgroundColor: "red" }} />
+
       <View style={styles.container}>
         {!hideSidebar ? <Sidebar /> : null}
 
