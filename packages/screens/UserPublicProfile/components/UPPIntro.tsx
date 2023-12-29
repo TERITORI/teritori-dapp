@@ -10,6 +10,7 @@ import { BrandText } from "../../../components/BrandText";
 import { useCopyToClipboard } from "../../../components/CopyToClipboard";
 import { CopyToClipboardSecondary } from "../../../components/CopyToClipboardSecondary";
 import { OptimizedImage } from "../../../components/OptimizedImage";
+import { Box } from "../../../components/boxes/Box";
 import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
 import { SocialButton } from "../../../components/buttons/SocialButton";
@@ -20,7 +21,12 @@ import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { parseUserId } from "../../../networks";
 import { DEFAULT_NAME } from "../../../utils/social-feed";
-import { neutral00, neutral55, neutral77 } from "../../../utils/style/colors";
+import {
+  neutral00,
+  neutral44,
+  neutral55,
+  neutral77,
+} from "../../../utils/style/colors";
 import {
   fontBold16,
   fontMedium14,
@@ -173,7 +179,14 @@ export const UPPIntro: React.FC<{
           </BrandText>
         </View>
         {/* Stats and public address */}
-        <LegacyTertiaryBox mainContainerStyle={{ padding: 16 }}>
+        <Box
+          style={{
+            padding: 16,
+            borderWidth: 1,
+            borderColor: neutral44,
+          }}
+          notched
+        >
           <View
             style={{
               flexDirection: "row",
@@ -206,7 +219,7 @@ export const UPPIntro: React.FC<{
             text={userAddress}
             networkIcon={network?.id}
           />
-        </LegacyTertiaryBox>
+        </Box>
       </View>
     </>
   );
