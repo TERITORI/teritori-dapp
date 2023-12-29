@@ -82,6 +82,7 @@ export type RootStackParamList = {
 
   //Mini Screens
   MiniTabs: undefined;
+  Conversation: { conversationId: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -182,7 +183,8 @@ const navConfig: {
     SuccessScreen: "native-wallet/success",
 
     // ==== Mini nav
-    MiniTabs: "min-tabs",
+    MiniTabs: "mini-tabs",
+    Conversation: "mini-conversation",
   },
 };
 

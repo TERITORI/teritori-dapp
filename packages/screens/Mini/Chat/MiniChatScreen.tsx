@@ -1,7 +1,16 @@
 import React, { useState } from "react";
-import { FlatList, TouchableOpacity, View } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SvgProps } from "react-native-svg";
 
+import { ChatList } from "./ChatList";
+import { SearchChatList } from "./SearchChatList";
+import { dummyChat } from "./chatDummyData";
 import closeSVG from "../../../../assets/icons/close.svg";
 import friendSVG from "../../../../assets/icons/friend.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -29,6 +38,7 @@ const collectionScreenTabItems = {
     name: "Multichannels",
   },
 };
+const HAS_CHATS = true;
 
 const DATA = [
   {
@@ -96,13 +106,14 @@ const Item = ({ title, icon }: ItemProps) => (
     </View>
   </View>
 );
-
 export const MiniChatScreen: MiniScreenFC<"MiniChats"> = ({
   navigation,
   route,
 }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("chats");
+  const [search, setSearch] = useState("");
+
   return (
     <ScreenContainer
       headerChildren={<></>}
@@ -122,47 +133,70 @@ export const MiniChatScreen: MiniScreenFC<"MiniChats"> = ({
           marginTop: layout.spacing_x2,
         }}
       />
-      <View style={{ flex: 1, height: 900 }}>
-        <View
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flex: 1,
-          }}
-        >
-          <BrandText
-            style={[fontMedium16, { textAlign: "center", color: neutral77 }]}
-          >
-            No chats yet.
-          </BrandText>
-          <BrandText
-            style={[fontMedium16, { textAlign: "center", color: neutral77 }]}
-          >
-            Get Started by messaging a friend.
-          </BrandText>
-        </View>
 
-        <View>
-          <BrandText
-            style={[
-              fontSemibold18,
-              { color: secondaryColor, marginBottom: 12 },
-            ]}
+      <ScrollView
+        style={{
+          flex: 1,
+          width: Dimensions.get("window").width,
+        }}
+      >
+        <SearchChatList
+          onClose={() => {}}
+          setValue={setSearch}
+          value={search}
+          style={{
+            backgroundColor: "rgba(118, 118, 128, 0.24)",
+            padding: 10,
+            borderRadius: 10,
+            marginVertical: layout.spacing_x2_5,
+          }}
+        />
+        {!HAS_CHATS ? (
+          <View
+            style={{
+              flex: 1,
+              height: Dimensions.get("window").height - 450,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            Get Started
-          </BrandText>
-          <FlatList
-            horizontal
-            data={DATA}
-            renderItem={({ item }) => (
-              <Item title={item.title} icon={item.icon} />
-            )}
-            keyExtractor={(item) => item.id}
-            style={{ marginBottom: 16 }}
-          />
-        </View>
-      </View>
+            <BrandText
+              style={[fontMedium16, { textAlign: "center", color: neutral77 }]}
+            >
+              No chats yet.
+            </BrandText>
+            <BrandText
+              style={[fontMedium16, { textAlign: "center", color: neutral77 }]}
+            >
+              Get Started by messaging a friend.
+            </BrandText>
+          </View>
+        ) : (
+          <ChatList items={dummyChat} />
+        )}
+
+        {!HAS_CHATS && (
+          <View>
+            <BrandText
+              style={[
+                fontSemibold18,
+                { color: secondaryColor, marginBottom: 12 },
+              ]}
+            >
+              Get Started
+            </BrandText>
+            <FlatList
+              horizontal
+              data={DATA}
+              renderItem={({ item }) => (
+                <Item title={item.title} icon={item.icon} />
+              )}
+              keyExtractor={(item) => item.id}
+              style={{ marginBottom: 16 }}
+            />
+          </View>
+        )}
+      </ScrollView>
     </ScreenContainer>
   );
 };

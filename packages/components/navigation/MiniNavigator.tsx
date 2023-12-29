@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
 import { MiniChatScreen } from "../../screens/Mini/Chat/MiniChatScreen";
+import { Conversation } from "../../screens/Mini/Conversation";
 import { MiniFeedScreen } from "../../screens/Mini/Feed/MiniFeedScreen";
 import { MiniWalletScreen } from "../../screens/Mini/Wallet/MiniWalletScreen";
 import { CreatePassword } from "../../screens/Wallet/Screens/CreatePassword";
@@ -105,6 +106,14 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: "Create Password",
+        }}
+      />
+      <Stack.Screen
+        name="Conversation"
+        component={Conversation}
+        options={{
+          header: () => null,
+          title: "Chat",
         }}
       />
       <Stack.Screen
