@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QueryMsg",
+  "anyOf": [
+    {
+      "$ref": "#/definitions/QueryMsg"
+    }
+  ],
+  "definitions": {
+    "QueryMsg": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "info"
+          ],
+          "properties": {
+            "info": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "history"
+          ],
+          "properties": {
+            "history": {
+              "type": "object",
+              "required": [
+                "limit"
+              ],
+              "properties": {
+                "cursor": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "format": "uint64",
+                  "minimum": 0.0
+                },
+                "limit": {
+                  "type": "integer",
+                  "format": "uint16",
+                  "minimum": 0.0
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}
