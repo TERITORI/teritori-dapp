@@ -231,6 +231,21 @@ impl RakkiContract {
         Ok(Response::default().add_messages(msgs))
     }
 
+    #[msg(exec)]
+    pub fn change_owner(&self, ctx: ExecCtx, new_owner: String) -> StdResult<Response> {
+        let config = self.config.load(ctx.deps.storage)?;
+        if ctx.info.sender != config.owner {
+            return Err(StdError::generic_err("only owner can change owner"));
+        }
+        let new_owner = ctx.deps.api.addr_validate(&new_owner)?;
+        self.config
+            .update(ctx.deps.storage, |mut config| -> StdResult<Config> {
+                config.owner = new_owner;
+                return Ok(config);
+            })?;
+        Ok(Response::default())
+    }
+
     #[msg(query)]
     pub fn info(&self, ctx: QueryCtx) -> StdResult<Info> {
         let config = self.config.load(ctx.deps.storage)?;

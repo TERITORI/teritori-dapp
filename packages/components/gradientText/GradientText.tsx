@@ -27,7 +27,8 @@ export type GradientType =
   | "purple"
   | "pink"
   | "gray"
-  | "grayLight";
+  | "grayLight"
+  | "yellow";
 
 export interface GradientTextProps {
   style?: StyleProp<
@@ -98,6 +99,11 @@ const gradient = (type: GradientType) => {
         colors: [gradientColorLighterGray, gradientColorLightLavender],
         start,
         end,
+      };
+    case "yellow":
+      return {
+        colors: ["#FFD83D", "#FFEDAE"],
+        locations: [-0.0109, 1],
       };
   }
 };

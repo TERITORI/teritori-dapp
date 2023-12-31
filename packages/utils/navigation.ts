@@ -76,6 +76,8 @@ export type RootStackParamList = {
   Message: { view: string; tab?: string } | undefined;
   ChatSection: Conversation;
   FriendshipManager: { tab?: MessageFriendsTabItem } | undefined;
+
+  Rakki: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -167,6 +169,8 @@ const navConfig: {
     Message: "message/:view?",
     ChatSection: "message/chat",
     FriendshipManager: "/friends",
+
+    Rakki: "rakki",
   },
 };
 

@@ -34,6 +34,8 @@ const gradient = (type: GradientType) => {
       return `90deg, ${gradientColorGray} 0%, ${gradientColorLightGray} 100%`;
     case "grayLight":
       return `90deg, ${gradientColorLighterGray} 0%, ${gradientColorLightLavender} 100%`;
+    case "yellow":
+      return "267deg, #FFD83D -1.09%, #FFEDAE 100%";
   }
 };
 

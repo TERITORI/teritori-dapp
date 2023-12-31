@@ -548,6 +548,14 @@ export const getKeplrSigningCosmWasmClient = async (
   });
 };
 
+export const getNonSigningCosmWasmClient = async (networkId: string) => {
+  const network = getCosmosNetwork(networkId);
+  if (!network?.rpcEndpoint) {
+    return undefined;
+  }
+  return await CosmWasmClient.connect(network.rpcEndpoint);
+};
+
 export const mustGetNonSigningCosmWasmClient = async (networkId: string) => {
   const network = mustGetCosmosNetwork(networkId);
   return await CosmWasmClient.connect(network.rpcEndpoint);

@@ -24,6 +24,7 @@ interface NetworkInfoBase {
   secondaryDuringMintList?: string[];
   excludeFromLaunchpadList?: string[];
   overrides?: string;
+  featureObjects?: FeatureObject[];
 }
 
 export type CosmosNetworkInfo = NetworkInfoBase & {
@@ -122,6 +123,7 @@ export enum NetworkFeature {
   SocialFeed = "SocialFeed",
   UPP = "UPP",
   RiotP2E = "RiotP2E",
+  CosmWasmRakki = "CosmWasmRakki",
 }
 
 export enum UserKind {
@@ -129,3 +131,17 @@ export enum UserKind {
   Multisig = "Multisig",
   Organization = "Organization",
 }
+
+type NameServiceFeature = {
+  kind: NetworkFeature.NameService;
+  codeId: number;
+  contractAddress: string;
+};
+
+type CosmWasmRakkiFeature = {
+  kind: NetworkFeature.CosmWasmRakki;
+  codeId: number;
+  contractAddress: string;
+};
+
+type FeatureObject = NameServiceFeature | CosmWasmRakkiFeature;
