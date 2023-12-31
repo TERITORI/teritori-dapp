@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ExecuteMsg",
+  "anyOf": [
+    {
+      "$ref": "#/definitions/ExecMsg"
+    }
+  ],
+  "definitions": {
+    "ExecMsg": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "buy_ticket"
+          ],
+          "properties": {
+            "buy_ticket": {
+              "type": "object",
+              "required": [
+                "entropy"
+              ],
+              "properties": {
+                "entropy": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "withdraw_fees"
+          ],
+          "properties": {
+            "withdraw_fees": {
+              "type": "object",
+              "required": [
+                "destination"
+              ],
+              "properties": {
+                "destination": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "stop"
+          ],
+          "properties": {
+            "stop": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

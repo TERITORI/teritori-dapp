@@ -8,6 +8,7 @@ module.exports = {
     "react-hooks/exhaustive-deps": "error", // Checks effect dependencies
     "prettier/prettier": "error",
     "import/order": "error",
+    // "import/no-cycle": "error",
     "no-restricted-syntax": [
       "error",
       {
