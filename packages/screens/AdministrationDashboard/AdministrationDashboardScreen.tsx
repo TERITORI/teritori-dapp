@@ -11,16 +11,22 @@ import {
   ViewStyle,
   useWindowDimensions,
 } from "react-native";
+import {
+  ArrowTopRightOnSquareIcon,
+  ShieldCheckIcon,
+} from "react-native-heroicons/outline";
 
 import { CurrentlyHighLightedProject } from "./CurrentlyHighLightedProject";
+import avaPNG from "../../../assets/default-images/ava.png";
 import guardianPng from "../../../assets/default-images/guardian_1.png";
-import etherscanSVG from "../../../assets/icons/etherscan.svg";
+import SolanaCircleSVG from "../../../assets/icons/networks/solana-circle.svg";
 import penSVG from "../../../assets/icons/pen.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Box } from "../../components/boxes/Box";
 import { GradientText } from "../../components/gradientText";
+import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
 import { TableRow } from "../../components/table/TableRow";
 import { Tabs } from "../../components/tabs/Tabs";
 import { ApplicationStatusCard } from "../../components/teritoriNameService/ApplicationStatusCard";
@@ -212,7 +218,7 @@ export const AdministrationDashboardScreen: React.FC = () => {
           <ApplicationStatusCard
             label="Ready to Launch"
             count={10123}
-            onPress={() => {}}
+            onPress={() => navigation.navigate("ReadyLaunchpadApplications")}
             isReady
           />
         </View>
@@ -236,22 +242,27 @@ export const AdministrationDashboardScreen: React.FC = () => {
         >
           <ApplicationTable rows={dummyData} />
         </View>
-        <Box
-          notched
-          style={{
-            alignSelf: "center",
-            borderRadius: 6,
-            alignItems: "center",
-            justifyContent: "center",
-            borderWidth: 1,
-            borderColor: primaryColor,
-            padding: 16,
-          }}
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate("LaunchpadApplications")}
         >
-          <BrandText style={[fontSemibold13, { color: primaryColor }]}>
-            Load More
-          </BrandText>
-        </Box>
+          <Box
+            notched
+            style={{
+              alignSelf: "center",
+              borderRadius: 6,
+              alignItems: "center",
+              justifyContent: "center",
+              borderWidth: 1,
+              borderColor: primaryColor,
+              padding: 16,
+            }}
+          >
+            <BrandText style={[fontSemibold13, { color: primaryColor }]}>
+              Load More
+            </BrandText>
+          </Box>
+        </TouchableOpacity>
 
         <View style={{ marginTop: layout.spacing_x4 }}>
           <Tabs
@@ -330,22 +341,28 @@ export const AdministrationDashboardScreen: React.FC = () => {
                   >
                     EXCLUSIVE GENESIS TERITORI COLLECTION
                   </GradientText>
-                  <Box
-                    notched
-                    style={{
-                      alignSelf: "flex-start",
-                      borderRadius: 6,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: 16,
-                      backgroundColor: primaryColor,
-                      marginTop: 24,
-                    }}
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("AllProjectAdministrationDash")
+                    }
                   >
-                    <BrandText style={[fontSemibold13, { color: neutral17 }]}>
-                      Explore collection
-                    </BrandText>
-                  </Box>
+                    <Box
+                      notched
+                      style={{
+                        alignSelf: "flex-start",
+                        borderRadius: 6,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: 16,
+                        backgroundColor: primaryColor,
+                        marginTop: 24,
+                      }}
+                    >
+                      <BrandText style={[fontSemibold13, { color: neutral17 }]}>
+                        Explore collection
+                      </BrandText>
+                    </Box>
+                  </TouchableOpacity>
                 </View>
                 <View style={{ marginRight: layout.spacing_x4, flex: 2 }}>
                   <Image
@@ -429,13 +446,39 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
           paddingRight: layout.spacing_x1,
         }}
       >
-        <BrandText style={isMobile ? fontSemibold11 : fontSemibold13}>
+        <RoundedGradientImage
+          size="XS"
+          sourceURI={avaPNG}
+          style={{ marginRight: isMobile ? 8 : 16 }}
+        />
+        <BrandText
+          style={[
+            isMobile ? fontSemibold11 : fontSemibold13,
+            { marginRight: 8 },
+          ]}
+        >
           {rowData.collectionNameData}
         </BrandText>
+        <ShieldCheckIcon color={primaryColor} width={20} height={20} />
       </View>
-      <InnerCell style={{ flex: TABLE_ROWS.collectionNetwork.flex }}>
-        {rowData["collectionNetwork"]}
-      </InnerCell>
+      <View
+        style={{
+          flex: TABLE_ROWS.collectionNetwork.flex,
+          flexDirection: "row",
+          flexWrap: "nowrap",
+          alignItems: "center",
+          paddingRight: layout.spacing_x1,
+        }}
+      >
+        <SVG width={20} height={20} source={SolanaCircleSVG} color="white" />
+        <InnerCell
+          style={{
+            marginLeft: 8,
+          }}
+        >
+          {rowData["collectionNetwork"]}
+        </InnerCell>
+      </View>
       {!isMobile && (
         <>
           <LinkIconAndRedirect style={{ flex: TABLE_ROWS.TwitterURL.flex }}>
@@ -493,19 +536,7 @@ const LinkIconAndRedirect: React.FC<{
           Linking.openURL(children);
         }}
       >
-        <Box
-          style={{
-            marginLeft: 6,
-            backgroundColor: primaryColor,
-            borderRadius: 6,
-            width: 25,
-            height: 25,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <SVG width={20} height={20} source={etherscanSVG} />
-        </Box>
+        <ArrowTopRightOnSquareIcon color="white" width={20} height={20} />
       </TouchableOpacity>
     </View>
   );
