@@ -62,6 +62,8 @@ export const currencyATOMcolor = "#5C26F5";
 export const currencyOSMOcolor = "#A401D4";
 export const currencyGNOcolor = "#232800";
 
+export const lightblue = "#D2DEFC";
+
 // Returns hexa color modified with alpha
 export const withAlpha = (color: string, opacity: number) => {
   const _opacity = Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255);
