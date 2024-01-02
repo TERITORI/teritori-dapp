@@ -7,10 +7,17 @@ const { WebpackDeduplicationPlugin } = require("webpack-deduplication-plugin");
 module.exports = async function (env, argv) {
   const config = await createExpoWebpackConfigAsync(env, argv);
 
+  if (process.env.isElectron) {
+    config.target = "electron-renderer";
+    config.output.publicPath = "./";
+  }
   // since webpack5, node libs are not polyfilled automatically
   config.resolve.fallback = {
     ...config.resolve.fallback,
+    assert: require.resolve("assert/"),
     crypto: require.resolve("crypto-browserify"),
+    fs: false,
+    os: require.resolve("os-browserify/browser"),
     stream: require.resolve("stream-browserify"),
   };
   config.plugins.push(
@@ -89,6 +96,17 @@ module.exports = async function (env, argv) {
         ],
       });
     }
+  });
+
+  config.module.rules = config.module.rules.map((rule) => {
+    if (rule.oneOf instanceof Array) {
+      rule.oneOf[rule.oneOf.length - 1].exclude = [
+        /\.(js|mjs|jsx|cjs|ts|tsx)$/,
+        /\.html$/,
+        /\.json$/,
+      ];
+    }
+    return rule;
   });
 
   // needed by solana libs

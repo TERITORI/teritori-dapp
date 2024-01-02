@@ -60,7 +60,7 @@ export const HashtagFeedScreen: ScreenFC<"HashtagFeed"> = ({
 }) => {
   const isMobile = useIsMobile();
   const navigation = useAppNavigation();
-  const feedRequest: PostsRequest = useMemo(() => {
+  const feedRequest: Partial<PostsRequest> = useMemo(() => {
     return {
       filter: {
         user: "",

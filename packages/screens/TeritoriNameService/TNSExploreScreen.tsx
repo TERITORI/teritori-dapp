@@ -8,7 +8,7 @@ import GradientModalBase from "../../components/modals/GradientModalBase";
 import { TNSSendFundsModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
 import { useTNS } from "../../context/TNSProvider";
-import { useNSNameAvailability } from "../../hooks/useNSNameAvailability";
+import { useNSMintAvailability } from "../../hooks/useNSMintAvailability";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -27,7 +27,7 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
   const network = getCosmosNetwork(networkId);
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
   const tokenId = (name + network?.nameServiceTLD || "").toLowerCase();
-  const { nameAvailable, nameError, loading } = useNSNameAvailability(
+  const { nameAvailable, nameError, loading } = useNSMintAvailability(
     networkId,
     tokenId,
   );
@@ -70,7 +70,6 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
               onPress={() => {
                 onClose("TNSConsultName");
               }}
-              squaresBackgroundColor={neutral17}
             />
             <PrimaryButtonOutline
               size="XL"

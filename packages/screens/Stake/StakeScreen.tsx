@@ -17,7 +17,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useValidators } from "../../hooks/useValidators";
 import { NetworkKind, UserKind, parseUserId } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
-import { fontSemibold28 } from "../../utils/style/fonts";
+import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
@@ -60,7 +60,6 @@ export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("active");
   const areThereWallets = useAreThereWallets();
 
-  // functions
   const toggleDetailModal = (stakeData?: ValidatorInfo) => {
     setStakeDetailModalVisible(!stakeDetailModalVisible);
     setSelectedStake(stakeData);
@@ -83,7 +82,9 @@ export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
 
   return (
     <ScreenContainer
-      fullWidth
+      headerChildren={<BrandText style={fontSemibold20}>Stake</BrandText>}
+      responsive
+      isLarge
       forceNetworkKind={NetworkKind.Cosmos}
       forceNetworkId={multisigId && selectedNetworkId}
     >

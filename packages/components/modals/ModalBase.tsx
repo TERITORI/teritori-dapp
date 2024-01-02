@@ -1,4 +1,9 @@
-import React, { ComponentType, ReactNode, useEffect } from "react";
+import React, {
+  ComponentType,
+  ReactNode,
+  useEffect,
+  PropsWithChildren,
+} from "react";
 import {
   Modal,
   View,
@@ -8,6 +13,7 @@ import {
   StyleProp,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../assets/icons/hamburger-button-cross.svg";
@@ -18,6 +24,7 @@ import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SeparatorGradient } from "../separators/SeparatorGradient";
 import { SpacerColumn } from "../spacer";
@@ -35,15 +42,29 @@ type ModalBaseProps = {
   childrenBottom?: JSX.Element | JSX.Element[];
   hideMainSeparator?: boolean;
   description?: string;
-  noBrokenCorners?: boolean;
   scrollable?: boolean;
-  contentStyle?: StyleProp<ViewStyle>;
+  boxStyle?: StyleProp<BoxStyle>;
   containerStyle?: StyleProp<ViewStyle>;
   childrenContainerStyle?: StyleProp<ViewStyle>;
   closeButtonStyle?: StyleProp<ViewStyle>;
   verticalPosition?: "center" | "top" | "bottom";
   closeOnBlur?: boolean;
   children: ReactNode;
+};
+
+const ScrollableComponent = ({
+  scrollable,
+  ...props
+}: PropsWithChildren<{
+  scrollable?: boolean;
+  style: StyleProp<ViewStyle>;
+  contentContainerStyle: StyleProp<ViewStyle>;
+}>) => {
+  if (scrollable) {
+    return <ScrollView {...props} />;
+  } else {
+    return <View {...props} />;
+  }
 };
 
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
@@ -59,17 +80,18 @@ const ModalBase: React.FC<ModalBaseProps> = ({
   hideMainSeparator,
   description,
   scrollable,
-  contentStyle,
+  boxStyle,
   containerStyle,
   childrenContainerStyle,
   onBackPress,
-  noBrokenCorners,
   closeButtonStyle,
   verticalPosition = "center",
   closeOnBlur,
 }) => {
-  const { width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const navigation = useAppNavigation();
+
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     if (closeOnBlur !== true) return;
@@ -82,27 +104,40 @@ const ModalBase: React.FC<ModalBaseProps> = ({
 
   return (
     <Modal
-      style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        margin: 0,
+      }}
       animationType="fade"
       transparent
       visible={visible}
       onRequestClose={onClose}
     >
       {/*------ Modal background */}
-      <ScrollView
-        scrollEnabled={scrollable}
+      <ScrollableComponent
+        scrollable={scrollable}
         style={[
           {
             height: "100%",
             width: "100%",
             backgroundColor: "rgba(0, 0, 0, .8)",
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom,
+            maxHeight: windowHeight,
           },
           containerStyle,
+          !scrollable && {
+            alignItems: "center",
+            justifyContent: "center",
+          },
         ]}
         contentContainerStyle={[
           {
-            alignItems: "center",
-            justifyContent: "center",
+            padding: layout.spacing_x0_5,
+            flex: 1,
+            height: windowHeight,
           },
           !scrollable && {
             height: "100%",
@@ -112,31 +147,16 @@ const ModalBase: React.FC<ModalBaseProps> = ({
       >
         {/*------ Modal main container */}
         <TertiaryBox
-          fullWidth={windowWidth < RESPONSIVE_BREAKPOINT_S}
-          width={windowWidth < RESPONSIVE_BREAKPOINT_S ? undefined : width}
           style={[
-            { margin: "auto" },
+            {
+              margin: "auto",
+              width: windowWidth < RESPONSIVE_BREAKPOINT_S ? "100%" : width,
+              alignItems: "flex-start",
+            },
             verticalPosition === "top" && { marginTop: 0 },
             verticalPosition === "bottom" && { marginBottom: 0 },
+            boxStyle,
           ]}
-          mainContainerStyle={[
-            {
-              alignItems: "flex-start",
-              backgroundColor: "#000000",
-            },
-            verticalPosition === "top" && {
-              borderTopEndRadius: 0,
-              borderTopStartRadius: 0,
-              borderTopWidth: 0,
-            },
-            verticalPosition === "bottom" && {
-              borderBottomEndRadius: 0,
-              borderBottomStartRadius: 0,
-              borderBottomWidth: 0,
-            },
-            contentStyle,
-          ]}
-          noBrokenCorners={noBrokenCorners}
         >
           {/*------ Modal header */}
           <View
@@ -233,7 +253,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
           {/*------- Modal bottom content */}
           {childrenBottom}
         </TertiaryBox>
-      </ScrollView>
+      </ScrollableComponent>
     </Modal>
   );
 };

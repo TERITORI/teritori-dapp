@@ -5,7 +5,7 @@ am
 
 <h3 align="center"> Teritori is a decentralized application, with a dedicated Cosmos SDK Blockchain, providing tools for decentralized organizations & Web3 adventurers.</h3> 
 
-In 2023, team target is to migrate on [Gnolang](https://www.gnoland.space/docs/what-is-gno) smartcontracts, allowing to build smartcontracts in Go, with a robust and radically transparent approach.
+In 2024, team target is to be one of the first dApp using [Gnolang](https://www.gnoland.space/docs/what-is-gno) smartcontracts, allowing to build smartcontracts in Go, with a robust and radically transparent approach.
 
 > **Warning**: Teritori is still under active alpha development and not audited yet. The dApp should be used very carefuly.
 
@@ -22,7 +22,7 @@ See it working [Here](https://app.teritori.com/)
 ❯ yarn --version
 3.5.0
 ❯ node --version
-v16.17.0
+v18.1.0
 ❯ npx --version
 8.15.0
 ```

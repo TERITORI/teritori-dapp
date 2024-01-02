@@ -10,9 +10,10 @@ import { fontSemibold16 } from "../utils/style/fonts";
 
 interface EmptyListProps {
   text: string;
+  size?: number;
 }
 
-export const EmptyList: React.FC<EmptyListProps> = ({ text }) => {
+export const EmptyList: React.FC<EmptyListProps> = ({ text, size = 250 }) => {
   return (
     <AnimationFadeIn
       style={{
@@ -21,7 +22,7 @@ export const EmptyList: React.FC<EmptyListProps> = ({ text }) => {
         alignItems: "center",
       }}
     >
-      <SVG source={emptyListSVG} width={250} height={250} />
+      <SVG source={emptyListSVG} width={size} height={size} />
       <SpacerColumn size={2} />
       <BrandText style={[fontSemibold16, { color: neutral77 }]}>
         {text}

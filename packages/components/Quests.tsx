@@ -1,40 +1,35 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { View } from "react-native";
 
 import { QuestCard } from "./cards/QuestCard";
+import { GridList } from "./layout/GridList";
 import { Quest } from "../api/marketplace/v1/marketplace";
 import { parseUserId } from "../networks";
 import { getMarketplaceClient } from "../utils/backend";
+import { layout } from "../utils/style/layout";
 
 export const Quests: React.FC<{
   userId: string | undefined;
 }> = ({ userId }) => {
   const { data: quests } = useQuests(userId);
-
-  const questCardStyle = {
-    marginTop: 20,
-    marginRight: 16,
-  };
-
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        flexWrap: "wrap",
-        marginTop: -20,
-        marginRight: -16,
+    <GridList<Quest>
+      renderItem={({ item: quest }, elemWidth) => {
+        return (
+          <QuestCard
+            key={quest.id}
+            label={quest.title}
+            width={elemWidth}
+            completed={quest.completed}
+          />
+        );
       }}
-    >
-      {(quests || []).map((quest) => (
-        <QuestCard
-          key={quest.id}
-          label={quest.title}
-          style={questCardStyle}
-          completed={quest.completed}
-        />
-      ))}
-    </View>
+      data={quests || []}
+      minElemWidth={140}
+      gap={layout.spacing_x1}
+      keyExtractor={(item) => item.id}
+      noFixedHeight
+    />
   );
 };
 

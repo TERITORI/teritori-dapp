@@ -27,7 +27,7 @@ import { NFTInfo } from "../../utils/types/nft";
 import { BrandText } from "../BrandText";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { ActivityTable } from "../activity/ActivityTable";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { NFTCancelListingCard } from "../cards/NFTCancelListingCard";
 import { NFTPriceBuyCard } from "../cards/NFTPriceBuyCard";
 import { NFTSellCard } from "../cards/NFTSellCard";
@@ -231,7 +231,7 @@ export const NFTMainInfo: React.FC<{
         }}
       >
         {/*---- Image NFT */}
-        <TertiaryBox
+        <LegacyTertiaryBox
           width={isMobile && width < 464 ? width : 464}
           height={isMobile && width < 464 ? width : 464}
           style={{
@@ -245,7 +245,7 @@ export const NFTMainInfo: React.FC<{
             size={isMobile && width < 464 ? width : 462}
             style={{ borderRadius: 8 }}
           />
-        </TertiaryBox>
+        </LegacyTertiaryBox>
         {/*---- Info NFT */}
         <View style={{ maxWidth: isMobile && width < 600 ? width : 600 }}>
           <BrandText style={[fontSemibold28, { marginBottom: 12 }]}>

@@ -45,7 +45,7 @@ import {
   mustGetNonSigningCosmWasmClient,
   parseNftId,
 } from "../../networks";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { web3ToWeb2URI } from "../../utils/ipfs";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { NFTDropedAdjustmentType, FooterNftData } from "../../utils/types/nft";
@@ -157,14 +157,16 @@ export const RiotersFooterScreen: React.FC = () => {
             if (!nftInfo || !nftInfo.token_uri) {
               continue;
             }
-            const ipfs = ipfsURLToHTTPURL(nftInfo.token_uri);
+            const ipfs = web3ToWeb2URI(nftInfo.token_uri);
             const response = await fetch(ipfs);
             const responseJSON = await response.json();
             newNfts.push({
               ...nft,
               imageUri: responseJSON.image.startsWith("ipfs://")
-                ? ipfsURLToHTTPURL(responseJSON.image)
+                ? web3ToWeb2URI(responseJSON.image)
                 : responseJSON.image,
+              // FIXME: sanitize
+              // eslint-disable-next-line no-restricted-syntax
               borderRadius: JSON.parse(nft.additional).borderRadius || 0,
             });
           }
@@ -295,6 +297,8 @@ export const RiotersFooterScreen: React.FC = () => {
 
   const onReceiveDragDrop = useCallback(
     (event: any) => {
+      // FIXME: sanitize
+      // eslint-disable-next-line no-restricted-syntax
       const nft: NFT = JSON.parse(event.dragged.payload);
       if (
         !nftDroped ||

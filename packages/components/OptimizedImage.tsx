@@ -1,4 +1,5 @@
-import React from "react";
+import { CID } from "multiformats";
+import React, { memo } from "react";
 import { Image, ImageProps, View, StyleSheet, PixelRatio } from "react-native";
 
 import { neutral33 } from "../utils/style/colors";
@@ -12,42 +13,48 @@ export const OptimizedImage: React.FC<
     sourceURI?: string | null;
     fallbackURI?: string | null;
   }
-> = ({ sourceURI: baseSourceURI, width, height, fallbackURI, ...other }) => {
-  const [isError, setIsError] = React.useState(false);
-  const [isFallbackError, setIsFallbackError] = React.useState(false);
-  const shouldUseFallback = !baseSourceURI || isError;
-  const sourceURI = shouldUseFallback ? fallbackURI : baseSourceURI;
-  const sourceWidth = PixelRatio.getPixelSizeForLayoutSize(width);
-  const sourceHeight = PixelRatio.getPixelSizeForLayoutSize(height);
+> = memo(
+  ({ sourceURI: baseSourceURI, width, height, fallbackURI, ...other }) => {
+    const [isError, setIsError] = React.useState(false);
+    const [isFallbackError, setIsFallbackError] = React.useState(false);
+    const shouldUseFallback = !baseSourceURI || isError;
+    const sourceURI = shouldUseFallback ? fallbackURI : baseSourceURI;
+    const sourceWidth = PixelRatio.getPixelSizeForLayoutSize(width);
+    const sourceHeight = PixelRatio.getPixelSizeForLayoutSize(height);
 
-  if ((shouldUseFallback && !fallbackURI) || isFallbackError) {
+    if ((shouldUseFallback && !fallbackURI) || isFallbackError) {
+      return (
+        <View
+          style={{
+            width,
+            height,
+            borderRadius: StyleSheet.flatten(other.style).borderRadius,
+            borderTopLeftRadius: StyleSheet.flatten(other.style)
+              .borderTopLeftRadius,
+            borderBottomLeftRadius: StyleSheet.flatten(other.style)
+              .borderBottomLeftRadius,
+            backgroundColor: neutral33,
+          }}
+        />
+      );
+    }
     return (
-      <View
-        style={{
-          width,
-          height,
-          borderRadius: StyleSheet.flatten(other.style).borderRadius,
-          backgroundColor: neutral33,
+      <Image
+        onError={() => {
+          if (shouldUseFallback) {
+            setIsFallbackError(true);
+            return;
+          }
+          setIsError(true);
         }}
+        source={{
+          uri: transformURI(sourceURI || undefined, sourceWidth, sourceHeight),
+        }}
+        {...other}
       />
     );
-  }
-  return (
-    <Image
-      onError={() => {
-        if (shouldUseFallback) {
-          setIsFallbackError(true);
-          return;
-        }
-        setIsError(true);
-      }}
-      source={{
-        uri: transformURI(sourceURI || undefined, sourceWidth, sourceHeight),
-      }}
-      {...other}
-    />
-  );
-};
+  },
+);
 
 const transformURI = (
   uri: string | undefined,
@@ -63,8 +70,14 @@ const transformURI = (
     return uri;
   }
 
-  const knownScheme = ["https://", "http://", "ipfs://"].find((scheme) =>
-    uri.startsWith(scheme),
+  // detect if raw CID
+  try {
+    CID.parse(uri);
+    uri = "ipfs://" + uri;
+  } catch {}
+
+  const knownScheme = ["https://", "http://", "ipfs://"].find(
+    (scheme) => uri?.startsWith(scheme),
   );
   if (!knownScheme) {
     return uri;

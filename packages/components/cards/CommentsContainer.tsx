@@ -10,7 +10,7 @@ import { RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 import {
   SocialCommentCard,
   SocialCommentCardProps,
-} from "../socialFeed/SocialThread/SocialCommentCard";
+} from "../socialFeed/SocialCard/cards/SocialCommentCard";
 import { SpacerColumn } from "../spacer";
 
 interface CommentsContainerProps

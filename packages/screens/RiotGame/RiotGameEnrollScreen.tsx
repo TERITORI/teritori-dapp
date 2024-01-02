@@ -15,7 +15,7 @@ import closeSVG from "../../../assets/icons/close.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
 import { TertiaryButton } from "../../components/buttons/TertiaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
@@ -58,7 +58,7 @@ import { layout } from "../../utils/style/layout";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 const EMBEDDED_VIDEO_URI =
-  "https://bafybeihfkmpunve47w4avfnuv3mfnsgoqclahpx54zj4b2ypve52iqmxsa.ipfs.nftstorage.link/";
+  "https://bafybeihfkmpunve47w4avfnuv3mfnsgoqclahpx54zj4b2ypve52iqmxsa.ipfs.cf-ipfs.com/";
 const embeddedVideoHeight = 267;
 const embeddedVideoWidth = 468;
 
@@ -383,7 +383,7 @@ export const RiotGameEnrollScreen: React.FC = () => {
             </BrandText>
           </View>
 
-          <TertiaryBox
+          <LegacyTertiaryBox
             mainContainerStyle={{
               padding: layout.spacing_x4,
               alignItems: "flex-start",
@@ -397,7 +397,7 @@ export const RiotGameEnrollScreen: React.FC = () => {
                 .utc(stakingDuration)
                 .format("HH [hours] mm [minutes] ss [seconds]")}
             </BrandText>
-          </TertiaryBox>
+          </LegacyTertiaryBox>
 
           <View
             style={{

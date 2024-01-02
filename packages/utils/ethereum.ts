@@ -1,10 +1,10 @@
 import detectEthereumProvider from "@metamask/detect-provider";
 import { ethers } from "ethers";
 
-import { ipfsURLToHTTPURL } from "./ipfs";
+import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { web3ToWeb2URI } from "./ipfs";
 import { Attribute, Collection, NFT } from "../api/marketplace/v1/marketplace";
-import { TeritoriMinter__factory } from "../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
-import { TeritoriNft__factory } from "../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import {
   EthereumNetworkInfo,
   parseNetworkObjectId,
@@ -138,8 +138,7 @@ const addNftMetadata = async (nft: NFT) => {
   const nftClient = TeritoriNft__factory.connect(nftContractAddress, provider);
 
   const tokenURI = await nftClient.callStatic.tokenURI(nftTokenId);
-  const metadataURL = ipfsURLToHTTPURL(tokenURI);
-
+  const metadataURL = web3ToWeb2URI(tokenURI);
   const infoReply = await fetch(metadataURL);
   const info = await infoReply.json();
 

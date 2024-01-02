@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Splash Screen</title>
+    <style>
+      /* Apply CSS styles for the splash screen */
+      body {
+        height: 300px;
+        width: 500px;
+        margin: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .splash {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+      }
+      .splash img {
+        max-width: 100%;
+        max-height: 100%;
+      }
+      .loading {
+        position: absolute;
+        bottom: 30px;
+        text-align: center;
+        width: 100%;
+        color: #fff; /* Text color */
+      }
+      .spinner {
+        border: 4px solid rgba(255, 255, 255, 0.3); /* White border with some transparency */
+        border-top: 4px solid #fff; /* White border on top */
+        border-radius: 50%; /* Create a circle */
+        width: 20px;
+        height: 20px;
+        animation: spin 2s linear infinite; /* Add a simple spinning animation */
+        margin: 0 auto;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="splash">
+      <img src="./splash.png" alt="Splash Logo" />
+    </div>
+    <div class="loading">
+      <div class="spinner"></div>
+    </div>
+  </body>
+</html>

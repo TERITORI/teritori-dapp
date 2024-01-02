@@ -44,7 +44,7 @@ import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
@@ -248,7 +248,7 @@ export const TextInputCustom = <T extends FieldValues>({
           <SpacerColumn size={1.5} />
         </>
       )}
-      <TertiaryBox
+      <LegacyTertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
         mainContainerStyle={[
@@ -294,12 +294,12 @@ export const TextInputCustom = <T extends FieldValues>({
           </View>
 
           {isLoading ? (
-            <ActivityIndicator color={secondaryColor} />
+            <ActivityIndicator color={secondaryColor} size="small" />
           ) : (
             <>{children}</>
           )}
         </View>
-      </TertiaryBox>
+      </LegacyTertiaryBox>
       <ErrorText>{error || fieldError}</ErrorText>
     </CustomPressable>
   );
@@ -312,6 +312,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     paddingHorizontal: 12,
     paddingVertical: 10,
+    minHeight: 50,
     backgroundColor: neutral22,
   },
   noCropBorderBg: {

@@ -1,4 +1,5 @@
 export interface Media {
+  id?: string;
   imageUrl?: string;
   name: string;
   createdBy: string;
@@ -7,5 +8,4 @@ export interface Media {
   albumId?: string;
   postId?: string;
   isVideo?: boolean;
-  videoId?: string;
 }

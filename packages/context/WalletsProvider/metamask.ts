@@ -4,6 +4,7 @@ import { useMemo, useEffect } from "react";
 import { Wallet } from "./wallet";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { NetworkKind, getUserId } from "../../networks";
+import { ethereumNetwork } from "../../networks/ethereum";
 import { setSelectedWalletId } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
@@ -21,18 +22,23 @@ export const useMetamask: () => UseMetamaskResult = () => {
 
   const wallet: Wallet | undefined = useMemo(() => {
     if (!address || !isConnected) return;
+    let targetNetworkId = ethereumNetwork.id;
+    if (selectedNetworkInfo?.kind === NetworkKind.Ethereum) {
+      targetNetworkId = selectedNetworkInfo.id;
+    }
+    const userId = getUserId(targetNetworkId, address);
     const walletId = `metamask-${address}`;
     const wallet: Wallet = {
       id: walletId,
       address,
       provider: WalletProvider.Metamask,
       networkKind: NetworkKind.Ethereum,
-      networkId: selectedNetworkInfo?.id || "",
-      userId: getUserId(selectedNetworkInfo?.id, address || ""),
+      networkId: targetNetworkId,
+      userId,
       connected: isConnected,
     };
     return wallet;
-  }, [address, isConnected, selectedNetworkInfo?.id]);
+  }, [address, isConnected, selectedNetworkInfo]);
 
   useEffect(() => {
     if (

@@ -9,9 +9,17 @@ export const useNSMintPrice = (
   networkId: string | undefined,
   tokenId: string,
 ) => {
-  const { data } = useQuery(
+  const { data, ...other } = useQuery(
     ["nsMintPrice", networkId, tokenId],
     async () => {
+      if (tokenId !== tokenId.toLowerCase()) {
+        return {
+          denom: "unknown",
+          amount: "0",
+          invalid: true,
+        };
+      }
+
       if (!networkId) {
         return null;
       }
@@ -29,12 +37,22 @@ export const useNSMintPrice = (
 
       const info = await tnsClient.contractInfo();
 
-      const amount = await tnsClient.mintPrice({ tokenId });
-
-      return { denom: info.native_denom, amount: amount?.toString() || "0" };
+      try {
+        const amount = await tnsClient.mintPrice({ tokenId });
+        return {
+          denom: info.native_denom,
+          amount: amount?.toString() || "0",
+          invalid: false,
+        };
+      } catch (e) {
+        if (e instanceof Error && e.message.includes("Token Name Invalid")) {
+          return { denom: info.native_denom, amount: "0", invalid: true };
+        }
+        throw e;
+      }
     },
     { staleTime: Infinity },
   );
 
-  return data;
+  return { nsMintPrice: data, ...other };
 };

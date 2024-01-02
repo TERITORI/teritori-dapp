@@ -8,7 +8,7 @@ import defaultInventoryItemPNG from "../../../assets/game/default-inventory-item
 import addCircleFilledSVG from "../../../assets/icons/add-circle-filled.svg";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
 import { CustomPressable } from "../../components/buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { useRippers } from "../../hooks/riotGame/useRippers";
@@ -64,7 +64,7 @@ export const RiotGameInventoryScreen = () => {
             keyExtractor={(item, index) => "" + index}
             renderItem={() => {
               return (
-                <TertiaryBox
+                <LegacyTertiaryBox
                   style={{ margin: layout.spacing_x1 }}
                   width={150}
                   height={150}
@@ -73,7 +73,7 @@ export const RiotGameInventoryScreen = () => {
                     style={{ width: 60, height: 90 }}
                     source={defaultInventoryItemPNG}
                   />
-                </TertiaryBox>
+                </LegacyTertiaryBox>
               );
             }}
           />
@@ -106,7 +106,7 @@ export const RiotGameInventoryScreen = () => {
             keyExtractor={(ripper) => ripper.id}
             renderItem={({ item: ripper }) => {
               return (
-                <TertiaryBox
+                <LegacyTertiaryBox
                   style={{ margin: layout.spacing_x1 }}
                   width={150}
                   height={150}
@@ -116,7 +116,7 @@ export const RiotGameInventoryScreen = () => {
                     source={ripper.imageUri}
                     isStaked={isNFTStaked(ripper)}
                   />
-                </TertiaryBox>
+                </LegacyTertiaryBox>
               );
             }}
           />

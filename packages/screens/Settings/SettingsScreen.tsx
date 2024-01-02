@@ -2,6 +2,7 @@ import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
+import "../../weshnet/client";
 
 import { Notifications } from "./components/Notifications";
 import { SettingItem } from "./components/SettingItem";
@@ -12,7 +13,9 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CustomPressable } from "../../components/buttons/CustomPressable";
+import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { TertiaryButton } from "../../components/buttons/TertiaryButton";
+import ModalBase from "../../components/modals/ModalBase";
 import { NetworksListModal } from "../../components/modals/NetworksListModal";
 import { SpacerColumn } from "../../components/spacer";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
@@ -24,7 +27,7 @@ import {
   setIsLightTheme,
   setNFTStorageAPI,
 } from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
+import { RootState, useAppDispatch } from "../../store/store";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutralA3, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
@@ -153,6 +156,10 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
           />
         </View>
 
+        <SpacerColumn size={4} />
+
+        <WeshnetStateButton />
+
         {/*Please note that the "user profile customization" part of this task was changed to navigate to the TNS manage page.*/}
         {/*I left the files ( committed to the repo UserProfileModal.tsx) as by the previous developer.*/}
         {/*<UserProfileModal*/}
@@ -161,5 +168,28 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
         {/*/>*/}
       </View>
     </ScreenContainer>
+  );
+};
+
+const WeshnetStateButton: React.FC = () => {
+  const state = useSelector((state: RootState) => state.message);
+  const [modalVisible, setModalVisible] = React.useState(false);
+  return (
+    <>
+      <PrimaryButton
+        size="M"
+        text="Weshnet State"
+        fullWidth
+        onPress={() => setModalVisible(true)}
+      />
+      <ModalBase
+        label="Weshnet"
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        scrollable
+      >
+        <BrandText>{JSON.stringify(state, null, 2)}</BrandText>
+      </ModalBase>
+    </>
   );
 };

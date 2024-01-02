@@ -8,20 +8,22 @@ import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
+import Plausible from "plausible-tracker";
 import React, { ReactNode, memo, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { Platform, View } from "react-native";
+import { Platform, View, Text, TextStyle } from "react-native";
+import { enableLegacyWebImplementation } from "react-native-gesture-handler";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
-import { BrandText } from "./packages/components/BrandText";
 import { MultisigDeauth } from "./packages/components/multisig/MultisigDeauth";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
 import { MediaPlayerContextProvider } from "./packages/context/MediaPlayerProvider";
+import { MessageContextProvider } from "./packages/context/MessageProvider";
 import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
@@ -32,9 +34,16 @@ import {
 } from "./packages/context/WalletsProvider";
 import { useSelectedNetworkId } from "./packages/hooks/useSelectedNetwork";
 import useSelectedWallet from "./packages/hooks/useSelectedWallet";
+import { getAvailableApps } from "./packages/screens/DAppStore/query/getFromFile";
+import { setAvailableApps } from "./packages/store/slices/dapps-store";
 import { setSelectedWalletId } from "./packages/store/slices/settings";
 import { persistor, store, useAppDispatch } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
+
+const plausible = Plausible({
+  domain: "app.teritori.com",
+});
+plausible.enableAutoPageviews();
 
 const queryClient = new QueryClient();
 
@@ -42,6 +51,9 @@ const queryClient = new QueryClient();
 type DefaultForm = {
   novalue: string;
 };
+// this is required for react-native-gesture-handler to work on web
+enableLegacyWebImplementation(true);
+// ^ required for drog and drop on the dAppStore
 
 export default function App() {
   const methods = useForm<DefaultForm>();
@@ -80,16 +92,19 @@ export default function App() {
                       <DropdownsContextProvider>
                         <WalletsProvider>
                           <WalletSyncer />
+                          <DappStoreApps />
                           <MultisigDeauth />
                           <SearchBarContextProvider>
                             <TransactionModalsProvider>
                               <TNSContextProvider>
                                 <TNSMetaDataListContextProvider>
                                   <MenuProvider>
-                                    <MediaPlayerContextProvider>
-                                      <StatusBar style="inverted" />
-                                      <Navigator />
-                                    </MediaPlayerContextProvider>
+                                    <MessageContextProvider>
+                                      <MediaPlayerContextProvider>
+                                        <StatusBar style="inverted" />
+                                        <Navigator />
+                                      </MediaPlayerContextProvider>
+                                    </MessageContextProvider>
                                   </MenuProvider>
                                 </TNSMetaDataListContextProvider>
                               </TNSContextProvider>
@@ -139,11 +154,15 @@ class ErrorBoundary extends React.Component<{ children: ReactNode }> {
       // You can render any custom fallback UI
       return (
         <View style={{ backgroundColor: "black", height: "100%" }}>
-          <BrandText>{`${this.state.error}`}</BrandText>
+          <Text style={errorBoundaryTextCStyle}>{`${this.state.error}`}</Text>
           {this.state.error !== this.state.catchError && (
-            <BrandText>{`${this.state.catchError}`}</BrandText>
+            <Text
+              style={errorBoundaryTextCStyle}
+            >{`${this.state.catchError}`}</Text>
           )}
-          <BrandText>{this.state.catchInfo?.componentStack}</BrandText>
+          <Text style={errorBoundaryTextCStyle}>
+            {this.state.catchInfo?.componentStack}
+          </Text>
         </View>
       );
     }
@@ -152,6 +171,8 @@ class ErrorBoundary extends React.Component<{ children: ReactNode }> {
   }
 }
 
+const errorBoundaryTextCStyle: TextStyle = { color: "white" };
+
 const WalletSyncer: React.FC = memo(() => {
   const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
@@ -159,12 +180,22 @@ const WalletSyncer: React.FC = memo(() => {
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (!selectedWallet || selectedWallet.networkId !== selectedNetworkId) {
-      dispatch(
-        setSelectedWalletId(
-          wallets.find((w) => w.networkId === selectedNetworkId)?.id,
-        ),
-      );
+      const newWallet = wallets.find((w) => w.networkId === selectedNetworkId);
+      console.log("syncing wallet", newWallet);
+      dispatch(setSelectedWalletId(newWallet?.id));
     }
   }, [dispatch, selectedNetworkId, selectedWallet, wallets]);
   return null;
 });
+
+const DappStoreApps: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const dAppStoreValues = getAvailableApps();
+
+    dispatch(setAvailableApps(dAppStoreValues));
+  }, [dispatch]);
+
+  return null;
+};

@@ -3,6 +3,7 @@ import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import { useDropdowns } from "../../context/DropdownsProvider";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useWallets } from "../../context/WalletsProvider";
 import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
 import { useIsMobile } from "../../hooks/useIsMobile";
@@ -19,7 +20,7 @@ import { layout } from "../../utils/style/layout";
 import { WalletProvider } from "../../utils/walletProvider";
 import { BrandText } from "../BrandText";
 import { NetworkIcon } from "../NetworkIcon";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { TertiaryButton } from "../buttons/TertiaryButton";
 import { NetworksListModal } from "../modals/NetworksListModal";
 
@@ -30,6 +31,7 @@ export const NetworkSelectorMenu: FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ forceNetworkId, forceNetworkKind, forceNetworkFeatures, style }) => {
   const { closeOpenedDropdown } = useDropdowns();
+  const { resetMediaPlayer } = useMediaPlayer();
   const dispatch = useAppDispatch();
   const { wallets } = useWallets();
   const { setToastError } = useFeedbacks();
@@ -69,10 +71,11 @@ export const NetworkSelectorMenu: FC<{
     dispatch(setSelectedWalletId(selectedWallet?.id || ""));
 
     closeOpenedDropdown();
+    resetMediaPlayer();
   };
 
   return (
-    <TertiaryBox
+    <LegacyTertiaryBox
       width={172}
       noBrokenCorners
       style={style}
@@ -142,6 +145,6 @@ export const NetworkSelectorMenu: FC<{
           setNetworksModalVisible(false);
         }}
       />
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 };

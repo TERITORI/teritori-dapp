@@ -23,7 +23,7 @@ import {
   getMetaMaskEthereumProvider,
 } from "../../../utils/ethereum";
 import { squadWithdraw } from "../../../utils/game";
-import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
+import { web3ToWeb2URI } from "../../../utils/ipfs";
 import { fontMedium48 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { RipperLightInfo, SquadInfo } from "../types";
@@ -45,7 +45,7 @@ const cosmosNFTInfos = async (
   );
 
   const stakedRippers: RipperLightInfo[] = nftInfos.map(({ extension }) => ({
-    imageUri: ipfsURLToHTTPURL(`${extension?.image}`),
+    imageUri: web3ToWeb2URI(`${extension?.image}`),
     name: `${extension?.name}`,
   }));
 
@@ -77,7 +77,7 @@ const ethereumNFTInfos = async (
   );
 
   const stakedRippers: RipperLightInfo[] = nftInfos.map((nft) => ({
-    imageUri: ipfsURLToHTTPURL(`${nft.image}`),
+    imageUri: web3ToWeb2URI(`${nft.image}`),
     name: `${nft.name}`,
   }));
 

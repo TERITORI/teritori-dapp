@@ -1,3 +1,4 @@
+import { OfflineSigner } from "@cosmjs/proto-signing";
 import React from "react";
 import { Linking } from "react-native";
 
@@ -15,6 +16,7 @@ import {
 import {
   setIsLeapConnected,
   setSelectedNetworkId,
+  setSelectedWalletId,
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 
@@ -56,7 +58,15 @@ export const ConnectLeapButton: React.FC<{
 
       await leap.enable(network.chainId);
 
+      const offlineSigner: OfflineSigner = await leap.getOfflineSignerAuto(
+        network.chainId,
+      );
+      const accounts = await offlineSigner.getAccounts();
+
       dispatch(setSelectedNetworkId(network.id));
+      if (accounts.length) {
+        dispatch(setSelectedWalletId("leap-" + accounts[0].address));
+      }
       dispatch(setIsLeapConnected(true));
 
       onDone && onDone();

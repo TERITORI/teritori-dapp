@@ -2,6 +2,9 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
+import { feedsTabItems } from "./social-feed";
+import { Conversation, MessageFriendsTabItem } from "./types/message";
+import { uppTabItems } from "./upp";
 import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.type";
 
 export type RouteName = keyof RootStackParamList;
@@ -15,7 +18,10 @@ export type RootStackParamList = {
   WalletManagerWallets: undefined;
   WalletManagerChains: undefined;
   Governance: undefined;
-  UserPublicProfile: { id: string };
+  UserPublicProfile: {
+    id: string;
+    tab?: keyof typeof uppTabItems;
+  };
   RiotersFooter: undefined;
 
   Launchpad: undefined;
@@ -27,7 +33,7 @@ export type RootStackParamList = {
   Collection: { id: string };
   CollectionTools: { id: string };
   NFTDetail: { id: string; openBuy?: boolean };
-  Feed?: { network?: string };
+  Feed?: { tab: keyof typeof feedsTabItems; network?: string };
   FeedNewArticle:
     | (NewPostFormValues & {
         additionalMention?: string;
@@ -66,6 +72,11 @@ export type RootStackParamList = {
 
   DAppStore: undefined;
   ToriPunks: { route: string };
+
+  Metrics: undefined;
+  Message: { view: string; tab?: string } | undefined;
+  ChatSection: Conversation;
+  FriendshipManager: { tab?: MessageFriendsTabItem } | undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -94,7 +105,7 @@ const navConfig: {
     WalletManagerWallets: "wallet-manager/wallets",
     WalletManagerChains: "wallet-manager/chains",
     Governance: "governance",
-    UserPublicProfile: "user/:id",
+    UserPublicProfile: "user/:id/:tab?",
     RiotersFooter: "rioters-footer",
     // === RiotGame
     RiotGame: "riot-game",
@@ -120,7 +131,7 @@ const navConfig: {
     Collection: "collection/:id",
     CollectionTools: "collection/:id/tools",
     NFTDetail: "nft/:id",
-    Feed: "feed",
+    Feed: "feed/:tab?",
     FeedNewArticle: "feed/new",
     FeedPostView: "feed/post/:id",
     HashtagFeed: "feed/tag/:hashtag",
@@ -151,6 +162,13 @@ const navConfig: {
     DAppStore: "dapp-store",
     // === DApps
     ToriPunks: "dapp/tori-punks/:route?",
+    // === Metrics
+    Metrics: "stats",
+
+    // ==== Message
+    Message: "message/:view?",
+    ChatSection: "message/chat",
+    FriendshipManager: "/friends",
   },
 };
 

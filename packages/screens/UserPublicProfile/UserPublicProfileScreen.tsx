@@ -1,236 +1,170 @@
 import { bech32 } from "bech32";
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { View } from "react-native";
+import React, { useEffect, useMemo } from "react";
 
-import {
-  UserPublicProfileScreenHeader,
-  screenTabItems,
-} from "./UserPublicProfileHeader";
-import { PostsRequest } from "../../api/feed/v1/feed";
+import { DAOsUPPScreen } from "./tabScreens/DAOsUPPScreen";
+import { FundsUPPScreen } from "./tabScreens/FundsUPPScreen";
+import { GnoDemoUPPScreen } from "./tabScreens/GnoDemoUPPScreen";
+import { MembersUPPScreen } from "./tabScreens/MembersUPPScreen";
+import { MentionsPostsUPPScreen } from "./tabScreens/MentionsPostsUPPScreen";
+import { MusicUPPScreen } from "./tabScreens/MusicUPPScreen";
+import { NFTsUPPScreen } from "./tabScreens/NFTsUPPScreen";
+import { PostsUPPScreen } from "./tabScreens/PostsUPPScreen";
+import { ProposalsUPPScreen } from "./tabScreens/ProposalsUPPScreen";
+import { QuestsUPPScreen } from "./tabScreens/QuestsUPPScreen";
+import { VideosUPPScreen } from "./tabScreens/VideosUPPScreen";
 import { BrandText } from "../../components/BrandText";
 import { NotFound } from "../../components/NotFound";
-import { Quests } from "../../components/Quests";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { DAOMembers } from "../../components/dao/DAOMembers";
-import { DAOProposals } from "../../components/dao/DAOProposals";
-import { DAOsList } from "../../components/dao/DAOsList";
-import { GnoDemo } from "../../components/dao/GnoDemo";
-import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
-import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
-import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
-import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
+import {
+  ScreenContainer,
+  ScreenContainerProps,
+} from "../../components/ScreenContainer";
+import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { usePrevious } from "../../hooks/usePrevious";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
-import { Assets } from "../WalletManager/Assets";
+import { uppTabItems, UppTabKeys } from "../../utils/upp";
 
-const TabContainer: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { width } = useMaxResolution();
-  return (
-    <View style={{ flex: 1, alignItems: "center" }}>
-      <View style={{ width }}>{children}</View>
-    </View>
-  );
-};
-
-const SelectedTabContent: React.FC<{
+export interface UppTabScreenProps {
   userId: string;
-  selectedTab: keyof typeof screenTabItems;
-  setSelectedTab: (tab: keyof typeof screenTabItems) => void;
-}> = ({ userId, selectedTab, setSelectedTab }) => {
-  const selectedWallet = useSelectedWallet();
-  const userInfo = useNSUserInfo(userId);
-  const [network, userAddress] = parseUserId(userId);
-  const { isDAO } = useIsDAO(userId);
-  const { isDAOMember } = useIsDAOMember(userId, selectedWallet?.userId, isDAO);
-
-  const feedRequestUser: PostsRequest = useMemo(() => {
-    return {
-      filter: {
-        user: userId,
-        mentions: [],
-        categories: [],
-        hashtags: [],
-      },
-      limit: 10,
-      offset: 0,
-    };
-  }, [userId]);
-
-  const feedRequestMentions: PostsRequest = useMemo(() => {
-    return {
-      filter: {
-        user: "",
-        mentions: userInfo?.metadata.tokenId
-          ? // The user can be mentioned by his NS name OR his address, so we use both in this filter
-            [`@${userAddress}`, `@${userInfo?.metadata.tokenId}`]
-          : // Btw, is the user has no NS name, we use his address in this filter
-            [`@${userAddress}`],
-        categories: [],
-        hashtags: [],
-      },
-      limit: 10,
-      offset: 0,
-    };
-  }, [userInfo?.metadata.tokenId, userAddress]);
-
-  const Header = useCallback(() => {
-    return (
-      <UserPublicProfileScreenHeader
-        userId={userId}
-        selectedTab={selectedTab}
-        setSelectedTab={setSelectedTab}
-      />
-    );
-  }, [selectedTab, setSelectedTab, userId]);
-
-  switch (selectedTab) {
-    case "userPosts":
-      return (
-        <NewsFeed
-          disablePosting={
-            isDAO ? !isDAOMember : selectedWallet?.userId !== userId
-          }
-          daoId={isDAO ? userId : undefined}
-          Header={Header}
-          additionalMention={
-            isDAO
-              ? undefined
-              : selectedWallet?.address !== userAddress
-                ? userInfo?.metadata.tokenId || userAddress
-                : undefined
-          }
-          req={feedRequestUser}
-        />
-      );
-    case "mentionsPosts":
-      return (
-        <NewsFeed
-          disablePosting={
-            !selectedWallet?.connected || selectedWallet?.userId === userId
-          }
-          Header={Header}
-          additionalMention={
-            selectedWallet?.address !== userAddress
-              ? userInfo?.metadata.tokenId || userAddress
-              : undefined
-          }
-          req={feedRequestMentions}
-        />
-      );
-    case "nfts":
-      return <UPPNFTs userId={userId} />;
-    // case "activity":
-    //   return <UPPActivity />;
-    case "quests":
-      return <Quests userId={userId} />;
-    // case "pathwar":
-    //   return <UPPPathwarChallenges />;
-    // case "gig":
-    //   return <UPPGigServices />;
-    case "members":
-      return <DAOMembers daoId={userId} />;
-    case "proposals":
-      return <DAOProposals daoId={userId} />;
-    case "funds":
-      return <Assets userId={userId} readOnly />;
-    case "daos":
-      return (
-        <DAOsList
-          req={{ networkId: network?.id, memberAddress: userAddress }}
-        />
-      );
-    case "gnoDemo":
-      return <GnoDemo daoId={userId} />;
-    default:
-      return null;
-  }
-};
-
-const initialTab: keyof typeof screenTabItems = "userPosts";
+  screenContainerOtherProps: Partial<ScreenContainerProps>;
+}
 
 export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   route: {
-    params: { id },
+    params: { id, tab: tabKey },
   },
 }) => {
-  const [selectedTab, setSelectedTab] =
-    useState<keyof typeof screenTabItems>(initialTab);
-
-  const prevId = usePrevious(id);
-  useEffect(() => {
-    if (prevId && id !== prevId) {
-      setSelectedTab(initialTab);
-    }
-  }, [id, prevId]);
   const navigation = useAppNavigation();
   const [network, userAddress] = parseUserId(id);
+  useForceNetworkSelection(network?.id);
   const { metadata, notFound } = useNSUserInfo(id);
+  const screenContainerOtherProps: Partial<ScreenContainerProps> =
+    useMemo(() => {
+      return {
+        forceNetworkId: network?.id,
+        responsive: true,
+        fullWidth: true,
+        footerChildren: <></>,
+        headerChildren: (
+          <BrandText style={fontSemibold20}>
+            {metadata?.tokenId || userAddress}
+          </BrandText>
+        ),
+        onBackPress: () =>
+          navigation.canGoBack()
+            ? navigation.goBack()
+            : navigation.navigate("Home"),
+      };
+    }, [network?.id, metadata?.tokenId, userAddress, navigation]);
+
   useEffect(() => {
     navigation.setOptions({
       title: `Teritori - User: ${metadata.tokenId || userAddress}`,
     });
   }, [navigation, userAddress, metadata.tokenId]);
 
-  const content =
-    network?.kind !== NetworkKind.Gno &&
-    (notFound || !userAddress || !bech32.decodeUnsafe(userAddress)) ? (
-      <NotFound label="User" />
-    ) : (
-      <>
-        {selectedTab !== "userPosts" && selectedTab !== "mentionsPosts" ? (
-          <TabContainer>
-            <UserPublicProfileScreenHeader
-              userId={id}
-              selectedTab={selectedTab}
-              setSelectedTab={setSelectedTab}
-            />
-            <SelectedTabContent
-              selectedTab={selectedTab}
-              userId={id}
-              setSelectedTab={setSelectedTab}
-            />
-          </TabContainer>
-        ) : (
-          <SelectedTabContent
-            selectedTab={selectedTab}
-            userId={id}
-            setSelectedTab={setSelectedTab}
-          />
-        )}
-      </>
+  if (
+    (tabKey && !uppTabItems[tabKey]) ||
+    (network?.kind !== NetworkKind.Gno &&
+      (notFound || !userAddress || !bech32.decodeUnsafe(userAddress)))
+  ) {
+    return (
+      <ScreenContainer
+        key={`NotFoundUPP ${id}-${tabKey}`} // this key is to reset the screen state when the id changes
+        {...screenContainerOtherProps}
+        headerChildren={
+          <BrandText style={fontSemibold20}>Page not found</BrandText>
+        }
+      >
+        <NotFound label="Page" />
+      </ScreenContainer>
     );
-
-  return (
-    <ScreenContainer
-      key={`UserPublicProfile ${id}`} // this key is to reset the screen state when the id changes
-      forceNetworkId={network?.id}
-      responsive
-      fullWidth
-      noScroll={selectedTab === "userPosts" || selectedTab === "mentionsPosts"}
-      footerChildren={<></>}
-      headerChildren={
-        <BrandText style={fontSemibold20}>
-          {metadata?.tokenId || userAddress}
-        </BrandText>
-      }
-      onBackPress={() =>
-        navigation.canGoBack()
-          ? navigation.goBack()
-          : navigation.navigate("Home")
-      }
-    >
-      {content}
-    </ScreenContainer>
-  );
+  }
+  switch (tabKey) {
+    case UppTabKeys.posts:
+      return (
+        <PostsUPPScreen
+          userId={id}
+          screenContainerOtherProps={screenContainerOtherProps}
+        />
+      );
+    case UppTabKeys.mentionsPosts:
+      return (
+        <MentionsPostsUPPScreen
+          userId={id}
+          screenContainerOtherProps={screenContainerOtherProps}
+        />
+      );
+    case UppTabKeys.music:
+      return (
+        <MusicUPPScreen
+          userId={id}
+          screenContainerOtherProps={screenContainerOtherProps}
+        />
+      );
+    case UppTabKeys.videos:
+      return (
+        <VideosUPPScreen
+          userId={id}
+          screenContainerOtherProps={screenContainerOtherProps}
+        />
+      );
+    case UppTabKeys.daos:
+      return (
+        <DAOsUPPScreen
+          userId={id}
+          screenContainerOtherProps={screenContainerOtherProps}
+        />
+      );
+    case UppTabKeys.members:
+      return (
+        <MembersUPPScreen
+          userId={id}
+          screenContainerOtherProps={screenContainerOtherProps}
+        />
+      );
+    case UppTabKeys.proposals:
+      return (
+        <ProposalsUPPScreen
+          userId={id}
+          screenContainerOtherProps={screenContainerOtherProps}
+        />
+      );
+    case UppTabKeys.quests:
+      return (
+        <QuestsUPPScreen
+          userId={id}
+          screenContainerOtherProps={screenContainerOtherProps}
+        />
+      );
+    case UppTabKeys.nfts:
+      return (
+        <NFTsUPPScreen
+          userId={id}
+          screenContainerOtherProps={screenContainerOtherProps}
+        />
+      );
+    case UppTabKeys.funds:
+      return (
+        <FundsUPPScreen
+          userId={id}
+          screenContainerOtherProps={screenContainerOtherProps}
+        />
+      );
+    case UppTabKeys.gnoDemo:
+      return (
+        <GnoDemoUPPScreen
+          userId={id}
+          screenContainerOtherProps={screenContainerOtherProps}
+        />
+      );
+    default:
+      return (
+        <PostsUPPScreen
+          userId={id}
+          screenContainerOtherProps={screenContainerOtherProps}
+        />
+      );
+  }
 };

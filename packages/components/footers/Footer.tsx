@@ -5,60 +5,62 @@ import {
   TouchableOpacity,
   View,
   ViewStyle,
-  Image,
 } from "react-native";
 
 import { LegalFooter } from "./LegalFooter";
-import getUpImage from "../../../assets/getup.png";
+import coingecko from "../../../assets/icons/coingecko_logo.svg";
 import discordSVG from "../../../assets/icons/discord.svg";
 import mediumSVG from "../../../assets/icons/medium.svg";
-import twitterSVG from "../../../assets/icons/twitter.svg";
+import XtwitterSVG from "../../../assets/icons/x-logo.svg";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { secondaryColor } from "../../utils/style/colors";
-import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
+import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 const FooterSocialNetworks: React.FC = () => {
   return (
-    <TertiaryBox
+    <LegacyTertiaryBox
       mainContainerStyle={{ padding: layout.spacing_x1, flexDirection: "row" }}
       style={{ marginBottom: layout.contentSpacing }}
     >
       <TouchableOpacity
         style={{ marginRight: layout.spacing_x1 }}
-        onPress={() => Linking.openURL("https://medium.com/teritori/")}
+        onPress={() =>
+          Linking.openURL("https://www.coingecko.com/en/coins/teritori")
+        }
       >
-        <TertiaryBox
+        <LegacyTertiaryBox
           mainContainerStyle={{
             borderColor: secondaryColor,
             borderRadius: 12,
             padding: layout.spacing_x1_5,
           }}
         >
-          <SVG source={mediumSVG} width={20} height={20} />
-        </TertiaryBox>
+          <SVG source={coingecko} width={20} height={20} />
+        </LegacyTertiaryBox>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={{ marginRight: layout.spacing_x1 }}
         onPress={() => Linking.openURL("https://twitter.com/TeritoriNetwork")}
       >
-        <TertiaryBox
+        <LegacyTertiaryBox
           mainContainerStyle={{
             borderColor: secondaryColor,
             borderRadius: 12,
             padding: layout.spacing_x1_5,
           }}
         >
-          <SVG source={twitterSVG} width={20} height={20} />
-        </TertiaryBox>
+          <SVG source={XtwitterSVG} width={20} height={20} />
+        </LegacyTertiaryBox>
       </TouchableOpacity>
 
       <TouchableOpacity
+        style={{ marginRight: layout.spacing_x1 }}
         onPress={() => Linking.openURL("https://discord.gg/teritori")}
       >
-        <TertiaryBox
+        <LegacyTertiaryBox
           mainContainerStyle={{
             borderColor: secondaryColor,
             borderRadius: 12,
@@ -66,45 +68,23 @@ const FooterSocialNetworks: React.FC = () => {
           }}
         >
           <SVG source={discordSVG} width={20} height={20} />
-        </TertiaryBox>
+        </LegacyTertiaryBox>
       </TouchableOpacity>
-    </TertiaryBox>
-  );
-};
 
-const FooterGetUp: React.FC = () => {
-  return (
-    <View
-      style={{
-        flexDirection: "row",
-        width: "100%",
-        maxWidth: screenContentMaxWidthLarge,
-        justifyContent: "space-between",
-        marginBottom: layout.contentSpacing,
-      }}
-    >
-      <Image
-        source={{ uri: getUpImage }}
-        style={{
-          width: 323,
-          height: 179,
-        }}
-      />
-      <Image
-        source={{ uri: getUpImage }}
-        style={{
-          width: 323,
-          height: 179,
-        }}
-      />
-      <Image
-        source={{ uri: getUpImage }}
-        style={{
-          width: 323,
-          height: 179,
-        }}
-      />
-    </View>
+      <TouchableOpacity
+        onPress={() => Linking.openURL("https://medium.com/teritori/")}
+      >
+        <LegacyTertiaryBox
+          mainContainerStyle={{
+            borderColor: secondaryColor,
+            borderRadius: 12,
+            padding: layout.spacing_x1_5,
+          }}
+        >
+          <SVG source={mediumSVG} width={20} height={20} />
+        </LegacyTertiaryBox>
+      </TouchableOpacity>
+    </LegacyTertiaryBox>
   );
 };
 
@@ -132,8 +112,6 @@ export const Footer: React.FC<{
         style,
       ]}
     >
-      <FooterGetUp />
-
       <FooterLogo />
 
       <FooterSocialNetworks />

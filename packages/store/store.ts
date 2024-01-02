@@ -12,6 +12,7 @@ import {
   marketplaceFilters,
   marketplaceFilterUI,
 } from "./slices/marketplaceFilters";
+import { messageReducer } from "./slices/message";
 import { searchReducer } from "./slices/search";
 import {
   multisigTokensAdapter,
@@ -21,6 +22,7 @@ import {
 import { squadPresetsReducer } from "./slices/squadPresets";
 import { walletsReducer } from "./slices/wallets";
 import { defaultEnabledNetworks } from "../networks";
+import { isElectron } from "../utils/isElectron";
 
 const migrations = {
   0: (state: any) => {
@@ -50,9 +52,20 @@ const migrations = {
   },
 };
 
+let storage = AsyncStorage;
+
+if (isElectron()) {
+  const createElectronStorage = require("redux-persist-electron-storage");
+  storage = createElectronStorage({
+    electronStoreOpts: {
+      projectName: "Teritori",
+    },
+  });
+}
+
 const persistConfig = {
   key: "root",
-  storage: AsyncStorage,
+  storage,
   version: 0,
   migrate: createMigrate(migrations, { debug: false }),
   whitelist: [
@@ -79,6 +92,7 @@ const rootReducer = combineReducers({
   marketplaceFilters,
   marketplaceFilterUI,
   search: searchReducer,
+  message: messageReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

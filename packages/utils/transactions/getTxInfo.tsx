@@ -17,7 +17,7 @@ import tnsWhiteSVG from "../../../assets/icons/tns-service_white.svg";
 import walletWhiteSVG from "../../../assets/icons/wallet_white.svg";
 import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
 import { BrandText } from "../../components/BrandText";
-import { SocialMessageContent } from "../../components/socialFeed/SocialThread/SocialMessageContent";
+import { SocialMessageContent } from "../../components/socialFeed/SocialCard/SocialMessageContent";
 import { SpacerColumn } from "../../components/spacer";
 import { Username } from "../../components/user/Username";
 import {
@@ -335,6 +335,8 @@ export const getTxInfo = (
         const contractAddress = msg.value.contract;
         let execMsg: any = {};
         try {
+          // FIXME: sanitize
+          // eslint-disable-next-line no-restricted-syntax
           execMsg = JSON.parse(
             Buffer.from(
               new Uint8Array(Object.values(msg.value.msg)),
@@ -392,11 +394,7 @@ export const getTxInfo = (
               <View>
                 <BrandText>Post on social feed</BrandText>
                 <SpacerColumn size={2.5} />
-                <SocialMessageContent
-                  postCategory={execMsg.create_post.category}
-                  metadata={JSON.parse(execMsg.create_post.metadata)}
-                  isPreview
-                />
+                <SocialMessageContent post={execMsg.create_post} isPreview />
               </View>
             );
           };

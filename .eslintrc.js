@@ -16,11 +16,30 @@ module.exports = {
         selector:
           "MemberExpression[object.name='StyleSheet'][property.name='create']",
       },
+      {
+        message:
+          "Do not use JSON.parse, it breaks type safety, use sanitization utils instead",
+        selector: "MemberExpression[object.name='JSON'][property.name='parse']",
+      },
     ],
   },
   overrides: [
     {
       extends: "universe/node",
+      rules: {
+        "@typescript-eslint/no-unused-vars": "error",
+        "prettier/prettier": "error",
+        "import/order": "error",
+        "no-restricted-syntax": [
+          "error",
+          {
+            message:
+              "Do not use JSON.parse, it breaks type safety, use sanitization utils instead",
+            selector:
+              "MemberExpression[object.name='JSON'][property.name='parse']",
+          },
+        ],
+      },
       files: [
         ".eslintrc.js",
         "babel.config.js",

@@ -3,14 +3,13 @@ import React from "react";
 import { View } from "react-native";
 
 import { DeleteButton } from "./DeleteButton";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { web3ToWeb2URI } from "../../utils/ipfs";
 import { errorColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
 import { LocalFileData, RemoteFileData } from "../../utils/types/files";
-import { VideoMetaInfo } from "../../utils/types/video";
 import { BrandText } from "../BrandText";
 import { MediaPlayerVideo } from "../mediaPlayer/MediaPlayerVideo";
+import { SocialFeedVideoMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
 
 interface VideoPreviewProps {
   file: LocalFileData | RemoteFileData;
@@ -27,12 +26,10 @@ export const VideoView: React.FC<VideoPreviewProps> = ({
   postId,
   isEditable = false,
 }) => {
-  const videoMetaInfo: VideoMetaInfo = {
+  const videoMetadata: SocialFeedVideoMetadata = {
     title: "Video from Social Feed",
     description: "",
-    url: file.url,
-    image: file.thumbnailFileData?.url || "",
-    duration: 0,
+    videoFile: file,
   };
 
   if (!file?.url)
@@ -53,21 +50,17 @@ export const VideoView: React.FC<VideoPreviewProps> = ({
       {isEditable ? (
         <Video
           useNativeControls
-          source={{ uri: ipfsURLToHTTPURL(videoMetaInfo.url) }}
+          source={{ uri: web3ToWeb2URI(videoMetadata.videoFile.url) }}
           resizeMode={ResizeMode.CONTAIN}
           style={{
             height: 400,
-            marginTop: layout.spacing_x2,
-            marginBottom: layout.spacing_x2,
           }}
         />
       ) : (
         <MediaPlayerVideo
-          videoMetaInfo={videoMetaInfo}
+          videoMetadata={videoMetadata}
           style={{
             height: 400,
-            marginTop: layout.spacing_x2,
-            marginBottom: layout.spacing_x2,
           }}
           resizeMode={ResizeMode.CONTAIN}
           authorId={authorId}

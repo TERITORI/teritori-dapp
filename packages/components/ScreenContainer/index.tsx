@@ -1,10 +1,10 @@
-import React, { useMemo, useCallback, ReactNode } from "react";
+import React, { ReactNode, useCallback, useMemo } from "react";
 import {
   SafeAreaView,
   ScrollView,
-  View,
   StyleSheet,
   useWindowDimensions,
+  View,
 } from "react-native";
 
 import { Header } from "./Header";
@@ -15,7 +15,6 @@ import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
-import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
 import {
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
@@ -34,7 +33,7 @@ import { Sidebar } from "../navigation/Sidebar";
 import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
 import { Separator } from "../separators/Separator";
 
-export const ScreenContainer: React.FC<{
+export interface ScreenContainerProps {
   headerChildren?: JSX.Element;
   footerChildren?: React.ReactNode;
   mobileTitle?: string;
@@ -50,7 +49,9 @@ export const ScreenContainer: React.FC<{
   onBackPress?: () => void;
   maxWidth?: number;
   children?: ReactNode;
-}> = ({
+}
+
+export const ScreenContainer: React.FC<ScreenContainerProps> = ({
   children,
   headerChildren,
   footerChildren,
@@ -120,7 +121,6 @@ export const ScreenContainer: React.FC<{
   /////////////// default returns
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
-      <DAppStoreData />
       {/*FIXME: Too many containers levels*/}
 
       <View style={styles.container}>

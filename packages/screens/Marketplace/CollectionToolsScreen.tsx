@@ -26,7 +26,7 @@ const SnapshotEntry: React.FC<{
     <View style={[{ flexDirection: "row" }, style]}>
       <PrimaryButton
         text={`Snapshot ${name}`}
-        style={{ marginRight: 20 }}
+        boxStyle={{ marginRight: 20 }}
         size="M"
         onPress={async () => {
           const data = JSON.stringify(await snapshotFunc(), null, 2);

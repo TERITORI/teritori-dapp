@@ -1,11 +1,13 @@
+import { z } from "zod";
+
 import { GIF_MIME_TYPE } from "./mime";
 import { HASHTAG_REGEX, MENTION_REGEX, URL_REGEX } from "./regex";
+import { zodTryParseJSON } from "./sanitize";
 import { redDefault } from "./style/colors";
 import { LocalFileData } from "./types/files";
 import flagSVG from "../../assets/icons/notification.svg";
 import { Post, Reaction } from "../api/feed/v1/feed";
 import {
-  PostCategory,
   PostExtra,
   PostResultExtra,
 } from "../components/socialFeed/NewsFeed/NewsFeed.type";
@@ -17,30 +19,44 @@ export const DEFAULT_NAME = "Anon";
 export const DEFAULT_USERNAME = "anonymous";
 export const SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT = 2500;
 export const NB_ROWS_SHOWN_IN_PREVIEW = 5;
-export const ARTICLE_COVER_IMAGE_HEIGHT = 240;
+export const ARTICLE_MAX_WIDTH = 1046;
+export const ARTICLE_COVER_IMAGE_HEIGHT = 300;
+export const ARTICLE_THUMBNAIL_IMAGE_HEIGHT = 252;
+export const BASE_POST: Post = {
+  identifier: "",
+  category: 0,
+  authorId: "",
+  metadata: "",
+  isDeleted: false,
+  parentPostIdentifier: "",
+  subPostLength: 0,
+  createdAt: 0,
+  tipAmount: 0,
+  reactions: [],
+};
 
 export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
   const hasIcon = reactions.find((r) => r.icon === icon);
   if (hasIcon) {
     reactions = reactions.map((rect) => {
       if (rect.icon === icon) {
-        return { icon, count: ++rect.count };
+        return { icon, count: ++rect.count, ownState: true };
       }
       return rect;
     });
   } else {
-    reactions = [...reactions, { icon, count: 1 }];
+    reactions = [...reactions, { icon, count: 1, ownState: true }];
   }
 
   return reactions;
 };
 
 export const feedsTabItems: { [key: string]: TabDefinition } = {
-  all: {
+  "": {
     name: "Jungle News Feed",
   },
-  sounds: {
-    name: "Sounds Feed",
+  music: {
+    name: "Music Feed",
   },
   pics: {
     name: "Pics Feed",
@@ -62,24 +78,6 @@ export const feedsTabItems: { [key: string]: TabDefinition } = {
   },
 };
 
-// The Social Feed tabs doesn't fully correspond to the Posts categories, so we need to parse like this
-export const feedTabToCategories = (tab: keyof typeof feedsTabItems) => {
-  switch (tab) {
-    case "sounds":
-      return [PostCategory.Audio];
-    case "pics":
-      return [PostCategory.Picture];
-    case "videos":
-      return [PostCategory.Video];
-    case "articles":
-      return [PostCategory.Article];
-    case "moderationDAO":
-      return [PostCategory.Flagged];
-    default:
-      return [];
-  }
-};
-
 export const mentionMatch = (text: string) =>
   text.match(new RegExp(MENTION_REGEX, "g"));
 export const hashtagMatch = (text: string) =>
@@ -91,6 +89,18 @@ export const postResultToPost = (
   networkId: string,
   postResult: PostResultExtra | PostResult,
 ) => {
+  const metadata = zodTryParseJSON(
+    z.object({ createdAt: z.string() }),
+    postResult.metadata,
+  );
+
+  const chainReactions = postResult.reactions;
+  const postReactions: Reaction[] = chainReactions.map((reaction) => ({
+    icon: reaction.icon,
+    count: reaction.count,
+    ownState: false, // FIXME: find a way to get the user's reaction state from on-chain post
+  }));
+
   const post: Post = {
     category: postResult.category,
     isDeleted: postResult.deleted,
@@ -98,9 +108,9 @@ export const postResultToPost = (
     metadata: postResult.metadata,
     parentPostIdentifier: postResult.parent_post_identifier || "",
     subPostLength: postResult.sub_post_length,
-    reactions: postResult.reactions,
+    reactions: postReactions,
     authorId: getUserId(networkId, postResult.post_by),
-    createdAt: JSON.parse(postResult.metadata).createdAt,
+    createdAt: metadata ? Date.parse(metadata.createdAt) / 1000 : 0,
     tipAmount: parseFloat(postResult.tip_amount),
   };
   if ("isInLocal" in postResult) {

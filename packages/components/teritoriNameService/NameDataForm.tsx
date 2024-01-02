@@ -213,8 +213,7 @@ export const NameDataForm: React.FC<{
         text={btnLabel}
         disabled={disabled}
         onPress={handlePressBtn}
-        style={{ marginTop: 8, alignSelf: "center" }}
-        squaresBackgroundColor={neutral17}
+        boxStyle={{ marginTop: 8, alignSelf: "center" }}
         loader
       />
     </View>

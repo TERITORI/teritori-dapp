@@ -25,7 +25,7 @@ export const useCoingeckoPrices = (coins: CoingeckoCoin[]) => {
     },
     {
       initialData: {},
-      refetchInterval: 20000,
+      refetchInterval: 60000,
       staleTime: Infinity,
       initialDataUpdatedAt: 0,
     },

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, TextStyle, View, ViewStyle } from "react-native";
 
 import { ImagePreviewer } from "./ImagePreviewer";
 import { RadioDescriptionSelector } from "./RadioDescriptionSelector";
@@ -8,10 +8,20 @@ import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useNSAvailability } from "../../../hooks/useNSAvailability";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
-import { NetworkKind } from "../../../networks";
-import { neutral33, neutral77 } from "../../../utils/style/colors";
-import { fontSemibold20, fontSemibold28 } from "../../../utils/style/fonts";
+import { NetworkKind, getCosmosNetwork } from "../../../networks";
+import {
+  neutral33,
+  neutral77,
+  primaryColor,
+  redDefault,
+} from "../../../utils/style/colors";
+import {
+  fontSemibold14,
+  fontSemibold20,
+  fontSemibold28,
+} from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
 import { CreateDaoFormType, DaoType } from "../types";
@@ -33,14 +43,66 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
     setError,
     formState: { isValid },
   } = useForm<CreateDaoFormType>({
-    defaultValues: { structure: DaoType.MEMBER_BASED },
+    defaultValues: {
+      structure: DaoType.MEMBER_BASED,
+    },
     mode: "all",
   });
 
   const selectedNetwork = useSelectedNetworkInfo();
+  const cosmosNetwork = getCosmosNetwork(selectedNetwork?.id);
   const selectedRadioStructure = watch("structure");
   const uri = watch("imageUrl");
-  const name = watch("associatedTeritoriNameService");
+  const name = watch("associatedHandle");
+  const nameAvailability = useNSAvailability(selectedNetwork?.id, name);
+
+  useEffect(() => {
+    setValue("nameAvailability", nameAvailability);
+  }, [setValue, nameAvailability]);
+
+  let availabilityInfo = <></>;
+  if (name && selectedNetwork?.kind === NetworkKind.Cosmos) {
+    switch (nameAvailability.availability) {
+      case "invalid": {
+        availabilityInfo = (
+          <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
+            Invalid
+          </BrandText>
+        );
+        break;
+      }
+      case "mint": {
+        availabilityInfo = (
+          <View style={{ flexDirection: "row" }}>
+            {!!nameAvailability?.usdPrice && (
+              <>
+                <BrandText style={{ color: neutral77, ...fontSemibold14 }}>
+                  ${nameAvailability.usdPrice?.toFixed(2)}
+                </BrandText>
+                <BrandText style={{ color: neutral33, ...fontSemibold14 }}>
+                  {" - "}
+                </BrandText>
+              </>
+            )}
+            <BrandText style={{ color: primaryColor, ...fontSemibold14 }}>
+              {nameAvailability.prettyPrice}
+            </BrandText>
+          </View>
+        );
+        break;
+      }
+      case "none":
+      case "market": {
+        // TODO: handle market case
+        availabilityInfo = (
+          <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
+            Taken
+          </BrandText>
+        );
+        break;
+      }
+    }
+  }
 
   // functions
   const onErrorImageLoading = () =>
@@ -50,20 +112,20 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
     });
 
   return (
-    <View style={styles.fill}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <View style={fillCStyle}>
+      <ScrollView contentContainerStyle={containerCStyle}>
         <BrandText style={fontSemibold28}>
           Create a Teritori Organization
         </BrandText>
         <SpacerColumn size={2} />
-        <BrandText style={styles.sectionTitle}>Claim a name</BrandText>
+        <BrandText style={sectionTitleCStyle}>Claim a name</BrandText>
         <SpacerColumn size={2.5} />
-        <View style={styles.section}>
+        <View style={sectionCStyle}>
           <ImagePreviewer uri={uri} onError={onErrorImageLoading} />
           <SpacerRow size={2.5} />
-          <View style={styles.fill}>
-            <View style={styles.row}>
-              <View style={styles.fill}>
+          <View style={fillCStyle}>
+            <View style={rowCStyle}>
+              <View style={fillCStyle}>
                 <TextInputCustom<CreateDaoFormType>
                   noBrokenCorners
                   variant="labelOutside"
@@ -75,17 +137,18 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                 />
               </View>
               <SpacerRow size={2.5} />
-              <View style={styles.fill}>
+              <View style={fillCStyle}>
                 <TextInputCustom<CreateDaoFormType>
                   noBrokenCorners
+                  isLoading={nameAvailability.availability === "loading"}
                   variant="labelOutside"
                   control={control}
                   label={`Associated Handle${
                     name
-                      ? `: ${name}${
+                      ? `: ${
                           selectedNetwork?.kind === NetworkKind.Gno
-                            ? ""
-                            : ".tori"
+                            ? "gno.land/r/demo/" + name
+                            : name + cosmosNetwork?.nameServiceTLD
                         }`
                       : ""
                   }`}
@@ -94,9 +157,11 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                       ? "your_organization"
                       : "your-organization"
                   }
-                  name="associatedTeritoriNameService"
+                  name="associatedHandle"
                   rules={{ required: true }}
-                />
+                >
+                  {availabilityInfo}
+                </TextInputCustom>
               </View>
             </View>
 
@@ -126,10 +191,10 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
           </View>
         </View>
 
-        <BrandText style={styles.sectionTitle}>Choose a structure</BrandText>
+        <BrandText style={sectionTitleCStyle}>Choose a structure</BrandText>
         <SpacerColumn size={2} />
-        <View style={styles.row}>
-          <View style={styles.fill}>
+        <View style={rowCStyle}>
+          <View style={fillCStyle}>
             <RadioDescriptionSelector
               selected={selectedRadioStructure === DaoType.MEMBER_BASED}
               onPress={() => setValue("structure", DaoType.MEMBER_BASED)}
@@ -138,7 +203,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
             />
           </View>
           <SpacerRow size={2} />
-          <View style={styles.fill}>
+          <View style={fillCStyle}>
             <RadioDescriptionSelector
               disabled
               selected={selectedRadioStructure === DaoType.TOKEN_BASED}
@@ -151,44 +216,47 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
         <SpacerColumn size={2} />
       </ScrollView>
 
-      <View style={styles.footer}>
+      <View style={footerCStyle}>
         <PrimaryButton
           size="M"
           text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[1]}`}
           onPress={handleSubmit(onSubmit)}
-          disabled={!isValid}
+          disabled={
+            !isValid ||
+            (selectedNetwork?.kind === NetworkKind.Cosmos &&
+              !["mint"].includes(nameAvailability.availability))
+          }
         />
       </View>
     </View>
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    padding: layout.contentSpacing,
-    paddingRight: layout.spacing_x2_5,
-    paddingTop: layout.topContentSpacingWithHeading,
-  },
-  sectionTitle: StyleSheet.flatten([fontSemibold20, { color: neutral77 }]),
-  section: {
-    borderRadius: 12,
-    borderColor: neutral33,
-    borderWidth: 1,
-    padding: layout.spacing_x2_5,
-    flexDirection: "row",
-    marginBottom: layout.spacing_x4,
-  },
-  row: { flexDirection: "row" },
-  fill: { flex: 1 },
+const containerCStyle: ViewStyle = {
+  padding: layout.contentSpacing,
+  paddingRight: layout.spacing_x2_5,
+  paddingTop: layout.topContentSpacingWithHeading,
+};
 
-  footer: {
-    justifyContent: "flex-end",
-    alignItems: "flex-end",
-    paddingVertical: layout.spacing_x1_5,
-    paddingHorizontal: layout.spacing_x2_5,
-    borderTopWidth: 1,
-    borderColor: neutral33,
-  },
-});
+const sectionTitleCStyle: TextStyle = { ...fontSemibold20, color: neutral77 };
+
+const sectionCStyle: ViewStyle = {
+  borderRadius: 12,
+  borderColor: neutral33,
+  borderWidth: 1,
+  padding: layout.spacing_x2_5,
+  flexDirection: "row",
+  marginBottom: layout.spacing_x4,
+};
+const rowCStyle: ViewStyle = { flexDirection: "row" };
+
+const fillCStyle: ViewStyle = { flex: 1 };
+
+const footerCStyle: ViewStyle = {
+  justifyContent: "flex-end",
+  alignItems: "flex-end",
+  paddingVertical: layout.spacing_x1_5,
+  paddingHorizontal: layout.spacing_x2_5,
+  borderTopWidth: 1,
+  borderColor: neutral33,
+};

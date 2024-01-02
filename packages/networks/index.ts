@@ -178,7 +178,7 @@ export const getNetwork = (networkId: string | undefined) => {
   return allNetworks.find((n) => n.id === networkId);
 };
 
-export const mustGetNetwork = (networkId: string | undefined) => {
+const mustGetNetwork = (networkId: string | undefined) => {
   const network = getNetwork(networkId);
   if (!network) {
     throw new Error(`unknown network '${networkId}'`);
@@ -264,6 +264,21 @@ export const getNetworkObjectId = (
   }
   const network = getNetwork(networkId);
   return `${network?.idPrefix}-${subId}`;
+};
+
+export const getNftId = (
+  networkId: string | null | undefined,
+  nftContractAddress: string | null | undefined,
+  tokenId: string | null | undefined,
+) => {
+  if (!networkId || !nftContractAddress || !tokenId) {
+    return "";
+  }
+  const network = getNetwork(networkId);
+  if (!network) {
+    return "";
+  }
+  return `${network.idPrefix}-${nftContractAddress}-${tokenId}`;
 };
 
 export const getUserId = (
@@ -432,7 +447,7 @@ export const keplrChainInfoFromNetworkInfo = (
   };
 };
 
-const cosmosNetworkGasPrice = (
+export const cosmosNetworkGasPrice = (
   network: CosmosNetworkInfo,
   kind: "low" | "average" | "high",
 ) => {

@@ -18,9 +18,8 @@ const frameToAvatarRatio = 0.7;
 export const UserAvatarWithFrame: React.FC<{
   userId: string | undefined;
   size?: AvatarWithFrameSize;
-  noFrame?: boolean;
   style?: StyleProp<ViewStyle>;
-}> = ({ userId, size = "M", noFrame, style }) => {
+}> = ({ userId, size = "M", style }) => {
   const [network] = parseUserId(userId);
   const {
     metadata: { image },
@@ -34,7 +33,6 @@ export const UserAvatarWithFrame: React.FC<{
       isDAO={isDAO}
       size={size}
       style={style}
-      noFrame={noFrame}
     />
   );
 };
@@ -44,12 +42,11 @@ export const AvatarWithFrame: React.FC<{
   image: string | null | undefined;
   size?: AvatarWithFrameSize;
   isDAO: boolean;
-  noFrame?: boolean;
   style?: StyleProp<ViewStyle>;
-}> = ({ networkId, image, isDAO, size = "M", noFrame, style }) => {
+}> = ({ networkId, image, isDAO, size = "M", style }) => {
   const network = getNetwork(networkId);
   const frameSize = getSize(size);
-  const imageSize = frameSize * (noFrame ? 1 : frameToAvatarRatio);
+  const imageSize = frameSize * frameToAvatarRatio;
   return (
     <View
       style={[
@@ -60,22 +57,18 @@ export const AvatarWithFrame: React.FC<{
         style,
       ]}
     >
-      {!noFrame && (
-        <SVG
-          source={emptyCircleFrameSVG}
-          width={frameSize}
-          height={frameSize}
-          style={{ position: "relative", left: "-0.65%", top: "0.4%" }} // we need this adjustments to properly center the frame around the avatar, FIXME: this should be done in the avatar image
-        />
-      )}
+      <SVG
+        source={emptyCircleFrameSVG}
+        width={frameSize}
+        height={frameSize}
+        style={{ position: "relative", left: "-0.65%", top: "0.4%" }} // we need this adjustments to properly center the frame around the avatar, FIXME: this should be done in the avatar image
+      />
 
       <AnimationFadeIn
-        style={
-          !noFrame && {
-            position: "absolute",
-            zIndex: 2,
-          }
-        }
+        style={{
+          position: "absolute",
+          zIndex: 2,
+        }}
       >
         <OptimizedImage
           width={imageSize}
@@ -83,7 +76,7 @@ export const AvatarWithFrame: React.FC<{
           sourceURI={image}
           fallbackURI={nameServiceDefaultImage(isDAO, network)}
           style={[
-            { width: imageSize, height: imageSize },
+            { width: imageSize, height: imageSize, backgroundColor: "black" },
             isDAO
               ? {
                   borderRadius: imageSize * 0.05,

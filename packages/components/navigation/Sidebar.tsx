@@ -1,6 +1,6 @@
 import { useRoute } from "@react-navigation/native";
 import React from "react";
-import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import { FlatList, Linking, Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -124,7 +124,13 @@ export const Sidebar: React.FC = () => {
           return (
             <SidebarButton
               key={item.id}
-              onPress={onRouteChange}
+              onPress={
+                route === "External"
+                  ? () => {
+                      Linking.openURL(item.url);
+                    }
+                  : onRouteChange
+              }
               {...item}
               route={route}
             />

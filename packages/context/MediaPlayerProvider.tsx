@@ -20,7 +20,7 @@ import React, {
 import { useFeedbacks } from "./FeedbacksProvider";
 import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
 import { getNetworkObjectId } from "../networks";
-import { ipfsURLToHTTPURL } from "../utils/ipfs";
+import { web3ToWeb2URI } from "../utils/ipfs";
 import { useAppNavigation } from "../utils/navigation";
 import { Media } from "../utils/types/mediaPlayer";
 
@@ -47,6 +47,7 @@ interface DefaultValue {
   firstPlayVideo: (video: Video, media: Media) => void;
   triggerVideoFullscreen: () => void;
   onLayoutPlayerVideo: (video: Video) => Promise<void>;
+  resetMediaPlayer: () => void;
 }
 
 const defaultValue: DefaultValue = {
@@ -69,6 +70,7 @@ const defaultValue: DefaultValue = {
   firstPlayVideo: () => {},
   triggerVideoFullscreen: () => {},
   onLayoutPlayerVideo: async () => {},
+  resetMediaPlayer: () => {},
 };
 
 const MediaPlayerContext = createContext(defaultValue);
@@ -110,7 +112,7 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
       setMedia(mediaToSet);
       try {
         const { sound: createdSound } = await Audio.Sound.createAsync(
-          { uri: ipfsURLToHTTPURL(mediaToSet.fileUrl) },
+          { uri: web3ToWeb2URI(mediaToSet.fileUrl) },
           undefined,
           async (status: AVPlaybackStatus) => {
             if ("uri" in status && status.isLoaded) {
@@ -216,10 +218,7 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
       videoLastRoute?.key !==
       navigation.getState().routes[navigation.getState().routes.length - 1].key
     ) {
-      if (media?.videoId) {
-        // TODO: Uncomment this after video stuff integration
-        // navigation.navigate("VideoDetail", { id: media.videoId });
-      } else if (media?.postId) {
+      if (media?.postId) {
         navigation.navigate("FeedPostView", {
           id: getNetworkObjectId(selectedNetworkId, media.postId),
         });
@@ -305,6 +304,14 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
     av?.setIsLoopingAsync(!playbackStatus?.isLooping);
   };
 
+  const resetMediaPlayer = () => {
+    setMedia(undefined);
+    setIsMediaPlayerOpen(false);
+    setAv(undefined);
+    setPlaybackStatus(undefined);
+    av?.unloadAsync();
+  };
+
   return (
     <MediaPlayerContext.Provider
       value={{
@@ -327,6 +334,7 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
         firstPlayVideo,
         triggerVideoFullscreen,
         onLayoutPlayerVideo,
+        resetMediaPlayer,
       }}
     >
       {children}

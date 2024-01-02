@@ -125,7 +125,6 @@ const AddMembersModal: React.FC<{
       label="Add members to DAO"
       onClose={onClose}
       scrollable
-      noBrokenCorners
     >
       <View
         style={{
@@ -160,7 +159,7 @@ const AddMembersModal: React.FC<{
         disabled={!ids.length}
         text="Propose to add members"
         size="XS"
-        style={{ alignSelf: "center" }}
+        boxStyle={{ alignSelf: "center" }}
         loader
         fullWidth
         onPress={wrapWithFeedback(async () => {
