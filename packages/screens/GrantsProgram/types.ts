@@ -1,4 +1,5 @@
 import { SvgProps } from "react-native-svg";
+import { LocalFileData } from "../../utils/types/files";
 
 export const PRIORITY_HIGH = "high";
 export const PRIORITY_MEDIUM = "medium";
@@ -34,6 +35,7 @@ export type ShortDescData = {
   paymentAddr: string;
   coverImg: string;
   tags: string;
+  _coverImgFile?: LocalFileData;
 };
 
 export type TeamAndLinkData = {

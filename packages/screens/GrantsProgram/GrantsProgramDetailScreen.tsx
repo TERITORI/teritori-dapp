@@ -10,7 +10,7 @@ import {
   EMPTY_SHORT_DESC,
   EMPTY_TEAM_AND_LINK,
 } from "./hooks/useMakeRequestHook";
-import { useProjects } from "./hooks/useProjects";
+import { useProject, useProjects } from "./hooks/useProjects";
 import { Milestone, Project } from "./types";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import githubSVG from "../../../assets/icons/github.svg";
@@ -42,27 +42,13 @@ export const GrantsProgramDetailScreen: ScreenFC<
   const [selectedMilestone, setSelectedMilestone] = useState<Milestone>();
   const { params } = useRoute();
   const networkId = useSelectedNetworkId();
-  const { getProject } = useProjects(networkId);
+  const { data: project } = useProject(networkId, (params as any).id || 0);
 
   const onSelectMilestone = (milestone: Milestone) => {
     setSelectedMilestone(
       milestone.id === selectedMilestone?.id ? undefined : milestone,
     );
   };
-
-  const [project, setProject] = useState<Project>();
-
-  const fetchProject = useCallback(
-    async (projectId: number) => {
-      const project = await getProject(projectId);
-      setProject(project);
-    },
-    [getProject, setProject],
-  );
-
-  useEffect(() => {
-    fetchProject(+(params as any).id || 0);
-  }, [fetchProject, params]);
 
   return (
     <ScreenContainer isLarge responsive headerChildren={<HeaderBackButton />}>

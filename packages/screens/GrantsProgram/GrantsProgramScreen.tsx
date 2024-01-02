@@ -26,8 +26,7 @@ import { layout } from "../../utils/style/layout";
 export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
   const [searchText, setSearchText] = useState("");
   const networkId = useSelectedNetworkId();
-  const [projects, setProjects] = useState<Project[]>([]);
-  const { getProjects } = useProjects(networkId);
+  const { data: projects } = useProjects(networkId, 0, 100);
   const [filterStatus, setFilterStatus] = useState<string>();
 
   const navigation = useAppNavigation();
@@ -46,12 +45,13 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
 
   const filteredProjects = useMemo(() => {
     if (!filterStatus) return projects;
-    return projects.filter((p: Project) => p.status === filterStatus);
-  }, [filterStatus, projects]);
-
-  useEffect(() => {
-    getProjects(0, 10).then(setProjects);
-  }, [getProjects]);
+    return projects.filter(
+      (p: Project) =>
+        p.status === filterStatus &&
+        (p.metadata.shortDescData.name.includes(searchText) ||
+          p.metadata.shortDescData.desc.includes(searchText)),
+    );
+  }, [filterStatus, projects, searchText]);
 
   return (
     <ScreenContainer

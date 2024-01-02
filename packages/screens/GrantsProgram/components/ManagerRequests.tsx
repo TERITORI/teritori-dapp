@@ -5,9 +5,11 @@ import { Tag } from "./Milestone";
 import githubSVG from "../../../../assets/icons/github.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
+import { Link } from "../../../components/Link";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SocialButton } from "../../../components/buttons/SocialButton";
 import { Separator } from "../../../components/separators/Separator";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
@@ -22,18 +24,22 @@ import {
   fontSemibold16,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { useProject } from "../hooks/useProjects";
+import { Milestone } from "../types";
 
 export const ManagerRequests: React.FC = () => {
   const navigation = useAppNavigation();
+  const networkId = useSelectedNetworkId();
+  const projectId = "0";
+
+  const { data: project } = useProject(networkId, projectId);
 
   return (
     <>
-      {[1, 2, 3, 4, 5, 6, 7].map((id) => {
+      {project?.metadata.milestones.map((milestone: Milestone) => {
         return (
           <TertiaryBox
-            fullWidth
-            noBrokenCorners
-            mainContainerStyle={{
+            style={{
               backgroundColor: neutral17,
               marginTop: layout.spacing_x1_5,
               paddingVertical: layout.spacing_x1_5,
@@ -42,11 +48,11 @@ export const ManagerRequests: React.FC = () => {
           >
             <FlexRow>
               <BrandText style={[fontSemibold14, { flexGrow: 1 }]}>
-                🔎 Community Docs Platform
+                {milestone.name}
               </BrandText>
 
               <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-                @0x123123123
+                @{project?.contractor}
               </BrandText>
 
               <Separator
@@ -63,7 +69,11 @@ export const ManagerRequests: React.FC = () => {
                 Status
               </BrandText>
 
-              <Tag text="In Progress" color={neutralFF} bgColor="#693CB1" />
+              <Tag
+                text={milestone.statusId}
+                color={neutralFF}
+                bgColor="#693CB1"
+              />
 
               <BrandText
                 style={[
@@ -93,20 +103,26 @@ export const ManagerRequests: React.FC = () => {
                 Priority
               </BrandText>
 
-              <Tag text="High 🔥" color={neutralFF} bgColor="#673932" />
+              <Tag
+                text={milestone.priority}
+                color={neutralFF}
+                bgColor="#673932"
+              />
 
               <Separator
                 horizontal
                 style={{ marginHorizontal: layout.spacing_x1_5 }}
               />
 
-              <SocialButton
-                iconSvg={githubSVG}
-                style={{
-                  marginRight: layout.spacing_x2,
-                }}
-                bgColor={neutral17}
-              />
+              <Link to={milestone.githubLink}>
+                <SocialButton
+                  iconSvg={githubSVG}
+                  style={{
+                    marginRight: layout.spacing_x2,
+                  }}
+                  bgColor={neutral17}
+                />
+              </Link>
 
               <TouchableOpacity
                 onPress={() => navigation.navigate("GrantsProgramPayment")}

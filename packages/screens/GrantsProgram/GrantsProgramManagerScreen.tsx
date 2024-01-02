@@ -15,6 +15,7 @@ import { ScreenFC } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { useRoute } from "@react-navigation/native";
 
 type Tab = "allGrants" | "requestsByBuilders";
 
@@ -30,6 +31,9 @@ const TAB_OPTIONS = {
 export const GrantsProgramManagerScreen: ScreenFC<
   "GrantsProgramManager"
 > = () => {
+  const params = useRoute();
+  const projectId = (params as any).projectId || "0";
+
   const [searchText, setSearchText] = useState("");
   const [selectedTab, setSelectedTab] = useState<Tab>("allGrants");
 

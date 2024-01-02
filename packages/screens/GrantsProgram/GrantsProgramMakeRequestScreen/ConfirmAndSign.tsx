@@ -1,15 +1,19 @@
 import React, { useState } from "react";
-import { View, Image } from "react-native";
+import { Image, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import grantSuccessPaymentPNG from "../../../../assets/grant-success-payment.png";
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
 import ModalBase from "../../../components/modals/ModalBase";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { mustGetGnoNetwork } from "../../../networks";
+import { getUserId, mustGetGnoNetwork } from "../../../networks";
+import { selectNFTStorageAPI } from "../../../store/slices/settings";
 import { adenaVMCall } from "../../../utils/gno";
+import { generateIpfsKey, uploadFilesToPinata } from "../../../utils/ipfs";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
@@ -17,10 +21,13 @@ import {
   neutral77,
   neutralFF,
 } from "../../../utils/style/colors";
-import { fontSemibold16 } from "../../../utils/style/fonts";
+import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 import { useUtils } from "../hooks/useUtils";
+
+const PINATA_GATEWAY = "https://gateway.pinata.cloud/ipfs";
 
 export const ConfirmAndSign: React.FC = () => {
   const [isShowModal, setIsShowModal] = useState(false);
@@ -31,7 +38,50 @@ export const ConfirmAndSign: React.FC = () => {
   const wallet = useSelectedWallet();
   const { mustHaveValue } = useUtils();
 
+  const userIPFSKey = useSelector(selectNFTStorageAPI);
+  const selectedWallet = useSelectedWallet();
+  const userId = getUserId(networkId, selectedWallet?.address);
+
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+  const { setToastError } = useFeedbacks();
+
+  const uploadFile = async (fileToUpload: LocalFileData) => {
+    let remoteFiles: RemoteFileData[] = [];
+
+    const pinataJWTKey = userIPFSKey || (await generateIpfsKey("gno", userId));
+    if (pinataJWTKey) {
+      remoteFiles = await uploadFilesToPinata({
+        files: [fileToUpload],
+        pinataJWTKey,
+      });
+    }
+
+    if (!remoteFiles.find((file) => file.url)) {
+      console.error("upload file err : Fail to pin to IPFS");
+      setToastError({
+        title: "File upload failed",
+        message: "Fail to pin to IPFS, please try to Publish again",
+      });
+      return;
+    }
+
+    return `${PINATA_GATEWAY}/${remoteFiles[0].url}`;
+  };
+
   const confirmAndSign = async () => {
+    if (!shortDescData._coverImgFile) {
+      setToastError({
+        title: "Warning",
+        message: "Cover Image is mandatory",
+      });
+      throw Error("cover image file is required");
+    }
+
+    setIsUploadingImage(true);
+    const coverImg = await uploadFile(shortDescData._coverImgFile);
+    setIsUploadingImage(false);
+
     const gnoNetwork = mustGetGnoNetwork(networkId);
     const caller = mustHaveValue(wallet?.address, "caller");
     const escrowPkgPath = mustHaveValue(
@@ -50,6 +100,9 @@ export const ConfirmAndSign: React.FC = () => {
 
     const expiryDuration =
       "" + milestoneDurations.split(",").reduce((total, m) => total + +m, 0);
+
+    // Update the coverImg
+    shortDescData.coverImg = coverImg || "";
 
     const metadata = JSON.stringify({
       shortDescData,
@@ -94,7 +147,15 @@ export const ConfirmAndSign: React.FC = () => {
         alignItems: "center",
       }}
     >
-      <PrimaryButton text="Confirm and Sign" onPress={confirmAndSign} />
+      {isUploadingImage && (
+        <BrandText style={[fontSemibold14]}>Uploading Cover Image...</BrandText>
+      )}
+
+      <PrimaryButton
+        disabled={isUploadingImage}
+        text="Confirm and Sign"
+        onPress={confirmAndSign}
+      />
 
       <ModalBase
         onClose={() => setIsShowModal(false)}

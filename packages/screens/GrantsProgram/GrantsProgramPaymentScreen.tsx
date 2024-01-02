@@ -4,6 +4,7 @@ import { SvgProps } from "react-native-svg";
 
 import { HeaderBackButton } from "./components/HeaderBackButton";
 import { Tag } from "./components/Milestone";
+import { useProject } from "./hooks/useProjects";
 import discordSVG from "../../../assets/icons/discord.svg";
 import githubSVG from "../../../assets/icons/github.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
@@ -18,6 +19,7 @@ import { RoundedGradientImage } from "../../components/images/RoundedGradientIma
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { Separator } from "../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { ScreenFC } from "../../utils/navigation";
 import {
   neutral17,
@@ -52,12 +54,22 @@ const CustomSocialButton: React.FC<{
 export const GrantsProgramPaymentScreen: ScreenFC<
   "GrantsProgramPayment"
 > = () => {
+  const networkId = useSelectedNetworkId();
+  const projectId = "0";
+  const { data: project } = useProject(networkId, projectId);
+
   return (
     <ScreenContainer isLarge responsive headerChildren={<HeaderBackButton />}>
       <FlexRow style={{ marginTop: layout.spacing_x4 }}>
-        <RoundedGradientImage size="S" square sourceURI="" />
+        <RoundedGradientImage
+          size="S"
+          square
+          sourceURI={project?.metadata.shortDescData.coverImg}
+        />
         <SpacerRow size={2} />
-        <BrandText style={fontSemibold28}>Grants Manager</BrandText>
+        <BrandText style={fontSemibold28}>
+          {project?.metadata.shortDescData.name}
+        </BrandText>
       </FlexRow>
 
       <Separator style={{ marginVertical: layout.spacing_x2 }} />
@@ -84,13 +96,7 @@ export const GrantsProgramPaymentScreen: ScreenFC<
             <SpacerColumn size={2} />
 
             <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-              Grant name Learning Groups onboard strong technical specialists
-              (engineers, researchers, open-source developers, and more) into
-              the lorem ipsum dolor sit is Live, $50,000 lorem ipsum. Create a
-              community resource platform to facilitate online, and local, local
-              community engagement. The platform should help Platform users in
-              different regions coordinate meet-ups, translations of Platform
-              content into local languages, and to University outreach programs.
+              {project?.metadata.shortDescData.desc}
             </BrandText>
           </TertiaryBox>
 
@@ -108,13 +114,14 @@ export const GrantsProgramPaymentScreen: ScreenFC<
                 Tags:
               </BrandText>
 
-              <SpacerRow size={1} />
-
-              <Tag text="Infrastructure" />
-
-              <SpacerRow size={1} />
-
-              <Tag text="dApp" />
+              {project?.metadata.shortDescData.tags.split(",").map((tag) => {
+                return (
+                  <Tag
+                    text={tag}
+                    containerStyle={{ marginLeft: layout.spacing_x1_5 }}
+                  />
+                );
+              })}
 
               <View style={{ flexGrow: 1, alignItems: "flex-end" }}>
                 <Tag text="23.06.2023" />

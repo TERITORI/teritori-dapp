@@ -47,7 +47,11 @@ export const GrantBox: React.FC<{
       <View style={{ margin: layout.spacing_x2 }}>
         <FlexRow>
           <TouchableOpacity onPress={onPress}>
-            <RoundedGradientImage size="S" square sourceURI="" />
+            <RoundedGradientImage
+              size="S"
+              square
+              sourceURI={project.metadata.shortDescData.coverImg}
+            />
           </TouchableOpacity>
 
           <View style={{ marginLeft: layout.spacing_x2 }}>
@@ -111,11 +115,7 @@ export const GrantBox: React.FC<{
 
         <FlexRow>
           <FlexRow style={{ flexGrow: 1, width: "auto" }}>
-            <SocialButton
-              text=""
-              iconSvg={shareSVG}
-              iconColor={secondaryColor}
-            />
+            <SocialButton iconSvg={shareSVG} iconColor={secondaryColor} />
 
             <SpacerRow size={1} />
 

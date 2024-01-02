@@ -1,16 +1,21 @@
 import { Formik } from "formik";
 import React from "react";
 import { View } from "react-native";
-import { object, string, number } from "yup";
+import { number, object, string } from "yup";
 
 import { MakeRequestFooter } from "./Footer";
-import { ShortDescData } from "./types";
-import { useMakeRequestState } from "../hooks/useMakeRequestHook";
+import addSVG from "../../../../assets/icons/add.svg";
 import { BrandText } from "../../../components/BrandText";
+import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
+import { FileUploader } from "../../../components/fileUploader";
+import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
-import { neutral77 } from "../../../utils/style/colors";
+import { IMAGE_MIME_TYPES } from "../../../utils/mime";
+import { errorColor, neutral77, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
+import { useMakeRequestState } from "../hooks/useMakeRequestHook";
+import { ShortDescData } from "../types";
 
 const emptyValues: ShortDescData = {
   name: "",
@@ -19,6 +24,7 @@ const emptyValues: ShortDescData = {
   paymentAddr: "",
   coverImg: "",
   tags: "",
+  _coverImgFile: undefined,
 };
 
 const shortDescSchema = object({
@@ -28,6 +34,7 @@ const shortDescSchema = object({
   paymentAddr: string().required().min(32),
   coverImg: string().required().url(),
   tags: string().nullable(),
+  _coverImgFile: object(),
 });
 
 export const ShortPresentation: React.FC = () => {
@@ -56,92 +63,136 @@ export const ShortPresentation: React.FC = () => {
           goNextStep();
         }}
       >
-        {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
-          <>
-            <TextInputCustom
-              label="Name *"
-              name="name"
-              fullWidth
-              placeholder="Your Grant name"
-              variant="labelOutside"
-              onChangeText={handleChange("name")}
-              value={values.name}
-              error={errors.name}
-            />
+        {({
+          handleChange,
+          handleSubmit,
+          values,
+          errors,
+          setFieldValue,
+          setFieldError,
+        }) => {
+          return (
+            <>
+              <TextInputCustom
+                label="Name *"
+                name="name"
+                fullWidth
+                placeholder="Your Grant name"
+                variant="labelOutside"
+                onChangeText={handleChange("name")}
+                value={values.name}
+                error={errors.name}
+              />
 
-            <SpacerColumn size={2.5} />
+              <SpacerColumn size={2.5} />
 
-            <TextInputCustom
-              label="Description *"
-              name="description"
-              fullWidth
-              multiline
-              placeholder="Your Grant description"
-              textInputStyle={{ height: 80 }}
-              variant="labelOutside"
-              onChangeText={handleChange("desc")}
-              value={values.desc}
-              error={errors.desc}
-            />
+              <TextInputCustom
+                label="Description *"
+                name="description"
+                fullWidth
+                multiline
+                placeholder="Your Grant description"
+                textInputStyle={{ height: 80 }}
+                variant="labelOutside"
+                onChangeText={handleChange("desc")}
+                value={values.desc}
+                error={errors.desc}
+              />
 
-            <SpacerColumn size={2.5} />
+              <SpacerColumn size={2.5} />
 
-            <TextInputCustom
-              label="Budget *"
-              name="budget"
-              fullWidth
-              placeholder="What budget do you need?"
-              variant="labelOutside"
-              onChangeText={handleChange("budget")}
-              value={values.budget}
-              error={errors.budget}
-            />
+              <TextInputCustom
+                label="Budget *"
+                name="budget"
+                fullWidth
+                placeholder="What budget do you need?"
+                variant="labelOutside"
+                onChangeText={handleChange("budget")}
+                value={values.budget}
+                error={errors.budget}
+              />
 
-            <SpacerColumn size={2.5} />
+              <SpacerColumn size={2.5} />
 
-            <TextInputCustom
-              label="Payment Address (Gnoland or Cosmos) *"
-              name="paymentAddr"
-              fullWidth
-              placeholder="Type Gnoland or Cosmos payment address..."
-              variant="labelOutside"
-              onChangeText={handleChange("paymentAddr")}
-              value={values.paymentAddr}
-              error={errors.paymentAddr}
-            />
+              <TextInputCustom
+                label="Payment Address (Gnoland or Cosmos) *"
+                name="paymentAddr"
+                fullWidth
+                placeholder="Type Gnoland or Cosmos payment address..."
+                variant="labelOutside"
+                onChangeText={handleChange("paymentAddr")}
+                value={values.paymentAddr}
+                error={errors.paymentAddr}
+              />
 
-            <SpacerColumn size={2.5} />
+              <SpacerColumn size={2.5} />
 
-            <TextInputCustom
-              label="Cover image *"
-              name="coverImg"
-              fullWidth
-              placeholder="Type Gnoland or Cosmos payment address..."
-              variant="labelOutside"
-              onChangeText={handleChange("coverImg")}
-              value={values.coverImg}
-              error={errors.coverImg}
-            />
+              <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
+                Cover Image *
+              </BrandText>
 
-            <SpacerColumn size={2.5} />
+              <SpacerColumn size={1.5} />
 
-            <TextInputCustom
-              label="Tags *"
-              name="tags"
-              fullWidth
-              placeholder="Add  1-5 main Grant tags using comma..."
-              variant="labelOutside"
-              onChangeText={handleChange("tags")}
-              value={values.tags}
-              error={errors.tags}
-            />
+              <FileUploader
+                onUpload={async (files) => {
+                  if (files[0].fileType !== "image") {
+                    await setFieldError("coverImg", "file is not an image");
+                  }
+                  await setFieldValue("_coverImgFile", files[0]);
+                }}
+                mimeTypes={IMAGE_MIME_TYPES}
+              >
+                {({ onPress }) => (
+                  <PrimaryButtonOutline
+                    iconSVG={addSVG}
+                    text="Select file"
+                    fullWidth
+                    size="M"
+                    onPress={onPress}
+                  />
+                )}
+              </FileUploader>
 
-            <MakeRequestFooter
-              disableNext={Object.keys(errors).length !== 0}
-              onSubmit={handleSubmit}
-            />
-          </>
-        )}
+              <SpacerColumn size={1} />
+
+              {errors.coverImg && (
+                <BrandText style={[fontSemibold14, { color: errorColor }]}>
+                  {errors.coverImg}
+                </BrandText>
+              )}
+
+              <View style={{ alignItems: "center" }}>
+                {values._coverImgFile?.url && (
+                  <RoundedGradientImage
+                    size="M"
+                    square
+                    sourceURI={values._coverImgFile?.url}
+                  />
+                )}
+              </View>
+
+              <SpacerColumn size={2.5} />
+
+              <TextInputCustom
+                label="Tags *"
+                name="tags"
+                fullWidth
+                placeholder="Add  1-5 main Grant tags using comma..."
+                variant="labelOutside"
+                onChangeText={handleChange("tags")}
+                value={values.tags}
+                error={errors.tags}
+              />
+
+              <MakeRequestFooter
+                disableNext={
+                  Object.keys(errors).length !== 0 || !values._coverImgFile
+                }
+                onSubmit={handleSubmit}
+              />
+            </>
+          );
+        }}
       </Formik>
     </View>
   );
