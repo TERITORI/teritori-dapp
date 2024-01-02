@@ -180,6 +180,13 @@ export const fontMedium16: TextStyle = {
   fontFamily: "Exo_500Medium",
   fontWeight: "500",
 };
+export const fontMedium15: TextStyle = {
+  fontSize: 15,
+  letterSpacing: -(14 * 0.04),
+  lineHeight: 18,
+  fontFamily: "Exo_500Medium",
+  fontWeight: "500",
+};
 export const fontMedium14: TextStyle = {
   fontSize: 14,
   letterSpacing: -(14 * 0.04),
@@ -200,4 +207,11 @@ export const fontMedium10: TextStyle = {
   lineHeight: 12,
   fontFamily: "Exo_500Medium",
   fontWeight: "500",
+};
+export const fontNormal15: TextStyle = {
+  fontSize: 15,
+  letterSpacing: -(14 * 0.04),
+  lineHeight: 22,
+  fontFamily: "Exo_500Medium",
+  fontWeight: "400",
 };

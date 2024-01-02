@@ -1,6 +1,7 @@
 import React from "react";
 import { SafeAreaView, View } from "react-native";
 
+import { ChatInput } from "./ChatInput";
 import { Conversations } from "./Conversations";
 import { Header } from "./Header";
 import { BrandText } from "../../../components/BrandText";
@@ -9,6 +10,31 @@ import { SpacerRow } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import { fontSemibold22 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+
+const dummyMessage = [
+  {
+    id: "1",
+    date: "4m",
+    message: "Hi Guys",
+    isMyMessage: true,
+    status: "Sent",
+  },
+  {
+    id: "2",
+    date: "3m",
+    message:
+      "Let's start organization of the open Beta here! Some mates are waiting :)",
+    isMyMessage: true,
+    status: "Sent",
+  },
+  {
+    id: "3",
+    date: "1m",
+    message: "Hello! Let's get started.",
+    isMyMessage: false,
+    status: "Sent",
+  },
+];
 
 export const Conversation: ScreenFC<"Conversation"> = ({ navigation }) => {
   return (
@@ -38,7 +64,9 @@ export const Conversation: ScreenFC<"Conversation"> = ({ navigation }) => {
         </View>
       </View>
       <SpacerRow size={4} />
-      <Conversations conversations={[]} />
+      <Conversations conversations={[...dummyMessage]} isTyping />
+      <SpacerRow size={4} />
+      <ChatInput />
     </SafeAreaView>
   );
 };
