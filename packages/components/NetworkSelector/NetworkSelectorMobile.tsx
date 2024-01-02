@@ -25,7 +25,10 @@ export const NetworkSelectorMobile: React.FC<{
 
   return (
     <View style={style} ref={dropdownRef} collapsable={false}>
-      <TouchableOpacity onPress={() => setDropdownState(true)}>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={() => setDropdownState(!isDropdownOpen)}
+      >
         <LegacyTertiaryBox
           noBrokenCorners
           mainContainerStyle={{

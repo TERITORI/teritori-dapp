@@ -26,7 +26,10 @@ export const TopMenu: FC = () => {
 
   return (
     <View ref={dropdownRef} collapsable={false}>
-      <TouchableOpacity onPress={() => setDropdownState(true)}>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={() => setDropdownState(!isDropdownOpen)}
+      >
         <LegacyTertiaryBox
           width={220}
           mainContainerStyle={[

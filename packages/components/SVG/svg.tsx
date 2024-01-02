@@ -1,9 +1,13 @@
 import React from "react";
-import { Platform, Image, ImageProps } from "react-native";
+import { Platform, Image, View, ImageProps } from "react-native";
 import { SvgFromUri, SvgProps } from "react-native-svg";
 
 export const SVG: React.FC<
-  SvgProps & { source: React.FC<SvgProps> | string }
+  SvgProps & {
+    source: React.FC<SvgProps> | string;
+    height: ImageProps["height"];
+    width: ImageProps["width"];
+  }
 > = ({ source, ...svgProps }) => {
   if (!source) {
     return null;
@@ -11,9 +15,26 @@ export const SVG: React.FC<
 
   if (typeof source === "string" && source.startsWith("http")) {
     if (Platform.OS === "web") {
-      return <Image {...(svgProps as ImageProps)} source={{ uri: source }} />;
+      return (
+        <Image
+          source={{ uri: source }}
+          style={{
+            height: svgProps.height || "auto",
+            width: svgProps.width || "auto",
+          }}
+        />
+      );
     }
-    return <SvgFromUri uri={source} {...svgProps} />;
+    return (
+      <View
+        style={{
+          height: svgProps.height || "auto",
+          width: svgProps.width || "auto",
+        }}
+      >
+        <SvgFromUri uri={source} {...svgProps} />
+      </View>
+    );
   }
   const Component = source;
   return <Component {...svgProps} />;

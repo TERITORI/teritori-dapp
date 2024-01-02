@@ -6,7 +6,7 @@ import { LinkProps } from "./types";
 
 // FIXME: use <a> tag on web
 
-export const Link: React.FC<LinkProps> = ({ to, children }) => {
+export const Link: React.FC<LinkProps> = ({ to, children, style }) => {
   const handleExternal = useCallback(() => {
     return Linking.openURL(to || "");
   }, [to]);
@@ -16,6 +16,8 @@ export const Link: React.FC<LinkProps> = ({ to, children }) => {
   }
 
   return (
-    <TouchableOpacity onPress={handleExternal}>{children}</TouchableOpacity>
+    <TouchableOpacity style={style} onPress={handleExternal}>
+      {children}
+    </TouchableOpacity>
   );
 };

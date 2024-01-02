@@ -30,7 +30,8 @@ export const ConversationSelector: React.FC<{
   return (
     <View style={[{}, style]} ref={dropdownRef} collapsable={false}>
       <TouchableOpacity
-        onPress={() => setDropdownState(true)}
+        activeOpacity={0.9}
+        onPress={() => setDropdownState(!isDropdownOpen)}
         style={{
           flexDirection: "row",
           paddingHorizontal: 12,

@@ -29,7 +29,10 @@ export const Menu: React.FC<MenuProps> = ({
 
   return (
     <View style={{ position: "relative" }}>
-      <TouchableOpacity onPress={() => setDropdownState(true)}>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={() => setDropdownState(!isDropdownOpen)}
+      >
         {component}
       </TouchableOpacity>
       {isDropdownOpen && (

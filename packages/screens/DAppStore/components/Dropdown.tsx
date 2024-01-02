@@ -71,8 +71,6 @@ export const DropdownDappsStoreFilter: React.FC = () => {
 
   return (
     <View
-      ref={dropdownRef}
-      collapsable={false}
       style={{
         alignSelf: "flex-end",
         marginRight: layout.spacing_x3,
@@ -85,7 +83,7 @@ export const DropdownDappsStoreFilter: React.FC = () => {
           alignItems: "center",
         }}
         activeOpacity={1}
-        onPress={() => setDropdownState(false)}
+        onPress={() => setDropdownState(!isDropdownOpen)}
       >
         <BrandText style={[fontSemibold14, { marginRight: layout.spacing_x1 }]}>
           All dApps
@@ -97,29 +95,34 @@ export const DropdownDappsStoreFilter: React.FC = () => {
           color={secondaryColor}
         />
       </TouchableOpacity>
-
-      {isDropdownOpen && (
-        <LegacySecondaryBox
-          noBrokenCorners
-          width={248}
-          style={{ position: "absolute", top: 29, right: -14 }}
-          mainContainerStyle={{
-            paddingHorizontal: layout.spacing_x1_5,
-            paddingTop: layout.spacing_x1_5,
-            backgroundColor: neutral33,
-            alignItems: "flex-start",
-          }}
-        >
-          {options.map((option) => (
-            <SelectableOption
-              style={{ marginBottom: layout.spacing_x1_5 }}
-              key={option.id}
-              name={option.name}
-              id={option.id}
-            />
-          ))}
-        </LegacySecondaryBox>
-      )}
+      <View
+        ref={dropdownRef}
+        collapsable={false}
+        style={{ position: "absolute", top: 29, right: -14 }}
+      >
+        {isDropdownOpen && (
+          <LegacySecondaryBox
+            noBrokenCorners
+            width={248}
+            mainContainerStyle={{
+              paddingHorizontal: layout.spacing_x1_5,
+              paddingTop: layout.spacing_x1_5,
+              backgroundColor: neutral33,
+              alignItems: "flex-start",
+              flex: 1,
+            }}
+          >
+            {options.map((option) => (
+              <SelectableOption
+                style={{ marginBottom: layout.spacing_x1_5 }}
+                key={option.id}
+                name={option.name}
+                id={option.id}
+              />
+            ))}
+          </LegacySecondaryBox>
+        )}
+      </View>
     </View>
   );
 };

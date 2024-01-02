@@ -28,25 +28,29 @@ const gridHalfGutter = 12;
 
 export const HubLanding: React.FC = () => {
   const navigation = useAppNavigation();
-  const { width } = useMaxResolution();
+  const { width } = useMaxResolution({ responsive: true });
   const networkId = useSelectedNetworkId();
   const banners = useBanners(networkId);
   const banner = banners?.length ? banners[0] : undefined;
 
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
-      <View style={{ flex: 1 }}>
+      <View>
         {!!banner && (
-          <Link to={banner?.url || ""}>
+          <Link
+            to={banner?.url || ""}
+            style={{
+              marginTop: 56,
+            }}
+          >
             <OptimizedImage
               sourceURI={banner?.image}
               width={width}
-              height={350}
+              height={width / 3.12}
               style={{
-                height: 350,
+                height: width / 3.12,
                 width,
                 borderRadius: 20,
-                marginTop: 56,
               }}
             />
           </Link>

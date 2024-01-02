@@ -98,7 +98,7 @@ export const Pagination = ({
               alignItems: "center",
             }}
             activeOpacity={1}
-            onPress={() => setDropdownState(true)}
+            onPress={() => setDropdownState(!isDropdownOpen)}
           >
             <BrandText
               style={[fontSemibold14, { marginRight: layout.spacing_x1 }]}

@@ -14,7 +14,7 @@ export const TopMenuMobile: FC = () => {
 
   return (
     <View ref={dropdownRef} collapsable={false}>
-      <TouchableOpacity onPress={() => setDropdownState(true)}>
+      <TouchableOpacity onPress={() => setDropdownState(!isDropdownOpen)}>
         <UserAvatarWithFrame size="XXS" userId={selectedWallet?.userId} />
       </TouchableOpacity>
 

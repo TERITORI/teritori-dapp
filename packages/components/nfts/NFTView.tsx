@@ -281,7 +281,7 @@ const NFTViewHeader: React.FC<{
           ref={dropdownRef}
           collapsable={false}
         >
-          <Pressable onPress={() => setDropdownState(true)}>
+          <Pressable onPress={() => setDropdownState(!isDropdownOpen)}>
             <SVG source={dotsCircleSVG} height={32} width={32} />
           </Pressable>
           {isDropdownOpen && (

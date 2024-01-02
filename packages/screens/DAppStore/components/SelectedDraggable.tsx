@@ -91,6 +91,10 @@ export const SelectedDraggable: React.FC<{
               cursor: "grab",
             },
           }),
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          paddingHorizontal: layout.spacing_x1_5,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>

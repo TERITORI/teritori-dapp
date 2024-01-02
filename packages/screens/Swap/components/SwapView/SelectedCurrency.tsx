@@ -37,7 +37,8 @@ export const SelectedCurrency = forwardRef<
   return (
     <View ref={ref} collapsable={false}>
       <TouchableOpacity
-        onPress={() => setDropdownState(true)}
+        activeOpacity={0.9}
+        onPress={() => setDropdownState(!isDropdownOpen)}
         style={{
           flexDirection: "row",
           alignItems: "center",

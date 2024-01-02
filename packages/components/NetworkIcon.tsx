@@ -25,23 +25,21 @@ export const NetworkIcon: React.FC<{
     );
   }
 
-  if (iconToUse.endsWith(".svg")) {
-    return (
-      <SVG
-        style={{ borderRadius: size / 4 }}
-        source={
-          iconToUse.startsWith("http")
-            ? iconToUse
-            : icons.networks[
-                camelCase(iconToUse.replace(".svg", "")).replace(
-                  / /g,
-                  "",
-                ) as keyof typeof icons.networks
-              ]
-        }
-        width={size}
-        height={size}
-      />
-    );
-  }
+  return (
+    <SVG
+      style={{ borderRadius: size / 4 }}
+      source={
+        iconToUse.startsWith("http")
+          ? iconToUse
+          : icons.networks[
+              camelCase(iconToUse.replace(".svg", "")).replace(
+                / /g,
+                "",
+              ) as keyof typeof icons.networks
+            ]
+      }
+      width={size}
+      height={size}
+    />
+  );
 };

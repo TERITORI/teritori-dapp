@@ -49,10 +49,9 @@ export const HeaderMobile: FC<{
         <TogglePlayerButton />
         <SpacerRow size={1} />
         <SearchButtonMobile />
-
+        <SpacerRow size={1} />
         {!!selectedNFTDataInCart.length && (
           <>
-            <SpacerRow size={1} />
             <CartIconButtonBadge isMobile />
             <SpacerRow size={1} />
           </>
