@@ -5,8 +5,8 @@ import { SvgFromUri, SvgProps } from "react-native-svg";
 export const SVG: React.FC<
   SvgProps & {
     source: React.FC<SvgProps> | string;
-    height: ImageProps["height"];
-    width: ImageProps["width"];
+    height?: ImageProps["height"];
+    width?: ImageProps["width"];
   }
 > = ({ source, ...svgProps }) => {
   if (!source) {
