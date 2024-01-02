@@ -6,6 +6,7 @@ import { Platform } from "react-native";
 import { Sidebar } from "./Sidebar";
 import { AdministrationDashboardScreen } from "../../screens/AdministrationDashboard/AdministrationDashboardScreen";
 import { AllProjectAdministrationDashScreen } from "../../screens/AllProjectAdministrationDash/AllProjectAdministrationDashScreen";
+import { ApplicationRewiewScreen } from "../../screens/ApplicationRewiew/ApplicationRewiew";
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { CoreDAOScreen } from "../../screens/CoreDAO/CoreDAOScreen";
 import { DAppStoreScreen } from "../../screens/DAppStore/DAppStoreScreen";
@@ -145,6 +146,14 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="LaunchpadApplications"
         component={LaunchpadApplicationsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Applications"),
+        }}
+      />
+      <Stack.Screen
+        name="ApplicationReview"
+        component={ApplicationRewiewScreen}
         options={{
           header: () => null,
           title: screenTitle("Launchpad Applications"),

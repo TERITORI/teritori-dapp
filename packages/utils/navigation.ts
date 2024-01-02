@@ -26,6 +26,7 @@ export type RootStackParamList = {
   RiotersFooter: undefined;
   AdministrationDashboard: undefined;
   LaunchpadApplications: undefined;
+  ApplicationReview: undefined;
   ReadyLaunchpadApplications: undefined;
   AllProjectAdministrationDash: undefined;
 
@@ -114,6 +115,7 @@ const navConfig: {
     RiotersFooter: "rioters-footer",
     AdministrationDashboard: "administration-dashboard",
     LaunchpadApplications: "launchpad-applications",
+    ApplicationReview: "application-review",
     ReadyLaunchpadApplications: "ready-launchpad-applications",
     AllProjectAdministrationDash: "all-project-applications-dashboard",
     // === RiotGame
