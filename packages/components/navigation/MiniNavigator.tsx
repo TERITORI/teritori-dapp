@@ -1,13 +1,13 @@
 import {
-  createBottomTabNavigator,
   BottomTabNavigationProp,
+  createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
 import { RouteProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
 import { MiniChatScreen } from "../../screens/Mini/Chat/MiniChatScreen";
-import { Conversation } from "../../screens/Mini/Conversation";
+import { ConversationScreeen } from "../../screens/Mini/Conversation/ConversationScreen";
 import { MiniFeedScreen } from "../../screens/Mini/Feed/MiniFeedScreen";
 import { MiniWalletScreen } from "../../screens/Mini/Wallet/MiniWalletScreen";
 import { CreatePassword } from "../../screens/Wallet/Screens/CreatePassword";
@@ -19,29 +19,13 @@ import { RootStackParamList } from "../../utils/navigation";
 import { neutral00, secondaryColor } from "../../utils/style/colors";
 import { TabBarIcon } from "../TabBarIcon";
 
-export type MiniNavBottomTabParamList = {
-  MiniChats: undefined;
-  MiniWallets: undefined;
-  MiniFeeds: undefined;
-};
-
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const Tab = createBottomTabNavigator<MiniNavBottomTabParamList>();
+const Tab = createBottomTabNavigator<RootStackParamList>();
 
-export type MiniScreenFC<T extends keyof MiniNavBottomTabParamList> = React.FC<{
-  navigation: BottomTabNavigationProp<MiniNavBottomTabParamList, T>;
-  route: RouteProp<MiniNavBottomTabParamList, T>;
+export type MiniTabScreenFC<T extends keyof RootStackParamList> = React.FC<{
+  navigation: BottomTabNavigationProp<RootStackParamList, T>;
+  route: RouteProp<RootStackParamList, T>;
 }>;
-
-export const miniNavConfig: {
-  screens: { [Name in keyof MiniNavBottomTabParamList]: string };
-} = {
-  screens: {
-    MiniChats: "mini-chat",
-    MiniWallets: "mini-wallet",
-    MiniFeeds: "mini-feed",
-  },
-};
 
 const MainTab = () => {
   return (
@@ -110,7 +94,7 @@ export const MiniNavigator: React.FC = () => {
       />
       <Stack.Screen
         name="Conversation"
-        component={Conversation}
+        component={ConversationScreeen}
         options={{
           header: () => null,
           title: "Chat",

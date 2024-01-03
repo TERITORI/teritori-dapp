@@ -59,31 +59,11 @@ const dummyMessage = [
     isMyMessage: true,
     status: "Sent",
   },
-  {
-    id: "8",
-    date: "3m",
-    message:
-      "8Let's start organization of the open Beta here! Some mates are waiting :)",
-    isMyMessage: true,
-    status: "Sent",
-  },
-  {
-    id: "9",
-    date: "1m",
-    message: "9Hello! Let's get started.",
-    isMyMessage: false,
-    status: "Sent",
-  },
-  {
-    id: "10",
-    date: "1m",
-    message: "10Hello! Let's get started.",
-    isMyMessage: false,
-    status: "Sent",
-  },
 ];
 
-export const Conversation: ScreenFC<"Conversation"> = ({ navigation }) => {
+export const ConversationScreeen: ScreenFC<"Conversation"> = ({
+  navigation,
+}) => {
   return (
     <SafeAreaView
       style={{

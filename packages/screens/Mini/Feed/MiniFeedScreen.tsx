@@ -2,9 +2,9 @@ import React from "react";
 
 import { BrandText } from "../../../components/BrandText";
 import { ScreenContainer } from "../../../components/ScreenContainer";
-import { MiniScreenFC } from "../../../components/navigation/MiniNavigator";
+import { MiniTabScreenFC } from "../../../components/navigation/MiniNavigator";
 
-export const MiniFeedScreen: MiniScreenFC<"MiniFeeds"> = ({}) => {
+export const MiniFeedScreen: MiniTabScreenFC<"MiniFeeds"> = ({}) => {
   return (
     <ScreenContainer
       headerChildren={<></>}

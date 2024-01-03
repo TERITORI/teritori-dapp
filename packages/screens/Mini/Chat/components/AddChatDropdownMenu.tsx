@@ -1,16 +1,16 @@
 import React from "react";
 import { View } from "react-native";
 
-import AddSVG from "../../../../assets/icons/add-new.svg";
-import ChatGraySVG from "../../../../assets/icons/chat-gray.svg";
-import FriendGraySVG from "../../../../assets/icons/friend-gray.svg";
-import OrganizationGraySVG from "../../../../assets/icons/organization-gray.svg";
-import GroupGraySVG from "../../../../assets/icons/users-group-gray.svg";
-import { BrandText } from "../../../components/BrandText";
-import { Dropdown } from "../../../components/Dropdown";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { neutral22 } from "../../../utils/style/colors";
-import { fontMedium16 } from "../../../utils/style/fonts";
+import AddSVG from "../../../../../assets/icons/add-new.svg";
+import ChatGraySVG from "../../../../../assets/icons/chat-gray.svg";
+import FriendGraySVG from "../../../../../assets/icons/friend-gray.svg";
+import OrganizationGraySVG from "../../../../../assets/icons/organization-gray.svg";
+import GroupGraySVG from "../../../../../assets/icons/users-group-gray.svg";
+import { BrandText } from "../../../../components/BrandText";
+import { Dropdown } from "../../../../components/Dropdown";
+import { CustomPressable } from "../../../../components/buttons/CustomPressable";
+import { neutral22 } from "../../../../utils/style/colors";
+import { fontMedium16 } from "../../../../utils/style/fonts";
 
 export const AddChatDropdownMenu = () => {
   return (

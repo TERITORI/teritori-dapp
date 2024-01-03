@@ -2,15 +2,15 @@ import React from "react";
 import { View, FlatList } from "react-native";
 
 import { ChatAvatar } from "./ChatAvatar";
-import DoubleCheckSVG from "../../../../assets/icons/double-check.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { Separator } from "../../../components/separators/Separator";
-import { useAppNavigation } from "../../../utils/navigation";
-import { neutralA3, secondaryColor } from "../../../utils/style/colors";
-import { fontMedium13, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import DoubleCheckSVG from "../../../../../assets/icons/double-check.svg";
+import { BrandText } from "../../../../components/BrandText";
+import { SVG } from "../../../../components/SVG";
+import { CustomPressable } from "../../../../components/buttons/CustomPressable";
+import { Separator } from "../../../../components/separators/Separator";
+import { useAppNavigation } from "../../../../utils/navigation";
+import { neutralA3, secondaryColor } from "../../../../utils/style/colors";
+import { fontMedium13, fontSemibold14 } from "../../../../utils/style/fonts";
+import { layout } from "../../../../utils/style/layout";
 
 type ChatListProps = {
   items: SingleChatListType[];

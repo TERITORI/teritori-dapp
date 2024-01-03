@@ -9,7 +9,7 @@ import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerRow } from "../../../components/spacer";
 import { RootStackParamList } from "../../../utils/navigation";
-import { ChatAvatar } from "../Chat/ChatAvatar";
+import { ChatAvatar } from "../Chat/components/ChatAvatar";
 type HeaderProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "Conversation">;
 };

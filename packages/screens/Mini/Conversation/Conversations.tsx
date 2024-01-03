@@ -124,7 +124,7 @@ const SingleConversation = ({
         borderTopEndRadius: isMyMessage ? 2 : 10,
         borderBottomEndRadius: isMyMessage ? 2 : 10,
         backgroundColor: blueDefault,
-        paddingHorizontal: 8,
+        paddingHorizontal: layout.spacing_x2,
         paddingVertical: 6,
         alignSelf: isMyMessage ? "flex-end" : "flex-start",
         marginBottom: layout.spacing_x0_5,

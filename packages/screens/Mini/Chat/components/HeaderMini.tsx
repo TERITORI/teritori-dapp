@@ -1,23 +1,19 @@
 import React from "react";
-import { GestureResponderEvent, Image, Pressable, View } from "react-native";
+import { Image, Pressable, View } from "react-native";
 
-import NotificationSVG from "../../../assets/icons/notification-new.svg";
-import { BrandText } from "../../components/BrandText";
-import { AddChatDropdownMenu } from "../../screens/Mini/Chat/AddChatDropdownMenu";
-import { neutral00, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold18 } from "../../utils/style/fonts";
-import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
+import { AddChatDropdownMenu } from "./AddChatDropdownMenu";
+import NotificationSVG from "../../../../../assets/icons/notification-new.svg";
+import { BrandText } from "../../../../components/BrandText";
+import { neutral00, secondaryColor } from "../../../../utils/style/colors";
+import { fontSemibold18 } from "../../../../utils/style/fonts";
+import { layout, MOBILE_HEADER_HEIGHT } from "../../../../utils/style/layout";
+
 interface HeaderMiniProps {
   title: string;
-  onPressNotification?: (event: GestureResponderEvent) => void;
-  onPressAdd?: (event: GestureResponderEvent) => void;
 }
 
-export const HeaderMini = ({
-  title,
-  onPressNotification = () => {},
-  onPressAdd = () => {},
-}: HeaderMiniProps) => {
+export const HeaderMini = ({ title }: HeaderMiniProps) => {
+  const onPressNotification = () => {};
   return (
     <View
       style={{
@@ -32,6 +28,7 @@ export const HeaderMini = ({
         paddingHorizontal: layout.spacing_x1_5,
         position: "absolute",
         top: 0,
+        zIndex: 9999,
       }}
     >
       <Image

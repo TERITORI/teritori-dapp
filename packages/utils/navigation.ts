@@ -83,6 +83,9 @@ export type RootStackParamList = {
   //Mini Screens
   MiniTabs: undefined;
   Conversation: { conversationId: string };
+  MiniChats: undefined;
+  MiniWallets: undefined;
+  MiniFeeds: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -184,6 +187,9 @@ const navConfig: {
 
     // ==== Mini nav
     MiniTabs: "mini-tabs",
+    MiniChats: "mini-chat",
+    MiniWallets: "mini-wallet",
+    MiniFeeds: "mini-feed",
     Conversation: "mini-conversation",
   },
 };

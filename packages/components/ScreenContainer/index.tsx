@@ -49,6 +49,7 @@ export const ScreenContainer: React.FC<{
   onBackPress?: () => void;
   maxWidth?: number;
   children?: ReactNode;
+  headerMini?: ReactNode;
 }> = ({
   children,
   headerChildren,
@@ -65,6 +66,7 @@ export const ScreenContainer: React.FC<{
   forceNetworkId,
   forceNetworkKind,
   forceNetworkFeatures,
+  headerMini,
 }) => {
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
@@ -114,6 +116,7 @@ export const ScreenContainer: React.FC<{
         forceNetworkId={forceNetworkId}
         forceNetworkKind={forceNetworkKind}
         mobileTitle={mobileTitle}
+        headerMini={headerMini}
       />
     );
   /////////////// default returns

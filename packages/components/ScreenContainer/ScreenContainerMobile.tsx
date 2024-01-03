@@ -1,10 +1,12 @@
-import React, { FC, ReactNode } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { FC, ReactNode, useEffect, useState } from "react";
 import { SafeAreaView, useWindowDimensions, View } from "react-native";
 
-import { HeaderMini } from "./HeaderMini";
 import { HeaderMobile } from "./HeaderMobile";
+import { AppType } from "../../../Root";
 import { useSearchBar } from "../../context/SearchBarProvider";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
+import { HeaderMini } from "../../screens/Mini/Chat/components/HeaderMini";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
 import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
@@ -43,6 +45,7 @@ export const ScreenContainerMobile: FC<{
   mobileTitle?: string;
   onBackPress?: () => void;
   children: ReactNode;
+  headerMini?: ReactNode;
 }> = ({
   children,
   networkFilter,
@@ -52,21 +55,21 @@ export const ScreenContainerMobile: FC<{
   forceNetworkFeatures,
   mobileTitle,
   onBackPress,
+  headerMini,
 }) => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
-  // const [appType, setAppType] = useState<AppType>("normal");
+  const [appType, setAppType] = useState<AppType>("normal");
 
-  // useEffect(() => {
-  //   const getAppType = async () => {
-  //     const savedAppType = await AsyncStorage.getItem("app-type");
-  //     if (savedAppType && ["normal", "mini"].includes(savedAppType)) {
-  //       setAppType("mini");
-  //     }
-  //   };
-  //   getAppType();
-  // }, []);
-  const appType = "mini";
+  useEffect(() => {
+    const getAppType = async () => {
+      const savedAppType = await AsyncStorage.getItem("app-type");
+      if (savedAppType && ["normal", "mini"].includes(savedAppType)) {
+        setAppType("mini");
+      }
+    };
+    getAppType();
+  }, []);
   return (
     <SafeAreaView
       style={{
@@ -88,7 +91,7 @@ export const ScreenContainerMobile: FC<{
           visible={isSearchModalMobileOpen}
         />
         {appType === "mini" ? (
-          <HeaderMini title={mobileTitle || ""} />
+          headerMini ?? <HeaderMini title={mobileTitle || ""} />
         ) : (
           <HeaderMobile
             onBackPress={onBackPress}

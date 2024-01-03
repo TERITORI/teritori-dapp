@@ -2,16 +2,18 @@ import React, { useState } from "react";
 import { Dimensions, FlatList, TouchableOpacity, View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { ChatList } from "./ChatList";
-import { SearchChatList } from "./SearchChatList";
-import { dummyChat } from "./chatDummyData";
+import { ChatList } from "./components/ChatList";
+import { HeaderMini } from "./components/HeaderMini";
+import { SearchChatList } from "./components/SearchChatList";
+import { dummyChat } from "./components/chatDummyData";
+import { ChatSetting } from "./components/modals/ChatSetting";
 import rightArrowSVG from "../../../../assets/icons/chevron-right-white.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import friendSVG from "../../../../assets/icons/friend.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
-import { MiniScreenFC } from "../../../components/navigation/MiniNavigator";
+import { MiniTabScreenFC } from "../../../components/navigation/MiniNavigator";
 import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
 import { ToastInfo } from "../../../components/toasts/ToastInfo";
 import {
@@ -102,7 +104,7 @@ const Item = ({ title, icon }: ItemProps) => (
     </View>
   </View>
 );
-export const MiniChatScreen: MiniScreenFC<"MiniChats"> = ({
+export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
   navigation,
   route,
 }) => {
@@ -110,11 +112,19 @@ export const MiniChatScreen: MiniScreenFC<"MiniChats"> = ({
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("chats");
   const [search, setSearch] = useState("");
+  const [isChatSettingModalVisible, setIsChatSettingModalVisible] =
+    useState(false);
+
+  const toggleChatSettingModal = () =>
+    setIsChatSettingModalVisible((prev) => !prev);
 
   const hideToast = () => {
     setShowToast(false);
   };
-
+  const onLearnMoreToastPress = () => {
+    // navigation.navigate("ChatSetting");
+    setIsChatSettingModalVisible(true);
+  };
   return (
     <ScreenContainer
       headerChildren={<></>}
@@ -123,23 +133,28 @@ export const MiniChatScreen: MiniScreenFC<"MiniChats"> = ({
       footerChildren={null}
       noScroll
       mobileTitle="Chats"
+      headerMini={
+        showToast ? (
+          <ToastInfo
+            message={
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+              >
+                <BrandText style={[fontSemibold14, {}]}>
+                  Learn more about Forced Chat tab
+                </BrandText>
+                <SVG source={rightArrowSVG} height={20} width={20} />
+              </View>
+            }
+            onPress={onLearnMoreToastPress}
+            onCrossPress={hideToast}
+            position={{ left: 10, top: 0 }}
+          />
+        ) : (
+          <HeaderMini title="Chats" />
+        )
+      }
     >
-      {showToast && (
-        <ToastInfo
-          message={
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
-            >
-              <BrandText style={[fontSemibold14, {}]}>
-                Learn more about Forced Chat tab
-              </BrandText>
-              <SVG source={rightArrowSVG} height={20} width={20} />
-            </View>
-          }
-          onPress={() => alert("Wow")}
-          onCrossPress={hideToast}
-        />
-      )}
       <RoundedTabs
         items={collectionScreenTabItems}
         onSelect={(key) => setSelectedTab(key)}
@@ -214,6 +229,12 @@ export const MiniChatScreen: MiniScreenFC<"MiniChats"> = ({
           </View>
         )}
       </View>
+
+      {/* Chat setting model */}
+      <ChatSetting
+        toggleModal={toggleChatSettingModal}
+        isVisible={isChatSettingModalVisible}
+      />
     </ScreenContainer>
   );
 };

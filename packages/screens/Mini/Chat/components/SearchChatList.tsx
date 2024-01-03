@@ -1,11 +1,11 @@
 import React from "react";
 import { StyleProp, TextInput, View, ViewStyle } from "react-native";
 
-import searchSVG from "../../../../assets/icons/search-gray.svg";
-import { SVG } from "../../../components/SVG";
-import { SpacerRow } from "../../../components/spacer";
-import { neutral33, neutral77 } from "../../../utils/style/colors";
-import { fontMedium16 } from "../../../utils/style/fonts";
+import searchSVG from "../../../../../assets/icons/search-gray.svg";
+import { SVG } from "../../../../components/SVG";
+import { SpacerRow } from "../../../../components/spacer";
+import { neutral33, neutral77 } from "../../../../utils/style/colors";
+import { fontMedium16 } from "../../../../utils/style/fonts";
 
 interface SearchInputProps {
   onClose: () => void;
