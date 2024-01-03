@@ -50,6 +50,7 @@ export const ChatAvatar = ({
             if (isMembersMoreThanFour && index > 2) {
               return (
                 <View
+                  key={index}
                   style={{
                     height: avatarSize / 2,
                     width: avatarSize / 2,

@@ -1,16 +1,11 @@
 import React, { useState } from "react";
-import {
-  Dimensions,
-  FlatList,
-  ScrollView,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Dimensions, FlatList, TouchableOpacity, View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { ChatList } from "./ChatList";
 import { SearchChatList } from "./SearchChatList";
 import { dummyChat } from "./chatDummyData";
+import rightArrowSVG from "../../../../assets/icons/chevron-right-white.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import friendSVG from "../../../../assets/icons/friend.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -18,6 +13,7 @@ import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { MiniScreenFC } from "../../../components/navigation/MiniNavigator";
 import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
+import { ToastInfo } from "../../../components/toasts/ToastInfo";
 import {
   neutral22,
   neutral77,
@@ -110,9 +106,14 @@ export const MiniChatScreen: MiniScreenFC<"MiniChats"> = ({
   navigation,
   route,
 }) => {
+  const [showToast, setShowToast] = useState(true);
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("chats");
   const [search, setSearch] = useState("");
+
+  const hideToast = () => {
+    setShowToast(false);
+  };
 
   return (
     <ScreenContainer
@@ -123,6 +124,22 @@ export const MiniChatScreen: MiniScreenFC<"MiniChats"> = ({
       noScroll
       mobileTitle="Chats"
     >
+      {showToast && (
+        <ToastInfo
+          message={
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+            >
+              <BrandText style={[fontSemibold14, {}]}>
+                Learn more about Forced Chat tab
+              </BrandText>
+              <SVG source={rightArrowSVG} height={20} width={20} />
+            </View>
+          }
+          onPress={() => alert("Wow")}
+          onCrossPress={hideToast}
+        />
+      )}
       <RoundedTabs
         items={collectionScreenTabItems}
         onSelect={(key) => setSelectedTab(key)}
@@ -134,7 +151,7 @@ export const MiniChatScreen: MiniScreenFC<"MiniChats"> = ({
         }}
       />
 
-      <ScrollView
+      <View
         style={{
           flex: 1,
           width: Dimensions.get("window").width,
@@ -196,7 +213,7 @@ export const MiniChatScreen: MiniScreenFC<"MiniChats"> = ({
             />
           </View>
         )}
-      </ScrollView>
+      </View>
     </ScreenContainer>
   );
 };

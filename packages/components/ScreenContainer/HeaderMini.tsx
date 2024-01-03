@@ -32,7 +32,6 @@ export const HeaderMini = ({
         paddingHorizontal: layout.spacing_x1_5,
         position: "absolute",
         top: 0,
-        zIndex: 99999,
       }}
     >
       <Image

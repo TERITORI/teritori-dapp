@@ -1,8 +1,9 @@
 import React from "react";
-import { ScrollView, View } from "react-native";
+import { Dimensions, FlatList, View } from "react-native";
 
-import doubleCheckSVG from "../../../../assets/icons/double-check-white.svg";
+import doubleCheckSVG from "../../../../assets/icons/double-check.svg";
 import { BrandText } from "../../../components/BrandText";
+import { OptimizedImage } from "../../../components/OptimizedImage";
 import { SVG } from "../../../components/SVG";
 import {
   blueDefault,
@@ -10,7 +11,11 @@ import {
   neutralA3,
   secondaryColor,
 } from "../../../utils/style/colors";
-import { fontMedium10, fontNormal15 } from "../../../utils/style/fonts";
+import {
+  fontMedium10,
+  fontNormal15,
+  fontSemibold22,
+} from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 type ConversationType = {
@@ -28,36 +33,80 @@ type Props = {
 
 export const Conversations = ({ isTyping, conversations }: Props) => {
   return (
-    <ScrollView style={{ flex: 1 }}>
-      {conversations.map((conversation) => (
-        <SingleConversation {...conversation} key={conversation.id} />
-      ))}
-      {isTyping && (
-        <View
-          style={{
-            borderRadius: 32,
-            backgroundColor: neutral22,
-            width: "auto",
-            paddingHorizontal: 8,
-            paddingVertical: 6,
-            alignSelf: "flex-start",
-            marginTop: layout.spacing_x1_5,
-          }}
-        >
-          <BrandText
-            style={[
-              fontNormal15,
-              {
-                color: neutralA3,
-                width: "auto",
-              },
-            ]}
-          >
-            Typing...
-          </BrandText>
-        </View>
-      )}
-    </ScrollView>
+    <View
+      style={{
+        flex: 1,
+        paddingBottom: layout.spacing_x2,
+        width: Dimensions.get("window").width,
+      }}
+    >
+      <FlatList
+        data={conversations}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item, index }) => {
+          if (index + 1 === conversations.length && isTyping) {
+            return (
+              <>
+                <SingleConversation {...item} />
+                <View
+                  style={{
+                    borderRadius: 32,
+                    backgroundColor: neutral22,
+                    width: "auto",
+                    paddingHorizontal: 8,
+                    paddingVertical: 6,
+                    alignSelf: "flex-start",
+                    marginTop: layout.spacing_x1_5,
+                  }}
+                >
+                  <BrandText
+                    style={[
+                      fontNormal15,
+                      {
+                        color: neutralA3,
+                        width: "auto",
+                      },
+                    ]}
+                  >
+                    Typing...
+                  </BrandText>
+                </View>
+              </>
+            );
+          }
+          if (index === 0) {
+            return (
+              <View>
+                <View
+                  style={{
+                    alignItems: "center",
+                    marginTop: layout.spacing_x2_5,
+                  }}
+                >
+                  <OptimizedImage
+                    width={164}
+                    height={164}
+                    sourceURI="https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg"
+                    style={{
+                      width: 164,
+                      height: 164,
+                      borderRadius: 164 / 2,
+                    }}
+                  />
+                  <BrandText
+                    style={[fontSemibold22, { marginTop: layout.spacing_x1 }]}
+                  >
+                    Eleanor Pena
+                  </BrandText>
+                </View>
+                <SingleConversation {...item} />
+              </View>
+            );
+          }
+          return <SingleConversation {...item} />;
+        }}
+      />
+    </View>
   );
 };
 
@@ -77,7 +126,6 @@ const SingleConversation = ({
         backgroundColor: blueDefault,
         paddingHorizontal: 8,
         paddingVertical: 6,
-        minWidth: "auto",
         alignSelf: isMyMessage ? "flex-end" : "flex-start",
         marginBottom: layout.spacing_x0_5,
         maxWidth: "90%",

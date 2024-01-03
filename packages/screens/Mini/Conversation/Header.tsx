@@ -9,7 +9,6 @@ import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerRow } from "../../../components/spacer";
 import { RootStackParamList } from "../../../utils/navigation";
-import { layout } from "../../../utils/style/layout";
 import { ChatAvatar } from "../Chat/ChatAvatar";
 type HeaderProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "Conversation">;
@@ -29,7 +28,6 @@ export const Header = ({ navigation }: HeaderProps) => {
         flexDirection: "row",
         height: 44,
         alignItems: "center",
-        paddingHorizontal: layout.spacing_x2,
         justifyContent: "space-between",
       }}
     >

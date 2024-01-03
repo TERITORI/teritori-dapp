@@ -13,13 +13,13 @@ export const purpleLight = "#9990F5";
 export const orangeDefault = "#EAA54B";
 export const redDefault = errorColor;
 export const blueDefault = "#007AFF";
-
 export const codGrayColor = "#1C1C1C";
 export const mineShaftColor = "#3D3D3D";
 export const reefColor = "#D2FFAE";
 export const tulipTree = "#EAA54B";
 
 export const gameHighlight = "#FCEE4F";
+export const yankeesBlue = "#16283C";
 
 export const neutral00 = "#000000";
 export const neutral17 = "#171717";

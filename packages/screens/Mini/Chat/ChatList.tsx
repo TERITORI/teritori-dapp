@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, FlatList } from "react-native";
 
 import { ChatAvatar } from "./ChatAvatar";
 import DoubleCheckSVG from "../../../../assets/icons/double-check.svg";
@@ -21,13 +21,15 @@ export const ChatList = ({ items }: ChatListProps) => {
     <View
       style={{ flex: 1, paddingVertical: layout.spacing_x2, width: "100%" }}
     >
-      {Array.isArray(items) &&
-        items.map((item) => (
+      <FlatList
+        data={items}
+        renderItem={({ item }) => (
           <React.Fragment key={item.id}>
             <SingleFriendChatList {...item} />
             <Separator style={{ marginVertical: 12 }} />
           </React.Fragment>
-        ))}
+        )}
+      />
     </View>
   );
 };
