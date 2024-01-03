@@ -12,13 +12,14 @@ import {
   neutral44,
 } from "../../utils/style/colors";
 import { fontSemibold16, fontSemibold24 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { Box, BoxStyle } from "../boxes/Box";
 
 export const ApplicationStatusCard: React.FC<{
   label: string;
-  count: any;
+  count: number;
   style?: StyleProp<BoxStyle>;
   onPress: () => void;
   isReady?: boolean;
@@ -33,8 +34,8 @@ export const ApplicationStatusCard: React.FC<{
         style,
         {
           flex: 1,
-          paddingVertical: 20,
-          paddingHorizontal: 20,
+          paddingVertical: layout.spacing_x2_5,
+          paddingHorizontal: layout.spacing_x2_5,
           backgroundColor: isReady ? neutral00 : neutral11,
           borderWidth: 1,
           borderColor: isReady ? "" : neutral44,
@@ -51,9 +52,9 @@ export const ApplicationStatusCard: React.FC<{
           },
         ]}
       >
-        <BrandText style={[fontSemibold16]}>{label}</BrandText>
+        <BrandText style={fontSemibold16}>{label}</BrandText>
         <View>
-          <BrandText style={[fontSemibold24]}>{count}</BrandText>
+          <BrandText style={fontSemibold24}>{count}</BrandText>
         </View>
         <View
           style={{
