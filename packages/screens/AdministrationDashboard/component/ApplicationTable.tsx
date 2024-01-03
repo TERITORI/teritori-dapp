@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode } from "react";
 import {
   FlatList,
   Linking,
@@ -10,30 +10,22 @@ import {
   ViewStyle,
 } from "react-native";
 
-import avaPNG from "../../../assets/default-images/ava.png";
-import checkBadgeSVG from "../../../assets/icons/check-badge.svg";
-import externalLinkSVG from "../../../assets/icons/external-link.svg";
-import SolanaCircleSVG from "../../../assets/icons/networks/solana-circle.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
-import { LinkView } from "../../components/linkView/LinkView";
-import { HighVolSortButton } from "../../components/sorts/HighVolSortButton";
-import { TableRow } from "../../components/table/TableRow";
-import { Tabs } from "../../components/tabs/Tabs";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { useAppNavigation } from "../../utils/navigation";
-import { mineShaftColor, neutral33 } from "../../utils/style/colors";
+import avaPNG from "../../../../assets/default-images/ava.png";
+import checkBadgeSVG from "../../../../assets/icons/check-badge.svg";
+import externalLinkSVG from "../../../../assets/icons/external-link.svg";
+import SolanaCircleSVG from "../../../../assets/icons/networks/solana-circle.svg";
+import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
+import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
+import { LinkView } from "../../../components/linkView/LinkView";
+import { TableRow } from "../../../components/table/TableRow";
+import { useIsMobile } from "../../../hooks/useIsMobile";
+import { mineShaftColor } from "../../../utils/style/colors";
+import { fontSemibold11, fontSemibold13 } from "../../../utils/style/fonts";
 import {
-  fontSemibold11,
-  fontSemibold13,
-  fontSemibold20,
-  fontSemibold28,
-} from "../../utils/style/fonts";
-import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
-
-export type TabsListType = "pendingApllications" | "pendingConfirmations";
+  layout,
+  screenContentMaxWidthLarge,
+} from "../../../utils/style/layout";
 
 const TABLE_ROWS = {
   rank: {
@@ -70,107 +62,8 @@ const TABLE_ROWS = {
   },
 };
 
-const dummyData = {
-  rank: 1,
-  collectionNameData: "The R!ot",
-  collectionNetwork: "teritori",
-  TwitterURL: "https://www.lipsum.com/",
-  DiscordURL: "https://www.lipsum.com/",
-  expectedTotalSupply: 3000,
-  expectedPublicMintPrice: "550 L",
-  expectedMintDate: new Date(),
-};
-
-export const LaunchpadApplicationsScreen: React.FC = () => {
-  const navigation = useAppNavigation();
-  const isMobile = useIsMobile();
-
-  const tabs = {
-    pendingApllications: {
-      name: "Pending Apllications",
-      badgeCount: 32,
-    },
-    pendingConfirmations: {
-      name: "Pending Confirmations",
-      badgeCount: 42,
-    },
-  };
-
-  const [selectedTab, setSelectedTab] = useState<TabsListType>(
-    "pendingApllications",
-  );
-
-  return (
-    <ScreenContainer
-      isLarge
-      footerChildren={<></>}
-      headerChildren={
-        <BrandText style={fontSemibold20}>Administration Dashboard</BrandText>
-      }
-      responsive
-      onBackPress={() => navigation.goBack()}
-    >
-      <View
-        style={{
-          marginTop: layout.spacing_x4,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            flexWrap: "nowrap",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <BrandText style={fontSemibold28}>Launchpad Applications</BrandText>
-        </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            marginTop: 30,
-            borderTopColor: neutral33,
-            borderTopWidth: 1,
-            borderBottomColor: neutral33,
-            borderBottomWidth: 1,
-            paddingVertical: 8,
-          }}
-        >
-          <Tabs
-            items={tabs}
-            selected={selectedTab}
-            style={{ height: 48, flex: 1 }}
-            onSelect={setSelectedTab}
-            noUnderline
-          />
-
-          {!isMobile && (
-            <HighVolSortButton
-              style={{ marginLeft: 12 }}
-              sortDirection={1}
-              onChangeSortDirection={() => {}}
-            />
-          )}
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            flex: 12,
-            flexWrap: "nowrap",
-            justifyContent: "space-between",
-            marginTop: layout.spacing_x4,
-          }}
-        >
-          <ApplicationTable rows={Array(25).fill(dummyData)} />
-        </View>
-      </View>
-    </ScreenContainer>
-  );
-};
-
-const ApplicationTable: React.FC<{
-  rows: any[];
+export const ApplicationTable: React.FC<{
+  rows: any[]; // currently i don't know the data types will change it once i will work on functionality
 }> = ({ rows }) => {
   const isMobile = useIsMobile();
 
@@ -229,7 +122,7 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
           flexDirection: "row",
           flexWrap: "nowrap",
           alignItems: "center",
-          paddingRight: layout.spacing_x1,
+          marginRight: layout.spacing_x3,
         }}
         to={{
           screen: "ApplicationReview",

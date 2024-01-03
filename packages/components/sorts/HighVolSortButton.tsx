@@ -7,6 +7,7 @@ import sortSVG from "../../../assets/icons/sort.svg";
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
 import { neutral11, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { Box } from "../boxes/Box";
@@ -33,7 +34,7 @@ export const HighVolSortButton: React.FC<{
           {
             borderWidth: 1,
             borderColor: "#FFFFFF",
-            paddingHorizontal: 13,
+            paddingHorizontal: layout.spacing_x1_5,
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
@@ -47,7 +48,7 @@ export const HighVolSortButton: React.FC<{
             source={sortSVG}
             height={16}
             width={16}
-            style={{ marginRight: 8 }}
+            style={{ marginRight: layout.spacing_x0_75 }}
           />
           <BrandText style={fontSemibold14}>
             {sortDirection === SortDirection.SORT_DIRECTION_ASCENDING

@@ -1,13 +1,14 @@
 import React, { ReactNode, useState } from "react";
 import { FlatList, StyleProp, TextStyle, View, ViewStyle } from "react-native";
-import { ShieldCheckIcon } from "react-native-heroicons/outline";
 
 import avaPNG from "../../../assets/default-images/ava.png";
+import checkBadgeSVG from "../../../assets/icons/check-badge.svg";
 import SolanaCircleSVG from "../../../assets/icons/networks/solana-circle.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
+import { LinkView } from "../../components/linkView/LinkView";
 import { HighVolSortButton } from "../../components/sorts/HighVolSortButton";
 import { TableRow } from "../../components/table/TableRow";
 import { Tabs } from "../../components/tabs/Tabs";
@@ -18,7 +19,6 @@ import {
   mineShaftColor,
   neutral00,
   neutral33,
-  primaryColor,
 } from "../../utils/style/colors";
 import {
   fontSemibold11,
@@ -216,13 +216,16 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
       >
         {rowData.rank}
       </BrandText>
-      <View
+      <LinkView
         style={{
           flex: TABLE_ROWS.collectionNameData.flex,
           flexDirection: "row",
           flexWrap: "nowrap",
           alignItems: "center",
           paddingRight: layout.spacing_x1,
+        }}
+        to={{
+          screen: "ApplicationReview",
         }}
       >
         <RoundedGradientImage
@@ -238,8 +241,8 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
         >
           {rowData.collectionNameData}
         </BrandText>
-        <ShieldCheckIcon color={primaryColor} width={20} height={20} />
-      </View>
+        <SVG source={checkBadgeSVG} />
+      </LinkView>
       <View
         style={{
           flex: TABLE_ROWS.collectionNetwork.flex,

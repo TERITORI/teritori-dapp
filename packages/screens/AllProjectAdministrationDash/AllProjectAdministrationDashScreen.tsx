@@ -1,17 +1,16 @@
 import React, { ReactNode, useState } from "react";
 import { FlatList, StyleProp, TextStyle, View, ViewStyle } from "react-native";
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  ShieldCheckIcon,
-} from "react-native-heroicons/outline";
 
 import avaPNG from "../../../assets/default-images/ava.png";
+import checkBadgeSVG from "../../../assets/icons/check-badge.svg";
 import cryptoLogoSVG from "../../../assets/icons/crypto-logo.svg";
+import downArrowSVG from "../../../assets/icons/downArrow.svg";
+import upArrowSVG from "../../../assets/icons/upArrow.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
+import { LinkView } from "../../components/linkView/LinkView";
 import { HighVolSortButton } from "../../components/sorts/HighVolSortButton";
 import { TableRow } from "../../components/table/TableRow";
 import { Tabs } from "../../components/tabs/Tabs";
@@ -21,7 +20,6 @@ import {
   errorColor,
   mineShaftColor,
   neutral33,
-  primaryColor,
   successColor,
 } from "../../utils/style/colors";
 import {
@@ -252,13 +250,16 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
       >
         {rowData.rank}
       </BrandText>
-      <View
+      <LinkView
         style={{
           flex: TABLE_ROWS.collectionNameData.flex,
           flexDirection: "row",
           flexWrap: "nowrap",
           alignItems: "center",
           paddingRight: layout.spacing_x1,
+        }}
+        to={{
+          screen: "ApplicationReview",
         }}
       >
         <RoundedGradientImage
@@ -274,8 +275,8 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
         >
           {rowData.collectionNameData}
         </BrandText>
-        <ShieldCheckIcon color={primaryColor} width={20} height={20} />
-      </View>
+        <SVG source={checkBadgeSVG} />
+      </LinkView>
       <InnerCell style={{ flex: TABLE_ROWS.floor.flex }}>
         {rowData.floor}
       </InnerCell>
@@ -348,25 +349,9 @@ const PercentageVolume: React.FC<{
       ]}
     >
       {data.includes("+") ? (
-        <View
-          style={{
-            backgroundColor: "#C8FFAE33",
-            padding: 5,
-            borderRadius: 100,
-          }}
-        >
-          <ArrowUpIcon color={successColor} width={16} height={16} />
-        </View>
+        <SVG source={upArrowSVG} />
       ) : (
-        <View
-          style={{
-            backgroundColor: "#FFAEAE33",
-            padding: 5,
-            borderRadius: 100,
-          }}
-        >
-          <ArrowDownIcon color={errorColor} width={16} height={16} />
-        </View>
+        <SVG source={downArrowSVG} />
       )}
       <BrandText
         style={[
