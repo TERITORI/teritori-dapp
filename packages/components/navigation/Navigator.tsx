@@ -119,14 +119,6 @@ export const Navigator: React.FC = () => {
         }}
       />
       <Stack.Screen
-        name="ApplicationReview"
-        component={ApplicationRewiewScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Launchpad Applications"),
-        }}
-      />
-      <Stack.Screen
         name="ReadyLaunchpadApplications"
         component={ReadyLaunchpadApplicationsScreen}
         options={{
