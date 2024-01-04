@@ -29,7 +29,7 @@ export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
       style={{
         flex: 1,
         width: "100%",
-        backgroundColor: "rgba(0, 0, 0, .9)",
+        backgroundColor: "rgba(0, 0, 0,0.9)",
         position: "relative",
       }}
     >
@@ -62,39 +62,41 @@ export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
               justifyContent: "flex-end",
             }}
           >
-            <DAppStoreMenuItem
-              icon={marketplaceSVG}
-              title="Marketplace"
-              subTitle="NFT Marketplace"
-            />
-            <DAppStoreMenuItem
-              icon={launchpadSVG}
-              title="Launchpad"
-              subTitle="Multi Network NFT Launchpad"
-            />
-            <DAppStoreMenuItem
-              icon={stakingSVG}
-              title="Staking"
-              subTitle="Staking"
-            />
-            <DAppStoreMenuItem
-              icon={governanceSVG}
-              title="Governance"
-              subTitle="Governance"
-            />
-
-            <DAppsList
-              isEditing={enableEditingDApps}
-              togggleEdting={toggleEnableEditingDApps}
-            />
-            <Separator />
-            {!enableEditingDApps && (
+            <View style={{ backgroundColor: "#000" }}>
               <DAppStoreMenuItem
-                icon={penSVG}
-                title="Edit dApps list"
-                onPress={() => setEnableEditingDApps(true)}
+                icon={marketplaceSVG}
+                title="Marketplace"
+                subTitle="NFT Marketplace"
               />
-            )}
+              <DAppStoreMenuItem
+                icon={launchpadSVG}
+                title="Launchpad"
+                subTitle="Multi Network NFT Launchpad"
+              />
+              <DAppStoreMenuItem
+                icon={stakingSVG}
+                title="Staking"
+                subTitle="Staking"
+              />
+              <DAppStoreMenuItem
+                icon={governanceSVG}
+                title="Governance"
+                subTitle="Governance"
+              />
+
+              <DAppsList
+                isEditing={enableEditingDApps}
+                togggleEdting={toggleEnableEditingDApps}
+              />
+              <Separator />
+              {!enableEditingDApps && (
+                <DAppStoreMenuItem
+                  icon={penSVG}
+                  title="Edit dApps list"
+                  onPress={() => setEnableEditingDApps(true)}
+                />
+              )}
+            </View>
           </View>
         </ScrollView>
       </View>

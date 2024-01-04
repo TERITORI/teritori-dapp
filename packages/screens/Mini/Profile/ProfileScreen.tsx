@@ -79,15 +79,30 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
             justifyContent: "flex-end",
           }}
         >
-          {/* Main Account Row View */}
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <View>
+          <View style={{ backgroundColor: "#000" }}>
+            {/* Main Account Row View */}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: layout.spacing_x1,
+                  }}
+                >
+                  <BrandText style={[fontSemibold22]}>Main Account</BrandText>
+                  <SVG source={copySVG} height={20} width={20} />
+                </View>
+                <BrandText style={[fontMedium13, { color: neutralA3 }]}>
+                  62.424 TORI
+                </BrandText>
+              </View>
               <View
                 style={{
                   flexDirection: "row",
@@ -95,52 +110,39 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
                   gap: layout.spacing_x1,
                 }}
               >
-                <BrandText style={[fontSemibold22]}>Main Account</BrandText>
-                <SVG source={copySVG} height={20} width={20} />
+                <CustomPressable
+                  style={{
+                    backgroundColor: neutral33,
+                    padding: layout.spacing_x1,
+                    borderRadius: 10,
+                  }}
+                >
+                  <SVG source={googleSVG} height={20} width={20} />
+                </CustomPressable>
+                <CustomPressable>
+                  <SVG source={dotSVG} height={22} width={22} />
+                </CustomPressable>
               </View>
-              <BrandText style={[fontMedium13, { color: neutralA3 }]}>
-                62.424 TORI
-              </BrandText>
             </View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: layout.spacing_x1,
-              }}
-            >
-              <CustomPressable
-                style={{
-                  backgroundColor: neutral33,
-                  padding: layout.spacing_x1,
-                  borderRadius: 10,
-                }}
-              >
-                <SVG source={googleSVG} height={20} width={20} />
-              </CustomPressable>
-              <CustomPressable>
-                <SVG source={dotSVG} height={22} width={22} />
-              </CustomPressable>
-            </View>
-          </View>
 
-          <Separator style={{ marginTop: layout.spacing_x1_5 }} />
-          <ProfileMenuItem
-            icon={addSVG}
-            title="Add Account"
-            navigateTo="MiniChats"
-          />
-          <Separator />
-          <ProfileMenuItem
-            icon={settingSVG}
-            navigateTo="MiniChats"
-            title="Settings"
-          />
-          <ProfileMenuItem
-            icon={dAppStoreSVG}
-            title="dApps"
-            navigateTo="MiniDAppStore"
-          />
+            <Separator style={{ marginTop: layout.spacing_x1_5 }} />
+            <ProfileMenuItem
+              icon={addSVG}
+              title="Add Account"
+              navigateTo="MiniChats"
+            />
+            <Separator />
+            <ProfileMenuItem
+              icon={settingSVG}
+              navigateTo="MiniChats"
+              title="Settings"
+            />
+            <ProfileMenuItem
+              icon={dAppStoreSVG}
+              title="dApps"
+              navigateTo="MiniDAppStore"
+            />
+          </View>
         </View>
       </View>
     </SafeAreaView>
