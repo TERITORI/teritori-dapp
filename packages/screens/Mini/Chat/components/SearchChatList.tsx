@@ -8,17 +8,17 @@ import { neutral33, neutral77 } from "../../../../utils/style/colors";
 import { fontMedium16 } from "../../../../utils/style/fonts";
 
 interface SearchInputProps {
-  onClose: () => void;
   value: string;
   setValue: (val: string) => void;
   style?: StyleProp<ViewStyle>;
+  placeholder?: string;
 }
 
 export const SearchChatList = ({
-  onClose,
   value,
   setValue,
   style,
+  placeholder = "Search...",
 }: SearchInputProps) => {
   return (
     <View
@@ -39,7 +39,7 @@ export const SearchChatList = ({
         <SVG source={searchSVG} width={20} height={20} />
         <SpacerRow size={1} />
         <TextInput
-          placeholder="Search..."
+          placeholder={placeholder}
           value={value}
           onChangeText={setValue}
           placeholderTextColor={neutral77}

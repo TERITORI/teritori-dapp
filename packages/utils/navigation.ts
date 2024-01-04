@@ -88,6 +88,7 @@ export type RootStackParamList = {
   MiniFeeds: undefined;
   MiniProfile: undefined;
   MiniDAppStore: undefined;
+  MiniNewConversation: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -195,6 +196,7 @@ const navConfig: {
     Conversation: "mini-conversation",
     MiniProfile: "mini-profile",
     MiniDAppStore: "mini-dApp-store",
+    MiniNewConversation: "mini-new-conversation",
   },
 };
 
