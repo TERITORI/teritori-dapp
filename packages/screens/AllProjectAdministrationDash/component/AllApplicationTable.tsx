@@ -1,13 +1,14 @@
-import moment from "moment";
 import React from "react";
 import { FlatList, View } from "react-native";
 
+import { BrandText } from "../../../components/BrandText";
 import { CollectionNameCell } from "../../../components/applicationTableComponent/CollectionNameCell";
 import { InnerCellText } from "../../../components/applicationTableComponent/InnerCellText";
-import { LinkIconAndRedirect } from "../../../components/applicationTableComponent/LinkIconAndRedirect";
+import { PercentageVolumeCell } from "../../../components/applicationTableComponent/PercentageVolumeCell";
 import { TableRow } from "../../../components/table/TableRow";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { mineShaftColor } from "../../../utils/style/colors";
+import { fontSemibold11, fontSemibold13 } from "../../../utils/style/fonts";
 import {
   layout,
   screenContentMaxWidthLarge,
@@ -22,34 +23,26 @@ const TABLE_ROWS = {
     label: "Collection Name",
     flex: 5,
   },
-  collectionNetwork: {
-    label: "Collection Network",
+  floor: {
+    label: "Floor",
     flex: 3,
   },
-  TwitterURL: {
-    label: "Twitter URL",
-    flex: 2,
-  },
-  DiscordURL: {
-    label: "Discord URL",
-    flex: 2,
-  },
-  expectedTotalSupply: {
-    label: "Expected Total Supply",
+  totalVol: {
+    label: "Total Vol",
     flex: 3,
   },
-  expectedPublicMintPrice: {
-    label: "Expected Public Mint Price",
+  vol: {
+    label: "24h Vol",
     flex: 3,
   },
-  expectedMintDate: {
-    label: "Expected Mint Date",
+  volPerctage: {
+    label: "24h Vol %",
     flex: 3,
   },
 };
 
-export const ApplicationTable: React.FC<{
-  rows: any[]; // currently i don't know the data types will change it once i will work on functionality
+export const AllApplicationTable: React.FC<{
+  rows: any[];
 }> = ({ rows }) => {
   const isMobile = useIsMobile();
 
@@ -68,7 +61,6 @@ export const ApplicationTable: React.FC<{
             : Object.values(TABLE_ROWS).slice(0, -5)
         }
       />
-
       <FlatList
         data={rows}
         renderItem={({ item, index }) => <ApplicationRowData rowData={item} />}
@@ -99,50 +91,36 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
         paddingHorizontal: layout.spacing_x2_5,
       }}
     >
-      <InnerCellText style={{ flex: TABLE_ROWS.rank.flex }}>
+      <BrandText
+        style={[
+          { flex: TABLE_ROWS.rank.flex },
+          isMobile ? fontSemibold11 : fontSemibold13,
+        ]}
+      >
         {rowData.rank}
-      </InnerCellText>
+      </BrandText>
       <CollectionNameCell
         rowData={rowData}
         style={{ flex: TABLE_ROWS.collectionNameData.flex }}
       />
-      <InnerCellText
-        isSolanaIcon
-        style={{
-          flex: TABLE_ROWS.collectionNetwork.flex,
-        }}
-      >
-        {rowData["collectionNetwork"]}
+      <InnerCellText isCryptoLogo style={{ flex: TABLE_ROWS.floor.flex }}>
+        {rowData.floor}
       </InnerCellText>
       {!isMobile && (
         <>
-          <LinkIconAndRedirect style={{ flex: TABLE_ROWS.TwitterURL.flex }}>
-            {rowData.TwitterURL}
-          </LinkIconAndRedirect>
-          <LinkIconAndRedirect style={{ flex: TABLE_ROWS.DiscordURL.flex }}>
-            {rowData.DiscordURL}
-          </LinkIconAndRedirect>
           <InnerCellText
-            style={{
-              flex: TABLE_ROWS.expectedTotalSupply.flex,
-            }}
+            isCryptoLogo
+            style={{ flex: TABLE_ROWS.totalVol.flex }}
           >
-            {rowData.expectedTotalSupply}
+            {rowData.totalVol}
           </InnerCellText>
-          <InnerCellText
-            style={{
-              flex: TABLE_ROWS.expectedPublicMintPrice.flex,
-            }}
-          >
-            {rowData.expectedPublicMintPrice}
+          <InnerCellText isCryptoLogo style={{ flex: TABLE_ROWS.vol.flex }}>
+            {rowData.vol}
           </InnerCellText>
-          <InnerCellText
-            style={{
-              flex: TABLE_ROWS.expectedMintDate.flex,
-            }}
-          >
-            {moment(rowData.expectedMintDate).format("MMM D YYYY")}
-          </InnerCellText>
+          <PercentageVolumeCell
+            data={rowData.volPerctage}
+            style={{ flex: TABLE_ROWS.volPerctage.flex }}
+          />
         </>
       )}
     </View>
