@@ -44,13 +44,11 @@ export const ApplicationStatusCard: React.FC<{
     >
       <TouchableOpacity
         onPress={onPress}
-        style={[
-          {
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            height: 124,
-          },
-        ]}
+        style={{
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          height: 124,
+        }}
       >
         <BrandText style={fontSemibold16}>{label}</BrandText>
         <View>

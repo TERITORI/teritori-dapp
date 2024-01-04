@@ -30,18 +30,16 @@ export const HighVolSortButton: React.FC<{
     <TouchableOpacity onPress={handlePress} style={style}>
       <Box
         notched
-        style={[
-          {
-            borderWidth: 1,
-            borderColor: "#FFFFFF",
-            paddingHorizontal: layout.spacing_x1_5,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: neutral11,
-            height,
-          },
-        ]}
+        style={{
+          borderWidth: 1,
+          borderColor: "#FFFFFF",
+          paddingHorizontal: layout.spacing_x1_5,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          backgroundColor: neutral11,
+          height,
+        }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <SVG
@@ -52,12 +50,11 @@ export const HighVolSortButton: React.FC<{
           />
           <BrandText style={fontSemibold14}>
             {sortDirection === SortDirection.SORT_DIRECTION_ASCENDING
-              ? "Highest"
-              : "Lowest"}{" "}
+              ? "Highest "
+              : "Lowest "}
             Total Vol
           </BrandText>
         </View>
-
         <SVG
           source={
             sortDirection === SortDirection.SORT_DIRECTION_ASCENDING
@@ -66,7 +63,7 @@ export const HighVolSortButton: React.FC<{
           }
           height={16}
           width={16}
-          style={{ marginLeft: 8 }}
+          style={{ marginLeft: layout.spacing_x0_5 }}
           color={secondaryColor}
         />
       </Box>

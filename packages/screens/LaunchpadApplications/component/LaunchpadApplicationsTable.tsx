@@ -13,6 +13,8 @@ import {
   screenContentMaxWidthLarge,
 } from "../../../utils/style/layout";
 
+export type TabsListType = "pendingApllications" | "pendingConfirmations";
+
 const TABLE_ROWS = {
   rank: {
     label: "#",
@@ -48,8 +50,8 @@ const TABLE_ROWS = {
   },
 };
 
-export const ApplicationTable: React.FC<{
-  rows: any[]; // currently i don't know the data types will change it once i will work on functionality
+export const LaunchpadApplicationsTable: React.FC<{
+  rows: any[];
 }> = ({ rows }) => {
   const isMobile = useIsMobile();
 
@@ -125,6 +127,7 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
           <InnerCellText
             style={{
               flex: TABLE_ROWS.expectedTotalSupply.flex,
+              paddingRight: 0,
             }}
           >
             {rowData.expectedTotalSupply}
@@ -132,6 +135,7 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
           <InnerCellText
             style={{
               flex: TABLE_ROWS.expectedPublicMintPrice.flex,
+              paddingRight: 0,
             }}
           >
             {rowData.expectedPublicMintPrice}
@@ -139,6 +143,7 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
           <InnerCellText
             style={{
               flex: TABLE_ROWS.expectedMintDate.flex,
+              paddingRight: 0,
             }}
           >
             {moment(rowData.expectedMintDate).format("MMM D YYYY")}
