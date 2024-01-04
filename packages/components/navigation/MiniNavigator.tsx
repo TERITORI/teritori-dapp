@@ -8,7 +8,9 @@ import React from "react";
 
 import { MiniChatScreen } from "../../screens/Mini/Chat/MiniChatScreen";
 import { ConversationScreeen } from "../../screens/Mini/Conversation/ConversationScreen";
+import { DAppStoreScreen } from "../../screens/Mini/DAppStore/DAppStoreScreen";
 import { MiniFeedScreen } from "../../screens/Mini/Feed/MiniFeedScreen";
+import { ProfileScreen } from "../../screens/Mini/Profile/ProfileScreen";
 import { MiniWalletScreen } from "../../screens/Mini/Wallet/MiniWalletScreen";
 import { CreatePassword } from "../../screens/Wallet/Screens/CreatePassword";
 import { CreateScreen } from "../../screens/Wallet/Screens/CreateScreen";
@@ -106,6 +108,24 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: "All Set",
+        }}
+      />
+      <Stack.Screen
+        name="MiniProfile"
+        component={ProfileScreen}
+        options={{
+          header: () => null,
+          title: "Profile",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniDAppStore"
+        component={DAppStoreScreen}
+        options={{
+          header: () => null,
+          title: "dApp Store",
+          presentation: "transparentModal",
         }}
       />
     </Stack.Navigator>

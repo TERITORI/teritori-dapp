@@ -86,6 +86,8 @@ export type RootStackParamList = {
   MiniChats: undefined;
   MiniWallets: undefined;
   MiniFeeds: undefined;
+  MiniProfile: undefined;
+  MiniDAppStore: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -191,6 +193,8 @@ const navConfig: {
     MiniWallets: "mini-wallet",
     MiniFeeds: "mini-feed",
     Conversation: "mini-conversation",
+    MiniProfile: "mini-profile",
+    MiniDAppStore: "mini-dApp-store",
   },
 };
 

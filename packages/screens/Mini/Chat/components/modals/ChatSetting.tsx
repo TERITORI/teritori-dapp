@@ -65,7 +65,7 @@ export const ChatSetting = ({ toggleModal, isVisible }: Props) => {
           >
             <ChatSettingMenuItem
               icon={profileSVG}
-              navigateTo="MiniChats"
+              navigateTo="MiniProfile"
               title="Profile"
               toggleModal={toggleModal}
             />
@@ -137,6 +137,7 @@ export const ChatSetting = ({ toggleModal, isVisible }: Props) => {
     </TranslucentModal>
   );
 };
+
 type MenuItemProps = {
   icon: string | FC<SvgProps>;
   title: string;
