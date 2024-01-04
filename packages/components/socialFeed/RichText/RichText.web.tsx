@@ -58,6 +58,7 @@ import createInlineToolbarPlugin from "./inline-toolbar";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
+import { web3ToWeb2URI } from "../../../utils/ipfs";
 import {
   AUDIO_MIME_TYPES,
   IMAGE_MIME_TYPES,
@@ -518,8 +519,8 @@ export const createStateFromHTML = (html: string) => {
       if (nodeName === "video") {
         const entityConfig: any = {};
         entityConfig.src = node.getAttribute
-          ? node.getAttribute("src") || node
-          : node.src;
+          ? web3ToWeb2URI(node.getAttribute("src"))
+          : web3ToWeb2URI(node.src);
         entityConfig.alt = node.alt;
         entityConfig.height = node.style.height;
         entityConfig.width = node.style.width;
