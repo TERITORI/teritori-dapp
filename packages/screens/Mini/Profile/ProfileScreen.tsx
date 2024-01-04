@@ -133,13 +133,13 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
           <Separator />
           <ProfileMenuItem
             icon={settingSVG}
-            title="Settings"
             navigateTo="MiniChats"
+            title="Settings"
           />
           <ProfileMenuItem
             icon={dAppStoreSVG}
             title="dApps"
-            navigateTo="MiniChats"
+            navigateTo="MiniDAppStore"
           />
         </View>
       </View>
@@ -155,8 +155,7 @@ type MenuItemProps = {
 const ProfileMenuItem = ({ icon, navigateTo, title }: MenuItemProps) => {
   const navigation = useAppNavigation();
   const onMenuItemPress = () => {
-    //@ts-expect-error
-    navigation.navigate(navigateTo);
+    navigation.replace(navigateTo);
   };
   return (
     <CustomPressable onPress={onMenuItemPress}>
