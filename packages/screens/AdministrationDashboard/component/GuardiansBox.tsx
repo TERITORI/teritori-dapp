@@ -33,12 +33,12 @@ const MD_BREAKPOINT = 820;
 export const GuardiansBox = () => {
   const { width } = useWindowDimensions();
 
-  const [guardiansHandler, setGuardiansHandler] = useState<number[]>([]);
-  const [isListOpen, setIsListOpen] = useState<boolean>();
+  const [guardiansHandler, setGuardiansHandler] = useState<number[]>([1, 2]);
+  const [isListOpen, setIsListOpen] = useState<number>();
 
   return (
     <View style={{ flexDirection: width >= MD_BREAKPOINT ? "row" : "column" }}>
-      {guardiansHandler?.map((d: any, index: any) => {
+      {guardiansHandler?.map((d: number, index: number) => {
         return (
           <>
             <View
@@ -58,7 +58,7 @@ export const GuardiansBox = () => {
               <Box notched style={herosLisBox}>
                 <TouchableOpacity
                   onPress={() =>
-                    setIsListOpen((old: any) => (old === index ? null : index))
+                    setIsListOpen((old) => (old === index ? -1 : index))
                   }
                   style={toggleBox}
                 >
@@ -84,7 +84,9 @@ export const GuardiansBox = () => {
                     }}
                   >
                     <View style={{ margin: 10 }}>
-                      <SearchInput handleChangeText={() => {}} />
+                      <SearchInput
+                        handleChangeText={() => {}} //TODO: don't forget to rewrite onPress function if possible
+                      />
                       <FlatList
                         showsVerticalScrollIndicator={false}
                         data={Array(10).fill(0)}
@@ -108,7 +110,7 @@ export const GuardiansBox = () => {
                             <SVG source={checkBadgeSVG} />
                           </View>
                         )}
-                        keyExtractor={(item: any) => item.id}
+                        keyExtractor={(item) => item.id}
                         style={{
                           marginTop: 12,
                           marginLeft: 5,
@@ -125,14 +127,7 @@ export const GuardiansBox = () => {
                     imageStyle={{ borderRadius: 16 }}
                     style={imageBgStyle}
                   >
-                    <TouchableOpacity
-                      onPress={() => {
-                        const old = [...guardiansHandler];
-                        old.splice(index, 1);
-                        setGuardiansHandler(old);
-                      }}
-                      style={trashBtnBox}
-                    >
+                    <TouchableOpacity style={trashBtnBox}>
                       <SVG source={trashSVG} />
                     </TouchableOpacity>
                   </ImageBackground>
