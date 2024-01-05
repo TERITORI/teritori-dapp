@@ -1,42 +1,32 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { SafeAreaView, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { neutral00, neutral33, neutral77 } from "../../../utils/style/colors";
+import { SpacerColumn } from "../../../components/spacer";
+import { neutral00, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import {
-  NewCollectionDetailsFormValues,
-  NewCollectionFormForEistingBaseUrlValues,
-} from "../CreateCollection.type";
+import { NewCollectionFormForEistingBaseUrlValues } from "../CreateCollection.type";
 
-export const Uri: React.FC = () => {
-  const { control } = useForm<
-    NewCollectionFormForEistingBaseUrlValues | NewCollectionDetailsFormValues
-  >({
+export const UriTab: React.FC = () => {
+  const { control } = useForm<NewCollectionFormForEistingBaseUrlValues>({
     defaultValues: {
       baseTokenUri: "",
       coverImageUrl: "",
-      name: "",
-      description: "",
-      symbol: "",
-      externalLink: "",
-      websiteLink: "",
-      twitterProfileUrl: "",
-      twitterFollowers: "",
-      discordName: "",
-      email: "",
     },
     mode: "onBlur",
   });
-  const isMobile = useIsMobile();
 
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
-      <View style={styles.container}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+        }}
+      >
         <View
           style={{
             width: "100%",
@@ -53,15 +43,10 @@ export const Uri: React.FC = () => {
             assets & metadata manually to get a base URI for your collection.
           </BrandText>
 
-          <View
-            style={{
-              marginTop: isMobile ? layout.spacing_x2 : layout.contentSpacing,
-            }}
-          >
-            <TextInputCustom<
-              | NewCollectionFormForEistingBaseUrlValues
-              | NewCollectionDetailsFormValues
-            >
+          <SpacerColumn size={2} />
+
+          <View>
+            <TextInputCustom<NewCollectionFormForEistingBaseUrlValues>
               rules={{ required: true }}
               label="Base Token URI"
               placeHolder="ipfs://"
@@ -74,10 +59,7 @@ export const Uri: React.FC = () => {
                 borderRadius: 12,
               }}
             />
-            <TextInputCustom<
-              | NewCollectionFormForEistingBaseUrlValues
-              | NewCollectionDetailsFormValues
-            >
+            <TextInputCustom<NewCollectionFormForEistingBaseUrlValues>
               rules={{ required: true }}
               label="Cover Image URL"
               placeHolder="ipfs://"
@@ -91,20 +73,8 @@ export const Uri: React.FC = () => {
               }}
             />
           </View>
-          <View style={{ borderBottomWidth: 1, borderColor: neutral33 }} />
         </View>
       </View>
     </SafeAreaView>
   );
 };
-
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000000",
-    flexDirection: "row",
-    justifyContent: "center",
-    zIndex: 999,
-  },
-});

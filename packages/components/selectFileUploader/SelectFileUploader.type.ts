@@ -14,4 +14,5 @@ export interface SelectFileUploaderProps {
   children?: ({ onPress }: { onPress: () => void }) => React.ReactNode;
   maxUpload?: number;
   setIsLoading?: Dispatch<SetStateAction<boolean>>;
+  containerHeight?: number;
 }
