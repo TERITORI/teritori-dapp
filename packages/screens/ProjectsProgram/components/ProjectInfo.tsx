@@ -50,7 +50,7 @@ export const ProjectInfo: React.FC<{
               size="L"
               square
               sourceURI={
-                shortDescData.coverImg || shortDescData._coverImgFile?.url
+                shortDescData._coverImgFile?.url || shortDescData.coverImg
               }
             />
 

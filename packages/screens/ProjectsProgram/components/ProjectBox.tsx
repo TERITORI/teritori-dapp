@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import { Tag } from "./Milestone";
@@ -11,6 +11,7 @@ import websiteSVG from "../../../../assets/icons/website.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { Link } from "../../../components/Link";
+import { ProgressLine } from "../../../components/ProgressLine";
 import { SVG } from "../../../components/SVG";
 import { BoxStyle } from "../../../components/boxes/Box";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
@@ -18,13 +19,18 @@ import { SimpleButton } from "../../../components/buttons/SimpleButton";
 import { SocialButton } from "../../../components/buttons/SocialButton";
 import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
 import { Separator } from "../../../components/separators/Separator";
-import { SpacerRow } from "../../../components/spacer";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   neutral17,
   neutral77,
+  neutralA3,
   secondaryColor,
 } from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold20 } from "../../../utils/style/fonts";
+import {
+  fontSemibold10,
+  fontSemibold13,
+  fontSemibold20,
+} from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { Project } from "../types";
 
@@ -32,17 +38,24 @@ const STATUSES_MAP: { [key: string]: string } = {
   CREATED: "Open",
 };
 
-export const GrantBox: React.FC<{
+const BOX_WIDTH = 400;
+
+export const ProjectBox: React.FC<{
   onPress?: () => void;
   containerStyle?: BoxStyle;
   project: Project;
 }> = ({ containerStyle, onPress, project }) => {
-  if (!project) {
-    return null;
-  }
+  const stats = useMemo(() => {
+    const completed = project.milestones.filter(
+      (ms) => ms.status === "MS_COMPLETED",
+    ).length;
+    const total = project.milestones.length;
+    const percentCompleted = Math.floor((completed / total) * 100);
+    return { completed, total, percentCompleted };
+  }, [project.milestones]);
 
   return (
-    <TertiaryBox style={[containerStyle, { width: 400 }]}>
+    <TertiaryBox style={[containerStyle, { width: BOX_WIDTH }]}>
       {/* Body ============================================================== */}
       <View style={{ margin: layout.spacing_x2 }}>
         <FlexRow>
@@ -79,6 +92,24 @@ export const GrantBox: React.FC<{
         >
           {project.metadata.shortDescData.desc}
         </BrandText>
+
+        <SpacerColumn size={1} />
+
+        <View>
+          <FlexRow style={{ justifyContent: "space-between" }}>
+            <BrandText style={[fontSemibold10, { color: neutralA3 }]}>
+              Milestone
+            </BrandText>
+            <BrandText style={[fontSemibold10, { color: neutralA3 }]}>
+              {stats.completed}/{stats.total}
+            </BrandText>
+          </FlexRow>
+
+          <ProgressLine
+            percent={stats.percentCompleted}
+            width={BOX_WIDTH - 40}
+          />
+        </View>
       </View>
 
       {/* Footer ============================================================== */}

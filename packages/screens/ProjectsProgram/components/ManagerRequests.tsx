@@ -25,7 +25,7 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { useProject } from "../hooks/useProjects";
-import { Milestone } from "../types";
+import { MilestoneFormData } from "../types";
 
 export const ManagerRequests: React.FC = () => {
   const navigation = useAppNavigation();
@@ -36,7 +36,7 @@ export const ManagerRequests: React.FC = () => {
 
   return (
     <>
-      {project?.metadata.milestones.map((milestone: Milestone) => {
+      {project?.metadata.milestones.map((milestone: MilestoneFormData) => {
         return (
           <TertiaryBox
             style={{
@@ -125,7 +125,7 @@ export const ManagerRequests: React.FC = () => {
               </Link>
 
               <TouchableOpacity
-                onPress={() => navigation.navigate("GrantsProgramPayment")}
+                onPress={() => navigation.navigate("ProjectsProgramPayment")}
               >
                 <BrandText
                   style={[

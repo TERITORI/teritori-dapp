@@ -3,7 +3,7 @@ import dappStoreSVG from "../../assets/icons/dapp-store.svg";
 import feedSVG from "../../assets/icons/feed.svg";
 import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
 import governanceSVG from "../../assets/icons/governance.svg";
-import grantsProgramSVG from "../../assets/icons/grants-program.svg";
+import projectsProgramSVG from "../../assets/icons/projects-program.svg";
 import gridSVG from "../../assets/icons/grid.svg";
 import launchpadApplySVG from "../../assets/icons/launchpad-apply.svg";
 import launchpadLaunchpadSVG from "../../assets/icons/launchpad-launchpad.svg";
@@ -137,10 +137,10 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     route: "DAppStore",
     icon: dappStoreSVG,
   },
-  grantsProgram: {
-    title: "Grants Program",
-    id: "Grants Program",
-    route: "GrantsProgram",
-    icon: grantsProgramSVG,
+  projectsProgram: {
+    title: "Projects Program",
+    id: "Projects Program",
+    route: "ProjectsProgram",
+    icon: projectsProgramSVG,
   },
 };

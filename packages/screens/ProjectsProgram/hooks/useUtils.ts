@@ -3,7 +3,7 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 export const useUtils = () => {
   const { setToastError } = useFeedbacks();
 
-  const mustHaveValue = (value?: string, name?: string) => {
+  const mustGetValue = (value?: string, name?: string) => {
     if (!value) {
       setToastError({
         title: "Error",
@@ -14,5 +14,5 @@ export const useUtils = () => {
     return value;
   };
 
-  return { mustHaveValue };
+  return { mustGetValue };
 };

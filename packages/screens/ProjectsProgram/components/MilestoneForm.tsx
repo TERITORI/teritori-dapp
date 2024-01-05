@@ -29,8 +29,8 @@ import { layout } from "../../../utils/style/layout";
 import {
   PRIORITY_HIGH,
   PRIORITY_MEDIUM,
-  STATUS_OPEN,
-  Milestone,
+  MS_OPEN,
+  MilestoneFormData,
 } from "../types";
 
 const PRIORITIES: SelectInputItem[] = [
@@ -38,12 +38,12 @@ const PRIORITIES: SelectInputItem[] = [
   { label: "Medium", value: PRIORITY_MEDIUM },
 ];
 
-const initialValues: Milestone = {
+const initialValues: MilestoneFormData = {
   id: 0,
   name: "",
   desc: "",
   priority: PRIORITY_HIGH,
-  statusId: STATUS_OPEN,
+  statusId: MS_OPEN,
   budget: 0,
   githubLink: "",
 };
@@ -57,7 +57,7 @@ const newMilestoneSchema = object({
 });
 
 export const MilestoneForm: React.FC<{
-  onSubmit: (milestone: Milestone) => void;
+  onSubmit: (milestone: MilestoneFormData) => void;
   onClose: () => void;
 }> = ({ onSubmit, onClose }) => {
   const [priority, setPriority] = useState<"high" | "medium">(PRIORITY_HIGH);
@@ -67,7 +67,7 @@ export const MilestoneForm: React.FC<{
       <Formik
         initialValues={initialValues}
         validationSchema={newMilestoneSchema}
-        onSubmit={(values: Milestone) => {
+        onSubmit={(values: MilestoneFormData) => {
           values.priority = priority;
           onSubmit(values);
         }}

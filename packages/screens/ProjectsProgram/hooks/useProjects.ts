@@ -32,13 +32,13 @@ const toJSON = (contractData: string, isArray: boolean) => {
 };
 
 export const useProject = (networkId: string, projectId: string) => {
-  const { mustHaveValue } = useUtils();
+  const { mustGetValue } = useUtils();
 
   return useQuery(
     ["useProject", networkId, projectId],
     async () => {
       const gnoNetwork = mustGetGnoNetwork(networkId);
-      const escrowPkgPath = mustHaveValue(
+      const escrowPkgPath = mustGetValue(
         gnoNetwork.escrowPkgPath,
         "escrow pkg path",
       );
@@ -59,13 +59,13 @@ export const useProjects = (
   startAfter: number,
   limit: number,
 ) => {
-  const { mustHaveValue } = useUtils();
+  const { mustGetValue } = useUtils();
 
   return useQuery(
     ["useProjects", networkId, startAfter, limit],
     async () => {
       const gnoNetwork = mustGetGnoNetwork(networkId);
-      const escrowPkgPath = mustHaveValue(
+      const escrowPkgPath = mustGetValue(
         gnoNetwork.escrowPkgPath,
         "escrow pkg path",
       );

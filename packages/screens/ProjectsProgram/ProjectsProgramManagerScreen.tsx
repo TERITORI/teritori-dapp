@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { HeaderBackButton } from "./components/HeaderBackButton";
-import { ManagerAllGrants } from "./components/ManagerAllGrants";
+import { ManagerAllProjects } from "./components/ManagerAllProjects";
 import { ManagerRequests } from "./components/ManagerRequests";
 import filterSVG from "../../../assets/icons/filter.svg";
 import { BrandText } from "../../components/BrandText";
@@ -17,25 +17,25 @@ import { fontSemibold14, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { useRoute } from "@react-navigation/native";
 
-type Tab = "allGrants" | "requestsByBuilders";
+type Tab = "allProjects" | "requestsByBuilders";
 
 const TAB_OPTIONS = {
-  allGrants: {
-    name: "All Grants",
+  allProjects: {
+    name: "All Projects",
   },
   requestsByBuilders: {
     name: "Requests by builders",
   },
 };
 
-export const GrantsProgramManagerScreen: ScreenFC<
-  "GrantsProgramManager"
+export const ProjectsProgramManagerScreen: ScreenFC<
+  "ProjectsProgramManager"
 > = () => {
   const params = useRoute();
   const projectId = (params as any).projectId || "0";
 
   const [searchText, setSearchText] = useState("");
-  const [selectedTab, setSelectedTab] = useState<Tab>("allGrants");
+  const [selectedTab, setSelectedTab] = useState<Tab>("allProjects");
 
   return (
     <ScreenContainer isLarge responsive headerChildren={<HeaderBackButton />}>
@@ -45,7 +45,7 @@ export const GrantsProgramManagerScreen: ScreenFC<
           justifyContent: "space-between",
         }}
       >
-        <BrandText style={fontSemibold28}>Grants Manager</BrandText>
+        <BrandText style={fontSemibold28}>Projects Manager</BrandText>
 
         <Tabs
           items={TAB_OPTIONS}
@@ -56,7 +56,7 @@ export const GrantsProgramManagerScreen: ScreenFC<
 
         <FlexRow style={{ width: "auto" }}>
           <SearchBarInput
-            placeholder="Search for grant..."
+            placeholder="Search for project..."
             text={searchText}
             onChangeText={setSearchText}
           />
@@ -72,7 +72,7 @@ export const GrantsProgramManagerScreen: ScreenFC<
         </FlexRow>
       </FlexRow>
 
-      {selectedTab === "allGrants" && <ManagerAllGrants />}
+      {selectedTab === "allProjects" && <ManagerAllProjects />}
       {selectedTab === "requestsByBuilders" && <ManagerRequests />}
     </ScreenContainer>
   );

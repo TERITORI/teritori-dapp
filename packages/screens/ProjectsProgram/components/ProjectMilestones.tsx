@@ -15,11 +15,11 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { Milestone } from "../types";
+import { MilestoneFormData } from "../types";
 
 export const ProjectMilestones: React.FC<{
-  milestones: Milestone[];
-  onSelectMilestone?: (milestone: Milestone) => void;
+  milestones: MilestoneFormData[];
+  onSelectMilestone?: (milestone: MilestoneFormData) => void;
 }> = ({ milestones, onSelectMilestone }) => {
   const [searchText, setSearchText] = useState("");
   const [isHideInfo, setIsHideInfo] = useState(false);

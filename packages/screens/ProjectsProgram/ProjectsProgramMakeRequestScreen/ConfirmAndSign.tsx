@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Image, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import grantSuccessPaymentPNG from "../../../../assets/grant-success-payment.png";
+import projectSuccessPaymentPNG from "../../../../assets/project-success-payment.png";
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
@@ -36,7 +36,7 @@ export const ConfirmAndSign: React.FC = () => {
   const { shortDescData, milestones, teamAndLinkData } = useMakeRequestState();
   const networkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
-  const { mustHaveValue } = useUtils();
+  const { mustGetValue } = useUtils();
 
   const userIPFSKey = useSelector(selectNFTStorageAPI);
   const selectedWallet = useSelectedWallet();
@@ -47,6 +47,8 @@ export const ConfirmAndSign: React.FC = () => {
   const { setToastError } = useFeedbacks();
 
   const uploadFile = async (fileToUpload: LocalFileData) => {
+    setIsUploadingImage(true);
+
     let remoteFiles: RemoteFileData[] = [];
 
     const pinataJWTKey = userIPFSKey || (await generateIpfsKey("gno", userId));
@@ -58,14 +60,16 @@ export const ConfirmAndSign: React.FC = () => {
     }
 
     if (!remoteFiles.find((file) => file.url)) {
-      console.error("upload file err : Fail to pin to IPFS");
+      const message = "Fail to pin to IPFS, please try to Publish again";
       setToastError({
         title: "File upload failed",
-        message: "Fail to pin to IPFS, please try to Publish again",
+        message,
       });
-      return;
+      setIsUploadingImage(false);
+      throw Error(message);
     }
 
+    setIsUploadingImage(false);
     return `${PINATA_GATEWAY}/${remoteFiles[0].url}`;
   };
 
@@ -78,17 +82,15 @@ export const ConfirmAndSign: React.FC = () => {
       throw Error("cover image file is required");
     }
 
-    setIsUploadingImage(true);
     const coverImg = await uploadFile(shortDescData._coverImgFile);
-    setIsUploadingImage(false);
 
     const gnoNetwork = mustGetGnoNetwork(networkId);
-    const caller = mustHaveValue(wallet?.address, "caller");
-    const escrowPkgPath = mustHaveValue(
+    const caller = mustGetValue(wallet?.address, "caller");
+    const escrowPkgPath = mustGetValue(
       gnoNetwork.escrowPkgPath,
       "escrow pkg path",
     );
-    const escrowToken = mustHaveValue(
+    const escrowToken = mustGetValue(
       shortDescData?.paymentAddr,
       "payment address",
     );
@@ -165,7 +167,7 @@ export const ConfirmAndSign: React.FC = () => {
       >
         <View style={{ alignItems: "center" }}>
           <Image
-            source={grantSuccessPaymentPNG}
+            source={projectSuccessPaymentPNG}
             style={{
               width: 124,
               height: 124,
@@ -190,11 +192,11 @@ export const ConfirmAndSign: React.FC = () => {
           >
             <SecondaryButtonOutline
               size="SM"
-              text="Back to Grant Program"
+              text="Back to Project Program"
               backgroundColor={neutral00}
               onPress={() => {
                 setIsShowModal(false);
-                navigation.navigate("GrantsProgram");
+                navigation.navigate("ProjectsProgram");
               }}
             />
             <PrimaryButton

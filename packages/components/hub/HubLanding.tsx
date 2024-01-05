@@ -95,7 +95,7 @@ export const HubLanding: React.FC = () => {
               description="Get funds to develop, contribute and build new feature for Communities"
               info="Apply here"
               iconSVG={labsSVG}
-              onPress={() => Linking.openURL("https://teritori.com/grants")}
+              onPress={() => Linking.openURL("https://teritori.com/projects")}
             />
           </View>
         </Section>

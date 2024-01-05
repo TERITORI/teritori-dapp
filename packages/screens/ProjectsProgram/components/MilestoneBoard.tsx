@@ -6,11 +6,11 @@ import { MilestoneForm } from "./MilestoneForm";
 import { MilestoneItem } from "./MilestoneItem";
 import { MilestoneList } from "./MilestoneList";
 import addCircleSVG from "../../../../assets/icons/add-circle.svg";
-import grantsCompletedSVG from "../../../../assets/icons/grants-completed.svg";
-import grantsInProgressSVG from "../../../../assets/icons/grants-inProgress.svg";
-import grantsOpenSVG from "../../../../assets/icons/grants-open.svg";
-import grantsReviewSVG from "../../../../assets/icons/grants-review.svg";
 import noMilestonesSVG from "../../../../assets/icons/no-tasks.svg";
+import projectsCompletedSVG from "../../../../assets/icons/projects-completed.svg";
+import projectsInProgressSVG from "../../../../assets/icons/projects-inProgress.svg";
+import projectsOpenSVG from "../../../../assets/icons/projects-open.svg";
+import projectsReviewSVG from "../../../../assets/icons/projects-review.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
@@ -25,24 +25,29 @@ import {
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
-import { Status, Milestone } from "../types";
+import { Status, MilestoneFormData } from "../types";
 
 const STATUSES: Status[] = [
-  { id: "open", text: "Open (Backlog)", count: 4, iconSVG: grantsOpenSVG },
+  { id: "open", text: "Open (Backlog)", count: 4, iconSVG: projectsOpenSVG },
   {
     id: "inProgress",
     text: "In Progress",
     count: 4,
-    iconSVG: grantsInProgressSVG,
+    iconSVG: projectsInProgressSVG,
   },
-  { id: "review", text: "Review", count: 4, iconSVG: grantsReviewSVG },
-  { id: "completed", text: "Completed", count: 4, iconSVG: grantsCompletedSVG },
+  { id: "review", text: "Review", count: 4, iconSVG: projectsReviewSVG },
+  {
+    id: "completed",
+    text: "Completed",
+    count: 4,
+    iconSVG: projectsCompletedSVG,
+  },
 ];
 
 export const MilestoneBoard: React.FC<{
-  milestones: Milestone[];
+  milestones: MilestoneFormData[];
   containerStyle?: StyleProp<ViewStyle>;
-  onSelectMilestone?: (milestone: Milestone) => void;
+  onSelectMilestone?: (milestone: MilestoneFormData) => void;
   editable?: boolean;
 }> = ({ onSelectMilestone, containerStyle, editable, milestones }) => {
   const [hoveredMilestone, setHoveredMilestone] = useState<Milestone>();

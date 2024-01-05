@@ -9,11 +9,11 @@ import { FeedScreen } from "../../screens/Feed/FeedScreen";
 import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
 import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
-import { GrantsProgramDetailScreen } from "../../screens/GrantsProgram/GrantsProgramDetailScreen";
-import { GrantsProgramMakeRequestScreen } from "../../screens/GrantsProgram/GrantsProgramMakeRequestScreen";
-import { GrantsProgramManagerScreen } from "../../screens/GrantsProgram/GrantsProgramManagerScreen";
-import { GrantsProgramPaymentScreen } from "../../screens/GrantsProgram/GrantsProgramPaymentScreen";
-import { GrantsProgramScreen } from "../../screens/GrantsProgram/GrantsProgramScreen";
+import { ProjectsProgramDetailScreen } from "../../screens/ProjectsProgram/ProjectsProgramDetailScreen";
+import { ProjectsProgramMakeRequestScreen } from "../../screens/ProjectsProgram/ProjectsProgramMakeRequestScreen";
+import { ProjectsProgramManagerScreen } from "../../screens/ProjectsProgram/ProjectsProgramManagerScreen";
+import { ProjectsProgramPaymentScreen } from "../../screens/ProjectsProgram/ProjectsProgramPaymentScreen";
+import { ProjectsProgramScreen } from "../../screens/ProjectsProgram/ProjectsProgramScreen";
 import { HashtagFeedScreen } from "../../screens/HashtagFeed/HashtagFeedScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
 import { LaunchpadApplyScreen } from "../../screens/Launchpad/LaunchpadApplyScreen";
@@ -240,46 +240,46 @@ export const Navigator: React.FC = () => {
         }}
       />
 
-      {/* ==== Grants program */}
+      {/* ==== Projects program */}
       <Stack.Screen
-        name="GrantsProgram"
-        component={GrantsProgramScreen}
-        options={{ header: () => null, title: screenTitle("Grants Program") }}
+        name="ProjectsProgram"
+        component={ProjectsProgramScreen}
+        options={{ header: () => null, title: screenTitle("Projects Program") }}
       />
 
       <Stack.Screen
-        name="GrantsProgramDetail"
-        component={GrantsProgramDetailScreen}
+        name="ProjectsProgramDetail"
+        component={ProjectsProgramDetailScreen}
         options={{
           header: () => null,
-          title: screenTitle("Grants Program Detail"),
+          title: screenTitle("Projects Program Detail"),
         }}
       />
 
       <Stack.Screen
-        name="GrantsProgramManager"
-        component={GrantsProgramManagerScreen}
+        name="ProjectsProgramManager"
+        component={ProjectsProgramManagerScreen}
         options={{
           header: () => null,
-          title: screenTitle("Grants Program Manager"),
+          title: screenTitle("Projects Program Manager"),
         }}
       />
 
       <Stack.Screen
-        name="GrantsProgramPayment"
-        component={GrantsProgramPaymentScreen}
+        name="ProjectsProgramPayment"
+        component={ProjectsProgramPaymentScreen}
         options={{
           header: () => null,
-          title: screenTitle("Grants Program Payment"),
+          title: screenTitle("Projects Program Payment"),
         }}
       />
 
       <Stack.Screen
-        name="GrantsProgramMakeRequest"
-        component={GrantsProgramMakeRequestScreen}
+        name="ProjectsProgramMakeRequest"
+        component={ProjectsProgramMakeRequestScreen}
         options={{
           header: () => null,
-          title: screenTitle("Grants Program Make Request"),
+          title: screenTitle("Projects Program Make Request"),
         }}
       />
 

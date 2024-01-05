@@ -13,11 +13,11 @@ export const HeaderBackButton: React.FC = () => {
   const navigation = useAppNavigation();
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate("GrantsProgram")}>
+    <TouchableOpacity onPress={() => navigation.navigate("ProjectsProgram")}>
       <FlexRow>
         <SVG source={chevronLeftSVG} width={24} height={24} />
         <SpacerRow size={2} />
-        <BrandText style={fontSemibold20}>Grants Program</BrandText>
+        <BrandText style={fontSemibold20}>Projects Program</BrandText>
       </FlexRow>
     </TouchableOpacity>
   );

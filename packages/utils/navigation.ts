@@ -65,11 +65,11 @@ export type RootStackParamList = {
 
   Settings: undefined;
 
-  GrantsProgram: undefined;
-  GrantsProgramManager: undefined;
-  GrantsProgramPayment: undefined;
-  GrantsProgramMakeRequest: { step?: number };
-  GrantsProgramDetail: { id: string };
+  ProjectsProgram: undefined;
+  ProjectsProgramManager: undefined;
+  ProjectsProgramPayment: undefined;
+  ProjectsProgramMakeRequest: { step?: number };
+  ProjectsProgramDetail: { id: string };
 
   OrganizationDeployer: undefined;
   Organizations?: { network?: string };
@@ -148,12 +148,12 @@ const navConfig: {
     Organizations: "orgs",
     CoreDAO: "core-dao",
 
-    // === Grants Program
-    GrantsProgram: "grants-program",
-    GrantsProgramPayment: "grants-program/payment",
-    GrantsProgramManager: "grants-program/manager",
-    GrantsProgramMakeRequest: "grants-program/make-request",
-    GrantsProgramDetail: "grants-program/:id",
+    // === Projects Program
+    ProjectsProgram: "projects-program",
+    ProjectsProgramPayment: "projects-program/payment",
+    ProjectsProgramManager: "projects-program/manager",
+    ProjectsProgramMakeRequest: "projects-program/make-request",
+    ProjectsProgramDetail: "projects-program/:id",
     // === Organization
 
     OrganizationGetStarted: "organization-get-started",

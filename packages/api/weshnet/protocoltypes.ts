@@ -14194,7 +14194,7 @@ export interface ProtocolService {
     request: DeepPartial<MultiMemberGroupAliasResolverDisclose_Request>,
     metadata?: grpc.Metadata,
   ): Promise<MultiMemberGroupAliasResolverDisclose_Reply>;
-  /** MultiMemberGroupAdminRoleGrant grants an admin role to a group member */
+  /** MultiMemberGroupAdminRoleGrant projects an admin role to a group member */
   MultiMemberGroupAdminRoleGrant(
     request: DeepPartial<MultiMemberGroupAdminRoleGrant_Request>,
     metadata?: grpc.Metadata,

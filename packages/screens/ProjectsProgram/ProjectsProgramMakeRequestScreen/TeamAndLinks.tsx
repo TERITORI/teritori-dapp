@@ -4,8 +4,6 @@ import { View } from "react-native";
 import { object, string } from "yup";
 
 import { MakeRequestFooter } from "./Footer";
-import { TeamAndLinkData } from "./types";
-import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 import { BrandText } from "../../../components/BrandText";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { Separator } from "../../../components/separators/Separator";
@@ -17,6 +15,8 @@ import {
   fontSemibold20,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { useMakeRequestState } from "../hooks/useMakeRequestHook";
+import { TeamAndLinkData } from "../types";
 
 const emptyValues: TeamAndLinkData = {
   websiteLink: "",

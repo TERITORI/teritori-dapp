@@ -3,7 +3,7 @@ import dao from "../../../../assets/icons/dao.svg";
 import socialFeed from "../../../../assets/icons/feed.svg";
 import freelance from "../../../../assets/icons/freelanceservice.svg";
 import governance from "../../../../assets/icons/governance.svg";
-import grantsProgramSVG from "../../../../assets/icons/grants-program.svg";
+import projectsProgramSVG from "../../../../assets/icons/projects-program.svg";
 import checklogo from "../../../../assets/icons/greenCheck.svg";
 import launchpad from "../../../../assets/icons/launchpad.svg";
 import leap from "../../../../assets/icons/leap-cosmos-logo.svg";
@@ -343,13 +343,13 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: false,
           alwaysOn: false,
         },
-        grantsProgram: {
-          id: "grantsProgram",
-          title: "Grants Program",
-          description: "Grants Program",
-          icon: grantsProgramSVG,
+        projectsProgram: {
+          id: "projectsProgram",
+          title: "Projects Program",
+          description: "Projects Program",
+          icon: projectsProgramSVG,
 
-          route: "GrantsProgram",
+          route: "ProjectsProgram",
           groupKey: "bookmarks",
           selectedByDefault: false,
           alwaysOn: false,

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-import { GrantBox } from "./components/GrantBox";
+import { ProjectBox } from "./components/ProjectBox";
 import { useProjects } from "./hooks/useProjects";
 import { Project } from "./types";
 import filterSVG from "../../../assets/icons/filter.svg";
@@ -23,7 +23,7 @@ import {
 import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
+export const ProjectsProgramScreen: ScreenFC<"ProjectsProgram"> = () => {
   const [searchText, setSearchText] = useState("");
   const networkId = useSelectedNetworkId();
   const { data: projects } = useProjects(networkId, 0, 100);
@@ -31,16 +31,16 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
 
   const navigation = useAppNavigation();
 
-  const gotoGrantsProgramDetail = (id: string) => {
-    navigation.navigate("GrantsProgramDetail", { id });
+  const gotoProjectsProgramDetail = (id: string) => {
+    navigation.navigate("ProjectsProgramDetail", { id });
   };
 
-  const gotoGrantsProgramManager = () => {
-    navigation.navigate("GrantsProgramManager");
+  const gotoProjectsProgramManager = () => {
+    navigation.navigate("ProjectsProgramManager");
   };
 
   const gotoCreateGrant = () => {
-    navigation.navigate("GrantsProgramMakeRequest", { step: 1 });
+    navigation.navigate("ProjectsProgramMakeRequest", { step: 1 });
   };
 
   const filteredProjects = useMemo(() => {
@@ -58,25 +58,25 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
       isLarge
       responsive
       headerChildren={
-        <BrandText style={fontSemibold20}>Grants Program</BrandText>
+        <BrandText style={fontSemibold20}>Projects Program</BrandText>
       }
     >
       <FlexRow style={{ marginTop: layout.spacing_x4 }}>
         <BrandText style={[fontSemibold28, { flexGrow: 1 }]}>
-          Grants Program
+          Projects Program
         </BrandText>
 
         <SimpleButton
           outline
-          text="Grant Manager"
+          text="Project Manager"
           color={secondaryColor}
           size="SM"
-          onPress={gotoGrantsProgramManager}
+          onPress={gotoProjectsProgramManager}
         />
         <SpacerRow size={2} />
         <SimpleButton
           outline
-          text="Create a Grant"
+          text="Create a Project"
           color={primaryColor}
           size="SM"
           onPress={gotoCreateGrant}
@@ -118,7 +118,7 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
           <SpacerRow size={2} />
           <SimpleButton
             onPress={() => setFilterStatus("PASS")}
-            text="Past Grants"
+            text="Past Projects"
             size="SM"
             bgColor={filterStatus === "PASS" ? secondaryColor : "#171717"}
             color={filterStatus === "PASS" ? neutral00 : secondaryColor}
@@ -128,7 +128,7 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
 
         <FlexRow style={{ width: "auto", marginTop: layout.spacing_x2 }}>
           <SearchBarInput
-            placeholder="Search for grant..."
+            placeholder="Search for project..."
             text={searchText}
             onChangeText={setSearchText}
           />
@@ -151,10 +151,10 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
       >
         {filteredProjects.map((project) => {
           return (
-            <GrantBox
+            <ProjectBox
               key={"" + project.id}
               project={project}
-              onPress={() => gotoGrantsProgramDetail("" + project.id)}
+              onPress={() => gotoProjectsProgramDetail("" + project.id)}
               containerStyle={{
                 marginTop: layout.spacing_x2,
                 marginRight: layout.spacing_x2,

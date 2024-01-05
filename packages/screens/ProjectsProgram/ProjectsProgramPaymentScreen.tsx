@@ -51,8 +51,8 @@ const CustomSocialButton: React.FC<{
   );
 };
 
-export const GrantsProgramPaymentScreen: ScreenFC<
-  "GrantsProgramPayment"
+export const ProjectsProgramPaymentScreen: ScreenFC<
+  "ProjectsProgramPayment"
 > = () => {
   const networkId = useSelectedNetworkId();
   const projectId = "0";

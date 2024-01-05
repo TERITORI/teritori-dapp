@@ -124,7 +124,7 @@ export const useMakeRequestState = () => {
 
   const gotoStep = (stepIndice: number) => {
     store.actions.setStepIndice(stepIndice);
-    navigation.navigate("GrantsProgramMakeRequest", { step: stepIndice });
+    navigation.navigate("ProjectsProgramMakeRequest", { step: stepIndice });
   };
 
   const goNextStep = () => {

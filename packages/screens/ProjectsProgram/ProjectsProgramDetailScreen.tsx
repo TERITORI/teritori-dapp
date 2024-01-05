@@ -36,8 +36,8 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-export const GrantsProgramDetailScreen: ScreenFC<
-  "GrantsProgramDetail"
+export const ProjectsProgramDetailScreen: ScreenFC<
+  "ProjectsProgramDetail"
 > = () => {
   const [selectedMilestone, setSelectedMilestone] = useState<Milestone>();
   const { params } = useRoute();

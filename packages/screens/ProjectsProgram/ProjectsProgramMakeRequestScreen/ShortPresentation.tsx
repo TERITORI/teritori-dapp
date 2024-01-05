@@ -45,12 +45,12 @@ export const ShortPresentation: React.FC = () => {
 
   return (
     <View style={{ width: "100%", maxWidth: 480, margin: "auto" }}>
-      <BrandText style={fontSemibold20}>Grant details</BrandText>
+      <BrandText style={fontSemibold20}>Project details</BrandText>
 
       <SpacerColumn size={1} />
 
       <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-        Information about your Grant
+        Information about your Project
       </BrandText>
 
       <SpacerColumn size={2.5} />

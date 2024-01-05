@@ -1,17 +1,19 @@
 import { SvgProps } from "react-native-svg";
+
 import { LocalFileData } from "../../utils/types/files";
 
 export const PRIORITY_HIGH = "high";
 export const PRIORITY_MEDIUM = "medium";
 
-export const STATUS_OPEN = "open";
-export const STATUS_INPROGRESS = "inProgress";
-export const STATUS_REVIEW = "review";
-export const STATUS_COMPLETED = "completed";
+export const MS_OPEN = "MS_OPEN";
+export const MS_PROGRESS = "MS_PROGRESS";
+export const MS_REVIEW = "MS_REVIEW";
+export const MS_COMPLETED = "MS_COMPLETED";
 
-export type StatusId = "open" | "inProgress" | "review" | "completed";
+export type StatusId = "MS_OPEN" | "MS_PROGRESS" | "MS_REVIEW" | "MS_COMPLETED";
 
-export type Milestone = {
+// This type used in form when create a project
+export type MilestoneFormData = {
   id: number;
   name: string;
   desc: string;
@@ -48,16 +50,16 @@ export type TeamAndLinkData = {
 
 export type ProjectMetadata = {
   shortDescData: ShortDescData;
-  milestones: Milestone[];
+  milestones: MilestoneFormData[];
   teamAndLinkData: TeamAndLinkData;
 };
 
-export type ProjectMileStone = {
+export type ProjectMilestone = {
   title: string;
   amount: number;
   paid: number;
   duration: number;
-  status: string;
+  status: StatusId;
   funded: boolean;
   link: string;
 };
@@ -73,7 +75,7 @@ export type Project = {
   expireAt: number;
   funderFeedback: string;
   contractorFeedback: string;
-  milestones: ProjectMileStone[];
+  milestones: ProjectMilestone[];
   activeMilestone: number;
   pausedBy: string;
   conflictHandler: string;

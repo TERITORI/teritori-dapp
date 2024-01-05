@@ -34,10 +34,10 @@ export interface MonthlyVestingAddressSDKType {
 }
 export interface DistributionProportions {
   /**
-   * grants_program defines the proportion of the minted minted_denom that is
-   * to be allocated as grants.
+   * projects_program defines the proportion of the minted minted_denom that is
+   * to be allocated as projects.
    */
-  grantsProgram: string;
+  projectsProgram: string;
   /**
    * community_pool defines the proportion of the minted minted_denom that is
    * to be allocated to the community pool.
@@ -60,7 +60,7 @@ export interface DistributionProportions {
   developerRewards: string;
 }
 export interface DistributionProportionsSDKType {
-  grants_program: string;
+  projects_program: string;
   community_pool: string;
   usage_incentive: string;
   staking: string;
@@ -82,8 +82,8 @@ export interface Params {
   weightedDeveloperRewardsReceivers: MonthlyVestingAddress[];
   /** usage incentive address */
   usageIncentiveAddress: string;
-  /** grants program address */
-  grantsProgramAddress: string;
+  /** projects program address */
+  projectsProgramAddress: string;
   /** team reserve funds address */
   teamReserveAddress: string;
   /** start block to distribute minting rewards */
@@ -98,7 +98,7 @@ export interface ParamsSDKType {
   distribution_proportions: DistributionProportionsSDKType;
   weighted_developer_rewards_receivers: MonthlyVestingAddressSDKType[];
   usage_incentive_address: string;
-  grants_program_address: string;
+  projects_program_address: string;
   team_reserve_address: string;
   minting_rewards_distribution_start_block: Long;
 }
@@ -233,7 +233,7 @@ export const MonthlyVestingAddress = {
 };
 function createBaseDistributionProportions(): DistributionProportions {
   return {
-    grantsProgram: "",
+    projectsProgram: "",
     communityPool: "",
     usageIncentive: "",
     staking: "",
@@ -242,8 +242,8 @@ function createBaseDistributionProportions(): DistributionProportions {
 }
 export const DistributionProportions = {
   encode(message: DistributionProportions, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.grantsProgram !== "") {
-      writer.uint32(10).string(message.grantsProgram);
+    if (message.projectsProgram !== "") {
+      writer.uint32(10).string(message.projectsProgram);
     }
     if (message.communityPool !== "") {
       writer.uint32(18).string(message.communityPool);
@@ -267,7 +267,7 @@ export const DistributionProportions = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.grantsProgram = reader.string();
+          message.projectsProgram = reader.string();
           break;
         case 2:
           message.communityPool = reader.string();
@@ -290,7 +290,7 @@ export const DistributionProportions = {
   },
   fromPartial(object: DeepPartial<DistributionProportions>): DistributionProportions {
     const message = createBaseDistributionProportions();
-    message.grantsProgram = object.grantsProgram ?? "";
+    message.projectsProgram = object.projectsProgram ?? "";
     message.communityPool = object.communityPool ?? "";
     message.usageIncentive = object.usageIncentive ?? "";
     message.staking = object.staking ?? "";
@@ -307,7 +307,7 @@ function createBaseParams(): Params {
     distributionProportions: DistributionProportions.fromPartial({}),
     weightedDeveloperRewardsReceivers: [],
     usageIncentiveAddress: "",
-    grantsProgramAddress: "",
+    projectsProgramAddress: "",
     teamReserveAddress: "",
     mintingRewardsDistributionStartBlock: Long.ZERO
   };
@@ -335,8 +335,8 @@ export const Params = {
     if (message.usageIncentiveAddress !== "") {
       writer.uint32(58).string(message.usageIncentiveAddress);
     }
-    if (message.grantsProgramAddress !== "") {
-      writer.uint32(66).string(message.grantsProgramAddress);
+    if (message.projectsProgramAddress !== "") {
+      writer.uint32(66).string(message.projectsProgramAddress);
     }
     if (message.teamReserveAddress !== "") {
       writer.uint32(74).string(message.teamReserveAddress);
@@ -375,7 +375,7 @@ export const Params = {
           message.usageIncentiveAddress = reader.string();
           break;
         case 8:
-          message.grantsProgramAddress = reader.string();
+          message.projectsProgramAddress = reader.string();
           break;
         case 9:
           message.teamReserveAddress = reader.string();
@@ -399,7 +399,7 @@ export const Params = {
     message.distributionProportions = object.distributionProportions !== undefined && object.distributionProportions !== null ? DistributionProportions.fromPartial(object.distributionProportions) : undefined;
     message.weightedDeveloperRewardsReceivers = object.weightedDeveloperRewardsReceivers?.map(e => MonthlyVestingAddress.fromPartial(e)) || [];
     message.usageIncentiveAddress = object.usageIncentiveAddress ?? "";
-    message.grantsProgramAddress = object.grantsProgramAddress ?? "";
+    message.projectsProgramAddress = object.projectsProgramAddress ?? "";
     message.teamReserveAddress = object.teamReserveAddress ?? "";
     message.mintingRewardsDistributionStartBlock = object.mintingRewardsDistributionStartBlock !== undefined && object.mintingRewardsDistributionStartBlock !== null ? Long.fromValue(object.mintingRewardsDistributionStartBlock) : Long.ZERO;
     return message;

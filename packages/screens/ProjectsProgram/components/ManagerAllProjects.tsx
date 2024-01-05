@@ -1,19 +1,19 @@
 import React from "react";
 
-import { GrantBox } from "./GrantBox";
+import { ProjectBox } from "./ProjectBox";
 import FlexRow from "../../../components/FlexRow";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import { layout } from "../../../utils/style/layout";
 import { useProjects } from "../hooks/useProjects";
 import { useAppNavigation } from "../../../utils/navigation";
 
-export const ManagerAllGrants: React.FC = () => {
+export const ManagerAllProjects: React.FC = () => {
   const navigation = useAppNavigation();
   const networkId = useSelectedNetworkId();
   const { data: projects } = useProjects(networkId, 0, 100);
 
   const gotoMilestones = (projectId: string) => {
-    navigation.navigate("GrantsProgramManager")
+    navigation.navigate("ProjectsProgramManager")
   }
 
   return (
@@ -26,7 +26,7 @@ export const ManagerAllGrants: React.FC = () => {
     >
       {projects.map((project) => {
         return (
-          <GrantBox
+          <ProjectBox
             project={project}
             containerStyle={{
               marginTop: layout.spacing_x2,
