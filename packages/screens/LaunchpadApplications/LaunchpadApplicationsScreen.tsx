@@ -93,7 +93,7 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
             <HighVolSortButton
               style={{ marginLeft: 12 }}
               sortDirection={1}
-              onChangeSortDirection={() => {}}
+              onChangeSortDirection={() => {}} // TODO: don't forget to rewrite onPress function if possible
             />
           )}
         </View>
