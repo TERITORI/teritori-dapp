@@ -1,19 +1,15 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SelectFileUploader } from "../../../components/selectFileUploader";
+import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
 import { ARTICLE_THUMBNAIL_IMAGE_HEIGHT } from "../../../utils/social-feed";
-import {
-  neutral00,
-  neutral33,
-  neutral55,
-  neutral77,
-} from "../../../utils/style/colors";
+import { neutral00, neutral55, neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
@@ -35,8 +31,7 @@ export const NewWhitelist: React.FC = () => {
   });
 
   return (
-    <View style={styles.container}>
-      <View style={{ borderBottomWidth: 1, borderColor: neutral33 }} />
+    <View style={{ maxWidth: 416 }}>
       <SpacerColumn size={2} />
       <BrandText style={fontSemibold20}>Whitelist Minting Details</BrandText>
       <SpacerColumn size={1} />
@@ -145,7 +140,7 @@ export const NewWhitelist: React.FC = () => {
         }}
       />
 
-      <View style={{ borderBottomWidth: 1, borderColor: neutral33 }} />
+      <Separator />
       <SpacerColumn size={2} />
       <BrandText style={fontSemibold20}>Whitelist File</BrandText>
       <SpacerColumn size={1} />
@@ -167,14 +162,3 @@ export const NewWhitelist: React.FC = () => {
     </View>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    maxWidth: 416,
-  },
-  labelStyle: {
-    maxWidth: 416,
-  },
-});

@@ -7,16 +7,42 @@ export interface NewCollectionFormForEistingBaseUrlValues {
   coverImageUrl?: string;
 }
 
-export interface NewCollectionDetailsFormValues {
+export interface NewCollectionBasicFormValues {
   name?: string;
   description?: string;
   symbol?: string;
   externalLink?: string;
+}
+export interface NewCollectionDetailsFormValues {
   websiteLink?: string;
   twitterProfileUrl?: string;
   twitterFollowers: string;
   discordName?: string;
   email?: string;
+  projectDesciption?: string;
+}
+
+export interface NewCollectionMintFormValues {
+  token?: string;
+  unitPrice?: string;
+  perAddressLimit: string;
+  startTime?: string;
+}
+export interface NewCollectionTeamandConditionFormValues {
+  teamDesciption?: string;
+  teamLink?: string;
+  partner?: string;
+  investDesciption?: string;
+  investLink?: string;
+  roadmap?: string;
+}
+
+export interface NewCollectionAdditionalFormValues {
+  artwork?: string;
+  collectionSupply?: string;
+  mintPrice?: string;
+  mintDate?: string;
+  whitelistSpotPercentage?: string;
 }
 
 export interface ExistingWhitelistDetailsFormValues {
@@ -33,4 +59,12 @@ export interface NewWhitelistDetailsFormValues {
 export interface NewConfigureRoyaltyDetailsFormValues {
   PaymentAddress: string;
   SharePercentage: string;
+}
+
+export interface NewMetadataDetailsFormValues {
+  name: string;
+  description: string;
+  externalURL: string;
+  youtubeURL: string;
+  attributes: string;
 }

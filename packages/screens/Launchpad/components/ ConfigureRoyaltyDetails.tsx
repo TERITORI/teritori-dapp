@@ -1,16 +1,11 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
-import {
-  neutral00,
-  neutral33,
-  neutral55,
-  neutral77,
-} from "../../../utils/style/colors";
+import { neutral00, neutral55, neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
@@ -29,8 +24,7 @@ export const ConfigureRoyaltyDetails: React.FC = () => {
   });
 
   return (
-    <View style={styles.container}>
-      <View style={{ borderBottomWidth: 1, borderColor: neutral33 }} />
+    <View style={{ maxWidth: 416 }}>
       <SpacerColumn size={2} />
       <BrandText style={fontSemibold20}>Royalty Details</BrandText>
       <SpacerColumn size={1} />
@@ -81,14 +75,3 @@ export const ConfigureRoyaltyDetails: React.FC = () => {
     </View>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    maxWidth: 416,
-  },
-  labelStyle: {
-    maxWidth: 416,
-  },
-});

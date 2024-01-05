@@ -1,25 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { SafeAreaView, View } from "react-native";
 
 import { SelectedFilesPreview } from "../../../components/FilePreview/SelectedFilesPreview";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
+import { MetadataUpdateModal } from "../../../components/modals/collection/MetadataUpdateModal";
 import { SelectFileUploader } from "../../../components/selectFileUploader";
-import { useIsMobile } from "../../../hooks/useIsMobile";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
-import { ARTICLE_THUMBNAIL_IMAGE_HEIGHT } from "../../../utils/social-feed";
 import { neutral00, neutral33 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
+import { LocalFileData } from "../../../utils/types/files";
 import { NewCollectionFormValues } from "../CreateCollection.type";
 
-export const Assets: React.FC = () => {
-  const isMobile = useIsMobile();
-  const { width: currentWidth } = useWindowDimensions();
+export const AssetsTab: React.FC = () => {
+  const [files, setFiles] = useState<LocalFileData[]>([]);
+  const [selectedFile, setSelectedFile] = useState<LocalFileData>();
+
+  const [medataUpdateModalVisible, setMedataUpdateModalVisible] =
+    useState(false);
 
   const { control } = useForm<NewCollectionFormValues>({
     defaultValues: {
@@ -27,25 +25,21 @@ export const Assets: React.FC = () => {
     },
     mode: "onBlur",
   });
-  //TODO: Not handled for now
-  // const { mutate: openGraphMutate, data: openGraphData } = useOpenGraph();
-  const isLarge = currentWidth > 1400;
   return (
     <SafeAreaView
       style={{
         width: "100%",
         flex: 1,
+        borderBottomWidth: 1,
+        borderColor: neutral33,
+        marginBottom: 10,
       }}
     >
       <View
-        style={[
-          styles.container,
-          {
-            flexDirection: isLarge ? "row" : "column",
-            // justifyContent: "center",
-            // alignItems: "center",
-          },
-        ]}
+        style={{
+          flex: 1,
+          flexDirection: "row",
+        }}
       >
         {/* ===== Left container */}
         <View
@@ -64,11 +58,7 @@ export const Assets: React.FC = () => {
             }}
           >
             {/* <BrandText style={{ marginBottom: 12 }}>Left container</BrandText> */}
-            <View
-              style={{
-                marginTop: isMobile ? layout.spacing_x2 : layout.contentSpacing,
-              }}
-            >
+            <View>
               <TextInputCustom<NewCollectionFormValues>
                 rules={{ required: true }}
                 label="NFT.Storage API Key"
@@ -84,40 +74,39 @@ export const Assets: React.FC = () => {
               />
               <SelectFileUploader
                 label="Asset selection"
-                fileHeight={ARTICLE_THUMBNAIL_IMAGE_HEIGHT}
-                isImageCover
                 style={{
                   marginVertical: layout.spacing_x3,
                   width: 416,
                   maxHeight: 100,
                 }}
-                onUpload={(files) => {}}
+                multiple
+                onUpload={(files) => {
+                  setFiles(files);
+                }}
                 mimeTypes={IMAGE_MIME_TYPES}
               />
               <SelectFileUploader
                 label="Metadata selection"
-                fileHeight={ARTICLE_THUMBNAIL_IMAGE_HEIGHT}
-                isImageCover
                 style={{
                   marginVertical: layout.spacing_x3,
                   width: 416,
                   maxHeight: 100,
                 }}
+                multiple
                 onUpload={(files) => {}}
                 mimeTypes={IMAGE_MIME_TYPES}
               />
             </View>
           </View>
         </View>
-        {isLarge && (
-          <View
-            style={{
-              width: 1,
-              backgroundColor: neutral33,
-              margin: layout.spacing_x2,
-            }}
-          />
-        )}
+
+        <View
+          style={{
+            width: 1,
+            backgroundColor: neutral33,
+            margin: layout.spacing_x2,
+          }}
+        />
 
         {/* ===== Right container */}
         <View
@@ -128,21 +117,23 @@ export const Assets: React.FC = () => {
             margin: layout.spacing_x2,
           }}
         >
-          <SelectedFilesPreview></SelectedFilesPreview>
+          <SelectedFilesPreview
+            assets={files}
+            onSelect={(item) => {
+              setMedataUpdateModalVisible(true);
+              setSelectedFile(item);
+            }}
+          />
         </View>
+
+        {selectedFile && (
+          <MetadataUpdateModal
+            onClose={() => setMedataUpdateModalVisible(false)}
+            isVisible={medataUpdateModalVisible}
+            item={selectedFile}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
 };
-
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000000",
-    flexDirection: "row",
-    zIndex: 999,
-    borderBottomWidth: 1,
-    borderColor: neutral33,
-  },
-});

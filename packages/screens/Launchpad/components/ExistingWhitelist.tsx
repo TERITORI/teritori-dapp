@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
@@ -17,7 +17,11 @@ export const ExistingWhitelist: React.FC = () => {
   });
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        maxWidth: 416,
+      }}
+    >
       <SpacerColumn size={2} />
       <TextInputCustom<ExistingWhitelistDetailsFormValues>
         rules={{ required: true }}
@@ -35,14 +39,3 @@ export const ExistingWhitelist: React.FC = () => {
     </View>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    maxWidth: 416,
-  },
-  labelStyle: {
-    maxWidth: 416,
-  },
-});
