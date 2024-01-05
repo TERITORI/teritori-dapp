@@ -15,7 +15,7 @@ interface HeaderMiniProps {
 
 export const HeaderMini = ({ title, navigation }: HeaderMiniProps) => {
   const onPressNotification = () => {
-    navigation.navigate("Notifications");
+    navigation.navigate("AddressBook");
   };
   return (
     <View

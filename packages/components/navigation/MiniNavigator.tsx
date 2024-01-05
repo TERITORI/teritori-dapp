@@ -6,6 +6,7 @@ import { RouteProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
+import AddressBookScreen from "../../screens/Mini/AddressBook/AddressBookScreen";
 import { MiniChatScreen } from "../../screens/Mini/Chat/MiniChatScreen";
 import { ConversationScreeen } from "../../screens/Mini/Conversation/ConversationScreen";
 import { MiniFeedScreen } from "../../screens/Mini/Feed/MiniFeedScreen";
@@ -115,7 +116,14 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: "Notifications",
-          headerBackButtonMenuEnabled: true,
+        }}
+      />
+      <Stack.Screen
+        name="AddressBook"
+        component={AddressBookScreen}
+        options={{
+          header: () => null,
+          title: "AddressBook",
         }}
       />
     </Stack.Navigator>
