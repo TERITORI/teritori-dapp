@@ -252,7 +252,7 @@ export const TextInputCustom = <T extends FieldValues>({
             </Label>
             {subtitle}
           </View>
-          {sublabel && <>{sublabel}</>}
+          {sublabel && sublabel}
           <SpacerColumn size={1.5} />
         </>
       )}

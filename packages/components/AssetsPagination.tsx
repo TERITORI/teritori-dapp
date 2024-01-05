@@ -63,7 +63,7 @@ export const AssetsPagination = ({
             style={[
               {
                 flexDirection: "row",
-                paddingHorizontal: 12,
+                paddingHorizontal: layout.spacing_x1_5,
                 backgroundColor: neutral17,
                 width: 80,
                 height: SEARCH_BAR_INPUT_HEIGHT,
@@ -84,13 +84,15 @@ export const AssetsPagination = ({
                 { outlineStyle: "none" } as any,
               ]}
               onChangeText={(text) => {
-                handleChangePage(Number(text));
+                handleChangePage(+text);
               }}
             />
           </TertiaryBox>
         </View>
       </View>
+
       <SpacerRow size={1} />
+
       <View style={{ flex: 1 }}>
         <View style={styles.section}>
           <TouchableOpacity onPress={() => handleChangePage(0)}>
@@ -98,12 +100,15 @@ export const AssetsPagination = ({
               <SVG source={chevronLeftDoubleSVG} height={16} width={16} />
             </LegacyTertiaryBox>
           </TouchableOpacity>
+
           <SpacerRow size={1} />
+
           <TouchableOpacity onPress={() => handleChangePage(currentPage - 1)}>
             <LegacyTertiaryBox height={42} width={56}>
               <SVG source={chevronLeftSVG} height={16} width={16} />
             </LegacyTertiaryBox>
           </TouchableOpacity>
+
           <SpacerRow size={2} />
 
           <View style={[styles.section, { justifyContent: "flex-end" }]}>
@@ -142,7 +147,9 @@ export const AssetsPagination = ({
               <SVG source={chevronRightSVG} height={16} width={16} />
             </LegacyTertiaryBox>
           </TouchableOpacity>
+
           <SpacerRow size={1} />
+
           <TouchableOpacity onPress={() => handleChangePage(maxPage - 1)}>
             <LegacyTertiaryBox height={42} width={56}>
               <SVG source={chevronRightDoubleSVG} height={16} width={16} />
