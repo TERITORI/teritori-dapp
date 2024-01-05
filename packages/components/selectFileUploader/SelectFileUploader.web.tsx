@@ -41,9 +41,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
 
   const handleFiles = async (files: File[]) => {
     const _files = multiple ? files : [files[0]];
-    let supportedFiles = [...files].filter(
-      (file) => mimeTypes?.includes(file.type),
-    );
+    let supportedFiles = files.filter((file) => mimeTypes?.includes(file.type));
 
     if (maxUpload && supportedFiles.length) {
       supportedFiles = supportedFiles.slice(0, maxUpload);
@@ -65,10 +63,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
       setFile(URL.createObjectURL(_files[0]));
     }
 
-    const formattedFiles = await Promise.all(
-      supportedFiles.map(async (file) => await formatFile(file)),
-    );
-
+    const formattedFiles = await Promise.all(supportedFiles.map(formatFile));
     onUpload(formattedFiles);
   };
 
@@ -90,7 +85,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
     setIsLoading?.(true);
     ev.preventDefault();
     if (ev.dataTransfer.items) {
-      const files = [...ev.dataTransfer.items]
+      const files = ev.dataTransfer.items
         .filter((item: any) => item.kind === "file")
         .map((item: any) => item.getAsFile());
       await handleFiles(files);
