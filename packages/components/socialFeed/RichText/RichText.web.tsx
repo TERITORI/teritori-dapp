@@ -114,7 +114,24 @@ const inlineToolbarPlugin = createInlineToolbarPlugin({
     },
   },
 });
-const imagePlugin = createImagePlugin();
+const imagePlugin = createImagePlugin({
+  decorator: (Component) => {
+    return (props) => {
+      const { contentState: contentStateProp, ...otherProps } = props;
+      const contentState = ContentState.createFromBlockArray(
+        contentStateProp.getBlocksAsArray(),
+      );
+      for (const [key, entity] of contentState.getEntityMap().__getAll()) {
+        if (entity.getType() === "IMAGE") {
+          const data = entity.getData();
+          data.src = web3ToWeb2URI(data.src);
+          contentState.replaceEntityData(key, data);
+        }
+      }
+      return <Component {...otherProps} contentState={contentState} />;
+    };
+  },
+});
 const videoPlugin = createVideoPlugin();
 
 const { Toolbar } = staticToolbarPlugin;
