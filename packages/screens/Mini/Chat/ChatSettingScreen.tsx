@@ -35,6 +35,7 @@ export const ChatSettingScreen: ScreenFC<"MiniChatSetting"> = ({
 
   const onToggleChatSwitch = () => setIsChatEnabled((prev) => !prev);
   const closeChatSetting = () => navigation.goBack();
+  const navigateToSettings = () => navigation.replace("MiniSettings");
 
   return (
     <SafeAreaView
@@ -59,7 +60,7 @@ export const ChatSettingScreen: ScreenFC<"MiniChatSetting"> = ({
             alignItems: "center",
           }}
         >
-          <BackButton type="chevron" />
+          <BackButton type="chevron" onPress={navigateToSettings} />
           <BrandText style={[fontSemibold18]}>Chat Setting</BrandText>
 
           <CustomPressable onPress={closeChatSetting} style={{}}>

@@ -91,6 +91,7 @@ export type RootStackParamList = {
   MiniNewConversation: undefined;
   MiniNewGroup: undefined;
   MiniChatSetting: undefined;
+  MiniSettings: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -201,6 +202,7 @@ const navConfig: {
     MiniNewConversation: "mini-new-conversation",
     MiniNewGroup: "mini-new-group",
     MiniChatSetting: "mini-chat-setting",
+    MiniSettings: "mini-settings",
   },
 };
 

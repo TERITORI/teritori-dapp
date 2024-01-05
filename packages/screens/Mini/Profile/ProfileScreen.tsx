@@ -134,7 +134,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
             <Separator />
             <ProfileMenuItem
               icon={settingSVG}
-              navigateTo="MiniChats"
+              navigateTo="MiniSettings"
               title="Settings"
             />
             <ProfileMenuItem

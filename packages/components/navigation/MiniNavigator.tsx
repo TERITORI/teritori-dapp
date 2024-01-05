@@ -14,6 +14,7 @@ import { ConversationScreeen } from "../../screens/Mini/Conversation/Conversatio
 import { DAppStoreScreen } from "../../screens/Mini/DAppStore/DAppStoreScreen";
 import { MiniFeedScreen } from "../../screens/Mini/Feed/MiniFeedScreen";
 import { ProfileScreen } from "../../screens/Mini/Profile/ProfileScreen";
+import { SettingsScreen } from "../../screens/Mini/Settings/SettingsScreen";
 import { MiniWalletScreen } from "../../screens/Mini/Wallet/MiniWalletScreen";
 import { CreatePassword } from "../../screens/Wallet/Screens/CreatePassword";
 import { CreateScreen } from "../../screens/Wallet/Screens/CreateScreen";
@@ -154,6 +155,15 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: "Chat Setting",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniSettings"
+        component={SettingsScreen}
+        options={{
+          header: () => null,
+          title: "Settings",
           presentation: "transparentModal",
         }}
       />
