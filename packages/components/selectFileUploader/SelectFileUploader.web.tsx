@@ -32,6 +32,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
   maxUpload,
   isImageCover,
   fileHeight = 256,
+  containerHeight = 80,
   setIsLoading,
 }) => {
   const { setToastError } = useFeedbacks();
@@ -137,7 +138,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              height: file ? fileHeight : 80,
+              height: file ? fileHeight : containerHeight,
               borderRadius: 12,
             }}
           >
@@ -177,7 +178,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
                 style={{
                   flex: 1,
                   width: "100%",
-                  height: file ? fileHeight : 80,
+                  height: file ? fileHeight : containerHeight,
                   alignItems: "center",
                   padding: layout.spacing_x2_5,
                   borderRadius: 12,
@@ -195,8 +196,8 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
                 >
                   <View
                     style={{
-                      height: 40,
-                      width: 40,
+                      height: 32,
+                      width: 32,
                       borderRadius: 24,
                       backgroundColor: neutral17,
                       alignItems: "center",

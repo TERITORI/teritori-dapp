@@ -26,6 +26,7 @@ export const SelectFileUploader: React.FC<SelectFileUploaderProps> = ({
   style,
   isImageCover,
   fileHeight = 256,
+  containerHeight = 80,
 }) => {
   const [files, setFiles] = useState<File[] | FileList>([]);
 
@@ -40,7 +41,7 @@ export const SelectFileUploader: React.FC<SelectFileUploaderProps> = ({
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
-            height: files?.length ? fileHeight : 80,
+            height: files?.length ? fileHeight : containerHeight,
             borderRadius: 12,
           }}
         >
@@ -78,7 +79,7 @@ export const SelectFileUploader: React.FC<SelectFileUploaderProps> = ({
               style={{
                 flex: 1,
                 width: "100%",
-                height: files?.length ? fileHeight : 80,
+                height: files?.length ? fileHeight : containerHeight,
                 alignItems: "center",
                 padding: layout.spacing_x2_5,
                 borderRadius: 12,
@@ -96,8 +97,8 @@ export const SelectFileUploader: React.FC<SelectFileUploaderProps> = ({
               >
                 <View
                   style={{
-                    height: 40,
-                    width: 40,
+                    height: 32,
+                    width: 32,
                     borderRadius: 24,
                     backgroundColor: neutral17,
                     alignItems: "center",
