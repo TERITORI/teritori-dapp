@@ -11,8 +11,10 @@ import { Dropdown } from "../../../../components/Dropdown";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { neutral22 } from "../../../../utils/style/colors";
 import { fontMedium16 } from "../../../../utils/style/fonts";
+import { useAppNavigation } from "../../../../utils/navigation";
 
 export const AddChatDropdownMenu = () => {
+  const navigation = useAppNavigation();
   return (
     <View style={{ width: "auto" }}>
       <Dropdown
@@ -37,6 +39,7 @@ export const AddChatDropdownMenu = () => {
               height: 45,
               gap: 12,
             }}
+            onPress={() => navigation.navigate("MiniNewConversation")}
           >
             <ChatGraySVG />
             <BrandText style={[fontMedium16, {}]}>
@@ -50,6 +53,7 @@ export const AddChatDropdownMenu = () => {
               height: 45,
               gap: 12,
             }}
+            onPress={() => navigation.navigate("MiniNewGroup")}
           >
             <GroupGraySVG />
             <BrandText style={[fontMedium16, {}]}>Create new group</BrandText>
