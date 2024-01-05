@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import { ScrollView, View } from "react-native";
 
+import { Checkbox } from "./Checkbox";
 import chevronGrayRightSVG from "../../../../../assets/icons/chevron-right-gray.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { OptimizedImage } from "../../../../components/OptimizedImage";
 import { SVG } from "../../../../components/SVG";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { Separator } from "../../../../components/separators/Separator";
-import { neutral22 } from "../../../../utils/style/colors";
+import { blueDefault, neutral22 } from "../../../../utils/style/colors";
 import {
   fontBold11,
   fontMedium16,
   fontSemibold12,
+  fontSemibold15,
 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 
@@ -40,6 +42,22 @@ export const NewConversationOrGroupSelector = ({
     Record<string, number>
   >({});
   const [ref, setRef] = useState<ScrollView | null>(null);
+  const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
+
+  const toggleContactSelection = (id: string) => {
+    setSelectedContacts((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  };
+
+  const handleCreateGroupPress = () => {
+    if (onCreateGroup) {
+      const selectedContactsGroup = contacts.filter((x) =>
+        selectedContacts.includes(x.id),
+      );
+      onCreateGroup(selectedContactsGroup);
+    }
+  };
 
   const scrollHandler = (scrollToIndex: string) => {
     if (ref) {
@@ -77,7 +95,7 @@ export const NewConversationOrGroupSelector = ({
   };
   const alphaGroupedContacts = groupContactsWithAlphabet(contacts);
   return (
-    <View>
+    <View style={{ position: "relative", flex: 1 }}>
       <ScrollView
         style={{}}
         ref={(ref) => {
@@ -119,11 +137,19 @@ export const NewConversationOrGroupSelector = ({
                     val.map((contact, idx) => (
                       <React.Fragment key={`${contact.name}-${idx}`}>
                         <IndividualFriendName
+                          enableSelection={isGroupSelector}
+                          isSelected={selectedContacts.includes(contact.id)}
+                          onSelection={(id) => toggleContactSelection(id)}
                           avatar={fake_url}
-                          id={`${key}-${idx}`}
+                          id={contact.id}
                           name={contact.name}
                           onPress={() => {
-                            onPressContact && onPressContact(contact);
+                            if (onPressContact && !isGroupSelector) {
+                              onPressContact(contact);
+                            }
+                            if (isGroupSelector) {
+                              toggleContactSelection(contact.id);
+                            }
                           }}
                         />
                         {val.length > idx + 1 && (
@@ -137,6 +163,23 @@ export const NewConversationOrGroupSelector = ({
         </View>
       </ScrollView>
       <AlbhabetsSelector onPress={(x) => scrollHandler(x)} />
+      <CustomPressable
+        onPress={handleCreateGroupPress}
+        style={{
+          backgroundColor: blueDefault,
+          position: "absolute",
+          bottom: 40,
+          left: layout.spacing_x2,
+          right: layout.spacing_x2,
+          paddingVertical: layout.spacing_x1_5,
+          zIndex: 99,
+          borderRadius: 100,
+        }}
+      >
+        <BrandText style={[fontSemibold15, { textAlign: "center" }]}>
+          Create
+        </BrandText>
+      </CustomPressable>
     </View>
   );
 };
@@ -159,6 +202,12 @@ const IndividualFriendName = ({
   const onFriendNamePress = () => {
     if (onPress) {
       onPress();
+    }
+  };
+
+  const onCheckboxPress = () => {
+    if (onSelection) {
+      onSelection(id);
     }
   };
   return (
@@ -190,7 +239,12 @@ const IndividualFriendName = ({
         />
         <BrandText style={[fontMedium16, { lineHeight: 22 }]}>{name}</BrandText>
       </View>
-      <SVG source={chevronGrayRightSVG} height={24} width={24} />
+      {!enableSelection && (
+        <SVG source={chevronGrayRightSVG} height={24} width={24} />
+      )}
+      {enableSelection && (
+        <Checkbox isChecked={isSelected} onPress={onCheckboxPress} />
+      )}
     </CustomPressable>
   );
 };

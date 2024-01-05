@@ -4,7 +4,7 @@ import { StyleProp, TextInput, View, ViewStyle } from "react-native";
 import searchSVG from "../../../../../assets/icons/search-gray.svg";
 import { SVG } from "../../../../components/SVG";
 import { SpacerRow } from "../../../../components/spacer";
-import { neutral33, neutral77 } from "../../../../utils/style/colors";
+import { neutral33, neutralA3 } from "../../../../utils/style/colors";
 import { fontMedium16 } from "../../../../utils/style/fonts";
 
 interface SearchInputProps {
@@ -42,7 +42,7 @@ export const SearchChatList = ({
           placeholder={placeholder}
           value={value}
           onChangeText={setValue}
-          placeholderTextColor={neutral77}
+          placeholderTextColor={neutralA3}
           style={[
             fontMedium16,
             {

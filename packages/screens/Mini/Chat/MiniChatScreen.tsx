@@ -56,6 +56,7 @@ const DATA: (ItemProps & { id: string })[] = [
     id: "3",
     title: "New Group",
     icon: friendSVG,
+    route: "MiniNewGroup",
   },
 ];
 
@@ -193,7 +194,6 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
         }}
       >
         <SearchChatList
-          onClose={() => {}}
           setValue={setSearch}
           value={search}
           style={{

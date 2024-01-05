@@ -8,6 +8,7 @@ import React from "react";
 
 import { MiniChatScreen } from "../../screens/Mini/Chat/MiniChatScreen";
 import { NewConversationScreen } from "../../screens/Mini/Chat/NewConversationScreen";
+import { NewGroupScreen } from "../../screens/Mini/Chat/NewGroupScreen";
 import { ConversationScreeen } from "../../screens/Mini/Conversation/ConversationScreen";
 import { DAppStoreScreen } from "../../screens/Mini/DAppStore/DAppStoreScreen";
 import { MiniFeedScreen } from "../../screens/Mini/Feed/MiniFeedScreen";
@@ -73,7 +74,6 @@ export const MiniNavigator: React.FC = () => {
         options={{ header: () => null }}
         component={MainTab}
       />
-
       <Stack.Screen
         name="ViewSeed"
         component={ViewSeed}
@@ -135,6 +135,15 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: "New Conversation",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniNewGroup"
+        component={NewGroupScreen}
+        options={{
+          header: () => null,
+          title: "New Group",
           presentation: "transparentModal",
         }}
       />

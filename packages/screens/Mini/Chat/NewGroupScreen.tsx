@@ -18,111 +18,109 @@ const dummyContact = [
     avatar: "",
   },
   {
-    id: "1",
+    id: "2",
     name: "Albert",
     avatar: "",
   },
   {
-    id: "1",
+    id: "3",
     name: "Digger",
     avatar: "",
   },
   {
-    id: "1",
+    id: "4",
     name: "Bayo",
     avatar: "",
   },
   {
-    id: "1",
+    id: "5",
     name: "David",
     avatar: "",
   },
   {
-    id: "1",
+    id: "6",
     name: "Eddie",
     avatar: "",
   },
   {
-    id: "1",
+    id: "7",
     name: "Eva",
     avatar: "",
   },
   {
-    id: "1",
+    id: "8",
     name: "Digger",
     avatar: "",
   },
   {
-    id: "1",
+    id: "9",
     name: "Bold",
     avatar: "",
   },
   {
-    id: "1",
+    id: "10",
     name: "Arnold",
     avatar: "",
   },
   {
-    id: "1",
+    id: "11",
     name: "Albert",
     avatar: "",
   },
   {
-    id: "1",
+    id: "12",
     name: "Bayo",
     avatar: "",
   },
   {
-    id: "1",
+    id: "13",
     name: "David",
     avatar: "",
   },
   {
-    id: "1",
+    id: "14",
     name: "Eddie",
     avatar: "",
   },
   {
-    id: "1",
+    id: "15",
     name: "Eva",
     avatar: "",
   },
   {
-    id: "1",
+    id: "16",
     name: "Digger",
     avatar: "",
   },
   {
-    id: "1",
+    id: "17",
     name: "Bold",
     avatar: "",
   },
   {
-    id: "1",
+    id: "18",
     name: "Arnold",
     avatar: "",
   },
   {
-    id: "1",
+    id: "19",
     name: "David",
     avatar: "",
   },
   {
-    id: "1",
+    id: "20",
     name: "Eddie",
     avatar: "",
   },
 
   {
-    id: "1",
+    id: "21",
     name: "Digger",
     avatar: "",
   },
 ];
 
-export const NewConversationScreen: ScreenFC<"MiniNewConversation"> = ({
-  navigation,
-}) => {
+export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
   const [search, setSearch] = useState("");
 
   const onClose = () => {
@@ -152,16 +150,16 @@ export const NewConversationScreen: ScreenFC<"MiniNewConversation"> = ({
             alignItems: "center",
           }}
         >
-          <BrandText style={[fontSemibold18]}>New conversation</BrandText>
+          <BrandText style={[fontSemibold18]}>New Group</BrandText>
 
           <CustomPressable onPress={onClose} style={{}}>
             <SVG source={closeSVG} height={28} width={28} />
           </CustomPressable>
         </View>
         <SearchChatList
+          placeholder="Search by nickname"
           setValue={setSearch}
           value={search}
-          placeholder="Search by nickname"
           style={{
             backgroundColor: "rgba(118, 118, 128, 0.24)",
             padding: 10,
@@ -171,9 +169,13 @@ export const NewConversationScreen: ScreenFC<"MiniNewConversation"> = ({
         />
         <NewConversationOrGroupSelector
           contacts={dummyContact}
+          isGroupSelector
           onPressContact={({ id }) =>
             navigation.replace("Conversation", { conversationId: id })
           }
+          onCreateGroup={(selectedContactsGroup) => {
+            alert(JSON.stringify(selectedContactsGroup));
+          }}
         />
       </View>
     </SafeAreaView>
