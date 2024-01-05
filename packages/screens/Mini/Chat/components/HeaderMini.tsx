@@ -10,10 +10,13 @@ import { layout, MOBILE_HEADER_HEIGHT } from "../../../../utils/style/layout";
 
 interface HeaderMiniProps {
   title: string;
+  navigation: any;
 }
 
-export const HeaderMini = ({ title }: HeaderMiniProps) => {
-  const onPressNotification = () => {};
+export const HeaderMini = ({ title, navigation }: HeaderMiniProps) => {
+  const onPressNotification = () => {
+    navigation.navigate("Notifications");
+  };
   return (
     <View
       style={{

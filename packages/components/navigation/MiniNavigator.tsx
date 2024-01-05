@@ -9,6 +9,7 @@ import React from "react";
 import { MiniChatScreen } from "../../screens/Mini/Chat/MiniChatScreen";
 import { ConversationScreeen } from "../../screens/Mini/Conversation/ConversationScreen";
 import { MiniFeedScreen } from "../../screens/Mini/Feed/MiniFeedScreen";
+import NotificationScreen from "../../screens/Mini/Notifications/NotificationScreen";
 import { MiniWalletScreen } from "../../screens/Mini/Wallet/MiniWalletScreen";
 import { CreatePassword } from "../../screens/Wallet/Screens/CreatePassword";
 import { CreateScreen } from "../../screens/Wallet/Screens/CreateScreen";
@@ -106,6 +107,15 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: "All Set",
+        }}
+      />
+      <Stack.Screen
+        name="Notifications"
+        component={NotificationScreen}
+        options={{
+          header: () => null,
+          title: "Notifications",
+          headerBackButtonMenuEnabled: true,
         }}
       />
     </Stack.Navigator>
