@@ -9,9 +9,9 @@ import GroupGraySVG from "../../../../../assets/icons/users-group-gray.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { Dropdown } from "../../../../components/Dropdown";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
+import { useAppNavigation } from "../../../../utils/navigation";
 import { neutral22 } from "../../../../utils/style/colors";
 import { fontMedium16 } from "../../../../utils/style/fonts";
-import { useAppNavigation } from "../../../../utils/navigation";
 
 export const AddChatDropdownMenu = () => {
   const navigation = useAppNavigation();

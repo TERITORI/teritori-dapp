@@ -6,6 +6,7 @@ import { RouteProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
+import { ChatSettingScreen } from "../../screens/Mini/Chat/ChatSettingScreen";
 import { MiniChatScreen } from "../../screens/Mini/Chat/MiniChatScreen";
 import { NewConversationScreen } from "../../screens/Mini/Chat/NewConversationScreen";
 import { NewGroupScreen } from "../../screens/Mini/Chat/NewGroupScreen";
@@ -144,6 +145,15 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: "New Group",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniChatSetting"
+        component={ChatSettingScreen}
+        options={{
+          header: () => null,
+          title: "Chat Setting",
           presentation: "transparentModal",
         }}
       />

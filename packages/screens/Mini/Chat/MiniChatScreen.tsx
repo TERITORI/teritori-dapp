@@ -6,7 +6,6 @@ import { ChatList } from "./components/ChatList";
 import { HeaderMini } from "./components/HeaderMini";
 import { SearchChatList } from "./components/SearchChatList";
 import { dummyChat } from "./components/chatDummyData";
-import { ChatSetting } from "./components/modals/ChatSetting";
 import rightArrowSVG from "../../../../assets/icons/chevron-right-white.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import friendSVG from "../../../../assets/icons/friend.svg";
@@ -133,18 +132,13 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("chats");
   const [search, setSearch] = useState("");
-  const [isChatSettingModalVisible, setIsChatSettingModalVisible] =
-    useState(false);
-
-  const toggleChatSettingModal = () =>
-    setIsChatSettingModalVisible((prev) => !prev);
 
   const hideToast = () => {
     setShowToast(false);
   };
   const onLearnMoreToastPress = () => {
-    // navigation.navigate("ChatSetting");
-    setIsChatSettingModalVisible(true);
+    navigation.navigate("MiniChatSetting");
+    // setIsChatSettingModalVisible(true);
   };
   return (
     <ScreenContainer
@@ -249,12 +243,6 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
           </View>
         )}
       </View>
-
-      {/* Chat setting model */}
-      <ChatSetting
-        toggleModal={toggleChatSettingModal}
-        isVisible={isChatSettingModalVisible}
-      />
     </ScreenContainer>
   );
 };
