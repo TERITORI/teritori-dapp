@@ -136,13 +136,13 @@ export const AdministrationDashboardScreen: React.FC = () => {
           <ApplicationStatusCard
             label="Pending Applications"
             count={32}
-            onPress={() => {}}
+            onPress={() => {}} //TODO: don't forget to rewrite onPress function if possible
             isReady={false}
           />
           <ApplicationStatusCard
             label="Pending Confirmations"
             count={156}
-            onPress={() => {}}
+            onPress={() => {}} // TODO: don't forget to rewrite onPress function if possible
             style={{
               marginHorizontal: width >= MD_BREAKPOINT ? 12 : 0,
               marginVertical: width >= MD_BREAKPOINT ? 0 : 12,
