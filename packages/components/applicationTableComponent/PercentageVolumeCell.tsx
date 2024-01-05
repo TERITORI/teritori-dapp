@@ -10,10 +10,12 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 
 export const PercentageVolumeCell: React.FC<{
-  data: any;
+  value: string;
   style?: StyleProp<ViewStyle>;
-}> = ({ data, style }) => {
+}> = ({ value, style }) => {
   const isMobile = useIsMobile();
+  const isPositive = value.includes("+");
+
   return (
     <View
       style={[
@@ -26,22 +28,18 @@ export const PercentageVolumeCell: React.FC<{
         style,
       ]}
     >
-      {data.includes("+") ? (
-        <SVG source={upArrowSVG} />
-      ) : (
-        <SVG source={downArrowSVG} />
-      )}
+      {isPositive ? <SVG source={upArrowSVG} /> : <SVG source={downArrowSVG} />}
       <BrandText
         style={[
           isMobile ? fontSemibold11 : fontSemibold13,
           {
             marginLeft: 8,
-            color: data.includes("+") ? successColor : errorColor,
+            color: isPositive ? successColor : errorColor,
           },
         ]}
         numberOfLines={1}
       >
-        {data}
+        {value}
       </BrandText>
     </View>
   );

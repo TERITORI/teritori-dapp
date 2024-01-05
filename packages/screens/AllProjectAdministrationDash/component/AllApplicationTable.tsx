@@ -118,7 +118,7 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
             {rowData.vol}
           </InnerCellText>
           <PercentageVolumeCell
-            data={rowData.volPerctage}
+            value={rowData.volPerctage}
             style={{ flex: TABLE_ROWS.volPerctage.flex }}
           />
         </>
