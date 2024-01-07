@@ -219,9 +219,9 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 			OFFSET ?
 		`, where, orderSQL), // order By here or it won't work
 			s.conf.Whitelist,
-			time.Now().AddDate(0, 0, -30),
-			time.Now().AddDate(0, 0, -30),
-			time.Now().AddDate(0, 0, -60),
+			time.Now().AddDate(0, 0, -1),
+			time.Now().AddDate(0, 0, -1),
+			time.Now().AddDate(0, 0, -2),
 			limit,
 			offset,
 		).Scan(&collections).Error

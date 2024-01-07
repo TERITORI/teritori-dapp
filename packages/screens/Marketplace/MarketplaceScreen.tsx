@@ -54,11 +54,11 @@ const TABLE_ROWS = {
     flex: 3,
   },
   TimePeriodVolume: {
-    label: "30d Volume",
+    label: "24h Volume",
     flex: 3,
   },
   TimePeriodPercentualVolume: {
-    label: "30d % Volume",
+    label: "24h % Volume",
     flex: 3,
   },
   sales: {
