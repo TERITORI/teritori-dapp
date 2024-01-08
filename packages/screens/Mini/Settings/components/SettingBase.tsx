@@ -10,9 +10,19 @@ import { useAppNavigation } from "../../../../utils/navigation";
 import { fontSemibold18 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 
-type Props = { children: ReactNode; title: string; onGoBack?: () => void };
+type Props = {
+  children: ReactNode;
+  title: string;
+  onGoBack?: () => void;
+  reverseView?: boolean;
+};
 
-export const SettingBase = ({ children, title, onGoBack }: Props) => {
+export const SettingBase = ({
+  children,
+  title,
+  onGoBack,
+  reverseView = true,
+}: Props) => {
   const navigation = useAppNavigation();
   const onClose = () => navigation.goBack();
   const navigateToProfile = () => {
@@ -58,7 +68,7 @@ export const SettingBase = ({ children, title, onGoBack }: Props) => {
         <View
           style={{
             flex: 1,
-            justifyContent: "flex-end",
+            justifyContent: reverseView ? "flex-end" : "flex-start",
           }}
         >
           <View style={{ backgroundColor: "#000" }}>{children}</View>

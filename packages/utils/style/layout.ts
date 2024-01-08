@@ -77,6 +77,14 @@ export const layout = Object.freeze({
   get spacing_x4() {
     return this.base * 4;
   },
+  // 32
+  get spacing_x4_5() {
+    return this.base * 4.5;
+  },
+  // 32
+  get spacing_x5() {
+    return this.base * 5;
+  },
 
   borderRadius: 12,
   contentSpacing: 48,

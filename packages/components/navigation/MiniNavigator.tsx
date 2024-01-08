@@ -12,6 +12,8 @@ import { NewGroupScreen } from "../../screens/Mini/Chat/NewGroupScreen";
 import { ConversationScreeen } from "../../screens/Mini/Conversation/ConversationScreen";
 import { DAppStoreScreen } from "../../screens/Mini/DAppStore/DAppStoreScreen";
 import { MiniFeedScreen } from "../../screens/Mini/Feed/MiniFeedScreen";
+import { AccountDetailsScreen } from "../../screens/Mini/Profile/AccountDetailsScreen";
+import { AddAccountScreen } from "../../screens/Mini/Profile/AddAccountScreen";
 import { ProfileScreen } from "../../screens/Mini/Profile/ProfileScreen";
 import { ChatSettingScreen } from "../../screens/Mini/Settings/ChatSettingScreen";
 import { SettingsScreen } from "../../screens/Mini/Settings/SettingsScreen";
@@ -164,6 +166,24 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: "Settings",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniAccountDetails"
+        component={AccountDetailsScreen}
+        options={{
+          header: () => null,
+          title: "Account Details",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniAddAccount"
+        component={AddAccountScreen}
+        options={{
+          header: () => null,
+          title: "Add Account",
           presentation: "transparentModal",
         }}
       />

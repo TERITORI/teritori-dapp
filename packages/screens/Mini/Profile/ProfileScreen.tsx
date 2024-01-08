@@ -2,13 +2,13 @@ import React, { FC } from "react";
 import { SafeAreaView, View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
+import { Account } from "./components/Account";
 import addSVG from "../../../../assets/icons/add-solid-white.svg";
 import chevronGrayRightSVG from "../../../../assets/icons/chevron-right-gray.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
-import copySVG from "../../../../assets/icons/copy-gray.svg";
 import dAppStoreSVG from "../../../../assets/icons/dapp-store-solid.svg";
-import dotSVG from "../../../../assets/icons/dots-gray.svg";
 import googleSVG from "../../../../assets/icons/google.svg";
+import ledgerSVG from "../../../../assets/icons/ledger.svg";
 import lockSVG from "../../../../assets/icons/lock-solid.svg";
 import settingSVG from "../../../../assets/icons/setting-solid.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -20,13 +20,8 @@ import {
   ScreenFC,
   useAppNavigation,
 } from "../../../utils/navigation";
-import { neutral33, neutral39, neutralA3 } from "../../../utils/style/colors";
-import {
-  fontMedium13,
-  fontSemibold15,
-  fontSemibold18,
-  fontSemibold22,
-} from "../../../utils/style/fonts";
+import { neutral39 } from "../../../utils/style/colors";
+import { fontSemibold15, fontSemibold18 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
@@ -80,56 +75,32 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
           }}
         >
           <View style={{ backgroundColor: "#000" }}>
-            {/* Main Account Row View */}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: layout.spacing_x1,
-                  }}
-                >
-                  <BrandText style={[fontSemibold22]}>Main Account</BrandText>
-                  <SVG source={copySVG} height={20} width={20} />
-                </View>
-                <BrandText style={[fontMedium13, { color: neutralA3 }]}>
-                  62.424 TORI
-                </BrandText>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: layout.spacing_x1,
-                }}
-              >
-                <CustomPressable
-                  style={{
-                    backgroundColor: neutral33,
-                    padding: layout.spacing_x1,
-                    borderRadius: 10,
-                  }}
-                >
-                  <SVG source={googleSVG} height={20} width={20} />
-                </CustomPressable>
-                <CustomPressable>
-                  <SVG source={dotSVG} height={22} width={22} />
-                </CustomPressable>
-              </View>
+            <View style={{ zIndex: 300 }}>
+              <Account
+                accountName="Main Account"
+                id="1"
+                toriCount={62424}
+                logo={googleSVG}
+              />
+            </View>
+            <View style={{ zIndex: 200 }}>
+              <Account accountName="Account 2" id="2" toriCount={0} />
+            </View>
+            <View style={{ zIndex: 100 }}>
+              <Account
+                accountName="Ledger"
+                id="3"
+                toriCount={1000}
+                logo={ledgerSVG}
+                isLast
+              />
             </View>
 
             <Separator style={{ marginTop: layout.spacing_x1_5 }} />
             <ProfileMenuItem
               icon={addSVG}
               title="Add Account"
-              navigateTo="MiniChats"
+              navigateTo="MiniAddAccount"
             />
             <Separator />
             <ProfileMenuItem
