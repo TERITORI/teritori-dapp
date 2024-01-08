@@ -6,7 +6,6 @@ import { RouteProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
-import { ChatSettingScreen } from "../../screens/Mini/Chat/ChatSettingScreen";
 import { MiniChatScreen } from "../../screens/Mini/Chat/MiniChatScreen";
 import { NewConversationScreen } from "../../screens/Mini/Chat/NewConversationScreen";
 import { NewGroupScreen } from "../../screens/Mini/Chat/NewGroupScreen";
@@ -14,6 +13,7 @@ import { ConversationScreeen } from "../../screens/Mini/Conversation/Conversatio
 import { DAppStoreScreen } from "../../screens/Mini/DAppStore/DAppStoreScreen";
 import { MiniFeedScreen } from "../../screens/Mini/Feed/MiniFeedScreen";
 import { ProfileScreen } from "../../screens/Mini/Profile/ProfileScreen";
+import { ChatSettingScreen } from "../../screens/Mini/Settings/ChatSettingScreen";
 import { SettingsScreen } from "../../screens/Mini/Settings/SettingsScreen";
 import { MiniWalletScreen } from "../../screens/Mini/Wallet/MiniWalletScreen";
 import { CreatePassword } from "../../screens/Wallet/Screens/CreatePassword";

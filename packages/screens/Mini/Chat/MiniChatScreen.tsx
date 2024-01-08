@@ -37,7 +37,7 @@ const collectionScreenTabItems = {
     name: "Multichannels",
   },
 };
-const HAS_CHATS = false;
+const HAS_CHATS = true;
 
 const DATA: (ItemProps & { id: string })[] = [
   {
