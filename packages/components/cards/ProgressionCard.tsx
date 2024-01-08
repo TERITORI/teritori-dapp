@@ -4,11 +4,12 @@ import { ViewStyle, View, StyleProp } from "react-native";
 import { neutral44, neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
+import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { GradientText } from "../gradientText";
 
 export const ProgressionCard: React.FC<{
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle & BoxStyle>;
   label: string;
   valueCurrent: number;
   valueMax: number;
@@ -17,13 +18,15 @@ export const ProgressionCard: React.FC<{
 
   return (
     <TertiaryBox
-      style={{
-        ...[style],
-        paddingHorizontal: 16,
-        paddingVertical: 16,
-        width: "100%",
-        height: 100,
-      }}
+      style={[
+        style,
+        {
+          paddingHorizontal: 16,
+          paddingVertical: 16,
+          width: "100%",
+          height: 100,
+        },
+      ]}
     >
       <View style={{ zIndex: 2, width: "100%" }}>
         <BrandText style={[fontSemibold12, { marginBottom: 8 }]}>

@@ -9,12 +9,13 @@ import { neutral11, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const SortButton: React.FC<{
   sortDirection: SortDirection;
   onChangeSortDirection: (val: SortDirection) => void;
-  mainContainerStyle?: StyleProp<ViewStyle>;
+  mainContainerStyle?: StyleProp<ViewStyle & BoxStyle>;
   height?: number;
   style?: StyleProp<ViewStyle>;
 }> = ({
@@ -35,14 +36,16 @@ export const SortButton: React.FC<{
   return (
     <TouchableOpacity onPress={handlePress} style={style}>
       <TertiaryBox
-        style={{
-          borderColor: "#FFFFFF",
-          paddingHorizontal: 13,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          backgroundColor: neutral11,
-          ...[mainContainerStyle],
-        }}
+        style={[
+          {
+            borderColor: "#FFFFFF",
+            paddingHorizontal: 13,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            backgroundColor: neutral11,
+          },
+          mainContainerStyle,
+        ]}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <SVG

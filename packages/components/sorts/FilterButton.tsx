@@ -13,11 +13,12 @@ import { useAppDispatch } from "../../store/store";
 import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
+import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const FilterButton: React.FC<{
   style?: StyleProp<ViewStyle>;
-  mainContainerStyle?: StyleProp<ViewStyle>;
+  mainContainerStyle?: StyleProp<ViewStyle & BoxStyle>;
   showChevron?: boolean;
 }> = ({ style, mainContainerStyle, showChevron = false }) => {
   const dispatch = useAppDispatch();
@@ -29,13 +30,15 @@ export const FilterButton: React.FC<{
   return (
     <TouchableOpacity onPress={handlePress} style={style}>
       <TertiaryBox
-        style={{
-          height: 48,
-          width: showChevron ? undefined : 48,
-          flexDirection: "row",
-          borderRadius: 6,
-          ...[mainContainerStyle],
-        }}
+        style={[
+          {
+            height: 48,
+            width: showChevron ? undefined : 48,
+            flexDirection: "row",
+            borderRadius: 6,
+          },
+          mainContainerStyle,
+        ]}
       >
         <SVG source={filterSVG} width={20} height={20} />
         {showChevron && (

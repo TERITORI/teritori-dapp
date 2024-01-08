@@ -14,6 +14,7 @@ import {
 import { layout } from "../../utils/style/layout";
 import { NFTInfo } from "../../utils/types/nft";
 import { BrandText } from "../BrandText";
+import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 // TODO: Dynamic data + props
@@ -21,7 +22,7 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 export const NFTAttributeCard: React.FC<{
   nftAttribute: AttributeRarityFloor;
   nftInfo: NFTInfo;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle & BoxStyle>;
 }> = ({ nftAttribute, nftInfo, style }) => {
   const isMobile = useIsMobile();
   const { width } = useMaxResolution({ responsive: true, noMargin: true });
@@ -30,17 +31,19 @@ export const NFTAttributeCard: React.FC<{
     nftAttribute &&
     nftInfo && (
       <TertiaryBox
-        style={{
-          ...[style],
-          padding: 12,
-          alignItems: "flex-start",
-          backgroundColor: resolveColor(
-            "backgroundColor",
-            nftAttribute.rareRatio,
-          ),
-          height: 92,
-          width: isMobile && width < 380 ? 158 : 192,
-        }}
+        style={[
+          style,
+          {
+            padding: 12,
+            alignItems: "flex-start",
+            backgroundColor: resolveColor(
+              "backgroundColor",
+              nftAttribute.rareRatio,
+            ),
+            height: 92,
+            width: isMobile && width < 380 ? 158 : 192,
+          },
+        ]}
       >
         <BrandText
           style={[

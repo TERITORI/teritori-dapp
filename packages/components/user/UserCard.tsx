@@ -35,12 +35,13 @@ import { BrandText } from "../BrandText";
 import { DropdownOption } from "../DropdownOption";
 import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
+import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
 export const UserCard: React.FC<{
   userId: string;
-  style: StyleProp<ViewStyle>;
+  style: StyleProp<ViewStyle & BoxStyle>;
   daoId?: string;
 }> = ({ userId, style, daoId }) => {
   const [, userAddress] = parseUserId(userId);
@@ -59,14 +60,16 @@ export const UserCard: React.FC<{
   const width = typeof flatStyle.width === "number" ? flatStyle.width : 325;
   return (
     <TertiaryBox
-      style={{
-        ...[style],
-        ...{ width },
-        height: 287,
-        ...{ padding },
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-      }}
+      style={[
+        style,
+        {
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          width,
+          height: 287,
+          padding,
+        },
+      ]}
     >
       <OmniLink to={{ screen: "UserPublicProfile", params: { id: userId } }}>
         <UserAvatarWithFrame

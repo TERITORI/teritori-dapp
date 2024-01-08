@@ -19,23 +19,26 @@ import { headerHeight, layout, topMenuWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import FlexCol from "../FlexCol";
 import { OmniLink } from "../OmniLink";
+import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { Separator } from "../separators/Separator";
 
 export const TopMenuBox: FC<{
-  style?: StyleProp<ViewStyle>;
-  mainContainerStyle?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle & BoxStyle>;
+  mainContainerStyle?: StyleProp<ViewStyle & BoxStyle>;
 }> = ({ style, mainContainerStyle }) => {
   const { height: windowHeight } = useWindowDimensions();
 
   return (
     <TertiaryBox
-      style={{
-        ...[style],
-        borderRadius: 8,
-        ...[mainContainerStyle],
-        width: topMenuWidth,
-      }}
+      style={[
+        style,
+        mainContainerStyle,
+        {
+          borderRadius: 8,
+          width: topMenuWidth,
+        },
+      ]}
     >
       <ScrollView
         showsVerticalScrollIndicator={false}

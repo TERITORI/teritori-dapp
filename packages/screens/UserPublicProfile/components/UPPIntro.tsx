@@ -43,11 +43,13 @@ export const UPPIntro: React.FC<{
   return (
     <>
       <TertiaryBox
-        style={{
-          height: 320,
-          width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-          ...(windowWidth < RESPONSIVE_BREAKPOINT_S && { borderRadius: 0 }),
-        }}
+        style={[
+          {
+            height: 320,
+            width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
+          },
+          windowWidth < RESPONSIVE_BREAKPOINT_S && { borderRadius: 0 },
+        ]}
       >
         {/* Banner */}
         <OptimizedImage

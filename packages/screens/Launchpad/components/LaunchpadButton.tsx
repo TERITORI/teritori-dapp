@@ -33,12 +33,7 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
       onPress={url ? () => Linking.openURL(url) : undefined}
       style={styles.fill}
     >
-      <TertiaryBox
-        style={{
-          ...styles.fill,
-          ...styles.container,
-        }}
-      >
+      <TertiaryBox style={[styles.fill, styles.container]}>
         <View style={styles.detailContainer}>
           <BrandText>{title}</BrandText>
           <SpacerColumn size={3} />

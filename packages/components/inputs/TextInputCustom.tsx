@@ -44,6 +44,7 @@ import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
 import { SVG } from "../SVG";
+import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../spacer";
@@ -55,8 +56,8 @@ export interface TextInputCustomProps<T extends FieldValues>
   iconSVG?: React.FC<SvgProps>;
   placeHolder?: string;
   squaresBackgroundColor?: string;
-  style?: StyleProp<ViewStyle>;
-  textInputStyle?: StyleProp<TextStyle>;
+  style?: StyleProp<ViewStyle & BoxStyle>;
+  textInputStyle?: StyleProp<TextStyle & ViewStyle & BoxStyle>;
   onPressEnter?: () => void;
   currency?: Currency;
   disabled?: boolean;
@@ -72,7 +73,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   errorStyle?: ViewStyle;
   valueModifier?: (value: string) => string;
   isLoading?: boolean;
-  labelStyle?: TextStyle;
+  labelStyle?: TextStyle & BoxStyle;
   containerStyle?: ViewStyle;
   boxMainContainerStyle?: ViewStyle;
   noBrokenCorners?: boolean;
@@ -83,7 +84,7 @@ export interface TextInputCustomProps<T extends FieldValues>
 
 export const Label: React.FC<{
   children: string;
-  style?: StyleProp<TextStyle>;
+  style?: StyleProp<TextStyle & ViewStyle & BoxStyle>;
   isRequired?: boolean;
   hovered?: boolean;
 }> = ({ children, style, isRequired, hovered }) => (
@@ -249,13 +250,12 @@ export const TextInputCustom = <T extends FieldValues>({
         </>
       )}
       <TertiaryBox
-        style={{
-          ...styles.mainContainer,
-          ...(noBrokenCorners ? styles.noCropBorderBg : {}),
-          ...(hovered ? { borderColor: secondaryColor } : {}),
-          ...(width ? { width } : {}),
-          ...(height ? { height } : {}),
-        }}
+        style={[
+          styles.mainContainer,
+          noBrokenCorners && styles.noCropBorderBg,
+          hovered && { borderColor: secondaryColor },
+          { width, height },
+        ]}
       >
         <View style={styles.innerContainer}>
           {iconSVG && (

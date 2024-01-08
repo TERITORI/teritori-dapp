@@ -20,6 +20,7 @@ import { layout } from "../../utils/style/layout";
 import { WalletProvider } from "../../utils/walletProvider";
 import { BrandText } from "../BrandText";
 import { NetworkIcon } from "../NetworkIcon";
+import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { TertiaryButton } from "../buttons/TertiaryButton";
 import { NetworksListModal } from "../modals/NetworksListModal";
@@ -28,7 +29,7 @@ export const NetworkSelectorMenu: FC<{
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
   forceNetworkFeatures?: NetworkFeature[];
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle & BoxStyle>;
 }> = ({ forceNetworkId, forceNetworkKind, forceNetworkFeatures, style }) => {
   const { closeOpenedDropdown } = useDropdowns();
   const { resetMediaPlayer } = useMediaPlayer();
@@ -76,22 +77,22 @@ export const NetworkSelectorMenu: FC<{
 
   return (
     <TertiaryBox
-      style={{
-        ...[style],
-        paddingHorizontal: layout.spacing_x2,
-        paddingTop: layout.spacing_x2,
-        backgroundColor: neutral17,
-        alignItems: "flex-start",
-        ...(isMobile
-          ? {
-              borderTopWidth: 0,
-              borderRightWidth: 0,
-              borderTopRightRadius: 0,
-              borderBottomRightRadius: 0,
-            }
-          : {}),
-        width: 172,
-      }}
+      style={[
+        style,
+        {
+          paddingHorizontal: layout.spacing_x2,
+          paddingTop: layout.spacing_x2,
+          backgroundColor: neutral17,
+          alignItems: "flex-start",
+          width: 172,
+        },
+        isMobile && {
+          borderTopWidth: 0,
+          borderRightWidth: 0,
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0,
+        },
+      ]}
     >
       {enabledNetworks
         .filter((network) => {
