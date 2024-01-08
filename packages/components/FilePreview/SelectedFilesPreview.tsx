@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import { neutral33, neutral55, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold20 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { LocalFileData } from "../../utils/types/files";
 import { AssetsPagination } from "../AssetsPagination";
 import { BrandText } from "../BrandText";
@@ -14,11 +15,20 @@ export const SelectedFilesPreview: React.FC<{
   assets: LocalFileData[];
   onSelect: (item: LocalFileData) => void;
 }> = ({ assets, onSelect }) => {
-  const [itemsPerPage, setItemsPerPage] = useState(50);
-  const [pageIndex, setPageIndex] = useState(0);
-  const total = assets?.length || 28;
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPage, setTotalPage] = useState(1);
 
-  const maxPage = Math.max(Math.ceil(total / itemsPerPage), 1);
+  const itemsPerPage = 14; // Number of items to display per page
+
+  useEffect(() => {
+    if (assets) {
+      setTotalPage(Math.ceil(assets.length / itemsPerPage));
+    }
+  }, [assets]);
+
+  const indexOfLastItem = currentPage * itemsPerPage + itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = assets.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <View
@@ -28,56 +38,107 @@ export const SelectedFilesPreview: React.FC<{
       }}
     >
       <View style={{ justifyContent: "flex-end" }}>
-        {assets.length > 0 ? (
+        {currentItems.length > 0 ? (
           <>
-            <View style={{ flexDirection: "row" }}>
-              {assets.map((item, index) => (
-                <TouchableOpacity
-                  style={{
-                    height: 123,
-                    width: 100,
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                  }}
-                  onPress={() => {
-                    onSelect(item);
-                  }}
-                >
-                  <Box
+            <View style={{ flexDirection: "column" }}>
+              <View style={{ flexDirection: "row" }}>
+                {currentItems.slice(0, 7).map((item, index) => (
+                  <TouchableOpacity
                     style={{
+                      height: 123,
                       width: 100,
-                      height: 100,
-                      borderWidth: 1,
-                    }}
-                  >
-                    <img
-                      src={URL.createObjectURL(item.file)}
-                      style={{
-                        height: 100,
-                        width: 100,
-                      }}
-                      alt="Uploaded file"
-                    />
-                  </Box>
-                  <PrimaryBox
-                    style={{
-                      borderRadius: 32,
-                      height: 34,
-                      width: 52,
-                      top: 0,
+                      justifyContent: "flex-end",
                       alignItems: "center",
-                      justifyContent: "center",
-                      position: "absolute",
+                      marginHorizontal: layout.spacing_x1,
+                    }}
+                    onPress={() => {
+                      onSelect(item);
                     }}
                   >
-                    <BrandText
-                      style={[fontSemibold13, { color: secondaryColor }]}
+                    <Box
+                      style={{
+                        width: 100,
+                        height: 100,
+                      }}
                     >
-                      {index + 1}
-                    </BrandText>
-                  </PrimaryBox>
-                </TouchableOpacity>
-              ))}
+                      <img
+                        src={URL.createObjectURL(item.file)}
+                        style={{
+                          height: 100,
+                          width: 100,
+                        }}
+                        alt="Uploaded file"
+                      />
+                    </Box>
+                    <PrimaryBox
+                      style={{
+                        borderRadius: 32,
+                        height: 34,
+                        width: 52,
+                        top: 0,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        position: "absolute",
+                      }}
+                    >
+                      <BrandText
+                        style={[fontSemibold13, { color: secondaryColor }]}
+                      >
+                        {currentPage * itemsPerPage + index + 1}
+                      </BrandText>
+                    </PrimaryBox>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <View style={{ flexDirection: "row" }}>
+                {currentItems.slice(7).map((item, index) => (
+                  <TouchableOpacity
+                    style={{
+                      height: 123,
+                      width: 100,
+                      justifyContent: "flex-end",
+                      alignItems: "center",
+                      marginHorizontal: layout.spacing_x1,
+                    }}
+                    onPress={() => {
+                      onSelect(item);
+                    }}
+                  >
+                    <Box
+                      style={{
+                        width: 100,
+                        height: 100,
+                      }}
+                    >
+                      <img
+                        src={URL.createObjectURL(item.file)}
+                        style={{
+                          height: 100,
+                          width: 100,
+                        }}
+                        alt="Uploaded file"
+                      />
+                    </Box>
+                    <PrimaryBox
+                      style={{
+                        borderRadius: 32,
+                        height: 34,
+                        width: 52,
+                        top: 0,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        position: "absolute",
+                      }}
+                    >
+                      <BrandText
+                        style={[fontSemibold13, { color: secondaryColor }]}
+                      >
+                        {currentPage * itemsPerPage + index + 1 + 7}
+                      </BrandText>
+                    </PrimaryBox>
+                  </TouchableOpacity>
+                ))}
+              </View>
             </View>
           </>
         ) : (
@@ -97,23 +158,24 @@ export const SelectedFilesPreview: React.FC<{
           </Box>
         )}
       </View>
-      <View
-        style={{
-          justifyContent: "flex-end",
-          alignItems: "flex-end",
-          flex: 1,
-        }}
-      >
-        <AssetsPagination
-          currentPage={pageIndex}
-          maxPage={maxPage}
-          itemsPerPage={itemsPerPage}
-          dropdownOptions={[50, 100, 200]}
-          setItemsPerPage={setItemsPerPage}
-          onChangePage={setPageIndex}
-        />
-        <SpacerColumn size={2} />
-      </View>
+      {assets.length > 0 && (
+        <View
+          style={{
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+            flex: 1,
+          }}
+        >
+          <AssetsPagination
+            currentPage={currentPage}
+            maxPage={totalPage}
+            itemsPerPage={itemsPerPage}
+            setItemsPerPage={() => {}}
+            onChangePage={(page) => setCurrentPage(page)}
+          />
+          <SpacerColumn size={2} />
+        </View>
+      )}
     </View>
   );
 };

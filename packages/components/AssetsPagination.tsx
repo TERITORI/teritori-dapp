@@ -1,11 +1,10 @@
 import React from "react";
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { TextInput, TouchableOpacity, View } from "react-native";
 
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
 import { SEARCH_BAR_INPUT_HEIGHT } from "./Search/SearchBarInput";
 import { Box } from "./boxes/Box";
-import { LegacyTertiaryBox } from "./boxes/LegacyTertiaryBox";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { SpacerRow } from "./spacer";
 import chevronLeftDoubleSVG from "../../assets/icons/chevron-left-double.svg";
@@ -25,7 +24,6 @@ interface PaginationProps {
   currentPage: number;
   maxPage: number;
   itemsPerPage: number;
-  dropdownOptions: number[];
   setItemsPerPage: (item: number) => void;
   onChangePage: (page: number) => void;
 }
@@ -33,7 +31,6 @@ interface PaginationProps {
 export const AssetsPagination = ({
   currentPage,
   maxPage,
-  dropdownOptions,
   itemsPerPage,
   setItemsPerPage,
   onChangePage,
@@ -50,15 +47,50 @@ export const AssetsPagination = ({
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-around",
+        width: "100%",
+        paddingHorizontal: layout.spacing_x2,
+      }}
+    >
       <View style={{ flex: 1, flexDirection: "row" }}>
-        <View style={[styles.section, { justifyContent: "flex-start" }]}>
-          <BrandText style={styles.grayText}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+          }}
+        >
+          <BrandText
+            style={{
+              ...fontSemibold14,
+              color: neutral77,
+              paddingRight: layout.spacing_x1,
+              lineHeight: 14,
+            }}
+          >
             Page {currentPage + 1} of {maxPage}
           </BrandText>
         </View>
-        <View style={[styles.section, { justifyContent: "flex-start" }]}>
-          <BrandText style={styles.grayText}>| Go to page:</BrandText>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+          }}
+        >
+          <BrandText
+            style={{
+              ...fontSemibold14,
+              color: neutral77,
+              paddingRight: layout.spacing_x1,
+              lineHeight: 14,
+            }}
+          >
+            | Go to page:
+          </BrandText>
           <TertiaryBox
             style={[
               {
@@ -72,7 +104,7 @@ export const AssetsPagination = ({
             ]}
           >
             <TextInput
-              value={currentPage.toString()}
+              value={(currentPage + 1).toString()}
               inputMode="numeric"
               style={[
                 fontSemibold14,
@@ -94,24 +126,50 @@ export const AssetsPagination = ({
       <SpacerRow size={1} />
 
       <View style={{ flex: 1 }}>
-        <View style={styles.section}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <TouchableOpacity onPress={() => handleChangePage(0)}>
-            <LegacyTertiaryBox height={42} width={56}>
+            <TertiaryBox
+              style={{
+                height: 42,
+                width: 56,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <SVG source={chevronLeftDoubleSVG} height={16} width={16} />
-            </LegacyTertiaryBox>
+            </TertiaryBox>
           </TouchableOpacity>
 
           <SpacerRow size={1} />
 
           <TouchableOpacity onPress={() => handleChangePage(currentPage - 1)}>
-            <LegacyTertiaryBox height={42} width={56}>
+            <TertiaryBox
+              style={{
+                height: 42,
+                width: 56,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <SVG source={chevronLeftSVG} height={16} width={16} />
-            </LegacyTertiaryBox>
+            </TertiaryBox>
           </TouchableOpacity>
 
           <SpacerRow size={2} />
 
-          <View style={[styles.section, { justifyContent: "flex-end" }]}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "flex-end",
+            }}
+          >
             <Box
               notched
               style={{
@@ -135,7 +193,7 @@ export const AssetsPagination = ({
                 <BrandText
                   style={[fontSemibold14, { marginRight: layout.spacing_x1 }]}
                 >
-                  {maxPage}
+                  {currentPage + 1}
                 </BrandText>
               </TouchableOpacity>
             </Box>
@@ -143,42 +201,34 @@ export const AssetsPagination = ({
           <SpacerRow size={2} />
 
           <TouchableOpacity onPress={() => handleChangePage(currentPage + 1)}>
-            <LegacyTertiaryBox height={42} width={56}>
+            <TertiaryBox
+              style={{
+                height: 42,
+                width: 56,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <SVG source={chevronRightSVG} height={16} width={16} />
-            </LegacyTertiaryBox>
+            </TertiaryBox>
           </TouchableOpacity>
 
           <SpacerRow size={1} />
 
           <TouchableOpacity onPress={() => handleChangePage(maxPage - 1)}>
-            <LegacyTertiaryBox height={42} width={56}>
+            <TertiaryBox
+              style={{
+                height: 42,
+                width: 56,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <SVG source={chevronRightDoubleSVG} height={16} width={16} />
-            </LegacyTertiaryBox>
+            </TertiaryBox>
           </TouchableOpacity>
         </View>
       </View>
     </View>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
-    paddingHorizontal: layout.spacing_x2,
-  },
-  section: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  grayText: {
-    ...fontSemibold14,
-    color: neutral77,
-    paddingRight: layout.spacing_x1,
-    lineHeight: 14,
-  },
-});
