@@ -4,6 +4,7 @@ import { TouchableOpacity, View } from "react-native";
 import { SelectFileUploaderProps } from "./SelectFileUploader.type";
 import { formatFile } from "./formatFile";
 import addSVG from "../../../assets/icons/add-circle.svg";
+import filesSVG from "../../../assets/icons/files.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import {
   gradientColorBlue,
@@ -11,10 +12,12 @@ import {
   gradientColorTurquoise,
   neutral17,
   primaryColor,
+  secondaryColor,
   withAlpha,
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { LocalFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
 import { DeleteButton } from "../FilePreview/DeleteButton";
 import { SVGorImageIcon } from "../SVG/SVGorImageIcon";
@@ -37,11 +40,13 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
 }) => {
   const { setToastError } = useFeedbacks();
   const hiddenFileInput = useRef<HTMLInputElement>(null);
-  const [file, setFile] = useState("");
+  const [files, setFiles] = useState<LocalFileData[]>([]);
 
   const handleFiles = async (files: File[]) => {
     const _files = multiple ? files : [files[0]];
-    let supportedFiles = files.filter((file) => mimeTypes?.includes(file.type));
+    let supportedFiles = [...files].filter(
+      (file) => mimeTypes?.includes(file.type),
+    );
 
     if (maxUpload && supportedFiles.length) {
       supportedFiles = supportedFiles.slice(0, maxUpload);
@@ -59,11 +64,15 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
         message: "Sorry we couldn't upload some files at the moment.",
       });
     }
-    if (!multiple) {
-      setFile(URL.createObjectURL(_files[0]));
-    }
+    // if (!multiple) {
+    //   setFile(URL.createObjectURL(_files[0]));
+    // }
 
-    const formattedFiles = await Promise.all(supportedFiles.map(formatFile));
+    const formattedFiles = await Promise.all(
+      supportedFiles.map(async (file) => await formatFile(file)),
+    );
+
+    setFiles(formattedFiles);
     onUpload(formattedFiles);
   };
 
@@ -85,7 +94,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
     setIsLoading?.(true);
     ev.preventDefault();
     if (ev.dataTransfer.items) {
-      const files = ev.dataTransfer.items
+      const files = [...ev.dataTransfer.items]
         .filter((item: any) => item.kind === "file")
         .map((item: any) => item.getAsFile());
       await handleFiles(files);
@@ -133,21 +142,22 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              height: file ? fileHeight : containerHeight,
+              height:
+                files.length > 0 && !multiple ? fileHeight : containerHeight,
               borderRadius: 12,
             }}
           >
-            {file ? (
+            {files.length > 0 && !multiple ? (
               <>
                 <DeleteButton
                   onPress={() => {
-                    setFile("");
+                    setFiles([]);
                     onUpload([]);
                   }}
                   style={{ top: 12, right: 12 }}
                 />
                 <img
-                  src={file}
+                  src={URL.createObjectURL(files[0].file)}
                   style={{
                     overflow: "hidden",
                     height: fileHeight,
@@ -173,57 +183,98 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
                 style={{
                   flex: 1,
                   width: "100%",
-                  height: file ? fileHeight : containerHeight,
+                  height:
+                    files.length > 0 && !multiple
+                      ? fileHeight
+                      : containerHeight,
                   alignItems: "center",
                   padding: layout.spacing_x2_5,
                   borderRadius: 12,
                   borderWidth: 1,
                 }}
               >
-                <View
-                  style={{
-                    height: "100%",
-                    width: "100%",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
+                {files.length > 0 && multiple ? (
                   <View
                     style={{
-                      height: 32,
-                      width: 32,
-                      borderRadius: 24,
-                      backgroundColor: neutral17,
+                      height: "100%",
+                      width: "100%",
+                      flexDirection: "row",
                       alignItems: "center",
                       justifyContent: "center",
-                      marginRight: 20,
                     }}
                   >
-                    <SVGorImageIcon
-                      icon={addSVG}
-                      iconSize={40}
-                      style={{ tintColor: "red" }}
-                    />
-
-                    {/* <SVG source={plusSVG} color={primaryColor} /> */}
-                  </View>
-                  <View>
-                    <BrandText
-                      style={[fontSemibold14, { color: primaryColor }]}
+                    <View
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
                     >
-                      Select files
-                    </BrandText>
+                      <SVGorImageIcon
+                        icon={filesSVG}
+                        iconSize={40}
+                        style={{ tintColor: "red" }}
+                      />
+                    </View>
+                    <View>
+                      <BrandText
+                        style={[fontSemibold14, { color: secondaryColor }]}
+                      >
+                        {files.length} files selected
+                      </BrandText>
+                    </View>
+                    <input
+                      type="file"
+                      ref={hiddenFileInput}
+                      style={{ display: "none", position: "absolute" }}
+                      onChange={handleChange}
+                      multiple={multiple}
+                      accept={mimeTypes?.join(",")}
+                    />
                   </View>
-                  <input
-                    type="file"
-                    ref={hiddenFileInput}
-                    style={{ display: "none", position: "absolute" }}
-                    onChange={handleChange}
-                    multiple={multiple}
-                    accept={mimeTypes?.join(",")}
-                  />
-                </View>
+                ) : (
+                  <View
+                    style={{
+                      height: "100%",
+                      width: "100%",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <View
+                      style={{
+                        height: 32,
+                        width: 32,
+                        borderRadius: 24,
+                        backgroundColor: neutral17,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginRight: layout.spacing_x2,
+                      }}
+                    >
+                      <SVGorImageIcon
+                        icon={addSVG}
+                        iconSize={40}
+                        style={{ tintColor: "red" }}
+                      />
+                    </View>
+                    <View>
+                      <BrandText
+                        style={[fontSemibold14, { color: primaryColor }]}
+                      >
+                        Select files
+                      </BrandText>
+                    </View>
+                    <input
+                      type="file"
+                      ref={hiddenFileInput}
+                      style={{ display: "none", position: "absolute" }}
+                      onChange={handleChange}
+                      multiple={multiple}
+                      accept={mimeTypes?.join(",")}
+                    />
+                  </View>
+                )}
               </Box>
             )}
           </div>
