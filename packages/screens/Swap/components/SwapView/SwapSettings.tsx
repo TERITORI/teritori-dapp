@@ -205,7 +205,7 @@ export const SwapSettings: React.FC<{
                       ? primaryTextColor
                       : secondaryColor,
                   },
-                  fontSemibold14,
+                  // fontSemibold14,
                 ]}
                 onChangeText={(value: string) => onChangeManualSlippage(value)}
                 value={manualSlippage}
