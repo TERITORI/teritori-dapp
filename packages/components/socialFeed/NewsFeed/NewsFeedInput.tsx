@@ -601,14 +601,14 @@ export const NewsFeedInput = React.forwardRef<
               )}
 
               <PrimaryButton
-                disabled={
-                  (!formValues?.message &&
-                    !formValues?.files?.length &&
-                    !formValues?.gifs?.length) ||
-                  formValues?.message.length >
-                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
-                  !selectedWallet
-                }
+                // disabled={
+                //   (!formValues?.message &&
+                //     !formValues?.files?.length &&
+                //     !formValues?.gifs?.length) ||
+                //   formValues?.message.length >
+                //     SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
+                //   !selectedWallet
+                // }
                 isLoading={isLoading || isProcessing}
                 loader
                 size="M"

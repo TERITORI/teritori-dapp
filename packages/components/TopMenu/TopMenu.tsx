@@ -28,14 +28,16 @@ export const TopMenu: FC = () => {
     <View ref={dropdownRef}>
       <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
         <TertiaryBox
-          style={{
-            width: 220,
-            height: TOP_MENU_BUTTON_HEIGHT,
-            ...styles.buttonBoxMainContainer,
-            backgroundColor: isDropdownOpen(dropdownRef)
-              ? neutral33
-              : neutral00,
-          }}
+          style={[
+            styles.buttonBoxMainContainer,
+            {
+              width: 220,
+              height: TOP_MENU_BUTTON_HEIGHT,
+              backgroundColor: isDropdownOpen(dropdownRef)
+                ? neutral33
+                : neutral00,
+            },
+          ]}
         >
           <WalletView wallet={selectedWallet} style={styles.walletView} />
           <SVG

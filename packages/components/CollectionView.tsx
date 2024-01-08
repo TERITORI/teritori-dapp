@@ -46,11 +46,10 @@ export const CollectionView: React.FC<{
       disabled={item.id === "" && item.twitterUrl === ""}
     >
       <TertiaryBox
-        style={{
-          ...sizedStyles.boxMainContainer,
-          width: sizedStyles.box.width,
-          height: sizedStyles.box.height,
-        }}
+        style={[
+          sizedStyles.boxMainContainer,
+          { width: sizedStyles.box.width, height: sizedStyles.box.height },
+        ]}
       >
         <OptimizedImage
           sourceURI={item.imageUri}

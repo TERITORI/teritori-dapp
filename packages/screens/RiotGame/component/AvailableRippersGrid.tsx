@@ -41,17 +41,17 @@ export const AvailableRippersGrid: React.FC<AvailableRippersGridProps> = ({
             onPress={() => selectRipper && selectRipper(ripper)}
           >
             <TertiaryBox
-              style={{
-                margin: layout.spacing_x1,
-                width: THUMB_CONTAINER_WIDTH,
-                height: THUMB_CONTAINER_HEIGHT,
-                ...(isSelected
-                  ? {
-                      borderColor: secondaryColor,
-                      borderWidth: 1,
-                    }
-                  : {}),
-              }}
+              style={[
+                {
+                  margin: layout.spacing_x1,
+                  width: THUMB_CONTAINER_WIDTH,
+                  height: THUMB_CONTAINER_HEIGHT,
+                },
+                isSelected && {
+                  borderColor: secondaryColor,
+                  borderWidth: 1,
+                },
+              ]}
             >
               <RipperAvatar
                 size={THUMB_SIZE}

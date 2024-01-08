@@ -27,6 +27,7 @@ import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
+import { BoxStyle } from "../../components/boxes/Box";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
@@ -398,7 +399,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 }}
               />
 
-              <TertiaryBox style={{}}>
+              <TertiaryBox>
                 {/* Upper section */}
                 <FlexRow
                   style={{
@@ -726,20 +727,22 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
 };
 
 const AttributesCard: React.FC<{
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle & BoxStyle>;
   label: string;
   value: string;
 }> = ({ style, label, value }) => {
   return (
     <TertiaryBox
-      style={{
-        ...[style],
-        width: 132,
-        height: 62,
-        alignItems: "flex-start",
-        paddingHorizontal: 12,
-        paddingVertical: 14,
-      }}
+      style={[
+        style,
+        {
+          width: 132,
+          height: 62,
+          alignItems: "flex-start",
+          paddingHorizontal: 12,
+          paddingVertical: 14,
+        },
+      ]}
     >
       <BrandText
         style={[fontSemibold12, { color: neutral77, marginBottom: 6 }]}

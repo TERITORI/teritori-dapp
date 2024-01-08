@@ -5,25 +5,28 @@ import { neutral77 } from "../../utils/style/colors";
 import { imageDisplayLabel, prettyTokenData } from "../../utils/teritori";
 import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
+import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const NameData: React.FC<{
   token: any;
   name: string;
-  style?: ViewStyle;
+  style?: ViewStyle & BoxStyle;
 }> = ({ token, name, style }) => {
   const width = 396;
 
   return (
     <TertiaryBox
-      style={{
-        ...{ width },
-        ...[style],
-        alignItems: "flex-start",
-        justifyContent: "flex-start",
-        paddingHorizontal: 24,
-        paddingVertical: 24,
-      }}
+      style={[
+        style,
+        {
+          alignItems: "flex-start",
+          justifyContent: "flex-start",
+          paddingHorizontal: 24,
+          paddingVertical: 24,
+          width,
+        },
+      ]}
     >
       {token ? (
         <>

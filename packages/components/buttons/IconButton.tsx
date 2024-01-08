@@ -2,11 +2,7 @@ import React from "react";
 import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import {
-  borderRadiusButton,
-  ButtonsSize,
-  // heightButton,
-} from "../../utils/style/buttons";
+import { borderRadiusButton, ButtonsSize } from "../../utils/style/buttons";
 import { primaryColor } from "../../utils/style/colors";
 import { SVG } from "../SVG";
 import { SecondaryBox } from "../boxes/SecondaryBox";

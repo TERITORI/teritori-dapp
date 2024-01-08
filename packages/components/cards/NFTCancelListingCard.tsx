@@ -6,6 +6,7 @@ import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { NFTInfo } from "../../utils/types/nft";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
+import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { GradientText } from "../gradientText";
@@ -13,17 +14,19 @@ import { GradientText } from "../gradientText";
 export const NFTCancelListingCard: React.FC<{
   nftInfo: NFTInfo;
   onPressCancel: () => void;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle & BoxStyle>;
 }> = ({ nftInfo, onPressCancel, style }) => {
   return (
     <TertiaryBox
-      style={{
-        ...[style],
-        padding: 16,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        height: 88,
-      }}
+      style={[
+        style,
+        {
+          padding: 16,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          height: 88,
+        },
+      ]}
     >
       <View>
         <BrandText style={[fontSemibold12, { marginBottom: 6 }]}>

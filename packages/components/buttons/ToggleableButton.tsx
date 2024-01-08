@@ -3,11 +3,7 @@ import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
 
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
-import {
-  ButtonsSize,
-  // cornerWidthDropdownButton,
-  // heightDropdownButton,
-} from "../../utils/style/buttons";
+import { ButtonsSize } from "../../utils/style/buttons";
 import { neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";

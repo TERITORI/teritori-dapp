@@ -35,12 +35,14 @@ const ModalBaseTest: React.FC<{
       >
         {/*------ Modal main container */}
         <TertiaryBox
-          style={{
-            margin: "auto",
-            alignItems: "flex-start",
-            backgroundColor: "#000000",
-            ...(width ? { width } : {}),
-          }}
+          style={[
+            {
+              margin: "auto",
+              alignItems: "flex-start",
+              backgroundColor: "#000000",
+              width,
+            },
+          ]}
         >
           {/*------ Modal header */}
           <View

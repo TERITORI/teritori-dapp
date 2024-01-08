@@ -48,14 +48,16 @@ export const InfoBox: React.FC<InfoBoxProps> = ({
 
   return (
     <TertiaryBox
-      style={{
-        ...{ width },
-        ...{ height },
-        borderRadius: 5,
-        marginHorizontal: layout.spacing_x1,
-        padding: layout.spacing_x1_5,
-        alignItems: "flex-start",
-      }}
+      style={[
+        {
+          width,
+          height,
+          borderRadius: 5,
+          marginHorizontal: layout.spacing_x1,
+          padding: layout.spacing_x1_5,
+          alignItems: "flex-start",
+        },
+      ]}
     >
       <BrandText style={[titleFont, { color: neutralA3 }]}>{title}</BrandText>
       <BrandText style={[contentFont, { marginTop: 5 }]}>{content}</BrandText>
