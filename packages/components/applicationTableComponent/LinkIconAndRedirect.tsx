@@ -14,8 +14,8 @@ import { SVG } from "../SVG";
 export const LinkIconAndRedirect: React.FC<{
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
-  children: any;
-}> = ({ children, style, textStyle }) => {
+  value: string;
+}> = ({ value, style, textStyle }) => {
   return (
     <View
       style={[
@@ -27,7 +27,7 @@ export const LinkIconAndRedirect: React.FC<{
     >
       <TouchableOpacity
         onPress={() => {
-          Linking.openURL(children);
+          Linking.openURL(value);
         }}
       >
         <SVG source={externalLinkSVG} color="white" />
