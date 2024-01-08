@@ -1,8 +1,8 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Dimensions, View } from "react-native";
 
+import ListView from "./components/ListView";
 import closeSVG from "../../../../assets/icons/close.svg";
-import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
@@ -48,7 +48,7 @@ export default function AddressBookScreen({
           width: Dimensions.get("window").width,
         }}
       >
-        <BrandText>Address Book</BrandText>
+        <ListView options={{ label: "Add Address" }} />
       </View>
     </ScreenContainer>
   );

@@ -1,9 +1,9 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { View } from "react-native";
-import { ChevronDownIcon } from "react-native-heroicons/outline";
 import { SvgProps } from "react-native-svg";
 
 import Checkbox from "./Checkbox";
+import chevronDropdownSVG from "../../../../../assets/icons/chevron-down.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { Dropdown } from "../../../../components/Dropdown";
 import { SVG } from "../../../../components/SVG";
@@ -93,7 +93,7 @@ function DropdownButton({
       </BrandText>
       <SpacerRow size={1} />
       <SVG
-        source={options.icon ?? ChevronDownIcon}
+        source={options.icon ?? chevronDropdownSVG}
         color={blueDefault}
         height={16}
         width={16}
