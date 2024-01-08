@@ -94,6 +94,9 @@ export type RootStackParamList = {
   MiniSettings: undefined;
   MiniAccountDetails: { accountName: string; id: string };
   MiniAddAccount: undefined;
+  MiniSecurityAndPrivacy: undefined;
+  MiniChangePassword: undefined;
+  MiniRevealSeedPhrase: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -207,6 +210,9 @@ const navConfig: {
     MiniSettings: "mini-settings",
     MiniAccountDetails: "mini-account-details",
     MiniAddAccount: "mini-add-account",
+    MiniSecurityAndPrivacy: "mini-security-and-privacy",
+    MiniChangePassword: "mini-change-password",
+    MiniRevealSeedPhrase: "mini-reveal-seed-phrase",
   },
 };
 

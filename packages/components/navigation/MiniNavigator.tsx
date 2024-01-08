@@ -15,7 +15,10 @@ import { MiniFeedScreen } from "../../screens/Mini/Feed/MiniFeedScreen";
 import { AccountDetailsScreen } from "../../screens/Mini/Profile/AccountDetailsScreen";
 import { AddAccountScreen } from "../../screens/Mini/Profile/AddAccountScreen";
 import { ProfileScreen } from "../../screens/Mini/Profile/ProfileScreen";
+import { ChangePasswordScreen } from "../../screens/Mini/Settings/ChangePasswordScreen";
 import { ChatSettingScreen } from "../../screens/Mini/Settings/ChatSettingScreen";
+import { RevealSeedPhraseScreen } from "../../screens/Mini/Settings/RevealSeedPhraseScreen";
+import { SecurityAndPrivacy } from "../../screens/Mini/Settings/SecurityAndPrivacy";
 import { SettingsScreen } from "../../screens/Mini/Settings/SettingsScreen";
 import { MiniWalletScreen } from "../../screens/Mini/Wallet/MiniWalletScreen";
 import { CreatePassword } from "../../screens/Wallet/Screens/CreatePassword";
@@ -67,7 +70,7 @@ const MainTab = () => {
 
 export const MiniNavigator: React.FC = () => {
   return (
-    <Stack.Navigator initialRouteName="MiniTabs">
+    <Stack.Navigator initialRouteName="MiniRevealSeedPhrase">
       <Stack.Screen
         name="NativeWallet"
         component={CreateScreen}
@@ -184,6 +187,33 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: "Add Account",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniSecurityAndPrivacy"
+        component={SecurityAndPrivacy}
+        options={{
+          header: () => null,
+          title: "Security & Privacy",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniChangePassword"
+        component={ChangePasswordScreen}
+        options={{
+          header: () => null,
+          title: "Change Password",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniRevealSeedPhrase"
+        component={RevealSeedPhraseScreen}
+        options={{
+          header: () => null,
+          title: "Reveal Seed Phrase",
           presentation: "transparentModal",
         }}
       />
