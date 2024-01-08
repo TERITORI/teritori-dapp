@@ -94,6 +94,10 @@ export type RootStackParamList = {
   MiniSettings: undefined;
   MiniAccountDetails: { accountName: string; id: string };
   MiniAddAccount: undefined;
+  Notifications: undefined;
+  AddressBook: undefined;
+  AddAddressBook: undefined;
+  EditAddressBook: { addressId: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -207,6 +211,10 @@ const navConfig: {
     MiniSettings: "mini-settings",
     MiniAccountDetails: "mini-account-details",
     MiniAddAccount: "mini-add-account",
+    Notifications: "notifications",
+    AddressBook: "address-book",
+    AddAddressBook: "add-address-book",
+    EditAddressBook: "edit-address-book/:addressId",
   },
 };
 

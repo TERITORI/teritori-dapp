@@ -6,12 +6,16 @@ import { RouteProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
+import AddAddressBookScreen from "../../screens/Mini/AddressBook/AddAddressBookScreen";
+import AddressBookScreen from "../../screens/Mini/AddressBook/AddressBookScreen";
+import EditAddressBookScreen from "../../screens/Mini/AddressBook/EditAddressBookScreen";
 import { MiniChatScreen } from "../../screens/Mini/Chat/MiniChatScreen";
 import { NewConversationScreen } from "../../screens/Mini/Chat/NewConversationScreen";
 import { NewGroupScreen } from "../../screens/Mini/Chat/NewGroupScreen";
 import { ConversationScreeen } from "../../screens/Mini/Conversation/ConversationScreen";
 import { DAppStoreScreen } from "../../screens/Mini/DAppStore/DAppStoreScreen";
 import { MiniFeedScreen } from "../../screens/Mini/Feed/MiniFeedScreen";
+import NotificationScreen from "../../screens/Mini/Notifications/NotificationScreen";
 import { AccountDetailsScreen } from "../../screens/Mini/Profile/AccountDetailsScreen";
 import { AddAccountScreen } from "../../screens/Mini/Profile/AddAccountScreen";
 import { ProfileScreen } from "../../screens/Mini/Profile/ProfileScreen";
@@ -185,6 +189,38 @@ export const MiniNavigator: React.FC = () => {
           header: () => null,
           title: "Add Account",
           presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="Notifications"
+        component={NotificationScreen}
+        options={{
+          header: () => null,
+          title: "Notifications",
+        }}
+      />
+      <Stack.Screen
+        name="AddressBook"
+        component={AddressBookScreen}
+        options={{
+          header: () => null,
+          headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name="AddAddressBook"
+        component={AddAddressBookScreen}
+        options={{
+          header: () => null,
+          headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name="EditAddressBook"
+        component={EditAddressBookScreen}
+        options={{
+          header: () => null,
+          headerTransparent: true,
         }}
       />
     </Stack.Navigator>

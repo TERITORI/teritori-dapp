@@ -12,13 +12,17 @@ import { layout, MOBILE_HEADER_HEIGHT } from "../../../../utils/style/layout";
 
 interface HeaderMiniProps {
   title: string;
+  navigation: any;
 }
 
 export const HeaderMini = ({ title }: HeaderMiniProps) => {
-  const onPressNotification = () => {};
   const navigation = useAppNavigation();
 
   const onProfileImagePress = () => navigation.navigate("MiniProfile");
+
+  const onPressNotification = () => {
+    navigation.navigate("AddressBook");
+  };
 
   return (
     <View
