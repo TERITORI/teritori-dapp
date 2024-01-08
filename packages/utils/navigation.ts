@@ -88,6 +88,8 @@ export type RootStackParamList = {
   MiniFeeds: undefined;
   Notifications: undefined;
   AddressBook: undefined;
+  AddAddressBook: undefined;
+  EditAddressBook: { addressId: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -195,6 +197,8 @@ const navConfig: {
     Conversation: "mini-conversation",
     Notifications: "notifications",
     AddressBook: "address-book",
+    AddAddressBook: "add-address-book",
+    EditAddressBook: "edit-address-book/:addressId",
   },
 };
 

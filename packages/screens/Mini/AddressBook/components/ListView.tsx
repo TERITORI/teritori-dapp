@@ -1,23 +1,33 @@
 import React, { ReactNode } from "react";
-import { ImageStyle, StyleProp, TextStyle, View } from "react-native";
+import {
+  ImageStyle,
+  StyleProp,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SvgProps } from "react-native-svg";
 
 import ChevronLeftIconSvg from "../../../../../assets/icons/chevron-left.svg";
-import ChevronRightIconSvg from "../../../../../assets/icons/chevron-right.svg";
+import ChevronRightIconSvg from "../../../../../assets/icons/chevron-right-gray.svg";
 import { BrandText } from "../../../../components/BrandText";
-import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
-import { fontSemibold22 } from "../../../../utils/style/fonts";
+import { SVG } from "../../../../components/SVG";
+import { SpacerRow } from "../../../../components/spacer";
+import { neutralA3 } from "../../../../utils/style/colors";
+import { fontSemibold13, fontSemibold22 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 
 type IconOptionsType = {
   icon?: React.FC<SvgProps> | string;
   iconSize?: number;
   iconStyle?: StyleProp<ImageStyle>;
+  fill?: string;
 };
 
 type ListViewProps = {
   onPress?: () => void;
+  style?: StyleProp<ViewStyle>;
   options?: {
     label?: string;
     labelStyle?: StyleProp<TextStyle>;
@@ -29,14 +39,16 @@ type ListViewProps = {
     leftLabelStyle?: StyleProp<TextStyle>;
     rightLabel?: string | ReactNode;
     rightLabelStyle?: StyleProp<TextStyle>;
+    bottomLabel?: string;
   };
 };
 
 export default function ListView({
   onPress,
+  style,
   options = {
     label: "",
-    labelStyle: fontSemibold22,
+    labelStyle: {},
     leftLabel: "",
     leftLabelStyle: {},
     rightLabel: "",
@@ -45,6 +57,7 @@ export default function ListView({
     iconEnabled: true,
     iconOptions: {},
     leftIconOptions: {},
+    bottomLabel: "",
   },
 }: ListViewProps) {
   const {
@@ -58,54 +71,98 @@ export default function ListView({
     leftIconOptions,
     iconEnabled,
     leftIconEnabled,
+    bottomLabel,
   } = options;
 
-  const DEFAULT_ICON_SIZE = 24;
+  const DEFAULT_ICON_SIZE = 22;
 
   return (
     <TouchableOpacity onPress={onPress}>
       <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingVertical: layout.spacing_x1_5,
-          paddingHorizontal: layout.spacing_x1_5,
-        }}
+        style={[
+          {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingVertical: layout.spacing_x1_5,
+          },
+          style,
+        ]}
       >
-        <View>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           {leftIconEnabled && (
-            <SVGorImageIcon
-              icon={leftIconOptions?.icon ?? ChevronLeftIconSvg}
-              style={leftIconOptions?.iconStyle ?? {}}
-              iconSize={leftIconOptions?.iconSize ?? DEFAULT_ICON_SIZE}
-            />
+            <>
+              <SVG
+                source={leftIconOptions?.icon ?? ChevronLeftIconSvg}
+                style={leftIconOptions?.iconStyle ?? {}}
+                fill={leftIconOptions?.fill ?? ""}
+                width={leftIconOptions?.iconSize ?? DEFAULT_ICON_SIZE}
+                height={leftIconOptions?.iconSize ?? DEFAULT_ICON_SIZE}
+              />
+              <SpacerRow size={2} />
+            </>
           )}
 
-          {typeof label === "string" ? (
-            <BrandText style={labelStyle}>{label}</BrandText>
-          ) : (
-            label
-          )}
+          <View>
+            <View style={{ flexDirection: "row" }}>
+              {typeof label === "string" ? (
+                <>
+                  <BrandText style={labelStyle ?? fontSemibold22}>
+                    {label}
+                  </BrandText>
+                </>
+              ) : (
+                label
+              )}
 
-          {typeof leftLabel === "string" ? (
-            <BrandText style={leftLabelStyle}>{leftLabel}</BrandText>
-          ) : (
-            leftLabel
-          )}
+              {typeof leftLabel === "string" ? (
+                <>
+                  <SpacerRow size={1} />
+                  <BrandText
+                    style={
+                      leftLabelStyle ?? [fontSemibold13, { color: neutralA3 }]
+                    }
+                  >
+                    {leftLabel}
+                  </BrandText>
+                </>
+              ) : (
+                leftLabel
+              )}
+            </View>
+
+            {bottomLabel && (
+              <>
+                <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
+                  {bottomLabel}
+                </BrandText>
+              </>
+            )}
+          </View>
         </View>
 
-        <View>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           {typeof rightLabel === "string" ? (
-            <BrandText style={rightLabelStyle}>{rightLabel}</BrandText>
+            <>
+              <BrandText
+                style={
+                  rightLabelStyle ?? [fontSemibold13, { color: neutralA3 }]
+                }
+              >
+                {rightLabel}
+              </BrandText>
+              {iconEnabled && <SpacerRow size={1} />}
+            </>
           ) : (
             rightLabel
           )}
           {iconEnabled ?? (
-            <SVGorImageIcon
-              icon={iconOptions?.icon ?? ChevronRightIconSvg}
+            <SVG
+              source={iconOptions?.icon ?? ChevronRightIconSvg}
               style={iconOptions?.iconStyle ?? {}}
-              iconSize={iconOptions?.iconSize ?? DEFAULT_ICON_SIZE}
+              fill={iconOptions?.fill ?? ""}
+              width={iconOptions?.iconSize ?? DEFAULT_ICON_SIZE}
+              height={iconOptions?.iconSize ?? DEFAULT_ICON_SIZE}
             />
           )}
         </View>
