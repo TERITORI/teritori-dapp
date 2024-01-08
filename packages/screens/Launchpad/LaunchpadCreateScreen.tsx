@@ -47,10 +47,19 @@ const StepContent = ({ step }: { step: number }) => {
   }
 };
 
+const stepOptions = [
+  { key: 1, title: "Basic" },
+  { key: 2, title: "Details" },
+  { key: 3, title: "Team & Investments" },
+  { key: 4, title: "Additional" },
+  { key: 5, title: "Minting" },
+  { key: 6, title: "Assets & Metadata" },
+];
+
 export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const navigation = useAppNavigation();
 
-  const [selectedStep, setSelectedStep] = useState(1);
+  const [selectedStep, setSelectedStep] = useState(6);
   const [isLoading, setLoading] = useState(false);
 
   const onSubmit = () => {
@@ -59,14 +68,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
       setLoading(false);
     }, 1000);
   };
-  const stepOptions = [
-    { key: 1, title: "Basic" },
-    { key: 2, title: "Details" },
-    { key: 3, title: "Team & Investments" },
-    { key: 4, title: "Additional" },
-    { key: 5, title: "Minting" },
-    { key: 6, title: "Assets & Metadata" },
-  ];
+
   return (
     <ScreenContainer
       fullWidth
