@@ -116,12 +116,14 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
       </InnerCellText>
       {!isMobile && (
         <>
-          <LinkIconAndRedirect style={{ flex: TABLE_ROWS.TwitterURL.flex }}>
-            {rowData.TwitterURL}
-          </LinkIconAndRedirect>
-          <LinkIconAndRedirect style={{ flex: TABLE_ROWS.DiscordURL.flex }}>
-            {rowData.DiscordURL}
-          </LinkIconAndRedirect>
+          <LinkIconAndRedirect
+            value={rowData.TwitterURL}
+            style={{ flex: TABLE_ROWS.TwitterURL.flex }}
+          />
+          <LinkIconAndRedirect
+            value={rowData.DiscordURL}
+            style={{ flex: TABLE_ROWS.DiscordURL.flex }}
+          />
           <InnerCellText
             style={{
               flex: TABLE_ROWS.expectedTotalSupply.flex,

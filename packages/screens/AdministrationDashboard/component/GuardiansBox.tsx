@@ -34,7 +34,7 @@ export const GuardiansBox = () => {
   const { width } = useWindowDimensions();
 
   const [guardiansHandler, setGuardiansHandler] = useState<number[]>([1, 2]);
-  const [isListOpen, setIsListOpen] = useState<number>();
+  const [openedList, setOpenedList] = useState<number>();
 
   return (
     <View style={{ flexDirection: width >= MD_BREAKPOINT ? "row" : "column" }}>
@@ -58,7 +58,7 @@ export const GuardiansBox = () => {
               <Box notched style={herosLisBox}>
                 <TouchableOpacity
                   onPress={() =>
-                    setIsListOpen((old) => (old === index ? -1 : index))
+                    setOpenedList((old) => (old === index ? -1 : index))
                   }
                   style={toggleBox}
                 >
@@ -66,14 +66,14 @@ export const GuardiansBox = () => {
                     Genesis Guardians
                   </BrandText>
                   <View>
-                    {isListOpen === index ? (
+                    {openedList === index ? (
                       <SVG source={downSVG} />
                     ) : (
                       <SVG source={upSVG} />
                     )}
                   </View>
                 </TouchableOpacity>
-                {isListOpen === index ? (
+                {openedList === index ? (
                   <Box
                     notched
                     style={{
