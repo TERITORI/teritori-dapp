@@ -107,7 +107,7 @@ export const NewConversationOrGroupSelector = ({
             flex: 1,
           }}
         >
-          <View style={{ backgroundColor: "#000" }}>
+          <View>
             {alphaGroupedContacts &&
               Object.keys(alphaGroupedContacts).length > 0 &&
               Object.entries(alphaGroupedContacts).map(([key, val], index) => (

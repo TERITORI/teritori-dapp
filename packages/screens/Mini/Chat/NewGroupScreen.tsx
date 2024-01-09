@@ -1,15 +1,11 @@
 import React, { useState } from "react";
-import { SafeAreaView, View } from "react-native";
+import { Dimensions, View } from "react-native";
 
 import { NewConversationOrGroupSelector } from "./components/NewConversationOrGroupSelector";
 import { SearchChatList } from "./components/SearchChatList";
-import closeSVG from "../../../../assets/icons/close.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { ScreenFC } from "../../../utils/navigation";
-import { fontSemibold18 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { SettingBase } from "../Settings/components/SettingBase";
 
 const dummyContact = [
   {
@@ -123,39 +119,18 @@ const dummyContact = [
 export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
   const [search, setSearch] = useState("");
 
-  const onClose = () => {
-    navigation.goBack();
-  };
-
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        width: "100%",
-        backgroundColor: "rgba(0, 0, 0,0.95)",
-        position: "relative",
-      }}
+    <SettingBase
+      title="New group "
+      background="transparent"
+      reverseView={false}
     >
       <View
         style={{
-          flex: 1,
+          height: Dimensions.get("window").height - 150,
           paddingHorizontal: layout.spacing_x2,
         }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingVertical: layout.spacing_x1_5,
-            alignItems: "center",
-          }}
-        >
-          <BrandText style={[fontSemibold18]}>New Group</BrandText>
-
-          <CustomPressable onPress={onClose} style={{}}>
-            <SVG source={closeSVG} height={28} width={28} />
-          </CustomPressable>
-        </View>
         <SearchChatList
           placeholder="Search by nickname"
           setValue={setSearch}
@@ -178,6 +153,6 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
           }}
         />
       </View>
-    </SafeAreaView>
+    </SettingBase>
   );
 };

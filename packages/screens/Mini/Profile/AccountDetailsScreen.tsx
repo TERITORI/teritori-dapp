@@ -49,6 +49,7 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
       title="Account Details"
       onGoBack={navigateToProfile}
       reverseView={false}
+      background="transparent"
     >
       <View
         style={{

@@ -1,4 +1,5 @@
 import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { ReactNode } from "react";
 import { Dimensions, SafeAreaView, View } from "react-native";
 
@@ -16,7 +17,7 @@ type Props = {
   title?: string;
   onGoBack?: () => void;
   reverseView?: boolean;
-  background?: string;
+  background?: string | "transparent";
   customHeader?: ReactNode;
 };
 
@@ -43,7 +44,7 @@ export const SettingBase = ({
       style={{
         flex: 1,
         width: Dimensions.get("window").width,
-        backgroundColor: "rgba(0, 0, 0, .5)",
+        backgroundColor: "rgba(0, 0, 0, .4)",
         position: "relative",
       }}
     >
@@ -53,7 +54,31 @@ export const SettingBase = ({
           position: "absolute",
           zIndex: 0,
           width: Dimensions.get("window").width,
-          height: "100%",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
+      />
+      <LinearGradient
+        start={{ x: 1, y: 1 }}
+        end={{ x: 1, y: 0 }}
+        colors={[
+          "rgba(0,0,0,1)",
+          "rgba(0,0,0,1)",
+          "rgba(0,0,0,0.8)",
+          "rgba(0,0,0,0.2)",
+        ]}
+        style={{
+          flex: 1,
+          borderRadius: 6,
+          position: "absolute",
+          zIndex: 0,
+          width: Dimensions.get("window").width,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
         }}
       />
       <View

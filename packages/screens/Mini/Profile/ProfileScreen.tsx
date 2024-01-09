@@ -1,5 +1,7 @@
+import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { FC } from "react";
-import { SafeAreaView, View } from "react-native";
+import { Dimensions, SafeAreaView, View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { Account } from "./components/Account";
@@ -32,14 +34,40 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
       style={{
         flex: 1,
         width: "100%",
-        backgroundColor: "rgba(0, 0, 0, .9)",
         position: "relative",
       }}
     >
+      <BlurView
+        tint="dark"
+        style={{
+          position: "absolute",
+          zIndex: 0,
+          width: Dimensions.get("window").width,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
+      />
+      <LinearGradient
+        start={{ x: 1, y: 1 }}
+        end={{ x: 1, y: 0 }}
+        colors={["rgba(0,0,0,1)", "rgba(0,0,0,0.9)", "rgba(0,0,0,0.2)"]}
+        style={{
+          flex: 1,
+          borderRadius: 6,
+          position: "absolute",
+          zIndex: 0,
+          width: Dimensions.get("window").width,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
+      />
       <View
         style={{
           flex: 1,
-          paddingHorizontal: layout.spacing_x2,
         }}
       >
         <View
@@ -47,6 +75,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
+            paddingHorizontal: layout.spacing_x2,
           }}
         >
           <BrandText style={[fontSemibold18]}>Profile</BrandText>
@@ -74,7 +103,11 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
             justifyContent: "flex-end",
           }}
         >
-          <View style={{ backgroundColor: "#000" }}>
+          <View
+            style={{
+              paddingHorizontal: layout.spacing_x2,
+            }}
+          >
             <View style={{ zIndex: 300 }}>
               <Account
                 accountName="Main Account"
