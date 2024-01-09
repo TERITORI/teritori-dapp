@@ -166,7 +166,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
             position={{ left: 10, top: 0 }}
           />
         ) : (
-          <HeaderMini title="Chats" navigation={navigation} />
+          <HeaderMini title="Chats" />
         )
       }
     >

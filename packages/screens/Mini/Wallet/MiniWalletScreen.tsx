@@ -1,17 +1,14 @@
 import React, { useState } from "react";
-import { Pressable, View } from "react-native";
+import { Dimensions, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { Separator } from "../../../components/separators/Separator";
 import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
-import {
-  blueDefault,
-  neutral88,
-  secondaryColor,
-} from "../../../utils/style/colors";
+import { neutral88, secondaryColor } from "../../../utils/style/colors";
 import { fontMedium13, fontMedium24 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { CustomButton } from "../Settings/components/CustomButton";
 
 const collectionScreenTabItems = {
   tokens: {
@@ -24,12 +21,16 @@ const collectionScreenTabItems = {
 export const MiniWalletScreen = ({}) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("tokens");
+
+  const onDepositPress = () => {};
+
   return (
     <ScreenContainer
       headerChildren={<></>}
       responsive
       fullWidth
-      footerChildren={<></>}
+      footerChildren={null}
+      noScroll
       mobileTitle="Wallets"
     >
       <RoundedTabs
@@ -37,18 +38,22 @@ export const MiniWalletScreen = ({}) => {
         onSelect={(key) => setSelectedTab(key)}
         selected={selectedTab}
         style={{
-          height: 48,
-          maxHeight: 48,
+          maxHeight: 36,
           marginTop: layout.spacing_x2,
           marginBottom: layout.spacing_x2,
         }}
       />
-      <Separator />
-      <View style={{ paddingVertical: layout.spacing_x2 }}>
+      <View
+        style={{
+          flex: 1,
+          width: Dimensions.get("window").width,
+          paddingHorizontal: layout.spacing_x1_5,
+        }}
+      >
         <View
           style={{
             flexDirection: "row",
-            paddingVertical: 12,
+            paddingVertical: layout.spacing_x3,
           }}
         >
           <View style={{ flex: 1 }}>
@@ -73,35 +78,24 @@ export const MiniWalletScreen = ({}) => {
               Total balance
             </BrandText>
           </View>
-          <View style={{ flexDirection: "row" }}>
-            <Pressable
-              style={{
-                backgroundColor: blueDefault,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 100,
-                paddingHorizontal: layout.spacing_x2,
-                marginHorizontal: layout.spacing_x0_5,
-              }}
-            >
-              <BrandText>Deposit</BrandText>
-            </Pressable>
-            <Pressable
-              style={{
-                backgroundColor: "#393939",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 100,
-                paddingHorizontal: layout.spacing_x2,
-                marginHorizontal: layout.spacing_x0_5,
-              }}
-            >
-              <BrandText>Send</BrandText>
-            </Pressable>
+          <View style={{ flexDirection: "row", gap: layout.spacing_x1 }}>
+            <CustomButton
+              width={72}
+              title="Deposit"
+              size="medium"
+              onPress={onDepositPress}
+            />
+            <CustomButton
+              width={72}
+              title="Send"
+              size="medium"
+              onPress={onDepositPress}
+              type="gray"
+            />
           </View>
         </View>
+        <Separator />
       </View>
-      <Separator />
     </ScreenContainer>
   );
 };

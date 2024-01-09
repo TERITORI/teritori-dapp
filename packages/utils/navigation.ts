@@ -103,6 +103,7 @@ export type RootStackParamList = {
   MiniRevealSeedPhrase: undefined;
   MiniExportPrivateKey: undefined;
   MiniResetWallet: undefined;
+  MiniManageTokens: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -225,6 +226,7 @@ const navConfig: {
     MiniRevealSeedPhrase: "mini-reveal-seed-phrase",
     MiniExportPrivateKey: "mini-export-private-key",
     MiniResetWallet: "mini-reset-wallet",
+    MiniManageTokens: "mini-manage-tokens",
   },
 };
 

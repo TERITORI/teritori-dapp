@@ -17,7 +17,7 @@ type Props = {
   children?: ReactNode;
   isDisabled?: boolean;
   type?: "primary" | "danger" | "gray";
-  size?: "normal" | "small";
+  size?: "normal" | "medium" | "small";
   style?: StyleProp<ViewStyle>;
   width?: number;
 };
@@ -49,6 +49,8 @@ export const CustomButton = ({
     switch (size) {
       case "small":
         return 32;
+      case "medium":
+        return 36;
       case "normal":
         return 44;
       default:
@@ -60,6 +62,8 @@ export const CustomButton = ({
     switch (size) {
       case "small":
         return layout.spacing_x0_75;
+      case "medium":
+        return layout.spacing_x0_5;
       case "normal":
         return layout.spacing_x1_5;
       default:
@@ -78,6 +82,8 @@ export const CustomButton = ({
           opacity: isDisabled ? 0.7 : 1,
           height: getHeight(),
           width: width || "100%",
+          alignItems: "center",
+          justifyContent: "center",
         },
         style,
       ]}

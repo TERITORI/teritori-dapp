@@ -12,7 +12,6 @@ import { layout, MOBILE_HEADER_HEIGHT } from "../../../../utils/style/layout";
 
 interface HeaderMiniProps {
   title: string;
-  navigation: any;
 }
 
 export const HeaderMini = ({ title }: HeaderMiniProps) => {
