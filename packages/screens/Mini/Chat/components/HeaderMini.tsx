@@ -21,7 +21,7 @@ export const HeaderMini = ({ title }: HeaderMiniProps) => {
   const onProfileImagePress = () => navigation.navigate("MiniProfile");
 
   const onPressNotification = () => {
-    navigation.navigate("AddressBook");
+    navigation.navigate("Notifications");
   };
 
   return (

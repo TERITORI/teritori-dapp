@@ -1,12 +1,11 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Dimensions, View, FlatList } from "react-native";
+import { FlatList } from "react-native";
 
 import ListView from "./components/ListView";
 import AddNewSvg from "../../../../assets/icons/add-circle-filled.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { ScreenContainer } from "../../../components/ScreenContainer";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
@@ -15,6 +14,7 @@ import { neutralA3 } from "../../../utils/style/colors";
 import { fontNormal15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import MiniHeader from "../Notifications/components/MiniHeader";
+import { SettingBase } from "../Settings/components/SettingBase";
 
 type AddressBookScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "AddressBook">;
@@ -40,13 +40,8 @@ export default function AddressBookScreen({
   ];
 
   return (
-    <ScreenContainer
-      headerChildren={<></>}
-      responsive
-      fullWidth
-      footerChildren={null}
-      noScroll
-      headerMini={
+    <SettingBase
+      customHeader={
         <MiniHeader
           navigation={navigation}
           backEnabled
@@ -59,55 +54,60 @@ export default function AddressBookScreen({
         />
       }
     >
-      <View
+      {!addresses.length ? (
+        <BrandText
+          style={[
+            fontNormal15,
+            {
+              color: neutralA3,
+              paddingTop: layout.spacing_x2,
+              paddingHorizontal: layout.spacing_x1_5,
+            },
+          ]}
+        >
+          No Address to Display
+        </BrandText>
+      ) : (
+        <FlatList
+          inverted
+          data={addresses.reverse()}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <ListView
+              onPress={() =>
+                navigation.navigate("EditAddressBook", {
+                  addressId: item.id,
+                })
+              }
+              style={{
+                paddingHorizontal: layout.spacing_x1_5,
+              }}
+              options={{
+                label: item?.label,
+                iconEnabled: false,
+                rightLabel: item?.address,
+              }}
+            />
+          )}
+        />
+      )}
+      <SpacerColumn size={1.5} />
+      <Separator />
+      <ListView
+        onPress={() => navigation.navigate("AddAddressBook")}
         style={{
-          flex: 1,
-          justifyContent: "flex-end",
-          width: Dimensions.get("window").width,
-          backgroundColor: "rgba(0,0,0,0.5)",
+          paddingVertical: layout.spacing_x4,
           paddingHorizontal: layout.spacing_x1_5,
         }}
-      >
-        {!addresses.length ? (
-          <BrandText style={[fontNormal15, { color: neutralA3 }]}>
-            No Address to Display
-          </BrandText>
-        ) : (
-          <FlatList
-            inverted
-            style={{ flex: 1 }}
-            data={addresses.reverse()}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <ListView
-                onPress={() =>
-                  navigation.navigate("EditAddressBook", { addressId: item.id })
-                }
-                style={{ paddingVertical: layout.spacing_x1_5 }}
-                options={{
-                  label: item?.label,
-                  iconEnabled: false,
-                  rightLabel: item?.address,
-                }}
-              />
-            )}
-          />
-        )}
-        <SpacerColumn size={1.5} />
-        <Separator />
-        <ListView
-          onPress={() => navigation.navigate("AddAddressBook")}
-          style={{ paddingVertical: layout.spacing_x3 }}
-          options={{
-            label: "Add Network",
-            leftIconEnabled: true,
-            leftIconOptions: {
-              icon: AddNewSvg,
-              fill: "#fff",
-            },
-          }}
-        />
-      </View>
-    </ScreenContainer>
+        options={{
+          label: "Add Network",
+          leftIconEnabled: true,
+          leftIconOptions: {
+            icon: AddNewSvg,
+            fill: "#fff",
+          },
+        }}
+      />
+    </SettingBase>
   );
 }

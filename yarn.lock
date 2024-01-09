@@ -11580,6 +11580,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-blur@npm:~12.4.1":
+  version: 12.4.1
+  resolution: "expo-blur@npm:12.4.1"
+  peerDependencies:
+    expo: "*"
+  checksum: d6253bd40db623e8ce5f2737132c85c0d43980a9b693f0ad241bbf4b00041247bbf602d87c6fc8a7e700d25659eacffb596639de8cc991bef1585b43d3b19897
+  languageName: node
+  linkType: hard
+
 "expo-clipboard@npm:~4.3.1":
   version: 4.3.1
   resolution: "expo-clipboard@npm:4.3.1"
@@ -21340,6 +21349,7 @@ __metadata:
     expo: ^49.0.16
     expo-av: ~13.4.1
     expo-barcode-scanner: ~12.5.3
+    expo-blur: ~12.4.1
     expo-clipboard: ~4.3.1
     expo-dev-client: ^2.4.12
     expo-doctor: ^1.1.3
