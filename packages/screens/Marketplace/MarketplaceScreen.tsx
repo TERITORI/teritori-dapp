@@ -1,6 +1,7 @@
 import React, { ReactNode, useState } from "react";
 import { FlatList, StyleProp, TextStyle, View, ViewStyle } from "react-native";
 
+import { PeriodFilter } from "./PeriodFilter";
 import { PrettyPrint } from "./types";
 import {
   Collection,
@@ -15,7 +16,7 @@ import { Pagination } from "../../components/Pagination";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
 import { SearchInput } from "../../components/sorts/SearchInput";
-import { SpacerColumn } from "../../components/spacer";
+import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { TableRow } from "../../components/table/TableRow";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useCollections } from "../../hooks/useCollections";
@@ -176,6 +177,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
             justifyContent: "space-between",
             marginTop: layout.spacing_x4,
             marginBottom: layout.spacing_x4,
+            zIndex: 1,
           }}
         >
           <SearchInput
@@ -184,6 +186,8 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
             }}
             handleChangeText={handleChangeText}
           />
+          <SpacerRow size={2} />
+          <PeriodFilter />
         </View>
         <CollectionTable rows={collections} filterText={filterText} />
       </View>
