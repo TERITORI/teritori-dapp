@@ -72,43 +72,5 @@ export default function AddAddressBookScreen({
         <MiniButton title="Save" />
       </View>
     </SettingBase>
-    // <ScreenContainer
-    //   headerChildren={<></>}
-    //   responsive
-    //   fullWidth
-    //   footerChildren={null}
-    //   noScroll
-    //   headerMini={
-
-    //   }
-    // >
-    //   <View
-    //     style={{
-    //       flex: 1,
-    //       width: Dimensions.get("window").width,
-    //       justifyContent: "space-between",
-    //       backgroundColor: "rgba(0,0,0,0.5)",
-    //       paddingHorizontal: layout.spacing_x1_5,
-    //     }}
-    //   >
-    //     <View>
-    //       <View style={{ justifyContent: "center", alignItems: "center" }}>
-    //         <SpacerColumn size={2} />
-    //         <CircularImgOrIcon
-    //           style={{ alignItems: "center", justifyContent: "center" }}
-    //           icon={addSVG}
-    //         />
-    //       </View>
-
-    //       <SpacerColumn size={3} />
-    //       <MiniTextInput placeholder="Label" />
-
-    //       <SpacerColumn size={1} />
-    //       <MiniTextInput placeholder="Address" />
-    //     </View>
-
-    //     <MiniButton title="Add" />
-    //   </View>
-    // </ScreenContainer>
   );
 }
