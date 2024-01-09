@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, FlatList, TextStyle, useWindowDimensions } from "react-native";
 
 import { EstateCard } from "./EstateCard";
@@ -57,7 +57,7 @@ export const EstateCardList: React.FC<EstateCardListProps> = ({
   style,
 }) => {
   const { width: windowWidth } = useWindowDimensions();
-  const [flatListWidth, setFlatListWidth] = React.useState<number>(0);
+  const [flatListWidth, setFlatListWidth] = useState<number>(0);
   const isMobile = useIsMobile();
 
   return (

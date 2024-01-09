@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Pressable, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -27,8 +27,7 @@ export const HeaderMobile: React.FC<HeaderProps> = ({
   onBackPress,
 }) => {
   const theme = useTheme();
-  const [isConnectWalletVisible, setIsConnectWalletVisible] =
-    React.useState(false);
+  const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
   const selectedWallet = useSelectedWallet();
   const { toggleSidebar, isSidebarExpanded } = useRWASideBar();
 
@@ -91,8 +90,7 @@ export const HeaderMobile: React.FC<HeaderProps> = ({
 export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
   const theme = useTheme();
   const isLightTheme = useSelector(selectIsLightTheme);
-  const [isConnectWalletVisible, setIsConnectWalletVisible] =
-    React.useState(false);
+  const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
   const selectedWallet = useSelectedWallet();
 
   return (

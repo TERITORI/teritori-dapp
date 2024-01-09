@@ -37,12 +37,14 @@ export const RWA_SIDEBAR_LIST: (isLightTheme: boolean) => SidebarRecordType = (
 
     "rwa-portfolio": {
       title: "RWA Portfolio",
+      // TODO: Change route name and add RWAPortfolio into Navigator
       route: "RWAHome",
       id: "RWAPortfolio",
       icon: isLightTheme ? lightMarketplaceSVG : marketplaceSVG,
     },
     "rwa-wallet": {
       title: "RWA Wallet",
+      // TODO: Change route name and add RWAWallet into Navigator
       route: "RWAHome",
       id: "RWAWallet",
       icon: isLightTheme ? lightWalletSVG : walletSVG,

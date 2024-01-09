@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { View, ViewStyle } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 
@@ -16,12 +16,12 @@ const data: string[] = [
 ];
 
 export const RWACarousel: React.FC = () => {
-  const [index, handleIndex] = React.useState<number>(0);
+  const [index, handleIndex] = useState<number>(0);
   const theme = useTheme();
   const isLightTheme = useIsLightTheme();
   const isMobile = useIsMobile();
   const imageSize = isMobile ? 300 : 464;
-  const carouselRef = React.useRef<ICarouselInstance | null>(null);
+  const carouselRef = useRef<ICarouselInstance | null>(null);
   const selectedBackgroundColor = isLightTheme ? "#000" : "#FFF";
   const unselectedBackgroundColor = isLightTheme ? "#C5C5C5" : neutral44;
 

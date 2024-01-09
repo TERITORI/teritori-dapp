@@ -4,7 +4,6 @@ import {
   ScrollView,
   useWindowDimensions,
   View,
-  ViewStyle,
 } from "react-native";
 
 import { Header, HeaderMobile, HeaderProps } from "./Header";
@@ -26,29 +25,28 @@ export const RWAScreenContainer: React.FC<RWAScreenContainerProps> = ({
   const isMobile = useIsMobile();
 
   return (
-    <SafeAreaView style={{ width: "100%", flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <View
         style={{
-          ...ScreenContainerCStyle,
+          flex: 1,
+          flexDirection: "row",
           backgroundColor: theme.backgroundColor,
         }}
       >
         {isMobile ? <SideBarMobile /> : <SideBar />}
-        <View style={{ flex: 1, width: "100%" }}>
+        <View style={{ flex: 1 }}>
           {isMobile ? (
             <HeaderMobile onBackPress={onBackPress} headerTitle={headerTitle} />
           ) : (
             <Header onBackPress={onBackPress} headerTitle={headerTitle} />
           )}
-          <View
-            style={{ width: "100%", flexDirection: "row", flex: 1, height }}
-          >
-            <View style={ScrollViewContainerCStyle}>
+          <View style={{ flexDirection: "row", flex: 1, height }}>
+            <View style={{ flex: 1, height: "100%" }}>
               <ScrollView
                 style={{ width: "100%" }}
                 contentContainerStyle={{ paddingVertical: 40 }}
               >
-                <View style={ChildrenContainerCStyle}>{children}</View>
+                <View>{children}</View>
               </ScrollView>
             </View>
           </View>
@@ -56,22 +54,4 @@ export const RWAScreenContainer: React.FC<RWAScreenContainerProps> = ({
       </View>
     </SafeAreaView>
   );
-};
-
-const ScreenContainerCStyle: ViewStyle = {
-  flex: 1,
-  flexDirection: "row",
-  width: "100%",
-};
-
-const ScrollViewContainerCStyle: ViewStyle = {
-  flex: 1,
-  width: "100%",
-  height: "100%",
-};
-
-const ChildrenContainerCStyle: ViewStyle = {
-  flex: 1,
-  width: "100%",
-  height: "100%",
 };

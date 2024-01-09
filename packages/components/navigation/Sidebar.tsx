@@ -19,6 +19,7 @@ import { useSidebar } from "../../context/SidebarProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useTheme } from "../../hooks/useTheme";
 import { NetworkFeature, NetworkKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral33 } from "../../utils/style/colors";
@@ -59,6 +60,7 @@ export const Sidebar: React.FC = () => {
   const selectedNetworkKind = selectedNetworkInfo?.kind;
   const connected = selectedWallet?.connected;
   const navigation = useAppNavigation();
+  const theme = useTheme();
   const { name: currentRouteName } = useRoute();
   const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
 
@@ -101,7 +103,7 @@ export const Sidebar: React.FC = () => {
           style={[styles.toggleButtonContainer, toggleButtonStyle]}
         >
           <Pressable style={styles.toggleButton} onPress={toggleSidebar}>
-            <SVG source={chevronRightSVG} />
+            <SVG color={theme.textColor} source={chevronRightSVG} />
           </Pressable>
         </Animated.View>
 

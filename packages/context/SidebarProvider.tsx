@@ -29,14 +29,10 @@ export const useRWASideBar = () => {
     }
   }, [dispatch, isMobile]);
 
-  const dynamicSidebar = useMemo(() => {
-    let dynamicAppsSelection = [] as {
-      [key: string]: any;
-    };
-
-    dynamicAppsSelection = RWA_SIDEBAR_LIST(isLightTheme);
-    return dynamicAppsSelection;
-  }, [isLightTheme]);
+  const dynamicSidebar = useMemo(
+    () => RWA_SIDEBAR_LIST(isLightTheme),
+    [isLightTheme],
+  );
 
   const toggleSidebar = () => {
     dispatch(setSidebarExpanded(!isSidebarExpanded));

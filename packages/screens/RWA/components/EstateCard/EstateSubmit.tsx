@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleProp, TextInput, TextStyle, View } from "react-native";
 
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
@@ -21,7 +21,7 @@ export const EstateCardViewProperty: React.FC = () => {
 };
 
 export const EstateCardWailistInput: React.FC = () => {
-  const [value, onChangeValue] = React.useState<string>("");
+  const [value, onChangeValue] = useState<string>("");
   const theme = useTheme();
   const isMobile = useIsMobile();
 

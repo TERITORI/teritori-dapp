@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View } from "react-native";
 
 import { HomeProposals } from "./components/HomeProposals/HomeProposals";
@@ -16,14 +16,14 @@ export const RWAHomeScreen: ScreenFC<"RWAHome"> = () => {
   const dispatch = useAppDispatch();
   const isMobile = useIsMobile();
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(setIsLightTheme(false));
   }, [dispatch]);
 
   return (
     <RWAScreenContainer headerTitle="Fractionalized Real State Launchpad">
-      <View style={{ flex: 1, width: "100%" }}>
-        <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
+      <View>
+        <View style={{ alignItems: "center" }}>
           <HomeProposals />
         </View>
         <View>
