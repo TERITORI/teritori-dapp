@@ -20,6 +20,7 @@ import wallet from "../../../../assets/icons/wallet.svg";
 import axelarLogo from "../../../../assets/logos/Axelar-logo.svg";
 import mapOfZones from "../../../../assets/logos/MoZ-icon.svg";
 import astroportLogo from "../../../../assets/logos/astroport.svg";
+import calcfinance from "../../../../assets/logos/calc-finance.jpg";
 import coinHallLogo from "../../../../assets/logos/coinhall.svg";
 import mintscanLogo from "../../../../assets/logos/cosmostation-val.png";
 import daodao from "../../../../assets/logos/daodao.png";
@@ -163,6 +164,17 @@ export function getAvailableApps(): dAppGroup {
           icon: toripunks,
           description: "Enter the Bar, play games. punks!",
           route: "ToriPunks",
+          groupKey: "top-apps",
+          selectedByDefault: true,
+          alwaysOn: false,
+        },
+        calc: {
+          id: "calc",
+          title: "Calc Finance",
+          icon: calcfinance,
+          description: "DCA into your favorite assets",
+          route: "External",
+          url: "https://app.calculated.fi/?chain=osmosis-1",
           groupKey: "top-apps",
           selectedByDefault: true,
           alwaysOn: false,
