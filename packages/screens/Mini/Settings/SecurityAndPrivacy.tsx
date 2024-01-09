@@ -7,7 +7,7 @@ import { ScreenFC } from "../../../utils/navigation";
 export const SecurityAndPrivacy: ScreenFC<"MiniSecurityAndPrivacy"> = ({
   navigation,
 }) => {
-  const gotoSettings = () => navigation.navigate("MiniSettings");
+  const gotoSettings = () => navigation.replace("MiniSettings");
   return (
     <SettingBase title="Security & Privacy" onGoBack={gotoSettings}>
       <SettingMenuItem
@@ -20,7 +20,7 @@ export const SecurityAndPrivacy: ScreenFC<"MiniSecurityAndPrivacy"> = ({
       />
       <SettingMenuItem
         title="Export Private Key"
-        navigateTo="MiniSecurityAndPrivacy"
+        navigateTo="MiniExportPrivateKey"
       />
       <SettingMenuItem
         title="Reset Wallet"

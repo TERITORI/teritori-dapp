@@ -22,6 +22,7 @@ export const gameHighlight = "#FCEE4F";
 export const yankeesBlue = "#16283C";
 
 export const neutral00 = "#000000";
+export const neutral09 = "#090909";
 export const neutral17 = "#171717";
 export const neutral11 = "#111111";
 export const neutral15 = "#151515";

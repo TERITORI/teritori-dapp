@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import { Dimensions, View } from "react-native";
 
+import { CustomButton } from "./components/CustomButton";
 import { Input } from "./components/Input";
 import { SettingBase } from "./components/SettingBase";
-import { BrandText } from "../../../components/BrandText";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
-import { blueDefault } from "../../../utils/style/colors";
-import { fontSemibold15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
@@ -64,23 +61,18 @@ export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
           onChangeText={(text) => handleTextChange(text, "confirmPassword")}
           secureTextEntry
         />
-        <CustomPressable
+
+        <CustomButton
           onPress={onSaveNewPassword}
           style={{
-            backgroundColor: blueDefault,
-            paddingVertical: layout.spacing_x1_5,
-            borderRadius: 100,
             position: "absolute",
             bottom: 0,
             left: layout.spacing_x2,
             right: layout.spacing_x2,
             zIndex: 99,
           }}
-        >
-          <BrandText style={[fontSemibold15, { textAlign: "center" }]}>
-            Save
-          </BrandText>
-        </CustomPressable>
+          title="Save"
+        />
       </View>
     </SettingBase>
   );

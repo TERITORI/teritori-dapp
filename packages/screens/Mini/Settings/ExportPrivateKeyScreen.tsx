@@ -2,12 +2,12 @@ import React, { useState } from "react";
 
 import { CheckList } from "./components/CheckList";
 import { SettingBase } from "./components/SettingBase";
-import { ShowSeedPhrase } from "./components/ShowSeedPhrase";
+import { ShowPrivateKey } from "./components/ShowPrivateKey";
 import { ScreenFC } from "../../../utils/navigation";
 
 type ScreenType = "visible" | "hidden";
 
-export const RevealSeedPhraseScreen: ScreenFC<"MiniRevealSeedPhrase"> = ({
+export const ExportPrivateKeyScreen: ScreenFC<"MiniExportPrivateKey"> = ({
   navigation,
 }) => {
   const [visibleScreen, setVisibleScreen] = useState<ScreenType>("hidden");
@@ -16,10 +16,9 @@ export const RevealSeedPhraseScreen: ScreenFC<"MiniRevealSeedPhrase"> = ({
     navigation.replace("MiniSecurityAndPrivacy");
 
   const changeVisibleScreen = (key: ScreenType) => setVisibleScreen(key);
-
   return (
     <SettingBase
-      title="Reveal Seed Phrase"
+      title="Export Private Key"
       onGoBack={gotoSecurityAndPrivacy}
       reverseView={false}
     >
@@ -28,10 +27,10 @@ export const RevealSeedPhraseScreen: ScreenFC<"MiniRevealSeedPhrase"> = ({
           hidden: (
             <CheckList
               gotoVisibleScreen={() => changeVisibleScreen("visible")}
-              type="seed-phrase"
+              type="private-key"
             />
           ),
-          visible: <ShowSeedPhrase />,
+          visible: <ShowPrivateKey />,
         }[visibleScreen]
       }
     </SettingBase>

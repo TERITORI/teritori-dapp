@@ -34,7 +34,9 @@ export const RedAlert = ({ description, title }: Props) => {
         </BrandText>
       )}
       {description && (
-        <BrandText style={[fontMedium16, { color: dangerColor }]}>
+        <BrandText
+          style={[fontMedium16, { color: dangerColor, lineHeight: 22 }]}
+        >
           {description}
         </BrandText>
       )}

@@ -17,6 +17,7 @@ import { AddAccountScreen } from "../../screens/Mini/Profile/AddAccountScreen";
 import { ProfileScreen } from "../../screens/Mini/Profile/ProfileScreen";
 import { ChangePasswordScreen } from "../../screens/Mini/Settings/ChangePasswordScreen";
 import { ChatSettingScreen } from "../../screens/Mini/Settings/ChatSettingScreen";
+import { ExportPrivateKeyScreen } from "../../screens/Mini/Settings/ExportPrivateKeyScreen";
 import { RevealSeedPhraseScreen } from "../../screens/Mini/Settings/RevealSeedPhraseScreen";
 import { SecurityAndPrivacy } from "../../screens/Mini/Settings/SecurityAndPrivacy";
 import { SettingsScreen } from "../../screens/Mini/Settings/SettingsScreen";
@@ -70,7 +71,7 @@ const MainTab = () => {
 
 export const MiniNavigator: React.FC = () => {
   return (
-    <Stack.Navigator initialRouteName="MiniRevealSeedPhrase">
+    <Stack.Navigator initialRouteName="MiniTabs">
       <Stack.Screen
         name="NativeWallet"
         component={CreateScreen}
@@ -214,6 +215,15 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: "Reveal Seed Phrase",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniExportPrivateKey"
+        component={ExportPrivateKeyScreen}
+        options={{
+          header: () => null,
+          title: "Export Private Key",
           presentation: "transparentModal",
         }}
       />
