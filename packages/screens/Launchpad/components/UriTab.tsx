@@ -8,10 +8,10 @@ import { SpacerColumn } from "../../../components/spacer";
 import { neutral00, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { NewCollectionFormForEistingBaseUrlValues } from "../CreateCollection.type";
+import { ExistingBaseUrlValues } from "../CreateCollection.type";
 
 export const UriTab: React.FC = () => {
-  const { control } = useForm<NewCollectionFormForEistingBaseUrlValues>({
+  const { control } = useForm<ExistingBaseUrlValues>({
     defaultValues: {
       baseTokenUri: "",
       coverImageUrl: "",
@@ -46,7 +46,7 @@ export const UriTab: React.FC = () => {
           <SpacerColumn size={2} />
 
           <View>
-            <TextInputCustom<NewCollectionFormForEistingBaseUrlValues>
+            <TextInputCustom<ExistingBaseUrlValues>
               rules={{ required: true }}
               label="Base Token URI"
               placeHolder="ipfs://"
@@ -59,7 +59,7 @@ export const UriTab: React.FC = () => {
                 borderRadius: 12,
               }}
             />
-            <TextInputCustom<NewCollectionFormForEistingBaseUrlValues>
+            <TextInputCustom<ExistingBaseUrlValues>
               rules={{ required: true }}
               label="Cover Image URL"
               placeHolder="ipfs://"

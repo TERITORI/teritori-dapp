@@ -2,7 +2,7 @@ export interface NewCollectionFormValues {
   nftApiKey?: string;
 }
 
-export interface NewCollectionFormForEistingBaseUrlValues {
+export interface ExistingBaseUrlValues {
   baseTokenUri?: string;
   coverImageUrl?: string;
 }
