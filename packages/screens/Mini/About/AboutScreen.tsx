@@ -15,6 +15,7 @@ import { layout } from "../../../utils/style/layout";
 import ListView from "../AddressBook/components/ListView";
 import MiniHeader from "../Notifications/components/MiniHeader";
 import { SettingBase } from "../Settings/components/SettingBase";
+import { neutral77 } from "../../../utils/style/colors";
 
 type AboutScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "About">;
@@ -83,7 +84,7 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
         <SpacerColumn size={1} />
         <BrandText style={fontBold16}>TERITORI</BrandText>
         <SpacerColumn size={1} />
-        <TertiaryBadge label="v1.25" />
+        <TertiaryBadge label="v1.25" textColor={neutral77} />
         <SpacerColumn size={6} />
       </View>
       <View
