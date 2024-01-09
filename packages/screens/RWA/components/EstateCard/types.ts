@@ -1,4 +1,6 @@
-import { ViewStyle } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
+
+import { BoxStyle } from "../../../../components/boxes/Box";
 
 export type EstateCardBadgesProps = {
   tags: string[];
@@ -19,7 +21,7 @@ export type EstateCardInformationsProps = {
 };
 
 export type EstateCardProps = EstateCardBadgesProps &
-  EstateCardInformationsProps & { style?: ViewStyle };
+  EstateCardInformationsProps & { style?: StyleProp<BoxStyle> };
 
 export type EstateCardImageProps = {
   sourceURI: string;
@@ -29,7 +31,7 @@ export type EstateCardInformationBoxProps = {
   label: string;
   value: string;
   secondary?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<BoxStyle>;
 };
 
 export type EstateCardListProps = {

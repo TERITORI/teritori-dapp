@@ -42,10 +42,7 @@ export const RWAScreenContainer: React.FC<RWAScreenContainerProps> = ({
           )}
           <View style={{ flexDirection: "row", flex: 1, height }}>
             <View style={{ flex: 1, height: "100%" }}>
-              <ScrollView
-                style={{ width: "100%" }}
-                contentContainerStyle={{ paddingVertical: 40 }}
-              >
+              <ScrollView contentContainerStyle={{ paddingVertical: 40 }}>
                 <View>{children}</View>
               </ScrollView>
             </View>

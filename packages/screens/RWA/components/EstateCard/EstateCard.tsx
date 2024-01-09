@@ -20,15 +20,16 @@ export const EstateCard: React.FC<EstateCardProps> = ({
   const isMobile = useIsMobile();
   return (
     <TertiaryBox
-      mainContainerStyle={{
-        borderColor: theme.borderColor,
-        backgroundColor: theme.backgroundColor,
-        padding: isMobile ? layout.spacing_x1_5 : layout.spacing_x2_5,
-      }}
-      style={style}
-      squaresBackgroundColor={theme.backgroundColor}
-      width={isMobile ? 350 : 580}
-      height={isMobile ? 250 : 327}
+      style={[
+        {
+          borderColor: theme.borderColor,
+          backgroundColor: theme.backgroundColor,
+          padding: isMobile ? layout.spacing_x1_5 : layout.spacing_x2_5,
+          width: isMobile ? 350 : 580,
+          height: isMobile ? 250 : 327,
+        },
+        style,
+      ]}
     >
       <View style={{ flex: 1 }}>
         <EstateCardBadges tags={tags} />

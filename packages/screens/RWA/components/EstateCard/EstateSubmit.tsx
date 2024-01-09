@@ -14,8 +14,6 @@ export const EstateCardViewProperty: React.FC = () => {
       color={theme.primaryButtonColor}
       text="View Property"
       fullWidth
-      squaresBackgroundColor={theme.backgroundColor}
-      style={{ flex: 1 }}
     />
   );
 };
@@ -46,8 +44,6 @@ export const EstateCardWailistInput: React.FC = () => {
           width={isMobile ? 65 : 136}
           color={theme.primaryButtonColor}
           text={isMobile ? "Join..." : "Join Waitlist"}
-          style={{ flex: 1, marginLeft: 10 }}
-          noBrokenCorners
         />
       </View>
     </View>

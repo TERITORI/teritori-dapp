@@ -4,7 +4,7 @@ import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 
 import RealEstatePlaceholder from "../../../../../../assets/default-images/real-estate-placeholder.png";
 import { OptimizedImage } from "../../../../../components/OptimizedImage";
-import { TertiaryBox } from "../../../../../components/boxes/TertiaryBox";
+import { SecondaryBox } from "../../../../../components/boxes/SecondaryBox";
 import { useIsMobile } from "../../../../../hooks/useIsMobile";
 import { useIsLightTheme, useTheme } from "../../../../../hooks/useTheme";
 import { neutral44 } from "../../../../../utils/style/colors";
@@ -27,35 +27,34 @@ export const RWACarousel: React.FC = () => {
 
   return (
     <View style={{ width: "100%" }}>
-      <TertiaryBox
-        mainContainerStyle={BoxContainerCStyle}
-        noBrokenCorners
-        height={imageSize - 2}
-        width={imageSize - 2}
+      <View
+        style={[BoxContainerCStyle, { width: imageSize, height: imageSize }]}
       >
-        <Carousel
-          ref={carouselRef}
-          width={imageSize}
-          height={imageSize}
-          data={data}
-          panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
-          onProgressChange={(_, absoluteProgress) => {
-            handleIndex(Math.round(absoluteProgress));
-          }}
-          autoPlay
-          pagingEnabled
-          autoPlayInterval={7000}
-          renderItem={({ item, index }) => (
-            <OptimizedImage
-              width={imageSize}
-              height={imageSize}
-              sourceURI={item}
-              key={`Carousel-${index}`}
-              style={{ width: imageSize, height: imageSize }}
-            />
-          )}
-        />
-      </TertiaryBox>
+        <SecondaryBox style={[{ height: imageSize - 2, width: imageSize - 2 }]}>
+          <Carousel
+            ref={carouselRef}
+            width={imageSize}
+            height={imageSize}
+            data={data}
+            panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
+            onProgressChange={(_, absoluteProgress) => {
+              handleIndex(Math.round(absoluteProgress));
+            }}
+            autoPlay
+            pagingEnabled
+            autoPlayInterval={7000}
+            renderItem={({ item, index }) => (
+              <OptimizedImage
+                width={imageSize}
+                height={imageSize}
+                sourceURI={item}
+                key={`Carousel-${index}`}
+                style={{ width: imageSize, height: imageSize }}
+              />
+            )}
+          />
+        </SecondaryBox>
+      </View>
       <View style={{ width: imageSize }}>
         <View
           style={[

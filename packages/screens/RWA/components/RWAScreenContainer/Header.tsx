@@ -116,11 +116,9 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
           <View style={{ marginRight: 18 }}>
             <SecondaryButton
               textStyle={{ fontWeight: "200" }}
-              borderColor={!isLightTheme ? theme.borderColor : undefined}
               backgroundColor={theme.tertiaryButtonColor}
               color={isLightTheme ? theme.secondaryTextColor : theme.textColor}
               text="My Account"
-              squaresBackgroundColor={theme.headerSquaresBackgroundColor}
               size="SM"
               width={188}
             />
@@ -130,11 +128,9 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
             <View style={{ marginRight: 18 }}>
               <SecondaryButton
                 textStyle={{ fontWeight: "200" }}
-                borderColor={!isLightTheme ? theme.borderColor : undefined}
                 backgroundColor={theme.secondaryButtonColor}
                 color={theme.textColor}
                 text="Register"
-                squaresBackgroundColor={theme.headerSquaresBackgroundColor}
                 size="SM"
                 width={188}
               />
@@ -145,7 +141,6 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
                 backgroundColor={theme.primaryButtonColor}
                 color={theme.secondaryTextColor}
                 text="Connect Wallet"
-                squaresBackgroundColor={theme.headerSquaresBackgroundColor}
                 size="SM"
                 width={188}
                 onPress={() => setIsConnectWalletVisible(true)}
@@ -165,14 +160,12 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
 const HeaderContainerCStyle: ViewStyle = {
   flex: 1,
   height: headerHeight,
-  width: "100%",
   maxHeight: headerHeight,
   flexDirection: "row",
   borderBottomWidth: 1,
 };
 
 const HeaderRowCStyle: ViewStyle = {
-  width: "100%",
   flex: 1,
   flexDirection: "row",
   alignItems: "center",

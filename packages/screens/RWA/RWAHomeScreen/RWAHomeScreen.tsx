@@ -17,7 +17,7 @@ export const RWAHomeScreen: ScreenFC<"RWAHome"> = () => {
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    dispatch(setIsLightTheme(false));
+    dispatch(setIsLightTheme(true));
   }, [dispatch]);
 
   return (

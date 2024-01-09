@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 import { EstateCardImageProps } from "./types";
 import { OptimizedImage } from "../../../../components/OptimizedImage";
-import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
+import { SecondaryBox } from "../../../../components/boxes/SecondaryBox";
 import { useIsMobile } from "../../../../hooks/useIsMobile";
 import { useTheme } from "../../../../hooks/useTheme";
 
@@ -23,14 +23,13 @@ export const EstateCardImage: React.FC<EstateCardImageProps> = ({
         marginLeft: 10,
       }}
     >
-      <TertiaryBox
-        mainContainerStyle={{
+      <SecondaryBox
+        style={{
           borderColor: theme.borderColor,
           backgroundColor: theme.backgroundColor,
+          width: imageSize,
+          height: imageSize,
         }}
-        squaresBackgroundColor={theme.backgroundColor}
-        height={imageSize}
-        width={imageSize}
       >
         <OptimizedImage
           width={imageSize}
@@ -42,7 +41,7 @@ export const EstateCardImage: React.FC<EstateCardImageProps> = ({
             borderRadius: 10,
           }}
         />
-      </TertiaryBox>
+      </SecondaryBox>
     </View>
   );
 };

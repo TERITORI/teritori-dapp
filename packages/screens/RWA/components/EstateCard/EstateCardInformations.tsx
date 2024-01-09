@@ -1,5 +1,5 @@
 import React from "react";
-import { TextStyle, View, ViewStyle } from "react-native";
+import { View } from "react-native";
 
 import { EstateCardViewProperty, EstateCardWailistInput } from "./EstateSubmit";
 import {
@@ -34,10 +34,13 @@ const EstateCardInformationBox: React.FC<EstateCardInformationBoxProps> = ({
 
   return (
     <TertiaryBox
-      mainContainerStyle={[
+      style={[
         style,
-        InformationsBoxCStyle,
         {
+          flex: 1,
+          paddingLeft: 10,
+          flexDirection: "column",
+          alignItems: "flex-start",
           backgroundColor,
           borderColor: secondary
             ? theme.borderColor
@@ -45,18 +48,20 @@ const EstateCardInformationBox: React.FC<EstateCardInformationBoxProps> = ({
               ? theme.borderColor
               : undefined,
           borderWidth: secondary ? 1 : !isLightTheme ? 1 : 0,
-          justifyContent: isMobile ? "center" : undefined,
-          gap: isMobile ? 0 : 6,
+          justifyContent: "center",
+          height: isMobile ? 35 : 66,
+          width: isMobile ? 80 : 136,
         },
       ]}
-      noBrokenCorners={isLightTheme}
-      squaresBackgroundColor={theme.backgroundColor}
-      height={isMobile ? 35 : 66}
-      width={isMobile ? 80 : 136}
     >
       <BrandText
         numberOfLines={1}
-        style={{ ...InformationsBoxLabelCStyle, color: labelColor }}
+        style={{
+          fontSize: 11,
+          fontWeight: "200",
+          letterSpacing: -1,
+          color: labelColor,
+        }}
       >
         {label}
       </BrandText>
@@ -97,21 +102,22 @@ export const EstateCardInformations: React.FC<EstateCardInformationsProps> = ({
             label="Total Investment"
             value={card.totalInvestment}
           />
-          <View style={{ marginLeft: 10 }}>
-            <EstateCardInformationBox label="Target APY" value={card.estAPY} />
-          </View>
+          <EstateCardInformationBox
+            label="Target APY"
+            value={card.estAPY}
+            style={{ marginLeft: 10 }}
+          />
         </View>
         <View style={{ flex: 1, flexDirection: "row" }}>
           <EstateCardInformationBox
             label="Rental Start Date"
             value={card.rentalStartDate}
           />
-          <View style={{ marginLeft: 10 }}>
-            <EstateCardInformationBox
-              label="Target ROI per Token"
-              value={card.estAPYPerToken}
-            />
-          </View>
+          <EstateCardInformationBox
+            label="Target ROI per Token"
+            value={card.estAPYPerToken}
+            style={{ marginLeft: 10 }}
+          />
         </View>
       </View>
 
@@ -123,17 +129,4 @@ export const EstateCardInformations: React.FC<EstateCardInformationsProps> = ({
       )}
     </View>
   );
-};
-
-const InformationsBoxCStyle: ViewStyle = {
-  flex: 1,
-  paddingLeft: 10,
-  flexDirection: "column",
-  alignItems: "flex-start",
-};
-
-const InformationsBoxLabelCStyle: TextStyle = {
-  fontSize: 11,
-  fontWeight: "200",
-  letterSpacing: -1,
 };

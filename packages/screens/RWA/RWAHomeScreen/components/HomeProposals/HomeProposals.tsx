@@ -1,5 +1,5 @@
 import React from "react";
-import { TextStyle, View, ViewStyle } from "react-native";
+import { TextStyle, View } from "react-native";
 
 import { RWACarousel } from "./RWACarousel";
 import { BrandText } from "../../../../../components/BrandText";
@@ -16,13 +16,11 @@ export const HomeProposals: React.FC = () => {
 
   return (
     <View
-      style={[
-        HomeProposalsContainerCStyle,
-        {
-          flexDirection: isMobile ? "column" : "row",
-          gap: isMobile ? 40 : 120,
-        },
-      ]}
+      style={{
+        alignItems: "center",
+        flexDirection: isMobile ? "column" : "row",
+        gap: isMobile ? 40 : 120,
+      }}
     >
       <View style={{ marginHorizontal: isMobile ? 10 : 0 }}>
         <BrandText
@@ -56,7 +54,6 @@ export const HomeProposals: React.FC = () => {
           color={theme.secondaryTextColor}
           backgroundColor={theme.primaryButtonColor}
           text="View Property"
-          squaresBackgroundColor={theme.squaresBackgroundColor}
           size="XL"
           style={{ marginTop: 35 }}
         />
@@ -64,10 +61,6 @@ export const HomeProposals: React.FC = () => {
       <RWACarousel />
     </View>
   );
-};
-
-const HomeProposalsContainerCStyle: ViewStyle = {
-  alignItems: "center",
 };
 
 const HomeProposalsLabelCStyle: TextStyle = {
