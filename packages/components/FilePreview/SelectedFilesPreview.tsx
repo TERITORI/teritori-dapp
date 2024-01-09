@@ -60,10 +60,14 @@ export const SelectedFilesPreview: React.FC<{
                       onSelect(item);
                     }}
                   >
-                    <Box
+                    <View
                       style={{
                         width: 100,
                         height: 100,
+                        borderColor: neutral33,
+                        borderWidth: 1,
+                        overflow: "hidden",
+                        borderRadius: 8,
                       }}
                     >
                       <img
@@ -74,7 +78,7 @@ export const SelectedFilesPreview: React.FC<{
                         }}
                         alt="Uploaded file"
                       />
-                    </Box>
+                    </View>
                     <PrimaryBox
                       style={{
                         borderRadius: 32,
@@ -109,10 +113,14 @@ export const SelectedFilesPreview: React.FC<{
                       onSelect(item);
                     }}
                   >
-                    <Box
+                    <View
                       style={{
                         width: 100,
                         height: 100,
+                        borderColor: neutral33,
+                        borderWidth: 1,
+                        overflow: "hidden",
+                        borderRadius: 8,
                       }}
                     >
                       <img
@@ -123,7 +131,7 @@ export const SelectedFilesPreview: React.FC<{
                         }}
                         alt="Uploaded file"
                       />
-                    </Box>
+                    </View>
                     <PrimaryBox
                       style={{
                         borderRadius: 32,
