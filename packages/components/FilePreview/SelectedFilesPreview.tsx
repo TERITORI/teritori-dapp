@@ -33,11 +33,16 @@ export const SelectedFilesPreview: React.FC<{
   return (
     <View
       style={{
-        width: "100%",
+        width: 850,
         flex: 1,
       }}
     >
-      <View style={{ justifyContent: "flex-end" }}>
+      <View
+        style={{
+          justifyContent: "flex-end",
+          alignItems: "center",
+        }}
+      >
         {currentItems.length > 0 ? (
           <>
             <View style={{ flexDirection: "column" }}>
@@ -169,8 +174,6 @@ export const SelectedFilesPreview: React.FC<{
           <AssetsPagination
             currentPage={currentPage}
             maxPage={totalPage}
-            itemsPerPage={itemsPerPage}
-            setItemsPerPage={() => {}}
             onChangePage={(page) => setCurrentPage(page)}
           />
           <SpacerColumn size={2} />

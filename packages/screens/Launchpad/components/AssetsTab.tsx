@@ -57,7 +57,6 @@ export const AssetsTab: React.FC = () => {
               margin: layout.spacing_x2,
             }}
           >
-            {/* <BrandText style={{ marginBottom: 12 }}>Left container</BrandText> */}
             <View>
               <TextInputCustom<NewCollectionFormValues>
                 rules={{ required: true }}
