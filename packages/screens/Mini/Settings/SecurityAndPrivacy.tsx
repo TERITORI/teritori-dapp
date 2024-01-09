@@ -24,7 +24,7 @@ export const SecurityAndPrivacy: ScreenFC<"MiniSecurityAndPrivacy"> = ({
       />
       <SettingMenuItem
         title="Reset Wallet"
-        navigateTo="MiniSecurityAndPrivacy"
+        navigateTo="MiniResetWallet"
         danger
       />
     </SettingBase>

@@ -22,6 +22,7 @@ export const RevealSeedPhraseScreen: ScreenFC<"MiniRevealSeedPhrase"> = ({
       title="Reveal Seed Phrase"
       onGoBack={gotoSecurityAndPrivacy}
       reverseView={false}
+      background="transparent"
     >
       {
         {

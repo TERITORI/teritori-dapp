@@ -21,6 +21,7 @@ export const ExportPrivateKeyScreen: ScreenFC<"MiniExportPrivateKey"> = ({
       title="Export Private Key"
       onGoBack={gotoSecurityAndPrivacy}
       reverseView={false}
+      background="transparent"
     >
       {
         {
