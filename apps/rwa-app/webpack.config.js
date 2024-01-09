@@ -10,10 +10,7 @@ module.exports = async function (env, argv) {
     {
       ...env,
       babel: {
-        dangerouslyAddModulePathsToTranspile: [
-          path.resolve("./packages"),
-          path.resolve("./node_modules/rwa-app/packages"),
-        ],
+        dangerouslyAddModulePathsToTranspile: [path.resolve("./packages")],
       },
     },
     argv,
@@ -88,11 +85,22 @@ module.exports = async function (env, argv) {
     },
   });
 
+  config.module.rules.push({
+    test: /\.(js|mjs|jsx|cjs|ts|tsx|html|json)$/,
+    include: [path.resolve("../../node_modules/packages")],
+    exclude: [path.resolve("../../node_modules")],
+    use: {
+      loader: "babel-loader",
+      options: {
+        sourceType: "unambiguous",
+      },
+    },
+  });
+
   config.module.rules.forEach((rule) => {
     if (rule.oneOf) {
       rule.oneOf.unshift({
         test: /\.svg$/,
-        exclude: /node_modules/,
         use: [
           {
             loader: require.resolve("@svgr/webpack"),

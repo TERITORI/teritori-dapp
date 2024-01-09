@@ -13,6 +13,11 @@
     "lint-fix": "eslint --cache --ext .js,.jsx,.ts,.tsx . --fix",
     "postinstall": "patch-package"
   },
+  "workspaces": [
+    "apps/*",
+    "packages/",
+    "assets/"
+  ],
   "engines": {
     "node": "v18.1.0"
   },
@@ -119,6 +124,7 @@
     "redux": "^4.2.1",
     "redux-persist": "^6.0.0",
     "redux-persist-electron-storage": "^2.1.0",
+    "rwa-app": "workspace:*",
     "rxjs": "^7.8.1",
     "stream-browserify": "^3.0.0",
     "uuid": "^9.0.0",

@@ -15,7 +15,7 @@ interface OmniLinkToType {
 
 export const OmniLink: React.FC<{
   to: OmniLinkToType;
-  action?: any | undefined;
+  action?: () => void | undefined;
   children: ReactNode | undefined;
   style?: TouchableOpacityProps["style"];
   disabled?: boolean;

@@ -3400,6 +3400,78 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@expo/cli@npm:0.10.16":
+  version: 0.10.16
+  resolution: "@expo/cli@npm:0.10.16"
+  dependencies:
+    "@babel/runtime": ^7.20.0
+    "@expo/code-signing-certificates": 0.0.5
+    "@expo/config": ~8.1.0
+    "@expo/config-plugins": ~7.2.0
+    "@expo/dev-server": 0.5.5
+    "@expo/devcert": ^1.0.0
+    "@expo/env": 0.0.5
+    "@expo/json-file": ^8.2.37
+    "@expo/metro-config": ~0.10.0
+    "@expo/osascript": ^2.0.31
+    "@expo/package-manager": ~1.1.0
+    "@expo/plist": ^0.0.20
+    "@expo/prebuild-config": 6.2.6
+    "@expo/rudder-sdk-node": 1.1.1
+    "@expo/spawn-async": 1.5.0
+    "@expo/xcpretty": ^4.2.1
+    "@urql/core": 2.3.6
+    "@urql/exchange-retry": 0.3.0
+    accepts: ^1.3.8
+    arg: 4.1.0
+    better-opn: ~3.0.2
+    bplist-parser: ^0.3.1
+    cacache: ^15.3.0
+    chalk: ^4.0.0
+    ci-info: ^3.3.0
+    debug: ^4.3.4
+    env-editor: ^0.4.1
+    form-data: ^3.0.1
+    freeport-async: 2.0.0
+    fs-extra: ~8.1.0
+    getenv: ^1.0.0
+    graphql: 15.8.0
+    graphql-tag: ^2.10.1
+    https-proxy-agent: ^5.0.1
+    internal-ip: 4.3.0
+    js-yaml: ^3.13.1
+    json-schema-deref-sync: ^0.13.0
+    md5-file: ^3.2.3
+    md5hex: ^1.0.0
+    minipass: 3.1.6
+    node-fetch: ^2.6.7
+    node-forge: ^1.3.1
+    npm-package-arg: ^7.0.0
+    ora: 3.4.0
+    pretty-bytes: 5.6.0
+    progress: 2.0.3
+    prompts: ^2.3.2
+    qrcode-terminal: 0.11.0
+    require-from-string: ^2.0.2
+    requireg: ^0.2.2
+    resolve-from: ^5.0.0
+    semver: ^7.5.3
+    send: ^0.18.0
+    slugify: ^1.3.4
+    structured-headers: ^0.4.1
+    tar: ^6.0.5
+    tempy: ^0.7.1
+    terminal-link: ^2.1.1
+    text-table: ^0.2.0
+    url-join: 4.0.0
+    wrap-ansi: ^7.0.0
+    ws: ^8.12.1
+  bin:
+    expo-internal: build/bin/cli
+  checksum: f8a329fbd6224f707dabb935846fe1451ed027b4c414d7bdd4385affb4b9ac2281e0e4fffe3c24a4e45a4827af92454be7284b33ad92018d5e01a731f2bde52c
+  languageName: node
+  linkType: hard
+
 "@expo/code-signing-certificates@npm:0.0.5":
   version: 0.0.5
   resolution: "@expo/code-signing-certificates@npm:0.0.5"
@@ -6829,6 +6901,12 @@ __metadata:
   checksum: 1ed1cabba9abe55f4109b3f7292b4e4f3cf2953aad8dc148c0b3c3bd676675c31b1abb32ef563b7d5a19d1715bf90d1e5f09fad2a4ee655199468902da80f7c2
   languageName: node
   linkType: hard
+
+"assets@workspace:*, assets@workspace:assets":
+  version: 0.0.0-use.local
+  resolution: "assets@workspace:assets"
+  languageName: unknown
+  linkType: soft
 
 "ast-stringify@npm:0.1.0":
   version: 0.1.0
@@ -10683,6 +10761,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-file-system@npm:~15.4.5":
+  version: 15.4.5
+  resolution: "expo-file-system@npm:15.4.5"
+  dependencies:
+    uuid: ^3.4.0
+  peerDependencies:
+    expo: "*"
+  checksum: 3507f872a111dc2a603632d89c8c798f87927e2ab57bcd0afae34cd34423195ea8fc38a9bdceecb647f64333c6acdd9926722a43627cf5d6cdfbb204f4a0d10b
+  languageName: node
+  linkType: hard
+
 "expo-font@npm:~11.4.0":
   version: 11.4.0
   resolution: "expo-font@npm:11.4.0"
@@ -10763,6 +10852,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-modules-core@npm:1.5.12":
+  version: 1.5.12
+  resolution: "expo-modules-core@npm:1.5.12"
+  dependencies:
+    compare-versions: ^3.4.0
+    invariant: ^2.2.4
+  checksum: 9f41c103fb4bba2c63776d053be6c2492b21f5dd1896b711df8877c6a8385dc86a9e59f69bb57895ec4b98a11ecfd829ff2f53f91c2d473835e82c4788f8fca5
+  languageName: node
+  linkType: hard
+
 "expo-optimize@npm:^0.2.20":
   version: 0.2.20
   resolution: "expo-optimize@npm:0.2.20"
@@ -10831,6 +10930,36 @@ __metadata:
   bin:
     expo: bin/cli
   checksum: f3db3a8b6d80423834e4d02aa0d5cad192362bb6629b74b038290c1ac15be930ec11a298fc495d6f4281bee7811de677e8f7ee0cdf5d1c6ceec44014a7fa84a8
+  languageName: node
+  linkType: hard
+
+"expo@npm:~49.0.15":
+  version: 49.0.21
+  resolution: "expo@npm:49.0.21"
+  dependencies:
+    "@babel/runtime": ^7.20.0
+    "@expo/cli": 0.10.16
+    "@expo/config": 8.1.2
+    "@expo/config-plugins": 7.2.5
+    "@expo/vector-icons": ^13.0.0
+    babel-preset-expo: ~9.5.2
+    expo-application: ~5.3.0
+    expo-asset: ~8.10.1
+    expo-constants: ~14.4.2
+    expo-file-system: ~15.4.5
+    expo-font: ~11.4.0
+    expo-keep-awake: ~12.3.0
+    expo-modules-autolinking: 1.5.1
+    expo-modules-core: 1.5.12
+    fbemitter: ^3.0.0
+    invariant: ^2.2.4
+    md5-file: ^3.2.3
+    node-fetch: ^2.6.7
+    pretty-format: ^26.5.2
+    uuid: ^3.4.0
+  bin:
+    expo: bin/cli
+  checksum: df05ef172935685f2b9850ad4f3e5d0aa3a8dd3720e81ad534dd9ea8c8f7d84b8ea4efa68f410a9bdfc5d31f0a1d0e3f0a146de54f81d75747953c004a717b3b
   languageName: node
   linkType: hard
 
@@ -15837,6 +15966,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"packages@workspace:*, packages@workspace:packages":
+  version: 0.0.0-use.local
+  resolution: "packages@workspace:packages"
+  languageName: unknown
+  linkType: soft
+
 "pako@npm:1.0.11":
   version: 1.0.11
   resolution: "pako@npm:1.0.11"
@@ -18134,6 +18269,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rwa-app@workspace:*, rwa-app@workspace:apps/rwa-app":
+  version: 0.0.0-use.local
+  resolution: "rwa-app@workspace:apps/rwa-app"
+  dependencies:
+    "@babel/core": ^7.20.0
+    assets: "workspace:*"
+    expo: ~49.0.15
+    expo-status-bar: ~1.6.0
+    packages: "workspace:*"
+    react: 18.2.0
+    react-native: 0.72.6
+  languageName: unknown
+  linkType: soft
+
 "rx-lite-aggregates@npm:^4.0.8":
   version: 4.0.8
   resolution: "rx-lite-aggregates@npm:4.0.8"
@@ -19585,6 +19734,7 @@ __metadata:
     redux-persist: ^6.0.0
     redux-persist-electron-storage: ^2.1.0
     rimraf: ^5.0.5
+    rwa-app: "workspace:*"
     rxjs: ^7.8.1
     stream-browserify: ^3.0.0
     ts-node: ^10.9.1

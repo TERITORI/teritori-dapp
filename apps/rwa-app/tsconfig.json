@@ -1,0 +1,11 @@
+{
+  "extends": "expo/tsconfig.base",
+  "target": "ES5",
+  "compilerOptions": {
+    "useDefineForClassFields": false, // this is needed by cosmwasm-ts-codegen clients
+    "strict": true,
+    "removeComments": false, // maybe required for webpack magic comments
+    "target": "es6",
+    "module": "esnext" // 👈️ set to esnext
+  }
+}

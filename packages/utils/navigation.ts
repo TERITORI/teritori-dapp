@@ -1,13 +1,17 @@
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
+import {
+  RWAStackParamList,
+  rwaNavConfig,
+} from "rwa-app/packages/utils/navigation";
 
 import { Conversation, MessageFriendsTabItem } from "./types/message";
 import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.type";
 
 export type RouteName = keyof RootStackParamList;
 
-export type RootStackParamList = {
+export type RootStackParamList = RWAStackParamList & {
   Home?: { network?: string };
   MyCollection: undefined;
   Activity: undefined;
@@ -71,8 +75,6 @@ export type RootStackParamList = {
   Message: { view: string; tab?: string } | undefined;
   ChatSection: Conversation;
   FriendshipManager: { tab?: MessageFriendsTabItem } | undefined;
-
-  RWAHome: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -165,8 +167,8 @@ const navConfig: {
     ChatSection: "message/chat",
     FriendshipManager: "/friends",
 
-    // === RWA
-    RWAHome: "rwa-home",
+    // ==== RWA
+    ...rwaNavConfig.screens,
   },
 };
 

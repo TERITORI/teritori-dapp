@@ -1,0 +1,674 @@
+{
+  "ansi-styles@3.2.1": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@babel/code-frame/node_modules/ansi-styles",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@babel/highlight/node_modules/ansi-styles",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/cli/node_modules/ansi-styles",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/inquirerer/node_modules/ansi-styles",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/log-symbols/node_modules/ansi-styles",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/rwa-app/node_modules/ansi-styles",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/slice-ansi/node_modules/ansi-styles"
+  ],
+  "chalk@2.4.2": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@babel/code-frame/node_modules/chalk",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@babel/highlight/node_modules/chalk",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/cli/node_modules/ora/node_modules/chalk",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/inquirerer/node_modules/chalk",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/log-symbols/node_modules/chalk",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/rwa-app/node_modules/ora/node_modules/chalk"
+  ],
+  "supports-color@5.5.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@babel/code-frame/node_modules/supports-color",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@babel/highlight/node_modules/supports-color",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/cli/node_modules/supports-color",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/inquirerer/node_modules/supports-color",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/log-symbols/node_modules/supports-color",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/rwa-app/node_modules/supports-color"
+  ],
+  "find-up@3.0.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@babel/register/node_modules/find-up",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/pkg-up/node_modules/find-up"
+  ],
+  "locate-path@3.0.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@babel/register/node_modules/locate-path",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/pkg-up/node_modules/locate-path"
+  ],
+  "p-locate@3.0.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@babel/register/node_modules/p-locate",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/pkg-up/node_modules/p-locate"
+  ],
+  "@types/node@20.9.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@jest/environment/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@jest/fake-timers/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@jest/transform/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@jest/types/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@keplr-wallet/types/node_modules/secretjs/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/body-parser/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/bonjour/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/cacheable-request/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/connect-history-api-fallback/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/connect/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/express-serve-static-core/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/glob/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/graceful-fs/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/http-proxy/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/keyv/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/node-forge/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/responselike/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/send/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/serve-static/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/sockjs/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/ws/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@types/yauzl/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/jest-environment-node/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/jest-haste-map/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/jest-mock/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/jest-util/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/jest-worker/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/metro-file-map/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/pretty-format/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/protobufjs/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/secretjs/node_modules/@types/node",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/webpack-dev-server/node_modules/@types/node"
+  ],
+  "long@4.0.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/long",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/long",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/proto-signing/node_modules/long",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/long",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/long",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@keplr-wallet/types/node_modules/long",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/protobufjs/node_modules/long",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@keplr-wallet/types/node_modules/long",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@keplr-wallet/unit/node_modules/long",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/long",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/@cosmjs/proto-signing/node_modules/long",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/node_modules/long",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/secretjs/node_modules/long"
+  ],
+  "@types/linkify-it@3.0.2": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/@types/linkify-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/@types/linkify-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/@types/linkify-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/@types/linkify-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/@types/linkify-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/@types/linkify-it"
+  ],
+  "@types/markdown-it@12.2.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/@types/markdown-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/@types/markdown-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/@types/markdown-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/@types/markdown-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/@types/markdown-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/@types/markdown-it"
+  ],
+  "@types/mdurl@1.0.2": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/@types/mdurl",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/@types/mdurl",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/@types/mdurl",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/@types/mdurl",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/@types/mdurl",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/@types/mdurl"
+  ],
+  "brace-expansion@1.1.11": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/brace-expansion",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/brace-expansion",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/brace-expansion",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/brace-expansion",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/brace-expansion",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/minimatch/node_modules/brace-expansion",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/brace-expansion"
+  ],
+  "catharsis@0.9.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/catharsis",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/catharsis",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/catharsis",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/catharsis",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/catharsis",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/catharsis"
+  ],
+  "escodegen@2.1.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/escodegen",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/escodegen",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/escodegen",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/escodegen",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/escodegen",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/escodegen"
+  ],
+  "eslint-visitor-keys@1.3.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/eslint-visitor-keys",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/eslint-visitor-keys",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/eslint-visitor-keys",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/eslint-visitor-keys",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/eslint-visitor-keys",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/eslint-utils/node_modules/eslint-visitor-keys",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/eslint-visitor-keys"
+  ],
+  "espree@7.3.1": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/espree",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/espree",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/espree",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/espree",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/espree",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/espree"
+  ],
+  "fs.realpath@1.0.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/fs.realpath",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/fs.realpath",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/fs.realpath",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/fs.realpath",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/fs.realpath",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/fs.realpath"
+  ],
+  "glob@7.2.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/glob",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/glob",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/glob",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/glob",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/rimraf/node_modules/glob",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/glob",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/glob"
+  ],
+  "inflight@1.0.6": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/inflight",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/inflight",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/inflight",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/inflight",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/inflight",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/inflight"
+  ],
+  "js2xmlparser@4.0.2": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/js2xmlparser",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/js2xmlparser",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/js2xmlparser",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/js2xmlparser",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/js2xmlparser",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/js2xmlparser"
+  ],
+  "jsdoc@3.6.11": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/jsdoc",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/jsdoc",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/jsdoc",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/jsdoc",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/jsdoc",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/jsdoc"
+  ],
+  "klaw@3.0.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/klaw",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/klaw",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/klaw",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/klaw",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/klaw",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/klaw"
+  ],
+  "linkify-it@3.0.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/linkify-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/linkify-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/linkify-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/linkify-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/linkify-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/linkify-it"
+  ],
+  "markdown-it@12.3.2": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/markdown-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/markdown-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/markdown-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/markdown-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/markdown-it",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/markdown-it"
+  ],
+  "minimatch@3.1.2": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/minimatch",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/minimatch",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/minimatch",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/minimatch",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/minimatch",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/minimatch"
+  ],
+  "once@1.4.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/once",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/once",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/once",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/once",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/once",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/once"
+  ],
+  "requizzle@0.2.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/requizzle",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/requizzle",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/requizzle",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/requizzle",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/requizzle",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/requizzle"
+  ],
+  "rimraf@3.0.2": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/rimraf",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/rimraf",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/rimraf",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/rimraf",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/rimraf",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@npmcli/move-file/node_modules/rimraf",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cacache/node_modules/rimraf",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/rimraf",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/del/node_modules/rimraf",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/flat-cache/node_modules/rimraf",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/metro-cache/node_modules/rimraf",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/metro/node_modules/rimraf",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/rimraf",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/webpack-dev-server/node_modules/rimraf"
+  ],
+  "taffydb@2.6.2": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/taffydb",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/taffydb",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/taffydb",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/taffydb",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/taffydb",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/taffydb"
+  ],
+  "tmp@0.2.1": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/tmp",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/tmp",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/tmp",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/tmp",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/tmp",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/tmp"
+  ],
+  "wrappy@1.0.2": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs/cli/node_modules/wrappy",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs/cli/node_modules/wrappy",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/wrappy",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs/cli/node_modules/wrappy",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs/cli/node_modules/wrappy",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs/cli/node_modules/wrappy"
+  ],
+  "protobufjs@6.11.4": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@confio/ics23/node_modules/protobufjs",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/protobufjs",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/protobufjs",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/protobufjs",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmjs-types/node_modules/protobufjs",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/protobufjs"
+  ],
+  "@cosmjs/encoding@0.29.5": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/amino/node_modules/@cosmjs/encoding",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/@cosmjs/encoding",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/crypto/node_modules/@cosmjs/encoding",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/proto-signing/node_modules/@cosmjs/encoding",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/@cosmjs/encoding",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/encoding",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/@cosmjs/encoding"
+  ],
+  "bech32@1.1.4": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/amino/node_modules/bech32",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/bech32",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/crypto/node_modules/bech32",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/encoding/node_modules/bech32",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/launchpad/node_modules/bech32",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/ledger-amino/node_modules/bech32",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/proto-signing/node_modules/bech32",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/bech32",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/tendermint-rpc/node_modules/bech32",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/bech32",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@ethersproject/providers/node_modules/bech32",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@iov/crypto/node_modules/bech32",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@iov/encoding/node_modules/bech32",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/ledger-cosmos-js/node_modules/bech32",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/bech32"
+  ],
+  "@cosmjs/amino@0.29.5": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/@cosmjs/amino",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/proto-signing/node_modules/@cosmjs/amino",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/@cosmjs/amino",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/amino",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/@cosmjs/proto-signing/node_modules/@cosmjs/amino"
+  ],
+  "@cosmjs/stargate@0.29.5": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/@cosmjs/stargate",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate"
+  ],
+  "@cosmjs/tendermint-rpc@0.29.5": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/@cosmjs/tendermint-rpc",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/@cosmjs/tendermint-rpc",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/tendermint-rpc",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/@cosmjs/tendermint-rpc"
+  ],
+  "axios@0.21.4": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/axios",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/launchpad/node_modules/axios",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/axios",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/tendermint-rpc/node_modules/axios",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/launchpad/node_modules/axios",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/tendermint-rpc/node_modules/axios",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@pinata/sdk/node_modules/axios",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/axios"
+  ],
+  "@cosmjs/crypto@0.31.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/ledger-amino/node_modules/@cosmjs/crypto",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/tendermint-rpc/node_modules/@cosmjs/crypto"
+  ],
+  "@cosmjs/encoding@0.31.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/ledger-amino/node_modules/@cosmjs/encoding",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/tendermint-rpc/node_modules/@cosmjs/encoding"
+  ],
+  "@cosmjs/math@0.31.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/ledger-amino/node_modules/@cosmjs/math",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmjs/tendermint-rpc/node_modules/@cosmjs/math"
+  ],
+  "@keplr-wallet/types@0.11.22": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/@keplr-wallet/types",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@keplr-wallet/unit/node_modules/@keplr-wallet/types"
+  ],
+  "axios@0.27.2": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/axios",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@keplr-wallet/types/node_modules/axios",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@keplr-wallet/unit/node_modules/axios",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@osmonauts/lcd/node_modules/axios",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/osmojs/node_modules/@osmonauts/lcd/node_modules/axios"
+  ],
+  "protobufjs@6.11.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmology/core/node_modules/protobufjs",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@keplr-wallet/types/node_modules/secretjs/node_modules/protobufjs",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/secretjs/node_modules/protobufjs"
+  ],
+  "@babel/generator@7.23.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/core/node_modules/@babel/generator",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/traverse/node_modules/@babel/generator"
+  ],
+  "@babel/types@7.23.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/core/node_modules/@babel/types",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/generator/node_modules/@babel/types",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/parser/node_modules/@babel/types",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/preset-env/node_modules/@babel/types",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/preset-modules/node_modules/@babel/types",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/traverse/node_modules/@babel/types"
+  ],
+  "@babel/types@7.18.10": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/types",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/wasm-ast-types/node_modules/@babel/types"
+  ],
+  "minimatch@5.1.6": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/glob/node_modules/minimatch",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/babel-plugin-module-resolver/node_modules/minimatch"
+  ],
+  "ajv@6.12.6": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@eslint/eslintrc/node_modules/ajv",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/babel-loader/node_modules/ajv",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/eslint/node_modules/ajv",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/terser-webpack-plugin/node_modules/ajv",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/webpack/node_modules/ajv"
+  ],
+  "globals@13.23.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@eslint/eslintrc/node_modules/globals",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/eslint/node_modules/globals"
+  ],
+  "js-yaml@4.1.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@eslint/eslintrc/node_modules/js-yaml",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/xcpretty/node_modules/js-yaml",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cosmiconfig/node_modules/js-yaml",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/eslint/node_modules/js-yaml"
+  ],
+  "form-data@3.0.1": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/cli/node_modules/form-data",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/rwa-app/node_modules/form-data"
+  ],
+  "minipass@3.1.6": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/cli/node_modules/minipass",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/rwa-app/node_modules/minipass"
+  ],
+  "ora@3.4.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/cli/node_modules/ora",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/rwa-app/node_modules/ora"
+  ],
+  "strip-ansi@5.2.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/cli/node_modules/strip-ansi",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@react-native-community/cli-doctor/node_modules/strip-ansi",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/ansi-fragments/node_modules/strip-ansi",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/inquirerer/node_modules/inquirer/node_modules/strip-ansi",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/rwa-app/node_modules/strip-ansi"
+  ],
+  "glob@7.1.6": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/config-plugins/node_modules/glob",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/config/node_modules/glob",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/expo-modules-autolinking/node_modules/glob",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/sucrase/node_modules/glob"
+  ],
+  "@babel/code-frame@7.10.4": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/config/node_modules/@babel/code-frame",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/json-file/node_modules/@babel/code-frame",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/xcpretty/node_modules/@babel/code-frame",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/expo-modules-autolinking/node_modules/@babel/code-frame"
+  ],
+  "semver@7.5.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/config/node_modules/semver",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/prebuild-config/node_modules/semver",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/expo-modules-autolinking/node_modules/semver"
+  ],
+  "@expo/spawn-async@1.7.2": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/dev-server/node_modules/@expo/spawn-async",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/osascript/node_modules/@expo/spawn-async",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/package-manager/node_modules/@expo/spawn-async"
+  ],
+  "fs-extra@9.0.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/dev-server/node_modules/fs-extra",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/image-utils/node_modules/fs-extra",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/expo-pwa/node_modules/fs-extra"
+  ],
+  "debug@3.2.7": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/devcert/node_modules/debug",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/eslint-import-resolver-node/node_modules/debug",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/eslint-module-utils/node_modules/debug",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/eslint-plugin-import/node_modules/debug"
+  ],
+  "mkdirp@0.5.6": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/devcert/node_modules/mkdirp",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/mv/node_modules/mkdirp",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/react-native/node_modules/mkdirp"
+  ],
+  "rimraf@2.7.1": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/devcert/node_modules/rimraf",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/clean-webpack-plugin/node_modules/rimraf",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/patch-package/node_modules/rimraf"
+  ],
+  "tempy@0.3.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/image-utils/node_modules/tempy",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/expo-pwa/node_modules/tempy"
+  ],
+  "unique-string@1.0.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/image-utils/node_modules/unique-string",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/expo-pwa/node_modules/unique-string"
+  ],
+  "fs-extra@9.1.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/prebuild-config/node_modules/fs-extra",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/expo-modules-autolinking/node_modules/fs-extra",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/patch-package/node_modules/fs-extra"
+  ],
+  "cross-spawn@6.0.5": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/spawn-async/node_modules/cross-spawn",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/default-gateway/node_modules/cross-spawn"
+  ],
+  "shebang-command@1.2.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@expo/spawn-async/node_modules/shebang-command",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/default-gateway/node_modules/shebang-command"
+  ],
+  "find-up@4.1.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@istanbuljs/load-nyc-config/node_modules/find-up",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@react-native-community/cli/node_modules/find-up",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/logkitty/node_modules/find-up",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/pkg-dir/node_modules/find-up",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/qrcode/node_modules/find-up"
+  ],
+  "@jest/schemas@28.1.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@jest/transform/node_modules/@jest/schemas",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/jest-haste-map/node_modules/@jest/schemas"
+  ],
+  "@jest/types@28.1.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@jest/transform/node_modules/@jest/types",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/jest-haste-map/node_modules/@jest/types"
+  ],
+  "jest-util@28.1.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@jest/transform/node_modules/jest-util",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/jest-haste-map/node_modules/jest-util"
+  ],
+  "axios@0.21.1": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@keplr-wallet/types/node_modules/secretjs/node_modules/axios",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/secretjs/node_modules/axios"
+  ],
+  "rxjs@6.6.7": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@ledgerhq/devices/node_modules/rxjs",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/inquirerer/node_modules/rxjs"
+  ],
+  "lru-cache@10.0.2": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@npmcli/agent/node_modules/lru-cache",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/make-fetch-happen/node_modules/lru-cache",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/path-scurry/node_modules/lru-cache"
+  ],
+  "cosmiconfig@5.2.1": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@react-native-community/cli-config/node_modules/cosmiconfig",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/metro-config/node_modules/cosmiconfig"
+  ],
+  "import-fresh@2.0.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@react-native-community/cli-config/node_modules/import-fresh",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/metro-config/node_modules/import-fresh"
+  ],
+  "parse-json@4.0.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/@react-native-community/cli-config/node_modules/parse-json",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/metro-config/node_modules/parse-json"
+  ],
+  "buffer@5.7.1": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/bl/node_modules/buffer",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/cids/node_modules/buffer",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/multiaddr/node_modules/buffer",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/multibase/node_modules/buffer",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/multicodec/node_modules/buffer",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/multihashes/node_modules/buffer"
+  ],
+  "debug@2.6.9": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/body-parser/node_modules/debug",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/compression/node_modules/debug",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/connect/node_modules/debug",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/express/node_modules/debug",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/finalhandler/node_modules/debug",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/metro-file-map/node_modules/debug",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/metro-inspector-proxy/node_modules/debug",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/metro/node_modules/debug",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/send/node_modules/debug",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/serve-index/node_modules/debug"
+  ],
+  "glob-parent@5.1.2": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/chokidar/node_modules/glob-parent",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/fast-glob/node_modules/glob-parent"
+  ],
+  "yargs@16.2.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/depcheck/node_modules/yargs",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/react-native-vector-icons/node_modules/yargs"
+  ],
+  "domhandler@5.0.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/dom-serializer/node_modules/domhandler",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/react-native-svg/node_modules/domhandler",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/svgo/node_modules/domhandler"
+  ],
+  "iconv-lite@0.6.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/encoding/node_modules/iconv-lite",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/source-map-loader/node_modules/iconv-lite"
+  ],
+  "commander@7.2.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/expo-modules-autolinking/node_modules/commander",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/postcss-svgo/node_modules/commander",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/svgo/node_modules/commander"
+  ],
+  "isarray@1.0.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/hpack.js/node_modules/isarray",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/through2/node_modules/isarray"
+  ],
+  "readable-stream@2.3.8": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/hpack.js/node_modules/readable-stream",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/through2/node_modules/readable-stream"
+  ],
+  "string_decoder@1.1.1": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/hpack.js/node_modules/string_decoder",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/through2/node_modules/string_decoder"
+  ],
+  "chalk@1.1.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/inquirer-autocomplete-prompt/node_modules/chalk",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/inquirer/node_modules/chalk"
+  ],
+  "strip-ansi@3.0.1": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/inquirer-autocomplete-prompt/node_modules/strip-ansi",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/inquirer/node_modules/strip-ansi"
+  ],
+  "strip-ansi@4.0.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/inquirer/node_modules/string-width/node_modules/strip-ansi",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/inquirerer/node_modules/strip-ansi"
+  ],
+  "string-width@2.1.1": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/inquirer/node_modules/string-width",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/inquirerer/node_modules/string-width"
+  ],
+  "commander@2.20.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/jayson/node_modules/commander",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/terser/node_modules/commander"
+  ],
+  "supports-color@8.1.1": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/jest-haste-map/node_modules/supports-color",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/jest-worker/node_modules/supports-color"
+  ],
+  "pretty-format@29.7.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/jest-message-util/node_modules/pretty-format",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/jest-validate/node_modules/pretty-format"
+  ],
+  "cliui@6.0.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/logkitty/node_modules/cliui",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/qrcode/node_modules/cliui"
+  ],
+  "wrap-ansi@6.2.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/logkitty/node_modules/wrap-ansi",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/qrcode/node_modules/wrap-ansi"
+  ],
+  "yargs-parser@18.1.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/logkitty/node_modules/yargs-parser",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/qrcode/node_modules/yargs-parser"
+  ],
+  "yargs@15.4.1": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/logkitty/node_modules/yargs",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/qrcode/node_modules/yargs"
+  ],
+  "glob@10.3.10": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/make-fetch-happen/node_modules/glob",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/node-gyp/node_modules/glob",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/rimraf/node_modules/glob"
+  ],
+  "minimatch@9.0.3": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/make-fetch-happen/node_modules/minimatch",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/node-gyp/node_modules/minimatch",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/rimraf/node_modules/minimatch"
+  ],
+  "multibase@1.0.1": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/multiaddr/node_modules/cids/node_modules/multibase",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/multiaddr/node_modules/multihashes/node_modules/multibase"
+  ],
+  "multibase@0.7.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/multiaddr/node_modules/multibase",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/multihashes/node_modules/multibase"
+  ],
+  "ansi-escapes@4.3.2": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/password-prompt/node_modules/ansi-escapes",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/terminal-link/node_modules/ansi-escapes"
+  ],
+  "css-select@5.1.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/react-native-svg/node_modules/css-select",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/svgo/node_modules/css-select"
+  ],
+  "domutils@3.1.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/react-native-svg/node_modules/domutils",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/svgo/node_modules/domutils"
+  ],
+  "schema-utils@3.3.0": [
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/terser-webpack-plugin/node_modules/schema-utils",
+    "/Users/clegirar/SideProjects/teritori-dapp/node_modules/webpack/node_modules/schema-utils"
+  ]
+}
