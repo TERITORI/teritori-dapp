@@ -59,7 +59,7 @@ const stepOptions = [
 export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const navigation = useAppNavigation();
 
-  const [selectedStep, setSelectedStep] = useState(6);
+  const [selectedStep, setSelectedStep] = useState(1);
   const [isLoading, setLoading] = useState(false);
 
   const onSubmit = () => {
