@@ -23,16 +23,12 @@ import { layout } from "../utils/style/layout";
 interface PaginationProps {
   currentPage: number;
   maxPage: number;
-  itemsPerPage: number;
-  setItemsPerPage: (item: number) => void;
   onChangePage: (page: number) => void;
 }
 
 export const AssetsPagination = ({
   currentPage,
   maxPage,
-  itemsPerPage,
-  setItemsPerPage,
   onChangePage,
 }: PaginationProps) => {
   const handleChangePage = (pageIndex: number) => {
@@ -104,7 +100,7 @@ export const AssetsPagination = ({
             ]}
           >
             <TextInput
-              value={(currentPage + 1).toString()}
+              defaultValue={(currentPage + 1).toString()}
               inputMode="numeric"
               style={[
                 fontSemibold14,
@@ -115,8 +111,8 @@ export const AssetsPagination = ({
                 },
                 { outlineStyle: "none" } as any,
               ]}
-              onChangeText={(text) => {
-                handleChangePage(+text);
+              onSubmitEditing={(value) => {
+                handleChangePage(+value.nativeEvent.text - 1);
               }}
             />
           </TertiaryBox>
@@ -145,7 +141,6 @@ export const AssetsPagination = ({
               <SVG source={chevronLeftDoubleSVG} height={16} width={16} />
             </TertiaryBox>
           </TouchableOpacity>
-
           <SpacerRow size={1} />
 
           <TouchableOpacity onPress={() => handleChangePage(currentPage - 1)}>
@@ -160,7 +155,6 @@ export const AssetsPagination = ({
               <SVG source={chevronLeftSVG} height={16} width={16} />
             </TertiaryBox>
           </TouchableOpacity>
-
           <SpacerRow size={2} />
 
           <View
@@ -170,33 +164,73 @@ export const AssetsPagination = ({
               justifyContent: "flex-end",
             }}
           >
-            <Box
-              notched
+            <TouchableOpacity
               style={{
-                height: 42,
-                width: 80,
-                borderWidth: 1,
-                justifyContent: "center",
+                flexDirection: "row",
                 alignItems: "center",
-                backgroundColor: primaryColor,
-                borderColor: neutral33,
+              }}
+              onPress={() => {
+                handleChangePage(
+                  currentPage + 1 >= maxPage ? currentPage - 1 : currentPage,
+                );
               }}
             >
-              <TouchableOpacity
+              <Box
+                notched
                 style={{
-                  flexDirection: "row",
+                  height: 42,
+                  width: 56,
+                  borderWidth: 1,
+                  justifyContent: "center",
                   alignItems: "center",
+                  backgroundColor: primaryColor,
+                  borderColor: neutral33,
                 }}
-                activeOpacity={1}
-                disabled
               >
-                <BrandText
-                  style={[fontSemibold14, { marginRight: layout.spacing_x1 }]}
-                >
-                  {currentPage + 1}
+                <BrandText style={fontSemibold14}>
+                  {currentPage + 1 >= maxPage ? currentPage : currentPage + 1}
                 </BrandText>
-              </TouchableOpacity>
-            </Box>
+              </Box>
+            </TouchableOpacity>
+          </View>
+          <SpacerRow size={2} />
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "flex-end",
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+              activeOpacity={1}
+              onPress={() => {
+                handleChangePage(
+                  currentPage + 2 > maxPage ? currentPage : currentPage + 1,
+                );
+              }}
+            >
+              <Box
+                notched
+                style={{
+                  height: 42,
+                  width: 56,
+                  borderWidth: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: primaryColor,
+                  borderColor: neutral33,
+                }}
+              >
+                <BrandText style={fontSemibold14}>
+                  {currentPage + 2 > maxPage ? maxPage : currentPage + 2}
+                </BrandText>
+              </Box>
+            </TouchableOpacity>
           </View>
           <SpacerRow size={2} />
 
@@ -212,7 +246,6 @@ export const AssetsPagination = ({
               <SVG source={chevronRightSVG} height={16} width={16} />
             </TertiaryBox>
           </TouchableOpacity>
-
           <SpacerRow size={1} />
 
           <TouchableOpacity onPress={() => handleChangePage(maxPage - 1)}>
