@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { TouchableOpacity, View, ViewStyle } from "react-native";
 
 import chevronDownSVG from "./../../assets/icons/chevron-down.svg";
@@ -28,8 +28,6 @@ interface SelectionDropdownProps {
 }
 
 export const SelectionDropdown = ({
-  style,
-  onDropdownClosed,
   dropdownOptions,
   placeHolder,
   item,
@@ -39,15 +37,6 @@ export const SelectionDropdown = ({
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const dropdownRef = useRef<View>(null);
-
-  const isDropdownOpened = isDropdownOpen(dropdownRef);
-
-  useEffect(() => {
-    if (!isDropdownOpened) {
-      onDropdownClosed?.();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDropdownOpened]);
 
   return (
     <View
