@@ -18,7 +18,7 @@ export const SettingsScreen: ScreenFC<"MiniSettings"> = ({ navigation }) => {
         navigateTo="MiniSecurityAndPrivacy"
       />
       <SettingMenuItem title="Chat Settings" navigateTo="MiniChatSetting" />
-      <SettingMenuItem title="About Teritori" navigateTo="MiniSettings" />
+      <SettingMenuItem title="About Teritori" navigateTo="About" />
     </SettingBase>
   );
 };

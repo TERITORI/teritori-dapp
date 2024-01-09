@@ -6,6 +6,7 @@ import { RouteProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
+import AboutScreen from "../../screens/Mini/About/AboutScreen";
 import AddAddressBookScreen from "../../screens/Mini/AddressBook/AddAddressBookScreen";
 import AddressBookScreen from "../../screens/Mini/AddressBook/AddressBookScreen";
 import EditAddressBookScreen from "../../screens/Mini/AddressBook/EditAddressBookScreen";
@@ -277,6 +278,14 @@ export const MiniNavigator: React.FC = () => {
       <Stack.Screen
         name="ChangeNetwork"
         component={ChangeNetworkScreen}
+        options={{
+          header: () => null,
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="About"
+        component={AboutScreen}
         options={{
           header: () => null,
           presentation: "transparentModal",
