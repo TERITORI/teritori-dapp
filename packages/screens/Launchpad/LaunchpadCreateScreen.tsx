@@ -89,6 +89,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
             flexDirection: "row",
             alignItems: "center",
             minHeight: 56,
+            minWidth: 1290,
             backgroundColor: neutral17,
             justifyContent: "center",
             marginHorizontal: layout.spacing_x3,
