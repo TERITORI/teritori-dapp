@@ -28,7 +28,7 @@ import { BrandText } from "../BrandText";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { ActivityTable } from "../activity/ActivityTable";
 import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
-import { NFTCancelListingCard } from "../cards/NFTCancelListingCard";
+import { NFTModifyListingCard } from "../cards/NFTModifyListingCard";
 import { NFTPriceBuyCard } from "../cards/NFTPriceBuyCard";
 import { NFTSellCard } from "../cards/NFTSellCard";
 import { CollapsableSection } from "../collapsable/CollapsableSection";
@@ -247,7 +247,12 @@ export const NFTMainInfo: React.FC<{
           />
         </LegacyTertiaryBox>
         {/*---- Info NFT */}
-        <View style={{ maxWidth: isMobile && width < 600 ? width : 600 }}>
+        <View
+          style={{
+            maxWidth: isMobile && width < 600 ? width : 600,
+            width: "100%",
+          }}
+        >
           <BrandText style={[fontSemibold28, { marginBottom: 12 }]}>
             {nftInfo?.name}
           </BrandText>
@@ -274,7 +279,7 @@ export const NFTMainInfo: React.FC<{
                 />
               )}
               {nftInfo?.isListed && nftInfo.isOwner && (
-                <NFTCancelListingCard
+                <NFTModifyListingCard
                   nftInfo={nftInfo}
                   style={{ marginTop: 24, marginBottom: 40 }}
                   onPressCancel={cancelListing}
