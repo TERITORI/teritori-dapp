@@ -21,16 +21,23 @@ import axelarLogo from "../../../../assets/logos/Axelar-logo.svg";
 import mapOfZones from "../../../../assets/logos/MoZ-icon.svg";
 import astroportLogo from "../../../../assets/logos/astroport.svg";
 import coinHallLogo from "../../../../assets/logos/coinhall.svg";
+import mintscanLogo from "../../../../assets/logos/cosmostation-val.png";
 import daodao from "../../../../assets/logos/daodao.png";
 import kjnodes from "../../../../assets/logos/kjnodes-logo.svg";
+import kujirapod from "../../../../assets/logos/kujira-network.svg";
+import nodesguruLogo from "../../../../assets/logos/nodeguru-val.svg";
+import pingpubLogo from "../../../../assets/logos/pingpub-val.svg";
 import pulsarLogo from "../../../../assets/logos/pulsar-logo.svg";
 import radyium from "../../../../assets/logos/raydium.png";
+import restake from "../../../../assets/logos/restake.png";
 import skip from "../../../../assets/logos/skip.png";
+import stakemeLogo from "../../../../assets/logos/stakeme-val.svg";
 import subdao from "../../../../assets/logos/subdao.png";
 import tfm from "../../../../assets/logos/tfm-logo.png";
 import theGraph from "../../../../assets/logos/theGraph.png";
 import toripunks from "../../../../assets/logos/toniPunks.png";
 import uniswap from "../../../../assets/logos/uniswap.png";
+import yieldmos from "../../../../assets/logos/yieldmos.png";
 import { isElectron } from "../../../utils/isElectron";
 import { dAppGroup } from "../types";
 
@@ -81,16 +88,6 @@ export function getAvailableApps(): dAppGroup {
           groupKey: "teritori-core-apps",
           selectedByDefault: true,
           alwaysOn: true,
-        },
-        staking: {
-          id: "staking",
-          title: "Staking",
-          description: "Staking",
-          icon: staking,
-          route: "Staking",
-          groupKey: "teritori-core-apps",
-          selectedByDefault: true,
-          alwaysOn: false,
         },
         governance: {
           id: "governance",
@@ -168,6 +165,109 @@ export function getAvailableApps(): dAppGroup {
           route: "ToriPunks",
           groupKey: "top-apps",
           selectedByDefault: true,
+          alwaysOn: false,
+        },
+      },
+    },
+    explorers: {
+      id: "explorers",
+      groupName: "Explorers",
+      icon: BookMarkIcon,
+      active: true,
+      options: {
+        exploreme: {
+          id: "exploreme",
+          title: "ExploreMe",
+          description: "by STAKEME",
+          icon: stakemeLogo,
+          route: "External",
+          url: "https://teritori.exploreme.pro/dashboard/",
+          groupKey: "explorers",
+          selectedByDefault: false,
+          alwaysOn: false,
+        },
+        guru: {
+          id: "guru",
+          title: "Explorers Guru",
+          description: "by Nodes.Guru",
+          icon: nodesguruLogo,
+          route: "External",
+          url: "https://teritori.explorers.guru/validators",
+          groupKey: "explorers",
+          selectedByDefault: false,
+          alwaysOn: false,
+        },
+        teritori: {
+          id: "teritori",
+          title: "Teritori Explorer",
+          description: "by Ping.pub + Core Team",
+          icon: pingpubLogo,
+          route: "External",
+          url: "https://explorer.teritori.com/teritori",
+          groupKey: "explorers",
+          selectedByDefault: false,
+          alwaysOn: false,
+        },
+        mintscan: {
+          id: "mintscan",
+          title: "Mintscan",
+          description: "Cosmostation: Mintscan",
+          icon: mintscanLogo,
+          route: "External",
+          url: "https://www.mintscan.io/teritori/ecosystem",
+          groupKey: "explorers",
+          selectedByDefault: false,
+          alwaysOn: false,
+        },
+      },
+    },
+    staking: {
+      id: "staking",
+      groupName: "Staking",
+      icon: BookMarkIcon,
+      active: true,
+      options: {
+        restake: {
+          id: "restake",
+          title: "Restake",
+          description: "Auto compound your rewards",
+          icon: restake,
+          route: "External",
+          url: "https://restake.app/teritori",
+          groupKey: "staking",
+          selectedByDefault: false,
+          alwaysOn: false,
+        },
+        kujirapod: {
+          id: "kujirapod",
+          title: "Kujira: Pod",
+          description: "Balance your stake across multiple validators",
+          icon: kujirapod,
+          route: "External",
+          url: "https://pod.kujira.app/teritori-1",
+          groupKey: "staking",
+          selectedByDefault: false,
+          alwaysOn: false,
+        },
+        teritori: {
+          id: "teritori",
+          title: "Staking",
+          description: "by Teritori Team",
+          icon: staking,
+          route: "Staking",
+          groupKey: "staking",
+          selectedByDefault: true,
+          alwaysOn: false,
+        },
+        yieldmos: {
+          id: "yieldmos",
+          title: "Yieldmos",
+          description: "Auto compound",
+          icon: yieldmos,
+          route: "External",
+          url: "https://yieldmos.com/chain/teritori",
+          groupKey: "staking",
+          selectedByDefault: false,
           alwaysOn: false,
         },
       },
