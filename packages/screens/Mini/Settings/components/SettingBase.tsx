@@ -1,5 +1,6 @@
+import { BlurView } from "expo-blur";
 import React, { ReactNode } from "react";
-import { SafeAreaView, View } from "react-native";
+import { Dimensions, SafeAreaView, View } from "react-native";
 
 import closeSVG from "../../../../../assets/icons/close.svg";
 import { BrandText } from "../../../../components/BrandText";
@@ -12,10 +13,11 @@ import { layout } from "../../../../utils/style/layout";
 
 type Props = {
   children: ReactNode;
-  title: string;
+  title?: string;
   onGoBack?: () => void;
   reverseView?: boolean;
   background?: string;
+  customHeader?: ReactNode;
 };
 
 export const SettingBase = ({
@@ -24,6 +26,7 @@ export const SettingBase = ({
   onGoBack,
   reverseView = true,
   background = "#000",
+  customHeader,
 }: Props) => {
   const navigation = useAppNavigation();
   const onClose = () => navigation.goBack();
@@ -39,33 +42,48 @@ export const SettingBase = ({
     <SafeAreaView
       style={{
         flex: 1,
-        width: "100%",
-        backgroundColor: "rgba(0, 0, 0, .9)",
+        width: Dimensions.get("window").width,
+        backgroundColor: "rgba(0, 0, 0, .5)",
         position: "relative",
       }}
     >
+      <BlurView
+        tint="dark"
+        style={{
+          position: "absolute",
+          zIndex: 0,
+          width: Dimensions.get("window").width,
+          height: "100%",
+        }}
+      />
       <View
         style={{
           flex: 1,
         }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingHorizontal: layout.spacing_x2,
-          }}
-        >
-          {onGoBack && (
-            <BackButton type="chevron" onPress={navigateToProfile} />
-          )}
-          <BrandText style={[fontSemibold18]}>{title || "Settings"}</BrandText>
+        {customHeader ? (
+          customHeader
+        ) : (
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingHorizontal: layout.spacing_x2,
+            }}
+          >
+            {onGoBack && (
+              <BackButton type="chevron" onPress={navigateToProfile} />
+            )}
+            <BrandText style={[fontSemibold18]}>
+              {title || "Settings"}
+            </BrandText>
 
-          <CustomPressable onPress={onClose} style={{}}>
-            <SVG source={closeSVG} height={28} width={28} />
-          </CustomPressable>
-        </View>
+            <CustomPressable onPress={onClose} style={{}}>
+              <SVG source={closeSVG} height={28} width={28} />
+            </CustomPressable>
+          </View>
+        )}
 
         <View
           style={{
@@ -75,6 +93,7 @@ export const SettingBase = ({
         >
           <View
             style={{
+              width: Dimensions.get("window").width,
               backgroundColor: background,
             }}
           >

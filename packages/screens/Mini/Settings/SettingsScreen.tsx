@@ -11,7 +11,7 @@ export const SettingsScreen: ScreenFC<"MiniSettings"> = ({ navigation }) => {
       onGoBack={() => navigation.replace("MiniProfile")}
     >
       <SettingMenuItem title="Connected Apps" navigateTo="MiniSettings" />
-      <SettingMenuItem title="Address Book" navigateTo="MiniSettings" />
+      <SettingMenuItem title="Address Book" navigateTo="AddressBook" />
       <SettingMenuItem title="Change Network" navigateTo="MiniSettings" />
       <SettingMenuItem
         title="Security & Privacy"

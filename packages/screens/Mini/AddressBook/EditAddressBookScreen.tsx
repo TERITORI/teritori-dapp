@@ -1,23 +1,19 @@
-import {
-  NativeStackNavigationProp,
-  NativeStackScreenProps,
-} from "@react-navigation/native-stack";
-import { Dimensions, View } from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useEffect, useState } from "react";
+import { View } from "react-native";
 
+import { AddressBookType } from "./AddressBookScreen";
 import CircularImgOrIcon from "./components/CircularImgOrIcon";
 import MiniButton from "./components/MiniButton";
 import MiniTextInput from "./components/MiniTextInput";
 import addSVG from "../../../../assets/icons/add-new.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import { SVG } from "../../../components/SVG";
-import { ScreenContainer } from "../../../components/ScreenContainer";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
 import { RootStackParamList } from "../../../utils/navigation";
-import { layout } from "../../../utils/style/layout";
 import MiniHeader from "../Notifications/components/MiniHeader";
-import { useEffect, useState } from "react";
-import { AddressBookType } from "./AddressBookScreen";
+import { SettingBase } from "../Settings/components/SettingBase";
 
 interface AddressBookScreenProps
   extends NativeStackScreenProps<RootStackParamList, "EditAddressBook"> {}
@@ -51,13 +47,10 @@ export default function EditAddressBookScreen({
   }, [addressId]);
 
   return (
-    <ScreenContainer
-      headerChildren={<></>}
-      responsive
-      fullWidth
-      footerChildren={null}
-      noScroll
-      headerMini={
+    <SettingBase
+      background="transparent"
+      reverseView={false}
+      customHeader={
         <MiniHeader
           navigation={navigation}
           backEnabled
@@ -72,31 +65,33 @@ export default function EditAddressBookScreen({
     >
       <View
         style={{
-          flex: 1,
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <SpacerColumn size={10} />
+        <CircularImgOrIcon
+          style={{ alignItems: "center", justifyContent: "center" }}
+          icon={addSVG}
+        />
+      </View>
+      <View
+        style={{
           justifyContent: "space-between",
-          width: Dimensions.get("window").width,
-          backgroundColor: "rgba(0,0,0,0.5)",
-          paddingHorizontal: layout.spacing_x1_5,
+          backgroundColor: "rgba(0,0,0,0.8)",
+          height: "70%",
         }}
       >
         <View>
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <SpacerColumn size={2} />
-            <CircularImgOrIcon
-              style={{ alignItems: "center", justifyContent: "center" }}
-              icon={addSVG}
-            />
-          </View>
-
           <SpacerColumn size={3} />
           <MiniTextInput placeholder="Label" value={address.label} />
 
           <SpacerColumn size={1} />
           <MiniTextInput placeholder="Address" value={address.address} />
         </View>
-
         <MiniButton title="Save" />
       </View>
-    </ScreenContainer>
+    </SettingBase>
   );
 }

@@ -209,7 +209,7 @@ export const MiniNavigator: React.FC = () => {
         component={AddressBookScreen}
         options={{
           header: () => null,
-          headerTransparent: true,
+          presentation: "transparentModal",
         }}
       />
       <Stack.Screen
@@ -217,7 +217,7 @@ export const MiniNavigator: React.FC = () => {
         component={AddAddressBookScreen}
         options={{
           header: () => null,
-          headerTransparent: true,
+          presentation: "transparentModal",
         }}
       />
       <Stack.Screen
@@ -225,7 +225,7 @@ export const MiniNavigator: React.FC = () => {
         component={EditAddressBookScreen}
         options={{
           header: () => null,
-          headerTransparent: true,
+          presentation: "transparentModal",
         }}
       />
       <Stack.Screen
