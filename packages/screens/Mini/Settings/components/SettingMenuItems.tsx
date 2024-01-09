@@ -3,12 +3,17 @@ import { View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import chevronGrayRightSVG from "../../../../../assets/icons/chevron-right-gray.svg";
+import chevronRedRightSVG from "../../../../../assets/icons/chevron-right-red.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
 import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { RouteName, useAppNavigation } from "../../../../utils/navigation";
-import { neutralA3 } from "../../../../utils/style/colors";
+import {
+  dangerColor,
+  neutralA3,
+  secondaryColor,
+} from "../../../../utils/style/colors";
 import { fontMedium13, fontSemibold22 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 
@@ -17,12 +22,14 @@ type MenuItemProps = {
   title: string;
   subtitle?: string;
   navigateTo: RouteName;
+  danger?: boolean;
 };
 export const SettingMenuItem = ({
   navigateTo,
   title,
   subtitle,
   icon,
+  danger = false,
 }: MenuItemProps) => {
   const navigation = useAppNavigation();
   const onMenuItemPress = () => {
@@ -42,15 +49,31 @@ export const SettingMenuItem = ({
         <View style={{ flexDirection: "row", gap: layout.spacing_x1_5 }}>
           {icon && <SVGorImageIcon icon={icon} iconSize={24} />}
           <View>
-            <BrandText style={[fontSemibold22, {}]}>{title}</BrandText>
+            <BrandText
+              style={[
+                fontSemibold22,
+                { color: danger ? dangerColor : secondaryColor },
+              ]}
+            >
+              {title}
+            </BrandText>
             {subtitle && (
-              <BrandText style={[fontMedium13, { color: neutralA3 }]}>
+              <BrandText
+                style={[
+                  fontMedium13,
+                  { color: danger ? dangerColor : neutralA3 },
+                ]}
+              >
                 {subtitle}
               </BrandText>
             )}
           </View>
         </View>
-        <SVG source={chevronGrayRightSVG} height={24} width={24} />
+        <SVG
+          source={danger ? chevronRedRightSVG : chevronGrayRightSVG}
+          height={24}
+          width={24}
+        />
       </View>
     </CustomPressable>
   );

@@ -19,7 +19,12 @@ import NotificationScreen from "../../screens/Mini/Notifications/NotificationScr
 import { AccountDetailsScreen } from "../../screens/Mini/Profile/AccountDetailsScreen";
 import { AddAccountScreen } from "../../screens/Mini/Profile/AddAccountScreen";
 import { ProfileScreen } from "../../screens/Mini/Profile/ProfileScreen";
+import { ChangePasswordScreen } from "../../screens/Mini/Settings/ChangePasswordScreen";
 import { ChatSettingScreen } from "../../screens/Mini/Settings/ChatSettingScreen";
+import { ExportPrivateKeyScreen } from "../../screens/Mini/Settings/ExportPrivateKeyScreen";
+import { ResetWalletScreen } from "../../screens/Mini/Settings/ResetWalletScreen";
+import { RevealSeedPhraseScreen } from "../../screens/Mini/Settings/RevealSeedPhraseScreen";
+import { SecurityAndPrivacy } from "../../screens/Mini/Settings/SecurityAndPrivacy";
 import { SettingsScreen } from "../../screens/Mini/Settings/SettingsScreen";
 import { MiniWalletScreen } from "../../screens/Mini/Wallet/MiniWalletScreen";
 import { CreatePassword } from "../../screens/Wallet/Screens/CreatePassword";
@@ -221,6 +226,51 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name="MiniSecurityAndPrivacy"
+        component={SecurityAndPrivacy}
+        options={{
+          header: () => null,
+          title: "Security & Privacy",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniChangePassword"
+        component={ChangePasswordScreen}
+        options={{
+          header: () => null,
+          title: "Change Password",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniRevealSeedPhrase"
+        component={RevealSeedPhraseScreen}
+        options={{
+          header: () => null,
+          title: "Reveal Seed Phrase",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniExportPrivateKey"
+        component={ExportPrivateKeyScreen}
+        options={{
+          header: () => null,
+          title: "Export Private Key",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniResetWallet"
+        component={ResetWalletScreen}
+        options={{
+          header: () => null,
+          title: "Reset Wallet",
+          presentation: "transparentModal",
         }}
       />
     </Stack.Navigator>

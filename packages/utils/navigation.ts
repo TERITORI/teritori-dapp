@@ -98,6 +98,11 @@ export type RootStackParamList = {
   AddressBook: undefined;
   AddAddressBook: undefined;
   EditAddressBook: { addressId: string };
+  MiniSecurityAndPrivacy: undefined;
+  MiniChangePassword: undefined;
+  MiniRevealSeedPhrase: undefined;
+  MiniExportPrivateKey: undefined;
+  MiniResetWallet: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -215,6 +220,11 @@ const navConfig: {
     AddressBook: "address-book",
     AddAddressBook: "add-address-book",
     EditAddressBook: "edit-address-book/:addressId",
+    MiniSecurityAndPrivacy: "mini-security-and-privacy",
+    MiniChangePassword: "mini-change-password",
+    MiniRevealSeedPhrase: "mini-reveal-seed-phrase",
+    MiniExportPrivateKey: "mini-export-private-key",
+    MiniResetWallet: "mini-reset-wallet",
   },
 };
 

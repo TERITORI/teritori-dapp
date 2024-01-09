@@ -22,6 +22,7 @@ export const gameHighlight = "#FCEE4F";
 export const yankeesBlue = "#16283C";
 
 export const neutral00 = "#000000";
+export const neutral09 = "#090909";
 export const neutral17 = "#171717";
 export const neutral11 = "#111111";
 export const neutral15 = "#151515";
@@ -43,6 +44,8 @@ export const additionalRed = "#FFAEAE";
 export const additionalGreen = successColor;
 export const azureBlue = "#0A84FF";
 export const azureBlue20 = "rgba(10, 132, 255, 0.3)";
+
+export const dangerColor = "#E44C39";
 
 export const trashBackground = "rgba(244, 111, 118, 0.1)";
 

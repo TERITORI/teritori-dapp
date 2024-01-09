@@ -15,6 +15,7 @@ type Props = {
   title: string;
   onGoBack?: () => void;
   reverseView?: boolean;
+  background?: string;
 };
 
 export const SettingBase = ({
@@ -22,6 +23,7 @@ export const SettingBase = ({
   title,
   onGoBack,
   reverseView = true,
+  background = "#000",
 }: Props) => {
   const navigation = useAppNavigation();
   const onClose = () => navigation.goBack();
@@ -71,7 +73,13 @@ export const SettingBase = ({
             justifyContent: reverseView ? "flex-end" : "flex-start",
           }}
         >
-          <View style={{ backgroundColor: "#000" }}>{children}</View>
+          <View
+            style={{
+              backgroundColor: background,
+            }}
+          >
+            {children}
+          </View>
         </View>
       </View>
     </SafeAreaView>
