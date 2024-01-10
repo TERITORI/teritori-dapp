@@ -105,6 +105,7 @@ export type RootStackParamList = {
   MiniResetWallet: undefined;
   ChangeNetwork: undefined;
   About: undefined;
+  MiniManageTokens: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -229,6 +230,7 @@ const navConfig: {
     MiniResetWallet: "mini-reset-wallet",
     ChangeNetwork: "change-network",
     About: "about",
+    MiniManageTokens: "mini-manage-tokens",
   },
 };
 

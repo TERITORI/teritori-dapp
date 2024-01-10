@@ -28,6 +28,7 @@ import { ResetWalletScreen } from "../../screens/Mini/Settings/ResetWalletScreen
 import { RevealSeedPhraseScreen } from "../../screens/Mini/Settings/RevealSeedPhraseScreen";
 import { SecurityAndPrivacy } from "../../screens/Mini/Settings/SecurityAndPrivacy";
 import { SettingsScreen } from "../../screens/Mini/Settings/SettingsScreen";
+import { ManageTokensScreen } from "../../screens/Mini/Wallet/ManageTokensScreen";
 import { MiniWalletScreen } from "../../screens/Mini/Wallet/MiniWalletScreen";
 import { CreatePassword } from "../../screens/Wallet/Screens/CreatePassword";
 import { CreateScreen } from "../../screens/Wallet/Screens/CreateScreen";
@@ -288,6 +289,16 @@ export const MiniNavigator: React.FC = () => {
         component={AboutScreen}
         options={{
           header: () => null,
+          title: "About Screen",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniManageTokens"
+        component={ManageTokensScreen}
+        options={{
+          header: () => null,
+          title: "Manage Tokens",
           presentation: "transparentModal",
         }}
       />

@@ -1,17 +1,29 @@
 import React, { useState } from "react";
-import { Pressable, View } from "react-native";
+import { Dimensions, View } from "react-native";
 
+import { AddedToken } from "./components/AddedToken";
+import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
+import settingSVG from "../../../../assets/icons/setting-solid.svg";
+import transactionSVG from "../../../../assets/icons/transactions-gray.svg";
 import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
+import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
 import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
+import { ScreenFC } from "../../../utils/navigation";
 import {
-  blueDefault,
   neutral88,
+  neutralA3,
   secondaryColor,
 } from "../../../utils/style/colors";
-import { fontMedium13, fontMedium24 } from "../../../utils/style/fonts";
+import {
+  fontMedium13,
+  fontMedium24,
+  fontSemibold14,
+} from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { CustomButton } from "../Settings/components/CustomButton";
 
 const collectionScreenTabItems = {
   tokens: {
@@ -21,15 +33,23 @@ const collectionScreenTabItems = {
     name: "NFTs",
   },
 };
-export const MiniWalletScreen = ({}) => {
+
+export const MiniWalletScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("tokens");
+
+  const onDepositPress = () => {};
+  const onSendPress = () => {};
+  const handlePressManageTokens = () => {
+    navigation.navigate("MiniManageTokens");
+  };
   return (
     <ScreenContainer
       headerChildren={<></>}
       responsive
       fullWidth
-      footerChildren={<></>}
+      footerChildren={null}
+      noScroll
       mobileTitle="Wallets"
     >
       <RoundedTabs
@@ -37,18 +57,21 @@ export const MiniWalletScreen = ({}) => {
         onSelect={(key) => setSelectedTab(key)}
         selected={selectedTab}
         style={{
-          height: 48,
-          maxHeight: 48,
+          maxHeight: 36,
           marginTop: layout.spacing_x2,
-          marginBottom: layout.spacing_x2,
+          marginBottom: layout.spacing_x0_5,
         }}
       />
-      <Separator />
-      <View style={{ paddingVertical: layout.spacing_x2 }}>
+      <View
+        style={{
+          flex: 1,
+          width: Dimensions.get("window").width,
+        }}
+      >
         <View
           style={{
             flexDirection: "row",
-            paddingVertical: 12,
+            paddingTop: layout.spacing_x3,
           }}
         >
           <View style={{ flex: 1 }}>
@@ -73,35 +96,65 @@ export const MiniWalletScreen = ({}) => {
               Total balance
             </BrandText>
           </View>
-          <View style={{ flexDirection: "row" }}>
-            <Pressable
-              style={{
-                backgroundColor: blueDefault,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 100,
-                paddingHorizontal: layout.spacing_x2,
-                marginHorizontal: layout.spacing_x0_5,
-              }}
-            >
-              <BrandText>Deposit</BrandText>
-            </Pressable>
-            <Pressable
-              style={{
-                backgroundColor: "#393939",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 100,
-                paddingHorizontal: layout.spacing_x2,
-                marginHorizontal: layout.spacing_x0_5,
-              }}
-            >
-              <BrandText>Send</BrandText>
-            </Pressable>
+          <View style={{ flexDirection: "row", gap: layout.spacing_x1 }}>
+            <CustomButton
+              width={72}
+              title="Deposit"
+              size="medium"
+              onPress={onDepositPress}
+            />
+            <CustomButton
+              width={72}
+              title="Send"
+              size="medium"
+              onPress={onSendPress}
+              type="gray"
+            />
           </View>
         </View>
+        <Separator style={{ marginVertical: layout.spacing_x3 }} />
+        <AddedToken
+          code="3A31"
+          dollar={14530.35}
+          icon={teritoriSVG}
+          onPress={() => {}}
+          title="Teritori"
+          tori={62424}
+        />
+
+        <CustomPressable
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: layout.spacing_x1_5,
+          }}
+          onPress={handlePressManageTokens}
+        >
+          <SVG source={settingSVG} height={24} width={24} />
+          <BrandText style={[fontSemibold14, {}]}>Manage Tokens</BrandText>
+        </CustomPressable>
+        <Separator style={{ marginVertical: layout.spacing_x3 }} />
+        <BrandText
+          style={[
+            fontSemibold14,
+            { color: neutralA3, marginBottom: layout.spacing_x2 },
+          ]}
+        >
+          Last transactions
+        </BrandText>
+        <View
+          style={{
+            flexDirection: "row",
+            gap: layout.spacing_x1_5,
+            alignItems: "center",
+          }}
+        >
+          <SVG source={transactionSVG} height={24} width={24} />
+          <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
+            No recent transactions
+          </BrandText>
+        </View>
       </View>
-      <Separator />
     </ScreenContainer>
   );
 };
