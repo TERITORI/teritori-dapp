@@ -2,6 +2,7 @@ import { MsgExecuteContractEncodeObject } from "@cosmjs/cosmwasm-stargate";
 import { toUtf8 } from "@cosmjs/encoding";
 import { useFocusEffect } from "@react-navigation/native";
 import { useQueryClient } from "@tanstack/react-query";
+import Long from "long";
 import React, { useState } from "react";
 import { View } from "react-native";
 
@@ -221,7 +222,7 @@ export const TNSMintNameModal: React.FC<
           sender: userAddress,
           contract: cosmosNetwork.nameServiceContractAddress,
           msg: toUtf8(JSON.stringify(payload)),
-          funds: [price],
+          funds: Long.fromString(price.amount).isZero() ? undefined : [price],
         },
       };
 
