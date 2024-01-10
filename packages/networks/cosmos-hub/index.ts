@@ -10,6 +10,7 @@ export const cosmosNetwork: NetworkInfo = {
   features: [],
   currencies: cosmosHubCurrencies,
   overrides: "cosmos-registry:cosmoshub",
+  registryName: "cosmoshub",
   txExplorer: "https://www.mintscan.io/cosmos/txs/$hash",
   accountExplorer: "https://www.mintscan.io/cosmos/account/$address",
   contractExplorer: "https://www.mintscan.io/cosmos/account/$address",

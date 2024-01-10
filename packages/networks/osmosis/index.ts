@@ -4,6 +4,7 @@ import { NetworkKind, NetworkInfo, NetworkFeature } from "../types";
 export const osmosisNetwork: NetworkInfo = {
   id: "osmosis",
   kind: NetworkKind.Cosmos,
+  registryName: "osmosis",
   chainId: "osmosis-1",
   displayName: "Osmosis",
   icon: "icons/networks/osmosis.svg",
