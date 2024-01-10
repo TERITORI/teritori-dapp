@@ -2,7 +2,7 @@ import { teritoriTestnetCurrencies } from "./currencies";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
 
 const nameServiceContractAddress =
-  "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys";
+  "tori160wk6qdepxy99p79vgq4ue0stvz4sstxfcj5n9vq04h6gx6ydrwsy0a5fy";
 
 const riotContractAddressGen1 = "";
 
@@ -51,7 +51,8 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   nameServiceDefaultImage:
     "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
   nameServiceTLD: ".tori",
-  vaultContractAddress: "",
+  vaultContractAddress:
+    "tori1da7gq3lv7v48fkq2w4jp0f0yg4v7rey3d92legs8e83mhuf3agyq2z7rr9",
   riotContractAddressGen0: "",
   riotContractAddressGen1,
   riotSquadStakingContractAddressV1: "",
@@ -63,7 +64,8 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     riotContractAddressGen1,
   ],
   excludeFromLaunchpadList: [riotContractAddressGen1],
-  socialFeedContractAddress: "",
+  socialFeedContractAddress:
+    "tori1fc7nakzuyfn2qzkclafcsc54asamnclg064962lwne40w2lq558q2ch5h9",
   daoCw20CodeId: -1,
   daoFactoryCodeId: -1,
   daoCoreCodeId: -1,
