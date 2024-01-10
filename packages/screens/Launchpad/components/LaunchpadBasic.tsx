@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
-import { SelectionDropdown } from "../../../components/SelectionDropdown";
+import { CustomeNetworkSelector } from "../../../components/NetworkSelector/CustomeNetworkSelector";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SelectFileUploader } from "../../../components/selectFileUploader";
 import { SpacerColumn } from "../../../components/spacer";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
-import { ARTICLE_THUMBNAIL_IMAGE_HEIGHT } from "../../../utils/social-feed";
+import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "../../../utils/social-feed";
 import {
   neutral00,
   neutral77,
@@ -19,10 +19,6 @@ import { layout } from "../../../utils/style/layout";
 import { NewCollectionBasicFormValues } from "../CreateCollection.type";
 
 export const LaunchpadBasic: React.FC = () => {
-  const dropdownOptions = ["Yes", "No"];
-
-  const [item, setItem] = useState("");
-
   const { control } = useForm<NewCollectionBasicFormValues>({
     defaultValues: {
       name: "",
@@ -105,7 +101,7 @@ export const LaunchpadBasic: React.FC = () => {
         />
         <SelectFileUploader
           label="Cover Image *"
-          fileHeight={ARTICLE_THUMBNAIL_IMAGE_HEIGHT}
+          fileHeight={ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT}
           isImageCover
           style={{
             marginVertical: layout.spacing_x3,
@@ -128,11 +124,9 @@ export const LaunchpadBasic: React.FC = () => {
             borderRadius: 12,
           }}
         />
-        <SelectionDropdown
-          dropdownOptions={dropdownOptions}
-          placeHolder="Select Option"
-          item={item}
-          setItem={setItem}
+
+        <CustomeNetworkSelector
+          style={{ marginBottom: layout.spacing_x3 }}
           label="What network is your project on? *"
         />
       </View>

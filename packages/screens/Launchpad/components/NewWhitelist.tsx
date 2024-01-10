@@ -8,7 +8,7 @@ import { SelectFileUploader } from "../../../components/selectFileUploader";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
-import { ARTICLE_THUMBNAIL_IMAGE_HEIGHT } from "../../../utils/social-feed";
+import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "../../../utils/social-feed";
 import { neutral00, neutral55, neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold13,
@@ -150,7 +150,7 @@ export const NewWhitelist: React.FC = () => {
       <SpacerColumn size={2} />
       <SelectFileUploader
         label="Select file"
-        fileHeight={ARTICLE_THUMBNAIL_IMAGE_HEIGHT}
+        fileHeight={ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT}
         isImageCover
         style={{
           marginVertical: layout.spacing_x3,

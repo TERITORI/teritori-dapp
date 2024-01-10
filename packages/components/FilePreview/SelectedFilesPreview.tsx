@@ -40,7 +40,6 @@ export const SelectedFilesPreview: React.FC<{
       <View
         style={{
           justifyContent: "flex-end",
-          alignItems: "center",
         }}
       >
         {currentItems.length > 0 ? (
@@ -60,25 +59,23 @@ export const SelectedFilesPreview: React.FC<{
                       onSelect(item);
                     }}
                   >
-                    <View
+                    <PrimaryBox
                       style={{
-                        width: 100,
                         height: 100,
-                        borderColor: neutral33,
-                        borderWidth: 1,
-                        overflow: "hidden",
-                        borderRadius: 8,
+                        width: 100,
                       }}
                     >
                       <img
                         src={URL.createObjectURL(item.file)}
                         style={{
-                          height: 100,
-                          width: 100,
+                          height: 98,
+                          width: 98,
+                          borderRadius: 8,
                         }}
                         alt="Uploaded file"
                       />
-                    </View>
+                    </PrimaryBox>
+
                     <PrimaryBox
                       style={{
                         borderRadius: 32,
@@ -105,6 +102,7 @@ export const SelectedFilesPreview: React.FC<{
                     style={{
                       height: 123,
                       width: 100,
+                      marginTop: layout.spacing_x2,
                       justifyContent: "flex-end",
                       alignItems: "center",
                       marginHorizontal: layout.spacing_x1,
@@ -113,25 +111,23 @@ export const SelectedFilesPreview: React.FC<{
                       onSelect(item);
                     }}
                   >
-                    <View
+                    <PrimaryBox
                       style={{
-                        width: 100,
                         height: 100,
-                        borderColor: neutral33,
-                        borderWidth: 1,
-                        overflow: "hidden",
-                        borderRadius: 8,
+                        width: 100,
                       }}
                     >
                       <img
                         src={URL.createObjectURL(item.file)}
                         style={{
-                          height: 100,
-                          width: 100,
+                          height: 98,
+                          width: 98,
+                          borderRadius: 8,
                         }}
                         alt="Uploaded file"
                       />
-                    </View>
+                    </PrimaryBox>
+
                     <PrimaryBox
                       style={{
                         borderRadius: 32,
