@@ -39,7 +39,7 @@ export const ChatSettingScreen: ScreenFC<"MiniChatSetting"> = ({
     <SettingBase title="Chat Setting" onGoBack={navigateToSettings}>
       <ChatSettingMenuItem
         icon={profileSVG}
-        navigateTo="MiniProfile"
+        navigateTo="MiniProfileDetail"
         title="Profile"
       />
       <ChatSettingMenuItem
