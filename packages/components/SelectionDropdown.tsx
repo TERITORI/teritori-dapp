@@ -61,16 +61,14 @@ export const SelectionDropdown = ({
       </BrandText>
 
       <TertiaryBox
-        style={[
-          {
-            width: "100%",
-            minHeight: 50,
-            flexDirection: "row",
-            paddingHorizontal: 12,
-            backgroundColor: neutral17,
-            alignItems: "center",
-          },
-        ]}
+        style={{
+          width: "100%",
+          minHeight: 50,
+          flexDirection: "row",
+          paddingHorizontal: 12,
+          backgroundColor: neutral17,
+          alignItems: "center",
+        }}
       >
         <TouchableOpacity
           style={{
