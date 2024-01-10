@@ -9,6 +9,7 @@ export const cosmosThetaNetwork: NetworkInfo = {
   icon: "icons/networks/cosmos-hub.svg",
   features: [],
   overrides: "cosmos-registry:cosmoshubtestnet",
+  registryName: "cosmoshubtestnet",
   currencies: cosmosHubThetaCurrencies,
   txExplorer: "https://explorer.theta-testnet.polypore.xyz/transactions/$hash",
   accountExplorer:
