@@ -1,3 +1,4 @@
+import { BlurView } from "expo-blur";
 import * as Clipboard from "expo-clipboard";
 import React, { useState } from "react";
 import { View } from "react-native";
@@ -57,7 +58,8 @@ export const ShowPrivateKey = () => {
           </BrandText>
 
           {!revealKey && (
-            <View
+            <BlurView
+              intensity={30}
               style={{
                 position: "absolute",
                 top: 0,
@@ -66,7 +68,6 @@ export const ShowPrivateKey = () => {
                 right: 0,
                 alignItems: "center",
                 justifyContent: "center",
-                backgroundColor: "rgba(0, 0, 0, 0.80)",
                 borderRadius: layout.borderRadius,
               }}
             >
@@ -79,7 +80,7 @@ export const ShowPrivateKey = () => {
               <BrandText style={[fontSemibold13, {}]}>
                 Make sure no one is watching your screen
               </BrandText>
-            </View>
+            </BlurView>
           )}
         </View>
         <View
