@@ -39,7 +39,7 @@ export const ChatSettingScreen: ScreenFC<"MiniChatSetting"> = ({
     <SettingBase title="Chat Setting" onGoBack={navigateToSettings}>
       <ChatSettingMenuItem
         icon={profileSVG}
-        navigateTo="MiniProfile"
+        navigateTo="MiniProfileDetail"
         title="Profile"
       />
       <ChatSettingMenuItem
@@ -112,7 +112,7 @@ type MenuItemProps = {
 const ChatSettingMenuItem = ({ icon, navigateTo, title }: MenuItemProps) => {
   const navigation = useAppNavigation();
   const onMenuItemPress = () => {
-    navigation.replace(navigateTo);
+    navigation.replace(navigateTo, { back: "MiniChatSetting" });
   };
   return (
     <CustomPressable onPress={onMenuItemPress}>

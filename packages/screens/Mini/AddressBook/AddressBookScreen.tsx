@@ -46,6 +46,7 @@ export default function AddressBookScreen({
           navigation={navigation}
           backEnabled
           title="Address Book"
+          headerStyle={{ backgroundColor: "transparent" }}
           right={
             <CustomPressable onPress={onClose}>
               <SVG source={closeSVG} width={24} height={24} />

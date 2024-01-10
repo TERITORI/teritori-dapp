@@ -87,6 +87,7 @@ export type RootStackParamList = {
   MiniWallets: undefined;
   MiniFeeds: undefined;
   MiniProfile: undefined;
+  MiniProfileDetail: undefined;
   MiniDAppStore: undefined;
   MiniNewConversation: undefined;
   MiniNewGroup: undefined;
@@ -213,6 +214,7 @@ const navConfig: {
     MiniFeeds: "mini-feed",
     Conversation: "mini-conversation",
     MiniProfile: "mini-profile",
+    MiniProfileDetail: "mini-profile-detail",
     MiniDAppStore: "mini-dApp-store",
     MiniNewConversation: "mini-new-conversation",
     MiniNewGroup: "mini-new-group",

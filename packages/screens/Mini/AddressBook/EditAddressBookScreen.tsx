@@ -55,6 +55,7 @@ export default function EditAddressBookScreen({
           navigation={navigation}
           backEnabled
           title="Edit Address"
+          headerStyle={{ backgroundColor: "transparent" }}
           right={
             <CustomPressable onPress={onClose}>
               <SVG source={closeSVG} width={24} height={24} />

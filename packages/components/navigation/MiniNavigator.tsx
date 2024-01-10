@@ -20,6 +20,7 @@ import ChangeNetworkScreen from "../../screens/Mini/Network/ChangeNetworkScreen"
 import NotificationScreen from "../../screens/Mini/Notifications/NotificationScreen";
 import { AccountDetailsScreen } from "../../screens/Mini/Profile/AccountDetailsScreen";
 import { AddAccountScreen } from "../../screens/Mini/Profile/AddAccountScreen";
+import ProfileDetailScreen from "../../screens/Mini/Profile/ProfileDetailScreen";
 import { ProfileScreen } from "../../screens/Mini/Profile/ProfileScreen";
 import { ChangePasswordScreen } from "../../screens/Mini/Settings/ChangePasswordScreen";
 import { ChatSettingScreen } from "../../screens/Mini/Settings/ChatSettingScreen";
@@ -131,6 +132,15 @@ export const MiniNavigator: React.FC = () => {
       <Stack.Screen
         name="MiniProfile"
         component={ProfileScreen}
+        options={{
+          header: () => null,
+          title: "Profile",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniProfileDetail"
+        component={ProfileDetailScreen}
         options={{
           header: () => null,
           title: "Profile",
