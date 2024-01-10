@@ -1,5 +1,6 @@
 import React, { ReactNode, useState } from "react";
 import { FlatList, StyleProp, TextStyle, View, ViewStyle } from "react-native";
+import { useSelector } from "react-redux";
 
 import { PeriodFilter } from "./PeriodFilter";
 import { PrettyPrint } from "./types";
@@ -24,6 +25,7 @@ import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { NetworkFeature } from "../../networks";
+import { selectTimePeriod } from "../../store/slices/marketplaceFilters";
 import { prettyPrice } from "../../utils/coins";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
@@ -84,6 +86,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const enabledNetworks = useEnabledNetworks();
+  const timePeriod = useSelector(selectTimePeriod);
 
   const marketplaceNetworks = enabledNetworks.filter((network) => {
     return network.features.includes(NetworkFeature.NFTMarketplace);
@@ -112,14 +115,15 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
     sort: Sort.SORT_VOLUME_USD,
     limit: 32,
     offset: 0,
+    periodInMinutes: timePeriod.value,
     mintState: MintState.MINT_STATE_UNSPECIFIED,
   };
 
-  const { collections: borkenCollections } = useCollections(req);
+  const { collections: brokenCollections } = useCollections(req);
 
   // this is a hack, we need to fix these in the indexer but it's pain to replay due to current p2e implem and we need to fix this asap
   // FIXME
-  const collections = borkenCollections.map((collection) => {
+  const collections = brokenCollections.map((collection) => {
     let denom = collection.denom;
     let volumeDenom = collection.volumeDenom;
     switch (collection.id) {
@@ -202,11 +206,14 @@ const CollectionTable: React.FC<{
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [pageIndex, setPageIndex] = useState(0);
   const isMobile = useIsMobile();
-
+  const timePeriod = useSelector(selectTimePeriod);
   const filteredCollections = rows.filter(
     ({ collectionName }) =>
       collectionName?.toLowerCase().includes(filterText.toLowerCase()),
   );
+  TABLE_ROWS.TimePeriodPercentualVolume.label =
+    timePeriod.shortLabel + " % Volume";
+  TABLE_ROWS.TimePeriodVolume.label = timePeriod.shortLabel + " Volume";
 
   const maxPage = Math.max(Math.ceil(rows.length / itemsPerPage), 1);
   return (

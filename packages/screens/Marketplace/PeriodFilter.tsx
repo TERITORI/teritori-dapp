@@ -1,5 +1,6 @@
 import React, { FC, Fragment, useRef, useState } from "react";
 import { TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
@@ -8,50 +9,25 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useDropdowns } from "../../context/DropdownsProvider";
+import {
+  marketplacePeriodItems,
+  PeriodItem,
+  selectTimePeriod,
+  setTimePeriod,
+} from "../../store/slices/marketplaceFilters";
+import { useAppDispatch } from "../../store/store";
 import { neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
-
-interface PeriodItem {
-  label: string;
-  shortLabel: string;
-}
-
-const marketplacePeriodItems: PeriodItem[] = [
-  {
-    label: "Last 10 minutes",
-    shortLabel: "10m",
-  },
-  {
-    label: "Last 1 hour",
-    shortLabel: "1h",
-  },
-  {
-    label: "Last 6 hours",
-    shortLabel: "6h",
-  },
-  {
-    label: "Last 1 day",
-    shortLabel: "1d",
-  },
-  {
-    label: "Last 7 days",
-    shortLabel: "7d",
-  },
-  {
-    label: "Last 30 days",
-    shortLabel: "30d",
-  },
-];
 
 export const PeriodFilter: FC = () => {
   const { width } = useWindowDimensions();
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const dropdownRef = useRef<View>(null);
-  const [selectedItem, setSelectedItem] = useState<PeriodItem>(
-    marketplacePeriodItems[3],
-  );
+  const timePeriod = useSelector(selectTimePeriod);
+  const [selectedItem, setSelectedItem] = useState<PeriodItem>(timePeriod);
+  const dispatch = useAppDispatch();
 
   return (
     <View ref={dropdownRef}>
@@ -105,6 +81,8 @@ export const PeriodFilter: FC = () => {
                 <TouchableOpacity
                   onPress={() => {
                     setSelectedItem(periodItem);
+                    console.log(periodItem);
+                    dispatch(setTimePeriod(periodItem));
                     closeOpenedDropdown();
                   }}
                 >
