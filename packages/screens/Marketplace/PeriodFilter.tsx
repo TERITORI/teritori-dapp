@@ -29,6 +29,12 @@ export const PeriodFilter: FC = () => {
   const [selectedItem, setSelectedItem] = useState<PeriodItem>(timePeriod);
   const dispatch = useAppDispatch();
 
+  const onPressPeriodItem = (periodItem: PeriodItem) => {
+    setSelectedItem(periodItem);
+    dispatch(setTimePeriod(periodItem));
+    closeOpenedDropdown();
+  };
+
   return (
     <View ref={dropdownRef}>
       <TouchableOpacity
@@ -66,7 +72,6 @@ export const PeriodFilter: FC = () => {
           style={{
             position: "absolute",
             top: 44,
-
             backgroundColor: neutral33,
             paddingHorizontal: layout.spacing_x1_5,
             paddingTop: layout.spacing_x1_5,
@@ -78,14 +83,7 @@ export const PeriodFilter: FC = () => {
             .filter((periodItem) => selectedItem !== periodItem)
             .map((periodItem, index) => (
               <Fragment key={index}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setSelectedItem(periodItem);
-                    console.log(periodItem);
-                    dispatch(setTimePeriod(periodItem));
-                    closeOpenedDropdown();
-                  }}
-                >
+                <TouchableOpacity onPress={() => onPressPeriodItem(periodItem)}>
                   <BrandText style={fontSemibold14}>
                     {width < RESPONSIVE_BREAKPOINT_S
                       ? periodItem.shortLabel
