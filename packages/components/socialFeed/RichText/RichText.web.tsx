@@ -533,6 +533,23 @@ export const createStateFromHTML = (html: string) => {
           data: entityConfig,
         };
         return value;
+      } else if (nodeName === "img") {
+        const entityConfig: any = {};
+        entityConfig.src = node.getAttribute
+          ? web3ToWeb2URI(node.getAttribute("src"))
+          : web3ToWeb2URI(node.src);
+        entityConfig.alt = node.alt;
+        entityConfig.height = node.style.height;
+        entityConfig.width = node.style.width;
+        if (node.style.float) {
+          entityConfig.alignment = node.style.float;
+        }
+        const value: RawDraftEntity = {
+          type: "IMAGE",
+          mutability: "IMMUTABLE",
+          data: entityConfig,
+        };
+        return value;
       }
     },
   );
