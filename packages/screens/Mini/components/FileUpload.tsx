@@ -4,16 +4,40 @@ import { TertiaryBadge } from "../../../components/badges/TertiaryBadge";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { blueDefault } from "../../../utils/style/colors";
 
+interface FileUploadProps {
+  label: string;
+  onUpload?: (file: DocumentPicker.DocumentPickerAsset | undefined) => void;
+  onCancelled?: (error: string) => void;
+}
 //TODO: To capture uploaded file and handle cancel
-export default function FileUpload({ label }: { label: string }) {
+export default function FileUpload({
+  label,
+  onUpload,
+  onCancelled,
+}: FileUploadProps) {
   async function pickDocument() {
     try {
-      const document = await DocumentPicker.getDocumentAsync({});
-      console.log(document);
+      const document = await DocumentPicker.getDocumentAsync({
+        type: "image/*",
+      });
+      if (document.canceled) {
+        if (!onCancelled) {
+          return;
+        }
+
+        onCancelled("Cancelled");
+      }
+
+      if (!onUpload) {
+        return;
+      }
+
+      onUpload(document?.assets?.[0]);
     } catch (error) {
       console.log(error);
     }
   }
+
   return (
     <CustomPressable onPress={pickDocument}>
       <TertiaryBadge

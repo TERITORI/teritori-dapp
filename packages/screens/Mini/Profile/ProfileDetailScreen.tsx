@@ -30,6 +30,7 @@ export default function ProfileDetailScreen({
   navigation,
 }: ProfileDetailScreenProps) {
   const [username, setUsername] = useState("John Doe");
+  const [profileImage, setProfileImage] = useState("");
 
   const onClose = () =>
     navigation.canGoBack()
@@ -65,10 +66,17 @@ export default function ProfileDetailScreen({
         <CircularImgOrIcon
           enableFullIcon
           style={{ alignItems: "center", justifyContent: "center" }}
-          icon={require("../../../../assets/default-images/profile.png")}
+          icon={
+            profileImage
+              ? profileImage
+              : require("../../../../assets/default-images/profile.png")
+          }
         />
         <SpacerColumn size={1.5} />
-        <FileUpload label="Edit Photo" />
+        <FileUpload
+          label="Edit Photo"
+          onUpload={(file) => setProfileImage(file?.uri ?? "")}
+        />
       </View>
       <View
         style={{

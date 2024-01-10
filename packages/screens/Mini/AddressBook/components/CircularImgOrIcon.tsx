@@ -40,6 +40,7 @@ export default function CircularImgOrIcon({
         <SVGorImageIcon
           icon={icon}
           iconSize={enableFullIcon ? boxSize : boxSize / 2}
+          style={{ borderRadius: boxSize / 2 }}
         />
       )}
     </View>
