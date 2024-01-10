@@ -6,6 +6,7 @@ import { RouteProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
+import AboutScreen from "../../screens/Mini/About/AboutScreen";
 import AddAddressBookScreen from "../../screens/Mini/AddressBook/AddAddressBookScreen";
 import AddressBookScreen from "../../screens/Mini/AddressBook/AddressBookScreen";
 import EditAddressBookScreen from "../../screens/Mini/AddressBook/EditAddressBookScreen";
@@ -15,6 +16,7 @@ import { NewGroupScreen } from "../../screens/Mini/Chat/NewGroupScreen";
 import { ConversationScreeen } from "../../screens/Mini/Conversation/ConversationScreen";
 import { DAppStoreScreen } from "../../screens/Mini/DAppStore/DAppStoreScreen";
 import { MiniFeedScreen } from "../../screens/Mini/Feed/MiniFeedScreen";
+import ChangeNetworkScreen from "../../screens/Mini/Network/ChangeNetworkScreen";
 import NotificationScreen from "../../screens/Mini/Notifications/NotificationScreen";
 import { AccountDetailsScreen } from "../../screens/Mini/Profile/AccountDetailsScreen";
 import { AddAccountScreen } from "../../screens/Mini/Profile/AddAccountScreen";
@@ -270,6 +272,22 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: "Reset Wallet",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="ChangeNetwork"
+        component={ChangeNetworkScreen}
+        options={{
+          header: () => null,
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="About"
+        component={AboutScreen}
+        options={{
+          header: () => null,
           presentation: "transparentModal",
         }}
       />

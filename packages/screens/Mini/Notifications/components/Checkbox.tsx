@@ -66,13 +66,17 @@ const Checkbox = ({
             )}
           </View>
         </TouchableOpacity>
-        <SpacerRow size={2} />
+
         {label && (
-          <BrandText
-            style={[fontSemibold16, { color: secondaryColor }, labelStyle]}
-          >
-            {label}
-          </BrandText>
+          <>
+            <SpacerRow size={2} />
+
+            <BrandText
+              style={[fontSemibold16, { color: secondaryColor }, labelStyle]}
+            >
+              {label}
+            </BrandText>
+          </>
         )}
       </FlexRow>
     </>

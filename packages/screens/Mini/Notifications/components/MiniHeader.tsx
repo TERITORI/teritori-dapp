@@ -1,6 +1,6 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { ReactNode } from "react";
-import { View } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 
 import chevronLeftSVG from "../../../../../assets/icons/chevron-left.svg";
 import { BrandText } from "../../../../components/BrandText";
@@ -18,6 +18,7 @@ type HeaderProps = {
   backEnabled?: boolean;
   title?: string;
   right?: ReactNode;
+  headerStyle?: StyleProp<ViewStyle>;
 };
 
 const MiniHeader = ({
@@ -26,6 +27,7 @@ const MiniHeader = ({
   backEnabled,
   right,
   title,
+  headerStyle,
 }: HeaderProps) => {
   const navigateBack = () =>
     navigation.canGoBack()
@@ -34,20 +36,23 @@ const MiniHeader = ({
 
   return (
     <View
-      style={{
-        backgroundColor: neutral00,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        paddingVertical: layout.spacing_x1_5,
-        paddingHorizontal: layout.spacing_x1_5,
-        height: MOBILE_HEADER_HEIGHT,
-        maxHeight: MOBILE_HEADER_HEIGHT,
-        width: "100%",
-        alignItems: "center",
-        position: "absolute",
-        top: 0,
-        zIndex: 9999,
-      }}
+      style={[
+        {
+          backgroundColor: neutral00,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingVertical: layout.spacing_x1_5,
+          paddingHorizontal: layout.spacing_x1_5,
+          height: MOBILE_HEADER_HEIGHT,
+          maxHeight: MOBILE_HEADER_HEIGHT,
+          width: "100%",
+          alignItems: "center",
+          position: "absolute",
+          top: 0,
+          zIndex: 9999,
+        },
+        headerStyle,
+      ]}
     >
       <View
         style={{

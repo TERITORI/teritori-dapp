@@ -6,7 +6,7 @@ import { AddressBookType } from "./AddressBookScreen";
 import CircularImgOrIcon from "./components/CircularImgOrIcon";
 import MiniButton from "./components/MiniButton";
 import MiniTextInput from "./components/MiniTextInput";
-import addSVG from "../../../../assets/icons/add-new.svg";
+import addSVG from "../../../../assets/icons/add-circle-outline.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";

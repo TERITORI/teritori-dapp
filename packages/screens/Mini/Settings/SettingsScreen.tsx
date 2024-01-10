@@ -12,13 +12,13 @@ export const SettingsScreen: ScreenFC<"MiniSettings"> = ({ navigation }) => {
     >
       <SettingMenuItem title="Connected Apps" navigateTo="MiniSettings" />
       <SettingMenuItem title="Address Book" navigateTo="AddressBook" />
-      <SettingMenuItem title="Change Network" navigateTo="MiniSettings" />
+      <SettingMenuItem title="Change Network" navigateTo="ChangeNetwork" />
       <SettingMenuItem
         title="Security & Privacy"
         navigateTo="MiniSecurityAndPrivacy"
       />
       <SettingMenuItem title="Chat Settings" navigateTo="MiniChatSetting" />
-      <SettingMenuItem title="About Teritori" navigateTo="MiniSettings" />
+      <SettingMenuItem title="About Teritori" navigateTo="About" />
     </SettingBase>
   );
 };
