@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Dimensions, View } from "react-native";
 
-import { AddedTokens } from "./components/AddedTokens";
+import { AddedToken } from "./components/AddedToken";
 import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
 import settingSVG from "../../../../assets/icons/setting-solid.svg";
 import transactionSVG from "../../../../assets/icons/transactions-gray.svg";
@@ -11,6 +11,7 @@ import { ScreenContainer } from "../../../components/ScreenContainer";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
 import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
+import { ScreenFC } from "../../../utils/navigation";
 import {
   neutral88,
   neutralA3,
@@ -33,12 +34,15 @@ const collectionScreenTabItems = {
   },
 };
 
-export const MiniWalletScreen = ({}) => {
+export const MiniWalletScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("tokens");
 
   const onDepositPress = () => {};
-
+  const onSendPress = () => {};
+  const handlePressManageTokens = () => {
+    navigation.navigate("MiniManageTokens");
+  };
   return (
     <ScreenContainer
       headerChildren={<></>}
@@ -103,13 +107,13 @@ export const MiniWalletScreen = ({}) => {
               width={72}
               title="Send"
               size="medium"
-              onPress={onDepositPress}
+              onPress={onSendPress}
               type="gray"
             />
           </View>
         </View>
         <Separator style={{ marginVertical: layout.spacing_x3 }} />
-        <AddedTokens
+        <AddedToken
           code="3A31"
           dollar={14530.35}
           icon={teritoriSVG}
@@ -124,6 +128,7 @@ export const MiniWalletScreen = ({}) => {
             alignItems: "center",
             gap: layout.spacing_x1_5,
           }}
+          onPress={handlePressManageTokens}
         >
           <SVG source={settingSVG} height={24} width={24} />
           <BrandText style={[fontSemibold14, {}]}>Manage Tokens</BrandText>

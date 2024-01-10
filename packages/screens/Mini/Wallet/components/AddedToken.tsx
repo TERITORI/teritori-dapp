@@ -22,7 +22,7 @@ type Props = {
   onPress: () => void;
 };
 
-export const AddedTokens = ({
+export const AddedToken = ({
   code,
   dollar,
   icon,

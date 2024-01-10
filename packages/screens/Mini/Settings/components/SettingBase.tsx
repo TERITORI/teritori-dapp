@@ -44,7 +44,7 @@ export const SettingBase = ({
       style={{
         flex: 1,
         width: Dimensions.get("window").width,
-        backgroundColor: "rgba(0, 0, 0, .4)",
+        backgroundColor: "rgba(0, 0, 0, .2)",
         position: "relative",
       }}
     >
@@ -66,7 +66,7 @@ export const SettingBase = ({
         colors={[
           "rgba(0,0,0,1)",
           "rgba(0,0,0,1)",
-          "rgba(0,0,0,0.8)",
+          "rgba(0,0,0,0.6)",
           "rgba(0,0,0,0.2)",
         ]}
         style={{
