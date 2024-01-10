@@ -3,6 +3,7 @@ import React from "react";
 import { View } from "react-native";
 
 import { Tag } from "./Milestone";
+import { ProjectStatusTag } from "./ProjectStatusTag";
 import discordSVG from "../../../../assets/icons/discord.svg";
 import githubSVG from "../../../../assets/icons/github.svg";
 import gnoSVG from "../../../../assets/icons/networks/gno.svg";
@@ -27,12 +28,19 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ShortDescData, TeamAndLinkData } from "../types";
+import {
+  EMPTY_SHORT_DESC,
+  EMPTY_TEAM_AND_LINK,
+} from "../hooks/useMakeRequestHook";
+import { Project } from "../types";
 
 export const ProjectInfo: React.FC<{
-  shortDescData: ShortDescData;
-  teamAndLinkData: TeamAndLinkData;
-}> = ({ shortDescData, teamAndLinkData }) => {
+  project: Project;
+}> = ({ project }) => {
+  const shortDescData = project?.metadata.shortDescData || EMPTY_SHORT_DESC;
+  const teamAndLinkData =
+    project?.metadata.teamAndLinkData || EMPTY_TEAM_AND_LINK;
+
   return (
     <>
       <FlexRow
@@ -102,8 +110,7 @@ export const ProjectInfo: React.FC<{
           <SpacerColumn size={2} />
 
           <FlexRow>
-            <Tag text="Open" color="#C8FFAE" bgColor="#C8FFAE1A" />
-
+            <ProjectStatusTag status={project.status} size="XS" />
             <SpacerRow size={2} />
 
             {shortDescData?.tags.split(",").map((tag, idx) => {

@@ -56,7 +56,8 @@ export const SocialButton: React.FC<{
           >
             <SVG source={iconSvg} height={20} width={20} />
           </LegacySecondaryBox>
-          {text !== "" && (
+
+          {!!text && (
             <BrandText
               style={[fontMedium14, { marginLeft: 8, marginRight: 16 }]}
             >

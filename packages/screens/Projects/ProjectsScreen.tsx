@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import { ProjectBox } from "./components/ProjectBox";
+import { ProjectsStatusFilterButtons } from "./components/ProjectsStatusFilterButtons";
 import { useProjects } from "./hooks/useProjects";
-import { Project } from "./types";
+import { ContractStatus, Project } from "./types";
 import filterSVG from "../../../assets/icons/filter.svg";
 import { BrandText } from "../../components/BrandText";
 import { FlexRow } from "../../components/FlexRow";
@@ -15,7 +16,6 @@ import { SpacerRow } from "../../components/spacer";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
-  neutral00,
   neutral33,
   primaryColor,
   secondaryColor,
@@ -23,35 +23,37 @@ import {
 import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-export const ProjectsProgramScreen: ScreenFC<"ProjectsProgram"> = () => {
+export const ProjectsScreen: ScreenFC<"Projects"> = () => {
   const [searchText, setSearchText] = useState("");
   const networkId = useSelectedNetworkId();
-  const { data: projects } = useProjects(networkId, 0, 100);
-  const [filterStatus, setFilterStatus] = useState<string>();
+  const { data: projects } = useProjects(networkId, 0, 100, "ALL", "ALL");
 
   const navigation = useAppNavigation();
 
-  const gotoProjectsProgramDetail = (id: string) => {
-    navigation.navigate("ProjectsProgramDetail", { id });
+  const gotoProjectsDetail = (id: string) => {
+    navigation.navigate("ProjectsDetail", { id });
   };
 
-  const gotoProjectsProgramManager = () => {
-    navigation.navigate("ProjectsProgramManager");
+  const gotoProjectsManager = () => {
+    navigation.navigate("ProjectsManager", { view: "myInvestments" });
   };
 
   const gotoCreateGrant = () => {
-    navigation.navigate("ProjectsProgramMakeRequest", { step: 1 });
+    navigation.navigate("ProjectsMakeRequest", { step: 1 });
   };
 
+  const [statusFilter, setStatusFilter] = useState<ContractStatus>(
+    ContractStatus.ALL,
+  );
+
   const filteredProjects = useMemo(() => {
-    if (!filterStatus) return projects;
     return projects.filter(
       (p: Project) =>
-        p.status === filterStatus &&
+        (statusFilter === ContractStatus.ALL || p.status === statusFilter) &&
         (p.metadata.shortDescData.name.includes(searchText) ||
           p.metadata.shortDescData.desc.includes(searchText)),
     );
-  }, [filterStatus, projects, searchText]);
+  }, [statusFilter, projects, searchText]);
 
   return (
     <ScreenContainer
@@ -71,7 +73,7 @@ export const ProjectsProgramScreen: ScreenFC<"ProjectsProgram"> = () => {
           text="Project Manager"
           color={secondaryColor}
           size="SM"
-          onPress={gotoProjectsProgramManager}
+          onPress={gotoProjectsManager}
         />
         <SpacerRow size={2} />
         <SimpleButton
@@ -86,45 +88,10 @@ export const ProjectsProgramScreen: ScreenFC<"ProjectsProgram"> = () => {
       <Separator style={{ marginTop: layout.spacing_x2 }} />
 
       <FlexRow style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
-        <FlexRow style={{ width: "auto", marginTop: layout.spacing_x2 }}>
-          <SimpleButton
-            onPress={() => setFilterStatus("")}
-            text="All"
-            color={!filterStatus ? neutral00 : secondaryColor}
-            bgColor={!filterStatus ? secondaryColor : neutral00}
-            size="SM"
-            style={{ borderWidth: 0 }}
-          />
-          <SpacerRow size={2} />
-          <SimpleButton
-            onPress={() => setFilterStatus("CREATED")}
-            text="Open"
-            size="SM"
-            bgColor={filterStatus === "CREATED" ? secondaryColor : "#C8FFAE1A"}
-            color={filterStatus === "CREATED" ? neutral00 : "#C8FFAE"}
-            style={{ borderWidth: 0 }}
-          />
-          <SpacerRow size={2} />
-          <SimpleButton
-            onPress={() => setFilterStatus("IN_PROGRESS")}
-            text="In Progress"
-            size="SM"
-            bgColor={
-              filterStatus === "IN_PROGRESS" ? secondaryColor : "#EAA54B1A"
-            }
-            color={filterStatus === "IN_PROGRESS" ? neutral00 : "#EAA54B"}
-            style={{ borderWidth: 0 }}
-          />
-          <SpacerRow size={2} />
-          <SimpleButton
-            onPress={() => setFilterStatus("PASS")}
-            text="Past Projects"
-            size="SM"
-            bgColor={filterStatus === "PASS" ? secondaryColor : "#171717"}
-            color={filterStatus === "PASS" ? neutral00 : secondaryColor}
-            style={{ borderWidth: 0 }}
-          />
-        </FlexRow>
+        <ProjectsStatusFilterButtons
+          status={statusFilter}
+          onChange={setStatusFilter}
+        />
 
         <FlexRow style={{ width: "auto", marginTop: layout.spacing_x2 }}>
           <SearchBarInput
@@ -154,7 +121,7 @@ export const ProjectsProgramScreen: ScreenFC<"ProjectsProgram"> = () => {
             <ProjectBox
               key={"" + project.id}
               project={project}
-              onPress={() => gotoProjectsProgramDetail("" + project.id)}
+              onPress={() => gotoProjectsDetail("" + project.id)}
               containerStyle={{
                 marginTop: layout.spacing_x2,
                 marginRight: layout.spacing_x2,

@@ -58,11 +58,20 @@ export const useProjects = (
   networkId: string,
   startAfter: number,
   limit: number,
+  filterByFunder: string = "", // By default, get only projects which have not funder
+  filterByContractor: string = "", // By default, get only projects which have not contractor
 ) => {
   const { mustGetValue } = useUtils();
 
   return useQuery(
-    ["useProjects", networkId, startAfter, limit],
+    [
+      "useProjects",
+      networkId,
+      startAfter,
+      limit,
+      filterByFunder,
+      filterByContractor,
+    ],
     async () => {
       const gnoNetwork = mustGetGnoNetwork(networkId);
       const escrowPkgPath = mustGetValue(
@@ -72,10 +81,12 @@ export const useProjects = (
       const client = new GnoJSONRPCProvider(gnoNetwork.endpoint);
       const contractsData = await client.evaluateExpression(
         escrowPkgPath,
-        `RenderContracts(${startAfter},${limit})`,
+        `RenderContracts(${startAfter},${limit},"${filterByFunder}","${filterByContractor}")`,
       );
 
-      return toJSON(contractsData, true) as Project[];
+      const projects = toJSON(contractsData, true) as Project[];
+      projects.sort((p1, p2) => p2.id - p1.id);
+      return projects;
     },
     { initialData: [], refetchInterval: 5000 },
   );

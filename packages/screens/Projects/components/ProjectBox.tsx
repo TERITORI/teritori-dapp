@@ -33,6 +33,7 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { Project } from "../types";
+import { ProjectStatusTag } from "./ProjectStatusTag";
 
 const STATUSES_MAP: { [key: string]: string } = {
   CREATED: "Open",
@@ -107,7 +108,7 @@ export const ProjectBox: React.FC<{
 
           <ProgressLine
             percent={stats.percentCompleted}
-            width={BOX_WIDTH - 40}
+            width={BOX_WIDTH - 32}
           />
         </View>
       </View>
@@ -173,13 +174,7 @@ export const ProjectBox: React.FC<{
             </Link>
           </FlexRow>
 
-          <SimpleButton
-            text={STATUSES_MAP[project.status]}
-            size="SM"
-            bgColor="#C8FFAE1A"
-            color="#C8FFAE"
-            style={{ borderWidth: 0 }}
-          />
+          <ProjectStatusTag status={project.status} size="SM" />
         </FlexRow>
       </View>
     </TertiaryBox>

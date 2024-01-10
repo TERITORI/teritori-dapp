@@ -21,13 +21,13 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { PRIORITY_HIGH, PRIORITY_MEDIUM, Milestone } from "../types";
+import { MilestoneFormData, MsPriority } from "../types";
 
 export const MilestoneItem: React.FC<{
-  milestone: Milestone;
+  milestone: MilestoneFormData;
   isHovered?: boolean;
-  onPress?: (milestone: Milestone) => void;
-  onDelete?: (milestone: Milestone) => void;
+  onPress?: (milestone: MilestoneFormData) => void;
+  onDelete?: (milestone: MilestoneFormData) => void;
 }> = ({ milestone, onPress, isHovered, onDelete }) => {
   return (
     <View>
@@ -70,11 +70,11 @@ export const MilestoneItem: React.FC<{
             }}
           >
             <View style={{ flexGrow: 1, alignItems: "flex-start" }}>
-              {milestone.priority === PRIORITY_HIGH && (
+              {milestone.priority === MsPriority.MS_PRIORITY_HIGH && (
                 <Tag bgColor="#673932" color="#ffffff" text="High 🔥" />
               )}
 
-              {milestone.priority === PRIORITY_MEDIUM && (
+              {milestone.priority === MsPriority.MS_PRIORITY_MEDIUM && (
                 <Tag bgColor="#705B38" color="#ffffff" text="Medium" />
               )}
             </View>

@@ -9,11 +9,6 @@ import { FeedScreen } from "../../screens/Feed/FeedScreen";
 import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
 import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
-import { ProjectsProgramDetailScreen } from "../../screens/ProjectsProgram/ProjectsProgramDetailScreen";
-import { ProjectsProgramMakeRequestScreen } from "../../screens/ProjectsProgram/ProjectsProgramMakeRequestScreen";
-import { ProjectsProgramManagerScreen } from "../../screens/ProjectsProgram/ProjectsProgramManagerScreen";
-import { ProjectsProgramPaymentScreen } from "../../screens/ProjectsProgram/ProjectsProgramPaymentScreen";
-import { ProjectsProgramScreen } from "../../screens/ProjectsProgram/ProjectsProgramScreen";
 import { HashtagFeedScreen } from "../../screens/HashtagFeed/HashtagFeedScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
 import { LaunchpadApplyScreen } from "../../screens/Launchpad/LaunchpadApplyScreen";
@@ -33,6 +28,11 @@ import { MultisigWalletDashboardScreen } from "../../screens/Multisig/MultisigWa
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
+import { ProjectsDetailScreen } from "../../screens/Projects/ProjectsDetailScreen";
+import { ProjectsMakeRequestScreen } from "../../screens/Projects/ProjectsMakeRequestScreen";
+import { ProjectsManagerScreen } from "../../screens/Projects/ProjectsManagerScreen";
+import { ProjectsPaymentScreen } from "../../screens/Projects/ProjectsPaymentScreen";
+import { ProjectsScreen } from "../../screens/Projects/ProjectsScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
@@ -242,14 +242,14 @@ export const Navigator: React.FC = () => {
 
       {/* ==== Projects program */}
       <Stack.Screen
-        name="ProjectsProgram"
-        component={ProjectsProgramScreen}
+        name="Projects"
+        component={ProjectsScreen}
         options={{ header: () => null, title: screenTitle("Projects Program") }}
       />
 
       <Stack.Screen
-        name="ProjectsProgramDetail"
-        component={ProjectsProgramDetailScreen}
+        name="ProjectsDetail"
+        component={ProjectsDetailScreen}
         options={{
           header: () => null,
           title: screenTitle("Projects Program Detail"),
@@ -257,8 +257,8 @@ export const Navigator: React.FC = () => {
       />
 
       <Stack.Screen
-        name="ProjectsProgramManager"
-        component={ProjectsProgramManagerScreen}
+        name="ProjectsManager"
+        component={ProjectsManagerScreen}
         options={{
           header: () => null,
           title: screenTitle("Projects Program Manager"),
@@ -266,8 +266,8 @@ export const Navigator: React.FC = () => {
       />
 
       <Stack.Screen
-        name="ProjectsProgramPayment"
-        component={ProjectsProgramPaymentScreen}
+        name="ProjectsPayment"
+        component={ProjectsPaymentScreen}
         options={{
           header: () => null,
           title: screenTitle("Projects Program Payment"),
@@ -275,8 +275,8 @@ export const Navigator: React.FC = () => {
       />
 
       <Stack.Screen
-        name="ProjectsProgramMakeRequest"
-        component={ProjectsProgramMakeRequestScreen}
+        name="ProjectsMakeRequest"
+        component={ProjectsMakeRequestScreen}
         options={{
           header: () => null,
           title: screenTitle("Projects Program Make Request"),

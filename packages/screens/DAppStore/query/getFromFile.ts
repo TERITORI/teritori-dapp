@@ -3,7 +3,6 @@ import dao from "../../../../assets/icons/dao.svg";
 import socialFeed from "../../../../assets/icons/feed.svg";
 import freelance from "../../../../assets/icons/freelanceservice.svg";
 import governance from "../../../../assets/icons/governance.svg";
-import projectsProgramSVG from "../../../../assets/icons/projects-program.svg";
 import checklogo from "../../../../assets/icons/greenCheck.svg";
 import launchpad from "../../../../assets/icons/launchpad.svg";
 import leap from "../../../../assets/icons/leap-cosmos-logo.svg";
@@ -13,6 +12,7 @@ import multisig from "../../../../assets/icons/multisig.svg";
 import osmosisSVG from "../../../../assets/icons/networks/osmosis.svg";
 import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
 import pathwar from "../../../../assets/icons/pathwar.svg";
+import projectsProgramSVG from "../../../../assets/icons/projects-program.svg";
 import otherAppsIcon from "../../../../assets/icons/random-goods-icon.svg";
 import riot from "../../../../assets/icons/rioters-game.svg";
 import staking from "../../../../assets/icons/staking.svg";
@@ -344,12 +344,12 @@ export function getAvailableApps(): dAppGroup {
           alwaysOn: false,
         },
         projectsProgram: {
-          id: "projectsProgram",
+          id: "projects",
           title: "Projects Program",
           description: "Projects Program",
           icon: projectsProgramSVG,
 
-          route: "ProjectsProgram",
+          route: "Projects",
           groupKey: "bookmarks",
           selectedByDefault: false,
           alwaysOn: false,

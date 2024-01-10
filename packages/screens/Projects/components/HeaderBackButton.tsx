@@ -13,7 +13,7 @@ export const HeaderBackButton: React.FC = () => {
   const navigation = useAppNavigation();
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate("ProjectsProgram")}>
+    <TouchableOpacity onPress={() => navigation.navigate("Projects")}>
       <FlexRow>
         <SVG source={chevronLeftSVG} width={24} height={24} />
         <SpacerRow size={2} />

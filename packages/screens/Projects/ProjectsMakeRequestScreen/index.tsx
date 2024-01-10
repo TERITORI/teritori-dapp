@@ -15,8 +15,8 @@ import { Breadcrumb } from "../components/Breadcrumb";
 import { HeaderBackButton } from "../components/HeaderBackButton";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 
-export const ProjectsProgramMakeRequestScreen: ScreenFC<
-  "ProjectsProgramMakeRequest"
+export const ProjectsMakeRequestScreen: ScreenFC<
+  "ProjectsMakeRequest"
 > = () => {
   const {
     actions: { setStep },

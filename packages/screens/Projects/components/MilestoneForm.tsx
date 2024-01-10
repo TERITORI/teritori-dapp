@@ -26,24 +26,19 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import {
-  PRIORITY_HIGH,
-  PRIORITY_MEDIUM,
-  MS_OPEN,
-  MilestoneFormData,
-} from "../types";
+import { MilestoneFormData, MsPriority, MsStatus } from "../types";
 
 const PRIORITIES: SelectInputItem[] = [
-  { label: "High", value: PRIORITY_HIGH },
-  { label: "Medium", value: PRIORITY_MEDIUM },
+  { label: "High", value: MsPriority.MS_PRIORITY_HIGH.toString() },
+  { label: "Medium", value: MsPriority.MS_PRIORITY_MEDIUM.toString() },
 ];
 
 const initialValues: MilestoneFormData = {
   id: 0,
   name: "",
   desc: "",
-  priority: PRIORITY_HIGH,
-  statusId: MS_OPEN,
+  priority: MsPriority.MS_PRIORITY_MEDIUM,
+  status: MsStatus.MS_OPEN,
   budget: 0,
   githubLink: "",
 };
@@ -52,7 +47,7 @@ const newMilestoneSchema = object({
   name: string().required().min(3),
   desc: string().required().min(10),
   budget: number().required().positive().integer(),
-  priotity: string(),
+  priority: string(),
   github: string().url(),
 });
 
@@ -60,7 +55,9 @@ export const MilestoneForm: React.FC<{
   onSubmit: (milestone: MilestoneFormData) => void;
   onClose: () => void;
 }> = ({ onSubmit, onClose }) => {
-  const [priority, setPriority] = useState<"high" | "medium">(PRIORITY_HIGH);
+  const [priority, setPriority] = useState<MsPriority>(
+    MsPriority.MS_PRIORITY_MEDIUM,
+  );
 
   return (
     <View>
@@ -119,12 +116,10 @@ export const MilestoneForm: React.FC<{
                 Priority
               </BrandText>
               <SelectInput
-                data={[
-                  { label: "Hight", value: PRIORITY_HIGH },
-                  { label: "Medium", value: PRIORITY_MEDIUM },
-                ]}
+                data={PRIORITIES}
                 selectedItem={
-                  PRIORITIES.find((p) => p.value === priority) || PRIORITIES[0]
+                  PRIORITIES.find((p) => p.value === priority.toString()) ||
+                  PRIORITIES[0]
                 }
                 selectItem={(item) => setPriority(item.value as any)}
                 boxStyle={{ height: 32 }}

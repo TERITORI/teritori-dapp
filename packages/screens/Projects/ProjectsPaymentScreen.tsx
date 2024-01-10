@@ -1,4 +1,6 @@
-import React from "react";
+import { useRoute } from "@react-navigation/native";
+import moment from "moment";
+import React, { useState } from "react";
 import { View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
@@ -14,6 +16,7 @@ import FlexRow from "../../components/FlexRow";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { SocialButton } from "../../components/buttons/SocialButton";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
@@ -27,6 +30,7 @@ import {
   neutralA3,
   neutralFF,
   primaryColor,
+  redDefault,
 } from "../../utils/style/colors";
 import {
   fontSemibold13,
@@ -51,12 +55,18 @@ const CustomSocialButton: React.FC<{
   );
 };
 
-export const ProjectsProgramPaymentScreen: ScreenFC<
-  "ProjectsProgramPayment"
-> = () => {
+export const ProjectsPaymentScreen: ScreenFC<"ProjectsPayment"> = () => {
   const networkId = useSelectedNetworkId();
-  const projectId = "0";
+  const { params } = useRoute();
+
+  const { projectId, milestoneIdx } = params as any;
+
   const { data: project } = useProject(networkId, projectId);
+  const milestone = project?.milestones.find((_, idx) => idx === +milestoneIdx);
+
+  const [report, setReport] = useState("");
+
+  if (!milestone) return null;
 
   return (
     <ScreenContainer isLarge responsive headerChildren={<HeaderBackButton />}>
@@ -67,9 +77,7 @@ export const ProjectsProgramPaymentScreen: ScreenFC<
           sourceURI={project?.metadata.shortDescData.coverImg}
         />
         <SpacerRow size={2} />
-        <BrandText style={fontSemibold28}>
-          {project?.metadata.shortDescData.name}
-        </BrandText>
+        <BrandText style={fontSemibold28}>{milestone.title}</BrandText>
       </FlexRow>
 
       <Separator style={{ marginVertical: layout.spacing_x2 }} />
@@ -90,7 +98,7 @@ export const ProjectsProgramPaymentScreen: ScreenFC<
                 { color: neutralFF, alignSelf: "flex-start" },
               ]}
             >
-              Description
+              {milestone.title}
             </BrandText>
 
             <SpacerColumn size={2} />
@@ -124,7 +132,7 @@ export const ProjectsProgramPaymentScreen: ScreenFC<
               })}
 
               <View style={{ flexGrow: 1, alignItems: "flex-end" }}>
-                <Tag text="23.06.2023" />
+                <Tag text={moment(project?.createdAt).format("L")} />
               </View>
             </FlexRow>
           </TertiaryBox>
@@ -150,6 +158,8 @@ export const ProjectsProgramPaymentScreen: ScreenFC<
             <SpacerColumn size={2} />
 
             <TextInputCustom
+              value={report}
+              onChangeText={(text) => setReport(text)}
               label=""
               name="name"
               placeholder="Enter details here..."
@@ -158,6 +168,16 @@ export const ProjectsProgramPaymentScreen: ScreenFC<
               noBrokenCorners
               containerStyle={{ width: "100%" }}
               textInputStyle={{ height: 80 }}
+            />
+
+            <SpacerColumn size={2} />
+
+            <PrimaryButtonOutline
+              disabled={!report}
+              size="SM"
+              color={redDefault}
+              text="Ask for conflict solver"
+              style={{ alignSelf: "flex-end" }}
             />
           </TertiaryBox>
         </View>

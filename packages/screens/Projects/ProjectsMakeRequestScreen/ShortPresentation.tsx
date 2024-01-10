@@ -13,7 +13,7 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
 import { errorColor, neutral77, neutralA3 } from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
+import { fontSemibold13, fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 import { ShortDescData } from "../types";
 
@@ -24,14 +24,16 @@ const emptyValues: ShortDescData = {
   paymentAddr: "",
   coverImg: "",
   tags: "",
+  funder: "",
   _coverImgFile: undefined,
 };
 
 const shortDescSchema = object({
   name: string().required().min(3),
   desc: string().required().min(10),
+  funder: string().min(32),
   budget: number().required().positive().integer(),
-  paymentAddr: string().required().min(32),
+  paymentAddr: string().required().min(6),
   coverImg: string().required().url(),
   tags: string().nullable(),
   _coverImgFile: object(),
@@ -45,12 +47,12 @@ export const ShortPresentation: React.FC = () => {
 
   return (
     <View style={{ width: "100%", maxWidth: 480, margin: "auto" }}>
-      <BrandText style={fontSemibold20}>Project details</BrandText>
+      <BrandText style={fontSemibold20}>Grant details</BrandText>
 
       <SpacerColumn size={1} />
 
       <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-        Information about your Project
+        Information about your Grant
       </BrandText>
 
       <SpacerColumn size={2.5} />
@@ -115,15 +117,37 @@ export const ShortPresentation: React.FC = () => {
               <SpacerColumn size={2.5} />
 
               <TextInputCustom
-                label="Payment Address (Gnoland or Cosmos) *"
+                label="Expected funder"
+                name="funder"
+                fullWidth
+                placeholder="Expected funder for the project"
+                variant="labelOutside"
+                onChangeText={handleChange("funder")}
+                value={values.funder}
+                error={errors.funder}
+              />
+
+              <SpacerColumn size={2.5} />
+
+              <TextInputCustom
+                label="Payment Address (Gnoland) *"
                 name="paymentAddr"
                 fullWidth
-                placeholder="Type Gnoland or Cosmos payment address..."
+                placeholder="Type Gnoland payment address..."
                 variant="labelOutside"
                 onChangeText={handleChange("paymentAddr")}
                 value={values.paymentAddr}
+                defaultValue={"gopher20"}
                 error={errors.paymentAddr}
               />
+              <BrandText
+                style={[
+                  fontSemibold13,
+                  { color: neutralA3, fontStyle: "italic" },
+                ]}
+              >
+                * hardcoded to gopher20 for now !!!
+              </BrandText>
 
               <SpacerColumn size={2.5} />
 

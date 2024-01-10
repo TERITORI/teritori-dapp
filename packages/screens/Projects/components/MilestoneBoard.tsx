@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import Hoverable from "react-native-hoverable";
+import { SvgProps } from "react-native-svg";
 
 import { MilestoneForm } from "./MilestoneForm";
 import { MilestoneItem } from "./MilestoneItem";
@@ -25,21 +26,29 @@ import {
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
-import { Status, MilestoneFormData } from "../types";
+import { MilestoneFormData, MsStatus } from "../types";
 
-const STATUSES: Status[] = [
-  { id: "open", text: "Open (Backlog)", count: 4, iconSVG: projectsOpenSVG },
+export type Step = {
+  status: MsStatus;
+  text: string;
+  iconSVG: React.FC<SvgProps>;
+};
+
+const STEPS: Step[] = [
   {
-    id: "inProgress",
+    status: MsStatus.MS_OPEN,
+    text: "Open (Backlog)",
+    iconSVG: projectsOpenSVG,
+  },
+  {
+    status: MsStatus.MS_PROGRESS,
     text: "In Progress",
-    count: 4,
     iconSVG: projectsInProgressSVG,
   },
-  { id: "review", text: "Review", count: 4, iconSVG: projectsReviewSVG },
+  { status: MsStatus.MS_REVIEW, text: "Review", iconSVG: projectsReviewSVG },
   {
-    id: "completed",
+    status: MsStatus.MS_COMPLETED,
     text: "Completed",
-    count: 4,
     iconSVG: projectsCompletedSVG,
   },
 ];
@@ -50,19 +59,19 @@ export const MilestoneBoard: React.FC<{
   onSelectMilestone?: (milestone: MilestoneFormData) => void;
   editable?: boolean;
 }> = ({ onSelectMilestone, containerStyle, editable, milestones }) => {
-  const [hoveredMilestone, setHoveredMilestone] = useState<Milestone>();
+  const [hoveredMilestone, setHoveredMilestone] = useState<MilestoneFormData>();
   const [isShowMilestoneForm, showMilestoneForm] = useState(false);
 
   const {
     actions: { addMilestone, removeMilestone },
   } = useMakeRequestState();
 
-  const removeHoveredMilestone = (milestone: Milestone) => {
+  const removeHoveredMilestone = (milestone: MilestoneFormData) => {
     setHoveredMilestone(undefined);
     removeMilestone(milestone);
   };
 
-  const addNewMilestone = (milestone: Milestone) => {
+  const addNewMilestone = (milestone: MilestoneFormData) => {
     showMilestoneForm(false);
     addMilestone(milestone);
   };
@@ -78,9 +87,9 @@ export const MilestoneBoard: React.FC<{
         containerStyle,
       ]}
     >
-      {STATUSES.map((step, idx) => {
+      {STEPS.map((step, idx) => {
         const listItems = (milestones || []).filter(
-          (milestone) => milestone.statusId === step.id,
+          (milestone) => milestone.status === step.status,
         );
         const isBacklogItem = idx === 0;
 
@@ -88,7 +97,7 @@ export const MilestoneBoard: React.FC<{
           <MilestoneList
             key={idx}
             text={step.text}
-            count={step.count}
+            count={listItems.length}
             iconSVG={step.iconSVG}
           >
             {listItems.map((milestone) => {

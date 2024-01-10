@@ -1,39 +1,48 @@
-import { SvgProps } from "react-native-svg";
-
 import { LocalFileData } from "../../utils/types/files";
 
-export const PRIORITY_HIGH = "high";
-export const PRIORITY_MEDIUM = "medium";
+export enum MsPriority {
+  MS_PRIORITY_HIGH = "MS_PRIORITY_HIGH",
+  MS_PRIORITY_MEDIUM = "MS_PRIORITY_MEDIUM",
+}
 
-export const MS_OPEN = "MS_OPEN";
-export const MS_PROGRESS = "MS_PROGRESS";
-export const MS_REVIEW = "MS_REVIEW";
-export const MS_COMPLETED = "MS_COMPLETED";
+export enum MsStatus {
+  MS_OPEN = "MS_OPEN",
+  MS_PROGRESS = "MS_PROGRESS",
+  MS_REVIEW = "MS_REVIEW",
+  MS_COMPLETED = "MS_COMPLETED",
+}
 
-export type StatusId = "MS_OPEN" | "MS_PROGRESS" | "MS_REVIEW" | "MS_COMPLETED";
+export enum ContractStatus {
+  ALL = "ALL", // This is specific value used only for filter
+  CREATED = "CREATED",
+  ACCEPTED = "ACCEPTED",
+  CANCELED = "CANCELED",
+  PAUSED = "PAUSED",
+  COMPLETED = "COMPLETED",
+  REJECTED = "REJECTED",
+}
+
+export enum ProjectStatus {
+  OPEN = "OPEN",
+  IN_PROGRESS = "IN_PROGRESS",
+}
 
 // This type used in form when create a project
 export type MilestoneFormData = {
   id: number;
   name: string;
   desc: string;
-  statusId: StatusId;
+  status: MsStatus;
   budget: number;
   githubLink: string;
-  priority: "medium" | "high";
-};
-
-export type Status = {
-  id: string;
-  text: string;
-  iconSVG: React.FC<SvgProps>;
-  count: number;
+  priority: MsPriority;
 };
 
 export type ShortDescData = {
   name: string;
   desc: string;
   budget: string;
+  funder: string;
   paymentAddr: string;
   coverImg: string;
   tags: string;
@@ -59,7 +68,8 @@ export type ProjectMilestone = {
   amount: number;
   paid: number;
   duration: number;
-  status: StatusId;
+  status: MsStatus;
+  priority: MsPriority;
   funded: boolean;
   link: string;
 };
@@ -71,7 +81,7 @@ export type Project = {
   funder: string;
   escrowToken: string;
   metadata: ProjectMetadata;
-  status: string;
+  status: ContractStatus;
   expireAt: number;
   funderFeedback: string;
   contractorFeedback: string;
@@ -81,4 +91,6 @@ export type Project = {
   conflictHandler: string;
   handlerCandidate: string;
   handlerSuggestor: string;
+  createdAt: number;
+  rejectReason: string;
 };

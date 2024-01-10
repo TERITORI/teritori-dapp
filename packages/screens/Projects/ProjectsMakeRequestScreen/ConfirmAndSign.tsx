@@ -97,14 +97,19 @@ export const ConfirmAndSign: React.FC = () => {
 
     const milestoneTitles = milestones.map((m) => m.name).join(",");
     const milestoneAmounts = milestones.map((m) => m.budget).join(",");
-    const milestoneDurations = milestones.map((m) => "1000").join(",");
+    // FIXME: hardcode to 1 year duration
+    const milestoneDurations = milestones
+      .map((m) => (60 * 60 * 24 * 365).toString())
+      .join(",");
     const milestoneLinks = milestones.map((m) => m.githubLink).join(",");
+    const milestonePriorities = milestones.map((m) => m.priority).join(",");
 
     const expiryDuration =
       "" + milestoneDurations.split(",").reduce((total, m) => total + +m, 0);
 
     // Update the coverImg
     shortDescData.coverImg = coverImg || "";
+    shortDescData._coverImgFile = undefined;
 
     const metadata = JSON.stringify({
       shortDescData,
@@ -113,7 +118,7 @@ export const ConfirmAndSign: React.FC = () => {
     });
 
     const contractor = caller;
-    const funder = caller;
+    const funder = shortDescData.funder || "";
     const conflictHandler = "";
 
     await adenaVMCall(
@@ -133,6 +138,7 @@ export const ConfirmAndSign: React.FC = () => {
           milestoneAmounts,
           milestoneDurations,
           milestoneLinks,
+          milestonePriorities,
           conflictHandler,
         ],
       },
@@ -196,7 +202,7 @@ export const ConfirmAndSign: React.FC = () => {
               backgroundColor={neutral00}
               onPress={() => {
                 setIsShowModal(false);
-                navigation.navigate("ProjectsProgram");
+                navigation.navigate("Projects");
               }}
             />
             <PrimaryButton

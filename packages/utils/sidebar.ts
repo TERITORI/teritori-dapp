@@ -3,7 +3,6 @@ import dappStoreSVG from "../../assets/icons/dapp-store.svg";
 import feedSVG from "../../assets/icons/feed.svg";
 import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
 import governanceSVG from "../../assets/icons/governance.svg";
-import projectsProgramSVG from "../../assets/icons/projects-program.svg";
 import gridSVG from "../../assets/icons/grid.svg";
 import launchpadApplySVG from "../../assets/icons/launchpad-apply.svg";
 import launchpadLaunchpadSVG from "../../assets/icons/launchpad-launchpad.svg";
@@ -12,6 +11,7 @@ import messagesSVG from "../../assets/icons/messages.svg";
 import multisigSVG from "../../assets/icons/multisig.svg";
 import osmosisCircleSVG from "../../assets/icons/networks/osmosis-circle.svg";
 import pathwarSVG from "../../assets/icons/pathwar.svg";
+import projectsProgramSVG from "../../assets/icons/projects-program.svg";
 import riotersGameSVG from "../../assets/icons/rioters-game.svg";
 import stakingSVG from "../../assets/icons/staking.svg";
 import tnsServiceSVG from "../../assets/icons/tns-service.svg";
@@ -140,7 +140,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
   projectsProgram: {
     title: "Projects Program",
     id: "Projects Program",
-    route: "ProjectsProgram",
+    route: "Projects",
     icon: projectsProgramSVG,
   },
 };
