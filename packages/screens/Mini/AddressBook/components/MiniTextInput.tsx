@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { ReactNode, useRef, useState } from "react";
 import {
   TextInput,
   TextInputProps,
@@ -23,6 +23,7 @@ export interface MiniTexInputProps extends TextInputProps {
   icon?: React.FC<SvgProps> | string;
   iconSize?: number;
   enableClearButton?: boolean;
+  right?: ReactNode;
   onChangeText?: (text: string) => void;
   value?: string;
 }
@@ -34,6 +35,7 @@ export default function MiniTextInput({
   icon,
   iconSize,
   value,
+  right,
   onChangeText,
   ...rest
 }: MiniTexInputProps) {
@@ -109,6 +111,12 @@ export default function MiniTextInput({
           <CustomPressable onPress={onInputClear}>
             <SVG source={closeSVG} width={22} height={22} />
           </CustomPressable>
+        )}
+        {right && (
+          <>
+            <SpacerRow size={1} />
+            {right}
+          </>
         )}
       </View>
     </CustomPressable>

@@ -39,7 +39,9 @@ export const MiniWalletScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
     useState<keyof typeof collectionScreenTabItems>("tokens");
 
   const onDepositPress = () => {};
-  const onSendPress = () => {};
+  const onSendPress = () => {
+    navigation.navigate("MiniSelectToken");
+  };
   const handlePressManageTokens = () => {
     navigation.navigate("MiniManageTokens");
   };
