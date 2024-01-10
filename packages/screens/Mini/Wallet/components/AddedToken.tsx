@@ -5,11 +5,12 @@ import { SvgProps } from "react-native-svg";
 
 import chevronRightSVG from "../../../../../assets/icons/chevron-right-gray.svg";
 import copySVG from "../../../../../assets/icons/copy-gray.svg";
+import questionSVG from "../../../../../assets/icons/question-gray.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
 import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { neutralA3 } from "../../../../utils/style/colors";
+import { neutral39, neutralA3 } from "../../../../utils/style/colors";
 import { fontMedium13, fontSemibold14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 
@@ -61,7 +62,21 @@ export const AddedToken = ({
           gap: layout.spacing_x1_5,
         }}
       >
-        <SVGorImageIcon icon={icon} iconSize={24} />
+        <View
+          style={{
+            backgroundColor: !icon ? neutral39 : "transparent",
+            borderRadius: 100,
+            alignItems: "center",
+            justifyContent: "center",
+            width: 24,
+            height: 24,
+          }}
+        >
+          <SVGorImageIcon
+            icon={icon || questionSVG}
+            iconSize={icon ? 24 : 18}
+          />
+        </View>
         <View
           style={{
             flexDirection: "row",

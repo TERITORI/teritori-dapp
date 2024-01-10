@@ -122,6 +122,15 @@ export const MiniWalletScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
           tori={62424}
         />
 
+        <AddedToken
+          code="8F49"
+          dollar={245.59}
+          icon={""}
+          onPress={() => {}}
+          title="Token"
+          tori={1000}
+        />
+
         <CustomPressable
           style={{
             flexDirection: "row",

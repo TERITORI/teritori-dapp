@@ -106,6 +106,7 @@ export type RootStackParamList = {
   ChangeNetwork: undefined;
   About: undefined;
   MiniManageTokens: undefined;
+  MiniAddCustomToken: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -231,6 +232,7 @@ const navConfig: {
     ChangeNetwork: "change-network",
     About: "about",
     MiniManageTokens: "mini-manage-tokens",
+    MiniAddCustomToken: "mini-add-custom-token",
   },
 };
 

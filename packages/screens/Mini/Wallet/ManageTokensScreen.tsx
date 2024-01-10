@@ -21,7 +21,9 @@ export const ManageTokensScreen: ScreenFC<"MiniManageTokens"> = ({
 
   const toggleTokenStatus = () => setEnabledToken((prev) => !prev);
 
-  const onPressAddToken = () => {};
+  const onPressAddToken = () => {
+    navigation.replace("MiniAddCustomToken");
+  };
 
   return (
     <SettingBase title="Manage Tokens">
