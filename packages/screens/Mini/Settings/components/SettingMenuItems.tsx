@@ -33,7 +33,7 @@ export const SettingMenuItem = ({
 }: MenuItemProps) => {
   const navigation = useAppNavigation();
   const onMenuItemPress = () => {
-    navigation.replace(navigateTo);
+    navigation.replace(navigateTo, { back: "MiniSettings" });
   };
   return (
     <CustomPressable onPress={onMenuItemPress}>

@@ -1,3 +1,4 @@
+import { useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { ReactNode } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
@@ -29,10 +30,21 @@ const MiniHeader = ({
   title,
   headerStyle,
 }: HeaderProps) => {
-  const navigateBack = () =>
-    navigation.canGoBack()
-      ? navigation.goBack()
-      : navigation.replace("MiniTabs");
+  const route = useRoute();
+
+  const navigateBack = () => {
+    if (route.params?.back) {
+      navigation.replace(route.params?.back);
+      return;
+    }
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+      return;
+    }
+
+    navigation.replace("MiniTabs");
+  };
 
   return (
     <View

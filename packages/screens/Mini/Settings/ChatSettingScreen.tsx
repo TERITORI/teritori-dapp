@@ -112,7 +112,7 @@ type MenuItemProps = {
 const ChatSettingMenuItem = ({ icon, navigateTo, title }: MenuItemProps) => {
   const navigation = useAppNavigation();
   const onMenuItemPress = () => {
-    navigation.replace(navigateTo);
+    navigation.replace(navigateTo, { back: "MiniChatSetting" });
   };
   return (
     <CustomPressable onPress={onMenuItemPress}>
