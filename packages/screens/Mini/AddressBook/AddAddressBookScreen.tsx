@@ -34,6 +34,7 @@ export default function AddAddressBookScreen({
           navigation={navigation}
           backEnabled
           title="Add Address"
+          headerStyle={{ backgroundColor: "transparent" }}
           right={
             <CustomPressable onPress={onClose}>
               <SVG source={closeSVG} width={24} height={24} />
