@@ -4,6 +4,7 @@ import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
 export const osmosisTestnetNetwork: NetworkInfo = {
   id: "osmosis-testnet",
   kind: NetworkKind.Cosmos,
+  registryName: "osmosistestnet",
   chainId: "osmo-test-5",
   overrides: "cosmos-registry:osmosistestnet",
   displayName: "Osmosis Latest Testnet",

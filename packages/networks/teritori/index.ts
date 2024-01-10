@@ -22,6 +22,7 @@ export const teritoriNetwork: CosmosNetworkInfo = {
     NetworkFeature.NFTLaunchpad,
     NetworkFeature.RiotP2E,
   ],
+  registryName: "teritori",
   overrides: "cosmos-registry:teritori",
   walletUrlForStaking: "https://app.teritori.com/staking",
   currencies: teritoriCurrencies,
