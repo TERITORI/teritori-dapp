@@ -45,13 +45,16 @@ export type CosmosNetworkInfo = NetworkInfoBase & {
   };
   cosmosFeatures: string[];
   walletUrlForStaking?: string;
+  nameServiceCodeId?: number;
   nameServiceContractAddress?: string;
   nameServiceDefaultImage?: string;
   nameServiceTLD?: string;
+  marketplaceVaultCodeId?: number;
   vaultContractAddress?: string;
   riotSquadStakingContractAddressV1?: string;
   riotSquadStakingContractAddressV2?: string;
   riotersFooterContractAddress?: string;
+  socialFeedCodeId?: number;
   socialFeedContractAddress?: string;
   daoCw20CodeId?: number;
   daoFactoryCodeId?: number;
