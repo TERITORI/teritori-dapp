@@ -9,7 +9,7 @@ interface FileUploadProps {
   onUpload?: (file: DocumentPicker.DocumentPickerAsset | undefined) => void;
   onCancelled?: (error: string) => void;
 }
-//TODO: To capture uploaded file and handle cancel
+
 export default function FileUpload({
   label,
   onUpload,
