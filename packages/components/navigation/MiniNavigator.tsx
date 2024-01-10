@@ -30,8 +30,10 @@ import { RevealSeedPhraseScreen } from "../../screens/Mini/Settings/RevealSeedPh
 import { SecurityAndPrivacy } from "../../screens/Mini/Settings/SecurityAndPrivacy";
 import { SettingsScreen } from "../../screens/Mini/Settings/SettingsScreen";
 import AddCustomTokenScreen from "../../screens/Mini/Wallet/AddCustomTokenScreen";
+import { DepositTORIScreen } from "../../screens/Mini/Wallet/DepositTORIScreen";
 import { ManageTokensScreen } from "../../screens/Mini/Wallet/ManageTokensScreen";
 import { MiniWalletScreen } from "../../screens/Mini/Wallet/MiniWalletScreen";
+import { SelectTokenScreen } from "../../screens/Mini/Wallet/SelectTokenScreen";
 import { CreatePassword } from "../../screens/Wallet/Screens/CreatePassword";
 import { CreateScreen } from "../../screens/Wallet/Screens/CreateScreen";
 import { ImportWallet } from "../../screens/Wallet/Screens/ImportWallet";
@@ -319,6 +321,24 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: "Add Custom Token",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniSelectToken"
+        component={SelectTokenScreen}
+        options={{
+          header: () => null,
+          title: "Select Token",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniDepositTORI"
+        component={DepositTORIScreen}
+        options={{
+          header: () => null,
+          title: "Deposit TORI",
           presentation: "transparentModal",
         }}
       />

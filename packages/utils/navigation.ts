@@ -108,6 +108,8 @@ export type RootStackParamList = {
   About: undefined;
   MiniManageTokens: undefined;
   MiniAddCustomToken: undefined;
+  MiniSelectToken: undefined;
+  MiniDepositTORI: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -235,6 +237,8 @@ const navConfig: {
     About: "about",
     MiniManageTokens: "mini-manage-tokens",
     MiniAddCustomToken: "mini-add-custom-token",
+    MiniSelectToken: "mini-select-token",
+    MiniDepositTORI: "mini-deposit-tori",
   },
 };
 
