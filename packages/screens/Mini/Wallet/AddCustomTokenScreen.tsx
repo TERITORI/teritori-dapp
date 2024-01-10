@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { Dimensions, View } from "react-native";
 
 import { Select } from "./components/Select";
 import { BrandText } from "../../../components/BrandText";
@@ -11,6 +11,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { CustomButton } from "../Settings/components/CustomButton";
 import { SettingBase } from "../Settings/components/SettingBase";
 
 const tokenOptions = [
@@ -83,6 +84,8 @@ const AddCustomTokenScreen: ScreenFC<"MiniAddCustomToken"> = ({
     setSearchToken(text);
   };
 
+  const onAddToken = () => {};
+
   return (
     <SettingBase
       title="Add Custom Token"
@@ -95,6 +98,7 @@ const AddCustomTokenScreen: ScreenFC<"MiniAddCustomToken"> = ({
           gap: layout.spacing_x1_5,
           marginTop: layout.spacing_x2_5,
           paddingHorizontal: layout.spacing_x1_5,
+          height: Dimensions.get("window").height - 150,
         }}
       >
         <Select
@@ -113,6 +117,17 @@ const AddCustomTokenScreen: ScreenFC<"MiniAddCustomToken"> = ({
         <TokenInfoRow
           label="Token Decimals"
           value={selectedToken?.decimals || ""}
+        />
+        <CustomButton
+          onPress={onAddToken}
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: layout.spacing_x2,
+            right: layout.spacing_x2,
+            zIndex: 99,
+          }}
+          title="Add"
         />
       </View>
     </SettingBase>
