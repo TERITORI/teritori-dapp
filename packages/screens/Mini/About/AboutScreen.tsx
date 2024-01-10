@@ -10,12 +10,12 @@ import { TertiaryBadge } from "../../../components/badges/TertiaryBadge";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
 import { RootStackParamList } from "../../../utils/navigation";
+import { neutral77 } from "../../../utils/style/colors";
 import { fontBold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import ListView from "../AddressBook/components/ListView";
 import MiniHeader from "../Notifications/components/MiniHeader";
 import { SettingBase } from "../Settings/components/SettingBase";
-import { neutral77 } from "../../../utils/style/colors";
 
 type AboutScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "About">;
