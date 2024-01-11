@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import { Tag } from "./Milestone";
+import { ProjectStatusTag } from "./ProjectStatusTag";
 import discordSVG from "../../../../assets/icons/discord.svg";
 import githubSVG from "../../../../assets/icons/github.svg";
 import gnoSVG from "../../../../assets/icons/networks/gno.svg";
@@ -15,7 +16,6 @@ import { ProgressLine } from "../../../components/ProgressLine";
 import { SVG } from "../../../components/SVG";
 import { BoxStyle } from "../../../components/boxes/Box";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { SimpleButton } from "../../../components/buttons/SimpleButton";
 import { SocialButton } from "../../../components/buttons/SocialButton";
 import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
 import { Separator } from "../../../components/separators/Separator";
@@ -33,11 +33,6 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { Project } from "../types";
-import { ProjectStatusTag } from "./ProjectStatusTag";
-
-const STATUSES_MAP: { [key: string]: string } = {
-  CREATED: "Open",
-};
 
 const BOX_WIDTH = 400;
 

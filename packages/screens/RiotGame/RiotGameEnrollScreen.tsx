@@ -15,6 +15,7 @@ import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
+import { SimpleButton } from "../../components/buttons/SimpleButton";
 import { TertiaryButton } from "../../components/buttons/TertiaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
@@ -54,7 +55,6 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { SimpleButton } from "../../components/buttons/SimpleButton";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 const EMBEDDED_VIDEO_URI =

@@ -3,7 +3,6 @@ import React, { useMemo } from "react";
 import { View } from "react-native";
 
 import { MilestonesUpdateManager } from "./MilestonesUpdateManager";
-import { MyInvestmentsManager } from "./MyInvestmentsManager";
 import { MyProjectsManager } from "./MyProjectsManager";
 import { Requests } from "./Requests";
 import { TabOption, ViewKey } from "./types";

@@ -9,7 +9,7 @@ import { SearchBarInput } from "../../../components/Search/SearchBarInput";
 import { IconButton } from "../../../components/buttons/IconButton";
 import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { TableRow, TableRowHeading } from "../../../components/table/TableRow";
+import { TableRow } from "../../../components/table/TableRow";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { useAppNavigation } from "../../../utils/navigation";

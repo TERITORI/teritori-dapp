@@ -24,7 +24,6 @@ import {
   fontSemibold16,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { Tag } from "../components/Milestone";
 import { MilestonePriorityTag } from "../components/MilestonePriorityTag";
 import { MilestoneStatusTag } from "../components/MilestoneStatusTag";
 import { useProjects } from "../hooks/useProjects";

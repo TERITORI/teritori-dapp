@@ -13,7 +13,11 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
 import { errorColor, neutral77, neutralA3 } from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
+import {
+  fontSemibold13,
+  fontSemibold14,
+  fontSemibold20,
+} from "../../../utils/style/fonts";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 import { ShortDescData } from "../types";
 
@@ -137,7 +141,7 @@ export const ShortPresentation: React.FC = () => {
                 variant="labelOutside"
                 onChangeText={handleChange("paymentAddr")}
                 value={values.paymentAddr}
-                defaultValue={"gopher20"}
+                defaultValue="gopher20"
                 error={errors.paymentAddr}
               />
               <BrandText
