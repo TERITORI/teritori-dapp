@@ -1,13 +1,6 @@
 import React, { memo } from "react";
-import {
-  ViewStyle,
-  View,
-  StyleProp,
-  StyleSheet,
-  Pressable,
-} from "react-native";
+import { View, StyleProp, StyleSheet, Pressable } from "react-native";
 
-import { minNFTWidth } from "./NFTs";
 import checkMark from "../../../assets/icons/checkmark-marketplace.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
@@ -25,14 +18,17 @@ import { NetworkIcon } from "../NetworkIcon";
 import { OmniLink } from "../OmniLink";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
+import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SpacerRow } from "../spacer";
+
+// TODO: use `NFTs` component
 
 export const NFTBridge: React.FC<{
   data: NFT;
   selected: boolean;
   onPress?(): void;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<BoxStyle>;
 }> = memo(({ data: nft, selected, onPress, style }) => {
   const cardWidth = 250;
   // const { width: maxWidth } = useMaxResolution({ isLarge: true });
@@ -74,12 +70,7 @@ export const NFTBridge: React.FC<{
           marginVertical,
         }}
       >
-        <TertiaryBox
-          key={nft.name}
-          // height={438}
-          width={widthNumber}
-          style={styleWithoutMargins}
-        >
+        <TertiaryBox key={nft.name} style={styleWithoutMargins}>
           <View style={{ width: "100%" }}>
             <Pressable
               style={{
@@ -157,7 +148,7 @@ export const NFTBridge: React.FC<{
                 )}
               </View>
               <ImageWithTextInsert
-                size={minNFTWidth}
+                size={250}
                 imageURL={nft.imageUri}
                 style={{
                   marginTop: 15,
