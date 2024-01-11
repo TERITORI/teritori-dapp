@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Dimensions, View } from "react-native";
 
-import { CustomButton } from "./CustomButton";
 import { Input } from "./Input";
 import { RedAlert } from "./RedAlert";
 import { BrandText } from "../../../../components/BrandText";
@@ -10,6 +9,7 @@ import { neutral22, neutralA3 } from "../../../../utils/style/colors";
 import { fontMedium16 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { Checkbox } from "../../Chat/components/Checkbox";
+import { CustomButton } from "../../components/CustomButton";
 
 type Props = {
   gotoVisibleScreen: () => void;

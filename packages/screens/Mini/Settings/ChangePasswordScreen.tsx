@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Dimensions, View } from "react-native";
 
-import { CustomButton } from "./components/CustomButton";
 import { Input } from "./components/Input";
 import { SettingBase } from "./components/SettingBase";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
+import { CustomButton } from "../components/CustomButton";
 
 export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
   navigation,

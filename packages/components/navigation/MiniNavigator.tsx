@@ -13,6 +13,7 @@ import EditAddressBookScreen from "../../screens/Mini/AddressBook/EditAddressBoo
 import { MiniChatScreen } from "../../screens/Mini/Chat/MiniChatScreen";
 import { NewConversationScreen } from "../../screens/Mini/Chat/NewConversationScreen";
 import { NewGroupScreen } from "../../screens/Mini/Chat/NewGroupScreen";
+import { ConnectLedgerScreen } from "../../screens/Mini/ConnectLedger/ConnectLedgerScreen";
 import { ConversationScreeen } from "../../screens/Mini/Conversation/ConversationScreen";
 import { DAppStoreScreen } from "../../screens/Mini/DAppStore/DAppStoreScreen";
 import { MiniFeedScreen } from "../../screens/Mini/Feed/MiniFeedScreen";
@@ -85,7 +86,7 @@ const MainTab = () => {
 
 export const MiniNavigator: React.FC = () => {
   return (
-    <Stack.Navigator initialRouteName="ModeSelection">
+    <Stack.Navigator initialRouteName="ConnectLedger">
       <Stack.Screen
         name="ModeSelection"
         component={ModeSelectionScreen}
@@ -355,6 +356,14 @@ export const MiniNavigator: React.FC = () => {
           header: () => null,
           title: "Deposit TORI",
           presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="ConnectLedger"
+        component={ConnectLedgerScreen}
+        options={{
+          header: () => null,
+          title: "",
         }}
       />
     </Stack.Navigator>

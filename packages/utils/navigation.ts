@@ -112,6 +112,7 @@ export type RootStackParamList = {
   MiniDepositTORI: undefined;
   ModeSelection: undefined;
   ChatActivation: undefined;
+  ConnectLedger: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -243,6 +244,7 @@ const navConfig: {
     MiniDepositTORI: "mini-deposit-tori",
     ModeSelection: "mode-selection",
     ChatActivation: "chat-activation",
+    ConnectLedger: "connect-ledger",
   },
 };
 
