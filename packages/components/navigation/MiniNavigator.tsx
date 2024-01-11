@@ -29,6 +29,8 @@ import { ResetWalletScreen } from "../../screens/Mini/Settings/ResetWalletScreen
 import { RevealSeedPhraseScreen } from "../../screens/Mini/Settings/RevealSeedPhraseScreen";
 import { SecurityAndPrivacy } from "../../screens/Mini/Settings/SecurityAndPrivacy";
 import { SettingsScreen } from "../../screens/Mini/Settings/SettingsScreen";
+import { ChatActivationScreen } from "../../screens/Mini/StartScreens/ChatActivationScreen";
+import { ModeSelectionScreen } from "../../screens/Mini/StartScreens/ModeSelectionScreen";
 import AddCustomTokenScreen from "../../screens/Mini/Wallet/AddCustomTokenScreen";
 import { DepositTORIScreen } from "../../screens/Mini/Wallet/DepositTORIScreen";
 import { ManageTokensScreen } from "../../screens/Mini/Wallet/ManageTokensScreen";
@@ -83,7 +85,20 @@ const MainTab = () => {
 
 export const MiniNavigator: React.FC = () => {
   return (
-    <Stack.Navigator initialRouteName="MiniTabs">
+    <Stack.Navigator initialRouteName="ModeSelection">
+      <Stack.Screen
+        name="ModeSelection"
+        component={ModeSelectionScreen}
+        options={{ header: () => null, title: "" }}
+      />
+      <Stack.Screen
+        name="ChatActivation"
+        component={ChatActivationScreen}
+        options={{
+          header: () => null,
+          title: "",
+        }}
+      />
       <Stack.Screen
         name="NativeWallet"
         component={CreateScreen}

@@ -110,6 +110,8 @@ export type RootStackParamList = {
   MiniAddCustomToken: undefined;
   MiniSelectToken: undefined;
   MiniDepositTORI: undefined;
+  ModeSelection: undefined;
+  ChatActivation: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -239,6 +241,8 @@ const navConfig: {
     MiniAddCustomToken: "mini-add-custom-token",
     MiniSelectToken: "mini-select-token",
     MiniDepositTORI: "mini-deposit-tori",
+    ModeSelection: "mode-selection",
+    ChatActivation: "chat-activation",
   },
 };
 
