@@ -26,6 +26,7 @@ export interface MiniTexInputProps extends TextInputProps {
   right?: ReactNode;
   onChangeText?: (text: string) => void;
   value?: string;
+  type?: "number" | "string";
 }
 
 export default function MiniTextInput({
@@ -37,6 +38,7 @@ export default function MiniTextInput({
   value,
   right,
   onChangeText,
+  type = "string",
   ...rest
 }: MiniTexInputProps) {
   const inputRef = useRef<TextInput>(null);
@@ -58,6 +60,14 @@ export default function MiniTextInput({
 
     if (!onChangeText) {
       return;
+    }
+
+    if (type === "number") {
+      if (!isNumber(text)) {
+        return onChangeText("");
+      }
+
+      onChangeText(text);
     }
 
     onChangeText(text);
@@ -112,6 +122,7 @@ export default function MiniTextInput({
             <SVG source={closeSVG} width={22} height={22} />
           </CustomPressable>
         )}
+
         {right && (
           <>
             <SpacerRow size={1} />
@@ -121,4 +132,10 @@ export default function MiniTextInput({
       </View>
     </CustomPressable>
   );
+}
+
+function isNumber(text: string) {
+  const reg = new RegExp("^[0-9]+$");
+
+  return reg.test(text);
 }

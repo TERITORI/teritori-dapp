@@ -110,6 +110,8 @@ export type RootStackParamList = {
   MiniAddCustomToken: undefined;
   MiniSelectToken: undefined;
   MiniSendTori: undefined;
+  MiniSendingTori: undefined;
+  MiniTransactionDetail: { type: string; transactionId: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -239,6 +241,8 @@ const navConfig: {
     MiniAddCustomToken: "mini-add-custom-token",
     MiniSelectToken: "mini-select-token",
     MiniSendTori: "mini-send-tori",
+    MiniSendingTori: "mini-sending-tori",
+    MiniTransactionDetail: "mini-transaction-detail",
   },
 };
 

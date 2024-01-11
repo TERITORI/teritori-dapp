@@ -32,6 +32,8 @@ export default function CircularImgOrIcon({
           borderRadius: boxSize / 2,
           borderWidth: 2,
           borderColor: neutral22,
+          justifyContent: "center",
+          alignItems: "center",
         },
         style,
       ]}

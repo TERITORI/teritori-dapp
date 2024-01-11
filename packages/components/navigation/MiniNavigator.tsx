@@ -34,6 +34,8 @@ import { ManageTokensScreen } from "../../screens/Mini/Wallet/ManageTokensScreen
 import { MiniWalletScreen } from "../../screens/Mini/Wallet/MiniWalletScreen";
 import SelectTokenScreen from "../../screens/Mini/Wallet/SelectTokenScreen";
 import SendToriScreen from "../../screens/Mini/Wallet/SendToriScreen";
+import SendingToriScreen from "../../screens/Mini/Wallet/SendingToriScreen";
+import TransactionDetailScreen from "../../screens/Mini/Wallet/TransactionDetailScreen";
 import { CreatePassword } from "../../screens/Wallet/Screens/CreatePassword";
 import { CreateScreen } from "../../screens/Wallet/Screens/CreateScreen";
 import { ImportWallet } from "../../screens/Wallet/Screens/ImportWallet";
@@ -340,6 +342,22 @@ export const MiniNavigator: React.FC = () => {
           header: () => null,
           title: "Send TORI",
           presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniSendingTori"
+        component={SendingToriScreen}
+        options={{
+          header: () => null,
+          title: "Sending TORI",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniTransactionDetail"
+        component={TransactionDetailScreen}
+        options={{
+          header: () => null,
         }}
       />
     </Stack.Navigator>

@@ -2,9 +2,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useState } from "react";
 import { View } from "react-native";
 
-import { Select } from "./components/Select";
 import closeSVG from "../../../../assets/icons/close.svg";
-import inputAddressSVG from "../../../../assets/icons/input-address.svg";
 import teritoriSVG from "../../../../assets/icons/teritori-white.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
@@ -23,45 +21,30 @@ import MiniButton from "../AddressBook/components/MiniButton";
 import MiniTextInput from "../AddressBook/components/MiniTextInput";
 import MiniHeader from "../Notifications/components/MiniHeader";
 import { SettingBase } from "../Settings/components/SettingBase";
+import MiniTextInputWithDropdown from "../components/MiniTextInputWithDropdown";
 
 type SendToriScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "MiniSendTori">;
-};
-
-type SelectedTokenType = {
-  token: string;
-  symbol: string;
-  path: string;
-  decimals: number;
 };
 
 const tokenOptions = [
   {
     label: "Defi",
     subLabel: "f1du...2d6a",
-    value: "token",
-    record: {
-      token: "Defi",
-      symbol: "TKN",
-      path: "r/demo/token",
-      decimals: 4,
-    },
+    value: "f1duasdjfanjansjbasd2d6a",
+  },
+  {
+    label: "Defi1",
+    subLabel: "f1du...2d6aasdf",
+    value: "f1dunasdhjfashdf2d6aasdf",
   },
 ];
 
+const BALANCE = 62424;
+
 export default function SendToriScreen({ navigation }: SendToriScreenProps) {
-  const [selectedToken, setSelectedToken] = useState<SelectedTokenType | null>(
-    null,
-  );
-  const [searchToken, setSearchToken] = useState("");
-
-  const onSelectTokenChange = (value: string, record: typeof selectedToken) => {
-    setSelectedToken(record);
-  };
-
-  const onSearchToken = (text: string) => {
-    setSearchToken(text);
-  };
+  const [address, setAddress] = useState("");
+  const [amount, setAmount] = useState("");
 
   const onClose = () =>
     navigation.canGoBack()
@@ -110,47 +93,53 @@ export default function SendToriScreen({ navigation }: SendToriScreenProps) {
         <View>
           <SpacerColumn size={3} />
 
-          <Select
-            enableIconAnimation={false}
-            selected={selectedToken?.token || ""}
-            onSelect={onSelectTokenChange}
+          <MiniTextInputWithDropdown
             options={tokenOptions}
-            onSearchChange={onSearchToken}
-            searchValue={searchToken}
-            placeholder="Recepient's Teritori Address"
-            icon={inputAddressSVG}
+            value={address}
+            onChangeText={(value) => setAddress(value)}
           />
 
           <SpacerColumn size={1} />
 
           <MiniTextInput
             placeholder="Amount"
+            keyboardType="numeric"
+            type="number"
+            value={amount}
+            onChangeText={(value) => setAmount(value)}
             right={
-              <View style={{ alignItems: "center", flexDirection: "row" }}>
-                <BrandText style={[fontMedium15, { color: neutral77 }]}>
-                  TORI
-                </BrandText>
-                <SpacerRow size={1.5} />
-                <View
-                  style={{
-                    backgroundColor: neutral39,
-                    borderRadius: 18,
-                    paddingHorizontal: 14,
-                    paddingVertical: 4,
-                  }}
-                >
-                  <BrandText style={fontMedium16}>Max</BrandText>
+              <CustomPressable onPress={() => setAmount(BALANCE.toString())}>
+                <View style={{ alignItems: "center", flexDirection: "row" }}>
+                  <BrandText style={[fontMedium15, { color: neutral77 }]}>
+                    TORI
+                  </BrandText>
+                  <SpacerRow size={1.5} />
+                  <View
+                    style={{
+                      backgroundColor: neutral39,
+                      borderRadius: 18,
+                      paddingHorizontal: 14,
+                      paddingVertical: 4,
+                    }}
+                  >
+                    <BrandText style={fontMedium16}>Max</BrandText>
+                  </View>
                 </View>
-              </View>
+              </CustomPressable>
             }
           />
 
           <SpacerColumn size={1.5} />
           <BrandText style={[fontMedium13, { color: neutral77 }]}>
-            Balance: 62,424 TORI
+            Balance: {BALANCE} TORI
           </BrandText>
         </View>
-        <MiniButton title="Next" />
+        <MiniButton
+          title="Next"
+          onPress={() =>
+            navigation.replace("MiniSendingTori", { back: "MiniSendTori" })
+          }
+        />
       </View>
     </SettingBase>
   );

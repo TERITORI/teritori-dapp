@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { Dimensions, View } from "react-native";
 
 import { AddedToken } from "./components/AddedToken";
+import TransactionItem, { TransactionType } from "./components/TransactionItem";
 import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
 import settingSVG from "../../../../assets/icons/setting-solid.svg";
 import transactionSVG from "../../../../assets/icons/transactions-gray.svg";
@@ -10,6 +11,7 @@ import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
+import { SpacerColumn } from "../../../components/spacer";
 import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
 import { ScreenFC } from "../../../utils/navigation";
 import {
@@ -34,6 +36,25 @@ const collectionScreenTabItems = {
   },
 };
 
+const transactions: TransactionType[] = [
+  {
+    id: "nsidfidf",
+    type: "send",
+    status: "pending",
+    img: "",
+    amount: { tori: 2000, dollar: 637.42 },
+    to: "gjjsdifjidjfd",
+  },
+  {
+    id: "nsidfidfadf",
+    type: "send",
+    status: "success",
+    img: "https://images.unsplash.com/photo-1704834310326-70f4826650cd?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    amount: { tori: 2000, dollar: 637.42 },
+    to: "gjjsdifjidjfd",
+  },
+];
+
 export const MiniWalletScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("tokens");
@@ -54,22 +75,23 @@ export const MiniWalletScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
       noScroll
       mobileTitle="Wallets"
     >
-      <RoundedTabs
-        items={collectionScreenTabItems}
-        onSelect={(key) => setSelectedTab(key)}
-        selected={selectedTab}
-        style={{
-          maxHeight: 36,
-          marginTop: layout.spacing_x2,
-          marginBottom: layout.spacing_x0_5,
-        }}
-      />
       <View
         style={{
           flex: 1,
           width: Dimensions.get("window").width,
+          paddingHorizontal: layout.spacing_x1_5,
         }}
       >
+        <RoundedTabs
+          items={collectionScreenTabItems}
+          onSelect={(key) => setSelectedTab(key)}
+          selected={selectedTab}
+          style={{
+            maxHeight: 36,
+            marginTop: layout.spacing_x2,
+            marginBottom: layout.spacing_x0_5,
+          }}
+        />
         <View
           style={{
             flexDirection: "row",
@@ -124,14 +146,17 @@ export const MiniWalletScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
           tori={62424}
         />
 
+        <SpacerColumn size={3} />
         <AddedToken
           code="8F49"
           dollar={245.59}
-          icon={""}
+          icon=""
           onPress={() => {}}
           title="Token"
           tori={1000}
         />
+
+        <SpacerColumn size={3} />
 
         <CustomPressable
           style={{
@@ -145,6 +170,7 @@ export const MiniWalletScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
           <BrandText style={[fontSemibold14, {}]}>Manage Tokens</BrandText>
         </CustomPressable>
         <Separator style={{ marginVertical: layout.spacing_x3 }} />
+
         <BrandText
           style={[
             fontSemibold14,
@@ -153,18 +179,42 @@ export const MiniWalletScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
         >
           Last transactions
         </BrandText>
-        <View
-          style={{
-            flexDirection: "row",
-            gap: layout.spacing_x1_5,
-            alignItems: "center",
-          }}
-        >
-          <SVG source={transactionSVG} height={24} width={24} />
-          <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
-            No recent transactions
-          </BrandText>
-        </View>
+
+        {!transactions.length ? (
+          <View
+            style={{
+              flexDirection: "row",
+              gap: layout.spacing_x1_5,
+              alignItems: "center",
+            }}
+          >
+            <SVG source={transactionSVG} height={24} width={24} />
+            <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
+              No recent transactions
+            </BrandText>
+          </View>
+        ) : (
+          transactions.map((transaction, index) => {
+            const isLastItem = index === transactions.length - 1;
+
+            return (
+              <Fragment key={transaction.id}>
+                {index !== 0 && <SpacerColumn size={2} />}
+                <TransactionItem
+                  key={transaction.id}
+                  transaction={transaction}
+                  onPress={() =>
+                    navigation.navigate("MiniTransactionDetail", {
+                      transactionId: transaction.id,
+                      type: transaction.type,
+                    })
+                  }
+                  isLastItem={isLastItem}
+                />
+              </Fragment>
+            );
+          })
+        )}
       </View>
     </ScreenContainer>
   );
