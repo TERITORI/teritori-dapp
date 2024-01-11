@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { SafeAreaView, View } from "react-native";
+import { View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
@@ -20,7 +20,7 @@ export const UriTab: React.FC = () => {
   });
 
   return (
-    <SafeAreaView style={{ width: "100%", flex: 1 }}>
+    <View style={{ width: "100%", flex: 1 }}>
       <View
         style={{
           flexDirection: "row",
@@ -75,6 +75,6 @@ export const UriTab: React.FC = () => {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };

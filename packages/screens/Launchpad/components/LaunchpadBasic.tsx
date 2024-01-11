@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
-import { CustomeNetworkSelector } from "../../../components/NetworkSelector/CustomeNetworkSelector";
+import { CustomNetworkSelector } from "../../../components/NetworkSelector/CustomNetworkSelector";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SelectFileUploader } from "../../../components/selectFileUploader";
 import { SpacerColumn } from "../../../components/spacer";
@@ -125,7 +125,7 @@ export const LaunchpadBasic: React.FC = () => {
           }}
         />
 
-        <CustomeNetworkSelector
+        <CustomNetworkSelector
           style={{ marginBottom: layout.spacing_x3 }}
           label="What network is your project on? *"
         />

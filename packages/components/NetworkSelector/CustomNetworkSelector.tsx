@@ -14,7 +14,7 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
-export const CustomeNetworkSelector: React.FC<{
+export const CustomNetworkSelector: React.FC<{
   label?: string;
   style?: StyleProp<ViewStyle>;
   forceNetworkId?: string;

@@ -1,5 +1,5 @@
 import React, { FC, SyntheticEvent, useRef, useState } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View, Image } from "react-native";
 
 import { SelectFileUploaderProps } from "./SelectFileUploader.type";
 import { formatFile } from "./formatFile";
@@ -64,13 +64,8 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
         message: "Sorry we couldn't upload some files at the moment.",
       });
     }
-    // if (!multiple) {
-    //   setFile(URL.createObjectURL(_files[0]));
-    // }
 
-    const formattedFiles = await Promise.all(
-      supportedFiles.map(async (file) => await formatFile(file)),
-    );
+    const formattedFiles = await Promise.all(supportedFiles.map(formatFile));
 
     setFiles(formattedFiles);
     onUpload(formattedFiles);
@@ -156,16 +151,14 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
                   }}
                   style={{ top: 12, right: 12 }}
                 />
-                <img
-                  src={URL.createObjectURL(files[0].file)}
+                <Image
+                  source={{ uri: URL.createObjectURL(files[0].file) }}
                   style={{
                     overflow: "hidden",
                     height: fileHeight,
-                    backgroundSize: "cover",
                     width: isImageCover ? "100%" : "auto",
                     objectFit: isImageCover ? "cover" : "fill",
                   }}
-                  alt="Uploaded file"
                 />
               </>
             ) : (
