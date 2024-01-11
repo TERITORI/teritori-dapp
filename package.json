@@ -104,6 +104,7 @@
     "react-native-paper": "^4.12.5",
     "react-native-pell-rich-editor": "^1.8.8",
     "react-native-pie-chart": "^3.0.1",
+    "react-native-popover-view": "^5.1.8",
     "react-native-popup-menu": "^0.16.1",
     "react-native-qrcode-svg": "^6.2.0",
     "react-native-reanimated": "~3.3.0",
