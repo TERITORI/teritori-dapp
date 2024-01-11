@@ -175,8 +175,8 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
         onSelect={(key) => setSelectedTab(key)}
         selected={selectedTab}
         style={{
-          height: 48,
-          maxHeight: 48,
+          height: 36,
+          maxHeight: 36,
           marginTop: layout.spacing_x2,
         }}
       />
