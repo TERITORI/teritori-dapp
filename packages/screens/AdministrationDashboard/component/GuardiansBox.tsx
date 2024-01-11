@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   FlatList,
-  Image,
   ImageBackground,
   TouchableOpacity,
   View,
@@ -9,10 +8,9 @@ import {
   ViewStyle,
 } from "react-native";
 
-import avaPNG from "../../../../assets/default-images/ava.png";
+import { GuardiansList } from "./GuardiansList";
 import guardianPng from "../../../../assets/default-images/guardian_1.png";
 import addCircleSVG from "../../../../assets/icons/add-circle.svg";
-import checkBadgeSVG from "../../../../assets/icons/check-badge.svg";
 import dotSVG from "../../../../assets/icons/dot-more.svg";
 import downSVG from "../../../../assets/icons/down.svg";
 import trashSVG from "../../../../assets/icons/trash-white.svg";
@@ -26,7 +24,7 @@ import {
   neutral00,
   gradientColorLightBlue,
 } from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
+import { fontSemibold14 } from "../../../utils/style/fonts";
 
 const MD_BREAKPOINT = 820;
 
@@ -90,29 +88,12 @@ export const GuardiansBox = () => {
                       <FlatList
                         showsVerticalScrollIndicator={false}
                         data={Array(10).fill(0)}
-                        renderItem={({ item }) => (
-                          <View style={listToggle}>
-                            <Image
-                              style={{
-                                width: 28,
-                                height: 28,
-                              }}
-                              source={avaPNG}
-                            />
-                            <BrandText
-                              style={[
-                                fontSemibold16,
-                                { marginLeft: 15, marginRight: 10 },
-                              ]}
-                            >
-                              Meebits
-                            </BrandText>
-                            <SVG source={checkBadgeSVG} />
-                          </View>
+                        renderItem={({ item, index }) => (
+                          <GuardiansList index={index} />
                         )}
                         keyExtractor={(item) => item.id}
                         style={{
-                          marginTop: 12,
+                          marginTop: 16,
                           marginLeft: 5,
                         }}
                         contentContainerStyle={{
@@ -227,10 +208,4 @@ const imageBgStyle: ViewStyle = {
   justifyContent: "center",
   height: 250,
   width: "100%",
-};
-
-const listToggle: ViewStyle = {
-  flexDirection: "row",
-  alignItems: "center",
-  marginVertical: 5,
 };
