@@ -112,6 +112,9 @@ export type RootStackParamList = {
   MiniDepositTORI: undefined;
   ModeSelection: undefined;
   ChatActivation: undefined;
+  MiniSendTori: undefined;
+  MiniSendingTori: undefined;
+  MiniTransactionDetail: { type: string; transactionId: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -243,6 +246,9 @@ const navConfig: {
     MiniDepositTORI: "mini-deposit-tori",
     ModeSelection: "mode-selection",
     ChatActivation: "chat-activation",
+    MiniSendTori: "mini-send-tori",
+    MiniSendingTori: "mini-sending-tori",
+    MiniTransactionDetail: "mini-transaction-detail",
   },
 };
 

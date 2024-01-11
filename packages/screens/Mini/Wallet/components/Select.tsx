@@ -1,5 +1,6 @@
-import React, { ReactNode, useRef, useState } from "react";
-import { Animated, Dimensions, TextInput, View } from "react-native";
+import React, { FC, ReactNode, useRef, useState } from "react";
+import { Animated, Dimensions, View } from "react-native";
+import { SvgProps } from "react-native-svg";
 
 import chevronDownSVG from "../../../../../assets/icons/chevron-down-gray.svg";
 import chevronDownWhiteSVG from "../../../../../assets/icons/chevron-down-white.svg";
@@ -10,12 +11,15 @@ import { CustomPressable } from "../../../../components/buttons/CustomPressable"
 import { Separator } from "../../../../components/separators/Separator";
 import {
   neutral22,
+  neutral39,
   neutral77,
   neutralA3,
   secondaryColor,
+  withAlpha,
 } from "../../../../utils/style/colors";
 import { fontMedium16 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
+import MiniTextInput from "../../AddressBook/components/MiniTextInput";
 
 type Props = {
   selected: string;
@@ -29,6 +33,8 @@ type Props = {
   onSearchChange?: (text: string) => void;
   searchValue?: string;
   placeholder?: string;
+  enableIconAnimation?: boolean;
+  icon?: FC<SvgProps> | string;
 };
 
 export const Select = ({
@@ -38,6 +44,8 @@ export const Select = ({
   searchValue,
   onSelect,
   placeholder = "Select",
+  enableIconAnimation = true,
+  icon,
 }: Props) => {
   const [showOptions, setShowOPtions] = useState(false);
   const rotationValue = useRef(new Animated.Value(1)).current;
@@ -61,7 +69,9 @@ export const Select = ({
       <View
         style={{
           backgroundColor: neutral22,
-          borderColor: showOptions ? neutral77 : "transparent",
+          borderColor: showOptions
+            ? withAlpha(secondaryColor, 0.12)
+            : "transparent",
           borderWidth: 1,
           borderRadius: 10,
           position: "relative",
@@ -90,24 +100,41 @@ export const Select = ({
           >
             {selected || placeholder}
           </BrandText>
-          <Animated.View
-            style={{
-              transform: [
-                {
-                  rotate: rotationValue.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ["180deg", "0deg"],
-                  }),
-                },
-              ],
-            }}
-          >
-            <SVG
-              source={showOptions ? chevronDownWhiteSVG : chevronDownSVG}
-              height={24}
-              width={24}
-            />
-          </Animated.View>
+          {enableIconAnimation ? (
+            <Animated.View
+              style={{
+                transform: [
+                  {
+                    rotate: rotationValue.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ["180deg", "0deg"],
+                    }),
+                  },
+                ],
+              }}
+            >
+              <SVG
+                source={showOptions ? chevronDownWhiteSVG : chevronDownSVG}
+                height={24}
+                width={24}
+              />
+            </Animated.View>
+          ) : (
+            <View
+              style={{
+                backgroundColor: neutral39,
+                borderRadius: 18,
+                paddingHorizontal: 14,
+                paddingVertical: 4,
+              }}
+            >
+              <SVG
+                source={icon ? icon : chevronDownSVG}
+                height={24}
+                width={24}
+              />
+            </View>
+          )}
         </CustomPressable>
         {showOptions && (
           <View
@@ -118,7 +145,7 @@ export const Select = ({
               right: -1,
               zIndex: 99999,
               backgroundColor: neutral22,
-              borderColor: neutral77,
+              borderColor: withAlpha(secondaryColor, 0.12),
               borderWidth: 1,
               borderBottomEndRadius: 10,
               borderBottomStartRadius: 10,
@@ -126,22 +153,22 @@ export const Select = ({
           >
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
-                backgroundColor: "#000",
-                marginHorizontal: layout.spacing_x2_5,
-                marginVertical: layout.spacing_x1,
-                padding: layout.spacing_x0_75,
-                borderRadius: 10,
+                paddingHorizontal: layout.spacing_x1,
+                marginVertical: 10,
+                width: "100%",
               }}
             >
-              <SVG source={eyeLensSVG} height={24} width={24} />
-              <TextInput
+              <MiniTextInput
+                icon={eyeLensSVG}
+                style={{
+                  backgroundColor: "#000",
+                  paddingVertical: layout.spacing_x1,
+                  paddingHorizontal: layout.spacing_x1_5,
+                }}
                 value={searchValue}
                 onChangeText={onSearchChange}
                 placeholder="Search"
                 placeholderTextColor={neutralA3}
-                style={[fontMedium16, { flex: 1, color: secondaryColor }]}
               />
             </View>
             <View>

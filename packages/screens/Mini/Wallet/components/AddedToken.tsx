@@ -51,8 +51,6 @@ export const AddedToken = ({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        paddingVertical: layout.spacing_x1_5,
-        marginVertical: layout.spacing_x1_5,
       }}
     >
       <View
