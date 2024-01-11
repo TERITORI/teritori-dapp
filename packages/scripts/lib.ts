@@ -22,7 +22,7 @@ export const mustGetNodeMarketplaceClient = (networkId: string) => {
 
 export const retry = async <T>(
   retries: number,
-  fn: () => Promise<T>,
+  fn: () => Promise<T> | T,
 ): Promise<T> => {
   let lastError;
   for (let i = 0; i < retries; i++) {

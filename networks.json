@@ -3,6 +3,7 @@
     "id": "cosmos-registry:8ball",
     "displayName": "8ball",
     "chainId": "eightball-1",
+    "registryName": "8ball",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -39,6 +40,7 @@
     "id": "cosmos-registry:acrechain",
     "displayName": "Acrechain",
     "chainId": "acre_9052-1",
+    "registryName": "acrechain",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -93,6 +95,7 @@
     "id": "cosmos-registry:agoric",
     "displayName": "Agoric",
     "chainId": "agoric-3",
+    "registryName": "agoric",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -138,6 +141,7 @@
     "id": "cosmos-registry:aioz",
     "displayName": "AIOZ Network",
     "chainId": "aioz_168-1",
+    "registryName": "aioz",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -174,6 +178,7 @@
     "id": "cosmos-registry:akash",
     "displayName": "Akash",
     "chainId": "akashnet-2",
+    "registryName": "akash",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -210,6 +215,7 @@
     "id": "cosmos-registry:celestiatestnet2",
     "displayName": "Arabica Testnet",
     "chainId": "arabica-10",
+    "registryName": "celestiatestnet2",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -245,6 +251,7 @@
     "id": "cosmos-registry:archway",
     "displayName": "Archway",
     "chainId": "archway-1",
+    "registryName": "archway",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -290,6 +297,7 @@
     "id": "cosmos-registry:archwaytestnet",
     "displayName": "Archway testnet",
     "chainId": "constantine-3",
+    "registryName": "archwaytestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -326,6 +334,7 @@
     "id": "cosmos-registry:arkeonetworktestnet",
     "displayName": "Arkeo Network Testnet",
     "chainId": "arkeo",
+    "registryName": "arkeonetworktestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -361,6 +370,7 @@
     "id": "cosmos-registry:arkh",
     "displayName": "Arkhadian",
     "chainId": "arkh",
+    "registryName": "arkh",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -397,6 +407,7 @@
     "id": "cosmos-registry:assetmantle",
     "displayName": "AssetMantle",
     "chainId": "mantle-1",
+    "registryName": "assetmantle",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -433,6 +444,7 @@
     "id": "cosmos-registry:aura",
     "displayName": "Aura Network",
     "chainId": "xstaxy-1",
+    "registryName": "aura",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -469,6 +481,7 @@
     "id": "cosmos-registry:axelar",
     "displayName": "Axelar",
     "chainId": "axelar-dojo-1",
+    "registryName": "axelar",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -802,6 +815,7 @@
     "id": "cosmos-registry:axelartestnet",
     "displayName": "Axelar Testnet",
     "chainId": "axelar-testnet-lisbon-3",
+    "registryName": "axelartestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -900,6 +914,7 @@
     "id": "cosmos-registry:babylontestnet",
     "displayName": "Babylon Testnet",
     "chainId": "bbn-test1",
+    "registryName": "babylontestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -936,6 +951,7 @@
     "id": "cosmos-registry:bandchain",
     "displayName": "Band Protocol",
     "chainId": "laozi-mainnet",
+    "registryName": "bandchain",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -972,6 +988,7 @@
     "id": "cosmos-registry:beezee",
     "displayName": "BeeZee",
     "chainId": "beezee-1",
+    "registryName": "beezee",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1008,6 +1025,7 @@
     "id": "cosmos-registry:bitcanna",
     "displayName": "BitCanna",
     "chainId": "bitcanna-1",
+    "registryName": "bitcanna",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1044,6 +1062,7 @@
     "id": "cosmos-registry:bitcannadevnet",
     "displayName": "BitCanna Devnet-1 Testnet",
     "chainId": "bitcanna-dev-1",
+    "registryName": "bitcannadevnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1079,6 +1098,7 @@
     "id": "cosmos-registry:bitcannadevnet2",
     "displayName": "BitCanna Devnet-6 SDK v0.46.x Testnet",
     "chainId": "bitcanna-dev-6",
+    "registryName": "bitcannadevnet2",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1114,6 +1134,7 @@
     "id": "cosmos-registry:bitsong",
     "displayName": "BitSong",
     "chainId": "bitsong-2b",
+    "registryName": "bitsong",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1285,6 +1306,7 @@
     "id": "cosmos-registry:celestiatestnet",
     "displayName": "Blockspace Race Testnet",
     "chainId": "blockspacerace-0",
+    "registryName": "celestiatestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1320,6 +1342,7 @@
     "id": "cosmos-registry:bluzelle",
     "displayName": "Bluzelle",
     "chainId": "bluzelle-9",
+    "registryName": "bluzelle",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1374,6 +1397,7 @@
     "id": "cosmos-registry:bostrom",
     "displayName": "bostrom",
     "chainId": "bostrom",
+    "registryName": "bostrom",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1419,6 +1443,7 @@
     "id": "cosmos-registry:canto",
     "displayName": "Canto",
     "chainId": "canto_7700-1",
+    "registryName": "canto",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1455,6 +1480,7 @@
     "id": "cosmos-registry:carbon",
     "displayName": "Carbon",
     "chainId": "carbon-1",
+    "registryName": "carbon",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1581,6 +1607,7 @@
     "id": "cosmos-registry:cascadiatestnet",
     "displayName": "Cascadia Testnet",
     "chainId": "cascadia_6102-1",
+    "registryName": "cascadiatestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1617,6 +1644,7 @@
     "id": "cosmos-registry:cerberus",
     "displayName": "Cerberus",
     "chainId": "cerberus-chain-1",
+    "registryName": "cerberus",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1653,6 +1681,7 @@
     "id": "cosmos-registry:chain4energy",
     "displayName": "Chain4Energy",
     "chainId": "perun-1",
+    "registryName": "chain4energy",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1689,6 +1718,7 @@
     "id": "cosmos-registry:chain4energytestnet",
     "displayName": "Chain4Energy Testnet",
     "chainId": "babajaga-1",
+    "registryName": "chain4energytestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1725,6 +1755,7 @@
     "id": "cosmos-registry:cheqd",
     "displayName": "Cheqd",
     "chainId": "cheqd-mainnet-1",
+    "registryName": "cheqd",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1761,6 +1792,7 @@
     "id": "cosmos-registry:cheqdtestnet",
     "displayName": "cheqd Testnet",
     "chainId": "cheqd-testnet-6",
+    "registryName": "cheqdtestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1797,6 +1829,7 @@
     "id": "cosmos-registry:chihuahua",
     "displayName": "Chihuahua",
     "chainId": "chihuahua-1",
+    "registryName": "chihuahua",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1833,6 +1866,7 @@
     "id": "cosmos-registry:chimba",
     "displayName": "Chimba",
     "chainId": "chimba",
+    "registryName": "chimba",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1869,6 +1903,7 @@
     "id": "cosmos-registry:chimbatestnet",
     "displayName": "Chimba Testnet",
     "chainId": "chimba-testnet",
+    "registryName": "chimbatestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1904,6 +1939,7 @@
     "id": "cosmos-registry:chronicnetwork",
     "displayName": "Chronic Chain",
     "chainId": "morocco-1",
+    "registryName": "chronicnetwork",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -1948,6 +1984,7 @@
     "id": "cosmos-registry:comdex",
     "displayName": "Comdex",
     "chainId": "comdex-1",
+    "registryName": "comdex",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2002,6 +2039,7 @@
     "id": "cosmos-registry:commercionetwork",
     "displayName": "Commercio.network",
     "chainId": "commercio-3",
+    "registryName": "commercionetwork",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2047,6 +2085,7 @@
     "id": "cosmos-registry:composable",
     "displayName": "Composable",
     "chainId": "centauri-1",
+    "registryName": "composable",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2083,6 +2122,7 @@
     "id": "cosmos-registry:composabletestnet",
     "displayName": "Composable Testnet",
     "chainId": "banksy-testnet-3",
+    "registryName": "composabletestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2118,6 +2158,7 @@
     "id": "cosmos-registry:coolcattestnet",
     "displayName": "CoolCat Testnet",
     "chainId": "kitten-04",
+    "registryName": "coolcattestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2153,6 +2194,7 @@
     "id": "cosmos-registry:coreumtestnet",
     "displayName": "Coreum Testnet",
     "chainId": "coreum-testnet-1",
+    "registryName": "coreumtestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2204,6 +2246,7 @@
       }
     ],
     "overrides": "cosmos-registry:cosmoshub",
+    "registryName": "cosmoshub",
     "txExplorer": "https://www.mintscan.io/cosmos/txs/$hash",
     "accountExplorer": "https://www.mintscan.io/cosmos/account/$address",
     "contractExplorer": "https://www.mintscan.io/cosmos/account/$address",
@@ -2235,6 +2278,7 @@
     "icon": "icons/networks/cosmos-hub.svg",
     "features": [],
     "overrides": "cosmos-registry:cosmoshubtestnet",
+    "registryName": "cosmoshubtestnet",
     "currencies": [
       {
         "denom": "uatom",
@@ -2273,6 +2317,7 @@
     "id": "cosmos-registry:cosmwasmtestnet",
     "displayName": "CosmWasm Testnet",
     "chainId": "malaga-420",
+    "registryName": "cosmwasmtestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2317,6 +2362,7 @@
     "id": "cosmos-registry:crescent",
     "displayName": "Crescent",
     "chainId": "crescent-1",
+    "registryName": "crescent",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2362,6 +2408,7 @@
     "id": "cosmos-registry:cronos",
     "displayName": "Cronos",
     "chainId": "cronosmainnet_25-1",
+    "registryName": "cronos",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2398,6 +2445,7 @@
     "id": "cosmos-registry:cryptoorgchain",
     "displayName": "Crypto.org Chain",
     "chainId": "crypto-org-chain-mainnet-1",
+    "registryName": "cryptoorgchain",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2434,6 +2482,7 @@
     "id": "cosmos-registry:cudos",
     "displayName": "Cudos",
     "chainId": "cudos-1",
+    "registryName": "cudos",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2470,6 +2519,7 @@
     "id": "cosmos-registry:cudostestnet",
     "displayName": "Cudos Testnet",
     "chainId": "cudos-testnet-public-3",
+    "registryName": "cudostestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2505,6 +2555,7 @@
     "id": "cosmos-registry:decentr",
     "displayName": "Decentr",
     "chainId": "mainnet-3",
+    "registryName": "decentr",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2541,6 +2592,7 @@
     "id": "cosmos-registry:desmos",
     "displayName": "Desmos",
     "chainId": "desmos-mainnet",
+    "registryName": "desmos",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2577,6 +2629,7 @@
     "id": "cosmos-registry:desmostestnet",
     "displayName": "Desmos Testnet",
     "chainId": "morpheus-apollo-3",
+    "registryName": "desmostestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2613,6 +2666,7 @@
     "id": "cosmos-registry:dig",
     "displayName": "Dig Chain",
     "chainId": "dig-1",
+    "registryName": "dig",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2649,6 +2703,7 @@
     "id": "cosmos-registry:doravota",
     "displayName": "Dora Vota",
     "chainId": "vota-ash",
+    "registryName": "doravota",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2684,6 +2739,7 @@
     "id": "cosmos-registry:doravotatestnet",
     "displayName": "Dora Vota Testnet",
     "chainId": "doravota-devnet",
+    "registryName": "doravotatestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2719,6 +2775,7 @@
     "id": "cosmos-registry:dyson",
     "displayName": "Dyson Protocol",
     "chainId": "dyson-mainnet-01",
+    "registryName": "dyson",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2755,6 +2812,7 @@
     "id": "cosmos-registry:emoney",
     "displayName": "e-Money",
     "chainId": "emoney-3",
+    "registryName": "emoney",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2836,6 +2894,7 @@
     "id": "cosmos-registry:echelon",
     "displayName": "Echelon",
     "chainId": "echelon_3000-3",
+    "registryName": "echelon",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2872,6 +2931,7 @@
     "id": "cosmos-registry:elystestnet",
     "displayName": "Elys Network Testnet",
     "chainId": "elystestnet-1",
+    "registryName": "elystestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2916,6 +2976,7 @@
     "id": "cosmos-registry:empowertestnet",
     "displayName": "Empower Testnet",
     "chainId": "circulus-1",
+    "registryName": "empowertestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2951,6 +3012,7 @@
     "id": "cosmos-registry:empowerchain",
     "displayName": "EmpowerChain",
     "chainId": "empowerchain-1",
+    "registryName": "empowerchain",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -2986,6 +3048,7 @@
     "id": "cosmos-registry:entrypointtestnet",
     "displayName": "EntryPoint Testnet",
     "chainId": "entrypoint-pubtest-1",
+    "registryName": "entrypointtestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3088,6 +3151,7 @@
     "id": "cosmos-registry:ethos",
     "displayName": "Ethos",
     "chainId": "ethos_7003-1",
+    "registryName": "ethos",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3124,6 +3188,7 @@
     "id": "cosmos-registry:evmos",
     "displayName": "Evmos",
     "chainId": "evmos_9001-2",
+    "registryName": "evmos",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3169,6 +3234,7 @@
     "id": "cosmos-registry:evmostestnet",
     "displayName": "Evmos Testnet",
     "chainId": "evmos_9000-4",
+    "registryName": "evmostestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3204,6 +3270,7 @@
     "id": "cosmos-registry:fxcore",
     "displayName": "f(x)Core",
     "chainId": "fxcore",
+    "registryName": "fxcore",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3239,6 +3306,7 @@
     "id": "cosmos-registry:fetchhub",
     "displayName": "Fetch.ai",
     "chainId": "fetchhub-4",
+    "registryName": "fetchhub",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3284,6 +3352,7 @@
     "id": "cosmos-registry:fetchhubtestnet",
     "displayName": "Fetch.ai Testnet",
     "chainId": "dorado-1",
+    "registryName": "fetchhubtestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3319,6 +3388,7 @@
     "id": "cosmos-registry:firmachain",
     "displayName": "FirmaChain",
     "chainId": "colosseum-1",
+    "registryName": "firmachain",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3355,6 +3425,7 @@
     "id": "cosmos-registry:galaxy",
     "displayName": "Galaxy",
     "chainId": "galaxy-1",
+    "registryName": "galaxy",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3391,6 +3462,7 @@
     "id": "cosmos-registry:genesisl1",
     "displayName": "GenesisL1",
     "chainId": "genesis_29-2",
+    "registryName": "genesisl1",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3427,6 +3499,7 @@
     "id": "cosmos-registry:gitopia",
     "displayName": "Gitopia",
     "chainId": "gitopia",
+    "registryName": "gitopia",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3462,6 +3535,7 @@
     "id": "cosmos-registry:gitopiatestnet",
     "displayName": "Gitopia Testnet",
     "chainId": "gitopia-janus-testnet-2",
+    "registryName": "gitopiatestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3617,6 +3691,7 @@
     "id": "cosmos-registry:gravitybridge",
     "displayName": "Gravity Bridge",
     "chainId": "gravity-bridge-3",
+    "registryName": "gravitybridge",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3707,6 +3782,7 @@
     "id": "cosmos-registry:haqq",
     "displayName": "Haqq Network",
     "chainId": "haqq_11235-1",
+    "registryName": "haqq",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3743,6 +3819,7 @@
     "id": "cosmos-registry:highbury",
     "displayName": "Highbury",
     "chainId": "highbury_710-1",
+    "registryName": "highbury",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3797,6 +3874,7 @@
     "id": "cosmos-registry:humans",
     "displayName": "humans",
     "chainId": "humans_1089-1",
+    "registryName": "humans",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3833,6 +3911,7 @@
     "id": "cosmos-registry:humanstestnet",
     "displayName": "Humans AI Testnet",
     "chainId": "testnet-1",
+    "registryName": "humanstestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3868,6 +3947,7 @@
     "id": "cosmos-registry:hypersigntestnet",
     "displayName": "hypersign Testnet",
     "chainId": "jagrat",
+    "registryName": "hypersigntestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3903,6 +3983,7 @@
     "id": "cosmos-registry:idep",
     "displayName": "IDEP",
     "chainId": "Antora",
+    "registryName": "idep",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3939,6 +4020,7 @@
     "id": "cosmos-registry:imversed",
     "displayName": "Imversed",
     "chainId": "imversed_5555555-1",
+    "registryName": "imversed",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -3975,6 +4057,7 @@
     "id": "cosmos-registry:imversedtestnet",
     "displayName": "Imversed Testnet",
     "chainId": "imversed-test-1",
+    "registryName": "imversedtestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -4010,6 +4093,7 @@
     "id": "cosmos-registry:injective",
     "displayName": "Injective",
     "chainId": "injective-1",
+    "registryName": "injective",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -4046,6 +4130,7 @@
     "id": "cosmos-registry:injectivetestnet",
     "displayName": "Injective Testnet",
     "chainId": "injective-888",
+    "registryName": "injectivetestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -4081,6 +4166,7 @@
     "id": "cosmos-registry:irisnet",
     "displayName": "IRISnet",
     "chainId": "irishub-1",
+    "registryName": "irisnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -4117,6 +4203,7 @@
     "id": "cosmos-registry:impacthub",
     "displayName": "ixo",
     "chainId": "ixo-5",
+    "registryName": "impacthub",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -4153,6 +4240,7 @@
     "id": "cosmos-registry:impacthubdevnet",
     "displayName": "ixo Testnet",
     "chainId": "devnet-1",
+    "registryName": "impacthubdevnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -4188,6 +4276,7 @@
     "id": "cosmos-registry:impacthubtestnet",
     "displayName": "ixo Testnet",
     "chainId": "pandora-8",
+    "registryName": "impacthubtestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -4223,6 +4312,7 @@
     "id": "cosmos-registry:jackal",
     "displayName": "Jackal",
     "chainId": "jackal-1",
+    "registryName": "jackal",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -4259,6 +4349,7 @@
     "id": "cosmos-registry:jackaltestnet",
     "displayName": "Jackal Testnet",
     "chainId": "canine-1",
+    "registryName": "jackaltestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -4294,6 +4385,7 @@
     "id": "cosmos-registry:juno",
     "displayName": "Juno",
     "chainId": "juno-1",
+    "registryName": "juno",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -4897,6 +4989,7 @@
     "id": "cosmos-registry:junotestnet",
     "displayName": "Juno Testnet",
     "chainId": "uni-6",
+    "registryName": "junotestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -4941,6 +5034,7 @@
     "id": "cosmos-registry:kava",
     "displayName": "Kava",
     "chainId": "kava_2222-10",
+    "registryName": "kava",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5013,6 +5107,7 @@
     "id": "cosmos-registry:kichain",
     "displayName": "Ki",
     "chainId": "kichain-2",
+    "registryName": "kichain",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5058,6 +5153,7 @@
     "id": "cosmos-registry:kichaintestnet",
     "displayName": "Ki Testnet",
     "chainId": "kichain-t-4",
+    "registryName": "kichaintestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5093,6 +5189,7 @@
     "id": "cosmos-registry:konstellation",
     "displayName": "Konstellation",
     "chainId": "darchub",
+    "registryName": "konstellation",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5129,6 +5226,7 @@
     "id": "cosmos-registry:kujira",
     "displayName": "Kujira",
     "chainId": "kaiyo-1",
+    "registryName": "kujira",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5210,6 +5308,7 @@
     "id": "cosmos-registry:kujiratestnet",
     "displayName": "Kujira Harpoon Testnet",
     "chainId": "harpoon-4",
+    "registryName": "kujiratestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5254,6 +5353,7 @@
     "id": "cosmos-registry:kyve",
     "displayName": "KYVE",
     "chainId": "kyve-1",
+    "registryName": "kyve",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5290,6 +5390,7 @@
     "id": "cosmos-registry:kyvetestnet",
     "displayName": "KYVE Kaon Testnet",
     "chainId": "kaon-1",
+    "registryName": "kyvetestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5325,6 +5426,7 @@
     "id": "cosmos-registry:kyvedevnet",
     "displayName": "KYVE Korellia Testnet",
     "chainId": "korellia",
+    "registryName": "kyvedevnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5360,6 +5462,7 @@
     "id": "cosmos-registry:lambda",
     "displayName": "Lambda",
     "chainId": "lambda_92000-1",
+    "registryName": "lambda",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5396,6 +5499,7 @@
     "id": "cosmos-registry:lavatestnet",
     "displayName": "Lava Testnet",
     "chainId": "lava-testnet-2",
+    "registryName": "lavatestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5432,6 +5536,7 @@
     "id": "cosmos-registry:lavatestnet2",
     "displayName": "Lava Testnet",
     "chainId": "lava-testnet-1",
+    "registryName": "lavatestnet2",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5468,6 +5573,7 @@
     "id": "cosmos-registry:likecoin",
     "displayName": "LikeCoin",
     "chainId": "likecoin-mainnet-2",
+    "registryName": "likecoin",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5504,6 +5610,7 @@
     "id": "cosmos-registry:logos",
     "displayName": "Logos",
     "chainId": "logos_7002-1",
+    "registryName": "logos",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5540,6 +5647,7 @@
     "id": "cosmos-registry:loyal",
     "displayName": "Loyal",
     "chainId": "loyal-main-02",
+    "registryName": "loyal",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5576,6 +5684,7 @@
     "id": "cosmos-registry:lumnetwork",
     "displayName": "Lum Network",
     "chainId": "lum-network-1",
+    "registryName": "lumnetwork",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5612,6 +5721,7 @@
     "id": "cosmos-registry:lumenx",
     "displayName": "LumenX",
     "chainId": "LumenX",
+    "registryName": "lumenx",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5648,6 +5758,7 @@
     "id": "cosmos-registry:lumenxtestnet",
     "displayName": "LumenX-Test",
     "chainId": "lumenx-test",
+    "registryName": "lumenxtestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5683,6 +5794,7 @@
     "id": "cosmos-registry:mars",
     "displayName": "Mars Hub",
     "chainId": "mars-1",
+    "registryName": "mars",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5719,6 +5831,7 @@
     "id": "cosmos-registry:marstestnet",
     "displayName": "Mars Hub Testnet",
     "chainId": "ares-1",
+    "registryName": "marstestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5755,6 +5868,7 @@
     "id": "cosmos-registry:mayachain",
     "displayName": "Maya Protocol",
     "chainId": "mayachain-mainnet-v1",
+    "registryName": "mayachain",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5799,6 +5913,7 @@
     "id": "cosmos-registry:medasdigital",
     "displayName": "Medas Digital Network",
     "chainId": "medasdigital-1",
+    "registryName": "medasdigital",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5835,6 +5950,7 @@
     "id": "cosmos-registry:panacea",
     "displayName": "Medibloc",
     "chainId": "panacea-3",
+    "registryName": "panacea",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5871,6 +5987,7 @@
     "id": "cosmos-registry:meme",
     "displayName": "MEME",
     "chainId": "meme-1",
+    "registryName": "meme",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5907,6 +6024,7 @@
     "id": "cosmos-registry:microtick",
     "displayName": "Microtick",
     "chainId": "microtick-1",
+    "registryName": "microtick",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5943,6 +6061,7 @@
     "id": "cosmos-registry:migaloo",
     "displayName": "Migaloo",
     "chainId": "migaloo-1",
+    "registryName": "migaloo",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6024,6 +6143,7 @@
     "id": "cosmos-registry:migalootestnet",
     "displayName": "Migaloo Testnet",
     "chainId": "narwhal-1",
+    "registryName": "migalootestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6060,6 +6180,7 @@
     "id": "cosmos-registry:mises",
     "displayName": "Mises",
     "chainId": "mainnet",
+    "registryName": "mises",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6096,6 +6217,7 @@
     "id": "cosmos-registry:celestiatestnet3",
     "displayName": "Mocha Testnet",
     "chainId": "mocha-4",
+    "registryName": "celestiatestnet3",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6131,6 +6253,7 @@
     "id": "cosmos-registry:mun",
     "displayName": "Mun",
     "chainId": "mun-1",
+    "registryName": "mun",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6167,6 +6290,7 @@
     "id": "cosmos-registry:mythos",
     "displayName": "Mythos",
     "chainId": "mythos_7001-1",
+    "registryName": "mythos",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6203,6 +6327,7 @@
     "id": "cosmos-registry:neutron",
     "displayName": "Neutron",
     "chainId": "neutron-1",
+    "registryName": "neutron",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6239,6 +6364,7 @@
     "id": "cosmos-registry:neutrontestnet",
     "displayName": "Neutron Testnet",
     "chainId": "pion-1",
+    "registryName": "neutrontestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6275,6 +6401,7 @@
     "id": "cosmos-registry:noble",
     "displayName": "Noble",
     "chainId": "noble-1",
+    "registryName": "noble",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6329,6 +6456,7 @@
     "id": "cosmos-registry:nobletestnet",
     "displayName": "Noble",
     "chainId": "grand-1",
+    "registryName": "nobletestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6382,6 +6510,7 @@
     "id": "cosmos-registry:nois",
     "displayName": "Nois",
     "chainId": "nois-1",
+    "registryName": "nois",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6418,6 +6547,7 @@
     "id": "cosmos-registry:noistestnet",
     "displayName": "Nois Testnet",
     "chainId": "nois-testnet-005",
+    "registryName": "noistestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6454,6 +6584,7 @@
     "id": "cosmos-registry:nolus",
     "displayName": "Nolus",
     "chainId": "pirin-1",
+    "registryName": "nolus",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6490,6 +6621,7 @@
     "id": "cosmos-registry:nolustestnet",
     "displayName": "Nolus Testnet",
     "chainId": "rila-1",
+    "registryName": "nolustestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6526,6 +6658,7 @@
     "id": "cosmos-registry:nomic",
     "displayName": "Nomic",
     "chainId": "nomic-stakenet-3",
+    "registryName": "nomic",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6562,6 +6695,7 @@
     "id": "cosmos-registry:nyx",
     "displayName": "Nym",
     "chainId": "nyx",
+    "registryName": "nyx",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6607,6 +6741,7 @@
     "id": "cosmos-registry:octa",
     "displayName": "Octa",
     "chainId": "octa",
+    "registryName": "octa",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6643,6 +6778,7 @@
     "id": "cosmos-registry:odin",
     "displayName": "Odin Protocol",
     "chainId": "odin-mainnet-freya",
+    "registryName": "odin",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6697,6 +6833,7 @@
     "id": "cosmos-registry:ojotestnet",
     "displayName": "Ojo Network Testnet",
     "chainId": "ojo-devnet-1",
+    "registryName": "ojotestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6733,6 +6870,7 @@
     "id": "cosmos-registry:okexchain",
     "displayName": "OKExChain",
     "chainId": "exchain-66",
+    "registryName": "okexchain",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6769,6 +6907,7 @@
     "id": "cosmos-registry:okp4testnet",
     "displayName": "OKP4 Nemeton Testnet",
     "chainId": "okp4-nemeton-1",
+    "registryName": "okp4testnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6805,6 +6944,7 @@
     "id": "cosmos-registry:omniflixhub",
     "displayName": "OmniFlix",
     "chainId": "omniflixhub-1",
+    "registryName": "omniflixhub",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6841,6 +6981,7 @@
     "id": "cosmos-registry:onomy",
     "displayName": "Onomy",
     "chainId": "onomy-mainnet-1",
+    "registryName": "onomy",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6877,6 +7018,7 @@
     "id": "cosmos-registry:oraichain",
     "displayName": "Oraichain",
     "chainId": "Oraichain",
+    "registryName": "oraichain",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -6912,6 +7054,7 @@
   {
     "id": "osmosis",
     "kind": "Cosmos",
+    "registryName": "osmosis",
     "chainId": "osmosis-1",
     "displayName": "Osmosis",
     "icon": "icons/networks/osmosis.svg",
@@ -6987,6 +7130,7 @@
   {
     "id": "osmosis-testnet",
     "kind": "Cosmos",
+    "registryName": "osmosistestnet",
     "chainId": "osmo-test-5",
     "overrides": "cosmos-registry:osmosistestnet",
     "displayName": "Osmosis Latest Testnet",
@@ -7052,6 +7196,7 @@
     "id": "cosmos-registry:osmosistestnet4",
     "displayName": "Osmosis Testnet",
     "chainId": "osmo-test-4",
+    "registryName": "osmosistestnet4",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7097,6 +7242,7 @@
     "id": "cosmos-registry:passage",
     "displayName": "Passage",
     "chainId": "passage-2",
+    "registryName": "passage",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7133,6 +7279,7 @@
     "id": "cosmos-registry:passage1",
     "displayName": "Passage",
     "chainId": "passage-1",
+    "registryName": "passage1",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7169,6 +7316,7 @@
     "id": "cosmos-registry:persistence",
     "displayName": "Persistence",
     "chainId": "core-1",
+    "registryName": "persistence",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7214,6 +7362,7 @@
     "id": "cosmos-registry:persistencetestnet",
     "displayName": "Persistence Testnet",
     "chainId": "test-core-1",
+    "registryName": "persistencetestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7258,6 +7407,7 @@
     "id": "cosmos-registry:persistencetestnet2",
     "displayName": "Persistence Testnet",
     "chainId": "test-core-2",
+    "registryName": "persistencetestnet2",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7311,6 +7461,7 @@
     "id": "cosmos-registry:planq",
     "displayName": "Planq",
     "chainId": "planq_7070-2",
+    "registryName": "planq",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7347,6 +7498,7 @@
     "id": "cosmos-registry:point",
     "displayName": "Point Network",
     "chainId": "point_10687-1",
+    "registryName": "point",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7383,6 +7535,7 @@
     "id": "cosmos-registry:provenance",
     "displayName": "Provenance",
     "chainId": "pio-mainnet-1",
+    "registryName": "provenance",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7419,6 +7572,7 @@
     "id": "cosmos-registry:quasar",
     "displayName": "Quasar",
     "chainId": "quasar-1",
+    "registryName": "quasar",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7455,6 +7609,7 @@
     "id": "cosmos-registry:quasartestnet",
     "displayName": "Quasar Testnet",
     "chainId": "qsr-questnet-04",
+    "registryName": "quasartestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7509,6 +7664,7 @@
     "id": "cosmos-registry:quicksilver",
     "displayName": "Quicksilver",
     "chainId": "quicksilver-2",
+    "registryName": "quicksilver",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7590,6 +7746,7 @@
     "id": "cosmos-registry:quicksilvertestnet",
     "displayName": "Quicksilver Testnet",
     "chainId": "rhye-1",
+    "registryName": "quicksilvertestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7626,6 +7783,7 @@
     "id": "cosmos-registry:qwoyn",
     "displayName": "Qwoyn",
     "chainId": "qwoyn-1",
+    "registryName": "qwoyn",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7662,6 +7820,7 @@
     "id": "cosmos-registry:qwoyntestnet",
     "displayName": "Qwoyn Testnet",
     "chainId": "higgs-boson-1",
+    "registryName": "qwoyntestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7698,6 +7857,7 @@
     "id": "cosmos-registry:realio",
     "displayName": "Realio Network",
     "chainId": "realionetwork_3301-1",
+    "registryName": "realio",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7743,6 +7903,7 @@
     "id": "cosmos-registry:rebus",
     "displayName": "Rebus",
     "chainId": "reb_1111-1",
+    "registryName": "rebus",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7779,6 +7940,7 @@
     "id": "cosmos-registry:regen",
     "displayName": "Regen",
     "chainId": "regen-1",
+    "registryName": "regen",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7824,6 +7986,7 @@
     "id": "cosmos-registry:rizon",
     "displayName": "Rizon",
     "chainId": "titan-1",
+    "registryName": "rizon",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7860,6 +8023,7 @@
     "id": "cosmos-registry:akashtestnet",
     "displayName": "Sandbox Testnet",
     "chainId": "sandbox-01",
+    "registryName": "akashtestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7896,6 +8060,7 @@
     "id": "cosmos-registry:secretnetwork",
     "displayName": "Secret Network",
     "chainId": "secret-4",
+    "registryName": "secretnetwork",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8004,6 +8169,7 @@
     "id": "cosmos-registry:secretnetworktestnet",
     "displayName": "Secret Network Testnet",
     "chainId": "pulsar-3",
+    "registryName": "secretnetworktestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8039,6 +8205,7 @@
     "id": "cosmos-registry:secretnetworktestnet2",
     "displayName": "Secret Network Testnet",
     "chainId": "pulsar-2",
+    "registryName": "secretnetworktestnet2",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8074,6 +8241,7 @@
     "id": "cosmos-registry:sei",
     "displayName": "Sei",
     "chainId": "pacific-1",
+    "registryName": "sei",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8119,6 +8287,7 @@
     "id": "cosmos-registry:seitestnet",
     "displayName": "Sei Atlantic Testnet",
     "chainId": "atlantic-1",
+    "registryName": "seitestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8154,6 +8323,7 @@
     "id": "cosmos-registry:seidevnet3",
     "displayName": "Sei Devnet 3 Testnet",
     "chainId": "sei-devnet-3",
+    "registryName": "seidevnet3",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8189,6 +8359,7 @@
     "id": "cosmos-registry:sentinel",
     "displayName": "Sentinel",
     "chainId": "sentinelhub-2",
+    "registryName": "sentinel",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8225,6 +8396,7 @@
     "id": "cosmos-registry:sge",
     "displayName": "SGE",
     "chainId": "sgenet-1",
+    "registryName": "sge",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8261,6 +8433,7 @@
     "id": "cosmos-registry:sgetestnet",
     "displayName": "SGE Testnet",
     "chainId": "sge-network-3",
+    "registryName": "sgetestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8297,6 +8470,7 @@
     "id": "cosmos-registry:shareledger",
     "displayName": "Shareledger",
     "chainId": "ShareRing-VoyagerNet",
+    "registryName": "shareledger",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8333,6 +8507,7 @@
     "id": "cosmos-registry:shentu",
     "displayName": "Shentu",
     "chainId": "shentu-2.2",
+    "registryName": "shentu",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8369,6 +8544,7 @@
     "id": "cosmos-registry:sifchain",
     "displayName": "Sifchain",
     "chainId": "sifchain-1",
+    "registryName": "sifchain",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8405,6 +8581,7 @@
     "id": "cosmos-registry:sixtestnet",
     "displayName": "SIX Fivenet Testnet",
     "chainId": "fivenet",
+    "registryName": "sixtestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8440,6 +8617,7 @@
     "id": "cosmos-registry:sommelier",
     "displayName": "Sommelier",
     "chainId": "sommelier-3",
+    "registryName": "sommelier",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8476,6 +8654,7 @@
     "id": "cosmos-registry:sourcetestnet",
     "displayName": "Source Testnet",
     "chainId": "source-testnet",
+    "registryName": "sourcetestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8511,6 +8690,7 @@
     "id": "cosmos-registry:stafihub",
     "displayName": "StaFi Hub",
     "chainId": "stafihub-1",
+    "registryName": "stafihub",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8583,6 +8763,7 @@
     "id": "cosmos-registry:stargaze",
     "displayName": "Stargaze",
     "chainId": "stargaze-1",
+    "registryName": "stargaze",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8655,6 +8836,7 @@
     "id": "cosmos-registry:stargazetestnet",
     "displayName": "Stargaze Testnet",
     "chainId": "elgafar-1",
+    "registryName": "stargazetestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8690,6 +8872,7 @@
     "id": "cosmos-registry:starname",
     "displayName": "Starname",
     "chainId": "iov-mainnet-ibc",
+    "registryName": "starname",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8726,6 +8909,7 @@
     "id": "cosmos-registry:statesettestnet",
     "displayName": "Stateset Testnet",
     "chainId": "stateset-1-testnet",
+    "registryName": "statesettestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8761,6 +8945,7 @@
     "id": "cosmos-registry:stride",
     "displayName": "Stride",
     "chainId": "stride-1",
+    "registryName": "stride",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8887,6 +9072,7 @@
     "id": "cosmos-registry:stridetestnet",
     "displayName": "Stride Testnet",
     "chainId": "stride-testnet-1",
+    "registryName": "stridetestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8922,6 +9108,7 @@
     "id": "cosmos-registry:temporaltestnet",
     "displayName": "Temporal Testnet",
     "chainId": "temporal-test-1",
+    "registryName": "temporaltestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8957,6 +9144,7 @@
     "id": "cosmos-registry:tenet",
     "displayName": "Tenet",
     "chainId": "tenet_1559-1",
+    "registryName": "tenet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -9005,6 +9193,7 @@
       "NFTLaunchpad",
       "RiotP2E"
     ],
+    "registryName": "teritori",
     "overrides": "cosmos-registry:teritori",
     "walletUrlForStaking": "https://app.teritori.com/staking",
     "currencies": [
@@ -9080,8 +9269,9 @@
   {
     "id": "teritori-testnet",
     "kind": "Cosmos",
-    "chainId": "teritori-testnet-v3",
+    "chainId": "teritori-test-5",
     "displayName": "Teritori Testnet",
+    "registryName": "teritoritestnet",
     "icon": "icons/networks/teritori.svg",
     "features": [
       "NFTMarketplace",
@@ -9105,24 +9295,13 @@
       },
       {
         "kind": "ibc",
-        "denom": "ibc/C9300DDD93DF3A3A668CAB02398A0AA081EF89EC005B2DB68832E363BAAABF85",
-        "sourceNetwork": "cosmos-hub-theta",
-        "sourceDenom": "uatom",
+        "denom": "ibc/2CC0B1B7A981ACC74854717F221008484603BB8360E81B262411B0D830EDE9B0",
+        "sourceNetwork": "cosmos-registry:axelartestnet",
+        "sourceDenom": "uaxl",
+        "sourceChannelId": "channel-399",
         "sourceChannelPort": "transfer",
-        "sourceChannelId": "channel-685",
-        "destinationChannelPort": "transfer",
-        "destinationChannelId": "channel-30",
-        "deprecated": true
-      },
-      {
-        "kind": "ibc",
-        "denom": "ibc/8D9734B53D56DC57A92E4CC788547699853F411190F6DAA70FA12B9BD062F7AE",
-        "sourceNetwork": "cosmos-hub-theta",
-        "sourceDenom": "uatom",
-        "sourceChannelPort": "transfer",
-        "sourceChannelId": "channel-701",
-        "destinationChannelPort": "transfer",
-        "destinationChannelId": "channel-33"
+        "destinationChannelId": "channel-0",
+        "destinationChannelPort": "transfer"
       }
     ],
     "txExplorer": "https://explorer.teritori.com/teritori-testnet/tx/$hash",
@@ -9147,40 +9326,41 @@
       "no-legacy-stdTx",
       "ibc-go"
     ],
-    "nameServiceContractAddress": "tori18etjzrma5604af50jjklk3wlkqcsxdrvmy6jzw5naw2t7kyv4rys3kpwky",
+    "nameServiceContractAddress": "tori160wk6qdepxy99p79vgq4ue0stvz4sstxfcj5n9vq04h6gx6ydrwsy0a5fy",
     "nameServiceDefaultImage": "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
     "nameServiceTLD": ".tori",
-    "vaultContractAddress": "tori13d26fzmvuvlvvxwt3ur0vkv8j6f28mf4nqfmxu3xk5r57wzxxglqut8ezk",
-    "riotContractAddressGen0": "tori162skshe30f43kv2q2rw6we2mu3pvz43lm2zrg4hq50jdd2fjjdjsvm8mc7",
-    "riotContractAddressGen1": "tori1afwrcs58afaka6ltynevwcvq8zhejr3ssn703c0hky5emh890vzsry5wp5",
-    "riotSquadStakingContractAddressV1": "tori15wl5lw9pxpedcekgqr8vk5xfpkrsax3reyfkkey458t6a7vv0d5ssark6m",
-    "riotSquadStakingContractAddressV2": "tori1gzk7kets2dfr7rcmzunkem0a23pn9ktkpjf0elxp38x42zpddt6qhvsp9l",
-    "distributorContractAddress": "tori1ff0ze096zcy5va5xhl7zenwt5vca6z9n0l8du7q7qsd7ftrcz0cqvd0vgc",
-    "riotersFooterContractAddress": "tori1m6g3l3j5t988zwmp965hrhsxvm8jrkf2ulw4gmwj8hx8pd84tvcqeearsd",
+    "vaultContractAddress": "tori1da7gq3lv7v48fkq2w4jp0f0yg4v7rey3d92legs8e83mhuf3agyq2z7rr9",
+    "riotContractAddressGen0": "",
+    "riotContractAddressGen1": "",
+    "riotSquadStakingContractAddressV1": "",
+    "riotSquadStakingContractAddressV2": "",
+    "distributorContractAddress": "",
+    "riotersFooterContractAddress": "",
     "secondaryDuringMintList": [
-      "tori18etjzrma5604af50jjklk3wlkqcsxdrvmy6jzw5naw2t7kyv4rys3kpwky",
-      "tori1afwrcs58afaka6ltynevwcvq8zhejr3ssn703c0hky5emh890vzsry5wp5"
+      "tori160wk6qdepxy99p79vgq4ue0stvz4sstxfcj5n9vq04h6gx6ydrwsy0a5fy",
+      ""
     ],
     "excludeFromLaunchpadList": [
-      "tori1afwrcs58afaka6ltynevwcvq8zhejr3ssn703c0hky5emh890vzsry5wp5"
+      ""
     ],
-    "socialFeedContractAddress": "tori1umsk53n6rf5j2lam80zuz50sz9sdw2vdpr0vvd2xaaryprfa7ryslyvm69",
-    "daoCw20CodeId": 99,
-    "daoFactoryCodeId": 100,
-    "daoCoreCodeId": 176,
-    "daoPreProposeSingleCodeId": 102,
-    "daoProposalSingleCodeId": 103,
-    "daoVotingCw20StakedCodeId": 104,
-    "daoCw20StakeCodeId": 105,
-    "daoCw4GroupCodeId": 106,
-    "daoVotingCw4CodeId": 109,
-    "daoFactoryContractAddress": "tori1r29chp8ufwgx9u3wr4sfk050aardhkzwve7nht6y06gvlaqutr3qt83z6r",
-    "coreDAOAddress": "tori1dy5h9q9zue4swxe9mzracm8gudp0fcf2ncllch6pfq9d0fq0ftgq546063"
+    "socialFeedContractAddress": "tori1fc7nakzuyfn2qzkclafcsc54asamnclg064962lwne40w2lq558q2ch5h9",
+    "daoCw20CodeId": -1,
+    "daoFactoryCodeId": -1,
+    "daoCoreCodeId": -1,
+    "daoPreProposeSingleCodeId": -1,
+    "daoProposalSingleCodeId": -1,
+    "daoVotingCw20StakedCodeId": -1,
+    "daoCw20StakeCodeId": -1,
+    "daoCw4GroupCodeId": -1,
+    "daoVotingCw4CodeId": -1,
+    "daoFactoryContractAddress": "",
+    "coreDAOAddress": ""
   },
   {
     "id": "cosmos-registry:terpnettestnet",
     "displayName": "Terp-Network Testnet",
     "chainId": "90u-2",
+    "registryName": "terpnettestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -9225,6 +9405,7 @@
     "id": "cosmos-registry:terra2",
     "displayName": "Terra",
     "chainId": "phoenix-1",
+    "registryName": "terra2",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -9333,6 +9514,7 @@
     "id": "cosmos-registry:terra2testnet",
     "displayName": "Terra 2.0 Testnet",
     "chainId": "pisco-1",
+    "registryName": "terra2testnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -9368,6 +9550,7 @@
     "id": "cosmos-registry:terra",
     "displayName": "Terra Classic",
     "chainId": "columbus-5",
+    "registryName": "terra",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -11276,6 +11459,7 @@
     "id": "cosmos-registry:tgrade",
     "displayName": "Tgrade",
     "chainId": "tgrade-mainnet-1",
+    "registryName": "tgrade",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -11312,6 +11496,7 @@
     "id": "cosmos-registry:thorchain",
     "displayName": "THORChain",
     "chainId": "thorchain-mainnet-v1",
+    "registryName": "thorchain",
     "kind": "Cosmos",
     "currencies": [],
     "features": [],
@@ -11337,6 +11522,7 @@
     "id": "cosmos-registry:ulastestnet",
     "displayName": "ULAS Testnet",
     "chainId": "ulas",
+    "registryName": "ulastestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -11372,6 +11558,7 @@
     "id": "cosmos-registry:umee",
     "displayName": "Umee",
     "chainId": "umee-1",
+    "registryName": "umee",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -11408,6 +11595,7 @@
     "id": "cosmos-registry:unification",
     "displayName": "Unification",
     "chainId": "FUND-MainNet-2",
+    "registryName": "unification",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -11444,6 +11632,7 @@
     "id": "cosmos-registry:ununifi",
     "displayName": "UnUniFi",
     "chainId": "ununifi-beta-v1",
+    "registryName": "ununifi",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -11480,6 +11669,7 @@
     "id": "cosmos-registry:uptick",
     "displayName": "Uptick",
     "chainId": "uptick_117-1",
+    "registryName": "uptick",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -11516,6 +11706,7 @@
     "id": "cosmos-registry:upticktestnet",
     "displayName": "Uptick Testnet",
     "chainId": "uptick_7000-2",
+    "registryName": "upticktestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -11551,6 +11742,7 @@
     "id": "cosmos-registry:vidulum",
     "displayName": "Vidulum",
     "chainId": "vidulum-1",
+    "registryName": "vidulum",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -11587,6 +11779,7 @@
     "id": "cosmos-registry:vincechain",
     "displayName": "VinceChain Testnet",
     "chainId": "vince_1903-1",
+    "registryName": "vincechain",
     "kind": "Cosmos",
     "currencies": [],
     "features": [],
@@ -11613,6 +11806,7 @@
     "id": "cosmos-registry:gateway",
     "displayName": "Wormhole Gateway",
     "chainId": "wormchain",
+    "registryName": "gateway",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -11757,6 +11951,7 @@
     "id": "cosmos-registry:xiontestnet",
     "displayName": "Xion Testnet",
     "chainId": "xion-testnet-1",
+    "registryName": "xiontestnet",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -11793,6 +11988,7 @@
     "id": "cosmos-registry:xpla",
     "displayName": "XPLA",
     "chainId": "dimension_37-1",
+    "registryName": "xpla",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -11829,6 +12025,7 @@
     "id": "cosmos-registry:zetachaintestnet",
     "displayName": "ZetaChain Testnet",
     "chainId": "athens_7001",
+    "registryName": "zetachaintestnet",
     "kind": "Cosmos",
     "currencies": [
       {

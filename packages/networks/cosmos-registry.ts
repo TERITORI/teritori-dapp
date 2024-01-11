@@ -28,6 +28,7 @@ export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
             : chain.pretty_name + " Testnet"
           : chain.pretty_name,
         chainId: chain.chain_id,
+        registryName: chain.chain_name,
         kind: NetworkKind.Cosmos,
         currencies: chainAssets
           .filter((asset) => !(asset.ibc || asset.base.startsWith("ibc/"))) // TODO: remove ibc filter and correctly map ibc currencies
