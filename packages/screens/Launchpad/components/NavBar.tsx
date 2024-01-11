@@ -2,7 +2,12 @@ import React from "react";
 import { View, TouchableOpacity } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
-import { neutral33 } from "../../../utils/style/colors";
+import {
+  neutral33,
+  primaryColor,
+  primaryTextColor,
+  secondaryColor,
+} from "../../../utils/style/colors";
 
 export interface NavDefinition {
   name: string;
@@ -47,14 +52,14 @@ export const NavBar = <T extends { [key: string]: NavDefinition }>({
             >
               <View
                 style={{
-                  backgroundColor: selected === key ? "#16BBFF" : "black",
+                  backgroundColor: selected === key ? primaryColor : neutral33,
                   height: "100%",
                   justifyContent: "center",
                 }}
               >
                 <BrandText
                   style={{
-                    color: selected === key ? "black" : "white",
+                    color: selected === key ? primaryTextColor : secondaryColor,
                     fontSize: 14,
                     paddingHorizontal: 12,
                     textAlign: "center",
