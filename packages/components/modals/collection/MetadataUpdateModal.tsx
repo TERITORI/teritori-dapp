@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { View } from "react-native";
+import { Image, View } from "react-native";
 
 import { NewMetadataDetailsFormValues } from "../../../screens/Launchpad/CreateCollection.type";
 import { neutral77, secondaryColor } from "../../../utils/style/colors";
@@ -49,14 +49,13 @@ export const MetadataUpdateModal: React.FC<{
               borderColor: neutral77,
             }}
           >
-            <img
-              src={URL.createObjectURL(item?.file)}
+            <Image
+              source={{ uri: URL.createObjectURL(item.file) }}
               style={{
                 height: 54,
                 width: 54,
                 borderRadius: 8,
               }}
-              alt="Uploaded file"
             />
           </Box>
           <View style={{ marginLeft: layout.spacing_x2 }}>

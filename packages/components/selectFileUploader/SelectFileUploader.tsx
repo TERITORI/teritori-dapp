@@ -34,7 +34,7 @@ export const SelectFileUploader: React.FC<SelectFileUploaderProps> = ({
     <View style={style}>
       {!!label && <Label style={{ marginBottom: 12 }}>{label}</Label>}
       <TouchableOpacity>
-        <div
+        <View
           style={{
             flex: 1,
             display: "flex",
@@ -116,7 +116,7 @@ export const SelectFileUploader: React.FC<SelectFileUploaderProps> = ({
               </View>
             </Box>
           )}
-        </div>
+        </View>
       </TouchableOpacity>
     </View>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 
 import { neutral33, neutral55, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold20 } from "../../utils/style/fonts";
@@ -10,6 +10,8 @@ import { BrandText } from "../BrandText";
 import { Box } from "../boxes/Box";
 import { PrimaryBox } from "../boxes/PrimaryBox";
 import { SpacerColumn } from "../spacer";
+
+const RowSplitValue = 7;
 
 export const SelectedFilesPreview: React.FC<{
   assets: LocalFileData[];
@@ -46,7 +48,7 @@ export const SelectedFilesPreview: React.FC<{
           <>
             <View style={{ flexDirection: "column" }}>
               <View style={{ flexDirection: "row" }}>
-                {currentItems.slice(0, 7).map((item, index) => (
+                {currentItems.slice(0, RowSplitValue).map((item, index) => (
                   <TouchableOpacity
                     style={{
                       height: 123,
@@ -65,14 +67,13 @@ export const SelectedFilesPreview: React.FC<{
                         width: 100,
                       }}
                     >
-                      <img
-                        src={URL.createObjectURL(item.file)}
+                      <Image
+                        source={{ uri: URL.createObjectURL(item.file) }}
                         style={{
                           height: 98,
                           width: 98,
                           borderRadius: 8,
                         }}
-                        alt="Uploaded file"
                       />
                     </PrimaryBox>
 
@@ -97,7 +98,7 @@ export const SelectedFilesPreview: React.FC<{
                 ))}
               </View>
               <View style={{ flexDirection: "row" }}>
-                {currentItems.slice(7).map((item, index) => (
+                {currentItems.slice(RowSplitValue).map((item, index) => (
                   <TouchableOpacity
                     style={{
                       height: 123,
@@ -117,14 +118,13 @@ export const SelectedFilesPreview: React.FC<{
                         width: 100,
                       }}
                     >
-                      <img
-                        src={URL.createObjectURL(item.file)}
+                      <Image
+                        source={{ uri: URL.createObjectURL(item.file) }}
                         style={{
                           height: 98,
                           width: 98,
                           borderRadius: 8,
                         }}
-                        alt="Uploaded file"
                       />
                     </PrimaryBox>
 
@@ -142,7 +142,7 @@ export const SelectedFilesPreview: React.FC<{
                       <BrandText
                         style={[fontSemibold13, { color: secondaryColor }]}
                       >
-                        {currentPage * itemsPerPage + index + 1 + 7}
+                        {currentPage * itemsPerPage + index + 1 + RowSplitValue}
                       </BrandText>
                     </PrimaryBox>
                   </TouchableOpacity>
