@@ -46,13 +46,15 @@ export const MetadataUpdateModal: React.FC<{
               width: 56,
               height: 56,
               borderWidth: 1,
+              borderColor: neutral77,
             }}
           >
             <img
               src={URL.createObjectURL(item?.file)}
               style={{
-                height: 56,
-                width: 56,
+                height: 54,
+                width: 54,
+                borderRadius: 8,
               }}
               alt="Uploaded file"
             />
