@@ -16,7 +16,7 @@ import { layout } from "../../../utils/style/layout";
 import CircularImgOrIcon from "../AddressBook/components/CircularImgOrIcon";
 import MiniTextInput from "../AddressBook/components/MiniTextInput";
 import MiniHeader from "../Notifications/components/MiniHeader";
-import { SettingBase } from "../Settings/components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 import FileUpload from "../components/FileUpload";
 
 type ProfileDetailScreenProps = {

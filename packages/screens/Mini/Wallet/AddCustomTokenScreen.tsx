@@ -11,7 +11,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { SettingBase } from "../Settings/components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 import { CustomButton } from "../components/CustomButton";
 
 const tokenOptions = [

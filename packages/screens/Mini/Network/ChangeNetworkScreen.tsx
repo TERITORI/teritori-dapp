@@ -15,7 +15,7 @@ import { layout } from "../../../utils/style/layout";
 import ListView from "../AddressBook/components/ListView";
 import Checkbox from "../Notifications/components/Checkbox";
 import MiniHeader from "../Notifications/components/MiniHeader";
-import { SettingBase } from "../Settings/components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 
 type ChangeNetworkScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ChangeNetwork">;

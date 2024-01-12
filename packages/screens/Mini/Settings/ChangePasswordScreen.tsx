@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Dimensions, View } from "react-native";
 
-import { SettingBase } from "./components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";

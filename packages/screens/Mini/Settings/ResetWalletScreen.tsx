@@ -1,7 +1,7 @@
 import React from "react";
 import { Dimensions, View } from "react-native";
 
-import { SettingBase } from "./components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 import stopSVG from "../../../../assets/icons/stop.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";

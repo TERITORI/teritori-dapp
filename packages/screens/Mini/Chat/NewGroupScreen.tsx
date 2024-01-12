@@ -5,7 +5,7 @@ import { NewConversationOrGroupSelector } from "./components/NewConversationOrGr
 import { SearchChatList } from "./components/SearchChatList";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
-import { SettingBase } from "../Settings/components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 
 const dummyContact = [
   {

@@ -13,7 +13,7 @@ import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import MiniButton from "../AddressBook/components/MiniButton";
 import MiniHeader from "../Notifications/components/MiniHeader";
-import { SettingBase } from "../Settings/components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 import RowDisplay from "../components/RowDisplay";
 
 const SendingToriScreen: ScreenFC<"MiniSendingTori"> = ({ navigation }) => {

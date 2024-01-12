@@ -3,14 +3,14 @@ import { LinearGradient } from "expo-linear-gradient";
 import React, { ReactNode } from "react";
 import { Dimensions, SafeAreaView, View } from "react-native";
 
-import closeSVG from "../../../../../assets/icons/close.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { BackButton } from "../../../../components/navigation/components/BackButton";
-import { useAppNavigation } from "../../../../utils/navigation";
-import { fontSemibold18 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
+import closeSVG from "../../../../assets/icons/close.svg";
+import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
+import { CustomPressable } from "../../../components/buttons/CustomPressable";
+import { BackButton } from "../../../components/navigation/components/BackButton";
+import { useAppNavigation } from "../../../utils/navigation";
+import { fontSemibold18 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 
 type Props = {
   children: ReactNode;

@@ -15,7 +15,7 @@ import { ScreenFC } from "../../../utils/navigation";
 import { blueDefault } from "../../../utils/style/colors";
 import { fontSemibold15 } from "../../../utils/style/fonts";
 import { MOBILE_HEADER_HEIGHT, layout } from "../../../utils/style/layout";
-import { SettingBase } from "../Settings/components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 
 export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
   const [enableEditingDApps, setEnableEditingDApps] = useState(false);

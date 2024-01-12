@@ -12,7 +12,7 @@ import { Separator } from "../../../components/separators/Separator";
 import { ScreenFC } from "../../../utils/navigation";
 import { fontSemibold22 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { SettingBase } from "../Settings/components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 
 export const ManageTokensScreen: ScreenFC<"MiniManageTokens"> = ({
   navigation,

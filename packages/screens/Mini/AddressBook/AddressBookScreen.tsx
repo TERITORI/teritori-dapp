@@ -13,7 +13,7 @@ import { neutralA3 } from "../../../utils/style/colors";
 import { fontNormal15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import MiniHeader from "../Notifications/components/MiniHeader";
-import { SettingBase } from "../Settings/components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 
 export type AddressBookType = {
   id: string;

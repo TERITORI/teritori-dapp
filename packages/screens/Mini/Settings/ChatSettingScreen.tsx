@@ -2,7 +2,7 @@ import { FC, useState } from "react";
 import { Switch, View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { SettingBase } from "./components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 import chevronGrayRightSVG from "../../../../assets/icons/chevron-right-gray.svg";
 import dataCabinetSVG from "../../../../assets/icons/data-cabinet.svg";
 import laptopSVG from "../../../../assets/icons/laptop.svg";

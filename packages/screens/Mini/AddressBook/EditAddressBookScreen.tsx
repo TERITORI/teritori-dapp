@@ -12,7 +12,7 @@ import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import MiniHeader from "../Notifications/components/MiniHeader";
-import { SettingBase } from "../Settings/components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 
 const addresses: AddressBookType[] = [
   { id: "asdfdasd", label: "Defi1", address: "fadfd..sdf" },

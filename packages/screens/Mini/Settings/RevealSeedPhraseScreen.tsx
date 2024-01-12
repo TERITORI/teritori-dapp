@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { CheckList } from "./components/CheckList";
-import { SettingBase } from "./components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 import { ShowSeedPhrase } from "./components/ShowSeedPhrase";
 import { ScreenFC } from "../../../utils/navigation";
 

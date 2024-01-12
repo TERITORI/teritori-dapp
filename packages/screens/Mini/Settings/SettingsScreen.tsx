@@ -1,6 +1,6 @@
 import React from "react";
 
-import { SettingBase } from "./components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 import { SettingMenuItem } from "./components/SettingMenuItems";
 import { ScreenFC } from "../../../utils/navigation";
 

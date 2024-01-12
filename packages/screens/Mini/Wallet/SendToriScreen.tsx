@@ -19,7 +19,7 @@ import CircularImgOrIcon from "../AddressBook/components/CircularImgOrIcon";
 import MiniButton from "../AddressBook/components/MiniButton";
 import MiniTextInput from "../AddressBook/components/MiniTextInput";
 import MiniHeader from "../Notifications/components/MiniHeader";
-import { SettingBase } from "../Settings/components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 import MiniTextInputWithDropdown from "../components/MiniTextInputWithDropdown";
 
 const tokenOptions = [

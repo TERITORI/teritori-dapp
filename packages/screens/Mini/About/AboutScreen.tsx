@@ -15,7 +15,7 @@ import { fontBold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import ListView from "../AddressBook/components/ListView";
 import MiniHeader from "../Notifications/components/MiniHeader";
-import { SettingBase } from "../Settings/components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 
 type AboutScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "About">;

@@ -15,7 +15,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium13, fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { SettingBase } from "../Settings/components/SettingBase";
+import { SettingBase } from "../components/SettingBase";
 
 const QR_SIZE = 248;
 const accountDetails = {
