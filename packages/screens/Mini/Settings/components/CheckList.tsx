@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Dimensions, View } from "react-native";
 
-import { Input } from "../../components/Input";
 import { RedAlert } from "./RedAlert";
 import { BrandText } from "../../../../components/BrandText";
 import { SpacerColumn } from "../../../../components/spacer";
 import { neutral22, neutralA3 } from "../../../../utils/style/colors";
 import { fontMedium16 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
-import { Checkbox } from "../../components/Checkbox";
 import { CustomButton } from "../../components/CustomButton";
+import { CustomCheckbox } from "../../components/CustomCheckbox";
+import { Input } from "../../components/Input";
 
 type Props = {
   gotoVisibleScreen: () => void;
@@ -77,7 +77,7 @@ export const CheckList = ({ gotoVisibleScreen, type }: Props) => {
             marginBottom: layout.spacing_x2_5,
           }}
         >
-          <Checkbox
+          <CustomCheckbox
             isChecked={revealSeedsConditions.fullControlOverFunds}
             onPress={() => toggleConditionsPress("fullControlOverFunds")}
           />
@@ -97,7 +97,7 @@ export const CheckList = ({ gotoVisibleScreen, type }: Props) => {
             backgroundColor: neutral22,
           }}
         >
-          <Checkbox
+          <CustomCheckbox
             isChecked={revealSeedsConditions.neverShare}
             onPress={() => toggleConditionsPress("neverShare")}
           />

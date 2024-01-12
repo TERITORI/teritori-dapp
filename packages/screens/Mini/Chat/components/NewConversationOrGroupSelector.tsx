@@ -15,7 +15,7 @@ import {
   fontSemibold15,
 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
-import { Checkbox } from "../../components/Checkbox";
+import { CustomCheckbox } from "../../components/CustomCheckbox";
 
 const fake_url =
   "https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg";
@@ -243,7 +243,7 @@ const IndividualFriendName = ({
         <SVG source={chevronGrayRightSVG} height={24} width={24} />
       )}
       {enableSelection && (
-        <Checkbox isChecked={isSelected} onPress={onCheckboxPress} />
+        <CustomCheckbox isChecked={isSelected} onPress={onCheckboxPress} />
       )}
     </CustomPressable>
   );

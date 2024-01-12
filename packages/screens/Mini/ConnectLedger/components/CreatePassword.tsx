@@ -11,8 +11,8 @@ import {
 } from "../../../../utils/style/colors";
 import { fontMedium16, fontSemibold30 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
-import { Checkbox } from "../../components/Checkbox";
 import { CustomButton } from "../../components/CustomButton";
+import { CustomCheckbox } from "../../components/CustomCheckbox";
 import { Input } from "../../components/Input";
 import { StepType } from "../ConnectLedgerScreen";
 
@@ -100,7 +100,7 @@ export const CreatePassword = ({ onStepChange }: Props) => {
             marginBottom: layout.spacing_x2,
           }}
         >
-          <Checkbox
+          <CustomCheckbox
             isChecked={isTermsAccepted}
             onPress={() => setIsTermsAccepted((prev) => !prev)}
           />

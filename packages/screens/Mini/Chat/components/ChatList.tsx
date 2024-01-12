@@ -1,7 +1,6 @@
 import React from "react";
 import { View, FlatList } from "react-native";
 
-import { ChatAvatar } from "./ChatAvatar";
 import DoubleCheckSVG from "../../../../../assets/icons/double-check.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
@@ -11,6 +10,7 @@ import { useAppNavigation } from "../../../../utils/navigation";
 import { neutralA3, secondaryColor } from "../../../../utils/style/colors";
 import { fontMedium13, fontSemibold14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
+import { ChatAvatar } from "../../components/ChatAvatar";
 
 type ChatListProps = {
   items: SingleChatListType[];
