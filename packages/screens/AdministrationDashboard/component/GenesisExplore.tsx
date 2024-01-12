@@ -10,15 +10,11 @@ import guardianPng from "../../../../assets/default-images/guardian_1.png";
 import penSVG from "../../../../assets/icons/pen.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { Box } from "../../../components/boxes/Box";
+import { PrimaryBox } from "../../../components/boxes/PrimaryBox";
+import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
 import { GradientText } from "../../../components/gradientText";
 import { useAppNavigation } from "../../../utils/navigation";
-import {
-  gradientColorBlue,
-  gradientColorPurple,
-  neutral17,
-  primaryColor,
-} from "../../../utils/style/colors";
+import { neutral17, primaryColor } from "../../../utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
@@ -49,15 +45,7 @@ export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
           onPress={() => setIsEditHighlighted(true)}
           style={{ alignSelf: "flex-start" }}
         >
-          <Box
-            borderGradient={{
-              colors: [gradientColorBlue, gradientColorPurple],
-            }}
-            style={{
-              borderWidth: 1,
-              padding: 16,
-            }}
-          >
+          <PrimaryBox style={{ padding: 16 }}>
             <View
               style={{
                 alignItems: "center",
@@ -70,7 +58,7 @@ export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
                 Edit Hero
               </BrandText>
             </View>
-          </Box>
+          </PrimaryBox>
         </TouchableOpacity>
       </View>
       <View
@@ -97,8 +85,7 @@ export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
           <TouchableOpacity
             onPress={() => navigation.navigate("AllProjectAdministrationDash")}
           >
-            <Box
-              notched
+            <SecondaryBox
               style={{
                 alignSelf: "flex-start",
                 borderRadius: 6,
@@ -112,7 +99,7 @@ export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
               <BrandText style={[fontSemibold13, { color: neutral17 }]}>
                 Explore collection
               </BrandText>
-            </Box>
+            </SecondaryBox>
           </TouchableOpacity>
         </View>
         <View style={{ marginRight: layout.spacing_x4, flex: 2 }}>

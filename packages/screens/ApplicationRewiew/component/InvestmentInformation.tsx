@@ -3,8 +3,8 @@ import { View, useWindowDimensions } from "react-native";
 
 import { LinkCard } from "./LinkCard";
 import { BrandText } from "../../../components/BrandText";
-import { Box } from "../../../components/boxes/Box";
-import { neutral33, neutral77 } from "../../../utils/style/colors";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold12,
   fontSemibold14,
@@ -31,11 +31,8 @@ export const InvestmentInformation: React.FC = () => {
           flexWrap: "wrap",
         }}
       >
-        <Box
-          notched
+        <TertiaryBox
           style={{
-            borderWidth: 1,
-            borderColor: neutral33,
             borderRadius: 6,
             padding: 12,
             flex: 1,
@@ -53,7 +50,7 @@ export const InvestmentInformation: React.FC = () => {
             Legion'', have set up a technological & political system allowing
             them to continue to develop their wealth and safety.
           </BrandText>
-        </Box>
+        </TertiaryBox>
         <LinkCard
           title="Other Links"
           linksData={[
