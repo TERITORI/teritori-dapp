@@ -9,7 +9,6 @@ import (
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/TERITORI/teritori-dapp/go/internal/airtable_fetcher"
-	"github.com/TERITORI/teritori-dapp/go/internal/ethereum"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/holagql"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
@@ -28,7 +27,6 @@ type MarkteplaceService struct {
 
 	homeProvider      *airtable_fetcher.Cache
 	dAppStoreProvider *airtable_fetcher.Cache
-	ethereumProvider  *ethereum.Provider
 	// collectionsByVolumeProvider         collections.CollectionsProvider
 	// collectionsByMarketCapProvider      collections.CollectionsProvider
 	conf *Config
@@ -53,17 +51,11 @@ func NewMarketplaceService(ctx context.Context, conf *Config) (marketplacepb.Mar
 		dAppStoreProvider = airtable_fetcher.NewCache(ctx, airtable_fetcher.NewClient(conf.AirtableAPIKeydappsStore), conf.Logger.Named("airtable_fetcher"))
 	}
 
-	ethProvider, err := ethereum.NewEthereumProvider(conf.NetworkStore)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to create ethereum provider")
-	}
-
 	// FIXME: validate config
 	return &MarkteplaceService{
 		conf:              conf,
 		homeProvider:      homeProvider,
 		dAppStoreProvider: dAppStoreProvider,
-		ethereumProvider:  ethProvider,
 		// collectionsByVolumeProvider:         collections.NewCollectionsByVolumeProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
 		// collectionsByMarketCapProvider:      collections.NewCollectionsByMarketCapProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
 	}, nil
@@ -615,22 +607,7 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 
 		return nil
 
-	case *networks.EthereumNetwork:
-		activities, total, err := s.ethereumProvider.GetActivities(srv.Context(), collectionID, nftID, int(limit), int(offset))
-		if err != nil {
-			return errors.Wrap(err, "failed to fetch collection activity")
-		}
-		if err := srv.Send(&marketplacepb.ActivityResponse{Total: int64(total)}); err != nil {
-			return errors.Wrap(err, "failed to send total count")
-		}
-		for _, activity := range activities {
-			if err := srv.Send(&marketplacepb.ActivityResponse{Activity: activity}); err != nil {
-				return errors.Wrap(err, "failed to send activity")
-			}
-		}
-		return nil
-
-	case *networks.CosmosNetwork:
+	case *networks.CosmosNetwork, *networks.EthereumNetwork:
 		var totalCount int64
 		if err := s.conf.IndexerDB.
 			Model(&indexerdb.Activity{}).
@@ -752,15 +729,7 @@ func (s *MarkteplaceService) NFTPriceHistory(ctx context.Context, req *marketpla
 	}
 
 	switch network.(type) {
-
-	case *networks.EthereumNetwork:
-		data, err := s.ethereumProvider.GetNFTPriceHistory(ctx, id)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed get price history")
-		}
-		return &marketplacepb.NFTPriceHistoryResponse{Data: data}, nil
-
-	case *networks.CosmosNetwork:
+	case *networks.CosmosNetwork, *networks.EthereumNetwork:
 		var data []*marketplacepb.PriceDatum
 		if err := s.conf.IndexerDB.
 			WithContext(ctx).
