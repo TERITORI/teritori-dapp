@@ -28,7 +28,8 @@ export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
 }) => {
   const [isCopied, setIsCopied] = useState(false);
 
-  const onGotoSelectToken = () => navigation.replace("MiniSelectToken");
+  const onGotoSelectToken = () =>
+    navigation.replace("MiniSelectToken", { navigateTo: "MiniDepositTORI" });
 
   const onCopyPress = async () => {
     await Clipboard.setStringAsync(JSON.stringify(accountDetails));
