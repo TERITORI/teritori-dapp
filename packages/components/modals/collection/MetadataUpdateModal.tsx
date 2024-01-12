@@ -8,7 +8,7 @@ import { fontSemibold16, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/files";
 import { BrandText } from "../../BrandText";
-import { Box } from "../../boxes/Box";
+import { PrimaryBox } from "../../boxes/PrimaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import { Separator } from "../../separators/Separator";
@@ -41,11 +41,10 @@ export const MetadataUpdateModal: React.FC<{
             flexDirection: "row",
           }}
         >
-          <Box
+          <PrimaryBox
             style={{
               width: 56,
               height: 56,
-              borderWidth: 1,
               borderColor: neutral77,
             }}
           >
@@ -57,7 +56,7 @@ export const MetadataUpdateModal: React.FC<{
                 borderRadius: 8,
               }}
             />
-          </Box>
+          </PrimaryBox>
           <View style={{ marginLeft: layout.spacing_x2 }}>
             <BrandText style={[fontSemibold20, { color: secondaryColor }]}>
               Update Metadata

@@ -17,6 +17,7 @@ import {
 } from "../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
+import { PrimaryBox } from "./boxes/PrimaryBox";
 
 interface SelectionDropdownProps {
   style?: ViewStyle;
@@ -99,7 +100,7 @@ export const SelectionDropdown = ({
       </TertiaryBox>
 
       {isDropdownOpen(dropdownRef) && (
-        <Box
+        <PrimaryBox
           style={{
             position: "absolute",
             top: 80,
@@ -108,6 +109,7 @@ export const SelectionDropdown = ({
             paddingHorizontal: layout.spacing_x1_5,
             paddingTop: layout.spacing_x1_5,
             backgroundColor: neutral33,
+            borderColor: neutral33,
             alignItems: "flex-start",
           }}
         >
@@ -133,7 +135,7 @@ export const SelectionDropdown = ({
               </BrandText>
             </TouchableOpacity>
           ))}
-        </Box>
+        </PrimaryBox>
       )}
     </View>
   );

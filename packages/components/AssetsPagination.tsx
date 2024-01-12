@@ -4,19 +4,13 @@ import { TextInput, TouchableOpacity, View } from "react-native";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
 import { SEARCH_BAR_INPUT_HEIGHT } from "./Search/SearchBarInput";
-import { Box } from "./boxes/Box";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { SpacerRow } from "./spacer";
 import chevronLeftDoubleSVG from "../../assets/icons/chevron-left-double.svg";
 import chevronLeftSVG from "../../assets/icons/chevron-left.svg";
 import chevronRightDoubleSVG from "../../assets/icons/chevron-right-double.svg";
 import chevronRightSVG from "../../assets/icons/chevron-right.svg";
-import {
-  neutral17,
-  neutral33,
-  neutral77,
-  primaryColor,
-} from "../utils/style/colors";
+import { neutral17, neutral77, primaryColor } from "../utils/style/colors";
 import { fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 
@@ -162,22 +156,19 @@ const RightContainer = ({
               );
             }}
           >
-            <Box
-              notched
+            <TertiaryBox
               style={{
                 height: 42,
                 width: 56,
-                borderWidth: 1,
                 justifyContent: "center",
                 alignItems: "center",
                 backgroundColor: primaryColor,
-                borderColor: neutral33,
               }}
             >
               <BrandText style={fontSemibold14}>
                 {currentPage + 1 >= maxPage ? currentPage : currentPage + 1}
               </BrandText>
-            </Box>
+            </TertiaryBox>
           </TouchableOpacity>
         </View>
         <SpacerRow size={2} />
@@ -201,22 +192,19 @@ const RightContainer = ({
               );
             }}
           >
-            <Box
-              notched
+            <TertiaryBox
               style={{
                 height: 42,
                 width: 56,
-                borderWidth: 1,
                 justifyContent: "center",
                 alignItems: "center",
                 backgroundColor: primaryColor,
-                borderColor: neutral33,
               }}
             >
               <BrandText style={fontSemibold14}>
                 {currentPage + 2 > maxPage ? maxPage : currentPage + 2}
               </BrandText>
-            </Box>
+            </TertiaryBox>
           </TouchableOpacity>
         </View>
         <SpacerRow size={2} />
