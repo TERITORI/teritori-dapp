@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { View } from "react-native";
 
-import closeSVG from "../../../../assets/icons/close.svg";
 import teritoriSVG from "../../../../assets/icons/teritori-white.svg";
 import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
@@ -18,7 +16,6 @@ import { layout } from "../../../utils/style/layout";
 import CircularImgOrIcon from "../AddressBook/components/CircularImgOrIcon";
 import MiniButton from "../AddressBook/components/MiniButton";
 import MiniTextInput from "../AddressBook/components/MiniTextInput";
-import MiniHeader from "../Notifications/components/MiniHeader";
 import { SettingBase } from "../Settings/components/SettingBase";
 import MiniTextInputWithDropdown from "../components/MiniTextInputWithDropdown";
 
@@ -43,26 +40,15 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation }) => {
 
   const onClose = () =>
     navigation.canGoBack()
-      ? navigation.goBack()
+      ? navigation.replace("MiniSelectToken", { navigateTo: "MiniSendTori" })
       : navigation.replace("MiniTabs");
 
   return (
     <SettingBase
-      background="transparent"
+      title="Send TORI"
       reverseView={false}
-      customHeader={
-        <MiniHeader
-          navigation={navigation}
-          backEnabled
-          title="Send TORI"
-          headerStyle={{ backgroundColor: "transparent" }}
-          right={
-            <CustomPressable onPress={onClose}>
-              <SVG source={closeSVG} width={24} height={24} />
-            </CustomPressable>
-          }
-        />
-      }
+      background="transparent"
+      onGoBack={onClose}
     >
       <View
         style={{
@@ -80,7 +66,6 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation }) => {
       <View
         style={{
           justifyContent: "space-between",
-          backgroundColor: "rgba(0,0,0,0.8)",
           paddingHorizontal: layout.spacing_x1_5,
           height: "70%",
         }}
