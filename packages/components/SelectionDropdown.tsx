@@ -17,6 +17,7 @@ import {
 } from "../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
+
 interface SelectionDropdownProps {
   style?: ViewStyle;
   onDropdownClosed?: () => void;

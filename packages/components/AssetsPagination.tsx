@@ -26,6 +26,232 @@ interface PaginationProps {
   onChangePage: (page: number) => void;
 }
 
+const LeftContainer = ({
+  currentPage,
+  maxPage,
+  onChangePage,
+}: PaginationProps) => {
+  return (
+    <View style={{ flex: 1, flexDirection: "row" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-start",
+        }}
+      >
+        <BrandText
+          style={{
+            ...fontSemibold14,
+            color: neutral77,
+            paddingRight: layout.spacing_x1,
+            lineHeight: 14,
+          }}
+        >
+          Page {currentPage + 1} of {maxPage}
+        </BrandText>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-start",
+        }}
+      >
+        <BrandText
+          style={{
+            ...fontSemibold14,
+            color: neutral77,
+            paddingRight: layout.spacing_x1,
+            lineHeight: 14,
+          }}
+        >
+          | Go to page:
+        </BrandText>
+        <TertiaryBox
+          style={[
+            {
+              flexDirection: "row",
+              paddingHorizontal: layout.spacing_x1_5,
+              backgroundColor: neutral17,
+              width: 80,
+              height: SEARCH_BAR_INPUT_HEIGHT,
+              alignItems: "center",
+            },
+          ]}
+        >
+          <TextInput
+            defaultValue={(currentPage + 1).toString()}
+            inputMode="numeric"
+            style={[
+              fontSemibold14,
+              {
+                color: "white",
+                flex: 1,
+                width: 56,
+              },
+              { outlineStyle: "none" } as any,
+            ]}
+            onSubmitEditing={(value) => {
+              onChangePage(+value.nativeEvent.text - 1);
+            }}
+          />
+        </TertiaryBox>
+      </View>
+    </View>
+  );
+};
+
+const RightContainer = ({
+  currentPage,
+  maxPage,
+  onChangePage,
+}: PaginationProps) => {
+  return (
+    <View style={{ flex: 1 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <TouchableOpacity onPress={() => onChangePage(0)}>
+          <TertiaryBox
+            style={{
+              height: 42,
+              width: 56,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <SVG source={chevronLeftDoubleSVG} height={16} width={16} />
+          </TertiaryBox>
+        </TouchableOpacity>
+        <SpacerRow size={1} />
+
+        <TouchableOpacity onPress={() => onChangePage(currentPage - 1)}>
+          <TertiaryBox
+            style={{
+              height: 42,
+              width: 56,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <SVG source={chevronLeftSVG} height={16} width={16} />
+          </TertiaryBox>
+        </TouchableOpacity>
+        <SpacerRow size={2} />
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+            onPress={() => {
+              onChangePage(
+                currentPage + 1 >= maxPage ? currentPage - 1 : currentPage,
+              );
+            }}
+          >
+            <Box
+              notched
+              style={{
+                height: 42,
+                width: 56,
+                borderWidth: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: primaryColor,
+                borderColor: neutral33,
+              }}
+            >
+              <BrandText style={fontSemibold14}>
+                {currentPage + 1 >= maxPage ? currentPage : currentPage + 1}
+              </BrandText>
+            </Box>
+          </TouchableOpacity>
+        </View>
+        <SpacerRow size={2} />
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+            activeOpacity={1}
+            onPress={() => {
+              onChangePage(
+                currentPage + 2 > maxPage ? currentPage : currentPage + 1,
+              );
+            }}
+          >
+            <Box
+              notched
+              style={{
+                height: 42,
+                width: 56,
+                borderWidth: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: primaryColor,
+                borderColor: neutral33,
+              }}
+            >
+              <BrandText style={fontSemibold14}>
+                {currentPage + 2 > maxPage ? maxPage : currentPage + 2}
+              </BrandText>
+            </Box>
+          </TouchableOpacity>
+        </View>
+        <SpacerRow size={2} />
+
+        <TouchableOpacity onPress={() => onChangePage(currentPage + 1)}>
+          <TertiaryBox
+            style={{
+              height: 42,
+              width: 56,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <SVG source={chevronRightSVG} height={16} width={16} />
+          </TertiaryBox>
+        </TouchableOpacity>
+        <SpacerRow size={1} />
+
+        <TouchableOpacity onPress={() => onChangePage(maxPage - 1)}>
+          <TertiaryBox
+            style={{
+              height: 42,
+              width: 56,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <SVG source={chevronRightDoubleSVG} height={16} width={16} />
+          </TertiaryBox>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
 export const AssetsPagination = ({
   currentPage,
   maxPage,
@@ -51,217 +277,19 @@ export const AssetsPagination = ({
         paddingHorizontal: layout.spacing_x2,
       }}
     >
-      <View style={{ flex: 1, flexDirection: "row" }}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "flex-start",
-          }}
-        >
-          <BrandText
-            style={{
-              ...fontSemibold14,
-              color: neutral77,
-              paddingRight: layout.spacing_x1,
-              lineHeight: 14,
-            }}
-          >
-            Page {currentPage + 1} of {maxPage}
-          </BrandText>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "flex-start",
-          }}
-        >
-          <BrandText
-            style={{
-              ...fontSemibold14,
-              color: neutral77,
-              paddingRight: layout.spacing_x1,
-              lineHeight: 14,
-            }}
-          >
-            | Go to page:
-          </BrandText>
-          <TertiaryBox
-            style={[
-              {
-                flexDirection: "row",
-                paddingHorizontal: layout.spacing_x1_5,
-                backgroundColor: neutral17,
-                width: 80,
-                height: SEARCH_BAR_INPUT_HEIGHT,
-                alignItems: "center",
-              },
-            ]}
-          >
-            <TextInput
-              defaultValue={(currentPage + 1).toString()}
-              inputMode="numeric"
-              style={[
-                fontSemibold14,
-                {
-                  color: "white",
-                  flex: 1,
-                  width: 56,
-                },
-                { outlineStyle: "none" } as any,
-              ]}
-              onSubmitEditing={(value) => {
-                handleChangePage(+value.nativeEvent.text - 1);
-              }}
-            />
-          </TertiaryBox>
-        </View>
-      </View>
+      <LeftContainer
+        currentPage={currentPage}
+        maxPage={maxPage}
+        onChangePage={handleChangePage}
+      />
 
       <SpacerRow size={1} />
 
-      <View style={{ flex: 1 }}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <TouchableOpacity onPress={() => handleChangePage(0)}>
-            <TertiaryBox
-              style={{
-                height: 42,
-                width: 56,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <SVG source={chevronLeftDoubleSVG} height={16} width={16} />
-            </TertiaryBox>
-          </TouchableOpacity>
-          <SpacerRow size={1} />
-
-          <TouchableOpacity onPress={() => handleChangePage(currentPage - 1)}>
-            <TertiaryBox
-              style={{
-                height: 42,
-                width: 56,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <SVG source={chevronLeftSVG} height={16} width={16} />
-            </TertiaryBox>
-          </TouchableOpacity>
-          <SpacerRow size={2} />
-
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "flex-end",
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-              onPress={() => {
-                handleChangePage(
-                  currentPage + 1 >= maxPage ? currentPage - 1 : currentPage,
-                );
-              }}
-            >
-              <Box
-                notched
-                style={{
-                  height: 42,
-                  width: 56,
-                  borderWidth: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: primaryColor,
-                  borderColor: neutral33,
-                }}
-              >
-                <BrandText style={fontSemibold14}>
-                  {currentPage + 1 >= maxPage ? currentPage : currentPage + 1}
-                </BrandText>
-              </Box>
-            </TouchableOpacity>
-          </View>
-          <SpacerRow size={2} />
-
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "flex-end",
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-              activeOpacity={1}
-              onPress={() => {
-                handleChangePage(
-                  currentPage + 2 > maxPage ? currentPage : currentPage + 1,
-                );
-              }}
-            >
-              <Box
-                notched
-                style={{
-                  height: 42,
-                  width: 56,
-                  borderWidth: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: primaryColor,
-                  borderColor: neutral33,
-                }}
-              >
-                <BrandText style={fontSemibold14}>
-                  {currentPage + 2 > maxPage ? maxPage : currentPage + 2}
-                </BrandText>
-              </Box>
-            </TouchableOpacity>
-          </View>
-          <SpacerRow size={2} />
-
-          <TouchableOpacity onPress={() => handleChangePage(currentPage + 1)}>
-            <TertiaryBox
-              style={{
-                height: 42,
-                width: 56,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <SVG source={chevronRightSVG} height={16} width={16} />
-            </TertiaryBox>
-          </TouchableOpacity>
-          <SpacerRow size={1} />
-
-          <TouchableOpacity onPress={() => handleChangePage(maxPage - 1)}>
-            <TertiaryBox
-              style={{
-                height: 42,
-                width: 56,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <SVG source={chevronRightDoubleSVG} height={16} width={16} />
-            </TertiaryBox>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <RightContainer
+        currentPage={currentPage}
+        maxPage={maxPage}
+        onChangePage={handleChangePage}
+      />
     </View>
   );
 };

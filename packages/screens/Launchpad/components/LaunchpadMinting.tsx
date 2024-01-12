@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { ConfigureRoyaltyDetails } from "./ ConfigureRoyaltyDetails";
+import { ConfigureRoyaltyDetails } from "./ConfigureRoyaltyDetails";
 import { ExistingWhitelist } from "./ExistingWhitelist";
 import { NavBar } from "./NavBar";
 import { NewWhitelist } from "./NewWhitelist";
