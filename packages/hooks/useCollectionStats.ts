@@ -32,7 +32,6 @@ export const useCollectionStats = (collectionId: string, ownerId?: string) => {
       };
 
       const { stats } = await marketplaceClient.CollectionStats(req);
-
       return stats;
     },
     { staleTime: Infinity, keepPreviousData: true },

@@ -75,8 +75,8 @@ type DBCollectionWithExtra struct {
 	Name                string
 	ImageURI            string
 	Volume              string
-	TotalVolume         float32
-	FloorPrice          uint64
+	TotalVolume         string
+	FloorPrice          string
 	MintPrice           string
 	NumTrades           int64
 	NumOwners           int32
@@ -186,7 +186,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
                                           ON aop.id = t2.activity_id
     ),
     trades_by_collection_historic AS (
-        select COALESCE(sum(cast(t.price as float8)),0) as total_volume, COALESCE(sum(t.usd_price),0) as total_volume_usd, c.id, count(*) num_trades
+        select COALESCE(sum(t.price::bigint),0) as total_volume, COALESCE(sum(t.usd_price),0) as total_volume_usd, c.id, count(*) num_trades
         FROM trades t join activities a on a.id = t.activity_id
                       join teritori_collections tc on split_part(a.nft_id,'-',2)=tc.mint_contract_address
                       join collections c on c.id = tc.collection_id
@@ -196,12 +196,12 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
         from nfts
         group by collection_id),
     trades_by_collection AS (
-      SELECT SUM(cast(t.price as float8)) volume, nbc.id FROM trades_on_period AS t
+      SELECT SUM(t.price::bigint) volume, nbc.id FROM trades_on_period AS t
       INNER JOIN nft_by_collection nbc ON nbc.nft_id = t.nft_id
       GROUP BY nbc.id
     ),
     trades_by_collection_comparision AS (
-        SELECT SUM(cast(t.price as float8)) volume, nbc.id 
+        SELECT SUM(t.price::bigint) volume, nbc.id
         FROM trades_on_period_comparision AS t
         INNER JOIN nft_by_collection nbc ON nbc.nft_id = t.nft_id
         GROUP BY nbc.id
@@ -229,15 +229,6 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 	}
 
 	for _, c := range collections {
-		floorPrice := c.FloorPrice
-		totalVolume := c.TotalVolume
-
-		// FIXME: change floor_price, total_volume to text/bigint to handle eth value
-		if network.GetBase().Kind == networks.NetworkKindEthereum {
-			floorPrice = 0
-			totalVolume = 0
-		}
-
 		if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: &marketplacepb.Collection{
 			Id:                  c.ID,
 			CollectionName:      c.Name,
@@ -252,8 +243,8 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 			SecondaryDuringMint: c.SecondaryDuringMint,
 			MintPrice:           c.Price,
 			Denom:               c.Denom,
-			FloorPrice:          floorPrice,
-			TotalVolume:         totalVolume,
+			FloorPrice:          c.FloorPrice,
+			TotalVolume:         c.TotalVolume,
 			NumTrades:           c.NumTrades,
 			NumOwners:           c.NumOwners,
 			MaxSupply:           c.MaxSupply,
@@ -840,17 +831,7 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 	}
 
 	switch network.(type) {
-
-	case *networks.EthereumNetwork:
-		stats, err := s.ethereumProvider.GetCollectionStats(ctx, collectionID, ownerID)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed fetch ethereum collection stats")
-		}
-		return &marketplacepb.CollectionStatsResponse{
-			Stats: stats,
-		}, nil
-
-	case *networks.CosmosNetwork:
+	case *networks.CosmosNetwork, *networks.EthereumNetwork:
 		db, err := s.conf.IndexerDB.DB()
 		if err != nil {
 			return nil, errors.Wrap(err, "failed get DB instance")
@@ -868,7 +849,7 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
         select min(price_amount) price_amount, price_denom from listed_nfts ln2 group by ln2.price_denom 
       ),
       trades_in_collection as (
-        select COALESCE(sum(cast(t.price as float8)),0) total_volume FROM trades AS t
+        select COALESCE(sum(t.price::bigint),0) total_volume FROM trades AS t
         INNER join activities AS a on a.id = t.activity_id 
         INNER join nfts_in_collection nic on nic.id = a.nft_id
       ),
@@ -878,7 +859,7 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
         WHERE a2."time" > $3
 			),
 			trades_on_period AS (
-        SELECT COALESCE(avg(cast(t2.price as float8)),0) avg_price_period FROM trades t2 INNER JOIN activities_on_period aop
+        SELECT COALESCE(avg(t2.price::bigint),0) avg_price_period FROM trades t2 INNER JOIN activities_on_period aop
 				ON aop.activity_id = t2.activity_id
 			)
       select 

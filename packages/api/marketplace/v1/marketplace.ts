@@ -189,10 +189,10 @@ export interface Collection {
   secondaryDuringMint: boolean;
   websiteUrl: string;
   twitterUrl: string;
-  floorPrice: number;
+  floorPrice: string;
   maxSupply: number;
   mintPrice: string;
-  totalVolume: number;
+  totalVolume: string;
   numTrades: number;
   numOwners: number;
   denom: string;
@@ -890,10 +890,10 @@ function createBaseCollection(): Collection {
     secondaryDuringMint: false,
     websiteUrl: "",
     twitterUrl: "",
-    floorPrice: 0,
+    floorPrice: "",
     maxSupply: 0,
     mintPrice: "",
-    totalVolume: 0,
+    totalVolume: "",
     numTrades: 0,
     numOwners: 0,
     denom: "",
@@ -942,8 +942,8 @@ export const Collection = {
     if (message.twitterUrl !== "") {
       writer.uint32(114).string(message.twitterUrl);
     }
-    if (message.floorPrice !== 0) {
-      writer.uint32(120).uint64(message.floorPrice);
+    if (message.floorPrice !== "") {
+      writer.uint32(122).string(message.floorPrice);
     }
     if (message.maxSupply !== 0) {
       writer.uint32(128).int64(message.maxSupply);
@@ -951,8 +951,8 @@ export const Collection = {
     if (message.mintPrice !== "") {
       writer.uint32(138).string(message.mintPrice);
     }
-    if (message.totalVolume !== 0) {
-      writer.uint32(149).float(message.totalVolume);
+    if (message.totalVolume !== "") {
+      writer.uint32(146).string(message.totalVolume);
     }
     if (message.numTrades !== 0) {
       writer.uint32(152).int64(message.numTrades);
@@ -1068,11 +1068,11 @@ export const Collection = {
           message.twitterUrl = reader.string();
           continue;
         case 15:
-          if (tag !== 120) {
+          if (tag !== 122) {
             break;
           }
 
-          message.floorPrice = longToNumber(reader.uint64() as Long);
+          message.floorPrice = reader.string();
           continue;
         case 16:
           if (tag !== 128) {
@@ -1089,11 +1089,11 @@ export const Collection = {
           message.mintPrice = reader.string();
           continue;
         case 18:
-          if (tag !== 149) {
+          if (tag !== 146) {
             break;
           }
 
-          message.totalVolume = reader.float();
+          message.totalVolume = reader.string();
           continue;
         case 19:
           if (tag !== 152) {
@@ -1147,10 +1147,10 @@ export const Collection = {
       secondaryDuringMint: isSet(object.secondaryDuringMint) ? globalThis.Boolean(object.secondaryDuringMint) : false,
       websiteUrl: isSet(object.websiteUrl) ? globalThis.String(object.websiteUrl) : "",
       twitterUrl: isSet(object.twitterUrl) ? globalThis.String(object.twitterUrl) : "",
-      floorPrice: isSet(object.floorPrice) ? globalThis.Number(object.floorPrice) : 0,
+      floorPrice: isSet(object.floorPrice) ? globalThis.String(object.floorPrice) : "",
       maxSupply: isSet(object.maxSupply) ? globalThis.Number(object.maxSupply) : 0,
       mintPrice: isSet(object.mintPrice) ? globalThis.String(object.mintPrice) : "",
-      totalVolume: isSet(object.totalVolume) ? globalThis.Number(object.totalVolume) : 0,
+      totalVolume: isSet(object.totalVolume) ? globalThis.String(object.totalVolume) : "",
       numTrades: isSet(object.numTrades) ? globalThis.Number(object.numTrades) : 0,
       numOwners: isSet(object.numOwners) ? globalThis.Number(object.numOwners) : 0,
       denom: isSet(object.denom) ? globalThis.String(object.denom) : "",
@@ -1199,8 +1199,8 @@ export const Collection = {
     if (message.twitterUrl !== "") {
       obj.twitterUrl = message.twitterUrl;
     }
-    if (message.floorPrice !== 0) {
-      obj.floorPrice = Math.round(message.floorPrice);
+    if (message.floorPrice !== "") {
+      obj.floorPrice = message.floorPrice;
     }
     if (message.maxSupply !== 0) {
       obj.maxSupply = Math.round(message.maxSupply);
@@ -1208,7 +1208,7 @@ export const Collection = {
     if (message.mintPrice !== "") {
       obj.mintPrice = message.mintPrice;
     }
-    if (message.totalVolume !== 0) {
+    if (message.totalVolume !== "") {
       obj.totalVolume = message.totalVolume;
     }
     if (message.numTrades !== 0) {
@@ -1244,10 +1244,10 @@ export const Collection = {
     message.secondaryDuringMint = object.secondaryDuringMint ?? false;
     message.websiteUrl = object.websiteUrl ?? "";
     message.twitterUrl = object.twitterUrl ?? "";
-    message.floorPrice = object.floorPrice ?? 0;
+    message.floorPrice = object.floorPrice ?? "";
     message.maxSupply = object.maxSupply ?? 0;
     message.mintPrice = object.mintPrice ?? "";
-    message.totalVolume = object.totalVolume ?? 0;
+    message.totalVolume = object.totalVolume ?? "";
     message.numTrades = object.numTrades ?? 0;
     message.numOwners = object.numOwners ?? 0;
     message.denom = object.denom ?? "";

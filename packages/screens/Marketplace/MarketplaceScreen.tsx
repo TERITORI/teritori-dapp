@@ -303,7 +303,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         paddingHorizontal: layout.spacing_x2_5,
       }}
       to={{
-        screen: collection.floorPrice !== 0 ? "Collection" : "MintCollection",
+        screen: +collection.floorPrice !== 0 ? "Collection" : "MintCollection",
         params: { id: collection.id },
       }}
     >
@@ -422,7 +422,7 @@ const useRowData = (collection: Collection, rank: number): RowData => {
     },
     totalVolume: {
       networkId: collection.networkId,
-      value: collection.totalVolume,
+      value: +collection.totalVolume,
       denom: collection.denom,
     },
     TimePeriodVolume: {
@@ -434,7 +434,7 @@ const useRowData = (collection: Collection, rank: number): RowData => {
     sales: numFormatter(collection.numTrades, 0),
     floorPrice: {
       networkId: collection.networkId,
-      value: collection.floorPrice,
+      value: +collection.floorPrice,
       denom: collection.denom,
     },
     owners: numFormatter(
