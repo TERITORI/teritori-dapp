@@ -1,4 +1,3 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 
@@ -11,22 +10,19 @@ import closeSVG from "../../../../assets/icons/close.svg";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
-import { RootStackParamList } from "../../../utils/navigation";
+import { ScreenFC } from "../../../utils/navigation";
 import MiniHeader from "../Notifications/components/MiniHeader";
 import { SettingBase } from "../Settings/components/SettingBase";
-
-interface AddressBookScreenProps
-  extends NativeStackScreenProps<RootStackParamList, "EditAddressBook"> {}
 
 const addresses: AddressBookType[] = [
   { id: "asdfdasd", label: "Defi1", address: "fadfd..sdf" },
   { id: "asdfdasd8989", label: "Defi2", address: "fadfd..sdf" },
 ];
 
-export default function EditAddressBookScreen({
+const EditAddressBookScreen: ScreenFC<"EditAddressBook"> = ({
   navigation,
   route,
-}: AddressBookScreenProps) {
+}) => {
   const onClose = () =>
     navigation.canGoBack()
       ? navigation.goBack()
@@ -95,4 +91,6 @@ export default function EditAddressBookScreen({
       </View>
     </SettingBase>
   );
-}
+};
+
+export default EditAddressBookScreen;

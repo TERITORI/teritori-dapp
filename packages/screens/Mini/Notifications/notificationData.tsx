@@ -6,7 +6,6 @@ import {
   primaryColor,
   purpleDark,
   purpleDefault,
-  secondaryColor,
 } from "../../../utils/style/colors";
 
 export const notifications: NotificationType[] = [
@@ -115,7 +114,7 @@ export const notifications: NotificationType[] = [
 export const randomGradients = [
   {
     direction: GradientDirectionEnum.bottomTop,
-    colors: [primaryColor, secondaryColor],
+    colors: [primaryColor, purpleDark],
   },
   {
     direction: GradientDirectionEnum.topBottom,

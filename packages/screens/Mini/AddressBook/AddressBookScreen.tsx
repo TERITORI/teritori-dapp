@@ -1,4 +1,3 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { FlatList } from "react-native";
 
 import ListView from "./components/ListView";
@@ -9,16 +8,12 @@ import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
-import { RootStackParamList } from "../../../utils/navigation";
+import { ScreenFC } from "../../../utils/navigation";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontNormal15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import MiniHeader from "../Notifications/components/MiniHeader";
 import { SettingBase } from "../Settings/components/SettingBase";
-
-type AddressBookScreenProps = {
-  navigation: NativeStackNavigationProp<RootStackParamList, "AddressBook">;
-};
 
 export type AddressBookType = {
   id: string;
@@ -26,9 +21,7 @@ export type AddressBookType = {
   address: string;
 };
 
-export default function AddressBookScreen({
-  navigation,
-}: AddressBookScreenProps) {
+const AddressBookScreen: ScreenFC<"AddressBook"> = ({ navigation }) => {
   const onClose = () =>
     navigation.canGoBack()
       ? navigation.goBack()
@@ -76,8 +69,9 @@ export default function AddressBookScreen({
           renderItem={({ item }) => (
             <ListView
               onPress={() =>
-                navigation.navigate("EditAddressBook", {
+                navigation.replace("EditAddressBook", {
                   addressId: item.id,
+                  back: "AddressBook",
                 })
               }
               style={{
@@ -95,7 +89,9 @@ export default function AddressBookScreen({
       <SpacerColumn size={1.5} />
       <Separator />
       <ListView
-        onPress={() => navigation.navigate("AddAddressBook")}
+        onPress={() =>
+          navigation.replace("AddAddressBook", { back: "AddressBook" })
+        }
         style={{
           paddingVertical: layout.spacing_x4,
           paddingHorizontal: layout.spacing_x1_5,
@@ -111,4 +107,6 @@ export default function AddressBookScreen({
       />
     </SettingBase>
   );
-}
+};
+
+export default AddressBookScreen;

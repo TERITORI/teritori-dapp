@@ -96,9 +96,9 @@ export type RootStackParamList = {
   MiniAccountDetails: { accountName: string; id: string };
   MiniAddAccount: undefined;
   Notifications: undefined;
-  AddressBook: undefined;
-  AddAddressBook: undefined;
-  EditAddressBook: { addressId: string };
+  AddressBook: { back?: RouteName };
+  AddAddressBook: { back?: RouteName };
+  EditAddressBook: { addressId: string; back?: RouteName };
   MiniSecurityAndPrivacy: undefined;
   MiniChangePassword: undefined;
   MiniRevealSeedPhrase: undefined;
@@ -112,8 +112,8 @@ export type RootStackParamList = {
   MiniDepositTORI: undefined;
   ModeSelection: undefined;
   ChatActivation: undefined;
-  MiniSendTori: undefined;
-  MiniSendingTori: undefined;
+  MiniSendTori: { back?: RouteName };
+  MiniSendingTori: { back?: RouteName };
   MiniTransactionDetail: { type: string; transactionId: string };
 };
 

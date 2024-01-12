@@ -1,4 +1,3 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { FlatList } from "react-native";
 
 import closeSVG from "../../../../assets/icons/close.svg";
@@ -7,17 +6,13 @@ import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
-import { RootStackParamList } from "../../../utils/navigation";
+import { ScreenFC } from "../../../utils/navigation";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontNormal15, fontSemibold18 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import ListView from "../AddressBook/components/ListView";
 import MiniHeader from "../Notifications/components/MiniHeader";
 import { SettingBase } from "../Settings/components/SettingBase";
-
-type SelectWalletScreenProps = {
-  navigation: NativeStackNavigationProp<RootStackParamList, "MiniSelectToken">;
-};
 
 export type SelectWalletType = {
   id: string;
@@ -26,9 +21,7 @@ export type SelectWalletType = {
   tori: number;
 };
 
-export default function SelectTokenScreen({
-  navigation,
-}: SelectWalletScreenProps) {
+const SelectTokenScreen: ScreenFC<"MiniSelectToken"> = ({ navigation }) => {
   const onClose = () =>
     navigation.canGoBack()
       ? navigation.goBack()
@@ -97,4 +90,6 @@ export default function SelectTokenScreen({
       <SpacerColumn size={2} />
     </SettingBase>
   );
-}
+};
+
+export default SelectTokenScreen;

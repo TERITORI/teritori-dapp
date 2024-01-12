@@ -1,4 +1,3 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Dimensions, View } from "react-native";
 
 import NotificationList from "./NotificationList";
@@ -6,12 +5,8 @@ import DropdownWithCheck from "./components/DropdownWithCheck";
 import MiniHeader from "./components/MiniHeader";
 import { BrandText } from "../../../components/BrandText";
 import { ScreenContainer } from "../../../components/ScreenContainer";
-import { RootStackParamList } from "../../../utils/navigation";
+import { ScreenFC } from "../../../utils/navigation";
 import { fontSemibold18 } from "../../../utils/style/fonts";
-
-type NotificationScreenProps = {
-  navigation: NativeStackNavigationProp<RootStackParamList, "Notifications">;
-};
 
 const filterOptions = [
   {
@@ -40,9 +35,7 @@ const filterOptions = [
   },
 ];
 
-export default function NotificationScreen({
-  navigation,
-}: NotificationScreenProps) {
+const NotificationScreen: ScreenFC<"Notifications"> = ({ navigation }) => {
   return (
     <ScreenContainer
       headerChildren={<></>}
@@ -74,4 +67,6 @@ export default function NotificationScreen({
       </View>
     </ScreenContainer>
   );
-}
+};
+
+export default NotificationScreen;
