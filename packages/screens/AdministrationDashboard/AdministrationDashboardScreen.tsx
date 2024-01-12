@@ -6,7 +6,7 @@ import { CurrentlyHighLightedProject } from "./component/CurrentlyHighLightedPro
 import { GenesisExplore } from "./component/GenesisExplore";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { Box } from "../../components/boxes/Box";
+import { SecondaryBox } from "../../components/boxes/SecondaryBox";
 import { Tabs } from "../../components/tabs/Tabs";
 import { ApplicationStatusCard } from "../../components/teritoriNameService/ApplicationStatusCard";
 import { useAppNavigation } from "../../utils/navigation";
@@ -180,8 +180,7 @@ export const AdministrationDashboardScreen: React.FC = () => {
         <TouchableOpacity
           onPress={() => navigation.navigate("LaunchpadApplications")}
         >
-          <Box
-            notched
+          <SecondaryBox
             style={{
               alignSelf: "center",
               borderRadius: 6,
@@ -195,7 +194,7 @@ export const AdministrationDashboardScreen: React.FC = () => {
             <BrandText style={[fontSemibold13, { color: primaryColor }]}>
               Load More
             </BrandText>
-          </Box>
+          </SecondaryBox>
         </TouchableOpacity>
 
         <View style={{ marginTop: layout.spacing_x4 }}>

@@ -19,7 +19,7 @@ import websiteSVG from "../../../assets/icons/website.svg";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
-import { Box } from "../../components/boxes/Box";
+import { SecondaryBox } from "../../components/boxes/SecondaryBox";
 import { useAppNavigation } from "../../utils/navigation";
 import { primaryColor, primaryTextColor } from "../../utils/style/colors";
 import {
@@ -125,8 +125,7 @@ export const ApplicationRewiewScreen: React.FC = () => {
               ))}
             </View>
             <TouchableOpacity>
-              <Box
-                notched
+              <SecondaryBox
                 style={{
                   alignSelf: "flex-start",
                   borderRadius: 6,
@@ -144,7 +143,7 @@ export const ApplicationRewiewScreen: React.FC = () => {
                 >
                   Approve
                 </BrandText>
-              </Box>
+              </SecondaryBox>
             </TouchableOpacity>
           </View>
           {/* ===== Right container */}

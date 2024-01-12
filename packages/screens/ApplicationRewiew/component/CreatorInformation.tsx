@@ -2,7 +2,7 @@ import React from "react";
 import { View, useWindowDimensions } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
-import { Box } from "../../../components/boxes/Box";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { neutral33, neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold12,
@@ -32,11 +32,8 @@ export const CreatorInformation: React.FC = () => {
           flexWrap: "wrap",
         }}
       >
-        <Box
-          notched
+        <TertiaryBox
           style={{
-            borderWidth: 1,
-            borderColor: neutral33,
             borderRadius: 6,
             padding: 12,
             flex: 1,
@@ -48,12 +45,9 @@ export const CreatorInformation: React.FC = () => {
           <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
             @nickname
           </BrandText>
-        </Box>
-        <Box
-          notched
+        </TertiaryBox>
+        <TertiaryBox
           style={{
-            borderWidth: 1,
-            borderColor: neutral33,
             borderRadius: 6,
             padding: 12,
             flex: 1,
@@ -65,13 +59,10 @@ export const CreatorInformation: React.FC = () => {
           <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
             @nickname
           </BrandText>
-        </Box>
+        </TertiaryBox>
         <View style={{ flex: 1, flexDirection: "row", gap: 12 }}>
-          <Box
-            notched
+          <TertiaryBox
             style={{
-              borderWidth: 1,
-              borderColor: neutral33,
               borderRadius: 6,
               padding: 12,
               flex: 1,
@@ -83,12 +74,9 @@ export const CreatorInformation: React.FC = () => {
             <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
               5000
             </BrandText>
-          </Box>
-          <Box
-            notched
+          </TertiaryBox>
+          <TertiaryBox
             style={{
-              borderWidth: 1,
-              borderColor: neutral33,
               borderRadius: 6,
               padding: 12,
               flex: 1,
@@ -100,7 +88,7 @@ export const CreatorInformation: React.FC = () => {
             <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
               5000
             </BrandText>
-          </Box>
+          </TertiaryBox>
         </View>
       </View>
       <View
@@ -110,11 +98,8 @@ export const CreatorInformation: React.FC = () => {
           gap: 12,
         }}
       >
-        <Box
-          notched
+        <TertiaryBox
           style={{
-            borderWidth: 1,
-            borderColor: neutral33,
             borderRadius: 6,
             padding: 12,
             flex: 1,
@@ -126,12 +111,9 @@ export const CreatorInformation: React.FC = () => {
           <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
             @nickname
           </BrandText>
-        </Box>
-        <Box
-          notched
+        </TertiaryBox>
+        <TertiaryBox
           style={{
-            borderWidth: 1,
-            borderColor: neutral33,
             borderRadius: 6,
             padding: 12,
             flex: 1,
@@ -143,12 +125,9 @@ export const CreatorInformation: React.FC = () => {
           <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
             https://discord.com/link
           </BrandText>
-        </Box>
-        <Box
-          notched
+        </TertiaryBox>
+        <TertiaryBox
           style={{
-            borderWidth: 1,
-            borderColor: neutral33,
             borderRadius: 6,
             padding: 12,
             flex: 1,
@@ -160,7 +139,7 @@ export const CreatorInformation: React.FC = () => {
           <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
             hello@email.com
           </BrandText>
-        </Box>
+        </TertiaryBox>
       </View>
     </View>
   );

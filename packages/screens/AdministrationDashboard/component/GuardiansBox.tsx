@@ -17,13 +17,11 @@ import trashSVG from "../../../../assets/icons/trash-white.svg";
 import upSVG from "../../../../assets/icons/up.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { Box, BoxStyle } from "../../../components/boxes/Box";
+import { BoxStyle } from "../../../components/boxes/Box";
+import { PrimaryBox } from "../../../components/boxes/PrimaryBox";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SearchInput } from "../../../components/sorts/SearchInput";
-import {
-  neutral33,
-  neutral00,
-  gradientColorLightBlue,
-} from "../../../utils/style/colors";
+import { neutral33, neutral00 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 
 const MD_BREAKPOINT = 820;
@@ -53,7 +51,7 @@ export const GuardiansBox = () => {
                   <SVG source={dotSVG} />
                 </View>
               </View>
-              <Box notched style={herosLisBox}>
+              <TertiaryBox style={herosLisBox}>
                 <TouchableOpacity
                   onPress={() =>
                     setOpenedList((old) => (old === index ? -1 : index))
@@ -72,13 +70,10 @@ export const GuardiansBox = () => {
                   </View>
                 </TouchableOpacity>
                 {openedList === index ? (
-                  <Box
-                    notched
+                  <PrimaryBox
                     style={{
-                      height: 250,
+                      height: 260,
                       width: "100%",
-                      borderWidth: 1,
-                      borderColor: gradientColorLightBlue,
                     }}
                   >
                     <View style={{ margin: 10 }}>
@@ -101,7 +96,7 @@ export const GuardiansBox = () => {
                         }}
                       />
                     </View>
-                  </Box>
+                  </PrimaryBox>
                 ) : (
                   <ImageBackground
                     source={guardianPng}
@@ -113,19 +108,16 @@ export const GuardiansBox = () => {
                     </TouchableOpacity>
                   </ImageBackground>
                 )}
-              </Box>
+              </TertiaryBox>
             </View>
           </>
         );
       })}
       {guardiansHandler?.length < 5 ? (
-        <Box
-          notched
+        <TertiaryBox
           style={{
             width: width >= MD_BREAKPOINT ? "19%" : "100%",
             marginTop: 52,
-            borderWidth: 1,
-            borderColor: neutral33,
             padding: 12,
             height: 325,
           }}
@@ -141,7 +133,7 @@ export const GuardiansBox = () => {
               Add more
             </BrandText>
           </TouchableOpacity>
-        </Box>
+        </TertiaryBox>
       ) : null}
     </View>
   );
@@ -188,8 +180,6 @@ const viewBox: ViewStyle = {
 };
 
 const herosLisBox: BoxStyle = {
-  borderWidth: 1,
-  borderColor: neutral33,
   padding: 12,
   marginTop: 12,
   height: 325,
@@ -206,6 +196,6 @@ const plusBox: ViewStyle = {
 const imageBgStyle: ViewStyle = {
   alignItems: "center",
   justifyContent: "center",
-  height: 250,
+  height: 260,
   width: "100%",
 };

@@ -10,7 +10,7 @@ import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { Box } from "../boxes/Box";
+import { SecondaryBox } from "../boxes/SecondaryBox";
 
 export const HighVolSortButton: React.FC<{
   sortDirection: SortDirection;
@@ -28,8 +28,7 @@ export const HighVolSortButton: React.FC<{
 
   return (
     <TouchableOpacity onPress={handlePress} style={style}>
-      <Box
-        notched
+      <SecondaryBox
         style={{
           borderWidth: 1,
           borderColor: "#FFFFFF",
@@ -66,7 +65,7 @@ export const HighVolSortButton: React.FC<{
           style={{ marginLeft: layout.spacing_x0_5 }}
           color={secondaryColor}
         />
-      </Box>
+      </SecondaryBox>
     </TouchableOpacity>
   );
 };
