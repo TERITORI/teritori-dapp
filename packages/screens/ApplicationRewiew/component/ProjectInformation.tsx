@@ -3,8 +3,8 @@ import { View, useWindowDimensions } from "react-native";
 
 import { LinkCard } from "./LinkCard";
 import { BrandText } from "../../../components/BrandText";
-import { Box } from "../../../components/boxes/Box";
-import { neutral33, neutral77 } from "../../../utils/style/colors";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold12,
   fontSemibold14,
@@ -31,11 +31,8 @@ export const ProjectInformation: React.FC = () => {
           gap: 12,
         }}
       >
-        <Box
-          notched
+        <TertiaryBox
           style={{
-            borderWidth: 1,
-            borderColor: neutral33,
             borderRadius: 6,
             padding: 12,
             flex: 1,
@@ -51,7 +48,7 @@ export const ProjectInformation: React.FC = () => {
             majority. A minority of powerful & wealthy leaders, called the “The
             Legion''.
           </BrandText>
-        </Box>
+        </TertiaryBox>
         <LinkCard
           title="Other Links"
           linksData={[
@@ -61,11 +58,8 @@ export const ProjectInformation: React.FC = () => {
           ]}
         />
         <View style={{ flex: 1, gap: 12 }}>
-          <Box
-            notched
+          <TertiaryBox
             style={{
-              borderWidth: 1,
-              borderColor: neutral33,
               borderRadius: 6,
               padding: 12,
               flex: 1,
@@ -77,12 +71,9 @@ export const ProjectInformation: React.FC = () => {
             <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
               Apply Name
             </BrandText>
-          </Box>
-          <Box
-            notched
+          </TertiaryBox>
+          <TertiaryBox
             style={{
-              borderWidth: 1,
-              borderColor: neutral33,
               borderRadius: 6,
               padding: 12,
               flex: 1,
@@ -94,7 +85,7 @@ export const ProjectInformation: React.FC = () => {
             <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
               Type
             </BrandText>
-          </Box>
+          </TertiaryBox>
         </View>
       </View>
     </View>

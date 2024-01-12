@@ -5,7 +5,8 @@ import { GuardiansBox } from "./GuardiansBox";
 import blackCricleSVG from "../../../../assets/icons/black-check.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { Box, BoxStyle } from "../../../components/boxes/Box";
+import { BoxStyle } from "../../../components/boxes/Box";
+import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
 import {
   neutralA3,
   neutral17,
@@ -27,14 +28,14 @@ export const CurrentlyHighLightedProject = ({
         onPress={() => setIsEditHighlighted(false)}
         style={{ alignSelf: "flex-start" }}
       >
-        <Box notched style={boxBtn}>
+        <SecondaryBox style={boxBtn}>
           <SVG source={blackCricleSVG} />
           <BrandText
             style={[fontSemibold13, { color: neutral17, marginLeft: 5 }]}
           >
             Save changes
           </BrandText>
-        </Box>
+        </SecondaryBox>
       </TouchableOpacity>
       <View style={marginVertical24}>
         <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
