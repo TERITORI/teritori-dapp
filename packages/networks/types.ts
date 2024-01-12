@@ -38,6 +38,7 @@ export type CosmosNetworkInfo = NetworkInfoBase & {
   restEndpoint: string;
   rpcEndpoint: string;
   stakeCurrency: string;
+  registryName: string;
   gasPriceStep: {
     low: number;
     average: number;
