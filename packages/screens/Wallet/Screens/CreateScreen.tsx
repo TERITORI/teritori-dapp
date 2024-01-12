@@ -65,7 +65,7 @@ export const CreateScreen: ScreenFC<"NativeWallet"> = () => {
       >
         <Button text="Create Wallet" navigateTo="NativeWallet" />
         <Button text="Import Wallet" navigateTo="ImportWallet" />
-        <Button text="Connect Ledger" navigateTo="NativeWallet" />
+        <Button text="Connect Ledger" navigateTo="ConnectLedger" />
         {Platform.OS === "web" && <Connect3rdPartyWallet />}
       </View>
     </WalletContainer>

@@ -3,7 +3,6 @@ import * as Clipboard from "expo-clipboard";
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { CustomButton } from "./CustomButton";
 import { RedAlert } from "./RedAlert";
 import eyeClosedSVG from "../../../../../assets/icons/eye-closed.svg";
 import { BrandText } from "../../../../components/BrandText";
@@ -12,6 +11,7 @@ import { SpacerColumn } from "../../../../components/spacer";
 import { neutral09 } from "../../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
+import { CustomButton } from "../../components/CustomButton";
 
 const KEY =
   "0xb0b099df345359d948b59adaa3435b2484849335385f2594385ae8f1849019492019f25b5";

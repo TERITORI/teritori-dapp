@@ -13,7 +13,7 @@ import {
   fontSemibold30,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { CustomButton } from "../Settings/components/CustomButton";
+import { CustomButton } from "../components/CustomButton";
 
 const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;

@@ -115,6 +115,7 @@ export type RootStackParamList = {
   MiniSendTori: undefined;
   MiniSendingTori: undefined;
   MiniTransactionDetail: { type: string; transactionId: string };
+  ConnectLedger: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -249,6 +250,7 @@ const navConfig: {
     MiniSendTori: "mini-send-tori",
     MiniSendingTori: "mini-sending-tori",
     MiniTransactionDetail: "mini-transaction-detail",
+    ConnectLedger: "connect-ledger",
   },
 };
 

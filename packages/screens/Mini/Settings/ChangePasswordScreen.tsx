@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { Dimensions, View } from "react-native";
 
-import { CustomButton } from "./components/CustomButton";
-import { Input } from "./components/Input";
 import { SettingBase } from "./components/SettingBase";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
+import { CustomButton } from "../components/CustomButton";
+import { Input } from "../components/Input";
 
 export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
   navigation,
 }) => {
   const [formData, setFormDate] = useState({
-    pasword: "",
+    password: "",
     newPassword: "",
     confirmPassword: "",
   });
@@ -43,8 +43,8 @@ export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
       >
         <Input
           placeholder="Current Pasword"
-          value={formData.pasword}
-          onChangeText={(text) => handleTextChange(text, "pasword")}
+          value={formData.password}
+          onChangeText={(text) => handleTextChange(text, "password")}
           secureTextEntry
         />
         <SpacerColumn size={2} />
