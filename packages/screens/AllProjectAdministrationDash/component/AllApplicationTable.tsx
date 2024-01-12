@@ -2,9 +2,9 @@ import React from "react";
 import { FlatList, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
-import { CollectionNameCell } from "../../../components/applicationTableComponent/CollectionNameCell";
-import { InnerCellText } from "../../../components/applicationTableComponent/InnerCellText";
-import { PercentageVolumeCell } from "../../../components/applicationTableComponent/PercentageVolumeCell";
+import { CollectionNameCell } from "../../../components/applicationTable/CollectionNameCell";
+import { InnerCellText } from "../../../components/applicationTable/InnerCellText";
+import { PercentageVolumeCell } from "../../../components/applicationTable/PercentageVolumeCell";
 import { TableRow } from "../../../components/table/TableRow";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { mineShaftColor } from "../../../utils/style/colors";

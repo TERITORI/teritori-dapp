@@ -3,9 +3,6 @@ import { View, StyleProp, TouchableOpacity } from "react-native";
 
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import {
-  gradientColorBlue,
-  gradientColorDarkerBlue,
-  gradientColorPink,
   neutral00,
   neutral11,
   neutral30,
@@ -15,7 +12,8 @@ import { fontSemibold16, fontSemibold24 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { Box, BoxStyle } from "../boxes/Box";
+import { BoxStyle } from "../boxes/Box";
+import { PrimaryBox } from "../boxes/PrimaryBox";
 
 export const ApplicationStatusCard: React.FC<{
   label: string;
@@ -25,11 +23,7 @@ export const ApplicationStatusCard: React.FC<{
   isReady?: boolean;
 }> = ({ label, style, count, isReady, onPress }) => {
   return (
-    <Box
-      notched
-      borderGradient={{
-        colors: [gradientColorBlue, gradientColorDarkerBlue, gradientColorPink],
-      }}
+    <PrimaryBox
       style={[
         style,
         {
@@ -70,6 +64,6 @@ export const ApplicationStatusCard: React.FC<{
           <SVG source={chevronRightSVG} width={16} />
         </View>
       </TouchableOpacity>
-    </Box>
+    </PrimaryBox>
   );
 };
