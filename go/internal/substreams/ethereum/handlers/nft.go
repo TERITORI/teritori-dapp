@@ -114,6 +114,7 @@ func (h *Handler) handleInitialize(tx *pb.Tx) error {
 			MintContractAddress: minterAddress,
 			NFTContractAddress:  nftAddress,
 			CreatorAddress:      tx.Info.From,
+			Denom:               network.GetBase().Currencies[0].GetDenom(),
 		},
 	}
 

@@ -229,6 +229,15 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 	}
 
 	for _, c := range collections {
+		floorPrice := c.FloorPrice
+		totalVolume := c.TotalVolume
+
+		// FIXME: change floor_price, total_volume to text/bigint to handle eth value
+		if network.GetBase().Kind == networks.NetworkKindEthereum {
+			floorPrice = 0
+			totalVolume = 0
+		}
+
 		if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: &marketplacepb.Collection{
 			Id:                  c.ID,
 			CollectionName:      c.Name,
@@ -243,8 +252,8 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 			SecondaryDuringMint: c.SecondaryDuringMint,
 			MintPrice:           c.Price,
 			Denom:               c.Denom,
-			FloorPrice:          c.FloorPrice,
-			TotalVolume:         c.TotalVolume,
+			FloorPrice:          floorPrice,
+			TotalVolume:         totalVolume,
 			NumTrades:           c.NumTrades,
 			NumOwners:           c.NumOwners,
 			MaxSupply:           c.MaxSupply,
