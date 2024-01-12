@@ -1,18 +1,10 @@
 import React from "react";
-import { Image, ImageSourcePropType, View } from "react-native";
+import { View } from "react-native";
 
-import addSVG from "../../../../../assets/icons/add-circle-blue.svg";
-import linesSVG from "../../../../../assets/icons/lines-gray.svg";
-import minusSVG from "../../../../../assets/icons/minus-circle-red.svg";
+import { DAppStoreMenuItem } from "./DAppStoreMenuItems";
 import astroportPNG from "../../../../../assets/icons/networks/Astroport.png";
 import axelarPNG from "../../../../../assets/icons/networks/axelar.png";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { Separator } from "../../../../components/separators/Separator";
-import { neutralA3 } from "../../../../utils/style/colors";
-import { fontMedium13, fontSemibold22 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
 type Props = {
   isEditing: boolean;
   togggleEdting: () => void;
@@ -21,7 +13,7 @@ type Props = {
 export const DAppsList = ({ isEditing, togggleEdting }: Props) => {
   return (
     <View style={{ paddingBottom: isEditing ? 100 : 0 }}>
-      <IndividualDApp
+      <DAppStoreMenuItem
         icon={axelarPNG}
         title="Axelar Network"
         subTitle="Secure building"
@@ -29,7 +21,7 @@ export const DAppsList = ({ isEditing, togggleEdting }: Props) => {
         onPress={() => alert("Axelar Network")}
         isAdded
       />
-      <IndividualDApp
+      <DAppStoreMenuItem
         icon={astroportPNG}
         title="Powerful DEX"
         subTitle="Powerful DEX"
@@ -38,70 +30,70 @@ export const DAppsList = ({ isEditing, togggleEdting }: Props) => {
         isAdded
       />
       <Separator />
-      <IndividualDApp
+      <DAppStoreMenuItem
         icon={axelarPNG}
         title="Axelar Network"
         subTitle="Secure building"
         isEditing={isEditing}
         onPress={() => alert("Axelar Network")}
       />
-      <IndividualDApp
+      <DAppStoreMenuItem
         icon={astroportPNG}
         title="Powerful DEX"
         subTitle="Powerful DEX"
         isEditing={isEditing}
         onPress={() => alert("Powerful DEX")}
       />
-      <IndividualDApp
+      <DAppStoreMenuItem
         icon={axelarPNG}
         title="Axelar Network"
         subTitle="Secure building"
         isEditing={isEditing}
         onPress={() => alert("Axelar Network")}
       />
-      <IndividualDApp
+      <DAppStoreMenuItem
         icon={astroportPNG}
         title="Powerful DEX"
         subTitle="Powerful DEX"
         isEditing={isEditing}
         onPress={() => alert("Powerful DEX")}
       />
-      <IndividualDApp
+      <DAppStoreMenuItem
         icon={axelarPNG}
         title="Axelar Network"
         subTitle="Secure building"
         isEditing={isEditing}
         onPress={() => alert("Axelar Network")}
       />
-      <IndividualDApp
+      <DAppStoreMenuItem
         icon={astroportPNG}
         title="Powerful DEX"
         subTitle="Powerful DEX"
         isEditing={isEditing}
         onPress={() => alert("Powerful DEX")}
       />
-      <IndividualDApp
+      <DAppStoreMenuItem
         icon={axelarPNG}
         title="Axelar Network"
         subTitle="Secure building"
         isEditing={isEditing}
         onPress={() => alert("Axelar Network")}
       />
-      <IndividualDApp
+      <DAppStoreMenuItem
         icon={astroportPNG}
         title="Powerful DEX"
         subTitle="Powerful DEX"
         isEditing={isEditing}
         onPress={() => alert("Powerful DEX")}
       />
-      <IndividualDApp
+      <DAppStoreMenuItem
         icon={axelarPNG}
         title="Axelar Network"
         subTitle="Secure building"
         isEditing={isEditing}
         onPress={() => alert("Axelar Network")}
       />
-      <IndividualDApp
+      <DAppStoreMenuItem
         icon={astroportPNG}
         title="Powerful DEX"
         subTitle="Powerful DEX"
@@ -126,62 +118,5 @@ export const DAppsList = ({ isEditing, togggleEdting }: Props) => {
         </CustomPressable>
       )} */}
     </View>
-  );
-};
-
-type IndividualDAppProps = {
-  icon: ImageSourcePropType;
-  title: string;
-  subTitle?: string;
-  onPress?: () => void;
-  isAdded?: boolean;
-  isEditing?: boolean;
-};
-const IndividualDApp = ({
-  icon,
-  title,
-  onPress,
-  subTitle,
-  isAdded = false,
-  isEditing = false,
-}: IndividualDAppProps) => {
-  if (!isAdded && !isEditing) {
-    return null;
-  }
-  return (
-    <CustomPressable
-      onPress={onPress}
-      style={{
-        paddingVertical: 12,
-        alignItems: "center",
-        flexDirection: "row",
-        justifyContent: "space-between",
-      }}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          gap: layout.spacing_x1_5,
-          alignItems: "center",
-        }}
-      >
-        {isEditing && isAdded && <SVG source={minusSVG} />}
-        {isEditing && !isAdded && <SVG source={addSVG} />}
-        <Image
-          source={{ uri: Image.resolveAssetSource(icon).uri }}
-          height={24}
-          width={24}
-        />
-        <View>
-          <BrandText style={[fontSemibold22, {}]}>{title}</BrandText>
-          {subTitle && (
-            <BrandText style={[fontMedium13, { color: neutralA3 }]}>
-              {subTitle}
-            </BrandText>
-          )}
-        </View>
-      </View>
-      {isEditing && isAdded && <SVG source={linesSVG} height={20} width={20} />}
-    </CustomPressable>
   );
 };

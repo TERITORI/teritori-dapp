@@ -39,21 +39,25 @@ export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
               icon={marketplaceSVG}
               title="Marketplace"
               subTitle="NFT Marketplace"
+              isAdded
             />
             <DAppStoreMenuItem
               icon={launchpadSVG}
               title="Launchpad"
               subTitle="Multi Network NFT Launchpad"
+              isAdded
             />
             <DAppStoreMenuItem
               icon={stakingSVG}
               title="Staking"
               subTitle="Staking"
+              isAdded
             />
             <DAppStoreMenuItem
               icon={governanceSVG}
               title="Governance"
               subTitle="Governance"
+              isAdded
             />
 
             <DAppsList
@@ -66,6 +70,7 @@ export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
                 icon={penSVG}
                 title="Edit dApps list"
                 onPress={() => setEnableEditingDApps(true)}
+                isAdded
               />
             )}
           </View>

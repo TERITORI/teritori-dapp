@@ -2,8 +2,12 @@ import React, { FC } from "react";
 import { View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
+import addSVG from "../../../../../assets/icons/add-circle-blue.svg";
+import linesSVG from "../../../../../assets/icons/lines-gray.svg";
+import minusSVG from "../../../../../assets/icons/minus-circle-red.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
+import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { neutralA3 } from "../../../../utils/style/colors";
 import { fontMedium13, fontSemibold22 } from "../../../../utils/style/fonts";
@@ -14,6 +18,8 @@ type MenuItemProps = {
   title: string;
   subTitle?: string;
   onPress?: () => void;
+  isAdded?: boolean;
+  isEditing?: boolean;
 };
 
 export const DAppStoreMenuItem = ({
@@ -21,9 +27,22 @@ export const DAppStoreMenuItem = ({
   onPress,
   title,
   subTitle,
+  isAdded,
+  isEditing,
 }: MenuItemProps) => {
+  if (!isAdded && !isEditing) {
+    return null;
+  }
   return (
-    <CustomPressable onPress={onPress} style={{ paddingVertical: 12 }}>
+    <CustomPressable
+      onPress={onPress}
+      style={{
+        paddingVertical: 12,
+        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-between",
+      }}
+    >
       <View
         style={{
           flexDirection: "row",
@@ -31,7 +50,9 @@ export const DAppStoreMenuItem = ({
           alignItems: "center",
         }}
       >
-        <SVG source={icon} height={24} width={24} />
+        {isEditing && isAdded && <SVG source={minusSVG} />}
+        {isEditing && !isAdded && <SVG source={addSVG} />}
+        <SVGorImageIcon icon={icon} iconSize={24} />
         <View>
           <BrandText style={[fontSemibold22, {}]}>{title}</BrandText>
           {subTitle && (
@@ -41,6 +62,7 @@ export const DAppStoreMenuItem = ({
           )}
         </View>
       </View>
+      {isEditing && isAdded && <SVG source={linesSVG} height={20} width={20} />}
     </CustomPressable>
   );
 };
