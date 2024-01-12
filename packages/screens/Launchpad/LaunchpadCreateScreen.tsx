@@ -11,7 +11,7 @@ import ChevronRightSvg from "../../../assets/icons/chevron-right.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { Box } from "../../components/boxes/Box";
+import { PrimaryBox } from "../../components/boxes/PrimaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { SpacerColumn } from "../../components/spacer";
@@ -84,7 +84,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
           marginTop: layout.spacing_x3,
         }}
       >
-        <Box
+        <PrimaryBox
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -93,6 +93,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
             backgroundColor: neutral17,
             justifyContent: "center",
             marginHorizontal: layout.spacing_x3,
+            borderWidth: 0,
           }}
         >
           {stepOptions.map((item, index) => (
@@ -159,10 +160,12 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
               )}
             </TouchableOpacity>
           ))}
-        </Box>
+        </PrimaryBox>
+
         <View
           style={{
             paddingHorizontal: layout.spacing_x3_5,
+            zIndex: 1,
           }}
         >
           <SpacerColumn size={4} />

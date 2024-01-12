@@ -1,1 +1,1 @@
-export * from "./SelectFileUploader";
+export * from "./SelectFileUploader.web";

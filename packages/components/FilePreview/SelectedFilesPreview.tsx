@@ -7,7 +7,6 @@ import { layout } from "../../utils/style/layout";
 import { LocalFileData } from "../../utils/types/files";
 import { AssetsPagination } from "../AssetsPagination";
 import { BrandText } from "../BrandText";
-import { Box } from "../boxes/Box";
 import { PrimaryBox } from "../boxes/PrimaryBox";
 import { SpacerColumn } from "../spacer";
 
@@ -151,11 +150,10 @@ export const SelectedFilesPreview: React.FC<{
             </View>
           </>
         ) : (
-          <Box
+          <PrimaryBox
             style={{
               height: 267,
               width: "100%",
-              borderWidth: 1,
               justifyContent: "center",
               alignItems: "center",
               borderColor: neutral33,
@@ -164,7 +162,7 @@ export const SelectedFilesPreview: React.FC<{
             <BrandText style={[fontSemibold20, { color: neutral55 }]}>
               Select assets to preview
             </BrandText>
-          </Box>
+          </PrimaryBox>
         )}
       </View>
       {assets.length > 0 && (

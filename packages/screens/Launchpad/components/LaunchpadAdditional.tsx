@@ -119,7 +119,6 @@ export const LaunchpadAdditional: React.FC = () => {
           name="mintDate"
           control={control}
           variant="labelOutside"
-          multiline
           containerStyle={{ marginBottom: layout.spacing_x3 }}
           boxMainContainerStyle={{
             backgroundColor: neutral00,

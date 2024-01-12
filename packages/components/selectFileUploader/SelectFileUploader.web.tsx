@@ -7,13 +7,9 @@ import addSVG from "../../../assets/icons/add-circle.svg";
 import filesSVG from "../../../assets/icons/files.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import {
-  gradientColorBlue,
-  gradientColorDarkerBlue,
-  gradientColorTurquoise,
   neutral17,
   primaryColor,
   secondaryColor,
-  withAlpha,
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -21,7 +17,7 @@ import { LocalFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
 import { DeleteButton } from "../FilePreview/DeleteButton";
 import { SVGorImageIcon } from "../SVG/SVGorImageIcon";
-import { Box } from "../boxes/Box";
+import { PrimaryBox } from "../boxes/PrimaryBox";
 import { Label } from "../inputs/TextInputCustom";
 
 export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
@@ -162,17 +158,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
                 />
               </>
             ) : (
-              <Box
-                borderGradient={{
-                  start: { x: 0, y: 0 },
-                  end: { x: 1, y: 1 },
-                  locations: [0.7, 0.8],
-                  colors: [
-                    withAlpha(gradientColorDarkerBlue, 0.5),
-                    withAlpha(gradientColorBlue, 0.5),
-                    withAlpha(gradientColorTurquoise, 0.5),
-                  ],
-                }}
+              <PrimaryBox
                 style={{
                   flex: 1,
                   width: "100%",
@@ -268,7 +254,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
                     />
                   </View>
                 )}
-              </Box>
+              </PrimaryBox>
             )}
           </div>
         </TouchableOpacity>
