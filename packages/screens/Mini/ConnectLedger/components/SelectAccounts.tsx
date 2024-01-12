@@ -16,8 +16,8 @@ import {
   fontSemibold30,
 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
-import { Checkbox } from "../../components/Checkbox";
 import { CustomButton } from "../../components/CustomButton";
+import { CustomCheckbox } from "../../components/CustomCheckbox";
 import { StepType } from "../ConnectLedgerScreen";
 
 type Props = {
@@ -174,7 +174,7 @@ const Account = ({ isSelected, onSelect, path, token }: AccountProps) => {
           {path}
         </BrandText>
       </View>
-      <Checkbox isChecked={isSelected} onPress={onSelect} />
+      <CustomCheckbox isChecked={isSelected} onPress={onSelect} />
     </View>
   );
 };

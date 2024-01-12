@@ -2,10 +2,10 @@ import React from "react";
 import { View } from "react-native";
 import { Badge } from "react-native-paper";
 
-import { BrandText } from "../../../../components/BrandText";
-import { neutral22 } from "../../../../utils/style/colors";
-import { fontBold10 } from "../../../../utils/style/fonts";
-import { Avatar } from "../../../Message/components/Avatar";
+import { BrandText } from "../../../components/BrandText";
+import { neutral22 } from "../../../utils/style/colors";
+import { fontBold10 } from "../../../utils/style/fonts";
+import { Avatar } from "../../Message/components/Avatar";
 
 type ChatAvatarProps = {
   isActive?: boolean;

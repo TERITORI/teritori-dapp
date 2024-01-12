@@ -12,7 +12,11 @@ type Props = {
   onPress?: () => void;
 };
 
-export const Checkbox = ({ isChecked = false, style, onPress }: Props) => {
+export const CustomCheckbox = ({
+  isChecked = false,
+  style,
+  onPress,
+}: Props) => {
   return (
     <CustomPressable onPress={onPress}>
       <View
