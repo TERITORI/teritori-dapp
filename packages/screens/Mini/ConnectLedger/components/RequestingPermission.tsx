@@ -1,7 +1,7 @@
 import React from "react";
 import { Dimensions, View } from "react-native";
 
-import requestingPermissionSVG from "../../../../../assets/icons/loader.png";
+import requestingPermissionPNG from "../../../../../assets/icons/loader.png";
 import { BrandText } from "../../../../components/BrandText";
 import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
 import { neutral77 } from "../../../../utils/style/colors";
@@ -20,7 +20,7 @@ export const RequestingPermission = ({ onStepChange }: Props) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ alignItems: "center", paddingTop: 100, flex: 1 }}>
+      <View style={{ alignItems: "center", paddingTop: 80, flex: 1 }}>
         <View
           style={{
             height: 152,
@@ -30,7 +30,7 @@ export const RequestingPermission = ({ onStepChange }: Props) => {
             justifyContent: "center",
           }}
         >
-          <SVGorImageIcon icon={requestingPermissionSVG} iconSize={152} />
+          <SVGorImageIcon icon={requestingPermissionPNG} iconSize={152} />
         </View>
         <BrandText
           style={[

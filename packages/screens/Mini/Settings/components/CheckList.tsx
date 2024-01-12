@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Dimensions, View } from "react-native";
 
-import { Input } from "./Input";
+import { Input } from "../../components/Input";
 import { RedAlert } from "./RedAlert";
 import { BrandText } from "../../../../components/BrandText";
 import { SpacerColumn } from "../../../../components/spacer";
 import { neutral22, neutralA3 } from "../../../../utils/style/colors";
 import { fontMedium16 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
-import { Checkbox } from "../../Chat/components/Checkbox";
+import { Checkbox } from "../../components/Checkbox";
 import { CustomButton } from "../../components/CustomButton";
 
 type Props = {

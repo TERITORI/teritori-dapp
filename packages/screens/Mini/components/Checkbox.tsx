@@ -1,10 +1,10 @@
 import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import checkBoxSVG from "../../../../../assets/icons/checkbox-mini.svg";
-import { SVG } from "../../../../components/SVG";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { blueDefault, neutralA3 } from "../../../../utils/style/colors";
+import checkBoxSVG from "../../../../assets/icons/checkbox-mini.svg";
+import { SVG } from "../../../components/SVG";
+import { CustomPressable } from "../../../components/buttons/CustomPressable";
+import { blueDefault, neutralA3 } from "../../../utils/style/colors";
 
 type Props = {
   isChecked?: boolean;

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ScrollView, View } from "react-native";
 
-import { Checkbox } from "./Checkbox";
 import chevronGrayRightSVG from "../../../../../assets/icons/chevron-right-gray.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { OptimizedImage } from "../../../../components/OptimizedImage";
@@ -16,6 +15,7 @@ import {
   fontSemibold15,
 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
+import { Checkbox } from "../../components/Checkbox";
 
 const fake_url =
   "https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg";

@@ -86,7 +86,7 @@ const MainTab = () => {
 
 export const MiniNavigator: React.FC = () => {
   return (
-    <Stack.Navigator initialRouteName="ConnectLedger">
+    <Stack.Navigator initialRouteName="ModeSelection">
       <Stack.Screen
         name="ModeSelection"
         component={ModeSelectionScreen}

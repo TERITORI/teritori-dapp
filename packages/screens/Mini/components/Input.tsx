@@ -5,9 +5,9 @@ import {
   neutral22,
   neutral77,
   secondaryColor,
-} from "../../../../utils/style/colors";
-import { fontMedium16 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
+} from "../../../utils/style/colors";
+import { fontMedium16 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 
 type Props = {
   value: string;

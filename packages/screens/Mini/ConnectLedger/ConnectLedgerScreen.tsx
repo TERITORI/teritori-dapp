@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { SafeAreaView, View } from "react-native";
 
+import { AllSet } from "./components/AllSet";
 import { ConnectDevice } from "./components/ConnectDevice";
+import { CreatePassword } from "./components/CreatePassword";
+import { LoadingAccounts } from "./components/LoadingAccounts";
 import { OpenHelpInApp } from "./components/OpenHelpInApp";
 import { RequestingPermission } from "./components/RequestingPermission";
+import { SelectAccounts } from "./components/SelectAccounts";
 import teritoriSVG from "../../../../assets/icons/teritori-white.svg";
 import { SVG } from "../../../components/SVG";
 import { ScreenFC } from "../../../utils/navigation";
@@ -19,15 +23,24 @@ const screensSteps = {
   step_6: "create-password",
   step_7: "all-set",
 } as const;
+
 export type StepType = keyof typeof screensSteps;
 
-export const ConnectLedgerScreen: ScreenFC<"ConnectLedger"> = ({}) => {
+export const ConnectLedgerScreen: ScreenFC<"ConnectLedger"> = ({
+  navigation,
+}) => {
   const [activeStep, setActiveStep] = useState<StepType>("step_1");
   const activeScreen = screensSteps[activeStep];
 
   const onStepChange = (step: StepType) => {
     setActiveStep(step);
   };
+
+  const onComplete = () => navigation.navigate("MiniTabs");
+
+  const activeScreenPosition = +activeStep.split("_")[1];
+  const screenPercentage =
+    (activeScreenPosition / Object.keys(screensSteps).length) * 100;
 
   return (
     <SafeAreaView
@@ -44,7 +57,7 @@ export const ConnectLedgerScreen: ScreenFC<"ConnectLedger"> = ({}) => {
           width={27}
           style={{ alignSelf: "center", marginBottom: layout.spacing_x2_5 }}
         />
-        <ProgressLine2 percent={50} />
+        <ProgressLine2 percent={screenPercentage} />
       </View>
       <View
         style={{
@@ -58,10 +71,10 @@ export const ConnectLedgerScreen: ScreenFC<"ConnectLedger"> = ({}) => {
               <RequestingPermission onStepChange={onStepChange} />
             ),
             "open-help-app": <OpenHelpInApp onStepChange={onStepChange} />,
-            "loading-accounts": <ConnectDevice onStepChange={onStepChange} />,
-            "select-accounts": <ConnectDevice onStepChange={onStepChange} />,
-            "create-password": <ConnectDevice onStepChange={onStepChange} />,
-            "all-set": <ConnectDevice onStepChange={onStepChange} />,
+            "loading-accounts": <LoadingAccounts onStepChange={onStepChange} />,
+            "select-accounts": <SelectAccounts onStepChange={onStepChange} />,
+            "create-password": <CreatePassword onStepChange={onStepChange} />,
+            "all-set": <AllSet onComplete={onComplete} />,
           }[activeScreen]
         }
       </View>

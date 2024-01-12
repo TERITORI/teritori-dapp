@@ -20,7 +20,7 @@ export const ConnectDevice = ({ onStepChange }: Props) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ alignItems: "center", paddingTop: 100, flex: 1 }}>
+      <View style={{ alignItems: "center", paddingTop: 80, flex: 1 }}>
         <View
           style={{
             height: 152,
