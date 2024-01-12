@@ -1,4 +1,3 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import * as Clipboard from "expo-clipboard";
 import { Dimensions, View } from "react-native";
 import { SvgProps } from "react-native-svg";
@@ -12,7 +11,7 @@ import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { RootStackParamList } from "../../../utils/navigation";
+import { ScreenFC } from "../../../utils/navigation";
 import {
   blueDefault,
   neutralA3,
@@ -24,9 +23,6 @@ import { layout } from "../../../utils/style/layout";
 import CircularImgOrIcon from "../AddressBook/components/CircularImgOrIcon";
 import MiniHeader from "../Notifications/components/MiniHeader";
 import RowDisplay from "../components/RowDisplay";
-
-interface TransactionDetailScreenProps
-  extends NativeStackScreenProps<RootStackParamList, "MiniTransactionDetail"> {}
 
 export type TransactionDetailType = {
   id: string;
@@ -43,10 +39,10 @@ const transactionDetail: { [key: string]: any } = {
   fee: 0.000001,
 };
 
-export default function TransactionDetailScreen({
+const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
   navigation,
   route,
-}: TransactionDetailScreenProps) {
+}) => {
   const { type } = route.params;
 
   return (
@@ -166,7 +162,7 @@ export default function TransactionDetailScreen({
       </View>
     </ScreenContainer>
   );
-}
+};
 
 export function capitalizeStr(str: string) {
   const firstLetter = str.slice(0, 1).toUpperCase();
@@ -192,3 +188,5 @@ export async function copyToClipboard(value: string) {
   await Clipboard.setStringAsync(value);
   alert("Copied");
 }
+
+export default TransactionDetailScreen;

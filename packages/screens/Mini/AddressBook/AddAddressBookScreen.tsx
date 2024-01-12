@@ -1,4 +1,3 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { View } from "react-native";
 
 import CircularImgOrIcon from "./components/CircularImgOrIcon";
@@ -9,17 +8,11 @@ import closeSVG from "../../../../assets/icons/close.svg";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
-import { RootStackParamList } from "../../../utils/navigation";
+import { ScreenFC } from "../../../utils/navigation";
 import MiniHeader from "../Notifications/components/MiniHeader";
 import { SettingBase } from "../Settings/components/SettingBase";
 
-type AddressBookScreenProps = {
-  navigation: NativeStackNavigationProp<RootStackParamList, "AddressBook">;
-};
-
-export default function AddAddressBookScreen({
-  navigation,
-}: AddressBookScreenProps) {
+const AddAddressBookScreen: ScreenFC<"AddAddressBook"> = ({ navigation }) => {
   const onClose = () =>
     navigation.canGoBack()
       ? navigation.goBack()
@@ -74,4 +67,6 @@ export default function AddAddressBookScreen({
       </View>
     </SettingBase>
   );
-}
+};
+
+export default AddAddressBookScreen;

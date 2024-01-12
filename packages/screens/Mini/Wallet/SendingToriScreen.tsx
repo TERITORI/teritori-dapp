@@ -1,4 +1,3 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { View } from "react-native";
 
 import chevronDownSVG from "../../../../assets/icons/chevron-down-white.svg";
@@ -8,7 +7,7 @@ import { Dropdown } from "../../../components/Dropdown";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
-import { RootStackParamList } from "../../../utils/navigation";
+import { ScreenFC } from "../../../utils/navigation";
 import { secondaryColor } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -17,13 +16,7 @@ import MiniHeader from "../Notifications/components/MiniHeader";
 import { SettingBase } from "../Settings/components/SettingBase";
 import RowDisplay from "../components/RowDisplay";
 
-type SendingToriScreenProps = {
-  navigation: NativeStackNavigationProp<RootStackParamList, "MiniSendingTori">;
-};
-
-export default function SendingToriScreen({
-  navigation,
-}: SendingToriScreenProps) {
+const SendingToriScreen: ScreenFC<"MiniSendingTori"> = ({ navigation }) => {
   const onClose = () =>
     navigation.canGoBack()
       ? navigation.goBack()
@@ -99,4 +92,6 @@ export default function SendingToriScreen({
       </View>
     </SettingBase>
   );
-}
+};
+
+export default SendingToriScreen;

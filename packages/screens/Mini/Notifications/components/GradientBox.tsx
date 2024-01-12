@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { View } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 
 import { primaryColor, secondaryColor } from "../../../../utils/style/colors";
 
@@ -15,6 +15,7 @@ type GradientBoxProps = {
   radius?: number;
   direction?: GradientDirectionEnum;
   colors: string[];
+  style?: StyleProp<ViewStyle>;
 };
 
 export default function GradientBox({
@@ -22,8 +23,34 @@ export default function GradientBox({
   radius,
   direction = GradientDirectionEnum.topBottom,
   colors = [],
+  style,
 }: GradientBoxProps) {
-  const startEnd =
+  const startEnd = gradientPositionGenerator(direction);
+
+  return (
+    <View
+      style={[
+        {
+          backgroundColor: primaryColor,
+          width: size ?? 48,
+          height: size ?? 48,
+          borderRadius: radius ?? 6,
+        },
+        style,
+      ]}
+    >
+      <LinearGradient
+        start={startEnd.start}
+        end={startEnd.end}
+        colors={colors.length ? colors : [primaryColor, secondaryColor]}
+        style={{ flex: 1, borderRadius: radius ?? 6 }}
+      />
+    </View>
+  );
+}
+
+function gradientPositionGenerator(direction: GradientDirectionEnum) {
+  const coordinates =
     direction === GradientDirectionEnum.topBottom
       ? { start: { x: 0, y: 0 }, end: { x: 0, y: 1 } }
       : direction === GradientDirectionEnum.bottomTop
@@ -34,21 +61,5 @@ export default function GradientBox({
             ? { start: { x: 1, y: 0 }, end: { x: 0, y: 1 } }
             : { start: { x: 0, y: 0 }, end: { x: 0, y: 0 } };
 
-  return (
-    <View
-      style={{
-        backgroundColor: primaryColor,
-        width: size ?? 48,
-        height: size ?? 48,
-        borderRadius: radius ?? 6,
-      }}
-    >
-      <LinearGradient
-        start={startEnd.start}
-        end={startEnd.end}
-        colors={colors.length ? colors : [primaryColor, secondaryColor]}
-        style={{ flex: 1, borderRadius: radius ?? 6 }}
-      />
-    </View>
-  );
+  return coordinates;
 }

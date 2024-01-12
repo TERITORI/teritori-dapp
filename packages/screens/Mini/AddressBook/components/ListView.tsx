@@ -20,6 +20,7 @@ import { layout } from "../../../../utils/style/layout";
 
 type IconOptionsType = {
   icon?: React.FC<SvgProps> | string;
+  component?: ReactNode;
   iconSize?: number;
   iconStyle?: StyleProp<ImageStyle>;
   fill?: string;
@@ -90,18 +91,21 @@ export default function ListView({
         ]}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          {leftIconEnabled && (
-            <>
-              <SVG
-                source={leftIconOptions?.icon ?? ChevronLeftIconSvg}
-                style={leftIconOptions?.iconStyle ?? {}}
-                fill={leftIconOptions?.fill ?? ""}
-                width={leftIconOptions?.iconSize ?? DEFAULT_ICON_SIZE}
-                height={leftIconOptions?.iconSize ?? DEFAULT_ICON_SIZE}
-              />
-              <SpacerRow size={2} />
-            </>
-          )}
+          {leftIconEnabled &&
+            (React.isValidElement(leftIconOptions?.component) ? (
+              leftIconOptions?.component
+            ) : (
+              <>
+                <SVG
+                  source={leftIconOptions?.icon ?? ChevronLeftIconSvg}
+                  style={leftIconOptions?.iconStyle ?? {}}
+                  fill={leftIconOptions?.fill ?? ""}
+                  width={leftIconOptions?.iconSize ?? DEFAULT_ICON_SIZE}
+                  height={leftIconOptions?.iconSize ?? DEFAULT_ICON_SIZE}
+                />
+                <SpacerRow size={2} />
+              </>
+            ))}
 
           <View>
             <View style={{ flexDirection: "row" }}>
@@ -119,9 +123,11 @@ export default function ListView({
                 <>
                   <SpacerRow size={1} />
                   <BrandText
-                    style={
-                      leftLabelStyle ?? [fontSemibold13, { color: neutralA3 }]
-                    }
+                    style={[
+                      fontSemibold13,
+                      { color: neutralA3 },
+                      leftLabelStyle,
+                    ]}
                   >
                     {leftLabel}
                   </BrandText>
@@ -145,9 +151,7 @@ export default function ListView({
           {typeof rightLabel === "string" ? (
             <>
               <BrandText
-                style={
-                  rightLabelStyle ?? [fontSemibold13, { color: neutralA3 }]
-                }
+                style={[fontSemibold13, { color: neutralA3 }, rightLabelStyle]}
               >
                 {rightLabel}
               </BrandText>
@@ -156,15 +160,19 @@ export default function ListView({
           ) : (
             rightLabel
           )}
-          {iconEnabled ?? (
-            <SVG
-              source={iconOptions?.icon ?? ChevronRightIconSvg}
-              style={iconOptions?.iconStyle ?? {}}
-              fill={iconOptions?.fill ?? ""}
-              width={iconOptions?.iconSize ?? DEFAULT_ICON_SIZE}
-              height={iconOptions?.iconSize ?? DEFAULT_ICON_SIZE}
-            />
-          )}
+
+          {iconEnabled &&
+            (React.isValidElement(iconOptions?.component) ? (
+              iconOptions?.component
+            ) : (
+              <SVG
+                source={iconOptions?.icon ?? ChevronRightIconSvg}
+                style={iconOptions?.iconStyle ?? {}}
+                fill={iconOptions?.fill ?? ""}
+                width={iconOptions?.iconSize ?? DEFAULT_ICON_SIZE}
+                height={iconOptions?.iconSize ?? DEFAULT_ICON_SIZE}
+              />
+            ))}
         </View>
       </View>
     </TouchableOpacity>

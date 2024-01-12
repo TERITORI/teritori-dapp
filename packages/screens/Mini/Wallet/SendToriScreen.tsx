@@ -1,4 +1,3 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useState } from "react";
 import { View } from "react-native";
 
@@ -8,7 +7,7 @@ import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { RootStackParamList } from "../../../utils/navigation";
+import { ScreenFC } from "../../../utils/navigation";
 import { neutral39, neutral77 } from "../../../utils/style/colors";
 import {
   fontMedium13,
@@ -22,10 +21,6 @@ import MiniTextInput from "../AddressBook/components/MiniTextInput";
 import MiniHeader from "../Notifications/components/MiniHeader";
 import { SettingBase } from "../Settings/components/SettingBase";
 import MiniTextInputWithDropdown from "../components/MiniTextInputWithDropdown";
-
-type SendToriScreenProps = {
-  navigation: NativeStackNavigationProp<RootStackParamList, "MiniSendTori">;
-};
 
 const tokenOptions = [
   {
@@ -42,7 +37,7 @@ const tokenOptions = [
 
 const BALANCE = 62424;
 
-export default function SendToriScreen({ navigation }: SendToriScreenProps) {
+const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation }) => {
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
 
@@ -143,4 +138,6 @@ export default function SendToriScreen({ navigation }: SendToriScreenProps) {
       </View>
     </SettingBase>
   );
-}
+};
+
+export default SendToriScreen;
