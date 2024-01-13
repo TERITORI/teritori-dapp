@@ -4,6 +4,8 @@ import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
 const nameServiceContractAddress =
   "tori160wk6qdepxy99p79vgq4ue0stvz4sstxfcj5n9vq04h6gx6ydrwsy0a5fy";
 
+const riotContractAddressGen0 =
+  "tori1pmevf373awn47wkdter246n4r8xgx4xld9hkfvxle9pf327rc4hq9uhm0k";
 const riotContractAddressGen1 = "";
 
 export const teritoriTestnetNetwork: NetworkInfo = {
@@ -54,7 +56,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   nameServiceTLD: ".tori",
   vaultContractAddress:
     "tori1da7gq3lv7v48fkq2w4jp0f0yg4v7rey3d92legs8e83mhuf3agyq2z7rr9",
-  riotContractAddressGen0: "",
+  riotContractAddressGen0,
   riotContractAddressGen1,
   riotSquadStakingContractAddressV1: "",
   riotSquadStakingContractAddressV2: "",
@@ -62,6 +64,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   riotersFooterContractAddress: "",
   secondaryDuringMintList: [
     nameServiceContractAddress,
+    riotContractAddressGen0,
     riotContractAddressGen1,
   ],
   excludeFromLaunchpadList: [riotContractAddressGen1],
