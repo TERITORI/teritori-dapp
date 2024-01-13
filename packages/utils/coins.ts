@@ -72,6 +72,6 @@ export const prettyPrice = (
 };
 
 // Src: https://stackoverflow.com/questions/1685680/how-to-avoid-scientific-notation-for-large-numbers-in-javascript
-const bigNumToStr = (myNumb: number) => {
-  return myNumb.toLocaleString("fullwide", { useGrouping: false });
+export const bigNumToStr = (myNumb: number | string) => {
+  return Number(myNumb).toLocaleString("fullwide", { useGrouping: false });
 };

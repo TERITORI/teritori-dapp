@@ -37,20 +37,14 @@ export const useCollectionStats = (collectionId: string, ownerId?: string) => {
     { staleTime: Infinity, keepPreviousData: true },
   );
 
-  const usdPrice = prices["ethereum"]?.["usd"] || 0;
-
   const adjustedData = useMemo(() => {
     if (!data || network?.kind !== NetworkKind.Ethereum) return data;
 
-    // FIXME: fix from backend to not send nil
-    const ether = ethers.utils.formatEther(
-      BigNumber.from(data.totalVolume !== "<nil>" ? data.totalVolume || 0 : 0),
-    );
     return {
       ...data,
-      totalVolume: `${+ether * usdPrice}`,
+      // FIXME: fix from backend to not send nil
+      totalVolume: data.totalVolume !== "<nil>" ? data.totalVolume || "0" : "0",
     };
-  }, [data, network?.kind, usdPrice]);
-
+  }, [data, network?.kind]);
   return adjustedData;
 };
