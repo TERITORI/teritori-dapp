@@ -38,6 +38,13 @@ export const prettyPrice = (
   if (!denom) {
     denom = "unknown";
   }
+
+  // PATCH/HACK: sometime, the original value is corrupted. Ex: 1.0000000200408773e+21
+  // To avoid crash, we handle that case here. Ofc, fixing it at source of data would be better
+  if (value.includes("e+")) {
+    value = bigNumToStr(Number(value));
+  }
+
   const currency = getNativeCurrency(networkId, denom);
   if (currency) {
     const decval = Decimal.fromAtomics(value || "0", currency.decimals);
@@ -62,4 +69,9 @@ export const prettyPrice = (
   }
   if (noDenom) return `${value}`;
   return `${value} ${denom}`;
+};
+
+// Src: https://stackoverflow.com/questions/1685680/how-to-avoid-scientific-notation-for-large-numbers-in-javascript
+const bigNumToStr = (myNumb: number) => {
+  return myNumb.toLocaleString("fullwide", { useGrouping: false });
 };
