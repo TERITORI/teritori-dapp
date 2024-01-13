@@ -1,8 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { BigNumber, ethers } from "ethers";
 import { useMemo } from "react";
 
-import { useCoingeckoPrices } from "./useCoingeckoPrices";
 import { parseNetworkObjectId, NetworkKind } from "../networks";
 import { getMarketplaceClient } from "../utils/backend";
 
@@ -10,13 +8,6 @@ export const useCollectionStats = (collectionId: string, ownerId?: string) => {
   const [network] = parseNetworkObjectId(collectionId);
 
   const networkId = network?.id;
-
-  const coins =
-    network?.kind === NetworkKind.Ethereum
-      ? [{ networkId, denom: network.currencies[0].denom }]
-      : [];
-
-  const { prices } = useCoingeckoPrices(coins);
 
   const { data } = useQuery(
     ["collectionStats", collectionId, ownerId],
