@@ -30,14 +30,16 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature } from "../../networks";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
-import {
-  generateIpfsKey,
-  web3ToWeb2URI,
-  uploadFilesToPinata,
-} from "../../utils/ipfs";
+import { generateIpfsKey, uploadFilesToPinata } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { ARTICLE_THUMBNAIL_IMAGE_HEIGHT } from "../../utils/social-feed";
+import {
+  ARTICLE_COVER_IMAGE_MAX_HEIGHT,
+  ARTICLE_COVER_IMAGE_RATIO,
+  ARTICLE_MAX_WIDTH,
+  ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT,
+  ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH,
+} from "../../utils/social-feed";
 import {
   neutral00,
   neutral11,
@@ -45,7 +47,7 @@ import {
   secondaryColor,
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold20 } from "../../utils/style/fonts";
-import { layout, screenContentMaxWidth } from "../../utils/style/layout";
+import { layout } from "../../utils/style/layout";
 import { pluralOrNot } from "../../utils/text";
 import { RemoteFileData } from "../../utils/types/files";
 
@@ -116,7 +118,11 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       ];
 
       let pinataJWTKey = undefined;
-      if (localFiles?.length || formValues.thumbnailImage) {
+      if (
+        localFiles?.length ||
+        formValues.thumbnailImage ||
+        formValues.coverImage
+      ) {
         pinataJWTKey =
           userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
       }
@@ -129,6 +135,15 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           pinataJWTKey,
         });
         thumbnailImageRemoteFile = remoteFiles[0];
+      }
+      // Upload cover to IPFS
+      let coverImageRemoteFile: RemoteFileData | undefined;
+      if (formValues.coverImage && pinataJWTKey) {
+        const remoteFiles = await uploadFilesToPinata({
+          files: [formValues.coverImage],
+          pinataJWTKey,
+        });
+        coverImageRemoteFile = remoteFiles[0];
       }
 
       // Upload other files to IPFS
@@ -143,7 +158,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       // If the user uploaded files, but they are not pinned to IPFS, it returns files with empty url, so this is an error.
       if (
         (localFiles?.length && !remoteFiles.find((file) => file.url)) ||
-        (formValues.thumbnailImage && !thumbnailImageRemoteFile)
+        (formValues.thumbnailImage && !thumbnailImageRemoteFile) ||
+        (formValues.coverImage && !coverImageRemoteFile)
       ) {
         console.error("upload file err : Fail to pin to IPFS");
         setToastError({
@@ -159,10 +175,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         localFiles?.map((file, index) => {
           // Audio are not in the HTML for now
           if (remoteFiles[index]?.fileType !== "audio") {
-            message = message.replace(
-              file.url,
-              web3ToWeb2URI(remoteFiles[index].url),
-            );
+            message = message.replace(file.url, remoteFiles[index].url);
           }
         });
       }
@@ -170,6 +183,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       const metadata = generateArticleMetadata({
         ...formValues,
         thumbnailImage: thumbnailImageRemoteFile,
+        coverImage: coverImageRemoteFile,
         gifs: values.gifs,
         files: remoteFiles,
         mentions: values.mentions,
@@ -201,7 +215,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       forceNetworkFeatures={[NetworkFeature.SocialFeed]}
       responsive
       mobileTitle="NEW ARTICLE"
-      maxWidth={screenContentMaxWidth}
+      maxWidth={ARTICLE_MAX_WIDTH}
       headerChildren={<BrandText style={fontSemibold20}>New Article</BrandText>}
       onBackPress={navigateBack}
       footerChildren
@@ -254,13 +268,32 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
 
         <FileUploader
           label="Thumbnail image"
-          fileHeight={ARTICLE_THUMBNAIL_IMAGE_HEIGHT}
-          isImageCover
           style={{
             marginTop: layout.spacing_x3,
-            width: 364,
+          }}
+          fileImageStyle={{
+            objectFit: "cover",
+            height: ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT,
+            maxWidth: ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH,
           }}
           onUpload={(files) => setValue("thumbnailImage", files[0])}
+          mimeTypes={IMAGE_MIME_TYPES}
+        />
+
+        <FileUploader
+          label="Cover image"
+          style={{
+            marginTop: layout.spacing_x3,
+            width: "100%",
+          }}
+          fileImageStyle={{
+            objectFit: "cover",
+            height: "100%",
+            width: "100%",
+            maxHeight: ARTICLE_COVER_IMAGE_MAX_HEIGHT,
+            aspectRatio: ARTICLE_COVER_IMAGE_RATIO,
+          }}
+          onUpload={(files) => setValue("coverImage", files[0])}
           mimeTypes={IMAGE_MIME_TYPES}
         />
 
@@ -316,7 +349,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                   !formValues.message ||
                   !formValues.title ||
                   !formValues.shortDescription ||
-                  !formValues.thumbnailImage ||
                   !wallet
                 }
                 onPublish={onPublish}
