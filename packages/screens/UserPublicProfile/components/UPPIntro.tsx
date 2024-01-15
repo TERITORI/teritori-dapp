@@ -3,6 +3,7 @@ import { Linking, useWindowDimensions, View } from "react-native";
 
 import defaultUserProfileBannerPNG from "../../../../assets/default-images/default-user-profile-banner.png";
 import discordSVG from "../../../../assets/icons/discord.svg";
+import infoSVG from "../../../../assets/icons/info_black.svg";
 import shareSVG from "../../../../assets/icons/share.svg";
 import twitterSVG from "../../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../../assets/icons/website.svg";
@@ -18,7 +19,7 @@ import { ProfileButton } from "../../../components/hub/ProfileButton";
 import { UserAvatarWithFrame } from "../../../components/images/AvatarWithFrame";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { parseUserId } from "../../../networks";
+import { accountExplorerLink, parseUserId } from "../../../networks";
 import { DEFAULT_NAME } from "../../../utils/social-feed";
 import { neutral00, neutral55, neutral77 } from "../../../utils/style/colors";
 import {
@@ -98,6 +99,14 @@ export const UPPIntro: React.FC<{
               onPress={() => Linking.openURL(metadata.twitter_id || "")}
             />
           )}
+          <SocialButtonSecondary
+            iconSvg={infoSVG}
+            text="Explorer"
+            style={socialButtonStyle}
+            onPress={() =>
+              Linking.openURL(accountExplorerLink(network?.id, userAddress))
+            }
+          />
           {/* This Share button link works only on web */}
           <SocialButtonSecondary
             style={socialButtonStyle}
