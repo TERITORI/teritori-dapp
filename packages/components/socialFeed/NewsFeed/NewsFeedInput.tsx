@@ -20,13 +20,14 @@ import priceSVG from "../../../../assets/icons/price.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useFeedPosting } from "../../../hooks/feed/useFeedPosting";
+import { useIpfs } from "../../../hooks/useIpfs";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
-import { generateIpfsKey, uploadFilesToPinata } from "../../../utils/ipfs";
+import { generateIpfsKey } from "../../../utils/ipfs";
 import {
   AUDIO_MIME_TYPES,
   IMAGE_MIME_TYPES,
@@ -71,6 +72,11 @@ import { LegacyPrimaryBox } from "../../boxes/LegacyPrimaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { FileUploader } from "../../fileUploader";
+import {
+  FeedPostingProgressBar,
+  feedPostingStep,
+  FeedPostingStepId,
+} from "../../loaders/FeedPostingProgressBar";
 import { SpacerColumn } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
@@ -123,6 +129,7 @@ export const NewsFeedInput = React.forwardRef<
     const { width } = useMaxResolution();
     const isMobile = useIsMobile();
     const [viewWidth, setViewWidth] = useState(0);
+    const { uploadFilesToPinata, ipfsUploadProgress } = useIpfs();
     const inputMaxHeight = 400;
     const inputMinHeight = 20;
     const inputHeight = useSharedValue(20);
@@ -133,16 +140,22 @@ export const NewsFeedInput = React.forwardRef<
     const inputRef = useRef<TextInput>(null);
     const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
     const { setToastError } = useFeedbacks();
-    const [isLoading, setLoading] = useState(false);
+    const [isUploadLoading, setIsUploadLoading] = useState(false);
+    const [isProgressBarShown, setIsProgressBarShown] = useState(false);
     const [selection, setSelection] = useState<{ start: number; end: number }>({
       start: 10,
       end: 10,
     });
 
     const onPostCreationSuccess = () => {
-      reset();
-      onSubmitSuccess?.();
-      onCloseCreateModal?.();
+      // Timeout here to let a few time to see the progress bar "100% Done"
+      setTimeout(() => {
+        reset();
+        onSubmitSuccess?.();
+        onCloseCreateModal?.();
+        setIsUploadLoading(false);
+        setIsProgressBarShown(false);
+      }, 1000);
     };
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
@@ -162,14 +175,15 @@ export const NewsFeedInput = React.forwardRef<
       isProcessing,
       prettyPublishingFee,
       freePostCount,
+      step,
+      setStep,
     } = useFeedPosting(
       selectedNetwork?.id,
       userId,
       getPostCategory(formValues),
-      () => {
-        onPostCreationSuccess();
-      },
+      onPostCreationSuccess,
     );
+    const isLoading = isUploadLoading || isProcessing;
     const userIPFSKey = useSelector(selectNFTStorageAPI);
 
     const processSubmit = async () => {
@@ -177,8 +191,8 @@ export const NewsFeedInput = React.forwardRef<
         setNotEnoughFundModal(true);
         return;
       }
-
-      setLoading(true);
+      setIsUploadLoading(true);
+      setIsProgressBarShown(true);
       onSubmitInProgress && onSubmitInProgress();
       try {
         const isReplyToValid =
@@ -212,9 +226,14 @@ export const NewsFeedInput = React.forwardRef<
         let remoteFiles: RemoteFileData[] = [];
 
         if (formValues.files?.length) {
+          setStep(feedPostingStep(FeedPostingStepId.GENERATING_KEY));
+
           const pinataJWTKey =
             userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
+
           if (pinataJWTKey) {
+            setStep(feedPostingStep(FeedPostingStepId.UPLOADING_FILES));
+
             remoteFiles = await uploadFilesToPinata({
               files: formValues.files,
               pinataJWTKey,
@@ -245,12 +264,13 @@ export const NewsFeedInput = React.forwardRef<
         );
       } catch (err) {
         console.error("post submit err", err);
+        setIsUploadLoading(false);
+        setIsProgressBarShown(false);
         setToastError({
           title: "Post creation failed",
           message: err instanceof Error ? err.message : `${err}`,
         });
       }
-      setLoading(false);
     };
 
     useImperativeHandle(forwardRef, () => ({
@@ -428,203 +448,224 @@ export const NewsFeedInput = React.forwardRef<
             paddingHorizontal: isMobile
               ? layout.spacing_x1_5
               : layout.spacing_x2_5,
-            flexDirection:
-              viewWidth < SOCIAL_FEED_BREAKPOINT_M ? "column" : "row",
-            alignItems:
-              viewWidth < SOCIAL_FEED_BREAKPOINT_M ? "flex-end" : "center",
-            justifyContent: "space-between",
             borderRadius: 8,
           }}
         >
           <View
-            style={[
-              {
-                flexDirection: "row",
-                alignItems: "center",
-              },
-              viewWidth < SOCIAL_FEED_BREAKPOINT_M && {
-                alignSelf: "flex-start",
-              },
-            ]}
+            style={{
+              flexDirection:
+                viewWidth < SOCIAL_FEED_BREAKPOINT_M ? "column" : "row",
+              alignItems:
+                viewWidth < SOCIAL_FEED_BREAKPOINT_M ? "flex-end" : "center",
+              justifyContent: "space-between",
+            }}
           >
-            <SVG
-              source={priceSVG}
-              height={24}
-              width={24}
-              color={secondaryColor}
-            />
-            <BrandText
+            <View
               style={[
-                fontSemibold13,
-                { color: neutral77, marginLeft: layout.spacing_x1 },
+                {
+                  flexDirection: "row",
+                  alignItems: "center",
+                },
+                viewWidth < SOCIAL_FEED_BREAKPOINT_M && {
+                  alignSelf: "flex-start",
+                },
               ]}
             >
-              {freePostCount
-                ? `You have ${freePostCount} free ${type} left`
-                : `The cost for this ${type} is ${prettyPublishingFee}`}
-            </BrandText>
-          </View>
-          <View
-            style={[
-              {
-                flexDirection: viewWidth < BREAKPOINT_S ? "column" : "row",
-                alignItems: "center",
-                flex: 1,
-                justifyContent: "flex-end",
-              },
-              viewWidth < BREAKPOINT_S && { width: "100%" },
-            ]}
-          >
-            {viewWidth < BREAKPOINT_S && <SpacerColumn size={1.5} />}
+              <SVG
+                source={priceSVG}
+                height={24}
+                width={24}
+                color={secondaryColor}
+              />
+              <BrandText
+                style={[
+                  fontSemibold13,
+                  { color: neutral77, marginLeft: layout.spacing_x1 },
+                ]}
+              >
+                {freePostCount
+                  ? `You have ${freePostCount} free ${type} left`
+                  : `The cost for this ${type} is ${prettyPublishingFee}`}
+              </BrandText>
+            </View>
 
             <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
+              style={[
+                {
+                  flexDirection: viewWidth < BREAKPOINT_S ? "column" : "row",
+                  alignItems: "center",
+                  flex: 1,
+                  justifyContent: "flex-end",
+                },
+                viewWidth < BREAKPOINT_S && { width: "100%" },
+              ]}
             >
-              <EmojiSelector
-                onEmojiSelected={onEmojiSelected}
-                buttonStyle={{ marginRight: layout.spacing_x2 }}
-              />
+              {viewWidth < BREAKPOINT_S && <SpacerColumn size={1.5} />}
 
-              <GIFSelector
-                buttonStyle={{ marginRight: layout.spacing_x2 }}
-                onGIFSelected={(url) => {
-                  // Don't add if already added
-                  if (formValues.gifs?.find((gif) => gif === url)) return;
-                  url && setValue("gifs", [...(formValues.gifs || []), url]);
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
-                disabled={
-                  (formValues.files?.[0] &&
-                    formValues.files[0].fileType !== "image") ||
-                  (formValues.files || []).length +
-                    (formValues.gifs || [])?.length >=
-                    MAX_IMAGES
-                }
-              />
+              >
+                <EmojiSelector
+                  onEmojiSelected={onEmojiSelected}
+                  buttonStyle={{ marginRight: layout.spacing_x2 }}
+                />
 
-              <FileUploader
-                onUpload={(files) => setValue("files", [files?.[0]])}
-                mimeTypes={AUDIO_MIME_TYPES}
-              >
-                {({ onPress }) => (
-                  <IconBox
-                    icon={audioSVG}
-                    onPress={onPress}
-                    style={{ marginRight: layout.spacing_x2 }}
-                    disabled={
-                      !!formValues.files?.length || !!formValues.gifs?.length
-                    }
-                  />
-                )}
-              </FileUploader>
-              <FileUploader
-                onUpload={(files) => setValue("files", [files?.[0]])}
-                mimeTypes={VIDEO_MIME_TYPES}
-              >
-                {({ onPress }) => (
-                  <IconBox
-                    icon={videoSVG}
-                    onPress={onPress}
-                    style={{ marginRight: layout.spacing_x2 }}
-                    disabled={
-                      !!formValues.files?.length || !!formValues.gifs?.length
-                    }
-                  />
-                )}
-              </FileUploader>
-              <FileUploader
-                // multiple
-                onUpload={(files) => {
-                  // Don't add if already added
-                  if (
-                    formValues.files?.find(
-                      (file) => file.fileName === files[0].fileName,
+                <GIFSelector
+                  buttonStyle={{ marginRight: layout.spacing_x2 }}
+                  onGIFSelected={(url) => {
+                    // Don't add if already added
+                    if (formValues.gifs?.find((gif) => gif === url)) return;
+                    url && setValue("gifs", [...(formValues.gifs || []), url]);
+                  }}
+                  disabled={
+                    (formValues.files?.[0] &&
+                      formValues.files[0].fileType !== "image") ||
+                    (formValues.files || []).length +
+                      (formValues.gifs || [])?.length >=
+                      MAX_IMAGES
+                  }
+                />
+
+                <FileUploader
+                  onUpload={(files) => setValue("files", [files?.[0]])}
+                  mimeTypes={AUDIO_MIME_TYPES}
+                >
+                  {({ onPress }) => (
+                    <IconBox
+                      icon={audioSVG}
+                      onPress={onPress}
+                      style={{ marginRight: layout.spacing_x2 }}
+                      disabled={
+                        !!formValues.files?.length || !!formValues.gifs?.length
+                      }
+                    />
+                  )}
+                </FileUploader>
+                <FileUploader
+                  onUpload={(files) => setValue("files", [files?.[0]])}
+                  mimeTypes={VIDEO_MIME_TYPES}
+                >
+                  {({ onPress }) => (
+                    <IconBox
+                      icon={videoSVG}
+                      onPress={onPress}
+                      style={{ marginRight: layout.spacing_x2 }}
+                      disabled={
+                        !!formValues.files?.length || !!formValues.gifs?.length
+                      }
+                    />
+                  )}
+                </FileUploader>
+                <FileUploader
+                  // multiple
+                  onUpload={(files) => {
+                    // Don't add if already added
+                    if (
+                      formValues.files?.find(
+                        (file) => file.fileName === files[0].fileName,
+                      )
                     )
-                  )
-                    return;
-                  setValue("files", [...(formValues.files || []), ...files]);
+                      return;
+                    setValue("files", [...(formValues.files || []), ...files]);
+                  }}
+                  mimeTypes={IMAGE_MIME_TYPES}
+                >
+                  {({ onPress }) => (
+                    <IconBox
+                      disabled={
+                        (formValues.files?.[0] &&
+                          formValues.files[0].fileType !== "image") ||
+                        (formValues.files || []).length +
+                          (formValues.gifs || [])?.length >=
+                          MAX_IMAGES
+                      }
+                      icon={cameraSVG}
+                      onPress={onPress}
+                      style={{
+                        marginRight:
+                          viewWidth < BREAKPOINT_S ? 0 : layout.spacing_x2_5,
+                      }}
+                      iconProps={{
+                        height: 18,
+                        width: 18,
+                      }}
+                    />
+                  )}
+                </FileUploader>
+              </View>
+
+              {viewWidth < BREAKPOINT_S && <SpacerColumn size={1.5} />}
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
-                mimeTypes={IMAGE_MIME_TYPES}
               >
-                {({ onPress }) => (
-                  <IconBox
-                    disabled={
-                      (formValues.files?.[0] &&
-                        formValues.files[0].fileType !== "image") ||
-                      (formValues.files || []).length +
-                        (formValues.gifs || [])?.length >=
-                        MAX_IMAGES
-                    }
-                    icon={cameraSVG}
-                    onPress={onPress}
-                    style={{
-                      marginRight:
-                        viewWidth < BREAKPOINT_S ? 0 : layout.spacing_x2_5,
-                    }}
-                    iconProps={{
-                      height: 18,
-                      width: 18,
-                    }}
-                  />
+                {type === "post" && (
+                  <OmniLink to={{ screen: "FeedNewArticle" }}>
+                    <SecondaryButtonOutline
+                      size="M"
+                      color={
+                        formValues?.message.length >
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                          ? primaryTextColor
+                          : primaryColor
+                      }
+                      borderColor={primaryColor}
+                      touchableStyle={{
+                        marginRight: layout.spacing_x2,
+                      }}
+                      backgroundColor={
+                        formValues?.message.length >
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                          ? primaryColor
+                          : neutral17
+                      }
+                      text="Create an Article"
+                      squaresBackgroundColor={neutral17}
+                    />
+                  </OmniLink>
                 )}
-              </FileUploader>
-            </View>
 
-            {viewWidth < BREAKPOINT_S && <SpacerColumn size={1.5} />}
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              {type === "post" && (
-                <OmniLink to={{ screen: "FeedNewArticle" }}>
-                  <SecondaryButtonOutline
-                    size="M"
-                    color={
-                      formValues?.message.length >
-                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                        ? primaryTextColor
-                        : primaryColor
-                    }
-                    borderColor={primaryColor}
-                    touchableStyle={{
-                      marginRight: layout.spacing_x2,
-                    }}
-                    backgroundColor={
-                      formValues?.message.length >
-                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                        ? primaryColor
-                        : neutral17
-                    }
-                    text="Create an Article"
-                    squaresBackgroundColor={neutral17}
-                  />
-                </OmniLink>
-              )}
-
-              <PrimaryButton
-                disabled={
-                  (!formValues?.message &&
-                    !formValues?.files?.length &&
-                    !formValues?.gifs?.length) ||
-                  formValues?.message.length >
-                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
-                  !selectedWallet
-                }
-                isLoading={isLoading || isProcessing}
-                loader
-                size="M"
-                text={
-                  daoId ? "Propose" : type === "comment" ? "Comment" : "Publish"
-                }
-                onPress={handleSubmit(processSubmit)}
-              />
+                <PrimaryButton
+                  disabled={
+                    (!formValues?.message &&
+                      !formValues?.files?.length &&
+                      !formValues?.gifs?.length) ||
+                    formValues?.message.length >
+                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
+                    !selectedWallet
+                  }
+                  isLoading={isLoading}
+                  loader
+                  size="M"
+                  text={
+                    daoId
+                      ? "Propose"
+                      : type === "comment"
+                        ? "Comment"
+                        : "Publish"
+                  }
+                  onPress={handleSubmit(processSubmit)}
+                />
+              </View>
             </View>
           </View>
+
+          {step.id !== "UNDEFINED" && isProgressBarShown && (
+            <>
+              <SpacerColumn size={1.5} />
+              <FeedPostingProgressBar
+                step={step}
+                ipfsUploadProgress={ipfsUploadProgress}
+              />
+              <SpacerColumn size={1} />
+            </>
+          )}
         </View>
       </View>
     );

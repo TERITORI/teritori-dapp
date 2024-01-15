@@ -1,53 +1,6 @@
-import { omit } from "lodash";
 import { CID } from "multiformats";
 
 import { mustGetFeedClient } from "./backend";
-import { LocalFileData, RemoteFileData } from "./types/files";
-import { pinataPinFileToIPFS } from "../candymachine/pinata-upload";
-
-interface UploadPostFilesToPinataParams {
-  files: LocalFileData[];
-  pinataJWTKey: string;
-}
-
-export const uploadFilesToPinata = async ({
-  files,
-  pinataJWTKey,
-}: UploadPostFilesToPinataParams): Promise<RemoteFileData[]> => {
-  const storedFile = async (file: LocalFileData): Promise<RemoteFileData> => {
-    const fileData = await pinataPinFileToIPFS({
-      file,
-      pinataJWTKey,
-    });
-    if (file.thumbnailFileData) {
-      const thumbnailData = await pinataPinFileToIPFS({
-        file: file.thumbnailFileData,
-        pinataJWTKey,
-      });
-
-      return {
-        ...omit(file, "file"),
-        url: fileData?.IpfsHash || "",
-        thumbnailFileData: {
-          ...omit(file.thumbnailFileData, "file"),
-          url: thumbnailData?.IpfsHash || "",
-        },
-      };
-    } else {
-      return {
-        ...omit(file, "file"),
-        url: fileData?.IpfsHash || "",
-      };
-    }
-  };
-
-  const queries = [];
-  for (const file of files) {
-    const storedFileQuery = storedFile(file);
-    queries.push(storedFileQuery);
-  }
-  return await Promise.all(queries);
-};
 
 export const generateIpfsKey = async (
   networkId: string,
