@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Pressable, StyleProp, useWindowDimensions, View } from "react-native";
+import { Pressable, StyleProp, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { CheckboxDappStore } from "./CheckboxDappStore";
@@ -45,8 +45,6 @@ export const DAppBox: React.FC<{
   useEffect(() => {
     setChecked(selectedApps.includes(draggableId));
   }, [selectedApps, draggableId]);
-  const { width } = useWindowDimensions();
-  const isMobile = width < 760;
 
   return (
     <Pressable onPress={handleClick} disabled={alwaysOn}>
@@ -54,53 +52,49 @@ export const DAppBox: React.FC<{
         style={[
           {
             alignItems: "center",
-            justifyContent: "space-between",
             flexDirection: "row",
-            paddingVertical: layout.spacing_x1_5,
-            paddingLeft: layout.spacing_x1_5,
-            paddingRight: layout.spacing_x2_5,
+            padding: layout.spacing_x1_5,
             borderRadius: 20,
             borderWidth: 1,
             borderColor: neutral33,
             backgroundColor: isChecked ? neutral17 : neutral00,
             height: 88,
-            width: isMobile ? width * 0.8 : 306,
           },
           style,
         ]}
       >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Box
-            style={{
-              backgroundColor: neutral17,
-              borderRadius: 12,
-              padding: layout.spacing_x1,
-              width: 64,
-              height: 64,
-            }}
+        <Box
+          style={{
+            backgroundColor: isChecked ? neutral00 : neutral17,
+            borderRadius: 12,
+            padding: layout.spacing_x1,
+            width: 64,
+            height: 64,
+          }}
+        >
+          <SVGorImageIcon icon={icon} iconSize={48} />
+        </Box>
+        <View
+          style={{
+            marginHorizontal: layout.spacing_x2,
+            flex: 1,
+          }}
+        >
+          <BrandText style={fontSemibold14} numberOfLines={1}>
+            {title}
+          </BrandText>
+          <BrandText
+            isTicker
+            style={[
+              fontSemibold13,
+              {
+                color: neutral77,
+                marginTop: layout.spacing_x0_5,
+              },
+            ]}
           >
-            <SVGorImageIcon icon={icon} iconSize={48} />
-          </Box>
-          <View
-            style={{
-              marginHorizontal: layout.spacing_x2,
-              maxWidth: 158,
-              width: "100%",
-            }}
-          >
-            <BrandText style={fontSemibold14} numberOfLines={1}>
-              {title}
-            </BrandText>
-            <BrandText
-              isTicker
-              style={[
-                fontSemibold13,
-                { color: neutral77, marginTop: layout.spacing_x0_5 },
-              ]}
-            >
-              {description}
-            </BrandText>
-          </View>
+            {description}
+          </BrandText>
         </View>
 
         {!alwaysOn && <CheckboxDappStore isChecked={isChecked} />}
