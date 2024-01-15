@@ -20,7 +20,7 @@ const posts: PostType[] = [
     user: { img: "", name: "John Doe", username: "johndoe" },
     postedAt: "6 minutes ago",
     content: [
-      { type: "text", value: "Hey #Teritori" },
+      { type: "text", value: { text: "Hey", mentions: ["Teritori"] } },
       {
         type: "img",
         value:
@@ -36,7 +36,7 @@ const posts: PostType[] = [
     user: { img: "", name: "John Doe", username: "johndoe" },
     postedAt: "6 minutes ago",
     content: [
-      { type: "text", value: "GM #Teritori" },
+      { type: "text", value: { text: "GM", mentions: ["Teritori"] } },
       {
         type: "img",
         value:

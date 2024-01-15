@@ -7,7 +7,7 @@ import transferSVG from "../../../../../assets/icons/social/transfer-gray.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
 import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
-import { neutralA3 } from "../../../../utils/style/colors";
+import { blueDefault, neutralA3 } from "../../../../utils/style/colors";
 import {
   fontMedium14,
   fontMedium15,
@@ -36,7 +36,6 @@ export default function PostCard({ post }: { post: PostType }) {
   return (
     <View style={{ height: "auto" }}>
       <CardHeader user={{ ...post.user, postedAt: post.postedAt }} />
-      {/* <CardContent content={post?.content} /> */}
       <FlatList
         showsVerticalScrollIndicator={false}
         data={post.content}
@@ -110,7 +109,7 @@ function CardHeader({ user }: CardHeaderProps) {
 
 type ContentType = {
   type: "img" | "text" | "video";
-  value: string;
+  value: string | { text: string; mentions: string[] };
 };
 
 function CardContent({ content }: { content: ContentType }) {
@@ -118,7 +117,22 @@ function CardContent({ content }: { content: ContentType }) {
     return (
       <View style={{ flex: 1, height: "auto" }}>
         <SpacerColumn size={0.5} />
-        <BrandText style={fontMedium15}>{content.value}</BrandText>
+
+        {typeof content.value === "string" ? (
+          <BrandText style={fontMedium15}>{content.value}</BrandText>
+        ) : (
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <BrandText style={fontMedium15}>{content.value.text}</BrandText>
+            {content?.value?.mentions.map((mention) => (
+              <>
+                <SpacerRow size={1} />
+                <BrandText style={[fontMedium15, { color: blueDefault }]}>
+                  #{mention}
+                </BrandText>
+              </>
+            ))}
+          </View>
+        )}
       </View>
     );
   }
@@ -128,7 +142,9 @@ function CardContent({ content }: { content: ContentType }) {
       <>
         <View style={{ width: "100%", height: 200, borderRadius: 12 }}>
           <Image
-            source={{ uri: content.value }}
+            source={{
+              uri: typeof content.value === "string" ? content.value : "",
+            }}
             style={{ width: "100%", height: "100%", borderRadius: 12 }}
           />
         </View>
