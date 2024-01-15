@@ -7,7 +7,6 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
-// A custom TextInput. You can add children (Ex: An icon or a small container)
 export const NameStatus: React.FC<{
   available?: boolean;
   hasError?: boolean;

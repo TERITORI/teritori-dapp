@@ -5,11 +5,6 @@ import { useState } from "react";
 
 import { LocalFileData, RemoteFileData } from "../utils/types/files";
 
-interface PinataFileProps {
-  file: LocalFileData;
-  pinataJWTKey: string;
-}
-
 interface UploadPostFilesToPinataParams {
   files: LocalFileData[];
   pinataJWTKey: string;
@@ -18,6 +13,11 @@ interface UploadPostFilesToPinataParams {
 interface IPFSUploadProgress {
   fileUrl: string;
   progress: number; // 0 to 1
+}
+
+export interface PinataFileProps {
+  file: LocalFileData;
+  pinataJWTKey: string;
 }
 
 export const useIpfs = () => {
@@ -57,7 +57,7 @@ export const useIpfs = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      return responseFile.data.IpfsHash;
+      return CID.parse(responseFile.data.IpfsHash).toV1().toString();
     } catch (err) {
       console.error("Error pinning " + file.fileName + " to IPFS", err);
     }
@@ -74,9 +74,7 @@ export const useIpfs = () => {
         file,
         pinataJWTKey,
       });
-      const url = !fileIpfsHash
-        ? ""
-        : "ipfs://" + CID.parse(fileIpfsHash).toV1().toString();
+      const url = !fileIpfsHash ? "" : "ipfs://" + fileIpfsHash;
 
       if (file.thumbnailFileData) {
         const thumbnailFileIpfsHash = await pinataPinFileToIPFS({
@@ -85,7 +83,7 @@ export const useIpfs = () => {
         });
         const thumbnailUrl = !thumbnailFileIpfsHash
           ? ""
-          : "ipfs://" + CID.parse(thumbnailFileIpfsHash).toV1().toString();
+          : "ipfs://" + thumbnailFileIpfsHash;
 
         return {
           ...omit(file, "file"),
@@ -128,5 +126,9 @@ export const useIpfs = () => {
         0,
       ) / ipfsUploadProgresses.length;
 
-  return { uploadFilesToPinata, ipfsUploadProgress: finalProgress };
+  return {
+    uploadFilesToPinata,
+    pinataPinFileToIPFS,
+    ipfsUploadProgress: finalProgress,
+  };
 };

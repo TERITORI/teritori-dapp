@@ -120,7 +120,7 @@ export const TNSNameFinderModal: React.FC<{
     <ModalBase
       visible={visible}
       onClose={onClose}
-      label="Find a name"
+      label="Find a Name"
       childrenBottom={<DomainsAvailability />}
       width={372}
     >
