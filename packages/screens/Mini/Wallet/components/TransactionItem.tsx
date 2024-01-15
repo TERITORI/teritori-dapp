@@ -91,7 +91,7 @@ export default function TransactionItem({
           </View>
         </View>
 
-        <View>
+        <View style={{ alignItems: "flex-end" }}>
           <BrandText style={fontSemibold16}>
             {type === "send" ? "-" : "+"} {amount.tori} TORI
           </BrandText>

@@ -7,7 +7,6 @@ import { ScreenContainer } from "../../../components/ScreenContainer";
 import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
-import { CustomButton } from "../components/CustomButton";
 
 const collectionScreenTabItems = {
   tokens: {
