@@ -44,7 +44,7 @@ const transactions: TransactionType[] = [
   },
 ];
 
-const TokenScreen: ScreenFC<"MiniTabs"> = ({ navigation, route }) => {
+const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
   const onDepositPress = () => {
     navigation.navigate("MiniSelectToken", { navigateTo: "MiniDepositTORI" });
   };
