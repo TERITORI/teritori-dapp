@@ -9449,17 +9449,13 @@
       ""
     ],
     "socialFeedContractAddress": "tori1fc7nakzuyfn2qzkclafcsc54asamnclg064962lwne40w2lq558q2ch5h9",
-    "daoCw20CodeId": -1,
-    "daoFactoryCodeId": -1,
-    "daoCoreCodeId": -1,
-    "daoPreProposeSingleCodeId": -1,
-    "daoProposalSingleCodeId": -1,
-    "daoVotingCw20StakedCodeId": -1,
-    "daoCw20StakeCodeId": -1,
-    "daoCw4GroupCodeId": -1,
-    "daoVotingCw4CodeId": -1,
-    "daoFactoryContractAddress": "",
-    "coreDAOAddress": ""
+    "daoCoreCodeId": 55,
+    "daoPreProposeSingleCodeId": 56,
+    "daoProposalSingleCodeId": 57,
+    "daoCw4GroupCodeId": 59,
+    "daoVotingCw4CodeId": 60,
+    "daoFactoryCodeId": 61,
+    "daoFactoryContractAddress": "tori1u3auh8k360v6mq3fujngdur5t2cf8l0eagfyfvxnk98zqhtlt39qk0eyvt"
   },
   {
     "id": "cosmos-registry:terpnettestnet",
