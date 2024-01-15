@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
@@ -20,18 +20,50 @@ import { layout } from "../../../../utils/style/layout";
 export type FilterOption = {
   value: string;
   name: string;
+  checked: boolean;
 };
 
 type DropdownWithCheckProps = {
   filterOptions: FilterOption[];
   headerOptions: { name: string; icon?: React.FC<SvgProps> | string };
+  onPress: (selectedOptions: DropdownReturnedType[]) => void;
 };
 
 export default function DropdownWithCheck({
   filterOptions,
   headerOptions,
+  onPress,
 }: DropdownWithCheckProps) {
-  const [filters, setFilters] = useState<string[]>([]);
+  const [filters, setFilters] = useState<FilterOption[]>(filterOptions);
+  const [allOption, setAllOption] = useState(true);
+
+  const filterButtons = (option: DropdownReturnedType) => {
+    if (option.value === "all" && !option.checked) {
+      setAllOption(true);
+      setFilters((prev) => {
+        const newData = prev.map((item) => ({ ...item, checked: true }));
+        onPress(newData);
+        return newData;
+      });
+      return;
+    } else {
+      setFilters((prev) => {
+        const newData = prev.map((item) => {
+          if (item.value === option.value) {
+            if (item.checked) {
+              return { ...item, checked: false };
+            }
+            return { ...item, checked: true };
+          }
+          return item;
+        });
+
+        onPress(newData);
+        return newData;
+      });
+      setAllOption(false);
+    }
+  };
 
   return (
     <Dropdown
@@ -49,15 +81,18 @@ export default function DropdownWithCheck({
           backgroundColor: neutral22,
         }}
       >
-        {filterOptions.map((filterOptionItem, index) => {
-          const lastItem = index === filterOptions.length - 1;
+        <DropdownItem
+          dropdownOption={{ name: "All", value: "all", checked: allOption }}
+          onPress={filterButtons}
+        />
+        {filters.map((filterOptionItem, index) => {
+          const lastItem = index === filters.length - 1;
 
           return (
             <DropdownItem
               lastItem={lastItem}
               dropdownOption={filterOptionItem}
-              filters={filters}
-              setFilters={setFilters}
+              onPress={filterButtons}
             />
           );
         })}
@@ -102,15 +137,29 @@ function DropdownButton({
   );
 }
 
-type DropdownItemProps = {
-  dropdownOption: { value: string; name: string };
-  lastItem?: boolean;
-  filters?: string[];
-  setFilters?: Dispatch<SetStateAction<string[]>>;
+type DropdownOptionType = {
+  value: string;
+  name: string;
+  checked: boolean;
 };
 
-function DropdownItem({ dropdownOption, lastItem }: DropdownItemProps) {
-  const [checkedItem, setCheckedItem] = useState(dropdownOption.value);
+export type DropdownReturnedType = { value: string; checked: boolean };
+
+type DropdownItemProps = {
+  dropdownOption: DropdownOptionType;
+  lastItem?: boolean;
+  onPress: (option: DropdownReturnedType) => void;
+};
+
+function DropdownItem({
+  dropdownOption,
+  lastItem,
+  onPress,
+}: DropdownItemProps) {
+  // const [checkedItem, setCheckedItem] = useState({
+  //   value: dropdownOption.value,
+  //   checked: dropdownOption.checked,
+  // });
 
   return (
     <View
@@ -124,14 +173,14 @@ function DropdownItem({ dropdownOption, lastItem }: DropdownItemProps) {
       <Checkbox
         label={dropdownOption.name}
         value={dropdownOption.value}
-        isChecked={checkedItem === dropdownOption.value}
+        isChecked={dropdownOption.checked}
         onPress={(isChecked, value) => {
           if (!isChecked) {
-            setCheckedItem(value);
+            onPress({ value, checked: true });
             return;
           }
 
-          setCheckedItem("");
+          onPress({ value, checked: false });
         }}
       />
     </View>

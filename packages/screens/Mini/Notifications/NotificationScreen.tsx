@@ -7,35 +7,41 @@ import { BrandText } from "../../../components/BrandText";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { ScreenFC } from "../../../utils/navigation";
 import { fontSemibold18 } from "../../../utils/style/fonts";
+import { useState } from "react";
 
-const filterOptions = [
-  {
-    value: "all",
-    name: "All",
-  },
+const filterOptionsConst = [
   {
     value: "nft_sales",
     name: "NFT sales",
+    checked: true,
   },
   {
     value: "announcements",
     name: "Announcements",
+    checked: true,
   },
   {
     value: "news",
     name: "News",
+    checked: true,
   },
   {
     value: "tranactions",
     name: "Tranactions",
+    checked: true,
   },
   {
     value: "tips",
     name: "Tips",
+    checked: true,
   },
 ];
 
 const NotificationScreen: ScreenFC<"Notifications"> = ({ navigation }) => {
+  const [filterOptions, setFilterOptions] = useState<any>([]);
+
+  console.log(filterOptions);
+
   return (
     <ScreenContainer
       headerChildren={<></>}
@@ -50,8 +56,9 @@ const NotificationScreen: ScreenFC<"Notifications"> = ({ navigation }) => {
           backEnabled
           right={
             <DropdownWithCheck
-              filterOptions={filterOptions}
+              filterOptions={filterOptionsConst}
               headerOptions={{ name: "Filters" }}
+              onPress={(selectedItems) => setFilterOptions(selectedItems)}
             />
           }
         />
