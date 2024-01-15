@@ -257,6 +257,7 @@ export interface CollectionsRequest {
   upcoming: boolean;
   networkId: string;
   mintState: MintState;
+  periodInMinutes?: number | undefined;
 }
 
 export interface CollectionStatsRequest {
@@ -2018,7 +2019,16 @@ export const PriceDatum = {
 };
 
 function createBaseCollectionsRequest(): CollectionsRequest {
-  return { limit: 0, offset: 0, sort: 0, sortDirection: 0, upcoming: false, networkId: "", mintState: 0 };
+  return {
+    limit: 0,
+    offset: 0,
+    sort: 0,
+    sortDirection: 0,
+    upcoming: false,
+    networkId: "",
+    mintState: 0,
+    periodInMinutes: undefined,
+  };
 }
 
 export const CollectionsRequest = {
@@ -2043,6 +2053,9 @@ export const CollectionsRequest = {
     }
     if (message.mintState !== 0) {
       writer.uint32(64).int32(message.mintState);
+    }
+    if (message.periodInMinutes !== undefined) {
+      writer.uint32(72).int32(message.periodInMinutes);
     }
     return writer;
   },
@@ -2103,6 +2116,13 @@ export const CollectionsRequest = {
 
           message.mintState = reader.int32() as any;
           continue;
+        case 9:
+          if (tag !== 72) {
+            break;
+          }
+
+          message.periodInMinutes = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2121,6 +2141,7 @@ export const CollectionsRequest = {
       upcoming: isSet(object.upcoming) ? globalThis.Boolean(object.upcoming) : false,
       networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
       mintState: isSet(object.mintState) ? mintStateFromJSON(object.mintState) : 0,
+      periodInMinutes: isSet(object.periodInMinutes) ? globalThis.Number(object.periodInMinutes) : undefined,
     };
   },
 
@@ -2147,6 +2168,9 @@ export const CollectionsRequest = {
     if (message.mintState !== 0) {
       obj.mintState = mintStateToJSON(message.mintState);
     }
+    if (message.periodInMinutes !== undefined) {
+      obj.periodInMinutes = Math.round(message.periodInMinutes);
+    }
     return obj;
   },
 
@@ -2162,6 +2186,7 @@ export const CollectionsRequest = {
     message.upcoming = object.upcoming ?? false;
     message.networkId = object.networkId ?? "";
     message.mintState = object.mintState ?? 0;
+    message.periodInMinutes = object.periodInMinutes ?? undefined;
     return message;
   },
 };
