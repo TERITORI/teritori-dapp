@@ -15,11 +15,51 @@ const filter = createEntityAdapter<AttributeRarityFloor>({
     `${attribute.collectionId}-${attribute.traitType}-${attribute.value}`,
 });
 
+export interface PeriodItem {
+  label: string;
+  shortLabel: string;
+  value: number;
+}
+
+export const marketplacePeriodItems: PeriodItem[] = [
+  {
+    label: "Last 10 minutes",
+    shortLabel: "10m",
+    value: 10,
+  },
+  {
+    label: "Last 1 hour",
+    shortLabel: "1h",
+    value: 60,
+  },
+  {
+    label: "Last 6 hours",
+    shortLabel: "6h",
+    value: 360,
+  },
+  {
+    label: "Last 1 day",
+    shortLabel: "1d",
+    value: 1440,
+  },
+  {
+    label: "Last 7 days",
+    shortLabel: "7d",
+    value: 10080,
+  },
+  {
+    label: "Last 30 days",
+    shortLabel: "30d",
+    value: 43200, // 30 * 24 * 60
+  },
+];
+
 interface UIStates {
   showFilters: boolean;
   showFilterButton: boolean;
   buyNowState: boolean;
   priceRange: PriceRange;
+  timePeriod: PeriodItem;
 }
 
 const initialState: UIStates = {
@@ -30,6 +70,7 @@ const initialState: UIStates = {
     min: "0",
     max: "0",
   },
+  timePeriod: marketplacePeriodItems[3],
 };
 
 export const selectShowFilters = (state: RootState) =>
@@ -40,6 +81,9 @@ export const selectBuyNow = (state: RootState) =>
 
 export const selectPriceRange = (state: RootState) =>
   state.marketplaceFilterUI.priceRange;
+
+export const selectTimePeriod = (state: RootState) =>
+  state.marketplaceFilterUI.timePeriod;
 
 const filtersSlice = createSlice({
   name: "marketPlaceFilters",
@@ -68,6 +112,9 @@ const filterUI = createSlice({
     setPriceRange: (state, action: PayloadAction<PriceRange>) => {
       state.priceRange = action.payload;
     },
+    setTimePeriod: (state, action: PayloadAction<PeriodItem>) => {
+      state.timePeriod = action.payload;
+    },
   },
 });
 
@@ -87,7 +134,8 @@ export const selectAllSelectedAttributeDataByCollectionId = (
 export const { addSelected, removeSelected, clearSelectedByCollection } =
   filtersSlice.actions;
 
-export const { setShowFilters, setBuyNow, setPriceRange } = filterUI.actions;
+export const { setShowFilters, setBuyNow, setPriceRange, setTimePeriod } =
+  filterUI.actions;
 
 export const marketplaceFilters = filtersSlice.reducer;
 export const marketplaceFilterUI = filterUI.reducer;
