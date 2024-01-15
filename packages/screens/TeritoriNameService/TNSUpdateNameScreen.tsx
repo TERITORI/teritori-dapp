@@ -6,7 +6,6 @@ import { View } from "react-native";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 import ModalBase from "../../components/modals/ModalBase";
 import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
-import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
@@ -18,10 +17,10 @@ import { useNSNameOwner } from "../../hooks/useNSNameOwner";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
-  getKeplrSigningCosmWasmClient,
-  mustGetNonSigningCosmWasmClient,
-  mustGetCosmosNetwork,
   getCosmosNetwork,
+  getKeplrSigningCosmWasmClient,
+  mustGetCosmosNetwork,
+  mustGetNonSigningCosmWasmClient,
 } from "../../networks";
 import { neutral17 } from "../../utils/style/colors";
 import { defaultMetaData } from "../../utils/types/tns";
@@ -197,16 +196,16 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
     <ModalBase
       hideMainSeparator
       onClose={() => onClose()}
+      label="Edit profile"
       scrollable
       width={457}
       boxStyle={{
         backgroundColor: neutral17,
       }}
     >
-      <NameNFT name={name} />
       <View
         style={{
-          marginVertical: 20,
+          marginBottom: 20,
         }}
       >
         <NameDataForm
