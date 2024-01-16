@@ -50,6 +50,19 @@ const migrations = {
       },
     };
   },
+  2: (state: any) => {
+    return {
+      ...state,
+      marketplaceFilterUI: {
+        ...state.marketplaceFilterUI,
+        timePeriod: {
+          label: "Last 1 day",
+          shortLabel: "1d",
+          value: 1440,
+        },
+      },
+    };
+  },
 };
 
 let storage = AsyncStorage;
@@ -66,7 +79,7 @@ if (isElectron()) {
 const persistConfig = {
   key: "root",
   storage,
-  version: 0,
+  version: 2,
   migrate: createMigrate(migrations, { debug: false }),
   whitelist: [
     "wallets",
