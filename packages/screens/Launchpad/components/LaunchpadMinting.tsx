@@ -6,10 +6,10 @@ import { ConfigureRoyaltyDetails } from "./ConfigureRoyaltyDetails";
 import { ExistingWhitelist } from "./ExistingWhitelist";
 import { NavBar } from "./NavBar";
 import { NewWhitelist } from "./NewWhitelist";
+import { TextInputLaunchpadMintValues } from "./inputs/TextInputLaunchpadMintValues";
 import { BrandText } from "../../../components/BrandText";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
-import { neutral00, neutral55, neutral77 } from "../../../utils/style/colors";
+import { neutral55, neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
@@ -72,26 +72,17 @@ export const LaunchpadMinting: React.FC = () => {
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputCustom<NewCollectionMintFormValues>
-          rules={{ required: true }}
+        <TextInputLaunchpadMintValues
+          required
           label="Number of Tokens "
           placeHolder="0"
           name="token"
           control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
         />
-        <TextInputCustom<NewCollectionMintFormValues>
-          rules={{ required: true }}
+
+        <TextInputLaunchpadMintValues
+          required
           label="Unit Price"
-          placeHolder="0"
-          name="unitPrice"
-          control={control}
-          variant="labelOutside"
           sublabel={
             <View>
               <BrandText style={[fontSemibold13, { color: neutral55 }]}>
@@ -99,33 +90,14 @@ export const LaunchpadMinting: React.FC = () => {
               </BrandText>
             </View>
           }
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
+          placeHolder="0"
+          name="unitPrice"
+          control={control}
         />
 
-        <TextInputCustom<NewCollectionMintFormValues>
-          rules={{ required: true }}
+        <TextInputLaunchpadMintValues
+          required
           label="Per Address Limit "
-          placeHolder="0"
-          name="perAddressLimit"
-          control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
-        />
-        <TextInputCustom<NewCollectionMintFormValues>
-          rules={{ required: true }}
-          label="Start Time "
-          placeHolder="--.--.---- --:--"
-          name="startTime"
-          control={control}
-          variant="labelOutside"
           sublabel={
             <View>
               <BrandText style={[fontSemibold13, { color: neutral55 }]}>
@@ -133,12 +105,19 @@ export const LaunchpadMinting: React.FC = () => {
               </BrandText>
             </View>
           }
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
+          placeHolder="0"
+          name="perAddressLimit"
+          control={control}
         />
+
+        <TextInputLaunchpadMintValues
+          required
+          label="Start Time "
+          placeHolder="--.--.---- --:--"
+          name="startTime"
+          control={control}
+        />
+
         <NavBar
           items={CreateWhitelistTabItems}
           selected={selectedWhitelistTab}

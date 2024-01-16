@@ -2,18 +2,14 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
+import { TextInputLaunchpadBasicValues } from "./inputs/TextInputLaunchpadBasicValues";
 import { BrandText } from "../../../components/BrandText";
 import { CustomNetworkSelector } from "../../../components/NetworkSelector/CustomNetworkSelector";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SelectFileUploader } from "../../../components/selectFileUploader";
 import { SpacerColumn } from "../../../components/spacer";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
 import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "../../../utils/social-feed";
-import {
-  neutral00,
-  neutral77,
-  primaryColor,
-} from "../../../utils/style/colors";
+import { neutral77, primaryColor } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { NewCollectionBasicFormValues } from "../CreateCollection.type";
@@ -60,45 +56,31 @@ export const LaunchpadBasic: React.FC = () => {
       </View>
       <View style={{ width: 416 }}>
         <SpacerColumn size={2} />
-        <TextInputCustom<NewCollectionBasicFormValues>
-          rules={{ required: true }}
+
+        <TextInputLaunchpadBasicValues
+          required
           label="Name"
           placeHolder="My Awesome Collection"
           name="name"
           control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
         />
-        <TextInputCustom<NewCollectionBasicFormValues>
-          rules={{ required: true }}
+
+        <TextInputLaunchpadBasicValues
+          required
           label="Description"
           placeHolder="My Awesome Collection Description"
           name="description"
           control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
         />
-        <TextInputCustom<NewCollectionBasicFormValues>
-          rules={{ required: true }}
+
+        <TextInputLaunchpadBasicValues
+          required
           label="Symbol"
           placeHolder="Symbol"
           name="symbol"
           control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
         />
+
         <SelectFileUploader
           label="Cover Image *"
           fileHeight={ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT}
@@ -111,18 +93,13 @@ export const LaunchpadBasic: React.FC = () => {
           onUpload={(files) => {}}
           mimeTypes={IMAGE_MIME_TYPES}
         />
-        <TextInputCustom<NewCollectionBasicFormValues>
-          rules={{ required: false }}
+
+        <TextInputLaunchpadBasicValues
+          required
           label="External Link"
           placeHolder="https://collection..."
           name="externalLink"
           control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
         />
 
         <CustomNetworkSelector

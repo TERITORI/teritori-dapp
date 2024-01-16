@@ -2,17 +2,16 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
+import { TextInputLaunchpadDetailsValues } from "./inputs/TextInputLaunchpadDetailsValues";
 import { BrandText } from "../../../components/BrandText";
 import { SelectionDropdown } from "../../../components/SelectionDropdown";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
-import { neutral00, neutral55, neutral77 } from "../../../utils/style/colors";
+import { neutral55, neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold20,
 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { NewCollectionDetailsFormValues } from "../CreateCollection.type";
 
 export const LaunchpadDetails: React.FC = () => {
@@ -28,6 +27,7 @@ export const LaunchpadDetails: React.FC = () => {
       discordName: "",
       email: "",
       projectDesciption: "",
+      projectType: "",
     },
     mode: "onBlur",
   });
@@ -42,70 +42,43 @@ export const LaunchpadDetails: React.FC = () => {
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputCustom<NewCollectionDetailsFormValues>
-          rules={{ required: false }}
+        <TextInputLaunchpadDetailsValues
           label="Website Link"
           placeHolder="https://website..."
           name="websiteLink"
           control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
         />
-        <TextInputCustom<NewCollectionDetailsFormValues>
-          rules={{ required: true }}
-          label="Twitter Profile *"
+
+        <TextInputLaunchpadDetailsValues
+          label="Twitter Profile "
           placeHolder="https://twitter..."
           name="twitterProfileUrl"
           control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
+          required
         />
-        <TextInputCustom<NewCollectionDetailsFormValues>
-          rules={{ required: true }}
+
+        <TextInputLaunchpadDetailsValues
           label="How many Twitter followers does your project have? "
           placeHolder="10,000"
           name="twitterFollowers"
           control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
+          required
         />
-        <TextInputCustom<NewCollectionDetailsFormValues>
-          rules={{ required: true }}
+
+        <TextInputLaunchpadDetailsValues
           label="Discord name of your main contact: "
           placeHolder="nickname#0000"
           name="discordName"
           control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
+          required
         />
-        <TextInputCustom<NewCollectionDetailsFormValues>
-          rules={{ required: true }}
+
+        <TextInputLaunchpadDetailsValues
           label="Main contact email address: "
           placeHolder="contact@email.com"
           name="email"
           control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
+          required
         />
 
         <SelectionDropdown
@@ -116,22 +89,15 @@ export const LaunchpadDetails: React.FC = () => {
           label="Is your project a derivative project? *"
         />
 
-        <TextInputCustom<NewCollectionDetailsFormValues>
-          rules={{ required: true }}
+        <TextInputLaunchpadDetailsValues
           label="Project type:"
           placeHolder="Multiple answers allowed"
-          name="email"
+          name="projectType"
           control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
+          required
         />
 
-        <TextInputCustom<NewCollectionDetailsFormValues>
-          rules={{ required: true }}
+        <TextInputLaunchpadDetailsValues
           label="Describe your project: "
           sublabel={
             <View>
@@ -147,15 +113,9 @@ export const LaunchpadDetails: React.FC = () => {
             </View>
           }
           placeHolder="Describe here..."
-          name="email"
+          name="projectDesciption"
           control={control}
-          variant="labelOutside"
-          multiline
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
+          required
         />
 
         <SelectionDropdown

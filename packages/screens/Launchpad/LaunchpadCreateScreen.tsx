@@ -6,7 +6,7 @@ import { LaunchpadAssetsandMetadata } from "./components/LaunchpadAssetsandMetad
 import { LaunchpadBasic } from "./components/LaunchpadBasic";
 import { LaunchpadDetails } from "./components/LaunchpadDetails";
 import { LaunchpadMinting } from "./components/LaunchpadMinting";
-import { LaunchpadTeamandCondition } from "./components/LaunchpadTeamandCondition";
+import { LaunchpadTeamandInvestment } from "./components/LaunchpadTeamandInvestment";
 import ChevronRightSvg from "../../../assets/icons/chevron-right.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
@@ -35,7 +35,7 @@ const StepContent = ({ step }: { step: number }) => {
     case 2:
       return <LaunchpadDetails />;
     case 3:
-      return <LaunchpadTeamandCondition />;
+      return <LaunchpadTeamandInvestment />;
     case 4:
       return <LaunchpadAdditional />;
     case 5:
