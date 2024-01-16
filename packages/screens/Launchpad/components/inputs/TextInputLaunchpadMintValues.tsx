@@ -12,31 +12,26 @@ interface TextInputCustomProps<NewCollectionMintFormValues extends FieldValues>
   placeHolder: string;
   control: Control<NewCollectionMintFormValues>;
   name: Path<NewCollectionMintFormValues>;
-  required?: boolean;
   sublabel?: React.ReactElement;
-  multiline?: boolean;
 }
 
 export const TextInputLaunchpadMintValues = <
   NewCollectionMintFormValues extends FieldValues,
 >({
   control,
-  required = false,
   name,
   label,
   placeHolder,
   sublabel,
-  multiline = false,
 }: TextInputCustomProps<NewCollectionMintFormValues>) => {
   return (
     <TextInputCustom<NewCollectionMintFormValues>
-      rules={{ required }}
+      rules={{ required: true }}
       label={label}
       placeHolder={placeHolder}
       name={name}
       sublabel={sublabel}
       control={control}
-      multiline={multiline}
       variant="labelOutside"
       containerStyle={{ marginBottom: layout.spacing_x3 }}
       boxMainContainerStyle={{

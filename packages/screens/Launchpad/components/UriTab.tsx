@@ -47,19 +47,17 @@ export const UriTab: React.FC = () => {
 
           <View>
             <TextInputLaunchpadUrlValues
-              control={control}
-              required
               label="Base Token URI"
               placeHolder="ipfs://"
               name="baseTokenUri"
+              control={control}
             />
 
             <TextInputLaunchpadUrlValues
-              control={control}
-              required
               name="coverImageUrl"
               label="Cover Image URL"
               placeHolder="ipfs://"
+              control={control}
             />
           </View>
         </View>
