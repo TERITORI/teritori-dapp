@@ -1,8 +1,8 @@
-export interface NewCollectionFormValues {
+export interface NewCollectionAssetsFormValues {
   nftApiKey?: string;
 }
 
-export interface ExistingBaseUrlValues {
+export interface ExistingBaseUrlFormValues {
   baseTokenUri?: string;
   coverImageUrl?: string;
 }
@@ -19,6 +19,7 @@ export interface NewCollectionDetailsFormValues {
   twitterFollowers: string;
   discordName?: string;
   email?: string;
+  projectType?: string;
   projectDesciption?: string;
 }
 
@@ -28,7 +29,7 @@ export interface NewCollectionMintFormValues {
   perAddressLimit: string;
   startTime?: string;
 }
-export interface NewCollectionTeamandConditionFormValues {
+export interface TeamandInvestmentFormValues {
   teamDesciption?: string;
   teamLink?: string;
   partner?: string;
