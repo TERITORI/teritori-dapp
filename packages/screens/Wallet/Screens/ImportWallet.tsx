@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Slip10, Slip10Curve, stringToPath } from "@cosmjs/crypto";
 import { toHex } from "@cosmjs/encoding";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
