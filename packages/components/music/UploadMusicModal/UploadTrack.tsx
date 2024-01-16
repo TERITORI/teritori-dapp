@@ -5,10 +5,11 @@ import { useSelector } from "react-redux";
 import Add from "../../../../assets/icons/add-primary.svg";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useFeedPosting } from "../../../hooks/feed/useFeedPosting";
+import { useIpfs } from "../../../hooks/useIpfs";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
-import { generateIpfsKey, uploadFilesToPinata } from "../../../utils/ipfs";
+import { generateIpfsKey } from "../../../utils/ipfs";
 import { AUDIO_MIME_TYPES } from "../../../utils/mime";
 import {
   neutral30,
@@ -25,6 +26,11 @@ import { SVG } from "../../SVG";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { FileUploader } from "../../fileUploader";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
+import {
+  FeedPostingProgressBar,
+  feedPostingStep,
+  FeedPostingStepId,
+} from "../../loaders/FeedPostingProgressBar";
 import { FeedFeeText } from "../../socialFeed/FeedFeeText";
 import {
   PostCategory,
@@ -45,17 +51,20 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
   const selectedWallet = useSelectedWallet();
   const userId = selectedWallet?.userId;
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
-  const { makePost, canPayForPost, isProcessing } = useFeedPosting(
-    selectedNetwork?.id,
-    userId,
-    PostCategory.MusicAudio,
-    onUploadDone,
-  );
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
+  const { uploadFilesToPinata, ipfsUploadProgress } = useIpfs();
+  const { makePost, canPayForPost, isProcessing, step, setStep } =
+    useFeedPosting(selectedNetwork?.id, userId, PostCategory.MusicAudio, () => {
+      // Timeout here to let a few time to see the progress bar "100% Done"
+      setTimeout(() => {
+        setIsUploadLoading(false);
+        setIsProgressBarShown(false);
+        onUploadDone();
+      }, 1000);
+    });
+  const [isUploadLoading, setIsUploadLoading] = useState(false);
+  const [isProgressBarShown, setIsProgressBarShown] = useState(false);
+  const isLoading = isUploadLoading || isProcessing;
   const userIPFSKey = useSelector(selectNFTStorageAPI);
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [localAudioFile, setLocalAudioFile] = useState<LocalFileData>();
@@ -67,7 +76,6 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       setNotEnoughFundModal(true);
       return;
     }
-
     // we need this hack until the createdAt field is properly provided by the contract
     const trackWithCreationDate = {
       ...track,
@@ -78,16 +86,18 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       await makePost(JSON.stringify(trackWithCreationDate));
     } catch (err) {
       console.error("post submit err", err);
+      setIsUploadLoading(false);
+      setIsProgressBarShown(false);
       setToastError({
         title: "Post creation failed",
         message: err instanceof Error ? err.message : `${err}`,
       });
     }
-    setIsUploading(false);
   };
 
   const onPressUpload = async () => {
-    setIsLoading(true);
+    setIsUploadLoading(true);
+    setIsProgressBarShown(true);
     if (
       !selectedWallet?.connected ||
       !selectedWallet.address ||
@@ -95,6 +105,8 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
     ) {
       return;
     }
+    setStep(feedPostingStep(FeedPostingStepId.GENERATING_KEY));
+
     const pinataJWTKey =
       userIPFSKey || (await generateIpfsKey(selectedNetwork?.id || "", userId));
     if (!pinataJWTKey) {
@@ -105,6 +117,8 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       });
       return;
     }
+    setStep(feedPostingStep(FeedPostingStepId.UPLOADING_FILES));
+
     const uploadedFiles = await uploadFilesToPinata({
       pinataJWTKey,
       files: [localAudioFile],
@@ -123,19 +137,10 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       audioFile: uploadedFiles[0],
     };
     await processCreateMusicAudioPost(track);
-    setIsLoading(false);
-    onUploadDone();
   };
 
   return (
     <>
-      {isNotEnoughFundModal && (
-        <NotEnoughFundModal
-          visible
-          onClose={() => setNotEnoughFundModal(false)}
-        />
-      )}
-
       <View style={inputBoxStyle}>
         <View style={textBoxStyle}>
           <TextInputCustom
@@ -145,6 +150,8 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
             onChangeText={(text) => setTitle(text)}
             label="Track name"
             name="trackName"
+            disabled={isLoading}
+            style={isLoading && { opacity: 0.5 }}
           />
           <SpacerColumn size={2.5} />
 
@@ -155,6 +162,8 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
             onChangeText={(text) => setDescription(text)}
             label="Track description"
             name="trackDescription"
+            disabled={isLoading}
+            style={isLoading && { opacity: 0.5 }}
           />
         </View>
       </View>
@@ -171,16 +180,13 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
           onUpload={(files) => setLocalAudioFile(files[0])}
           style={uploadButtonStyle}
           mimeTypes={AUDIO_MIME_TYPES}
-          setIsLoading={setIsLoading}
+          setIsLoading={setIsUploadLoading}
         >
           {({ onPress }) => (
             <TouchableOpacity
-              style={[
-                buttonContainerStyle,
-                (isUploading || isLoading) && { opacity: 0.5 },
-              ]}
+              style={[buttonContainerStyle, isLoading && { opacity: 0.5 }]}
               onPress={onPress}
-              disabled={isUploading || isLoading}
+              disabled={isLoading}
             >
               <SVG source={Add} width={20} height={20} stroke={primaryColor} />
               <SpacerRow size={1} />
@@ -223,18 +229,33 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
         <PrimaryButton
           text="Upload"
           disabled={
-            !localAudioFile?.url ||
-            !title ||
-            isUploading ||
-            isProcessing ||
-            isLoading ||
-            !canPayForPost
+            !localAudioFile?.url || !title || isLoading || !canPayForPost
           }
           size="SM"
           onPress={onPressUpload}
-          isLoading={isUploading || isLoading || isProcessing}
+          isLoading={isLoading}
+          loader
         />
       </View>
+
+      {step.id !== "UNDEFINED" && isProgressBarShown && (
+        <>
+          <View style={divideLineStyle} />
+          <SpacerColumn size={2} />
+          <FeedPostingProgressBar
+            step={step}
+            ipfsUploadProgress={ipfsUploadProgress}
+          />
+          <SpacerColumn size={2} />
+        </>
+      )}
+
+      {isNotEnoughFundModal && (
+        <NotEnoughFundModal
+          visible
+          onClose={() => setNotEnoughFundModal(false)}
+        />
+      )}
     </>
   );
 };
