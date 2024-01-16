@@ -280,7 +280,7 @@ publish.multisig-backend:
 
 .PHONY: validate-networks
 validate-networks: node_modules
-	npx ts-node packages/scripts/validateNetworks.ts
+	yarn validate-networks
 
 .PHONY: networks.json
 networks.json: node_modules validate-networks
@@ -289,7 +289,7 @@ networks.json: node_modules validate-networks
 .PHONY: unused-exports
 unused-exports: node_modules
 	## TODO unexclude all paths except packages/api;packages/contracts-clients;packages/evm-contracts-clients
-	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\.web|.electron|.d.ts" --ignoreTestFiles 
+	yarn unused-exports
 
 .PHONY: prepare-electron
 prepare-electron: node_modules
