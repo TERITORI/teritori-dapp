@@ -1,7 +1,7 @@
-import { ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import avaPNG from "../../../assets/default-images/ava.png";
-import checkBadgeSVG from "../../../assets/icons/check-badge.svg";
+import checkBadgeSVG from "../../../assets/icons/certified.svg";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { fontSemibold11, fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -24,7 +24,6 @@ export const CollectionNameCell = ({ rowData, style }: Props) => {
         style,
         {
           flexDirection: "row",
-          flexWrap: "nowrap",
           alignItems: "center",
           marginRight: layout.spacing_x3,
         },
@@ -36,14 +35,21 @@ export const CollectionNameCell = ({ rowData, style }: Props) => {
       <RoundedGradientImage
         size="XS"
         sourceURI={avaPNG}
-        style={{ marginRight: isMobile ? 8 : 16 }}
+        style={{
+          marginRight: isMobile ? layout.spacing_x1 : layout.spacing_x2,
+        }}
       />
       <BrandText
-        style={[isMobile ? fontSemibold11 : fontSemibold13, { marginRight: 8 }]}
+        style={[
+          isMobile ? fontSemibold11 : fontSemibold13,
+          { marginRight: layout.spacing_x1 },
+        ]}
       >
         {rowData.collectionNameData}
       </BrandText>
-      <SVG source={checkBadgeSVG} />
+      <View style={{ width: 20, height: 20, flex: 1 }}>
+        <SVG source={checkBadgeSVG} width={18} height={18} />
+      </View>
     </OmniLink>
   );
 };

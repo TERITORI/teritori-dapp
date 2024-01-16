@@ -1,21 +1,20 @@
 import {
   Linking,
   StyleProp,
-  TextStyle,
   TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
 
 import externalLinkSVG from "../../../assets/icons/external-link.svg";
+import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 
 export const LinkIconAndRedirect: React.FC<{
   style?: StyleProp<ViewStyle>;
-  textStyle?: StyleProp<TextStyle>;
   value: string;
-}> = ({ value, style, textStyle }) => {
+}> = ({ value, style }) => {
   return (
     <View
       style={[
@@ -30,7 +29,7 @@ export const LinkIconAndRedirect: React.FC<{
           Linking.openURL(value);
         }}
       >
-        <SVG source={externalLinkSVG} color="white" />
+        <SVG source={externalLinkSVG} color={secondaryColor} />
       </TouchableOpacity>
     </View>
   );
