@@ -60,29 +60,6 @@ const getLedgerAccountDetails = async () => {
     "teritori",
   );
   console.log(primaryChainAccount, chainWiseAddresses);
-
-  // setWalletAccounts(
-  //   primaryChainAccount.map((account, index) => ({
-  //     address: account.address,
-  //     pubkey: account.pubkey,
-  //     index,
-  //   })),
-  // );
-  // const addresses: Addresses = {};
-  //
-  // for (const [chain, chainAddresses] of Object.entries(chainWiseAddresses)) {
-  //   let index = 0;
-  //   for (const address of chainAddresses) {
-  //     if (addresses[index]) {
-  //       addresses[index][chain] = address;
-  //     } else {
-  //       addresses[index] = { [chain]: address };
-  //     }
-  //     index += 1;
-  //   }
-  // }
-  //
-  // setAddresses(addresses);
 };
 
 export const ImportWallet: ScreenFC<"ImportWallet"> = () => {

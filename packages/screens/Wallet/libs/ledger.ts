@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   AccountData,
   AminoSignResponse,

@@ -14,7 +14,7 @@ export const AddAccountScreen: ScreenFC<"MiniAddAccount"> = ({
     <BlurScreenContainer title="Add Account" onGoBack={goToProfile}>
       <View style={{ marginBottom: layout.spacing_x1_5 }}>
         <SettingMenuItem
-          navigateTo="MiniAddAccount"
+          navigateTo="NativeWallet"
           title="Create new account"
           subtitle="Generate a new account"
         />
