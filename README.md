@@ -1,4 +1,4 @@
-am
+
 <h1 align="center">
   <img src="https://i.postimg.cc/C1zJ8fmM/Twitter-Original-Header-Dots-curvemode.png" alt="Teritori" title="Teritori" height="300px" />
 </h1>
