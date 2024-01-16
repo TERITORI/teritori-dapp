@@ -45,6 +45,7 @@ const groupSelectors = groupEntityAdapter.getSelectors();
 
 export interface MessageState {
   isWeshConnected: boolean;
+  isOnboardingCompleted: boolean;
   peers: EntityState<PeerItem>;
   contactInfo: {
     name: string;
@@ -60,6 +61,7 @@ export interface MessageState {
 
 const initialState: MessageState = {
   isWeshConnected: false,
+  isOnboardingCompleted: false,
   contactInfo: {
     name: "Anon",
     avatar: "",
@@ -75,6 +77,9 @@ const initialState: MessageState = {
 
 export const selectIsWeshConnected = (state: RootState) =>
   state.message.isWeshConnected;
+
+export const selectIsOnboardingCompleted = (state: RootState) =>
+  state.message.isOnboardingCompleted;
 
 export const selectContactInfo = (state: RootState) =>
   state.message.contactInfo;
@@ -148,6 +153,9 @@ const messageSlice = createSlice({
   reducers: {
     setIsWeshConnected: (state, action: PayloadAction<boolean>) => {
       state.isWeshConnected = action.payload;
+    },
+    setIsOnboardingCompleted: (state, action: PayloadAction<boolean>) => {
+      state.isOnboardingCompleted = action.payload;
     },
     setMessage: (
       state,
@@ -252,6 +260,7 @@ export const {
   updateConversationById,
   setPeerList,
   setIsWeshConnected,
+  setIsOnboardingCompleted,
 } = messageSlice.actions;
 
 export const messageReducer = messageSlice.reducer;

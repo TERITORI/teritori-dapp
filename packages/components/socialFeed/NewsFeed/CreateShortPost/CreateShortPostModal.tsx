@@ -1,5 +1,5 @@
 import React from "react";
-import { useWindowDimensions } from "react-native";
+import { Platform, useWindowDimensions } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 
 import { layout } from "../../../../utils/style/layout";
@@ -36,7 +36,11 @@ export const CreateShortPostModal: React.FC<{
       width={windowWidth}
       label={label}
     >
-      <MenuProvider>
+      <MenuProvider
+        style={{
+          minHeight: Platform.OS !== "web" ? 360 : "auto",
+        }}
+      >
         <NewsFeedInput
           replyTo={replyTo}
           parentId={parentId}

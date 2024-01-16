@@ -9,6 +9,7 @@ import {
   Group,
   GroupInfo_Request,
   GroupType,
+  ServiceExportData_Reply,
 } from "../api/weshnet/protocoltypes";
 import {
   MessageState,
@@ -299,4 +300,40 @@ export const sendMessage = async ({
   } catch (err) {
     console.error("send message err", err);
   }
+};
+
+export const exportAccount = async () => {
+  const data = await weshClient.client.ServiceExportData({});
+  let acc = new Uint8Array(0);
+
+  const observer = {
+    next: (data: ServiceExportData_Reply) => {
+      const combinedArray = new Uint8Array(
+        acc.length + data.exportedData.length,
+      );
+      combinedArray.set(acc);
+      combinedArray.set(data.exportedData, acc.length);
+      acc = combinedArray;
+    },
+    error: (e: any) => {
+      console.error("export error", e);
+    },
+    complete: async () => {
+      if (Platform.OS === "web") {
+        const blob = new Blob([acc], {
+          type: "application/x-tar",
+        });
+
+        const downloadLink = document.createElement("a");
+        downloadLink.href = window.URL.createObjectURL(blob);
+        downloadLink.download = "backup.tar";
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+
+        document.body.removeChild(downloadLink);
+      }
+    },
+  };
+  data.subscribe(observer);
 };

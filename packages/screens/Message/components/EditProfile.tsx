@@ -18,9 +18,10 @@ import { createSharableLink } from "../../../weshnet/services";
 
 interface EditProfileProps {
   onClose: () => void;
+  buttonTitle?: string;
 }
 
-export const EditProfile = ({ onClose }: EditProfileProps) => {
+export const EditProfile = ({ onClose, buttonTitle }: EditProfileProps) => {
   const contactInfo = useSelector(selectContactInfo);
   const [values, setValues] = useState({
     name: contactInfo.name,
@@ -102,7 +103,7 @@ export const EditProfile = ({ onClose }: EditProfileProps) => {
       <SpacerColumn size={2} />
       <PrimaryButton
         onPress={handleSave}
-        text="Update profile"
+        text={buttonTitle || "Update profile"}
         size="M"
         touchableStyle={{
           alignSelf: "center",
