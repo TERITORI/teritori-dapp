@@ -33,7 +33,7 @@ export const PercentageVolumeCell: React.FC<{
         style={[
           isMobile ? fontSemibold11 : fontSemibold13,
           {
-            marginLeft: 8,
+            marginLeft: layout.spacing_x1,
             color: isPositive ? successColor : errorColor,
           },
         ]}

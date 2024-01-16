@@ -83,7 +83,7 @@ export const GuardiansBox = () => {
                       <FlatList
                         showsVerticalScrollIndicator={false}
                         data={Array(10).fill(0)}
-                        renderItem={({ item, index }) => (
+                        renderItem={({ index }) => (
                           <GuardiansList index={index} />
                         )}
                         keyExtractor={(item) => item.id}

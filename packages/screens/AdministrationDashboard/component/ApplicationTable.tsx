@@ -71,7 +71,7 @@ export const ApplicationTable: React.FC<{
 
       <FlatList
         data={rows}
-        renderItem={({ item, index }) => <ApplicationRowData rowData={item} />}
+        renderItem={({ item }) => <ApplicationRowData rowData={item} />}
         keyExtractor={(item) => item.id}
         style={{
           minHeight: 220,

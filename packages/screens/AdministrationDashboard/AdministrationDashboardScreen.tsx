@@ -48,7 +48,7 @@ const dummyData = [
   },
   {
     rank: 3,
-    collectionNameData: "cachablesadly",
+    collectionNameData: "cachablesadly back push chair",
     collectionNetwork: "solanaL",
     TwitterURL: "https://www.lipsum.com/",
     DiscordURL: "https://www.lipsum.com/",
