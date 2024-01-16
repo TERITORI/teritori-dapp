@@ -13,39 +13,39 @@ const filterOptionsConst = [
   {
     value: "all",
     name: "All",
-    checked: true,
+    isChecked: true,
   },
   {
     value: "nft_sales",
     name: "NFT sales",
-    checked: true,
+    isChecked: true,
   },
   {
     value: "announcements",
     name: "Announcements",
-    checked: true,
+    isChecked: true,
   },
   {
     value: "news",
     name: "News",
-    checked: true,
+    isChecked: true,
   },
   {
     value: "tranactions",
     name: "Tranactions",
-    checked: true,
+    isChecked: true,
   },
   {
     value: "tips",
     name: "Tips",
-    checked: true,
+    isChecked: true,
   },
 ];
 
 const NotificationScreen: ScreenFC<"Notifications"> = ({ navigation }) => {
   const [filterOptions, setFilterOptions] = useState<any>([]);
 
-  // console.log(filterOptions);
+  console.log(filterOptions);
 
   return (
     <ScreenContainer
