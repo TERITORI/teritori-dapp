@@ -35,6 +35,11 @@ node_modules: package.json yarn.lock
 	yarn
 	touch $@
 
+.PHONY: go-mod-tidy
+go-mod-tidy:
+	go mod tidy
+	cd electron && go mod tidy
+
 .PHONY: generate
 generate: generate.protobuf generate.graphql generate.contracts-clients generate.go-networks networks.json
 
