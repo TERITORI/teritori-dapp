@@ -13,7 +13,7 @@ import { neutralA3 } from "../../../utils/style/colors";
 import { fontNormal15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import MiniHeader from "../Notifications/components/MiniHeader";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 export type AddressBookType = {
   id: string;
@@ -33,7 +33,7 @@ const AddressBookScreen: ScreenFC<"AddressBook"> = ({ navigation }) => {
   ];
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       customHeader={
         <MiniHeader
           navigation={navigation}
@@ -105,7 +105,7 @@ const AddressBookScreen: ScreenFC<"AddressBook"> = ({ navigation }) => {
           },
         }}
       />
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };
 

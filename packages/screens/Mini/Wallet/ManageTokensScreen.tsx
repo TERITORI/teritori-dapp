@@ -12,7 +12,7 @@ import { Separator } from "../../../components/separators/Separator";
 import { ScreenFC } from "../../../utils/navigation";
 import { fontSemibold22 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 export const ManageTokensScreen: ScreenFC<"MiniManageTokens"> = ({
   navigation,
@@ -26,7 +26,7 @@ export const ManageTokensScreen: ScreenFC<"MiniManageTokens"> = ({
   };
 
   return (
-    <SettingBase title="Manage Tokens">
+    <BlurScreenContainer title="Manage Tokens">
       <View
         style={{
           paddingHorizontal: layout.spacing_x0_75,
@@ -72,6 +72,6 @@ export const ManageTokensScreen: ScreenFC<"MiniManageTokens"> = ({
           <SVG source={chevronRightSVG} height={24} width={24} />
         </CustomPressable>
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };

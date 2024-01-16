@@ -15,7 +15,7 @@ import { ScreenFC } from "../../../utils/navigation";
 import { blueDefault } from "../../../utils/style/colors";
 import { fontSemibold15 } from "../../../utils/style/fonts";
 import { MOBILE_HEADER_HEIGHT, layout } from "../../../utils/style/layout";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
   const [enableEditingDApps, setEnableEditingDApps] = useState(false);
@@ -23,7 +23,7 @@ export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
   const toggleEnableEditingDApps = () => setEnableEditingDApps((prev) => !prev);
 
   return (
-    <SettingBase title="dApp Store" background="transparent">
+    <BlurScreenContainer title="dApp Store" background="transparent">
       <ScrollView>
         <View
           style={{
@@ -93,6 +93,6 @@ export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
           </BrandText>
         </CustomPressable>
       )}
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };

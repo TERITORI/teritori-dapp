@@ -10,7 +10,7 @@ import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import MiniHeader from "../Notifications/components/MiniHeader";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 const AddAddressBookScreen: ScreenFC<"AddAddressBook"> = ({ navigation }) => {
   const onClose = () =>
@@ -19,7 +19,7 @@ const AddAddressBookScreen: ScreenFC<"AddAddressBook"> = ({ navigation }) => {
       : navigation.replace("MiniTabs");
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       background="transparent"
       reverseView={false}
       customHeader={
@@ -65,7 +65,7 @@ const AddAddressBookScreen: ScreenFC<"AddAddressBook"> = ({ navigation }) => {
         </View>
         <MiniButton title="Save" />
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };
 

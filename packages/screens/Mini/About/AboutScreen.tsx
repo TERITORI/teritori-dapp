@@ -15,7 +15,7 @@ import { fontBold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import ListView from "../AddressBook/components/ListView";
 import MiniHeader from "../Notifications/components/MiniHeader";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 type AboutScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "About">;
@@ -55,7 +55,7 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
       : navigation.replace("MiniTabs");
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       background="transparent"
       reverseView={false}
       customHeader={
@@ -115,6 +115,6 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
         />
         <SpacerColumn size={6} />
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 }

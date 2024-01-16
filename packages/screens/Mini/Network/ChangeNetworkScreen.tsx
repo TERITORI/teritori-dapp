@@ -15,7 +15,7 @@ import { layout } from "../../../utils/style/layout";
 import ListView from "../AddressBook/components/ListView";
 import Checkbox from "../Notifications/components/Checkbox";
 import MiniHeader from "../Notifications/components/MiniHeader";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 type ChangeNetworkScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ChangeNetwork">;
@@ -50,7 +50,7 @@ export default function ChangeNetworkScreen({
   ];
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       customHeader={
         <MiniHeader
           navigation={navigation}
@@ -84,10 +84,11 @@ export default function ChangeNetworkScreen({
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <ListView
-              onPress={() =>
-                navigation.navigate("EditChangeNetwork", {
-                  addressId: item.id,
-                })
+              onPress={
+                () => {}
+                // navigation.navigate("EditChangeNetwork", {
+                //   addressId: item.id,
+                // })
               }
               style={{
                 paddingHorizontal: layout.spacing_x1_5,
@@ -132,6 +133,6 @@ export default function ChangeNetworkScreen({
           },
         }}
       />
-    </SettingBase>
+    </BlurScreenContainer>
   );
 }

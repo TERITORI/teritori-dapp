@@ -11,7 +11,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { CustomButton } from "../components/CustomButton";
 
 const tokenOptions = [
@@ -87,7 +87,7 @@ const AddCustomTokenScreen: ScreenFC<"MiniAddCustomToken"> = ({
   const onAddToken = () => {};
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       title="Add Custom Token"
       reverseView={false}
       onGoBack={gotoManageTokens}
@@ -130,7 +130,7 @@ const AddCustomTokenScreen: ScreenFC<"MiniAddCustomToken"> = ({
           title="Add"
         />
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };
 

@@ -5,7 +5,7 @@ import { NewConversationOrGroupSelector } from "./components/NewConversationOrGr
 import { SearchChatList } from "./components/SearchChatList";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 const dummyContact = [
   {
@@ -120,7 +120,7 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
   const [search, setSearch] = useState("");
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       title="New group "
       background="transparent"
       reverseView={false}
@@ -153,6 +153,6 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
           }}
         />
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };

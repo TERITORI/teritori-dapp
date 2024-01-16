@@ -15,7 +15,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium13, fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 const QR_SIZE = 248;
 const accountDetails = {
@@ -37,7 +37,7 @@ export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
   };
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       title="Deposit TORI"
       reverseView={false}
       background="transparent"
@@ -126,6 +126,6 @@ export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
           Only use this address to receive tokens on Teritori.
         </BrandText>
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };

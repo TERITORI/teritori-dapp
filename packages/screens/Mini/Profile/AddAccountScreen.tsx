@@ -3,15 +3,15 @@ import { View } from "react-native";
 
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
-import { SettingBase } from "../components/SettingBase";
 import { SettingMenuItem } from "../Settings/components/SettingMenuItems";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 export const AddAccountScreen: ScreenFC<"MiniAddAccount"> = ({
   navigation,
 }) => {
   const goToProfile = () => navigation.replace("MiniProfile");
   return (
-    <SettingBase title="Add Account" onGoBack={goToProfile}>
+    <BlurScreenContainer title="Add Account" onGoBack={goToProfile}>
       <View style={{ marginBottom: layout.spacing_x1_5 }}>
         <SettingMenuItem
           navigateTo="MiniAddAccount"
@@ -29,6 +29,6 @@ export const AddAccountScreen: ScreenFC<"MiniAddAccount"> = ({
           subtitle="Add a Ledger account"
         />
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };

@@ -1,12 +1,12 @@
 import React from "react";
 
-import { SettingBase } from "../components/SettingBase";
 import { SettingMenuItem } from "./components/SettingMenuItems";
 import { ScreenFC } from "../../../utils/navigation";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 export const SettingsScreen: ScreenFC<"MiniSettings"> = ({ navigation }) => {
   return (
-    <SettingBase
+    <BlurScreenContainer
       title="Settings"
       onGoBack={() => navigation.replace("MiniProfile")}
     >
@@ -19,6 +19,6 @@ export const SettingsScreen: ScreenFC<"MiniSettings"> = ({ navigation }) => {
       />
       <SettingMenuItem title="Chat Settings" navigateTo="MiniChatSetting" />
       <SettingMenuItem title="About Teritori" navigateTo="About" />
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };

@@ -21,7 +21,7 @@ type Props = {
   customHeader?: ReactNode;
 };
 
-export const SettingBase = ({
+export const BlurScreenContainer = ({
   children,
   title,
   onGoBack,

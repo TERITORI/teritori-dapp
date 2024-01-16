@@ -16,8 +16,8 @@ import { layout } from "../../../utils/style/layout";
 import CircularImgOrIcon from "../AddressBook/components/CircularImgOrIcon";
 import MiniButton from "../AddressBook/components/MiniButton";
 import MiniTextInput from "../AddressBook/components/MiniTextInput";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import MiniTextInputWithDropdown from "../components/MiniTextInputWithDropdown";
-import { SettingBase } from "../components/SettingBase";
 
 const tokenOptions = [
   {
@@ -44,7 +44,7 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation }) => {
       : navigation.replace("MiniTabs");
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       title="Send TORI"
       reverseView={false}
       background="transparent"
@@ -121,7 +121,7 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation }) => {
           }
         />
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };
 

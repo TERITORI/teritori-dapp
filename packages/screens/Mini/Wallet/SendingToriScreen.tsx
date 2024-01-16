@@ -13,8 +13,8 @@ import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import MiniButton from "../AddressBook/components/MiniButton";
 import MiniHeader from "../Notifications/components/MiniHeader";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import RowDisplay from "../components/RowDisplay";
-import { SettingBase } from "../components/SettingBase";
 
 const SendingToriScreen: ScreenFC<"MiniSendingTori"> = ({ navigation }) => {
   const onClose = () =>
@@ -23,7 +23,7 @@ const SendingToriScreen: ScreenFC<"MiniSendingTori"> = ({ navigation }) => {
       : navigation.replace("MiniTabs");
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       background="transparent"
       customHeader={
         <MiniHeader
@@ -90,7 +90,7 @@ const SendingToriScreen: ScreenFC<"MiniSendingTori"> = ({ navigation }) => {
 
         <MiniButton title="Send" onPress={() => navigation.goBack()} />
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };
 

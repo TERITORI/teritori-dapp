@@ -12,7 +12,7 @@ import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import MiniHeader from "../Notifications/components/MiniHeader";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 const addresses: AddressBookType[] = [
   { id: "asdfdasd", label: "Defi1", address: "fadfd..sdf" },
@@ -43,7 +43,7 @@ const EditAddressBookScreen: ScreenFC<"EditAddressBook"> = ({
   }, [addressId]);
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       background="transparent"
       reverseView={false}
       customHeader={
@@ -89,7 +89,7 @@ const EditAddressBookScreen: ScreenFC<"EditAddressBook"> = ({
         </View>
         <MiniButton title="Save" />
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };
 
