@@ -10,7 +10,6 @@ import { fontMedium16, fontSemibold30 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { CustomButton } from "../components/CustomButton";
-import { SettingBase } from "../components/SettingBase";
 
 export const ResetWalletScreen: ScreenFC<"MiniResetWallet"> = ({
   navigation,
