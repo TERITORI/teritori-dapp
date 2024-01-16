@@ -2,7 +2,7 @@ import React from "react";
 import { Image, View, ViewStyle } from "react-native";
 
 import avaPNG from "../../../../assets/default-images/ava.png";
-import checkBadgeSVG from "../../../../assets/icons/check-badge.svg";
+import checkBadgeSVG from "../../../../assets/icons/certified.svg";
 import SolanaCircleSVG from "../../../../assets/icons/networks/solana-circle.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
@@ -39,7 +39,7 @@ export const TooltipContant = () => {
               >
                 Meebits
               </BrandText>
-              <SVG source={checkBadgeSVG} />
+              <SVG source={checkBadgeSVG} width={18} height={18} />
             </View>
           </View>
           <View style={{ marginTop: layout.spacing_x2_5 }}>

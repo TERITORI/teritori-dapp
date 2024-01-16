@@ -4,6 +4,7 @@ import { StyleProp, TextStyle, View, ViewStyle } from "react-native";
 import cryptoLogoSVG from "../../../assets/icons/crypto-logo.svg";
 import SolanaCircleSVG from "../../../assets/icons/networks/solana-circle.svg";
 import { useIsMobile } from "../../hooks/useIsMobile";
+import { secondaryColor } from "../../utils/style/colors";
 import { fontSemibold11, fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -32,14 +33,18 @@ export const InnerCellText: React.FC<{
         },
         (isSolanaIcon || isCryptoLogo) && {
           flexDirection: "row",
-          flexWrap: "nowrap",
           alignItems: "center",
         },
       ]}
     >
       {isSolanaIcon && (
         <View style={{ marginRight: layout.spacing_x0_25 }}>
-          <SVG width={20} height={20} source={SolanaCircleSVG} color="white" />
+          <SVG
+            width={20}
+            height={20}
+            source={SolanaCircleSVG}
+            color={secondaryColor}
+          />
         </View>
       )}
       {isCryptoLogo && (
