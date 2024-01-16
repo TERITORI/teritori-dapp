@@ -23,19 +23,7 @@ type AboutScreenProps = {
 
 const links = [
   {
-    label: "Website",
-    url: "https:ggogle.com",
-  },
-  {
-    label: "Developer Docs",
-    url: "https:ggogle.com",
-  },
-  {
-    label: "GitHub",
-    url: "https:ggogle.com",
-  },
-  {
-    label: "Help & Support",
+    label: "Privacy Policy",
     url: "https:ggogle.com",
   },
   {
@@ -43,7 +31,19 @@ const links = [
     url: "https:ggogle.com",
   },
   {
-    label: "Privacy Policy",
+    label: "Help & Support",
+    url: "https:ggogle.com",
+  },
+  {
+    label: "GitHub",
+    url: "https:ggogle.com",
+  },
+  {
+    label: "Developer Docs",
+    url: "https:ggogle.com",
+  },
+  {
+    label: "Website",
     url: "https:ggogle.com",
   },
 ];
@@ -96,7 +96,7 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
       >
         <FlatList
           inverted
-          data={links.reverse()}
+          data={links}
           keyExtractor={(item) => item.label}
           renderItem={({ item }) => (
             <ListView
@@ -106,6 +106,7 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
               }}
               options={{
                 label: item?.label,
+                iconEnabled: true,
                 iconOptions: {
                   icon: externalLinkSVG,
                 },

@@ -1,12 +1,8 @@
-import { BlurView } from "expo-blur";
-import { LinearGradient } from "expo-linear-gradient";
-import React, { FC } from "react";
-import { Dimensions, SafeAreaView, View } from "react-native";
-import { SvgProps } from "react-native-svg";
+import React from "react";
+import { View } from "react-native";
 
 import { Account } from "./components/Account";
 import addSVG from "../../../../assets/icons/add-solid-white.svg";
-import chevronGrayRightSVG from "../../../../assets/icons/chevron-right-gray.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import dAppStoreSVG from "../../../../assets/icons/dapp-store-solid.svg";
 import googleSVG from "../../../../assets/icons/google.svg";
@@ -17,59 +13,21 @@ import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
-import {
-  RouteName,
-  ScreenFC,
-  useAppNavigation,
-} from "../../../utils/navigation";
+import { SpacerColumn } from "../../../components/spacer";
+import { ScreenFC } from "../../../utils/navigation";
 import { neutral39 } from "../../../utils/style/colors";
 import { fontSemibold15, fontSemibold18 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { SettingMenuItem } from "../components/SettingMenuItems";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
   const onClose = () => navigation.goBack();
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        width: "100%",
-        position: "relative",
-      }}
-    >
-      <BlurView
-        tint="dark"
-        style={{
-          position: "absolute",
-          zIndex: 0,
-          width: Dimensions.get("window").width,
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-        }}
-      />
-      <LinearGradient
-        start={{ x: 1, y: 1 }}
-        end={{ x: 1, y: 0 }}
-        colors={["rgba(0,0,0,1)", "rgba(0,0,0,0.9)", "rgba(0,0,0,0.2)"]}
-        style={{
-          flex: 1,
-          borderRadius: 6,
-          position: "absolute",
-          zIndex: 0,
-          width: Dimensions.get("window").width,
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-        }}
-      />
-      <View
-        style={{
-          flex: 1,
-        }}
-      >
+    <BlurScreenContainer
+      background="transparent"
+      customHeader={
         <View
           style={{
             flexDirection: "row",
@@ -96,89 +54,58 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
             <SVG source={closeSVG} height={28} width={28} />
           </CustomPressable>
         </View>
-
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "flex-end",
-          }}
-        >
-          <View
-            style={{
-              paddingHorizontal: layout.spacing_x2,
-            }}
-          >
-            <View style={{ zIndex: 300 }}>
-              <Account
-                accountName="Main Account"
-                id="1"
-                toriCount={62424}
-                logo={googleSVG}
-              />
-            </View>
-            <View style={{ zIndex: 200 }}>
-              <Account accountName="Account 2" id="2" toriCount={0} />
-            </View>
-            <View style={{ zIndex: 100 }}>
-              <Account
-                accountName="Ledger"
-                id="3"
-                toriCount={1000}
-                logo={ledgerSVG}
-                isLast
-              />
-            </View>
-
-            <Separator style={{ marginTop: layout.spacing_x1_5 }} />
-            <ProfileMenuItem
-              icon={addSVG}
-              title="Add Account"
-              navigateTo="MiniAddAccount"
-            />
-            <Separator />
-            <ProfileMenuItem
-              icon={settingSVG}
-              navigateTo="MiniSettings"
-              title="Settings"
-            />
-            <ProfileMenuItem
-              icon={dAppStoreSVG}
-              title="dApps"
-              navigateTo="MiniDAppStore"
-            />
-          </View>
-        </View>
-      </View>
-    </SafeAreaView>
-  );
-};
-
-type MenuItemProps = {
-  icon: string | FC<SvgProps>;
-  title: string;
-  navigateTo: RouteName;
-};
-const ProfileMenuItem = ({ icon, navigateTo, title }: MenuItemProps) => {
-  const navigation = useAppNavigation();
-  const onMenuItemPress = () => {
-    navigation.replace(navigateTo);
-  };
-  return (
-    <CustomPressable onPress={onMenuItemPress}>
+      }
+    >
       <View
         style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          padding: layout.spacing_x2,
-          marginBottom: layout.spacing_x1_5,
+          paddingHorizontal: layout.spacing_x2,
         }}
       >
-        <View style={{ flexDirection: "row", gap: layout.spacing_x1_5 }}>
-          <SVG source={icon} height={24} width={24} />
-          <BrandText>{title}</BrandText>
+        <View style={{ zIndex: 300 }}>
+          <Account
+            accountName="Main Account"
+            id="1"
+            toriCount={62424}
+            logo={googleSVG}
+          />
         </View>
-        <SVG source={chevronGrayRightSVG} height={24} width={24} />
+        <View style={{ zIndex: 200 }}>
+          <Account accountName="Account 2" id="2" toriCount={0} />
+        </View>
+        <View style={{ zIndex: 100 }}>
+          <Account
+            accountName="Ledger"
+            id="3"
+            toriCount={1000}
+            logo={ledgerSVG}
+            isLast
+          />
+        </View>
+
+        <SpacerColumn size={1} />
+        <Separator />
+        <SpacerColumn size={1} />
+        <SettingMenuItem
+          icon={addSVG}
+          navigateTo="MiniAddAccount"
+          title="Add Account"
+        />
+        <SpacerColumn size={1} />
+        <Separator />
+        <SpacerColumn size={1} />
+        <SettingMenuItem
+          icon={settingSVG}
+          navigateTo="MiniSettings"
+          title="Settings"
+        />
+        <SpacerColumn size={1} />
+        <SettingMenuItem
+          icon={dAppStoreSVG}
+          navigateTo="MiniDAppStore"
+          title="dApps"
+        />
+        <SpacerColumn size={1} />
       </View>
-    </CustomPressable>
+    </BlurScreenContainer>
   );
 };

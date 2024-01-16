@@ -1,8 +1,38 @@
-import React from "react";
+import React, { Fragment } from "react";
+import { View } from "react-native";
 
-import { SettingMenuItem } from "./components/SettingMenuItems";
-import { ScreenFC } from "../../../utils/navigation";
+import { SpacerColumn } from "../../../components/spacer";
+import { RouteName, ScreenFC } from "../../../utils/navigation";
+import { layout } from "../../../utils/style/layout";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import { SettingMenuItem } from "../components/SettingMenuItems";
+
+const settingScreens: { title: string; navigateTo: RouteName }[] = [
+  {
+    title: "Connected Apps",
+    navigateTo: "MiniSettings",
+  },
+  {
+    title: "Address Book",
+    navigateTo: "AddressBook",
+  },
+  {
+    title: "Change Network",
+    navigateTo: "ChangeNetwork",
+  },
+  {
+    title: "Security & Privacy",
+    navigateTo: "MiniSecurityAndPrivacy",
+  },
+  {
+    title: "Chat Settings",
+    navigateTo: "MiniChatSetting",
+  },
+  {
+    title: "About Teritori",
+    navigateTo: "About",
+  },
+];
 
 export const SettingsScreen: ScreenFC<"MiniSettings"> = ({ navigation }) => {
   return (
@@ -10,15 +40,19 @@ export const SettingsScreen: ScreenFC<"MiniSettings"> = ({ navigation }) => {
       title="Settings"
       onGoBack={() => navigation.replace("MiniProfile")}
     >
-      <SettingMenuItem title="Connected Apps" navigateTo="MiniSettings" />
-      <SettingMenuItem title="Address Book" navigateTo="AddressBook" />
-      <SettingMenuItem title="Change Network" navigateTo="ChangeNetwork" />
-      <SettingMenuItem
-        title="Security & Privacy"
-        navigateTo="MiniSecurityAndPrivacy"
-      />
-      <SettingMenuItem title="Chat Settings" navigateTo="MiniChatSetting" />
-      <SettingMenuItem title="About Teritori" navigateTo="About" />
+      <View style={{ paddingHorizontal: layout.spacing_x2 }}>
+        {settingScreens.map((screen) => {
+          return (
+            <Fragment key={screen.title}>
+              <SettingMenuItem
+                title={screen.title}
+                navigateTo={screen.navigateTo}
+              />
+              <SpacerColumn size={1} />
+            </Fragment>
+          );
+        })}
+      </View>
     </BlurScreenContainer>
   );
 };
