@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 
 import useSelectedWallet from "./useSelectedWallet";
-import { useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNftVaultClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import {
@@ -75,50 +74,38 @@ export const useCancelNFTListing = (
   tokenId: string,
 ) => {
   const wallet = useSelectedWallet();
-  const { setToastError } = useFeedbacks();
 
   return useCallback(async () => {
-    try {
-      const network = getNetwork(networkId);
-      if (!network) {
-        throw new Error("unknown network");
-      }
+    const network = getNetwork(networkId);
+    if (!network) {
+      throw new Error("unknown network");
+    }
 
-      if (!wallet?.address || !wallet.connected) {
-        throw new Error("bad wallet");
-      }
+    if (!wallet?.address || !wallet.connected) {
+      throw new Error("bad wallet");
+    }
 
-      switch (network.kind) {
-        case NetworkKind.Cosmos:
-          return await teritoriCancelNFTListing(
-            network.id,
-            wallet.address,
-            nftContractAddress,
-            tokenId,
-          );
-        case NetworkKind.Ethereum:
-          return await ethereumCancelNFTListing(
-            network.id,
-            wallet.address,
-            nftContractAddress,
-            tokenId,
-          );
-        default:
-          throw Error(`Unsupported network ${network}`);
-      }
-    } catch (err) {
-      console.error(err);
-      if (err instanceof Error) {
-        setToastError({
-          title: "Failed to cancel NFT listing",
-          message: err.message,
-        });
-      }
+    switch (network.kind) {
+      case NetworkKind.Cosmos:
+        return await teritoriCancelNFTListing(
+          network.id,
+          wallet.address,
+          nftContractAddress,
+          tokenId,
+        );
+      case NetworkKind.Ethereum:
+        return await ethereumCancelNFTListing(
+          network.id,
+          wallet.address,
+          nftContractAddress,
+          tokenId,
+        );
+      default:
+        throw Error(`Unsupported network ${network}`);
     }
   }, [
     networkId,
     nftContractAddress,
-    setToastError,
     tokenId,
     wallet?.address,
     wallet?.connected,

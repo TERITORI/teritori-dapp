@@ -69,8 +69,20 @@ export const NFTMainInfo: React.FC<{
     price: string,
     denom: string | undefined,
   ) => Promise<string | undefined>;
-  cancelListing: () => Promise<string | undefined>;
-}> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
+  cancelListing: () => Promise<void>;
+  updatePrice: (newPrice: {
+    amount: string;
+    denom: string;
+  }) => void | Promise<void>;
+}> = ({
+  nftId,
+  nftInfo,
+  buy,
+  sell,
+  cancelListing,
+  showMarketplace,
+  updatePrice,
+}) => {
   const isMobile = useIsMobile();
   const { width } = useMaxResolution({ responsive: true, noMargin: true });
   if (isMobile) {
@@ -283,6 +295,7 @@ export const NFTMainInfo: React.FC<{
                   nftInfo={nftInfo}
                   style={{ marginTop: 24, marginBottom: 40 }}
                   onPressCancel={cancelListing}
+                  onPressUpdatePrice={updatePrice}
                 />
               )}
               {!nftInfo?.isListed && !nftInfo?.isOwner && (

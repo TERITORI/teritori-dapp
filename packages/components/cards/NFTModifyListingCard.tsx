@@ -1,7 +1,10 @@
+import { Decimal } from "@cosmjs/math";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
+import { StyleProp, TouchableOpacity, View } from "react-native";
 
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { getNativeCurrency } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { neutral17, neutral33, secondaryColor } from "../../utils/style/colors";
 import {
@@ -13,7 +16,8 @@ import { layout } from "../../utils/style/layout";
 import { NFTInfo } from "../../utils/types/nft";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { BoxStyle } from "../boxes/Box";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 import { GradientText } from "../gradientText";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { SpacerRow } from "../spacer";
@@ -24,24 +28,31 @@ export type NFTModifyListingForm = {
 
 export const NFTModifyListingCard: React.FC<{
   nftInfo: NFTInfo;
-  onPressCancel: () => void;
-  style?: StyleProp<ViewStyle>;
-}> = ({ nftInfo, onPressCancel, style }) => {
+  onPressCancel: () => Promise<void>;
+  onPressUpdatePrice(newPrice: {
+    amount: string;
+    denom: string;
+  }): void | Promise<void>;
+  style?: StyleProp<BoxStyle>;
+}> = ({ nftInfo, onPressCancel, onPressUpdatePrice, style }) => {
   const { control, watch } = useForm<NFTModifyListingForm>();
   const newPrice = watch("newPrice");
+  const { wrapWithFeedback } = useFeedbacks();
 
   return (
-    <LegacyTertiaryBox
-      fullWidth
-      height={100}
-      style={style}
-      mainContainerStyle={{
-        padding: 16,
-        flexDirection: "row",
-        justifyContent: "space-between",
-      }}
+    <TertiaryBox
+      style={[
+        {
+          width: "100%",
+          height: 100,
+          padding: 16,
+          flexDirection: "row",
+          justifyContent: "space-between",
+        },
+        style,
+      ]}
     >
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, justifyContent: "space-between" }}>
         <BrandText style={[fontSemibold12, { marginBottom: 6 }]}>
           Current Price
         </BrandText>
@@ -105,9 +116,26 @@ export const NFTModifyListingCard: React.FC<{
               alignItems: "center",
               justifyContent: "center",
             }}
-            onPress={() => {
-              // TODO : Modify listing price
-            }}
+            onPress={wrapWithFeedback(async () => {
+              if (!newPrice) {
+                throw new Error("New price is required");
+              }
+              const currency = getNativeCurrency(
+                nftInfo.networkId,
+                nftInfo.priceDenom,
+              );
+              if (!currency) {
+                throw new Error("Currency not found");
+              }
+              const amount = Decimal.fromUserInput(
+                newPrice,
+                currency.decimals,
+              ).atomics;
+              await onPressUpdatePrice({
+                amount,
+                denom: nftInfo.priceDenom,
+              });
+            })}
             disabled={!newPrice}
           >
             <BrandText
@@ -131,7 +159,7 @@ export const NFTModifyListingCard: React.FC<{
             alignItems: "center",
             justifyContent: "center",
           }}
-          onPress={onPressCancel}
+          onPress={wrapWithFeedback(onPressCancel)}
         >
           <BrandText
             style={[
@@ -145,6 +173,6 @@ export const NFTModifyListingCard: React.FC<{
           </BrandText>
         </TouchableOpacity>
       </View>
-    </LegacyTertiaryBox>
+    </TertiaryBox>
   );
 };
