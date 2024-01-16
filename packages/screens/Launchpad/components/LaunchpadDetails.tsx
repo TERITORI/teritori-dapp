@@ -50,35 +50,35 @@ export const LaunchpadDetails: React.FC = () => {
         />
 
         <TextInputLaunchpadDetailsValues
+          required
           label="Twitter Profile "
           placeHolder="https://twitter..."
           name="twitterProfileUrl"
           control={control}
-          required
         />
 
         <TextInputLaunchpadDetailsValues
+          required
           label="How many Twitter followers does your project have? "
           placeHolder="10,000"
           name="twitterFollowers"
           control={control}
-          required
         />
 
         <TextInputLaunchpadDetailsValues
+          required
           label="Discord name of your main contact: "
           placeHolder="nickname#0000"
           name="discordName"
           control={control}
-          required
         />
 
         <TextInputLaunchpadDetailsValues
+          required
           label="Main contact email address: "
           placeHolder="contact@email.com"
           name="email"
           control={control}
-          required
         />
 
         <SelectionDropdown
@@ -90,14 +90,15 @@ export const LaunchpadDetails: React.FC = () => {
         />
 
         <TextInputLaunchpadDetailsValues
+          required
           label="Project type:"
           placeHolder="Multiple answers allowed"
           name="projectType"
           control={control}
-          required
         />
 
         <TextInputLaunchpadDetailsValues
+          required
           label="Describe your project: "
           sublabel={
             <View>
@@ -115,7 +116,6 @@ export const LaunchpadDetails: React.FC = () => {
           placeHolder="Describe here..."
           name="projectDesciption"
           control={control}
-          required
         />
 
         <SelectionDropdown

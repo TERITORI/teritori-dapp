@@ -73,7 +73,6 @@ export const LaunchpadMinting: React.FC = () => {
         <SpacerColumn size={2} />
 
         <TextInputLaunchpadMintValues
-          required
           label="Number of Tokens "
           placeHolder="0"
           name="token"
@@ -81,7 +80,6 @@ export const LaunchpadMinting: React.FC = () => {
         />
 
         <TextInputLaunchpadMintValues
-          required
           label="Unit Price"
           sublabel={
             <View>
@@ -96,7 +94,6 @@ export const LaunchpadMinting: React.FC = () => {
         />
 
         <TextInputLaunchpadMintValues
-          required
           label="Per Address Limit "
           sublabel={
             <View>
@@ -111,7 +108,6 @@ export const LaunchpadMinting: React.FC = () => {
         />
 
         <TextInputLaunchpadMintValues
-          required
           label="Start Time "
           placeHolder="--.--.---- --:--"
           name="startTime"

@@ -12,21 +12,19 @@ interface TextInputCustomProps<NewCollectionBasicFormValues extends FieldValues>
   placeHolder: string;
   control: Control<NewCollectionBasicFormValues>;
   name: Path<NewCollectionBasicFormValues>;
-  required: boolean;
 }
 
 export const TextInputLaunchpadBasicValues = <
   NewCollectionBasicFormValues extends FieldValues,
 >({
   control,
-  required,
   name,
   label,
   placeHolder,
 }: TextInputCustomProps<NewCollectionBasicFormValues>) => {
   return (
     <TextInputCustom<NewCollectionBasicFormValues>
-      rules={{ required }}
+      rules={{ required: true }}
       label={label}
       placeHolder={placeHolder}
       name={name}

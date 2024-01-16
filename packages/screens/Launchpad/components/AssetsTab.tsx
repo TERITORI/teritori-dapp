@@ -3,8 +3,8 @@ import { useForm } from "react-hook-form";
 import { SafeAreaView, View } from "react-native";
 
 import { TextInputLaunchpadAssetsValues } from "./inputs/TextInputLaunchpadAssetsValues";
+import { MetadataUpdateModal } from "./modals/MetadataUpdateModal";
 import { SelectedFilesPreview } from "../../../components/FilePreview/SelectedFilesPreview";
-import { MetadataUpdateModal } from "../../../components/modals/collection/MetadataUpdateModal";
 import { SelectFileUploader } from "../../../components/selectFileUploader";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
 import { neutral33 } from "../../../utils/style/colors";
@@ -59,7 +59,6 @@ export const AssetsTab: React.FC = () => {
           >
             <View>
               <TextInputLaunchpadAssetsValues
-                required
                 label="NFT.Storage API Key"
                 placeHolder="My Awesome Collection"
                 name="nftApiKey"

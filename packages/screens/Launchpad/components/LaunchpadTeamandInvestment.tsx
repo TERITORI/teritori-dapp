@@ -62,6 +62,7 @@ export const LaunchpadTeamandInvestment: React.FC = () => {
           placeHolder="Describe here..."
           name="teamDesciption"
           control={control}
+          multiline
         />
 
         <TextInputLaunchpadTandIValues
