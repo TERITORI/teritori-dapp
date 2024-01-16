@@ -49,7 +49,7 @@ export const ProjectsMakeRequestScreen: ScreenFC<
         {stepIndice === 1 && <ShortPresentation />}
         {stepIndice === 2 && <TeamAndLinks />}
         {stepIndice === 3 && <Milestones />}
-        {stepIndice === 4 && <Preview />}
+        {stepIndice === 4 && <Preview  />}
         {stepIndice === 5 && <ConfirmAndSign />}
       </View>
     </ScreenContainer>

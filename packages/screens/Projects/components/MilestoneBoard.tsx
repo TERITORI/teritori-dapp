@@ -26,7 +26,7 @@ import {
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
-import { MilestoneFormData, MsStatus } from "../types";
+import { ProjectMilestone, MsStatus } from "../types";
 
 export type Step = {
   status: MsStatus;
@@ -54,24 +54,24 @@ const STEPS: Step[] = [
 ];
 
 export const MilestoneBoard: React.FC<{
-  milestones: MilestoneFormData[];
+  milestones: ProjectMilestone[];
   containerStyle?: StyleProp<ViewStyle>;
-  onSelectMilestone?: (milestone: MilestoneFormData) => void;
+  onSelectMilestone?: (milestone: ProjectMilestone) => void;
   editable?: boolean;
 }> = ({ onSelectMilestone, containerStyle, editable, milestones }) => {
-  const [hoveredMilestone, setHoveredMilestone] = useState<MilestoneFormData>();
+  const [hoveredMilestone, setHoveredMilestone] = useState<ProjectMilestone>();
   const [isShowMilestoneForm, showMilestoneForm] = useState(false);
 
   const {
     actions: { addMilestone, removeMilestone },
   } = useMakeRequestState();
 
-  const removeHoveredMilestone = (milestone: MilestoneFormData) => {
+  const removeHoveredMilestone = (milestone: ProjectMilestone) => {
     setHoveredMilestone(undefined);
     removeMilestone(milestone);
   };
 
-  const addNewMilestone = (milestone: MilestoneFormData) => {
+  const addNewMilestone = (milestone: ProjectMilestone) => {
     showMilestoneForm(false);
     addMilestone(milestone);
   };

@@ -5,6 +5,7 @@ import { TouchableOpacity, View } from "react-native";
 import filterSVG from "../../../../assets/icons/filter.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
+import { ProgressLine } from "../../../components/ProgressLine";
 import { SearchBarInput } from "../../../components/Search/SearchBarInput";
 import { IconButton } from "../../../components/buttons/IconButton";
 import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
@@ -35,10 +36,6 @@ const getTableCols = (projectType: ProjectType) => {
     manager: {
       label: projectType === "myProjects" ? "Investor" : "Builder",
       flex: 5,
-    },
-    signs: {
-      label: "Signs(signed/required)",
-      flex: 3,
     },
     milestones: {
       label: "Milestones",
@@ -105,18 +102,13 @@ const ProjectRow: React.FC<{ project: Project; projectType: ProjectType }> = ({
         </BrandText>
       </View>
 
-      {/* === Signs === */}
-      <View style={{ flex: 3, alignItems: "center" }}>
-        <BrandText style={[{ color: neutralFF }, fontSemibold13]}>
-          1/2 (???)
-        </BrandText>
-      </View>
-
       {/* === Milestones === */}
       <View style={{ flex: 3, alignItems: "center" }}>
         <BrandText style={[{ color: neutralFF }, fontSemibold13]}>
           {stats.completed}/{stats.total}
         </BrandText>
+
+        <ProgressLine percent={stats.percentCompleted} width={60} />
       </View>
 
       {/* === Grant === */}
@@ -156,10 +148,16 @@ export const MyProjectsManager: React.FC<{
   const [searchText, setSearchText] = useState("");
 
   const filteredProjects = useMemo(() => {
-    return projects.filter(
-      (p) => statusFilter === ContractStatus.ALL || p.status === statusFilter,
-    );
-  }, [projects, statusFilter]);
+    return projects
+      .filter(
+        (p) => statusFilter === ContractStatus.ALL || p.status === statusFilter,
+      )
+      .filter((p) =>
+        p.metadata.shortDescData.name
+          .toLowerCase()
+          .includes(searchText.toLowerCase()),
+      );
+  }, [projects, statusFilter, searchText]);
 
   return (
     <View>
@@ -203,7 +201,7 @@ export const MyProjectsManager: React.FC<{
         }}
       >
         {filteredProjects.map((project) => (
-          <ProjectRow project={project} projectType={type} />
+          <ProjectRow key={project.id} project={project} projectType={type} />
         ))}
       </FlexRow>
     </View>

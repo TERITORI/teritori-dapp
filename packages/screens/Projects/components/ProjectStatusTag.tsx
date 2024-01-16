@@ -3,7 +3,7 @@ import React from "react";
 import { SimpleButton } from "../../../components/buttons/SimpleButton";
 import {
   neutral00,
-  neutral22,
+  neutral22, primaryColor,
   redDefault,
   secondaryColor,
 } from "../../../utils/style/colors";
@@ -38,7 +38,7 @@ export const ProjectStatusTag: React.FC<{
       break;
     case ContractStatus.COMPLETED:
       text = "Completed";
-      color = secondaryColor;
+      color = primaryColor;
       bgColor = neutral00;
       borderColor = neutral22;
       break;

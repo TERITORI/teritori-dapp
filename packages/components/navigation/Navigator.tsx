@@ -50,6 +50,7 @@ import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPub
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
+import { ProjectsCompleteMilestoneScreen } from "../../screens/Projects/CompleteMilestoneScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const screenTitle = (title: string) => "Teritori - " + title;
@@ -271,6 +272,15 @@ export const Navigator: React.FC = () => {
         options={{
           header: () => null,
           title: screenTitle("Projects Program Payment"),
+        }}
+      />
+
+      <Stack.Screen
+        name="ProjectsCompleteMilestone"
+        component={ProjectsCompleteMilestoneScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Projects Milestone"),
         }}
       />
 

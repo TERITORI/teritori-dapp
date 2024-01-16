@@ -27,22 +27,13 @@ export enum ProjectStatus {
   IN_PROGRESS = "IN_PROGRESS",
 }
 
-// This type used in form when create a project
-export type MilestoneFormData = {
-  id: number;
-  name: string;
-  desc: string;
-  status: MsStatus;
-  budget: number;
-  githubLink: string;
-  priority: MsPriority;
-};
-
 export type ShortDescData = {
   name: string;
   desc: string;
-  budget: string;
+  budget: number;
+  duration: number;
   funder: string;
+  contractor: string;
   paymentAddr: string;
   coverImg: string;
   tags: string;
@@ -59,19 +50,21 @@ export type TeamAndLinkData = {
 
 export type ProjectMetadata = {
   shortDescData: ShortDescData;
-  milestones: MilestoneFormData[];
+  milestones: ProjectMilestone[];
   teamAndLinkData: TeamAndLinkData;
 };
 
 export type ProjectMilestone = {
+  id: number;
   title: string;
+  desc: string;
   amount: number;
   paid: number;
   duration: number;
+  link: string;
+  funded: boolean;
   status: MsStatus;
   priority: MsPriority;
-  funded: boolean;
-  link: string;
 };
 
 export type Project = {
@@ -92,5 +85,7 @@ export type Project = {
   handlerCandidate: string;
   handlerSuggestor: string;
   createdAt: number;
+  funded: boolean;
+  budget: number;
   rejectReason: string;
 };

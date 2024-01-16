@@ -1,4 +1,5 @@
 import { Link } from "@react-navigation/native";
+import moment from "moment";
 import React from "react";
 import { View } from "react-native";
 
@@ -24,23 +25,18 @@ import {
   neutral33,
   neutral00,
   primaryColor,
-  secondaryColor,
+  secondaryColor, yellowDefault,
 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import {
-  EMPTY_SHORT_DESC,
-  EMPTY_TEAM_AND_LINK,
-} from "../hooks/useMakeRequestHook";
-import { Project } from "../types";
+import { ContractStatus, ShortDescData, TeamAndLinkData } from "../types";
 
 export const ProjectInfo: React.FC<{
-  project: Project;
-}> = ({ project }) => {
-  const shortDescData = project?.metadata.shortDescData || EMPTY_SHORT_DESC;
-  const teamAndLinkData =
-    project?.metadata.teamAndLinkData || EMPTY_TEAM_AND_LINK;
-
+  projectStatus?: ContractStatus;
+  isFunded?: boolean;
+  shortDescData: ShortDescData;
+  teamAndLinkData: TeamAndLinkData;
+}> = ({ projectStatus, shortDescData, teamAndLinkData, isFunded }) => {
   return (
     <>
       <FlexRow
@@ -110,7 +106,9 @@ export const ProjectInfo: React.FC<{
           <SpacerColumn size={2} />
 
           <FlexRow>
-            <ProjectStatusTag status={project.status} size="XS" />
+            {projectStatus && (
+              <ProjectStatusTag status={projectStatus} size="XS" />
+            )}
             <SpacerRow size={2} />
 
             {shortDescData?.tags.split(",").map((tag, idx) => {
@@ -129,23 +127,49 @@ export const ProjectInfo: React.FC<{
         </View>
 
         {/* Right block ======================================================= */}
-        <View style={{ marginTop: layout.spacing_x2 }}>
+        <View style={{ marginTop: layout.spacing_x2, width: 280 }}>
           <TertiaryBox
             style={{
               backgroundColor: neutral22,
               borderWidth: 0,
               paddingVertical: 12,
               paddingHorizontal: 16,
-              width: 224,
             }}
           >
             <FlexRow style={{ justifyContent: "center", width: "100%" }}>
-              <BrandText style={[fontSemibold20, { color: neutral77 }]}>
-                Grant:
+              <BrandText
+                style={[
+                  fontSemibold20,
+                  { color: isFunded ? yellowDefault : neutral77 },
+                ]}
+              >
+                {isFunded ? "Funded:" : "Budget:"}
               </BrandText>
               <SpacerRow size={1} />
               <BrandText style={[fontSemibold20, { color: primaryColor }]}>
                 ${shortDescData?.budget}
+              </BrandText>
+            </FlexRow>
+          </TertiaryBox>
+
+          <SpacerColumn size={2} />
+
+          <TertiaryBox
+            style={{
+              backgroundColor: neutral22,
+              borderWidth: 0,
+              paddingVertical: 12,
+              paddingHorizontal: 16,
+
+            }}
+          >
+            <FlexRow style={{ justifyContent: "center", width: "100%" }}>
+              <BrandText style={[fontSemibold20, { color: neutral77 }]}>
+                Expire At:
+              </BrandText>
+              <SpacerRow size={1} />
+              <BrandText style={[fontSemibold20, { color: primaryColor }]}>
+                {moment(shortDescData.duration * 1000 + Date.now()).format("L")}
               </BrandText>
             </FlexRow>
           </TertiaryBox>

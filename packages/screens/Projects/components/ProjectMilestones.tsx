@@ -15,22 +15,18 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { MilestoneFormData, Project } from "../types";
+import { ProjectMilestone } from "../types";
 
 export const ProjectMilestones: React.FC<{
-  project: Project;
-  onSelectMilestone?: (milestone: MilestoneFormData) => void;
-}> = ({ project, onSelectMilestone }) => {
-  const milestones = useMemo(() => {
-    return project?.metadata.milestones || [];
-  }, [project?.metadata.milestones]);
-
+  milestones: ProjectMilestone[];
+  onSelectMilestone?: (milestone: ProjectMilestone) => void;
+}> = ({ milestones, onSelectMilestone }) => {
   const [searchText, setSearchText] = useState("");
   const [isHideInfo, setIsHideInfo] = useState(false);
 
   const filteredMilestones = useMemo(() => {
     return milestones.filter(
-      (m) => m.name.includes(searchText) || m.desc.includes(searchText),
+      (m) => m.title.includes(searchText) || m.desc.includes(searchText),
     );
   }, [milestones, searchText]);
 

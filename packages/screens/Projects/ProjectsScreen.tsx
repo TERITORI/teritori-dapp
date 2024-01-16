@@ -14,6 +14,7 @@ import { SimpleButton } from "../../components/buttons/SimpleButton";
 import { Separator } from "../../components/separators/Separator";
 import { SpacerRow } from "../../components/spacer";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { NetworkKind } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
   neutral33,
@@ -57,6 +58,7 @@ export const ProjectsScreen: ScreenFC<"Projects"> = () => {
 
   return (
     <ScreenContainer
+      forceNetworkKind={NetworkKind.Gno}
       isLarge
       responsive
       headerChildren={

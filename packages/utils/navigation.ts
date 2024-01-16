@@ -67,9 +67,10 @@ export type RootStackParamList = {
 
   Projects: undefined;
   ProjectsManager: { view?: string };
-  ProjectsPayment: { projectId: string; milestoneIdx: string };
+  ProjectsPayment: { projectId: string; milestoneId: string };
+  ProjectsCompleteMilestone: { projectId: number; milestoneId: number };
   ProjectsMakeRequest: { step?: number };
-  ProjectsDetail: { id: string };
+  ProjectsDetail: { id: number };
 
   OrganizationDeployer: undefined;
   Organizations?: { network?: string };
@@ -151,6 +152,8 @@ const navConfig: {
     // === Projects Program
     Projects: "projects",
     ProjectsPayment: "projects/payment",
+    ProjectsCompleteMilestone:
+      "projects/completeMilestone/:projectId/:milestoneId",
     ProjectsManager: "projects/manager/:view",
     ProjectsMakeRequest: "projects/make-request",
     ProjectsDetail: "projects/:id",

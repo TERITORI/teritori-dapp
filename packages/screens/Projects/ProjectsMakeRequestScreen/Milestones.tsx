@@ -10,8 +10,24 @@ import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 export const Milestones: React.FC = () => {
   const {
     milestones,
-    actions: { goNextStep },
+    shortDescData,
+    actions: { goNextStep, setShortDesc },
   } = useMakeRequestState();
+
+  const goToReview = () => {
+    // Calculate total budget based on total milestones amounts
+    const totalBudget = milestones.reduce((total, m) => total + +m.amount, 0);
+    const totalDuration = milestones.reduce(
+      (total, m) => total + +m.duration,
+      0,
+    );
+    shortDescData.budget = totalBudget;
+    shortDescData.duration = totalDuration;
+
+    setShortDesc(shortDescData);
+
+    goNextStep();
+  };
 
   return (
     <View>
@@ -25,7 +41,7 @@ export const Milestones: React.FC = () => {
         }}
       />
 
-      <MakeRequestFooter disableNext={false} onSubmit={goNextStep} />
+      <MakeRequestFooter disableNext={false} onSubmit={goToReview} />
     </View>
   );
 };

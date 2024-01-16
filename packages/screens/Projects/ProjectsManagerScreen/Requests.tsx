@@ -17,6 +17,7 @@ import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { mustGetGnoNetwork } from "../../../networks";
 import { adenaVMCall } from "../../../utils/gno";
+import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral17,
   neutralA3,
@@ -42,8 +43,13 @@ const RequestItem: React.FC<{
   const { setToastError, setToastSuccess } = useFeedbacks();
   const [isShowModal, setIsShowModal] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
+  const navigation = useAppNavigation();
 
   const { mustGetValue } = useUtils();
+
+  const gotoProjectDetail = (project: Project) => {
+    navigation.navigate("ProjectsDetail", { id: project.id });
+  };
 
   const acceptContract = async (project: Project) => {
     setIsProcessing(true);
@@ -125,11 +131,17 @@ const RequestItem: React.FC<{
       >
         <FlexRow>
           <View style={{ flexGrow: 1, flex: 5 }}>
-            <BrandText style={fontSemibold14}>
+            <BrandText
+              onPress={() => gotoProjectDetail(project)}
+              style={fontSemibold14}
+            >
               {project.metadata.shortDescData.name}
             </BrandText>
 
-            <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
+            <BrandText
+              onPress={() => gotoProjectDetail(project)}
+              style={[fontSemibold14, { color: neutralA3 }]}
+            >
               {project.metadata.shortDescData.desc}
             </BrandText>
           </View>

@@ -1,18 +1,26 @@
 import { Formik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
-import { number, object, string } from "yup";
+import { RadioButton } from "react-native-paper";
+import { object, string } from "yup";
 
 import { MakeRequestFooter } from "./Footer";
 import addSVG from "../../../../assets/icons/add.svg";
 import { BrandText } from "../../../components/BrandText";
+import FlexRow from "../../../components/FlexRow";
 import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
 import { FileUploader } from "../../../components/fileUploader";
 import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
-import { errorColor, neutral77, neutralA3 } from "../../../utils/style/colors";
+import {
+  errorColor,
+  neutral77,
+  neutralA3,
+  primaryColor,
+} from "../../../utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
@@ -24,11 +32,13 @@ import { ShortDescData } from "../types";
 const emptyValues: ShortDescData = {
   name: "",
   desc: "",
-  budget: "",
+  budget: 0,
+  duration: 0,
   paymentAddr: "",
   coverImg: "",
   tags: "",
   funder: "",
+  contractor: "",
   _coverImgFile: undefined,
 };
 
@@ -36,7 +46,7 @@ const shortDescSchema = object({
   name: string().required().min(3),
   desc: string().required().min(10),
   funder: string().min(32),
-  budget: number().required().positive().integer(),
+  contractor: string().min(32),
   paymentAddr: string().required().min(6),
   coverImg: string().required().url(),
   tags: string().nullable(),
@@ -48,6 +58,14 @@ export const ShortPresentation: React.FC = () => {
     actions: { goNextStep, setShortDesc },
     shortDescData,
   } = useMakeRequestState();
+  const selectedWallet = useSelectedWallet();
+  const caller = selectedWallet?.address;
+
+  const [creatorType, setCreatorType] = useState("contractor");
+
+  if (!caller) {
+    return null;
+  }
 
   return (
     <View style={{ width: "100%", maxWidth: 480, margin: "auto" }}>
@@ -65,6 +83,12 @@ export const ShortPresentation: React.FC = () => {
         initialValues={shortDescData || emptyValues}
         validationSchema={shortDescSchema}
         onSubmit={(values) => {
+          if (creatorType === "contractor") {
+            values.contractor = caller;
+          } else {
+            values.funder = caller;
+          }
+
           setShortDesc(values);
           goNextStep();
         }}
@@ -79,6 +103,87 @@ export const ShortPresentation: React.FC = () => {
         }) => {
           return (
             <>
+              <View>
+                <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
+                  Creator type
+                </BrandText>
+
+                <FlexRow>
+                  <RadioButton
+                    value="contractor"
+                    color={primaryColor}
+                    uncheckedColor="#777777"
+                    status={
+                      creatorType === "contractor" ? "checked" : "unchecked"
+                    }
+                    onPress={async () => {
+                      setCreatorType("contractor");
+                      await setFieldValue("contractor", caller);
+                      await setFieldValue("funder", "");
+                    }}
+                  />
+                  <BrandText
+                    onPress={async () => {
+                      setCreatorType("contractor");
+                      await setFieldValue("contractor", caller);
+                      await setFieldValue("funder", "");
+                    }}
+                    style={fontSemibold14}
+                  >
+                    I'm contractor who looks for a funder
+                  </BrandText>
+                </FlexRow>
+
+                <FlexRow>
+                  <RadioButton
+                    value="funder"
+                    color={primaryColor}
+                    uncheckedColor="#777777"
+                    status={creatorType === "funder" ? "checked" : "unchecked"}
+                    onPress={async () => {
+                      setCreatorType("funder");
+                      await setFieldValue("funder", caller);
+                      await setFieldValue("contractor", "");
+                    }}
+                  />
+                  <BrandText
+                    onPress={async () => {
+                      setCreatorType("funder");
+                      await setFieldValue("funder", caller);
+                      await setFieldValue("contractor", "");
+                    }}
+                    style={fontSemibold14}
+                  >
+                    I'm funder who looks for a developer
+                  </BrandText>
+                </FlexRow>
+              </View>
+
+              <SpacerColumn size={2.5} />
+
+              <TextInputCustom
+                label={
+                  creatorType === "funder"
+                    ? "Potential contractor"
+                    : "Potential funder"
+                }
+                name="funder"
+                fullWidth
+                placeholder="Type the potential user address here..."
+                variant="labelOutside"
+                onChangeText={handleChange(
+                  creatorType === "funder" ? "contractor" : "funder",
+                )}
+                value={
+                  creatorType === "funder" ? values.contractor : values.funder
+                }
+                error={
+                  creatorType === "funder" ? errors.contractor : errors.funder
+                }
+              />
+
+              <SpacerColumn size={2.5} />
+
               <TextInputCustom
                 label="Name *"
                 name="name"
@@ -108,32 +213,6 @@ export const ShortPresentation: React.FC = () => {
               <SpacerColumn size={2.5} />
 
               <TextInputCustom
-                label="Budget *"
-                name="budget"
-                fullWidth
-                placeholder="What budget do you need?"
-                variant="labelOutside"
-                onChangeText={handleChange("budget")}
-                value={values.budget}
-                error={errors.budget}
-              />
-
-              <SpacerColumn size={2.5} />
-
-              <TextInputCustom
-                label="Expected funder"
-                name="funder"
-                fullWidth
-                placeholder="Expected funder for the project"
-                variant="labelOutside"
-                onChangeText={handleChange("funder")}
-                value={values.funder}
-                error={errors.funder}
-              />
-
-              <SpacerColumn size={2.5} />
-
-              <TextInputCustom
                 label="Payment Address (Gnoland) *"
                 name="paymentAddr"
                 fullWidth
@@ -141,7 +220,7 @@ export const ShortPresentation: React.FC = () => {
                 variant="labelOutside"
                 onChangeText={handleChange("paymentAddr")}
                 value={values.paymentAddr}
-                defaultValue="gopher20"
+                defaultValue="gno.land/r/demo/foo20"
                 error={errors.paymentAddr}
               />
               <BrandText

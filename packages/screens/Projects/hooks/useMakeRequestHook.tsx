@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import { useAppNavigation } from "../../../utils/navigation";
 import {
-  MilestoneFormData,
+  ProjectMilestone,
   MsPriority,
   MsStatus,
   ShortDescData,
@@ -13,14 +13,14 @@ type MakeRequestState = {
   stepIndice: number;
   shortDescData: ShortDescData;
   teamAndLinkData: TeamAndLinkData;
-  milestones: MilestoneFormData[];
+  milestones: ProjectMilestone[];
   actions: {
     setStepIndice: (stepIndice: number) => void;
     setShortDesc: (shortDescData: ShortDescData) => void;
     setTeamAndLink: (teamAndLinkData: TeamAndLinkData) => void;
 
-    addMilestone: (milestone: MilestoneFormData) => void;
-    removeMilestone: (milestone: MilestoneFormData) => void;
+    addMilestone: (milestone: ProjectMilestone) => void;
+    removeMilestone: (milestone: ProjectMilestone) => void;
   };
 };
 
@@ -30,7 +30,9 @@ export const EMPTY_SHORT_DESC: ShortDescData = {
   name: "",
   desc: "",
   funder: "",
-  budget: "0",
+  contractor: "",
+  budget: 0,
+  duration: 0,
   paymentAddr: "",
   coverImg: "",
   tags: "",
@@ -57,9 +59,11 @@ export const EMPTY_MILESTONE = {
 export const fakeShortDesc: ShortDescData = {
   name: "This is name",
   desc: "This is long description",
-  budget: "123456",
+  budget: 0,
+  duration: 0,
   funder: "",
-  paymentAddr: "acbderfkjhajskhfjdhsfjkdhsfdsfds",
+  contractor: "",
+  paymentAddr: "gno.land/r/demo/foo20",
   coverImg: "https://thisis.img",
   tags: "tag1,tag2,tag3",
 };
@@ -72,15 +76,18 @@ export const fakeTeamAndLink: TeamAndLinkData = {
   teamDesc: "This is long team description",
 };
 
-const fakeMilestones: MilestoneFormData[] = [
+const fakeMilestones: ProjectMilestone[] = [
   {
     id: 1,
-    name: "Community Docs Platform 1",
-    desc: "Milestone description, this is very very very long description of a milestone, we expect this will span on multi lines",
+    title: "Community Docs Platform 1",
+    desc: "Milestone description this is very very very long description of a milestone we expect this will span on multi lines",
     status: MsStatus.MS_OPEN,
     priority: MsPriority.MS_PRIORITY_HIGH,
-    budget: 10_000_000,
-    githubLink: "https://github.com",
+    amount: 10,
+    link: "https://github.com",
+    funded: false,
+    paid: 0,
+    duration: 60 * 60 * 24 * 7,
   },
 ];
 
@@ -95,7 +102,7 @@ export const useMakeRequestStore = create<MakeRequestState>((set, get) => ({
     setTeamAndLink: (teamAndLinkData: TeamAndLinkData) => {
       set({ teamAndLinkData });
     },
-    addMilestone: (milestone: MilestoneFormData) => {
+    addMilestone: (milestone: ProjectMilestone) => {
       const updatedMilestones = [...get().milestones, milestone].map(
         (t, idx) => {
           t.id = idx;
@@ -105,7 +112,7 @@ export const useMakeRequestStore = create<MakeRequestState>((set, get) => ({
 
       set({ milestones: updatedMilestones });
     },
-    removeMilestone: (milestone: MilestoneFormData) => {
+    removeMilestone: (milestone: ProjectMilestone) => {
       const updatedMilestones = get()
         .milestones.filter((t) => t.id !== milestone.id)
         .map((t, idx) => {

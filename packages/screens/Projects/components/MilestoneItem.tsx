@@ -1,3 +1,4 @@
+import moment from "moment";
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
@@ -21,13 +22,13 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { MilestoneFormData, MsPriority } from "../types";
+import { ProjectMilestone, MsPriority } from "../types";
 
 export const MilestoneItem: React.FC<{
-  milestone: MilestoneFormData;
+  milestone: ProjectMilestone;
   isHovered?: boolean;
-  onPress?: (milestone: MilestoneFormData) => void;
-  onDelete?: (milestone: MilestoneFormData) => void;
+  onPress?: (milestone: ProjectMilestone) => void;
+  onDelete?: (milestone: ProjectMilestone) => void;
 }> = ({ milestone, onPress, isHovered, onDelete }) => {
   return (
     <View>
@@ -45,7 +46,7 @@ export const MilestoneItem: React.FC<{
               { alignSelf: "flex-start", alignItems: "center" },
             ]}
           >
-            🔎 {milestone.name}
+            🔎 {milestone.title}
           </BrandText>
 
           <SpacerColumn size={1} />
@@ -61,6 +62,22 @@ export const MilestoneItem: React.FC<{
             ]}
           >
             {milestone.desc}
+          </BrandText>
+
+          <SpacerColumn size={2} />
+
+          <BrandText
+            style={[
+              fontSemibold13,
+              {
+                alignSelf: "flex-start",
+                alignItems: "center",
+                color: neutralA3,
+              },
+            ]}
+          >
+            Duration:{" "}
+            {moment.duration(milestone.duration, "seconds").humanize()}
           </BrandText>
 
           <FlexRow
@@ -80,7 +97,7 @@ export const MilestoneItem: React.FC<{
             </View>
 
             <Tag
-              text={"$" + milestone.budget}
+              text={"$" + milestone.amount}
               color={neutral77}
               borderColor={neutral33}
               bgColor={neutral00}

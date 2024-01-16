@@ -10,6 +10,7 @@ import { BrandText } from "../../../components/BrandText";
 import { FlexRow } from "../../../components/FlexRow";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { Tabs } from "../../../components/tabs/Tabs";
+import { NetworkKind } from "../../../networks";
 import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import { neutral33 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
@@ -26,7 +27,7 @@ const TAB_OPTIONS: TabOption = {
     component: <MyProjectsManager type="myProjects" />,
   },
   milestonesUpdates: {
-    name: "Milestones Updates",
+    name: "Reviews",
     component: <MilestonesUpdateManager />,
   },
   requestsByBuilders: {
@@ -53,7 +54,12 @@ export const ProjectsManagerScreen: ScreenFC<"ProjectsManager"> = () => {
   }, [viewFromParams]);
 
   return (
-    <ScreenContainer isLarge responsive headerChildren={<HeaderBackButton />}>
+    <ScreenContainer
+      forceNetworkKind={NetworkKind.Gno}
+      isLarge
+      responsive
+      headerChildren={<HeaderBackButton />}
+    >
       <FlexRow
         style={{
           marginTop: layout.spacing_x4,
