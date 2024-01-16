@@ -2,16 +2,16 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
+import { TextInputLaunchpadUrlValues } from "./inputs/TextInputLaunchpadUrlValues";
 import { BrandText } from "../../../components/BrandText";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
-import { neutral00, neutral77 } from "../../../utils/style/colors";
+import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ExistingBaseUrlValues } from "../CreateCollection.type";
+import { ExistingBaseUrlFormValues } from "../CreateCollection.type";
 
 export const UriTab: React.FC = () => {
-  const { control } = useForm<ExistingBaseUrlValues>({
+  const { control } = useForm<ExistingBaseUrlFormValues>({
     defaultValues: {
       baseTokenUri: "",
       coverImageUrl: "",
@@ -46,31 +46,20 @@ export const UriTab: React.FC = () => {
           <SpacerColumn size={2} />
 
           <View>
-            <TextInputCustom<ExistingBaseUrlValues>
-              rules={{ required: true }}
+            <TextInputLaunchpadUrlValues
+              control={control}
+              required
               label="Base Token URI"
               placeHolder="ipfs://"
               name="baseTokenUri"
-              control={control}
-              variant="labelOutside"
-              containerStyle={{ marginBottom: layout.spacing_x3 }}
-              boxMainContainerStyle={{
-                backgroundColor: neutral00,
-                borderRadius: 12,
-              }}
             />
-            <TextInputCustom<ExistingBaseUrlValues>
-              rules={{ required: true }}
+
+            <TextInputLaunchpadUrlValues
+              control={control}
+              required
+              name="coverImageUrl"
               label="Cover Image URL"
               placeHolder="ipfs://"
-              name="coverImageUrl"
-              control={control}
-              variant="labelOutside"
-              containerStyle={{ marginBottom: layout.spacing_x3 }}
-              boxMainContainerStyle={{
-                backgroundColor: neutral00,
-                borderRadius: 12,
-              }}
             />
           </View>
         </View>

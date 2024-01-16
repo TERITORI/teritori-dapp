@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { SafeAreaView, View } from "react-native";
 
+import { TextInputLaunchpadAssetsValues } from "./inputs/TextInputLaunchpadAssetsValues";
 import { SelectedFilesPreview } from "../../../components/FilePreview/SelectedFilesPreview";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { MetadataUpdateModal } from "../../../components/modals/collection/MetadataUpdateModal";
 import { SelectFileUploader } from "../../../components/selectFileUploader";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
-import { neutral00, neutral33 } from "../../../utils/style/colors";
+import { neutral33 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/files";
-import { NewCollectionFormValues } from "../CreateCollection.type";
+import { NewCollectionAssetsFormValues } from "../CreateCollection.type";
 
 export const AssetsTab: React.FC = () => {
   const [files, setFiles] = useState<LocalFileData[]>([]);
@@ -19,7 +19,7 @@ export const AssetsTab: React.FC = () => {
   const [medataUpdateModalVisible, setMedataUpdateModalVisible] =
     useState(false);
 
-  const { control } = useForm<NewCollectionFormValues>({
+  const { control } = useForm<NewCollectionAssetsFormValues>({
     defaultValues: {
       nftApiKey: "",
     },
@@ -58,19 +58,14 @@ export const AssetsTab: React.FC = () => {
             }}
           >
             <View>
-              <TextInputCustom<NewCollectionFormValues>
-                rules={{ required: true }}
+              <TextInputLaunchpadAssetsValues
+                required
                 label="NFT.Storage API Key"
                 placeHolder="My Awesome Collection"
                 name="nftApiKey"
                 control={control}
-                variant="labelOutside"
-                containerStyle={{ marginBottom: layout.spacing_x3 }}
-                boxMainContainerStyle={{
-                  backgroundColor: neutral00,
-                  borderRadius: 12,
-                }}
               />
+
               <SelectFileUploader
                 label="Asset selection"
                 style={{

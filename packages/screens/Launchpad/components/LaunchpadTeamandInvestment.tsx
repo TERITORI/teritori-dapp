@@ -2,20 +2,19 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
+import { TextInputLaunchpadTandIValues } from "./inputs/TextInputLaunchpadTeamValues";
 import { BrandText } from "../../../components/BrandText";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
-import { neutral00, neutral55, neutral77 } from "../../../utils/style/colors";
+import { neutral55, neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold20,
 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { NewCollectionTeamandConditionFormValues } from "../CreateCollection.type";
+import { TeamandInvestmentFormValues } from "../CreateCollection.type";
 
-export const LaunchpadTeamandCondition: React.FC = () => {
-  const { control } = useForm<NewCollectionTeamandConditionFormValues>({
+export const LaunchpadTeamandInvestment: React.FC = () => {
+  const { control } = useForm<TeamandInvestmentFormValues>({
     defaultValues: {
       teamDesciption: "",
       teamLink: "",
@@ -37,13 +36,14 @@ export const LaunchpadTeamandCondition: React.FC = () => {
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputCustom<NewCollectionTeamandConditionFormValues>
-          rules={{ required: true }}
+        <TextInputLaunchpadTandIValues
+          required
           label="Describe your team: "
           sublabel={
             <View>
               <BrandText style={[fontSemibold13, { color: neutral55 }]}>
                 1. How many core members are you? ( Working on the project daily
+                )
               </BrandText>
               <BrandText style={[fontSemibold13, { color: neutral55 }]}>
                 2. Who does what in your team?
@@ -62,17 +62,9 @@ export const LaunchpadTeamandCondition: React.FC = () => {
           placeHolder="Describe here..."
           name="teamDesciption"
           control={control}
-          variant="labelOutside"
-          multiline
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
         />
 
-        <TextInputCustom<NewCollectionTeamandConditionFormValues>
-          rules={{ required: false }}
+        <TextInputLaunchpadTandIValues
           label="Team links and attachments "
           sublabel={
             <View>
@@ -85,16 +77,10 @@ export const LaunchpadTeamandCondition: React.FC = () => {
           placeHolder="Type here..."
           name="teamDesciption"
           control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
         />
 
-        <TextInputCustom<NewCollectionTeamandConditionFormValues>
-          rules={{ required: true }}
+        <TextInputLaunchpadTandIValues
+          required
           label="Do you have any partners on the project? "
           sublabel={
             <View>
@@ -106,16 +92,10 @@ export const LaunchpadTeamandCondition: React.FC = () => {
           placeHolder="Type here..."
           name="partner"
           control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
         />
 
-        <TextInputCustom<NewCollectionTeamandConditionFormValues>
-          rules={{ required: true }}
+        <TextInputLaunchpadTandIValues
+          required
           label="What have you invested in this project so far? "
           sublabel={
             <View>
@@ -136,17 +116,9 @@ export const LaunchpadTeamandCondition: React.FC = () => {
           placeHolder="Type here..."
           name="investDesciption"
           control={control}
-          variant="labelOutside"
-          multiline
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
         />
 
-        <TextInputCustom<NewCollectionTeamandConditionFormValues>
-          rules={{ required: false }}
+        <TextInputLaunchpadTandIValues
           label="Investment links and attachments "
           sublabel={
             <View>
@@ -159,16 +131,9 @@ export const LaunchpadTeamandCondition: React.FC = () => {
           placeHolder="Type here..."
           name="investLink"
           control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
         />
 
-        <TextInputCustom<NewCollectionTeamandConditionFormValues>
-          rules={{ required: true }}
+        <TextInputLaunchpadTandIValues
           label="Whitepaper and roadmap: "
           sublabel={
             <View>
@@ -181,12 +146,7 @@ export const LaunchpadTeamandCondition: React.FC = () => {
           placeHolder="Type here..."
           name="roadmap"
           control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
+          required
         />
       </View>
     </View>
