@@ -203,7 +203,7 @@ export const NFTBridge: React.FC<{
 });
 
 // using this because ellipizeMode seems broken
-export const shortUserAddressFromID = (id: string, size: number) => {
+const shortUserAddressFromID = (id: string, size: number) => {
   const [network] = parseUserId(id);
   if (network) {
     const prefixLen = network.idPrefix.length + 1;

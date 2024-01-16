@@ -25,6 +25,7 @@ ignores: [
   "electron",
   "rimraf",
   "assert",
+  "webpack-bundle-analyzer",
 ]
 ignorePatterns: [
   "/cache", 
