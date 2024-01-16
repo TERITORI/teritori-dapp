@@ -2,17 +2,17 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Image, View } from "react-native";
 
-import { NewMetadataDetailsFormValues } from "../../../screens/Launchpad/CreateCollection.type";
-import { neutral77, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold16, fontSemibold20 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { LocalFileData } from "../../../utils/types/files";
-import { BrandText } from "../../BrandText";
-import { PrimaryBox } from "../../boxes/PrimaryBox";
-import { PrimaryButton } from "../../buttons/PrimaryButton";
-import { TextInputCustom } from "../../inputs/TextInputCustom";
-import { Separator } from "../../separators/Separator";
-import ModalBase from "../ModalBase";
+import { BrandText } from "../../../../components/BrandText";
+import { PrimaryBox } from "../../../../components/boxes/PrimaryBox";
+import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
+import ModalBase from "../../../../components/modals/ModalBase";
+import { Separator } from "../../../../components/separators/Separator";
+import { neutral77, secondaryColor } from "../../../../utils/style/colors";
+import { fontSemibold16, fontSemibold20 } from "../../../../utils/style/fonts";
+import { layout } from "../../../../utils/style/layout";
+import { LocalFileData } from "../../../../utils/types/files";
+import { NewMetadataDetailsFormValues } from "../../CreateCollection.type";
+import { TextInputLaunchpadMetadataValues } from "../inputs/TextInputLaunchpadMetadataValues";
 
 export const MetadataUpdateModal: React.FC<{
   onClose: () => void;
@@ -106,45 +106,39 @@ export const MetadataUpdateModal: React.FC<{
       >
         <Separator style={{ marginBottom: layout.spacing_x3 }} />
 
-        <TextInputCustom<NewMetadataDetailsFormValues>
+        <TextInputLaunchpadMetadataValues
           name="name"
           label="Name"
           control={control}
           placeHolder="Token name"
-          containerStyle={{ marginBottom: layout.spacing_x1_5, width: "100%" }}
-          variant="labelOutside"
         />
-        <TextInputCustom<NewMetadataDetailsFormValues>
+
+        <TextInputLaunchpadMetadataValues
           name="description"
           label="Description"
           control={control}
           placeHolder="Token description"
-          containerStyle={{ marginBottom: layout.spacing_x1_5, width: "100%" }}
-          variant="labelOutside"
         />
-        <TextInputCustom<NewMetadataDetailsFormValues>
+
+        <TextInputLaunchpadMetadataValues
           name="externalURL"
           label="External URL"
           control={control}
           placeHolder="https://"
-          containerStyle={{ marginBottom: layout.spacing_x1_5, width: "100%" }}
-          variant="labelOutside"
         />
-        <TextInputCustom<NewMetadataDetailsFormValues>
+
+        <TextInputLaunchpadMetadataValues
           name="youtubeURL"
-          label="COMMENT ?"
+          label="Youtube URL"
           control={control}
           placeHolder="https://"
-          containerStyle={{ marginBottom: layout.spacing_x1_5, width: "100%" }}
-          variant="labelOutside"
         />
-        <TextInputCustom<NewMetadataDetailsFormValues>
+
+        <TextInputLaunchpadMetadataValues
           name="attributes"
           label="Attributes"
           control={control}
           placeHolder="Enter trait types and values"
-          containerStyle={{ marginBottom: layout.spacing_x1_5, width: "100%" }}
-          variant="labelOutside"
         />
       </View>
     </ModalBase>

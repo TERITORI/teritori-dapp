@@ -3,38 +3,33 @@ import { Control, FieldValues, Path } from "react-hook-form";
 import { TextInputProps } from "react-native";
 
 import { TextInputCustom } from "../../../../components/inputs/TextInputCustom";
-import { neutral00 } from "../../../../utils/style/colors";
 import { layout } from "../../../../utils/style/layout";
 
-interface TextInputCustomProps<ExistingBaseUrlFormValues extends FieldValues>
+interface TextInputCustomProps<NewMetadataDetailsFormValues extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
   placeHolder: string;
-  control: Control<ExistingBaseUrlFormValues>;
-  name: Path<ExistingBaseUrlFormValues>;
+  control: Control<NewMetadataDetailsFormValues>;
+  name: Path<NewMetadataDetailsFormValues>;
 }
 
-export const TextInputLaunchpadUrlValues = <
-  ExistingBaseUrlFormValues extends FieldValues,
+export const TextInputLaunchpadMetadataValues = <
+  NewMetadataDetailsFormValues extends FieldValues,
 >({
   control,
   name,
   label,
   placeHolder,
-}: TextInputCustomProps<ExistingBaseUrlFormValues>) => {
+}: TextInputCustomProps<NewMetadataDetailsFormValues>) => {
   return (
-    <TextInputCustom<ExistingBaseUrlFormValues>
+    <TextInputCustom<NewMetadataDetailsFormValues>
       rules={{ required: false }}
       label={label}
       placeHolder={placeHolder}
       name={name}
       control={control}
       variant="labelOutside"
-      containerStyle={{ marginBottom: layout.spacing_x3 }}
-      boxMainContainerStyle={{
-        backgroundColor: neutral00,
-        borderRadius: 12,
-      }}
+      containerStyle={{ marginBottom: layout.spacing_x1_5, width: "100%" }}
     />
   );
 };

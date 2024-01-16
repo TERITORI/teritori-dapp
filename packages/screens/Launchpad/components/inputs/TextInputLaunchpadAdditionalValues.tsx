@@ -13,7 +13,6 @@ interface TextInputCustomProps<
   placeHolder: string;
   control: Control<NewCollectionAdditionalFormValues>;
   name: Path<NewCollectionAdditionalFormValues>;
-  required?: boolean;
   sublabel?: React.ReactElement;
   multiline?: boolean;
 }
@@ -22,7 +21,6 @@ export const TextInputLaunchpadAdditionalValues = <
   NewCollectionAdditionalFormValues extends FieldValues,
 >({
   control,
-  required = false,
   name,
   label,
   placeHolder,
@@ -31,7 +29,7 @@ export const TextInputLaunchpadAdditionalValues = <
 }: TextInputCustomProps<NewCollectionAdditionalFormValues>) => {
   return (
     <TextInputCustom<NewCollectionAdditionalFormValues>
-      rules={{ required }}
+      rules={{ required: true }}
       label={label}
       placeHolder={placeHolder}
       name={name}

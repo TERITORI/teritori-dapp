@@ -41,7 +41,6 @@ export const LaunchpadAdditional: React.FC = () => {
         <SpacerColumn size={2} />
 
         <TextInputLaunchpadAdditionalValues
-          required
           label="Please describe your artwork: "
           sublabel={
             <View>
@@ -70,7 +69,6 @@ export const LaunchpadAdditional: React.FC = () => {
         />
 
         <TextInputLaunchpadAdditionalValues
-          required
           label="What is your expected collection supply?"
           placeHolder="Type here..."
           name="collectionSupply"
@@ -78,7 +76,6 @@ export const LaunchpadAdditional: React.FC = () => {
         />
 
         <TextInputLaunchpadAdditionalValues
-          required
           label="What is your expected public sale mint price?"
           sublabel={
             <View>
@@ -93,7 +90,6 @@ export const LaunchpadAdditional: React.FC = () => {
         />
 
         <TextInputLaunchpadAdditionalValues
-          required
           label="What is your expected mint date? "
           placeHolder="dd.mm.yyyy | hh:mm PM"
           name="mintDate"
@@ -117,7 +113,6 @@ export const LaunchpadAdditional: React.FC = () => {
         />
 
         <TextInputLaunchpadAdditionalValues
-          required
           label="We'd love to offer TeritoriDAO members 10% of your whitelist supply if your project is willing. Please let us know how many whitelist spots you'd be willing to allocate our DAO: "
           placeHolder="0"
           name="whitelistSpotPercentage"

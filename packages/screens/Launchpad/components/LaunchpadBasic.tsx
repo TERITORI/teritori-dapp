@@ -58,7 +58,6 @@ export const LaunchpadBasic: React.FC = () => {
         <SpacerColumn size={2} />
 
         <TextInputLaunchpadBasicValues
-          required
           label="Name"
           placeHolder="My Awesome Collection"
           name="name"
@@ -66,7 +65,6 @@ export const LaunchpadBasic: React.FC = () => {
         />
 
         <TextInputLaunchpadBasicValues
-          required
           label="Description"
           placeHolder="My Awesome Collection Description"
           name="description"
@@ -74,7 +72,6 @@ export const LaunchpadBasic: React.FC = () => {
         />
 
         <TextInputLaunchpadBasicValues
-          required
           label="Symbol"
           placeHolder="Symbol"
           name="symbol"
@@ -95,7 +92,6 @@ export const LaunchpadBasic: React.FC = () => {
         />
 
         <TextInputLaunchpadBasicValues
-          required
           label="External Link"
           placeHolder="https://collection..."
           name="externalLink"

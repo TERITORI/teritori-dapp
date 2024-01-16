@@ -14,6 +14,7 @@ interface TextInputCustomProps<TeamandInvestmentFormValues extends FieldValues>
   name: Path<TeamandInvestmentFormValues>;
   required?: boolean;
   sublabel?: React.ReactElement;
+  multiline?: boolean;
 }
 
 export const TextInputLaunchpadTandIValues = <
@@ -25,6 +26,7 @@ export const TextInputLaunchpadTandIValues = <
   label,
   placeHolder,
   sublabel,
+  multiline = false,
 }: TextInputCustomProps<TeamandInvestmentFormValues>) => {
   return (
     <TextInputCustom<TeamandInvestmentFormValues>
@@ -34,6 +36,7 @@ export const TextInputLaunchpadTandIValues = <
       name={name}
       sublabel={sublabel}
       control={control}
+      multiline={multiline}
       variant="labelOutside"
       containerStyle={{ marginBottom: layout.spacing_x3 }}
       boxMainContainerStyle={{
