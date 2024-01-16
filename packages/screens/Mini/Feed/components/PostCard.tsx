@@ -1,3 +1,4 @@
+import React from "react";
 import { View, Image } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 
@@ -123,13 +124,13 @@ function CardContent({ content }: { content: ContentType }) {
         ) : (
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <BrandText style={fontMedium15}>{content.value.text}</BrandText>
-            {content?.value?.mentions.map((mention) => (
-              <>
+            {content?.value?.mentions.map((mention, idx) => (
+              <React.Fragment key={`${mention}-${idx}`}>
                 <SpacerRow size={1} />
                 <BrandText style={[fontMedium15, { color: blueDefault }]}>
                   #{mention}
                 </BrandText>
-              </>
+              </React.Fragment>
             ))}
           </View>
         )}
