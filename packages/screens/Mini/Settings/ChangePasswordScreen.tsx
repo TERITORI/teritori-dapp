@@ -7,7 +7,6 @@ import { layout } from "../../../utils/style/layout";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { CustomButton } from "../components/CustomButton";
 import { Input } from "../components/Input";
-import { SettingBase } from "../components/SettingBase";
 
 export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
   navigation,
