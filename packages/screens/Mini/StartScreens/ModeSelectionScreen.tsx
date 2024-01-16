@@ -79,7 +79,7 @@ export const ModeSelectionScreen: ScreenFC<"ModeSelection"> = ({
       <CustomButton
         title="Select mode"
         onPress={onSelectModePress}
-        width={windowWidth - 20}
+        width={width - 20}
         style={{
           position: "absolute",
           bottom: 50,
