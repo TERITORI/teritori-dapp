@@ -105,6 +105,12 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		return nil
 	}
 
+	periodInMinutes := -time.Duration(req.GetPeriodInMinutes()) * time.Minute // has to be minus because we want to go back in time
+
+	if periodInMinutes == 0 {
+		periodInMinutes = -43200 * time.Minute // 30 days
+	}
+
 	networkID := req.GetNetworkId()
 	if networkID == "" {
 		return errors.New("missing network id")
@@ -210,9 +216,9 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 	`, where, orderSQL), // order By here or it won't work
 		network.GetBase().ID,
 		s.conf.Whitelist,
-		time.Now().AddDate(0, 0, -30),
-		time.Now().AddDate(0, 0, -30),
-		time.Now().AddDate(0, 0, -60),
+		time.Now().Add(periodInMinutes).Truncate(time.Minute),
+		time.Now().Add(periodInMinutes).Truncate(time.Minute),
+		time.Now().Add(periodInMinutes*2).Truncate(time.Minute),
 		limit,
 		offset,
 	).Scan(&collections).Error

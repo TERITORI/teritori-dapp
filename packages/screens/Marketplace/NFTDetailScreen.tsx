@@ -38,7 +38,7 @@ const Content: React.FC<{
 }> = ({ id }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("main");
-  const { setToastError } = useFeedbacks();
+  const { setToastError, setLoadingFullScreen } = useFeedbacks();
   const isMobile = useIsMobile();
   const wallet = useSelectedWallet();
   const { info, refresh, notFound } = useNFTInfo(id, wallet?.userId);
@@ -99,7 +99,7 @@ const Content: React.FC<{
       const txHash = await buyFunc(wallet, info);
 
       console.log("buy", txHash);
-      refresh();
+      await refresh();
 
       return txHash;
     } catch (e) {
@@ -122,7 +122,7 @@ const Content: React.FC<{
       }
       const txHash = await sell(info.nftAddress, info.tokenId, price, denom);
       console.log("txHash:", txHash);
-      refresh();
+      await refresh();
       return txHash;
     },
     [info, sell, refresh],
@@ -135,11 +135,56 @@ const Content: React.FC<{
   );
 
   const handleCancelListing = useCallback(async () => {
-    const txHash = await cancelListing();
-    console.log("txHash:", txHash);
-    refresh();
-    return txHash;
-  }, [cancelListing, refresh]);
+    setLoadingFullScreen(true);
+    try {
+      await cancelListing();
+      await refresh();
+      setLoadingFullScreen(false);
+    } catch (e) {
+      setLoadingFullScreen(false);
+      throw e;
+    }
+  }, [cancelListing, refresh, setLoadingFullScreen]);
+
+  const updatePrice = useCallback(
+    async (newPrice: { amount: string; denom: string }) => {
+      setLoadingFullScreen(true);
+      try {
+        if (!info) {
+          throw new Error("No NFT info");
+        }
+        const sender = wallet?.address;
+        if (!sender) {
+          throw new Error("No wallet connected");
+        }
+        const client = await getKeplrSigningCosmWasmClient(info.networkId);
+        if (!client) {
+          throw new Error("Failed to get client");
+        }
+        const cosmosNetwork = mustGetCosmosNetwork(info.networkId);
+        if (!cosmosNetwork.vaultContractAddress) {
+          throw new Error("network not supported");
+        }
+        const vaultClient = new TeritoriNftVaultClient(
+          client,
+          sender,
+          cosmosNetwork.vaultContractAddress,
+        );
+        await vaultClient.updatePrice({
+          nftContractAddr: info.nftAddress,
+          nftTokenId: info.tokenId,
+          amount: newPrice.amount,
+          denom: newPrice.denom,
+        });
+        await refresh();
+        setLoadingFullScreen(false);
+      } catch (e) {
+        setLoadingFullScreen(false);
+        throw e;
+      }
+    },
+    [info, refresh, setLoadingFullScreen, wallet?.address],
+  );
 
   if (
     ![NetworkKind.Cosmos, NetworkKind.Ethereum].includes(
@@ -195,6 +240,7 @@ const Content: React.FC<{
             buy={handleBuy}
             sell={handleSell}
             cancelListing={handleCancelListing}
+            updatePrice={updatePrice}
             showMarketplace={showMarketplace}
           />
           <SpacerColumn size={6} />
