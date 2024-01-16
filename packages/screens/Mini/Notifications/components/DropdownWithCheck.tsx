@@ -38,31 +38,44 @@ export default function DropdownWithCheck({
   const [allOption, setAllOption] = useState(true);
 
   const filterButtons = (option: DropdownReturnedType) => {
-    if (option.value === "all" && !option.checked) {
-      setAllOption(true);
-      setFilters((prev) => {
-        const newData = prev.map((item) => ({ ...item, checked: true }));
-        onPress(newData);
-        return newData;
-      });
-      return;
-    } else {
-      setFilters((prev) => {
-        const newData = prev.map((item) => {
-          if (item.value === option.value) {
-            if (item.checked) {
-              return { ...item, checked: false };
-            }
-            return { ...item, checked: true };
-          }
-          return item;
-        });
+    // if (option.value === "all" && !option.checked) {
+    //   setAllOption(true);
+    //   setFilters((prev) => {
+    //     const newData = prev.map((item) => ({ ...item, checked: true }));
+    //     onPress(newData);
+    //     return newData;
+    //   });
+    // } else {
+    // console.log(filters);
+    // if (option.value === "all") {
+    console.log(option);
+    //   if (option.checked) {
+    //     console.log(option.checked);
+    //     // console.log(filters.map((item) => ({ ...item, checked: false })));
+    //     setFilters(filters.map((item) => ({ ...item, checked: false })));
+    //   }
 
-        onPress(newData);
-        return newData;
-      });
-      setAllOption(false);
-    }
+    //   if (!option.checked) {
+    //     console.log("hie");
+    //     setFilters((prev) => prev.map((item) => ({ ...item, checked: true })));
+    //     // return;
+    //   }
+    // }
+
+    // setFilters((prev) => {
+    //   const newData = prev.map((item) => {
+    //     if (item.value === option.value) {
+    //       if (item.checked) {
+    //         return { ...item, checked: false };
+    //       }
+    //       return { ...item, checked: true };
+    //     }
+    //     return item;
+    //   });
+
+    //   onPress(newData);
+    //   return newData;
+    // });
   };
 
   return (
@@ -81,10 +94,6 @@ export default function DropdownWithCheck({
           backgroundColor: neutral22,
         }}
       >
-        <DropdownItem
-          dropdownOption={{ name: "All", value: "all", checked: allOption }}
-          onPress={filterButtons}
-        />
         {filters.map((filterOptionItem, index) => {
           const lastItem = index === filters.length - 1;
 
@@ -160,7 +169,11 @@ function DropdownItem({
   //   value: dropdownOption.value,
   //   checked: dropdownOption.checked,
   // });
+  const [checked, setChecked] = useState(dropdownOption.checked ?? false);
 
+  function checkHandler(isChecked: boolean, value: string) {
+    setChecked(isChecked);
+  }
   return (
     <View
       style={{
@@ -173,15 +186,8 @@ function DropdownItem({
       <Checkbox
         label={dropdownOption.name}
         value={dropdownOption.value}
-        isChecked={dropdownOption.checked}
-        onPress={(isChecked, value) => {
-          if (!isChecked) {
-            onPress({ value, checked: true });
-            return;
-          }
-
-          onPress({ value, checked: false });
-        }}
+        isChecked={checked}
+        onPress={checkHandler}
       />
     </View>
   );

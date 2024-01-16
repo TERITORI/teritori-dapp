@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Dimensions, View } from "react-native";
 
 import NotificationList from "./NotificationList";
@@ -7,9 +8,13 @@ import { BrandText } from "../../../components/BrandText";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { ScreenFC } from "../../../utils/navigation";
 import { fontSemibold18 } from "../../../utils/style/fonts";
-import { useState } from "react";
 
 const filterOptionsConst = [
+  {
+    value: "all",
+    name: "All",
+    checked: true,
+  },
   {
     value: "nft_sales",
     name: "NFT sales",
@@ -40,7 +45,7 @@ const filterOptionsConst = [
 const NotificationScreen: ScreenFC<"Notifications"> = ({ navigation }) => {
   const [filterOptions, setFilterOptions] = useState<any>([]);
 
-  console.log(filterOptions);
+  // console.log(filterOptions);
 
   return (
     <ScreenContainer
