@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import { NewConversationOrGroupSelector } from "./components/NewConversationOrGroupSelector";
 import { SearchChatList } from "./components/SearchChatList";
@@ -118,6 +118,7 @@ const dummyContact = [
 
 export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
   const [search, setSearch] = useState("");
+  const { height: windowHeight } = useWindowDimensions();
 
   return (
     <BlurScreenContainer
@@ -127,7 +128,7 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
     >
       <View
         style={{
-          height: Dimensions.get("window").height - 150,
+          height: windowHeight - 150,
           paddingHorizontal: layout.spacing_x2,
         }}
       >

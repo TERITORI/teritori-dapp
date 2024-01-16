@@ -1,5 +1,5 @@
 import React from "react";
-import { View, FlatList, Dimensions } from "react-native";
+import { View, FlatList, useWindowDimensions } from "react-native";
 
 import dotSVG from "../../../../../assets/icons/dots.svg";
 import { BrandText } from "../../../../components/BrandText";
@@ -111,12 +111,13 @@ function AccordionContent({ options }: { options: NFTProps[] }) {
 
 function NFTCard({ data }: NFTCardProps) {
   const randomIndex = Math.floor(Math.random() * 4);
+  const { width: windowWidth } = useWindowDimensions();
 
   return (
     <View
       style={{
         height: 200,
-        width: Dimensions.get("window").width / 2.21,
+        width: windowWidth / 2.21,
         borderRadius: 14,
         backgroundColor: primaryColor,
         position: "relative",
@@ -166,7 +167,7 @@ function NFTCard({ data }: NFTCardProps) {
         <GradientBox
           colors={randomGradients[randomIndex].colors}
           direction={randomGradients[randomIndex].direction}
-          size={Dimensions.get("window").width / 2.21}
+          size={windowWidth / 2.21}
           radius={14}
           style={{ flex: 1 }}
         />

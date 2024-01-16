@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { Dimensions, FlatList, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { ChatList } from "./components/ChatList";
@@ -132,6 +137,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("chats");
   const [search, setSearch] = useState("");
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
   const hideToast = () => {
     setShowToast(false);
@@ -184,7 +190,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
       <View
         style={{
           flex: 1,
-          width: Dimensions.get("window").width,
+          width: windowWidth,
         }}
       >
         <SearchChatList
@@ -201,7 +207,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
           <View
             style={{
               flex: 1,
-              height: Dimensions.get("window").height - 450,
+              height: windowHeight - 450,
               justifyContent: "center",
               alignItems: "center",
             }}

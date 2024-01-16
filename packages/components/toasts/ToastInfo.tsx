@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, useWindowDimensions, View } from "react-native";
 
 import closeSVG from "../../../assets/icons/close.svg";
 import infoSVG from "../../../assets/icons/info-blue.svg";
@@ -21,7 +21,8 @@ export const ToastInfo: React.FC<{
   position = { left: 10, top: -60 },
   onCrossPress,
 }) => {
-  const width = Dimensions.get("window").width - 20;
+  const { width: windowWidth } = useWindowDimensions();
+  const width = windowWidth - 20;
   const marginHorizontal = 12;
 
   return (

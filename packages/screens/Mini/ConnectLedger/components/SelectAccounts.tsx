@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import circularPlusSVG from "../../../../../assets/icons/plus-white-circular.svg";
 import { BrandText } from "../../../../components/BrandText";
@@ -44,6 +44,7 @@ const accountDetails = [
 
 export const SelectAccounts = ({ onStepChange }: Props) => {
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
+  const { width: windowWidth } = useWindowDimensions();
 
   const onPressClose = () => {
     onStepChange("step_6");
@@ -125,7 +126,7 @@ export const SelectAccounts = ({ onStepChange }: Props) => {
       <CustomButton
         title="Next"
         onPress={onPressClose}
-        width={Dimensions.get("window").width - 20}
+        width={windowWidth - 20}
         style={{
           position: "absolute",
           bottom: 30,

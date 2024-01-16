@@ -1,7 +1,7 @@
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { FC } from "react";
-import { Dimensions, SafeAreaView, View } from "react-native";
+import { SafeAreaView, useWindowDimensions, View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { Account } from "./components/Account";
@@ -28,6 +28,7 @@ import { layout } from "../../../utils/style/layout";
 
 export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
   const onClose = () => navigation.goBack();
+  const { width: windowWidth } = useWindowDimensions();
 
   return (
     <SafeAreaView
@@ -42,7 +43,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
         style={{
           position: "absolute",
           zIndex: 0,
-          width: Dimensions.get("window").width,
+          width: windowWidth,
           top: 0,
           left: 0,
           right: 0,
@@ -58,7 +59,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
           borderRadius: 6,
           position: "absolute",
           zIndex: 0,
-          width: Dimensions.get("window").width,
+          width: windowWidth,
           top: 0,
           left: 0,
           right: 0,

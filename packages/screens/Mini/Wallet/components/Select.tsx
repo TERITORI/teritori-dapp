@@ -1,5 +1,5 @@
 import React, { FC, ReactNode, useRef, useState } from "react";
-import { Animated, Dimensions, View } from "react-native";
+import { Animated, useWindowDimensions, View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import chevronDownSVG from "../../../../../assets/icons/chevron-down-gray.svg";
@@ -58,12 +58,13 @@ export const Select = ({
       useNativeDriver: false,
     }).start();
   };
+  const { height: windowHeight } = useWindowDimensions();
 
   return (
     <CustomPressable
       onPress={toggleShowOptions}
       style={{
-        height: showOptions ? Dimensions.get("window").height : "auto",
+        height: showOptions ? windowHeight : "auto",
       }}
     >
       <View

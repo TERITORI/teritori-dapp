@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, View, Dimensions } from "react-native";
+import { TouchableOpacity, useWindowDimensions, View } from "react-native";
 
 import warningSVG from "../../../assets/icons/warning.svg";
 import { errorColor, neutral11, neutral77 } from "../../utils/style/colors";
@@ -13,6 +13,7 @@ export const ToastError: React.FC<{
   onPress: () => void;
 }> = ({ title, message, onPress }) => {
   const width = 432;
+  const { width: windowWidth } = useWindowDimensions();
 
   return (
     <TouchableOpacity
@@ -30,7 +31,7 @@ export const ToastError: React.FC<{
         height: "auto",
         position: "absolute",
         top: 24,
-        left: Dimensions.get("window").width / 2 - width / 2,
+        left: windowWidth / 2 - width / 2,
         zIndex: 999,
       }}
     >

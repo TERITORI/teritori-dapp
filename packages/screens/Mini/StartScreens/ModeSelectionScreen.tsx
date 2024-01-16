@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, SafeAreaView, View } from "react-native";
+import { SafeAreaView, useWindowDimensions, View } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 
 import walletSVG from "../../../../assets/wallet-screen.svg";
@@ -15,13 +15,12 @@ import {
 import { layout } from "../../../utils/style/layout";
 import { CustomButton } from "../components/CustomButton";
 
-const width = Dimensions.get("window").width;
-const height = Dimensions.get("window").height;
 const totalSlides = 2;
 
 export const ModeSelectionScreen: ScreenFC<"ModeSelection"> = ({
   navigation,
 }) => {
+  const { width, height } = useWindowDimensions();
   const [activeIndex, setActiveIndex] = useState(0);
   const onSelectModePress = () => {
     navigation.navigate("ChatActivation");
@@ -80,7 +79,7 @@ export const ModeSelectionScreen: ScreenFC<"ModeSelection"> = ({
       <CustomButton
         title="Select mode"
         onPress={onSelectModePress}
-        width={Dimensions.get("window").width - 20}
+        width={windowWidth - 20}
         style={{
           position: "absolute",
           bottom: 50,

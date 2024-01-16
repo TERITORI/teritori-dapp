@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, SafeAreaView, View } from "react-native";
+import { SafeAreaView, useWindowDimensions, View } from "react-native";
 
 import messengerSVG from "../../../../assets/icons/messenger.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -17,6 +17,7 @@ import { CustomButton } from "../components/CustomButton";
 export const ChatActivationScreen: ScreenFC<"ChatActivation"> = ({
   navigation,
 }) => {
+  const { width: windowWidth } = useWindowDimensions();
   const onActivatePress = () => {
     navigation.navigate("NativeWallet");
   };
@@ -105,13 +106,13 @@ export const ChatActivationScreen: ScreenFC<"ChatActivation"> = ({
         <CustomButton
           title="Activate"
           onPress={onActivatePress}
-          width={Dimensions.get("window").width / 2 - 16}
+          width={windowWidth / 2 - 16}
         />
         <CustomButton
           title="Not Now"
           type="gray"
           onPress={onNotNowPress}
-          width={Dimensions.get("window").width / 2 - 16}
+          width={windowWidth / 2 - 16}
         />
       </View>
     </SafeAreaView>

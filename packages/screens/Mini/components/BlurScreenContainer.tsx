@@ -1,7 +1,7 @@
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { ReactNode } from "react";
-import { Dimensions, SafeAreaView, View } from "react-native";
+import { SafeAreaView, useWindowDimensions, View } from "react-native";
 
 import closeSVG from "../../../../assets/icons/close.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -29,6 +29,7 @@ export const BlurScreenContainer = ({
   background = "#000",
   customHeader,
 }: Props) => {
+  const { width: windowWidth } = useWindowDimensions();
   const navigation = useAppNavigation();
   const onClose = () => navigation.goBack();
   const navigateToProfile = () => {
@@ -43,7 +44,7 @@ export const BlurScreenContainer = ({
     <SafeAreaView
       style={{
         flex: 1,
-        width: Dimensions.get("window").width,
+        width: windowWidth,
         backgroundColor: "rgba(0, 0, 0, .2)",
         position: "relative",
       }}
@@ -53,7 +54,7 @@ export const BlurScreenContainer = ({
         style={{
           position: "absolute",
           zIndex: 0,
-          width: Dimensions.get("window").width,
+          width: windowWidth,
           top: 0,
           left: 0,
           right: 0,
@@ -74,7 +75,7 @@ export const BlurScreenContainer = ({
           borderRadius: 6,
           position: "absolute",
           zIndex: 0,
-          width: Dimensions.get("window").width,
+          width: windowWidth,
           top: 0,
           left: 0,
           right: 0,
@@ -118,7 +119,7 @@ export const BlurScreenContainer = ({
         >
           <View
             style={{
-              width: Dimensions.get("window").width,
+              width: windowWidth,
               backgroundColor: background,
             }}
           >

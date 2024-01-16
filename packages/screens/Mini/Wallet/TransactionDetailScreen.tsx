@@ -1,5 +1,5 @@
 import * as Clipboard from "expo-clipboard";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import checkSVG from "../../../../assets/icons/check-white.svg";
@@ -44,6 +44,7 @@ const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
   route,
 }) => {
   const { type } = route.params;
+  const { width: windowWidth } = useWindowDimensions();
 
   return (
     <ScreenContainer
@@ -71,7 +72,7 @@ const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
       <View
         style={{
           flex: 1,
-          width: Dimensions.get("window").width,
+          width: windowWidth,
           alignItems: "center",
         }}
       >

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import { RedAlert } from "./RedAlert";
 import { BrandText } from "../../../../components/BrandText";
@@ -22,6 +22,7 @@ export const CheckList = ({ gotoVisibleScreen, type }: Props) => {
     fullControlOverFunds: false,
     neverShare: false,
   });
+  const { height: windowHeight } = useWindowDimensions();
 
   const toggleConditionsPress = (key: keyof typeof revealSeedsConditions) => {
     setRevealSeedsConditions((prev) => ({
@@ -40,7 +41,7 @@ export const CheckList = ({ gotoVisibleScreen, type }: Props) => {
   return (
     <View
       style={{
-        height: Dimensions.get("window").height - 150,
+        height: windowHeight - 150,
         marginTop: layout.spacing_x4,
         paddingHorizontal: layout.spacing_x2,
         position: "relative",

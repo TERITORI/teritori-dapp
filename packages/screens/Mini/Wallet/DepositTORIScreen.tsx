@@ -1,6 +1,6 @@
 import * as Clipboard from "expo-clipboard";
 import React, { useState } from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 
 import { BrandText } from "../../../components/BrandText";
@@ -26,6 +26,8 @@ const accountDetails = {
 export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
   navigation,
 }) => {
+  const { height: windowHeight } = useWindowDimensions();
+
   const [isCopied, setIsCopied] = useState(false);
 
   const onGotoSelectToken = () =>
@@ -49,7 +51,7 @@ export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
           marginBottom: layout.spacing_x2,
           alignItems: "center",
           justifyContent: "center",
-          height: Dimensions.get("window").height - 150,
+          height: windowHeight - 150,
         }}
       >
         <View style={{ alignItems: "center", marginBottom: layout.spacing_x5 }}>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, ScrollView, View } from "react-native";
+import { ScrollView, useWindowDimensions, View } from "react-native";
 
 import { DAppStoreMenuItem } from "./component/DAppStoreMenuItems";
 import { DAppsList } from "./component/DAppsList";
@@ -19,6 +19,7 @@ import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
   const [enableEditingDApps, setEnableEditingDApps] = useState(false);
+  const { height: windowHeight } = useWindowDimensions();
 
   const toggleEnableEditingDApps = () => setEnableEditingDApps((prev) => !prev);
 
@@ -28,8 +29,7 @@ export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
         <View
           style={{
             flex: 1,
-            minHeight:
-              Dimensions.get("window").height - MOBILE_HEADER_HEIGHT - 70,
+            minHeight: windowHeight - MOBILE_HEADER_HEIGHT - 70,
             justifyContent: "flex-end",
             paddingHorizontal: layout.spacing_x2,
           }}

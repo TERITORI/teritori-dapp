@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import { NewConversationOrGroupSelector } from "./components/NewConversationOrGroupSelector";
 import { SearchChatList } from "./components/SearchChatList";
@@ -119,6 +119,8 @@ const dummyContact = [
 export const NewConversationScreen: ScreenFC<"MiniNewConversation"> = ({
   navigation,
 }) => {
+  const { height: windowHeight } = useWindowDimensions();
+
   const [search, setSearch] = useState("");
 
   return (
@@ -130,7 +132,7 @@ export const NewConversationScreen: ScreenFC<"MiniNewConversation"> = ({
       <View
         style={{
           paddingHorizontal: layout.spacing_x2,
-          height: Dimensions.get("window").height - 150,
+          height: windowHeight - 150,
         }}
       >
         <SearchChatList

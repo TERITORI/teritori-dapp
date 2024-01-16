@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import NotificationList from "./NotificationList";
 import DropdownWithCheck from "./components/DropdownWithCheck";
@@ -47,6 +47,8 @@ const NotificationScreen: ScreenFC<"Notifications"> = ({ navigation }) => {
 
   console.log(filterOptions);
 
+  const { width: windowWidth } = useWindowDimensions();
+
   return (
     <ScreenContainer
       headerChildren={<></>}
@@ -72,7 +74,7 @@ const NotificationScreen: ScreenFC<"Notifications"> = ({ navigation }) => {
       <View
         style={{
           flex: 1,
-          width: Dimensions.get("window").width,
+          width: windowWidth,
         }}
       >
         <NotificationList />
