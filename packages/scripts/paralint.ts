@@ -41,7 +41,8 @@ const main = async () => {
     },
   );
   await tasks.run();
-  if (tasks.errors.length > 0) {
+  if (tasks.tasks.some((t) => t.state === "FAILED")) {
+    console.error("Failed");
     process.exit(1);
   }
 };
