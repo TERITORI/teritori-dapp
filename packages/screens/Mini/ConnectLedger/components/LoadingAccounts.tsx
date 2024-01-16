@@ -9,6 +9,7 @@ import { fontMedium16, fontSemibold30 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { CustomButton } from "../../components/CustomButton";
 import { StepType } from "../ConnectLedgerScreen";
+
 type Props = {
   onStepChange: (step: StepType) => void;
 };

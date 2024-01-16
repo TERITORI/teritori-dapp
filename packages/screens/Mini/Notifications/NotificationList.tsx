@@ -1,5 +1,5 @@
 import React from "react";
-import { View, FlatList } from "react-native";
+import { FlatList, View } from "react-native";
 
 import NotificationCard from "./NotificationCard";
 import { notifications } from "./notificationData";

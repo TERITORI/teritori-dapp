@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { View, ViewStyle, StyleProp, TextStyle } from "react-native";
+import { StyleProp, TextStyle, View, ViewStyle } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { neutral22, neutralA3 } from "../../../utils/style/colors";

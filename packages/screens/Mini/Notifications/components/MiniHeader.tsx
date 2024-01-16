@@ -11,7 +11,7 @@ import { SpacerRow } from "../../../../components/spacer";
 import { RootStackParamList } from "../../../../utils/navigation";
 import { neutral00 } from "../../../../utils/style/colors";
 import { fontSemibold18 } from "../../../../utils/style/fonts";
-import { MOBILE_HEADER_HEIGHT, layout } from "../../../../utils/style/layout";
+import { layout, MOBILE_HEADER_HEIGHT } from "../../../../utils/style/layout";
 
 type HeaderProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, any>;

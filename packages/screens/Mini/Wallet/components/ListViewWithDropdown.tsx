@@ -1,5 +1,5 @@
 import React from "react";
-import { View, FlatList, useWindowDimensions } from "react-native";
+import { FlatList, useWindowDimensions, View } from "react-native";
 
 import dotSVG from "../../../../../assets/icons/dots.svg";
 import { BrandText } from "../../../../components/BrandText";

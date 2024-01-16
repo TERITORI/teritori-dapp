@@ -14,7 +14,7 @@ import { Separator } from "../../../components/separators/Separator";
 import { ScreenFC } from "../../../utils/navigation";
 import { blueDefault } from "../../../utils/style/colors";
 import { fontSemibold15 } from "../../../utils/style/fonts";
-import { MOBILE_HEADER_HEIGHT, layout } from "../../../utils/style/layout";
+import { layout, MOBILE_HEADER_HEIGHT } from "../../../utils/style/layout";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {

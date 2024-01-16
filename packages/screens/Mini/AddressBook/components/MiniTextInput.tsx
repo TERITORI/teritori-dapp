@@ -1,9 +1,9 @@
 import React, { ReactNode, useRef, useState } from "react";
 import {
+  StyleProp,
   TextInput,
   TextInputProps,
   TextStyle,
-  StyleProp,
   View,
   ViewStyle,
 } from "react-native";
