@@ -1,70 +1,108 @@
-import { View, FlatList } from "react-native";
+import { useCallback, useMemo } from "react";
+import { View } from "react-native";
+import Animated from "react-native-reanimated";
 
-import PostCard, { PostType } from "./components/PostCard";
+import { MiniSocialArticle } from "./components/MiniSocialArticle";
+import { MiniThread } from "./components/MiniThread";
+import { MiniVideo } from "./components/MiniVideo";
+import { Post, PostsRequest } from "../../../api/feed/v1/feed";
 import { Separator } from "../../../components/separators/Separator";
+import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn } from "../../../components/spacer";
-import { ScreenFC } from "../../../utils/navigation";
+import {
+  combineFetchFeedPages,
+  useFetchFeed,
+} from "../../../hooks/feed/useFetchFeed";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { layout } from "../../../utils/style/layout";
 
-const posts: PostType[] = [
-  {
-    id: "sdfsdf",
-    user: { img: "", name: "John Doe", username: "johndoe" },
-    postedAt: "6 minutes ago",
-    content: [{ type: "text", value: "How are you today?" }],
-    comments: 43,
-    reaction: false,
-    transfer: 3,
-  },
-  {
-    id: "sdfsdfasdfd",
-    user: { img: "", name: "John Doe", username: "johndoe" },
-    postedAt: "6 minutes ago",
-    content: [
-      { type: "text", value: { text: "Hey", mentions: ["Teritori"] } },
-      {
-        type: "img",
-        value:
-          "https://images.unsplash.com/photo-1632516643720-e7f5d7d6ecc9?q=80&w=2811&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      },
-    ],
-    comments: 124,
-    reaction: false,
-    transfer: 5,
-  },
-  {
-    id: "sdfsdfasdfdasdfa",
-    user: { img: "", name: "John Doe", username: "johndoe" },
-    postedAt: "6 minutes ago",
-    content: [
-      { type: "text", value: { text: "GM", mentions: ["Teritori"] } },
-      {
-        type: "img",
-        value:
-          "https://images.unsplash.com/photo-1632516643720-e7f5d7d6ecc9?q=80&w=2811&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      },
-    ],
-    comments: 43,
-    reaction: false,
-    transfer: 3,
-  },
-];
+type Props = {
+  category: PostCategory[];
+};
+const JungleScreen = ({ category }: Props) => {
+  const selectedWallet = useSelectedWallet();
 
-const JungleScreen: ScreenFC<"MiniFeeds"> = ({ navigation }) => {
+  const req: Partial<PostsRequest> = {
+    filter: {
+      categories: category,
+      hashtags: [],
+      mentions: [],
+      user: "",
+    },
+    limit: 10,
+    offset: 1,
+    queryUserId: selectedWallet?.userId,
+  };
+  const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
+  const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
+    useFetchFeed(reqWithQueryUser);
+
+  const combinedPosts = useMemo(
+    () => (data ? combineFetchFeedPages(data.pages) : []),
+    [data],
+  );
+
+  const RenderItem = useCallback(
+    (post: Post) => {
+      // NOTE: if you edit this, make sure that this is not too CPU expensive
+      // Heavy components like SocialThreadCard, SocialArticleCard, etc. should be properly memoized
+      return (
+        <View
+          style={{
+            width: "100%",
+          }}
+        >
+          {post.category === PostCategory.Article ? (
+            // <SocialArticleCard
+            //   post={post}
+            //   style={cardStyle}
+            //   refetchFeed={refetch}
+            // />
+            <MiniSocialArticle post={post} />
+          ) : post.category === PostCategory.Video ? (
+            <>
+              <MiniVideo post={post} refetchFeed={refetch} />
+              {/* <SocialVideoCard
+              post={post}
+              style={cardStyle}
+              refetchFeed={refetch}
+            /> */}
+            </>
+          ) : (
+            <MiniThread post={post} refetchFeed={refetch} />
+            // <SocialThreadCard
+            //   post={post}
+            //   refetchFeed={refetch}
+            //   isPreview
+            //   isFlagged={isFlagged}
+            //   style={cardStyle}
+            // />
+          )}
+          <Separator style={{ marginVertical: layout.spacing_x3 }} />
+        </View>
+      );
+    },
+    [refetch],
+  );
+  const onEndReached = () => {
+    if (!isLoading && hasNextPage && !isFetching) {
+      fetchNextPage();
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <SpacerColumn size={2} />
-      <FlatList
-        ItemSeparatorComponent={() => <Separator />}
-        showsVerticalScrollIndicator={false}
-        data={posts}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item, index }) => (
-          <>
-            <SpacerColumn size={index === 0 ? 1 : 2} />
-            <PostCard post={item} />
-            <SpacerColumn size={2} />
-          </>
-        )}
+      <Animated.FlatList
+        scrollEnabled
+        data={combinedPosts}
+        renderItem={({ item: post }) => RenderItem(post)}
+        ListHeaderComponentStyle={{
+          zIndex: 1,
+        }}
+        keyExtractor={(post: Post, idx: number) => `${post.identifier}-${idx}`}
+        onEndReachedThreshold={4}
+        onEndReached={onEndReached}
       />
     </View>
   );

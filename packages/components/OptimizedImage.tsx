@@ -61,7 +61,7 @@ const transformURI = (
   width: number,
   height: number,
 ) => {
-  if (!uri) {
+  if (!uri || typeof uri !== "string") {
     return "";
   }
 

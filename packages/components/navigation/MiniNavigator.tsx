@@ -67,6 +67,7 @@ const MainTab = () => {
         },
         tabBarStyle: { backgroundColor: neutral00, borderTopWidth: 0 },
       })}
+      initialRouteName="MiniFeeds"
     >
       <Tab.Screen
         name="MiniChats"

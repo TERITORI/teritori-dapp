@@ -3,6 +3,7 @@ import { Dimensions, View } from "react-native";
 
 import JungleScreen from "./JungleScreen";
 import { ScreenContainer } from "../../../components/ScreenContainer";
+import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
@@ -10,18 +11,23 @@ import { layout } from "../../../utils/style/layout";
 const feedScreenTabItems = {
   jungle: {
     name: "Jungle",
+    categories: [],
   },
   sounds: {
     name: "Sounds",
+    categories: [PostCategory.MusicAudio],
   },
   pics: {
     name: "Pics",
+    categories: [PostCategory.Picture],
   },
   videos: {
     name: "Videos",
+    categories: [PostCategory.Video],
   },
   articles: {
     name: "Articles",
+    categories: [PostCategory.Article],
   },
 };
 
@@ -31,6 +37,8 @@ export const MiniFeedScreen: ScreenFC<"MiniFeeds"> = ({
 }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof feedScreenTabItems>("jungle");
+
+  const category = feedScreenTabItems[selectedTab].categories;
   return (
     <ScreenContainer
       headerChildren={<></>}
@@ -57,9 +65,8 @@ export const MiniFeedScreen: ScreenFC<"MiniFeeds"> = ({
             marginBottom: layout.spacing_x0_5,
           }}
         />
-        {selectedTab === "jungle" && (
-          <JungleScreen navigation={navigation} route={route} />
-        )}
+        <JungleScreen category={category} />
+        {/* {selectedTab === "jungle" && <JungleScreen category={category} />} */}
       </View>
     </ScreenContainer>
   );
