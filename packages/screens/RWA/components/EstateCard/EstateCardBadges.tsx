@@ -10,16 +10,18 @@ export const EstateCardBadges: React.FC<EstateCardBadgesProps> = ({ tags }) => {
   const theme = useTheme();
   const isMobile = useIsMobile();
   return (
-    <View style={{ flexDirection: "row", marginBottom: 10 }}>
+    <View
+      style={{
+        flexDirection: "row",
+        flexWrap: isMobile ? "wrap" : "nowrap",
+        gap: 6,
+        marginBottom: 10,
+      }}
+    >
       {tags.map((value, index) => {
-        // Limit to 2 tags on mobile
-        if (isMobile && index > 1) {
-          return;
-        }
         return (
           <View
             style={{
-              marginLeft: index !== 0 ? 6 : 0,
               backgroundColor: theme.badgeBackgroundColor,
               ...BadgeItemCStyle,
             }}
@@ -29,7 +31,7 @@ export const EstateCardBadges: React.FC<EstateCardBadgesProps> = ({ tags }) => {
               style={{
                 color: theme.badgeColor,
                 fontWeight: "200",
-                fontSize: 13,
+                fontSize: 12,
               }}
             >
               {value}
@@ -42,9 +44,9 @@ export const EstateCardBadges: React.FC<EstateCardBadgesProps> = ({ tags }) => {
 };
 
 const BadgeItemCStyle: ViewStyle = {
-  height: 28,
+  height: 20,
   borderRadius: 10,
   justifyContent: "center",
   alignItems: "center",
-  paddingHorizontal: 12,
+  paddingHorizontal: 6,
 };

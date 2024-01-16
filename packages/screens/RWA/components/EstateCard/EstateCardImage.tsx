@@ -4,25 +4,16 @@ import { View } from "react-native";
 import { EstateCardImageProps } from "./types";
 import { OptimizedImage } from "../../../../components/OptimizedImage";
 import { SecondaryBox } from "../../../../components/boxes/SecondaryBox";
-import { useIsMobile } from "../../../../hooks/useIsMobile";
 import { useTheme } from "../../../../hooks/useTheme";
 
 export const EstateCardImage: React.FC<EstateCardImageProps> = ({
   sourceURI,
 }) => {
   const theme = useTheme();
-  const isMobile = useIsMobile();
-  const imageSize = isMobile ? 150 : 247;
+  const imageSize = 192;
 
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "flex-end",
-        justifyContent: "flex-end",
-        marginLeft: 10,
-      }}
-    >
+    <View style={{ flex: 1, alignItems: "center" }}>
       <SecondaryBox
         style={{
           borderColor: theme.borderColor,

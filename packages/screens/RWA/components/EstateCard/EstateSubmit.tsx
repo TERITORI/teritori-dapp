@@ -32,7 +32,7 @@ export const EstateCardWailistInput: React.FC = () => {
           style={[
             TextInputCStyle,
             {
-              width: isMobile ? 100 : 136,
+              flex: 1,
               color: theme.textColor,
               borderColor: theme.borderColor,
             },
@@ -40,11 +40,13 @@ export const EstateCardWailistInput: React.FC = () => {
           placeholder="mail@teritori.com"
           placeholderTextColor={neutralA3}
         />
-        <PrimaryButton
-          width={isMobile ? 65 : 136}
-          color={theme.primaryButtonColor}
-          text={isMobile ? "Join..." : "Join Waitlist"}
-        />
+        <View style={{ flex: 1 }}>
+          <PrimaryButton
+            fullWidth
+            color={theme.primaryButtonColor}
+            text={isMobile ? "Join..." : "Join Waitlist"}
+          />
+        </View>
       </View>
     </View>
   );

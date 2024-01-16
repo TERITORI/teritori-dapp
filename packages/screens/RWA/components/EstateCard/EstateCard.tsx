@@ -6,6 +6,7 @@ import { EstateCardImage } from "./EstateCardImage";
 import { EstateCardInformations } from "./EstateCardInformations";
 import { EstateCardProps } from "./types";
 import EstatePlaceholder from "../../../../../assets/default-images/estate-placeholder.png";
+import { BrandText } from "../../../../components/BrandText";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
 import { useIsMobile } from "../../../../hooks/useIsMobile";
 import { useTheme } from "../../../../hooks/useTheme";
@@ -25,18 +26,28 @@ export const EstateCard: React.FC<EstateCardProps> = ({
           borderColor: theme.borderColor,
           backgroundColor: theme.backgroundColor,
           padding: isMobile ? layout.spacing_x1_5 : layout.spacing_x2_5,
-          width: isMobile ? 350 : 580,
-          height: isMobile ? 250 : 327,
+          width: isMobile ? 328 : 384,
+          height: isMobile ? 532 : 508,
         },
         style,
       ]}
     >
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, flexDirection: "column" }}>
+        <EstateCardImage sourceURI={EstatePlaceholder} />
+        <BrandText
+          numberOfLines={1}
+          style={{
+            fontSize: 18,
+            fontWeight: "300",
+            letterSpacing: -1,
+            marginBottom: layout.spacing_x2,
+            marginTop: !isMobile ? layout.spacing_x2 : 0,
+          }}
+        >
+          {card.title}
+        </BrandText>
         <EstateCardBadges tags={tags} />
-        <View style={{ flex: 1, flexDirection: "row", marginTop: 5 }}>
-          <EstateCardInformations card={card} />
-          <EstateCardImage sourceURI={EstatePlaceholder} />
-        </View>
+        <EstateCardInformations card={card} />
       </View>
     </TertiaryBox>
   );

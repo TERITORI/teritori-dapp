@@ -18,8 +18,8 @@ export const HomeProposals: React.FC = () => {
     <View
       style={{
         alignItems: "center",
-        flexDirection: isMobile ? "column" : "row",
-        gap: isMobile ? 40 : 120,
+        flexDirection: isMobile ? "column-reverse" : "row",
+        gap: isMobile ? 15 : 120,
       }}
     >
       <View style={{ marginHorizontal: isMobile ? 10 : 0 }}>
@@ -55,7 +55,12 @@ export const HomeProposals: React.FC = () => {
           backgroundColor={theme.primaryButtonColor}
           text="View Property"
           size="XL"
-          style={{ marginTop: 35 }}
+          textStyle={{ fontWeight: "300", fontSize: 14, letterSpacing: 0 }}
+          style={{
+            marginTop: isMobile ? 20 : 35,
+            height: isMobile ? 46 : 56,
+            width: isMobile ? "100%" : 135,
+          }}
         />
       </View>
       <RWACarousel />

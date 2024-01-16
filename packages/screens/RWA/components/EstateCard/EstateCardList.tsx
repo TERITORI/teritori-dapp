@@ -1,12 +1,18 @@
-import React, { useState } from "react";
-import { View, FlatList, TextStyle, useWindowDimensions } from "react-native";
+import React, { useMemo } from "react";
+import { View, FlatList, TextStyle } from "react-native";
 
 import { EstateCard } from "./EstateCard";
+import { ShowMoreButton } from "./ShowMoreButton";
 import { EstateCardListProps, EstateCardProps } from "./types";
+import EstateIcon from "../../../../../assets/icons/estate.svg";
 import { BrandText } from "../../../../components/BrandText";
+import { SVG } from "../../../../components/SVG";
 import { useIsMobile } from "../../../../hooks/useIsMobile";
+import { useTheme } from "../../../../hooks/useTheme";
+import { neutralA3 } from "../../../../utils/style/colors";
 import { fontSemibold20 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
+import { useIsRWAListThreshold } from "../../useIsRWAListThreshold";
 
 export const getEstateCardList: (
   isComingSoon?: boolean,
@@ -51,53 +57,89 @@ export const getEstateCardList: (
   ];
 };
 
+const EstateCardListEmpty: React.FC = () => {
+  const theme = useTheme();
+
+  return (
+    <View
+      style={{
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: theme.borderColor,
+        height: 64,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: layout.spacing_x1_5,
+        }}
+      >
+        <SVG source={EstateIcon} width={24} height={24} color={neutralA3} />
+        <BrandText style={[{ fontSize: 18, color: neutralA3 }]}>
+          No available estates
+        </BrandText>
+      </View>
+    </View>
+  );
+};
+
+const EstateCardListFilled: React.FC<{
+  cards: EstateCardProps[];
+}> = ({ cards }) => {
+  const isMobile = useIsMobile();
+  return isMobile ? (
+    <View style={{ flexDirection: "column" }}>
+      {cards.map((value, index) => (
+        <EstateCard
+          style={{ marginBottom: index + 1 <= cards.length ? 15 : 0 }}
+          key={value.card.id}
+          {...value}
+        />
+      ))}
+    </View>
+  ) : (
+    <FlatList
+      data={cards}
+      renderItem={({ item, index }) => (
+        <EstateCard
+          style={{ marginLeft: index === 0 ? 0 : 16 }}
+          key={item.card.id}
+          {...item}
+        />
+      )}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+    />
+  );
+};
+
 export const EstateCardList: React.FC<EstateCardListProps> = ({
   cards,
   title,
   style,
 }) => {
-  const { width: windowWidth } = useWindowDimensions();
-  const [flatListWidth, setFlatListWidth] = useState<number>(0);
-  const isMobile = useIsMobile();
+  const isRWAListThreshold = useIsRWAListThreshold();
+
+  const maxItems = useMemo(
+    () => (isRWAListThreshold ? 2 : 3),
+    [isRWAListThreshold],
+  );
 
   return (
-    <View
-      style={{
-        ...style,
-        // center content to fit with large screens
-        alignItems:
-          flatListWidth < windowWidth || isMobile ? "center" : undefined,
-      }}
-    >
+    <View style={[style]}>
       <View>
-        <BrandText style={[ListTitleCStyle, { marginLeft: isMobile ? 0 : 60 }]}>
-          {title}
-        </BrandText>
-        {isMobile ? (
-          <View style={{ flexDirection: "column" }}>
-            {cards.map((value, index) => (
-              <EstateCard
-                style={{ marginBottom: index + 1 <= cards.length ? 15 : 0 }}
-                key={value.card.id}
-                {...value}
-              />
-            ))}
-          </View>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <BrandText style={[ListTitleCStyle]}>{title}</BrandText>
+          {cards.length > maxItems && <ShowMoreButton />}
+        </View>
+        {cards.length ? (
+          <EstateCardListFilled cards={cards} />
         ) : (
-          <FlatList
-            contentContainerStyle={{ paddingHorizontal: 40 }}
-            data={cards}
-            renderItem={({ item, index }) => (
-              <EstateCard
-                style={{ marginLeft: index === 0 ? 20 : 24 }}
-                key={item.card.id}
-                {...item}
-              />
-            )}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            onContentSizeChange={(width) => setFlatListWidth(width)}
-          />
+          <EstateCardListEmpty />
         )}
       </View>
     </View>

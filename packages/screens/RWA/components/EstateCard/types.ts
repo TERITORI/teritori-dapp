@@ -30,7 +30,6 @@ export type EstateCardImageProps = {
 export type EstateCardInformationBoxProps = {
   label: string;
   value: string;
-  secondary?: boolean;
   style?: StyleProp<BoxStyle>;
 };
 

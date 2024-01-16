@@ -8,56 +8,32 @@ import {
 } from "./types";
 import { BrandText } from "../../../../components/BrandText";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
-import { useIsMobile } from "../../../../hooks/useIsMobile";
+import { Separator } from "../../../../components/separators/Separator";
 import { useIsLightTheme, useTheme } from "../../../../hooks/useTheme";
 import { neutral77, neutralA3 } from "../../../../utils/style/colors";
+import { layout } from "../../../../utils/style/layout";
 
 const EstateCardInformationBox: React.FC<EstateCardInformationBoxProps> = ({
   label,
   value,
-  secondary = false,
-  style,
 }) => {
-  const theme = useTheme();
   const isLightTheme = useIsLightTheme();
-  const isMobile = useIsMobile();
-  const backgroundColor = secondary
-    ? theme.headerBackgroundColor
-    : isLightTheme
-      ? "#F9F9F9"
-      : theme.headerBackgroundColor;
-  const labelColor = secondary
-    ? neutral77
-    : isLightTheme
-      ? neutralA3
-      : neutral77;
 
+  const labelColor = isLightTheme ? neutralA3 : neutral77;
   return (
-    <TertiaryBox
-      style={[
-        style,
-        {
-          flex: 1,
-          paddingLeft: 10,
-          flexDirection: "column",
-          alignItems: "flex-start",
-          backgroundColor,
-          borderColor: secondary
-            ? theme.borderColor
-            : !isLightTheme
-              ? theme.borderColor
-              : undefined,
-          borderWidth: secondary ? 1 : !isLightTheme ? 1 : 0,
-          justifyContent: "center",
-          height: isMobile ? 35 : 66,
-          width: isMobile ? 80 : 136,
-        },
-      ]}
+    <View
+      style={{
+        flex: 1,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
     >
       <BrandText
         numberOfLines={1}
         style={{
-          fontSize: 11,
+          flex: 1,
+          fontSize: 12,
           fontWeight: "200",
           letterSpacing: -1,
           color: labelColor,
@@ -68,58 +44,60 @@ const EstateCardInformationBox: React.FC<EstateCardInformationBoxProps> = ({
       <BrandText
         numberOfLines={1}
         style={{
-          fontSize: 13,
-          fontWeight: secondary ? "200" : "300",
+          textAlign: "right",
+          flex: 1,
+          fontSize: 12,
+          fontWeight: "300",
           letterSpacing: -0.5,
         }}
       >
         {value}
       </BrandText>
-    </TertiaryBox>
+    </View>
   );
 };
 
 export const EstateCardInformations: React.FC<EstateCardInformationsProps> = ({
   card,
 }) => {
-  const isMobile = useIsMobile();
+  const theme = useTheme();
+  const isLightTheme = useIsLightTheme();
+  const backgroundColor = isLightTheme
+    ? "#F9F9F9"
+    : theme.headerBackgroundColor;
+
   return (
     <View style={{ flex: 1 }}>
-      <BrandText
-        numberOfLines={1}
-        style={{
-          fontSize: 18,
-          maxWidth: isMobile ? 165 : 284,
-          fontWeight: "300",
-          letterSpacing: -1,
-        }}
+      <TertiaryBox
+        style={[
+          {
+            height: 128,
+            backgroundColor,
+            justifyContent: "center",
+            padding: layout.spacing_x1,
+            borderColor: !isLightTheme ? theme.borderColor : undefined,
+            borderWidth: !isLightTheme ? 1 : 0,
+            marginBottom: layout.spacing_x2,
+          },
+        ]}
       >
-        {card.title}
-      </BrandText>
-      <View style={{ flex: 1, flexDirection: "column", marginTop: 12 }}>
-        <View style={{ flex: 1, flexDirection: "row" }}>
-          <EstateCardInformationBox
-            label="Total Investment"
-            value={card.totalInvestment}
-          />
-          <EstateCardInformationBox
-            label="Target APY"
-            value={card.estAPY}
-            style={{ marginLeft: 10 }}
-          />
-        </View>
-        <View style={{ flex: 1, flexDirection: "row" }}>
-          <EstateCardInformationBox
-            label="Rental Start Date"
-            value={card.rentalStartDate}
-          />
-          <EstateCardInformationBox
-            label="Target ROI per Token"
-            value={card.estAPYPerToken}
-            style={{ marginLeft: 10 }}
-          />
-        </View>
-      </View>
+        <EstateCardInformationBox
+          label="Total Investment"
+          value={card.totalInvestment}
+        />
+        <Separator color={theme.borderColor} />
+        <EstateCardInformationBox label="Target APY" value={card.estAPY} />
+        <Separator color={theme.borderColor} />
+        <EstateCardInformationBox
+          label="Rental Start Date"
+          value={card.rentalStartDate}
+        />
+        <Separator color={theme.borderColor} />
+        <EstateCardInformationBox
+          label="Target ROI per Token"
+          value={card.estAPYPerToken}
+        />
+      </TertiaryBox>
 
       {/* EstateSubmit */}
       {card.isComingSoon ? (
