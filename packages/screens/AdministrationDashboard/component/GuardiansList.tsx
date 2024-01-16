@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import { Image, TouchableOpacity, ViewStyle } from "react-native";
 import Popover from "react-native-popover-view";
 
 import { TooltipContant } from "./TooltipContant";
 import avaPNG from "../../../../assets/default-images/ava.png";
-import checkBadgeSVG from "../../../../assets/icons/check-badge.svg";
+import checkBadgeSVG from "../../../../assets/icons/certified.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { neutral44, neutral11 } from "../../../utils/style/colors";
 import { fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
-export const GuardiansList = ({ index }: { index: number }) => {
+export const GuardiansList: FC<{ index: number }> = ({ index }) => {
   const [viewPopover, setViewPopover] = useState<number>(-1);
 
   const setViewPopoverHandler = (index: number) => {
@@ -39,7 +39,7 @@ export const GuardiansList = ({ index }: { index: number }) => {
             >
               Meebits
             </BrandText>
-            <SVG source={checkBadgeSVG} />
+            <SVG source={checkBadgeSVG} width={18} height={18} />
           </TouchableOpacity>
         }
         onRequestClose={() => setViewPopover(-1)}
