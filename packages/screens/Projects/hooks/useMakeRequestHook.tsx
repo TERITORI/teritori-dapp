@@ -8,6 +8,7 @@ import {
   ShortDescData,
   TeamAndLinkData,
 } from "../types";
+import { emptyShortDesc, emptyTeamAndLink } from "../defaultValues";
 
 type MakeRequestState = {
   stepIndice: number;
@@ -56,26 +57,6 @@ export const EMPTY_MILESTONE = {
   githubLink: "",
 };
 
-export const fakeShortDesc: ShortDescData = {
-  name: "This is name",
-  desc: "This is long description",
-  budget: 0,
-  duration: 0,
-  funder: "",
-  contractor: "",
-  paymentAddr: "gno.land/r/demo/foo20",
-  coverImg: "https://thisis.img",
-  tags: "tag1,tag2,tag3",
-};
-
-export const fakeTeamAndLink: TeamAndLinkData = {
-  websiteLink: "https://website.com",
-  twitterProfile: "https://twitter.com",
-  discordLink: "https://discord.com",
-  githubLink: "https://github.com",
-  teamDesc: "This is long team description",
-};
-
 const fakeMilestones: ProjectMilestone[] = [
   {
     id: 1,
@@ -93,8 +74,8 @@ const fakeMilestones: ProjectMilestone[] = [
 
 export const useMakeRequestStore = create<MakeRequestState>((set, get) => ({
   stepIndice: 1,
-  shortDescData: fakeShortDesc,
-  teamAndLinkData: fakeTeamAndLink,
+  shortDescData: emptyShortDesc,
+  teamAndLinkData: emptyTeamAndLink,
   milestones: fakeMilestones,
   actions: {
     setStepIndice: (stepIndice: number) => set({ stepIndice }),

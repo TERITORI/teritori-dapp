@@ -27,20 +27,7 @@ import {
   fontSemibold20,
 } from "../../../utils/style/fonts";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
-import { ShortDescData } from "../types";
-
-const emptyValues: ShortDescData = {
-  name: "",
-  desc: "",
-  budget: 0,
-  duration: 0,
-  paymentAddr: "",
-  coverImg: "",
-  tags: "",
-  funder: "",
-  contractor: "",
-  _coverImgFile: undefined,
-};
+import { emptyShortDesc } from "../defaultValues";
 
 const shortDescSchema = object({
   name: string().required().min(3),
@@ -80,7 +67,7 @@ export const ShortPresentation: React.FC = () => {
       <SpacerColumn size={2.5} />
 
       <Formik
-        initialValues={shortDescData || emptyValues}
+        initialValues={shortDescData || emptyShortDesc}
         validationSchema={shortDescSchema}
         onSubmit={(values) => {
           if (creatorType === "contractor") {

@@ -74,7 +74,7 @@ const ProjectRow: React.FC<{ project: Project; projectType: ProjectType }> = ({
 
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("ProjectsDetail", { id: "" + project.id })
+            navigation.navigate("ProjectsDetail", { id: project.id })
           }
         >
           <BrandText

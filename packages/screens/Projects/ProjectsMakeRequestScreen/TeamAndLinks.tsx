@@ -16,15 +16,7 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
-import { TeamAndLinkData } from "../types";
-
-const emptyValues: TeamAndLinkData = {
-  websiteLink: "",
-  twitterProfile: "",
-  discordLink: "",
-  githubLink: "",
-  teamDesc: "",
-};
+import { emptyTeamAndLink } from "../defaultValues";
 
 const teamAndLinkSchema = object({
   websiteLink: string().required().url(),
@@ -53,7 +45,7 @@ export const TeamAndLinks: React.FC = () => {
       <SpacerColumn size={2.5} />
 
       <Formik
-        initialValues={teamAndLinkData || emptyValues}
+        initialValues={teamAndLinkData || emptyTeamAndLink}
         validationSchema={teamAndLinkSchema}
         onSubmit={(values) => {
           setTeamAndLink(values);
