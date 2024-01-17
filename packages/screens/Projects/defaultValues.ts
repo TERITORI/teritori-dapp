@@ -21,22 +21,22 @@ export const emptyShortDesc: ShortDescData = {
   _coverImgFile: undefined,
 };
 
-export const fakeShortDesc: ShortDescData = {
-  name: "This is name",
-  desc: "This is long description",
-  budget: 0,
-  duration: 0,
-  funder: "",
-  contractor: "",
-  paymentAddr: "gno.land/r/demo/tori20",
-  coverImg: "https://thisis.img",
-  tags: "tag1,tag2,tag3",
-};
-
-export const fakeTeamAndLink: TeamAndLinkData = {
-  websiteLink: "https://website.com",
-  twitterProfile: "https://twitter.com",
-  discordLink: "https://discord.com",
-  githubLink: "https://github.com",
-  teamDesc: "This is long team description",
-};
+// Used only when dev, for quickly goto next step
+// export const fakeShortDesc: ShortDescData = {
+//   name: "This is name",
+//   desc: "This is long description",
+//   budget: 0,
+//   duration: 0,
+//   funder: "",
+//   contractor: "",
+//   paymentAddr: "gno.land/r/demo/tori20",
+//   coverImg: "https://thisis.img",
+//   tags: "tag1,tag2,tag3",
+// };
+// export const fakeTeamAndLink: TeamAndLinkData = {
+//   websiteLink: "https://website.com",
+//   twitterProfile: "https://twitter.com",
+//   discordLink: "https://discord.com",
+//   githubLink: "https://github.com",
+//   teamDesc: "This is long team description",
+// };

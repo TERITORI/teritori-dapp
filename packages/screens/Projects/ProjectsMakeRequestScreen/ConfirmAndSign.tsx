@@ -10,12 +10,13 @@ import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryBut
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useIpfs } from "../../../hooks/useIpfs";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId, mustGetGnoNetwork } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
 import { adenaVMCall, extractGnoString } from "../../../utils/gno";
-import { generateIpfsKey, uploadFilesToPinata } from "../../../utils/ipfs";
+import { generateIpfsKey } from "../../../utils/ipfs";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
@@ -40,6 +41,7 @@ export const ConfirmAndSign: React.FC = () => {
   const networkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
   const { mustGetValue } = useUtils();
+  const { uploadFilesToPinata } = useIpfs();
 
   const userIPFSKey = useSelector(selectNFTStorageAPI);
   const selectedWallet = useSelectedWallet();

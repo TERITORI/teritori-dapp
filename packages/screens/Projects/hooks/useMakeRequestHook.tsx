@@ -27,36 +27,6 @@ type MakeRequestState = {
 
 const TOTAL_STEPS = 5;
 
-export const EMPTY_SHORT_DESC: ShortDescData = {
-  name: "",
-  desc: "",
-  funder: "",
-  contractor: "",
-  budget: 0,
-  duration: 0,
-  paymentAddr: "",
-  coverImg: "",
-  tags: "",
-};
-
-export const EMPTY_TEAM_AND_LINK = {
-  websiteLink: "",
-  twitterProfile: "",
-  discordLink: "",
-  githubLink: "",
-  teamDesc: "",
-};
-
-export const EMPTY_MILESTONE = {
-  id: -1,
-  name: "",
-  desc: "",
-  status: MsStatus.MS_OPEN,
-  priority: MsPriority.MS_PRIORITY_MEDIUM,
-  budget: 0,
-  githubLink: "",
-};
-
 const fakeMilestones: ProjectMilestone[] = [
   {
     id: 1,
@@ -72,7 +42,7 @@ const fakeMilestones: ProjectMilestone[] = [
   },
 ];
 
-export const useMakeRequestStore = create<MakeRequestState>((set, get) => ({
+const useMakeRequestStore = create<MakeRequestState>((set, get) => ({
   stepIndice: 1,
   shortDescData: emptyShortDesc,
   teamAndLinkData: emptyTeamAndLink,

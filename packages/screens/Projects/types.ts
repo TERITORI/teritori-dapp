@@ -22,11 +22,6 @@ export enum ContractStatus {
   REJECTED = "REJECTED",
 }
 
-export enum ProjectStatus {
-  OPEN = "OPEN",
-  IN_PROGRESS = "IN_PROGRESS",
-}
-
 export type ShortDescData = {
   name: string;
   desc: string;
@@ -48,7 +43,7 @@ export type TeamAndLinkData = {
   teamDesc: string;
 };
 
-export type ProjectMetadata = {
+type ProjectMetadata = {
   shortDescData: ShortDescData;
   milestones: ProjectMilestone[];
   teamAndLinkData: TeamAndLinkData;

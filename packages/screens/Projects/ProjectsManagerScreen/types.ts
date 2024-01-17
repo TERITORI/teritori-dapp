@@ -7,7 +7,7 @@ export type ViewKey =
   | "requestsByBuilders"
   | "requestsByInvestors";
 
-export type ViewData = {
+type ViewData = {
   name: string;
   component: React.ReactNode;
 };
