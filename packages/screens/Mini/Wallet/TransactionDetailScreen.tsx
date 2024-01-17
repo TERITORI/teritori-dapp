@@ -20,7 +20,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontBold16, fontSemibold15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import MiniHeader from "../Notifications/components/MiniHeader";
+import CustomAppBar from "../components/AppBar/CustomAppBar";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import RowDisplay from "../components/RowDisplay";
 
@@ -49,7 +49,7 @@ const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
   return (
     <ScreenContainer
       headerMini={
-        <MiniHeader
+        <CustomAppBar
           navigation={navigation}
           backEnabled
           left={
