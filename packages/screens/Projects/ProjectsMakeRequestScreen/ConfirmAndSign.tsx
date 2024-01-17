@@ -11,7 +11,10 @@ import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useIpfs } from "../../../hooks/useIpfs";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import {
+  useSelectedNetworkId,
+  useSelectedNetworkInfo,
+} from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId, mustGetGnoNetwork } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
@@ -46,6 +49,7 @@ export const ConfirmAndSign: React.FC = () => {
   const userIPFSKey = useSelector(selectNFTStorageAPI);
   const selectedWallet = useSelectedWallet();
   const userId = getUserId(networkId, selectedWallet?.address);
+  const selectedNetwork = useSelectedNetworkInfo();
 
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
@@ -56,11 +60,17 @@ export const ConfirmAndSign: React.FC = () => {
 
     let remoteFiles: RemoteFileData[] = [];
 
-    const pinataJWTKey = userIPFSKey || (await generateIpfsKey("gno", userId));
+    const pinataJWTKey =
+      userIPFSKey || (await generateIpfsKey(selectedNetwork?.id || "", userId));
     if (pinataJWTKey) {
       remoteFiles = await uploadFilesToPinata({
         files: [fileToUpload],
         pinataJWTKey,
+      });
+    } else {
+      return setToastError({
+        title: "File upload failed",
+        message: "Unable to get IPFS key",
       });
     }
 
