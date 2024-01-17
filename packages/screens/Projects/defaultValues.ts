@@ -1,4 +1,4 @@
-import { MsPriority, MsStatus, ProjectMilestone, ShortDescData, TeamAndLinkData } from "./types";
+import { ShortDescData, TeamAndLinkData } from "./types";
 
 export const emptyTeamAndLink: TeamAndLinkData = {
   websiteLink: "",

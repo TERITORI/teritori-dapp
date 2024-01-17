@@ -2,13 +2,7 @@ import { create } from "zustand";
 
 import { useAppNavigation } from "../../../utils/navigation";
 import { emptyShortDesc, emptyTeamAndLink } from "../defaultValues";
-import {
-  ProjectMilestone,
-  MsPriority,
-  MsStatus,
-  ShortDescData,
-  TeamAndLinkData,
-} from "../types";
+import { ProjectMilestone, ShortDescData, TeamAndLinkData } from "../types";
 
 type MakeRequestState = {
   stepIndice: number;
