@@ -3813,6 +3813,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@googlemaps/js-api-loader@npm:^1.14.3":
+  version: 1.16.2
+  resolution: "@googlemaps/js-api-loader@npm:1.16.2"
+  dependencies:
+    fast-deep-equal: ^3.1.3
+  checksum: 122ee57cc6a936e50358aedc4e79042353590467210e901fb42d4e7d9123c248c4db5cd5407a350cb5bea6de9e9ef1a508c08ba593475285d90bc4b93db42f51
+  languageName: node
+  linkType: hard
+
 "@graphql-typed-document-node/core@npm:^3.1.0":
   version: 3.2.0
   resolution: "@graphql-typed-document-node/core@npm:3.2.0"
@@ -4514,6 +4523,17 @@ __metadata:
   bin:
     json2ts: dist/src/cli.js
   checksum: 8b965d0d46551fa985ef00ba4f64c26cd1ea7f63336db6f40722c77b9ba5574a99389ca58eca2294dc62b95ac045611ff0098f1bf2c141a4faf4808112ad6e88
+  languageName: node
+  linkType: hard
+
+"@react-leaflet/core@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@react-leaflet/core@npm:2.1.0"
+  peerDependencies:
+    leaflet: ^1.9.0
+    react: ^18.0.0
+    react-dom: ^18.0.0
+  checksum: c11a15fb71a9929b809f346d8f784d0f32afa373bc096aa1f0d0fa6a2ef0ce632a563c31876abf8b255a12a19d6e80ece31e2ef505f79a678bbf073e7a6c5c60
   languageName: node
   linkType: hard
 
@@ -5421,6 +5441,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/geojson@npm:*":
+  version: 7946.0.13
+  resolution: "@types/geojson@npm:7946.0.13"
+  checksum: b3b68457c89bc3f0445dc9eb54d07e6f89658672867c54989bc7f71f87d54e562195b291d43e1b84476493351271d7ccb9f5c6ab2012b29fbafbb0e8e43c4bca
+  languageName: node
+  linkType: hard
+
 "@types/glob@npm:^7.1.1, @types/glob@npm:^7.1.3":
   version: 7.2.0
   resolution: "@types/glob@npm:7.2.0"
@@ -5541,6 +5568,15 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: e009a2bfb50e90ca9b7c6e8f648f8464067271fd99116f881073fa6fa76dc8d0133181dd65e6614d5fb1220d671d67b0124aef7d97dc02d7e342ab143a47779d
+  languageName: node
+  linkType: hard
+
+"@types/leaflet@npm:^1.9.8":
+  version: 1.9.8
+  resolution: "@types/leaflet@npm:1.9.8"
+  dependencies:
+    "@types/geojson": "*"
+  checksum: d6a33d5db0bdf608957cd52701b17ee89e936034a8f0ab619b8e7ef70312a0da177837dd125756e83af036276a8b299cc724c9ffb3caa7d22893fea2791e1e13
   languageName: node
   linkType: hard
 
@@ -13740,6 +13776,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"leaflet-geosearch@npm:^3.11.0":
+  version: 3.11.0
+  resolution: "leaflet-geosearch@npm:3.11.0"
+  dependencies:
+    "@googlemaps/js-api-loader": ^1.14.3
+    leaflet: ^1.6.0
+  dependenciesMeta:
+    "@googlemaps/js-api-loader":
+      optional: true
+    leaflet:
+      optional: true
+  checksum: 560682d638ad03f1426a23915328211fa0bd638ebc1e8403f72090ad44e28c402626548cb663756300a00570a168c9cc1671ce2f7d3642b657222ba82b6aa76f
+  languageName: node
+  linkType: hard
+
+"leaflet.markercluster@npm:^1.5.3":
+  version: 1.5.3
+  resolution: "leaflet.markercluster@npm:1.5.3"
+  peerDependencies:
+    leaflet: ^1.3.1
+  checksum: abf0d0befbc78b7f178a330791554f0e4fd7170dbe2e6d59f387b627d914f4633b0541a9028fe5d11cf842c09c8dbb56ae6bd9d1d08c5ce35e32541c8f1eacd1
+  languageName: node
+  linkType: hard
+
+"leaflet@npm:^1.6.0, leaflet@npm:^1.9.4":
+  version: 1.9.4
+  resolution: "leaflet@npm:1.9.4"
+  checksum: bfc79f17a247b37b92d84b3c78702501603392d6589fde606de4a825d11f1609d90225388834f2e0709dac327e52dcd4b4b9cc9fd3d590060c5b1e53b84fa6c6
+  languageName: node
+  linkType: hard
+
 "ledger-cosmos-js@npm:^2.1.8":
   version: 2.1.8
   resolution: "ledger-cosmos-js@npm:2.1.8"
@@ -17141,6 +17208,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-leaflet-cluster@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "react-leaflet-cluster@npm:2.1.0"
+  dependencies:
+    leaflet.markercluster: ^1.5.3
+  peerDependencies:
+    leaflet: ^1.8.0
+    react: ^18.0.0
+    react-dom: ^18.0.0
+    react-leaflet: ^4.0.0
+  checksum: 14e802fba65c29ab7607466178f4948a27d515ddcbfd48d54cb2c37051772fa71ab0f1d3da55862c345ccae86eae040333eb4f392c60405d1a1c3d83f1368501
+  languageName: node
+  linkType: hard
+
+"react-leaflet@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "react-leaflet@npm:4.2.1"
+  dependencies:
+    "@react-leaflet/core": ^2.1.0
+  peerDependencies:
+    leaflet: ^1.9.0
+    react: ^18.0.0
+    react-dom: ^18.0.0
+  checksum: 79222c2ba0c62facaa3dfee18f7a692f917a4fb744ba8d22269a77f9779fc9634962230eb51265ff2563a1a5e3287d2ec16640ee7f5de459458027e05cd756ba
+  languageName: node
+  linkType: hard
+
 "react-native-confetti-cannon@npm:^1.5.2":
   version: 1.5.2
   resolution: "react-native-confetti-cannon@npm:1.5.2"
@@ -19516,6 +19610,7 @@ __metadata:
     "@types/draft-convert": ^2.1.4
     "@types/draft-js": ^0.11.9
     "@types/html-to-draftjs": ^1.4.0
+    "@types/leaflet": ^1.9.8
     "@types/node": ^20.9.1
     "@types/react": ~18.2.14
     "@types/react-native-countdown-component": ^2.7.0
@@ -19555,6 +19650,8 @@ __metadata:
     google-protobuf: ^3.21.2
     html-to-draftjs: ^1.5.0
     immutable: ^4.0.0
+    leaflet: ^1.9.4
+    leaflet-geosearch: ^3.11.0
     lodash: ^4.17.21
     long: ^5.2.1
     lottie-ios: 3.4.0
@@ -19573,6 +19670,8 @@ __metadata:
     react: 18.2.0
     react-dom: 18.2.0
     react-hook-form: ^7.36.1
+    react-leaflet: ^4.2.1
+    react-leaflet-cluster: ^2.1.0
     react-native: 0.72.6
     react-native-confetti-cannon: ^1.5.2
     react-native-countdown-component: ^2.7.1

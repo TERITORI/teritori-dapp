@@ -39,6 +39,7 @@ type ModalBaseProps = {
   width?: number;
   visible?: boolean;
   Header?: ComponentType;
+  hideHeader?: boolean;
   childrenBottom?: JSX.Element | JSX.Element[];
   hideMainSeparator?: boolean;
   description?: string;
@@ -77,6 +78,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
   childrenBottom,
   children,
   Header,
+  hideHeader = false,
   hideMainSeparator,
   description,
   scrollable,
@@ -159,81 +161,87 @@ const ModalBase: React.FC<ModalBaseProps> = ({
           ]}
         >
           {/*------ Modal header */}
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "100%",
-              paddingHorizontal: modalMarginPadding,
-              paddingVertical: layout.spacing_x2,
-            }}
-          >
-            {(label || labelComponent || description) && (
-              <View
-                style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
-              >
-                {onBackPress && (
-                  <TouchableOpacity
-                    activeOpacity={0.9}
-                    style={{
-                      height: 32,
-                      width: 32,
-                      backgroundColor: neutral22,
-                      borderRadius: 20,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginRight: 12,
-                    }}
-                    onPress={onBackPress}
-                  >
-                    <SVG source={chevronLeft} height={12} width={12} />
-                  </TouchableOpacity>
-                )}
-
-                <View style={{ flex: 1, width: "100%" }}>
-                  {label && (
-                    <BrandText style={{ color: "white", lineHeight: 24 }}>
-                      {label}
-                    </BrandText>
-                  )}
-
-                  {labelComponent}
-
-                  {description && (
-                    <>
-                      <SpacerColumn size={1} />
-                      <BrandText
-                        style={[
-                          fontSemibold14,
-                          {
-                            color: neutral77,
-                            width: "100%",
-                            lineHeight: 20,
-                            flexWrap: "wrap",
-                          },
-                        ]}
-                      >
-                        {description}
-                      </BrandText>
-                    </>
-                  )}
-                </View>
-              </View>
-            )}
-
-            {Header && <Header />}
-
-            <TouchableOpacity
-              containerStyle={[
-                { marginLeft: modalMarginPadding },
-                closeButtonStyle,
-              ]}
-              style={{ justifyContent: "center" }}
-              onPress={onClose}
+          {!hideHeader && (
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: "100%",
+                paddingHorizontal: modalMarginPadding,
+                paddingVertical: layout.spacing_x2,
+              }}
             >
-              <SVG width={32} height={32} source={closeSVG} />
-            </TouchableOpacity>
-          </View>
+              {(label || labelComponent || description) && (
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  {onBackPress && (
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={{
+                        height: 32,
+                        width: 32,
+                        backgroundColor: neutral22,
+                        borderRadius: 20,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginRight: 12,
+                      }}
+                      onPress={onBackPress}
+                    >
+                      <SVG source={chevronLeft} height={12} width={12} />
+                    </TouchableOpacity>
+                  )}
+
+                  <View style={{ flex: 1, width: "100%" }}>
+                    {label && (
+                      <BrandText style={{ color: "white", lineHeight: 24 }}>
+                        {label}
+                      </BrandText>
+                    )}
+
+                    {labelComponent}
+
+                    {description && (
+                      <>
+                        <SpacerColumn size={1} />
+                        <BrandText
+                          style={[
+                            fontSemibold14,
+                            {
+                              color: neutral77,
+                              width: "100%",
+                              lineHeight: 20,
+                              flexWrap: "wrap",
+                            },
+                          ]}
+                        >
+                          {description}
+                        </BrandText>
+                      </>
+                    )}
+                  </View>
+                </View>
+              )}
+
+              {Header && <Header />}
+
+              <TouchableOpacity
+                containerStyle={[
+                  { marginLeft: modalMarginPadding },
+                  closeButtonStyle,
+                ]}
+                style={{ justifyContent: "center" }}
+                onPress={onClose}
+              >
+                <SVG width={32} height={32} source={closeSVG} />
+              </TouchableOpacity>
+            </View>
+          )}
           {children && (
             <View
               style={[

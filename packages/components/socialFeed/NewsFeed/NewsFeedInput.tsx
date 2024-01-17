@@ -10,6 +10,7 @@ import {
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
+import { MapModal } from "./MapModal";
 import { NewPostFormValues, ReplyToType } from "./NewsFeed.type";
 import { generatePostMetadata, getPostCategory } from "./NewsFeedQueries";
 import { NotEnoughFundModal } from "./NotEnoughFundModal";
@@ -138,6 +139,7 @@ export const NewsFeedInput = React.forwardRef<
       start: 10,
       end: 10,
     });
+    const [isMapModal, setMapModal] = useState(false);
 
     const onPostCreationSuccess = () => {
       reset();
@@ -289,6 +291,13 @@ export const NewsFeedInput = React.forwardRef<
           <NotEnoughFundModal
             visible
             onClose={() => setNotEnoughFundModal(false)}
+          />
+        )}
+        {isMapModal && (
+          <MapModal
+            handleSubmit={() => handleSubmit(processSubmit)()}
+            visible
+            onClose={() => setMapModal(false)}
           />
         )}
         <PrimaryBox
@@ -601,21 +610,23 @@ export const NewsFeedInput = React.forwardRef<
               )}
 
               <PrimaryButton
-                // disabled={
-                //   (!formValues?.message &&
-                //     !formValues?.files?.length &&
-                //     !formValues?.gifs?.length) ||
-                //   formValues?.message.length >
-                //     SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
-                //   !selectedWallet
-                // }
+                disabled={
+                  (!formValues?.message &&
+                    !formValues?.files?.length &&
+                    !formValues?.gifs?.length) ||
+                  formValues?.message.length >
+                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
+                  !selectedWallet
+                }
                 isLoading={isLoading || isProcessing}
                 loader
                 size="M"
                 text={
                   daoId ? "Propose" : type === "comment" ? "Comment" : "Publish"
                 }
-                onPress={handleSubmit(processSubmit)}
+                onPress={() => {
+                  setMapModal(true);
+                }}
               />
             </View>
           </View>
