@@ -95,6 +95,7 @@ const AddressBookScreen: ScreenFC<"AddressBook"> = ({ navigation }) => {
           options={{
             label: "Add Network",
             leftIconEnabled: true,
+            iconEnabled: true,
             leftIconOptions: {
               icon: AddNewSvg,
               fill: "#fff",

@@ -5,7 +5,6 @@ import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontNormal15, fontSemibold18 } from "../../../utils/style/fonts";
@@ -92,7 +91,6 @@ const SelectTokenScreen: ScreenFC<"MiniSelectToken"> = ({
           )}
         />
       )}
-      <SpacerColumn size={2} />
     </BlurScreenContainer>
   );
 };

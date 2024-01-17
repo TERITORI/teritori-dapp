@@ -2,17 +2,13 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import { ManageToken } from "./components/ManageToken";
-import plusSVG from "../../../../assets/icons/add-solid-white.svg";
-import chevronRightSVG from "../../../../assets/icons/chevron-right-gray.svg";
+import AddNewSvg from "../../../../assets/icons/add-circle-filled.svg";
 import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
 import { ScreenFC } from "../../../utils/navigation";
-import { fontSemibold22 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import ListView from "../components/ListView";
 
 export const ManageTokensScreen: ScreenFC<"MiniManageTokens"> = ({
   navigation,
@@ -29,8 +25,9 @@ export const ManageTokensScreen: ScreenFC<"MiniManageTokens"> = ({
     <BlurScreenContainer title="Manage Tokens">
       <View
         style={{
-          paddingHorizontal: layout.spacing_x0_75,
-          paddingVertical: layout.spacing_x1,
+          paddingHorizontal: layout.spacing_x2,
+          flex: 1,
+          justifyContent: "flex-end",
         }}
       >
         <ManageToken
@@ -49,28 +46,21 @@ export const ManageTokensScreen: ScreenFC<"MiniManageTokens"> = ({
           onToggleSwitch={toggleTokenStatus}
         />
         <Separator />
-        <CustomPressable
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingVertical: layout.spacing_x1_5,
-            marginVertical: layout.spacing_x1,
-          }}
+        <ListView
           onPress={onPressAddToken}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: layout.spacing_x1_5,
-            }}
-          >
-            <SVG source={plusSVG} height={24} width={24} />
-            <BrandText style={[fontSemibold22, {}]}>Add Token</BrandText>
-          </View>
-          <SVG source={chevronRightSVG} height={24} width={24} />
-        </CustomPressable>
+          style={{
+            paddingVertical: layout.spacing_x4,
+          }}
+          options={{
+            label: "Add Token",
+            leftIconEnabled: true,
+            iconEnabled: true,
+            leftIconOptions: {
+              icon: AddNewSvg,
+              fill: "#fff",
+            },
+          }}
+        />
       </View>
     </BlurScreenContainer>
   );
