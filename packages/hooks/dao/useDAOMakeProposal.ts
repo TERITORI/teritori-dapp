@@ -28,7 +28,7 @@ export const useDAOMakeProposal = (
         title: string;
       },
     ) => {
-      if (!enabled) {
+      if (enabled === false) {
         throw new Error("Hook is not enabled");
       }
 

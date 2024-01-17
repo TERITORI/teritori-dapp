@@ -2,7 +2,6 @@ import child_process from "child_process";
 import { program } from "commander";
 import { cloneDeep } from "lodash";
 import path from "path";
-import { z } from "zod";
 
 import {
   ExecuteMsg as NameServiceExecuteMsg,
@@ -12,7 +11,7 @@ import { InstantiateMsg as MarketplaceVaultInstantiateMsg } from "../../contract
 import { InstantiateMsg as SocialFeedInstantiateMsg } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { CosmosNetworkInfo, getCosmosNetwork } from "../../networks";
 import { zodTryParseJSON } from "../../utils/sanitize";
-import { retry } from "../lib";
+import { injectRPCPort, retry, zodTxResult } from "../lib";
 import sqh from "../sqh";
 
 const main = async () => {
@@ -87,24 +86,6 @@ const main = async () => {
 
   console.log(JSON.stringify(network, null, 2));
 };
-
-const zodTxResult = z.object({
-  height: z.string(),
-  txhash: z.string(),
-  events: z.array(
-    z.object({
-      type: z.string(),
-      attributes: z.array(
-        z.object({
-          key: z.string().transform((v) => Buffer.from(v, "base64").toString()),
-          value: z
-            .string()
-            .transform((v) => Buffer.from(v, "base64").toString()),
-        }),
-      ),
-    }),
-  ),
-});
 
 const instantiateMarketplaceVault = (
   wallet: string,
@@ -257,21 +238,6 @@ const storeWASM = async (
     throw new Error("Failed to parse code_id");
   }
   return +codeId;
-};
-
-const injectRPCPort = (rpcEndpoint: string) => {
-  const u = new URL(rpcEndpoint);
-  if (u.protocol === "https:" && u.port === "") {
-    u.protocol = "ftp:";
-    u.port = "443";
-    return u.toString().replace("ftp:", "https:");
-  }
-  if (u.protocol === "http:" && u.port === "") {
-    u.protocol = "ftp:";
-    u.port = "80";
-    return u.toString().replace("ftp:", "http:");
-  }
-  return rpcEndpoint;
 };
 
 main();

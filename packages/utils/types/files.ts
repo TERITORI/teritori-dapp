@@ -29,6 +29,7 @@ const ZodBaseFileData = z.object({
   audioMetadata: ZodAudioFileMetadata.optional(),
   videoMetadata: ZodVideoFileMetadata.optional(),
   isCoverImage: z.boolean().optional(),
+  isThumbnailImage: z.boolean().optional(),
   base64Image: z.string().optional(),
 });
 type BaseFileData = z.infer<typeof ZodBaseFileData>;

@@ -1,6 +1,6 @@
 ignores: [
   "buffer",
-  "ts-node",
+  "tsx",
   "ts-proto",
   "ts-unused-exports",
   "postinstall-postinstall",
@@ -25,6 +25,8 @@ ignores: [
   "electron",
   "rimraf",
   "assert",
+  "listr2",
+  "typescript",
 ]
 ignorePatterns: [
   "/cache", 

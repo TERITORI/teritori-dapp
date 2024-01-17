@@ -35,6 +35,11 @@ node_modules: package.json yarn.lock
 	yarn
 	touch $@
 
+.PHONY: go-mod-tidy
+go-mod-tidy:
+	go mod tidy
+	cd electron && go mod tidy
+
 .PHONY: generate
 generate: generate.protobuf generate.graphql generate.contracts-clients generate.go-networks networks.json
 
@@ -85,7 +90,7 @@ generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(
 
 .PHONY: generate.go-networks
 generate.go-networks: node_modules validate-networks
-	npx ts-node packages/scripts/generateGoNetworks.ts | gofmt > go/pkg/networks/networks.gen.go
+	npx tsx packages/scripts/generateGoNetworks.ts | gofmt > go/pkg/networks/networks.gen.go
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE): node_modules
@@ -268,16 +273,16 @@ publish.multisig-backend:
 
 .PHONY: validate-networks
 validate-networks: node_modules
-	npx ts-node packages/scripts/validateNetworks.ts
+	yarn validate-networks
 
 .PHONY: networks.json
 networks.json: node_modules validate-networks
-	npx ts-node packages/scripts/generateJSONNetworks.ts > $@
+	npx tsx packages/scripts/generateJSONNetworks.ts > $@
 
 .PHONY: unused-exports
 unused-exports: node_modules
 	## TODO unexclude all paths except packages/api;packages/contracts-clients;packages/evm-contracts-clients
-	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\.web|.electron|.d.ts" --ignoreTestFiles 
+	yarn unused-exports
 
 .PHONY: prepare-electron
 prepare-electron: node_modules

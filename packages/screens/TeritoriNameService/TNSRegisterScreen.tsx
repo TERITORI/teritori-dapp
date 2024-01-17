@@ -29,7 +29,7 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
   return (
     <GradientModalBase
       onClose={() => onClose()}
-      label="Find a name"
+      label="Find a Name"
       width={457}
       modalStatus={name && nameAvailable ? "success" : "danger"}
       hideMainSeparator
