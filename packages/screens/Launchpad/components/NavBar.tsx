@@ -9,7 +9,7 @@ import {
   secondaryColor,
 } from "../../../utils/style/colors";
 
-export interface NavDefinition {
+interface NavDefinition {
   name: string;
 }
 
