@@ -16,19 +16,11 @@ import {
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { layout } from "../../../utils/style/layout";
 
-type Props = {
-  category: PostCategory[];
-};
-const JungleScreen = ({ category }: Props) => {
+export const JungleFeedScreen = () => {
   const selectedWallet = useSelectedWallet();
 
   const req: Partial<PostsRequest> = {
-    filter: {
-      categories: category,
-      hashtags: [],
-      mentions: [],
-      user: "",
-    },
+    filter: undefined,
     limit: 10,
     offset: 1,
     queryUserId: selectedWallet?.userId,
@@ -107,5 +99,3 @@ const JungleScreen = ({ category }: Props) => {
     </View>
   );
 };
-
-export default JungleScreen;
