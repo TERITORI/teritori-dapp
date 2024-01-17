@@ -21,7 +21,6 @@ export const RevealSeedPhraseScreen: ScreenFC<"MiniRevealSeedPhrase"> = ({
     <BlurScreenContainer
       title="Reveal Seed Phrase"
       onGoBack={gotoSecurityAndPrivacy}
-      reverseView={false}
       background="transparent"
     >
       {

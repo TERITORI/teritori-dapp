@@ -31,7 +31,6 @@ export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
     <BlurScreenContainer
       title="Change Password"
       onGoBack={gotoSecurityAndPrivacy}
-      reverseView={false}
       background="transparent"
     >
       <View

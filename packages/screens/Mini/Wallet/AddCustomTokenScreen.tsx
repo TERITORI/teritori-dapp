@@ -90,7 +90,6 @@ const AddCustomTokenScreen: ScreenFC<"MiniAddCustomToken"> = ({
   return (
     <BlurScreenContainer
       title="Add Custom Token"
-      reverseView={false}
       onGoBack={gotoManageTokens}
       background="transparent"
     >

@@ -9,14 +9,14 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SvgProps } from "react-native-svg";
 
-import ChevronLeftIconSvg from "../../../../../assets/icons/chevron-left.svg";
-import ChevronRightIconSvg from "../../../../../assets/icons/chevron-right-gray.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { SpacerRow } from "../../../../components/spacer";
-import { neutralA3 } from "../../../../utils/style/colors";
-import { fontSemibold13, fontSemibold22 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
+import ChevronLeftIconSvg from "../../../../assets/icons/chevron-left.svg";
+import ChevronRightIconSvg from "../../../../assets/icons/chevron-right-gray.svg";
+import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
+import { SpacerRow } from "../../../components/spacer";
+import { neutralA3 } from "../../../utils/style/colors";
+import { fontSemibold13, fontSemibold22 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 
 type IconOptionsType = {
   icon?: React.FC<SvgProps> | string;

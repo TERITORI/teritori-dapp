@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { AddressBookType } from "./AddressBookScreen";
-import CircularImgOrIcon from "./components/CircularImgOrIcon";
-import MiniTextInput from "./components/MiniTextInput";
 import addSVG from "../../../../assets/icons/add-circle-outline.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import { SVG } from "../../../components/SVG";
@@ -13,7 +11,9 @@ import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
 import MiniHeader from "../Notifications/components/MiniHeader";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import { CustomButton } from "../components/CustomButton";
+import MiniTextInput from "../components/MiniTextInput";
 
 const addresses: AddressBookType[] = [
   { id: "asdfdasd", label: "Defi1", address: "fadfd..sdf" },

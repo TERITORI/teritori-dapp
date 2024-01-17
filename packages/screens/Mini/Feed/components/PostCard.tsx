@@ -14,7 +14,7 @@ import {
   fontSemibold14,
   fontSemibold16,
 } from "../../../../utils/style/fonts";
-import CircularImgOrIcon from "../../AddressBook/components/CircularImgOrIcon";
+import CircularImgOrIcon from "../../components/CircularImgOrIcon";
 
 type UserType = {
   img: string;

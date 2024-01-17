@@ -9,7 +9,7 @@ import {
   neutralA3,
   secondaryColor,
 } from "../../../utils/style/colors";
-import ListView from "../AddressBook/components/ListView";
+import ListView from "./ListView";
 
 type MenuItemProps = {
   icon?: string | FC<SvgProps>;

@@ -12,10 +12,10 @@ import { RootStackParamList } from "../../../utils/navigation";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontNormal15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import ListView from "../AddressBook/components/ListView";
 import Checkbox from "../Notifications/components/Checkbox";
 import MiniHeader from "../Notifications/components/MiniHeader";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import ListView from "../components/ListView";
 
 type ChangeNetworkScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ChangeNetwork">;

@@ -13,10 +13,10 @@ import {
   fontMedium16,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import CircularImgOrIcon from "../AddressBook/components/CircularImgOrIcon";
-import MiniTextInput from "../AddressBook/components/MiniTextInput";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import { CustomButton } from "../components/CustomButton";
+import MiniTextInput from "../components/MiniTextInput";
 import MiniTextInputWithDropdown from "../components/MiniTextInputWithDropdown";
 
 const tokenOptions = [

@@ -13,9 +13,9 @@ import { RootStackParamList } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontBold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import ListView from "../AddressBook/components/ListView";
 import MiniHeader from "../Notifications/components/MiniHeader";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import ListView from "../components/ListView";
 
 type AboutScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "About">;
@@ -86,10 +86,12 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
         <TertiaryBadge label="v1.25" textColor={neutral77} />
         <SpacerColumn size={6} />
       </View>
+
       <View
         style={{
           justifyContent: "space-between",
           backgroundColor: "rgba(0,0,0,0.8)",
+          padding: layout.spacing_x2,
           flex: 1,
         }}
       >

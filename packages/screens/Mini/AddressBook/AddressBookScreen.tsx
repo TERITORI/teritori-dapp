@@ -1,6 +1,5 @@
 import { FlatList, View } from "react-native";
 
-import ListView from "./components/ListView";
 import AddNewSvg from "../../../../assets/icons/add-circle-filled.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -14,6 +13,7 @@ import { fontNormal15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import MiniHeader from "../Notifications/components/MiniHeader";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import ListView from "../components/ListView";
 
 export type AddressBookType = {
   id: string;
