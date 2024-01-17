@@ -110,6 +110,7 @@ export const ProjectInfo: React.FC<{
             {projectStatus && (
               <ProjectStatusTag status={projectStatus} size="XS" />
             )}
+
             <SpacerRow size={2} />
 
             {shortDescData?.tags.split(",").map((tag, idx) => {

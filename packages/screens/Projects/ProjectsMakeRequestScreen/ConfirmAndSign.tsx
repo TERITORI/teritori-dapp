@@ -75,7 +75,7 @@ export const ConfirmAndSign: React.FC = () => {
     }
 
     setIsUploadingImage(false);
-    return `${PINATA_GATEWAY}/${remoteFiles[0].url}`;
+    return `${PINATA_GATEWAY}/${remoteFiles[0].url.replace("ipfs://", "")}`;
   };
 
   const confirmAndSign = async () => {

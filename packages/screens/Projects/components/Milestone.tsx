@@ -13,6 +13,8 @@ export const Tag: React.FC<{
   borderColor?: string;
   containerStyle?: ViewStyle;
 }> = ({ text, bgColor, color, borderColor, size, containerStyle }) => {
+  if (text === "") return null;
+
   return (
     <SimpleButton
       bgColor={bgColor || neutral00}
