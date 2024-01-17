@@ -2,14 +2,14 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
+import { TextInputLaunchpadNewWhitelistValues } from "./inputs/TextInputLaunchpadNewWhitelistValues";
 import { BrandText } from "../../../components/BrandText";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SelectFileUploader } from "../../../components/selectFileUploader";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
 import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "../../../utils/social-feed";
-import { neutral00, neutral55, neutral77 } from "../../../utils/style/colors";
+import { neutral55, neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
@@ -39,8 +39,7 @@ export const NewWhitelist: React.FC = () => {
         Information about your minting settings
       </BrandText>
       <SpacerColumn size={2} />
-      <TextInputCustom<NewWhitelistDetailsFormValues>
-        rules={{ required: true }}
+      <TextInputLaunchpadNewWhitelistValues
         label="Unit Price "
         placeHolder="0"
         name="unitPrice"
@@ -52,15 +51,9 @@ export const NewWhitelist: React.FC = () => {
           </View>
         }
         control={control}
-        variant="labelOutside"
-        containerStyle={{ marginBottom: layout.spacing_x3 }}
-        boxMainContainerStyle={{
-          backgroundColor: neutral00,
-          borderRadius: 12,
-        }}
       />
-      <TextInputCustom<NewWhitelistDetailsFormValues>
-        rules={{ required: true }}
+
+      <TextInputLaunchpadNewWhitelistValues
         label="Member Limit "
         placeHolder="0"
         name="memberLimit"
@@ -72,15 +65,9 @@ export const NewWhitelist: React.FC = () => {
           </View>
         }
         control={control}
-        variant="labelOutside"
-        containerStyle={{ marginBottom: layout.spacing_x3 }}
-        boxMainContainerStyle={{
-          backgroundColor: neutral00,
-          borderRadius: 12,
-        }}
       />
-      <TextInputCustom<NewWhitelistDetailsFormValues>
-        rules={{ required: true }}
+
+      <TextInputLaunchpadNewWhitelistValues
         label="Per Address Limit"
         placeHolder="0"
         name="perAddresaLimit"
@@ -92,15 +79,9 @@ export const NewWhitelist: React.FC = () => {
           </View>
         }
         control={control}
-        variant="labelOutside"
-        containerStyle={{ marginBottom: layout.spacing_x3 }}
-        boxMainContainerStyle={{
-          backgroundColor: neutral00,
-          borderRadius: 12,
-        }}
       />
-      <TextInputCustom<NewWhitelistDetailsFormValues>
-        rules={{ required: true }}
+
+      <TextInputLaunchpadNewWhitelistValues
         label="Start Time "
         placeHolder="0"
         name="startTime"
@@ -112,15 +93,9 @@ export const NewWhitelist: React.FC = () => {
           </View>
         }
         control={control}
-        variant="labelOutside"
-        containerStyle={{ marginBottom: layout.spacing_x3 }}
-        boxMainContainerStyle={{
-          backgroundColor: neutral00,
-          borderRadius: 12,
-        }}
       />
-      <TextInputCustom<NewWhitelistDetailsFormValues>
-        rules={{ required: true }}
+
+      <TextInputLaunchpadNewWhitelistValues
         label="End Time "
         placeHolder="0"
         name="endTime"
@@ -132,12 +107,6 @@ export const NewWhitelist: React.FC = () => {
           </View>
         }
         control={control}
-        variant="labelOutside"
-        containerStyle={{ marginBottom: layout.spacing_x3 }}
-        boxMainContainerStyle={{
-          backgroundColor: neutral00,
-          borderRadius: 12,
-        }}
       />
 
       <Separator />
