@@ -26,7 +26,6 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
 
   return (
     <BlurScreenContainer
-      background="transparent"
       customHeader={
         <View
           style={{

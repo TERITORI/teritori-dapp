@@ -38,17 +38,11 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation }) => {
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
 
-  const onClose = () =>
-    navigation.canGoBack()
-      ? navigation.replace("MiniSelectToken", { navigateTo: "MiniSendTori" })
-      : navigation.replace("MiniTabs");
+  const goBackTo = () =>
+    navigation.replace("MiniSelectToken", { navigateTo: "MiniSendingTori" });
 
   return (
-    <BlurScreenContainer
-      title="Send TORI"
-      background="transparent"
-      onGoBack={onClose}
-    >
+    <BlurScreenContainer title="Send TORI" onGoBack={goBackTo}>
       <SpacerColumn size={2} />
       <View
         style={{

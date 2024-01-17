@@ -124,7 +124,7 @@ export const NewConversationScreen: ScreenFC<"MiniNewConversation"> = ({
   const [search, setSearch] = useState("");
 
   return (
-    <BlurScreenContainer title="New conversation" background="transparent">
+    <BlurScreenContainer title="New conversation">
       <View
         style={{
           paddingHorizontal: layout.spacing_x2,

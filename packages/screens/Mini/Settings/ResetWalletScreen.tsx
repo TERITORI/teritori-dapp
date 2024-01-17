@@ -23,11 +23,7 @@ export const ResetWalletScreen: ScreenFC<"MiniResetWallet"> = ({
   };
 
   return (
-    <BlurScreenContainer
-      title="Reset Wallet"
-      onGoBack={gotoSecurityAndPrivacy}
-      background="transparent"
-    >
+    <BlurScreenContainer title="Reset Wallet" onGoBack={gotoSecurityAndPrivacy}>
       <View
         style={{
           justifyContent: "space-between",

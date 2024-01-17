@@ -1,44 +1,24 @@
 import { View } from "react-native";
 
 import chevronDownSVG from "../../../../assets/icons/chevron-down-white.svg";
-import closeSVG from "../../../../assets/icons/close.svg";
 import teritoriCircleSVG from "../../../../assets/icons/tori-circle.svg";
 import { Dropdown } from "../../../components/Dropdown";
 import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import { secondaryColor } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import MiniHeader from "../Notifications/components/MiniHeader";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { CustomButton } from "../components/CustomButton";
 import RowDisplay from "../components/RowDisplay";
 
 const SendingToriScreen: ScreenFC<"MiniSendingTori"> = ({ navigation }) => {
-  const onClose = () =>
-    navigation.canGoBack()
-      ? navigation.goBack()
-      : navigation.replace("MiniTabs");
+  const goBackTo = () =>
+    navigation.replace("MiniSendTori", { back: "MiniSendingTori" });
 
   return (
-    <BlurScreenContainer
-      background="transparent"
-      customHeader={
-        <MiniHeader
-          navigation={navigation}
-          backEnabled
-          title="Sending TORI"
-          headerStyle={{ backgroundColor: "transparent" }}
-          right={
-            <CustomPressable onPress={onClose}>
-              <SVG source={closeSVG} width={24} height={24} />
-            </CustomPressable>
-          }
-        />
-      }
-    >
+    <BlurScreenContainer title="Sending TORI" onGoBack={goBackTo}>
       <View
         style={{
           flex: 1,

@@ -121,7 +121,7 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
   const { height: windowHeight } = useWindowDimensions();
 
   return (
-    <BlurScreenContainer title="New group " background="transparent">
+    <BlurScreenContainer title="New group">
       <View
         style={{
           height: windowHeight - 150,

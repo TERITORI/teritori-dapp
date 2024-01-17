@@ -37,11 +37,7 @@ export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
   };
 
   return (
-    <BlurScreenContainer
-      title="Deposit TORI"
-      background="transparent"
-      onGoBack={onGotoSelectToken}
-    >
+    <BlurScreenContainer title="Deposit TORI" onGoBack={onGotoSelectToken}>
       <View
         style={{
           paddingHorizontal: layout.spacing_x2,

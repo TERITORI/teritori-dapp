@@ -2,10 +2,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { FlatList, View } from "react-native";
 
 import AddNewSvg from "../../../../assets/icons/add-circle-filled.svg";
-import closeSVG from "../../../../assets/icons/close.svg";
 import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
 import { RootStackParamList } from "../../../utils/navigation";
@@ -13,7 +10,6 @@ import { neutralA3 } from "../../../utils/style/colors";
 import { fontNormal15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import Checkbox from "../Notifications/components/Checkbox";
-import MiniHeader from "../Notifications/components/MiniHeader";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import ListView from "../components/ListView";
 
@@ -30,10 +26,7 @@ export type ChangeNetworkType = {
 export default function ChangeNetworkScreen({
   navigation,
 }: ChangeNetworkScreenProps) {
-  const onClose = () =>
-    navigation.canGoBack()
-      ? navigation.goBack()
-      : navigation.replace("MiniTabs");
+  const goBackTo = () => navigation.replace("MiniSettings");
 
   const addresses: ChangeNetworkType[] = [
     {
@@ -50,20 +43,7 @@ export default function ChangeNetworkScreen({
   ];
 
   return (
-    <BlurScreenContainer
-      customHeader={
-        <MiniHeader
-          navigation={navigation}
-          backEnabled
-          title="Change Network"
-          right={
-            <CustomPressable onPress={onClose}>
-              <SVG source={closeSVG} width={24} height={24} />
-            </CustomPressable>
-          }
-        />
-      }
-    >
+    <BlurScreenContainer title="Change Network" onGoBack={goBackTo}>
       {!addresses.length ? (
         <BrandText
           style={[

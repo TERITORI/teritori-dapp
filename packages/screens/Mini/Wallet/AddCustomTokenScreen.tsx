@@ -88,11 +88,7 @@ const AddCustomTokenScreen: ScreenFC<"MiniAddCustomToken"> = ({
   const onAddToken = () => {};
 
   return (
-    <BlurScreenContainer
-      title="Add Custom Token"
-      onGoBack={gotoManageTokens}
-      background="transparent"
-    >
+    <BlurScreenContainer title="Add Custom Token" onGoBack={gotoManageTokens}>
       <View
         style={{
           paddingHorizontal: layout.spacing_x2,

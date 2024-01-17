@@ -24,7 +24,7 @@ export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
   const toggleEnableEditingDApps = () => setEnableEditingDApps((prev) => !prev);
 
   return (
-    <BlurScreenContainer title="dApp Store" background="transparent">
+    <BlurScreenContainer title="dApp Store">
       <ScrollView>
         <View
           style={{
