@@ -14,9 +14,9 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import CircularImgOrIcon from "../AddressBook/components/CircularImgOrIcon";
-import MiniButton from "../AddressBook/components/MiniButton";
 import MiniTextInput from "../AddressBook/components/MiniTextInput";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import { CustomButton } from "../components/CustomButton";
 import MiniTextInputWithDropdown from "../components/MiniTextInputWithDropdown";
 
 const tokenOptions = [
@@ -46,10 +46,10 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation }) => {
   return (
     <BlurScreenContainer
       title="Send TORI"
-      reverseView={false}
       background="transparent"
       onGoBack={onClose}
     >
+      <SpacerColumn size={2} />
       <View
         style={{
           width: "100%",
@@ -57,17 +57,17 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation }) => {
           justifyContent: "center",
         }}
       >
-        <SpacerColumn size={10} />
         <CircularImgOrIcon
           style={{ alignItems: "center", justifyContent: "center" }}
           icon={teritoriSVG}
         />
       </View>
+      <SpacerColumn size={2} />
       <View
         style={{
           justifyContent: "space-between",
-          paddingHorizontal: layout.spacing_x1_5,
-          height: "70%",
+          paddingHorizontal: layout.spacing_x2,
+          flex: 1,
         }}
       >
         <View>
@@ -114,7 +114,8 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation }) => {
             Balance: {BALANCE} TORI
           </BrandText>
         </View>
-        <MiniButton
+
+        <CustomButton
           title="Next"
           onPress={() =>
             navigation.replace("MiniSendingTori", { back: "MiniSendTori" })

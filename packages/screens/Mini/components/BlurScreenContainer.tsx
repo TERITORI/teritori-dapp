@@ -10,13 +10,12 @@ import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { BackButton } from "../../../components/navigation/components/BackButton";
 import { useAppNavigation } from "../../../utils/navigation";
 import { fontSemibold18 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { MOBILE_HEADER_HEIGHT, layout } from "../../../utils/style/layout";
 
 type Props = {
   children: ReactNode;
   title?: string;
   onGoBack?: () => void;
-  reverseView?: boolean;
   background?: string | "transparent";
   customHeader?: ReactNode;
 };
@@ -25,8 +24,7 @@ export const BlurScreenContainer = ({
   children,
   title,
   onGoBack,
-  reverseView = true,
-  background = "#000",
+  background = "transparent",
   customHeader,
 }: Props) => {
   const { width: windowWidth } = useWindowDimensions();
@@ -88,7 +86,16 @@ export const BlurScreenContainer = ({
         }}
       >
         {customHeader ? (
-          customHeader
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              height: MOBILE_HEADER_HEIGHT,
+            }}
+          >
+            {customHeader}
+          </View>
         ) : (
           <View
             style={{
@@ -96,6 +103,7 @@ export const BlurScreenContainer = ({
               justifyContent: "space-between",
               alignItems: "center",
               paddingHorizontal: layout.spacing_x2,
+              height: MOBILE_HEADER_HEIGHT,
             }}
           >
             {onGoBack && (
@@ -114,17 +122,10 @@ export const BlurScreenContainer = ({
         <View
           style={{
             flex: 1,
-            justifyContent: reverseView ? "flex-end" : "flex-start",
+            backgroundColor: background,
           }}
         >
-          <View
-            style={{
-              width: windowWidth,
-              backgroundColor: background,
-            }}
-          >
-            {children}
-          </View>
+          {children}
         </View>
       </View>
     </SafeAreaView>

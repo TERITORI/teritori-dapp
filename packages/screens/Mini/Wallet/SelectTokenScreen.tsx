@@ -77,7 +77,7 @@ const SelectTokenScreen: ScreenFC<"MiniSelectToken"> = ({
                 })
               }
               style={{
-                paddingHorizontal: layout.spacing_x1_5,
+                paddingHorizontal: layout.spacing_x2,
               }}
               options={{
                 leftIconEnabled: true,
