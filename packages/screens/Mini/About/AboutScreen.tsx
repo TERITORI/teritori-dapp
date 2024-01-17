@@ -57,7 +57,6 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
   return (
     <BlurScreenContainer
       background="transparent"
-      reverseView={false}
       customHeader={
         <MiniHeader
           headerStyle={{ backgroundColor: "transparent" }}
@@ -79,7 +78,7 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
           justifyContent: "center",
         }}
       >
-        <SpacerColumn size={12} />
+        <SpacerColumn size={3} />
         <SVG source={teritoriSVG} fontSize={64} />
         <SpacerColumn size={1} />
         <BrandText style={fontBold16}>TERITORI</BrandText>
@@ -91,7 +90,7 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
         style={{
           justifyContent: "space-between",
           backgroundColor: "rgba(0,0,0,0.8)",
-          height: "70%",
+          flex: 1,
         }}
       >
         <FlatList
@@ -114,7 +113,6 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
             />
           )}
         />
-        <SpacerColumn size={6} />
       </View>
     </BlurScreenContainer>
   );
