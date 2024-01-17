@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { View } from "react-native";
 
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
@@ -25,7 +25,6 @@ export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
   };
 
   const onSaveNewPassword = () => {};
-  const { height: windowHeight } = useWindowDimensions();
 
   return (
     <BlurScreenContainer
@@ -35,44 +34,36 @@ export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
     >
       <View
         style={{
-          height: windowHeight - 180,
-          marginTop: layout.spacing_x4,
           paddingHorizontal: layout.spacing_x2,
-          position: "relative",
+          justifyContent: "space-between",
+          flex: 1,
         }}
       >
-        <Input
-          placeholder="Current Pasword"
-          value={formData.password}
-          onChangeText={(text) => handleTextChange(text, "password")}
-          secureTextEntry
-        />
-        <SpacerColumn size={2} />
-        <Input
-          placeholder="New Pasword"
-          value={formData.newPassword}
-          onChangeText={(text) => handleTextChange(text, "newPassword")}
-          secureTextEntry
-        />
-        <SpacerColumn size={2} />
-        <Input
-          placeholder="Confirm New Pasword"
-          value={formData.confirmPassword}
-          onChangeText={(text) => handleTextChange(text, "confirmPassword")}
-          secureTextEntry
-        />
+        <View>
+          <SpacerColumn size={2} />
+          <Input
+            placeholder="Current Pasword"
+            value={formData.password}
+            onChangeText={(text) => handleTextChange(text, "password")}
+            secureTextEntry
+          />
+          <SpacerColumn size={2} />
+          <Input
+            placeholder="New Pasword"
+            value={formData.newPassword}
+            onChangeText={(text) => handleTextChange(text, "newPassword")}
+            secureTextEntry
+          />
+          <SpacerColumn size={2} />
+          <Input
+            placeholder="Confirm New Pasword"
+            value={formData.confirmPassword}
+            onChangeText={(text) => handleTextChange(text, "confirmPassword")}
+            secureTextEntry
+          />
+        </View>
 
-        <CustomButton
-          onPress={onSaveNewPassword}
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: layout.spacing_x2,
-            right: layout.spacing_x2,
-            zIndex: 99,
-          }}
-          title="Save"
-        />
+        <CustomButton onPress={onSaveNewPassword} title="Save" />
       </View>
     </BlurScreenContainer>
   );
