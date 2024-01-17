@@ -28,6 +28,7 @@ import { MultisigWalletDashboardScreen } from "../../screens/Multisig/MultisigWa
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
+import { ProjectsCompleteMilestoneScreen } from "../../screens/Projects/CompleteMilestoneScreen";
 import { ProjectsDetailScreen } from "../../screens/Projects/ProjectsDetailScreen";
 import { ProjectsMakeRequestScreen } from "../../screens/Projects/ProjectsMakeRequestScreen";
 import { ProjectsManagerScreen } from "../../screens/Projects/ProjectsManagerScreen";
@@ -50,7 +51,6 @@ import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPub
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
-import { ProjectsCompleteMilestoneScreen } from "../../screens/Projects/CompleteMilestoneScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const screenTitle = (title: string) => "Teritori - " + title;

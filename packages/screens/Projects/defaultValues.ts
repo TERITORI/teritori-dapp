@@ -28,7 +28,7 @@ export const fakeShortDesc: ShortDescData = {
   duration: 0,
   funder: "",
   contractor: "",
-  paymentAddr: "gno.land/r/demo/foo20",
+  paymentAddr: "gno.land/r/demo/tori20",
   coverImg: "https://thisis.img",
   tags: "tag1,tag2,tag3",
 };
@@ -40,4 +40,3 @@ export const fakeTeamAndLink: TeamAndLinkData = {
   githubLink: "https://github.com",
   teamDesc: "This is long team description",
 };
-

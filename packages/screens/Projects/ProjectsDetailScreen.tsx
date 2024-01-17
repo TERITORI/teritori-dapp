@@ -1,3 +1,4 @@
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { Link, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
@@ -43,7 +44,6 @@ import {
   fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 
 const STATUSES: SelectInputItem[] = [
   { label: "Open", value: MsStatus.MS_OPEN.toString() },

@@ -3,7 +3,8 @@ import React from "react";
 import { SimpleButton } from "../../../components/buttons/SimpleButton";
 import {
   neutral00,
-  neutral22, primaryColor,
+  neutral22,
+  primaryColor,
   redDefault,
   secondaryColor,
 } from "../../../utils/style/colors";

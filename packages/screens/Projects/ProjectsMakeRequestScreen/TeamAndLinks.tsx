@@ -15,8 +15,8 @@ import {
   fontSemibold20,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 import { emptyTeamAndLink } from "../defaultValues";
+import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 
 const teamAndLinkSchema = object({
   websiteLink: string().required().url(),

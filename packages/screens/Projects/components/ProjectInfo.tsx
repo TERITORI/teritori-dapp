@@ -25,7 +25,8 @@ import {
   neutral33,
   neutral00,
   primaryColor,
-  secondaryColor, yellowDefault,
+  secondaryColor,
+  yellowDefault,
 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -160,7 +161,6 @@ export const ProjectInfo: React.FC<{
               borderWidth: 0,
               paddingVertical: 12,
               paddingHorizontal: 16,
-
             }}
           >
             <FlexRow style={{ justifyContent: "center", width: "100%" }}>

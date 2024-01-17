@@ -26,8 +26,8 @@ import {
   fontSemibold14,
   fontSemibold20,
 } from "../../../utils/style/fonts";
-import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 import { emptyShortDesc } from "../defaultValues";
+import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 
 const shortDescSchema = object({
   name: string().required().min(3),
@@ -207,7 +207,7 @@ export const ShortPresentation: React.FC = () => {
                 variant="labelOutside"
                 onChangeText={handleChange("paymentAddr")}
                 value={values.paymentAddr}
-                defaultValue="gno.land/r/demo/foo20"
+                defaultValue="gno.land/r/demo/tori20"
                 error={errors.paymentAddr}
               />
               <BrandText

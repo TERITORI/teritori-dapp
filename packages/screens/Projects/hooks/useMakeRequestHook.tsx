@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 import { useAppNavigation } from "../../../utils/navigation";
+import { emptyShortDesc, emptyTeamAndLink } from "../defaultValues";
 import {
   ProjectMilestone,
   MsPriority,
@@ -8,7 +9,6 @@ import {
   ShortDescData,
   TeamAndLinkData,
 } from "../types";
-import { emptyShortDesc, emptyTeamAndLink } from "../defaultValues";
 
 type MakeRequestState = {
   stepIndice: number;

@@ -7,7 +7,7 @@ import { HeaderBackButton } from "./components/HeaderBackButton";
 import { MilestoneStatusTag } from "./components/MilestoneStatusTag";
 import { useProject } from "./hooks/useProjects";
 import { useUtils } from "./hooks/useUtils";
-import { MsStatus, Project, ProjectMilestone } from "./types";
+import { Project, ProjectMilestone } from "./types";
 import githubSVG from "../../../assets/icons/github.svg";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";

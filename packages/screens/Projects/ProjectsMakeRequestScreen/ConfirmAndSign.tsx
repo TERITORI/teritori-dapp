@@ -14,10 +14,7 @@ import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId, mustGetGnoNetwork } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
-import {
-  adenaVMCall,
-  extractGnoString,
-} from "../../../utils/gno";
+import { adenaVMCall, extractGnoString } from "../../../utils/gno";
 import { generateIpfsKey, uploadFilesToPinata } from "../../../utils/ipfs";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
