@@ -6,7 +6,7 @@ import { HeaderMobile } from "./HeaderMobile";
 import { AppType } from "../../../Root";
 import { useSearchBar } from "../../context/SearchBarProvider";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
-import { HeaderMini } from "../../screens/Mini/Chat/components/HeaderMini";
+import DefaultAppBar from "../../screens/Mini/components/AppBar/DefaultAppBar";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
 import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
@@ -91,7 +91,7 @@ export const ScreenContainerMobile: FC<{
           visible={isSearchModalMobileOpen}
         />
         {appType === "mini" ? (
-          headerMini ?? <HeaderMini title={mobileTitle || ""} />
+          headerMini ?? <DefaultAppBar title={mobileTitle || ""} />
         ) : (
           <HeaderMobile
             onBackPress={onBackPress}

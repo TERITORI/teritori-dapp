@@ -1,20 +1,44 @@
-import React from "react";
-import { Image, Pressable, View } from "react-native";
+import { View, Image, Pressable } from "react-native";
 
-import { AddChatDropdownMenu } from "./AddChatDropdownMenu";
+import ChatGraySVG from "../../../../../assets/icons/chat-gray.svg";
+import FriendGraySVG from "../../../../../assets/icons/friend-gray.svg";
 import NotificationSVG from "../../../../../assets/icons/notification-new.svg";
+import OrganizationGraySVG from "../../../../../assets/icons/organization-gray.svg";
+import GroupGraySVG from "../../../../../assets/icons/users-group-gray.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { useAppNavigation } from "../../../../utils/navigation";
 import { neutral00, secondaryColor } from "../../../../utils/style/colors";
 import { fontSemibold18 } from "../../../../utils/style/fonts";
-import { layout, MOBILE_HEADER_HEIGHT } from "../../../../utils/style/layout";
+import { MOBILE_HEADER_HEIGHT, layout } from "../../../../utils/style/layout";
+import { DropdownWithListItem } from "../Dropdown/DropdownWithListItem";
 
-interface HeaderMiniProps {
+type DefaultAppBarProps = {
   title: string;
-}
+};
 
-export const HeaderMini = ({ title }: HeaderMiniProps) => {
+const dropdownItems = [
+  {
+    icon: ChatGraySVG,
+    name: "Create new conversation",
+    onPress: (navigation: any) => navigation.navigate("MiniNewConversation"),
+  },
+  {
+    icon: GroupGraySVG,
+    name: "Create new group",
+    onPress: (navigation: any) => navigation.navigate("MiniNewGroup"),
+  },
+  {
+    icon: FriendGraySVG,
+    name: "Add a friend",
+  },
+  {
+    icon: OrganizationGraySVG,
+    name: "Create an organization",
+  },
+];
+
+export default function DefaultAppBar({ title }: DefaultAppBarProps) {
   const navigation = useAppNavigation();
 
   const onProfileImagePress = () => navigation.navigate("MiniProfile");
@@ -66,8 +90,8 @@ export const HeaderMini = ({ title }: HeaderMiniProps) => {
         >
           <NotificationSVG />
         </Pressable>
-        <AddChatDropdownMenu />
+        <DropdownWithListItem items={dropdownItems} />
       </View>
     </View>
   );
-};
+}

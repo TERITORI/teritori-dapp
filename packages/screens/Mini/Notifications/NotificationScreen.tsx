@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 
 import NotificationList from "./NotificationList";
-import DropdownWithCheck from "./components/DropdownWithCheck";
+import DropdownWithCheck from "../components/Dropdown/DropdownWithCheck";
 import MiniHeader from "./components/MiniHeader";
 import { BrandText } from "../../../components/BrandText";
 import { ScreenContainer } from "../../../components/ScreenContainer";

@@ -8,7 +8,6 @@ import {
 import { SvgProps } from "react-native-svg";
 
 import { ChatList } from "./components/ChatList";
-import { HeaderMini } from "./components/HeaderMini";
 import { SearchChatList } from "./components/SearchChatList";
 import { dummyChat } from "./components/chatDummyData";
 import rightArrowSVG from "../../../../assets/icons/chevron-right-white.svg";
@@ -33,6 +32,7 @@ import {
   fontSemibold18,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import DefaultAppBar from "../components/AppBar/DefaultAppBar";
 
 const collectionScreenTabItems = {
   chats: {
@@ -172,7 +172,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
             position={{ left: 10, top: 0 }}
           />
         ) : (
-          <HeaderMini title="Chats" />
+          <DefaultAppBar title="Chat" />
         )
       }
     >
