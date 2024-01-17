@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, useWindowDimensions, View } from "react-native";
+import { FlatList, View } from "react-native";
 
 import doubleCheckSVG from "../../../../assets/icons/double-check.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -32,14 +32,11 @@ type Props = {
 };
 
 export const Conversations = ({ isTyping, conversations }: Props) => {
-  const { width: windowWidth } = useWindowDimensions();
-
   return (
     <View
       style={{
         flex: 1,
         paddingBottom: layout.spacing_x2,
-        width: windowWidth,
       }}
     >
       <FlatList

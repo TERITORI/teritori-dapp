@@ -20,6 +20,7 @@ type HeaderProps = {
   title?: string;
   right?: ReactNode;
   headerStyle?: StyleProp<ViewStyle>;
+  background?: string;
 };
 
 const CustomAppBar = ({
@@ -29,6 +30,7 @@ const CustomAppBar = ({
   right,
   title,
   headerStyle,
+  background,
 }: HeaderProps) => {
   const route = useRoute();
 
@@ -50,11 +52,10 @@ const CustomAppBar = ({
     <View
       style={[
         {
-          backgroundColor: neutral00,
+          backgroundColor: background ?? neutral00,
           flexDirection: "row",
           justifyContent: "space-between",
-          paddingVertical: layout.spacing_x1_5,
-          paddingHorizontal: layout.spacing_x1_5,
+          paddingHorizontal: layout.spacing_x2,
           height: MOBILE_HEADER_HEIGHT,
           maxHeight: MOBILE_HEADER_HEIGHT,
           width: "100%",

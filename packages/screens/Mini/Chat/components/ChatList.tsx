@@ -33,6 +33,7 @@ export const ChatList = ({ items }: ChatListProps) => {
     </View>
   );
 };
+
 type SingleChatListType = {
   name: string;
   lastActiveDateTime: string;
@@ -42,6 +43,7 @@ type SingleChatListType = {
   type?: "single" | "group";
   membersAvatar: string[];
 };
+
 const SingleFriendChatList = ({
   lastActiveDateTime,
   lastMessage,
@@ -60,7 +62,6 @@ const SingleFriendChatList = ({
     <CustomPressable
       onPress={handleListPress}
       style={{
-        marginHorizontal: layout.spacing_x2,
         flexDirection: "row",
         alignItems: "flex-start",
       }}

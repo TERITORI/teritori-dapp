@@ -97,7 +97,7 @@ export default function MiniTextInput({
                 width={iconSize ?? 22}
                 height={iconSize ?? 22}
               />
-              <SpacerRow size={2} />
+              <SpacerRow size={1} />
             </>
           )}
           <TextInput

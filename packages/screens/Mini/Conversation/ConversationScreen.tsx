@@ -1,11 +1,12 @@
 import React from "react";
-import { SafeAreaView } from "react-native";
+import { SafeAreaView, View } from "react-native";
 
+import { ChatHeader } from "./ChatHeader";
 import { ChatInput } from "./ChatInput";
 import { Conversations } from "./Conversations";
-import { Header } from "./Header";
-import { SpacerRow } from "../../../components/spacer";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
+import { layout } from "../../../utils/style/layout";
 
 const dummyMessage = [
   {
@@ -72,10 +73,13 @@ export const ConversationScreeen: ScreenFC<"Conversation"> = ({
         backgroundColor: "#000000",
       }}
     >
-      <Header navigation={navigation} />
-      <SpacerRow size={4} />
-      <Conversations conversations={[...dummyMessage]} isTyping />
-      <ChatInput />
+      <View style={{ paddingHorizontal: layout.spacing_x2, flex: 1 }}>
+        <ChatHeader navigation={navigation} />
+        <SpacerRow size={4} />
+        <Conversations conversations={[...dummyMessage]} isTyping />
+        <SpacerColumn size={1} />
+        <ChatInput />
+      </View>
     </SafeAreaView>
   );
 };
