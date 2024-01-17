@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { StyleProp, View, ViewStyle, useWindowDimensions } from "react-native";
 
-import { PostFooter } from "./PostFooter";
+import { PostActions } from "./PostActions";
 import { PostHeader } from "./PostHeader";
 import defaultThumbnailImage from "../../../../../assets/default-images/default-article-thumbnail.png";
 import { Post } from "../../../../api/feed/v1/feed";
@@ -82,22 +82,23 @@ export const MiniSocialArticle = ({ post, refetchFeed, style }: Props) => {
   const title = simplePostMetadata?.title;
 
   const authorMetadata = authorNSInfo.metadata;
+  const userName = authorMetadata?.tokenId
+    ? authorMetadata.tokenId
+    : tinyAddress(authorAddress, 19);
+  const name =
+    authorMetadata?.public_name ||
+    (!authorMetadata?.tokenId
+      ? DEFAULT_NAME
+      : authorMetadata.tokenId.split(".")[0]) ||
+    DEFAULT_NAME;
+
   return (
     <View>
       <PostHeader
         user={{
           img: authorMetadata.image,
-          name:
-            authorMetadata?.public_name ||
-            (!authorMetadata?.tokenId
-              ? DEFAULT_NAME
-              : authorMetadata.tokenId.split(".")[0]) ||
-            DEFAULT_NAME,
-          username: `${
-            authorMetadata?.tokenId
-              ? authorMetadata.tokenId
-              : tinyAddress(authorAddress, 19)
-          }`,
+          name,
+          username: userName,
           postedAt: post.createdAt,
         }}
       />
@@ -128,7 +129,7 @@ export const MiniSocialArticle = ({ post, refetchFeed, style }: Props) => {
         />
       )}
       <SpacerColumn size={1} />
-      <PostFooter comments={1} reaction={0} transfer={0} />
+      <PostActions comments={1} reaction={0} transfer={0} />
     </View>
   );
 };

@@ -15,7 +15,7 @@ type CardFooterProps = {
   transfer: number;
 };
 
-export function PostFooter({ comments, reaction, transfer }: CardFooterProps) {
+export function PostActions({ comments, reaction, transfer }: CardFooterProps) {
   return (
     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>

@@ -1,10 +1,11 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
 import { MiniSocialArticle } from "./components/MiniSocialArticle";
 import { MiniThread } from "./components/MiniThread";
 import { MiniVideo } from "./components/MiniVideo";
+import { Spinner } from "./components/Spinner";
 import { Post, PostsRequest } from "../../../api/feed/v1/feed";
 import { Separator } from "../../../components/separators/Separator";
 import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
@@ -15,16 +16,13 @@ import {
 } from "../../../hooks/feed/useFetchFeed";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { layout } from "../../../utils/style/layout";
-
-export const JungleFeedScreen = () => {
+type Props = {
+  req: Partial<PostsRequest>;
+};
+export const JungleFeedScreen = ({ req }: Props) => {
+  const [isRefreshing, setIsRefreshing] = useState(true);
   const selectedWallet = useSelectedWallet();
 
-  const req: Partial<PostsRequest> = {
-    filter: undefined,
-    limit: 10,
-    offset: 1,
-    queryUserId: selectedWallet?.userId,
-  };
   const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed(reqWithQueryUser);
@@ -45,30 +43,11 @@ export const JungleFeedScreen = () => {
           }}
         >
           {post.category === PostCategory.Article ? (
-            // <SocialArticleCard
-            //   post={post}
-            //   style={cardStyle}
-            //   refetchFeed={refetch}
-            // />
-            <MiniSocialArticle post={post} />
+            <MiniSocialArticle post={post} refetchFeed={refetch} />
           ) : post.category === PostCategory.Video ? (
-            <>
-              <MiniVideo post={post} refetchFeed={refetch} />
-              {/* <SocialVideoCard
-              post={post}
-              style={cardStyle}
-              refetchFeed={refetch}
-            /> */}
-            </>
+            <MiniVideo post={post} refetchFeed={refetch} />
           ) : (
-            <MiniThread post={post} refetchFeed={refetch} />
-            // <SocialThreadCard
-            //   post={post}
-            //   refetchFeed={refetch}
-            //   isPreview
-            //   isFlagged={isFlagged}
-            //   style={cardStyle}
-            // />
+            <MiniThread post={post} refetchFeed={refetch} isPreview />
           )}
           <Separator style={{ marginVertical: layout.spacing_x3 }} />
         </View>
@@ -77,16 +56,33 @@ export const JungleFeedScreen = () => {
     [refetch],
   );
   const onEndReached = () => {
+    setIsRefreshing(false);
     if (!isLoading && hasNextPage && !isFetching) {
       fetchNextPage();
     }
   };
 
+  const onRefreshing = () => {
+    setIsRefreshing(true);
+    refetch();
+  };
+
   return (
     <View style={{ flex: 1 }}>
-      <SpacerColumn size={2} />
+      {isFetching && isRefreshing && (
+        <>
+          <View
+            style={{
+              alignItems: "center",
+              marginVertical: layout.spacing_x1_5,
+            }}
+          >
+            <Spinner />
+          </View>
+          <SpacerColumn size={2} />
+        </>
+      )}
       <Animated.FlatList
-        scrollEnabled
         data={combinedPosts}
         renderItem={({ item: post }) => RenderItem(post)}
         ListHeaderComponentStyle={{
@@ -95,7 +91,16 @@ export const JungleFeedScreen = () => {
         keyExtractor={(post: Post, idx: number) => `${post.identifier}-${idx}`}
         onEndReachedThreshold={4}
         onEndReached={onEndReached}
+        refreshing={isFetching}
+        onRefresh={onRefreshing}
       />
+      {isFetching && !isRefreshing && (
+        <View
+          style={{ alignItems: "center", marginVertical: layout.spacing_x1_5 }}
+        >
+          <Spinner />
+        </View>
+      )}
     </View>
   );
 };

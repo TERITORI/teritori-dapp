@@ -2,7 +2,7 @@ import { ResizeMode } from "expo-av";
 import React, { useEffect, useState } from "react";
 import { StyleProp, View, ViewStyle, useWindowDimensions } from "react-native";
 
-import { PostFooter } from "./PostFooter";
+import { PostActions } from "./PostActions";
 import { PostHeader } from "./PostHeader";
 import { Post } from "../../../../api/feed/v1/feed";
 import { BrandText } from "../../../../components/BrandText";
@@ -28,6 +28,7 @@ type Props = {
   post: Post;
   refetchFeed?: () => Promise<any>;
   style?: StyleProp<ViewStyle>;
+  isFlagged?: boolean;
 };
 export const DEFAULT_NAME = "Anon";
 
@@ -57,17 +58,19 @@ export const MiniVideo = ({ post, refetchFeed, style }: Props) => {
     ? authorMetadata.tokenId
     : tinyAddress(authorAddress, 19);
 
+  const name =
+    authorMetadata?.public_name ||
+    (!authorMetadata?.tokenId
+      ? DEFAULT_NAME
+      : authorMetadata.tokenId.split(".")[0]) ||
+    DEFAULT_NAME;
+
   return (
     <View>
       <PostHeader
         user={{
           img: authorMetadata.image,
-          name:
-            authorMetadata?.public_name ||
-            (!authorMetadata?.tokenId
-              ? DEFAULT_NAME
-              : authorMetadata.tokenId.split(".")[0]) ||
-            DEFAULT_NAME,
+          name,
           username,
           postedAt: post.createdAt,
         }}
@@ -111,7 +114,7 @@ export const MiniVideo = ({ post, refetchFeed, style }: Props) => {
       )}
 
       <SpacerColumn size={1.5} />
-      <PostFooter comments={1} reaction={0} transfer={0} />
+      <PostActions comments={1} reaction={0} transfer={0} />
     </View>
   );
 };
