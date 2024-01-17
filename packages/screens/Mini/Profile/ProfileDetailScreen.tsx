@@ -61,7 +61,7 @@ export default function ProfileDetailScreen({
           justifyContent: "center",
         }}
       >
-        <SpacerColumn size={9} />
+        <SpacerColumn size={1} />
         <CircularImgOrIcon
           enableFullIcon
           style={{ alignItems: "center", justifyContent: "center" }}
@@ -82,7 +82,7 @@ export default function ProfileDetailScreen({
           justifyContent: "space-between",
           backgroundColor: "rgba(0,0,0,0.8)",
           height: "70%",
-          paddingHorizontal: layout.spacing_x1_5,
+          paddingHorizontal: layout.spacing_x2,
         }}
       >
         <View>

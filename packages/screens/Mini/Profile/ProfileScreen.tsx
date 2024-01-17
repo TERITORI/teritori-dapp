@@ -30,6 +30,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
       customHeader={
         <View
           style={{
+            width: "100%",
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
@@ -59,6 +60,8 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
       <View
         style={{
           paddingHorizontal: layout.spacing_x2,
+          justifyContent: "flex-end",
+          flex: 1,
         }}
       >
         <View style={{ zIndex: 300 }}>
