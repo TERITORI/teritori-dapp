@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ScrollView, useWindowDimensions, View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 import { DAppStoreMenuItem } from "./component/DAppStoreMenuItems";
 import { DAppsList } from "./component/DAppsList";
@@ -14,24 +14,26 @@ import { Separator } from "../../../components/separators/Separator";
 import { ScreenFC } from "../../../utils/navigation";
 import { blueDefault } from "../../../utils/style/colors";
 import { fontSemibold15 } from "../../../utils/style/fonts";
-import { layout, MOBILE_HEADER_HEIGHT } from "../../../utils/style/layout";
+import { layout } from "../../../utils/style/layout";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
   const [enableEditingDApps, setEnableEditingDApps] = useState(false);
-  const { height: windowHeight } = useWindowDimensions();
 
   const toggleEnableEditingDApps = () => setEnableEditingDApps((prev) => !prev);
 
   return (
     <BlurScreenContainer title="dApp Store">
-      <ScrollView>
+      <ScrollView
+        contentContainerStyle={{
+          flex: enableEditingDApps ? 0 : 1,
+          paddingHorizontal: layout.spacing_x2,
+        }}
+      >
         <View
           style={{
             flex: 1,
-            minHeight: windowHeight - MOBILE_HEADER_HEIGHT - 70,
             justifyContent: "flex-end",
-            paddingHorizontal: layout.spacing_x2,
           }}
         >
           <View style={{}}>
