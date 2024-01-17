@@ -102,13 +102,11 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
       }}
     >
       <View style={HeaderRowCStyle}>
-        <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <SpacerRow size={8} />
           {onBackPress && <BackButton onPress={onBackPress} />}
-          <BrandText
-            numberOfLines={1}
-            style={{ letterSpacing: -1, fontSize: 20 }}
-          >
+          <SpacerRow size={1} />
+          <BrandText numberOfLines={1} style={{ fontSize: 20 }}>
             {headerTitle}
           </BrandText>
         </View>

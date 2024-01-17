@@ -57,7 +57,7 @@ export const getEstateCardList: (
   ];
 };
 
-const EstateCardListEmpty: React.FC = () => {
+export const EstateCardListEmpty: React.FC = () => {
   const theme = useTheme();
 
   return (
@@ -79,7 +79,9 @@ const EstateCardListEmpty: React.FC = () => {
         }}
       >
         <SVG source={EstateIcon} width={24} height={24} color={neutralA3} />
-        <BrandText style={[{ fontSize: 18, color: neutralA3 }]}>
+        <BrandText
+          style={[{ fontSize: 18, color: neutralA3, fontWeight: "300" }]}
+        >
           No available estates
         </BrandText>
       </View>

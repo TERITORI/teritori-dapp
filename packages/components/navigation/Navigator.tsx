@@ -30,6 +30,7 @@ import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScree
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
 import { RWAHomeScreen } from "../../screens/RWA/RWAHomeScreen/RWAHomeScreen";
+import { RWAListsScreen } from "../../screens/RWA/RWAListsScreen/RWAListsScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
@@ -346,10 +347,16 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Friends Add"),
         }}
       />
+      {/* ==== RWA */}
       <Stack.Screen
         name="RWAHome"
         component={RWAHomeScreen}
         options={{ header: () => null, title: screenTitle("RWA Home") }}
+      />
+      <Stack.Screen
+        name="RWALists"
+        component={RWAListsScreen}
+        options={{ header: () => null, title: screenTitle("RWA Lists") }}
       />
     </Stack.Navigator>
   );

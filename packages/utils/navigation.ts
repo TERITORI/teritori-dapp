@@ -78,6 +78,7 @@ export type RootStackParamList = {
   FriendshipManager: { tab?: MessageFriendsTabItem } | undefined;
 
   RWAHome: undefined;
+  RWALists: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -172,6 +173,7 @@ const navConfig: {
 
     // === RWA
     RWAHome: "rwa-home",
+    RWALists: "rwa-lists",
   },
 };
 
