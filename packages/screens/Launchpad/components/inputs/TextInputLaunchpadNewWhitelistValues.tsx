@@ -7,28 +7,31 @@ import { neutral00 } from "../../../../utils/style/colors";
 import { layout } from "../../../../utils/style/layout";
 
 interface TextInputCustomProps<
-  NewCollectionAssetsFormValues extends FieldValues,
+  NewWhitelistDetailsFormValues extends FieldValues,
 > extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
   placeHolder: string;
-  control: Control<NewCollectionAssetsFormValues>;
-  name: Path<NewCollectionAssetsFormValues>;
+  control: Control<NewWhitelistDetailsFormValues>;
+  name: Path<NewWhitelistDetailsFormValues>;
+  sublabel?: React.ReactElement;
 }
 
-export const TextInputLaunchpadAssetsValues = <
-  NewCollectionAssetsFormValues extends FieldValues,
+export const TextInputLaunchpadNewWhitelistValues = <
+  NewWhitelistDetailsFormValues extends FieldValues,
 >({
   control,
   name,
   label,
   placeHolder,
-}: TextInputCustomProps<NewCollectionAssetsFormValues>) => {
+  sublabel,
+}: TextInputCustomProps<NewWhitelistDetailsFormValues>) => {
   return (
-    <TextInputCustom<NewCollectionAssetsFormValues>
+    <TextInputCustom<NewWhitelistDetailsFormValues>
       rules={{ required: true }}
       label={label}
       placeHolder={placeHolder}
       name={name}
+      sublabel={sublabel}
       control={control}
       variant="labelOutside"
       containerStyle={{ marginBottom: layout.spacing_x3 }}

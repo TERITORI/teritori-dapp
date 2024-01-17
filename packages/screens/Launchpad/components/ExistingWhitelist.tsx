@@ -2,10 +2,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
+import { TextInputLaunchpadExistingWhitelistValues } from "./inputs/TextInputLaunchpadExistingWhitelistValues";
 import { SpacerColumn } from "../../../components/spacer";
-import { neutral00 } from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
 import { ExistingWhitelistDetailsFormValues } from "../CreateCollection.type";
 
 export const ExistingWhitelist: React.FC = () => {
@@ -23,18 +21,12 @@ export const ExistingWhitelist: React.FC = () => {
       }}
     >
       <SpacerColumn size={2} />
-      <TextInputCustom<ExistingWhitelistDetailsFormValues>
-        rules={{ required: true }}
+
+      <TextInputLaunchpadExistingWhitelistValues
         label="Whitelist Address"
         placeHolder="teritori123456789qwertyuiopasdfghjklzxcvbnm"
         name="whitelistAddress"
         control={control}
-        variant="labelOutside"
-        containerStyle={{ marginBottom: layout.spacing_x3 }}
-        boxMainContainerStyle={{
-          backgroundColor: neutral00,
-          borderRadius: 12,
-        }}
       />
     </View>
   );

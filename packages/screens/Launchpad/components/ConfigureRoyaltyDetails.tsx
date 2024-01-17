@@ -2,16 +2,15 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
+import { TextInputLaunchpadRoyaltyValues } from "./inputs/TextInputLaunchpadRoyaltyValues";
 import { BrandText } from "../../../components/BrandText";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
-import { neutral00, neutral55, neutral77 } from "../../../utils/style/colors";
+import { neutral55, neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold20,
 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { NewConfigureRoyaltyDetailsFormValues } from "../CreateCollection.type";
 
 export const ConfigureRoyaltyDetails: React.FC = () => {
@@ -32,8 +31,8 @@ export const ConfigureRoyaltyDetails: React.FC = () => {
         Information about royalty
       </BrandText>
       <SpacerColumn size={2} />
-      <TextInputCustom<NewConfigureRoyaltyDetailsFormValues>
-        rules={{ required: true }}
+
+      <TextInputLaunchpadRoyaltyValues
         label="Payment Address "
         placeHolder="teritori123456789qwertyuiopasdfghjklzxcvbnm"
         name="PaymentAddress"
@@ -45,15 +44,9 @@ export const ConfigureRoyaltyDetails: React.FC = () => {
           </View>
         }
         control={control}
-        variant="labelOutside"
-        containerStyle={{ marginBottom: layout.spacing_x3 }}
-        boxMainContainerStyle={{
-          backgroundColor: neutral00,
-          borderRadius: 12,
-        }}
       />
-      <TextInputCustom<NewConfigureRoyaltyDetailsFormValues>
-        rules={{ required: true }}
+
+      <TextInputLaunchpadRoyaltyValues
         label="Share Percentage "
         placeHolder="8%"
         name="SharePercentage"
@@ -65,12 +58,6 @@ export const ConfigureRoyaltyDetails: React.FC = () => {
           </View>
         }
         control={control}
-        variant="labelOutside"
-        containerStyle={{ marginBottom: layout.spacing_x3 }}
-        boxMainContainerStyle={{
-          backgroundColor: neutral00,
-          borderRadius: 12,
-        }}
       />
     </View>
   );

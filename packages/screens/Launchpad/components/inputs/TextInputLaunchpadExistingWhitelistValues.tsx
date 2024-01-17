@@ -7,24 +7,24 @@ import { neutral00 } from "../../../../utils/style/colors";
 import { layout } from "../../../../utils/style/layout";
 
 interface TextInputCustomProps<
-  NewCollectionAssetsFormValues extends FieldValues,
+  ExistingWhitelistDetailsFormValues extends FieldValues,
 > extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
   placeHolder: string;
-  control: Control<NewCollectionAssetsFormValues>;
-  name: Path<NewCollectionAssetsFormValues>;
+  control: Control<ExistingWhitelistDetailsFormValues>;
+  name: Path<ExistingWhitelistDetailsFormValues>;
 }
 
-export const TextInputLaunchpadAssetsValues = <
-  NewCollectionAssetsFormValues extends FieldValues,
+export const TextInputLaunchpadExistingWhitelistValues = <
+  ExistingWhitelistDetailsFormValues extends FieldValues,
 >({
   control,
   name,
   label,
   placeHolder,
-}: TextInputCustomProps<NewCollectionAssetsFormValues>) => {
+}: TextInputCustomProps<ExistingWhitelistDetailsFormValues>) => {
   return (
-    <TextInputCustom<NewCollectionAssetsFormValues>
+    <TextInputCustom<ExistingWhitelistDetailsFormValues>
       rules={{ required: true }}
       label={label}
       placeHolder={placeHolder}
