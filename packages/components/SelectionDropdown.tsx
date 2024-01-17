@@ -5,7 +5,7 @@ import chevronDownSVG from "./../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "./../../assets/icons/chevron-up.svg";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
-import { Box } from "./boxes/Box";
+import { PrimaryBox } from "./boxes/PrimaryBox";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { useDropdowns } from "../context/DropdownsProvider";
 import {
@@ -17,7 +17,6 @@ import {
 } from "../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
-import { PrimaryBox } from "./boxes/PrimaryBox";
 
 interface SelectionDropdownProps {
   style?: ViewStyle;
