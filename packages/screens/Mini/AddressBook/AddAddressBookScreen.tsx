@@ -1,41 +1,20 @@
 import { View } from "react-native";
 
 import addSVG from "../../../../assets/icons/add-circle-outline.svg";
-import closeSVG from "../../../../assets/icons/close.svg";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
-import MiniHeader from "../Notifications/components/MiniHeader";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import { CustomButton } from "../components/CustomButton";
 import MiniTextInput from "../components/MiniTextInput";
 
 const AddAddressBookScreen: ScreenFC<"AddAddressBook"> = ({ navigation }) => {
-  const onClose = () =>
-    navigation.canGoBack()
-      ? navigation.goBack()
-      : navigation.replace("MiniTabs");
+  const goBackTo = () =>
+    navigation.replace("AddressBook", { back: "AddAddressBook" });
 
   return (
-    <BlurScreenContainer
-      background="transparent"
-      customHeader={
-        <MiniHeader
-          navigation={navigation}
-          backEnabled
-          title="Add Address"
-          headerStyle={{ backgroundColor: "transparent" }}
-          right={
-            <CustomPressable onPress={onClose}>
-              <SVG source={closeSVG} width={24} height={24} />
-            </CustomPressable>
-          }
-        />
-      }
-    >
+    <BlurScreenContainer title="Add Address" onGoBack={goBackTo}>
       <SpacerColumn size={2} />
       <View
         style={{

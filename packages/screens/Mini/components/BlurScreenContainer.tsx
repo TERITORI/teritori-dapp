@@ -97,26 +97,28 @@ export const BlurScreenContainer = ({
             {customHeader}
           </View>
         ) : (
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingHorizontal: layout.spacing_x2,
-              height: MOBILE_HEADER_HEIGHT,
-            }}
-          >
-            {onGoBack && (
-              <BackButton type="chevron" onPress={navigateToProfile} />
-            )}
-            <BrandText style={[fontSemibold18]}>
-              {title || "Settings"}
-            </BrandText>
+          <>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingHorizontal: layout.spacing_x2,
+                height: MOBILE_HEADER_HEIGHT,
+              }}
+            >
+              {onGoBack && (
+                <BackButton type="chevron" onPress={navigateToProfile} />
+              )}
+              <BrandText style={[fontSemibold18]}>
+                {title || "Settings"}
+              </BrandText>
 
-            <CustomPressable onPress={onClose} style={{}}>
-              <SVG source={closeSVG} height={28} width={28} />
-            </CustomPressable>
-          </View>
+              <CustomPressable onPress={onClose}>
+                <SVG source={closeSVG} height={28} width={28} />
+              </CustomPressable>
+            </View>
+          </>
         )}
 
         <View
