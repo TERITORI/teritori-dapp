@@ -27,26 +27,11 @@ type MakeRequestState = {
 
 const TOTAL_STEPS = 5;
 
-const fakeMilestones: ProjectMilestone[] = [
-  {
-    id: 1,
-    title: "Community Docs Platform 1",
-    desc: "Milestone description this is very very very long description of a milestone we expect this will span on multi lines",
-    status: MsStatus.MS_OPEN,
-    priority: MsPriority.MS_PRIORITY_HIGH,
-    amount: 10,
-    link: "https://github.com",
-    funded: false,
-    paid: 0,
-    duration: 60 * 60 * 24 * 7,
-  },
-];
-
 const useMakeRequestStore = create<MakeRequestState>((set, get) => ({
   stepIndice: 1,
   shortDescData: emptyShortDesc,
   teamAndLinkData: emptyTeamAndLink,
-  milestones: fakeMilestones,
+  milestones: [],
   actions: {
     setStepIndice: (stepIndice: number) => set({ stepIndice }),
     setShortDesc: (shortDescData: ShortDescData) => set({ shortDescData }),

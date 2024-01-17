@@ -35,7 +35,7 @@ const shortDescSchema = object({
   funder: string().min(32),
   contractor: string().min(32),
   paymentAddr: string().required().min(6),
-  coverImg: string().required().url(),
+  coverImg: string().required(),
   tags: string().nullable(),
   _coverImgFile: object(),
 });
@@ -231,7 +231,9 @@ export const ShortPresentation: React.FC = () => {
                 onUpload={async (files) => {
                   if (files[0].fileType !== "image") {
                     await setFieldError("coverImg", "file is not an image");
+                    return;
                   }
+                  await setFieldValue("coverImg", files[0].url);
                   await setFieldValue("_coverImgFile", files[0]);
                 }}
                 mimeTypes={IMAGE_MIME_TYPES}

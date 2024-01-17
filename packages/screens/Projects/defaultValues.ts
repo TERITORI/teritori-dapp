@@ -1,4 +1,4 @@
-import { ShortDescData, TeamAndLinkData } from "./types";
+import { MsPriority, MsStatus, ProjectMilestone, ShortDescData, TeamAndLinkData } from "./types";
 
 export const emptyTeamAndLink: TeamAndLinkData = {
   websiteLink: "",
@@ -40,3 +40,17 @@ export const emptyShortDesc: ShortDescData = {
 //   githubLink: "https://github.com",
 //   teamDesc: "This is long team description",
 // };
+// export const fakeMilestones: ProjectMilestone[] = [
+//   {
+//     id: 1,
+//     title: "Community Docs Platform 1",
+//     desc: "Milestone description this is very very very long description of a milestone we expect this will span on multi lines",
+//     status: MsStatus.MS_OPEN,
+//     priority: MsPriority.MS_PRIORITY_HIGH,
+//     amount: 10,
+//     link: "https://github.com",
+//     funded: false,
+//     paid: 0,
+//     duration: 60 * 60 * 24 * 7,
+//   },
+// ];

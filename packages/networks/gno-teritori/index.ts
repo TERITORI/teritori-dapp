@@ -32,6 +32,7 @@ export const gnoTeritoriNetwork: GnoNetworkInfo = {
   groupsPkgPath: "gno.land/r/demo/teritori/groups_v4",
   votingGroupPkgPath: "gno.land/p/demo/teritori/dao_voting_group_v2",
   daoProposalSinglePkgPath: "gno.land/p/demo/teritori/dao_proposal_single_v4",
+  escrowPkgPath: "gno.land/r/demo/escrow_wip",
   daoInterfacesPkgPath: "gno.land/p/demo/teritori/dao_interfaces_v5",
   daoCorePkgPath: "gno.land/p/demo/teritori/dao_core_v4",
   gnowebURL: "https://testnet.gno.teritori.com",
