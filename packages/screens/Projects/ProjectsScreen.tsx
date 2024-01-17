@@ -31,7 +31,7 @@ export const ProjectsScreen: ScreenFC<"Projects"> = () => {
 
   const navigation = useAppNavigation();
 
-  const gotoProjectsDetail = (id: string) => {
+  const gotoProjectsDetail = (id: number) => {
     navigation.navigate("ProjectsDetail", { id });
   };
 
@@ -115,7 +115,6 @@ export const ProjectsScreen: ScreenFC<"Projects"> = () => {
         style={{
           width: "100%",
           flexWrap: "wrap",
-          justifyContent: "space-between",
         }}
       >
         {filteredProjects.map((project) => {
@@ -123,7 +122,7 @@ export const ProjectsScreen: ScreenFC<"Projects"> = () => {
             <ProjectBox
               key={"" + project.id}
               project={project}
-              onPress={() => gotoProjectsDetail("" + project.id)}
+              onPress={() => gotoProjectsDetail(project.id)}
               containerStyle={{
                 marginTop: layout.spacing_x2,
                 marginRight: layout.spacing_x2,
