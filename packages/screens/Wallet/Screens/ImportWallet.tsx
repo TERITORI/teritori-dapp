@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Slip10, Slip10Curve, stringToPath } from "@cosmjs/crypto";
 import { toHex } from "@cosmjs/encoding";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
@@ -60,29 +61,6 @@ const getLedgerAccountDetails = async () => {
     "teritori",
   );
   console.log(primaryChainAccount, chainWiseAddresses);
-
-  // setWalletAccounts(
-  //   primaryChainAccount.map((account, index) => ({
-  //     address: account.address,
-  //     pubkey: account.pubkey,
-  //     index,
-  //   })),
-  // );
-  // const addresses: Addresses = {};
-  //
-  // for (const [chain, chainAddresses] of Object.entries(chainWiseAddresses)) {
-  //   let index = 0;
-  //   for (const address of chainAddresses) {
-  //     if (addresses[index]) {
-  //       addresses[index][chain] = address;
-  //     } else {
-  //       addresses[index] = { [chain]: address };
-  //     }
-  //     index += 1;
-  //   }
-  // }
-  //
-  // setAddresses(addresses);
 };
 
 export const ImportWallet: ScreenFC<"ImportWallet"> = () => {

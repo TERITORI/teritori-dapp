@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import requestingPermissionPNG from "../../../../../assets/icons/loader.png";
 import { BrandText } from "../../../../components/BrandText";
@@ -9,6 +9,7 @@ import { fontMedium16, fontSemibold30 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { CustomButton } from "../../components/CustomButton";
 import { StepType } from "../ConnectLedgerScreen";
+
 type Props = {
   onStepChange: (step: StepType) => void;
 };
@@ -17,6 +18,7 @@ export const RequestingPermission = ({ onStepChange }: Props) => {
   const onPressConnect = () => {
     onStepChange("step_3");
   };
+  const { width: windowWidth } = useWindowDimensions();
 
   return (
     <View style={{ flex: 1 }}>
@@ -62,7 +64,7 @@ export const RequestingPermission = ({ onStepChange }: Props) => {
       <CustomButton
         title="Connect"
         onPress={onPressConnect}
-        width={Dimensions.get("window").width - 20}
+        width={windowWidth - 20}
         style={{
           position: "absolute",
           bottom: 30,

@@ -10,6 +10,7 @@ import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerRow } from "../../../components/spacer";
 import { RootStackParamList } from "../../../utils/navigation";
 import { ChatAvatar } from "../components/ChatAvatar";
+
 type HeaderProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "Conversation">;
 };

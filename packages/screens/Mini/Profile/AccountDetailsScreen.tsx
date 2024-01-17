@@ -18,7 +18,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium16, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 const QR_SIZE = 248;
 const ACCOUNT_DETAILS = "GxF34g10nz0wchvkkj7rr09vcxj5rpt2m3A31";
@@ -45,7 +45,7 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
   const handleViewOnTeritoriscan = () => {};
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       title="Account Details"
       onGoBack={navigateToProfile}
       reverseView={false}
@@ -127,6 +127,6 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
           </CustomPressable>
         </View>
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };

@@ -15,7 +15,7 @@ import { fontBold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import ListView from "../AddressBook/components/ListView";
 import MiniHeader from "../Notifications/components/MiniHeader";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 type AboutScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "About">;
@@ -23,19 +23,7 @@ type AboutScreenProps = {
 
 const links = [
   {
-    label: "Website",
-    url: "https:ggogle.com",
-  },
-  {
-    label: "Developer Docs",
-    url: "https:ggogle.com",
-  },
-  {
-    label: "GitHub",
-    url: "https:ggogle.com",
-  },
-  {
-    label: "Help & Support",
+    label: "Privacy Policy",
     url: "https:ggogle.com",
   },
   {
@@ -43,7 +31,19 @@ const links = [
     url: "https:ggogle.com",
   },
   {
-    label: "Privacy Policy",
+    label: "Help & Support",
+    url: "https:ggogle.com",
+  },
+  {
+    label: "GitHub",
+    url: "https:ggogle.com",
+  },
+  {
+    label: "Developer Docs",
+    url: "https:ggogle.com",
+  },
+  {
+    label: "Website",
     url: "https:ggogle.com",
   },
 ];
@@ -55,9 +55,8 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
       : navigation.replace("MiniTabs");
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       background="transparent"
-      reverseView={false}
       customHeader={
         <MiniHeader
           headerStyle={{ backgroundColor: "transparent" }}
@@ -79,7 +78,7 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
           justifyContent: "center",
         }}
       >
-        <SpacerColumn size={12} />
+        <SpacerColumn size={3} />
         <SVG source={teritoriSVG} fontSize={64} />
         <SpacerColumn size={1} />
         <BrandText style={fontBold16}>TERITORI</BrandText>
@@ -91,12 +90,12 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
         style={{
           justifyContent: "space-between",
           backgroundColor: "rgba(0,0,0,0.8)",
-          height: "70%",
+          flex: 1,
         }}
       >
         <FlatList
           inverted
-          data={links.reverse()}
+          data={links}
           keyExtractor={(item) => item.label}
           renderItem={({ item }) => (
             <ListView
@@ -106,6 +105,7 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
               }}
               options={{
                 label: item?.label,
+                iconEnabled: true,
                 iconOptions: {
                   icon: externalLinkSVG,
                 },
@@ -113,8 +113,7 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
             />
           )}
         />
-        <SpacerColumn size={6} />
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 }

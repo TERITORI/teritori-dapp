@@ -1,7 +1,6 @@
 import React from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
-import { SettingBase } from "../components/SettingBase";
 import stopSVG from "../../../../assets/icons/stop.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
@@ -9,6 +8,7 @@ import { ScreenFC } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontMedium16, fontSemibold30 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { CustomButton } from "../components/CustomButton";
 
 export const ResetWalletScreen: ScreenFC<"MiniResetWallet"> = ({
@@ -16,13 +16,14 @@ export const ResetWalletScreen: ScreenFC<"MiniResetWallet"> = ({
 }) => {
   const gotoSecurityAndPrivacy = () =>
     navigation.replace("MiniSecurityAndPrivacy");
+  const { height: windowHeight } = useWindowDimensions();
 
   const onResetPress = () => {
     alert("Reset");
   };
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       title="Reset Wallet"
       onGoBack={gotoSecurityAndPrivacy}
       reverseView={false}
@@ -34,7 +35,7 @@ export const ResetWalletScreen: ScreenFC<"MiniResetWallet"> = ({
           alignItems: "center",
           paddingHorizontal: layout.spacing_x1_5,
           paddingTop: layout.spacing_x4,
-          height: Dimensions.get("window").height - 150,
+          height: windowHeight - 150,
         }}
       >
         <SVG
@@ -66,6 +67,6 @@ export const ResetWalletScreen: ScreenFC<"MiniResetWallet"> = ({
           }}
         />
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };

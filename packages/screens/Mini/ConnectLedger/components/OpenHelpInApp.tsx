@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import questionMarkSVG from "../../../../../assets/icons/question-gray.svg";
 import { BrandText } from "../../../../components/BrandText";
@@ -9,6 +9,7 @@ import { fontMedium16, fontSemibold30 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { CustomButton } from "../../components/CustomButton";
 import { StepType } from "../ConnectLedgerScreen";
+
 type Props = {
   onStepChange: (step: StepType) => void;
 };
@@ -17,6 +18,8 @@ export const OpenHelpInApp = ({ onStepChange }: Props) => {
   const onPressClose = () => {
     onStepChange("step_4");
   };
+  const { width: windowWidth } = useWindowDimensions();
+
   return (
     <View style={{ flex: 1 }}>
       <View style={{ alignItems: "center", paddingTop: 80, flex: 1 }}>
@@ -64,7 +67,7 @@ export const OpenHelpInApp = ({ onStepChange }: Props) => {
         title="Close"
         type="gray"
         onPress={onPressClose}
-        width={Dimensions.get("window").width - 20}
+        width={windowWidth - 20}
         style={{
           position: "absolute",
           bottom: 30,

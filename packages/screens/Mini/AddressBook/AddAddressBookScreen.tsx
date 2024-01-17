@@ -1,7 +1,6 @@
 import { View } from "react-native";
 
 import CircularImgOrIcon from "./components/CircularImgOrIcon";
-import MiniButton from "./components/MiniButton";
 import MiniTextInput from "./components/MiniTextInput";
 import addSVG from "../../../../assets/icons/add-circle-outline.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
@@ -9,8 +8,10 @@ import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
+import { layout } from "../../../utils/style/layout";
 import MiniHeader from "../Notifications/components/MiniHeader";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import { CustomButton } from "../components/CustomButton";
 
 const AddAddressBookScreen: ScreenFC<"AddAddressBook"> = ({ navigation }) => {
   const onClose = () =>
@@ -19,9 +20,8 @@ const AddAddressBookScreen: ScreenFC<"AddAddressBook"> = ({ navigation }) => {
       : navigation.replace("MiniTabs");
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       background="transparent"
-      reverseView={false}
       customHeader={
         <MiniHeader
           navigation={navigation}
@@ -36,36 +36,37 @@ const AddAddressBookScreen: ScreenFC<"AddAddressBook"> = ({ navigation }) => {
         />
       }
     >
+      <SpacerColumn size={2} />
       <View
         style={{
-          width: "100%",
           alignItems: "center",
           justifyContent: "center",
+          paddingHorizontal: layout.spacing_x2,
         }}
       >
-        <SpacerColumn size={10} />
         <CircularImgOrIcon
           style={{ alignItems: "center", justifyContent: "center" }}
           icon={addSVG}
         />
       </View>
+      <SpacerColumn size={4} />
       <View
         style={{
           justifyContent: "space-between",
-          backgroundColor: "rgba(0,0,0,0.8)",
-          height: "70%",
+          paddingHorizontal: layout.spacing_x2,
+          flex: 1,
         }}
       >
-        <View>
-          <SpacerColumn size={3} />
+        <View style={{ flex: 1 }}>
           <MiniTextInput placeholder="Label" />
 
           <SpacerColumn size={1} />
           <MiniTextInput placeholder="Address" />
         </View>
-        <MiniButton title="Save" />
+
+        <CustomButton onPress={() => {}} title="Add" />
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import { BrandText } from "../../../../components/BrandText";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
@@ -21,6 +21,8 @@ type Props = {
 };
 
 export const CreatePassword = ({ onStepChange }: Props) => {
+  const { width: windowWidth } = useWindowDimensions();
+
   const [formData, setFormDate] = useState({
     password: "",
     confirmPassword: "",
@@ -127,7 +129,7 @@ export const CreatePassword = ({ onStepChange }: Props) => {
           title="Save"
           isDisabled={isDisabled}
           onPress={onPressSave}
-          width={Dimensions.get("window").width - 20}
+          width={windowWidth - 20}
           style={{}}
         />
       </View>

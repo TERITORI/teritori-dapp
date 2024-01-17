@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import NotificationList from "./NotificationList";
 import DropdownWithCheck from "./components/DropdownWithCheck";
@@ -13,39 +13,41 @@ const filterOptionsConst = [
   {
     value: "all",
     name: "All",
-    checked: true,
+    isChecked: true,
   },
   {
     value: "nft_sales",
     name: "NFT sales",
-    checked: true,
+    isChecked: true,
   },
   {
     value: "announcements",
     name: "Announcements",
-    checked: true,
+    isChecked: true,
   },
   {
     value: "news",
     name: "News",
-    checked: true,
+    isChecked: true,
   },
   {
     value: "tranactions",
     name: "Tranactions",
-    checked: true,
+    isChecked: true,
   },
   {
     value: "tips",
     name: "Tips",
-    checked: true,
+    isChecked: true,
   },
 ];
 
 const NotificationScreen: ScreenFC<"Notifications"> = ({ navigation }) => {
   const [filterOptions, setFilterOptions] = useState<any>([]);
 
-  // console.log(filterOptions);
+  console.log(filterOptions);
+
+  const { width: windowWidth } = useWindowDimensions();
 
   return (
     <ScreenContainer
@@ -72,7 +74,7 @@ const NotificationScreen: ScreenFC<"Notifications"> = ({ navigation }) => {
       <View
         style={{
           flex: 1,
-          width: Dimensions.get("window").width,
+          width: windowWidth,
         }}
       >
         <NotificationList />

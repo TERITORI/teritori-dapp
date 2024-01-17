@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import { Select } from "./components/Select";
 import { BrandText } from "../../../components/BrandText";
@@ -11,7 +11,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { CustomButton } from "../components/CustomButton";
 
 const tokenOptions = [
@@ -69,6 +69,7 @@ type SelectedTokenType = {
 const AddCustomTokenScreen: ScreenFC<"MiniAddCustomToken"> = ({
   navigation,
 }) => {
+  const { height: windowHeight } = useWindowDimensions();
   const [selectedToken, setSelectedToken] = useState<SelectedTokenType | null>(
     null,
   );
@@ -87,7 +88,7 @@ const AddCustomTokenScreen: ScreenFC<"MiniAddCustomToken"> = ({
   const onAddToken = () => {};
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       title="Add Custom Token"
       reverseView={false}
       onGoBack={gotoManageTokens}
@@ -98,7 +99,7 @@ const AddCustomTokenScreen: ScreenFC<"MiniAddCustomToken"> = ({
           gap: layout.spacing_x1_5,
           marginTop: layout.spacing_x2_5,
           paddingHorizontal: layout.spacing_x1_5,
-          height: Dimensions.get("window").height - 150,
+          height: windowHeight - 150,
         }}
       >
         <Select
@@ -130,7 +131,7 @@ const AddCustomTokenScreen: ScreenFC<"MiniAddCustomToken"> = ({
           title="Add"
         />
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };
 

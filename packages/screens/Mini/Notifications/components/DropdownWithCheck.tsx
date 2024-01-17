@@ -20,13 +20,13 @@ import { layout } from "../../../../utils/style/layout";
 export type FilterOption = {
   value: string;
   name: string;
-  checked: boolean;
+  isChecked: boolean;
 };
 
 type DropdownWithCheckProps = {
   filterOptions: FilterOption[];
   headerOptions: { name: string; icon?: React.FC<SvgProps> | string };
-  onPress: (selectedOptions: DropdownReturnedType[]) => void;
+  onPress: (selectedOptions: Partial<FilterOption>[]) => void;
 };
 
 export default function DropdownWithCheck({
@@ -34,48 +34,57 @@ export default function DropdownWithCheck({
   headerOptions,
   onPress,
 }: DropdownWithCheckProps) {
-  const [filters, setFilters] = useState<FilterOption[]>(filterOptions);
-  const [allOption, setAllOption] = useState(true);
+  const [filters, setFilters] =
+    useState<Partial<FilterOption>[]>(filterOptions);
+  // const [allOption, setAllOption] = useState(true);
 
-  const filterButtons = (option: DropdownReturnedType) => {
-    // if (option.value === "all" && !option.checked) {
-    //   setAllOption(true);
-    //   setFilters((prev) => {
-    //     const newData = prev.map((item) => ({ ...item, checked: true }));
-    //     onPress(newData);
-    //     return newData;
-    //   });
-    // } else {
-    // console.log(filters);
-    // if (option.value === "all") {
-    console.log(option);
-    //   if (option.checked) {
-    //     console.log(option.checked);
-    //     // console.log(filters.map((item) => ({ ...item, checked: false })));
-    //     setFilters(filters.map((item) => ({ ...item, checked: false })));
-    //   }
+  const filterButtons = (isChecked: boolean, value: string) => {
+    if (value === "all") {
+      if (!isChecked) {
+        setFilters((prev) => {
+          const newData = prev.map((item) => ({ ...item, isChecked: true }));
+          onPress(newData);
+          return newData;
+        });
+        return;
+      }
 
-    //   if (!option.checked) {
-    //     console.log("hie");
-    //     setFilters((prev) => prev.map((item) => ({ ...item, checked: true })));
-    //     // return;
-    //   }
-    // }
+      if (isChecked) {
+        setFilters((prev) => {
+          const newData = prev.map((item) => ({ ...item, isChecked: false }));
+          onPress(newData);
+          return newData;
+        });
+      }
 
-    // setFilters((prev) => {
-    //   const newData = prev.map((item) => {
-    //     if (item.value === option.value) {
-    //       if (item.checked) {
-    //         return { ...item, checked: false };
-    //       }
-    //       return { ...item, checked: true };
-    //     }
-    //     return item;
-    //   });
+      return;
+    }
 
-    //   onPress(newData);
-    //   return newData;
-    // });
+    setFilters((prev) => {
+      const newData = prev.map((item) => {
+        if (item.value === value) {
+          if (item.isChecked) {
+            return { ...item, isChecked: false };
+          }
+          return { ...item, isChecked: true };
+        }
+
+        return item;
+      });
+
+      let manipluatedData = newData;
+
+      if (newData.some((item) => !item.isChecked)) {
+        manipluatedData = newData.map((item) => {
+          if (item.value === "all") {
+            return { ...item, isChecked: false };
+          }
+          return item;
+        });
+      }
+      onPress(manipluatedData);
+      return manipluatedData;
+    });
   };
 
   return (
@@ -99,6 +108,7 @@ export default function DropdownWithCheck({
 
           return (
             <DropdownItem
+              key={filterOptionItem.value}
               lastItem={lastItem}
               dropdownOption={filterOptionItem}
               onPress={filterButtons}
@@ -146,18 +156,10 @@ function DropdownButton({
   );
 }
 
-type DropdownOptionType = {
-  value: string;
-  name: string;
-  checked: boolean;
-};
-
-export type DropdownReturnedType = { value: string; checked: boolean };
-
 type DropdownItemProps = {
-  dropdownOption: DropdownOptionType;
+  dropdownOption: Partial<FilterOption>;
   lastItem?: boolean;
-  onPress: (option: DropdownReturnedType) => void;
+  onPress: (isChecked: boolean, value: string) => void;
 };
 
 function DropdownItem({
@@ -165,15 +167,6 @@ function DropdownItem({
   lastItem,
   onPress,
 }: DropdownItemProps) {
-  // const [checkedItem, setCheckedItem] = useState({
-  //   value: dropdownOption.value,
-  //   checked: dropdownOption.checked,
-  // });
-  const [checked, setChecked] = useState(dropdownOption.checked ?? false);
-
-  function checkHandler(isChecked: boolean, value: string) {
-    setChecked(isChecked);
-  }
   return (
     <View
       style={{
@@ -185,9 +178,9 @@ function DropdownItem({
     >
       <Checkbox
         label={dropdownOption.name}
-        value={dropdownOption.value}
-        isChecked={checked}
-        onPress={checkHandler}
+        value={dropdownOption?.value ?? ""}
+        isChecked={dropdownOption.isChecked ?? false}
+        onPress={onPress}
       />
     </View>
   );

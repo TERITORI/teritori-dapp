@@ -16,8 +16,8 @@ import { layout } from "../../../utils/style/layout";
 import CircularImgOrIcon from "../AddressBook/components/CircularImgOrIcon";
 import MiniTextInput from "../AddressBook/components/MiniTextInput";
 import MiniHeader from "../Notifications/components/MiniHeader";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import FileUpload from "../components/FileUpload";
-import { SettingBase } from "../components/SettingBase";
 
 type ProfileDetailScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -38,7 +38,7 @@ export default function ProfileDetailScreen({
       : navigation.replace("MiniTabs");
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       background="transparent"
       reverseView={false}
       customHeader={
@@ -107,6 +107,6 @@ export default function ProfileDetailScreen({
           </BrandText>
         </View>
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 }

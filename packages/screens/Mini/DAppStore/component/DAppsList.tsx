@@ -5,6 +5,7 @@ import { DAppStoreMenuItem } from "./DAppStoreMenuItems";
 import astroportPNG from "../../../../../assets/icons/networks/Astroport.png";
 import axelarPNG from "../../../../../assets/icons/networks/axelar.png";
 import { Separator } from "../../../../components/separators/Separator";
+
 type Props = {
   isEditing: boolean;
   togggleEdting: () => void;

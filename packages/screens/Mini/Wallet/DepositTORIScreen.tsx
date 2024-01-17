@@ -1,6 +1,6 @@
 import * as Clipboard from "expo-clipboard";
 import React, { useState } from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 
 import { BrandText } from "../../../components/BrandText";
@@ -15,7 +15,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium13, fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 const QR_SIZE = 248;
 const accountDetails = {
@@ -26,6 +26,8 @@ const accountDetails = {
 export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
   navigation,
 }) => {
+  const { height: windowHeight } = useWindowDimensions();
+
   const [isCopied, setIsCopied] = useState(false);
 
   const onGotoSelectToken = () =>
@@ -37,7 +39,7 @@ export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
   };
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       title="Deposit TORI"
       reverseView={false}
       background="transparent"
@@ -49,7 +51,7 @@ export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
           marginBottom: layout.spacing_x2,
           alignItems: "center",
           justifyContent: "center",
-          height: Dimensions.get("window").height - 150,
+          height: windowHeight - 150,
         }}
       >
         <View style={{ alignItems: "center", marginBottom: layout.spacing_x5 }}>
@@ -126,6 +128,6 @@ export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
           Only use this address to receive tokens on Teritori.
         </BrandText>
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };

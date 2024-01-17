@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import { NewConversationOrGroupSelector } from "./components/NewConversationOrGroupSelector";
 import { SearchChatList } from "./components/SearchChatList";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 const dummyContact = [
   {
@@ -118,16 +118,17 @@ const dummyContact = [
 
 export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
   const [search, setSearch] = useState("");
+  const { height: windowHeight } = useWindowDimensions();
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       title="New group "
       background="transparent"
       reverseView={false}
     >
       <View
         style={{
-          height: Dimensions.get("window").height - 150,
+          height: windowHeight - 150,
           paddingHorizontal: layout.spacing_x2,
         }}
       >
@@ -153,6 +154,6 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
           }}
         />
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };

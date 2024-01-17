@@ -12,7 +12,7 @@ import { fontNormal15, fontSemibold18 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import ListView from "../AddressBook/components/ListView";
 import MiniHeader from "../Notifications/components/MiniHeader";
-import { SettingBase } from "../components/SettingBase";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 export type SelectWalletType = {
   id: string;
@@ -37,7 +37,7 @@ const SelectTokenScreen: ScreenFC<"MiniSelectToken"> = ({
   ];
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       customHeader={
         <MiniHeader
           navigation={navigation}
@@ -77,7 +77,7 @@ const SelectTokenScreen: ScreenFC<"MiniSelectToken"> = ({
                 })
               }
               style={{
-                paddingHorizontal: layout.spacing_x1_5,
+                paddingHorizontal: layout.spacing_x2,
               }}
               options={{
                 leftIconEnabled: true,
@@ -93,7 +93,7 @@ const SelectTokenScreen: ScreenFC<"MiniSelectToken"> = ({
         />
       )}
       <SpacerColumn size={2} />
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };
 

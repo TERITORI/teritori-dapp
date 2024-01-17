@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import { BrandText } from "../../../../components/BrandText";
 import { neutral77 } from "../../../../utils/style/colors";
@@ -11,6 +11,7 @@ type Props = {
   onComplete: () => void;
 };
 export const AllSet = ({ onComplete }: Props) => {
+  const { width: windowWidth } = useWindowDimensions();
   const onPressStart = () => {
     onComplete();
   };
@@ -58,7 +59,7 @@ export const AllSet = ({ onComplete }: Props) => {
         <CustomButton
           title="Start"
           onPress={onPressStart}
-          width={Dimensions.get("window").width - 20}
+          width={windowWidth - 20}
           style={{}}
         />
       </View>

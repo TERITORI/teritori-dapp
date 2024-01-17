@@ -11,10 +11,10 @@ import { ScreenFC } from "../../../utils/navigation";
 import { secondaryColor } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import MiniButton from "../AddressBook/components/MiniButton";
 import MiniHeader from "../Notifications/components/MiniHeader";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import { CustomButton } from "../components/CustomButton";
 import RowDisplay from "../components/RowDisplay";
-import { SettingBase } from "../components/SettingBase";
 
 const SendingToriScreen: ScreenFC<"MiniSendingTori"> = ({ navigation }) => {
   const onClose = () =>
@@ -23,7 +23,7 @@ const SendingToriScreen: ScreenFC<"MiniSendingTori"> = ({ navigation }) => {
       : navigation.replace("MiniTabs");
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       background="transparent"
       customHeader={
         <MiniHeader
@@ -41,21 +41,13 @@ const SendingToriScreen: ScreenFC<"MiniSendingTori"> = ({ navigation }) => {
     >
       <View
         style={{
-          width: "100%",
-          alignItems: "center",
+          flex: 1,
+          paddingHorizontal: layout.spacing_x2,
           justifyContent: "space-between",
         }}
       >
-        <SpacerColumn size={10} />
-      </View>
-      <View
-        style={{
-          justifyContent: "space-between",
-          paddingHorizontal: layout.spacing_x1_5,
-          height: "90%",
-        }}
-      >
-        <View style={{ flex: 1 }}>
+        <View>
+          <SpacerColumn size={3} />
           <RowDisplay
             leftLabel={
               <SVG source={teritoriCircleSVG} width={28} height={28} />
@@ -87,10 +79,9 @@ const SendingToriScreen: ScreenFC<"MiniSendingTori"> = ({ navigation }) => {
             </View>
           </Dropdown>
         </View>
-
-        <MiniButton title="Send" onPress={() => navigation.goBack()} />
+        <CustomButton title="Send" onPress={() => navigation.goBack()} />
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };
 

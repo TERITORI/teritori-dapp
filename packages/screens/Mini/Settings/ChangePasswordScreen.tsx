@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
-import { SettingBase } from "../components/SettingBase";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { CustomButton } from "../components/CustomButton";
 import { Input } from "../components/Input";
 
@@ -25,9 +25,10 @@ export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
   };
 
   const onSaveNewPassword = () => {};
+  const { height: windowHeight } = useWindowDimensions();
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       title="Change Password"
       onGoBack={gotoSecurityAndPrivacy}
       reverseView={false}
@@ -35,7 +36,7 @@ export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
     >
       <View
         style={{
-          height: Dimensions.get("window").height - 180,
+          height: windowHeight - 180,
           marginTop: layout.spacing_x4,
           paddingHorizontal: layout.spacing_x2,
           position: "relative",
@@ -74,6 +75,6 @@ export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
           title="Save"
         />
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };

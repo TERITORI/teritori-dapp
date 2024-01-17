@@ -1,20 +1,21 @@
 import React from "react";
 import { View } from "react-native";
 
+import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
-import { SettingBase } from "../components/SettingBase";
-import { SettingMenuItem } from "../Settings/components/SettingMenuItems";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import { SettingMenuItem } from "../components/SettingMenuItems";
 
 export const AddAccountScreen: ScreenFC<"MiniAddAccount"> = ({
   navigation,
 }) => {
   const goToProfile = () => navigation.replace("MiniProfile");
   return (
-    <SettingBase title="Add Account" onGoBack={goToProfile}>
-      <View style={{ marginBottom: layout.spacing_x1_5 }}>
+    <BlurScreenContainer title="Add Account" onGoBack={goToProfile}>
+      <View style={{ paddingHorizontal: layout.spacing_x2 }}>
         <SettingMenuItem
-          navigateTo="MiniAddAccount"
+          navigateTo="NativeWallet"
           title="Create new account"
           subtitle="Generate a new account"
         />
@@ -28,7 +29,8 @@ export const AddAccountScreen: ScreenFC<"MiniAddAccount"> = ({
           title="Connect Ledger"
           subtitle="Add a Ledger account"
         />
+        <SpacerColumn size={1.5} />
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };

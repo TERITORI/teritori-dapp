@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import NFTScreen from "./NFTScreen";
 import TokenScreen from "./TokenScreen";
@@ -23,6 +23,7 @@ export const MiniWalletScreen: ScreenFC<"MiniWallets"> = ({
 }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("tokens");
+  const { width: windowWidth } = useWindowDimensions();
 
   return (
     <ScreenContainer
@@ -36,7 +37,7 @@ export const MiniWalletScreen: ScreenFC<"MiniWallets"> = ({
       <View
         style={{
           flex: 1,
-          width: Dimensions.get("window").width,
+          width: windowWidth,
           paddingHorizontal: layout.spacing_x1_5,
         }}
       >

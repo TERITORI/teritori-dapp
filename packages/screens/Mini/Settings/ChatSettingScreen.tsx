@@ -2,7 +2,6 @@ import { FC, useState } from "react";
 import { Switch, View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { SettingBase } from "../components/SettingBase";
 import chevronGrayRightSVG from "../../../../assets/icons/chevron-right-gray.svg";
 import dataCabinetSVG from "../../../../assets/icons/data-cabinet.svg";
 import laptopSVG from "../../../../assets/icons/laptop.svg";
@@ -26,6 +25,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 export const ChatSettingScreen: ScreenFC<"MiniChatSetting"> = ({
   navigation,
@@ -36,7 +36,7 @@ export const ChatSettingScreen: ScreenFC<"MiniChatSetting"> = ({
   const navigateToSettings = () => navigation.replace("MiniSettings");
 
   return (
-    <SettingBase title="Chat Setting" onGoBack={navigateToSettings}>
+    <BlurScreenContainer title="Chat Setting" onGoBack={navigateToSettings}>
       <ChatSettingMenuItem
         icon={profileSVG}
         navigateTo="MiniProfileDetail"
@@ -100,7 +100,7 @@ export const ChatSettingScreen: ScreenFC<"MiniChatSetting"> = ({
           device will run out of battery faster.
         </BrandText>
       </View>
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };
 

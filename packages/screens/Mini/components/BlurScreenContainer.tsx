@@ -1,7 +1,7 @@
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { ReactNode } from "react";
-import { Dimensions, SafeAreaView, View } from "react-native";
+import { SafeAreaView, useWindowDimensions, View } from "react-native";
 
 import closeSVG from "../../../../assets/icons/close.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -10,25 +10,24 @@ import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { BackButton } from "../../../components/navigation/components/BackButton";
 import { useAppNavigation } from "../../../utils/navigation";
 import { fontSemibold18 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { MOBILE_HEADER_HEIGHT, layout } from "../../../utils/style/layout";
 
 type Props = {
   children: ReactNode;
   title?: string;
   onGoBack?: () => void;
-  reverseView?: boolean;
   background?: string | "transparent";
   customHeader?: ReactNode;
 };
 
-export const SettingBase = ({
+export const BlurScreenContainer = ({
   children,
   title,
   onGoBack,
-  reverseView = true,
-  background = "#000",
+  background = "transparent",
   customHeader,
 }: Props) => {
+  const { width: windowWidth } = useWindowDimensions();
   const navigation = useAppNavigation();
   const onClose = () => navigation.goBack();
   const navigateToProfile = () => {
@@ -43,7 +42,7 @@ export const SettingBase = ({
     <SafeAreaView
       style={{
         flex: 1,
-        width: Dimensions.get("window").width,
+        width: windowWidth,
         backgroundColor: "rgba(0, 0, 0, .2)",
         position: "relative",
       }}
@@ -53,7 +52,7 @@ export const SettingBase = ({
         style={{
           position: "absolute",
           zIndex: 0,
-          width: Dimensions.get("window").width,
+          width: windowWidth,
           top: 0,
           left: 0,
           right: 0,
@@ -74,7 +73,7 @@ export const SettingBase = ({
           borderRadius: 6,
           position: "absolute",
           zIndex: 0,
-          width: Dimensions.get("window").width,
+          width: windowWidth,
           top: 0,
           left: 0,
           right: 0,
@@ -87,7 +86,16 @@ export const SettingBase = ({
         }}
       >
         {customHeader ? (
-          customHeader
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              height: MOBILE_HEADER_HEIGHT,
+            }}
+          >
+            {customHeader}
+          </View>
         ) : (
           <View
             style={{
@@ -95,6 +103,7 @@ export const SettingBase = ({
               justifyContent: "space-between",
               alignItems: "center",
               paddingHorizontal: layout.spacing_x2,
+              height: MOBILE_HEADER_HEIGHT,
             }}
           >
             {onGoBack && (
@@ -113,17 +122,10 @@ export const SettingBase = ({
         <View
           style={{
             flex: 1,
-            justifyContent: reverseView ? "flex-end" : "flex-start",
+            backgroundColor: background,
           }}
         >
-          <View
-            style={{
-              width: Dimensions.get("window").width,
-              backgroundColor: background,
-            }}
-          >
-            {children}
-          </View>
+          {children}
         </View>
       </View>
     </SafeAreaView>

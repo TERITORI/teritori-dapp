@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
 import { CheckList } from "./components/CheckList";
-import { SettingBase } from "../components/SettingBase";
 import { ShowSeedPhrase } from "./components/ShowSeedPhrase";
 import { ScreenFC } from "../../../utils/navigation";
+import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 type ScreenType = "visible" | "hidden";
 
@@ -18,7 +18,7 @@ export const RevealSeedPhraseScreen: ScreenFC<"MiniRevealSeedPhrase"> = ({
   const changeVisibleScreen = (key: ScreenType) => setVisibleScreen(key);
 
   return (
-    <SettingBase
+    <BlurScreenContainer
       title="Reveal Seed Phrase"
       onGoBack={gotoSecurityAndPrivacy}
       reverseView={false}
@@ -35,6 +35,6 @@ export const RevealSeedPhraseScreen: ScreenFC<"MiniRevealSeedPhrase"> = ({
           visible: <ShowSeedPhrase />,
         }[visibleScreen]
       }
-    </SettingBase>
+    </BlurScreenContainer>
   );
 };

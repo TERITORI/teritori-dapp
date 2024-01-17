@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import { JungleFeedScreen } from "./JungleFeedScreen";
 import { SoundFeedScreen } from "./SoundFeedScreen";
@@ -33,6 +33,7 @@ export const MiniFeedScreen: ScreenFC<"MiniFeeds"> = ({
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof feedScreenTabItems>("jungle");
 
+  const { width } = useWindowDimensions();
   return (
     <ScreenContainer
       headerChildren={<></>}
@@ -45,7 +46,7 @@ export const MiniFeedScreen: ScreenFC<"MiniFeeds"> = ({
       <View
         style={{
           flex: 1,
-          width: Dimensions.get("window").width,
+          width,
           paddingHorizontal: layout.spacing_x1_5,
         }}
       >
