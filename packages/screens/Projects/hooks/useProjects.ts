@@ -3,29 +3,38 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useUtils } from "./useUtils";
 import { mustGetGnoNetwork } from "../../../networks";
+import { extractGnoString } from "../../../utils/gno";
 import { Project } from "../types";
 
 const toJSON = (contractData: string, isArray: boolean) => {
-  const regex = isArray ? /("\[.*\]")/ : /("{.*}")/;
+  // const regex = isArray ? /("\[.*\]")/ : /("{.*}")/;
+  //
+  // // FIXME: Wait JK to fix this JSON =============================================
+  // // NOTE: Don't know why extractGnoJSONString doesn't work here
+  // let rawData = contractData.match(regex)?.[0] || "";
 
-  // FIXME: Wait JK to fix this JSON =============================================
-  // NOTE: Don't know why extractGnoJSONString doesn't work here
-  const rawData = contractData.match(regex)?.[0] || "";
+  let rawData = extractGnoString(contractData);
+
+  // FIXME: dont support \n for now
+  rawData = rawData.replace(/\n/g, " ");
 
   // FIXME: sanitize
   // eslint-disable-next-line no-restricted-syntax
-  let contractJSON = JSON.parse(JSON.parse(rawData));
+  let contractJSON: any = JSON.parse(rawData);
 
-  if (isArray) {
+  if (Array.isArray(contractJSON)) {
     contractJSON = contractJSON.map((data: any) => {
       // FIXME: sanitize
       // eslint-disable-next-line no-restricted-syntax
-      data.metadata = JSON.parse(data.metadata);
+      data.metadata = JSON.parse(data.metadata.replace(/\n/g, " "));
       return data;
     });
   } else {
+    // FIXME: sanitize
     // eslint-disable-next-line no-restricted-syntax
-    contractJSON.metadata = JSON.parse(contractJSON.metadata);
+    contractJSON.metadata = JSON.parse(
+      contractJSON.metadata.replace(/\n/g, " "),
+    );
   }
 
   return contractJSON;

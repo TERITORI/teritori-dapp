@@ -70,8 +70,9 @@ export const ProjectBox: React.FC<{
               </BrandText>
             </TouchableOpacity>
             <FlexRow style={{ marginTop: layout.spacing_x0_75 }}>
-              {project.metadata.shortDescData.tags.split(",").map((tag) => (
+              {project.metadata.shortDescData.tags.split(",").map((tag, idx) => (
                 <Tag
+                  key={idx}
                   text={tag}
                   containerStyle={{ marginRight: layout.spacing_x1 }}
                 />
@@ -81,6 +82,7 @@ export const ProjectBox: React.FC<{
         </FlexRow>
 
         <BrandText
+          numberOfLines={2}
           style={[
             fontSemibold13,
             { color: neutral77, marginTop: layout.spacing_x2 },

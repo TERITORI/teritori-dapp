@@ -117,10 +117,10 @@ export const ProjectsScreen: ScreenFC<"Projects"> = () => {
           flexWrap: "wrap",
         }}
       >
-        {filteredProjects.map((project) => {
+        {filteredProjects.map((project, idx) => {
           return (
             <ProjectBox
-              key={"" + project.id}
+              key={project.id}
               project={project}
               onPress={() => gotoProjectsDetail(project.id)}
               containerStyle={{
