@@ -2,22 +2,15 @@ import React from "react";
 import { FlatList, useWindowDimensions, View } from "react-native";
 
 import dotSVG from "../../../../../assets/icons/dots.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { Dropdown } from "../../../../components/Dropdown";
-import { SVG } from "../../../../components/SVG";
 import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
 import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
-import {
-  neutral67,
-  primaryColor,
-  withAlpha,
-} from "../../../../utils/style/colors";
+import { primaryColor, withAlpha } from "../../../../utils/style/colors";
 import { fontSemibold16 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import ListView from "../../components/ListView";
 import GradientBox from "../../Notifications/components/GradientBox";
 import { randomGradients } from "../../Notifications/notificationData";
 import Accordion from "../../components/Accordion/Accordion";
+import { DropdownWithListItem } from "../../components/Dropdown/DropdownWithListItem";
+import ListView from "../../components/ListView";
 
 type NFTProps = {
   id: string;
@@ -135,27 +128,12 @@ function NFTCard({ data }: NFTCardProps) {
           zIndex: 999,
         }}
       >
-        <Dropdown
-          triggerComponent={
-            <SVG source={dotSVG} height={24} width={24} fill="#fff" />
-          }
-          positionStyle={{
-            top: 28,
-            right: 0,
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: neutral67,
-              borderRadius: 8,
-              paddingHorizontal: layout.spacing_x2,
-              width: 120,
-              height: 90,
-            }}
-          >
-            <BrandText>options</BrandText>
-          </View>
-        </Dropdown>
+        <DropdownWithListItem
+          items={[{ name: "collection 1" }, { name: "collection 2" }]}
+          icon={dotSVG}
+          positionStyle={{ top: 30 }}
+          style={{ width: 120 }}
+        />
       </View>
       {data.img ? (
         <SVGorImageIcon

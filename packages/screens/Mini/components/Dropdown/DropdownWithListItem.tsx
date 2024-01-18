@@ -1,6 +1,6 @@
 import { NavigationProp } from "@react-navigation/native";
 import React, { FC } from "react";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import AddSVG from "../../../../../assets/icons/add-new.svg";
@@ -23,11 +23,15 @@ type DropdownItemType = {
 type DropdownWithListItemProps = {
   items: DropdownItemType[];
   icon?: React.FC<SvgProps> | string;
+  positionStyle?: ViewStyle;
+  style?: ViewStyle;
 };
 
 export const DropdownWithListItem = ({
   items,
   icon,
+  positionStyle = {},
+  style = {},
 }: DropdownWithListItemProps) => {
   const navigation = useAppNavigation();
   return (
@@ -39,6 +43,7 @@ export const DropdownWithListItem = ({
         positionStyle={{
           bottom: -190,
           right: 0,
+          ...positionStyle,
         }}
       >
         <View
@@ -46,6 +51,7 @@ export const DropdownWithListItem = ({
             backgroundColor: neutral22,
             borderRadius: 12,
             width: 252,
+            ...style,
           }}
         >
           {items.map((dropdownItem, index) => {
