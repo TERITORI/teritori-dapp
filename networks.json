@@ -9267,6 +9267,82 @@
     "daoVotingCw4CodeId": 33
   },
   {
+    "id": "teritori-localnet",
+    "kind": "Cosmos",
+    "chainId": "testing",
+    "displayName": "Teritori Localnet",
+    "registryName": "teritorilocalnet",
+    "icon": "icons/networks/teritori.svg",
+    "features": [
+      "NFTMarketplace",
+      "Organizations",
+      "SocialFeed",
+      "UPP",
+      "NameService",
+      "BurnTokens",
+      "NFTLaunchpad",
+      "RiotP2E"
+    ],
+    "currencies": [
+      {
+        "denom": "utori",
+        "displayName": "TORI",
+        "decimals": 6,
+        "coingeckoId": "teritori",
+        "icon": "icons/networks/teritori-circle.svg",
+        "kind": "native",
+        "color": "#16BBFF"
+      }
+    ],
+    "txExplorer": "",
+    "accountExplorer": "",
+    "contractExplorer": "",
+    "idPrefix": "devtori",
+    "testnet": true,
+    "backendEndpoint": "",
+    "addressPrefix": "tori",
+    "restEndpoint": "http://localhost:1317",
+    "rpcEndpoint": "http://localhost:26657",
+    "stakeCurrency": "utori",
+    "gasPriceStep": {
+      "low": 0,
+      "average": 0.025,
+      "high": 0.04
+    },
+    "cosmosFeatures": [
+      "stargate",
+      "ibc-transfer",
+      "cosmwasm",
+      "no-legacy-stdTx",
+      "ibc-go"
+    ],
+    "nameServiceContractAddress": "",
+    "nameServiceDefaultImage": "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
+    "nameServiceTLD": ".tori",
+    "vaultContractAddress": "",
+    "riotContractAddressGen0": "",
+    "riotContractAddressGen1": "",
+    "riotSquadStakingContractAddressV1": "",
+    "riotSquadStakingContractAddressV2": "",
+    "distributorContractAddress": "",
+    "riotersFooterContractAddress": "",
+    "secondaryDuringMintList": [
+      "",
+      ""
+    ],
+    "excludeFromLaunchpadList": [
+      ""
+    ],
+    "socialFeedContractAddress": "",
+    "daoCoreCodeId": -1,
+    "daoPreProposeSingleCodeId": -1,
+    "daoProposalSingleCodeId": -1,
+    "daoCw4GroupCodeId": -1,
+    "daoVotingCw4CodeId": -1,
+    "daoFactoryCodeId": -1,
+    "daoFactoryContractAddress": ""
+  },
+  {
     "id": "teritori-testnet",
     "kind": "Cosmos",
     "chainId": "teritori-test-5",
