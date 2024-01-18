@@ -71,3 +71,5 @@ export const zodTxResult = z.object({
     }),
   ),
 });
+
+export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
