@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import { NewConversationOrGroupSelector } from "./components/NewConversationOrGroupSelector";
-import { SearchChatList } from "./components/SearchChatList";
+import searchSVG from "../../../../assets/icons/search-gray.svg";
+import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
+import { fontMedium14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import MiniTextInput from "../components/MiniTextInput";
 
 const dummyContact = [
   {
@@ -129,17 +132,15 @@ export const NewConversationScreen: ScreenFC<"MiniNewConversation"> = ({
           flex: 1,
         }}
       >
-        <SearchChatList
-          setValue={setSearch}
+        <MiniTextInput
+          onChangeText={setSearch}
           value={search}
+          icon={searchSVG}
           placeholder="Search by nickname"
-          style={{
-            backgroundColor: "rgba(118, 118, 128, 0.24)",
-            padding: 10,
-            borderRadius: 10,
-            marginVertical: layout.spacing_x2_5,
-          }}
+          style={{ paddingVertical: layout.spacing_x1 }}
+          inputStyle={[fontMedium14]}
         />
+        <SpacerColumn size={2} />
         <NewConversationOrGroupSelector
           contacts={dummyContact}
           onPressContact={({ id }) =>

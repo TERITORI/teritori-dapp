@@ -17,6 +17,8 @@ import { fontMedium16 } from "../../../utils/style/fonts";
 type CheckboxProp = {
   isChecked: boolean;
   value: string;
+  size?: "sm" | "md" | "lg" | number;
+  type?: "circle" | "box";
   onPress: (isChecked: boolean, value: string) => void;
   checkboxColor?: string;
   labelStyle?: StyleProp<TextStyle>;
@@ -25,14 +27,27 @@ type CheckboxProp = {
 };
 
 const Checkbox = ({
-  isChecked,
+  isChecked = false,
   value,
+  type = "box",
+  size = "sm",
   label,
   onPress,
   labelStyle,
   checkboxStyle,
   checkboxColor,
 }: CheckboxProp) => {
+  const checkboxSize =
+    typeof size === "string"
+      ? size === "sm"
+        ? 16
+        : size === "md"
+          ? 20
+          : 24
+      : size;
+  const borderRadius = type === "circle" ? checkboxSize / 2 : 5;
+  const checkBoxIcon = checkboxSize / 2;
+
   return (
     <>
       <FlexRow>
@@ -40,9 +55,9 @@ const Checkbox = ({
           <View
             style={[
               {
-                width: 16,
-                height: 16,
-                borderRadius: 5,
+                width: checkboxSize,
+                height: checkboxSize,
+                borderRadius,
                 borderWidth: 1,
                 borderColor: neutralA3,
                 backgroundColor: neutral17,
@@ -59,8 +74,8 @@ const Checkbox = ({
             {isChecked && (
               <SVG
                 source={checkSVG}
-                width={8}
-                height={8}
+                width={checkBoxIcon}
+                height={checkBoxIcon}
                 fill={checkboxColor ?? secondaryColor}
               />
             )}

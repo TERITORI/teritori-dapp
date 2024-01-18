@@ -59,44 +59,46 @@ const SingleFriendChatList = ({
     navigation.navigate("Conversation", { conversationId });
   };
   return (
-    <CustomPressable
-      onPress={handleListPress}
-      style={{
-        flexDirection: "row",
-        alignItems: "flex-start",
-      }}
-    >
-      <ChatAvatar isActive membersAvatar={membersAvatar} />
-      <View
+    <>
+      <CustomPressable
+        onPress={handleListPress}
         style={{
-          width: "100%",
-          flex: 1,
-          marginLeft: layout.spacing_x2,
-          marginRight: layout.spacing_x1,
+          flexDirection: "row",
+          alignItems: "flex-start",
         }}
       >
+        <ChatAvatar isActive membersAvatar={membersAvatar} />
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
             width: "100%",
+            flex: 1,
+            marginLeft: layout.spacing_x2,
+            marginRight: layout.spacing_x1,
           }}
         >
-          <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
-            {name}
-          </BrandText>
-          <BrandText style={[fontMedium13, { color: neutralA3 }]}>
-            {lastActiveDateTime}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
+              {name}
+            </BrandText>
+            <BrandText style={[fontMedium13, { color: neutralA3 }]}>
+              {lastActiveDateTime}
+            </BrandText>
+          </View>
+          <BrandText
+            style={[fontMedium13, { color: neutralA3, maxWidth: "100%" }]}
+            numberOfLines={1}
+          >
+            {lastMessage}
           </BrandText>
         </View>
-        <BrandText
-          style={[fontMedium13, { color: neutralA3, maxWidth: "100%" }]}
-          numberOfLines={1}
-        >
-          {lastMessage}
-        </BrandText>
-      </View>
-      <SVG source={DoubleCheckSVG} height={16} width={16} />
-    </CustomPressable>
+        <SVG source={DoubleCheckSVG} height={16} width={16} />
+      </CustomPressable>
+    </>
   );
 };

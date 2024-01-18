@@ -28,6 +28,7 @@ import {
   secondaryColor,
 } from "../../../utils/style/colors";
 import {
+  fontMedium14,
   fontMedium16,
   fontSemibold14,
   fontSemibold18,
@@ -145,7 +146,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
     setShowToast(false);
   };
   const onLearnMoreToastPress = () => {
-    navigation.navigate("MiniChatSetting");
+    navigation.navigate("MiniChatSetting", { back: undefined });
     // setIsChatSettingModalVisible(true);
   };
 
@@ -214,15 +215,9 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
             onChangeText={onSearchChange}
             style={{
               backgroundColor: "rgba(118, 118, 128, 0.24)",
-              padding: 10,
-              borderRadius: 10,
+              paddingVertical: layout.spacing_x1,
             }}
-            inputStyle={[
-              fontMedium16,
-              {
-                color: "#fff",
-              },
-            ]}
+            inputStyle={[fontMedium14]}
             placeholder="Search..."
           />
           <SpacerColumn size={1} />
