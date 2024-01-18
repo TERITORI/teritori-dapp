@@ -1,13 +1,15 @@
 import { View } from "react-native";
 
+import defaultThumbnailImage from "../../../../../assets/default-images/default-article-thumbnail.png";
 import { BrandText } from "../../../../components/BrandText";
+import { OptimizedImage } from "../../../../components/OptimizedImage";
+import { SVG } from "../../../../components/SVG";
 import { DotSeparator } from "../../../../components/separators/DotSeparator";
 import { DateTime } from "../../../../components/socialFeed/SocialCard/DateTime";
 import { SpacerRow } from "../../../../components/spacer";
 import { neutralA3 } from "../../../../utils/style/colors";
 import { fontMedium14, fontSemibold16 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
-import CircularImgOrIcon from "../../components/CircularImgOrIcon";
 
 type UserHeaderType = {
   img: string | null | undefined;
@@ -32,16 +34,23 @@ export function PostHeader({ user }: CardHeaderProps) {
           height: 36,
         }}
       >
-        <CircularImgOrIcon
-          enableFullIcon
-          style={{ alignItems: "center", justifyContent: "center" }}
-          size={38}
-          icon={
-            img
-              ? img
-              : require("../../../../../assets/default-images/profile.png")
-          }
-        />
+        {typeof img === "function" ? (
+          <SVG source={img} height={38} width={38} />
+        ) : (
+          <OptimizedImage
+            width={38}
+            height={38}
+            sourceURI={img}
+            fallbackURI={defaultThumbnailImage}
+            style={{
+              zIndex: -1,
+              width: 38,
+              height: 38,
+              borderRadius: 20,
+            }}
+          />
+        )}
+
         <SpacerRow size={1.5} />
         <BrandText style={fontSemibold16}>{name}</BrandText>
         <SpacerRow size={1} />

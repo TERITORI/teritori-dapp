@@ -16,6 +16,7 @@ import {
 } from "../../../hooks/feed/useFetchFeed";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { layout } from "../../../utils/style/layout";
+
 type Props = {
   req: Partial<PostsRequest>;
 };
@@ -34,8 +35,6 @@ export const JungleFeedScreen = ({ req }: Props) => {
 
   const RenderItem = useCallback(
     (post: Post) => {
-      // NOTE: if you edit this, make sure that this is not too CPU expensive
-      // Heavy components like SocialThreadCard, SocialArticleCard, etc. should be properly memoized
       return (
         <View
           style={{
