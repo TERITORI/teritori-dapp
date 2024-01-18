@@ -25,10 +25,10 @@ import { RouteName, useAppNavigation } from "../../../utils/navigation";
 import {
   neutral22,
   neutral77,
+  neutralA3,
   secondaryColor,
 } from "../../../utils/style/colors";
 import {
-  fontMedium14,
   fontMedium16,
   fontSemibold14,
   fontSemibold18,
@@ -217,7 +217,8 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
               backgroundColor: "rgba(118, 118, 128, 0.24)",
               paddingVertical: layout.spacing_x1,
             }}
-            inputStyle={[fontMedium14]}
+            inputStyle={[fontSemibold14, { lineHeight: 0 }]}
+            placeholderTextColor={neutralA3}
             placeholder="Search..."
           />
           <SpacerColumn size={1} />

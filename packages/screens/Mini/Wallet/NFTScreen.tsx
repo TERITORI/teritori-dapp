@@ -6,6 +6,9 @@ import searchSvg from "../../../../assets/icons/search-gray.svg";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
+import { neutralA3 } from "../../../utils/style/colors";
+import { fontSemibold14 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import MiniTextInput from "../components/MiniTextInput";
 
 const nftData = [
@@ -81,8 +84,12 @@ const NFTScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
       <MiniTextInput
         placeholder="Search"
         icon={searchSvg}
-        enableClearButton
-        style={{ paddingVertical: 10 }}
+        style={{
+          backgroundColor: "rgba(118, 118, 128, 0.24)",
+          paddingVertical: layout.spacing_x1,
+        }}
+        inputStyle={[fontSemibold14, { lineHeight: 0 }]}
+        placeholderTextColor={neutralA3}
       />
 
       <SpacerColumn size={3} />
