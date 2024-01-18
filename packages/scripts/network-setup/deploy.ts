@@ -163,7 +163,7 @@ const instantiateNameService = async (
   };
   const cmd = `teritorid tx wasm execute ${addr} ${sqh(
     JSON.stringify(feesMsg),
-  )} --from ${wallet} --gas auto --gas-adjustment 1.5 --broadcast-mode block --chain-id ${
+  )} --from ${wallet} --gas auto --gas-adjustment 1.5 --broadcast-mode sync --chain-id ${
     network.chainId
   } --node ${injectRPCPort(
     network.rpcEndpoint,
@@ -185,7 +185,7 @@ const instantiateContract = async (
 ) => {
   const cmd = `teritorid tx wasm instantiate ${codeId} ${sqh(
     JSON.stringify(msg),
-  )} --from ${wallet} --gas auto --gas-adjustment 1.5 --broadcast-mode block --chain-id ${
+  )} --from ${wallet} --gas auto --gas-adjustment 1.5 --broadcast-mode sync --chain-id ${
     network.chainId
   } --node ${injectRPCPort(
     network.rpcEndpoint,
@@ -216,7 +216,7 @@ const storeWASM = async (
   network: CosmosNetworkInfo,
   wasmFilePath: string,
 ) => {
-  const cmd = `teritorid tx wasm store ${wasmFilePath} --from ${wallet} --gas auto --gas-adjustment 1.5 --broadcast-mode block --chain-id ${
+  const cmd = `teritorid tx wasm store ${wasmFilePath} --from ${wallet} --gas auto --gas-adjustment 1.5 --broadcast-mode sync --chain-id ${
     network.chainId
   } --node ${injectRPCPort(
     network.rpcEndpoint,
