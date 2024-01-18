@@ -7,12 +7,11 @@ import {
   assets as osmosisAssets,
 } from "@cosmology/core";
 import { useQuery } from "@tanstack/react-query";
-import Long from "long";
 import { osmosis, getSigningOsmosisClient } from "osmojs";
-import { QuerySpotPriceRequest } from "osmojs/src/codegen/osmosis/gamm/v1beta1/query";
-import { Coin } from "osmojs/types/codegen/cosmos/base/v1beta1/coin";
-import { MsgSwapExactAmountIn } from "osmojs/types/codegen/osmosis/gamm/v1beta1/tx";
-import { SwapAmountInRoute } from "osmojs/types/codegen/osmosis/poolmanager/v1beta1/swap_route";
+import { Coin } from "osmojs/dist/codegen/cosmos/base/v1beta1/coin";
+import { QuerySpotPriceRequest } from "osmojs/dist/codegen/osmosis/gamm/v1beta1/query";
+import { MsgSwapExactAmountIn } from "osmojs/dist/codegen/osmosis/gamm/v1beta1/tx";
+import { SwapAmountInRoute } from "osmojs/dist/codegen/osmosis/poolmanager/v1beta1/swap_route";
 import { useEffect, useMemo, useState } from "react";
 
 import { useSelectedNetworkId } from "./useSelectedNetwork";
@@ -291,7 +290,7 @@ export const useSwap = (
           lcdPool.poolAssets.forEach((asset) => {
             if (asset.token.denom === currencyIn.denom) {
               firstRequestSpotPrice = {
-                poolId: Long.fromString(lcdPool.id),
+                poolId: BigInt(lcdPool.id),
                 // quote asset is the currencyIn
                 quoteAssetDenom: currencyIn.denom,
                 // base asset is the no currencyIn (Certainly OSMO)
@@ -303,7 +302,7 @@ export const useSwap = (
             }
             if (asset.token.denom === currencyOut.denom) {
               lastRequestSpotPrice = {
-                poolId: Long.fromString(lcdPool.id),
+                poolId: BigInt(lcdPool.id),
                 // quote asset is the no currencyIn (Certainly OSMO)
                 quoteAssetDenom:
                   lcdPool.poolAssets.find(
@@ -331,7 +330,7 @@ export const useSwap = (
       // ===== Spot price of the directPool
       else if (directPool) {
         const requestSpotPrice = {
-          poolId: Long.fromString(directPool.id),
+          poolId: BigInt(directPool.id),
           baseAssetDenom: currencyOut.denom,
           quoteAssetDenom: currencyIn.denom,
         };
@@ -374,25 +373,25 @@ export const useSwap = (
       const signer = await getKeplrSigner(selectedNetwork.id);
       const client = await getSigningOsmosisClient({
         rpcEndpoint: selectedNetwork.rpcEndpoint || "",
-        signer,
+        signer: signer as any, // FIXME
       });
       const routes: SwapAmountInRoute[] = [];
       if (isMultihop) {
         if (multihopPools[0].poolAssets[0].token.denom)
           routes.push({
-            poolId: Long.fromString(multihopPools[0].id),
+            poolId: BigInt(multihopPools[0].id),
             tokenOutDenom: "uosmo", // multihopPools must have osmo token as asset
           } as SwapAmountInRoute);
 
         routes.push({
-          poolId: Long.fromString(multihopPools[1].id),
+          poolId: BigInt(multihopPools[1].id),
           tokenOutDenom: currencyOut.denom,
         } as SwapAmountInRoute);
       } else {
         //use directPool
         //only one route
         routes.push({
-          poolId: Long.fromString(directPool?.id!),
+          poolId: BigInt(directPool?.id!),
           tokenOutDenom: currencyOut.denom,
         });
       }

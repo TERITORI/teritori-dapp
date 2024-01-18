@@ -13,16 +13,8 @@ import {
   GasPrice,
   defaultRegistryTypes,
   AminoTypes,
-  AminoConverters,
-  createAuthzAminoConverters,
-  createBankAminoConverters,
-  createDistributionAminoConverters,
-  createFeegrantAminoConverters,
-  createGovAminoConverters,
-  createIbcAminoConverters,
-  createStakingAminoConverters,
-  createVestingAminoConverters,
   StargateClient,
+  createDefaultAminoConverters,
 } from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 import { bech32 } from "bech32";
@@ -100,20 +92,6 @@ export const cosmosTypesRegistry = new Registry([
   ...wasmTypes,
   ...teritoriProtoRegistry,
 ]);
-
-// FIXME: upgrade stargate since it exposes this function in new versions
-function createDefaultAminoConverters(): AminoConverters {
-  return {
-    ...createAuthzAminoConverters(),
-    ...createBankAminoConverters(),
-    ...createDistributionAminoConverters(),
-    ...createGovAminoConverters(),
-    ...createStakingAminoConverters(""),
-    ...createIbcAminoConverters(),
-    ...createFeegrantAminoConverters(),
-    ...createVestingAminoConverters(),
-  };
-}
 
 const cosmosAminoTypes = new AminoTypes({
   ...createDefaultAminoConverters(),
@@ -439,7 +417,6 @@ export const keplrChainInfoFromNetworkInfo = (
     },
     currencies: [stakeCurrency],
     feeCurrencies: [stakeCurrency],
-    gasPriceStep: network.gasPriceStep,
     features: network.cosmosFeatures,
   };
 };
@@ -499,7 +476,7 @@ export const getKeplrSigningStargateClient = async (
 
   return await SigningStargateClient.connectWithSigner(
     network.rpcEndpoint,
-    signer,
+    signer as any, // FIXME
     {
       gasPrice,
       registry: cosmosTypesRegistry,
@@ -545,9 +522,13 @@ export const getKeplrSigningCosmWasmClient = async (
     throw new Error("gas price not found");
   }
 
-  return SigningCosmWasmClient.connectWithSigner(network.rpcEndpoint, signer, {
-    gasPrice,
-  });
+  return SigningCosmWasmClient.connectWithSigner(
+    network.rpcEndpoint,
+    signer as any, // FIXME
+    {
+      gasPrice,
+    },
+  );
 };
 
 export const mustGetNonSigningCosmWasmClient = async (networkId: string) => {

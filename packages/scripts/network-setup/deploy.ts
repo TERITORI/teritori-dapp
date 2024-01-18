@@ -1,3 +1,4 @@
+import { IndexedTx } from "@cosmjs/stargate";
 import child_process from "child_process";
 import { program } from "commander";
 import { cloneDeep } from "lodash";
@@ -9,7 +10,11 @@ import {
 } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { InstantiateMsg as MarketplaceVaultInstantiateMsg } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.types";
 import { InstantiateMsg as SocialFeedInstantiateMsg } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import { CosmosNetworkInfo, getCosmosNetwork } from "../../networks";
+import {
+  CosmosNetworkInfo,
+  getCosmosNetwork,
+  mustGetNonSigningCosmWasmClient,
+} from "../../networks";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import { injectRPCPort, retry, zodTxResult } from "../lib";
 import sqh from "../sqh";
@@ -47,6 +52,10 @@ const main = async () => {
     walletAddr,
     network,
   );
+
+  // FIXME: no race
+  console.log("Waiting for settlement");
+  await new Promise((resolve) => setTimeout(resolve, 10000));
 
   console.log("Storing social feed");
   const socialFeedWasmFilePath = path.join(__dirname, "social-feed.wasm");
@@ -202,13 +211,9 @@ const instantiateContract = async (
   if (!outObj) {
     throw new Error("Failed to parse instantiate result");
   }
-  const contract_address = outObj.events
-    .find((e) => e.type === "instantiate")
-    ?.attributes.find((a) => a.key === "_contract_address")?.value;
-  if (!contract_address) {
-    throw new Error("Failed to parse contract address");
-  }
-  return contract_address;
+  const tx = await getTx(network.id, outObj.txhash);
+  const contractAddress = mustGetAttr(tx, "instantiate", "_contract_address");
+  return contractAddress;
 };
 
 const storeWASM = async (
@@ -225,19 +230,43 @@ const storeWASM = async (
   const out = await retry(5, () =>
     child_process.execSync(cmd, {
       stdio: ["inherit", "pipe", "inherit"],
+      encoding: "utf-8",
     }),
   );
-  const outObj = zodTryParseJSON(zodTxResult, out.toString());
+  const outObj = zodTryParseJSON(zodTxResult, out);
   if (!outObj) {
     throw new Error("Failed to parse store result");
   }
-  const codeId = outObj.events
-    .find((e) => e.type === "store_code")
-    ?.attributes.find((a) => a.key === "code_id")?.value;
-  if (!codeId) {
-    throw new Error("Failed to parse code_id");
-  }
+  const { txhash } = outObj;
+  const tx = await getTx(network.id, txhash);
+  const codeId = mustGetAttr(tx, "store_code", "code_id");
   return +codeId;
+};
+
+// FIXME: timeout
+const getTx = async (networkId: string, txhash: string) => {
+  let tx: IndexedTx | null = null;
+  while (tx === null) {
+    tx = await retry(5, async () => {
+      const client = await mustGetNonSigningCosmWasmClient(networkId);
+      return client.getTx(txhash);
+    });
+  }
+  return tx;
+};
+
+const getAttr = (tx: IndexedTx, eventKey: string, attrKey: string) => {
+  return tx?.events
+    .find((e) => e.type === eventKey)
+    ?.attributes.find((a) => a.key === attrKey)?.value;
+};
+
+const mustGetAttr = (tx: IndexedTx, eventKey: string, attrKey: string) => {
+  const val = getAttr(tx, eventKey, attrKey);
+  if (!val) {
+    throw new Error(`Failed to get ${eventKey}.${attrKey}`);
+  }
+  return val;
 };
 
 main();
