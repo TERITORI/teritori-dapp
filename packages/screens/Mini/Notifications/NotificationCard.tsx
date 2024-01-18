@@ -9,7 +9,7 @@ import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
-import { SpacerRow } from "../../../components/spacer";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   neutralA3,
   primaryColor,
@@ -148,6 +148,8 @@ function NotificationCardInnerContent({
           {date}
         </BrandText>
       </View>
+
+      <SpacerColumn size={0.4} />
       <View style={{ flexDirection: "row" }}>
         <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
           {desc}
@@ -181,6 +183,7 @@ function NotificationCardInnerContent({
             )}
           </>
         )}
+
         {link && (
           <>
             <SpacerRow size={0.7} />

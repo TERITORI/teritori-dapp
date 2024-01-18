@@ -73,7 +73,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
             <BrandText style={[fontSemibold15]}>Lock Wallet</BrandText>
           </CustomPressable>
           <CustomPressable onPress={onClose} style={{}}>
-            <SVG source={closeSVG} height={28} width={28} />
+            <SVG source={closeSVG} height={24} width={24} />
           </CustomPressable>
         </View>
       }

@@ -2,11 +2,13 @@ import { View, Image, Pressable } from "react-native";
 
 import ChatGraySVG from "../../../../../assets/icons/chat-gray.svg";
 import FriendGraySVG from "../../../../../assets/icons/friend-gray.svg";
-import NotificationSVG from "../../../../../assets/icons/notification-new.svg";
+import notificationSVG from "../../../../../assets/icons/notification-new.svg";
 import OrganizationGraySVG from "../../../../../assets/icons/organization-gray.svg";
 import GroupGraySVG from "../../../../../assets/icons/users-group-gray.svg";
 import { BrandText } from "../../../../components/BrandText";
+import { SVG } from "../../../../components/SVG";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
+import { SpacerRow } from "../../../../components/spacer";
 import { useAppNavigation } from "../../../../utils/navigation";
 import { neutral00, secondaryColor } from "../../../../utils/style/colors";
 import { fontSemibold18 } from "../../../../utils/style/fonts";
@@ -82,14 +84,12 @@ export default function DefaultAppBar({ title }: DefaultAppBarProps) {
       >
         {title}
       </BrandText>
-      <View style={{ flexDirection: "row" }}>
-        <Pressable
-          onPress={onPressNotification}
-          style={{ paddingHorizontal: layout.spacing_x2 }}
-        >
-          <NotificationSVG />
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Pressable onPress={onPressNotification}>
+          <SVG source={notificationSVG} width={22} height={22} />
         </Pressable>
-        <DropdownWithListItem items={dropdownItems} />
+        <SpacerRow size={2.75} />
+        <DropdownWithListItem items={dropdownItems} iconSize={22} />
       </View>
     </View>
   );
