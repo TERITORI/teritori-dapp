@@ -129,7 +129,7 @@ export const MiniSocialArticle = ({ post, refetchFeed, style }: Props) => {
         />
       )}
       <SpacerColumn size={1} />
-      <PostActions comments={1} reaction={0} transfer={0} />
+      <PostActions post={localPost} setPost={setLocalPost} />
     </View>
   );
 };

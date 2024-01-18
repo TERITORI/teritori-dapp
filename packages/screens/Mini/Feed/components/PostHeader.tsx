@@ -7,7 +7,7 @@ import { SpacerRow } from "../../../../components/spacer";
 import { neutralA3 } from "../../../../utils/style/colors";
 import { fontMedium14, fontSemibold16 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
-import CircularImgOrIcon from "../../AddressBook/components/CircularImgOrIcon";
+import CircularImgOrIcon from "../../components/CircularImgOrIcon";
 
 type UserHeaderType = {
   img: string | null | undefined;

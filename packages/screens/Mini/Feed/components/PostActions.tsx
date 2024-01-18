@@ -1,45 +1,64 @@
+import { Dispatch, SetStateAction } from "react";
 import { View } from "react-native";
 
-import commentSVG from "../../../../../assets/icons/social/comments-gray.svg";
-import reactionSVG from "../../../../../assets/icons/social/happy-gray.svg";
-import transferSVG from "../../../../../assets/icons/social/transfer-gray.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
+import { PostCommentCount } from "./PostCommentCount";
+import { PostReactions } from "./PostReactions";
+import { Post } from "../../../../api/feed/v1/feed";
+import { EmojiSelector } from "../../../../components/socialFeed/EmojiSelector";
+import { TipButton } from "../../../../components/socialFeed/SocialActions/TipButton";
 import { SpacerRow } from "../../../../components/spacer";
-import { neutralA3 } from "../../../../utils/style/colors";
-import { fontSemibold14 } from "../../../../utils/style/fonts";
+import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
+import useSelectedWallet from "../../../../hooks/useSelectedWallet";
+import { useSocialReactions } from "../../../../hooks/useSocialReactions";
+import { parseUserId } from "../../../../networks";
 
 type CardFooterProps = {
-  comments: number;
-  reaction: number;
-  transfer: number;
+  post: Post;
+  setPost: Dispatch<SetStateAction<Post>>;
 };
 
-export function PostActions({ comments, reaction, transfer }: CardFooterProps) {
+export function PostActions({ post, setPost }: CardFooterProps) {
+  const wallet = useSelectedWallet();
+  const authorNSInfo = useNSUserInfo(post.authorId);
+  const [, authorAddress] = parseUserId(post.authorId);
+  const username = authorNSInfo?.metadata?.tokenId || authorAddress;
+
+  const { handleReaction, isPostMutationLoading } = useSocialReactions({
+    post,
+    setPost,
+  });
+
   return (
     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <SVG source={commentSVG} width={20} height={20} />
-        <SpacerRow size={0.5} />
-        <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
-          {comments.toString()}
-        </BrandText>
+        <PostCommentCount count={post.subPostLength} />
       </View>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <SVG source={reactionSVG} width={20} height={20} />
-        <SpacerRow size={0.5} />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          flex: 1,
+        }}
+      >
+        <PostReactions
+          reactions={post.reactions}
+          onPressReaction={handleReaction}
+          isLoading={isPostMutationLoading}
+        />
+        <SpacerRow size={1} />
+        <EmojiSelector
+          onEmojiSelected={handleReaction}
+          isLoading={isPostMutationLoading}
+        />
+      </View>
 
-        <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
-          {reaction}
-        </BrandText>
-      </View>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <SVG source={transferSVG} width={23} height={23} />
-        <SpacerRow size={0.5} />
-        <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
-          {transfer.toString()}
-        </BrandText>
-      </View>
+      <TipButton
+        disabled={post.authorId === wallet?.userId}
+        amount={post.tipAmount}
+        author={username}
+        postId={post.identifier}
+      />
     </View>
   );
 }

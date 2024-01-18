@@ -9,7 +9,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
-import React, { memo, ReactNode, useEffect, useState } from "react";
+import React, { memo, ReactNode, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Platform, Text, TextStyle, View } from "react-native";
 import {
@@ -36,6 +36,7 @@ import {
   useWallets,
   WalletsProvider,
 } from "./packages/context/WalletsProvider";
+import { useAppType } from "./packages/hooks/useAppType";
 import { useSelectedNetworkId } from "./packages/hooks/useSelectedNetwork";
 import useSelectedWallet from "./packages/hooks/useSelectedWallet";
 import { getAvailableApps } from "./packages/screens/DAppStore/query/getFromFile";
@@ -53,7 +54,6 @@ type DefaultForm = {
 // this is required for react-native-gesture-handler to work on web
 enableLegacyWebImplementation(true);
 // ^ required for drog and drop on the dAppStore
-export type AppType = "normal" | "mini";
 
 export default function App() {
   const methods = useForm<DefaultForm>();
@@ -62,17 +62,17 @@ export default function App() {
     Exo_600SemiBold,
     Exo_700Bold,
   });
-  const [appType, setAppType] = useState<AppType>("mini");
+  const [appType] = useAppType();
 
-  useEffect(() => {
-    const getAppType = async () => {
-      const savedAppType = await AsyncStorage.getItem("app-type");
-      if (savedAppType && ["web3Addict", "mini"].includes(savedAppType)) {
-        setAppType("mini");
-      }
-    };
-    getAppType();
-  }, []);
+  // useEffect(() => {
+  //   const getAppType = async () => {
+  //     const savedAppType = await AsyncStorage.getItem("app-type");
+  //     if (savedAppType && ["web3Addict", "mini"].includes(savedAppType)) {
+  //       setAppType("mini");
+  //     }
+  //   };
+  //   getAppType();
+  // }, []);
 
   // FIXME: Fonts don't load on electron
   if (Platform.OS !== "web" && !fontsLoaded) {

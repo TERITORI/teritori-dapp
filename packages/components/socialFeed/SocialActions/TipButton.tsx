@@ -2,7 +2,9 @@ import React, { useMemo, useState } from "react";
 import { TouchableOpacity } from "react-native";
 
 import { TipModal } from "./TipModal";
+import tipSolidSVG from "../../../../assets/icons/social/transfer-gray.svg";
 import tipSVG from "../../../../assets/icons/tip.svg";
+import { useAppType } from "../../../hooks/useAppType";
 import { useCoingeckoPrices } from "../../../hooks/useCoingeckoPrices";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import { NetworkKind } from "../../../networks";
@@ -62,6 +64,7 @@ export const TipButton: React.FC<{
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const [tipModalVisible, setTipModalVisible] = useState(false);
   const [tipAmountLocal, setTipAmountLocal] = useState(amount);
+  const [appType] = useAppType();
 
   return (
     <>
@@ -79,7 +82,12 @@ export const TipButton: React.FC<{
         onPress={() => setTipModalVisible(true)}
         disabled={disabled}
       >
-        <SVG source={tipSVG} width={20} height={20} color={secondaryColor} />
+        <SVG
+          source={appType === "mini" ? tipSolidSVG : tipSVG}
+          width={20}
+          height={20}
+          color={secondaryColor}
+        />
         <SpacerRow size={0.75} />
         <BrandText style={[fontSemibold13, disabled && { color: neutral77 }]}>
           {selectedNetworkInfo?.kind === NetworkKind.Gno ? (

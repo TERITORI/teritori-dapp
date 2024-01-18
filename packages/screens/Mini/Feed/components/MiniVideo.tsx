@@ -114,7 +114,7 @@ export const MiniVideo = ({ post, refetchFeed, style }: Props) => {
       )}
 
       <SpacerColumn size={1.5} />
-      <PostActions comments={1} reaction={0} transfer={0} />
+      <PostActions post={localPost} setPost={setLocalPost} />
     </View>
   );
 };

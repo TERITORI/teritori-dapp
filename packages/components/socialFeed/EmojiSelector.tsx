@@ -4,6 +4,8 @@ import { ActivityIndicator } from "react-native-paper";
 import { Menu, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
 import emojiSVG from "../../../assets/icons/emoji.svg";
+import emojiSolidSVG from "../../../assets/icons/social/happy-gray.svg";
+import { useAppType } from "../../hooks/useAppType";
 import { neutral33, neutral67, secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import EmojiModal from "../EmojiModal";
@@ -27,6 +29,8 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
   iconStyle,
   disabled,
 }) => {
+  const [appType] = useAppType();
+
   const [isEmojiModalVisible, setIsEmojiModalVisible] = useState(false);
 
   const toggleEmojiModal = () =>
@@ -43,7 +47,7 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
           <ActivityIndicator animating color={secondaryColor} size={32} />
         ) : (
           <IconBox
-            icon={emojiSVG}
+            icon={appType === "mini" ? emojiSolidSVG : emojiSVG}
             onPress={toggleEmojiModal}
             disabled={disabled}
             style={iconStyle}
