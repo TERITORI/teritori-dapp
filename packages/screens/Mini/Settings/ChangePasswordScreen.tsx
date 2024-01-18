@@ -6,7 +6,7 @@ import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { CustomButton } from "../components/CustomButton";
-import { Input } from "../components/Input";
+import MiniTextInput from "../components/MiniTextInput";
 
 export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
   navigation,
@@ -40,21 +40,21 @@ export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
       >
         <View>
           <SpacerColumn size={2} />
-          <Input
+          <MiniTextInput
             placeholder="Current Pasword"
             value={formData.password}
             onChangeText={(text) => handleTextChange(text, "password")}
             secureTextEntry
           />
           <SpacerColumn size={2} />
-          <Input
+          <MiniTextInput
             placeholder="New Pasword"
             value={formData.newPassword}
             onChangeText={(text) => handleTextChange(text, "newPassword")}
             secureTextEntry
           />
           <SpacerColumn size={2} />
-          <Input
+          <MiniTextInput
             placeholder="Confirm New Pasword"
             value={formData.confirmPassword}
             onChangeText={(text) => handleTextChange(text, "confirmPassword")}

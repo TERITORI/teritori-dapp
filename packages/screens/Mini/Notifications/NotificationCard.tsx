@@ -2,7 +2,6 @@ import React from "react";
 import { View } from "react-native";
 
 import { NotificationType } from "./NotificationList";
-import GradientBox from "./components/GradientBox";
 import { randomGradients } from "./notificationData";
 import messageSvg from "../../../../assets/icons/social-threads/chat.svg";
 import commentSvg from "../../../../assets/icons/social-threads/message.svg";
@@ -17,6 +16,7 @@ import {
   secondaryColor,
 } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
+import GradientBox from "../components/GradientBox";
 
 type NotificationCardProps = {
   item: NotificationType;

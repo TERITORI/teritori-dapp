@@ -6,10 +6,10 @@ import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
 import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
 import { primaryColor, withAlpha } from "../../../../utils/style/colors";
 import { fontSemibold14 } from "../../../../utils/style/fonts";
-import GradientBox from "../../Notifications/components/GradientBox";
 import { randomGradients } from "../../Notifications/notificationData";
 import Accordion from "../../components/Accordion/Accordion";
 import { DropdownWithListItem } from "../../components/Dropdown/DropdownWithListItem";
+import GradientBox from "../../components/GradientBox";
 import ListView from "../../components/ListView";
 
 type NFTProps = {

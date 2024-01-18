@@ -9,7 +9,7 @@ import { fontMedium16 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { CustomButton } from "../../components/CustomButton";
 import { CustomCheckbox } from "../../components/CustomCheckbox";
-import { Input } from "../../components/Input";
+import MiniTextInput from "../../components/MiniTextInput";
 
 type Props = {
   gotoVisibleScreen: () => void;
@@ -57,7 +57,7 @@ export const CheckList = ({ gotoVisibleScreen, type }: Props) => {
           }
         />
         <SpacerColumn size={1.5} />
-        <Input
+        <MiniTextInput
           placeholder="Password"
           secureTextEntry
           value={password}

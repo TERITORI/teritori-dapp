@@ -23,6 +23,7 @@ type DropdownItemType = {
 type DropdownWithListItemProps = {
   items: DropdownItemType[];
   icon?: React.FC<SvgProps> | string;
+  iconSize?: number;
   positionStyle?: ViewStyle;
   style?: ViewStyle;
 };
@@ -30,6 +31,7 @@ type DropdownWithListItemProps = {
 export const DropdownWithListItem = ({
   items,
   icon,
+  iconSize,
   positionStyle = {},
   style = {},
 }: DropdownWithListItemProps) => {
@@ -38,7 +40,11 @@ export const DropdownWithListItem = ({
     <View style={{ width: "auto" }}>
       <Dropdown
         triggerComponent={
-          <SVG source={icon ?? AddSVG} width={24} height={24} />
+          <SVG
+            source={icon ?? AddSVG}
+            width={iconSize ?? 24}
+            height={iconSize ?? 24}
+          />
         }
         positionStyle={{
           bottom: -190,
