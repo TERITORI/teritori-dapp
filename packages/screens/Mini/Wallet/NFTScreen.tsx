@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 
-import ListViewWithDropdown from "./components/ListViewWithDropdown";
+import NFTAccordion from "./components/NFTAccordion";
 import searchSvg from "../../../../assets/icons/search-gray.svg";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
@@ -79,7 +79,7 @@ const nftData = [
 const NFTScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
-      <SpacerColumn size={3} />
+      <SpacerColumn size={2} />
 
       <MiniTextInput
         placeholder="Search"
@@ -92,7 +92,7 @@ const NFTScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
         placeholderTextColor={neutralA3}
       />
 
-      <SpacerColumn size={3} />
+      <SpacerColumn size={2} />
       <FlatList
         ItemSeparatorComponent={() => <Separator />}
         showsVerticalScrollIndicator={false}
@@ -100,9 +100,9 @@ const NFTScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
         keyExtractor={(item) => item.id}
         renderItem={({ item, index }) => (
           <>
-            <SpacerColumn size={index === 0 ? 1 : 2} />
-            <ListViewWithDropdown open={index === 0} item={item} />
-            <SpacerColumn size={2} />
+            <SpacerColumn size={index === 0 ? 1 : 1.5} />
+            <NFTAccordion open={index === 0} item={item} />
+            <SpacerColumn size={1.5} />
           </>
         )}
       />
