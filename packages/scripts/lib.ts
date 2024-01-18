@@ -1,4 +1,5 @@
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
+import fs from "fs/promises";
 import { z } from "zod";
 
 import {
@@ -72,4 +73,34 @@ export const zodTxResult = z.object({
   ),
 });
 
+type TxResult = z.infer<typeof zodTxResult>;
+
+const getAttr = (tx: TxResult, eventKey: string, attrKey: string) => {
+  return tx?.events
+    .find((e) => e.type === eventKey)
+    ?.attributes.find((a) => a.key === attrKey)?.value;
+};
+
+export const mustGetAttr = (
+  tx: TxResult,
+  eventKey: string,
+  attrKey: string,
+) => {
+  const val = getAttr(tx, eventKey, attrKey);
+  if (!val) {
+    throw new Error(`Failed to get ${eventKey}.${attrKey}`);
+  }
+  return val;
+};
+
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+export const replaceInFile = async (
+  filePath: string,
+  match: string | RegExp,
+  repl: string,
+) => {
+  const data = await fs.readFile(filePath, { encoding: "utf-8" });
+  const newData = data.replace(match, repl);
+  await fs.writeFile(filePath, newData);
+};

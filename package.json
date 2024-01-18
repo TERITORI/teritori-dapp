@@ -11,7 +11,7 @@
     "build:web": "expo export:web",
     "lint": "npx tsx packages/scripts/paralint",
     "lint-fix": "eslint --cache --ext .js,.jsx,.ts,.tsx . --fix",
-    "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport=\"packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\\.web|.electron|.d.ts\" --ignoreTestFiles",
+    "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport=\"packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\\.web|.electron|.d.ts\"",
     "validate-networks": "tsx packages/scripts/validateNetworks.ts",
     "postinstall": "patch-package"
   },
@@ -20,6 +20,7 @@
   },
   "engineStrict": true,
   "dependencies": {
+    "@chain-registry/types": "^0.17.1",
     "@cosmjs/amino": "0.32.2",
     "@cosmjs/cosmwasm-stargate": "0.32.2",
     "@cosmjs/encoding": "^0.32.2",
