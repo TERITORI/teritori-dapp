@@ -64,7 +64,7 @@ export const NavBar = <T extends { [key: string]: NavDefinition }>({
                     paddingHorizontal: 12,
                     textAlign: "center",
                   }}
-                  // numberOfLines={1}
+                  numberOfLines={1}
                 >
                   {items[key].name}
                 </BrandText>
