@@ -53,10 +53,6 @@ const main = async () => {
     network,
   );
 
-  // FIXME: no race
-  console.log("Waiting for settlement");
-  await new Promise((resolve) => setTimeout(resolve, 10000));
-
   console.log("Storing social feed");
   const socialFeedWasmFilePath = path.join(__dirname, "social-feed.wasm");
   network.socialFeedCodeId = await storeWASM(
@@ -178,9 +174,16 @@ const instantiateNameService = async (
     network.rpcEndpoint,
   )} --yes --keyring-backend test -o json`;
   console.log("> " + cmd);
-  child_process.execSync(cmd, {
-    stdio: ["inherit", "pipe", "inherit"],
-  });
+  const out = await retry(5, () =>
+    child_process.execSync(cmd, {
+      stdio: ["inherit", "pipe", "inherit"],
+    }),
+  );
+  const outObj = zodTryParseJSON(zodTxResult, out.toString());
+  if (!outObj) {
+    throw new Error("Failed to parse instantiate result");
+  }
+  await getTx(network.id, outObj.txhash);
   return addr;
 };
 
