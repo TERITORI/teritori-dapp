@@ -17,7 +17,8 @@ import { NewCollectionDetailsFormValues } from "../CreateCollection.type";
 export const LaunchpadDetails: React.FC = () => {
   const dropdownOptions = ["Yes", "No"];
 
-  const [item, setItem] = useState("");
+  const [isDerivativeProject, setIsDerivativeProject] = useState("");
+  const [isPreviouslyApplied, setIsPreviouslyApplied] = useState("");
 
   const { control } = useForm<NewCollectionDetailsFormValues>({
     defaultValues: {
@@ -84,8 +85,8 @@ export const LaunchpadDetails: React.FC = () => {
         <SelectionDropdown
           dropdownOptions={dropdownOptions}
           placeHolder="Select Option"
-          item={item}
-          setItem={setItem}
+          item={isDerivativeProject}
+          setItem={setIsDerivativeProject}
           label="Is your project a derivative project? *"
         />
 
@@ -121,8 +122,8 @@ export const LaunchpadDetails: React.FC = () => {
         <SelectionDropdown
           dropdownOptions={dropdownOptions}
           placeHolder="Select Option"
-          item={item}
-          setItem={setItem}
+          item={isPreviouslyApplied}
+          setItem={setIsPreviouslyApplied}
           label="Have you previously applied for the same project before? *"
         />
       </View>

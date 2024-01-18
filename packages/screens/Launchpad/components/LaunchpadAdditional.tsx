@@ -17,7 +17,9 @@ import { NewCollectionAdditionalFormValues } from "../CreateCollection.type";
 export const LaunchpadAdditional: React.FC = () => {
   const dropdownOptions = ["Yes", "No"];
 
-  const [item, setItem] = useState("");
+  const [isReadyForMint, setIsReadyForMint] = useState("");
+  const [isEscrowMintProceeds, setIsEscrowMintProceeds] = useState("");
+  const [isDox, setIsDox] = useState("");
 
   const { control } = useForm<NewCollectionAdditionalFormValues>({
     defaultValues: {
@@ -58,13 +60,14 @@ export const LaunchpadAdditional: React.FC = () => {
           placeHolder="Describe here..."
           name="artwork"
           control={control}
+          multiline
         />
 
         <SelectionDropdown
           dropdownOptions={dropdownOptions}
           placeHolder="Select Option"
-          item={item}
-          setItem={setItem}
+          item={isReadyForMint}
+          setItem={setIsReadyForMint}
           label="Is your collection ready for the mint? *"
         />
 
@@ -99,17 +102,19 @@ export const LaunchpadAdditional: React.FC = () => {
         <SelectionDropdown
           dropdownOptions={dropdownOptions}
           placeHolder="Select Option"
-          item={item}
-          setItem={setItem}
+          item={isEscrowMintProceeds}
+          setItem={setIsEscrowMintProceeds}
           label="If selected for the launchpad, You will escrow mint proceeds for this time period: *"
+          style={{ zIndex: 2 }}
         />
 
         <SelectionDropdown
           dropdownOptions={dropdownOptions}
           placeHolder="Select Option"
-          item={item}
-          setItem={setItem}
+          item={isDox}
+          setItem={setIsDox}
           label="Are you dox or have you planned to dox? *"
+          style={{ zIndex: 1 }}
         />
 
         <TextInputLaunchpadAdditionalValues
@@ -117,7 +122,6 @@ export const LaunchpadAdditional: React.FC = () => {
           placeHolder="0"
           name="whitelistSpotPercentage"
           control={control}
-          multiline
         />
       </View>
     </View>
