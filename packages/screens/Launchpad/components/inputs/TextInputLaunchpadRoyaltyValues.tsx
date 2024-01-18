@@ -3,7 +3,6 @@ import { Control, FieldValues, Path } from "react-hook-form";
 import { TextInputProps } from "react-native";
 
 import { TextInputCustom } from "../../../../components/inputs/TextInputCustom";
-import { neutral00 } from "../../../../utils/style/colors";
 import { layout } from "../../../../utils/style/layout";
 
 interface TextInputCustomProps<
@@ -34,10 +33,9 @@ export const TextInputLaunchpadRoyaltyValues = <
       sublabel={sublabel}
       control={control}
       variant="labelOutside"
-      containerStyle={{ marginBottom: layout.spacing_x3 }}
+      containerStyle={{ marginBottom: layout.spacing_x2 }}
       boxMainContainerStyle={{
-        backgroundColor: neutral00,
-        borderRadius: 12,
+        minHeight: 40,
       }}
     />
   );

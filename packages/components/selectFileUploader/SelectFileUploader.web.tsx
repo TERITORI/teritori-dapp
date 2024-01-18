@@ -121,7 +121,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
 
   return (
     <>
-      <View style={[style]}>
+      <View style={style}>
         {!!label && <Label style={{ marginBottom: 12 }}>{label}</Label>}
         <TouchableOpacity onPress={handleClick}>
           <div

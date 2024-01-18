@@ -83,7 +83,7 @@ export const LaunchpadBasic: React.FC = () => {
           fileHeight={ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT}
           isImageCover
           style={{
-            marginVertical: layout.spacing_x3,
+            marginBottom: layout.spacing_x2,
             width: 416,
           }}
           containerHeight={48}
