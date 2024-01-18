@@ -29,6 +29,7 @@ interface SelectionDropdownProps {
 }
 
 export const SelectionDropdown = ({
+  style,
   dropdownOptions,
   placeHolder,
   item,
@@ -41,12 +42,15 @@ export const SelectionDropdown = ({
 
   return (
     <View
-      style={{
-        width: "100%",
-        zIndex: 1,
-        minHeight: 50,
-        marginBottom: layout.spacing_x3,
-      }}
+      style={[
+        {
+          zIndex: 1,
+          width: "100%",
+          minHeight: 40,
+          marginBottom: layout.spacing_x3,
+        },
+        style,
+      ]}
     >
       <BrandText
         style={[
@@ -61,81 +65,85 @@ export const SelectionDropdown = ({
         {label}
       </BrandText>
 
-      <TertiaryBox
-        style={{
-          width: "100%",
-          minHeight: 50,
-          flexDirection: "row",
-          paddingHorizontal: 12,
-          backgroundColor: neutral17,
-          alignItems: "center",
-        }}
-      >
-        <TouchableOpacity
+      <View>
+        <TertiaryBox
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flex: 1,
-          }}
-          activeOpacity={1}
-          onPress={() => onPressDropdownButton(dropdownRef)}
-        >
-          <BrandText
-            style={[
-              fontSemibold14,
-              { marginRight: layout.spacing_x1, color: neutral77 },
-            ]}
-          >
-            {item ? item : placeHolder}
-          </BrandText>
-          <SVG
-            source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
-            width={16}
-            height={16}
-            color={secondaryColor}
-          />
-        </TouchableOpacity>
-      </TertiaryBox>
-
-      {isDropdownOpen(dropdownRef) && (
-        <PrimaryBox
-          style={{
-            position: "absolute",
-            top: 80,
-            right: 0,
             width: "100%",
-            paddingHorizontal: layout.spacing_x1_5,
-            paddingTop: layout.spacing_x1_5,
-            backgroundColor: neutral33,
-            borderColor: neutral33,
-            alignItems: "flex-start",
+            minHeight: 40,
+            flexDirection: "row",
+            paddingHorizontal: 12,
+            backgroundColor: neutral17,
+            alignItems: "center",
           }}
         >
-          {dropdownOptions.map((item, index) => (
-            <TouchableOpacity
-              onPress={() => {
-                closeOpenedDropdown();
-                setItem(item);
-              }}
-              key={index}
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flex: 1,
+            }}
+            activeOpacity={1}
+            onPress={() => onPressDropdownButton(dropdownRef)}
+          >
+            <BrandText
               style={[
-                {
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: layout.spacing_x1_5,
-                },
+                fontSemibold14,
+                { marginRight: layout.spacing_x1, color: neutral77 },
               ]}
             >
-              <BrandText
-                style={[fontSemibold13, { marginLeft: 12, color: neutralA3 }]}
+              {item ? item : placeHolder}
+            </BrandText>
+            <SVG
+              source={
+                isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG
+              }
+              width={16}
+              height={16}
+              color={secondaryColor}
+            />
+          </TouchableOpacity>
+        </TertiaryBox>
+
+        {isDropdownOpen(dropdownRef) && (
+          <PrimaryBox
+            style={{
+              position: "absolute",
+              top: 42,
+              right: 0,
+              width: "100%",
+              paddingHorizontal: layout.spacing_x1_5,
+              paddingTop: layout.spacing_x1_5,
+              backgroundColor: neutral33,
+              borderColor: neutral33,
+              alignItems: "flex-start",
+            }}
+          >
+            {dropdownOptions.map((item, index) => (
+              <TouchableOpacity
+                onPress={() => {
+                  closeOpenedDropdown();
+                  setItem(item);
+                }}
+                key={index}
+                style={[
+                  {
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: layout.spacing_x1_5,
+                  },
+                ]}
               >
-                {item}
-              </BrandText>
-            </TouchableOpacity>
-          ))}
-        </PrimaryBox>
-      )}
+                <BrandText
+                  style={[fontSemibold13, { marginLeft: 12, color: neutralA3 }]}
+                >
+                  {item}
+                </BrandText>
+              </TouchableOpacity>
+            ))}
+          </PrimaryBox>
+        )}
+      </View>
     </View>
   );
 };

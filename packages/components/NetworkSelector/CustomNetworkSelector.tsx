@@ -58,7 +58,7 @@ export const CustomNetworkSelector: React.FC<{
       <TertiaryBox
         style={{
           width: "100%",
-          minHeight: 50,
+          minHeight: 40,
           flexDirection: "row",
           paddingHorizontal: 12,
           backgroundColor: neutral17,
@@ -94,7 +94,7 @@ export const CustomNetworkSelector: React.FC<{
 
       {isDropdownOpen(dropdownRef) && (
         <NetworkSelectorMenu
-          style={{ minWidth: 50, width: "100%" }}
+          style={{ minWidth: 40, width: "100%" }}
           forceNetworkId={forceNetworkId}
           forceNetworkKind={forceNetworkKind}
           forceNetworkFeatures={forceNetworkFeatures}
