@@ -13,7 +13,7 @@ import { fontMedium16, fontSemibold30 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { CustomButton } from "../../components/CustomButton";
 import { CustomCheckbox } from "../../components/CustomCheckbox";
-import { Input } from "../../components/Input";
+import MiniTextInput from "../../components/MiniTextInput";
 import { StepType } from "../ConnectLedgerScreen";
 
 type Props = {
@@ -67,14 +67,15 @@ export const CreatePassword = ({ onStepChange }: Props) => {
           This will be used to unlock your wallet.
         </BrandText>
         <SpacerColumn size={4} />
-        <Input
-          placeholder="New Pasword"
+
+        <MiniTextInput
+          placeholder="New Password"
           value={formData.password}
           onChangeText={(text) => handleTextChange(text, "password")}
           secureTextEntry
         />
         <SpacerColumn size={2} />
-        <Input
+        <MiniTextInput
           placeholder="Confirm New Pasword"
           value={formData.confirmPassword}
           onChangeText={(text) => handleTextChange(text, "confirmPassword")}

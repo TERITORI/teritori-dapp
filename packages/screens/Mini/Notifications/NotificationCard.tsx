@@ -2,7 +2,6 @@ import React from "react";
 import { View } from "react-native";
 
 import { NotificationType } from "./NotificationList";
-import GradientBox from "./components/GradientBox";
 import { randomGradients } from "./notificationData";
 import messageSvg from "../../../../assets/icons/social-threads/chat.svg";
 import commentSvg from "../../../../assets/icons/social-threads/message.svg";
@@ -10,13 +9,14 @@ import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
-import { SpacerRow } from "../../../components/spacer";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   neutralA3,
   primaryColor,
   secondaryColor,
 } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
+import GradientBox from "../components/GradientBox";
 
 type NotificationCardProps = {
   item: NotificationType;
@@ -148,6 +148,8 @@ function NotificationCardInnerContent({
           {date}
         </BrandText>
       </View>
+
+      <SpacerColumn size={0.4} />
       <View style={{ flexDirection: "row" }}>
         <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
           {desc}
@@ -181,6 +183,7 @@ function NotificationCardInnerContent({
             )}
           </>
         )}
+
         {link && (
           <>
             <SpacerRow size={0.7} />

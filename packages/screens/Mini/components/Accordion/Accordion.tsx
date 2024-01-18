@@ -1,5 +1,6 @@
 import { FC, PropsWithChildren, useLayoutEffect, useRef } from "react";
 import { Animated, View } from "react-native";
+import { SvgProps } from "react-native-svg";
 
 import AccordionProvider, { useAccordion } from "./AccordionProvider";
 import chevronSVG from "../../../../../assets/icons/chevron-down-gray.svg";
@@ -7,7 +8,13 @@ import { SVG } from "../../../../components/SVG";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 
 interface IAccordionComposition {
-  Header: React.FC<PropsWithChildren<{ enableIcon?: boolean }>>;
+  Header: React.FC<
+    PropsWithChildren<{
+      enableIcon?: boolean;
+      iconSize?: number;
+      icon?: FC<SvgProps> | string;
+    }>
+  >;
   Content: React.FC<PropsWithChildren<{ height?: number }>>;
 }
 
@@ -23,7 +30,13 @@ const Accordion: FC<PropsWithChildren<{ initialValue?: boolean }>> &
 export function AccordionHeader({
   children,
   enableIcon = true,
-}: PropsWithChildren<{ enableIcon?: boolean }>) {
+  iconSize,
+  icon,
+}: PropsWithChildren<{
+  enableIcon?: boolean;
+  iconSize?: number;
+  icon?: FC<SvgProps> | string;
+}>) {
   const { expanded, toggle } = useAccordion();
   const rotationValue = useRef(new Animated.Value(1)).current;
 
@@ -60,7 +73,11 @@ export function AccordionHeader({
               ],
             }}
           >
-            <SVG source={chevronSVG} height={24} width={24} />
+            <SVG
+              source={icon ?? chevronSVG}
+              height={iconSize ?? 24}
+              width={iconSize ?? 24}
+            />
           </Animated.View>
         )}
       </View>

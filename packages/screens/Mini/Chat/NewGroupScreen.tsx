@@ -1,11 +1,15 @@
 import React, { useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { View } from "react-native";
 
 import { NewConversationOrGroupSelector } from "./components/NewConversationOrGroupSelector";
-import { SearchChatList } from "./components/SearchChatList";
+import searchSVG from "../../../../assets/icons/search-gray.svg";
+import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
+import { neutralA3 } from "../../../utils/style/colors";
+import { fontMedium14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import MiniTextInput from "../components/MiniTextInput";
 
 const dummyContact = [
   {
@@ -118,27 +122,25 @@ const dummyContact = [
 
 export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
   const [search, setSearch] = useState("");
-  const { height: windowHeight } = useWindowDimensions();
 
   return (
     <BlurScreenContainer title="New group">
       <View
         style={{
-          height: windowHeight - 150,
           paddingHorizontal: layout.spacing_x2,
+          flex: 1,
         }}
       >
-        <SearchChatList
-          placeholder="Search by nickname"
-          setValue={setSearch}
+        <MiniTextInput
+          onChangeText={setSearch}
           value={search}
-          style={{
-            backgroundColor: "rgba(118, 118, 128, 0.24)",
-            padding: 10,
-            borderRadius: 10,
-            marginVertical: layout.spacing_x2_5,
-          }}
+          icon={searchSVG}
+          placeholder="Search by nickname"
+          style={{ paddingVertical: layout.spacing_x1 }}
+          inputStyle={[fontMedium14]}
+          placeholderTextColor={neutralA3}
         />
+        <SpacerColumn size={2} />
         <NewConversationOrGroupSelector
           contacts={dummyContact}
           isGroupSelector

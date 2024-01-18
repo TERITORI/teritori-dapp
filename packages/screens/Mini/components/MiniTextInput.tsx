@@ -13,7 +13,7 @@ import closeSVG from "../../../../assets/icons/input-close.svg";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerRow } from "../../../components/spacer";
-import { neutral22, neutral77 } from "../../../utils/style/colors";
+import { neutral22, neutral77, withAlpha } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
@@ -79,7 +79,7 @@ export default function MiniTextInput({
         style={[
           {
             width: "100%",
-            backgroundColor: neutral22,
+            backgroundColor: withAlpha(neutral22, 0.9),
             borderRadius: layout.borderRadius,
             padding: layout.spacing_x2,
             flexDirection: "row",
@@ -107,6 +107,7 @@ export default function MiniTextInput({
               {
                 color: "#fff",
                 lineHeight: 0,
+                width: "100%",
               },
               inputStyle,
             ]}

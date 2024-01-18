@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
-import { Account } from "./components/Account";
+import { Account } from "./Account";
 import addSVG from "../../../../assets/icons/add-solid-white.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import dAppStoreSVG from "../../../../assets/icons/dapp-store-solid.svg";
@@ -14,12 +14,34 @@ import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
-import { ScreenFC } from "../../../utils/navigation";
+import { RouteName, ScreenFC } from "../../../utils/navigation";
 import { neutral39 } from "../../../utils/style/colors";
 import { fontSemibold15, fontSemibold18 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { SettingMenuItem } from "../components/SettingMenuItems";
+
+const profileScreens: {
+  title: string;
+  navigateTo: RouteName;
+  icon?: any;
+}[] = [
+  {
+    title: "Add Account",
+    navigateTo: "MiniAddAccount",
+    icon: addSVG,
+  },
+  {
+    title: "Settings",
+    navigateTo: "MiniSettings",
+    icon: settingSVG,
+  },
+  {
+    title: "dApps",
+    navigateTo: "MiniDAppStore",
+    icon: dAppStoreSVG,
+  },
+];
 
 export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
   const onClose = () => navigation.goBack();
@@ -51,7 +73,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
             <BrandText style={[fontSemibold15]}>Lock Wallet</BrandText>
           </CustomPressable>
           <CustomPressable onPress={onClose} style={{}}>
-            <SVG source={closeSVG} height={28} width={28} />
+            <SVG source={closeSVG} height={24} width={24} />
           </CustomPressable>
         </View>
       }
@@ -84,29 +106,26 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
           />
         </View>
 
-        <SpacerColumn size={1} />
         <Separator />
         <SpacerColumn size={1} />
-        <SettingMenuItem
-          icon={addSVG}
-          navigateTo="MiniAddAccount"
-          title="Add Account"
-        />
-        <SpacerColumn size={1} />
-        <Separator />
-        <SpacerColumn size={1} />
-        <SettingMenuItem
-          icon={settingSVG}
-          navigateTo="MiniSettings"
-          title="Settings"
-        />
-        <SpacerColumn size={1} />
-        <SettingMenuItem
-          icon={dAppStoreSVG}
-          navigateTo="MiniDAppStore"
-          title="dApps"
-        />
-        <SpacerColumn size={1} />
+        {profileScreens.map((screen, index) => {
+          return (
+            <>
+              <SettingMenuItem
+                icon={screen.icon}
+                navigateTo={screen.navigateTo}
+                title={screen.title}
+              />
+              {index === 0 && (
+                <>
+                  <SpacerColumn size={1} />
+                  <Separator />
+                </>
+              )}
+              <SpacerColumn size={1} />
+            </>
+          );
+        })}
       </View>
     </BlurScreenContainer>
   );

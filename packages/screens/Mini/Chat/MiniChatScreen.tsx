@@ -25,6 +25,7 @@ import { RouteName, useAppNavigation } from "../../../utils/navigation";
 import {
   neutral22,
   neutral77,
+  neutralA3,
   secondaryColor,
 } from "../../../utils/style/colors";
 import {
@@ -145,7 +146,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
     setShowToast(false);
   };
   const onLearnMoreToastPress = () => {
-    navigation.navigate("MiniChatSetting");
+    navigation.navigate("MiniChatSetting", { back: undefined });
     // setIsChatSettingModalVisible(true);
   };
 
@@ -214,15 +215,10 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
             onChangeText={onSearchChange}
             style={{
               backgroundColor: "rgba(118, 118, 128, 0.24)",
-              padding: 10,
-              borderRadius: 10,
+              paddingVertical: layout.spacing_x1,
             }}
-            inputStyle={[
-              fontMedium16,
-              {
-                color: "#fff",
-              },
-            ]}
+            inputStyle={[fontSemibold14, { lineHeight: 0 }]}
+            placeholderTextColor={neutralA3}
             placeholder="Search..."
           />
           <SpacerColumn size={1} />

@@ -7,14 +7,15 @@ import { OptimizedImage } from "../../../../components/OptimizedImage";
 import { SVG } from "../../../../components/SVG";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { Separator } from "../../../../components/separators/Separator";
-import { blueDefault, neutral22 } from "../../../../utils/style/colors";
+import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
+import { neutral22 } from "../../../../utils/style/colors";
 import {
-  fontBold11,
+  fontBold10,
   fontMedium16,
   fontSemibold12,
-  fontSemibold15,
 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
+import { CustomButton } from "../../components/CustomButton";
 import { CustomCheckbox } from "../../components/CustomCheckbox";
 
 const fake_url =
@@ -93,7 +94,9 @@ export const NewConversationOrGroupSelector = ({
         {} as Record<string, ContactType[]>,
       );
   };
+
   const alphaGroupedContacts = groupContactsWithAlphabet(contacts);
+
   return (
     <View style={{ position: "relative", flex: 1 }}>
       <ScrollView
@@ -113,7 +116,6 @@ export const NewConversationOrGroupSelector = ({
               Object.entries(alphaGroupedContacts).map(([key, val], index) => (
                 <View
                   key={`${key}-${index}`}
-                  style={{ marginBottom: layout.spacing_x1_5 }}
                   onLayout={(event) => {
                     const layout = event.nativeEvent.layout;
                     dataSourceCords[key] = layout.y;
@@ -129,10 +131,11 @@ export const NewConversationOrGroupSelector = ({
                       borderRadius: 32,
                     }}
                   >
-                    <BrandText style={[fontSemibold12, {}]}>
+                    <BrandText style={[fontSemibold12]}>
                       {key.toUpperCase()}
                     </BrandText>
                   </View>
+                  <SpacerColumn size={2} />
                   {Array.isArray(val) &&
                     val.map((contact, idx) => (
                       <React.Fragment key={`${contact.name}-${idx}`}>
@@ -141,8 +144,10 @@ export const NewConversationOrGroupSelector = ({
                           isSelected={selectedContacts.includes(contact.id)}
                           onSelection={(id) => toggleContactSelection(id)}
                           avatar={fake_url}
+                          key={contact.id}
                           id={contact.id}
                           name={contact.name}
+                          lastItem={val.length - 1 === idx}
                           onPress={() => {
                             if (onPressContact && !isGroupSelector) {
                               onPressContact(contact);
@@ -152,34 +157,26 @@ export const NewConversationOrGroupSelector = ({
                             }
                           }}
                         />
-                        {val.length > idx + 1 && (
-                          <Separator color="rgba(84, 84, 88, 0.65)" />
-                        )}
+                        <SpacerColumn size={2} />
                       </React.Fragment>
                     ))}
                 </View>
               ))}
           </View>
+          <SpacerColumn size={8} />
         </View>
       </ScrollView>
       <AlbhabetsSelector onPress={(x) => scrollHandler(x)} />
-      <CustomPressable
+
+      <CustomButton
         onPress={handleCreateGroupPress}
+        title="Create"
         style={{
-          backgroundColor: blueDefault,
           position: "absolute",
           bottom: 40,
-          left: layout.spacing_x2,
-          right: layout.spacing_x2,
-          paddingVertical: layout.spacing_x1_5,
           zIndex: 99,
-          borderRadius: 100,
         }}
-      >
-        <BrandText style={[fontSemibold15, { textAlign: "center" }]}>
-          Create
-        </BrandText>
-      </CustomPressable>
+      />
     </View>
   );
 };
@@ -188,8 +185,10 @@ type IndividualFriendNameProps = ContactType & {
   onPress?: () => void;
   enableSelection?: boolean;
   isSelected?: boolean;
+  lastItem: boolean;
   onSelection?: (id: string) => void;
 };
+
 const IndividualFriendName = ({
   avatar,
   id,
@@ -197,6 +196,7 @@ const IndividualFriendName = ({
   onPress,
   enableSelection = false,
   isSelected = false,
+  lastItem,
   onSelection,
 }: IndividualFriendNameProps) => {
   const onFriendNamePress = () => {
@@ -210,6 +210,7 @@ const IndividualFriendName = ({
       onSelection(id);
     }
   };
+
   return (
     <CustomPressable
       onPress={onFriendNamePress}
@@ -217,14 +218,12 @@ const IndividualFriendName = ({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingVertical: layout.spacing_x2,
       }}
     >
       <View
         style={{
           flexDirection: "row",
           gap: layout.spacing_x1_5,
-          alignItems: "center",
         }}
       >
         <OptimizedImage
@@ -237,14 +236,44 @@ const IndividualFriendName = ({
             borderRadius: 22 / 2,
           }}
         />
-        <BrandText style={[fontMedium16, { lineHeight: 22 }]}>{name}</BrandText>
+        <View style={{ flex: 1 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <View>
+              <BrandText style={[fontMedium16, { lineHeight: 22 }]}>
+                {name}
+              </BrandText>
+            </View>
+
+            <View>
+              {!enableSelection && (
+                <SVG source={chevronGrayRightSVG} height={24} width={24} />
+              )}
+              {enableSelection && (
+                <>
+                  <CustomCheckbox
+                    isChecked={isSelected}
+                    onPress={onCheckboxPress}
+                  />
+                </>
+              )}
+
+              <SpacerRow size={3.5} />
+            </View>
+          </View>
+          <SpacerColumn size={2} />
+          {!lastItem && (
+            <Separator
+              style={{ height: 0.9, backgroundColor: "rgba(84, 84, 88, 0.65)" }}
+            />
+          )}
+        </View>
       </View>
-      {!enableSelection && (
-        <SVG source={chevronGrayRightSVG} height={24} width={24} />
-      )}
-      {enableSelection && (
-        <CustomCheckbox isChecked={isSelected} onPress={onCheckboxPress} />
-      )}
     </CustomPressable>
   );
 };
@@ -252,21 +281,22 @@ const IndividualFriendName = ({
 type AlphabetSelectorProps = {
   onPress: (alphabet: string) => void;
 };
+
 const alphabet = "abcdefghijklmnopqrstuvwxyz#149".split("");
+
 const AlbhabetsSelector = ({ onPress }: AlphabetSelectorProps) => {
   return (
     <View
       style={{
         gap: layout.spacing_x0_75,
         position: "absolute",
-        right: -20,
-        top: 10,
+        right: -18,
       }}
     >
       {Array.isArray(alphabet) &&
         alphabet.map((alph) => (
           <CustomPressable key={alph} onPress={() => onPress(alph)}>
-            <BrandText style={[fontBold11]}>{alph.toUpperCase()}</BrandText>
+            <BrandText style={[fontBold10]}>{alph.toUpperCase()}</BrandText>
           </CustomPressable>
         ))}
     </View>

@@ -3,11 +3,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import React, { ReactNode } from "react";
 import { SafeAreaView, useWindowDimensions, View } from "react-native";
 
+import chevronSVG from "../../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { BackButton } from "../../../components/navigation/components/BackButton";
 import { useAppNavigation } from "../../../utils/navigation";
 import { fontSemibold18 } from "../../../utils/style/fonts";
 import { MOBILE_HEADER_HEIGHT, layout } from "../../../utils/style/layout";
@@ -108,14 +108,16 @@ export const BlurScreenContainer = ({
             }}
           >
             {onGoBack && (
-              <BackButton type="chevron" onPress={navigateToProfile} />
+              <CustomPressable onPress={navigateToProfile}>
+                <SVG source={chevronSVG} height={24} width={24} />
+              </CustomPressable>
             )}
-            <BrandText style={[fontSemibold18]}>
+            <BrandText style={[fontSemibold18, { lineHeight: 0 }]}>
               {title || "Settings"}
             </BrandText>
 
             <CustomPressable onPress={onClose}>
-              <SVG source={closeSVG} height={28} width={28} />
+              <SVG source={closeSVG} height={24} width={24} />
             </CustomPressable>
           </View>
         )}

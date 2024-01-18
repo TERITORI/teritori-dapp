@@ -15,8 +15,14 @@ import {
   neutral44,
   neutral88,
 } from "../../../../utils/style/colors";
-import { fontMedium15, fontSemibold16 } from "../../../../utils/style/fonts";
+import {
+  fontMedium13,
+  fontMedium14,
+  fontMedium15,
+  fontSemibold16,
+} from "../../../../utils/style/fonts";
 import { capitalizeStr } from "../TransactionDetailScreen";
+import { layout } from "../../../../utils/style/layout";
 
 export type TransactionType = {
   id: string;
@@ -45,10 +51,10 @@ export default function TransactionItem({
         <View style={{ flexDirection: "row", flex: 1 }}>
           <View
             style={{
-              width: 40,
-              height: 40,
+              width: 36,
+              height: 36,
               backgroundColor: neutral1A,
-              borderRadius: 20,
+              borderRadius: 18,
               alignItems: "center",
               justifyContent: "center",
               position: "relative",
@@ -56,14 +62,15 @@ export default function TransactionItem({
           >
             <SVGorImageIcon
               icon={img || teritoriSVG}
-              iconSize={img ? 40 : 20}
-              style={{ borderRadius: img ? 20 : 10 }}
+              iconSize={img ? 36 : 18}
+              style={{ borderRadius: img ? 18 : 9 }}
             />
+
             <View
               style={{
-                width: 18,
-                height: 18,
-                borderRadius: 7.5,
+                width: 16,
+                height: 16,
+                borderRadius: 8,
                 backgroundColor: status === "pending" ? neutral44 : blueDefault,
                 position: "absolute",
                 bottom: 0,
@@ -74,31 +81,39 @@ export default function TransactionItem({
             >
               <SVG
                 source={status === "pending" ? arrowUpSVG : checkSVG}
-                width={12}
-                height={12}
+                width={10}
+                height={10}
                 fill="#fff"
               />
             </View>
           </View>
+
           <SpacerRow size={1.5} />
+
           <View style={{ flex: 1 }}>
-            <BrandText style={fontSemibold16}>{capitalizeStr(type)}</BrandText>
+            <BrandText style={fontMedium14}>{capitalizeStr(type)}</BrandText>
+
             <SpacerColumn size={0.5} />
-            <BrandText style={[fontMedium15, { color: neutral88 }]}>
+
+            <BrandText style={[fontMedium13, { color: neutral88 }]}>
               To: {to}
             </BrandText>
+
             {!isLastItem && <Separator style={{ marginTop: 16 }} />}
           </View>
         </View>
 
         <View style={{ alignItems: "flex-end" }}>
-          <BrandText style={fontSemibold16}>
+          <BrandText style={fontMedium14}>
             {type === "send" ? "-" : "+"} {amount.tori} TORI
           </BrandText>
+
           <SpacerColumn size={0.5} />
-          <BrandText style={[fontMedium15, { color: neutral88 }]}>
+
+          <BrandText style={[fontMedium13, { color: neutral88 }]}>
             ${amount.dollar}
           </BrandText>
+
           {!isLastItem && <Separator style={{ marginTop: 16 }} />}
         </View>
       </View>

@@ -4,6 +4,7 @@ import { useWindowDimensions, View } from "react-native";
 import NFTScreen from "./NFTScreen";
 import TokenScreen from "./TokenScreen";
 import { ScreenContainer } from "../../../components/ScreenContainer";
+import { SpacerColumn } from "../../../components/spacer";
 import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
@@ -41,14 +42,14 @@ export const MiniWalletScreen: ScreenFC<"MiniWallets"> = ({
           paddingHorizontal: layout.spacing_x2,
         }}
       >
+        <SpacerColumn size={1} />
         <RoundedTabs
           items={collectionScreenTabItems}
           onSelect={(key) => setSelectedTab(key)}
           selected={selectedTab}
           style={{
+            height: 36,
             maxHeight: 36,
-            marginTop: layout.spacing_x2,
-            marginBottom: layout.spacing_x0_5,
           }}
         />
         {selectedTab === "tokens" && (
