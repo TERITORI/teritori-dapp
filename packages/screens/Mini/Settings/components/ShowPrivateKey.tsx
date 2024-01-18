@@ -31,13 +31,13 @@ export const ShowPrivateKey = () => {
   return (
     <View
       style={{
-        marginTop: layout.spacing_x4,
         paddingHorizontal: layout.spacing_x2,
         position: "relative",
         justifyContent: "space-between",
       }}
     >
       <View>
+        <SpacerColumn size={2} />
         <RedAlert description="Do not share your private key! Anyone with your private key will have full control of your wallet." />
         <SpacerColumn size={1.5} />
         <View

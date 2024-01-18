@@ -9,13 +9,13 @@ import {
 } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import closeSVG from "../../../../../assets/icons/input-close.svg";
-import { SVG } from "../../../../components/SVG";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { SpacerRow } from "../../../../components/spacer";
-import { neutral22, neutral77 } from "../../../../utils/style/colors";
-import { fontMedium16 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
+import closeSVG from "../../../../assets/icons/input-close.svg";
+import { SVG } from "../../../components/SVG";
+import { CustomPressable } from "../../../components/buttons/CustomPressable";
+import { SpacerRow } from "../../../components/spacer";
+import { neutral22, neutral77 } from "../../../utils/style/colors";
+import { fontMedium16 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 
 export interface MiniTexInputProps extends TextInputProps {
   style?: StyleProp<ViewStyle>;
@@ -97,7 +97,7 @@ export default function MiniTextInput({
                 width={iconSize ?? 22}
                 height={iconSize ?? 22}
               />
-              <SpacerRow size={2} />
+              <SpacerRow size={1} />
             </>
           )}
           <TextInput

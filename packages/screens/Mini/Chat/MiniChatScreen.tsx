@@ -8,17 +8,17 @@ import {
 import { SvgProps } from "react-native-svg";
 
 import { ChatList } from "./components/ChatList";
-import { HeaderMini } from "./components/HeaderMini";
-import { SearchChatList } from "./components/SearchChatList";
 import { dummyChat } from "./components/chatDummyData";
 import rightArrowSVG from "../../../../assets/icons/chevron-right-white.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import friendSVG from "../../../../assets/icons/friend.svg";
+import searchSVG from "../../../../assets/icons/search-gray.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { MiniTabScreenFC } from "../../../components/navigation/MiniNavigator";
+import { SpacerColumn } from "../../../components/spacer";
 import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
 import { ToastInfo } from "../../../components/toasts/ToastInfo";
 import { RouteName, useAppNavigation } from "../../../utils/navigation";
@@ -33,6 +33,8 @@ import {
   fontSemibold18,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import DefaultAppBar from "../components/AppBar/DefaultAppBar";
+import MiniTextInput from "../components/MiniTextInput";
 
 const collectionScreenTabItems = {
   chats: {
@@ -137,7 +139,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("chats");
   const [search, setSearch] = useState("");
-  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const { width: windowWidth } = useWindowDimensions();
 
   const hideToast = () => {
     setShowToast(false);
@@ -146,6 +148,11 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
     navigation.navigate("MiniChatSetting");
     // setIsChatSettingModalVisible(true);
   };
+
+  function onSearchChange(text: string) {
+    setSearch(text);
+  }
+
   return (
     <ScreenContainer
       headerChildren={<></>}
@@ -172,82 +179,113 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
             position={{ left: 10, top: 0 }}
           />
         ) : (
-          <HeaderMini title="Chats" />
+          <DefaultAppBar title="Chat" />
         )
       }
     >
-      <RoundedTabs
-        items={collectionScreenTabItems}
-        onSelect={(key) => setSelectedTab(key)}
-        selected={selectedTab}
-        style={{
-          height: 36,
-          maxHeight: 36,
-          marginTop: layout.spacing_x2,
-        }}
-      />
-
       <View
         style={{
+          paddingHorizontal: layout.spacing_x2,
           flex: 1,
           width: windowWidth,
         }}
       >
-        <SearchChatList
-          setValue={setSearch}
-          value={search}
+        <SpacerColumn size={1} />
+        <RoundedTabs
+          items={collectionScreenTabItems}
+          onSelect={(key) => setSelectedTab(key)}
+          selected={selectedTab}
           style={{
-            backgroundColor: "rgba(118, 118, 128, 0.24)",
-            padding: 10,
-            borderRadius: 10,
-            marginVertical: layout.spacing_x2_5,
+            height: 36,
+            maxHeight: 36,
           }}
         />
-        {!HAS_CHATS ? (
-          <View
-            style={{
-              flex: 1,
-              height: windowHeight - 450,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <BrandText
-              style={[fontMedium16, { textAlign: "center", color: neutral77 }]}
-            >
-              No chats yet.
-            </BrandText>
-            <BrandText
-              style={[fontMedium16, { textAlign: "center", color: neutral77 }]}
-            >
-              Get Started by messaging a friend.
-            </BrandText>
-          </View>
-        ) : (
-          <ChatList items={dummyChat} />
-        )}
 
-        {!HAS_CHATS && (
-          <View>
-            <BrandText
-              style={[
-                fontSemibold18,
-                { color: secondaryColor, marginBottom: 12 },
-              ]}
+        <View
+          style={{
+            flex: 1,
+            width: "100%",
+          }}
+        >
+          <SpacerColumn size={2} />
+          <MiniTextInput
+            value={search}
+            icon={searchSVG}
+            onChangeText={onSearchChange}
+            style={{
+              backgroundColor: "rgba(118, 118, 128, 0.24)",
+              padding: 10,
+              borderRadius: 10,
+            }}
+            inputStyle={[
+              fontMedium16,
+              {
+                color: "#fff",
+              },
+            ]}
+            placeholder="Search..."
+          />
+          <SpacerColumn size={1} />
+          {!HAS_CHATS ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
-              Get Started
-            </BrandText>
-            <FlatList
-              horizontal
-              data={DATA}
-              renderItem={({ item }) => (
-                <Item title={item.title} icon={item.icon} route={item.route} />
-              )}
-              keyExtractor={(item) => item.id}
-              style={{ marginBottom: 16 }}
-            />
-          </View>
-        )}
+              <BrandText
+                style={[
+                  fontMedium16,
+                  { textAlign: "center", color: neutral77 },
+                ]}
+              >
+                No chats yet.
+              </BrandText>
+              <SpacerColumn size={0.5} />
+              <BrandText
+                style={[
+                  fontMedium16,
+                  { textAlign: "center", color: neutral77 },
+                ]}
+              >
+                Get Started by messaging a friend.
+              </BrandText>
+            </View>
+          ) : (
+            <ChatList items={dummyChat} />
+          )}
+
+          {!HAS_CHATS && (
+            <>
+              <SpacerColumn size={2} />
+              <View>
+                <BrandText
+                  style={[
+                    fontSemibold18,
+                    { color: secondaryColor, marginBottom: 12 },
+                  ]}
+                >
+                  Get Started
+                </BrandText>
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  horizontal
+                  data={DATA}
+                  renderItem={({ item }) => (
+                    <Item
+                      title={item.title}
+                      icon={item.icon}
+                      route={item.route}
+                    />
+                  )}
+                  keyExtractor={(item) => item.id}
+                  style={{ marginBottom: 16 }}
+                />
+              </View>
+            </>
+          )}
+        </View>
       </View>
     </ScreenContainer>
   );

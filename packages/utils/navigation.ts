@@ -83,7 +83,7 @@ export type RootStackParamList = {
   //Mini Screens
   MiniTabs: undefined;
   Conversation: { conversationId: string };
-  MiniChats: undefined;
+  MiniChats: { back?: RouteName };
   MiniWallets: undefined;
   MiniFeeds: undefined;
   MiniProfile: undefined;
@@ -91,7 +91,7 @@ export type RootStackParamList = {
   MiniDAppStore: undefined;
   MiniNewConversation: undefined;
   MiniNewGroup: undefined;
-  MiniChatSetting: undefined;
+  MiniChatSetting: { back?: RouteName };
   MiniSettings: undefined;
   MiniAccountDetails: { accountName: string; id: string };
   MiniAddAccount: undefined;

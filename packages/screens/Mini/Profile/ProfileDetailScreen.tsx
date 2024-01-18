@@ -2,22 +2,18 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useState } from "react";
 import { View } from "react-native";
 
-import closeSVG from "../../../../assets/icons/close.svg";
 import editProfileSVG from "../../../../assets/icons/input-edit.svg";
 import profileSVG from "../../../../assets/icons/input-profile.svg";
 import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
 import { RootStackParamList } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontMedium14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import CircularImgOrIcon from "../AddressBook/components/CircularImgOrIcon";
-import MiniTextInput from "../AddressBook/components/MiniTextInput";
-import MiniHeader from "../Notifications/components/MiniHeader";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import FileUpload from "../components/FileUpload";
+import MiniTextInput from "../components/MiniTextInput";
 
 type ProfileDetailScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -32,29 +28,11 @@ export default function ProfileDetailScreen({
   const [username, setUsername] = useState("John Doe");
   const [profileImage, setProfileImage] = useState("");
 
-  const onClose = () =>
-    navigation.canGoBack()
-      ? navigation.goBack()
-      : navigation.replace("MiniTabs");
+  const goBackTo = () =>
+    navigation.replace("MiniChatSetting", { back: "MiniProfileDetail" });
 
   return (
-    <BlurScreenContainer
-      background="transparent"
-      reverseView={false}
-      customHeader={
-        <MiniHeader
-          navigation={navigation}
-          backEnabled
-          title="Profile"
-          headerStyle={{ backgroundColor: "transparent" }}
-          right={
-            <CustomPressable onPress={onClose}>
-              <SVG source={closeSVG} width={24} height={24} />
-            </CustomPressable>
-          }
-        />
-      }
-    >
+    <BlurScreenContainer title="Profile" onGoBack={goBackTo}>
       <View
         style={{
           width: "100%",
@@ -62,7 +40,7 @@ export default function ProfileDetailScreen({
           justifyContent: "center",
         }}
       >
-        <SpacerColumn size={9} />
+        <SpacerColumn size={1} />
         <CircularImgOrIcon
           enableFullIcon
           style={{ alignItems: "center", justifyContent: "center" }}
@@ -83,7 +61,7 @@ export default function ProfileDetailScreen({
           justifyContent: "space-between",
           backgroundColor: "rgba(0,0,0,0.8)",
           height: "70%",
-          paddingHorizontal: layout.spacing_x1_5,
+          paddingHorizontal: layout.spacing_x2,
         }}
       >
         <View>

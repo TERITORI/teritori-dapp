@@ -20,8 +20,6 @@ export const ExportPrivateKeyScreen: ScreenFC<"MiniExportPrivateKey"> = ({
     <BlurScreenContainer
       title="Export Private Key"
       onGoBack={gotoSecurityAndPrivacy}
-      reverseView={false}
-      background="transparent"
     >
       {
         {

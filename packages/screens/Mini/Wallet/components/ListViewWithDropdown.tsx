@@ -14,7 +14,7 @@ import {
 } from "../../../../utils/style/colors";
 import { fontSemibold16 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
-import ListView from "../../AddressBook/components/ListView";
+import ListView from "../../components/ListView";
 import GradientBox from "../../Notifications/components/GradientBox";
 import { randomGradients } from "../../Notifications/notificationData";
 import Accordion from "../../components/Accordion/Accordion";

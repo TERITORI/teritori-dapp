@@ -38,7 +38,7 @@ export const MiniWalletScreen: ScreenFC<"MiniWallets"> = ({
         style={{
           flex: 1,
           width: windowWidth,
-          paddingHorizontal: layout.spacing_x1_5,
+          paddingHorizontal: layout.spacing_x2,
         }}
       >
         <RoundedTabs

@@ -2,8 +2,8 @@ import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
-import { neutral22 } from "../../../../utils/style/colors";
+import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
+import { neutral22 } from "../../../utils/style/colors";
 
 type CircularBoxType = {
   size?: number;

@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { TextInput, View } from "react-native";
+import { View } from "react-native";
 
 import cameraSVG from "../../../../assets/icons/camera-white.svg";
 import micSVG from "../../../../assets/icons/mic-white.svg";
 import chatPlusSVG from "../../../../assets/icons/plus-white.svg";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { neutral22, neutral77 } from "../../../utils/style/colors";
+import { neutral77 } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import MiniTextInput from "../components/MiniTextInput";
 
 type Props = object;
 
@@ -26,7 +27,6 @@ export const ChatInput = (props: Props) => {
     <View
       style={{
         flexDirection: "row",
-        paddingHorizontal: layout.spacing_x2,
         alignItems: "center",
         gap: layout.spacing_x2,
       }}
@@ -34,23 +34,16 @@ export const ChatInput = (props: Props) => {
       <CustomPressable onPress={onPlusPress}>
         <SVG source={chatPlusSVG} />
       </CustomPressable>
-      <TextInput
-        placeholder="Message"
-        value={newMessage}
-        onChangeText={onNewMessageChange}
-        placeholderTextColor={neutral77}
-        style={[
-          fontMedium16,
-          {
-            color: neutral77,
-            flex: 1,
-            backgroundColor: neutral22,
-            paddingHorizontal: 12,
-            paddingVertical: 8,
-            borderRadius: 10,
-          },
-        ]}
-      />
+
+      <View style={{ flex: 1 }}>
+        <MiniTextInput
+          placeholder="Message"
+          value={newMessage}
+          onChangeText={onNewMessageChange}
+          style={{ paddingVertical: layout.spacing_x1 }}
+          inputStyle={[fontMedium16, { color: neutral77 }]}
+        />
+      </View>
       <CustomPressable onPress={onCameraPress}>
         <SVG source={cameraSVG} height={24} />
       </CustomPressable>

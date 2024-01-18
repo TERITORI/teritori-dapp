@@ -43,13 +43,14 @@ export const ShowSeedPhrase = () => {
   return (
     <View
       style={{
-        marginTop: layout.spacing_x4,
         paddingHorizontal: layout.spacing_x2,
         position: "relative",
         justifyContent: "space-between",
+        flex: 1,
       }}
     >
       <View>
+        <SpacerColumn size={2} />
         <RedAlert description="Your seed phrase is the only way to recover your wallet. Keep it somewhere safe and secret." />
         <SpacerColumn size={1.5} />
         <View

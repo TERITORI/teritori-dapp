@@ -41,7 +41,13 @@ export const SecurityAndPrivacy: ScreenFC<"MiniSecurityAndPrivacy"> = ({
   const gotoSettings = () => navigation.replace("MiniSettings");
   return (
     <BlurScreenContainer title="Security & Privacy" onGoBack={gotoSettings}>
-      <View style={{ paddingHorizontal: layout.spacing_x2 }}>
+      <View
+        style={{
+          paddingHorizontal: layout.spacing_x2,
+          flex: 1,
+          justifyContent: "flex-end",
+        }}
+      >
         {settingScreens.map((screen) => {
           return (
             <Fragment key={screen.title}>

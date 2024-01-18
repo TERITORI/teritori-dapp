@@ -16,7 +16,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import MiniTextInput from "../AddressBook/components/MiniTextInput";
+import MiniTextInput from "./MiniTextInput";
 
 type OptionType = {
   label: string;

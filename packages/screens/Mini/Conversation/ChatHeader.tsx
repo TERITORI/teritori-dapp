@@ -9,12 +9,13 @@ import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerRow } from "../../../components/spacer";
 import { RootStackParamList } from "../../../utils/navigation";
+import { MOBILE_HEADER_HEIGHT } from "../../../utils/style/layout";
 import { ChatAvatar } from "../components/ChatAvatar";
 
 type HeaderProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "Conversation">;
 };
-export const Header = ({ navigation }: HeaderProps) => {
+export const ChatHeader = ({ navigation }: HeaderProps) => {
   const navigateBack = () =>
     navigation.canGoBack()
       ? navigation.goBack()
@@ -27,7 +28,7 @@ export const Header = ({ navigation }: HeaderProps) => {
     <View
       style={{
         flexDirection: "row",
-        height: 44,
+        height: MOBILE_HEADER_HEIGHT,
         alignItems: "center",
         justifyContent: "space-between",
       }}
@@ -38,7 +39,13 @@ export const Header = ({ navigation }: HeaderProps) => {
           alignItems: "center",
         }}
       >
-        <CustomPressable onPress={navigateBack}>
+        <CustomPressable
+          onPress={navigateBack}
+          style={{
+            alignItems: "flex-start",
+            justifyContent: "flex-start",
+          }}
+        >
           <SVG source={chevronLeftSVG} height={28} width={28} />
         </CustomPressable>
         <SpacerRow size={2} />

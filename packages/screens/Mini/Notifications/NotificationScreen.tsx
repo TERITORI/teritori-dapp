@@ -2,12 +2,12 @@ import { useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 
 import NotificationList from "./NotificationList";
-import DropdownWithCheck from "./components/DropdownWithCheck";
-import MiniHeader from "./components/MiniHeader";
 import { BrandText } from "../../../components/BrandText";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { ScreenFC } from "../../../utils/navigation";
 import { fontSemibold18 } from "../../../utils/style/fonts";
+import CustomAppBar from "../components/AppBar/CustomAppBar";
+import DropdownWithCheck from "../components/Dropdown/DropdownWithCheck";
 
 const filterOptionsConst = [
   {
@@ -57,7 +57,7 @@ const NotificationScreen: ScreenFC<"Notifications"> = ({ navigation }) => {
       footerChildren={null}
       noScroll
       headerMini={
-        <MiniHeader
+        <CustomAppBar
           navigation={navigation}
           left={<BrandText style={fontSemibold18}>Notifications</BrandText>}
           backEnabled

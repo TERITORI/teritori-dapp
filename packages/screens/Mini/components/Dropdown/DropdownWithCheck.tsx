@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import Checkbox from "./Checkbox";
 import chevronDropdownSVG from "../../../../../assets/icons/chevron-down.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { Dropdown } from "../../../../components/Dropdown";
@@ -16,6 +15,7 @@ import {
 } from "../../../../utils/style/colors";
 import { fontSemibold14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
+import Checkbox from "../Checkbox";
 
 export type FilterOption = {
   value: string;
@@ -170,7 +170,9 @@ function DropdownItem({
   return (
     <View
       style={{
-        paddingVertical: layout.spacing_x2,
+        height: 45,
+        alignItems: "center",
+        justifyContent: "center",
         borderBottomWidth: !lastItem ? 0.5 : 0,
         borderBottomColor: !lastItem ? withAlpha(secondaryColor, 0.3) : "",
       }}

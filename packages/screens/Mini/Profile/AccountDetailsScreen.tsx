@@ -45,12 +45,7 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
   const handleViewOnTeritoriscan = () => {};
 
   return (
-    <BlurScreenContainer
-      title="Account Details"
-      onGoBack={navigateToProfile}
-      reverseView={false}
-      background="transparent"
-    >
+    <BlurScreenContainer title="Account Details" onGoBack={navigateToProfile}>
       <View
         style={{
           marginTop: layout.spacing_x3,

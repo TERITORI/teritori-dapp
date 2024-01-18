@@ -1,21 +1,18 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { FlatList, View } from "react-native";
 
-import closeSVG from "../../../../assets/icons/close.svg";
 import externalLinkSVG from "../../../../assets/icons/external-grey.svg";
 import teritoriSVG from "../../../../assets/icons/teritori-white.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBadge } from "../../../components/badges/TertiaryBadge";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
 import { RootStackParamList } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontBold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import ListView from "../AddressBook/components/ListView";
-import MiniHeader from "../Notifications/components/MiniHeader";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import ListView from "../components/ListView";
 
 type AboutScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "About">;
@@ -55,22 +52,7 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
       : navigation.replace("MiniTabs");
 
   return (
-    <BlurScreenContainer
-      background="transparent"
-      customHeader={
-        <MiniHeader
-          headerStyle={{ backgroundColor: "transparent" }}
-          navigation={navigation}
-          backEnabled
-          title="About Teritori"
-          right={
-            <CustomPressable onPress={onClose}>
-              <SVG source={closeSVG} width={24} height={24} />
-            </CustomPressable>
-          }
-        />
-      }
-    >
+    <BlurScreenContainer title="About Teritori" onGoBack={onClose}>
       <View
         style={{
           width: "100%",
@@ -86,10 +68,12 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
         <TertiaryBadge label="v1.25" textColor={neutral77} />
         <SpacerColumn size={6} />
       </View>
+
       <View
         style={{
           justifyContent: "space-between",
           backgroundColor: "rgba(0,0,0,0.8)",
+          padding: layout.spacing_x2,
           flex: 1,
         }}
       >

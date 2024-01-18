@@ -6,7 +6,7 @@ import searchSvg from "../../../../assets/icons/search-gray.svg";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
-import MiniTextInput from "../AddressBook/components/MiniTextInput";
+import MiniTextInput from "../components/MiniTextInput";
 
 const nftData = [
   {

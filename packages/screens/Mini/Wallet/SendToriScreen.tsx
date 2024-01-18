@@ -13,10 +13,10 @@ import {
   fontMedium16,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import CircularImgOrIcon from "../AddressBook/components/CircularImgOrIcon";
-import MiniTextInput from "../AddressBook/components/MiniTextInput";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import { CustomButton } from "../components/CustomButton";
+import MiniTextInput from "../components/MiniTextInput";
 import MiniTextInputWithDropdown from "../components/MiniTextInputWithDropdown";
 
 const tokenOptions = [
@@ -38,17 +38,11 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation }) => {
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
 
-  const onClose = () =>
-    navigation.canGoBack()
-      ? navigation.replace("MiniSelectToken", { navigateTo: "MiniSendTori" })
-      : navigation.replace("MiniTabs");
+  const goBackTo = () =>
+    navigation.replace("MiniSelectToken", { navigateTo: "MiniSendingTori" });
 
   return (
-    <BlurScreenContainer
-      title="Send TORI"
-      background="transparent"
-      onGoBack={onClose}
-    >
+    <BlurScreenContainer title="Send TORI" onGoBack={goBackTo}>
       <SpacerColumn size={2} />
       <View
         style={{

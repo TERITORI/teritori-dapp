@@ -99,6 +99,7 @@ export const BlurScreenContainer = ({
         ) : (
           <View
             style={{
+              width: "100%",
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
@@ -113,7 +114,7 @@ export const BlurScreenContainer = ({
               {title || "Settings"}
             </BrandText>
 
-            <CustomPressable onPress={onClose} style={{}}>
+            <CustomPressable onPress={onClose}>
               <SVG source={closeSVG} height={28} width={28} />
             </CustomPressable>
           </View>

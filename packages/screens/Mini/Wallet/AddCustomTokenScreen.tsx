@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { View } from "react-native";
 
 import { Select } from "./components/Select";
 import { BrandText } from "../../../components/BrandText";
+import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import {
   neutral22,
@@ -69,7 +70,6 @@ type SelectedTokenType = {
 const AddCustomTokenScreen: ScreenFC<"MiniAddCustomToken"> = ({
   navigation,
 }) => {
-  const { height: windowHeight } = useWindowDimensions();
   const [selectedToken, setSelectedToken] = useState<SelectedTokenType | null>(
     null,
   );
@@ -88,48 +88,39 @@ const AddCustomTokenScreen: ScreenFC<"MiniAddCustomToken"> = ({
   const onAddToken = () => {};
 
   return (
-    <BlurScreenContainer
-      title="Add Custom Token"
-      reverseView={false}
-      onGoBack={gotoManageTokens}
-      background="transparent"
-    >
+    <BlurScreenContainer title="Add Custom Token" onGoBack={gotoManageTokens}>
       <View
         style={{
-          gap: layout.spacing_x1_5,
-          marginTop: layout.spacing_x2_5,
-          paddingHorizontal: layout.spacing_x1_5,
-          height: windowHeight - 150,
+          paddingHorizontal: layout.spacing_x2,
+          flex: 1,
+          justifyContent: "space-between",
         }}
       >
-        <Select
-          selected={selectedToken?.token || ""}
-          onSelect={onSelectTokenChange}
-          options={tokenOptions}
-          onSearchChange={onSearchToken}
-          searchValue={searchToken}
-          placeholder="Select a GRC20 Token"
-        />
-        <TokenInfoRow
-          label="Token Symbol"
-          value={selectedToken?.symbol || ""}
-        />
-        <TokenInfoRow label="Token Path" value={selectedToken?.path || ""} />
-        <TokenInfoRow
-          label="Token Decimals"
-          value={selectedToken?.decimals || ""}
-        />
-        <CustomButton
-          onPress={onAddToken}
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: layout.spacing_x2,
-            right: layout.spacing_x2,
-            zIndex: 99,
-          }}
-          title="Add"
-        />
+        <View>
+          <SpacerColumn size={2} />
+          <Select
+            selected={selectedToken?.token || ""}
+            onSelect={onSelectTokenChange}
+            options={tokenOptions}
+            onSearchChange={onSearchToken}
+            searchValue={searchToken}
+            placeholder="Select a GRC20 Token"
+          />
+          <SpacerColumn size={1} />
+          <TokenInfoRow
+            label="Token Symbol"
+            value={selectedToken?.symbol || ""}
+          />
+          <SpacerColumn size={1} />
+          <TokenInfoRow label="Token Path" value={selectedToken?.path || ""} />
+          <SpacerColumn size={1} />
+          <TokenInfoRow
+            label="Token Decimals"
+            value={selectedToken?.decimals || ""}
+          />
+        </View>
+
+        <CustomButton onPress={onAddToken} title="Add" />
       </View>
     </BlurScreenContainer>
   );
