@@ -74,7 +74,7 @@ export const startCosmosLocalnet = async (
   };
 };
 
-export const waitForHeight = async (port: number, targetHeight: bigint) => {
+const waitForHeight = async (port: number, targetHeight: bigint) => {
   const statusCmd = `curl -s http://localhost:${port}/status`;
   console.log("> " + statusCmd);
   while (true) {
