@@ -1,4 +1,5 @@
 // @ts-nocheck
+/* eslint-disable */
 import {
   AccountData,
   AminoSignResponse,
@@ -247,3 +248,11 @@ export async function importLedgerAccount(
     throw new LedgerError(e.message);
   }
 }
+
+const getLedgerAccountDetails = async () => {
+  const { primaryChainAccount, chainWiseAddresses } = await importLedgerAccount(
+    Array.from({ length: 4 }, (value, index) => index),
+    "teritori",
+  );
+  console.log(primaryChainAccount, chainWiseAddresses);
+};
