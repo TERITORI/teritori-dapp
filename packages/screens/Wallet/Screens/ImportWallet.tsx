@@ -1,8 +1,3 @@
-/* eslint-disable */
-import { Slip10, Slip10Curve, stringToPath } from "@cosmjs/crypto";
-import { toHex } from "@cosmjs/encoding";
-import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
-import * as bip39 from "bip39";
 import React, { useState } from "react";
 import { TextInput, View } from "react-native";
 
@@ -19,49 +14,7 @@ import { layout } from "../../../utils/style/layout";
 import { AcceptAndNavigate } from "../layout/AcceptAndNavigate";
 import { TopBarWithProgress } from "../layout/TopBarWithProgress";
 import { WalletContainer } from "../layout/WalletContainer";
-import { importLedgerAccount } from "../libs/ledger";
-
-export function createMnemonic(numberOfWords: 12 | 24 = 24): string {
-  if (numberOfWords === 12) return bip39.generateMnemonic(128);
-  return bip39.generateMnemonic(256);
-}
-
-interface Seed {
-  derivation: string;
-  mnemonic: string;
-}
-
-export async function generatePrivateKeyFromHdPath(
-  mnemonic: string,
-  hdPath: string,
-): Promise<string> {
-  const seed = await bip39.mnemonicToSeed(mnemonic);
-  const res = Slip10.derivePath(
-    Slip10Curve.Secp256k1,
-    seed,
-    stringToPath(hdPath),
-  );
-  return toHex(res.privkey);
-}
-
-const getMyAccount = async (seed: Seed) => {
-  const myWallet = await DirectSecp256k1HdWallet.fromMnemonic(seed.mnemonic, {
-    prefix: "tori",
-    // hdPaths: stringToPath(seed.derivation),
-  });
-
-  const [mySigner] = await myWallet.getAccounts();
-  const myAddress = mySigner.address;
-  return { myAddress, myWallet, mySigner };
-};
-
-const getLedgerAccountDetails = async () => {
-  const { primaryChainAccount, chainWiseAddresses } = await importLedgerAccount(
-    Array.from({ length: 4 }, (value, index) => index),
-    "teritori",
-  );
-  console.log(primaryChainAccount, chainWiseAddresses);
-};
+import { correctMnemonic, Seed } from "../util/seed";
 
 export const ImportWallet: ScreenFC<"ImportWallet"> = () => {
   const [seed, setSeed] = useState<Seed>();
@@ -82,7 +35,10 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = () => {
         <BrandText
           style={[
             fontSemibold16,
-            { color: neutral77, marginTop: layout.spacing_x1 },
+            {
+              color: neutral77,
+              marginTop: layout.spacing_x1,
+            },
           ]}
         >
           Import an existing wallet with a 12 or 24-word seed phrase.
@@ -105,7 +61,7 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = () => {
             multiline
             numberOfLines={4}
             onChangeText={(text) => {
-              setSeed({ mnemonic: text, derivation });
+              setSeed({ mnemonic: correctMnemonic(text), derivation });
             }}
             value={seed?.mnemonic}
             style={[fontSemibold16, { color: secondaryColor, width: "100%" }]}
