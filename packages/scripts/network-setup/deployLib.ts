@@ -180,7 +180,7 @@ const instantiateNameService = async (
   };
   const cmd = `${opts.binaryPath} tx wasm execute ${addr} ${sqh(
     JSON.stringify(feesMsg),
-  )} --from ${wallet} --gas auto --gas-adjustment 1.5 --broadcast-mode block --chain-id ${
+  )} --from ${wallet} --gas auto --gas-adjustment 1.5 --broadcast-mode sync --chain-id ${
     network.chainId
   } --node ${injectRPCPort(
     network.rpcEndpoint,
@@ -210,7 +210,7 @@ const instantiateContract = async (
 ) => {
   const cmd = `${opts.binaryPath} tx wasm instantiate ${codeId} ${sqh(
     JSON.stringify(msg),
-  )} --from ${wallet} --gas auto --gas-adjustment 1.5 --broadcast-mode block --chain-id ${
+  )} --from ${wallet} --gas auto --gas-adjustment 1.5 --broadcast-mode sync --chain-id ${
     network.chainId
   } --node ${injectRPCPort(
     network.rpcEndpoint,
@@ -240,7 +240,7 @@ const storeWASM = async (
 ) => {
   const cmd = `${
     opts.binaryPath
-  } tx wasm store ${wasmFilePath} --from ${wallet} --gas auto --gas-adjustment 1.5 --broadcast-mode block --chain-id ${
+  } tx wasm store ${wasmFilePath} --from ${wallet} --gas auto --gas-adjustment 1.5 --broadcast-mode sync --chain-id ${
     network.chainId
   } --node ${injectRPCPort(
     network.rpcEndpoint,
