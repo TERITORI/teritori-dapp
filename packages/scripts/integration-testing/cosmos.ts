@@ -148,7 +148,7 @@ export const upgradeCosmosLocalnet = async (
   return height;
 };
 
-const buildCosmos = async (
+export const buildCosmos = async (
   repoPath: string,
   binaryName: string,
 ): Promise<string> => {
