@@ -30,7 +30,7 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { mustGetGnoNetwork } from "../../networks";
-import { adenaVMCall, extractGnoString } from "../../utils/gno";
+import { adenaVMCall, extractGnoNumber, extractGnoString } from "../../utils/gno";
 import { ScreenFC } from "../../utils/navigation";
 import {
   neutral00,
@@ -270,17 +270,27 @@ export const ProjectsDetailScreen: ScreenFC<"ProjectsDetail"> = () => {
         await provider.evaluateExpression(escrowPkgPath, `CurrentRealm()`),
       );
 
-      await adenaVMCall(
-        networkId,
-        {
-          caller,
-          send: "",
-          pkg_path: project.escrowToken,
-          func: "Approve",
-          args: [escrowAddress, "" + project.budget], // Decimal of gopher20 = 4
-        },
-        { gasWanted: 1_000_000 },
+      // Check if Allowance is enough
+      const allowance = extractGnoNumber(
+        await provider.evaluateExpression(
+          project.escrowToken,
+          `Allowance("${selectedWallet?.address}","${escrowAddress}")`,
+        ),
       );
+
+      if (allowance < project.budget) {
+        await adenaVMCall(
+          networkId,
+          {
+            caller,
+            send: "",
+            pkg_path: project.escrowToken,
+            func: "Approve",
+            args: [escrowAddress, "" + project.budget], // Decimal of gopher20 = 4
+          },
+          { gasWanted: 1_000_000 },
+        );
+      }
 
       await adenaVMCall(
         networkId,
@@ -369,7 +379,13 @@ export const ProjectsDetailScreen: ScreenFC<"ProjectsDetail"> = () => {
                 <SpacerColumn size={2} />
               </>
             )}
-
+          <PrimaryButton
+            disabled={isProcessing}
+            text="Submit funder"
+            onPress={() => submitFunder(project)}
+            size="SM"
+            width={200}
+          />
           {/* If current user is not contractor, not creator of project and the project has not funder yet then user can become funder */}
           {selectedWallet?.address !== project.sender &&
             selectedWallet?.address !== project.contractor &&

@@ -36,8 +36,18 @@ export const adenaDoContract = async (
     memo: opts?.memo,
   };
   const res = await adena.DoContract(req);
+
   if (res.status === "failure") {
-    throw new Error(res.message);
+    const regex = /Data:.*s\:\"(.*)\"}\n/;
+    const matches = res.data.error.log.match(regex);
+    const errMsg = matches.length > 1 ? matches[1] : res.message;
+
+    console.error("Transaction failed:", {
+      error: errMsg,
+      stack: res.data.error.log,
+    });
+
+    throw new Error(errMsg);
   }
   const hash: string = res.data.hash;
   const { height: txHeight, index } = await client.waitForTransaction(
