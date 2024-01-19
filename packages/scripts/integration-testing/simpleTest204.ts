@@ -9,24 +9,24 @@ const repoURL = "https://github.com/TERITORI/teritori-chain.git";
 
 const main = async () => {
   const binaries = await buildBinaries(repoURL, "teritorid", [
-    "v2.0.3",
+    "v2.0.4",
   ] as const);
 
   const {
     home,
-    result: v203Result,
-    process: v203Process,
-  } = await startCosmosLocalnet(binaries["v2.0.3"]);
+    result: v204Result,
+    process: v204Process,
+  } = await startCosmosLocalnet(binaries["v2.0.4"]);
 
   await deployTeritoriEcosystem(
-    { binaryPath: binaries["v2.0.3"], home },
+    { binaryPath: binaries["v2.0.4"], home },
     teritoriLocalnetNetwork.id,
     "testnet-adm",
   );
 
   // stop
-  v203Process.kill(os.constants.signals.SIGINT);
-  await v203Result;
+  v204Process.kill(os.constants.signals.SIGINT);
+  await v204Result;
 
   await fs.rm(home, { recursive: true, force: true });
 };

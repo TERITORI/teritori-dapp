@@ -1,4 +1,5 @@
 import { IndexedTx } from "@cosmjs/stargate";
+import { bech32 } from "bech32";
 import child_process from "child_process";
 import { cloneDeep } from "lodash";
 import path from "path";
@@ -15,7 +16,7 @@ import {
   mustGetNonSigningCosmWasmClient,
 } from "../../networks";
 import { zodTryParseJSON } from "../../utils/sanitize";
-import { injectRPCPort, retry, zodTxResult } from "../lib";
+import { injectRPCPort, retry, sleep, zodTxResult } from "../lib";
 import sqh from "../sqh";
 
 export const deployTeritoriEcosystem = async (
@@ -30,12 +31,16 @@ export const deployTeritoriEcosystem = async (
   }
   console.log(`Deploying to ${network.displayName}`);
 
-  const walletAddr = child_process
+  let walletAddr = child_process
     .execSync(
       `${opts.binaryPath} keys show --keyring-backend test -a ${wallet} --home ${opts.home}`,
     )
     .toString()
     .trim();
+  if (walletAddr.startsWith("Successfully migrated")) {
+    walletAddr = walletAddr.substring(walletAddr.indexOf("\n")).trim();
+  }
+  bech32.decode(walletAddr);
 
   console.log("Wallet address:", walletAddr);
 
@@ -186,11 +191,15 @@ const instantiateNameService = async (
     network.rpcEndpoint,
   )} --yes --keyring-backend test -o json --home ${opts.home}`;
   console.log("> " + cmd);
-  const out = await retry(5, () =>
+  let out = await retry(5, () =>
     child_process.execSync(cmd, {
       stdio: ["inherit", "pipe", "inherit"],
+      encoding: "utf-8",
     }),
   );
+  if (!out.startsWith("{")) {
+    out = out.substring(out.indexOf("{"));
+  }
   const outObj = zodTryParseJSON(zodTxResult, out.toString());
   if (!outObj) {
     throw new Error("Failed to parse instantiate result");
@@ -218,12 +227,16 @@ const instantiateContract = async (
     label,
   )} --admin ${admin} --home ${opts.home}`;
   console.log("> " + cmd);
-  const out = await retry(5, () =>
+  let out = await retry(5, () =>
     child_process.execSync(cmd, {
       stdio: ["inherit", "pipe", "inherit"],
+      encoding: "utf-8",
     }),
   );
-  const outObj = zodTryParseJSON(zodTxResult, out.toString());
+  if (!out.startsWith("{")) {
+    out = out.substring(out.indexOf("{"));
+  }
+  const outObj = zodTryParseJSON(zodTxResult, out);
   if (!outObj) {
     throw new Error("Failed to parse instantiate result");
   }
@@ -246,12 +259,15 @@ const storeWASM = async (
     network.rpcEndpoint,
   )} --yes --keyring-backend test -o json --home ${opts.home}`;
   console.log("> " + cmd);
-  const out = await retry(5, () =>
+  let out = await retry(5, () =>
     child_process.execSync(cmd, {
       stdio: ["inherit", "pipe", "inherit"],
       encoding: "utf-8",
     }),
   );
+  if (!out.startsWith("{")) {
+    out = out.substring(out.indexOf("{"));
+  }
   const outObj = zodTryParseJSON(zodTxResult, out);
   if (!outObj) {
     throw new Error("Failed to parse store result");
@@ -262,14 +278,24 @@ const storeWASM = async (
   return +codeId;
 };
 
-// FIXME: timeout
-const getTx = async (networkId: string, txhash: string) => {
-  let tx: IndexedTx | null = null;
-  while (tx === null) {
-    tx = await retry(5, async () => {
-      const client = await mustGetNonSigningCosmWasmClient(networkId);
-      return client.getTx(txhash);
-    });
+const getTx = async (networkId: string, txhash: string, timeout?: number) => {
+  const innerGetTx = async () => {
+    let tx: IndexedTx | null = null;
+    while (tx === null) {
+      tx = await retry(5, async () => {
+        const client = await mustGetNonSigningCosmWasmClient(networkId);
+        return client.getTx(txhash);
+      });
+    }
+    return tx;
+  };
+  const startTimeout = async () => {
+    await sleep(timeout || 50000);
+    return undefined;
+  };
+  const tx = await Promise.race([startTimeout(), innerGetTx()]);
+  if (!tx) {
+    throw new Error("Timed out waiting for tx '" + txhash + "'");
   }
   return tx;
 };

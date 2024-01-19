@@ -19,7 +19,7 @@ const main = async () => {
     "v1.3.0",
     "v1.3.1",
     "v1.4.2",
-    "v2.0.3",
+    "v2.0.4",
   ] as const);
 
   const {
@@ -74,21 +74,21 @@ const main = async () => {
     `minimum-gas-prices = "0stake"`,
   );
 
-  const { process: v203Process, result: v203Result } =
-    await startCosmosLocalnet(binaries["v2.0.3"], {
+  const { process: v204Process, result: v204Result } =
+    await startCosmosLocalnet(binaries["v2.0.4"], {
       home,
       height: upgradeHeight,
     });
 
   // test cosmwasm
   await deployTeritoriEcosystem(
-    { binaryPath: binaries["v2.0.3"], home },
+    { binaryPath: binaries["v2.0.4"], home },
     teritoriLocalnetNetwork.id,
     "testnet-adm",
   );
 
-  v203Process.kill(os.constants.signals.SIGINT);
-  await v203Result;
+  v204Process.kill(os.constants.signals.SIGINT);
+  await v204Result;
 
   await fs.rm(home, { recursive: true, force: true });
 };
