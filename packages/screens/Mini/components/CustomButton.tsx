@@ -1,5 +1,10 @@
 import React, { ReactNode } from "react";
-import { GestureResponderEvent, StyleProp, ViewStyle } from "react-native";
+import {
+  DimensionValue,
+  GestureResponderEvent,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
@@ -19,7 +24,7 @@ type Props = {
   type?: "primary" | "danger" | "gray";
   size?: "normal" | "medium" | "small";
   style?: StyleProp<ViewStyle>;
-  width?: number;
+  width?: DimensionValue;
 };
 
 export const CustomButton = ({
@@ -81,7 +86,7 @@ export const CustomButton = ({
           borderRadius: 100,
           opacity: isDisabled ? 0.7 : 1,
           height: getHeight(),
-          width: width || "100%",
+          width: width ?? "100%",
           alignItems: "center",
           justifyContent: "center",
         },

@@ -15,14 +15,8 @@ import {
   neutral44,
   neutral88,
 } from "../../../../utils/style/colors";
-import {
-  fontMedium13,
-  fontMedium14,
-  fontMedium15,
-  fontSemibold16,
-} from "../../../../utils/style/fonts";
+import { fontMedium13, fontMedium14 } from "../../../../utils/style/fonts";
 import { capitalizeStr } from "../TransactionDetailScreen";
-import { layout } from "../../../../utils/style/layout";
 
 export type TransactionType = {
   id: string;
@@ -45,6 +39,7 @@ export default function TransactionItem({
   isLastItem,
 }: TransactionItemProps) {
   const { type, img, status, to, amount } = transaction;
+
   return (
     <CustomPressable onPress={onPress}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>

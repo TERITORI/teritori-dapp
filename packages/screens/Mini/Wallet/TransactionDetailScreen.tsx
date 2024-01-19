@@ -1,29 +1,21 @@
 import * as Clipboard from "expo-clipboard";
 import { capitalize } from "lodash";
 import { useWindowDimensions, View } from "react-native";
-import { SvgProps } from "react-native-svg";
 
 import checkSVG from "../../../../assets/icons/check-white.svg";
-import copySVG from "../../../../assets/icons/copy-gray.svg";
-import externalLinkSVG from "../../../../assets/icons/external-grey.svg";
 import teritoriCircleSVG from "../../../../assets/icons/tori-circle.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
-import {
-  blueDefault,
-  neutralA3,
-  secondaryColor,
-  withAlpha,
-} from "../../../utils/style/colors";
-import { fontBold16, fontSemibold15 } from "../../../utils/style/fonts";
+import { blueDefault, neutralA3 } from "../../../utils/style/colors";
+import { fontSemibold15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import CustomAppBar from "../components/AppBar/CustomAppBar";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import RowDisplay from "../components/RowDisplay";
+import MiniTable from "../components/Table/MiniTable";
 
 export type TransactionDetailType = {
   id: string;
@@ -31,14 +23,45 @@ export type TransactionDetailType = {
   address: string;
 };
 
-const transactionDetail: { [key: string]: any } = {
-  date: "Dec 1, 2023 00:00:01 AM",
-  type: "Send",
-  status: { code: "success", link: "" },
-  to: "asdfinidnfdf",
-  txId: "ndifdfjdsdf",
-  fee: 0.000001,
-};
+const transactionDetail = [
+  {
+    label: "date",
+    value: "Dec 1, 2023 00:00:01 AM",
+  },
+  { label: "type", value: "Send" },
+  {
+    label: "status",
+    value: "Success",
+    icon: "link",
+    onPress: () => {},
+    valueColor: blueDefault,
+  },
+  {
+    label: "to",
+    value: "asdidjfdijf",
+    icon: "copy",
+    onPress: () =>
+      copyToClipboard(
+        JSON.stringify({
+          token: "asdidjfdijf",
+          type: "to",
+        }),
+      ),
+  },
+  {
+    label: "txId",
+    value: "nijijndfijdif",
+    icon: "copy",
+    onPress: () =>
+      copyToClipboard(
+        JSON.stringify({
+          token: "nijijndfijdif",
+          type: "txId",
+        }),
+      ),
+  },
+  { label: "fee", value: "0.000001 TORI" },
+];
 
 const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
   navigation,
@@ -83,7 +106,7 @@ const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
           backgroundColor={blueDefault}
         />
 
-        <View style={{ width: "100%", paddingHorizontal: layout.spacing_x1_5 }}>
+        <View style={{ width: "100%", paddingHorizontal: layout.spacing_x2 }}>
           <SpacerColumn size={3} />
           <RowDisplay
             leftLabel={
@@ -98,67 +121,8 @@ const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
           />
 
           <SpacerColumn size={2} />
-          {Object.keys(transactionDetail).map((item, index) => {
-            const firstItem = index === 0;
-            const lastItem =
-              Object.keys(transactionDetail).length - 1 === index;
 
-            const rightLabel =
-              item === "status" ? (
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <BrandText style={[fontBold16, { color: blueDefault }]}>
-                    {capitalizeStr(transactionDetail[item].code)}
-                  </BrandText>
-                  <SpacerRow size={1} />
-                  <IconButton onPress={() => {}} icon={externalLinkSVG} />
-                </View>
-              ) : item === "to" || item === "txId" ? (
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <BrandText style={fontBold16}>
-                    {transactionDetail[item]}
-                  </BrandText>
-                  <SpacerRow size={1} />
-                  <IconButton
-                    onPress={() =>
-                      copyToClipboard(
-                        JSON.stringify({
-                          token: transactionDetail[item],
-                          type: item,
-                        }),
-                      )
-                    }
-                    icon={copySVG}
-                  />
-                </View>
-              ) : item === "fee" ? (
-                `${transactionDetail[item].toFixed(6)} TORI`
-              ) : (
-                transactionDetail[item]
-              );
-
-            return (
-              <RowDisplay
-                key={item}
-                leftLabel={capitalizeStr(item)}
-                style={{
-                  borderRadius: 0,
-                  borderWidth: 1,
-                  borderTopWidth: 1,
-                  borderLeftWidth: 1,
-                  borderRightWidth: 1,
-                  borderBottomWidth: lastItem ? 1 : 0,
-                  borderTopRightRadius: firstItem ? 14 : 0,
-                  borderTopLeftRadius: firstItem ? 14 : 0,
-                  borderBottomLeftRadius: lastItem ? 14 : 0,
-                  borderBottomRightRadius: lastItem ? 14 : 0,
-                  borderColor: withAlpha(secondaryColor, 0.12),
-                }}
-                rightLabel={rightLabel}
-              />
-            );
-          })}
-
-          <SpacerColumn size={2} />
+          <MiniTable items={transactionDetail} />
         </View>
       </View>
     </ScreenContainer>
@@ -169,20 +133,6 @@ export function capitalizeStr(str: string) {
   const firstLetter = str.slice(0, 1).toUpperCase();
   const lastLetter = str.slice(1);
   return firstLetter + lastLetter;
-}
-
-type IconButtonProps = {
-  icon: React.FC<SvgProps> | string;
-  iconSize?: number;
-  onPress?: () => void;
-};
-
-function IconButton({ icon, iconSize, onPress }: IconButtonProps) {
-  return (
-    <CustomPressable onPress={onPress}>
-      <SVG source={icon} width={iconSize ?? 22} height={iconSize ?? 22} />
-    </CustomPressable>
-  );
 }
 
 export async function copyToClipboard(value: string) {
