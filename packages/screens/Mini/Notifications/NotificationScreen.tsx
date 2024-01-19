@@ -58,7 +58,6 @@ const NotificationScreen: ScreenFC<"Notifications"> = ({ navigation }) => {
       noScroll
       headerMini={
         <CustomAppBar
-          navigation={navigation}
           left={<BrandText style={fontSemibold18}>Notifications</BrandText>}
           backEnabled
           right={

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { StyleProp, View, ViewStyle, useWindowDimensions } from "react-native";
+import { StyleProp, ViewStyle, useWindowDimensions } from "react-native";
 
 import { PostActions } from "./PostActions";
 import { PostHeader } from "./PostHeader";
@@ -7,6 +7,7 @@ import defaultThumbnailImage from "../../../../../assets/default-images/default-
 import { Post } from "../../../../api/feed/v1/feed";
 import { BrandText } from "../../../../components/BrandText";
 import { OptimizedImage } from "../../../../components/OptimizedImage";
+import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import {
   ZodSocialFeedArticleMetadata,
   ZodSocialFeedPostMetadata,
@@ -18,7 +19,9 @@ import {
 } from "../../../../components/socialFeed/RichText";
 import { SpacerColumn } from "../../../../components/spacer";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
-import { parseUserId } from "../../../../networks";
+import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
+import { getNetworkObjectId, parseUserId } from "../../../../networks";
+import { useAppNavigation } from "../../../../utils/navigation";
 import { zodTryParseJSON } from "../../../../utils/sanitize";
 import { neutralA3 } from "../../../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../../../utils/style/fonts";
@@ -33,7 +36,10 @@ export const DEFAULT_NAME = "Anon";
 
 export const MiniSocialArticle = ({ post, refetchFeed, style }: Props) => {
   const { width: windowWidth } = useWindowDimensions();
+  const navigation = useAppNavigation();
 
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetworkId = selectedNetworkInfo?.id || "";
   const [localPost, setLocalPost] = useState<Post>(post);
   const [, authorAddress] = parseUserId(localPost.authorId);
   const authorNSInfo = useNSUserInfo(localPost.authorId);
@@ -73,6 +79,11 @@ export const MiniSocialArticle = ({ post, refetchFeed, style }: Props) => {
     setLocalPost(post);
   }, [post]);
 
+  const onPressPost = () => {
+    // const id = getNetworkObjectId(selectedNetworkId, localPost.identifier);
+    // navigation.navigate("MiniFeedDetails", { id });
+  };
+
   const thumbnailURI = thumbnailImage?.url
     ? thumbnailImage.url.includes("://")
       ? thumbnailImage.url
@@ -93,7 +104,7 @@ export const MiniSocialArticle = ({ post, refetchFeed, style }: Props) => {
     DEFAULT_NAME;
 
   return (
-    <View>
+    <CustomPressable onPress={onPressPost}>
       <PostHeader
         user={{
           img: authorMetadata.image,
@@ -130,6 +141,6 @@ export const MiniSocialArticle = ({ post, refetchFeed, style }: Props) => {
       )}
       <SpacerColumn size={1} />
       <PostActions post={localPost} setPost={setLocalPost} />
-    </View>
+    </CustomPressable>
   );
 };
