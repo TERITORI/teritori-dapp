@@ -7,7 +7,13 @@ import util from "util";
 
 import { cloneRepo } from "./git";
 import { zodTryParseJSON } from "../../utils/sanitize";
-import { mustGetAttr, replaceInFile, sleep, zodTxResult } from "../lib";
+import {
+  execPromise,
+  mustGetAttr,
+  replaceInFile,
+  sleep,
+  zodTxResult,
+} from "../lib";
 
 export const startCosmosLocalnet = async (
   binaryPath: string,
@@ -22,7 +28,7 @@ export const startCosmosLocalnet = async (
     // run teritorid init --chain-id=testing testing --home=$HOME/.teritorid
     const initCmd = `${binaryPath} init testing --chain-id testing --home ${home}`;
     console.log("> " + initCmd);
-    child_process.execSync(initCmd, { stdio: "ignore" });
+    await execPromise(initCmd);
 
     await replaceInFile(
       path.join(home, "config/genesis.json"),
@@ -33,27 +39,27 @@ export const startCosmosLocalnet = async (
     // run teritorid keys add validator --keyring-backend=test --home=$HOME/.teritorid
     const addValidatorCmd = `${binaryPath} keys add validator --keyring-backend=test --home ${home}`;
     console.log("> " + addValidatorCmd);
-    child_process.execSync(addValidatorCmd);
+    await execPromise(addValidatorCmd);
     // run teritorid add-genesis-account $(teritorid keys show validator -a --keyring-backend=test --home=$HOME/.teritorid) 100000000000utori,100000000000stake --home=$HOME/.teritorid
     const addGenesisAccountCmd = `${binaryPath} add-genesis-account $(${binaryPath} keys show validator -a --keyring-backend=test --home ${home}) 100000000000000000utori,100000000000000000stake --home ${home}`;
     console.log("> " + addGenesisAccountCmd);
-    child_process.execSync(addGenesisAccountCmd);
+    await execPromise(addGenesisAccountCmd);
     // run teritorid keys add testnet-adm --keyring-backend=test --home=$HOME/.teritorid
     const addTestnetAdmCmd = `${binaryPath} keys add testnet-adm --keyring-backend=test --home ${home}`;
     console.log("> " + addTestnetAdmCmd);
-    child_process.execSync(addTestnetAdmCmd);
+    await execPromise(addTestnetAdmCmd);
     // run teritorid add-genesis-account $(teritorid keys show validator -a --keyring-backend=test --home=$HOME/.teritorid) 100000000000utori,100000000000stake --home=$HOME/.teritorid
     const addTestnetAdmGenesisAccountCmd = `${binaryPath} add-genesis-account $(${binaryPath} keys show testnet-adm -a --keyring-backend=test --home ${home}) 100000000000000000utori,100000000000000000stake --home ${home}`;
     console.log("> " + addTestnetAdmGenesisAccountCmd);
-    child_process.execSync(addTestnetAdmGenesisAccountCmd);
+    await execPromise(addTestnetAdmGenesisAccountCmd);
     // run teritorid gentx validator 500000000stake --keyring-backend=test --home=$HOME/.teritorid --chain-id=testing
     const gentxCmd = `${binaryPath} gentx validator 500000000stake --keyring-backend=test --home ${home} --chain-id=testing`;
     console.log("> " + gentxCmd);
-    child_process.execSync(gentxCmd);
+    await execPromise(gentxCmd);
     // run teritorid collect-gentxs --home=$HOME/.teritorid
     const collectGentxsCmd = `${binaryPath} collect-gentxs --home ${home}`;
     console.log("> " + collectGentxsCmd);
-    child_process.execSync(collectGentxsCmd, { stdio: "ignore" });
+    await execPromise(collectGentxsCmd);
   }
   const cmd = `${binaryPath} start --home ${home}`;
   console.log("> " + cmd);
@@ -79,8 +85,9 @@ const waitForHeight = async (port: number, targetHeight: bigint) => {
   console.log("> " + statusCmd);
   while (true) {
     try {
+      const result = await execPromise(statusCmd);
       // eslint-disable-next-line no-restricted-syntax
-      const status = JSON.parse(child_process.execSync(statusCmd).toString());
+      const status = JSON.parse(result.stdout);
       const height = BigInt(status.result.sync_info.latest_block_height);
       //console.log(`height: ${height}`);
       if (height < targetHeight) {
@@ -102,7 +109,9 @@ export const upgradeCosmosLocalnet = async (
   const statusCmd = `curl -s http://localhost:26657/status`;
   console.log("> " + statusCmd);
   // eslint-disable-next-line no-restricted-syntax
-  const status = JSON.parse(child_process.execSync(statusCmd).toString());
+  const status = JSON.parse(
+    (await execPromise(statusCmd, { encoding: "utf-8" })).stdout,
+  );
   let height = BigInt(status.result.sync_info.latest_block_height);
   height += BigInt(8);
 
@@ -114,8 +123,8 @@ export const upgradeCosmosLocalnet = async (
   */
   const cmd = `${oldBinaryPath} tx gov submit-proposal software-upgrade "${newVersion}" --upgrade-height=${height} --title="Upgrade to ${newVersion}" --description="Upgrade to ${newVersion}" --from=${validatorWalletName} --keyring-backend=test --chain-id=testing --home=${home} --yes -b block --deposit="500000000stake" --node http://127.0.0.1:26657 -o json`;
   console.log("> " + cmd);
-  const out = child_process.execSync(cmd, { encoding: "utf-8" });
-  const outObj = zodTryParseJSON(zodTxResult, out.toString());
+  const { stdout: out } = await execPromise(cmd, { encoding: "utf-8" });
+  const outObj = zodTryParseJSON(zodTxResult, out);
   if (!outObj) {
     throw new Error("Failed to parse submit-proposal result");
   }
@@ -126,14 +135,14 @@ export const upgradeCosmosLocalnet = async (
   */
   const voteCmd = `${oldBinaryPath} tx gov vote ${proposalId} yes --from ${validatorWalletName} --chain-id testing --home ${home} -b block -y --keyring-backend test  --node http://127.0.0.1:26657`;
   console.log("> " + voteCmd);
-  child_process.execSync(voteCmd);
+  await execPromise(voteCmd);
 
   await waitForHeight(26657, height);
 
   // check proposal status
   const proposalCmd = `${oldBinaryPath} query gov proposal ${proposalId} --chain-id testing --home ${home} -o json --node http://127.0.0.1:26657`;
   console.log("> " + proposalCmd);
-  const proposalOut = child_process.execSync(proposalCmd, {
+  const { stdout: proposalOut } = await execPromise(proposalCmd, {
     encoding: "utf-8",
   });
   // TODO: compare date

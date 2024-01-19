@@ -1,6 +1,5 @@
 import { IndexedTx } from "@cosmjs/stargate";
 import { bech32 } from "bech32";
-import child_process from "child_process";
 import { cloneDeep } from "lodash";
 import path from "path";
 
@@ -16,7 +15,7 @@ import {
   mustGetNonSigningCosmWasmClient,
 } from "../../networks";
 import { zodTryParseJSON } from "../../utils/sanitize";
-import { injectRPCPort, retry, sleep, zodTxResult } from "../lib";
+import { execPromise, injectRPCPort, retry, sleep, zodTxResult } from "../lib";
 import sqh from "../sqh";
 
 export const deployTeritoriEcosystem = async (
@@ -31,12 +30,12 @@ export const deployTeritoriEcosystem = async (
   }
   console.log(`Deploying to ${network.displayName}`);
 
-  let walletAddr = child_process
-    .execSync(
+  let walletAddr = (
+    await execPromise(
       `${opts.binaryPath} keys show --keyring-backend test -a ${wallet} --home ${opts.home}`,
+      { encoding: "utf-8" },
     )
-    .toString()
-    .trim();
+  ).stdout.trim();
   if (walletAddr.startsWith("Successfully migrated")) {
     walletAddr = walletAddr.substring(walletAddr.indexOf("\n")).trim();
   }
@@ -191,12 +190,11 @@ const instantiateNameService = async (
     network.rpcEndpoint,
   )} --yes --keyring-backend test -o json --home ${opts.home}`;
   console.log("> " + cmd);
-  let out = await retry(5, () =>
-    child_process.execSync(cmd, {
-      stdio: ["inherit", "pipe", "inherit"],
+  let { stdout: out } = await retry(5, async () => {
+    return await execPromise(cmd, {
       encoding: "utf-8",
-    }),
-  );
+    });
+  });
   if (!out.startsWith("{")) {
     out = out.substring(out.indexOf("{"));
   }
@@ -227,11 +225,12 @@ const instantiateContract = async (
     label,
   )} --admin ${admin} --home ${opts.home}`;
   console.log("> " + cmd);
-  let out = await retry(5, () =>
-    child_process.execSync(cmd, {
-      stdio: ["inherit", "pipe", "inherit"],
-      encoding: "utf-8",
-    }),
+  let { stdout: out } = await retry(
+    5,
+    async () =>
+      await execPromise(cmd, {
+        encoding: "utf-8",
+      }),
   );
   if (!out.startsWith("{")) {
     out = out.substring(out.indexOf("{"));
@@ -259,12 +258,11 @@ const storeWASM = async (
     network.rpcEndpoint,
   )} --yes --keyring-backend test -o json --home ${opts.home}`;
   console.log("> " + cmd);
-  let out = await retry(5, () =>
-    child_process.execSync(cmd, {
-      stdio: ["inherit", "pipe", "inherit"],
+  let { stdout: out } = await retry(5, async () => {
+    return await execPromise(cmd, {
       encoding: "utf-8",
-    }),
-  );
+    });
+  });
   if (!out.startsWith("{")) {
     out = out.substring(out.indexOf("{"));
   }
@@ -290,12 +288,22 @@ const getTx = async (networkId: string, txhash: string, timeout?: number) => {
     return tx;
   };
   const startTimeout = async () => {
-    await sleep(timeout || 50000);
+    await sleep(timeout || 10000);
     return undefined;
   };
   const tx = await Promise.race([startTimeout(), innerGetTx()]);
   if (!tx) {
     throw new Error("Timed out waiting for tx '" + txhash + "'");
+  }
+  if (tx.code !== 0) {
+    throw new Error(
+      "Tx '" +
+        txhash +
+        "' failed with code " +
+        tx.code +
+        "\n" +
+        JSON.stringify(tx, null, 2),
+    );
   }
   return tx;
 };

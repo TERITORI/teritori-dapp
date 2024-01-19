@@ -1,5 +1,7 @@
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
+import child_process from "child_process";
 import fs from "fs/promises";
+import util from "util";
 import { z } from "zod";
 
 import {
@@ -104,3 +106,5 @@ export const replaceInFile = async (
   const newData = data.replace(match, repl);
   await fs.writeFile(filePath, newData);
 };
+
+export const execPromise = util.promisify(child_process.exec);
