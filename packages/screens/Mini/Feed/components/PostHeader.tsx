@@ -40,7 +40,7 @@ export function PostHeader({ user }: CardHeaderProps) {
           <OptimizedImage
             width={38}
             height={38}
-            sourceURI={img}
+            sourceURI={img || defaultThumbnailImage}
             fallbackURI={defaultThumbnailImage}
             style={{
               zIndex: -1,

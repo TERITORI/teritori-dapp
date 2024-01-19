@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView } from "react-native";
+import { View } from "react-native";
 
 import { PostsRequest } from "../../../api/feed/v1/feed";
 import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
@@ -9,9 +9,9 @@ type Props = object;
 
 export const VideoFeedScreen = (props: Props) => {
   return (
-    <ScrollView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <FeedVideosList title="All videos" req={feedRequest} />
-    </ScrollView>
+    </View>
   );
 };
 
