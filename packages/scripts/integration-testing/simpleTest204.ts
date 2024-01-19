@@ -1,5 +1,4 @@
 import fs from "fs/promises";
-import os from "os";
 
 import { buildBinaries, startCosmosLocalnet } from "./cosmos";
 import { teritoriLocalnetNetwork } from "../../networks/teritori-localnet";
@@ -25,7 +24,7 @@ const main = async () => {
   );
 
   // stop
-  v204Process.kill(os.constants.signals.SIGINT);
+  v204Process.kill();
   await v204Result;
 
   await fs.rm(home, { recursive: true, force: true });

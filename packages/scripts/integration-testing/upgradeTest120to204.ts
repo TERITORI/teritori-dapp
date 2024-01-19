@@ -1,5 +1,4 @@
 import fs from "fs/promises";
-import os from "os";
 import path from "path";
 
 import {
@@ -41,7 +40,7 @@ const main = async () => {
     validatorWalletName,
     home,
   );
-  v120Process.kill(os.constants.signals.SIGINT);
+  v120Process.kill();
   await v120Result;
 
   upgradeHeight = await runUpgrade(
@@ -87,7 +86,7 @@ const main = async () => {
     "testnet-adm",
   );
 
-  v204Process.kill(os.constants.signals.SIGINT);
+  v204Process.kill();
   await v204Result;
 
   await fs.rm(home, { recursive: true, force: true });
@@ -110,7 +109,7 @@ const runUpgrade = async (
     validatorWalletName,
     home,
   );
-  process.kill(os.constants.signals.SIGINT);
+  process.kill();
   await result;
   return upgradeHeight;
 };

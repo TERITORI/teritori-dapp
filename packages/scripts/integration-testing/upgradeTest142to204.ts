@@ -1,5 +1,4 @@
 import fs from "fs/promises";
-import os from "os";
 import path from "path";
 
 import {
@@ -38,7 +37,7 @@ const main = async () => {
     validatorWalletName,
     home,
   );
-  v142Process.kill(os.constants.signals.SIGINT);
+  v142Process.kill();
   await v142Result;
 
   await replaceInFile(
@@ -64,7 +63,7 @@ const main = async () => {
   );
 
   // stop
-  v204Process.kill(os.constants.signals.SIGINT);
+  v204Process.kill();
   await result;
 
   await fs.rm(home, { recursive: true, force: true });
