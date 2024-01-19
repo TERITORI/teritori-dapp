@@ -1,4 +1,4 @@
-import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 
 import { NetworkKind } from "../../networks";
 
@@ -17,7 +17,11 @@ const storeWalletsAdapter = createEntityAdapter<StoreWallet>({
 const walletsSlice = createSlice({
   name: "wallets",
   initialState: storeWalletsAdapter.getInitialState(),
-  reducers: {},
+  reducers: {
+    addSelected: storeWalletsAdapter.setOne,
+    removeSelected: storeWalletsAdapter.removeOne,
+  },
 });
 
 export const walletsReducer = walletsSlice.reducer;
+export const { addSelected, removeSelected } = walletsSlice.actions;
