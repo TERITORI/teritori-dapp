@@ -1,4 +1,5 @@
 import * as Clipboard from "expo-clipboard";
+import { capitalize } from "lodash";
 import { useWindowDimensions, View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
@@ -50,11 +51,10 @@ const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
     <ScreenContainer
       headerMini={
         <CustomAppBar
-          navigation={navigation}
           backEnabled
           left={
             <>
-              <BrandText>{type} </BrandText>
+              <BrandText>{capitalize(type)} </BrandText>
               <BrandText style={[fontSemibold15, { color: neutralA3 }]}>
                 (to:naisdnfasdf)
               </BrandText>

@@ -16,6 +16,7 @@ import { NewGroupScreen } from "../../screens/Mini/Chat/NewGroupScreen";
 import { ConnectLedgerScreen } from "../../screens/Mini/ConnectLedger/ConnectLedgerScreen";
 import { ConversationScreeen } from "../../screens/Mini/Conversation/ConversationScreen";
 import { DAppStoreScreen } from "../../screens/Mini/DAppStore/DAppStoreScreen";
+import FeedDetailsScreen from "../../screens/Mini/Feed/FeedDetailsScreen";
 import { MiniFeedScreen } from "../../screens/Mini/Feed/MiniFeedScreen";
 import ChangeNetworkScreen from "../../screens/Mini/Network/ChangeNetworkScreen";
 import NotificationScreen from "../../screens/Mini/Notifications/NotificationScreen";
@@ -392,6 +393,14 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: "",
+        }}
+      />
+      <Stack.Screen
+        name="MiniFeedDetails"
+        component={FeedDetailsScreen}
+        options={{
+          header: () => null,
+          title: "Feed",
         }}
       />
     </Stack.Navigator>
