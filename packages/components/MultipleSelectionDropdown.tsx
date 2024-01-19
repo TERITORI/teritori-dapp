@@ -10,6 +10,7 @@ import { TertiaryBox } from "./boxes/TertiaryBox";
 import { Separator } from "./separators/Separator";
 import { SpacerColumn } from "./spacer";
 import { useDropdowns } from "../context/DropdownsProvider";
+import { CheckboxDappStore } from "../screens/DAppStore/components/CheckboxDappStore";
 import {
   additionalRed,
   neutral17,
@@ -21,26 +22,27 @@ import {
 import { fontMedium14, fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 
-interface SelectionDropdownProps {
+interface MultipleSelectionDropdownProps {
   style?: ViewStyle;
   onDropdownClosed?: () => void;
   dropdownOptions: string[];
   placeHolder?: string;
-  setItem: (item: string) => void;
-  item?: string;
+  setItems: (item: string) => void;
+  items: string[];
   label?: string;
+  sublabel?: React.ReactElement;
 }
 
-export const SelectionDropdown = ({
+export const MultipleSelectionDropdown = ({
   style,
   dropdownOptions,
   placeHolder,
-  item,
+  items,
   label,
-  setItem,
-}: SelectionDropdownProps) => {
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
+  setItems,
+  sublabel,
+}: MultipleSelectionDropdownProps) => {
+  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
   const dropdownRef = useRef<View>(null);
 
   return (
@@ -83,6 +85,8 @@ export const SelectionDropdown = ({
         </BrandText>
       </View>
 
+      {sublabel && sublabel}
+
       <View>
         <TertiaryBox
           style={{
@@ -110,7 +114,7 @@ export const SelectionDropdown = ({
                 { marginRight: layout.spacing_x1, color: neutral77 },
               ]}
             >
-              {item ? item : placeHolder}
+              {items?.length > 0 ? items.join(", ") : placeHolder}
             </BrandText>
             <SVG
               source={
@@ -140,8 +144,7 @@ export const SelectionDropdown = ({
             {dropdownOptions.map((item, index) => (
               <TouchableOpacity
                 onPress={() => {
-                  closeOpenedDropdown();
-                  setItem(item);
+                  setItems(item);
                 }}
                 key={index}
                 style={{
@@ -149,10 +152,18 @@ export const SelectionDropdown = ({
                   width: "100%",
                 }}
               >
-                <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
-                  {item}
-                </BrandText>
+                <View style={{ flexDirection: "row" }}>
+                  <CheckboxDappStore
+                    isChecked={items.includes(item)}
+                    style={{ marginRight: layout.spacing_x1 }}
+                  />
 
+                  <BrandText
+                    style={[fontSemibold14, { color: secondaryColor }]}
+                  >
+                    {item}
+                  </BrandText>
+                </View>
                 {dropdownOptions.length - 1 !== index && (
                   <>
                     <SpacerColumn size={1} />

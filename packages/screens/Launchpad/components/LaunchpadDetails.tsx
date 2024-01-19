@@ -4,6 +4,7 @@ import { View } from "react-native";
 
 import { TextInputLaunchpadDetailsValues } from "./inputs/TextInputLaunchpadDetailsValues";
 import { BrandText } from "../../../components/BrandText";
+import { MultipleSelectionDropdown } from "../../../components/MultipleSelectionDropdown";
 import { SelectionDropdown } from "../../../components/SelectionDropdown";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutral55, neutral77 } from "../../../utils/style/colors";
@@ -16,9 +17,11 @@ import { NewCollectionDetailsFormValues } from "../CreateCollection.type";
 
 export const LaunchpadDetails: React.FC = () => {
   const dropdownOptions = ["Yes", "No"];
+  const projectOptions = ["PFP", "Utility", "Metaverse", "P2E", "Other"];
 
   const [isDerivativeProject, setIsDerivativeProject] = useState("");
   const [isPreviouslyApplied, setIsPreviouslyApplied] = useState("");
+  const [projectTypes, setProjectTypes] = useState<string[]>([]);
 
   const { control } = useForm<NewCollectionDetailsFormValues>({
     defaultValues: {
@@ -87,15 +90,29 @@ export const LaunchpadDetails: React.FC = () => {
           placeHolder="Select Option"
           item={isDerivativeProject}
           setItem={setIsDerivativeProject}
-          label="Is your project a derivative project? *"
+          label="Is your project a derivative project?"
+          style={{ zIndex: 3 }}
         />
 
-        <TextInputLaunchpadDetailsValues
-          required
+        <MultipleSelectionDropdown
+          dropdownOptions={projectOptions}
+          placeHolder="Select Option"
+          items={projectTypes}
+          setItems={(item) => {
+            // eslint-disable-next-line no-unused-expressions
+            projectTypes.includes(item)
+              ? setProjectTypes(projectTypes.filter((data) => data !== item))
+              : setProjectTypes([...projectTypes, item]);
+          }}
           label="Project type:"
-          placeHolder="Multiple answers allowed"
-          name="projectType"
-          control={control}
+          sublabel={
+            <View>
+              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+                Multiple answers allowed
+              </BrandText>
+            </View>
+          }
+          style={{ zIndex: 2 }}
         />
 
         <TextInputLaunchpadDetailsValues
@@ -124,7 +141,8 @@ export const LaunchpadDetails: React.FC = () => {
           placeHolder="Select Option"
           item={isPreviouslyApplied}
           setItem={setIsPreviouslyApplied}
-          label="Have you previously applied for the same project before? *"
+          label="Have you previously applied for the same project before?"
+          style={{ zIndex: 1 }}
         />
       </View>
     </View>

@@ -68,7 +68,7 @@ export const LaunchpadAdditional: React.FC = () => {
           placeHolder="Select Option"
           item={isReadyForMint}
           setItem={setIsReadyForMint}
-          label="Is your collection ready for the mint? *"
+          label="Is your collection ready for the mint?"
         />
 
         <TextInputLaunchpadAdditionalValues
@@ -113,7 +113,7 @@ export const LaunchpadAdditional: React.FC = () => {
           placeHolder="Select Option"
           item={isDox}
           setItem={setIsDox}
-          label="Are you dox or have you planned to dox? *"
+          label="Are you dox or have you planned to dox?"
           style={{ zIndex: 1 }}
         />
 
