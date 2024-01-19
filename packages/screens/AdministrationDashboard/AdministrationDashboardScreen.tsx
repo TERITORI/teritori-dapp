@@ -19,8 +19,8 @@ import {
 import { layout } from "../../utils/style/layout";
 
 const MD_BREAKPOINT = 820;
-export type TabsListType = "pendingApllications" | "pendingConfirmations";
-export type SecTabsListType =
+type TabsListType = "pendingApllications" | "pendingConfirmations";
+type SecTabsListType =
   | "highlightedNewsHero"
   | "upcomingProjectsCarousel"
   | "liveSaleinProgress";

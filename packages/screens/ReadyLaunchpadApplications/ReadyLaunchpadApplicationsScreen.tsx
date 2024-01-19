@@ -12,7 +12,7 @@ import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-export type TabsListType = "readyForListing" | "waitingForApproval";
+type TabsListType = "readyForListing" | "waitingForApproval";
 
 const dummyData = {
   rank: 1,

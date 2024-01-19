@@ -12,12 +12,7 @@ import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-export type TabsListType =
-  | "all"
-  | "verified"
-  | "ethereum"
-  | "solana"
-  | "cosmos";
+type TabsListType = "all" | "verified" | "ethereum" | "solana" | "cosmos";
 
 const dummyData = [
   {

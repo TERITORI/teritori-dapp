@@ -17,8 +17,6 @@ import {
   screenContentMaxWidthLarge,
 } from "../../../utils/style/layout";
 
-export type TabsListType = "readyForListing" | "waitingForApproval";
-
 const TABLE_ROWS = {
   rank: {
     label: "#",

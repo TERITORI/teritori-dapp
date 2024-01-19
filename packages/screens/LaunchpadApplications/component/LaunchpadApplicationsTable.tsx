@@ -13,8 +13,6 @@ import {
   screenContentMaxWidthLarge,
 } from "../../../utils/style/layout";
 
-export type TabsListType = "pendingApllications" | "pendingConfirmations";
-
 const TABLE_ROWS = {
   rank: {
     label: "#",
