@@ -95,7 +95,7 @@ const waitForHeight = async (port: number, targetHeight: bigint) => {
       }
       break;
     } catch {}
-    await sleep(2000);
+    await sleep(1000);
   }
 };
 

@@ -34,6 +34,7 @@ export const retry = async <T>(
       return await fn();
     } catch (e) {
       lastError = e;
+      await sleep(500);
     }
   }
   if (lastError) {

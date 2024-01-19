@@ -284,11 +284,12 @@ const getTx = async (networkId: string, txhash: string, timeout?: number) => {
         const client = await mustGetNonSigningCosmWasmClient(networkId);
         return client.getTx(txhash);
       });
+      await sleep(1000);
     }
     return tx;
   };
   const startTimeout = async () => {
-    await sleep(timeout || 10000);
+    await sleep(timeout || 20000);
     return undefined;
   };
   const tx = await Promise.race([startTimeout(), innerGetTx()]);
