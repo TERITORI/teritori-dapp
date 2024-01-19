@@ -7,8 +7,9 @@ import SolanaCircleSVG from "../../../../assets/icons/networks/solana-circle.svg
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { InnerCellText } from "../../../components/applicationTable/InnerCellText";
-import { lightblue, neutral00, neutral77 } from "../../../utils/style/colors";
-import { fontSemibold15, fontSemibold16 } from "../../../utils/style/fonts";
+import { HeaderContant } from "../../../components/headerContant/HeaderContant";
+import { lightblue, neutral00 } from "../../../utils/style/colors";
+import { fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 export const TooltipContant = () => {
@@ -16,10 +17,7 @@ export const TooltipContant = () => {
     <>
       <View style={flexRowCenter}>
         <View>
-          <View>
-            <BrandText style={[fontSemibold15, { color: neutral77 }]}>
-              Collection Name
-            </BrandText>
+          <HeaderContant header="Collection Name">
             <View style={listToggle}>
               <Image
                 style={{
@@ -41,11 +39,11 @@ export const TooltipContant = () => {
               </BrandText>
               <SVG source={checkBadgeSVG} width={18} height={18} />
             </View>
-          </View>
-          <View style={{ marginTop: layout.spacing_x2_5 }}>
-            <BrandText style={[fontSemibold15, { color: neutral77 }]}>
-              Project Readiness for Mint
-            </BrandText>
+          </HeaderContant>
+          <HeaderContant
+            style={{ marginTop: layout.spacing_x1_5 }}
+            header="Project Readiness for Mint"
+          >
             <InnerCellText
               style={{
                 backgroundColor: lightblue,
@@ -53,19 +51,15 @@ export const TooltipContant = () => {
                 paddingHorizontal: 10,
                 paddingVertical: 5,
                 alignSelf: "flex-start",
-                marginTop: layout.spacing_x1_5,
               }}
               textStyle={{ color: neutral00 }}
             >
               Complete and ready to mint
             </InnerCellText>
-          </View>
+          </HeaderContant>
         </View>
         <View>
-          <View>
-            <BrandText style={[fontSemibold15, { color: neutral77 }]}>
-              Collection network
-            </BrandText>
+          <HeaderContant header="Collection network">
             <View style={listToggle}>
               <SVG
                 width={28}
@@ -79,11 +73,11 @@ export const TooltipContant = () => {
                 Solana
               </BrandText>
             </View>
-          </View>
-          <View style={{ marginTop: layout.spacing_x2_5 }}>
-            <BrandText style={[fontSemibold15, { color: neutral77 }]}>
-              Basic marketing package
-            </BrandText>
+          </HeaderContant>
+          <HeaderContant
+            style={{ marginTop: layout.spacing_x1_5 }}
+            header="Basic marketing package"
+          >
             <InnerCellText
               style={{
                 backgroundColor: lightblue,
@@ -91,13 +85,12 @@ export const TooltipContant = () => {
                 paddingHorizontal: 10,
                 paddingVertical: 5,
                 alignSelf: "flex-start",
-                marginTop: layout.spacing_x1_5,
               }}
               textStyle={{ color: neutral00 }}
             >
               Yes
             </InnerCellText>
-          </View>
+          </HeaderContant>
         </View>
       </View>
     </>
@@ -107,7 +100,6 @@ export const TooltipContant = () => {
 const listToggle: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
-  marginTop: layout.spacing_x1_5,
 };
 
 const flexRowCenter: ViewStyle = {

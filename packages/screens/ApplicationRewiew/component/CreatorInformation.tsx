@@ -2,13 +2,9 @@ import React from "react";
 import { View, useWindowDimensions } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { neutral33, neutral77 } from "../../../utils/style/colors";
-import {
-  fontSemibold12,
-  fontSemibold14,
-  fontSemibold20,
-} from "../../../utils/style/fonts";
+import { BoxDetailTeriroy } from "../../../components/boxDetailTeriroy/BoxDetailTeriroy";
+import { neutral33 } from "../../../utils/style/colors";
+import { fontSemibold20 } from "../../../utils/style/fonts";
 
 const MD_BREAKPOINT = 800;
 
@@ -32,63 +28,18 @@ export const CreatorInformation: React.FC = () => {
           flexWrap: "wrap",
         }}
       >
-        <TertiaryBox
-          style={{
-            borderRadius: 6,
-            padding: 12,
-            flex: 1,
-          }}
-        >
-          <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-            Creator Name
-          </BrandText>
-          <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
-            @nickname
-          </BrandText>
-        </TertiaryBox>
-        <TertiaryBox
-          style={{
-            borderRadius: 6,
-            padding: 12,
-            flex: 1,
-          }}
-        >
-          <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-            Creator Name
-          </BrandText>
-          <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
-            @nickname
-          </BrandText>
-        </TertiaryBox>
+        <BoxDetailTeriroy title="Creator Name" descripation="@nickname" />
+        <BoxDetailTeriroy title="Creator Name" descripation="@nickname" />
+
         <View style={{ flex: 1, flexDirection: "row", gap: 12 }}>
-          <TertiaryBox
-            style={{
-              borderRadius: 6,
-              padding: 12,
-              flex: 1,
-            }}
-          >
-            <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-              Twitter Follower Range
-            </BrandText>
-            <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
-              5000
-            </BrandText>
-          </TertiaryBox>
-          <TertiaryBox
-            style={{
-              borderRadius: 6,
-              padding: 12,
-              flex: 1,
-            }}
-          >
-            <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-              Twitter Follower Count
-            </BrandText>
-            <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
-              5000
-            </BrandText>
-          </TertiaryBox>
+          <BoxDetailTeriroy
+            title="Twitter Follower Range"
+            descripation="5000"
+          />
+          <BoxDetailTeriroy
+            title="Twitter Follower Count"
+            descripation="5000"
+          />
         </View>
       </View>
       <View
@@ -98,48 +49,18 @@ export const CreatorInformation: React.FC = () => {
           gap: 12,
         }}
       >
-        <TertiaryBox
-          style={{
-            borderRadius: 6,
-            padding: 12,
-            flex: 1,
-          }}
-        >
-          <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-            Main Contact Discord
-          </BrandText>
-          <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
-            @nickname
-          </BrandText>
-        </TertiaryBox>
-        <TertiaryBox
-          style={{
-            borderRadius: 6,
-            padding: 12,
-            flex: 1,
-          }}
-        >
-          <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-            Discord URL
-          </BrandText>
-          <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
-            https://discord.com/link
-          </BrandText>
-        </TertiaryBox>
-        <TertiaryBox
-          style={{
-            borderRadius: 6,
-            padding: 12,
-            flex: 1,
-          }}
-        >
-          <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-            Main Contact Email
-          </BrandText>
-          <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
-            hello@email.com
-          </BrandText>
-        </TertiaryBox>
+        <BoxDetailTeriroy
+          title="Main Contact Discord"
+          descripation="@nickname"
+        />
+        <BoxDetailTeriroy
+          title="Discord URL"
+          descripation="https://discord.com/link"
+        />
+        <BoxDetailTeriroy
+          title="Main Contact Email"
+          descripation="hello@email.com"
+        />
       </View>
     </View>
   );

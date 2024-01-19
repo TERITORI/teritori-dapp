@@ -3,13 +3,8 @@ import { View, useWindowDimensions } from "react-native";
 
 import { LinkCard } from "./LinkCard";
 import { BrandText } from "../../../components/BrandText";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { neutral77 } from "../../../utils/style/colors";
-import {
-  fontSemibold12,
-  fontSemibold14,
-  fontSemibold20,
-} from "../../../utils/style/fonts";
+import { BoxDetailTeriroy } from "../../../components/boxDetailTeriroy/BoxDetailTeriroy";
+import { fontSemibold20 } from "../../../utils/style/fonts";
 
 const MD_BREAKPOINT = 800;
 
@@ -31,24 +26,14 @@ export const ProjectInformation: React.FC = () => {
           gap: 12,
         }}
       >
-        <TertiaryBox
-          style={{
-            borderRadius: 6,
-            padding: 12,
-            flex: 1,
-          }}
-        >
-          <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-            Creator Name
-          </BrandText>
-          <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
-            For decades, the destruction of ecosystems and social relations has
-            turned people into soulless robots. At the same time, inequality
-            explodes every year and misery becomes the norm for the silent
-            majority. A minority of powerful & wealthy leaders, called the “The
-            Legion''.
-          </BrandText>
-        </TertiaryBox>
+        <BoxDetailTeriroy
+          title="Creator Name"
+          descripation="For decades, the destruction of ecosystems and social relations has
+          turned people into soulless robots. At the same time, inequality
+          explodes every year and misery becomes the norm for the silent
+          majority. A minority of powerful & wealthy leaders, called the “The
+          Legion''."
+        />
         <LinkCard
           title="Other Links"
           linksData={[
@@ -58,34 +43,8 @@ export const ProjectInformation: React.FC = () => {
           ]}
         />
         <View style={{ flex: 1, gap: 12 }}>
-          <TertiaryBox
-            style={{
-              borderRadius: 6,
-              padding: 12,
-              flex: 1,
-            }}
-          >
-            <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-              Previous Apply
-            </BrandText>
-            <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
-              Apply Name
-            </BrandText>
-          </TertiaryBox>
-          <TertiaryBox
-            style={{
-              borderRadius: 6,
-              padding: 12,
-              flex: 1,
-            }}
-          >
-            <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-              Project Type
-            </BrandText>
-            <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
-              Type
-            </BrandText>
-          </TertiaryBox>
+          <BoxDetailTeriroy title="Previous Apply" descripation="Apply Name" />
+          <BoxDetailTeriroy title="Previous Type" descripation="Type" />
         </View>
       </View>
     </View>

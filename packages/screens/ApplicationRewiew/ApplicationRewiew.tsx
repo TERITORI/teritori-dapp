@@ -54,11 +54,7 @@ export const ApplicationRewiewScreen: React.FC = () => {
       responsive
       onBackPress={() => navigation.goBack()}
     >
-      <View
-        style={{
-          marginTop: layout.spacing_x4,
-        }}
-      >
+      <View style={{ marginTop: layout.spacing_x4 }}>
         <View
           style={{
             flexDirection: width >= LG_BREAKPOINT ? "row" : "column-reverse",
@@ -69,11 +65,7 @@ export const ApplicationRewiewScreen: React.FC = () => {
           }}
         >
           {/* ===== Left container */}
-          <View
-            style={{
-              flex: 1,
-            }}
-          >
+          <View style={{ flex: 1 }}>
             <View style={{ alignSelf: "flex-start" }}>
               <TertiaryBadge size="SM" label="PENDING REVIEW" />
             </View>
@@ -147,19 +139,8 @@ export const ApplicationRewiewScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
           {/* ===== Right container */}
-          <View
-            style={{
-              flex: 1,
-              marginLeft: 16,
-            }}
-          >
-            <Image
-              style={{
-                width: 450,
-                height: 450,
-              }}
-              source={guardianPng}
-            />
+          <View style={{ flex: 1, marginLeft: 16 }}>
+            <Image style={{ width: 450, height: 450 }} source={guardianPng} />
           </View>
         </View>
         <View>
