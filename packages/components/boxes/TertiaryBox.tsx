@@ -9,17 +9,20 @@ import { neutral33 } from "../../utils/style/colors";
 export const TertiaryBox: React.FC<{
   children?: ReactNode;
   style?: StyleProp<BoxStyle>;
-}> = ({ style, children }) => {
+  notched?: boolean;
+}> = ({ style, children, notched = true }) => {
   return (
     <Box
-      notched
       style={[
         {
           borderWidth: 1,
           borderColor: neutral33,
+          justifyContent: "center",
+          alignItems: "center",
         },
         style,
       ]}
+      notched={notched}
     >
       {children}
     </Box>

@@ -31,6 +31,7 @@ export const TopMenuBox: FC<{
 
   return (
     <TertiaryBox
+      notched={false}
       style={[
         style,
         mainContainerStyle,

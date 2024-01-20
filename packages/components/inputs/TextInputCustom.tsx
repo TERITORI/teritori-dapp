@@ -56,7 +56,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   iconSVG?: React.FC<SvgProps>;
   placeHolder?: string;
   squaresBackgroundColor?: string;
-  style?: StyleProp<ViewStyle & BoxStyle>;
+  style?: StyleProp<ViewStyle>;
   textInputStyle?: StyleProp<TextStyle & ViewStyle & BoxStyle>;
   onPressEnter?: () => void;
   currency?: Currency;

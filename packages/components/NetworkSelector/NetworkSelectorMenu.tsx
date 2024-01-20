@@ -81,7 +81,7 @@ export const NetworkSelectorMenu: FC<{
         style,
         {
           paddingHorizontal: layout.spacing_x2,
-          paddingTop: layout.spacing_x2,
+          paddingVertical: layout.spacing_x2,
           backgroundColor: neutral17,
           alignItems: "flex-start",
           width: 172,
