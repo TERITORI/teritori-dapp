@@ -10,7 +10,7 @@ export const cloneRepo = async (
 ): Promise<string> => {
   const repoPath = await fs.mkdtemp(path.join(tmpdir(), "git-repo-"));
   const cmd = `git clone ${repoURL} ${repoPath} && cd ${repoPath} && git checkout ${ref}`;
-  // console.log("> " + cmd);
+  // console.log("⚙️  " + cmd);
   await new Promise((resolve, reject) => {
     child_process.exec(cmd, (err, stdout, stderr) => {
       if (err) {

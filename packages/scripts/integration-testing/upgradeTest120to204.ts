@@ -23,9 +23,8 @@ const main = async () => {
 
   const {
     home,
-    result: v120Result,
-    process: v120Process,
     validatorWalletName,
+    kill: killv120,
   } = await startCosmosLocalnet(binaries["v1.2.0"]);
 
   await deployTeritoriEcosystem(
@@ -40,8 +39,7 @@ const main = async () => {
     validatorWalletName,
     home,
   );
-  v120Process.kill();
-  await v120Result;
+  await killv120();
 
   upgradeHeight = await runUpgrade(
     binaries["v1.3.0"],
@@ -73,11 +71,10 @@ const main = async () => {
     `minimum-gas-prices = "0stake"`,
   );
 
-  const { process: v204Process, result: v204Result } =
-    await startCosmosLocalnet(binaries["v2.0.4"], {
-      home,
-      height: upgradeHeight,
-    });
+  const { kill: killv204 } = await startCosmosLocalnet(binaries["v2.0.4"], {
+    home,
+    height: upgradeHeight,
+  });
 
   // test cosmwasm
   await deployTeritoriEcosystem(
@@ -86,8 +83,7 @@ const main = async () => {
     "testnet-adm",
   );
 
-  v204Process.kill();
-  await v204Result;
+  await killv204();
 
   await fs.rm(home, { recursive: true, force: true });
 };
@@ -99,7 +95,7 @@ const runUpgrade = async (
   version: string,
   validatorWalletName: string,
 ) => {
-  const { result, process } = await startCosmosLocalnet(binaryPath, {
+  const { kill } = await startCosmosLocalnet(binaryPath, {
     home,
     height,
   });
@@ -109,8 +105,7 @@ const runUpgrade = async (
     validatorWalletName,
     home,
   );
-  process.kill();
-  await result;
+  await kill();
   return upgradeHeight;
 };
 

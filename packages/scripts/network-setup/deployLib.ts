@@ -189,7 +189,7 @@ const instantiateNameService = async (
   } --node ${injectRPCPort(
     network.rpcEndpoint,
   )} --yes --keyring-backend test -o json --home ${opts.home}`;
-  console.log("> " + cmd);
+  console.log("⚙️  " + cmd);
   let { stdout: out } = await retry(5, async () => {
     return await execPromise(cmd, {
       encoding: "utf-8",
@@ -224,7 +224,7 @@ const instantiateContract = async (
   )} --yes --keyring-backend test -o json --label ${sqh(
     label,
   )} --admin ${admin} --home ${opts.home}`;
-  console.log("> " + cmd);
+  console.log("⚙️  " + cmd);
   let { stdout: out } = await retry(
     5,
     async () =>
@@ -257,7 +257,7 @@ const storeWASM = async (
   } --node ${injectRPCPort(
     network.rpcEndpoint,
   )} --yes --keyring-backend test -o json --home ${opts.home}`;
-  console.log("> " + cmd);
+  console.log("⚙️  " + cmd);
   let { stdout: out } = await retry(5, async () => {
     return await execPromise(cmd, {
       encoding: "utf-8",
@@ -292,6 +292,7 @@ const getTx = async (networkId: string, txhash: string, timeout?: number) => {
     await sleep(timeout || 20000);
     return undefined;
   };
+  console.log("⏳ Waiting for tx '" + txhash + "'");
   const tx = await Promise.race([startTimeout(), innerGetTx()]);
   if (!tx) {
     throw new Error("Timed out waiting for tx '" + txhash + "'");
@@ -306,6 +307,7 @@ const getTx = async (networkId: string, txhash: string, timeout?: number) => {
         JSON.stringify(tx, null, 2),
     );
   }
+  console.log("Tx '" + txhash + "' found");
   return tx;
 };
 

@@ -20,8 +20,7 @@ const main = async () => {
 
   const {
     home,
-    result: v142Result,
-    process: v142Process,
+    kill: killv142,
     validatorWalletName,
   } = await startCosmosLocalnet(binaries["v1.4.2"]);
 
@@ -37,8 +36,7 @@ const main = async () => {
     validatorWalletName,
     home,
   );
-  v142Process.kill();
-  await v142Result;
+  await killv142();
 
   await replaceInFile(
     path.join(home, "config/app.toml"),
@@ -47,13 +45,10 @@ const main = async () => {
   );
 
   // start next version
-  const { result, process: v204Process } = await startCosmosLocalnet(
-    binaries["v2.0.4"],
-    {
-      home,
-      height: upgradeHeight,
-    },
-  );
+  const { kill: killv204 } = await startCosmosLocalnet(binaries["v2.0.4"], {
+    home,
+    height: upgradeHeight,
+  });
 
   // test cosmwasm
   await deployTeritoriEcosystem(
@@ -63,8 +58,7 @@ const main = async () => {
   );
 
   // stop
-  v204Process.kill();
-  await result;
+  await killv204();
 
   await fs.rm(home, { recursive: true, force: true });
 };

@@ -1,5 +1,5 @@
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
-import child_process from "child_process";
+import child_process, { ChildProcess, PromiseWithChild } from "child_process";
 import fs from "fs/promises";
 import util from "util";
 import { z } from "zod";
@@ -103,9 +103,33 @@ export const replaceInFile = async (
   match: string | RegExp,
   repl: string,
 ) => {
+  console.log("🔧 Editing file " + filePath);
   const data = await fs.readFile(filePath, { encoding: "utf-8" });
   const newData = data.replace(match, repl);
   await fs.writeFile(filePath, newData);
+  console.log("🔧 Edited file " + filePath);
 };
 
 export const execPromise = util.promisify(child_process.exec);
+
+export const killProcess = async (
+  p: ChildProcess,
+  r: PromiseWithChild<{
+    stdout: string;
+    stderr: string;
+  }>,
+  timeout?: number,
+) => {
+  console.log("🔪 Killing process");
+  const innerKillProcess = async () => {
+    p.kill();
+    console.log("⏳ Waiting for process to terminate");
+    await r;
+  };
+  const startTimeout = async () => {
+    await sleep(timeout || 5000);
+    throw new Error("Timed out waiting for process to terminate");
+  };
+  await Promise.race([startTimeout(), innerKillProcess()]);
+  console.log("🔪 Process terminated");
+};

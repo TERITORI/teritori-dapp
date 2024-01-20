@@ -51,7 +51,7 @@ const main = async () => {
   } --node ${injectRPCPort(destinationNetwork.rpcEndpoint)} -o json${
     keyringBackend ? ` --keyring-backend ${keyringBackend}` : ""
   }`;
-  console.log("> " + cmd);
+  console.log("⚙️  " + cmd);
   const out = child_process.execSync(cmd, {
     stdio: ["inherit", "pipe", "inherit"],
     encoding: "utf-8",

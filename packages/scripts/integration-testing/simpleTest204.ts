@@ -11,11 +11,7 @@ const main = async () => {
     "v2.0.4",
   ] as const);
 
-  const {
-    home,
-    result: v204Result,
-    process: v204Process,
-  } = await startCosmosLocalnet(binaries["v2.0.4"]);
+  const { home, kill } = await startCosmosLocalnet(binaries["v2.0.4"]);
 
   await deployTeritoriEcosystem(
     { binaryPath: binaries["v2.0.4"], home },
@@ -24,8 +20,7 @@ const main = async () => {
   );
 
   // stop
-  v204Process.kill();
-  await v204Result;
+  await kill();
 
   await fs.rm(home, { recursive: true, force: true });
 };
