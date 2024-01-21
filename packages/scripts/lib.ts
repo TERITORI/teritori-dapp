@@ -127,7 +127,7 @@ export const killProcess = async (
     await r;
   };
   const startTimeout = async () => {
-    await sleep(timeout || 5000);
+    await sleep(timeout || 20000);
     throw new Error("Timed out waiting for process to terminate");
   };
   await Promise.race([startTimeout(), innerKillProcess()]);
