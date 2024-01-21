@@ -122,6 +122,7 @@ export const killProcess = async (
 ) => {
   console.log("🔪 Killing process");
   const innerKillProcess = async () => {
+    p.stdin?.destroy();
     p.kill();
     console.log("⏳ Waiting for process to terminate");
     await r;

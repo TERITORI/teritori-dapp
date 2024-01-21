@@ -1,7 +1,7 @@
 import child_process from "child_process";
 import fs from "fs/promises";
 import { Listr } from "listr2";
-import { tmpdir } from "os";
+import os from "os";
 import path from "path";
 
 import { cloneRepo } from "./git";
@@ -32,14 +32,14 @@ export const startCosmosLocalnet = async (
   console.log(`🧱 Starting localnet version ${version} at height ${height}`);
   let home = opts?.home;
   if (!home) {
-    home = await fs.mkdtemp(path.join(tmpdir(), "cosmos-home-"));
+    home = await fs.mkdtemp(path.join(os.tmpdir(), "cosmos-home-"));
     // run teritorid init --chain-id=testing testing --home=$HOME/.teritorid
     const initCmd = `${binaryPath} init testing --chain-id testing --home ${home}`;
     console.log("⚙️  " + initCmd);
     await execPromise(initCmd);
 
     await replaceInFile(
-      path.join(home, "config/genesis.json"),
+      path.join(home, "config", "genesis.json"),
       `"voting_period": "172800s"`,
       `"voting_period": "20s"`,
     );
@@ -72,17 +72,26 @@ export const startCosmosLocalnet = async (
   const cmd = `${binaryPath} start --home ${home}`;
   console.log("⚙️  " + cmd);
 
+  const ac = new AbortController();
   const result = execPromise(cmd, {
     encoding: "utf-8",
   });
+  const p = result.child;
   await waitForHeight(26657, height + BigInt(1));
   console.log(`🏠 Started localnet version ${version}`);
   return {
     home,
     validatorWalletName: "validator",
     result,
-    process: result.child,
-    kill: () => killProcess(result.child, result),
+    process: p,
+    ac,
+    kill: async () => {
+      try {
+        await killProcess(p, result);
+      } catch (e) {
+        throw e;
+      }
+    },
   };
 };
 
@@ -183,7 +192,7 @@ export const buildCosmos = async (
       }
     });
   });
-  return `${repoPath}/build/${binaryName}`;
+  return path.join(repoPath, "build", binaryName);
 };
 
 type TupleToObject<T extends readonly string[], V> = {
@@ -204,7 +213,7 @@ export const buildBinaries = async <V extends readonly string[]>(
           const repoPath = await cloneRepo(repoURL, v);
           const builtBinaryPath = await buildCosmos(repoPath, binaryName);
           const finalDir = await fs.mkdtemp(
-            path.join(tmpdir(), `${binaryName}-${v}-`),
+            path.join(os.tmpdir(), `${binaryName}-${v}-`),
           );
           const finalPath = path.join(finalDir, binaryName);
           await fs.copyFile(builtBinaryPath, finalPath);
