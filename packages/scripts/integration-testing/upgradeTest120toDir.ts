@@ -1,8 +1,10 @@
+import { program } from "commander";
 import fs from "fs/promises";
 import path from "path";
 
 import {
   buildBinaries,
+  buildCosmos,
   startCosmosLocalnet,
   upgradeCosmosLocalnet,
 } from "./cosmos";
@@ -13,13 +15,21 @@ import { deployTeritoriEcosystem } from "../network-setup/deployLib";
 const repoURL = "https://github.com/TERITORI/teritori-chain.git";
 
 const main = async () => {
+  program.argument(
+    "<repo-path>",
+    "Path to the repo to build latest binary from",
+  );
+  program.parse();
+  const [repoPath] = program.args;
+
   const binaries = await buildBinaries(repoURL, "teritorid", [
     "v1.2.0",
     "v1.3.0",
     "v1.3.1",
     "v1.4.2",
-    "v2.0.4",
   ] as const);
+
+  const v204Binary = await buildCosmos(repoPath, "teritorid");
 
   const {
     home,
@@ -71,14 +81,14 @@ const main = async () => {
     `minimum-gas-prices = "0stake"`,
   );
 
-  const { kill: killv204 } = await startCosmosLocalnet(binaries["v2.0.4"], {
+  const { kill: killv204 } = await startCosmosLocalnet(v204Binary, {
     home,
     height: upgradeHeight,
   });
 
   // test cosmwasm
   await deployTeritoriEcosystem(
-    { binaryPath: binaries["v2.0.4"], home },
+    { binaryPath: v204Binary, home },
     teritoriLocalnetNetwork.id,
     "testnet-adm",
   );

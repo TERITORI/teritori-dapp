@@ -34,6 +34,13 @@ const main = async () => {
       validatorWalletName,
     } = await startCosmosLocalnet(binaries["v1.4.2"]);
 
+    // deploy
+    await deployTeritoriEcosystem(
+      { binaryPath: binaries["v1.4.2"], home },
+      teritoriLocalnetNetwork.id,
+      "testnet-adm",
+    );
+
     const upgradeHeight = await upgradeCosmosLocalnet(
       binaries["v1.4.2"],
       "v2.0.0",
