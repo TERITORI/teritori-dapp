@@ -5,7 +5,7 @@ import { BrandText } from "../../../../components/BrandText";
 import { neutral77 } from "../../../../utils/style/colors";
 import { fontMedium16, fontSemibold30 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
-import { CustomButton } from "../../components/CustomButton";
+import { CustomButton } from "../../components/Button/CustomButton";
 
 type Props = {
   onComplete: () => void;

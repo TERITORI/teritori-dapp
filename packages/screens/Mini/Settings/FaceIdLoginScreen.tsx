@@ -3,6 +3,7 @@ import { View } from "react-native";
 
 import faceIdSVG from "../../../../assets/icons/faceid.svg";
 import { BrandText } from "../../../components/BrandText";
+import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontMedium13 } from "../../../utils/style/fonts";
@@ -20,6 +21,7 @@ const FaceIdLoginScreen: ScreenFC<"MiniFaceLogin"> = ({ navigation }) => {
           paddingHorizontal: layout.spacing_x2,
         }}
       >
+        <SpacerColumn size={1} />
         <ListView
           options={{
             leftIconEnabled: true,
