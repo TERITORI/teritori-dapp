@@ -6,7 +6,6 @@ import blackCricleSVG from "../../../../assets/icons/black-check.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { BoxStyle } from "../../../components/boxes/Box";
-import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
 import {
   neutralA3,
   neutral17,
@@ -28,14 +27,14 @@ export const CurrentlyHighLightedProject = ({
         onPress={() => setIsEditHighlighted(false)}
         style={{ alignSelf: "flex-start" }}
       >
-        <SecondaryBox style={boxBtn}>
+        <View style={boxBtn}>
           <SVG source={blackCricleSVG} />
           <BrandText
             style={[fontSemibold13, { color: neutral17, marginLeft: 5 }]}
           >
             Save changes
           </BrandText>
-        </SecondaryBox>
+        </View>
       </TouchableOpacity>
       <View style={marginVertical24}>
         <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
@@ -56,7 +55,8 @@ const boxBtn: BoxStyle = {
   borderRadius: 6,
   alignItems: "center",
   justifyContent: "center",
-  padding: 16,
+  paddingHorizontal: layout.spacing_x1_5,
+  paddingVertical: layout.spacing_x1,
   backgroundColor: primaryColor,
   marginTop: 24,
 };

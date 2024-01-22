@@ -23,10 +23,7 @@ import {
 import { layout } from "../../../utils/style/layout";
 
 const MD_BREAKPOINT = 820;
-
-type Props = {
-  setIsEditHighlighted: (val: boolean) => void;
-};
+type Props = { setIsEditHighlighted: (val: boolean) => void };
 
 export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
   const navigation = useAppNavigation();
@@ -45,7 +42,12 @@ export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
           onPress={() => setIsEditHighlighted(true)}
           style={{ alignSelf: "flex-start" }}
         >
-          <PrimaryBox style={{ padding: 16 }}>
+          <PrimaryBox
+            style={{
+              paddingHorizontal: layout.spacing_x1_5,
+              paddingVertical: layout.spacing_x1,
+            }}
+          >
             <View
               style={{
                 alignItems: "center",
