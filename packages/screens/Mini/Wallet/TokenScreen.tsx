@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { AddedToken } from "./components/AddedToken";
 import TransactionItem, { TransactionType } from "./components/TransactionItem";
@@ -11,6 +12,8 @@ import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
+import { useBalances } from "../../../hooks/useBalances";
+import { selectAllWallets } from "../../../store/slices/wallets";
 import { ScreenFC } from "../../../utils/navigation";
 import {
   neutral88,
@@ -31,7 +34,7 @@ const transactions: TransactionType[] = [
     type: "send",
     status: "pending",
     img: "",
-    amount: { tori: 2000, dollar: 637.42 },
+    coin: { amount: "2000", denom: "TORI", dollar: 637.42 },
     to: "gjjsdifjidjfd",
   },
   {
@@ -39,7 +42,7 @@ const transactions: TransactionType[] = [
     type: "send",
     status: "success",
     img: "https://images.unsplash.com/photo-1704834310326-70f4826650cd?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    amount: { tori: 2000, dollar: 637.42 },
+    coin: { amount: "1000", denom: "TORI", dollar: 337.42 },
     to: "gjjsdifjidjfd",
   },
 ];
@@ -54,6 +57,11 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
   const handlePressManageTokens = () => {
     navigation.navigate("MiniManageTokens");
   };
+
+  const wallets = useSelector(selectAllWallets);
+  console.log(wallets);
+  const balances = useBalances("teritori", wallets[0].publicKey);
+  console.log(balances);
 
   return (
     <>
@@ -72,7 +80,12 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
               },
             ]}
           >
-            $14,530.35
+            $
+            {balances
+              .reduce((acc, balance) => {
+                return acc + (balance.usdAmount || 0);
+              }, 0)
+              .toFixed(2)}
           </BrandText>
           <BrandText
             style={[
@@ -102,24 +115,20 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
         </View>
       </View>
       <Separator style={{ marginVertical: layout.spacing_x3 }} />
-      <AddedToken
-        code="3A31"
-        dollar={14530.35}
-        icon={teritoriSVG}
-        onPress={() => {}}
-        title="Teritori"
-        tori={62424}
-      />
-
-      <SpacerColumn size={3} />
-      <AddedToken
-        code="8F49"
-        dollar={245.59}
-        icon=""
-        onPress={() => {}}
-        title="Token"
-        tori={1000}
-      />
+      {balances.map((balance) => (
+        <>
+          <AddedToken
+            code="3A31"
+            dollarAmount={balance.usdAmount?.toLocaleString() || "N/A"}
+            icon={teritoriSVG}
+            key={balance.denom}
+            onPress={() => {}}
+            denom={balance.denom}
+            amount={balance.amount}
+          />
+          <SpacerColumn size={3} />
+        </>
+      ))}
 
       <SpacerColumn size={3} />
 

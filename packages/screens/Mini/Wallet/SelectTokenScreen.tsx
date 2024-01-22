@@ -13,7 +13,7 @@ export type SelectWalletType = {
   id: string;
   label: string;
   img?: string;
-  tori: number;
+  amount: string;
 };
 
 const SelectTokenScreen: ScreenFC<"MiniSelectToken"> = ({
@@ -22,7 +22,7 @@ const SelectTokenScreen: ScreenFC<"MiniSelectToken"> = ({
 }) => {
   const { navigateTo } = route.params;
   const addresses: SelectWalletType[] = [
-    { id: "asdfdasd", label: "Teritori", img: "", tori: 62424 },
+    { id: "asdfdasd", label: "Teritori", img: "", amount: "62424" },
   ];
 
   return (
@@ -61,7 +61,7 @@ const SelectTokenScreen: ScreenFC<"MiniSelectToken"> = ({
                   icon: teritoriSVG,
                 },
                 label: item?.label,
-                rightLabel: `${item?.tori.toString()} TORI`,
+                rightLabel: `${item?.amount.toString()} TORI`,
                 iconOptions: { iconStyle: { marginLeft: 10 } },
               }}
             />

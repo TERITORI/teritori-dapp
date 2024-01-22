@@ -10,36 +10,38 @@ import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
 import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
+import { prettyPrice } from "../../../../utils/coins";
 import { neutral39, neutralA3 } from "../../../../utils/style/colors";
 import { fontMedium13, fontSemibold14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
+import { findByBaseDenom } from "../../../Wallet/util/chain-registry";
 
 type Props = {
   icon: string | FC<SvgProps>;
-  title: string;
+  denom: string;
   code: string;
-  tori: number;
-  dollar: number;
+  amount: string;
+  dollarAmount: string;
   onPress: () => void;
 };
 
 export const AddedToken = ({
   code,
-  dollar,
-  icon,
+  dollarAmount,
   onPress,
-  title,
-  tori,
+  denom,
+  amount,
 }: Props) => {
+  const assetList = findByBaseDenom(denom);
+  const asset = assetList?.assets[0];
   const onCopyPrivateKeyPress = async () => {
     await Clipboard.setStringAsync(
       JSON.stringify({
         code,
-        dollar,
-        icon,
+        dollarAmount,
         onPress,
-        title,
-        tori,
+        denom,
+        amount,
       }),
     );
     alert("Copied");
@@ -62,7 +64,7 @@ export const AddedToken = ({
       >
         <View
           style={{
-            backgroundColor: !icon ? neutral39 : "transparent",
+            backgroundColor: !asset?.logo_URIs?.svg ? neutral39 : "transparent",
             borderRadius: 100,
             alignItems: "center",
             justifyContent: "center",
@@ -71,8 +73,8 @@ export const AddedToken = ({
           }}
         >
           <SVGorImageIcon
-            icon={icon || questionSVG}
-            iconSize={icon ? 24 : 18}
+            icon={asset?.logo_URIs?.png || questionSVG}
+            iconSize={asset ? 24 : 18}
           />
         </View>
         <View
@@ -82,7 +84,7 @@ export const AddedToken = ({
             gap: layout.spacing_x0_5,
           }}
         >
-          <BrandText style={[fontSemibold14, {}]}>{title}</BrandText>
+          <BrandText style={[fontSemibold14, {}]}>{asset?.symbol}</BrandText>
           <BrandText style={[fontMedium13, { color: neutralA3 }]}>
             {code}
           </BrandText>
@@ -100,10 +102,10 @@ export const AddedToken = ({
         }}
       >
         <BrandText style={[fontSemibold14, {}]}>
-          {tori.toLocaleString()}
+          {prettyPrice(assetList?.chain_name, amount, denom)}
         </BrandText>
         <BrandText style={[fontMedium13, { color: neutralA3 }]}>
-          ${dollar.toLocaleString()}
+          ${dollarAmount.toLocaleString()}
         </BrandText>
         <SVG source={chevronRightSVG} height={16} width={16} />
       </CustomPressable>
