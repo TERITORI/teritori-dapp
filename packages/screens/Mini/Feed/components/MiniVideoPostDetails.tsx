@@ -7,6 +7,7 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
+import { CommentInput } from "./CommentInput";
 import { Post, PostsRequest } from "../../../../api/feed/v1/feed";
 import { BrandText } from "../../../../components/BrandText";
 import { ScreenContainer } from "../../../../components/ScreenContainer";
@@ -220,6 +221,12 @@ export const MiniVideoPostDetails = ({
               </BrandText>
             </>
           )}
+          <CommentInput
+            count={comments.length}
+            networkId={networkId}
+            post={localPost}
+            onComment={refetchPost}
+          />
           {comments.map((comment, index) => (
             <Fragment key={index}>
               <SpacerColumn size={2.5} />
