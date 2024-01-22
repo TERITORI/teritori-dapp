@@ -1,6 +1,6 @@
 import { camelCase } from "lodash";
 import React from "react";
-import { Image, View } from "react-native";
+import { View } from "react-native";
 
 import { SVG } from "./SVG";
 import { icons } from "../../assets";
@@ -25,28 +25,21 @@ export const NetworkIcon: React.FC<{
     );
   }
 
-  if (iconToUse.endsWith(".svg")) {
-    return (
-      <SVG
-        style={{ borderRadius: size / 4 }}
-        source={
-          icons.networks[
-            camelCase(iconToUse.replace(".svg", "")).replace(
-              / /g,
-              "",
-            ) as keyof typeof icons.networks
-          ] || iconToUse
-        }
-        width={size}
-        height={size}
-      />
-    );
-  }
-
   return (
-    <Image
-      source={{ uri: iconToUse }}
-      style={{ width: size, height: size, borderRadius: size / 4 }}
+    <SVG
+      style={{ borderRadius: size / 4 }}
+      source={
+        iconToUse.startsWith("http")
+          ? iconToUse
+          : icons.networks[
+              camelCase(iconToUse.replace(".svg", "")).replace(
+                / /g,
+                "",
+              ) as keyof typeof icons.networks
+            ]
+      }
+      width={size}
+      height={size}
     />
   );
 };
