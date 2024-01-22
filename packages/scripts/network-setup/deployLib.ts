@@ -1,9 +1,16 @@
+import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { OfflineSigner } from "@cosmjs/proto-signing";
 import { IndexedTx } from "@cosmjs/stargate";
 import { bech32 } from "bech32";
-import { cloneDeep } from "lodash";
+import _, { cloneDeep } from "lodash";
 import path from "path";
 
 import {
+  TeritoriNameServiceClient,
+  TeritoriNameServiceQueryClient,
+} from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
+import {
+  Metadata,
   ExecuteMsg as NameServiceExecuteMsg,
   InstantiateMsg as NameServiceInstantiateMsg,
 } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
@@ -11,6 +18,7 @@ import { InstantiateMsg as MarketplaceVaultInstantiateMsg } from "../../contract
 import { InstantiateMsg as SocialFeedInstantiateMsg } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import {
   CosmosNetworkInfo,
+  cosmosNetworkGasPrice,
   getCosmosNetwork,
   mustGetNonSigningCosmWasmClient,
 } from "../../networks";
@@ -19,7 +27,7 @@ import { execPromise, injectRPCPort, retry, sleep, zodTxResult } from "../lib";
 import sqh from "../sqh";
 
 export const deployTeritoriEcosystem = async (
-  opts: { home: string; binaryPath: string },
+  opts: { home: string; binaryPath: string; signer: OfflineSigner | undefined },
   networkId: string,
   wallet: string,
 ) => {
@@ -99,7 +107,82 @@ export const deployTeritoriEcosystem = async (
     walletAddr,
     network,
   );
+
+  if (opts.signer) {
+    await registerTNSHandle(network, opts.signer);
+    await testTeritoriEcosystem(network);
+  }
+
   return network;
+};
+
+const goldenName = "testing.tori";
+
+const goldenMetadata: Metadata = {
+  contract_address: "0x1234abcd5678efgh9012ijkl3456mnop",
+  discord_id: "123456789012345678",
+  email: "example@email.com",
+  external_url: "https://www.example.com",
+  image: "https://www.example.com/image.png",
+  image_data: null,
+  keybase_id: "keybaseUser1",
+  parent_token_id: null,
+  pgp_public_key: null,
+  public_bio: "This is a sample biography.",
+  public_name: "John Doe",
+  public_profile_header: "Header Information",
+  telegram_id: "telegramUser1",
+  twitter_id: "twitterUser1",
+  validator_operator_address: null,
+};
+
+const registerTNSHandle = async (
+  network: CosmosNetworkInfo,
+  signer: OfflineSigner,
+) => {
+  console.log("🙋🏽‍♀️ Registering TNS handle");
+  if (!network.nameServiceContractAddress) {
+    throw new Error("Name service contract address not found");
+  }
+  const cosmWasmClient = await SigningCosmWasmClient.connectWithSigner(
+    network.rpcEndpoint,
+    signer,
+    { gasPrice: cosmosNetworkGasPrice(network, "average") },
+  );
+  const senderAddress = (await signer.getAccounts())[0].address;
+  const nameServiceClient = new TeritoriNameServiceClient(
+    cosmWasmClient,
+    senderAddress,
+    network.nameServiceContractAddress,
+  );
+  await nameServiceClient.mint({
+    tokenId: goldenName,
+    extension: goldenMetadata,
+    owner: senderAddress,
+  });
+  console.log("✅ TNS handle registered");
+};
+
+export const testTeritoriEcosystem = async (network: CosmosNetworkInfo) => {
+  console.log("🧪 Testing Teritori ecosystem");
+  if (!network.nameServiceContractAddress) {
+    throw new Error("Name service contract address not found");
+  }
+  const cosmWasmClient = await mustGetNonSigningCosmWasmClient(network.id);
+  const nameServiceClient = new TeritoriNameServiceQueryClient(
+    cosmWasmClient,
+    network.nameServiceContractAddress,
+  );
+  const nameServiceInfo = await nameServiceClient.nftInfo({
+    tokenId: goldenName,
+  });
+  if (!_.isEqual(nameServiceInfo.extension, goldenMetadata)) {
+    throw new Error(
+      "Metadata does not match\n" +
+        JSON.stringify(nameServiceInfo.extension, null, 2),
+    );
+  }
+  console.log("✅ Name service metadata matches");
 };
 
 const instantiateMarketplaceVault = (

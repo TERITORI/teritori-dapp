@@ -9,7 +9,7 @@ const main = async () => {
   const [networkId, wallet] = program.args;
 
   const network = await deployTeritoriEcosystem(
-    { home: "~/.teritorid", binaryPath: "teritorid" },
+    { home: "~/.teritorid", binaryPath: "teritorid", signer: undefined },
     networkId,
     wallet,
   );

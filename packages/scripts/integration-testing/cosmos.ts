@@ -1,3 +1,5 @@
+import { Secp256k1HdWallet } from "@cosmjs/amino";
+import { OfflineSigner } from "@cosmjs/proto-signing";
 import child_process from "child_process";
 import fs from "fs/promises";
 import { Listr } from "listr2";
@@ -31,6 +33,7 @@ export const startCosmosLocalnet = async (
   ).stderr.trim();
   console.log(`🧱 Starting localnet version ${version} at height ${height}`);
   let home = opts?.home;
+  let admSigner: OfflineSigner | undefined;
   if (!home) {
     home = await fs.mkdtemp(path.join(os.tmpdir(), "cosmos-home-"));
     // run teritorid init --chain-id=testing testing --home=$HOME/.teritorid
@@ -55,7 +58,16 @@ export const startCosmosLocalnet = async (
     // run teritorid keys add testnet-adm --keyring-backend=test --home=$HOME/.teritorid
     const addTestnetAdmCmd = `${binaryPath} keys add testnet-adm --keyring-backend=test --home ${home}`;
     console.log("⚙️  " + addTestnetAdmCmd);
-    await execPromise(addTestnetAdmCmd);
+    const { stderr } = await execPromise(addTestnetAdmCmd);
+    const resParts = stderr
+      .split("\n")
+      .map((s) => s.trim())
+      .filter((s) => !!s);
+    const admMnemonicString = resParts[resParts.length - 1];
+    console.log("🔑 testnet-adm mnemonic: " + admMnemonicString);
+    admSigner = await Secp256k1HdWallet.fromMnemonic(admMnemonicString, {
+      prefix: "tori",
+    });
     // run teritorid add-genesis-account $(teritorid keys show validator -a --keyring-backend=test --home=$HOME/.teritorid) 100000000000utori,100000000000stake --home=$HOME/.teritorid
     const addTestnetAdmGenesisAccountCmd = `${binaryPath} add-genesis-account $(${binaryPath} keys show testnet-adm -a --keyring-backend=test --home ${home}) 100000000000000000utori,100000000000000000stake --home ${home}`;
     console.log("⚙️  " + addTestnetAdmGenesisAccountCmd);
@@ -80,6 +92,7 @@ export const startCosmosLocalnet = async (
   await waitForHeight(26657, height + BigInt(1));
   console.log(`🏠 Started localnet version ${version}`);
   return {
+    admSigner,
     home,
     validatorWalletName: "validator",
     result,

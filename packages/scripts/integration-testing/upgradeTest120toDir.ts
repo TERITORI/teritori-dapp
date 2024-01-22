@@ -10,7 +10,10 @@ import {
 } from "./cosmos";
 import { teritoriLocalnetNetwork } from "../../networks/teritori-localnet";
 import { replaceInFile } from "../lib";
-import { deployTeritoriEcosystem } from "../network-setup/deployLib";
+import {
+  deployTeritoriEcosystem,
+  testTeritoriEcosystem,
+} from "../network-setup/deployLib";
 
 const repoURL = "https://github.com/TERITORI/teritori-chain.git";
 
@@ -35,10 +38,14 @@ const main = async () => {
     home,
     validatorWalletName,
     kill: killv120,
+    admSigner,
   } = await startCosmosLocalnet(binaries["v1.2.0"]);
+  if (!admSigner) {
+    throw new Error("adm signer is undefined");
+  }
 
-  await deployTeritoriEcosystem(
-    { binaryPath: binaries["v1.2.0"], home },
+  const initialEcosystem = await deployTeritoriEcosystem(
+    { binaryPath: binaries["v1.2.0"], home, signer: admSigner },
     teritoriLocalnetNetwork.id,
     "testnet-adm",
   );
@@ -86,9 +93,11 @@ const main = async () => {
     height: upgradeHeight,
   });
 
+  await testTeritoriEcosystem(initialEcosystem);
+
   // test cosmwasm
   await deployTeritoriEcosystem(
-    { binaryPath: v204Binary, home },
+    { binaryPath: v204Binary, home, signer: admSigner },
     teritoriLocalnetNetwork.id,
     "testnet-adm",
   );

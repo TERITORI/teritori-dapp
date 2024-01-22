@@ -15,10 +15,13 @@ const main = async () => {
 
   const binary = await buildCosmos(repoPath, "teritorid");
 
-  const { home, kill } = await startCosmosLocalnet(binary);
+  const { home, kill, admSigner } = await startCosmosLocalnet(binary);
+  if (!admSigner) {
+    throw new Error("adm signer is undefined");
+  }
 
   await deployTeritoriEcosystem(
-    { binaryPath: binary, home },
+    { binaryPath: binary, home, signer: admSigner },
     teritoriLocalnetNetwork.id,
     "testnet-adm",
   );
