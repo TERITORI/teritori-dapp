@@ -13,6 +13,8 @@ import { FileUploader } from "../../../components/fileUploader";
 import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
+import { useNameSearch } from "../../../hooks/search/useNameSearch";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
 import {
@@ -26,13 +28,14 @@ import {
   fontSemibold14,
   fontSemibold20,
 } from "../../../utils/style/fonts";
+import { TNSResult } from "../components/TNSResult";
 import { emptyShortDesc } from "../defaultValues";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 
 const shortDescSchema = object({
   name: string().required().min(3),
   desc: string().required().min(10),
-  funder: string().min(32),
+  funder: string(),
   contractor: string().min(32),
   paymentAddr: string().required().min(6),
   coverImg: string().required(),
@@ -47,8 +50,17 @@ export const ShortPresentation: React.FC = () => {
   } = useMakeRequestState();
   const selectedWallet = useSelectedWallet();
   const caller = selectedWallet?.address;
+  const selectedNetworkId = useSelectedNetworkId();
+  const [searchTNSText, setSearchTNSText] = useState("");
+  const [isTNSVisible, setIsTNSVisible] = useState(false);
 
   const [creatorType, setCreatorType] = useState("contractor");
+
+  const { names } = useNameSearch({
+    networkId: selectedNetworkId,
+    input: searchTNSText,
+    limit: 12,
+  });
 
   if (!caller) {
     return null;
@@ -148,26 +160,44 @@ export const ShortPresentation: React.FC = () => {
 
               <SpacerColumn size={2.5} />
 
-              <TextInputCustom
-                label={
-                  creatorType === "funder"
-                    ? "Potential contractor"
-                    : "Potential funder"
-                }
-                name="funder"
-                fullWidth
-                placeholder="Type the potential user address here..."
-                variant="labelOutside"
-                onChangeText={handleChange(
-                  creatorType === "funder" ? "contractor" : "funder",
-                )}
-                value={
-                  creatorType === "funder" ? values.contractor : values.funder
-                }
-                error={
-                  creatorType === "funder" ? errors.contractor : errors.funder
-                }
-              />
+              <View style={{ position: "relative", zIndex: 2 }}>
+                <TextInputCustom
+                  label={
+                    creatorType === "funder"
+                      ? "Potential contractor"
+                      : "Potential funder"
+                  }
+                  name="funder"
+                  fullWidth
+                  placeholder="Type the potential user address here..."
+                  variant="labelOutside"
+                  onChangeText={(text) => {
+                    setSearchTNSText(text);
+                    setIsTNSVisible(true);
+                    return handleChange(
+                      creatorType === "funder" ? "contractor" : "funder",
+                    )(text);
+                  }}
+                  value={
+                    creatorType === "funder" ? values.contractor : values.funder
+                  }
+                  error={
+                    creatorType === "funder" ? errors.contractor : errors.funder
+                  }
+                />
+
+                <TNSResult
+                  visible={isTNSVisible && names.length > 0}
+                  networkId={selectedNetworkId}
+                  names={names}
+                  onSelected={(name) => {
+                    setIsTNSVisible(false);
+                    return handleChange(
+                      creatorType === "funder" ? "contractor" : "funder",
+                    )(name);
+                  }}
+                />
+              </View>
 
               <SpacerColumn size={2.5} />
 

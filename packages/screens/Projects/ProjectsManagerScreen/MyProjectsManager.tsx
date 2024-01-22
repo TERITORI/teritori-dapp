@@ -7,12 +7,14 @@ import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { ProgressLine } from "../../../components/ProgressLine";
 import { SearchBarInput } from "../../../components/Search/SearchBarInput";
+import { UserNameInline } from "../../../components/UserNameInline";
 import { IconButton } from "../../../components/buttons/IconButton";
 import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { TableRow } from "../../../components/table/TableRow";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { getUserId } from "../../../networks";
 import { useAppNavigation } from "../../../utils/navigation";
 import { neutral33, neutralFF } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
@@ -54,12 +56,21 @@ const getTableCols = (projectType: ProjectType) => {
 
 type ProjectType = "myInvestments" | "myProjects";
 
+const TNSName: React.FC<{ networkId: string; userAddress: string }> = ({
+  networkId,
+  userAddress,
+}) => {
+  const userId = getUserId(networkId, userAddress);
+  return <UserNameInline userId={userId} />;
+};
+
 const ProjectRow: React.FC<{ project: Project; projectType: ProjectType }> = ({
   project,
   projectType,
 }) => {
   const stats = getProjectStats(project);
   const navigation = useAppNavigation();
+  const networkId = useSelectedNetworkId();
 
   return (
     <FlexRow
@@ -95,11 +106,13 @@ const ProjectRow: React.FC<{ project: Project; projectType: ProjectType }> = ({
       </View>
 
       {/* === Manager === */}
-      <View style={{ flex: 5, alignItems: "flex-start" }}>
-        <BrandText style={[{ color: neutralFF }, fontSemibold13]}>
-          {projectType === "myProjects" && project.funder}
-          {projectType === "myInvestments" && project.contractor}
-        </BrandText>
+      <View style={{ flex: 5, alignItems: "center" }}>
+        {projectType === "myProjects" && (
+          <TNSName networkId={networkId} userAddress={project.funder} />
+        )}
+        {projectType === "myInvestments" && (
+          <TNSName networkId={networkId} userAddress={project.contractor} />
+        )}
       </View>
 
       {/* === Milestones === */}
@@ -148,6 +161,8 @@ export const MyProjectsManager: React.FC<{
   const [searchText, setSearchText] = useState("");
 
   const filteredProjects = useMemo(() => {
+    if (!selectedWallet?.address) return [];
+
     return projects
       .filter(
         (p) => statusFilter === ContractStatus.ALL || p.status === statusFilter,
@@ -157,7 +172,7 @@ export const MyProjectsManager: React.FC<{
           .toLowerCase()
           .includes(searchText.toLowerCase()),
       );
-  }, [projects, statusFilter, searchText]);
+  }, [projects, statusFilter, searchText, selectedWallet?.address]);
 
   return (
     <View>
