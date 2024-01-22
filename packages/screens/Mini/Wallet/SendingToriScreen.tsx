@@ -20,8 +20,8 @@ import {
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
-import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import { CustomButton } from "../components/Button/CustomButton";
+import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import MobileModal from "../components/MobileModal";
 import RowDisplay from "../components/RowDisplay";
 import MiniTable from "../components/Table/MiniTable";
