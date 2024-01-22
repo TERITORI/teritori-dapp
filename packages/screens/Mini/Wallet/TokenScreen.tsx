@@ -23,7 +23,7 @@ import {
   fontSemibold14,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { CustomButton } from "../components/CustomButton";
+import { CustomButton } from "../components/Button/CustomButton";
 
 const transactions: TransactionType[] = [
   {

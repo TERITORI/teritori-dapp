@@ -105,6 +105,7 @@ export type RootStackParamList = {
   EditAddressBook: { addressId: string; back?: RouteName };
   MiniSecurityAndPrivacy: undefined;
   MiniChangePassword: undefined;
+  MiniFaceLogin: undefined;
   MiniRevealSeedPhrase: undefined;
   MiniExportPrivateKey: undefined;
   MiniResetWallet: undefined;
@@ -241,6 +242,7 @@ const navConfig: {
     EditAddressBook: "edit-address-book/:addressId",
     MiniSecurityAndPrivacy: "mini-security-and-privacy",
     MiniChangePassword: "mini-change-password",
+    MiniFaceLogin: "mini-face-login",
     MiniRevealSeedPhrase: "mini-reveal-seed-phrase",
     MiniExportPrivateKey: "mini-export-private-key",
     MiniResetWallet: "mini-reset-wallet",

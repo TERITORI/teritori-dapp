@@ -15,7 +15,7 @@ import {
   fontSemibold12,
 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
-import { CustomButton } from "../../components/CustomButton";
+import { CustomButton } from "../../components/Button/CustomButton";
 import { CustomCheckbox } from "../../components/CustomCheckbox";
 
 const fake_url =

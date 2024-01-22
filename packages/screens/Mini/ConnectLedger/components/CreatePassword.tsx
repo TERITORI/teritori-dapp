@@ -11,7 +11,7 @@ import {
 } from "../../../../utils/style/colors";
 import { fontMedium16, fontSemibold30 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
-import { CustomButton } from "../../components/CustomButton";
+import { CustomButton } from "../../components/Button/CustomButton";
 import { CustomCheckbox } from "../../components/CustomCheckbox";
 import MiniTextInput from "../../components/MiniTextInput";
 import { StepType } from "../ConnectLedgerScreen";
