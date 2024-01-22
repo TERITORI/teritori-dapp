@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Switch, View } from "react-native";
+import { View } from "react-native";
 
 import dataCabinetSVG from "../../../../assets/icons/data-cabinet.svg";
 import laptopSVG from "../../../../assets/icons/laptop.svg";
@@ -11,23 +10,16 @@ import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
-import {
-  blueDefault,
-  neutral33,
-  neutral77,
-  neutral99,
-} from "../../../utils/style/colors";
+import { neutral77 } from "../../../utils/style/colors";
 import { fontMedium13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import ToggleButton from "../components/Button/ToggleButton";
 import { SettingMenuItem } from "../components/SettingMenuItems";
 
 export const ChatSettingScreen: ScreenFC<"MiniChatSetting"> = ({
   navigation,
 }) => {
-  const [isChatEnabled, setIsChatEnabled] = useState(true);
-
-  const onToggleChatSwitch = () => setIsChatEnabled((prev) => !prev);
   const navigateToSettings = () => navigation.replace("MiniSettings");
 
   return (
@@ -90,13 +82,14 @@ export const ChatSettingScreen: ScreenFC<"MiniChatSetting"> = ({
               <BrandText>Force turn on Chats tab</BrandText>
             </View>
 
-            <Switch
+            {/* <Switch
               ios_backgroundColor={isChatEnabled ? blueDefault : neutral33}
               trackColor={{ false: neutral33, true: blueDefault }}
               thumbColor={isChatEnabled ? "#fff" : neutral99}
               onValueChange={onToggleChatSwitch}
               value={isChatEnabled}
-            />
+            /> */}
+            <ToggleButton isActive />
           </View>
           <SpacerColumn size={1} />
           <BrandText style={[fontMedium13, { color: neutral77 }]}>
