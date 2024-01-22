@@ -1,5 +1,4 @@
 import { Video } from "expo-av";
-import { ResizeMode } from "expo-av/src/Video.types";
 import React, { useEffect } from "react";
 import { Platform, View } from "react-native";
 
@@ -7,9 +6,10 @@ import { ConnectAdenaButton } from "../../../components/connectWallet/ConnectAde
 import { ConnectKeplrButton } from "../../../components/connectWallet/ConnectKeplrButton";
 import { ConnectLeapButton } from "../../../components/connectWallet/ConnectLeapButton";
 import { ConnectMetamaskButton } from "../../../components/connectWallet/ConnectMetamaskButton";
+import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
-import { Button } from "../components/Button";
+import { CustomButton } from "../../Mini/components/Button/CustomButton";
 import { WalletContainer } from "../layout/WalletContainer";
 
 function Connect3rdPartyWallet() {
@@ -41,32 +41,54 @@ export const CreateScreen: ScreenFC<"NativeWallet"> = () => {
 
   return (
     <WalletContainer>
-      <Video
-        ref={video}
-        shouldPlay
-        isLooping
-        resizeMode={ResizeMode.CONTAIN}
-        style={{
-          flex: 4,
-          height: "100%",
-          width: "100%",
-          borderWidth: 1,
-          marginBottom: layout.spacing_x2,
-        }}
-      />
       <View
-        style={{
-          width: "100%",
-          flex: 1,
-          marginTop: layout.spacing_x3,
-          justifyContent: "space-around",
-          alignItems: "center",
-        }}
+        style={{ flex: 1, height: "100%", justifyContent: "space-between" }}
       >
-        <Button text="Create Wallet" navigateTo="MiniRevealSeedPhrase" />
-        <Button text="Import Wallet" navigateTo="ImportWallet" />
-        <Button text="Connect Ledger" navigateTo="ConnectLedger" />
-        {Platform.OS === "web" && <Connect3rdPartyWallet />}
+        <Video
+          ref={video}
+          shouldPlay
+          isLooping
+          style={{
+            flex: 1,
+            borderWidth: 1,
+            marginBottom: layout.spacing_x2,
+          }}
+        />
+        <View
+          style={{
+            justifyContent: "space-around",
+            alignItems: "center",
+          }}
+        >
+          <CustomButton
+            title="Create Wallet"
+            onPress={(_, navigation) => {
+              navigation.navigate("NewWallet");
+            }}
+          />
+          <SpacerColumn size={1} />
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <CustomButton
+              onPress={(_, navigation) => {
+                navigation.navigate("ImportWallet");
+              }}
+              title="Import Wallet"
+              style={{ flex: 1 }}
+              type="outline"
+            />
+            <CustomButton
+              onPress={(_, navigation) => {
+                navigation.navigate("ConnectLedger");
+              }}
+              title="Connect Ledger"
+              style={{ flex: 1 }}
+              type="outline"
+            />
+          </View>
+
+          {Platform.OS === "web" && <Connect3rdPartyWallet />}
+          <SpacerColumn size={10} />
+        </View>
       </View>
     </WalletContainer>
   );

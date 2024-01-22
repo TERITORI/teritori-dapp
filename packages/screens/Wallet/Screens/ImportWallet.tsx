@@ -43,6 +43,7 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = () => {
         >
           Import an existing wallet with a 12 or 24-word seed phrase.
         </BrandText>
+
         <View
           style={{
             backgroundColor: neutral15,
@@ -68,6 +69,7 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = () => {
           />
         </View>
       </View>
+
       <AcceptAndNavigate
         buttonText="Next"
         text="This phrase will only be stored on this device. Teritori can’t recover it for you."

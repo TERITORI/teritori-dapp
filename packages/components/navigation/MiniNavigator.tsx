@@ -45,6 +45,7 @@ import TransactionDetailScreen from "../../screens/Mini/Wallet/TransactionDetail
 import { CreatePassword } from "../../screens/Wallet/Screens/CreatePassword";
 import { CreateScreen } from "../../screens/Wallet/Screens/CreateScreen";
 import { ImportWallet } from "../../screens/Wallet/Screens/ImportWallet";
+import NewWalletScreen from "../../screens/Wallet/Screens/NewWalletScreen";
 import { SuccessScreen } from "../../screens/Wallet/Screens/SucessScreen";
 import { ViewSeed } from "../../screens/Wallet/Screens/ViewSeed";
 import { RootStackParamList } from "../../utils/navigation";
@@ -91,7 +92,7 @@ const MainTab = () => {
 
 export const MiniNavigator: React.FC = () => {
   return (
-    <Stack.Navigator initialRouteName="MiniTabs">
+    <Stack.Navigator initialRouteName="NativeWallet">
       <Stack.Screen
         name="ModeSelection"
         component={ModeSelectionScreen}
@@ -126,6 +127,14 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: "Import Wallet with Seed",
+        }}
+      />
+      <Stack.Screen
+        name="NewWallet"
+        component={NewWalletScreen}
+        options={{
+          header: () => null,
+          title: "",
         }}
       />
       <Stack.Screen

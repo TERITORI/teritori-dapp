@@ -121,6 +121,7 @@ export type RootStackParamList = {
   MiniSendingTori: { back?: RouteName };
   MiniTransactionDetail: { type: string; transactionId: string };
   ConnectLedger: undefined;
+  NewWallet: undefined;
   MiniFeedDetails: { id: string };
 };
 
@@ -258,6 +259,7 @@ const navConfig: {
     MiniSendingTori: "mini-sending-tori",
     MiniTransactionDetail: "mini-transaction-detail",
     ConnectLedger: "connect-ledger",
+    NewWallet: "new-wallet",
     MiniFeedDetails: "mini-feed-details",
   },
 };
