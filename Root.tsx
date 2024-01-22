@@ -31,6 +31,7 @@ import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
 import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
+import { WalletControlContextProvider } from "./packages/context/WalletControlProvider";
 import {
   WalletsProvider,
   useWallets,
@@ -100,22 +101,24 @@ export default function App() {
                             <WalletSyncer />
                             <DappStoreApps />
                             <MultisigDeauth />
-                            <SearchBarContextProvider>
-                              <TransactionModalsProvider>
-                                <TNSContextProvider>
-                                  <TNSMetaDataListContextProvider>
-                                    <MenuProvider>
-                                      <MessageContextProvider>
-                                        <MediaPlayerContextProvider>
-                                          <StatusBar style="inverted" />
-                                          <Navigator />
-                                        </MediaPlayerContextProvider>
-                                      </MessageContextProvider>
-                                    </MenuProvider>
-                                  </TNSMetaDataListContextProvider>
-                                </TNSContextProvider>
-                              </TransactionModalsProvider>
-                            </SearchBarContextProvider>
+                            <WalletControlContextProvider>
+                              <SearchBarContextProvider>
+                                <TransactionModalsProvider>
+                                  <TNSContextProvider>
+                                    <TNSMetaDataListContextProvider>
+                                      <MenuProvider>
+                                        <MessageContextProvider>
+                                          <MediaPlayerContextProvider>
+                                            <StatusBar style="inverted" />
+                                            <Navigator />
+                                          </MediaPlayerContextProvider>
+                                        </MessageContextProvider>
+                                      </MenuProvider>
+                                    </TNSMetaDataListContextProvider>
+                                  </TNSContextProvider>
+                                </TransactionModalsProvider>
+                              </SearchBarContextProvider>
+                            </WalletControlContextProvider>
                           </WalletsProvider>
                         </DropdownsContextProvider>
                       </FeedbacksContextProvider>
