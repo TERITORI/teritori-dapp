@@ -1,16 +1,13 @@
-import { BlurView } from "expo-blur";
 import * as Clipboard from "expo-clipboard";
 import React, { useState } from "react";
 import { View } from "react-native";
 
 import { RedAlert } from "./RedAlert";
-import eyeClosedSVG from "../../../../../assets/icons/eye-closed.svg";
 import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
 import { SpacerColumn } from "../../../../components/spacer";
-import { neutral09 } from "../../../../utils/style/colors";
-import { fontSemibold13, fontSemibold14 } from "../../../../utils/style/fonts";
+import { fontSemibold14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
+import BlurViewWrapper from "../../components/BlurViewWrapper";
 import { CustomButton } from "../../components/Button/CustomButton";
 
 const SEEDS = [
@@ -53,22 +50,10 @@ export const ShowSeedPhrase = () => {
         <SpacerColumn size={2} />
         <RedAlert description="Your seed phrase is the only way to recover your wallet. Keep it somewhere safe and secret." />
         <SpacerColumn size={1.5} />
-        <View
-          style={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-            rowGap: 12,
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: layout.borderRadius,
-            borderWidth: 1,
-            borderColor: "rgba(255, 255, 255, 0.20)",
-            paddingHorizontal: layout.spacing_x5,
-            paddingVertical: layout.spacing_x4,
-            position: "relative",
-            marginBottom: layout.spacing_x1_5,
-            backgroundColor: neutral09,
-          }}
+
+        <BlurViewWrapper
+          show={revealSeeds}
+          wrapperStyle={{ flexDirection: "row", rowGap: 12, flexWrap: "wrap" }}
         >
           {Array.isArray(SEEDS) &&
             SEEDS.map((seed) => (
@@ -79,32 +64,10 @@ export const ShowSeedPhrase = () => {
                 {seed}
               </BrandText>
             ))}
-          {!revealSeeds && (
-            <BlurView
-              intensity={20}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                bottom: 0,
-                right: 0,
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: layout.borderRadius,
-              }}
-            >
-              <SVG
-                source={eyeClosedSVG}
-                height={20}
-                width={20}
-                style={{ marginBottom: layout.spacing_x1_5 }}
-              />
-              <BrandText style={[fontSemibold13, {}]}>
-                Make sure no one is watching your screen
-              </BrandText>
-            </BlurView>
-          )}
-        </View>
+        </BlurViewWrapper>
+
+        <SpacerColumn size={1.5} />
+
         <View
           style={{
             flexDirection: "row",
