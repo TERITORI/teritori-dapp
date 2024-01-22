@@ -11,7 +11,7 @@
     "build:web": "expo export:web",
     "lint": "npx tsx packages/scripts/paralint",
     "lint-fix": "eslint --cache --ext .js,.jsx,.ts,.tsx . --fix",
-    "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport=\"packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\\.web|.electron|.d.ts\" --ignoreTestFiles",
+    "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport=\"packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;app.config.js;.*\\.web|.electron|.native|.d.ts\" --ignoreTestFiles",
     "validate-networks": "tsx packages/scripts/validateNetworks.ts",
     "postinstall": "patch-package"
   },

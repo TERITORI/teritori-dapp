@@ -1,6 +1,4 @@
-import { ExpoConfig } from "expo/config";
-
-const config: { expo: ExpoConfig } = {
+const config = {
   expo: {
     name: "teritori-dapp",
     slug: "teritori-dapp",

@@ -62,10 +62,9 @@ export const processMessage = async (
             ? `You invited ${getConversationName(
                 conversation,
               )} to a group ${message?.payload?.metadata?.groupName}`
-            : `${getConversationName(
-                conversation,
-              )} invited you to a group ${message?.payload?.metadata
-                ?.groupName}`;
+            : `${getConversationName(conversation)} invited you to a group ${
+                message?.payload?.metadata?.groupName
+              }`;
 
           if (!message.payload) {
             message.payload = { files: [], message: "", metadata: {} };
