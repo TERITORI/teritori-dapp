@@ -61,6 +61,8 @@ const TNSName: React.FC<{ networkId: string; userAddress: string }> = ({
   userAddress,
 }) => {
   const userId = getUserId(networkId, userAddress);
+
+  if (!userId) return null;
   return <UserNameInline userId={userId} />;
 };
 
