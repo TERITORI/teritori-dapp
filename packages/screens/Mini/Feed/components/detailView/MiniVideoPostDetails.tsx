@@ -7,43 +7,43 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
-import { CommentInput } from "./CommentInput";
-import { Post, PostsRequest } from "../../../../api/feed/v1/feed";
-import { BrandText } from "../../../../components/BrandText";
-import { ScreenContainer } from "../../../../components/ScreenContainer";
-import { MediaPlayerVideo } from "../../../../components/mediaPlayer/MediaPlayerVideo";
+import { Post, PostsRequest } from "../../../../../api/feed/v1/feed";
+import { BrandText } from "../../../../../components/BrandText";
+import { ScreenContainer } from "../../../../../components/ScreenContainer";
+import { MediaPlayerVideo } from "../../../../../components/mediaPlayer/MediaPlayerVideo";
 import {
   PostCategory,
   ZodSocialFeedVideoMetadata,
-} from "../../../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { DislikeButton } from "../../../../components/socialFeed/SocialActions/DislikeButton";
-import { LikeButton } from "../../../../components/socialFeed/SocialActions/LikeButton";
-import { ReportButton } from "../../../../components/socialFeed/SocialActions/ReportButton";
-import { ShareButton } from "../../../../components/socialFeed/SocialActions/ShareButton";
-import { TipButton } from "../../../../components/socialFeed/SocialActions/TipButton";
-import { SocialCardHeader } from "../../../../components/socialFeed/SocialCard/SocialCardHeader";
-import { SOCIAl_CARD_BORDER_RADIUS } from "../../../../components/socialFeed/SocialCard/cards/SocialThreadCard";
-import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
-import { VideosList } from "../../../../components/video/VideosList";
+} from "../../../../../components/socialFeed/NewsFeed/NewsFeed.type";
+import { DislikeButton } from "../../../../../components/socialFeed/SocialActions/DislikeButton";
+import { LikeButton } from "../../../../../components/socialFeed/SocialActions/LikeButton";
+import { ReportButton } from "../../../../../components/socialFeed/SocialActions/ReportButton";
+import { ShareButton } from "../../../../../components/socialFeed/SocialActions/ShareButton";
+import { TipButton } from "../../../../../components/socialFeed/SocialActions/TipButton";
+import { SocialCardHeader } from "../../../../../components/socialFeed/SocialCard/SocialCardHeader";
+import { SOCIAl_CARD_BORDER_RADIUS } from "../../../../../components/socialFeed/SocialCard/cards/SocialThreadCard";
+import { SpacerColumn, SpacerRow } from "../../../../../components/spacer";
+import { VideosList } from "../../../../../components/video/VideosList";
 import {
   combineFetchCommentPages,
   useFetchComments,
-} from "../../../../hooks/feed/useFetchComments";
-import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
-import useSelectedWallet from "../../../../hooks/useSelectedWallet";
-import { NetworkKind, getNetwork, parseUserId } from "../../../../networks";
-import { zodTryParseJSON } from "../../../../utils/sanitize";
+} from "../../../../../hooks/feed/useFetchComments";
+import { useNSUserInfo } from "../../../../../hooks/useNSUserInfo";
+import useSelectedWallet from "../../../../../hooks/useSelectedWallet";
+import { NetworkKind, getNetwork, parseUserId } from "../../../../../networks";
+import { zodTryParseJSON } from "../../../../../utils/sanitize";
 import {
   BASE_POST,
   DEFAULT_USERNAME,
   postResultToPost,
-} from "../../../../utils/social-feed";
-import { neutralA3 } from "../../../../utils/style/colors";
-import { fontSemibold14 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import { tinyAddress } from "../../../../utils/text";
-import { VideoComment } from "../../../FeedPostView/components/VideoComment";
-import CustomAppBar from "../../components/AppBar/CustomAppBar";
+} from "../../../../../utils/social-feed";
+import { neutralA3 } from "../../../../../utils/style/colors";
+import { fontSemibold14 } from "../../../../../utils/style/fonts";
+import { layout } from "../../../../../utils/style/layout";
+import { tinyAddress } from "../../../../../utils/text";
+import { VideoComment } from "../../../../FeedPostView/components/VideoComment";
+import CustomAppBar from "../../../components/AppBar/CustomAppBar";
+import { VideoCommentInput } from "../VideoCommentInput";
 
 type Props = {
   networkId: string;
@@ -83,6 +83,7 @@ export const MiniVideoPostDetails = ({
     () => (commentsData ? combineFetchCommentPages(commentsData.pages) : []),
     [commentsData],
   );
+
   const userVideosFeedRequest: Partial<PostsRequest> = {
     filter: {
       categories: [PostCategory.Video],
@@ -93,6 +94,7 @@ export const MiniVideoPostDetails = ({
     limit: 10,
     offset: 0,
   };
+
   const allVideosFeedRequest: Partial<PostsRequest> = {
     filter: {
       categories: [PostCategory.Video],
@@ -103,6 +105,7 @@ export const MiniVideoPostDetails = ({
     limit: 10,
     offset: 0,
   };
+
   const [otherVideosRequest, setOtherVideosRequest] = useState(
     userVideosFeedRequest,
   );
@@ -221,7 +224,7 @@ export const MiniVideoPostDetails = ({
               </BrandText>
             </>
           )}
-          <CommentInput
+          <VideoCommentInput
             count={comments.length}
             networkId={networkId}
             post={localPost}

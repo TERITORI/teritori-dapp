@@ -145,7 +145,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
 
   return (
     <CustomPressable
-      onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
+      onLayout={(e) => setViewWidth(e.nativeEvent?.layout?.width)}
       disabled={!!localComment.isInLocal}
       onPress={() =>
         navigation.navigate("FeedPostView", {
@@ -157,7 +157,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
       <AnimationFadeIn
         onLayout={(e) =>
           setReplyListYOffset((prev) => {
-            prev[0] = e.nativeEvent.layout.y;
+            prev[0] = e.nativeEvent?.layout?.y;
             return prev;
           })
         }
@@ -212,8 +212,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
             style={{ marginLeft: isMobile ? 0 : LINES_HORIZONTAL_SPACE }}
             onLayout={(e) =>
               setReplyListYOffset((prev) => {
-                prev[2] = e.nativeEvent.layout.height;
-                setReplyListLayout(e.nativeEvent.layout);
+                prev[2] = e.nativeEvent?.layout?.height;
+                setReplyListLayout(e.nativeEvent?.layout);
                 return prev;
               })
             }
@@ -241,7 +241,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
           style={repliesButtonContainerCStyle}
           onLayout={(e) =>
             setReplyListYOffset((prev) => {
-              prev[1] = e.nativeEvent.layout.y;
+              prev[1] = e.nativeEvent?.layout?.y;
               return prev;
             })
           }

@@ -1,7 +1,9 @@
 import React from "react";
-import { ActivityIndicator, SafeAreaView, View } from "react-native";
+import { SafeAreaView, View } from "react-native";
 
-import { MiniVideoPostDetails } from "./components/MiniVideoPostDetails";
+import { Spinner } from "./components/Spinner";
+import { MiniArticlePostDetails } from "./components/detailView/MiniArticlePostDetails";
+import { MiniVideoPostDetails } from "./components/detailView/MiniVideoPostDetails";
 import { BrandText } from "../../../components/BrandText";
 import { NotFound } from "../../../components/NotFound";
 import { BackButton } from "../../../components/navigation/components/BackButton";
@@ -11,7 +13,6 @@ import { parseNetworkObjectId } from "../../../networks";
 import { gnoTeritoriNetwork } from "../../../networks/gno-teritori";
 import { teritoriNetwork } from "../../../networks/teritori";
 import { ScreenFC } from "../../../utils/navigation";
-import { primaryColor } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import CustomAppBar from "../components/AppBar/CustomAppBar";
 
@@ -51,11 +52,11 @@ const FeedDetailsScreen: ScreenFC<"MiniFeedDetails"> = ({
           <BackButton type="chevron" />
           <BrandText>{label}</BrandText>
         </View>
-        <ActivityIndicator
-          color={primaryColor}
-          size="large"
-          style={{ marginTop: layout.spacing_x4 }}
-        />
+        <View
+          style={{ alignItems: "center", marginVertical: layout.spacing_x5 }}
+        >
+          <Spinner />
+        </View>
       </SafeAreaView>
     );
   }
@@ -76,12 +77,28 @@ const FeedDetailsScreen: ScreenFC<"MiniFeedDetails"> = ({
       </SafeAreaView>
     );
   }
+  if (post.category === PostCategory.Video) {
+    return (
+      <MiniVideoPostDetails
+        networkId={networkId}
+        post={post}
+        refetchPost={refetch}
+      />
+    );
+  }
+  if (post.category === PostCategory.Article) {
+    return (
+      <MiniArticlePostDetails
+        networkId={networkId}
+        post={post}
+        refetchPost={refetch}
+      />
+    );
+  }
   return (
-    <MiniVideoPostDetails
-      networkId={networkId}
-      post={post}
-      refetchPost={refetch}
-    />
+    <SafeAreaView>
+      <BrandText>ALL - Defaults</BrandText>
+    </SafeAreaView>
   );
 };
 

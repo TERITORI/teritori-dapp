@@ -80,8 +80,8 @@ export const MiniSocialArticle = ({ post, refetchFeed, style }: Props) => {
   }, [post]);
 
   const onPressPost = () => {
-    // const id = getNetworkObjectId(selectedNetworkId, localPost.identifier);
-    // navigation.navigate("MiniFeedDetails", { id });
+    const id = getNetworkObjectId(selectedNetworkId, localPost.identifier);
+    navigation.navigate("MiniFeedDetails", { id });
   };
 
   const thumbnailURI = thumbnailImage?.url

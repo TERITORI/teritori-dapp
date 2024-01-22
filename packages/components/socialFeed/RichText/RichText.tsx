@@ -27,6 +27,7 @@ export const RichText: React.FC<RichTextProps> = ({
   publishDisabled,
   loading,
   isPostConsultation,
+  initialValue,
 }) => {
   const { width: windowWidth } = useWindowDimensions();
   const richText = useRef(null);
@@ -36,7 +37,12 @@ export const RichText: React.FC<RichTextProps> = ({
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-        <RichEditor ref={richText} onChange={onChange} onBlur={onBlur} />
+        <RichEditor
+          initialContentHTML={initialValue}
+          ref={richText}
+          onChange={onChange}
+          onBlur={onBlur}
+        />
       </KeyboardAvoidingView>
 
       {!isPostConsultation && (

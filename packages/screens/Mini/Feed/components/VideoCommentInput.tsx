@@ -33,7 +33,12 @@ type Props = {
   onComment?: () => void;
 };
 
-export const CommentInput = ({ count, networkId, post, onComment }: Props) => {
+export const VideoCommentInput = ({
+  count,
+  networkId,
+  post,
+  onComment,
+}: Props) => {
   const wallet = useSelectedWallet();
 
   const [replyTo, setReplyTo] = useState<ReplyToType>();

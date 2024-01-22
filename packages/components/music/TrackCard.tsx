@@ -14,6 +14,7 @@ import NormalPlay from "../../../assets/icons/music/normal-play.svg";
 import ThreeDotsCircleWhite from "../../../assets/icons/music/three-dot-circle-white.svg";
 import { Post } from "../../api/feed/v1/feed";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
+import { useAppType } from "../../hooks/useAppType";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../networks";
@@ -39,6 +40,7 @@ export const TrackCard: React.FC<{
   hideAuthor?: boolean;
   style?: StyleProp<ViewStyle>;
 }> = memo(({ post, hideAuthor, style }) => {
+  const [appType] = useAppType();
   const track = zodTryParseJSON(ZodSocialFeedTrackMetadata, post.metadata);
   const authorNSInfo = useNSUserInfo(post.authorId);
   const [, userAddress] = parseUserId(post.authorId);
@@ -81,9 +83,12 @@ export const TrackCard: React.FC<{
           onHoverOut={() => setIsHovered(false)}
           style={imgBoxStyle}
           onPress={() => {
-            navigation.navigate("FeedPostView", {
-              id: getNetworkObjectId(selectedNetworkId, post.identifier),
-            });
+            navigation.navigate(
+              appType === "mini" ? "MiniFeedDetails" : "FeedPostView",
+              {
+                id: getNetworkObjectId(selectedNetworkId, post.identifier),
+              },
+            );
           }}
         >
           <OptimizedImage
