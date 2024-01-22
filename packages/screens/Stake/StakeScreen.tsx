@@ -84,6 +84,7 @@ export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
     <ScreenContainer
       headerChildren={<BrandText style={fontSemibold20}>Stake</BrandText>}
       responsive
+      isLarge
       forceNetworkKind={NetworkKind.Cosmos}
       forceNetworkId={multisigId && selectedNetworkId}
       noScroll={Platform.OS !== "web"}

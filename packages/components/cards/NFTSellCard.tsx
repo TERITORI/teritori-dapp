@@ -7,7 +7,7 @@ import {
   keplrCurrencyFromNativeCurrencyInfo,
 } from "../../networks";
 import { NFTInfo } from "../../utils/types/nft";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { NFTSellInfo } from "../nftDetails/components/NFTSellInfo";
@@ -33,7 +33,7 @@ export const NFTSellCard: React.FC<{
   }
   return (
     <View style={style}>
-      <TertiaryBox
+      <LegacyTertiaryBox
         fullWidth
         height={88}
         style={{ marginBottom: 16 }}
@@ -58,7 +58,7 @@ export const NFTSellCard: React.FC<{
           text="List this NFT"
           onPress={handleSubmit(handleSell)}
         />
-      </TertiaryBox>
+      </LegacyTertiaryBox>
       <NFTSellInfo nftInfo={nftInfo} price={values.price} />
     </View>
   );

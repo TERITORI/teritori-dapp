@@ -9,14 +9,14 @@ import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { NetworkIcon } from "../NetworkIcon";
 import { SuccessBadge } from "../badges/SuccessBadge";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 export const WalletStatusCard: React.FC = () => {
   const wallet = useSelectedWallet();
   const selectedNetworkInfo = getNetwork(wallet?.networkId);
 
   return (
-    <TertiaryBox
+    <LegacyTertiaryBox
       fullWidth
       mainContainerStyle={{
         backgroundColor: neutral17,
@@ -43,6 +43,6 @@ export const WalletStatusCard: React.FC = () => {
       </View>
 
       <SuccessBadge label="connected" />
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 };

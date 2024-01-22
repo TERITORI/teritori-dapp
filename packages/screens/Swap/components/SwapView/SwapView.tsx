@@ -12,7 +12,7 @@ import chevronCircleDown from "../../../../../assets/icons/chevron-circle-down.s
 import chevronCircleUp from "../../../../../assets/icons/chevron-circle-up.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
-import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../../../../components/boxes/LegacyTertiaryBox";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../../components/buttons/SecondaryButton";
@@ -313,7 +313,10 @@ export const SwapView: React.FC = () => {
 
   // ===== RETURN
   return (
-    <TertiaryBox fullWidth style={{ maxWidth: MAX_WIDTH, alignSelf: "center" }}>
+    <LegacyTertiaryBox
+      fullWidth
+      style={{ maxWidth: MAX_WIDTH, alignSelf: "center" }}
+    >
       <View style={{ width: "100%" }} onLayout={onLayout}>
         <View
           style={{
@@ -339,7 +342,7 @@ export const SwapView: React.FC = () => {
           >
             <View style={{ width: "100%" }}>
               {/*======= First currency */}
-              <TertiaryBox
+              <LegacyTertiaryBox
                 fullWidth
                 mainContainerStyle={{
                   padding: layout.spacing_x2,
@@ -429,11 +432,11 @@ export const SwapView: React.FC = () => {
                     </View>
                   </View>
                 </Animated.View>
-              </TertiaryBox>
+              </LegacyTertiaryBox>
 
               {/*======= Second currency */}
               <SpacerColumn size={1.5} />
-              <TertiaryBox
+              <LegacyTertiaryBox
                 fullWidth
                 mainContainerStyle={{
                   padding: layout.spacing_x2,
@@ -489,7 +492,7 @@ export const SwapView: React.FC = () => {
                     </View>
                   </Animated.View>
                 </>
-              </TertiaryBox>
+              </LegacyTertiaryBox>
             </View>
 
             {/*======= Currencies In/Out equivalence */}
@@ -550,6 +553,6 @@ export const SwapView: React.FC = () => {
           setCurrency={setCurrencyIn}
         />
       </View>
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 };

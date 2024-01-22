@@ -21,7 +21,7 @@ import {
   getUserId,
 } from "../networks";
 import { getEthereumProvider } from "../utils/ethereum";
-import { ipfsURLToHTTPURL } from "../utils/ipfs";
+import { web3ToWeb2URI } from "../utils/ipfs";
 import { nameServiceDefaultImage } from "../utils/tns";
 import { NFTAttribute, NFTInfo } from "../utils/types/nft";
 
@@ -191,7 +191,7 @@ const getEthereumStandardNFTInfo = async (
     data.json(),
   );
   const tokenURI = await nftClient.tokenURI(tokenId);
-  const metadataURL = ipfsURLToHTTPURL(tokenURI);
+  const metadataURL = web3ToWeb2URI(tokenURI);
   const metadata = await fetch(metadataURL).then((data) => data.json());
   const attributes: NFTAttribute[] = [];
   for (const attr of metadata.attributes) {
@@ -291,7 +291,7 @@ const getTeritoriBunkerNFTInfo = async (
   }
 
   const collectionMetadata = await (
-    await fetch(ipfsURLToHTTPURL(minterConfig.nft_base_uri))
+    await fetch(web3ToWeb2URI(minterConfig.nft_base_uri))
   ).json();
 
   // ======== Getting NFT client
@@ -310,7 +310,7 @@ const getTeritoriBunkerNFTInfo = async (
   let royalties = 0;
   if (nftInfo.token_uri) {
     const nftMetadata = await (
-      await fetch(ipfsURLToHTTPURL(nftInfo.token_uri))
+      await fetch(web3ToWeb2URI(nftInfo.token_uri))
     ).json();
     name = nftMetadata.name;
     image = nftMetadata.image;
@@ -401,7 +401,7 @@ const getTeritoriRiotBreedingNFTInfo = async (
   const breedingConfig = await breedingClient.config();
 
   const collectionMetadata = await (
-    await fetch(ipfsURLToHTTPURL(breedingConfig.child_base_uri))
+    await fetch(web3ToWeb2URI(breedingConfig.child_base_uri))
   ).json();
 
   // ======== Getting NFT client
@@ -420,7 +420,7 @@ const getTeritoriRiotBreedingNFTInfo = async (
   let royalties = 0;
   if (nftInfo.token_uri) {
     const nftMetadata = await (
-      await fetch(ipfsURLToHTTPURL(nftInfo.token_uri))
+      await fetch(web3ToWeb2URI(nftInfo.token_uri))
     ).json();
     name = nftMetadata.name;
     image = nftMetadata.image;

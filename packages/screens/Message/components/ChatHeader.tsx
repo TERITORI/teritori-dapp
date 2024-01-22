@@ -11,7 +11,7 @@ import searchSVG from "../../../../assets/icons/search.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
 import { BackButton } from "../../../components/navigation/components/BackButton";
 import { SpacerRow } from "../../../components/spacer";
 import { useDropdowns } from "../../../context/DropdownsProvider";
@@ -201,7 +201,7 @@ export const ChatHeader = ({
                   <SVG source={dots} />
                 </TouchableOpacity>
                 {isDropdownOpen(dropdownRef) && (
-                  <TertiaryBox
+                  <LegacyTertiaryBox
                     width={140}
                     style={{ position: "absolute", top: 30, right: 10 }}
                     mainContainerStyle={{
@@ -240,7 +240,7 @@ export const ChatHeader = ({
                         </TouchableOpacity>
                       );
                     })}
-                  </TertiaryBox>
+                  </LegacyTertiaryBox>
                 )}
 
                 <SpacerRow size={1} />

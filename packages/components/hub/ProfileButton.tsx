@@ -156,9 +156,8 @@ const RegisterGnoNameModal: React.FC<{
     <ModalBase
       label="Register Gno name"
       visible={visible}
-      noBrokenCorners
       onClose={onClose}
-      contentStyle={{ minWidth: 400 }}
+      boxStyle={{ minWidth: 400 }}
     >
       <BrandText style={fontSemibold14}>
         <BrandText style={[fontSemibold14, { color: neutral77 }]}>
@@ -198,7 +197,7 @@ const RegisterGnoNameModal: React.FC<{
         disabled={buttonDisabled}
         fullWidth
         loader
-        style={{ marginBottom: modalMarginPadding }}
+        boxStyle={{ marginBottom: modalMarginPadding }}
         onPress={async () => {
           await wrapWithFeedback(async () => {
             if (!selectedWallet) throw new Error("No wallet selected");

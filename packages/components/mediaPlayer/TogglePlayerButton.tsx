@@ -7,7 +7,7 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 export const TogglePlayerButton: FC = () => {
   const isMobile = useIsMobile();
@@ -19,7 +19,7 @@ export const TogglePlayerButton: FC = () => {
         setIsMediaPlayerOpen((isMediaPlayerOpen) => !isMediaPlayerOpen)
       }
     >
-      <TertiaryBox
+      <LegacyTertiaryBox
         noBrokenCorners
         mainContainerStyle={{
           flexDirection: "row",
@@ -36,7 +36,7 @@ export const TogglePlayerButton: FC = () => {
             color={secondaryColor}
           />
         </View>
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </TouchableOpacity>
   );
 };

@@ -3,7 +3,7 @@ import { StyleSheet, Linking, View, Pressable } from "react-native";
 
 import { BrandText } from "./BrandText";
 import { OptimizedImage } from "./OptimizedImage";
-import { TertiaryBox } from "./boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "./boxes/LegacyTertiaryBox";
 import { GradientText } from "./gradientText";
 import { Collection, MintState } from "../api/marketplace/v1/marketplace";
 import { useCollectionThumbnailInfo } from "../hooks/collection/useCollectionThumbnailInfo";
@@ -45,7 +45,7 @@ export const CollectionView: React.FC<{
       }}
       disabled={item.id === "" && item.twitterUrl === ""}
     >
-      <TertiaryBox
+      <LegacyTertiaryBox
         noBrokenCorners={size === "XS"}
         mainContainerStyle={sizedStyles.boxMainContainer}
         width={sizedStyles.box.width}
@@ -139,7 +139,7 @@ export const CollectionView: React.FC<{
             )}
           </View>
         </View>
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </Pressable>
   );
 };

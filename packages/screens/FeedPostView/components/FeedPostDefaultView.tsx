@@ -150,10 +150,6 @@ export const FeedPostDefaultView: FC<{
       tinyAddress(authorAddress) ||
       DEFAULT_USERNAME;
 
-    if (post.category === PostCategory.Article) {
-      return `Article by ${authorDisplayName}`;
-    }
-
     if (post?.parentPostIdentifier) {
       return `Comment by ${authorDisplayName}`;
     }
@@ -313,8 +309,8 @@ export const FeedPostDefaultView: FC<{
           style={{ alignSelf: "center" }}
           ref={feedInputRef}
           type="comment"
-          parentId={postId}
           replyTo={replyTo}
+          parentId={post.identifier}
           onSubmitInProgress={handleSubmitInProgress}
           onSubmitSuccess={() => {
             setReplyTo(undefined);
@@ -324,12 +320,15 @@ export const FeedPostDefaultView: FC<{
       )}
 
       <CreateShortPostModal
+        label="Create a Comment"
         isVisible={isCreateModalVisible}
         onClose={() => setCreateModalVisible(false)}
         onSubmitSuccess={() => {
           setReplyTo(undefined);
           refetchComments();
         }}
+        replyTo={replyTo}
+        parentId={post.identifier}
       />
     </ScreenContainer>
   );

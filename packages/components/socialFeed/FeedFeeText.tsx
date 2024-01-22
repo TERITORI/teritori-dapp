@@ -8,13 +8,14 @@ import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 
 export const FeedFeeText: React.FC<{
+  networkId: string | undefined;
   userId: string | undefined;
   category: PostCategory;
   style?: StyleProp<ViewStyle>;
-}> = ({ userId, category, style }) => {
+}> = ({ networkId, userId, category, style }) => {
   const theme = useTheme();
   const { canPayForPost, prettyPublishingFee, prettyFeeBalance } =
-    useFeedPosting(userId, category);
+    useFeedPosting(networkId, userId, category);
   const balanceColor = canPayForPost ? theme.textColor : errorColor;
   return (
     <View

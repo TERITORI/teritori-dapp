@@ -4,7 +4,7 @@ import { Image } from "react-native";
 import { TopMenuSection } from "./TopMenuSection";
 import { useBanners } from "../../hooks/useBanners";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { web3ToWeb2URI } from "../../utils/ipfs";
 import FlexCol from "../FlexCol";
 import { Link } from "../Link";
 import { PrimaryBox } from "../boxes/PrimaryBox";
@@ -18,10 +18,10 @@ export const TopMenuHighlightedNews: React.FC = () => {
     <TopMenuSection title="Highlighted News">
       <FlexCol>
         <Link to={banner?.url || ""}>
-          <PrimaryBox noBrokenCorners>
+          <PrimaryBox>
             <Image
               source={{
-                uri: ipfsURLToHTTPURL(banner?.image),
+                uri: web3ToWeb2URI(banner?.image),
               }}
               style={{
                 height: 94,

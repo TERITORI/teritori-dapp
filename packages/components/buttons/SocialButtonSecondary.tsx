@@ -11,7 +11,7 @@ import {
 import { fontMedium14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { SecondaryBox } from "../boxes/SecondaryBox";
+import { LegacySecondaryBox } from "../boxes/LegacySecondaryBox";
 
 export const SocialButtonSecondary: React.FC<{
   text: string;
@@ -21,13 +21,13 @@ export const SocialButtonSecondary: React.FC<{
 }> = ({ text, onPress, iconSvg, style }) => {
   return (
     <TouchableOpacity onPress={onPress} style={style}>
-      <SecondaryBox
+      <LegacySecondaryBox
         noBrokenCorners
         mainContainerStyle={{ backgroundColor: withAlpha(neutral1A, 0.64) }}
         height={44}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <SecondaryBox
+          <LegacySecondaryBox
             noBrokenCorners
             style={{ marginLeft: 6 }}
             mainContainerStyle={{
@@ -45,7 +45,7 @@ export const SocialButtonSecondary: React.FC<{
               height={20}
               color={primaryTextColor}
             />
-          </SecondaryBox>
+          </LegacySecondaryBox>
           <BrandText
             style={[
               fontMedium14,
@@ -55,7 +55,7 @@ export const SocialButtonSecondary: React.FC<{
             {text}
           </BrandText>
         </View>
-      </SecondaryBox>
+      </LegacySecondaryBox>
     </TouchableOpacity>
   );
 };

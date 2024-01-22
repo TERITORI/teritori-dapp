@@ -20,7 +20,7 @@ import React, {
 import { useFeedbacks } from "./FeedbacksProvider";
 import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
 import { getNetworkObjectId } from "../networks";
-import { ipfsURLToHTTPURL } from "../utils/ipfs";
+import { web3ToWeb2URI } from "../utils/ipfs";
 import { useAppNavigation } from "../utils/navigation";
 import { Media } from "../utils/types/mediaPlayer";
 
@@ -112,7 +112,7 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
       setMedia(mediaToSet);
       try {
         const { sound: createdSound } = await Audio.Sound.createAsync(
-          { uri: ipfsURLToHTTPURL(mediaToSet.fileUrl) },
+          { uri: web3ToWeb2URI(mediaToSet.fileUrl) },
           undefined,
           async (status: AVPlaybackStatus) => {
             if ("uri" in status && status.isLoaded) {

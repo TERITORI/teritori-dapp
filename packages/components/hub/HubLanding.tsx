@@ -14,6 +14,7 @@ import {
 import { useBanners } from "../../hooks/useBanners";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { web3ToWeb2URI } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
 import { Link } from "../Link";
 import { OptimizedImage } from "../OptimizedImage";
@@ -39,7 +40,7 @@ export const HubLanding: React.FC = () => {
         {!!banner && (
           <Link to={banner?.url || ""}>
             <OptimizedImage
-              sourceURI={banner?.image}
+              sourceURI={web3ToWeb2URI(banner?.image)}
               width={width}
               height={350}
               style={{

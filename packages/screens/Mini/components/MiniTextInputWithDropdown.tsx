@@ -1,6 +1,7 @@
 import { Fragment, useState } from "react";
 import { View } from "react-native";
 
+import MiniTextInput from "./MiniTextInput";
 import inputAddressSVG from "../../../../assets/icons/input-address.svg";
 import eyeLensSVG from "../../../../assets/icons/search-gray.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -16,7 +17,6 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import MiniTextInput from "./MiniTextInput";
 
 type OptionType = {
   label: string;

@@ -55,13 +55,7 @@ export const TransactionPaymentModal: React.FC<{
   }
 
   return (
-    <ModalBase
-      visible={visible}
-      onClose={onClose}
-      width={372}
-      label={label}
-      noBrokenCorners
-    >
+    <ModalBase visible={visible} onClose={onClose} width={372} label={label}>
       <View>
         {/*==== Text*/}
         <View style={{ flexDirection: "row", marginBottom: 16 }}>

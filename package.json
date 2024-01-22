@@ -9,8 +9,10 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "build:web": "expo export:web",
-    "lint": "eslint --cache --ext .js,.jsx,.ts,.tsx . && tsc",
+    "lint": "npx tsx packages/scripts/paralint",
     "lint-fix": "eslint --cache --ext .js,.jsx,.ts,.tsx . --fix",
+    "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport=\"packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\\.web|.electron|.d.ts\" --ignoreTestFiles",
+    "validate-networks": "tsx packages/scripts/validateNetworks.ts",
     "postinstall": "patch-package"
   },
   "engines": {
@@ -91,6 +93,7 @@
     "google-protobuf": "^3.21.2",
     "html-to-draftjs": "^1.5.0",
     "immutable": "^4.0.0",
+    "listr2": "^8.0.1",
     "lodash": "^4.17.21",
     "long": "^5.2.1",
     "lottie-react-native": "5.1.6",
@@ -100,6 +103,7 @@
     "node-libs-react-native": "^1.2.1",
     "os-browserify": "^0.3.0",
     "osmojs": "15.0.5",
+    "plausible-tracker": "^0.3.8",
     "protobufjs": "^7.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -136,6 +140,7 @@
     "rxjs": "^7.8.1",
     "stream-browserify": "^3.0.0",
     "text-encoding-polyfill": "^0.6.7",
+    "tsx": "^4.7.0",
     "uuid": "^9.0.0",
     "victory": "^36.6.12",
     "victory-native": "^36.6.8",
@@ -177,7 +182,6 @@
     "prettier": "^3.0.3",
     "react-native-svg-transformer": "^1.0.0",
     "rimraf": "^5.0.5",
-    "ts-node": "^10.9.1",
     "ts-proto": "^1.120.0",
     "ts-unused-exports": "^10.0.1",
     "typescript": "^5.2.2",
@@ -189,7 +193,8 @@
     "@expo/prebuild-config": "~6.2.4",
     "expo-modules-autolinking": "~1.5.0",
     "@expo/config-plugins": "~7.2.2",
-    "@expo/metro-config": "~0.10.0"
+    "@expo/metro-config": "~0.10.0",
+    "chain-registry@^1.20.0": "patch:chain-registry@npm%3A1.20.0#./.yarn/patches/chain-registry-npm-1.20.0-e290300d1b.patch"
   },
   "private": true,
   "packageManager": "yarn@3.5.0"

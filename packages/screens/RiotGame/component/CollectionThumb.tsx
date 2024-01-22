@@ -3,7 +3,7 @@ import { TouchableOpacity } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { OptimizedImage } from "../../../components/OptimizedImage";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
 import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
 import { useAppNavigation } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
@@ -24,7 +24,7 @@ export const CollectionThumb: React.FC<CollectionThumbProps> = ({
         navigation.navigate("RiotGameMarketplace", { collectionId })
       }
     >
-      <TertiaryBox
+      <LegacyTertiaryBox
         mainContainerStyle={{
           paddingTop: 12,
           paddingBottom: 20,
@@ -51,7 +51,7 @@ export const CollectionThumb: React.FC<CollectionThumbProps> = ({
         >
           {info?.name}
         </BrandText>
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </TouchableOpacity>
   );
 };

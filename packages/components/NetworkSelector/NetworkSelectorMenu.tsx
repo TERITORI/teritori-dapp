@@ -20,7 +20,7 @@ import { layout } from "../../utils/style/layout";
 import { WalletProvider } from "../../utils/walletProvider";
 import { BrandText } from "../BrandText";
 import { NetworkIcon } from "../NetworkIcon";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { TertiaryButton } from "../buttons/TertiaryButton";
 import { NetworksListModal } from "../modals/NetworksListModal";
 
@@ -75,7 +75,7 @@ export const NetworkSelectorMenu: FC<{
   };
 
   return (
-    <TertiaryBox
+    <LegacyTertiaryBox
       width={172}
       noBrokenCorners
       style={style}
@@ -145,6 +145,6 @@ export const NetworkSelectorMenu: FC<{
           setNetworksModalVisible(false);
         }}
       />
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 };

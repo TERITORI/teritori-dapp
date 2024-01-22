@@ -1,6 +1,29 @@
 import { useQuery } from "@tanstack/react-query";
+import { z } from "zod";
 
 import { parseUserId, NetworkKind } from "../networks";
+
+const zodCosmosDelegation = z.object({
+  delegation: z.object({
+    delegator_address: z.string(),
+    validator_address: z.string(),
+    shares: z.string(),
+  }),
+  balance: z.object({
+    denom: z.string(),
+    amount: z.string(),
+  }),
+});
+
+type CosmosDelegation = z.infer<typeof zodCosmosDelegation>;
+
+const zodCosmosDelegationsResponse = z.object({
+  delegation_responses: z.array(zodCosmosDelegation),
+  pagination: z.object({
+    next_key: z.string().nullable(),
+    total: z.string(),
+  }),
+});
 
 export const useCosmosDelegations = (userId: string | undefined) => {
   return useQuery(
@@ -10,7 +33,7 @@ export const useCosmosDelegations = (userId: string | undefined) => {
       if (network?.kind !== NetworkKind.Cosmos) {
         return [];
       }
-      const delegations: any[] = []; // FIXME: type this
+      const delegations: CosmosDelegation[] = [];
       let nextKey = "";
       while (true) {
         const httpResponse = await fetch(
@@ -20,7 +43,8 @@ export const useCosmosDelegations = (userId: string | undefined) => {
             nextKey,
           )}`,
         );
-        const response = await httpResponse.json();
+        const rawResponse = await httpResponse.json();
+        const response = zodCosmosDelegationsResponse.parse(rawResponse);
         delegations.push(...response.delegation_responses);
         if (!response.pagination.next_key) {
           break;

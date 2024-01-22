@@ -19,7 +19,6 @@ import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
 import { OnPressReplyType } from "../../../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../../../utils/navigation";
-import { zodTryParseJSON } from "../../../../utils/sanitize";
 import { DEFAULT_USERNAME } from "../../../../utils/social-feed";
 import {
   neutral00,
@@ -40,10 +39,7 @@ import {
   LINES_HORIZONTAL_SPACE,
 } from "../../../cards/CommentsContainer";
 import { SpacerColumn } from "../../../spacer";
-import {
-  PostExtra,
-  ZodSocialFeedPostMetadata,
-} from "../../NewsFeed/NewsFeed.type";
+import { PostExtra } from "../../NewsFeed/NewsFeed.type";
 import { SocialCardFooter } from "../SocialCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";
 import { SocialMessageContent } from "../SocialMessageContent";
@@ -97,10 +93,6 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     [data],
   );
   const moreCommentsCount = localComment.subPostLength - comments.length;
-  const metadata = zodTryParseJSON(
-    ZodSocialFeedPostMetadata,
-    localComment.metadata,
-  );
   const authorNSInfo = useNSUserInfo(localComment.authorId);
   const username = authorNSInfo?.metadata?.tokenId
     ? tinyAddress(authorNSInfo?.metadata?.tokenId || "", 19)
@@ -199,15 +191,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
               <SpacerColumn size={1.5} />
 
               {/*====== Card Content */}
-              {!!metadata && (
-                <SocialMessageContent
-                  authorId={localComment.authorId}
-                  postId={localComment.identifier}
-                  metadata={metadata}
-                  postCategory={localComment.category}
-                />
-              )}
-
+              <SocialMessageContent post={localComment} />
               <SpacerColumn size={1.5} />
 
               {/*====== Card Actions */}

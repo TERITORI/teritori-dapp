@@ -17,7 +17,7 @@ import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 export const PrimaryButtonOutline: React.FC<{
   size: ButtonsSize;
@@ -68,7 +68,7 @@ export const PrimaryButtonOutline: React.FC<{
         touchableStyle,
       ]}
     >
-      <TertiaryBox
+      <LegacyTertiaryBox
         height={heightButton(size)}
         mainContainerStyle={{
           flexDirection: "row",
@@ -98,7 +98,7 @@ export const PrimaryButtonOutline: React.FC<{
             </BrandText>
           </>
         )}
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </TouchableOpacity>
   );
 };

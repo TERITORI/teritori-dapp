@@ -33,7 +33,7 @@ import { Sidebar } from "../navigation/Sidebar";
 import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
 import { Separator } from "../separators/Separator";
 
-export const ScreenContainer: React.FC<{
+export interface ScreenContainerProps {
   headerChildren?: JSX.Element;
   footerChildren?: React.ReactNode;
   mobileTitle?: string;
@@ -50,7 +50,9 @@ export const ScreenContainer: React.FC<{
   maxWidth?: number;
   children?: ReactNode;
   headerMini?: ReactNode;
-}> = ({
+}
+
+export const ScreenContainer: React.FC<ScreenContainerProps> = ({
   children,
   headerChildren,
   footerChildren,

@@ -38,6 +38,7 @@ import { gnoTest3Network } from "./gno-test3";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
 import { teritoriNetwork } from "./teritori";
+import { teritoriLocalnetNetwork } from "./teritori-localnet";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import {
   CosmosNetworkInfo,
@@ -61,6 +62,7 @@ const packageNetworks = [
   teritoriNetwork,
   cosmosNetwork,
   teritoriTestnetNetwork,
+  teritoriLocalnetNetwork,
   cosmosThetaNetwork,
   ethereumGoerliNetwork,
   ethereumNetwork,
@@ -173,7 +175,7 @@ export const getNetwork = (networkId: string | undefined) => {
   return allNetworks.find((n) => n.id === networkId);
 };
 
-export const mustGetNetwork = (networkId: string | undefined) => {
+const mustGetNetwork = (networkId: string | undefined) => {
   const network = getNetwork(networkId);
   if (!network) {
     throw new Error(`unknown network '${networkId}'`);
@@ -442,7 +444,7 @@ export const keplrChainInfoFromNetworkInfo = (
   };
 };
 
-const cosmosNetworkGasPrice = (
+export const cosmosNetworkGasPrice = (
   network: CosmosNetworkInfo,
   kind: "low" | "average" | "high",
 ) => {

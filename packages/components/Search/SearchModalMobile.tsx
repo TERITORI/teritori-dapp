@@ -14,7 +14,6 @@ export const SearchModalMobile: FC<{
     <ModalBase
       scrollable
       verticalPosition="top"
-      noBrokenCorners
       visible={visible}
       onClose={onClose}
       width={windowWidth}

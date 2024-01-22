@@ -378,7 +378,7 @@ const JoinMultisigModal: React.FC<{
       visible={visible}
       onClose={onClose}
       label="Join multisig"
-      contentStyle={{ minWidth: 400 }}
+      boxStyle={{ minWidth: 400 }}
     >
       <TextInputCustom
         value={name}

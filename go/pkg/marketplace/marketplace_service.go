@@ -123,6 +123,13 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		return errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
 	}
 
+	periodInMinutes := -time.Duration(req.GetPeriodInMinutes()) * time.Minute // has to be minus because we want to go back in time
+
+	if periodInMinutes == 0 {
+		periodInMinutes = -43200 * time.Minute // 30 days
+	}
+	// get time.Duration to minutes
+
 	switch network := network.(type) {
 
 	case *networks.CosmosNetwork:
@@ -219,9 +226,9 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 			OFFSET ?
 		`, where, orderSQL), // order By here or it won't work
 			s.conf.Whitelist,
-			time.Now().AddDate(0, 0, -30),
-			time.Now().AddDate(0, 0, -30),
-			time.Now().AddDate(0, 0, -60),
+			time.Now().Add(periodInMinutes).Truncate(time.Minute),
+			time.Now().Add(periodInMinutes).Truncate(time.Minute),
+			time.Now().Add(periodInMinutes*2).Truncate(time.Minute),
 			limit,
 			offset,
 		).Scan(&collections).Error

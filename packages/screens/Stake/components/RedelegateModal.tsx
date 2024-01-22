@@ -86,13 +86,13 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       return [];
     }
     let currentValidators = allValidators;
-    if (bondedTokens.atomics && bondedTokens.atomics !== "0") {
+    if (bondedTokens && bondedTokens.amount.atomics !== "0") {
       currentValidators = currentValidators.filter(
         (d) => d.moniker !== validator.moniker,
       );
     }
     return currentValidators;
-  }, [allValidators, bondedTokens.atomics, validator?.moniker]);
+  }, [allValidators, bondedTokens, validator?.moniker]);
 
   const onSubmit = useCallback(
     async (formData: StakeFormValuesType) => {
@@ -281,11 +281,11 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           placeHolder="0"
           currency={keplrCurrencyFromNativeCurrencyInfo(stakingCurrency)}
           defaultValue=""
-          rules={{ required: true, max: bondedTokens.toString() }}
+          rules={{ required: true, max: bondedTokens?.amount.toString() }}
         >
           <Pressable
             onPress={() =>
-              setValue("amount", bondedTokens.toString(), {
+              setValue("amount", bondedTokens?.amount.toString() || "0", {
                 shouldValidate: true,
               })
             }
@@ -299,8 +299,8 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           Tokens bonded to source validator:{" "}
           {prettyPrice(
             networkId,
-            bondedTokens.atomics,
-            stakingCurrency?.denom || "",
+            bondedTokens?.amount.atomics,
+            bondedTokens?.currency.denom,
           )}
         </BrandText>
         <SpacerColumn size={2.5} />
@@ -313,7 +313,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
-    width: 700,
+    width: 900,
   },
   footerRow: {
     flexDirection: "row",

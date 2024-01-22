@@ -29,7 +29,7 @@ import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { EmptyList } from "../EmptyList";
 import { NetworkIcon } from "../NetworkIcon";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
@@ -43,7 +43,7 @@ export const NetworksListModal: FC<{
       label="Manage Networks"
       visible={isVisible}
       onClose={onClose}
-      contentStyle={{ minWidth: 360, paddingBottom: modalMarginPadding }}
+      boxStyle={{ minWidth: 360, paddingBottom: modalMarginPadding }}
     >
       <NetworksSettings />
     </ModalBase>
@@ -97,7 +97,10 @@ const NetworkSettingsItem: FC<{ networkId: string }> = memo(({ networkId }) => {
   const n = getNetwork(networkId);
   if (!n) return null;
   return (
-    <TertiaryBox fullWidth mainContainerStyle={{ padding: layout.spacing_x1 }}>
+    <LegacyTertiaryBox
+      fullWidth
+      mainContainerStyle={{ padding: layout.spacing_x1 }}
+    >
       <TouchableOpacity
         onPress={() => {
           dispatch(toggleNetwork({ networkId }));
@@ -130,6 +133,6 @@ const NetworkSettingsItem: FC<{ networkId: string }> = memo(({ networkId }) => {
           value={state}
         />
       </TouchableOpacity>
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 });

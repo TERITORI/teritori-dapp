@@ -27,8 +27,8 @@ import { NFTInfo } from "../../utils/types/nft";
 import { BrandText } from "../BrandText";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { ActivityTable } from "../activity/ActivityTable";
-import { TertiaryBox } from "../boxes/TertiaryBox";
-import { NFTCancelListingCard } from "../cards/NFTCancelListingCard";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { NFTModifyListingCard } from "../cards/NFTModifyListingCard";
 import { NFTPriceBuyCard } from "../cards/NFTPriceBuyCard";
 import { NFTSellCard } from "../cards/NFTSellCard";
 import { CollapsableSection } from "../collapsable/CollapsableSection";
@@ -69,8 +69,20 @@ export const NFTMainInfo: React.FC<{
     price: string,
     denom: string | undefined,
   ) => Promise<string | undefined>;
-  cancelListing: () => Promise<string | undefined>;
-}> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
+  cancelListing: () => Promise<void>;
+  updatePrice: (newPrice: {
+    amount: string;
+    denom: string;
+  }) => void | Promise<void>;
+}> = ({
+  nftId,
+  nftInfo,
+  buy,
+  sell,
+  cancelListing,
+  showMarketplace,
+  updatePrice,
+}) => {
   const isMobile = useIsMobile();
   const { width } = useMaxResolution({ responsive: true, noMargin: true });
   if (isMobile) {
@@ -231,7 +243,7 @@ export const NFTMainInfo: React.FC<{
         }}
       >
         {/*---- Image NFT */}
-        <TertiaryBox
+        <LegacyTertiaryBox
           width={isMobile && width < 464 ? width : 464}
           height={isMobile && width < 464 ? width : 464}
           style={{
@@ -245,9 +257,14 @@ export const NFTMainInfo: React.FC<{
             size={isMobile && width < 464 ? width : 462}
             style={{ borderRadius: 8 }}
           />
-        </TertiaryBox>
+        </LegacyTertiaryBox>
         {/*---- Info NFT */}
-        <View style={{ maxWidth: isMobile && width < 600 ? width : 600 }}>
+        <View
+          style={{
+            maxWidth: isMobile && width < 600 ? width : 600,
+            width: "100%",
+          }}
+        >
           <BrandText style={[fontSemibold28, { marginBottom: 12 }]}>
             {nftInfo?.name}
           </BrandText>
@@ -274,10 +291,11 @@ export const NFTMainInfo: React.FC<{
                 />
               )}
               {nftInfo?.isListed && nftInfo.isOwner && (
-                <NFTCancelListingCard
+                <NFTModifyListingCard
                   nftInfo={nftInfo}
                   style={{ marginTop: 24, marginBottom: 40 }}
                   onPressCancel={cancelListing}
+                  onPressUpdatePrice={updatePrice}
                 />
               )}
               {!nftInfo?.isListed && !nftInfo?.isOwner && (

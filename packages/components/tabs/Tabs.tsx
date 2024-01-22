@@ -12,6 +12,7 @@ import {
   ViewStyle,
 } from "react-native";
 
+import { NetworkFeature, NetworkKind, UserKind } from "../../networks";
 import {
   gradientColorBlue,
   gradientColorDarkerBlue,
@@ -37,6 +38,9 @@ export interface TabDefinition {
   scrollTo?: string;
   iconSVG?: any;
   iconColor?: string;
+  networkKinds?: NetworkKind[];
+  networkFeatures?: NetworkFeature[];
+  userKinds?: UserKind[];
 }
 
 export const Tabs = <T extends { [key: string]: TabDefinition }>({

@@ -23,7 +23,7 @@ export enum PostCategory {
   Video,
 }
 
-export interface NewPostFormValues {
+export interface NewArticleFormValues {
   title: string;
   hashtags: string[];
   mentions: string[];
@@ -32,7 +32,17 @@ export interface NewPostFormValues {
   gifs?: string[];
   nftStorageApiToken?: string;
   thumbnailImage?: LocalFileData;
-  shortDescription: string;
+  coverImage?: LocalFileData;
+  shortDescription?: string;
+}
+
+export interface NewPostFormValues {
+  title: string;
+  hashtags: string[];
+  mentions: string[];
+  message: string;
+  files?: LocalFileData[];
+  gifs?: string[];
 }
 
 export interface PostResultExtra extends PostResult {
@@ -65,12 +75,16 @@ export const ZodSocialFeedArticleMetadata = z.object({
   title: z.string(),
   shortDescription: z.string(),
   thumbnailImage: ZodRemoteFileData.optional(),
+  coverImage: ZodRemoteFileData.optional(),
   message: z.string(),
   files: MaybeFiles.optional(),
   gifs: z.array(z.string()).optional(),
   hashtags: z.array(z.string()),
   mentions: z.array(z.string()),
 });
+export type SocialFeedArticleMetadata = z.infer<
+  typeof ZodSocialFeedArticleMetadata
+>;
 
 export const ZodSocialFeedTrackMetadata = z.object({
   title: z.string(),

@@ -14,7 +14,7 @@ import {
 import { layout } from "../../utils/style/layout";
 import { NFTInfo } from "../../utils/types/nft";
 import { BrandText } from "../BrandText";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 // TODO: Dynamic data + props
 
@@ -29,7 +29,7 @@ export const NFTAttributeCard: React.FC<{
   return (
     nftAttribute &&
     nftInfo && (
-      <TertiaryBox
+      <LegacyTertiaryBox
         height={92}
         width={isMobile && width < 380 ? 158 : 192}
         style={style}
@@ -103,7 +103,7 @@ export const NFTAttributeCard: React.FC<{
         >
           {nftAttribute.rareRatio.toFixed(2)}%
         </BrandText>
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     )
   );
 };

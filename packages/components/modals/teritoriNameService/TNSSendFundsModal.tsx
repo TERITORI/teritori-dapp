@@ -177,7 +177,7 @@ export const TNSSendFundsModal: React.FC<{
         <PrimaryButton
           size="M"
           text="Send"
-          style={{
+          boxStyle={{
             marginVertical: 20,
           }}
           fullWidth

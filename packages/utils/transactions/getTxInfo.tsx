@@ -17,7 +17,6 @@ import tnsWhiteSVG from "../../../assets/icons/tns-service_white.svg";
 import walletWhiteSVG from "../../../assets/icons/wallet_white.svg";
 import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
 import { BrandText } from "../../components/BrandText";
-import { ZodSocialFeedPostMetadata } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { SocialMessageContent } from "../../components/socialFeed/SocialCard/SocialMessageContent";
 import { SpacerColumn } from "../../components/spacer";
 import { Username } from "../../components/user/Username";
@@ -29,7 +28,6 @@ import {
 } from "../../networks";
 import { prettyPrice } from "../coins";
 import { AppNavigationProp } from "../navigation";
-import { zodTryParseJSON } from "../sanitize";
 import { neutral77 } from "../style/colors";
 import { fontSemibold14 } from "../style/fonts";
 import { tinyAddress } from "../text";
@@ -391,22 +389,12 @@ export const getTxInfo = (
         ) {
           icon = feedWhiteSVG;
           name = "Post on feed";
-          const metadata = zodTryParseJSON(
-            ZodSocialFeedPostMetadata,
-            execMsg.create_post.metadata,
-          );
           preview = () => {
             return (
               <View>
                 <BrandText>Post on social feed</BrandText>
                 <SpacerColumn size={2.5} />
-                {!!metadata && (
-                  <SocialMessageContent
-                    postCategory={execMsg.create_post.category}
-                    metadata={metadata}
-                    isPreview
-                  />
-                )}
+                <SocialMessageContent post={execMsg.create_post} isPreview />
               </View>
             );
           };

@@ -17,7 +17,7 @@ import {
 import { fontMedium14, fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
-import { TertiaryBox } from "../../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../../boxes/LegacyTertiaryBox";
 import { SpacerRow } from "../../spacer";
 
 export const CartIconButtonBadge: React.FC<{
@@ -40,7 +40,7 @@ export const CartIconButtonBadge: React.FC<{
   return selected.length > 0 ? (
     <View style={style}>
       <TouchableOpacity onPress={handleShowCart}>
-        <TertiaryBox
+        <LegacyTertiaryBox
           noBrokenCorners={isMobile}
           mainContainerStyle={{
             flexDirection: "row",
@@ -64,7 +64,7 @@ export const CartIconButtonBadge: React.FC<{
           >
             {selected.length}
           </BrandText>
-        </TertiaryBox>
+        </LegacyTertiaryBox>
       </TouchableOpacity>
     </View>
   ) : null;

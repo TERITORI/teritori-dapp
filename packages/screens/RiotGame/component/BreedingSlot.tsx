@@ -8,7 +8,7 @@ import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { OptimizedImage } from "../../../components/OptimizedImage";
 import { SVG } from "../../../components/SVG";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { isNFTStaked } from "../../../utils/game";
 import {
@@ -40,7 +40,7 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
   const imageSize = computedSize - layout.spacing_x2 * 2;
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
-      <TertiaryBox
+      <LegacyTertiaryBox
         width={computedSize}
         height={computedSize}
         mainContainerStyle={{
@@ -117,7 +117,7 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
             color={secondaryColor}
           />
         )}
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </TouchableOpacity>
   );
 };

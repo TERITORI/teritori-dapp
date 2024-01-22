@@ -153,6 +153,7 @@ message CollectionsRequest {
   bool upcoming = 6;
   string network_id = 7;
   MintState mint_state = 8;
+  optional int32 period_in_minutes = 9;
 }
 
 message CollectionStatsRequest {

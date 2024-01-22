@@ -241,11 +241,11 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
           placeHolder="0"
           currency={keplrCurrencyFromNativeCurrencyInfo(stakingCurrency)}
           defaultValue=""
-          rules={{ required: true, max: bondedTokens.toString() }}
+          rules={{ required: true, max: bondedTokens?.amount.toString() }}
         >
           <Pressable
             onPress={() =>
-              setValue("amount", bondedTokens.toString(), {
+              setValue("amount", bondedTokens?.amount.toString() || "0", {
                 shouldValidate: true,
               })
             }
@@ -259,8 +259,8 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
           Bonded tokens:{" "}
           {prettyPrice(
             networkId,
-            bondedTokens.atomics,
-            stakingCurrency?.denom || "",
+            bondedTokens?.amount.atomics,
+            bondedTokens?.currency.denom,
           )}
         </BrandText>
         <SpacerColumn size={2.5} />

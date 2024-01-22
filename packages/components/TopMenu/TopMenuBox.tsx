@@ -19,7 +19,7 @@ import { headerHeight, layout, topMenuWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import FlexCol from "../FlexCol";
 import { OmniLink } from "../OmniLink";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { Separator } from "../separators/Separator";
 
 export const TopMenuBox: FC<{
@@ -29,7 +29,7 @@ export const TopMenuBox: FC<{
   const { height: windowHeight } = useWindowDimensions();
 
   return (
-    <TertiaryBox
+    <LegacyTertiaryBox
       width={topMenuWidth}
       noBrokenCorners
       style={[style, { borderRadius: 8 }]}
@@ -57,7 +57,7 @@ export const TopMenuBox: FC<{
           </FlexCol>
         </OmniLink>
       </ScrollView>
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 };
 

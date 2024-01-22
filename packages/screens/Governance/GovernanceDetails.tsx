@@ -9,7 +9,7 @@ import { VictoryPie } from "victory";
 import { ProposalStatus } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ConfirmationVote } from "../../components/GovernanceBox/ConfirmationVote";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
@@ -403,7 +403,7 @@ export const GovernanceDetails: React.FC<{
         </View>
       </View>
 
-      <TertiaryBox
+      <LegacyTertiaryBox
         width={1240}
         height={196}
         style={{ right: "-0.5%", marginTop: 25 }}
@@ -606,12 +606,12 @@ export const GovernanceDetails: React.FC<{
           <PrimaryButton
             width={150}
             size="XL"
-            style={{ position: "absolute", left: 510, bottom: -40 }}
+            boxStyle={{ position: "absolute", left: 510, bottom: -40 }}
             text="Vote"
             onPress={() => activeVote()}
           />
         )}
-      </TertiaryBox>
+      </LegacyTertiaryBox>
 
       {activeConfirmationVotePopup()}
 

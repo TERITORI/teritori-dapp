@@ -10,7 +10,7 @@ import teritoriLogo from "../../../../../assets/icons/networks/teritori-circle.s
 import squidRouter from "../../../../../assets/icons/squidrouter.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
-import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../../../../components/boxes/LegacyTertiaryBox";
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import { GradientText } from "../../../../components/gradientText";
 import { SeparatorGradient } from "../../../../components/separators/SeparatorGradient";
@@ -32,7 +32,7 @@ export const HowToBuy: React.FC = () => {
   const isHowToBuyExpanded = useSelector(selectIsHowToBuyExpanded);
 
   return (
-    <TertiaryBox fullWidth style={{ maxWidth: 600, alignSelf: "center" }}>
+    <LegacyTertiaryBox fullWidth style={{ maxWidth: 600, alignSelf: "center" }}>
       <View style={{ width: "100%" }}>
         <View
           style={{
@@ -96,7 +96,7 @@ export const HowToBuy: React.FC = () => {
           </View>
         </View>
       </View>
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 };
 
@@ -174,7 +174,7 @@ const BuyingStep: React.FC<{ selectedMethod: string }> = ({
             website, you can do it there too.
           </Paragraph>
           <PrimaryButton
-            style={{
+            boxStyle={{
               alignSelf: "center",
               marginVertical: layout.spacing_x2_5,
             }}
@@ -220,7 +220,7 @@ const BuyingStep: React.FC<{ selectedMethod: string }> = ({
             Leap Wallet, you can download it on your phone or computer.
           </Paragraph>
           <PrimaryButton
-            style={{
+            boxStyle={{
               alignSelf: "center",
               marginVertical: layout.spacing_x2_5,
             }}
@@ -320,7 +320,7 @@ const BuyingMethod: React.FC<{
       }}
       onPress={() => setSelectedMethod(method.name)}
     >
-      <TertiaryBox
+      <LegacyTertiaryBox
         mainContainerStyle={{
           borderColor:
             method.name === selectedMethod ? primaryColor : secondaryColor,
@@ -339,7 +339,7 @@ const BuyingMethod: React.FC<{
         </BrandText>
 
         {method.icon}
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </TouchableOpacity>
   );
 };

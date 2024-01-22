@@ -1,6 +1,8 @@
 import { Decimal } from "@cosmjs/math";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { partition } from "lodash";
+import { z } from "zod";
 
 import { getCosmosNetwork, getStakingCurrency } from "../networks";
 import { ValidatorInfo } from "../screens/Stake/types";
@@ -19,6 +21,11 @@ const initialData = {
   inactiveValidators: [],
 };
 
+const zodCosmosPoolData = z.object({
+  bonded_tokens: z.string(),
+  not_bonded_tokens: z.string(),
+});
+
 export const useValidators = (networkId: string | undefined) => {
   const { data, isFetching } = useQuery(
     ["validators", networkId],
@@ -31,6 +38,14 @@ export const useValidators = (networkId: string | undefined) => {
       if (!stakingCurrency) {
         throw new Error("unknown staking currency");
       }
+      const poolDataRes = await axios.get(
+        `${network.restEndpoint}/cosmos/staking/v1beta1/pool`,
+      );
+      const poolData = zodCosmosPoolData.parse(poolDataRes.data.pool);
+      const bondedAprox = Decimal.fromAtomics(
+        poolData.bonded_tokens,
+        stakingCurrency.decimals,
+      ).toFloatApproximation();
       const httpResponse = await fetch(
         `${network.restEndpoint}/cosmos/staking/v1beta1/params`,
       );
@@ -48,19 +63,19 @@ export const useValidators = (networkId: string | undefined) => {
 
         validators.push(
           ...payload.validators.map((v: any, i: number) => {
+            const vpDecimal = Decimal.fromAtomics(
+              v.tokens,
+              stakingCurrency.decimals,
+            );
+            const vpApprox = vpDecimal.toFloatApproximation();
             const info: ValidatorInfo = {
               rank: `${i + 1}`,
               moniker: v.description.moniker,
               imageURL: v.imageURL,
               status: v.status,
               address: v.operator_address,
-              votingPower: Decimal.fromAtomics(
-                v.tokens,
-                stakingCurrency.decimals,
-              )
-                .toFloatApproximation()
-                .toFixed()
-                .toString(),
+              votingPower: vpApprox.toFixed().toString(),
+              votingPowerPercent: (vpApprox / bondedAprox) * 100,
               commission: prettyPercent(v.commission.commission_rates.rate),
               description: v.description.details,
               website: v.description.website,

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { getValueFor } from "../../../hooks/useMobileSecureStore";
 import { ScreenFC } from "../../../utils/navigation";

@@ -9,6 +9,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
+import Plausible from "plausible-tracker";
 import React, { memo, ReactNode, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Platform, Text, TextStyle, View } from "react-native";
@@ -47,6 +48,12 @@ import { linking } from "./packages/utils/navigation";
 
 const queryClient = new QueryClient();
 
+if (Platform.OS === "web") {
+  const plausible = Plausible({
+    domain: "app.teritori.com",
+  });
+  plausible.enableAutoPageviews();
+}
 // it's here just to fix a TS2589 error
 type DefaultForm = {
   novalue: string;
@@ -74,12 +81,10 @@ export default function App() {
   //   getAppType();
   // }, []);
 
-  // FIXME: Fonts don't load on electron
-  if (Platform.OS !== "web" && !fontsLoaded) {
-    return null;
-  }
-
   if (Platform.OS !== "web") {
+    if (!fontsLoaded) {
+      return null;
+    }
     AsyncStorage.setItem("app-type", "mini");
   }
 

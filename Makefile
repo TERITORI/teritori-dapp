@@ -17,6 +17,9 @@ RIOTER_FOOTER_PACKAGE=rioter-footer-nft
 VAULT_REPO=teritori-vault
 VAULT_PACKAGE=teritori-nft-vault
 
+ADDR_LIST_REPO=cw_addr_list
+ADDR_LIST_PACKAGE=cw-address-list
+
 CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
 DOCKER_REGISTRY=rg.nl-ams.scw.cloud/teritori
@@ -31,6 +34,11 @@ MULTISIG_DOCKER_IMAGE=$(DOCKER_REGISTRY)/cosmos-multisig-backend:$(shell git rev
 node_modules: package.json yarn.lock
 	yarn
 	touch $@
+
+.PHONY: go-mod-tidy
+go-mod-tidy:
+	go mod tidy
+	cd electron && go mod tidy
 
 .PHONY: generate
 generate: generate.protobuf generate.graphql generate.contracts-clients generate.go-networks networks.json
@@ -82,7 +90,7 @@ generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(
 
 .PHONY: generate.go-networks
 generate.go-networks: node_modules validate-networks
-	npx ts-node packages/scripts/generateGoNetworks.ts | gofmt > go/pkg/networks/networks.gen.go
+	npx tsx packages/scripts/generateGoNetworks.ts | gofmt > go/pkg/networks/networks.gen.go
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE): node_modules
@@ -208,6 +216,20 @@ $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
 	go fmt ./go/pkg/contracts/vault_types
 	rm -fr $(VAULT_REPO)
 
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(ADDR_LIST_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(ADDR_LIST_PACKAGE): node_modules
+	rm -fr $(ADDR_LIST_REPO)
+	git clone git@github.com:TERITORI/cw_addr_list.git
+	cd $(ADDR_LIST_REPO) && git checkout 01dad8e4ec2998c74145f7be0901630b3720787b
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(ADDR_LIST_REPO)/schema \
+		--out $@ \
+		--name $(ADDR_LIST_PACKAGE) \
+		--no-bundle
+	rm -fr $(ADDR_LIST_REPO)
+
 .PHONY: publish.backend
 publish.backend:
 	docker build -f go/cmd/teritori-dapp-backend/Dockerfile .  --platform linux/amd64 -t $(BACKEND_DOCKER_IMAGE)
@@ -251,16 +273,16 @@ publish.multisig-backend:
 
 .PHONY: validate-networks
 validate-networks: node_modules
-	npx ts-node packages/scripts/validateNetworks.ts
+	yarn validate-networks
 
 .PHONY: networks.json
 networks.json: node_modules validate-networks
-	npx ts-node packages/scripts/generateJSONNetworks.ts > $@
+	npx tsx packages/scripts/generateJSONNetworks.ts > $@
 
 .PHONY: unused-exports
 unused-exports: node_modules
 	## TODO unexclude all paths except packages/api;packages/contracts-clients;packages/evm-contracts-clients
-	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="app.config.ts;packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\.web|.native|.electron|.d.ts" --ignoreTestFiles 
+	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="app.config.ts;packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\.web|.native|.electron|.d.ts" --ignoreTestFiles
 
 .PHONY: prepare-electron
 prepare-electron: node_modules

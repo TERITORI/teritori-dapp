@@ -39,7 +39,6 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
       visible={visible}
       hideMainSeparator
       width={457}
-      noBrokenCorners
     >
       <ConnectKeplrButton onDone={onClose} />
       <SpacerColumn size={1.5} />
