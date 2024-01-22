@@ -41,6 +41,7 @@ import { osmosisTestnetNetwork } from "./osmosis-testnet";
 import { polygonNetwork } from "./polygon";
 import { polygonMumbaiNetwork } from "./polygon-mumbai";
 import { teritoriNetwork } from "./teritori";
+import { teritoriLocalnetNetwork } from "./teritori-localnet";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import {
   CosmosNetworkInfo,
@@ -62,6 +63,7 @@ const packageNetworks = [
   teritoriNetwork,
   cosmosNetwork,
   teritoriTestnetNetwork,
+  teritoriLocalnetNetwork,
   cosmosThetaNetwork,
   ethereumGoerliNetwork,
   ethereumNetwork,

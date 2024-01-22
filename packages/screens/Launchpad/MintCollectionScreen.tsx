@@ -19,6 +19,7 @@ import balanceSVG from "../../../assets/icons/balance.svg";
 import minusSVG from "../../../assets/icons/minus.svg";
 import plusSVG from "../../../assets/icons/plus.svg";
 import sigmaSVG from "../../../assets/icons/sigma.svg";
+import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
 import FlexRow from "../../components/FlexRow";
@@ -37,9 +38,11 @@ import {
   initialToastError,
   useFeedbacks,
 } from "../../context/FeedbacksProvider";
+import { useWalletControl } from "../../context/WalletControlProvider";
 import { Wallet } from "../../context/WalletsProvider";
 import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { useBalances } from "../../hooks/useBalances";
+import { useCanPay } from "../../hooks/useCanPay";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
@@ -52,6 +55,7 @@ import {
   getNativeCurrency,
   parseNetworkObjectId,
   getEthereumNetwork,
+  NetworkFeature,
 } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { MintPhase } from "../../utils/collection";
@@ -92,8 +96,8 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   },
 }) => {
   const { width: currentWidth } = useWindowDimensions();
-
   const wallet = useSelectedWallet();
+  const userId = wallet?.userId;
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
   const {
@@ -102,15 +106,31 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     refetch: refetchCollectionInfo,
   } = useCollectionInfo(id);
   const { setToastError } = useFeedbacks();
+  const { showConnectWalletModal, showNotEnoughFundsModal } =
+    useWalletControl();
   const [viewWidth, setViewWidth] = useState(0);
   const [network, mintAddress] = parseNetworkObjectId(id);
   const balances = useBalances(network?.id, wallet?.address);
   const balance = balances.find((bal) => bal.denom === info?.priceDenom);
-
   const [totalBulkMint, setTotalBulkMint] = useState(1);
-
+  const {
+    discord: discordLink,
+    twitter: twitterLink,
+    website: websiteLink,
+  } = info;
+  const hasLinks = discordLink || twitterLink || websiteLink;
+  const priceCurrency = getCurrency(network?.id, info.priceDenom);
+  const priceNativeCurrency = getNativeCurrency(network?.id, info.priceDenom);
+  const cost: Coin = useMemo(() => {
+    return {
+      amount: info.unitPrice || "0",
+      denom: info?.priceDenom || "",
+    };
+  }, [info.unitPrice, info?.priceDenom]);
+  const canPayForMint = useCanPay({ userId, cost });
+  const forceNetworkFeature = NetworkFeature.NFTLaunchpad;
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
-  const mintButtonDisabled = minted || !wallet?.connected;
+  const mintButtonDisabled = minted;
 
   const updateTotalBulkMint = (newTotalBulkMint: number | string) => {
     const numOnlyRegexp = new RegExp(/^\d+$/);
@@ -130,6 +150,17 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     }
 
     setTotalBulkMint(totalBulkMint);
+  };
+
+  const onPressDeposit = async () => {
+    if (!wallet?.address || !wallet.connected) {
+      showConnectWalletModal({
+        forceNetworkFeature,
+        action: "Mint this Collection",
+      });
+      return;
+    }
+    setDepositVisible(true);
   };
 
   const prettyError = (err: any) => {
@@ -239,6 +270,20 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
 
   const mint = useCallback(async () => {
     try {
+      if (!wallet?.address || !wallet.connected) {
+        showConnectWalletModal({
+          action: "Mint this Collection",
+          forceNetworkFeature,
+        });
+        return;
+      }
+      if (!canPayForMint) {
+        showNotEnoughFundsModal({
+          action: "Mint this Collection",
+          cost,
+        });
+        return;
+      }
       setToastError(initialToastError);
       if (!wallet) {
         setToastError({
@@ -274,7 +319,18 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
       }
       console.error(e);
     }
-  }, [cosmosMint, ethereumMint, network, setToastError, wallet]);
+  }, [
+    cost,
+    showConnectWalletModal,
+    forceNetworkFeature,
+    canPayForMint,
+    cosmosMint,
+    ethereumMint,
+    network,
+    setToastError,
+    wallet,
+    showNotEnoughFundsModal,
+  ]);
 
   const mintTermsConditionsURL = useMemo(() => {
     switch (mintAddress) {
@@ -290,16 +346,6 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   if (!info) {
     return <ScreenContainer noMargin />;
   }
-
-  const {
-    discord: discordLink,
-    twitter: twitterLink,
-    website: websiteLink,
-  } = info;
-  const hasLinks = discordLink || twitterLink || websiteLink;
-
-  const priceCurrency = getCurrency(network?.id, info.priceDenom);
-  const priceNativeCurrency = getNativeCurrency(network?.id, info.priceDenom);
 
   if (notFound) {
     return (
@@ -465,9 +511,9 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                       </BrandText>
                       <BrandText style={fontSemibold16}>
                         {prettyPrice(
-                          network?.id || "",
+                          network?.id,
                           balance?.amount || "0",
-                          balance?.denom || "",
+                          info.priceDenom,
                         )}
                       </BrandText>
                     </View>
@@ -560,7 +606,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                         width={150}
                         disabled={mintButtonDisabled}
                         loader
-                        onPress={() => setDepositVisible(true)}
+                        onPress={onPressDeposit}
                       />
                     )}
 
@@ -571,11 +617,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                         size="XL"
                         text="Mint"
                         width={priceCurrency?.kind === "ibc" ? 100 : 200}
-                        disabled={
-                          mintButtonDisabled ||
-                          parseInt(balance?.amount || "0", 10) <
-                            parseInt(info.unitPrice || "0", 10)
-                        }
+                        disabled={mintButtonDisabled}
                         loader
                         onPress={mint}
                       />

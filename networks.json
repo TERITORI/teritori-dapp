@@ -9371,9 +9371,85 @@
     "daoVotingCw4CodeId": 33
   },
   {
+    "id": "teritori-localnet",
+    "kind": "Cosmos",
+    "chainId": "testing",
+    "displayName": "Teritori Localnet",
+    "registryName": "teritorilocalnet",
+    "icon": "icons/networks/teritori.svg",
+    "features": [
+      "NFTMarketplace",
+      "Organizations",
+      "SocialFeed",
+      "UPP",
+      "NameService",
+      "BurnTokens",
+      "NFTLaunchpad",
+      "RiotP2E"
+    ],
+    "currencies": [
+      {
+        "denom": "utori",
+        "displayName": "TORI",
+        "decimals": 6,
+        "coingeckoId": "teritori",
+        "icon": "icons/networks/teritori-circle.svg",
+        "kind": "native",
+        "color": "#16BBFF"
+      }
+    ],
+    "txExplorer": "",
+    "accountExplorer": "",
+    "contractExplorer": "",
+    "idPrefix": "devtori",
+    "testnet": true,
+    "backendEndpoint": "",
+    "addressPrefix": "tori",
+    "restEndpoint": "http://localhost:1317",
+    "rpcEndpoint": "http://localhost:26657",
+    "stakeCurrency": "utori",
+    "gasPriceStep": {
+      "low": 0,
+      "average": 0.025,
+      "high": 0.04
+    },
+    "cosmosFeatures": [
+      "stargate",
+      "ibc-transfer",
+      "cosmwasm",
+      "no-legacy-stdTx",
+      "ibc-go"
+    ],
+    "nameServiceContractAddress": "",
+    "nameServiceDefaultImage": "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
+    "nameServiceTLD": ".tori",
+    "vaultContractAddress": "",
+    "riotContractAddressGen0": "",
+    "riotContractAddressGen1": "",
+    "riotSquadStakingContractAddressV1": "",
+    "riotSquadStakingContractAddressV2": "",
+    "distributorContractAddress": "",
+    "riotersFooterContractAddress": "",
+    "secondaryDuringMintList": [
+      "",
+      ""
+    ],
+    "excludeFromLaunchpadList": [
+      ""
+    ],
+    "socialFeedContractAddress": "",
+    "daoCoreCodeId": -1,
+    "daoPreProposeSingleCodeId": -1,
+    "daoProposalSingleCodeId": -1,
+    "daoCw4GroupCodeId": -1,
+    "daoVotingCw4CodeId": -1,
+    "daoFactoryCodeId": -1,
+    "daoFactoryContractAddress": ""
+  },
+  {
     "id": "teritori-testnet",
     "kind": "Cosmos",
-    "chainId": "teritori-test-5",
+    "chainId": "teritori-test-6",
     "displayName": "Teritori Testnet",
     "registryName": "teritoritestnet",
     "icon": "icons/networks/teritori.svg",
@@ -9430,7 +9506,7 @@
       "no-legacy-stdTx",
       "ibc-go"
     ],
-    "nameServiceContractAddress": "tori160wk6qdepxy99p79vgq4ue0stvz4sstxfcj5n9vq04h6gx6ydrwsy0a5fy",
+    "nameServiceContractAddress": "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys",
     "nameServiceDefaultImage": "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
     "nameServiceTLD": ".tori",
     "vaultContractAddress": "tori1da7gq3lv7v48fkq2w4jp0f0yg4v7rey3d92legs8e83mhuf3agyq2z7rr9",
@@ -9441,21 +9517,21 @@
     "distributorContractAddress": "",
     "riotersFooterContractAddress": "",
     "secondaryDuringMintList": [
-      "tori160wk6qdepxy99p79vgq4ue0stvz4sstxfcj5n9vq04h6gx6ydrwsy0a5fy",
+      "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys",
       "tori1pmevf373awn47wkdter246n4r8xgx4xld9hkfvxle9pf327rc4hq9uhm0k",
       ""
     ],
     "excludeFromLaunchpadList": [
       ""
     ],
-    "socialFeedContractAddress": "tori1fc7nakzuyfn2qzkclafcsc54asamnclg064962lwne40w2lq558q2ch5h9",
-    "daoCoreCodeId": 55,
-    "daoPreProposeSingleCodeId": 56,
-    "daoProposalSingleCodeId": 57,
-    "daoCw4GroupCodeId": 59,
-    "daoVotingCw4CodeId": 60,
-    "daoFactoryCodeId": 61,
-    "daoFactoryContractAddress": "tori1u3auh8k360v6mq3fujngdur5t2cf8l0eagfyfvxnk98zqhtlt39qk0eyvt"
+    "socialFeedContractAddress": "tori1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrqazuvxk",
+    "daoCoreCodeId": 4,
+    "daoPreProposeSingleCodeId": 5,
+    "daoProposalSingleCodeId": 6,
+    "daoCw4GroupCodeId": 7,
+    "daoVotingCw4CodeId": 8,
+    "daoFactoryCodeId": 9,
+    "daoFactoryContractAddress": "tori1s85asu5dckeelmgzrwqakxc8tc4gllutjq4uq3a4lwak2hfp9c3q4spguf"
   },
   {
     "id": "cosmos-registry:terpnettestnet",
