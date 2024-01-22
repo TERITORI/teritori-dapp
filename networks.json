@@ -3086,7 +3086,10 @@
     "kind": "Ethereum",
     "displayName": "Ethereum",
     "icon": "ethereum.svg",
-    "features": ["NFTMarketplace", "NFTLaunchpad"],
+    "features": [
+      "NFTMarketplace",
+      "NFTLaunchpad"
+    ],
     "currencies": [
       {
         "denom": "0x0000000000000000000000000000000000000000",
@@ -3116,7 +3119,10 @@
     "kind": "Ethereum",
     "displayName": "Ethereum Goerli",
     "icon": "ethereum.svg",
-    "features": ["NFTMarketplace", "NFTLaunchpad"],
+    "features": [
+      "NFTMarketplace",
+      "NFTLaunchpad"
+    ],
     "currencies": [
       {
         "denom": "0x0000000000000000000000000000000000000000",
@@ -3566,7 +3572,11 @@
     "kind": "Gno",
     "displayName": "Gno Dev",
     "icon": "gno.svg",
-    "features": ["Organizations", "SocialFeed", "UPP"],
+    "features": [
+      "Organizations",
+      "SocialFeed",
+      "UPP"
+    ],
     "currencies": [
       {
         "denom": "ugnot",
@@ -3606,7 +3616,11 @@
     "kind": "Gno",
     "displayName": "Gno Teritori",
     "icon": "gno.svg",
-    "features": ["Organizations", "SocialFeed", "UPP"],
+    "features": [
+      "Organizations",
+      "SocialFeed",
+      "UPP"
+    ],
     "currencies": [
       {
         "denom": "ugnot",
@@ -7044,7 +7058,9 @@
     "chainId": "osmosis-1",
     "displayName": "Osmosis",
     "icon": "osmosis.svg",
-    "features": ["Swap"],
+    "features": [
+      "Swap"
+    ],
     "overrides": "cosmos-registry:osmosis",
     "currencies": [
       {
@@ -7119,7 +7135,9 @@
     "overrides": "cosmos-registry:osmosistestnet",
     "displayName": "Osmosis Latest Testnet",
     "icon": "osmosis.svg",
-    "features": ["Swap"],
+    "features": [
+      "Swap"
+    ],
     "currencies": [
       {
         "denom": "uosmo",
@@ -9254,7 +9272,7 @@
     "chainId": "testing",
     "displayName": "Teritori Localnet",
     "registryName": "teritorilocalnet",
-    "icon": "teritori.svg",
+    "icon": "icons/networks/teritori.svg",
     "features": [
       "NFTMarketplace",
       "Organizations",
@@ -9271,7 +9289,7 @@
         "displayName": "TORI",
         "decimals": 6,
         "coingeckoId": "teritori",
-        "icon": "teritori-circle.svg",
+        "icon": "icons/networks/teritori-circle.svg",
         "kind": "native",
         "color": "#16BBFF"
       }
@@ -9308,8 +9326,13 @@
     "riotSquadStakingContractAddressV2": "",
     "distributorContractAddress": "",
     "riotersFooterContractAddress": "",
-    "secondaryDuringMintList": ["", ""],
-    "excludeFromLaunchpadList": [""],
+    "secondaryDuringMintList": [
+      "",
+      ""
+    ],
+    "excludeFromLaunchpadList": [
+      ""
+    ],
     "socialFeedContractAddress": "",
     "daoCoreCodeId": -1,
     "daoPreProposeSingleCodeId": -1,
@@ -9393,7 +9416,9 @@
       "tori160wk6qdepxy99p79vgq4ue0stvz4sstxfcj5n9vq04h6gx6ydrwsy0a5fy",
       ""
     ],
-    "excludeFromLaunchpadList": [""],
+    "excludeFromLaunchpadList": [
+      ""
+    ],
     "socialFeedContractAddress": "tori1fc7nakzuyfn2qzkclafcsc54asamnclg064962lwne40w2lq558q2ch5h9",
     "daoCoreCodeId": 55,
     "daoPreProposeSingleCodeId": 56,
