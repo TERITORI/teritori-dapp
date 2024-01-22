@@ -20,7 +20,6 @@ import {
   ZodSocialFeedVideoMetadata,
 } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { generatePostMetadata } from "../../../components/socialFeed/NewsFeed/NewsFeedQueries";
-import { NotEnoughFundModal } from "../../../components/socialFeed/NewsFeed/NotEnoughFundModal";
 import { DislikeButton } from "../../../components/socialFeed/SocialActions/DislikeButton";
 import { LikeButton } from "../../../components/socialFeed/SocialActions/LikeButton";
 import { ReportButton } from "../../../components/socialFeed/SocialActions/ReportButton";
@@ -113,13 +112,12 @@ export const FeedPostVideoView: FC<{
   const [replyTo, setReplyTo] = useState<ReplyToType>();
   const [newComment, setNewComment] = useState("");
   const [isCreateCommentLoading, setCreateCommentLoading] = useState(false);
-  const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const comments = useMemo(
     () => (commentsData ? combineFetchCommentPages(commentsData.pages) : []),
     [commentsData],
   );
 
-  const { makePost, canPayForPost, isProcessing } = useFeedPosting(
+  const { makePost, isProcessing } = useFeedPosting(
     networkId,
     wallet?.userId,
     PostCategory.Comment,
@@ -164,10 +162,6 @@ export const FeedPostVideoView: FC<{
   };
 
   const handleSubmitComment = async () => {
-    if (!canPayForPost) {
-      setNotEnoughFundModal(true);
-      return;
-    }
     setCreateCommentLoading(true);
     try {
       const hasUsername =
@@ -487,13 +481,6 @@ export const FeedPostVideoView: FC<{
           )}
         </View>
       </Animated.ScrollView>
-
-      {isNotEnoughFundModal && (
-        <NotEnoughFundModal
-          visible
-          onClose={() => setNotEnoughFundModal(false)}
-        />
-      )}
     </ScreenContainer>
   );
 };
