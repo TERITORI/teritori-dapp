@@ -72,13 +72,7 @@ export const MiniThread = ({
         <MusicPostTrackContent post={localPost} />
       ) : postMetadata ? (
         <>
-          <SocialMessageContent
-            authorId={localPost.authorId}
-            postId={localPost.identifier}
-            metadata={postMetadata}
-            postCategory={localPost.category}
-            isPreview={isPreview}
-          />
+          <SocialMessageContent post={localPost} isPreview={isPreview} />
         </>
       ) : null}
       <SpacerColumn size={1} />

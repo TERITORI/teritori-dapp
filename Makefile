@@ -35,11 +35,6 @@ node_modules: package.json yarn.lock
 	yarn
 	touch $@
 
-.PHONY: go-mod-tidy
-go-mod-tidy:
-	go mod tidy
-	cd electron && go mod tidy
-
 .PHONY: generate
 generate: generate.protobuf generate.graphql generate.contracts-clients generate.go-networks networks.json
 
@@ -90,7 +85,7 @@ generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(
 
 .PHONY: generate.go-networks
 generate.go-networks: node_modules validate-networks
-	npx tsx packages/scripts/generateGoNetworks.ts | gofmt > go/pkg/networks/networks.gen.go
+	npx ts-node packages/scripts/generateGoNetworks.ts | gofmt > go/pkg/networks/networks.gen.go
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE): node_modules
@@ -273,11 +268,11 @@ publish.multisig-backend:
 
 .PHONY: validate-networks
 validate-networks: node_modules
-	yarn validate-networks
+	npx ts-node packages/scripts/validateNetworks.ts
 
 .PHONY: networks.json
 networks.json: node_modules validate-networks
-	npx tsx packages/scripts/generateJSONNetworks.ts > $@
+	npx ts-node packages/scripts/generateJSONNetworks.ts > $@
 
 .PHONY: unused-exports
 unused-exports: node_modules

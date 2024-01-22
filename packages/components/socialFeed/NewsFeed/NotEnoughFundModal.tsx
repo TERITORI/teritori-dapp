@@ -2,6 +2,7 @@ import React from "react";
 import { View } from "react-native";
 
 import priceSVG from "../../../../assets/icons/price.svg";
+import { useAppType } from "../../../hooks/useAppType";
 import {
   errorColor,
   neutral11,
@@ -38,6 +39,7 @@ export const NotEnoughFundModal: React.FC<TNotEnoughFundModalProps> = ({
   onClose,
   visible,
 }) => {
+  const [appType] = useAppType();
   return (
     <ModalBase
       visible={visible}
@@ -52,7 +54,7 @@ export const NotEnoughFundModal: React.FC<TNotEnoughFundModalProps> = ({
           borderWidth: 1,
           borderColor: errorColor,
           position: "absolute",
-          top: -170,
+          top: appType === "mini" ? 0 : -170,
           left: 0,
           right: 0,
           paddingVertical: 12,
@@ -85,7 +87,14 @@ export const NotEnoughFundModal: React.FC<TNotEnoughFundModalProps> = ({
           </BrandText>
         </View>
       </View>
-      <View style={{ flex: 1, alignItems: "center", paddingBottom: 20 }}>
+      <View
+        style={{
+          ...(appType !== "mini" && { flex: 1 }),
+          alignItems: "center",
+          paddingBottom: 20,
+          ...(appType === "mini" && { marginTop: 100 }),
+        }}
+      >
         {DO_SOMETHING_BUTTONS.map((item) => (
           <SecondaryButton
             key={item.text}
