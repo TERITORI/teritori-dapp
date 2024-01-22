@@ -132,9 +132,9 @@ export const MiniArticlePostDetails = ({
       <Animated.ScrollView
         ref={aref}
         onScroll={scrollHandler}
-        // scrollEventThrottle={1}
+        scrollEventThrottle={1}
       >
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, width: windowWidth - 20 }}>
           <SocialCardWrapper post={localPost} refetchFeed={refetchPost}>
             {!!coverImage && (
               <>

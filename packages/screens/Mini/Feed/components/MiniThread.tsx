@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 
 import { PostActions } from "./PostActions";
 import { PostHeader } from "./PostHeader";
 import { Post } from "../../../../api/feed/v1/feed";
+import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import {
   PostCategory,
   ZodSocialFeedPostMetadata,
 } from "../../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { MusicPostTrackContent } from "../../../../components/socialFeed/SocialCard/MusicPostTrackContent";
+import { SocialCardWrapper } from "../../../../components/socialFeed/SocialCard/SocialCardWrapper";
 import { SocialMessageContent } from "../../../../components/socialFeed/SocialCard/SocialMessageContent";
 import { SpacerColumn } from "../../../../components/spacer";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
-import { parseUserId } from "../../../../networks";
+import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
+import { getNetworkObjectId, parseUserId } from "../../../../networks";
+import { useAppNavigation } from "../../../../utils/navigation";
 import { zodTryParseJSON } from "../../../../utils/sanitize";
 import { tinyAddress } from "../../../../utils/text";
 
@@ -32,9 +36,12 @@ export const MiniThread = ({
   isPreview,
   isFlagged,
 }: Props) => {
+  const navigation = useAppNavigation();
   const [localPost, setLocalPost] = useState<Post>(post);
   const [, authorAddress] = parseUserId(localPost.authorId);
   const authorNSInfo = useNSUserInfo(localPost.authorId);
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetworkId = selectedNetworkInfo?.id || "";
 
   const postMetadata = zodTryParseJSON(
     ZodSocialFeedPostMetadata,
@@ -58,25 +65,37 @@ export const MiniThread = ({
     DEFAULT_NAME;
 
   return (
-    <View>
-      <PostHeader
-        user={{
-          img: authorMetadata.image,
-          name,
-          username,
-          postedAt: post.createdAt,
+    <SocialCardWrapper
+      post={post}
+      refetchFeed={refetchFeed}
+      isFlagged={isFlagged}
+    >
+      <CustomPressable
+        onPress={() => {
+          navigation.navigate("MiniFeedDetails", {
+            id: getNetworkObjectId(selectedNetworkId, localPost.identifier),
+          });
         }}
-      />
-      <SpacerColumn size={1.5} />
-      {post.category === PostCategory.MusicAudio ? (
-        <MusicPostTrackContent post={localPost} />
-      ) : postMetadata ? (
-        <>
-          <SocialMessageContent post={localPost} isPreview={isPreview} />
-        </>
-      ) : null}
-      <SpacerColumn size={1} />
-      <PostActions post={localPost} setPost={setLocalPost} />
-    </View>
+      >
+        <PostHeader
+          user={{
+            img: authorMetadata.image,
+            name,
+            username,
+            postedAt: post.createdAt,
+          }}
+        />
+        <SpacerColumn size={1.5} />
+        {post.category === PostCategory.MusicAudio ? (
+          <MusicPostTrackContent post={localPost} />
+        ) : postMetadata ? (
+          <>
+            <SocialMessageContent post={localPost} isPreview={isPreview} />
+          </>
+        ) : null}
+        <SpacerColumn size={1} />
+        <PostActions post={localPost} setPost={setLocalPost} />
+      </CustomPressable>
+    </SocialCardWrapper>
   );
 };

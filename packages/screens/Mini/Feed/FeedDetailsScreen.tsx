@@ -3,6 +3,7 @@ import { SafeAreaView, View } from "react-native";
 
 import { Spinner } from "./components/Spinner";
 import { MiniArticlePostDetails } from "./components/detailView/MiniArticlePostDetails";
+import MiniDefaultPostDetails from "./components/detailView/MiniDefaultPostDetails";
 import { MiniVideoPostDetails } from "./components/detailView/MiniVideoPostDetails";
 import { BrandText } from "../../../components/BrandText";
 import { NotFound } from "../../../components/NotFound";
@@ -35,7 +36,7 @@ const FeedDetailsScreen: ScreenFC<"MiniFeedDetails"> = ({
     }
   }
   const networkId = network?.id;
-  const { post, isLoading, refetch } = usePost(postId, networkId);
+  const { post, isLoading, refetch, isFetching } = usePost(postId, networkId);
   const label = post?.category === PostCategory.Video ? "Video" : "Post";
 
   if (isLoading) {
@@ -96,9 +97,12 @@ const FeedDetailsScreen: ScreenFC<"MiniFeedDetails"> = ({
     );
   }
   return (
-    <SafeAreaView>
-      <BrandText>ALL - Defaults</BrandText>
-    </SafeAreaView>
+    <MiniDefaultPostDetails
+      networkId={networkId}
+      post={post}
+      refetchPost={refetch}
+      isLoading={isLoading || isFetching}
+    />
   );
 };
 

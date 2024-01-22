@@ -1,11 +1,12 @@
 import { ResizeMode } from "expo-av";
 import React, { useEffect, useState } from "react";
-import { StyleProp, View, ViewStyle, useWindowDimensions } from "react-native";
+import { StyleProp, ViewStyle, useWindowDimensions } from "react-native";
 
 import { PostActions } from "./PostActions";
 import { PostHeader } from "./PostHeader";
 import { Post } from "../../../../api/feed/v1/feed";
 import { BrandText } from "../../../../components/BrandText";
+import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { MediaPlayerVideo } from "../../../../components/mediaPlayer/MediaPlayerVideo";
 import {
   ZodSocialFeedPostMetadata,
@@ -13,7 +14,9 @@ import {
 } from "../../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn } from "../../../../components/spacer";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
-import { parseUserId } from "../../../../networks";
+import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
+import { getNetworkObjectId, parseUserId } from "../../../../networks";
+import { useAppNavigation } from "../../../../utils/navigation";
 import { zodTryParseJSON } from "../../../../utils/sanitize";
 import { errorColor, neutralA3 } from "../../../../utils/style/colors";
 import {
@@ -33,6 +36,9 @@ type Props = {
 export const DEFAULT_NAME = "Anon";
 
 export const MiniVideo = ({ post, refetchFeed, style }: Props) => {
+  const navigation = useAppNavigation();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetworkId = selectedNetworkInfo?.id || "";
   const [localPost, setLocalPost] = useState<Post>(post);
   const { width: windowWidth } = useWindowDimensions();
   const [, authorAddress] = parseUserId(localPost.authorId);
@@ -66,7 +72,13 @@ export const MiniVideo = ({ post, refetchFeed, style }: Props) => {
     DEFAULT_NAME;
 
   return (
-    <View>
+    <CustomPressable
+      onPress={() => {
+        navigation.navigate("MiniFeedDetails", {
+          id: getNetworkObjectId(selectedNetworkId, localPost.identifier),
+        });
+      }}
+    >
       <PostHeader
         user={{
           img: authorMetadata.image,
@@ -115,6 +127,6 @@ export const MiniVideo = ({ post, refetchFeed, style }: Props) => {
 
       <SpacerColumn size={1.5} />
       <PostActions post={localPost} setPost={setLocalPost} />
-    </View>
+    </CustomPressable>
   );
 };
