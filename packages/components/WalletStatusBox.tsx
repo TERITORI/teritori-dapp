@@ -49,7 +49,7 @@ export const WalletStatusBox: React.FC = () => {
               <BrandText style={[fontSemibold13]}>
                 {tinyAddress(
                   selectedWallet.address,
-                  width < RESPONSIVE_BREAKPOINT_S ? 20 : 40,
+                  width < RESPONSIVE_BREAKPOINT_S ? 20 : 36,
                 )}
               </BrandText>
             </View>
