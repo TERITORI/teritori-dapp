@@ -5,7 +5,7 @@ import { getValueFor, remove, save } from "../../../hooks/useMobileSecureStore";
 export const useNativeWallet = async () => {
   const wallet = getWalletFromMnemonic({
     mnemonic: getMnemonic(),
-    token: "tori",
+    token: "TORI", //has to be all caps for TORI
   });
   if (!wallet) {
     throw new Error("wallet not found");
@@ -13,12 +13,12 @@ export const useNativeWallet = async () => {
   return wallet;
 };
 
-export const getMnemonic = async (index?: 0) => {
-  const mnemonic = await getValueFor(`mnemonic-${index}`);
-  if (!mnemonic) {
-    throw new Error("mnemonic not found");
-  }
-  return mnemonic;
+export const getMnemonic = (index?: 0) => {
+  return getValueFor(`mnemonic-${index}`)
+    .then((res) => res)
+    .catch((e) => {
+      throw new Error(`failed to get mnemonic ${e}`);
+    });
 };
 
 export const setMnemonic = async (mnemonic: string, index?: 0) => {

@@ -9,7 +9,7 @@ export const ViewSeed: ScreenFC<"ViewSeed"> = () => {
   const { wrapWithFeedback } = useFeedbacks();
 
   const createWallet = async () => {
-    const fromStorage = await getValueFor("wallet");
+    const fromStorage = await getValueFor("mnemonic");
     let mnemonic = "";
     if (fromStorage) {
       mnemonic = fromStorage;
