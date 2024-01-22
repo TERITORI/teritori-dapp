@@ -6,7 +6,7 @@ import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
 import { useBalances } from "../../hooks/useBalances";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getCurrency, getNativeCurrency } from "../../networks";
+import { getCurrency, getNativeCurrency, getNetwork } from "../../networks";
 import { DepositWithdrawModal } from "../../screens/WalletManager/components/DepositWithdrawModal";
 import { prettyPrice } from "../../utils/coins";
 import { neutral77 } from "../../utils/style/colors";
@@ -35,24 +35,25 @@ export const NotEnoughFundsModal: FC<{
   const costBalance = balances.find((bal) => bal.denom === cost?.denom);
   const currency = getCurrency(selectedNetwork?.id, cost?.denom);
   const nativeCurrency = getNativeCurrency(selectedNetwork?.id, cost?.denom);
+  const originNetwork =
+    currency?.kind === "ibc" ? getNetwork(currency.sourceNetwork) : undefined;
   const [isDepositModalVisible, setDepositModalVisible] = useState(false);
 
-  const doSomethingButtons: DoSomethingButton[] =
-    currency?.kind === "ibc"
-      ? [
-          {
-            text: `Deposit ${
-              nativeCurrency ? nativeCurrency.displayName : "tokens"
-            }`,
-            onPress: () => setDepositModalVisible(true),
-          },
-        ]
-      : [
-          {
-            text: "Add funds with card",
-            onPress: () => Linking.openURL("https://app.kado.money/"),
-          },
-        ];
+  const doSomethingButtons: DoSomethingButton[] = [
+    {
+      text: "Swap on Squid",
+      onPress: () => {
+        const url = `https://app.squidrouter.com/?chains=1%2C${selectedNetwork?.chainId}&tokens=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48%2C${cost?.denom}`;
+        Linking.openURL(url);
+      },
+    },
+  ];
+  if (currency?.kind === "ibc") {
+    doSomethingButtons.push({
+      text: `Deposit from ${originNetwork?.displayName || "Unknown"}`,
+      onPress: () => setDepositModalVisible(true),
+    });
+  }
 
   return (
     <>
