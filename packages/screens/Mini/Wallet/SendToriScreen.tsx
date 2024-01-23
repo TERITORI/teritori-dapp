@@ -2,7 +2,6 @@ import { useState } from "react";
 import { View } from "react-native";
 
 import questionSVG from "../../../../assets/icons/question-gray.svg";
-import teritoriSVG from "../../../../assets/icons/teritori-white.svg";
 import { BrandText } from "../../../components/BrandText";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
@@ -51,7 +50,7 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation, route }) => {
   if (!selectedToken) {
     return null;
   }
-  console.log("denom", denom, selectedToken);
+
   return (
     <BlurScreenContainer title="Send TORI" onGoBack={goBackTo}>
       <SpacerColumn size={2} />
@@ -64,7 +63,7 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation, route }) => {
       >
         <CircularImgOrIcon
           style={{ alignItems: "center", justifyContent: "center" }}
-          icon={selectedToken?.logo_URIs?.png || questionSVG}
+          icon={selectedToken?.logo_URIs?.svg || questionSVG}
         />
       </View>
       <SpacerColumn size={2} />
@@ -131,7 +130,12 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation, route }) => {
         <CustomButton
           title="Next"
           onPress={() =>
-            navigation.replace("MiniSendingTori", { back: "MiniSendTori" })
+            navigation.replace("MiniSendingTori", {
+              back: "MiniSendTori",
+              amount,
+              denom,
+              address,
+            })
           }
         />
       </View>
