@@ -1,26 +1,25 @@
 import React, { useState } from "react";
-import { View, ViewStyle, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
-import { ProgressLine } from "../../../components/ProgressLine";
 import { ScreenContainer } from "../../../components/ScreenContainer";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
-import { Metadata } from "../../../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { ScreenFC } from "../../../utils/navigation";
-import { neutral00, neutral77 } from "../../../utils/style/colors";
-import { fontSemibold16, fontSemibold28 } from "../../../utils/style/fonts";
+import { neutral77, neutralA3 } from "../../../utils/style/colors";
+import {
+  fontMedium16,
+  fontSemibold16,
+  fontSemibold28,
+} from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import CustomAppBar from "../../Mini/components/AppBar/CustomAppBar";
+import MiniTextInput from "../../Mini/components/MiniTextInput";
 import { AcceptAndNavigate } from "../layout/AcceptAndNavigate";
 
-// This component has already been made in mini -> ledger -> components -> CreatePassword
-export const CreatePassword: ScreenFC<"CreatePassword"> = () => {
+export const CreatePasswordWallet: ScreenFC<"CreatePasswordWallet"> = () => {
   const { width } = useWindowDimensions();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  const inputStyle: ViewStyle = { marginBottom: 12, width: "100%" };
 
   return (
     <ScreenContainer
@@ -39,10 +38,6 @@ export const CreatePassword: ScreenFC<"CreatePassword"> = () => {
         }}
       >
         <View>
-          <ProgressLine percent={75} width={width} style={{ width: "100%" }} />
-
-          <SpacerColumn size={5.6} />
-
           <BrandText
             style={[fontSemibold28, { marginBottom: layout.spacing_x1_5 }]}
           >
@@ -57,36 +52,50 @@ export const CreatePassword: ScreenFC<"CreatePassword"> = () => {
             This will be used to unlock your wallet.
           </BrandText>
 
-          <TextInputCustom<Metadata>
-            name="password"
-            style={inputStyle}
-            label="Password"
-            placeHolder="Password"
+          <MiniTextInput
             value={password}
-            textContentType="newPassword"
-            autoComplete="off"
             onChangeText={setPassword}
-            squaresBackgroundColor={neutral00}
-          />
-          <TextInputCustom<Metadata>
-            name="confirm-password"
-            style={inputStyle}
-            label="Password"
-            placeHolder="Confirm Password"
-            value={confirmPassword}
-            textContentType="newPassword"
+            placeholder="Password"
             autoComplete="off"
             autoCapitalize="none"
+            secureTextEntry
+          />
+
+          <SpacerColumn size={1.5} />
+
+          <MiniTextInput
+            value={confirmPassword}
             onChangeText={setConfirmPassword}
-            squaresBackgroundColor={neutral00}
+            placeholder="Confirm Password"
+            autoComplete="off"
+            autoCapitalize="none"
+            secureTextEntry
           />
         </View>
         {password === confirmPassword &&
           password.length > 0 &&
           confirmPassword.length > 0 && (
             <AcceptAndNavigate
-              buttonText="Save"
-              label="I agree to the Terms of Service."
+              buttonText="Save Password"
+              label={
+                <BrandText
+                  style={[fontMedium16, { color: neutralA3, lineHeight: 22 }]}
+                >
+                  I agree to the{" "}
+                  <BrandText
+                    style={[
+                      fontMedium16,
+                      {
+                        color: neutralA3,
+                        lineHeight: 22,
+                        textDecorationLine: "underline",
+                      },
+                    ]}
+                  >
+                    Terms of Service.
+                  </BrandText>
+                </BrandText>
+              }
               value="terms&service"
               navigateTo="SuccessScreen"
             />

@@ -3,27 +3,37 @@ import {
   DimensionValue,
   GestureResponderEvent,
   StyleProp,
+  TextStyle,
   ViewStyle,
 } from "react-native";
 
 import { BrandText } from "../../../../components/BrandText";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import {
+  AppNavigationProp,
+  useAppNavigation,
+} from "../../../../utils/navigation";
+import {
   blueDefault,
   dangerColor,
   neutral33,
+  neutral39,
 } from "../../../../utils/style/colors";
 import { fontSemibold15 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 
 type Props = {
-  onPress: (event: GestureResponderEvent) => void;
+  onPress: (
+    event: GestureResponderEvent,
+    navigation: AppNavigationProp,
+  ) => void;
   title?: string;
   children?: ReactNode;
   isDisabled?: boolean;
-  type?: "primary" | "danger" | "gray";
+  type?: "primary" | "danger" | "gray" | "outline";
   size?: "normal" | "medium" | "small";
   style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
   width?: DimensionValue;
 };
 
@@ -34,9 +44,12 @@ export const CustomButton = ({
   isDisabled,
   type = "primary",
   style,
+  textStyle,
   size = "normal",
   width,
 }: Props) => {
+  const navigation = useAppNavigation();
+
   const getbgColor = () => {
     switch (type) {
       case "danger":
@@ -45,6 +58,8 @@ export const CustomButton = ({
         return blueDefault;
       case "gray":
         return neutral33;
+      case "outline":
+        return "transparent";
       default:
         return blueDefault;
     }
@@ -78,7 +93,7 @@ export const CustomButton = ({
 
   return (
     <CustomPressable
-      onPress={onPress}
+      onPress={(event) => onPress(event, navigation)}
       style={[
         {
           backgroundColor: getbgColor(),
@@ -89,13 +104,15 @@ export const CustomButton = ({
           width: width ?? "100%",
           alignItems: "center",
           justifyContent: "center",
+          borderWidth: type === "outline" ? 1 : 0,
+          borderColor: type === "outline" ? neutral39 : "",
         },
         style,
       ]}
       disabled={isDisabled}
     >
       {children || (
-        <BrandText style={[fontSemibold15, { textAlign: "center" }]}>
+        <BrandText style={[fontSemibold15, { textAlign: "center" }, textStyle]}>
           {title}
         </BrandText>
       )}

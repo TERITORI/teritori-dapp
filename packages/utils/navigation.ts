@@ -82,6 +82,7 @@ export type RootStackParamList = {
   ViewSeed: undefined;
   ImportWallet: undefined;
   CreatePassword: undefined;
+  CreatePasswordWallet: undefined;
   SuccessScreen: undefined;
 
   //Mini Screens
@@ -126,6 +127,7 @@ export type RootStackParamList = {
   };
   MiniTransactionDetail: { type: string; transactionId: string };
   ConnectLedger: undefined;
+  CreateWallet: undefined;
   MiniFeedDetails: { id: string };
 };
 
@@ -224,6 +226,7 @@ const navConfig: {
     ViewSeed: "native-wallet/view-seed",
     ImportWallet: "native-wallet/import",
     CreatePassword: "native-wallet/create-password",
+    CreatePasswordWallet: "native-wallet/create-password-wallet",
     SuccessScreen: "native-wallet/success",
 
     // ==== Mini nav
@@ -263,6 +266,7 @@ const navConfig: {
     MiniSendingTori: "mini-sending-tori",
     MiniTransactionDetail: "mini-transaction-detail",
     ConnectLedger: "connect-ledger",
+    CreateWallet: "create-wallet",
     MiniFeedDetails: "mini-feed-details",
   },
 };

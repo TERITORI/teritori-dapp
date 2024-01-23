@@ -1,24 +1,18 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { View } from "react-native";
-import { Checkbox } from "react-native-paper";
 
-import { BrandText } from "../../../components/BrandText";
 import { RouteName } from "../../../utils/navigation";
-import {
-  neutral15,
-  neutral17,
-  neutral44,
-  neutralA3,
-} from "../../../utils/style/colors";
-import { fontSemibold16 } from "../../../utils/style/fonts";
+import { neutral22, neutralA3 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
-import { Button } from "../components/Button";
+import { CustomButton } from "../../Mini/components/Button/CustomButton";
+import Checkbox from "../../Mini/components/checkbox/Checkbox";
 
 export const AcceptAndNavigate: React.FC<{
   buttonText: string;
-  text: string;
+  label: string | ReactNode;
+  value: string;
   navigateTo: RouteName;
-}> = ({ buttonText, text, navigateTo }) => {
+}> = ({ buttonText, label, value, navigateTo }) => {
   const [checked, setChecked] = useState(false);
 
   return (
@@ -31,41 +25,22 @@ export const AcceptAndNavigate: React.FC<{
         alignItems: "center",
       }}
     >
-      <View
-        style={{
-          width: "100%",
-          height: 80,
-          backgroundColor: neutral15,
-          justifyContent: "center",
+      <Checkbox
+        type="circle"
+        isChecked={checked}
+        onPress={(isChecked, _) => setChecked(!isChecked)}
+        label={label}
+        value={value}
+        size="md"
+        labelStyle={[{ color: neutralA3, lineHeight: 22, flex: 1 }]}
+        wrapperStyle={{
           alignItems: "center",
-          flexDirection: "row",
-          flexWrap: "nowrap",
-          borderRadius: 10,
-          gap: 12,
-          paddingVertical: 8,
-          paddingHorizontal: 16,
+          borderRadius: layout.borderRadius,
+          backgroundColor: neutral22,
+          paddingVertical: layout.spacing_x1,
+          paddingHorizontal: layout.spacing_x2,
         }}
-      >
-        <View
-          style={{
-            borderRadius: 32,
-            borderWidth: 1,
-            borderColor: neutralA3,
-            backgroundColor: neutral17,
-          }}
-        >
-          <Checkbox
-            status={checked ? "checked" : "unchecked"}
-            onPress={() => {
-              setChecked(!checked);
-            }}
-            color="#007AFF"
-            uncheckedColor={neutral44}
-          />
-        </View>
-
-        <BrandText style={[fontSemibold16]}>{text}</BrandText>
-      </View>
+      />
       <View
         style={{
           width: "100%",
@@ -74,7 +49,12 @@ export const AcceptAndNavigate: React.FC<{
           alignItems: "center",
         }}
       >
-        <Button disabled={!checked} text={buttonText} navigateTo={navigateTo} />
+        <CustomButton
+          isDisabled={!checked}
+          title={buttonText}
+          textStyle={{ textTransform: "uppercase" }}
+          onPress={(_, navigation) => navigation.replace(navigateTo)}
+        />
       </View>
     </View>
   );
