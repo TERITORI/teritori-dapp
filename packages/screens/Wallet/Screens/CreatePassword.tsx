@@ -86,7 +86,8 @@ export const CreatePassword: ScreenFC<"CreatePassword"> = () => {
           confirmPassword.length > 0 && (
             <AcceptAndNavigate
               buttonText="Save"
-              text="I agree to the Terms of Service."
+              label="I agree to the Terms of Service."
+              value="terms&service"
               navigateTo="SuccessScreen"
             />
           )}
