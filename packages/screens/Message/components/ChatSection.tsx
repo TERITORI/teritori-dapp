@@ -114,11 +114,10 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
     if (!searchInput) {
       return [];
     }
-    return messages.filter(
-      (item) =>
-        item?.payload?.message
-          ?.toLowerCase()
-          .includes(searchInput?.toLowerCase()),
+    return messages.filter((item) =>
+      item?.payload?.message
+        ?.toLowerCase()
+        .includes(searchInput?.toLowerCase()),
     );
   }, [messages, searchInput]);
 

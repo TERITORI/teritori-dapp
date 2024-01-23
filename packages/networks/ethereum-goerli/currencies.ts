@@ -7,7 +7,7 @@ export const ethereumGoerliCurrencies: CurrencyInfo[] = [
     displayName: "GoerliETH",
     decimals: 18,
     coingeckoId: "ethereum",
-    icon: "icons/networks/ethereum-circle.svg",
+    icon: "ethereum-circle.svg",
     kind: "native",
     color: currencyETHcolor,
   },

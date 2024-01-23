@@ -83,7 +83,7 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
           style,
         ]}
       >
-        {iconSVG && (
+        {!!iconSVG && (
           <SVG
             style={{ marginRight: layout.spacing_x1 }}
             height={layout.spacing_x2}
