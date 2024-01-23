@@ -114,7 +114,6 @@ export const NFTView: React.FC<{
 
 const NFTViewContent: React.FC<{
   nft: NFT;
-
   mobileMode: boolean;
   localSelected: boolean;
 }> = memo(({ nft, mobileMode, localSelected }) => {
