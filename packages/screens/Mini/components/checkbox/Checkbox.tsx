@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { StyleProp, TextStyle, View, ViewStyle } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -25,7 +26,7 @@ type CheckboxProp = {
   checkboxColor?: string;
   labelStyle?: StyleProp<TextStyle>;
   checkboxStyle?: StyleProp<ViewStyle>;
-  label?: string;
+  label?: string | ReactNode;
 };
 
 const Checkbox = ({
@@ -98,11 +99,15 @@ const Checkbox = ({
           <>
             <SpacerRow size={1.4} />
 
-            <BrandText
-              style={[fontMedium16, { color: secondaryColor }, labelStyle]}
-            >
-              {label}
-            </BrandText>
+            {typeof label === "string" ? (
+              <BrandText
+                style={[fontMedium16, { color: secondaryColor }, labelStyle]}
+              >
+                {label}
+              </BrandText>
+            ) : (
+              label
+            )}
           </>
         )}
       </View>

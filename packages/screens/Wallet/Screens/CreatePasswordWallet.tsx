@@ -5,8 +5,12 @@ import { BrandText } from "../../../components/BrandText";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
-import { neutral77 } from "../../../utils/style/colors";
-import { fontSemibold16, fontSemibold28 } from "../../../utils/style/fonts";
+import { neutral77, neutralA3 } from "../../../utils/style/colors";
+import {
+  fontMedium16,
+  fontSemibold16,
+  fontSemibold28,
+} from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import CustomAppBar from "../../Mini/components/AppBar/CustomAppBar";
 import MiniTextInput from "../../Mini/components/MiniTextInput";
@@ -73,7 +77,26 @@ export const CreatePasswordWallet: ScreenFC<"CreatePasswordWallet"> = () => {
           confirmPassword.length > 0 && (
             <AcceptAndNavigate
               buttonText="Save Password"
-              text="I agree to the Terms of Service."
+              label={
+                <BrandText
+                  style={[fontMedium16, { color: neutralA3, lineHeight: 22 }]}
+                >
+                  I agree to the{" "}
+                  <BrandText
+                    style={[
+                      fontMedium16,
+                      {
+                        color: neutralA3,
+                        lineHeight: 22,
+                        textDecorationLine: "underline",
+                      },
+                    ]}
+                  >
+                    Terms of Service.
+                  </BrandText>
+                </BrandText>
+              }
+              value="terms&service"
               navigateTo="SuccessScreen"
             />
           )}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { View } from "react-native";
 
 import { RouteName } from "../../../utils/navigation";
@@ -9,9 +9,10 @@ import Checkbox from "../../Mini/components/checkbox/Checkbox";
 
 export const AcceptAndNavigate: React.FC<{
   buttonText: string;
-  text: string;
+  label: string | ReactNode;
+  value: string;
   navigateTo: RouteName;
-}> = ({ buttonText, text, navigateTo }) => {
+}> = ({ buttonText, label, value, navigateTo }) => {
   const [checked, setChecked] = useState(false);
 
   return (
@@ -28,8 +29,8 @@ export const AcceptAndNavigate: React.FC<{
         type="circle"
         isChecked={checked}
         onPress={(isChecked, _) => setChecked(!isChecked)}
-        label={text}
-        value={text}
+        label={label}
+        value={value}
         size="md"
         labelStyle={[{ color: neutralA3, lineHeight: 22, flex: 1 }]}
         wrapperStyle={{

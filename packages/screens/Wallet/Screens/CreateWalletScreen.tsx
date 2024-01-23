@@ -127,7 +127,9 @@ export const CreateWalletScreen: ScreenFC<"CreateWallet"> = ({
           />
           <SpacerColumn size={2} />
           <CustomButton
-            onPress={(_, navigation) => navigation.navigate("CreatePassword")}
+            onPress={(_, navigation) =>
+              navigation.navigate("CreatePasswordWallet")
+            }
             textStyle={{ textTransform: "uppercase" }}
             title="Next"
             isDisabled={!isChecked}
