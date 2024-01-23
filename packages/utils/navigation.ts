@@ -115,9 +115,9 @@ const navConfig: {
     RiotersFooter: "rioters-footer",
     AdministrationDashboard: "launchpad/admin",
     LaunchpadApplications: "launchpad/applications",
-    ApplicationReview: "launchpad/applicationReview",
-    ReadyLaunchpadApplications: "launchpad/readyAapplications",
-    AllProjectAdministrationDash: "launchpad/AllAapplications",
+    ApplicationReview: "launchpad/application-review",
+    ReadyLaunchpadApplications: "launchpad/ready-applications",
+    AllProjectAdministrationDash: "launchpad/all-applications",
     // === RiotGame
     RiotGame: "riot-game",
     RiotGameEnroll: "riot-game/enroll",

@@ -1,12 +1,7 @@
 import React from "react";
-import {
-  Image,
-  TouchableOpacity,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 
-import guardianPng from "../../../../assets/default-images/guardian_1.png";
+import { CarousleHero } from "./CarousleHero";
 import penSVG from "../../../../assets/icons/pen.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
@@ -23,21 +18,23 @@ import {
 import { layout } from "../../../utils/style/layout";
 
 const MD_BREAKPOINT = 820;
+const LG_BREAKPOINT = 1200;
 type Props = { setIsEditHighlighted: (val: boolean) => void };
 
 export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
   const navigation = useAppNavigation();
   const { width } = useWindowDimensions();
+  const isBreakPoint = width >= MD_BREAKPOINT;
 
   return (
     <View
       style={{
         marginVertical: 32,
-        flexDirection: width >= MD_BREAKPOINT ? "row" : "column",
+        flexDirection: isBreakPoint ? "row" : "column",
         justifyContent: "space-between",
       }}
     >
-      <View style={{ flex: 1 }}>
+      <View style={{ width: isBreakPoint ? "15%" : "100%", marginBottom: 16 }}>
         <TouchableOpacity
           onPress={() => setIsEditHighlighted(true)}
           style={{ alignSelf: "flex-start" }}
@@ -65,22 +62,17 @@ export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
       </View>
       <View
         style={{
-          flex: 5,
-          flexDirection: width >= MD_BREAKPOINT ? "row" : "column",
+          flex: 1,
+          flexDirection: isBreakPoint ? "row" : "column",
           alignItems: "center",
           justifyContent: "space-between",
         }}
       >
-        <View style={{ flex: 1 }}>
+        <View style={[isBreakPoint ? { flex: 1.5 } : { marginVertical: 16 }]}>
           <BrandText style={fontSemibold24}>Genesis Guardians</BrandText>
           <GradientText
             gradientType="blueExtended"
-            style={[
-              fontSemibold14,
-              {
-                marginTop: 10,
-              },
-            ]}
+            style={[fontSemibold14, { marginTop: 10 }]}
           >
             EXCLUSIVE GENESIS TERITORI COLLECTION
           </GradientText>
@@ -104,16 +96,8 @@ export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
             </SecondaryBox>
           </TouchableOpacity>
         </View>
-        <View style={{ marginRight: layout.spacing_x4, flex: 2 }}>
-          <Image
-            style={{
-              width: 524,
-              height: 524,
-              borderRadius: 12,
-            }}
-            source={guardianPng}
-          />
-        </View>
+        <CarousleHero />
+        {width >= LG_BREAKPOINT && <View style={{ flex: 1 }} />}
       </View>
     </View>
   );

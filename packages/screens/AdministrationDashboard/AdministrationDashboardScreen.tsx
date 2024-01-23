@@ -108,11 +108,7 @@ export const AdministrationDashboardScreen: React.FC = () => {
       responsive
       onBackPress={() => navigation.goBack()}
     >
-      <View
-        style={{
-          marginTop: layout.spacing_x4,
-        }}
-      >
+      <View style={{ marginTop: layout.spacing_x4 }}>
         <View
           style={{
             flexDirection: "row",
