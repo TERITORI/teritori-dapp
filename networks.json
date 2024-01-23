@@ -9509,8 +9509,8 @@
     "nameServiceContractAddress": "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys",
     "nameServiceDefaultImage": "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
     "nameServiceTLD": ".tori",
-    "vaultContractAddress": "tori1da7gq3lv7v48fkq2w4jp0f0yg4v7rey3d92legs8e83mhuf3agyq2z7rr9",
-    "riotContractAddressGen0": "tori1pmevf373awn47wkdter246n4r8xgx4xld9hkfvxle9pf327rc4hq9uhm0k",
+    "vaultContractAddress": "tori17p9rzwnnfxcjp32un9ug7yhhzgtkhvl9jfksztgw5uh69wac2pgs9ezf0j",
+    "riotContractAddressGen0": "",
     "riotContractAddressGen1": "",
     "riotSquadStakingContractAddressV1": "",
     "riotSquadStakingContractAddressV2": "",
@@ -9518,7 +9518,7 @@
     "riotersFooterContractAddress": "",
     "secondaryDuringMintList": [
       "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys",
-      "tori1pmevf373awn47wkdter246n4r8xgx4xld9hkfvxle9pf327rc4hq9uhm0k",
+      "",
       ""
     ],
     "excludeFromLaunchpadList": [
