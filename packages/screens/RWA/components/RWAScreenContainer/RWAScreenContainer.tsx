@@ -7,7 +7,7 @@ import {
 } from "react-native";
 
 import { Header, HeaderMobile, HeaderProps } from "./Header";
-import { SideBar, SideBarMobile } from "./SideBar/SideBar";
+import { Sidebar, SidebarMobile } from "./Sidebar/Sidebar";
 import { useIsMobile } from "../../../../hooks/useIsMobile";
 import { useTheme } from "../../../../hooks/useTheme";
 
@@ -33,7 +33,7 @@ export const RWAScreenContainer: React.FC<RWAScreenContainerProps> = ({
           backgroundColor: theme.backgroundColor,
         }}
       >
-        {isMobile ? <SideBarMobile /> : <SideBar />}
+        {isMobile ? <SidebarMobile /> : <Sidebar />}
         <View style={{ flex: 1 }}>
           {isMobile ? (
             <HeaderMobile onBackPress={onBackPress} headerTitle={headerTitle} />

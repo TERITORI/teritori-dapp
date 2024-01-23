@@ -17,12 +17,12 @@ import { useAppRoute } from "../../../../../utils/navigation";
 import { fontSemibold12 } from "../../../../../utils/style/fonts";
 import { layout } from "../../../../../utils/style/layout";
 
-interface SideBarButtonProps extends SidebarType {
+interface SidebarButtonProps extends SidebarType {
   onPress?: (routeName: SidebarType["route"]) => void;
   iconSize?: number;
 }
 
-export const SideBarButton: React.FC<SideBarButtonProps> = ({
+export const SidebarButton: React.FC<SidebarButtonProps> = ({
   icon,
   onPress,
   title,

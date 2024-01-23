@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useWindowDimensions } from "react-native";
 
+import { RWA_LISTS_SIZE } from "./constants";
 import { useRWASideBar } from "../../context/SidebarProvider";
 import { fullSidebarWidth, smallSidebarWidth } from "../../utils/style/layout";
 
@@ -10,11 +11,11 @@ export const useIsRWAListThreshold = () => {
   const { width: currentWidth } = useWindowDimensions();
   const { isSidebarExpanded } = useRWASideBar();
 
-  // 1184 = width of rwa lists
   return useMemo(
     () =>
       currentWidth <
-      1184 + (isSidebarExpanded ? fullSidebarWidth : smallSidebarWidth),
+      RWA_LISTS_SIZE +
+        (isSidebarExpanded ? fullSidebarWidth : smallSidebarWidth),
     [currentWidth, isSidebarExpanded],
   );
 };

@@ -12,6 +12,7 @@ import {
   getEstateCardList,
 } from "../components/EstateCard/EstateCardList";
 import { RWAScreenContainer } from "../components/RWAScreenContainer/RWAScreenContainer";
+import { RWA_LISTS_SIZE } from "../constants";
 import { useIsRWAListThreshold } from "../useIsRWAListThreshold";
 
 export const RWAHomeScreen: ScreenFC<"RWAHome"> = () => {
@@ -23,7 +24,6 @@ export const RWAHomeScreen: ScreenFC<"RWAHome"> = () => {
     dispatch(setIsLightTheme(true));
   }, [dispatch]);
 
-  // 789
   return (
     <RWAScreenContainer headerTitle="Fractionalized Real State Launchpad">
       <View>
@@ -33,7 +33,7 @@ export const RWAHomeScreen: ScreenFC<"RWAHome"> = () => {
         <View style={{ alignItems: "center", flex: 1 }}>
           <View
             style={[
-              !isMobile && { width: isRWAListThreshold ? 789 : 1184 },
+              !isMobile && { width: isRWAListThreshold ? 789 : RWA_LISTS_SIZE },
               { marginTop: layout.spacing_x2 },
             ]}
           >

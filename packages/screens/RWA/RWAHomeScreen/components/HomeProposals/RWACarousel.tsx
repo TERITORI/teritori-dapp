@@ -8,6 +8,7 @@ import { SecondaryBox } from "../../../../../components/boxes/SecondaryBox";
 import { useIsMobile } from "../../../../../hooks/useIsMobile";
 import { useIsLightTheme, useTheme } from "../../../../../hooks/useTheme";
 import { neutral44 } from "../../../../../utils/style/colors";
+import { layout } from "../../../../../utils/style/layout";
 
 const data: string[] = [
   RealEstatePlaceholder,
@@ -74,7 +75,7 @@ export const RWACarousel: React.FC = () => {
                   borderRadius: 4,
                   width: index === indexData ? 16 : 8,
                   height: 4,
-                  marginHorizontal: 2,
+                  marginHorizontal: layout.spacing_x0_25,
                 }}
               />
             );

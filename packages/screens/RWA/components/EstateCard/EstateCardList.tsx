@@ -132,7 +132,7 @@ export const EstateCardList: React.FC<EstateCardListProps> = ({
   );
 
   return (
-    <View style={[style]}>
+    <View style={style}>
       <View>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <BrandText style={[ListTitleCStyle]}>{title}</BrandText>

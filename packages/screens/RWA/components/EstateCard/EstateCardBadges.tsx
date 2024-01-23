@@ -5,6 +5,7 @@ import { EstateCardBadgesProps } from "./types";
 import { BrandText } from "../../../../components/BrandText";
 import { useIsMobile } from "../../../../hooks/useIsMobile";
 import { useTheme } from "../../../../hooks/useTheme";
+import { layout } from "../../../../utils/style/layout";
 
 export const EstateCardBadges: React.FC<EstateCardBadgesProps> = ({ tags }) => {
   const theme = useTheme();
@@ -48,5 +49,5 @@ const BadgeItemCStyle: ViewStyle = {
   borderRadius: 10,
   justifyContent: "center",
   alignItems: "center",
-  paddingHorizontal: 6,
+  paddingHorizontal: layout.spacing_x0_75,
 };

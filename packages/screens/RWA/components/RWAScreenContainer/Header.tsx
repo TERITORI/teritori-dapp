@@ -15,7 +15,11 @@ import { useRWASideBar } from "../../../../context/SidebarProvider";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
 import { useTheme } from "../../../../hooks/useTheme";
 import { selectIsLightTheme } from "../../../../store/slices/settings";
-import { headerHeight, layout } from "../../../../utils/style/layout";
+import {
+  MOBILE_HEADER_HEIGHT,
+  headerHeight,
+  layout,
+} from "../../../../utils/style/layout";
 
 export type HeaderProps = {
   headerTitle: string;
@@ -36,18 +40,23 @@ export const HeaderMobile: React.FC<HeaderProps> = ({
 
   return (
     <View
-      style={{
-        ...HeaderContainerCStyle,
-        backgroundColor: theme.headerBackgroundColor,
-        borderBottomColor: theme.borderColor,
-      }}
+      style={[
+        HeaderContainerCStyle,
+        {
+          height: MOBILE_HEADER_HEIGHT,
+          maxHeight: MOBILE_HEADER_HEIGHT,
+          backgroundColor: theme.headerBackgroundColor,
+          borderBottomColor: theme.borderColor,
+        },
+      ]}
     >
       <View style={HeaderRowCStyle}>
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
           {onBackPress && <BackButton onPress={onBackPress} />}
+          <SpacerRow size={1} />
           <BrandText
             numberOfLines={1}
-            style={{ letterSpacing: -1, maxWidth: "75%", fontSize: 20 }}
+            style={{ letterSpacing: -1, fontSize: 20 }}
           >
             {headerTitle}
           </BrandText>
@@ -70,7 +79,13 @@ export const HeaderMobile: React.FC<HeaderProps> = ({
             />
           </View>
         </Pressable>
-        <Pressable style={{ marginRight: 20 }} onPress={toggleSidebar}>
+        <Pressable
+          style={{
+            marginRight: layout.spacing_x3,
+            marginLeft: layout.spacing_x1,
+          }}
+          onPress={toggleSidebar}
+        >
           <SVG
             width={32}
             height={32}
@@ -95,17 +110,20 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
 
   return (
     <View
-      style={{
-        ...HeaderContainerCStyle,
-        backgroundColor: theme.headerBackgroundColor,
-        borderBottomColor: theme.borderColor,
-      }}
+      style={[
+        HeaderContainerCStyle,
+        {
+          height: headerHeight,
+          maxHeight: headerHeight,
+          backgroundColor: theme.headerBackgroundColor,
+          borderBottomColor: theme.borderColor,
+        },
+      ]}
     >
       <View style={HeaderRowCStyle}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <SpacerRow size={8} />
           {onBackPress && <BackButton onPress={onBackPress} />}
-          <SpacerRow size={1} />
+          <SpacerRow size={1.5} />
           <BrandText numberOfLines={1} style={{ fontSize: 20 }}>
             {headerTitle}
           </BrandText>
@@ -113,7 +131,6 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
         {selectedWallet ? (
           <View style={{ marginRight: 18 }}>
             <SecondaryButton
-              textStyle={{ fontWeight: "200" }}
               backgroundColor={theme.tertiaryButtonColor}
               color={isLightTheme ? theme.secondaryTextColor : theme.textColor}
               text="My Account"
@@ -125,7 +142,6 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
           <View style={{ flexDirection: "row" }}>
             <View style={{ marginRight: 18 }}>
               <SecondaryButton
-                textStyle={{ fontWeight: "200" }}
                 backgroundColor={theme.secondaryButtonColor}
                 color={theme.textColor}
                 text="Register"
@@ -135,7 +151,6 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
             </View>
             <View style={{ marginRight: 18 }}>
               <SecondaryButton
-                textStyle={{ fontWeight: "200" }}
                 backgroundColor={theme.primaryButtonColor}
                 color={theme.secondaryTextColor}
                 text="Connect Wallet"
@@ -157,8 +172,6 @@ export const Header: React.FC<HeaderProps> = ({ headerTitle, onBackPress }) => {
 
 const HeaderContainerCStyle: ViewStyle = {
   flex: 1,
-  height: headerHeight,
-  maxHeight: headerHeight,
   flexDirection: "row",
   borderBottomWidth: 1,
 };

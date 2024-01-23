@@ -10,6 +10,7 @@ import { BrandText } from "../../../../components/BrandText";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
 import { useIsMobile } from "../../../../hooks/useIsMobile";
 import { useTheme } from "../../../../hooks/useTheme";
+import { fontSemibold18 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 
 export const EstateCard: React.FC<EstateCardProps> = ({
@@ -36,13 +37,13 @@ export const EstateCard: React.FC<EstateCardProps> = ({
         <EstateCardImage sourceURI={EstatePlaceholder} />
         <BrandText
           numberOfLines={1}
-          style={{
-            fontSize: 18,
-            fontWeight: "300",
-            letterSpacing: -1,
-            marginBottom: layout.spacing_x2,
-            marginTop: !isMobile ? layout.spacing_x2 : 0,
-          }}
+          style={[
+            fontSemibold18,
+            {
+              marginBottom: layout.spacing_x2,
+              marginTop: !isMobile ? layout.spacing_x2 : 0,
+            },
+          ]}
         >
           {card.title}
         </BrandText>

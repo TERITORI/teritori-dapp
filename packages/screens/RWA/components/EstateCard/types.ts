@@ -36,5 +36,5 @@ export type EstateCardInformationBoxProps = {
 export type EstateCardListProps = {
   cards: EstateCardProps[];
   title: string;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 };

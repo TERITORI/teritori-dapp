@@ -1,5 +1,5 @@
 import React from "react";
-import { TextStyle, View } from "react-native";
+import { View } from "react-native";
 
 import { RWACarousel } from "./RWACarousel";
 import { BrandText } from "../../../../../components/BrandText";
@@ -7,6 +7,12 @@ import { SecondaryButton } from "../../../../../components/buttons/SecondaryButt
 import { GradientText } from "../../../../../components/gradientText";
 import { useIsMobile } from "../../../../../hooks/useIsMobile";
 import { useIsLightTheme, useTheme } from "../../../../../hooks/useTheme";
+import {
+  fontSemibold12,
+  fontSemibold14,
+  fontSemibold20,
+  fontSemibold28,
+} from "../../../../../utils/style/fonts";
 
 export const HomeProposals: React.FC = () => {
   const isLightTheme = useIsLightTheme();
@@ -25,28 +31,18 @@ export const HomeProposals: React.FC = () => {
       <View style={{ marginHorizontal: isMobile ? 10 : 0 }}>
         <BrandText
           numberOfLines={1}
-          style={{
-            fontSize: isMobile ? 20 : 28,
-            lineHeight: 45,
-            letterSpacing: -1,
-          }}
+          style={isMobile ? fontSemibold20 : fontSemibold28}
         >
           7519 Wykes St, Detroit, MI 48210
         </BrandText>
         {isLightTheme ? (
           <BrandText
-            style={[
-              HomeProposalsLabelCStyle,
-              { color: theme.primaryButtonColor },
-            ]}
+            style={[fontSemibold12, { color: theme.primaryButtonColor }]}
           >
             {label}
           </BrandText>
         ) : (
-          <GradientText
-            style={HomeProposalsLabelCStyle}
-            gradientType="blueExtended"
-          >
+          <GradientText style={fontSemibold12} gradientType="blueExtended">
             {label}
           </GradientText>
         )}
@@ -55,7 +51,7 @@ export const HomeProposals: React.FC = () => {
           backgroundColor={theme.primaryButtonColor}
           text="View Property"
           size="XL"
-          textStyle={{ fontWeight: "300", fontSize: 14, letterSpacing: 0 }}
+          textStyle={fontSemibold14}
           style={{
             marginTop: isMobile ? 20 : 35,
             height: isMobile ? 46 : 56,
@@ -66,9 +62,4 @@ export const HomeProposals: React.FC = () => {
       <RWACarousel />
     </View>
   );
-};
-
-const HomeProposalsLabelCStyle: TextStyle = {
-  fontSize: 12,
-  letterSpacing: 1,
 };

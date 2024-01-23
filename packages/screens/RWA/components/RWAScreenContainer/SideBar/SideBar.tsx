@@ -13,7 +13,7 @@ import Animated, {
   WithSpringConfig,
 } from "react-native-reanimated";
 
-import { SideBarButton } from "./SideBarButton";
+import { SidebarButton } from "./SidebarButton";
 import chevronRightSVG from "../../../../../../assets/icons/chevron-right.svg";
 import RWADarkLogo from "../../../../../../assets/logos/rwa-dark-logo.svg";
 import RWALightLogo from "../../../../../../assets/logos/rwa-light-logo.svg";
@@ -74,7 +74,7 @@ const SidebarSeparator: React.FC = () => {
   );
 };
 
-export const SideBarMobile: React.FC = () => {
+export const SidebarMobile: React.FC = () => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   // const navigation = useAppNavigation();
   const { isSidebarExpanded, dynamicSidebar } = useRWASideBar();
@@ -102,7 +102,7 @@ export const SideBarMobile: React.FC = () => {
   return (
     <Animated.View
       style={[
-        SideBarMobileContainerCStyle,
+        SidebarMobileContainerCStyle,
         layoutStyle,
         {
           height: windowHeight - MOBILE_HEADER_HEIGHT,
@@ -117,7 +117,7 @@ export const SideBarMobile: React.FC = () => {
         data={Object.values(dynamicSidebar)}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <SideBarButton key={item.id} onPress={onRouteChange} {...item} />
+          <SidebarButton key={item.id} onPress={onRouteChange} {...item} />
         )}
         ListHeaderComponent={<SpacerColumn size={1} />}
         ListFooterComponent={<SidebarSeparator />}
@@ -126,14 +126,14 @@ export const SideBarMobile: React.FC = () => {
   );
 };
 
-const SideBarMobileContainerCStyle: ViewStyle = {
+const SidebarMobileContainerCStyle: ViewStyle = {
   borderRightWidth: 1,
   position: "absolute",
   top: MOBILE_HEADER_HEIGHT,
   zIndex: 9999,
 };
 
-export const SideBar: React.FC = () => {
+export const Sidebar: React.FC = () => {
   const navigation = useAppNavigation();
   const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useRWASideBar();
   const theme = useTheme();
@@ -198,7 +198,7 @@ export const SideBar: React.FC = () => {
         data={Object.values(dynamicSidebar)}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <SideBarButton key={item.id} onPress={onRouteChange} {...item} />
+          <SidebarButton key={item.id} onPress={onRouteChange} {...item} />
         )}
         ListHeaderComponent={<SpacerColumn size={1} />}
         ListFooterComponent={<SidebarSeparator />}
