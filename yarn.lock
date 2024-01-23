@@ -9644,13 +9644,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crypto@git+https://github.com/entronad/crypto-es.git":
-  version: 2.1.0
-  resolution: "crypto@https://github.com/entronad/crypto-es.git#commit=d506677fae3d03a454b37ad126e0c119d416b757"
-  checksum: 94acbe4658579806891c15c3956b5175ed910201488be54dd72d2a9430d824b92ad09b75ccac328512f08ef01df7455b25cd0ea58986d856635d7e31cdcd2416
-  languageName: node
-  linkType: hard
-
 "css-declaration-sorter@npm:^6.3.1":
   version: 6.4.1
   resolution: "css-declaration-sorter@npm:6.4.1"
@@ -21351,7 +21344,6 @@ __metadata:
     commander: ^10.0.1
     cors-anywhere: ^0.4.4
     cross-env: ^7.0.3
-    crypto: "git+https://github.com/entronad/crypto-es.git"
     crypto-browserify: ^3.12.0
     depcheck: ^1.4.7
     dotenv: ^16.3.1

@@ -67,7 +67,6 @@
     "buffer": "^6.0.3",
     "chain-registry": "^1.20.0",
     "commander": "^10.0.1",
-    "crypto": "git+https://github.com/entronad/crypto-es.git",
     "crypto-browserify": "^3.12.0",
     "dotenv-webpack": "^8.0.0",
     "draft-convert": "^2.1.13",
