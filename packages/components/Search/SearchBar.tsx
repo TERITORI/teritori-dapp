@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import {
@@ -10,16 +10,15 @@ import {
   SEARCH_RESULTS_MARGIN,
   SearchBarResults,
 } from "./SearchBarResults";
-import { useDropdowns } from "../../context/DropdownsProvider";
 import { useSearchBar } from "../../context/SearchBarProvider";
+import { useClickOutside } from "../../hooks/useClickOutside";
 import { COLLECTION_VIEW_SM_WIDTH } from "../CollectionView";
 import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
   style,
 }) => {
-  const { openDropdown, isDropdownOpen } = useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
   const { hasCollections, hasNames } = useSearchBar();
   const hasSomething = hasNames || hasCollections;
 
@@ -27,9 +26,10 @@ export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
     <View
       style={[{ justifyContent: "center", alignItems: "center" }, style]}
       ref={dropdownRef}
+      collapsable={false}
     >
-      <SearchBarInputGlobal onInteraction={() => openDropdown(dropdownRef)} />
-      {isDropdownOpen(dropdownRef) && hasSomething && (
+      <SearchBarInputGlobal onInteraction={() => setDropdownState(true)} />
+      {isDropdownOpen && hasSomething && (
         <LegacyTertiaryBox
           noBrokenCorners
           style={{
