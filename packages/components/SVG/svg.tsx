@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, Image, ImageProps, View } from "react-native";
+import { Platform, Image, View, ImageProps } from "react-native";
 import { SvgFromUri, SvgProps } from "react-native-svg";
 
 export const SVG: React.FC<

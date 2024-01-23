@@ -130,7 +130,6 @@ message Activity {
   string buyer_id = 10;
   string seller_id = 11;
   double usd_price = 12;
-  string target_id = 13;
 }
 
 message Quest {
@@ -154,7 +153,6 @@ message CollectionsRequest {
   bool upcoming = 6;
   string network_id = 7;
   MintState mint_state = 8;
-  optional int32 period_in_minutes = 9;
 }
 
 message CollectionStatsRequest {

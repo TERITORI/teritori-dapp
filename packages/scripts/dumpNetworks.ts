@@ -1,7 +1,9 @@
 import { allNetworks } from "../networks";
 
 const main = async () => {
-  console.log(JSON.stringify(allNetworks, null, 2));
+  for (const n of allNetworks) {
+    console.log(n);
+  }
 };
 
 main();

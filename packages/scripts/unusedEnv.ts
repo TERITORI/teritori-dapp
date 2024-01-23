@@ -35,11 +35,11 @@ const cmd = `grep -R -E --no-filename ${excludePatterns
 console.log("Running command:");
 console.log(cmd);
 
-const grepOut = child_process.spawnSync(cmd, {
-  encoding: "utf-8",
-  shell: true,
-});
-const grepLines = grepOut.stdout.split("\n").map((l) => l.trim());
+const grepOut = child_process.execSync(cmd);
+const grepLines = grepOut
+  .toString("utf-8")
+  .split("\n")
+  .map((l) => l.trim());
 
 // console.log(grepLines.join("\n"));
 

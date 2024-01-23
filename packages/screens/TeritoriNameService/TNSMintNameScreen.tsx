@@ -2,15 +2,13 @@ import { MsgExecuteContractEncodeObject } from "@cosmjs/cosmwasm-stargate";
 import { toUtf8 } from "@cosmjs/encoding";
 import { useFocusEffect } from "@react-navigation/native";
 import { useQueryClient } from "@tanstack/react-query";
-import Long from "long";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
 import longCardSVG from "../../../assets/cards/long-card.svg";
 import coinSVG from "../../../assets/icons/coin.svg";
-import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import ModalBase from "../../components/modals/ModalBase";
@@ -25,7 +23,6 @@ import {
 } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useBalances } from "../../hooks/useBalances";
-import { useCanPay } from "../../hooks/useCanPay";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { useIsLeapConnected } from "../../hooks/useIsLeapConnected";
 import { useNSMintPrice } from "../../hooks/useNSMintPrice";
@@ -192,13 +189,7 @@ export const TNSMintNameModal: React.FC<
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { nsMintPrice: price } = useNSMintPrice(networkId, normalizedTokenId);
   const balance = balances.find((bal) => bal.denom === price?.denom);
-  const cost: Coin = useMemo(() => {
-    return {
-      amount: price?.amount || "0",
-      denom: price?.denom || "",
-    };
-  }, [price?.amount, price?.denom]);
-  const canPayForMintName = useCanPay({ userId, cost });
+
   const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);
   const queryClient = useQueryClient();
 
@@ -230,7 +221,7 @@ export const TNSMintNameModal: React.FC<
           sender: userAddress,
           contract: cosmosNetwork.nameServiceContractAddress,
           msg: toUtf8(JSON.stringify(payload)),
-          funds: Long.fromString(price.amount).isZero() ? undefined : [price],
+          funds: [price],
         },
       };
 
@@ -314,15 +305,16 @@ export const TNSMintNameModal: React.FC<
         />
         <NameDataForm
           btnLabel={
-            !canPayForMintName
-              ? "Not enough funds"
-              : userKind === UserKind.Single
-                ? "Register your username"
-                : "Propose to register"
+            userKind === UserKind.Single
+              ? "Register your username"
+              : "Propose to register"
           }
           onPressBtn={handleSubmit}
           initialData={initialData}
-          disabled={!canPayForMintName}
+          disabled={
+            !price ||
+            parseInt(balance?.amount || "0", 10) < parseInt(price.amount, 10)
+          }
         />
       </View>
       <TNSRegisterSuccess visible={isSuccessModal} onClose={handleModalClose} />

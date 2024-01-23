@@ -1,4 +1,5 @@
 import { MsgVoteEncodeObject, isDeliverTxFailure } from "@cosmjs/stargate";
+import Long from "long";
 import moment from "moment";
 import React, { useState, useCallback } from "react";
 import { ScrollView, ViewStyle, StyleProp, View } from "react-native";
@@ -110,7 +111,9 @@ export const GovernanceDetails: React.FC<{
       const vote: MsgVoteEncodeObject = {
         typeUrl: "/cosmos.gov.v1beta1.MsgVote",
         value: {
-          proposalId: BigInt(numberProposal.substring(1)),
+          proposalId: Long.fromNumber(
+            parseInt(numberProposal.substring(1), 10),
+          ),
           voter: String(selectedWallet.address),
           option: voteOption,
         },

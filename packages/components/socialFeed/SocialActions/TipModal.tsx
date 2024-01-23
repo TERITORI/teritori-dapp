@@ -138,9 +138,9 @@ export const TipModal: React.FC<{
       onClose={onClose}
       width={400}
       label={`Your wallet has ${prettyPrice(
-        selectedNetworkInfo?.id,
+        selectedWallet?.networkId || "",
         currencyBalance?.amount || "0",
-        nativeCurrency?.denom,
+        currencyBalance?.denom || "",
       )}`}
     >
       <View

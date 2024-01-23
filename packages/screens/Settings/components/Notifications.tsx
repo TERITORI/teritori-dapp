@@ -30,7 +30,7 @@ export const Notifications: React.FC = () => {
     expiredBids: {
       title: "Expired bids",
       description:
-        "When your bid expires or gets deactivated because of not enough funds",
+        "When your bid expires or gets deactivated because of insufficient funds",
       state: true,
     },
     purchase: {

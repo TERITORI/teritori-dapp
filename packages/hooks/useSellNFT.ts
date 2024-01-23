@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import { Wallet } from "./../context/WalletsProvider/wallet";
 import { getMetaMaskEthereumSigner } from "./../utils/ethereum";
 import useSelectedWallet from "./useSelectedWallet";
-import { initialToastError, useFeedbacks } from "../context/FeedbacksProvider";
+import { useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNftClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
 import { TeritoriNft__factory } from "../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
@@ -138,7 +138,6 @@ export const useSellNFT = (networkKind: NetworkKind | undefined) => {
             throw Error(`Unsupported network ${networkKind}`);
         }
 
-        setToastError(initialToastError);
         const txHash = await sellNFTFunc(
           wallet,
           nftContractAddress,

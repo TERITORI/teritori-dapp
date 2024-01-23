@@ -1,4 +1,4 @@
-import React, { ComponentProps, useRef, useCallback } from "react";
+import React, { ComponentProps, useCallback } from "react";
 import {
   StyleProp,
   ViewStyle,
@@ -10,12 +10,12 @@ import {
 
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import trashSVG from "../../../assets/icons/trash.svg";
-import { useDropdowns } from "../../context/DropdownsProvider";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { Member } from "../../contracts-clients/cw4-group/Cw4Group.types";
 import { useDAOGroup } from "../../hooks/dao/useDAOGroup";
 import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
+import { useClickOutside } from "../../hooks/useClickOutside";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseUserId } from "../../networks";
@@ -188,9 +188,7 @@ const CardActions: React.FC<{
     | boolean
   )[];
 }> = ({ actions }) => {
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
 
   const filteredActions = actions.filter(
     (a): a is ComponentProps<typeof DropdownOption> =>
@@ -201,11 +199,11 @@ const CardActions: React.FC<{
   }
 
   return (
-    <View>
-      <Pressable onPress={() => onPressDropdownButton(dropdownRef)}>
+    <View ref={dropdownRef} collapsable={false}>
+      <Pressable onPress={() => setDropdownState(false)}>
         <SVG source={dotsCircleSVG} height={32} width={32} />
       </Pressable>
-      {isDropdownOpen(dropdownRef) && (
+      {isDropdownOpen && (
         <View
           style={{
             position: "absolute",
@@ -224,7 +222,7 @@ const CardActions: React.FC<{
             <DropdownOption
               {...action}
               onPress={() => {
-                closeOpenedDropdown();
+                setDropdownState(false);
                 action.onPress?.();
               }}
             />

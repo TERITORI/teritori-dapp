@@ -5,6 +5,7 @@ import { TrashIcon, Bars3Icon } from "react-native-heroicons/solid";
 import { BrandText } from "../../../components/BrandText";
 import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
 import { Box } from "../../../components/boxes/Box";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { setCheckedApp } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
 import {
@@ -80,25 +81,19 @@ export const SelectedDraggable: React.FC<{
           </Box>
         </TouchableOpacity>
       </Pressable>
-
-      <Box
+      <TertiaryBox
         style={{
           marginLeft: layout.spacing_x1,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          paddingVertical: layout.spacing_x1_5,
-          paddingLeft: layout.spacing_x1_5,
-          paddingRight: layout.spacing_x2,
           width: 256,
           height: 48,
-          borderWidth: 1,
-          borderColor: neutral33,
           ...Platform.select({
             web: {
               cursor: "grab",
             },
           }),
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
           paddingHorizontal: layout.spacing_x1_5,
         }}
       >
@@ -114,7 +109,7 @@ export const SelectedDraggable: React.FC<{
         </View>
 
         <Bars3Icon size={24} fill={neutral44} />
-      </Box>
+      </TertiaryBox>
     </Pressable>
   );
 };

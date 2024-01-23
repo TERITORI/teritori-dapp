@@ -28,7 +28,7 @@ import { BrandText } from "../BrandText";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { ActivityTable } from "../activity/ActivityTable";
 import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
-import { NFTModifyListingCard } from "../cards/NFTModifyListingCard";
+import { NFTCancelListingCard } from "../cards/NFTCancelListingCard";
 import { NFTPriceBuyCard } from "../cards/NFTPriceBuyCard";
 import { NFTSellCard } from "../cards/NFTSellCard";
 import { CollapsableSection } from "../collapsable/CollapsableSection";
@@ -69,20 +69,8 @@ export const NFTMainInfo: React.FC<{
     price: string,
     denom: string | undefined,
   ) => Promise<string | undefined>;
-  cancelListing: () => Promise<void>;
-  updatePrice: (newPrice: {
-    amount: string;
-    denom: string;
-  }) => void | Promise<void>;
-}> = ({
-  nftId,
-  nftInfo,
-  buy,
-  sell,
-  cancelListing,
-  showMarketplace,
-  updatePrice,
-}) => {
+  cancelListing: () => Promise<string | undefined>;
+}> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
   const isMobile = useIsMobile();
   const { width } = useMaxResolution({ responsive: true, noMargin: true });
   if (isMobile) {
@@ -259,12 +247,7 @@ export const NFTMainInfo: React.FC<{
           />
         </LegacyTertiaryBox>
         {/*---- Info NFT */}
-        <View
-          style={{
-            maxWidth: isMobile && width < 600 ? width : 600,
-            width: "100%",
-          }}
-        >
+        <View style={{ maxWidth: isMobile && width < 600 ? width : 600 }}>
           <BrandText style={[fontSemibold28, { marginBottom: 12 }]}>
             {nftInfo?.name}
           </BrandText>
@@ -291,11 +274,10 @@ export const NFTMainInfo: React.FC<{
                 />
               )}
               {nftInfo?.isListed && nftInfo.isOwner && (
-                <NFTModifyListingCard
+                <NFTCancelListingCard
                   nftInfo={nftInfo}
                   style={{ marginTop: 24, marginBottom: 40 }}
                   onPressCancel={cancelListing}
-                  onPressUpdatePrice={updatePrice}
                 />
               )}
               {!nftInfo?.isListed && !nftInfo?.isOwner && (

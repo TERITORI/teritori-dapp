@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/CosmWasm/wasmd/x/wasm/types"
-	"github.com/cometbft/cometbft/rpc/client/http"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -14,6 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authTypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/pkg/errors"
+	"github.com/tendermint/tendermint/rpc/client/http"
 )
 
 const KEY_NAME = "__MemoryKeyName__"
@@ -149,7 +149,7 @@ func (cc *ContractClient) initExecClientCtx(sender string, mnemonic string) erro
 }
 
 func (cc *ContractClient) GetKeyring(mnemonic string) (keyring.Keyring, error) {
-	kb := keyring.NewInMemory(cc.execClientCtx.Codec, cc.execClientCtx.KeyringOptions...)
+	kb := keyring.NewInMemory(cc.execClientCtx.KeyringOptions...)
 	keyringAlgos, _ := kb.SupportedAlgorithms()
 	algo, algoErr := keyring.NewSigningAlgoFromString(ALGO_NAME, keyringAlgos)
 	if algoErr != nil {
@@ -198,7 +198,7 @@ func (cc *ContractClient) BroadcastTx(msgs ...sdk.Msg) (*sdk.TxResponse, error) 
 
 	txf = txf.WithGas(adjusted)
 
-	unsignedTx, err := txf.BuildUnsignedTx(msgs...)
+	unsignedTx, err := tx.BuildUnsignedTx(txf, msgs...)
 	if err != nil {
 		return nil, err
 	}

@@ -19,7 +19,8 @@ import { ActivityTable } from "../../components/activity/ActivityTable";
 import { TNSNameFinderModal } from "../../components/modals/teritoriNameService/TNSNameFinderModal";
 import { FlowCard } from "../../components/teritoriNameService/FlowCard";
 import { useTNS } from "../../context/TNSProvider";
-import { useWalletControl } from "../../context/WalletControlProvider";
+import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { useIsLeapConnected } from "../../hooks/useIsLeapConnected";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -78,11 +79,13 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   const selectedNetwork = getCosmosNetwork(selectedNetworkId);
   const selectedWallet = useSelectedWallet();
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
-  const { showConnectWalletModal } = useWalletControl();
   const collectionId = getCollectionId(
     selectedNetwork?.id,
     selectedNetwork?.nameServiceContractAddress,
   );
+
+  const isKeplrConnected = useIsKeplrConnected();
+  const isLeapConnected = useIsLeapConnected();
 
   const handleModalClose: TNSCloseHandler = (
     modalName,
@@ -128,17 +131,6 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
     }
   };
 
-  const onPressRegister = async () => {
-    if (!selectedWallet?.address || !selectedWallet.connected) {
-      showConnectWalletModal({
-        forceNetworkFeature: NetworkFeature.NameService,
-        action: "Register a Name",
-      });
-      return;
-    }
-    navigation.navigate("TNSHome", { modal: "register" });
-  };
-
   useEffect(() => {
     handleModalChange(route.params?.modal, route.params?.name);
     if (route.params?.name) {
@@ -175,12 +167,18 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
           }}
         >
           <FlowCard
+            disabled={!isKeplrConnected && !isLeapConnected}
             label="Register"
             description="Register and configure a new name"
             iconSVG={registerSVG}
-            onPress={onPressRegister}
+            onPress={() =>
+              navigation.navigate("TNSHome", { modal: "register" })
+            }
           />
           <FlowCard
+            disabled={
+              (!isKeplrConnected && !isLeapConnected) || !tokens?.length
+            }
             label="Manage"
             description="Transfer, edit, or burn a name that you own"
             iconSVG={penSVG}
@@ -189,7 +187,6 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
               marginHorizontal: width >= MD_BREAKPOINT ? 12 : 0,
               marginVertical: width >= MD_BREAKPOINT ? 0 : 12,
             }}
-            disabled={!tokens.length}
           />
           <FlowCard
             label="Explore"

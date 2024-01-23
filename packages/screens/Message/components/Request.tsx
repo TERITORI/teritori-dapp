@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import { Avatar, Badge } from "react-native-paper";
 
+import { MessageAvatar } from "./MessageAvatar";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
@@ -29,8 +29,6 @@ type Props = {
 const RequestList = ({ isOnline, data }: Props) => {
   const { setToastError } = useFeedbacks();
   const [addLoading, setAddLoading] = useState(false);
-
-  const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
 
   const handleAddFriend = async () => {
     setAddLoading(true);
@@ -72,17 +70,7 @@ const RequestList = ({ isOnline, data }: Props) => {
     <View>
       <FlexRow justifyContent="space-between" style={{ flex: 1 }}>
         <FlexRow style={{ flex: 1 }}>
-          <Avatar.Image size={40} source={{ uri: data.avatar }} />
-          <Badge
-            style={{
-              position: "absolute",
-              top: 30,
-              left: 30,
-
-              backgroundColor: onlineStatusBadgeColor,
-            }}
-            size={12}
-          />
+          <MessageAvatar item={data} />
           <SpacerRow size={1.5} />
           <View>
             <BrandText style={[fontSemibold13, { color: secondaryColor }]}>

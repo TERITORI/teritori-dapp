@@ -7,17 +7,14 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { NFTMainInfo } from "../../components/nftDetails/NFTMainInfo";
 import { SpacerColumn } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
-import {
-  initialToastError,
-  useFeedbacks,
-} from "../../context/FeedbacksProvider";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { Wallet } from "../../context/WalletsProvider";
 import { TeritoriNftVaultClient } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { NFTVault__factory } from "../../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
-import { useMintEnded } from "../../hooks/collection/useMintEnded";
 import { useCancelNFTListing } from "../../hooks/useCancelNFTListing";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { useMintEnded } from "../../hooks/useMintEnded";
 import { useNFTInfo } from "../../hooks/useNFTInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";
@@ -38,7 +35,7 @@ const Content: React.FC<{
 }> = ({ id }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("main");
-  const { setToastError, setLoadingFullScreen } = useFeedbacks();
+  const { setToastError } = useFeedbacks();
   const isMobile = useIsMobile();
   const wallet = useSelectedWallet();
   const { info, refresh, notFound } = useNFTInfo(id, wallet?.userId);
@@ -94,12 +91,11 @@ const Content: React.FC<{
       return;
     }
 
-    setToastError(initialToastError);
     try {
       const txHash = await buyFunc(wallet, info);
 
       console.log("buy", txHash);
-      await refresh();
+      refresh();
 
       return txHash;
     } catch (e) {
@@ -122,7 +118,7 @@ const Content: React.FC<{
       }
       const txHash = await sell(info.nftAddress, info.tokenId, price, denom);
       console.log("txHash:", txHash);
-      await refresh();
+      refresh();
       return txHash;
     },
     [info, sell, refresh],
@@ -135,56 +131,11 @@ const Content: React.FC<{
   );
 
   const handleCancelListing = useCallback(async () => {
-    setLoadingFullScreen(true);
-    try {
-      await cancelListing();
-      await refresh();
-      setLoadingFullScreen(false);
-    } catch (e) {
-      setLoadingFullScreen(false);
-      throw e;
-    }
-  }, [cancelListing, refresh, setLoadingFullScreen]);
-
-  const updatePrice = useCallback(
-    async (newPrice: { amount: string; denom: string }) => {
-      setLoadingFullScreen(true);
-      try {
-        if (!info) {
-          throw new Error("No NFT info");
-        }
-        const sender = wallet?.address;
-        if (!sender) {
-          throw new Error("No wallet connected");
-        }
-        const client = await getKeplrSigningCosmWasmClient(info.networkId);
-        if (!client) {
-          throw new Error("Failed to get client");
-        }
-        const cosmosNetwork = mustGetCosmosNetwork(info.networkId);
-        if (!cosmosNetwork.vaultContractAddress) {
-          throw new Error("network not supported");
-        }
-        const vaultClient = new TeritoriNftVaultClient(
-          client,
-          sender,
-          cosmosNetwork.vaultContractAddress,
-        );
-        await vaultClient.updatePrice({
-          nftContractAddr: info.nftAddress,
-          nftTokenId: info.tokenId,
-          amount: newPrice.amount,
-          denom: newPrice.denom,
-        });
-        await refresh();
-        setLoadingFullScreen(false);
-      } catch (e) {
-        setLoadingFullScreen(false);
-        throw e;
-      }
-    },
-    [info, refresh, setLoadingFullScreen, wallet?.address],
-  );
+    const txHash = await cancelListing();
+    console.log("txHash:", txHash);
+    refresh();
+    return txHash;
+  }, [cancelListing, refresh]);
 
   if (
     ![NetworkKind.Cosmos, NetworkKind.Ethereum].includes(
@@ -240,7 +191,6 @@ const Content: React.FC<{
             buy={handleBuy}
             sell={handleSell}
             cancelListing={handleCancelListing}
-            updatePrice={updatePrice}
             showMarketplace={showMarketplace}
           />
           <SpacerColumn size={6} />

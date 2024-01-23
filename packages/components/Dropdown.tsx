@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   LayoutChangeEvent,
   TouchableOpacity,
@@ -6,12 +6,18 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { DefaultValue, useDropdowns } from "../context/DropdownsProvider";
+import { useClickOutside } from "../hooks/useClickOutside";
 
 interface DropdownProps {
   children:
     | React.ReactNode
-    | (({ closeOpenedDropdown }: Partial<DefaultValue>) => React.ReactNode);
+    | (({
+        isDropdownOpen,
+        setDropdownState,
+      }: {
+        isDropdownOpen: boolean;
+        setDropdownState: (val?: boolean) => void;
+      }) => React.ReactNode);
   triggerComponent?: React.ReactNode;
   style?: ViewStyle;
   onDropdownClosed?: () => void;
@@ -29,20 +35,14 @@ export const Dropdown = ({
     height: 0,
     width: 0,
   });
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
-  const dropdownRef = useRef<View>(null);
 
-  const isDropdownOpened = isDropdownOpen(dropdownRef);
-
-  const [isOpened, setIsOpened] = useState(false);
-
-  useEffect(() => {
-    if (isOpened && !isDropdownOpened) {
-      onDropdownClosed?.();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDropdownOpened, isOpened]);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside({
+    callback: (val) => {
+      if (!val) {
+        onDropdownClosed?.();
+      }
+    },
+  });
 
   const handleLayout = ({ nativeEvent: { layout } }: LayoutChangeEvent) => {
     setLayout(layout);
@@ -50,8 +50,7 @@ export const Dropdown = ({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleOpen = () => {
-    setIsOpened(true);
-    onPressDropdownButton(dropdownRef);
+    setDropdownState(true);
   };
 
   useEffect(() => {
@@ -66,13 +65,14 @@ export const Dropdown = ({
       style={[{ position: "relative", zIndex: 99999999 }, style]}
       ref={dropdownRef}
       onLayout={handleLayout}
+      collapsable={false}
     >
       {!!triggerComponent && (
         <TouchableOpacity onPress={handleOpen}>
           {triggerComponent}
         </TouchableOpacity>
       )}
-      {isDropdownOpened && (
+      {isDropdownOpen && (
         <View
           style={[
             {
@@ -85,7 +85,7 @@ export const Dropdown = ({
           ]}
         >
           {typeof children === "function"
-            ? children({ isDropdownOpen, closeOpenedDropdown })
+            ? children({ isDropdownOpen, setDropdownState })
             : children}
         </View>
       )}

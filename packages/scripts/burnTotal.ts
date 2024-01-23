@@ -52,9 +52,6 @@ const main = async () => {
     const txs = JSON.parse(burnTxsJSON);
 
     for (const tx of txs.txs) {
-      if (tx.code !== 0) {
-        continue;
-      }
       const burnValue = getEventValue(tx.events, "burn", "amount");
       if (!burnValue) {
         continue;

@@ -46,8 +46,7 @@ import { web3ToWeb2URI } from "../../../utils/ipfs";
 import { useAppNavigation } from "../../../utils/navigation";
 import { zodTryParseJSON } from "../../../utils/sanitize";
 import {
-  ARTICLE_COVER_IMAGE_MAX_HEIGHT,
-  ARTICLE_COVER_IMAGE_RATIO,
+  ARTICLE_COVER_IMAGE_HEIGHT,
   ARTICLE_MAX_WIDTH,
   DEFAULT_USERNAME,
 } from "../../../utils/social-feed";
@@ -61,7 +60,7 @@ import {
 import { tinyAddress } from "../../../utils/text";
 import { OnPressReplyType } from "../FeedPostViewScreen";
 
-const contentPaddingHorizontal = layout.spacing_x2;
+const contentPaddingHorizontal = layout.spacing_x2_5;
 
 export const FeedPostArticleView: FC<{
   networkId: string;
@@ -121,11 +120,7 @@ export const FeedPostArticleView: FC<{
     () => metadataToUse?.files?.filter((file) => file.fileType === "audio"),
     [metadataToUse?.files],
   );
-  // Old articles doesn't have coverImage, but they have a file with a isCoverImage flag
-  const coverImage =
-    articleMetadata?.coverImage ||
-    metadataToUse?.files?.find((file) => file.isCoverImage);
-
+  const coverImage = metadataToUse?.files?.find((file) => file.isCoverImage);
   const headerLabel = useMemo(() => {
     const authorDisplayName =
       authorNSInfo?.metadata?.tokenId ||
@@ -250,47 +245,45 @@ export const FeedPostArticleView: FC<{
             }}
           >
             <SocialCardWrapper post={localPost} refetchFeed={refetchPost}>
-              {/*========== Article title, author info and cover image */}
-              {!!coverImage && (
-                <>
-                  <Image
-                    source={{ uri: web3ToWeb2URI(coverImage.url) }}
-                    resizeMode="cover"
-                    style={{
-                      width: "100%",
-                      aspectRatio: ARTICLE_COVER_IMAGE_RATIO,
-                      // height: ARTICLE_COVER_IMAGE_MAX_HEIGHT/1.6,
-                      maxHeight: ARTICLE_COVER_IMAGE_MAX_HEIGHT,
-                    }}
-                  />
-                  <SpacerColumn size={3} />
-                </>
-              )}
-
-              {!!metadataToUse?.title && (
-                <BrandText>{metadataToUse.title}</BrandText>
-              )}
-
-              <SpacerColumn size={1.5} />
               <SocialCardHeader
                 authorAddress={authorAddress}
                 authorId={localPost.authorId}
                 createdAt={post.createdAt}
                 authorMetadata={authorNSInfo?.metadata}
               />
+
               <SpacerColumn size={1.5} />
 
-              {/*========== Article content */}
-              <RichText
-                initialValue={metadataToUse.message}
-                isPostConsultation
-                audioFiles={audioFiles}
-                postId={postId}
-                authorId={authorId}
-              />
+              {/*====== Card Content */}
+              <View>
+                {!!metadataToUse?.title && (
+                  <BrandText style={{ marginBottom: layout.spacing_x1 }}>
+                    {metadataToUse.title}
+                  </BrandText>
+                )}
+                {!!coverImage && (
+                  <Image
+                    source={{ uri: web3ToWeb2URI(coverImage.url) }}
+                    resizeMode="cover"
+                    style={{
+                      width: "100%",
+                      height: ARTICLE_COVER_IMAGE_HEIGHT,
+                      marginBottom: layout.spacing_x1_5,
+                    }}
+                  />
+                )}
+
+                <RichText
+                  initialValue={metadataToUse.message}
+                  isPostConsultation
+                  audioFiles={audioFiles}
+                  postId={postId}
+                  authorId={authorId}
+                />
+              </View>
               <SpacerColumn size={1.5} />
 
-              {/*========== Actions */}
+              {/*====== Card Actions */}
               <SocialCardFooter
                 cardWidth={articleWidth}
                 isPostConsultation
@@ -301,7 +294,6 @@ export const FeedPostArticleView: FC<{
               />
             </SocialCardWrapper>
           </View>
-
           {/*========== Refresh button no mobile */}
           {!isMobile && (
             <Animated.View
@@ -341,10 +333,10 @@ export const FeedPostArticleView: FC<{
           </View>
         </View>
 
-        {/*========== Comment input */}
         {!isMobile && (
           <>
             <SpacerColumn size={2.5} />
+
             <NewsFeedInput
               style={{ alignSelf: "center" }}
               ref={feedInputRef}
@@ -361,7 +353,6 @@ export const FeedPostArticleView: FC<{
         )}
       </Animated.ScrollView>
 
-      {/*========== Refresh button mobile */}
       {flatListContentOffsetY >= articleOffsetY + 66 && !isMobile && (
         <View style={floatingActionsCStyle}>
           <RefreshButtonRound

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { View, ViewStyle } from "react-native";
 
-import { MediaPreview } from "./MediaPreview";
 import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { neutral17, neutral77 } from "../../utils/style/colors";
-import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
+
+// TODO: Later, create a reusable FormBase cpt to avoid writing too much code and call it in NameDataForm.tsx. Maybe use react-hook-form ?
 
 export const NameDataForm: React.FC<{
   isMintPath?: boolean;
@@ -20,8 +20,8 @@ export const NameDataForm: React.FC<{
   const [pathId, setPathId] = useState("");
   const [publicName, setPublicName] = useState("");
   const [public_bio, setBio] = useState("");
-  const [avatarImageUrl, setAvatarImageUrl] = useState("");
-  const [bannerImageUrl, setBannerImageUrl] = useState("");
+  const [image, setImageUrl] = useState("");
+  const [bannerImage, setBannerImage] = useState("");
   const [email, setEmail] = useState("");
   const [external_url, setWebsite] = useState("");
   const [twitter_id, setTwitter] = useState("");
@@ -40,8 +40,8 @@ export const NameDataForm: React.FC<{
       pathId,
       public_name: publicName,
       public_bio,
-      image: avatarImageUrl,
-      public_profile_header: bannerImageUrl,
+      image,
+      public_profile_header: bannerImage,
       email,
       external_url,
       twitter_id,
@@ -54,8 +54,8 @@ export const NameDataForm: React.FC<{
   // Setting initial inputs values (Pre-filled values if existing token)
   useEffect(() => {
     setBio(initialData.public_bio || "");
-    setAvatarImageUrl(initialData.image || "");
-    setBannerImageUrl(initialData.public_profile_header || "");
+    setImageUrl(initialData.image || "");
+    setBannerImage(initialData.public_profile_header || "");
     setEmail(initialData.email || "");
     setWebsite(initialData.external_url || "");
     setTwitter(initialData.twitter_id || "");
@@ -70,7 +70,6 @@ export const NameDataForm: React.FC<{
     <View
       style={{
         width: "100%",
-        alignItems: "center",
       }}
     >
       {isMintPath ? (
@@ -98,12 +97,9 @@ export const NameDataForm: React.FC<{
               .
             </BrandText>
           </View>
-
-          {/*// TODO: Refacto TextInputCustom and fix usages*/}
-
           <TextInputCustom<Metadata>
             name="pathId"
-            containerStyle={inputStyle}
+            style={inputStyle}
             label="Path ID (must be unique)"
             placeHolder="Type path ID here"
             value={pathId}
@@ -114,11 +110,8 @@ export const NameDataForm: React.FC<{
       ) : null}
       <TextInputCustom<Metadata>
         name="name"
-        containerStyle={inputStyle}
-        label="Name"
-        rules={{ required: true }}
-        noBrokenCorners
-        variant="labelOutside"
+        style={[inputStyle, !isMintPath && { marginTop: 4 }]}
+        label="NAME"
         placeHolder="Type name here"
         value={publicName}
         onChangeText={setPublicName}
@@ -127,29 +120,35 @@ export const NameDataForm: React.FC<{
       />
       <TextInputCustom<Metadata>
         name="public_bio"
-        containerStyle={inputStyle}
-        label="Bio"
-        noBrokenCorners
-        variant="labelOutside"
+        style={inputStyle}
+        label="BIO"
         placeHolder="Type bio here"
         value={public_bio}
         onChangeText={setBio}
         squaresBackgroundColor={neutral17}
       />
-      <MediaPreview
+      <TextInputCustom<Metadata>
+        name="image"
         style={inputStyle}
-        avatarImageUrl={avatarImageUrl}
-        bannerImageUrl={bannerImageUrl}
-        setAvatarImageUrl={setAvatarImageUrl}
-        setBannerImageUrl={setBannerImageUrl}
+        label="AVATAR IMAGE URL"
+        placeHolder="Insert image URL here"
+        value={image}
+        onChangeText={setImageUrl}
+        squaresBackgroundColor={neutral17}
       />
-
+      <TextInputCustom<Metadata>
+        name="public_profile_header"
+        style={inputStyle}
+        label="BANNER IMAGE URL"
+        placeHolder="Insert image URL here"
+        value={bannerImage}
+        onChangeText={setBannerImage}
+        squaresBackgroundColor={neutral17}
+      />
       <TextInputCustom<Metadata>
         name="email"
-        containerStyle={inputStyle}
-        label="Email"
-        noBrokenCorners
-        variant="labelOutside"
+        style={inputStyle}
+        label="EMAIL"
         placeHolder="Type email here"
         value={email}
         onChangeText={setEmail}
@@ -157,10 +156,8 @@ export const NameDataForm: React.FC<{
       />
       <TextInputCustom<Metadata>
         name="external_url"
-        containerStyle={inputStyle}
-        label="Website"
-        noBrokenCorners
-        variant="labelOutside"
+        style={inputStyle}
+        label="WEBSITE"
         placeHolder="Type/insert link here"
         value={external_url}
         onChangeText={setWebsite}
@@ -168,10 +165,8 @@ export const NameDataForm: React.FC<{
       />
       <TextInputCustom<Metadata>
         name="twitter_id"
-        containerStyle={inputStyle}
-        label="Twitter (X)"
-        noBrokenCorners
-        variant="labelOutside"
+        style={inputStyle}
+        label="TWITTER"
         placeHolder="Link to Twitter account"
         value={twitter_id}
         onChangeText={setTwitter}
@@ -179,10 +174,8 @@ export const NameDataForm: React.FC<{
       />
       <TextInputCustom<Metadata>
         name="discord_id"
-        containerStyle={inputStyle}
-        label="Discord"
-        noBrokenCorners
-        variant="labelOutside"
+        style={inputStyle}
+        label="DISCORD"
         placeHolder="Link to Discord"
         value={discord_id}
         onChangeText={setDiscord}
@@ -190,10 +183,8 @@ export const NameDataForm: React.FC<{
       />
       <TextInputCustom<Metadata>
         name="telegram_id"
-        containerStyle={inputStyle}
-        label="Telegram Username"
-        noBrokenCorners
-        variant="labelOutside"
+        style={inputStyle}
+        label="TELEGRAM USERNAME"
         placeHolder="@nickname"
         value={telegram_id}
         onChangeText={setTelegrameUsername}
@@ -201,10 +192,8 @@ export const NameDataForm: React.FC<{
       />
       <TextInputCustom<Metadata>
         name="keybase_id"
-        containerStyle={inputStyle}
-        label="Keybase.io"
-        noBrokenCorners
-        variant="labelOutside"
+        style={inputStyle}
+        label="KEYBASE.IO"
         placeHolder="Type/insert link here"
         value={keybase_id}
         onChangeText={setKeybaseIo}
@@ -212,21 +201,19 @@ export const NameDataForm: React.FC<{
       />
       <TextInputCustom<Metadata>
         name="validator_operator_address"
-        containerStyle={inputStyle}
-        label="Validator Operator Address"
-        noBrokenCorners
-        variant="labelOutside"
+        style={inputStyle}
+        label="VALIDATOR OPERATOR ADDRESS"
         placeHolder="Type/insert link here"
         value={validator_operator_address}
         onChangeText={setValidatorOperatorAddress}
         squaresBackgroundColor={neutral17}
       />
       <PrimaryButton
-        size="M"
+        size="XL"
         text={btnLabel}
         disabled={disabled}
         onPress={handlePressBtn}
-        boxStyle={{ marginTop: layout.spacing_x1 }}
+        boxStyle={{ marginTop: 8, alignSelf: "center" }}
         loader
       />
     </View>

@@ -94,13 +94,9 @@ interface GeneratePostMetadataParams extends Omit<NewPostFormValues, "files"> {
 }
 
 interface GenerateArticleMetadataParams
-  extends Omit<
-    NewArticleFormValues,
-    "files" | "thumbnailImage" | "coverImage"
-  > {
+  extends Omit<NewArticleFormValues, "files" | "thumbnailImage"> {
   files: RemoteFileData[];
   thumbnailImage?: RemoteFileData;
-  coverImage?: RemoteFileData;
 }
 
 export const generatePostMetadata = ({
@@ -134,7 +130,6 @@ export const generateArticleMetadata = ({
   gifs,
   nftStorageApiToken,
   thumbnailImage,
-  coverImage,
   shortDescription,
 }: GenerateArticleMetadataParams): SocialFeedArticleMetadata => {
   const m = ZodSocialFeedArticleMetadata.parse({
@@ -146,7 +141,6 @@ export const generateArticleMetadata = ({
     gifs: gifs || [],
     nftStorageApiToken: nftStorageApiToken || "",
     thumbnailImage,
-    coverImage,
     shortDescription: shortDescription || "",
   });
   // we need this hack until the createdAt field is properly provided by the contract

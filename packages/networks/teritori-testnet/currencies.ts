@@ -14,12 +14,24 @@ export const teritoriTestnetCurrencies: CurrencyInfo[] = [
   {
     kind: "ibc",
     denom:
-      "ibc/2CC0B1B7A981ACC74854717F221008484603BB8360E81B262411B0D830EDE9B0",
-    sourceNetwork: "cosmos-registry:axelartestnet",
-    sourceDenom: "uaxl",
-    sourceChannelId: "channel-399",
+      "ibc/C9300DDD93DF3A3A668CAB02398A0AA081EF89EC005B2DB68832E363BAAABF85",
+    sourceNetwork: "cosmos-hub-theta",
+    sourceDenom: "uatom",
     sourceChannelPort: "transfer",
-    destinationChannelId: "channel-0",
+    sourceChannelId: "channel-685",
     destinationChannelPort: "transfer",
+    destinationChannelId: "channel-30",
+    deprecated: true,
+  },
+  {
+    kind: "ibc",
+    denom:
+      "ibc/8D9734B53D56DC57A92E4CC788547699853F411190F6DAA70FA12B9BD062F7AE",
+    sourceNetwork: "cosmos-hub-theta",
+    sourceDenom: "uatom",
+    sourceChannelPort: "transfer",
+    sourceChannelId: "channel-701",
+    destinationChannelPort: "transfer",
+    destinationChannelId: "channel-33",
   },
 ];

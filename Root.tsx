@@ -12,6 +12,7 @@ import Plausible from "plausible-tracker";
 import React, { ReactNode, memo, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform, View, Text, TextStyle } from "react-native";
+import { ClickOutsideProvider } from "react-native-click-outside";
 import {
   enableLegacyWebImplementation,
   GestureHandlerRootView,
@@ -23,7 +24,6 @@ import { PersistGate } from "redux-persist/integration/react";
 
 import { MultisigDeauth } from "./packages/components/multisig/MultisigDeauth";
 import { Navigator } from "./packages/components/navigation/Navigator";
-import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
 import { MediaPlayerContextProvider } from "./packages/context/MediaPlayerProvider";
 import { MessageContextProvider } from "./packages/context/MessageProvider";
@@ -31,7 +31,6 @@ import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
 import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
-import { WalletControlContextProvider } from "./packages/context/WalletControlProvider";
 import {
   WalletsProvider,
   useWallets,
@@ -96,31 +95,29 @@ export default function App() {
                   <NavigationContainer linking={linking}>
                     <SafeAreaProvider>
                       <FeedbacksContextProvider>
-                        <DropdownsContextProvider>
+                        <ClickOutsideProvider>
                           <WalletsProvider>
                             <WalletSyncer />
                             <DappStoreApps />
                             <MultisigDeauth />
-                            <WalletControlContextProvider>
-                              <SearchBarContextProvider>
-                                <TransactionModalsProvider>
-                                  <TNSContextProvider>
-                                    <TNSMetaDataListContextProvider>
-                                      <MenuProvider>
-                                        <MessageContextProvider>
-                                          <MediaPlayerContextProvider>
-                                            <StatusBar style="inverted" />
-                                            <Navigator />
-                                          </MediaPlayerContextProvider>
-                                        </MessageContextProvider>
-                                      </MenuProvider>
-                                    </TNSMetaDataListContextProvider>
-                                  </TNSContextProvider>
-                                </TransactionModalsProvider>
-                              </SearchBarContextProvider>
-                            </WalletControlContextProvider>
+                            <SearchBarContextProvider>
+                              <TransactionModalsProvider>
+                                <TNSContextProvider>
+                                  <TNSMetaDataListContextProvider>
+                                    <MenuProvider>
+                                      <MessageContextProvider>
+                                        <MediaPlayerContextProvider>
+                                          <StatusBar style="inverted" />
+                                          <Navigator />
+                                        </MediaPlayerContextProvider>
+                                      </MessageContextProvider>
+                                    </MenuProvider>
+                                  </TNSMetaDataListContextProvider>
+                                </TNSContextProvider>
+                              </TransactionModalsProvider>
+                            </SearchBarContextProvider>
                           </WalletsProvider>
-                        </DropdownsContextProvider>
+                        </ClickOutsideProvider>
                       </FeedbacksContextProvider>
                     </SafeAreaProvider>
                   </NavigationContainer>

@@ -1,15 +1,13 @@
 import React, { ReactNode, useState } from "react";
 import {
   FlatList,
+  Platform,
   StyleProp,
   TextStyle,
   View,
   ViewStyle,
-  Platform,
 } from "react-native";
-import { useSelector } from "react-redux";
 
-import { PeriodFilter } from "./PeriodFilter";
 import { PrettyPrint } from "./types";
 import {
   Collection,
@@ -24,7 +22,7 @@ import { Pagination } from "../../components/Pagination";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
 import { SearchInput } from "../../components/sorts/SearchInput";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import { SpacerColumn } from "../../components/spacer";
 import { TableRow } from "../../components/table/TableRow";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useCollections } from "../../hooks/useCollections";
@@ -32,7 +30,6 @@ import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { NetworkFeature } from "../../networks";
-import { selectTimePeriod } from "../../store/slices/marketplaceFilters";
 import { prettyPrice } from "../../utils/coins";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
@@ -93,7 +90,6 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const enabledNetworks = useEnabledNetworks();
-  const timePeriod = useSelector(selectTimePeriod);
   const isMobile = useIsMobile();
 
   const marketplaceNetworks = enabledNetworks.filter((network) => {
@@ -123,15 +119,14 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
     sort: Sort.SORT_VOLUME_USD,
     limit: 32,
     offset: 0,
-    periodInMinutes: timePeriod.value,
     mintState: MintState.MINT_STATE_UNSPECIFIED,
   };
 
-  const { collections: brokenCollections } = useCollections(req);
+  const { collections: borkenCollections } = useCollections(req);
 
   // this is a hack, we need to fix these in the indexer but it's pain to replay due to current p2e implem and we need to fix this asap
   // FIXME
-  const collections = brokenCollections.map((collection) => {
+  const collections = borkenCollections.map((collection) => {
     let denom = collection.denom;
     let volumeDenom = collection.volumeDenom;
     switch (collection.id) {
@@ -189,7 +184,6 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
             justifyContent: "space-between",
             marginTop: layout.spacing_x4,
             marginBottom: layout.spacing_x4,
-            zIndex: 1,
           }}
         >
           <SearchInput
@@ -198,8 +192,6 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
             }}
             handleChangeText={handleChangeText}
           />
-          <SpacerRow size={2} />
-          <PeriodFilter />
         </View>
         <CollectionTable rows={collections} filterText={filterText} />
       </View>
@@ -214,13 +206,11 @@ const CollectionTable: React.FC<{
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [pageIndex, setPageIndex] = useState(0);
   const isMobile = useIsMobile();
-  const timePeriod = useSelector(selectTimePeriod);
-  const filteredCollections = rows.filter(({ collectionName }) =>
-    collectionName?.toLowerCase().includes(filterText.toLowerCase()),
+
+  const filteredCollections = rows.filter(
+    ({ collectionName }) =>
+      collectionName?.toLowerCase().includes(filterText.toLowerCase()),
   );
-  TABLE_ROWS.TimePeriodPercentualVolume.label =
-    timePeriod.shortLabel + " % Volume";
-  TABLE_ROWS.TimePeriodVolume.label = timePeriod.shortLabel + " Volume";
 
   const maxPage = Math.max(Math.ceil(rows.length / itemsPerPage), 1);
   return (

@@ -9,7 +9,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { ConnectWalletModal } from "../modals/ConnectWalletModal";
+import { ConnectWalletModal } from "../connectWallet/ConnectWalletModal";
 
 const HEIGHT = 40;
 const WIDTH = 220;

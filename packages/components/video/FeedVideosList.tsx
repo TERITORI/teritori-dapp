@@ -5,13 +5,11 @@ import { UploadVideoButton } from "./UploadVideoButton";
 import { UploadVideoModal } from "./UploadVideoModal";
 import { VideoCard } from "./VideoCard";
 import { Post, PostsRequest } from "../../api/feed/v1/feed";
-import { useWalletControl } from "../../context/WalletControlProvider";
 import {
   combineFetchFeedPages,
   useFetchFeed,
 } from "../../hooks/feed/useFetchFeed";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkFeature } from "../../networks";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -28,7 +26,6 @@ export const FeedVideosList: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ title, req, allowUpload, style }) => {
   const selectedWallet = useSelectedWallet();
-  const { showConnectWalletModal } = useWalletControl();
   const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
 
@@ -54,17 +51,6 @@ export const FeedVideosList: React.FC<{
     }
   };
 
-  const onPressUploadVideo = async () => {
-    if (!selectedWallet?.address || !selectedWallet.connected) {
-      showConnectWalletModal({
-        forceNetworkFeature: NetworkFeature.SocialFeed,
-        action: "Publish a Video",
-      });
-      return;
-    }
-    setOpenUploadModal(true);
-  };
-
   if (!data && (isLoading || isFetching))
     return <View style={{ minWidth: minCardWidth }} />;
   return (
@@ -74,7 +60,9 @@ export const FeedVideosList: React.FC<{
           {title}
         </BrandText>
 
-        {allowUpload && <UploadVideoButton onPress={onPressUploadVideo} />}
+        {allowUpload && (
+          <UploadVideoButton onPress={() => setOpenUploadModal(true)} />
+        )}
       </View>
       <View style={[contentGroupCStyle]}>
         <GridList<Post>

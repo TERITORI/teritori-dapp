@@ -16,12 +16,10 @@ import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
-  getCosmosNetwork,
   getKeplrSigningCosmWasmClient,
   mustGetCosmosNetwork,
 } from "../../networks";
-import { neutral17, neutralA3 } from "../../utils/style/colors";
-import { layout } from "../../utils/style/layout";
+import { neutral17 } from "../../utils/style/colors";
 
 interface TNSBurnNameScreenProps extends TNSModalCommonProps {}
 
@@ -31,12 +29,10 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
   const { name } = useTNS();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
-  const network = getCosmosNetwork(selectedWallet?.networkId);
+  const network = mustGetCosmosNetwork(selectedWallet?.networkId);
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
   const walletAddress = selectedWallet?.address;
-  const normalizedTokenId = (
-    name + network?.nameServiceTLD || ""
-  ).toLowerCase();
+  const normalizedTokenId = (name + network.nameServiceTLD || "").toLowerCase();
 
   const queryClient = useQueryClient();
 
@@ -57,7 +53,6 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
     }
 
     try {
-      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
       if (!network.nameServiceContractAddress) {
         throw new Error("network not supported");
       }
@@ -98,7 +93,6 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
     <ModalBase
       hideMainSeparator
       onClose={() => onClose()}
-      label="Burn Name NFT"
       width={457}
       boxStyle={{
         backgroundColor: neutral17,
@@ -137,7 +131,7 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
               style={{
                 fontSize: 16,
                 lineHeight: 20,
-                color: neutralA3,
+                color: "#A3A3A3",
                 marginTop: 16,
                 marginBottom: 20,
               }}
@@ -151,7 +145,7 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
               size="XS"
               text="I understand, burn it"
               onPress={onSubmit}
-              style={{ marginBottom: layout.spacing_x4 }}
+              style={{ marginBottom: 80 }}
               loader
             />
           </View>

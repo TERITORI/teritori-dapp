@@ -123,13 +123,6 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		return errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
 	}
 
-	periodInMinutes := -time.Duration(req.GetPeriodInMinutes()) * time.Minute // has to be minus because we want to go back in time
-
-	if periodInMinutes == 0 {
-		periodInMinutes = -43200 * time.Minute // 30 days
-	}
-	// get time.Duration to minutes
-
 	switch network := network.(type) {
 
 	case *networks.CosmosNetwork:
@@ -226,9 +219,9 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 			OFFSET ?
 		`, where, orderSQL), // order By here or it won't work
 			s.conf.Whitelist,
-			time.Now().Add(periodInMinutes).Truncate(time.Minute),
-			time.Now().Add(periodInMinutes).Truncate(time.Minute),
-			time.Now().Add(periodInMinutes*2).Truncate(time.Minute),
+			time.Now().AddDate(0, 0, -30),
+			time.Now().AddDate(0, 0, -30),
+			time.Now().AddDate(0, 0, -60),
 			limit,
 			offset,
 		).Scan(&collections).Error
@@ -751,7 +744,6 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 				TransactionKind: string(activity.Kind),
 				TargetName:      activity.NFT.Name,
 				TargetImageUri:  activity.NFT.ImageURI,
-				TargetId:        string(activity.NFT.ID),
 				ContractName:    "ToriVault",
 				Time:            activity.Time.Format(time.RFC3339),
 				Amount:          price,

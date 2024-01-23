@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -8,7 +8,7 @@ import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { LegacySecondaryBox } from "../../../components/boxes/LegacySecondaryBox";
-import { useDropdowns } from "../../../context/DropdownsProvider";
+import { useClickOutside } from "../../../hooks/useClickOutside";
 import {
   selectAvailableApps,
   setAvailableApps,
@@ -59,8 +59,8 @@ const SelectableOption: React.FC<{
 };
 
 export const DropdownDappsStoreFilter: React.FC = () => {
-  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
+
   const availableApps = useSelector(selectAvailableApps);
   const options = Object.values(availableApps).map((option) => {
     return {
@@ -71,7 +71,6 @@ export const DropdownDappsStoreFilter: React.FC = () => {
 
   return (
     <View
-      ref={dropdownRef}
       style={{
         alignSelf: "flex-end",
         marginRight: layout.spacing_x3,
@@ -84,41 +83,46 @@ export const DropdownDappsStoreFilter: React.FC = () => {
           alignItems: "center",
         }}
         activeOpacity={1}
-        onPress={() => onPressDropdownButton(dropdownRef)}
+        onPress={() => setDropdownState(!isDropdownOpen)}
       >
         <BrandText style={[fontSemibold14, { marginRight: layout.spacing_x1 }]}>
           All dApps
         </BrandText>
         <SVG
-          source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
+          source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
           width={16}
           height={16}
           color={secondaryColor}
         />
       </TouchableOpacity>
-
-      {isDropdownOpen(dropdownRef) && (
-        <LegacySecondaryBox
-          noBrokenCorners
-          width={248}
-          style={{ position: "absolute", top: 29, right: -14 }}
-          mainContainerStyle={{
-            paddingHorizontal: layout.spacing_x1_5,
-            paddingTop: layout.spacing_x1_5,
-            backgroundColor: neutral33,
-            alignItems: "flex-start",
-          }}
-        >
-          {options.map((option) => (
-            <SelectableOption
-              style={{ marginBottom: layout.spacing_x1_5 }}
-              key={option.id}
-              name={option.name}
-              id={option.id}
-            />
-          ))}
-        </LegacySecondaryBox>
-      )}
+      <View
+        ref={dropdownRef}
+        collapsable={false}
+        style={{ position: "absolute", top: 29, right: -14 }}
+      >
+        {isDropdownOpen && (
+          <LegacySecondaryBox
+            noBrokenCorners
+            width={248}
+            mainContainerStyle={{
+              paddingHorizontal: layout.spacing_x1_5,
+              paddingTop: layout.spacing_x1_5,
+              backgroundColor: neutral33,
+              alignItems: "flex-start",
+              flex: 1,
+            }}
+          >
+            {options.map((option) => (
+              <SelectableOption
+                style={{ marginBottom: layout.spacing_x1_5 }}
+                key={option.id}
+                name={option.name}
+                id={option.id}
+              />
+            ))}
+          </LegacySecondaryBox>
+        )}
+      </View>
     </View>
   );
 };

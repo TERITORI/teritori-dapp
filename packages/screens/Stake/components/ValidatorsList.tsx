@@ -243,7 +243,6 @@ const ValidatorRow: React.FC<{
           </View>
         </>
       )}
-
       {!!actions && (
         <View
           style={{

@@ -1,16 +1,12 @@
 import { coin } from "@cosmjs/proto-signing";
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { useCreatePost } from "./useCreatePost";
 import { useFeedPostFee } from "./useFeedPostFee";
 import { useFreePostsCount } from "./useFreePostsCount";
 import { signingSocialFeedClient } from "../../client-creators/socialFeedClient";
-import {
-  feedPostingStep,
-  FeedPostingStepId,
-} from "../../components/loaders/FeedPostingProgressBar";
 import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { TERITORI_FEED_ID } from "../../components/socialFeed/const";
 import {
@@ -36,16 +32,13 @@ export const useFeedPosting = (
   if (network) {
     networkId = network.id;
   }
-  const [step, setStep] = useState(
-    feedPostingStep(FeedPostingStepId.UNDEFINED),
-  );
+
   const balances = useBalances(networkId, userAddress);
   const { postFee } = useFeedPostFee(networkId, category);
   const { freePostCount } = useFreePostsCount(userId, category);
   const { isDAO } = useIsDAO(userId);
   const makeProposal = useDAOMakeProposal(isDAO ? userId : undefined);
   const { mutateAsync, isLoading: isProcessing } = useCreatePost({
-    onMutate: () => {},
     onSuccess,
   });
 
@@ -83,8 +76,6 @@ export const useFeedPosting = (
         if (!userAddress) {
           throw new Error("Invalid sender");
         }
-        setStep(feedPostingStep(FeedPostingStepId.PROPOSING));
-
         await makeProposal(userAddress, {
           title: "Post on feed",
           description: "",
@@ -102,7 +93,6 @@ export const useFeedPosting = (
             },
           ],
         });
-        setStep(feedPostingStep(FeedPostingStepId.DONE));
       } else {
         if (network?.kind === NetworkKind.Gno) {
           const vmCall = {
@@ -117,7 +107,6 @@ export const useFeedPosting = (
               msg.metadata,
             ],
           };
-          setStep(feedPostingStep(FeedPostingStepId.POSTING));
 
           const txHash = await adenaDoContract(
             network.id,
@@ -127,10 +116,7 @@ export const useFeedPosting = (
 
           const provider = new GnoJSONRPCProvider(network.endpoint);
           await provider.waitForTransaction(txHash);
-          setStep(feedPostingStep(FeedPostingStepId.DONE));
         } else {
-          setStep(feedPostingStep(FeedPostingStepId.POSTING));
-
           const client = await signingSocialFeedClient({
             networkId: network?.id,
             walletAddress: userAddress,
@@ -144,7 +130,6 @@ export const useFeedPosting = (
               funds: [coin(postFee, "utori")],
             },
           });
-          setStep(feedPostingStep(FeedPostingStepId.DONE));
         }
       }
     },
@@ -177,7 +162,5 @@ export const useFeedPosting = (
       feeBalance?.amount || "0",
       feeCurrency?.denom,
     ),
-    step,
-    setStep,
   };
 };

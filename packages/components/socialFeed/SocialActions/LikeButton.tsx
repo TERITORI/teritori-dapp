@@ -4,8 +4,7 @@ import { ActivityIndicator } from "react-native-paper";
 
 import thumbUpSVG from "../../../../assets/icons/thumb-up.svg";
 import { Post } from "../../../api/feed/v1/feed";
-import { useSocialReactions } from "../../../hooks/feed/useSocialReactions";
-import { LIKE_EMOJI } from "../../../utils/social-feed";
+import { useSocialReactions } from "../../../hooks/useSocialReactions";
 import { neutral22, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -26,7 +25,7 @@ export const LikeButton: FC<{
     return <ActivityIndicator animating color={secondaryColor} size={32} />;
   return (
     <TouchableOpacity
-      onPress={() => handleReaction(LIKE_EMOJI)}
+      onPress={() => handleReaction("👍")}
       style={{
         flexDirection: "row",
         alignItems: "center",
@@ -40,8 +39,7 @@ export const LikeButton: FC<{
       <SVG source={thumbUpSVG} height={20} width={20} color={secondaryColor} />
       <SpacerRow size={0.75} />
       <BrandText style={fontSemibold13}>
-        {post.reactions.find((reaction) => reaction.icon === LIKE_EMOJI)
-          ?.count || 0}
+        {post.reactions.find((reaction) => reaction.icon === "👍")?.count || 0}
       </BrandText>
     </TouchableOpacity>
   );

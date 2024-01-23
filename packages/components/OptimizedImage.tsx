@@ -1,5 +1,5 @@
 import { CID } from "multiformats";
-import React, { memo, useEffect } from "react";
+import React, { memo } from "react";
 import { Image, ImageProps, View, StyleSheet, PixelRatio } from "react-native";
 
 import { neutral33 } from "../utils/style/colors";
@@ -21,15 +21,6 @@ export const OptimizedImage: React.FC<
     const sourceURI = shouldUseFallback ? fallbackURI : baseSourceURI;
     const sourceWidth = PixelRatio.getPixelSizeForLayoutSize(width);
     const sourceHeight = PixelRatio.getPixelSizeForLayoutSize(height);
-    const otherStyle = StyleSheet.flatten(other.style);
-
-    useEffect(() => {
-      setIsError(false);
-    }, [baseSourceURI]);
-
-    useEffect(() => {
-      setIsFallbackError(false);
-    }, [fallbackURI]);
 
     if ((shouldUseFallback && !fallbackURI) || isFallbackError) {
       return (
@@ -37,16 +28,11 @@ export const OptimizedImage: React.FC<
           style={{
             width,
             height,
-            position: otherStyle.position,
-            top: otherStyle.top,
-            left: otherStyle.left,
-            right: otherStyle.right,
-            bottom: otherStyle.bottom,
-            borderColor: otherStyle.borderColor,
-            borderWidth: otherStyle.borderWidth,
-            borderRadius: otherStyle.borderRadius,
-            borderTopLeftRadius: otherStyle.borderTopLeftRadius,
-            borderBottomLeftRadius: otherStyle.borderBottomLeftRadius,
+            borderRadius: StyleSheet.flatten(other.style).borderRadius,
+            borderTopLeftRadius: StyleSheet.flatten(other.style)
+              .borderTopLeftRadius,
+            borderBottomLeftRadius: StyleSheet.flatten(other.style)
+              .borderBottomLeftRadius,
             backgroundColor: neutral33,
           }}
         />
@@ -90,8 +76,8 @@ const transformURI = (
     uri = "ipfs://" + uri;
   } catch {}
 
-  const knownScheme = ["https://", "http://", "ipfs://"].find((scheme) =>
-    uri?.startsWith(scheme),
+  const knownScheme = ["https://", "http://", "ipfs://"].find(
+    (scheme) => uri?.startsWith(scheme),
   );
   if (!knownScheme) {
     return uri;

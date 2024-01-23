@@ -51,13 +51,7 @@ export const JoinGroup = ({ onClose }: CreateConversationProps) => {
   };
 
   return (
-    <ModalBase
-      label="Join Group"
-      onClose={onClose}
-      visible
-      width={590}
-      scrollable
-    >
+    <ModalBase label="Join Group" onClose={onClose} visible width={590}>
       <KeyboardAwareScrollView>
         <View>
           <BrandText

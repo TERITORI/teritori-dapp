@@ -22,9 +22,8 @@ export const useSquadStakingSquadsV1 = (userId: string | undefined) => {
           return null;
         }
 
-        const contractAddress = getCosmosNetwork(
-          network.id,
-        )?.riotSquadStakingContractAddressV1;
+        const contractAddress = getCosmosNetwork(network.id)
+          ?.riotSquadStakingContractAddressV1;
 
         if (!contractAddress) {
           return null;

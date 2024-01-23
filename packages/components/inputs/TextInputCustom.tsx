@@ -18,7 +18,6 @@ import {
 } from "react-hook-form";
 import {
   ActivityIndicator,
-  Pressable,
   StyleProp,
   StyleSheet,
   TextInput,
@@ -49,14 +48,11 @@ import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
-// TODO: Refacto TextInputCustom. Too much props
-
 export interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
   variant?: "regular" | "labelOutside" | "noStyle";
   iconSVG?: React.FC<SvgProps>;
-  onPressChildren?: () => void;
   placeHolder?: string;
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;
@@ -143,7 +139,6 @@ export const TextInputCustom = <T extends FieldValues>({
   subtitle,
   labelStyle,
   iconSVG,
-  onPressChildren,
   hideLabel,
   valueModifier,
   errorStyle,
@@ -297,10 +292,9 @@ export const TextInputCustom = <T extends FieldValues>({
               {...restProps}
             />
           </View>
+
           {isLoading ? (
             <ActivityIndicator color={secondaryColor} size="small" />
-          ) : onPressChildren ? (
-            <Pressable onPress={onPressChildren}>{children}</Pressable>
           ) : (
             <>{children}</>
           )}

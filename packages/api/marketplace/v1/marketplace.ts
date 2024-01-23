@@ -236,7 +236,6 @@ export interface Activity {
   buyerId: string;
   sellerId: string;
   usdPrice: number;
-  targetId: string;
 }
 
 export interface Quest {
@@ -258,7 +257,6 @@ export interface CollectionsRequest {
   upcoming: boolean;
   networkId: string;
   mintState: MintState;
-  periodInMinutes?: number | undefined;
 }
 
 export interface CollectionStatsRequest {
@@ -1633,7 +1631,6 @@ function createBaseActivity(): Activity {
     buyerId: "",
     sellerId: "",
     usdPrice: 0,
-    targetId: "",
   };
 }
 
@@ -1674,9 +1671,6 @@ export const Activity = {
     }
     if (message.usdPrice !== 0) {
       writer.uint32(97).double(message.usdPrice);
-    }
-    if (message.targetId !== "") {
-      writer.uint32(106).string(message.targetId);
     }
     return writer;
   },
@@ -1772,13 +1766,6 @@ export const Activity = {
 
           message.usdPrice = reader.double();
           continue;
-        case 13:
-          if (tag !== 106) {
-            break;
-          }
-
-          message.targetId = reader.string();
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1802,7 +1789,6 @@ export const Activity = {
       buyerId: isSet(object.buyerId) ? globalThis.String(object.buyerId) : "",
       sellerId: isSet(object.sellerId) ? globalThis.String(object.sellerId) : "",
       usdPrice: isSet(object.usdPrice) ? globalThis.Number(object.usdPrice) : 0,
-      targetId: isSet(object.targetId) ? globalThis.String(object.targetId) : "",
     };
   },
 
@@ -1844,9 +1830,6 @@ export const Activity = {
     if (message.usdPrice !== 0) {
       obj.usdPrice = message.usdPrice;
     }
-    if (message.targetId !== "") {
-      obj.targetId = message.targetId;
-    }
     return obj;
   },
 
@@ -1867,7 +1850,6 @@ export const Activity = {
     message.buyerId = object.buyerId ?? "";
     message.sellerId = object.sellerId ?? "";
     message.usdPrice = object.usdPrice ?? 0;
-    message.targetId = object.targetId ?? "";
     return message;
   },
 };
@@ -2036,16 +2018,7 @@ export const PriceDatum = {
 };
 
 function createBaseCollectionsRequest(): CollectionsRequest {
-  return {
-    limit: 0,
-    offset: 0,
-    sort: 0,
-    sortDirection: 0,
-    upcoming: false,
-    networkId: "",
-    mintState: 0,
-    periodInMinutes: undefined,
-  };
+  return { limit: 0, offset: 0, sort: 0, sortDirection: 0, upcoming: false, networkId: "", mintState: 0 };
 }
 
 export const CollectionsRequest = {
@@ -2070,9 +2043,6 @@ export const CollectionsRequest = {
     }
     if (message.mintState !== 0) {
       writer.uint32(64).int32(message.mintState);
-    }
-    if (message.periodInMinutes !== undefined) {
-      writer.uint32(72).int32(message.periodInMinutes);
     }
     return writer;
   },
@@ -2133,13 +2103,6 @@ export const CollectionsRequest = {
 
           message.mintState = reader.int32() as any;
           continue;
-        case 9:
-          if (tag !== 72) {
-            break;
-          }
-
-          message.periodInMinutes = reader.int32();
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2158,7 +2121,6 @@ export const CollectionsRequest = {
       upcoming: isSet(object.upcoming) ? globalThis.Boolean(object.upcoming) : false,
       networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
       mintState: isSet(object.mintState) ? mintStateFromJSON(object.mintState) : 0,
-      periodInMinutes: isSet(object.periodInMinutes) ? globalThis.Number(object.periodInMinutes) : undefined,
     };
   },
 
@@ -2185,9 +2147,6 @@ export const CollectionsRequest = {
     if (message.mintState !== 0) {
       obj.mintState = mintStateToJSON(message.mintState);
     }
-    if (message.periodInMinutes !== undefined) {
-      obj.periodInMinutes = Math.round(message.periodInMinutes);
-    }
     return obj;
   },
 
@@ -2203,7 +2162,6 @@ export const CollectionsRequest = {
     message.upcoming = object.upcoming ?? false;
     message.networkId = object.networkId ?? "";
     message.mintState = object.mintState ?? 0;
-    message.periodInMinutes = object.periodInMinutes ?? undefined;
     return message;
   },
 };
@@ -4502,7 +4460,9 @@ export class GrpcWebImpl {
             }
           },
         });
-        observer.add(() => client.close());
+        observer.add(() => {
+          return client.close();
+        });
       };
       upStream();
     }).pipe(share());

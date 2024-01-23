@@ -21,10 +21,10 @@ const initialStatePersisted: DappsStoragePersisted = {
   selectedApps: [],
 };
 
-export const selectAvailableApps = (state: RootState) =>
+export const selectAvailableApps = (state: RootState): dAppGroup =>
   state.dAppsStore.availableApps;
 
-export const selectCheckedApps = (state: RootState) =>
+export const selectCheckedApps = (state: RootState): pinnedAppsCollection =>
   state.dAppsStorePersisted.selectedApps;
 
 const dAppsStore = createSlice({

@@ -20,10 +20,8 @@ export const DEFAULT_USERNAME = "anonymous";
 export const SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT = 2500;
 export const NB_ROWS_SHOWN_IN_PREVIEW = 5;
 export const ARTICLE_MAX_WIDTH = 1046;
-export const ARTICLE_COVER_IMAGE_MAX_HEIGHT = 460;
-export const ARTICLE_COVER_IMAGE_RATIO = 2.274;
-export const ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH = 364;
-export const ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT = 252;
+export const ARTICLE_COVER_IMAGE_HEIGHT = 300;
+export const ARTICLE_THUMBNAIL_IMAGE_HEIGHT = 252;
 export const BASE_POST: Post = {
   identifier: "",
   category: 0,
@@ -36,8 +34,6 @@ export const BASE_POST: Post = {
   tipAmount: 0,
   reactions: [],
 };
-export const LIKE_EMOJI = "👍";
-export const DISLIKE_EMOJI = "👎";
 
 export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
   const hasIcon = reactions.find((r) => r.icon === icon);

@@ -25,13 +25,14 @@ import { Label } from "../inputs/TextInputCustom";
 export const FileUploader: FC<FileUploaderProps> = ({
   label,
   style,
-  fileImageStyle,
   onUpload,
   // multiple is not used at true for now, needs to refactor in parents
   multiple,
   mimeTypes,
   children,
   maxUpload,
+  isImageCover,
+  fileHeight = 256,
   setIsLoading,
 }) => {
   const { setToastError } = useFeedbacks();
@@ -40,8 +41,8 @@ export const FileUploader: FC<FileUploaderProps> = ({
 
   const handleFiles = async (files: File[]) => {
     const _files = multiple ? files : [files[0]];
-    let supportedFiles = [...files].filter((file) =>
-      mimeTypes?.includes(file.type),
+    let supportedFiles = [...files].filter(
+      (file) => mimeTypes?.includes(file.type),
     );
 
     if (maxUpload && supportedFiles.length) {
@@ -137,6 +138,7 @@ export const FileUploader: FC<FileUploaderProps> = ({
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
+              height: file ? fileHeight : 80,
               borderRadius: 12,
             }}
           >
@@ -153,11 +155,10 @@ export const FileUploader: FC<FileUploaderProps> = ({
                   src={file}
                   style={{
                     overflow: "hidden",
-                    height: 256,
+                    height: fileHeight,
                     backgroundSize: "cover",
-                    width: "auto",
-                    objectFit: "fill",
-                    ...fileImageStyle,
+                    width: isImageCover ? "100%" : "auto",
+                    objectFit: isImageCover ? "cover" : "fill",
                   }}
                   alt="Uploaded file"
                 />
@@ -173,7 +174,7 @@ export const FileUploader: FC<FileUploaderProps> = ({
                 ]}
                 style={{ flex: 1 }}
                 mainContainerStyle={{
-                  height: 80,
+                  height: file ? fileHeight : 80,
                   alignItems: "center",
                   padding: layout.spacing_x2_5,
                   borderRadius: 12,

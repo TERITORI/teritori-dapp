@@ -52,8 +52,7 @@ export const LeftRail = () => {
               renderItemContent={({ item, index }) => {
                 const { appId, groupKey } = getValuesFromId(item);
                 return availableApps ? (
-                  availableApps[groupKey] &&
-                  availableApps[groupKey]?.options[appId] ? (
+                  availableApps[groupKey] ? (
                     <SelectedDraggable
                       dragHandler={setIsDraggable}
                       option={availableApps[groupKey]?.options[appId]}

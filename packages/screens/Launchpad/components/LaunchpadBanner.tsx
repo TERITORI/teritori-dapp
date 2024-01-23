@@ -1,42 +1,46 @@
 import React from "react";
-import { Image, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import LaunchpadBannerImage from "../../../../assets/banners/launchpad.jpg";
 import LogoSimpleSvg from "../../../../assets/icons/logo-simple.svg";
 import { BrandText } from "../../../components/BrandText";
+import { OptimizedImage } from "../../../components/OptimizedImage";
 import { SVG } from "../../../components/SVG";
 import { SpacerColumn } from "../../../components/spacer";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
-import { fontSemibold16, fontSemibold28 } from "../../../utils/style/fonts";
+import { fontSemibold28 } from "../../../utils/style/fonts";
 
 export const LaunchpadBanner: React.FC = () => {
   const { width } = useMaxResolution();
-  const isSmallScreen = width < 500;
-  const logoSize = isSmallScreen ? 44 : 88;
-  const font = isSmallScreen ? fontSemibold16 : fontSemibold28;
 
   return (
-    <View>
-      <Image
-        source={LaunchpadBannerImage}
-        style={{
-          width,
-          height: width / 2.5,
-        }}
+    <View style={styles.container}>
+      <OptimizedImage
+        sourceURI={LaunchpadBannerImage}
+        width={width}
+        height={width / 2.5}
+        style={{ width, height: width / 2.5, resizeMode: "contain" }}
       />
-      <View
-        style={{
-          position: "absolute",
-          height: "100%",
-          width: "100%",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <SVG source={LogoSimpleSvg} width={logoSize} height={logoSize} />
+      <View style={styles.detailContainer}>
+        <SVG source={LogoSimpleSvg} width={88} height={88} />
         <SpacerColumn size={1} />
-        <BrandText style={font}>Launchpad Submission Form</BrandText>
+        <BrandText style={fontSemibold28}>Launchpad Submission Form</BrandText>
       </View>
     </View>
   );
 };
+
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
+const styles = StyleSheet.create({
+  container: {
+    position: "relative",
+  },
+  detailContainer: {
+    position: "absolute",
+    height: "100%",
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
