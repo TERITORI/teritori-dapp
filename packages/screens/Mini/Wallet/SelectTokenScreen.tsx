@@ -46,6 +46,7 @@ const SelectTokenScreen: ScreenFC<"MiniSelectToken"> = ({
               onPress={() =>
                 navigation.replace(navigateTo, {
                   back: "MiniSelectToken",
+                  denom: item.denom,
                 })
               }
               style={{

@@ -117,7 +117,7 @@ export type RootStackParamList = {
   MiniDepositTORI: { back?: RouteName };
   ModeSelection: undefined;
   ChatActivation: undefined;
-  MiniSendTori: { back?: RouteName };
+  MiniSendTori: { back?: RouteName; denom: string };
   MiniSendingTori: { back?: RouteName };
   MiniTransactionDetail: { type: string; transactionId: string };
   ConnectLedger: undefined;

@@ -139,7 +139,7 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
         onPress={handlePressManageTokens}
       >
         <SVG source={settingSVG} height={24} width={24} />
-        <BrandText style={[fontSemibold14, {}]}>Manage Tokens</BrandText>
+        <BrandText style={[fontSemibold14]}>Manage Tokens</BrandText>
       </CustomPressable>
       <Separator style={{ marginVertical: layout.spacing_x3 }} />
 
