@@ -1,27 +1,22 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 
 import LaunchpadBannerImage from "../../../../assets/banners/launchpad.jpg";
 import LogoSimpleSvg from "../../../../assets/icons/logo-simple.svg";
 import { BrandText } from "../../../components/BrandText";
-import { OptimizedImage } from "../../../components/OptimizedImage";
 import { SVG } from "../../../components/SVG";
 import { SpacerColumn } from "../../../components/spacer";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { fontSemibold28 } from "../../../utils/style/fonts";
-
-const imageWidth = 1024;
 
 export const LaunchpadBanner: React.FC = () => {
   const { width } = useMaxResolution();
 
   return (
     <View style={styles.container}>
-      <OptimizedImage
-        sourceURI={LaunchpadBannerImage}
-        width={imageWidth}
-        height={imageWidth / 2.5}
-        style={{ width, height: width / 2.5, resizeMode: "contain" }}
+      <Image
+        source={LaunchpadBannerImage}
+        style={{ width, aspectRatio: 1, resizeMode: "contain" }}
       />
       <View style={styles.detailContainer}>
         <SVG source={LogoSimpleSvg} width={88} height={88} />
