@@ -17,7 +17,7 @@ export const findByBaseDenom: (token: string) => AssetList | undefined = (
 export const useGetAssets = (networkId: string, address: string) => {
   const balances = useBalances(networkId, address);
 
-  const assets = balances.map((balance) => {
+  return balances.map((balance) => {
     const assetList = findByBaseDenom(balance.denom);
     return {
       ...balance,
@@ -25,6 +25,4 @@ export const useGetAssets = (networkId: string, address: string) => {
       networkId,
     };
   });
-
-  return assets;
 };
