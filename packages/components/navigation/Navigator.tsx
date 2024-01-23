@@ -44,7 +44,7 @@ import { SwapScreen } from "../../screens/Swap/SwapScreen";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
 import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
 import { CreatePassword } from "../../screens/Wallet/Screens/CreatePassword";
-import { CreateScreen } from "../../screens/Wallet/Screens/CreateScreen";
+import { CreateWalletScreen } from "../../screens/Wallet/Screens/NativeWallet";
 import { ImportWallet } from "../../screens/Wallet/Screens/ImportWallet";
 import { SuccessScreen } from "../../screens/Wallet/Screens/SucessScreen";
 import { ViewSeed } from "../../screens/Wallet/Screens/ViewSeed";
@@ -353,7 +353,7 @@ export const Navigator: React.FC = () => {
 
       <Stack.Screen
         name="NativeWallet"
-        component={CreateScreen}
+        component={CreateWalletScreen}
         options={{ header: () => null, title: screenTitle("Wallet Create") }}
       />
       <Stack.Screen

@@ -21,7 +21,7 @@ function Connect3rdPartyWallet() {
   );
 }
 
-export const CreateScreen: ScreenFC<"NativeWallet"> = () => {
+const NativeWallet: ScreenFC<"NativeWallet"> = () => {
   const video = React.useRef(null);
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export const CreateScreen: ScreenFC<"NativeWallet"> = () => {
           <CustomButton
             title="Create Wallet"
             onPress={(_, navigation) => {
-              navigation.navigate("NewWallet");
+              navigation.navigate("CreateWallet");
             }}
           />
           <SpacerColumn size={1} />
@@ -93,3 +93,5 @@ export const CreateScreen: ScreenFC<"NativeWallet"> = () => {
     </WalletContainer>
   );
 };
+
+export default NativeWallet;

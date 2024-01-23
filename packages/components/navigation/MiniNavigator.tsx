@@ -43,9 +43,10 @@ import SendToriScreen from "../../screens/Mini/Wallet/SendToriScreen";
 import SendingToriScreen from "../../screens/Mini/Wallet/SendingToriScreen";
 import TransactionDetailScreen from "../../screens/Mini/Wallet/TransactionDetailScreen";
 import { CreatePassword } from "../../screens/Wallet/Screens/CreatePassword";
-import { CreateScreen } from "../../screens/Wallet/Screens/CreateScreen";
+import { CreatePasswordWallet } from "../../screens/Wallet/Screens/CreatePasswordWallet";
+import { CreateWalletScreen } from "../../screens/Wallet/Screens/CreateWalletScreen";
 import { ImportWallet } from "../../screens/Wallet/Screens/ImportWallet";
-import NewWalletScreen from "../../screens/Wallet/Screens/NewWalletScreen";
+import NativeWallet from "../../screens/Wallet/Screens/NativeWallet";
 import { SuccessScreen } from "../../screens/Wallet/Screens/SucessScreen";
 import { ViewSeed } from "../../screens/Wallet/Screens/ViewSeed";
 import { RootStackParamList } from "../../utils/navigation";
@@ -108,7 +109,7 @@ export const MiniNavigator: React.FC = () => {
       />
       <Stack.Screen
         name="NativeWallet"
-        component={CreateScreen}
+        component={NativeWallet}
         options={{ header: () => null, title: "Wallet Create" }}
       />
       <Stack.Screen
@@ -130,11 +131,19 @@ export const MiniNavigator: React.FC = () => {
         }}
       />
       <Stack.Screen
-        name="NewWallet"
-        component={NewWalletScreen}
+        name="CreateWallet"
+        component={CreateWalletScreen}
         options={{
           header: () => null,
           title: "",
+        }}
+      />
+      <Stack.Screen
+        name="CreatePasswordWallet"
+        component={CreatePasswordWallet}
+        options={{
+          header: () => null,
+          title: "Create Password",
         }}
       />
       <Stack.Screen

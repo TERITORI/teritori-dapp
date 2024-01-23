@@ -23,7 +23,9 @@ import Checkbox from "../../Mini/components/checkbox/Checkbox";
 import useFetch from "../hooks/useFetch";
 import { getMnemonic } from "../hooks/useNativeWallet";
 
-const NewWalletScreen: ScreenFC<"NewWallet"> = ({ navigation }) => {
+export const CreateWalletScreen: ScreenFC<"CreateWallet"> = ({
+  navigation,
+}) => {
   const { width } = useWindowDimensions();
   const phrase = useFetch<string>(getMnemonic);
   const [isChecked, setIsChecked] = useState(false);
@@ -41,7 +43,7 @@ const NewWalletScreen: ScreenFC<"NewWallet"> = ({ navigation }) => {
             <CustomPressable
               style={{ flexDirection: "row", alignItems: "center" }}
               onPress={() => {
-                navigation.navigate("CreatePassword");
+                navigation.navigate("CreatePasswordWallet");
               }}
             >
               <BrandText
@@ -135,5 +137,3 @@ const NewWalletScreen: ScreenFC<"NewWallet"> = ({ navigation }) => {
     </ScreenContainer>
   );
 };
-
-export default NewWalletScreen;
