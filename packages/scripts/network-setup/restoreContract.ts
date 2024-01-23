@@ -46,12 +46,12 @@ const main = async () => {
   const contractPath = `${codeDetails.checksum}.wasm`;
   fs.writeFileSync(contractPath, contractBytes);
 
-  const cmd = `teritorid tx wasm store ${contractPath} --from ${wallet} --gas auto --gas-adjustment 1.3 -y -b block --chain-id ${
+  const cmd = `teritorid tx wasm store ${contractPath} --from ${wallet} --gas auto --gas-adjustment 1.3 -y -b sync --chain-id ${
     destinationNetwork.chainId
   } --node ${injectRPCPort(destinationNetwork.rpcEndpoint)} -o json${
     keyringBackend ? ` --keyring-backend ${keyringBackend}` : ""
   }`;
-  console.log("> " + cmd);
+  console.log("⚙️  " + cmd);
   const out = child_process.execSync(cmd, {
     stdio: ["inherit", "pipe", "inherit"],
     encoding: "utf-8",

@@ -13,8 +13,8 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/internal/ipfsutil"
 	"github.com/TERITORI/teritori-dapp/go/pkg/pricespb"
 	"github.com/allegro/bigcache/v3"
+	abcitypes "github.com/cometbft/cometbft/abci/types"
 	"github.com/pkg/errors"
-	abcitypes "github.com/tendermint/tendermint/abci/types"
 )
 
 type StringEventAttribute struct {
