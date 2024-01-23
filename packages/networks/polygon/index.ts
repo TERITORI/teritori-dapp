@@ -7,7 +7,7 @@ export const polygonNetwork: EthereumNetworkInfo = {
   id: "polygon",
   kind: NetworkKind.Ethereum,
   displayName: "Polygon",
-  icon: "icons/networks/polygon.svg",
+  icon: "polygon.svg",
   features: [NetworkFeature.RiotP2E],
   currencies: polygonCurrencies,
   idPrefix: "polygon",

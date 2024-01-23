@@ -7556,7 +7556,7 @@
     "id": "polygon",
     "kind": "Ethereum",
     "displayName": "Polygon",
-    "icon": "icons/networks/polygon.svg",
+    "icon": "polygon.svg",
     "features": [
       "RiotP2E"
     ],
@@ -7566,7 +7566,7 @@
         "displayName": "MATIC",
         "decimals": 18,
         "coingeckoId": "matic",
-        "icon": "icons/networks/polygon.svg",
+        "icon": "polygon.svg",
         "kind": "native",
         "color": "#232731"
       }
@@ -7596,7 +7596,7 @@
     "id": "polygon-mumbai",
     "kind": "Ethereum",
     "displayName": "Polygon Mumbai",
-    "icon": "icons/networks/polygon.svg",
+    "icon": "polygon.svg",
     "features": [
       "RiotP2E",
       "NFTMarketplace"
@@ -7607,7 +7607,7 @@
         "displayName": "MATIC",
         "decimals": 18,
         "coingeckoId": "matic",
-        "icon": "icons/networks/polygon.svg",
+        "icon": "polygon.svg",
         "kind": "native",
         "color": "#232731"
       }

@@ -5,7 +5,7 @@ export const polygonMumbaiNetwork: EthereumNetworkInfo = {
   id: "polygon-mumbai",
   kind: NetworkKind.Ethereum,
   displayName: "Polygon Mumbai",
-  icon: "icons/networks/polygon.svg",
+  icon: "polygon.svg",
   features: [NetworkFeature.RiotP2E, NetworkFeature.NFTMarketplace],
   currencies: polygonMumbaiCurrencies,
   idPrefix: "mumbai",

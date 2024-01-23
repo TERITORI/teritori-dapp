@@ -7,7 +7,7 @@ export const polygonMumbaiCurrencies: CurrencyInfo[] = [
     displayName: "MATIC",
     decimals: 18,
     coingeckoId: "matic",
-    icon: "icons/networks/polygon.svg",
+    icon: "polygon.svg",
     kind: "native",
     color: currencyETHcolor,
   },
