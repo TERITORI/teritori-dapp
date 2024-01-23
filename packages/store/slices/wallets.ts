@@ -6,6 +6,7 @@ import { RootState } from "../store";
 interface StoreWallet {
   publicKey: string;
   network: NetworkKind;
+  networkId: string;
 }
 
 const storeWalletId = (wallet: StoreWallet) =>

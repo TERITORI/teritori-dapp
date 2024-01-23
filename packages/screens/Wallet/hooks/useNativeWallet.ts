@@ -2,7 +2,7 @@ import { getWalletFromMnemonic } from "@cosmology/core/src/utils/wallet";
 
 import { getValueFor, remove, save } from "../../../hooks/useMobileSecureStore";
 
-export const useNativeWallet = async (token: "TORI") => {
+export const useNativeWallet = async (token?: "TORI") => {
   const wallet = getWalletFromMnemonic({
     mnemonic: getMnemonic(),
     token, //has to be all caps for TORI
