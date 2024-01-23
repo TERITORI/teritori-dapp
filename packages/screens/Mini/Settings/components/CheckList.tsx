@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { View } from "react-native";
 
 import { RedAlert } from "./RedAlert";
@@ -85,7 +85,7 @@ export const CheckList = ({ gotoVisibleScreen, type }: Props) => {
       <View>
         {checkboxes.map((item) => {
           return (
-            <>
+            <Fragment key={item.key}>
               <SpacerColumn size={1} />
 
               <Checkbox
@@ -107,7 +107,7 @@ export const CheckList = ({ gotoVisibleScreen, type }: Props) => {
                   paddingHorizontal: layout.spacing_x2,
                 }}
               />
-            </>
+            </Fragment>
           );
         })}
 
