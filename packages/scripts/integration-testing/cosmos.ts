@@ -47,12 +47,18 @@ export const startCosmosLocalnet = async (
       `"voting_period": "20s"`,
     );
 
+    await replaceInFile(
+      path.join(home, "config", "genesis.json"),
+      /stake"/g,
+      `utori"`,
+    );
+
     // run teritorid keys add validator --keyring-backend=test --home=$HOME/.teritorid
     const addValidatorCmd = `${binaryPath} keys add validator --keyring-backend=test --home ${home}`;
     console.log("⚙️  " + addValidatorCmd);
     await execPromise(addValidatorCmd);
     // run teritorid add-genesis-account $(teritorid keys show validator -a --keyring-backend=test --home=$HOME/.teritorid) 100000000000utori,100000000000stake --home=$HOME/.teritorid
-    const addGenesisAccountCmd = `${binaryPath} add-genesis-account $(${binaryPath} keys show validator -a --keyring-backend=test --home ${home}) 100000000000000000utori,100000000000000000stake --home ${home}`;
+    const addGenesisAccountCmd = `${binaryPath} add-genesis-account $(${binaryPath} keys show validator -a --keyring-backend=test --home ${home}) 100000000000000000utori --home ${home}`;
     console.log("⚙️  " + addGenesisAccountCmd);
     await execPromise(addGenesisAccountCmd);
     // run teritorid keys add testnet-adm --keyring-backend=test --home=$HOME/.teritorid
@@ -69,11 +75,11 @@ export const startCosmosLocalnet = async (
       prefix: "tori",
     });
     // run teritorid add-genesis-account $(teritorid keys show validator -a --keyring-backend=test --home=$HOME/.teritorid) 100000000000utori,100000000000stake --home=$HOME/.teritorid
-    const addTestnetAdmGenesisAccountCmd = `${binaryPath} add-genesis-account $(${binaryPath} keys show testnet-adm -a --keyring-backend=test --home ${home}) 100000000000000000utori,100000000000000000stake --home ${home}`;
+    const addTestnetAdmGenesisAccountCmd = `${binaryPath} add-genesis-account $(${binaryPath} keys show testnet-adm -a --keyring-backend=test --home ${home}) 100000000000000000utori --home ${home}`;
     console.log("⚙️  " + addTestnetAdmGenesisAccountCmd);
     await execPromise(addTestnetAdmGenesisAccountCmd);
     // run teritorid gentx validator 500000000stake --keyring-backend=test --home=$HOME/.teritorid --chain-id=testing
-    const gentxCmd = `${binaryPath} gentx validator 500000000stake --keyring-backend=test --home ${home} --chain-id=testing`;
+    const gentxCmd = `${binaryPath} gentx validator 500000000utori --keyring-backend=test --home ${home} --chain-id=testing`;
     console.log("⚙️  " + gentxCmd);
     await execPromise(gentxCmd);
     // run teritorid collect-gentxs --home=$HOME/.teritorid
@@ -152,7 +158,7 @@ export const upgradeCosmosLocalnet = async (
     --from=validator --keyring-backend=test \
     --chain-id=testing --home=$HOME/.teritorid --yes -b block --deposit="100000000stake"
   */
-  const cmd = `${oldBinaryPath} tx gov submit-proposal software-upgrade "${newVersion}" --upgrade-height=${height} --title="Upgrade to ${newVersion}" --description="Upgrade to ${newVersion}" --from=${validatorWalletName} --keyring-backend=test --chain-id=testing --home=${home} --yes -b block --deposit="500000000stake" --node http://127.0.0.1:26657 -o json`;
+  const cmd = `${oldBinaryPath} tx gov submit-proposal software-upgrade "${newVersion}" --upgrade-height=${height} --title="Upgrade to ${newVersion}" --description="Upgrade to ${newVersion}" --from=${validatorWalletName} --keyring-backend=test --chain-id=testing --home=${home} --yes -b block --deposit="500000000utori" --node http://127.0.0.1:26657 -o json`;
   console.log("⚙️  " + cmd);
   const { stdout: out } = await execPromise(cmd, { encoding: "utf-8" });
   const outObj = zodTryParseJSON(zodTxResult, out);

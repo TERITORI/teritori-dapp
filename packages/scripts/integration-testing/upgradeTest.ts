@@ -32,7 +32,7 @@ const main = async () => {
     "v1.4.2",
   ] as const);
 
-  const v204Binary = await buildCosmos(repoPath, "teritorid");
+  const latestBinary = await buildCosmos(repoPath, "teritorid");
 
   const {
     home,
@@ -85,24 +85,27 @@ const main = async () => {
   await replaceInFile(
     path.join(home, "config/app.toml"),
     `minimum-gas-prices = ""`,
-    `minimum-gas-prices = "0stake"`,
+    `minimum-gas-prices = "0utori"`,
   );
 
-  const { kill: killv204 } = await startCosmosLocalnet(v204Binary, {
+  const { kill: killLatest } = await startCosmosLocalnet(latestBinary, {
     home,
     height: upgradeHeight,
   });
 
+  // test cosmwasm
+
   await testTeritoriEcosystem(initialEcosystem);
 
-  // test cosmwasm
   await deployTeritoriEcosystem(
-    { binaryPath: v204Binary, home, signer: admSigner },
+    { binaryPath: latestBinary, home, signer: admSigner },
     teritoriLocalnetNetwork.id,
     "testnet-adm",
   );
 
-  await killv204();
+  // clean
+
+  await killLatest();
 
   await fs.rm(home, { recursive: true, force: true });
 };
