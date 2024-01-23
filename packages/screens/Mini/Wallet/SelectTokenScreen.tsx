@@ -1,33 +1,39 @@
 import { FlatList } from "react-native";
 
-import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
+import questionSVG from "../../../../assets/icons/question-gray.svg";
 import { BrandText } from "../../../components/BrandText";
+import { useBalances } from "../../../hooks/useBalances";
+import { prettyPrice } from "../../../utils/coins";
 import { ScreenFC } from "../../../utils/navigation";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontNormal15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { findByBaseDenom } from "../../Wallet/util/chain-registry";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import ListView from "../components/ListView";
-
-export type SelectWalletType = {
-  id: string;
-  label: string;
-  img?: string;
-  amount: string;
-};
 
 const SelectTokenScreen: ScreenFC<"MiniSelectToken"> = ({
   navigation,
   route,
 }) => {
   const { navigateTo } = route.params;
-  const addresses: SelectWalletType[] = [
-    { id: "asdfdasd", label: "Teritori", img: "", amount: "62424" },
-  ];
+  const networkId = "teritori";
+  const balances = useBalances(
+    networkId,
+    "tori1lkydvh2qae4gqdslmwaxrje7j57p2kq8dw9d7t",
+  );
+
+  const assets = balances.map((balance) => {
+    const assetList = findByBaseDenom(balance.denom);
+    return {
+      ...balance,
+      ...assetList?.assets[0],
+    };
+  });
 
   return (
     <BlurScreenContainer title="Select Token">
-      {!addresses.length ? (
+      {!assets.length ? (
         <BrandText
           style={[
             fontNormal15,
@@ -43,8 +49,8 @@ const SelectTokenScreen: ScreenFC<"MiniSelectToken"> = ({
       ) : (
         <FlatList
           inverted
-          data={addresses.reverse()}
-          keyExtractor={(item) => item.id}
+          data={assets}
+          keyExtractor={(item) => item.denom}
           renderItem={({ item }) => (
             <ListView
               onPress={() =>
@@ -58,10 +64,10 @@ const SelectTokenScreen: ScreenFC<"MiniSelectToken"> = ({
               options={{
                 leftIconEnabled: true,
                 leftIconOptions: {
-                  icon: teritoriSVG,
+                  icon: item.logo_URIs?.svg || questionSVG,
                 },
-                label: item?.label,
-                rightLabel: `${item?.amount.toString()} TORI`,
+                label: item?.symbol,
+                rightLabel: prettyPrice(networkId, item.amount, item.denom),
                 iconOptions: { iconStyle: { marginLeft: 10 } },
               }}
             />

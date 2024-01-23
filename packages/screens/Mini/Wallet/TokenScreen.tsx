@@ -1,6 +1,5 @@
 import { Fragment } from "react";
 import { View } from "react-native";
-import { useSelector } from "react-redux";
 
 import { AddedToken } from "./components/AddedToken";
 import TransactionItem, { TransactionType } from "./components/TransactionItem";
@@ -13,9 +12,6 @@ import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
 import { useBalances } from "../../../hooks/useBalances";
-import { teritoriNetwork } from "../../../networks/teritori";
-import { addSelected, selectAllWallets } from "../../../store/slices/wallets";
-import { useAppDispatch } from "../../../store/store";
 import { ScreenFC } from "../../../utils/navigation";
 import {
   neutral88,
