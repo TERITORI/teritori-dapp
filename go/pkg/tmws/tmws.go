@@ -7,10 +7,10 @@ import (
 
 	"github.com/pkg/errors"
 
+	tmjson "github.com/cometbft/cometbft/libs/json" // needed for correct unmarshal
+	ctypes "github.com/cometbft/cometbft/rpc/core/types"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/gorilla/websocket"
-	tmjson "github.com/tendermint/tendermint/libs/json" // needed for correct unmarshal
-	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 )
 
 type Client struct {
