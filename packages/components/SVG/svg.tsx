@@ -32,7 +32,6 @@ export const SVG: React.FC<
           width: svgProps.width || "auto",
         }}
       >
-        {" "}
         <SvgFromUri uri={source} {...svgProps} />
       </View>
     );
