@@ -373,7 +373,7 @@ export const useSwap = (
       const signer = await getKeplrSigner(selectedNetwork.id);
       const client = await getSigningOsmosisClient({
         rpcEndpoint: selectedNetwork.rpcEndpoint || "",
-        signer: signer as any, // FIXME
+        signer,
       });
       const routes: SwapAmountInRoute[] = [];
       if (isMultihop) {

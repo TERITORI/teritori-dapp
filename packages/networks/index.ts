@@ -44,7 +44,7 @@ import {
   teritoriAminoConverters,
   teritoriProtoRegistry,
 } from "../api/teritori-chain";
-import { getKeplr } from "../utils/keplr";
+import { convertKeplrSigner, getKeplr } from "../utils/keplr";
 
 export * from "./types";
 
@@ -446,7 +446,9 @@ export const getKeplrSigner = async (networkId: string) => {
 
   await keplr.enable(network.chainId);
 
-  return keplr.getOfflineSignerAuto(network.chainId);
+  const keplrSigner = await keplr.getOfflineSignerAuto(network.chainId);
+
+  return convertKeplrSigner(keplrSigner);
 };
 
 const getKeplrOnlyAminoSigner = async (networkId: string) => {
@@ -476,7 +478,7 @@ export const getKeplrSigningStargateClient = async (
 
   return await SigningStargateClient.connectWithSigner(
     network.rpcEndpoint,
-    signer as any, // FIXME
+    signer,
     {
       gasPrice,
       registry: cosmosTypesRegistry,
@@ -522,13 +524,9 @@ export const getKeplrSigningCosmWasmClient = async (
     throw new Error("gas price not found");
   }
 
-  return SigningCosmWasmClient.connectWithSigner(
-    network.rpcEndpoint,
-    signer as any, // FIXME
-    {
-      gasPrice,
-    },
-  );
+  return SigningCosmWasmClient.connectWithSigner(network.rpcEndpoint, signer, {
+    gasPrice,
+  });
 };
 
 export const mustGetNonSigningCosmWasmClient = async (networkId: string) => {
