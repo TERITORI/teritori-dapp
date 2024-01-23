@@ -11,14 +11,14 @@ import {
   SearchBarResults,
 } from "./SearchBarResults";
 import { useSearchBar } from "../../context/SearchBarProvider";
-import { useClickOutside } from "../../hooks/useClickOutside";
+import { useDropdowns } from "../../hooks/useDropdowns";
 import { COLLECTION_VIEW_SM_WIDTH } from "../CollectionView";
 import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
   style,
 }) => {
-  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
   const { hasCollections, hasNames } = useSearchBar();
   const hasSomething = hasNames || hasCollections;
 

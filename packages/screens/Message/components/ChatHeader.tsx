@@ -15,7 +15,7 @@ import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
 import { BackButton } from "../../../components/navigation/components/BackButton";
 import { SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useClickOutside } from "../../../hooks/useClickOutside";
+import { useDropdowns } from "../../../hooks/useDropdowns";
 import { updateConversationById } from "../../../store/slices/message";
 import { neutral17, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold12 } from "../../../utils/style/fonts";
@@ -46,7 +46,7 @@ export const ChatHeader = ({
   const [showTextInput, setShowTextInput] = useState(false);
   const [showGroupDetails, setShowGroupDetails] = useState(false);
 
-  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
   const handleSearchIconPress = () => {
     setShowTextInput(true);
   };

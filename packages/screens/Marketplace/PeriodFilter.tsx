@@ -8,7 +8,7 @@ import sortSVG from "../../../assets/icons/sort.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useClickOutside } from "../../hooks/useClickOutside";
+import { useDropdowns } from "../../hooks/useDropdowns";
 import {
   marketplacePeriodItems,
   PeriodItem,
@@ -22,7 +22,7 @@ import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 
 export const PeriodFilter: FC = () => {
   const { width } = useWindowDimensions();
-  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
 
   const timePeriod = useSelector(selectTimePeriod);
   const [selectedItem, setSelectedItem] = useState<PeriodItem>(timePeriod);

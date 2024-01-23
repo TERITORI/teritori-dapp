@@ -4,7 +4,7 @@ import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 import { NetworkSelectorMenu } from "./NetworkSelectorMenu";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
-import { useClickOutside } from "../../hooks/useClickOutside";
+import { useDropdowns } from "../../hooks/useDropdowns";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { NetworkFeature, NetworkKind } from "../../networks";
 import { secondaryColor } from "../../utils/style/colors";
@@ -20,7 +20,7 @@ export const NetworkSelectorMobile: React.FC<{
   forceNetworkKind?: NetworkKind;
   forceNetworkFeatures?: NetworkFeature[];
 }> = ({ style, forceNetworkId, forceNetworkKind, forceNetworkFeatures }) => {
-  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
   const selectedNetworkInfo = useSelectedNetworkInfo();
 
   return (

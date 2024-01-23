@@ -20,8 +20,8 @@ import { SeparatorGradient } from "../../../../components/separators/SeparatorGr
 import { SpacerColumn } from "../../../../components/spacer";
 import { useFeedbacks } from "../../../../context/FeedbacksProvider";
 import { useBalances } from "../../../../hooks/useBalances";
-import { useClickOutside } from "../../../../hooks/useClickOutside";
 import { useCoingeckoPrices } from "../../../../hooks/useCoingeckoPrices";
+import { useDropdowns } from "../../../../hooks/useDropdowns";
 import {
   useSelectedNetworkId,
   useSelectedNetworkInfo,
@@ -226,10 +226,9 @@ export const SwapView: React.FC = () => {
   const [slippage, setSlippage] = useState(1);
 
   // ---- Dropdowns
-  const [isDropdownInOpen, setDropdownInState, dropdownInRef] =
-    useClickOutside();
+  const [isDropdownInOpen, setDropdownInState, dropdownInRef] = useDropdowns();
   const [isDropdownOutOpen, setDropdownOutState, dropdownOutRef] =
-    useClickOutside();
+    useDropdowns();
 
   const onChangeAmountIn = (text: string) => {
     if (!text) {

@@ -8,7 +8,7 @@ import { SVG } from "../../../components/SVG";
 import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
 import { SpacerRow } from "../../../components/spacer";
 import { useMessage } from "../../../context/MessageProvider";
-import { useClickOutside } from "../../../hooks/useClickOutside";
+import { useDropdowns } from "../../../hooks/useDropdowns";
 import { neutral17, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -17,7 +17,7 @@ import { CONVERSATION_TYPES } from "../../../utils/types/message";
 export const ConversationSelector: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ style }) => {
-  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
 
   const { activeConversationType, setActiveConversationType } = useMessage();
 

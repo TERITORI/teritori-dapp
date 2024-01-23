@@ -12,7 +12,7 @@ import chevronLeftSVG from "../../assets/icons/chevron-left.svg";
 import chevronRightDoubleSVG from "../../assets/icons/chevron-right-double.svg";
 import chevronRightSVG from "../../assets/icons/chevron-right.svg";
 import chevronUpSVG from "../../assets/icons/chevron-up.svg";
-import { useClickOutside } from "../hooks/useClickOutside";
+import { useDropdowns } from "../hooks/useDropdowns";
 import {
   neutral33,
   neutral77,
@@ -49,7 +49,7 @@ export const Pagination = ({
       onChangePage(pageIndex);
     }
   };
-  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
 
   return (
     <View style={styles.container}>

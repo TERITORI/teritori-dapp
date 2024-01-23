@@ -3,7 +3,7 @@ import { View, TouchableOpacity } from "react-native";
 
 import { BrandText } from "./BrandText";
 import { LegacyPrimaryBox } from "./boxes/LegacyPrimaryBox";
-import { useClickOutside } from "../hooks/useClickOutside";
+import { useDropdowns } from "../hooks/useDropdowns";
 import { neutral33 } from "../utils/style/colors";
 import { fontSemibold13 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
@@ -25,7 +25,7 @@ export const Menu: React.FC<MenuProps> = ({
   component,
   width = DEFAULT_WIDTH,
 }) => {
-  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
 
   return (
     <View style={{ position: "relative" }}>

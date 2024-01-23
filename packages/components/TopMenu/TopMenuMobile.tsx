@@ -2,13 +2,13 @@ import React, { FC } from "react";
 import { View, TouchableOpacity } from "react-native";
 
 import { TopMenuBox } from "./TopMenuBox";
-import { useClickOutside } from "../../hooks/useClickOutside";
+import { useDropdowns } from "../../hooks/useDropdowns";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutral00 } from "../../utils/style/colors";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
 export const TopMenuMobile: FC = () => {
-  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
 
   const selectedWallet = useSelectedWallet();
 

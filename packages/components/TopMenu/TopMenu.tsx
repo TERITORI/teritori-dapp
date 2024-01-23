@@ -5,7 +5,7 @@ import { TopMenuBox } from "./TopMenuBox";
 import { WalletView } from "./WalletView";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
-import { useClickOutside } from "../../hooks/useClickOutside";
+import { useDropdowns } from "../../hooks/useDropdowns";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   neutral00,
@@ -21,7 +21,7 @@ export const TOP_MENU_BUTTON_HEIGHT = 40;
 
 export const TopMenu: FC = () => {
   const selectedWallet = useSelectedWallet();
-  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
 
   return (
     <View ref={dropdownRef} collapsable={false}>

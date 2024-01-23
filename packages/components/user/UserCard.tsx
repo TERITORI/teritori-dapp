@@ -16,7 +16,7 @@ import { Member } from "../../contracts-clients/cw4-group/Cw4Group.types";
 import { useDAOGroup } from "../../hooks/dao/useDAOGroup";
 import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
-import { useClickOutside } from "../../hooks/useClickOutside";
+import { useDropdowns } from "../../hooks/useDropdowns";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseUserId } from "../../networks";
@@ -189,7 +189,7 @@ const CardActions: React.FC<{
     | boolean
   )[];
 }> = ({ actions }) => {
-  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
 
   const filteredActions = actions.filter(
     (a): a is ComponentProps<typeof DropdownOption> =>

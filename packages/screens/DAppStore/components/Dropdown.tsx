@@ -8,7 +8,7 @@ import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { LegacySecondaryBox } from "../../../components/boxes/LegacySecondaryBox";
-import { useClickOutside } from "../../../hooks/useClickOutside";
+import { useDropdowns } from "../../../hooks/useDropdowns";
 import {
   selectAvailableApps,
   setAvailableApps,
@@ -59,7 +59,7 @@ const SelectableOption: React.FC<{
 };
 
 export const DropdownDappsStoreFilter: React.FC = () => {
-  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
 
   const availableApps = useSelector(selectAvailableApps);
   const options = Object.values(availableApps).map((option) => {

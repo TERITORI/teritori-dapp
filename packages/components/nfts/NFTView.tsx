@@ -12,7 +12,7 @@ import octagonSVG from "../../../assets/icons/octagon.svg";
 import raffleSVG from "../../../assets/icons/raffle.svg";
 import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
-import { useClickOutside } from "../../hooks/useClickOutside";
+import { useDropdowns } from "../../hooks/useDropdowns";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -215,7 +215,7 @@ const NFTViewHeader: React.FC<{
 }> = memo(({ nft, localSelected }) => {
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(nft.ownerId);
-  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside();
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
   const isOwner = nft.ownerId === selectedWallet?.userId;
   const isOwnerAndNotListed = isOwner && !nft.isListed;
   const [isTransferNFTVisible, setIsTransferNFTVisible] =

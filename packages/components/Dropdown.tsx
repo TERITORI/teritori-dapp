@@ -6,7 +6,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { useClickOutside } from "../hooks/useClickOutside";
+import { useDropdowns } from "../hooks/useDropdowns";
 
 interface DropdownProps {
   children:
@@ -35,7 +35,7 @@ export const Dropdown = ({
     height: 0,
     width: 0,
   });
-  const [isDropdownOpen, setDropdownState, dropdownRef] = useClickOutside({
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns({
     callback: (val) => {
       if (!val) {
         onDropdownClosed?.();

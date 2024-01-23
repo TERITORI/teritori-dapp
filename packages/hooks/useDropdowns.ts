@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { useClickOutside as _useClickOutside } from "react-native-click-outside";
+import { useClickOutside } from "react-native-click-outside";
 
 type HookConfig = {
   triggerOnUnmount?: boolean;
   triggerOnBlur?: boolean;
 };
 
-export const useClickOutside = <T = View>({
+export const useDropdowns = <T = View>({
   config,
   callback,
 }: {
@@ -15,7 +15,7 @@ export const useClickOutside = <T = View>({
   callback?: (val: boolean) => void;
 } = {}): [boolean, (value?: boolean) => void, React.RefObject<T>] => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const ref = _useClickOutside<T>(() => {
+  const ref = useClickOutside<T>(() => {
     setIsDropdownOpen(false);
     callback?.(false);
   }, config);
