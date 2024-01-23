@@ -12,20 +12,20 @@ import { useSelector } from "react-redux";
 
 import { NewPostFormValues, ReplyToType } from "./NewsFeed.type";
 import { generatePostMetadata, getPostCategory } from "./NewsFeedQueries";
-import { NotEnoughFundModal } from "./NotEnoughFundModal";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
 import priceSVG from "../../../../assets/icons/price.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useWalletControl } from "../../../context/WalletControlProvider";
 import { useFeedPosting } from "../../../hooks/feed/useFeedPosting";
 import { useIpfs } from "../../../hooks/useIpfs";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getUserId } from "../../../networks";
+import { getUserId, NetworkFeature } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
 import { generateIpfsKey } from "../../../utils/ipfs";
 import {
@@ -138,25 +138,9 @@ export const NewsFeedInput = React.forwardRef<
     const selectedWallet = useSelectedWallet();
     const userId = getUserId(selectedNetworkId, selectedWallet?.address);
     const inputRef = useRef<TextInput>(null);
-    const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
     const { setToastError } = useFeedbacks();
     const [isUploadLoading, setIsUploadLoading] = useState(false);
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
-    const [selection, setSelection] = useState<{ start: number; end: number }>({
-      start: 10,
-      end: 10,
-    });
-
-    const onPostCreationSuccess = () => {
-      // Timeout here to let a few time to see the progress bar "100% Done"
-      setTimeout(() => {
-        reset();
-        onSubmitSuccess?.();
-        onCloseCreateModal?.();
-        setIsUploadLoading(false);
-        setIsProgressBarShown(false);
-      }, 1000);
-    };
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
@@ -169,26 +153,58 @@ export const NewsFeedInput = React.forwardRef<
       },
     );
     const formValues = watch();
+    const postCategory = getPostCategory(formValues);
+    const onPostCreationSuccess = () => {
+      // Timeout here to let a few time to see the progress bar "100% Done"
+      setTimeout(() => {
+        reset();
+        onSubmitSuccess?.();
+        onCloseCreateModal?.();
+        setIsUploadLoading(false);
+        setIsProgressBarShown(false);
+      }, 1000);
+    };
     const {
       makePost,
       canPayForPost,
       isProcessing,
       prettyPublishingFee,
       freePostCount,
+      publishingFee,
       step,
       setStep,
     } = useFeedPosting(
       selectedNetwork?.id,
       userId,
-      getPostCategory(formValues),
+      postCategory,
       onPostCreationSuccess,
     );
     const isLoading = isUploadLoading || isProcessing;
     const userIPFSKey = useSelector(selectNFTStorageAPI);
+    const { showNotEnoughFundsModal, showConnectWalletModal } =
+      useWalletControl();
+    const [selection, setSelection] = useState<{ start: number; end: number }>({
+      start: 10,
+      end: 10,
+    });
 
     const processSubmit = async () => {
+      const action = "Publish a Post";
+      if (!selectedWallet?.address || !selectedWallet.connected) {
+        showConnectWalletModal({
+          forceNetworkFeature: NetworkFeature.SocialFeed,
+          action,
+        });
+        return;
+      }
       if (!canPayForPost) {
-        setNotEnoughFundModal(true);
+        showNotEnoughFundsModal({
+          action,
+          cost: {
+            amount: publishingFee.toString(),
+            denom: publishingFee.denom || "",
+          },
+        });
         return;
       }
       setIsUploadLoading(true);
@@ -246,6 +262,7 @@ export const NewsFeedInput = React.forwardRef<
             title: "File upload failed",
             message: "Fail to pin to IPFS, please try to Publish again",
           });
+          setIsUploadLoading(false);
           return;
         }
 
@@ -306,12 +323,6 @@ export const NewsFeedInput = React.forwardRef<
         style={[{ width }, style]}
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       >
-        {isNotEnoughFundModal && (
-          <NotEnoughFundModal
-            visible
-            onClose={() => setNotEnoughFundModal(false)}
-          />
-        )}
         <LegacyPrimaryBox
           fullWidth
           style={{

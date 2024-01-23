@@ -2,10 +2,10 @@ import React, { Dispatch, FC, SetStateAction } from "react";
 import { View } from "react-native";
 
 import { Post } from "../../../api/feed/v1/feed";
+import { useSocialReactions } from "../../../hooks/feed/useSocialReactions";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { useSocialReactions } from "../../../hooks/useSocialReactions";
 import { NetworkKind, parseUserId } from "../../../networks";
 import FlexRow from "../../FlexRow";
 import { SpacerRow } from "../../spacer";

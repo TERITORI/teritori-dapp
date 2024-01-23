@@ -6,7 +6,7 @@ import { WalletItem } from "./WalletItem";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { ConnectWalletModal } from "../../components/connectWallet/ConnectWalletModal";
+import { ConnectWalletModal } from "../../components/modals/ConnectWalletModal";
 import { useWallets } from "../../context/WalletsProvider";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral33, neutralA3 } from "../../utils/style/colors";
