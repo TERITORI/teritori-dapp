@@ -168,7 +168,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
               paddingVertical: layout.spacing_x2,
             }}
           >
-            {(label || labelComponent || description) && (
+            {!!(label || labelComponent || description) && (
               <View
                 style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
               >
@@ -191,7 +191,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
                 )}
 
                 <View style={{ flex: 1, width: "100%" }}>
-                  {label && (
+                  {!!label && (
                     <BrandText style={{ color: "white", lineHeight: 24 }}>
                       {label}
                     </BrandText>
@@ -199,7 +199,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
 
                   {labelComponent}
 
-                  {description && (
+                  {!!description && (
                     <>
                       <SpacerColumn size={1} />
                       <BrandText
@@ -221,7 +221,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
               </View>
             )}
 
-            {Header && <Header />}
+            {!!Header && <Header />}
 
             <TouchableOpacity
               containerStyle={[
@@ -234,7 +234,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
               <SVG width={32} height={32} source={closeSVG} />
             </TouchableOpacity>
           </View>
-          {children && (
+          {!!children && (
             <View
               style={[
                 { width: "100%", paddingHorizontal: modalMarginPadding },

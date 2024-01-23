@@ -7,7 +7,7 @@ export const cosmosHubThetaCurrencies: CurrencyInfo[] = [
     displayName: "ATOM",
     decimals: 6,
     coingeckoId: "cosmos",
-    icon: "icons/networks/cosmos-hub-circle.svg",
+    icon: "cosmos-hub-circle.svg",
     kind: "native",
     color: currencyATOMcolor,
   },

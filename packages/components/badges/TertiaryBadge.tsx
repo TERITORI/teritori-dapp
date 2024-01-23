@@ -37,7 +37,7 @@ export const TertiaryBadge: React.FC<{
       <BrandText style={[fontSemibold14, { color: textColor }]}>
         {label}
       </BrandText>
-      {iconSVG && (
+      {!!iconSVG && (
         <SVG
           source={iconSVG}
           width={16}

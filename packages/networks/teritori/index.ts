@@ -11,7 +11,7 @@ export const teritoriNetwork: CosmosNetworkInfo = {
   kind: NetworkKind.Cosmos,
   chainId: "teritori-1",
   displayName: "Teritori",
-  icon: "icons/networks/teritori.svg",
+  icon: "teritori.svg",
   features: [
     NetworkFeature.NFTMarketplace,
     NetworkFeature.Organizations,

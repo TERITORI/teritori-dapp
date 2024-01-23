@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 
 import { DelegateModal } from "./components/DelegateModal";
 import { RedelegateModal } from "./components/RedelegateModal";
@@ -87,6 +87,7 @@ export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
       isLarge
       forceNetworkKind={NetworkKind.Cosmos}
       forceNetworkId={multisigId && selectedNetworkId}
+      noScroll={Platform.OS !== "web"}
     >
       <View
         style={{
