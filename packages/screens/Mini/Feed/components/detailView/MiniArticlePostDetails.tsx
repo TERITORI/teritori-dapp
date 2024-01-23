@@ -1,16 +1,25 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Image, View, useWindowDimensions } from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { View, useWindowDimensions } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
 
+import defaultThumbnailImage from "../../../../../../assets/default-images/default-article-thumbnail.png";
 import { Post } from "../../../../../api/feed/v1/feed";
 import { BrandText } from "../../../../../components/BrandText";
+import { OptimizedImage } from "../../../../../components/OptimizedImage";
 import { ScreenContainer } from "../../../../../components/ScreenContainer";
 import { CommentsContainer } from "../../../../../components/cards/CommentsContainer";
-import { ZodSocialFeedArticleMetadata } from "../../../../../components/socialFeed/NewsFeed/NewsFeed.type";
+import {
+  ReplyToType,
+  ZodSocialFeedArticleMetadata,
+} from "../../../../../components/socialFeed/NewsFeed/NewsFeed.type";
+import {
+  NewsFeedInput,
+  NewsFeedInputHandle,
+} from "../../../../../components/socialFeed/NewsFeed/NewsFeedInput";
 import { RichText } from "../../../../../components/socialFeed/RichText";
 import { SocialCardHeader } from "../../../../../components/socialFeed/SocialCard/SocialCardHeader";
 import { SocialCardWrapper } from "../../../../../components/socialFeed/SocialCard/SocialCardWrapper";
@@ -21,14 +30,8 @@ import {
 } from "../../../../../hooks/feed/useFetchComments";
 import { useNSUserInfo } from "../../../../../hooks/useNSUserInfo";
 import { parseUserId } from "../../../../../networks";
-import { web3ToWeb2URI } from "../../../../../utils/ipfs";
 import { zodTryParseJSON } from "../../../../../utils/sanitize";
-import {
-  ARTICLE_COVER_IMAGE_MAX_HEIGHT,
-  ARTICLE_COVER_IMAGE_RATIO,
-  BASE_POST,
-  DEFAULT_USERNAME,
-} from "../../../../../utils/social-feed";
+import { BASE_POST, DEFAULT_USERNAME } from "../../../../../utils/social-feed";
 import { fontSemibold16 } from "../../../../../utils/style/fonts";
 import { tinyAddress } from "../../../../../utils/text";
 import CustomAppBar from "../../../components/AppBar/CustomAppBar";
@@ -49,6 +52,8 @@ export const MiniArticlePostDetails = ({
   const { width: windowWidth } = useWindowDimensions();
 
   const aref = useAnimatedRef<Animated.ScrollView>();
+  const feedInputRef = useRef<NewsFeedInputHandle>(null);
+  const [replyTo, setReplyTo] = useState<ReplyToType>();
 
   const [localPost, setLocalPost] = useState(post || BASE_POST);
 
@@ -68,7 +73,7 @@ export const MiniArticlePostDetails = ({
 
   // Old articles doesn't have coverImage, but they have a file with a isCoverImage flag
   const coverImage =
-    articleMetadata?.coverImage ||
+    articleMetadata?.thumbnailImage ||
     metadataToUse?.files?.find((file) => file.isCoverImage);
 
   const authorNSInfo = useNSUserInfo(localPost.authorId);
@@ -76,7 +81,7 @@ export const MiniArticlePostDetails = ({
 
   const {
     data,
-    // refetch: refetchComments,
+    refetch: refetchComments,
     hasNextPage,
     fetchNextPage,
     // isLoading: isLoadingComments,
@@ -98,6 +103,12 @@ export const MiniArticlePostDetails = ({
     tinyAddress(authorAddress) ||
     DEFAULT_USERNAME;
 
+  const thumbnailURI = coverImage?.url
+    ? coverImage.url.includes("://")
+      ? coverImage.url
+      : "ipfs://" + coverImage.url
+    : defaultThumbnailImage;
+
   useEffect(() => {
     setLocalPost(post);
   }, [post]);
@@ -117,6 +128,12 @@ export const MiniArticlePostDetails = ({
     },
     [postId],
   );
+
+  const handleSubmitInProgress = () => {
+    if (replyTo?.parentId && replyTo.yOffsetValue)
+      aref.current?.scrollTo(replyTo.yOffsetValue);
+    else aref.current?.scrollTo(0);
+  };
   if (!metadataToUse) return null;
 
   return (
@@ -138,14 +155,17 @@ export const MiniArticlePostDetails = ({
           <SocialCardWrapper post={localPost} refetchFeed={refetchPost}>
             {!!coverImage && (
               <>
-                <Image
-                  source={{ uri: web3ToWeb2URI(coverImage.url) }}
-                  resizeMode="cover"
+                <OptimizedImage
+                  width={windowWidth}
+                  height={200}
+                  sourceURI={thumbnailURI}
+                  fallbackURI={defaultThumbnailImage}
                   style={{
-                    width: "100%",
-                    aspectRatio: ARTICLE_COVER_IMAGE_RATIO,
-                    // height: ARTICLE_COVER_IMAGE_MAX_HEIGHT/1.6,
-                    maxHeight: ARTICLE_COVER_IMAGE_MAX_HEIGHT,
+                    zIndex: -1,
+                    width: windowWidth,
+                    height: 200 - 2,
+                    borderTopRightRadius: 20,
+                    borderBottomRightRadius: 20,
                   }}
                 />
                 <SpacerColumn size={3} />
@@ -168,17 +188,30 @@ export const MiniArticlePostDetails = ({
             />
 
             {/*========== Article content */}
-
-            <RichText
-              initialValue={metadataToUse.message}
-              isPostConsultation
-              audioFiles={audioFiles}
-              postId={postId}
-              authorId={authorId}
-            />
+            <View>
+              <RichText
+                initialValue={metadataToUse.message}
+                isPostConsultation
+                audioFiles={audioFiles}
+                postId={postId}
+                authorId={authorId}
+              />
+            </View>
             <SpacerColumn size={1.5} />
           </SocialCardWrapper>
           <View>
+            <NewsFeedInput
+              style={{ alignSelf: "center" }}
+              ref={feedInputRef}
+              type="comment"
+              replyTo={replyTo}
+              parentId={post.identifier}
+              onSubmitInProgress={handleSubmitInProgress}
+              onSubmitSuccess={() => {
+                setReplyTo(undefined);
+                refetchComments();
+              }}
+            />
             <CommentsContainer
               cardWidth={windowWidth}
               comments={comments}

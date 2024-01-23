@@ -1,9 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { View, useWindowDimensions } from "react-native";
-import Animated, { useAnimatedRef } from "react-native-reanimated";
+import Animated, {
+  useAnimatedRef,
+  useAnimatedScrollHandler,
+  useSharedValue,
+} from "react-native-reanimated";
 
 import { Post } from "../../../../../api/feed/v1/feed";
 import { ScreenContainer } from "../../../../../components/ScreenContainer";
+import { CommentsContainer } from "../../../../../components/cards/CommentsContainer";
 import {
   PostCategory,
   ReplyToType,
@@ -13,6 +18,10 @@ import {
   NewsFeedInputHandle,
 } from "../../../../../components/socialFeed/NewsFeed/NewsFeedInput";
 import { SocialThreadCard } from "../../../../../components/socialFeed/SocialCard/cards/SocialThreadCard";
+import {
+  combineFetchCommentPages,
+  useFetchComments,
+} from "../../../../../hooks/feed/useFetchComments";
 import { useNSUserInfo } from "../../../../../hooks/useNSUserInfo";
 import { parseUserId } from "../../../../../networks";
 import { useAppNavigation } from "../../../../../utils/navigation";
@@ -42,7 +51,21 @@ const MiniDefaultPostDetails = ({
 
   const [localPost, setLocalPost] = useState(post || BASE_POST);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
-
+  const {
+    data,
+    refetch: refetchComments,
+    hasNextPage,
+    fetchNextPage,
+  } = useFetchComments({
+    parentId: post?.identifier,
+    totalCount: post?.subPostLength,
+    enabled: true,
+  });
+  const isNextPageAvailable = useSharedValue(hasNextPage);
+  const comments = useMemo(
+    () => (data ? combineFetchCommentPages(data.pages) : []),
+    [data],
+  );
   const postId = post.identifier;
 
   useEffect(() => {
@@ -87,6 +110,29 @@ const MiniDefaultPostDetails = ({
     feedInputRef.current?.setValue(`@${data.username} `);
     feedInputRef.current?.focusInput();
   };
+
+  const scrollHandler = useAnimatedScrollHandler(
+    {
+      onScroll: (event) => {
+        let offsetPadding = 40;
+        offsetPadding += event.layoutMeasurement.height;
+        if (
+          event.contentOffset.y >= event.contentSize.height - offsetPadding &&
+          isNextPageAvailable.value
+        ) {
+          fetchNextPage();
+        }
+      },
+    },
+    [post?.identifier],
+  );
+
+  const handleSubmitInProgress = () => {
+    if (replyTo?.parentId && replyTo.yOffsetValue)
+      aref.current?.scrollTo(replyTo.yOffsetValue);
+    else aref.current?.scrollTo(0);
+  };
+
   return (
     <ScreenContainer
       forceNetworkId={networkId}
@@ -99,8 +145,8 @@ const MiniDefaultPostDetails = ({
     >
       <Animated.ScrollView
         ref={aref}
-        // onScroll={scrollHandler}
-        // scrollEventThrottle={1}
+        onScroll={scrollHandler}
+        scrollEventThrottle={1}
       >
         <View style={{ flex: 1, width: windowWidth - 20 }}>
           {!!post && (
@@ -118,16 +164,21 @@ const MiniDefaultPostDetails = ({
               />
             </View>
           )}
+          <CommentsContainer
+            cardWidth={windowWidth - 20}
+            comments={comments}
+            onPressReply={onPressReply}
+          />
           <NewsFeedInput
             style={{ alignSelf: "center" }}
             ref={feedInputRef}
             type="comment"
             replyTo={replyTo}
             parentId={post.identifier}
-            // onSubmitInProgress={handleSubmitInProgress}
+            onSubmitInProgress={handleSubmitInProgress}
             onSubmitSuccess={() => {
               setReplyTo(undefined);
-              //   refetchComments();
+              refetchComments();
             }}
           />
         </View>

@@ -1,5 +1,5 @@
 import { ContentState, EditorState } from "draft-js";
-import React, { useRef } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   View,
   KeyboardAvoidingView,
@@ -15,12 +15,12 @@ import {
 import { RichTextProps } from "./RichText.type";
 import { ActionsContainer } from "./Toolbar/ActionsContainer";
 import { ToolbarContainer } from "./Toolbar/ToolbarContainer";
+import { useAppType } from "../../../hooks/useAppType";
 import { SOCIAL_FEED_BREAKPOINT_M } from "../../../utils/style/layout";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 
 // /!\ It will not fully work on mobile
-
 export const RichText: React.FC<RichTextProps> = ({
   onChange = () => {},
   onBlur,
@@ -29,19 +29,46 @@ export const RichText: React.FC<RichTextProps> = ({
   isPostConsultation,
   initialValue,
 }) => {
-  const { width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const richText = useRef(null);
+  const [apptype] = useAppType();
+  const [initialHeight, setInitialHeight] = useState(windowHeight);
+
+  const initialHTML = useMemo(() => {
+    const pattern = /src=\\"(?!ipfs:\/\/)([^\\"]+)\\"/g;
+    const replacement = 'src="ipfs://$1"';
+    const addedIPFShtml = initialValue.replace(pattern, replacement);
+
+    return addedIPFShtml.replaceAll("ipfs://", "https://ipfs.io/ipfs/");
+  }, [initialValue]);
+
+  const handleHeightChange = useCallback((height: number) => {
+    setInitialHeight(height * 2);
+  }, []);
+
   return (
     <View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
+        style={{ flex: 1, minHeight: initialHeight }}
       >
         <RichEditor
-          initialContentHTML={initialValue}
+          initialContentHTML={initialHTML}
           ref={richText}
           onChange={onChange}
           onBlur={onBlur}
+          onHeightChange={handleHeightChange}
+          containerStyle={{ minHeight: initialHeight }}
+          editorStyle={
+            apptype === "mini"
+              ? {
+                  backgroundColor: "#000",
+                  color: "#fff",
+                  caretColor: "#fff",
+                }
+              : {}
+          }
+          disabled={isPostConsultation}
         />
       </KeyboardAvoidingView>
 
