@@ -13,7 +13,9 @@ import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
 import { useBalances } from "../../../hooks/useBalances";
-import { selectAllWallets } from "../../../store/slices/wallets";
+import { teritoriNetwork } from "../../../networks/teritori";
+import { addSelected, selectAllWallets } from "../../../store/slices/wallets";
+import { useAppDispatch } from "../../../store/store";
 import { ScreenFC } from "../../../utils/navigation";
 import {
   neutral88,
@@ -58,10 +60,10 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
     navigation.navigate("MiniManageTokens");
   };
 
-  const wallets = useSelector(selectAllWallets);
-  console.log(wallets);
-  const balances = useBalances("teritori", wallets[0].publicKey);
-  console.log(balances);
+  const balances = useBalances(
+    "teritori",
+    "tori1lkydvh2qae4gqdslmwaxrje7j57p2kq8dw9d7t",
+  );
 
   return (
     <>
