@@ -1,15 +1,10 @@
 import React from "react";
-import { Switch, View } from "react-native";
+import { View } from "react-native";
 
 import { SVG } from "./SVG";
 import feedSVG from "../../assets/icons/bottomTab/feed.svg";
 import walletSVG from "../../assets/icons/bottomTab/wallets.svg";
-import {
-  blueDefault,
-  neutral33,
-  neutral99,
-  secondaryColor,
-} from "../utils/style/colors";
+import ToggleButton from "../screens/Mini/components/Button/ToggleButton";
 
 const icons = {
   MiniChats: "",
@@ -31,15 +26,9 @@ export const TabBarIcon = ({
   size,
 }: TabBarIconProps) => {
   if (title === "MiniChats") {
-    return (
-      <Switch
-        trackColor={{ false: neutral33, true: blueDefault }}
-        thumbColor={!focused ? neutral99 : secondaryColor}
-        ios_backgroundColor={focused ? blueDefault : neutral33}
-        value={focused}
-      />
-    );
+    return <ToggleButton isActive />;
   }
+
   return (
     <View
       style={{

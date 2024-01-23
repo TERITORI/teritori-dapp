@@ -25,8 +25,8 @@ const settingScreens: {
     navigateTo: "MiniExportPrivateKey",
   },
   {
-    title: "Security & Privacy",
-    navigateTo: "MiniResetWallet",
+    title: "Log in with a FaceID",
+    navigateTo: "MiniFaceLogin",
   },
   {
     title: "Reset Wallet",

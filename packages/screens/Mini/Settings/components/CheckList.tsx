@@ -7,7 +7,7 @@ import { SpacerColumn } from "../../../../components/spacer";
 import { neutral22, neutralA3 } from "../../../../utils/style/colors";
 import { fontMedium16 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
-import { CustomButton } from "../../components/CustomButton";
+import { CustomButton } from "../../components/Button/CustomButton";
 import { CustomCheckbox } from "../../components/CustomCheckbox";
 import MiniTextInput from "../../components/MiniTextInput";
 

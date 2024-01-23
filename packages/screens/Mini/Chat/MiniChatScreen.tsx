@@ -169,7 +169,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
               <View
                 style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
               >
-                <BrandText style={[fontSemibold14, {}]}>
+                <BrandText style={[fontSemibold14]}>
                   Learn more about Forced Chat tab
                 </BrandText>
                 <SVG source={rightArrowSVG} height={20} width={20} />

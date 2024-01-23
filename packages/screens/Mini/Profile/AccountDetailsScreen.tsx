@@ -98,7 +98,7 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
             borderRadius: layout.borderRadius,
           }}
         >
-          <BrandText style={[fontSemibold14, {}]}>{accountDetails}</BrandText>
+          <BrandText style={[fontSemibold14]}>{accountDetails}</BrandText>
           <CustomPressable onPress={copyToClipboard}>
             <SVG source={copySVG} height={22} width={22} />
           </CustomPressable>

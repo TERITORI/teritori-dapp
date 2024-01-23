@@ -27,6 +27,7 @@ import { ProfileScreen } from "../../screens/Mini/Profile/ProfileScreen";
 import { ChangePasswordScreen } from "../../screens/Mini/Settings/ChangePasswordScreen";
 import { ChatSettingScreen } from "../../screens/Mini/Settings/ChatSettingScreen";
 import { ExportPrivateKeyScreen } from "../../screens/Mini/Settings/ExportPrivateKeyScreen";
+import FaceIdLoginScreen from "../../screens/Mini/Settings/FaceIdLoginScreen";
 import { ResetWalletScreen } from "../../screens/Mini/Settings/ResetWalletScreen";
 import { RevealSeedPhraseScreen } from "../../screens/Mini/Settings/RevealSeedPhraseScreen";
 import { SecurityAndPrivacy } from "../../screens/Mini/Settings/SecurityAndPrivacy";
@@ -301,6 +302,15 @@ export const MiniNavigator: React.FC = () => {
         }}
       />
       <Stack.Screen
+        name="MiniFaceLogin"
+        component={FaceIdLoginScreen}
+        options={{
+          header: () => null,
+          title: "Log in with a FaceID",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
         name="MiniResetWallet"
         component={ResetWalletScreen}
         options={{
@@ -376,7 +386,7 @@ export const MiniNavigator: React.FC = () => {
         component={SendingToriScreen}
         options={{
           header: () => null,
-          title: "Sending TORI",
+          title: "Sending TOKEN",
           presentation: "transparentModal",
         }}
       />

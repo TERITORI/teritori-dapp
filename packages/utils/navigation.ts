@@ -105,6 +105,7 @@ export type RootStackParamList = {
   EditAddressBook: { addressId: string; back?: RouteName };
   MiniSecurityAndPrivacy: undefined;
   MiniChangePassword: undefined;
+  MiniFaceLogin: undefined;
   MiniRevealSeedPhrase: undefined;
   MiniExportPrivateKey: undefined;
   MiniResetWallet: undefined;
@@ -113,11 +114,16 @@ export type RootStackParamList = {
   MiniManageTokens: undefined;
   MiniAddCustomToken: undefined;
   MiniSelectToken: { navigateTo: RouteName };
-  MiniDepositTORI: { back?: RouteName };
+  MiniDepositTORI: { back?: RouteName; denom: string };
   ModeSelection: undefined;
   ChatActivation: undefined;
-  MiniSendTori: { back?: RouteName };
-  MiniSendingTori: { back?: RouteName };
+  MiniSendTori: { back?: RouteName; denom: string };
+  MiniSendingTori: {
+    back?: RouteName;
+    amount: string;
+    denom: string;
+    address: string;
+  };
   MiniTransactionDetail: { type: string; transactionId: string };
   ConnectLedger: undefined;
   MiniFeedDetails: { id: string };
@@ -241,6 +247,7 @@ const navConfig: {
     EditAddressBook: "edit-address-book/:addressId",
     MiniSecurityAndPrivacy: "mini-security-and-privacy",
     MiniChangePassword: "mini-change-password",
+    MiniFaceLogin: "mini-face-login",
     MiniRevealSeedPhrase: "mini-reveal-seed-phrase",
     MiniExportPrivateKey: "mini-export-private-key",
     MiniResetWallet: "mini-reset-wallet",

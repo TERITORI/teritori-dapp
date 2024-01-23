@@ -7,8 +7,8 @@ import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
-import { CustomButton } from "../components/CustomButton";
 import MiniTextInput from "../components/MiniTextInput";
 
 const addresses: AddressBookType[] = [

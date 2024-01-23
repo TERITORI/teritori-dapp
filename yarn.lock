@@ -12273,12 +12273,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-secure-store@npm:^12.5.0":
-  version: 12.8.1
-  resolution: "expo-secure-store@npm:12.8.1"
+"expo-secure-store@npm:~12.3.1":
+  version: 12.3.1
+  resolution: "expo-secure-store@npm:12.3.1"
   peerDependencies:
     expo: "*"
-  checksum: 739540167e66f70c1f2d1053251a19ff753ba9cc435b9184f0b63f22fab408d96428a3fef8e276f9f12d1b2fc61435a181f59117a19fc5f4bfd6da0487652b64
+  checksum: b4e0bb14b39d9276483e6d219a445399dbe556921fa71c10dbd7927ae8f3fb8c964fab35c7ba4a9e3acc4e944130d779edaf1337c2b8d74ed25b5621ebbb0cd4
   languageName: node
   linkType: hard
 
@@ -21893,7 +21893,7 @@ __metadata:
     expo-font: ~11.4.0
     expo-linear-gradient: ~12.3.0
     expo-optimize: ^0.2.20
-    expo-secure-store: ^12.5.0
+    expo-secure-store: ~12.3.1
     expo-status-bar: ~1.6.0
     google-protobuf: ^3.21.2
     html-to-draftjs: ^1.5.0

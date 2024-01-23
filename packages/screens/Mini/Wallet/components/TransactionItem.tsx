@@ -23,7 +23,7 @@ export type TransactionType = {
   type: "send" | "deposit";
   status: "pending" | "success";
   img?: string;
-  amount: { tori: number; dollar: number };
+  coin: { denom: string; amount: string; dollar: number };
   to: string;
 };
 
@@ -38,7 +38,7 @@ export default function TransactionItem({
   onPress,
   isLastItem,
 }: TransactionItemProps) {
-  const { type, img, status, to, amount } = transaction;
+  const { type, img, status, to, coin } = transaction;
 
   return (
     <CustomPressable onPress={onPress}>
@@ -100,13 +100,13 @@ export default function TransactionItem({
 
         <View style={{ alignItems: "flex-end" }}>
           <BrandText style={fontMedium14}>
-            {type === "send" ? "-" : "+"} {amount.tori} TORI
+            {type === "send" ? "-" : "+"} {coin.amount} {coin.denom}
           </BrandText>
 
           <SpacerColumn size={0.5} />
 
           <BrandText style={[fontMedium13, { color: neutral88 }]}>
-            ${amount.dollar}
+            ${coin.dollar}
           </BrandText>
 
           {!isLastItem && <Separator style={{ marginTop: 16 }} />}

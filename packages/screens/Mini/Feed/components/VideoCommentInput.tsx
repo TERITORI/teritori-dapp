@@ -21,7 +21,7 @@ import {
 } from "../../../../utils/social-feed";
 import { neutral77, secondaryColor } from "../../../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../../../utils/style/fonts";
-import { CustomButton } from "../../components/CustomButton";
+import { CustomButton } from "../../components/Button/CustomButton";
 
 const INPUT_MIN_HEIGHT = 20;
 const INPUT_MAX_HEIGHT = 400;

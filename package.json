@@ -68,7 +68,7 @@
     "bip39": "^3.1.0",
     "browser-headers": "^0.4.1",
     "buffer": "^6.0.3",
-    "chain-registry": "^1.20.0",
+    "chain-registry": "^1.25.4",
     "commander": "^10.0.1",
     "crypto": "git+https://github.com/entronad/crypto-es.git",
     "crypto-browserify": "^3.12.0",
@@ -88,7 +88,7 @@
     "expo-font": "~11.4.0",
     "expo-linear-gradient": "~12.3.0",
     "expo-optimize": "^0.2.20",
-    "expo-secure-store": "^12.5.0",
+    "expo-secure-store": "~12.3.1",
     "expo-status-bar": "~1.6.0",
     "google-protobuf": "^3.21.2",
     "html-to-draftjs": "^1.5.0",
@@ -193,8 +193,7 @@
     "@expo/prebuild-config": "~6.2.4",
     "expo-modules-autolinking": "~1.5.0",
     "@expo/config-plugins": "~7.2.2",
-    "@expo/metro-config": "~0.10.0",
-    "chain-registry@^1.20.0": "patch:chain-registry@npm%3A1.20.0#./.yarn/patches/chain-registry-npm-1.20.0-e290300d1b.patch"
+    "@expo/metro-config": "~0.10.0"
   },
   "private": true,
   "packageManager": "yarn@3.5.0"

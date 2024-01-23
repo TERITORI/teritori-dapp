@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { View } from "react-native";
 
-import teritoriSVG from "../../../../assets/icons/teritori-white.svg";
+import questionSVG from "../../../../assets/icons/question-gray.svg";
 import { BrandText } from "../../../components/BrandText";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { prettyPrice } from "../../../utils/coins";
 import { ScreenFC } from "../../../utils/navigation";
 import { neutral39, neutral77 } from "../../../utils/style/colors";
 import {
@@ -13,9 +14,10 @@ import {
   fontMedium16,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { useGetAssets } from "../../Wallet/util/chain-registry";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
-import { CustomButton } from "../components/CustomButton";
 import MiniTextInput from "../components/MiniTextInput";
 import MiniTextInputWithDropdown from "../components/MiniTextInputWithDropdown";
 
@@ -32,14 +34,22 @@ const tokenOptions = [
   },
 ];
 
-const BALANCE = 62424;
-
-const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation }) => {
+const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation, route }) => {
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
 
   const goBackTo = () =>
     navigation.replace("MiniSelectToken", { navigateTo: "MiniSendingTori" });
+
+  const assets = useGetAssets(
+    "teritori",
+    "tori1lkydvh2qae4gqdslmwaxrje7j57p2kq8dw9d7t",
+  );
+  const { denom } = route.params;
+  const selectedToken = assets.find((asset) => asset.denom === denom);
+  if (!selectedToken) {
+    return null;
+  }
 
   return (
     <BlurScreenContainer title="Send TORI" onGoBack={goBackTo}>
@@ -53,7 +63,7 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation }) => {
       >
         <CircularImgOrIcon
           style={{ alignItems: "center", justifyContent: "center" }}
-          icon={teritoriSVG}
+          icon={selectedToken?.logo_URIs?.svg || questionSVG}
         />
       </View>
       <SpacerColumn size={2} />
@@ -82,10 +92,14 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation }) => {
             value={amount}
             onChangeText={(value) => setAmount(value)}
             right={
-              <CustomPressable onPress={() => setAmount(BALANCE.toString())}>
+              <CustomPressable
+                onPress={() =>
+                  setAmount(selectedToken?.amount.toString() || "")
+                }
+              >
                 <View style={{ alignItems: "center", flexDirection: "row" }}>
                   <BrandText style={[fontMedium15, { color: neutral77 }]}>
-                    TORI
+                    {selectedToken?.symbol || "Unknown"}
                   </BrandText>
                   <SpacerRow size={1.5} />
                   <View
@@ -105,14 +119,23 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation }) => {
 
           <SpacerColumn size={1.5} />
           <BrandText style={[fontMedium13, { color: neutral77 }]}>
-            Balance: {BALANCE} TORI
+            {`Balance ${prettyPrice(
+              selectedToken.networkId,
+              selectedToken.amount,
+              selectedToken.denom,
+            )}`}
           </BrandText>
         </View>
 
         <CustomButton
           title="Next"
           onPress={() =>
-            navigation.replace("MiniSendingTori", { back: "MiniSendTori" })
+            navigation.replace("MiniSendingTori", {
+              back: "MiniSendTori",
+              amount,
+              denom,
+              address,
+            })
           }
         />
       </View>

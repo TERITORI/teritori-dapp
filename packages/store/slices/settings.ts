@@ -33,6 +33,7 @@ interface Settings {
   NFTStorageAPI: string;
   isKeplrConnected: boolean;
   isLeapConnected: boolean;
+  isNativeWalletConnected: boolean;
   isAdenaConnected: boolean;
   alreadyVisited: boolean;
   areTestnetsEnabled: boolean;
@@ -49,6 +50,7 @@ const initialState: Settings = {
   NFTStorageAPI: process.env.NFT_STORAGE_API || "",
   isKeplrConnected: false,
   isLeapConnected: false,
+  isNativeWalletConnected: false,
   isAdenaConnected: false,
   howToBuyExapanded: true,
   alreadyVisited: false,
@@ -76,6 +78,9 @@ export const selectIsKeplrConnected = (state: RootState) =>
 
 export const selectIsLeapConnected = (state: RootState) =>
   state.settings.isLeapConnected;
+
+export const selectINativeWalletConnected = (state: RootState) =>
+  state.settings.isNativeWalletConnected;
 
 export const selectIsAdenaConnected = (state: RootState) =>
   state.settings.isAdenaConnected;
@@ -155,6 +160,9 @@ const settingsSlice = createSlice({
     },
     setIsLeapConnected: (state, action: PayloadAction<boolean>) => {
       state.isLeapConnected = action.payload;
+    },
+    setINativeWalletConnected: (state, action: PayloadAction<boolean>) => {
+      state.isNativeWalletConnected = action.payload;
     },
     setIsAdenaConnected: (state, action: PayloadAction<boolean>) => {
       state.isAdenaConnected = action.payload;

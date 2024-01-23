@@ -6,15 +6,15 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { BrandText } from "../../../components/BrandText";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
+import { BrandText } from "../../../../components/BrandText";
+import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import {
   blueDefault,
   dangerColor,
   neutral33,
-} from "../../../utils/style/colors";
-import { fontSemibold15 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "../../../../utils/style/colors";
+import { fontSemibold15 } from "../../../../utils/style/fonts";
+import { layout } from "../../../../utils/style/layout";
 
 type Props = {
   onPress: (event: GestureResponderEvent) => void;
