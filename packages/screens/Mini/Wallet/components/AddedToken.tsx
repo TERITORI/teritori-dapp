@@ -84,7 +84,7 @@ export const AddedToken = ({
             gap: layout.spacing_x0_5,
           }}
         >
-          <BrandText style={[fontSemibold14, {}]}>{asset?.symbol}</BrandText>
+          <BrandText style={[fontSemibold14]}>{asset?.symbol}</BrandText>
           <BrandText style={[fontMedium13, { color: neutralA3 }]}>
             {code}
           </BrandText>
@@ -101,7 +101,7 @@ export const AddedToken = ({
           gap: layout.spacing_x0_5,
         }}
       >
-        <BrandText style={[fontSemibold14, {}]}>
+        <BrandText style={[fontSemibold14]}>
           {prettyPrice(assetList?.chain_name, amount, denom)}
         </BrandText>
         <BrandText style={[fontMedium13, { color: neutralA3 }]}>
