@@ -114,11 +114,16 @@ export type RootStackParamList = {
   MiniManageTokens: undefined;
   MiniAddCustomToken: undefined;
   MiniSelectToken: { navigateTo: RouteName };
-  MiniDepositTORI: { back?: RouteName };
+  MiniDepositTORI: { back?: RouteName; denom: string };
   ModeSelection: undefined;
   ChatActivation: undefined;
   MiniSendTori: { back?: RouteName; denom: string };
-  MiniSendingTori: { back?: RouteName };
+  MiniSendingTori: {
+    back?: RouteName;
+    amount: string;
+    denom: string;
+    address: string;
+  };
   MiniTransactionDetail: { type: string; transactionId: string };
   ConnectLedger: undefined;
   MiniFeedDetails: { id: string };

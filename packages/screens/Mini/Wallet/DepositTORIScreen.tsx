@@ -15,6 +15,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium13, fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { findByBaseDenom } from "../../Wallet/util/chain-registry";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
 
 const QR_SIZE = 248;
@@ -25,9 +26,11 @@ const accountDetails = {
 
 export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
   navigation,
+  route,
 }) => {
   const [isCopied, setIsCopied] = useState(false);
 
+  const { denom } = route.params;
   const onGotoSelectToken = () =>
     navigation.replace("MiniSelectToken", { navigateTo: "MiniDepositTORI" });
 
@@ -36,8 +39,16 @@ export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
     setIsCopied(true);
   };
 
+  const selectedToken = findByBaseDenom(denom)?.assets[0];
+  if (!selectedToken) {
+    return null;
+  }
+
   return (
-    <BlurScreenContainer title="Deposit TORI" onGoBack={onGotoSelectToken}>
+    <BlurScreenContainer
+      title={`Deposit ${selectedToken.symbol}`}
+      onGoBack={onGotoSelectToken}
+    >
       <View
         style={{
           paddingHorizontal: layout.spacing_x2,
