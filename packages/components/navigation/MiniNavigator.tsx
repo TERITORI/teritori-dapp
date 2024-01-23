@@ -386,7 +386,7 @@ export const MiniNavigator: React.FC = () => {
         component={SendingToriScreen}
         options={{
           header: () => null,
-          title: "Sending TORI",
+          title: "Sending TOKEN",
           presentation: "transparentModal",
         }}
       />
