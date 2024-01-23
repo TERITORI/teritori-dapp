@@ -2,8 +2,8 @@ import React from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import backSVG from "../../../../assets/icons/back.svg";
+import { useTheme } from "../../../hooks/useTheme";
 import { useAppNavigation } from "../../../utils/navigation";
-import { neutral22 } from "../../../utils/style/colors";
 import { SVG } from "../../SVG";
 
 export const BackButton: React.FC<{
@@ -11,6 +11,7 @@ export const BackButton: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ onPress, style }) => {
   const navigation = useAppNavigation();
+  const theme = useTheme();
 
   const handleOnPress = () => {
     if (onPress) onPress();
@@ -26,11 +27,11 @@ export const BackButton: React.FC<{
           alignItems: "center",
           width: 32,
           height: 32,
-          backgroundColor: neutral22,
+          backgroundColor: theme.backButtonColor,
           borderRadius: 999,
         }}
       >
-        <SVG width={24} height={24} source={backSVG} />
+        <SVG width={24} height={24} source={backSVG} color={theme.textColor} />
       </View>
     </TouchableOpacity>
   );

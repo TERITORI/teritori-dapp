@@ -71,11 +71,14 @@ export type RootStackParamList = {
 
   DAppStore: undefined;
   ToriPunks: { route: string };
-
   Metrics: undefined;
+
   Message: { view: string; tab?: string } | undefined;
   ChatSection: Conversation;
   FriendshipManager: { tab?: MessageFriendsTabItem } | undefined;
+
+  RWAHome: undefined;
+  RWALists: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -167,6 +170,10 @@ const navConfig: {
     Message: "message/:view?",
     ChatSection: "message/chat",
     FriendshipManager: "/friends",
+
+    // === RWA
+    RWAHome: "rwa-home",
+    RWALists: "rwa-lists",
   },
 };
 

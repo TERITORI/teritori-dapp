@@ -8,12 +8,13 @@ import {
 } from "react-native";
 import { SvgProps } from "react-native-svg";
 
+import { useTheme } from "../../hooks/useTheme";
 import {
   borderRadiusButton,
   ButtonsSize,
   heightButton,
 } from "../../utils/style/buttons";
-import { primaryColor, primaryTextColor } from "../../utils/style/colors";
+import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -52,6 +53,7 @@ export const PrimaryButton: React.FC<{
   color = primaryColor,
   isLoading: isLoadingProp,
 }) => {
+  const theme = useTheme();
   const [isLocalLoading, setIsLocalLoading] = useState(false);
   const [hovered, setHovered] = useState(false);
 
@@ -128,7 +130,7 @@ export const PrimaryButton: React.FC<{
             style={[
               fontSemibold14,
               {
-                color: primaryTextColor,
+                color: theme.secondaryTextColor,
                 textAlign: "center",
               },
             ]}
