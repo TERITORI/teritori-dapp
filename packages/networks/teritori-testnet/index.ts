@@ -2,14 +2,14 @@ import { teritoriTestnetCurrencies } from "./currencies";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
 
 const nameServiceContractAddress =
-  "tori160wk6qdepxy99p79vgq4ue0stvz4sstxfcj5n9vq04h6gx6ydrwsy0a5fy";
+  "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys";
 
 const riotContractAddressGen1 = "";
 
 export const teritoriTestnetNetwork: NetworkInfo = {
   id: "teritori-testnet",
   kind: NetworkKind.Cosmos,
-  chainId: "teritori-test-5",
+  chainId: "teritori-test-6",
   displayName: "Teritori Testnet",
   registryName: "teritoritestnet",
   icon: "teritori.svg",
@@ -53,7 +53,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
   nameServiceTLD: ".tori",
   vaultContractAddress:
-    "tori1da7gq3lv7v48fkq2w4jp0f0yg4v7rey3d92legs8e83mhuf3agyq2z7rr9",
+    "tori17p9rzwnnfxcjp32un9ug7yhhzgtkhvl9jfksztgw5uh69wac2pgs9ezf0j",
   riotContractAddressGen0: "",
   riotContractAddressGen1,
   riotSquadStakingContractAddressV1: "",
@@ -66,13 +66,13 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   ],
   excludeFromLaunchpadList: [riotContractAddressGen1],
   socialFeedContractAddress:
-    "tori1fc7nakzuyfn2qzkclafcsc54asamnclg064962lwne40w2lq558q2ch5h9",
-  daoCoreCodeId: 55,
-  daoPreProposeSingleCodeId: 56,
-  daoProposalSingleCodeId: 57,
-  daoCw4GroupCodeId: 59,
-  daoVotingCw4CodeId: 60,
-  daoFactoryCodeId: 61,
+    "tori1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrqazuvxk",
+  daoCoreCodeId: 4,
+  daoPreProposeSingleCodeId: 5,
+  daoProposalSingleCodeId: 6,
+  daoCw4GroupCodeId: 7,
+  daoVotingCw4CodeId: 8,
+  daoFactoryCodeId: 9,
   daoFactoryContractAddress:
-    "tori1u3auh8k360v6mq3fujngdur5t2cf8l0eagfyfvxnk98zqhtlt39qk0eyvt",
+    "tori1s85asu5dckeelmgzrwqakxc8tc4gllutjq4uq3a4lwak2hfp9c3q4spguf",
 };
