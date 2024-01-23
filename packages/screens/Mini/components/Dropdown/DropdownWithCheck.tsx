@@ -15,7 +15,7 @@ import {
 } from "../../../../utils/style/colors";
 import { fontSemibold14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
-import Checkbox from "../Checkbox";
+import Checkbox from "../checkbox/Checkbox";
 
 export type FilterOption = {
   value: string;
