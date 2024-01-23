@@ -706,6 +706,7 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 				TransactionKind: string(activity.Kind),
 				TargetName:      activity.NFT.Name,
 				TargetImageUri:  activity.NFT.ImageURI,
+				TargetId:        string(activity.NFT.ID),
 				ContractName:    "ToriVault",
 				Time:            activity.Time.Format(time.RFC3339),
 				Amount:          price,

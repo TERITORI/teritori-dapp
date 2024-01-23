@@ -68,8 +68,9 @@ export const durationToXP = (duration: number) => {
 export const getRipperRarity = (ripper: NFT): RipperRarity => {
   let rarity: RipperRarity;
 
-  const ripperSkin = ripper.attributes.find((attr) => attr.traitType === "Skin")
-    ?.value;
+  const ripperSkin = ripper.attributes.find(
+    (attr) => attr.traitType === "Skin",
+  )?.value;
 
   switch (ripperSkin) {
     case "Pure Gold":
@@ -107,8 +108,9 @@ export const getRipperTraitValue = (
   ripper: NFT,
   traitType: RipperTraitType,
 ) => {
-  let res: any = ripper.attributes.find((attr) => attr.traitType === traitType)
-    ?.value;
+  let res: any = ripper.attributes.find(
+    (attr) => attr.traitType === traitType,
+  )?.value;
 
   if (res === undefined || res === "None") {
     res = null;

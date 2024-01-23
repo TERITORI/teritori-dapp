@@ -7,7 +7,7 @@ export const teritoriTestnetCurrencies: CurrencyInfo[] = [
     displayName: "TORI",
     decimals: 6,
     coingeckoId: "teritori",
-    icon: "icons/networks/teritori-circle.svg",
+    icon: "teritori-circle.svg",
     kind: "native",
     color: currencyTORIcolor,
   },

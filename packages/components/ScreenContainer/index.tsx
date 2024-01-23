@@ -126,7 +126,7 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
       <View style={styles.container}>
         {!hideSidebar ? <Sidebar /> : null}
 
-        <View style={{ width: "100%", flex: 1 }}>
+        <View style={{ flex: 1 }}>
           {/*==== Header*/}
           <Header onBackPress={onBackPress}>{headerChildren}</Header>
 

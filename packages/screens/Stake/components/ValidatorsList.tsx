@@ -212,7 +212,6 @@ const ValidatorRow: React.FC<{
                 </BrandText>
               )}
           </View>
-
           <View
             style={{
               flex: TABLE_ROWS.claimable.flex,
@@ -245,7 +244,7 @@ const ValidatorRow: React.FC<{
         </>
       )}
 
-      {actions && (
+      {!!actions && (
         <View
           style={{
             flex: TABLE_ROWS.actions.flex,

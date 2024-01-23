@@ -1,15 +1,9 @@
 import React, { FC, ReactNode } from "react";
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { Platform, ScrollView, useWindowDimensions, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { HeaderMobile } from "./HeaderMobile";
 import { useSearchBar } from "../../context/SearchBarProvider";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
@@ -61,73 +55,75 @@ export const ScreenContainerMobile: FC<{
   onBackPress,
 }) => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
-  const { width } = useMaxResolution();
+  const insets = useSafeAreaInsets();
+
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <SearchModalMobile
-        onClose={() => setSearchModalMobileOpen(false)}
-        visible={isSearchModalMobileOpen}
-      />
-      <HeaderMobile
-        onBackPress={onBackPress}
-        forceNetworkId={forceNetworkId}
-        forceNetworkKind={forceNetworkKind}
-        forceNetworkFeatures={forceNetworkFeatures}
-      />
-      <SidebarMobile />
+    <View
+      style={{
+        flex: 1,
+        width: "100%",
+        backgroundColor: "#000000",
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+      }}
+    >
+      <View
+        style={[
+          {
+            flex: 1,
+            paddingTop: MOBILE_HEADER_HEIGHT,
+          },
+        ]}
+      >
+        <SearchModalMobile
+          onClose={() => setSearchModalMobileOpen(false)}
+          visible={isSearchModalMobileOpen}
+        />
+        <HeaderMobile
+          onBackPress={onBackPress}
+          forceNetworkId={forceNetworkId}
+          forceNetworkKind={forceNetworkKind}
+          forceNetworkFeatures={forceNetworkFeatures}
+        />
+        {Platform.OS === "web" && <SidebarMobile />}
 
-      {/*==== Scrollable screen content*/}
-      <View style={{ flex: 1, width: "100%", height: windowHeight }}>
-        <SelectedNetworkGate filter={networkFilter}>
-          {hasScroll ? (
-            <ScrollView
-              contentContainerStyle={[
-                {
-                  minHeight: windowHeight - MOBILE_HEADER_HEIGHT,
-                },
-              ]}
-            >
-              {mobileTitle ? <MobileTitle title={mobileTitle} /> : null}
-              <View style={[styles.childrenContainer, { flex: 1, width }]}>
-                {children}
-              </View>
-              {/*TODO: Put here Riotters Footer ?*/}
-            </ScrollView>
-          ) : (
-            <>
-              <View style={[styles.childrenContainer, { flex: 1 }]}>
-                {children}
-              </View>
-            </>
-            // TODO: Put here Riotters Footer ?
-          )}
-          <MediaPlayerBar
-            style={{
-              position: "absolute",
-              bottom: 0,
-              right: 0,
-              width: windowWidth,
-            }}
-          />
-        </SelectedNetworkGate>
+        {/*==== Scrollable screen content*/}
+        <View style={{ flex: 1, width: "100%", height: windowHeight }}>
+          <SelectedNetworkGate filter={networkFilter}>
+            {hasScroll ? (
+              <ScrollView
+                contentContainerStyle={[
+                  {
+                    marginHorizontal: layout.spacing_x2,
+                    minHeight: windowHeight - MOBILE_HEADER_HEIGHT,
+                  },
+                ]}
+              >
+                {mobileTitle ? <MobileTitle title={mobileTitle} /> : null}
+                <View style={[{ height: "100%" }]}>{children}</View>
+              </ScrollView>
+            ) : (
+              <>
+                <View
+                  style={[{ flex: 1, height: "100%", alignSelf: "center" }]}
+                >
+                  {children}
+                </View>
+              </>
+            )}
+            <MediaPlayerBar
+              style={{
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                width: windowWidth,
+              }}
+            />
+          </SelectedNetworkGate>
+        </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: "100%",
-    backgroundColor: "#000000",
-    paddingTop: MOBILE_HEADER_HEIGHT,
-  },
-  childrenContainer: {
-    height: "100%",
-    alignSelf: "center",
-  },
-});

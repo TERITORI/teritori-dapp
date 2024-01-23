@@ -5,7 +5,7 @@ export const ethereumNetwork: EthereumNetworkInfo = {
   id: "ethereum",
   kind: NetworkKind.Ethereum,
   displayName: "Ethereum",
-  icon: "icons/networks/ethereum.svg",
+  icon: "ethereum.svg",
   features: [
     NetworkFeature.NFTMarketplace,
     NetworkFeature.RiotP2E,

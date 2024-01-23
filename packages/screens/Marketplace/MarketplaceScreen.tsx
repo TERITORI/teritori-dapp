@@ -1,5 +1,12 @@
 import React, { ReactNode, useState } from "react";
-import { FlatList, StyleProp, TextStyle, View, ViewStyle } from "react-native";
+import {
+  FlatList,
+  StyleProp,
+  TextStyle,
+  View,
+  ViewStyle,
+  Platform,
+} from "react-native";
 import { useSelector } from "react-redux";
 
 import { PeriodFilter } from "./PeriodFilter";
@@ -87,6 +94,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const enabledNetworks = useEnabledNetworks();
   const timePeriod = useSelector(selectTimePeriod);
+  const isMobile = useIsMobile();
 
   const marketplaceNetworks = enabledNetworks.filter((network) => {
     return network.features.includes(NetworkFeature.NFTMarketplace);
@@ -159,7 +167,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
       >
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: isMobile ? "column" : "row",
             flexWrap: "nowrap",
             justifyContent: "space-between",
             alignItems: "center",
@@ -207,9 +215,8 @@ const CollectionTable: React.FC<{
   const [pageIndex, setPageIndex] = useState(0);
   const isMobile = useIsMobile();
   const timePeriod = useSelector(selectTimePeriod);
-  const filteredCollections = rows.filter(
-    ({ collectionName }) =>
-      collectionName?.toLowerCase().includes(filterText.toLowerCase()),
+  const filteredCollections = rows.filter(({ collectionName }) =>
+    collectionName?.toLowerCase().includes(filterText.toLowerCase()),
   );
   TABLE_ROWS.TimePeriodPercentualVolume.label =
     timePeriod.shortLabel + " % Volume";
@@ -232,6 +239,7 @@ const CollectionTable: React.FC<{
         }
       />
       <FlatList
+        scrollEnabled={Platform.OS === "web"}
         data={filteredCollections}
         renderItem={({ item, index }) => (
           <CollectionRow collection={item} rank={index} />

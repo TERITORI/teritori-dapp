@@ -72,7 +72,7 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
         </View>
       )}
 
-      {rarity && (
+      {!!rarity && (
         <View style={[styles.labelContainer, { bottom: 0 }]}>
           <BrandText style={[styles.label, { color: rarityColor }]}>
             {rarity}
