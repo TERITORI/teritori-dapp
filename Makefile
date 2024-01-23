@@ -378,8 +378,4 @@ build-android-weshframework:
 	-tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target android -androidapi 21 \
 	./go/cmd/weshd-app/
 
-.PHONY: load-wesh-frameworks
-load-wesh-frameworks:
-	pip install gdown
-	gdown https://drive.google.com/drive/folders/1NHG4yH-LMXwBnvgmwDnYKWdoIizfh3Ed -O ./weshd/android/ --folder
-	gdown https://drive.google.com/drive/folders/1UiIZ913lh_mrv7oKnI_u9418b5m8xttl -O ./weshd/ios/ --folder
+ 
