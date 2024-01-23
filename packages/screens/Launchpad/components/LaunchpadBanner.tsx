@@ -10,6 +10,8 @@ import { SpacerColumn } from "../../../components/spacer";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { fontSemibold28 } from "../../../utils/style/fonts";
 
+const imageWidth = 1024;
+
 export const LaunchpadBanner: React.FC = () => {
   const { width } = useMaxResolution();
 
@@ -17,8 +19,8 @@ export const LaunchpadBanner: React.FC = () => {
     <View style={styles.container}>
       <OptimizedImage
         sourceURI={LaunchpadBannerImage}
-        width={width}
-        height={width / 2.5}
+        width={imageWidth}
+        height={imageWidth / 2.5}
         style={{ width, height: width / 2.5, resizeMode: "contain" }}
       />
       <View style={styles.detailContainer}>
