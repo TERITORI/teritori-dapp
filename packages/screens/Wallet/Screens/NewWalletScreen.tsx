@@ -112,7 +112,7 @@ const NewWalletScreen: ScreenFC<"NewWallet"> = ({ navigation }) => {
             onPress={() => setIsChecked(true)}
             value="item"
             label="This phrase will only be stored on this device. Teritori can’t recover it for you."
-            labelStyle={{ color: neutralA3, lineHeight: 22, flex: 1 }}
+            labelStyle={[{ color: neutralA3, lineHeight: 22, flex: 1 }]}
             type="circle"
             size="md"
             wrapperStyle={{
