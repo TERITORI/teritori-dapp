@@ -1,5 +1,3 @@
-import * as Clipboard from "expo-clipboard";
-import React, { useState } from "react";
 import { View } from "react-native";
 
 import { RedAlert } from "./RedAlert";
@@ -7,35 +5,12 @@ import { BrandText } from "../../../../components/BrandText";
 import { SpacerColumn } from "../../../../components/spacer";
 import { fontSemibold14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
+import useFetch from "../../../Wallet/hooks/useFetch";
+import { getMnemonic } from "../../../Wallet/hooks/useNativeWallet";
 import BlurViewWrapper from "../../components/BlurViewWrapper";
-import { CustomButton } from "../../components/Button/CustomButton";
-
-const SEEDS = [
-  "tiger",
-  "current",
-  "very",
-  "power",
-  "light",
-  "choose",
-  "store",
-  "cover",
-  "paint",
-  "speed",
-  "first",
-  "snow",
-];
 
 export const ShowSeedPhrase = () => {
-  const [revealSeeds, setRevealSeeds] = useState(false);
-
-  const onCopySeedPhrasesPress = async () => {
-    await Clipboard.setStringAsync(JSON.stringify(SEEDS));
-    alert("Copied");
-  };
-
-  const onToggleSeedPhrasesPress = async () => {
-    setRevealSeeds((prev) => !prev);
-  };
+  const phrase = useFetch<string>(getMnemonic);
 
   return (
     <View
@@ -52,44 +27,18 @@ export const ShowSeedPhrase = () => {
         <SpacerColumn size={1.5} />
 
         <BlurViewWrapper
-          show={revealSeeds}
           wrapperStyle={{ flexDirection: "row", rowGap: 12, flexWrap: "wrap" }}
+          copy={phrase}
         >
-          {Array.isArray(SEEDS) &&
-            SEEDS.map((seed) => (
-              <BrandText
-                key={seed}
-                style={[fontSemibold14, { textAlign: "center", width: "25%" }]}
-              >
-                {seed}
-              </BrandText>
-            ))}
+          {phrase?.split(" ").map((seed) => (
+            <BrandText
+              key={seed}
+              style={[fontSemibold14, { textAlign: "center", width: "25%" }]}
+            >
+              {seed}
+            </BrandText>
+          ))}
         </BlurViewWrapper>
-
-        <SpacerColumn size={1.5} />
-
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            gap: layout.spacing_x2,
-          }}
-        >
-          <CustomButton
-            title={revealSeeds ? "Hide" : "View"}
-            onPress={onToggleSeedPhrasesPress}
-            type="gray"
-            size="small"
-            width={75}
-          />
-          <CustomButton
-            title="Copy"
-            onPress={onCopySeedPhrasesPress}
-            type="gray"
-            size="small"
-            width={75}
-          />
-        </View>
       </View>
     </View>
   );

@@ -3,6 +3,7 @@ import {
   DimensionValue,
   GestureResponderEvent,
   StyleProp,
+  TextStyle,
   ViewStyle,
 } from "react-native";
 
@@ -32,6 +33,7 @@ type Props = {
   type?: "primary" | "danger" | "gray" | "outline";
   size?: "normal" | "medium" | "small";
   style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
   width?: DimensionValue;
 };
 
@@ -42,6 +44,7 @@ export const CustomButton = ({
   isDisabled,
   type = "primary",
   style,
+  textStyle,
   size = "normal",
   width,
 }: Props) => {
@@ -109,7 +112,7 @@ export const CustomButton = ({
       disabled={isDisabled}
     >
       {children || (
-        <BrandText style={[fontSemibold15, { textAlign: "center" }]}>
+        <BrandText style={[fontSemibold15, { textAlign: "center" }, textStyle]}>
           {title}
         </BrandText>
       )}
