@@ -7,6 +7,9 @@ const { WebpackDeduplicationPlugin } = require("webpack-deduplication-plugin");
 module.exports = async function (env, argv) {
   const config = await createExpoWebpackConfigAsync(env, argv);
 
+  // overrind lottie on web due to https://github.com/expo/expo/issues/6054
+  config.resolve.alias["lottie-react-native"] = "react-native-web-lottie";
+
   if (process.env.isElectron) {
     config.target = "electron-renderer";
     config.output.publicPath = "./";
