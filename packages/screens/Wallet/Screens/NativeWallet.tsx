@@ -2,6 +2,11 @@ import { Video } from "expo-av";
 import React, { useEffect } from "react";
 import { Platform, View } from "react-native";
 
+import astroSvg from "../../../../assets/icons/networks/astroport-circle.svg";
+import connectWalletSvg from "../../../../assets/icons/networks/connect-wallet-circle.svg";
+import foxSvg from "../../../../assets/icons/networks/fox-circle.svg";
+import keplerSvg from "../../../../assets/icons/networks/kepler-circle.svg";
+import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
 import { ConnectAdenaButton } from "../../../components/connectWallet/ConnectAdenaButton";
 import { ConnectKeplrButton } from "../../../components/connectWallet/ConnectKeplrButton";
 import { ConnectLeapButton } from "../../../components/connectWallet/ConnectLeapButton";
@@ -20,6 +25,25 @@ function Connect3rdPartyWallet() {
     </>
   );
 }
+
+const wallets = [
+  {
+    img: foxSvg,
+    name: "fox",
+  },
+  {
+    img: keplerSvg,
+    name: "kepler",
+  },
+  {
+    img: astroSvg,
+    name: "astroport",
+  },
+  {
+    img: connectWalletSvg,
+    name: "connectWallet",
+  },
+];
 
 const NativeWallet: ScreenFC<"NativeWallet"> = () => {
   const video = React.useRef(null);
@@ -66,7 +90,7 @@ const NativeWallet: ScreenFC<"NativeWallet"> = () => {
               navigation.navigate("CreateWallet");
             }}
           />
-          <SpacerColumn size={1} />
+          <SpacerColumn size={1.5} />
           <View style={{ flexDirection: "row", gap: 10 }}>
             <CustomButton
               onPress={(_, navigation) => {
@@ -86,8 +110,14 @@ const NativeWallet: ScreenFC<"NativeWallet"> = () => {
             />
           </View>
 
+          <SpacerColumn size={3} />
+          <View style={{ flexDirection: "row", gap: 12 }}>
+            {wallets.map((wallet) => {
+              return <SVGorImageIcon icon={wallet.img} iconSize={42} />;
+            })}
+          </View>
+          <SpacerColumn size={8} />
           {Platform.OS === "web" && <Connect3rdPartyWallet />}
-          <SpacerColumn size={10} />
         </View>
       </View>
     </WalletContainer>
