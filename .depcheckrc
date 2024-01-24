@@ -29,7 +29,8 @@
     "crypto",
     "expo-constants",
     "metro-config",
-    "react-native-web-lottie"
+    "react-native-web-lottie",
+    "expo-splash-screen"
   ],
   "ignorePatterns": [
     "/cache",
