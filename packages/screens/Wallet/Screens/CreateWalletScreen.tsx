@@ -19,7 +19,7 @@ import { layout } from "../../../utils/style/layout";
 import CustomAppBar from "../../Mini/components/AppBar/CustomAppBar";
 import BlurViewWrapper from "../../Mini/components/BlurViewWrapper";
 import { CustomButton } from "../../Mini/components/Button/CustomButton";
-import Checkbox from "../../Mini/components/checkbox/Checkbox";
+import Checkbox from "../../Mini/components/Checkbox/Checkbox";
 import useFetch from "../hooks/useFetch";
 import { getMnemonic } from "../hooks/useNativeWallet";
 

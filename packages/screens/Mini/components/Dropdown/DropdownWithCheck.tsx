@@ -15,7 +15,7 @@ import {
 } from "../../../../utils/style/colors";
 import { fontSemibold14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
-import Checkbox from "../checkbox/Checkbox";
+import Checkbox from "../Checkbox/Checkbox";
 
 export type FilterOption = {
   value: string;
@@ -159,7 +159,7 @@ function DropdownButton({
 type DropdownItemProps = {
   dropdownOption: Partial<FilterOption>;
   lastItem?: boolean;
-  onPress: (isChecked: boolean, value: string) => void;
+  onPress: (isChecked: boolean, value: any) => void;
 };
 
 function DropdownItem({

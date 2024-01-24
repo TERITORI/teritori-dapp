@@ -5,7 +5,7 @@ import { RouteName } from "../../../utils/navigation";
 import { neutral22, neutralA3 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { CustomButton } from "../../Mini/components/Button/CustomButton";
-import Checkbox from "../../Mini/components/checkbox/Checkbox";
+import Checkbox from "../../Mini/components/Checkbox/Checkbox";
 
 export const AcceptAndNavigate: React.FC<{
   buttonText: string;

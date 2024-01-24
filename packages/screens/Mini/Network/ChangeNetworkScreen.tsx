@@ -10,7 +10,7 @@ import { neutralA3 } from "../../../utils/style/colors";
 import { fontNormal15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
-import Checkbox from "../components/checkbox/Checkbox";
+import Checkbox from "../components/Checkbox/Checkbox";
 import ListView from "../components/ListView";
 
 type ChangeNetworkScreenProps = {
