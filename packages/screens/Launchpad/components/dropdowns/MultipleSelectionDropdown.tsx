@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import chevronDownSVG from "./../../assets/icons/chevron-down.svg";
-import chevronUpSVG from "./../../assets/icons/chevron-up.svg";
+import chevronDownSVG from "./../../../../../assets/icons/chevron-down.svg";
+import chevronUpSVG from "./../../../../../assets/icons/chevron-up.svg";
 import { MultipleSelectionDropdownProps } from "./DropdownProps.type";
 import { LabelText } from "./LabelText";
 import { BrandText } from "../../../../components/BrandText";
