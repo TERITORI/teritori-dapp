@@ -4,13 +4,13 @@ import { NetworkKind } from "../../networks";
 import { RootState } from "../store";
 
 interface StoreWallet {
+  index: number;
   publicKey: string;
   network: NetworkKind;
   networkId: string;
 }
 
-const storeWalletId = (wallet: StoreWallet) =>
-  `${wallet.network}-${wallet.publicKey}`;
+const storeWalletId = (wallet: StoreWallet) => `${wallet.index}`;
 
 const storeWalletsAdapter = createEntityAdapter<StoreWallet>({
   selectId: storeWalletId,
