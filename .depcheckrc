@@ -28,16 +28,15 @@
     "assert",
     "listr2",
     "typescript",
-    "@dotlottie/react-player",
-    "@lottiefiles/react-lottie-player",
     "crypto",
     "expo-constants",
     "metro-config",
+    "react-native-web-lottie"
   ],
   "ignorePatterns": [
     "/cache",
     "/.yarn",
     "/electron-webpack.js",
-    "/electron/webpack.config.js",
+    "/electron/webpack.config.js"
   ]
 }
