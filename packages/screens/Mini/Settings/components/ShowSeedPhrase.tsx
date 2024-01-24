@@ -5,12 +5,12 @@ import { BrandText } from "../../../../components/BrandText";
 import { SpacerColumn } from "../../../../components/spacer";
 import { fontSemibold14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
+import { getMnemonic } from "../../../Wallet/hooks/getNativeWallet";
 import useFetch from "../../../Wallet/hooks/useFetch";
-import { getMnemonic } from "../../../Wallet/hooks/useNativeWallet";
 import BlurViewWrapper from "../../components/BlurViewWrapper";
 
 export const ShowSeedPhrase = () => {
-  const phrase = useFetch<string>(getMnemonic);
+  const phrase = useFetch<string | undefined>(getMnemonic);
 
   return (
     <View

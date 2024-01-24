@@ -429,6 +429,7 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: "Feed",
+          animation: "fade",
         }}
       />
     </Stack.Navigator>
