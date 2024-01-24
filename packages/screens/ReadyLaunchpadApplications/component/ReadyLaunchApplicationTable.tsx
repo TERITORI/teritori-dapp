@@ -1,7 +1,9 @@
 import React from "react";
 import { FlatList, View } from "react-native";
 
+import dotsSVG from "../../../../assets/icons/dots.svg";
 import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
 import { CollectionNameCell } from "../../../components/applicationTable/CollectionNameCell";
 import { InnerCellText } from "../../../components/applicationTable/InnerCellText";
 import { TableRow } from "../../../components/table/TableRow";
@@ -162,19 +164,32 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
               {rowData.premiumMarketingPackage}
             </InnerCellText>
           </View>
-          <View style={{ flex: TABLE_ROWS.basicMarketingPackage.flex }}>
-            <InnerCellText
-              style={{
-                backgroundColor: lightblue,
-                borderRadius: 100,
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                alignSelf: "flex-start",
-              }}
-              textStyle={{ color: neutral00 }}
-            >
-              {rowData.basicMarketingPackage}
-            </InnerCellText>
+          <View
+            style={{
+              flex: TABLE_ROWS.basicMarketingPackage.flex,
+              flexDirection: "row",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <InnerCellText
+                style={{
+                  backgroundColor: lightblue,
+                  borderRadius: 100,
+                  paddingHorizontal: 10,
+                  paddingVertical: 5,
+                  alignSelf: "flex-start",
+                }}
+                textStyle={{ color: neutral00 }}
+              >
+                {rowData.basicMarketingPackage}
+              </InnerCellText>
+            </View>
+            <SVG
+              source={dotsSVG}
+              height={16}
+              width={16}
+              style={{ marginLeft: layout.spacing_x0_5 }}
+            />
           </View>
         </>
       )}

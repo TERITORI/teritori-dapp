@@ -71,18 +71,18 @@ export const ReadyLaunchpadApplicationsScreen: React.FC = () => {
         <View
           style={{
             flexDirection: "row",
+            alignItems: "center",
             marginTop: 30,
             borderTopColor: neutral33,
             borderTopWidth: 1,
             borderBottomColor: neutral33,
             borderBottomWidth: 1,
-            paddingVertical: 8,
           }}
         >
           <Tabs
             items={tabs}
             selected={selectedTab}
-            style={{ height: 48, flex: 1 }}
+            style={{ height: 58, flex: 1 }}
             onSelect={setSelectedTab}
             noUnderline
           />
@@ -92,6 +92,7 @@ export const ReadyLaunchpadApplicationsScreen: React.FC = () => {
               style={{ marginLeft: 12 }}
               sortDirection={1}
               onChangeSortDirection={() => {}} // TODO: don't forget to rewrite onPress function if possible
+              height={42}
             />
           )}
         </View>

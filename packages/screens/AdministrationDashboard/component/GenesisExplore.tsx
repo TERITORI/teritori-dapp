@@ -11,6 +11,7 @@ import { GradientText } from "../../../components/gradientText";
 import { useAppNavigation } from "../../../utils/navigation";
 import { neutral17, primaryColor } from "../../../utils/style/colors";
 import {
+  fontSemibold12,
   fontSemibold13,
   fontSemibold14,
   fontSemibold24,
@@ -41,22 +42,20 @@ export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
         >
           <PrimaryBox
             style={{
-              paddingHorizontal: layout.spacing_x1_5,
+              paddingRight: layout.spacing_x1_5,
+              paddingLeft: layout.spacing_x1,
               paddingVertical: layout.spacing_x1,
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "row",
             }}
           >
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "row",
-              }}
-            >
+            <View style={{ marginBottom: layout.spacing_x0_5 }}>
               <SVG width={20} height={20} source={penSVG} color="white" />
-              <BrandText style={[fontSemibold13, { marginLeft: 5 }]}>
-                Edit Hero
-              </BrandText>
             </View>
+            <BrandText style={[fontSemibold12, { marginLeft: 5 }]}>
+              Edit Hero
+            </BrandText>
           </PrimaryBox>
         </TouchableOpacity>
       </View>

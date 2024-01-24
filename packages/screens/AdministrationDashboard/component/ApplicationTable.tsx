@@ -2,6 +2,8 @@ import moment from "moment";
 import React from "react";
 import { FlatList, View } from "react-native";
 
+import dotsSVG from "../../../../assets/icons/dots.svg";
+import { SVG } from "../../../components/SVG";
 import { CollectionNameCell } from "../../../components/applicationTable/CollectionNameCell";
 import { InnerCellText } from "../../../components/applicationTable/InnerCellText";
 import { LinkIconAndRedirect } from "../../../components/applicationTable/LinkIconAndRedirect";
@@ -138,13 +140,22 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
           >
             {rowData.expectedPublicMintPrice}
           </InnerCellText>
-          <InnerCellText
+          <View
             style={{
               flex: TABLE_ROWS.expectedMintDate.flex,
+              flexDirection: "row",
             }}
           >
-            {moment(rowData.expectedMintDate).format("MMM D YYYY")}
-          </InnerCellText>
+            <InnerCellText style={{ flex: 1 }}>
+              {moment(rowData.expectedMintDate).format("MMM D YYYY")}
+            </InnerCellText>
+            <SVG
+              source={dotsSVG}
+              height={16}
+              width={16}
+              style={{ marginLeft: layout.spacing_x0_5 }}
+            />
+          </View>
         </>
       )}
     </View>

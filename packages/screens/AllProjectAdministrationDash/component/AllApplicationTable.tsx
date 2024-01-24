@@ -1,7 +1,9 @@
 import React from "react";
 import { FlatList, View } from "react-native";
 
+import dotsSVG from "../../../../assets/icons/dots.svg";
 import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
 import { CollectionNameCell } from "../../../components/applicationTable/CollectionNameCell";
 import { InnerCellText } from "../../../components/applicationTable/InnerCellText";
 import { PercentageVolumeCell } from "../../../components/applicationTable/PercentageVolumeCell";
@@ -117,10 +119,23 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
           <InnerCellText isCryptoLogo style={{ flex: TABLE_ROWS.vol.flex }}>
             {rowData.vol}
           </InnerCellText>
-          <PercentageVolumeCell
-            value={rowData.volPerctage}
-            style={{ flex: TABLE_ROWS.volPerctage.flex }}
-          />
+          <View
+            style={{
+              flex: TABLE_ROWS.volPerctage.flex,
+              flexDirection: "row",
+            }}
+          >
+            <PercentageVolumeCell
+              value={rowData.volPerctage}
+              style={{ flex: 1 }}
+            />
+            <SVG
+              source={dotsSVG}
+              height={16}
+              width={16}
+              style={{ marginLeft: layout.spacing_x0_5 }}
+            />
+          </View>
         </>
       )}
     </View>
