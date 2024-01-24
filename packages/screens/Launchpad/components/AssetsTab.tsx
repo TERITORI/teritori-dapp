@@ -70,8 +70,8 @@ export const AssetsTab: React.FC = () => {
                 style={{
                   marginVertical: layout.spacing_x3,
                   width: 416,
-                  maxHeight: 100,
                 }}
+                containerHeight={100}
                 multiple
                 onUpload={(files) => {
                   setFiles(files);
@@ -83,8 +83,8 @@ export const AssetsTab: React.FC = () => {
                 style={{
                   marginVertical: layout.spacing_x3,
                   width: 416,
-                  maxHeight: 100,
                 }}
+                containerHeight={100}
                 multiple
                 onUpload={(files) => {}}
                 mimeTypes={IMAGE_MIME_TYPES}

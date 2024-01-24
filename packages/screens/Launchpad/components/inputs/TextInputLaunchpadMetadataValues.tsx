@@ -30,9 +30,8 @@ export const TextInputLaunchpadMetadataValues = <
       control={control}
       variant="labelOutside"
       containerStyle={{ marginBottom: layout.spacing_x1_5, width: "100%" }}
-      boxMainContainerStyle={{
-        minHeight: 40,
-      }}
+      boxMainContainerStyle={{ minHeight: 0 }}
+      height={40}
     />
   );
 };
