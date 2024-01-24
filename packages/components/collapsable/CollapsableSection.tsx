@@ -58,7 +58,7 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
         <View
           style={[
             chevronContainerCStyle,
-            isExpanded ? null : { transform: "rotate(0.5turn)" },
+            isExpanded ? { transform: "rotate(0.5turn)" } : null,
           ]}
         >
           <SVG
