@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextInput, View } from "react-native";
+import { Pressable, TextInput, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { ScreenFC } from "../../../utils/navigation";
@@ -9,8 +9,13 @@ import {
   neutralA3,
   secondaryColor,
 } from "../../../utils/style/colors";
-import { fontSemibold16, fontSemibold28 } from "../../../utils/style/fonts";
+import {
+  fontMedium16,
+  fontSemibold16,
+  fontSemibold28,
+} from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { setMnemonic } from "../hooks/getNativeWallet";
 import { AcceptAndNavigate } from "../layout/AcceptAndNavigate";
 import { TopBarWithProgress } from "../layout/TopBarWithProgress";
 import { WalletContainer } from "../layout/WalletContainer";
@@ -72,7 +77,23 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = () => {
 
       <AcceptAndNavigate
         buttonText="Next"
-        text="This phrase will only be stored on this device. Teritori can’t recover it for you."
+        value="ok"
+        label={
+          <Pressable
+            onPress={() => {
+              if (seed) {
+                setMnemonic(seed.mnemonic);
+              }
+            }}
+          >
+            <BrandText
+              style={[fontMedium16, { color: neutralA3, lineHeight: 22 }]}
+            >
+              "This phrase will only be stored on this device. Teritori can’t
+              recover it for you."
+            </BrandText>
+          </Pressable>
+        }
         navigateTo="CreatePassword"
       />
     </WalletContainer>
