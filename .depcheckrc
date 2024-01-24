@@ -9,7 +9,6 @@
     "expo-dev-client",
     "@cosmwasm/ts-codegen",
     "commander",
-    "lottie-ios",
     "@types/node",
     "@improbable-eng/grpc-web-node-http-transport",
     "babel-loader",
@@ -26,7 +25,6 @@
     "electron",
     "rimraf",
     "assert",
-    "listr2",
     "typescript",
     "crypto",
     "expo-constants",
@@ -35,8 +33,6 @@
   ],
   "ignorePatterns": [
     "/cache",
-    "/.yarn",
-    "/electron-webpack.js",
-    "/electron/webpack.config.js"
+    "/.yarn"
   ]
 }

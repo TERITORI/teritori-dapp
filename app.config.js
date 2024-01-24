@@ -32,6 +32,7 @@ const config = {
     extra: {
       env: process.env,
     },
+    plugins: ["expo-font"],
   },
 };
 
