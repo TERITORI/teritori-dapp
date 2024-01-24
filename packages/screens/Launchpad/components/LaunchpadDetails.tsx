@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
+import { MultipleSelectionDropdown } from "./dropdowns/MultipleSelectionDropdown";
+import { SelectionDropdown } from "./dropdowns/SelectionDropdown";
 import { TextInputLaunchpadDetailsValues } from "./inputs/TextInputLaunchpadDetailsValues";
 import { BrandText } from "../../../components/BrandText";
-import { MultipleSelectionDropdown } from "../../../components/MultipleSelectionDropdown";
-import { SelectionDropdown } from "../../../components/SelectionDropdown";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutral55, neutral77 } from "../../../utils/style/colors";
 import {
@@ -13,6 +13,7 @@ import {
   fontSemibold14,
   fontSemibold20,
 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import { NewCollectionDetailsFormValues } from "../CreateCollection.type";
 
 export const LaunchpadDetails: React.FC = () => {
@@ -99,14 +100,15 @@ export const LaunchpadDetails: React.FC = () => {
           placeHolder="Select Option"
           items={projectTypes}
           setItems={(item) => {
-            // eslint-disable-next-line no-unused-expressions
-            projectTypes.includes(item)
-              ? setProjectTypes(projectTypes.filter((data) => data !== item))
-              : setProjectTypes([...projectTypes, item]);
+            if (projectTypes.includes(item)) {
+              setProjectTypes(projectTypes.filter((data) => data !== item));
+            } else {
+              setProjectTypes([...projectTypes, item]);
+            }
           }}
           label="Project type:"
           sublabel={
-            <View>
+            <View style={{ marginBottom: layout.spacing_x1 }}>
               <BrandText style={[fontSemibold13, { color: neutral55 }]}>
                 Multiple answers allowed
               </BrandText>

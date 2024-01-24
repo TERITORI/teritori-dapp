@@ -4,7 +4,7 @@ import { SafeAreaView, View } from "react-native";
 
 import { TextInputLaunchpadAssetsValues } from "./inputs/TextInputLaunchpadAssetsValues";
 import { MetadataUpdateModal } from "./modals/MetadataUpdateModal";
-import { SelectedFilesPreview } from "../../../components/FilePreview/SelectedFilesPreview";
+import { SelectedFilesPreview } from "../../../components/FilePreview/SelectedFilesPreview/SelectedFilesPreview";
 import { SelectFileUploader } from "../../../components/selectFileUploader";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
 import { neutral33 } from "../../../utils/style/colors";

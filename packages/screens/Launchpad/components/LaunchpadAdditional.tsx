@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
+import { SelectionDropdown } from "./dropdowns/SelectionDropdown";
 import { TextInputLaunchpadAdditionalValues } from "./inputs/TextInputLaunchpadAdditionalValues";
 import { BrandText } from "../../../components/BrandText";
-import { SelectionDropdown } from "../../../components/SelectionDropdown";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutral55, neutral77 } from "../../../utils/style/colors";
 import {
