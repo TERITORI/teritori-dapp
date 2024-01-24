@@ -20,6 +20,7 @@ export const SuccessScreen: ScreenFC<"SuccessScreen"> = () => {
           flex: 7,
           marginTop: layout.spacing_x3,
           alignItems: "flex-start",
+          paddingTop: 80,
         }}
       >
         <BrandText style={[fontSemibold28]}>You're All Set!</BrandText>
@@ -32,7 +33,11 @@ export const SuccessScreen: ScreenFC<"SuccessScreen"> = () => {
           Click on the Start button to launch Teritori.
         </BrandText>
       </View>
-      <Button text="Start" navigateTo="MiniTabs" />
+      <Button
+        text="Start"
+        navigateTo="MiniTabs"
+        style={{ width: "auto", marginBottom: layout.spacing_x3 }}
+      />
     </WalletContainer>
   );
 };
