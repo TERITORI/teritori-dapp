@@ -46,6 +46,7 @@ export const MultipleSelectionDropdown = ({
         },
         style,
       ]}
+      ref={dropdownRef}
     >
       <LabelText label={label} />
 
