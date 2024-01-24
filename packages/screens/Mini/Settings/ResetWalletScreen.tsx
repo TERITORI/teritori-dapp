@@ -1,15 +1,17 @@
 import React from "react";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import stopSVG from "../../../../assets/icons/stop.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { SpacerColumn } from "../../../components/spacer";
+import { selectAllWallets } from "../../../store/slices/wallets";
 import { ScreenFC } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontMedium16, fontSemibold30 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { resetWallet } from "../../Wallet/hooks/useNativeWallet";
+import { resetWallet } from "../../Wallet/hooks/getNativeWallet";
 import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { CustomButton } from "../components/Button/CustomButton";
 
@@ -19,8 +21,12 @@ export const ResetWalletScreen: ScreenFC<"MiniResetWallet"> = ({
   const gotoSecurityAndPrivacy = () =>
     navigation.replace("MiniSecurityAndPrivacy");
 
+  const wallets = useSelector(selectAllWallets);
+
   const onResetPress = () => {
-    resetWallet();
+    wallets.map((wallet) => {
+      resetWallet(wallet.index);
+    });
   };
 
   return (
