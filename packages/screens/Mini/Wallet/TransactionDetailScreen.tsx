@@ -14,8 +14,8 @@ import { fontSemibold15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import CustomAppBar from "../components/AppBar/CustomAppBar";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
-import RowDisplay from "../components/RowDisplay";
 import MiniTable from "../components/Table/MiniTable";
+import MiniTableRow from "../components/Table/MiniTableRow";
 
 export type TransactionDetailType = {
   id: string;
@@ -108,7 +108,7 @@ const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
 
         <View style={{ width: "100%", paddingHorizontal: layout.spacing_x2 }}>
           <SpacerColumn size={3} />
-          <RowDisplay
+          <MiniTableRow
             leftLabel={
               <SVG source={teritoriCircleSVG} width={28} height={28} />
             }
