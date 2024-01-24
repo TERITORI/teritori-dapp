@@ -11,7 +11,7 @@
     "build:web": "expo export:web",
     "lint": "npx tsx packages/scripts/paralint",
     "lint-fix": "eslint --cache --ext .js,.jsx,.ts,.tsx . --fix",
-    "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport=\"packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;app.config.js;./App.tsx;.*\\.web|.electron|.native|.d.ts\"",
+    "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport=\"packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;app.config.js;weshd;./App.tsx;.*\\.web|.electron|.native|.d.ts\"",
     "validate-networks": "tsx packages/scripts/validateNetworks.ts",
     "postinstall": "patch-package"
   },
@@ -84,6 +84,7 @@
     "expo-linear-gradient": "~12.7.1",
     "expo-optimize": "^0.2.20",
     "expo-status-bar": "~1.11.1",
+    "expo-splash-screen": "~0.20.5",
     "google-protobuf": "^3.21.2",
     "html-to-draftjs": "^1.5.0",
     "immutable": "^4.0.0",
@@ -189,5 +190,10 @@
     "multiformats@^12.1.3": "patch:multiformats@npm%3A12.1.3#./.yarn/patches/multiformats-npm-12.1.3-dbaa26037a.patch"
   },
   "private": true,
-  "packageManager": "yarn@3.5.0"
+  "packageManager": "yarn@3.5.0",
+  "expo": {
+    "autolinking": {
+      "nativeModulesDir": "./weshd"
+    }
+  }
 }

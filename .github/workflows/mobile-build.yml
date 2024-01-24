@@ -1,0 +1,114 @@
+name: Build Mobile App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up matrix
+        run: echo "starting...."
+  build:
+    needs: prepare
+    strategy:
+      matrix:
+        include:
+          - platform: android
+            runner: ubuntu-latest
+            build-cmd: eas build --local --non-interactive --platform=android
+          - platform: ios
+            runner: macos-13
+            build-cmd: eas build --local --non-interactive --platform=ios
+    runs-on: ${{ matrix.runner }}
+    continue-on-error: true
+    steps:
+      - uses: maxim-lobanov/setup-xcode@v1
+        if: matrix.platform == 'ios'
+        with:
+          xcode-version: "15.1.0"
+
+      - uses: actions/setup-go@v3
+        if: matrix.platform == 'ios'
+        with:
+          go-version: "1.19"
+
+      - name: Select xcode
+        if: matrix.platform == 'ios'
+        run: sudo xcode-select -s /Applications/Xcode_15.1.app
+
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: "yarn"
+          node-version: 18
+
+      - name: Fix gitignore
+        run: npx tsx ./packages/scripts/app-build/fixGitignore.ts
+
+      - name: Fix package.json
+        run: yarn remove @lottiefiles/react-lottie-player
+
+      - name: Install node modules
+        run: yarn install
+
+      - name: Build ios weshframework
+        if: matrix.platform == 'ios'
+        run: make check-ios-weshframework
+
+      - name: Build android weshframework
+        if: matrix.platform == 'android'
+        run: make check-android-weshframework
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build ${{ matrix.platform }}
+        run: ${{ matrix.build-cmd }}
+
+      - name: EAS Submit iOS IPA
+        if: matrix.platform == 'ios'
+        run: |
+          IPA_FILE=$(find ./ -name 'build-*.ipa' -type f)
+          if [ -z "$IPA_FILE" ]; then
+            echo "Error: IPA file not found."
+            exit 1
+          fi
+
+          # eas submit --platform=ios --path=$IPA_FILE 
+          echo "IPA_FILE=$IPA_FILE" >> $GITHUB_ENV
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v3
+        if: matrix.platform == 'ios'
+        with:
+          name: teritori-${{ github.sha }}-${{ matrix.platform }}.ipa
+          path: ${{ env.IPA_FILE }}
+          if-no-files-found: error
+
+      - name: EAS Submit aab
+        if: matrix.platform == 'android'
+        run: |
+          AAB_FILE=$(find ./ -name 'build-*.aab' -type f)
+          if [ -z "$AAB_FILE" ]; then
+            echo "Error: apk file not found."
+            exit 1
+          fi
+
+          # eas submit --platform=android --path=$AAB_FILE
+          echo "AAB_FILE=$AAB_FILE" >> $GITHUB_ENV
+
+      - name: Upload aab
+        uses: actions/upload-artifact@v3
+        if: matrix.platform == 'android'
+        with:
+          name: teritori-${{ github.sha }}-${{ matrix.platform }}.aab
+          path: ${{ env.AAB_FILE }}
+          if-no-files-found: error
