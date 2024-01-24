@@ -66,7 +66,6 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
       <View
         style={{
           flexDirection: "row",
-          paddingTop: layout.spacing_x3,
         }}
       >
         <View style={{ flex: 1 }}>

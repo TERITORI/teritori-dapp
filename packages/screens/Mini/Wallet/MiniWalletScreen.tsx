@@ -52,6 +52,9 @@ export const MiniWalletScreen: ScreenFC<"MiniWallets"> = ({
             maxHeight: 36,
           }}
         />
+
+        <SpacerColumn size={2} />
+
         {selectedTab === "tokens" && (
           <TokenScreen navigation={navigation} route={route} />
         )}

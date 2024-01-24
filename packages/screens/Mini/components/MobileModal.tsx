@@ -25,7 +25,7 @@ export default function MobileModal({
   visible,
   onClose,
   children,
-  innerContainerOptions = { style: {}, height: "75%" },
+  innerContainerOptions = { style: {}, height: "85%" },
 }: MobileModalProps) {
   const { style, height } = innerContainerOptions;
 
@@ -39,8 +39,7 @@ export default function MobileModal({
     >
       <SafeAreaView
         style={{
-          width: "100%",
-          height: "100%",
+          flex: 1,
           backgroundColor: "rgba(0,0,0,0.6)",
         }}
         onTouchCancel={onClose}
@@ -51,10 +50,11 @@ export default function MobileModal({
         <View
           style={[
             {
-              height: height ?? "75%",
+              height,
               borderTopLeftRadius: 24,
               borderTopRightRadius: 24,
               position: "relative",
+              backgroundColor: "red",
             },
             style ?? {},
           ]}

@@ -52,20 +52,22 @@ export const MiniFeedScreen: ScreenFC<"MiniFeeds"> = ({
         style={{
           flex: 1,
           width,
-          paddingHorizontal: layout.spacing_x1_5,
+          paddingHorizontal: layout.spacing_x2,
         }}
       >
+        <SpacerColumn size={1} />
         <RoundedTabs
           items={feedScreenTabItems}
           onSelect={(key) => setSelectedTab(key)}
           selected={selectedTab}
           style={{
+            height: 36,
             maxHeight: 36,
-            marginTop: layout.spacing_x2,
-            marginBottom: layout.spacing_x0_5,
           }}
         />
-        <SpacerColumn size={1.5} />
+
+        <SpacerColumn size={2} />
+
         {selectedTab === "jungle" && (
           <JungleFeedScreen req={defaultFeedRequest} />
         )}
