@@ -25,7 +25,7 @@ export const AddAccountScreen: ScreenFC<"MiniAddAccount"> = ({
           subtitle="Generate a new account"
         />
         <SettingMenuItem
-          navigateTo="MiniAddAccount"
+          navigateTo="ImportWallet"
           title="Import private key"
           subtitle="Import private key"
         />
