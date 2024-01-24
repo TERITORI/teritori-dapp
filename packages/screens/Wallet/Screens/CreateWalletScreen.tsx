@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { Secp256k1HdWallet } from "@cosmjs/amino";
+import { useEffect, useState } from "react";
 import { View, useWindowDimensions } from "react-native";
+import { useSelector } from "react-redux";
 
 import rightArrowSVG from "../../../../assets/icons/arrow-right.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -7,6 +9,9 @@ import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { mustGetCosmosNetwork } from "../../../networks";
+import { addSelected, selectAllWallets } from "../../../store/slices/wallets";
+import { useAppDispatch } from "../../../store/store";
 import { ScreenFC } from "../../../utils/navigation";
 import { dangerColor, neutral22, neutralA3 } from "../../../utils/style/colors";
 import {
@@ -20,14 +25,40 @@ import CustomAppBar from "../../Mini/components/AppBar/CustomAppBar";
 import BlurViewWrapper from "../../Mini/components/BlurViewWrapper";
 import { CustomButton } from "../../Mini/components/Button/CustomButton";
 import Checkbox from "../../Mini/components/checkbox/Checkbox";
-import useFetch from "../hooks/useFetch";
-import { getMnemonic } from "../hooks/useNativeWallet";
+import { getMnemonic, getNativeWallet } from "../hooks/getNativeWallet";
+import { createMnemonic } from "../util/seed";
 
 export const CreateWalletScreen: ScreenFC<"CreateWallet"> = ({
   navigation,
 }) => {
   const { width } = useWindowDimensions();
-  const phrase = useFetch<string>(getMnemonic);
+  const wallets = useSelector(selectAllWallets);
+  const networkId = "teritori";
+  const network = mustGetCosmosNetwork(networkId);
+  const dispatch = useAppDispatch();
+  const [wallet, setWallet] = useState<Secp256k1HdWallet>();
+  const maxIndex = wallets.reduce(
+    (max, wallet) => Math.max(max, wallet.index),
+    0,
+  );
+  const [localPhrase, setLocalPhrase] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    (async () => {
+      const mnemonicValue = await getMnemonic(maxIndex + 1);
+      const native = await getNativeWallet("TORI", maxIndex + 1);
+
+      // @ts-ignore
+      setWallet(native);
+      setLocalPhrase(mnemonicValue);
+    })();
+  }, [maxIndex]);
+
+  useEffect(() => {
+    if (localPhrase === undefined) {
+      setLocalPhrase(createMnemonic());
+    }
+  }, [localPhrase, maxIndex]);
   const [isChecked, setIsChecked] = useState(false);
 
   return (
@@ -69,7 +100,9 @@ export const CreateWalletScreen: ScreenFC<"CreateWallet"> = ({
         <View>
           <SpacerColumn size={1} />
           <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <BrandText style={fontSemibold30}>Seed Phrase</BrandText>
+            <BrandText style={fontSemibold30}>{`Seed Phrase #${
+              maxIndex + 1
+            }`}</BrandText>
 
             <SpacerColumn size={1} />
             <BrandText style={[fontMedium16, { color: dangerColor }]}>
@@ -86,7 +119,7 @@ export const CreateWalletScreen: ScreenFC<"CreateWallet"> = ({
 
           <BlurViewWrapper
             hideButton
-            copy={phrase}
+            copy={localPhrase}
             wrapperStyle={{
               height: 324,
               width: "100%",
@@ -97,7 +130,7 @@ export const CreateWalletScreen: ScreenFC<"CreateWallet"> = ({
             }}
             blurContainerStyle={{ justifyContent: "flex-end" }}
           >
-            {phrase?.split(" ").map((seed) => (
+            {localPhrase?.split(" ").map((seed) => (
               <BrandText
                 key={seed}
                 style={[fontSemibold14, { textAlign: "center", width: "25%" }]}
@@ -127,12 +160,24 @@ export const CreateWalletScreen: ScreenFC<"CreateWallet"> = ({
           />
           <SpacerColumn size={2} />
           <CustomButton
-            onPress={(_, navigation) =>
-              navigation.navigate("CreatePasswordWallet")
-            }
+            onPress={(_, navigation) => {
+              if (wallet) {
+                wallet.getAccounts().then((accounts) => {
+                  dispatch(
+                    addSelected({
+                      publicKey: accounts[0].address,
+                      network: network.kind,
+                      networkId: "teritori",
+                      index: maxIndex + 1,
+                    }),
+                  );
+                });
+                navigation.navigate("CreatePasswordWallet");
+              }
+            }}
             textStyle={{ textTransform: "uppercase" }}
             title="Next"
-            isDisabled={!isChecked}
+            isDisabled={!isChecked || !wallet}
           />
         </View>
       </View>
