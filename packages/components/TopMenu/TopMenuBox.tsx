@@ -35,10 +35,7 @@ export const TopMenuBox: FC<{
       style={[
         style,
         mainContainerStyle,
-        {
-          borderRadius: 8,
-          width: topMenuWidth,
-        },
+        { borderRadius: 8, width: topMenuWidth },
       ]}
     >
       <ScrollView
