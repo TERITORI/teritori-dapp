@@ -7,8 +7,8 @@ import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
 import { Separator } from "../../../components/separators/Separator";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import ListView from "../components/ListView";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 export const ManageTokensScreen: ScreenFC<"MiniManageTokens"> = ({
   navigation,

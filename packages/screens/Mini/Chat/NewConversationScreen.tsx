@@ -7,8 +7,8 @@ import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import { fontMedium14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import MiniTextInput from "../components/MiniTextInput";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 const dummyContact = [
   {

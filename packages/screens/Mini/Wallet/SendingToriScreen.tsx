@@ -22,13 +22,13 @@ import {
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { useGetAssets } from "../../Wallet/util/chain-registry";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import MobileModal from "../components/MobileModal";
 import MiniTable from "../components/Table/MiniTable";
 import MiniTableRow from "../components/Table/MiniTableRow";
 import TitleBar from "../components/TitleBar";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 const getTxData = (denom: string, amount: string) => {
   const networkId = "teritori"; // networkId placeholder

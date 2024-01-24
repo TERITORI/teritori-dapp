@@ -18,8 +18,8 @@ import { RouteName, ScreenFC } from "../../../utils/navigation";
 import { neutral39 } from "../../../utils/style/colors";
 import { fontSemibold15, fontSemibold18 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { SettingMenuItem } from "../components/SettingMenuItems";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 const profileScreens: {
   title: string;

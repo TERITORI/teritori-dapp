@@ -11,8 +11,8 @@ import { RootStackParamList } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontBold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import ListView from "../components/ListView";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 type AboutScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "About">;

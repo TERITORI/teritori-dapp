@@ -1,9 +1,10 @@
 import React from "react";
-import { useWindowDimensions, View } from "react-native";
+import { View } from "react-native";
 
 import requestingPermissionPNG from "../../../../../assets/icons/loader.png";
 import { BrandText } from "../../../../components/BrandText";
 import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
+import { SpacerColumn } from "../../../../components/spacer";
 import { neutral77 } from "../../../../utils/style/colors";
 import { fontMedium16, fontSemibold30 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
@@ -18,11 +19,16 @@ export const RequestingPermission = ({ onStepChange }: Props) => {
   const onPressConnect = () => {
     onStepChange("step_3");
   };
-  const { width: windowWidth } = useWindowDimensions();
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={{ alignItems: "center", paddingTop: 80, flex: 1 }}>
+    <View style={{ flex: 1, paddingHorizontal: layout.spacing_x2 }}>
+      <SpacerColumn size={8} />
+      <View
+        style={{
+          alignItems: "center",
+          flex: 1,
+        }}
+      >
         <View
           style={{
             height: 152,
@@ -34,6 +40,7 @@ export const RequestingPermission = ({ onStepChange }: Props) => {
         >
           <SVGorImageIcon icon={requestingPermissionPNG} iconSize={152} />
         </View>
+
         <BrandText
           style={[
             fontSemibold30,
@@ -47,6 +54,7 @@ export const RequestingPermission = ({ onStepChange }: Props) => {
         >
           Requesting Permissions
         </BrandText>
+
         <BrandText
           style={[
             fontMedium16,
@@ -61,17 +69,7 @@ export const RequestingPermission = ({ onStepChange }: Props) => {
           Please approve the connection request in your browser.
         </BrandText>
       </View>
-      <CustomButton
-        title="Connect"
-        onPress={onPressConnect}
-        width={windowWidth - 20}
-        style={{
-          position: "absolute",
-          bottom: 30,
-          left: 10,
-          right: 10,
-        }}
-      />
+      <CustomButton title="Connect" onPress={onPressConnect} />
     </View>
   );
 };

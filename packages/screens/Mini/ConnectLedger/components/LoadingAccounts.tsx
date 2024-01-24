@@ -4,6 +4,7 @@ import { useWindowDimensions, View } from "react-native";
 import requestingPermissionPNG from "../../../../../assets/icons/loader.png";
 import { BrandText } from "../../../../components/BrandText";
 import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
+import { SpacerColumn } from "../../../../components/spacer";
 import { neutral77 } from "../../../../utils/style/colors";
 import { fontMedium16, fontSemibold30 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
@@ -19,9 +20,11 @@ export const LoadingAccounts = ({ onStepChange }: Props) => {
   const onPressNext = () => {
     onStepChange("step_5");
   };
+
   return (
-    <View style={{ flex: 1 }}>
-      <View style={{ alignItems: "center", paddingTop: 80, flex: 1 }}>
+    <View style={{ flex: 1, paddingHorizontal: layout.spacing_x2 }}>
+      <SpacerColumn size={8} />
+      <View style={{ alignItems: "center", flex: 1 }}>
         <View
           style={{
             height: 152,
@@ -60,17 +63,7 @@ export const LoadingAccounts = ({ onStepChange }: Props) => {
           seconds...
         </BrandText>
       </View>
-      <CustomButton
-        title="Next"
-        onPress={onPressNext}
-        width={windowWidth - 20}
-        style={{
-          position: "absolute",
-          bottom: 30,
-          left: 10,
-          right: 10,
-        }}
-      />
+      <CustomButton title="Next" onPress={onPressNext} />
     </View>
   );
 };

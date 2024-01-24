@@ -8,8 +8,8 @@ import { ScreenFC } from "../../../utils/navigation";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontMedium14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import MiniTextInput from "../components/MiniTextInput";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 const dummyContact = [
   {

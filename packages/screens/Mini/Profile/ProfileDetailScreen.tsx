@@ -10,10 +10,10 @@ import { RootStackParamList } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontMedium14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import FileUpload from "../components/FileUpload";
 import MiniTextInput from "../components/MiniTextInput";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 type ProfileDetailScreenProps = {
   navigation: NativeStackNavigationProp<

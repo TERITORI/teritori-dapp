@@ -46,7 +46,8 @@ export const CreatePassword = ({ onStepChange }: Props) => {
         paddingHorizontal: layout.spacing_x2,
       }}
     >
-      <View style={{ paddingTop: 80, flex: 1 }}>
+      <SpacerColumn size={8} />
+      <View style={{ flex: 1 }}>
         <BrandText
           style={[
             fontSemibold30,

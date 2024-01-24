@@ -16,7 +16,7 @@ import {
 import { fontMedium13, fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { findByBaseDenom } from "../../Wallet/util/chain-registry";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 const QR_SIZE = 248;
 const accountDetails = {

@@ -1,9 +1,10 @@
 import React from "react";
-import { useWindowDimensions, View } from "react-native";
+import { View } from "react-native";
 
 import ledgerSVG from "../../../../../assets/icons/ledger.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
+import { SpacerColumn } from "../../../../components/spacer";
 import { neutral17, neutral77 } from "../../../../utils/style/colors";
 import { fontMedium16, fontSemibold30 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
@@ -18,11 +19,16 @@ export const ConnectDevice = ({ onStepChange }: Props) => {
   const onPressConnect = () => {
     onStepChange("step_2");
   };
-  const { width: windowWidth } = useWindowDimensions();
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={{ alignItems: "center", paddingTop: 80, flex: 1 }}>
+    <View
+      style={{
+        flex: 1,
+        paddingHorizontal: layout.spacing_x2,
+      }}
+    >
+      <SpacerColumn size={8} />
+      <View style={{ alignItems: "center", flex: 1 }}>
         <View
           style={{
             height: 152,
@@ -63,17 +69,7 @@ export const ConnectDevice = ({ onStepChange }: Props) => {
           Connect your ledger device to your ? and make sure it is unlocked.
         </BrandText>
       </View>
-      <CustomButton
-        title="Connect"
-        onPress={onPressConnect}
-        width={windowWidth - 20}
-        style={{
-          position: "absolute",
-          bottom: 30,
-          left: 10,
-          right: 10,
-        }}
-      />
+      <CustomButton title="Connect" onPress={onPressConnect} />
     </View>
   );
 };

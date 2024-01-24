@@ -15,11 +15,11 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { useGetAssets } from "../../Wallet/util/chain-registry";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import MiniTextInput from "../components/MiniTextInput";
 import MiniTextInputWithDropdown from "../components/MiniTextInputWithDropdown";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 const tokenOptions = [
   {

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { CheckList } from "./components/CheckList";
 import { ShowPrivateKey } from "./components/ShowPrivateKey";
 import { ScreenFC } from "../../../utils/navigation";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 type ScreenType = "visible" | "hidden";
 

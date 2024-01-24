@@ -1,7 +1,8 @@
 import React from "react";
-import { useWindowDimensions, View } from "react-native";
+import { View } from "react-native";
 
 import { BrandText } from "../../../../components/BrandText";
+import { SpacerColumn } from "../../../../components/spacer";
 import { neutral77 } from "../../../../utils/style/colors";
 import { fontMedium16, fontSemibold30 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
@@ -10,16 +11,16 @@ import { CustomButton } from "../../components/Button/CustomButton";
 type Props = {
   onComplete: () => void;
 };
+
 export const AllSet = ({ onComplete }: Props) => {
-  const { width: windowWidth } = useWindowDimensions();
   const onPressStart = () => {
     onComplete();
   };
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, paddingHorizontal: layout.spacing_x2 }}>
+      <SpacerColumn size={8} />
       <View
         style={{
-          paddingTop: 80,
           flex: 1,
           paddingHorizontal: layout.spacing_x0_5,
         }}
@@ -48,21 +49,8 @@ export const AllSet = ({ onComplete }: Props) => {
           can start exploring the app.
         </BrandText>
       </View>
-      <View
-        style={{
-          position: "absolute",
-          bottom: 30,
-          left: 10,
-          right: 10,
-        }}
-      >
-        <CustomButton
-          title="Start"
-          onPress={onPressStart}
-          width={windowWidth - 20}
-          style={{}}
-        />
-      </View>
+
+      <CustomButton title="Start" onPress={onPressStart} />
     </View>
   );
 };

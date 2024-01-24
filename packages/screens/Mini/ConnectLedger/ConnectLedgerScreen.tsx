@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SafeAreaView, View } from "react-native";
+import { View } from "react-native";
 
 import { AllSet } from "./components/AllSet";
 import { ConnectDevice } from "./components/ConnectDevice";
@@ -8,11 +8,8 @@ import { LoadingAccounts } from "./components/LoadingAccounts";
 import { OpenHelpInApp } from "./components/OpenHelpInApp";
 import { RequestingPermission } from "./components/RequestingPermission";
 import { SelectAccounts } from "./components/SelectAccounts";
-import teritoriSVG from "../../../../assets/icons/teritori-white.svg";
-import { SVG } from "../../../components/SVG";
 import { ScreenFC } from "../../../utils/navigation";
-import { layout } from "../../../utils/style/layout";
-import { ProgressLine2 } from "../components/ProgressLine2";
+import MultiStepScreenContainer from "../layout/MultiStepScreenContainer";
 
 const screensSteps = {
   step_1: "connect-device",
@@ -43,22 +40,7 @@ export const ConnectLedgerScreen: ScreenFC<"ConnectLedger"> = ({
     (activeScreenPosition / Object.keys(screensSteps).length) * 100;
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        width: "100%",
-        backgroundColor: "#000000",
-      }}
-    >
-      <View style={{ marginVertical: layout.spacing_x1_5 }}>
-        <SVG
-          source={teritoriSVG}
-          height={27}
-          width={27}
-          style={{ alignSelf: "center", marginBottom: layout.spacing_x2_5 }}
-        />
-        <ProgressLine2 percent={screenPercentage} />
-      </View>
+    <MultiStepScreenContainer screenPercentage={screenPercentage}>
       <View
         style={{
           flex: 1,
@@ -78,6 +60,6 @@ export const ConnectLedgerScreen: ScreenFC<"ConnectLedger"> = ({
           }[activeScreen]
         }
       </View>
-    </SafeAreaView>
+    </MultiStepScreenContainer>
   );
 };
