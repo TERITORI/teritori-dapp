@@ -190,7 +190,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
             {selectedStep !== 1 && (
               <SecondaryButton
                 width={136}
-                size="XL"
+                size="M"
                 text="Back"
                 loader
                 onPress={() => {
@@ -200,7 +200,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
             )}
             <PrimaryButton
               width={137}
-              size="XL"
+              size="M"
               text={stepOptions.length === selectedStep ? "Submit" : "Next"}
               loader
               isLoading={isLoading}

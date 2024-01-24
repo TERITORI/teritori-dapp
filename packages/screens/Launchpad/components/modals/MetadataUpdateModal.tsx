@@ -84,7 +84,7 @@ export const MetadataUpdateModal: React.FC<{
             }}
           >
             <PrimaryButton
-              size="M"
+              size="XS"
               text="Update Metadata"
               boxStyle={{
                 marginVertical: 20,
