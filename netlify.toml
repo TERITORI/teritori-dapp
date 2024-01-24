@@ -1,2 +1,8 @@
 [build]
-command = 'npx expo-optimize && npx expo export:web && echo "/* /index.html 200" >> web-build/_redirects'
+command = 'npm i -g sharp-cli && npx expo-optimize && npx expo export:web'
+[build.environment]
+NODE_OPTIONS = "--max_old_space_size=4096"
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
