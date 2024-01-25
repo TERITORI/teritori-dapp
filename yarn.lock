@@ -11304,12 +11304,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-av@npm:~13.10.3":
-  version: 13.10.3
-  resolution: "expo-av@npm:13.10.3"
+"expo-av@npm:~13.10.4":
+  version: 13.10.4
+  resolution: "expo-av@npm:13.10.4"
   peerDependencies:
     expo: "*"
-  checksum: 27f99259ab4db33ff71ad7b30f0da2f36ad8be9ae644c533e0af8a10d3d5f3d041d28b365b4913c89524ed9d2cb5a3c1500bfc2a24001486e083b4a569f7447d
+  checksum: bc077b02a52d59ac403cb1a7df59d38eb75c1093163fe8f5d7474f0b6248e50dc8479b12a990bc7b07a197e716c9af87af4140968046187d7d23084bf9036e8d
   languageName: node
   linkType: hard
 
@@ -20540,7 +20540,7 @@ __metadata:
     eslint-plugin-react-hooks: ^4.6.0
     ethers: ^5.7.2
     expo: ^50.0.3
-    expo-av: ~13.10.3
+    expo-av: ~13.10.4
     expo-barcode-scanner: ~12.9.2
     expo-clipboard: ~5.0.1
     expo-dev-client: ~3.3.7

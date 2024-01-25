@@ -76,7 +76,7 @@
     "eslint-config-universe": "^12.0.0",
     "ethers": "^5.7.2",
     "expo": "^50.0.3",
-    "expo-av": "~13.10.3",
+    "expo-av": "~13.10.4",
     "expo-barcode-scanner": "~12.9.2",
     "expo-clipboard": "~5.0.1",
     "expo-document-picker": "~11.10.1",
