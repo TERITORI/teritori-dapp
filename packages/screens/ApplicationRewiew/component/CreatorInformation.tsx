@@ -1,8 +1,8 @@
 import React from "react";
 import { View, useWindowDimensions } from "react-native";
 
+import { BoxDetailTeritori } from "../../../components/BoxDetailTeritori/BoxDetailTeritori";
 import { BrandText } from "../../../components/BrandText";
-import { BoxDetailTeriroy } from "../../../components/boxDetailTeriroy/BoxDetailTeriroy";
 import { neutral33 } from "../../../utils/style/colors";
 import { fontSemibold20 } from "../../../utils/style/fonts";
 
@@ -28,15 +28,15 @@ export const CreatorInformation: React.FC = () => {
           flexWrap: "wrap",
         }}
       >
-        <BoxDetailTeriroy title="Creator Name" descripation="@nickname" />
-        <BoxDetailTeriroy title="Creator Name" descripation="@nickname" />
+        <BoxDetailTeritori title="Creator Name" descripation="@nickname" />
+        <BoxDetailTeritori title="Creator Name" descripation="@nickname" />
 
         <View style={{ flex: 1, flexDirection: "row", gap: 12 }}>
-          <BoxDetailTeriroy
+          <BoxDetailTeritori
             title="Twitter Follower Range"
             descripation="5000"
           />
-          <BoxDetailTeriroy
+          <BoxDetailTeritori
             title="Twitter Follower Count"
             descripation="5000"
           />
@@ -49,15 +49,15 @@ export const CreatorInformation: React.FC = () => {
           gap: 12,
         }}
       >
-        <BoxDetailTeriroy
+        <BoxDetailTeritori
           title="Main Contact Discord"
           descripation="@nickname"
         />
-        <BoxDetailTeriroy
+        <BoxDetailTeritori
           title="Discord URL"
           descripation="https://discord.com/link"
         />
-        <BoxDetailTeriroy
+        <BoxDetailTeritori
           title="Main Contact Email"
           descripation="hello@email.com"
         />

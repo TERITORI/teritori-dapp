@@ -18,7 +18,7 @@ type Props = {
   setIsEditHighlighted: (val: boolean) => void;
 };
 
-export const CurrentlyHighLightedProject = ({
+export const CurrentlyHighlightedProject = ({
   setIsEditHighlighted,
 }: Props) => {
   return (

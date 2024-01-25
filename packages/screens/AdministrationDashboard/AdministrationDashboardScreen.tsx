@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 
+import { ApplicationStatusCard } from "./component/ApplicationStatusCard";
 import { ApplicationTable } from "./component/ApplicationTable";
-import { CurrentlyHighLightedProject } from "./component/CurrentlyHighLightedProject";
+import { CurrentlyHighlightedProject } from "./component/CurrentlyHighLightedProject";
 import { GenesisExplore } from "./component/GenesisExplore";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryBox } from "../../components/boxes/SecondaryBox";
 import { Tabs } from "../../components/tabs/Tabs";
-import { ApplicationStatusCard } from "../../components/teritoriNameService/ApplicationStatusCard";
 import { useAppNavigation } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
 import {
@@ -202,7 +202,7 @@ export const AdministrationDashboardScreen: React.FC = () => {
           />
 
           {isEditHighlighted ? (
-            <CurrentlyHighLightedProject
+            <CurrentlyHighlightedProject
               setIsEditHighlighted={setIsEditHighlighted}
             />
           ) : (

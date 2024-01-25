@@ -6,7 +6,7 @@ import { fontSemibold15 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 
-export const HeaderContant: React.FC<{
+export const HeaderContent: React.FC<{
   header: string;
   children: React.ReactNode;
   style?: ViewStyle;

@@ -5,9 +5,9 @@ import avaPNG from "../../../../assets/default-images/ava.png";
 import checkBadgeSVG from "../../../../assets/icons/certified.svg";
 import SolanaCircleSVG from "../../../../assets/icons/networks/solana-circle.svg";
 import { BrandText } from "../../../components/BrandText";
+import { HeaderContent } from "../../../components/HeaderContent/HeaderContent";
 import { SVG } from "../../../components/SVG";
 import { InnerCellText } from "../../../components/applicationTable/InnerCellText";
-import { HeaderContant } from "../../../components/headerContant/HeaderContant";
 import { lightblue, neutral00 } from "../../../utils/style/colors";
 import { fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -17,7 +17,7 @@ export const TooltipContant = () => {
     <>
       <View style={flexRowCenter}>
         <View>
-          <HeaderContant header="Collection Name">
+          <HeaderContent header="Collection Name">
             <View style={listToggle}>
               <Image
                 style={{
@@ -39,8 +39,8 @@ export const TooltipContant = () => {
               </BrandText>
               <SVG source={checkBadgeSVG} width={18} height={18} />
             </View>
-          </HeaderContant>
-          <HeaderContant
+          </HeaderContent>
+          <HeaderContent
             style={{ marginTop: layout.spacing_x1_5 }}
             header="Project Readiness for Mint"
           >
@@ -56,10 +56,10 @@ export const TooltipContant = () => {
             >
               Complete and ready to mint
             </InnerCellText>
-          </HeaderContant>
+          </HeaderContent>
         </View>
         <View>
-          <HeaderContant header="Collection network">
+          <HeaderContent header="Collection network">
             <View style={listToggle}>
               <SVG
                 width={28}
@@ -73,8 +73,8 @@ export const TooltipContant = () => {
                 Solana
               </BrandText>
             </View>
-          </HeaderContant>
-          <HeaderContant
+          </HeaderContent>
+          <HeaderContent
             style={{ marginTop: layout.spacing_x1_5 }}
             header="Basic marketing package"
           >
@@ -90,7 +90,7 @@ export const TooltipContant = () => {
             >
               Yes
             </InnerCellText>
-          </HeaderContant>
+          </HeaderContent>
         </View>
       </View>
     </>

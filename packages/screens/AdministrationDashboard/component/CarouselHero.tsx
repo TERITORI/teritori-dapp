@@ -12,7 +12,7 @@ import { layout } from "../../../utils/style/layout";
 
 const MD_BREAKPOINT = 820;
 
-export const CarousleHero = () => {
+export const CarouselHero = () => {
   const { width } = useWindowDimensions();
   const heroData = [...new Array(6).keys()];
   const isBreakPoint = width >= MD_BREAKPOINT;

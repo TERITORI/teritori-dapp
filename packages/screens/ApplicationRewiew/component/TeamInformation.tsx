@@ -2,8 +2,8 @@ import React from "react";
 import { View, useWindowDimensions } from "react-native";
 
 import { LinkCard } from "./LinkCard";
+import { BoxDetailTeritori } from "../../../components/BoxDetailTeritori/BoxDetailTeritori";
 import { BrandText } from "../../../components/BrandText";
-import { BoxDetailTeriroy } from "../../../components/boxDetailTeriroy/BoxDetailTeriroy";
 import { fontSemibold20 } from "../../../utils/style/fonts";
 
 const MD_BREAKPOINT = 800;
@@ -25,7 +25,7 @@ export const TeamInformation: React.FC = () => {
           gap: 12,
         }}
       >
-        <BoxDetailTeriroy
+        <BoxDetailTeritori
           title="Team Description"
           descripation="For decades, the destruction of ecosystems and social relations has
             turned people into soulless robots. At the same time, inequality
@@ -34,7 +34,7 @@ export const TeamInformation: React.FC = () => {
             Legion'', have set up a technological & political system allowing
             them to continue to develop their wealth and safety."
         />
-        <BoxDetailTeriroy
+        <BoxDetailTeritori
           title="Partners Description"
           descripation="For decades, the destruction of ecosystems and social relations has
           turned people into soulless robots. At the same time, inequality

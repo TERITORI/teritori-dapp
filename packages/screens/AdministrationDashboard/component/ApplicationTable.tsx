@@ -134,9 +134,7 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
             {rowData.expectedTotalSupply}
           </InnerCellText>
           <InnerCellText
-            style={{
-              flex: TABLE_ROWS.expectedPublicMintPrice.flex,
-            }}
+            style={{ flex: TABLE_ROWS.expectedPublicMintPrice.flex }}
           >
             {rowData.expectedPublicMintPrice}
           </InnerCellText>

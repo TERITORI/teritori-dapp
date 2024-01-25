@@ -5,7 +5,7 @@ import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
-export const BoxDetailTeriroy: React.FC<{
+export const BoxDetailTeritori: React.FC<{
   title: string;
   descripation: string;
 }> = ({ title, descripation }) => {

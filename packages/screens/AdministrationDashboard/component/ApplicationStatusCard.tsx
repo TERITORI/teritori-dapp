@@ -1,19 +1,19 @@
 import React from "react";
 import { View, StyleProp, TouchableOpacity } from "react-native";
 
-import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
+import chevronRightSVG from "../../../../assets/icons/chevron-right.svg";
+import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
+import { BoxStyle } from "../../../components/boxes/Box";
+import { PrimaryBox } from "../../../components/boxes/PrimaryBox";
 import {
   neutral00,
   neutral11,
   neutral30,
   neutral44,
-} from "../../utils/style/colors";
-import { fontSemibold16, fontSemibold24 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { BrandText } from "../BrandText";
-import { SVG } from "../SVG";
-import { BoxStyle } from "../boxes/Box";
-import { PrimaryBox } from "../boxes/PrimaryBox";
+} from "../../../utils/style/colors";
+import { fontSemibold16, fontSemibold24 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 
 export const ApplicationStatusCard: React.FC<{
   label: string;

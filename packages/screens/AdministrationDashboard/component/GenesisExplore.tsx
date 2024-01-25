@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 
-import { CarousleHero } from "./CarousleHero";
+import { CarouselHero } from "./CarouselHero";
 import penSVG from "../../../../assets/icons/pen.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
@@ -95,7 +95,7 @@ export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
             </SecondaryBox>
           </TouchableOpacity>
         </View>
-        <CarousleHero />
+        <CarouselHero />
         {width >= LG_BREAKPOINT && <View style={{ flex: 1 }} />}
       </View>
     </View>
