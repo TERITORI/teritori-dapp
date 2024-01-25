@@ -1,6 +1,7 @@
 import { Video } from "expo-av";
 import React, { useEffect } from "react";
 import { Platform, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import astroSvg from "../../../../assets/icons/networks/astroport-circle.svg";
 import connectWalletSvg from "../../../../assets/icons/networks/connect-wallet-circle.svg";
@@ -12,6 +13,7 @@ import { ConnectKeplrButton } from "../../../components/connectWallet/ConnectKep
 import { ConnectLeapButton } from "../../../components/connectWallet/ConnectLeapButton";
 import { ConnectMetamaskButton } from "../../../components/connectWallet/ConnectMetamaskButton";
 import { SpacerColumn } from "../../../components/spacer";
+import { selectAllWallets } from "../../../store/slices/wallets";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
 import { CustomButton } from "../../Mini/components/Button/CustomButton";
@@ -47,7 +49,7 @@ const wallets = [
 
 const NativeWallet: ScreenFC<"NativeWallet"> = () => {
   const video = React.useRef(null);
-
+  const wallets = useSelector(selectAllWallets);
   useEffect(() => {
     if (video.current) {
       // @ts-ignore
@@ -90,6 +92,17 @@ const NativeWallet: ScreenFC<"NativeWallet"> = () => {
               navigation.navigate("CreateWallet");
             }}
           />
+          {wallets.length > 0 && (
+            <CustomButton
+              title="Continue"
+              style={{
+                marginVertical: layout.spacing_x2,
+              }}
+              onPress={(_, navigation) => {
+                navigation.navigate("MiniTabs");
+              }}
+            />
+          )}
           <SpacerColumn size={1.5} />
           <View style={{ flexDirection: "row", gap: 10 }}>
             <CustomButton
