@@ -1,4 +1,5 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { Platform } from "react-native";
 
@@ -51,12 +52,14 @@ import { RootStackParamList } from "../../utils/navigation";
 import { neutral00 } from "../../utils/style/colors";
 import { fullSidebarWidth } from "../../utils/style/layout";
 
-//const Stack = createNativeStackNavigator<RootStackParamList>();
-const Drawer = createDrawerNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
+const Drawer =
+  Platform.OS === "web" ? Stack : createDrawerNavigator<RootStackParamList>();
 const screenTitle = (title: string) => "Teritori - " + title;
 
 export const Navigator: React.FC = () => {
   return (
+    //@ts-ignore
     <Drawer.Navigator
       initialRouteName="Home"
       drawerContent={() => (Platform.OS === "web" ? null : <Sidebar />)}
