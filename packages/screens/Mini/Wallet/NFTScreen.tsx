@@ -79,8 +79,6 @@ const nftData = [
 const NFTScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
-      <SpacerColumn size={2} />
-
       <MiniTextInput
         placeholder="Search"
         icon={searchSvg}
@@ -92,7 +90,7 @@ const NFTScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
         placeholderTextColor={neutralA3}
       />
 
-      <SpacerColumn size={2} />
+      <SpacerColumn size={1} />
       <FlatList
         ItemSeparatorComponent={() => <Separator />}
         showsVerticalScrollIndicator={false}

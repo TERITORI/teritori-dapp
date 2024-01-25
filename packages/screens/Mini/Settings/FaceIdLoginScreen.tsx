@@ -8,9 +8,9 @@ import { ScreenFC } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontMedium13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import ToggleButton from "../components/Button/ToggleButton";
 import ListView from "../components/ListView";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 const FaceIdLoginScreen: ScreenFC<"MiniFaceLogin"> = ({ navigation }) => {
   const goBack = () => navigation.replace("MiniSettings");

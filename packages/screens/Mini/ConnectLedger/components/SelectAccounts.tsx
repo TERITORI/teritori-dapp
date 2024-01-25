@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { View } from "react-native";
 
 import circularPlusSVG from "../../../../../assets/icons/plus-white-circular.svg";
 import { BrandText } from "../../../../components/BrandText";
@@ -17,7 +17,7 @@ import {
 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { CustomButton } from "../../components/Button/CustomButton";
-import { CustomCheckbox } from "../../components/CustomCheckbox";
+import Checkbox from "../../components/Checkbox/Checkbox";
 import { StepType } from "../ConnectLedgerScreen";
 
 type Props = {
@@ -44,7 +44,6 @@ const accountDetails = [
 
 export const SelectAccounts = ({ onStepChange }: Props) => {
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
-  const { width: windowWidth } = useWindowDimensions();
 
   const onPressClose = () => {
     onStepChange("step_6");
@@ -60,8 +59,19 @@ export const SelectAccounts = ({ onStepChange }: Props) => {
     );
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={{ alignItems: "center", paddingTop: 80, flex: 1 }}>
+    <View
+      style={{
+        flex: 1,
+        paddingHorizontal: layout.spacing_x2,
+      }}
+    >
+      <View
+        style={{
+          alignItems: "center",
+          paddingTop: 80,
+          flex: 1,
+        }}
+      >
         <View
           style={{
             height: 152,
@@ -123,17 +133,7 @@ export const SelectAccounts = ({ onStepChange }: Props) => {
           <BrandText style={[fontSemibold15, {}]}>Load more accounts</BrandText>
         </CustomPressable>
       </View>
-      <CustomButton
-        title="Next"
-        onPress={onPressClose}
-        width={windowWidth - 20}
-        style={{
-          position: "absolute",
-          bottom: 30,
-          left: 10,
-          right: 10,
-        }}
-      />
+      <CustomButton title="Next" onPress={onPressClose} />
     </View>
   );
 };
@@ -175,7 +175,17 @@ const Account = ({ isSelected, onSelect, path, token }: AccountProps) => {
           {path}
         </BrandText>
       </View>
-      <CustomCheckbox isChecked={isSelected} onPress={onSelect} />
+
+      <Checkbox
+        isChecked={isSelected}
+        onPress={onSelect}
+        value={token}
+        type="circle"
+        size="md"
+        wrapperStyle={{
+          width: "auto",
+        }}
+      />
     </View>
   );
 };

@@ -12,8 +12,8 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { CustomButton } from "../components/Button/CustomButton";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 const tokenOptions = [
   {

@@ -8,8 +8,8 @@ import { ScreenFC } from "../../../utils/navigation";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontNormal15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import ListView from "../components/ListView";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 export type AddressBookType = {
   id: string;

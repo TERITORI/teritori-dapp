@@ -22,13 +22,13 @@ import {
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { useGetAssets } from "../../Wallet/util/chain-registry";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import MobileModal from "../components/MobileModal";
-import RowDisplay from "../components/RowDisplay";
 import MiniTable from "../components/Table/MiniTable";
+import MiniTableRow from "../components/Table/MiniTableRow";
 import TitleBar from "../components/TitleBar";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 const getTxData = (denom: string, amount: string) => {
   const networkId = "teritori"; // networkId placeholder
@@ -110,7 +110,7 @@ const SendingToriScreen: ScreenFC<"MiniSendingTori"> = ({
       >
         <View>
           <SpacerColumn size={3} />
-          <RowDisplay
+          <MiniTableRow
             leftLabel={
               <SVG
                 source={selectedToken?.logo_URIs?.svg || questionSVG}
@@ -132,12 +132,12 @@ const SendingToriScreen: ScreenFC<"MiniSendingTori"> = ({
             }
           >
             <View style={{ flex: 1 }}>
-              <RowDisplay
+              <MiniTableRow
                 leftLabel={address}
                 leftLabelStyle={{ color: secondaryColor }}
               />
               <SpacerColumn size={1.5} />
-              <RowDisplay
+              <MiniTableRow
                 leftLabel="Network Fee"
                 rightLabel="0.0000001 TORI"
                 rightLabelStyle={fontMedium16}

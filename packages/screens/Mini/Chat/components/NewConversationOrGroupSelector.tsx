@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 import chevronGrayRightSVG from "../../../../../assets/icons/chevron-right-gray.svg";
@@ -16,7 +16,7 @@ import {
 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { CustomButton } from "../../components/Button/CustomButton";
-import { CustomCheckbox } from "../../components/CustomCheckbox";
+import Checkbox from "../../components/Checkbox/Checkbox";
 
 const fake_url =
   "https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg";
@@ -26,6 +26,7 @@ type ContactType = {
   name: string;
   avatar: string;
 };
+
 type Props = {
   contacts: ContactType[];
   isGroupSelector?: boolean;
@@ -46,11 +47,14 @@ export const NewConversationOrGroupSelector = ({
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
 
   const toggleContactSelection = (id: string) => {
-    setSelectedContacts((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
+    if (selectedContacts.includes(id)) {
+      setSelectedContacts((prev) => prev.filter((x) => x !== id));
+    } else {
+      setSelectedContacts((prev) => [...prev, id]);
+    }
   };
 
+  console.log(selectedContacts);
   const handleCreateGroupPress = () => {
     if (onCreateGroup) {
       const selectedContactsGroup = contacts.filter((x) =>
@@ -95,7 +99,10 @@ export const NewConversationOrGroupSelector = ({
       );
   };
 
-  const alphaGroupedContacts = groupContactsWithAlphabet(contacts);
+  const alphaGroupedContacts = useMemo(
+    () => groupContactsWithAlphabet(contacts),
+    [contacts],
+  );
 
   return (
     <View style={{ position: "relative", flex: 1 }}>
@@ -186,97 +193,87 @@ type IndividualFriendNameProps = ContactType & {
   enableSelection?: boolean;
   isSelected?: boolean;
   lastItem: boolean;
-  onSelection?: (id: string) => void;
+  onSelection: (id: string) => void;
 };
 
-const IndividualFriendName = ({
-  avatar,
-  id,
-  name,
-  onPress,
-  enableSelection = false,
-  isSelected = false,
-  lastItem,
-  onSelection,
-}: IndividualFriendNameProps) => {
-  const onFriendNamePress = () => {
-    if (onPress) {
-      onPress();
-    }
-  };
+const IndividualFriendName = React.memo(
+  ({
+    avatar,
+    id,
+    name,
+    onPress,
+    enableSelection = false,
+    isSelected = false,
+    lastItem,
+    onSelection,
+  }: IndividualFriendNameProps) => {
+    const onFriendNamePress = () => {
+      if (onPress) {
+        onPress();
+      }
+    };
 
-  const onCheckboxPress = () => {
-    if (onSelection) {
-      onSelection(id);
-    }
-  };
-
-  return (
-    <CustomPressable
-      onPress={onFriendNamePress}
-      style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          gap: layout.spacing_x1_5,
-        }}
-      >
-        <OptimizedImage
-          width={22}
-          height={22}
-          sourceURI={avatar}
-          style={{
-            width: 22,
-            height: 22,
-            borderRadius: 22 / 2,
-          }}
-        />
-        <View style={{ flex: 1 }}>
-          <View
+    return (
+      <>
+        <View style={{ flexDirection: "row" }}>
+          <CustomPressable
+            onPress={onFriendNamePress}
             style={{
               flexDirection: "row",
-              justifyContent: "space-between",
               alignItems: "center",
+              gap: layout.spacing_x1_5,
+              flex: 1,
             }}
           >
+            <OptimizedImage
+              width={22}
+              height={22}
+              sourceURI={avatar}
+              style={{
+                width: 22,
+                height: 22,
+                borderRadius: 22 / 2,
+              }}
+            />
             <View>
               <BrandText style={[fontMedium16, { lineHeight: 22 }]}>
                 {name}
               </BrandText>
             </View>
+          </CustomPressable>
 
-            <View>
-              {!enableSelection && (
-                <SVG source={chevronGrayRightSVG} height={24} width={24} />
-              )}
-              {enableSelection && (
-                <>
-                  <CustomCheckbox
-                    isChecked={isSelected}
-                    onPress={onCheckboxPress}
-                  />
-                </>
-              )}
+          <View>
+            {!enableSelection && (
+              <SVG source={chevronGrayRightSVG} height={24} width={24} />
+            )}
+            {enableSelection && (
+              <>
+                <Checkbox
+                  isChecked={isSelected}
+                  onPress={(_, id) => onSelection(id as string)}
+                  value={id}
+                  type="circle"
+                  size="md"
+                />
+              </>
+            )}
 
-              <SpacerRow size={3.5} />
-            </View>
+            <SpacerRow size={3.5} />
           </View>
-          <SpacerColumn size={2} />
-          {!lastItem && (
-            <Separator
-              style={{ height: 0.9, backgroundColor: "rgba(84, 84, 88, 0.65)" }}
-            />
-          )}
         </View>
-      </View>
-    </CustomPressable>
-  );
-};
+        <SpacerColumn size={2} />
+        {!lastItem && (
+          <Separator
+            style={{
+              height: 0.9,
+              backgroundColor: "rgba(84, 84, 88, 0.65)",
+            }}
+          />
+        )}
+      </>
+    );
+  },
+);
 
 type AlphabetSelectorProps = {
   onPress: (alphabet: string) => void;

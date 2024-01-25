@@ -6,8 +6,8 @@ import { SpacerColumn } from "../../../../components/spacer";
 import { neutral22, neutralA3 } from "../../../../utils/style/colors";
 import { layout } from "../../../../utils/style/layout";
 import { CustomButton } from "../../components/Button/CustomButton";
+import Checkbox from "../../components/Checkbox/Checkbox";
 import MiniTextInput from "../../components/MiniTextInput";
-import Checkbox from "../../components/checkbox/Checkbox";
 
 type Props = {
   gotoVisibleScreen: () => void;

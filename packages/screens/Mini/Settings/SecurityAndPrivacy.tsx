@@ -4,8 +4,8 @@ import { View } from "react-native";
 import { SpacerColumn } from "../../../components/spacer";
 import { RouteName, ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { SettingMenuItem } from "../components/SettingMenuItems";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 const settingScreens: {
   title: string;

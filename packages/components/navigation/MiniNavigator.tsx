@@ -93,7 +93,7 @@ const MainTab = () => {
 
 export const MiniNavigator: React.FC = () => {
   return (
-    <Stack.Navigator initialRouteName="NativeWallet">
+    <Stack.Navigator initialRouteName="MiniChats">
       <Stack.Screen
         name="ModeSelection"
         component={ModeSelectionScreen}

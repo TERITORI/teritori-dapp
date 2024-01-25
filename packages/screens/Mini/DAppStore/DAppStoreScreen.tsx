@@ -15,7 +15,7 @@ import { ScreenFC } from "../../../utils/navigation";
 import { blueDefault } from "../../../utils/style/colors";
 import { fontSemibold15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
   const [enableEditingDApps, setEnableEditingDApps] = useState(false);

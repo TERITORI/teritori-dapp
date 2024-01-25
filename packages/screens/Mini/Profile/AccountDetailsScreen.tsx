@@ -18,7 +18,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium16, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 const QR_SIZE = 248;
 const ACCOUNT_DETAILS = "GxF34g10nz0wchvkkj7rr09vcxj5rpt2m3A31";

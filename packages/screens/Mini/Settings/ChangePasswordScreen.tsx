@@ -4,9 +4,9 @@ import { View } from "react-native";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
-import { BlurScreenContainer } from "../components/BlurScreenContainer";
 import { CustomButton } from "../components/Button/CustomButton";
 import MiniTextInput from "../components/MiniTextInput";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
   navigation,
