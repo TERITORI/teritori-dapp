@@ -1,5 +1,6 @@
 import React from "react";
-import { View } from "react-native";
+import { FlatList, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { Account } from "./Account";
 import addSVG from "../../../../assets/icons/add-solid-white.svg";
@@ -8,19 +9,20 @@ import dAppStoreSVG from "../../../../assets/icons/dapp-store-solid.svg";
 import googleSVG from "../../../../assets/icons/google.svg";
 import ledgerSVG from "../../../../assets/icons/ledger.svg";
 import lockSVG from "../../../../assets/icons/lock-solid.svg";
+import questionSVG from "../../../../assets/icons/question-gray.svg";
 import settingSVG from "../../../../assets/icons/setting-solid.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
+import { selectAllWallets, StoreWallet } from "../../../store/slices/wallets";
 import { RouteName, ScreenFC } from "../../../utils/navigation";
 import { neutral39 } from "../../../utils/style/colors";
 import { fontSemibold15, fontSemibold18 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { SettingMenuItem } from "../components/SettingMenuItems";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
-
 const profileScreens: {
   title: string;
   navigateTo: RouteName;
@@ -43,8 +45,23 @@ const profileScreens: {
   },
 ];
 
+type ProviderType = StoreWallet["provider"];
+const getProviderLogo = (provider: ProviderType) => {
+  switch (provider) {
+    case "google":
+      return googleSVG;
+    case "ledger":
+      return ledgerSVG;
+    case "native":
+      return null; //teritoriSVG;
+    default:
+      return questionSVG;
+  }
+};
+
 export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
   const onClose = () => navigation.goBack();
+  const wallets = useSelector(selectAllWallets);
 
   return (
     <BlurScreenContainer
@@ -85,26 +102,21 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
           flex: 1,
         }}
       >
-        <View style={{ zIndex: 300 }}>
-          <Account
-            accountName="Main Account"
-            id="1"
-            toriCount={62424}
-            logo={googleSVG}
-          />
-        </View>
-        <View style={{ zIndex: 200 }}>
-          <Account accountName="Account 2" id="2" toriCount={0} />
-        </View>
-        <View style={{ zIndex: 100 }}>
-          <Account
-            accountName="Ledger"
-            id="3"
-            toriCount={1000}
-            logo={ledgerSVG}
-            isLast
-          />
-        </View>
+        <FlatList
+          data={wallets}
+          renderItem={({ item, index }) => {
+            return (
+              <View key={index}>
+                <Account
+                  accountName={"Seed Phrase #" + item.index}
+                  address={item.address}
+                  logo={getProviderLogo(item.provider)}
+                  isLast={index === wallets.length - 1}
+                />
+              </View>
+            );
+          }}
+        />
 
         <Separator />
         <SpacerColumn size={1} />

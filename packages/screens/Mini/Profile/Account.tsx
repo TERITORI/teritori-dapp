@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import copySVG from "../../../../assets/icons/copy-gray.svg";
@@ -14,21 +14,21 @@ import { useAppNavigation } from "../../../utils/navigation";
 import { neutral33, neutralA3 } from "../../../utils/style/colors";
 import { fontMedium13, fontSemibold22 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { tinyAddress } from "../../../utils/text";
+import { copyToClipboard } from "../Wallet/TransactionDetailScreen";
 import { DropdownWithListItem } from "../components/Dropdown/DropdownWithListItem";
 
 type Props = {
   accountName: string;
-  toriCount: number;
   logo?: string | FC<SvgProps>;
-  id: string;
+  address: string;
   isLast?: boolean;
 };
 
 export const Account = ({
   accountName,
-  id,
-  toriCount,
   logo,
+  address,
   isLast = false,
 }: Props) => {
   const navigation = useAppNavigation();
@@ -56,10 +56,13 @@ export const Account = ({
           }}
         >
           <BrandText style={[fontSemibold22]}>{accountName}</BrandText>
-          <SVG source={copySVG} height={20} width={20} />
+          <Pressable onPress={() => copyToClipboard(address)}>
+            <SVG source={copySVG} height={20} width={20} />
+          </Pressable>
         </View>
+
         <BrandText style={[fontMedium13, { color: neutralA3 }]}>
-          {toriCount.toLocaleString()} TORI
+          {`${tinyAddress(address, 16)}`}
         </BrandText>
       </View>
       <View
@@ -88,7 +91,7 @@ export const Account = ({
           iconSize={22}
           items={[
             {
-              name: "View on Teritoriscan",
+              name: "View on Explorer",
               icon: openSVG,
               onPress: () => alert("Hello Teritoriscan"),
             },

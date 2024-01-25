@@ -165,8 +165,9 @@ export const CreateWalletScreen: ScreenFC<"CreateWallet"> = ({
                 wallet.getAccounts().then((accounts) => {
                   dispatch(
                     addSelected({
-                      publicKey: accounts[0].address,
+                      address: accounts[0].address,
                       network: network.kind,
+                      provider: "native",
                       networkId: "teritori",
                       index: maxIndex + 1,
                     }),
