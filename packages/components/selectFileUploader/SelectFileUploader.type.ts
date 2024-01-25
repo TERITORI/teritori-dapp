@@ -15,4 +15,5 @@ export interface SelectFileUploaderProps {
   maxUpload?: number;
   setIsLoading?: Dispatch<SetStateAction<boolean>>;
   containerHeight?: number;
+  isRequired?: boolean;
 }

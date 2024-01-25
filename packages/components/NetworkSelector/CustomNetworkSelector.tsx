@@ -13,9 +13,10 @@ import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+import { Label } from "../inputs/TextInputCustom";
 
 export const CustomNetworkSelector: React.FC<{
-  label?: string;
+  label: string;
   style?: StyleProp<ViewStyle>;
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
@@ -38,27 +39,17 @@ export const CustomNetworkSelector: React.FC<{
         {
           width: "100%",
           zIndex: 100,
-          minHeight: 50,
         },
       ]}
     >
-      <BrandText
-        style={[
-          fontSemibold14,
-          {
-            marginRight: layout.spacing_x1,
-            color: neutral77,
-            marginBottom: layout.spacing_x1,
-          },
-        ]}
-      >
+      <Label style={{ marginBottom: layout.spacing_x1 }} isRequired>
         {label}
-      </BrandText>
+      </Label>
 
       <TertiaryBox
         style={{
           width: "100%",
-          minHeight: 40,
+          height: 40,
           flexDirection: "row",
           paddingHorizontal: 12,
           backgroundColor: neutral17,
@@ -94,7 +85,8 @@ export const CustomNetworkSelector: React.FC<{
 
       {isDropdownOpen(dropdownRef) && (
         <NetworkSelectorMenu
-          style={{ minWidth: 40, width: "100%" }}
+          optionsMenuwidth={416}
+          style={{ width: "100%", marginTop: layout.spacing_x0_75 }}
           forceNetworkId={forceNetworkId}
           forceNetworkKind={forceNetworkKind}
           forceNetworkFeatures={forceNetworkFeatures}
