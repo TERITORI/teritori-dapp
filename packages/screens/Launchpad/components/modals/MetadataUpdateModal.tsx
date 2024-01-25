@@ -12,7 +12,7 @@ import { fontSemibold16, fontSemibold20 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { LocalFileData } from "../../../../utils/types/files";
 import { NewMetadataDetailsFormValues } from "../../CreateCollection.type";
-import { TextInputLaunchpadMetadataValues } from "../inputs/TextInputLaunchpadMetadataValues";
+import { TextInputLaunchpad } from "../inputs/TextInputLaunchpad";
 
 export const MetadataUpdateModal: React.FC<{
   onClose: () => void;
@@ -106,35 +106,40 @@ export const MetadataUpdateModal: React.FC<{
       >
         <Separator style={{ marginBottom: layout.spacing_x3 }} />
 
-        <TextInputLaunchpadMetadataValues
+        <TextInputLaunchpad<NewMetadataDetailsFormValues>
+          required
           name="name"
           label="Name"
           control={control}
           placeHolder="Token name"
         />
 
-        <TextInputLaunchpadMetadataValues
+        <TextInputLaunchpad<NewMetadataDetailsFormValues>
+          required
           name="description"
           label="Description"
           control={control}
           placeHolder="Token description"
         />
 
-        <TextInputLaunchpadMetadataValues
+        <TextInputLaunchpad<NewMetadataDetailsFormValues>
+          required
           name="externalURL"
           label="External URL"
           control={control}
           placeHolder="https://"
         />
 
-        <TextInputLaunchpadMetadataValues
+        <TextInputLaunchpad<NewMetadataDetailsFormValues>
+          required
           name="youtubeURL"
           label="Youtube URL"
           control={control}
           placeHolder="https://"
         />
 
-        <TextInputLaunchpadMetadataValues
+        <TextInputLaunchpad<NewMetadataDetailsFormValues>
+          required
           name="attributes"
           label="Attributes"
           control={control}

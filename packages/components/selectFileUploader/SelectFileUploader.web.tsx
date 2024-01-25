@@ -33,6 +33,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
   fileHeight = 256,
   containerHeight = 80,
   setIsLoading,
+  isRequired = true,
 }) => {
   const { setToastError } = useFeedbacks();
   const hiddenFileInput = useRef<HTMLInputElement>(null);
@@ -122,7 +123,14 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
   return (
     <>
       <View style={style}>
-        {!!label && <Label style={{ marginBottom: 12 }}>{label}</Label>}
+        {!!label && (
+          <Label
+            style={{ marginBottom: layout.spacing_x1 }}
+            isRequired={isRequired}
+          >
+            {label}
+          </Label>
+        )}
         <TouchableOpacity onPress={handleClick}>
           <div
             onDrop={dropHandler}

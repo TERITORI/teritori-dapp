@@ -5,34 +5,40 @@ import { TextInputProps } from "react-native";
 import { TextInputCustom } from "../../../../components/inputs/TextInputCustom";
 import { layout } from "../../../../utils/style/layout";
 
-interface TextInputCustomProps<
-  ExistingWhitelistDetailsFormValues extends FieldValues,
-> extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
+interface TextInputCustomProps<T extends FieldValues>
+  extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
   placeHolder: string;
-  control: Control<ExistingWhitelistDetailsFormValues>;
-  name: Path<ExistingWhitelistDetailsFormValues>;
+  control: Control<T>;
+  name: Path<T>;
+  sublabel?: React.ReactElement;
+  multiline?: boolean;
+  required?: boolean;
 }
 
-export const TextInputLaunchpadExistingWhitelistValues = <
-  ExistingWhitelistDetailsFormValues extends FieldValues,
->({
+export const TextInputLaunchpad = <T extends FieldValues>({
   control,
   name,
   label,
   placeHolder,
-}: TextInputCustomProps<ExistingWhitelistDetailsFormValues>) => {
+  sublabel,
+  multiline = false,
+  required = false,
+}: TextInputCustomProps<T>) => {
   return (
-    <TextInputCustom<ExistingWhitelistDetailsFormValues>
-      rules={{ required: true }}
+    <TextInputCustom<T>
+      rules={{ required }}
+      labelStyle={{ maxWidth: 416 }}
       label={label}
       placeHolder={placeHolder}
+      sublabel={sublabel}
       name={name}
       control={control}
       variant="labelOutside"
       containerStyle={{ marginBottom: layout.spacing_x2 }}
       boxMainContainerStyle={{ minHeight: 0 }}
       height={40}
+      multiline={multiline}
     />
   );
 };
