@@ -6,7 +6,8 @@ import stopSVG from "../../../../assets/icons/stop.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { SpacerColumn } from "../../../components/spacer";
-import { selectAllWallets } from "../../../store/slices/wallets";
+import { resetAll, selectAllWallets } from "../../../store/slices/wallets";
+import { useAppDispatch } from "../../../store/store";
 import { ScreenFC } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontMedium16, fontSemibold30 } from "../../../utils/style/fonts";
@@ -21,12 +22,14 @@ export const ResetWalletScreen: ScreenFC<"MiniResetWallet"> = ({
   const gotoSecurityAndPrivacy = () =>
     navigation.replace("MiniSecurityAndPrivacy");
 
+  const dispatch = useAppDispatch();
   const wallets = useSelector(selectAllWallets);
 
   const onResetPress = () => {
     wallets.map((wallet) => {
-      resetWallet(wallet.index);
+      resetWallet(wallet.index); // remove from storage
     });
+    dispatch(resetAll); // remove all from redux | app state
   };
 
   return (

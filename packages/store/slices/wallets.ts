@@ -3,9 +3,10 @@ import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import { NetworkKind } from "../../networks";
 import { RootState } from "../store";
 
-interface StoreWallet {
+export interface StoreWallet {
   index: number;
-  publicKey: string;
+  address: string;
+  provider: "native" | "ledger" | "google";
   network: NetworkKind;
   networkId: string;
 }
@@ -24,6 +25,7 @@ const walletsSlice = createSlice({
   reducers: {
     addSelected: storeWalletsAdapter.setOne,
     removeSelected: storeWalletsAdapter.removeOne,
+    resetAll: storeWalletsAdapter.removeAll,
   },
 });
 
@@ -31,4 +33,4 @@ export const selectAllWallets = (state: RootState) =>
   selectors.selectAll(state.wallets);
 
 export const walletsReducer = walletsSlice.reducer;
-export const { addSelected, removeSelected } = walletsSlice.actions;
+export const { addSelected, resetAll } = walletsSlice.actions;
