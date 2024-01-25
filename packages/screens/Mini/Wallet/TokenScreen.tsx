@@ -113,7 +113,7 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
       </View>
       <Separator style={{ marginVertical: layout.spacing_x3 }} />
       {balances.map((balance) => (
-        <>
+        <Fragment key={balance.denom}>
           <AddedToken
             code="3A31"
             dollarAmount={balance.usdAmount?.toLocaleString() || "N/A"}
@@ -124,7 +124,7 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
             amount={balance.amount}
           />
           <SpacerColumn size={3} />
-        </>
+        </Fragment>
       ))}
 
       <SpacerColumn size={3} />

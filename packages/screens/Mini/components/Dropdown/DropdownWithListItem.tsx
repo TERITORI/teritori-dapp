@@ -63,7 +63,7 @@ export const DropdownWithListItem = ({
           {items.map((dropdownItem, index) => {
             const { onPress, name, icon } = dropdownItem;
             return (
-              <>
+              <React.Fragment key={dropdownItem.name}>
                 <CustomPressable
                   key={dropdownItem.name}
                   style={{
@@ -85,7 +85,7 @@ export const DropdownWithListItem = ({
                   <BrandText style={[fontMedium16]}>{name}</BrandText>
                 </CustomPressable>
                 {items.length - 1 !== index && <Separator />}
-              </>
+              </React.Fragment>
             );
           })}
         </View>

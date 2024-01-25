@@ -110,7 +110,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
         <SpacerColumn size={1} />
         {profileScreens.map((screen, index) => {
           return (
-            <>
+            <React.Fragment key={screen.title}>
               <SettingMenuItem
                 icon={screen.icon}
                 navigateTo={screen.navigateTo}
@@ -123,7 +123,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
                 </>
               )}
               <SpacerColumn size={1} />
-            </>
+            </React.Fragment>
           );
         })}
       </View>
