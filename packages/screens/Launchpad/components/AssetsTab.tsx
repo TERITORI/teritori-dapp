@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { SafeAreaView, View } from "react-native";
 
-import { TextInputLaunchpadAssetsValues } from "./inputs/TextInputLaunchpadAssetsValues";
+import { TextInputLaunchpad } from "./inputs/TextInputLaunchpad";
 import { MetadataUpdateModal } from "./modals/MetadataUpdateModal";
 import { SelectedFilesPreview } from "../../../components/FilePreview/SelectedFilesPreview/SelectedFilesPreview";
 import { SelectFileUploader } from "../../../components/selectFileUploader";
@@ -58,7 +58,8 @@ export const AssetsTab: React.FC = () => {
             }}
           >
             <View>
-              <TextInputLaunchpadAssetsValues
+              <TextInputLaunchpad<NewCollectionAssetsFormValues>
+                required
                 label="NFT.Storage API Key"
                 placeHolder="My Awesome Collection"
                 name="nftApiKey"
@@ -77,6 +78,7 @@ export const AssetsTab: React.FC = () => {
                   setFiles(files);
                 }}
                 mimeTypes={IMAGE_MIME_TYPES}
+                isRequired={false}
               />
               <SelectFileUploader
                 label="Metadata selection"
@@ -88,6 +90,7 @@ export const AssetsTab: React.FC = () => {
                 multiple
                 onUpload={(files) => {}}
                 mimeTypes={IMAGE_MIME_TYPES}
+                isRequired={false}
               />
             </View>
           </View>

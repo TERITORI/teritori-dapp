@@ -4,11 +4,11 @@ import { TouchableOpacity, View } from "react-native";
 import chevronDownSVG from "./../../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "./../../../../../assets/icons/chevron-up.svg";
 import { SelectionDropdownProps } from "./DropdownProps.type";
-import { LabelText } from "./LabelText";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
 import { PrimaryBox } from "../../../../components/boxes/PrimaryBox";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
+import { Label } from "../../../../components/inputs/TextInputCustom";
 import { Separator } from "../../../../components/separators/Separator";
 import { SpacerColumn } from "../../../../components/spacer";
 import { useDropdowns } from "../../../../context/DropdownsProvider";
@@ -47,7 +47,9 @@ export const SelectionDropdown = ({
       ]}
       ref={dropdownRef}
     >
-      <LabelText label={label} />
+      <Label style={{ marginBottom: layout.spacing_x1 }} isRequired>
+        {label}
+      </Label>
 
       <View>
         <TertiaryBox

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { SelectionDropdown } from "./dropdowns/SelectionDropdown";
-import { TextInputLaunchpadAdditionalValues } from "./inputs/TextInputLaunchpadAdditionalValues";
+import { TextInputLaunchpad } from "./inputs/TextInputLaunchpad";
 import { BrandText } from "../../../components/BrandText";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutral55, neutral77 } from "../../../utils/style/colors";
@@ -42,7 +42,8 @@ export const LaunchpadAdditional: React.FC = () => {
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpadAdditionalValues
+        <TextInputLaunchpad<NewCollectionAdditionalFormValues>
+          required
           label="Please describe your artwork: "
           sublabel={
             <View>
@@ -71,14 +72,16 @@ export const LaunchpadAdditional: React.FC = () => {
           label="Is your collection ready for the mint?"
         />
 
-        <TextInputLaunchpadAdditionalValues
+        <TextInputLaunchpad<NewCollectionAdditionalFormValues>
+          required
           label="What is your expected collection supply?"
           placeHolder="Type here..."
           name="collectionSupply"
           control={control}
         />
 
-        <TextInputLaunchpadAdditionalValues
+        <TextInputLaunchpad<NewCollectionAdditionalFormValues>
+          required
           label="What is your expected public sale mint price?"
           sublabel={
             <View>
@@ -92,7 +95,8 @@ export const LaunchpadAdditional: React.FC = () => {
           control={control}
         />
 
-        <TextInputLaunchpadAdditionalValues
+        <TextInputLaunchpad<NewCollectionAdditionalFormValues>
+          required
           label="What is your expected mint date? "
           placeHolder="dd.mm.yyyy | hh:mm PM"
           name="mintDate"
@@ -117,7 +121,8 @@ export const LaunchpadAdditional: React.FC = () => {
           style={{ zIndex: 1 }}
         />
 
-        <TextInputLaunchpadAdditionalValues
+        <TextInputLaunchpad<NewCollectionAdditionalFormValues>
+          required
           label="We'd love to offer TeritoriDAO members 10% of your whitelist supply if your project is willing. Please let us know how many whitelist spots you'd be willing to allocate our DAO: "
           placeHolder="0"
           name="whitelistSpotPercentage"

@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { TextInputLaunchpadBasicValues } from "./inputs/TextInputLaunchpadBasicValues";
+import { TextInputLaunchpad } from "./inputs/TextInputLaunchpad";
 import { BrandText } from "../../../components/BrandText";
 import { CustomNetworkSelector } from "../../../components/NetworkSelector/CustomNetworkSelector";
 import { SelectFileUploader } from "../../../components/selectFileUploader";
@@ -57,29 +57,32 @@ export const LaunchpadBasic: React.FC = () => {
       <View style={{ width: 416 }}>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpadBasicValues
+        <TextInputLaunchpad<NewCollectionBasicFormValues>
           label="Name"
           placeHolder="My Awesome Collection"
           name="name"
           control={control}
+          required
         />
 
-        <TextInputLaunchpadBasicValues
+        <TextInputLaunchpad<NewCollectionBasicFormValues>
           label="Description"
           placeHolder="My Awesome Collection Description"
           name="description"
           control={control}
+          required
         />
 
-        <TextInputLaunchpadBasicValues
+        <TextInputLaunchpad<NewCollectionBasicFormValues>
           label="Symbol"
           placeHolder="Symbol"
           name="symbol"
           control={control}
+          required
         />
 
         <SelectFileUploader
-          label="Cover Image *"
+          label="Cover Image"
           fileHeight={ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT}
           isImageCover
           style={{
@@ -91,16 +94,17 @@ export const LaunchpadBasic: React.FC = () => {
           mimeTypes={IMAGE_MIME_TYPES}
         />
 
-        <TextInputLaunchpadBasicValues
+        <TextInputLaunchpad<NewCollectionBasicFormValues>
           label="External Link"
           placeHolder="https://collection..."
           name="externalLink"
           control={control}
+          required
         />
 
         <CustomNetworkSelector
           style={{ marginBottom: layout.spacing_x3 }}
-          label="What network is your project on? *"
+          label="What network is your project on?"
         />
       </View>
     </View>

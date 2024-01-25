@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { TextInputLaunchpadNewWhitelistValues } from "./inputs/TextInputLaunchpadNewWhitelistValues";
+import { TextInputLaunchpad } from "./inputs/TextInputLaunchpad";
 import { BrandText } from "../../../components/BrandText";
 import { SelectFileUploader } from "../../../components/selectFileUploader";
 import { Separator } from "../../../components/separators/Separator";
@@ -39,7 +39,8 @@ export const NewWhitelist: React.FC = () => {
         Information about your minting settings
       </BrandText>
       <SpacerColumn size={2} />
-      <TextInputLaunchpadNewWhitelistValues
+      <TextInputLaunchpad<NewWhitelistDetailsFormValues>
+        required
         label="Unit Price "
         placeHolder="0"
         name="unitPrice"
@@ -53,7 +54,8 @@ export const NewWhitelist: React.FC = () => {
         control={control}
       />
 
-      <TextInputLaunchpadNewWhitelistValues
+      <TextInputLaunchpad<NewWhitelistDetailsFormValues>
+        required
         label="Member Limit "
         placeHolder="0"
         name="memberLimit"
@@ -67,7 +69,8 @@ export const NewWhitelist: React.FC = () => {
         control={control}
       />
 
-      <TextInputLaunchpadNewWhitelistValues
+      <TextInputLaunchpad<NewWhitelistDetailsFormValues>
+        required
         label="Per Address Limit"
         placeHolder="0"
         name="perAddresaLimit"
@@ -81,7 +84,8 @@ export const NewWhitelist: React.FC = () => {
         control={control}
       />
 
-      <TextInputLaunchpadNewWhitelistValues
+      <TextInputLaunchpad<NewWhitelistDetailsFormValues>
+        required
         label="Start Time "
         placeHolder="0"
         name="startTime"
@@ -95,7 +99,8 @@ export const NewWhitelist: React.FC = () => {
         control={control}
       />
 
-      <TextInputLaunchpadNewWhitelistValues
+      <TextInputLaunchpad<NewWhitelistDetailsFormValues>
+        required
         label="End Time "
         placeHolder="0"
         name="endTime"

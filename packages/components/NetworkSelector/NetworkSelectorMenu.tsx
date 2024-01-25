@@ -29,12 +29,14 @@ export const NetworkSelectorMenu: FC<{
   forceNetworkFeatures?: NetworkFeature[];
   style?: StyleProp<ViewStyle>;
   onSelect: () => void;
+  optionsMenuwidth?: number;
 }> = ({
   forceNetworkId,
   forceNetworkKind,
   forceNetworkFeatures,
   style,
   onSelect,
+  optionsMenuwidth = 172,
 }) => {
   const { resetMediaPlayer } = useMediaPlayer();
   const dispatch = useAppDispatch();
@@ -81,7 +83,7 @@ export const NetworkSelectorMenu: FC<{
 
   return (
     <LegacyTertiaryBox
-      width={172}
+      width={optionsMenuwidth}
       noBrokenCorners
       style={style}
       mainContainerStyle={[
