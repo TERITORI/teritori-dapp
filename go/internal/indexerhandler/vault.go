@@ -22,40 +22,13 @@ type VaultExecuteUpdatePriceMsgData struct {
 	Amount             string `json:"amount"`
 }
 
-// FIXME: this is untested and probably broken
-
 func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	contractAddress := execMsg.Contract
 
 	if contractAddress != h.config.Network.VaultContractAddress {
+		h.logger.Debug("ignoring update price on unknown vault")
 		return nil
 	}
-
-	// FIXME: what happens if collection doesn't exists?
-	// get collection
-	var collection indexerdb.Collection
-	r := h.db.
-		Joins("JOIN Teritori_collections ON Teritori_collections.collection_id = collections.id").
-		Where("Teritori_collections.nft_contract_address = ?", contractAddress).
-		Find(&collection)
-	if err := r.
-		Error; err != nil {
-		return errors.Wrap(err, "failed to query collections")
-	}
-	if r.RowsAffected < 1 {
-		//Did not find any collection with the given contract address
-		return nil
-	}
-	if collection.TeritoriCollection == nil {
-		return errors.New("no teritori info on collection")
-	}
-
-	// get token id
-	tokenIds := e.Events["wasm.token_id"]
-	if len(tokenIds) == 0 {
-		return errors.New("no token ids")
-	}
-	tokenId := tokenIds[0]
 
 	// get message
 	var updatePriceMsg VaultExecuteUpdatePriceMsg
@@ -63,13 +36,31 @@ func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExe
 		return errors.Wrap(err, "failed to unmarshal update price msg")
 	}
 
+	// get collection
+	var collection *indexerdb.Collection
+	findResult := h.db.
+		Preload("TeritoriCollection").
+		Joins("JOIN teritori_collections on teritori_collections.collection_id = collections.id").
+		Where("teritori_collections.nft_contract_address = ?", updatePriceMsg.Data.NFTContractAddress).
+		Find(&collection)
+	if err := findResult.Error; err != nil {
+		return errors.Wrap(err, "failed to query for collection")
+	}
+	if findResult.RowsAffected == 0 {
+		h.logger.Debug("ignored update price on unknown collection")
+		return nil
+	}
+	if collection.TeritoriCollection == nil {
+		return errors.New("no teritori info on collection")
+	}
+
 	// update
 	price := updatePriceMsg.Data.Amount
 	denom := updatePriceMsg.Data.Denom
-	nftId := h.config.Network.NFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
+	nftId := h.config.Network.NFTID(collection.TeritoriCollection.MintContractAddress, updatePriceMsg.Data.NFTTokenId)
 	if err := h.db.Model(&indexerdb.NFT{ID: nftId}).UpdateColumns(map[string]interface{}{
-		"Price": price,
-		"Denom": denom,
+		"PriceAmount": price,
+		"PriceDenom":  denom,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to update nft price")
 	}
