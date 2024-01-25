@@ -56,7 +56,13 @@ export const ConnectLedgerScreen: ScreenFC<"ConnectLedger"> = ({
             "loading-accounts": <LoadingAccounts onStepChange={onStepChange} />,
             "select-accounts": <SelectAccounts onStepChange={onStepChange} />,
             "create-password": <CreatePassword onStepChange={onStepChange} />,
-            "all-set": <AllSet onComplete={onComplete} />,
+            "all-set": (
+              <AllSet
+                onComplete={onComplete}
+                description="Your Ledger account has been successfully added to Teritori. Now you
+            can start exploring the app."
+              />
+            ),
           }[activeScreen]
         }
       </View>

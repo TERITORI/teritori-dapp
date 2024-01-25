@@ -7,7 +7,10 @@ import MultiStepScreenContainer from "../../Mini/layout/MultiStepScreenContainer
 export const SuccessScreen: ScreenFC<"SuccessScreen"> = ({ navigation }) => {
   return (
     <MultiStepScreenContainer screenPercentage={100}>
-      <AllSet onComplete={() => navigation.navigate("MiniTabs")} />
+      <AllSet
+        onComplete={() => navigation.navigate("MiniTabs")}
+        description="Click on the Start button to launch Teritori."
+      />
     </MultiStepScreenContainer>
   );
 };
