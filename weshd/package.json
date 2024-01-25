@@ -1,0 +1,6 @@
+{
+  "name": "expo-weshnet",
+  "version": "0.1.0",
+  "description": "expo weshnet",
+  "main": "./index.ts"
+}
