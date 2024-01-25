@@ -1,13 +1,9 @@
 import React, { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { FlatList, View, useWindowDimensions } from "react-native";
 
 import { DAppStoreMenuItem } from "./component/DAppStoreMenuItems";
 import { DAppsList } from "./component/DAppsList";
-import governanceSVG from "../../../../assets/icons/governance-gray.svg";
-import launchpadSVG from "../../../../assets/icons/launchpad-gray.svg";
-import marketplaceSVG from "../../../../assets/icons/marketplace-gray.svg";
 import penSVG from "../../../../assets/icons/pen-solid.svg";
-import stakingSVG from "../../../../assets/icons/staking-gray.svg";
 import { BrandText } from "../../../components/BrandText";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
@@ -19,53 +15,24 @@ import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
   const [enableEditingDApps, setEnableEditingDApps] = useState(false);
-
+  const { height: windowHeight } = useWindowDimensions();
   const toggleEnableEditingDApps = () => setEnableEditingDApps((prev) => !prev);
 
   return (
     <BlurScreenContainer title="dApp Store">
-      <ScrollView
-        contentContainerStyle={{
-          flex: enableEditingDApps ? 0 : 1,
-          paddingHorizontal: layout.spacing_x2,
-        }}
-      >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "flex-end",
-          }}
-        >
-          <View style={{}}>
-            <DAppStoreMenuItem
-              icon={marketplaceSVG}
-              title="Marketplace"
-              subTitle="NFT Marketplace"
-              isAdded
-            />
-            <DAppStoreMenuItem
-              icon={launchpadSVG}
-              title="Launchpad"
-              subTitle="Multi Network NFT Launchpad"
-              isAdded
-            />
-            <DAppStoreMenuItem
-              icon={stakingSVG}
-              title="Staking"
-              subTitle="Staking"
-              isAdded
-            />
-            <DAppStoreMenuItem
-              icon={governanceSVG}
-              title="Governance"
-              subTitle="Governance"
-              isAdded
-            />
-
-            <DAppsList
-              isEditing={enableEditingDApps}
-              togggleEdting={toggleEnableEditingDApps}
-            />
+      <FlatList
+        data={[]}
+        renderItem={() => null}
+        ListHeaderComponent={
+          <View
+            style={{
+              paddingHorizontal: layout.spacing_x2,
+              minHeight: windowHeight - 170,
+              flex: 1,
+              justifyContent: "flex-end",
+            }}
+          >
+            <DAppsList isEditing={enableEditingDApps} />
             <Separator />
             {!enableEditingDApps && (
               <DAppStoreMenuItem
@@ -76,8 +43,9 @@ export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
               />
             )}
           </View>
-        </View>
-      </ScrollView>
+        }
+      />
+
       {enableEditingDApps && (
         <CustomPressable
           onPress={toggleEnableEditingDApps}

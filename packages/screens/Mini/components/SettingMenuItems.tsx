@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { SvgProps } from "react-native-svg";
 
+import ListView from "./ListView";
 import chevronGrayRightSVG from "../../../../assets/icons/chevron-right-gray.svg";
 import chevronRedRightSVG from "../../../../assets/icons/chevron-right-red.svg";
 import { RouteName, useAppNavigation } from "../../../utils/navigation";
@@ -9,7 +10,6 @@ import {
   neutralA3,
   secondaryColor,
 } from "../../../utils/style/colors";
-import ListView from "./ListView";
 
 type MenuItemProps = {
   icon?: string | FC<SvgProps>;
@@ -35,7 +35,7 @@ export const SettingMenuItem = ({
         onPress={onMenuItemPress}
         options={{
           label: title,
-          leftIconEnabled: icon ? true : false,
+          leftIconEnabled: !!icon,
           leftIconOptions: {
             icon,
           },

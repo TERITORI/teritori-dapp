@@ -20,6 +20,7 @@ type MenuItemProps = {
   onPress?: () => void;
   isAdded?: boolean;
   isEditing?: boolean;
+  onActionPress?: () => void;
 };
 
 export const DAppStoreMenuItem = ({
@@ -29,10 +30,18 @@ export const DAppStoreMenuItem = ({
   subTitle,
   isAdded,
   isEditing,
+  onActionPress,
 }: MenuItemProps) => {
   if (!isAdded && !isEditing) {
     return null;
   }
+
+  const handleAddMinusActionPress = () => {
+    if (onActionPress) {
+      onActionPress();
+    }
+  };
+
   return (
     <CustomPressable
       onPress={onPress}
@@ -50,8 +59,12 @@ export const DAppStoreMenuItem = ({
           alignItems: "center",
         }}
       >
-        {isEditing && isAdded && <SVG source={minusSVG} />}
-        {isEditing && !isAdded && <SVG source={addSVG} />}
+        {isEditing && (
+          <CustomPressable onPress={handleAddMinusActionPress}>
+            {isAdded && <SVG source={minusSVG} />}
+            {!isAdded && <SVG source={addSVG} />}
+          </CustomPressable>
+        )}
         <SVGorImageIcon icon={icon} iconSize={24} />
         <View>
           <BrandText style={[fontSemibold22, {}]}>{title}</BrandText>
