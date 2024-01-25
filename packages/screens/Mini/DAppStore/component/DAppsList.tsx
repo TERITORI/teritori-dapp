@@ -1,103 +1,116 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FlatList, View, useWindowDimensions } from "react-native";
 import { DraxList, DraxProvider } from "react-native-drax";
+import { useSelector } from "react-redux";
 
 import { DAppStoreMenuItem } from "./DAppStoreMenuItems";
-import astroportPNG from "../../../../../assets/icons/networks/Astroport.png";
-import axelarPNG from "../../../../../assets/icons/networks/axelar.png";
 import { BrandText } from "../../../../components/BrandText";
 import { Separator } from "../../../../components/separators/Separator";
+import {
+  selectAvailableApps,
+  selectCheckedApps,
+  setCheckedApp,
+  setSelectedApps,
+} from "../../../../store/slices/dapps-store";
+import { useAppDispatch } from "../../../../store/store";
 import { layout } from "../../../../utils/style/layout";
+import { SEPARATOR, getValuesFromId } from "../../../DAppStore/query/util";
+import { dAppType } from "../../../DAppStore/types";
 
 type Props = {
   isEditing: boolean;
-  togggleEdting: () => void;
 };
 
-const addedList = [
-  {
-    id: 1,
-    icon: axelarPNG,
-    title: "Axelar Network",
-    subTitle: "Secure building",
-  },
-  {
-    id: 2,
-    icon: astroportPNG,
-    title: "Powerful DEX",
-    subTitle: "Powerful DEX",
-  },
-];
+export const DAppsList = ({ isEditing }: Props) => {
+  const dispatch = useAppDispatch();
 
-const optionsList = [
-  {
-    id: 3,
-    icon: axelarPNG,
-    title: "Axelar Network",
-    subTitle: "Secure building 3",
-  },
-  {
-    id: 4,
-    icon: astroportPNG,
-    title: "Powerful DEX",
-    subTitle: "Powerful DEX 4",
-  },
-  {
-    id: 5,
-    icon: axelarPNG,
-    title: "Axelar Network",
-    subTitle: "Secure building 5",
-  },
-  {
-    id: 6,
-    icon: astroportPNG,
-    title: "Powerful DEX",
-    subTitle: "Powerful DEX 6",
-  },
-  {
-    id: 7,
-    icon: axelarPNG,
-    title: "Axelar Network",
-    subTitle: "Secure building 7",
-  },
-  {
-    id: 8,
-    icon: astroportPNG,
-    title: "Powerful DEX",
-    subTitle: "Powerful DEX 8",
-  },
-  {
-    id: 9,
-    icon: axelarPNG,
-    title: "Axelar Network",
-    subTitle: "Secure building 9",
-  },
-  {
-    id: 10,
-    icon: astroportPNG,
-    title: "Powerful DEX",
-    subTitle: "Powerful DEX 10",
-  },
-];
-
-export const DAppsList = ({ isEditing, togggleEdting }: Props) => {
   const { width: windowsWidth } = useWindowDimensions();
-  const [addedDApps, setAddedDApps] = useState(addedList);
-  const [optionsDApps, setOptionsDApps] = useState(optionsList);
+  const availableApps = useSelector(selectAvailableApps);
+  const selectedApps = useSelector(selectCheckedApps);
 
-  const onRemoveDApps = (item: (typeof addedDApps)[0]) => {
-    setAddedDApps(addedDApps.filter((x) => x.id !== item.id));
-    if (item) {
-      setOptionsDApps((prev) => [item, ...prev]);
+  const coreDApps = availableApps["teritori-core-apps"];
+  const externalApps = availableApps["bookmarks"];
+  const staking = availableApps["staking"];
+  const topApps = availableApps["top-apps"];
+
+  const [selectedAppsFromValues, setSelectedAppsFromValues] = useState<
+    dAppType[]
+  >([]);
+  const [remainingToSelectApps, setRemainingToSelectApps] = useState<
+    dAppType[]
+  >([]);
+
+  const selectedOptionsIds: string[] = useMemo(() => {
+    return selectedApps.reduce((acc, app) => {
+      const { appId, groupKey } = getValuesFromId(app);
+      if (availableApps[groupKey]?.options[appId]?.alwaysOn) {
+        return acc;
+      }
+      acc.push(availableApps[groupKey]?.options[appId]?.id);
+      return acc;
+    }, [] as string[]);
+  }, [availableApps, selectedApps]);
+
+  const getOptions = useCallback(
+    (item: typeof externalApps) => {
+      if (item?.options && Object.values(item?.options).length) {
+        return Object.values(item.options).filter(
+          (x) => !selectedOptionsIds.includes(x.id) && !x.alwaysOn,
+        );
+      }
+      return [];
+    },
+    [selectedOptionsIds],
+  );
+
+  useEffect(() => {
+    if (selectedApps) {
+      const selected = selectedApps
+        .map((app) => {
+          const { appId, groupKey } = getValuesFromId(app);
+          if (availableApps[groupKey]?.options[appId]?.alwaysOn) {
+            return undefined;
+          }
+          return availableApps[groupKey]?.options[appId];
+        })
+        .filter(Boolean) as dAppType[];
+
+      if (selected) {
+        setSelectedAppsFromValues(selected);
+      }
     }
+  }, [selectedApps, availableApps]);
+
+  useEffect(() => {
+    if (selectedApps) {
+      const remainingToSelectApps = [
+        ...getOptions(topApps),
+        ...getOptions(staking),
+        ...getOptions(externalApps),
+      ];
+      if (remainingToSelectApps) {
+        setRemainingToSelectApps(remainingToSelectApps);
+      }
+    }
+  }, [topApps, staking, externalApps, selectedApps, getOptions]);
+
+  const alwaysOnApps = useMemo(() => {
+    return [
+      ...Object.values(coreDApps.options).filter((x) => x.alwaysOn),
+      ...Object.values(topApps.options).filter((x) => x.alwaysOn),
+    ];
+  }, [coreDApps, topApps]);
+
+  const handleClick = (groupKey: string, id: string) => {
+    const draggableId = `${groupKey}${SEPARATOR}${id}`;
+
+    const action = {
+      draggableId,
+      isChecked: !selectedApps.includes(draggableId),
+    };
+    dispatch(setCheckedApp(action));
   };
 
-  const onAddDApps = (item: (typeof addedDApps)[0]) => {
-    setOptionsDApps(optionsDApps.filter((x) => x.id !== item.id));
-    if (item) {
-      setAddedDApps((prev) => [...prev, item]);
-    }
-  };
   const renderNoDApps = () => (
     <View style={{ marginVertical: layout.spacing_x3 }}>
       <BrandText>No DApps</BrandText>
@@ -105,51 +118,71 @@ export const DAppsList = ({ isEditing, togggleEdting }: Props) => {
   );
   return (
     <View style={{ paddingBottom: isEditing ? 100 : 0 }}>
-      <DraxProvider style={{ width: windowsWidth - 30 }}>
-        <DraxList
-          data={addedDApps}
-          onItemReorder={({ fromIndex, toIndex }) => {
-            const newData = addedDApps.slice();
-            newData.splice(toIndex, 0, newData.splice(fromIndex, 1)[0]);
-            setAddedDApps(newData);
-          }}
-          itemsDraggable={isEditing}
-          renderItemContent={({ item, index }) => {
-            return (
-              <DAppStoreMenuItem
-                icon={item.icon}
-                title={item.title}
-                subTitle={item.subTitle}
-                isEditing={isEditing}
-                onPress={() => alert(item.subTitle)}
-                isAdded
-                onActionPress={() => onRemoveDApps(item)}
-              />
-            );
-          }}
-          keyExtractor={(item, idx) => `${item.id}-${idx}`}
-          ListEmptyComponent={renderNoDApps}
-        />
-      </DraxProvider>
-      <Separator />
       <FlatList
-        data={optionsDApps}
+        data={alwaysOnApps}
         renderItem={({ item, index }) => {
           return (
             <DAppStoreMenuItem
               icon={item.icon}
               title={item.title}
-              subTitle={item.subTitle}
-              isEditing={isEditing}
-              onPress={() => alert(item.subTitle)}
-              isAdded={false}
-              onActionPress={() => onAddDApps(item)}
+              isAdded
+              onPress={() => alert(item.title)}
             />
           );
         }}
-        ListEmptyComponent={renderNoDApps}
-        keyExtractor={(item, idx) => `${item?.id}-${idx}`}
+        keyExtractor={(item, idx) => `${item?.title}-${idx}`}
       />
+      <DraxProvider style={{ width: windowsWidth - 30 }}>
+        <DraxList
+          data={selectedAppsFromValues}
+          onItemReorder={({ fromIndex, toIndex }) => {
+            const newData = selectedApps.slice();
+            newData.splice(toIndex, 0, newData.splice(fromIndex, 1)[0]);
+            dispatch(setSelectedApps(newData));
+          }}
+          itemsDraggable={isEditing}
+          renderItemContent={({ item, index }) => {
+            return (
+              <DAppStoreMenuItem
+                icon={item?.icon || ""}
+                title={item?.title || ""}
+                subTitle={item?.description}
+                isEditing={isEditing}
+                onPress={() => alert(item?.title)}
+                isAdded
+                onActionPress={() =>
+                  item && handleClick(item.groupKey, item.id)
+                }
+              />
+            );
+          }}
+          keyExtractor={(item, idx) => `${item?.id}-${idx}`}
+          ListEmptyComponent={renderNoDApps}
+        />
+      </DraxProvider>
+      <Separator />
+      {isEditing && (
+        <FlatList
+          data={remainingToSelectApps}
+          renderItem={({ item, index }) => {
+            return (
+              <DAppStoreMenuItem
+                icon={item.icon}
+                title={item.title}
+                subTitle={item.description}
+                isEditing={isEditing}
+                onPress={() => alert(item.description)}
+                isAdded={false}
+                onActionPress={() =>
+                  item && handleClick(item.groupKey, item.id)
+                }
+              />
+            );
+          }}
+          ListEmptyComponent={renderNoDApps}
+          keyExtractor={(item, idx) => `${item?.id}-${idx}`}
+        />
+      )}
     </View>
   );
 };

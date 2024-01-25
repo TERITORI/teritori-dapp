@@ -3,11 +3,7 @@ import { FlatList, View, useWindowDimensions } from "react-native";
 
 import { DAppStoreMenuItem } from "./component/DAppStoreMenuItems";
 import { DAppsList } from "./component/DAppsList";
-import governanceSVG from "../../../../assets/icons/governance-gray.svg";
-import launchpadSVG from "../../../../assets/icons/launchpad-gray.svg";
-import marketplaceSVG from "../../../../assets/icons/marketplace-gray.svg";
 import penSVG from "../../../../assets/icons/pen-solid.svg";
-import stakingSVG from "../../../../assets/icons/staking-gray.svg";
 import { BrandText } from "../../../components/BrandText";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
@@ -32,54 +28,20 @@ export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
             style={{
               paddingHorizontal: layout.spacing_x2,
               minHeight: windowHeight - 170,
+              flex: 1,
+              justifyContent: "flex-end",
             }}
           >
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "flex-end",
-              }}
-            >
-              <View style={{}}>
-                <DAppStoreMenuItem
-                  icon={marketplaceSVG}
-                  title="Marketplace"
-                  subTitle="NFT Marketplace"
-                  isAdded
-                />
-                <DAppStoreMenuItem
-                  icon={launchpadSVG}
-                  title="Launchpad"
-                  subTitle="Multi Network NFT Launchpad"
-                  isAdded
-                />
-                <DAppStoreMenuItem
-                  icon={stakingSVG}
-                  title="Staking"
-                  subTitle="Staking"
-                  isAdded
-                />
-                <DAppStoreMenuItem
-                  icon={governanceSVG}
-                  title="Governance"
-                  subTitle="Governance"
-                  isAdded
-                />
-                <DAppsList
-                  isEditing={enableEditingDApps}
-                  togggleEdting={toggleEnableEditingDApps}
-                />
-                <Separator />
-                {!enableEditingDApps && (
-                  <DAppStoreMenuItem
-                    icon={penSVG}
-                    title="Edit dApps list"
-                    onPress={() => setEnableEditingDApps(true)}
-                    isAdded
-                  />
-                )}
-              </View>
-            </View>
+            <DAppsList isEditing={enableEditingDApps} />
+            <Separator />
+            {!enableEditingDApps && (
+              <DAppStoreMenuItem
+                icon={penSVG}
+                title="Edit dApps list"
+                onPress={() => setEnableEditingDApps(true)}
+                isAdded
+              />
+            )}
           </View>
         }
       />
