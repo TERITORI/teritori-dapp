@@ -19,7 +19,7 @@ import {
   settingsReducer,
 } from "./slices/settings";
 import { squadPresetsReducer } from "./slices/squadPresets";
-import { walletsReducer } from "./slices/wallets";
+import { addressBookReducer, walletsReducer } from "./slices/wallets";
 import { storage } from "./storage";
 import { defaultEnabledNetworks } from "../networks";
 
@@ -71,6 +71,7 @@ const persistConfig = {
   migrate: createMigrate(migrations, { debug: false }),
   whitelist: [
     "wallets",
+    "addressBook",
     "settings",
     "dAppsStorePersisted",
     "squadPresets",
@@ -84,6 +85,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   wallets: walletsReducer,
+  addressBook: addressBookReducer,
   settings: settingsReducer,
   squadPresets: squadPresetsReducer,
   dAppsStorePersisted: dAppsReducerPersisted,

@@ -1,20 +1,21 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
-import { AddressBookType } from "./AddressBookScreen";
 import addSVG from "../../../../assets/icons/add-circle-outline.svg";
 import { SpacerColumn } from "../../../components/spacer";
+import {
+  addEntry,
+  removeEntry,
+  selectAddressBookById,
+} from "../../../store/slices/wallets";
+import { RootState, useAppDispatch } from "../../../store/store";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
 import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import MiniTextInput from "../components/MiniTextInput";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
-
-const addresses: AddressBookType[] = [
-  { id: "asdfdasd", label: "Defi1", address: "fadfd..sdf" },
-  { id: "asdfdasd8989", label: "Defi2", address: "fadfd..sdf" },
-];
 
 const EditAddressBookScreen: ScreenFC<"EditAddressBook"> = ({
   navigation,
@@ -23,19 +24,24 @@ const EditAddressBookScreen: ScreenFC<"EditAddressBook"> = ({
   const goBackTo = () =>
     navigation.replace("AddressBook", { back: "EditAddressBook" });
 
-  const [address, setAddress] = useState<{ label: string; address: string }>({
-    label: "",
-    address: "",
-  });
   const { addressId } = route.params;
+  let bookEntry = useSelector((state: RootState) =>
+    selectAddressBookById(state, addressId),
+  );
+  if (!bookEntry) {
+    // this has a race condition with the navigation
+    bookEntry = {
+      id: 0,
+      name: "",
+      address: "",
+      networkId: "",
+    };
+  }
+  // add local state for name and address
+  const [name, setName] = useState(bookEntry.name);
+  const [address, setAddress] = useState(bookEntry.address);
 
-  useEffect(() => {
-    const filteredAddress = addresses.filter((item) => item.id === addressId);
-
-    if (filteredAddress.length) {
-      setAddress(filteredAddress[0]);
-    }
-  }, [addressId]);
+  const dispatch = useAppDispatch();
 
   return (
     <BlurScreenContainer title="Edit Address" onGoBack={goBackTo}>
@@ -61,13 +67,51 @@ const EditAddressBookScreen: ScreenFC<"EditAddressBook"> = ({
         }}
       >
         <View style={{ flex: 1 }}>
-          <MiniTextInput placeholder="Label" value={address.label} />
+          <MiniTextInput
+            placeholder="Label"
+            value={name}
+            onChangeText={setName}
+          />
 
           <SpacerColumn size={1} />
-          <MiniTextInput placeholder="Address" value={address.address} />
+          <MiniTextInput
+            placeholder="Address"
+            value={address}
+            onChangeText={setAddress}
+          />
         </View>
 
-        <CustomButton onPress={() => {}} title="Save" />
+        <CustomButton
+          onPress={() => {
+            if (bookEntry) {
+              // this has a race condition with the navigation
+              dispatch(removeEntry(bookEntry.id));
+            }
+            navigation.navigate("AddressBook", { back: "AddAddressBook" });
+          }}
+          type="danger"
+          title="Delete"
+          style={{ marginBottom: layout.spacing_x2 }}
+        />
+
+        <CustomButton
+          onPress={() => {
+            if (name !== "" && address !== "") {
+              if (bookEntry) {
+                dispatch(
+                  addEntry({
+                    id: bookEntry.id,
+                    name,
+                    address,
+                    networkId: "teritori", // hardcoded for now
+                  }),
+                );
+              }
+            }
+            navigation.navigate("AddressBook", { back: "AddAddressBook" });
+          }}
+          title="Save"
+        />
       </View>
     </BlurScreenContainer>
   );

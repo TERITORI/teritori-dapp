@@ -21,6 +21,8 @@ export const CreatePasswordWallet: ScreenFC<"CreatePasswordWallet"> = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // special case user has password already
+
   return (
     <ScreenContainer
       responsive

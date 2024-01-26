@@ -1,4 +1,4 @@
-import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice, EntityId } from "@reduxjs/toolkit";
 
 import { NetworkKind } from "../../networks";
 import { RootState } from "../store";
@@ -9,6 +9,14 @@ export interface StoreWallet {
   provider: "native" | "ledger" | "google";
   network: NetworkKind;
   networkId: string;
+  // needsPassword: boolean;
+}
+
+export interface AddressBookEntry {
+  id: number;
+  address: string;
+  name: string;
+  networkId: string;
 }
 
 const storeWalletId = (wallet: StoreWallet) => `${wallet.index}`;
@@ -16,8 +24,10 @@ const storeWalletId = (wallet: StoreWallet) => `${wallet.index}`;
 const storeWalletsAdapter = createEntityAdapter<StoreWallet>({
   selectId: storeWalletId,
 });
-
 const selectors = storeWalletsAdapter.getSelectors();
+
+const storeAddress = createEntityAdapter<AddressBookEntry>();
+const addressSelectors = storeAddress.getSelectors();
 
 const walletsSlice = createSlice({
   name: "wallets",
@@ -25,12 +35,31 @@ const walletsSlice = createSlice({
   reducers: {
     addSelected: storeWalletsAdapter.setOne,
     removeSelected: storeWalletsAdapter.removeOne,
-    resetAll: storeWalletsAdapter.removeAll,
+    resetAllWallets: storeWalletsAdapter.removeAll,
+  },
+});
+
+const addressBookSlice = createSlice({
+  name: "addressBook",
+  initialState: storeAddress.getInitialState(),
+  reducers: {
+    addEntry: storeAddress.setOne,
+    removeEntry: storeAddress.removeOne,
+    resetAllAddressBook: storeAddress.removeAll,
   },
 });
 
 export const selectAllWallets = (state: RootState) =>
   selectors.selectAll(state.wallets);
 
+export const selectAllAddressBook = (state: RootState) =>
+  addressSelectors.selectAll(state.addressBook);
+
+export const selectAddressBookById = (state: RootState, id: EntityId) =>
+  addressSelectors.selectById(state.addressBook, id);
+
 export const walletsReducer = walletsSlice.reducer;
-export const { addSelected, resetAll } = walletsSlice.actions;
+export const addressBookReducer = addressBookSlice.reducer;
+export const { addEntry, removeEntry, resetAllAddressBook } =
+  addressBookSlice.actions;
+export const { addSelected, resetAllWallets } = walletsSlice.actions;

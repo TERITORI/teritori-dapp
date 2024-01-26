@@ -6,7 +6,11 @@ import stopSVG from "../../../../assets/icons/stop.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { SpacerColumn } from "../../../components/spacer";
-import { resetAll, selectAllWallets } from "../../../store/slices/wallets";
+import {
+  resetAllAddressBook,
+  resetAllWallets,
+  selectAllWallets,
+} from "../../../store/slices/wallets";
 import { useAppDispatch } from "../../../store/store";
 import { ScreenFC } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
@@ -29,7 +33,8 @@ export const ResetWalletScreen: ScreenFC<"MiniResetWallet"> = ({
     wallets.map((wallet) => {
       resetWallet(wallet.index); // remove from storage
     });
-    dispatch(resetAll); // remove all from redux | app state
+    dispatch(resetAllWallets); // remove all from redux | app state
+    dispatch(resetAllAddressBook); // reset means reset!
   };
 
   return (
