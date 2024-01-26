@@ -24,7 +24,7 @@ jobs:
         run: make lint.js
 
       - name: Build web app
-        run: yarn expo export:web
+        run: yarn expo export -p web
 
       - name: Check that there is no diff
         run: git diff --exit-code
