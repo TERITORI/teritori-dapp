@@ -9,7 +9,6 @@
     "expo-dev-client",
     "@cosmwasm/ts-codegen",
     "commander",
-    "lottie-ios",
     "@types/node",
     "@improbable-eng/grpc-web-node-http-transport",
     "babel-loader",
@@ -26,19 +25,16 @@
     "electron",
     "rimraf",
     "assert",
-    "listr2",
     "typescript",
-    "@dotlottie/react-player",
-    "@lottiefiles/react-lottie-player",
     "crypto",
     "expo-constants",
     "metro-config",
     "webpack-bundle-analyzer",
+    "react-native-web-lottie",
+    "expo-splash-screen"
   ],
   "ignorePatterns": [
     "/cache",
-    "/.yarn",
-    "/electron-webpack.js",
-    "/electron/webpack.config.js"
+    "/.yarn"
   ]
 }

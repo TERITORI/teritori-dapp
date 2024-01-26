@@ -1,5 +1,5 @@
 [build]
-command = 'npx expo-optimize && npx expo export:web'
+command = 'npm i -g sharp-cli && npx expo-optimize && npx expo export:web'
 [build.environment]
 NODE_OPTIONS = "--max_old_space_size=4096"
 [[redirects]]

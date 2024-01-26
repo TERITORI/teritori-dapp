@@ -273,7 +273,7 @@ const getTeritoriBunkerNFTInfo = async (
   let breedingsAvailable;
 
   if (
-    !!network.riotContractAddressGen1 &&
+    network.riotContractAddressGen1 &&
     breedingConfig?.parent_contract_addr === minterConfig.nft_addr
   ) {
     const breedingClient = new TeritoriBreedingQueryClient(

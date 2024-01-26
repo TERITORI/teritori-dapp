@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import Long from "long";
 import { useCallback, useMemo } from "react";
 
@@ -25,6 +26,7 @@ import {
   getCollectionMetadata,
   getTnsCollectionInfo,
 } from "../utils/collection";
+import { isLinkBanned } from "../utils/link-ban";
 
 // NOTE: consider using the indexer for this
 export const useCollectionInfo = (
@@ -65,7 +67,7 @@ export const useCollectionInfo = (
     contractKind === CollectionContractKind.EthereumBunkerV0,
   );
 
-  return useMemo(() => {
+  const { collectionInfo, ...other } = useMemo(() => {
     switch (contractKind) {
       case CollectionContractKind.CosmwasmNameServiceV0:
         if (network?.kind === NetworkKind.Cosmos) {
@@ -119,6 +121,29 @@ export const useCollectionInfo = (
     ethereumCollectionInfo,
     network,
   ]);
+
+  const clean = useMemo(() => {
+    if (!collectionInfo) {
+      return collectionInfo;
+    }
+
+    const r = cloneDeep(collectionInfo);
+
+    console.log("discord link", r.discord);
+
+    if (isLinkBanned(r.discord)) {
+      delete r.discord;
+    }
+    if (isLinkBanned(r.twitter)) {
+      delete r.twitter;
+    }
+    if (isLinkBanned(r.website)) {
+      delete r.website;
+    }
+    return r;
+  }, [collectionInfo]);
+
+  return { collectionInfo: clean, ...other };
 };
 
 const useTeritoriBreedingCollectionInfo = (
