@@ -1,3 +1,4 @@
+import { bech32 } from "bech32";
 import { useState } from "react";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
@@ -98,14 +99,22 @@ const EditAddressBookScreen: ScreenFC<"EditAddressBook"> = ({
           onPress={() => {
             if (name !== "" && address !== "") {
               if (bookEntry) {
-                dispatch(
-                  addEntry({
-                    id: bookEntry.id,
-                    name,
-                    address,
-                    networkId: "teritori", // hardcoded for now
-                  }),
-                );
+                try {
+                  bech32.decode(address);
+                  dispatch(
+                    addEntry({
+                      id: bookEntry.id,
+                      name,
+                      address,
+                      networkId: "teritori", // hardcoded for now
+                    }),
+                  );
+                  navigation.navigate("AddressBook", {
+                    back: "AddAddressBook",
+                  });
+                } catch (e) {
+                  alert(`Invalid address ${e} ${address}`); // TODO: make a better UI FIXME
+                }
               }
             }
             navigation.navigate("AddressBook", { back: "AddAddressBook" });
