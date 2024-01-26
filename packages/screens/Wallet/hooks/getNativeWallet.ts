@@ -71,3 +71,19 @@ export const resetWallet = async (index: number) => {
     throw new Error(`failed to remove mnemonic ${e}`);
   }
 };
+
+export const setPassword = async (mnemonic: string) => {
+  try {
+    await save(`password`, mnemonic);
+  } catch (e) {
+    throw new Error(`failed to save password ${e}`);
+  }
+};
+
+export const getPassword = async () => {
+  try {
+    return await getValueFor(`password`);
+  } catch (e) {
+    throw new Error(`failed to get password ${e}`);
+  }
+};
