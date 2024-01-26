@@ -3,7 +3,7 @@ import { StyleProp, TextStyle, View, ViewStyle } from "react-native";
 
 import { BrandText } from "../../../../components/BrandText";
 import { neutral22, neutralA3 } from "../../../../utils/style/colors";
-import { fontBold16, fontMedium16 } from "../../../../utils/style/fonts";
+import { fontBold16, fontMedium15 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 
 type MiniTableRowProps = {
@@ -36,7 +36,7 @@ export default function MiniTableRow({
       ]}
     >
       {typeof leftLabel === "string" ? (
-        <BrandText style={[fontMedium16, { color: neutralA3 }, leftLabelStyle]}>
+        <BrandText style={[fontMedium15, { color: neutralA3 }, leftLabelStyle]}>
           {leftLabel}
         </BrandText>
       ) : (

@@ -1,5 +1,6 @@
 import { Fragment, useState } from "react";
-import { View } from "react-native";
+import { FlatList, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import MiniTextInput from "./MiniTextInput";
 import inputAddressSVG from "../../../../assets/icons/input-address.svg";
@@ -8,6 +9,7 @@ import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
+import { selectAllAddressBook } from "../../../store/slices/wallets";
 import {
   neutral22,
   neutral39,
@@ -17,6 +19,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { tinyAddress } from "../../../utils/text";
 
 type OptionType = {
   label: string;
@@ -36,8 +39,12 @@ export default function MiniTextInputWithDropdown({
   options,
 }: MiniTextInputWithDropdownProps) {
   const [searchValue, setSearchValue] = useState("");
-  const [showOptions, setShowOptions] = useState(false);
 
+  const addresses = useSelector(selectAllAddressBook).filter((item) =>
+    item.name.toLowerCase().includes(searchValue.toLowerCase()),
+  );
+
+  const [showOptions, setShowOptions] = useState(false);
   function onItemSelect(value: string) {
     if (!onChangeText) {
       return;
@@ -118,13 +125,14 @@ export default function MiniTextInputWithDropdown({
             />
           </View>
           <View>
-            {Array.isArray(options) &&
-              options.length > 0 &&
-              options.map((opt, idx) => (
-                <Fragment key={`${opt.value}-${idx}`}>
+            <FlatList
+              data={addresses}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item, index }) => (
+                <Fragment key={`${item.address}-${index}`}>
                   <CustomPressable
                     onPress={() => {
-                      onItemSelect(opt.value);
+                      onItemSelect(item.address);
                       setShowOptions(false);
                     }}
                     style={{
@@ -135,22 +143,18 @@ export default function MiniTextInputWithDropdown({
                       paddingVertical: layout.spacing_x1_5,
                     }}
                   >
-                    {opt.label && typeof opt.label === "string" ? (
-                      <BrandText style={[fontMedium16, {}]}>
-                        {opt.label}
-                      </BrandText>
-                    ) : (
-                      opt.label
-                    )}
-                    {opt.subLabel && (
-                      <BrandText style={[fontMedium16, { color: neutralA3 }]}>
-                        {opt.subLabel}
-                      </BrandText>
-                    )}
+                    <BrandText style={[fontMedium16, {}]}>
+                      {item.name}
+                    </BrandText>
+
+                    <BrandText style={[fontMedium16, { color: neutralA3 }]}>
+                      {tinyAddress(item.address, 16)}
+                    </BrandText>
                   </CustomPressable>
-                  {idx + 1 < options.length && <Separator />}
+                  {index < options.length + 1 && <Separator />}
                 </Fragment>
-              ))}
+              )}
+            />
           </View>
         </View>
       )}
