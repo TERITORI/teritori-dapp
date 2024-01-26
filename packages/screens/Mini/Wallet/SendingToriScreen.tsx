@@ -9,8 +9,12 @@ import { BrandText } from "../../../components/BrandText";
 import { CurrencyIcon } from "../../../components/CurrencyIcon";
 import { Dropdown } from "../../../components/Dropdown";
 import { SVG } from "../../../components/SVG";
+import { UserNameInline } from "../../../components/UserNameInline";
 import { TertiaryBadge } from "../../../components/badges/TertiaryBadge";
+import { UserAvatarWithFrame } from "../../../components/images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
+import { parseUserId } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import {
@@ -30,7 +34,7 @@ import MiniTableRow from "../components/Table/MiniTableRow";
 import TitleBar from "../components/TitleBar";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
-const getTxData = (denom: string, amount: string) => {
+const getTxData = (denom: string, amount: string, userId: string) => {
   const networkId = "teritori"; // networkId placeholder
   const prettyAmount = prettyPrice(networkId, amount, denom);
   return [
@@ -59,12 +63,7 @@ const getTxData = (denom: string, amount: string) => {
     {
       label: (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <CircularImgOrIcon
-            size={32}
-            enableFullIcon
-            style={{ alignItems: "center", justifyContent: "center" }}
-            icon={require("../../../../assets/default-images/profile.png")}
-          />
+          <UserNameInline userId={userId} />
           <SpacerRow size={1} />
           <BrandText style={[fontMedium16, { color: neutralA3 }]}>
             ninja.tori
@@ -149,7 +148,7 @@ const SendingToriScreen: ScreenFC<"MiniSendingTori"> = ({
         <SendingModal
           visible={openModal}
           onClose={() => setOpenModal(false)}
-          txData={getTxData(denom, amount)}
+          txData={getTxData(denom, amount, `tori-${address}`)}
         />
 
         <CustomButton title="Send" onPress={() => setOpenModal(true)} />
