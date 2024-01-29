@@ -89,6 +89,11 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 		return nil
 	}
 
+	// Ignore requestMint
+	if methodHex == "31a02bce" {
+		return nil
+	}
+
 	method, err := ParseMethod(contractABI, tx.Info.Input)
 	if err != nil {
 		return errors.Wrap(err, "failed to parse method. Tx: "+tx.Info.Hash)
@@ -135,9 +140,9 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 			if err := h.handleBridgeNFT(contractABI, tx, args); err != nil {
 				return errors.Wrap(err, "failed to handle execute bridge NFT")
 			}
-		case "mintWithMetadata":
+		case "mint", "mintWithMetadata":
 			if err := h.handleMintWithMetadata(contractABI, tx, args); err != nil {
-				return errors.Wrap(err, "failed to handle mint with meta data")
+				return errors.Wrap(err, "failed to handle mint and mint with meta data")
 			}
 		case "transferFrom":
 			if err := h.handleTransferFrom(contractABI, tx, args); err != nil {
@@ -156,6 +161,8 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 			if err := h.handleBuyNFT(contractABI, tx, args); err != nil {
 				return errors.Wrap(err, "failed to handle buyNFT")
 			}
+		default:
+			h.logger.Info(">>> ignore", zap.String("method", method.Name))
 		}
 	}
 

@@ -25,8 +25,6 @@ export const ethereumGoerliNetwork: EthereumNetworkInfo = {
   // backendEndpoint: "http://localhost:9090",
   chainId: 5,
   alchemyApiKey: "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
-  theGraphEndpoint:
-    "https://api.studio.thegraph.com/query/40379/teritori-goerli-indexer/v-test-01",
   vaultContractAddress: "0xab30d7379ebfd146b77b0b4d6f3eb09bd725e4ef",
   riotContractAddressGen0: "0x43cc70bf324d716782628bed38af97e4afe92f69",
   riotContractAddressGen1,

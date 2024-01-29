@@ -19,8 +19,6 @@ export const polygonNetwork: EthereumNetworkInfo = {
   backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   chainId: 137,
   alchemyApiKey: "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
-  theGraphEndpoint:
-    "https://api.studio.thegraph.com/query/40379/teritori-goerli-indexer/v-test-01",
   vaultContractAddress: "0xab30d7379ebfd146b77b0b4d6f3eb09bd725e4ef",
   riotContractAddressGen0: "0x40d2ed8611f7b4633adf162f788b67cae1811f24",
   riotContractAddressGen1,

@@ -49,7 +49,6 @@ type EthereumNetwork struct {
 	ChainID                         int32  `json:"chainId"`
 	RpcEndpoint                     string `json:"rpcEndpoint"`
 	AlchemyAPIKey                   string `json:"alchemyApiKey"`
-	TheGraphEndpoint                string `json:"theGraphEndpoint"`
 	FirehoseEndpoint                string `json:"firehoseEndpoint"`
 	SubstreamsManifest              string `json:"substreamsManifest"`
 	IndexStartBlock                 string `json:"indexStartBlock"`

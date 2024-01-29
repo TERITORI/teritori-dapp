@@ -75,7 +75,6 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
   endpoint: string;
   chainId: number;
   alchemyApiKey: string;
-  theGraphEndpoint: string;
   vaultContractAddress: string;
   riotSquadStakingContractAddress: string;
   firehoseEndpoint?: string;

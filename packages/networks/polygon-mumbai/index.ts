@@ -18,8 +18,6 @@ export const polygonMumbaiNetwork: EthereumNetworkInfo = {
   // backendEndpoint: "http://localhost:9090",
   chainId: 80001,
   alchemyApiKey: "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
-  theGraphEndpoint:
-    "https://api.studio.thegraph.com/query/40379/teritori-goerli-indexer/v-test-01",
   vaultContractAddress: "0xffc71bf3aca1355dc29b06c12bc8ef32f8f20c51",
   excludeFromLaunchpadList: [],
   riotSquadStakingContractAddress: "0xb080380ccb801d4a4c2e75d3aee7728f97cf4608",
