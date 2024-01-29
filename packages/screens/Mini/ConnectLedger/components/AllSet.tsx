@@ -10,9 +10,10 @@ import { CustomButton } from "../../components/Button/CustomButton";
 
 type Props = {
   onComplete: () => void;
+  description?: string;
 };
 
-export const AllSet = ({ onComplete }: Props) => {
+export const AllSet = ({ onComplete, description }: Props) => {
   const onPressStart = () => {
     onComplete();
   };
@@ -45,8 +46,7 @@ export const AllSet = ({ onComplete }: Props) => {
             },
           ]}
         >
-          Your Ledger account has been successfully added to Teritori. Now you
-          can start exploring the app.
+          {description}
         </BrandText>
       </View>
 
