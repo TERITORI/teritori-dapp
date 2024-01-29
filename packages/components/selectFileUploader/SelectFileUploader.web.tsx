@@ -41,8 +41,8 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
 
   const handleFiles = async (files: File[]) => {
     const _files = multiple ? files : [files[0]];
-    let supportedFiles = [...files].filter(
-      (file) => mimeTypes?.includes(file.type),
+    let supportedFiles = [...files].filter((file) =>
+      mimeTypes?.includes(file.type),
     );
 
     if (maxUpload && supportedFiles.length) {
