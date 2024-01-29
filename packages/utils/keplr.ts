@@ -1,4 +1,4 @@
-import { OfflineSigner } from "@cosmjs/proto-signing";
+import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import {
   Window as KeplrWindow,
   OfflineAminoSigner as KeplrOfflineAminoSigner,
@@ -21,38 +21,35 @@ export const getKeplr = () => {
 export const convertKeplrSigner = (
   keplrSigner: KeplrOfflineAminoSigner | KeplrOfflineDirectSigner,
 ): OfflineSigner => {
-  const signer: OfflineSigner = {
-    getAccounts: async () => {
-      return keplrSigner.getAccounts();
-    },
-    signDirect: async (signerAddress, signDoc) => {
-      if (!("signDirect" in keplrSigner)) {
-        throw new Error("signDirect not implemented");
-      }
-      const convertedSignDoc: KeplrSignDoc = {
-        ...signDoc,
-        accountNumber: Long.fromString(signDoc.accountNumber.toString()),
-      };
-      const response = await keplrSigner.signDirect(
-        signerAddress,
-        convertedSignDoc,
-      );
-      return {
-        ...response,
-        signed: {
-          ...response.signed,
-          accountNumber: BigInt(response.signed.accountNumber.toString()),
-        },
-      };
-    },
-    signAmino: async (signerAddress, tx) => {
-      if (!("signAmino" in keplrSigner)) {
-        throw new Error("signAmino not implemented");
-      }
-      return keplrSigner.signAmino(signerAddress, tx);
-    },
-  };
-  return signer;
+  if ("signDirect" in keplrSigner) {
+    const signer: OfflineDirectSigner = {
+      getAccounts: async () => {
+        return keplrSigner.getAccounts();
+      },
+      signDirect: async (signerAddress, signDoc) => {
+        const convertedSignDoc: KeplrSignDoc = {
+          ...signDoc,
+          accountNumber: Long.fromString(signDoc.accountNumber.toString()),
+        };
+        const response = await keplrSigner.signDirect(
+          signerAddress,
+          convertedSignDoc,
+        );
+        return {
+          ...response,
+          signed: {
+            ...response.signed,
+            accountNumber: BigInt(response.signed.accountNumber.toString()),
+          },
+        };
+      },
+    };
+    return signer;
+  }
+  if ("signAmino" in keplrSigner) {
+    return keplrSigner;
+  }
+  throw new Error("unexpected signer shape");
 };
 
 export const keplrSignArbitrary = async (
