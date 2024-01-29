@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { useSelectedNetworkInfo } from "./../../hooks/useSelectedNetwork";
-import { Wallet } from "./wallet";
-import { NetworkKind, getUserId } from "../../networks";
-import { teritoriNetwork } from "../../networks/teritori";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
+import { NetworkKind, getUserId } from "../../../networks";
+import { teritoriNetwork } from "../../../networks/teritori";
 import {
   selectIsLeapConnected,
   selectSelectedWalletId,
   setIsLeapConnected,
-} from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
-import { WalletProvider } from "../../utils/walletProvider";
+} from "../../../store/slices/settings";
+import { useAppDispatch } from "../../../store/store";
+import { WalletProvider } from "../../../utils/walletProvider";
+import { Wallet } from "../wallet";
 
 type UseLeapResult = [true, boolean, Wallet[]] | [false, boolean, undefined];
 

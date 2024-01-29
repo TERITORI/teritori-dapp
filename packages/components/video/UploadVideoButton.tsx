@@ -2,7 +2,6 @@ import React, { FC } from "react";
 import { TextStyle, TouchableOpacity, ViewStyle } from "react-native";
 
 import Upload from "../../../assets/icons/upload_alt.svg";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutral30, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -13,14 +12,8 @@ import { SpacerRow } from "../spacer";
 export const UploadVideoButton: FC<{
   onPress: () => void;
 }> = ({ onPress }) => {
-  const wallet = useSelectedWallet();
-
   return (
-    <TouchableOpacity
-      style={[buttonContainerStyle, { opacity: !wallet?.connected ? 0.5 : 1 }]}
-      onPress={onPress}
-      disabled={!wallet?.connected}
-    >
+    <TouchableOpacity style={buttonContainerStyle} onPress={onPress}>
       <SVG source={Upload} width={16} height={16} />
       <SpacerRow size={1} />
       <BrandText style={buttonTextStyle}>Publish as creator</BrandText>

@@ -51,7 +51,9 @@ export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
             <BrandText style={{ marginRight: 20, fontSize: 20 }}>
               Wallet
             </BrandText>
-            {selectedWallet && <WalletItem item={selectedWallet} zIndex={10} />}
+            {!!selectedWallet && (
+              <WalletItem item={selectedWallet} zIndex={10} />
+            )}
           </View>
           <MyNFTs />
         </View>

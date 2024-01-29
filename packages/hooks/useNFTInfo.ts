@@ -258,7 +258,7 @@ const getTeritoriBunkerNFTInfo = async (
   userId: string | undefined,
   breedingConfig: BreedingConfigResponse | null | undefined,
 ) => {
-  if (!network.vaultContractAddress || !network.riotContractAddressGen1) {
+  if (!network.vaultContractAddress) {
     throw new Error("network not supported");
   }
 
@@ -274,7 +274,10 @@ const getTeritoriBunkerNFTInfo = async (
 
   let breedingsAvailable;
 
-  if (breedingConfig?.parent_contract_addr === minterConfig.nft_addr) {
+  if (
+    network.riotContractAddressGen1 &&
+    breedingConfig?.parent_contract_addr === minterConfig.nft_addr
+  ) {
     const breedingClient = new TeritoriBreedingQueryClient(
       cosmwasmClient,
       network.riotContractAddressGen1,

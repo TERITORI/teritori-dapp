@@ -12,10 +12,12 @@ import { useSelector } from "react-redux";
 import Add from "../../../assets/icons/add-primary.svg";
 import Img from "../../../assets/icons/img.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useWalletControl } from "../../context/WalletControlProvider";
 import { useFeedPosting } from "../../hooks/feed/useFeedPosting";
 import { useIpfs } from "../../hooks/useIpfs";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkFeature } from "../../networks";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
 import { generateIpfsKey, web3ToWeb2URI } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES, VIDEO_MIME_TYPES } from "../../utils/mime";
@@ -48,7 +50,6 @@ import {
   PostCategory,
   SocialFeedVideoMetadata,
 } from "../socialFeed/NewsFeed/NewsFeed.type";
-import { NotEnoughFundModal } from "../socialFeed/NewsFeed/NotEnoughFundModal";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
 const UPLOAD_VIDEO_MODAL_WIDTH = 590;
@@ -62,25 +63,33 @@ export const UploadVideoModal: FC<{
   const selectedNetwork = useSelectedNetworkInfo();
   const selectedWallet = useSelectedWallet();
   const userId = selectedWallet?.userId || "";
-  const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const { uploadFilesToPinata, ipfsUploadProgress } = useIpfs();
-  const { makePost, canPayForPost, isProcessing, step, setStep } =
-    useFeedPosting(selectedNetwork?.id, userId, PostCategory.Video, () => {
-      // Timeout here to let a few time to see the progress bar "100% Done"
-      setTimeout(() => {
-        setIsUploadLoading(false);
-        setLocalImageFile(undefined);
-        setLocalVideoFile(undefined);
-        setDescription("");
-        setTitle("");
-        setIsProgressBarShown(false);
-        onClose();
-      }, 1000);
-    });
+  const postCategory = PostCategory.Video;
+  const {
+    makePost,
+    canPayForPost,
+    isProcessing,
+    publishingFee,
+    step,
+    setStep,
+  } = useFeedPosting(selectedNetwork?.id, userId, postCategory, () => {
+    // Timeout here to let a few time to see the progress bar "100% Done"
+    setTimeout(() => {
+      setIsUploadLoading(false);
+      setLocalImageFile(undefined);
+      setLocalVideoFile(undefined);
+      setDescription("");
+      setTitle("");
+      setIsProgressBarShown(false);
+      onClose();
+    }, 1000);
+  });
   const [isThumbnailContainerHovered, setThumbnailContainerHovered] =
     useState(false);
   const [isUploadLoading, setIsUploadLoading] = useState(false);
   const [isProgressBarShown, setIsProgressBarShown] = useState(false);
+  const { showNotEnoughFundsModal, showConnectWalletModal } =
+    useWalletControl();
   const isLoading = isUploadLoading || isProcessing;
   const userIPFSKey = useSelector(selectNFTStorageAPI);
   const [title, setTitle] = useState("");
@@ -89,11 +98,6 @@ export const UploadVideoModal: FC<{
   const [localImageFile, setLocalImageFile] = useState<LocalFileData>();
 
   const processCreateVideoPost = async (video: SocialFeedVideoMetadata) => {
-    if (!canPayForPost) {
-      setNotEnoughFundModal(true);
-      return;
-    }
-
     // we need this hack until the createdAt field is properly provided by the contract
     const videoWithCreationDate = {
       ...video,
@@ -114,15 +118,29 @@ export const UploadVideoModal: FC<{
   };
 
   const onPressUpload = async () => {
-    setIsUploadLoading(true);
-    setIsProgressBarShown(true);
-    if (
-      !selectedWallet?.connected ||
-      !selectedWallet.address ||
-      !localVideoFile
-    ) {
+    const action = "Publish a Video";
+    if (!selectedWallet?.address || !selectedWallet.connected) {
+      showConnectWalletModal({
+        forceNetworkFeature: NetworkFeature.SocialFeed,
+        action,
+      });
       return;
     }
+    if (!canPayForPost) {
+      showNotEnoughFundsModal({
+        action,
+        cost: {
+          amount: publishingFee.toString(),
+          denom: publishingFee.denom || "",
+        },
+      });
+      return;
+    }
+    if (!localVideoFile) {
+      return;
+    }
+    setIsUploadLoading(true);
+    setIsProgressBarShown(true);
     setStep(feedPostingStep(FeedPostingStepId.GENERATING_KEY));
 
     const pinataJWTKey =
@@ -133,6 +151,7 @@ export const UploadVideoModal: FC<{
         title: "File upload failed",
         message: "No Pinata JWT",
       });
+      setIsUploadLoading(false);
       return;
     }
     setStep(feedPostingStep(FeedPostingStepId.UPLOADING_FILES));
@@ -153,6 +172,7 @@ export const UploadVideoModal: FC<{
         title: "File upload failed",
         message: "Fail to pin to IPFS, please try to Publish again",
       });
+      setIsUploadLoading(false);
       return;
     }
     const video: SocialFeedVideoMetadata = {
@@ -323,7 +343,7 @@ export const UploadVideoModal: FC<{
       <FeedFeeText
         networkId={selectedNetwork?.id}
         userId={selectedWallet?.userId}
-        category={PostCategory.Video}
+        category={postCategory}
         style={{ marginTop: layout.spacing_x2 }}
       />
 
@@ -354,13 +374,6 @@ export const UploadVideoModal: FC<{
           />
           <SpacerColumn size={2} />
         </>
-      )}
-
-      {isNotEnoughFundModal && (
-        <NotEnoughFundModal
-          visible
-          onClose={() => setNotEnoughFundModal(false)}
-        />
       )}
     </ModalBase>
   );

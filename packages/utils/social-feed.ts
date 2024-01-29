@@ -36,6 +36,8 @@ export const BASE_POST: Post = {
   tipAmount: 0,
   reactions: [],
 };
+export const LIKE_EMOJI = "👍";
+export const DISLIKE_EMOJI = "👎";
 
 export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
   const hasIcon = reactions.find((r) => r.icon === icon);

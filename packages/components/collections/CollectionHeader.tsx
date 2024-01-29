@@ -1,4 +1,4 @@
-import Clipboard from "@react-native-clipboard/clipboard";
+import * as Clipboard from "expo-clipboard";
 import React from "react";
 import { View, Platform, Linking } from "react-native";
 
@@ -78,7 +78,7 @@ export const CollectionHeader: React.FC<{
     }
 
     try {
-      Clipboard.setString(currentUrl || "");
+      Clipboard.setStringAsync(currentUrl || "");
       setToastSuccess({
         title: "URL Copied!",
         message: "",
@@ -232,7 +232,7 @@ export const CollectionHeader: React.FC<{
               flexDirection: "row",
               flexWrap: "wrap",
               justifyContent: isMobile ? "center" : "flex-start",
-              margin: layout.spacing_x2_5,
+              marginVertical: layout.spacing_x2_5,
               alignItems: "center",
               flex: 1,
             }}

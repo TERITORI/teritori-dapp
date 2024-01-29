@@ -49,10 +49,16 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
   }, [swapNetworkConnected, isScreenFocused]);
 
   return (
-    <ScreenContainer headerChildren={<BrandText>Swap</BrandText>}>
+    <ScreenContainer
+      headerChildren={<BrandText>Swap</BrandText>}
+      forceNetworkFeatures={[NetworkFeature.Swap]}
+    >
       <View style={styles.mainContainer}>
         {!selectedWallet?.address ? (
-          <MainConnectWalletButton style={{ alignSelf: "center" }} />
+          <MainConnectWalletButton
+            style={{ alignSelf: "center" }}
+            forceNetworkFeature={NetworkFeature.Swap}
+          />
         ) : swapNetworkConnected && isScreenFocused ? (
           <>
             <Suspense fallback={<BrandText>Loading...</BrandText>}>

@@ -1,3 +1,4 @@
+import { ContentState, EditorState } from "draft-js";
 import React, { useRef } from "react";
 import {
   View,
@@ -69,4 +70,19 @@ export const RichText: React.FC<RichTextProps> = ({
       )}
     </View>
   );
+};
+
+export const isArticleHTMLNeedsTruncate = (html: string, isPreview = false) => {
+  return false;
+};
+
+export const getTruncatedArticleHTML = (html: string) => {
+  return {
+    truncatedState: ContentState,
+    truncatedHtml: html,
+  };
+};
+
+export const createStateFromHTML = (html: string) => {
+  return new EditorState();
 };

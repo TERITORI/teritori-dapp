@@ -1,6 +1,9 @@
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
+import { Platform } from "react-native";
 
+import { Sidebar } from "./Sidebar";
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { CoreDAOScreen } from "../../screens/CoreDAO/CoreDAOScreen";
 import { DAppStoreScreen } from "../../screens/DAppStore/DAppStoreScreen";
@@ -51,30 +54,58 @@ import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPub
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
+import { neutral00 } from "../../utils/style/colors";
+import { fullSidebarWidth } from "../../utils/style/layout";
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+// Drawer navigator is broken on web
+// FIXME: upgrade to expo-router
+
+const getNav = () => {
+  if (Platform.OS === "web") {
+    return {
+      Nav: createNativeStackNavigator<RootStackParamList>(),
+      navigatorScreenOptions: {},
+    };
+  } else {
+    return {
+      Nav: createDrawerNavigator<RootStackParamList>(),
+      navigatorScreenOptions: {
+        drawerStyle: {
+          backgroundColor: neutral00,
+          width: fullSidebarWidth,
+        },
+      },
+    };
+  }
+};
+
+const { Nav, navigatorScreenOptions } = getNav();
+
 const screenTitle = (title: string) => "Teritori - " + title;
 
 export const Navigator: React.FC = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
+    <Nav.Navigator
+      initialRouteName="Home"
+      drawerContent={() => (Platform.OS === "web" ? null : <Sidebar />)}
+      screenOptions={navigatorScreenOptions as any} // FIXME: upgrade to expo-router
+    >
+      <Nav.Screen
         name="Home"
         component={HomeScreen}
         options={{ header: () => null, title: screenTitle("Home") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="MyCollection"
         component={MyCollectionScreen}
         options={{ header: () => null, title: screenTitle("My Collection") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="RiotGame"
         component={RiotGameScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Guardians") }}
       />
-
-      <Stack.Screen
+      <Nav.Screen
         name="Marketplace"
         component={MarketplaceScreen}
         options={{
@@ -82,29 +113,29 @@ export const Navigator: React.FC = () => {
           title: screenTitle("NFT Marketplace - Popular Collections"),
         }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="Governance"
         component={GovernanceScreen}
         options={{ header: () => null, title: screenTitle("Governance") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="UserPublicProfile"
         component={UserPublicProfileScreen}
         options={{ header: () => null }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="RiotersFooter"
         component={RiotersFooterScreen}
         options={{ header: () => null, title: screenTitle("Rioters Footer") }}
       />
 
       {/* === Riot Game */}
-      <Stack.Screen
+      <Nav.Screen
         name="RiotGameEnroll"
         component={RiotGameEnrollScreen}
         options={{ header: () => null, title: screenTitle("Riot Game Enroll") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="RiotGameFight"
         component={RiotGameFightScreen}
         options={{
@@ -112,7 +143,7 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Riot Game Fight"),
         }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="RiotGameBreeding"
         component={RiotGameBreedingScreen}
         options={{
@@ -120,7 +151,7 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Riot Game Breeding"),
         }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="RiotGameMarketplace"
         component={RiotGameMarketplaceScreen}
         options={{
@@ -128,7 +159,7 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Riot Game Marketplace"),
         }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="RiotGameMemories"
         component={RiotGameMemoriesScreen}
         options={{
@@ -136,7 +167,7 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Riot Game Memories"),
         }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="RiotGameLeaderboard"
         component={RiotGameLeaderboardScreen}
         options={{
@@ -144,7 +175,7 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Riot Game Leaderboard"),
         }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="RiotGameInventory"
         component={RiotGameInventoryScreen}
         options={{
@@ -154,12 +185,12 @@ export const Navigator: React.FC = () => {
       />
 
       {/* ==== Wallet Manager */}
-      <Stack.Screen
+      <Nav.Screen
         name="WalletManager"
         component={WalletManagerScreen}
         options={{ header: () => null, title: screenTitle("Wallet Manager") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="WalletManagerWallets"
         component={WalletManagerWalletsScreen}
         options={{
@@ -167,7 +198,7 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Wallet Manager (Wallets)"),
         }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="WalletManagerChains"
         component={WalletManagerWalletsScreen}
         options={{
@@ -177,12 +208,12 @@ export const Navigator: React.FC = () => {
       />
 
       {/* ==== Launchpad */}
-      <Stack.Screen
+      <Nav.Screen
         name="Launchpad"
         component={LaunchpadScreen}
         options={{ header: () => null, title: screenTitle("Launchpad") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="LaunchpadApply"
         component={LaunchpadApplyScreen}
         options={{
@@ -190,14 +221,14 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Launchpad (Apply)"),
         }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="MintCollection"
         component={MintCollectionScreen}
         options={{ header: () => null, title: screenTitle("Mint Collection") }}
       />
 
       {/* ==== Multisig */}
-      <Stack.Screen
+      <Nav.Screen
         name="Multisig"
         component={MultisigScreen}
         options={{
@@ -205,7 +236,7 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Multisig Wallets"),
         }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="MultisigCreate"
         component={MultisigCreateScreen}
         options={{
@@ -213,7 +244,7 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Create Multisig Wallet"),
         }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="MultisigWalletDashboard"
         component={MultisigWalletDashboardScreen}
         options={{
@@ -224,7 +255,7 @@ export const Navigator: React.FC = () => {
 
       {/* ==== Organization */}
 
-      <Stack.Screen
+      <Nav.Screen
         name="OrganizationDeployer"
         component={OrganizationDeployerScreen}
         options={{
@@ -232,7 +263,7 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Organization Deployer"),
         }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="Organizations"
         component={OrganizationsScreen}
         options={{
@@ -242,13 +273,13 @@ export const Navigator: React.FC = () => {
       />
 
       {/* ==== Projects program */}
-      <Stack.Screen
+      <Nav.Screen
         name="Projects"
         component={ProjectsScreen}
         options={{ header: () => null, title: screenTitle("Projects Program") }}
       />
 
-      <Stack.Screen
+      <Nav.Screen
         name="ProjectsDetail"
         component={ProjectsDetailScreen}
         options={{
@@ -257,7 +288,7 @@ export const Navigator: React.FC = () => {
         }}
       />
 
-      <Stack.Screen
+      <Nav.Screen
         name="ProjectsManager"
         component={ProjectsManagerScreen}
         options={{
@@ -266,7 +297,7 @@ export const Navigator: React.FC = () => {
         }}
       />
 
-      <Stack.Screen
+      <Nav.Screen
         name="ProjectsPayment"
         component={ProjectsPaymentScreen}
         options={{
@@ -275,7 +306,7 @@ export const Navigator: React.FC = () => {
         }}
       />
 
-      <Stack.Screen
+      <Nav.Screen
         name="ProjectsCompleteMilestone"
         component={ProjectsCompleteMilestoneScreen}
         options={{
@@ -284,7 +315,7 @@ export const Navigator: React.FC = () => {
         }}
       />
 
-      <Stack.Screen
+      <Nav.Screen
         name="ProjectsMakeRequest"
         component={ProjectsMakeRequestScreen}
         options={{
@@ -294,94 +325,94 @@ export const Navigator: React.FC = () => {
       />
 
       {/* ==== Teritori Name Service*/}
-      <Stack.Screen
+      <Nav.Screen
         name="TNSHome"
         component={TNSHomeScreen}
         options={{ header: () => null, title: screenTitle("Name Service") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="Collection"
         component={CollectionScreen}
         options={{ header: () => null, title: screenTitle("Collection") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="NFTDetail"
         component={NFTDetailScreen}
         options={{ header: () => null, title: screenTitle("NFT") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="Staking"
         component={StakeScreen}
         options={{ header: () => null, title: screenTitle("Staking") }}
       />
       {/* ==== Swap*/}
-      <Stack.Screen
+      <Nav.Screen
         name="Swap"
         component={SwapScreen}
         options={{ header: () => null, title: screenTitle("Swap") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="ComingSoon"
         component={ComingSoonScreen}
         options={{ header: () => null }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="CollectionTools"
         component={CollectionToolsScreen}
         options={{ header: () => null }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="Settings"
         component={SettingsScreen}
         options={{ header: () => null }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="FeedNewArticle"
         component={FeedNewArticleScreen}
         options={{ header: () => null, title: screenTitle("New Article") }}
       />
 
-      <Stack.Screen
+      <Nav.Screen
         name="FeedPostView"
         component={FeedPostViewScreen}
         options={{ header: () => null, title: "Teritori" }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="Feed"
         component={FeedScreen}
         options={{ header: () => null, title: screenTitle("Feed") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="HashtagFeed"
         component={HashtagFeedScreen}
         options={{ header: () => null, title: screenTitle("") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="ToriPunks"
         component={ToriPunks}
         options={{ header: () => null, title: screenTitle("ToriPunks") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="DAppStore"
         component={DAppStoreScreen}
         options={{ header: () => null, title: screenTitle("dApp Store") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="CoreDAO"
         component={CoreDAOScreen}
         options={{ header: () => null, title: screenTitle("Core DAO") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="Metrics"
         component={MetricsScreen}
         options={{ header: () => null, title: screenTitle("Metrics") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="Message"
         component={MessageScreen}
         options={{ header: () => null, title: screenTitle("Message") }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="ChatSection"
         component={ChatSectionScreen}
         options={{
@@ -389,7 +420,7 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Chat Message"),
         }}
       />
-      <Stack.Screen
+      <Nav.Screen
         name="FriendshipManager"
         component={FriendshipManagerScreen}
         options={{
@@ -397,6 +428,6 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Friends Add"),
         }}
       />
-    </Stack.Navigator>
+    </Nav.Navigator>
   );
 };

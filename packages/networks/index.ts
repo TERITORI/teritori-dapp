@@ -13,16 +13,8 @@ import {
   GasPrice,
   defaultRegistryTypes,
   AminoTypes,
-  AminoConverters,
-  createAuthzAminoConverters,
-  createBankAminoConverters,
-  createDistributionAminoConverters,
-  createFeegrantAminoConverters,
-  createGovAminoConverters,
-  createIbcAminoConverters,
-  createStakingAminoConverters,
-  createVestingAminoConverters,
   StargateClient,
+  createDefaultAminoConverters,
 } from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 import { bech32 } from "bech32";
@@ -38,6 +30,7 @@ import { gnoTest3Network } from "./gno-test3";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
 import { teritoriNetwork } from "./teritori";
+import { teritoriLocalnetNetwork } from "./teritori-localnet";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import {
   CosmosNetworkInfo,
@@ -51,7 +44,7 @@ import {
   teritoriAminoConverters,
   teritoriProtoRegistry,
 } from "../api/teritori-chain";
-import { getKeplr } from "../utils/keplr";
+import { convertKeplrSigner, getKeplr } from "../utils/keplr";
 
 export * from "./types";
 
@@ -61,6 +54,7 @@ const packageNetworks = [
   teritoriNetwork,
   cosmosNetwork,
   teritoriTestnetNetwork,
+  teritoriLocalnetNetwork,
   cosmosThetaNetwork,
   ethereumGoerliNetwork,
   ethereumNetwork,
@@ -98,20 +92,6 @@ export const cosmosTypesRegistry = new Registry([
   ...wasmTypes,
   ...teritoriProtoRegistry,
 ]);
-
-// FIXME: upgrade stargate since it exposes this function in new versions
-function createDefaultAminoConverters(): AminoConverters {
-  return {
-    ...createAuthzAminoConverters(),
-    ...createBankAminoConverters(),
-    ...createDistributionAminoConverters(),
-    ...createGovAminoConverters(),
-    ...createStakingAminoConverters(""),
-    ...createIbcAminoConverters(),
-    ...createFeegrantAminoConverters(),
-    ...createVestingAminoConverters(),
-  };
-}
 
 const cosmosAminoTypes = new AminoTypes({
   ...createDefaultAminoConverters(),
@@ -437,7 +417,6 @@ export const keplrChainInfoFromNetworkInfo = (
     },
     currencies: [stakeCurrency],
     feeCurrencies: [stakeCurrency],
-    gasPriceStep: network.gasPriceStep,
     features: network.cosmosFeatures,
   };
 };
@@ -467,7 +446,9 @@ export const getKeplrSigner = async (networkId: string) => {
 
   await keplr.enable(network.chainId);
 
-  return keplr.getOfflineSignerAuto(network.chainId);
+  const keplrSigner = await keplr.getOfflineSignerAuto(network.chainId);
+
+  return convertKeplrSigner(keplrSigner);
 };
 
 const getKeplrOnlyAminoSigner = async (networkId: string) => {

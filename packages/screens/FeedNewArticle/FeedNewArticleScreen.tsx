@@ -24,11 +24,11 @@ import {
   PostCategory,
 } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { generateArticleMetadata } from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
-import { NotEnoughFundModal } from "../../components/socialFeed/NewsFeed/NotEnoughFundModal";
 import { RichText } from "../../components/socialFeed/RichText";
 import { PublishValues } from "../../components/socialFeed/RichText/RichText.type";
 import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useWalletControl } from "../../context/WalletControlProvider";
 import { useFeedPosting } from "../../hooks/feed/useFeedPosting";
 import { useIpfs } from "../../hooks/useIpfs";
 import { useIsMobile } from "../../hooks/useIsMobile";
@@ -65,18 +65,19 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const userId = wallet?.userId;
   const userIPFSKey = useSelector(selectNFTStorageAPI);
   const { uploadFilesToPinata, ipfsUploadProgress } = useIpfs();
-  const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [isUploadLoading, setIsUploadLoading] = useState(false);
   const [isProgressBarShown, setIsProgressBarShown] = useState(false);
+  const postCategory = PostCategory.Article;
   const {
     makePost,
     isProcessing,
     canPayForPost,
     freePostCount,
     prettyPublishingFee,
+    publishingFee,
     step,
     setStep,
-  } = useFeedPosting(selectedNetworkId, userId, PostCategory.Article, () => {
+  } = useFeedPosting(selectedNetworkId, userId, postCategory, () => {
     // Timeout here to let a few time to see the progress bar "100% Done"
     setTimeout(() => {
       setIsUploadLoading(false);
@@ -86,6 +87,9 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       reset();
     }, 1000);
   });
+  const forceNetworkFeature = NetworkFeature.SocialFeed;
+  const { showNotEnoughFundsModal, showConnectWalletModal } =
+    useWalletControl();
   const isLoading = isUploadLoading || isProcessing;
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
@@ -119,12 +123,27 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const navigateBack = () => navigation.navigate("Feed");
 
   const onPublish = async (values: PublishValues) => {
+    const action = "Publish an Article";
+    if (!wallet?.address || !wallet.connected) {
+      showConnectWalletModal({
+        forceNetworkFeature,
+        action,
+      });
+      return;
+    }
+    if (!canPayForPost) {
+      showNotEnoughFundsModal({
+        action,
+        cost: {
+          amount: publishingFee.amount.toString(),
+          denom: publishingFee.denom || "",
+        },
+      });
+      return;
+    }
     setIsUploadLoading(true);
     setIsProgressBarShown(true);
     try {
-      if (!canPayForPost) {
-        return setNotEnoughFundModal(true);
-      }
       const localFiles = [
         ...(formValues.files || []),
         ...values.images,
@@ -160,6 +179,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           title: "File upload failed",
           message: "Fail to pin to IPFS, please try to Publish again",
         });
+        setIsUploadLoading(false);
         return;
       }
 
@@ -185,6 +205,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         hashtags: values.hashtags,
         message,
       });
+
       await makePost(JSON.stringify(metadata));
     } catch (err) {
       console.error("post submit error", err);
@@ -215,7 +236,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
 
   return (
     <ScreenContainer
-      forceNetworkFeatures={[NetworkFeature.SocialFeed]}
+      forceNetworkFeatures={[forceNetworkFeature]}
       responsive
       mobileTitle="NEW ARTICLE"
       fullWidth
@@ -224,11 +245,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       footerChildren
       noScroll
     >
-      <NotEnoughFundModal
-        onClose={() => setNotEnoughFundModal(false)}
-        visible={isNotEnoughFundModal}
-      />
-
       <ScrollView
         ref={scrollViewRef}
         style={{

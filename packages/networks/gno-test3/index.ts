@@ -5,7 +5,7 @@ export const gnoTest3Network: GnoNetworkInfo = {
   id: "gno-test3",
   kind: NetworkKind.Gno,
   displayName: "Gno Test3",
-  icon: "icons/networks/gno.svg",
+  icon: "gno.svg",
   features: [],
   currencies: gnoCurrencies,
   stakeCurrency: "ugnot",

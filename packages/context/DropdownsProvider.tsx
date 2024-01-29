@@ -6,7 +6,12 @@ import React, {
   useContext,
   useState,
 } from "react";
-import { GestureResponderEvent, Pressable, StyleSheet } from "react-native";
+import {
+  GestureResponderEvent,
+  Pressable,
+  StyleSheet,
+  ViewStyle,
+} from "react-native";
 
 export interface DefaultValue {
   onPressDropdownButton: (dropdownRef: RefObject<any>) => void;
@@ -60,6 +65,7 @@ export const DropdownsContextProvider: React.FC<{ children: ReactNode }> = ({
       if (
         openedDropdownRef &&
         openedDropdownRef.current &&
+        openedDropdownRef.current.contains &&
         !openedDropdownRef.current.contains(e.target)
       ) {
         closeOpenedDropdown();
@@ -87,7 +93,7 @@ export const DropdownsContextProvider: React.FC<{ children: ReactNode }> = ({
 // FIXME: remove StyleSheet.create
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
-  pressable: { height: "100%", width: "100%", cursor: "unset" },
+  pressable: { height: "100%", width: "100%", cursor: "unset" } as ViewStyle,
 });
 
 export const useDropdowns = () => useContext(DropdownsContext);

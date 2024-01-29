@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     color: secondaryColor,
     fontFamily: "Exo_600SemiBold",
     outlineStyle: "none",
-  },
+  } as TextStyle,
   innerContainer: {
     flexDirection: "row",
     alignItems: "center",

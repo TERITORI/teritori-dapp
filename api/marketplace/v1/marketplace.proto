@@ -130,6 +130,7 @@ message Activity {
   string buyer_id = 10;
   string seller_id = 11;
   double usd_price = 12;
+  string target_id = 13;
 }
 
 message Quest {
