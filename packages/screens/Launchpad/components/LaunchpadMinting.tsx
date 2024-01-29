@@ -6,7 +6,8 @@ import { ConfigureRoyaltyDetails } from "./ConfigureRoyaltyDetails";
 import { ExistingWhitelist } from "./ExistingWhitelist";
 import { NavBar } from "./NavBar";
 import { NewWhitelist } from "./NewWhitelist";
-import { TextInputLaunchpad } from "./inputs/TextInputLaunchpad";
+import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
+import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadRequiredSublabel";
 import { BrandText } from "../../../components/BrandText";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutral55, neutral77 } from "../../../utils/style/colors";
@@ -72,16 +73,14 @@ export const LaunchpadMinting: React.FC = () => {
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpad<NewCollectionMintFormValues>
-          required
+        <TextInputLaunchpadRequired<NewCollectionMintFormValues>
           label="Number of Tokens "
           placeHolder="0"
           name="token"
           control={control}
         />
 
-        <TextInputLaunchpad<NewCollectionMintFormValues>
-          required
+        <TextInputLaunchpadRequiredSublabel<NewCollectionMintFormValues>
           label="Unit Price"
           sublabel={
             <View>
@@ -95,8 +94,7 @@ export const LaunchpadMinting: React.FC = () => {
           control={control}
         />
 
-        <TextInputLaunchpad<NewCollectionMintFormValues>
-          required
+        <TextInputLaunchpadRequiredSublabel<NewCollectionMintFormValues>
           label="Per Address Limit "
           sublabel={
             <View>
@@ -110,8 +108,7 @@ export const LaunchpadMinting: React.FC = () => {
           control={control}
         />
 
-        <TextInputLaunchpad<NewCollectionMintFormValues>
-          required
+        <TextInputLaunchpadRequired<NewCollectionMintFormValues>
           label="Start Time "
           placeHolder="--.--.---- --:--"
           name="startTime"

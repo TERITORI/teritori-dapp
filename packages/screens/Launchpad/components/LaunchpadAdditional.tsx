@@ -3,7 +3,8 @@ import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { SelectionDropdown } from "./dropdowns/SelectionDropdown";
-import { TextInputLaunchpad } from "./inputs/TextInputLaunchpad";
+import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
+import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadRequiredSublabel";
 import { BrandText } from "../../../components/BrandText";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutral55, neutral77 } from "../../../utils/style/colors";
@@ -42,8 +43,7 @@ export const LaunchpadAdditional: React.FC = () => {
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpad<NewCollectionAdditionalFormValues>
-          required
+        <TextInputLaunchpadRequiredSublabel<NewCollectionAdditionalFormValues>
           label="Please describe your artwork: "
           sublabel={
             <View>
@@ -72,16 +72,14 @@ export const LaunchpadAdditional: React.FC = () => {
           label="Is your collection ready for the mint?"
         />
 
-        <TextInputLaunchpad<NewCollectionAdditionalFormValues>
-          required
+        <TextInputLaunchpadRequired<NewCollectionAdditionalFormValues>
           label="What is your expected collection supply?"
           placeHolder="Type here..."
           name="collectionSupply"
           control={control}
         />
 
-        <TextInputLaunchpad<NewCollectionAdditionalFormValues>
-          required
+        <TextInputLaunchpadRequiredSublabel<NewCollectionAdditionalFormValues>
           label="What is your expected public sale mint price?"
           sublabel={
             <View>
@@ -95,8 +93,7 @@ export const LaunchpadAdditional: React.FC = () => {
           control={control}
         />
 
-        <TextInputLaunchpad<NewCollectionAdditionalFormValues>
-          required
+        <TextInputLaunchpadRequired<NewCollectionAdditionalFormValues>
           label="What is your expected mint date? "
           placeHolder="dd.mm.yyyy | hh:mm PM"
           name="mintDate"
@@ -121,8 +118,7 @@ export const LaunchpadAdditional: React.FC = () => {
           style={{ zIndex: 1 }}
         />
 
-        <TextInputLaunchpad<NewCollectionAdditionalFormValues>
-          required
+        <TextInputLaunchpadRequired<NewCollectionAdditionalFormValues>
           label="We'd love to offer TeritoriDAO members 10% of your whitelist supply if your project is willing. Please let us know how many whitelist spots you'd be willing to allocate our DAO: "
           placeHolder="0"
           name="whitelistSpotPercentage"

@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { TextInputLaunchpad } from "./inputs/TextInputLaunchpad";
+import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadRequiredSublabel";
 import { BrandText } from "../../../components/BrandText";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutral55, neutral77 } from "../../../utils/style/colors";
@@ -36,8 +36,7 @@ export const LaunchpadTeamandInvestment: React.FC = () => {
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpad<TeamandInvestmentFormValues>
-          required
+        <TextInputLaunchpadRequiredSublabel<TeamandInvestmentFormValues>
           label="Describe your team: "
           sublabel={
             <View>
@@ -62,10 +61,10 @@ export const LaunchpadTeamandInvestment: React.FC = () => {
           placeHolder="Describe here..."
           name="teamDesciption"
           control={control}
-          multiline
         />
 
-        <TextInputLaunchpad<TeamandInvestmentFormValues>
+        <TextInputLaunchpadRequiredSublabel<TeamandInvestmentFormValues>
+          required={false}
           label="Team links and attachments "
           sublabel={
             <View>
@@ -80,8 +79,7 @@ export const LaunchpadTeamandInvestment: React.FC = () => {
           control={control}
         />
 
-        <TextInputLaunchpad<TeamandInvestmentFormValues>
-          required
+        <TextInputLaunchpadRequiredSublabel<TeamandInvestmentFormValues>
           label="Do you have any partners on the project? "
           sublabel={
             <View>
@@ -95,8 +93,7 @@ export const LaunchpadTeamandInvestment: React.FC = () => {
           control={control}
         />
 
-        <TextInputLaunchpad<TeamandInvestmentFormValues>
-          required
+        <TextInputLaunchpadRequiredSublabel<TeamandInvestmentFormValues>
           label="What have you invested in this project so far? "
           sublabel={
             <View>
@@ -119,7 +116,8 @@ export const LaunchpadTeamandInvestment: React.FC = () => {
           control={control}
         />
 
-        <TextInputLaunchpad<TeamandInvestmentFormValues>
+        <TextInputLaunchpadRequiredSublabel<TeamandInvestmentFormValues>
+          required={false}
           label="Investment links and attachments "
           sublabel={
             <View>
@@ -134,7 +132,7 @@ export const LaunchpadTeamandInvestment: React.FC = () => {
           control={control}
         />
 
-        <TextInputLaunchpad<TeamandInvestmentFormValues>
+        <TextInputLaunchpadRequiredSublabel<TeamandInvestmentFormValues>
           label="Whitepaper and roadmap: "
           sublabel={
             <View>
@@ -147,7 +145,6 @@ export const LaunchpadTeamandInvestment: React.FC = () => {
           placeHolder="Type here..."
           name="roadmap"
           control={control}
-          required
         />
       </View>
     </View>

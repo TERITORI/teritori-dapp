@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { SafeAreaView, View } from "react-native";
 
-import { TextInputLaunchpad } from "./inputs/TextInputLaunchpad";
+import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
 import { MetadataUpdateModal } from "./modals/MetadataUpdateModal";
 import { SelectedFilesPreview } from "../../../components/FilePreview/SelectedFilesPreview/SelectedFilesPreview";
 import { SelectFileUploader } from "../../../components/selectFileUploader";
@@ -58,8 +58,7 @@ export const AssetsTab: React.FC = () => {
             }}
           >
             <View>
-              <TextInputLaunchpad<NewCollectionAssetsFormValues>
-                required
+              <TextInputLaunchpadRequired<NewCollectionAssetsFormValues>
                 label="NFT.Storage API Key"
                 placeHolder="My Awesome Collection"
                 name="nftApiKey"
