@@ -4,7 +4,8 @@ import { View } from "react-native";
 
 import { MultipleSelectionDropdown } from "./dropdowns/MultipleSelectionDropdown";
 import { SelectionDropdown } from "./dropdowns/SelectionDropdown";
-import { TextInputLaunchpad } from "./inputs/TextInputLaunchpad";
+import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
+import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadRequiredSublabel";
 import { BrandText } from "../../../components/BrandText";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutral55, neutral77 } from "../../../utils/style/colors";
@@ -47,14 +48,15 @@ export const LaunchpadDetails: React.FC = () => {
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpad<NewCollectionDetailsFormValues>
+        <TextInputLaunchpadRequired<NewCollectionDetailsFormValues>
           label="Website Link"
           placeHolder="https://website..."
           name="websiteLink"
           control={control}
+          required={false}
         />
 
-        <TextInputLaunchpad<NewCollectionDetailsFormValues>
+        <TextInputLaunchpadRequired<NewCollectionDetailsFormValues>
           required
           label="Twitter Profile "
           placeHolder="https://twitter..."
@@ -62,7 +64,7 @@ export const LaunchpadDetails: React.FC = () => {
           control={control}
         />
 
-        <TextInputLaunchpad<NewCollectionDetailsFormValues>
+        <TextInputLaunchpadRequired<NewCollectionDetailsFormValues>
           required
           label="How many Twitter followers does your project have? "
           placeHolder="10,000"
@@ -70,7 +72,7 @@ export const LaunchpadDetails: React.FC = () => {
           control={control}
         />
 
-        <TextInputLaunchpad<NewCollectionDetailsFormValues>
+        <TextInputLaunchpadRequired<NewCollectionDetailsFormValues>
           required
           label="Discord name of your main contact: "
           placeHolder="nickname#0000"
@@ -78,7 +80,7 @@ export const LaunchpadDetails: React.FC = () => {
           control={control}
         />
 
-        <TextInputLaunchpad<NewCollectionDetailsFormValues>
+        <TextInputLaunchpadRequired<NewCollectionDetailsFormValues>
           required
           label="Main contact email address: "
           placeHolder="contact@email.com"
@@ -117,8 +119,7 @@ export const LaunchpadDetails: React.FC = () => {
           style={{ zIndex: 2 }}
         />
 
-        <TextInputLaunchpad<NewCollectionDetailsFormValues>
-          required
+        <TextInputLaunchpadRequiredSublabel<NewCollectionDetailsFormValues>
           label="Describe your project: "
           sublabel={
             <View>

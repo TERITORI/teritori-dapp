@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { TextInputLaunchpad } from "./inputs/TextInputLaunchpad";
+import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadRequiredSublabel";
 import { BrandText } from "../../../components/BrandText";
 import { SelectFileUploader } from "../../../components/selectFileUploader";
 import { Separator } from "../../../components/separators/Separator";
@@ -39,8 +39,7 @@ export const NewWhitelist: React.FC = () => {
         Information about your minting settings
       </BrandText>
       <SpacerColumn size={2} />
-      <TextInputLaunchpad<NewWhitelistDetailsFormValues>
-        required
+      <TextInputLaunchpadRequiredSublabel<NewWhitelistDetailsFormValues>
         label="Unit Price "
         placeHolder="0"
         name="unitPrice"
@@ -54,8 +53,7 @@ export const NewWhitelist: React.FC = () => {
         control={control}
       />
 
-      <TextInputLaunchpad<NewWhitelistDetailsFormValues>
-        required
+      <TextInputLaunchpadRequiredSublabel<NewWhitelistDetailsFormValues>
         label="Member Limit "
         placeHolder="0"
         name="memberLimit"
@@ -69,8 +67,7 @@ export const NewWhitelist: React.FC = () => {
         control={control}
       />
 
-      <TextInputLaunchpad<NewWhitelistDetailsFormValues>
-        required
+      <TextInputLaunchpadRequiredSublabel<NewWhitelistDetailsFormValues>
         label="Per Address Limit"
         placeHolder="0"
         name="perAddresaLimit"
@@ -84,8 +81,7 @@ export const NewWhitelist: React.FC = () => {
         control={control}
       />
 
-      <TextInputLaunchpad<NewWhitelistDetailsFormValues>
-        required
+      <TextInputLaunchpadRequiredSublabel<NewWhitelistDetailsFormValues>
         label="Start Time "
         placeHolder="0"
         name="startTime"
@@ -99,8 +95,7 @@ export const NewWhitelist: React.FC = () => {
         control={control}
       />
 
-      <TextInputLaunchpad<NewWhitelistDetailsFormValues>
-        required
+      <TextInputLaunchpadRequiredSublabel<NewWhitelistDetailsFormValues>
         label="End Time "
         placeHolder="0"
         name="endTime"

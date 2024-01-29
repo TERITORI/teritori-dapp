@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { TextInputLaunchpad } from "./inputs/TextInputLaunchpad";
+import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadRequiredSublabel";
 import { BrandText } from "../../../components/BrandText";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutral55, neutral77 } from "../../../utils/style/colors";
@@ -32,8 +32,7 @@ export const ConfigureRoyaltyDetails: React.FC = () => {
       </BrandText>
       <SpacerColumn size={2} />
 
-      <TextInputLaunchpad<NewConfigureRoyaltyDetailsFormValues>
-        required
+      <TextInputLaunchpadRequiredSublabel<NewConfigureRoyaltyDetailsFormValues>
         label="Payment Address "
         placeHolder="teritori123456789qwertyuiopasdfghjklzxcvbnm"
         name="PaymentAddress"
@@ -47,8 +46,7 @@ export const ConfigureRoyaltyDetails: React.FC = () => {
         control={control}
       />
 
-      <TextInputLaunchpad<NewConfigureRoyaltyDetailsFormValues>
-        required
+      <TextInputLaunchpadRequiredSublabel<NewConfigureRoyaltyDetailsFormValues>
         label="Share Percentage "
         placeHolder="8%"
         name="SharePercentage"
