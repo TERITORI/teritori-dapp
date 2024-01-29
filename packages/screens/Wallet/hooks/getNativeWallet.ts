@@ -39,7 +39,8 @@ export const useRegisterWallet = async (
   instance.getAccounts().then((accounts) => {
     dispatch(
       addSelected({
-        publicKey: accounts[0].address,
+        address: accounts[0].address,
+        provider: "native",
         network: network.kind,
         networkId: network.id,
         index,
