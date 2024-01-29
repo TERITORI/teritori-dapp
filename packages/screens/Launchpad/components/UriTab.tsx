@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { TextInputLaunchpad } from "./inputs/TextInputLaunchpad";
+import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
 import { BrandText } from "../../../components/BrandText";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutral77 } from "../../../utils/style/colors";
@@ -45,16 +45,14 @@ export const UriTab: React.FC = () => {
 
           <SpacerColumn size={2} />
 
-          <TextInputLaunchpad<ExistingBaseUrlFormValues>
-            required
+          <TextInputLaunchpadRequired<ExistingBaseUrlFormValues>
             label="Base Token URI"
             placeHolder="ipfs://"
             name="baseTokenUri"
             control={control}
           />
 
-          <TextInputLaunchpad<ExistingBaseUrlFormValues>
-            required
+          <TextInputLaunchpadRequired<ExistingBaseUrlFormValues>
             name="coverImageUrl"
             label="Cover Image URL"
             placeHolder="ipfs://"

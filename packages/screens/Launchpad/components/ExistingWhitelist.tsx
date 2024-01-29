@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { TextInputLaunchpad } from "./inputs/TextInputLaunchpad";
+import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
 import { SpacerColumn } from "../../../components/spacer";
 import { ExistingWhitelistDetailsFormValues } from "../CreateCollection.type";
 
@@ -22,8 +22,7 @@ export const ExistingWhitelist: React.FC = () => {
     >
       <SpacerColumn size={2} />
 
-      <TextInputLaunchpad<ExistingWhitelistDetailsFormValues>
-        required
+      <TextInputLaunchpadRequired<ExistingWhitelistDetailsFormValues>
         label="Whitelist Address"
         placeHolder="teritori123456789qwertyuiopasdfghjklzxcvbnm"
         name="whitelistAddress"

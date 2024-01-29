@@ -2,8 +2,7 @@ import React from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
 import { TextInputProps } from "react-native";
 
-import { TextInputCustom } from "../../../../components/inputs/TextInputCustom";
-import { layout } from "../../../../utils/style/layout";
+import { TextInputLaunchpad } from "./TextInputLaunchpad";
 
 interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
@@ -16,27 +15,20 @@ interface TextInputCustomProps<T extends FieldValues>
   required?: boolean;
 }
 
-export const TextInputLaunchpad = <T extends FieldValues>({
+export const TextInputLaunchpadRequired = <T extends FieldValues>({
   control,
   name,
   label,
   placeHolder,
-  sublabel,
-  required = false,
+  required = true,
 }: TextInputCustomProps<T>) => {
   return (
-    <TextInputCustom<T>
-      rules={{ required }}
-      labelStyle={{ maxWidth: 416 }}
+    <TextInputLaunchpad<T>
+      required={required}
       label={label}
       placeHolder={placeHolder}
-      sublabel={sublabel}
       name={name}
       control={control}
-      variant="labelOutside"
-      containerStyle={{ marginBottom: layout.spacing_x2 }}
-      boxMainContainerStyle={{ minHeight: 0 }}
-      height={40}
     />
   );
 };

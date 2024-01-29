@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { TextInputLaunchpad } from "./inputs/TextInputLaunchpad";
+import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
 import { BrandText } from "../../../components/BrandText";
 import { CustomNetworkSelector } from "../../../components/NetworkSelector/CustomNetworkSelector";
 import { SelectFileUploader } from "../../../components/selectFileUploader";
@@ -57,28 +57,25 @@ export const LaunchpadBasic: React.FC = () => {
       <View style={{ width: 416 }}>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpad<NewCollectionBasicFormValues>
+        <TextInputLaunchpadRequired<NewCollectionBasicFormValues>
           label="Name"
           placeHolder="My Awesome Collection"
           name="name"
           control={control}
-          required
         />
 
-        <TextInputLaunchpad<NewCollectionBasicFormValues>
+        <TextInputLaunchpadRequired<NewCollectionBasicFormValues>
           label="Description"
           placeHolder="My Awesome Collection Description"
           name="description"
           control={control}
-          required
         />
 
-        <TextInputLaunchpad<NewCollectionBasicFormValues>
+        <TextInputLaunchpadRequired<NewCollectionBasicFormValues>
           label="Symbol"
           placeHolder="Symbol"
           name="symbol"
           control={control}
-          required
         />
 
         <SelectFileUploader
@@ -94,12 +91,12 @@ export const LaunchpadBasic: React.FC = () => {
           mimeTypes={IMAGE_MIME_TYPES}
         />
 
-        <TextInputLaunchpad<NewCollectionBasicFormValues>
+        <TextInputLaunchpadRequired<NewCollectionBasicFormValues>
           label="External Link"
           placeHolder="https://collection..."
           name="externalLink"
           control={control}
-          required
+          required={false}
         />
 
         <CustomNetworkSelector
