@@ -2,9 +2,15 @@ import * as Clipboard from "expo-clipboard";
 import React, { useState } from "react";
 import { View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
+import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../components/BrandText";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
+import {
+  selectSelectedNativeWalletIndex,
+  selectWalletById,
+} from "../../../store/slices/wallets";
+import { RootState } from "../../../store/store";
 import { ScreenFC } from "../../../utils/navigation";
 import {
   neutral22,
@@ -15,14 +21,11 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium13, fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { useSelectedNativeWallet } from "../../Wallet/hooks/useSelectedNativeWallet";
 import { findByBaseDenom } from "../../Wallet/util/chain-registry";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 const QR_SIZE = 248;
-const accountDetails = {
-  token: "GxF34g10nz0wchvkkj7rr09vcxj5rpt2m3A31",
-  account: "Account 1",
-};
 
 export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
   navigation,
@@ -34,6 +37,12 @@ export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
   const onGotoSelectToken = () =>
     navigation.replace("MiniSelectToken", { navigateTo: "MiniDepositTORI" });
 
+  const selectedWallet = useSelectedNativeWallet();
+
+  const accountDetails = {
+    address: selectedWallet?.address,
+    token: denom,
+  };
   const onCopyPress = async () => {
     await Clipboard.setStringAsync(JSON.stringify(accountDetails));
     setIsCopied(true);
@@ -58,18 +67,16 @@ export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
         }}
       >
         <View style={{ alignItems: "center", marginBottom: layout.spacing_x5 }}>
-          {accountDetails && (
-            <View
-              style={{
-                backgroundColor: secondaryColor,
-                width: QR_SIZE + 32,
-                padding: layout.spacing_x2,
-                borderRadius: layout.borderRadius,
-              }}
-            >
-              <QRCode size={QR_SIZE} value={JSON.stringify(accountDetails)} />
-            </View>
-          )}
+          <View
+            style={{
+              backgroundColor: secondaryColor,
+              width: QR_SIZE + 32,
+              padding: layout.spacing_x2,
+              borderRadius: layout.borderRadius,
+            }}
+          >
+            <QRCode size={QR_SIZE} value={JSON.stringify(accountDetails)} />
+          </View>
         </View>
         <View
           style={{
@@ -89,8 +96,8 @@ export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
               gap: layout.spacing_x1_5,
             }}
           >
-            <BrandText style={[fontMedium16, {}]}>
-              {accountDetails.account}
+            <BrandText style={[fontMedium16]}>
+              {accountDetails.address}
             </BrandText>
             <BrandText style={[fontMedium16, { color: neutralA3 }]}>
               {`( ${accountDetails.token.substring(

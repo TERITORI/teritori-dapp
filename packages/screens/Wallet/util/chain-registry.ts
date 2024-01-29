@@ -3,6 +3,7 @@ import { assets } from "chain-registry";
 
 import { useBalances } from "../../../hooks/useBalances";
 
+// @ts-ignore
 export const findByBaseDenom: (token: string) => AssetList | undefined = (
   token,
 ) => {
@@ -14,7 +15,10 @@ export const findByBaseDenom: (token: string) => AssetList | undefined = (
   });
 };
 
-export const useGetAssets = (networkId: string, address: string) => {
+export const useGetAssets = (
+  networkId: string | undefined,
+  address: string | undefined,
+) => {
   const balances = useBalances(networkId, address);
 
   return balances.map((balance) => {

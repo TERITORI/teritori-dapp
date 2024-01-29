@@ -24,6 +24,7 @@ import {
   fontSemibold14,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { useSelectedNativeWallet } from "../../Wallet/hooks/useSelectedNativeWallet";
 import { CustomButton } from "../components/Button/CustomButton";
 
 const transactions: TransactionType[] = [
@@ -56,9 +57,11 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
     navigation.navigate("MiniManageTokens");
   };
 
+  const selectedWallet = useSelectedNativeWallet();
+
   const balances = useBalances(
-    "teritori",
-    "tori1lkydvh2qae4gqdslmwaxrje7j57p2kq8dw9d7t",
+    selectedWallet?.networkId,
+    selectedWallet?.address,
   );
 
   return (
@@ -115,7 +118,6 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
       {balances.map((balance) => (
         <Fragment key={balance.denom}>
           <AddedToken
-            code="3A31"
             dollarAmount={balance.usdAmount?.toLocaleString() || "N/A"}
             icon={teritoriSVG}
             key={balance.denom}

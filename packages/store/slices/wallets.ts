@@ -1,4 +1,9 @@
-import { createEntityAdapter, createSlice, EntityId } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSlice,
+  EntityId,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 
 import { NetworkKind } from "../../networks";
 import { RootState } from "../store";
@@ -31,11 +36,18 @@ const addressSelectors = storeAddress.getSelectors();
 
 const walletsSlice = createSlice({
   name: "wallets",
-  initialState: storeWalletsAdapter.getInitialState(),
+  initialState: {
+    ...storeWalletsAdapter.getInitialState(),
+    selectedWalletId: -1, // Add new state variable for selected wallet ID
+  },
   reducers: {
     addSelected: storeWalletsAdapter.setOne,
     removeSelected: storeWalletsAdapter.removeOne,
     resetAllWallets: storeWalletsAdapter.removeAll,
+    setSelectedNativeWalletIndex: (state, action: PayloadAction<number>) => {
+      // Add new reducer function
+      state.selectedWalletId = action.payload;
+    },
   },
 });
 
@@ -49,8 +61,14 @@ const addressBookSlice = createSlice({
   },
 });
 
+export const selectSelectedNativeWalletIndex = (state: RootState) =>
+  state.wallets.selectedWalletId;
+
 export const selectAllWallets = (state: RootState) =>
   selectors.selectAll(state.wallets);
+
+export const selectWalletById = (state: RootState, id: EntityId) =>
+  selectors.selectById(state.wallets, id);
 
 export const selectAllAddressBook = (state: RootState) =>
   addressSelectors.selectAll(state.addressBook);
@@ -62,4 +80,9 @@ export const walletsReducer = walletsSlice.reducer;
 export const addressBookReducer = addressBookSlice.reducer;
 export const { addEntry, removeEntry, resetAllAddressBook } =
   addressBookSlice.actions;
-export const { addSelected, resetAllWallets } = walletsSlice.actions;
+export const {
+  addSelected,
+  resetAllWallets,
+  setSelectedNativeWalletIndex,
+  removeSelected,
+} = walletsSlice.actions;

@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, Pressable, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { Account } from "./Account";
@@ -16,7 +16,12 @@ import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
-import { selectAllWallets, StoreWallet } from "../../../store/slices/wallets";
+import {
+  selectAllWallets,
+  setSelectedNativeWalletIndex,
+  StoreWallet,
+} from "../../../store/slices/wallets";
+import { useAppDispatch } from "../../../store/store";
 import { RouteName, ScreenFC } from "../../../utils/navigation";
 import { neutral39 } from "../../../utils/style/colors";
 import { fontSemibold15, fontSemibold18 } from "../../../utils/style/fonts";
@@ -62,6 +67,7 @@ const getProviderLogo = (provider: ProviderType) => {
 export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
   const onClose = () => navigation.goBack();
   const wallets = useSelector(selectAllWallets);
+  const dispatch = useAppDispatch();
 
   return (
     <BlurScreenContainer
@@ -106,14 +112,20 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
           data={wallets}
           renderItem={({ item, index }) => {
             return (
-              <View key={index}>
+              <Pressable
+                key={index}
+                onPress={() => {
+                  dispatch(setSelectedNativeWalletIndex(item.index));
+                  onClose();
+                }}
+              >
                 <Account
                   accountName={"Seed Phrase #" + item.index}
                   address={item.address}
                   logo={getProviderLogo(item.provider)}
                   isLast={index === wallets.length - 1}
                 />
-              </View>
+              </Pressable>
             );
           }}
         />

@@ -11,10 +11,7 @@ import { Dropdown } from "../../../components/Dropdown";
 import { SVG } from "../../../components/SVG";
 import { UserNameInline } from "../../../components/UserNameInline";
 import { TertiaryBadge } from "../../../components/badges/TertiaryBadge";
-import { UserAvatarWithFrame } from "../../../components/images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { parseUserId } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import {
@@ -25,9 +22,9 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { useSelectedNativeWallet } from "../../Wallet/hooks/useSelectedNativeWallet";
 import { useGetAssets } from "../../Wallet/util/chain-registry";
 import { CustomButton } from "../components/Button/CustomButton";
-import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import MobileModal from "../components/MobileModal";
 import MiniTable from "../components/Table/MiniTable";
 import MiniTableRow from "../components/Table/MiniTableRow";
@@ -87,9 +84,11 @@ const SendingToriScreen: ScreenFC<"MiniSendingTori"> = ({
       back: "MiniSendingTori",
       denom,
     });
+  const selectedWallet = useSelectedNativeWallet();
+
   const assets = useGetAssets(
-    "teritori",
-    "tori1lkydvh2qae4gqdslmwaxrje7j57p2kq8dw9d7t",
+    selectedWallet?.networkId,
+    selectedWallet?.address,
   );
   const selectedToken = assets.find((asset) => asset.denom === denom);
   if (!selectedToken) {

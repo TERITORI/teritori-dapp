@@ -7,6 +7,7 @@ import { ScreenFC } from "../../../utils/navigation";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontNormal15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { useSelectedNativeWallet } from "../../Wallet/hooks/useSelectedNativeWallet";
 import { useGetAssets } from "../../Wallet/util/chain-registry";
 import ListView from "../components/ListView";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
@@ -16,9 +17,12 @@ const SelectTokenScreen: ScreenFC<"MiniSelectToken"> = ({
   route,
 }) => {
   const { navigateTo } = route.params;
+
+  const selectedWallet = useSelectedNativeWallet();
+
   const assets = useGetAssets(
-    "teritori",
-    "tori1lkydvh2qae4gqdslmwaxrje7j57p2kq8dw9d7t",
+    selectedWallet?.networkId,
+    selectedWallet?.address,
   );
 
   return (

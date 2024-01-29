@@ -14,6 +14,7 @@ import {
   fontMedium16,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { useSelectedNativeWallet } from "../../Wallet/hooks/useSelectedNativeWallet";
 import { useGetAssets } from "../../Wallet/util/chain-registry";
 import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
@@ -41,9 +42,11 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation, route }) => {
   const goBackTo = () =>
     navigation.replace("MiniSelectToken", { navigateTo: "MiniSendingTori" });
 
+  const selectedWallet = useSelectedNativeWallet();
+
   const assets = useGetAssets(
-    "teritori",
-    "tori1lkydvh2qae4gqdslmwaxrje7j57p2kq8dw9d7t",
+    selectedWallet?.networkId,
+    selectedWallet?.address,
   );
   const { denom } = route.params;
   const selectedToken = assets.find((asset) => asset.denom === denom);
