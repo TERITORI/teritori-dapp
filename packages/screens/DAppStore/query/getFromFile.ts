@@ -196,6 +196,16 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: true,
           alwaysOn: false,
         },
+        projectsProgram: {
+          id: "projects",
+          title: "Projects Program",
+          icon: projectsProgramSVG,
+          description: "Projects Program",
+          route: "Projects",
+          groupKey: "top-apps",
+          selectedByDefault: true,
+          alwaysOn: true,
+        },
       },
     },
     explorers: {
@@ -467,17 +477,6 @@ export function getAvailableApps(): dAppGroup {
 
           route: "External",
           url: "https://thegraph.com/",
-          groupKey: "bookmarks",
-          selectedByDefault: false,
-          alwaysOn: false,
-        },
-        projectsProgram: {
-          id: "projects",
-          title: "Projects Program",
-          description: "Projects Program",
-          icon: projectsProgramSVG,
-
-          route: "Projects",
           groupKey: "bookmarks",
           selectedByDefault: false,
           alwaysOn: false,
