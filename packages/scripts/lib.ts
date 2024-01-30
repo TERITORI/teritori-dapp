@@ -1,4 +1,5 @@
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
+import { Buffer } from "buffer";
 import child_process, { ChildProcess, PromiseWithChild } from "child_process";
 import fs from "fs/promises";
 import util from "util";

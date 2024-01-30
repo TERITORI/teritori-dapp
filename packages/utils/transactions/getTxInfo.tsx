@@ -1,4 +1,5 @@
 import { MsgExecuteContractEncodeObject } from "@cosmjs/cosmwasm-stargate";
+import { Buffer } from "buffer";
 import React from "react";
 import {
   Text,
