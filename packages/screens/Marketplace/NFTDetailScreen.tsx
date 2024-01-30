@@ -1,4 +1,5 @@
 import { ScrollView, Target } from "@nandorojo/anchor";
+import { useNavigation } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 
@@ -30,8 +31,9 @@ import {
   parseNftId,
 } from "../../networks";
 import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { NFTInfo } from "../../utils/types/nft";
+
+import { useLocalSearchParams, router } from "@/utils/router";
 
 const Content: React.FC<{
   id: string;
@@ -250,17 +252,14 @@ const Content: React.FC<{
   }
 };
 
-export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
-  route: {
-    params: { id },
-  },
-}) => {
+export const NFTDetailScreen = () => {
+  let { id } = useLocalSearchParams<"/nft/[id]">();
   // needed for emoji
   id = decodeURIComponent(id);
 
   const [network] = parseNftId(id);
   const { info } = useNFTInfo(id);
-  const navigation = useAppNavigation();
+  const navigation = useNavigation();
 
   useEffect(() => {
     navigation.setOptions({
@@ -277,11 +276,14 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
       noScroll
       noMargin
       onBackPress={() =>
-        navigation.canGoBack()
-          ? navigation.goBack()
+        router.canGoBack()
+          ? router.back()
           : info?.collectionId
-            ? navigation.navigate("Collection", { id: info?.collectionId })
-            : navigation.navigate("Marketplace")
+            ? router.navigate({
+                pathname: "/collection/[id]",
+                params: { id: info?.collectionId },
+              })
+            : router.navigate("/marketplace")
       }
     >
       <Content key={id} id={id} />

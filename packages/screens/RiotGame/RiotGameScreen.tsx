@@ -6,13 +6,12 @@ import { GameBgCard } from "./component/GameBgCard";
 import { GameBgOverlay } from "./component/GameBgOverlay";
 import { RiotGameHeader } from "./component/RiotGameHeader";
 import { gameBgData } from "../../utils/game";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral00 } from "../../utils/style/colors";
 import { headerHeight } from "../../utils/style/layout";
 
-export const RiotGameScreen = () => {
-  const navigation = useAppNavigation();
+import { router } from "@/utils/router";
 
+export const RiotGameScreen = () => {
   const { width, height } = useWindowDimensions();
   const cardSize = {
     height: (height - headerHeight) / 5,
@@ -20,7 +19,7 @@ export const RiotGameScreen = () => {
   };
 
   const gotoEnroll = () => {
-    navigation.navigate("RiotGameEnroll");
+    router.push("/riot-game/breeding");
   };
 
   return (

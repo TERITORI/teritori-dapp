@@ -32,9 +32,7 @@ export const SocialCardHeader: FC<{
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-        <OmniLink
-          to={{ screen: "UserPublicProfile", params: { id: authorId } }}
-        >
+        <OmniLink href={{ pathname: "/user/[id]", params: { id: authorId } }}>
           {/*---- User image */}
           <UserAvatarWithFrame
             style={{
@@ -54,9 +52,7 @@ export const SocialCardHeader: FC<{
             flex: 1,
           }}
         >
-          <OmniLink
-            to={{ screen: "UserPublicProfile", params: { id: authorId } }}
-          >
+          <OmniLink href={{ pathname: "/user/[id]", params: { id: authorId } }}>
             {/*---- User name */}
             <AnimationFadeIn>
               <BrandText style={fontSemibold16} numberOfLines={1}>
@@ -78,7 +74,10 @@ export const SocialCardHeader: FC<{
               <>
                 {/* ---- User TNS name*/}
                 <OmniLink
-                  to={{ screen: "UserPublicProfile", params: { id: authorId } }}
+                  href={{
+                    pathname: "/user/[id]",
+                    params: { id: authorId },
+                  }}
                 >
                   <BrandText
                     style={[

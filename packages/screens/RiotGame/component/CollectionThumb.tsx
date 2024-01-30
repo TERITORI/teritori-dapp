@@ -5,8 +5,9 @@ import { BrandText } from "../../../components/BrandText";
 import { OptimizedImage } from "../../../components/OptimizedImage";
 import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
 import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
-import { useAppNavigation } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
+
+import { router } from "@/utils/router";
 
 type CollectionThumbProps = {
   collectionId: string;
@@ -16,12 +17,14 @@ export const CollectionThumb: React.FC<CollectionThumbProps> = ({
   collectionId,
 }) => {
   const { collectionInfo: info } = useCollectionInfo(collectionId);
-  const navigation = useAppNavigation();
 
   return (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate("RiotGameMarketplace", { collectionId })
+        router.navigate({
+          pathname: "/riot-game/marketplace",
+          params: { collectionId },
+        })
       }
     >
       <LegacyTertiaryBox

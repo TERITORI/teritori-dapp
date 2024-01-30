@@ -1,7 +1,7 @@
 import { MsgExecuteContractEncodeObject } from "@cosmjs/cosmwasm-stargate";
 import { toUtf8 } from "@cosmjs/encoding";
-import { useFocusEffect } from "@react-navigation/native";
 import { useQueryClient } from "@tanstack/react-query";
+import { useFocusEffect } from "expo-router";
 import Long from "long";
 import React, { useMemo, useState } from "react";
 import { View } from "react-native";
@@ -42,10 +42,11 @@ import {
   UserKind,
 } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { defaultMetaData } from "../../utils/types/tns";
+
+import { router } from "@/utils/router";
 
 const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
   price,
@@ -109,7 +110,6 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   const isLeapConnected = useIsLeapConnected();
 
   const userHasCoWallet = useAreThereWallets();
-  const navigation = useAppNavigation();
   const networkId = useSelectedNetworkId();
   const network = getCosmosNetwork(networkId);
   const normalizedTokenId = (
@@ -150,7 +150,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   useFocusEffect(() => {
     // ===== Controls many things, be careful
     if (!userHasCoWallet || (!isKeplrConnected && !isLeapConnected))
-      navigation.navigate("TNSHome");
+      router.navigate("/tns");
     if (name && userHasCoWallet && tokens.includes(normalizedTokenId))
       onClose();
 

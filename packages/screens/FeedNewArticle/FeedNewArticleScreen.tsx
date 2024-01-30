@@ -38,7 +38,6 @@ import { NetworkFeature } from "../../networks";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
 import { generateIpfsKey } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
   ARTICLE_COVER_IMAGE_MAX_HEIGHT,
   ARTICLE_COVER_IMAGE_RATIO,
@@ -56,9 +55,11 @@ import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { pluralOrNot } from "../../utils/text";
 import { RemoteFileData } from "../../utils/types/files";
 
+import { router } from "@/utils/router";
+
 //TODO: In mobile : Make ActionsContainer accessible (floating button ?)
 
-export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
+export const FeedNewArticleScreen = () => {
   const isMobile = useIsMobile();
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
@@ -92,7 +93,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     useWalletControl();
   const isLoading = isUploadLoading || isProcessing;
   const { setToastSuccess, setToastError } = useFeedbacks();
-  const navigation = useAppNavigation();
   const scrollViewRef = useRef<ScrollView>(null);
 
   const {
@@ -120,7 +120,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const formValues = watch();
 
   //TODO: Keep short post formValues when returning to short post
-  const navigateBack = () => navigation.navigate("Feed");
+  const navigateBack = () => router.navigate("/feed");
 
   const onPublish = async (values: PublishValues) => {
     const action = "Publish an Article";

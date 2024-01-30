@@ -2,19 +2,18 @@ import React from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import backSVG from "../../../../assets/icons/back.svg";
-import { useAppNavigation } from "../../../utils/navigation";
 import { neutral22 } from "../../../utils/style/colors";
 import { SVG } from "../../SVG";
+
+import { router } from "@/utils/router";
 
 export const BackButton: React.FC<{
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
 }> = ({ onPress, style }) => {
-  const navigation = useAppNavigation();
-
   const handleOnPress = () => {
     if (onPress) onPress();
-    else if (navigation.canGoBack()) navigation.goBack();
+    else if (router.canGoBack()) router.back();
   };
 
   return (

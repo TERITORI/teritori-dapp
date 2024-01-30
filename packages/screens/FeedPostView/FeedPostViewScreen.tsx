@@ -15,19 +15,17 @@ import { usePost } from "../../hooks/feed/usePost";
 import { parseNetworkObjectId } from "../../networks";
 import { gnoTeritoriNetwork } from "../../networks/gno-teritori";
 import { teritoriNetwork } from "../../networks/teritori";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
+import { useLocalSearchParams, router } from "@/utils/router";
+
 export type OnPressReplyType = (replyTo: ReplyToType) => void;
 
-export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
-  route: {
-    params: { id },
-  },
-}) => {
-  const navigation = useAppNavigation();
+export const FeedPostViewScreen = () => {
+  const { id } = useLocalSearchParams<"/feed/post/[id]">();
+
   let [network, postId] = parseNetworkObjectId(id);
   if (!network) {
     // fallback to teritori or gno network if there is no network prefix in the id
@@ -56,9 +54,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
           <BrandText style={fontSemibold20}>Loading {label}</BrandText>
         }
         onBackPress={() =>
-          navigation.canGoBack()
-            ? navigation.goBack()
-            : navigation.navigate("Feed")
+          router.canGoBack() ? router.back() : router.navigate("/feed")
         }
         footerChildren
         noScroll
@@ -83,9 +79,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
           <BrandText style={fontSemibold20}>{label} not found</BrandText>
         }
         onBackPress={() =>
-          navigation.canGoBack()
-            ? navigation.goBack()
-            : navigation.navigate("Feed")
+          router.canGoBack() ? router.back() : router.navigate("/feed")
         }
         footerChildren
         noScroll

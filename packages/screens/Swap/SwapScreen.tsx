@@ -15,11 +15,10 @@ import { osmosisNetwork } from "../../networks/osmosis";
 import { osmosisTestnetNetwork } from "../../networks/osmosis-testnet";
 import { setSelectedNetworkId } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
-import { ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 import { Assets } from "../WalletManager/Assets";
 
-export const SwapScreen: ScreenFC<"Swap"> = () => {
+export const SwapScreen = () => {
   const selectedWallet = useSelectedWallet();
   const selectedNetwork = useSelectedNetworkInfo();
   const dispatch = useAppDispatch();

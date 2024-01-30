@@ -8,7 +8,6 @@ import {
   setShowCart,
 } from "../../../store/slices/marketplaceCartItems";
 import { useAppDispatch } from "../../../store/store";
-import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
   neutral17,
@@ -20,12 +19,13 @@ import { BrandText } from "../../BrandText";
 import { LegacyTertiaryBox } from "../../boxes/LegacyTertiaryBox";
 import { SpacerRow } from "../../spacer";
 
+import { router } from "@/utils/router";
+
 export const CartIconButtonBadge: React.FC<{
   style?: StyleProp<ViewStyle>;
   isMobile?: boolean;
 }> = ({ style, isMobile }) => {
   const selected = useSelector(selectAllSelectedNFTData);
-  const navigation = useAppNavigation();
 
   const dispatch = useAppDispatch();
 
@@ -33,7 +33,7 @@ export const CartIconButtonBadge: React.FC<{
     dispatch(setShowCart(true));
     if (selected.length > 0) {
       const id = selected[0].id.slice(0, selected[0].id.lastIndexOf("-"));
-      navigation.navigate("Collection", { id });
+      router.navigate({ pathname: "/collection/[id]", params: { id } });
     }
   };
 

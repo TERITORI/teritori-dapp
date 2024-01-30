@@ -43,7 +43,6 @@ import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { getNetworkObjectId, parseUserId } from "../../../networks";
 import { web3ToWeb2URI } from "../../../utils/ipfs";
-import { useAppNavigation } from "../../../utils/navigation";
 import { zodTryParseJSON } from "../../../utils/sanitize";
 import {
   ARTICLE_COVER_IMAGE_MAX_HEIGHT,
@@ -61,6 +60,8 @@ import {
 import { tinyAddress } from "../../../utils/text";
 import { OnPressReplyType } from "../FeedPostViewScreen";
 
+import { router } from "@/utils/router";
+
 const contentPaddingHorizontal = layout.spacing_x2;
 
 export const FeedPostArticleView: FC<{
@@ -69,7 +70,6 @@ export const FeedPostArticleView: FC<{
   refetchPost: () => Promise<any>;
   isLoadingPost?: boolean;
 }> = ({ post, networkId, refetchPost, isLoadingPost }) => {
-  const navigation = useAppNavigation();
   const { width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
   const isMobile = useIsMobile();
@@ -176,10 +176,13 @@ export const FeedPostArticleView: FC<{
 
   useEffect(() => {
     if (post?.category === PostCategory.Video)
-      navigation.replace("FeedPostView", {
-        id: postId,
+      router.replace({
+        pathname: "/feed/post/[id]",
+        params: {
+          id: postId,
+        },
       });
-  }, [post?.category, postId, navigation]);
+  }, [post?.category, postId]);
 
   useEffect(() => {
     // HECK: updated state was not showing up in scrollhander
@@ -198,15 +201,18 @@ export const FeedPostArticleView: FC<{
       }
       onBackPress={() =>
         post?.parentPostIdentifier
-          ? navigation.navigate("FeedPostView", {
-              id: getNetworkObjectId(
-                networkId,
-                post?.parentPostIdentifier || "",
-              ),
+          ? router.navigate({
+              pathname: "/feed/post/[id]",
+              params: {
+                id: getNetworkObjectId(
+                  networkId,
+                  post?.parentPostIdentifier || "",
+                ),
+              },
             })
-          : navigation.canGoBack()
-            ? navigation.goBack()
-            : navigation.navigate("Feed")
+          : router.canGoBack()
+            ? router.back()
+            : router.navigate("/feed")
       }
       footerChildren
       noScroll

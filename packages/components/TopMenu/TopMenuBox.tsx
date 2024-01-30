@@ -51,7 +51,7 @@ export const TopMenuBox: FC<{
         <TopMenuLiveMint />
 
         <Separator />
-        <OmniLink to={{ screen: "Settings" }}>
+        <OmniLink href="/settings">
           <FlexCol style={{ paddingVertical: layout.spacing_x1_5 }}>
             <BrandText style={styles.settingsText}>Settings</BrandText>
           </FlexCol>

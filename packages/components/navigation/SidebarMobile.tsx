@@ -12,7 +12,6 @@ import addSVG from "../../../assets/icons/add-circle.svg";
 import { useSidebar } from "../../context/SidebarProvider";
 import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import { NetworkKind } from "../../networks";
-import { RouteName, useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
 import {
   layout,
@@ -20,6 +19,8 @@ import {
   MOBILE_SIDEBAR_MAX_WIDTH,
 } from "../../utils/style/layout";
 import { SpacerColumn } from "../spacer";
+
+import { Routes, router } from "@/utils/router";
 
 const SpringConfig: WithSpringConfig = {
   stiffness: 100,
@@ -30,7 +31,6 @@ const SpringConfig: WithSpringConfig = {
 export const SidebarMobile: FC = () => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const selectedNetworkKind = useSelectedNetworkKind();
-  const navigation = useAppNavigation();
   const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
 
   const layoutStyle = useAnimatedStyle(
@@ -48,8 +48,7 @@ export const SidebarMobile: FC = () => {
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
-    // @ts-expect-error
-    navigation.navigate(name);
+    router.navigate(name);
   };
 
   return (
@@ -78,7 +77,7 @@ export const SidebarMobile: FC = () => {
           return (
             <SidebarButton
               key={item.id}
-              onPress={(routeName: RouteName) => {
+              onPress={(routeName: keyof Routes) => {
                 isSidebarExpanded && toggleSidebar();
                 onRouteChange(routeName);
               }}
@@ -93,11 +92,11 @@ export const SidebarMobile: FC = () => {
             <SidebarButton
               icon={addSVG}
               iconSize={36}
-              route="DAppStore"
+              route="/dapp-store"
               key="ComingSoon2"
               id="ComingSoon2"
               title=""
-              onPress={() => navigation.navigate("DAppStore")}
+              onPress={() => router.navigate("/dapp-store")}
             />
             <SpacerColumn size={1} />
           </>

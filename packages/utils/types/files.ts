@@ -44,3 +44,7 @@ export const ZodRemoteFileData = z.object({
   thumbnailFileData: ZodBaseFileData.optional(),
 });
 export type RemoteFileData = z.infer<typeof ZodRemoteFileData>;
+
+export interface FileWithPath extends File {
+  path: string;
+}

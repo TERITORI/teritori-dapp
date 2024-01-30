@@ -7,12 +7,13 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import { parseNetworkObjectId } from "../../networks";
 import { getMarketplaceClient } from "../../utils/backend";
-import { ScreenFC } from "../../utils/navigation";
 import {
   snapshotCollectionOGs,
   snapshotCollectionOwners,
   snapshotCollectionOwnersWithIds,
 } from "../../utils/snapshots";
+
+import { useLocalSearchParams } from "@/utils/router";
 
 // FIXME: support native
 
@@ -48,11 +49,9 @@ const SnapshotEntry: React.FC<{
   );
 };
 
-export const CollectionToolsScreen: ScreenFC<"CollectionTools"> = ({
-  route: {
-    params: { id },
-  },
-}) => {
+export const CollectionToolsScreen = () => {
+  const { id } = useLocalSearchParams<"/collection/[id]/tools">();
+
   const { collectionInfo } = useCollectionInfo(id);
   const [network] = parseNetworkObjectId(id);
   const backendClient = getMarketplaceClient(network?.id);

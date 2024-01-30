@@ -31,11 +31,6 @@ import {
 } from "../../../store/slices/message";
 import { RootState } from "../../../store/store";
 import {
-  ScreenFC,
-  useAppNavigation,
-  useAppRoute,
-} from "../../../utils/navigation";
-import {
   neutral00,
   neutral33,
   neutral77,
@@ -57,6 +52,8 @@ import { weshConfig } from "../../../weshnet";
 import { getNewConversationText } from "../../../weshnet/messageHelpers";
 import { sendMessage } from "../../../weshnet/services";
 import { bytesFromString, stringFromBytes } from "../../../weshnet/utils";
+
+import { router, useLocalSearchParams } from "@/utils/router";
 interface ChatSectionProps {
   conversation: IConversation;
 }
@@ -530,15 +527,15 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   );
 };
 
-export const ChatSectionScreen: ScreenFC<"ChatSection"> = () => {
-  const { params } = useAppRoute();
-  const { navigate } = useAppNavigation();
+export const ChatSectionScreen = () => {
+  const params = useLocalSearchParams();
+
   return (
     <ScreenContainer
       noScroll
       fullWidth
       noMargin
-      onBackPress={() => navigate("Message")}
+      onBackPress={() => router.navigate("/message")}
       footerChildren={<></>}
     >
       <ChatSection conversation={params as IConversation} />

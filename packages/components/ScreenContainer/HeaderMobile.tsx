@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from "expo-router";
 import React, { FC } from "react";
 import { View, StyleSheet, TouchableOpacity, Platform } from "react-native";
 import { useSelector } from "react-redux";

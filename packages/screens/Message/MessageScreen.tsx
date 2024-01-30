@@ -29,18 +29,20 @@ import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useMessage } from "../../context/MessageProvider";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { selectIsWeshConnected } from "../../store/slices/message";
-import { useAppNavigation, ScreenFC } from "../../utils/navigation";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
-  const activeView = route?.params?.view;
-  const activeTab = route?.params?.tab;
+import { router, useLocalSearchParams } from "@/utils/router";
+
+export const MessageScreen = () => {
+  const params = useLocalSearchParams<"/message">();
+  const activeView = params?.view;
+  const activeTab = params?.tab;
+
   const isWeshConnected = useSelector(selectIsWeshConnected);
 
   const { activeConversation, setActiveConversation } = useMessage();
 
-  const navigation = useAppNavigation();
   const isMobile = useIsMobile();
   const { width } = useWindowDimensions();
 
@@ -55,7 +57,10 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
       icon: chat,
       isActive: true,
       onPress: () => {
-        navigation.navigate("Message", { view: "CreateConversation" });
+        router.navigate({
+          pathname: "/message/[view]",
+          params: { view: "CreateConversation" },
+        });
       },
     },
     {
@@ -64,7 +69,10 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
       icon: group,
       isActive: true,
       onPress() {
-        navigation.navigate("Message", { view: "CreateGroup" });
+        router.navigate({
+          pathname: "/message/[view]",
+          params: { view: "CreateGroup" },
+        });
       },
     },
     {
@@ -74,9 +82,12 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
       isActive: true,
       onPress() {
         if (Platform.OS !== "web") {
-          navigation.navigate("FriendshipManager");
+          router.navigate("/message/friends");
         } else {
-          navigation.navigate("Message", { view: "AddFriend" });
+          router.navigate({
+            pathname: "/message/[view]",
+            params: { view: "AddFriend" },
+          });
         }
       },
     },
@@ -86,7 +97,10 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
       icon: group,
       isActive: true,
       onPress() {
-        navigation.navigate("Message", { view: "JoinGroup" });
+        router.navigate({
+          pathname: "/message/[view]",
+          params: { view: "JoinGroup" },
+        });
       },
     },
     {
@@ -184,7 +198,7 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
                 activeTab={activeTab}
                 setActiveConversation={(conv) => {
                   setActiveConversation(conv);
-                  navigation.navigate("Message");
+                  router.navigate("/message");
                 }}
               />
             ) : (
@@ -200,13 +214,13 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
         )}
       </View>
       {activeView === "CreateGroup" && (
-        <CreateGroup onClose={() => navigation.navigate("Message")} />
+        <CreateGroup onClose={() => router.navigate("/message")} />
       )}
       {activeView === "CreateConversation" && (
-        <CreateConversation onClose={() => navigation.navigate("Message")} />
+        <CreateConversation onClose={() => router.navigate("/message")} />
       )}
       {activeView === "JoinGroup" && (
-        <JoinGroup onClose={() => navigation.navigate("Message")} />
+        <JoinGroup onClose={() => router.navigate("/message")} />
       )}
     </ScreenContainer>
   );

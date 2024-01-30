@@ -1,4 +1,3 @@
-import { useLinkProps } from "@react-navigation/native";
 import React, { ReactNode } from "react";
 import {
   Platform,
@@ -8,24 +7,28 @@ import {
   ViewStyle,
 } from "react-native";
 
-interface OmniLinkToType {
-  screen: string | never;
-  params?: object;
-}
+import { Href, router, Routes } from "@/utils/router";
 
 export const OmniLink: React.FC<{
-  to: OmniLinkToType;
-  action?: any | undefined;
+  href: Href<keyof Routes>;
+  action?: "navigate" | "replace" | "push";
   children: ReactNode | undefined;
   style?: TouchableOpacityProps["style"];
   disabled?: boolean;
   noHoverEffect?: boolean;
-}> = ({ to, action, children, style, disabled, noHoverEffect }) => {
-  // @ts-ignore
-  const { onPress, ...props } = useLinkProps({ to, action });
-
+}> = ({
+  href,
+  action = "navigate",
+  children,
+  style,
+  disabled,
+  noHoverEffect,
+}) => {
   const [isHovered, setIsHovered] = React.useState(false);
 
+  const onPress = () => {
+    router[action](href);
+  };
   const handlePress = (e: any) => {
     if (Platform.OS === "web") {
       e.stopPropagation();
@@ -45,7 +48,7 @@ export const OmniLink: React.FC<{
     // You can add hover effects using `onMouseEnter` and `onMouseLeave`
     return (
       <View
-        // @ts-expect-error
+        //@ts-expect-error
         onClick={!disabled ? handlePress : null}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -56,7 +59,11 @@ export const OmniLink: React.FC<{
           { transitionDuration: "150ms" } as ViewStyle, // browser specific
           style,
         ]}
-        {...(disabled ? {} : props)}
+        {...(disabled
+          ? {}
+          : {
+              accessibilityRole: "link",
+            })}
       >
         {children}
       </View>
@@ -64,7 +71,7 @@ export const OmniLink: React.FC<{
   }
 
   return (
-    <TouchableOpacity style={style} onPress={onPress} {...props}>
+    <TouchableOpacity style={style} onPress={onPress} accessibilityRole="link">
       {children}
     </TouchableOpacity>
   );

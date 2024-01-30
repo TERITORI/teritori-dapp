@@ -1,13 +1,13 @@
 import { SvgProps } from "react-native-svg";
 
-import { RootStackParamList } from "../../utils/navigation";
+import { Routes } from "@/utils/router";
 
 export interface dAppType {
   id: string;
   title: string;
   description: string;
   icon: React.FC<SvgProps> | string;
-  route: "External" | "ComingSoon" | keyof RootStackParamList;
+  route: "External" | "ComingSoon" | keyof Routes;
   url?: string;
   groupKey: string;
   selectedByDefault: boolean;

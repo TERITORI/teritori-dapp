@@ -9,14 +9,14 @@ import { OptimizedImage } from "../OptimizedImage";
 
 export const CollectionInfoInline: React.FC<{
   imageSource: ImageURISource;
-  id?: string;
+  id: string | undefined;
   name?: string;
 }> = ({ imageSource, id, name }) => {
   return (
     <OmniLink
-      to={{
-        screen: "Collection",
-        params: { id },
+      href={{
+        pathname: "/collection/[id]",
+        params: { id: id || "" },
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>

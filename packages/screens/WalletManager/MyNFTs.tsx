@@ -40,9 +40,7 @@ export const MyNFTs: React.FC = () => {
       >
         <BrandText style={{ marginRight: 20, fontSize: 20 }}>My NFTs</BrandText>
         <OmniLink
-          to={{
-            screen: "MyCollection",
-          }}
+          href="/my-collection"
           style={{
             display: "flex",
             flexDirection: "row",

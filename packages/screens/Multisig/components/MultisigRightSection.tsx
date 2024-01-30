@@ -1,5 +1,4 @@
 import { Decimal } from "@cosmjs/math";
-import { useRoute } from "@react-navigation/native";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { View, ViewStyle } from "react-native";
@@ -38,7 +37,6 @@ import {
   getNonSigningStargateClient,
   getUserId,
 } from "../../../networks";
-import { AppRouteType, useAppNavigation } from "../../../utils/navigation";
 import {
   neutral33,
   neutral55,
@@ -50,15 +48,14 @@ import { layout } from "../../../utils/style/layout";
 import { TNSMintNameModal } from "../../TeritoriNameService/TNSMintNameScreen";
 import { TNSRegisterScreen } from "../../TeritoriNameService/TNSRegisterScreen";
 
+import { router, useLocalSearchParams } from "@/utils/router";
+
 export const MultisigRightSection: React.FC = () => {
-  const navigation = useAppNavigation();
   const [visibleRegisterForm, setVisibleRegisterForm] =
     useState<boolean>(false);
   const [visibleMintForm, setVisibleMintForm] = useState<boolean>(false);
   const [showSendModal, setShowSendModal] = useState(false);
-  const {
-    params: { id },
-  } = useRoute<AppRouteType<"MultisigWalletDashboard">>();
+  const { id } = useLocalSearchParams<"/multisig/[id]">();
   const [network] = parseUserId(id);
   const stakingCurrency = getStakingCurrency(network?.id);
   const { multisig, isInitialLoading } = useMultisigInfo(id);
@@ -81,10 +78,7 @@ export const MultisigRightSection: React.FC = () => {
   };
   const handleMintTnsModalClose = (modalName?: string) => {
     setVisibleMintForm(false);
-    navigation.reset({
-      index: 1,
-      routes: [{ name: "Multisig" }],
-    });
+    router.replace("/multisig");
   };
 
   if (isInitialLoading) {
@@ -142,7 +136,12 @@ export const MultisigRightSection: React.FC = () => {
           size="M"
           text="Delegate"
           fullWidth
-          onPress={() => navigation.navigate("Staking", { multisigId: id })}
+          onPress={() =>
+            router.navigate({
+              pathname: "/staking",
+              params: { multisigId: id },
+            })
+          }
         />,
       );
 

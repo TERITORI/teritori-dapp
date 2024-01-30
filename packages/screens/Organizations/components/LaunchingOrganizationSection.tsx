@@ -5,17 +5,17 @@ import { StyleSheet, View, Animated } from "react-native";
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SpacerColumn } from "../../../components/spacer";
-import { useAppNavigation } from "../../../utils/navigation";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+
+import { router } from "@/utils/router";
 
 export const LaunchingOrganizationSection: React.FC<{
   isLaunched: boolean;
   id: string | undefined;
   resetForm: () => Promise<void>;
 }> = ({ isLaunched, id, resetForm }) => {
-  const { navigate } = useAppNavigation();
   const successAnimateValue = useRef(new Animated.Value(0)).current;
   const lottieRef = useRef<Lottie>(null);
 
@@ -54,7 +54,7 @@ export const LaunchingOrganizationSection: React.FC<{
               loader
               onPress={async () => {
                 await resetForm();
-                navigate("UserPublicProfile", { id });
+                router.navigate({ pathname: "/user/[id]", params: { id } });
               }}
             />
           </View>

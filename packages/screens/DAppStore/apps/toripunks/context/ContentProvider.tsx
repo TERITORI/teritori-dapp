@@ -12,7 +12,8 @@ import { Dimensions } from "react-native";
 import { textStyle } from "./TextStyleUtil";
 import { Wallet } from "../../../../../context/WalletsProvider";
 import useSelectedWallet from "../../../../../hooks/useSelectedWallet";
-import { useAppNavigation } from "../../../../../utils/navigation";
+
+import { router } from "@/utils/router";
 
 interface DefaultValue {
   setSelectedSectionHandler: (section: string) => void;
@@ -49,11 +50,13 @@ export const ContentContextProvider: React.FC<{
   const [selectedSection, setSelectedSection] = useState<string>(screen);
 
   const selectedWallet = useSelectedWallet();
-  const navigation = useAppNavigation();
   const [loadingGame, setLoadingGame] = useState<boolean>(false);
 
   const setSelectedSectionHandler = (section: string) => {
-    navigation.navigate("ToriPunks", { route: section });
+    router.navigate({
+      pathname: "/dapp/tori-punks/[route]",
+      params: { route: section },
+    });
     setSelectedSection(section);
   };
 

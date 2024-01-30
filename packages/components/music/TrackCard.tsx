@@ -17,7 +17,6 @@ import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import { neutral17, neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14, fontMedium13 } from "../../utils/style/fonts";
@@ -32,6 +31,8 @@ import { CustomPressable } from "../buttons/CustomPressable";
 import { ZodSocialFeedTrackMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn } from "../spacer";
 
+import { router } from "@/utils/router";
+
 const BUTTONS_HEIGHT = 28;
 export const TRACK_CARD_WIDTH = 242;
 export const TrackCard: React.FC<{
@@ -43,7 +44,6 @@ export const TrackCard: React.FC<{
   const authorNSInfo = useNSUserInfo(post.authorId);
   const [, userAddress] = parseUserId(post.authorId);
   const [isHovered, setIsHovered] = useState(false);
-  const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   let cardWidth = StyleSheet.flatten(style)?.width;
   if (typeof cardWidth !== "number") {
@@ -81,8 +81,11 @@ export const TrackCard: React.FC<{
           onHoverOut={() => setIsHovered(false)}
           style={imgBoxStyle}
           onPress={() => {
-            navigation.navigate("FeedPostView", {
-              id: getNetworkObjectId(selectedNetworkId, post.identifier),
+            router.navigate({
+              pathname: "/feed/post/[id]",
+              params: {
+                id: getNetworkObjectId(selectedNetworkId, post.identifier),
+              },
             });
           }}
         >
@@ -128,8 +131,8 @@ export const TrackCard: React.FC<{
         <>
           <SpacerColumn size={1} />
           <OmniLink
-            to={{
-              screen: "UserPublicProfile",
+            href={{
+              pathname: "/user/[id]",
               params: { id: post.authorId },
             }}
           >

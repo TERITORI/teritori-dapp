@@ -1,5 +1,5 @@
-import { useLinkTo } from "@react-navigation/native";
-import React, { useCallback } from "react";
+import { router } from "expo-router";
+import React from "react";
 import { Image, Linking, useWindowDimensions, View } from "react-native";
 
 import { News } from "../../api/marketplace/v1/marketplace";
@@ -21,20 +21,17 @@ export const NewsBox: React.FC<{
   news: News;
 }> = ({ news }) => {
   const { width } = useWindowDimensions();
-  const linkTo = useLinkTo();
-  const navigateTo = useCallback(
-    (to: string | undefined) => {
-      if (!to) {
-        return;
-      }
-      if (to.startsWith("/")) {
-        linkTo(to);
-        return;
-      }
-      Linking.openURL(to);
-    },
-    [linkTo],
-  );
+
+  const navigateTo = (to: string | undefined) => {
+    if (!to) {
+      return;
+    }
+    if (to.startsWith("/")) {
+      router.navigate(to);
+      return;
+    }
+    Linking.openURL(to);
+  };
 
   return (
     <View

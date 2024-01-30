@@ -7,14 +7,13 @@ import { OwnedNFTs } from "../../components/OwnedNFTs";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 
 /*
   FIXME: this needs to handle all collections and all nfts
 */
 
-export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
+export const MyCollectionScreen = () => {
   const selectedWallet = useSelectedWallet();
 
   const EmptyListComponent = useCallback(

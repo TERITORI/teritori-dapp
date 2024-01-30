@@ -4,16 +4,21 @@ import { Content } from "./content/Content";
 import { ContentContextProvider } from "./context/ContentProvider";
 import { ScreenContainer } from "../../../../components/ScreenContainer";
 import { TopLogo } from "../../../../components/navigation/components/TopLogo";
-import { ScreenFC, useAppNavigation } from "../../../../utils/navigation";
 
-export const ToriPunks: ScreenFC<"ToriPunks"> = ({ route }) => {
-  const navigation = useAppNavigation();
-  const screen = route.params ? route.params.route : "welcome";
+import { router, useLocalSearchParams } from "@/utils/router";
+export const ToriPunks = () => {
+  const { route } = useLocalSearchParams<"/dapp/tori-punks/[route]">();
+
+  const screen = route || "welcome";
   useEffect(() => {
-    if (!route.params) {
-      navigation.navigate("ToriPunks", { route: screen });
+    if (!route) {
+      router.navigate({
+        pathname: "/dapp/tori-punks/[route]",
+        params: { route: screen },
+      });
     }
-  }, [navigation, route.params, screen]);
+  }, [route, screen]);
+
   return (
     <ScreenContainer
       fullWidth

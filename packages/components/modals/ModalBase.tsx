@@ -1,3 +1,4 @@
+import { useNavigation } from "expo-router";
 import React, {
   ComponentType,
   ReactNode,
@@ -17,7 +18,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../assets/icons/hamburger-button-cross.svg";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral77, neutral22 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
@@ -89,7 +89,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
   closeOnBlur,
 }) => {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
-  const navigation = useAppNavigation();
+  const navigation = useNavigation();
 
   const insets = useSafeAreaInsets();
 

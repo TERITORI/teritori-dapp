@@ -26,11 +26,10 @@ import {
   mustGetNonSigningCosmWasmClient,
 } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
-import { ScreenFC } from "../../utils/navigation";
 
 // This is a dev tool for now
 
-export const CoreDAOScreen: ScreenFC<"CoreDAO"> = () => {
+export const CoreDAOScreen = () => {
   const networkId = useSelectedNetworkId();
   return (
     <ScreenContainer>

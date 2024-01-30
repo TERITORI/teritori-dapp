@@ -6,10 +6,11 @@ import { useIsDAO } from "../../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { parseUserId, UserKind } from "../../../networks";
-import { useAppNavigation } from "../../../utils/navigation";
 import { primaryColor } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { uppTabItems } from "../../../utils/upp";
+
+import { router } from "@/utils/router";
 
 interface UserPublicProfileScreenHeaderProps {
   userId: string;
@@ -21,7 +22,6 @@ export const UPPHeader = memo(
     userId,
     selectedTab: selectedTabKey,
   }: UserPublicProfileScreenHeaderProps) => {
-    const navigation = useAppNavigation();
     const selectedWallet = useSelectedWallet();
     const { width } = useMaxResolution();
     const { isDAO } = useIsDAO(userId);
@@ -63,7 +63,10 @@ export const UPPHeader = memo(
           items={items}
           selected={selectedTabKey}
           onSelect={(key) => {
-            navigation.navigate("UserPublicProfile", { id: userId, tab: key });
+            router.navigate({
+              pathname: "/user/[id]",
+              params: { id: userId, tab: key },
+            });
           }}
           style={{
             width,

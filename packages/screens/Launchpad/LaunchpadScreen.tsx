@@ -12,10 +12,9 @@ import { CollectionsCarouselHeader } from "../../components/carousels/Collection
 import { CollectionGallery } from "../../components/collections/CollectionGallery";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getNetwork, NetworkFeature } from "../../networks";
-import { ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 
-export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
+export const LaunchpadScreen = () => {
   const selectedNetworkId = useSelectedNetworkId();
 
   return (

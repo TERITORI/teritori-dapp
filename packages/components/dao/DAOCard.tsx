@@ -70,7 +70,7 @@ const DAOCardView: React.FC<{
   const [, daoAddress] = parseUserId(daoId);
   return (
     <OmniLink
-      to={{ screen: "UserPublicProfile", params: { id: daoId } }}
+      href={{ pathname: "/user/[id]", params: { id: daoId } }}
       style={[
         {
           width: 250,

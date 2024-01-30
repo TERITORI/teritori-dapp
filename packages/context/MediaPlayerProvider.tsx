@@ -1,10 +1,10 @@
-import { Route } from "@react-navigation/native";
 import {
   Audio,
   AVPlaybackStatus,
   AVPlaybackStatusSuccess,
   Video,
 } from "expo-av";
+import { Route, useNavigation } from "expo-router";
 import { shuffle } from "lodash";
 import React, {
   createContext,
@@ -21,8 +21,9 @@ import { useFeedbacks } from "./FeedbacksProvider";
 import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
 import { getNetworkObjectId } from "../networks";
 import { web3ToWeb2URI } from "../utils/ipfs";
-import { useAppNavigation } from "../utils/navigation";
 import { Media } from "../utils/types/mediaPlayer";
+
+import { router } from "@/utils/router";
 
 interface DefaultValue {
   handlePlayPause: () => Promise<void>;
@@ -79,7 +80,7 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const selectedNetworkId = useSelectedNetworkId();
-  const navigation = useAppNavigation();
+  const navigation = useNavigation();
   const [videoLastRoute, setVideoLastRoute] = useState<Route<any>>();
   // ------- Only used in UI
   const [isMediaPlayerOpen, setIsMediaPlayerOpen] = useState(
@@ -219,8 +220,11 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
       navigation.getState().routes[navigation.getState().routes.length - 1].key
     ) {
       if (media?.postId) {
-        navigation.navigate("FeedPostView", {
-          id: getNetworkObjectId(selectedNetworkId, media.postId),
+        router.navigate({
+          pathname: "/feed/post/[id]",
+          params: {
+            id: getNetworkObjectId(selectedNetworkId, media.postId),
+          },
         });
       }
     }

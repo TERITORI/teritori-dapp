@@ -70,7 +70,7 @@ export const UserCard: React.FC<{
         },
       ]}
     >
-      <OmniLink to={{ screen: "UserPublicProfile", params: { id: userId } }}>
+      <OmniLink href={{ pathname: "/user/[id]", params: { id: userId } }}>
         <UserAvatarWithFrame
           userId={userId}
           size="L"

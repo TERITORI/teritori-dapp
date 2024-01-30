@@ -16,11 +16,13 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useValidators } from "../../hooks/useValidators";
 import { NetworkKind, UserKind, parseUserId } from "../../networks";
-import { ScreenFC } from "../../utils/navigation";
 import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
+import { useLocalSearchParams } from "@/utils/router";
+
+export const StakeScreen = () => {
+  const params = useLocalSearchParams<"/staking">();
   const selectedWallet = useSelectedWallet();
   const isMobile = useIsMobile();
   let selectedNetworkId: string | undefined = useSelectedNetworkId();

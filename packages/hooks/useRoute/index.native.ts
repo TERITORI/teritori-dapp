@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from "expo-router";
 
 export const useRoute = () => {
   const navigation = useNavigation();

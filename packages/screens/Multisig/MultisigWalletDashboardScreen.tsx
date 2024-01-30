@@ -14,11 +14,12 @@ import { useMultisigInfo } from "../../hooks/multisig/useMultisigInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId, parseUserId } from "../../networks";
 import { validateAddress } from "../../utils/formRules";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { Assets } from "../WalletManager/Assets";
+
+import { router, useLocalSearchParams } from "@/utils/router";
 
 type MultisigFormType = {
   multisigAddress: string;
@@ -26,12 +27,9 @@ type MultisigFormType = {
   assets: string;
 };
 
-export const MultisigWalletDashboardScreen: ScreenFC<
-  "MultisigWalletDashboard"
-> = ({ route }) => {
-  const navigation = useAppNavigation();
+export const MultisigWalletDashboardScreen = () => {
+  const { id: multisigUserId } = useLocalSearchParams<"/multisig/[id]">();
   const { control } = useForm<MultisigFormType>();
-  const { id: multisigUserId } = route.params;
   const [network, multisigAddress] = parseUserId(multisigUserId);
   const userId = useSelectedWallet()?.userId;
   const { multisig, isLoading } = useMultisigInfo(multisigUserId);
@@ -43,7 +41,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
       headerChildren={
         <BrandText style={fontSemibold20}>Dashboard {walletName}</BrandText>
       }
-      onBackPress={() => navigation.navigate("Multisig")}
+      onBackPress={() => router.navigate("/multisig")}
       footerChildren={<></>}
       noMargin
       fullWidth

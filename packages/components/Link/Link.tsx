@@ -1,4 +1,4 @@
-import { Link as NativeLink } from "@react-navigation/native";
+import { Link as NativeLink } from "expo-router";
 import React, { useCallback } from "react";
 import { Linking, TouchableOpacity } from "react-native";
 
@@ -12,7 +12,8 @@ export const Link: React.FC<LinkProps> = ({ to, children }) => {
   }, [to]);
 
   if ((to || "").startsWith("/")) {
-    return <NativeLink to={to || ""}>{children}</NativeLink>;
+    //@ts-expect-error
+    return <NativeLink href={to || ""}>{children}</NativeLink>;
   }
 
   return (

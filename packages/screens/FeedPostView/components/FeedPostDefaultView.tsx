@@ -37,7 +37,6 @@ import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { getNetworkObjectId, parseUserId } from "../../../networks";
-import { useAppNavigation } from "../../../utils/navigation";
 import { DEFAULT_USERNAME } from "../../../utils/social-feed";
 import { fontSemibold20 } from "../../../utils/style/fonts";
 import {
@@ -48,14 +47,14 @@ import {
 import { tinyAddress } from "../../../utils/text";
 import { OnPressReplyType } from "../FeedPostViewScreen";
 
+import { router } from "@/utils/router";
+
 export const FeedPostDefaultView: FC<{
   networkId: string;
   post: Post;
   refetchPost: () => Promise<any>;
   isLoadingPost?: boolean;
 }> = ({ post, networkId, refetchPost, isLoadingPost }) => {
-  const navigation = useAppNavigation();
-
   const { width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
   const isMobile = useIsMobile();
@@ -65,10 +64,13 @@ export const FeedPostDefaultView: FC<{
 
   useEffect(() => {
     if (post?.category === PostCategory.Video)
-      navigation.replace("FeedPostView", {
-        id: postId,
+      router.replace({
+        pathname: "/feed/post/[id]",
+        params: {
+          id: postId,
+        },
       });
-  }, [post?.category, postId, navigation]);
+  }, [post?.category, postId]);
 
   const authorId = post?.authorId;
   const authorNSInfo = useNSUserInfo(authorId);
@@ -173,15 +175,18 @@ export const FeedPostDefaultView: FC<{
       }
       onBackPress={() =>
         post?.parentPostIdentifier
-          ? navigation.navigate("FeedPostView", {
-              id: getNetworkObjectId(
-                networkId,
-                post?.parentPostIdentifier || "",
-              ),
+          ? router.navigate({
+              pathname: "/feed/post/[id]",
+              params: {
+                id: getNetworkObjectId(
+                  networkId,
+                  post?.parentPostIdentifier || "",
+                ),
+              },
             })
-          : navigation.canGoBack()
-            ? navigation.goBack()
-            : navigation.navigate("Feed")
+          : router.canGoBack()
+            ? router.back()
+            : router.navigate("/feed")
       }
       footerChildren
       noScroll

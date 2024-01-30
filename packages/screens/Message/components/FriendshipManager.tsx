@@ -16,12 +16,13 @@ import {
   selectContactRequestList,
   selectConversationList,
 } from "../../../store/slices/message";
-import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
 import {
   Conversation,
   MessageFriendsTabItem,
 } from "../../../utils/types/message";
+
+import { router, useLocalSearchParams } from "@/utils/router";
 
 interface FriendshipManagerProps {
   setActiveConversation?: (item: Conversation) => void;
@@ -34,7 +35,6 @@ export const FriendshipManager = ({
 }: FriendshipManagerProps) => {
   const conversations = useSelector(selectConversationList);
   const contactRequests = useSelector(selectContactRequestList);
-  const { navigate } = useAppNavigation();
 
   const isMobile = useIsMobile();
   const { width } = useWindowDimensions();
@@ -71,16 +71,22 @@ export const FriendshipManager = ({
               marginRight: layout.spacing_x2,
               marginTop: -layout.spacing_x1_5,
             }}
-            onPress={() => navigate("Message")}
+            onPress={() => router.navigate("/message")}
           />
         )}
         <Tabs
           items={tabs}
           onSelect={(tab) => {
             if (Platform.OS !== "web") {
-              navigate("FriendshipManager", { tab });
+              router.navigate({
+                pathname: "/message/friends",
+                params: { tab },
+              });
             } else {
-              navigate("Message", { view: "AddFriend", tab });
+              router.navigate({
+                pathname: "/message/[view]",
+                params: { view: "AddFriend", tab },
+              });
             }
           }}
           selected={activeTab as MessageFriendsTabItem}
@@ -105,7 +111,7 @@ export const FriendshipManager = ({
   );
   if (Platform.OS !== "web") {
     return (
-      <ScreenContainer onBackPress={() => navigate("Message")}>
+      <ScreenContainer onBackPress={() => router.navigate("/message")}>
         <View style={{ paddingHorizontal: layout.spacing_x0_5 }}>
           {renderContentWeb()}
         </View>
@@ -125,10 +131,9 @@ export const FriendshipManager = ({
   );
 };
 
-export const FriendshipManagerScreen: ScreenFC<"FriendshipManager"> = ({
-  route,
-}) => {
-  const activeTab = route?.params?.tab || "friends";
+export const FriendshipManagerScreen = () => {
+  const params = useLocalSearchParams<"/message/friends">();
+  const activeTab = params?.tab || "friends";
 
   return <FriendshipManager activeTab={activeTab} />;
 };

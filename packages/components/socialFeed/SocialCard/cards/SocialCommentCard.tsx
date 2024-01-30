@@ -18,7 +18,6 @@ import { usePrevious } from "../../../../hooks/usePrevious";
 import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
 import { OnPressReplyType } from "../../../../screens/FeedPostView/FeedPostViewScreen";
-import { useAppNavigation } from "../../../../utils/navigation";
 import { DEFAULT_USERNAME } from "../../../../utils/social-feed";
 import {
   neutral00,
@@ -43,6 +42,8 @@ import { PostExtra } from "../../NewsFeed/NewsFeed.type";
 import { SocialCardFooter } from "../SocialCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";
 import { SocialMessageContent } from "../SocialMessageContent";
+
+import { router } from "@/utils/router";
 
 export interface SocialCommentCardProps {
   // We use the cardWidth provided from CommentsContainer.
@@ -72,7 +73,6 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   const [localComment, setLocalComment] = useState<PostExtra>({ ...comment });
   const [viewWidth, setViewWidth] = useState(0);
   const isMobile = useIsMobile();
-  const navigation = useAppNavigation();
   const [replyShown, setReplyShown] = useState(false);
   const [replyListYOffset, setReplyListYOffset] = useState<number[]>([]);
   const [replyListLayout, setReplyListLayout] = useState<LayoutRectangle>();
@@ -148,8 +148,11 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
       onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       disabled={!!localComment.isInLocal}
       onPress={() =>
-        navigation.navigate("FeedPostView", {
-          id: getNetworkObjectId(selectedNetworkId, localComment.identifier),
+        router.navigate({
+          pathname: "/feed/post/[id]",
+          params: {
+            id: getNetworkObjectId(selectedNetworkId, localComment.identifier),
+          },
         })
       }
       style={{ width: cardWidth }}

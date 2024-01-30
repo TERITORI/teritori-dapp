@@ -21,7 +21,7 @@ const ORG_CARD_TAG_WIDTH = 94;
 const OrgCard: React.FC<{ organization: DAO }> = ({ organization }) => {
   return (
     <OmniLink
-      to={{ screen: "UserPublicProfile", params: { id: organization.id } }}
+      href={{ pathname: "/user/[id]", params: { id: organization.id } }}
     >
       <LegacyTertiaryBox
         height={48}

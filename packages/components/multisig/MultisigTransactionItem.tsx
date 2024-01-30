@@ -7,7 +7,6 @@ import { MultisigTransactionModal } from "./MultisigTransactionModal";
 import { ParsedTransaction } from "../../hooks/multisig/useMultisigTransactions";
 import { getCosmosNetworkByChainId, getUserId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
-import { useAppNavigation } from "../../utils/navigation";
 import {
   neutral17,
   neutral33,
@@ -42,7 +41,6 @@ export const MultisigTransactionItem: React.FC<MultisigTransactionItemProps> = (
     threshold,
     signatures,
   } = props;
-  const navigation = useAppNavigation();
   const network = getCosmosNetworkByChainId(chainId);
   const creatorId = getUserId(network?.id, creatorAddress);
   const [isHovered, setHovered] = useState(false);
@@ -55,7 +53,7 @@ export const MultisigTransactionItem: React.FC<MultisigTransactionItemProps> = (
     small1: txInfo,
     small2: txInfo2,
     icon: txIcon,
-  } = getTxInfo(msgs, navigation, network, {
+  } = getTxInfo(msgs, network, {
     textStyle: { ...brandTextNormalCStyle, color: "white" },
   });
 

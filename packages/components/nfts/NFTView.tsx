@@ -157,8 +157,8 @@ const NFTViewContent: React.FC<{
           dropdownRef={dropdownRef}
         />
         <OmniLink
-          to={{
-            screen: "NFTDetail",
+          href={{
+            pathname: "/nft/[id]",
             params: { id: nft.id },
           }}
         >
@@ -254,8 +254,8 @@ const NFTViewHeader: React.FC<{
           }}
         />
         <OmniLink
-          to={{
-            screen: "UserPublicProfile",
+          href={{
+            pathname: "/user/[id]",
             params: { id: nft.ownerId },
           }}
         >
@@ -311,8 +311,8 @@ const NFTViewHeader: React.FC<{
               />
               <SpacerColumn size={0.5} />
               <OmniLink
-                to={{
-                  screen: "NFTDetail",
+                href={{
+                  pathname: "/nft/[id]",
                   params: { id: nft.id },
                 }}
               >
@@ -412,8 +412,8 @@ const NFTViewFooter: React.FC<{ nft: NFT; localSelected: boolean }> = memo(
         {nft.isListed && (
           <View style={{ flex: 1 }}>
             <OmniLink
-              to={{
-                screen: "NFTDetail",
+              href={{
+                pathname: "/nft/[id]",
                 params: { id: nft.id, openBuy: !isOwner },
               }}
               noHoverEffect

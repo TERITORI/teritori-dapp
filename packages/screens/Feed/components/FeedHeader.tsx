@@ -12,10 +12,11 @@ import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId, NetworkKind, parseUserId } from "../../../networks";
-import { useAppNavigation } from "../../../utils/navigation";
 import { feedsTabItems } from "../../../utils/social-feed";
 import { primaryColor } from "../../../utils/style/colors";
 import { fontSemibold16 } from "../../../utils/style/fonts";
+
+import { router } from "@/utils/router";
 
 type FeedHeaderProps = {
   selectedTab: keyof typeof feedsTabItems;
@@ -23,7 +24,6 @@ type FeedHeaderProps = {
 
 export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
   const { width } = useMaxResolution();
-  const navigation = useAppNavigation();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkKind = selectedNetworkInfo?.kind;
   const selectedWallet = useSelectedWallet();
@@ -74,7 +74,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
         items={adjustedTabItems}
         selected={selectedTab}
         onSelect={(key) => {
-          navigation.navigate("Feed", { tab: key });
+          router.navigate({ pathname: "/feed/[tab]", params: { tab: key } });
         }}
         style={{
           alignSelf: "center",

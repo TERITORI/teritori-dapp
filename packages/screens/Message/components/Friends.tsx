@@ -5,16 +5,16 @@ import FriendList from "./FriendsList";
 import { MessageBlankFiller } from "./MessageBlankFiller";
 import { TextInputCustomBorder } from "../../../components/inputs/TextInputCustomBorder";
 import { SpacerColumn } from "../../../components/spacer";
-import { useAppNavigation } from "../../../utils/navigation";
 import { neutral00 } from "../../../utils/style/colors";
 import { Conversation } from "../../../utils/types/message";
+
+import { router } from "@/utils/router";
 interface FriendsProps {
   items: Conversation[];
   setActiveConversation?: (item: Conversation) => void;
 }
 export const Friends = ({ items, setActiveConversation }: FriendsProps) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { navigate } = useAppNavigation();
 
   const filteredItems = items.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -39,9 +39,9 @@ export const Friends = ({ items, setActiveConversation }: FriendsProps) => {
             handleChatPress={() => {
               setActiveConversation?.(item);
               if (Platform.OS !== "web") {
-                navigate("ChatSection", item);
+                router.navigate({ pathname: "/message/chat", params: item });
               } else {
-                navigate("Message");
+                router.navigate("/message");
               }
               setActiveConversation?.(item);
             }}

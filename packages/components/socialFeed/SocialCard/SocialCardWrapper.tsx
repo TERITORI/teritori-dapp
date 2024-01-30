@@ -207,8 +207,8 @@ export const SocialCardWrapper: FC<{
           <SpacerRow size={1} />
 
           <OmniLink
-            to={{
-              screen: "UserPublicProfile",
+            href={{
+              pathname: "/user/[id]",
               params: { id: localPost.authorId },
             }}
           >

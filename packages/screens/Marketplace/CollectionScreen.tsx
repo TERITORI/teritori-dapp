@@ -17,20 +17,21 @@ import {
   setShowFilters,
 } from "../../store/slices/marketplaceFilters";
 import { useAppDispatch } from "../../store/store";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
-  const { id } = route.params;
+import { router, useLocalSearchParams } from "@/utils/router";
+
+export const CollectionScreen = () => {
+  const { id } = useLocalSearchParams<"/collection/[id]">();
+
   const [selectedTab, setSelectedTab] = useState<TabsListType>("collections");
   const { collectionInfo: info } = useCollectionInfo(id);
   const [sortDirection, setSortDirection] = useState(
     SortDirection.SORT_DIRECTION_ASCENDING,
   );
   const [network] = parseCollectionId(id);
-  const navigation = useAppNavigation();
   const { width } = useMaxResolution({
     responsive: true,
     noMargin: false,
@@ -55,7 +56,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
       footerChildren={<></>}
       headerChildren={<BrandText style={fontSemibold20}>{info.name}</BrandText>}
       responsive
-      onBackPress={() => navigation.navigate("Marketplace")}
+      onBackPress={() => router.navigate("/marketplace")}
       forceNetworkId={network?.id}
     >
       <View

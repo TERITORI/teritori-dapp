@@ -27,16 +27,16 @@ import {
   cosmosTypesRegistry,
 } from "../../networks";
 import { prettyPrice } from "../coins";
-import { AppNavigationProp } from "../navigation";
 import { neutral77 } from "../style/colors";
 import { fontSemibold14 } from "../style/fonts";
 import { tinyAddress } from "../text";
+
+import { router } from "@/utils/router";
 
 // once we gather enough different messages here, we should try to establish meaningful abstractions and split this func
 
 export const getTxInfo = (
   msgs: any[],
-  navigation: AppNavigationProp,
   network: NetworkInfo | undefined,
   opts?: { textStyle?: StyleProp<TextStyle> },
 ): {
@@ -431,7 +431,10 @@ export const getTxInfo = (
                 onPress={() => {
                   // TODO: show tns info using reusable component
                   const id = getUserId(network?.id, contractAddress);
-                  navigation.navigate("UserPublicProfile", { id });
+                  router.navigate({
+                    pathname: "/user/[id]",
+                    params: { id },
+                  });
                 }}
               >
                 <BrandText style={opts.textStyle}>

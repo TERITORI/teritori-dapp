@@ -19,7 +19,8 @@ import {
   getKeplrSigningStargateClient,
   cosmosTypesRegistry,
 } from "../networks";
-import { AppNavigationProp, useAppNavigation } from "../utils/navigation";
+
+import { router } from "@/utils/router";
 
 export const useRunOrProposeTransaction = (
   userId: string | undefined,
@@ -33,7 +34,6 @@ export const useRunOrProposeTransaction = (
     userKind === UserKind.Organization,
   );
   const queryClient = useQueryClient();
-  const navigation = useAppNavigation();
   return useCallback(
     async ({
       msgs,
@@ -58,14 +58,12 @@ export const useRunOrProposeTransaction = (
         makeDAOProposal,
         queryClient,
         navigateToProposals,
-        navigation,
       });
     },
     [
       makeDAOProposal,
       multisigAuthToken,
       multisigClient,
-      navigation,
       queryClient,
       userId,
       userKind,
@@ -86,7 +84,6 @@ const runOrProposeTransaction = async ({
   makeDAOProposal,
   queryClient,
   navigateToProposals,
-  navigation,
 }: {
   userKind: UserKind;
   userId: string | undefined;
@@ -99,7 +96,6 @@ const runOrProposeTransaction = async ({
   makeDAOProposal: ReturnType<typeof useDAOMakeProposal>;
   queryClient: QueryClient;
   navigateToProposals?: boolean;
-  navigation: AppNavigationProp;
 }) => {
   const [network, userAddress] = parseUserId(userId);
   if (!network) {
@@ -173,7 +169,7 @@ const runOrProposeTransaction = async ({
         ...multisigTransactionsCountsQueryKey(cosmosNetwork.id),
       ]);
       if (navigateToProposals && userId) {
-        navigation.navigate("MultisigWalletDashboard", { id: userId });
+        router.navigate({ pathname: "/multisig/[id]", params: { id: userId } });
       }
       break;
     }
