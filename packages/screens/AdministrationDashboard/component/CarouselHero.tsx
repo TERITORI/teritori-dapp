@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { Image, View, ViewStyle, useWindowDimensions } from "react-native";
-import Carousel from "react-native-reanimated-carousel";
+import React, { useRef, useState } from "react";
+import { View, ViewStyle, useWindowDimensions } from "react-native";
+import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 
 import guardianPng from "../../../../assets/default-images/guardian_1.png";
+import { OptimizedImage } from "../../../components/OptimizedImage";
 import {
   neutral00,
   neutral44,
@@ -12,11 +13,13 @@ import { layout } from "../../../utils/style/layout";
 
 const MD_BREAKPOINT = 820;
 
+const data: string[] = [guardianPng, guardianPng, guardianPng];
+
 export const CarouselHero = () => {
   const { width } = useWindowDimensions();
-  const heroData = [...new Array(6).keys()];
   const isBreakPoint = width >= MD_BREAKPOINT;
   const [currentPage, setCurrentPage] = useState<number>(0);
+  const carouselRef = useRef<ICarouselInstance | null>(null);
 
   return (
     <View
@@ -27,32 +30,55 @@ export const CarouselHero = () => {
           alignItems: "center",
           justifyContent: "center",
         },
-        isBreakPoint ? { flex: 1 } : { marginTop: 16 },
+        isBreakPoint ? { flex: 1 } : { marginTop: layout.spacing_x2 },
       ]}
     >
       <Carousel
-        loop
+        ref={carouselRef}
         width={490}
         height={490}
+        data={data}
+        panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
+        onProgressChange={(_, absoluteProgress) => {
+          console.log("absoluteProgress", absoluteProgress);
+          setCurrentPage(Math.round(absoluteProgress));
+        }}
+        autoPlay
+        pagingEnabled
+        autoPlayInterval={7000}
+        renderItem={({ item, index }) => (
+          <OptimizedImage
+            width={490}
+            height={490}
+            sourceURI={item}
+            key={`Carousel-${index}`}
+            style={{ width: 490, height: 490, borderRadius: 12 }}
+          />
+        )}
+      />
+      {/* <Carousel
+        loop
+        width={492}
+        height={490}
         autoPlay={false}
-        data={heroData}
+        data={data}
         scrollAnimationDuration={1000}
         onSnapToItem={(index) => setCurrentPage(index)}
         renderItem={({ index }) => (
           <View style={{ paddingHorizontal: layout.spacing_x0_25 }}>
-            <Image
+            <OptimizedImage
+              sourceURI={guardianPng}
               style={{
-                width: 490,
-                height: 490,
                 borderRadius: 12,
               }}
-              source={guardianPng}
+              height={490}
+              width={490}
             />
           </View>
         )}
-      />
+      /> */}
       <View style={pagination}>
-        {heroData.map((_, index) => (
+        {data.map((_, index) => (
           <View
             key={index}
             style={[paginationDot, index === currentPage && activeDot]}
@@ -67,7 +93,7 @@ const pagination: ViewStyle = {
   flexDirection: "row",
   justifyContent: "center",
   alignItems: "center",
-  marginTop: 10,
+  marginTop: layout.spacing_x1_5,
   position: "absolute",
   bottom: 10,
   backgroundColor: neutral00,
