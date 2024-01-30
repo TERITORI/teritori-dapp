@@ -4,7 +4,6 @@ import { Image, View } from "react-native";
 import LaunchpadBannerImage from "../../../../assets/banners/launchpad.jpg";
 import LogoSimpleSvg from "../../../../assets/icons/logo-simple.svg";
 import { BrandText } from "../../../components/BrandText";
-import { OptimizedImage } from "../../../components/OptimizedImage";
 import { SVG } from "../../../components/SVG";
 import { SpacerColumn } from "../../../components/spacer";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";

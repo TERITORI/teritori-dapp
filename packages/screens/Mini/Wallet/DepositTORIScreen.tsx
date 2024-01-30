@@ -2,15 +2,9 @@ import * as Clipboard from "expo-clipboard";
 import React, { useState } from "react";
 import { View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
-import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../components/BrandText";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import {
-  selectSelectedNativeWalletIndex,
-  selectWalletById,
-} from "../../../store/slices/wallets";
-import { RootState } from "../../../store/store";
 import { ScreenFC } from "../../../utils/navigation";
 import {
   neutral22,
