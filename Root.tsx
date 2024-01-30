@@ -4,7 +4,6 @@ import {
   Exo_500Medium,
   Exo_700Bold,
 } from "@expo-google-fonts/exo";
-import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
@@ -22,7 +21,6 @@ import { Provider as ReduxProvider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
 import { MultisigDeauth } from "./packages/components/multisig/MultisigDeauth";
-import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
 import { MediaPlayerContextProvider } from "./packages/context/MediaPlayerProvider";
@@ -42,7 +40,6 @@ import { getAvailableApps } from "./packages/screens/DAppStore/query/getFromFile
 import { setAvailableApps } from "./packages/store/slices/dapps-store";
 import { setSelectedWalletId } from "./packages/store/slices/settings";
 import { persistor, store, useAppDispatch } from "./packages/store/store";
-import { linking } from "./packages/utils/navigation";
 
 if (Platform.OS === "web") {
   const plausible = Plausible({
@@ -61,7 +58,7 @@ type DefaultForm = {
 enableLegacyWebImplementation(true);
 // ^ required for drog and drop on the dAppStore
 
-export default function App() {
+export default function App({ children }: { children: ReactNode }) {
   const methods = useForm<DefaultForm>();
   const [fontsLoaded] = useFonts({
     Exo_500Medium,
@@ -93,37 +90,35 @@ export default function App() {
             <QueryClientProvider client={queryClient}>
               <FormProvider<DefaultForm> {...methods}>
                 <MetaMaskProvider>
-                  <NavigationContainer linking={linking}>
-                    <SafeAreaProvider>
-                      <FeedbacksContextProvider>
-                        <DropdownsContextProvider>
-                          <WalletsProvider>
-                            <WalletSyncer />
-                            <DappStoreApps />
-                            <MultisigDeauth />
-                            <WalletControlContextProvider>
-                              <SearchBarContextProvider>
-                                <TransactionModalsProvider>
-                                  <TNSContextProvider>
-                                    <TNSMetaDataListContextProvider>
-                                      <MenuProvider>
-                                        <MessageContextProvider>
-                                          <MediaPlayerContextProvider>
-                                            <StatusBar style="inverted" />
-                                            <Navigator />
-                                          </MediaPlayerContextProvider>
-                                        </MessageContextProvider>
-                                      </MenuProvider>
-                                    </TNSMetaDataListContextProvider>
-                                  </TNSContextProvider>
-                                </TransactionModalsProvider>
-                              </SearchBarContextProvider>
-                            </WalletControlContextProvider>
-                          </WalletsProvider>
-                        </DropdownsContextProvider>
-                      </FeedbacksContextProvider>
-                    </SafeAreaProvider>
-                  </NavigationContainer>
+                  <SafeAreaProvider>
+                    <FeedbacksContextProvider>
+                      <DropdownsContextProvider>
+                        <WalletsProvider>
+                          <WalletSyncer />
+                          <DappStoreApps />
+                          <MultisigDeauth />
+                          <WalletControlContextProvider>
+                            <SearchBarContextProvider>
+                              <TransactionModalsProvider>
+                                <TNSContextProvider>
+                                  <TNSMetaDataListContextProvider>
+                                    <MenuProvider>
+                                      <MessageContextProvider>
+                                        <MediaPlayerContextProvider>
+                                          <StatusBar style="inverted" />
+                                          {children}
+                                        </MediaPlayerContextProvider>
+                                      </MessageContextProvider>
+                                    </MenuProvider>
+                                  </TNSMetaDataListContextProvider>
+                                </TNSContextProvider>
+                              </TransactionModalsProvider>
+                            </SearchBarContextProvider>
+                          </WalletControlContextProvider>
+                        </WalletsProvider>
+                      </DropdownsContextProvider>
+                    </FeedbacksContextProvider>
+                  </SafeAreaProvider>
                 </MetaMaskProvider>
               </FormProvider>
             </QueryClientProvider>

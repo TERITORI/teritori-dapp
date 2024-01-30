@@ -15,7 +15,6 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../networks";
 import { prettyMediaDuration } from "../../utils/mediaPlayer";
-import { useAppNavigation } from "../../utils/navigation";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import {
   errorColor,
@@ -40,6 +39,8 @@ import { ZodSocialFeedVideoMetadata } from "../socialFeed/NewsFeed/NewsFeed.type
 import { DateTime } from "../socialFeed/SocialCard/DateTime";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
+import { router } from "@/utils/router";
+
 const IMAGE_HEIGHT = 173;
 const VIDEO_CARD_WIDTH = 261;
 export const VideoCard: React.FC<{
@@ -50,7 +51,6 @@ export const VideoCard: React.FC<{
 }> = memo(({ post, hideAuthor, hideDescription, style }) => {
   const { width: windowWidth } = useWindowDimensions();
   const selectedNetworkId = useSelectedNetworkId();
-  const navigation = useAppNavigation();
   const video = zodTryParseJSON(ZodSocialFeedVideoMetadata, post.metadata);
   const authorNSInfo = useNSUserInfo(post.authorId);
   const [, userAddress] = parseUserId(post.authorId);
@@ -105,8 +105,11 @@ export const VideoCard: React.FC<{
           onHoverIn={() => setIsHovered(true)}
           onHoverOut={() => setIsHovered(false)}
           onPress={() =>
-            navigation.navigate("FeedPostView", {
-              id: getNetworkObjectId(selectedNetworkId, post.identifier),
+            router.navigate({
+              pathname: "/feed/post/[id]",
+              params: {
+                id: getNetworkObjectId(selectedNetworkId, post.identifier),
+              },
             })
           }
         >
@@ -159,8 +162,8 @@ export const VideoCard: React.FC<{
       <View>
         {!hideAuthor && (
           <OmniLink
-            to={{
-              screen: "UserPublicProfile",
+            href={{
+              pathname: "/user/[id]",
               params: { id: post.authorId },
             }}
             style={{

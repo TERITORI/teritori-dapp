@@ -29,9 +29,10 @@ import {
   getUserId,
   mustGetCosmosNetwork,
 } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
+
+import { router } from "@/utils/router";
 
 const NotOwnerActions: React.FC<{
   tokenId: string;
@@ -43,7 +44,6 @@ const NotOwnerActions: React.FC<{
   const isKeplrConnected = useIsKeplrConnected();
   const isLeapConnected = useIsLeapConnected();
 
-  const navigation = useAppNavigation();
   return (
     <View
       style={{
@@ -60,7 +60,10 @@ const NotOwnerActions: React.FC<{
           boxStyle={{ marginRight: layout.spacing_x3 }}
           onPress={() => {
             onClose();
-            navigation.navigate("UserPublicProfile", { id: ownerId });
+            router.navigate({
+              pathname: "/user/[id]",
+              params: { id: ownerId },
+            });
           }}
         />
       )}
@@ -88,7 +91,7 @@ const OwnerActions: React.FC<{
   const wallet = useSelectedWallet();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const queryClient = useQueryClient();
-  const navigation = useAppNavigation();
+
   return (
     <View
       style={{
@@ -106,7 +109,10 @@ const OwnerActions: React.FC<{
           style={{ marginRight: layout.spacing_x3 }}
           onPress={() => {
             onClose();
-            navigation.navigate("UserPublicProfile", { id: ownerId });
+            router.navigate({
+              pathname: "/user/[id]",
+              params: { id: ownerId },
+            });
           }}
         />
       )}

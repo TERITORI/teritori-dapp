@@ -14,7 +14,6 @@ import {
   useDAOProposals,
 } from "../../hooks/dao/useDAOProposals";
 import { getUserId, parseUserId } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
 import {
   neutral33,
   neutral55,
@@ -97,14 +96,9 @@ const ProposalRow: React.FC<{
 
   const proposerId = getUserId(network?.id, proposal.proposal.proposer);
 
-  const navigation = useAppNavigation();
-
-  const { name, icon } = getTxInfo(
-    proposal.proposal.msgs,
-    navigation,
-    network,
-    { textStyle: [fontSemibold13, { lineHeight: 13 }] },
-  );
+  const { name, icon } = getTxInfo(proposal.proposal.msgs, network, {
+    textStyle: [fontSemibold13, { lineHeight: 13 }],
+  });
 
   return (
     <View

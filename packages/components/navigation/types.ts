@@ -1,12 +1,13 @@
 import { SvgProps } from "react-native-svg";
 
 import { NetworkKind } from "../../networks";
-import { RouteName } from "../../utils/navigation";
+
+import { Routes } from "@/utils/router";
 
 export type SidebarType = {
   title: string;
   id: string;
-  route: RouteName;
+  route: keyof Routes;
   icon: React.FC<SvgProps>;
   nested?: Record<string, Omit<SidebarType, "nested">>;
 };
@@ -16,7 +17,7 @@ export type SidebarRecordType = Record<
   {
     title: string;
     id: string;
-    route: RouteName;
+    route: keyof Routes;
     icon: React.FC<SvgProps>;
     nested?: Record<string, SidebarType>;
     disabledOn?: NetworkKind[];

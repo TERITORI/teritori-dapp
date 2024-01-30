@@ -49,6 +49,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ label, style }) => {
                 style={{ top: 12, right: 12 }}
               />
               <Image
+                //@ts-expect-error
                 source={{ uri: files?.[0]?.path }}
                 style={[
                   {

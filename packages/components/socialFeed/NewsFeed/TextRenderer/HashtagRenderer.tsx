@@ -1,16 +1,18 @@
 import React from "react";
 import { Text, TouchableOpacity } from "react-native";
 
-import { useAppNavigation } from "../../../../utils/navigation";
 import { primaryColor } from "../../../../utils/style/colors";
-export const HashtagRenderer: React.FC<{ text: string }> = ({ text }) => {
-  const navigation = useAppNavigation();
 
+import { router } from "@/utils/router";
+export const HashtagRenderer: React.FC<{ text: string }> = ({ text }) => {
   return (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate("HashtagFeed", {
-          hashtag: text.replace("#", ""),
+        router.navigate({
+          pathname: "/feed/tag/[hashtag]",
+          params: {
+            hashtag: text.replace("#", ""),
+          },
         })
       }
     >

@@ -33,9 +33,9 @@ export const Username: FC<{
   }
   return (
     <OmniLink
-      to={{
-        screen: "UserPublicProfile",
-        params: { id: userId },
+      href={{
+        pathname: "/user/[id]",
+        params: { id: userId || "" },
       }}
     >
       <BrandText

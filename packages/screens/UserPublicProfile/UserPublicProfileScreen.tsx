@@ -1,4 +1,5 @@
 import { bech32 } from "bech32";
+import { useNavigation } from "expo-router";
 import React, { useEffect, useMemo } from "react";
 
 import { DAOsUPPScreen } from "./tabScreens/DAOsUPPScreen";
@@ -21,21 +22,20 @@ import {
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { NetworkKind, parseUserId } from "../../networks";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { uppTabItems, UppTabKeys } from "../../utils/upp";
+
+import { useLocalSearchParams, router } from "@/utils/router";
 
 export interface UppTabScreenProps {
   userId: string;
   screenContainerOtherProps: Partial<ScreenContainerProps>;
 }
 
-export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
-  route: {
-    params: { id, tab: tabKey },
-  },
-}) => {
-  const navigation = useAppNavigation();
+export const UserPublicProfileScreen = () => {
+  const { id, tab: tabKey } = useLocalSearchParams<"/user/[id]">();
+  const navigation = useNavigation();
+
   const [network, userAddress] = parseUserId(id);
   useForceNetworkSelection(network?.id);
   const { metadata, notFound } = useNSUserInfo(id);
@@ -52,17 +52,15 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
           </BrandText>
         ),
         onBackPress: () =>
-          navigation.canGoBack()
-            ? navigation.goBack()
-            : navigation.navigate("Home"),
+          router.canGoBack() ? router.back() : router.navigate(""),
       };
-    }, [network?.id, metadata?.tokenId, userAddress, navigation]);
+    }, [network?.id, metadata?.tokenId, userAddress]);
 
   useEffect(() => {
     navigation.setOptions({
       title: `Teritori - User: ${metadata.tokenId || userAddress}`,
     });
-  }, [navigation, userAddress, metadata.tokenId]);
+  }, [userAddress, metadata.tokenId, navigation]);
 
   if (
     (tabKey && !uppTabItems[tabKey]) ||

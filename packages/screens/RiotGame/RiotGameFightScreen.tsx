@@ -1,4 +1,4 @@
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { FightSection } from "./component/FightSection";
@@ -12,15 +12,15 @@ import { useSquadStakingConfig } from "../../hooks/riotGame/useSquadStakingConfi
 import { useSquadStakingSquadsV2 } from "../../hooks/riotGame/useSquadStakingSquadsV2";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
+
+import { router } from "@/utils/router";
 
 const FIGHT_BG_URI =
   "https://bafybeigv6eunkzlb4a7je6c5ezrcxgr2bv2guuwogin6mbsmdl2i6mgvwq.ipfs.cf-ipfs.com/";
 
 export const RiotGameFightScreen = () => {
-  const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
 
@@ -49,7 +49,7 @@ export const RiotGameFightScreen = () => {
   );
 
   const gotoMarketplace = () => {
-    navigation.navigate("RiotGameMarketplace");
+    router.navigate("/riot-game/marketplace");
   };
 
   const onCloseClaimModal = () => {
@@ -68,9 +68,9 @@ export const RiotGameFightScreen = () => {
 
   const focusEffect = useCallback(() => {
     if (isSquadsLoaded && squadStakingConfig?.owner && squads.length === 0) {
-      navigation.replace("RiotGameEnroll");
+      router.replace("/riot-game/enroll");
     }
-  }, [isSquadsLoaded, navigation, squadStakingConfig?.owner, squads.length]);
+  }, [isSquadsLoaded, squadStakingConfig?.owner, squads.length]);
   useFocusEffect(focusEffect);
 
   return (

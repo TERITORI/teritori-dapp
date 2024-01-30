@@ -51,23 +51,23 @@ export const ProfileButton: React.FC<{
       <OmniLink
         style={style}
         disabled={network?.kind !== NetworkKind.Cosmos}
-        to={
+        href={
           !isEdit
             ? {
-                screen: "UserPublicProfile",
+                pathname: "/user/[id]",
                 params: {
                   id: selectedWallet.userId,
                 },
               }
             : metadata.tokenId
               ? {
-                  screen: "TNSHome",
+                  pathname: "/tns/[modal]",
                   params: {
                     modal: "update-name",
                     name: metadata.tokenId.replace(".tori", ""),
                   },
                 }
-              : { screen: "ComingSoon" }
+              : "/coming-soon"
         }
       >
         <SecondaryButtonOutline
@@ -92,8 +92,8 @@ const RegisterButton: React.FC<{
   if (network?.kind === NetworkKind.Cosmos) {
     return (
       <OmniLink
-        to={{
-          screen: "TNSHome",
+        href={{
+          pathname: "/tns/[modal]",
           params: {
             modal: "register",
           },

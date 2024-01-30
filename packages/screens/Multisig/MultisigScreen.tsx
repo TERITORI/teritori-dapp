@@ -22,14 +22,14 @@ import { useMultisigAuthToken } from "../../hooks/multisig/useMultisigAuthToken"
 import { useUserMultisigs } from "../../hooks/multisig/useUserMultisigs";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId, NetworkKind } from "../../networks";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold16, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 
-export const MultisigScreen: ScreenFC<"Multisig"> = () => {
-  const navigation = useAppNavigation();
+import { router } from "@/utils/router";
+
+export const MultisigScreen = () => {
   const selectedWallet = useSelectedWallet();
   const authToken = useMultisigAuthToken(selectedWallet?.userId);
 
@@ -50,7 +50,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
       footerChildren={<></>}
       noMargin
       fullWidth
-      onBackPress={() => navigation.navigate("Multisig")}
+      onBackPress={() => router.navigate("/multisig")}
       noScroll
       forceNetworkKind={NetworkKind.Cosmos}
     >
@@ -86,8 +86,14 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                     icon={multisigWalletSVG}
                     isBetaVersion
                     onPress={() =>
-                      navigation.navigate("MultisigWalletDashboard", {
-                        id: getUserId(selectedWallet?.networkId, item.address),
+                      router.navigate({
+                        pathname: "/multisig/[id]",
+                        params: {
+                          id: getUserId(
+                            selectedWallet?.networkId,
+                            item.address,
+                          ),
+                        },
                       })
                     }
                     subtitle={tinyAddress(item.address, 21)}
@@ -102,7 +108,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                   icon={postJobSVG}
                   isBetaVersion
                   disabled={!authToken}
-                  onPress={() => navigation.navigate("MultisigCreate")}
+                  onPress={() => router.navigate("/multisig/create")}
                 />
               )}
               ListFooterComponent={() =>
@@ -139,11 +145,14 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                         icon={multisigWalletSVG}
                         isBetaVersion
                         onPress={() =>
-                          navigation.navigate("MultisigWalletDashboard", {
-                            id: getUserId(
-                              selectedWallet?.networkId,
-                              item.address,
-                            ),
+                          router.navigate({
+                            pathname: "/multisig/[id]",
+                            params: {
+                              id: getUserId(
+                                selectedWallet?.networkId,
+                                item.address,
+                              ),
+                            },
                           })
                         }
                         subtitle={tinyAddress(item.address, 21)}

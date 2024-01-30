@@ -8,7 +8,6 @@ import { Post } from "../../../../api/feed/v1/feed";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
-import { useAppNavigation } from "../../../../utils/navigation";
 import { zodTryParseJSON } from "../../../../utils/sanitize";
 import { ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH } from "../../../../utils/social-feed";
 import {
@@ -44,6 +43,8 @@ import { SocialCardFooter } from "../SocialCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";
 import { SocialCardWrapper } from "../SocialCardWrapper";
 
+import { router } from "@/utils/router";
+
 const ARTICLE_CARD_PADDING_VERTICAL = layout.spacing_x2;
 const ARTICLE_CARD_PADDING_HORIZONTAL = layout.spacing_x2_5;
 
@@ -54,7 +55,6 @@ export const SocialArticleCard: FC<{
   refetchFeed?: () => Promise<any>;
   isFlagged?: boolean;
 }> = memo(({ post, isPostConsultation, refetchFeed, style, isFlagged }) => {
-  const navigation = useAppNavigation();
   const [localPost, setLocalPost] = useState<Post>(post);
   const [viewWidth, setViewWidth] = useState(0);
   const { width: windowWidth } = useWindowDimensions();
@@ -120,8 +120,11 @@ export const SocialArticleCard: FC<{
     >
       <CustomPressable
         onPress={() =>
-          navigation.navigate("FeedPostView", {
-            id: getNetworkObjectId(selectedNetworkId, localPost.identifier),
+          router.navigate({
+            pathname: "/feed/post/[id]",
+            params: {
+              id: getNetworkObjectId(selectedNetworkId, localPost.identifier),
+            },
           })
         }
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}

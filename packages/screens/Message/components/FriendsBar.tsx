@@ -13,7 +13,6 @@ import {
   selectConversationList,
   selectContactRequestList,
 } from "../../../store/slices/message";
-import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral22,
   secondaryColor,
@@ -21,10 +20,11 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 
+import { router } from "@/utils/router";
+
 export const FriendsBar = () => {
   const contactRequests = useSelector(selectContactRequestList);
   const conversations = useSelector(selectConversationList);
-  const { navigate } = useAppNavigation();
 
   return (
     <View
@@ -53,9 +53,18 @@ export const FriendsBar = () => {
               <TouchableOpacity
                 onPress={() => {
                   if (Platform.OS !== "web") {
-                    navigate("FriendshipManager", { tab: "request" });
+                    router.navigate({
+                      pathname: "/message/friends",
+                      params: { tab: "request" },
+                    });
                   } else {
-                    navigate("Message", { view: "AddFriend", tab: "request" });
+                    router.navigate({
+                      pathname: "/message/[view]",
+                      params: {
+                        view: "AddFriend",
+                        tab: "request",
+                      },
+                    });
                   }
                 }}
               >
@@ -73,9 +82,18 @@ export const FriendsBar = () => {
               }}
               onPress={() => {
                 if (Platform.OS !== "web") {
-                  navigate("FriendshipManager", { tab: "friends" });
+                  router.navigate({
+                    pathname: "/message/friends",
+                    params: { tab: "friends" },
+                  });
                 } else {
-                  navigate("Message", { view: "AddFriend", tab: "friends" });
+                  router.navigate({
+                    pathname: "/message/[view]",
+                    params: {
+                      view: "AddFriend",
+                      tab: "friends",
+                    },
+                  });
                 }
               }}
             >

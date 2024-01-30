@@ -28,9 +28,10 @@ import {
   setNFTStorageAPI,
 } from "../../store/slices/settings";
 import { RootState, useAppDispatch } from "../../store/store";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutralA3, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+
+import { router } from "@/utils/router";
 
 const NFTAPIKeyInput: React.FC = () => {
   const userIPFSKey = useSelector(selectNFTStorageAPI);
@@ -71,8 +72,7 @@ const NFTAPIKeyInput: React.FC = () => {
   );
 };
 
-export const SettingsScreen: ScreenFC<"Settings"> = () => {
-  const navigation = useAppNavigation();
+export const SettingsScreen = () => {
   const commonStyles = useCommonStyles();
   const isKeplrConnected = useIsKeplrConnected();
   const testnetEnabled = useSelector(selectAreTestnetsEnabled);
@@ -124,7 +124,12 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
         <View style={commonStyles.cardContainer}>
           <TouchableOpacity
             disabled={!isKeplrConnected}
-            onPress={() => navigation.navigate("TNSHome", { modal: "manage" })}
+            onPress={() =>
+              router.navigate({
+                pathname: "/tns/[modal]",
+                params: { modal: "manage" },
+              })
+            }
             style={{
               opacity: !isKeplrConnected ? 0.5 : 1,
             }}

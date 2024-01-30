@@ -13,9 +13,7 @@ export const BuyTokens: React.FC<{
 }> = ({ flexDirection, textStyle }) => {
   return (
     <OmniLink
-      to={{
-        screen: "Swap",
-      }}
+      href="/swap"
       style={{
         justifyContent: "center",
         alignItems: "center",

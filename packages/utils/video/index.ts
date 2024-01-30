@@ -1,6 +1,6 @@
-import { VideoFileMetadata } from "../types/files";
+import { FileWithPath, VideoFileMetadata } from "../types/files";
 
-const getVideoDuration = (file: File) => {
+const getVideoDuration = (file: FileWithPath) => {
   let duration = 0;
   try {
     const video = document.createElement("video");
@@ -22,7 +22,7 @@ const getVideoDuration = (file: File) => {
   return duration;
 };
 
-export const getVideoData = (file: File): VideoFileMetadata => {
+export const getVideoData = (file: FileWithPath): VideoFileMetadata => {
   const duration = getVideoDuration(file) * 1000;
   return {
     duration,

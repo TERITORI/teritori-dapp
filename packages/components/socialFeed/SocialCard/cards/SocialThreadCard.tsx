@@ -6,7 +6,6 @@ import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
 import { OnPressReplyType } from "../../../../screens/FeedPostView/FeedPostViewScreen";
-import { useAppNavigation } from "../../../../utils/navigation";
 import {
   neutral00,
   neutral17,
@@ -25,6 +24,8 @@ import { SocialCardFooter } from "../SocialCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";
 import { SocialCardWrapper } from "../SocialCardWrapper";
 import { SocialMessageContent } from "../SocialMessageContent";
+
+import { router } from "@/utils/router";
 
 export const SOCIAl_CARD_BORDER_RADIUS = 12;
 
@@ -54,7 +55,6 @@ export const SocialThreadCard: React.FC<{
     const selectedNetworkId = selectedNetworkInfo?.id || "";
     const authorNSInfo = useNSUserInfo(localPost.authorId);
     const [, authorAddress] = parseUserId(localPost.authorId);
-    const navigation = useAppNavigation();
     const username = authorNSInfo?.metadata?.tokenId || authorAddress;
 
     const handleReply = () =>
@@ -76,8 +76,11 @@ export const SocialThreadCard: React.FC<{
           onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
           disabled={isPostConsultation}
           onPress={() =>
-            navigation.navigate("FeedPostView", {
-              id: getNetworkObjectId(selectedNetworkId, localPost.identifier),
+            router.navigate({
+              pathname: "/feed/post/[id]",
+              params: {
+                id: getNetworkObjectId(selectedNetworkId, localPost.identifier),
+              },
             })
           }
           style={[

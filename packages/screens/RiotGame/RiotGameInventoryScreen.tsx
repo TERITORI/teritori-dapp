@@ -14,19 +14,19 @@ import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutl
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { isNFTStaked } from "../../utils/game";
-import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
 import { fontMedium32 } from "../../utils/style/fonts";
 import { layout, MOBILE_MAX_WIDTH } from "../../utils/style/layout";
 
+import { router } from "@/utils/router";
+
 export const RiotGameInventoryScreen = () => {
-  const navigation = useAppNavigation();
   const isMobile = useIsMobile();
 
   const { myAvailableRippers } = useRippers();
 
   const gotoBreeding = () => {
-    navigation.navigate("RiotGameBreeding");
+    router.navigate("/riot-game/breeding");
   };
 
   return (

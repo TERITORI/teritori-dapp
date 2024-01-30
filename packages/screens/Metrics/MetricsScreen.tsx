@@ -11,14 +11,13 @@ import { SpacerColumn } from "../../components/spacer";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { getNonSigningStargateClient } from "../../networks";
 import { teritoriNetwork } from "../../networks/teritori";
-import { ScreenFC } from "../../utils/navigation";
 import { errorColor, secondaryColor } from "../../utils/style/colors";
 import { fontBold16, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 const targetBlock = 12614400;
 
-export const MetricsScreen: ScreenFC<"Metrics"> = () => {
+export const MetricsScreen = () => {
   const { data: currentHeight } = useCosmosHeight(teritoriNetwork.id);
   const { width: windowWidth } = useWindowDimensions();
   const mobileMode = useIsMobile();

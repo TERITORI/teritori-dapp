@@ -5,10 +5,11 @@ import { SimpleButton } from "./SimpleButton";
 import addCircleSVG from "../../../../assets/icons/add-circle.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { useAppNavigation } from "../../../utils/navigation";
 import { yellowDefault, neutral17 } from "../../../utils/style/colors";
 import { fontMedium48, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+
+import { router } from "@/utils/router";
 
 type FightSectionHeaderProps = {
   title: string;
@@ -21,10 +22,8 @@ export const FightSectionHeader: React.FC<FightSectionHeaderProps> = ({
   total,
   hasStakeButton,
 }) => {
-  const navigation = useAppNavigation();
-
   const gotoEnroll = () => {
-    navigation.replace("RiotGameEnroll");
+    router.replace("/riot-game/enroll");
   };
 
   return (

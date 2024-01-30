@@ -20,7 +20,6 @@ import { useRoute } from "../../hooks/useRoute";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature, NetworkKind } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33 } from "../../utils/style/colors";
 import { fontBold16, fontBold9 } from "../../utils/style/fonts";
 import {
@@ -31,6 +30,8 @@ import {
 } from "../../utils/style/layout";
 import { Separator } from "../separators/Separator";
 import { SpacerColumn } from "../spacer";
+
+import { router } from "@/utils/router";
 
 const SpringConfig: WithSpringConfig = {
   stiffness: 100,
@@ -57,7 +58,6 @@ export const Sidebar: React.FC = () => {
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkKind = selectedNetworkInfo?.kind;
   const connected = selectedWallet?.connected;
-  const navigation = useAppNavigation();
   const insets = useSafeAreaInsets();
   const { name: currentRouteName } = useRoute();
   const { isSidebarExpanded, dynamicSidebar } = useSidebar();
@@ -72,8 +72,7 @@ export const Sidebar: React.FC = () => {
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
-    // @ts-expect-error
-    navigation.navigate(name);
+    router.navigate(name);
   };
 
   return (
@@ -133,11 +132,11 @@ export const Sidebar: React.FC = () => {
               <SidebarButton
                 icon={addSVG}
                 iconSize={36}
-                route="DAppStore"
+                route="/dapp-store"
                 key="ComingSoon2"
                 id="ComingSoon2"
                 title=""
-                onPress={() => navigation.navigate("DAppStore")}
+                onPress={() => router.navigate("/dapp-store")}
               />
               <SpacerColumn size={1} />
             </>

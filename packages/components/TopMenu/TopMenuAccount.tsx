@@ -23,7 +23,7 @@ export const TopMenuAccount: React.FC = () => {
       />
 
       <FlexRow alignItems="center" justifyContent="space-between">
-        <OmniLink to={{ screen: "WalletManagerWallets" }}>
+        <OmniLink href="/wallet-manager/wallets">
           <FlexRow alignItems="center">
             <BrandText style={switchAccountCStyle}>Change Wallet</BrandText>
             <SVG source={chevronRightSVG} width={16} height={16} />
@@ -31,8 +31,8 @@ export const TopMenuAccount: React.FC = () => {
         </OmniLink>
 
         <OmniLink
-          to={{
-            screen: "UserPublicProfile",
+          href={{
+            pathname: "/user/[id]",
             params: { id: selectedWallet?.userId || "" },
           }}
         >

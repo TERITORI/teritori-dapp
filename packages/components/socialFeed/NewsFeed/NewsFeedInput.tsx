@@ -617,7 +617,7 @@ export const NewsFeedInput = React.forwardRef<
                 }}
               >
                 {type === "post" && (
-                  <OmniLink to={{ screen: "FeedNewArticle" }}>
+                  <OmniLink href="/feed/new">
                     <SecondaryButtonOutline
                       size="M"
                       color={

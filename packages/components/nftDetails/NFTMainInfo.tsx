@@ -1,5 +1,4 @@
 import { Target } from "@nandorojo/anchor";
-import { RouteProp, useRoute } from "@react-navigation/native";
 import React, { Suspense, useEffect, useState } from "react";
 import { View, ViewStyle } from "react-native";
 
@@ -14,7 +13,6 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { parseNetworkObjectId } from "../../networks";
 import { getMarketplaceClient } from "../../utils/backend";
-import { RootStackParamList } from "../../utils/navigation";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import {
   fontMedium14,
@@ -36,6 +34,8 @@ import { CollectionInfoInline } from "../collections/CollectionInfoInline";
 import { TransactionModals } from "../modals/transaction/TransactionModals";
 import { SpacerColumn } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
+
+import { useLocalSearchParams } from "@/utils/router";
 
 const mainInfoTabItems: {
   about: {
@@ -90,8 +90,7 @@ export const NFTMainInfo: React.FC<{
     sectionContainerStyles.width = width < 600 ? width : 600;
   }
   const { openTransactionModals } = useTransactionModals();
-  const { params } = useRoute<RouteProp<RootStackParamList, "NFTDetail">>();
-
+  const params = useLocalSearchParams<"/nft/[id]">();
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof mainInfoTabItems>("attributes");
   const [network] = parseNetworkObjectId(nftInfo?.collectionId);

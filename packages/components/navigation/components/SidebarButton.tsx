@@ -11,7 +11,6 @@ import { SidebarNestedButton } from "./SidebarNestedButton";
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { useSidebar } from "../../../context/SidebarProvider";
-import { useAppRoute } from "../../../utils/navigation";
 import {
   neutral17,
   neutral33,
@@ -29,6 +28,8 @@ import { CustomPressable } from "../../buttons/CustomPressable";
 import { SpacerRow } from "../../spacer";
 import { SidebarType } from "../types";
 
+import { useRoute } from "@/hooks/useRoute";
+
 export interface SidebarButtonProps extends SidebarType {
   onPress?: (routeName: SidebarType["route"]) => void;
   iconSize?: number;
@@ -43,14 +44,14 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   nested,
 }) => {
   const { isSidebarExpanded } = useSidebar();
-  const { name: currentRouteName } = useAppRoute();
+  const { name: currentRouteName } = useRoute();
   const allNestedRoutes = useMemo(
     () => (nested ? Object.values(nested).map((d) => d.route) : []),
     [nested],
   );
   const [isNestedBarExpanded, setIsNestedBarExpanded] =
     useState<boolean>(false);
-  const isComingSoon = route === "ComingSoon";
+  const isComingSoon = route === "/coming-soon";
   const isFocused = useIsFocused();
   const isSelected = useMemo(() => {
     if (nested) {
@@ -151,7 +152,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
                     key={n.title}
                     {...n}
                     onPress={
-                      n.route === "ComingSoon"
+                      n.route === "/coming-soon"
                         ? () => {}
                         : onPress && (() => onPress(n.route))
                     }

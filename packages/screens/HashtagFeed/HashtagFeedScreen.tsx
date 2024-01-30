@@ -8,10 +8,11 @@ import { MobileTitle } from "../../components/ScreenContainer/ScreenContainerMob
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral22, primaryColor } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidth } from "../../utils/style/layout";
+
+import { useLocalSearchParams, router } from "@/utils/router";
 
 const Header = ({ hashtag }: { hashtag: string }) => {
   const isMobile = useIsMobile();
@@ -53,13 +54,10 @@ const Header = ({ hashtag }: { hashtag: string }) => {
   );
 };
 
-export const HashtagFeedScreen: ScreenFC<"HashtagFeed"> = ({
-  route: {
-    params: { hashtag },
-  },
-}) => {
+export const HashtagFeedScreen = () => {
+  const { hashtag } = useLocalSearchParams<"/feed/tag/[hashtag]">();
   const isMobile = useIsMobile();
-  const navigation = useAppNavigation();
+
   const feedRequest: Partial<PostsRequest> = useMemo(() => {
     return {
       filter: {
@@ -83,18 +81,18 @@ export const HashtagFeedScreen: ScreenFC<"HashtagFeed"> = ({
         <BrandText style={fontSemibold20}>{`Tag ${hashtag}`}</BrandText>
       }
       onBackPress={() =>
-        navigation.canGoBack()
-          ? navigation.goBack()
-          : navigation.navigate("Feed")
+        router.canGoBack() ? router.back() : router.navigate("/feed")
       }
     >
       <NewsFeed
-        additionalHashtag={hashtag}
+        additionalHashtag={hashtag as string}
         req={feedRequest}
         Header={() => (
           <>
             {/* ScreenContainer has noScroll, so we need to add MobileTitle here */}
-            {isMobile && <MobileTitle title={`TAG ${hashtag.toUpperCase()}`} />}
+            {isMobile && (
+              <MobileTitle title={`TAG ${(hashtag as string).toUpperCase()}`} />
+            )}
             <Header hashtag={`#${hashtag}`} />
           </>
         )}

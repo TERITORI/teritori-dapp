@@ -10,15 +10,15 @@ import { SpacerColumn } from "../../components/spacer";
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { NetworkFeature } from "../../networks";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-export const OrganizationsScreen: ScreenFC<"Organizations"> = ({
-  route: { params },
-}) => {
+import { useLocalSearchParams, router } from "@/utils/router";
+
+export const OrganizationsScreen = () => {
+  const params = useLocalSearchParams<"/orgs">();
   useForceNetworkSelection(params?.network);
-  const navigation = useAppNavigation();
+
   const networkId = useSelectedNetworkId();
 
   return (
@@ -36,7 +36,7 @@ export const OrganizationsScreen: ScreenFC<"Organizations"> = ({
           topRight={
             <PrimaryButton
               text="Create Dao"
-              onPress={() => navigation.navigate("OrganizationDeployer")}
+              onPress={() => router.navigate("/create-org")}
             />
           }
         />

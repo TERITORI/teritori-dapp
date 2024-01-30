@@ -1,4 +1,3 @@
-import { Link } from "@react-navigation/native";
 import moment from "moment";
 import React, { useState } from "react";
 import { FlatList, TextStyle, View } from "react-native";
@@ -22,6 +21,8 @@ import { ExternalLink } from "../ExternalLink";
 import { Pagination } from "../Pagination";
 import { SpacerColumn } from "../spacer";
 import { TableRowHeading, TableRow } from "../table/TableRow";
+
+import { Link } from "@/utils/router";
 
 const TABLE_ROWS: { [key: string]: TableRowHeading } = {
   transactionId: {
@@ -170,7 +171,12 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
         style={{ flex: TABLE_ROWS.buyer.flex, paddingRight: layout.spacing_x1 }}
       >
         <Link
-          to={`/user/${activity.buyerId}`}
+          href={{
+            pathname: "/user/[id]",
+            params: {
+              id: activity.buyerId,
+            },
+          }}
           style={[fontMedium14, { color: primaryColor }]}
           numberOfLines={1}
           ellipsizeMode="middle"
@@ -184,7 +190,12 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
         }}
       >
         <Link
-          to={`/user/${activity.sellerId}`}
+          href={{
+            pathname: "/user/[id]",
+            params: {
+              id: activity.sellerId,
+            },
+          }}
           style={[fontMedium14, { color: primaryColor }]}
           numberOfLines={1}
           ellipsizeMode="middle"

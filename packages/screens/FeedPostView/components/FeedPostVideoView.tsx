@@ -40,7 +40,6 @@ import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getNetwork, NetworkKind, parseUserId } from "../../../networks";
-import { useAppNavigation } from "../../../utils/navigation";
 import { zodTryParseJSON } from "../../../utils/sanitize";
 import {
   BASE_POST,
@@ -67,6 +66,8 @@ import {
 } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
 
+import { router } from "@/utils/router";
+
 const POST_VIDEO_MAX_WIDTH = 960;
 const INPUT_MIN_HEIGHT = 20;
 const INPUT_MAX_HEIGHT = 400;
@@ -77,7 +78,6 @@ export const FeedPostVideoView: FC<{
   refetchPost: () => Promise<any>;
 }> = ({ post, refetchPost, networkId }) => {
   const { width: windowWidth } = useWindowDimensions();
-  const navigation = useAppNavigation();
   const wallet = useSelectedWallet();
   const network = getNetwork(networkId);
 
@@ -244,9 +244,7 @@ export const FeedPostVideoView: FC<{
         <BrandText style={fontSemibold20}>Video by {username}</BrandText>
       }
       onBackPress={() =>
-        navigation.canGoBack()
-          ? navigation.goBack()
-          : navigation.navigate("Feed")
+        router.canGoBack() ? router.back() : router.navigate("/feed")
       }
       isLarge
       responsive

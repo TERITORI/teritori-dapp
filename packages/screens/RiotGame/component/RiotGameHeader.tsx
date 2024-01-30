@@ -23,10 +23,6 @@ import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useRoute } from "../../../hooks/useRoute";
 import { NetworkFeature } from "../../../networks";
 import {
-  RootStackParamList,
-  useAppNavigation,
-} from "../../../utils/navigation";
-import {
   neutral33,
   neutralA3,
   yellowDefault,
@@ -37,36 +33,35 @@ import {
   headerMarginHorizontal,
   layout,
 } from "../../../utils/style/layout";
-import { PickByValue } from "../../../utils/types/helper";
+
+import { Routes, router } from "@/utils/router";
 
 type MenuItem = {
   id: string;
   name: string;
-  route?:
-    | keyof PickByValue<RootStackParamList, undefined>
-    | "RiotGameMarketplace";
+  route?: keyof Routes;
   externalRoute?: string;
   iconSVG: React.FC<SvgProps>;
 };
 
 const MENU_ITEMS: MenuItem[] = [
-  { id: "fight", name: "Fight", route: "RiotGameEnroll", iconSVG: fightSVG },
+  { id: "fight", name: "Fight", route: "/riot-game/enroll", iconSVG: fightSVG },
   {
     id: "inventory",
     name: "Inventory",
-    route: "RiotGameInventory",
+    route: "/riot-game/inventory",
     iconSVG: inventorySVG,
   },
   {
     id: "breeding",
     name: "Breeding",
-    route: "RiotGameBreeding",
+    route: "/riot-game/breeding",
     iconSVG: gameBoxSVG,
   },
   {
     id: "leaderboard",
     name: "Leaderboard",
-    route: "RiotGameLeaderboard",
+    route: "/riot-game/leaderboard",
     iconSVG: trophiesSVG,
   },
   {
@@ -79,13 +74,13 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: "marketplace",
     name: "Marketplace",
-    route: "RiotGameMarketplace",
+    route: "/riot-game/marketplace",
     iconSVG: cartSVG,
   },
   {
     id: "memories",
     name: "Memories",
-    route: "RiotGameMemories",
+    route: "/riot-game/memories",
     iconSVG: filmSVG,
   },
 ];
@@ -97,7 +92,6 @@ type RiotGameHeaderProps = {
 export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
   hideMenu = false,
 }) => {
-  const navigation = useAppNavigation();
   const { name: routeName } = useRoute();
   useForceNetworkFeatures([NetworkFeature.RiotP2E]);
   const isMobile = useIsMobile();
@@ -106,8 +100,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
     if (item.externalRoute) {
       Linking.openURL(item.externalRoute);
     } else if (item.route) {
-      // @ts-expect-error
-      navigation.navigate(item.route);
+      router.navigate(item.route);
     }
   };
 

@@ -1,4 +1,4 @@
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect } from "expo-router";
 import React, { useState } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 

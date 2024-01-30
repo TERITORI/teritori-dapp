@@ -40,7 +40,6 @@ import {
   squadStake,
   squadWithdrawSeason1,
 } from "../../utils/game";
-import { useAppNavigation } from "../../utils/navigation";
 import {
   neutral00,
   neutral33,
@@ -56,6 +55,8 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
+import { router } from "@/utils/router";
+
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 const EMBEDDED_VIDEO_URI =
   "https://bafybeihfkmpunve47w4avfnuv3mfnsgoqclahpx54zj4b2ypve52iqmxsa.ipfs.cf-ipfs.com/";
@@ -64,7 +65,6 @@ const embeddedVideoWidth = 468;
 
 export const RiotGameEnrollScreen: React.FC = () => {
   const isMobile = useIsMobile();
-  const navigation = useAppNavigation();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const [activeSquadId, setActiveSquadId] = useState<number>(1);
   const selectedWallet = useSelectedWallet();
@@ -139,7 +139,7 @@ export const RiotGameEnrollScreen: React.FC = () => {
   };
 
   const gotoCurrentFight = () => {
-    navigation.replace("RiotGameFight");
+    router.replace("/riot-game/fight");
   };
 
   const unstakeSeason1 = async () => {
@@ -197,7 +197,7 @@ export const RiotGameEnrollScreen: React.FC = () => {
 
       // Wait a little before redirection to be sure that we have passed the fight start time
       setTimeout(() => {
-        navigation.replace("RiotGameFight");
+        router.replace("/riot-game/fight");
       }, 1000);
     } catch (e: any) {
       setToastError({
@@ -256,11 +256,10 @@ export const RiotGameEnrollScreen: React.FC = () => {
       squadStakingConfig?.owner &&
       squads.length === squadStakingConfig.squad_count_limit
     ) {
-      navigation.replace("RiotGameFight");
+      router.replace("/riot-game/fight");
     }
   }, [
     isInitialLoading,
-    navigation,
     squadStakingConfig?.owner,
     squadStakingConfig?.squad_count_limit,
     squads,

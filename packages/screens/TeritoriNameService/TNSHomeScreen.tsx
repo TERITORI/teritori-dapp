@@ -29,7 +29,8 @@ import {
   getCosmosNetwork,
   NetworkFeature,
 } from "../../networks";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+
+import { router, useLocalSearchParams } from "@/utils/router";
 
 type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
 type TNSModals =
@@ -65,7 +66,8 @@ export interface TNSModalCommonProps {
 const LG_BREAKPOINT = 1600;
 const MD_BREAKPOINT = 820;
 
-export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
+export const TNSHomeScreen = () => {
+  const params = useLocalSearchParams<"/tns">();
   const { width } = useWindowDimensions();
 
   const [modalNameFinderVisible, setModalNameFinderVisible] = useState(false);
@@ -73,7 +75,6 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   const [activeModal, setActiveModal] = useState<TNSModals>();
   const [navigateBackTo, setNavigateBackTo] = useState<TNSModals>();
   const { name, setName } = useTNS();
-  const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const selectedNetwork = getCosmosNetwork(selectedNetworkId);
   const selectedWallet = useSelectedWallet();
@@ -90,14 +91,17 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
     _name = name,
   ) => {
     if (modalName) {
-      navigation.navigate("TNSHome", {
-        modal: TNSPathMap[modalName],
-        name: _name,
+      router.navigate({
+        pathname: "/tns/[modal]",
+        params: {
+          modal: TNSPathMap[modalName],
+          name: _name,
+        },
       });
       setNavigateBackTo(navigateBackTo);
     } else {
       setName("");
-      navigation.navigate("TNSHome", { modal: "" });
+      router.navigate("/tns");
     }
   };
 
@@ -136,15 +140,18 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
       });
       return;
     }
-    navigation.navigate("TNSHome", { modal: "register" });
+    router.navigate({
+      pathname: "/tns/[modal]",
+      params: { modal: "register" },
+    });
   };
 
   useEffect(() => {
-    handleModalChange(route.params?.modal, route.params?.name);
-    if (route.params?.name) {
-      setName(route.params.name);
+    handleModalChange(params?.modal, params?.name);
+    if (params?.name) {
+      setName(params.name);
     }
-  }, [route, setName]);
+  }, [params, setName]);
 
   const tnsModalCommonProps = {
     onClose: handleModalClose,
@@ -184,7 +191,12 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
             label="Manage"
             description="Transfer, edit, or burn a name that you own"
             iconSVG={penSVG}
-            onPress={() => navigation.navigate("TNSHome", { modal: "manage" })}
+            onPress={() =>
+              router.navigate({
+                pathname: "/tns/[modal]",
+                params: { modal: "manage" },
+              })
+            }
             style={{
               marginHorizontal: width >= MD_BREAKPOINT ? 12 : 0,
               marginVertical: width >= MD_BREAKPOINT ? 0 : 12,
@@ -195,7 +207,12 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
             label="Explore"
             description="Lookup addresses and explore registered names"
             iconSVG={exploreSVG}
-            onPress={() => navigation.navigate("TNSHome", { modal: "explore" })}
+            onPress={() =>
+              router.navigate({
+                pathname: "/tns/[modal]",
+                params: { modal: "explore" },
+              })
+            }
           />
         </View>
 
@@ -205,14 +222,17 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
           visible={modalNameFinderVisible}
           onClose={() => {
             setModalNameFinderVisible(false);
-            navigation.navigate("TNSHome", { modal: "" });
+            router.navigate("/tns");
           }}
           onEnter={() => {
             setModalNameFinderVisible(false);
             pressedTNSItems &&
-              navigation.navigate("TNSHome", {
-                modal: TNSPathMap[pressedTNSItems],
-                name,
+              router.navigate({
+                pathname: "/tns/[modal]",
+                params: {
+                  modal: TNSPathMap[pressedTNSItems],
+                  name,
+                },
               });
           }}
         />

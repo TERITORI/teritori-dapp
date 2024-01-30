@@ -17,3 +17,5 @@
 /cache
 /.git
 /electron
+
+expo-env.d.ts

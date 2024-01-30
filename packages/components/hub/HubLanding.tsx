@@ -14,7 +14,6 @@ import {
 import { useBanners } from "../../hooks/useBanners";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { useAppNavigation } from "../../utils/navigation";
 import { Link } from "../Link";
 import { OptimizedImage } from "../OptimizedImage";
 import { Section } from "../Section";
@@ -24,10 +23,11 @@ import { MyWalletsCard } from "../cards/MyWalletsCard";
 import { CollectionsCarouselSection } from "../carousels/CollectionsCarouselSection";
 import { NewsCarouselSection } from "../carousels/NewsCarouselSection";
 
+import { router } from "@/utils/router";
+
 const gridHalfGutter = 12;
 
 export const HubLanding: React.FC = () => {
-  const navigation = useAppNavigation();
   const { width } = useMaxResolution();
   const networkId = useSelectedNetworkId();
   const banners = useBanners(networkId);
@@ -62,11 +62,9 @@ export const HubLanding: React.FC = () => {
               margin: -gridHalfGutter,
             }}
           >
-            <MyWalletsCard
-              onPress={() => navigation.navigate("WalletManager")}
-            />
+            <MyWalletsCard onPress={() => router.navigate("/wallet-manager")} />
             <DAppCard
-              onPress={() => navigation.navigate("Staking")}
+              onPress={() => router.navigate("/staking")}
               label="Staking"
               description="Participate to the Security Get rewards by delegating to Teritori validators"
               info="Staking on Keplr!"
@@ -77,14 +75,14 @@ export const HubLanding: React.FC = () => {
               description="Trade your NFTs & TNS and rank up on your profile by contributing to expansion"
               info="Explore Collections"
               iconSVG={marketplaceSVG}
-              onPress={() => navigation.navigate("Marketplace")}
+              onPress={() => router.navigate("/marketplace")}
             />
             <DAppCard
               label="Launchpad"
               description="Apply to a NFT Launch on Teritori Launchpad and get validated & pushed by the community."
               info="Apply here"
               iconSVG={launchpadSVG}
-              onPress={() => navigation.navigate("Launchpad")}
+              onPress={() => router.navigate("/launchpad")}
             />
             <DAppCard
               label="Tori Labs"

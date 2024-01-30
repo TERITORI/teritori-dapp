@@ -32,7 +32,6 @@ import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { parseUserId } from "../../networks";
 import { mustGetP2eClient } from "../../utils/backend";
 import { parseUserScoreInfo } from "../../utils/game";
-import { useAppNavigation } from "../../utils/navigation";
 import {
   additionalGreen,
   additionalRed,
@@ -47,6 +46,8 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
+import { router } from "@/utils/router";
+
 type RankProps = {
   changes: number;
 };
@@ -55,7 +56,6 @@ type PlayerNameProps = {
 };
 
 const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
-  const navigation = useAppNavigation();
   const [, address] = parseUserId(userId);
   const userInfo = useNSUserInfo(userId);
 
@@ -66,8 +66,11 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
       <TouchableOpacity
         style={{ flexDirection: "row", alignItems: "center" }}
         onPress={() => {
-          navigation.navigate("UserPublicProfile", {
-            id: userId,
+          router.navigate({
+            pathname: "/user/[id]",
+            params: {
+              id: userId,
+            },
           });
         }}
       >

@@ -14,8 +14,9 @@ import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork, getUserId } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral17 } from "../../utils/style/colors";
+
+import { router } from "@/utils/router";
 
 interface TNSExploreScreenProps extends TNSModalCommonProps {}
 
@@ -27,7 +28,6 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
   const selectedWallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
   const network = getCosmosNetwork(networkId);
-  const navigation = useAppNavigation();
   const { nameOwner } = useNSNameOwner(
     networkId,
     name + network?.nameServiceTLD || "",
@@ -75,8 +75,11 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
               width={154}
               text="View Owner"
               onPress={() => {
-                navigation.navigate("UserPublicProfile", {
-                  id: getUserId(networkId, nameOwner),
+                router.navigate({
+                  pathname: "/user/[id]",
+                  params: {
+                    id: getUserId(networkId, nameOwner),
+                  },
                 });
               }}
             />

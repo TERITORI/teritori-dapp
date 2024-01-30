@@ -19,7 +19,7 @@ export const SidebarProfileButton: React.FC<{
   } = useNSUserInfo(userId);
 
   return (
-    <OmniLink to={{ screen: "UserPublicProfile", params: { id: userId } }}>
+    <OmniLink href={{ pathname: "/user/[id]", params: { id: userId } }}>
       <View
         style={[
           {

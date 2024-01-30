@@ -12,7 +12,6 @@ import {
   NetworkKind,
   parseUserId,
 } from "../../../../networks";
-import { useAppNavigation } from "../../../../utils/navigation";
 import { zodTryParseJSON } from "../../../../utils/sanitize";
 import { DEFAULT_USERNAME } from "../../../../utils/social-feed";
 import {
@@ -48,6 +47,8 @@ import { FlaggedCardFooter } from "../FlaggedCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";
 import { SocialCardWrapper } from "../SocialCardWrapper";
 
+import { router } from "@/utils/router";
+
 const VIDEO_CARD_PADDING_VERTICAL = layout.spacing_x2;
 const VIDEO_CARD_PADDING_HORIZONTAL = layout.spacing_x2_5;
 
@@ -57,7 +58,6 @@ export const SocialVideoCard: FC<{
   refetchFeed?: () => Promise<any>;
   isFlagged?: boolean;
 }> = memo(({ post, refetchFeed, style, isFlagged }) => {
-  const navigation = useAppNavigation();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const wallet = useSelectedWallet();
   const [localPost, setLocalPost] = useState<Post>(post);
@@ -125,11 +125,14 @@ export const SocialVideoCard: FC<{
         <SpacerColumn size={1} />
         <CustomPressable
           onPress={() =>
-            navigation.navigate("FeedPostView", {
-              id: getNetworkObjectId(
-                selectedNetworkInfo?.id,
-                localPost.identifier,
-              ),
+            router.navigate({
+              pathname: "/feed/post/[id]",
+              params: {
+                id: getNetworkObjectId(
+                  selectedNetworkInfo?.id,
+                  localPost.identifier,
+                ),
+              },
             })
           }
           style={{

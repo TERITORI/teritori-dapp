@@ -12,11 +12,10 @@ import { MainConnectWalletButton } from "../../components/connectWallet/MainConn
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { ScreenFC } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 
-export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
+export const WalletManagerScreen = () => {
   const selectedWallet = useSelectedWallet();
   const areThereWallets = useAreThereWallets();
   const { height } = useMaxResolution();

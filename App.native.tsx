@@ -7,11 +7,8 @@ import "react-native-get-random-values";
 import "react-native-gesture-handler";
 import Constants from "expo-constants";
 
-import Root from "./Root";
-
 Object.entries(Constants.expoConfig?.extra?.env).forEach(([key, value]) => {
   process.env[key] = `${value}`;
 });
 
 grpc.setDefaultTransport(ReactNativeTransport({}));
-export default Root;

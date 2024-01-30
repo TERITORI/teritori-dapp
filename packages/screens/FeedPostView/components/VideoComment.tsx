@@ -40,8 +40,8 @@ export const VideoComment: FC<{
         }}
       >
         <OmniLink
-          to={{
-            screen: "UserPublicProfile",
+          href={{
+            pathname: "/user/[id]",
             params: { id: comment.authorId },
           }}
         >
@@ -55,8 +55,8 @@ export const VideoComment: FC<{
         <View style={{ flex: 1 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <OmniLink
-              to={{
-                screen: "UserPublicProfile",
+              href={{
+                pathname: "/user/[id]",
                 params: { id: comment.authorId },
               }}
             >

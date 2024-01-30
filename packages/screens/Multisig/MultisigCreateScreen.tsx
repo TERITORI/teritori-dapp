@@ -27,7 +27,6 @@ import {
   validateAddress,
   validateMaxNumber,
 } from "../../utils/formRules";
-import { useAppNavigation } from "../../utils/navigation";
 import {
   neutral33,
   neutral77,
@@ -41,6 +40,8 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+
+import { router } from "@/utils/router";
 
 type CreateMultisigWalletFormType = {
   addresses: { address: string }[];
@@ -61,16 +62,15 @@ export const MultisigCreateScreen = () => {
     emptyPubKeyGroup(),
     emptyPubKeyGroup(),
   ]);
-  const navigation = useAppNavigation();
   const signatureRequiredValue = watch("signatureRequired");
   useEffect(() => {
     if (!authToken) {
       setTimeout(() => {
         // without timeout, the navigation action is not handled
-        navigation.navigate("Multisig");
+        router.navigate("/multisig");
       }, 1000);
     }
-  }, [authToken, navigation]);
+  }, [authToken]);
 
   const defaultNbSignaturesRequired = useMemo(
     () => addressIndexes.length.toString(),
@@ -125,8 +125,11 @@ export const MultisigCreateScreen = () => {
       name,
     });
 
-    navigation.navigate("MultisigWalletDashboard", {
-      id: getUserId(selectedNetwork?.id, res.multisigAddress),
+    router.navigate({
+      pathname: "/multisig/[id]",
+      params: {
+        id: getUserId(selectedNetwork?.id, res.multisigAddress),
+      },
     });
   };
 
@@ -158,9 +161,7 @@ export const MultisigCreateScreen = () => {
         <BrandText style={fontSemibold20}>Multisig Wallet</BrandText>
       }
       onBackPress={() =>
-        navigation.canGoBack()
-          ? navigation.goBack()
-          : navigation.navigate("Multisig")
+        router.canGoBack() ? router.back() : router.navigate("/multisig")
       }
       footerChildren={<></>}
       noMargin

@@ -18,7 +18,6 @@ import {
   UserKind,
 } from "../../networks";
 import { DepositWithdrawModal } from "../../screens/WalletManager/components/DepositWithdrawModal";
-import { useAppNavigation } from "../../utils/navigation";
 import {
   gradientColorBlue,
   gradientColorDarkerBlue,
@@ -40,6 +39,8 @@ import FlexRow from "../FlexRow";
 import { SVG } from "../SVG";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SendModal } from "../modals/SendModal";
+
+import { router } from "@/utils/router";
 
 const TokenBalance: React.FC = () => {
   const selectedWallet = useSelectedWallet();
@@ -188,7 +189,6 @@ const TokenBalance: React.FC = () => {
 
 export const TopMenuMyWallets: React.FC = () => {
   const selectedNetworkInfo = useSelectedNetworkInfo();
-  const navigation = useAppNavigation();
   const [isDepositVisible, setDepositVisible] = useState(false);
   const [isSendVisible, setSendVisible] = useState(false);
 
@@ -221,7 +221,7 @@ export const TopMenuMyWallets: React.FC = () => {
             paddingHorizontal={layout.spacing_x2}
             text="Stake"
             size="XS"
-            onPress={() => navigation.navigate("Staking")}
+            onPress={() => router.navigate("/staking")}
           />
           <SecondaryButton
             disabled={
@@ -239,14 +239,14 @@ export const TopMenuMyWallets: React.FC = () => {
             paddingHorizontal={layout.spacing_x2}
             text="Swap"
             size="XS"
-            onPress={() => navigation.navigate("Swap")}
+            onPress={() => router.navigate("/swap")}
           />
         </FlexRow>
 
         <FlexRow justifyContent="center">
           <TouchableOpacity
             style={styles.manageWalletsContainer}
-            onPress={() => navigation.navigate("WalletManagerWallets")}
+            onPress={() => router.navigate("/wallet-manager/wallets")}
           >
             <BrandText style={styles.manageWallets}>Manage wallets</BrandText>
             <SVG source={walletsSVG} width={24} height={24} />

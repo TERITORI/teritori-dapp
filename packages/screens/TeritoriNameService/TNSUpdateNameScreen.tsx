@@ -1,5 +1,5 @@
-import { useFocusEffect } from "@react-navigation/native";
 import { useQueryClient } from "@tanstack/react-query";
+import { useFocusEffect } from "expo-router";
 import React, { useState } from "react";
 import { View } from "react-native";
 

@@ -61,7 +61,6 @@ import {
 import { prettyPrice } from "../../utils/coins";
 import { MintPhase } from "../../utils/collection";
 import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
-import { ScreenFC } from "../../utils/navigation";
 import {
   neutral17,
   neutral30,
@@ -85,6 +84,8 @@ import {
 import { layout } from "../../utils/style/layout";
 import { DepositWithdrawModal } from "../WalletManager/components/DepositWithdrawModal";
 
+import { useLocalSearchParams } from "@/utils/router";
+
 const maxImageSize = 532;
 const cardsHalfGap = 6;
 
@@ -100,11 +101,9 @@ const countDownTxtStyleStarts: StyleProp<TextStyle> = {
 const sleep = (duration: number) =>
   new Promise((resolve) => setTimeout(resolve, duration));
 
-export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
-  route: {
-    params: { id },
-  },
-}) => {
+export const MintCollectionScreen = () => {
+  const { id } = useLocalSearchParams<"/collection/[id]/mint">();
+
   const { width: currentWidth } = useWindowDimensions();
   const wallet = useSelectedWallet();
   const userId = wallet?.userId;

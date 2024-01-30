@@ -2,7 +2,6 @@ import React, { memo } from "react";
 import { View } from "react-native";
 
 import { getNetwork } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { getTxInfo } from "../../utils/transactions/getTxInfo";
@@ -13,7 +12,6 @@ export const MessagesPreviewList: React.FC<{
   networkId: string | undefined;
   msgs: any[];
 }> = memo(({ networkId, msgs }) => {
-  const navigation = useAppNavigation();
   return (
     <>
       {msgs.map((message, index) => {
@@ -32,7 +30,6 @@ export const MessagesPreviewList: React.FC<{
         } else {
           const { MessagePreview } = getTxInfo(
             [message],
-            navigation,
             getNetwork(networkId),
           );
           content = <MessagePreview />;

@@ -14,9 +14,11 @@ import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { NetworkFeature } from "../../networks";
-import { ScreenFC } from "../../utils/navigation";
 
-export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
+import { useLocalSearchParams } from "@/utils/router";
+
+export const FeedScreen = () => {
+  const params = useLocalSearchParams<"/feed/[tab]">();
   useForceNetworkSelection(params?.network);
   const isMobile = useIsMobile();
 

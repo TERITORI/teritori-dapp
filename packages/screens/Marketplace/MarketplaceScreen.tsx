@@ -34,7 +34,6 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { NetworkFeature } from "../../networks";
 import { selectTimePeriod } from "../../store/slices/marketplaceFilters";
 import { prettyPrice } from "../../utils/coins";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
   errorColor,
   mineShaftColor,
@@ -49,6 +48,8 @@ import {
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { numFormatter } from "../../utils/text";
 import { arrayIncludes } from "../../utils/typescript";
+
+import { router } from "@/utils/router";
 
 const TABLE_ROWS = {
   rank: {
@@ -89,8 +90,7 @@ const TABLE_ROWS = {
   },
 };
 
-export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
-  const navigation = useAppNavigation();
+export const MarketplaceScreen = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const enabledNetworks = useEnabledNetworks();
   const timePeriod = useSelector(selectTimePeriod);
@@ -158,7 +158,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
         <BrandText style={fontSemibold20}>NFT Marketplace</BrandText>
       }
       responsive
-      onBackPress={() => navigation.navigate("Marketplace")}
+      onBackPress={() => router.navigate("/marketplace")}
     >
       <View
         style={{
@@ -321,8 +321,11 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         paddingVertical: layout.spacing_x2,
         paddingHorizontal: layout.spacing_x2_5,
       }}
-      to={{
-        screen: collection.floorPrice !== 0 ? "Collection" : "MintCollection",
+      href={{
+        pathname:
+          collection.floorPrice !== 0
+            ? "/collection/[id]"
+            : "/collection/[id]/mint",
         params: { id: collection.id },
       }}
     >

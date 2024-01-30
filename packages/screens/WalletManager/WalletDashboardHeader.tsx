@@ -13,10 +13,11 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { rewardsPrice, useRewards } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { UserKind } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
+
+import { router } from "@/utils/router";
 
 interface WalletDashboardHeaderProps {
   title: string;
@@ -92,7 +93,7 @@ export const WalletDashboardHeader: React.FC = () => {
   const selectedNetworkId = selectedWallet?.networkId;
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
-  const navigation = useAppNavigation();
+
   const { delegationsBalances } = useDelegations(
     selectedNetworkId,
     selectedWallet?.address,
@@ -144,7 +145,12 @@ export const WalletDashboardHeader: React.FC = () => {
             justifyContent: "center",
             marginRight: 16,
           }}
-          onPress={() => navigation.navigate("TNSHome", { modal: "manage" })}
+          onPress={() =>
+            router.navigate({
+              pathname: "/tns/[modal]",
+              params: { modal: "manage" },
+            })
+          }
         >
           <SVG width={24} height={24} source={penSVG} />
         </TouchableOpacity>

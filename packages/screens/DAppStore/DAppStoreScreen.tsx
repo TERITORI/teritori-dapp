@@ -8,9 +8,8 @@ import { BrandText } from "../../components/BrandText";
 import { FullWidthSeparator } from "../../components/FullWidthSeparator";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/separators/Separator";
-import { ScreenFC } from "../../utils/navigation";
 
-export const DAppStoreScreen: ScreenFC<"DAppStore"> = () => {
+export const DAppStoreScreen = () => {
   const [searchInput, setSearchInput] = useState("");
   const { width } = useWindowDimensions();
   const isMobile = width < 720;

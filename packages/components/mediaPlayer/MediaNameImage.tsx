@@ -28,8 +28,8 @@ export const MediaNameImage: FC<{
   return (
     <OmniLink
       style={[{ alignSelf: "flex-start" }, style]}
-      to={{
-        screen: "FeedPostView",
+      href={{
+        pathname: "/feed/post/[id]",
         params: {
           id: getNetworkObjectId(network?.id, media?.postId) || "",
         },

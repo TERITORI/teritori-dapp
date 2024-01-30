@@ -94,3 +94,6 @@ buck-out/
 
 # eslint
 /.eslintcache
+
+
+expo-env.d.ts

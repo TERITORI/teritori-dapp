@@ -22,6 +22,8 @@ import { LegacyPrimaryBox } from "../boxes/LegacyPrimaryBox";
 import { GradientText } from "../gradientText";
 import { Label } from "../inputs/TextInputCustom";
 
+import { FileWithPath } from "@/utils/types/files";
+
 export const FileUploader: FC<FileUploaderProps> = ({
   label,
   style,
@@ -38,7 +40,7 @@ export const FileUploader: FC<FileUploaderProps> = ({
   const hiddenFileInput = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState("");
 
-  const handleFiles = async (files: File[]) => {
+  const handleFiles = async (files: FileWithPath[]) => {
     const _files = multiple ? files : [files[0]];
     let supportedFiles = [...files].filter((file) =>
       mimeTypes?.includes(file.type),
@@ -76,7 +78,7 @@ export const FileUploader: FC<FileUploaderProps> = ({
     const targetEvent = event.target as HTMLInputElement;
 
     if (targetEvent.files && targetEvent.files[0]) {
-      await handleFiles(targetEvent?.files as unknown as File[]);
+      await handleFiles(targetEvent?.files as unknown as FileWithPath[]);
     }
     setIsLoading?.(false);
   };

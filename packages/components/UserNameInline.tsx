@@ -12,7 +12,7 @@ import { layout } from "../utils/style/layout";
 import { tinyAddress } from "../utils/text";
 
 type PlayerNameProps = {
-  userId: string | undefined;
+  userId: string;
   multisignWalletAddres?: string | null;
   style?: StyleProp<TextStyle>;
 };
@@ -29,7 +29,7 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
   return (
     <FlexRow alignItems="center" style={style}>
       <OmniLink
-        to={{ screen: "UserPublicProfile", params: { id: userId } }}
+        href={{ pathname: "/user/[id]", params: { id: userId } }}
         style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
       >
         <UserAvatarWithFrame size="XXS" userId={userId} />
