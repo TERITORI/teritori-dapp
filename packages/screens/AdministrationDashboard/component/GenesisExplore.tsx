@@ -30,12 +30,17 @@ export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
   return (
     <View
       style={{
-        marginVertical: 32,
+        marginVertical: layout.spacing_x4,
         flexDirection: isBreakPoint ? "row" : "column",
         justifyContent: "space-between",
       }}
     >
-      <View style={{ width: isBreakPoint ? "15%" : "100%", marginBottom: 16 }}>
+      <View
+        style={{
+          width: isBreakPoint ? "15%" : "100%",
+          marginBottom: layout.spacing_x2,
+        }}
+      >
         <TouchableOpacity
           onPress={() => setIsEditHighlighted(true)}
           style={{ alignSelf: "flex-start" }}
@@ -53,7 +58,9 @@ export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
             <View style={{ marginBottom: layout.spacing_x0_5 }}>
               <SVG width={20} height={20} source={penSVG} color="white" />
             </View>
-            <BrandText style={[fontSemibold12, { marginLeft: 5 }]}>
+            <BrandText
+              style={[fontSemibold12, { marginLeft: layout.spacing_x0_75 }]}
+            >
               Edit Hero
             </BrandText>
           </PrimaryBox>
@@ -67,11 +74,17 @@ export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
           justifyContent: "space-between",
         }}
       >
-        <View style={[isBreakPoint ? { flex: 1.5 } : { marginVertical: 16 }]}>
+        <View
+          style={[
+            isBreakPoint
+              ? { flex: 1.5 }
+              : { marginVertical: layout.spacing_x2 },
+          ]}
+        >
           <BrandText style={fontSemibold24}>Genesis Guardians</BrandText>
           <GradientText
             gradientType="blueExtended"
-            style={[fontSemibold14, { marginTop: 10 }]}
+            style={[fontSemibold14, { marginTop: layout.spacing_x1_5 }]}
           >
             EXCLUSIVE GENESIS TERITORI COLLECTION
           </GradientText>
@@ -84,9 +97,9 @@ export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
                 borderRadius: 6,
                 alignItems: "center",
                 justifyContent: "center",
-                padding: 16,
+                padding: layout.spacing_x2,
                 backgroundColor: primaryColor,
-                marginTop: 24,
+                marginTop: layout.spacing_x3,
               }}
             >
               <BrandText style={[fontSemibold13, { color: neutral17 }]}>

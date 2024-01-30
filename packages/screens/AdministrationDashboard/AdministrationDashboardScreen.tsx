@@ -124,7 +124,7 @@ export const AdministrationDashboardScreen: React.FC = () => {
 
         <View
           style={{
-            marginVertical: 24,
+            marginVertical: layout.spacing_x3,
             flexDirection: width >= MD_BREAKPOINT ? "row" : "column",
             justifyContent: "center",
           }}
@@ -140,8 +140,9 @@ export const AdministrationDashboardScreen: React.FC = () => {
             count={156}
             onPress={() => {}} // TODO: don't forget to rewrite onPress function if possible
             style={{
-              marginHorizontal: width >= MD_BREAKPOINT ? 12 : 0,
-              marginVertical: width >= MD_BREAKPOINT ? 0 : 12,
+              marginHorizontal:
+                width >= MD_BREAKPOINT ? layout.spacing_x1_5 : 0,
+              marginVertical: width >= MD_BREAKPOINT ? 0 : layout.spacing_x1_5,
             }}
             isReady={false}
           />
@@ -184,7 +185,7 @@ export const AdministrationDashboardScreen: React.FC = () => {
               justifyContent: "center",
               borderWidth: 1,
               borderColor: primaryColor,
-              padding: 16,
+              padding: layout.spacing_x2,
             }}
           >
             <BrandText style={[fontSemibold13, { color: primaryColor }]}>

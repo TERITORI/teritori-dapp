@@ -117,7 +117,7 @@ const navConfig: {
     LaunchpadApplications: "launchpad/applications",
     ApplicationReview: "launchpad/application-review",
     ReadyLaunchpadApplications: "launchpad/ready-applications",
-    AllProjectAdministrationDash: "launchpad/all-applications",
+    AllProjectAdministrationDash: "launchpad/all-projects",
     // === RiotGame
     RiotGame: "riot-game",
     RiotGameEnroll: "riot-game/enroll",

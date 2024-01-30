@@ -58,7 +58,7 @@ const boxBtn: BoxStyle = {
   paddingHorizontal: layout.spacing_x1_5,
   paddingVertical: layout.spacing_x1,
   backgroundColor: primaryColor,
-  marginTop: 24,
+  marginTop: layout.spacing_x3,
 };
 
 const marginVertical24: ViewStyle = {

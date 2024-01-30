@@ -1,6 +1,7 @@
 import React from "react";
 import { FlatList, View } from "react-native";
 
+import { CellBadgeRow } from "./CellBadgeRow";
 import dotsSVG from "../../../../assets/icons/dots.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
@@ -122,48 +123,18 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
       </InnerCellText>
       {!isMobile && (
         <>
-          <View style={{ flex: TABLE_ROWS.projectReadinessForMint.flex }}>
-            <InnerCellText
-              style={{
-                backgroundColor: lightblue,
-                borderRadius: 100,
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                alignSelf: "flex-start",
-              }}
-              textStyle={{ color: neutral00 }}
-            >
-              {rowData.projectReadinessForMint}
-            </InnerCellText>
-          </View>
-          <View style={{ flex: TABLE_ROWS.whitelistQuantity.flex }}>
-            <InnerCellText
-              style={{
-                backgroundColor: lightblue,
-                borderRadius: 100,
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                alignSelf: "flex-start",
-              }}
-              textStyle={{ color: neutral00 }}
-            >
-              {rowData.whitelistQuantity}
-            </InnerCellText>
-          </View>
-          <View style={{ flex: TABLE_ROWS.premiumMarketingPackage.flex }}>
-            <InnerCellText
-              style={{
-                backgroundColor: lightblue,
-                borderRadius: 100,
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                alignSelf: "flex-start",
-              }}
-              textStyle={{ color: neutral00 }}
-            >
-              {rowData.premiumMarketingPackage}
-            </InnerCellText>
-          </View>
+          <CellBadgeRow
+            style={{ flex: TABLE_ROWS.projectReadinessForMint.flex }}
+            text={rowData.projectReadinessForMint}
+          />
+          <CellBadgeRow
+            style={{ flex: TABLE_ROWS.whitelistQuantity.flex }}
+            text={rowData.whitelistQuantity}
+          />
+          <CellBadgeRow
+            style={{ flex: TABLE_ROWS.premiumMarketingPackage.flex }}
+            text={rowData.premiumMarketingPackage}
+          />
           <View
             style={{
               flex: TABLE_ROWS.basicMarketingPackage.flex,
