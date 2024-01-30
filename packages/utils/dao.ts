@@ -3,6 +3,7 @@ import {
   SigningCosmWasmClient,
 } from "@cosmjs/cosmwasm-stargate";
 import { StdFee, Coin } from "@cosmjs/stargate";
+import { Buffer } from "buffer";
 
 import { TeritoriNameServiceClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import {

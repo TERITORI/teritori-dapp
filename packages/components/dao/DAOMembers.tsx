@@ -1,4 +1,5 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
+import { Buffer } from "buffer";
 import React, { useCallback, useState } from "react";
 import { StyleProp, View, ViewStyle, useWindowDimensions } from "react-native";
 

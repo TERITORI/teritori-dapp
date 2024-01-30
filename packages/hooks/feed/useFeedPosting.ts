@@ -1,5 +1,6 @@
 import { coin } from "@cosmjs/proto-signing";
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
+import { Buffer } from "buffer";
 import { useCallback, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 

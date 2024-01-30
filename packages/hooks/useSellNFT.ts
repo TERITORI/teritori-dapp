@@ -1,4 +1,5 @@
 import { Decimal } from "@cosmjs/math";
+import { Buffer } from "buffer";
 import { ethers } from "ethers";
 import { useCallback } from "react";
 

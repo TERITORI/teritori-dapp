@@ -1,3 +1,4 @@
+import { Buffer } from "buffer";
 import { sha256 } from "ethers/lib/utils";
 
 export const getIBCDenom = (

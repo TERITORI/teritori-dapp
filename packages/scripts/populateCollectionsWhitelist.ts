@@ -3,6 +3,7 @@ import {
   MsgExecuteContractEncodeObject,
   SigningCosmWasmClient,
 } from "@cosmjs/cosmwasm-stargate";
+import { Buffer } from "buffer";
 import { program } from "commander";
 
 import { retry } from "./lib";

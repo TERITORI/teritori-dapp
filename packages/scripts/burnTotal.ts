@@ -1,3 +1,4 @@
+import { Buffer } from "buffer";
 import child_process from "child_process";
 import { program } from "commander";
 
