@@ -40,7 +40,6 @@ export const SelectionDropdown = ({
         {
           zIndex: 1,
           width: "100%",
-          minHeight: 40,
           marginBottom: layout.spacing_x3,
         },
         style,
@@ -55,9 +54,9 @@ export const SelectionDropdown = ({
         <TertiaryBox
           style={{
             width: "100%",
-            minHeight: 40,
+            height: 40,
             flexDirection: "row",
-            paddingHorizontal: 12,
+            paddingHorizontal: layout.spacing_x1_5,
             backgroundColor: neutral17,
             alignItems: "center",
           }}

@@ -58,9 +58,9 @@ export const MultipleSelectionDropdown = ({
         <TertiaryBox
           style={{
             width: "100%",
-            minHeight: 40,
+            height: 40,
             flexDirection: "row",
-            paddingHorizontal: 12,
+            paddingHorizontal: layout.spacing_x1_5,
             backgroundColor: neutral17,
             alignItems: "center",
           }}
