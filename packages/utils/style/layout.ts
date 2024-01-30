@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 export const screenContainerContentMarginHorizontal = 140; // Corresponding to the space H between the Sidebar and the page content
 export const headerHeight = 80;
 export const MOBILE_HEADER_HEIGHT = 64;
@@ -8,7 +9,7 @@ export const headerMarginHorizontal = 22;
 export const avatarWidth = 40;
 export const topMenuWidth = 332;
 export const smallSidebarWidth = 76;
-export const fullSidebarWidth = 210;
+export const fullSidebarWidth = Platform.OS === "web" ? 210 : 240;
 export const MOBILE_SIDEBAR_MAX_WIDTH = 500;
 export const MOBILE_MAX_WIDTH = 1024;
 export const RESPONSIVE_BREAKPOINT_S = 512;

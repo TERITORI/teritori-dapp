@@ -14,7 +14,10 @@ module.exports = (() => {
     ...resolver,
     assetExts: resolver.assetExts.filter((ext) => ext !== "svg"),
     sourceExts: [...resolver.sourceExts, "svg", "cjs"],
-    extraNodeModules: require("node-libs-react-native"),
+    extraNodeModules: {
+      ...require("node-libs-react-native"),
+      crypto: require.resolve("crypto-browserify"),
+    },
     blacklistRE: blacklist([
       /node_modules\/redux-persist-electron-storage\/.*/,
       /node_modules\/electron\/.*/,

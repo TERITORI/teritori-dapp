@@ -33,6 +33,7 @@ import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
 import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
+import { WalletControlContextProvider } from "./packages/context/WalletControlProvider";
 import {
   useWallets,
   WalletsProvider,
@@ -46,14 +47,15 @@ import { setSelectedWalletId } from "./packages/store/slices/settings";
 import { persistor, store, useAppDispatch } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
 
-const queryClient = new QueryClient();
-
 if (Platform.OS === "web") {
   const plausible = Plausible({
     domain: "app.teritori.com",
   });
   plausible.enableAutoPageviews();
 }
+
+const queryClient = new QueryClient();
+
 // it's here just to fix a TS2589 error
 type DefaultForm = {
   novalue: string;
@@ -115,7 +117,8 @@ export default function App() {
                             <WalletSyncer />
                             <DappStoreApps />
                             <MultisigDeauth />
-                            <SearchBarContextProvider>
+                            <WalletControlContextProvider>
+                              <SearchBarContextProvider>
                               <TransactionModalsProvider>
                                 <TNSContextProvider>
                                   <TNSMetaDataListContextProvider>
@@ -135,6 +138,7 @@ export default function App() {
                                 </TNSContextProvider>
                               </TransactionModalsProvider>
                             </SearchBarContextProvider>
+                            </WalletControlContextProvider>
                           </WalletsProvider>
                         </DropdownsContextProvider>
                       </FeedbacksContextProvider>

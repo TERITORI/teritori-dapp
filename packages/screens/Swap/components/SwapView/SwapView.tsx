@@ -515,7 +515,7 @@ export const SwapView: React.FC = () => {
               loader
               text={
                 amountIn && parseFloat(amountIn) > parseFloat(currencyInAmount)
-                  ? "Insufficient balance"
+                  ? "Not enough funds"
                   : "Swap"
               }
               fullWidth

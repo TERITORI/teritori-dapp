@@ -5,6 +5,7 @@ import { UploadVideoButton } from "./UploadVideoButton";
 import { UploadVideoModal } from "./UploadVideoModal";
 import { VideoCard } from "./VideoCard";
 import { Post, PostsRequest } from "../../api/feed/v1/feed";
+import { useWalletControl } from "../../context/WalletControlProvider";
 import {
   combineFetchFeedPages,
   useFetchFeed,
@@ -12,6 +13,7 @@ import {
 import { useAppType } from "../../hooks/useAppType";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { Spinner } from "../../screens/Mini/Feed/components/Spinner";
+import { NetworkFeature } from "../../networks";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -29,6 +31,7 @@ export const FeedVideosList: React.FC<{
 }> = ({ title, req, allowUpload, style }) => {
   const [appType] = useAppType();
   const selectedWallet = useSelectedWallet();
+  const { showConnectWalletModal } = useWalletControl();
   const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
 
@@ -52,6 +55,17 @@ export const FeedVideosList: React.FC<{
     if (!isLoading && hasNextPage && !isFetching) {
       fetchNextPage();
     }
+  };
+
+  const onPressUploadVideo = async () => {
+    if (!selectedWallet?.address || !selectedWallet.connected) {
+      showConnectWalletModal({
+        forceNetworkFeature: NetworkFeature.SocialFeed,
+        action: "Publish a Video",
+      });
+      return;
+    }
+    setOpenUploadModal(true);
   };
 
   if (!data && (isLoading || isFetching))
@@ -81,9 +95,7 @@ export const FeedVideosList: React.FC<{
           {title}
         </BrandText>
 
-        {allowUpload && (
-          <UploadVideoButton onPress={() => setOpenUploadModal(true)} />
-        )}
+        {allowUpload && <UploadVideoButton onPress={onPressUploadVideo} />}
       </View>
       <View style={[contentGroupCStyle]}>
         <GridList<Post>

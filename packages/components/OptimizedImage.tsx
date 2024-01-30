@@ -75,7 +75,7 @@ const transformURI = (
   width: number,
   height: number,
 ) => {
-  if (!uri || typeof uri !== "string") {
+  if (typeof uri !== "string" || !uri) {
     return "";
   }
 
@@ -90,8 +90,8 @@ const transformURI = (
     uri = "ipfs://" + uri;
   } catch {}
 
-  const knownScheme = ["https://", "http://", "ipfs://"].find(
-    (scheme) => uri?.startsWith(scheme),
+  const knownScheme = ["https://", "http://", "ipfs://"].find((scheme) =>
+    uri?.startsWith(scheme),
   );
   if (!knownScheme) {
     return uri;

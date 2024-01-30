@@ -6,7 +6,7 @@ import contactsSVG from "../../../assets/icons/contacts.svg";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import { SVG } from "../SVG";
-import { ConnectWalletModal } from "../connectWallet/ConnectWalletModal";
+import { ConnectWalletModal } from "../modals/ConnectWalletModal";
 
 export const ConnectWalletButtonMobile: FC<{
   style?: StyleProp<ViewStyle>;
