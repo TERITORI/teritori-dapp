@@ -91,7 +91,7 @@ export const ScreenContainerMobile: FC<{
           />
         )}
 
-        <SidebarMobile />
+        {appType !== "mini" && <SidebarMobile />}
 
         {/*==== Scrollable screen content*/}
         <View style={{ flex: 1, width: "100%", height: windowHeight }}>

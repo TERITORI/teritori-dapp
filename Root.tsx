@@ -119,25 +119,25 @@ export default function App() {
                             <MultisigDeauth />
                             <WalletControlContextProvider>
                               <SearchBarContextProvider>
-                              <TransactionModalsProvider>
-                                <TNSContextProvider>
-                                  <TNSMetaDataListContextProvider>
-                                    <MenuProvider>
-                                      <MessageContextProvider>
-                                        <MediaPlayerContextProvider>
-                                          <StatusBar style="inverted" />
-                                          {appType === "mini" ? (
-                                            <MiniNavigator />
-                                          ) : (
-                                            <Navigator />
-                                          )}
-                                        </MediaPlayerContextProvider>
-                                      </MessageContextProvider>
-                                    </MenuProvider>
-                                  </TNSMetaDataListContextProvider>
-                                </TNSContextProvider>
-                              </TransactionModalsProvider>
-                            </SearchBarContextProvider>
+                                <TransactionModalsProvider>
+                                  <TNSContextProvider>
+                                    <TNSMetaDataListContextProvider>
+                                      <MenuProvider>
+                                        <MessageContextProvider>
+                                          <MediaPlayerContextProvider>
+                                            <StatusBar style="inverted" />
+                                            {appType === "mini" ? (
+                                              <MiniNavigator />
+                                            ) : (
+                                              <Navigator />
+                                            )}
+                                          </MediaPlayerContextProvider>
+                                        </MessageContextProvider>
+                                      </MenuProvider>
+                                    </TNSMetaDataListContextProvider>
+                                  </TNSContextProvider>
+                                </TransactionModalsProvider>
+                              </SearchBarContextProvider>
                             </WalletControlContextProvider>
                           </WalletsProvider>
                         </DropdownsContextProvider>
