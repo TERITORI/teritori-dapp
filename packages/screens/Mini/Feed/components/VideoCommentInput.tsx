@@ -10,7 +10,7 @@ import {
   ReplyToType,
 } from "../../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { generatePostMetadata } from "../../../../components/socialFeed/NewsFeed/NewsFeedQueries";
-import { NotEnoughFundModal } from "../../../../components/socialFeed/NewsFeed/NotEnoughFundModal";
+// import { NotEnoughFundModal } from "../../../../components/socialFeed/NewsFeed/NotEnoughFundModal";
 import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
 import { useFeedPosting } from "../../../../hooks/feed/useFeedPosting";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
@@ -157,12 +157,12 @@ export const VideoCommentInput = ({
           </View>
         </View>
       </View>
-      {isNotEnoughFundModal && (
+      {/* {isNotEnoughFundModal && (
         <NotEnoughFundModal
           visible
           onClose={() => setNotEnoughFundModal(false)}
         />
-      )}
+      )} */}
     </View>
   );
 };
