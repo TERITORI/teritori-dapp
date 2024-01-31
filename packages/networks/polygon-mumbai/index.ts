@@ -15,7 +15,6 @@ export const polygonMumbaiNetwork: EthereumNetworkInfo = {
   contractExplorer: "https://mumbai.polygonscan.com/address/$address",
   testnet: true,
   backendEndpoint: "https://dapp-backend.testnet.teritori.com",
-  // backendEndpoint: "http://localhost:9090",
   chainId: 80001,
   alchemyApiKey: "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
   vaultContractAddress: "0xffc71bf3aca1355dc29b06c12bc8ef32f8f20c51",
@@ -28,8 +27,8 @@ export const polygonMumbaiNetwork: EthereumNetworkInfo = {
   substreamsManifest: "go/internal/substreams/ethereum/polygon_mumbai.yaml",
   distributorContractAddress: "0xe16927b4df1a9938c0b7506186f6d55f2e1403c6",
   toriBridgedTokenAddress: "0xc46944cd8c700b2a33f496219eecca0fdbdc3fac",
-  riotContractAddressGen0: "0x916ad9d549907ccbbaf9ba65526826bfc3a9c0c4",
-  riotBridgedNFTAddressGen0: "0xb081acb7da31f58f0efa8ea920c5866339f3b06c",
   riotOriginalCollectionIdGen0:
     "testeth-0x43cc70bf324d716782628bed38af97e4afe92f69",
+  riotContractAddressGen0: "0x916ad9d549907ccbbaf9ba65526826bfc3a9c0c4",
+  riotBridgedNFTAddressGen0: "0xb081acb7da31f58f0efa8ea920c5866339f3b06c",
 };

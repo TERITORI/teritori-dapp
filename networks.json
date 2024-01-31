@@ -3114,13 +3114,17 @@
     "alchemyApiKey": "xZ3FVF0o6q_4beg_afmCEzf4GSJErhId",
     "vaultContractAddress": "0x6251B3384c8eD53e2Cc38d34c1f26ffE8d461B94",
     "riotContractAddressGen0": "0x8f8304ea566affeb96ad0ffb593bbebd8876d124",
+    "riotContractAddressGen1": "0x00---",
+    "excludeFromLaunchpadList": [
+      "0x00---"
+    ],
     "riotSquadStakingContractAddress": "0x00---",
     "firehoseEndpoint": "mainnet.eth.streamingfast.io:443",
     "indexStartBlock": "16341067",
     "indexStopBlock": "-1",
     "substreamsManifest": "go/internal/substreams/ethereum/ethereum_mainnet.yaml",
     "distributorContractAddress": "0x00---",
-    "riotBridgeAddressGen0": "0x00---",
+    "riotBridgeAddressGen0": "0x037ecf2480df7b0e8b46d0a9a650cb5371d89573",
     "riotNFTAddressGen0": "0x39e45eca52965210e69f7e768f58550460e5e79a"
   },
   {
@@ -7581,16 +7585,18 @@
     "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
     "chainId": 137,
     "alchemyApiKey": "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
-    "vaultContractAddress": "0xab30d7379ebfd146b77b0b4d6f3eb09bd725e4ef",
-    "riotContractAddressGen0": "0x40d2ed8611f7b4633adf162f788b67cae1811f24",
-    "riotContractAddressGen1": "",
+    "vaultContractAddress": "0x037ecf2480df7b0e8b46d0a9a650cb5371d89573",
     "excludeFromLaunchpadList": [],
     "riotSquadStakingContractAddress": "0x9083986a7c842b6c733c2f9bd25d67cc27119025",
-    "firehoseEndpoint": "mumbai.streamingfast.io:443",
-    "indexStartBlock": "40567872",
+    "firehoseEndpoint": "polygon.streamingfast.io:443",
+    "indexStartBlock": "52917042",
     "indexStopBlock": "-1",
-    "substreamsManifest": "go/internal/substreams/ethereum/polygon_mumbai.yaml",
-    "distributorContractAddress": "0x750070a76A3444F27E3fccabe4D423105cfa3e72"
+    "substreamsManifest": "go/internal/substreams/ethereum/polygon.yaml",
+    "distributorContractAddress": "0xbd85bd724c78150e4ebc3c2bcb0d32ec7c0fc84f",
+    "toriBridgedTokenAddress": "0x69ded9b7658507ca8c5a6f1f6ff53276802ec228",
+    "riotOriginalCollectionIdGen0": "testeth-0x8f8304ea566affeb96ad0ffb593bbebd8876d124",
+    "riotContractAddressGen0": "0x9083986a7c842b6c733c2f9bd25d67cc27119025",
+    "riotBridgedNFTAddressGen0": "0x539b772de11f78109e0131bf9fde54b4b50a8440"
   },
   {
     "id": "polygon-mumbai",
@@ -7630,9 +7636,9 @@
     "substreamsManifest": "go/internal/substreams/ethereum/polygon_mumbai.yaml",
     "distributorContractAddress": "0xe16927b4df1a9938c0b7506186f6d55f2e1403c6",
     "toriBridgedTokenAddress": "0xc46944cd8c700b2a33f496219eecca0fdbdc3fac",
+    "riotOriginalCollectionIdGen0": "testeth-0x43cc70bf324d716782628bed38af97e4afe92f69",
     "riotContractAddressGen0": "0x916ad9d549907ccbbaf9ba65526826bfc3a9c0c4",
-    "riotBridgedNFTAddressGen0": "0xb081acb7da31f58f0efa8ea920c5866339f3b06c",
-    "riotOriginalCollectionIdGen0": "testeth-0x43cc70bf324d716782628bed38af97e4afe92f69"
+    "riotBridgedNFTAddressGen0": "0xb081acb7da31f58f0efa8ea920c5866339f3b06c"
   },
   {
     "id": "cosmos-registry:provenance",
