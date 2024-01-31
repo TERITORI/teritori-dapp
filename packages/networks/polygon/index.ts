@@ -24,7 +24,7 @@ export const polygonNetwork: EthereumNetworkInfo = {
   firehoseEndpoint: "polygon.streamingfast.io:443",
   indexStartBlock: "52917042",
   indexStopBlock: "-1",
-  substreamsManifest: "go/internal/substreams/ethereum/polygon.yaml",
+  substreamsManifest: "go/internal/substreams/ethereum/polygon_mainnet.yaml",
   distributorContractAddress: "0xbd85bd724c78150e4ebc3c2bcb0d32ec7c0fc84f",
   toriBridgedTokenAddress: "0x69ded9b7658507ca8c5a6f1f6ff53276802ec228",
   riotOriginalCollectionIdGen0:
