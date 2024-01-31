@@ -5,7 +5,7 @@ export const isElectron = () => {
       return true;
     }
   } catch (err) {
-    console.error("isElectron err", err);
+    console.log("isElectron err", err);
   }
   return false;
 };

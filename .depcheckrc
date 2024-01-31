@@ -31,7 +31,9 @@
     "metro-config",
     "webpack-bundle-analyzer",
     "react-native-web-lottie",
-    "expo-splash-screen"
+    "expo-splash-screen",
+    "electron-store",
+    "redux-persist-electron-storage"
   ],
   "ignorePatterns": [
     "/cache",

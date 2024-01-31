@@ -298,11 +298,12 @@ unused-exports: node_modules
 
 .PHONY: prepare-electron
 prepare-electron: node_modules
-	yarn rimraf ./web-build
-	yarn cross-env isElectron=prod expo export:web
+	yarn rimraf ./dist
+	yarn cross-env isElectron=prod expo export -p web
 	yarn rimraf ./electron/web-build
 	mkdir ./electron/web-build
-	cp -r ./web-build/* ./electron/web-build
+	cp -r ./dist/* ./electron/web-build
+	yarn tsx ./packages/scripts/electron/fixHTML.ts
 
 # requires prepare-electron
 .PHONY: build-electron-mac-amd64

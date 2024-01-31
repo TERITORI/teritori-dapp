@@ -1,6 +1,7 @@
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { isDeliverTxFailure, StdFee } from "@cosmjs/stargate";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import { Buffer } from "buffer";
 import { useCallback } from "react";
 
 import { useDAOMakeProposal } from "./dao/useDAOMakeProposal";

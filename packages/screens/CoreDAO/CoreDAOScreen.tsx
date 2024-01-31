@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { Buffer } from "buffer";
 import React from "react";
 import { View } from "react-native";
 

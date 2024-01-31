@@ -1,3 +1,4 @@
+import { Buffer } from "buffer";
 import React, { ComponentProps, useRef, useCallback } from "react";
 import {
   StyleProp,
