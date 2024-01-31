@@ -29,7 +29,6 @@
     "crypto",
     "expo-constants",
     "metro-config",
-    "webpack-bundle-analyzer",
     "react-native-web-lottie",
     "expo-splash-screen",
     "electron-store",

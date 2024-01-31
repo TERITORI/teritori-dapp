@@ -88,6 +88,7 @@
     "google-protobuf": "^3.21.2",
     "html-to-draftjs": "^1.5.0",
     "immutable": "^4.0.0",
+    "kubernetes-models": "^4.3.1",
     "listr2": "^8.0.1",
     "lodash": "^4.17.21",
     "long": "^5.2.1",
@@ -138,6 +139,7 @@
     "victory": "^36.6.12",
     "victory-native": "^36.6.8",
     "waveform-data": "^4.3.0",
+    "yaml": "^2.3.4",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -175,10 +177,7 @@
     "rimraf": "^5.0.5",
     "ts-proto": "^1.120.0",
     "ts-unused-exports": "^10.0.1",
-    "typescript": "^5.2.2",
-    "webpack": "^5.89.0",
-    "webpack-bundle-analyzer": "^4.9.1",
-    "webpack-deduplication-plugin": "^0.0.8"
+    "typescript": "^5.2.2"
   },
   "resolutions": {
     "@gnolang/tm2-js-client@^1.0.0": "patch:@gnolang/tm2-js-client@npm%3A1.0.1#./.yarn/patches/@gnolang-tm2-js-client-npm-1.0.1-9e54bafbb3.patch",
