@@ -16,7 +16,9 @@
         "buildType": "apk"
       }
     },
-    "production": {}
+    "production": {
+      "node": "18.1.0"
+    }
   },
   "submit": {
     "production": {}

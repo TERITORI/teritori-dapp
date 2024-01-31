@@ -41,7 +41,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@axelar-network/axelarjs-sdk@npm:^0.13.6":
+"@axelar-network/axelarjs-sdk@npm:0.13.9":
   version: 0.13.9
   resolution: "@axelar-network/axelarjs-sdk@npm:0.13.9"
   dependencies:
@@ -63,6 +63,31 @@ __metadata:
     uuid: ^8.3.2
     ws: ^8.13.0
   checksum: 75389642d6d6ac3f9c794b51726ea4ff4ba4a7dec21f2ee9f80f914ce312fc38934c270aee8a3e4c584f6ee7445d57844610074610a4f34217bcc513aeb6e0f6
+  languageName: node
+  linkType: hard
+
+"@axelar-network/axelarjs-sdk@patch:@axelar-network/axelarjs-sdk@npm%3A0.13.9#./.yarn/patches/@axelar-network-axelarjs-sdk-npm-0.13.9-617166d9cd.patch::locator=teritori-dapp%40workspace%3A.":
+  version: 0.13.9
+  resolution: "@axelar-network/axelarjs-sdk@patch:@axelar-network/axelarjs-sdk@npm%3A0.13.9#./.yarn/patches/@axelar-network-axelarjs-sdk-npm-0.13.9-617166d9cd.patch::version=0.13.9&hash=dc0f6f&locator=teritori-dapp%40workspace%3A."
+  dependencies:
+    "@axelar-network/axelar-cgp-solidity": ^4.5.0
+    "@axelar-network/axelarjs-types": ^0.33.0
+    "@cosmjs/json-rpc": ^0.30.1
+    "@cosmjs/stargate": 0.31.0-alpha.1
+    "@ethersproject/abstract-provider": ^5.7.0
+    "@ethersproject/networks": ^5.7.1
+    "@ethersproject/providers": ^5.7.2
+    "@types/uuid": ^8.3.1
+    bech32: ^2.0.0
+    clone-deep: ^4.0.1
+    cross-fetch: ^3.1.5
+    ethers: ^5.7.2
+    socket.io-client: ^4.6.1
+    standard-http-error: ^2.0.1
+    string-similarity-js: ^2.1.4
+    uuid: ^8.3.2
+    ws: ^8.13.0
+  checksum: 2d0fa29c6ec20d27b73d9b5cab81b4ed486d6c282bd71f40cd2b86960406d7a8e21a15b10f1c8a44786aa0517ac497f0ca75ee22f05008b84fe0ad9b74a13424
   languageName: node
   linkType: hard
 
