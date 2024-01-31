@@ -40,6 +40,8 @@ type Activity struct {
 	// "belongs to" relations
 	NFTID networks.NFTID `gorm:"index"`
 	NFT   *NFT
+
+	NetworkID string `gorm:"index"`
 }
 
 type Listing struct {
@@ -48,11 +50,15 @@ type Listing struct {
 	PriceDenom string
 	USDPrice   float64
 	SellerID   networks.UserID
+
+	NetworkID string `gorm:"index"`
 }
 
 type CancelListing struct {
 	ActivityID networks.ActivityID `gorm:"primaryKey"`
 	SellerID   networks.UserID
+
+	NetworkID string `gorm:"index"`
 }
 
 type UpdateNFTPrice struct {
@@ -61,6 +67,8 @@ type UpdateNFTPrice struct {
 	Price      string
 	PriceDenom string
 	USDPrice   float64
+
+	NetworkID string `gorm:"index"`
 }
 
 type Trade struct {
@@ -70,6 +78,8 @@ type Trade struct {
 	USDPrice   float64
 	BuyerID    networks.UserID
 	SellerID   networks.UserID
+
+	NetworkID string `gorm:"index"`
 }
 
 type Mint struct {
@@ -78,21 +88,29 @@ type Mint struct {
 	PriceDenom string
 	USDPrice   float64
 	BuyerID    networks.UserID
+
+	NetworkID string `gorm:"index"`
 }
 
 type Burn struct {
 	ActivityID networks.ActivityID `gorm:"primaryKey"`
 	BurnerID   networks.UserID
+
+	NetworkID string `gorm:"index"`
 }
 
 type SendNFT struct {
 	ActivityID networks.ActivityID `gorm:"primaryKey"`
 	Sender     networks.UserID
 	Receiver   networks.UserID
+
+	NetworkID string `gorm:"index"`
 }
 
 type TransferNFT struct {
 	ActivityID networks.ActivityID `gorm:"primaryKey"`
 	Sender     networks.UserID
 	Receiver   networks.UserID
+
+	NetworkID string `gorm:"index"`
 }

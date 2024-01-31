@@ -43,11 +43,11 @@ const Content: React.FC<{
   const wallet = useSelectedWallet();
   const { info, refresh, notFound } = useNFTInfo(id, wallet?.userId);
   const { width } = useMaxResolution({ responsive: true, noMargin: true });
-  const [network, collectionAddress] = parseNftId(id);
-  const collectionId = getCollectionId(network?.id, collectionAddress);
+  const [network, mintContractAddress] = parseNftId(id);
+  const collectionId = getCollectionId(network?.id, mintContractAddress);
   const mintEnded = useMintEnded(collectionId);
   const showMarketplace =
-    (network?.secondaryDuringMintList || []).includes(collectionAddress) ||
+    (network?.secondaryDuringMintList || []).includes(mintContractAddress) ||
     (mintEnded !== undefined && mintEnded);
 
   const screenTabItems = {

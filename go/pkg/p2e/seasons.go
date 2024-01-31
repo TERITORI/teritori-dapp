@@ -18,7 +18,7 @@ type Season struct {
 
 // TODO: We hardcode this right now but should defined in dynamic way in the future (airtable, db...)
 // BossHp is in Days
-var THE_RIOT_SEASONS = []Season{
+var THE_RIOT_COSMOS_SEASONS = []Season{
 	// Season 1
 	{
 		ID:         "Season 1",
@@ -175,9 +175,25 @@ var THE_RIOT_SEASONS = []Season{
 		ID:        "Pre-Season 7",
 		GameID:    THE_RIOT_GAME_ID,
 		BossName:  `== $*=|'¤?")à-£_%`,
-		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.cf-ipfs.com/",
+		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.nftstorage.link/",
 		StartsAt:  "2023-09-08T00:00:00",
 		EndsAt:    "2023-12-10T00:00:00",
 		IsPre:     true,
+	},
+}
+
+var THE_RIOT_ETHEREUM_SEASONS = []Season{
+	// Season 1
+	{
+		ID:         "Season 1 - ETH",
+		GameID:     THE_RIOT_GAME_ID,
+		Denom:      "eth",
+		Decimals:   18,
+		TotalPrize: 1,
+		BossName:   "Philipp Rustov",
+		BossImage:  "",
+		TopN:       500,
+		StartsAt:   "2023-01-15T00:00:00",
+		EndsAt:     "2023-12-14T00:00:00",
 	},
 }

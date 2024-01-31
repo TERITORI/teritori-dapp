@@ -11,7 +11,7 @@
     "build:web": "expo export -p web",
     "lint": "npx tsx packages/scripts/paralint",
     "lint-fix": "eslint --cache --ext .js,.jsx,.ts,.tsx . --fix",
-    "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport=\"packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;app.config.js;weshd;./App.tsx;.*\\.web|.electron|.native|.d.ts\"",
+    "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport=\"packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/screens/RiotGame/RiotGameBridgeScreen.tsx;packages/components/socialFeed/RichText/inline-toolbar;app.config.js;weshd;./App.tsx;.*\\.web|.electron|.native|.d.ts\"",
     "validate-networks": "tsx packages/scripts/validateNetworks.ts",
     "postinstall": "patch-package"
   },
@@ -20,6 +20,7 @@
   },
   "engineStrict": true,
   "dependencies": {
+    "@axelar-network/axelarjs-sdk": "^0.13.6",
     "@chain-registry/types": "^0.17.1",
     "@cosmjs/amino": "0.32.2",
     "@cosmjs/cosmwasm-stargate": "0.32.2",
@@ -87,6 +88,7 @@
     "google-protobuf": "^3.21.2",
     "html-to-draftjs": "^1.5.0",
     "immutable": "^4.0.0",
+    "kubernetes-models": "^4.3.1",
     "listr2": "^8.0.1",
     "lodash": "^4.17.21",
     "long": "^5.2.1",
@@ -137,6 +139,7 @@
     "victory": "^36.6.12",
     "victory-native": "^36.6.8",
     "waveform-data": "^4.3.0",
+    "yaml": "^2.3.4",
     "zod": "^3.22.4"
   },
   "devDependencies": {

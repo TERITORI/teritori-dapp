@@ -32,7 +32,8 @@
     "react-native-web-lottie",
     "expo-splash-screen",
     "electron-store",
-    "redux-persist-electron-storage"
+    "redux-persist-electron-storage",
+    "@axelar-network/axelarjs-types"
   ],
   "ignorePatterns": [
     "/cache",

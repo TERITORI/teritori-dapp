@@ -4,6 +4,8 @@ import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
 const nameServiceContractAddress =
   "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys";
 
+const riotContractAddressGen0 =
+  "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc";
 const riotContractAddressGen1 = "";
 
 export const teritoriTestnetNetwork: NetworkInfo = {
@@ -15,13 +17,13 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   icon: "teritori.svg",
   features: [
     NetworkFeature.NFTMarketplace,
+    NetworkFeature.RiotP2E,
     NetworkFeature.Organizations,
     NetworkFeature.SocialFeed,
     NetworkFeature.UPP,
     NetworkFeature.NameService,
     NetworkFeature.BurnTokens,
     NetworkFeature.NFTLaunchpad,
-    NetworkFeature.RiotP2E,
   ],
   currencies: teritoriTestnetCurrencies,
   txExplorer: "https://explorer.teritori.com/teritori-testnet/tx/$hash",
@@ -54,7 +56,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   nameServiceTLD: ".tori",
   vaultContractAddress:
     "tori17p9rzwnnfxcjp32un9ug7yhhzgtkhvl9jfksztgw5uh69wac2pgs9ezf0j",
-  riotContractAddressGen0: "",
+  riotContractAddressGen0,
   riotContractAddressGen1,
   riotSquadStakingContractAddressV1: "",
   riotSquadStakingContractAddressV2: "",
@@ -62,7 +64,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   riotersFooterContractAddress: "",
   secondaryDuringMintList: [
     nameServiceContractAddress,
-    "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc", // riot gen 0
+    riotContractAddressGen0,
     riotContractAddressGen1,
   ],
   excludeFromLaunchpadList: [riotContractAddressGen1],

@@ -8,7 +8,26 @@ import { share } from "rxjs/operators";
 
 export const protobufPackage = "p2e.v1";
 
+export interface MerkleDataRequest {
+  userId: string;
+  token: string;
+  networkId: string;
+}
+
+export interface UserReward {
+  to: string;
+  token: string;
+  amount: string;
+}
+
+export interface MerkleDataResponse {
+  proof: string[];
+  userReward: UserReward | undefined;
+  claimableAmount: string;
+}
+
 export interface AllSeasonsRequest {
+  networkId: string;
 }
 
 export interface SeasonWithoutPrize {
@@ -22,6 +41,7 @@ export interface AllSeasonsResponse {
 }
 
 export interface CurrentSeasonRequest {
+  networkId: string;
 }
 
 export interface CurrentSeasonResponse {
@@ -38,6 +58,7 @@ export interface CurrentSeasonResponse {
 export interface UserRankRequest {
   seasonId: string;
   userId: string;
+  networkId: string;
 }
 
 export interface UserRankResponse {
@@ -49,6 +70,7 @@ export interface LeaderboardRequest {
   seasonId: string;
   limit: number;
   offset: number;
+  networkId: string;
 }
 
 export interface UserScore {
@@ -64,12 +86,284 @@ export interface LeaderboardResponse {
   userScore: UserScore | undefined;
 }
 
+function createBaseMerkleDataRequest(): MerkleDataRequest {
+  return { userId: "", token: "", networkId: "" };
+}
+
+export const MerkleDataRequest = {
+  encode(message: MerkleDataRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    if (message.token !== "") {
+      writer.uint32(18).string(message.token);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(26).string(message.networkId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MerkleDataRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMerkleDataRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.token = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MerkleDataRequest {
+    return {
+      userId: isSet(object.userId) ? globalThis.String(object.userId) : "",
+      token: isSet(object.token) ? globalThis.String(object.token) : "",
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+    };
+  },
+
+  toJSON(message: MerkleDataRequest): unknown {
+    const obj: any = {};
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
+    if (message.token !== "") {
+      obj.token = message.token;
+    }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MerkleDataRequest>, I>>(base?: I): MerkleDataRequest {
+    return MerkleDataRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<MerkleDataRequest>, I>>(object: I): MerkleDataRequest {
+    const message = createBaseMerkleDataRequest();
+    message.userId = object.userId ?? "";
+    message.token = object.token ?? "";
+    message.networkId = object.networkId ?? "";
+    return message;
+  },
+};
+
+function createBaseUserReward(): UserReward {
+  return { to: "", token: "", amount: "" };
+}
+
+export const UserReward = {
+  encode(message: UserReward, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.to !== "") {
+      writer.uint32(10).string(message.to);
+    }
+    if (message.token !== "") {
+      writer.uint32(18).string(message.token);
+    }
+    if (message.amount !== "") {
+      writer.uint32(26).string(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserReward {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserReward();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.to = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.token = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.amount = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UserReward {
+    return {
+      to: isSet(object.to) ? globalThis.String(object.to) : "",
+      token: isSet(object.token) ? globalThis.String(object.token) : "",
+      amount: isSet(object.amount) ? globalThis.String(object.amount) : "",
+    };
+  },
+
+  toJSON(message: UserReward): unknown {
+    const obj: any = {};
+    if (message.to !== "") {
+      obj.to = message.to;
+    }
+    if (message.token !== "") {
+      obj.token = message.token;
+    }
+    if (message.amount !== "") {
+      obj.amount = message.amount;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UserReward>, I>>(base?: I): UserReward {
+    return UserReward.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UserReward>, I>>(object: I): UserReward {
+    const message = createBaseUserReward();
+    message.to = object.to ?? "";
+    message.token = object.token ?? "";
+    message.amount = object.amount ?? "";
+    return message;
+  },
+};
+
+function createBaseMerkleDataResponse(): MerkleDataResponse {
+  return { proof: [], userReward: undefined, claimableAmount: "" };
+}
+
+export const MerkleDataResponse = {
+  encode(message: MerkleDataResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.proof) {
+      writer.uint32(10).string(v!);
+    }
+    if (message.userReward !== undefined) {
+      UserReward.encode(message.userReward, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.claimableAmount !== "") {
+      writer.uint32(26).string(message.claimableAmount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MerkleDataResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMerkleDataResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.proof.push(reader.string());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.userReward = UserReward.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.claimableAmount = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MerkleDataResponse {
+    return {
+      proof: globalThis.Array.isArray(object?.proof) ? object.proof.map((e: any) => globalThis.String(e)) : [],
+      userReward: isSet(object.userReward) ? UserReward.fromJSON(object.userReward) : undefined,
+      claimableAmount: isSet(object.claimableAmount) ? globalThis.String(object.claimableAmount) : "",
+    };
+  },
+
+  toJSON(message: MerkleDataResponse): unknown {
+    const obj: any = {};
+    if (message.proof?.length) {
+      obj.proof = message.proof;
+    }
+    if (message.userReward !== undefined) {
+      obj.userReward = UserReward.toJSON(message.userReward);
+    }
+    if (message.claimableAmount !== "") {
+      obj.claimableAmount = message.claimableAmount;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MerkleDataResponse>, I>>(base?: I): MerkleDataResponse {
+    return MerkleDataResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<MerkleDataResponse>, I>>(object: I): MerkleDataResponse {
+    const message = createBaseMerkleDataResponse();
+    message.proof = object.proof?.map((e) => e) || [];
+    message.userReward = (object.userReward !== undefined && object.userReward !== null)
+      ? UserReward.fromPartial(object.userReward)
+      : undefined;
+    message.claimableAmount = object.claimableAmount ?? "";
+    return message;
+  },
+};
+
 function createBaseAllSeasonsRequest(): AllSeasonsRequest {
-  return {};
+  return { networkId: "" };
 }
 
 export const AllSeasonsRequest = {
-  encode(_: AllSeasonsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: AllSeasonsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.networkId !== "") {
+      writer.uint32(10).string(message.networkId);
+    }
     return writer;
   },
 
@@ -80,6 +374,13 @@ export const AllSeasonsRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -89,20 +390,24 @@ export const AllSeasonsRequest = {
     return message;
   },
 
-  fromJSON(_: any): AllSeasonsRequest {
-    return {};
+  fromJSON(object: any): AllSeasonsRequest {
+    return { networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "" };
   },
 
-  toJSON(_: AllSeasonsRequest): unknown {
+  toJSON(message: AllSeasonsRequest): unknown {
     const obj: any = {};
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<AllSeasonsRequest>, I>>(base?: I): AllSeasonsRequest {
     return AllSeasonsRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<AllSeasonsRequest>, I>>(_: I): AllSeasonsRequest {
+  fromPartial<I extends Exact<DeepPartial<AllSeasonsRequest>, I>>(object: I): AllSeasonsRequest {
     const message = createBaseAllSeasonsRequest();
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -258,11 +563,14 @@ export const AllSeasonsResponse = {
 };
 
 function createBaseCurrentSeasonRequest(): CurrentSeasonRequest {
-  return {};
+  return { networkId: "" };
 }
 
 export const CurrentSeasonRequest = {
-  encode(_: CurrentSeasonRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: CurrentSeasonRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.networkId !== "") {
+      writer.uint32(10).string(message.networkId);
+    }
     return writer;
   },
 
@@ -273,6 +581,13 @@ export const CurrentSeasonRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -282,20 +597,24 @@ export const CurrentSeasonRequest = {
     return message;
   },
 
-  fromJSON(_: any): CurrentSeasonRequest {
-    return {};
+  fromJSON(object: any): CurrentSeasonRequest {
+    return { networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "" };
   },
 
-  toJSON(_: CurrentSeasonRequest): unknown {
+  toJSON(message: CurrentSeasonRequest): unknown {
     const obj: any = {};
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<CurrentSeasonRequest>, I>>(base?: I): CurrentSeasonRequest {
     return CurrentSeasonRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<CurrentSeasonRequest>, I>>(_: I): CurrentSeasonRequest {
+  fromPartial<I extends Exact<DeepPartial<CurrentSeasonRequest>, I>>(object: I): CurrentSeasonRequest {
     const message = createBaseCurrentSeasonRequest();
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -465,7 +784,7 @@ export const CurrentSeasonResponse = {
 };
 
 function createBaseUserRankRequest(): UserRankRequest {
-  return { seasonId: "", userId: "" };
+  return { seasonId: "", userId: "", networkId: "" };
 }
 
 export const UserRankRequest = {
@@ -475,6 +794,9 @@ export const UserRankRequest = {
     }
     if (message.userId !== "") {
       writer.uint32(18).string(message.userId);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(26).string(message.networkId);
     }
     return writer;
   },
@@ -500,6 +822,13 @@ export const UserRankRequest = {
 
           message.userId = reader.string();
           continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -513,6 +842,7 @@ export const UserRankRequest = {
     return {
       seasonId: isSet(object.seasonId) ? globalThis.String(object.seasonId) : "",
       userId: isSet(object.userId) ? globalThis.String(object.userId) : "",
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
     };
   },
 
@@ -524,6 +854,9 @@ export const UserRankRequest = {
     if (message.userId !== "") {
       obj.userId = message.userId;
     }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
     return obj;
   },
 
@@ -534,6 +867,7 @@ export const UserRankRequest = {
     const message = createBaseUserRankRequest();
     message.seasonId = object.seasonId ?? "";
     message.userId = object.userId ?? "";
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -615,7 +949,7 @@ export const UserRankResponse = {
 };
 
 function createBaseLeaderboardRequest(): LeaderboardRequest {
-  return { seasonId: "", limit: 0, offset: 0 };
+  return { seasonId: "", limit: 0, offset: 0, networkId: "" };
 }
 
 export const LeaderboardRequest = {
@@ -628,6 +962,9 @@ export const LeaderboardRequest = {
     }
     if (message.offset !== 0) {
       writer.uint32(24).int32(message.offset);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(34).string(message.networkId);
     }
     return writer;
   },
@@ -660,6 +997,13 @@ export const LeaderboardRequest = {
 
           message.offset = reader.int32();
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -674,6 +1018,7 @@ export const LeaderboardRequest = {
       seasonId: isSet(object.seasonId) ? globalThis.String(object.seasonId) : "",
       limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
       offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
     };
   },
 
@@ -688,6 +1033,9 @@ export const LeaderboardRequest = {
     if (message.offset !== 0) {
       obj.offset = Math.round(message.offset);
     }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
     return obj;
   },
 
@@ -699,6 +1047,7 @@ export const LeaderboardRequest = {
     message.seasonId = object.seasonId ?? "";
     message.limit = object.limit ?? 0;
     message.offset = object.offset ?? 0;
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -901,6 +1250,7 @@ export interface P2eService {
   CurrentSeason(request: DeepPartial<CurrentSeasonRequest>, metadata?: grpc.Metadata): Promise<CurrentSeasonResponse>;
   UserRank(request: DeepPartial<UserRankRequest>, metadata?: grpc.Metadata): Promise<UserRankResponse>;
   AllSeasons(request: DeepPartial<AllSeasonsRequest>, metadata?: grpc.Metadata): Promise<AllSeasonsResponse>;
+  MerkleData(request: DeepPartial<MerkleDataRequest>, metadata?: grpc.Metadata): Promise<MerkleDataResponse>;
 }
 
 export class P2eServiceClientImpl implements P2eService {
@@ -912,6 +1262,7 @@ export class P2eServiceClientImpl implements P2eService {
     this.CurrentSeason = this.CurrentSeason.bind(this);
     this.UserRank = this.UserRank.bind(this);
     this.AllSeasons = this.AllSeasons.bind(this);
+    this.MerkleData = this.MerkleData.bind(this);
   }
 
   Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse> {
@@ -928,6 +1279,10 @@ export class P2eServiceClientImpl implements P2eService {
 
   AllSeasons(request: DeepPartial<AllSeasonsRequest>, metadata?: grpc.Metadata): Promise<AllSeasonsResponse> {
     return this.rpc.unary(P2eServiceAllSeasonsDesc, AllSeasonsRequest.fromPartial(request), metadata);
+  }
+
+  MerkleData(request: DeepPartial<MerkleDataRequest>, metadata?: grpc.Metadata): Promise<MerkleDataResponse> {
+    return this.rpc.unary(P2eServiceMerkleDataDesc, MerkleDataRequest.fromPartial(request), metadata);
   }
 }
 
@@ -1015,6 +1370,29 @@ export const P2eServiceAllSeasonsDesc: UnaryMethodDefinitionish = {
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = AllSeasonsResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const P2eServiceMerkleDataDesc: UnaryMethodDefinitionish = {
+  methodName: "MerkleData",
+  service: P2eServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return MerkleDataRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = MerkleDataResponse.decode(data);
       return {
         ...value,
         toObject() {

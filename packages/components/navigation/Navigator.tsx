@@ -33,6 +33,7 @@ import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScree
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
+// import { RiotGameBridgeScreen } from "../../screens/RiotGame/RiotGameBridgeScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
 import { RiotGameInventoryScreen } from "../../screens/RiotGame/RiotGameInventoryScreen";
@@ -184,6 +185,16 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Riot Game Inventory"),
         }}
       />
+      {/*
+      <Nav.Screen
+        name="RiotGameBridge"
+        component={RiotGameBridgeScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Bridge"),
+        }}
+      />
+      */}
 
       {/* ==== Wallet Manager */}
       <Nav.Screen

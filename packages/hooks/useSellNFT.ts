@@ -15,7 +15,6 @@ import {
   getNativeCurrency,
   mustGetCosmosNetwork,
   mustGetEthereumNetwork,
-  WEI_TOKEN_ADDRESS,
   NetworkKind,
 } from "../networks";
 
@@ -96,7 +95,7 @@ const ethereumSellNFT = async (
     nftContractAddress,
     tokenId,
     {
-      token: WEI_TOKEN_ADDRESS,
+      token: network.currencies[0].denom,
       amount: ethers.utils.parseEther(price),
     },
     txFeeData,
