@@ -5,7 +5,7 @@ import { Container } from "kubernetes-models/v1";
 import path from "path";
 import yaml from "yaml";
 
-import { NetworkFeature, getNetwork } from "@/networks";
+import { NetworkFeature, NetworkKind, getNetwork } from "@/networks";
 
 program
   .option("-n, --network-id <network-id>", "network id")
@@ -31,6 +31,16 @@ if (!network) {
 const genDeployment = (mode: string) => {
   const filePrefix = `${networkId}-${mode}-${databaseName}`;
   const podName = `indexer-${filePrefix}`;
+
+  const args: string[] = [];
+  if (network.kind === NetworkKind.Ethereum) {
+    args.push("sink");
+  }
+  args.push(
+    `--indexer-mode=${mode}`,
+    `--indexer-network-id=${networkId}`,
+    `--database-name=${databaseName}`,
+  );
 
   const deployment = new Deployment({
     metadata: {
@@ -66,11 +76,7 @@ const genDeployment = (mode: string) => {
                   },
                 },
               ],
-              args: [
-                `--indexer-mode=${mode}`,
-                `--indexer-network-id=${networkId}`,
-                `--database-name=${databaseName}`,
-              ],
+              args,
             }),
           ],
         },
