@@ -444,9 +444,37 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			}
 
 			// json string => struct
-			var dbAttributes []indexerdb.Attribute
-			if err := json.Unmarshal(jsonStr, &dbAttributes); err != nil {
+			var dbAttributesAny []indexerdb.AttributeAny
+			if err := json.Unmarshal(jsonStr, &dbAttributesAny); err != nil {
 				return errors.Wrap(err, "failed to convert nft json string => struct")
+			}
+
+			var dbAttributes []indexerdb.Attribute
+			for _, attribute := range dbAttributesAny {
+				switch attribute.Value.(type) {
+				case string:
+					dbAttributes = append(dbAttributes, indexerdb.Attribute{
+						TraitType: attribute.TraitType,
+						Value:     attribute.Value.(string),
+					})
+				case float64:
+					dbAttributes = append(dbAttributes, indexerdb.Attribute{
+						TraitType: attribute.TraitType,
+						Value:     fmt.Sprintf("%f", attribute.Value.(float64)),
+					})
+				case bool:
+					dbAttributes = append(dbAttributes, indexerdb.Attribute{
+						TraitType: attribute.TraitType,
+						Value:     fmt.Sprintf("%t", attribute.Value.(bool)),
+					})
+				case int64:
+					dbAttributes = append(dbAttributes, indexerdb.Attribute{
+						TraitType: attribute.TraitType,
+						Value:     fmt.Sprintf("%d", attribute.Value.(int64)),
+					})
+				default:
+					return errors.New("unsupported attribute type")
+				}
 			}
 
 			// db -> pb
