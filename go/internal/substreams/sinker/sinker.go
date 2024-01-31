@@ -21,8 +21,7 @@ import (
 )
 
 const (
-	HISTORICAL_BLOCK_FLUSH_EACH = 1000
-	LIVE_BLOCK_FLUSH_EACH       = 1
+	LIVE_BLOCK_FLUSH_EACH = 1
 )
 
 type PostgresSinker struct {
@@ -44,6 +43,7 @@ type TeritoriConfig struct {
 	NetworkStore *networks.NetworkStore
 	Loader       *Loader
 	IndexerMode  indexerdb.IndexerMode
+	BatchBlocks  uint64
 }
 
 func New(sink *sink.Sinker, config *TeritoriConfig, logger *zap.Logger, tracer logging.Tracer) (*PostgresSinker, error) {
@@ -145,5 +145,5 @@ func (s *PostgresSinker) batchBlockModulo(blockData *pbsubstreamsrpc.BlockScoped
 		return LIVE_BLOCK_FLUSH_EACH
 	}
 
-	return HISTORICAL_BLOCK_FLUSH_EACH
+	return s.config.BatchBlocks
 }

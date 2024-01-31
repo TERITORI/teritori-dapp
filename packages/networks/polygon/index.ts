@@ -19,7 +19,7 @@ export const polygonNetwork: EthereumNetworkInfo = {
   alchemyApiKey: "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
   vaultContractAddress: "0x037ecf2480df7b0e8b46d0a9a650cb5371d89573",
   excludeFromLaunchpadList: [],
-  riotSquadStakingContractAddress: "0x9083986a7c842b6c733c2f9bd25d67cc27119025",
+  riotSquadStakingContractAddress: "0xca415044477678c5e040f6bd1f67da887ab868e9",
   // Substreams
   firehoseEndpoint: "polygon.streamingfast.io:443",
   indexStartBlock: "52917042",

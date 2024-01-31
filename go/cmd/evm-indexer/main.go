@@ -49,6 +49,7 @@ var SinkCmd = cli.Command(sinkE,
 		flags.String("networks-file", "networks.json", "Path to networks config file")
 		flags.String("indexer-mode", "", "the mode to run indexer: p2e, data. p2e: index only p2e, data: index all data without p2e")
 		flags.String("indexer-network-id", "", "target network to index")
+		flags.Int("batch-blocks", 100, "persist data to db every given number of blocks")
 
 		// Add default sink Flags ====================================================================
 		flags.Int(sink.FlagUndoBufferSize, 3, "Number of blocks to keep buffered to handle fork reorganizations")
@@ -78,6 +79,9 @@ func sinkE(cmd *cobra.Command, args []string) error {
 
 	// get and validate selected network
 	network := netstore.MustGetEthereumNetwork(networkID)
+
+	// Get historical block flush each
+	batchBlocks := MustGetFlagUint64("batch-blocks")
 
 	// Verify indexerMode
 	mode := MustGetFlagString("indexer-mode")
@@ -130,6 +134,7 @@ func sinkE(cmd *cobra.Command, args []string) error {
 		zap.String("manifest_path", network.SubstreamsManifest),
 		zap.String("output_module_name", outputModuleName),
 		zap.String("block_range", blockRange),
+		zap.Uint64("batch_blocks", batchBlocks),
 	)
 
 	// Auto migrate DB
@@ -175,6 +180,7 @@ func sinkE(cmd *cobra.Command, args []string) error {
 		NetworkStore: &netstore,
 		Loader:       loader,
 		IndexerMode:  indexerMode,
+		BatchBlocks:  batchBlocks,
 	}
 
 	sink, err := sink.NewFromViper(
