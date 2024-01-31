@@ -1,6 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
+import { PaginationBlock } from "./PaginationBlock";
 import { PaginationProps } from "./PaginationProps.type";
 import chevronLeftDoubleSVG from "../../../../assets/icons/chevron-left-double.svg";
 import chevronLeftSVG from "../../../../assets/icons/chevron-left.svg";
@@ -8,8 +9,8 @@ import chevronRightDoubleSVG from "../../../../assets/icons/chevron-right-double
 import chevronRightSVG from "../../../../assets/icons/chevron-right.svg";
 import { primaryColor } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
-import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { SpacerRow } from "../../spacer";
 
@@ -27,32 +28,16 @@ export const RightContainer = ({
           justifyContent: "center",
         }}
       >
-        <TouchableOpacity onPress={() => onChangePage(0)}>
-          <TertiaryBox
-            style={{
-              height: 42,
-              width: 56,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <SVG source={chevronLeftDoubleSVG} height={16} width={16} />
-          </TertiaryBox>
-        </TouchableOpacity>
+        <PaginationBlock
+          onPress={() => onChangePage(0)}
+          source={chevronLeftDoubleSVG}
+        />
         <SpacerRow size={1} />
 
-        <TouchableOpacity onPress={() => onChangePage(currentPage - 1)}>
-          <TertiaryBox
-            style={{
-              height: 42,
-              width: 56,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <SVG source={chevronLeftSVG} height={16} width={16} />
-          </TertiaryBox>
-        </TouchableOpacity>
+        <PaginationBlock
+          onPress={() => onChangePage(currentPage - 1)}
+          source={chevronLeftSVG}
+        />
         <SpacerRow size={2} />
 
         <View
@@ -82,7 +67,12 @@ export const RightContainer = ({
                 backgroundColor: primaryColor,
               }}
             >
-              <BrandText style={fontSemibold14}>
+              <BrandText
+                style={{
+                  ...fontSemibold14,
+                  lineHeight: layout.spacing_x2,
+                }}
+              >
                 {currentPage + 1 >= maxPage ? currentPage : currentPage + 1}
               </BrandText>
             </TertiaryBox>
@@ -118,7 +108,12 @@ export const RightContainer = ({
                 backgroundColor: primaryColor,
               }}
             >
-              <BrandText style={fontSemibold14}>
+              <BrandText
+                style={{
+                  ...fontSemibold14,
+                  lineHeight: layout.spacing_x2,
+                }}
+              >
                 {currentPage + 2 > maxPage ? maxPage : currentPage + 2}
               </BrandText>
             </TertiaryBox>
@@ -126,32 +121,16 @@ export const RightContainer = ({
         </View>
         <SpacerRow size={2} />
 
-        <TouchableOpacity onPress={() => onChangePage(currentPage + 1)}>
-          <TertiaryBox
-            style={{
-              height: 42,
-              width: 56,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <SVG source={chevronRightSVG} height={16} width={16} />
-          </TertiaryBox>
-        </TouchableOpacity>
+        <PaginationBlock
+          onPress={() => onChangePage(currentPage + 1)}
+          source={chevronRightSVG}
+        />
         <SpacerRow size={1} />
 
-        <TouchableOpacity onPress={() => onChangePage(maxPage - 1)}>
-          <TertiaryBox
-            style={{
-              height: 42,
-              width: 56,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <SVG source={chevronRightDoubleSVG} height={16} width={16} />
-          </TertiaryBox>
-        </TouchableOpacity>
+        <PaginationBlock
+          onPress={() => onChangePage(maxPage - 1)}
+          source={chevronRightDoubleSVG}
+        />
       </View>
     </View>
   );

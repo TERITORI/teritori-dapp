@@ -2,7 +2,11 @@ import React from "react";
 import { TextInput, View } from "react-native";
 
 import { PaginationProps } from "./PaginationProps.type";
-import { neutral17, neutral77 } from "../../../utils/style/colors";
+import {
+  neutral17,
+  neutral77,
+  secondaryColor,
+} from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
@@ -28,7 +32,7 @@ export const LeftContainer = ({
             ...fontSemibold14,
             color: neutral77,
             paddingRight: layout.spacing_x1,
-            lineHeight: 14,
+            lineHeight: layout.spacing_x2,
           }}
         >
           Page {currentPage + 1} of {maxPage}
@@ -46,7 +50,7 @@ export const LeftContainer = ({
             ...fontSemibold14,
             color: neutral77,
             paddingRight: layout.spacing_x1,
-            lineHeight: 14,
+            lineHeight: layout.spacing_x2,
           }}
         >
           | Go to page:
@@ -69,7 +73,7 @@ export const LeftContainer = ({
             style={[
               fontSemibold14,
               {
-                color: "white",
+                color: secondaryColor,
                 flex: 1,
                 width: 56,
               },
