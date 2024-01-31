@@ -1,0 +1,163 @@
+diff --git a/dist/src/libs/AxelarQueryAPI.d.ts b/dist/src/libs/AxelarQueryAPI.d.ts
+index 52f6cba9d9df34d7857509b7fc573c7f0bc0fbde..b51235a19f95de239b5ba4862f37b0d6e0fb2e2e 100644
+--- a/dist/src/libs/AxelarQueryAPI.d.ts
++++ b/dist/src/libs/AxelarQueryAPI.d.ts
+@@ -2,7 +2,7 @@ import { RestService } from "../services";
+ import { AxelarQueryAPIConfig, BaseFeeResponse, Environment } from "./types";
+ import { EvmChain } from "../constants/EvmChain";
+ import { GasToken } from "../constants/GasToken";
+-import { FeeInfoResponse, TransferFeeResponse } from "@axelar-network/axelarjs-types/axelar/nexus/v1beta1/query";
++import { FeeInfoResponse, TransferFeeResponse } from "@axelar-network/axelarjs-types/build/commonjs/axelar/nexus/v1beta1/query";
+ import { BigNumber, BigNumberish } from "ethers";
+ interface TranslatedTransferRateLimitResponse {
+     incoming: string;
+@@ -49,7 +49,7 @@ export declare class AxelarQueryAPI {
+      * @returns
+      */
+     getFeeForChainAndAsset(chainId: string, assetDenom: string): Promise<FeeInfoResponse>;
+-    getEVMEvent(sourceChainId: string, srcTxHash: string, srcEventId: number): Promise<import("@axelar-network/axelarjs-types/axelar/evm/v1beta1/query").EventResponse | undefined>;
++    getEVMEvent(sourceChainId: string, srcTxHash: string, srcEventId: number): Promise<import("@axelar-network/axelarjs-types/build/commonjs/axelar/evm/v1beta1/query").EventResponse | undefined>;
+     getConfirmationHeight(chain: string): Promise<number>;
+     /**
+      * Gest the transfer fee for a given transaction
+diff --git a/dist/src/libs/AxelarQueryAPI.js b/dist/src/libs/AxelarQueryAPI.js
+index 87dc869dd7840bce4c448163e1619a66d88b061b..a17f277cbc1cb6ee7a42b0123292194833ba1f82 100644
+--- a/dist/src/libs/AxelarQueryAPI.js
++++ b/dist/src/libs/AxelarQueryAPI.js
+@@ -20,7 +20,7 @@ const services_1 = require("../services");
+ const constants_2 = require("../constants");
+ const AxelarQueryClient_1 = require("./AxelarQueryClient");
+ const cross_fetch_1 = __importDefault(require("cross-fetch"));
+-const query_1 = require("@axelar-network/axelarjs-types/axelar/nexus/v1beta1/query");
++const query_1 = require("@axelar-network/axelarjs-types/build/commonjs/axelar/nexus/v1beta1/query");
+ const utils_2 = require("../utils");
+ const chains_1 = require("../chains");
+ const s3_1 = __importDefault(require("./TransactionRecoveryApi/constants/s3"));
+diff --git a/dist/src/libs/AxelarQueryClient/types/index.d.ts b/dist/src/libs/AxelarQueryClient/types/index.d.ts
+index dadb87a4701f08b9726fa0aeafff6dea4a66278c..9446e9efad8c430eb39114c2b3760b258428cfb8 100644
+--- a/dist/src/libs/AxelarQueryClient/types/index.d.ts
++++ b/dist/src/libs/AxelarQueryClient/types/index.d.ts
+@@ -1,7 +1,7 @@
+-import { QueryService as EvmQS } from "@axelar-network/axelarjs-types/axelar/evm/v1beta1/service";
+-import { QueryService as AxelarnetQS } from "@axelar-network/axelarjs-types/axelar/axelarnet/v1beta1/service";
+-import { QueryService as NexusQS } from "@axelar-network/axelarjs-types/axelar/nexus/v1beta1/service";
+-import { QueryService as TSSQS } from "@axelar-network/axelarjs-types/axelar/tss/v1beta1/service";
++import { QueryService as EvmQS } from "@axelar-network/axelarjs-types/build/commonjs/axelar/evm/v1beta1/service";
++import { QueryService as AxelarnetQS } from "@axelar-network/axelarjs-types/build/commonjs/axelar/axelarnet/v1beta1/service";
++import { QueryService as NexusQS } from "@axelar-network/axelarjs-types/build/commonjs/axelar/nexus/v1beta1/service";
++import { QueryService as TSSQS } from "@axelar-network/axelarjs-types/build/commonjs/axelar/tss/v1beta1/service";
+ import { QueryClient } from "@cosmjs/stargate";
+ export interface AxelarQueryService {
+     readonly evm: EvmQS;
+diff --git a/dist/src/libs/AxelarQueryClient/types/index.js b/dist/src/libs/AxelarQueryClient/types/index.js
+index c594b7f574fb7640545af793c63be3e0cfed739f..eaa558fc08c87a5a30005b221b458a965576d953 100644
+--- a/dist/src/libs/AxelarQueryClient/types/index.js
++++ b/dist/src/libs/AxelarQueryClient/types/index.js
+@@ -1,10 +1,10 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.setupQueryExtension = void 0;
+-const service_1 = require("@axelar-network/axelarjs-types/axelar/evm/v1beta1/service");
+-const service_2 = require("@axelar-network/axelarjs-types/axelar/axelarnet/v1beta1/service");
+-const service_3 = require("@axelar-network/axelarjs-types/axelar/nexus/v1beta1/service");
+-const service_4 = require("@axelar-network/axelarjs-types/axelar/tss/v1beta1/service");
++const service_1 = require("@axelar-network/axelarjs-types/build/commonjs/axelar/evm/v1beta1/service");
++const service_2 = require("@axelar-network/axelarjs-types/build/commonjs/axelar/axelarnet/v1beta1/service");
++const service_3 = require("@axelar-network/axelarjs-types/build/commonjs/axelar/nexus/v1beta1/service");
++const service_4 = require("@axelar-network/axelarjs-types/build/commonjs/axelar/tss/v1beta1/service");
+ const stargate_1 = require("@cosmjs/stargate");
+ function setupQueryExtension(base) {
+     const client = (0, stargate_1.createProtobufRpcClient)(base);
+diff --git a/dist/src/libs/AxelarSigningClient/types/AxelarnetTxTypes.js b/dist/src/libs/AxelarSigningClient/types/AxelarnetTxTypes.js
+index 3718302f0f6976c8755d34710437e0b2ae0ec8b3..ed31be28741d7835daf82a0e2c4038af0de3fb3e 100644
+--- a/dist/src/libs/AxelarSigningClient/types/AxelarnetTxTypes.js
++++ b/dist/src/libs/AxelarSigningClient/types/AxelarnetTxTypes.js
+@@ -1,7 +1,7 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.registerAxelarnetTxTypes = void 0;
+-const tx_1 = require("@axelar-network/axelarjs-types/axelar/axelarnet/v1beta1/tx");
++const tx_1 = require("@axelar-network/axelarjs-types/build/commonjs/axelar/axelarnet/v1beta1/tx");
+ const TxTypeUrlMap = {
+     AxelarnetLinkRequest: `/${tx_1.protobufPackage}.LinkRequest`,
+     AxelarnetConfirmDepositRequest: `/${tx_1.protobufPackage}.ConfirmDepositRequest`,
+diff --git a/dist/src/libs/AxelarSigningClient/types/EvmTxTypes.js b/dist/src/libs/AxelarSigningClient/types/EvmTxTypes.js
+index 917e3527bb77941218963bfa5b68ee9795329580..8c5561da12242ae68f3f39c9e33e5fd0cb7062a9 100644
+--- a/dist/src/libs/AxelarSigningClient/types/EvmTxTypes.js
++++ b/dist/src/libs/AxelarSigningClient/types/EvmTxTypes.js
+@@ -1,7 +1,7 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.registerEvmTxTypes = void 0;
+-const tx_1 = require("@axelar-network/axelarjs-types/axelar/evm/v1beta1/tx");
++const tx_1 = require("@axelar-network/axelarjs-types/build/commonjs/axelar/evm/v1beta1/tx");
+ const TxTypeUrlMap = {
+     EvmLinkRequest: `/${tx_1.protobufPackage}.LinkRequest`,
+     EvmSetGatewayRequest: `/${tx_1.protobufPackage}.SetGatewayRequest`,
+diff --git a/dist/src/libs/TransactionRecoveryApi/AxelarGMPRecoveryAPI.d.ts b/dist/src/libs/TransactionRecoveryApi/AxelarGMPRecoveryAPI.d.ts
+index d1faf2f2503de713d4b15f045fa1ec2d2fccd5ff..c87d06a252f9d3d8803655110aca53298cd089a5 100644
+--- a/dist/src/libs/TransactionRecoveryApi/AxelarGMPRecoveryAPI.d.ts
++++ b/dist/src/libs/TransactionRecoveryApi/AxelarGMPRecoveryAPI.d.ts
+@@ -3,7 +3,7 @@ import { EvmChain } from "../../constants/EvmChain";
+ import { GasToken } from "../../constants/GasToken";
+ import { AxelarRecoveryApi } from "./AxelarRecoveryApi";
+ import { AxelarQueryAPI } from "../AxelarQueryAPI";
+-import { EventResponse } from "@axelar-network/axelarjs-types/axelar/evm/v1beta1/query";
++import { EventResponse } from "@axelar-network/axelarjs-types/build/commonjs/axelar/evm/v1beta1/query";
+ import { ChainInfo } from "src/chains/types";
+ import { Coin, OfflineSigner } from "@cosmjs/proto-signing";
+ import { DeliverTxResponse, SigningStargateClient, StdFee } from "@cosmjs/stargate";
+diff --git a/dist/src/libs/TransactionRecoveryApi/AxelarGMPRecoveryAPI.js b/dist/src/libs/TransactionRecoveryApi/AxelarGMPRecoveryAPI.js
+index 20af4416060796e5dc6b7887f2d899ee2e4bf112..879d80dad12d51b9e748e70846fb9fc69cf96ab7 100644
+--- a/dist/src/libs/TransactionRecoveryApi/AxelarGMPRecoveryAPI.js
++++ b/dist/src/libs/TransactionRecoveryApi/AxelarGMPRecoveryAPI.js
+@@ -39,7 +39,7 @@ const providerHelper_1 = require("./helpers/providerHelper");
+ const error_1 = require("./constants/error");
+ const helpers_1 = require("./helpers");
+ const utils_1 = require("../../utils");
+-const types_2 = require("@axelar-network/axelarjs-types/axelar/evm/v1beta1/types");
++const types_2 = require("@axelar-network/axelarjs-types/build/commonjs/axelar/evm/v1beta1/types");
+ const utils_2 = require("ethers/lib/utils");
+ const s3_1 = __importDefault(require("./constants/s3"));
+ const stargate_1 = require("@cosmjs/stargate");
+diff --git a/dist/src/libs/TransactionRecoveryApi/AxelarRecoveryApi.d.ts b/dist/src/libs/TransactionRecoveryApi/AxelarRecoveryApi.d.ts
+index 02c161a8256da56fd2da5f88ff314461193676fb..e92199717a4508834444c03ca9a611f22d313f1e 100644
+--- a/dist/src/libs/TransactionRecoveryApi/AxelarRecoveryApi.d.ts
++++ b/dist/src/libs/TransactionRecoveryApi/AxelarRecoveryApi.d.ts
+@@ -133,10 +133,10 @@ export declare class AxelarRecoveryApi {
+     executePendingTransfers(chainName: string): Promise<import("../types").AxelarTxResponse>;
+     routeMessageRequest(txHash: string, payload: string, logIndex?: number): Promise<import("../types").AxelarTxResponse>;
+     signCommands(chainName: string): Promise<import("../types").AxelarTxResponse>;
+-    queryBatchedCommands(chainId: string, batchCommandId?: string): Promise<import("@axelar-network/axelarjs-types/axelar/evm/v1beta1/query").BatchedCommandsResponse>;
++    queryBatchedCommands(chainId: string, batchCommandId?: string): Promise<import("@axelar-network/axelarjs-types/build/commonjs/axelar/evm/v1beta1/query").BatchedCommandsResponse>;
+     queryGatewayAddress({ chain }: {
+         chain: string;
+-    }): Promise<import("@axelar-network/axelarjs-types/axelar/evm/v1beta1/query").GatewayAddressResponse>;
++    }): Promise<import("@axelar-network/axelarjs-types/build/commonjs/axelar/evm/v1beta1/query").GatewayAddressResponse>;
+     getSignedTxAndBroadcast(chain: string, data: string): Promise<import("@ethersproject/abstract-provider").TransactionResponse>;
+     sendApproveTx(chain: string, data: string, evmWalletDetails: EvmWalletDetails): Promise<any>;
+     broadcastEvmTx(chain: string, data: string, evmWalletDetails?: {
+diff --git a/dist/src/libs/TransactionRecoveryApi/helpers/mappers.d.ts b/dist/src/libs/TransactionRecoveryApi/helpers/mappers.d.ts
+index 54edb998f0af1e55a513088595cd947c5697f4b3..70cbdcc8206614f66a4b013e19c2da52ecf09341 100644
+--- a/dist/src/libs/TransactionRecoveryApi/helpers/mappers.d.ts
++++ b/dist/src/libs/TransactionRecoveryApi/helpers/mappers.d.ts
+@@ -1,4 +1,4 @@
+-import { BatchedCommandsResponse } from "@axelar-network/axelarjs-types/axelar/evm/v1beta1/query";
++import { BatchedCommandsResponse } from "@axelar-network/axelarjs-types/build/commonjs/axelar/evm/v1beta1/query";
+ import { BatchedCommandsAxelarscanResponse } from "../AxelarRecoveryApi";
+ export declare const mapIntoAxelarscanResponseType: (input: BatchedCommandsResponse, chainId: string) => BatchedCommandsAxelarscanResponse;
+ //# sourceMappingURL=mappers.d.ts.map
+\ No newline at end of file
+diff --git a/dist/src/libs/TransactionRecoveryApi/helpers/mappers.js b/dist/src/libs/TransactionRecoveryApi/helpers/mappers.js
+index ffbd805b5a238a18ba239163eb8e2e76632d9a2c..71bf57d4c11989d1343e374b77a4b48dd91cea26 100644
+--- a/dist/src/libs/TransactionRecoveryApi/helpers/mappers.js
++++ b/dist/src/libs/TransactionRecoveryApi/helpers/mappers.js
+@@ -1,7 +1,7 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.mapIntoAxelarscanResponseType = void 0;
+-const types_1 = require("@axelar-network/axelarjs-types/axelar/evm/v1beta1/types");
++const types_1 = require("@axelar-network/axelarjs-types/build/commonjs/axelar/evm/v1beta1/types");
+ /**
+ * core returns a number response that's typed to an enum:
+     "export declare enum BatchedCommandsStatus {
