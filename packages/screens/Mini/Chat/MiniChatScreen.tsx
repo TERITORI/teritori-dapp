@@ -6,11 +6,13 @@ import {
   View,
 } from "react-native";
 import { SvgProps } from "react-native-svg";
+import { useSelector } from "react-redux";
 
 import { ChatList } from "./components/ChatList";
 import { dummyChat } from "./components/chatDummyData";
 import rightArrowSVG from "../../../../assets/icons/chevron-right-white.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
+import friendGraySVG from "../../../../assets/icons/friend-gray.svg";
 import friendSVG from "../../../../assets/icons/friend.svg";
 import searchSVG from "../../../../assets/icons/search-gray.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -21,12 +23,15 @@ import { MiniTabScreenFC } from "../../../components/navigation/MiniNavigator";
 import { SpacerColumn } from "../../../components/spacer";
 import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
 import { ToastInfo } from "../../../components/toasts/ToastInfo";
+import { selectContactInfo } from "../../../store/slices/message";
 import { RouteName, useAppNavigation } from "../../../utils/navigation";
 import {
   neutral22,
+  neutral33,
   neutral77,
   neutralA3,
   secondaryColor,
+  withAlpha,
 } from "../../../utils/style/colors";
 import {
   fontMedium16,
@@ -34,8 +39,13 @@ import {
   fontSemibold18,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { weshServices } from "../../../weshnet";
+import { Spinner } from "../Feed/components/Spinner";
 import DefaultAppBar from "../components/AppBar/DefaultAppBar";
+import { CustomButton } from "../components/Button/CustomButton";
 import MiniTextInput from "../components/MiniTextInput";
+import MobileModal from "../components/MobileModal";
+import TitleBar from "../components/TitleBar";
 
 const collectionScreenTabItems = {
   chats: {
@@ -45,12 +55,13 @@ const collectionScreenTabItems = {
     name: "Multichannels",
   },
 };
-const HAS_CHATS = true;
+const HAS_CHATS = false;
 
 const DATA: (ItemProps & { id: string })[] = [
   {
     id: "1",
     title: "Add a friend",
+    value: "add_friend",
     icon: friendSVG,
   },
   {
@@ -67,15 +78,26 @@ const DATA: (ItemProps & { id: string })[] = [
   },
 ];
 
-type ItemProps = { title: string; icon: React.FC<SvgProps>; route?: RouteName };
+type ItemProps = {
+  title: string;
+  icon: React.FC<SvgProps>;
+  route?: RouteName;
+  value?: string;
+  onClick?: (value: string) => void;
+};
 
-const Item = ({ title, icon, route }: ItemProps) => {
+const Item = ({ title, icon, route, value, onClick }: ItemProps) => {
   const navigation = useAppNavigation();
 
   const onNavigateToRoute = () => {
     if (route) {
       //@ts-expect-error
       navigation.navigate(route);
+      return;
+    }
+
+    if (onClick) {
+      onClick(value ?? "");
     }
   };
   return (
@@ -136,11 +158,15 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
   navigation,
   route,
 }) => {
+  const contactInfo = useSelector(selectContactInfo);
   const [showToast, setShowToast] = useState(true);
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("chats");
   const [search, setSearch] = useState("");
   const { width: windowWidth } = useWindowDimensions();
+  const [activeModal, setActiveModal] = useState("");
+  const [contactLink, setContactLink] = useState("");
+  const [addContactLoading, setAddContactLoading] = useState(false);
 
   const hideToast = () => {
     setShowToast(false);
@@ -153,6 +179,20 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
   function onSearchChange(text: string) {
     setSearch(text);
   }
+
+  const handleAddContact = async () => {
+    //TODO: error handling and adding loading UI
+    setAddContactLoading(true);
+
+    try {
+      await weshServices.addContact(contactLink, contactInfo);
+      setActiveModal("");
+    } catch (err: any) {
+      console.log(err);
+    }
+
+    setAddContactLoading(false);
+  };
 
   return (
     <ScreenContainer
@@ -272,7 +312,8 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
                     <Item
                       title={item.title}
                       icon={item.icon}
-                      route={item.route}
+                      value={item.value}
+                      onClick={(value) => setActiveModal(value)}
                     />
                   )}
                   keyExtractor={(item) => item.id}
@@ -281,6 +322,47 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
               </View>
             </>
           )}
+
+          <MobileModal
+            visible={activeModal === "add_friend"}
+            onClose={() => setActiveModal("")}
+            innerContainerOptions={{ height: "40%" }}
+          >
+            <View
+              style={{
+                padding: layout.spacing_x2,
+                justifyContent: "space-between",
+                alignItems: "center",
+                flex: 1,
+              }}
+            >
+              {addContactLoading ? (
+                <View>
+                  <Spinner />
+                </View>
+              ) : (
+                <>
+                  <TitleBar
+                    title="Add a Friend"
+                    subTitle="Please paste the contact link below"
+                    icon={friendGraySVG}
+                  />
+
+                  <View style={{ width: "100%" }}>
+                    <MiniTextInput
+                      placeholder="contact link"
+                      style={{ backgroundColor: withAlpha(neutral33, 0.9) }}
+                      placeholderTextColor={neutralA3}
+                      value={contactLink}
+                      onChangeText={setContactLink}
+                    />
+                    <SpacerColumn size={1.5} />
+                    <CustomButton onPress={handleAddContact} title="Add" />
+                  </View>
+                </>
+              )}
+            </View>
+          </MobileModal>
         </View>
       </View>
     </ScreenContainer>
