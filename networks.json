@@ -3088,7 +3088,9 @@
     "icon": "ethereum.svg",
     "features": [
       "NFTMarketplace",
-      "NFTLaunchpad"
+      "RiotP2E",
+      "NFTLaunchpad",
+      "NFTBridge"
     ],
     "currencies": [
       {
@@ -3110,9 +3112,20 @@
     "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
     "chainId": 1,
     "alchemyApiKey": "xZ3FVF0o6q_4beg_afmCEzf4GSJErhId",
-    "theGraphEndpoint": "https://api.studio.thegraph.com/query/40379/teritori-mainnet/v1",
     "vaultContractAddress": "0x6251B3384c8eD53e2Cc38d34c1f26ffE8d461B94",
-    "riotContractAddress": "0x8f8304ea566affeb96ad0ffb593bbebd8876d124"
+    "riotContractAddressGen0": "0x8f8304ea566affeb96ad0ffb593bbebd8876d124",
+    "riotContractAddressGen1": "0x00---",
+    "excludeFromLaunchpadList": [
+      "0x00---"
+    ],
+    "riotSquadStakingContractAddress": "0x00---",
+    "firehoseEndpoint": "mainnet.eth.streamingfast.io:443",
+    "indexStartBlock": "16341067",
+    "indexStopBlock": "-1",
+    "substreamsManifest": "go/internal/substreams/ethereum/ethereum_mainnet.yaml",
+    "distributorContractAddress": "0x00---",
+    "riotBridgeAddressGen0": "0x037ecf2480df7b0e8b46d0a9a650cb5371d89573",
+    "riotNFTAddressGen0": "0x39e45eca52965210e69f7e768f58550460e5e79a"
   },
   {
     "id": "ethereum-goerli",
@@ -3121,7 +3134,9 @@
     "icon": "ethereum.svg",
     "features": [
       "NFTMarketplace",
-      "NFTLaunchpad"
+      "RiotP2E",
+      "NFTLaunchpad",
+      "NFTBridge"
     ],
     "currencies": [
       {
@@ -3143,9 +3158,20 @@
     "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
     "chainId": 5,
     "alchemyApiKey": "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
-    "theGraphEndpoint": "https://api.studio.thegraph.com/query/40379/teritori-goerli-indexer/v-test-01",
-    "vaultContractAddress": "0xaB30d7379EbfD146B77B0B4d6f3eB09BD725e4EF",
-    "riotContractAddress": "0x43cc70bf324d716782628bed38af97e4afe92f69"
+    "vaultContractAddress": "0xab30d7379ebfd146b77b0b4d6f3eb09bd725e4ef",
+    "riotContractAddressGen0": "0x43cc70bf324d716782628bed38af97e4afe92f69",
+    "riotContractAddressGen1": "0xdfff431d4c2275201dEd83dAd613A3DbDA1D11A7",
+    "excludeFromLaunchpadList": [
+      "0xdfff431d4c2275201dEd83dAd613A3DbDA1D11A7"
+    ],
+    "riotSquadStakingContractAddress": "0xdfa5cbcd0db5d966e68dd143c6441ec47e2777be",
+    "firehoseEndpoint": "goerli.eth.streamingfast.io:443",
+    "indexStartBlock": "8218450",
+    "indexStopBlock": "-1",
+    "substreamsManifest": "go/internal/substreams/ethereum/ethereum_goerli.yaml",
+    "distributorContractAddress": "0x750070a76a3444f27e3fccabe4d423105cfa3e72",
+    "riotBridgeAddressGen0": "0xf7e1268364168328c0445b8da152581f96f49780",
+    "riotNFTAddressGen0": "0x7a9e5dbe7d3946ce4ea2f2396549c349635ebf2f"
   },
   {
     "id": "cosmos-registry:ethos",
@@ -7535,6 +7561,89 @@
     "cosmosFeatures": []
   },
   {
+    "id": "polygon",
+    "kind": "Ethereum",
+    "displayName": "Polygon",
+    "icon": "polygon.svg",
+    "features": [
+      "RiotP2E"
+    ],
+    "currencies": [
+      {
+        "denom": "0x0000000000000000000000000000000000000000",
+        "displayName": "MATIC",
+        "decimals": 18,
+        "coingeckoId": "matic",
+        "icon": "polygon.svg",
+        "kind": "native",
+        "color": "#232731"
+      }
+    ],
+    "idPrefix": "polygon",
+    "endpoint": "https://polygon-mumbai.blockpi.network/v1/rpc/public",
+    "txExplorer": "https://mumbai.polygonscan.com/tx/$hash",
+    "accountExplorer": "https://mumbai.polygonscan.com/address/$address",
+    "contractExplorer": "https://mumbai.polygonscan.com/address/$address",
+    "testnet": false,
+    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "chainId": 137,
+    "alchemyApiKey": "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
+    "vaultContractAddress": "0x037ecf2480df7b0e8b46d0a9a650cb5371d89573",
+    "excludeFromLaunchpadList": [],
+    "riotSquadStakingContractAddress": "0xca415044477678c5e040f6bd1f67da887ab868e9",
+    "firehoseEndpoint": "polygon.streamingfast.io:443",
+    "indexStartBlock": "52917042",
+    "indexStopBlock": "-1",
+    "substreamsManifest": "go/internal/substreams/ethereum/polygon_mainnet.yaml",
+    "distributorContractAddress": "0xbd85bd724c78150e4ebc3c2bcb0d32ec7c0fc84f",
+    "toriBridgedTokenAddress": "0x69ded9b7658507ca8c5a6f1f6ff53276802ec228",
+    "riotOriginalCollectionIdGen0": "eth-0x8f8304ea566affeb96ad0ffb593bbebd8876d124",
+    "riotContractAddressGen0": "0x9083986a7c842b6c733c2f9bd25d67cc27119025",
+    "riotBridgedNFTAddressGen0": "0x539b772de11f78109e0131bf9fde54b4b50a8440"
+  },
+  {
+    "id": "polygon-mumbai",
+    "kind": "Ethereum",
+    "displayName": "Polygon Mumbai",
+    "icon": "polygon.svg",
+    "features": [
+      "RiotP2E",
+      "NFTMarketplace"
+    ],
+    "currencies": [
+      {
+        "denom": "0x0000000000000000000000000000000000000000",
+        "displayName": "MATIC",
+        "decimals": 18,
+        "coingeckoId": "matic",
+        "icon": "polygon.svg",
+        "kind": "native",
+        "color": "#232731"
+      }
+    ],
+    "idPrefix": "mumbai",
+    "endpoint": "https://polygon-mumbai.blockpi.network/v1/rpc/public",
+    "txExplorer": "https://mumbai.polygonscan.com/tx/$hash",
+    "accountExplorer": "https://mumbai.polygonscan.com/address/$address",
+    "contractExplorer": "https://mumbai.polygonscan.com/address/$address",
+    "testnet": true,
+    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "chainId": 80001,
+    "alchemyApiKey": "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
+    "vaultContractAddress": "0xffc71bf3aca1355dc29b06c12bc8ef32f8f20c51",
+    "excludeFromLaunchpadList": [],
+    "riotSquadStakingContractAddress": "0xb080380ccb801d4a4c2e75d3aee7728f97cf4608",
+    "firehoseEndpoint": "mumbai.streamingfast.io:443",
+    "indexStartBlock": "43127605",
+    "indexStopBlock": "-1",
+    "substreamsManifest": "go/internal/substreams/ethereum/polygon_mumbai.yaml",
+    "distributorContractAddress": "0xe16927b4df1a9938c0b7506186f6d55f2e1403c6",
+    "toriBridgedTokenAddress": "0xc46944cd8c700b2a33f496219eecca0fdbdc3fac",
+    "riotOriginalCollectionIdGen0": "testeth-0x43cc70bf324d716782628bed38af97e4afe92f69",
+    "riotContractAddressGen0": "0x916ad9d549907ccbbaf9ba65526826bfc3a9c0c4",
+    "riotBridgedNFTAddressGen0": "0xb081acb7da31f58f0efa8ea920c5866339f3b06c"
+  },
+  {
     "id": "cosmos-registry:provenance",
     "displayName": "Provenance",
     "chainId": "pio-mainnet-1",
@@ -9188,13 +9297,13 @@
     "icon": "teritori.svg",
     "features": [
       "NFTMarketplace",
+      "RiotP2E",
       "Organizations",
       "SocialFeed",
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad",
-      "RiotP2E"
+      "NFTLaunchpad"
     ],
     "registryName": "teritori",
     "overrides": "cosmos-registry:teritori",
@@ -9354,13 +9463,13 @@
     "icon": "teritori.svg",
     "features": [
       "NFTMarketplace",
+      "RiotP2E",
       "Organizations",
       "SocialFeed",
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad",
-      "RiotP2E"
+      "NFTLaunchpad"
     ],
     "currencies": [
       {
@@ -9409,7 +9518,7 @@
     "nameServiceDefaultImage": "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
     "nameServiceTLD": ".tori",
     "vaultContractAddress": "tori17p9rzwnnfxcjp32un9ug7yhhzgtkhvl9jfksztgw5uh69wac2pgs9ezf0j",
-    "riotContractAddressGen0": "",
+    "riotContractAddressGen0": "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc",
     "riotContractAddressGen1": "",
     "riotSquadStakingContractAddressV1": "",
     "riotSquadStakingContractAddressV2": "",

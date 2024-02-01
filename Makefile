@@ -24,6 +24,8 @@ CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
 DOCKER_REGISTRY=rg.nl-ams.scw.cloud/teritori
 INDEXER_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-indexer:$(shell git rev-parse --short HEAD)
+FLUSH_DATA_IMAGE=$(DOCKER_REGISTRY)/flush-data:$(shell git rev-parse --short HEAD)
+EVM_INDEXER_IMAGE=$(DOCKER_REGISTRY)/evm-indexer:$(shell git rev-parse --short HEAD)
 BACKEND_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
 PRICES_SERVICE_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-service:$(shell git rev-parse --short HEAD)
 PRICES_OHLC_REFRESH_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-ohlc-refresh:$(shell git rev-parse --short HEAD)
@@ -235,6 +237,16 @@ publish.backend:
 	docker build -f go/cmd/teritori-dapp-backend/Dockerfile .  --platform linux/amd64 -t $(BACKEND_DOCKER_IMAGE)
 	docker push $(BACKEND_DOCKER_IMAGE)
 
+.PHONY: publish.flush-data
+publish.flush-data:
+	docker build -f go/cmd/flush-data/Dockerfile .  --platform linux/amd64 -t $(FLUSH_DATA_IMAGE)
+	docker push $(FLUSH_DATA_IMAGE)
+
+.PHONY: publish.evm-indexer
+publish.evm-indexer:
+	docker build -f go/cmd/evm-indexer/Dockerfile .  --platform linux/amd64 -t $(EVM_INDEXER_IMAGE)
+	docker push $(EVM_INDEXER_IMAGE)
+
 .PHONY: publish.indexer
 publish.indexer:
 	docker build -f go/cmd/teritori-indexer/Dockerfile . --platform linux/amd64 -t $(INDEXER_DOCKER_IMAGE)
@@ -286,11 +298,12 @@ unused-exports: node_modules
 
 .PHONY: prepare-electron
 prepare-electron: node_modules
-	yarn rimraf ./web-build
-	yarn cross-env isElectron=prod expo export:web
+	yarn rimraf ./dist
+	yarn cross-env isElectron=prod expo export -p web
 	yarn rimraf ./electron/web-build
 	mkdir ./electron/web-build
-	cp -r ./web-build/* ./electron/web-build
+	cp -r ./dist/* ./electron/web-build
+	yarn tsx ./packages/scripts/electron/fixHTML.ts
 
 # requires prepare-electron
 .PHONY: build-electron-mac-amd64

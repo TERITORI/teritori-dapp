@@ -1,0 +1,19 @@
+specVersion: v0.1.0
+package:
+  name: "substreams_ethereum_mainnet"
+  version: v0.1.0
+
+binaries:
+  default:
+    type: wasm/rust-v1
+    file: ./ethereum_mainnet.wasm
+
+modules:
+  - name: block_out
+    kind: map
+    initialBlock: 16341067 # goerli: 8218450 # mainnet: 16341067
+    inputs:
+      - source: sf.ethereum.type.v2.Block
+      - source: sf.substreams.v1.Clock
+    output:
+      type: proto:teritori.ethereum_block.v1.EthereumBlock

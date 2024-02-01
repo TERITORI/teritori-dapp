@@ -62,13 +62,14 @@ func (h *Handler) handleInstantiateBreeding(e *Message, contractAddress string, 
 	collectionId := h.config.Network.CollectionID(contractAddress)
 	if err := h.db.Create(&indexerdb.Collection{
 		ID:                  collectionId,
-		NetworkId:           h.config.Network.ID,
+		NetworkID:           h.config.Network.ID,
 		Name:                minterInstantiateMsg.ChildNftName,
 		ImageURI:            metadata.ImageURI,
 		MaxSupply:           maxSupply,
 		SecondaryDuringMint: true,
 		Time:                blockTime,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
+			NetworkID:           h.config.Network.ID,
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  nftAddr,
 			CreatorAddress:      instantiateMsg.Sender,
@@ -116,7 +117,7 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 	}
 
 	startTimeDt := time.Unix(int64(startTime), 0)
-	season, _, err := p2e.GetSeasonByTime(startTimeDt)
+	season, _, err := p2e.GetSeasonByTime(startTimeDt, h.config.Network)
 	if err != nil {
 		return errors.Wrap(err, "failed to get season")
 	}
@@ -148,6 +149,7 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 		EndTime:   endTime,
 		TokenIDs:  strings.Join(tokenIds, ","),
 		SeasonID:  season.ID,
+		NetworkID: h.config.Network.ID,
 	}
 
 	if err := h.db.Create(&squadStaking).Error; err != nil {
@@ -157,8 +159,9 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 	// Create leaderboard (by season) record if does not exist
 	var userScore indexerdb.P2eLeaderboard
 	q2 := &indexerdb.P2eLeaderboard{
-		UserID:   ownerId,
-		SeasonID: season.ID,
+		UserID:    ownerId,
+		SeasonID:  season.ID,
+		NetworkID: h.config.Network.ID,
 	}
 	if err := h.db.Where(q2).FirstOrCreate(&userScore).Error; err != nil {
 		return errors.Wrap(err, "failed to get/create user record for leaderboard")
@@ -239,7 +242,7 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 
 		// Get current leaderboard record
 		startTimeDt := time.Unix(int64(squadStaking.StartTime), 0)
-		season, _, err := p2e.GetSeasonByTime(startTimeDt)
+		season, _, err := p2e.GetSeasonByTime(startTimeDt, h.config.Network)
 		if err != nil {
 			return errors.Wrap(err, "failed to get season")
 		}

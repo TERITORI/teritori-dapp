@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { View, ViewStyle } from "react-native";
 
 import { InfoBox } from "./InfoBox";
@@ -5,7 +6,10 @@ import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonO
 import { useGameRewards } from "../../../hooks/riotGame/useGameRewards";
 import { useSeasonRank } from "../../../hooks/riotGame/useSeasonRank";
 import { useIsMobile } from "../../../hooks/useIsMobile";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { NetworkKind } from "../../../networks";
+import { teritoriCurrencies } from "../../../networks/teritori/currencies";
 import { decimalFromAtomics } from "../../../utils/coins";
 import { yellowDefault } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
@@ -21,6 +25,31 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
   const selectedWallet = useSelectedWallet();
   const { userRank, prettyUserRank, currentSeason } = useSeasonRank();
   const { isClaiming, claimableAmount, claimRewards } = useGameRewards();
+  const selectedNetwork = useSelectedNetworkInfo();
+
+  const formattedClaimable = useMemo(() => {
+    if (
+      !selectedNetwork?.kind ||
+      !selectedWallet?.networkId ||
+      !claimableAmount
+    ) {
+      return "0";
+    }
+
+    const res = decimalFromAtomics(
+      selectedWallet.networkId,
+      "" + claimableAmount,
+      selectedNetwork.kind === NetworkKind.Ethereum
+        ? selectedNetwork.currencies[0].denom
+        : teritoriCurrencies[0].denom,
+    );
+    return res;
+  }, [
+    claimableAmount,
+    selectedNetwork?.kind,
+    selectedWallet?.networkId,
+    selectedNetwork?.currencies,
+  ]);
 
   return (
     <View
@@ -64,11 +93,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
           text={
             isClaiming
               ? "Claiming..."
-              : `Claim available rewards: ${decimalFromAtomics(
-                  selectedWallet?.networkId,
-                  "" + claimableAmount,
-                  "utori", // FIXME: don't hardcode denom and use prettyPrice
-                )} TORI`
+              : `Claim available rewards: ${formattedClaimable} TORI`
           }
           touchableStyle={{ marginLeft: layout.spacing_x1 }}
           onPress={claimRewards}

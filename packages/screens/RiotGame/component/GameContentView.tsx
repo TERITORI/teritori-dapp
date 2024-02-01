@@ -10,6 +10,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import { FightStatsSection } from "./FightStatsSection";
 import { RiotGameHeader } from "./RiotGameHeader";
 import { LoaderFullScreen } from "../../../components/loaders/LoaderFullScreen";
+import { useForceNetworkFeatures } from "../../../hooks/useForceNetworkFeatures";
+import { NetworkFeature } from "../../../networks";
 import { neutral00 } from "../../../utils/style/colors";
 
 type GameContentViewProps = {
@@ -19,6 +21,7 @@ type GameContentViewProps = {
   hideStats?: boolean;
   loading?: boolean;
   children: ReactNode;
+  forceNetworkFeatures?: NetworkFeature[];
 };
 
 export const GameContentView: React.FC<GameContentViewProps> = ({
@@ -27,8 +30,11 @@ export const GameContentView: React.FC<GameContentViewProps> = ({
   bgImage,
   hideStats = false,
   loading = false,
+  forceNetworkFeatures,
   ...props
 }) => {
+  useForceNetworkFeatures(forceNetworkFeatures);
+
   const content = (
     <ScrollView>
       {!hideStats && <FightStatsSection />}

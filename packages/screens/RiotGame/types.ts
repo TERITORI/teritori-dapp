@@ -60,3 +60,24 @@ export type RipperLightInfo = {
   name: string;
   imageUri: string;
 };
+
+export type SquadConfig = {
+  bonusMultiplier: number[];
+  cooldownPeriod: number;
+  maxSquadSize: number;
+  minSquadSize: number;
+  owner: string;
+  squadCountLimit: number;
+};
+
+interface NFT {
+  contract: string;
+  tokenId: string;
+}
+
+export interface SquadInfo {
+  index: number;
+  endTime: number;
+  nfts: NFT[];
+  startTime: number;
+}

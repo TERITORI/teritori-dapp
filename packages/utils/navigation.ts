@@ -49,6 +49,7 @@ export type RootStackParamList = {
   RiotGameFight: undefined;
   RiotGameBreeding: undefined;
   RiotGameMemories: undefined;
+  RiotGameBridge: undefined;
   RiotGameMarketplace: { collectionId?: string } | undefined;
   RiotGameLeaderboard: undefined;
   RiotGameInventory: undefined;
@@ -120,6 +121,7 @@ const navConfig: {
     RiotGameFight: "riot-game/fight",
     RiotGameBreeding: "riot-game/breeding",
     RiotGameMemories: "riot-game/memories",
+    RiotGameBridge: "riot-game/bridge",
     RiotGameMarketplace: "riot-game/marketplace",
     RiotGameLeaderboard: "riot-game/leaderboard",
     RiotGameInventory: "riot-game/inventory",

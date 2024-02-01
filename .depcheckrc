@@ -30,7 +30,10 @@
     "expo-constants",
     "metro-config",
     "react-native-web-lottie",
-    "expo-splash-screen"
+    "expo-splash-screen",
+    "electron-store",
+    "redux-persist-electron-storage",
+    "@axelar-network/axelarjs-types"
   ],
   "ignorePatterns": [
     "/cache",

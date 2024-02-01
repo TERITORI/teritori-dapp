@@ -1,4 +1,5 @@
 import { Keplr } from "@keplr-wallet/types";
+import { Buffer } from "buffer";
 import { FC } from "react";
 
 import {

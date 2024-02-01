@@ -28,8 +28,8 @@ const config = {
       package: "com.teritori",
     },
     web: {
+      bundler: "metro",
       favicon: "./assets/favicon.png",
-      bundler: "webpack",
     },
     extra: {
       env: process.env,

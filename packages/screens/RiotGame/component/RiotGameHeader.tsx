@@ -3,6 +3,7 @@ import { Linking, StyleSheet, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SvgProps } from "react-native-svg";
 
+import bridgeSVG from "../../../../assets/icons/bridge.svg";
 import cartSVG from "../../../../assets/icons/cart.svg";
 import diamondSVG from "../../../../assets/icons/diamond.svg";
 import fightSVG from "../../../../assets/icons/fight.svg";
@@ -88,6 +89,12 @@ const MENU_ITEMS: MenuItem[] = [
     route: "RiotGameMemories",
     iconSVG: filmSVG,
   },
+  {
+    id: "bridge",
+    name: "NFT Bridge",
+    route: "RiotGameBridge",
+    iconSVG: bridgeSVG,
+  },
 ];
 
 type RiotGameHeaderProps = {
@@ -101,7 +108,6 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
   const { name: routeName } = useRoute();
   useForceNetworkFeatures([NetworkFeature.RiotP2E]);
   const isMobile = useIsMobile();
-
   const onMenuItemClick = (item: MenuItem) => {
     if (item.externalRoute) {
       Linking.openURL(item.externalRoute);
