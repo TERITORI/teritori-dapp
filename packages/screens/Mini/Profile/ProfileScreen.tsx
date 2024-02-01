@@ -1,14 +1,17 @@
-import React from "react";
+import * as Clipboard from "expo-clipboard";
+import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { Account } from "./Account";
 import addSVG from "../../../../assets/icons/add-solid-white.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
+import copySVG from "../../../../assets/icons/copy.svg";
 import dAppStoreSVG from "../../../../assets/icons/dapp-store-solid.svg";
 import googleSVG from "../../../../assets/icons/google.svg";
 import ledgerSVG from "../../../../assets/icons/ledger.svg";
 import lockSVG from "../../../../assets/icons/lock-solid.svg";
+import profileSVG from "../../../../assets/icons/profile-circle-white";
 import questionSVG from "../../../../assets/icons/question-gray.svg";
 import settingSVG from "../../../../assets/icons/setting-solid.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -17,17 +20,27 @@ import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
 import {
+  selectContactInfo,
+  setContactInfo,
+} from "../../../store/slices/message";
+import {
+  StoreWallet,
   selectAllWallets,
   setSelectedNativeWalletIndex,
-  StoreWallet,
 } from "../../../store/slices/wallets";
 import { useAppDispatch } from "../../../store/store";
 import { RouteName, ScreenFC } from "../../../utils/navigation";
 import { neutral39 } from "../../../utils/style/colors";
-import { fontSemibold15, fontSemibold18 } from "../../../utils/style/fonts";
+import {
+  fontMedium10,
+  fontSemibold15,
+  fontSemibold18,
+} from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { createSharableLink } from "../../../weshnet/services";
 import { SettingMenuItem } from "../components/SettingMenuItems";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
 const profileScreens: {
   title: string;
   navigateTo: RouteName;
@@ -68,6 +81,31 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
   const onClose = () => navigation.goBack();
   const wallets = useSelector(selectAllWallets);
   const dispatch = useAppDispatch();
+  const contactInfo = useSelector(selectContactInfo);
+  const [isCopied, setIsCopied] = useState(false);
+
+  useEffect(() => {
+    const shareLink = createSharableLink({
+      ...contactInfo,
+    });
+    dispatch(
+      setContactInfo({
+        shareLink,
+      }),
+    );
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
+
+  const onCopyPress = async () => {
+    console.log({ link: contactInfo?.shareLink });
+    await Clipboard.setStringAsync(contactInfo?.shareLink);
+
+    setIsCopied(true);
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 3000);
+  };
 
   return (
     <BlurScreenContainer
@@ -131,6 +169,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
         />
 
         <Separator />
+
         <SpacerColumn size={1} />
         {profileScreens.map((screen, index) => {
           return (
@@ -150,6 +189,20 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
             </React.Fragment>
           );
         })}
+        <CustomPressable onPress={onCopyPress}>
+          <View
+            style={{
+              paddingVertical: layout.spacing_x1_5,
+              flexDirection: "row",
+              gap: layout.spacing_x2,
+            }}
+          >
+            <SVG source={profileSVG} height={24} width={24} />
+            <BrandText>Share my contact</BrandText>
+            <SVG source={copySVG} height={24} width={24} />
+            {isCopied && <BrandText style={[fontMedium10]}>copied</BrandText>}
+          </View>
+        </CustomPressable>
       </View>
     </BlurScreenContainer>
   );
