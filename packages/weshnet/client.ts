@@ -14,7 +14,7 @@ const createWeshClient = (url: string) => {
   return client;
 };
 
-const getAddress = (port: number) => {
+const getWeshnetAddress = (port: number) => {
   switch (Platform.OS) {
     case "android":
       return `10.0.2.2:${port}`;
@@ -49,7 +49,7 @@ class WeshClient {
         return false;
       }
 
-      const address = getAddress(port);
+      const address = getWeshnetAddress(port);
       const client = createWeshClient(address);
       const config = await client.ServiceGetConfiguration({});
       weshConfig.config = config;
