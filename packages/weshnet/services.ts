@@ -1,3 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Constants from "expo-constants";
 import { Platform } from "react-native";
 
 import { weshClient } from "./client";
@@ -20,6 +22,8 @@ import {
 import { store } from "../store/store";
 import { isElectron } from "../utils/isElectron";
 import { CONVERSATION_TYPES, Message } from "../utils/types/message";
+
+const isRunningInExpoGo = Constants.appOwnership === "expo";
 
 let getPeerListIntervalId: ReturnType<typeof setInterval>;
 
@@ -44,10 +48,32 @@ export const bootWeshModule = async () => {
 
     if (isElectron()) {
       weshClient.watchPort();
-    } else {
-      setTimeout(() => {
-        weshClient.createClient(4242);
-      }, 15 * 1000);
+    } else if (!isRunningInExpoGo) {
+      let port: number;
+      if (__DEV__) {
+        const refPort = await AsyncStorage.getItem("__DEV__WeshPort");
+
+        try {
+          port = Number(refPort);
+          await weshClient.createClient(port);
+          await weshClient.client.ServiceGetConfiguration({});
+        } catch {
+          const WeshnetModule = require("../../weshd");
+          port = await WeshnetModule.getPort();
+          await AsyncStorage.setItem("__DEV__WeshPort", String(port));
+          WeshnetModule.boot();
+          setTimeout(() => {
+            weshClient.createClient(port);
+          }, 15 * 1000);
+        }
+      } else {
+        const WeshnetModule = require("../../weshd");
+        port = await WeshnetModule.getPort();
+        WeshnetModule.boot();
+        setTimeout(() => {
+          weshClient.createClient(port);
+        }, 15 * 1000);
+      }
     }
   } catch (err) {
     console.error("bootWeshModule", err);
