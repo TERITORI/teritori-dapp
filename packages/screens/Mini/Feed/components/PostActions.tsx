@@ -7,9 +7,9 @@ import { Post } from "../../../../api/feed/v1/feed";
 import { EmojiSelector } from "../../../../components/socialFeed/EmojiSelector";
 import { TipButton } from "../../../../components/socialFeed/SocialActions/TipButton";
 import { SpacerRow } from "../../../../components/spacer";
+import { useSocialReactions } from "../../../../hooks/feed/useSocialReactions";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
-import { useSocialReactions } from "../../../../hooks/useSocialReactions";
 import { parseUserId } from "../../../../networks";
 
 type CardFooterProps = {
