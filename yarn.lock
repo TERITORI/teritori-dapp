@@ -16317,19 +16317,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-reanimated-carousel@npm:^3.0.3":
-  version: 3.5.1
-  resolution: "react-native-reanimated-carousel@npm:3.5.1"
+"react-native-reanimated-carousel@npm:4.0.0-alpha.9":
+  version: 4.0.0-alpha.9
+  resolution: "react-native-reanimated-carousel@npm:4.0.0-alpha.9"
   peerDependencies:
-    react: ">=16.8.0"
-    react-native: ">=0.6.0"
-    react-native-gesture-handler: ">=2.0.0"
+    "@types/react": "*"
+    "@types/react-native": "*"
+    react: ">=18.0.0"
+    react-native: ">=0.70.3"
+    react-native-gesture-handler: ">=2.9.0"
     react-native-reanimated: ">=3.0.0"
-  checksum: a2eb640453fa35f659c1fb5575f903364d513fb7f621104afa14fee2284132674dfaf0d87cb29e8c119f7513094a5967d5193f3dfa24043af167c6f26abcfe73
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-native":
+      optional: true
+  checksum: cb11564ea7f4a3afba08f26ba391bc341f636454ceb2622694c9895c3d2e1e47d7beca977c88e5a7d6f9df59360cfae2a3e629eb8564897c424b43826cac6378
   languageName: node
   linkType: hard
 
-"react-native-reanimated@npm:~3.6.2":
+"react-native-reanimated@npm:^3.6.2":
   version: 3.6.2
   resolution: "react-native-reanimated@npm:3.6.2"
   dependencies:
@@ -18594,8 +18601,8 @@ __metadata:
     react-native-pie-chart: ^3.0.1
     react-native-popup-menu: ^0.16.1
     react-native-qrcode-svg: ^6.2.0
-    react-native-reanimated: ~3.6.2
-    react-native-reanimated-carousel: ^3.0.3
+    react-native-reanimated: ^3.6.2
+    react-native-reanimated-carousel: 4.0.0-alpha.9
     react-native-redash: ^18.0.0
     react-native-safe-area-context: 4.8.2
     react-native-screens: ~3.29.0
