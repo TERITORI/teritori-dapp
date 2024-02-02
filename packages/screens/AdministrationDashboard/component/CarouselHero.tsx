@@ -40,7 +40,6 @@ export const CarouselHero = () => {
         data={data}
         panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
         onProgressChange={(_, absoluteProgress) => {
-          console.log("absoluteProgress", absoluteProgress);
           setCurrentPage(Math.round(absoluteProgress));
         }}
         autoPlay
@@ -56,27 +55,7 @@ export const CarouselHero = () => {
           />
         )}
       />
-      {/* <Carousel
-        loop
-        width={492}
-        height={490}
-        autoPlay={false}
-        data={data}
-        scrollAnimationDuration={1000}
-        onSnapToItem={(index) => setCurrentPage(index)}
-        renderItem={({ index }) => (
-          <View style={{ paddingHorizontal: layout.spacing_x0_25 }}>
-            <OptimizedImage
-              sourceURI={guardianPng}
-              style={{
-                borderRadius: 12,
-              }}
-              height={490}
-              width={490}
-            />
-          </View>
-        )}
-      /> */}
+
       <View style={pagination}>
         {data.map((_, index) => (
           <View
