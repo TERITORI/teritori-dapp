@@ -1,5 +1,6 @@
+import { chain } from "lodash";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FlatList, View } from "react-native";
 
 import doubleCheckSVG from "../../../../assets/icons/double-check.svg";
@@ -25,6 +26,7 @@ import {
   getConversationName,
 } from "../../../weshnet/messageHelpers";
 import { stringFromBytes } from "../../../weshnet/utils";
+import { PostReactions } from "../Feed/components/PostReactions";
 import { ChatAvatar } from "../components/ChatAvatar";
 
 const DefaultName = "Anon";
@@ -35,6 +37,7 @@ type ConversationType = {
   message: string;
   isMyMessage: boolean;
   status: string;
+  reactions?: any;
 };
 
 type Props = {
@@ -170,6 +173,7 @@ export const Conversations = ({
                   }
                   message={item?.payload?.message || ""}
                   status=""
+                  reactions={item?.reactions}
                 />
               )}
             </>
@@ -185,7 +189,21 @@ const SingleConversation = ({
   isMyMessage,
   message,
   status,
+  reactions,
 }: ConversationType) => {
+  const reactionsMade = useMemo(() => {
+    if (reactions?.length) {
+      return [];
+    }
+    return chain(reactions || [])
+      .groupBy(message)
+      .map((value, key) => ({
+        icon: value?.[0]?.payload?.message || "",
+        count: value.length,
+        ownState: false,
+      }))
+      .value();
+  }, [message, reactions]);
   return (
     <View
       style={{
@@ -233,6 +251,7 @@ const SingleConversation = ({
           {date}
         </BrandText>
         <SVG source={doubleCheckSVG} height={16} width={16} />
+        <PostReactions reactions={reactionsMade} onPressReaction={() => {}} />
       </View>
     </View>
   );

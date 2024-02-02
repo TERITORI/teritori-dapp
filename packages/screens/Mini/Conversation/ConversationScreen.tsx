@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ChatHeader } from "./ChatHeader";
 import { ChatInput } from "./ChatInput";
 import { Conversations } from "./Conversations";
+import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   selectConversationById,
@@ -99,16 +100,18 @@ export const ConversationScreeen: ScreenFC<"Conversation"> = ({
       }}
     >
       <View style={{ paddingHorizontal: layout.spacing_x2, flex: 1 }}>
-        <ChatHeader navigation={navigation} conversation={conversationItem} />
-        <SpacerRow size={4} />
-        <Conversations
-          messages={messages}
-          contactMessages={contactMessages}
-          isTyping={false}
-          conversationItem={conversationItem}
-        />
-        <SpacerColumn size={1} />
-        <ChatInput conversationId={conversationId} />
+        <KeyboardAvoidingView extraVerticalOffset={32}>
+          <ChatHeader navigation={navigation} conversation={conversationItem} />
+          <SpacerRow size={4} />
+          <Conversations
+            messages={messages}
+            contactMessages={contactMessages}
+            isTyping={false}
+            conversationItem={conversationItem}
+          />
+          <SpacerColumn size={1} />
+          <ChatInput conversationId={conversationId} />
+        </KeyboardAvoidingView>
       </View>
     </SafeAreaView>
   );
