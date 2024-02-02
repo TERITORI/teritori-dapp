@@ -11,7 +11,6 @@ binaries:
 modules:
   - name: block_out
     kind: map
-    initialBlock: 8218450 # goerli: 8218450 # mainnet: 16341067
     inputs:
       - source: sf.ethereum.type.v2.Block
       - source: sf.substreams.v1.Clock

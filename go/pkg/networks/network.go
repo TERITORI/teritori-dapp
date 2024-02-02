@@ -52,7 +52,6 @@ type EthereumNetwork struct {
 	FirehoseEndpoint                string `json:"firehoseEndpoint"`
 	SubstreamsManifest              string `json:"substreamsManifest"`
 	IndexStartBlock                 string `json:"indexStartBlock"`
-	IndexStopBlock                  string `json:"indexStopBlock"`
 	VaultContractAddress            string `json:"vaultContractAddress"`
 	RiotContractAddressGen0         string `json:"riotContractAddressGen0"`
 	RiotContractAddressGen1         string `json:"riotContractAddressGen1"`

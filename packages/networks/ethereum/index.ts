@@ -32,7 +32,6 @@ export const ethereumNetwork: EthereumNetworkInfo = {
   // Substreams
   firehoseEndpoint: "mainnet.eth.streamingfast.io:443",
   indexStartBlock: "16341067",
-  indexStopBlock: "-1",
   substreamsManifest: "go/internal/substreams/ethereum/ethereum_mainnet.yaml",
   distributorContractAddress: "0x00---", // No need for now, we distribute on Polygon instead
   riotBridgeAddressGen0: "0x037ecf2480df7b0e8b46d0a9a650cb5371d89573",

@@ -23,7 +23,6 @@ export const polygonMumbaiNetwork: EthereumNetworkInfo = {
   // Substreams
   firehoseEndpoint: "mumbai.streamingfast.io:443",
   indexStartBlock: "43127605", // Deploy Minter: 43127605, // Transfer NFT (old minter): 43031073
-  indexStopBlock: "-1",
   substreamsManifest: "go/internal/substreams/ethereum/polygon_mumbai.yaml",
   distributorContractAddress: "0xe16927b4df1a9938c0b7506186f6d55f2e1403c6",
   toriBridgedTokenAddress: "0xc46944cd8c700b2a33f496219eecca0fdbdc3fac",
