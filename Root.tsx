@@ -42,6 +42,7 @@ import { getAvailableApps } from "./packages/screens/DAppStore/query/getFromFile
 import { setAvailableApps } from "./packages/store/slices/dapps-store";
 import { setSelectedWalletId } from "./packages/store/slices/settings";
 import { persistor, store, useAppDispatch } from "./packages/store/store";
+import { isElectron } from "./packages/utils/isElectron";
 import { linking } from "./packages/utils/navigation";
 
 if (Platform.OS === "web") {
@@ -70,7 +71,7 @@ export default function App() {
   });
 
   // FIXME: Fonts don't load on electron
-  if (Platform.OS !== "web" && !fontsLoaded) {
+  if (isElectron() && !fontsLoaded) {
     return null;
   }
 

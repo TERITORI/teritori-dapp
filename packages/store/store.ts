@@ -1,6 +1,11 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { Middleware, combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import { persistStore, persistReducer, createMigrate } from "redux-persist";
+import {
+  persistStore,
+  persistReducer,
+  createMigrate,
+  REHYDRATE,
+} from "redux-persist";
 
 import { dAppsReducer, dAppsReducerPersisted } from "./slices/dapps-store";
 import {
@@ -22,6 +27,7 @@ import { squadPresetsReducer } from "./slices/squadPresets";
 import { walletsReducer } from "./slices/wallets";
 import { storage } from "./storage";
 import { defaultEnabledNetworks } from "../networks";
+import { bootWeshModule } from "../weshnet/services";
 
 const migrations = {
   0: (state: any) => {
@@ -98,10 +104,19 @@ const rootReducer = combineReducers({
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+const afterRehydrateMiddleware: Middleware = () => (next) => (action) => {
+  if (action.type === REHYDRATE) {
+    bootWeshModule();
+  }
+  return next(action);
+};
+
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ serializableCheck: false }),
+  middleware: (getDefaultMiddleware) => [
+    ...getDefaultMiddleware({ serializableCheck: false }),
+    afterRehydrateMiddleware,
+  ],
 });
 
 export const persistor = persistStore(store);
