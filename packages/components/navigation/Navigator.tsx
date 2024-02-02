@@ -135,7 +135,7 @@ export const Navigator: React.FC = () => {
         component={RiotersFooterScreen}
         options={{ header: () => null, title: screenTitle("Rioters Footer") }}
       />
-      <Drawer.Screen
+      <Nav.Screen
         name="AdministrationDashboard"
         component={AdministrationDashboardScreen}
         options={{
@@ -143,7 +143,7 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Administration Dashboard"),
         }}
       />
-      <Drawer.Screen
+      <Nav.Screen
         name="LaunchpadApplications"
         component={LaunchpadApplicationsScreen}
         options={{
@@ -151,7 +151,7 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Launchpad Applications"),
         }}
       />
-      <Drawer.Screen
+      <Nav.Screen
         name="ReadyLaunchpadApplications"
         component={ReadyLaunchpadApplicationsScreen}
         options={{
@@ -159,7 +159,7 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Ready Launchpad Applications"),
         }}
       />
-      <Drawer.Screen
+      <Nav.Screen
         name="AllProjectAdministrationDash"
         component={AllProjectAdministrationDashScreen}
         options={{
@@ -167,7 +167,7 @@ export const Navigator: React.FC = () => {
           title: screenTitle("All Launchpad Applications"),
         }}
       />
-      <Drawer.Screen
+      <Nav.Screen
         name="ApplicationReview"
         component={ApplicationRewiewScreen}
         options={{
