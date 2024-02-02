@@ -1,22 +1,33 @@
-import React from "react";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
 
 import doubleCheckSVG from "../../../../assets/icons/double-check.svg";
 import { BrandText } from "../../../components/BrandText";
-import { OptimizedImage } from "../../../components/OptimizedImage";
 import { SVG } from "../../../components/SVG";
+import { Separator } from "../../../components/separators/Separator";
 import {
   blueDefault,
-  neutral22,
-  neutralA3,
+  neutral00,
   secondaryColor,
 } from "../../../utils/style/colors";
 import {
   fontMedium10,
   fontNormal15,
+  fontSemibold14,
   fontSemibold22,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { Conversation, Message } from "../../../utils/types/message";
+import { weshConfig } from "../../../weshnet";
+import {
+  getConversationAvatar,
+  getConversationName,
+} from "../../../weshnet/messageHelpers";
+import { stringFromBytes } from "../../../weshnet/utils";
+import { ChatAvatar } from "../components/ChatAvatar";
+
+const DefaultName = "Anon";
 
 type ConversationType = {
   id: string;
@@ -27,11 +38,47 @@ type ConversationType = {
 };
 
 type Props = {
-  conversations: ConversationType[];
+  messages: Message[];
   isTyping: boolean;
+  conversationItem?: Conversation;
+  contactMessages: Message[];
 };
 
-export const Conversations = ({ isTyping, conversations }: Props) => {
+export const Conversations = ({
+  isTyping,
+  messages,
+  conversationItem,
+  contactMessages,
+}: Props) => {
+  const [lastReadMessage, setLastReadMessage] = useState<Message | undefined>();
+
+  useEffect(() => {
+    const lastReadMessageIndex = messages.findIndex(
+      (item) => item?.id === conversationItem?.lastReadIdByMe,
+    );
+    if (lastReadMessageIndex === -1) {
+      return;
+    }
+
+    const nextContactMessages = messages.filter(
+      (item, index) =>
+        index < lastReadMessageIndex &&
+        item.senderId !== stringFromBytes(weshConfig.config?.accountPk),
+    );
+
+    const nextMessage = nextContactMessages[nextContactMessages.length - 1];
+
+    if (
+      nextMessage &&
+      nextMessage.id !== conversationItem?.lastReadIdByMe &&
+      lastReadMessage?.id !== nextMessage.id
+    ) {
+      setLastReadMessage(nextMessage);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversationItem, messages]);
+
   return (
     <View
       style={{
@@ -40,69 +87,93 @@ export const Conversations = ({ isTyping, conversations }: Props) => {
       }}
     >
       <FlatList
-        data={conversations}
+        data={messages}
+        inverted
         keyExtractor={(item) => item.id}
         renderItem={({ item, index }) => {
-          if (index + 1 === conversations.length && isTyping) {
-            return (
-              <>
-                <SingleConversation {...item} />
+          const previousMessage =
+            index < messages.length - 1 ? messages[index + 1] : undefined;
+
+          const separatorDate = previousMessage
+            ? moment(item.timestamp).format("DD/MM/YYYY") !==
+                moment(previousMessage.timestamp).format("DD/MM/YYYY") &&
+              item.timestamp
+            : item.timestamp;
+
+          if (item.type === "group-join") {
+            return null;
+          }
+
+          return (
+            <>
+              {!!separatorDate && (
                 <View
                   style={{
-                    borderRadius: 32,
-                    backgroundColor: neutral22,
-                    width: "auto",
-                    paddingHorizontal: 8,
-                    paddingVertical: 6,
-                    alignSelf: "flex-start",
-                    marginTop: layout.spacing_x1_5,
+                    position: "relative",
+                    flexDirection: "row",
+                    justifyContent: "center",
                   }}
                 >
+                  <Separator style={{ position: "absolute", top: 10 }} />
                   <BrandText
                     style={[
-                      fontNormal15,
+                      fontSemibold14,
                       {
-                        color: neutralA3,
-                        width: "auto",
+                        backgroundColor: neutral00,
+                        zIndex: 10,
+                        paddingHorizontal: layout.spacing_x2,
+                        textAlign: "center",
+                        marginBottom: layout.spacing_x3,
                       },
                     ]}
                   >
-                    Typing...
+                    {moment(separatorDate).format("YYYY, MMM DD")}
                   </BrandText>
                 </View>
-              </>
-            );
-          }
-          if (index === 0) {
-            return (
-              <View>
-                <View
-                  style={{
-                    alignItems: "center",
-                    marginTop: layout.spacing_x2_5,
-                  }}
-                >
-                  <OptimizedImage
-                    width={164}
-                    height={164}
-                    sourceURI="https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg"
+              )}
+              {item.type === "accept-contact" && (
+                <View style={{ marginBottom: layout.spacing_x5 }}>
+                  <View
                     style={{
-                      width: 164,
-                      height: 164,
-                      borderRadius: 164 / 2,
+                      alignItems: "center",
+                      marginTop: layout.spacing_x2_5,
                     }}
-                  />
-                  <BrandText
-                    style={[fontSemibold22, { marginTop: layout.spacing_x1 }]}
                   >
-                    Eleanor Pena
-                  </BrandText>
+                    <ChatAvatar
+                      membersAvatar={
+                        conversationItem
+                          ? conversationItem?.members.map((_, index) =>
+                              getConversationAvatar(conversationItem, index),
+                            )
+                          : [""]
+                      }
+                      size="xlg"
+                      hideStatusIndicator
+                    />
+                    <BrandText
+                      style={[fontSemibold22, { marginTop: layout.spacing_x1 }]}
+                    >
+                      {conversationItem
+                        ? getConversationName(conversationItem)
+                        : DefaultName}
+                    </BrandText>
+                  </View>
                 </View>
-                <SingleConversation {...item} />
-              </View>
-            );
-          }
-          return <SingleConversation {...item} />;
+              )}
+              {item.type !== "accept-contact" && (
+                <SingleConversation
+                  date={moment(item?.timestamp).format("hh:mm a")}
+                  id=""
+                  isMyMessage={
+                    item?.senderId ===
+                    stringFromBytes(weshConfig.config?.accountPk)
+                  }
+                  message={item?.payload?.message || ""}
+                  status=""
+                />
+              )}
+            </>
+          );
         }}
       />
     </View>

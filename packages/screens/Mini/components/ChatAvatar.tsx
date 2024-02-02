@@ -10,18 +10,21 @@ import { Avatar } from "../../Message/components/Avatar";
 type ChatAvatarProps = {
   isActive?: boolean;
   membersAvatar: string[];
-  size?: "sm" | "md";
+  size?: "sm" | "md" | "lg" | "xlg";
+  hideStatusIndicator?: boolean;
 };
 
 export const ChatAvatar = ({
   isActive = false,
   membersAvatar,
   size = "md",
+  hideStatusIndicator = false,
 }: ChatAvatarProps) => {
   const numberOfMembers = membersAvatar.length;
   const isMembersMoreThanFour = numberOfMembers > 4;
   const extraMembers = numberOfMembers - 3 || 0;
-  const avatarSize = size === "md" ? 48 : 32;
+  const avatarSize =
+    size === "md" ? 48 : size === "lg" ? 100 : size === "xlg" ? 164 : 32;
   return (
     <View
       style={{ position: "relative", width: avatarSize, height: avatarSize }}
@@ -76,7 +79,7 @@ export const ChatAvatar = ({
           })}
         </View>
       )}
-      {membersAvatar.length === 1 && (
+      {!hideStatusIndicator && membersAvatar.length === 1 && (
         <Badge
           style={{
             position: "absolute",
