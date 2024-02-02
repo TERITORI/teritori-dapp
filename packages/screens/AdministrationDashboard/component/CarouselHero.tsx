@@ -38,7 +38,7 @@ export const CarouselHero = () => {
         width={490}
         height={490}
         data={data}
-        panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
+        onConfigurePanGesture={(g) => g.enableTrackpadTwoFingerGesture(true)}
         onProgressChange={(_, absoluteProgress) => {
           setCurrentPage(Math.round(absoluteProgress));
         }}
