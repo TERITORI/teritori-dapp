@@ -44,7 +44,6 @@ import { Spinner } from "../Feed/components/Spinner";
 import DefaultAppBar from "../components/AppBar/DefaultAppBar";
 import { CustomButton } from "../components/Button/CustomButton";
 import MiniTextInput from "../components/MiniTextInput";
-import { useSelector } from "react-redux";
 import { selectIsWeshConnected } from "../../../store/slices/message";
 import MobileModal from "../components/MobileModal";
 import TitleBar from "../components/TitleBar";
