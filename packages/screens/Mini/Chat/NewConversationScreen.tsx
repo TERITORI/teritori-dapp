@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { NewConversationOrGroupSelector } from "./components/NewConversationOrGroupSelector";
 import searchSVG from "../../../../assets/icons/search-gray.svg";
 import { SpacerColumn } from "../../../components/spacer";
+import {
+  selectContactRequestList,
+  selectConversationList,
+} from "../../../store/slices/message";
 import { ScreenFC } from "../../../utils/navigation";
 import { fontMedium14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -123,6 +128,12 @@ export const NewConversationScreen: ScreenFC<"MiniNewConversation"> = ({
   navigation,
 }) => {
   const [search, setSearch] = useState("");
+  const conversations = useSelector(selectConversationList);
+  const contactRequests = useSelector(selectContactRequestList);
+  const contactConversations = useMemo(() => {
+    return conversations.filter((item) => item.type === "contact");
+  }, [conversations]);
+  console.log({ contactConversations, contactRequests });
 
   return (
     <BlurScreenContainer title="New conversation">
