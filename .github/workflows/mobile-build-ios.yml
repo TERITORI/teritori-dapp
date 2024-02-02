@@ -37,6 +37,12 @@ jobs:
       - name: Fix gitignore
         run: npx tsx ./packages/scripts/app-build/fixGitignore.ts
 
+      - name: Restore wesh framework from cache if possible
+        uses: actions/cache@v4
+        with:
+          path: weshd/ios/Frameworks/WeshFramework.xcframework
+          key: cache_wesh-framework_ios_go1.19_macos-14_${{ hashFiles('weshd/**/*.go', 'weshd/go.mod', 'weshd/go.sum') }}
+
       - name: Build ios weshframework
         run: make check-ios-weshframework
 
