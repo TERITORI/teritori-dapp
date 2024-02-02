@@ -75,6 +75,7 @@ lint.buf:
 	buf lint api
 	buf breaking --against 'https://github.com/TERITORI/teritori-dapp.git#branch=main' --path api
 
+# we ignore expo-doctor until react-native-reanimated-carousel is compatible with recommended react-native-reanimated version
 .PHONY: lint.js
 lint.js: node_modules
 	yarn lint
