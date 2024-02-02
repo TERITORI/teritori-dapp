@@ -13,7 +13,7 @@ import rightArrowSVG from "../../../../assets/icons/chevron-right-white.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import friendSVG from "../../../../assets/icons/friend.svg";
 import searchSVG from "../../../../assets/icons/search-gray.svg";
-import { BrandText } from "../../../components/BrandText";
+import { BrandText } from "../../../components/BrandText/BrandText";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
@@ -36,6 +36,8 @@ import {
 import { layout } from "../../../utils/style/layout";
 import DefaultAppBar from "../components/AppBar/DefaultAppBar";
 import MiniTextInput from "../components/MiniTextInput";
+import { useSelector } from "react-redux";
+import { selectIsWeshConnected } from "../../../store/slices/message";
 
 const collectionScreenTabItems = {
   chats: {
@@ -45,7 +47,7 @@ const collectionScreenTabItems = {
     name: "Multichannels",
   },
 };
-const HAS_CHATS = true;
+const HAS_CHATS = false;
 
 const DATA: (ItemProps & { id: string })[] = [
   {
