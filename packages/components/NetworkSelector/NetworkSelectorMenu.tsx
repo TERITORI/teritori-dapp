@@ -1,7 +1,6 @@
 import React, { FC, useState } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
-import { useDropdowns } from "../../context/DropdownsProvider";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useWallets } from "../../context/WalletsProvider";
@@ -29,8 +28,14 @@ export const NetworkSelectorMenu: FC<{
   forceNetworkKind?: NetworkKind;
   forceNetworkFeatures?: NetworkFeature[];
   style?: StyleProp<ViewStyle>;
-}> = ({ forceNetworkId, forceNetworkKind, forceNetworkFeatures, style }) => {
-  const { closeOpenedDropdown } = useDropdowns();
+  onSelect: () => void;
+}> = ({
+  forceNetworkId,
+  forceNetworkKind,
+  forceNetworkFeatures,
+  style,
+  onSelect,
+}) => {
   const { resetMediaPlayer } = useMediaPlayer();
   const dispatch = useAppDispatch();
   const { wallets } = useWallets();
@@ -41,6 +46,7 @@ export const NetworkSelectorMenu: FC<{
   const isMobile = useIsMobile();
 
   const onPressNetwork = (networkId: string) => {
+    onSelect();
     let walletProvider: WalletProvider | null = null;
 
     const network = getNetwork(networkId);
@@ -70,7 +76,6 @@ export const NetworkSelectorMenu: FC<{
 
     dispatch(setSelectedWalletId(selectedWallet?.id || ""));
 
-    closeOpenedDropdown();
     resetMediaPlayer();
   };
 
