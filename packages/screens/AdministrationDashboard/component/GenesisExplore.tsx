@@ -76,9 +76,7 @@ export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
       >
         <View
           style={[
-            isBreakPoint
-              ? { flex: 1.5 }
-              : { marginVertical: layout.spacing_x2 },
+            isBreakPoint ? { flex: 2 } : { marginVertical: layout.spacing_x2 },
           ]}
         >
           <BrandText style={fontSemibold24}>Genesis Guardians</BrandText>
