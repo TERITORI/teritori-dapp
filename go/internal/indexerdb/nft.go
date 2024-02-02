@@ -11,6 +11,11 @@ type Attribute struct {
 	Value     string `json:"value"`
 }
 
+type AttributeAny struct {
+	TraitType string `json:"trait_type"`
+	Value     any    `json:"value"`
+}
+
 type NFT struct {
 	// ID is network-dependent
 	// Teritori: tori-<bech32_mint_contract_address>-<token_id>

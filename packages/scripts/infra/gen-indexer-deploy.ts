@@ -33,8 +33,16 @@ const genDeployment = (mode: string) => {
   const podName = `indexer-${filePrefix}`;
 
   const args: string[] = [];
-  if (network.kind === NetworkKind.Ethereum) {
-    args.push("sink");
+
+  switch (network.kind) {
+    case NetworkKind.Ethereum: {
+      args.push("sink", "--batch-blocks=5");
+      break;
+    }
+    case NetworkKind.Cosmos: {
+      args.push("--chunk-size=1000");
+      break;
+    }
   }
   args.push(
     `--indexer-mode=${mode}`,

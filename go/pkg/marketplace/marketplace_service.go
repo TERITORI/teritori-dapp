@@ -444,9 +444,37 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			}
 
 			// json string => struct
-			var dbAttributes []indexerdb.Attribute
-			if err := json.Unmarshal(jsonStr, &dbAttributes); err != nil {
+			var dbAttributesAny []indexerdb.AttributeAny
+			if err := json.Unmarshal(jsonStr, &dbAttributesAny); err != nil {
 				return errors.Wrap(err, "failed to convert nft json string => struct")
+			}
+
+			var dbAttributes []indexerdb.Attribute
+			for _, attribute := range dbAttributesAny {
+				switch attribute.Value.(type) {
+				case string:
+					dbAttributes = append(dbAttributes, indexerdb.Attribute{
+						TraitType: attribute.TraitType,
+						Value:     attribute.Value.(string),
+					})
+				case float64:
+					dbAttributes = append(dbAttributes, indexerdb.Attribute{
+						TraitType: attribute.TraitType,
+						Value:     fmt.Sprintf("%f", attribute.Value.(float64)),
+					})
+				case bool:
+					dbAttributes = append(dbAttributes, indexerdb.Attribute{
+						TraitType: attribute.TraitType,
+						Value:     fmt.Sprintf("%t", attribute.Value.(bool)),
+					})
+				case int64:
+					dbAttributes = append(dbAttributes, indexerdb.Attribute{
+						TraitType: attribute.TraitType,
+						Value:     fmt.Sprintf("%d", attribute.Value.(int64)),
+					})
+				default:
+					return errors.New("unsupported attribute type")
+				}
 			}
 
 			// db -> pb
@@ -762,11 +790,17 @@ type QuestWithCompletion struct {
 }
 
 func (s *MarkteplaceService) Quests(req *marketplacepb.QuestsRequest, srv marketplacepb.MarketplaceService_QuestsServer) error {
+	network, _, err := s.conf.NetworkStore.ParseUserID(req.GetUserId())
+	if err != nil {
+		return errors.Wrap(err, "invalid user id")
+	}
+
 	var quests []QuestWithCompletion
 	if err := s.conf.IndexerDB.
 		WithContext(srv.Context()).
 		Model(&indexerdb.Quest{}).
 		Select("quests.id as id, quests.title as title, quest_completions.completed as completed").
+		Where("quests.network_id = ?", network.GetBase().ID).
 		Joins("LEFT JOIN quest_completions ON quests.id = quest_completions.quest_id AND quest_completions.user_id = ?", req.GetUserId()).
 		Limit(int(req.GetLimit())).
 		Offset(int(req.GetOffset())).
