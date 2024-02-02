@@ -33,6 +33,7 @@ const dropdownItems = [
   {
     icon: FriendGraySVG,
     name: "Add a friend",
+    onPress: (navigation: any) => navigation.navigate("MiniFriend"),
   },
   {
     icon: OrganizationGraySVG,
