@@ -141,7 +141,7 @@ export const CollectionsCarouselHeader: React.FC<{
         width={width}
         data={collections}
         ref={carouselRef}
-        panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
+        onConfigurePanGesture={(g) => g.enableTrackpadTwoFingerGesture(true)}
         height={HERO_SIZE + 4}
         pagingEnabled
         autoPlay

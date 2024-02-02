@@ -135,9 +135,9 @@ export const SmallCarousel: React.FC<TCarouselProps & { height: number }> = (
         style={style}
         width={width}
         height={height}
-        onScrollBegin={() => setScrolling(true)}
+        onScrollStart={() => setScrolling(true)}
         onScrollEnd={onScrollEnd}
-        panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
+        onConfigurePanGesture={(g) => g.enableTrackpadTwoFingerGesture(true)}
         {...carouselProps}
       />
       {isNextButtonDisplayed && (
