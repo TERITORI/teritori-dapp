@@ -2,19 +2,17 @@ import React, { useState } from "react";
 import {
   FlatList,
   TouchableOpacity,
-  useWindowDimensions,
   View,
+  useWindowDimensions,
 } from "react-native";
 import { SvgProps } from "react-native-svg";
 import { useSelector } from "react-redux";
 
 import { ChatList } from "./components/ChatList";
-import { dummyChat } from "./components/chatDummyData";
 import rightArrowSVG from "../../../../assets/icons/chevron-right-white.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import friendGraySVG from "../../../../assets/icons/friend-gray.svg";
 import friendSVG from "../../../../assets/icons/friend.svg";
-import searchSVG from "../../../../assets/icons/search-gray.svg";
 import { BrandText } from "../../../components/BrandText/BrandText";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
@@ -23,7 +21,12 @@ import { MiniTabScreenFC } from "../../../components/navigation/MiniNavigator";
 import { SpacerColumn } from "../../../components/spacer";
 import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
 import { ToastInfo } from "../../../components/toasts/ToastInfo";
-import { selectContactInfo } from "../../../store/slices/message";
+import { useMessage } from "../../../context/MessageProvider";
+import {
+  selectContactInfo,
+  selectConversationList,
+} from "../../../store/slices/message";
+import { RootState } from "../../../store/store";
 import { RouteName, useAppNavigation } from "../../../utils/navigation";
 import {
   neutral22,
@@ -44,7 +47,6 @@ import { Spinner } from "../Feed/components/Spinner";
 import DefaultAppBar from "../components/AppBar/DefaultAppBar";
 import { CustomButton } from "../components/Button/CustomButton";
 import MiniTextInput from "../components/MiniTextInput";
-import { selectIsWeshConnected } from "../../../store/slices/message";
 import MobileModal from "../components/MobileModal";
 import TitleBar from "../components/TitleBar";
 
@@ -56,7 +58,6 @@ const collectionScreenTabItems = {
     name: "Multichannels",
   },
 };
-const HAS_CHATS = false;
 
 const DATA: (ItemProps & { id: string })[] = [
   {
@@ -163,11 +164,17 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
   const [showToast, setShowToast] = useState(true);
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("chats");
-  const [search, setSearch] = useState("");
   const { width: windowWidth } = useWindowDimensions();
   const [activeModal, setActiveModal] = useState("");
   const [contactLink, setContactLink] = useState("");
   const [addContactLoading, setAddContactLoading] = useState(false);
+
+  const { activeConversationType } = useMessage();
+  const conversationList = useSelector((state: RootState) =>
+    selectConversationList(state, activeConversationType),
+  );
+
+  const hasChats = conversationList.length > 0;
 
   const hideToast = () => {
     setShowToast(false);
@@ -176,10 +183,6 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
     navigation.navigate("MiniChatSetting", { back: undefined });
     // setIsChatSettingModalVisible(true);
   };
-
-  function onSearchChange(text: string) {
-    setSearch(text);
-  }
 
   const handleAddContact = async () => {
     //TODO: error handling and adding loading UI
@@ -249,21 +252,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
             width: "100%",
           }}
         >
-          <SpacerColumn size={2} />
-          <MiniTextInput
-            value={search}
-            icon={searchSVG}
-            onChangeText={onSearchChange}
-            style={{
-              backgroundColor: "rgba(118, 118, 128, 0.24)",
-              paddingVertical: layout.spacing_x1,
-            }}
-            inputStyle={[fontSemibold14, { lineHeight: 0 }]}
-            placeholderTextColor={neutralA3}
-            placeholder="Search..."
-          />
-          <SpacerColumn size={1} />
-          {!HAS_CHATS ? (
+          {!hasChats ? (
             <View
               style={{
                 flex: 1,
@@ -290,10 +279,10 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
               </BrandText>
             </View>
           ) : (
-            <ChatList items={dummyChat} />
+            <ChatList />
           )}
 
-          {!HAS_CHATS && (
+          {!hasChats && (
             <>
               <SpacerColumn size={2} />
               <View>
