@@ -29,6 +29,6 @@ export const polygonNetwork: EthereumNetworkInfo = {
   toriBridgedTokenAddress: "0x69ded9b7658507ca8c5a6f1f6ff53276802ec228",
   riotOriginalCollectionIdGen0:
     "eth-0x8f8304ea566affeb96ad0ffb593bbebd8876d124",
-  riotContractAddressGen0: "0x9083986a7c842b6c733c2f9bd25d67cc27119025",
+  riotContractAddressGen0: "0x0e8021622cff2950a35369b336004dea0cd63b5d",
   riotBridgedNFTAddressGen0: "0x539b772de11f78109e0131bf9fde54b4b50a8440",
 };
