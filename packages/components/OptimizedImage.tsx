@@ -35,8 +35,8 @@ export const OptimizedImage: React.FC<
       return (
         <View
           style={{
-            width,
-            height,
+            width: otherStyle.width,
+            height: otherStyle.height,
             position: otherStyle.position,
             top: otherStyle.top,
             left: otherStyle.left,
