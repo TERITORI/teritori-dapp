@@ -203,6 +203,15 @@ export const ConfirmAndSign: React.FC = () => {
         alignItems: "center",
       }}
     >
+      <ModalBase
+        onClose={() => navigation.navigate("Projects")}
+        label="Sign the transaction"
+        visible
+        width={480}
+      >
+        
+      </ModalBase>
+
       {isUploadingImage && (
         <BrandText style={[fontSemibold14]}>Uploading Cover Image...</BrandText>
       )}

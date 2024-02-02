@@ -11,6 +11,8 @@ import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 export const MakeRequestFooter: React.FC<{
   onSubmit: () => void;
   disableNext: boolean;
+  nextText?: string;
+  backText?: string;
 }> = (props) => {
   const {
     actions: { goPrevStep },
@@ -33,7 +35,7 @@ export const MakeRequestFooter: React.FC<{
         />
         <PrimaryButton
           onPress={props.onSubmit}
-          text="Next"
+          text={props.nextText || "Next"}
           size="SM"
           width={120}
           disabled={props.disableNext}

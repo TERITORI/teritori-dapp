@@ -31,6 +31,7 @@ import {
 import { TNSResult } from "../components/TNSResult";
 import { emptyShortDesc } from "../defaultValues";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
+import { ButtonsGroup } from "@/screens/Projects/components/ButtonsGroup";
 
 const shortDescSchema = object({
   name: string().required().min(3),
@@ -43,6 +44,9 @@ const shortDescSchema = object({
   _coverImgFile: object(),
 });
 
+const CREATOR_TYPE_CONTRACTOR = "contractor";
+const CREATOR_TYPE_FUNDER = "funder";
+
 export const ShortPresentation: React.FC = () => {
   const {
     actions: { goNextStep, setShortDesc },
@@ -54,7 +58,7 @@ export const ShortPresentation: React.FC = () => {
   const [searchTNSText, setSearchTNSText] = useState("");
   const [isTNSVisible, setIsTNSVisible] = useState(false);
 
-  const [creatorType, setCreatorType] = useState("contractor");
+  const [creatorType, setCreatorType] = useState(CREATOR_TYPE_CONTRACTOR);
 
   const { names } = useNameSearch({
     networkId: selectedNetworkId,
@@ -82,7 +86,7 @@ export const ShortPresentation: React.FC = () => {
         initialValues={shortDescData || emptyShortDesc}
         validationSchema={shortDescSchema}
         onSubmit={(values) => {
-          if (creatorType === "contractor") {
+          if (creatorType === CREATOR_TYPE_CONTRACTOR) {
             values.contractor = caller;
           } else {
             values.funder = caller;
@@ -104,58 +108,30 @@ export const ShortPresentation: React.FC = () => {
             <>
               <View>
                 <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
-                  Creator type
+                  I'm *
                 </BrandText>
 
-                <FlexRow>
-                  <RadioButton
-                    value="contractor"
-                    color={primaryColor}
-                    uncheckedColor="#777777"
-                    status={
-                      creatorType === "contractor" ? "checked" : "unchecked"
-                    }
-                    onPress={async () => {
-                      setCreatorType("contractor");
-                      await setFieldValue("contractor", caller);
-                      await setFieldValue("funder", "");
-                    }}
-                  />
-                  <BrandText
-                    onPress={async () => {
-                      setCreatorType("contractor");
-                      await setFieldValue("contractor", caller);
-                      await setFieldValue("funder", "");
-                    }}
-                    style={fontSemibold14}
-                  >
-                    I'm contractor who looks for a funder
-                  </BrandText>
-                </FlexRow>
+                <SpacerColumn size={1} />
 
-                <FlexRow>
-                  <RadioButton
-                    value="funder"
-                    color={primaryColor}
-                    uncheckedColor="#777777"
-                    status={creatorType === "funder" ? "checked" : "unchecked"}
-                    onPress={async () => {
-                      setCreatorType("funder");
+                <ButtonsGroup
+                  size="XS"
+                  texts={[
+                    "A contractor looking for a funder",
+                    "A funder looking for a developer",
+                  ]}
+                  selectedId={creatorType === CREATOR_TYPE_CONTRACTOR ? 0 : 1}
+                  onChange={async (selectedId) => {
+                    if (selectedId === 0) {
+                      setCreatorType(CREATOR_TYPE_CONTRACTOR);
+                      await setFieldValue("contractor", caller);
+                      await setFieldValue("funder", "");
+                    } else {
+                      setCreatorType(CREATOR_TYPE_FUNDER);
                       await setFieldValue("funder", caller);
                       await setFieldValue("contractor", "");
-                    }}
-                  />
-                  <BrandText
-                    onPress={async () => {
-                      setCreatorType("funder");
-                      await setFieldValue("funder", caller);
-                      await setFieldValue("contractor", "");
-                    }}
-                    style={fontSemibold14}
-                  >
-                    I'm funder who looks for a developer
-                  </BrandText>
-                </FlexRow>
+                    }
+                  }}
+                />
               </View>
 
               <SpacerColumn size={2.5} />
@@ -163,8 +139,8 @@ export const ShortPresentation: React.FC = () => {
               <View style={{ position: "relative", zIndex: 2 }}>
                 <TextInputCustom
                   label={
-                    creatorType === "funder"
-                      ? "Potential contractor"
+                    creatorType === CREATOR_TYPE_FUNDER
+                      ? "Potential developer"
                       : "Potential funder"
                   }
                   name="funder"
@@ -175,14 +151,20 @@ export const ShortPresentation: React.FC = () => {
                     setSearchTNSText(text);
                     setIsTNSVisible(true);
                     return handleChange(
-                      creatorType === "funder" ? "contractor" : "funder",
+                      creatorType === CREATOR_TYPE_FUNDER
+                        ? CREATOR_TYPE_CONTRACTOR
+                        : CREATOR_TYPE_FUNDER,
                     )(text);
                   }}
                   value={
-                    creatorType === "funder" ? values.contractor : values.funder
+                    creatorType === CREATOR_TYPE_FUNDER
+                      ? values.contractor
+                      : values.funder
                   }
                   error={
-                    creatorType === "funder" ? errors.contractor : errors.funder
+                    creatorType === CREATOR_TYPE_FUNDER
+                      ? errors.contractor
+                      : errors.funder
                   }
                 />
 
@@ -193,7 +175,9 @@ export const ShortPresentation: React.FC = () => {
                   onSelected={(name) => {
                     setIsTNSVisible(false);
                     return handleChange(
-                      creatorType === "funder" ? "contractor" : "funder",
+                      creatorType === CREATOR_TYPE_FUNDER
+                        ? CREATOR_TYPE_CONTRACTOR
+                        : CREATOR_TYPE_FUNDER,
                     )(name);
                   }}
                 />

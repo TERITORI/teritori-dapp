@@ -22,7 +22,11 @@ export const Preview: React.FC = () => {
       />
 
       <ProjectMilestones milestones={milestones} />
-      <MakeRequestFooter disableNext={false} onSubmit={goNextStep} />
+      <MakeRequestFooter
+        nextText="Publish this request"
+        disableNext={false}
+        onSubmit={goNextStep}
+      />
     </View>
   );
 };
