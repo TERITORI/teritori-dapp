@@ -26,7 +26,7 @@ export const TopMenuMobile: FC = () => {
             top: 48,
             right: -60,
           },
-          isDropdownOpen && { display: "none" },
+          !isDropdownOpen && { display: "none" },
         ]}
         mainContainerStyle={{
           borderTopWidth: 0,
