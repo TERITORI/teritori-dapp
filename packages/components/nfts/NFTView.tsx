@@ -105,6 +105,7 @@ export const NFTView: React.FC<{
             nft={nft}
             mobileMode={isMobile}
             localSelected={localSelected}
+            size={width}
           />
         </TertiaryBox>
       </View>
@@ -116,7 +117,8 @@ const NFTViewContent: React.FC<{
   nft: NFT;
   mobileMode: boolean;
   localSelected: boolean;
-}> = memo(({ nft, mobileMode, localSelected }) => {
+  size: number | undefined;
+}> = memo(({ nft, mobileMode, localSelected, size }) => {
   const insideMargin = layout.spacing_x2;
   const selectedWallet = useSelectedWallet();
   const dispatch = useAppDispatch();
@@ -129,6 +131,8 @@ const NFTViewContent: React.FC<{
       dispatch(removeSelected(nft.id));
     }
   };
+
+  const imgRenderSize = size ? size - insideMargin * 2 : 250;
 
   const isOwner = nft.ownerId === selectedWallet?.userId;
   return (
@@ -154,15 +158,15 @@ const NFTViewContent: React.FC<{
           }}
         >
           <ImageWithTextInsert
-            size={250}
+            sourceSize={250}
             imageURL={nft.imageUri}
             textInsert={nft.textInsert}
             style={{
               marginTop: 15,
               marginBottom: 20,
               borderRadius: 12,
-              width: "100%",
-              aspectRatio: 1,
+              width: imgRenderSize,
+              height: imgRenderSize,
             }}
           />
           <BrandText
