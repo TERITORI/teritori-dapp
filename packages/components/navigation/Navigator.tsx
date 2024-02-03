@@ -4,6 +4,9 @@ import React from "react";
 import { Platform } from "react-native";
 
 import { Sidebar } from "./Sidebar";
+import { AdministrationDashboardScreen } from "../../screens/AdministrationDashboard/AdministrationDashboardScreen";
+import { AllProjectAdministrationDashScreen } from "../../screens/AllProjectAdministrationDash/AllProjectAdministrationDashScreen";
+import { ApplicationRewiewScreen } from "../../screens/ApplicationRewiew/ApplicationRewiew";
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { CoreDAOScreen } from "../../screens/CoreDAO/CoreDAOScreen";
 import { DAppStoreScreen } from "../../screens/DAppStore/DAppStoreScreen";
@@ -19,6 +22,7 @@ import { LaunchpadApplyScreen } from "../../screens/Launchpad/LaunchpadApplyScre
 import { LaunchpadCreateScreen } from "../../screens/Launchpad/LaunchpadCreateScreen";
 import { LaunchpadScreen } from "../../screens/Launchpad/LaunchpadScreen";
 import { MintCollectionScreen } from "../../screens/Launchpad/MintCollectionScreen";
+import { LaunchpadApplicationsScreen } from "../../screens/LaunchpadApplications/LaunchpadApplicationsScreen";
 import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
@@ -33,6 +37,7 @@ import { MultisigWalletDashboardScreen } from "../../screens/Multisig/MultisigWa
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
+import { ReadyLaunchpadApplicationsScreen } from "../../screens/ReadyLaunchpadApplications/ReadyLaunchpadApplicationsScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 // import { RiotGameBridgeScreen } from "../../screens/RiotGame/RiotGameBridgeScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
@@ -130,6 +135,46 @@ export const Navigator: React.FC = () => {
         name="RiotersFooter"
         component={RiotersFooterScreen}
         options={{ header: () => null, title: screenTitle("Rioters Footer") }}
+      />
+      <Nav.Screen
+        name="AdministrationDashboard"
+        component={AdministrationDashboardScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Administration Dashboard"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadApplications"
+        component={LaunchpadApplicationsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Applications"),
+        }}
+      />
+      <Nav.Screen
+        name="ReadyLaunchpadApplications"
+        component={ReadyLaunchpadApplicationsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Ready Launchpad Applications"),
+        }}
+      />
+      <Nav.Screen
+        name="AllProjectAdministrationDash"
+        component={AllProjectAdministrationDashScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("All Launchpad Applications"),
+        }}
+      />
+      <Nav.Screen
+        name="ApplicationReview"
+        component={ApplicationRewiewScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Application Review"),
+        }}
       />
 
       {/* === Riot Game */}
