@@ -24,6 +24,11 @@ export type RootStackParamList = {
     tab?: keyof typeof uppTabItems;
   };
   RiotersFooter: undefined;
+  AdministrationDashboard: undefined;
+  LaunchpadApplications: undefined;
+  ApplicationReview: undefined;
+  ReadyLaunchpadApplications: undefined;
+  AllProjectAdministrationDash: undefined;
 
   Launchpad: undefined;
   LaunchpadApply: undefined;
@@ -108,6 +113,11 @@ const navConfig: {
     Governance: "governance",
     UserPublicProfile: "user/:id/:tab?",
     RiotersFooter: "rioters-footer",
+    AdministrationDashboard: "launchpad/admin",
+    LaunchpadApplications: "launchpad/applications",
+    ApplicationReview: "launchpad/application-review",
+    ReadyLaunchpadApplications: "launchpad/ready-applications",
+    AllProjectAdministrationDash: "launchpad/all-projects",
     // === RiotGame
     RiotGame: "riot-game",
     RiotGameEnroll: "riot-game/enroll",
