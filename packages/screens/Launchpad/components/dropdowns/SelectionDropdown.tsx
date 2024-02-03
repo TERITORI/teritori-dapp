@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import chevronDownSVG from "./../../../../../assets/icons/chevron-down.svg";
@@ -11,7 +11,7 @@ import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
 import { Label } from "../../../../components/inputs/TextInputCustom";
 import { Separator } from "../../../../components/separators/Separator";
 import { SpacerColumn } from "../../../../components/spacer";
-import { useDropdowns } from "../../../../context/DropdownsProvider";
+import { useDropdowns } from "../../../../hooks/useDropdowns";
 import {
   neutral17,
   neutral44,
@@ -30,9 +30,7 @@ export const SelectionDropdown = ({
   label,
   setItem,
 }: SelectionDropdownProps) => {
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, ref] = useDropdowns();
 
   return (
     <View
@@ -44,7 +42,7 @@ export const SelectionDropdown = ({
         },
         style,
       ]}
-      ref={dropdownRef}
+      ref={ref}
     >
       <Label style={{ marginBottom: layout.spacing_x1 }} isRequired>
         {label}
@@ -69,7 +67,7 @@ export const SelectionDropdown = ({
               flex: 1,
             }}
             activeOpacity={1}
-            onPress={() => onPressDropdownButton(dropdownRef)}
+            onPress={() => setDropdownState()}
           >
             <BrandText
               style={[
@@ -80,9 +78,7 @@ export const SelectionDropdown = ({
               {item ? item : placeHolder}
             </BrandText>
             <SVG
-              source={
-                isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG
-              }
+              source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
               width={16}
               height={16}
               color={secondaryColor}
@@ -90,7 +86,7 @@ export const SelectionDropdown = ({
           </TouchableOpacity>
         </TertiaryBox>
 
-        {isDropdownOpen(dropdownRef) && (
+        {isDropdownOpen && (
           <PrimaryBox
             style={{
               position: "absolute",
@@ -107,7 +103,7 @@ export const SelectionDropdown = ({
             {dropdownOptions.map((item, index) => (
               <TouchableOpacity
                 onPress={() => {
-                  closeOpenedDropdown();
+                  setDropdownState(false);
                   setItem(item);
                 }}
                 key={index}

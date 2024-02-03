@@ -1,10 +1,10 @@
-import React, { useRef } from "react";
+import React from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import { NetworkSelectorMenu } from "./NetworkSelectorMenu";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
-import { useDropdowns } from "../../context/DropdownsProvider";
+import { useDropdowns } from "../../hooks/useDropdowns";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { NetworkFeature, NetworkKind } from "../../networks";
 import { neutral17, neutral77, secondaryColor } from "../../utils/style/colors";
@@ -28,8 +28,7 @@ export const CustomNetworkSelector: React.FC<{
   forceNetworkFeatures,
   label,
 }) => {
-  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, ref] = useDropdowns();
   const selectedNetworkInfo = useSelectedNetworkInfo();
 
   return (
@@ -41,6 +40,7 @@ export const CustomNetworkSelector: React.FC<{
           zIndex: 100,
         },
       ]}
+      ref={ref}
     >
       <Label style={{ marginBottom: layout.spacing_x1 }} isRequired>
         {label}
@@ -64,7 +64,7 @@ export const CustomNetworkSelector: React.FC<{
             flex: 1,
           }}
           activeOpacity={1}
-          onPress={() => onPressDropdownButton(dropdownRef)}
+          onPress={() => setDropdownState()}
         >
           <BrandText
             style={[
@@ -75,7 +75,7 @@ export const CustomNetworkSelector: React.FC<{
             {selectedNetworkInfo?.displayName}
           </BrandText>
           <SVG
-            source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
+            source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
             width={16}
             height={16}
             color={secondaryColor}
@@ -83,8 +83,9 @@ export const CustomNetworkSelector: React.FC<{
         </TouchableOpacity>
       </TertiaryBox>
 
-      {isDropdownOpen(dropdownRef) && (
+      {isDropdownOpen && (
         <NetworkSelectorMenu
+          onSelect={() => {}}
           optionsMenuwidth={416}
           style={{ width: "100%", marginTop: layout.spacing_x0_75 }}
           forceNetworkId={forceNetworkId}

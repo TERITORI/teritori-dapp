@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import chevronDownSVG from "./../../../../../assets/icons/chevron-down.svg";
@@ -11,7 +11,7 @@ import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
 import { Label } from "../../../../components/inputs/TextInputCustom";
 import { Separator } from "../../../../components/separators/Separator";
 import { SpacerColumn } from "../../../../components/spacer";
-import { useDropdowns } from "../../../../context/DropdownsProvider";
+import { useDropdowns } from "../../../../hooks/useDropdowns";
 import {
   neutral17,
   neutral44,
@@ -32,8 +32,7 @@ export const MultipleSelectionDropdown = ({
   setItems,
   sublabel,
 }: MultipleSelectionDropdownProps) => {
-  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, ref] = useDropdowns();
 
   return (
     <View
@@ -46,7 +45,7 @@ export const MultipleSelectionDropdown = ({
         },
         style,
       ]}
-      ref={dropdownRef}
+      ref={ref}
     >
       <Label style={{ marginBottom: layout.spacing_x1 }} isRequired>
         {label}
@@ -73,7 +72,7 @@ export const MultipleSelectionDropdown = ({
               flex: 1,
             }}
             activeOpacity={1}
-            onPress={() => onPressDropdownButton(dropdownRef)}
+            onPress={() => setDropdownState()}
           >
             <BrandText
               style={[
@@ -84,9 +83,7 @@ export const MultipleSelectionDropdown = ({
               {items?.length > 0 ? items.join(", ") : placeHolder}
             </BrandText>
             <SVG
-              source={
-                isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG
-              }
+              source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
               width={16}
               height={16}
               color={secondaryColor}
@@ -94,7 +91,7 @@ export const MultipleSelectionDropdown = ({
           </TouchableOpacity>
         </TertiaryBox>
 
-        {isDropdownOpen(dropdownRef) && (
+        {isDropdownOpen && (
           <PrimaryBox
             style={{
               position: "absolute",
