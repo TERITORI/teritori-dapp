@@ -4,6 +4,7 @@ import {
   EvmChain,
   GasToken,
 } from "@axelar-network/axelarjs-sdk";
+import { Decimal } from "@cosmjs/math";
 import { BigNumber, ethers } from "ethers";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -70,12 +71,15 @@ import {
   fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { Decimal } from "@cosmjs/math";
 
-const _toDecimalNumber = (bn: BigNumber, strLen: number = 10, decNum: number = 18) => {
+const _toDecimalNumber = (
+  bn: BigNumber,
+  strLen: number = 10,
+  decNum: number = 18,
+) => {
   const numStr = Decimal.fromAtomics(bn.toString(), decNum).toString();
   return numStr.substring(0, strLen) + "...";
-}
+};
 
 const getNFTClient = async (
   network: EthereumNetworkInfo | undefined,
@@ -220,22 +224,25 @@ export const RiotGameBridgeScreen: React.FC = () => {
         GMPGasFee,
       );
 
-      const gasData = await Promise.all([estimatedGasRequest, axelarGasRequest]);
+      const gasData = await Promise.all([
+        estimatedGasRequest,
+        axelarGasRequest,
+      ]);
       const estimatedGas = (maxFeePerGas || BigNumber.from(0)).mul(gasData[0]);
       const axelarGas = BigNumber.from(gasData[1]);
 
       console.log({
-        estimatedGas: estimatedGas.toString(), 
-        axelarGas: axelarGas.toString(), 
-        total: estimatedGas.add(axelarGas).toString()
-      })
+        estimatedGas: estimatedGas.toString(),
+        axelarGas: axelarGas.toString(),
+        total: estimatedGas.add(axelarGas).toString(),
+      });
 
       setEstimatedGas(estimatedGas);
       setAxelarGas(axelarGas);
       setIsEstimatingGas(false);
-    } catch(e: any) {
+    } catch (e: any) {
       console.error(e);
-      setToastError({title: "Error", message: e.message});
+      setToastError({ title: "Error", message: e.message });
     }
   };
 
@@ -572,18 +579,12 @@ const SideBridge: React.FC<{
         <View style={{ paddingVertical: layout.spacing_x1 }}>
           <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
             Estimated Gas:{" "}
-            {isEstimatingGas
-              ? "estimating..."
-              : _toDecimalNumber(estimatedGas)
-            }
+            {isEstimatingGas ? "estimating..." : _toDecimalNumber(estimatedGas)}
           </BrandText>
 
           <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
             Estimated Axelar Gas:{" "}
-            {isEstimatingGas
-              ? "estimating..."
-              : _toDecimalNumber(axelarGas)
-            }
+            {isEstimatingGas ? "estimating..." : _toDecimalNumber(axelarGas)}
           </BrandText>
 
           <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
@@ -602,8 +603,7 @@ const SideBridge: React.FC<{
           You pay:{" "}
           {isEstimatingGas
             ? "estimating..."
-            : _toDecimalNumber(axelarGas.add(estimatedGas))
-          }
+            : _toDecimalNumber(axelarGas.add(estimatedGas))}
         </BrandText>
 
         <Separator />

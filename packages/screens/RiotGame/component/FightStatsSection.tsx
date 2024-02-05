@@ -8,11 +8,11 @@ import { useSeasonRank } from "../../../hooks/riotGame/useSeasonRank";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { NetworkKind } from "../../../networks";
 import { teritoriCurrencies } from "../../../networks/teritori/currencies";
 import { decimalFromAtomics } from "../../../utils/coins";
 import { yellowDefault } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
+
 import { teritoriNetwork } from "@/networks/teritori";
 
 type FightStatsSectionProps = {
@@ -46,12 +46,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
     );
 
     return res;
-  }, [
-    claimableAmount,
-    selectedNetwork?.kind,
-    selectedWallet?.networkId,
-    selectedNetwork?.currencies,
-  ]);
+  }, [claimableAmount, selectedNetwork?.kind, selectedWallet?.networkId]);
 
   return (
     <View
