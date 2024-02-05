@@ -6,6 +6,7 @@ import { RouteProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
+import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import AboutScreen from "../../screens/Mini/About/AboutScreen";
 import AddAddressBookScreen from "../../screens/Mini/AddressBook/AddAddressBookScreen";
 import AddressBookScreen from "../../screens/Mini/AddressBook/AddressBookScreen";
@@ -431,6 +432,11 @@ export const MiniNavigator: React.FC = () => {
           title: "Feed",
           animation: "fade",
         }}
+      />
+      <Stack.Screen
+        name="NFTDetail"
+        component={NFTDetailScreen}
+        options={{ header: () => null, title: "NFT" }}
       />
     </Stack.Navigator>
   );
