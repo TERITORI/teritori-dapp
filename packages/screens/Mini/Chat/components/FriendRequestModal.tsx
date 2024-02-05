@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -10,11 +10,12 @@ import {
   neutralA3,
   withAlpha,
 } from "../../../../utils/style/colors";
-import { layout } from "../../../../utils/style/layout";
+import { MOBILE_HEADER_HEIGHT, layout } from "../../../../utils/style/layout";
 import { weshServices } from "../../../../weshnet";
 import { Spinner } from "../../Feed/components/Spinner";
 import { CustomButton } from "../../components/Button/CustomButton";
 import MiniTextInput from "../../components/MiniTextInput";
+import MiniToast from "../../components/MiniToast";
 import MobileModal from "../../components/MobileModal";
 import TitleBar from "../../components/TitleBar";
 import { ToastType } from "../MiniFriendScreen";
@@ -22,15 +23,17 @@ import { ToastType } from "../MiniFriendScreen";
 export default function FriendRequestModal({
   visible,
   onClose,
-  setOpenToast,
 }: {
   visible: boolean;
   onClose: () => void;
-  setOpenToast: Dispatch<SetStateAction<ToastType>>;
 }) {
   const contactInfo = useSelector(selectContactInfo);
   const [contactLink, setContactLink] = useState("");
   const [addContactLoading, setAddContactLoading] = useState(false);
+  const [openToast, setOpenToast] = useState<ToastType>({
+    type: undefined,
+    message: "",
+  });
 
   const handleAddContact = async () => {
     //TODO: error handling and adding loading UI
@@ -53,6 +56,17 @@ export default function FriendRequestModal({
       onClose={onClose}
       innerContainerOptions={{ height: "40%" }}
     >
+      {openToast.type && (
+        <>
+          <MiniToast
+            message={openToast.message}
+            type={openToast.type ?? "info"}
+            onClose={() => setOpenToast({ type: undefined, message: "" })}
+            style={{ position: "absolute", top: -MOBILE_HEADER_HEIGHT }}
+          />
+          <SpacerColumn size={1.5} />
+        </>
+      )}
       <View
         style={{
           padding: layout.spacing_x2,
