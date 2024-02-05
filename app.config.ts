@@ -37,7 +37,7 @@ const config = {
         projectId: "9ce165de-0199-478c-b3bd-8688e5ce03eb",
       },
     },
-    plugins: ["expo-font", "expo-secure-store"],
+    plugins: ["expo-font"],
   },
 };
 
