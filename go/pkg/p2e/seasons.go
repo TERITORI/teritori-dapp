@@ -187,13 +187,13 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 	{
 		ID:         "Season 1 - ETH",
 		GameID:     THE_RIOT_GAME_ID,
-		Denom:      "eth",
-		Decimals:   18,
-		TotalPrize: 1,
+		Denom:      "tori",
+		Decimals:   6,
+		TotalPrize: 200,
 		BossName:   "Philipp Rustov",
 		BossImage:  "",
 		TopN:       500,
-		StartsAt:   "2023-01-15T00:00:00",
-		EndsAt:     "2023-12-14T00:00:00",
+		StartsAt:   "2024-02-04T00:00:00",
+		EndsAt:     "2024-02-06T00:00:00",
 	},
 }

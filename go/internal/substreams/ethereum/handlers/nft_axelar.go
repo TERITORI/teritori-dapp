@@ -25,10 +25,10 @@ func (h *Handler) handleExecute(contractABI *abi.ABI, tx *pb.Tx, args map[string
 		return errors.Wrap(err, "failed to parse transfer input")
 	}
 
-	tokenID, err := DecodeTopicToInt(tx.Receipt.Logs[1].Data)
+	tokenID, err := DecodeTopicToInt(tx.Receipt.Logs[1].Topics[3])
 	if err != nil {
 		// Try to decode from 2nd log entry
-		tokenID, err = DecodeTopicToInt(tx.Receipt.Logs[2].Data)
+		tokenID, err = DecodeTopicToInt(tx.Receipt.Logs[1].Topics[3])
 
 		if err != nil {
 			return errors.Wrap(err, "failed to decode tokenID")

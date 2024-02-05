@@ -92,15 +92,9 @@ func GetDailyRewardsConfigBySeason(seasonId string, network networks.Network) (s
 	var dailyRewards sdk.DecCoins
 	for _, reward := range seasonRewards {
 		amount := reward.QuoInt64(int64(bossHp))
-		kind := network.GetBase().Kind
 		var dailyAmountInt sdk.Int
-		if kind == networks.NetworkKindEthereum {
-			// Convert ETH => wei
-			dailyAmountInt = cosmosmath.NewIntWithDecimal(amount.MulInt64(10_000_000_000).RoundInt64(), int(season.Decimals-10))
-		} else {
-			// Contract take utori so we need convert tori => utori
-			dailyAmountInt = cosmosmath.NewIntWithDecimal(amount.RoundInt64(), int(season.Decimals))
-		}
+		// Becase we bridge token from Teritori so event in EVM network, it has the 6 decimals just like from teritori
+		dailyAmountInt = cosmosmath.NewIntWithDecimal(amount.RoundInt64(), int(season.Decimals))
 
 		dailyCoin := sdk.NewDecCoin(season.Denom, dailyAmountInt)
 		dailyRewards = append(dailyRewards, dailyCoin)
