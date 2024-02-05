@@ -18497,6 +18497,7 @@ __metadata:
   resolution: "teritori-dapp@workspace:."
   dependencies:
     "@axelar-network/axelarjs-sdk": ^0.13.6
+    "@axelar-network/axelarjs-types": ^0.33.0
     "@babel/core": ^7.23.3
     "@babel/plugin-proposal-export-namespace-from": ^7.18.9
     "@babel/plugin-proposal-nullish-coalescing-operator": ^7.18.6
