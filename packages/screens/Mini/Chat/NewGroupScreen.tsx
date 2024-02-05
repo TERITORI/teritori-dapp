@@ -1,127 +1,41 @@
 import React, { useState } from "react";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
-import { NewConversationOrGroupSelector } from "./components/NewConversationOrGroupSelector";
+import {
+  ContactSelectionType,
+  NewConversationOrGroupSelector,
+} from "./components/NewConversationOrGroupSelector";
 import searchSVG from "../../../../assets/icons/search-gray.svg";
 import { SpacerColumn } from "../../../components/spacer";
+import { selectConversationList } from "../../../store/slices/message";
 import { ScreenFC } from "../../../utils/navigation";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontMedium14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import {
+  getConversationAvatar,
+  getConversationName,
+} from "../../../weshnet/messageHelpers";
 import MiniTextInput from "../components/MiniTextInput";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
-const dummyContact = [
-  {
-    id: "1",
-    name: "Eva",
-    avatar: "",
-  },
-  {
-    id: "2",
-    name: "Albert",
-    avatar: "",
-  },
-  {
-    id: "3",
-    name: "Digger",
-    avatar: "",
-  },
-  {
-    id: "4",
-    name: "Bayo",
-    avatar: "",
-  },
-  {
-    id: "5",
-    name: "David",
-    avatar: "",
-  },
-  {
-    id: "6",
-    name: "Eddie",
-    avatar: "",
-  },
-  {
-    id: "7",
-    name: "Eva",
-    avatar: "",
-  },
-  {
-    id: "8",
-    name: "Digger",
-    avatar: "",
-  },
-  {
-    id: "9",
-    name: "Bold",
-    avatar: "",
-  },
-  {
-    id: "10",
-    name: "Arnold",
-    avatar: "",
-  },
-  {
-    id: "11",
-    name: "Albert",
-    avatar: "",
-  },
-  {
-    id: "12",
-    name: "Bayo",
-    avatar: "",
-  },
-  {
-    id: "13",
-    name: "David",
-    avatar: "",
-  },
-  {
-    id: "14",
-    name: "Eddie",
-    avatar: "",
-  },
-  {
-    id: "15",
-    name: "Eva",
-    avatar: "",
-  },
-  {
-    id: "16",
-    name: "Digger",
-    avatar: "",
-  },
-  {
-    id: "17",
-    name: "Bold",
-    avatar: "",
-  },
-  {
-    id: "18",
-    name: "Arnold",
-    avatar: "",
-  },
-  {
-    id: "19",
-    name: "David",
-    avatar: "",
-  },
-  {
-    id: "20",
-    name: "Eddie",
-    avatar: "",
-  },
-
-  {
-    id: "21",
-    name: "Digger",
-    avatar: "",
-  },
-];
-
 export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
   const [search, setSearch] = useState("");
+  const conversations = useSelector(selectConversationList);
+
+  const usersList = conversations.reduce((acc, conversation) => {
+    if (conversation) {
+      acc.push({
+        id: conversation.id,
+        avatar: conversation?.members.map((_, index) =>
+          getConversationAvatar(conversation, index),
+        ),
+        name: getConversationName(conversation),
+      });
+    }
+    return acc;
+  }, [] as ContactSelectionType[]);
 
   return (
     <BlurScreenContainer title="New group">
@@ -142,7 +56,7 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
         />
         <SpacerColumn size={2} />
         <NewConversationOrGroupSelector
-          contacts={dummyContact}
+          contacts={usersList}
           isGroupSelector
           onPressContact={({ id }) =>
             navigation.replace("Conversation", { conversationId: id })

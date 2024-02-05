@@ -38,7 +38,7 @@ export const ChatList = () => {
     selectConversationList(state, activeConversationType),
   );
 
-  const [searchInput, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
 
   const searchResults = useMemo(() => {
     if (!searchInput) {
@@ -52,7 +52,7 @@ export const ChatList = () => {
   }, [conversationList, searchInput]);
 
   function onSearchChange(text: string) {
-    setSearch(text);
+    setSearchInput(text);
   }
 
   return (

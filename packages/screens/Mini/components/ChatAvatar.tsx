@@ -10,7 +10,7 @@ import { Avatar } from "../../Message/components/Avatar";
 type ChatAvatarProps = {
   isActive?: boolean;
   membersAvatar: string[];
-  size?: "sm" | "md" | "lg" | "xlg";
+  size?: "xsm" | "sm" | "md" | "lg" | "xlg";
   hideStatusIndicator?: boolean;
 };
 
@@ -24,7 +24,15 @@ export const ChatAvatar = ({
   const isMembersMoreThanFour = numberOfMembers > 4;
   const extraMembers = numberOfMembers - 3 || 0;
   const avatarSize =
-    size === "md" ? 48 : size === "lg" ? 100 : size === "xlg" ? 164 : 32;
+    size === "xsm"
+      ? 22
+      : size === "md"
+        ? 48
+        : size === "lg"
+          ? 100
+          : size === "xlg"
+            ? 164
+            : 32;
   return (
     <View
       style={{ position: "relative", width: avatarSize, height: avatarSize }}
