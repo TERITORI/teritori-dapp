@@ -95,19 +95,22 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
         </View>
       </View>
       <Separator style={{ marginVertical: layout.spacing_x3 }} />
-      {balances.map((balance) => (
-        <Fragment key={balance.denom}>
-          <AddedToken
-            dollarAmount={balance.usdAmount?.toLocaleString() || "N/A"}
-            icon={teritoriSVG}
-            key={balance.denom}
-            onPress={() => {}}
-            denom={balance.denom}
-            amount={balance.amount}
-          />
-          <SpacerColumn size={3} />
-        </Fragment>
-      ))}
+      <FlatList
+        data={balances}
+        keyExtractor={(item) => item.denom}
+        renderItem={({ item: balance }) => (
+          <>
+            <AddedToken
+              dollarAmount={balance.usdAmount?.toLocaleString() || "N/A"}
+              icon={teritoriSVG}
+              onPress={() => {}}
+              denom={balance.denom}
+              amount={balance.amount}
+            />
+            <SpacerColumn size={3} />
+          </>
+        )}
+      />
 
       <SpacerColumn size={3} />
 
@@ -138,8 +141,6 @@ const LastTransactions = () => {
     "teritori",
     selectedWallet?.address,
   );
-
-  console.log(transactions, error, isLoading);
 
   return (
     <>
