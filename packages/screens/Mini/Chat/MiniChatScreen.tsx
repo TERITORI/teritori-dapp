@@ -2,18 +2,17 @@ import React, { useState } from "react";
 import {
   FlatList,
   TouchableOpacity,
-  useWindowDimensions,
   View,
+  useWindowDimensions,
 } from "react-native";
 import { SvgProps } from "react-native-svg";
+import { useSelector } from "react-redux";
 
 import { ChatList } from "./components/ChatList";
-import { dummyChat } from "./components/chatDummyData";
 import rightArrowSVG from "../../../../assets/icons/chevron-right-white.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import friendSVG from "../../../../assets/icons/friend.svg";
-import searchSVG from "../../../../assets/icons/search-gray.svg";
-import { BrandText } from "../../../components/BrandText";
+import { BrandText } from "../../../components/BrandText/BrandText";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
@@ -21,11 +20,13 @@ import { MiniTabScreenFC } from "../../../components/navigation/MiniNavigator";
 import { SpacerColumn } from "../../../components/spacer";
 import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
 import { ToastInfo } from "../../../components/toasts/ToastInfo";
+import { useMessage } from "../../../context/MessageProvider";
+import { selectConversationList } from "../../../store/slices/message";
+import { RootState } from "../../../store/store";
 import { RouteName, useAppNavigation } from "../../../utils/navigation";
 import {
   neutral22,
   neutral77,
-  neutralA3,
   secondaryColor,
 } from "../../../utils/style/colors";
 import {
@@ -35,7 +36,6 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import DefaultAppBar from "../components/AppBar/DefaultAppBar";
-import MiniTextInput from "../components/MiniTextInput";
 
 const collectionScreenTabItems = {
   chats: {
@@ -45,13 +45,13 @@ const collectionScreenTabItems = {
     name: "Multichannels",
   },
 };
-const HAS_CHATS = true;
 
 const DATA: (ItemProps & { id: string })[] = [
   {
     id: "1",
     title: "Add a friend",
     icon: friendSVG,
+    route: "MiniFriend",
   },
   {
     id: "2",
@@ -67,15 +67,26 @@ const DATA: (ItemProps & { id: string })[] = [
   },
 ];
 
-type ItemProps = { title: string; icon: React.FC<SvgProps>; route?: RouteName };
+type ItemProps = {
+  title: string;
+  icon: React.FC<SvgProps>;
+  route?: RouteName;
+  value?: string;
+  onClick?: (value: string) => void;
+};
 
-const Item = ({ title, icon, route }: ItemProps) => {
+const Item = ({ title, icon, route, value, onClick }: ItemProps) => {
   const navigation = useAppNavigation();
 
   const onNavigateToRoute = () => {
     if (route) {
       //@ts-expect-error
       navigation.navigate(route);
+      return;
+    }
+
+    if (onClick) {
+      onClick(value ?? "");
     }
   };
   return (
@@ -139,8 +150,14 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
   const [showToast, setShowToast] = useState(true);
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("chats");
-  const [search, setSearch] = useState("");
   const { width: windowWidth } = useWindowDimensions();
+
+  const { activeConversationType } = useMessage();
+  const conversationList = useSelector((state: RootState) =>
+    selectConversationList(state, activeConversationType),
+  );
+
+  const hasChats = conversationList.length > 0;
 
   const hideToast = () => {
     setShowToast(false);
@@ -149,10 +166,6 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
     navigation.navigate("MiniChatSetting", { back: undefined });
     // setIsChatSettingModalVisible(true);
   };
-
-  function onSearchChange(text: string) {
-    setSearch(text);
-  }
 
   return (
     <ScreenContainer
@@ -208,21 +221,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
             width: "100%",
           }}
         >
-          <SpacerColumn size={2} />
-          <MiniTextInput
-            value={search}
-            icon={searchSVG}
-            onChangeText={onSearchChange}
-            style={{
-              backgroundColor: "rgba(118, 118, 128, 0.24)",
-              paddingVertical: layout.spacing_x1,
-            }}
-            inputStyle={[fontSemibold14, { lineHeight: 0 }]}
-            placeholderTextColor={neutralA3}
-            placeholder="Search..."
-          />
-          <SpacerColumn size={1} />
-          {!HAS_CHATS ? (
+          {!hasChats ? (
             <View
               style={{
                 flex: 1,
@@ -249,10 +248,10 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
               </BrandText>
             </View>
           ) : (
-            <ChatList items={dummyChat} />
+            <ChatList />
           )}
 
-          {!HAS_CHATS && (
+          {!hasChats && (
             <>
               <SpacerColumn size={2} />
               <View>
@@ -272,6 +271,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
                     <Item
                       title={item.title}
                       icon={item.icon}
+                      value={item.value}
                       route={item.route}
                     />
                   )}

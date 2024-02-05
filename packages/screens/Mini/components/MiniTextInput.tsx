@@ -1,4 +1,12 @@
-import React, { ReactNode, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  ReactNode,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   StyleProp,
   TextInput,
@@ -27,6 +35,7 @@ export interface MiniTexInputProps extends TextInputProps {
   onChangeText?: (text: string) => void;
   value?: string;
   type?: "number" | "string";
+  setRef?: Dispatch<SetStateAction<RefObject<any> | null>>;
 }
 
 export default function MiniTextInput({
@@ -39,11 +48,17 @@ export default function MiniTextInput({
   right,
   onChangeText,
   type = "string",
+  setRef,
   ...rest
 }: MiniTexInputProps) {
   const inputRef = useRef<TextInput>(null);
   const [clearButton, setClearButton] = useState(false);
 
+  useEffect(() => {
+    if (inputRef.current && setRef) {
+      setRef(inputRef);
+    }
+  }, [setRef]);
   function onInputClick() {
     inputRef.current?.focus();
   }

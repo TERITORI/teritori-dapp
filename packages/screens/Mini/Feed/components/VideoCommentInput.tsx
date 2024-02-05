@@ -5,12 +5,12 @@ import { useSharedValue } from "react-native-reanimated";
 import { Post } from "../../../../api/feed/v1/feed";
 import { BrandText } from "../../../../components/BrandText";
 import { UserAvatarWithFrame } from "../../../../components/images/AvatarWithFrame";
+import { NotEnoughFundsModal } from "../../../../components/modals/NotEnoughFundModal";
 import {
   PostCategory,
   ReplyToType,
 } from "../../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { generatePostMetadata } from "../../../../components/socialFeed/NewsFeed/NewsFeedQueries";
-import { NotEnoughFundModal } from "../../../../components/socialFeed/NewsFeed/NotEnoughFundModal";
 import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
 import { useFeedPosting } from "../../../../hooks/feed/useFeedPosting";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
@@ -158,7 +158,7 @@ export const VideoCommentInput = ({
         </View>
       </View>
       {isNotEnoughFundModal && (
-        <NotEnoughFundModal
+        <NotEnoughFundsModal
           visible
           onClose={() => setNotEnoughFundModal(false)}
         />

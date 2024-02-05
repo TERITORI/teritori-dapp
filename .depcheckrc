@@ -25,13 +25,15 @@ ignores: [
   "electron",
   "rimraf",
   "assert",
-  "@dotlottie/react-player",
-  "@lottiefiles/react-lottie-player",
+  "typescript",
   "crypto",
   "expo-constants",
-  "metro-config"
+  "metro-config",
+  "react-native-web-lottie",
+  "expo-splash-screen",
   "listr2",
-  "typescript",
+  "@dotlottie/react-player",
+  "@lottiefiles/react-lottie-player"
 ]
 ignorePatterns: [
   "/cache", 

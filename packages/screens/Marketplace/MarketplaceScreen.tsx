@@ -1,11 +1,11 @@
 import React, { ReactNode, useState } from "react";
 import {
   FlatList,
-  Platform,
   StyleProp,
   TextStyle,
   View,
   ViewStyle,
+  Platform,
 } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -215,9 +215,8 @@ const CollectionTable: React.FC<{
   const [pageIndex, setPageIndex] = useState(0);
   const isMobile = useIsMobile();
   const timePeriod = useSelector(selectTimePeriod);
-  const filteredCollections = rows.filter(
-    ({ collectionName }) =>
-      collectionName?.toLowerCase().includes(filterText.toLowerCase()),
+  const filteredCollections = rows.filter(({ collectionName }) =>
+    collectionName?.toLowerCase().includes(filterText.toLowerCase()),
   );
   TABLE_ROWS.TimePeriodPercentualVolume.label =
     timePeriod.shortLabel + " % Volume";

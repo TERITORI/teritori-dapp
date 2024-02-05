@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleProp, StyleSheet, TextInput, ViewStyle } from "react-native";
+import {
+  StyleProp,
+  StyleSheet,
+  TextInput,
+  TextStyle,
+  ViewStyle,
+} from "react-native";
 
 import searchSVG from "../../../assets/icons/search.svg";
 import { fontMedium14 } from "../../utils/style/fonts";
@@ -45,6 +51,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     width: "100%",
     outlineStyle: "none",
-  },
+  } as TextStyle,
 });
 const textInputStyle = StyleSheet.flatten([styles.textInput, fontMedium14]);

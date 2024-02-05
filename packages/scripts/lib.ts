@@ -1,4 +1,7 @@
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
+import child_process, { ChildProcess, PromiseWithChild } from "child_process";
+import fs from "fs/promises";
+import util from "util";
 import { z } from "zod";
 
 import {
@@ -31,6 +34,7 @@ export const retry = async <T>(
       return await fn();
     } catch (e) {
       lastError = e;
+      await sleep(500);
     }
   }
   if (lastError) {
@@ -71,3 +75,62 @@ export const zodTxResult = z.object({
     }),
   ),
 });
+
+type TxResult = z.infer<typeof zodTxResult>;
+
+const getAttr = (tx: TxResult, eventKey: string, attrKey: string) => {
+  return tx?.events
+    .find((e) => e.type === eventKey)
+    ?.attributes.find((a) => a.key === attrKey)?.value;
+};
+
+export const mustGetAttr = (
+  tx: TxResult,
+  eventKey: string,
+  attrKey: string,
+) => {
+  const val = getAttr(tx, eventKey, attrKey);
+  if (!val) {
+    throw new Error(`Failed to get ${eventKey}.${attrKey}`);
+  }
+  return val;
+};
+
+export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+export const replaceInFile = async (
+  filePath: string,
+  match: string | RegExp,
+  repl: string,
+) => {
+  console.log("🔧 Editing file " + filePath);
+  const data = await fs.readFile(filePath, { encoding: "utf-8" });
+  const newData = data.replace(match, repl);
+  await fs.writeFile(filePath, newData);
+  console.log("🔧 Edited file " + filePath);
+};
+
+export const execPromise = util.promisify(child_process.exec);
+
+export const killProcess = async (
+  p: ChildProcess,
+  r: PromiseWithChild<{
+    stdout: string;
+    stderr: string;
+  }>,
+  timeout?: number,
+) => {
+  console.log("🔪 Killing process");
+  const innerKillProcess = async () => {
+    p.stdin?.destroy();
+    p.kill();
+    console.log("⏳ Waiting for process to terminate");
+    await r;
+  };
+  const startTimeout = async () => {
+    await sleep(timeout || 20000);
+    throw new Error("Timed out waiting for process to terminate");
+  };
+  await Promise.race([startTimeout(), innerKillProcess()]);
+  console.log("🔪 Process terminated");
+};

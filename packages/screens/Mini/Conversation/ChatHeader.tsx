@@ -10,12 +10,18 @@ import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerRow } from "../../../components/spacer";
 import { RootStackParamList } from "../../../utils/navigation";
 import { MOBILE_HEADER_HEIGHT } from "../../../utils/style/layout";
+import { Conversation } from "../../../utils/types/message";
+import {
+  getConversationAvatar,
+  getConversationName,
+} from "../../../weshnet/messageHelpers";
 import { ChatAvatar } from "../components/ChatAvatar";
 
 type HeaderProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "Conversation">;
+  conversation?: Conversation;
 };
-export const ChatHeader = ({ navigation }: HeaderProps) => {
+export const ChatHeader = ({ navigation, conversation }: HeaderProps) => {
   const navigateBack = () =>
     navigation.canGoBack()
       ? navigation.goBack()
@@ -50,14 +56,20 @@ export const ChatHeader = ({ navigation }: HeaderProps) => {
         </CustomPressable>
         <SpacerRow size={2} />
         <ChatAvatar
-          membersAvatar={[
-            "https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg",
-          ]}
+          membersAvatar={
+            conversation
+              ? conversation?.members.map((_, index) =>
+                  getConversationAvatar(conversation, index),
+                )
+              : [""]
+          }
           isActive
           size="sm"
         />
         <SpacerRow size={1.5} />
-        <BrandText>Eleanor Pena</BrandText>
+        <BrandText>
+          {conversation && getConversationName(conversation)}
+        </BrandText>
       </View>
       <CustomPressable onPress={handlePhoneCellPress}>
         <SVG source={phoneCellSVG} height={28} width={28} />

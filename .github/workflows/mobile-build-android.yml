@@ -1,0 +1,67 @@
+name: Build Android App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.19"
+
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: "yarn"
+          node-version: 18
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: "zulu" # See 'Supported distributions' for available options
+          java-version: "17"
+
+      - name: Fix package.json
+        run: yarn remove @lottiefiles/react-lottie-player
+
+      - name: Install node modules
+        run: yarn install
+
+      - name: Fix gitignore
+        run: npx tsx ./packages/scripts/app-build/fixGitignore.ts
+
+      - name: Build android weshframework
+        run: make check-android-weshframework
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build android
+        run: eas build --local --non-interactive --platform=android
+
+      - name: EAS Submit aab
+        run: |
+          AAB_FILE=$(find ./ -name 'build-*.aab' -type f)
+          if [ -z "$AAB_FILE" ]; then
+            echo "Error: apk file not found."
+            exit 1
+          fi
+
+          # eas submit --platform=android --path=$AAB_FILE
+          echo "AAB_FILE=$AAB_FILE" >> $GITHUB_ENV
+
+      - name: Upload aab
+        uses: actions/upload-artifact@v3
+        with:
+          name: teritori-${{ github.sha }}.aab
+          path: ${{ env.AAB_FILE }}
+          if-no-files-found: error

@@ -1,5 +1,10 @@
 import React, { FC, ReactNode } from "react";
-import { SafeAreaView, View, useWindowDimensions } from "react-native";
+import {
+  Platform,
+  SafeAreaView,
+  View,
+  useWindowDimensions,
+} from "react-native";
 
 import { HeaderMobile } from "./HeaderMobile";
 import { useSearchBar } from "../../context/SearchBarProvider";
@@ -91,7 +96,7 @@ export const ScreenContainerMobile: FC<{
           />
         )}
 
-        <SidebarMobile />
+        {Platform.OS === "web" && <SidebarMobile />}
 
         {/*==== Scrollable screen content*/}
         <View style={{ flex: 1, width: "100%", height: windowHeight }}>

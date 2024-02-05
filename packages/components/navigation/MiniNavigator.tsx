@@ -12,6 +12,7 @@ import AddAddressBookScreen from "../../screens/Mini/AddressBook/AddAddressBookS
 import AddressBookScreen from "../../screens/Mini/AddressBook/AddressBookScreen";
 import EditAddressBookScreen from "../../screens/Mini/AddressBook/EditAddressBookScreen";
 import { MiniChatScreen } from "../../screens/Mini/Chat/MiniChatScreen";
+import { MiniFriendScreen } from "../../screens/Mini/Chat/MiniFriendScreen";
 import { NewConversationScreen } from "../../screens/Mini/Chat/NewConversationScreen";
 import { NewGroupScreen } from "../../screens/Mini/Chat/NewGroupScreen";
 import { ConnectLedgerScreen } from "../../screens/Mini/ConnectLedger/ConnectLedgerScreen";
@@ -204,6 +205,15 @@ export const MiniNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: "New Conversation",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniFriend"
+        component={MiniFriendScreen}
+        options={{
+          header: () => null,
+          title: "Friends",
           presentation: "transparentModal",
         }}
       />

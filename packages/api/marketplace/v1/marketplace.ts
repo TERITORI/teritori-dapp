@@ -236,6 +236,7 @@ export interface Activity {
   buyerId: string;
   sellerId: string;
   usdPrice: number;
+  targetId: string;
 }
 
 export interface Quest {
@@ -1632,6 +1633,7 @@ function createBaseActivity(): Activity {
     buyerId: "",
     sellerId: "",
     usdPrice: 0,
+    targetId: "",
   };
 }
 
@@ -1672,6 +1674,9 @@ export const Activity = {
     }
     if (message.usdPrice !== 0) {
       writer.uint32(97).double(message.usdPrice);
+    }
+    if (message.targetId !== "") {
+      writer.uint32(106).string(message.targetId);
     }
     return writer;
   },
@@ -1767,6 +1772,13 @@ export const Activity = {
 
           message.usdPrice = reader.double();
           continue;
+        case 13:
+          if (tag !== 106) {
+            break;
+          }
+
+          message.targetId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1790,6 +1802,7 @@ export const Activity = {
       buyerId: isSet(object.buyerId) ? globalThis.String(object.buyerId) : "",
       sellerId: isSet(object.sellerId) ? globalThis.String(object.sellerId) : "",
       usdPrice: isSet(object.usdPrice) ? globalThis.Number(object.usdPrice) : 0,
+      targetId: isSet(object.targetId) ? globalThis.String(object.targetId) : "",
     };
   },
 
@@ -1831,6 +1844,9 @@ export const Activity = {
     if (message.usdPrice !== 0) {
       obj.usdPrice = message.usdPrice;
     }
+    if (message.targetId !== "") {
+      obj.targetId = message.targetId;
+    }
     return obj;
   },
 
@@ -1851,6 +1867,7 @@ export const Activity = {
     message.buyerId = object.buyerId ?? "";
     message.sellerId = object.sellerId ?? "";
     message.usdPrice = object.usdPrice ?? 0;
+    message.targetId = object.targetId ?? "";
     return message;
   },
 };
@@ -4485,9 +4502,7 @@ export class GrpcWebImpl {
             }
           },
         });
-        observer.add(() => {
-          return client.close();
-        });
+        observer.add(() => client.close());
       };
       upStream();
     }).pipe(share());

@@ -4,10 +4,12 @@ import { useSelector } from "react-redux";
 
 import Add from "../../../../assets/icons/add-primary.svg";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useWalletControl } from "../../../context/WalletControlProvider";
 import { useFeedPosting } from "../../../hooks/feed/useFeedPosting";
 import { useIpfs } from "../../../hooks/useIpfs";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { NetworkFeature } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
 import { generateIpfsKey } from "../../../utils/ipfs";
 import { AUDIO_MIME_TYPES } from "../../../utils/mime";
@@ -36,7 +38,6 @@ import {
   PostCategory,
   SocialFeedTrackMetadata,
 } from "../../socialFeed/NewsFeed/NewsFeed.type";
-import { NotEnoughFundModal } from "../../socialFeed/NewsFeed/NotEnoughFundModal";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 
 interface Props {
@@ -50,19 +51,27 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
   const selectedNetwork = useSelectedNetworkInfo();
   const selectedWallet = useSelectedWallet();
   const userId = selectedWallet?.userId;
-  const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const { uploadFilesToPinata, ipfsUploadProgress } = useIpfs();
-  const { makePost, canPayForPost, isProcessing, step, setStep } =
-    useFeedPosting(selectedNetwork?.id, userId, PostCategory.MusicAudio, () => {
-      // Timeout here to let a few time to see the progress bar "100% Done"
-      setTimeout(() => {
-        setIsUploadLoading(false);
-        setIsProgressBarShown(false);
-        onUploadDone();
-      }, 1000);
-    });
+  const postCategory = PostCategory.MusicAudio;
+  const {
+    makePost,
+    canPayForPost,
+    isProcessing,
+    publishingFee,
+    step,
+    setStep,
+  } = useFeedPosting(selectedNetwork?.id, userId, postCategory, () => {
+    // Timeout here to let a few time to see the progress bar "100% Done"
+    setTimeout(() => {
+      setIsUploadLoading(false);
+      setIsProgressBarShown(false);
+      onUploadDone();
+    }, 1000);
+  });
   const [isUploadLoading, setIsUploadLoading] = useState(false);
   const [isProgressBarShown, setIsProgressBarShown] = useState(false);
+  const { showNotEnoughFundsModal, showConnectWalletModal } =
+    useWalletControl();
   const isLoading = isUploadLoading || isProcessing;
   const userIPFSKey = useSelector(selectNFTStorageAPI);
   const [title, setTitle] = useState("");
@@ -72,10 +81,6 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
   const processCreateMusicAudioPost = async (
     track: SocialFeedTrackMetadata,
   ) => {
-    if (!canPayForPost) {
-      setNotEnoughFundModal(true);
-      return;
-    }
     // we need this hack until the createdAt field is properly provided by the contract
     const trackWithCreationDate = {
       ...track,
@@ -96,15 +101,29 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
   };
 
   const onPressUpload = async () => {
-    setIsUploadLoading(true);
-    setIsProgressBarShown(true);
-    if (
-      !selectedWallet?.connected ||
-      !selectedWallet.address ||
-      !localAudioFile
-    ) {
+    const action = "Publish a Track";
+    if (!selectedWallet?.address || !selectedWallet.connected) {
+      showConnectWalletModal({
+        forceNetworkFeature: NetworkFeature.SocialFeed,
+        action,
+      });
       return;
     }
+    if (!canPayForPost) {
+      showNotEnoughFundsModal({
+        action,
+        cost: {
+          amount: publishingFee.amount.toString(),
+          denom: publishingFee.denom || "",
+        },
+      });
+      return;
+    }
+    if (!localAudioFile) {
+      return;
+    }
+    setIsUploadLoading(true);
+    setIsProgressBarShown(true);
     setStep(feedPostingStep(FeedPostingStepId.GENERATING_KEY));
 
     const pinataJWTKey =
@@ -115,6 +134,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
         title: "File upload failed",
         message: "No Pinata JWT",
       });
+      setIsUploadLoading(false);
       return;
     }
     setStep(feedPostingStep(FeedPostingStepId.UPLOADING_FILES));
@@ -129,6 +149,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
         title: "File upload failed",
         message: "Fail to pin to IPFS, please try to Publish again",
       });
+      setIsUploadLoading(false);
       return;
     }
     const track: SocialFeedTrackMetadata = {
@@ -214,7 +235,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       <FeedFeeText
         networkId={selectedNetwork?.id}
         userId={selectedWallet?.userId}
-        category={PostCategory.MusicAudio}
+        category={postCategory}
         style={{ marginTop: layout.spacing_x2 }}
       />
 
@@ -248,13 +269,6 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
           />
           <SpacerColumn size={2} />
         </>
-      )}
-
-      {isNotEnoughFundModal && (
-        <NotEnoughFundModal
-          visible
-          onClose={() => setNotEnoughFundModal(false)}
-        />
       )}
     </>
   );

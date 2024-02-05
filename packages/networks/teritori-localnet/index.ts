@@ -30,8 +30,8 @@ export const teritoriLocalnetNetwork: NetworkInfo = {
   testnet: true,
   backendEndpoint: "",
   addressPrefix: "tori",
-  restEndpoint: "http://localhost:1317",
-  rpcEndpoint: "http://localhost:26657",
+  restEndpoint: "http://127.0.0.1:1317",
+  rpcEndpoint: "http://127.0.0.1:26657",
   stakeCurrency: "utori",
   gasPriceStep: {
     low: 0.0,

@@ -5,6 +5,7 @@ import (
 	"math"
 	"time"
 
+	cosmosmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/pkg/errors"
 )
@@ -88,7 +89,7 @@ func GetDailyRewardsConfigBySeason(seasonId string) (sdk.DecCoins, error) {
 		amount := reward.QuoInt64(int64(bossHp))
 
 		// Contract take utori so we need convert tori => utori
-		dailyAmountInt := sdk.NewIntWithDecimal(amount.RoundInt64(), int(season.Decimals))
+		dailyAmountInt := cosmosmath.NewIntWithDecimal(amount.RoundInt64(), int(season.Decimals))
 		dailyCoin := sdk.NewDecCoin(season.Denom, dailyAmountInt)
 		dailyRewards = append(dailyRewards, dailyCoin)
 	}

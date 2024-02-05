@@ -121,7 +121,7 @@ export const TransactionPaymentModal: React.FC<{
           ) ? (
             <View style={{ alignItems: "center", width: "100%" }}>
               <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                Insufficient funds
+                Not enough funds
               </BrandText>
             </View>
           ) : (

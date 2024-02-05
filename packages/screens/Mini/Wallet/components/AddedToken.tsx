@@ -4,7 +4,6 @@ import { View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import chevronRightSVG from "../../../../../assets/icons/chevron-right-gray.svg";
-import copySVG from "../../../../../assets/icons/copy-gray.svg";
 import questionSVG from "../../../../../assets/icons/question-gray.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
