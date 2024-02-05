@@ -1,8 +1,8 @@
 import { Fragment } from "react";
-import { View } from "react-native";
+import { FlatList, View } from "react-native";
 
 import { AddedToken } from "./components/AddedToken";
-import TransactionItem, { TransactionType } from "./components/TransactionItem";
+import TransactionItem from "./components/TransactionItem";
 import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
 import settingSVG from "../../../../assets/icons/setting-solid.svg";
 import transactionSVG from "../../../../assets/icons/transactions-gray.svg";
@@ -12,7 +12,7 @@ import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
 import { useBalances } from "../../../hooks/useBalances";
-import { ScreenFC } from "../../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import {
   neutral88,
   neutralA3,
@@ -24,27 +24,9 @@ import {
   fontSemibold14,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { useSearchTx } from "../../Wallet/hooks/useSearchTx";
 import { useSelectedNativeWallet } from "../../Wallet/hooks/useSelectedNativeWallet";
 import { CustomButton } from "../components/Button/CustomButton";
-
-const transactions: TransactionType[] = [
-  {
-    id: "nsidfidf",
-    type: "send",
-    status: "pending",
-    img: "",
-    coin: { amount: "2000", denom: "TORI", dollar: 637.42 },
-    to: "gjjsdifjidjfd",
-  },
-  {
-    id: "nsidfidfadf",
-    type: "send",
-    status: "success",
-    img: "https://images.unsplash.com/photo-1704834310326-70f4826650cd?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    coin: { amount: "1000", denom: "TORI", dollar: 337.42 },
-    to: "gjjsdifjidjfd",
-  },
-];
 
 const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
   const onDepositPress = () => {
@@ -144,6 +126,25 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
       </CustomPressable>
       <Separator style={{ marginVertical: layout.spacing_x3 }} />
 
+      <LastTransactions />
+    </>
+  );
+};
+
+const LastTransactions = () => {
+  const selectedWallet = useSelectedNativeWallet();
+
+  const navigation = useAppNavigation();
+
+  const { transactions, error, isLoading } = useSearchTx(
+    "https://teritori-api.polkachu.com",
+    selectedWallet?.address,
+  );
+
+  console.log(transactions, error, isLoading);
+
+  return (
+    <>
       <BrandText
         style={[
           fontSemibold14,
@@ -153,40 +154,48 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
         Last transactions
       </BrandText>
 
-      {!transactions.length ? (
-        <View
-          style={{
-            flexDirection: "row",
-            gap: layout.spacing_x1_5,
-            alignItems: "center",
-          }}
-        >
-          <SVG source={transactionSVG} height={24} width={24} />
-          <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
-            No recent transactions
-          </BrandText>
-        </View>
-      ) : (
-        transactions.map((transaction, index) => {
-          const isLastItem = index === transactions.length - 1;
+      {!isLoading && (
+        <FlatList
+          data={transactions}
+          keyExtractor={(item) => item.txhash}
+          ListEmptyComponent={() => (
+            <View
+              style={{
+                flexDirection: "row",
+                gap: layout.spacing_x1_5,
+                alignItems: "center",
+              }}
+            >
+              <SVG source={transactionSVG} height={24} width={24} />
+              <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
+                No recent transactions
+              </BrandText>
+            </View>
+          )}
+          renderItem={({ item: transaction, index }) => {
+            const isLastItem = index === transactions.length - 1;
+            if (transaction.tx["@type"] !== "/cosmos.bank.v1beta1.MsgSend") {
+              return <></>;
+            }
 
-          return (
-            <Fragment key={transaction.id}>
-              {index !== 0 && <SpacerColumn size={2} />}
-              <TransactionItem
-                key={transaction.id}
-                transaction={transaction}
-                onPress={() =>
-                  navigation.navigate("MiniTransactionDetail", {
-                    transactionId: transaction.id,
-                    type: transaction.type,
-                  })
-                }
-                isLastItem={isLastItem}
-              />
-            </Fragment>
-          );
-        })
+            return (
+              <Fragment key={transaction.txHash}>
+                {index !== 0 && <SpacerColumn size={2} />}
+                <TransactionItem
+                  key={transaction.txHash}
+                  transaction={transaction}
+                  onPress={() =>
+                    navigation.navigate("MiniTransactionDetail", {
+                      transactionId: transaction.txHash,
+                      type: transaction.tx["@type"],
+                    })
+                  }
+                  isLastItem={isLastItem}
+                />
+              </Fragment>
+            );
+          }}
+        />
       )}
     </>
   );

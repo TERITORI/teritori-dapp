@@ -9,6 +9,7 @@ import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { Separator } from "../../../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
+import { prettyPrice } from "../../../../utils/coins";
 import {
   blueDefault,
   neutral1A,
@@ -16,15 +17,23 @@ import {
   neutral88,
 } from "../../../../utils/style/colors";
 import { fontMedium13, fontMedium14 } from "../../../../utils/style/fonts";
+import { tinyAddress } from "../../../../utils/text";
+import { useSelectedNativeWallet } from "../../../Wallet/hooks/useSelectedNativeWallet";
 import { capitalizeStr } from "../TransactionDetailScreen";
 
 export type TransactionType = {
-  id: string;
-  type: "send" | "deposit";
-  status: "pending" | "success";
-  img?: string;
-  coin: { denom: string; amount: string; dollar: number };
-  to: string;
+  txhash: string;
+  tx: {
+    "@type": "/cosmos.bank.v1beta1.MsgSend";
+    from_address: string;
+    to_address: string;
+    amount: [
+      {
+        denom: string;
+        amount: string;
+      },
+    ];
+  };
 };
 
 type TransactionItemProps = {
@@ -38,7 +47,18 @@ export default function TransactionItem({
   onPress,
   isLastItem,
 }: TransactionItemProps) {
-  const { type, img, status, to, coin } = transaction;
+  const selectedWallet = useSelectedNativeWallet();
+  const address = selectedWallet?.address;
+
+  const from = tinyAddress(transaction.tx.from_address);
+  const to = tinyAddress(transaction.tx.to_address);
+  const amount = transaction.tx.amount[0].amount;
+  const denom = transaction.tx.amount[0].denom;
+  const img = null;
+  const type = transaction.tx.to_address !== address ? "send" : "receive";
+  console.log(transaction.tx.to_address, address, type);
+  const status = "success"; // we are only getting completed transactions at this point
+  const coin = { amount, denom, dollar: 0 };
 
   return (
     <CustomPressable onPress={onPress}>
@@ -91,7 +111,7 @@ export default function TransactionItem({
             <SpacerColumn size={0.5} />
 
             <BrandText style={[fontMedium13, { color: neutral88 }]}>
-              To: {to}
+              {type === "send" ? `To:${to}` : `From:${from}`}
             </BrandText>
 
             {!isLastItem && <Separator style={{ marginTop: 16 }} />}
@@ -100,7 +120,8 @@ export default function TransactionItem({
 
         <View style={{ alignItems: "flex-end" }}>
           <BrandText style={fontMedium14}>
-            {type === "send" ? "-" : "+"} {coin.amount} {coin.denom}
+            {type === "send" ? "-" : "+"}{" "}
+            {prettyPrice("teritori", coin.amount, coin.denom)}
           </BrandText>
 
           <SpacerColumn size={0.5} />
