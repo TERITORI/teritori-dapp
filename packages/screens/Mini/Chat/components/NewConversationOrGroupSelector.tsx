@@ -23,6 +23,7 @@ export type ContactSelectionType = {
   id: string;
   name: string;
   avatar: string | string[];
+  conversationId?: string;
 };
 
 type Props = {
