@@ -8,6 +8,7 @@ import { SVG } from "../../../components/SVG";
 import { SpacerColumn } from "../../../components/spacer";
 import {
   resetAllAddressBook,
+  resetAllTokens,
   resetAllWallets,
   selectAllWallets,
 } from "../../../store/slices/wallets";
@@ -35,6 +36,7 @@ export const ResetWalletScreen: ScreenFC<"MiniResetWallet"> = ({
     });
     dispatch(resetAllWallets); // remove all from redux | app state
     dispatch(resetAllAddressBook); // reset means reset!
+    dispatch(resetAllTokens); // reset means reset!
   };
 
   return (

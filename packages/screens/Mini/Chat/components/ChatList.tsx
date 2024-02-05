@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react";
 import { FlatList, View } from "react-native";
 import { useSelector } from "react-redux";
 
+import DoubleCheckWhiteSVG from "../../../../../assets/icons/double-check-white.svg";
 import DoubleCheckSVG from "../../../../../assets/icons/double-check.svg";
 import searchSVG from "../../../../../assets/icons/search-gray.svg";
 import { BrandText } from "../../../../components/BrandText";
@@ -38,7 +39,7 @@ export const ChatList = () => {
     selectConversationList(state, activeConversationType),
   );
 
-  const [searchInput, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
 
   const searchResults = useMemo(() => {
     if (!searchInput) {
@@ -52,7 +53,7 @@ export const ChatList = () => {
   }, [conversationList, searchInput]);
 
   function onSearchChange(text: string) {
-    setSearch(text);
+    setSearchInput(text);
   }
 
   return (
@@ -171,19 +172,10 @@ const SingleFriendChatList = ({ data, onPress }: SingleChatListType) => {
           {lastMessage?.payload?.message}
         </BrandText>
       </View>
-      <SVG source={DoubleCheckSVG} height={16} width={16} />
-      {!isAllMessageRead && (
-        <View
-          style={{
-            backgroundColor: "white",
-            width: 10,
-            height: 10,
-            position: "absolute",
-            right: 5,
-            bottom: 3,
-            borderRadius: 20,
-          }}
-        />
+      {isAllMessageRead ? (
+        <SVG source={DoubleCheckSVG} height={16} width={16} />
+      ) : (
+        <SVG source={DoubleCheckWhiteSVG} height={16} width={16} />
       )}
     </CustomPressable>
   );

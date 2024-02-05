@@ -1,25 +1,29 @@
-import React, { useState } from "react";
-import { View } from "react-native";
+import React from "react";
+import { FlatList, View } from "react-native";
 
 import { ManageToken } from "./components/ManageToken";
 import AddNewSvg from "../../../../assets/icons/add-circle-filled.svg";
-import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
 import { Separator } from "../../../components/separators/Separator";
+import { useBalances } from "../../../hooks/useBalances";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
+import { useSelectedNativeWallet } from "../../Wallet/hooks/useSelectedNativeWallet";
 import ListView from "../components/ListView";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 export const ManageTokensScreen: ScreenFC<"MiniManageTokens"> = ({
   navigation,
 }) => {
-  const [enabledToken, setEnabledToken] = useState(false);
-
-  const toggleTokenStatus = () => setEnabledToken((prev) => !prev);
-
   const onPressAddToken = () => {
     navigation.replace("MiniAddCustomToken");
   };
+
+  const selectedWallet = useSelectedNativeWallet();
+
+  const balances = useBalances(
+    selectedWallet?.networkId,
+    selectedWallet?.address,
+  );
 
   return (
     <BlurScreenContainer title="Manage Tokens">
@@ -30,20 +34,16 @@ export const ManageTokensScreen: ScreenFC<"MiniManageTokens"> = ({
           justifyContent: "flex-end",
         }}
       >
-        <ManageToken
-          icon={teritoriSVG}
-          title="Teritori"
-          tori={62424}
-          showSwitch={false}
-        />
-        <ManageToken
-          icon=""
-          title="Token"
-          tori={2345}
-          showSwitch
-          suffix="TKN"
-          isEnabled={enabledToken}
-          onToggleSwitch={toggleTokenStatus}
+        <FlatList
+          data={balances}
+          keyExtractor={(item) => item.denom}
+          renderItem={({ item: balance }) => (
+            <ManageToken
+              amount={balance.amount}
+              showSwitch={balance.denom !== "utori"}
+              denom={balance.denom}
+            />
+          )}
         />
         <Separator />
         <ListView

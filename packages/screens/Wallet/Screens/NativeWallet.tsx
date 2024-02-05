@@ -47,6 +47,7 @@ const wallets = [
 
 const NativeWallet: ScreenFC<"NativeWallet"> = () => {
   const video = React.useRef(null);
+
   useEffect(() => {
     if (video.current) {
       // @ts-ignore
