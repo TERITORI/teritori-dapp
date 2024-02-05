@@ -9,17 +9,10 @@ import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { ToastError } from "../../../components/toasts/ToastError";
-import { ToastInfo } from "../../../components/toasts/ToastInfo";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { selectContactRequestList } from "../../../store/slices/message";
 import { ScreenFC } from "../../../utils/navigation";
 import { neutral22, secondaryColor } from "../../../utils/style/colors";
-import {
-  fontMedium14,
-  fontSemibold14,
-  fontSemibold16,
-} from "../../../utils/style/fonts";
+import { fontMedium14, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ContactRequest } from "../../../utils/types/message";
 import { weshClient } from "../../../weshnet";
@@ -33,115 +26,6 @@ import { CustomButton } from "../components/Button/CustomButton";
 import MiniTextInput from "../components/MiniTextInput";
 import MiniToast from "../components/MiniToast";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
-
-const dummyContact = [
-  {
-    id: "1",
-    name: "Eva",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Albert",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Digger",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Bayo",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "David",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Eddie",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Eva",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Digger",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Bold",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Arnold",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Albert",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Bayo",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "David",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Eddie",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Eva",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Digger",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Bold",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Arnold",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "David",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Eddie",
-    avatar: "",
-  },
-
-  {
-    id: "1",
-    name: "Digger",
-    avatar: "",
-  },
-];
 
 export type ToastType = {
   type: "success" | "error" | "";

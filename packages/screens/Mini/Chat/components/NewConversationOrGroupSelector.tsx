@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 
+import { CreateGroupConfirmation } from "./CreateGroupConfirmation";
 import chevronGrayRightSVG from "../../../../../assets/icons/chevron-right-gray.svg";
 import { BrandText } from "../../../../components/BrandText";
-import { OptimizedImage } from "../../../../components/OptimizedImage";
 import { SVG } from "../../../../components/SVG";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { Separator } from "../../../../components/separators/Separator";
@@ -16,22 +16,24 @@ import {
 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { CustomButton } from "../../components/Button/CustomButton";
+import { ChatAvatar } from "../../components/ChatAvatar";
 import Checkbox from "../../components/Checkbox/Checkbox";
 
-const fake_url =
-  "https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg";
-
-type ContactType = {
+export type ContactSelectionType = {
   id: string;
   name: string;
-  avatar: string;
+  avatar: string | string[];
+  conversationId?: string;
 };
 
 type Props = {
-  contacts: ContactType[];
+  contacts: ContactSelectionType[];
   isGroupSelector?: boolean;
-  onPressContact?: (contact: ContactType) => void;
-  onCreateGroup?: (selectedContact: ContactType[]) => void;
+  onPressContact?: (contact: ContactSelectionType) => void;
+  onCreateGroup?: (
+    selectedContact: ContactSelectionType[],
+    groupName: string,
+  ) => void;
 };
 
 export const NewConversationOrGroupSelector = ({
@@ -45,6 +47,9 @@ export const NewConversationOrGroupSelector = ({
   >({});
   const [ref, setRef] = useState<ScrollView | null>(null);
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
+  const [groupName, setGroupName] = useState("");
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const toggleContactSelection = (id: string) => {
     if (selectedContacts.includes(id)) {
@@ -54,13 +59,27 @@ export const NewConversationOrGroupSelector = ({
     }
   };
 
-  console.log(selectedContacts);
-  const handleCreateGroupPress = () => {
+  const openCreateGroupConfirmationModal = () => {
+    setOpenConfirmation(true);
+  };
+
+  const handleCreateGroupPress = async () => {
+    if (selectedContacts.length === 0) {
+      return;
+    }
+
+    if (!openConfirmation) {
+      openCreateGroupConfirmationModal();
+      return;
+    }
+
     if (onCreateGroup) {
       const selectedContactsGroup = contacts.filter((x) =>
         selectedContacts.includes(x.id),
       );
-      onCreateGroup(selectedContactsGroup);
+      setLoading(true);
+      await onCreateGroup(selectedContactsGroup, groupName);
+      setLoading(false);
     }
   };
 
@@ -74,7 +93,7 @@ export const NewConversationOrGroupSelector = ({
     }
   };
 
-  const groupContactsWithAlphabet = (contacts: ContactType[]) => {
+  const groupContactsWithAlphabet = (contacts: ContactSelectionType[]) => {
     const groupedContacts = contacts.reduce(
       (acc, val) => {
         const firstCharacter = val.name.toLowerCase().charAt(0);
@@ -85,7 +104,7 @@ export const NewConversationOrGroupSelector = ({
         }
         return acc;
       },
-      {} as Record<string, ContactType[]>,
+      {} as Record<string, ContactSelectionType[]>,
     );
 
     return Object.keys(groupedContacts)
@@ -95,7 +114,7 @@ export const NewConversationOrGroupSelector = ({
           obj[key] = groupedContacts[key];
           return obj;
         },
-        {} as Record<string, ContactType[]>,
+        {} as Record<string, ContactSelectionType[]>,
       );
   };
 
@@ -107,7 +126,6 @@ export const NewConversationOrGroupSelector = ({
   return (
     <View style={{ position: "relative", flex: 1 }}>
       <ScrollView
-        style={{}}
         ref={(ref) => {
           setRef(ref);
         }}
@@ -150,7 +168,7 @@ export const NewConversationOrGroupSelector = ({
                           enableSelection={isGroupSelector}
                           isSelected={selectedContacts.includes(contact.id)}
                           onSelection={(id) => toggleContactSelection(id)}
-                          avatar={fake_url}
+                          avatar={contact.avatar}
                           key={contact.id}
                           id={contact.id}
                           name={contact.name}
@@ -183,12 +201,26 @@ export const NewConversationOrGroupSelector = ({
           bottom: 40,
           zIndex: 99,
         }}
+        isDisabled={loading}
+      />
+      <CreateGroupConfirmation
+        isOpen={openConfirmation}
+        onClose={() => setOpenConfirmation(false)}
+        onCreate={handleCreateGroupPress}
+        selected={contacts.reduce((acc, val) => {
+          if (selectedContacts.includes(val.id)) {
+            acc.push(val.name);
+          }
+          return acc;
+        }, [] as string[])}
+        groupName={groupName}
+        setGroupName={setGroupName}
       />
     </View>
   );
 };
 
-type IndividualFriendNameProps = ContactType & {
+type IndividualFriendNameProps = ContactSelectionType & {
   onPress?: () => void;
   enableSelection?: boolean;
   isSelected?: boolean;
@@ -225,15 +257,10 @@ const IndividualFriendName = React.memo(
               flex: 1,
             }}
           >
-            <OptimizedImage
-              width={22}
-              height={22}
-              sourceURI={avatar}
-              style={{
-                width: 22,
-                height: 22,
-                borderRadius: 22 / 2,
-              }}
+            <ChatAvatar
+              membersAvatar={typeof avatar === "string" ? [avatar] : avatar}
+              hideStatusIndicator
+              size="sm"
             />
             <View>
               <BrandText style={[fontMedium16, { lineHeight: 22 }]}>
