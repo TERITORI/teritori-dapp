@@ -161,6 +161,7 @@ type BunkerUpdateConfigMsg struct {
 	Payload struct {
 		Owner               *string `json:"owner"`
 		SecondaryDuringMint *bool   `json:"secondary_during_mint"`
+		NFTMaxSupply        *string `json:"nft_max_supply"`
 	} `json:"update_config"`
 }
 
@@ -170,25 +171,46 @@ func (h *Handler) handleExecuteBunkerUpdateConfig(e *Message, execMsg *wasmtypes
 		return errors.Wrap(err, "failed to unmarshal tns set_adming_address msg")
 	}
 
-	updates := make(map[string]interface{})
+	totalUpdates := 0
 
-	if msg.Payload.Owner != nil {
-		updates["CreatorAddress"] = *msg.Payload.Owner
-	}
-	if msg.Payload.SecondaryDuringMint != nil {
-		updates["SecondaryDuringMint"] = *msg.Payload.SecondaryDuringMint
-	}
-
-	if len(updates) != 0 {
-		if err := h.db.
-			Model(&indexerdb.TeritoriCollection{}).
-			Where("collection_id = ?", h.config.Network.CollectionID(execMsg.Contract)).
-			UpdateColumns(updates).
-			Error; err != nil {
-			return errors.Wrap(err, "failed to update bunker creator")
+	{
+		updates := make(map[string]interface{})
+		if msg.Payload.Owner != nil {
+			updates["CreatorAddress"] = *msg.Payload.Owner
 		}
-		h.logger.Info("updated bunker config")
+		if len(updates) != 0 {
+			if err := h.db.
+				Model(&indexerdb.TeritoriCollection{}).
+				Where("collection_id = ?", h.config.Network.CollectionID(execMsg.Contract)).
+				UpdateColumns(updates).
+				Error; err != nil {
+				return errors.Wrap(err, "failed to update bunker creator")
+			}
+			totalUpdates += len(updates)
+		}
 	}
+
+	{
+		updates := make(map[string]interface{})
+		if msg.Payload.SecondaryDuringMint != nil {
+			updates["SecondaryDuringMint"] = *msg.Payload.SecondaryDuringMint
+		}
+		if msg.Payload.NFTMaxSupply != nil {
+			updates["MaxSupply"] = *msg.Payload.NFTMaxSupply
+		}
+		if len(updates) != 0 {
+			if err := h.db.
+				Model(&indexerdb.Collection{}).
+				Where("id = ?", h.config.Network.CollectionID(execMsg.Contract)).
+				UpdateColumns(updates).
+				Error; err != nil {
+				return errors.Wrap(err, "failed to update bunker creator")
+			}
+			totalUpdates += len(updates)
+		}
+	}
+
+	h.logger.Info("updated bunker config", zap.Int("total-updates", totalUpdates))
 
 	return nil
 }

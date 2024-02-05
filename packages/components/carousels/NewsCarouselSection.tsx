@@ -50,7 +50,7 @@ export const NewsCarouselSection: React.FC = () => {
         width={width}
         data={news || []}
         ref={carouselRef}
-        panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
+        onConfigurePanGesture={(g) => g.enableTrackpadTwoFingerGesture(true)}
         height={382}
         pagingEnabled
         loop
