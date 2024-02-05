@@ -56,7 +56,7 @@ export default function TransactionItem({
   const denom = transaction.tx.amount[0].denom;
   const img = null;
   const type = transaction.tx.to_address !== address ? "send" : "receive";
-  console.log(transaction.tx.to_address, address, type);
+
   const status = "success"; // we are only getting completed transactions at this point
   const coin = { amount, denom, dollar: 0 };
 

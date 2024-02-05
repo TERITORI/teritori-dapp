@@ -137,7 +137,7 @@ const LastTransactions = () => {
   const navigation = useAppNavigation();
 
   const { transactions, error, isLoading } = useSearchTx(
-    "https://teritori-api.polkachu.com",
+    "teritori",
     selectedWallet?.address,
   );
 
