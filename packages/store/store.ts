@@ -1,9 +1,9 @@
-import { Middleware, combineReducers, configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore, Middleware } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import {
-  persistStore,
-  persistReducer,
   createMigrate,
+  persistReducer,
+  persistStore,
   REHYDRATE,
 } from "redux-persist";
 
@@ -24,7 +24,11 @@ import {
   settingsReducer,
 } from "./slices/settings";
 import { squadPresetsReducer } from "./slices/squadPresets";
-import { addressBookReducer, walletsReducer } from "./slices/wallets";
+import {
+  addressBookReducer,
+  tokensReducer,
+  walletsReducer,
+} from "./slices/wallets";
 import { storage } from "./storage";
 import { defaultEnabledNetworks } from "../networks";
 import { bootWeshModule } from "../weshnet/services";
@@ -92,6 +96,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   wallets: walletsReducer,
   addressBook: addressBookReducer,
+  tokens: tokensReducer,
   settings: settingsReducer,
   squadPresets: squadPresetsReducer,
   dAppsStorePersisted: dAppsReducerPersisted,

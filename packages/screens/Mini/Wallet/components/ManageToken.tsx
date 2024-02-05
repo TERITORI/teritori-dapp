@@ -1,10 +1,13 @@
-import React, { FC } from "react";
+import React from "react";
 import { Switch, View } from "react-native";
-import { SvgProps } from "react-native-svg";
+import { useSelector } from "react-redux";
 
 import questionSVG from "../../../../../assets/icons/question-gray.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
+import { selectTokenId, updateOne } from "../../../../store/slices/wallets";
+import { RootState, useAppDispatch } from "../../../../store/store";
+import { prettyPrice } from "../../../../utils/coins";
 import {
   blueDefault,
   neutral33,
@@ -15,26 +18,42 @@ import {
 } from "../../../../utils/style/colors";
 import { fontSemibold14, fontSemibold22 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
+import { findByBaseDenom } from "../../../Wallet/util/chain-registry";
 
 type Props = {
-  icon: string | FC<SvgProps>;
-  title: string;
-  tori: number;
-  suffix?: string;
+  amount: string;
+  denom: string;
   showSwitch?: boolean;
-  isEnabled?: boolean;
-  onToggleSwitch?: () => void;
 };
 
-export const ManageToken = ({
-  icon,
-  title,
-  tori,
-  showSwitch = true,
-  suffix = "TORI",
-  isEnabled,
-  onToggleSwitch,
-}: Props) => {
+export const ManageToken = ({ amount, showSwitch = true, denom }: Props) => {
+  const assetList = findByBaseDenom(denom);
+  const asset = assetList?.assets[0];
+  const token = useSelector((state: RootState) => selectTokenId(state, denom));
+
+  const dispatch = useAppDispatch();
+
+  const onToggleSwitch = () => {
+    if (!token) {
+      dispatch(
+        updateOne({
+          denom,
+          enabled: true,
+          networkId: "teritori",
+          decimals: asset?.denom_units[0].exponent || 6, // default to 6
+          symbol: asset ? asset.symbol : denom,
+        }),
+      );
+    } else {
+      dispatch(
+        updateOne({
+          ...token,
+          enabled: !token.enabled,
+        }),
+      );
+    }
+  };
+
   return (
     <View
       style={{
@@ -54,7 +73,7 @@ export const ManageToken = ({
       >
         <View
           style={{
-            backgroundColor: !icon ? neutral39 : "transparent",
+            backgroundColor: !asset?.logo_URIs?.svg ? neutral39 : "transparent",
             borderRadius: 100,
             alignItems: "center",
             justifyContent: "center",
@@ -63,8 +82,8 @@ export const ManageToken = ({
           }}
         >
           <SVGorImageIcon
-            icon={icon || questionSVG}
-            iconSize={icon ? 24 : 18}
+            icon={asset?.logo_URIs?.svg || questionSVG}
+            iconSize={asset?.logo_URIs?.svg ? 24 : 18}
           />
         </View>
         <View
@@ -74,7 +93,7 @@ export const ManageToken = ({
             gap: layout.spacing_x0_5,
           }}
         >
-          <BrandText style={[fontSemibold22, {}]}>{title}</BrandText>
+          <BrandText style={[fontSemibold22, {}]}>{asset?.symbol}</BrandText>
         </View>
       </View>
 
@@ -86,15 +105,17 @@ export const ManageToken = ({
         }}
       >
         <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
-          {tori.toLocaleString()} {suffix}
+          {prettyPrice(assetList?.chain_name, amount, denom)}
         </BrandText>
         {showSwitch && (
           <Switch
-            value={isEnabled}
-            onChange={onToggleSwitch}
+            value={token?.enabled || false}
+            onChange={() => {
+              onToggleSwitch();
+            }}
             trackColor={{ false: neutral33, true: blueDefault }}
-            thumbColor={!isEnabled ? neutral99 : secondaryColor}
-            ios_backgroundColor={isEnabled ? blueDefault : neutral33}
+            thumbColor={!token?.enabled ? neutral99 : secondaryColor}
+            ios_backgroundColor={token?.enabled ? blueDefault : neutral33}
           />
         )}
       </View>

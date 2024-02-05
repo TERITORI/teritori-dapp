@@ -137,7 +137,7 @@ const LastTransactions = () => {
 
   const navigation = useAppNavigation();
 
-  const { transactions, error, isLoading } = useSearchTx(
+  const { transactions, isLoading } = useSearchTx(
     "teritori",
     selectedWallet?.address,
   );
