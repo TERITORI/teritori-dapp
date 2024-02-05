@@ -9,7 +9,6 @@ import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { selectContactRequestList } from "../../../store/slices/message";
 import { ScreenFC } from "../../../utils/navigation";
 import { neutral22, secondaryColor } from "../../../utils/style/colors";
@@ -112,7 +111,6 @@ type Props = {
 
 function FriendRequest({ isOnline, data, setOpenToast }: Props) {
   const [addLoading, setAddLoading] = useState(false);
-  const { setToastError } = useFeedbacks();
 
   const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
 
@@ -130,10 +128,7 @@ function FriendRequest({ isOnline, data, setOpenToast }: Props) {
       });
     } catch (err) {
       console.error(err);
-      setToastError({
-        title: "Failed",
-        message: "Failed to reject contact. Please try again later.",
-      });
+      setOpenToast({ type: "error", message: "Add Friend failed" });
     }
     setAddLoading(false);
   };
@@ -145,11 +140,7 @@ function FriendRequest({ isOnline, data, setOpenToast }: Props) {
       });
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
-      // setOpenToast({ type: "error", message: "Cancel Friend failed" });
-      setToastError({
-        title: "Failed",
-        message: "Failed to reject contact. Please try again later.",
-      });
+      setOpenToast({ type: "error", message: "Cancel Friend failed" });
     }
   };
 

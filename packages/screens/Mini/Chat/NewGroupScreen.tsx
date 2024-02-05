@@ -143,11 +143,6 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
           }}
         />
       </View>
-      {/* <GroupCreateModal
-        visible={activeGroupModal}
-        onClose={() => setActiveGroupModal(false)}
-        checkedContacts={selectedContacts.map((item) => item.id)}
-      /> */}
     </BlurScreenContainer>
   );
 };

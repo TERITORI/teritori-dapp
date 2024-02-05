@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 
-import { CreateGroupConfirmation } from "./CreateGroupConfirmation";
+import { CreateGroupModal } from "./CreateGroupModal";
 import chevronGrayRightSVG from "../../../../../assets/icons/chevron-right-gray.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
@@ -203,7 +203,7 @@ export const NewConversationOrGroupSelector = ({
         }}
         isDisabled={loading}
       />
-      <CreateGroupConfirmation
+      <CreateGroupModal
         isOpen={openConfirmation}
         onClose={() => setOpenConfirmation(false)}
         onCreate={handleCreateGroupPress}
