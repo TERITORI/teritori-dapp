@@ -21,7 +21,7 @@ import Checkbox from "../../components/Checkbox/Checkbox";
 const fake_url =
   "https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg";
 
-type ContactType = {
+export type ContactType = {
   id: string;
   name: string;
   avatar: string;
@@ -54,7 +54,6 @@ export const NewConversationOrGroupSelector = ({
     }
   };
 
-  console.log(selectedContacts);
   const handleCreateGroupPress = () => {
     if (onCreateGroup) {
       const selectedContactsGroup = contacts.filter((x) =>
