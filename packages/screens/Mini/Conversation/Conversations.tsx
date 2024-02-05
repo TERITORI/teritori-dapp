@@ -26,6 +26,7 @@ import {
   getConversationName,
 } from "../../../weshnet/messageHelpers";
 import { stringFromBytes } from "../../../weshnet/utils";
+import { GroupInvitationAction } from "../../Message/components/GroupInvitationAction";
 import { PostReactions } from "../Feed/components/PostReactions";
 import { ChatAvatar } from "../components/ChatAvatar";
 
@@ -107,6 +108,9 @@ export const Conversations = ({
             return null;
           }
 
+          const isSender =
+            item?.senderId === stringFromBytes(weshConfig?.config?.accountPk);
+
           return (
             <>
               {!!separatorDate && (
@@ -163,14 +167,16 @@ export const Conversations = ({
                   </View>
                 </View>
               )}
+
+              {item?.type === "group-invite" && !isSender && (
+                <GroupInvitationAction message={item} />
+              )}
+
               {item.type !== "accept-contact" && (
                 <SingleConversation
                   date={moment(item?.timestamp).format("hh:mm a")}
                   id=""
-                  isMyMessage={
-                    item?.senderId ===
-                    stringFromBytes(weshConfig.config?.accountPk)
-                  }
+                  isMyMessage={isSender}
                   message={item?.payload?.message || ""}
                   status=""
                   reactions={item?.reactions}
