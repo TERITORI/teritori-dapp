@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 
+import { CreateGroupConfirmation } from "./CreateGroupConfirmation";
 import chevronGrayRightSVG from "../../../../../assets/icons/chevron-right-gray.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
@@ -28,7 +29,10 @@ type Props = {
   contacts: ContactSelectionType[];
   isGroupSelector?: boolean;
   onPressContact?: (contact: ContactSelectionType) => void;
-  onCreateGroup?: (selectedContact: ContactSelectionType[]) => void;
+  onCreateGroup?: (
+    selectedContact: ContactSelectionType[],
+    groupName: string,
+  ) => void;
 };
 
 export const NewConversationOrGroupSelector = ({
@@ -42,6 +46,10 @@ export const NewConversationOrGroupSelector = ({
   >({});
   const [ref, setRef] = useState<ScrollView | null>(null);
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
+  const [groupName, setGroupName] = useState("");
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const toggleContactSelection = (id: string) => {
     if (selectedContacts.includes(id)) {
       setSelectedContacts((prev) => prev.filter((x) => x !== id));
@@ -50,12 +58,27 @@ export const NewConversationOrGroupSelector = ({
     }
   };
 
-  const handleCreateGroupPress = () => {
+  const openCreateGroupConfirmationModal = () => {
+    setOpenConfirmation(true);
+  };
+
+  const handleCreateGroupPress = async () => {
+    if (selectedContacts.length === 0) {
+      return;
+    }
+
+    if (!openConfirmation) {
+      openCreateGroupConfirmationModal();
+      return;
+    }
+
     if (onCreateGroup) {
       const selectedContactsGroup = contacts.filter((x) =>
         selectedContacts.includes(x.id),
       );
-      onCreateGroup(selectedContactsGroup);
+      setLoading(true);
+      await onCreateGroup(selectedContactsGroup, groupName);
+      setLoading(false);
     }
   };
 
@@ -177,6 +200,20 @@ export const NewConversationOrGroupSelector = ({
           bottom: 40,
           zIndex: 99,
         }}
+        isDisabled={loading}
+      />
+      <CreateGroupConfirmation
+        isOpen={openConfirmation}
+        onClose={() => setOpenConfirmation(false)}
+        onCreate={handleCreateGroupPress}
+        selected={contacts.reduce((acc, val) => {
+          if (selectedContacts.includes(val.id)) {
+            acc.push(val.name);
+          }
+          return acc;
+        }, [] as string[])}
+        groupName={groupName}
+        setGroupName={setGroupName}
       />
     </View>
   );
