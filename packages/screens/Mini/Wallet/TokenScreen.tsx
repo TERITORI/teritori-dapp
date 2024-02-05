@@ -29,16 +29,6 @@ import { useSelectedNativeWallet } from "../../Wallet/hooks/useSelectedNativeWal
 import { CustomButton } from "../components/Button/CustomButton";
 
 const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
-  const onDepositPress = () => {
-    navigation.navigate("MiniSelectToken", { navigateTo: "MiniDepositTORI" });
-  };
-  const onSendPress = () => {
-    navigation.navigate("MiniSelectToken", { navigateTo: "MiniSendTori" });
-  };
-  const handlePressManageTokens = () => {
-    navigation.navigate("MiniManageTokens");
-  };
-
   const selectedWallet = useSelectedNativeWallet();
 
   const balances = useBalances(
@@ -85,13 +75,21 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
             width={72}
             title="Deposit"
             size="medium"
-            onPress={onDepositPress}
+            onPress={() =>
+              navigation.navigate("MiniSelectToken", {
+                navigateTo: "MiniDepositTORI",
+              })
+            }
           />
           <CustomButton
             width={72}
             title="Send"
             size="medium"
-            onPress={onSendPress}
+            onPress={() =>
+              navigation.navigate("MiniSelectToken", {
+                navigateTo: "MiniSendTori",
+              })
+            }
             type="gray"
           />
         </View>
@@ -119,7 +117,7 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
           alignItems: "center",
           gap: layout.spacing_x1_5,
         }}
-        onPress={handlePressManageTokens}
+        onPress={() => navigation.navigate("MiniManageTokens")}
       >
         <SVG source={settingSVG} height={24} width={24} />
         <BrandText style={[fontSemibold14]}>Manage Tokens</BrandText>
