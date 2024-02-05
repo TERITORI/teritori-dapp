@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"math/big"
 	"strconv"
 	"strings"
@@ -132,6 +133,64 @@ func (h *Handler) handleSquadStake(contractABI *abi.ABI, tx *pb.Tx, args map[str
 		nftContracts = append(nftContracts, strings.ToLower(nft.Collection.String()))
 	}
 
+	// PATCH: due to change of SquadStakingV3, it takes time to register all metadata into NftRegistry
+	// so we calculate duration in the code. Beware that changes from contract (modifity, stamina...) will not affect this calculation
+	tokenID0 := tokenIDs[0]
+	var firstNFT indexerdb.NFT
+
+	if err := h.indexerDB.
+		Select("nfts.*").
+		Joins("JOIN teritori_nfts ON teritori_nfts.nft_id = nfts.id").
+		Where("teritori_nfts.token_id = ? AND teritori_nfts.network_id = ?", tokenID0, h.network.IDPrefix).
+		First(&firstNFT).Error; err != nil {
+		return errors.Wrap(err, "failed to get first staked NFT")
+	}
+
+	jsonStr, err := json.Marshal(firstNFT.Attributes)
+	if err != nil {
+		return errors.Wrap(err, "failed to convert nft attributes => json string")
+	}
+
+	// json string => struct
+	var dbAttributesAny []indexerdb.AttributeAny
+	if err := json.Unmarshal(jsonStr, &dbAttributesAny); err != nil {
+		return errors.Wrap(err, "failed to convert nft json string => struct")
+	}
+
+	firstNFTStamina := 0
+	for _, attribute := range dbAttributesAny {
+		attrName := attribute.TraitType
+
+		if attrName != "Stamina" {
+			continue
+		}
+
+		firstNFTStamina = int(attribute.Value.(float64))
+	}
+
+	if firstNFTStamina == 0 {
+		return errors.Wrap(err, "failed to get first staked NFT Stamina")
+	}
+
+	multipliers := []int{
+		0,
+		100,
+		105,
+		125,
+		131,
+		139,
+		161,
+	}
+
+	oneHour := 60 * 60
+	bonusMultiplier := multipliers[len(tokenIDs)] / 100
+
+	if bonusMultiplier == 0 {
+		return errors.New("failed to get bonus multiplier")
+	}
+
+	duration := firstNFTStamina * oneHour * bonusMultiplier / 8
+
 	indexerAction, err := indexeraction.NewIndexerAction(h.network.NetworkBase, h.dbTransaction, h.logger)
 	if err != nil {
 		return errors.Wrap(err, "failed to get indexeraction")
@@ -142,7 +201,9 @@ func (h *Handler) handleSquadStake(contractABI *abi.ABI, tx *pb.Tx, args map[str
 		tx.Info.To,
 		tx.Info.From,
 		squadStakeEvent.StartTime.Uint64(),
-		squadStakeEvent.EndTime.Uint64(),
+		// NOTE: to avoid to register all metadata on NftRegistry, we calculate the endtime on indexer
+		// squadStakeEvent.EndTime.Uint64(),
+		squadStakeEvent.StartTime.Uint64()+uint64(duration),
 		tokenIDs,
 		nftContracts,
 	); err != nil {
