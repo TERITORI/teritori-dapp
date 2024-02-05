@@ -34,15 +34,27 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
   const contactInfo = useSelector(selectContactInfo);
 
   const usersList = conversations.reduce((acc, conversation) => {
+    const name = getConversationName(conversation);
     if (conversation && conversation?.type === "contact") {
       const contactPk = conversation?.members?.[0].id;
-
+      if (search) {
+        if (name.toLowerCase().includes(search.toLowerCase())) {
+          acc.push({
+            id: contactPk,
+            avatar: conversation?.members.map((_, index) =>
+              getConversationAvatar(conversation, index),
+            ),
+            name,
+          });
+        }
+        return acc;
+      }
       acc.push({
         id: contactPk,
         avatar: conversation?.members.map((_, index) =>
           getConversationAvatar(conversation, index),
         ),
-        name: getConversationName(conversation),
+        name,
       });
     }
     return acc;

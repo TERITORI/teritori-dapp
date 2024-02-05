@@ -8,7 +8,7 @@ import { SVG } from "../../../../components/SVG";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { Separator } from "../../../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
-import { neutral22 } from "../../../../utils/style/colors";
+import { neutral22, neutralA3 } from "../../../../utils/style/colors";
 import {
   fontBold10,
   fontMedium16,
@@ -136,6 +136,16 @@ export const NewConversationOrGroupSelector = ({
           }}
         >
           <View>
+            {Object.keys(alphaGroupedContacts).length === 0 && (
+              <BrandText
+                style={[
+                  fontMedium16,
+                  { textAlign: "center", color: neutralA3 },
+                ]}
+              >
+                No contacts found.
+              </BrandText>
+            )}
             {alphaGroupedContacts &&
               Object.keys(alphaGroupedContacts).length > 0 &&
               Object.entries(alphaGroupedContacts).map(([key, val], index) => (
