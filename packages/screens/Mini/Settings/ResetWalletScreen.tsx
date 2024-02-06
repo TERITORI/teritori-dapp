@@ -34,9 +34,9 @@ export const ResetWalletScreen: ScreenFC<"MiniResetWallet"> = ({
     wallets.map((wallet) => {
       resetWallet(wallet.index); // remove from storage
     });
-    dispatch(resetAllWallets); // remove all from redux | app state
-    dispatch(resetAllAddressBook); // reset means reset!
-    dispatch(resetAllTokens); // reset means reset!
+    dispatch(resetAllWallets()); // remove all from redux | app state
+    dispatch(resetAllAddressBook()); // reset means reset!
+    dispatch(resetAllTokens()); // reset means reset!
   };
 
   return (
