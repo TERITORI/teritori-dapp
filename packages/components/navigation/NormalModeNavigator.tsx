@@ -24,6 +24,7 @@ import { LaunchpadCreateScreen } from "@/screens/Launchpad/LaunchpadCreateScreen
 import { LaunchpadScreen } from "@/screens/Launchpad/LaunchpadScreen";
 import { MintCollectionScreen } from "@/screens/Launchpad/MintCollectionScreen";
 import { LaunchpadApplicationsScreen } from "@/screens/LaunchpadApplications/LaunchpadApplicationsScreen";
+import { LeaderboardMarketplaceScreen } from "@/screens/LeaderboardMarketplaceScreen/LeaderboardMarketplaceScreen";
 import { CollectionScreen } from "@/screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "@/screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "@/screens/Marketplace/MarketplaceScreen";
@@ -147,6 +148,15 @@ export const NormalModeNavigator: React.FC = () => {
       <Nav.Screen
         name="ApplicationReview"
         component={ApplicationRewiewScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Application Review"),
+        }}
+      />
+
+      <Nav.Screen
+        name="LeaderboardMarketplace"
+        component={LeaderboardMarketplaceScreen}
         options={{
           header: () => null,
           title: screenTitle("Application Review"),
