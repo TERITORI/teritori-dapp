@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 
 import { ArticlesFeed } from "./components/ArticlesFeed";
 import { FeedHeader } from "./components/FeedHeader";
+import { MapFeed } from "./components/MapFeed";
 import { ModerationFeed } from "./components/ModerationFeed";
 import { MusicFeed } from "./components/MusicFeed";
 import { PicsFeed } from "./components/PicsFeed";
@@ -25,6 +26,8 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
     switch (params?.tab) {
       case "music":
         return <MusicFeed />;
+      case "map":
+        return <MapFeed />;
       case "pics":
         return <PicsFeed />;
       case "videos":
