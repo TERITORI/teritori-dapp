@@ -1,4 +1,4 @@
-import { View, Image, Pressable } from "react-native";
+import { Pressable, View } from "react-native";
 
 import ChatGraySVG from "../../../../../assets/icons/chat-gray.svg";
 import FriendGraySVG from "../../../../../assets/icons/friend-gray.svg";
@@ -8,11 +8,14 @@ import GroupGraySVG from "../../../../../assets/icons/users-group-gray.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
+import { UserAvatarWithFrame } from "../../../../components/images/AvatarWithFrame";
 import { SpacerRow } from "../../../../components/spacer";
+import { getUserId } from "../../../../networks";
 import { useAppNavigation } from "../../../../utils/navigation";
 import { neutral00, secondaryColor } from "../../../../utils/style/colors";
 import { fontSemibold18 } from "../../../../utils/style/fonts";
-import { MOBILE_HEADER_HEIGHT, layout } from "../../../../utils/style/layout";
+import { layout, MOBILE_HEADER_HEIGHT } from "../../../../utils/style/layout";
+import { useSelectedNativeWallet } from "../../../Wallet/hooks/useSelectedNativeWallet";
 import { DropdownWithListItem } from "../Dropdown/DropdownWithListItem";
 
 type DefaultAppBarProps = {
@@ -43,7 +46,8 @@ const dropdownItems = [
 
 export default function DefaultAppBar({ title }: DefaultAppBarProps) {
   const navigation = useAppNavigation();
-
+  const wallet = useSelectedNativeWallet();
+  const userId = getUserId(wallet?.networkId, wallet?.address);
   const onProfileImagePress = () => navigation.navigate("MiniProfile");
 
   const onPressNotification = () => {
@@ -67,9 +71,9 @@ export default function DefaultAppBar({ title }: DefaultAppBarProps) {
       }}
     >
       <CustomPressable onPress={onProfileImagePress}>
-        <Image
-          source={{ uri: "https://picsum.photos/200" }}
-          style={{ height: 32, width: 32, borderRadius: 16 }}
+        <UserAvatarWithFrame
+          userId={userId !== "" ? userId : "tori-"}
+          size="S"
         />
       </CustomPressable>
       <BrandText
