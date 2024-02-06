@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Linking, useWindowDimensions, View } from "react-native";
 
+import { PremiumSubscriptionModal } from "./modals/PremiumSubscriptionModal";
 import defaultUserProfileBannerPNG from "../../../../assets/default-images/default-user-profile-banner.png";
 import discordSVG from "../../../../assets/icons/discord.svg";
 import infoSVG from "../../../../assets/icons/info_black.svg";
@@ -21,7 +22,12 @@ import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { accountExplorerLink, parseUserId } from "../../../networks";
 import { DEFAULT_NAME } from "../../../utils/social-feed";
-import { neutral00, neutral55, neutral77 } from "../../../utils/style/colors";
+import {
+  neutral00,
+  neutral55,
+  neutral77,
+  secondaryColor,
+} from "../../../utils/style/colors";
 import {
   fontBold16,
   fontMedium14,
@@ -29,6 +35,8 @@ import {
 } from "../../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
+
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
 
 export const UPPIntro: React.FC<{
   userId: string;
@@ -40,7 +48,8 @@ export const UPPIntro: React.FC<{
   const [network, userAddress] = parseUserId(userId);
   const { width } = useMaxResolution();
   const { width: windowWidth } = useWindowDimensions();
-
+  const [premiumSubscriptionModalVisible, setPremiumSubscriptionModalVisible] =
+    useState(true);
   return (
     <>
       <LegacyTertiaryBox
@@ -115,20 +124,45 @@ export const UPPIntro: React.FC<{
             onPress={() => copyToClipboard(window.location.href, "URL copied")}
           />
         </View>
-        {isUserOwner ? (
-          <ProfileButton
-            style={{ position: "absolute", right: 0, bottom: -80 }}
-            isEdit
+
+        <PremiumSubscriptionModal
+          onClose={() => setPremiumSubscriptionModalVisible(false)}
+          isVisible={premiumSubscriptionModalVisible}
+          userId={userId}
+        />
+        <View
+          style={{
+            position: "absolute",
+            right: 0,
+            bottom: -80,
+            flexDirection: "row",
+          }}
+        >
+          <SecondaryButton
+            style={{ width: 132, marginRight: layout.spacing_x2 }}
+            text="Premium Sub"
+            size="M"
+            backgroundColor={secondaryColor}
+            textStyle={{
+              lineHeight: layout.spacing_x2,
+              color: neutral00,
+            }}
+            onPress={() => {
+              setPremiumSubscriptionModalVisible(true);
+            }}
           />
-        ) : (
-          <SecondaryButtonOutline
-            touchableStyle={{ position: "absolute", right: 0, bottom: -80 }}
-            text="Follow this Teritori"
-            size="XL"
-            backgroundColor={neutral00}
-            disabled
-          />
-        )}
+          {isUserOwner ? (
+            <ProfileButton isEdit />
+          ) : (
+            <SecondaryButtonOutline
+              text="Follow this Teritori"
+              size="M"
+              backgroundColor={neutral00}
+              disabled
+            />
+          )}
+        </View>
+
         <UserAvatarWithFrame
           userId={userId}
           style={{

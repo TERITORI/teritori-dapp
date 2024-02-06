@@ -71,7 +71,7 @@ export const ProfileButton: React.FC<{
         }
       >
         <SecondaryButtonOutline
-          size="XL"
+          size="M"
           disabled={network?.kind !== NetworkKind.Cosmos}
           text={isEdit ? "Edit profile" : "My profile"}
           backgroundColor={neutral00}
