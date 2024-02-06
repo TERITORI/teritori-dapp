@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { TxResponseSDKType } from "osmojs/types/codegen/cosmos/base/abci/v1beta1/abci";
+import { TxResponseSDKType } from "osmojs/dist/codegen/cosmos/base/abci/v1beta1/abci";
 
 import { getNetwork, NetworkInfo, NetworkKind } from "../../../networks";
 
@@ -49,7 +49,6 @@ export const getLastFiveTransactions = async (
 
     case NetworkKind.Cosmos: {
       const nodeUrl = network.restEndpoint;
-
       // DOCS:
       // https://github.com/cosmos/cosmos-sdk/blob/main/proto/cosmos/tx/v1beta1/service.proto#L83
       const sender = [
