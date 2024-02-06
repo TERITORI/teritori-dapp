@@ -56,6 +56,9 @@ export const feedsTabItems: { [key: string]: TabDefinition } = {
   "": {
     name: "Jungle News Feed",
   },
+  map: {
+    name: "Map Feed",
+  },
   music: {
     name: "Music Feed",
   },

@@ -1,0 +1,17 @@
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+}
+
+.cluster-icon {
+  background-color: #fff;
+  height: 2em;
+  width: 2em;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  box-shadow: 0 0 0px 5px rgba(255, 255, 255, 0.4);
+}

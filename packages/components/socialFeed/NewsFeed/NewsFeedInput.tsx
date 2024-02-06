@@ -10,6 +10,7 @@ import {
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
+import { MapModal } from "./MapModal";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
@@ -73,7 +74,7 @@ import FlexRow from "../../FlexRow";
 import { IconBox } from "../../IconBox";
 import { OmniLink } from "../../OmniLink";
 import { SVG } from "../../SVG";
-import { LegacyPrimaryBox } from "../../boxes/LegacyPrimaryBox";
+import { PrimaryBox } from "../../boxes/PrimaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { FileUploader } from "../../fileUploader";
@@ -145,6 +146,7 @@ export const NewsFeedInput = React.forwardRef<
     const { setToastError } = useFeedbacks();
     const [isUploadLoading, setIsUploadLoading] = useState(false);
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
+    const [isMapModal, setMapModal] = useState(false);
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
@@ -322,21 +324,19 @@ export const NewsFeedInput = React.forwardRef<
 
     const focusInput = () => inputRef.current?.focus();
 
-    return (
+    return -(
       <View
         style={[{ width }, style]}
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       >
-        <LegacyPrimaryBox
-          fullWidth
-          style={{
-            zIndex: 9,
-          }}
-          mainContainerStyle={{
-            backgroundColor: appMode === "mini" ? neutral00 : neutral22,
-          }}
-          noRightBrokenBorder
-        >
+        {isMapModal && (
+          <MapModal
+            handleSubmit={() => handleSubmit(processSubmit)()}
+            visible
+            onClose={() => setMapModal(false)}
+          />
+        )}
+        <PrimaryBox style={{ backgroundColor: neutral22, zIndex: 9 }}>
           <Pressable
             onPress={focusInput}
             style={{
@@ -453,7 +453,7 @@ export const NewsFeedInput = React.forwardRef<
               }
             }}
           />
-        </LegacyPrimaryBox>
+        </PrimaryBox>
         <View
           style={{
             backgroundColor: appMode === "mini" ? neutral00 : neutral17,
@@ -676,7 +676,9 @@ export const NewsFeedInput = React.forwardRef<
                         ? "Comment"
                         : "Publish"
                   }
-                  onPress={handleSubmit(processSubmit)}
+                  onPress={() => {
+                    setMapModal(true);
+                  }}
                 />
               </View>
             </View>
