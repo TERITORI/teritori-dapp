@@ -6,6 +6,7 @@ export const successColor = "#C8FFAE";
 export const errorColor = "#F46F76";
 
 export const yellowDefault = "#FFE768";
+export const yellowPremium = "#F5C900";
 export const pinkDefault = "#F46FBF";
 export const purpleDark = "#5C26F5";
 export const purpleDefault = "#9058EC";

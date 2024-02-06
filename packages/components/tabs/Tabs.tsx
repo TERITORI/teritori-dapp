@@ -12,6 +12,7 @@ import {
   ViewStyle,
 } from "react-native";
 
+import pointsSVG from "../../../assets/icons/points.svg";
 import { NetworkFeature, NetworkKind, UserKind } from "../../networks";
 import {
   gradientColorBlue,
@@ -20,6 +21,7 @@ import {
   neutral33,
   neutral77,
   secondaryColor,
+  yellowPremium,
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -125,10 +127,19 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-
                     height: 24,
                   }}
                 >
+                  {key === "premium-content" && (
+                    <View
+                      style={{
+                        position: "relative",
+                        marginRight: layout.spacing_x1,
+                      }}
+                    >
+                      <SVG source={pointsSVG} width={16} height={16} />
+                    </View>
+                  )}
                   {isSelected && gradientText ? (
                     <GradientText
                       gradientType="blueExtended"
@@ -141,6 +152,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                       style={[
                         fontSemibold14,
                         { lineHeight: 14 },
+                        key === "premium-content" && { color: yellowPremium },
                         item.disabled && { color: neutral77 },
                         tabTextStyle,
                       ]}
@@ -194,7 +206,12 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                       <View
                         style={[
                           styles.selectedBorder,
-                          { backgroundColor: borderColorTabSelected },
+                          {
+                            backgroundColor:
+                              key === "premium-content"
+                                ? yellowPremium
+                                : borderColorTabSelected,
+                          },
                         ]}
                       />
                     )}

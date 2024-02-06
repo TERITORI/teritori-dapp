@@ -9,6 +9,7 @@ import { MentionsPostsUPPScreen } from "./tabScreens/MentionsPostsUPPScreen";
 import { MusicUPPScreen } from "./tabScreens/MusicUPPScreen";
 import { NFTsUPPScreen } from "./tabScreens/NFTsUPPScreen";
 import { PostsUPPScreen } from "./tabScreens/PostsUPPScreen";
+import { PremiumContentScreen } from "./tabScreens/PremiumContentScreen";
 import { ProposalsUPPScreen } from "./tabScreens/ProposalsUPPScreen";
 import { QuestsUPPScreen } from "./tabScreens/QuestsUPPScreen";
 import { VideosUPPScreen } from "./tabScreens/VideosUPPScreen";
@@ -85,6 +86,13 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
     case UppTabKeys.posts:
       return (
         <PostsUPPScreen
+          userId={id}
+          screenContainerOtherProps={screenContainerOtherProps}
+        />
+      );
+    case UppTabKeys.Subscrib:
+      return (
+        <PremiumContentScreen
           userId={id}
           screenContainerOtherProps={screenContainerOtherProps}
         />

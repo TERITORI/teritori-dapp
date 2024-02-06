@@ -49,7 +49,7 @@ export const UPPIntro: React.FC<{
   const { width } = useMaxResolution();
   const { width: windowWidth } = useWindowDimensions();
   const [premiumSubscriptionModalVisible, setPremiumSubscriptionModalVisible] =
-    useState(true);
+    useState(false);
   return (
     <>
       <LegacyTertiaryBox
