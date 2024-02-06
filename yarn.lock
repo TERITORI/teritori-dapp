@@ -66,13 +66,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@axelar-network/axelarjs-types@npm:^0.33.0":
+"@axelar-network/axelarjs-types@npm:0.33.0":
   version: 0.33.0
   resolution: "@axelar-network/axelarjs-types@npm:0.33.0"
   dependencies:
     long: ^5.2.0
     protobufjs: ^7.0.0
   checksum: 1cdee798a40f2d63ceae3f2fc1fe733fe98c8f025e2f03826ad679199da5833afdaada57c3fb855d75bd2d371e60c1fc57b08419faa8526bb4d8f95ef9e319fe
+  languageName: node
+  linkType: hard
+
+"@axelar-network/axelarjs-types@patch:@axelar-network/axelarjs-types@npm%3A0.33.0#./.yarn/patches/@axelar-network-axelarjs-types-npm-0.33.0-5d36465d11.patch::locator=teritori-dapp%40workspace%3A.":
+  version: 0.33.0
+  resolution: "@axelar-network/axelarjs-types@patch:@axelar-network/axelarjs-types@npm%3A0.33.0#./.yarn/patches/@axelar-network-axelarjs-types-npm-0.33.0-5d36465d11.patch::version=0.33.0&hash=cca27f&locator=teritori-dapp%40workspace%3A."
+  dependencies:
+    long: ^5.2.0
+    protobufjs: ^7.0.0
+  checksum: 48202accbd82cb8cd37f14e0cc151dae5a992d9509646e2e70f4a7e694edef2512663913da2da57d5288bd950c43e120fde7f4d14c2feb3a85d9ae55366c757e
   languageName: node
   linkType: hard
 
