@@ -1,29 +1,41 @@
+import { Secp256k1HdWallet } from "@cosmjs/amino";
 import React, { useState } from "react";
-import { Pressable, TextInput, View } from "react-native";
+import { TextInput, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../components/BrandText";
 import { SpacerColumn } from "../../../components/spacer";
+import { mustGetCosmosNetwork } from "../../../networks";
+import { addSelected, selectAllWallets } from "../../../store/slices/wallets";
+import { useAppDispatch } from "../../../store/store";
 import { ScreenFC } from "../../../utils/navigation";
 import {
   neutral15,
+  neutral22,
   neutral77,
   neutralA3,
   secondaryColor,
 } from "../../../utils/style/colors";
-import {
-  fontMedium16,
-  fontSemibold16,
-  fontSemibold28,
-} from "../../../utils/style/fonts";
+import { fontSemibold16, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { CustomButton } from "../../Mini/components/Button/CustomButton";
+import Checkbox from "../../Mini/components/Checkbox/Checkbox";
 import MultiStepScreenContainer from "../../Mini/layout/MultiStepScreenContainer";
-import { setMnemonic } from "../hooks/getNativeWallet";
-import { AcceptAndNavigate } from "../layout/AcceptAndNavigate";
-import { correctMnemonic, Seed } from "../util/seed";
+import { getNativeWallet, setMnemonic } from "../hooks/getNativeWallet";
+import { correctMnemonic } from "../util/seed";
 
-export const ImportWallet: ScreenFC<"ImportWallet"> = () => {
-  const [seed, setSeed] = useState<Seed>();
-  const derivation = "m/44'/118'/0'/0/0";
+export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {
+  const [localPhrase, setLocalPhrase] = useState<string | undefined>(undefined);
+  const wallets = useSelector(selectAllWallets);
+  const networkId = "teritori";
+  const network = mustGetCosmosNetwork(networkId);
+  const dispatch = useAppDispatch();
+  const [wallet, setWallet] = useState<Secp256k1HdWallet>();
+  const maxIndex = wallets.reduce(
+    (max, wallet) => Math.max(max, wallet.index),
+    0,
+  );
+  const [isChecked, setIsChecked] = useState(false);
 
   return (
     <MultiStepScreenContainer screenPercentage={25} enableBack>
@@ -64,35 +76,69 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = () => {
               multiline
               numberOfLines={4}
               onChangeText={(text) => {
-                setSeed({ mnemonic: correctMnemonic(text), derivation });
+                setLocalPhrase(correctMnemonic(text));
               }}
-              value={seed?.mnemonic}
+              // value={localPhrase}
               style={[fontSemibold16, { color: secondaryColor, width: "100%" }]}
             />
           </View>
         </View>
 
-        <AcceptAndNavigate
-          buttonText="Next"
-          value="ok"
-          label={
-            <Pressable
-              onPress={() => {
-                if (seed) {
-                  setMnemonic(seed.mnemonic);
+        <View>
+          <Checkbox
+            isChecked={isChecked}
+            onPress={() => setIsChecked(true)}
+            value="item"
+            label="This phrase will only be stored on this device. Teritori can’t recover it for you."
+            labelStyle={[{ color: neutralA3, lineHeight: 22, flex: 1 }]}
+            type="circle"
+            size="md"
+            wrapperStyle={{
+              alignItems: "center",
+              borderRadius: layout.borderRadius,
+              backgroundColor: neutral22,
+              paddingVertical: layout.spacing_x1,
+              paddingHorizontal: layout.spacing_x2,
+            }}
+          />
+          <SpacerColumn size={2} />
+          <CustomButton
+            onPress={(_, navigation) => {
+              console.log(localPhrase);
+              if (!localPhrase) {
+                return;
+              }
+              (async () => {
+                await setMnemonic(localPhrase, maxIndex + 1);
+                const native = await getNativeWallet("TORI", maxIndex + 1);
+                // @ts-ignore
+                if (native === "bad mnemonic" || !native) {
+                  alert("Invalid mnemonic");
+                  return;
                 }
-              }}
-            >
-              <BrandText
-                style={[fontMedium16, { color: neutralA3, lineHeight: 22 }]}
-              >
-                "This phrase will only be stored on this device. Teritori can’t
-                recover it for you."
-              </BrandText>
-            </Pressable>
-          }
-          navigateTo="CreatePassword"
-        />
+                // @ts-ignore
+                setWallet(native);
+              })();
+              if (wallet) {
+                wallet.getAccounts().then((accounts) => {
+                  dispatch(
+                    addSelected({
+                      address: accounts[0].address,
+                      network: network.kind,
+                      provider: "native",
+                      networkId: "teritori",
+                      index: maxIndex + 1,
+                    }),
+                  );
+                });
+                navigation.navigate("CreatePasswordWallet");
+              }
+            }}
+            textStyle={{ textTransform: "uppercase" }}
+            title="Next"
+            isDisabled={!isChecked}
+          />
+        </View>
       </View>
     </MultiStepScreenContainer>
   );
