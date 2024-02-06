@@ -31,7 +31,12 @@ export default function MobileModal({
 
   return (
     <Modal
-      style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
+      }}
       animationType="slide"
       transparent
       visible={visible}
@@ -45,7 +50,7 @@ export default function MobileModal({
         onTouchCancel={onClose}
       >
         <CustomPressable style={{ flex: 1 }} onPress={onClose}>
-          <View style={{ flex: 1 }}>{}</View>
+          <View style={{ flex: 1 }} />
         </CustomPressable>
         <View
           style={[

@@ -1,128 +1,59 @@
 import React, { useState } from "react";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
-import { NewConversationOrGroupSelector } from "./components/NewConversationOrGroupSelector";
+import {
+  ContactSelectionType,
+  NewConversationOrGroupSelector,
+} from "./components/NewConversationOrGroupSelector";
 import searchSVG from "../../../../assets/icons/search-gray.svg";
 import { SpacerColumn } from "../../../components/spacer";
+import { selectConversationList } from "../../../store/slices/message";
 import { ScreenFC } from "../../../utils/navigation";
 import { fontMedium14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import {
+  getConversationAvatar,
+  getConversationName,
+} from "../../../weshnet/messageHelpers";
 import MiniTextInput from "../components/MiniTextInput";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
-
-const dummyContact = [
-  {
-    id: "1",
-    name: "Eva",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Albert",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Digger",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Bayo",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "David",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Eddie",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Eva",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Digger",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Bold",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Arnold",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Albert",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Bayo",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "David",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Eddie",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Eva",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Digger",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Bold",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Arnold",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "David",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Eddie",
-    avatar: "",
-  },
-
-  {
-    id: "1",
-    name: "Digger",
-    avatar: "",
-  },
-];
 
 export const NewConversationScreen: ScreenFC<"MiniNewConversation"> = ({
   navigation,
 }) => {
   const [search, setSearch] = useState("");
+  const conversations = useSelector(selectConversationList);
+
+  const usersList = conversations.reduce((acc, conversation) => {
+    const name = getConversationName(conversation);
+    if (conversation && conversation?.type === "contact") {
+      const contactPk = conversation?.members?.[0].id;
+      if (search) {
+        if (name.toLowerCase().includes(search.toLowerCase())) {
+          acc.push({
+            id: contactPk,
+            conversationId: conversation.id,
+            avatar: conversation?.members.map((_, index) =>
+              getConversationAvatar(conversation, index),
+            ),
+            name,
+          });
+        }
+
+        return acc;
+      }
+      acc.push({
+        id: contactPk,
+        conversationId: conversation.id,
+        avatar: conversation?.members.map((_, index) =>
+          getConversationAvatar(conversation, index),
+        ),
+        name,
+      });
+    }
+    return acc;
+  }, [] as ContactSelectionType[]);
 
   return (
     <BlurScreenContainer title="New conversation">
@@ -142,10 +73,12 @@ export const NewConversationScreen: ScreenFC<"MiniNewConversation"> = ({
         />
         <SpacerColumn size={2} />
         <NewConversationOrGroupSelector
-          contacts={dummyContact}
-          onPressContact={({ id }) =>
-            navigation.replace("Conversation", { conversationId: id })
-          }
+          contacts={usersList}
+          onPressContact={({ id, conversationId }) => {
+            if (conversationId) {
+              navigation.replace("Conversation", { conversationId });
+            }
+          }}
         />
       </View>
     </BlurScreenContainer>

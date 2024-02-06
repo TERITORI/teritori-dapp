@@ -9,17 +9,10 @@ import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { ToastError } from "../../../components/toasts/ToastError";
-import { ToastInfo } from "../../../components/toasts/ToastInfo";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { selectContactRequestList } from "../../../store/slices/message";
 import { ScreenFC } from "../../../utils/navigation";
 import { neutral22, secondaryColor } from "../../../utils/style/colors";
-import {
-  fontMedium14,
-  fontSemibold14,
-  fontSemibold16,
-} from "../../../utils/style/fonts";
+import { fontMedium14, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ContactRequest } from "../../../utils/types/message";
 import { weshClient } from "../../../weshnet";
@@ -34,117 +27,8 @@ import MiniTextInput from "../components/MiniTextInput";
 import MiniToast from "../components/MiniToast";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
-const dummyContact = [
-  {
-    id: "1",
-    name: "Eva",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Albert",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Digger",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Bayo",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "David",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Eddie",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Eva",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Digger",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Bold",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Arnold",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Albert",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Bayo",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "David",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Eddie",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Eva",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Digger",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Bold",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Arnold",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "David",
-    avatar: "",
-  },
-  {
-    id: "1",
-    name: "Eddie",
-    avatar: "",
-  },
-
-  {
-    id: "1",
-    name: "Digger",
-    avatar: "",
-  },
-];
-
 export type ToastType = {
-  type: "success" | "error" | "";
+  type?: "success" | "error";
   message: string;
 };
 
@@ -153,11 +37,9 @@ export const MiniFriendScreen: ScreenFC<"MiniFriend"> = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const contactRequestList = useSelector(selectContactRequestList);
   const [openToast, setOpenToast] = useState<ToastType>({
-    type: "",
+    type: undefined,
     message: "",
   });
-
-  console.log(contactRequestList);
 
   return (
     <BlurScreenContainer
@@ -167,7 +49,7 @@ export const MiniFriendScreen: ScreenFC<"MiniFriend"> = ({ navigation }) => {
           <MiniToast
             message={openToast.message}
             type={openToast.type ?? "info"}
-            onClose={() => setOpenToast({ type: "", message: "" })}
+            onClose={() => setOpenToast({ type: undefined, message: "" })}
           />
         )
       }
@@ -214,7 +96,6 @@ export const MiniFriendScreen: ScreenFC<"MiniFriend"> = ({ navigation }) => {
       <FriendRequestModal
         visible={activeModal === "addFriend"}
         onClose={() => setActiveModal("")}
-        setOpenToast={setOpenToast}
       />
     </BlurScreenContainer>
   );
@@ -230,7 +111,6 @@ type Props = {
 
 function FriendRequest({ isOnline, data, setOpenToast }: Props) {
   const [addLoading, setAddLoading] = useState(false);
-  //   console.log(data);
 
   const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
 
@@ -247,10 +127,10 @@ function FriendRequest({ isOnline, data, setOpenToast }: Props) {
         },
       });
     } catch (err) {
-      console.error("add friend err", err);
+      console.error(err);
       setOpenToast({ type: "error", message: "Add Friend failed" });
     }
-    // setAddLoading(false);
+    setAddLoading(false);
   };
 
   const handleCancelFriend = async () => {
@@ -301,6 +181,7 @@ function FriendRequest({ isOnline, data, setOpenToast }: Props) {
             type="danger"
             size="small"
             width={70}
+            isDisabled={addLoading}
           />
         </FlexRow>
       </FlexRow>
