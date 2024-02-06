@@ -12,6 +12,7 @@ import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
 import { useBalances } from "../../../hooks/useBalances";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import {
   neutral88,
@@ -136,11 +137,12 @@ const LastTransactions = () => {
   const selectedWallet = useSelectedNativeWallet();
 
   const navigation = useAppNavigation();
-
+  const networkId = useSelectedNetworkId();
   const { transactions, isLoading } = useSearchTx(
-    "teritori",
+    networkId,
     selectedWallet?.address,
   );
+  console.log("transactions", transactions);
 
   return (
     <>

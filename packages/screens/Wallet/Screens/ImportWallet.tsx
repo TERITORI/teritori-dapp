@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../components/BrandText";
 import { SpacerColumn } from "../../../components/spacer";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import { mustGetCosmosNetwork } from "../../../networks";
 import { addSelected, selectAllWallets } from "../../../store/slices/wallets";
 import { useAppDispatch } from "../../../store/store";
@@ -27,7 +28,7 @@ import { correctMnemonic } from "../util/seed";
 export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {
   const [localPhrase, setLocalPhrase] = useState<string | undefined>(undefined);
   const wallets = useSelector(selectAllWallets);
-  const networkId = "teritori";
+  const networkId = useSelectedNetworkId();
   const network = mustGetCosmosNetwork(networkId);
   const dispatch = useAppDispatch();
   const [wallet, setWallet] = useState<Secp256k1HdWallet>();

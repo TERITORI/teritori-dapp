@@ -9,6 +9,7 @@ import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import { mustGetCosmosNetwork } from "../../../networks";
 import { addSelected, selectAllWallets } from "../../../store/slices/wallets";
 import { useAppDispatch } from "../../../store/store";
@@ -33,7 +34,7 @@ export const CreateWalletScreen: ScreenFC<"CreateWallet"> = ({
 }) => {
   const { width } = useWindowDimensions();
   const wallets = useSelector(selectAllWallets);
-  const networkId = "teritori";
+  const networkId = useSelectedNetworkId();
   const network = mustGetCosmosNetwork(networkId);
   const dispatch = useAppDispatch();
   const [wallet, setWallet] = useState<Secp256k1HdWallet>();
