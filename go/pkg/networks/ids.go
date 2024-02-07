@@ -76,6 +76,10 @@ func (n *NetworkBase) ActivityID(txHash string, messageIndex int) ActivityID {
 	return ActivityID(fmt.Sprintf("%s-%s-%d", n.IDPrefix, txHash, messageIndex))
 }
 
+func (n *NetworkBase) SubActivityID(txHash string, messageIndex int, activityIndex int) ActivityID {
+	return ActivityID(fmt.Sprintf("%s-%s-%d-%d", n.IDPrefix, txHash, messageIndex, activityIndex))
+}
+
 // returns <network_id>-<tx_hash>-<message_index>
 func (netstore NetworkStore) ParseActivityID(activityId string) (Network, string, int, error) {
 	parts := strings.Split(activityId, "-")

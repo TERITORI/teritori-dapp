@@ -146,17 +146,35 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		return errors.Wrap(err, "failed to get block time")
 	}
 
+	// get amounts and denom from funds
+	amount := "0"
+	denom := ""
+	usdAmount := 0.0
+	if len(execMsg.Funds) > 0 {
+		if len(execMsg.Funds) != 1 {
+			return errors.New("expected 1 fund")
+		}
+		amount = execMsg.Funds[0].Amount.String()
+		denom = execMsg.Funds[0].Denom
+		usdAmount, err = h.usdAmount(denom, amount, blockTime)
+		if err != nil {
+			return errors.Wrap(err, "failed to get usd price")
+		}
+	}
+
 	// create mint activity
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:   h.config.Network.ActivityID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindMint,
 		Time: blockTime,
 		Mint: &indexerdb.Mint{
-			// TODO: get price
-			BuyerID:   ownerId,
-			NetworkID: collection.NetworkID,
+			BuyerID:    ownerId,
+			NetworkID:  collection.NetworkID,
+			Price:      amount,
+			PriceDenom: denom,
+			USDPrice:   usdAmount,
 		},
-		NFTID:     nftId,
+		NFTID:     &nftId,
 		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create mint activity")
