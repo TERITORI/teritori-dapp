@@ -65,7 +65,7 @@ jobs:
             exit 1
           fi
 
-          # eas submit --platform=android --path=$AAB_FILE
+          eas submit --platform=android --path=$AAB_FILE
           echo "AAB_FILE=$AAB_FILE" >> $GITHUB_ENV
 
       - name: Upload aab
