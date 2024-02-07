@@ -62,7 +62,7 @@ func GetSeasonByTime(givenTime time.Time, network networks.Network) (Season, flo
 		}
 	}
 
-	return Season{}, 0, errors.New("not in any season")
+	return Season{}, 0, errors.New(fmt.Sprintf("not in any season with given time: %s", givenTime))
 }
 
 func GetSeasonById(seasonId string, network networks.Network) (Season, error) {
