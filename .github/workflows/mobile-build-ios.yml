@@ -28,14 +28,14 @@ jobs:
           cache: "yarn"
           node-version: 18
 
-      - name: Bump ios buildNumber
-        run: make bump-ios-build-number
-
       - name: Fix package.json
         run: yarn remove @lottiefiles/react-lottie-player
 
       - name: Install node modules
         run: yarn install
+
+      - name: Bump ios buildNumber
+        run: make bump-ios-build-number
 
       - name: Fix gitignore
         run: npx tsx ./packages/scripts/app-build/fixGitignore.ts
