@@ -1,25 +1,18 @@
 import React from "react";
 import { View } from "react-native";
 
-import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
+import { PremiumSubscriptionBottom } from "./PremiumSubscriptionBottom";
 import ModalBase from "../../../../components/modals/ModalBase";
 import { layout } from "../../../../utils/style/layout";
 
 import { BrandText } from "@/components/BrandText";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
-import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
 import { DEFAULT_NAME } from "@/utils/social-feed";
-import { neutral55, neutral77, secondaryColor } from "@/utils/style/colors";
-import {
-  fontBold16,
-  fontMedium14,
-  fontSemibold14,
-  fontSemibold16,
-  fontSemibold20,
-} from "@/utils/style/fonts";
+import { neutral55, neutral77 } from "@/utils/style/colors";
+import { fontBold16, fontMedium14, fontSemibold16 } from "@/utils/style/fonts";
 
 export const PremiumSubscriptionModal: React.FC<{
   onClose: () => void;
@@ -35,85 +28,7 @@ export const PremiumSubscriptionModal: React.FC<{
       onClose={onClose}
       width={464}
       label="Premium Subscription"
-      childrenBottom={
-        <View style={{ width: "100%" }}>
-          <Separator />
-
-          <View
-            style={{
-              margin: layout.spacing_x2,
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <View>
-              <BrandText
-                style={[fontSemibold14, { color: neutral77, lineHeight: 20 }]}
-              >
-                Subscription price:
-              </BrandText>
-
-              <SpacerColumn size={1} />
-
-              <BrandText style={[fontSemibold20, { color: secondaryColor }]}>
-                $9.99
-              </BrandText>
-            </View>
-
-            <View>
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: "flex-end",
-                }}
-              >
-                <BrandText
-                  style={[fontSemibold14, { color: neutral77, lineHeight: 20 }]}
-                >
-                  Pay by :
-                </BrandText>
-              </View>
-              <SpacerColumn size={1} />
-
-              <BrandText
-                style={[fontSemibold14, { color: neutral77, lineHeight: 20 }]}
-              >
-                Balance:{" "}
-                <BrandText
-                  style={[
-                    fontSemibold14,
-                    { color: secondaryColor, lineHeight: 20 },
-                  ]}
-                >
-                  105K TORI{" "}
-                  <BrandText
-                    style={[
-                      fontSemibold14,
-                      { color: neutral77, lineHeight: 20 },
-                    ]}
-                  >
-                    $5,846.63
-                  </BrandText>
-                </BrandText>
-              </BrandText>
-            </View>
-          </View>
-          <View
-            style={{
-              alignItems: "center",
-              marginVertical: layout.spacing_x2,
-            }}
-          >
-            <PrimaryButton
-              size="XL"
-              text="Subscribe"
-              width={424}
-              loader
-              onPress={onClose}
-            />
-          </View>
-        </View>
-      }
+      childrenBottom={<PremiumSubscriptionBottom onSubscribe={onClose} />}
     >
       <View
         style={{
