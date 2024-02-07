@@ -15,9 +15,13 @@ import { sendMessage } from "../../../weshnet/services";
 import { bytesFromString } from "../../../weshnet/utils";
 import MiniTextInput from "../components/MiniTextInput";
 
-type Props = { conversationId: string; replyTo: ReplyTo | undefined };
+type Props = {
+  conversationId: string;
+  replyTo: ReplyTo | undefined;
+  clearReplyTo: () => void;
+};
 
-export const ChatInput = ({ conversationId, replyTo }: Props) => {
+export const ChatInput = ({ conversationId, replyTo, clearReplyTo }: Props) => {
   const [newMessage, setNewMessage] = useState("");
   const [inputRef, setInputRef] = useState<RefObject<any> | null>(null);
 
@@ -47,6 +51,7 @@ export const ChatInput = ({ conversationId, replyTo }: Props) => {
       });
 
       setNewMessage("");
+      clearReplyTo();
       inputRef?.current?.focus();
     } catch (err: any) {
       console.log(err);

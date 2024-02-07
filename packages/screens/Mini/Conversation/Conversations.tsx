@@ -281,7 +281,11 @@ export const Conversations = ({
           </CustomPressable>
         </View>
       )}
-      <ChatInput conversationId={conversationId} replyTo={replyTo} />
+      <ChatInput
+        conversationId={conversationId}
+        replyTo={replyTo}
+        clearReplyTo={() => setReplyTo(undefined)}
+      />
     </>
   );
 };
