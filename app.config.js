@@ -20,6 +20,11 @@ const config = {
       supportsTablet: true,
       bundleIdentifier: "com.teritori",
       buildNumber: "5",
+      infoPlist: {
+        NSBluetoothAlwaysUsageDescription: "Used for Bluetooth communications",
+        NSBluetoothPeripheralUsageDescription:
+          "Used for Bluetooth communications",
+      },
     },
     android: {
       adaptiveIcon: {

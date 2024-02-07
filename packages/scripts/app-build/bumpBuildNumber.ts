@@ -6,7 +6,7 @@ const buildNumber = process.argv[2];
 fs.readFile(FILE_PATH, "utf8", (err, data) => {
   if (err) {
     console.error("Error reading app.config.js", err);
-    return;
+    process.exit(1);
   }
   const regex = /buildNumber: "(\d+)"/;
 
@@ -15,6 +15,7 @@ fs.readFile(FILE_PATH, "utf8", (err, data) => {
   fs.writeFile(FILE_PATH, updatedData, "utf8", (err) => {
     if (err) {
       console.error("Error updating app.config.js:", err);
+      process.exit(1);
     } else {
       console.log("app.config.js updated successfully!");
     }
