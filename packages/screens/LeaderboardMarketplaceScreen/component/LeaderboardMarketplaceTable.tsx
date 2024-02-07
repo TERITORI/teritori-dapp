@@ -58,7 +58,7 @@ const dummyData = {
 export const LeaderboardMarketplaceTable: React.FC = () => {
   const isMobile = useIsMobile();
   const [pageIndex, setPageIndex] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(50);
 
   const rowsData = Array(150).fill(dummyData);
 
