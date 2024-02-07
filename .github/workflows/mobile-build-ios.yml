@@ -28,6 +28,9 @@ jobs:
           cache: "yarn"
           node-version: 18
 
+      - name: Bump ios buildNumber
+        run: make bump-ios-build-number
+
       - name: Fix package.json
         run: yarn remove @lottiefiles/react-lottie-player
 

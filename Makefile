@@ -383,3 +383,8 @@ init-weshd-go:
 	cd ./weshd && go install golang.org/x/mobile/cmd/gobind
 	cd ./weshd && go install golang.org/x/mobile/cmd/gomobile
 	cd ./weshd && gomobile init
+
+.PHONY: bump-ios-build-number
+bump-ios-build-number:  
+	npx tsx packages/scripts/app-build/bumpBuildNumber.ts $(shell git rev-list HEAD --count)
+

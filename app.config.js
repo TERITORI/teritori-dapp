@@ -19,7 +19,7 @@ const config = {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.teritori",
-      buildNumber: 5,
+      buildNumber: "5",
     },
     android: {
       adaptiveIcon: {
