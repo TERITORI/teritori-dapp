@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { FlatList, View } from "react-native";
 
 import { ChatInput } from "./ChatInput";
+import closeSVG from "../../../../assets/icons/close.svg";
 import doubleCheckSVG from "../../../../assets/icons/double-check.svg";
 import replySVG from "../../../../assets/icons/reply-white.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -14,18 +15,25 @@ import { EmojiSelector } from "../../../components/socialFeed/EmojiSelector";
 import { SpacerColumn } from "../../../components/spacer";
 import {
   blueDefault,
+  eggWhite,
   neutral00,
+  neutral22,
   neutral30,
+  neutral33,
+  neutral99,
+  neutralA3,
   secondaryColor,
 } from "../../../utils/style/colors";
 import {
   fontMedium10,
   fontNormal15,
+  fontSemibold11,
+  fontSemibold12,
   fontSemibold14,
   fontSemibold22,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { Conversation, Message } from "../../../utils/types/message";
+import { Conversation, Message, ReplyTo } from "../../../utils/types/message";
 import { weshConfig } from "../../../weshnet";
 import {
   getConversationAvatar,
@@ -50,6 +58,7 @@ type ConversationType = {
   onLongPress?: (messageId: string) => void;
   onReplyPress?: (messageId: string) => void;
   showMessageOptions?: boolean;
+  parentMessage?: Message | undefined;
 };
 
 type Props = {
@@ -68,7 +77,7 @@ export const Conversations = ({
   contactMessages,
 }: Props) => {
   const [lastReadMessage, setLastReadMessage] = useState<Message | undefined>();
-  const [replyTo, setReplyTo] = useState("");
+  const [replyTo, setReplyTo] = useState<ReplyTo>();
   const [longPressedMessageId, setLongPressedMessageId] = useState("");
 
   useEffect(() => {
@@ -131,6 +140,9 @@ export const Conversations = ({
             const isSender =
               item?.senderId === stringFromBytes(weshConfig?.config?.accountPk);
 
+            const parentMessage = item?.parentId
+              ? messages.find((msg) => msg.id === item.parentId)
+              : undefined;
             return (
               <>
                 {!!separatorDate && (
@@ -205,12 +217,18 @@ export const Conversations = ({
                     status=""
                     reactions={item?.reactions}
                     onLongPress={handleLongPressMessage}
+                    parentMessage={parentMessage}
                     showMessageOptions={
                       longPressedMessageId
                         ? longPressedMessageId === item?.id
                         : false
                     }
-                    onReplyPress={setReplyTo}
+                    onReplyPress={(msgId) =>
+                      setReplyTo({
+                        id: msgId,
+                        message: item?.payload?.message || "",
+                      })
+                    }
                   />
                 )}
               </>
@@ -219,7 +237,51 @@ export const Conversations = ({
         />
       </View>
       <SpacerColumn size={1} />
-      <ChatInput conversationId={conversationId} />
+      {replyTo?.id && (
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: layout.spacing_x1,
+            backgroundColor: neutral22,
+            borderRadius: 20,
+            marginBottom: layout.spacing_x0_5,
+            padding: layout.spacing_x1,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: neutral33,
+              borderRadius: 20,
+              padding: layout.spacing_x0_5,
+            }}
+          >
+            <SVG source={replySVG} height={22} width={22} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <BrandText style={[fontSemibold14, { color: neutral99 }]}>
+              Reply To :
+            </BrandText>
+            <BrandText
+              numberOfLines={2}
+              style={[fontSemibold12, { color: neutral99 }]}
+            >
+              {replyTo.message}
+            </BrandText>
+          </View>
+          <CustomPressable
+            style={{
+              backgroundColor: neutral33,
+              borderRadius: 20,
+              padding: layout.spacing_x0_5,
+            }}
+            onPress={() => setReplyTo(undefined)}
+          >
+            <SVG source={closeSVG} height={14} width={14} />
+          </CustomPressable>
+        </View>
+      )}
+      <ChatInput conversationId={conversationId} replyTo={replyTo} />
     </>
   );
 };
@@ -235,24 +297,26 @@ const SingleConversation = ({
   onLongPress,
   onReplyPress,
   showMessageOptions,
+  parentMessage,
 }: ConversationType) => {
   const reactionsMade = useMemo(() => {
     if (reactions?.length) {
       return [];
     }
+
     return chain(reactions || [])
       .groupBy(message)
-      .map((value, key) => ({
-        icon: value?.[0]?.payload?.message || "",
-        count: value.length,
-        ownState: false,
-      }))
+      .map((value, key) => {
+        return {
+          icon: value?.[0]?.payload?.message || "",
+          count: value.length,
+          ownState: false,
+        };
+      })
       .value();
   }, [message, reactions]);
 
   const onEmojiSelected = async (emoji: string | null) => {
-    console.log(emoji);
-
     if (emoji) {
       await sendMessage({
         groupPk: bytesFromString(conversationId),
@@ -315,6 +379,33 @@ const SingleConversation = ({
             maxWidth: "90%",
           }}
         >
+          {!!parentMessage?.id && (
+            <View
+              style={{
+                flexDirection: "row",
+                marginBottom: layout.spacing_x0_5,
+              }}
+            >
+              <View
+                style={{
+                  height: "100%",
+                  width: 3,
+                  backgroundColor: neutralA3,
+                  paddingVertical: layout.spacing_x1_5,
+                  marginRight: layout.spacing_x0_5,
+                }}
+              />
+              <BrandText
+                style={[
+                  fontSemibold11,
+                  { color: isMyMessage ? neutralA3 : eggWhite },
+                ]}
+                numberOfLines={2}
+              >
+                {parentMessage?.payload?.message}
+              </BrandText>
+            </View>
+          )}
           <BrandText
             style={[
               fontNormal15,
@@ -364,7 +455,11 @@ const SingleConversation = ({
           </View>
         )}
       </CustomPressable>
-      <PostReactions reactions={reactionsMade} onPressReaction={() => {}} />
+      <View
+        style={{ alignSelf: isMyMessage ? "flex-end" : "flex-start", flex: 1 }}
+      >
+        <PostReactions reactions={reactionsMade} onPressReaction={() => {}} />
+      </View>
     </View>
   );
 };

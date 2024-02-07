@@ -20,6 +20,7 @@ export const tulipTree = "#EAA54B";
 
 export const gameHighlight = "#FCEE4F";
 export const yankeesBlue = "#16283C";
+export const eggWhite = "#F0EAD6";
 
 export const neutral00 = "#000000";
 export const neutral09 = "#090909";

@@ -10,13 +10,14 @@ import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontMedium16, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { ReplyTo } from "../../../utils/types/message";
 import { sendMessage } from "../../../weshnet/services";
 import { bytesFromString } from "../../../weshnet/utils";
 import MiniTextInput from "../components/MiniTextInput";
 
-type Props = { conversationId: string };
+type Props = { conversationId: string; replyTo: ReplyTo | undefined };
 
-export const ChatInput = ({ conversationId }: Props) => {
+export const ChatInput = ({ conversationId, replyTo }: Props) => {
   const [newMessage, setNewMessage] = useState("");
   const [inputRef, setInputRef] = useState<RefObject<any> | null>(null);
 
@@ -37,7 +38,7 @@ export const ChatInput = ({ conversationId }: Props) => {
         groupPk: bytesFromString(conversationId),
         message: {
           type: "message",
-          parentId: "",
+          parentId: replyTo ? replyTo?.id : "",
           payload: {
             message: newMessage || data?.message,
             files: [],

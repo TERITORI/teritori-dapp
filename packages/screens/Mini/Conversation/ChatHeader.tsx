@@ -1,6 +1,7 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import chevronLeftSVG from "../../../../assets/icons/chevron-left.svg";
 import phoneCellSVG from "../../../../assets/icons/phone-cell.svg";
@@ -8,6 +9,8 @@ import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerRow } from "../../../components/spacer";
+import { selectPeerById } from "../../../store/slices/message";
+import { RootState } from "../../../store/store";
 import { RootStackParamList } from "../../../utils/navigation";
 import { MOBILE_HEADER_HEIGHT } from "../../../utils/style/layout";
 import { Conversation } from "../../../utils/types/message";
@@ -30,6 +33,14 @@ export const ChatHeader = ({ navigation, conversation }: HeaderProps) => {
   const handlePhoneCellPress = () => {
     alert("Phone cell");
   };
+
+  const contactInfo = conversation ? conversation.members?.[0] : "";
+  const peerId = contactInfo ? contactInfo?.peerId : "";
+
+  const peerStatus = useSelector((state: RootState) =>
+    selectPeerById(state, peerId),
+  );
+
   return (
     <View
       style={{
@@ -63,7 +74,7 @@ export const ChatHeader = ({ navigation, conversation }: HeaderProps) => {
                 )
               : [""]
           }
-          isActive
+          isActive={peerStatus?.isActive}
           size="sm"
         />
         <SpacerRow size={1.5} />
