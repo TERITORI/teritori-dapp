@@ -15,16 +15,6 @@ import { useMaxResolution } from "@/hooks/useMaxResolution";
 
 type TabsListType = "teritori" | "ethereum";
 
-const dummyData = {
-  rank: 1,
-  trader: "ferryman.tori",
-  totalXp: "1340",
-  bonus: "X2",
-  listingXp: "150",
-  salesXp: 250,
-  buyXp: "2270",
-};
-
 export const LeaderboardMarketplaceScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const { width } = useMaxResolution();
@@ -83,7 +73,7 @@ export const LeaderboardMarketplaceScreen: React.FC = () => {
             marginTop: layout.spacing_x4,
           }}
         >
-          <LeaderboardMarketplaceTable rows={Array(5).fill(dummyData)} />
+          <LeaderboardMarketplaceTable />
         </View>
       </View>
     </ScreenContainer>

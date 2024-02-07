@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { FlatList, Image, View } from "react-native";
 
 import DefaultEnemyPNG from "../../../../assets/game/default-enemy.png";
@@ -45,10 +45,31 @@ const TABLE_ROWS = {
   },
 };
 
-export const LeaderboardMarketplaceTable: React.FC<{
-  rows: any[];
-}> = ({ rows }) => {
+const dummyData = {
+  rank: 1,
+  trader: "ferryman.tori",
+  totalXp: "1340",
+  bonus: "X2",
+  listingXp: "150",
+  salesXp: 250,
+  buyXp: "2270",
+};
+
+export const LeaderboardMarketplaceTable: React.FC = () => {
   const isMobile = useIsMobile();
+  const [pageIndex, setPageIndex] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+
+  const rowsData = Array(150).fill(dummyData);
+
+  const displayData = useMemo(() => {
+    const skip = pageIndex * itemsPerPage;
+    const limit = itemsPerPage;
+
+    return rowsData.slice(skip, skip + limit);
+  }, [pageIndex, itemsPerPage, rowsData]);
+
+  const maxPage = Math.max(Math.ceil(rowsData?.length / itemsPerPage), 1);
 
   return (
     <View
@@ -67,7 +88,7 @@ export const LeaderboardMarketplaceTable: React.FC<{
       />
 
       <FlatList
-        data={rows}
+        data={displayData}
         renderItem={({ item, index }) => <LeaderboardRowData rowData={item} />}
         keyExtractor={(item) => item.id}
         style={{
@@ -79,12 +100,12 @@ export const LeaderboardMarketplaceTable: React.FC<{
       />
       <SpacerColumn size={2} />
       <Pagination
-        currentPage={1}
-        maxPage={120}
-        itemsPerPage={50}
+        currentPage={pageIndex}
+        maxPage={maxPage}
+        itemsPerPage={itemsPerPage}
         dropdownOptions={[50, 100, 200]}
-        setItemsPerPage={() => {}}
-        onChangePage={() => {}}
+        setItemsPerPage={setItemsPerPage}
+        onChangePage={setPageIndex}
       />
       <SpacerColumn size={2} />
     </View>
