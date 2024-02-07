@@ -1,9 +1,9 @@
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { Platform } from "react-native";
 
 import { Sidebar } from "./Sidebar";
+import { platformScreens } from "./platformSpecific";
+import { Nav, navigatorScreenOptions, screenTitle } from "./util";
 import { AdministrationDashboardScreen } from "../../screens/AdministrationDashboard/AdministrationDashboardScreen";
 import { AllProjectAdministrationDashScreen } from "../../screens/AllProjectAdministrationDash/AllProjectAdministrationDashScreen";
 import { ApplicationRewiewScreen } from "../../screens/ApplicationRewiew/ApplicationRewiew";
@@ -39,7 +39,6 @@ import { OrganizationDeployerScreen } from "../../screens/Organizations/Organiza
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
 import { ReadyLaunchpadApplicationsScreen } from "../../screens/ReadyLaunchpadApplications/ReadyLaunchpadApplicationsScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
-// import { RiotGameBridgeScreen } from "../../screens/RiotGame/RiotGameBridgeScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
 import { RiotGameInventoryScreen } from "../../screens/RiotGame/RiotGameInventoryScreen";
@@ -55,35 +54,6 @@ import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
 import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
-import { RootStackParamList } from "../../utils/navigation";
-import { neutral00 } from "../../utils/style/colors";
-import { fullSidebarWidth } from "../../utils/style/layout";
-
-// Drawer navigator is broken on web
-// FIXME: upgrade to expo-router
-
-const getNav = () => {
-  if (Platform.OS === "web") {
-    return {
-      Nav: createNativeStackNavigator<RootStackParamList>(),
-      navigatorScreenOptions: {},
-    };
-  } else {
-    return {
-      Nav: createDrawerNavigator<RootStackParamList>(),
-      navigatorScreenOptions: {
-        drawerStyle: {
-          backgroundColor: neutral00,
-          width: fullSidebarWidth,
-        },
-      },
-    };
-  }
-};
-
-const { Nav, navigatorScreenOptions } = getNav();
-
-const screenTitle = (title: string) => "Teritori - " + title;
 
 export const Navigator: React.FC = () => {
   return (
@@ -231,16 +201,6 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Riot Game Inventory"),
         }}
       />
-      {/*
-      <Nav.Screen
-        name="RiotGameBridge"
-        component={RiotGameBridgeScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Riot Game Bridge"),
-        }}
-      />
-      */}
 
       {/* ==== Wallet Manager */}
       <Nav.Screen
@@ -442,6 +402,8 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Friends Add"),
         }}
       />
+
+      {platformScreens}
     </Nav.Navigator>
   );
 };

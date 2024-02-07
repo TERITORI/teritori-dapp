@@ -8,11 +8,12 @@ import { useSeasonRank } from "../../../hooks/riotGame/useSeasonRank";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { NetworkKind } from "../../../networks";
 import { teritoriCurrencies } from "../../../networks/teritori/currencies";
 import { decimalFromAtomics } from "../../../utils/coins";
 import { yellowDefault } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
+
+import { teritoriNetwork } from "@/networks/teritori";
 
 type FightStatsSectionProps = {
   containerStyle?: ViewStyle;
@@ -37,19 +38,15 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
     }
 
     const res = decimalFromAtomics(
-      selectedWallet.networkId,
+      // NOTICE: Force to teritori network becase in bridge case, token is the same as Teritori
+      teritoriNetwork.id,
       "" + claimableAmount,
-      selectedNetwork.kind === NetworkKind.Ethereum
-        ? selectedNetwork.currencies[0].denom
-        : teritoriCurrencies[0].denom,
+      // NOTICE: In bridged case, we used bridged token from teritori so decimal = 6 instead of selectedNetwork.currencies[0].denom
+      teritoriCurrencies[0].denom,
     );
+
     return res;
-  }, [
-    claimableAmount,
-    selectedNetwork?.kind,
-    selectedWallet?.networkId,
-    selectedNetwork?.currencies,
-  ]);
+  }, [claimableAmount, selectedNetwork?.kind, selectedWallet?.networkId]);
 
   return (
     <View

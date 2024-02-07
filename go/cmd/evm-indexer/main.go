@@ -116,7 +116,7 @@ func sinkE(cmd *cobra.Command, args []string) error {
 	// 	substreamsMode = sink.SubstreamsModeProduction
 	// }
 
-	blockRange := fmt.Sprintf("%s:%s", network.IndexStartBlock, network.IndexStopBlock)
+	blockRange := fmt.Sprintf("%s:-1", network.IndexStartBlock) // -1: mean no IndexStopBlock
 	outputModuleName := "block_out"
 
 	endpoint := network.FirehoseEndpoint

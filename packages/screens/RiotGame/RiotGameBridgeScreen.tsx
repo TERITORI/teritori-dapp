@@ -4,6 +4,7 @@ import {
   EvmChain,
   GasToken,
 } from "@axelar-network/axelarjs-sdk";
+import { Decimal } from "@cosmjs/math";
 import { BigNumber, ethers } from "ethers";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -71,6 +72,15 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
+const _toDecimalNumber = (
+  bn: BigNumber,
+  strLen: number = 10,
+  decNum: number = 18,
+) => {
+  const numStr = Decimal.fromAtomics(bn.toString(), decNum).toString();
+  return numStr.substring(0, strLen) + "...";
+};
+
 const getNFTClient = async (
   network: EthereumNetworkInfo | undefined,
   address: string | undefined,
@@ -107,9 +117,9 @@ export const RiotGameBridgeScreen: React.FC = () => {
   const [isCheckingNFT, setIsCheckingNFT] = useState(true);
   const [isApproving, setIsApproving] = useState(false);
   const [isBridging, setIsBridging] = useState(false);
-  const [estimatedGas, setEstimatedGas] = useState(0);
+  const [estimatedGas, setEstimatedGas] = useState(BigNumber.from(0));
   const [isEstimatingGas, setIsEstimatingGas] = useState(false);
-  const [axelarGas, setAxelarGas] = useState(0);
+  const [axelarGas, setAxelarGas] = useState(BigNumber.from(0));
   const [txHash, setTxHash] = useState("");
 
   const networkId = useSelectedNetworkId();
@@ -165,8 +175,7 @@ export const RiotGameBridgeScreen: React.FC = () => {
     );
 
     const { maxFeePerGas } = await signer.getFeeData();
-
-    const estimatedGas = bridgeClient.estimateGas.bridgeNft(tokenId);
+    const estimatedGasRequest = bridgeClient.estimateGas.bridgeNft(tokenId);
 
     if (!network?.riotBridgeAddressGen0) {
       throw Error("Bridge is undefined");
@@ -199,34 +208,49 @@ export const RiotGameBridgeScreen: React.FC = () => {
       environment: axelarEnv,
     });
 
-    const srcChainId = "ethereum-2"; // NOTE: don't know it does not work with Evm.ETH
+    const srcChainId = EvmChain.ETHEREUM;
     const destChainId = EvmChain.POLYGON;
     const srcChainTokenSymbol = GasToken.ETH;
     const gasLimit = 700_000;
 
-    const axelarGas = await axelarSdk.estimateGasFee(
-      srcChainId,
-      destChainId,
-      srcChainTokenSymbol,
-      gasLimit,
-      1.1,
-      "0",
-      GMPGasFee,
-    );
+    try {
+      const axelarGasRequest = await axelarSdk.estimateGasFee(
+        srcChainId,
+        destChainId,
+        srcChainTokenSymbol,
+        gasLimit,
+        1.1,
+        "0",
+        GMPGasFee,
+      );
 
-    const gasData = await Promise.all([estimatedGas, axelarGas]);
-    const gas = (maxFeePerGas || BigNumber.from(0)).mul(gasData[0]).toNumber();
+      const gasData = await Promise.all([
+        estimatedGasRequest,
+        axelarGasRequest,
+      ]);
+      const estimatedGas = (maxFeePerGas || BigNumber.from(0)).mul(gasData[0]);
+      const axelarGas = BigNumber.from(gasData[1]);
 
-    setEstimatedGas(gas);
-    setAxelarGas(+gasData[1].toString());
-    setIsEstimatingGas(false);
+      console.log({
+        estimatedGas: estimatedGas.toString(),
+        axelarGas: axelarGas.toString(),
+        total: estimatedGas.add(axelarGas).toString(),
+      });
+
+      setEstimatedGas(estimatedGas);
+      setAxelarGas(axelarGas);
+      setIsEstimatingGas(false);
+    } catch (e: any) {
+      console.error(e);
+      setToastError({ title: "Error", message: e.message });
+    }
   };
 
   const bridgeNFT = async () => {
     if (!selectedNFT) return;
     if (!network) return;
 
-    if (axelarGas + estimatedGas === 0) {
+    if (axelarGas.add(estimatedGas).toString() === "0") {
       return setToastError({
         title: "Warning",
         message: "Unable to estimate gas",
@@ -270,8 +294,8 @@ export const RiotGameBridgeScreen: React.FC = () => {
       const [, , tokenId] = parseNftId(selectedNFT.id);
       const { maxFeePerGas: maxFee, maxPriorityFeePerGas: maxPrio } =
         await signer.getFeeData();
-      const maxFeePerGas = maxFee?.toNumber();
-      const maxPriorityFeePerGas = maxPrio?.toNumber();
+      const maxFeePerGas = maxFee?.toString();
+      const maxPriorityFeePerGas = maxPrio?.toString();
       const txFeeData = {
         maxFeePerGas,
         maxPriorityFeePerGas,
@@ -299,7 +323,7 @@ export const RiotGameBridgeScreen: React.FC = () => {
   const onSelectNFT = async (nft: NFT) => {
     setIsCheckingNFT(true);
     setSelectedNFT(nft);
-    setEstimatedGas(0);
+    setEstimatedGas(BigNumber.from(0));
     setTxHash("");
 
     const { nftClient, signer } = await getNFTClient(
@@ -417,7 +441,7 @@ export const RiotGameBridgeScreen: React.FC = () => {
 
             {txHash && (
               <ExternalLink
-                externalUrl={`https://testnet.axelarscan.io/gmp/${txHash}`}
+                externalUrl={`https://axelarscan.io/gmp/${txHash}`}
                 style={[fontMedium14, { width: "100%" }]}
                 ellipsizeMode="middle"
                 numberOfLines={1}
@@ -442,8 +466,8 @@ const SideBridge: React.FC<{
   isCheckingNFT: boolean;
   isApproving: boolean;
   isBridging: boolean;
-  estimatedGas: number;
-  axelarGas: number;
+  estimatedGas: BigNumber;
+  axelarGas: BigNumber;
   isEstimatingGas: boolean;
 }> = ({
   style,
@@ -555,16 +579,12 @@ const SideBridge: React.FC<{
         <View style={{ paddingVertical: layout.spacing_x1 }}>
           <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
             Estimated Gas:{" "}
-            {isEstimatingGas
-              ? "estimating..."
-              : Math.round(estimatedGas / 10 ** 10) / 10 ** 8}
+            {isEstimatingGas ? "estimating..." : _toDecimalNumber(estimatedGas)}
           </BrandText>
 
           <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
             Estimated Axelar Gas:{" "}
-            {isEstimatingGas
-              ? "estimating..."
-              : Math.round(axelarGas / 10 ** 10) / 10 ** 8}
+            {isEstimatingGas ? "estimating..." : _toDecimalNumber(axelarGas)}
           </BrandText>
 
           <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
@@ -583,7 +603,7 @@ const SideBridge: React.FC<{
           You pay:{" "}
           {isEstimatingGas
             ? "estimating..."
-            : Math.round((axelarGas + estimatedGas) / 10 ** 10) / 10 ** 8}
+            : _toDecimalNumber(axelarGas.add(estimatedGas))}
         </BrandText>
 
         <Separator />
@@ -599,7 +619,7 @@ const SideBridge: React.FC<{
               color={yellowDefault}
               size="SM"
               text="Bridge your NFT"
-              disabled={!selected || isBridging}
+              disabled={!selected || isBridging || isEstimatingGas}
               onPress={onBridge}
             />
           ) : (
