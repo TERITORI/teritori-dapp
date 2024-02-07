@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Image, View } from "react-native";
+import { Image, View, useWindowDimensions } from "react-native";
 
 import { LeaderboardMarketplaceTable } from "./component/LeaderboardMarketplaceTable";
 import LeaderboardBannerImage from "../../../assets/banners/LeaderboardBanner.png";
@@ -11,13 +11,12 @@ import { layout } from "../../utils/style/layout";
 
 import { Tabs } from "@/components/tabs/Tabs";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { useMaxResolution } from "@/hooks/useMaxResolution";
 
 type TabsListType = "teritori" | "ethereum";
 
 export const LeaderboardMarketplaceScreen: React.FC = () => {
   const navigation = useAppNavigation();
-  const { width } = useMaxResolution();
+  const { width } = useWindowDimensions();
   const isMobile = useIsMobile();
   const [selectedTab, setSelectedTab] = useState<TabsListType>("teritori");
 
@@ -40,10 +39,14 @@ export const LeaderboardMarketplaceScreen: React.FC = () => {
       responsive
       onBackPress={() => navigation.goBack()}
     >
-      <View style={{ marginTop: layout.spacing_x4 }}>
+      <View>
         <Image
           source={LeaderboardBannerImage}
-          style={{ width: "100%", height: width / 2.5 }}
+          resizeMode="contain"
+          style={{
+            width: "100%",
+            height: width / 4,
+          }}
         />
 
         <View
