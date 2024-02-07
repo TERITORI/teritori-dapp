@@ -37,7 +37,7 @@ jobs:
         run: yarn install
 
       - name: Bump ios buildNumber
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         run: make bump-ios-build-number
 
       - name: Fix gitignore
@@ -71,7 +71,7 @@ jobs:
           echo "IPA_FILE=$IPA_FILE" >> $GITHUB_ENV
 
       - name: EAS Submit iOS IPA
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         run: eas submit --platform=ios --path=${{ env.IPA_FILE }}  --profile=production
 
       - name: Upload IPA
