@@ -19,6 +19,15 @@
     "production": {}
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "track": "internal"
+      },
+      "ios": {
+        "appleId": "sakulbudhathoki977@gmail.com",
+        "ascAppId": "6448350436",
+        "appleTeamId": "Y7D67GAV2M"
+      }
+    }
   }
 }

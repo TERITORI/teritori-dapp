@@ -22,6 +22,8 @@ jobs:
         run: sudo xcode-select -s /Applications/Xcode_15.2.app
 
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v3
         with:
@@ -33,6 +35,10 @@ jobs:
 
       - name: Install node modules
         run: yarn install
+
+      - name: Bump ios buildNumber
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: make bump-ios-build-number
 
       - name: Fix gitignore
         run: npx tsx ./packages/scripts/app-build/fixGitignore.ts
@@ -55,16 +61,18 @@ jobs:
       - name: Build ios
         run: eas build --local --non-interactive --platform=ios
 
-      - name: EAS Submit iOS IPA
+      - name: Update IPA File path
         run: |
           IPA_FILE=$(find ./ -name 'build-*.ipa' -type f)
           if [ -z "$IPA_FILE" ]; then
             echo "Error: IPA file not found."
             exit 1
           fi
-
-          # eas submit --platform=ios --path=$IPA_FILE 
           echo "IPA_FILE=$IPA_FILE" >> $GITHUB_ENV
+
+      - name: EAS Submit iOS IPA
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: eas submit --platform=ios --path=${{ env.IPA_FILE }}  --profile=production
 
       - name: Upload IPA
         uses: actions/upload-artifact@v3
