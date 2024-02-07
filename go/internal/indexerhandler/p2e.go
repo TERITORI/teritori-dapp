@@ -314,3 +314,69 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 
 	return nil
 }
+
+func (h *Handler) handleExecuteBreed(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	minterContractAddress := execMsg.Contract
+	if minterContractAddress != h.config.Network.RiotContractAddressGen1 {
+		h.logger.Debug("ignored breed on unknown collection", zap.String("contract-address", minterContractAddress))
+		return nil
+	}
+
+	collectionId := h.config.Network.CollectionID(minterContractAddress)
+	var collection indexerdb.Collection
+	if err := h.db.Where("id = ?", collectionId).First(&collection).Error; err != nil {
+		h.logger.Debug("ignored request mint for unknown collection", zap.String("collection-id", string(collectionId)))
+		return nil
+	}
+
+	owner := execMsg.Sender
+	ownerId := h.config.Network.UserID(owner)
+
+	activityId := h.config.Network.ActivityID(e.TxHash, e.MsgIndex)
+
+	// get block time
+	blockTime, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
+	// get price
+	amount := "0"
+	denom := ""
+	usdAmount := 0.0
+	if len(execMsg.Funds) != 0 {
+		if len(execMsg.Funds) != 1 {
+			return errors.New("expected 1 coin in funds")
+		}
+		amount = execMsg.Funds[0].Amount.String()
+		denom = execMsg.Funds[0].Denom
+		var err error
+		usdAmount, err = h.usdAmount(denom, amount, blockTime)
+		if err != nil {
+			return errors.Wrap(err, "failed to get usd price")
+		}
+	}
+
+	// create request mint activity
+	if err := h.db.Create(&indexerdb.Activity{
+		ID:   activityId,
+		Kind: indexerdb.ActivityKindRequestMint,
+		Time: blockTime,
+		RequestMint: &indexerdb.RequestMint{
+			BuyerID:      ownerId,
+			NetworkID:    collection.NetworkID,
+			CollectionID: collection.ID,
+			Price:        amount,
+			PriceDenom:   denom,
+			USDPrice:     usdAmount,
+			Minted:       false,
+		},
+		NetworkID: collection.NetworkID,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to create request mint activity")
+	}
+
+	h.logger.Info("breeding requested", zap.String("collection-id", string(collection.ID)), zap.String("owner-id", string(ownerId)))
+
+	return nil
+}

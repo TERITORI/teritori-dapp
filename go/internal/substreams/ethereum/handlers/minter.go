@@ -76,7 +76,7 @@ func (h *Handler) handleMintWithMetadata(contractABI *abi.ABI, tx *pb.Tx, args m
 				BuyerID:   ownerID,
 				NetworkID: h.network.ID,
 			},
-			NFTID:     nftID,
+			NFTID:     &nftID,
 			NetworkID: h.network.ID,
 		}).Error; err != nil {
 			return errors.Wrap(err, "failed to create mint activity")

@@ -51,7 +51,7 @@ func (u *IndexerAction) WithdrawNFT(
 	activityID := u.network.ActivityID(txHash, msgIndex)
 	if err := u.dbTransaction.Create(&indexerdb.Activity{
 		ID:    activityID,
-		NFTID: nftID,
+		NFTID: &nftID,
 		Kind:  indexerdb.ActivityKindCancelListing,
 		Time:  blockTime,
 		CancelListing: &indexerdb.CancelListing{
@@ -130,7 +130,7 @@ func (u *IndexerAction) ListNFT(
 	activityID := u.network.ActivityID(txHash, msgIndex)
 	if err := u.dbTransaction.Create(&indexerdb.Activity{
 		ID:    activityID,
-		NFTID: nftID,
+		NFTID: &nftID,
 		Kind:  indexerdb.ActivityKindList,
 		Time:  blockTime,
 		Listing: &indexerdb.Listing{
@@ -221,7 +221,7 @@ func (u *IndexerAction) BuyNFT(
 	activityID := u.network.ActivityID(txHash, msgIndex)
 	if err := u.dbTransaction.Create(&indexerdb.Activity{
 		ID:    activityID,
-		NFTID: nftID,
+		NFTID: &nftID,
 		Kind:  indexerdb.ActivityKindTrade,
 		Time:  blockTime,
 		Trade: &indexerdb.Trade{

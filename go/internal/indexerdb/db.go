@@ -65,6 +65,7 @@ var allModels = []interface{}{
 	&Trade{},
 	&UpdateNFTPrice{},
 	&Mint{},
+	&RequestMint{},
 	&Burn{},
 	&SendNFT{},
 	&TransferNFT{},

@@ -13,6 +13,7 @@ const (
 	ActivityKindTrade          = ActivityKind("trade")
 	ActivityKindList           = ActivityKind("list")
 	ActivityKindCancelListing  = ActivityKind("cancel-listing")
+	ActivityKindRequestMint    = ActivityKind("request-mint")
 	ActivityKindMint           = ActivityKind("mint")
 	ActivityKindBurn           = ActivityKind("burn")
 	ActivityKindSendNFT        = ActivityKind("send-nft")
@@ -23,9 +24,10 @@ const (
 type Activity struct {
 	// ID is network-dependent
 	// Teritori: tori-<tx_hash>-<msg_index>
-	ID   networks.ActivityID
-	Kind ActivityKind `gorm:"index"`
-	Time time.Time    `gorm:"index"`
+	ID        networks.ActivityID
+	Kind      ActivityKind `gorm:"index"`
+	Time      time.Time    `gorm:"index"`
+	NetworkID string       `gorm:"index"`
 
 	// "has one" relations
 	Listing        *Listing
@@ -36,12 +38,9 @@ type Activity struct {
 	SendNFT        *SendNFT
 	TransferNFT    *TransferNFT
 	UpdateNFTPrice *UpdateNFTPrice
-
-	// "belongs to" relations
-	NFTID networks.NFTID `gorm:"index"`
-	NFT   *NFT
-
-	NetworkID string `gorm:"index"`
+	RequestMint    *RequestMint
+	NFTID          *networks.NFTID `gorm:"index"`
+	NFT            *NFT
 }
 
 type Listing struct {
@@ -88,6 +87,18 @@ type Mint struct {
 	PriceDenom string
 	USDPrice   float64
 	BuyerID    networks.UserID
+
+	NetworkID string `gorm:"index"`
+}
+
+type RequestMint struct {
+	ActivityID   networks.ActivityID `gorm:"primaryKey"`
+	Price        string
+	PriceDenom   string
+	USDPrice     float64
+	CollectionID networks.CollectionID `gorm:"index"`
+	BuyerID      networks.UserID       `gorm:"index"`
+	Minted       bool                  `gorm:"index"`
 
 	NetworkID string `gorm:"index"`
 }

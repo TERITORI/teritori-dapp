@@ -98,7 +98,7 @@ func (h *Handler) handleExecuteSendNFTFallback(e *Message, execMsg *wasmtypes.Ms
 			Receiver:  receiverID,
 			NetworkID: collection.NetworkID,
 		},
-		NFTID:     nftId,
+		NFTID:     &nftId,
 		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create mint activity")
@@ -159,7 +159,7 @@ func (h *Handler) handleExecuteBurn(e *Message, execMsg *wasmtypes.MsgExecuteCon
 			BurnerID:  h.config.Network.UserID(execMsg.Sender),
 			NetworkID: collection.NetworkID,
 		},
-		NFTID:     nftId,
+		NFTID:     &nftId,
 		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create burn activity")
@@ -194,7 +194,7 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 		return errors.Wrap(err, "failed to query collections")
 	}
 	if r.RowsAffected == 0 {
-		h.logger.Debug("ignored burn on unknown collection", zap.String("contract-address", contractAddress))
+		h.logger.Debug("ignored transfer nft on unknown collection", zap.String("contract-address", contractAddress))
 		return nil
 	}
 	if collection.TeritoriCollection == nil {
@@ -204,7 +204,7 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 	// get msg
 	var msg ExecuteTransferNftMsg
 	if err := json.Unmarshal(execMsg.Msg, &msg); err != nil {
-		return errors.Wrap(err, "failed to un marshal msg")
+		return errors.Wrap(err, "failed to unmarshal msg")
 	}
 
 	receiverID := h.config.Network.UserID(msg.Data.Recipient)
@@ -231,7 +231,7 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 			Receiver:  receiverID,
 			NetworkID: collection.NetworkID,
 		},
-		NFTID:     nftId,
+		NFTID:     &nftId,
 		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create transfer activity")

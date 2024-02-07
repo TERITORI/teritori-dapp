@@ -55,7 +55,7 @@ func (h *Handler) handleTransferFrom(contractABI *abi.ABI, tx *pb.Tx, args map[s
 			Receiver:  h.network.UserID(input.To.String()),
 			NetworkID: collection.NetworkID,
 		},
-		NFTID:     nftId,
+		NFTID:     &nftId,
 		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create send activity")
