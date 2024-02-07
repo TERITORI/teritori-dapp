@@ -54,15 +54,18 @@ export const LeaderboardMarketplaceScreen: React.FC = () => {
             flexDirection: isMobile ? "column" : "row",
             flexWrap: "nowrap",
             justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: layout.spacing_x3,
+            alignItems: isMobile ? "stretch" : "center",
+            marginTop: isMobile ? layout.spacing_x2_5 : 0,
           }}
         >
           <BrandText style={fontSemibold28}>NFT Traders Leaderboard</BrandText>
           <Tabs
             items={tabs}
             selected={selectedTab}
-            style={{ height: 32 }}
+            style={{
+              height: 32,
+              marginTop: isMobile ? layout.spacing_x2_5 : 0,
+            }}
             onSelect={setSelectedTab}
           />
         </View>

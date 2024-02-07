@@ -143,21 +143,36 @@ const LeaderboardRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
           {rowData.trader}
         </InnerCellText>
       </View>
-      <InnerCellText style={{ flex: TABLE_ROWS.totalXp.flex }}>
+      <InnerCellText
+        textStyle={{ paddingLeft: layout.spacing_x1 }}
+        style={{ flex: TABLE_ROWS.totalXp.flex }}
+      >
         {rowData.totalXp}
       </InnerCellText>
       {!isMobile && (
         <>
-          <InnerCellText style={{ flex: TABLE_ROWS.bonus.flex }}>
+          <InnerCellText
+            textStyle={{ paddingLeft: layout.spacing_x1 }}
+            style={{ flex: TABLE_ROWS.bonus.flex }}
+          >
             {rowData.bonus}
           </InnerCellText>
-          <InnerCellText style={{ flex: TABLE_ROWS.listingXp.flex }}>
+          <InnerCellText
+            textStyle={{ paddingLeft: layout.spacing_x1 }}
+            style={{ flex: TABLE_ROWS.listingXp.flex }}
+          >
             {rowData.listingXp}
           </InnerCellText>
-          <InnerCellText style={{ flex: TABLE_ROWS.salesXp.flex }}>
+          <InnerCellText
+            textStyle={{ paddingLeft: layout.spacing_x1 }}
+            style={{ flex: TABLE_ROWS.salesXp.flex }}
+          >
             {rowData.salesXp}
           </InnerCellText>
-          <InnerCellText style={{ flex: TABLE_ROWS.buyXp.flex }}>
+          <InnerCellText
+            textStyle={{ paddingLeft: layout.spacing_x1 }}
+            style={{ flex: TABLE_ROWS.buyXp.flex }}
+          >
             {rowData.buyXp}
           </InnerCellText>
         </>
