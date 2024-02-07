@@ -29,5 +29,5 @@ export const polygonMumbaiNetwork: EthereumNetworkInfo = {
   riotOriginalCollectionIdGen0:
     "testeth-0x43cc70bf324d716782628bed38af97e4afe92f69",
   riotContractAddressGen0: "0x916ad9d549907ccbbaf9ba65526826bfc3a9c0c4",
-  riotBridgedNFTAddressGen0: "0xb081acb7da31f58f0efa8ea920c5866339f3b06c",
+  riotBridgedNFTAddressGen0: "0xd0410e21b2672ca31a4e4c4faff513270e64d5bc",
 };

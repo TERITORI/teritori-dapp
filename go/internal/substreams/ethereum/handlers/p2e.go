@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"math/big"
 	"strconv"
 	"strings"
@@ -141,9 +142,32 @@ func (h *Handler) handleSquadStake(contractABI *abi.ABI, tx *pb.Tx, args map[str
 	if err := h.indexerDB.
 		Select("nfts.*").
 		Joins("JOIN teritori_nfts ON teritori_nfts.nft_id = nfts.id").
-		Where("teritori_nfts.token_id = ? AND teritori_nfts.network_id = ?", tokenID0, h.network.IDPrefix).
+		Where("teritori_nfts.token_id = ? AND teritori_nfts.network_id = ?", tokenID0, h.network.ID).
 		First(&firstNFT).Error; err != nil {
-		return errors.Wrap(err, "failed to get first staked NFT")
+		h.logger.Warn(fmt.Sprintf("unable to find staked NFT: %s on network: %s", tokenID0, h.network.ID))
+
+		// Edge case: If unable to find the firstNFT data then
+		// fallback to try to get that data from original network
+		var originalNetworkPrefix string
+		if h.network.ID == "polygon-mumbai" {
+			originalNetworkPrefix = "ethereum-goerli"
+		} else if h.network.ID == "polygon" {
+			originalNetworkPrefix = "ethereum"
+		}
+
+		if originalNetworkPrefix == "" {
+			return errors.New("failed to get original network")
+		}
+
+		if err := h.indexerDB.
+			Select("nfts.*").
+			Joins("JOIN teritori_nfts ON teritori_nfts.nft_id = nfts.id").
+			Where("teritori_nfts.token_id = ? AND teritori_nfts.network_id = ?", tokenID0, originalNetworkPrefix).
+			First(&firstNFT).Error; err != nil {
+			return errors.Wrap(err, fmt.Sprintf("fallback: failed to get first staked NFT: %s on network: %s", tokenID0, originalNetworkPrefix))
+		} else {
+			h.logger.Warn(fmt.Sprintf("found staked NFT: %s on original network: %s", tokenID0, originalNetworkPrefix))
+		}
 	}
 
 	jsonStr, err := json.Marshal(firstNFT.Attributes)
@@ -166,10 +190,6 @@ func (h *Handler) handleSquadStake(contractABI *abi.ABI, tx *pb.Tx, args map[str
 		}
 
 		firstNFTStamina = int(attribute.Value.(float64))
-	}
-
-	if firstNFTStamina == 0 {
-		return errors.Wrap(err, "failed to get first staked NFT Stamina")
 	}
 
 	multipliers := []int{

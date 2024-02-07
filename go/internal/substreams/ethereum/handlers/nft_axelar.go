@@ -55,13 +55,8 @@ func (h *Handler) handleExecute(contractABI *abi.ABI, tx *pb.Tx, args map[string
 	var sourceNFT indexerdb.NFT
 	sourceNftID := h.network.StringToNFTID(fmt.Sprintf("%s-%d", originalCollectionID, tokenID))
 	if err := h.indexerDB.First(&sourceNFT, &indexerdb.NFT{ID: sourceNftID}).Error; err != nil {
-		// NOTE: When testing, we bridged from different collections which are not our NFT collection
-		// so they have not been indexed, so we will not be able to get the source NFT here. In that case, we just ignore this NFT
-		// return errors.Wrap(err, "failed to get source teritori_nft")
-		h.logger.Warn(fmt.Sprintf("NFT %d does not exist from source collection, maybe it's related to a test", tokenID))
-		return nil
+		return errors.Wrap(err, fmt.Sprintf("NFT %d does not exist from source collection", tokenID))
 	}
-
 	targetCollectionID := h.network.CollectionID(h.network.RiotContractAddressGen0)
 	// Create target nft
 	targetNFT := indexerdb.NFT{
