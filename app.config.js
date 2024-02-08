@@ -24,6 +24,7 @@ const config = {
         NSBluetoothAlwaysUsageDescription: "Used for Bluetooth communications",
         NSBluetoothPeripheralUsageDescription:
           "Used for Bluetooth communications",
+        ITSAppUsesNonExemptEncryption: false,
       },
     },
     android: {
