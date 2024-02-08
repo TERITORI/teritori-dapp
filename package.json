@@ -21,6 +21,7 @@
   "engineStrict": true,
   "dependencies": {
     "@chain-registry/types": "^0.17.1",
+    "@chain-registry/utils": "1.13.2",
     "@cosmjs/amino": "0.32.2",
     "@cosmjs/cosmwasm-stargate": "0.32.2",
     "@cosmjs/encoding": "^0.32.2",
