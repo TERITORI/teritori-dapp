@@ -1,9 +1,12 @@
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { Platform } from "react-native";
 
 import { Sidebar } from "./Sidebar";
+import { platformScreens } from "./platformSpecific";
+import { Nav, navigatorScreenOptions, screenTitle } from "./util";
+import { AdministrationDashboardScreen } from "../../screens/AdministrationDashboard/AdministrationDashboardScreen";
+import { AllProjectAdministrationDashScreen } from "../../screens/AllProjectAdministrationDash/AllProjectAdministrationDashScreen";
+import { ApplicationRewiewScreen } from "../../screens/ApplicationRewiew/ApplicationRewiew";
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { CoreDAOScreen } from "../../screens/CoreDAO/CoreDAOScreen";
 import { DAppStoreScreen } from "../../screens/DAppStore/DAppStoreScreen";
@@ -15,8 +18,10 @@ import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { HashtagFeedScreen } from "../../screens/HashtagFeed/HashtagFeedScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
 import { LaunchpadApplyScreen } from "../../screens/Launchpad/LaunchpadApplyScreen";
+import { LaunchpadCreateScreen } from "../../screens/Launchpad/LaunchpadCreateScreen";
 import { LaunchpadScreen } from "../../screens/Launchpad/LaunchpadScreen";
 import { MintCollectionScreen } from "../../screens/Launchpad/MintCollectionScreen";
+import { LaunchpadApplicationsScreen } from "../../screens/LaunchpadApplications/LaunchpadApplicationsScreen";
 import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
@@ -37,8 +42,8 @@ import { ProjectsMakeRequestScreen } from "../../screens/Projects/ProjectsMakeRe
 import { ProjectsManagerScreen } from "../../screens/Projects/ProjectsManagerScreen";
 import { ProjectsPaymentScreen } from "../../screens/Projects/ProjectsPaymentScreen";
 import { ProjectsScreen } from "../../screens/Projects/ProjectsScreen";
+import { ReadyLaunchpadApplicationsScreen } from "../../screens/ReadyLaunchpadApplications/ReadyLaunchpadApplicationsScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
-// import { RiotGameBridgeScreen } from "../../screens/RiotGame/RiotGameBridgeScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
 import { RiotGameInventoryScreen } from "../../screens/RiotGame/RiotGameInventoryScreen";
@@ -54,35 +59,6 @@ import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
 import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
-import { RootStackParamList } from "../../utils/navigation";
-import { neutral00 } from "../../utils/style/colors";
-import { fullSidebarWidth } from "../../utils/style/layout";
-
-// Drawer navigator is broken on web
-// FIXME: upgrade to expo-router
-
-const getNav = () => {
-  if (Platform.OS === "web") {
-    return {
-      Nav: createNativeStackNavigator<RootStackParamList>(),
-      navigatorScreenOptions: {},
-    };
-  } else {
-    return {
-      Nav: createDrawerNavigator<RootStackParamList>(),
-      navigatorScreenOptions: {
-        drawerStyle: {
-          backgroundColor: neutral00,
-          width: fullSidebarWidth,
-        },
-      },
-    };
-  }
-};
-
-const { Nav, navigatorScreenOptions } = getNav();
-
-const screenTitle = (title: string) => "Teritori - " + title;
 
 export const Navigator: React.FC = () => {
   return (
@@ -128,6 +104,46 @@ export const Navigator: React.FC = () => {
         name="RiotersFooter"
         component={RiotersFooterScreen}
         options={{ header: () => null, title: screenTitle("Rioters Footer") }}
+      />
+      <Nav.Screen
+        name="AdministrationDashboard"
+        component={AdministrationDashboardScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Administration Dashboard"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadApplications"
+        component={LaunchpadApplicationsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Applications"),
+        }}
+      />
+      <Nav.Screen
+        name="ReadyLaunchpadApplications"
+        component={ReadyLaunchpadApplicationsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Ready Launchpad Applications"),
+        }}
+      />
+      <Nav.Screen
+        name="AllProjectAdministrationDash"
+        component={AllProjectAdministrationDashScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("All Launchpad Applications"),
+        }}
+      />
+      <Nav.Screen
+        name="ApplicationReview"
+        component={ApplicationRewiewScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Application Review"),
+        }}
       />
 
       {/* === Riot Game */}
@@ -184,16 +200,6 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Riot Game Inventory"),
         }}
       />
-      {/*
-      <Nav.Screen
-        name="RiotGameBridge"
-        component={RiotGameBridgeScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Riot Game Bridge"),
-        }}
-      />
-      */}
 
       {/* ==== Wallet Manager */}
       <Nav.Screen
@@ -227,6 +233,14 @@ export const Navigator: React.FC = () => {
       <Nav.Screen
         name="LaunchpadApply"
         component={LaunchpadApplyScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad (Apply)"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadCreate"
+        component={LaunchpadCreateScreen}
         options={{
           header: () => null,
           title: screenTitle("Launchpad (Apply)"),
@@ -439,6 +453,8 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Friends Add"),
         }}
       />
+
+      {platformScreens}
     </Nav.Navigator>
   );
 };

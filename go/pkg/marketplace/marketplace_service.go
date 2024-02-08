@@ -677,10 +677,6 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 			return errors.Wrap(err, "failed to retrieve activities from db")
 		}
 		for _, activity := range activities {
-			if activity.NFT == nil {
-				s.conf.Logger.Error("missing NFT on activity")
-				continue
-			}
 			var price, denom, buyerId, sellerId string
 			var usdPrice float64
 			switch activity.Kind {
@@ -702,6 +698,9 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 			case indexerdb.ActivityKindMint:
 				if activity.Mint != nil {
 					buyerId = string(activity.Mint.BuyerID)
+					price = activity.Mint.Price
+					denom = activity.Mint.PriceDenom
+					usdPrice = activity.Mint.USDPrice
 				}
 			case indexerdb.ActivityKindBurn:
 				if activity.Burn != nil {

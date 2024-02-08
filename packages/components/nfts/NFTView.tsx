@@ -1,5 +1,5 @@
 import { isEqual } from "lodash";
-import React, { RefObject, memo, useMemo, useRef, useState } from "react";
+import React, { memo, useMemo, useState } from "react";
 import { View, StyleProp, StyleSheet, Pressable } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -12,7 +12,7 @@ import octagonSVG from "../../../assets/icons/octagon.svg";
 import raffleSVG from "../../../assets/icons/raffle.svg";
 import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
-import { useDropdowns } from "../../context/DropdownsProvider";
+import { useDropdowns } from "../../hooks/useDropdowns";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -55,8 +55,6 @@ export const NFTView: React.FC<{
   const cardWidth = isMobile ? 220 : 250;
   const flatStyle = StyleSheet.flatten(style);
 
-  const dropdownRef = useRef<View>(null);
-
   // put margins on touchable opacity
   const {
     marginBottom,
@@ -81,7 +79,6 @@ export const NFTView: React.FC<{
   return (
     <>
       <View
-        ref={dropdownRef}
         style={{
           margin,
           marginBottom,
@@ -106,9 +103,9 @@ export const NFTView: React.FC<{
         >
           <NFTViewContent
             nft={nft}
-            dropdownRef={dropdownRef}
             mobileMode={isMobile}
             localSelected={localSelected}
+            size={width}
           />
         </TertiaryBox>
       </View>
@@ -118,10 +115,10 @@ export const NFTView: React.FC<{
 
 const NFTViewContent: React.FC<{
   nft: NFT;
-  dropdownRef: RefObject<View>;
   mobileMode: boolean;
   localSelected: boolean;
-}> = memo(({ nft, dropdownRef, mobileMode, localSelected }) => {
+  size: number | undefined;
+}> = memo(({ nft, mobileMode, localSelected, size }) => {
   const insideMargin = layout.spacing_x2;
   const selectedWallet = useSelectedWallet();
   const dispatch = useAppDispatch();
@@ -134,6 +131,8 @@ const NFTViewContent: React.FC<{
       dispatch(removeSelected(nft.id));
     }
   };
+
+  const imgRenderSize = size ? size - insideMargin * 2 : 250;
 
   const isOwner = nft.ownerId === selectedWallet?.userId;
   return (
@@ -151,11 +150,7 @@ const NFTViewContent: React.FC<{
           handleClick(nft, localSelected);
         }}
       >
-        <NFTViewHeader
-          nft={nft}
-          localSelected={localSelected}
-          dropdownRef={dropdownRef}
-        />
+        <NFTViewHeader nft={nft} localSelected={localSelected} />
         <OmniLink
           to={{
             screen: "NFTDetail",
@@ -163,15 +158,15 @@ const NFTViewContent: React.FC<{
           }}
         >
           <ImageWithTextInsert
-            size={250}
+            sourceSize={250}
             imageURL={nft.imageUri}
             textInsert={nft.textInsert}
             style={{
               marginTop: 15,
               marginBottom: 20,
               borderRadius: 12,
-              width: "100%",
-              aspectRatio: 1,
+              width: imgRenderSize,
+              height: imgRenderSize,
             }}
           />
           <BrandText
@@ -220,12 +215,10 @@ const NFTViewContent: React.FC<{
 const NFTViewHeader: React.FC<{
   nft: NFT;
   localSelected: boolean;
-  dropdownRef: RefObject<View>;
-}> = memo(({ nft, localSelected, dropdownRef }) => {
+}> = memo(({ nft, localSelected }) => {
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(nft.ownerId);
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
   const isOwner = nft.ownerId === selectedWallet?.userId;
   const isOwnerAndNotListed = isOwner && !nft.isListed;
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
@@ -284,11 +277,15 @@ const NFTViewHeader: React.FC<{
         </View>
       )}
       {isOwnerAndNotListed && (
-        <View style={{ position: "relative", zIndex: 1000 }}>
-          <Pressable onPress={() => onPressDropdownButton(dropdownRef)}>
+        <View
+          style={{ position: "relative", zIndex: 1000 }}
+          ref={dropdownRef}
+          collapsable={false}
+        >
+          <Pressable onPress={() => setDropdownState(!isDropdownOpen)}>
             <SVG source={dotsCircleSVG} height={32} width={32} />
           </Pressable>
-          {isDropdownOpen(dropdownRef) && (
+          {isDropdownOpen && (
             <View
               style={{
                 position: "absolute",
@@ -304,7 +301,7 @@ const NFTViewHeader: React.FC<{
               }}
             >
               <DropdownOption
-                onPress={closeOpenedDropdown}
+                onPress={() => setDropdownState(false)}
                 icon={octagonSVG}
                 isComingSoon
                 label="Set as Avatar"
@@ -320,7 +317,7 @@ const NFTViewHeader: React.FC<{
               </OmniLink>
               <SpacerColumn size={0.5} />
               <DropdownOption
-                onPress={closeOpenedDropdown}
+                onPress={() => setDropdownState(false)}
                 icon={raffleSVG}
                 isComingSoon
                 label="Create Raffle with this NFT"
@@ -328,7 +325,7 @@ const NFTViewHeader: React.FC<{
               <SpacerColumn size={0.5} />
               <DropdownOption
                 onPress={() => {
-                  closeOpenedDropdown();
+                  setDropdownState(false);
                   setIsTransferNFTVisible(true);
                 }}
                 icon={sendSVG}
@@ -336,7 +333,7 @@ const NFTViewHeader: React.FC<{
               />
               <SpacerColumn size={0.5} />
               <DropdownOption
-                onPress={closeOpenedDropdown}
+                onPress={() => setDropdownState(false)}
                 icon={footerSVG}
                 isComingSoon
                 label="Put this NFT in the Rioters Footer"

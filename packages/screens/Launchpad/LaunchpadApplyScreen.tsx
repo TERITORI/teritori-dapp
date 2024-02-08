@@ -7,6 +7,7 @@ import {
   LaunchpadButtonProps,
 } from "./components/LaunchpadButton";
 import { BrandText } from "../../components/BrandText";
+import { OmniLink } from "../../components/OmniLink";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { ScreenFC } from "../../utils/navigation";
@@ -23,7 +24,7 @@ const BUTTONS: LaunchpadButtonProps[] = [
     title: "Create",
     description:
       "Upload your assets, enter collection metadata and deploy your collection.",
-    buttonTitle: "Coming soon",
+    buttonTitle: "Open",
   },
   {
     title: "My Collections",
@@ -55,7 +56,9 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
           url="https://airtable.com/shr1kU7kXW0267gNV"
         />
         <SpacerRow size={1.2} />
-        <LaunchpadButton {...BUTTONS[1]} />
+        <OmniLink noHoverEffect to={{ screen: "LaunchpadCreate" }}>
+          <LaunchpadButton {...BUTTONS[1]} />
+        </OmniLink>
         <SpacerRow size={1.2} />
         <LaunchpadButton {...BUTTONS[2]} />
       </View>

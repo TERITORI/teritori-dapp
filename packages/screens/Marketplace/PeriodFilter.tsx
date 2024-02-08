@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useRef, useState } from "react";
+import React, { FC, Fragment, useState } from "react";
 import { TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -8,7 +8,7 @@ import sortSVG from "../../../assets/icons/sort.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useDropdowns } from "../../context/DropdownsProvider";
+import { useDropdowns } from "../../hooks/useDropdowns";
 import {
   marketplacePeriodItems,
   PeriodItem,
@@ -22,9 +22,8 @@ import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 
 export const PeriodFilter: FC = () => {
   const { width } = useWindowDimensions();
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
+
   const timePeriod = useSelector(selectTimePeriod);
   const [selectedItem, setSelectedItem] = useState<PeriodItem>(timePeriod);
   const dispatch = useAppDispatch();
@@ -32,13 +31,13 @@ export const PeriodFilter: FC = () => {
   const onPressPeriodItem = (periodItem: PeriodItem) => {
     setSelectedItem(periodItem);
     dispatch(setTimePeriod(periodItem));
-    closeOpenedDropdown();
+    setDropdownState(false);
   };
 
   return (
-    <View ref={dropdownRef}>
+    <View ref={dropdownRef} collapsable={false}>
       <TouchableOpacity
-        onPress={() => onPressDropdownButton(dropdownRef)}
+        onPress={() => setDropdownState(!isDropdownOpen)}
         style={{
           height: 40,
           paddingLeft: layout.spacing_x1,
@@ -60,14 +59,14 @@ export const PeriodFilter: FC = () => {
         <SpacerRow size={1} />
 
         <SVG
-          source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
+          source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
           width={16}
           height={16}
           color={secondaryColor}
         />
       </TouchableOpacity>
 
-      {isDropdownOpen(dropdownRef) && (
+      {isDropdownOpen && (
         <View
           style={{
             position: "absolute",

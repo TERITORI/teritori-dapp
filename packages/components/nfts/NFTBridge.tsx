@@ -148,7 +148,7 @@ export const NFTBridge: React.FC<{
                 )}
               </View>
               <ImageWithTextInsert
-                size={250}
+                sourceSize={250}
                 imageURL={nft.imageUri}
                 style={{
                   marginTop: 15,

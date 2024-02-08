@@ -12,6 +12,7 @@ import Plausible from "plausible-tracker";
 import React, { ReactNode, memo, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform, View, Text, TextStyle } from "react-native";
+import { ClickOutsideProvider as DropdownsProvider } from "react-native-click-outside";
 import {
   enableLegacyWebImplementation,
   GestureHandlerRootView,
@@ -23,7 +24,6 @@ import { PersistGate } from "redux-persist/integration/react";
 
 import { MultisigDeauth } from "./packages/components/multisig/MultisigDeauth";
 import { Navigator } from "./packages/components/navigation/Navigator";
-import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
 import { MediaPlayerContextProvider } from "./packages/context/MediaPlayerProvider";
 import { MessageContextProvider } from "./packages/context/MessageProvider";
@@ -42,6 +42,7 @@ import { getAvailableApps } from "./packages/screens/DAppStore/query/getFromFile
 import { setAvailableApps } from "./packages/store/slices/dapps-store";
 import { setSelectedWalletId } from "./packages/store/slices/settings";
 import { persistor, store, useAppDispatch } from "./packages/store/store";
+import { isElectron } from "./packages/utils/isElectron";
 import { linking } from "./packages/utils/navigation";
 
 if (Platform.OS === "web") {
@@ -70,7 +71,7 @@ export default function App() {
   });
 
   // FIXME: Fonts don't load on electron
-  if (Platform.OS !== "web" && !fontsLoaded) {
+  if (isElectron() && !fontsLoaded) {
     return null;
   }
 
@@ -96,7 +97,7 @@ export default function App() {
                   <NavigationContainer linking={linking}>
                     <SafeAreaProvider>
                       <FeedbacksContextProvider>
-                        <DropdownsContextProvider>
+                        <DropdownsProvider>
                           <WalletsProvider>
                             <WalletSyncer />
                             <DappStoreApps />
@@ -120,7 +121,7 @@ export default function App() {
                               </SearchBarContextProvider>
                             </WalletControlContextProvider>
                           </WalletsProvider>
-                        </DropdownsContextProvider>
+                        </DropdownsProvider>
                       </FeedbacksContextProvider>
                     </SafeAreaProvider>
                   </NavigationContainer>

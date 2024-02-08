@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { z } from "zod";
 
 import { useBreedingConfig } from "./useBreedingConfig";
 import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
@@ -249,6 +250,12 @@ const getEthereumStandardNFTInfo = async (
   return nfo;
 };
 
+const zodMinimalCollectionMetadata = z.object({
+  image: z.string(),
+});
+
+type MinimalColectionMetadata = z.infer<typeof zodMinimalCollectionMetadata>;
+
 const getTeritoriBunkerNFTInfo = async (
   network: CosmosNetworkInfo,
   minterContractAddress: string,
@@ -291,9 +298,20 @@ const getTeritoriBunkerNFTInfo = async (
     );
   }
 
-  const collectionMetadata = await (
-    await fetch(web3ToWeb2URI(minterConfig.nft_base_uri))
-  ).json();
+  const collectionMetadataURI = web3ToWeb2URI(minterConfig.nft_base_uri);
+  let collectionMetadata: MinimalColectionMetadata;
+  try {
+    collectionMetadata = zodMinimalCollectionMetadata.parse(
+      await (await fetch(collectionMetadataURI)).json(),
+    );
+  } catch (e) {
+    console.warn(
+      "failed to get minimal collection metadata:",
+      collectionMetadataURI,
+      e,
+    );
+    collectionMetadata = { image: "" };
+  }
 
   // ======== Getting NFT client
   const nftClient = new TeritoriNftQueryClient(

@@ -210,6 +210,18 @@ func (h *Handler) handleExecute(e *Message) error {
 	// Index data
 	if h.config.IndexerMode == indexerdb.IndexerModeData {
 		switch wasmAction {
+		case "request_mint":
+			if err := h.handleExecuteBunkerRequestMint(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle request_mint")
+			}
+		case "batch_request_mint":
+			if err := h.handleExecuteBunkerBatchRequestMint(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle request_mint")
+			}
+		case "breed":
+			if err := h.handleExecuteBreed(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle breed")
+			}
 		case "mint":
 			if err := h.handleExecuteMint(e, &executeMsg); err != nil {
 				return errors.Wrap(err, "failed to handle mint")

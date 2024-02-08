@@ -183,17 +183,30 @@ var THE_RIOT_COSMOS_SEASONS = []Season{
 }
 
 var THE_RIOT_ETHEREUM_SEASONS = []Season{
+	// Season 0: Used when testing
+	{
+		ID:         "Season 0 - ETH",
+		GameID:     THE_RIOT_GAME_ID,
+		Denom:      "tori",
+		Decimals:   6,
+		TotalPrize: 1,
+		BossName:   "Tori Pup",
+		BossImage:  "https://bafkreidzf2kol7hi3lae33fpu6iryfw7mgbp5fbqnyewq64kagykc266h4.ipfs.cf-ipfs.com/",
+		TopN:       500,
+		StartsAt:   "2023-12-01T00:00:00",
+		EndsAt:     "2024-02-07T00:00:00",
+	},
 	// Season 1
 	{
 		ID:         "Season 1 - ETH",
 		GameID:     THE_RIOT_GAME_ID,
-		Denom:      "eth",
-		Decimals:   18,
+		Denom:      "tori",
+		Decimals:   6,
 		TotalPrize: 1,
-		BossName:   "Philipp Rustov",
-		BossImage:  "",
+		BossName:   "Tori Pup",
+		BossImage:  "https://bafkreidzf2kol7hi3lae33fpu6iryfw7mgbp5fbqnyewq64kagykc266h4.ipfs.cf-ipfs.com/",
 		TopN:       500,
-		StartsAt:   "2023-01-15T00:00:00",
-		EndsAt:     "2023-12-14T00:00:00",
+		StartsAt:   "2024-02-07T00:00:00",
+		EndsAt:     "2024-02-11T00:00:00",
 	},
 }

@@ -79,7 +79,6 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
   riotSquadStakingContractAddress: string;
   firehoseEndpoint?: string;
   indexStartBlock?: string;
-  indexStopBlock?: string;
   substreamsManifest?: string;
   toriBridgedTokenAddress?: string;
 

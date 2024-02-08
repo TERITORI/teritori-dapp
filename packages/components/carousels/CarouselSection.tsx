@@ -84,7 +84,7 @@ export const CarouselSection: React.FC<
         ref={carouselRef}
         style={style}
         width={width || 0}
-        panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
+        onConfigurePanGesture={(g) => g.enableTrackpadTwoFingerGesture(true)}
         {...carouselProps}
       />
     </Section>

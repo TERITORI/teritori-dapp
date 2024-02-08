@@ -27,6 +27,9 @@ type NFT struct {
 	PriceAmount sql.NullString `gorm:"type:numeric"`
 	PriceDenom  string
 	LockedOn    string
+	Attributes  ArrayJSONB `gorm:"type:jsonb;default:'[]'"`
+	Burnt       bool
+	NetworkID   string `gorm:"index"`
 
 	// "belongs to" relations
 	CollectionID networks.CollectionID `gorm:"index"`
@@ -34,13 +37,6 @@ type NFT struct {
 
 	// "has one" relations
 	TeritoriNFT *TeritoriNFT
-
-	// "has many" relations
-	Activities []Activity
-	Attributes ArrayJSONB `gorm:"type:jsonb;default:'[]'"`
-	Burnt      bool
-
-	NetworkID string `gorm:"index"`
 }
 
 type TeritoriNFT struct {
