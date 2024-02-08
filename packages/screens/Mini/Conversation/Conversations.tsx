@@ -170,7 +170,7 @@ export const Conversations = ({
                     </BrandText>
                   </View>
                 )}
-                {item.type === "accept-contact" && (
+                {item.type === "accept-contact" && !previousMessage && (
                   <View style={{ marginBottom: layout.spacing_x5 }}>
                     <View
                       style={{
@@ -304,7 +304,7 @@ const SingleConversation = ({
   parentMessage,
 }: ConversationType) => {
   const reactionsMade = useMemo(() => {
-    if (reactions?.length) {
+    if (!reactions?.length) {
       return [];
     }
 
