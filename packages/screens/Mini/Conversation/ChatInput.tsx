@@ -29,7 +29,7 @@ export const ChatInput = ({ conversationId, replyTo, clearReplyTo }: Props) => {
     setNewMessage(text);
   };
   const onPlusPress = () => {};
-  const onCameraPress = () => {};
+  const onCameraPress = async () => {};
   const onMicPress = () => {};
 
   const handleSendNewMessage = async (data?: any) => {
