@@ -1,10 +1,13 @@
+import { Decimal } from "@cosmjs/math";
 import { useState } from "react";
 import { View } from "react-native";
 
 import questionSVG from "../../../../assets/icons/question-gray.svg";
 import { BrandText } from "../../../components/BrandText";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
+import { UserAvatarWithFrame } from "../../../components/images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { prettyPrice } from "../../../utils/coins";
 import { ScreenFC } from "../../../utils/navigation";
 import { neutral39, neutral77 } from "../../../utils/style/colors";
@@ -15,7 +18,10 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { useSelectedNativeWallet } from "../../Wallet/hooks/useSelectedNativeWallet";
-import { useGetAssets } from "../../Wallet/util/chain-registry";
+import {
+  getExponentByDenom,
+  useGetAssets,
+} from "../../Wallet/util/chain-registry";
 import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import MiniTextInput from "../components/MiniTextInput";
@@ -50,12 +56,23 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation, route }) => {
   );
   const { denom } = route.params;
   const selectedToken = assets.find((asset) => asset.denom === denom);
+  const {
+    metadata: { image, tokenId },
+  } = useNSUserInfo(`tori-${address}`);
+
   if (!selectedToken) {
     return null;
   }
+  const amountInAtomics = Decimal.fromUserInput(
+    amount,
+    getExponentByDenom(selectedToken.denom),
+  ).atomics;
 
   return (
-    <BlurScreenContainer title="Send TORI" onGoBack={goBackTo}>
+    <BlurScreenContainer
+      title={`Send ${selectedToken.symbol}`}
+      onGoBack={goBackTo}
+    >
       <SpacerColumn size={2} />
       <View
         style={{
@@ -64,10 +81,19 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation, route }) => {
           justifyContent: "center",
         }}
       >
-        <CircularImgOrIcon
-          style={{ alignItems: "center", justifyContent: "center" }}
-          icon={selectedToken?.logo_URIs?.svg || questionSVG}
-        />
+        {image ? (
+          <View style={{ alignItems: "center", justifyContent: "center" }}>
+            <UserAvatarWithFrame userId={`tori-${address}`} size="XL" />
+            <BrandText style={[fontMedium15, { color: neutral77 }]}>
+              {tokenId}
+            </BrandText>
+          </View>
+        ) : (
+          <CircularImgOrIcon
+            style={{ alignItems: "center", justifyContent: "center" }}
+            icon={selectedToken?.logo_URIs?.png || questionSVG}
+          />
+        )}
       </View>
       <SpacerColumn size={2} />
       <View
@@ -83,7 +109,7 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation, route }) => {
           <MiniTextInputWithDropdown
             options={tokenOptions}
             value={address}
-            onChangeText={(value) => setAddress(value)}
+            onChangeText={setAddress}
           />
 
           <SpacerColumn size={1} />
@@ -93,7 +119,7 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation, route }) => {
             keyboardType="numeric"
             type="number"
             value={amount}
-            onChangeText={(value) => setAmount(value)}
+            onChangeText={setAmount}
             right={
               <CustomPressable
                 onPress={() =>
@@ -132,10 +158,11 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation, route }) => {
 
         <CustomButton
           title="Next"
+          isDisabled={!address || !amount}
           onPress={() =>
             navigation.replace("MiniSendingTori", {
               back: "MiniSendTori",
-              amount,
+              amount: amountInAtomics,
               denom,
               address,
             })
