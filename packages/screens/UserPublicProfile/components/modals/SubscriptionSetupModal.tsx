@@ -87,7 +87,6 @@ export const SubscriptionSetupModal: React.FC<{
           {tiers.map((tier, index) => {
             return (
               <AccordionComponent
-                index={index}
                 onRemoveItem={() => {
                   removeItem(tier.id);
                 }}

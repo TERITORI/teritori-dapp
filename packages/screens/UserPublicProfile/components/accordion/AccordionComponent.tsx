@@ -30,19 +30,18 @@ import {
 import { fontSemibold14, fontSemibold16 } from "@/utils/style/fonts";
 import { LocalFileData } from "@/utils/types/files";
 
-export interface AccordionProps {
-  index: number;
+interface AccordionProps {
   onRemoveItem: () => void;
 }
 
-export interface SubscriptionFormValues {
+interface SubscriptionFormValues {
   title: string;
   price: string;
   duration: string;
   description: string;
 }
 
-export const AccordionComponent = ({ index, onRemoveItem }: AccordionProps) => {
+export const AccordionComponent = ({ onRemoveItem }: AccordionProps) => {
   const [isopen, setIsopen] = useState(false);
   const [file, setFile] = useState<LocalFileData[]>([]);
 
