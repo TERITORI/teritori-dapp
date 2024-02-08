@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Image, View, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
 import { LeaderboardMarketplaceTable } from "./component/LeaderboardMarketplaceTable";
 import LeaderboardBannerImage from "../../../assets/banners/LeaderboardBanner.png";
@@ -9,6 +9,7 @@ import { useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
+import { OptimizedImage } from "@/components/OptimizedImage";
 import { Tabs } from "@/components/tabs/Tabs";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
@@ -40,8 +41,10 @@ export const LeaderboardMarketplaceScreen: React.FC = () => {
       onBackPress={() => navigation.goBack()}
     >
       <View>
-        <Image
-          source={LeaderboardBannerImage}
+        <OptimizedImage
+          width={width}
+          height={width / 4}
+          sourceURI={LeaderboardBannerImage}
           resizeMode="contain"
           style={{
             width: "100%",
