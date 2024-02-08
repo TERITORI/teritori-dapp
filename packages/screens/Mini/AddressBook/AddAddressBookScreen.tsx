@@ -1,10 +1,12 @@
 import { bech32 } from "bech32";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
 
 import addSVG from "../../../../assets/icons/add-circle-outline.svg";
+import { UserAvatarWithFrame } from "../../../components/images/AvatarWithFrame";
 import { SpacerColumn } from "../../../components/spacer";
+import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { addEntry, selectAllAddressBook } from "../../../store/slices/wallets";
 import { useAppDispatch } from "../../../store/store";
 import { ScreenFC } from "../../../utils/navigation";
@@ -19,12 +21,19 @@ const AddAddressBookScreen: ScreenFC<"AddAddressBook"> = ({ navigation }) => {
     navigation.replace("AddressBook", { back: "AddAddressBook" });
   const dispatch = useAppDispatch();
 
-  const [name, setName] = useState("");
+  const [name, setName] = useState("aa");
   const [address, setAddress] = useState("");
   const addresses = useSelector(selectAllAddressBook);
   // hoping to reduce duplicate ids
   const newId = useMemo(() => addresses.length + 1, [addresses]);
 
+  const {
+    metadata: { image, tokenId },
+  } = useNSUserInfo(`tori-${address}`);
+
+  useEffect(() => {
+    setName(tokenId || "");
+  }, [tokenId, address]);
   return (
     <BlurScreenContainer title="Add Address" onGoBack={goBackTo}>
       <SpacerColumn size={2} />
@@ -35,10 +44,18 @@ const AddAddressBookScreen: ScreenFC<"AddAddressBook"> = ({ navigation }) => {
           paddingHorizontal: layout.spacing_x2,
         }}
       >
-        <CircularImgOrIcon
-          style={{ alignItems: "center", justifyContent: "center" }}
-          icon={addSVG}
-        />
+        {image ? (
+          <UserAvatarWithFrame
+            userId={`tori-${address}`}
+            size="XL"
+            style={{ alignItems: "center", justifyContent: "center" }}
+          />
+        ) : (
+          <CircularImgOrIcon
+            style={{ alignItems: "center", justifyContent: "center" }}
+            icon={addSVG}
+          />
+        )}
       </View>
       <SpacerColumn size={4} />
       <View
@@ -49,7 +66,11 @@ const AddAddressBookScreen: ScreenFC<"AddAddressBook"> = ({ navigation }) => {
         }}
       >
         <View style={{ flex: 1 }}>
-          <MiniTextInput placeholder="Label" onChangeText={setName} />
+          <MiniTextInput
+            placeholder="Label"
+            onChangeText={setName}
+            value={name}
+          />
 
           <SpacerColumn size={1} />
           <MiniTextInput placeholder="Address" onChangeText={setAddress} />
