@@ -3,8 +3,7 @@ import { SigningStargateClient } from "@cosmjs/stargate";
 import { getNativeWallet } from "./getNativeWallet";
 import { mustGetCosmosNetwork } from "../../../networks";
 
-export const useNativeSigner = async () => {
-  const networkId = "teritori";
+export const useNativeSigner = async (networkId: string = "teritori") => {
   const network = mustGetCosmosNetwork(networkId);
 
   const wallet = await getNativeWallet();

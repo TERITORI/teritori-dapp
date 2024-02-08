@@ -47,7 +47,7 @@ export const CreateWalletScreen: ScreenFC<"CreateWallet"> = ({
   useEffect(() => {
     (async () => {
       const mnemonicValue = await getMnemonic(maxIndex + 1);
-      const native = await getNativeWallet("TORI", maxIndex + 1);
+      const native = await getNativeWallet("tori", maxIndex + 1);
 
       // @ts-ignore
       setWallet(native);
