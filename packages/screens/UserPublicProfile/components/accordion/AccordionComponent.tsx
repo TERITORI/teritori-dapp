@@ -28,6 +28,7 @@ import {
   secondaryColor,
 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "@/utils/style/fonts";
+import { LocalFileData } from "@/utils/types/files";
 
 export interface AccordionProps {
   index: number;
@@ -43,6 +44,8 @@ export interface SubscriptionFormValues {
 
 export const AccordionComponent = ({ index, onRemoveItem }: AccordionProps) => {
   const [isopen, setIsopen] = useState(false);
+  const [file, setFile] = useState<LocalFileData[]>([]);
+
   const { control, watch } = useForm<SubscriptionFormValues>({
     defaultValues: {
       title: "",
@@ -71,7 +74,10 @@ export const AccordionComponent = ({ index, onRemoveItem }: AccordionProps) => {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Image
             source={{
-              uri: "https://imgproxy.tools.teritori.com/insecure/width:136/height:136/plain/ipfs%3A%2F%2Fbafybeihn5k3lskhj5xysdplt7eqw2vehzngbu2zrs7ctfqv77nkzygik6q%2Fcollection-image.gif",
+              uri:
+                file.length > 0
+                  ? URL.createObjectURL(file[0].file)
+                  : "https://imgproxy.tools.teritori.com/insecure/width:136/height:136/plain/ipfs%3A%2F%2Fbafybeihn5k3lskhj5xysdplt7eqw2vehzngbu2zrs7ctfqv77nkzygik6q%2Fcollection-image.gif",
             }}
             style={{
               height: 48,
@@ -109,7 +115,7 @@ export const AccordionComponent = ({ index, onRemoveItem }: AccordionProps) => {
               height: ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT,
               maxWidth: ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH,
             }}
-            onUpload={(files) => {}}
+            onUpload={(files) => setFile([files?.[0]])}
             mimeTypes={IMAGE_MIME_TYPES}
           />
           <SpacerColumn size={1} />
