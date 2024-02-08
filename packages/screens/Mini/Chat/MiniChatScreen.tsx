@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   TouchableOpacity,
   View,
@@ -21,7 +22,10 @@ import { SpacerColumn } from "../../../components/spacer";
 import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
 import { ToastInfo } from "../../../components/toasts/ToastInfo";
 import { useMessage } from "../../../context/MessageProvider";
-import { selectConversationList } from "../../../store/slices/message";
+import {
+  selectConversationList,
+  selectIsWeshConnected,
+} from "../../../store/slices/message";
 import { RootState } from "../../../store/store";
 import { RouteName, useAppNavigation } from "../../../utils/navigation";
 import {
@@ -89,6 +93,7 @@ const Item = ({ title, icon, route, value, onClick }: ItemProps) => {
       onClick(value ?? "");
     }
   };
+
   return (
     <CustomPressable onPress={onNavigateToRoute}>
       <View
@@ -156,6 +161,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
   const conversationList = useSelector((state: RootState) =>
     selectConversationList(state, activeConversationType),
   );
+  const isWeshConnected = useSelector(selectIsWeshConnected);
 
   const hasChats = conversationList.length > 0;
 
@@ -166,6 +172,39 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
     navigation.navigate("MiniChatSetting", { back: undefined });
     // setIsChatSettingModalVisible(true);
   };
+
+  if (!isWeshConnected) {
+    return (
+      <ScreenContainer
+        headerChildren={<></>}
+        responsive
+        fullWidth
+        footerChildren={<></>}
+        noScroll
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            padding: layout.spacing_x1,
+          }}
+        >
+          <ActivityIndicator size={"large"} />
+          <BrandText
+            style={[
+              fontSemibold14,
+              { textAlign: "center", marginTop: layout.spacing_x1_5 },
+            ]}
+          >
+            We are currently in the process of setting up Weshnet, and it will
+            be ready within just a few short minutes.{"\n"} Thank you for your
+            understanding
+          </BrandText>
+        </View>
+      </ScreenContainer>
+    );
+  }
 
   return (
     <ScreenContainer

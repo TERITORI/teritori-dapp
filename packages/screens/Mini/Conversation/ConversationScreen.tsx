@@ -3,10 +3,9 @@ import { SafeAreaView, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 import { ChatHeader } from "./ChatHeader";
-import { ChatInput } from "./ChatInput";
 import { Conversations } from "./Conversations";
 import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { SpacerRow } from "../../../components/spacer";
 import {
   selectConversationById,
   selectMessageList,
@@ -108,9 +107,8 @@ export const ConversationScreeen: ScreenFC<"Conversation"> = ({
             contactMessages={contactMessages}
             isTyping={false}
             conversationItem={conversationItem}
+            conversationId={conversationId}
           />
-          <SpacerColumn size={1} />
-          <ChatInput conversationId={conversationId} />
         </KeyboardAvoidingView>
       </View>
     </SafeAreaView>
