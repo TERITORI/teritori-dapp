@@ -158,7 +158,7 @@ export const Conversations = ({
                             ? conversationItem?.members.map((_, index) =>
                                 getConversationAvatar(conversationItem, index),
                               )
-                            : [""]
+                            : []
                         }
                         size="xlg"
                         hideStatusIndicator
@@ -192,6 +192,7 @@ export const Conversations = ({
                     reactions={item?.reactions}
                     onLongPress={handleLongPressMessage}
                     parentMessage={parentMessage}
+                    files={item?.payload?.files}
                     showMessageOptions={
                       longPressedMessageId
                         ? longPressedMessageId === item?.id

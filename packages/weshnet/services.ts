@@ -300,6 +300,7 @@ export const sendMessage = async ({
   if (!groupPk) {
     return;
   }
+
   try {
     await weshClient.client.AppMessageSend({
       groupPk,
