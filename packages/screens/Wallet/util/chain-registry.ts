@@ -1,4 +1,9 @@
-import { AssetList } from "@chain-registry/types/types/assets";
+import { AssetList } from "@chain-registry/types";
+import {
+  CoinDenom,
+  Exponent,
+  getExponentByDenom as _getExponentByDenom,
+} from "@chain-registry/utils";
 import { assets } from "chain-registry";
 
 import { useBalances } from "../../../hooks/useBalances";
@@ -29,4 +34,8 @@ export const useGetAssets = (
       networkId,
     };
   });
+};
+
+export const getExponentByDenom = (denom: CoinDenom): Exponent => {
+  return _getExponentByDenom(assets, denom, "teritori");
 };
