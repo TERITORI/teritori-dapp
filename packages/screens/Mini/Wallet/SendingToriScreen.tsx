@@ -1,3 +1,11 @@
+import { Decimal } from "@cosmjs/math";
+import {
+  isDeliverTxFailure,
+  MsgSendEncodeObject,
+  StdFee,
+} from "@cosmjs/stargate";
+import { cosmos } from "osmojs";
+import { TxRaw } from "osmojs/dist/codegen/cosmos/tx/v1beta1/tx";
 import React, { useState } from "react";
 import { View } from "react-native";
 
@@ -12,6 +20,12 @@ import { SVG } from "../../../components/SVG";
 import { UserNameInline } from "../../../components/UserNameInline";
 import { TertiaryBadge } from "../../../components/badges/TertiaryBadge";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import {
+  cosmosTypesRegistry,
+  getCosmosNetwork,
+  getStakingCurrency,
+} from "../../../networks";
+import { cosmosNetwork } from "../../../networks/cosmos-hub";
 import { prettyPrice } from "../../../utils/coins";
 import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import {
@@ -22,6 +36,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { getNativeSigner } from "../../Wallet/hooks/getNativeSigner";
 import { useSelectedNativeWallet } from "../../Wallet/hooks/useSelectedNativeWallet";
 import { useGetAssets } from "../../Wallet/util/chain-registry";
 import { CustomButton } from "../components/Button/CustomButton";
@@ -34,6 +49,7 @@ import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 const getTxData = (denom: string, amount: string, userId: string) => {
   const networkId = "teritori"; // networkId placeholder
   const prettyAmount = prettyPrice(networkId, amount, denom);
+
   return [
     {
       label: "Token",
@@ -94,6 +110,14 @@ const SendingToriScreen: ScreenFC<"MiniSendingTori"> = ({
   if (!selectedToken) {
     return null;
   }
+  const cosmosMsg: MsgSendEncodeObject = {
+    typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+    value: {
+      fromAddress: selectedWallet?.address,
+      toAddress: address,
+      amount: [{ amount, denom }],
+    },
+  };
   return (
     <BlurScreenContainer
       title={`Sending ${selectedToken.symbol}`}
@@ -148,6 +172,7 @@ const SendingToriScreen: ScreenFC<"MiniSendingTori"> = ({
           visible={openModal}
           onClose={() => setOpenModal(false)}
           txData={getTxData(denom, amount, `tori-${address}`)}
+          msg={cosmosMsg}
         />
 
         <CustomButton title="Send" onPress={() => setOpenModal(true)} />
@@ -161,11 +186,21 @@ export default SendingToriScreen;
 type SendingModalProps = {
   visible: boolean;
   txData: any;
+  msg: MsgSendEncodeObject;
   onClose: () => void;
 };
 
-function SendingModal({ visible, onClose, txData }: SendingModalProps) {
+function SendingModal({ visible, onClose, txData, msg }: SendingModalProps) {
   const navigation = useAppNavigation();
+  const selectedWallet = useSelectedNativeWallet();
+  const cosmosNetwork = getCosmosNetwork(selectedWallet?.networkId);
+  if (!cosmosNetwork) {
+    throw new Error("User's network is not a Cosmos network");
+  }
+  const stakingCurrency = getStakingCurrency(selectedWallet?.networkId);
+  if (!stakingCurrency) {
+    throw new Error("Staking currency not found");
+  }
 
   return (
     <MobileModal visible={visible} onClose={onClose}>
@@ -199,7 +234,54 @@ function SendingModal({ visible, onClose, txData }: SendingModalProps) {
           />
           <CustomButton
             title="Sign"
-            onPress={() => navigation.navigate("MiniTabs")}
+            onPress={async () => {
+              let signed: TxRaw;
+              console.log("Signing tx", msg);
+              console.log("Selected wallet", selectedWallet);
+
+              if (selectedWallet === undefined) return;
+              const client = await getNativeSigner(selectedWallet);
+              if (client === undefined) return;
+
+              try {
+                const simulation = await client.simulate(
+                  selectedWallet.address,
+                  [msg],
+                  "",
+                );
+                const gasEstimate = simulation;
+                const fee: StdFee = {
+                  gas: gasEstimate.toFixed(0),
+                  amount: [
+                    {
+                      amount: (
+                        gasEstimate * cosmosNetwork.gasPriceStep.low
+                      ).toFixed(0),
+                      denom: stakingCurrency.denom,
+                    },
+                  ],
+                };
+                console.log("Simulation", simulation);
+                signed = await client.sign(
+                  selectedWallet.address,
+                  [msg],
+                  fee,
+                  "",
+                );
+                const txRaw = cosmos.tx.v1beta1.TxRaw;
+                const txResponse = await client.broadcastTx(
+                  Uint8Array.from(txRaw.encode(signed).finish()),
+                );
+                console.log("Tx sent", txResponse);
+                if (isDeliverTxFailure(txResponse)) {
+                  throw new Error(txResponse.rawLog);
+                }
+                console.log("Tx sent", txResponse);
+                navigation.navigate("MiniTabs");
+              } catch (e: any) {
+                console.error(e);
+              }
+            }}
             style={{ flex: 1 }}
           />
         </View>
