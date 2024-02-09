@@ -190,7 +190,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
             padding: layout.spacing_x1,
           }}
         >
-          <ActivityIndicator size={"large"} />
+          <ActivityIndicator size="large" />
           <BrandText
             style={[
               fontSemibold14,

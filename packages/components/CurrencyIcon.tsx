@@ -1,6 +1,6 @@
 import { camelCase } from "lodash";
 import React from "react";
-import { View } from "react-native";
+import { Image, View } from "react-native";
 
 import { SVG } from "./SVG";
 import { icons } from "../../assets";
