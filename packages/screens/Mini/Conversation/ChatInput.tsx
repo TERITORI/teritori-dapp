@@ -28,6 +28,7 @@ export const ChatInput = ({ conversationId, replyTo, clearReplyTo }: Props) => {
   const [newMessage, setNewMessage] = useState("");
   const [inputRef, setInputRef] = useState<RefObject<any> | null>(null);
   const [files, setFiles] = useState<Asset[] | null>(null);
+  const [sendingMessage, setSendingMessage] = useState(false);
 
   const onNewMessageChange = (text: string) => {
     setNewMessage(text);
@@ -54,6 +55,7 @@ export const ChatInput = ({ conversationId, replyTo, clearReplyTo }: Props) => {
     if (!newMessage && !data?.message && !files) {
       return;
     }
+    setSendingMessage(true);
     const fileToSendFormat = files
       ?.map((x) => ({
         type: x.type,
@@ -79,6 +81,8 @@ export const ChatInput = ({ conversationId, replyTo, clearReplyTo }: Props) => {
       setNewMessage("");
       setFiles(null);
       clearReplyTo();
+      setSendingMessage(false);
+
       inputRef?.current?.focus();
     } catch (err: any) {
       console.log(err);
@@ -177,7 +181,10 @@ export const ChatInput = ({ conversationId, replyTo, clearReplyTo }: Props) => {
           </>
         )}
         {(newMessage || (files && files?.length > 0)) && (
-          <CustomPressable onPress={handleSendNewMessage}>
+          <CustomPressable
+            onPress={handleSendNewMessage}
+            disabled={sendingMessage}
+          >
             <SVG source={sendSVG} height={24} />
           </CustomPressable>
         )}
