@@ -1,4 +1,3 @@
-import * as Clipboard from "expo-clipboard";
 import React, { useMemo, useState } from "react";
 import {
   View,
@@ -29,6 +28,8 @@ import {
 import { useAppDispatch } from "../../store/store";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { modalMarginPadding } from "../../utils/style/modals";
+
+import Clipboard from "@/modules/Clipboard";
 
 interface WalletItemProps {
   item: Wallet;

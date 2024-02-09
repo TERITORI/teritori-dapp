@@ -1,4 +1,3 @@
-import * as Clipboard from "expo-clipboard";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 
@@ -7,6 +6,8 @@ import { LegacyTertiaryBox } from "./boxes/LegacyTertiaryBox";
 import copySVG from "../../assets/icons/copy.svg";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { neutral22 } from "../utils/style/colors";
+
+import Clipboard from "@/modules/Clipboard";
 
 export const CopyToClipboardIcon: React.FC<{
   text: string;

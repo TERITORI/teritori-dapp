@@ -33,7 +33,9 @@
     "expo-splash-screen",
     "electron-store",
     "redux-persist-electron-storage",
-    "@axelar-network/axelarjs-types"
+    "@axelar-network/axelarjs-types",
+    "@react-native-clipboard/clipboard",
+    "react-native-fs"
   ],
   "ignorePatterns": [
     "/cache",
