@@ -40,10 +40,10 @@ Then press `w` to open the page in your browser
 ### Build web app
 
 ```
-yarn && npx expo-optimize && npx expo export:web
+yarn && npx expo-optimize && npx expo export -p web
 ```
 
-The site is in `web-build/`
+The site is in `dist/`
 
 ## Introduction
 

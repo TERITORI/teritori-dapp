@@ -1,6 +1,7 @@
 import { MultisigThresholdPubkey } from "@cosmjs/amino";
 import { makeMultisignedTxBytes } from "@cosmjs/stargate";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Buffer } from "buffer";
 
 import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";

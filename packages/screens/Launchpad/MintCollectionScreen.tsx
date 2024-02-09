@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   StyleProp,
-  TextStyle,
   View,
   ViewStyle,
   useWindowDimensions,
@@ -87,15 +86,6 @@ import { DepositWithdrawModal } from "../WalletManager/components/DepositWithdra
 
 const maxImageSize = 532;
 const cardsHalfGap = 6;
-
-const countDownTxtStyleStarts: StyleProp<TextStyle> = {
-  fontSize: 16,
-  letterSpacing: 0,
-  lineHeight: 20,
-  fontFamily: "Exo_600SemiBold",
-  fontWeight: "600",
-  color: pinkDefault,
-};
 
 const sleep = (duration: number) =>
   new Promise((resolve) => setTimeout(resolve, duration));
@@ -346,7 +336,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     switch (mintAddress) {
       case getCosmosNetwork(network?.id)?.riotContractAddressGen0:
         return "https://teritori.notion.site/The-R-ot-Terms-Conditions-0ea730897c964b04ab563e0648cc2f5b";
-      case getEthereumNetwork(network?.id)?.riotContractAddress:
+      case getEthereumNetwork(network?.id)?.riotContractAddressGen0:
         return "https://teritori.notion.site/The-Riot-Terms-Conditions-ETH-92328fb2d4494b6fb073b38929b28883";
       default:
         return null;
@@ -897,9 +887,23 @@ const PhaseCountdown: React.FC<{
         until={(startsAt || now) - now}
         onFinish={onCountdownEnd}
         size={8}
+        digitTxtStyle={{
+          fontSize: 16,
+          letterSpacing: 0,
+          lineHeight: 20,
+          fontFamily: "Exo_600SemiBold",
+          fontWeight: "600",
+          color: pinkDefault,
+        }}
+        separatorStyle={{
+          fontSize: 16,
+          letterSpacing: 0,
+          lineHeight: 20,
+          fontFamily: "Exo_600SemiBold",
+          fontWeight: "600",
+          color: pinkDefault,
+        }}
         style={{ marginLeft: layout.spacing_x1 }}
-        digitTxtStyle={countDownTxtStyleStarts}
-        separatorStyle={countDownTxtStyleStarts}
         digitStyle={{ backgroundColor: "none" }}
         showSeparator
         timeLabels={{ d: "", h: "", m: "", s: "" }}

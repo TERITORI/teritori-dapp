@@ -29,6 +29,9 @@ import { gnoTeritoriNetwork } from "./gno-teritori";
 import { gnoTest3Network } from "./gno-test3";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
+// import { solanaNetwork } from "./solana";
+import { polygonNetwork } from "./polygon";
+import { polygonMumbaiNetwork } from "./polygon-mumbai";
 import { teritoriNetwork } from "./teritori";
 import { teritoriLocalnetNetwork } from "./teritori-localnet";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
@@ -48,8 +51,6 @@ import { convertKeplrSigner, getKeplr } from "../utils/keplr";
 
 export * from "./types";
 
-export const WEI_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000";
-
 const packageNetworks = [
   teritoriNetwork,
   cosmosNetwork,
@@ -63,6 +64,8 @@ const packageNetworks = [
   gnoTest3Network,
   gnoDevNetwork,
   gnoTeritoriNetwork,
+  polygonMumbaiNetwork,
+  polygonNetwork,
 ];
 
 export const defaultEnabledNetworks = [
@@ -70,6 +73,8 @@ export const defaultEnabledNetworks = [
   "teritori-testnet",
   "ethereum",
   "ethereum-goerli",
+  "polygon",
+  "polygon-mumbai",
   "cosmos-hub",
   "osmosis",
   "gno-teritori",

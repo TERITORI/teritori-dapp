@@ -79,7 +79,7 @@ func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExe
 	// create activity
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:    h.config.Network.ActivityID(e.TxHash, e.MsgIndex),
-		NFTID: nftId,
+		NFTID: &nftId,
 		Kind:  indexerdb.ActivityKindUpdateNFTPrice,
 		Time:  blockTime,
 		UpdateNFTPrice: &indexerdb.UpdateNFTPrice{
@@ -87,7 +87,9 @@ func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExe
 			PriceDenom: denom,
 			USDPrice:   usdAmount,
 			SellerID:   h.config.Network.UserID(execMsg.Sender),
+			NetworkID:  collection.NetworkID,
 		},
+		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create listing in db")
 	}
@@ -159,12 +161,14 @@ func (h *Handler) handleExecuteWithdraw(e *Message, execMsg *wasmtypes.MsgExecut
 	activityID := h.config.Network.ActivityID(e.TxHash, e.MsgIndex)
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:    activityID,
-		NFTID: nftID,
+		NFTID: &nftID,
 		Kind:  indexerdb.ActivityKindCancelListing,
 		Time:  blockTime,
 		CancelListing: &indexerdb.CancelListing{
-			SellerID: h.config.Network.UserID(execMsg.Sender),
+			SellerID:  h.config.Network.UserID(execMsg.Sender),
+			NetworkID: collection.NetworkID,
 		},
+		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create listing cancelation in db")
 	}
@@ -274,7 +278,7 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 	activityID := h.config.Network.ActivityID(e.TxHash, e.MsgIndex)
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:    activityID,
-		NFTID: nftID,
+		NFTID: &nftID,
 		Kind:  indexerdb.ActivityKindTrade,
 		Time:  blockTime,
 		Trade: &indexerdb.Trade{
@@ -283,25 +287,29 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 			USDPrice:   usdAmount,
 			BuyerID:    buyerID,
 			SellerID:   sellerID,
+			NetworkID:  collection.NetworkID,
 		},
+		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create trade in db")
 	}
 
 	// complete buy quest
 	if err := h.db.Save(&indexerdb.QuestCompletion{
-		UserID:    buyerID,
-		QuestID:   "buy_nft",
-		Completed: true,
+		UserID:         buyerID,
+		QuestID:        "buy_nft",
+		Completed:      true,
+		QuestNetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save buy quest completion")
 	}
 
 	// complete sell quest
 	if err := h.db.Save(&indexerdb.QuestCompletion{
-		UserID:    sellerID,
-		QuestID:   "sell_nft",
-		Completed: true,
+		UserID:         sellerID,
+		QuestID:        "sell_nft",
+		Completed:      true,
+		QuestNetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save sell quest completion")
 	}
@@ -374,7 +382,7 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 	activityID := h.config.Network.ActivityID(e.TxHash, e.MsgIndex)
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:    activityID,
-		NFTID: nftID,
+		NFTID: &nftID,
 		Kind:  indexerdb.ActivityKindList,
 		Time:  blockTime,
 		Listing: &indexerdb.Listing{
@@ -382,16 +390,19 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 			PriceDenom: denom,
 			USDPrice:   usdAmount,
 			SellerID:   sellerID,
+			NetworkID:  collection.NetworkID,
 		},
+		NetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create listing in db")
 	}
 
 	// complete quest
 	if err := h.db.Save(&indexerdb.QuestCompletion{
-		UserID:    sellerID,
-		QuestID:   "list_nft",
-		Completed: true,
+		UserID:         sellerID,
+		QuestID:        "list_nft",
+		Completed:      true,
+		QuestNetworkID: collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save quest completion")
 	}

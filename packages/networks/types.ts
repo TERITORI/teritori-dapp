@@ -23,6 +23,11 @@ interface NetworkInfoBase {
   backendEndpoint: string;
   secondaryDuringMintList?: string[];
   excludeFromLaunchpadList?: string[];
+
+  // p2e
+  distributorContractAddress?: string;
+  riotContractAddressGen0?: string;
+  riotContractAddressGen1?: string;
   overrides?: string;
 }
 
@@ -47,9 +52,6 @@ export type CosmosNetworkInfo = NetworkInfoBase & {
   nameServiceTLD?: string;
   marketplaceVaultCodeId?: number;
   vaultContractAddress?: string;
-  distributorContractAddress?: string;
-  riotContractAddressGen0?: string;
-  riotContractAddressGen1?: string;
   riotSquadStakingContractAddressV1?: string;
   riotSquadStakingContractAddressV2?: string;
   riotersFooterContractAddress?: string;
@@ -73,9 +75,24 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
   endpoint: string;
   chainId: number;
   alchemyApiKey: string;
-  theGraphEndpoint: string;
   vaultContractAddress: string;
-  riotContractAddress: string;
+  riotSquadStakingContractAddress: string;
+  firehoseEndpoint?: string;
+  indexStartBlock?: string;
+  substreamsManifest?: string;
+  toriBridgedTokenAddress?: string;
+
+  riotContractAddressGen0: string;
+  riotOriginalCollectionIdGen0?: string;
+  riotBridgeAddressGen0?: string;
+  riotNFTAddressGen0?: string;
+  riotBridgedNFTAddressGen0?: string;
+
+  riotContractAddressGen1?: string;
+  riotOriginalCollectionIdGen1?: string;
+  riotBridgeAddressGen1?: string;
+  riotNFTAddressGen1?: string;
+  riotBridgedNFTAddressGen1?: string;
 };
 
 export type GnoNetworkInfo = NetworkInfoBase & {
@@ -123,9 +140,11 @@ export enum NetworkFeature {
   Swap = "Swap",
   BurnTokens = "BurnTokens",
   Organizations = "Organizations",
+  P2E = "P2E",
   SocialFeed = "SocialFeed",
   UPP = "UPP",
   RiotP2E = "RiotP2E",
+  NFTBridge = "NFTBridge",
 }
 
 export enum UserKind {

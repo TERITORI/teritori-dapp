@@ -1,4 +1,5 @@
 import { Decimal } from "@cosmjs/math";
+import { Buffer } from "buffer";
 import { ethers } from "ethers";
 import { useCallback } from "react";
 
@@ -14,7 +15,6 @@ import {
   getNativeCurrency,
   mustGetCosmosNetwork,
   mustGetEthereumNetwork,
-  WEI_TOKEN_ADDRESS,
   NetworkKind,
 } from "../networks";
 
@@ -95,7 +95,7 @@ const ethereumSellNFT = async (
     nftContractAddress,
     tokenId,
     {
-      token: WEI_TOKEN_ADDRESS,
+      token: network.currencies[0].denom,
       amount: ethers.utils.parseEther(price),
     },
     txFeeData,
