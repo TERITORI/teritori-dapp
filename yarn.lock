@@ -2099,21 +2099,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chain-registry/types@npm:^0.17.1":
-  version: 0.17.1
-  resolution: "@chain-registry/types@npm:0.17.1"
-  dependencies:
-    "@babel/runtime": ^7.21.0
-  checksum: be3c52d22e0b835aead431718f2282e722632e626d84402ab55fef8227392ae155125a6b3002a9a2dcb7438602b14da2a241423a9a8e28fab5552d0a496eb2ab
-  languageName: node
-  linkType: hard
-
 "@chain-registry/types@npm:^0.18.0":
   version: 0.18.0
   resolution: "@chain-registry/types@npm:0.18.0"
   dependencies:
     "@babel/runtime": ^7.21.0
   checksum: 420bc6fc93389cd52f7f744349f0d453322b4f83fcd18a3c379f9bc7731822abf8f1442ae20298518f1a15bd1c442a4942d1bb16becc874215acea86204d715e
+  languageName: node
+  linkType: hard
+
+"@chain-registry/utils@npm:1.18.0":
+  version: 1.18.0
+  resolution: "@chain-registry/utils@npm:1.18.0"
+  dependencies:
+    "@babel/runtime": ^7.21.0
+    "@chain-registry/types": ^0.18.0
+    bignumber.js: 9.1.1
+    sha.js: ^2.4.11
+  checksum: 5a4b9b4af5ed880a972fbab8282ad13f3c260bc1df5af448c26634584c728a0fcbbf336b4dda29f7e408f77821ac0a18a5d45f878d8b90936d43e9ae10223ca9
   languageName: node
   linkType: hard
 
@@ -7930,6 +7933,13 @@ __metadata:
     bindings: ^1.3.0
     node-gyp: latest
   checksum: d010c9f57758bcdaccb435d88b483ffcc95fe8bbc6e7fb3a44fb5221f29c894ffaf4a3c5a4a530e0e7d6608203c2cde9b79ee4f2386cd6d4462d1070bc8c9f4e
+  languageName: node
+  linkType: hard
+
+"bignumber.js@npm:9.1.1":
+  version: 9.1.1
+  resolution: "bignumber.js@npm:9.1.1"
+  checksum: ad243b7e2f9120b112d670bb3d674128f0bd2ca1745b0a6c9df0433bd2c0252c43e6315d944c2ac07b4c639e7496b425e46842773cf89c6a2dcd4f31e5c4b11e
   languageName: node
   linkType: hard
 
@@ -20573,7 +20583,7 @@ __metadata:
     "@babel/plugin-transform-arrow-functions": ^7.23.3
     "@babel/plugin-transform-shorthand-properties": ^7.23.3
     "@babel/plugin-transform-template-literals": ^7.23.3
-    "@chain-registry/types": ^0.17.1
+    "@chain-registry/utils": 1.18.0
     "@cosmjs/amino": 0.32.2
     "@cosmjs/cosmwasm-stargate": 0.32.2
     "@cosmjs/encoding": ^0.32.2

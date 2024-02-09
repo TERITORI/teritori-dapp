@@ -11,8 +11,16 @@ import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { selectContactRequestList } from "../../../store/slices/message";
 import { ScreenFC } from "../../../utils/navigation";
-import { neutral22, secondaryColor } from "../../../utils/style/colors";
-import { fontMedium14, fontSemibold14 } from "../../../utils/style/fonts";
+import {
+  neutral22,
+  neutral77,
+  secondaryColor,
+} from "../../../utils/style/colors";
+import {
+  fontMedium14,
+  fontMedium16,
+  fontSemibold14,
+} from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ContactRequest } from "../../../utils/types/message";
 import { weshClient } from "../../../weshnet";
@@ -71,21 +79,34 @@ export const MiniFriendScreen: ScreenFC<"MiniFriend"> = ({ navigation }) => {
         <SpacerColumn size={2} />
 
         <View style={{ flex: 1 }}>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={contactRequestList}
-            renderItem={({ item }) => (
-              <FriendRequest
-                data={item}
-                name={item.name}
-                isOnline={false}
-                avatar={undefined}
-                setOpenToast={setOpenToast}
-              />
-            )}
-            keyExtractor={(item) => item.id}
-            style={{}}
-          />
+          {contactRequestList.length > 0 ? (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={contactRequestList}
+              renderItem={({ item }) => (
+                <FriendRequest
+                  data={item}
+                  name={item.name}
+                  isOnline={false}
+                  avatar={undefined}
+                  setOpenToast={setOpenToast}
+                />
+              )}
+              keyExtractor={(item) => item.id}
+              style={{}}
+            />
+          ) : (
+            <View style={{ flex: 1 }}>
+              <BrandText
+                style={[
+                  fontMedium16,
+                  { textAlign: "center", color: neutral77 },
+                ]}
+              >
+                No Friend Requests yet.
+              </BrandText>
+            </View>
+          )}
           <CustomButton
             onPress={() => setActiveModal("addFriend")}
             title="Send Friend Request"
