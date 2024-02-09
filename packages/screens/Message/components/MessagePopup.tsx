@@ -1,4 +1,3 @@
-import * as Clipboard from "expo-clipboard";
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 
@@ -13,6 +12,8 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+
+import Clipboard from "@/modules/Clipboard";
 
 interface MessagePopupProps {
   message: string;

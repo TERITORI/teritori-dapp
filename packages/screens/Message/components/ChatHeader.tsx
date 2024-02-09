@@ -1,4 +1,3 @@
-import * as Clipboard from "expo-clipboard";
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
@@ -26,6 +25,8 @@ import { subscribeMessages } from "../../../weshnet/message/subscriber";
 import { getConversationName } from "../../../weshnet/messageHelpers";
 import { createMultiMemberShareableLink } from "../../../weshnet/services";
 import { bytesFromString } from "../../../weshnet/utils";
+
+import Clipboard from "@/modules/Clipboard";
 
 interface ChatHeaderProps {
   searchInput: string;
