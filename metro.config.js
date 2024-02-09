@@ -29,6 +29,16 @@ module.exports = (() => {
         type: "empty",
       };
     }
+    if (
+      platform === "web" &&
+      ["react-native-fs", "@react-native-clipboard/clipboard"].includes(
+        moduleName,
+      )
+    ) {
+      return {
+        type: "empty",
+      };
+    }
     //TODO: remove after electron renderer fix
     if (
       platform === "web" &&

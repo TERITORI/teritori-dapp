@@ -5270,6 +5270,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-clipboard/clipboard@npm:^1.13.2":
+  version: 1.13.2
+  resolution: "@react-native-clipboard/clipboard@npm:1.13.2"
+  peerDependencies:
+    react: ">=16.0"
+    react-native: ">=0.57.0"
+  checksum: e26a2b92ff4cd8f5cc1bd5ae784fa7b2d9437d7801abf9a09bf34ddb450bb5e898256e1793f22543ef0576710dab99fa6ccf693364a04f1334acc6eccd64b497
+  languageName: node
+  linkType: hard
+
 "@react-native-community/cli-clean@npm:12.3.0":
   version: 12.3.0
   resolution: "@react-native-community/cli-clean@npm:12.3.0"
@@ -16668,6 +16678,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-fs@npm:^2.20.0":
+  version: 2.20.0
+  resolution: "react-native-fs@npm:2.20.0"
+  dependencies:
+    base-64: ^0.1.0
+    utf8: ^3.0.0
+  peerDependencies:
+    react-native: "*"
+    react-native-windows: "*"
+  peerDependenciesMeta:
+    react-native-windows:
+      optional: true
+  checksum: 0be9bb9a5c13b501d0a3006efc3aa5c0b5b211456ee04718297f4e522532f3527f1daa220bd67d3b82d819ed8fdab8f64b7d6e0d7b768c1fd1d8ec9122d94316
+  languageName: node
+  linkType: hard
+
 "react-native-gesture-handler@npm:~2.14.0":
   version: 2.14.1
   resolution: "react-native-gesture-handler@npm:2.14.1"
@@ -19059,6 +19085,7 @@ __metadata:
     "@pinata/sdk": ^2.1.0
     "@react-native-anywhere/polyfill-base64": ^0.0.1-alpha.0
     "@react-native-async-storage/async-storage": 1.21.0
+    "@react-native-clipboard/clipboard": ^1.13.2
     "@react-native-community/slider": 4.4.2
     "@react-native-masked-view/masked-view": 0.3.0
     "@react-navigation/bottom-tabs": ^6.5.11
@@ -19106,6 +19133,7 @@ __metadata:
     expo-dev-client: ~3.3.8
     expo-doctor: ^1.1.3
     expo-document-picker: ~11.10.1
+    expo-file-system: ~16.0.6
     expo-font: ~11.10.2
     expo-linear-gradient: ~12.7.1
     expo-optimize: ^0.2.20
@@ -19137,6 +19165,7 @@ __metadata:
     react-native-confetti-cannon: ^1.5.2
     react-native-countdown-component: ^2.7.1
     react-native-drax: ^0.10.2
+    react-native-fs: ^2.20.0
     react-native-gesture-handler: ~2.14.0
     react-native-get-random-values: ~1.8.0
     react-native-heroicons: ^3.2.0
@@ -19941,6 +19970,13 @@ __metadata:
     node-gyp: latest
     node-gyp-build: ^4.3.0
   checksum: 5579350a023c66a2326752b6c8804cc7b39dcd251bb088241da38db994b8d78352e388dcc24ad398ab98385ba3c5ffcadb6b5b14b2637e43f767869055e46ba6
+  languageName: node
+  linkType: hard
+
+"utf8@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "utf8@npm:3.0.0"
+  checksum: cb89a69ad9ab393e3eae9b25305b3ff08bebca9adc839191a34f90777eb2942f86a96369d2839925fea58f8f722f7e27031d697f10f5f39690f8c5047303e62d
   languageName: node
   linkType: hard
 

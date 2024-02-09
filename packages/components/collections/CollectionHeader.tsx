@@ -1,4 +1,3 @@
-import * as Clipboard from "expo-clipboard";
 import React from "react";
 import { View, Platform, Linking } from "react-native";
 
@@ -25,6 +24,8 @@ import { FilterButton } from "../sorts/FilterButton";
 import { SortButton } from "../sorts/SortButton";
 import { SpacerRow } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
+
+import Clipboard from "@/modules/Clipboard";
 
 // All the screen content before the Flatlist used to display NFTs
 export const CollectionHeader: React.FC<{

@@ -36,7 +36,9 @@
     "@axelar-network/axelarjs-types",
     "@cosmjs/crypto",
     "@cosmjs/ledger-amino",
-    "@ledgerhq/hw-transport"
+    "@ledgerhq/hw-transport",
+    "@react-native-clipboard/clipboard",
+    "react-native-fs"
   ],
   "ignorePatterns": [
     "/cache",
