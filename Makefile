@@ -386,5 +386,5 @@ init-weshd-go:
 
 .PHONY: bump-ios-build-number
 bump-ios-build-number:  
-	npx tsx packages/scripts/app-build/bumpBuildNumber.ts $(shell git rev-list HEAD --count)
+	npx tsx packages/scripts/app-build/bumpBuildNumber.ts $(shell echo $$(($$(git rev-list HEAD --count) + 10)))
 
