@@ -10,7 +10,7 @@ import useFetch from "../../../Wallet/hooks/useFetch";
 import BlurViewWrapper from "../../components/BlurViewWrapper";
 
 export const ShowSeedPhrase = () => {
-  const phrase = useFetch<string | undefined>(getMnemonic);
+  const phrase = useFetch<string | null>(getMnemonic);
 
   return (
     <View

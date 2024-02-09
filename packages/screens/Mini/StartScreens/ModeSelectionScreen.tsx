@@ -55,7 +55,6 @@ export const ModeSelectionScreen: ScreenFC<"ModeSelection"> = ({
         autoPlay
         data={[...new Array(2).keys()]}
         scrollAnimationDuration={1000}
-        // onSnapToItem={(index) => setActiveIndex(index)}
         onScrollStart={() => {
           setActiveIndex((prev) => (prev + 1 < totalSlides ? prev + 1 : 0));
         }}

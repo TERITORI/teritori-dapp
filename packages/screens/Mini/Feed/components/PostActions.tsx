@@ -7,7 +7,6 @@ import { TipButton } from "../../../../components/socialFeed/SocialActions/TipBu
 import { SpacerRow } from "../../../../components/spacer";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
-// import { useSocialReactions } from "../../../../hooks/useSocialReactions";
 import { parseUserId } from "../../../../networks";
 
 type CardFooterProps = {
@@ -20,11 +19,6 @@ export function PostActions({ post, setPost }: CardFooterProps) {
   const authorNSInfo = useNSUserInfo(post.authorId);
   const [, authorAddress] = parseUserId(post.authorId);
   const username = authorNSInfo?.metadata?.tokenId || authorAddress;
-
-  // const { handleReaction, isPostMutationLoading } = useSocialReactions({
-  //   post,
-  //   setPost,
-  // });
 
   return (
     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -39,16 +33,7 @@ export function PostActions({ post, setPost }: CardFooterProps) {
           flex: 1,
         }}
       >
-        {/* <PostReactions
-          reactions={post.reactions}
-          onPressReaction={handleReaction}
-          isLoading={isPostMutationLoading}
-        /> */}
         <SpacerRow size={1} />
-        {/* <EmojiSelector
-          onEmojiSelected={handleReaction}
-          isLoading={isPostMutationLoading}
-        /> */}
       </View>
 
       <TipButton

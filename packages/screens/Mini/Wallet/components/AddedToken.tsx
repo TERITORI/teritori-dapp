@@ -17,19 +17,12 @@ import { findByBaseDenom } from "../../../Wallet/util/chain-registry";
 type Props = {
   icon: string | FC<SvgProps>;
   denom: string;
-  // code: string;
   amount: string;
   dollarAmount: string;
   onPress: () => void;
 };
 
-export const AddedToken = ({
-  // code,
-  dollarAmount,
-  onPress,
-  denom,
-  amount,
-}: Props) => {
+export const AddedToken = ({ dollarAmount, onPress, denom, amount }: Props) => {
   const assetList = findByBaseDenom(denom);
   const asset = assetList?.assets[0];
 
@@ -71,12 +64,6 @@ export const AddedToken = ({
           }}
         >
           <BrandText style={[fontSemibold14]}>{asset?.symbol}</BrandText>
-          {/*<BrandText style={[fontMedium13, { color: neutralA3 }]}>*/}
-          {/*  {code}*/}
-          {/*</BrandText>*/}
-          {/*<CustomPressable onPress={onCopyPrivateKeyPress}>*/}
-          {/*  <SVG source={copySVG} height={16} width={16} />*/}
-          {/*</CustomPressable>*/}
         </View>
       </View>
       <CustomPressable

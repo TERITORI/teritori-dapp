@@ -159,7 +159,6 @@ export const MiniVideoPostDetails = ({
             videoMetadata={video}
             style={{
               aspectRatio: 1.7,
-              // height: 540,
               width: windowWidth - 2,
               borderRadius: SOCIAl_CARD_BORDER_RADIUS,
             }}

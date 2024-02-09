@@ -46,14 +46,12 @@ const wallets = [
 ];
 
 const NativeWallet: ScreenFC<"NativeWallet"> = () => {
-  const video = React.useRef(null);
+  const video = React.useRef<Video>(null);
 
   useEffect(() => {
     if (video.current) {
-      // @ts-ignore
       video.current.unloadAsync().then(() => {
-        // @ts-ignore
-        video.current.loadAsync(
+        video?.current?.loadAsync(
           require("../../../../assets/videos/teritori-os-anim-ios.mp4"),
           {
             shouldPlay: true,

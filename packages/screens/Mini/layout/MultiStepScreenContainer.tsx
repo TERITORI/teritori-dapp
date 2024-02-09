@@ -8,7 +8,7 @@ import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
 import { useAppNavigation } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
-import { ProgressLine2 } from "../components/ProgressLine2";
+import { ProgressLine } from "../components/ProgressLine";
 
 interface MultiStepScreenProps extends PropsWithChildren {
   screenPercentage: number;
@@ -51,7 +51,7 @@ export default function MultiStepScreenContainer({
           />
         )}
         <SpacerColumn size={2} />
-        <ProgressLine2 percent={screenPercentage} />
+        <ProgressLine percent={screenPercentage} />
       </View>
       {children}
     </SafeAreaView>

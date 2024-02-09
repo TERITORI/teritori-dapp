@@ -49,9 +49,8 @@ export const CreateWalletScreen: ScreenFC<"CreateWallet"> = ({
       const mnemonicValue = await getMnemonic(maxIndex + 1);
       const native = await getNativeWallet("tori", maxIndex + 1);
 
-      // @ts-ignore
       setWallet(native);
-      setLocalPhrase(mnemonicValue);
+      setLocalPhrase(mnemonicValue || undefined);
     })();
   }, [maxIndex]);
 

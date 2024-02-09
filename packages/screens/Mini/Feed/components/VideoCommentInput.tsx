@@ -140,7 +140,6 @@ export const VideoCommentInput = ({
                   height: newComment
                     ? inputHeight.value || INPUT_MIN_HEIGHT
                     : INPUT_MIN_HEIGHT,
-                  //   width: "100%",
                   flex: 1,
                   color: secondaryColor,
                 },

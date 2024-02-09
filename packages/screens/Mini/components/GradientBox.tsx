@@ -50,16 +50,24 @@ export default function GradientBox({
 }
 
 function gradientPositionGenerator(direction: GradientDirectionEnum) {
-  const coordinates =
-    direction === GradientDirectionEnum.topBottom
-      ? { start: { x: 0, y: 0 }, end: { x: 0, y: 1 } }
-      : direction === GradientDirectionEnum.bottomTop
-        ? { start: { x: 1, y: 1 }, end: { x: 1, y: 0 } }
-        : direction === GradientDirectionEnum.leftDiagnol
-          ? { start: { x: 0, y: 0 }, end: { x: 1, y: 1 } }
-          : direction === GradientDirectionEnum.rightDiagnol
-            ? { start: { x: 1, y: 0 }, end: { x: 0, y: 1 } }
-            : { start: { x: 0, y: 0 }, end: { x: 0, y: 0 } };
+  let coordinates;
+  switch (direction) {
+    case GradientDirectionEnum.topBottom:
+      coordinates = { start: { x: 0, y: 0 }, end: { x: 0, y: 1 } };
+      break;
+    case GradientDirectionEnum.bottomTop:
+      coordinates = { start: { x: 1, y: 1 }, end: { x: 1, y: 0 } };
+      break;
+    case GradientDirectionEnum.leftDiagnol:
+      coordinates = { start: { x: 0, y: 0 }, end: { x: 1, y: 1 } };
+      break;
+    case GradientDirectionEnum.rightDiagnol:
+      coordinates = { start: { x: 1, y: 0 }, end: { x: 0, y: 1 } };
+      break;
+    default:
+      coordinates = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 } };
+      break;
+  }
 
   return coordinates;
 }

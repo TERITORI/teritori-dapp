@@ -161,7 +161,7 @@ const settingsSlice = createSlice({
     setIsLeapConnected: (state, action: PayloadAction<boolean>) => {
       state.isLeapConnected = action.payload;
     },
-    setINativeWalletConnected: (state, action: PayloadAction<boolean>) => {
+    setIsNativeWalletConnected: (state, action: PayloadAction<boolean>) => {
       state.isNativeWalletConnected = action.payload;
     },
     setIsAdenaConnected: (state, action: PayloadAction<boolean>) => {

@@ -79,7 +79,6 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {
               onChangeText={(text) => {
                 setLocalPhrase(correctMnemonic(text));
               }}
-              // value={localPhrase}
               style={[fontSemibold16, { color: secondaryColor, width: "100%" }]}
             />
           </View>
@@ -112,12 +111,14 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {
               (async () => {
                 await setMnemonic(localPhrase, maxIndex + 1);
                 const native = await getNativeWallet("TORI", maxIndex + 1);
-                // @ts-ignore
-                if (native === "bad mnemonic" || !native) {
+
+                if (
+                  (native as unknown as string) === "bad mnemonic" ||
+                  !native
+                ) {
                   alert("Invalid mnemonic");
                   return;
                 }
-                // @ts-ignore
                 setWallet(native);
               })();
               if (wallet) {

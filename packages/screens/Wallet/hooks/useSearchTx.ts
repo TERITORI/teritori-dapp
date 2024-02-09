@@ -83,40 +83,10 @@ export const getLastFiveTransactions = async (
       });
 
       return blocks.map((txResponse: TxResponseSDKType) => {
-        // const events = blocks.logs[0].events
-        //   .filter((message) => {
-        //     return message.type === "transfer";
-        //   })
-        //   .map((message) => {
-        //     const amount = message.attributes.find((attr) => attr.key === "amount");
-        //     const recipient = message.attributes.find(
-        //       (attr) => attr.key === "recipient",
-        //     );
-        //     const sender = message.attributes.find((attr) => attr.key === "sender");
-        //     if (
-        //       sender === undefined ||
-        //       recipient === undefined ||
-        //       amount === undefined
-        //     ) {
-        //       return {
-        //         amount: "",
-        //         recipient: "",
-        //         sender: "",
-        //       };
-        //     }
-        //
-        //     return {
-        //       amount: amount.value,
-        //       recipient: recipient.value,
-        //       sender: sender.value,
-        //     };
-        //   });
-
         return {
           // @ts-expect-error
           txhash: txResponse.txhash ? txResponse.txhash : txResponse.hash,
           height: txResponse.height,
-          // events,
           // @ts-expect-error
           tx: txResponse.tx.body.messages[0], // support only one message ?
         };

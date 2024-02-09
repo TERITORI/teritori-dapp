@@ -15,7 +15,7 @@ interface ProgressLineProps {
 
 const PADDING_LENGTH = 32;
 
-export const ProgressLine2: React.FC<ProgressLineProps> = ({
+export const ProgressLine: React.FC<ProgressLineProps> = ({
   percent,
   width = DEFAULT_WIDTH,
   style,

@@ -22,7 +22,6 @@ import MiniTextInput from "../components/MiniTextInput";
 const NFTScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
   const selectedWallet = useSelectedNativeWallet();
   const userId = `tori-${selectedWallet?.address}`;
-  // const userId = "tori-tori1c2t58ydw6ww7ukrm66xu67y2hmz66dermqax99";
   const [network] = parseNetworkObjectId(userId);
   const networkId = network?.id || "";
   const { collections } = useCollections({

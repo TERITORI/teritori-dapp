@@ -36,7 +36,6 @@ export default function DropdownWithCheck({
 }: DropdownWithCheckProps) {
   const [filters, setFilters] =
     useState<Partial<FilterOption>[]>(filterOptions);
-  // const [allOption, setAllOption] = useState(true);
 
   const filterButtons = (isChecked: boolean, value: string) => {
     if (value === "all") {
@@ -132,8 +131,8 @@ function DropdownButton({
         flexDirection: "row",
         borderRadius: 999,
         position: "relative",
-        paddingHorizontal: 12,
-        paddingVertical: 6,
+        paddingHorizontal: layout.spacing_x1_5,
+        paddingVertical: layout.spacing_x0_75,
         alignItems: "center",
       }}
     >

@@ -3,7 +3,7 @@ import { useWindowDimensions, View } from "react-native";
 
 import { BackButton } from "../../../components/navigation/components/BackButton";
 import { layout } from "../../../utils/style/layout";
-import { ProgressLine2 } from "../../Mini/components/ProgressLine2";
+import { ProgressLine } from "../../Mini/components/ProgressLine";
 
 export const TopBarWithProgress: React.FC<{ progress: number }> = ({
   progress,
@@ -21,7 +21,7 @@ export const TopBarWithProgress: React.FC<{ progress: number }> = ({
       }}
     >
       <BackButton />
-      <ProgressLine2
+      <ProgressLine
         percent={progress}
         width={width}
         style={{ width: "100%" }}

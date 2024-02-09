@@ -26,8 +26,7 @@ export const useLeap: () => UseLeapResult = () => {
   const selectedWalletId = useSelector(selectSelectedWalletId);
 
   const handleLoad = () => {
-    // @ts-ignore
-    const nativeWallet = window?.leap;
+    const nativeWallet = (window as any)?.leap;
     const hasLeap = !!nativeWallet;
     if (hasLeap) {
       console.log("nativeWallet installed");
@@ -58,8 +57,8 @@ export const useLeap: () => UseLeapResult = () => {
         return;
       }
       // todo: fix this; not tested at all for Native Wallet
-      // @ts-ignore
-      const leap = window?.leap;
+
+      const leap = (window as any).leap;
       if (!leap) {
         console.error("no leap");
         return;
@@ -85,8 +84,7 @@ export const useLeap: () => UseLeapResult = () => {
       }
 
       try {
-        // @ts-ignore
-        const leap = window?.leap;
+        const leap = (window as any)?.leap;
         if (!leap) {
           setReady(true);
           console.error("no leap");

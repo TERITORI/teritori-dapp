@@ -142,14 +142,7 @@ const NFTCard: React.FC<{ nft: NFT }> = ({ nft }) => {
             borderRadius: 12,
             zIndex: 999,
           }}
-        >
-          {/*<DropdownWithListItem*/}
-          {/*  items={[{ name: "collection 1" }, { name: "collection 2" }]}*/}
-          {/*  icon={dotSVG}*/}
-          {/*  positionStyle={{ top: 30 }}*/}
-          {/*  style={{ width: 120 }}*/}
-          {/*/>*/}
-        </View>
+        />
         {nft.imageUri ? (
           <SVGorImageIcon
             icon={web3ToWeb2URI(nft.imageUri)}

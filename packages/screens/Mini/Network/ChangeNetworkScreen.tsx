@@ -64,12 +64,6 @@ export default function ChangeNetworkScreen({
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <ListView
-              onPress={
-                () => {}
-                // navigation.navigate("EditChangeNetwork", {
-                //   addressId: item.id,
-                // })
-              }
               style={{
                 paddingHorizontal: layout.spacing_x1_5,
               }}
@@ -99,7 +93,6 @@ export default function ChangeNetworkScreen({
       <SpacerColumn size={1.5} />
       <Separator />
       <ListView
-        onPress={() => {}}
         style={{
           paddingVertical: layout.spacing_x4,
           paddingHorizontal: layout.spacing_x1_5,

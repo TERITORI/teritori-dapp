@@ -90,7 +90,6 @@ export const DropdownWithListItem = ({
           })}
         </View>
       </Dropdown>
-      {/* )} */}
     </View>
   );
 };
