@@ -2,16 +2,15 @@ import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 
 import addSVG from "./../../../../../assets/icons/add-secondary.svg";
+import { SubscriptionBottomComponent } from "./SubscriptionBottomComponent";
 import settingsSVG from "../../../../../assets/icons/settings-primary.svg";
-import ModalBase from "../../../../components/modals/ModalBase";
 import { layout } from "../../../../utils/style/layout";
 import { AccordionComponent } from "../accordion/AccordionComponent";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
-import { PrimaryButton } from "@/components/buttons/PrimaryButton";
-import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import RoundedModalBase from "@/components/modals/RoundedModalBase";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerRow } from "@/components/spacer";
 import {
@@ -40,12 +39,13 @@ export const SubscriptionSetupModal: React.FC<{
   };
 
   return (
-    <ModalBase
+    <RoundedModalBase
       visible={isVisible}
       onClose={onClose}
       width={457}
       hideMainSeparator
       scrollable
+      boxStyle={{ borderColor: neutral33 }}
       labelComponent={
         <View
           style={{
@@ -72,7 +72,7 @@ export const SubscriptionSetupModal: React.FC<{
         style={{
           alignItems: "center",
           width: "100%",
-          marginBottom: layout.spacing_x1,
+          marginBottom: layout.spacing_x2,
         }}
       >
         <PrimaryBox
@@ -129,42 +129,12 @@ export const SubscriptionSetupModal: React.FC<{
               </BrandText>
             </TouchableOpacity>
           </View>
+
           <Separator />
 
-          <View
-            style={{
-              justifyContent: "center",
-              marginVertical: layout.spacing_x1,
-              marginTop: layout.spacing_x2,
-              flexDirection: "row",
-            }}
-          >
-            <View style={{ marginHorizontal: layout.spacing_x1 }}>
-              <SecondaryButton
-                width={112}
-                size="M"
-                text="Cancel"
-                loader
-                onPress={() => {
-                  onClose();
-                }}
-              />
-            </View>
-
-            <View style={{ marginHorizontal: layout.spacing_x1 }}>
-              <PrimaryButton
-                width={112}
-                size="M"
-                text="Setup"
-                loader
-                onPress={() => {
-                  onClose();
-                }}
-              />
-            </View>
-          </View>
+          <SubscriptionBottomComponent onClose={onClose} onSubmit={onSubmit} />
         </PrimaryBox>
       </View>
-    </ModalBase>
+    </RoundedModalBase>
   );
 };

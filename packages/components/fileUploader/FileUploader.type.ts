@@ -4,6 +4,7 @@ import { StyleProp, ViewStyle } from "react-native";
 import { LocalFileData } from "../../utils/types/files";
 
 export interface FileUploaderProps {
+  defaultFile?: string;
   onUpload: (files: LocalFileData[]) => void;
   label?: string;
   style?: StyleProp<ViewStyle>;

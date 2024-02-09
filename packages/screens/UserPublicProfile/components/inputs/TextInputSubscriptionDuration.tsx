@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
-import { TextInputProps, View } from "react-native";
+import { TextInputProps } from "react-native";
 
 import { TextInputCustom } from "../../../../components/inputs/TextInputCustom";
 import { layout } from "../../../../utils/style/layout";
-import {
-  DurationDropdown,
-  dropdownOptions,
-} from "../dropdowns/DurationDropdown";
 
-import { neutral00 } from "@/utils/style/colors";
+import { BrandText } from "@/components/BrandText";
+import { PrimaryBox } from "@/components/boxes/PrimaryBox";
+import { neutral00, neutral33, secondaryColor } from "@/utils/style/colors";
+import { fontMedium14 } from "@/utils/style/fonts";
 
 interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
@@ -25,8 +24,6 @@ export const TextInputSubscriptionDuration = <T extends FieldValues>({
   label,
   placeHolder,
 }: TextInputCustomProps<T>) => {
-  const [selectedDuration, setSelectedDuration] = useState(dropdownOptions[1]);
-
   return (
     <TextInputCustom<T>
       noBrokenCorners
@@ -44,12 +41,29 @@ export const TextInputSubscriptionDuration = <T extends FieldValues>({
         borderRadius: 12,
       }}
       children={
-        <View style={{}}>
-          <DurationDropdown
-            item={selectedDuration}
-            setItem={setSelectedDuration}
-          />
-        </View>
+        <PrimaryBox
+          style={{
+            height: 24,
+            flexDirection: "row",
+            paddingHorizontal: layout.spacing_x1_5,
+            backgroundColor: neutral33,
+            alignItems: "center",
+            borderColor: neutral33,
+            borderRadius: 32,
+          }}
+        >
+          <BrandText
+            style={[
+              fontMedium14,
+              {
+                color: secondaryColor,
+                lineHeight: layout.spacing_x2,
+              },
+            ]}
+          >
+            months
+          </BrandText>
+        </PrimaryBox>
       }
     />
   );

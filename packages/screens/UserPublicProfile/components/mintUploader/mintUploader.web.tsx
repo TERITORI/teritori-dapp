@@ -23,6 +23,7 @@ import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const MintUploader: FC<FileUploaderProps> = ({
+  defaultFile,
   style,
   fileImageStyle,
   onUpload,
@@ -33,7 +34,7 @@ export const MintUploader: FC<FileUploaderProps> = ({
 }) => {
   const { setToastError } = useFeedbacks();
   const hiddenFileInput = useRef<HTMLInputElement>(null);
-  const [file, setFile] = useState("");
+  const [file, setFile] = useState(defaultFile);
 
   const handleFiles = async (files: File[]) => {
     const _files = [files[0]];
