@@ -4,7 +4,7 @@ import { SupportedChain } from "./chain-infos";
  * Gas adjustment for each network
  *
  *  */
-export const gasAdjustment: Record<SupportedChain, number> = {
+export const gasAdjustment: Partial<Record<SupportedChain, number>> = {
   chihuahua: 1.7,
   cosmos: 1.5,
   osmosis: 1.5,

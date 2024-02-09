@@ -3,8 +3,11 @@ import { SupportedChain } from "./chain-infos";
 /**
  * address prefixes object includes address prefix as key, and chain infos key as value
  * */
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const addressPrefixes: Record<string, SupportedChain | (string & {})> = {
+
+export const addressPrefixes: Record<
+  string,
+  SupportedChain | (string & object)
+> = {
   agoric: "agoric",
   akash: "akash",
   arkh: "arkh",

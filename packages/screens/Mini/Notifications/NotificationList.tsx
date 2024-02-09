@@ -33,7 +33,7 @@ export default function NotificationList() {
         renderItem={({ item }) => (
           <React.Fragment key={item.notificationId}>
             <NotificationCard item={item} />
-            <Separator style={{ marginVertical: 12 }} />
+            <Separator style={{ marginVertical: layout.spacing_x1_5 }} />
           </React.Fragment>
         )}
       />

@@ -20,7 +20,9 @@ export const DefaultGasEstimates = {
   DEFAULT_GAS_STAKE: 160_000,
 };
 
-export const defaultGasEstimates: Record<SupportedChain, GasEstimates> = {
+export const defaultGasEstimates: Partial<
+  Record<SupportedChain, GasEstimates>
+> = {
   cosmos: { ...DefaultGasEstimates, DEFAULT_GAS_TRANSFER: 80_000 },
   osmosis: DefaultGasEstimates,
   juno: { ...DefaultGasEstimates, DEFAULT_GAS_TRANSFER: 80_000 },

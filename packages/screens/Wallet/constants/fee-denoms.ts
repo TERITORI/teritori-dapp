@@ -6,7 +6,7 @@ import { SupportedChain } from "./chain-infos";
 import { denoms, NativeDenom } from "./denoms";
 
 type Network = "mainnet" | "testnet";
-type FeeDenom = Record<SupportedChain, NativeDenom>;
+type FeeDenom = Partial<Record<SupportedChain, NativeDenom>>;
 
 type FeeDenoms = Record<Network, FeeDenom>;
 

@@ -82,13 +82,6 @@ export const ChatSettingScreen: ScreenFC<"MiniChatSetting"> = ({
               <BrandText>Force turn on Chats tab</BrandText>
             </View>
 
-            {/* <Switch
-              ios_backgroundColor={isChatEnabled ? blueDefault : neutral33}
-              trackColor={{ false: neutral33, true: blueDefault }}
-              thumbColor={isChatEnabled ? "#fff" : neutral99}
-              onValueChange={onToggleChatSwitch}
-              value={isChatEnabled}
-            /> */}
             <ToggleButton isActive />
           </View>
           <SpacerColumn size={1} />

@@ -1,5 +1,3 @@
-// @ts-nocheck
-/* eslint-disable */
 export const chainIdToChain: Record<string, string> = {
   "acre_9052-1": "acrechain",
   "agoric-3": "agoric",

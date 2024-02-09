@@ -1,5 +1,3 @@
-// @ts-nocheck
-/* eslint-disable */
 export type SecretToken = {
   name: string;
   symbol: string;

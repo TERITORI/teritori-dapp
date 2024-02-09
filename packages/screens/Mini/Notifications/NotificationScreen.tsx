@@ -43,9 +43,7 @@ const filterOptionsConst = [
 ];
 
 const NotificationScreen: ScreenFC<"Notifications"> = ({ navigation }) => {
-  const [filterOptions, setFilterOptions] = useState<any>([]);
-
-  console.log(filterOptions);
+  const [, setFilterOptions] = useState<any>([]);
 
   const { width: windowWidth } = useWindowDimensions();
 
