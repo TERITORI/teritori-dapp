@@ -1,10 +1,13 @@
 import React from "react";
 import { View } from "react-native";
 
+import usdcSVG from "../../../../../assets/icons/crypto-usdc.svg";
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import { layout } from "../../../../utils/style/layout";
 
 import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { useBalances } from "@/hooks/useBalances";
@@ -12,8 +15,12 @@ import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getStakingCurrency } from "@/networks";
 import { premiumPrice } from "@/utils/coins";
-import { neutral77, secondaryColor } from "@/utils/style/colors";
-import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
+import { neutral33, neutral77, secondaryColor } from "@/utils/style/colors";
+import {
+  fontMedium14,
+  fontSemibold14,
+  fontSemibold20,
+} from "@/utils/style/fonts";
 
 export const PremiumSubscriptionBottom = ({
   onSubscribe,
@@ -36,7 +43,8 @@ export const PremiumSubscriptionBottom = ({
 
       <View
         style={{
-          margin: layout.spacing_x2,
+          marginTop: layout.spacing_x2,
+          marginHorizontal: layout.spacing_x2,
           flexDirection: "row",
           justifyContent: "space-between",
         }}
@@ -59,14 +67,43 @@ export const PremiumSubscriptionBottom = ({
           <View
             style={{
               flex: 1,
-              alignItems: "flex-end",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "flex-end",
             }}
           >
             <BrandText
               style={[fontSemibold14, { color: neutral77, lineHeight: 20 }]}
             >
-              Pay by :
+              Pay by:
             </BrandText>
+            <PrimaryBox
+              style={{
+                height: 28,
+                flexDirection: "row",
+                paddingHorizontal: layout.spacing_x1_5,
+                marginLeft: layout.spacing_x0_5,
+                backgroundColor: neutral33,
+                alignItems: "center",
+                borderColor: neutral33,
+                borderRadius: 32,
+              }}
+            >
+              <SVG source={usdcSVG} width={16} height={16} />
+
+              <BrandText
+                style={[
+                  fontMedium14,
+                  {
+                    marginLeft: layout.spacing_x0_5,
+                    color: secondaryColor,
+                    lineHeight: layout.spacing_x2,
+                  },
+                ]}
+              >
+                USDC
+              </BrandText>
+            </PrimaryBox>
           </View>
           <SpacerColumn size={1} />
 
@@ -94,6 +131,7 @@ export const PremiumSubscriptionBottom = ({
           </BrandText>
         </View>
       </View>
+
       <View
         style={{
           alignItems: "center",

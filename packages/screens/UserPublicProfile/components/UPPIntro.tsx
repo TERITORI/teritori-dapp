@@ -152,7 +152,7 @@ export const UPPIntro: React.FC<{
             }}
           />
           {isUserOwner ? (
-            <ProfileButton isEdit />
+            <ProfileButton isEdit buttonSize="M" />
           ) : (
             <SecondaryButtonOutline
               text="Follow this Teritori"

@@ -35,10 +35,13 @@ import { TextInputCustom } from "../inputs/TextInputCustom";
 import ModalBase from "../modals/ModalBase";
 import { SpacerColumn } from "../spacer";
 
+import { ButtonsSize } from "@/utils/style/buttons";
+
 export const ProfileButton: React.FC<{
+  buttonSize?: ButtonsSize;
   style?: StyleProp<ViewStyle>;
   isEdit?: boolean;
-}> = ({ style, isEdit }) => {
+}> = ({ style, isEdit, buttonSize = "XL" }) => {
   const selectedWallet = useSelectedWallet();
   const network = getNetwork(selectedWallet?.networkId);
   const { metadata } = useNSUserInfo(selectedWallet?.userId);
@@ -71,7 +74,7 @@ export const ProfileButton: React.FC<{
         }
       >
         <SecondaryButtonOutline
-          size="M"
+          size={buttonSize}
           disabled={network?.kind !== NetworkKind.Cosmos}
           text={isEdit ? "Edit profile" : "My profile"}
           backgroundColor={neutral00}
