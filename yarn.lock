@@ -2140,6 +2140,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@chain-registry/types@npm:^0.17.1":
+  version: 0.17.1
+  resolution: "@chain-registry/types@npm:0.17.1"
+  dependencies:
+    "@babel/runtime": ^7.21.0
+  checksum: be3c52d22e0b835aead431718f2282e722632e626d84402ab55fef8227392ae155125a6b3002a9a2dcb7438602b14da2a241423a9a8e28fab5552d0a496eb2ab
+  languageName: node
+  linkType: hard
+
 "@chain-registry/types@npm:^0.18.0":
   version: 0.18.0
   resolution: "@chain-registry/types@npm:0.18.0"

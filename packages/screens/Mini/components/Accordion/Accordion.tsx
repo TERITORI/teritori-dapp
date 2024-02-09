@@ -27,7 +27,7 @@ const Accordion: FC<PropsWithChildren<{ initialValue?: boolean }>> &
   );
 };
 
-export function AccordionHeader({
+function AccordionHeader({
   children,
   enableIcon = true,
   iconSize,
@@ -85,7 +85,7 @@ export function AccordionHeader({
   );
 }
 
-export function AccordionContent({
+function AccordionContent({
   children,
   height = 200,
 }: PropsWithChildren<{ height?: number }>) {

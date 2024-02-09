@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 
-export type AppType = "normal" | "mini" | "web3Addict";
+type AppType = "normal" | "mini" | "web3Addict";
 
 export const useAppType = () => {
   const [appType, setAppType] = useState<AppType | null>(null);

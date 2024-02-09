@@ -32,7 +32,7 @@ type Props = {
   refetchFeed?: () => Promise<any>;
   style?: StyleProp<ViewStyle>;
 };
-export const DEFAULT_NAME = "Anon";
+const DEFAULT_NAME = "Anon";
 
 export const MiniSocialArticle = ({ post, refetchFeed, style }: Props) => {
   const { width: windowWidth } = useWindowDimensions();

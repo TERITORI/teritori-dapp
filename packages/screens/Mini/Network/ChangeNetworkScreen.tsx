@@ -17,7 +17,7 @@ type ChangeNetworkScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ChangeNetwork">;
 };
 
-export type ChangeNetworkType = {
+type ChangeNetworkType = {
   id: string;
   label: string;
   url: string;

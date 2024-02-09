@@ -35,7 +35,7 @@ import MiniTextInput from "../components/MiniTextInput";
 import MiniToast from "../components/MiniToast";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
-export type ToastType = {
+type ToastType = {
   type?: "success" | "error";
   message: string;
 };

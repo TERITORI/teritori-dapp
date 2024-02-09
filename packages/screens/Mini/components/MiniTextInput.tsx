@@ -25,7 +25,7 @@ import { neutral22, neutral77, withAlpha } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
-export interface MiniTexInputProps extends TextInputProps {
+interface MiniTexInputProps extends TextInputProps {
   style?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<TextStyle>;
   icon?: React.FC<SvgProps> | string;

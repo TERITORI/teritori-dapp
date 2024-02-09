@@ -17,7 +17,7 @@ import { fontSemibold14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import Checkbox from "../Checkbox/Checkbox";
 
-export type FilterOption = {
+type FilterOption = {
   value: string;
   name: string;
   isChecked: boolean;

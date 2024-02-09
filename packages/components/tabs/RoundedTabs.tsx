@@ -12,7 +12,7 @@ import { layout } from "../../utils/style/layout";
 import { objectKeys } from "../../utils/typescript";
 import { BrandText } from "../BrandText";
 
-export interface TabDefinition {
+interface TabDefinition {
   name: string;
 }
 

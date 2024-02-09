@@ -14,7 +14,7 @@ import {
 } from "../../../../utils/style/colors";
 import { fontMedium16 } from "../../../../utils/style/fonts";
 
-export type CheckboxOnPressType = <T>(isChecked: boolean, value: T) => void;
+type CheckboxOnPressType = <T>(isChecked: boolean, value: T) => void;
 
 type CheckboxProp = {
   isChecked: boolean;

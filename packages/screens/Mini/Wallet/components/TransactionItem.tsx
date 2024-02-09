@@ -21,7 +21,7 @@ import { tinyAddress } from "../../../../utils/text";
 import { useSelectedNativeWallet } from "../../../Wallet/hooks/useSelectedNativeWallet";
 import { capitalizeStr } from "../TransactionDetailScreen";
 
-export type TransactionType = {
+type TransactionType = {
   txhash: string;
   tx: {
     "@type": "/cosmos.bank.v1beta1.MsgSend";

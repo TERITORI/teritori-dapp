@@ -33,7 +33,7 @@ type Props = {
   style?: StyleProp<ViewStyle>;
   isFlagged?: boolean;
 };
-export const DEFAULT_NAME = "Anon";
+const DEFAULT_NAME = "Anon";
 
 export const MiniVideo = ({ post, refetchFeed, style }: Props) => {
   const navigation = useAppNavigation();

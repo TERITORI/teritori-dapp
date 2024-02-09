@@ -64,7 +64,7 @@ export const NFTAccordion: React.FC<{
   );
 };
 
-export const AccordionTrigger: React.FC<{
+const AccordionTrigger: React.FC<{
   label: string;
   subLabel: string;
   image: string;

@@ -17,12 +17,6 @@ import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import MiniTable from "../components/Table/MiniTable";
 import MiniTableRow from "../components/Table/MiniTableRow";
 
-export type TransactionDetailType = {
-  id: string;
-  label: string;
-  address: string;
-};
-
 const transactionDetail = [
   {
     label: "date",
