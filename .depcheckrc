@@ -33,7 +33,10 @@
     "expo-splash-screen",
     "electron-store",
     "redux-persist-electron-storage",
-    "@axelar-network/axelarjs-types"
+    "@axelar-network/axelarjs-types",
+    "@cosmjs/crypto",
+    "@cosmjs/ledger-amino",
+    "@ledgerhq/hw-transport"
   ],
   "ignorePatterns": [
     "/cache",

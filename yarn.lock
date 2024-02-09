@@ -9244,13 +9244,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crypto@git+https://github.com/entronad/crypto-es.git":
-  version: 2.1.0
-  resolution: "crypto@https://github.com/entronad/crypto-es.git#commit=d506677fae3d03a454b37ad126e0c119d416b757"
-  checksum: 94acbe4658579806891c15c3956b5175ed910201488be54dd72d2a9430d824b92ad09b75ccac328512f08ef01df7455b25cd0ea58986d856635d7e31cdcd2416
-  languageName: node
-  linkType: hard
-
 "css-in-js-utils@npm:^3.1.0":
   version: 3.1.0
   resolution: "css-in-js-utils@npm:3.1.0"
@@ -14192,13 +14185,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lottie-ios@npm:4.3.3":
-  version: 4.3.3
-  resolution: "lottie-ios@npm:4.3.3"
-  checksum: 8d8976206ff0061e4339a558b49c5dafd47082be90c73f60b14d526b2fbfee6905b1a0a1850227b8f91ba3f8a7dc8336c1e55e19a8722ecde3c4dd8187e05206
-  languageName: node
-  linkType: hard
-
 "lottie-react-native@npm:6.5.1":
   version: 6.5.1
   resolution: "lottie-react-native@npm:6.5.1"
@@ -19101,7 +19087,6 @@ __metadata:
     commander: ^10.0.1
     cors-anywhere: ^0.4.4
     cross-env: ^7.0.3
-    crypto: "git+https://github.com/entronad/crypto-es.git"
     crypto-browserify: ^3.12.0
     depcheck: ^1.4.7
     dotenv: ^16.3.1
@@ -19134,7 +19119,6 @@ __metadata:
     listr2: ^8.0.1
     lodash: ^4.17.21
     long: ^5.2.1
-    lottie-ios: 4.3.3
     lottie-react-native: 6.5.1
     metamask-react: ^2.4.1
     moment: ^2.29.4
