@@ -1,6 +1,4 @@
-import { NetworkData } from "./../types/validators";
-
-export const networkData: NetworkData[] = [
+export const networkData = [
   {
     enabled: true,
     name: "osmosis",

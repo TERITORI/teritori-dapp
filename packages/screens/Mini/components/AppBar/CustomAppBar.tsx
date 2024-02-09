@@ -1,4 +1,3 @@
-import { useRoute } from "@react-navigation/native";
 import React, { ReactNode } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
@@ -31,16 +30,11 @@ const CustomAppBar = ({
   background,
   onBack,
 }: HeaderProps) => {
-  const route = useRoute();
   const navigation = useAppNavigation();
 
   const navigateBack = () => {
     if (onBack) {
       onBack();
-      return;
-    }
-    if (route?.params?.back) {
-      navigation.replace(route?.params?.back);
       return;
     }
 

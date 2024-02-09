@@ -86,7 +86,7 @@ export default function TransactionItem({
                 width: 16,
                 height: 16,
                 borderRadius: 8,
-                backgroundColor: status === "pending" ? neutral44 : blueDefault,
+                backgroundColor: status !== "success" ? neutral44 : blueDefault,
                 position: "absolute",
                 bottom: 0,
                 right: 0,
@@ -95,7 +95,7 @@ export default function TransactionItem({
               }}
             >
               <SVG
-                source={status === "pending" ? arrowUpSVG : checkSVG}
+                source={status !== "success" ? arrowUpSVG : checkSVG}
                 width={10}
                 height={10}
                 fill="#fff"

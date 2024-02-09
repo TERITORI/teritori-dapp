@@ -11,7 +11,7 @@ import dAppStoreSVG from "../../../../assets/icons/dapp-store-solid.svg";
 import googleSVG from "../../../../assets/icons/google.svg";
 import ledgerSVG from "../../../../assets/icons/ledger.svg";
 import lockSVG from "../../../../assets/icons/lock-solid.svg";
-import profileSVG from "../../../../assets/icons/profile-circle-white";
+import profileSVG from "../../../../assets/icons/profile-circle-white.svg";
 import questionSVG from "../../../../assets/icons/question-gray.svg";
 import settingSVG from "../../../../assets/icons/setting-solid.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -160,7 +160,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
                 <Account
                   accountName={"Seed Phrase #" + item.index}
                   address={item.address}
-                  logo={getProviderLogo(item.provider)}
+                  logo={getProviderLogo(item.provider) || undefined}
                   isLast={index === wallets.length - 1}
                 />
               </Pressable>

@@ -18,7 +18,7 @@ import { tinyAddress } from "../../../utils/text";
 import { copyToClipboard } from "../Wallet/TransactionDetailScreen";
 import { DropdownWithListItem } from "../components/Dropdown/DropdownWithListItem";
 
-type Props = {
+type AccountProps = {
   accountName: string;
   logo?: string | FC<SvgProps>;
   address: string;
@@ -30,7 +30,7 @@ export const Account = ({
   logo,
   address,
   isLast = false,
-}: Props) => {
+}: AccountProps) => {
   const navigation = useAppNavigation();
   const navigateToAccountDetails = () => {
     navigation.replace("MiniAccountDetails", { id: "12345", accountName });
