@@ -96,6 +96,7 @@ generate.go-networks: node_modules validate-networks
 
 .PHONY/: $(CONTRACTS_CLIENTS_DIR)/cw721-membership
 $(CONTRACTS_CLIENTS_DIR)/cw721-membership: node_modules
+	rm -fr $@
 	cd cosmwasm-contracts/cw721-membership && cargo schema
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \
@@ -104,6 +105,7 @@ $(CONTRACTS_CLIENTS_DIR)/cw721-membership: node_modules
 		--name cw721-membership \
 		--no-bundle
 	npx tsx packages/scripts/makeTypescriptIndex $@
+	touch $@
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE): node_modules
