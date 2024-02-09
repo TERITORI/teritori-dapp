@@ -1,4 +1,3 @@
-import * as Clipboard from "expo-clipboard";
 import React, { FC } from "react";
 import { View } from "react-native";
 import { SvgProps } from "react-native-svg";
@@ -33,18 +32,6 @@ export const AddedToken = ({
 }: Props) => {
   const assetList = findByBaseDenom(denom);
   const asset = assetList?.assets[0];
-  const onCopyPrivateKeyPress = async () => {
-    await Clipboard.setStringAsync(
-      JSON.stringify({
-        // code,
-        dollarAmount,
-        onPress,
-        denom,
-        amount,
-      }),
-    );
-    alert("Copied");
-  };
 
   return (
     <View

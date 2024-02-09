@@ -12,8 +12,8 @@ import {
 } from "../../hooks/feed/useFetchFeed";
 import { useAppType } from "../../hooks/useAppType";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { Spinner } from "../../screens/Mini/Feed/components/Spinner";
 import { NetworkFeature } from "../../networks";
+import { Spinner } from "../../screens/Mini/Feed/components/Spinner";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";

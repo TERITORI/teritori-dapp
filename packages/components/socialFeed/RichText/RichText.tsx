@@ -34,7 +34,7 @@ export const RichText: React.FC<RichTextProps> = ({
   const [initialHeight, setInitialHeight] = useState(windowHeight);
 
   const initialHTML = useMemo(() => {
-    const pattern = /src=\"(?!ipfs:\/\/)([^\\"]+)\"/g;
+    const pattern = /src="(?!ipfs:\/\/)([^\\"]+)"/g;
     const replacement = 'src="ipfs://$1"';
     const addedIPFShtml = initialValue.replace(pattern, replacement);
 

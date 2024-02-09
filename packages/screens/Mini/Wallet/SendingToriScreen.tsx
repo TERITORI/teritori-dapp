@@ -1,4 +1,3 @@
-import { Decimal } from "@cosmjs/math";
 import {
   isDeliverTxFailure,
   MsgSendEncodeObject,
@@ -20,12 +19,7 @@ import { SVG } from "../../../components/SVG";
 import { UserNameInline } from "../../../components/UserNameInline";
 import { TertiaryBadge } from "../../../components/badges/TertiaryBadge";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import {
-  cosmosTypesRegistry,
-  getCosmosNetwork,
-  getStakingCurrency,
-} from "../../../networks";
-import { cosmosNetwork } from "../../../networks/cosmos-hub";
+import { getCosmosNetwork, getStakingCurrency } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import {
