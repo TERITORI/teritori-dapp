@@ -97,3 +97,6 @@ substreams-*/target
 
 # eslint
 /.eslintcache
+
+# rust
+/target/
