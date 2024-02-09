@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 type AppType = "normal" | "mini" | "web3Addict";
 
 export const useAppType = () => {
-  const [appType, setAppType] = useState<AppType | null>(null);
+  const [appType, setAppType] = useState<AppType>("mini");
+
+  const handleSet = async (type: AppType) => {
+    setAppType(type);
+    await AsyncStorage.setItem("app-type", type);
+  };
 
   useEffect(() => {
     const getAppType = async () => {
@@ -16,5 +21,5 @@ export const useAppType = () => {
     getAppType();
   }, []);
 
-  return [appType, setAppType];
+  return [appType, handleSet];
 };

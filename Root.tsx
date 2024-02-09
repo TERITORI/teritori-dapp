@@ -4,7 +4,6 @@ import {
   Exo_700Bold,
   useFonts,
 } from "@expo-google-fonts/exo";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
@@ -74,18 +73,6 @@ export default function App() {
   });
   const [appType] = useAppType();
 
-  // useEffect(() => {
-  //   const getAppType = async () => {
-  //     const savedAppType = await AsyncStorage.getItem("app-type");
-  //     if (savedAppType && ["web3Addict", "mini"].includes(savedAppType)) {
-  //       setAppType("mini");
-  //     }
-  //   };
-  //   getAppType();
-  // }, []);
-
-  AsyncStorage.setItem("app-type", "mini");
-
   // FIXME: Fonts don't load on electron
   if (isElectron() && !fontsLoaded) {
     return null;
@@ -127,7 +114,8 @@ export default function App() {
                                         <MessageContextProvider>
                                           <MediaPlayerContextProvider>
                                             <StatusBar style="inverted" />
-                                            {appType === "mini" ? (
+                                            {appType === "mini" &&
+                                            Platform.OS !== "web" ? (
                                               <MiniNavigator />
                                             ) : (
                                               <Navigator />
