@@ -22,4 +22,6 @@ type Post struct {
 	IsDeleted            bool
 	IsFree               bool
 	TipAmount            int64
+
+	NetworkID string `gorm:"index"`
 }

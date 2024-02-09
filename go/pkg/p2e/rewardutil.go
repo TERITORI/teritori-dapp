@@ -6,6 +6,7 @@ import (
 	"time"
 
 	cosmosmath "cosmossdk.io/math"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/pkg/errors"
 )
@@ -14,8 +15,15 @@ var (
 	COEF = sdk.NewDec(1).Add(sdk.NewDecWithPrec(15, 4)) // 1.0015
 )
 
-func GetAllSeasons() []Season {
-	return THE_RIOT_SEASONS
+func GetAllSeasons(network networks.Network) []Season {
+	switch network.GetBase().Kind {
+	case networks.NetworkKindEthereum:
+		return THE_RIOT_ETHEREUM_SEASONS
+	case networks.NetworkKindCosmos:
+		return THE_RIOT_COSMOS_SEASONS
+	default:
+		return []Season{}
+	}
 }
 
 func GetBossHp(season Season) (int32, error) {
@@ -34,11 +42,12 @@ func GetBossHp(season Season) (int32, error) {
 }
 
 // returns: season, time passed in days, error
-func GetSeasonByTime(givenTime time.Time) (Season, float64, error) {
+func GetSeasonByTime(givenTime time.Time, network networks.Network) (Season, float64, error) {
 	layout := "2006-01-02T15:04:05"
 
-	for _, season := range GetAllSeasons() {
+	for _, season := range GetAllSeasons(network) {
 		seasonStartsAt, err := time.Parse(layout, season.StartsAt)
+
 		if err != nil {
 			return Season{}, 0, errors.Wrap(err, "failed to parsed season start time")
 		}
@@ -53,11 +62,11 @@ func GetSeasonByTime(givenTime time.Time) (Season, float64, error) {
 		}
 	}
 
-	return Season{}, 0, errors.New("not in any season")
+	return Season{}, 0, errors.New(fmt.Sprintf("not in any season with given time: %s", givenTime))
 }
 
-func GetSeasonById(seasonId string) (Season, error) {
-	for _, season := range GetAllSeasons() {
+func GetSeasonById(seasonId string, network networks.Network) (Season, error) {
+	for _, season := range GetAllSeasons(network) {
 		if seasonId == season.ID {
 			return season, nil
 		}
@@ -67,18 +76,14 @@ func GetSeasonById(seasonId string) (Season, error) {
 	return Season{}, errors.New(fmt.Sprintf("failed to find season by id :%s", seasonId))
 }
 
-func GetDailyRewardsConfigBySeason(seasonId string) (sdk.DecCoins, error) {
-	season, err := GetSeasonById(seasonId)
+func GetDailyRewardsConfigBySeason(seasonId string, network networks.Network) (sdk.DecCoins, error) {
+	season, err := GetSeasonById(seasonId, network)
 
 	if err != nil {
 		return nil, err
 	}
 
-	seasonRewards, err := GetRewardsConfigBySeason(season.ID)
-	if err != nil {
-		return nil, err
-	}
-
+	seasonRewards, err := GetRewardsConfigBySeason(season.ID, network)
 	bossHp, err := GetBossHp(season)
 	if err != nil {
 		return nil, err
@@ -87,39 +92,40 @@ func GetDailyRewardsConfigBySeason(seasonId string) (sdk.DecCoins, error) {
 	var dailyRewards sdk.DecCoins
 	for _, reward := range seasonRewards {
 		amount := reward.QuoInt64(int64(bossHp))
+		var dailyAmountInt sdk.Int
+		// Becase we bridge token from Teritori so event in EVM network, it has the 6 decimals just like from teritori
+		dailyAmountInt = cosmosmath.NewIntWithDecimal(amount.RoundInt64(), int(season.Decimals))
 
-		// Contract take utori so we need convert tori => utori
-		dailyAmountInt := cosmosmath.NewIntWithDecimal(amount.RoundInt64(), int(season.Decimals))
 		dailyCoin := sdk.NewDecCoin(season.Denom, dailyAmountInt)
 		dailyRewards = append(dailyRewards, dailyCoin)
 	}
-
 	return dailyRewards, nil
 }
 
-func GetRewardsConfigBySeason(seasonId string) ([]sdk.Dec, error) {
-	targetSeason, err := GetSeasonById(seasonId)
+func GetRewardsConfigBySeason(seasonId string, network networks.Network) ([]sdk.Dec, error) {
+	targetSeason, err := GetSeasonById(seasonId, network)
 	if err != nil {
 		return nil, err
 	}
 
-	allSeasons := GetAllSeasons()
+	allSeasons := GetAllSeasons(network)
 	if len(allSeasons) == 0 {
 		return nil, errors.New("failed to get seasons data")
 	}
-	baseSeason := allSeasons[0]
 
 	seasonPool := sdk.NewDec(int64(targetSeason.TotalPrize))
-	basePool := sdk.NewDec(int64(baseSeason.TotalPrize))
+
+	// Hardcode base pool because we base on this number for split the pool
+	basePool := sdk.NewDec(int64(1_800_000))
 
 	seasonCoef := seasonPool.Quo(basePool)
 	baseRewardsConfig := getBaseRewardsConfig()
 
 	seasonRewards := make([]sdk.Dec, len(baseRewardsConfig))
+
 	for i, baseReward := range baseRewardsConfig {
 		seasonRewards[i] = baseReward.Mul(seasonCoef)
 	}
-
 	return seasonRewards, nil
 }
 

@@ -1,4 +1,3 @@
-import { ContentState, EditorState } from "draft-js";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   View,
@@ -111,11 +110,17 @@ export const isArticleHTMLNeedsTruncate = (html: string, isPreview = false) => {
 
 export const getTruncatedArticleHTML = (html: string) => {
   return {
-    truncatedState: ContentState,
+    truncatedState: {},
     truncatedHtml: html,
   };
 };
 
 export const createStateFromHTML = (html: string) => {
-  return new EditorState();
+  return {
+    getCurrentContent: () => {
+      return {
+        getPlainText: () => html.replace(/<\/?[^>]+(>|$)/g, ""),
+      };
+    },
+  };
 };

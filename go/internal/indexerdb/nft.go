@@ -11,6 +11,11 @@ type Attribute struct {
 	Value     string `json:"value"`
 }
 
+type AttributeAny struct {
+	TraitType string `json:"trait_type"`
+	Value     any    `json:"value"`
+}
+
 type NFT struct {
 	// ID is network-dependent
 	// Teritori: tori-<bech32_mint_contract_address>-<token_id>
@@ -22,6 +27,9 @@ type NFT struct {
 	PriceAmount sql.NullString `gorm:"type:numeric"`
 	PriceDenom  string
 	LockedOn    string
+	Attributes  ArrayJSONB `gorm:"type:jsonb;default:'[]'"`
+	Burnt       bool
+	NetworkID   string `gorm:"index"`
 
 	// "belongs to" relations
 	CollectionID networks.CollectionID `gorm:"index"`
@@ -29,14 +37,11 @@ type NFT struct {
 
 	// "has one" relations
 	TeritoriNFT *TeritoriNFT
-
-	// "has many" relations
-	Activities []Activity
-	Attributes ArrayJSONB `gorm:"type:jsonb;default:'[]'"`
-	Burnt      bool
 }
 
 type TeritoriNFT struct {
 	NFTID   string `gorm:"primaryKey"`
 	TokenID string
+
+	NetworkID string `gorm:"index"`
 }

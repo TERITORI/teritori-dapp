@@ -4,8 +4,10 @@ import { Image, ImageProps, View, StyleSheet, PixelRatio } from "react-native";
 
 import { neutral33 } from "../utils/style/colors";
 
-// This only supports uri images since the proxy is only for external images
-
+/**
+ * This only supports uri images since the proxy is only for external images
+ * The width and height props are the source image dimensions, they should not be dynamic, otherwise it will overwelm the resizing proxy
+ */
 export const OptimizedImage: React.FC<
   Omit<ImageProps, "source"> & {
     width: number;
@@ -35,8 +37,8 @@ export const OptimizedImage: React.FC<
       return (
         <View
           style={{
-            width,
-            height,
+            width: otherStyle.width,
+            height: otherStyle.height,
             position: otherStyle.position,
             top: otherStyle.top,
             left: otherStyle.left,
@@ -52,6 +54,13 @@ export const OptimizedImage: React.FC<
         />
       );
     }
+
+    // imported images are already a valid source object
+    const source =
+      (typeof sourceURI === "string"
+        ? { uri: transformURI(sourceURI, sourceWidth, sourceHeight) }
+        : sourceURI) || {};
+
     return (
       <Image
         onError={() => {
@@ -61,9 +70,7 @@ export const OptimizedImage: React.FC<
           }
           setIsError(true);
         }}
-        source={{
-          uri: transformURI(sourceURI || undefined, sourceWidth, sourceHeight),
-        }}
+        source={source}
         {...other}
       />
     );

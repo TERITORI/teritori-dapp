@@ -62,13 +62,14 @@ func (h *Handler) handleInstantiateBreeding(e *Message, contractAddress string, 
 	collectionId := h.config.Network.CollectionID(contractAddress)
 	if err := h.db.Create(&indexerdb.Collection{
 		ID:                  collectionId,
-		NetworkId:           h.config.Network.ID,
+		NetworkID:           h.config.Network.ID,
 		Name:                minterInstantiateMsg.ChildNftName,
 		ImageURI:            metadata.ImageURI,
 		MaxSupply:           maxSupply,
 		SecondaryDuringMint: true,
 		Time:                blockTime,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
+			NetworkID:           h.config.Network.ID,
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  nftAddr,
 			CreatorAddress:      instantiateMsg.Sender,
@@ -116,7 +117,7 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 	}
 
 	startTimeDt := time.Unix(int64(startTime), 0)
-	season, _, err := p2e.GetSeasonByTime(startTimeDt)
+	season, _, err := p2e.GetSeasonByTime(startTimeDt, h.config.Network)
 	if err != nil {
 		return errors.Wrap(err, "failed to get season")
 	}
@@ -148,6 +149,7 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 		EndTime:   endTime,
 		TokenIDs:  strings.Join(tokenIds, ","),
 		SeasonID:  season.ID,
+		NetworkID: h.config.Network.ID,
 	}
 
 	if err := h.db.Create(&squadStaking).Error; err != nil {
@@ -157,8 +159,9 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 	// Create leaderboard (by season) record if does not exist
 	var userScore indexerdb.P2eLeaderboard
 	q2 := &indexerdb.P2eLeaderboard{
-		UserID:   ownerId,
-		SeasonID: season.ID,
+		UserID:    ownerId,
+		SeasonID:  season.ID,
+		NetworkID: h.config.Network.ID,
 	}
 	if err := h.db.Where(q2).FirstOrCreate(&userScore).Error; err != nil {
 		return errors.Wrap(err, "failed to get/create user record for leaderboard")
@@ -239,7 +242,7 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 
 		// Get current leaderboard record
 		startTimeDt := time.Unix(int64(squadStaking.StartTime), 0)
-		season, _, err := p2e.GetSeasonByTime(startTimeDt)
+		season, _, err := p2e.GetSeasonByTime(startTimeDt, h.config.Network)
 		if err != nil {
 			return errors.Wrap(err, "failed to get season")
 		}
@@ -308,6 +311,72 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 			return errors.New("failed to update lockedOn")
 		}
 	}
+
+	return nil
+}
+
+func (h *Handler) handleExecuteBreed(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	minterContractAddress := execMsg.Contract
+	if minterContractAddress != h.config.Network.RiotContractAddressGen1 {
+		h.logger.Debug("ignored breed on unknown collection", zap.String("contract-address", minterContractAddress))
+		return nil
+	}
+
+	collectionId := h.config.Network.CollectionID(minterContractAddress)
+	var collection indexerdb.Collection
+	if err := h.db.Where("id = ?", collectionId).First(&collection).Error; err != nil {
+		h.logger.Debug("ignored request mint for unknown collection", zap.String("collection-id", string(collectionId)))
+		return nil
+	}
+
+	owner := execMsg.Sender
+	ownerId := h.config.Network.UserID(owner)
+
+	activityId := h.config.Network.ActivityID(e.TxHash, e.MsgIndex)
+
+	// get block time
+	blockTime, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
+	// get price
+	amount := "0"
+	denom := ""
+	usdAmount := 0.0
+	if len(execMsg.Funds) != 0 {
+		if len(execMsg.Funds) != 1 {
+			return errors.New("expected 1 coin in funds")
+		}
+		amount = execMsg.Funds[0].Amount.String()
+		denom = execMsg.Funds[0].Denom
+		var err error
+		usdAmount, err = h.usdAmount(denom, amount, blockTime)
+		if err != nil {
+			return errors.Wrap(err, "failed to get usd price")
+		}
+	}
+
+	// create request mint activity
+	if err := h.db.Create(&indexerdb.Activity{
+		ID:   activityId,
+		Kind: indexerdb.ActivityKindRequestMint,
+		Time: blockTime,
+		RequestMint: &indexerdb.RequestMint{
+			BuyerID:      ownerId,
+			NetworkID:    collection.NetworkID,
+			CollectionID: collection.ID,
+			Price:        amount,
+			PriceDenom:   denom,
+			USDPrice:     usdAmount,
+			Minted:       false,
+		},
+		NetworkID: collection.NetworkID,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to create request mint activity")
+	}
+
+	h.logger.Info("breeding requested", zap.String("collection-id", string(collection.ID)), zap.String("owner-id", string(ownerId)))
 
 	return nil
 }

@@ -1,9 +1,9 @@
 import { combineReducers, configureStore, Middleware } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import {
-  createMigrate,
-  persistReducer,
   persistStore,
+  persistReducer,
+  createMigrate,
   REHYDRATE,
 } from "redux-persist";
 

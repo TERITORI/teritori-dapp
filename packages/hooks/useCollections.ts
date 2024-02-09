@@ -55,15 +55,19 @@ export const useCollections = (
 
       // FIXME: refactor into addCollectionListMetadata
 
-      collections = await Promise.all(
-        collections.map(async (c) => {
-          const network = getNetwork(c.networkId);
-          if (network?.kind === NetworkKind.Ethereum) {
-            return addCollectionMetadata(c);
-          }
-          return c;
-        }),
-      );
+      try {
+        collections = await Promise.all(
+          collections.map(async (c) => {
+            const network = getNetwork(c.networkId);
+            if (network?.kind === NetworkKind.Ethereum) {
+              return addCollectionMetadata(c);
+            }
+            return c;
+          }),
+        );
+      } catch (e) {
+        console.warn("failed to add collection metadata", e);
+      }
 
       return { nextCursor: pageParam + req.limit, collections };
     },

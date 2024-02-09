@@ -24,9 +24,16 @@ export type RootStackParamList = {
     tab?: keyof typeof uppTabItems;
   };
   RiotersFooter: undefined;
+  AdministrationDashboard: undefined;
+  LaunchpadApplications: undefined;
+  ApplicationReview: undefined;
+  ReadyLaunchpadApplications: undefined;
+  AllProjectAdministrationDash: undefined;
 
   Launchpad: undefined;
   LaunchpadApply: undefined;
+  LaunchpadCreate: undefined;
+
   MintCollection: { id: string };
   TNSHome: { modal: string; name?: string } | undefined;
 
@@ -49,6 +56,7 @@ export type RootStackParamList = {
   RiotGameFight: undefined;
   RiotGameBreeding: undefined;
   RiotGameMemories: undefined;
+  RiotGameBridge: undefined;
   RiotGameMarketplace: { collectionId?: string } | undefined;
   RiotGameLeaderboard: undefined;
   RiotGameInventory: undefined;
@@ -161,12 +169,18 @@ const navConfig: {
     Governance: "governance",
     UserPublicProfile: "user/:id/:tab?",
     RiotersFooter: "rioters-footer",
+    AdministrationDashboard: "launchpad/admin",
+    LaunchpadApplications: "launchpad/applications",
+    ApplicationReview: "launchpad/application-review",
+    ReadyLaunchpadApplications: "launchpad/ready-applications",
+    AllProjectAdministrationDash: "launchpad/all-projects",
     // === RiotGame
     RiotGame: "riot-game",
     RiotGameEnroll: "riot-game/enroll",
     RiotGameFight: "riot-game/fight",
     RiotGameBreeding: "riot-game/breeding",
     RiotGameMemories: "riot-game/memories",
+    RiotGameBridge: "riot-game/bridge",
     RiotGameMarketplace: "riot-game/marketplace",
     RiotGameLeaderboard: "riot-game/leaderboard",
     RiotGameInventory: "riot-game/inventory",
@@ -174,6 +188,8 @@ const navConfig: {
     // ==== Launchpad
     Launchpad: "launchpad",
     LaunchpadApply: "launchpad/apply",
+    LaunchpadCreate: "launchpad/create",
+
     // Mint NFT collection
     MintCollection: "collection/:id/mint",
     // ==== Teritori Name Service

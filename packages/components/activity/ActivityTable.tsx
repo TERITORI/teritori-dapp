@@ -106,6 +106,8 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
   const buyerInfo = useNSUserInfo(activity.buyerId);
   const sellerInfo = useNSUserInfo(activity.sellerId);
 
+  const hasAmount = !!(activity.amount && activity.amount !== "0");
+
   return (
     <View
       style={{
@@ -154,18 +156,21 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
       >
         {moment(activity.time).fromNow()}
       </BrandText>
-      <BrandText
-        style={[
-          fontMedium14,
-          {
-            flex: TABLE_ROWS.totalAmount.flex,
-            paddingRight: layout.spacing_x1,
-          },
-        ]}
+      <View
+        style={{
+          flexDirection: "row",
+          flex: TABLE_ROWS.totalAmount.flex,
+          paddingRight: layout.spacing_x1,
+        }}
       >
-        {!!activity.amount &&
-          prettyPrice(network?.id || "", activity.amount, activity.denom)}
-      </BrandText>
+        <BrandText style={[fontMedium14, { flex: 1 }]}>
+          {hasAmount &&
+            `${prettyPrice(network?.id || "", activity.amount, activity.denom)}`}
+        </BrandText>
+        <BrandText style={[fontMedium14, { color: neutral77, flex: 1 }]}>
+          {hasAmount && `~$${activity.usdPrice.toFixed(2)}`}
+        </BrandText>
+      </View>
       <View
         style={{ flex: TABLE_ROWS.buyer.flex, paddingRight: layout.spacing_x1 }}
       >
@@ -221,6 +226,10 @@ const prettyActivityName = (kind: string) => {
 
 const activityNameStyle = (kind: string): TextStyle => {
   switch (kind) {
+    case "mint":
+      return {
+        color: primaryColor,
+      };
     case "trade":
       return {
         color: reefColor,

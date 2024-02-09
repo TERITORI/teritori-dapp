@@ -12,6 +12,7 @@ import solanaCircle from "./solana-circle.svg";
 import solana from "./solana.svg";
 import teritoriCircle from "./teritori-circle.svg";
 import teritori from "./teritori.svg";
+import polygon from "./polygon.svg";
 
 export const networks = {
   teritori,
@@ -28,4 +29,5 @@ export const networks = {
   solana,
   solanaCircle,
   gno,
+  polygon,
 };

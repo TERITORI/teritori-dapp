@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.12.1
+
       - uses: actions/setup-go@v3
         with:
           go-version: "1.19"
@@ -36,6 +39,12 @@ jobs:
       - name: Fix gitignore
         run: npx tsx ./packages/scripts/app-build/fixGitignore.ts
 
+      - name: Restore wesh framework from cache if possible
+        uses: actions/cache@v4
+        with:
+          path: weshd/android/libs/WeshFramework.aar
+          key: cache_wesh-framework_android_go1.19_linux_${{ hashFiles('weshd/**/*.go', 'weshd/go.mod', 'weshd/go.sum') }}
+
       - name: Build android weshframework
         run: make check-android-weshframework
 
@@ -56,7 +65,7 @@ jobs:
             exit 1
           fi
 
-          # eas submit --platform=android --path=$AAB_FILE
+          # eas submit --platform=android --path=$AAB_FILE --profile=production
           echo "AAB_FILE=$AAB_FILE" >> $GITHUB_ENV
 
       - name: Upload aab

@@ -20,7 +20,7 @@ export const FightBossSection: React.FC = () => {
   const fetchCurrentSeason = useCallback(async () => {
     try {
       const p2eClient = mustGetP2eClient(networkId);
-      const currentSeason = await p2eClient.CurrentSeason({});
+      const currentSeason = await p2eClient.CurrentSeason({ networkId });
       setCurrentSeason(currentSeason);
     } catch (e) {
       if (e instanceof Error) {

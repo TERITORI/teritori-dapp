@@ -18,7 +18,7 @@ type Season struct {
 
 // TODO: We hardcode this right now but should defined in dynamic way in the future (airtable, db...)
 // BossHp is in Days
-var THE_RIOT_SEASONS = []Season{
+var THE_RIOT_COSMOS_SEASONS = []Season{
 	// Season 1
 	{
 		ID:         "Season 1",
@@ -175,9 +175,38 @@ var THE_RIOT_SEASONS = []Season{
 		ID:        "Pre-Season 7",
 		GameID:    THE_RIOT_GAME_ID,
 		BossName:  `== $*=|'¤?")à-£_%`,
-		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.cf-ipfs.com/",
+		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.nftstorage.link/",
 		StartsAt:  "2023-09-08T00:00:00",
 		EndsAt:    "2023-12-10T00:00:00",
 		IsPre:     true,
+	},
+}
+
+var THE_RIOT_ETHEREUM_SEASONS = []Season{
+	// Season 0: Used when testing
+	{
+		ID:         "Season 0 - ETH",
+		GameID:     THE_RIOT_GAME_ID,
+		Denom:      "tori",
+		Decimals:   6,
+		TotalPrize: 1,
+		BossName:   "Tori Pup",
+		BossImage:  "https://bafkreidzf2kol7hi3lae33fpu6iryfw7mgbp5fbqnyewq64kagykc266h4.ipfs.cf-ipfs.com/",
+		TopN:       500,
+		StartsAt:   "2023-12-01T00:00:00",
+		EndsAt:     "2024-02-07T00:00:00",
+	},
+	// Season 1
+	{
+		ID:         "Season 1 - ETH",
+		GameID:     THE_RIOT_GAME_ID,
+		Denom:      "tori",
+		Decimals:   6,
+		TotalPrize: 1,
+		BossName:   "Tori Pup",
+		BossImage:  "https://bafkreidzf2kol7hi3lae33fpu6iryfw7mgbp5fbqnyewq64kagykc266h4.ipfs.cf-ipfs.com/",
+		TopN:       500,
+		StartsAt:   "2024-02-07T00:00:00",
+		EndsAt:     "2024-02-11T00:00:00",
 	},
 }

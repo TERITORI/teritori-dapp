@@ -16,7 +16,7 @@ export const useSeasonRank = () => {
       if (!client) {
         return null;
       }
-      return await client.CurrentSeason({});
+      return await client.CurrentSeason({ networkId });
     },
     { refetchInterval: 300000, staleTime: 300000 },
   );

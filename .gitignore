@@ -82,6 +82,9 @@ buck-out/
 # Expo
 .expo/
 
+# Substreams
+substreams-*/target
+
 # @end expo-cli
 
 

@@ -129,13 +129,16 @@ export const RiotGameLeaderboardScreen = () => {
 
     const _userScores: UserScore[] = [];
 
-    const currentSeason = await p2eClient.CurrentSeason({});
+    const currentSeason = await p2eClient.CurrentSeason({
+      networkId: selectedNetwork?.id,
+    });
     setCurrentSeason(currentSeason);
 
-    const streamData = await p2eClient.Leaderboard({
+    const streamData = p2eClient.Leaderboard({
       seasonId: currentSeason.id,
       limit: 500,
       offset: 0,
+      networkId: selectedNetwork?.id,
     });
 
     await streamData.forEach((item: LeaderboardResponse) => {

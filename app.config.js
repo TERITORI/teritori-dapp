@@ -2,7 +2,7 @@ const config = {
   expo: {
     name: "Teritori",
     slug: "teritori",
-    version: "1.0.0",
+    version: "1.0.3",
     orientation: "portrait",
     icon: "./assets/icon.png",
     owner: "teritori",
@@ -19,6 +19,13 @@ const config = {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.teritori",
+      buildNumber: "5",
+      infoPlist: {
+        NSBluetoothAlwaysUsageDescription: "Used for Bluetooth communications",
+        NSBluetoothPeripheralUsageDescription:
+          "Used for Bluetooth communications",
+        ITSAppUsesNonExemptEncryption: false,
+      },
     },
     android: {
       adaptiveIcon: {
@@ -28,8 +35,8 @@ const config = {
       package: "com.teritori",
     },
     web: {
+      bundler: "metro",
       favicon: "./assets/favicon.png",
-      bundler: "webpack",
     },
     extra: {
       env: process.env,
