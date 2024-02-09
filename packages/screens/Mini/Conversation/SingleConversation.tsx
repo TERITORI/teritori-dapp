@@ -177,7 +177,12 @@ export const SingleConversation = ({
                       return null;
                     }
                     return (
-                      <View style={{ marginBottom: layout.spacing_x1 }}>
+                      <View
+                        style={{
+                          marginBottom: layout.spacing_x1,
+                          paddingTop: layout.spacing_x1_5,
+                        }}
+                      >
                         <Image
                           source={{
                             uri: `data:${item.type};base64,${item.base64}`,
