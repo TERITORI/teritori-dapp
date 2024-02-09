@@ -1,6 +1,6 @@
 import { chain } from "lodash";
 import React, { useMemo } from "react";
-import { View } from "react-native";
+import { FlatList, Image, View, useWindowDimensions } from "react-native";
 
 import doubleCheckSVG from "../../../../assets/icons/double-check.svg";
 import replySVG from "../../../../assets/icons/reply-white.svg";
@@ -38,6 +38,7 @@ type ConversationType = {
   onReplyPress?: (messageId: string) => void;
   showMessageOptions?: boolean;
   parentMessage?: Message | undefined;
+  files?: { type: string; base64: string; name: string; duration: string }[];
 };
 export const SingleConversation = ({
   date,
@@ -51,7 +52,10 @@ export const SingleConversation = ({
   onReplyPress,
   showMessageOptions,
   parentMessage,
+  files,
 }: ConversationType) => {
+  const { width: windowWidth } = useWindowDimensions();
+
   const reactionsMade = useMemo(() => {
     if (!reactions?.length) {
       return [];
@@ -157,6 +161,44 @@ export const SingleConversation = ({
               >
                 {parentMessage?.payload?.message}
               </BrandText>
+            </View>
+          )}
+          {files && files.length > 0 && (
+            <View>
+              {files && Array.isArray(files) ? (
+                <FlatList
+                  data={files}
+                  keyExtractor={({ name }, idx) => `${idx}-${name}`}
+                  contentContainerStyle={{
+                    gap: layout.spacing_x2,
+                  }}
+                  renderItem={({ item, index }) => {
+                    if (!item.base64) {
+                      return null;
+                    }
+                    return (
+                      <View
+                        style={{
+                          marginBottom: layout.spacing_x1,
+                          paddingTop: layout.spacing_x1_5,
+                        }}
+                      >
+                        <Image
+                          source={{
+                            uri: `data:${item.type};base64,${item.base64}`,
+                          }}
+                          height={130}
+                          width={windowWidth / 1.5}
+                          style={{
+                            borderRadius: 11,
+                          }}
+                          resizeMode="cover"
+                        />
+                      </View>
+                    );
+                  }}
+                />
+              ) : null}
             </View>
           )}
           <BrandText
