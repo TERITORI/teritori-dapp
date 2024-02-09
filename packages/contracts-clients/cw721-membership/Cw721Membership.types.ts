@@ -11,7 +11,7 @@ export interface InstantiateMsg {
 }
 export type ExecuteMsg = ExecMsg;
 export type ExecMsg = {
-  create_channel: {
+  upsert_channel: {
     memberships_config: MembershipConfig[];
     [k: string]: unknown;
   };
@@ -60,6 +60,7 @@ export type ExecMsg = {
 export type Uint64 = string;
 export type Uint128 = string;
 export interface MembershipConfig {
+  description: string;
   display_name: string;
   duration_seconds: Uint64;
   nft_image_uri: string;

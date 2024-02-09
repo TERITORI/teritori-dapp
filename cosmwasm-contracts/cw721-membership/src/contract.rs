@@ -14,7 +14,7 @@ use sylvia::{contract, entry_points};
 
 pub type NftExtension = Metadata;
 
-// IMPORTANT: Should we require that nfts are consumed to increase an expiration by account?
+// TODO: allow to transfer channel
 
 pub struct Cw721MembershipContract {
     pub(crate) config: Item<'static, Config>,
@@ -29,6 +29,7 @@ pub struct Cw721MembershipContract {
 #[cw_serde]
 pub struct MembershipConfig {
     display_name: String,
+    description: String,
     nft_image_uri: String,
     nft_name_prefix: String,
     duration_seconds: Uint64,
@@ -63,6 +64,7 @@ pub struct Channel {
 #[cw_serde]
 pub struct Nft {
     name: String,
+    description: String,
     image_uri: String,
     start_time: Timestamp,
     duration_seconds: Uint64,
@@ -127,7 +129,7 @@ impl Cw721MembershipContract {
     // Membership mutations
 
     #[msg(exec)]
-    pub fn create_channel(
+    pub fn upsert_channel(
         &self,
         ctx: ExecCtx,
         memberships_config: Vec<MembershipConfig>,
@@ -137,8 +139,12 @@ impl Cw721MembershipContract {
         let config = self.config.load(ctx.deps.storage)?;
 
         self.channels
-            .update(ctx.deps.storage, owner_addr, |channel| match channel {
-                Some(_) => Err(ContractError::ChannelExists),
+            .update::<_, ContractError>(ctx.deps.storage, owner_addr, |channel| match channel {
+                Some(channel) => Ok(Channel {
+                    memberships_config,
+                    next_index: channel.next_index,
+                    mint_royalties: channel.mint_royalties,
+                }),
                 None => Ok(Channel {
                     memberships_config,
                     next_index: Uint64::one(),
@@ -205,6 +211,7 @@ impl Cw721MembershipContract {
         let nft_name = format!("{} #{}", membership.nft_name_prefix, nft_index);
         let nft = Nft {
             name: nft_name,
+            description: membership.description.to_owned(),
             image_uri: membership.nft_image_uri.to_owned(),
             start_time: ctx.env.block.time.to_owned(),
             duration_seconds: membership.duration_seconds,
@@ -253,6 +260,7 @@ impl Cw721MembershipContract {
         Ok(Response::default())
     }
 
+    // TODO: partial update
     pub fn update_channel(
         &self,
         ctx: ExecCtx,
@@ -638,7 +646,7 @@ impl Cw721MembershipContract {
         ctx: QueryCtx,
         token_id: String,
     ) -> Result<NftInfoResponse<NftExtension>, ContractError> {
-        self.private_nft_info(&ctx, &token_id)
+        self.internal_nft_info(&ctx, &token_id)
     }
 
     /// With MetaData Extension.
@@ -653,7 +661,7 @@ impl Cw721MembershipContract {
         include_expired: Option<bool>,
     ) -> Result<AllNftInfoResponse<NftExtension>, ContractError> {
         let access = self.internal_owner_of(&ctx, &token_id)?;
-        let info = self.private_nft_info(&ctx, &token_id)?;
+        let info = self.internal_nft_info(&ctx, &token_id)?;
         Ok(AllNftInfoResponse { access, info })
     }
 
@@ -748,7 +756,7 @@ impl Cw721MembershipContract {
         })
     }
 
-    fn private_nft_info(
+    fn internal_nft_info(
         &self,
         ctx: &QueryCtx,
         token_id: &String,

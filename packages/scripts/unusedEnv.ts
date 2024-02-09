@@ -4,7 +4,13 @@ import fs from "fs";
 import path from "path";
 import process from "process";
 
-const dirsToExclude = ["node_modules", ".git", "cache"];
+const dirsToExclude = [
+  "node_modules",
+  ".git",
+  "cache",
+  "target",
+  "cosmwasm-contracts",
+];
 const excludePatterns = ["*.env", "Dockerfile", "docker-compose.yml", "*.md"];
 
 const varNameToFlagName = (varName: string) => {

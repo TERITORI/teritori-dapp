@@ -1,18 +1,30 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 
-import addSVG from "./../../../../../assets/icons/add-secondary.svg";
 import { SubscriptionBottomComponent } from "./SubscriptionBottomComponent";
-import settingsSVG from "../../../../../assets/icons/settings-primary.svg";
-import { layout } from "../../../../utils/style/layout";
 import { AccordionComponent } from "../accordion/AccordionComponent";
 
+import addSVG from "@/assets/icons/add-secondary.svg";
+import settingsSVG from "@/assets/icons/settings-primary.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import RoundedModalBase from "@/components/modals/RoundedModalBase";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import {
+  Cw721MembershipClient,
+  MembershipConfig,
+} from "@/contracts-clients/cw721-membership";
+import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import {
+  getKeplrSigningCosmWasmClient,
+  getNetworkFeature,
+  parseUserId,
+} from "@/networks";
+import { NetworkFeature } from "@/networks/features";
 import {
   neutral22,
   neutral33,
@@ -20,23 +32,56 @@ import {
   secondaryColor,
 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { LocalMembershipConfig } from "@/utils/types/premiumFeed";
 
 export const SubscriptionSetupModal: React.FC<{
-  onSubmit: () => void;
+  userId: string;
   isVisible: boolean;
   onClose: () => void;
-}> = ({ onSubmit, isVisible, onClose }) => {
-  const [tiers, setTiers] = useState([{ id: Math.random() }]);
+}> = ({ userId, isVisible, onClose }) => {
+  const selectedWallet = useSelectedWallet();
 
-  const addItem = () => {
-    const newItem = { id: Math.random() };
-    setTiers([...tiers, newItem]);
-  };
+  const [network, channelAddress] = parseUserId(userId);
+  const networkId = network?.id;
 
-  const removeItem = (id: number) => {
-    const updatedItems = tiers.filter((item) => item.id !== id);
-    setTiers(updatedItems);
-  };
+  const { data: channel } = usePremiumChannel(networkId, channelAddress);
+
+  const [tiers, setTiers] = useState<LocalMembershipConfig[]>([]);
+  const { wrapWithFeedback } = useFeedbacks();
+
+  useEffect(() => {
+    if (!channel) {
+      return;
+    }
+    setTiers(channel.memberships_config || []);
+  }, [channel]);
+
+  const addItem = useCallback((item: LocalMembershipConfig) => {
+    setTiers((tiers) => [...tiers, item]);
+  }, []);
+
+  const removeItem = useCallback((id: number) => {
+    setTiers((tiers) => tiers.filter((_, index) => index === id));
+  }, []);
+
+  const handleChangeTier = useCallback(
+    (
+      index: number,
+      cb: (oldTier: LocalMembershipConfig) => LocalMembershipConfig,
+    ) => {
+      setTiers((tiers) => {
+        const updatedTiers = [...tiers];
+        updatedTiers[index] = cb(updatedTiers[index]);
+        return updatedTiers;
+      });
+    },
+    [],
+  );
+
+  if (!networkId || channel === undefined) {
+    return null;
+  }
 
   return (
     <RoundedModalBase
@@ -87,8 +132,13 @@ export const SubscriptionSetupModal: React.FC<{
           {tiers.map((tier, index) => {
             return (
               <AccordionComponent
+                key={index}
+                networkId={networkId}
+                tier={tier}
+                tierIndex={index}
+                onChangeTier={handleChangeTier}
                 onRemoveItem={() => {
-                  removeItem(tier.id);
+                  removeItem(index);
                 }}
               />
             );
@@ -114,7 +164,8 @@ export const SubscriptionSetupModal: React.FC<{
                 borderColor: secondaryColor,
               }}
               onPress={() => {
-                addItem();
+                const emptyConfig: LocalMembershipConfig = {};
+                addItem(emptyConfig);
               }}
             >
               <SVG source={addSVG} width={16} height={16} />
@@ -132,7 +183,58 @@ export const SubscriptionSetupModal: React.FC<{
 
           <Separator />
 
-          <SubscriptionBottomComponent onClose={onClose} onSubmit={onSubmit} />
+          <SubscriptionBottomComponent
+            onClose={onClose}
+            onSubmit={wrapWithFeedback(async () => {
+              const sender = selectedWallet?.address;
+              if (!sender) {
+                throw new Error("No wallet selected");
+              }
+
+              const premiumFeedFeature = getNetworkFeature(
+                networkId,
+                NetworkFeature.CosmWasmPremiumFeed,
+              );
+              if (!premiumFeedFeature) {
+                throw new Error("This network does not support premium feed");
+              }
+
+              const validatedTiers = tiers.map((t) => {
+                if (
+                  !t.display_name ||
+                  !t.description ||
+                  !t.price ||
+                  !t.duration_seconds
+                ) {
+                  throw new Error("Invalid tier");
+                }
+                const vt: MembershipConfig = {
+                  display_name: t.display_name,
+                  description: t.description,
+                  price: t.price,
+                  duration_seconds: t.duration_seconds,
+                  nft_image_uri: t.nft_image_uri || "",
+                  nft_name_prefix: "Sub",
+                  trade_royalties: 0,
+                };
+                return vt;
+              });
+
+              const cosmWasmClient =
+                await getKeplrSigningCosmWasmClient(networkId);
+              const client = new Cw721MembershipClient(
+                cosmWasmClient,
+                sender,
+                premiumFeedFeature.membershipContractAddress,
+              );
+
+              if (channel === null) {
+                await client.upsertChannel({
+                  membershipsConfig: validatedTiers,
+                });
+              }
+            })}
+          />
         </PrimaryBox>
       </View>
     </RoundedModalBase>

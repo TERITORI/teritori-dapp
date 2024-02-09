@@ -1,21 +1,40 @@
-import React, { useState } from "react";
+import React, { FC, useCallback, useState } from "react";
 
 import { AccordionBottomComponent } from "./AccordionBottomComponent";
 import { AccordionTopComponent } from "./AccordionTopComponent";
-import defaultTierImage from "../../../../../assets/default-images/default-tier-thumbnail.png";
 import { layout } from "../../../../utils/style/layout";
 
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { neutral22, neutral33 } from "@/utils/style/colors";
 import { LocalFileData } from "@/utils/types/files";
+import { LocalMembershipConfig } from "@/utils/types/premiumFeed";
 
 interface AccordionProps {
+  networkId: string;
+  tier: LocalMembershipConfig;
+  tierIndex: number;
+  onChangeTier: (
+    index: number,
+    cb: (oldTier: LocalMembershipConfig) => LocalMembershipConfig,
+  ) => void;
   onRemoveItem: () => void;
 }
 
-export const AccordionComponent = ({ onRemoveItem }: AccordionProps) => {
+export const AccordionComponent: FC<AccordionProps> = ({
+  networkId,
+  onRemoveItem,
+  onChangeTier,
+  tier,
+  tierIndex,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [files, setFiles] = useState<LocalFileData[]>([]);
+
+  const handleChangeTier = useCallback(
+    (cb: (oldTier: LocalMembershipConfig) => LocalMembershipConfig) =>
+      onChangeTier(tierIndex, cb),
+    [tierIndex, onChangeTier],
+  );
 
   return (
     <PrimaryBox
@@ -30,16 +49,18 @@ export const AccordionComponent = ({ onRemoveItem }: AccordionProps) => {
       <AccordionTopComponent
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        image={
-          files.length > 0
-            ? URL.createObjectURL(files[0].file)
-            : defaultTierImage
-        }
+        tier={tier}
+        tierIndex={tierIndex}
+        onChangeTier={handleChangeTier}
       />
 
       {isOpen && (
         <AccordionBottomComponent
+          networkId={networkId}
           onRemoveItem={onRemoveItem}
+          tier={tier}
+          tierIndex={tierIndex}
+          onChangeTier={handleChangeTier}
           image={files.length > 0 ? URL.createObjectURL(files[0].file) : ""}
           setFiles={setFiles}
         />

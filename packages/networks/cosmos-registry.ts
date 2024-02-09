@@ -65,6 +65,7 @@ export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
             return nativeCurrency;
           }),
         features: [],
+        featureObjects: [],
         idPrefix: chain.chain_name,
         addressPrefix: chain.bech32_prefix,
         txExplorer:

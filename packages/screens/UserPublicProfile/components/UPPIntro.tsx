@@ -2,41 +2,38 @@ import React, { useState } from "react";
 import { Linking, useWindowDimensions, View } from "react-native";
 
 import { SubscriptionSetupModal } from "./modals/SubscriptionSetupModal";
-import defaultUserProfileBannerPNG from "../../../../assets/default-images/default-user-profile-banner.png";
-import discordSVG from "../../../../assets/icons/discord.svg";
-import infoSVG from "../../../../assets/icons/info_black.svg";
-import shareSVG from "../../../../assets/icons/share.svg";
-import twitterSVG from "../../../../assets/icons/twitter.svg";
-import websiteSVG from "../../../../assets/icons/website.svg";
-import { BrandText } from "../../../components/BrandText";
-import { useCopyToClipboard } from "../../../components/CopyToClipboard";
-import { CopyToClipboardSecondary } from "../../../components/CopyToClipboardSecondary";
-import { OptimizedImage } from "../../../components/OptimizedImage";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
-import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
-import { SocialButton } from "../../../components/buttons/SocialButton";
-import { SocialButtonSecondary } from "../../../components/buttons/SocialButtonSecondary";
-import { ProfileButton } from "../../../components/hub/ProfileButton";
-import { UserAvatarWithFrame } from "../../../components/images/AvatarWithFrame";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { accountExplorerLink, parseUserId } from "../../../networks";
-import { DEFAULT_NAME } from "../../../utils/social-feed";
+
+import defaultUserProfileBannerPNG from "@/assets/default-images/default-user-profile-banner.png";
+import discordSVG from "@/assets/icons/discord.svg";
+import infoSVG from "@/assets/icons/info_black.svg";
+import shareSVG from "@/assets/icons/share.svg";
+import twitterSVG from "@/assets/icons/twitter.svg";
+import websiteSVG from "@/assets/icons/website.svg";
+import { BrandText } from "@/components/BrandText";
+import { useCopyToClipboard } from "@/components/CopyToClipboard";
+import { CopyToClipboardSecondary } from "@/components/CopyToClipboardSecondary";
+import { OptimizedImage } from "@/components/OptimizedImage";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { SecondaryButtonOutline } from "@/components/buttons/SecondaryButtonOutline";
+import { SocialButton } from "@/components/buttons/SocialButton";
+import { SocialButtonSecondary } from "@/components/buttons/SocialButtonSecondary";
+import { ProfileButton } from "@/components/hub/ProfileButton";
+import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { accountExplorerLink, parseUserId } from "@/networks";
+import { DEFAULT_NAME } from "@/utils/social-feed";
 import {
   neutral00,
   neutral55,
   neutral77,
   secondaryColor,
-} from "../../../utils/style/colors";
-import {
-  fontBold16,
-  fontMedium14,
-  fontSemibold14,
-} from "../../../utils/style/fonts";
-import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
-
-import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+} from "@/utils/style/colors";
+import { fontBold16, fontMedium14, fontSemibold14 } from "@/utils/style/fonts";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
+import { tinyAddress } from "@/utils/text";
 
 export const UPPIntro: React.FC<{
   userId: string;
@@ -48,6 +45,8 @@ export const UPPIntro: React.FC<{
   const [network, userAddress] = parseUserId(userId);
   const { width } = useMaxResolution();
   const { width: windowWidth } = useWindowDimensions();
+
+  const developerMode = useDeveloperMode();
 
   const [subscriptionSetupModalVisible, setSubscriptionSetupModalVisible] =
     useState(false);
@@ -126,11 +125,6 @@ export const UPPIntro: React.FC<{
           />
         </View>
 
-        <SubscriptionSetupModal
-          onSubmit={() => setSubscriptionSetupModalVisible(false)}
-          onClose={() => setSubscriptionSetupModalVisible(false)}
-          isVisible={subscriptionSetupModalVisible}
-        />
         <View
           style={{
             position: "absolute",
@@ -139,30 +133,41 @@ export const UPPIntro: React.FC<{
             flexDirection: "row",
           }}
         >
-          {isUserOwner && (
-            <SecondaryButton
-              style={{ width: 132, marginRight: layout.spacing_x2 }}
-              text="Premium Sub"
-              size="M"
-              backgroundColor={secondaryColor}
-              textStyle={{
-                lineHeight: layout.spacing_x2,
-                color: neutral00,
-              }}
-              onPress={() => {
-                setSubscriptionSetupModalVisible(true);
-              }}
-            />
-          )}
           {isUserOwner ? (
-            <ProfileButton isEdit buttonSize="M" />
+            <>
+              {developerMode && (
+                <>
+                  <SecondaryButton
+                    style={{ width: 132, marginRight: layout.spacing_x2 }}
+                    text="Premium Sub"
+                    size="M"
+                    backgroundColor={secondaryColor}
+                    textStyle={{
+                      lineHeight: layout.spacing_x2,
+                      color: neutral00,
+                    }}
+                    onPress={() => {
+                      setSubscriptionSetupModalVisible(true);
+                    }}
+                  />
+                  <SubscriptionSetupModal
+                    userId={userId}
+                    onClose={() => setSubscriptionSetupModalVisible(false)}
+                    isVisible={subscriptionSetupModalVisible}
+                  />
+                </>
+              )}
+              <ProfileButton isEdit buttonSize="M" />
+            </>
           ) : (
-            <SecondaryButtonOutline
-              text="Follow this Teritori"
-              size="M"
-              backgroundColor={neutral00}
-              disabled
-            />
+            <>
+              <SecondaryButtonOutline
+                text="Follow this Teritori"
+                size="M"
+                backgroundColor={neutral00}
+                disabled
+              />
+            </>
           )}
         </View>
 

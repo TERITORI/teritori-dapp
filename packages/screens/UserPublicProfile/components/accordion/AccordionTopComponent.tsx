@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
 import { View, TouchableOpacity } from "react-native";
 
 import chevronDownSVG from "./../../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "./../../../../../assets/icons/chevron-up.svg";
+import defaultTierImage from "../../../../../assets/default-images/default-tier-thumbnail.png";
 import { layout } from "../../../../utils/style/layout";
 
 import { BrandText } from "@/components/BrandText";
@@ -13,33 +13,29 @@ import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "@/components/inputs/TextInputOutsideLabel";
 import { neutral77, neutralA3, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold16 } from "@/utils/style/fonts";
+import {
+  LocalMembershipConfig,
+  SubscriptionFormValues,
+} from "@/utils/types/premiumFeed";
 
 interface AccordionTopProps {
   isOpen: boolean;
   setIsOpen: (item: boolean) => void;
-  image: string;
-}
-
-interface SubscriptionFormValues {
-  title: string;
-  price: string;
-  duration: string;
-  description: string;
+  tier: LocalMembershipConfig;
+  tierIndex: number;
+  onChangeTier: (
+    cb: (oldTier: LocalMembershipConfig) => LocalMembershipConfig,
+  ) => void;
 }
 
 export const AccordionTopComponent = ({
   isOpen,
   setIsOpen,
-  image,
+  tier,
+  tierIndex,
+  onChangeTier,
 }: AccordionTopProps) => {
   const [isFocused, setIsFocused] = useState(false);
-
-  const { control, watch } = useForm<SubscriptionFormValues>({
-    defaultValues: {
-      title: "",
-    },
-    mode: "onBlur",
-  });
 
   if (isOpen) {
     return (
@@ -59,10 +55,16 @@ export const AccordionTopComponent = ({
             rules={{ required: true }}
             placeHolder="Tier name"
             placeholderTextColor={neutralA3}
-            name="title"
-            control={control}
+            name={`${tierIndex}.title`}
             label="Tier name"
             variant="noStyle"
+            value={tier.display_name}
+            onChangeText={(text) => {
+              onChangeTier((tier) => ({
+                ...tier,
+                display_name: text,
+              }));
+            }}
             onBlur={() => setIsFocused(false)}
           />
         ) : (
@@ -100,7 +102,8 @@ export const AccordionTopComponent = ({
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <OptimizedImage
-            sourceURI={image}
+            sourceURI={tier.nft_image_uri}
+            fallbackURI={defaultTierImage}
             style={{
               height: 48,
               width: 48,
@@ -115,7 +118,7 @@ export const AccordionTopComponent = ({
               { color: secondaryColor, marginLeft: layout.spacing_x1 },
             ]}
           >
-            {watch("title")}
+            {tier.display_name}
           </BrandText>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>

@@ -2,18 +2,22 @@ import React from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
 import { TextInputProps, View } from "react-native";
 
-import usdcSVG from "../../../../../assets/icons/crypto-usdc.svg";
-import { TextInputCustom } from "../../../../components/inputs/TextInputCustom";
-import { layout } from "../../../../utils/style/layout";
-
 import { BrandText } from "@/components/BrandText";
-import { SVG } from "@/components/SVG";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import {
+  getNativeCurrency,
+  keplrCurrencyFromNativeCurrencyInfo,
+} from "@/networks";
 import { neutral00, neutral55 } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
+  networkId: string;
+  denom: string;
   placeHolder: string;
   control: Control<T>;
   name: Path<T>;
@@ -21,10 +25,13 @@ interface TextInputCustomProps<T extends FieldValues>
 
 export const TextInputSubscriptionPrice = <T extends FieldValues>({
   control,
+  networkId,
+  denom,
   name,
   label,
   placeHolder,
 }: TextInputCustomProps<T>) => {
+  const nativeCurrency = getNativeCurrency(networkId, denom);
   return (
     <TextInputCustom<T>
       noBrokenCorners
@@ -34,6 +41,7 @@ export const TextInputSubscriptionPrice = <T extends FieldValues>({
       placeHolder={placeHolder}
       name={name}
       control={control}
+      currency={keplrCurrencyFromNativeCurrencyInfo(nativeCurrency)}
       inputMode="decimal"
       variant="labelOutside"
       containerStyle={{ marginVertical: layout.spacing_x1 }}
@@ -53,9 +61,9 @@ export const TextInputSubscriptionPrice = <T extends FieldValues>({
               },
             ]}
           >
-            USDC
+            {nativeCurrency?.displayName}
           </BrandText>
-          <SVG source={usdcSVG} width={16} height={16} />
+          <CurrencyIcon size={16} denom={denom} networkId={networkId} />
         </View>
       }
     />

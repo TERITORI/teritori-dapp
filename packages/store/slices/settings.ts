@@ -41,6 +41,7 @@ interface Settings {
   multisigTokens: EntityState<MultisigToken>;
   networkSettings: EntityState<NetworkSettings>;
   isLightTheme: boolean;
+  developerMode: boolean;
 }
 
 const initialState: Settings = {
@@ -63,6 +64,7 @@ const initialState: Settings = {
     })),
   ),
   isLightTheme: false,
+  developerMode: false,
 };
 
 export const selectSelectedNetworkId = (state: RootState) =>
@@ -91,6 +93,9 @@ export const selectIsHowToBuyExpanded = (state: RootState) =>
 
 export const selectNFTStorageAPI = (state: RootState) =>
   state.settings.NFTStorageAPI;
+
+export const selectDeveloperMode = (state: RootState) =>
+  state.settings.developerMode;
 
 export const selectNetworkEnabled = (
   state: RootState,
@@ -216,6 +221,9 @@ const settingsSlice = createSlice({
     setIsLightTheme: (state, action: PayloadAction<boolean>) => {
       state.isLightTheme = action.payload;
     },
+    setDeveloperMode: (state, action: PayloadAction<boolean>) => {
+      state.developerMode = action.payload;
+    },
   },
 });
 
@@ -232,6 +240,7 @@ export const {
   setMultisigToken,
   toggleNetwork,
   setIsLightTheme,
+  setDeveloperMode,
 } = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;

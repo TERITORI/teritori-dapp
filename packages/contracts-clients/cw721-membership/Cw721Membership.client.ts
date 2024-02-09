@@ -188,7 +188,7 @@ export class Cw721MembershipQueryClient implements Cw721MembershipReadOnlyInterf
 export interface Cw721MembershipInterface extends Cw721MembershipReadOnlyInterface {
   contractAddress: string;
   sender: string;
-  createChannel: ({
+  upsertChannel: ({
     membershipsConfig
   }: {
     membershipsConfig: MembershipConfig[];
@@ -251,7 +251,7 @@ export class Cw721MembershipClient extends Cw721MembershipQueryClient implements
     this.client = client;
     this.sender = sender;
     this.contractAddress = contractAddress;
-    this.createChannel = this.createChannel.bind(this);
+    this.upsertChannel = this.upsertChannel.bind(this);
     this.subscribe = this.subscribe.bind(this);
     this.updateConfig = this.updateConfig.bind(this);
     this.updateChannelMintPlatformFee = this.updateChannelMintPlatformFee.bind(this);
@@ -261,13 +261,13 @@ export class Cw721MembershipClient extends Cw721MembershipQueryClient implements
     this.burn = this.burn.bind(this);
   }
 
-  createChannel = async ({
+  upsertChannel = async ({
     membershipsConfig
   }: {
     membershipsConfig: MembershipConfig[];
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
-      create_channel: {
+      upsert_channel: {
         memberships_config: membershipsConfig
       }
     }, fee, memo, _funds);

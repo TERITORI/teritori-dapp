@@ -21,9 +21,11 @@ import { SpacerColumn } from "../../components/spacer";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import {
   selectAreTestnetsEnabled,
+  selectDeveloperMode,
   selectIsLightTheme,
   selectNFTStorageAPI,
   setAreTestnetsEnabled,
+  setDeveloperMode,
   setIsLightTheme,
   setNFTStorageAPI,
 } from "../../store/slices/settings";
@@ -76,6 +78,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
   const commonStyles = useCommonStyles();
   const isKeplrConnected = useIsKeplrConnected();
   const testnetEnabled = useSelector(selectAreTestnetsEnabled);
+  const developerMode = useSelector(selectDeveloperMode);
   const dispatch = useAppDispatch();
   const [networksModalVisible, setNetworksModalVisible] = React.useState(false);
   const isLightTheme = useSelector(selectIsLightTheme);
@@ -119,7 +122,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
 
         <Notifications />
 
-        <SpacerColumn size={4} />
+        <SpacerColumn size={3} />
 
         <View style={commonStyles.cardContainer}>
           <TouchableOpacity
@@ -141,7 +144,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
           </TouchableOpacity>
         </View>
 
-        <SpacerColumn size={4} />
+        <SpacerColumn size={3} />
 
         <View style={commonStyles.cardContainer}>
           <SettingItem
@@ -156,9 +159,24 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
           />
         </View>
 
-        <SpacerColumn size={4} />
+        <SpacerColumn size={3} />
 
         <WeshnetStateButton />
+
+        <SpacerColumn size={3} />
+
+        <View style={commonStyles.cardContainer}>
+          <SettingItem
+            onPress={(item: SettingItemType) => {
+              dispatch(setDeveloperMode(!item.state));
+            }}
+            item={{
+              title: "Developer Mode, use at your own risk!",
+              description: "",
+              state: developerMode,
+            }}
+          />
+        </View>
 
         {/*Please note that the "user profile customization" part of this task was changed to navigate to the TNS manage page.*/}
         {/*I left the files ( committed to the repo UserProfileModal.tsx) as by the previous developer.*/}

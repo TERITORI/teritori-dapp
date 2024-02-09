@@ -1,14 +1,13 @@
 import React from "react";
 import { View } from "react-native";
 
-import { layout } from "../../../../utils/style/layout";
-
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { layout } from "@/utils/style/layout";
 
 export const SubscriptionBottomComponent: React.FC<{
-  onSubmit: () => void;
-  onClose: () => void;
+  onSubmit: (() => Promise<void>) | (() => void);
+  onClose: (() => Promise<void>) | (() => void);
 }> = ({ onSubmit, onClose }) => {
   return (
     <View
@@ -25,9 +24,7 @@ export const SubscriptionBottomComponent: React.FC<{
           size="M"
           text="Cancel"
           loader
-          onPress={() => {
-            onClose();
-          }}
+          onPress={onClose}
         />
       </View>
 
@@ -37,9 +34,7 @@ export const SubscriptionBottomComponent: React.FC<{
           size="M"
           text="Setup"
           loader
-          onPress={() => {
-            onSubmit();
-          }}
+          onPress={onSubmit}
         />
       </View>
     </View>

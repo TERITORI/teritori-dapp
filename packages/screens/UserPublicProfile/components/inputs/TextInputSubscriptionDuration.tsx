@@ -2,13 +2,12 @@ import React from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
 import { TextInputProps } from "react-native";
 
-import { TextInputCustom } from "../../../../components/inputs/TextInputCustom";
-import { layout } from "../../../../utils/style/layout";
-
 import { BrandText } from "@/components/BrandText";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { neutral00, neutral33, secondaryColor } from "@/utils/style/colors";
 import { fontMedium14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
@@ -23,6 +22,7 @@ export const TextInputSubscriptionDuration = <T extends FieldValues>({
   name,
   label,
   placeHolder,
+  onChangeText,
 }: TextInputCustomProps<T>) => {
   return (
     <TextInputCustom<T>
@@ -35,6 +35,7 @@ export const TextInputSubscriptionDuration = <T extends FieldValues>({
       control={control}
       inputMode="numeric"
       variant="labelOutside"
+      onChangeText={onChangeText}
       containerStyle={{ marginVertical: layout.spacing_x1, zIndex: 2 }}
       boxMainContainerStyle={{
         backgroundColor: neutral00,
@@ -61,7 +62,7 @@ export const TextInputSubscriptionDuration = <T extends FieldValues>({
               },
             ]}
           >
-            months
+            days
           </BrandText>
         </PrimaryBox>
       }

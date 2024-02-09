@@ -39,6 +39,7 @@
     "MembershipConfig": {
       "type": "object",
       "required": [
+        "description",
         "display_name",
         "duration_seconds",
         "nft_image_uri",
@@ -47,6 +48,9 @@
         "trade_royalties"
       ],
       "properties": {
+        "description": {
+          "type": "string"
+        },
         "display_name": {
           "type": "string"
         },

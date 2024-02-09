@@ -103,6 +103,7 @@ $(CONTRACTS_CLIENTS_DIR)/cw721-membership: node_modules
 		--out $@ \
 		--name cw721-membership \
 		--no-bundle
+	npx tsx packages/scripts/makeTypescriptIndex $@
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE): node_modules
