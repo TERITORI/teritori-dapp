@@ -10,7 +10,6 @@ import {
 import { useSelector } from "react-redux";
 
 import { PeriodFilter } from "./PeriodFilter";
-import { PrettyPrint } from "./types";
 import {
   Collection,
   MintState,
@@ -48,6 +47,7 @@ import {
 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { numFormatter } from "../../utils/text";
+import { PrettyPrint } from "../../utils/types/marketplace";
 import { arrayIncludes } from "../../utils/typescript";
 
 const TABLE_ROWS = {

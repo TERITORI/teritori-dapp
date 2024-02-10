@@ -39,7 +39,10 @@ import {
   fontSemibold20,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { StakeFormValuesType, ValidatorInfo } from "../types";
+import {
+  StakeFormValuesType,
+  ValidatorInfo,
+} from "../../../utils/types/staking";
 
 interface RedelegateModalProps {
   onClose?: () => void;

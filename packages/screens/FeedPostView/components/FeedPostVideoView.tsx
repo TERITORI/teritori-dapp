@@ -15,12 +15,6 @@ import { ScreenContainer } from "../../../components/ScreenContainer";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { UserAvatarWithFrame } from "../../../components/images/AvatarWithFrame";
 import { MediaPlayerVideo } from "../../../components/mediaPlayer/MediaPlayerVideo";
-import {
-  PostCategory,
-  ReplyToType,
-  ZodSocialFeedVideoMetadata,
-} from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { generatePostMetadata } from "../../../components/socialFeed/NewsFeed/NewsFeedQueries";
 import { DislikeButton } from "../../../components/socialFeed/SocialActions/DislikeButton";
 import { LikeButton } from "../../../components/socialFeed/SocialActions/LikeButton";
 import { ReportButton } from "../../../components/socialFeed/SocialActions/ReportButton";
@@ -40,7 +34,7 @@ import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getNetwork, NetworkKind, parseUserId } from "../../../networks";
-import { useAppNavigation } from "../../../utils/navigation";
+import { generatePostMetadata } from "../../../utils/feed/queries";
 import { zodTryParseJSON } from "../../../utils/sanitize";
 import {
   BASE_POST,
@@ -66,6 +60,13 @@ import {
   SOCIAL_FEED_BREAKPOINT_M,
 } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
+import {
+  PostCategory,
+  ReplyToType,
+  ZodSocialFeedVideoMetadata,
+} from "../../../utils/types/feed";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const POST_VIDEO_MAX_WIDTH = 960;
 const INPUT_MIN_HEIGHT = 20;

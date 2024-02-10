@@ -7,13 +7,13 @@ import profileSVG from "../../../../assets/icons/profile-circle-white.svg";
 import warningSVG from "../../../../assets/icons/warning-circular-orange.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
+import ToggleButton from "../../../components/buttons/ToggleButton";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
 import { ScreenFC } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontMedium13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import ToggleButton from "../components/Button/ToggleButton";
 import { SettingMenuItem } from "../components/SettingMenuItems";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 

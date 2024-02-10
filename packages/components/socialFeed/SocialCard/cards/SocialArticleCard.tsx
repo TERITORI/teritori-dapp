@@ -8,7 +8,6 @@ import { Post } from "../../../../api/feed/v1/feed";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
-import { useAppNavigation } from "../../../../utils/navigation";
 import { zodTryParseJSON } from "../../../../utils/sanitize";
 import { ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH } from "../../../../utils/social-feed";
 import {
@@ -26,14 +25,14 @@ import {
   RESPONSIVE_BREAKPOINT_S,
   SOCIAL_FEED_BREAKPOINT_M,
 } from "../../../../utils/style/layout";
+import {
+  ZodSocialFeedArticleMetadata,
+  ZodSocialFeedPostMetadata,
+} from "../../../../utils/types/feed";
 import { BrandText } from "../../../BrandText";
 import { OptimizedImage } from "../../../OptimizedImage";
 import { CustomPressable } from "../../../buttons/CustomPressable";
 import { SpacerColumn } from "../../../spacer";
-import {
-  ZodSocialFeedArticleMetadata,
-  ZodSocialFeedPostMetadata,
-} from "../../NewsFeed/NewsFeed.type";
 import {
   createStateFromHTML,
   getTruncatedArticleHTML,
@@ -43,6 +42,8 @@ import { FlaggedCardFooter } from "../FlaggedCardFooter";
 import { SocialCardFooter } from "../SocialCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";
 import { SocialCardWrapper } from "../SocialCardWrapper";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const ARTICLE_CARD_PADDING_VERTICAL = layout.spacing_x2;
 const ARTICLE_CARD_PADDING_HORIZONTAL = layout.spacing_x2_5;

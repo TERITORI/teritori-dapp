@@ -6,10 +6,11 @@ import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { SpacerRow } from "../../../../components/spacer";
-import { useAppNavigation } from "../../../../utils/navigation";
 import { neutral00 } from "../../../../utils/style/colors";
 import { fontSemibold18 } from "../../../../utils/style/fonts";
 import { MOBILE_HEADER_HEIGHT, layout } from "../../../../utils/style/layout";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 type HeaderProps = {
   left?: ReactNode;

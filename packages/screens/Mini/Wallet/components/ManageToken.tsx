@@ -18,7 +18,7 @@ import {
 } from "../../../../utils/style/colors";
 import { fontSemibold14, fontSemibold22 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
-import { findByBaseDenom } from "../../../Wallet/util/chain-registry";
+import { findByBaseDenom } from "../../../../utils/wallet/chain-registry";
 
 type Props = {
   amount: string;

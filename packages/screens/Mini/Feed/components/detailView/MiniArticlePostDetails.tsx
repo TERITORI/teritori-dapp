@@ -13,10 +13,6 @@ import { OptimizedImage } from "../../../../../components/OptimizedImage";
 import { ScreenContainer } from "../../../../../components/ScreenContainer";
 import { CommentsContainer } from "../../../../../components/cards/CommentsContainer";
 import {
-  ReplyToType,
-  ZodSocialFeedArticleMetadata,
-} from "../../../../../components/socialFeed/NewsFeed/NewsFeed.type";
-import {
   NewsFeedInput,
   NewsFeedInputHandle,
 } from "../../../../../components/socialFeed/NewsFeed/NewsFeedInput";
@@ -34,6 +30,10 @@ import { zodTryParseJSON } from "../../../../../utils/sanitize";
 import { BASE_POST, DEFAULT_USERNAME } from "../../../../../utils/social-feed";
 import { fontSemibold16 } from "../../../../../utils/style/fonts";
 import { tinyAddress } from "../../../../../utils/text";
+import {
+  ReplyToType,
+  ZodSocialFeedArticleMetadata,
+} from "../../../../../utils/types/feed";
 import CustomAppBar from "../../../components/AppBar/CustomAppBar";
 
 type Props = {

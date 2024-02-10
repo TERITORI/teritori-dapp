@@ -26,7 +26,7 @@ import {
   TokenSettingFormType,
   MemberSettingFormType,
   DaoType,
-} from "../types";
+} from "../../../utils/types/organizations";
 
 interface ReviewInformationSectionProps {
   organizationData?: CreateDaoFormType;

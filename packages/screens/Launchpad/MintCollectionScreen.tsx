@@ -33,6 +33,7 @@ import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { ProgressionCard } from "../../components/cards/ProgressionCard";
 import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
 import { GradientText } from "../../components/gradientText";
+import { DepositWithdrawModal } from "../../components/modals/DepositWithdrawModal";
 import { SpacerRow } from "../../components/spacer";
 import {
   initialToastError,
@@ -82,7 +83,6 @@ import {
   fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { DepositWithdrawModal } from "../WalletManager/components/DepositWithdrawModal";
 
 const maxImageSize = 532;
 const cardsHalfGap = 6;

@@ -4,8 +4,8 @@ import { FeedHeader } from "./FeedHeader";
 import { PostsRequest } from "../../../api/feed/v1/feed";
 import { MobileTitle } from "../../../components/ScreenContainer/ScreenContainerMobile";
 import { NewsFeed } from "../../../components/socialFeed/NewsFeed/NewsFeed";
-import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { useIsMobile } from "../../../hooks/useIsMobile";
+import { PostCategory } from "../../../utils/types/feed";
 
 export const PicsFeed: FC = () => {
   const isMobile = useIsMobile();

@@ -10,6 +10,10 @@ import { ScreenContainer } from "../../../components/ScreenContainer";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import {
+  getMnemonic,
+  getNativeWallet,
+} from "../../../hooks/wallet/getNativeWallet";
 import { mustGetCosmosNetwork } from "../../../networks";
 import { addSelected, selectAllWallets } from "../../../store/slices/wallets";
 import { useAppDispatch } from "../../../store/store";
@@ -22,12 +26,11 @@ import {
   fontSemibold30,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { createMnemonic } from "../../../utils/wallet/seed";
 import CustomAppBar from "../../Mini/components/AppBar/CustomAppBar";
 import BlurViewWrapper from "../../Mini/components/BlurViewWrapper";
 import { CustomButton } from "../../Mini/components/Button/CustomButton";
 import Checkbox from "../../Mini/components/Checkbox/Checkbox";
-import { getMnemonic, getNativeWallet } from "../hooks/getNativeWallet";
-import { createMnemonic } from "../util/seed";
 
 export const CreateWalletScreen: ScreenFC<"CreateWallet"> = ({
   navigation,

@@ -10,13 +10,14 @@ import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { useAppNavigation } from "../../../utils/navigation";
+import { DropdownWithListItem } from "../../../components/mini/DropdownWithListItem";
 import { neutral33, neutralA3 } from "../../../utils/style/colors";
 import { fontMedium13, fontSemibold22 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
 import { copyToClipboard } from "../Wallet/TransactionDetailScreen";
-import { DropdownWithListItem } from "../components/Dropdown/DropdownWithListItem";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 type AccountProps = {
   accountName: string;

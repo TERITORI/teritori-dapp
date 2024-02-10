@@ -8,7 +8,7 @@ import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
 import { GridList } from "../../../components/layout/GridList";
 import { selectAvailableApps } from "../../../store/slices/dapps-store";
 import { layout } from "../../../utils/style/layout";
-import { dAppType } from "../types";
+import { dAppType } from "../../../utils/types/dapp-store";
 
 export const RightRail = ({ searchInput }: { searchInput: string }) => {
   const availableApps = useSelector(selectAvailableApps);

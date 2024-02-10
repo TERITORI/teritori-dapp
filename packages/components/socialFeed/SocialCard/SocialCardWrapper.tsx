@@ -8,6 +8,7 @@ import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { NetworkKind, parseUserId } from "../../../networks";
+import { TERITORI_FEED_ID } from "../../../utils/feed/constants";
 import { adenaVMCall } from "../../../utils/gno";
 import {
   GnoBanPostMessage,
@@ -28,7 +29,6 @@ import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButton } from "../../buttons/SecondaryButton";
 import { SpacerColumn, SpacerRow } from "../../spacer";
-import { TERITORI_FEED_ID } from "../const";
 import { FlagConfirmModal } from "../modals/FlagConfirmModal";
 import { FlagConfirmedModal } from "../modals/FlagConfirmedModal";
 import { FlagDetailsModal } from "../modals/FlagDetailsModal";

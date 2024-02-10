@@ -7,6 +7,7 @@ import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
 import { Box } from "../../../components/boxes/Box";
 import { setCheckedApp } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
+import { SEPARATOR } from "../../../utils/dapp-store";
 import {
   errorColor,
   neutral33,
@@ -16,8 +17,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontBold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { SEPARATOR } from "../query/util";
-import { dAppType } from "../types";
+import { dAppType } from "../../../utils/types/dapp-store";
 
 export const SelectedDraggable: React.FC<{
   option?: dAppType;

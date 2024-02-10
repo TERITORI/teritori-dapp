@@ -11,10 +11,6 @@ import { Post, PostsRequest } from "../../../../../api/feed/v1/feed";
 import { BrandText } from "../../../../../components/BrandText";
 import { ScreenContainer } from "../../../../../components/ScreenContainer";
 import { MediaPlayerVideo } from "../../../../../components/mediaPlayer/MediaPlayerVideo";
-import {
-  PostCategory,
-  ZodSocialFeedVideoMetadata,
-} from "../../../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { DislikeButton } from "../../../../../components/socialFeed/SocialActions/DislikeButton";
 import { LikeButton } from "../../../../../components/socialFeed/SocialActions/LikeButton";
 import { ReportButton } from "../../../../../components/socialFeed/SocialActions/ReportButton";
@@ -41,6 +37,10 @@ import { neutralA3 } from "../../../../../utils/style/colors";
 import { fontSemibold14 } from "../../../../../utils/style/fonts";
 import { layout } from "../../../../../utils/style/layout";
 import { tinyAddress } from "../../../../../utils/text";
+import {
+  PostCategory,
+  ZodSocialFeedVideoMetadata,
+} from "../../../../../utils/types/feed";
 import { VideoComment } from "../../../../FeedPostView/components/VideoComment";
 import CustomAppBar from "../../../components/AppBar/CustomAppBar";
 import { VideoCommentInput } from "../VideoCommentInput";

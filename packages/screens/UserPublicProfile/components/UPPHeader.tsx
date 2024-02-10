@@ -6,10 +6,11 @@ import { useIsDAO } from "../../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { parseUserId, UserKind } from "../../../networks";
-import { useAppNavigation } from "../../../utils/navigation";
 import { primaryColor } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { uppTabItems } from "../../../utils/upp";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 interface UserPublicProfileScreenHeaderProps {
   userId: string;

@@ -3,7 +3,6 @@ import { Platform } from "react-native";
 import { useSelector } from "react-redux";
 
 import { useIsMobile } from "../hooks/useIsMobile";
-import { getValuesFromId, SEPARATOR } from "../screens/DAppStore/query/util";
 import {
   selectAvailableApps,
   selectCheckedApps,
@@ -15,6 +14,8 @@ import {
 } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
 import { SIDEBAR_LIST } from "../utils/sidebar";
+
+import { getValuesFromId, SEPARATOR } from "@/utils/dapp-store";
 
 export const useSidebar = () => {
   const isSidebarExpanded = useSelector(selectSidebarExpanded);

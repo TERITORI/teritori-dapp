@@ -1,8 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 
 import { selectAppMode, setAppMode } from "@/store/slices/settings";
-
-export type AppMode = "normal" | "mini" | "web3Addict";
+import { AppMode } from "@/utils/types/app-mode";
 
 export const useAppMode = () => {
   const appMode = useSelector(selectAppMode);

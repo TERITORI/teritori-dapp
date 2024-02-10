@@ -2,23 +2,15 @@ import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { ConfigureVotingSection } from "./components/ConfigureVotingSection";
 import { CreateDAOSection } from "./components/CreateDAOSection";
 import { LaunchingOrganizationSection } from "./components/LaunchingOrganizationSection";
 import { MemberSettingsSection } from "./components/MemberSettingsSection";
 import { ReviewInformationSection } from "./components/ReviewInformationSection";
 import { RightSection } from "./components/RightSection";
 import { TokenSettingsSection } from "./components/TokenSettingsSection";
-import {
-  ConfigureVotingFormType,
-  CreateDaoFormType,
-  LaunchingProcessStepType,
-  TokenSettingFormType,
-  MemberSettingFormType,
-  DaoType,
-} from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { ConfigureVotingSection } from "../../components/dao/ConfigureVotingSection";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -31,18 +23,15 @@ import {
 } from "../../networks";
 import { createDaoTokenBased, createDaoMemberBased } from "../../utils/dao";
 import { adenaDeployGnoDAO } from "../../utils/gnodao/deploy";
-
-export const ORGANIZATION_DEPLOYER_STEPS = [
-  "Create a DAO",
-  "Configure voting",
-  "Set tokens or members",
-  "Review information",
-  "Launch organization",
-];
-
-export const LAUNCHING_PROCESS_STEPS: LaunchingProcessStepType[] = [
-  { title: "Create organization", completeText: "Transaction finalized" },
-];
+import {
+  ConfigureVotingFormType,
+  CreateDaoFormType,
+  TokenSettingFormType,
+  MemberSettingFormType,
+  DaoType,
+  LAUNCHING_PROCESS_STEPS,
+  ORGANIZATION_DEPLOYER_STEPS,
+} from "../../utils/types/organizations";
 
 export const OrganizationDeployerScreen = () => {
   const selectedWallet = useSelectedWallet();

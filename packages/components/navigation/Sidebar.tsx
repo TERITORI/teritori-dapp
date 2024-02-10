@@ -12,15 +12,13 @@ import { SideNotch } from "./components/SideNotch";
 import { SidebarButton } from "./components/SidebarButton";
 import { SidebarProfileButton } from "./components/SidebarProfileButton";
 import { TopLogo } from "./components/TopLogo";
-import { SidebarType } from "./types";
 import addSVG from "../../../assets/icons/add-circle.svg";
 import { useSidebar } from "../../context/SidebarProvider";
+import { useRoute } from "../../hooks/navigation/useRoute";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useRoute } from "../../hooks/useRoute";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature, NetworkKind } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33 } from "../../utils/style/colors";
 import { fontBold16, fontBold9 } from "../../utils/style/fonts";
 import {
@@ -29,8 +27,11 @@ import {
   layout,
   smallSidebarWidth,
 } from "../../utils/style/layout";
+import { SidebarType } from "../../utils/types/sidebar";
 import { Separator } from "../separators/Separator";
 import { SpacerColumn } from "../spacer";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const SpringConfig: WithSpringConfig = {
   stiffness: 100,

@@ -21,6 +21,10 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import {
+  PostCategory,
+  SocialFeedTrackMetadata,
+} from "../../../utils/types/feed";
 import { LocalFileData } from "../../../utils/types/files";
 import { BrandText } from "../../BrandText";
 import { EditableAudioPreview } from "../../FilePreview/EditableAudioPreview";
@@ -28,17 +32,11 @@ import { SVG } from "../../SVG";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { FileUploader } from "../../fileUploader";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
-import {
-  FeedPostingProgressBar,
-  feedPostingStep,
-  FeedPostingStepId,
-} from "../../loaders/FeedPostingProgressBar";
+import { FeedPostingProgressBar } from "../../loaders/FeedPostingProgressBar";
 import { FeedFeeText } from "../../socialFeed/FeedFeeText";
-import {
-  PostCategory,
-  SocialFeedTrackMetadata,
-} from "../../socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn, SpacerRow } from "../../spacer";
+
+import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
 
 interface Props {
   onUploadDone: () => void;

@@ -18,8 +18,10 @@ import {
 import { neutral33, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
-import { TokenSettingFormType } from "../types";
+import {
+  ORGANIZATION_DEPLOYER_STEPS,
+  TokenSettingFormType,
+} from "../../../utils/types/organizations";
 
 interface TokenSettingsSectionProps {
   onSubmit: (form: TokenSettingFormType) => void;

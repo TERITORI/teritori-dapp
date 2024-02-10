@@ -13,13 +13,14 @@ import {
 import { useAppMode } from "../../hooks/useAppMode";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature } from "../../networks";
-import { Spinner } from "../../screens/Mini/Feed/components/Spinner";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { ZodSocialFeedVideoMetadata } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 import { GridList } from "../layout/GridList";
-import { ZodSocialFeedVideoMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
+
+import { Spinner } from "@/components/Spinner";
 
 const minCardWidth = 261;
 

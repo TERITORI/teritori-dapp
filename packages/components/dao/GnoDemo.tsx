@@ -7,7 +7,6 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useInvalidateDAOProposals } from "../../hooks/dao/useDAOProposals";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, parseUserId } from "../../networks";
-import { ConfigureVotingSection } from "../../screens/Organizations/components/ConfigureVotingSection";
 import { adenaVMCall, extractGnoNumber } from "../../utils/gno";
 import {
   GnoDAOUpdateSettings,
@@ -23,6 +22,8 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import ModalBase from "../modals/ModalBase";
 import { SpacerColumn } from "../spacer";
+
+import { ConfigureVotingSection } from "@/components/dao/ConfigureVotingSection";
 
 const toFixed4 = (n: number) => {
   return Math.round(n * 100);

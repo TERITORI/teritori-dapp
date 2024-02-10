@@ -6,9 +6,10 @@ import teritoriSVG from "../../../../assets/icons/teritori-white.svg";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../../components/spacer";
-import { useAppNavigation } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
 import { ProgressLine } from "../components/ProgressLine";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 interface MultiStepScreenProps extends PropsWithChildren {
   screenPercentage: number;

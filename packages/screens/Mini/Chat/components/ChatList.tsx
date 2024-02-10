@@ -20,7 +20,6 @@ import {
   selectPeerById,
 } from "../../../../store/slices/message";
 import { RootState } from "../../../../store/store";
-import { useAppNavigation } from "../../../../utils/navigation";
 import { neutralA3, secondaryColor } from "../../../../utils/style/colors";
 import { fontMedium13, fontSemibold14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
@@ -31,6 +30,8 @@ import {
 } from "../../../../weshnet/messageHelpers";
 import { ChatAvatar } from "../../components/ChatAvatar";
 import MiniTextInput from "../../components/MiniTextInput";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export const ChatList = () => {
   const navigation = useAppNavigation();

@@ -5,10 +5,10 @@ import { Post } from "../../../api/feed/v1/feed";
 import { zodTryParseJSON } from "../../../utils/sanitize";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
+import { ZodSocialFeedTrackMetadata } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
 import { AudioView } from "../../FilePreview/AudioView";
 import { SpacerColumn } from "../../spacer";
-import { ZodSocialFeedTrackMetadata } from "../NewsFeed/NewsFeed.type";
 
 export const MusicPostTrackContent: FC<{
   post: Post;

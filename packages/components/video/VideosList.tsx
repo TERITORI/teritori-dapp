@@ -12,9 +12,9 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import { fontSemibold16 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { ZodSocialFeedVideoMetadata } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 import { GridList } from "../layout/GridList";
-import { ZodSocialFeedVideoMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
 
 const minCardWidth = 261;
 

@@ -5,9 +5,9 @@ import { ManageToken } from "./components/ManageToken";
 import AddNewSvg from "../../../../assets/icons/add-circle-filled.svg";
 import { Separator } from "../../../components/separators/Separator";
 import { useBalances } from "../../../hooks/useBalances";
+import { useSelectedNativeWallet } from "../../../hooks/wallet/useSelectedNativeWallet";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
-import { useSelectedNativeWallet } from "../../Wallet/hooks/useSelectedNativeWallet";
 import ListView from "../components/ListView";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 

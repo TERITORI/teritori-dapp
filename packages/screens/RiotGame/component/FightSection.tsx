@@ -26,7 +26,7 @@ import { squadWithdraw } from "../../../utils/game";
 import { web3ToWeb2URI } from "../../../utils/ipfs";
 import { fontMedium48 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { RipperLightInfo, SquadInfo } from "../types";
+import { RipperLightInfo, SquadInfo } from "../../../utils/types/riot-p2e";
 
 const cosmosNFTInfos = async (
   network: NetworkInfo,

@@ -19,9 +19,9 @@ import { ConnectWalletButton } from "../../../components/TopMenu/ConnectWalletBu
 import { TopLogo } from "../../../components/navigation/components/TopLogo";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerRow } from "../../../components/spacer";
+import { useRoute } from "../../../hooks/navigation/useRoute";
 import { useForceNetworkFeatures } from "../../../hooks/useForceNetworkFeatures";
 import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useRoute } from "../../../hooks/useRoute";
 import { NetworkFeature } from "../../../networks";
 import {
   RootStackParamList,

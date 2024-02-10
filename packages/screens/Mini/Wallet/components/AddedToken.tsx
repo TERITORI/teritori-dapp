@@ -12,7 +12,7 @@ import { prettyPrice } from "../../../../utils/coins";
 import { neutral39, neutralA3 } from "../../../../utils/style/colors";
 import { fontMedium13, fontSemibold14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
-import { findByBaseDenom } from "../../../Wallet/util/chain-registry";
+import { findByBaseDenom } from "../../../../utils/wallet/chain-registry";
 
 type Props = {
   icon: string | FC<SvgProps>;

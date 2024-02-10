@@ -6,10 +6,6 @@ import { UploadMusicButton } from "./UploadMusicButton";
 import { UploadMusicModal } from "./UploadMusicModal";
 import { Post, PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
-import {
-  PostCategory,
-  ZodSocialFeedTrackMetadata,
-} from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { useWalletControl } from "../../context/WalletControlProvider";
 import {
   combineFetchFeedPages,
@@ -18,11 +14,16 @@ import {
 import { useAppMode } from "../../hooks/useAppMode";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature } from "../../networks";
-import { Spinner } from "../../screens/Mini/Feed/components/Spinner";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import {
+  PostCategory,
+  ZodSocialFeedTrackMetadata,
+} from "../../utils/types/feed";
 import { GridList } from "../layout/GridList";
+
+import { Spinner } from "@/components/Spinner";
 
 const minCardWidth = 250;
 const gap = layout.spacing_x2;

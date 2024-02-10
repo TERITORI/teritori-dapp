@@ -16,7 +16,6 @@ import {
   parseUserId,
   UserKind,
 } from "../../networks";
-import { TransactionForm } from "../../screens/WalletManager/types";
 import { prettyPrice } from "../../utils/coins";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
@@ -30,6 +29,8 @@ import { DAOSelector } from "../dao/DAOSelector";
 import { SearchNSInputContainer } from "../inputs/SearchNSInputContainer";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../spacer";
+
+import { TransactionForm } from "@/utils/types/wallet";
 
 type SendModalProps = {
   isVisible: boolean;

@@ -6,11 +6,11 @@ import { Post } from "../../../api/feed/v1/feed";
 import { HTML_TAG_REGEXP } from "../../../utils/regex";
 import { zodTryParseJSON } from "../../../utils/sanitize";
 import { convertGIFToLocalFileType } from "../../../utils/social-feed";
+import { ZodSocialFeedPostMetadata } from "../../../utils/types/feed";
 import { AudioView } from "../../FilePreview/AudioView";
 import { ImagesViews } from "../../FilePreview/ImagesViews";
 import { VideoView } from "../../FilePreview/VideoView";
 import { SpacerColumn } from "../../spacer";
-import { ZodSocialFeedPostMetadata } from "../NewsFeed/NewsFeed.type";
 import { TextRenderer } from "../NewsFeed/TextRenderer/TextRenderer";
 interface Props {
   post: Post;

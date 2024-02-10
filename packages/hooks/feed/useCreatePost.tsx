@@ -1,9 +1,9 @@
 import { useQueryClient } from "@tanstack/react-query";
 
 import { FetchCommentResponse } from "./useFetchComments";
-import { PostResultExtra } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTeritoriSocialFeedCreatePostMutation } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
+import { PostResultExtra } from "../../utils/types/feed";
 import useSelectedWallet from "../useSelectedWallet";
 
 // =============== Used only for Simple Post for now. (Sorry for the mess)
