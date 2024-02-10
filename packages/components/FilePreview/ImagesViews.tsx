@@ -97,7 +97,7 @@ export const ImagesViews: React.FC<ImagePreviewProps> = ({
               setFullView(true);
             }}
             key={file.url}
-            //@ts-expect-error
+            // @ts-expect-error: description todo
             style={{
               padding: layout.spacing_x1,
               ...getDimension(index, files.length),

@@ -388,7 +388,7 @@ export const NewsFeedInput = React.forwardRef<
                         : inputMinHeight,
                       width: "100%",
                       color: secondaryColor,
-                      //@ts-ignore
+                      // @ts-expect-error: description todo
                       outlineStyle: "none",
                       outlineWidth: 0,
                     },

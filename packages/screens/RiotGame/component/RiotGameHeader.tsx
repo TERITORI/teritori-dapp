@@ -112,7 +112,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
     if (item.externalRoute) {
       Linking.openURL(item.externalRoute);
     } else if (item.route) {
-      // @ts-expect-error
+      // @ts-expect-error: description todo
       navigation.navigate(item.route);
     }
   };

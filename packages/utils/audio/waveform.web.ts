@@ -3,7 +3,7 @@ import WaveformData from "waveform-data";
 import { BAR_LENGTH } from "./constants";
 import { AudioFileMetadata } from "../types/files";
 
-//@ts-ignore
+// @ts-expect-error: description todo
 window.AudioContext = window.AudioContext || window?.webkitAudioContext;
 
 const audioContext = new AudioContext();

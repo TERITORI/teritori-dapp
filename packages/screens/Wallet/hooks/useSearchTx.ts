@@ -84,10 +84,10 @@ const getLastFiveTransactions = async (
 
       return blocks.map((txResponse: TxResponseSDKType) => {
         return {
-          // @ts-expect-error
+          // @ts-expect-error: description todo
           txhash: txResponse.txhash ? txResponse.txhash : txResponse.hash,
           height: txResponse.height,
-          // @ts-expect-error
+          // @ts-expect-error: description todo
           tx: txResponse.tx.body.messages[0], // support only one message ?
         };
       });

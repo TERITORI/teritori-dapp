@@ -108,18 +108,16 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
       return;
     }
     try {
-      //@ts-ignore
       const routeName = Object.keys(TNSPathMap).find(
-        //@ts-ignore
+        // @ts-expect-error: description todo
         (key) => TNSPathMap[key] === modal,
       );
-      //@ts-ignore
 
       if (["register", "explore"].includes(modal) && !name) {
         setModalNameFinderVisible(true);
         setPressedTNSItems(modal === "register" ? "TNSRegister" : "TNSExplore");
       } else {
-        //@ts-ignore
+        // @ts-expect-error: description todo
         setActiveModal(routeName);
         setModalNameFinderVisible(false);
       }

@@ -70,7 +70,7 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
           containerStyle={styles.modalContainer}
           searchStyle={{
             backgroundColor: neutral33,
-            // @ts-ignore
+            // @ts-expect-error: description todo
             color: secondaryColor,
           }}
           headerStyle={{

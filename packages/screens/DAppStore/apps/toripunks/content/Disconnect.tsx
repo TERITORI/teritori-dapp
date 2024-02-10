@@ -14,7 +14,7 @@ export const Disconnect = () => {
   const styleTypeSize = isMinimunWindowWidth ? "80" : "40";
   return (
     <View
-      // @ts-expect-error
+      // @ts-expect-error: description todo
       style={{
         height: "34vh",
         justifyContent: "flex-end",
@@ -37,7 +37,7 @@ export const Disconnect = () => {
         ???
       </Label>
       <View
-        // @ts-expect-error
+        // @ts-expect-error: description todo
         style={{
           marginTop: "5em",
           flexDirection: "row",
@@ -48,7 +48,7 @@ export const Disconnect = () => {
         <ButtonLabel
           text="YES"
           size="S"
-          // @ts-expect-error
+          // @ts-expect-error: description todo
           style={{
             marginRight: "2em",
           }}
