@@ -72,7 +72,7 @@ export const Sidebar: React.FC = () => {
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
-    // @ts-expect-error
+    // @ts-expect-error: description todo
     navigation.navigate(name);
   };
 

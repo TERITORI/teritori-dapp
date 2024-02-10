@@ -120,7 +120,7 @@ export const generatePostMetadata = ({
     gifs: gifs || [],
   });
   // we need this hack until the createdAt field is properly provided by the contract
-  // @ts-expect-error
+  // @ts-expect-error: description todo
   m.createdAt = new Date().toISOString();
   return m;
 };
@@ -150,7 +150,7 @@ export const generateArticleMetadata = ({
     shortDescription: shortDescription || "",
   });
   // we need this hack until the createdAt field is properly provided by the contract
-  // @ts-expect-error
+  // @ts-expect-error: description todo
   m.createdAt = new Date().toISOString();
   return m;
 };

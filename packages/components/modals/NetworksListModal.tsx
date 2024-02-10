@@ -126,7 +126,7 @@ const NetworkSettingsItem: FC<{ networkId: string }> = memo(({ networkId }) => {
         </View>
         <SpacerRow size={1} />
         <Switch
-          // @ts-expect-error
+          // @ts-expect-error: description todo
           activeThumbColor={primaryColor}
           thumbColor={state ? primaryColor : neutral55}
           trackColor={{ true: secondaryColor, false: neutralA3 }}

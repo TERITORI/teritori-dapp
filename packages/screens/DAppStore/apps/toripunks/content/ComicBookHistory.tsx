@@ -93,7 +93,7 @@ export const ComicBookHistory = () => {
 
   return (
     <View
-      // @ts-expect-error
+      // @ts-expect-error: description todo
       style={{
         flexWrap: "nowrap",
         alignItems: "center",
@@ -110,7 +110,7 @@ export const ComicBookHistory = () => {
       >
         <Label
           styleType={`H2_DHBS_${styleTypeSize}`}
-          // @ts-expect-error
+          // @ts-expect-error: description todo
           style={{
             textAlign: "center",
             color: "#FFD753",
@@ -123,7 +123,7 @@ export const ComicBookHistory = () => {
           early punk wallet
         </Label>
         <FlatList
-          // @ts-expect-error
+          // @ts-expect-error: description todo
           contentContainerStyle={{
             alignItems: "center",
             marginTop: 80,
