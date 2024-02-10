@@ -62,7 +62,7 @@ export const SubscriptionSetupModal: React.FC<{
   }, []);
 
   const removeItem = useCallback((id: number) => {
-    setTiers((tiers) => tiers.filter((_, index) => index === id));
+    setTiers((tiers) => tiers.filter((_, index) => index !== id));
   }, []);
 
   const handleChangeTier = useCallback(
