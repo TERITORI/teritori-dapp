@@ -17,10 +17,7 @@ import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
 import CustomAppBar from "../components/AppBar/CustomAppBar";
 
-const FeedDetailsScreen: ScreenFC<"MiniFeedDetails"> = ({
-  navigation,
-  route,
-}) => {
+export const FeedDetailsView: ScreenFC<"FeedPostView"> = ({ route }) => {
   const { id } = route.params;
   let [network, postId] = parseNetworkObjectId(id);
   if (!network) {
@@ -105,5 +102,3 @@ const FeedDetailsScreen: ScreenFC<"MiniFeedDetails"> = ({
     />
   );
 };
-
-export default FeedDetailsScreen;

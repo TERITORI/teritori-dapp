@@ -74,7 +74,7 @@ export const MiniVideo = ({ post, refetchFeed, style }: Props) => {
   return (
     <CustomPressable
       onPress={() => {
-        navigation.navigate("MiniFeedDetails", {
+        navigation.navigate("FeedPostView", {
           id: getNetworkObjectId(selectedNetworkId, localPost.identifier),
         });
       }}

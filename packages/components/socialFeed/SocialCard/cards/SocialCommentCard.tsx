@@ -17,7 +17,7 @@ import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import { usePrevious } from "../../../../hooks/usePrevious";
 import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
-import { OnPressReplyType } from "../../../../screens/FeedPostView/FeedPostViewScreen";
+import { OnPressReplyType } from "../../../../screens/FeedPostView/FeedPostView";
 import { useAppNavigation } from "../../../../utils/navigation";
 import { DEFAULT_USERNAME } from "../../../../utils/social-feed";
 import {

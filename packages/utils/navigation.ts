@@ -138,7 +138,6 @@ export type RootStackParamList = {
   MiniTransactionDetail: { type: string; transactionId: string };
   ConnectLedger: undefined;
   CreateWallet: undefined;
-  MiniFeedDetails: { id: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -286,7 +285,6 @@ const navConfig: {
     MiniTransactionDetail: "mini-transaction-detail",
     ConnectLedger: "connect-ledger",
     CreateWallet: "create-wallet",
-    MiniFeedDetails: "mini-feed-details",
   },
 };
 

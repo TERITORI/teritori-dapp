@@ -72,7 +72,7 @@ export const MiniThread = ({
     >
       <CustomPressable
         onPress={() => {
-          navigation.navigate("MiniFeedDetails", {
+          navigation.navigate("FeedPostView", {
             id: getNetworkObjectId(selectedNetworkId, localPost.identifier),
           });
         }}

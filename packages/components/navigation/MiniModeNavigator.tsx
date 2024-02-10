@@ -6,6 +6,7 @@ import { RouteProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
+import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import AboutScreen from "../../screens/Mini/About/AboutScreen";
 import AddAddressBookScreen from "../../screens/Mini/AddressBook/AddAddressBookScreen";
@@ -18,7 +19,6 @@ import { NewGroupScreen } from "../../screens/Mini/Chat/NewGroupScreen";
 import { ConnectLedgerScreen } from "../../screens/Mini/ConnectLedger/ConnectLedgerScreen";
 import { ConversationScreeen } from "../../screens/Mini/Conversation/ConversationScreen";
 import { DAppStoreScreen } from "../../screens/Mini/DAppStore/DAppStoreScreen";
-import FeedDetailsScreen from "../../screens/Mini/Feed/FeedDetailsScreen";
 import { MiniFeedScreen } from "../../screens/Mini/Feed/MiniFeedScreen";
 import ChangeNetworkScreen from "../../screens/Mini/Network/ChangeNetworkScreen";
 import NotificationScreen from "../../screens/Mini/Notifications/NotificationScreen";
@@ -435,13 +435,9 @@ export const MiniModeNavigator: React.FC = () => {
         }}
       />
       <Stack.Screen
-        name="MiniFeedDetails"
-        component={FeedDetailsScreen}
-        options={{
-          header: () => null,
-          title: "Feed",
-          animation: "fade",
-        }}
+        name="FeedPostView"
+        component={FeedPostViewScreen}
+        options={{ header: () => null, title: "Feed", animation: "fade" }}
       />
       <Stack.Screen
         name="NFTDetail"

@@ -27,7 +27,7 @@ import { parseUserId } from "../../../../../networks";
 import { useAppNavigation } from "../../../../../utils/navigation";
 import { BASE_POST, DEFAULT_USERNAME } from "../../../../../utils/social-feed";
 import { tinyAddress } from "../../../../../utils/text";
-import { OnPressReplyType } from "../../../../FeedPostView/FeedPostViewScreen";
+import { OnPressReplyType } from "../../../../FeedPostView/FeedPostView";
 import CustomAppBar from "../../../components/AppBar/CustomAppBar";
 
 type Props = {
@@ -70,7 +70,7 @@ const MiniDefaultPostDetails = ({
 
   useEffect(() => {
     if (post?.category === PostCategory.Video)
-      navigation.replace("MiniFeedDetails", {
+      navigation.replace("FeedPostView", {
         id: postId,
       });
   }, [post?.category, postId, navigation]);
