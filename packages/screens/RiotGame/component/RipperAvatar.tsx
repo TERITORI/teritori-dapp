@@ -12,7 +12,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold9 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { RipperRarity } from "../types";
+import { RipperRarity } from "../../../utils/types/riot-p2e";
 
 type RipperAvatarProps = {
   size: number;

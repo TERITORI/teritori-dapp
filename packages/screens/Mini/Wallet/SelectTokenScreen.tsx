@@ -2,15 +2,16 @@ import { FlatList } from "react-native";
 
 import questionSVG from "../../../../assets/icons/question-gray.svg";
 import { BrandText } from "../../../components/BrandText";
+import { useSelectedNativeWallet } from "../../../hooks/wallet/useSelectedNativeWallet";
 import { prettyPrice } from "../../../utils/coins";
 import { ScreenFC } from "../../../utils/navigation";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontNormal15 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { useSelectedNativeWallet } from "../../Wallet/hooks/useSelectedNativeWallet";
-import { useGetAssets } from "../../Wallet/util/chain-registry";
 import ListView from "../components/ListView";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { useGetAssets } from "@/hooks/wallet/useGetAssets";
 
 const SelectTokenScreen: ScreenFC<"MiniSelectToken"> = ({
   navigation,

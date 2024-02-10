@@ -1,20 +1,20 @@
 import React from "react";
 import { SafeAreaView, View } from "react-native";
 
-import { Spinner } from "./components/Spinner";
 import { MiniArticlePostDetails } from "./components/detailView/MiniArticlePostDetails";
 import MiniDefaultPostDetails from "./components/detailView/MiniDefaultPostDetails";
 import { MiniVideoPostDetails } from "./components/detailView/MiniVideoPostDetails";
 import { BrandText } from "../../../components/BrandText";
 import { NotFound } from "../../../components/NotFound";
+import { Spinner } from "../../../components/Spinner";
 import { BackButton } from "../../../components/navigation/components/BackButton";
-import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { usePost } from "../../../hooks/feed/usePost";
 import { parseNetworkObjectId } from "../../../networks";
 import { gnoTeritoriNetwork } from "../../../networks/gno-teritori";
 import { teritoriNetwork } from "../../../networks/teritori";
 import { ScreenFC } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
+import { PostCategory } from "../../../utils/types/feed";
 import CustomAppBar from "../components/AppBar/CustomAppBar";
 
 export const FeedDetailsView: ScreenFC<"FeedPostView"> = ({ route }) => {

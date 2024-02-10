@@ -9,10 +9,6 @@ import { BrandText } from "../../../../components/BrandText";
 import { OptimizedImage } from "../../../../components/OptimizedImage";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import {
-  ZodSocialFeedArticleMetadata,
-  ZodSocialFeedPostMetadata,
-} from "../../../../components/socialFeed/NewsFeed/NewsFeed.type";
-import {
   createStateFromHTML,
   getTruncatedArticleHTML,
   isArticleHTMLNeedsTruncate,
@@ -21,11 +17,16 @@ import { SpacerColumn } from "../../../../components/spacer";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
-import { useAppNavigation } from "../../../../utils/navigation";
 import { zodTryParseJSON } from "../../../../utils/sanitize";
 import { neutralA3 } from "../../../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../../../utils/style/fonts";
 import { tinyAddress } from "../../../../utils/text";
+import {
+  ZodSocialFeedArticleMetadata,
+  ZodSocialFeedPostMetadata,
+} from "../../../../utils/types/feed";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 type Props = {
   post: Post;

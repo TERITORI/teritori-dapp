@@ -3,9 +3,10 @@ import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import backSVG from "../../../../assets/icons/back.svg";
 import chevronLeftSVG from "../../../../assets/icons/chevron-left.svg";
-import { useAppNavigation } from "../../../utils/navigation";
 import { neutral22 } from "../../../utils/style/colors";
 import { SVG } from "../../SVG";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export const BackButton: React.FC<{
   type?: "arrow" | "chevron";

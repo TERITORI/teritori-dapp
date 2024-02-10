@@ -40,7 +40,6 @@ import {
   squadStake,
   squadWithdrawSeason1,
 } from "../../utils/game";
-import { useAppNavigation } from "../../utils/navigation";
 import {
   neutral00,
   neutral33,
@@ -55,6 +54,8 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 const EMBEDDED_VIDEO_URI =

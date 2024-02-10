@@ -10,8 +10,6 @@ import {
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
-import { NewPostFormValues, ReplyToType } from "./NewsFeed.type";
-import { generatePostMetadata, getPostCategory } from "./NewsFeedQueries";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
@@ -28,6 +26,10 @@ import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId, NetworkFeature } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
+import {
+  generatePostMetadata,
+  getPostCategory,
+} from "../../../utils/feed/queries";
 import { generateIpfsKey } from "../../../utils/ipfs";
 import {
   AUDIO_MIME_TYPES,
@@ -63,6 +65,7 @@ import {
   layout,
 } from "../../../utils/style/layout";
 import { replaceBetweenString } from "../../../utils/text";
+import { NewPostFormValues, ReplyToType } from "../../../utils/types/feed";
 import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
 import { BrandText } from "../../BrandText";
 import { FilesPreviewsContainer } from "../../FilePreview/FilesPreviewsContainer";
@@ -74,14 +77,12 @@ import { LegacyPrimaryBox } from "../../boxes/LegacyPrimaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { FileUploader } from "../../fileUploader";
-import {
-  FeedPostingProgressBar,
-  FeedPostingStepId,
-  feedPostingStep,
-} from "../../loaders/FeedPostingProgressBar";
+import { FeedPostingProgressBar } from "../../loaders/FeedPostingProgressBar";
 import { SpacerColumn } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
+
+import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
 
 interface NewsFeedInputProps {
   type: "comment" | "post";

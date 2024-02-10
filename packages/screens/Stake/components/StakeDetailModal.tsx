@@ -19,7 +19,7 @@ import {
   fontSemibold20,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ValidatorInfo } from "../types";
+import { ValidatorInfo } from "../../../utils/types/staking";
 
 interface StakeDetailModalProps {
   onClose?: () => void;

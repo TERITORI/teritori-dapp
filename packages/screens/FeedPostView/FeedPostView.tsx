@@ -7,10 +7,6 @@ import { FeedPostVideoView } from "./components/FeedPostVideoView";
 import { BrandText } from "../../components/BrandText";
 import { NotFound } from "../../components/NotFound";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import {
-  PostCategory,
-  ReplyToType,
-} from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { usePost } from "../../hooks/feed/usePost";
 import { parseNetworkObjectId } from "../../networks";
 import { gnoTeritoriNetwork } from "../../networks/gno-teritori";
@@ -19,8 +15,7 @@ import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-
-export type OnPressReplyType = (replyTo: ReplyToType) => void;
+import { PostCategory } from "../../utils/types/feed";
 
 export const FeedPostView: ScreenFC<"FeedPostView"> = ({
   route: {

@@ -14,16 +14,7 @@ import {
   Label,
   TextInputCustom,
 } from "../../components/inputs/TextInputCustom";
-import {
-  FeedPostingProgressBar,
-  feedPostingStep,
-  FeedPostingStepId,
-} from "../../components/loaders/FeedPostingProgressBar";
-import {
-  NewArticleFormValues,
-  PostCategory,
-} from "../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { generateArticleMetadata } from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
+import { FeedPostingProgressBar } from "../../components/loaders/FeedPostingProgressBar";
 import { RichText } from "../../components/socialFeed/RichText";
 import { PublishValues } from "../../components/socialFeed/RichText/RichText.type";
 import { SpacerColumn } from "../../components/spacer";
@@ -36,6 +27,7 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature } from "../../networks";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
+import { generateArticleMetadata } from "../../utils/feed/queries";
 import { generateIpfsKey } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
@@ -54,7 +46,10 @@ import {
 import { fontSemibold13, fontSemibold20 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { pluralOrNot } from "../../utils/text";
+import { NewArticleFormValues, PostCategory } from "../../utils/types/feed";
 import { RemoteFileData } from "../../utils/types/files";
+
+import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
 
 //TODO: In mobile : Make ActionsContainer accessible (floating button ?)
 

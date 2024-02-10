@@ -2,8 +2,8 @@
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { getValueFor } from "../../../hooks/useMobileSecureStore";
 import { ScreenFC } from "../../../utils/navigation";
-import { setMnemonic } from "../hooks/getNativeWallet";
-import { createMnemonic } from "../util/seed";
+import { setMnemonic } from "../../../hooks/wallet/getNativeWallet";
+import { createMnemonic } from "../../../utils/wallet/seed";
 
 export const ViewSeed: ScreenFC<"ViewSeed"> = () => {
   const { wrapWithFeedback } = useFeedbacks();

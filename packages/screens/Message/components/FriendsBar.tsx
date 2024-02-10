@@ -13,13 +13,14 @@ import {
   selectConversationList,
   selectContactRequestList,
 } from "../../../store/slices/message";
-import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral22,
   secondaryColor,
   primaryColor,
 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export const FriendsBar = () => {
   const contactRequests = useSelector(selectContactRequestList);

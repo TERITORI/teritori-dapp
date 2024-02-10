@@ -8,7 +8,6 @@ import { SVG } from "../../../components/SVG";
 import { PrimaryBox } from "../../../components/boxes/PrimaryBox";
 import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
 import { GradientText } from "../../../components/gradientText";
-import { useAppNavigation } from "../../../utils/navigation";
 import { neutral17, primaryColor } from "../../../utils/style/colors";
 import {
   fontSemibold12,
@@ -17,6 +16,8 @@ import {
   fontSemibold24,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const MD_BREAKPOINT = 820;
 const LG_BREAKPOINT = 1200;

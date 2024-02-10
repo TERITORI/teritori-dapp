@@ -5,10 +5,9 @@ import Animated from "react-native-reanimated";
 import { MiniSocialArticle } from "./components/MiniSocialArticle";
 import { MiniThread } from "./components/MiniThread";
 import { MiniVideo } from "./components/MiniVideo";
-import { Spinner } from "./components/Spinner";
 import { Post, PostsRequest } from "../../../api/feed/v1/feed";
+import { Spinner } from "../../../components/Spinner";
 import { Separator } from "../../../components/separators/Separator";
-import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn } from "../../../components/spacer";
 import {
   combineFetchFeedPages,
@@ -16,6 +15,7 @@ import {
 } from "../../../hooks/feed/useFetchFeed";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { layout } from "../../../utils/style/layout";
+import { PostCategory } from "../../../utils/types/feed";
 
 type Props = {
   req: Partial<PostsRequest>;

@@ -13,6 +13,8 @@ import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn } from "../../../components/spacer";
 import { useBalances } from "../../../hooks/useBalances";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import { useSearchTx } from "../../../hooks/wallet/useSearchTx";
+import { useSelectedNativeWallet } from "../../../hooks/wallet/useSelectedNativeWallet";
 import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import {
   neutral88,
@@ -25,8 +27,6 @@ import {
   fontSemibold14,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { useSearchTx } from "../../Wallet/hooks/useSearchTx";
-import { useSelectedNativeWallet } from "../../Wallet/hooks/useSelectedNativeWallet";
 import { CustomButton } from "../components/Button/CustomButton";
 
 const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {

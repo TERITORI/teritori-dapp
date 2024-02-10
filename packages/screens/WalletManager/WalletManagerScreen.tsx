@@ -2,13 +2,13 @@ import React from "react";
 import { View } from "react-native";
 
 import { Assets } from "./Assets";
-import { MyNFTs } from "./MyNFTs";
-import { WalletDashboardHeader } from "./WalletDashboardHeader";
 import { WalletHeader } from "./WalletHeader";
 import { WalletItem } from "./WalletItem";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
+import { MyNFTs } from "../../components/hub/MyNFTs";
+import { WalletDashboardHeader } from "../../components/hub/WalletDashboardHeader";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";

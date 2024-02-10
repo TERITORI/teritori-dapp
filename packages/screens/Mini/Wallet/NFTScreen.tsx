@@ -11,12 +11,12 @@ import {
 } from "../../../api/marketplace/v1/marketplace";
 import { SpacerColumn } from "../../../components/spacer";
 import { useCollections } from "../../../hooks/useCollections";
+import { useSelectedNativeWallet } from "../../../hooks/wallet/useSelectedNativeWallet";
 import { parseNetworkObjectId } from "../../../networks";
 import { ScreenFC } from "../../../utils/navigation";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { useSelectedNativeWallet } from "../../Wallet/hooks/useSelectedNativeWallet";
 import MiniTextInput from "../components/MiniTextInput";
 
 const NFTScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {

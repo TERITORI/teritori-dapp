@@ -13,9 +13,9 @@ import {
   setSelectedApps,
 } from "../../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../../store/store";
+import { SEPARATOR, getValuesFromId } from "../../../../utils/dapp-store";
 import { layout } from "../../../../utils/style/layout";
-import { SEPARATOR, getValuesFromId } from "../../../DAppStore/query/util";
-import { dAppType } from "../../../DAppStore/types";
+import { dAppType } from "../../../../utils/types/dapp-store";
 
 type Props = {
   isEditing: boolean;

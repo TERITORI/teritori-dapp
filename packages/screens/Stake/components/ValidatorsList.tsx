@@ -18,7 +18,7 @@ import { removeObjectKey, removeObjectKeys } from "../../../utils/object";
 import { mineShaftColor } from "../../../utils/style/colors";
 import { fontSemibold11, fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ValidatorInfo } from "../types";
+import { ValidatorInfo } from "../../../utils/types/staking";
 
 const TABLE_ROWS = {
   rank: {

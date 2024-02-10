@@ -10,10 +10,6 @@ import { Post } from "../../../../../api/feed/v1/feed";
 import { ScreenContainer } from "../../../../../components/ScreenContainer";
 import { CommentsContainer } from "../../../../../components/cards/CommentsContainer";
 import {
-  PostCategory,
-  ReplyToType,
-} from "../../../../../components/socialFeed/NewsFeed/NewsFeed.type";
-import {
   NewsFeedInput,
   NewsFeedInputHandle,
 } from "../../../../../components/socialFeed/NewsFeed/NewsFeedInput";
@@ -24,11 +20,16 @@ import {
 } from "../../../../../hooks/feed/useFetchComments";
 import { useNSUserInfo } from "../../../../../hooks/useNSUserInfo";
 import { parseUserId } from "../../../../../networks";
-import { useAppNavigation } from "../../../../../utils/navigation";
 import { BASE_POST, DEFAULT_USERNAME } from "../../../../../utils/social-feed";
 import { tinyAddress } from "../../../../../utils/text";
-import { OnPressReplyType } from "../../../../FeedPostView/FeedPostView";
+import {
+  OnPressReplyType,
+  PostCategory,
+  ReplyToType,
+} from "../../../../../utils/types/feed";
 import CustomAppBar from "../../../components/AppBar/CustomAppBar";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 type Props = {
   networkId: string;

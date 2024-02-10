@@ -4,7 +4,6 @@ import { StyleProp, View, ViewStyle } from "react-native";
 import { AttributeRarityFloor } from "../../api/marketplace/v1/marketplace";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { resolveColor } from "../../screens/Marketplace/utils";
 import { prettyPrice } from "../../utils/coins";
 import {
   fontBold11,
@@ -15,6 +14,8 @@ import { layout } from "../../utils/style/layout";
 import { NFTInfo } from "../../utils/types/nft";
 import { BrandText } from "../BrandText";
 import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+
+import { resolveColor } from "@/utils/marketplace";
 
 // TODO: Dynamic data + props
 

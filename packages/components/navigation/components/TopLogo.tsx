@@ -2,9 +2,10 @@ import React from "react";
 import { View, TouchableOpacity } from "react-native";
 
 import logoTopVersionSVG from "../../../../assets/logos/logo-hexagon-version-alpha.svg";
-import { useAppNavigation } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
 import { SVG } from "../../SVG";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export const TopLogo = () => {
   const navigation = useAppNavigation();

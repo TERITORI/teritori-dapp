@@ -5,8 +5,6 @@ import { Post } from "../../../../api/feed/v1/feed";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
-import { OnPressReplyType } from "../../../../screens/FeedPostView/FeedPostView";
-import { useAppNavigation } from "../../../../utils/navigation";
 import {
   neutral00,
   neutral17,
@@ -14,10 +12,10 @@ import {
   withAlpha,
 } from "../../../../utils/style/colors";
 import { layout } from "../../../../utils/style/layout";
+import { OnPressReplyType, PostCategory } from "../../../../utils/types/feed";
 import FlexRow from "../../../FlexRow";
 import { CustomPressable } from "../../../buttons/CustomPressable";
 import { SpacerColumn } from "../../../spacer";
-import { PostCategory } from "../../NewsFeed/NewsFeed.type";
 import { SocialThreadGovernance } from "../../SocialActions/SocialThreadGovernance";
 import { FlaggedCardFooter } from "../FlaggedCardFooter";
 import { MusicPostTrackContent } from "../MusicPostTrackContent";
@@ -25,6 +23,8 @@ import { SocialCardFooter } from "../SocialCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";
 import { SocialCardWrapper } from "../SocialCardWrapper";
 import { SocialMessageContent } from "../SocialMessageContent";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export const SOCIAl_CARD_BORDER_RADIUS = 12;
 

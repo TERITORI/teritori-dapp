@@ -3,10 +3,9 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
 import { feedsTabItems } from "./social-feed";
+import { NewPostFormValues } from "./types/feed";
 import { Conversation, MessageFriendsTabItem } from "./types/message";
 import { uppTabItems } from "./upp";
-import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.type";
-import { useRoute } from "../hooks/useRoute";
 
 export type RouteName = keyof RootStackParamList;
 
@@ -292,5 +291,3 @@ export const linking = {
   prefixes: [],
   config: navConfig,
 };
-
-export const useAppRoute = () => useRoute<RouteProp<RootStackParamList>>();

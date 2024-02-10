@@ -17,7 +17,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../assets/icons/hamburger-button-cross.svg";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral77, neutral22 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
@@ -28,6 +27,8 @@ import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SeparatorGradient } from "../separators/SeparatorGradient";
 import { SpacerColumn } from "../spacer";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 

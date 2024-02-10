@@ -25,7 +25,7 @@ import {
 import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
-import { SquadInfo } from "../types";
+import { SquadInfo } from "../../../utils/types/riot-p2e";
 
 type UnstakeModalProps = {
   visible?: boolean;

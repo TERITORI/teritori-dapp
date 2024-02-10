@@ -17,8 +17,6 @@ import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import { usePrevious } from "../../../../hooks/usePrevious";
 import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
-import { OnPressReplyType } from "../../../../screens/FeedPostView/FeedPostView";
-import { useAppNavigation } from "../../../../utils/navigation";
 import { DEFAULT_USERNAME } from "../../../../utils/social-feed";
 import {
   neutral00,
@@ -30,6 +28,7 @@ import {
 } from "../../../../utils/style/colors";
 import { layout } from "../../../../utils/style/layout";
 import { tinyAddress } from "../../../../utils/text";
+import { OnPressReplyType, PostExtra } from "../../../../utils/types/feed";
 import { AnimationFadeIn } from "../../../animations/AnimationFadeIn";
 import { AnimationFadeInOut } from "../../../animations/AnimationFadeInOut";
 import { CustomPressable } from "../../../buttons/CustomPressable";
@@ -39,10 +38,11 @@ import {
   LINES_HORIZONTAL_SPACE,
 } from "../../../cards/CommentsContainer";
 import { SpacerColumn } from "../../../spacer";
-import { PostExtra } from "../../NewsFeed/NewsFeed.type";
 import { SocialCardFooter } from "../SocialCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";
 import { SocialMessageContent } from "../SocialMessageContent";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export interface SocialCommentCardProps {
   // We use the cardWidth provided from CommentsContainer.

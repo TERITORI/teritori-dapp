@@ -15,8 +15,10 @@ import { patternOnlyNumbers, validateAddress } from "../../../utils/formRules";
 import { neutral33, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
-import { MemberSettingFormType } from "../types";
+import {
+  MemberSettingFormType,
+  ORGANIZATION_DEPLOYER_STEPS,
+} from "../../../utils/types/organizations";
 
 interface MemberSettingsSectionProps {
   onSubmit: (form: MemberSettingFormType) => void;

@@ -5,6 +5,7 @@ import QRCode from "react-native-qrcode-svg";
 
 import { BrandText } from "../../../components/BrandText";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
+import { useSelectedNativeWallet } from "../../../hooks/wallet/useSelectedNativeWallet";
 import { ScreenFC } from "../../../utils/navigation";
 import {
   neutral22,
@@ -15,8 +16,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium13, fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { useSelectedNativeWallet } from "../../Wallet/hooks/useSelectedNativeWallet";
-import { findByBaseDenom } from "../../Wallet/util/chain-registry";
+import { findByBaseDenom } from "../../../utils/wallet/chain-registry";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 const QR_SIZE = 248;

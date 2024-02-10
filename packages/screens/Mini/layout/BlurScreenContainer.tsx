@@ -8,9 +8,10 @@ import closeSVG from "../../../../assets/icons/close.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { useAppNavigation } from "../../../utils/navigation";
 import { fontSemibold18 } from "../../../utils/style/fonts";
 import { MOBILE_HEADER_HEIGHT, layout } from "../../../utils/style/layout";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 type Props = {
   children: ReactNode;

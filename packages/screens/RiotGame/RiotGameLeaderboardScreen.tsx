@@ -32,7 +32,6 @@ import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { parseUserId } from "../../networks";
 import { mustGetP2eClient } from "../../utils/backend";
 import { parseUserScoreInfo } from "../../utils/game";
-import { useAppNavigation } from "../../utils/navigation";
 import {
   additionalGreen,
   additionalRed,
@@ -46,6 +45,8 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 type RankProps = {
   changes: number;

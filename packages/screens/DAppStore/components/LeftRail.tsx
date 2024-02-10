@@ -11,9 +11,9 @@ import {
   setSelectedApps,
 } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
+import { getValuesFromId } from "../../../utils/dapp-store";
 import { neutral67 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
-import { getValuesFromId } from "../query/util";
 
 export const LeftRail = () => {
   const dispatch = useAppDispatch();

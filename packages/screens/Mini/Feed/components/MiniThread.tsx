@@ -5,10 +5,6 @@ import { PostActions } from "./PostActions";
 import { PostHeader } from "./PostHeader";
 import { Post } from "../../../../api/feed/v1/feed";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import {
-  PostCategory,
-  ZodSocialFeedPostMetadata,
-} from "../../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { MusicPostTrackContent } from "../../../../components/socialFeed/SocialCard/MusicPostTrackContent";
 import { SocialCardWrapper } from "../../../../components/socialFeed/SocialCard/SocialCardWrapper";
 import { SocialMessageContent } from "../../../../components/socialFeed/SocialCard/SocialMessageContent";
@@ -16,9 +12,14 @@ import { SpacerColumn } from "../../../../components/spacer";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
-import { useAppNavigation } from "../../../../utils/navigation";
 import { zodTryParseJSON } from "../../../../utils/sanitize";
 import { tinyAddress } from "../../../../utils/text";
+import {
+  PostCategory,
+  ZodSocialFeedPostMetadata,
+} from "../../../../utils/types/feed";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 type Props = {
   post: Post;

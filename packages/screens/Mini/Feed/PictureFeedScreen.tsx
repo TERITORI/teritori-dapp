@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 import { JungleFeedScreen } from "./JungleFeedScreen";
 import { PostsRequest } from "../../../api/feed/v1/feed";
-import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
+import { PostCategory } from "../../../utils/types/feed";
 
 type Props = object;
 

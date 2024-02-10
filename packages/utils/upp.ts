@@ -1,5 +1,5 @@
-import { TabDefinition } from "../components/tabs/Tabs";
-import { NetworkFeature, NetworkKind, UserKind } from "../networks";
+import { NetworkFeature, NetworkKind, UserKind } from "@/networks";
+import { TabDefinition } from "@/utils/types/tabs";
 
 export enum UppTabKeys {
   posts = "",

@@ -5,8 +5,9 @@ import { BrandText } from "../../../components/BrandText";
 import { OptimizedImage } from "../../../components/OptimizedImage";
 import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
 import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
-import { useAppNavigation } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 type CollectionThumbProps = {
   collectionId: string;

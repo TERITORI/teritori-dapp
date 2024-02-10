@@ -30,11 +30,7 @@ import {
   updateConversationById,
 } from "../../../store/slices/message";
 import { RootState } from "../../../store/store";
-import {
-  ScreenFC,
-  useAppNavigation,
-  useAppRoute,
-} from "../../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
   neutral33,
@@ -57,6 +53,8 @@ import { weshConfig } from "../../../weshnet";
 import { getNewConversationText } from "../../../weshnet/messageHelpers";
 import { sendMessage } from "../../../weshnet/services";
 import { bytesFromString, stringFromBytes } from "../../../weshnet/utils";
+
+import { useAppRoute } from "@/hooks/navigation/useAppRoute";
 interface ChatSectionProps {
   conversation: IConversation;
 }

@@ -9,6 +9,7 @@ import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { Separator } from "../../../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
+import { useSelectedNativeWallet } from "../../../../hooks/wallet/useSelectedNativeWallet";
 import { prettyPrice } from "../../../../utils/coins";
 import {
   blueDefault,
@@ -18,7 +19,6 @@ import {
 } from "../../../../utils/style/colors";
 import { fontMedium13, fontMedium14 } from "../../../../utils/style/fonts";
 import { tinyAddress } from "../../../../utils/text";
-import { useSelectedNativeWallet } from "../../../Wallet/hooks/useSelectedNativeWallet";
 import { capitalizeStr } from "../TransactionDetailScreen";
 
 type TransactionType = {

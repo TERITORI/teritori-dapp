@@ -12,7 +12,6 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { NetworkFeature, NetworkKind, UserKind } from "../../networks";
 import {
   gradientColorBlue,
   gradientColorDarkerBlue,
@@ -31,17 +30,7 @@ import { TertiaryBadge } from "../badges/TertiaryBadge";
 import { GradientText } from "../gradientText";
 import { SpacerRow } from "../spacer";
 
-export interface TabDefinition {
-  name: string;
-  badgeCount?: number;
-  disabled?: boolean;
-  scrollTo?: string;
-  iconSVG?: any;
-  iconColor?: string;
-  networkKinds?: NetworkKind[];
-  networkFeatures?: NetworkFeature[];
-  userKinds?: UserKind[];
-}
+import { TabDefinition } from "@/utils/types/tabs";
 
 export const Tabs = <T extends { [key: string]: TabDefinition }>({
   items,

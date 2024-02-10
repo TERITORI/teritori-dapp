@@ -4,7 +4,8 @@ import { View } from "react-native";
 import { SVG } from "./SVG";
 import feedSVG from "../../assets/icons/bottomTab/feed.svg";
 import walletSVG from "../../assets/icons/bottomTab/wallets.svg";
-import ToggleButton from "../screens/Mini/components/Button/ToggleButton";
+
+import ToggleButton from "@/components/buttons/ToggleButton";
 
 const icons = {
   MiniChats: "",

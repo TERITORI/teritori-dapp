@@ -4,8 +4,8 @@ import moment from "moment";
 
 import { Post } from "../../api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
-import { decodeGnoPost } from "../../components/socialFeed/utils";
 import { NetworkKind, getNetwork, getUserId } from "../../networks";
+import { decodeGnoPost } from "../../utils/feed/gno";
 import { extractGnoJSONString } from "../../utils/gno";
 import { safeParseJSON } from "../../utils/sanitize";
 

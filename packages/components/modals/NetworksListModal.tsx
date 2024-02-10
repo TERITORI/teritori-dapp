@@ -10,7 +10,6 @@ import { useSelector } from "react-redux";
 
 import ModalBase from "./ModalBase";
 import { allNetworks, getNetwork } from "../../networks";
-import { joinElements } from "../../screens/Multisig/components/MultisigRightSection";
 import {
   selectAreTestnetsEnabled,
   selectNetworkEnabled,
@@ -32,6 +31,8 @@ import { NetworkIcon } from "../NetworkIcon";
 import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../spacer";
+
+import { joinElements } from "@/utils/react";
 
 export const NetworksListModal: FC<{
   isVisible: boolean;

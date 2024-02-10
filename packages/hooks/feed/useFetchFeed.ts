@@ -3,8 +3,6 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { Post, PostsRequest } from "../../api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
-import { TERITORI_FEED_ID } from "../../components/socialFeed/const";
-import { decodeGnoPost } from "../../components/socialFeed/utils";
 import {
   GnoNetworkInfo,
   NetworkInfo,
@@ -12,6 +10,8 @@ import {
   parseUserId,
 } from "../../networks";
 import { mustGetFeedClient } from "../../utils/backend";
+import { TERITORI_FEED_ID } from "../../utils/feed/constants";
+import { decodeGnoPost } from "../../utils/feed/gno";
 import { extractGnoJSONString } from "../../utils/gno";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";

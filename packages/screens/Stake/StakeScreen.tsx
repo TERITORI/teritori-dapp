@@ -6,7 +6,6 @@ import { RedelegateModal } from "./components/RedelegateModal";
 import { StakeDetailModal } from "./components/StakeDetailModal";
 import { UndelegateModal } from "./components/UndelegateModal";
 import { ValidatorsTable } from "./components/ValidatorsList";
-import { ValidatorInfo } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Tabs } from "../../components/tabs/Tabs";
@@ -19,6 +18,7 @@ import { NetworkKind, UserKind, parseUserId } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
 import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { ValidatorInfo } from "../../utils/types/staking";
 
 export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
   const selectedWallet = useSelectedWallet();

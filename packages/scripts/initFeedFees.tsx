@@ -7,9 +7,9 @@ import { toUtf8 } from "@cosmjs/encoding";
 import { program } from "commander";
 import { createInterface } from "readline";
 
-import { PostCategory } from "../components/socialFeed/NewsFeed/NewsFeed.type";
 import { ExecuteMsg } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { cosmosNetworkGasPrice, mustGetCosmosNetwork } from "../networks";
+import { PostCategory } from "../utils/types/feed";
 
 const main = async () => {
   program.argument("<networkId>");

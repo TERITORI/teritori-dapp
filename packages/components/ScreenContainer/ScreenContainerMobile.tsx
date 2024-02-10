@@ -10,7 +10,6 @@ import { HeaderMobile } from "./HeaderMobile";
 import { useSearchBar } from "../../context/SearchBarProvider";
 import { useAppMode } from "../../hooks/useAppMode";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
-import DefaultAppBar from "../../screens/Mini/components/AppBar/DefaultAppBar";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
 import { MOBILE_HEADER_HEIGHT, layout } from "../../utils/style/layout";
@@ -19,6 +18,8 @@ import { SearchModalMobile } from "../Search/SearchModalMobile";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { MediaPlayerBar } from "../mediaPlayer/MediaPlayerBar";
 import { SidebarMobile } from "../navigation/SidebarMobile";
+
+import DefaultAppBar from "@/components/mini/DefaultAppBar";
 
 export const MobileTitle: FC<{ title: string }> = ({ title }) => {
   const { width: windowWidth } = useWindowDimensions();

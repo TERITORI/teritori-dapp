@@ -14,8 +14,9 @@ import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork, getUserId } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral17 } from "../../utils/style/colors";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 interface TNSExploreScreenProps extends TNSModalCommonProps {}
 

@@ -5,6 +5,7 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { mustGetGnoNetwork } from "../../../networks";
+import { TERITORI_FEED_ID } from "../../../utils/feed/constants";
 import { adenaDoContract } from "../../../utils/gno";
 import { neutral77, neutral33 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
@@ -14,7 +15,6 @@ import { RadioButton } from "../../RadioButton";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import ModalBase from "../../modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../spacer";
-import { TERITORI_FEED_ID } from "../const";
 
 type FlagModalProps = {
   postId: string;

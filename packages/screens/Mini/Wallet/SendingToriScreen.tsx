@@ -19,6 +19,8 @@ import { SVG } from "../../../components/SVG";
 import { UserNameInline } from "../../../components/UserNameInline";
 import { TertiaryBadge } from "../../../components/badges/TertiaryBadge";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { getNativeSigner } from "../../../hooks/wallet/getNativeSigner";
+import { useSelectedNativeWallet } from "../../../hooks/wallet/useSelectedNativeWallet";
 import { getCosmosNetwork, getStakingCurrency } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
@@ -30,15 +32,14 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { getNativeSigner } from "../../Wallet/hooks/getNativeSigner";
-import { useSelectedNativeWallet } from "../../Wallet/hooks/useSelectedNativeWallet";
-import { useGetAssets } from "../../Wallet/util/chain-registry";
 import { CustomButton } from "../components/Button/CustomButton";
 import MobileModal from "../components/MobileModal";
 import MiniTable from "../components/Table/MiniTable";
 import MiniTableRow from "../components/Table/MiniTableRow";
 import TitleBar from "../components/TitleBar";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { useGetAssets } from "@/hooks/wallet/useGetAssets";
 
 const getTxData = (denom: string, amount: string, userId: string) => {
   const networkId = "teritori"; // networkId placeholder

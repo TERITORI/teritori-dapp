@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { getPostFee } from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
+import { getPostFee } from "../../utils/feed/queries";
+import { PostCategory } from "../../utils/types/feed";
 
 export const useFeedPostFee = (
   networkId: string | undefined,

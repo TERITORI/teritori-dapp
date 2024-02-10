@@ -23,8 +23,11 @@ import {
   fontSemibold28,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
-import { CreateDaoFormType, DaoType } from "../types";
+import {
+  CreateDaoFormType,
+  DaoType,
+  ORGANIZATION_DEPLOYER_STEPS,
+} from "../../../utils/types/organizations";
 
 //const RADIO_DESCRIPTION_TYPES = ["Membership", "Governance", "Decentralized"];
 

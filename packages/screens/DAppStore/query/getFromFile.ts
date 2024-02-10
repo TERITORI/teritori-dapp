@@ -42,7 +42,7 @@ import toripunks from "../../../../assets/logos/toniPunks.png";
 import uniswap from "../../../../assets/logos/uniswap.png";
 import yieldmos from "../../../../assets/logos/yieldmos.png";
 import { isElectron } from "../../../utils/isElectron";
-import { dAppGroup } from "../types";
+import { dAppGroup } from "../../../utils/types/dapp-store";
 
 export function getAvailableApps(): dAppGroup {
   return {

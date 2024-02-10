@@ -8,9 +8,10 @@ import { ProjectInformation } from "./component/ProjectInformation";
 import { TeamInformation } from "./component/TeamInformation";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export const ApplicationRewiewScreen: React.FC = () => {
   const navigation = useAppNavigation();

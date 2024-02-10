@@ -6,7 +6,7 @@ import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { neutral22, neutral77, neutralA3 } from "../../../utils/style/colors";
 import { fontBold12, fontSemibold28 } from "../../../utils/style/fonts";
-import { GameBgCardItem } from "../types";
+import { GameBgCardItem } from "../../../utils/types/riot-p2e";
 
 interface GameBgCardProps {
   width: number;

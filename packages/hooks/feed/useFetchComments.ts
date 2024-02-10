@@ -2,8 +2,6 @@ import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
-import { TERITORI_FEED_ID } from "../../components/socialFeed/const";
-import { decodeGnoPost } from "../../components/socialFeed/utils";
 import {
   PostResult,
   Reaction,
@@ -13,6 +11,8 @@ import {
   NetworkKind,
   parseNetworkObjectId,
 } from "../../networks";
+import { TERITORI_FEED_ID } from "../../utils/feed/constants";
+import { decodeGnoPost } from "../../utils/feed/gno";
 import { extractGnoJSONString } from "../../utils/gno";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 

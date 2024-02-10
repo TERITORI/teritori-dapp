@@ -17,6 +17,7 @@ import { BrandText } from "../../../components/BrandText/BrandText";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
+import DefaultAppBar from "../../../components/mini/DefaultAppBar";
 import { MiniTabScreenFC } from "../../../components/navigation/MiniModeNavigator";
 import { SpacerColumn } from "../../../components/spacer";
 import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
@@ -39,7 +40,6 @@ import {
   fontSemibold18,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import DefaultAppBar from "../components/AppBar/DefaultAppBar";
 
 const collectionScreenTabItems = {
   chats: {

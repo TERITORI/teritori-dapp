@@ -11,7 +11,7 @@ import { Token as MultisigToken, Token } from "../../api/multisig/v1/multisig";
 import { defaultEnabledNetworks } from "../../networks";
 import { RootState } from "../store";
 
-import { AppMode } from "@/hooks/useAppMode";
+import { AppMode } from "@/utils/types/app-mode";
 
 type NetworkSettings = {
   networkId: string;

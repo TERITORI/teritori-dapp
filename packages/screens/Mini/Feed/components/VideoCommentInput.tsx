@@ -6,14 +6,10 @@ import { Post } from "../../../../api/feed/v1/feed";
 import { BrandText } from "../../../../components/BrandText";
 import { UserAvatarWithFrame } from "../../../../components/images/AvatarWithFrame";
 import { NotEnoughFundsModal } from "../../../../components/modals/NotEnoughFundModal";
-import {
-  PostCategory,
-  ReplyToType,
-} from "../../../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { generatePostMetadata } from "../../../../components/socialFeed/NewsFeed/NewsFeedQueries";
 import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
 import { useFeedPosting } from "../../../../hooks/feed/useFeedPosting";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
+import { generatePostMetadata } from "../../../../utils/feed/queries";
 import {
   SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
   hashtagMatch,
@@ -21,6 +17,7 @@ import {
 } from "../../../../utils/social-feed";
 import { neutral77, secondaryColor } from "../../../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../../../utils/style/fonts";
+import { PostCategory, ReplyToType } from "../../../../utils/types/feed";
 import { CustomButton } from "../../components/Button/CustomButton";
 
 const INPUT_MIN_HEIGHT = 20;

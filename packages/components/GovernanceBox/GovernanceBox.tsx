@@ -10,8 +10,9 @@ import {
 
 import { BrandText } from "../../components/BrandText/BrandText";
 import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
-import { ProposalStatus } from "../../screens/Governance/types";
 import { tulipTree } from "../../utils/style/colors";
+
+import { ProposalStatus } from "@/utils/types/gov";
 
 // FIXME: code dedup
 
@@ -89,7 +90,7 @@ export const GovernanceBox: React.FC<{
   function activeGovernanceDetailsPopup() {
     if (displayGovernanceDetails) {
       const GovernanceDetails = React.lazy(() =>
-        import("../../screens/Governance/GovernanceDetails").then((module) => ({
+        import("@/screens/Governance/GovernanceDetails").then((module) => ({
           default: module.GovernanceDetails,
         })),
       );

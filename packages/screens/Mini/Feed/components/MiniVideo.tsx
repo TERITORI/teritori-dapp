@@ -8,15 +8,10 @@ import { Post } from "../../../../api/feed/v1/feed";
 import { BrandText } from "../../../../components/BrandText";
 import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { MediaPlayerVideo } from "../../../../components/mediaPlayer/MediaPlayerVideo";
-import {
-  ZodSocialFeedPostMetadata,
-  ZodSocialFeedVideoMetadata,
-} from "../../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn } from "../../../../components/spacer";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
-import { useAppNavigation } from "../../../../utils/navigation";
 import { zodTryParseJSON } from "../../../../utils/sanitize";
 import { errorColor, neutralA3 } from "../../../../utils/style/colors";
 import {
@@ -26,6 +21,12 @@ import {
 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { tinyAddress } from "../../../../utils/text";
+import {
+  ZodSocialFeedPostMetadata,
+  ZodSocialFeedVideoMetadata,
+} from "../../../../utils/types/feed";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 type Props = {
   post: Post;
