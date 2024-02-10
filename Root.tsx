@@ -1,17 +1,17 @@
 import {
-  Exo_500Medium,
-  Exo_600SemiBold,
-  Exo_700Bold,
   useFonts,
+  Exo_600SemiBold,
+  Exo_500Medium,
+  Exo_700Bold,
 } from "@expo-google-fonts/exo";
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
 import Plausible from "plausible-tracker";
-import React, { memo, ReactNode, useEffect } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { Platform, Text, TextStyle, View } from "react-native";
+import React, { ReactNode, memo, useEffect } from "react";
+import { useForm, FormProvider } from "react-hook-form";
+import { Platform, View, Text, TextStyle } from "react-native";
 import { ClickOutsideProvider as DropdownsProvider } from "react-native-click-outside";
 import {
   enableLegacyWebImplementation,
@@ -33,8 +33,8 @@ import { TNSContextProvider } from "./packages/context/TNSProvider";
 import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
 import { WalletControlContextProvider } from "./packages/context/WalletControlProvider";
 import {
-  useWallets,
   WalletsProvider,
+  useWallets,
 } from "./packages/context/WalletsProvider";
 import { useSelectedNetworkId } from "./packages/hooks/useSelectedNetwork";
 import useSelectedWallet from "./packages/hooks/useSelectedWallet";
