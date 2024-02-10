@@ -23,7 +23,6 @@ import { Provider as ReduxProvider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
 import { MultisigDeauth } from "./packages/components/multisig/MultisigDeauth";
-import { MiniNavigator } from "./packages/components/navigation/MiniNavigator";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
 import { MediaPlayerContextProvider } from "./packages/context/MediaPlayerProvider";
@@ -37,7 +36,6 @@ import {
   useWallets,
   WalletsProvider,
 } from "./packages/context/WalletsProvider";
-import { useAppMode } from "./packages/hooks/useAppMode";
 import { useSelectedNetworkId } from "./packages/hooks/useSelectedNetwork";
 import useSelectedWallet from "./packages/hooks/useSelectedWallet";
 import { getAvailableApps } from "./packages/screens/DAppStore/query/getFromFile";
@@ -71,7 +69,6 @@ export default function App() {
     Exo_600SemiBold,
     Exo_700Bold,
   });
-  const [appMode] = useAppMode();
 
   // FIXME: Fonts don't load on electron
   if (isElectron() && !fontsLoaded) {
@@ -114,12 +111,7 @@ export default function App() {
                                         <MessageContextProvider>
                                           <MediaPlayerContextProvider>
                                             <StatusBar style="inverted" />
-                                            {appMode === "mini" &&
-                                            Platform.OS !== "web" ? (
-                                              <MiniNavigator />
-                                            ) : (
-                                              <Navigator />
-                                            )}
+                                            <Navigator />
                                           </MediaPlayerContextProvider>
                                         </MessageContextProvider>
                                       </MenuProvider>

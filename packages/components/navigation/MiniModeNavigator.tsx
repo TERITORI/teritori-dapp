@@ -93,7 +93,7 @@ const MainTab = () => {
   );
 };
 
-export const MiniNavigator: React.FC = () => {
+export const MiniModeNavigator: React.FC = () => {
   return (
     <Stack.Navigator initialRouteName="MiniTabs">
       <Stack.Screen

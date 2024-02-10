@@ -37,7 +37,6 @@ node_modules: package.json yarn.lock
 	yarn
 	touch $@
 
-
 .PHONY: go-mod-tidy
 go-mod-tidy:
 	go mod tidy

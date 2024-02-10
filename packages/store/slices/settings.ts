@@ -5,10 +5,13 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import { bech32 } from "bech32";
+import { Platform } from "react-native";
 
 import { Token as MultisigToken, Token } from "../../api/multisig/v1/multisig";
 import { defaultEnabledNetworks } from "../../networks";
 import { RootState } from "../store";
+
+import { AppMode } from "@/hooks/useAppMode";
 
 type NetworkSettings = {
   networkId: string;
@@ -28,6 +31,7 @@ export const multisigTokensAdapter = createEntityAdapter<Token>({
 const multisigTokensSelectors = multisigTokensAdapter.getSelectors();
 
 interface Settings {
+  appMode: AppMode;
   selectedNetworkId: string;
   selectedWalletId: string | undefined;
   NFTStorageAPI: string;
@@ -45,6 +49,7 @@ interface Settings {
 }
 
 const initialState: Settings = {
+  appMode: Platform.OS === "web" ? "normal" : "mini",
   selectedWalletId: "",
   selectedNetworkId: "",
   NFTStorageAPI: process.env.NFT_STORAGE_API || "",
@@ -66,6 +71,8 @@ const initialState: Settings = {
   ),
   isLightTheme: false,
 };
+
+export const selectAppMode = (state: RootState) => state.settings.appMode;
 
 export const selectSelectedNetworkId = (state: RootState) =>
   state.settings.selectedNetworkId;
@@ -224,6 +231,9 @@ const settingsSlice = createSlice({
     setIsLightTheme: (state, action: PayloadAction<boolean>) => {
       state.isLightTheme = action.payload;
     },
+    setAppMode: (state, action: PayloadAction<AppMode>) => {
+      state.appMode = action.payload;
+    },
   },
 });
 
@@ -240,6 +250,7 @@ export const {
   setMultisigToken,
   toggleNetwork,
   setIsLightTheme,
+  setAppMode,
 } = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;

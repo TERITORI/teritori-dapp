@@ -1,4 +1,5 @@
 import { combineReducers, configureStore, Middleware } from "@reduxjs/toolkit";
+import { Platform } from "react-native";
 import { useDispatch } from "react-redux";
 import {
   persistStore,
@@ -72,12 +73,21 @@ const migrations = {
       },
     };
   },
+  3: (state: any) => {
+    return {
+      ...state,
+      settings: {
+        ...state.settings,
+        appMode: Platform.OS === "web" ? "normal" : "mini",
+      },
+    };
+  },
 };
 
 const persistConfig = {
   key: "root",
   storage,
-  version: 2,
+  version: 3,
   migrate: createMigrate(migrations, { debug: false }),
   whitelist: [
     "wallets",
