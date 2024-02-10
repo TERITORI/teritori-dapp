@@ -93,7 +93,9 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
         shareLink,
       }),
     );
-  }, [contactInfo, dispatch]);
+    //TODO: remove this; import/export account will replace this functionality
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   const onCopyPress = async () => {
     await Clipboard.setStringAsync(contactInfo?.shareLink);

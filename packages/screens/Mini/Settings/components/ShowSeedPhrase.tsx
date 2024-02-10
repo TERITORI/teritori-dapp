@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { RedAlert } from "./RedAlert";
@@ -6,11 +7,19 @@ import { SpacerColumn } from "../../../../components/spacer";
 import { fontSemibold14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { getMnemonic } from "../../../Wallet/hooks/getNativeWallet";
-import useFetch from "../../../Wallet/hooks/useFetch";
 import BlurViewWrapper from "../../components/BlurViewWrapper";
 
 export const ShowSeedPhrase = () => {
-  const phrase = useFetch<string | null>(getMnemonic);
+  const [phrase, setPhrase] = useState<string | null>();
+
+  const getPhrase = async () => {
+    const _phrase = await getMnemonic();
+    setPhrase(_phrase);
+  };
+
+  useEffect(() => {
+    getPhrase();
+  }, []);
 
   return (
     <View
