@@ -30,12 +30,12 @@ import { neutralA3, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { nameServiceDefaultImage } from "../../utils/tns";
+import { SocialFeedVideoMetadata } from "../../utils/types/feed";
 import { Media } from "../../utils/types/mediaPlayer";
 import { BrandText } from "../BrandText";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { CustomPressable } from "../buttons/CustomPressable";
-import { SocialFeedVideoMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
 import { SOCIAl_CARD_BORDER_RADIUS } from "../socialFeed/SocialCard/cards/SocialThreadCard";
 import { SpacerColumn, SpacerRow } from "../spacer";
 

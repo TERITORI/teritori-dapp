@@ -3,10 +3,9 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
 import { feedsTabItems } from "./social-feed";
+import { NewPostFormValues } from "./types/feed";
 import { Conversation, MessageFriendsTabItem } from "./types/message";
 import { uppTabItems } from "./upp";
-import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.type";
-import { useRoute } from "../hooks/useRoute";
 
 export type RouteName = keyof RootStackParamList;
 
@@ -85,6 +84,59 @@ export type RootStackParamList = {
   Message: { view: string; tab?: string } | undefined;
   ChatSection: Conversation;
   FriendshipManager: { tab?: MessageFriendsTabItem } | undefined;
+
+  // native wallet screens
+  NativeWallet: undefined;
+  ViewSeed: undefined;
+  ImportWallet: undefined;
+  CreatePassword: undefined;
+  CreatePasswordWallet: undefined;
+  SuccessScreen: undefined;
+
+  //Mini Screens
+  MiniTabs: undefined;
+  Conversation: { conversationId: string };
+  MiniChats: { back?: RouteName };
+  MiniWallets: undefined;
+  MiniFeeds: undefined;
+  MiniProfile: undefined;
+  MiniProfileDetail: undefined;
+  MiniDAppStore: undefined;
+  MiniNewConversation: undefined;
+  MiniFriend: undefined;
+  MiniNewGroup: undefined;
+  MiniChatSetting: { back?: RouteName };
+  MiniSettings: undefined;
+  MiniAccountDetails: { accountName: string; id: string };
+  MiniAddAccount: undefined;
+  Notifications: undefined;
+  AddressBook: { back?: RouteName };
+  AddAddressBook: { back?: RouteName };
+  EditAddressBook: { addressId: string; back?: RouteName };
+  MiniSecurityAndPrivacy: undefined;
+  MiniChangePassword: undefined;
+  MiniFaceLogin: undefined;
+  MiniRevealSeedPhrase: undefined;
+  MiniExportPrivateKey: undefined;
+  MiniResetWallet: undefined;
+  ChangeNetwork: undefined;
+  About: undefined;
+  MiniManageTokens: undefined;
+  MiniAddCustomToken: undefined;
+  MiniSelectToken: { navigateTo: RouteName };
+  MiniDepositTORI: { back?: RouteName; denom: string };
+  ModeSelection: undefined;
+  ChatActivation: undefined;
+  MiniSendTori: { back?: RouteName; denom: string };
+  MiniSendingTori: {
+    back?: RouteName;
+    amount: string;
+    denom: string;
+    address: string;
+  };
+  MiniTransactionDetail: { type: string; transactionId: string };
+  ConnectLedger: undefined;
+  CreateWallet: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -184,6 +236,54 @@ const navConfig: {
     Message: "message/:view?",
     ChatSection: "message/chat",
     FriendshipManager: "/friends",
+
+    // ==== Native Wallet
+    NativeWallet: "native-wallet",
+    ViewSeed: "native-wallet/view-seed",
+    ImportWallet: "native-wallet/import",
+    CreatePassword: "native-wallet/create-password",
+    CreatePasswordWallet: "native-wallet/create-password-wallet",
+    SuccessScreen: "native-wallet/success",
+
+    // ==== Mini nav
+    MiniTabs: "mini-tabs",
+    MiniChats: "mini-chat",
+    MiniWallets: "mini-wallet",
+    MiniFeeds: "mini-feed",
+    Conversation: "mini-conversation",
+    MiniProfile: "mini-profile",
+    MiniProfileDetail: "mini-profile-detail",
+    MiniDAppStore: "mini-dApp-store",
+    MiniNewConversation: "mini-new-conversation",
+    MiniFriend: "mini-friend",
+    MiniNewGroup: "mini-new-group",
+    MiniChatSetting: "mini-chat-setting",
+    MiniSettings: "mini-settings",
+    MiniAccountDetails: "mini-account-details",
+    MiniAddAccount: "mini-add-account",
+    Notifications: "notifications",
+    AddressBook: "address-book",
+    AddAddressBook: "add-address-book",
+    EditAddressBook: "edit-address-book/:addressId",
+    MiniSecurityAndPrivacy: "mini-security-and-privacy",
+    MiniChangePassword: "mini-change-password",
+    MiniFaceLogin: "mini-face-login",
+    MiniRevealSeedPhrase: "mini-reveal-seed-phrase",
+    MiniExportPrivateKey: "mini-export-private-key",
+    MiniResetWallet: "mini-reset-wallet",
+    ChangeNetwork: "change-network",
+    About: "about",
+    MiniManageTokens: "mini-manage-tokens",
+    MiniAddCustomToken: "mini-add-custom-token",
+    MiniSelectToken: "mini-select-token",
+    MiniDepositTORI: "mini-deposit-tori",
+    ModeSelection: "mode-selection",
+    ChatActivation: "chat-activation",
+    MiniSendTori: "mini-send-tori",
+    MiniSendingTori: "mini-sending-tori",
+    MiniTransactionDetail: "mini-transaction-detail",
+    ConnectLedger: "connect-ledger",
+    CreateWallet: "create-wallet",
   },
 };
 
@@ -191,5 +291,3 @@ export const linking = {
   prefixes: [],
   config: navConfig,
 };
-
-export const useAppRoute = () => useRoute<RouteProp<RootStackParamList>>();

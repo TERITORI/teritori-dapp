@@ -1,17 +1,15 @@
 import React, { useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
+  Pressable,
   TextInput,
   View,
   ViewStyle,
-  Pressable,
   useWindowDimensions,
 } from "react-native";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
-import { NewPostFormValues, ReplyToType } from "./NewsFeed.type";
-import { generatePostMetadata, getPostCategory } from "./NewsFeedQueries";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
@@ -20,6 +18,7 @@ import videoSVG from "../../../../assets/icons/video.svg";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useWalletControl } from "../../../context/WalletControlProvider";
 import { useFeedPosting } from "../../../hooks/feed/useFeedPosting";
+import { useAppMode } from "../../../hooks/useAppMode";
 import { useIpfs } from "../../../hooks/useIpfs";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
@@ -27,6 +26,10 @@ import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId, NetworkFeature } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
+import {
+  generatePostMetadata,
+  getPostCategory,
+} from "../../../utils/feed/queries";
 import { generateIpfsKey } from "../../../utils/ipfs";
 import {
   AUDIO_MIME_TYPES,
@@ -37,11 +40,12 @@ import {
   SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
   hashtagMatch,
   mentionMatch,
-  replaceFileInArray,
   removeFileFromArray,
+  replaceFileInArray,
 } from "../../../utils/social-feed";
 import {
   errorColor,
+  neutral00,
   neutral17,
   neutral22,
   neutral77,
@@ -56,11 +60,12 @@ import {
   fontSemibold16,
 } from "../../../utils/style/fonts";
 import {
-  layout,
   RESPONSIVE_BREAKPOINT_S,
   SOCIAL_FEED_BREAKPOINT_M,
+  layout,
 } from "../../../utils/style/layout";
 import { replaceBetweenString } from "../../../utils/text";
+import { NewPostFormValues, ReplyToType } from "../../../utils/types/feed";
 import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
 import { BrandText } from "../../BrandText";
 import { FilesPreviewsContainer } from "../../FilePreview/FilesPreviewsContainer";
@@ -72,14 +77,12 @@ import { LegacyPrimaryBox } from "../../boxes/LegacyPrimaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { FileUploader } from "../../fileUploader";
-import {
-  FeedPostingProgressBar,
-  feedPostingStep,
-  FeedPostingStepId,
-} from "../../loaders/FeedPostingProgressBar";
+import { FeedPostingProgressBar } from "../../loaders/FeedPostingProgressBar";
 import { SpacerColumn } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
+
+import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
 
 interface NewsFeedInputProps {
   type: "comment" | "post";
@@ -125,6 +128,7 @@ export const NewsFeedInput = React.forwardRef<
     },
     forwardRef,
   ) => {
+    const [appMode] = useAppMode();
     const { width: windowWidth } = useWindowDimensions();
     const { width } = useMaxResolution();
     const isMobile = useIsMobile();
@@ -329,7 +333,7 @@ export const NewsFeedInput = React.forwardRef<
             zIndex: 9,
           }}
           mainContainerStyle={{
-            backgroundColor: neutral22,
+            backgroundColor: appMode === "mini" ? neutral00 : neutral22,
           }}
           noRightBrokenBorder
         >
@@ -385,7 +389,7 @@ export const NewsFeedInput = React.forwardRef<
                         : inputMinHeight,
                       width: "100%",
                       color: secondaryColor,
-                      //@ts-ignore
+                      // @ts-expect-error: description todo
                       outlineStyle: "none",
                       outlineWidth: 0,
                     },
@@ -452,7 +456,8 @@ export const NewsFeedInput = React.forwardRef<
         </LegacyPrimaryBox>
         <View
           style={{
-            backgroundColor: neutral17,
+            backgroundColor: appMode === "mini" ? neutral00 : neutral17,
+
             paddingVertical: isMobile
               ? layout.spacing_x1_5
               : layout.spacing_x1_5,
@@ -539,73 +544,83 @@ export const NewsFeedInput = React.forwardRef<
                       MAX_IMAGES
                   }
                 />
-
-                <FileUploader
-                  onUpload={(files) => setValue("files", [files?.[0]])}
-                  mimeTypes={AUDIO_MIME_TYPES}
-                >
-                  {({ onPress }) => (
-                    <IconBox
-                      icon={audioSVG}
-                      onPress={onPress}
-                      style={{ marginRight: layout.spacing_x2 }}
-                      disabled={
-                        !!formValues.files?.length || !!formValues.gifs?.length
-                      }
-                    />
-                  )}
-                </FileUploader>
-                <FileUploader
-                  onUpload={(files) => setValue("files", [files?.[0]])}
-                  mimeTypes={VIDEO_MIME_TYPES}
-                >
-                  {({ onPress }) => (
-                    <IconBox
-                      icon={videoSVG}
-                      onPress={onPress}
-                      style={{ marginRight: layout.spacing_x2 }}
-                      disabled={
-                        !!formValues.files?.length || !!formValues.gifs?.length
-                      }
-                    />
-                  )}
-                </FileUploader>
-                <FileUploader
-                  // multiple
-                  onUpload={(files) => {
-                    // Don't add if already added
-                    if (
-                      formValues.files?.find(
-                        (file) => file.fileName === files[0].fileName,
-                      )
-                    )
-                      return;
-                    setValue("files", [...(formValues.files || []), ...files]);
-                  }}
-                  mimeTypes={IMAGE_MIME_TYPES}
-                >
-                  {({ onPress }) => (
-                    <IconBox
-                      disabled={
-                        (formValues.files?.[0] &&
-                          formValues.files[0].fileType !== "image") ||
-                        (formValues.files || []).length +
-                          (formValues.gifs || [])?.length >=
-                          MAX_IMAGES
-                      }
-                      icon={cameraSVG}
-                      onPress={onPress}
-                      style={{
-                        marginRight:
-                          viewWidth < BREAKPOINT_S ? 0 : layout.spacing_x2_5,
+                {appMode !== "mini" && (
+                  <>
+                    <FileUploader
+                      onUpload={(files) => setValue("files", [files?.[0]])}
+                      mimeTypes={AUDIO_MIME_TYPES}
+                    >
+                      {({ onPress }) => (
+                        <IconBox
+                          icon={audioSVG}
+                          onPress={onPress}
+                          style={{ marginRight: layout.spacing_x2 }}
+                          disabled={
+                            !!formValues.files?.length ||
+                            !!formValues.gifs?.length
+                          }
+                        />
+                      )}
+                    </FileUploader>
+                    <FileUploader
+                      onUpload={(files) => setValue("files", [files?.[0]])}
+                      mimeTypes={VIDEO_MIME_TYPES}
+                    >
+                      {({ onPress }) => (
+                        <IconBox
+                          icon={videoSVG}
+                          onPress={onPress}
+                          style={{ marginRight: layout.spacing_x2 }}
+                          disabled={
+                            !!formValues.files?.length ||
+                            !!formValues.gifs?.length
+                          }
+                        />
+                      )}
+                    </FileUploader>
+                    <FileUploader
+                      // multiple
+                      onUpload={(files) => {
+                        // Don't add if already added
+                        if (
+                          formValues.files?.find(
+                            (file) => file.fileName === files[0].fileName,
+                          )
+                        )
+                          return;
+                        setValue("files", [
+                          ...(formValues.files || []),
+                          ...files,
+                        ]);
                       }}
-                      iconProps={{
-                        height: 18,
-                        width: 18,
-                      }}
-                    />
-                  )}
-                </FileUploader>
+                      mimeTypes={IMAGE_MIME_TYPES}
+                    >
+                      {({ onPress }) => (
+                        <IconBox
+                          disabled={
+                            (formValues.files?.[0] &&
+                              formValues.files[0].fileType !== "image") ||
+                            (formValues.files || []).length +
+                              (formValues.gifs || [])?.length >=
+                              MAX_IMAGES
+                          }
+                          icon={cameraSVG}
+                          onPress={onPress}
+                          style={{
+                            marginRight:
+                              viewWidth < BREAKPOINT_S
+                                ? 0
+                                : layout.spacing_x2_5,
+                          }}
+                          iconProps={{
+                            height: 18,
+                            width: 18,
+                          }}
+                        />
+                      )}
+                    </FileUploader>
+                  </>
+                )}
               </View>
 
               {viewWidth < BREAKPOINT_S && <SpacerColumn size={1.5} />}

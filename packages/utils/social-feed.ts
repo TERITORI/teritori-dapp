@@ -4,14 +4,11 @@ import { GIF_MIME_TYPE } from "./mime";
 import { HASHTAG_REGEX, MENTION_REGEX, URL_REGEX } from "./regex";
 import { zodTryParseJSON } from "./sanitize";
 import { redDefault } from "./style/colors";
+import { PostExtra, PostResultExtra } from "./types/feed";
 import { LocalFileData } from "./types/files";
+import { TabDefinition } from "./types/tabs";
 import flagSVG from "../../assets/icons/notification.svg";
 import { Post, Reaction } from "../api/feed/v1/feed";
-import {
-  PostExtra,
-  PostResultExtra,
-} from "../components/socialFeed/NewsFeed/NewsFeed.type";
-import { TabDefinition } from "../components/tabs/Tabs";
 import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { getUserId } from "../networks";
 

@@ -18,3 +18,17 @@ export const getReactNodeStringProp = (
   }
   return value;
 };
+
+export const joinElements = <ElementType, SeparatorType>(
+  elements: ElementType[],
+  separator: SeparatorType,
+) => {
+  const result: (ElementType | SeparatorType)[] = [];
+  elements.forEach((e, i) => {
+    result.push(e);
+    if (i < elements.length - 1) {
+      result.push(separator);
+    }
+  });
+  return result;
+};

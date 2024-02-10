@@ -1,8 +1,9 @@
 import React from "react";
 import { Text, TouchableOpacity } from "react-native";
 
-import { useAppNavigation } from "../../../../utils/navigation";
 import { primaryColor } from "../../../../utils/style/colors";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 export const HashtagRenderer: React.FC<{ text: string }> = ({ text }) => {
   const navigation = useAppNavigation();
 

@@ -4,12 +4,9 @@ import { useWindowDimensions, View } from "react-native";
 import { BrandText } from "../../../components/BrandText";
 import { OmniLink } from "../../../components/OmniLink";
 import { UserAvatarWithFrame } from "../../../components/images/AvatarWithFrame";
-import {
-  PostExtra,
-  ZodSocialFeedPostMetadata,
-} from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { DateTime } from "../../../components/socialFeed/SocialCard/DateTime";
 import { SpacerRow } from "../../../components/spacer";
+import { useAppMode } from "../../../hooks/useAppMode";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { parseUserId } from "../../../networks";
 import { zodTryParseJSON } from "../../../utils/sanitize";
@@ -17,10 +14,15 @@ import { neutral77, primaryColor } from "../../../utils/style/colors";
 import { fontMedium13, fontSemibold14 } from "../../../utils/style/fonts";
 import { RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
+import {
+  PostExtra,
+  ZodSocialFeedPostMetadata,
+} from "../../../utils/types/feed";
 
 export const VideoComment: FC<{
   comment: PostExtra;
 }> = ({ comment }) => {
+  const [appMode] = useAppMode();
   const { width: windowWidth } = useWindowDimensions();
   const metadata = zodTryParseJSON(ZodSocialFeedPostMetadata, comment.metadata);
   const authorNSInfo = useNSUserInfo(comment.authorId);
@@ -40,6 +42,7 @@ export const VideoComment: FC<{
         }}
       >
         <OmniLink
+          disabled={appMode === "mini"}
           to={{
             screen: "UserPublicProfile",
             params: { id: comment.authorId },
@@ -55,6 +58,7 @@ export const VideoComment: FC<{
         <View style={{ flex: 1 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <OmniLink
+              disabled={appMode === "mini"}
               to={{
                 screen: "UserPublicProfile",
                 params: { id: comment.authorId },

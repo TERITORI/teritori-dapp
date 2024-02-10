@@ -1,6 +1,4 @@
-// @ts-ignore
 import comicBookHistory from "../../assets/background/comicbook-history.jpg";
-// @ts-ignore
 import comicBookLanding from "../../assets/background/comicbook.jpg";
 import disconnect from "../../assets/background/disconnect.png";
 import lottery from "../../assets/background/lottery.png";

@@ -15,7 +15,6 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../networks";
 import { prettyMediaDuration } from "../../utils/mediaPlayer";
-import { useAppNavigation } from "../../utils/navigation";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import {
   errorColor,
@@ -31,14 +30,16 @@ import {
 } from "../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
+import { ZodSocialFeedVideoMetadata } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 import { OmniLink } from "../OmniLink";
 import { OptimizedImage } from "../OptimizedImage";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
-import { ZodSocialFeedVideoMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
 import { DateTime } from "../socialFeed/SocialCard/DateTime";
 import { SpacerColumn, SpacerRow } from "../spacer";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const IMAGE_HEIGHT = 173;
 const VIDEO_CARD_WIDTH = 261;

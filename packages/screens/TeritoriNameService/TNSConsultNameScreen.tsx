@@ -29,9 +29,10 @@ import {
   getUserId,
   mustGetCosmosNetwork,
 } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const NotOwnerActions: React.FC<{
   tokenId: string;

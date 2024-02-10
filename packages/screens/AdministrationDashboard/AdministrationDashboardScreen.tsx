@@ -9,7 +9,6 @@ import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryBox } from "../../components/boxes/SecondaryBox";
 import { Tabs } from "../../components/tabs/Tabs";
-import { useAppNavigation } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
 import {
   fontSemibold13,
@@ -17,6 +16,8 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const MD_BREAKPOINT = 820;
 type TabsListType = "pendingApllications" | "pendingConfirmations";

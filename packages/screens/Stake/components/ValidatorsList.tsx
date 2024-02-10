@@ -18,7 +18,7 @@ import { removeObjectKey, removeObjectKeys } from "../../../utils/object";
 import { mineShaftColor } from "../../../utils/style/colors";
 import { fontSemibold11, fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ValidatorInfo } from "../types";
+import { ValidatorInfo } from "../../../utils/types/staking";
 
 const TABLE_ROWS = {
   rank: {
@@ -220,12 +220,12 @@ const ValidatorRow: React.FC<{
               alignItems: "center",
             }}
           >
-            {claimablePrice && (
+            {!!claimablePrice && (
               <BrandText style={[isMobile ? fontSemibold11 : fontSemibold13]}>
                 {`$${claimablePrice.toFixed(2)}`}
               </BrandText>
             )}
-            {pendingRewards.length && (
+            {!!pendingRewards?.length && (
               <PrimaryButtonOutline
                 size={isMobile ? "XXS" : "XS"}
                 style={

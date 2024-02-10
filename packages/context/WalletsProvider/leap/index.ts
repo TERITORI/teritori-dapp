@@ -26,8 +26,7 @@ export const useLeap: () => UseLeapResult = () => {
   const selectedWalletId = useSelector(selectSelectedWalletId);
 
   const handleLoad = () => {
-    // @ts-ignore
-    const leap = window?.leap;
+    const leap = (window as any)?.leap;
     const hasLeap = !!leap;
     if (hasLeap) {
       console.log("leap installed");
@@ -57,8 +56,7 @@ export const useLeap: () => UseLeapResult = () => {
       if (selectedNetworkInfo?.kind !== NetworkKind.Cosmos) {
         return;
       }
-      // @ts-ignore
-      const leap = window?.leap;
+      const leap = (window as any)?.leap;
       if (!leap) {
         console.error("no leap");
         return;
@@ -84,8 +82,7 @@ export const useLeap: () => UseLeapResult = () => {
       }
 
       try {
-        // @ts-ignore
-        const leap = window?.leap;
+        const leap = (window as any)?.leap;
         if (!leap) {
           setReady(true);
           console.error("no leap");

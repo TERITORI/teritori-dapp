@@ -19,9 +19,9 @@ import { ConnectWalletButton } from "../../../components/TopMenu/ConnectWalletBu
 import { TopLogo } from "../../../components/navigation/components/TopLogo";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerRow } from "../../../components/spacer";
+import { useRoute } from "../../../hooks/navigation/useRoute";
 import { useForceNetworkFeatures } from "../../../hooks/useForceNetworkFeatures";
 import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useRoute } from "../../../hooks/useRoute";
 import { NetworkFeature } from "../../../networks";
 import {
   RootStackParamList,
@@ -112,7 +112,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
     if (item.externalRoute) {
       Linking.openURL(item.externalRoute);
     } else if (item.route) {
-      // @ts-expect-error
+      // @ts-expect-error: description todo
       navigation.navigate(item.route);
     }
   };

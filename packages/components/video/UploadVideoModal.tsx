@@ -30,6 +30,7 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { PostCategory, SocialFeedVideoMetadata } from "../../utils/types/feed";
 import { LocalFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
 import { DeleteButton } from "../FilePreview/DeleteButton";
@@ -39,18 +40,12 @@ import { CustomPressable } from "../buttons/CustomPressable";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { FileUploader } from "../fileUploader";
 import { TextInputCustom } from "../inputs/TextInputCustom";
-import {
-  FeedPostingProgressBar,
-  feedPostingStep,
-  FeedPostingStepId,
-} from "../loaders/FeedPostingProgressBar";
+import { FeedPostingProgressBar } from "../loaders/FeedPostingProgressBar";
 import ModalBase from "../modals/ModalBase";
 import { FeedFeeText } from "../socialFeed/FeedFeeText";
-import {
-  PostCategory,
-  SocialFeedVideoMetadata,
-} from "../socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn, SpacerRow } from "../spacer";
+
+import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
 
 const UPLOAD_VIDEO_MODAL_WIDTH = 590;
 const THUMBNAIL_SIZE = 198;

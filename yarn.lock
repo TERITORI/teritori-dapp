@@ -2140,12 +2140,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chain-registry/types@npm:^0.17.0, @chain-registry/types@npm:^0.17.1":
+"@chain-registry/types@npm:^0.17.1":
   version: 0.17.1
   resolution: "@chain-registry/types@npm:0.17.1"
   dependencies:
     "@babel/runtime": ^7.21.0
   checksum: be3c52d22e0b835aead431718f2282e722632e626d84402ab55fef8227392ae155125a6b3002a9a2dcb7438602b14da2a241423a9a8e28fab5552d0a496eb2ab
+  languageName: node
+  linkType: hard
+
+"@chain-registry/types@npm:^0.18.0":
+  version: 0.18.0
+  resolution: "@chain-registry/types@npm:0.18.0"
+  dependencies:
+    "@babel/runtime": ^7.21.0
+  checksum: 420bc6fc93389cd52f7f744349f0d453322b4f83fcd18a3c379f9bc7731822abf8f1442ae20298518f1a15bd1c442a4942d1bb16becc874215acea86204d715e
+  languageName: node
+  linkType: hard
+
+"@chain-registry/utils@npm:1.18.0":
+  version: 1.18.0
+  resolution: "@chain-registry/utils@npm:1.18.0"
+  dependencies:
+    "@babel/runtime": ^7.21.0
+    "@chain-registry/types": ^0.18.0
+    bignumber.js: 9.1.1
+    sha.js: ^2.4.11
+  checksum: 5a4b9b4af5ed880a972fbab8282ad13f3c260bc1df5af448c26634584c728a0fcbbf336b4dda29f7e408f77821ac0a18a5d45f878d8b90936d43e9ae10223ca9
   languageName: node
   linkType: hard
 
@@ -2937,7 +2958,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dotlottie/react-player@npm:^1.6.15":
+"@dotlottie/react-player@npm:^1.6.5":
   version: 1.6.15
   resolution: "@dotlottie/react-player@npm:1.6.15"
   dependencies:
@@ -5873,6 +5894,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-navigation/bottom-tabs@npm:^6.5.11":
+  version: 6.5.11
+  resolution: "@react-navigation/bottom-tabs@npm:6.5.11"
+  dependencies:
+    "@react-navigation/elements": ^1.3.21
+    color: ^4.2.3
+    warn-once: ^0.1.0
+  peerDependencies:
+    "@react-navigation/native": ^6.0.0
+    react: "*"
+    react-native: "*"
+    react-native-safe-area-context: ">= 3.0.0"
+    react-native-screens: ">= 3.0.0"
+  checksum: 40719f03d926ddf046f395e1e3007b8e3b64b82ecdf33a397b7b2eb9b0387fdd00ece2089db670e6d339838bd0658ee279b9409873bbeb28df89ad86f8f09140
+  languageName: node
+  linkType: hard
+
 "@react-navigation/core@npm:^6.4.10":
   version: 6.4.10
   resolution: "@react-navigation/core@npm:6.4.10"
@@ -7866,6 +7904,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bignumber.js@npm:9.1.1":
+  version: 9.1.1
+  resolution: "bignumber.js@npm:9.1.1"
+  checksum: ad243b7e2f9120b112d670bb3d674128f0bd2ca1745b0a6c9df0433bd2c0252c43e6315d944c2ac07b4c639e7496b425e46842773cf89c6a2dcd4f31e5c4b11e
+  languageName: node
+  linkType: hard
+
 "bindings@npm:^1.3.0":
   version: 1.5.0
   resolution: "bindings@npm:1.5.0"
@@ -7875,7 +7920,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bip39@npm:^3.0.2":
+"bip39@npm:^3.0.2, bip39@npm:^3.1.0":
   version: 3.1.0
   resolution: "bip39@npm:3.1.0"
   dependencies:
@@ -8153,7 +8198,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"buffer@npm:6.0.3, buffer@npm:~6.0.3":
+"buffer@npm:6.0.3, buffer@npm:^6.0.3, buffer@npm:~6.0.3":
   version: 6.0.3
   resolution: "buffer@npm:6.0.3"
   dependencies:
@@ -8377,23 +8422,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chain-registry@npm:1.20.0":
-  version: 1.20.0
-  resolution: "chain-registry@npm:1.20.0"
+"chain-registry@npm:^1.25.4":
+  version: 1.27.0
+  resolution: "chain-registry@npm:1.27.0"
   dependencies:
     "@babel/runtime": ^7.21.0
-    "@chain-registry/types": ^0.17.0
-  checksum: 0b28cea3503a9a0f3028bdeb9dd5922fc6be10d112aa0b45218d0167e1d1c68d736d14d26110b33321ba99aa5abe4a3cc6473758307a149aceeea51f768ba5d3
-  languageName: node
-  linkType: hard
-
-"chain-registry@patch:chain-registry@npm%3A1.20.0#./.yarn/patches/chain-registry-npm-1.20.0-e290300d1b.patch::locator=teritori-dapp%40workspace%3A.":
-  version: 1.20.0
-  resolution: "chain-registry@patch:chain-registry@npm%3A1.20.0#./.yarn/patches/chain-registry-npm-1.20.0-e290300d1b.patch::version=1.20.0&hash=e664f8&locator=teritori-dapp%40workspace%3A."
-  dependencies:
-    "@babel/runtime": ^7.21.0
-    "@chain-registry/types": ^0.17.0
-  checksum: e60cf0654aad27910e4d238bcd7fb718a50151c3b3518cf4d9b293aa207c4a35f7585068429c5abb55dca530d0806659f10127438ca07161c264bd4250d6fe57
+    "@chain-registry/types": ^0.18.0
+  checksum: cfe13f3e2d1ba08785fdb4c14e7525c5956adf54b93d2e18118499502dbd8c015df330ba73bc32f3a40ca2360c31f59b7613feee5a197e37225b02e3ef1054aa
   languageName: node
   linkType: hard
 
@@ -10867,6 +10902,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-blur@npm:~12.9.1":
+  version: 12.9.1
+  resolution: "expo-blur@npm:12.9.1"
+  peerDependencies:
+    expo: "*"
+  checksum: 3d20be089e41c9d05618721c8546584eb2f9ce1dd666960b34234b8c9fee0db312ace6738c73c3c377a9af8a740be4d056dc0ec53e02f5d57633b1df208cc221
+  languageName: node
+  linkType: hard
+
 "expo-clipboard@npm:~5.0.1":
   version: 5.0.1
   resolution: "expo-clipboard@npm:5.0.1"
@@ -11062,6 +11106,15 @@ __metadata:
   bin:
     expo-optimize: build/index.js
   checksum: db6d5d4a8cdaa1e6a776d6a095b64bcf7677026045390f7e1dff7dcd412b09a047e7a8882c6239c18dc3eb78d8eda39c5ad4bce6c1586c6a5ed357499f86d380
+  languageName: node
+  linkType: hard
+
+"expo-secure-store@npm:~12.8.1":
+  version: 12.8.1
+  resolution: "expo-secure-store@npm:12.8.1"
+  peerDependencies:
+    expo: "*"
+  checksum: 739540167e66f70c1f2d1053251a19ff753ba9cc435b9184f0b63f22fab408d96428a3fef8e276f9f12d1b2fc61435a181f59117a19fc5f4bfd6da0487652b64
   languageName: node
   linkType: hard
 
@@ -16616,6 +16669,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-image-picker@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "react-native-image-picker@npm:7.1.0"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 7f5c16dbcde719367e8fea7e05dd0ca8cb4cb4d163ce3fd093440fde69ff536dfb12f8b14a82b3d306785b7a5609e99042a981050631aa91cffb0a410c056ef9
+  languageName: node
+  linkType: hard
+
 "react-native-iphone-x-helper@npm:^1.3.1":
   version: 1.3.1
   resolution: "react-native-iphone-x-helper@npm:1.3.1"
@@ -18923,6 +18986,7 @@ __metadata:
     "@babel/plugin-transform-shorthand-properties": ^7.23.3
     "@babel/plugin-transform-template-literals": ^7.23.3
     "@chain-registry/types": ^0.17.1
+    "@chain-registry/utils": 1.18.0
     "@cosmjs/amino": 0.32.2
     "@cosmjs/cosmwasm-stargate": 0.32.2
     "@cosmjs/encoding": ^0.32.2
@@ -18932,7 +18996,7 @@ __metadata:
     "@cosmjs/tendermint-rpc": ^0.32.2
     "@cosmology/core": 2.0.1
     "@cosmwasm/ts-codegen": ^0.35.7
-    "@dotlottie/react-player": ^1.6.15
+    "@dotlottie/react-player": ^1.6.5
     "@draft-js-plugins/anchor": ^4.2.0
     "@draft-js-plugins/buttons": ^4.3.3
     "@draft-js-plugins/editor": ^4.1.3
@@ -18960,6 +19024,7 @@ __metadata:
     "@react-native-clipboard/clipboard": ^1.13.2
     "@react-native-community/slider": 4.4.2
     "@react-native-masked-view/masked-view": 0.3.0
+    "@react-navigation/bottom-tabs": ^6.5.11
     "@react-navigation/drawer": ^6.6.6
     "@react-navigation/native": ^6.0.11
     "@react-navigation/native-stack": ^6.7.0
@@ -18978,8 +19043,10 @@ __metadata:
     babel-loader: ^8.2.5
     babel-plugin-react-inline-svg-unique-id: ^1.3.1
     bech32: ^2.0.0
+    bip39: ^3.1.0
     browser-headers: ^0.4.1
-    chain-registry: ^1.20.0
+    buffer: ^6.0.3
+    chain-registry: ^1.25.4
     commander: ^10.0.1
     cors-anywhere: ^0.4.4
     cross-env: ^7.0.3
@@ -18997,6 +19064,7 @@ __metadata:
     expo: ~50.0.6
     expo-av: ~13.10.5
     expo-barcode-scanner: ~12.9.2
+    expo-blur: ~12.9.1
     expo-clipboard: ~5.0.1
     expo-dev-client: ~3.3.8
     expo-doctor: ^1.1.3
@@ -19005,6 +19073,7 @@ __metadata:
     expo-font: ~11.10.2
     expo-linear-gradient: ~12.7.1
     expo-optimize: ^0.2.20
+    expo-secure-store: ~12.8.1
     expo-splash-screen: ~0.26.4
     expo-status-bar: ~1.11.1
     google-protobuf: ^3.21.2
@@ -19036,6 +19105,7 @@ __metadata:
     react-native-gesture-handler: ~2.14.0
     react-native-get-random-values: ~1.8.0
     react-native-heroicons: ^3.2.0
+    react-native-image-picker: ^7.1.0
     react-native-keyboard-aware-scrollview: ^2.1.0
     react-native-paper: ^4.12.5
     react-native-pell-rich-editor: ^1.8.8

@@ -5,10 +5,13 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import { bech32 } from "bech32";
+import { Platform } from "react-native";
 
 import { Token as MultisigToken, Token } from "../../api/multisig/v1/multisig";
 import { defaultEnabledNetworks } from "../../networks";
 import { RootState } from "../store";
+
+import { AppMode } from "@/utils/types/app-mode";
 
 type NetworkSettings = {
   networkId: string;
@@ -28,11 +31,13 @@ export const multisigTokensAdapter = createEntityAdapter<Token>({
 const multisigTokensSelectors = multisigTokensAdapter.getSelectors();
 
 interface Settings {
+  appMode: AppMode;
   selectedNetworkId: string;
   selectedWalletId: string | undefined;
   NFTStorageAPI: string;
   isKeplrConnected: boolean;
   isLeapConnected: boolean;
+  isNativeWalletConnected: boolean;
   isAdenaConnected: boolean;
   alreadyVisited: boolean;
   areTestnetsEnabled: boolean;
@@ -45,11 +50,13 @@ interface Settings {
 }
 
 const initialState: Settings = {
+  appMode: Platform.OS === "web" ? "normal" : "mini",
   selectedWalletId: "",
   selectedNetworkId: "",
   NFTStorageAPI: process.env.NFT_STORAGE_API || "",
   isKeplrConnected: false,
   isLeapConnected: false,
+  isNativeWalletConnected: false,
   isAdenaConnected: false,
   howToBuyExapanded: true,
   alreadyVisited: false,
@@ -67,6 +74,8 @@ const initialState: Settings = {
   developerMode: false,
 };
 
+export const selectAppMode = (state: RootState) => state.settings.appMode;
+
 export const selectSelectedNetworkId = (state: RootState) =>
   state.settings.selectedNetworkId;
 
@@ -78,6 +87,9 @@ export const selectIsKeplrConnected = (state: RootState) =>
 
 export const selectIsLeapConnected = (state: RootState) =>
   state.settings.isLeapConnected;
+
+export const selectINativeWalletConnected = (state: RootState) =>
+  state.settings.isNativeWalletConnected;
 
 export const selectIsAdenaConnected = (state: RootState) =>
   state.settings.isAdenaConnected;
@@ -161,6 +173,9 @@ const settingsSlice = createSlice({
     setIsLeapConnected: (state, action: PayloadAction<boolean>) => {
       state.isLeapConnected = action.payload;
     },
+    setIsNativeWalletConnected: (state, action: PayloadAction<boolean>) => {
+      state.isNativeWalletConnected = action.payload;
+    },
     setIsAdenaConnected: (state, action: PayloadAction<boolean>) => {
       state.isAdenaConnected = action.payload;
     },
@@ -221,6 +236,9 @@ const settingsSlice = createSlice({
     setIsLightTheme: (state, action: PayloadAction<boolean>) => {
       state.isLightTheme = action.payload;
     },
+    setAppMode: (state, action: PayloadAction<AppMode>) => {
+      state.appMode = action.payload;
+    },
     setDeveloperMode: (state, action: PayloadAction<boolean>) => {
       state.developerMode = action.payload;
     },
@@ -240,6 +258,7 @@ export const {
   setMultisigToken,
   toggleNetwork,
   setIsLightTheme,
+  setAppMode,
   setDeveloperMode,
 } = settingsSlice.actions;
 

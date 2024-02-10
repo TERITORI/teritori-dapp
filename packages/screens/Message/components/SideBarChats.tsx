@@ -24,7 +24,6 @@ import { useIsMobile } from "../../../hooks/useIsMobile";
 import { selectConversationList } from "../../../store/slices/message";
 import { setSearchText } from "../../../store/slices/search";
 import { RootState } from "../../../store/store";
-import { useAppNavigation } from "../../../utils/navigation";
 import {
   primaryColor,
   secondaryColor,
@@ -34,6 +33,8 @@ import {
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { getConversationName } from "../../../weshnet/messageHelpers";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export const SideBarChats = () => {
   const { activeConversationType, activeConversation, setActiveConversation } =

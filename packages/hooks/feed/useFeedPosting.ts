@@ -9,12 +9,6 @@ import { useFeedPostFee } from "./useFeedPostFee";
 import { useFreePostsCount } from "./useFreePostsCount";
 import { signingSocialFeedClient } from "../../client-creators/socialFeedClient";
 import {
-  feedPostingStep,
-  FeedPostingStepId,
-} from "../../components/loaders/FeedPostingProgressBar";
-import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { TERITORI_FEED_ID } from "../../components/socialFeed/const";
-import {
   parseUserId,
   getStakingCurrency,
   mustGetCosmosNetwork,
@@ -22,10 +16,14 @@ import {
 } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { defaultSocialFeedFee } from "../../utils/fee";
+import { TERITORI_FEED_ID } from "../../utils/feed/constants";
 import { adenaDoContract } from "../../utils/gno";
+import { PostCategory } from "../../utils/types/feed";
 import { useIsDAO } from "../cosmwasm/useCosmWasmContractInfo";
 import { useDAOMakeProposal } from "../dao/useDAOMakeProposal";
 import { useBalances } from "../useBalances";
+
+import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
 
 export const useFeedPosting = (
   networkId: string | undefined,

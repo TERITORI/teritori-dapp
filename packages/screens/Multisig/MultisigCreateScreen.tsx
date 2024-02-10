@@ -27,7 +27,6 @@ import {
   validateAddress,
   validateMaxNumber,
 } from "../../utils/formRules";
-import { useAppNavigation } from "../../utils/navigation";
 import {
   neutral33,
   neutral77,
@@ -41,6 +40,8 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 type CreateMultisigWalletFormType = {
   addresses: { address: string }[];

@@ -17,12 +17,6 @@ import {
 import { CreateShortPostButton } from "../../../components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostButton";
 import { CreateShortPostModal } from "../../../components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostModal";
 import {
-  PostCategory,
-  ReplyToType,
-  ZodSocialFeedArticleMetadata,
-  ZodSocialFeedPostMetadata,
-} from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
-import {
   NewsFeedInput,
   NewsFeedInputHandle,
 } from "../../../components/socialFeed/NewsFeed/NewsFeedInput";
@@ -43,7 +37,6 @@ import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { getNetworkObjectId, parseUserId } from "../../../networks";
 import { web3ToWeb2URI } from "../../../utils/ipfs";
-import { useAppNavigation } from "../../../utils/navigation";
 import { zodTryParseJSON } from "../../../utils/sanitize";
 import {
   ARTICLE_COVER_IMAGE_MAX_HEIGHT,
@@ -59,7 +52,15 @@ import {
   screenContentMaxWidth,
 } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
-import { OnPressReplyType } from "../FeedPostViewScreen";
+import {
+  OnPressReplyType,
+  PostCategory,
+  ReplyToType,
+  ZodSocialFeedArticleMetadata,
+  ZodSocialFeedPostMetadata,
+} from "../../../utils/types/feed";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const contentPaddingHorizontal = layout.spacing_x2;
 

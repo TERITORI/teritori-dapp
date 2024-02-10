@@ -17,6 +17,7 @@ import {
 } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
+import { TERITORI_FEED_ID } from "../../../utils/feed/constants";
 import { adenaDoContract } from "../../../utils/gno";
 import { neutral77, primaryColor } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
@@ -26,7 +27,6 @@ import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../../modals/ModalBase";
 import { SpacerColumn } from "../../spacer";
-import { TERITORI_FEED_ID } from "../const";
 
 type TipFormType = {
   amount: string;

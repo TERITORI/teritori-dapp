@@ -42,10 +42,11 @@ import {
   UserKind,
 } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { defaultMetaData } from "../../utils/types/tns";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
   price,

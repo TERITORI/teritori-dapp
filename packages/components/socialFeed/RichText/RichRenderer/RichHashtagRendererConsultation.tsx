@@ -1,8 +1,9 @@
 import React, { ReactNode } from "react";
 
-import { useAppNavigation } from "../../../../utils/navigation";
 import { getReactNodeStringProp } from "../../../../utils/react";
 import { primaryColor } from "../../../../utils/style/colors";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export const RichHashtagRendererConsultation = (props: {
   children: ReactNode;

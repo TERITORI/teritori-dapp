@@ -7,7 +7,7 @@ import Animated, {
 import { SideNotch } from "./SideNotch";
 import { SidebarButtonProps } from "./SidebarButton";
 import { useSidebar } from "../../../context/SidebarProvider";
-import { useRoute } from "../../../hooks/useRoute";
+import { useRoute } from "../../../hooks/navigation/useRoute";
 import { neutralA3, primaryColor } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";

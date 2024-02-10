@@ -27,7 +27,7 @@ import {
   fontMedium40,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { SquadInfo } from "../types";
+import { SquadInfo } from "../../../utils/types/riot-p2e";
 
 type FightCountdownSectionProps = {
   unstake(): void;

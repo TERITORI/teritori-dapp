@@ -14,7 +14,6 @@ import {
   useDAOProposals,
 } from "../../hooks/dao/useDAOProposals";
 import { getUserId, parseUserId } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
 import {
   neutral33,
   neutral55,
@@ -23,10 +22,12 @@ import {
   errorColor,
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
-import { getTxInfo } from "../../utils/transactions/getTxInfo";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { getTxInfo } from "../tx/getTxInfo";
 import { Username } from "../user/Username";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export const DAOProposals: React.FC<{
   daoId: string | undefined;

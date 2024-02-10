@@ -18,10 +18,6 @@ import {
 import { CreateShortPostButton } from "../../../components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostButton";
 import { CreateShortPostModal } from "../../../components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostModal";
 import {
-  PostCategory,
-  ReplyToType,
-} from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
-import {
   NewsFeedInput,
   NewsFeedInputHandle,
 } from "../../../components/socialFeed/NewsFeed/NewsFeedInput";
@@ -37,7 +33,6 @@ import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { getNetworkObjectId, parseUserId } from "../../../networks";
-import { useAppNavigation } from "../../../utils/navigation";
 import { DEFAULT_USERNAME } from "../../../utils/social-feed";
 import { fontSemibold20 } from "../../../utils/style/fonts";
 import {
@@ -46,7 +41,13 @@ import {
   screenContentMaxWidth,
 } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
-import { OnPressReplyType } from "../FeedPostViewScreen";
+import {
+  OnPressReplyType,
+  PostCategory,
+  ReplyToType,
+} from "../../../utils/types/feed";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export const FeedPostDefaultView: FC<{
   networkId: string;

@@ -1,4 +1,5 @@
-import { Middleware, combineReducers, configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore, Middleware } from "@reduxjs/toolkit";
+import { Platform } from "react-native";
 import { useDispatch } from "react-redux";
 import {
   persistStore,
@@ -24,7 +25,11 @@ import {
   settingsReducer,
 } from "./slices/settings";
 import { squadPresetsReducer } from "./slices/squadPresets";
-import { walletsReducer } from "./slices/wallets";
+import {
+  addressBookReducer,
+  tokensReducer,
+  walletsReducer,
+} from "./slices/wallets";
 import { storage } from "./storage";
 import { defaultEnabledNetworks } from "../networks";
 import { bootWeshModule } from "../weshnet/services";
@@ -73,6 +78,15 @@ const migrations = {
       ...state,
       settings: {
         ...state.settings,
+        appMode: Platform.OS === "web" ? "normal" : "mini",
+      },
+    };
+  },
+  4: (state: any) => {
+    return {
+      ...state,
+      settings: {
+        ...state.settings,
         developerMode: false,
       },
     };
@@ -82,10 +96,11 @@ const migrations = {
 const persistConfig = {
   key: "root",
   storage,
-  version: 3,
+  version: 4,
   migrate: createMigrate(migrations, { debug: false }),
   whitelist: [
     "wallets",
+    "addressBook",
     "settings",
     "dAppsStorePersisted",
     "squadPresets",
@@ -99,6 +114,8 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   wallets: walletsReducer,
+  addressBook: addressBookReducer,
+  tokens: tokensReducer,
   settings: settingsReducer,
   squadPresets: squadPresetsReducer,
   dAppsStorePersisted: dAppsReducerPersisted,

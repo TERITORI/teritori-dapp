@@ -8,7 +8,6 @@ import {
   setShowCart,
 } from "../../../store/slices/marketplaceCartItems";
 import { useAppDispatch } from "../../../store/store";
-import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
   neutral17,
@@ -19,6 +18,8 @@ import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { LegacyTertiaryBox } from "../../boxes/LegacyTertiaryBox";
 import { SpacerRow } from "../../spacer";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export const CartIconButtonBadge: React.FC<{
   style?: StyleProp<ViewStyle>;
