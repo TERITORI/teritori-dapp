@@ -286,7 +286,6 @@ export const FeedPostVideoView: FC<{
                 videoMetadata={video}
                 style={{
                   aspectRatio: 1.7,
-                  // height: 540,
                   width: viewWidth - 2,
                   borderRadius: SOCIAl_CARD_BORDER_RADIUS,
                 }}
@@ -413,9 +412,6 @@ export const FeedPostVideoView: FC<{
                         : INPUT_MIN_HEIGHT,
                       width: "100%",
                       color: secondaryColor,
-                      //@ts-ignore
-                      outlineStyle: "none",
-                      outlineWidth: 0,
                     },
                   ]}
                 />

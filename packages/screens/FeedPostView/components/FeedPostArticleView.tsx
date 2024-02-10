@@ -59,7 +59,7 @@ import {
   screenContentMaxWidth,
 } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
-import { OnPressReplyType } from "../FeedPostViewScreen";
+import { OnPressReplyType } from "../FeedPostView";
 
 const contentPaddingHorizontal = layout.spacing_x2;
 

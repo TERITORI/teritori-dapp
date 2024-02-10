@@ -10,8 +10,10 @@ import {
   combineFetchFeedPages,
   useFetchFeed,
 } from "../../hooks/feed/useFetchFeed";
+import { useAppMode } from "../../hooks/useAppMode";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature } from "../../networks";
+import { Spinner } from "../../screens/Mini/Feed/components/Spinner";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -27,6 +29,7 @@ export const FeedVideosList: React.FC<{
   allowUpload?: boolean;
   style?: StyleProp<ViewStyle>;
 }> = ({ title, req, allowUpload, style }) => {
+  const [appMode] = useAppMode();
   const selectedWallet = useSelectedWallet();
   const { showConnectWalletModal } = useWalletControl();
   const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
@@ -66,7 +69,25 @@ export const FeedVideosList: React.FC<{
   };
 
   if (!data && (isLoading || isFetching))
-    return <View style={{ minWidth: minCardWidth }} />;
+    return (
+      <View
+        style={{
+          minWidth: minCardWidth,
+        }}
+      >
+        {appMode === "mini" && (
+          <View
+            style={{
+              alignItems: "center",
+              marginVertical: layout.spacing_x1_5,
+            }}
+          >
+            <Spinner />
+          </View>
+        )}
+      </View>
+    );
+
   return (
     <View style={[containerCStyle, style]}>
       <View style={oneLineCStyle}>
