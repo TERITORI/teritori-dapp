@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   View,
   KeyboardAvoidingView,
@@ -33,14 +33,6 @@ export const RichText: React.FC<RichTextProps> = ({
   const [appMode] = useAppMode();
   const [initialHeight, setInitialHeight] = useState(windowHeight);
 
-  const initialHTML = useMemo(() => {
-    const pattern = /src="(?!ipfs:\/\/)([^\\"]+)"/g;
-    const replacement = 'src="ipfs://$1"';
-    const addedIPFShtml = initialValue.replace(pattern, replacement);
-
-    return addedIPFShtml.replaceAll("ipfs://", "https://ipfs.io/ipfs/");
-  }, [initialValue]);
-
   const handleHeightChange = useCallback((height: number) => {
     setInitialHeight(height * 2);
   }, []);
@@ -52,7 +44,7 @@ export const RichText: React.FC<RichTextProps> = ({
         style={{ flex: 1, minHeight: initialHeight }}
       >
         <RichEditor
-          initialContentHTML={initialHTML}
+          initialContentHTML={initialValue}
           ref={richText}
           onChange={onChange}
           onBlur={onBlur}
