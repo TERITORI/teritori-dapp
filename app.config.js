@@ -24,6 +24,8 @@ const config = {
         NSBluetoothAlwaysUsageDescription: "Used for Bluetooth communications",
         NSBluetoothPeripheralUsageDescription:
           "Used for Bluetooth communications",
+        NSPhotoLibraryUsageDescription:
+          "Access to your photo library is required for image upload functionality.",
         ITSAppUsesNonExemptEncryption: false,
       },
     },
