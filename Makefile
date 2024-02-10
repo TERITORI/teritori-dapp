@@ -43,8 +43,6 @@ go-mod-tidy:
 	cd electron && go mod tidy
 
 .PHONY: generate
-
-.PHONY: generate
 generate: generate.protobuf generate.graphql generate.contracts-clients generate.go-networks networks.json
 
 .PHONY: generate.protobuf
@@ -94,7 +92,7 @@ generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(
 
 .PHONY: generate.go-networks
 generate.go-networks: node_modules validate-networks
-	npx tsx packages/scripts/generateGoNetworks.ts | gofmt > go/pkg/networks/networks.gen.go
+	yarn validate-networks
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE): node_modules
