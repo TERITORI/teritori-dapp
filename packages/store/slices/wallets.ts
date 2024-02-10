@@ -16,14 +16,14 @@ export interface StoreWallet {
   networkId: string;
 }
 
-export interface AddressBookEntry {
+interface AddressBookEntry {
   id: number;
   address: string;
   name: string;
   networkId: string;
 }
 
-export interface TokenEntry {
+interface TokenEntry {
   denom: string;
   enabled: boolean;
   networkId: string;
@@ -95,9 +95,6 @@ export const selectAllAddressBook = (state: RootState) =>
   addressSelectors.selectAll(state.addressBook);
 export const selectAddressBookById = (state: RootState, id: EntityId) =>
   addressSelectors.selectById(state.addressBook, id);
-// tokens
-export const selectAllTokens = (state: RootState) =>
-  tokenSelectors.selectAll(state.tokens);
 export const selectTokenId = (state: RootState, id: EntityId) =>
   tokenSelectors.selectById(state.tokens, id);
 
@@ -106,10 +103,6 @@ export const addressBookReducer = addressBookSlice.reducer;
 export const tokensReducer = tokensSlice.reducer;
 export const { addEntry, removeEntry, resetAllAddressBook } =
   addressBookSlice.actions;
-export const {
-  addSelected,
-  resetAllWallets,
-  setSelectedNativeWalletIndex,
-  removeSelected,
-} = walletsSlice.actions;
-export const { updateOne, removeToken, resetAllTokens } = tokensSlice.actions;
+export const { addSelected, resetAllWallets, setSelectedNativeWalletIndex } =
+  walletsSlice.actions;
+export const { updateOne, resetAllTokens } = tokensSlice.actions;

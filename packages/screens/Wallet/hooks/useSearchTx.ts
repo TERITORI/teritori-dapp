@@ -34,7 +34,7 @@ export const useSearchTx = (
   };
 };
 
-export const getLastFiveTransactions = async (
+const getLastFiveTransactions = async (
   network: NetworkInfo,
   address: string,
 ) => {

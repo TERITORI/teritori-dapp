@@ -3,9 +3,8 @@ import {
   CoinDenom,
   Exponent,
   getExponentByDenom as _getExponentByDenom,
-  getIbcAssetPath,
 } from "@chain-registry/utils";
-import { assets, ibc } from "chain-registry";
+import { assets } from "chain-registry";
 
 import { useBalances } from "../../../hooks/useBalances";
 
@@ -39,13 +38,4 @@ export const useGetAssets = (
 
 export const getExponentByDenom = (denom: CoinDenom): Exponent => {
   return _getExponentByDenom(assets, denom, "teritori");
-};
-
-// get ibc channel
-export const getIbcChannel = (
-  denom: CoinDenom,
-  source: string,
-  target: string,
-) => {
-  return getIbcAssetPath(ibc, source, target, assets, denom);
 };

@@ -4809,53 +4809,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/devices@npm:^8.2.0":
-  version: 8.2.0
-  resolution: "@ledgerhq/devices@npm:8.2.0"
-  dependencies:
-    "@ledgerhq/errors": ^6.16.1
-    "@ledgerhq/logs": ^6.12.0
-    rxjs: ^7.8.1
-    semver: ^7.3.5
-  checksum: 5232c4ba8c428a7e44c32198eacc7f14c188f5d50dd34322c92cfb45bb015265c845099a1814fc53c9c8f99b5306eba93b8db835d65ad7cfa8f2bed25acc202c
-  languageName: node
-  linkType: hard
-
 "@ledgerhq/errors@npm:^5.50.0":
   version: 5.50.0
   resolution: "@ledgerhq/errors@npm:5.50.0"
   checksum: 2933e85f5a3768bfb303ba08b759e01f3de9bfc6d1a18b4b0f9353bb16cfbac302a5e6f683867056d3a4d9897ec8c2656c268662338e881df27315936809084d
-  languageName: node
-  linkType: hard
-
-"@ledgerhq/errors@npm:^6.16.1":
-  version: 6.16.1
-  resolution: "@ledgerhq/errors@npm:6.16.1"
-  checksum: 6bbcedee7103d8aa878a7e84e4824796e1505ef32013e1e98679827a72696d01da897adb95a996ad30fa120bf126b98d68107870001b950a55bf9af4372f42af
-  languageName: node
-  linkType: hard
-
-"@ledgerhq/hw-transport-webhid@npm:^6.28.1":
-  version: 6.28.2
-  resolution: "@ledgerhq/hw-transport-webhid@npm:6.28.2"
-  dependencies:
-    "@ledgerhq/devices": ^8.2.0
-    "@ledgerhq/errors": ^6.16.1
-    "@ledgerhq/hw-transport": ^6.30.2
-    "@ledgerhq/logs": ^6.12.0
-  checksum: 669db7eff691ec811e1c7d45ebf23b2767bd870d9a4a25fd787b4a565e296830cd6cc7adabed1a65e16e438bc1b7d1879003698d80fbae8e5b5715f7195aa30d
-  languageName: node
-  linkType: hard
-
-"@ledgerhq/hw-transport-webusb@npm:^6.28.1":
-  version: 6.28.2
-  resolution: "@ledgerhq/hw-transport-webusb@npm:6.28.2"
-  dependencies:
-    "@ledgerhq/devices": ^8.2.0
-    "@ledgerhq/errors": ^6.16.1
-    "@ledgerhq/hw-transport": ^6.30.2
-    "@ledgerhq/logs": ^6.12.0
-  checksum: 116982e3a7e65a769d22fda1100eead853e6a7403dd36c8d1f88c0dc0f8ced0574afead35294b8332bc281e74f02ea69851a220aaf56fe6a0ba0e59e4ea0faaa
   languageName: node
   linkType: hard
 
@@ -4870,29 +4827,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/hw-transport@npm:^6.30.2":
-  version: 6.30.2
-  resolution: "@ledgerhq/hw-transport@npm:6.30.2"
-  dependencies:
-    "@ledgerhq/devices": ^8.2.0
-    "@ledgerhq/errors": ^6.16.1
-    "@ledgerhq/logs": ^6.12.0
-    events: ^3.3.0
-  checksum: 5bfaa9c939408b1d2033884c45b08d56e98318442d3bad82bb2e291fdea570eaa1be79efd646e6a5b2093115576068ef25ff9436156ed7b0b7b1224c2632c0da
-  languageName: node
-  linkType: hard
-
 "@ledgerhq/logs@npm:^5.50.0":
   version: 5.50.0
   resolution: "@ledgerhq/logs@npm:5.50.0"
   checksum: ad2e2f0f52ef2c921ccd19e4e65911d661fe625880f9358dc7cde5375d2a3fbc30bc0af6f1d219887878366e814e05b5008e924bfcabf35880c927909dd20b83
-  languageName: node
-  linkType: hard
-
-"@ledgerhq/logs@npm:^6.12.0":
-  version: 6.12.0
-  resolution: "@ledgerhq/logs@npm:6.12.0"
-  checksum: 53fb9ceaf26b2a9fd6e7639b19119f4fef2f814d465fdd910e69c9486dce78137a1790e24f019a03bfabc87e19b2e6683f4da93a7fd203a61117a709fdf6484c
   languageName: node
   linkType: hard
 
@@ -19076,8 +19014,6 @@ __metadata:
     "@improbable-eng/grpc-web-react-native-transport": ^0.15.0
     "@inline-svg-unique-id/react": ^1.2.3
     "@keplr-wallet/types": ^0.12.63
-    "@ledgerhq/hw-transport-webhid": ^6.28.1
-    "@ledgerhq/hw-transport-webusb": ^6.28.1
     "@lottiefiles/react-lottie-player": ^3.5.3
     "@metamask/detect-provider": ^2.0.0
     "@nandorojo/anchor": ^0.3.1
