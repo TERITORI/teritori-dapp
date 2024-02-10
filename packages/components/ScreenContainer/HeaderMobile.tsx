@@ -71,7 +71,7 @@ export const HeaderMobile: FC<{
             if (Platform.OS === "web") {
               toggleSidebar();
             } else {
-              //@ts-ignore
+              // @ts-expect-error: description todo
               navigation.openDrawer();
             }
           }}

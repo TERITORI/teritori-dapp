@@ -84,7 +84,7 @@ const Item = ({ title, icon, route, value, onClick }: ItemProps) => {
 
   const onNavigateToRoute = () => {
     if (route) {
-      //@ts-expect-error
+      // @ts-expect-error: description todo
       navigation.navigate(route);
       return;
     }

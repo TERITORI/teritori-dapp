@@ -508,7 +508,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                   if (
                     Platform.OS === "web" &&
                     e.nativeEvent.key === "Enter" &&
-                    //@ts-ignore
+                    // @ts-expect-error: description todo
                     !e?.shiftKey
                   ) {
                     e.preventDefault();

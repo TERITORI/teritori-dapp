@@ -31,7 +31,7 @@ export const SettingItem: React.FC<{
           ) : null}
         </View>
         <Switch
-          // @ts-expect-error
+          // @ts-expect-error: description todo
           activeThumbColor={primaryColor}
           thumbColor={item.state ? primaryColor : neutral55}
           trackColor={{ true: secondaryColor, false: neutralA3 }}

@@ -74,13 +74,13 @@ export const useSwap = (
     lcdPools?.pools.forEach((pool) => {
       // @ts-expect-error FIXME: We get LcdPool with properties with underscore. Prevent errors in makeLcdPoolPretty
       if (pool.pool_assets) pool.poolAssets = pool.pool_assets;
-      // @ts-expect-error
+      // @ts-expect-error: description todo
       if (pool.total_weight) pool.totalWeight = pool.total_weight;
-      // @ts-expect-error
+      // @ts-expect-error: description todo
       if (pool.pool_params) pool.poolParams = pool.pool_params;
-      // @ts-expect-error
+      // @ts-expect-error: description todo
       if (pool.pool_params.swap_fee)
-        // @ts-expect-error
+        // @ts-expect-error: description todo
         pool.poolParams.swapFee = pool.pool_params.swap_fee;
       //TODO: Get "/osmosis.gamm.v1beta1.Pool" from libs
       if (pool["@type"] !== "/osmosis.gamm.v1beta1.Pool") return;
