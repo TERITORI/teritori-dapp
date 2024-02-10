@@ -34,9 +34,6 @@
     "electron-store",
     "redux-persist-electron-storage",
     "@axelar-network/axelarjs-types",
-    "@cosmjs/crypto",
-    "@cosmjs/ledger-amino",
-    "@ledgerhq/hw-transport",
     "@react-native-clipboard/clipboard",
     "react-native-fs"
   ],
