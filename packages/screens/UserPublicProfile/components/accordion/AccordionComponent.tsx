@@ -6,7 +6,6 @@ import { layout } from "../../../../utils/style/layout";
 
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { neutral22, neutral33 } from "@/utils/style/colors";
-import { LocalFileData } from "@/utils/types/files";
 import { LocalMembershipConfig } from "@/utils/types/premiumFeed";
 
 interface AccordionProps {
@@ -28,7 +27,6 @@ export const AccordionComponent: FC<AccordionProps> = ({
   tierIndex,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [files, setFiles] = useState<LocalFileData[]>([]);
 
   const handleChangeTier = useCallback(
     (cb: (oldTier: LocalMembershipConfig) => LocalMembershipConfig) =>
@@ -48,6 +46,7 @@ export const AccordionComponent: FC<AccordionProps> = ({
     >
       <AccordionTopComponent
         isOpen={isOpen}
+        networkId={networkId}
         setIsOpen={setIsOpen}
         tier={tier}
         tierIndex={tierIndex}
@@ -61,8 +60,6 @@ export const AccordionComponent: FC<AccordionProps> = ({
           tier={tier}
           tierIndex={tierIndex}
           onChangeTier={handleChangeTier}
-          image={files.length > 0 ? URL.createObjectURL(files[0].file) : ""}
-          setFiles={setFiles}
         />
       )}
     </PrimaryBox>

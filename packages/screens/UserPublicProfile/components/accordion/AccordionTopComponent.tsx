@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 
@@ -11,8 +12,9 @@ import { OptimizedImage } from "@/components/OptimizedImage";
 import { SVG } from "@/components/SVG";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "@/components/inputs/TextInputOutsideLabel";
+import { prettyPrice } from "@/utils/coins";
 import { neutral77, neutralA3, secondaryColor } from "@/utils/style/colors";
-import { fontSemibold16 } from "@/utils/style/fonts";
+import { fontSemibold14, fontSemibold16 } from "@/utils/style/fonts";
 import {
   LocalMembershipConfig,
   SubscriptionFormValues,
@@ -21,6 +23,7 @@ import {
 interface AccordionTopProps {
   isOpen: boolean;
   setIsOpen: (item: boolean) => void;
+  networkId: string;
   tier: LocalMembershipConfig;
   tierIndex: number;
   onChangeTier: (
@@ -31,6 +34,7 @@ interface AccordionTopProps {
 export const AccordionTopComponent = ({
   isOpen,
   setIsOpen,
+  networkId,
   tier,
   tierIndex,
   onChangeTier,
@@ -105,6 +109,7 @@ export const AccordionTopComponent = ({
             sourceURI={tier.nft_image_uri}
             fallbackURI={defaultTierImage}
             style={{
+              backgroundColor: "black",
               height: 48,
               width: 48,
               borderRadius: 8,
@@ -112,14 +117,31 @@ export const AccordionTopComponent = ({
             height={48}
             width={48}
           />
-          <BrandText
-            style={[
-              fontSemibold16,
-              { color: secondaryColor, marginLeft: layout.spacing_x1 },
-            ]}
-          >
-            {tier.display_name}
-          </BrandText>
+          <View style={{ justifyContent: "space-between", height: "100%" }}>
+            <BrandText
+              style={[
+                fontSemibold16,
+                { color: secondaryColor, marginLeft: layout.spacing_x1 },
+              ]}
+            >
+              {tier.display_name || "Untitled"}
+            </BrandText>
+            <BrandText
+              style={[
+                fontSemibold14,
+                { color: neutral77, marginLeft: layout.spacing_x1 },
+              ]}
+            >
+              {!!tier.price &&
+                prettyPrice(
+                  networkId,
+                  tier.price.amount,
+                  tier.price.denom,
+                )}{" "}
+              {!!tier.duration_seconds &&
+                `for ${moment.duration(tier.duration_seconds, "seconds").humanize()}`}
+            </BrandText>
+          </View>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <SVG

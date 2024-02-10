@@ -16,6 +16,7 @@ export enum NetworkFeature {
 type CosmWasmPremiumFeed = {
   type: NetworkFeature.CosmWasmPremiumFeed;
   membershipContractAddress: string;
+  mintDenom: string;
 };
 
 type CosmWasmSocialFeed = {

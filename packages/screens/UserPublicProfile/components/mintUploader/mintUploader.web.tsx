@@ -1,11 +1,12 @@
 import React, { FC, SyntheticEvent, useRef, useState } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { ImageStyle, StyleProp, TouchableOpacity, View } from "react-native";
 
 import picSVG from "../../../../../assets/icons/pic.svg";
 import uploadSVG from "../../../../../assets/icons/upload.svg";
 
 import { BrandText } from "@/components/BrandText";
 import { DeleteButton } from "@/components/FilePreview/DeleteButton";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import { SVG } from "@/components/SVG";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { FileUploaderProps } from "@/components/fileUploader/FileUploader.type";
@@ -22,7 +23,11 @@ import {
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-export const MintUploader: FC<FileUploaderProps> = ({
+type MintUploaderProps = Omit<FileUploaderProps, "fileImageStyle"> & {
+  fileImageStyle?: StyleProp<ImageStyle>;
+};
+
+export const MintUploader: FC<MintUploaderProps> = ({
   defaultFile,
   style,
   fileImageStyle,
@@ -94,7 +99,7 @@ export const MintUploader: FC<FileUploaderProps> = ({
     ev.preventDefault();
   };
 
-  const InputComponent = (
+  const inputElem = (
     <input
       type="file"
       ref={hiddenFileInput}
@@ -108,7 +113,7 @@ export const MintUploader: FC<FileUploaderProps> = ({
     return (
       <>
         {children({ onPress: handleClick })}
-        {InputComponent}
+        {inputElem}
       </>
     );
   }
@@ -138,16 +143,20 @@ export const MintUploader: FC<FileUploaderProps> = ({
                   }}
                   style={{ top: 12, right: 12 }}
                 />
-                <img
-                  src={file}
-                  style={{
-                    overflow: "hidden",
-                    height: 256,
-                    backgroundSize: "cover",
-                    width: "auto",
-                    objectFit: "fill",
-                    ...fileImageStyle,
-                  }}
+                <OptimizedImage
+                  sourceURI={file}
+                  width={250}
+                  height={250}
+                  style={[
+                    {
+                      backgroundColor: "black",
+                      borderRadius: 8,
+                      resizeMode: "cover",
+                      height: 256,
+                      width: 256,
+                    },
+                    fileImageStyle,
+                  ]}
                   alt="Uploaded file"
                 />
               </>
@@ -242,7 +251,7 @@ export const MintUploader: FC<FileUploaderProps> = ({
           </div>
         </TouchableOpacity>
       </View>
-      {InputComponent}
+      {inputElem}
     </>
   );
 };

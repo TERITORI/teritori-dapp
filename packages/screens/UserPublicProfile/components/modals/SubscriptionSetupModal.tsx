@@ -9,7 +9,7 @@ import settingsSVG from "@/assets/icons/settings-primary.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
-import RoundedModalBase from "@/components/modals/RoundedModalBase";
+import ModalBase from "@/components/modals/ModalBase";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
@@ -84,7 +84,7 @@ export const SubscriptionSetupModal: React.FC<{
   }
 
   return (
-    <RoundedModalBase
+    <ModalBase
       visible={isVisible}
       onClose={onClose}
       width={457}
@@ -215,7 +215,7 @@ export const SubscriptionSetupModal: React.FC<{
                   duration_seconds: t.duration_seconds,
                   nft_image_uri: t.nft_image_uri || "",
                   nft_name_prefix: "Sub",
-                  trade_royalties: 0,
+                  trade_royalties: 80,
                 };
                 return vt;
               });
@@ -228,15 +228,13 @@ export const SubscriptionSetupModal: React.FC<{
                 premiumFeedFeature.membershipContractAddress,
               );
 
-              if (channel === null) {
-                await client.upsertChannel({
-                  membershipsConfig: validatedTiers,
-                });
-              }
+              await client.upsertChannel({
+                membershipsConfig: validatedTiers,
+              });
             })}
           />
         </PrimaryBox>
       </View>
-    </RoundedModalBase>
+    </ModalBase>
   );
 };

@@ -1,3 +1,4 @@
+import { Decimal } from "@cosmjs/math";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { View, TouchableOpacity } from "react-native";
@@ -6,6 +7,13 @@ import trashSVG from "@/assets/icons/trash.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useIpfs } from "@/hooks/useIpfs";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import {
+  NetworkFeature,
+  getNativeCurrency,
+  getNetworkFeature,
+} from "@/networks";
 import { TextInputSubscriptionDuration } from "@/screens/UserPublicProfile/components/inputs/TextInputSubscriptionDuration";
 import { TextInputSubscriptionMultiline } from "@/screens/UserPublicProfile/components/inputs/TextInputSubscriptionMultiline";
 import { TextInputSubscriptionPrice } from "@/screens/UserPublicProfile/components/inputs/TextInputSubscriptionPrice";
@@ -18,7 +26,6 @@ import {
 import { errorColor } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { LocalFileData } from "@/utils/types/files";
 import {
   LocalMembershipConfig,
   SubscriptionFormValues,
@@ -26,33 +33,40 @@ import {
 
 interface AccordionBottomProps {
   networkId: string;
-  image: string;
   tier: LocalMembershipConfig;
   tierIndex: number;
   onChangeTier: (
     cb: (oldTier: LocalMembershipConfig) => LocalMembershipConfig,
   ) => void;
-  setFiles: (files: LocalFileData[]) => void;
   onRemoveItem: () => void;
 }
 
 export const AccordionBottomComponent = ({
   networkId,
   onRemoveItem,
-  setFiles,
   tierIndex,
   tier,
   onChangeTier,
-  image,
 }: AccordionBottomProps) => {
   const { control, watch, setValue } = useForm<SubscriptionFormValues>({
     defaultValues: [],
     mode: "onBlur",
   });
+  const selectedWallet = useSelectedWallet();
+  const { uploadToIPFS } = useIpfs();
+
+  const priceKey = `${tierIndex}.price` as const;
 
   useEffect(() => {
     if (tier.price !== undefined) {
-      setValue(`${tierIndex}.price`, tier.price.amount);
+      const currency = getNativeCurrency(networkId, tier.price.denom);
+      if (currency) {
+        const userValue = Decimal.fromAtomics(
+          tier.price.amount,
+          currency.decimals,
+        ).toString();
+        setValue(priceKey, userValue);
+      }
     }
     if (tier.duration_seconds !== undefined) {
       setValue(
@@ -63,22 +77,50 @@ export const AccordionBottomComponent = ({
     if (tier.description !== undefined) {
       setValue(`${tierIndex}.description`, tier.description);
     }
-  }, [tier, setValue, tierIndex]);
+  }, [networkId, priceKey, setValue, tier, tierIndex]);
 
-  const priceKey = `${tierIndex}.price` as const;
+  const config = getNetworkFeature(
+    networkId,
+    NetworkFeature.CosmWasmPremiumFeed,
+  );
+  const tierPriceDenom = tier.price?.denom || config?.mintDenom;
+  const price = watch(priceKey);
 
   useEffect(() => {
     onChangeTier((tier) => {
-      const inputAmount = watch(priceKey, tier.price?.amount || "0");
-      const newTier = {
-        ...tier,
-        price: { amount: inputAmount, denom: tier.price?.denom || "utori" },
-      };
-      return newTier;
+      try {
+        if (!price) {
+          throw new Error("No price");
+        }
+        const config = getNetworkFeature(
+          networkId,
+          NetworkFeature.CosmWasmPremiumFeed,
+        );
+        if (!config) {
+          throw new Error("This network does not support premium feed");
+        }
+        const tierPriceDenom = tier.price?.denom || config.mintDenom;
+        console.log("setting price amount", price, "for tier", tier);
+        const currency = getNativeCurrency(networkId, tierPriceDenom);
+        if (!currency) {
+          return tier;
+        }
+        const atomics = Decimal.fromUserInput(
+          price,
+          currency?.decimals,
+        ).atomics;
+        const newTier = {
+          ...tier,
+          price: { amount: atomics, denom: tierPriceDenom },
+        };
+        return newTier;
+      } catch {
+        const newTier = { ...tier, price: undefined };
+        return newTier;
+      }
     });
-  }, [onChangeTier, watch, priceKey]);
+  }, [networkId, onChangeTier, price]);
 
-  const tierPriceDenom = tier.price?.denom || "utori"; // FIXME: hardcoded denom
   // const tierPriceAmount = tier.price?.amount || "0";
 
   return (
@@ -92,10 +134,21 @@ export const AccordionBottomComponent = ({
           height: ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT,
           maxWidth: ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH,
         }}
-        onUpload={(files) =>
-          files.length > 0 ? setFiles([files?.[0]]) : setFiles([])
-        }
-        defaultFile={image}
+        onUpload={async (files) => {
+          if (files.length !== 1) {
+            throw new Error("Only one file is allowed");
+          }
+          if (!selectedWallet) {
+            throw new Error("No wallet selected");
+          }
+          const file = files[0];
+          const web3URI = await uploadToIPFS(selectedWallet.userId, file);
+          onChangeTier((tier) => {
+            const newTier = { ...tier, nft_image_uri: web3URI };
+            return newTier;
+          });
+        }}
+        defaultFile={tier.nft_image_uri}
         mimeTypes={IMAGE_MIME_TYPES}
       />
 
@@ -105,7 +158,7 @@ export const AccordionBottomComponent = ({
         label="Price"
         placeHolder="9.99"
         networkId={networkId}
-        denom={tierPriceDenom}
+        denom={tierPriceDenom || ""}
         control={control}
         name={priceKey}
       />

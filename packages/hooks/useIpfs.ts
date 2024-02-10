@@ -2,8 +2,13 @@ import axios from "axios";
 import { omit } from "lodash";
 import { CID } from "multiformats";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 import { LocalFileData, RemoteFileData } from "../utils/types/files";
+
+import { parseUserId } from "@/networks";
+import { selectNFTStorageAPI } from "@/store/slices/settings";
+import { generateIpfsKey } from "@/utils/ipfs";
 
 interface UploadPostFilesToPinataParams {
   files: LocalFileData[];
@@ -119,6 +124,28 @@ export const useIpfs = () => {
     return await Promise.all(queries);
   };
 
+  const userIPFSKey = useSelector(selectNFTStorageAPI);
+
+  const uploadToIPFS = async (userId: string, file: LocalFileData) => {
+    const [network] = parseUserId(userId);
+    if (!network) {
+      throw new Error("Invalid user id");
+    }
+    const pinataJWTKey =
+      userIPFSKey || (await generateIpfsKey(network.id, userId));
+    if (!pinataJWTKey) {
+      throw new Error("Failed to get upload key");
+    }
+    const fileIpfsHash = await pinataPinFileToIPFS({
+      file,
+      pinataJWTKey,
+    });
+    if (!fileIpfsHash) {
+      throw new Error("Failed to pin file");
+    }
+    return "ipfs://" + fileIpfsHash;
+  };
+
   const finalProgress = !ipfsUploadProgresses.length
     ? 0
     : ipfsUploadProgresses.reduce(
@@ -127,6 +154,7 @@ export const useIpfs = () => {
       ) / ipfsUploadProgresses.length;
 
   return {
+    uploadToIPFS,
     uploadFilesToPinata,
     pinataPinFileToIPFS,
     ipfsUploadProgress: finalProgress,
