@@ -293,7 +293,9 @@ networks.json: node_modules validate-networks
 
 .PHONY: unused-exports
 unused-exports: node_modules
-	 yarn unused-exports
+	## TODO unexclude all paths except packages/api;packages/contracts-clients;packages/evm-contracts-clients
+	yarn unused-exports
+
 .PHONY: prepare-electron
 prepare-electron: node_modules
 	yarn rimraf ./dist
