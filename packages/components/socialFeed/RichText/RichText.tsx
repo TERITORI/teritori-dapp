@@ -14,7 +14,7 @@ import {
 import { RichTextProps } from "./RichText.type";
 import { ActionsContainer } from "./Toolbar/ActionsContainer";
 import { ToolbarContainer } from "./Toolbar/ToolbarContainer";
-import { useAppType } from "../../../hooks/useAppType";
+import { useAppMode } from "../../../hooks/useAppMode";
 import { SOCIAL_FEED_BREAKPOINT_M } from "../../../utils/style/layout";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SpacerColumn, SpacerRow } from "../../spacer";
@@ -30,7 +30,7 @@ export const RichText: React.FC<RichTextProps> = ({
 }) => {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const richText = useRef(null);
-  const [apptype] = useAppType();
+  const [appMode] = useAppMode();
   const [initialHeight, setInitialHeight] = useState(windowHeight);
 
   const initialHTML = useMemo(() => {
@@ -59,7 +59,7 @@ export const RichText: React.FC<RichTextProps> = ({
           onHeightChange={handleHeightChange}
           containerStyle={{ minHeight: initialHeight }}
           editorStyle={
-            apptype === "mini"
+            appMode === "mini"
               ? {
                   backgroundColor: "#000",
                   color: "#fff",

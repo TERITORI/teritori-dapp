@@ -10,7 +10,7 @@ import {
   combineFetchFeedPages,
   useFetchFeed,
 } from "../../hooks/feed/useFetchFeed";
-import { useAppType } from "../../hooks/useAppType";
+import { useAppMode } from "../../hooks/useAppMode";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature } from "../../networks";
 import { Spinner } from "../../screens/Mini/Feed/components/Spinner";
@@ -29,7 +29,7 @@ export const FeedVideosList: React.FC<{
   allowUpload?: boolean;
   style?: StyleProp<ViewStyle>;
 }> = ({ title, req, allowUpload, style }) => {
-  const [appType] = useAppType();
+  const [appMode] = useAppMode();
   const selectedWallet = useSelectedWallet();
   const { showConnectWalletModal } = useWalletControl();
   const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
@@ -75,7 +75,7 @@ export const FeedVideosList: React.FC<{
           minWidth: minCardWidth,
         }}
       >
-        {appType === "mini" && (
+        {appMode === "mini" && (
           <View
             style={{
               alignItems: "center",

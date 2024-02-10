@@ -15,7 +15,7 @@ import {
   combineFetchFeedPages,
   useFetchFeed,
 } from "../../hooks/feed/useFetchFeed";
-import { useAppType } from "../../hooks/useAppType";
+import { useAppMode } from "../../hooks/useAppMode";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature } from "../../networks";
 import { Spinner } from "../../screens/Mini/Feed/components/Spinner";
@@ -33,7 +33,7 @@ export const FeedMusicList: React.FC<{
   allowUpload?: boolean;
   style?: StyleProp<ViewStyle>;
 }> = ({ title, authorId, allowUpload, style }) => {
-  const [appType] = useAppType();
+  const [appMode] = useAppMode();
   const selectedWallet = useSelectedWallet();
   const { showConnectWalletModal } = useWalletControl();
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
@@ -87,7 +87,7 @@ export const FeedMusicList: React.FC<{
   if (!data && (isLoading || isFetching))
     return (
       <View style={[{ minWidth: minCardWidth }, style]}>
-        {appType === "mini" && (
+        {appMode === "mini" && (
           <View
             style={{
               alignItems: "center",

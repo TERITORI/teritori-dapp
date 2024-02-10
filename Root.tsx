@@ -37,7 +37,7 @@ import {
   useWallets,
   WalletsProvider,
 } from "./packages/context/WalletsProvider";
-import { useAppType } from "./packages/hooks/useAppType";
+import { useAppMode } from "./packages/hooks/useAppMode";
 import { useSelectedNetworkId } from "./packages/hooks/useSelectedNetwork";
 import useSelectedWallet from "./packages/hooks/useSelectedWallet";
 import { getAvailableApps } from "./packages/screens/DAppStore/query/getFromFile";
@@ -71,7 +71,7 @@ export default function App() {
     Exo_600SemiBold,
     Exo_700Bold,
   });
-  const [appType] = useAppType();
+  const [appMode] = useAppMode();
 
   // FIXME: Fonts don't load on electron
   if (isElectron() && !fontsLoaded) {
@@ -114,7 +114,7 @@ export default function App() {
                                         <MessageContextProvider>
                                           <MediaPlayerContextProvider>
                                             <StatusBar style="inverted" />
-                                            {appType === "mini" &&
+                                            {appMode === "mini" &&
                                             Platform.OS !== "web" ? (
                                               <MiniNavigator />
                                             ) : (

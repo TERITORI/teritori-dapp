@@ -10,7 +10,7 @@ import {
 } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { DateTime } from "../../../components/socialFeed/SocialCard/DateTime";
 import { SpacerRow } from "../../../components/spacer";
-import { useAppType } from "../../../hooks/useAppType";
+import { useAppMode } from "../../../hooks/useAppMode";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { parseUserId } from "../../../networks";
 import { zodTryParseJSON } from "../../../utils/sanitize";
@@ -22,7 +22,7 @@ import { tinyAddress } from "../../../utils/text";
 export const VideoComment: FC<{
   comment: PostExtra;
 }> = ({ comment }) => {
-  const [appType] = useAppType();
+  const [appMode] = useAppMode();
   const { width: windowWidth } = useWindowDimensions();
   const metadata = zodTryParseJSON(ZodSocialFeedPostMetadata, comment.metadata);
   const authorNSInfo = useNSUserInfo(comment.authorId);
@@ -42,7 +42,7 @@ export const VideoComment: FC<{
         }}
       >
         <OmniLink
-          disabled={appType === "mini"}
+          disabled={appMode === "mini"}
           to={{
             screen: "UserPublicProfile",
             params: { id: comment.authorId },
@@ -58,7 +58,7 @@ export const VideoComment: FC<{
         <View style={{ flex: 1 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <OmniLink
-              disabled={appType === "mini"}
+              disabled={appMode === "mini"}
               to={{
                 screen: "UserPublicProfile",
                 params: { id: comment.authorId },

@@ -20,7 +20,7 @@ import videoSVG from "../../../../assets/icons/video.svg";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useWalletControl } from "../../../context/WalletControlProvider";
 import { useFeedPosting } from "../../../hooks/feed/useFeedPosting";
-import { useAppType } from "../../../hooks/useAppType";
+import { useAppMode } from "../../../hooks/useAppMode";
 import { useIpfs } from "../../../hooks/useIpfs";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
@@ -127,7 +127,7 @@ export const NewsFeedInput = React.forwardRef<
     },
     forwardRef,
   ) => {
-    const [appType] = useAppType();
+    const [appMode] = useAppMode();
     const { width: windowWidth } = useWindowDimensions();
     const { width } = useMaxResolution();
     const isMobile = useIsMobile();
@@ -332,7 +332,7 @@ export const NewsFeedInput = React.forwardRef<
             zIndex: 9,
           }}
           mainContainerStyle={{
-            backgroundColor: appType === "mini" ? neutral00 : neutral22,
+            backgroundColor: appMode === "mini" ? neutral00 : neutral22,
           }}
           noRightBrokenBorder
         >
@@ -455,7 +455,7 @@ export const NewsFeedInput = React.forwardRef<
         </LegacyPrimaryBox>
         <View
           style={{
-            backgroundColor: appType === "mini" ? neutral00 : neutral17,
+            backgroundColor: appMode === "mini" ? neutral00 : neutral17,
 
             paddingVertical: isMobile
               ? layout.spacing_x1_5
@@ -543,7 +543,7 @@ export const NewsFeedInput = React.forwardRef<
                       MAX_IMAGES
                   }
                 />
-                {appType !== "mini" && (
+                {appMode !== "mini" && (
                   <>
                     <FileUploader
                       onUpload={(files) => setValue("files", [files?.[0]])}

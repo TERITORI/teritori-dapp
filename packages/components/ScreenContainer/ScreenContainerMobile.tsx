@@ -8,7 +8,7 @@ import {
 
 import { HeaderMobile } from "./HeaderMobile";
 import { useSearchBar } from "../../context/SearchBarProvider";
-import { useAppType } from "../../hooks/useAppType";
+import { useAppMode } from "../../hooks/useAppMode";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import DefaultAppBar from "../../screens/Mini/components/AppBar/DefaultAppBar";
 import { neutral33, neutral77 } from "../../utils/style/colors";
@@ -63,7 +63,7 @@ export const ScreenContainerMobile: FC<{
 }) => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
-  const [appType] = useAppType();
+  const [appMode] = useAppMode();
 
   return (
     <SafeAreaView
@@ -85,7 +85,7 @@ export const ScreenContainerMobile: FC<{
           onClose={() => setSearchModalMobileOpen(false)}
           visible={isSearchModalMobileOpen}
         />
-        {appType === "mini" ? (
+        {appMode === "mini" ? (
           headerMini ?? <DefaultAppBar title={mobileTitle || ""} />
         ) : (
           <HeaderMobile

@@ -11,7 +11,7 @@ import {
 
 import defaultThumbnailImage from "../../../assets/default-images/default-video-thumbnail.jpg";
 import { Post } from "../../api/feed/v1/feed";
-import { useAppType } from "../../hooks/useAppType";
+import { useAppMode } from "../../hooks/useAppMode";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../networks";
@@ -49,7 +49,7 @@ export const VideoCard: React.FC<{
   hideDescription?: boolean;
   style?: StyleProp<ViewStyle>;
 }> = memo(({ post, hideAuthor, hideDescription, style }) => {
-  const [appType] = useAppType();
+  const [appMode] = useAppMode();
   const { width: windowWidth } = useWindowDimensions();
   const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
@@ -108,7 +108,7 @@ export const VideoCard: React.FC<{
           onHoverOut={() => setIsHovered(false)}
           onPress={() =>
             navigation.navigate(
-              appType === "mini" ? "MiniFeedDetails" : "FeedPostView",
+              appMode === "mini" ? "MiniFeedDetails" : "FeedPostView",
               {
                 id: getNetworkObjectId(selectedNetworkId, post.identifier),
               },
