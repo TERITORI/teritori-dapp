@@ -248,7 +248,6 @@ const SubscriptionSetupForm: React.FC<{
                 remove(index);
               }}
               setIsLoading={(value) => {
-                console.log("setIsLoading", value);
                 setLoadStates((prev) => ({ ...prev, [elem.id]: value }));
               }}
               update={update}
