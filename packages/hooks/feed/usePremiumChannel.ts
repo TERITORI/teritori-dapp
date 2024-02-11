@@ -32,23 +32,14 @@ export const usePremiumChannel = (
         premiumFeedFeature.membershipContractAddress,
       );
 
-      console.log(
-        "fetch channel",
-        networkId,
-        channelAddress,
-        premiumFeedFeature,
-      );
-
       try {
         const channel = await client.channel({ channelAddr: channelAddress });
-        console.log("channel", channel);
         return channel;
       } catch (error) {
         if (
           error instanceof Error &&
           error.message.includes("Channel does not exist")
         ) {
-          console.log("channel", null);
           return null;
         }
         throw error;
