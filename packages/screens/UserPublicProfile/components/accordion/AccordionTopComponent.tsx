@@ -17,7 +17,7 @@ import { getNativeCurrency } from "@/networks";
 import { prettyPrice } from "@/utils/coins";
 import { neutral77, neutralA3, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "@/utils/style/fonts";
-import { SubscriptionFormValues } from "@/utils/types/premiumFeed";
+import { SubscriptionFormValues } from "@/utils/types/premium-feed";
 
 interface AccordionTopProps {
   isOpen: boolean;

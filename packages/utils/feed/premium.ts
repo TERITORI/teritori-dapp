@@ -3,7 +3,7 @@ import { Decimal } from "@cosmjs/math";
 import { MembershipConfig } from "@/contracts-clients/cw721-membership";
 import { getNativeCurrency } from "@/networks";
 import { bigDaySeconds } from "@/utils/big-time";
-import { SubscriptionFormElem } from "@/utils/types/premiumFeed";
+import { SubscriptionFormElem } from "@/utils/types/premium-feed";
 
 export const mapTierToFormElement = (
   networkId: string,

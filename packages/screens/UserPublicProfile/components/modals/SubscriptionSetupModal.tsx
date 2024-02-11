@@ -43,7 +43,7 @@ import { layout } from "@/utils/style/layout";
 import {
   SubscriptionFormElem,
   SubscriptionFormValues,
-} from "@/utils/types/premiumFeed";
+} from "@/utils/types/premium-feed";
 
 export const SubscriptionSetupModal: React.FC<{
   userId: string;

@@ -26,7 +26,7 @@ import {
 import { errorColor } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { SubscriptionFormValues } from "@/utils/types/premiumFeed";
+import { SubscriptionFormValues } from "@/utils/types/premium-feed";
 
 interface AccordionBottomProps {
   networkId: string;
