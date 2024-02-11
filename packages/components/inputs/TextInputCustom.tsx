@@ -210,11 +210,26 @@ export const TextInputCustom = <T extends FieldValues>({
     }
 
     if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
+      console.log(
+        "field changing",
+        value,
+        "regexp",
+        regexp,
+        "field",
+        field,
+        "value modifier",
+        valueModifier,
+      );
       field.onChange(valueModifier ? valueModifier(value) : value);
       if (restProps?.onChangeText) {
         restProps.onChangeText(value);
       }
+      return;
     }
+
+    console.log("field changing", value, "regexp", regexp, "field", field);
+
+    field.onChange(value);
   };
 
   if (variant === "noStyle")

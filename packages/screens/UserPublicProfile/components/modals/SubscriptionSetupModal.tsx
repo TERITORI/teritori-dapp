@@ -1,4 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { Decimal } from "@cosmjs/math";
+import { isEqual } from "lodash";
+import React, { useCallback, useMemo, useState } from "react";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { View, TouchableOpacity } from "react-native";
 
 import { SubscriptionBottomComponent } from "./SubscriptionBottomComponent";
@@ -14,6 +17,7 @@ import { Separator } from "@/components/separators/Separator";
 import { SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
+  ChannelResponse,
   Cw721MembershipClient,
   MembershipConfig,
 } from "@/contracts-clients/cw721-membership";
@@ -21,10 +25,13 @@ import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import {
   getKeplrSigningCosmWasmClient,
+  getNativeCurrency,
   getNetworkFeature,
   parseUserId,
 } from "@/networks";
 import { NetworkFeature } from "@/networks/features";
+import { bigDaySeconds } from "@/utils/big-time";
+import { mapTierToFormElement } from "@/utils/feed/premium";
 import {
   neutral22,
   neutral33,
@@ -33,51 +40,20 @@ import {
 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { LocalMembershipConfig } from "@/utils/types/premiumFeed";
+import {
+  SubscriptionFormElem,
+  SubscriptionFormValues,
+} from "@/utils/types/premiumFeed";
 
 export const SubscriptionSetupModal: React.FC<{
   userId: string;
   isVisible: boolean;
   onClose: () => void;
 }> = ({ userId, isVisible, onClose }) => {
-  const selectedWallet = useSelectedWallet();
-
   const [network, channelAddress] = parseUserId(userId);
   const networkId = network?.id;
 
   const { data: channel } = usePremiumChannel(networkId, channelAddress);
-
-  const [tiers, setTiers] = useState<LocalMembershipConfig[]>([]);
-  const { wrapWithFeedback } = useFeedbacks();
-
-  useEffect(() => {
-    if (!channel) {
-      return;
-    }
-    setTiers(channel.memberships_config || []);
-  }, [channel]);
-
-  const addItem = useCallback((item: LocalMembershipConfig) => {
-    setTiers((tiers) => [...tiers, item]);
-  }, []);
-
-  const removeItem = useCallback((id: number) => {
-    setTiers((tiers) => tiers.filter((_, index) => index !== id));
-  }, []);
-
-  const handleChangeTier = useCallback(
-    (
-      index: number,
-      cb: (oldTier: LocalMembershipConfig) => LocalMembershipConfig,
-    ) => {
-      setTiers((tiers) => {
-        const updatedTiers = [...tiers];
-        updatedTiers[index] = cb(updatedTiers[index]);
-        return updatedTiers;
-      });
-    },
-    [],
-  );
 
   if (!networkId || channel === undefined) {
     return null;
@@ -113,128 +89,246 @@ export const SubscriptionSetupModal: React.FC<{
         </View>
       }
     >
-      <View
+      <SubscriptionSetupForm
+        channel={channel}
+        networkId={networkId}
+        onClose={onClose}
+      />
+    </ModalBase>
+  );
+};
+
+const SubscriptionSetupForm: React.FC<{
+  channel: ChannelResponse | null;
+  networkId: string;
+  onClose: () => void;
+}> = ({ channel, networkId, onClose }) => {
+  const selectedWallet = useSelectedWallet();
+  const [loadStates, setLoadStates] = useState<
+    Record<string, boolean | undefined>
+  >({});
+
+  const isUploadingFiles = Object.values(loadStates).some((v) => v);
+
+  const { wrapWithFeedback } = useFeedbacks();
+
+  const defaultValues = useMemo(() => {
+    let tiers: SubscriptionFormElem[] = [];
+    if (channel) {
+      tiers = channel.memberships_config.map((tier) =>
+        mapTierToFormElement(networkId, tier),
+      );
+    }
+    return {
+      tiers,
+    };
+  }, [channel, networkId]);
+
+  const { control } = useForm<SubscriptionFormValues>({
+    defaultValues,
+  });
+
+  const {
+    fields: defaultFields,
+    remove,
+    append,
+    update,
+  } = useFieldArray({
+    control,
+    name: "tiers",
+  });
+
+  const tiers = useWatch({ control, name: "tiers" });
+
+  const fields = useMemo(
+    () =>
+      tiers.map((t, index) => ({
+        ...defaultFields[index],
+        ...t,
+      })),
+    [defaultFields, tiers],
+  );
+
+  const createNewTier = useCallback(() => {
+    const feature = getNetworkFeature(
+      networkId,
+      NetworkFeature.CosmWasmPremiumFeed,
+    );
+    if (!feature) {
+      throw new Error("This network does not support premium feed");
+    }
+    const newElem: SubscriptionFormElem = {
+      title: "",
+      amount: "",
+      denom: feature.mintDenom,
+      durationDays: "",
+      description: "",
+      imageURI: "",
+      open: false,
+    };
+    append(newElem);
+  }, [append, networkId]);
+
+  const { chainTiers, hasChange } = useMemo(() => {
+    try {
+      const validatedTiers = tiers.map((formElem) => {
+        if (
+          !formElem.title ||
+          !formElem.description ||
+          !formElem.amount ||
+          !formElem.denom ||
+          !formElem.durationDays
+        ) {
+          throw new Error("Invalid tier");
+        }
+        const currency = getNativeCurrency(networkId, formElem.denom);
+        if (!currency) {
+          throw new Error("Invalid currency");
+        }
+        const atomicAmount = Decimal.fromUserInput(
+          formElem.amount,
+          currency.decimals,
+        ).atomics;
+        const durationSeconds = (
+          bigDaySeconds * BigInt(formElem.durationDays)
+        ).toString();
+        const vt: MembershipConfig = {
+          display_name: formElem.title,
+          description: formElem.description,
+          price: { amount: atomicAmount, denom: formElem.denom },
+          duration_seconds: durationSeconds,
+          nft_image_uri: formElem.imageURI,
+          nft_name_prefix: "Sub",
+          trade_royalties: 80,
+        };
+        return vt;
+      });
+      return {
+        chainTiers: validatedTiers,
+        hasChange: !isEqual(channel?.memberships_config || [], validatedTiers),
+      };
+    } catch (e) {
+      console.error("Error validating tiers", e);
+      return {
+        chainTiers: undefined,
+        hasChange: false,
+      };
+    }
+  }, [channel?.memberships_config, networkId, tiers]);
+
+  return (
+    <View
+      style={{
+        alignItems: "center",
+        width: "100%",
+        marginBottom: layout.spacing_x2,
+      }}
+    >
+      <PrimaryBox
         style={{
-          alignItems: "center",
           width: "100%",
-          marginBottom: layout.spacing_x2,
+          borderColor: neutral33,
+          backgroundColor: neutral22,
+          padding: layout.spacing_x1,
+          borderWidth: 1,
         }}
       >
-        <PrimaryBox
+        {fields.map((elem, index) => {
+          return (
+            <AccordionComponent
+              key={elem.id}
+              elem={elem}
+              elemIndex={index}
+              remove={() => {
+                setLoadStates((prev) => {
+                  const newState = { ...prev };
+                  delete newState[elem.id];
+                  return newState;
+                });
+                remove(index);
+              }}
+              setIsLoading={(value) => {
+                console.log("setIsLoading", value);
+                setLoadStates((prev) => ({ ...prev, [elem.id]: value }));
+              }}
+              update={update}
+              networkId={networkId}
+              control={control}
+            />
+          );
+        })}
+
+        <View
           style={{
-            width: "100%",
-            borderColor: neutral33,
-            backgroundColor: neutral22,
-            padding: layout.spacing_x1,
-            borderWidth: 1,
+            marginTop: layout.spacing_x1,
+            marginBottom: layout.spacing_x2,
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {tiers.map((tier, index) => {
-            return (
-              <AccordionComponent
-                key={index}
-                networkId={networkId}
-                tier={tier}
-                tierIndex={index}
-                onChangeTier={handleChangeTier}
-                onRemoveItem={() => {
-                  removeItem(index);
-                }}
-              />
-            );
-          })}
-
-          <View
+          <TouchableOpacity
             style={{
-              marginTop: layout.spacing_x1,
-              marginBottom: layout.spacing_x2,
+              flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
+              height: 32,
+              paddingHorizontal: layout.spacing_x2,
+              borderRadius: 999,
+              borderWidth: 1,
+              borderColor: secondaryColor,
             }}
+            onPress={createNewTier}
           >
-            <TouchableOpacity
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                height: 32,
-                width: 100,
-                borderRadius: 999,
-                borderWidth: 1,
-                borderColor: secondaryColor,
-              }}
-              onPress={() => {
-                const emptyConfig: LocalMembershipConfig = {};
-                addItem(emptyConfig);
-              }}
+            <SVG source={addSVG} width={10} height={10} />
+            <SpacerRow size={1} />
+            <BrandText
+              style={[
+                fontSemibold14,
+                { color: secondaryColor, lineHeight: layout.spacing_x2 },
+              ]}
             >
-              <SVG source={addSVG} width={16} height={16} />
-              <SpacerRow size={1} />
-              <BrandText
-                style={[
-                  fontSemibold14,
-                  { color: secondaryColor, lineHeight: layout.spacing_x2 },
-                ]}
-              >
-                Add tier
-              </BrandText>
-            </TouchableOpacity>
-          </View>
+              Add tier
+            </BrandText>
+          </TouchableOpacity>
+        </View>
 
-          <Separator />
+        <Separator />
 
-          <SubscriptionBottomComponent
-            onClose={onClose}
-            onSubmit={wrapWithFeedback(async () => {
-              const sender = selectedWallet?.address;
-              if (!sender) {
-                throw new Error("No wallet selected");
-              }
+        <SubscriptionBottomComponent
+          onClose={onClose}
+          submitDisabled={isUploadingFiles || !hasChange}
+          submitLabel={channel ? "Save" : "Create"}
+          onSubmit={wrapWithFeedback(async () => {
+            if (!chainTiers) {
+              throw new Error("Invalid tiers");
+            }
+            const sender = selectedWallet?.address;
+            if (!sender) {
+              throw new Error("No wallet selected");
+            }
+            const premiumFeedFeature = getNetworkFeature(
+              networkId,
+              NetworkFeature.CosmWasmPremiumFeed,
+            );
+            if (!premiumFeedFeature) {
+              throw new Error("This network does not support premium feed");
+            }
+            const cosmWasmClient =
+              await getKeplrSigningCosmWasmClient(networkId);
+            const client = new Cw721MembershipClient(
+              cosmWasmClient,
+              sender,
+              premiumFeedFeature.membershipContractAddress,
+            );
 
-              const premiumFeedFeature = getNetworkFeature(
-                networkId,
-                NetworkFeature.CosmWasmPremiumFeed,
-              );
-              if (!premiumFeedFeature) {
-                throw new Error("This network does not support premium feed");
-              }
+            await client.upsertChannel({
+              membershipsConfig: chainTiers,
+            });
 
-              const validatedTiers = tiers.map((t) => {
-                if (
-                  !t.display_name ||
-                  !t.description ||
-                  !t.price ||
-                  !t.duration_seconds
-                ) {
-                  throw new Error("Invalid tier");
-                }
-                const vt: MembershipConfig = {
-                  display_name: t.display_name,
-                  description: t.description,
-                  price: t.price,
-                  duration_seconds: t.duration_seconds,
-                  nft_image_uri: t.nft_image_uri || "",
-                  nft_name_prefix: "Sub",
-                  trade_royalties: 80,
-                };
-                return vt;
-              });
-
-              const cosmWasmClient =
-                await getKeplrSigningCosmWasmClient(networkId);
-              const client = new Cw721MembershipClient(
-                cosmWasmClient,
-                sender,
-                premiumFeedFeature.membershipContractAddress,
-              );
-
-              await client.upsertChannel({
-                membershipsConfig: validatedTiers,
-              });
-            })}
-          />
-        </PrimaryBox>
-      </View>
-    </ModalBase>
+            onClose();
+          })}
+        />
+      </PrimaryBox>
+    </View>
   );
 };

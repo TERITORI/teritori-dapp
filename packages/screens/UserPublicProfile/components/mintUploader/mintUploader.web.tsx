@@ -11,6 +11,7 @@ import { SVG } from "@/components/SVG";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { FileUploaderProps } from "@/components/fileUploader/FileUploader.type";
 import { formatFile } from "@/components/fileUploader/formatFile";
+import { AnimatedLoader } from "@/components/loaders/AnimatedLoader";
 import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
@@ -35,11 +36,17 @@ export const MintUploader: FC<MintUploaderProps> = ({
   mimeTypes,
   children,
   maxUpload,
-  setIsLoading,
+  setIsLoading: setIsLoadingExternal,
 }) => {
   const { setToastError } = useFeedbacks();
   const hiddenFileInput = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState(defaultFile);
+  const [isLoadingInternal, setIsLoadingInternal] = useState(false);
+
+  const setIsLoading = (value: boolean) => {
+    setIsLoadingInternal(value);
+    setIsLoadingExternal?.(value);
+  };
 
   const handleFiles = async (files: File[]) => {
     const _files = [files[0]];
@@ -64,17 +71,24 @@ export const MintUploader: FC<MintUploaderProps> = ({
       supportedFiles.map(async (file) => await formatFile(file)),
     );
 
-    onUpload(formattedFiles);
+    await onUpload(formattedFiles);
   };
 
   const handleChange = async (event: SyntheticEvent) => {
-    setIsLoading?.(true);
-    const targetEvent = event.target as HTMLInputElement;
+    setIsLoading(true);
+    try {
+      const targetEvent = event.target as HTMLInputElement;
 
-    if (targetEvent.files && targetEvent.files[0]) {
-      await handleFiles(targetEvent?.files as unknown as File[]);
+      if (targetEvent.files && targetEvent.files[0]) {
+        await handleFiles(targetEvent?.files as unknown as File[]);
+      }
+    } catch (error) {
+      setToastError({
+        title: "Failed to upload file",
+        message: error instanceof Error ? error.message : `${error}`,
+      });
     }
-    setIsLoading?.(false);
+    setIsLoading(false);
   };
 
   const handleClick = () => {
@@ -82,17 +96,25 @@ export const MintUploader: FC<MintUploaderProps> = ({
   };
 
   const dropHandler = async (ev: any) => {
-    setIsLoading?.(true);
     ev.preventDefault();
-    if (ev.dataTransfer.items) {
-      const files = [...ev.dataTransfer.items]
-        .filter((item: any) => item.kind === "file")
-        .map((item: any) => item.getAsFile());
-      await handleFiles(files);
-    } else {
-      await handleFiles(ev.dataTransfer.files);
+    setIsLoading(true);
+    try {
+      if (ev.dataTransfer.items) {
+        const files = [...ev.dataTransfer.items]
+          .filter((item: any) => item.kind === "file")
+          .map((item: any) => item.getAsFile());
+        await handleFiles(files);
+      } else {
+        await handleFiles(ev.dataTransfer.files);
+      }
+    } catch (error) {
+      console.error("Failed to upload file", error);
+      setToastError({
+        title: "Failed to upload file",
+        message: error instanceof Error ? error.message : `${error}`,
+      });
     }
-    setIsLoading?.(false);
+    setIsLoading(false);
   };
 
   const dragOverHandler = (ev: SyntheticEvent) => {
@@ -154,11 +176,23 @@ export const MintUploader: FC<MintUploaderProps> = ({
                       resizeMode: "cover",
                       height: 256,
                       width: 256,
+                      opacity: isLoadingInternal ? 0.5 : 1,
                     },
                     fileImageStyle,
                   ]}
                   alt="Uploaded file"
                 />
+                {isLoadingInternal && (
+                  <View
+                    style={{
+                      position: "absolute",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <AnimatedLoader />
+                  </View>
+                )}
               </>
             ) : (
               <View style={{ width: "100%", alignItems: "center" }}>

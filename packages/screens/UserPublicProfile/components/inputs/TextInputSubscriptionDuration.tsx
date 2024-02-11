@@ -22,7 +22,6 @@ export const TextInputSubscriptionDuration = <T extends FieldValues>({
   name,
   label,
   placeHolder,
-  onChangeText,
 }: TextInputCustomProps<T>) => {
   return (
     <TextInputCustom<T>
@@ -35,7 +34,6 @@ export const TextInputSubscriptionDuration = <T extends FieldValues>({
       control={control}
       inputMode="numeric"
       variant="labelOutside"
-      onChangeText={onChangeText}
       containerStyle={{ marginVertical: layout.spacing_x1, zIndex: 2 }}
       boxMainContainerStyle={{
         backgroundColor: neutral00,

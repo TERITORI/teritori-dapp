@@ -6,9 +6,11 @@ import { SecondaryButton } from "@/components/buttons/SecondaryButton";
 import { layout } from "@/utils/style/layout";
 
 export const SubscriptionBottomComponent: React.FC<{
+  submitDisabled?: boolean;
+  submitLabel: string;
   onSubmit: (() => Promise<void>) | (() => void);
   onClose: (() => Promise<void>) | (() => void);
-}> = ({ onSubmit, onClose }) => {
+}> = ({ onSubmit, onClose, submitDisabled, submitLabel }) => {
   return (
     <View
       style={{
@@ -30,9 +32,10 @@ export const SubscriptionBottomComponent: React.FC<{
 
       <View style={{ marginHorizontal: layout.spacing_x1 }}>
         <PrimaryButton
+          disabled={submitDisabled}
           width={112}
           size="M"
-          text="Setup"
+          text={submitLabel}
           loader
           onPress={onSubmit}
         />

@@ -1,12 +1,11 @@
-import { MembershipConfig } from "@/contracts-clients/cw721-membership";
-
-export type LocalMembershipConfig = Partial<MembershipConfig>;
-
-interface SubscriptionFormElem {
+export interface SubscriptionFormElem {
   title: string;
-  price: string;
-  duration: string;
+  amount: string;
+  denom: string;
+  durationDays: string;
   description: string;
+  imageURI: string;
+  open: boolean;
 }
 
-export type SubscriptionFormValues = SubscriptionFormElem[];
+export type SubscriptionFormValues = { tiers: SubscriptionFormElem[] };

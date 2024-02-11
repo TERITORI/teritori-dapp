@@ -1,5 +1,7 @@
+import { Decimal } from "@cosmjs/math";
 import moment from "moment";
-import React, { useState } from "react";
+import React from "react";
+import { Control, FieldArrayWithId } from "react-hook-form";
 import { View, TouchableOpacity } from "react-native";
 
 import chevronDownSVG from "./../../../../../assets/icons/chevron-down.svg";
@@ -11,35 +13,30 @@ import { BrandText } from "@/components/BrandText";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { SVG } from "@/components/SVG";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
-import { TextInputOutsideLabel } from "@/components/inputs/TextInputOutsideLabel";
+import { getNativeCurrency } from "@/networks";
 import { prettyPrice } from "@/utils/coins";
 import { neutral77, neutralA3, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "@/utils/style/fonts";
-import {
-  LocalMembershipConfig,
-  SubscriptionFormValues,
-} from "@/utils/types/premiumFeed";
+import { SubscriptionFormValues } from "@/utils/types/premiumFeed";
 
 interface AccordionTopProps {
   isOpen: boolean;
   setIsOpen: (item: boolean) => void;
   networkId: string;
-  tier: LocalMembershipConfig;
-  tierIndex: number;
-  onChangeTier: (
-    cb: (oldTier: LocalMembershipConfig) => LocalMembershipConfig,
-  ) => void;
+  control: Control<SubscriptionFormValues>;
+  elem: FieldArrayWithId<SubscriptionFormValues, "tiers", "id">;
+  elemIndex: number;
 }
 
 export const AccordionTopComponent = ({
   isOpen,
   setIsOpen,
   networkId,
-  tier,
-  tierIndex,
-  onChangeTier,
+  control,
+  elem: tier,
+  elemIndex: tierIndex,
 }: AccordionTopProps) => {
-  const [isFocused, setIsFocused] = useState(false);
+  const currency = getNativeCurrency(networkId, tier?.denom);
 
   if (isOpen) {
     return (
@@ -52,37 +49,24 @@ export const AccordionTopComponent = ({
           height: 32,
         }}
       >
-        {isFocused ? (
-          <TextInputCustom<SubscriptionFormValues>
-            hideLabel
-            noBrokenCorners
-            rules={{ required: true }}
-            placeHolder="Tier name"
-            placeholderTextColor={neutralA3}
-            name={`${tierIndex}.title`}
-            label="Tier name"
-            variant="noStyle"
-            value={tier.display_name}
-            onChangeText={(text) => {
-              onChangeTier((tier) => ({
-                ...tier,
-                display_name: text,
-              }));
-            }}
-            onBlur={() => setIsFocused(false)}
-          />
-        ) : (
-          <TouchableOpacity
-            onPress={() => {
-              setIsFocused(true);
-            }}
-          >
-            <TextInputOutsideLabel label="Tier name" isAsterickSign />
-          </TouchableOpacity>
-        )}
+        <TextInputCustom
+          hideLabel
+          noBrokenCorners
+          rules={{ required: true }}
+          control={control}
+          placeHolder="Tier name"
+          textInputStyle={fontSemibold16}
+          placeholderTextColor={neutralA3}
+          name={`tiers.${tierIndex}.title`}
+          label="Tier name"
+          variant="noStyle"
+        />
 
         <TouchableOpacity
-          style={{ flexDirection: "row", alignItems: "center" }}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
           onPress={() => {
             setIsOpen(false);
           }}
@@ -106,7 +90,7 @@ export const AccordionTopComponent = ({
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <OptimizedImage
-            sourceURI={tier.nft_image_uri}
+            sourceURI={tier?.imageURI}
             fallbackURI={defaultTierImage}
             style={{
               backgroundColor: "black",
@@ -124,7 +108,7 @@ export const AccordionTopComponent = ({
                 { color: secondaryColor, marginLeft: layout.spacing_x1 },
               ]}
             >
-              {tier.display_name || "Untitled"}
+              {tier?.title || "New Tier"}
             </BrandText>
             <BrandText
               style={[
@@ -132,14 +116,16 @@ export const AccordionTopComponent = ({
                 { color: neutral77, marginLeft: layout.spacing_x1 },
               ]}
             >
-              {!!tier.price &&
-                prettyPrice(
-                  networkId,
-                  tier.price.amount,
-                  tier.price.denom,
-                )}{" "}
-              {!!tier.duration_seconds &&
-                `for ${moment.duration(tier.duration_seconds, "seconds").humanize()}`}
+              {!!tier.amount && !!tier.denom && !!tier.durationDays
+                ? `${prettyPrice(
+                    networkId,
+                    Decimal.fromUserInput(
+                      tier?.amount || "0",
+                      currency?.decimals || 0,
+                    ).atomics,
+                    tier.denom,
+                  )} for ${moment.duration(tier.durationDays, "days").humanize()}`
+                : "Configure me"}
             </BrandText>
           </View>
         </View>

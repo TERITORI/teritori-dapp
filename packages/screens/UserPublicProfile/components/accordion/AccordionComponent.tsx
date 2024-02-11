@@ -1,4 +1,10 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { FC } from "react";
+import {
+  Control,
+  FieldArrayWithId,
+  UseFieldArrayRemove,
+  UseFieldArrayUpdate,
+} from "react-hook-form";
 
 import { AccordionBottomComponent } from "./AccordionBottomComponent";
 import { AccordionTopComponent } from "./AccordionTopComponent";
@@ -6,34 +12,27 @@ import { layout } from "../../../../utils/style/layout";
 
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { neutral22, neutral33 } from "@/utils/style/colors";
-import { LocalMembershipConfig } from "@/utils/types/premiumFeed";
+import { SubscriptionFormValues } from "@/utils/types/premiumFeed";
 
 interface AccordionProps {
   networkId: string;
-  tier: LocalMembershipConfig;
-  tierIndex: number;
-  onChangeTier: (
-    index: number,
-    cb: (oldTier: LocalMembershipConfig) => LocalMembershipConfig,
-  ) => void;
-  onRemoveItem: () => void;
+  control: Control<SubscriptionFormValues>;
+  elem: FieldArrayWithId<SubscriptionFormValues, "tiers", "id">;
+  elemIndex: number;
+  update: UseFieldArrayUpdate<SubscriptionFormValues, "tiers">;
+  remove: UseFieldArrayRemove;
+  setIsLoading?: (value: boolean) => void;
 }
 
 export const AccordionComponent: FC<AccordionProps> = ({
   networkId,
-  onRemoveItem,
-  onChangeTier,
-  tier,
-  tierIndex,
+  control,
+  elem,
+  elemIndex,
+  remove,
+  update,
+  setIsLoading,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleChangeTier = useCallback(
-    (cb: (oldTier: LocalMembershipConfig) => LocalMembershipConfig) =>
-      onChangeTier(tierIndex, cb),
-    [tierIndex, onChangeTier],
-  );
-
   return (
     <PrimaryBox
       style={{
@@ -45,21 +44,25 @@ export const AccordionComponent: FC<AccordionProps> = ({
       }}
     >
       <AccordionTopComponent
-        isOpen={isOpen}
+        isOpen={elem.open}
         networkId={networkId}
-        setIsOpen={setIsOpen}
-        tier={tier}
-        tierIndex={tierIndex}
-        onChangeTier={handleChangeTier}
+        setIsOpen={(value) => {
+          update(elemIndex, { ...elem, open: value });
+        }}
+        control={control}
+        elem={elem}
+        elemIndex={elemIndex}
       />
 
-      {isOpen && (
+      {elem.open && (
         <AccordionBottomComponent
           networkId={networkId}
-          onRemoveItem={onRemoveItem}
-          tier={tier}
-          tierIndex={tierIndex}
-          onChangeTier={handleChangeTier}
+          control={control}
+          elem={elem}
+          update={update}
+          elemIndex={elemIndex}
+          remove={remove}
+          setIsLoading={setIsLoading}
         />
       )}
     </PrimaryBox>

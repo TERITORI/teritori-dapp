@@ -18,7 +18,6 @@ export const TextInputSubscriptionMultiline = <T extends FieldValues>({
   name,
   label,
   placeHolder,
-  onChangeText,
   control,
 }: TextInputCustomProps<T>) => {
   return (
@@ -27,7 +26,6 @@ export const TextInputSubscriptionMultiline = <T extends FieldValues>({
       rules={{ required: true }}
       multiline
       label={label}
-      onChangeText={onChangeText}
       placeHolder={placeHolder}
       name={name}
       control={control}

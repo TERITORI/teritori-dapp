@@ -1,6 +1,10 @@
-import { Decimal } from "@cosmjs/math";
-import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import React from "react";
+import {
+  Control,
+  FieldArrayWithId,
+  UseFieldArrayRemove,
+  UseFieldArrayUpdate,
+} from "react-hook-form";
 import { View, TouchableOpacity } from "react-native";
 
 import trashSVG from "@/assets/icons/trash.svg";
@@ -9,11 +13,7 @@ import { SVG } from "@/components/SVG";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useIpfs } from "@/hooks/useIpfs";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import {
-  NetworkFeature,
-  getNativeCurrency,
-  getNetworkFeature,
-} from "@/networks";
+import { NetworkFeature, getNetworkFeature } from "@/networks";
 import { TextInputSubscriptionDuration } from "@/screens/UserPublicProfile/components/inputs/TextInputSubscriptionDuration";
 import { TextInputSubscriptionMultiline } from "@/screens/UserPublicProfile/components/inputs/TextInputSubscriptionMultiline";
 import { TextInputSubscriptionPrice } from "@/screens/UserPublicProfile/components/inputs/TextInputSubscriptionPrice";
@@ -26,102 +26,39 @@ import {
 import { errorColor } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import {
-  LocalMembershipConfig,
-  SubscriptionFormValues,
-} from "@/utils/types/premiumFeed";
+import { SubscriptionFormValues } from "@/utils/types/premiumFeed";
 
 interface AccordionBottomProps {
   networkId: string;
-  tier: LocalMembershipConfig;
-  tierIndex: number;
-  onChangeTier: (
-    cb: (oldTier: LocalMembershipConfig) => LocalMembershipConfig,
-  ) => void;
-  onRemoveItem: () => void;
+  control: Control<SubscriptionFormValues>;
+  elem: FieldArrayWithId<SubscriptionFormValues, "tiers", "id">;
+  elemIndex: number;
+  remove: UseFieldArrayRemove;
+  update: UseFieldArrayUpdate<SubscriptionFormValues, "tiers">;
+  setIsLoading?: (value: boolean) => void;
 }
 
 export const AccordionBottomComponent = ({
   networkId,
-  onRemoveItem,
-  tierIndex,
-  tier,
-  onChangeTier,
+  control,
+  elem: tier,
+  elemIndex: tierIndex,
+  remove,
+  update,
+  setIsLoading,
 }: AccordionBottomProps) => {
-  const { control, watch, setValue } = useForm<SubscriptionFormValues>({
-    defaultValues: [],
-    mode: "onBlur",
-  });
   const selectedWallet = useSelectedWallet();
   const { uploadToIPFS } = useIpfs();
 
-  const priceKey = `${tierIndex}.price` as const;
-
-  useEffect(() => {
-    if (tier.price !== undefined) {
-      const currency = getNativeCurrency(networkId, tier.price.denom);
-      if (currency) {
-        const userValue = Decimal.fromAtomics(
-          tier.price.amount,
-          currency.decimals,
-        ).toString();
-        setValue(priceKey, userValue);
-      }
-    }
-    if (tier.duration_seconds !== undefined) {
-      setValue(
-        `${tierIndex}.duration`,
-        (BigInt(tier.duration_seconds) / bigDaySeconds).toString(),
-      );
-    }
-    if (tier.description !== undefined) {
-      setValue(`${tierIndex}.description`, tier.description);
-    }
-  }, [networkId, priceKey, setValue, tier, tierIndex]);
+  const priceKey = `tiers.${tierIndex}.amount` as const;
+  const durationKey = `tiers.${tierIndex}.durationDays` as const;
+  const descriptionKey = `tiers.${tierIndex}.description` as const;
 
   const config = getNetworkFeature(
     networkId,
     NetworkFeature.CosmWasmPremiumFeed,
   );
-  const tierPriceDenom = tier.price?.denom || config?.mintDenom;
-  const price = watch(priceKey);
-
-  useEffect(() => {
-    onChangeTier((tier) => {
-      try {
-        if (!price) {
-          throw new Error("No price");
-        }
-        const config = getNetworkFeature(
-          networkId,
-          NetworkFeature.CosmWasmPremiumFeed,
-        );
-        if (!config) {
-          throw new Error("This network does not support premium feed");
-        }
-        const tierPriceDenom = tier.price?.denom || config.mintDenom;
-        console.log("setting price amount", price, "for tier", tier);
-        const currency = getNativeCurrency(networkId, tierPriceDenom);
-        if (!currency) {
-          return tier;
-        }
-        const atomics = Decimal.fromUserInput(
-          price,
-          currency?.decimals,
-        ).atomics;
-        const newTier = {
-          ...tier,
-          price: { amount: atomics, denom: tierPriceDenom },
-        };
-        return newTier;
-      } catch {
-        const newTier = { ...tier, price: undefined };
-        return newTier;
-      }
-    });
-  }, [networkId, onChangeTier, price]);
-
-  // const tierPriceAmount = tier.price?.amount || "0";
+  const tierPriceDenom = tier?.denom || config?.mintDenom;
 
   return (
     <>
@@ -141,20 +78,21 @@ export const AccordionBottomComponent = ({
           if (!selectedWallet) {
             throw new Error("No wallet selected");
           }
+          if (!tier) {
+            throw new Error("No tier");
+          }
           const file = files[0];
           const web3URI = await uploadToIPFS(selectedWallet.userId, file);
-          onChangeTier((tier) => {
-            const newTier = { ...tier, nft_image_uri: web3URI };
-            return newTier;
-          });
+          update(tierIndex, { ...tier, imageURI: web3URI });
         }}
-        defaultFile={tier.nft_image_uri}
+        setIsLoading={setIsLoading}
+        defaultFile={tier?.imageURI}
         mimeTypes={IMAGE_MIME_TYPES}
       />
 
       <SpacerColumn size={1} />
 
-      <TextInputSubscriptionPrice<SubscriptionFormValues>
+      <TextInputSubscriptionPrice
         label="Price"
         placeHolder="9.99"
         networkId={networkId}
@@ -162,39 +100,17 @@ export const AccordionBottomComponent = ({
         control={control}
         name={priceKey}
       />
-      <TextInputSubscriptionDuration<SubscriptionFormValues>
+      <TextInputSubscriptionDuration
         label="Tier duration"
         placeHolder="Type tier duration here"
-        name={`${tierIndex}.duration`}
-        onChangeText={(text) =>
-          onChangeTier((tier) => {
-            try {
-              const durationSeconds = BigInt(text) * bigDaySeconds;
-              const newTier = {
-                ...tier,
-                duration_seconds: durationSeconds.toString(),
-              };
-              return newTier;
-            } catch (e) {
-              console.error("Error parsing duration", e);
-              return tier;
-            }
-          })
-        }
+        name={durationKey}
         control={control}
       />
-      <TextInputSubscriptionMultiline<SubscriptionFormValues>
+      <TextInputSubscriptionMultiline
         label="Tier description"
         placeHolder="Type tier description here"
-        name={`${tierIndex}.description`}
-        value={tier.description}
+        name={descriptionKey}
         control={control}
-        onChangeText={(text) =>
-          onChangeTier((tier) => {
-            const newTier = { ...tier, description: text };
-            return newTier;
-          })
-        }
       />
       <View
         style={{
@@ -209,12 +125,12 @@ export const AccordionBottomComponent = ({
             alignItems: "center",
             justifyContent: "center",
             height: 32,
-            width: 126,
+            paddingHorizontal: layout.spacing_x2,
             borderRadius: 999,
             borderWidth: 1,
             borderColor: errorColor,
           }}
-          onPress={onRemoveItem}
+          onPress={() => remove(tierIndex)}
         >
           <SVG source={trashSVG} width={16} height={16} />
           <SpacerRow size={1} />
@@ -231,5 +147,3 @@ export const AccordionBottomComponent = ({
     </>
   );
 };
-
-const bigDaySeconds = BigInt(24) * BigInt(60) * BigInt(60);
