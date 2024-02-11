@@ -46,7 +46,7 @@ export const UPPIntro: React.FC<{
   const { width } = useMaxResolution();
   const { width: windowWidth } = useWindowDimensions();
 
-  const developerMode = useDeveloperMode();
+  const [developerMode] = useDeveloperMode();
 
   const [subscriptionSetupModalVisible, setSubscriptionSetupModalVisible] =
     useState(false);

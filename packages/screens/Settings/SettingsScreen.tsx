@@ -21,11 +21,9 @@ import { SpacerColumn } from "../../components/spacer";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import {
   selectAreTestnetsEnabled,
-  selectDeveloperMode,
   selectIsLightTheme,
   selectNFTStorageAPI,
   setAreTestnetsEnabled,
-  setDeveloperMode,
   setIsLightTheme,
   setNFTStorageAPI,
 } from "../../store/slices/settings";
@@ -33,6 +31,8 @@ import { RootState, useAppDispatch } from "../../store/store";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutralA3, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 
 const NFTAPIKeyInput: React.FC = () => {
   const userIPFSKey = useSelector(selectNFTStorageAPI);
@@ -78,10 +78,10 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
   const commonStyles = useCommonStyles();
   const isKeplrConnected = useIsKeplrConnected();
   const testnetEnabled = useSelector(selectAreTestnetsEnabled);
-  const developerMode = useSelector(selectDeveloperMode);
   const dispatch = useAppDispatch();
   const [networksModalVisible, setNetworksModalVisible] = React.useState(false);
   const isLightTheme = useSelector(selectIsLightTheme);
+  const [developerMode, setDeveloperMode] = useDeveloperMode();
 
   return (
     <ScreenContainer>
@@ -168,7 +168,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
         <View style={commonStyles.cardContainer}>
           <SettingItem
             onPress={(item: SettingItemType) => {
-              dispatch(setDeveloperMode(!item.state));
+              setDeveloperMode(!item.state);
             }}
             item={{
               title: "Developer Mode, use at your own risk!",
