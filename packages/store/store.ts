@@ -82,12 +82,21 @@ const migrations = {
       },
     };
   },
+  4: (state: any) => {
+    return {
+      ...state,
+      settings: {
+        ...state.settings,
+        developerMode: false,
+      },
+    };
+  },
 };
 
 const persistConfig = {
   key: "root",
   storage,
-  version: 3,
+  version: 4,
   migrate: createMigrate(migrations, { debug: false }),
   whitelist: [
     "wallets",

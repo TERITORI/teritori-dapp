@@ -17,6 +17,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "8ball",
     "addressPrefix": "8ball",
     "txExplorer": "https://explorer.8ball.info/8ball/tx/$hash",
@@ -72,6 +73,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "acrechain",
     "addressPrefix": "acre",
     "txExplorer": "https://acrescout.mindheartsoul.org/tx/$hash",
@@ -118,6 +120,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "agoric",
     "addressPrefix": "agoric",
     "txExplorer": "https://agoric.bigdipper.live/transactions/$hash",
@@ -155,6 +158,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "aioz",
     "addressPrefix": "aioz",
     "txExplorer": "https://explorer.aioz.network/tx/$hash",
@@ -192,6 +196,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "akash",
     "addressPrefix": "akash",
     "txExplorer": "https://app.ezstaking.io/akash/txs/$hash",
@@ -229,6 +234,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "andromeda",
     "addressPrefix": "andr",
     "txExplorer": "https://explorer.stavr.tech/Andromeda-Mainnet/tx/$hash",
@@ -266,6 +272,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "celestiatestnet2",
     "addressPrefix": "celestia",
     "txExplorer": "https://explorer.celestia-arabica-10.com/arabica-10/tx/$hash",
@@ -311,6 +318,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "archway",
     "addressPrefix": "archway",
     "txExplorer": "https://archway.explorers.guru/transaction/$hash",
@@ -348,6 +356,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "archwaytestnet",
     "addressPrefix": "archway",
     "txExplorer": "https://testnet.archway.explorers.guru/transaction/$hash",
@@ -385,6 +394,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "arkeonetworktestnet",
     "addressPrefix": "tarkeo",
     "txExplorer": "https://explorer.nodexcapital.com/arkeo/tx/$hash",
@@ -421,6 +431,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "arkh",
     "addressPrefix": "arkh",
     "txExplorer": "https://explorer.nodestake.top/arkh/tx/$hash",
@@ -458,6 +469,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "artelatestnet",
     "addressPrefix": "art",
     "txExplorer": "https://testnet-scan.artela.network/tx/$hash",
@@ -494,6 +506,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "assetmantle",
     "addressPrefix": "mantle",
     "txExplorer": "https://app.ezstaking.io/assetmantle/txs/$hash",
@@ -531,6 +544,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "auratestnet",
     "addressPrefix": "aura",
     "txExplorer": "https://euphoria.aurascan.io/transaction/$hash",
@@ -568,6 +582,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "aura",
     "addressPrefix": "aura",
     "txExplorer": "https://aurascan.io/transaction/$hash",
@@ -902,6 +917,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "axelar",
     "addressPrefix": "axelar",
     "txExplorer": "https://axelarscan.io/tx/$hash",
@@ -1002,6 +1018,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "axelartestnet",
     "addressPrefix": "axelar",
     "txExplorer": "https://testnet.axelarscan.io/tx/$hash",
@@ -1038,6 +1055,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "babylontestnet",
     "addressPrefix": "bbn",
     "txExplorer": "https://babylon.explorers.guru/transaction/$hash",
@@ -1075,6 +1093,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "bandchain",
     "addressPrefix": "band",
     "txExplorer": "https://cosmoscan.io/tx/$hash",
@@ -1112,6 +1131,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "beezee",
     "addressPrefix": "bze",
     "txExplorer": "https://ping.pub/beezee/tx/$hash",
@@ -1149,6 +1169,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "bitcanna",
     "addressPrefix": "bcna",
     "txExplorer": "https://ezstaking.tools/bitcanna/txs/$hash",
@@ -1186,6 +1207,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "bitcannadevnet",
     "addressPrefix": "bcna",
     "txExplorer": "https://explorer.thesilverfox.pro/bitcanna/tx/$hash",
@@ -1222,6 +1244,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "bitcannadevnet2",
     "addressPrefix": "bcna",
     "txExplorer": "https://explorer-devnet-6.bitcanna.io/tx/$hash",
@@ -1393,6 +1416,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "bitsong",
     "addressPrefix": "bitsong",
     "txExplorer": "https://app.ezstaking.io/bitsong/txs/$hash",
@@ -1430,6 +1454,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "celestiatestnet",
     "addressPrefix": "celestia",
     "txExplorer": "https://testnet.mintscan.io/celestia-incentivized-testnet/txs/$hash",
@@ -1484,6 +1509,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "bluzelle",
     "addressPrefix": "bluzelle",
     "txExplorer": "https://ping.explorer.net.bluzelle.com/bluzelle/tx/$hash",
@@ -1557,6 +1583,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "bostrom",
     "addressPrefix": "bostrom",
     "txExplorer": "https://cyb.ai/network/bostrom/tx/$hash",
@@ -1594,6 +1621,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "canto",
     "addressPrefix": "canto",
     "txExplorer": "https://cosmos.explorer.canto.io/transactions/$hash",
@@ -1730,6 +1758,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "carbon",
     "addressPrefix": "swth",
     "txExplorer": "https://scan.carbon.network/transaction/$hash?net=main",
@@ -1767,6 +1796,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "cascadiatestnet",
     "addressPrefix": "cascadia",
     "txExplorer": "https://validator.cascadia.foundation/transactions/$hash",
@@ -1804,6 +1834,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "celestia",
     "addressPrefix": "celestia",
     "txExplorer": "https://mintscan.io/celestia/txs/$hash",
@@ -1841,6 +1872,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "cerberus",
     "addressPrefix": "cerberus",
     "txExplorer": "https://skynetexplorers.com/cerberus/tx/$hash",
@@ -1878,6 +1910,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "chain4energy",
     "addressPrefix": "c4e",
     "txExplorer": "https://explorer.apeironnodes.com/chain4energy/transactions/$hash",
@@ -1915,6 +1948,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "chain4energytestnet",
     "addressPrefix": "c4e",
     "txExplorer": "https://explorer.stavr.tech/C4E-Testnet/transactions/$hash",
@@ -1952,6 +1986,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "cheqd",
     "addressPrefix": "cheqd",
     "txExplorer": "https://bigdipper.live/cheqd/transactions/$hash",
@@ -1989,6 +2024,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "cheqdtestnet",
     "addressPrefix": "cheqd",
     "txExplorer": "https://testnet-explorer.cheqd.io/transactions/$hash",
@@ -2089,6 +2125,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "chihuahua",
     "addressPrefix": "chihuahua",
     "txExplorer": "https://ping.pub/chihuahua/tx/$hash",
@@ -2126,6 +2163,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "chimba",
     "addressPrefix": "chimba",
     "txExplorer": "https://explorer.chimba.ooo/transactions/$hash",
@@ -2163,6 +2201,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "chimbatestnet",
     "addressPrefix": "chimba",
     "txExplorer": "https://explorer.testnet.chimba.ooo/transactions/$hash",
@@ -2208,6 +2247,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "chronicnetwork",
     "addressPrefix": "chronic",
     "txExplorer": "https://atomscan.com/chronicnetwork/transactions/$hash",
@@ -2262,6 +2302,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "comdex",
     "addressPrefix": "comdex",
     "txExplorer": "https://app.ezstaking.io/comdex/txs/$hash",
@@ -2308,6 +2349,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "commercionetwork",
     "addressPrefix": "did:com:",
     "txExplorer": "https://mainnet.commercio.network/transactions/detail/$hash",
@@ -2345,6 +2387,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "composable",
     "addressPrefix": "centauri",
     "txExplorer": "https://ping.pub/centauri/tx/$hash",
@@ -2382,6 +2425,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "composabletestnet",
     "addressPrefix": "centauri",
     "txExplorer": "https://explorer.nodexcapital.com/composable-3/tx/$hash",
@@ -2418,6 +2462,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "conscious",
     "addressPrefix": "cvn",
     "txExplorer": "https://explore.consciousdao.com/tx/$hash",
@@ -2455,6 +2500,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "coolcattestnet",
     "addressPrefix": "ccat",
     "txExplorer": "not-found",
@@ -2491,6 +2537,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "coreumtestnet",
     "addressPrefix": "testcore",
     "txExplorer": "https://explorer.testnet-1.coreum.dev/coreum/transactions/$hash",
@@ -2623,6 +2670,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "cosmwasmtestnet",
     "addressPrefix": "wasm",
     "txExplorer": "https://block-explorer.malaga-420.cosmwasm.com/transactions/$hash",
@@ -2668,6 +2716,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "coss",
     "addressPrefix": "coss",
     "txExplorer": "not-found",
@@ -2705,6 +2754,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "cosstestnet",
     "addressPrefix": "coss",
     "txExplorer": "not-found",
@@ -2750,6 +2800,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "crescent",
     "addressPrefix": "cre",
     "txExplorer": "https://www.mintscan.io/crescent/transactions/$hash",
@@ -2787,6 +2838,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "cronos",
     "addressPrefix": "crc",
     "txExplorer": "https://cronoscan.com/tx/$hash",
@@ -2824,6 +2876,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "cryptoorgchain",
     "addressPrefix": "cro",
     "txExplorer": "https://www.mintscan.io/crypto-org/transactions/$hash",
@@ -2861,6 +2914,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "cudos",
     "addressPrefix": "cudos",
     "txExplorer": "https://explorer.cudos.org/transactions/$hash",
@@ -2898,6 +2952,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "cudostestnet",
     "addressPrefix": "cudos",
     "txExplorer": "https://explorer.testnet.cudos.org/transactions/$hash",
@@ -2934,6 +2989,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "deardogetestnet",
     "addressPrefix": "deardoge",
     "txExplorer": "https://testnet-explorer.deardoge.org/deardoge/tx/$hash",
@@ -2970,6 +3026,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "decentr",
     "addressPrefix": "decentr",
     "txExplorer": "https://explorer.decentr.net/transactions/$hash?networkId=mainnet",
@@ -3007,6 +3064,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "desmos",
     "addressPrefix": "desmos",
     "txExplorer": "https://app.ezstaking.io/desmos/txs/$hash",
@@ -3044,6 +3102,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "desmostestnet",
     "addressPrefix": "desmos",
     "txExplorer": "https://testnet.live/desmos/transactions/$hash",
@@ -3081,6 +3140,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "selfchaindevnet",
     "addressPrefix": "self",
     "txExplorer": "https://explorer-devnet.selfchain.xyz/self/transactions/$hash",
@@ -3117,6 +3177,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "dig",
     "addressPrefix": "dig",
     "txExplorer": "https://ping.pub/dig/tx/$hash",
@@ -3154,6 +3215,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "doravota",
     "addressPrefix": "dora",
     "txExplorer": "https://vota-explorer.dorafactory.org/doravota/tx/$hash",
@@ -3190,6 +3252,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "doravotatestnet2",
     "addressPrefix": "dora",
     "txExplorer": "https://vota-vk-explorer.dorafactory.org/doravotaincentive/tx/$hash",
@@ -3226,6 +3289,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "doravotatestnet",
     "addressPrefix": "dora",
     "txExplorer": "https://maci-explorer-test.dorafactory.org/dora/tx/$hash",
@@ -3262,6 +3326,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "dydx",
     "addressPrefix": "dydx",
     "txExplorer": "https://www.mintscan.io/dydx/txs/$hash",
@@ -3299,6 +3364,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "dydxtestnet",
     "addressPrefix": "dydx",
     "txExplorer": "https://www.mintscan.io/dydx-testnet/txs/$hash",
@@ -3336,6 +3402,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "dyson",
     "addressPrefix": "dys",
     "txExplorer": "https://explorer.dys.dysonprotocol.com/dyson/tx/$hash",
@@ -3418,6 +3485,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "emoney",
     "addressPrefix": "emoney",
     "txExplorer": "https://app.ezstaking.io/emoney/txs/$hash",
@@ -3455,6 +3523,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "echelon",
     "addressPrefix": "echelon",
     "txExplorer": "https://app.ech.network/explorer/tx/$hash",
@@ -3501,6 +3570,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "elystestnet",
     "addressPrefix": "elys",
     "txExplorer": "https://explorer.stavr.tech/Elys-Testnet/tx/$hash",
@@ -3537,6 +3607,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "empowertestnet",
     "addressPrefix": "empower",
     "txExplorer": "https://empowerchain.exploreme.pro/transaction/$hash",
@@ -3573,6 +3644,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "empowerchain",
     "addressPrefix": "empower",
     "txExplorer": "https://explorer.stavr.tech/Empower-Mainnet/txs/$hash",
@@ -3609,6 +3681,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "entrypointtestnet",
     "addressPrefix": "entrypoint",
     "txExplorer": "https://explorer.entrypoint.zone/entrypoint/tx/$hash",
@@ -3736,6 +3809,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "ethos",
     "addressPrefix": "ethos",
     "txExplorer": "not-found",
@@ -3782,6 +3856,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "evmos",
     "addressPrefix": "evmos",
     "txExplorer": "https://app.ezstaking.io/evmos/txs/$hash",
@@ -3819,6 +3894,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "evmostestnet",
     "addressPrefix": "evmos",
     "txExplorer": "https://testnet.mintscan.io/evmos-testnet/txs/$hash",
@@ -3864,6 +3940,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "fxcore",
     "addressPrefix": "fx",
     "txExplorer": "https://starscan.io/fxcore/tx/$hash",
@@ -3909,6 +3986,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "fetchhub",
     "addressPrefix": "fetch",
     "txExplorer": "https://www.mintscan.io/fetchai/transactions/$hash",
@@ -3946,6 +4024,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "fetchhubtestnet",
     "addressPrefix": "fetch",
     "txExplorer": "https://explore-dorado.fetch.ai/transactions/$hash",
@@ -3982,6 +4061,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "firmachain",
     "addressPrefix": "firma",
     "txExplorer": "https://app.ezstaking.io/firmachain/txs/$hash",
@@ -4019,6 +4099,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "furya",
     "addressPrefix": "furya",
     "txExplorer": "https://explorer.furya.xyz/txs/$hash",
@@ -4056,6 +4137,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "galaxy",
     "addressPrefix": "galaxy",
     "txExplorer": "https://explorer.postcapitalist.io/Galaxy/tx/$hash",
@@ -4093,6 +4175,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "genesisl1",
     "addressPrefix": "genesis",
     "txExplorer": "https://ping.pub/genesisL1/tx/$hash",
@@ -4130,6 +4213,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "gitopia",
     "addressPrefix": "gitopia",
     "txExplorer": "https://ping.pub/gitopia/tx/$hash",
@@ -4167,6 +4251,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "gitopiatestnet",
     "addressPrefix": "gitopia",
     "txExplorer": "https://gitopia.explorers.guru/transaction/$hash",
@@ -4404,6 +4489,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "gravitybridge",
     "addressPrefix": "gravity",
     "txExplorer": "https://app.ezstaking.io/gravitybridge/txs/$hash",
@@ -4441,6 +4527,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "haqq",
     "addressPrefix": "haqq",
     "txExplorer": "https://explorer.haqq.network/tx/$hash",
@@ -4496,6 +4583,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "highbury",
     "addressPrefix": "fury",
     "txExplorer": "https://www.explorer.furya.wtf//txs/$hash",
@@ -4533,6 +4621,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "humanstestnet",
     "addressPrefix": "humans",
     "txExplorer": "https://explorer.humans.zone/humans-testnet/tx/$hash",
@@ -4569,6 +4658,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "humans",
     "addressPrefix": "human",
     "txExplorer": "https://www.mintscan.io/humans/tx/$hash",
@@ -4606,6 +4696,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "hypersigntestnet",
     "addressPrefix": "hid",
     "txExplorer": "https://explorer.hypersign.id/hypersign-testnet/tx/$hash",
@@ -4642,6 +4733,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "idep",
     "addressPrefix": "idep",
     "txExplorer": "https://app.ezstaking.io/idep/txs/$hash",
@@ -4679,6 +4771,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "imversed",
     "addressPrefix": "imv",
     "txExplorer": "https://txe.imversed.network/tx/$hash",
@@ -4716,6 +4809,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "imversedtestnet",
     "addressPrefix": "imv",
     "txExplorer": "https://tex-s.imversed.com/transactions/$hash",
@@ -4788,6 +4882,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "injective",
     "addressPrefix": "inj",
     "txExplorer": "https://explorer.injective.network/transaction/$hash",
@@ -4825,6 +4920,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "injectivetestnet",
     "addressPrefix": "inj",
     "txExplorer": "https://testnet.explorer.injective.network/transaction/$hash",
@@ -4861,6 +4957,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "irisnet",
     "addressPrefix": "iaa",
     "txExplorer": "https://app.ezstaking.io/irisnet/txs/$hash",
@@ -4898,6 +4995,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "impacthub",
     "addressPrefix": "ixo",
     "txExplorer": "https://app.ezstaking.io/ixo/txs/$hash",
@@ -4935,6 +5033,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "impacthubdevnet",
     "addressPrefix": "ixo",
     "txExplorer": "https://blockscan.devnet.ixo.earth/ixo/transactions/$hash",
@@ -4971,6 +5070,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "impacthubtestnet",
     "addressPrefix": "ixo",
     "txExplorer": "https://blockscan.testnet.ixo.earth/ixo/transactions/$hash",
@@ -5008,6 +5108,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "jackal",
     "addressPrefix": "jkl",
     "txExplorer": "https://ping.pub/jackal/tx/$hash",
@@ -5045,6 +5146,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "jackaltestnet",
     "addressPrefix": "jkl",
     "txExplorer": "https://explorer.stavr.tech/Jackal-Testnet/tx/$hash",
@@ -5684,6 +5786,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "juno",
     "addressPrefix": "juno",
     "txExplorer": "https://app.ezstaking.io/juno/txs/$hash",
@@ -5730,6 +5833,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "junotestnet",
     "addressPrefix": "juno",
     "txExplorer": "https://testnet.app.ezstaking.io/juno-testnet/txs/$hash",
@@ -5802,6 +5906,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "kava",
     "addressPrefix": "kava",
     "txExplorer": "https://www.mintscan.io/kava/transactions/$hash",
@@ -5848,6 +5953,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "kichain",
     "addressPrefix": "ki",
     "txExplorer": "https://app.ezstaking.io/kichain/txs/$hash",
@@ -5885,6 +5991,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "kichaintestnet",
     "addressPrefix": "tki",
     "txExplorer": "https://kichain-t-4.blockchain.ki/transactions/$hash",
@@ -5921,6 +6028,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "konstellation",
     "addressPrefix": "darc",
     "txExplorer": "https://explorer.konstellation.tech/tx/$hash",
@@ -6093,6 +6201,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "kujira",
     "addressPrefix": "kujira",
     "txExplorer": "https://finder.kujira.app/kaiyo-1/tx/$hash",
@@ -6139,6 +6248,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "kujiratestnet",
     "addressPrefix": "kujira",
     "txExplorer": "https://kujira.explorers.guru/transaction/$hash",
@@ -6175,6 +6285,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "kyve",
     "addressPrefix": "kyve",
     "txExplorer": "https://www.mintscan.io/kyve/txs/$hash",
@@ -6212,6 +6323,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "kyvetestnet",
     "addressPrefix": "kyve",
     "txExplorer": "https://testnet.mintscan.io/kyve-testnet/txs/$hash",
@@ -6248,6 +6360,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "kyvedevnet",
     "addressPrefix": "kyve",
     "txExplorer": "https://kyve.explorers.guru/transaction/$hash",
@@ -6284,6 +6397,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "lambda",
     "addressPrefix": "lamb",
     "txExplorer": "https://explorer.lambda.im/tx/$hash",
@@ -6321,6 +6435,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "lavatestnet",
     "addressPrefix": "lava@",
     "txExplorer": "https://lava.explorers.guru//transaction/$hash",
@@ -6358,6 +6473,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "likecoin",
     "addressPrefix": "like",
     "txExplorer": "https://www.mintscan.io/likecoin/transactions/$hash",
@@ -6395,6 +6511,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "likecointestnet",
     "addressPrefix": "like",
     "txExplorer": "https://testnet.bigdipper.live/likecoin/transactions/$hash",
@@ -6432,6 +6549,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "logos",
     "addressPrefix": "logos",
     "txExplorer": "not-found",
@@ -6469,6 +6587,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "loyal",
     "addressPrefix": "loyal",
     "txExplorer": "https://pingpub.joinloyal.io/loyal/tx/$hash",
@@ -6506,6 +6625,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "lumnetwork",
     "addressPrefix": "lum",
     "txExplorer": "https://app.ezstaking.io/lumnetwork/txs/$hash",
@@ -6543,6 +6663,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "lumenx",
     "addressPrefix": "lumen",
     "txExplorer": "https://explorer.chaintools.tech/lumenx/tx/$hash",
@@ -6580,6 +6701,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "lumenxtestnet",
     "addressPrefix": "lumen",
     "txExplorer": "https://testnet.explorer.chaintools.tech/lumenx/tx/$hash",
@@ -6616,6 +6738,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "mars",
     "addressPrefix": "mars",
     "txExplorer": "https://explorer.marsprotocol.io/transactions/$hash",
@@ -6653,6 +6776,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "marstestnet",
     "addressPrefix": "mars",
     "txExplorer": "https://testnet-explorer.marsprotocol.io/transactions/$hash",
@@ -6699,6 +6823,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "mayachain",
     "addressPrefix": "maya",
     "txExplorer": "https://www.explorer.mayachain.info/#/txs/$hash",
@@ -6735,6 +6860,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "medasdigital",
     "addressPrefix": "medas",
     "txExplorer": "https://explorer.medas-digital.io:3100/medasdigital/transactions/$hash",
@@ -6772,6 +6898,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "panacea",
     "addressPrefix": "panacea",
     "txExplorer": "https://www.mintscan.io/medibloc/transactions/$hash",
@@ -6809,6 +6936,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "meme",
     "addressPrefix": "meme",
     "txExplorer": "https://ping.pub/meme/tx/$hash",
@@ -6846,6 +6974,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "microtick",
     "addressPrefix": "micro",
     "txExplorer": "https://ping.pub/microtick/tx/$hash",
@@ -6955,6 +7084,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "migaloo",
     "addressPrefix": "migaloo",
     "txExplorer": "https://migaloo.explorers.guru/transaction/$hash",
@@ -6992,6 +7122,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "migalootestnet",
     "addressPrefix": "migaloo",
     "txExplorer": "https://ping.pfc.zone/narwhal-testnet/tx/$hash",
@@ -7029,6 +7160,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "mises",
     "addressPrefix": "mises",
     "txExplorer": "https://gw.mises.site/tx/$hash",
@@ -7066,6 +7198,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "celestiatestnet3",
     "addressPrefix": "celestia",
     "txExplorer": "https://testnet.mintscan.io/celestia-testnet/txs/$hash",
@@ -7102,6 +7235,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "mun",
     "addressPrefix": "mun",
     "txExplorer": "https://explorer.mun.money/mun/$hash",
@@ -7139,6 +7273,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "mythos",
     "addressPrefix": "mythos",
     "txExplorer": "not-found",
@@ -7293,6 +7428,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "neutron",
     "addressPrefix": "neutron",
     "txExplorer": "https://www.mintscan.io/neutron/transactions/$hash",
@@ -7330,6 +7466,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "neutrontestnet",
     "addressPrefix": "neutron",
     "txExplorer": "https://explorer.rs-testnet.polypore.xyz/pion-1/tx/$hash",
@@ -7367,6 +7504,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "nibiru",
     "addressPrefix": "nibi",
     "txExplorer": "https://nibiru.explorers.guru/transaction/$hash",
@@ -7422,6 +7560,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "noble",
     "addressPrefix": "noble",
     "txExplorer": "https://www.mintscan.io/noble/txs/$hash",
@@ -7486,6 +7625,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "nobletestnet",
     "addressPrefix": "noble",
     "txExplorer": "https://testnet.mintscan.io/noble-testnet/txs/$hash",
@@ -7522,6 +7662,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "nois",
     "addressPrefix": "nois",
     "txExplorer": "https://app.ezstaking.io/nois/txs/$hash",
@@ -7559,6 +7700,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "noistestnet",
     "addressPrefix": "nois",
     "txExplorer": "https://explorer.stavr.tech/Nois-Testnet/tx/$hash",
@@ -7596,6 +7738,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "nolus",
     "addressPrefix": "nolus",
     "txExplorer": "https://explorer.nolus.io/pirin-1/tx/$hash",
@@ -7633,6 +7776,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "nolustestnet",
     "addressPrefix": "nolus",
     "txExplorer": "https://explorer-rila.nolus.io/rila-1/tx/$hash",
@@ -7679,6 +7823,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "nomic",
     "addressPrefix": "nomic",
     "txExplorer": "https://bigdipper.live/nomic/transactions/$hash",
@@ -7725,6 +7870,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "nyx",
     "addressPrefix": "n",
     "txExplorer": "https://nym.explorers.guru/transaction/$hash",
@@ -7762,6 +7908,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "octa",
     "addressPrefix": "octa",
     "txExplorer": "http://explorer.octa-coin.com/txs/$hash",
@@ -7817,6 +7964,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "odin",
     "addressPrefix": "odin",
     "txExplorer": "https://mainnet.odinprotocol.io/transactions/$hash",
@@ -7854,6 +8002,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "okexchain",
     "addressPrefix": "ex",
     "txExplorer": "https://www.oklink.com/en/okc/tx/$hash",
@@ -7891,6 +8040,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "okp4testnet",
     "addressPrefix": "okp4",
     "txExplorer": "https://testnet.ping.pub/OKP4%20testnet/tx/$hash",
@@ -7928,6 +8078,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "omniflixhub",
     "addressPrefix": "omniflix",
     "txExplorer": "https://app.ezstaking.io/omniflixhub/txs/$hash",
@@ -7965,6 +8116,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "onomy",
     "addressPrefix": "onomy",
     "txExplorer": "https://explorer.onomy.io/transactions/$hash",
@@ -8002,6 +8154,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "oraichain",
     "addressPrefix": "orai",
     "txExplorer": "https://scan.orai.io/txs/$hash",
@@ -8189,6 +8342,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "osmosistestnet4",
     "addressPrefix": "osmo",
     "txExplorer": "not-found",
@@ -8226,6 +8380,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "passage",
     "addressPrefix": "pasg",
     "txExplorer": "https://passage.aneka.io/txs/$hash",
@@ -8263,6 +8418,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "passage1",
     "addressPrefix": "pasg",
     "txExplorer": "https://passage.aneka.io/txs/$hash",
@@ -8318,6 +8474,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "persistence",
     "addressPrefix": "persistence",
     "txExplorer": "https://www.mintscan.io/persistence/transactions/$hash",
@@ -8364,6 +8521,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "persistencetestnet",
     "addressPrefix": "persistence",
     "txExplorer": "https://testnet.ping.pub/test-core-1/tx/$hash",
@@ -8427,6 +8585,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "persistencetestnet2",
     "addressPrefix": "persistence",
     "txExplorer": "https://testnet.mintscan.io/persistence-testnet/txs/$hash",
@@ -8463,6 +8622,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "planq",
     "addressPrefix": "plq",
     "txExplorer": "https://explorer.planq.network/transactions/$hash",
@@ -8500,6 +8660,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "point",
     "addressPrefix": "point",
     "txExplorer": "https://explorer.pointnetwork.io/tx/$hash",
@@ -8618,6 +8779,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "provenance",
     "addressPrefix": "pb",
     "txExplorer": "https://explorer.provenance.io/tx/$hash",
@@ -8655,6 +8817,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "pryzmtestnet",
     "addressPrefix": "pryzm",
     "txExplorer": "https://testnets.cosmosrun.info/pryzm-indigo-1/tx/$hash",
@@ -8692,6 +8855,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "pundix",
     "addressPrefix": "px",
     "txExplorer": "https://starscan.io/pundix/tx/$hash",
@@ -8729,6 +8893,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "quasar",
     "addressPrefix": "quasar",
     "txExplorer": "https://www.mintscan.io/quasar/transactions/$hash",
@@ -8784,6 +8949,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "quasartestnet",
     "addressPrefix": "quasar",
     "txExplorer": "not-found",
@@ -8866,6 +9032,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "quicksilver",
     "addressPrefix": "quick",
     "txExplorer": "https://www.mintscan.io/quicksilver/transactions/$hash",
@@ -8903,6 +9070,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "quicksilvertestnet",
     "addressPrefix": "quick",
     "txExplorer": "https://explorer.stavr.tech/Quicksilver/tx/$hash",
@@ -8940,6 +9108,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "qwoyn",
     "addressPrefix": "qwoyn",
     "txExplorer": "https://explorer.theamsolutions.info/qwoyn-main/blocks",
@@ -8977,6 +9146,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "qwoyntestnet",
     "addressPrefix": "qwoyn",
     "txExplorer": "https://explorer.theamsolutions.info/qwoyn-testnet/tx/$hash",
@@ -9023,6 +9193,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "realio",
     "addressPrefix": "realio",
     "txExplorer": "https://explorer.stavr.tech/realio-mainnet/tx/$hash",
@@ -9060,6 +9231,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "rebus",
     "addressPrefix": "rebus",
     "txExplorer": "https://rebus.explorers.guru/transaction/$hash",
@@ -9106,6 +9278,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "regen",
     "addressPrefix": "regen",
     "txExplorer": "https://www.mintscan.io/regen/transactions/$hash",
@@ -9143,6 +9316,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "rsprovidertestnet",
     "addressPrefix": "cosmos",
     "txExplorer": "https://testnet.mintscan.io/ics-testnet-provider/txs/$hash",
@@ -9179,6 +9353,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "rizon",
     "addressPrefix": "rizon",
     "txExplorer": "https://app.ezstaking.io/rizon/txs/$hash",
@@ -9216,6 +9391,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "sagatestnet",
     "addressPrefix": "saga",
     "txExplorer": "https://www.mintscan.io/saga-testnet/tx/$hash",
@@ -9253,6 +9429,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "akashtestnet",
     "addressPrefix": "akash",
     "txExplorer": "https://explorer.sandbox-01.aksh.pw/akash/tx/$hash",
@@ -9371,6 +9548,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "secretnetwork",
     "addressPrefix": "secret",
     "txExplorer": "https://app.ezstaking.io/secretnetwork/txs/$hash",
@@ -9408,6 +9586,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "secretnetworktestnet",
     "addressPrefix": "secret",
     "txExplorer": "https://testnet.ping.pub/secret/tx/$hash",
@@ -9444,6 +9623,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "secretnetworktestnet2",
     "addressPrefix": "secret",
     "txExplorer": "https://secretnodes.com/secret/chains/pulsar-2/transactions/$hash",
@@ -9516,6 +9696,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "sei",
     "addressPrefix": "sei",
     "txExplorer": "https://ping.pub/sei/tx/$hash",
@@ -9553,6 +9734,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "seitestnet",
     "addressPrefix": "sei",
     "txExplorer": "https://sei.explorers.guru/transaction/$hash",
@@ -9590,6 +9772,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "seidevnet3",
     "addressPrefix": "sei",
     "txExplorer": "https://devnet.sei.explorers.guru/transaction/$hash",
@@ -9626,6 +9809,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "sentinel",
     "addressPrefix": "sent",
     "txExplorer": "https://www.mintscan.io/sentinel/transactions/$hash",
@@ -9663,6 +9847,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "sge",
     "addressPrefix": "sge",
     "txExplorer": "https://blockexplorer.sgenetwork.io/sge/tx/$hash",
@@ -9700,6 +9885,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "sgetestnet",
     "addressPrefix": "sge",
     "txExplorer": "https://blockexplorer.testnet.sgenetwork.io/sge-network/tx/$hash",
@@ -9737,6 +9923,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "shareledger",
     "addressPrefix": "shareledger",
     "txExplorer": "https://explorer.shareri.ng/transactions/$hash",
@@ -9774,6 +9961,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "shentu",
     "addressPrefix": "shentu",
     "txExplorer": "https://app.ezstaking.io/shentu/txs/$hash",
@@ -9811,6 +9999,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "sifchain",
     "addressPrefix": "sif",
     "txExplorer": "https://app.ezstaking.io/sifchain/txs/$hash",
@@ -9848,6 +10037,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "sixtestnet",
     "addressPrefix": "6x",
     "txExplorer": "https://sixscan.io/fivenet/tx/$hash",
@@ -9884,6 +10074,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "six",
     "addressPrefix": "6x",
     "txExplorer": "https://sixscan.io/sixnet/tx/$hash",
@@ -9920,6 +10111,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "sommelier",
     "addressPrefix": "somm",
     "txExplorer": "https://sommscan.io",
@@ -9957,6 +10149,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "source",
     "addressPrefix": "source",
     "txExplorer": "https://explorer.stavr.tech/Source-Mainnet/tx/$hash",
@@ -9994,6 +10187,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "sourcetestnet",
     "addressPrefix": "source",
     "txExplorer": "https://explorer.nodestake.top/source-testnet/tx/$hash",
@@ -10066,6 +10260,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "stafihub",
     "addressPrefix": "stafi",
     "txExplorer": "https://www.mintscan.io/stafi/transactions/$hash",
@@ -10148,6 +10343,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "stargaze",
     "addressPrefix": "stars",
     "txExplorer": "https://app.ezstaking.io/stargaze/txs/$hash",
@@ -10185,6 +10381,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "stargazetestnet",
     "addressPrefix": "stars",
     "txExplorer": "https://testnet-explorer.publicawesome.dev/stargaze/tx/$hash",
@@ -10221,6 +10418,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "starname",
     "addressPrefix": "star",
     "txExplorer": "https://ping.pub/starname/tx/$hash",
@@ -10258,6 +10456,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "statesettestnet",
     "addressPrefix": "stateset",
     "txExplorer": "https://explore.stateset.zone/transactions/$hash",
@@ -10294,6 +10493,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "stratos",
     "addressPrefix": "st",
     "txExplorer": "https://explorer.thestratos.org/transactions/$hash",
@@ -10421,6 +10621,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "stride",
     "addressPrefix": "stride",
     "txExplorer": "https://explorer.bccnodes.com/stride-M/tx/$hash",
@@ -10458,6 +10659,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "stridetestnet",
     "addressPrefix": "stride",
     "txExplorer": "https://testnet.ping.pub/stride/tx/$hash",
@@ -10494,6 +10696,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "temporaltestnet",
     "addressPrefix": "temporal",
     "txExplorer": "https://testnet.explorer.thesilverfox.pro/temporal/tx/$hash",
@@ -10530,6 +10733,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "tenet",
     "addressPrefix": "tenet",
     "txExplorer": "https://ping.pub/tenet/tx/$hash",
@@ -10729,7 +10933,15 @@
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad"
+      "NFTLaunchpad",
+      "CosmWasmPremiumFeed"
+    ],
+    "featureObjects": [
+      {
+        "type": "CosmWasmPremiumFeed",
+        "membershipContractAddress": "tori1yek2csaaw550wq52v06ztwp2snuxp8epkfzzvqfvkv8g6xfv3nqqzgz3p9",
+        "mintDenom": "utori"
+      }
     ],
     "currencies": [
       {
@@ -10828,6 +11040,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "terpnettestnet",
     "addressPrefix": "terp",
     "txExplorer": "https://explorer.nodestake.top/terp-testnet/tx/$hash",
@@ -11089,6 +11302,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "terra2",
     "addressPrefix": "terra",
     "txExplorer": "https://atomscan.com/terra2/transactions/$hash",
@@ -11126,6 +11340,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "terra2testnet",
     "addressPrefix": "terra",
     "txExplorer": "https://finder.terra.money/testnet/tx/$hash",
@@ -13043,6 +13258,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "terra",
     "addressPrefix": "terra",
     "txExplorer": "https://ping.pub/terra-luna/tx/$hash",
@@ -13080,6 +13296,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "tgrade",
     "addressPrefix": "tgrade",
     "txExplorer": "https://tgrade.aneka.io/txs/$hash",
@@ -13107,6 +13324,7 @@
     "kind": "Cosmos",
     "currencies": [],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "thorchain",
     "addressPrefix": "thor",
     "txExplorer": "https://thorchain.net/#/txs/$hash",
@@ -13143,6 +13361,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "ulastestnet",
     "addressPrefix": "ulas",
     "txExplorer": "https://testnet-explorer.ulas.network/ulas/tx/$hash",
@@ -13179,6 +13398,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "umee",
     "addressPrefix": "umee",
     "txExplorer": "https://www.mintscan.io/umee/transactions/$hash",
@@ -13216,6 +13436,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "unification",
     "addressPrefix": "und",
     "txExplorer": "https://explorer.unification.io/transactions/$hash",
@@ -13253,6 +13474,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "uniontestnet",
     "addressPrefix": "union",
     "txExplorer": "https://explorer.cryptware.io/union/tx/$hash",
@@ -13290,6 +13512,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "ununifi",
     "addressPrefix": "ununifi",
     "txExplorer": "https://ununifi.io/explorer/txs/$hash",
@@ -13327,6 +13550,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "uptick",
     "addressPrefix": "uptick",
     "txExplorer": "https://explorers.brocha.in/uptick/tx/$hash",
@@ -13364,6 +13588,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "upticktestnet",
     "addressPrefix": "uptick",
     "txExplorer": "https://explorer.testnet.uptick.network/uptick-network-testnet/tx/$hash",
@@ -13400,6 +13625,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "vidulum",
     "addressPrefix": "vdl",
     "txExplorer": "https://explorers.vidulum.app/vidulum/tx/$hash",
@@ -13437,6 +13663,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "vincechaintestnet",
     "addressPrefix": "vce",
     "txExplorer": "https://scan-testnet.vincechain.com/tx/$hash",
@@ -13600,6 +13827,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "gateway",
     "addressPrefix": "wormhole",
     "txExplorer": "https://bigdipper.live/wormhole/transactions/$hash",
@@ -13637,6 +13865,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "xiontestnet",
     "addressPrefix": "xion",
     "txExplorer": "not-found",
@@ -13674,6 +13903,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "xpla",
     "addressPrefix": "xpla",
     "txExplorer": "https://explorer.xpla.io/mainnet/tx/$hash",
@@ -13711,6 +13941,7 @@
       }
     ],
     "features": [],
+    "featureObjects": [],
     "idPrefix": "zetachaintestnet",
     "addressPrefix": "zeta",
     "txExplorer": "https://explorer.zetachain.com/cc/tx/$hash",

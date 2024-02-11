@@ -32,6 +32,8 @@ import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutralA3, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
+
 const NFTAPIKeyInput: React.FC = () => {
   const userIPFSKey = useSelector(selectNFTStorageAPI);
   const dispatch = useAppDispatch();
@@ -79,6 +81,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
   const dispatch = useAppDispatch();
   const [networksModalVisible, setNetworksModalVisible] = React.useState(false);
   const isLightTheme = useSelector(selectIsLightTheme);
+  const [developerMode, setDeveloperMode] = useDeveloperMode();
 
   return (
     <ScreenContainer>
@@ -119,7 +122,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
 
         <Notifications />
 
-        <SpacerColumn size={4} />
+        <SpacerColumn size={3} />
 
         <View style={commonStyles.cardContainer}>
           <TouchableOpacity
@@ -141,7 +144,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
           </TouchableOpacity>
         </View>
 
-        <SpacerColumn size={4} />
+        <SpacerColumn size={3} />
 
         <View style={commonStyles.cardContainer}>
           <SettingItem
@@ -156,9 +159,24 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
           />
         </View>
 
-        <SpacerColumn size={4} />
+        <SpacerColumn size={3} />
 
         <WeshnetStateButton />
+
+        <SpacerColumn size={3} />
+
+        <View style={commonStyles.cardContainer}>
+          <SettingItem
+            onPress={(item: SettingItemType) => {
+              setDeveloperMode(!item.state);
+            }}
+            item={{
+              title: "Developer Mode, use at your own risk!",
+              description: "",
+              state: developerMode,
+            }}
+          />
+        </View>
 
         {/*Please note that the "user profile customization" part of this task was changed to navigate to the TNS manage page.*/}
         {/*I left the files ( committed to the repo UserProfileModal.tsx) as by the previous developer.*/}

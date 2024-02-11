@@ -1,5 +1,6 @@
 import { teritoriTestnetCurrencies } from "./currencies";
-import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
+import { NetworkFeature } from "../features";
+import { NetworkInfo, NetworkKind } from "../types";
 
 const nameServiceContractAddress =
   "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys";
@@ -24,6 +25,15 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     NetworkFeature.NameService,
     NetworkFeature.BurnTokens,
     NetworkFeature.NFTLaunchpad,
+    NetworkFeature.CosmWasmPremiumFeed,
+  ],
+  featureObjects: [
+    {
+      type: NetworkFeature.CosmWasmPremiumFeed,
+      membershipContractAddress:
+        "tori1yek2csaaw550wq52v06ztwp2snuxp8epkfzzvqfvkv8g6xfv3nqqzgz3p9",
+      mintDenom: "utori",
+    },
   ],
   currencies: teritoriTestnetCurrencies,
   txExplorer: "https://explorer.teritori.com/teritori-testnet/tx/$hash",
