@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getNativeCurrency } from "../networks";
-import { CoingeckoCoin, CoingeckoPrices } from "../utils/coingecko";
-import { isDefined } from "../utils/filter";
+import { getNativeCurrency } from "@/networks";
+import { CoingeckoCoin, CoingeckoPrices } from "@/utils/coingecko";
+import { isDefined } from "@/utils/filter";
 
 export const useCoingeckoPrices = (coins: CoingeckoCoin[]) => {
   const ids = coins

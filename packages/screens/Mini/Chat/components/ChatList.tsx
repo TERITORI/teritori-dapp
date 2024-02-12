@@ -6,32 +6,32 @@ import { useSelector } from "react-redux";
 import DoubleCheckWhiteSVG from "../../../../../assets/icons/double-check-white.svg";
 import DoubleCheckSVG from "../../../../../assets/icons/double-check.svg";
 import searchSVG from "../../../../../assets/icons/search-gray.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { Separator } from "../../../../components/separators/Separator";
-import { SpacerColumn } from "../../../../components/spacer";
-import { useMessage } from "../../../../context/MessageProvider";
+import { ChatAvatar } from "../../components/ChatAvatar";
+import MiniTextInput from "../../components/MiniTextInput";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn } from "@/components/spacer";
+import { useMessage } from "@/context/MessageProvider";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import {
   selectConversationById,
   selectConversationList,
   selectLastContactMessageByGroupPk,
   selectLastMessageByGroupPk,
   selectPeerById,
-} from "../../../../store/slices/message";
-import { RootState } from "../../../../store/store";
-import { neutralA3, secondaryColor } from "../../../../utils/style/colors";
-import { fontMedium13, fontSemibold14 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import { Conversation } from "../../../../utils/types/message";
+} from "@/store/slices/message";
+import { RootState } from "@/store/store";
+import { neutralA3, secondaryColor } from "@/utils/style/colors";
+import { fontMedium13, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { Conversation } from "@/utils/types/message";
 import {
   getConversationAvatar,
   getConversationName,
-} from "../../../../weshnet/messageHelpers";
-import { ChatAvatar } from "../../components/ChatAvatar";
-import MiniTextInput from "../../components/MiniTextInput";
-
-import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+} from "@/weshnet/messageHelpers";
 
 export const ChatList = () => {
   const navigation = useAppNavigation();

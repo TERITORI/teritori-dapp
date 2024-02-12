@@ -3,16 +3,17 @@ import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
-import { SpacerRow } from "../../../components/spacer";
-import { useMessage } from "../../../context/MessageProvider";
-import { useDropdowns } from "../../../hooks/useDropdowns";
-import { neutral17, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold12 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { CONVERSATION_TYPES } from "../../../utils/types/message";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { SpacerRow } from "@/components/spacer";
+import { useMessage } from "@/context/MessageProvider";
+import { useDropdowns } from "@/hooks/useDropdowns";
+import { neutral17, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold12 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { CONVERSATION_TYPES } from "@/utils/types/message";
 
 export const ConversationSelector: React.FC<{
   style?: StyleProp<ViewStyle>;

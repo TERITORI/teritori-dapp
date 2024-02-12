@@ -1,16 +1,17 @@
 import { useCallback } from "react";
 
 import useSelectedWallet from "./useSelectedWallet";
-import { TeritoriNftVaultClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
-import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
+
+import { TeritoriNftVaultClient } from "@/contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { NFTVault__factory } from "@/evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import {
   getKeplrSigningCosmWasmClient,
   getNetwork,
   mustGetCosmosNetwork,
   mustGetEthereumNetwork,
   NetworkKind,
-} from "../networks";
-import { getMetaMaskEthereumSigner } from "../utils/ethereum";
+} from "@/networks";
+import { getMetaMaskEthereumSigner } from "@/utils/ethereum";
 
 const teritoriCancelNFTListing = async (
   networkId: string,

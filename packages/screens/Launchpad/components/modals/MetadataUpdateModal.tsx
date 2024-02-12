@@ -2,17 +2,18 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Image, View } from "react-native";
 
-import { BrandText } from "../../../../components/BrandText";
-import { PrimaryBox } from "../../../../components/boxes/PrimaryBox";
-import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import ModalBase from "../../../../components/modals/ModalBase";
-import { Separator } from "../../../../components/separators/Separator";
-import { neutral77, secondaryColor } from "../../../../utils/style/colors";
-import { fontSemibold16, fontSemibold20 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import { LocalFileData } from "../../../../utils/types/files";
 import { NewMetadataDetailsFormValues } from "../../CreateCollection.type";
 import { TextInputLaunchpadRequired } from "../inputs/TextInputLaunchpadRequired";
+
+import { BrandText } from "@/components/BrandText";
+import { PrimaryBox } from "@/components/boxes/PrimaryBox";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { Separator } from "@/components/separators/Separator";
+import { neutral77, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold16, fontSemibold20 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { LocalFileData } from "@/utils/types/files";
 
 export const MetadataUpdateModal: React.FC<{
   onClose: () => void;

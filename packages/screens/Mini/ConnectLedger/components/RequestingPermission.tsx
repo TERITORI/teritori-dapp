@@ -2,14 +2,15 @@ import React from "react";
 import { View } from "react-native";
 
 import requestingPermissionPNG from "../../../../../assets/icons/loader.png";
-import { BrandText } from "../../../../components/BrandText";
-import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
-import { SpacerColumn } from "../../../../components/spacer";
-import { neutral77 } from "../../../../utils/style/colors";
-import { fontMedium16, fontSemibold30 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
 import { CustomButton } from "../../components/Button/CustomButton";
 import { StepType } from "../ConnectLedgerScreen";
+
+import { BrandText } from "@/components/BrandText";
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { SpacerColumn } from "@/components/spacer";
+import { neutral77 } from "@/utils/style/colors";
+import { fontMedium16, fontSemibold30 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type Props = {
   onStepChange: (step: StepType) => void;

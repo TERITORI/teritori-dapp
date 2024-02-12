@@ -1,13 +1,14 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import warningTriangleSVG from "../../../../assets/icons/warning-triangle.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { SpacerRow, SpacerColumn } from "../../../components/spacer";
-import { errorColor, neutral77 } from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold12 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { errorColor, neutral77 } from "@/utils/style/colors";
+import { fontSemibold12, fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const WarningBox: React.FC<{
   title: string;

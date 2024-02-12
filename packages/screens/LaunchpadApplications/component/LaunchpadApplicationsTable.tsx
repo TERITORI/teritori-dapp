@@ -3,17 +3,15 @@ import React from "react";
 import { FlatList, View } from "react-native";
 
 import dotsSVG from "../../../../assets/icons/dots.svg";
-import { SVG } from "../../../components/SVG";
-import { CollectionNameCell } from "../../../components/applicationTable/CollectionNameCell";
-import { InnerCellText } from "../../../components/applicationTable/InnerCellText";
-import { LinkIconAndRedirect } from "../../../components/applicationTable/LinkIconAndRedirect";
-import { TableRow } from "../../../components/table/TableRow";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { mineShaftColor } from "../../../utils/style/colors";
-import {
-  layout,
-  screenContentMaxWidthLarge,
-} from "../../../utils/style/layout";
+
+import { SVG } from "@/components/SVG";
+import { CollectionNameCell } from "@/components/applicationTable/CollectionNameCell";
+import { InnerCellText } from "@/components/applicationTable/InnerCellText";
+import { LinkIconAndRedirect } from "@/components/applicationTable/LinkIconAndRedirect";
+import { TableRow } from "@/components/table/TableRow";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { mineShaftColor } from "@/utils/style/colors";
+import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
 
 const TABLE_ROWS = {
   rank: {

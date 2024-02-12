@@ -4,12 +4,9 @@ import { SvgProps } from "react-native-svg";
 import ListView from "./ListView";
 import chevronGrayRightSVG from "../../../../assets/icons/chevron-right-gray.svg";
 import chevronRedRightSVG from "../../../../assets/icons/chevron-right-red.svg";
-import { RouteName, useAppNavigation } from "../../../utils/navigation";
-import {
-  dangerColor,
-  neutralA3,
-  secondaryColor,
-} from "../../../utils/style/colors";
+
+import { RouteName, useAppNavigation } from "@/utils/navigation";
+import { dangerColor, neutralA3, secondaryColor } from "@/utils/style/colors";
 
 type MenuItemProps = {
   icon?: string | FC<SvgProps>;

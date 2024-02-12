@@ -2,20 +2,21 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import friendGraySVG from "../../../../../assets/icons/friend-gray.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SpacerColumn } from "../../../../components/spacer";
+import { CustomButton } from "../../components/Button/CustomButton";
+import MiniTextInput from "../../components/MiniTextInput";
+import MobileModal from "../../components/MobileModal";
+import TitleBar from "../../components/TitleBar";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn } from "@/components/spacer";
 import {
   neutral33,
   neutralA3,
   redDefault,
   withAlpha,
-} from "../../../../utils/style/colors";
-import { fontMedium14 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import { CustomButton } from "../../components/Button/CustomButton";
-import MiniTextInput from "../../components/MiniTextInput";
-import MobileModal from "../../components/MobileModal";
-import TitleBar from "../../components/TitleBar";
+} from "@/utils/style/colors";
+import { fontMedium14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type Props = {
   selected: string[];

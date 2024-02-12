@@ -1,5 +1,5 @@
-import { useWallets } from "../context/WalletsProvider";
-import { WalletProvider } from "../utils/walletProvider";
+import { useWallets } from "@/context/WalletsProvider";
+import { WalletProvider } from "@/utils/walletProvider";
 
 export const useIsNativeWalletConnected = () => {
   const { wallets } = useWallets();

@@ -2,16 +2,17 @@ import { FlatList, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import AddNewSvg from "../../../../assets/icons/add-circle-filled.svg";
-import { BrandText } from "../../../components/BrandText";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn } from "../../../components/spacer";
-import { selectAllAddressBook } from "../../../store/slices/wallets";
-import { ScreenFC } from "../../../utils/navigation";
-import { neutralA3 } from "../../../utils/style/colors";
-import { fontNormal15 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import ListView from "../components/ListView";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { BrandText } from "@/components/BrandText";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn } from "@/components/spacer";
+import { selectAllAddressBook } from "@/store/slices/wallets";
+import { ScreenFC } from "@/utils/navigation";
+import { neutralA3 } from "@/utils/style/colors";
+import { fontNormal15 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const AddressBookScreen: ScreenFC<"AddressBook"> = ({ navigation }) => {
   const goBackTo = () => navigation.replace("MiniSettings");

@@ -3,23 +3,24 @@ import { View } from "react-native";
 import arrowUpSVG from "../../../../../assets/icons/arrow-up.svg";
 import checkSVG from "../../../../../assets/icons/check.svg";
 import teritoriSVG from "../../../../../assets/icons/networks/teritori.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { Separator } from "../../../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
-import { useSelectedNativeWallet } from "../../../../hooks/wallet/useSelectedNativeWallet";
-import { prettyPrice } from "../../../../utils/coins";
+import { capitalizeStr } from "../TransactionDetailScreen";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
+import { prettyPrice } from "@/utils/coins";
 import {
   blueDefault,
   neutral1A,
   neutral44,
   neutral88,
-} from "../../../../utils/style/colors";
-import { fontMedium13, fontMedium14 } from "../../../../utils/style/fonts";
-import { tinyAddress } from "../../../../utils/text";
-import { capitalizeStr } from "../TransactionDetailScreen";
+} from "@/utils/style/colors";
+import { fontMedium13, fontMedium14 } from "@/utils/style/fonts";
+import { tinyAddress } from "@/utils/text";
 
 type TransactionType = {
   txhash: string;

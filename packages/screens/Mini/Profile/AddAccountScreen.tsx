@@ -1,10 +1,11 @@
 import React from "react";
 import { View } from "react-native";
 
-import { ScreenFC } from "../../../utils/navigation";
-import { layout } from "../../../utils/style/layout";
 import { SettingMenuItem } from "../components/SettingMenuItems";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { ScreenFC } from "@/utils/navigation";
+import { layout } from "@/utils/style/layout";
 
 export const AddAccountScreen: ScreenFC<"MiniAddAccount"> = ({
   navigation,

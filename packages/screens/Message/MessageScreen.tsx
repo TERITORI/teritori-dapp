@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
 import {
-  View,
-  TouchableOpacity,
-  ScrollView,
   ActivityIndicator,
-  useWindowDimensions,
   Platform,
+  ScrollView,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
 } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -22,16 +22,17 @@ import chat from "../../../assets/icons/add-chat.svg";
 import friend from "../../../assets/icons/friend.svg";
 import group from "../../../assets/icons/group.svg";
 import space from "../../../assets/icons/space.svg";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { Separator } from "../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useMessage } from "../../context/MessageProvider";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { selectIsWeshConnected } from "../../store/slices/message";
-import { useAppNavigation, ScreenFC } from "../../utils/navigation";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useMessage } from "@/context/MessageProvider";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { selectIsWeshConnected } from "@/store/slices/message";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
   const activeView = route?.params?.view;

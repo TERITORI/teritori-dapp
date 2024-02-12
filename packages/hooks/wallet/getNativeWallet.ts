@@ -1,7 +1,8 @@
 import { Secp256k1HdWallet } from "@cosmjs/amino";
 
-import { createMnemonic } from "../../utils/wallet/seed";
 import { getValueFor, remove, save } from "../useMobileSecureStore";
+
+import { createMnemonic } from "@/utils/wallet/seed";
 
 export const getNativeWallet = (prefix: string = "tori", index: number = 0) => {
   return (async () => {

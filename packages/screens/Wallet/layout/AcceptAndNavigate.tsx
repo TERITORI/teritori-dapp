@@ -1,11 +1,12 @@
 import React, { ReactNode, useState } from "react";
 import { View } from "react-native";
 
-import { RouteName } from "../../../utils/navigation";
-import { neutral22, neutralA3 } from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
 import { CustomButton } from "../../Mini/components/Button/CustomButton";
 import Checkbox from "../../Mini/components/Checkbox/Checkbox";
+
+import { RouteName } from "@/utils/navigation";
+import { neutral22, neutralA3 } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 
 export const AcceptAndNavigate: React.FC<{
   buttonText: string;

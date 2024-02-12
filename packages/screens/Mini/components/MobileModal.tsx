@@ -1,16 +1,16 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { PropsWithChildren } from "react";
 import {
-  SafeAreaView,
-  View,
-  Modal,
-  StyleProp,
-  ViewStyle,
   DimensionValue,
+  Modal,
+  SafeAreaView,
+  StyleProp,
+  View,
+  ViewStyle,
 } from "react-native";
 
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { neutral22 } from "../../../utils/style/colors";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { neutral22 } from "@/utils/style/colors";
 
 interface MobileModalProps extends PropsWithChildren {
   visible: boolean;

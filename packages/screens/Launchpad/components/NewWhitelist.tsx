@@ -3,20 +3,21 @@ import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadRequiredSublabel";
-import { BrandText } from "../../../components/BrandText";
-import { SelectFileUploader } from "../../../components/selectFileUploader";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn } from "../../../components/spacer";
-import { IMAGE_MIME_TYPES } from "../../../utils/mime";
-import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "../../../utils/social-feed";
-import { neutral55, neutral77 } from "../../../utils/style/colors";
+import { NewWhitelistDetailsFormValues } from "../CreateCollection.type";
+
+import { BrandText } from "@/components/BrandText";
+import { SelectFileUploader } from "@/components/selectFileUploader";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn } from "@/components/spacer";
+import { IMAGE_MIME_TYPES } from "@/utils/mime";
+import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "@/utils/social-feed";
+import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold20,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { NewWhitelistDetailsFormValues } from "../CreateCollection.type";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const NewWhitelist: React.FC = () => {
   const { control } = useForm<NewWhitelistDetailsFormValues>({

@@ -1,10 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query";
 
 import { FetchCommentResponse } from "./useFetchComments";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useTeritoriSocialFeedCreatePostMutation } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
-import { PostResultExtra } from "../../utils/types/feed";
 import useSelectedWallet from "../useSelectedWallet";
+
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useTeritoriSocialFeedCreatePostMutation } from "@/contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
+import { PostResultExtra } from "@/utils/types/feed";
 
 // =============== Used only for Simple Post for now. (Sorry for the mess)
 export const useCreatePost = ({

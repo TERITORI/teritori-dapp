@@ -1,12 +1,13 @@
 import { NotificationType } from "./NotificationList";
+import { GradientDirectionEnum } from "../components/GradientBox";
+
 import {
   blueDefault,
   orangeDefault,
   primaryColor,
   purpleDark,
   purpleDefault,
-} from "../../../utils/style/colors";
-import { GradientDirectionEnum } from "../components/GradientBox";
+} from "@/utils/style/colors";
 
 export const notifications: NotificationType[] = [
   {

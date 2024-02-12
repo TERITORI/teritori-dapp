@@ -4,23 +4,24 @@ import { TouchableOpacity, View } from "react-native";
 import chevronDownSVG from "./../../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "./../../../../../assets/icons/chevron-up.svg";
 import { SelectionDropdownProps } from "./DropdownProps.type";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { PrimaryBox } from "../../../../components/boxes/PrimaryBox";
-import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
-import { Label } from "../../../../components/inputs/TextInputCustom";
-import { Separator } from "../../../../components/separators/Separator";
-import { SpacerColumn } from "../../../../components/spacer";
-import { useDropdowns } from "../../../../hooks/useDropdowns";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { PrimaryBox } from "@/components/boxes/PrimaryBox";
+import { TertiaryBox } from "@/components/boxes/TertiaryBox";
+import { Label } from "@/components/inputs/TextInputCustom";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn } from "@/components/spacer";
+import { useDropdowns } from "@/hooks/useDropdowns";
 import {
   neutral17,
   neutral44,
   neutral55,
   neutral77,
   secondaryColor,
-} from "../../../../utils/style/colors";
-import { fontMedium14, fontSemibold14 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
+} from "@/utils/style/colors";
+import { fontMedium14, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const SelectionDropdown = ({
   style,

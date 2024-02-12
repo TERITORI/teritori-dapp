@@ -1,8 +1,9 @@
 import Long from "long";
 
 import { useBalances } from "./useBalances";
-import { Coin } from "../api/teritori-chain/cosmos/base/v1beta1/coin";
-import { parseUserId } from "../networks";
+
+import { Coin } from "@/api/teritori-chain/cosmos/base/v1beta1/coin";
+import { parseUserId } from "@/networks";
 
 interface CanPayForPostParams {
   userId?: string;

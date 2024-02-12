@@ -1,21 +1,22 @@
-import { StyleProp, View, ViewStyle, useWindowDimensions } from "react-native";
+import { StyleProp, useWindowDimensions, View, ViewStyle } from "react-native";
 
 import closeSVG from "../../../../assets/icons/close.svg";
 import infoSVG from "../../../../assets/icons/info-blue.svg";
 import warningSVG from "../../../../assets/icons/warning.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { SpacerRow } from "../../../components/spacer";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { SpacerRow } from "@/components/spacer";
 import {
   blueDefault,
   errorColor,
   neutral11,
   successColor,
   yankeesBlue,
-} from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "@/utils/style/colors";
+import { fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface MiniToastProp {
   message: string;

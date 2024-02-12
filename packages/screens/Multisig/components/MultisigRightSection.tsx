@@ -5,51 +5,52 @@ import { Buffer } from "buffer";
 import React, { useState } from "react";
 import { View, ViewStyle } from "react-native";
 
-import { Coin } from "../../../api/teritori-chain/cosmos/base/v1beta1/coin";
-import { MsgBurnTokens } from "../../../api/teritori-chain/teritori/mint/v1beta1/tx";
-import { BrandText } from "../../../components/BrandText";
-import { MaxButton } from "../../../components/buttons/MaxButton";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
-import { SendModal } from "../../../components/modals/SendModal";
-import { TNSNameFinderModal } from "../../../components/modals/teritoriNameService/TNSNameFinderModal";
-import { LoginButton } from "../../../components/multisig/LoginButton";
-import { SpacerColumn } from "../../../components/spacer";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useMultisigAuthToken } from "../../../hooks/multisig/useMultisigAuthToken";
-import { useMultisigClient } from "../../../hooks/multisig/useMultisigClient";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { TNSMintNameModal } from "../../TeritoriNameService/TNSMintNameScreen";
+import { TNSRegisterScreen } from "../../TeritoriNameService/TNSRegisterScreen";
+
+import { Coin } from "@/api/teritori-chain/cosmos/base/v1beta1/coin";
+import { MsgBurnTokens } from "@/api/teritori-chain/teritori/mint/v1beta1/tx";
+import { BrandText } from "@/components/BrandText";
+import { MaxButton } from "@/components/buttons/MaxButton";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { SendModal } from "@/components/modals/SendModal";
+import { TNSNameFinderModal } from "@/components/modals/teritoriNameService/TNSNameFinderModal";
+import { LoginButton } from "@/components/multisig/LoginButton";
+import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useMultisigAuthToken } from "@/hooks/multisig/useMultisigAuthToken";
+import { useMultisigClient } from "@/hooks/multisig/useMultisigClient";
 import {
   multisigInfoQueryKey,
   useMultisigInfo,
-} from "../../../hooks/multisig/useMultisigInfo";
-import { multisigTransactionsQueryKey } from "../../../hooks/multisig/useMultisigTransactions";
-import { userMultisigsQueryKey } from "../../../hooks/multisig/useUserMultisigs";
-import { useBalances } from "../../../hooks/useBalances";
-import { useRunOrProposeTransaction } from "../../../hooks/useRunOrProposeTransaction";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
+} from "@/hooks/multisig/useMultisigInfo";
+import { multisigTransactionsQueryKey } from "@/hooks/multisig/useMultisigTransactions";
+import { userMultisigsQueryKey } from "@/hooks/multisig/useUserMultisigs";
+import { useBalances } from "@/hooks/useBalances";
+import { useRunOrProposeTransaction } from "@/hooks/useRunOrProposeTransaction";
 import {
-  NetworkFeature,
-  UserKind,
   getCosmosNetworkByChainId,
   getNativeCurrency,
-  getStakingCurrency,
-  keplrCurrencyFromNativeCurrencyInfo,
-  parseUserId,
   getNonSigningStargateClient,
+  getStakingCurrency,
   getUserId,
-} from "../../../networks";
-import { AppRouteType, useAppNavigation } from "../../../utils/navigation";
+  keplrCurrencyFromNativeCurrencyInfo,
+  NetworkFeature,
+  parseUserId,
+  UserKind,
+} from "@/networks";
+import { AppRouteType, useAppNavigation } from "@/utils/navigation";
 import {
   neutral33,
   neutral55,
   neutral77,
   primaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold12, fontSemibold13 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { TNSMintNameModal } from "../../TeritoriNameService/TNSMintNameScreen";
-import { TNSRegisterScreen } from "../../TeritoriNameService/TNSRegisterScreen";
+} from "@/utils/style/colors";
+import { fontSemibold12, fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const MultisigRightSection: React.FC = () => {
   const navigation = useAppNavigation();

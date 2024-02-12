@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
-import { layout } from "../../../utils/style/layout";
+import { layout } from "@/utils/style/layout";
 
 export const WalletContainer: React.FC<{ children: ReactNode }> = ({
   children,

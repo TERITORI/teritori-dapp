@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { RedAlert } from "./RedAlert";
-import { BrandText } from "../../../../components/BrandText";
-import { SpacerColumn } from "../../../../components/spacer";
-import { getMnemonic } from "../../../../hooks/wallet/getNativeWallet";
-import { fontSemibold14 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
 import BlurViewWrapper from "../../components/BlurViewWrapper";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn } from "@/components/spacer";
+import { getMnemonic } from "@/hooks/wallet/getNativeWallet";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const ShowSeedPhrase = () => {
   const [phrase, setPhrase] = useState<string | null>();

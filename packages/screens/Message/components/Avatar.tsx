@@ -2,9 +2,10 @@ import React from "react";
 import { ImageStyle, View } from "react-native";
 
 import logoSVG from "../../../../assets/logos/logo.svg";
-import { SVG } from "../../../components/SVG";
-import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
-import { neutral22 } from "../../../utils/style/colors";
+
+import { SVG } from "@/components/SVG";
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { neutral22 } from "@/utils/style/colors";
 
 type AvatarProps = {
   source: string;

@@ -7,26 +7,27 @@ import { FightCountdownSection } from "./FightCountdownSection";
 import { FightSquadSection } from "./FightSquadSection";
 import { UnstakeModal } from "./UnstakeModal";
 import FlexRow from "../../../components/FlexRow";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { TeritoriNftQueryClient } from "../../../contracts-clients/teritori-nft/TeritoriNft.client";
-import { TeritoriNft__factory } from "../../../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { TeritoriNftQueryClient } from "@/contracts-clients/teritori-nft/TeritoriNft.client";
+import { TeritoriNft__factory } from "@/evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import {
   getNetwork,
   mustGetEthereumNetwork,
   mustGetNonSigningCosmWasmClient,
   NetworkInfo,
   NetworkKind,
-} from "../../../networks";
+} from "@/networks";
 import {
   getEthereumProvider,
   getMetaMaskEthereumProvider,
-} from "../../../utils/ethereum";
-import { squadWithdraw } from "../../../utils/game";
-import { web3ToWeb2URI } from "../../../utils/ipfs";
-import { fontMedium48 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { RipperLightInfo, SquadInfo } from "../../../utils/types/riot-p2e";
+} from "@/utils/ethereum";
+import { squadWithdraw } from "@/utils/game";
+import { web3ToWeb2URI } from "@/utils/ipfs";
+import { fontMedium48 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { RipperLightInfo, SquadInfo } from "@/utils/types/riot-p2e";
 
 const cosmosNFTInfos = async (
   network: NetworkInfo,

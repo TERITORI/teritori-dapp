@@ -2,13 +2,14 @@ import React, { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 
 import logoSVG from "../../../assets/logos/logo.svg";
-import { BrandText } from "../../components/BrandText";
-import { OwnedNFTs } from "../../components/OwnedNFTs";
-import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { ScreenFC } from "../../utils/navigation";
-import { layout } from "../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { OwnedNFTs } from "@/components/OwnedNFTs";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenFC } from "@/utils/navigation";
+import { layout } from "@/utils/style/layout";
 
 /*
   FIXME: this needs to handle all collections and all nfts

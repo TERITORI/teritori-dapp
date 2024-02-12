@@ -1,9 +1,9 @@
 import {
-  View,
-  Text,
-  TouchableOpacity,
   Image,
   StyleProp,
+  Text,
+  TouchableOpacity,
+  View,
   ViewStyle,
 } from "react-native";
 

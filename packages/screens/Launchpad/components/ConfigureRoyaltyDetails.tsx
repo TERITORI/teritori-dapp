@@ -3,15 +3,16 @@ import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadRequiredSublabel";
-import { BrandText } from "../../../components/BrandText";
-import { SpacerColumn } from "../../../components/spacer";
-import { neutral55, neutral77 } from "../../../utils/style/colors";
+import { NewConfigureRoyaltyDetailsFormValues } from "../CreateCollection.type";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn } from "@/components/spacer";
+import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold20,
-} from "../../../utils/style/fonts";
-import { NewConfigureRoyaltyDetailsFormValues } from "../CreateCollection.type";
+} from "@/utils/style/fonts";
 
 export const ConfigureRoyaltyDetails: React.FC = () => {
   const { control } = useForm<NewConfigureRoyaltyDetailsFormValues>({

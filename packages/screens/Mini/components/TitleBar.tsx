@@ -1,11 +1,11 @@
-import { View, StyleProp, ViewStyle } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { BrandText } from "../../../components/BrandText";
-import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
-import { SpacerColumn } from "../../../components/spacer";
-import { neutralA3 } from "../../../utils/style/colors";
-import { fontMedium16, fontSemibold30 } from "../../../utils/style/fonts";
+import { BrandText } from "@/components/BrandText";
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { SpacerColumn } from "@/components/spacer";
+import { neutralA3 } from "@/utils/style/colors";
+import { fontMedium16, fontSemibold30 } from "@/utils/style/fonts";
 
 type TitleBarProps = {
   icon?: React.FC<SvgProps> | string;

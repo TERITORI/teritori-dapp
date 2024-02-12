@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { web3ToWeb2URI } from "../utils/ipfs";
+import { web3ToWeb2URI } from "@/utils/ipfs";
 
 export const useRemoteJSON = (uri: string | undefined) => {
   return useQuery(

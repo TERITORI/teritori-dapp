@@ -1,7 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import { primaryColor, secondaryColor } from "../../../utils/style/colors";
+import { primaryColor, secondaryColor } from "@/utils/style/colors";
 
 export enum GradientDirectionEnum {
   "topBottom",

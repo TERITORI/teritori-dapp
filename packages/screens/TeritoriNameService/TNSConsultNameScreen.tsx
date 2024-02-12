@@ -3,36 +3,36 @@ import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 
 import { TNSModalCommonProps } from "./TNSHomeScreen";
-import { BrandText } from "../../components/BrandText";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
-import { TNSSendFundsModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
-import { NameNFT } from "../../components/teritoriNameService/NameNFT";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useTNS } from "../../context/TNSProvider";
-import { TeritoriNameServiceClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { useDAOs } from "../../hooks/dao/useDAOs";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { useIsLeapConnected } from "../../hooks/useIsLeapConnected";
-import { useNSNameInfo } from "../../hooks/useNSNameInfo";
-import { useNSNameOwner } from "../../hooks/useNSNameOwner";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { BrandText } from "@/components/BrandText";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { TNSSendFundsModal } from "@/components/modals/teritoriNameService/TNSSendFundsModal";
+import { NameNFT } from "@/components/teritoriNameService/NameNFT";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useTNS } from "@/context/TNSProvider";
+import { TeritoriNameServiceClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { useDAOs } from "@/hooks/dao/useDAOs";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useIsKeplrConnected } from "@/hooks/useIsKeplrConnected";
+import { useIsLeapConnected } from "@/hooks/useIsLeapConnected";
+import { useNSNameInfo } from "@/hooks/useNSNameInfo";
+import { useNSNameOwner } from "@/hooks/useNSNameOwner";
 import {
   nsPrimaryAliasQueryKey,
   useNSPrimaryAlias,
-} from "../../hooks/useNSPrimaryAlias";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
+} from "@/hooks/useNSPrimaryAlias";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   getCosmosNetwork,
   getKeplrSigningCosmWasmClient,
   getUserId,
   mustGetCosmosNetwork,
-} from "../../networks";
-import { neutral17, neutral33 } from "../../utils/style/colors";
-import { layout } from "../../utils/style/layout";
-
-import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+} from "@/networks";
+import { neutral17, neutral33 } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 
 const NotOwnerActions: React.FC<{
   tokenId: string;

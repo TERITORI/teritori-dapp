@@ -1,20 +1,17 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { BrandText } from "../../../../components/BrandText";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { SpacerColumn } from "../../../../components/spacer";
-import {
-  neutral22,
-  neutral77,
-  neutralA3,
-} from "../../../../utils/style/colors";
-import { fontMedium16, fontSemibold30 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
 import { CustomButton } from "../../components/Button/CustomButton";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import MiniTextInput from "../../components/MiniTextInput";
 import { StepType } from "../ConnectLedgerScreen";
+
+import { BrandText } from "@/components/BrandText";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { SpacerColumn } from "@/components/spacer";
+import { neutral22, neutral77, neutralA3 } from "@/utils/style/colors";
+import { fontMedium16, fontSemibold30 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type Props = {
   onStepChange: (step: StepType) => void;

@@ -3,11 +3,12 @@ import { useWindowDimensions, View } from "react-native";
 
 import NFTScreen from "./NFTScreen";
 import TokenScreen from "./TokenScreen";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { SpacerColumn } from "../../../components/spacer";
-import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
-import { ScreenFC } from "../../../utils/navigation";
-import { layout } from "../../../utils/style/layout";
+
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { SpacerColumn } from "@/components/spacer";
+import { RoundedTabs } from "@/components/tabs/RoundedTabs";
+import { ScreenFC } from "@/utils/navigation";
+import { layout } from "@/utils/style/layout";
 
 const collectionScreenTabItems = {
   tokens: {

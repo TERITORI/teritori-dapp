@@ -3,23 +3,24 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 import addSVG from "../../../../assets/icons/add.svg";
 import gameBoxSVG from "../../../../assets/icons/game-box.svg";
-import { NFT } from "../../../api/marketplace/v1/marketplace";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { OptimizedImage } from "../../../components/OptimizedImage";
-import { SVG } from "../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { isNFTStaked } from "../../../utils/game";
+
+import { NFT } from "@/api/marketplace/v1/marketplace";
+import { BrandText } from "@/components/BrandText";
+import { OptimizedImage } from "@/components/OptimizedImage";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { isNFTStaked } from "@/utils/game";
 import {
   neutral33,
-  secondaryColor,
-  withAlpha,
   neutralA3,
   redDefault,
-} from "../../../utils/style/colors";
-import { fontMedium14, fontSemibold12 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+  secondaryColor,
+  withAlpha,
+} from "@/utils/style/colors";
+import { fontMedium14, fontSemibold12 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface BreedingSlotProps {
   active?: boolean;

@@ -12,11 +12,12 @@ import guardianPng from "../../../../assets/default-images/guardian_profile.png"
 import discordSVG from "../../../../assets/icons/discord.svg";
 import twitterSVG from "../../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../../assets/icons/website.svg";
-import { BrandText } from "../../../components/BrandText";
-import { TertiaryBadge } from "../../../components/badges/TertiaryBadge";
-import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
-import { primaryColor, primaryTextColor } from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
+
+import { BrandText } from "@/components/BrandText";
+import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
+import { SecondaryBox } from "@/components/boxes/SecondaryBox";
+import { primaryColor, primaryTextColor } from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 
 const dummyData = [
   { title: "Supply", value: "5000" },

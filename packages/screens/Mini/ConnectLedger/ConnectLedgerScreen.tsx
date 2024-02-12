@@ -8,8 +8,9 @@ import { LoadingAccounts } from "./components/LoadingAccounts";
 import { OpenHelpInApp } from "./components/OpenHelpInApp";
 import { RequestingPermission } from "./components/RequestingPermission";
 import { SelectAccounts } from "./components/SelectAccounts";
-import { ScreenFC } from "../../../utils/navigation";
 import MultiStepScreenContainer from "../layout/MultiStepScreenContainer";
+
+import { ScreenFC } from "@/utils/navigation";
 
 const screensSteps = {
   step_1: "connect-device",

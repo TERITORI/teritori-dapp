@@ -5,20 +5,21 @@ import { StyleProp, View, ViewStyle } from "react-native";
 import { MultisigFormInput } from "./components/MultisigFormInput";
 import { MultisigRightSection } from "./components/MultisigRightSection";
 import { MultisigSection } from "./components/MultisigSection";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { MultisigTransactions } from "../../components/multisig/MultisigTransactions";
-import { SpacerColumn } from "../../components/spacer";
-import { UserCard } from "../../components/user/UserCard";
-import { useMultisigInfo } from "../../hooks/multisig/useMultisigInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId, parseUserId } from "../../networks";
-import { validateAddress } from "../../utils/formRules";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { neutral33 } from "../../utils/style/colors";
-import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
 import { Assets } from "../WalletManager/Assets";
+
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { MultisigTransactions } from "@/components/multisig/MultisigTransactions";
+import { SpacerColumn } from "@/components/spacer";
+import { UserCard } from "@/components/user/UserCard";
+import { useMultisigInfo } from "@/hooks/multisig/useMultisigInfo";
+import { getUserId, parseUserId } from "@/networks";
+import { validateAddress } from "@/utils/formRules";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { neutral33 } from "@/utils/style/colors";
+import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type MultisigFormType = {
   multisigAddress: string;

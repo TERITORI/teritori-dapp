@@ -6,12 +6,13 @@ import { JungleFeedScreen } from "./JungleFeedScreen";
 import { MusicFeedScreen } from "./MusicFeedScreen";
 import { PictureFeedScreen } from "./PictureFeedScreen";
 import { VideoFeedScreen } from "./VideoFeedScreen";
-import { PostsRequest } from "../../../api/feed/v1/feed";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { SpacerColumn } from "../../../components/spacer";
-import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
-import { ScreenFC } from "../../../utils/navigation";
-import { layout } from "../../../utils/style/layout";
+
+import { PostsRequest } from "@/api/feed/v1/feed";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { SpacerColumn } from "@/components/spacer";
+import { RoundedTabs } from "@/components/tabs/RoundedTabs";
+import { ScreenFC } from "@/utils/navigation";
+import { layout } from "@/utils/style/layout";
 
 const feedScreenTabItems = {
   jungle: {

@@ -15,7 +15,8 @@ import { useEthNFTContractURI } from "./collection/useEthNFTContractURI";
 import { useBreedingConfig } from "./useBreedingConfig";
 import { useCW721ContractInfo } from "./useNFTContractInfo";
 import { useRemoteJSON } from "./useRemoteJSON";
-import { parseNetworkObjectId, NetworkKind } from "../networks";
+
+import { parseNetworkObjectId, NetworkKind } from "@/networks";
 import {
   CollectionContractKind,
   CollectionInfo,
@@ -25,8 +26,8 @@ import {
   expandEthereumBunkerConfig,
   getCollectionMetadata,
   getTnsCollectionInfo,
-} from "../utils/collection";
-import { isLinkBanned } from "../utils/link-ban";
+} from "@/utils/collection";
+import { isLinkBanned } from "@/utils/link-ban";
 
 // NOTE: consider using the indexer for this
 export const useCollectionInfo = (

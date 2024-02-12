@@ -1,11 +1,12 @@
 import React, { FC } from "react";
 
-import { Quests } from "../../../components/Quests";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { UppTabKeys } from "../../../utils/upp";
 import { UppTabScreenProps } from "../UserPublicProfileScreen";
 import { UPPHeader } from "../components/UPPHeader";
 import { UPPScreenContentWrapper } from "../components/UPPScreenContentWrapper";
+
+import { Quests } from "@/components/Quests";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { UppTabKeys } from "@/utils/upp";
 
 export const QuestsUPPScreen: FC<UppTabScreenProps> = ({
   userId,

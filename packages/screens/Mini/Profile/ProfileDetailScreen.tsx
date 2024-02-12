@@ -4,16 +4,17 @@ import { View } from "react-native";
 
 import editProfileSVG from "../../../../assets/icons/input-edit.svg";
 import profileSVG from "../../../../assets/icons/input-profile.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SpacerColumn } from "../../../components/spacer";
-import { RootStackParamList } from "../../../utils/navigation";
-import { neutral77 } from "../../../utils/style/colors";
-import { fontMedium14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import FileUpload from "../components/FileUpload";
 import MiniTextInput from "../components/MiniTextInput";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn } from "@/components/spacer";
+import { RootStackParamList } from "@/utils/navigation";
+import { neutral77 } from "@/utils/style/colors";
+import { fontMedium14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type ProfileDetailScreenProps = {
   navigation: NativeStackNavigationProp<

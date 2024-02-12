@@ -3,21 +3,22 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 
-import { BrandText } from "../../../components/BrandText";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { useSelectedNativeWallet } from "../../../hooks/wallet/useSelectedNativeWallet";
-import { ScreenFC } from "../../../utils/navigation";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { BrandText } from "@/components/BrandText";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
+import { ScreenFC } from "@/utils/navigation";
 import {
   neutral22,
   neutral39,
   neutral77,
   neutralA3,
   secondaryColor,
-} from "../../../utils/style/colors";
-import { fontMedium13, fontMedium16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { findByBaseDenom } from "../../../utils/wallet/chain-registry";
-import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+} from "@/utils/style/colors";
+import { fontMedium13, fontMedium16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { findByBaseDenom } from "@/utils/wallet/chain-registry";
 
 const QR_SIZE = 248;
 

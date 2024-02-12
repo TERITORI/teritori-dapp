@@ -1,16 +1,17 @@
 import React, { FC, useCallback, useMemo } from "react";
 
-import { PostsRequest } from "../../../api/feed/v1/feed";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { NewsFeed } from "../../../components/socialFeed/NewsFeed/NewsFeed";
-import { useIsDAO } from "../../../hooks/cosmwasm/useCosmWasmContractInfo";
-import { useIsDAOMember } from "../../../hooks/dao/useDAOMember";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { parseUserId } from "../../../networks";
-import { UppTabKeys } from "../../../utils/upp";
 import { UppTabScreenProps } from "../UserPublicProfileScreen";
 import { UPPHeader } from "../components/UPPHeader";
+
+import { PostsRequest } from "@/api/feed/v1/feed";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { NewsFeed } from "@/components/socialFeed/NewsFeed/NewsFeed";
+import { useIsDAO } from "@/hooks/cosmwasm/useCosmWasmContractInfo";
+import { useIsDAOMember } from "@/hooks/dao/useDAOMember";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { parseUserId } from "@/networks";
+import { UppTabKeys } from "@/utils/upp";
 
 export const PostsUPPScreen: FC<UppTabScreenProps> = ({
   userId,

@@ -3,19 +3,20 @@ import { View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import chevronDropdownSVG from "../../../../../assets/icons/chevron-down.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { Dropdown } from "../../../../components/Dropdown";
-import { SVG } from "../../../../components/SVG";
-import { SpacerRow } from "../../../../components/spacer";
+import Checkbox from "../Checkbox/Checkbox";
+
+import { BrandText } from "@/components/BrandText";
+import { Dropdown } from "@/components/Dropdown";
+import { SVG } from "@/components/SVG";
+import { SpacerRow } from "@/components/spacer";
 import {
   blueDefault,
   neutral22,
   secondaryColor,
   withAlpha,
-} from "../../../../utils/style/colors";
-import { fontSemibold14 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import Checkbox from "../Checkbox/Checkbox";
+} from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type FilterOption = {
   value: string;

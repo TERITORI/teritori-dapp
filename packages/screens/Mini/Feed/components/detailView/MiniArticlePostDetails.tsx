@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
@@ -7,34 +7,32 @@ import Animated, {
 } from "react-native-reanimated";
 
 import defaultThumbnailImage from "../../../../../../assets/default-images/default-article-thumbnail.png";
-import { Post } from "../../../../../api/feed/v1/feed";
-import { BrandText } from "../../../../../components/BrandText";
-import { OptimizedImage } from "../../../../../components/OptimizedImage";
-import { ScreenContainer } from "../../../../../components/ScreenContainer";
-import { CommentsContainer } from "../../../../../components/cards/CommentsContainer";
+import CustomAppBar from "../../../components/AppBar/CustomAppBar";
+
+import { Post } from "@/api/feed/v1/feed";
+import { BrandText } from "@/components/BrandText";
+import { OptimizedImage } from "@/components/OptimizedImage";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { CommentsContainer } from "@/components/cards/CommentsContainer";
 import {
   NewsFeedInput,
   NewsFeedInputHandle,
-} from "../../../../../components/socialFeed/NewsFeed/NewsFeedInput";
-import { RichText } from "../../../../../components/socialFeed/RichText";
-import { SocialCardHeader } from "../../../../../components/socialFeed/SocialCard/SocialCardHeader";
-import { SocialCardWrapper } from "../../../../../components/socialFeed/SocialCard/SocialCardWrapper";
-import { SpacerColumn } from "../../../../../components/spacer";
+} from "@/components/socialFeed/NewsFeed/NewsFeedInput";
+import { RichText } from "@/components/socialFeed/RichText";
+import { SocialCardHeader } from "@/components/socialFeed/SocialCard/SocialCardHeader";
+import { SocialCardWrapper } from "@/components/socialFeed/SocialCard/SocialCardWrapper";
+import { SpacerColumn } from "@/components/spacer";
 import {
   combineFetchCommentPages,
   useFetchComments,
-} from "../../../../../hooks/feed/useFetchComments";
-import { useNSUserInfo } from "../../../../../hooks/useNSUserInfo";
-import { parseUserId } from "../../../../../networks";
-import { zodTryParseJSON } from "../../../../../utils/sanitize";
-import { BASE_POST, DEFAULT_USERNAME } from "../../../../../utils/social-feed";
-import { fontSemibold16 } from "../../../../../utils/style/fonts";
-import { tinyAddress } from "../../../../../utils/text";
-import {
-  ReplyToType,
-  ZodSocialFeedArticleMetadata,
-} from "../../../../../utils/types/feed";
-import CustomAppBar from "../../../components/AppBar/CustomAppBar";
+} from "@/hooks/feed/useFetchComments";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { parseUserId } from "@/networks";
+import { zodTryParseJSON } from "@/utils/sanitize";
+import { BASE_POST, DEFAULT_USERNAME } from "@/utils/social-feed";
+import { fontSemibold16 } from "@/utils/style/fonts";
+import { tinyAddress } from "@/utils/text";
+import { ReplyToType, ZodSocialFeedArticleMetadata } from "@/utils/types/feed";
 
 type Props = {
   networkId: string;

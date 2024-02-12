@@ -9,16 +9,18 @@ import { SettingItem } from "./components/SettingItem";
 import { useCommonStyles } from "./components/commonStyles";
 import { SettingItemType } from "./types";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { CustomPressable } from "../../components/buttons/CustomPressable";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { TertiaryButton } from "../../components/buttons/TertiaryButton";
 import ModalBase from "../../components/modals/ModalBase";
-import { NetworksListModal } from "../../components/modals/NetworksListModal";
-import { SpacerColumn } from "../../components/spacer";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { TertiaryButton } from "@/components/buttons/TertiaryButton";
+import { NetworksListModal } from "@/components/modals/NetworksListModal";
+import { SpacerColumn } from "@/components/spacer";
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
+import { useIsKeplrConnected } from "@/hooks/useIsKeplrConnected";
 import {
   selectAreTestnetsEnabled,
   selectIsLightTheme,
@@ -26,13 +28,11 @@ import {
   setAreTestnetsEnabled,
   setIsLightTheme,
   setNFTStorageAPI,
-} from "../../store/slices/settings";
-import { RootState, useAppDispatch } from "../../store/store";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { neutralA3, primaryColor } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-
-import { useDeveloperMode } from "@/hooks/useDeveloperMode";
+} from "@/store/slices/settings";
+import { RootState, useAppDispatch } from "@/store/store";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { neutralA3, primaryColor } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
 
 const NFTAPIKeyInput: React.FC = () => {
   const userIPFSKey = useSelector(selectNFTStorageAPI);

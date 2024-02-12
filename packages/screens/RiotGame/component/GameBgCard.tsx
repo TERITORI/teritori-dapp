@@ -2,11 +2,12 @@ import React, { useCallback } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
 import addSVG from "../../../../assets/icons/add.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { neutral22, neutral77, neutralA3 } from "../../../utils/style/colors";
-import { fontBold12, fontSemibold28 } from "../../../utils/style/fonts";
-import { GameBgCardItem } from "../../../utils/types/riot-p2e";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { neutral22, neutral77, neutralA3 } from "@/utils/style/colors";
+import { fontBold12, fontSemibold28 } from "@/utils/style/fonts";
+import { GameBgCardItem } from "@/utils/types/riot-p2e";
 
 interface GameBgCardProps {
   width: number;

@@ -2,8 +2,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { Dimensions, View, ViewStyle } from "react-native";
 
-import { neutral33 } from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
+import { neutral33 } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 
 const DEFAULT_WIDTH = Dimensions.get("window").width;
 

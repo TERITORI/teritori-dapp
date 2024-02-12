@@ -3,14 +3,15 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 
 import { useDAOFirstProposalModule } from "./useDAOProposalModules";
-import { DaoProposalSingleQueryClient } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
-import { VoteResponse } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
+
+import { DaoProposalSingleQueryClient } from "@/contracts-clients/dao-proposal-single/DaoProposalSingle.client";
+import { VoteResponse } from "@/contracts-clients/dao-proposal-single/DaoProposalSingle.types";
 import {
   NetworkKind,
   mustGetNonSigningCosmWasmClient,
   parseUserId,
-} from "../../networks";
-import { extractGnoNumber } from "../../utils/gno";
+} from "@/networks";
+import { extractGnoNumber } from "@/utils/gno";
 
 const daoVoteInfoQueryKey = (
   daoId: string | undefined,

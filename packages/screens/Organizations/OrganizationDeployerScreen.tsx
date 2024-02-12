@@ -8,30 +8,31 @@ import { MemberSettingsSection } from "./components/MemberSettingsSection";
 import { ReviewInformationSection } from "./components/ReviewInformationSection";
 import { RightSection } from "./components/RightSection";
 import { TokenSettingsSection } from "./components/TokenSettingsSection";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { ConfigureVotingSection } from "../../components/dao/ConfigureVotingSection";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { ConfigureVotingSection } from "@/components/dao/ConfigureVotingSection";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { nsNameInfoQueryKey } from "@/hooks/useNSNameInfo";
 import {
-  NetworkKind,
   getKeplrSigningCosmWasmClient,
   getNetwork,
   getUserId,
   mustGetCosmosNetwork,
-} from "../../networks";
-import { createDaoTokenBased, createDaoMemberBased } from "../../utils/dao";
-import { adenaDeployGnoDAO } from "../../utils/gnodao/deploy";
+  NetworkKind,
+} from "@/networks";
+import { createDaoMemberBased, createDaoTokenBased } from "@/utils/dao";
+import { adenaDeployGnoDAO } from "@/utils/gnodao/deploy";
 import {
   ConfigureVotingFormType,
   CreateDaoFormType,
-  TokenSettingFormType,
-  MemberSettingFormType,
   DaoType,
   LAUNCHING_PROCESS_STEPS,
+  MemberSettingFormType,
   ORGANIZATION_DEPLOYER_STEPS,
-} from "../../utils/types/organizations";
+  TokenSettingFormType,
+} from "@/utils/types/organizations";
 
 export const OrganizationDeployerScreen = () => {
   const selectedWallet = useSelectedWallet();

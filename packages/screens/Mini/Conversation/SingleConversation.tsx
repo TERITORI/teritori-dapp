@@ -1,30 +1,31 @@
 import { chain } from "lodash";
 import React, { useMemo } from "react";
-import { FlatList, Image, View, useWindowDimensions } from "react-native";
+import { FlatList, Image, useWindowDimensions, View } from "react-native";
 
 import doubleCheckSVG from "../../../../assets/icons/double-check.svg";
 import replySVG from "../../../../assets/icons/reply-white.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { EmojiSelector } from "../../../components/socialFeed/EmojiSelector";
+import { PostReactions } from "../Feed/components/PostReactions";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { EmojiSelector } from "@/components/socialFeed/EmojiSelector";
 import {
   blueDefault,
   eggWhite,
   neutral30,
   neutralA3,
   secondaryColor,
-} from "../../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontMedium10,
   fontNormal15,
   fontSemibold11,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { Message } from "../../../utils/types/message";
-import { sendMessage } from "../../../weshnet/services";
-import { bytesFromString } from "../../../weshnet/utils";
-import { PostReactions } from "../Feed/components/PostReactions";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { Message } from "@/utils/types/message";
+import { sendMessage } from "@/weshnet/services";
+import { bytesFromString } from "@/weshnet/utils";
 
 type ConversationType = {
   messageId: string;
