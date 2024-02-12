@@ -74,7 +74,7 @@ export const MiniFriendScreen: ScreenFC<"MiniFriend"> = ({ navigation }) => {
           icon={searchSVG}
           placeholder="Search Friend Requests"
           style={{ paddingVertical: layout.spacing_x1 }}
-          inputStyle={[fontMedium14]}
+          inputStyle={[fontMedium14, { lineHeight: 0 }]}
         />
         <SpacerColumn size={2} />
 

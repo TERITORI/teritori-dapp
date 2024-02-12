@@ -29,6 +29,8 @@ export type RootStackParamList = {
   ReadyLaunchpadApplications: undefined;
   AllProjectAdministrationDash: undefined;
 
+  LeaderboardMarketplace: undefined;
+
   Launchpad: undefined;
   LaunchpadApply: undefined;
   LaunchpadCreate: undefined;
@@ -172,6 +174,9 @@ const navConfig: {
     ApplicationReview: "launchpad/application-review",
     ReadyLaunchpadApplications: "launchpad/ready-applications",
     AllProjectAdministrationDash: "launchpad/all-projects",
+
+    LeaderboardMarketplace: "leaderboard/marketplace",
+
     // === RiotGame
     RiotGame: "riot-game",
     RiotGameEnroll: "riot-game/enroll",

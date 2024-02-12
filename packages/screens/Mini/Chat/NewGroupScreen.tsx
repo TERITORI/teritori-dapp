@@ -138,7 +138,7 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
           icon={searchSVG}
           placeholder="Search by nickname"
           style={{ paddingVertical: layout.spacing_x1 }}
-          inputStyle={[fontMedium14]}
+          inputStyle={[fontMedium14, { lineHeight: 0 }]}
           placeholderTextColor={neutralA3}
         />
         <SpacerColumn size={2} />

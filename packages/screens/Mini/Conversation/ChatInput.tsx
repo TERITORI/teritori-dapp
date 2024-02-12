@@ -159,7 +159,7 @@ export const ChatInput = ({ conversationId, replyTo, clearReplyTo }: Props) => {
             value={newMessage}
             onChangeText={onNewMessageChange}
             style={{ paddingVertical: layout.spacing_x1 }}
-            inputStyle={[fontMedium16, { color: neutral77 }]}
+            inputStyle={[fontMedium16, { color: neutral77, lineHeight: 0 }]}
             numberOfLines={6}
             multiline
             autoFocus
