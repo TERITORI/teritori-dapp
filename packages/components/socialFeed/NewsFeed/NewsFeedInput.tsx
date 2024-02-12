@@ -10,6 +10,7 @@ import {
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
+import { MapModal } from "./MapModal";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
@@ -145,6 +146,11 @@ export const NewsFeedInput = React.forwardRef<
     const [isUploadLoading, setIsUploadLoading] = useState(false);
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
     const [premium, setPremium] = useState(false);
+    const [isMapModal, setMapModal] = useState(false);
+    const [locationSelected, setLocationSelected] = useState<[number, number]>([
+      48.8566, 2.3522,
+    ]);
+    const [description, setDescription] = useState("");
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
@@ -333,8 +339,20 @@ export const NewsFeedInput = React.forwardRef<
         style={[{ width }, style]}
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       >
-        <View style={{ zIndex: 9 }}>
-          <PrimaryBox
+        {isMapModal && (
+          <MapModal
+            handleSubmit={() => handleSubmit(processSubmit)()}
+            visible
+            onClose={() => setMapModal(false)}
+            locationSelected={locationSelected}
+            setLocationSelected={setLocationSelected}
+            description={description}
+            setDescription={setDescription}
+          />
+        )}
+        <View style={{ backgroundColor: neutral22, zIndex: 9 }}>
+          <Pressable
+            onPress={focusInput}
             style={{
               backgroundColor: appMode === "mini" ? neutral00 : neutral22,
               width: "100%",
@@ -456,7 +474,7 @@ export const NewsFeedInput = React.forwardRef<
                 }
               }}
             />
-          </PrimaryBox>
+          </Pressable>
         </View>
         <View
           style={{
@@ -697,7 +715,9 @@ export const NewsFeedInput = React.forwardRef<
                         ? "Comment"
                         : "Publish"
                   }
-                  onPress={handleSubmit(processSubmit)}
+                  onPress={() => {
+                    setMapModal(true);
+                  }}
                 />
               </View>
             </View>
