@@ -69,7 +69,7 @@ export const NewConversationScreen: ScreenFC<"MiniNewConversation"> = ({
           icon={searchSVG}
           placeholder="Search by nickname"
           style={{ paddingVertical: layout.spacing_x1 }}
-          inputStyle={[fontMedium14]}
+          inputStyle={[fontMedium14, { lineHeight: 0 }]}
         />
         <SpacerColumn size={2} />
         <NewConversationOrGroupSelector
