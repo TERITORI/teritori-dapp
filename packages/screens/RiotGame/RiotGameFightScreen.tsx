@@ -5,17 +5,17 @@ import { FightSection } from "./component/FightSection";
 import { FightSectionHeader } from "./component/FightSectionHeader";
 import { GameContentView } from "./component/GameContentView";
 import addCircleSFilledSVG from "../../../assets/icons/add-circle-filled.svg";
-import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import { SpacerColumn } from "../../components/spacer";
-import { useSquadStakingConfig } from "../../hooks/riotGame/useSquadStakingConfig";
-import { useSquadStakingSquads } from "../../hooks/riotGame/useSquadStakingSquads";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { yellowDefault } from "../../utils/style/colors";
-import { layout } from "../../utils/style/layout";
-import { SquadInfo } from "../../utils/types/riot-p2e";
 
+import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
+import { SpacerColumn } from "@/components/spacer";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useSquadStakingConfig } from "@/hooks/riotGame/useSquadStakingConfig";
+import { useSquadStakingSquads } from "@/hooks/riotGame/useSquadStakingSquads";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { yellowDefault } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
+import { SquadInfo } from "@/utils/types/riot-p2e";
 
 const FIGHT_BG_URI =
   "https://bafybeigv6eunkzlb4a7je6c5ezrcxgr2bv2guuwogin6mbsmdl2i6mgvwq.ipfs.cf-ipfs.com/";

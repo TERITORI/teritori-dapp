@@ -1,35 +1,35 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
 
-import { Post } from "../../../../../api/feed/v1/feed";
-import { ScreenContainer } from "../../../../../components/ScreenContainer";
-import { CommentsContainer } from "../../../../../components/cards/CommentsContainer";
+import CustomAppBar from "../../../components/AppBar/CustomAppBar";
+
+import { Post } from "@/api/feed/v1/feed";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { CommentsContainer } from "@/components/cards/CommentsContainer";
 import {
   NewsFeedInput,
   NewsFeedInputHandle,
-} from "../../../../../components/socialFeed/NewsFeed/NewsFeedInput";
-import { SocialThreadCard } from "../../../../../components/socialFeed/SocialCard/cards/SocialThreadCard";
+} from "@/components/socialFeed/NewsFeed/NewsFeedInput";
+import { SocialThreadCard } from "@/components/socialFeed/SocialCard/cards/SocialThreadCard";
 import {
   combineFetchCommentPages,
   useFetchComments,
-} from "../../../../../hooks/feed/useFetchComments";
-import { useNSUserInfo } from "../../../../../hooks/useNSUserInfo";
-import { parseUserId } from "../../../../../networks";
-import { BASE_POST, DEFAULT_USERNAME } from "../../../../../utils/social-feed";
-import { tinyAddress } from "../../../../../utils/text";
+} from "@/hooks/feed/useFetchComments";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { parseUserId } from "@/networks";
+import { BASE_POST, DEFAULT_USERNAME } from "@/utils/social-feed";
+import { tinyAddress } from "@/utils/text";
 import {
   OnPressReplyType,
   PostCategory,
   ReplyToType,
-} from "../../../../../utils/types/feed";
-import CustomAppBar from "../../../components/AppBar/CustomAppBar";
-
-import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+} from "@/utils/types/feed";
 
 type Props = {
   networkId: string;

@@ -5,11 +5,12 @@ import Popover from "react-native-popover-view";
 import { TooltipContant } from "./TooltipContant";
 import avaPNG from "../../../../assets/default-images/ava.png";
 import checkBadgeSVG from "../../../../assets/icons/certified.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { neutral44, neutral11 } from "../../../utils/style/colors";
-import { fontSemibold16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { neutral44, neutral11 } from "@/utils/style/colors";
+import { fontSemibold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const GuardiansList: FC<{ index: number }> = ({ index }) => {
   const [viewPopover, setViewPopover] = useState<number>(-1);

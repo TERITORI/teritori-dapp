@@ -4,10 +4,11 @@ import { View } from "react-native";
 import { CollectionThumb } from "./component/CollectionThumb";
 import { CollectionView } from "./component/CollectionView";
 import { GameContentView } from "./component/GameContentView";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getCollectionId, getNetwork } from "../../networks";
-import { ScreenFC } from "../../utils/navigation";
+
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getCollectionId, getNetwork } from "@/networks";
+import { ScreenFC } from "@/utils/navigation";
 
 export const RiotGameMarketplaceScreen: ScreenFC<"RiotGameMarketplace"> = ({
   route,

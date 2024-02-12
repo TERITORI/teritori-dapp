@@ -3,10 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
-import { getNativeCurrency, getNetwork, NetworkKind } from "../networks";
-import { Balance } from "../utils/coins";
-import { getEthereumProvider } from "../utils/ethereum";
-import { CosmosBalancesResponse } from "../utils/teritori";
+
+import { getNativeCurrency, getNetwork, NetworkKind } from "@/networks";
+import { Balance } from "@/utils/coins";
+import { getEthereumProvider } from "@/utils/ethereum";
+import { CosmosBalancesResponse } from "@/utils/teritori";
 
 export const useBalances = (
   networkId: string | undefined,

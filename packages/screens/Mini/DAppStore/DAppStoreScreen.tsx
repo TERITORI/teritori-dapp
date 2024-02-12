@@ -1,17 +1,18 @@
 import React, { useState } from "react";
-import { FlatList, View, useWindowDimensions } from "react-native";
+import { FlatList, useWindowDimensions, View } from "react-native";
 
 import { DAppStoreMenuItem } from "./component/DAppStoreMenuItems";
 import { DAppsList } from "./component/DAppsList";
 import penSVG from "../../../../assets/icons/pen-solid.svg";
-import { BrandText } from "../../../components/BrandText";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { Separator } from "../../../components/separators/Separator";
-import { ScreenFC } from "../../../utils/navigation";
-import { blueDefault } from "../../../utils/style/colors";
-import { fontSemibold15 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { BrandText } from "@/components/BrandText";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { Separator } from "@/components/separators/Separator";
+import { ScreenFC } from "@/utils/navigation";
+import { blueDefault } from "@/utils/style/colors";
+import { fontSemibold15 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
   const [enableEditingDApps, setEnableEditingDApps] = useState(false);

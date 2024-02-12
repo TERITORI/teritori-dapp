@@ -4,19 +4,20 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { ChatHeader } from "./ChatHeader";
 import { Conversations } from "./Conversations";
-import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
-import { SpacerRow } from "../../../components/spacer";
+
+import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
+import { SpacerRow } from "@/components/spacer";
 import {
   selectConversationById,
   selectMessageList,
   updateConversationById,
-} from "../../../store/slices/message";
-import { RootState } from "../../../store/store";
-import { ScreenFC } from "../../../utils/navigation";
-import { layout } from "../../../utils/style/layout";
-import { weshConfig } from "../../../weshnet";
-import { sendMessage } from "../../../weshnet/services";
-import { bytesFromString, stringFromBytes } from "../../../weshnet/utils";
+} from "@/store/slices/message";
+import { RootState } from "@/store/store";
+import { ScreenFC } from "@/utils/navigation";
+import { layout } from "@/utils/style/layout";
+import { weshConfig } from "@/weshnet";
+import { sendMessage } from "@/weshnet/services";
+import { bytesFromString, stringFromBytes } from "@/weshnet/utils";
 
 export const ConversationScreeen: ScreenFC<"Conversation"> = ({
   navigation,

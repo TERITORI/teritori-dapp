@@ -1,14 +1,16 @@
 import React, { useMemo, useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { Avatar } from "react-native-paper";
 
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { neutral77, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { CheckboxDappStore } from "../../DAppStore/components/CheckboxDappStore";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { neutral77, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+
 export interface CheckboxItem {
   id: string;
   name: string;

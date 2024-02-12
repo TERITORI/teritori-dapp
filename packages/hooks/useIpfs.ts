@@ -4,11 +4,10 @@ import { CID } from "multiformats";
 import { useCallback, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { LocalFileData, RemoteFileData } from "../utils/types/files";
-
 import { parseUserId } from "@/networks";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { generateIpfsKey } from "@/utils/ipfs";
+import { LocalFileData, RemoteFileData } from "@/utils/types/files";
 
 interface UploadPostFilesToPinataParams {
   files: LocalFileData[];

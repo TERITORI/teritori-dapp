@@ -4,24 +4,25 @@ import { View } from "react-native";
 
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 import burnSVG from "../../../assets/icons/burn.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
-import { NameNFT } from "../../components/teritoriNameService/NameNFT";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useTNS } from "../../context/TNSProvider";
-import { TeritoriNameServiceClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { NameNFT } from "@/components/teritoriNameService/NameNFT";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useTNS } from "@/context/TNSProvider";
+import { TeritoriNameServiceClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { nsNameInfoQueryKey } from "@/hooks/useNSNameInfo";
+import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
 import {
   getCosmosNetwork,
   getKeplrSigningCosmWasmClient,
   mustGetCosmosNetwork,
-} from "../../networks";
-import { neutral17, neutralA3 } from "../../utils/style/colors";
-import { layout } from "../../utils/style/layout";
+} from "@/networks";
+import { neutral17, neutralA3 } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 
 interface TNSBurnNameScreenProps extends TNSModalCommonProps {}
 

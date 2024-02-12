@@ -1,5 +1,5 @@
 import React, { RefObject, useState } from "react";
-import { FlatList, Image, View, useWindowDimensions } from "react-native";
+import { FlatList, Image, useWindowDimensions, View } from "react-native";
 import { Asset, launchImageLibrary } from "react-native-image-picker";
 
 import cameraSVG from "../../../../assets/icons/camera-white.svg";
@@ -7,15 +7,16 @@ import crossSVG from "../../../../assets/icons/close.svg";
 import micSVG from "../../../../assets/icons/mic-white.svg";
 import chatPlusSVG from "../../../../assets/icons/plus-white.svg";
 import sendSVG from "../../../../assets/icons/sent.svg";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { neutral00, neutral77 } from "../../../utils/style/colors";
-import { fontMedium16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { ReplyTo } from "../../../utils/types/message";
-import { sendMessage } from "../../../weshnet/services";
-import { bytesFromString } from "../../../weshnet/utils";
 import MiniTextInput from "../components/MiniTextInput";
+
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { neutral00, neutral77 } from "@/utils/style/colors";
+import { fontMedium16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { ReplyTo } from "@/utils/types/message";
+import { sendMessage } from "@/weshnet/services";
+import { bytesFromString } from "@/weshnet/utils";
 
 type Props = {
   conversationId: string;

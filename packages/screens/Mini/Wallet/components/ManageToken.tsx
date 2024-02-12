@@ -3,11 +3,12 @@ import { Switch, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import questionSVG from "../../../../../assets/icons/question-gray.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
-import { selectTokenId, updateOne } from "../../../../store/slices/wallets";
-import { RootState, useAppDispatch } from "../../../../store/store";
-import { prettyPrice } from "../../../../utils/coins";
+
+import { BrandText } from "@/components/BrandText";
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { selectTokenId, updateOne } from "@/store/slices/wallets";
+import { RootState, useAppDispatch } from "@/store/store";
+import { prettyPrice } from "@/utils/coins";
 import {
   blueDefault,
   neutral33,
@@ -15,10 +16,10 @@ import {
   neutral99,
   neutralA3,
   secondaryColor,
-} from "../../../../utils/style/colors";
-import { fontSemibold14, fontSemibold22 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import { findByBaseDenom } from "../../../../utils/wallet/chain-registry";
+} from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold22 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { findByBaseDenom } from "@/utils/wallet/chain-registry";
 
 type Props = {
   amount: string;

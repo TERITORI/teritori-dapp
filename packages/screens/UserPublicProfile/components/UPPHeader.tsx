@@ -1,16 +1,16 @@
 import React, { memo } from "react";
 
 import { UPPIntro } from "./UPPIntro";
-import { Tabs } from "../../../components/tabs/Tabs";
-import { useIsDAO } from "../../../hooks/cosmwasm/useCosmWasmContractInfo";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { parseUserId, UserKind } from "../../../networks";
-import { primaryColor } from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
-import { uppTabItems } from "../../../utils/upp";
 
+import { Tabs } from "@/components/tabs/Tabs";
+import { useIsDAO } from "@/hooks/cosmwasm/useCosmWasmContractInfo";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { parseUserId, UserKind } from "@/networks";
+import { primaryColor } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
+import { uppTabItems } from "@/utils/upp";
 
 interface UserPublicProfileScreenHeaderProps {
   userId: string;

@@ -3,17 +3,18 @@ import { SafeAreaView, useWindowDimensions, View } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 
 import walletSVG from "../../../../assets/wallet-screen.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { ScreenFC } from "../../../utils/navigation";
-import { neutral77 } from "../../../utils/style/colors";
+import { CustomButton } from "../components/Button/CustomButton";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { ScreenFC } from "@/utils/navigation";
+import { neutral77 } from "@/utils/style/colors";
 import {
   fontMedium16,
   fontSemibold16,
   fontSemibold30,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { CustomButton } from "../components/Button/CustomButton";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const totalSlides = 2;
 

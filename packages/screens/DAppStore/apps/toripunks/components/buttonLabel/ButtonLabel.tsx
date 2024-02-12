@@ -1,4 +1,4 @@
-import { StyleProp, View, ViewStyle, Text } from "react-native";
+import { StyleProp, Text, View, ViewStyle } from "react-native";
 
 import { useContentContext } from "../../context/ContentProvider";
 

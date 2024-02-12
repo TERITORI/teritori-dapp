@@ -3,16 +3,17 @@ import { StyleProp, TextStyle, View, ViewStyle } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import checkSVG from "../../../../../assets/icons/check.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { SpacerRow } from "../../../../components/spacer";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SpacerRow } from "@/components/spacer";
 import {
   blueDefault,
   neutral17,
   neutralA3,
   secondaryColor,
-} from "../../../../utils/style/colors";
-import { fontMedium16 } from "../../../../utils/style/fonts";
+} from "@/utils/style/colors";
+import { fontMedium16 } from "@/utils/style/fonts";
 
 type CheckboxOnPressType = <T>(isChecked: boolean, value: T) => void;
 

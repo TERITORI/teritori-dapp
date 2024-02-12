@@ -3,16 +3,17 @@ import { FlatList, View } from "react-native";
 
 import externalLinkSVG from "../../../../assets/icons/external-grey.svg";
 import teritoriSVG from "../../../../assets/icons/teritori-white.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { TertiaryBadge } from "../../../components/badges/TertiaryBadge";
-import { SpacerColumn } from "../../../components/spacer";
-import { RootStackParamList } from "../../../utils/navigation";
-import { neutral77 } from "../../../utils/style/colors";
-import { fontBold16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import ListView from "../components/ListView";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
+import { SpacerColumn } from "@/components/spacer";
+import { RootStackParamList } from "@/utils/navigation";
+import { neutral77 } from "@/utils/style/colors";
+import { fontBold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type AboutScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "About">;

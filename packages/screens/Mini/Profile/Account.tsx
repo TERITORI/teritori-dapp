@@ -6,18 +6,18 @@ import copySVG from "../../../../assets/icons/copy-gray.svg";
 import dotSVG from "../../../../assets/icons/dots-gray.svg";
 import infoSVG from "../../../../assets/icons/info-circle-gray.svg";
 import openSVG from "../../../../assets/icons/open-gray.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { DropdownWithListItem } from "../../../components/mini/DropdownWithListItem";
-import { neutral33, neutralA3 } from "../../../utils/style/colors";
-import { fontMedium13, fontSemibold22 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
 import { copyToClipboard } from "../Wallet/TransactionDetailScreen";
 
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { DropdownWithListItem } from "@/components/mini/DropdownWithListItem";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { neutral33, neutralA3 } from "@/utils/style/colors";
+import { fontMedium13, fontSemibold22 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { tinyAddress } from "@/utils/text";
 
 type AccountProps = {
   accountName: string;

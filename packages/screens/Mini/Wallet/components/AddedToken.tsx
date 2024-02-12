@@ -4,15 +4,16 @@ import { SvgProps } from "react-native-svg";
 
 import chevronRightSVG from "../../../../../assets/icons/chevron-right-gray.svg";
 import questionSVG from "../../../../../assets/icons/question-gray.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { prettyPrice } from "../../../../utils/coins";
-import { neutral39, neutralA3 } from "../../../../utils/style/colors";
-import { fontMedium13, fontSemibold14 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import { findByBaseDenom } from "../../../../utils/wallet/chain-registry";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { prettyPrice } from "@/utils/coins";
+import { neutral39, neutralA3 } from "@/utils/style/colors";
+import { fontMedium13, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { findByBaseDenom } from "@/utils/wallet/chain-registry";
 
 type Props = {
   icon: string | FC<SvgProps>;

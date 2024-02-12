@@ -3,22 +3,23 @@ import { View } from "react-native";
 import { useSelector } from "react-redux";
 
 import friendGraySVG from "../../../../../assets/icons/friend-gray.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SpacerColumn } from "../../../../components/spacer";
-import { selectContactInfo } from "../../../../store/slices/message";
-import {
-  neutral33,
-  neutralA3,
-  redDefault,
-  withAlpha,
-} from "../../../../utils/style/colors";
-import { fontMedium14 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
 import { weshServices } from "../../../../weshnet";
 import { CustomButton } from "../../components/Button/CustomButton";
 import MiniTextInput from "../../components/MiniTextInput";
 import MobileModal from "../../components/MobileModal";
 import TitleBar from "../../components/TitleBar";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn } from "@/components/spacer";
+import { selectContactInfo } from "@/store/slices/message";
+import {
+  neutral33,
+  neutralA3,
+  redDefault,
+  withAlpha,
+} from "@/utils/style/colors";
+import { fontMedium14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export default function FriendRequestModal({
   visible,

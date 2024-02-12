@@ -5,15 +5,16 @@ import { View } from "react-native";
 import { SelectionDropdown } from "./dropdowns/SelectionDropdown";
 import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
 import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadRequiredSublabel";
-import { BrandText } from "../../../components/BrandText";
-import { SpacerColumn } from "../../../components/spacer";
-import { neutral55, neutral77 } from "../../../utils/style/colors";
+import { NewCollectionAdditionalFormValues } from "../CreateCollection.type";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn } from "@/components/spacer";
+import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold20,
-} from "../../../utils/style/fonts";
-import { NewCollectionAdditionalFormValues } from "../CreateCollection.type";
+} from "@/utils/style/fonts";
 
 export const LaunchpadAdditional: React.FC = () => {
   const dropdownOptions = ["Yes", "No"];

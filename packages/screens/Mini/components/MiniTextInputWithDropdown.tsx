@@ -5,21 +5,22 @@ import { useSelector } from "react-redux";
 import MiniTextInput from "./MiniTextInput";
 import inputAddressSVG from "../../../../assets/icons/input-address.svg";
 import eyeLensSVG from "../../../../assets/icons/search-gray.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { Separator } from "../../../components/separators/Separator";
-import { selectAllAddressBook } from "../../../store/slices/wallets";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { Separator } from "@/components/separators/Separator";
+import { selectAllAddressBook } from "@/store/slices/wallets";
 import {
   neutral22,
   neutral39,
   neutralA3,
   secondaryColor,
   withAlpha,
-} from "../../../utils/style/colors";
-import { fontMedium16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
+} from "@/utils/style/colors";
+import { fontMedium16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { tinyAddress } from "@/utils/text";
 
 type OptionType = {
   label: string;

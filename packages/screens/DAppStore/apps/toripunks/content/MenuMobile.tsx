@@ -1,15 +1,16 @@
 import {
+  StyleProp,
+  Text,
   TouchableOpacity,
   View,
-  Text,
-  StyleProp,
   ViewStyle,
 } from "react-native";
 
-import { useNSUserInfo } from "../../../../../hooks/useNSUserInfo";
-import { tinyAddress } from "../../../../../utils/text";
 import { Button } from "../components/button/Button";
 import { useContentContext } from "../context/ContentProvider";
+
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { tinyAddress } from "@/utils/text";
 
 const LINKS = [
   {

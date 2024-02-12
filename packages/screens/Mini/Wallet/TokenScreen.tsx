@@ -6,28 +6,25 @@ import TransactionItem from "./components/TransactionItem";
 import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
 import settingSVG from "../../../../assets/icons/setting-solid.svg";
 import transactionSVG from "../../../../assets/icons/transactions-gray.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn } from "../../../components/spacer";
-import { useBalances } from "../../../hooks/useBalances";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
-import { useSearchTx } from "../../../hooks/wallet/useSearchTx";
-import { useSelectedNativeWallet } from "../../../hooks/wallet/useSelectedNativeWallet";
-import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
-import {
-  neutral88,
-  neutralA3,
-  secondaryColor,
-} from "../../../utils/style/colors";
+import { CustomButton } from "../components/Button/CustomButton";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn } from "@/components/spacer";
+import { useBalances } from "@/hooks/useBalances";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { useSearchTx } from "@/hooks/wallet/useSearchTx";
+import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { neutral88, neutralA3, secondaryColor } from "@/utils/style/colors";
 import {
   fontMedium13,
   fontMedium24,
   fontSemibold14,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { CustomButton } from "../components/Button/CustomButton";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
   const selectedWallet = useSelectedNativeWallet();

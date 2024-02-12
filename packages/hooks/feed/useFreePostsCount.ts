@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getAvailableFreePost } from "../../utils/feed/queries";
-import { PostCategory } from "../../utils/types/feed";
+import { getAvailableFreePost } from "@/utils/feed/queries";
+import { PostCategory } from "@/utils/types/feed";
 
 export const useFreePostsCount = (
   userId: string | undefined,

@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
-import { FeedMusicList } from "../../../components/music/FeedMusicList";
+import { FeedMusicList } from "@/components/music/FeedMusicList";
 
 export const MusicFeedScreen = () => {
   return (

@@ -1,36 +1,34 @@
 import { Secp256k1HdWallet } from "@cosmjs/amino";
 import { useEffect, useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import rightArrowSVG from "../../../../assets/icons/arrow-right.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
-import {
-  getMnemonic,
-  getNativeWallet,
-} from "../../../hooks/wallet/getNativeWallet";
-import { mustGetCosmosNetwork } from "../../../networks";
-import { addSelected, selectAllWallets } from "../../../store/slices/wallets";
-import { useAppDispatch } from "../../../store/store";
-import { ScreenFC } from "../../../utils/navigation";
-import { dangerColor, neutral22, neutralA3 } from "../../../utils/style/colors";
+import CustomAppBar from "../../Mini/components/AppBar/CustomAppBar";
+import BlurViewWrapper from "../../Mini/components/BlurViewWrapper";
+import { CustomButton } from "../../Mini/components/Button/CustomButton";
+import Checkbox from "../../Mini/components/Checkbox/Checkbox";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getMnemonic, getNativeWallet } from "@/hooks/wallet/getNativeWallet";
+import { mustGetCosmosNetwork } from "@/networks";
+import { addSelected, selectAllWallets } from "@/store/slices/wallets";
+import { useAppDispatch } from "@/store/store";
+import { ScreenFC } from "@/utils/navigation";
+import { dangerColor, neutral22, neutralA3 } from "@/utils/style/colors";
 import {
   fontMedium16,
   fontSemibold14,
   fontSemibold15,
   fontSemibold30,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { createMnemonic } from "../../../utils/wallet/seed";
-import CustomAppBar from "../../Mini/components/AppBar/CustomAppBar";
-import BlurViewWrapper from "../../Mini/components/BlurViewWrapper";
-import { CustomButton } from "../../Mini/components/Button/CustomButton";
-import Checkbox from "../../Mini/components/Checkbox/Checkbox";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { createMnemonic } from "@/utils/wallet/seed";
 
 export const CreateWalletScreen: ScreenFC<"CreateWallet"> = ({
   navigation,

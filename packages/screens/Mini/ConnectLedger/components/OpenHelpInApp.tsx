@@ -2,14 +2,15 @@ import React from "react";
 import { View } from "react-native";
 
 import questionMarkSVG from "../../../../../assets/icons/question-gray.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { SpacerColumn } from "../../../../components/spacer";
-import { neutral17, neutral77 } from "../../../../utils/style/colors";
-import { fontMedium16, fontSemibold30 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
 import { CustomButton } from "../../components/Button/CustomButton";
 import { StepType } from "../ConnectLedgerScreen";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SpacerColumn } from "@/components/spacer";
+import { neutral17, neutral77 } from "@/utils/style/colors";
+import { fontMedium16, fontSemibold30 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type Props = {
   onStepChange: (step: StepType) => void;

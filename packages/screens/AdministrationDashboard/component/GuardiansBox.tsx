@@ -15,14 +15,15 @@ import dotSVG from "../../../../assets/icons/dot-more.svg";
 import downSVG from "../../../../assets/icons/down.svg";
 import trashSVG from "../../../../assets/icons/trash-white.svg";
 import upSVG from "../../../../assets/icons/up.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { BoxStyle } from "../../../components/boxes/Box";
-import { PrimaryBox } from "../../../components/boxes/PrimaryBox";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { SearchInput } from "../../../components/sorts/SearchInput";
-import { neutral33, neutral00 } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { BoxStyle } from "@/components/boxes/Box";
+import { PrimaryBox } from "@/components/boxes/PrimaryBox";
+import { TertiaryBox } from "@/components/boxes/TertiaryBox";
+import { SearchInput } from "@/components/sorts/SearchInput";
+import { neutral33, neutral00 } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
 
 const MD_BREAKPOINT = 820;
 

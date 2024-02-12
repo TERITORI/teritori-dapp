@@ -6,16 +6,17 @@ import astroSvg from "../../../../assets/icons/networks/astroport-circle.svg";
 import connectWalletSvg from "../../../../assets/icons/networks/connect-wallet-circle.svg";
 import foxSvg from "../../../../assets/icons/networks/fox-circle.svg";
 import keplerSvg from "../../../../assets/icons/networks/kepler-circle.svg";
-import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
-import { ConnectAdenaButton } from "../../../components/connectWallet/ConnectAdenaButton";
-import { ConnectKeplrButton } from "../../../components/connectWallet/ConnectKeplrButton";
-import { ConnectLeapButton } from "../../../components/connectWallet/ConnectLeapButton";
-import { ConnectMetamaskButton } from "../../../components/connectWallet/ConnectMetamaskButton";
-import { SpacerColumn } from "../../../components/spacer";
-import { ScreenFC } from "../../../utils/navigation";
-import { layout } from "../../../utils/style/layout";
 import { CustomButton } from "../../Mini/components/Button/CustomButton";
 import { WalletContainer } from "../layout/WalletContainer";
+
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { ConnectAdenaButton } from "@/components/connectWallet/ConnectAdenaButton";
+import { ConnectKeplrButton } from "@/components/connectWallet/ConnectKeplrButton";
+import { ConnectLeapButton } from "@/components/connectWallet/ConnectLeapButton";
+import { ConnectMetamaskButton } from "@/components/connectWallet/ConnectMetamaskButton";
+import { SpacerColumn } from "@/components/spacer";
+import { ScreenFC } from "@/utils/navigation";
+import { layout } from "@/utils/style/layout";
 
 function Connect3rdPartyWallet() {
   return (

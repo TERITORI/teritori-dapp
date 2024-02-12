@@ -2,12 +2,12 @@ import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 
-import { Post } from "../../api/feed/v1/feed";
-import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
-import { NetworkKind, getNetwork, getUserId } from "../../networks";
-import { decodeGnoPost } from "../../utils/feed/gno";
-import { extractGnoJSONString } from "../../utils/gno";
-import { safeParseJSON } from "../../utils/sanitize";
+import { Post } from "@/api/feed/v1/feed";
+import { nonSigningSocialFeedClient } from "@/client-creators/socialFeedClient";
+import { NetworkKind, getNetwork, getUserId } from "@/networks";
+import { decodeGnoPost } from "@/utils/feed/gno";
+import { extractGnoJSONString } from "@/utils/gno";
+import { safeParseJSON } from "@/utils/sanitize";
 
 // FIXME: this is not typed
 export const usePost = (id: string, networkId: string | undefined) => {

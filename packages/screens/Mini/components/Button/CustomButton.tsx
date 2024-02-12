@@ -7,20 +7,17 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { BrandText } from "../../../../components/BrandText";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import {
-  AppNavigationProp,
-  useAppNavigation,
-} from "../../../../utils/navigation";
+import { BrandText } from "@/components/BrandText";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { AppNavigationProp, useAppNavigation } from "@/utils/navigation";
 import {
   blueDefault,
   dangerColor,
   neutral33,
   neutral39,
-} from "../../../../utils/style/colors";
-import { fontSemibold15 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
+} from "@/utils/style/colors";
+import { fontSemibold15 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type Props = {
   onPress: (

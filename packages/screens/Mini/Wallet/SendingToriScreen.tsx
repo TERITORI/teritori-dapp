@@ -12,26 +12,6 @@ import chevronDownSVG from "../../../../assets/icons/chevron-down-white.svg";
 import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
 import questionSVG from "../../../../assets/icons/question-gray.svg";
 import teritoriCircleSVG from "../../../../assets/icons/tori-circle.svg";
-import { BrandText } from "../../../components/BrandText";
-import { CurrencyIcon } from "../../../components/CurrencyIcon";
-import { Dropdown } from "../../../components/Dropdown";
-import { SVG } from "../../../components/SVG";
-import { UserNameInline } from "../../../components/UserNameInline";
-import { TertiaryBadge } from "../../../components/badges/TertiaryBadge";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { getNativeSigner } from "../../../hooks/wallet/getNativeSigner";
-import { useSelectedNativeWallet } from "../../../hooks/wallet/useSelectedNativeWallet";
-import { getCosmosNetwork, getStakingCurrency } from "../../../networks";
-import { prettyPrice } from "../../../utils/coins";
-import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
-import {
-  neutral33,
-  neutralA3,
-  secondaryColor,
-  withAlpha,
-} from "../../../utils/style/colors";
-import { fontMedium16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { CustomButton } from "../components/Button/CustomButton";
 import MobileModal from "../components/MobileModal";
 import MiniTable from "../components/Table/MiniTable";
@@ -39,7 +19,27 @@ import MiniTableRow from "../components/Table/MiniTableRow";
 import TitleBar from "../components/TitleBar";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
+import { BrandText } from "@/components/BrandText";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
+import { Dropdown } from "@/components/Dropdown";
+import { SVG } from "@/components/SVG";
+import { UserNameInline } from "@/components/UserNameInline";
+import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { getNativeSigner } from "@/hooks/wallet/getNativeSigner";
 import { useGetAssets } from "@/hooks/wallet/useGetAssets";
+import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
+import { getCosmosNetwork, getStakingCurrency } from "@/networks";
+import { prettyPrice } from "@/utils/coins";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import {
+  neutral33,
+  neutralA3,
+  secondaryColor,
+  withAlpha,
+} from "@/utils/style/colors";
+import { fontMedium16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const getTxData = (denom: string, amount: string, userId: string) => {
   const networkId = "teritori"; // networkId placeholder

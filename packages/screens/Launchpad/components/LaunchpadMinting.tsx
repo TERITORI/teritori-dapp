@@ -8,16 +8,17 @@ import { NavBar } from "./NavBar";
 import { NewWhitelist } from "./NewWhitelist";
 import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
 import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadRequiredSublabel";
-import { BrandText } from "../../../components/BrandText";
-import { SpacerColumn } from "../../../components/spacer";
-import { neutral55, neutral77 } from "../../../utils/style/colors";
+import { NewCollectionMintFormValues } from "../CreateCollection.type";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn } from "@/components/spacer";
+import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold20,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { NewCollectionMintFormValues } from "../CreateCollection.type";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const CreateWhitelistTabItems = {
   nowhitelist: {

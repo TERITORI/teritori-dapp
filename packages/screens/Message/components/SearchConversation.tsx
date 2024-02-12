@@ -1,26 +1,23 @@
 import moment from "moment";
 import React from "react";
-import { View, TouchableOpacity, Image } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 
 import { Avatar } from "./Avatar";
 import { FileRenderer } from "./FileRenderer";
-import { BrandText } from "../../../components/BrandText";
 import FlexCol from "../../../components/FlexCol";
 import FlexRow from "../../../components/FlexRow";
+
+import { BrandText } from "@/components/BrandText";
 import {
-  neutral77,
-  secondaryColor,
-  neutralA3,
   neutral30,
-} from "../../../utils/style/colors";
-import {
-  fontBold9,
-  fontMedium10,
-  fontSemibold11,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { Conversation, Message } from "../../../utils/types/message";
-import { getConversationAvatar } from "../../../weshnet/messageHelpers";
+  neutral77,
+  neutralA3,
+  secondaryColor,
+} from "@/utils/style/colors";
+import { fontBold9, fontMedium10, fontSemibold11 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { Conversation, Message } from "@/utils/types/message";
+import { getConversationAvatar } from "@/weshnet/messageHelpers";
 
 interface SearchConversationProps {
   conversation: Conversation;

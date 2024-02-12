@@ -3,16 +3,17 @@ import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
-import { BrandText } from "../../../components/BrandText";
-import { CustomNetworkSelector } from "../../../components/NetworkSelector/CustomNetworkSelector";
-import { SelectFileUploader } from "../../../components/selectFileUploader";
-import { SpacerColumn } from "../../../components/spacer";
-import { IMAGE_MIME_TYPES } from "../../../utils/mime";
-import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "../../../utils/social-feed";
-import { neutral77, primaryColor } from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { NewCollectionBasicFormValues } from "../CreateCollection.type";
+
+import { BrandText } from "@/components/BrandText";
+import { CustomNetworkSelector } from "@/components/NetworkSelector/CustomNetworkSelector";
+import { SelectFileUploader } from "@/components/selectFileUploader";
+import { SpacerColumn } from "@/components/spacer";
+import { IMAGE_MIME_TYPES } from "@/utils/mime";
+import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "@/utils/social-feed";
+import { neutral77, primaryColor } from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const LaunchpadBasic: React.FC = () => {
   const { control } = useForm<NewCollectionBasicFormValues>({

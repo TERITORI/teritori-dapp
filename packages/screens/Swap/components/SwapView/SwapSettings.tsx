@@ -9,22 +9,23 @@ import React, {
 import { Pressable, View } from "react-native";
 
 import infoSVG from "../../../../../assets/icons/info.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../../components/boxes/LegacyTertiaryBox";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { TextInputCustom } from "../../../../components/inputs/TextInputCustom";
+import { FadeInView } from "../FadeInView";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import {
   neutral77,
   neutralA3,
   primaryColor,
   primaryTextColor,
   secondaryColor,
-} from "../../../../utils/style/colors";
-import { fontSemibold14, fontSemibold16 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import { isFloatText } from "../../../../utils/text";
-import { FadeInView } from "../FadeInView";
+} from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { isFloatText } from "@/utils/text";
 
 type SlippageItem = {
   value: number;

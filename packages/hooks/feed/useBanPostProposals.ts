@@ -2,8 +2,8 @@ import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
-import { getGnoNetwork } from "../../networks";
-import { extractGnoJSONString } from "../../utils/gno";
+import { getGnoNetwork } from "@/networks";
+import { extractGnoJSONString } from "@/utils/gno";
 
 export const useGetBanPostProposals = (networkId: string | undefined) => {
   const { data: banPostProposals, ...other } = useQuery(

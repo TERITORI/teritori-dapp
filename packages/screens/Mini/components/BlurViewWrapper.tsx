@@ -6,13 +6,14 @@ import { SvgProps } from "react-native-svg";
 
 import { CustomButton } from "./Button/CustomButton";
 import eyeClosedSVG from "../../../../assets/icons/eye-closed.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { SpacerColumn } from "../../../components/spacer";
-import { neutral09 } from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { SpacerColumn } from "@/components/spacer";
+import { neutral09 } from "@/utils/style/colors";
+import { fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface BlurViewWrapperProps extends BlurViewProps {
   blurContainerStyle?: StyleProp<ViewStyle>;

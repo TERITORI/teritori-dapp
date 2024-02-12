@@ -5,13 +5,13 @@ import { SafeAreaView, useWindowDimensions, View } from "react-native";
 
 import chevronSVG from "../../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { fontSemibold18 } from "../../../utils/style/fonts";
-import { MOBILE_HEADER_HEIGHT, layout } from "../../../utils/style/layout";
 
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { fontSemibold18 } from "@/utils/style/fonts";
+import { layout, MOBILE_HEADER_HEIGHT } from "@/utils/style/layout";
 
 type Props = {
   children: ReactNode;

@@ -1,7 +1,7 @@
 import { FC, ReactNode } from "react";
 import { View } from "react-native";
 
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
 
 // Layout and Footer for UPP Screens.  Ex in DAOsUPPScreen.tsx
 // The UPP screens that use NewsFeed shouldn't use this wrapper. Ex in FeedPostsUPPScreen.tsx

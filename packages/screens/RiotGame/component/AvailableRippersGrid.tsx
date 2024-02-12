@@ -2,11 +2,12 @@ import React from "react";
 import { FlatList, TouchableOpacity } from "react-native";
 
 import { RipperAvatar } from "./RipperAvatar";
-import { NFT } from "../../../api/marketplace/v1/marketplace";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
-import { getRipperRarity, isNFTStaked } from "../../../utils/game";
-import { secondaryColor } from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
+
+import { NFT } from "@/api/marketplace/v1/marketplace";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { getRipperRarity, isNFTStaked } from "@/utils/game";
+import { secondaryColor } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 
 interface AvailableRippersGridProps {
   selectedRipper?: NFT | undefined;

@@ -2,8 +2,9 @@ import React from "react";
 import { View } from "react-native";
 
 import { JungleFeedScreen } from "./JungleFeedScreen";
-import { PostsRequest } from "../../../api/feed/v1/feed";
-import { PostCategory } from "../../../utils/types/feed";
+
+import { PostsRequest } from "@/api/feed/v1/feed";
+import { PostCategory } from "@/utils/types/feed";
 
 export const ArticlesFeedScreen = () => {
   const feedRequest: Partial<PostsRequest> = {

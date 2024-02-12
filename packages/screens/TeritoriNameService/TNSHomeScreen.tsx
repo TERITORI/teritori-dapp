@@ -12,24 +12,25 @@ import TNSBannerPNG from "../../../assets/banners/tns.png";
 import exploreSVG from "../../../assets/icons/explore-neutral77.svg";
 import penSVG from "../../../assets/icons/pen-neutral77.svg";
 import registerSVG from "../../../assets/icons/register-neutral77.svg";
-import { BrandText } from "../../components/BrandText";
-import { IntroLogoText } from "../../components/IntroLogoText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { ActivityTable } from "../../components/activity/ActivityTable";
-import { TNSNameFinderModal } from "../../components/modals/teritoriNameService/TNSNameFinderModal";
-import { FlowCard } from "../../components/teritoriNameService/FlowCard";
-import { useTNS } from "../../context/TNSProvider";
-import { useWalletControl } from "../../context/WalletControlProvider";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { BrandText } from "@/components/BrandText";
+import { IntroLogoText } from "@/components/IntroLogoText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { ActivityTable } from "@/components/activity/ActivityTable";
+import { TNSNameFinderModal } from "@/components/modals/teritoriNameService/TNSNameFinderModal";
+import { FlowCard } from "@/components/teritoriNameService/FlowCard";
+import { useTNS } from "@/context/TNSProvider";
+import { useWalletControl } from "@/context/WalletControlProvider";
+import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   NetworkKind,
   getCollectionId,
   getCosmosNetwork,
   NetworkFeature,
-} from "../../networks";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+} from "@/networks";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 
 type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
 type TNSModals =

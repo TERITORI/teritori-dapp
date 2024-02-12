@@ -4,20 +4,21 @@ import { View } from "react-native";
 import { useSelector } from "react-redux";
 
 import addSVG from "../../../../assets/icons/add-circle-outline.svg";
-import { BrandText } from "../../../components/BrandText";
-import { UserAvatarWithFrame } from "../../../components/images/AvatarWithFrame";
-import { SpacerColumn } from "../../../components/spacer";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { addEntry, selectAllAddressBook } from "../../../store/slices/wallets";
-import { useAppDispatch } from "../../../store/store";
-import { ScreenFC } from "../../../utils/navigation";
-import { neutral77 } from "../../../utils/style/colors";
-import { fontMedium15 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import MiniTextInput from "../components/MiniTextInput";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { BrandText } from "@/components/BrandText";
+import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
+import { SpacerColumn } from "@/components/spacer";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { addEntry, selectAllAddressBook } from "@/store/slices/wallets";
+import { useAppDispatch } from "@/store/store";
+import { ScreenFC } from "@/utils/navigation";
+import { neutral77 } from "@/utils/style/colors";
+import { fontMedium15 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const AddAddressBookScreen: ScreenFC<"AddAddressBook"> = ({ navigation }) => {
   const goBackTo = () =>

@@ -2,8 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
-import { JoinState } from "../../api/multisig/v1/multisig";
-import { NetworkKind, parseUserId } from "../../networks";
+
+import { JoinState } from "@/api/multisig/v1/multisig";
+import { NetworkKind, parseUserId } from "@/networks";
 
 const batchSize = 100;
 

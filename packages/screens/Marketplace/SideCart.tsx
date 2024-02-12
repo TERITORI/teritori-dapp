@@ -17,24 +17,25 @@ import { TrashIcon } from "react-native-heroicons/outline";
 import { useSelector } from "react-redux";
 
 import closeSVG from "../../../assets/icons/close.svg";
-import { NFT } from "../../api/marketplace/v1/marketplace";
-import { BrandText } from "../../components/BrandText";
-import { CurrencyIcon } from "../../components/CurrencyIcon";
-import { OptimizedImage } from "../../components/OptimizedImage";
-import { SVG } from "../../components/SVG";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { shortUserAddressFromID } from "../../components/nfts/NFTView";
-import { Separator } from "../../components/separators/Separator";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { Wallet } from "../../context/WalletsProvider";
-import { useBalances } from "../../hooks/useBalances";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { NFT } from "@/api/marketplace/v1/marketplace";
+import { BrandText } from "@/components/BrandText";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
+import { OptimizedImage } from "@/components/OptimizedImage";
+import { SVG } from "@/components/SVG";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { shortUserAddressFromID } from "@/components/nfts/NFTView";
+import { Separator } from "@/components/separators/Separator";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { Wallet } from "@/context/WalletsProvider";
+import { useBalances } from "@/hooks/useBalances";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import {
   getKeplrSigningCosmWasmClient,
   parseNftId,
   txExplorerLink,
-} from "../../networks";
+} from "@/networks";
 import {
   emptyCart,
   removeSelected,
@@ -43,9 +44,9 @@ import {
   selectSelectedNFTIds,
   selectShowCart,
   setShowCart,
-} from "../../store/slices/marketplaceCartItems";
-import { RootState, useAppDispatch } from "../../store/store";
-import { prettyPrice } from "../../utils/coins";
+} from "@/store/slices/marketplaceCartItems";
+import { RootState, useAppDispatch } from "@/store/store";
+import { prettyPrice } from "@/utils/coins";
 import {
   codGrayColor,
   errorColor,
@@ -53,14 +54,14 @@ import {
   neutral77,
   neutralA3,
   primaryColor,
-} from "../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontMedium10,
   fontSemibold12,
   fontSemibold14,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { modalMarginPadding } from "../../utils/style/modals";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { modalMarginPadding } from "@/utils/style/modals";
 
 const Header: React.FC<{
   items: any[];

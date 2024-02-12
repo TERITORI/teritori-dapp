@@ -1,9 +1,9 @@
 /* eslint-disable */
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { getValueFor } from "../../../hooks/useMobileSecureStore";
-import { ScreenFC } from "../../../utils/navigation";
-import { setMnemonic } from "../../../hooks/wallet/getNativeWallet";
-import { createMnemonic } from "../../../utils/wallet/seed";
+import {useFeedbacks} from "@/context/FeedbacksProvider";
+import {getValueFor} from "@/hooks/useMobileSecureStore";
+import {ScreenFC} from "@/utils/navigation";
+import {setMnemonic} from "@/hooks/wallet/getNativeWallet";
+import {createMnemonic} from "@/utils/wallet/seed";
 
 export const ViewSeed: ScreenFC<"ViewSeed"> = () => {
   const { wrapWithFeedback } = useFeedbacks();

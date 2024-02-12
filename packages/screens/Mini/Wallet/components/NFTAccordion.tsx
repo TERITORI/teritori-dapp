@@ -1,26 +1,27 @@
 import React from "react";
 import { FlatList, View } from "react-native";
 
+import { randomGradients } from "../../Notifications/notificationData";
+import Accordion from "../../components/Accordion/Accordion";
+import GradientBox from "../../components/GradientBox";
+import ListView from "../../components/ListView";
+
 import {
   Collection,
   NFT,
   Sort,
   SortDirection,
-} from "../../../../api/marketplace/v1/marketplace";
-import { OmniLink } from "../../../../components/OmniLink";
-import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
-import { RoundedGradientImage } from "../../../../components/images/RoundedGradientImage";
-import { Separator } from "../../../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
-import { useNFTs } from "../../../../hooks/useNFTs";
-import { web3ToWeb2URI } from "../../../../utils/ipfs";
-import { primaryColor, withAlpha } from "../../../../utils/style/colors";
-import { fontSemibold14 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import { randomGradients } from "../../Notifications/notificationData";
-import Accordion from "../../components/Accordion/Accordion";
-import GradientBox from "../../components/GradientBox";
-import ListView from "../../components/ListView";
+} from "@/api/marketplace/v1/marketplace";
+import { OmniLink } from "@/components/OmniLink";
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useNFTs } from "@/hooks/useNFTs";
+import { web3ToWeb2URI } from "@/utils/ipfs";
+import { primaryColor, withAlpha } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const NFTAccordion: React.FC<{
   index: number;

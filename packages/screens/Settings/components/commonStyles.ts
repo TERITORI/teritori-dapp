@@ -6,13 +6,13 @@ import {
   neutral33,
   neutralA3,
   secondaryColor,
-} from "../../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontSemibold12,
   fontSemibold14,
   fontSemibold20,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const MOBILE_WIDTH = 768;
 

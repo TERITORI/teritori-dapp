@@ -1,15 +1,16 @@
 import { View } from "react-native";
 
 import defaultThumbnailImage from "../../../../../assets/default-images/default-article-thumbnail.png";
-import { BrandText } from "../../../../components/BrandText";
-import { OptimizedImage } from "../../../../components/OptimizedImage";
-import { SVG } from "../../../../components/SVG";
-import { DotSeparator } from "../../../../components/separators/DotSeparator";
-import { DateTime } from "../../../../components/socialFeed/SocialCard/DateTime";
-import { SpacerRow } from "../../../../components/spacer";
-import { neutralA3 } from "../../../../utils/style/colors";
-import { fontMedium14, fontSemibold16 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { OptimizedImage } from "@/components/OptimizedImage";
+import { SVG } from "@/components/SVG";
+import { DotSeparator } from "@/components/separators/DotSeparator";
+import { DateTime } from "@/components/socialFeed/SocialCard/DateTime";
+import { SpacerRow } from "@/components/spacer";
+import { neutralA3 } from "@/utils/style/colors";
+import { fontMedium14, fontSemibold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type UserHeaderType = {
   img: string | null | undefined;

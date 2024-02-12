@@ -14,32 +14,30 @@ import lockSVG from "../../../../assets/icons/lock-solid.svg";
 import profileSVG from "../../../../assets/icons/profile-circle-white.svg";
 import questionSVG from "../../../../assets/icons/question-gray.svg";
 import settingSVG from "../../../../assets/icons/setting-solid.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn } from "../../../components/spacer";
+import { SettingMenuItem } from "../components/SettingMenuItems";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn } from "@/components/spacer";
+import { selectContactInfo, setContactInfo } from "@/store/slices/message";
 import {
-  selectContactInfo,
-  setContactInfo,
-} from "../../../store/slices/message";
-import {
-  StoreWallet,
   selectAllWallets,
   setSelectedNativeWalletIndex,
-} from "../../../store/slices/wallets";
-import { useAppDispatch } from "../../../store/store";
-import { RouteName, ScreenFC } from "../../../utils/navigation";
-import { neutral39 } from "../../../utils/style/colors";
+  StoreWallet,
+} from "@/store/slices/wallets";
+import { useAppDispatch } from "@/store/store";
+import { RouteName, ScreenFC } from "@/utils/navigation";
+import { neutral39 } from "@/utils/style/colors";
 import {
   fontMedium10,
   fontSemibold15,
   fontSemibold18,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { createSharableLink } from "../../../weshnet/services";
-import { SettingMenuItem } from "../components/SettingMenuItems";
-import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { createSharableLink } from "@/weshnet/services";
 
 const profileScreens: {
   title: string;

@@ -10,15 +10,12 @@ import Animated, {
 
 // misc
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import {
-  neutral33,
-  primaryColor,
-  secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { neutral33, primaryColor, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type ReviewCollapsableProps = {
   title: string;

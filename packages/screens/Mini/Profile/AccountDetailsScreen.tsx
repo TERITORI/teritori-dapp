@@ -6,19 +6,20 @@ import QRCode from "react-native-qrcode-svg";
 import copySVG from "../../../../assets/icons/copy-gray.svg";
 import openSVG from "../../../../assets/icons/open-blue.svg";
 import penSVG from "../../../../assets/icons/pen-solid-gray.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { ScreenFC } from "../../../utils/navigation";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { ScreenFC } from "@/utils/navigation";
 import {
   azureBlue,
   azureBlue20,
   neutral22,
   secondaryColor,
-} from "../../../utils/style/colors";
-import { fontMedium16, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+} from "@/utils/style/colors";
+import { fontMedium16, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const QR_SIZE = 248;
 const ACCOUNT_DETAILS = "GxF34g10nz0wchvkkj7rr09vcxj5rpt2m3A31";

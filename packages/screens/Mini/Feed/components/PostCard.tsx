@@ -1,21 +1,22 @@
 import React from "react";
-import { View, Image } from "react-native";
+import { Image, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 
 import commentSVG from "../../../../../assets/icons/social/comments-gray.svg";
 import reactionSVG from "../../../../../assets/icons/social/happy-gray.svg";
 import transferSVG from "../../../../../assets/icons/social/transfer-gray.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
-import { blueDefault, neutralA3 } from "../../../../utils/style/colors";
+import CircularImgOrIcon from "../../components/CircularImgOrIcon";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { blueDefault, neutralA3 } from "@/utils/style/colors";
 import {
   fontMedium14,
   fontMedium15,
   fontSemibold14,
   fontSemibold16,
-} from "../../../../utils/style/fonts";
-import CircularImgOrIcon from "../../components/CircularImgOrIcon";
+} from "@/utils/style/fonts";
 
 type UserType = {
   img: string;

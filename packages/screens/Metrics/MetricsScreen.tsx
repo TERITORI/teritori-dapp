@@ -1,20 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { Linking, Pressable, View, useWindowDimensions } from "react-native";
+import { Linking, Pressable, useWindowDimensions, View } from "react-native";
 
 import statsLogo from "../../../assets/logos/stats.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { GradientText } from "../../components/gradientText";
-import { SpacerColumn } from "../../components/spacer";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { getNonSigningStargateClient } from "../../networks";
-import { teritoriNetwork } from "../../networks/teritori";
-import { ScreenFC } from "../../utils/navigation";
-import { errorColor, secondaryColor } from "../../utils/style/colors";
-import { fontBold16, fontSemibold28 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { GradientText } from "@/components/gradientText";
+import { SpacerColumn } from "@/components/spacer";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { getNonSigningStargateClient } from "@/networks";
+import { teritoriNetwork } from "@/networks/teritori";
+import { ScreenFC } from "@/utils/navigation";
+import { errorColor, secondaryColor } from "@/utils/style/colors";
+import { fontBold16, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const targetBlock = 12614400;
 

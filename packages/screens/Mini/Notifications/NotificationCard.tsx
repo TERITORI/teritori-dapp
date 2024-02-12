@@ -5,18 +5,15 @@ import { NotificationType } from "./NotificationList";
 import { randomGradients } from "./notificationData";
 import messageSvg from "../../../../assets/icons/social-threads/chat.svg";
 import commentSvg from "../../../../assets/icons/social-threads/message.svg";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SVG } from "../../../components/SVG";
-import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import {
-  neutralA3,
-  primaryColor,
-  secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import GradientBox from "../components/GradientBox";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { neutralA3, primaryColor, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "@/utils/style/fonts";
 
 type NotificationCardProps = {
   item: NotificationType;

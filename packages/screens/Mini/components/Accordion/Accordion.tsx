@@ -4,8 +4,9 @@ import { SvgProps } from "react-native-svg";
 
 import AccordionProvider, { useAccordion } from "./AccordionProvider";
 import chevronSVG from "../../../../../assets/icons/chevron-down-gray.svg";
-import { SVG } from "../../../../components/SVG";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
+
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
 
 interface IAccordionComposition {
   Header: React.FC<

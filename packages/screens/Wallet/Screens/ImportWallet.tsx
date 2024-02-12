@@ -3,30 +3,28 @@ import React, { useState } from "react";
 import { TextInput, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { BrandText } from "../../../components/BrandText";
-import { SpacerColumn } from "../../../components/spacer";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
-import {
-  getNativeWallet,
-  setMnemonic,
-} from "../../../hooks/wallet/getNativeWallet";
-import { mustGetCosmosNetwork } from "../../../networks";
-import { addSelected, selectAllWallets } from "../../../store/slices/wallets";
-import { useAppDispatch } from "../../../store/store";
-import { ScreenFC } from "../../../utils/navigation";
+import { CustomButton } from "../../Mini/components/Button/CustomButton";
+import Checkbox from "../../Mini/components/Checkbox/Checkbox";
+import MultiStepScreenContainer from "../../Mini/layout/MultiStepScreenContainer";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn } from "@/components/spacer";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getNativeWallet, setMnemonic } from "@/hooks/wallet/getNativeWallet";
+import { mustGetCosmosNetwork } from "@/networks";
+import { addSelected, selectAllWallets } from "@/store/slices/wallets";
+import { useAppDispatch } from "@/store/store";
+import { ScreenFC } from "@/utils/navigation";
 import {
   neutral15,
   neutral22,
   neutral77,
   neutralA3,
   secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold16, fontSemibold28 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { correctMnemonic } from "../../../utils/wallet/seed";
-import { CustomButton } from "../../Mini/components/Button/CustomButton";
-import Checkbox from "../../Mini/components/Checkbox/Checkbox";
-import MultiStepScreenContainer from "../../Mini/layout/MultiStepScreenContainer";
+} from "@/utils/style/colors";
+import { fontSemibold16, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { correctMnemonic } from "@/utils/wallet/seed";
 
 export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {
   const [localPhrase, setLocalPhrase] = useState<string | undefined>(undefined);

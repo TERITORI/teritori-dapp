@@ -1,12 +1,13 @@
 import React from "react";
 import { View } from "react-native";
 
-import { BrandText } from "../../../../components/BrandText";
-import { SpacerColumn } from "../../../../components/spacer";
-import { neutral77 } from "../../../../utils/style/colors";
-import { fontMedium16, fontSemibold30 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
 import { CustomButton } from "../../components/Button/CustomButton";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn } from "@/components/spacer";
+import { neutral77 } from "@/utils/style/colors";
+import { fontMedium16, fontSemibold30 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type Props = {
   onComplete: () => void;

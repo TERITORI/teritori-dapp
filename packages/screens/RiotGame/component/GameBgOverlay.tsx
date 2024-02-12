@@ -3,8 +3,9 @@ import { StyleSheet, useWindowDimensions, View } from "react-native";
 
 import gameBgShadowVerticalSVG from "../../../../assets/game-bg-shadow-vertical.svg";
 import gameBgShadowSVG from "../../../../assets/game-bg-shadow.svg";
-import { SVG } from "../../../components/SVG";
-import { headerHeight } from "../../../utils/style/layout";
+
+import { SVG } from "@/components/SVG";
+import { headerHeight } from "@/utils/style/layout";
 
 // misc
 

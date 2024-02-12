@@ -16,30 +16,19 @@ import { SimpleButton } from "./SimpleButton";
 import controllerSVG from "../../../../assets/game/controller.svg";
 import dashedBorderPNG from "../../../../assets/game/dashed-border.png";
 import closeSVG from "../../../../assets/icons/close.svg";
-import { NFT } from "../../../api/marketplace/v1/marketplace";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SVG } from "../../../components/SVG";
-import { SpacerRow } from "../../../components/spacer";
-import { useBreeding } from "../../../hooks/riotGame/useBreeding";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
-import { getRipperTokenId, isNFTStaked } from "../../../utils/game";
-import {
-  neutral00,
-  withAlpha,
-  yellowDefault,
-} from "../../../utils/style/colors";
-import {
-  fontMedium24,
-  fontMedium32,
-  fontMedium48,
-} from "../../../utils/style/fonts";
-import {
-  headerHeight,
-  layout,
-  MOBILE_MAX_WIDTH,
-} from "../../../utils/style/layout";
+
+import { NFT } from "@/api/marketplace/v1/marketplace";
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SpacerRow } from "@/components/spacer";
+import { useBreeding } from "@/hooks/riotGame/useBreeding";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getRipperTokenId, isNFTStaked } from "@/utils/game";
+import { neutral00, withAlpha, yellowDefault } from "@/utils/style/colors";
+import { fontMedium24, fontMedium32, fontMedium48 } from "@/utils/style/fonts";
+import { headerHeight, layout, MOBILE_MAX_WIDTH } from "@/utils/style/layout";
 
 type RipperSelectorModalProps = ModalProps & {
   slotId: number | undefined;

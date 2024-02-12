@@ -2,8 +2,9 @@ import React, { useState } from "react";
 
 import { CheckList } from "./components/CheckList";
 import { ShowSeedPhrase } from "./components/ShowSeedPhrase";
-import { ScreenFC } from "../../../utils/navigation";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { ScreenFC } from "@/utils/navigation";
 
 type ScreenType = "visible" | "hidden";
 
