@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Linking, useWindowDimensions, View } from "react-native";
 
-import { SubscriptionSetupModal } from "./modals/SubscriptionSetupModal";
 import { PremiumSubscriptionModal } from "./modals/PremiumSubscriptionModal";
+import { SubscriptionSetupModal } from "./modals/SubscriptionSetupModal";
 
 import defaultUserProfileBannerPNG from "@/assets/default-images/default-user-profile-banner.png";
 import discordSVG from "@/assets/icons/discord.svg";
