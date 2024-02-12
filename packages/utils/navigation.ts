@@ -109,6 +109,7 @@ export type RootStackParamList = {
   MiniFriend: undefined;
   MiniNewGroup: undefined;
   MiniChatSetting: { back?: RouteName };
+  MiniPreferencesSetting: { back?: RouteName };
   MiniSettings: undefined;
   MiniAccountDetails: { accountName: string; id: string };
   MiniAddAccount: undefined;
@@ -264,6 +265,7 @@ const navConfig: {
     MiniFriend: "mini-friend",
     MiniNewGroup: "mini-new-group",
     MiniChatSetting: "mini-chat-setting",
+    MiniPreferencesSetting: "mini-preferences-setting",
     MiniSettings: "mini-settings",
     MiniAccountDetails: "mini-account-details",
     MiniAddAccount: "mini-add-account",

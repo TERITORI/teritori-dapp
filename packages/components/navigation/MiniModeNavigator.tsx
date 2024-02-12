@@ -35,6 +35,7 @@ import { ChangePasswordScreen } from "@/screens/Mini/Settings/ChangePasswordScre
 import { ChatSettingScreen } from "@/screens/Mini/Settings/ChatSettingScreen";
 import { ExportPrivateKeyScreen } from "@/screens/Mini/Settings/ExportPrivateKeyScreen";
 import FaceIdLoginScreen from "@/screens/Mini/Settings/FaceIdLoginScreen";
+import { PreferencesSettingScreen } from "@/screens/Mini/Settings/PreferencesSetttingScreen";
 import { ResetWalletScreen } from "@/screens/Mini/Settings/ResetWalletScreen";
 import { RevealSeedPhraseScreen } from "@/screens/Mini/Settings/RevealSeedPhraseScreen";
 import { SecurityAndPrivacy } from "@/screens/Mini/Settings/SecurityAndPrivacy";
@@ -234,6 +235,15 @@ export const MiniModeNavigator = () => {
         options={{
           header: () => null,
           title: "Chat Setting",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniPreferencesSetting"
+        component={PreferencesSettingScreen}
+        options={{
+          header: () => null,
+          title: "Settings",
           presentation: "transparentModal",
         }}
       />

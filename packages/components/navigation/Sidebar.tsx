@@ -20,7 +20,7 @@ import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature, NetworkKind } from "../../networks";
 import { neutral00, neutral33 } from "../../utils/style/colors";
-import { fontBold16, fontBold9 } from "../../utils/style/fonts";
+import { fontBold16, fontBold9, fontSemibold14 } from "../../utils/style/fonts";
 import {
   fullSidebarWidth,
   headerHeight,
@@ -28,10 +28,13 @@ import {
   smallSidebarWidth,
 } from "../../utils/style/layout";
 import { SidebarType } from "../../utils/types/sidebar";
+import { BrandText } from "../BrandText";
+import ToggleButton from "../buttons/ToggleButton";
 import { Separator } from "../separators/Separator";
-import { SpacerColumn } from "../spacer";
+import { SpacerColumn, SpacerRow } from "../spacer";
 
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useAppMode } from "@/hooks/useAppMode";
 
 const SpringConfig: WithSpringConfig = {
   stiffness: 100,
@@ -62,6 +65,7 @@ export const Sidebar: React.FC = () => {
   const insets = useSafeAreaInsets();
   const { name: currentRouteName } = useRoute();
   const { isSidebarExpanded, dynamicSidebar } = useSidebar();
+  const [appMode, handleSet] = useAppMode();
 
   const layoutStyle = useAnimatedStyle(
     () => ({
@@ -131,6 +135,31 @@ export const Sidebar: React.FC = () => {
           ListHeaderComponent={<SpacerColumn size={1} />}
           ListFooterComponent={
             <>
+              {Platform.OS !== "web" && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    paddingHorizontal: layout.spacing_x3,
+                    paddingVertical: layout.spacing_x1,
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                >
+                  <BrandText style={fontSemibold14}>Normal Mode</BrandText>
+                  <SpacerRow size={1} />
+                  <ToggleButton
+                    isActive={appMode === "normal"}
+                    style={{ transform: [{ scale: 0.6 }] }}
+                    onValueChange={(value) => {
+                      if (value) {
+                        handleSet("web3Addict");
+                      }
+
+                      handleSet("mini");
+                    }}
+                  />
+                </View>
+              )}
               <SidebarButton
                 icon={addSVG}
                 iconSize={36}
