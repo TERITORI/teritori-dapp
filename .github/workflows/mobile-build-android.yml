@@ -37,12 +37,11 @@ jobs:
         run: yarn install
 
       - name: Bump android versionNumber
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         run: make bump-app-build-number
 
       - name: Download service account from env
-        env:
-          DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo $DATA > ./service-account-android-submit.json
+        run: echo ${{ secrets.GOOGLE_SERVICES_JSON }} | base64 --decode > ./service-account-android-submit.json
 
       - name: Fix gitignore
         run: npx tsx ./packages/scripts/app-build/fixGitignore.ts
@@ -73,7 +72,6 @@ jobs:
             exit 1
           fi
 
-          # eas submit --platform=android --path=$AAB_FILE --profile=production
           echo "AAB_FILE=$AAB_FILE" >> $GITHUB_ENV
 
       - name: EAS Submit Android aab
