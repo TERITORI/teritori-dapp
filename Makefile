@@ -397,7 +397,7 @@ init-weshd-go:
 	cd ./weshd && go install golang.org/x/mobile/cmd/gomobile
 	cd ./weshd && gomobile init
 
-.PHONY: bump-ios-build-number
-bump-ios-build-number:  
+.PHONY: bump-app-build-number
+bump-app-build-number:  
 	npx tsx packages/scripts/app-build/bumpBuildNumber.ts $(shell echo $$(($$(git rev-list HEAD --count) + 10)))
 

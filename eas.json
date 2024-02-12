@@ -21,7 +21,8 @@
   "submit": {
     "production": {
       "android": {
-        "track": "internal"
+        "track": "internal",
+        "serviceAccountKeyPath": "./service-account-android-submit.json"
       },
       "ios": {
         "appleId": "sakulbudhathoki977@gmail.com",

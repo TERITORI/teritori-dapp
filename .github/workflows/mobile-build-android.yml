@@ -36,6 +36,14 @@ jobs:
       - name: Install node modules
         run: yarn install
 
+      - name: Bump android versionNumber
+        run: make bump-app-build-number
+
+      - name: Download service account from env
+        env:
+          DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo $DATA > ./service-account-android-submit.json
+
       - name: Fix gitignore
         run: npx tsx ./packages/scripts/app-build/fixGitignore.ts
 
@@ -57,7 +65,7 @@ jobs:
       - name: Build android
         run: eas build --local --non-interactive --platform=android
 
-      - name: EAS Submit aab
+      - name: Update aab File path
         run: |
           AAB_FILE=$(find ./ -name 'build-*.aab' -type f)
           if [ -z "$AAB_FILE" ]; then
@@ -67,6 +75,9 @@ jobs:
 
           # eas submit --platform=android --path=$AAB_FILE --profile=production
           echo "AAB_FILE=$AAB_FILE" >> $GITHUB_ENV
+
+      - name: EAS Submit Android aab
+        run: eas submit --platform=android --path=${{ env.AAB_FILE }} --profile=production
 
       - name: Upload aab
         uses: actions/upload-artifact@v3

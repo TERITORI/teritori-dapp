@@ -35,6 +35,7 @@ const config = {
         backgroundColor: "#FFFFFF",
       },
       package: "com.teritori",
+      versionCode: "5",
     },
     web: {
       bundler: "metro",
