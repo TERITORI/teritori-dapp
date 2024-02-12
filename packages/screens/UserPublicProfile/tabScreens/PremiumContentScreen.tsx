@@ -25,11 +25,11 @@ export const PremiumContentScreen: FC<UppTabScreenProps> = ({
     useState(false);
   return (
     <ScreenContainer
-      key={`${UppTabKeys.Subscrib} ${userId}`} // this key is to reset the screen state when the id changes
+      key={`${UppTabKeys.premiumSubscribe} ${userId}`} // this key is to reset the screen state when the id changes
       {...screenContainerOtherProps}
     >
       <UPPScreenContentWrapper>
-        <UPPHeader userId={userId} selectedTab={UppTabKeys.Subscrib} />
+        <UPPHeader userId={userId} selectedTab={UppTabKeys.premiumSubscribe} />
         <PrimaryBox
           style={{
             height: 186,

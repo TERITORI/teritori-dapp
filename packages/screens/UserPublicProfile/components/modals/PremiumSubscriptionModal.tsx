@@ -57,28 +57,12 @@ export const PremiumSubscriptionModal: React.FC<{
             style={{ marginRight: 24 }}
           />
           <SpacerColumn size={2} />
-
-          {metadata?.tokenId ? (
-            <>
-              <BrandText style={[fontBold16]}>
-                {metadata?.public_name}
-              </BrandText>
-              <BrandText
-                style={[fontMedium14, { color: neutral55, marginTop: 2 }]}
-              >
-                @{metadata.tokenId}
-              </BrandText>
-            </>
-          ) : (
-            <>
-              <BrandText style={[fontBold16]}>{DEFAULT_NAME}</BrandText>
-              <BrandText
-                style={[fontMedium14, { color: neutral55, marginTop: 2 }]}
-              >
-                @{userAddress}
-              </BrandText>
-            </>
-          )}
+          <BrandText style={[fontBold16]}>
+            {metadata?.tokenId ? metadata?.public_name : DEFAULT_NAME}
+          </BrandText>
+          <BrandText style={[fontMedium14, { color: neutral55, marginTop: 2 }]}>
+            @{metadata?.tokenId ? metadata.tokenId : userAddress}
+          </BrandText>
         </View>
       </View>
     </ModalBase>

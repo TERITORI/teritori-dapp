@@ -91,7 +91,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
           screenContainerOtherProps={screenContainerOtherProps}
         />
       );
-    case UppTabKeys.Subscrib:
+    case UppTabKeys.premiumSubscribe:
       return (
         <PremiumContentScreen
           userId={id}
