@@ -12,10 +12,7 @@ import { BrandText } from "../../../../../components/BrandText";
 import { OptimizedImage } from "../../../../../components/OptimizedImage";
 import { ScreenContainer } from "../../../../../components/ScreenContainer";
 import { CommentsContainer } from "../../../../../components/cards/CommentsContainer";
-import {
-  NewsFeedInput,
-  NewsFeedInputHandle,
-} from "../../../../../components/socialFeed/NewsFeed/NewsFeedInput";
+import { NewsFeedInputHandle } from "../../../../../components/socialFeed/NewsFeed/NewsFeedInput";
 import { RichText } from "../../../../../components/socialFeed/RichText";
 import { SocialCardHeader } from "../../../../../components/socialFeed/SocialCard/SocialCardHeader";
 import { SocialCardWrapper } from "../../../../../components/socialFeed/SocialCard/SocialCardWrapper";
@@ -35,6 +32,8 @@ import {
   ZodSocialFeedArticleMetadata,
 } from "../../../../../utils/types/feed";
 import CustomAppBar from "../../../components/AppBar/CustomAppBar";
+
+import { MiniCommentInput } from "@/screens/Mini/components/MiniCommentInput";
 
 type Props = {
   networkId: string;
@@ -200,10 +199,10 @@ export const MiniArticlePostDetails = ({
             <SpacerColumn size={1.5} />
           </SocialCardWrapper>
           <View>
-            <NewsFeedInput
+            <SpacerColumn size={3} />
+            <MiniCommentInput
               style={{ alignSelf: "center" }}
               ref={feedInputRef}
-              type="comment"
               replyTo={replyTo}
               parentId={post.identifier}
               onSubmitInProgress={handleSubmitInProgress}
@@ -212,6 +211,7 @@ export const MiniArticlePostDetails = ({
                 refetchComments();
               }}
             />
+            <SpacerColumn size={4} />
             <CommentsContainer
               cardWidth={windowWidth}
               comments={comments}
