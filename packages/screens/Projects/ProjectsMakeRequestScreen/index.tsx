@@ -1,5 +1,4 @@
-import { useRoute } from "@react-navigation/native";
-import React, { useMemo } from "react";
+import React from "react";
 import { View } from "react-native";
 
 import { ConfirmAndSign } from "./ConfirmAndSign";
@@ -15,23 +14,18 @@ import { Breadcrumb } from "../components/Breadcrumb";
 import { HeaderBackButton } from "../components/HeaderBackButton";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 
+const renderStep = (stepIndice: number) => {
+  if (stepIndice === 1) return <ShortPresentation />;
+  if (stepIndice === 2) return <TeamAndLinks />;
+  if (stepIndice === 3) return <Milestones />;
+  if (stepIndice === 4) return <Preview />;
+  if (stepIndice === 5) return <ConfirmAndSign />;
+}
+
 export const ProjectsMakeRequestScreen: ScreenFC<
   "ProjectsMakeRequest"
 > = () => {
-  const {
-    actions: { setStep },
-  } = useMakeRequestState();
-  const route = useRoute();
-  const step = !route.params ? 1 : (route.params as any).step;
-  const stepIndice = useMemo(() => {
-    let res = step ? parseInt(step, 10) : 1;
-    res = Number.isInteger(res) ? res : 1;
-    res = res > 5 || res < 0 ? 1 : res;
-
-    setStep(res);
-
-    return res;
-  }, [setStep, step]);
+  const { stepIndice } = useMakeRequestState();
 
   return (
     <ScreenContainer
@@ -45,13 +39,7 @@ export const ProjectsMakeRequestScreen: ScreenFC<
       <SpacerColumn size={4} />
 
       {/* Main view============================================================ */}
-      <View style={{ width: "100%" }}>
-        {stepIndice === 1 && <ShortPresentation />}
-        {stepIndice === 2 && <TeamAndLinks />}
-        {stepIndice === 3 && <Milestones />}
-        {stepIndice === 4 && <Preview />}
-        {stepIndice === 5 && <ConfirmAndSign />}
-      </View>
+      <View style={{ width: "100%" }}>{renderStep(stepIndice)}</View>
     </ScreenContainer>
   );
 };

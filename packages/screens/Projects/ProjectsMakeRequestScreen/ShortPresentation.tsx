@@ -1,13 +1,11 @@
 import { Formik } from "formik";
 import React, { useState } from "react";
 import { View } from "react-native";
-import { RadioButton } from "react-native-paper";
 import { object, string } from "yup";
 
 import { MakeRequestFooter } from "./Footer";
 import addSVG from "../../../../assets/icons/add.svg";
 import { BrandText } from "../../../components/BrandText";
-import FlexRow from "../../../components/FlexRow";
 import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
 import { FileUploader } from "../../../components/fileUploader";
 import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
@@ -17,12 +15,7 @@ import { useNameSearch } from "../../../hooks/search/useNameSearch";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
-import {
-  errorColor,
-  neutral77,
-  neutralA3,
-  primaryColor,
-} from "../../../utils/style/colors";
+import { errorColor, neutral77, neutralA3 } from "../../../utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
@@ -31,6 +24,7 @@ import {
 import { TNSResult } from "../components/TNSResult";
 import { emptyShortDesc } from "../defaultValues";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
+
 import { ButtonsGroup } from "@/screens/Projects/components/ButtonsGroup";
 
 const shortDescSchema = object({

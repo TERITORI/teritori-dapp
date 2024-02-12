@@ -3,12 +3,13 @@ import React, { useState } from "react";
 import { Image, View } from "react-native";
 import { useSelector } from "react-redux";
 
+import gnoSVG from "../../../../assets/icons/networks/gno.svg";
 import projectSuccessPaymentPNG from "../../../../assets/project-success-payment.png";
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
 import ModalBase from "../../../components/modals/ModalBase";
-import { SpacerColumn } from "../../../components/spacer";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useIpfs } from "../../../hooks/useIpfs";
 import {
@@ -23,21 +24,37 @@ import { generateIpfsKey } from "../../../utils/ipfs";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
+  neutral17,
   neutral33,
   neutral77,
   neutralA3,
   neutralFF,
 } from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
+import {
+  fontSemibold12,
+  fontSemibold13,
+  fontSemibold14,
+  fontSemibold16,
+} from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
+import { Tag } from "../components/Milestone";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 import { useUtils } from "../hooks/useUtils";
+
+import FlexRow from "@/components/FlexRow";
+import { SVG } from "@/components/SVG";
+import { TertiaryBox } from "@/components/boxes/TertiaryBox";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { useBalances } from "@/hooks/useBalances";
+import { prettyPrice } from "@/utils/coins";
+import { tinyAddress } from "@/utils/text";
 
 const PINATA_GATEWAY = "https://gateway.pinata.cloud/ipfs";
 
 export const ConfirmAndSign: React.FC = () => {
   const [isShowModal, setIsShowModal] = useState(false);
+  const [isShowConfirmModal, setIsShowConfirmModal] = useState(true);
 
   const navigation = useAppNavigation();
   const { shortDescData, milestones, teamAndLinkData } = useMakeRequestState();
@@ -50,6 +67,8 @@ export const ConfirmAndSign: React.FC = () => {
   const selectedWallet = useSelectedWallet();
   const userId = getUserId(networkId, selectedWallet?.address);
   const selectedNetwork = useSelectedNetworkInfo();
+  const balances = useBalances(selectedNetwork?.id, selectedWallet?.address);
+  const bal = balances?.find((b) => b.denom === "ugnot");
 
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
@@ -88,8 +107,14 @@ export const ConfirmAndSign: React.FC = () => {
     return `${PINATA_GATEWAY}/${remoteFiles[0].url.replace("ipfs://", "")}`;
   };
 
+  const cancel = async () => {
+    setIsShowConfirmModal(false);
+    navigation.replace("Projects");
+  };
+
   const confirmAndSign = async () => {
     if (!shortDescData._coverImgFile) {
+      setIsShowConfirmModal(false);
       setToastError({
         title: "Warning",
         message: "Cover Image is mandatory",
@@ -97,50 +122,50 @@ export const ConfirmAndSign: React.FC = () => {
       throw Error("cover image file is required");
     }
 
-    const coverImg = await uploadFile(shortDescData._coverImgFile);
-
-    const gnoNetwork = mustGetGnoNetwork(networkId);
-    const caller = mustGetValue(wallet?.address, "caller");
-    const escrowPkgPath = mustGetValue(
-      gnoNetwork.escrowPkgPath,
-      "escrow pkg path",
-    );
-    const escrowToken = mustGetValue(
-      shortDescData?.paymentAddr,
-      "payment address",
-    );
-
-    const milestoneTitles = milestones.map((m) => m.title).join(",");
-    const milestoneAmounts = milestones.map((m) => m.amount).join(",");
-    const milestoneDescs = milestones.map((m) => m.desc).join(",");
-    const milestoneDurations = milestones.map((m) => m.duration).join(",");
-    const milestoneLinks = milestones.map((m) => m.link).join(",");
-    const milestonePriorities = milestones.map((m) => m.priority).join(",");
-
-    const expiryDuration =
-      "" + milestoneDurations.split(",").reduce((total, m) => total + +m, 0);
-
-    // Update the coverImg
-    shortDescData.coverImg = coverImg || "";
-    shortDescData._coverImgFile = undefined;
-
-    const metadata = JSON.stringify({
-      shortDescData,
-      teamAndLinkData,
-    });
-
-    const contractor = shortDescData.contractor || "";
-    const funder = shortDescData.funder || "";
-    const conflictHandler = "";
-
-    if (!contractor && !funder) {
-      return setToastError({
-        title: "Error",
-        message: "Contract and Funder cannot be both empty",
-      });
-    }
-
     try {
+      const coverImg = await uploadFile(shortDescData._coverImgFile);
+
+      const gnoNetwork = mustGetGnoNetwork(networkId);
+      const caller = mustGetValue(wallet?.address, "caller");
+      const escrowPkgPath = mustGetValue(
+        gnoNetwork.escrowPkgPath,
+        "escrow pkg path",
+      );
+      const escrowToken = mustGetValue(
+        shortDescData?.paymentAddr,
+        "payment address",
+      );
+
+      const milestoneTitles = milestones.map((m) => m.title).join(",");
+      const milestoneAmounts = milestones.map((m) => m.amount).join(",");
+      const milestoneDescs = milestones.map((m) => m.desc).join(",");
+      const milestoneDurations = milestones.map((m) => m.duration).join(",");
+      const milestoneLinks = milestones.map((m) => m.link).join(",");
+      const milestonePriorities = milestones.map((m) => m.priority).join(",");
+
+      const expiryDuration =
+        "" + milestoneDurations.split(",").reduce((total, m) => total + +m, 0);
+
+      // Update the coverImg
+      shortDescData.coverImg = coverImg || "";
+      shortDescData._coverImgFile = undefined;
+
+      const metadata = JSON.stringify({
+        shortDescData,
+        teamAndLinkData,
+      });
+
+      const contractor = shortDescData.contractor || "";
+      const funder = shortDescData.funder || "";
+      const conflictHandler = "";
+
+      if (!contractor && !funder) {
+        return setToastError({
+          title: "Error",
+          message: "Contract and Funder cannot be both empty",
+        });
+      }
+
       // If creator = funder then we need to send all needed fund
       if (caller === funder) {
         // Approve Escrow to send the needed foo20 fund
@@ -193,6 +218,7 @@ export const ConfirmAndSign: React.FC = () => {
       setIsShowModal(true);
     } catch (e: any) {
       setToastError({ title: "Error", message: e.message });
+      throw e;
     }
   };
 
@@ -204,43 +230,99 @@ export const ConfirmAndSign: React.FC = () => {
       }}
     >
       <ModalBase
-        onClose={() => navigation.navigate("Projects")}
+        onClose={cancel}
         label="Sign the transaction"
-        visible
+        visible={isShowConfirmModal}
         width={480}
       >
-        
+        <BrandText style={[{ color: neutral77 }, fontSemibold14]}>
+          You’re making the signature to validate a transaction
+        </BrandText>
+
+        <SpacerColumn size={2} />
+
+        <TertiaryBox
+          style={{
+            padding: layout.spacing_x1_5,
+            flexDirection: "row",
+            backgroundColor: neutral17,
+            alignItems: "center",
+          }}
+        >
+          <SVG width={20} height={20} source={gnoSVG} />
+
+          <SpacerRow size={1.5} />
+
+          <View style={{ flexGrow: 1 }}>
+            <BrandText style={[{ color: neutral77 }, fontSemibold12]}>
+              {selectedNetwork?.displayName}
+            </BrandText>
+
+            <BrandText style={fontSemibold13}>
+              {tinyAddress(selectedWallet?.address, 16)}
+            </BrandText>
+          </View>
+
+          {selectedWallet?.address && <Tag text="connected" color="#C8FFAE" />}
+        </TertiaryBox>
+
+        <SpacerColumn size={1.5} />
+
+        <FlexRow style={{ justifyContent: "space-between" }}>
+          <BrandText style={[{ color: neutral77 }, fontSemibold14]}>
+            Balance
+          </BrandText>
+
+          <BrandText style={[{ color: neutral77 }, fontSemibold14]}>
+            {prettyPrice(networkId, bal?.amount, "ugnot")}
+          </BrandText>
+        </FlexRow>
+
+        {/*{shortDescData.funder && (*/}
+        {/*  <BrandText style={[fontSemibold14, { color: neutralA3 }]}>*/}
+        {/*    Funder:{" "}*/}
+        {/*    {shortDescData.funder === selectedWallet?.address*/}
+        {/*      ? "Me"*/}
+        {/*      : shortDescData.funder}*/}
+        {/*  </BrandText>*/}
+        {/*)}*/}
+
+        {/*{shortDescData.contractor && (*/}
+        {/*  <BrandText style={[fontSemibold14, { color: neutralA3 }]}>*/}
+        {/*    Contractor:{" "}*/}
+        {/*    {shortDescData.contractor === selectedWallet?.address*/}
+        {/*      ? "Me"*/}
+        {/*      : shortDescData.contractor}*/}
+        {/*  </BrandText>*/}
+        {/*)}*/}
+
+        {isUploadingImage && (
+          <BrandText style={[fontSemibold14]}>
+            Uploading Cover Image...
+          </BrandText>
+        )}
+
+        <SpacerColumn size={2} />
+
+        <PrimaryButton
+          fullWidth
+          disabled={isUploadingImage}
+          text="Confirm and Sign"
+          onPress={confirmAndSign}
+        />
+
+        <SpacerColumn size={2} />
+
+        <SecondaryButton
+          fullWidth
+          size="M"
+          disabled={isUploadingImage}
+          text="Cancel"
+          onPress={cancel}
+        />
+
+        <SpacerColumn size={2} />
       </ModalBase>
-
-      {isUploadingImage && (
-        <BrandText style={[fontSemibold14]}>Uploading Cover Image...</BrandText>
-      )}
-
-      {shortDescData.funder && (
-        <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
-          Funder:{" "}
-          {shortDescData.funder === selectedWallet?.address
-            ? "Me"
-            : shortDescData.funder}
-        </BrandText>
-      )}
-
-      {shortDescData.contractor && (
-        <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
-          Contractor:{" "}
-          {shortDescData.contractor === selectedWallet?.address
-            ? "Me"
-            : shortDescData.contractor}
-        </BrandText>
-      )}
-
-      <SpacerColumn size={2} />
-
-      <PrimaryButton
-        disabled={isUploadingImage}
-        text="Confirm and Sign"
-        onPress={confirmAndSign}
-      />
 
       <ModalBase
         onClose={() => setIsShowModal(false)}

@@ -26,6 +26,7 @@ export const Preview: React.FC = () => {
         nextText="Publish this request"
         disableNext={false}
         onSubmit={goNextStep}
+        width={200}
       />
     </View>
   );
