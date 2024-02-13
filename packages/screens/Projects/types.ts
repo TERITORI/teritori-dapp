@@ -3,6 +3,7 @@ import { LocalFileData } from "../../utils/types/files";
 export enum MsPriority {
   MS_PRIORITY_HIGH = "MS_PRIORITY_HIGH",
   MS_PRIORITY_MEDIUM = "MS_PRIORITY_MEDIUM",
+  MS_PRIORITY_LOW = "MS_PRIORITY_LOW",
 }
 
 export enum MsStatus {

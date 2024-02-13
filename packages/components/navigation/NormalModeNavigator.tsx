@@ -39,6 +39,12 @@ import { MultisigWalletDashboardScreen } from "@/screens/Multisig/MultisigWallet
 import { MyCollectionScreen } from "@/screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "@/screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "@/screens/Organizations/OrganizationsScreen";
+import { ProjectsCompleteMilestoneScreen } from "@/screens/Projects/CompleteMilestoneScreen";
+import { ProjectsDetailScreen } from "@/screens/Projects/ProjectsDetailScreen";
+import { ProjectsMakeRequestScreen } from "@/screens/Projects/ProjectsMakeRequestScreen";
+import { ProjectsManagerScreen } from "@/screens/Projects/ProjectsManagerScreen";
+import { ProjectsPaymentScreen } from "@/screens/Projects/ProjectsPaymentScreen";
+import { ProjectsScreen } from "@/screens/Projects/ProjectsScreen";
 import { ReadyLaunchpadApplicationsScreen } from "@/screens/ReadyLaunchpadApplications/ReadyLaunchpadApplicationsScreen";
 import { RiotGameBreedingScreen } from "@/screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "@/screens/RiotGame/RiotGameEnrollScreen";
@@ -311,6 +317,58 @@ export const NormalModeNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: screenTitle("Organizations"),
+        }}
+      />
+
+      {/* ==== Projects program */}
+      <Nav.Screen
+        name="Projects"
+        component={ProjectsScreen}
+        options={{ header: () => null, title: screenTitle("Projects Program") }}
+      />
+
+      <Nav.Screen
+        name="ProjectsDetail"
+        component={ProjectsDetailScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Projects Program Detail"),
+        }}
+      />
+
+      <Nav.Screen
+        name="ProjectsManager"
+        component={ProjectsManagerScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Projects Program Manager"),
+        }}
+      />
+
+      <Nav.Screen
+        name="ProjectsPayment"
+        component={ProjectsPaymentScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Projects Program Payment"),
+        }}
+      />
+
+      <Nav.Screen
+        name="ProjectsCompleteMilestone"
+        component={ProjectsCompleteMilestoneScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Projects Milestone"),
+        }}
+      />
+
+      <Nav.Screen
+        name="ProjectsMakeRequest"
+        component={ProjectsMakeRequestScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Projects Program Make Request"),
         }}
       />
 

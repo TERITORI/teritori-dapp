@@ -1,4 +1,3 @@
-import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { Link, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
@@ -30,7 +29,7 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { mustGetGnoNetwork } from "../../networks";
-import { adenaVMCall, extractGnoNumber, extractGnoString } from "../../utils/gno";
+import { adenaVMCall } from "../../utils/gno";
 import { ScreenFC } from "../../utils/navigation";
 import {
   neutral00,
@@ -44,6 +43,8 @@ import {
   fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+
+import { useProjectInfo } from "@/screens/Projects/hooks/useProjectInfo";
 
 const STATUSES: SelectInputItem[] = [
   { label: "Open", value: MsStatus.MS_OPEN.toString() },
@@ -235,14 +236,12 @@ export const ProjectsDetailScreen: ScreenFC<"ProjectsDetail"> = () => {
   const networkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
 
-  const [isProcessing, setIsProcessing] = useState(false);
-  const { setToastError, setToastSuccess } = useFeedbacks();
-  const { mustGetValue } = useUtils();
-
   const [selectedMilestone, setSelectedMilestone] =
     useState<ProjectMilestone>();
 
   const { data: project } = useProject(networkId, (params as any).id || 0);
+  const { setEscrowToken } = useProjectInfo((state) => state.actions);
+  setEscrowToken(project?.escrowToken || "");
 
   const onSelectMilestone = (milestone: ProjectMilestone) => {
     setSelectedMilestone(
@@ -250,106 +249,14 @@ export const ProjectsDetailScreen: ScreenFC<"ProjectsDetail"> = () => {
     );
   };
 
-  const submitFunder = async (project: Project) => {
-    setIsProcessing(true);
-
-    try {
-      const gnoNetwork = mustGetGnoNetwork(networkId);
-      const caller = mustGetValue(selectedWallet?.address, "caller");
-      const escrowPkgPath = mustGetValue(
-        gnoNetwork.escrowPkgPath,
-        "escrow pkg path",
-      );
-
-      // Approve needed amount
-      // Approve Escrow to send the needed foo20 fund
-      // Get Escrow realm Address
-      const provider = new GnoJSONRPCProvider(gnoNetwork.endpoint);
-
-      const escrowAddress = extractGnoString(
-        await provider.evaluateExpression(escrowPkgPath, `CurrentRealm()`),
-      );
-
-      // Check if Allowance is enough
-      const allowance = extractGnoNumber(
-        await provider.evaluateExpression(
-          project.escrowToken,
-          `Allowance("${selectedWallet?.address}","${escrowAddress}")`,
-        ),
-      );
-
-      if (allowance < project.budget) {
-        await adenaVMCall(
-          networkId,
-          {
-            caller,
-            send: "",
-            pkg_path: project.escrowToken,
-            func: "Approve",
-            args: [escrowAddress, "" + project.budget], // Decimal of gopher20 = 4
-          },
-          { gasWanted: 1_000_000 },
-        );
-      }
-
-      await adenaVMCall(
-        networkId,
-        {
-          caller,
-          send: "",
-          pkg_path: escrowPkgPath,
-          func: "SubmitFunder",
-          args: [project.id.toString()],
-        },
-        { gasWanted: 1_000_000 },
-      );
-
-      setToastSuccess({
-        title: "Success",
-        message: "You become the funder for this project !",
-      });
-    } catch (e: any) {
-      setToastError({ title: "Error", message: e.message });
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const submitContractor = async (project: Project) => {
-    setIsProcessing(true);
-
-    try {
-      const gnoNetwork = mustGetGnoNetwork(networkId);
-      const caller = mustGetValue(selectedWallet?.address, "caller");
-      const escrowPkgPath = mustGetValue(
-        gnoNetwork.escrowPkgPath,
-        "escrow pkg path",
-      );
-
-      await adenaVMCall(
-        networkId,
-        {
-          caller,
-          send: "",
-          pkg_path: escrowPkgPath,
-          func: "SubmitContractor",
-          args: [project.id.toString()],
-        },
-        { gasWanted: 1_000_000 },
-      );
-
-      setToastSuccess({
-        title: "Success",
-        message: "You become the contractor for this project !",
-      });
-    } catch (e: any) {
-      setToastError({ title: "Error", message: e.message });
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  if (!project) return null;
+  if (!project)
+    return (
+      <ScreenContainer
+        isLarge
+        responsive
+        headerChildren={<HeaderBackButton />}
+      />
+    );
 
   return (
     <ScreenContainer isLarge responsive headerChildren={<HeaderBackButton />}>
@@ -360,52 +267,12 @@ export const ProjectsDetailScreen: ScreenFC<"ProjectsDetail"> = () => {
             isFunded={project.funded}
             shortDescData={project.metadata.shortDescData}
             teamAndLinkData={project.metadata.teamAndLinkData}
+            project={project}
           />
-
-          {/* Actions */}
-          {/* If current user is not funder, not creator of project and the project has not contractor yet then user can become contractor */}
-          {selectedWallet?.address !== project.sender &&
-            selectedWallet?.address !== project.funder &&
-            !project.contractor &&
-            project.status === ContractStatus.CREATED && (
-              <>
-                <PrimaryButton
-                  disabled={isProcessing}
-                  text="Submit contractor"
-                  onPress={() => submitContractor(project)}
-                  size="SM"
-                  width={200}
-                />
-                <SpacerColumn size={2} />
-              </>
-            )}
-          <PrimaryButton
-            disabled={isProcessing}
-            text="Submit funder"
-            onPress={() => submitFunder(project)}
-            size="SM"
-            width={200}
-          />
-          {/* If current user is not contractor, not creator of project and the project has not funder yet then user can become funder */}
-          {selectedWallet?.address !== project.sender &&
-            selectedWallet?.address !== project.contractor &&
-            !project.funded &&
-            project.status === ContractStatus.CREATED && (
-              <>
-                <PrimaryButton
-                  disabled={isProcessing}
-                  text="Submit funder"
-                  onPress={() => submitFunder(project)}
-                  size="SM"
-                  width={200}
-                />
-                <SpacerColumn size={2} />
-              </>
-            )}
 
           <ProjectMilestones
             onSelectMilestone={onSelectMilestone}
-            milestones={project.milestones}
+            milestones={project?.milestones || []}
           />
         </View>
 

@@ -1,5 +1,5 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Image, View } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -215,12 +215,17 @@ export const ConfirmAndSign: React.FC = () => {
         { gasWanted: 2_000_000 },
       );
 
+      setIsShowConfirmModal(false);
       setIsShowModal(true);
     } catch (e: any) {
       setToastError({ title: "Error", message: e.message });
       throw e;
     }
   };
+
+  const totalFunding = useMemo(() => {
+    return milestones.reduce((total, m) => total + +m.amount, 0).toString();
+  }, [milestones]);
 
   return (
     <View
@@ -270,6 +275,16 @@ export const ConfirmAndSign: React.FC = () => {
 
         <FlexRow style={{ justifyContent: "space-between" }}>
           <BrandText style={[{ color: neutral77 }, fontSemibold14]}>
+            Funding
+          </BrandText>
+
+          <BrandText style={[{ color: neutral77 }, fontSemibold14]}>
+            {prettyPrice(networkId, totalFunding, "ugnot")}
+          </BrandText>
+        </FlexRow>
+
+        <FlexRow style={{ justifyContent: "space-between" }}>
+          <BrandText style={[{ color: neutral77 }, fontSemibold14]}>
             Balance
           </BrandText>
 
@@ -277,24 +292,6 @@ export const ConfirmAndSign: React.FC = () => {
             {prettyPrice(networkId, bal?.amount, "ugnot")}
           </BrandText>
         </FlexRow>
-
-        {/*{shortDescData.funder && (*/}
-        {/*  <BrandText style={[fontSemibold14, { color: neutralA3 }]}>*/}
-        {/*    Funder:{" "}*/}
-        {/*    {shortDescData.funder === selectedWallet?.address*/}
-        {/*      ? "Me"*/}
-        {/*      : shortDescData.funder}*/}
-        {/*  </BrandText>*/}
-        {/*)}*/}
-
-        {/*{shortDescData.contractor && (*/}
-        {/*  <BrandText style={[fontSemibold14, { color: neutralA3 }]}>*/}
-        {/*    Contractor:{" "}*/}
-        {/*    {shortDescData.contractor === selectedWallet?.address*/}
-        {/*      ? "Me"*/}
-        {/*      : shortDescData.contractor}*/}
-        {/*  </BrandText>*/}
-        {/*)}*/}
 
         {isUploadingImage && (
           <BrandText style={[fontSemibold14]}>

@@ -73,6 +73,7 @@ export const useSidebar = () => {
     });
 
     dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
+
     return dynamicAppsSelection;
   }, [availableApps, selectedApps]);
 

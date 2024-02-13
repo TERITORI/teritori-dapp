@@ -11,4 +11,13 @@ export const gnoCurrencies: CurrencyInfo[] = [
     kind: "native",
     color: currencyGNOcolor,
   },
+  {
+    denom: "gno.land/r/demo/tori20",
+    displayName: "TORI20",
+    decimals: 6,
+    coingeckoId: "gno",
+    icon: "gno.svg",
+    kind: "grc20",
+    color: currencyGNOcolor,
+  },
 ];

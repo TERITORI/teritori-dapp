@@ -124,6 +124,12 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     route: "RiotGame",
     icon: riotersGameSVG,
   },
+  projectsProgram: {
+    title: "Projects Program",
+    id: "Projects Program",
+    route: "Projects",
+    icon: projectsProgramSVG,
+  },
   riotersFooter: {
     title: "Rioters Footer",
     id: "Rioters Footer",
@@ -135,11 +141,5 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     id: "dApp Store",
     route: "DAppStore",
     icon: dappStoreSVG,
-  },
-  projectsProgram: {
-    title: "Projects Program",
-    id: "Projects Program",
-    route: "Projects",
-    icon: projectsProgramSVG,
   },
 };

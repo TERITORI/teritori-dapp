@@ -136,7 +136,17 @@ export type NativeCurrencyInfo = {
   color: string;
 };
 
-export type CurrencyInfo = NativeCurrencyInfo | IBCCurrencyInfo;
+export type GRC20Info = {
+  kind: "grc20";
+  denom: string;
+  displayName: string;
+  decimals: number;
+  coingeckoId: string;
+  icon: string;
+  color: string;
+};
+
+export type CurrencyInfo = NativeCurrencyInfo | IBCCurrencyInfo | GRC20Info;
 
 export enum UserKind {
   Single = "Single",

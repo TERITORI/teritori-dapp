@@ -1,6 +1,6 @@
 import { Link } from "@react-navigation/native";
 import moment from "moment";
-import React from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
 import { Tag } from "./Milestone";
@@ -19,25 +19,44 @@ import { SocialButton } from "../../../components/buttons/SocialButton";
 import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
-  neutralA3,
-  neutral22,
-  neutral77,
-  neutral33,
   neutral00,
+  neutral22,
+  neutral33,
+  neutral77,
+  neutralA3,
   primaryColor,
   secondaryColor,
   yellowDefault,
 } from "../../../utils/style/colors";
-import { fontSemibold20, fontSemibold13 } from "../../../utils/style/fonts";
+import { fontSemibold13, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ContractStatus, ShortDescData, TeamAndLinkData } from "../types";
+import {
+  ContractStatus,
+  Project,
+  ShortDescData,
+  TeamAndLinkData,
+} from "../types";
+
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { FundProjectModal } from "@/screens/Projects/components/FundProjectModal";
+import { SubmitContractorCandidateModal } from "@/screens/Projects/components/SubmitContractorCandidateModal";
+import { prettyPrice } from "@/utils/coins";
 
 export const ProjectInfo: React.FC<{
   projectStatus?: ContractStatus;
   isFunded?: boolean;
   shortDescData: ShortDescData;
   teamAndLinkData: TeamAndLinkData;
-}> = ({ projectStatus, shortDescData, teamAndLinkData, isFunded }) => {
+  project?: Project;
+}> = ({ projectStatus, shortDescData, teamAndLinkData, isFunded, project }) => {
+  const selectedWallet = useSelectedWallet();
+  const networkId = useSelectedNetworkId();
+
+  const [isFundModalVisible, setIsFundModalVisible] = useState(false);
+  const [isSubmitContractorModalVisible, setIsSubmitContractorModalVisible] = useState(false);
+
   return (
     <>
       <FlexRow
@@ -101,6 +120,36 @@ export const ProjectInfo: React.FC<{
                   </BrandText>
                 </FlexRow>
               </TertiaryBox>
+
+              <SpacerColumn size={2} />
+
+              {/* Actions */}
+              {/* If current user is not funder, not creator of project and the project has not contractor yet then user can become contractor */}
+              {project &&
+                selectedWallet?.address !== project.sender &&
+                selectedWallet?.address !== project.funder &&
+                !project.contractor &&
+                project.status === ContractStatus.CREATED && (
+                  <PrimaryButton
+                    text="Submit contractor candidate"
+                    onPress={() => setIsSubmitContractorModalVisible(true)}
+                    size="SM"
+                    width={280}
+                  />
+                )}
+              {/* If current user is not contractor, not creator of project and the project has not funder yet then user can become funder */}
+              {project &&
+                selectedWallet?.address !== project.sender &&
+                selectedWallet?.address !== project.contractor &&
+                !project.funded &&
+                project.status === ContractStatus.CREATED && (
+                  <PrimaryButton
+                    text="Fund this project"
+                    onPress={() => setIsFundModalVisible(true)}
+                    size="SM"
+                    width={200}
+                  />
+                )}
             </View>
           </FlexRow>
 
@@ -145,11 +194,15 @@ export const ProjectInfo: React.FC<{
                   { color: isFunded ? yellowDefault : neutral77 },
                 ]}
               >
-                {isFunded ? "Funded:" : "Budget:"}
+                {isFunded ? "Deposited:" : "Budget:"}
               </BrandText>
               <SpacerRow size={1} />
               <BrandText style={[fontSemibold20, { color: primaryColor }]}>
-                ${shortDescData?.budget}
+                {prettyPrice(
+                  networkId,
+                  shortDescData?.budget.toString(),
+                  shortDescData.paymentAddr,
+                )}
               </BrandText>
             </FlexRow>
           </TertiaryBox>
@@ -230,6 +283,21 @@ export const ProjectInfo: React.FC<{
         </View>
       </FlexRow>
       <SpacerColumn size={2} />
+
+      {project && (
+        <FundProjectModal
+          project={project}
+          isVisible={isFundModalVisible}
+          onClose={() => setIsFundModalVisible(false)}
+        />
+      )}
+      {project && (
+        <SubmitContractorCandidateModal
+          project={project}
+          isVisible={isSubmitContractorModalVisible}
+          onClose={() => setIsSubmitContractorModalVisible(false)}
+        />
+      )}
     </>
   );
 };

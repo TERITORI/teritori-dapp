@@ -26,6 +26,7 @@ import { emptyShortDesc } from "../defaultValues";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 
 import { ButtonsGroup } from "@/screens/Projects/components/ButtonsGroup";
+import { useProjectInfo } from "@/screens/Projects/hooks/useProjectInfo";
 
 const shortDescSchema = object({
   name: string().required().min(3),
@@ -51,6 +52,7 @@ export const ShortPresentation: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const [searchTNSText, setSearchTNSText] = useState("");
   const [isTNSVisible, setIsTNSVisible] = useState(false);
+  const { setEscrowToken } = useProjectInfo((state) => state.actions);
 
   const [creatorType, setCreatorType] = useState(CREATOR_TYPE_CONTRACTOR);
 
@@ -86,6 +88,7 @@ export const ShortPresentation: React.FC = () => {
             values.funder = caller;
           }
 
+          setEscrowToken(values.paymentAddr);
           setShortDesc(values);
           goNextStep();
         }}

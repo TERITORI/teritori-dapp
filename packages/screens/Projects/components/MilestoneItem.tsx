@@ -24,12 +24,19 @@ import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ProjectMilestone, MsPriority } from "../types";
 
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { useProjectInfo } from "@/screens/Projects/hooks/useProjectInfo";
+import { prettyPrice } from "@/utils/coins";
+
 export const MilestoneItem: React.FC<{
   milestone: ProjectMilestone;
   isHovered?: boolean;
   onPress?: (milestone: ProjectMilestone) => void;
   onDelete?: (milestone: ProjectMilestone) => void;
 }> = ({ milestone, onPress, isHovered, onDelete }) => {
+  const networkId = useSelectedNetworkId();
+  const { escrowToken } = useProjectInfo();
+
   return (
     <View>
       <TouchableOpacity onPress={() => onPress?.(milestone)}>
@@ -94,10 +101,18 @@ export const MilestoneItem: React.FC<{
               {milestone.priority === MsPriority.MS_PRIORITY_MEDIUM && (
                 <Tag bgColor="#705B38" color="#ffffff" text="Medium" />
               )}
+
+              {milestone.priority === MsPriority.MS_PRIORITY_LOW && (
+                <Tag bgColor="#705B38" color="#ffffff" text="Low" />
+              )}
             </View>
 
             <Tag
-              text={"$" + milestone.amount}
+              text={prettyPrice(
+                networkId,
+                milestone.amount.toString(),
+                escrowToken,
+              )}
               color={neutral77}
               borderColor={neutral33}
               bgColor={neutral00}

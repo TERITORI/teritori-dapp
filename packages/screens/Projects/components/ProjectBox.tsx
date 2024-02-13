@@ -34,6 +34,9 @@ import {
 import { layout } from "../../../utils/style/layout";
 import { Project } from "../types";
 
+import { prettyPrice } from "@/utils/coins";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+
 const BOX_WIDTH = 400;
 
 export const ProjectBox: React.FC<{
@@ -49,6 +52,8 @@ export const ProjectBox: React.FC<{
     const percentCompleted = Math.floor((completed / total) * 100);
     return { completed, total, percentCompleted };
   }, [project.milestones]);
+
+  const networkId = useSelectedNetworkId();
 
   return (
     <TertiaryBox style={[containerStyle, { width: BOX_WIDTH }]}>
@@ -137,7 +142,11 @@ export const ProjectBox: React.FC<{
               Grant:
             </BrandText>
             <BrandText style={fontSemibold13}>
-              ${project.metadata.shortDescData.budget}
+              {prettyPrice(
+                networkId,
+                project.metadata.shortDescData.budget.toString(),
+                project.escrowToken,
+              )}
             </BrandText>
           </FlexRow>
         </FlexRow>

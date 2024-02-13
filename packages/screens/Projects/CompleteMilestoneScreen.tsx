@@ -42,6 +42,7 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { prettyPrice } from "@/utils/coins";
 
 const CustomSocialButton: React.FC<{
   text: string;
@@ -258,7 +259,11 @@ export const ProjectsCompleteMilestoneScreen: ScreenFC<
               <BrandText style={fontSemibold20}>Budget</BrandText>
               <SpacerRow size={1} />
               <BrandText style={[fontSemibold20, { color: primaryColor }]}>
-                ${milestone.amount}
+                {prettyPrice(
+                  networkId,
+                  milestone.amount.toString(),
+                  project.escrowToken,
+                )}
               </BrandText>
             </FlexRow>
 

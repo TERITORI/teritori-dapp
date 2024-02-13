@@ -1,5 +1,5 @@
 import { Formik } from "formik";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { number, object, string } from "yup";
 
@@ -27,6 +27,9 @@ import {
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ProjectMilestone, MsPriority, MsStatus } from "../types";
+import { getGRC20Currency, getIBCCurrency, mustGetGnoNetwork } from "@/networks";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { useProjectInfo } from "@/screens/Projects/hooks/useProjectInfo";
 
 const PRIORITIES: SelectInputItem[] = [
   { label: "High", value: MsPriority.MS_PRIORITY_HIGH.toString() },
@@ -69,6 +72,15 @@ export const MilestoneForm: React.FC<{
     MsPriority.MS_PRIORITY_MEDIUM,
   );
 
+  const networkId = useSelectedNetworkId();
+  const { escrowToken } = useProjectInfo();
+
+  const decimals = useMemo(() => {
+    const gnoNetwork = mustGetGnoNetwork(networkId);
+    const currency = getGRC20Currency(gnoNetwork.id, escrowToken);
+    return currency?.decimals || 0;
+  }, [networkId, escrowToken]);
+
   return (
     <View>
       <Formik
@@ -76,6 +88,7 @@ export const MilestoneForm: React.FC<{
         validationSchema={newMilestoneSchema}
         onSubmit={(values: ProjectMilestone) => {
           values.priority = priority;
+          values.amount = values.amount * 10 ** decimals;
           onSubmit(values);
         }}
       >

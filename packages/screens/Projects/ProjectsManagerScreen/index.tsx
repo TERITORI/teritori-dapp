@@ -31,7 +31,7 @@ const TAB_OPTIONS: TabOption = {
     component: <MilestonesUpdateManager />,
   },
   requestsByBuilders: {
-    name: "Requests by builders",
+    name: "Contractor candidates",
     component: <Requests type="requestsByBuilders" />,
   },
   requestsByInvestors: {
