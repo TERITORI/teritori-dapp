@@ -128,6 +128,7 @@ export type NetworkInfo =
 
 export type NativeCurrencyInfo = {
   kind: "native";
+  variant: "cosmos" | "ethereum" | "gno" | "grc20";
   denom: string;
   displayName: string;
   decimals: number;
@@ -136,17 +137,7 @@ export type NativeCurrencyInfo = {
   color: string;
 };
 
-export type GRC20Info = {
-  kind: "grc20";
-  denom: string;
-  displayName: string;
-  decimals: number;
-  coingeckoId: string;
-  icon: string;
-  color: string;
-};
-
-export type CurrencyInfo = NativeCurrencyInfo | IBCCurrencyInfo | GRC20Info;
+export type CurrencyInfo = NativeCurrencyInfo | IBCCurrencyInfo;
 
 export enum UserKind {
   Single = "Single",

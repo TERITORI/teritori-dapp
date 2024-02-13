@@ -20,6 +20,8 @@ VAULT_PACKAGE=teritori-nft-vault
 ADDR_LIST_REPO=cw_addr_list
 ADDR_LIST_PACKAGE=cw-address-list
 
+GOFMT=$(shell $(GO) env GOROOT)/bin/gofmt
+
 CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
 DOCKER_REGISTRY=rg.nl-ams.scw.cloud/teritori
@@ -92,7 +94,7 @@ generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(
 
 .PHONY: generate.go-networks
 generate.go-networks: node_modules validate-networks
-	npx tsx packages/scripts/generateGoNetworks.ts | gofmt > go/pkg/networks/networks.gen.go
+	npx tsx packages/scripts/generateGoNetworks.ts | $(GOFMT) > go/pkg/networks/networks.gen.go
 
 .PHONY/: $(CONTRACTS_CLIENTS_DIR)/cw721-membership
 $(CONTRACTS_CLIENTS_DIR)/cw721-membership: node_modules

@@ -126,17 +126,6 @@ export const getIBCCurrency = (
   return currency;
 };
 
-export const getGRC20Currency = (
-  networkId: string | undefined,
-  denom: string | undefined,
-) => {
-  const currency = getCurrency(networkId, denom);
-  if (currency?.kind !== "grc20") {
-    return undefined;
-  }
-  return currency;
-};
-
 export const getNativeCurrency = (
   networkId: string | undefined,
   denom: string | undefined,

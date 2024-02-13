@@ -29,11 +29,7 @@ import { layout } from "../../../utils/style/layout";
 import { ProjectMilestone, MsPriority, MsStatus } from "../types";
 
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import {
-  getGRC20Currency,
-  getIBCCurrency,
-  mustGetGnoNetwork,
-} from "@/networks";
+import { getNativeCurrency, mustGetGnoNetwork } from "@/networks";
 import { useProjectInfo } from "@/screens/Projects/hooks/useProjectInfo";
 
 const PRIORITIES: SelectInputItem[] = [
@@ -82,7 +78,7 @@ export const MilestoneForm: React.FC<{
 
   const decimals = useMemo(() => {
     const gnoNetwork = mustGetGnoNetwork(networkId);
-    const currency = getGRC20Currency(gnoNetwork.id, escrowToken);
+    const currency = getNativeCurrency(gnoNetwork.id, escrowToken);
     return currency?.decimals || 0;
   }, [networkId, escrowToken]);
 

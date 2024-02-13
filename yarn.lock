@@ -4085,20 +4085,20 @@ __metadata:
   linkType: hard
 
 "@gnolang/gno-js-client@npm:^1.1.7":
-  version: 1.1.7
-  resolution: "@gnolang/gno-js-client@npm:1.1.7"
+  version: 1.2.0
+  resolution: "@gnolang/gno-js-client@npm:1.2.0"
   dependencies:
     "@cosmjs/ledger-amino": ^0.32.0
-    "@gnolang/tm2-js-client": ^1.1.5
+    "@gnolang/tm2-js-client": ^1.1.6
     long: ^5.2.3
     protobufjs: ^7.2.3
-  checksum: 9335bf93e3c7fb5f9ba538d0c50039878927f6d4e3de8708d163e90df7a03558c97206f6b4cb402b0011a6ee9dd358bf041a0b54ed03d1e3d7eb8622af49fcce
+  checksum: fd1cc72df5370484fbfd2787d26db5347a0ce39751b3f8474ee474aca9aab75c5489e3d54c2271df0299afb71553676c3c3f98770c29b44278f28bd005f9c688
   languageName: node
   linkType: hard
 
-"@gnolang/tm2-js-client@npm:^1.1.5":
-  version: 1.1.5
-  resolution: "@gnolang/tm2-js-client@npm:1.1.5"
+"@gnolang/tm2-js-client@npm:^1.1.6":
+  version: 1.1.6
+  resolution: "@gnolang/tm2-js-client@npm:1.1.6"
   dependencies:
     "@cosmjs/amino": ^0.32.0
     "@cosmjs/crypto": ^0.32.0
@@ -4109,7 +4109,7 @@ __metadata:
     protobufjs: ^7.2.3
     uuid: ^9.0.1
     ws: ^8.13.0
-  checksum: a7ddbf9a3b66b72eab2616678c35660b332229e00efbfa5a1c2eebdbab6834051de19492a53774c1e25749566373e26fd70d5def566c9bcd786bffc3bf4fb5ee
+  checksum: 873c8ecfc2336161e5c6aae598fdf42e4fa8fafb2775b3debdce14b10c377d90d964cda332a0aff89a7cefbca199020ac88ad5019ac6943c4f846bcea7c29f00
   languageName: node
   linkType: hard
 

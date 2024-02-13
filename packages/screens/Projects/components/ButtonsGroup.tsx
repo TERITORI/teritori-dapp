@@ -7,11 +7,10 @@ import {
   neutral33,
   primaryColor,
   secondaryColor,
-  yellowDefault,
 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
 
-export type ButtonsGroupType = {
+type ButtonsGroupType = {
   texts: string[];
   selectedId: number;
   onChange?: (selectedId: number) => void;

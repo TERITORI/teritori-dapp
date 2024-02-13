@@ -7,8 +7,6 @@ import { neutral00, neutral33 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 
 const SEARCH_RESULTS_NAMES_MARGIN = layout.spacing_x1;
-export const SEARCH_RESULTS_MARGIN = layout.spacing_x2;
-export const SEARCH_RESULTS_COLLECTIONS_MARGIN = layout.spacing_x0_5;
 
 export const TNSResult: React.FC<{
   names: string[];
