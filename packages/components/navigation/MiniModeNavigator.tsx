@@ -1,10 +1,11 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   BottomTabNavigationProp,
   createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
 import { RouteProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { RootStackParamList } from "../../utils/navigation";
 import { neutral00, secondaryColor } from "../../utils/style/colors";
@@ -55,6 +56,7 @@ import { ImportWallet } from "@/screens/Wallet/Screens/ImportWallet";
 import NativeWallet from "@/screens/Wallet/Screens/NativeWallet";
 import { SuccessScreen } from "@/screens/Wallet/Screens/SucessScreen";
 import { ViewSeed } from "@/screens/Wallet/Screens/ViewSeed";
+import { safeParseJSON } from "@/utils/sanitize";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -95,8 +97,24 @@ const MainTab = () => {
 };
 
 export const MiniModeNavigator: React.FC = () => {
+  const [isOnboarded, setIsOnboarded] = useState(false);
+
+  useEffect(() => {
+    getOnboardedStatus();
+  }, []);
+
+  const getOnboardedStatus = async () => {
+    const onboarded = await AsyncStorage.getItem("ONBOARDED");
+    const data = safeParseJSON(onboarded as string) as boolean;
+    setIsOnboarded(data);
+  };
+
+  console.log(isOnboarded);
+
   return (
-    <Stack.Navigator initialRouteName="MiniTabs">
+    <Stack.Navigator
+      initialRouteName={!isOnboarded ? "ModeSelection" : "MiniTabs"}
+    >
       <Stack.Screen
         name="ModeSelection"
         component={ModeSelectionScreen}

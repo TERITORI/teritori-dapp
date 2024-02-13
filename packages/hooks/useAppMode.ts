@@ -3,7 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectAppMode, setAppMode } from "@/store/slices/settings";
 import { AppMode } from "@/utils/types/app-mode";
 
-export const useAppMode = () => {
+export const useAppMode = (): [
+  appMode: AppMode,
+  handleSet: (mode: AppMode) => void,
+] => {
   const appMode = useSelector(selectAppMode);
   const dispatch = useDispatch();
 
