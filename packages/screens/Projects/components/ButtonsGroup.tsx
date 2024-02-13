@@ -4,7 +4,8 @@ import { View } from "react-native";
 import { SimpleButton } from "@/components/buttons/SimpleButton";
 import {
   neutral00,
-  neutral33, primaryColor,
+  neutral33,
+  primaryColor,
   secondaryColor,
   yellowDefault,
 } from "@/utils/style/colors";

@@ -34,8 +34,8 @@ import {
 import { layout } from "../../../utils/style/layout";
 import { Project } from "../types";
 
-import { prettyPrice } from "@/utils/coins";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { prettyPrice } from "@/utils/coins";
 
 const BOX_WIDTH = 400;
 

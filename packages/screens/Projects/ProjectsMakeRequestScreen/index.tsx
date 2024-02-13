@@ -20,7 +20,7 @@ const renderStep = (stepIndice: number) => {
   if (stepIndice === 3) return <Milestones />;
   if (stepIndice === 4) return <Preview />;
   if (stepIndice === 5) return <ConfirmAndSign />;
-}
+};
 
 export const ProjectsMakeRequestScreen: ScreenFC<
   "ProjectsMakeRequest"

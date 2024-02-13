@@ -73,7 +73,6 @@ export const SubmitContractorCandidateModal: React.FC<
         title: "Success",
         message: "You candidate has been submitted",
       });
-
     } catch (e: any) {
       setToastError({ title: "Error", message: e.message });
     } finally {

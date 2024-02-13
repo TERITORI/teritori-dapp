@@ -55,7 +55,8 @@ export const ProjectInfo: React.FC<{
   const networkId = useSelectedNetworkId();
 
   const [isFundModalVisible, setIsFundModalVisible] = useState(false);
-  const [isSubmitContractorModalVisible, setIsSubmitContractorModalVisible] = useState(false);
+  const [isSubmitContractorModalVisible, setIsSubmitContractorModalVisible] =
+    useState(false);
 
   return (
     <>

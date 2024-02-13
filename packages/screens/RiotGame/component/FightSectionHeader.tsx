@@ -1,11 +1,11 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { SimpleButton } from "@/components/buttons/SimpleButton";
 import addCircleSVG from "../../../../assets/icons/add-circle.svg";
 import FlexRow from "../../../components/FlexRow";
 
 import { BrandText } from "@/components/BrandText";
+import { SimpleButton } from "@/components/buttons/SimpleButton";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { neutral17, yellowDefault } from "@/utils/style/colors";
 import { fontMedium48, fontSemibold28 } from "@/utils/style/fonts";

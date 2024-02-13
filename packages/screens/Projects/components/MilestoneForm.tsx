@@ -27,8 +27,13 @@ import {
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ProjectMilestone, MsPriority, MsStatus } from "../types";
-import { getGRC20Currency, getIBCCurrency, mustGetGnoNetwork } from "@/networks";
+
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import {
+  getGRC20Currency,
+  getIBCCurrency,
+  mustGetGnoNetwork,
+} from "@/networks";
 import { useProjectInfo } from "@/screens/Projects/hooks/useProjectInfo";
 
 const PRIORITIES: SelectInputItem[] = [
