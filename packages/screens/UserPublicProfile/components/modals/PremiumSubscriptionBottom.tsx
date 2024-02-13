@@ -10,6 +10,7 @@ import { SVG } from "@/components/SVG";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
+import { MembershipConfig } from "@/contracts-clients/cw721-membership";
 import { useBalances } from "@/hooks/useBalances";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
@@ -23,8 +24,10 @@ import {
 } from "@/utils/style/fonts";
 
 export const PremiumSubscriptionBottom = ({
+  item,
   onSubscribe,
 }: {
+  item: MembershipConfig | undefined;
   onSubscribe: () => void;
 }) => {
   const selectedWallet = useSelectedWallet();
@@ -59,7 +62,7 @@ export const PremiumSubscriptionBottom = ({
           <SpacerColumn size={1} />
 
           <BrandText style={[fontSemibold20, { color: secondaryColor }]}>
-            $9.99
+            ${(item && item.price.amount) || "0"}
           </BrandText>
         </View>
 
@@ -144,6 +147,7 @@ export const PremiumSubscriptionBottom = ({
           width={424}
           loader
           onPress={onSubscribe}
+          disabled={item === undefined}
         />
       </View>
     </View>

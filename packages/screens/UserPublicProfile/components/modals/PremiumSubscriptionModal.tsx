@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
+import { AccordionSelectComponent } from "./AccordionSelectComponent";
 import { PremiumSubscriptionBottom } from "./PremiumSubscriptionBottom";
 import ModalBase from "../../../../components/modals/ModalBase";
 import { layout } from "../../../../utils/style/layout";
 
 import { BrandText } from "@/components/BrandText";
+import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
 import { SpacerColumn } from "@/components/spacer";
+import { MembershipConfig } from "@/contracts-clients/cw721-membership";
+import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
 import { DEFAULT_NAME } from "@/utils/social-feed";
@@ -21,16 +25,25 @@ export const PremiumSubscriptionModal: React.FC<{
   userId: string;
 }> = ({ onClose, onSubscribe, isVisible, userId }) => {
   const { metadata } = useNSUserInfo(userId);
-  const [, userAddress] = parseUserId(userId);
+  const [user, userAddress] = parseUserId(userId);
+  const { data: channel } = usePremiumChannel(user?.id, userAddress);
+
+  const [selectedItem, setSelectedItem] = useState<MembershipConfig>();
+
+  if (!user?.id || channel === undefined) {
+    return null;
+  }
 
   return (
     <ModalBase
       visible={isVisible}
       onClose={onClose}
       width={464}
+      scrollable
       label="Premium Subscription"
       childrenBottom={
         <PremiumSubscriptionBottom
+          item={selectedItem}
           onSubscribe={() => {
             onClose();
             onSubscribe && onSubscribe();
@@ -52,10 +65,7 @@ export const PremiumSubscriptionModal: React.FC<{
 
           <SpacerColumn size={2} />
 
-          <RoundedGradientImage
-            sourceURI={metadata.image}
-            style={{ marginRight: 24 }}
-          />
+          <RoundedGradientImage sourceURI={metadata.image} />
           <SpacerColumn size={2} />
           <BrandText style={[fontBold16]}>
             {metadata?.tokenId ? metadata?.public_name : DEFAULT_NAME}
@@ -65,6 +75,26 @@ export const PremiumSubscriptionModal: React.FC<{
           </BrandText>
         </View>
       </View>
+      <PrimaryBox
+        style={{
+          width: "100%",
+          borderColor: "transparent",
+          marginTop: 20,
+          marginBottom: 20,
+        }}
+      >
+        {channel?.memberships_config?.map((memberships, index) => {
+          return (
+            <AccordionSelectComponent
+              item={memberships}
+              selectedItem={selectedItem}
+              onItemSelect={(item) => {
+                setSelectedItem(item);
+              }}
+            />
+          );
+        })}
+      </PrimaryBox>
     </ModalBase>
   );
 };
