@@ -35,6 +35,7 @@ const shortDescSchema = object({
   contractor: string().min(32),
   paymentAddr: string().required().min(6),
   coverImg: string().required(),
+  arbitrator: string().required(),
   tags: string().nullable(),
   _coverImgFile: object(),
 });
@@ -206,6 +207,19 @@ export const ShortPresentation: React.FC = () => {
                 onChangeText={handleChange("desc")}
                 value={values.desc}
                 error={errors.desc}
+              />
+
+              <SpacerColumn size={2.5} />
+
+              <TextInputCustom
+                label="Arbitrator address"
+                name="arbitrator"
+                fullWidth
+                placeholder="Address of the authority that will resolve conflicts"
+                variant="labelOutside"
+                onChangeText={handleChange("arbitrator")}
+                value={values.arbitrator}
+                error={errors.arbitrator}
               />
 
               <SpacerColumn size={2.5} />

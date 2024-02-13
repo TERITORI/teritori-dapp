@@ -1,4 +1,10 @@
-import { MsPriority, MsStatus, ProjectMilestone, ShortDescData, TeamAndLinkData } from "./types";
+import {
+  MsPriority,
+  MsStatus,
+  ProjectMilestone,
+  ShortDescData,
+  TeamAndLinkData,
+} from "./types";
 
 export const emptyTeamAndLink: TeamAndLinkData = {
   websiteLink: "",
@@ -12,6 +18,7 @@ export const emptyShortDesc: ShortDescData = {
   name: "",
   desc: "",
   budget: 0,
+  arbitrator: "",
   duration: 0,
   paymentAddr: "",
   coverImg: "",
@@ -25,11 +32,12 @@ export const emptyShortDesc: ShortDescData = {
 export const fakeShortDesc: ShortDescData = {
   name: "This is name",
   desc: "This is long description",
+  arbitrator: "",
   budget: 0,
   duration: 0,
   funder: "",
   contractor: "",
-  paymentAddr: "gno.land/r/demo/tori20",
+  paymentAddr: "ugnot",
   coverImg: "https://thisis.img",
   tags: "tag1,tag2,tag3",
 };

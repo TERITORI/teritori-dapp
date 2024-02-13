@@ -27,7 +27,6 @@ import {
   neutral17,
   neutral33,
   neutral77,
-  neutralA3,
   neutralFF,
 } from "../../../utils/style/colors";
 import {
@@ -155,9 +154,9 @@ export const ConfirmAndSign: React.FC = () => {
         teamAndLinkData,
       });
 
-      const contractor = shortDescData.contractor || "";
-      const funder = shortDescData.funder || "";
-      const conflictHandler = "";
+      const contractor = shortDescData.contractor;
+      const funder = shortDescData.funder;
+      const conflictHandler = shortDescData.arbitrator;
 
       if (!contractor && !funder) {
         return setToastError({

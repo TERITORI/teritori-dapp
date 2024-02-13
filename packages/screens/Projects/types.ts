@@ -34,6 +34,7 @@ export type ShortDescData = {
   coverImg: string;
   tags: string;
   _coverImgFile?: LocalFileData;
+  arbitrator: string;
 };
 
 export type TeamAndLinkData = {
