@@ -41,6 +41,7 @@ jobs:
         run: make bump-app-build-number
 
       - name: Download service account from env
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         run: echo ${{ secrets.GOOGLE_SERVICES_JSON }} | base64 --decode > ./service-account-android-submit.json
 
       - name: Fix gitignore
@@ -75,6 +76,7 @@ jobs:
           echo "AAB_FILE=$AAB_FILE" >> $GITHUB_ENV
 
       - name: EAS Submit Android aab
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         run: eas submit --platform=android --path=${{ env.AAB_FILE }} --profile=production
 
       - name: Upload aab
