@@ -1,26 +1,42 @@
 import React, { useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { TextInput, View, ViewStyle } from "react-native";
+import { launchImageLibrary } from "react-native-image-picker";
 import Animated, { useSharedValue } from "react-native-reanimated";
+import { useSelector } from "react-redux";
 
 import { CustomButton } from "./Button/CustomButton";
 import MiniToast from "./MiniToast";
+import cameraSVG from "../../../../assets/icons/camera-white.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
 import priceSVG from "../../../../assets/icons/price.svg";
+import videoSVG from "../../../../assets/icons/video.svg";
 
 import { BrandText } from "@/components/BrandText";
+import { FilesPreviewsContainer } from "@/components/FilePreview/FilesPreviewsContainer";
 import FlexRow from "@/components/FlexRow";
 import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgressBar";
 import { EmojiSelector } from "@/components/socialFeed/EmojiSelector";
 import { GIFSelector } from "@/components/socialFeed/GIFSelector";
+import { SpacerColumn } from "@/components/spacer";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
+import { useIpfs } from "@/hooks/useIpfs";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature, getUserId } from "@/networks";
+import { selectNFTStorageAPI } from "@/store/slices/settings";
+import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
 import { generatePostMetadata, getPostCategory } from "@/utils/feed/queries";
-import { SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT } from "@/utils/social-feed";
+import { generateIpfsKey } from "@/utils/ipfs";
+import { IMAGE_MIME_TYPES, VIDEO_MIME_TYPES } from "@/utils/mime";
+import {
+  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
+  removeFileFromArray,
+  replaceFileInArray,
+} from "@/utils/social-feed";
 import {
   errorColor,
   neutral77,
@@ -37,6 +53,8 @@ import {
 import { layout } from "@/utils/style/layout";
 import { replaceBetweenString } from "@/utils/text";
 import { NewPostFormValues, ReplyToType } from "@/utils/types/feed";
+import { LocalFileData, RemoteFileData } from "@/utils/types/files";
+import { getVideoData } from "@/utils/video";
 
 interface MiniCommentInputProps {
   parentId?: string;
@@ -64,8 +82,8 @@ export const MiniCommentInput = React.forwardRef<
     forwardRef,
   ) => {
     const inputMaxHeight = 400;
-    const inputMinHeight = 24;
-    const inputHeight = useSharedValue(24);
+    const inputMinHeight = 30;
+    const inputHeight = useSharedValue(30);
     const selectedNetwork = useSelectedNetworkInfo();
     const selectedNetworkId = selectedNetwork?.id || "teritori";
     const selectedWallet = useSelectedWallet();
@@ -75,6 +93,8 @@ export const MiniCommentInput = React.forwardRef<
       title: string;
       message: string;
     } | null>(null);
+    const [isUploadLoading, setIsUploadLoading] = useState(false);
+    const [isProgressBarShown, setIsProgressBarShown] = useState(false);
 
     const { showNotEnoughFundsModal, showConnectWalletModal } =
       useWalletControl();
@@ -95,6 +115,8 @@ export const MiniCommentInput = React.forwardRef<
       setTimeout(() => {
         reset();
         onSubmitSuccess?.();
+        setIsUploadLoading(false);
+        setIsProgressBarShown(false);
       }, 1000);
     };
     const {
@@ -104,13 +126,17 @@ export const MiniCommentInput = React.forwardRef<
       prettyPublishingFee,
       freePostCount,
       publishingFee,
+      setStep,
+      step,
     } = useFeedPosting(
       selectedNetwork?.id,
       userId,
       postCategory,
       onPostCreationSuccess,
     );
-    const isLoading = isProcessing;
+    const isLoading = isUploadLoading || isProcessing;
+    const { uploadFilesToPinata, ipfsUploadProgress } = useIpfs();
+    const userIPFSKey = useSelector(selectNFTStorageAPI);
 
     const [selection, setSelection] = useState<{ start: number; end: number }>({
       start: 10,
@@ -161,6 +187,8 @@ export const MiniCommentInput = React.forwardRef<
         });
         return;
       }
+      setIsUploadLoading(true);
+      setIsProgressBarShown(true);
       onSubmitInProgress && onSubmitInProgress();
       try {
         const finalMessage = formValues.message || "";
@@ -169,10 +197,37 @@ export const MiniCommentInput = React.forwardRef<
           replyTo.parentId &&
           formValues.message.includes(`@${replyTo.username}`);
 
+        let remoteFiles: RemoteFileData[] = [];
+
+        if (formValues.files?.length) {
+          setStep(feedPostingStep(FeedPostingStepId.GENERATING_KEY));
+
+          const pinataJWTKey =
+            userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
+
+          if (pinataJWTKey) {
+            setStep(feedPostingStep(FeedPostingStepId.UPLOADING_FILES));
+
+            remoteFiles = await uploadFilesToPinata({
+              files: formValues.files,
+              pinataJWTKey,
+            });
+          }
+        }
+        if (formValues.files?.length && !remoteFiles.find((file) => file.url)) {
+          console.error("upload file err : Fail to pin to IPFS");
+          setToastErrors({
+            title: "File upload failed",
+            message: "Fail to pin to IPFS, please try to Publish again",
+          });
+          setIsUploadLoading(false);
+          return;
+        }
+
         const metadata = generatePostMetadata({
           title: formValues.title || "",
           message: finalMessage,
-          files: [],
+          files: remoteFiles,
           gifs: formValues?.gifs || [],
           hashtags: [],
           mentions: [],
@@ -184,6 +239,8 @@ export const MiniCommentInput = React.forwardRef<
         );
       } catch (err) {
         console.error("post submit err", err);
+        setIsUploadLoading(false);
+        setIsProgressBarShown(false);
         setToastErrors({
           title: "Post creation failed",
           message: err instanceof Error ? err.message : `${err}`,
@@ -191,6 +248,107 @@ export const MiniCommentInput = React.forwardRef<
         setTimeout(() => {
           setToastErrors(null);
         }, 3000);
+      }
+    };
+
+    const onCameraPress = async () => {
+      try {
+        const result = await launchImageLibrary({
+          mediaType: "photo",
+          includeBase64: true,
+          presentationStyle: "fullScreen",
+          selectionLimit: 1,
+        });
+
+        if (
+          result.assets &&
+          result.assets.length > 0 &&
+          result.assets[0].type &&
+          IMAGE_MIME_TYPES.includes(result?.assets?.[0]?.type)
+        ) {
+          const choseFile = result.assets[0];
+
+          if (
+            formValues.files?.find(
+              (file) => file.fileName === choseFile.fileName,
+            )
+          )
+            return;
+
+          const imagePath = choseFile?.uri;
+          const imageMime = `${choseFile.type}`;
+          if (imagePath) {
+            const picture = await fetch(imagePath);
+            const pictures = await picture.blob();
+            const fileName = `${choseFile.fileName}`;
+
+            const imageData = new File([pictures], fileName);
+            setValue("files", [
+              ...(formValues.files || []),
+              {
+                file: imageData,
+                fileName,
+                fileType: "image",
+                mimeType: imageMime,
+                size: imageData.size || 0,
+                url: choseFile?.uri || "",
+                base64Image: choseFile.base64,
+              },
+            ]);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const onVideoPress = async () => {
+      try {
+        const result = await launchImageLibrary({
+          mediaType: "video",
+          presentationStyle: "fullScreen",
+          selectionLimit: 1,
+        });
+
+        if (
+          result.assets &&
+          result.assets.length > 0 &&
+          result.assets[0].type &&
+          VIDEO_MIME_TYPES.includes(result?.assets?.[0]?.type)
+        ) {
+          const choseFile = result.assets[0];
+
+          if (
+            formValues.files?.find(
+              (file) => file.fileName === choseFile.fileName,
+            )
+          )
+            return;
+
+          const imagePath = choseFile?.uri;
+          const mimeType = `${choseFile.type}`;
+          if (imagePath) {
+            const video = await fetch(imagePath);
+            const videos = await video.blob();
+            const fileName = `${choseFile.fileName}`;
+
+            const videoData = new File([videos], fileName);
+
+            setValue("files", [
+              {
+                file: videoData,
+                fileName,
+                fileType: "video",
+                mimeType,
+                size: choseFile?.fileSize || 0,
+                url: choseFile?.uri || "",
+                videoMetadata: getVideoData(videoData),
+              },
+            ]);
+          }
+        }
+      } catch (error) {
+        console.log(error);
       }
     };
 
@@ -285,6 +443,38 @@ export const MiniCommentInput = React.forwardRef<
               /{SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT}
             </BrandText>
           </BrandText>
+          {formValues.files && formValues.files.length > 0 ? (
+            <>
+              <SpacerColumn size={3} />
+              <FilesPreviewsContainer
+                files={formValues.files}
+                gifs={formValues.gifs}
+                onDelete={(file) => {
+                  setValue(
+                    "files",
+                    removeFileFromArray(
+                      formValues?.files || [],
+                      file as LocalFileData,
+                    ),
+                  );
+                }}
+                onDeleteGIF={(url) =>
+                  setValue(
+                    "gifs",
+                    (formValues?.gifs || [])?.filter((gif) => gif !== url),
+                  )
+                }
+                onAudioUpdate={(updatedFile) => {
+                  if (formValues?.files?.length) {
+                    setValue(
+                      "files",
+                      replaceFileInArray(formValues?.files, updatedFile),
+                    );
+                  }
+                }}
+              />
+            </>
+          ) : null}
         </View>
         <View
           style={[
@@ -311,6 +501,16 @@ export const MiniCommentInput = React.forwardRef<
               : `The cost for this comment is ${prettyPublishingFee}`}
           </BrandText>
         </View>
+        {step.id !== "UNDEFINED" && isProgressBarShown && (
+          <>
+            <SpacerColumn size={1.5} />
+            <FeedPostingProgressBar
+              step={step}
+              ipfsUploadProgress={ipfsUploadProgress}
+            />
+            <SpacerColumn size={1} />
+          </>
+        )}
         <View
           style={{
             flex: 1,
@@ -338,6 +538,46 @@ export const MiniCommentInput = React.forwardRef<
                   MAX_IMAGES
               }
             />
+            <CustomPressable
+              onPress={onVideoPress}
+              disabled={
+                Array.isArray(formValues?.files) &&
+                formValues?.files?.length > 0
+              }
+            >
+              <SVG
+                source={videoSVG}
+                height={24}
+                width={24}
+                style={{
+                  opacity:
+                    Array.isArray(formValues?.files) &&
+                    formValues?.files?.length > 0
+                      ? 0.7
+                      : 1,
+                }}
+              />
+            </CustomPressable>
+            <CustomPressable
+              onPress={onCameraPress}
+              disabled={
+                Array.isArray(formValues?.files) &&
+                formValues?.files?.length > 0
+              }
+            >
+              <SVG
+                source={cameraSVG}
+                height={24}
+                width={24}
+                style={{
+                  opacity:
+                    Array.isArray(formValues?.files) &&
+                    formValues?.files?.length > 0
+                      ? 0.7
+                      : 1,
+                }}
+              />
+            </CustomPressable>
           </FlexRow>
           <CustomButton
             onPress={handleSubmit(processSubmit)}
