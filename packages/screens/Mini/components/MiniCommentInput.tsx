@@ -1,17 +1,20 @@
-import React, { useRef, useState } from "react";
+import React, { useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Pressable, TextInput, View, ViewStyle } from "react-native";
+import { TextInput, View, ViewStyle } from "react-native";
 import Animated, { useSharedValue } from "react-native-reanimated";
 
+import { CustomButton } from "./Button/CustomButton";
+import MiniToast from "./MiniToast";
 import penSVG from "../../../../assets/icons/pen.svg";
 import priceSVG from "../../../../assets/icons/price.svg";
-import { CustomButton } from "./Button/CustomButton";
 
 import { BrandText } from "@/components/BrandText";
 import FlexRow from "@/components/FlexRow";
 import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { EmojiSelector } from "@/components/socialFeed/EmojiSelector";
 import { GIFSelector } from "@/components/socialFeed/GIFSelector";
+import { useWalletControl } from "@/context/WalletControlProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
@@ -34,9 +37,6 @@ import {
 import { layout } from "@/utils/style/layout";
 import { replaceBetweenString } from "@/utils/text";
 import { NewPostFormValues, ReplyToType } from "@/utils/types/feed";
-import { CustomPressable } from "@/components/buttons/CustomPressable";
-import { useWalletControl } from "@/context/WalletControlProvider";
-import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgressBar";
 
 interface MiniCommentInputProps {
   parentId?: string;
@@ -59,31 +59,25 @@ export const MiniCommentInput = React.forwardRef<
   MiniCommentInputInputHandle,
   MiniCommentInputProps
 >(
-  ({
-    parentId,
-    replyTo,
-    style,
-    onSubmitSuccess,
-    onSubmitInProgress,
-    daoId,
-  }) => {
+  (
+    { parentId, replyTo, style, onSubmitSuccess, onSubmitInProgress, daoId },
+    forwardRef,
+  ) => {
     const inputMaxHeight = 400;
-    const inputMinHeight = 30;
-    const inputHeight = useSharedValue(30);
+    const inputMinHeight = 24;
+    const inputHeight = useSharedValue(24);
     const selectedNetwork = useSelectedNetworkInfo();
     const selectedNetworkId = selectedNetwork?.id || "teritori";
     const selectedWallet = useSelectedWallet();
     const userId = getUserId(selectedNetworkId, selectedWallet?.address);
     const inputRef = useRef<TextInput>(null);
-    const [isUploadLoading, setIsUploadLoading] = useState(false);
-    const [isProgressBarShown, setIsProgressBarShown] = useState(false);
     const [toastErrors, setToastErrors] = useState<{
       title: string;
       message: string;
     } | null>(null);
+
     const { showNotEnoughFundsModal, showConnectWalletModal } =
       useWalletControl();
-
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
         defaultValues: {
@@ -101,8 +95,6 @@ export const MiniCommentInput = React.forwardRef<
       setTimeout(() => {
         reset();
         onSubmitSuccess?.();
-        setIsUploadLoading(false);
-        setIsProgressBarShown(false);
       }, 1000);
     };
     const {
@@ -112,15 +104,13 @@ export const MiniCommentInput = React.forwardRef<
       prettyPublishingFee,
       freePostCount,
       publishingFee,
-      step,
-      setStep,
     } = useFeedPosting(
       selectedNetwork?.id,
       userId,
       postCategory,
       onPostCreationSuccess,
     );
-    const isLoading = isUploadLoading || isProcessing;
+    const isLoading = isProcessing;
 
     const [selection, setSelection] = useState<{ start: number; end: number }>({
       start: 10,
@@ -146,8 +136,14 @@ export const MiniCommentInput = React.forwardRef<
 
     const focusInput = () => inputRef.current?.focus();
 
+    useImperativeHandle(forwardRef, () => ({
+      resetForm: reset,
+      setValue: handleTextChange,
+      focusInput,
+    }));
+
     const processSubmit = async () => {
-      const action = "Publish a Post";
+      const action = "Comment";
       if (!selectedWallet?.address || !selectedWallet.connected) {
         showConnectWalletModal({
           forceNetworkFeature: NetworkFeature.SocialFeed,
@@ -165,8 +161,6 @@ export const MiniCommentInput = React.forwardRef<
         });
         return;
       }
-      setIsUploadLoading(true);
-      setIsProgressBarShown(true);
       onSubmitInProgress && onSubmitInProgress();
       try {
         const finalMessage = formValues.message || "";
@@ -190,16 +184,29 @@ export const MiniCommentInput = React.forwardRef<
         );
       } catch (err) {
         console.error("post submit err", err);
-        setIsUploadLoading(false);
-        setIsProgressBarShown(false);
         setToastErrors({
           title: "Post creation failed",
           message: err instanceof Error ? err.message : `${err}`,
         });
+        setTimeout(() => {
+          setToastErrors(null);
+        }, 3000);
       }
     };
+
     return (
       <View>
+        {toastErrors && toastErrors.message && (
+          <MiniToast
+            type="error"
+            message={toastErrors.message}
+            style={{
+              width: "100%",
+              marginLeft: 0,
+              marginBottom: layout.spacing_x0_75,
+            }}
+          />
+        )}
         <View
           style={{
             borderRadius: layout.borderRadius,
@@ -233,7 +240,6 @@ export const MiniCommentInput = React.forwardRef<
                   onChangeText={handleTextChange}
                   multiline
                   onContentSizeChange={(e) => {
-                    // TODO: onContentSizeChange is not fired when deleting lines. We can only grow the input, but not shrink
                     if (e.nativeEvent.contentSize.height < inputMaxHeight) {
                       inputHeight.value = e.nativeEvent.contentSize.height;
                     }

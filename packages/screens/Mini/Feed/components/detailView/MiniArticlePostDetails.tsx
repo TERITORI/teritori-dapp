@@ -33,6 +33,7 @@ import {
 } from "../../../../../utils/types/feed";
 import CustomAppBar from "../../../components/AppBar/CustomAppBar";
 
+import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
 import { MiniCommentInput } from "@/screens/Mini/components/MiniCommentInput";
 
 type Props = {
@@ -145,81 +146,83 @@ export const MiniArticlePostDetails = ({
       noScroll
       headerMini={<CustomAppBar backEnabled title={`Article by ${username}`} />}
     >
-      <Animated.ScrollView
-        ref={aref}
-        onScroll={scrollHandler}
-        scrollEventThrottle={1}
-      >
-        <View style={{ flex: 1, width: windowWidth - 20 }}>
-          <SocialCardWrapper post={localPost} refetchFeed={refetchPost}>
-            {!!coverImage && (
-              <>
-                <OptimizedImage
-                  width={windowWidth}
-                  height={200}
-                  sourceURI={thumbnailURI}
-                  fallbackURI={defaultThumbnailImage}
-                  style={{
-                    zIndex: -1,
-                    width: windowWidth,
-                    height: 200 - 2,
-                    borderTopRightRadius: 20,
-                    borderBottomRightRadius: 20,
-                  }}
+      <KeyboardAvoidingView>
+        <Animated.ScrollView
+          ref={aref}
+          onScroll={scrollHandler}
+          scrollEventThrottle={1}
+        >
+          <View style={{ flex: 1, width: windowWidth - 20 }}>
+            <SocialCardWrapper post={localPost} refetchFeed={refetchPost}>
+              {!!coverImage && (
+                <>
+                  <OptimizedImage
+                    width={windowWidth}
+                    height={200}
+                    sourceURI={thumbnailURI}
+                    fallbackURI={defaultThumbnailImage}
+                    style={{
+                      zIndex: -1,
+                      width: windowWidth,
+                      height: 200 - 2,
+                      borderTopRightRadius: 20,
+                      borderBottomRightRadius: 20,
+                    }}
+                  />
+                  <SpacerColumn size={3} />
+                </>
+              )}
+              {!!metadataToUse?.title && (
+                <>
+                  <BrandText style={[fontSemibold16]}>
+                    {metadataToUse.title}
+                  </BrandText>
+                  <SpacerColumn size={1.5} />
+                </>
+              )}
+
+              <SocialCardHeader
+                authorAddress={authorAddress}
+                authorId={localPost.authorId}
+                createdAt={post.createdAt}
+                authorMetadata={authorNSInfo?.metadata}
+              />
+
+              {/*========== Article content */}
+              <View>
+                <RichText
+                  initialValue={metadataToUse.message}
+                  isPostConsultation
+                  audioFiles={audioFiles}
+                  postId={postId}
+                  authorId={authorId}
                 />
-                <SpacerColumn size={3} />
-              </>
-            )}
-            {!!metadataToUse?.title && (
-              <>
-                <BrandText style={[fontSemibold16]}>
-                  {metadataToUse.title}
-                </BrandText>
-                <SpacerColumn size={1.5} />
-              </>
-            )}
-
-            <SocialCardHeader
-              authorAddress={authorAddress}
-              authorId={localPost.authorId}
-              createdAt={post.createdAt}
-              authorMetadata={authorNSInfo?.metadata}
-            />
-
-            {/*========== Article content */}
+              </View>
+              <SpacerColumn size={1.5} />
+            </SocialCardWrapper>
             <View>
-              <RichText
-                initialValue={metadataToUse.message}
-                isPostConsultation
-                audioFiles={audioFiles}
-                postId={postId}
-                authorId={authorId}
+              <SpacerColumn size={3} />
+              <MiniCommentInput
+                style={{ alignSelf: "center" }}
+                ref={feedInputRef}
+                replyTo={replyTo}
+                parentId={post.identifier}
+                onSubmitInProgress={handleSubmitInProgress}
+                onSubmitSuccess={() => {
+                  setReplyTo(undefined);
+                  refetchComments();
+                }}
+              />
+              <SpacerColumn size={4} />
+              <CommentsContainer
+                cardWidth={windowWidth}
+                comments={comments}
+                onPressReply={() => {}}
               />
             </View>
-            <SpacerColumn size={1.5} />
-          </SocialCardWrapper>
-          <View>
-            <SpacerColumn size={3} />
-            <MiniCommentInput
-              style={{ alignSelf: "center" }}
-              ref={feedInputRef}
-              replyTo={replyTo}
-              parentId={post.identifier}
-              onSubmitInProgress={handleSubmitInProgress}
-              onSubmitSuccess={() => {
-                setReplyTo(undefined);
-                refetchComments();
-              }}
-            />
-            <SpacerColumn size={4} />
-            <CommentsContainer
-              cardWidth={windowWidth}
-              comments={comments}
-              onPressReply={() => {}}
-            />
           </View>
-        </View>
-      </Animated.ScrollView>
+        </Animated.ScrollView>
+      </KeyboardAvoidingView>
     </ScreenContainer>
   );
 };

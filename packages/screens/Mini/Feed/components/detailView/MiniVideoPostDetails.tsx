@@ -45,6 +45,8 @@ import { VideoComment } from "../../../../FeedPostView/components/VideoComment";
 import CustomAppBar from "../../../components/AppBar/CustomAppBar";
 import { VideoCommentInput } from "../VideoCommentInput";
 
+import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
+
 type Props = {
   networkId: string;
   post: Post;
@@ -145,109 +147,111 @@ export const MiniVideoPostDetails = ({
       noScroll
       headerMini={<CustomAppBar backEnabled title={`Video by ${username}`} />}
     >
-      <Animated.ScrollView
-        ref={aref}
-        contentContainerStyle={{
-          width: "100%",
-          alignSelf: "center",
-        }}
-        onScroll={scrollHandler}
-      >
-        <View>
-          {/*====== Video player ======*/}
-          <MediaPlayerVideo
-            videoMetadata={video}
-            style={{
-              aspectRatio: 1.7,
-              width: windowWidth - 2,
-              borderRadius: SOCIAl_CARD_BORDER_RADIUS,
-            }}
-            resizeMode={ResizeMode.CONTAIN}
-            authorId={localPost.authorId}
-            postId={localPost.identifier}
-          />
-          {/*====== Video info ======*/}
-          <SpacerColumn size={1.5} />
-          <BrandText numberOfLines={2} style={{}}>
-            {video.title?.trim()}
-          </BrandText>
-          <SpacerColumn size={1.5} />
+      <KeyboardAvoidingView>
+        <Animated.ScrollView
+          ref={aref}
+          contentContainerStyle={{
+            width: "100%",
+            alignSelf: "center",
+          }}
+          onScroll={scrollHandler}
+        >
           <View>
-            <SocialCardHeader
+            {/*====== Video player ======*/}
+            <MediaPlayerVideo
+              videoMetadata={video}
+              style={{
+                aspectRatio: 1.7,
+                width: windowWidth - 2,
+                borderRadius: SOCIAl_CARD_BORDER_RADIUS,
+              }}
+              resizeMode={ResizeMode.CONTAIN}
               authorId={localPost.authorId}
-              authorAddress={authorAddress}
-              createdAt={localPost.createdAt}
-              authorMetadata={authorNSInfo?.metadata}
+              postId={localPost.identifier}
             />
-            <SpacerColumn size={1} />
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <LikeButton post={localPost} setPost={setLocalPost} />
-              <SpacerRow size={1.5} />
-              <DislikeButton post={localPost} setPost={setLocalPost} />
-
-              <SpacerRow size={1.5} />
-              <TipButton
-                disabled={localPost.authorId === wallet?.userId}
-                amount={localPost.tipAmount}
-                author={username}
-                postId={localPost.identifier}
-                useAltStyle
+            {/*====== Video info ======*/}
+            <SpacerColumn size={1.5} />
+            <BrandText numberOfLines={2} style={{}}>
+              {video.title?.trim()}
+            </BrandText>
+            <SpacerColumn size={1.5} />
+            <View>
+              <SocialCardHeader
+                authorId={localPost.authorId}
+                authorAddress={authorAddress}
+                createdAt={localPost.createdAt}
+                authorMetadata={authorNSInfo?.metadata}
               />
+              <SpacerColumn size={1} />
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <LikeButton post={localPost} setPost={setLocalPost} />
+                <SpacerRow size={1.5} />
+                <DislikeButton post={localPost} setPost={setLocalPost} />
 
-              <SpacerRow size={1.5} />
-              <ShareButton postId={localPost.identifier} useAltStyle />
+                <SpacerRow size={1.5} />
+                <TipButton
+                  disabled={localPost.authorId === wallet?.userId}
+                  amount={localPost.tipAmount}
+                  author={username}
+                  postId={localPost.identifier}
+                  useAltStyle
+                />
 
-              {network?.kind === NetworkKind.Gno && (
-                <>
-                  <SpacerRow size={1.5} />
-                  <ReportButton
-                    refetchFeed={refetchPost}
-                    postId={localPost.identifier}
-                    useAltStyle
-                  />
-                </>
-              )}
+                <SpacerRow size={1.5} />
+                <ShareButton postId={localPost.identifier} useAltStyle />
+
+                {network?.kind === NetworkKind.Gno && (
+                  <>
+                    <SpacerRow size={1.5} />
+                    <ReportButton
+                      refetchFeed={refetchPost}
+                      postId={localPost.identifier}
+                      useAltStyle
+                    />
+                  </>
+                )}
+              </View>
             </View>
+            {video.description && (
+              <>
+                <SpacerColumn size={1.5} />
+                <BrandText
+                  style={[
+                    fontSemibold14,
+                    { color: neutralA3, marginVertical: layout.spacing_x1_5 },
+                  ]}
+                  numberOfLines={3}
+                >
+                  {video.description?.trim()}
+                </BrandText>
+              </>
+            )}
+            <VideoCommentInput
+              count={comments.length}
+              networkId={networkId}
+              post={localPost}
+              onComment={refetchPost}
+            />
+            {comments.map((comment, index) => (
+              <Fragment key={index}>
+                <SpacerColumn size={2.5} />
+                <VideoComment comment={postResultToPost(networkId, comment)} />
+              </Fragment>
+            ))}
+            <VideosList
+              consultedPostId={localPost.identifier}
+              title={
+                otherVideosRequest.filter?.user
+                  ? `More videos from ${username}`
+                  : "More videos from Social Feed"
+              }
+              style={{ width: "100%", marginTop: layout.spacing_x3 }}
+              onFetchFeedSuccess={onFetchOtherVideosSuccess}
+              req={otherVideosRequest}
+            />
           </View>
-          {video.description && (
-            <>
-              <SpacerColumn size={1.5} />
-              <BrandText
-                style={[
-                  fontSemibold14,
-                  { color: neutralA3, marginVertical: layout.spacing_x1_5 },
-                ]}
-                numberOfLines={3}
-              >
-                {video.description?.trim()}
-              </BrandText>
-            </>
-          )}
-          <VideoCommentInput
-            count={comments.length}
-            networkId={networkId}
-            post={localPost}
-            onComment={refetchPost}
-          />
-          {comments.map((comment, index) => (
-            <Fragment key={index}>
-              <SpacerColumn size={2.5} />
-              <VideoComment comment={postResultToPost(networkId, comment)} />
-            </Fragment>
-          ))}
-          <VideosList
-            consultedPostId={localPost.identifier}
-            title={
-              otherVideosRequest.filter?.user
-                ? `More videos from ${username}`
-                : "More videos from Social Feed"
-            }
-            style={{ width: "100%", marginTop: layout.spacing_x3 }}
-            onFetchFeedSuccess={onFetchOtherVideosSuccess}
-            req={otherVideosRequest}
-          />
-        </View>
-      </Animated.ScrollView>
+        </Animated.ScrollView>
+      </KeyboardAvoidingView>
     </ScreenContainer>
   );
 };

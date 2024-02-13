@@ -75,9 +75,11 @@ export default function MiniToast({
         <BrandText style={fontSemibold13}>{message}</BrandText>
       </View>
 
-      <CustomPressable onPress={onClose}>
-        <SVG source={closeSVG} width={22} height={22} />
-      </CustomPressable>
+      {onClose && (
+        <CustomPressable onPress={onClose}>
+          <SVG source={closeSVG} width={22} height={22} />
+        </CustomPressable>
+      )}
     </View>
   );
 }
