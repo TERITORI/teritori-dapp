@@ -75,7 +75,7 @@ export default function MiniTextInputWithDropdown({
         value={value}
         onChangeText={onChangeText}
         right={
-          <CustomPressable onPress={() => setShowOptions(true)}>
+          <CustomPressable onPress={() => setShowOptions(!showOptions)}>
             <View
               style={{
                 backgroundColor: neutral39,
