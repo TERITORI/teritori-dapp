@@ -1,34 +1,35 @@
-import * as Clipboard from "expo-clipboard";
 import React, { useMemo, useState } from "react";
 import {
-  View,
+  Linking,
   TouchableOpacity,
   useWindowDimensions,
-  Linking,
+  View,
 } from "react-native";
 import { CheckCircleIcon } from "react-native-heroicons/outline";
 
 import copySVG from "../../../assets/icons/copy.svg";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
-import { BrandText } from "../../components/BrandText";
-import { Menu } from "../../components/Menu";
-import { SVG } from "../../components/SVG";
-import { WalletProviderIcon } from "../../components/WalletProviderIcon";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { Wallet } from "../../context/WalletsProvider";
-import { useDelegations } from "../../hooks/useDelegations";
-import { useRewards } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { UserKind, accountExplorerLink } from "../../networks";
+
+import { BrandText } from "@/components/BrandText";
+import { Menu } from "@/components/Menu";
+import { SVG } from "@/components/SVG";
+import { WalletProviderIcon } from "@/components/WalletProviderIcon";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { Wallet } from "@/context/WalletsProvider";
+import { useDelegations } from "@/hooks/useDelegations";
+import { useRewards } from "@/hooks/useRewards";
+import Clipboard from "@/modules/Clipboard";
+import { accountExplorerLink, UserKind } from "@/networks";
 import {
   setSelectedNetworkId,
   setSelectedWalletId,
-} from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
-import { neutral33, neutral77 } from "../../utils/style/colors";
-import { modalMarginPadding } from "../../utils/style/modals";
+} from "@/store/slices/settings";
+import { useAppDispatch } from "@/store/store";
+import { neutral33, neutral77 } from "@/utils/style/colors";
+import { modalMarginPadding } from "@/utils/style/modals";
 
 interface WalletItemProps {
   item: Wallet;

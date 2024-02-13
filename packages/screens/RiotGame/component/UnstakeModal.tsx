@@ -5,27 +5,24 @@ import firePNG from "../../../../assets/game/fire.png";
 import trophiesSVG from "../../../../assets/icons/trophies.svg";
 import twitterSVG from "../../../../assets/icons/twitter.svg";
 import teritoriLogoSVG from "../../../../assets/logos/logo.svg";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SVG } from "../../../components/SVG";
-import { SocialButton } from "../../../components/buttons/SocialButton";
 import ModalBase from "../../../components/modals/ModalBase";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useGameRewards } from "../../../hooks/riotGame/useGameRewards";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { decimalFromAtomics } from "../../../utils/coins";
-import { durationToXP } from "../../../utils/game";
-import {
-  mineShaftColor,
-  neutral77,
-  neutralA3,
-} from "../../../utils/style/colors";
-import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
-import { SquadInfo } from "../types";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SocialButton } from "@/components/buttons/SocialButton";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useGameRewards } from "@/hooks/riotGame/useGameRewards";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { decimalFromAtomics } from "@/utils/coins";
+import { durationToXP } from "@/utils/game";
+import { mineShaftColor, neutral77, neutralA3 } from "@/utils/style/colors";
+import { fontSemibold16, fontSemibold20 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { tinyAddress } from "@/utils/text";
+import { SquadInfo } from "@/utils/types/riot-p2e";
 
 type UnstakeModalProps = {
   visible?: boolean;

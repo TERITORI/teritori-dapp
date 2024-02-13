@@ -3,24 +3,22 @@ import { Pressable, StyleProp, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { CheckboxDappStore } from "./CheckboxDappStore";
-import { BrandText } from "../../../components/BrandText";
-import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
-import { Box, BoxStyle } from "../../../components/boxes/Box";
-import {
-  selectCheckedApps,
-  setCheckedApp,
-} from "../../../store/slices/dapps-store";
-import { useAppDispatch } from "../../../store/store";
+
+import { BrandText } from "@/components/BrandText";
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { Box, BoxStyle } from "@/components/boxes/Box";
+import { selectCheckedApps, setCheckedApp } from "@/store/slices/dapps-store";
+import { useAppDispatch } from "@/store/store";
+import { SEPARATOR } from "@/utils/dapp-store";
 import {
   neutral00,
   neutral17,
   neutral33,
   neutral77,
-} from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { SEPARATOR } from "../query/util";
-import { dAppType } from "../types";
+} from "@/utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { dAppType } from "@/utils/types/dapp-store";
 
 export const DAppBox: React.FC<{
   option: dAppType;

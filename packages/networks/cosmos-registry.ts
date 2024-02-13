@@ -9,6 +9,7 @@ const banList = [
   "wavehashtestnet",
   "coreum",
   "seitestnet2",
+  "lavatestnet2",
 ];
 
 export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
@@ -65,6 +66,7 @@ export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
             return nativeCurrency;
           }),
         features: [],
+        featureObjects: [],
         idPrefix: chain.chain_name,
         addressPrefix: chain.bech32_prefix,
         txExplorer:

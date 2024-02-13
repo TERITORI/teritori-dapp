@@ -12,22 +12,19 @@ import brokenBoxPNG from "../../../../assets/game/broken-box.png";
 import clockSVG from "../../../../assets/game/clock.svg";
 import countDownPNG from "../../../../assets/game/countdown.png";
 import unstakeSVG from "../../../../assets/icons/unstake.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { SpacerColumn } from "../../../components/spacer";
-import { StakingState } from "../../../utils/game";
-import {
-  neutral77,
-  redDefault,
-  yellowDefault,
-} from "../../../utils/style/colors";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SpacerColumn } from "@/components/spacer";
+import { StakingState } from "@/utils/game";
+import { neutral77, redDefault, yellowDefault } from "@/utils/style/colors";
 import {
   fontSemibold20,
   fontSemibold14,
   fontMedium40,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { SquadInfo } from "../types";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { SquadInfo } from "@/utils/types/riot-p2e";
 
 type FightCountdownSectionProps = {
   unstake(): void;

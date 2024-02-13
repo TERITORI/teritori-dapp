@@ -4,29 +4,11 @@ import { useCoingeckoPrices } from "./useCoingeckoPrices";
 import { useNSMintAvailability } from "./useNSMintAvailability";
 import { useNSMintPrice } from "./useNSMintPrice";
 import { useVaultNFTInfo } from "./useVaultNFTInfo";
-import { getCosmosNetwork, getNativeCurrency, getNftId } from "../networks";
-import { CoingeckoCoin } from "../utils/coingecko";
-import { prettyPrice } from "../utils/coins";
 
-export type NSAvailability =
-  | {
-      availability: "loading";
-    }
-  | {
-      availability: "invalid";
-    }
-  | {
-      availability: "mint" | "market";
-      price: {
-        denom: string;
-        amount: string;
-      };
-      usdPrice?: number;
-      prettyPrice: string;
-    }
-  | {
-      availability: "none";
-    };
+import { getCosmosNetwork, getNativeCurrency, getNftId } from "@/networks";
+import { CoingeckoCoin } from "@/utils/coingecko";
+import { prettyPrice } from "@/utils/coins";
+import { NSAvailability } from "@/utils/types/tns";
 
 // TODO: support gno
 

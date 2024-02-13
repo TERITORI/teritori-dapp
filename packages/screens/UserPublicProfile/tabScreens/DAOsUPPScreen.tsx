@@ -1,12 +1,13 @@
 import React, { FC } from "react";
 
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { DAOsList } from "../../../components/dao/DAOsList";
-import { parseUserId } from "../../../networks";
-import { UppTabKeys } from "../../../utils/upp";
 import { UppTabScreenProps } from "../UserPublicProfileScreen";
 import { UPPHeader } from "../components/UPPHeader";
 import { UPPScreenContentWrapper } from "../components/UPPScreenContentWrapper";
+
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { DAOsList } from "@/components/dao/DAOsList";
+import { parseUserId } from "@/networks";
+import { UppTabKeys } from "@/utils/upp";
 
 export const DAOsUPPScreen: FC<UppTabScreenProps> = ({
   userId,

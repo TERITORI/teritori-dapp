@@ -2,21 +2,22 @@ import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { Dispatch, SetStateAction } from "react";
 
 import { useFeedPosting } from "./useFeedPosting";
-import { Post } from "../../api/feed/v1/feed";
-import { signingSocialFeedClient } from "../../client-creators/socialFeedClient";
-import { PostCategory } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { TERITORI_FEED_ID } from "../../components/socialFeed/const";
-import { useWalletControl } from "../../context/WalletControlProvider";
-import { useTeritoriSocialFeedReactPostMutation } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
-import { mustGetGnoNetwork, NetworkFeature, NetworkKind } from "../../networks";
-import { adenaDoContract } from "../../utils/gno";
+import { useSelectedNetworkInfo } from "../useSelectedNetwork";
+import useSelectedWallet from "../useSelectedWallet";
+
+import { Post } from "@/api/feed/v1/feed";
+import { signingSocialFeedClient } from "@/client-creators/socialFeedClient";
+import { useWalletControl } from "@/context/WalletControlProvider";
+import { useTeritoriSocialFeedReactPostMutation } from "@/contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
+import { mustGetGnoNetwork, NetworkFeature, NetworkKind } from "@/networks";
+import { TERITORI_FEED_ID } from "@/utils/feed/constants";
+import { adenaDoContract } from "@/utils/gno";
 import {
   DISLIKE_EMOJI,
   getUpdatedReactions,
   LIKE_EMOJI,
-} from "../../utils/social-feed";
-import { useSelectedNetworkInfo } from "../useSelectedNetwork";
-import useSelectedWallet from "../useSelectedWallet";
+} from "@/utils/social-feed";
+import { PostCategory } from "@/utils/types/feed";
 
 export const useSocialReactions = ({
   post,

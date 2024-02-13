@@ -1,15 +1,12 @@
 import React, { useRef, useState } from "react";
-import { View, ViewStyle, useWindowDimensions } from "react-native";
+import { useWindowDimensions, View, ViewStyle } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 
 import guardianPng from "../../../../assets/default-images/guardian_1.png";
-import { OptimizedImage } from "../../../components/OptimizedImage";
-import {
-  neutral00,
-  neutral44,
-  secondaryColor,
-} from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
+
+import { OptimizedImage } from "@/components/OptimizedImage";
+import { neutral00, neutral44, secondaryColor } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 
 const MD_BREAKPOINT = 820;
 

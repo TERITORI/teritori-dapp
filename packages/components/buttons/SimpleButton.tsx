@@ -1,16 +1,16 @@
 import React from "react";
-import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
+import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
 import {
   neutral00,
   primaryTextColor,
   yellowDefault,
-} from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { BrandText } from "../BrandText";
-import { SVG } from "../SVG";
+} from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface SimpleButtonProps {
   text: string;
@@ -18,8 +18,8 @@ interface SimpleButtonProps {
   color?: string;
   bgColor?: string;
   onPress?(): void;
-  containerStyle?: StyleProp<ViewStyle>;
-  style?: StyleProp<ViewStyle>;
+  containerStyle?: ViewStyle;
+  style?: ViewStyle;
   loading?: boolean;
   disabled?: boolean;
   iconSVG?: React.FC<SvgProps>;
@@ -29,8 +29,8 @@ interface SimpleButtonProps {
 export const SimpleButton: React.FC<SimpleButtonProps> = ({
   text,
   size = "M",
-  color,
-  bgColor,
+  color = primaryTextColor,
+  bgColor = yellowDefault,
   onPress,
   loading,
   disabled,

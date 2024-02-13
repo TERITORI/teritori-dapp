@@ -24,7 +24,7 @@ export const Lottery = () => {
   return (
     <>
       <View
-        // @ts-expect-error
+        // @ts-expect-error: description todo
         style={{
           height: isMinimunWindowWidth ? "57vh" : "73vh",
           paddingHorizontal: isMinimunWindowWidth ? 0 : 18,

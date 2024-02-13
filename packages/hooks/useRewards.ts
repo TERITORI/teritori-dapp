@@ -5,10 +5,11 @@ import { useMemo } from "react";
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
 import { useErrorHandler } from "./useErrorHandler";
 import { useRunOrProposeTransaction } from "./useRunOrProposeTransaction";
-import { useFeedbacks } from "../context/FeedbacksProvider";
-import { getNetwork, NetworkKind, UserKind, parseUserId } from "../networks";
-import { CoingeckoCoin, getCoingeckoPrice } from "../utils/coingecko";
-import { CosmosRewardsResponse } from "../utils/teritori";
+
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { getNetwork, NetworkKind, UserKind, parseUserId } from "@/networks";
+import { CoingeckoCoin, getCoingeckoPrice } from "@/utils/coingecko";
+import { CosmosRewardsResponse } from "@/utils/teritori";
 
 export type Reward = {
   validator: string;

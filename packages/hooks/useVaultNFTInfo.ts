@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { TeritoriNftVaultQueryClient } from "@/contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import {
   getCosmosNetwork,
   mustGetNonSigningCosmWasmClient,
   parseNftId,
-} from "../networks";
+} from "@/networks";
 
 export const useVaultNFTInfo = (nftId: string | undefined) => {
   const { data, ...other } = useQuery(

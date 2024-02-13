@@ -5,13 +5,11 @@ import { NFTView } from "./NFTView";
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNFTs } from "../../hooks/useNFTs";
-import {
-  AppliedFilters,
-  SideFilters,
-} from "../../screens/Marketplace/SideFilters";
 import { neutral00, neutral33 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { GridList } from "../layout/GridList";
+
+import { AppliedFilters, SideFilters } from "@/components/SideFilters";
 
 const keyExtractor = (item: NFT) => item.id;
 

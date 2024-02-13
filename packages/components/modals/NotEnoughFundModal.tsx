@@ -7,7 +7,6 @@ import { useBalances } from "../../hooks/useBalances";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCurrency, getNativeCurrency, getNetwork } from "../../networks";
-import { DepositWithdrawModal } from "../../screens/WalletManager/components/DepositWithdrawModal";
 import { prettyPrice } from "../../utils/coins";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
@@ -17,6 +16,8 @@ import { WalletStatusBox } from "../WalletStatusBox";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SeparatorGradient } from "../separators/SeparatorGradient";
 import { SpacerColumn } from "../spacer";
+
+import { DepositWithdrawModal } from "@/components/modals/DepositWithdrawModal";
 
 interface DoSomethingButton {
   text: string;

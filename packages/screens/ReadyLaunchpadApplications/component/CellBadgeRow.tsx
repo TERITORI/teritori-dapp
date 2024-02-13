@@ -1,8 +1,8 @@
 import React from "react";
 import { View, ViewStyle } from "react-native";
 
-import { InnerCellText } from "../../../components/applicationTable/InnerCellText";
-import { lightblue, neutral00 } from "../../../utils/style/colors";
+import { InnerCellText } from "@/components/applicationTable/InnerCellText";
+import { lightblue, neutral00 } from "@/utils/style/colors";
 
 export const CellBadgeRow: React.FC<{
   style: ViewStyle;

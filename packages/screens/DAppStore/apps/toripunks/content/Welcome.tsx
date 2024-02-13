@@ -11,7 +11,7 @@ export const Welcome = () => {
 
   return (
     <View
-      // @ts-expect-error
+      // @ts-expect-error: description todo
       style={{
         height: "74vh",
         justifyContent: isMinimunWindowWidth ? "flex-end" : "space-between",

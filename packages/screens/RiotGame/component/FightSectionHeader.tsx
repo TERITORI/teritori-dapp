@@ -1,14 +1,15 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
+import { SimpleButton } from "@/components/buttons/SimpleButton";
 import addCircleSVG from "../../../../assets/icons/add-circle.svg";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SimpleButton } from "../../../components/buttons/SimpleButton";
-import { useAppNavigation } from "../../../utils/navigation";
-import { yellowDefault, neutral17 } from "../../../utils/style/colors";
-import { fontMedium48, fontSemibold28 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { neutral17, yellowDefault } from "@/utils/style/colors";
+import { fontMedium48, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type FightSectionHeaderProps = {
   title: string;

@@ -6,11 +6,12 @@ import { CreatorInformation } from "./component/CreatorInformation";
 import { InvestmentInformation } from "./component/InvestmentInformation";
 import { ProjectInformation } from "./component/ProjectInformation";
 import { TeamInformation } from "./component/TeamInformation";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { useAppNavigation } from "../../utils/navigation";
-import { fontSemibold20 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { fontSemibold20 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const ApplicationRewiewScreen: React.FC = () => {
   const navigation = useAppNavigation();

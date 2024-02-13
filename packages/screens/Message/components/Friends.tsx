@@ -3,11 +3,13 @@ import { Platform, View } from "react-native";
 
 import FriendList from "./FriendsList";
 import { MessageBlankFiller } from "./MessageBlankFiller";
-import { TextInputCustomBorder } from "../../../components/inputs/TextInputCustomBorder";
-import { SpacerColumn } from "../../../components/spacer";
-import { useAppNavigation } from "../../../utils/navigation";
-import { neutral00 } from "../../../utils/style/colors";
-import { Conversation } from "../../../utils/types/message";
+
+import { TextInputCustomBorder } from "@/components/inputs/TextInputCustomBorder";
+import { SpacerColumn } from "@/components/spacer";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { neutral00 } from "@/utils/style/colors";
+import { Conversation } from "@/utils/types/message";
+
 interface FriendsProps {
   items: Conversation[];
   setActiveConversation?: (item: Conversation) => void;

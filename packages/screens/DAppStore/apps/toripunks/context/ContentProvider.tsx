@@ -10,9 +10,10 @@ import {
 import { Dimensions } from "react-native";
 
 import { textStyle } from "./TextStyleUtil";
-import { Wallet } from "../../../../../context/WalletsProvider";
 import useSelectedWallet from "../../../../../hooks/useSelectedWallet";
-import { useAppNavigation } from "../../../../../utils/navigation";
+
+import { Wallet } from "@/context/WalletsProvider";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 interface DefaultValue {
   setSelectedSectionHandler: (section: string) => void;

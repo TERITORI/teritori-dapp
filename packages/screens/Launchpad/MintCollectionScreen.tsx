@@ -5,12 +5,12 @@ import Long from "long";
 import React, { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
-  TouchableOpacity,
   StyleProp,
+  TextInput,
+  TouchableOpacity,
+  useWindowDimensions,
   View,
   ViewStyle,
-  useWindowDimensions,
-  TextInput,
 } from "react-native";
 import ConfettiCannon from "react-native-confetti-cannon";
 import CountDown from "react-native-countdown-component";
@@ -19,70 +19,68 @@ import balanceSVG from "../../../assets/icons/balance.svg";
 import minusSVG from "../../../assets/icons/minus.svg";
 import plusSVG from "../../../assets/icons/plus.svg";
 import sigmaSVG from "../../../assets/icons/sigma.svg";
-import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
-import { BrandText } from "../../components/BrandText";
-import { ExternalLink } from "../../components/ExternalLink";
 import FlexRow from "../../components/FlexRow";
-import { OptimizedImage } from "../../components/OptimizedImage";
-import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
-import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-import { ProgressionCard } from "../../components/cards/ProgressionCard";
-import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
-import { GradientText } from "../../components/gradientText";
-import { SpacerRow } from "../../components/spacer";
-import {
-  initialToastError,
-  useFeedbacks,
-} from "../../context/FeedbacksProvider";
-import { useWalletControl } from "../../context/WalletControlProvider";
-import { Wallet } from "../../context/WalletsProvider";
-import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
-import { useBalances } from "../../hooks/useBalances";
-import { useCanPay } from "../../hooks/useCanPay";
-import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { Coin } from "@/api/teritori-chain/cosmos/base/v1beta1/coin";
+import { BrandText } from "@/components/BrandText";
+import { ExternalLink } from "@/components/ExternalLink";
+import { OptimizedImage } from "@/components/OptimizedImage";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { ProgressionCard } from "@/components/cards/ProgressionCard";
+import { CollectionSocialButtons } from "@/components/collections/CollectionSocialButtons";
+import { GradientText } from "@/components/gradientText";
+import { DepositWithdrawModal } from "@/components/modals/DepositWithdrawModal";
+import { SpacerRow } from "@/components/spacer";
+import { initialToastError, useFeedbacks } from "@/context/FeedbacksProvider";
+import { useWalletControl } from "@/context/WalletControlProvider";
+import { Wallet } from "@/context/WalletsProvider";
+import { TeritoriMinter__factory } from "@/evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { useBalances } from "@/hooks/useBalances";
+import { useCanPay } from "@/hooks/useCanPay";
+import { useCollectionInfo } from "@/hooks/useCollectionInfo";
 import {
-  NetworkKind,
   CosmosNetworkInfo,
   EthereumNetworkInfo,
   getCosmosNetwork,
   getCurrency,
+  getEthereumNetwork,
   getKeplrSigningCosmWasmClient,
   getNativeCurrency,
-  parseNetworkObjectId,
-  getEthereumNetwork,
   NetworkFeature,
-} from "../../networks";
-import { prettyPrice } from "../../utils/coins";
-import { MintPhase } from "../../utils/collection";
-import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
-import { ScreenFC } from "../../utils/navigation";
+  NetworkKind,
+  parseNetworkObjectId,
+} from "@/networks";
+import { prettyPrice } from "@/utils/coins";
+import { MintPhase } from "@/utils/collection";
+import { getMetaMaskEthereumSigner } from "@/utils/ethereum";
+import { ScreenFC } from "@/utils/navigation";
 import {
   neutral17,
+  neutral22,
   neutral30,
   neutral33,
   neutral67,
   neutral77,
-  neutral22,
   neutralA3,
   pinkDefault,
   primaryColor,
-  yellowDefault,
   secondaryColor,
-} from "../../utils/style/colors";
+  yellowDefault,
+} from "@/utils/style/colors";
 import {
   fontMedium14,
   fontSemibold12,
   fontSemibold14,
   fontSemibold16,
   fontSemibold20,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { DepositWithdrawModal } from "../WalletManager/components/DepositWithdrawModal";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const maxImageSize = 532;
 const cardsHalfGap = 6;

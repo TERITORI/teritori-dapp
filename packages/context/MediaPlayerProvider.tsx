@@ -21,8 +21,9 @@ import { useFeedbacks } from "./FeedbacksProvider";
 import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
 import { getNetworkObjectId } from "../networks";
 import { web3ToWeb2URI } from "../utils/ipfs";
-import { useAppNavigation } from "../utils/navigation";
 import { Media } from "../utils/types/mediaPlayer";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 interface DefaultValue {
   handlePlayPause: () => Promise<void>;

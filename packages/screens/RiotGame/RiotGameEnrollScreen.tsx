@@ -11,50 +11,51 @@ import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperGridSelectorModal";
 import controllerSVG from "../../../assets/game/controller-yellow.svg";
 import closeSVG from "../../../assets/icons/close.svg";
-import { NFT } from "../../api/marketplace/v1/marketplace";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
-import { SimpleButton } from "../../components/buttons/SimpleButton";
-import { TertiaryButton } from "../../components/buttons/TertiaryButton";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useRippers } from "../../hooks/riotGame/useRippers";
-import { useSquadStakingConfig } from "../../hooks/riotGame/useSquadStakingConfig";
-import { useSquadStakingSquads } from "../../hooks/riotGame/useSquadStakingSquads";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { NFT } from "@/api/marketplace/v1/marketplace";
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { SimpleButton } from "@/components/buttons/SimpleButton";
+import { TertiaryButton } from "@/components/buttons/TertiaryButton";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useRippers } from "@/hooks/riotGame/useRippers";
+import { useSquadStakingConfig } from "@/hooks/riotGame/useSquadStakingConfig";
+import { useSquadStakingSquads } from "@/hooks/riotGame/useSquadStakingSquads";
 import {
   getSquadStakingSquadsV1QueryKey,
   useSquadStakingSquadsV1,
-} from "../../hooks/riotGame/useSquadStakingSquadsV1";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
+} from "@/hooks/riotGame/useSquadStakingSquadsV1";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   persistSquadPreset,
   selectSquadPresets,
-} from "../../store/slices/squadPresets";
-import { useAppDispatch } from "../../store/store";
-import { getP2eClient } from "../../utils/backend";
+} from "@/store/slices/squadPresets";
+import { useAppDispatch } from "@/store/store";
+import { getP2eClient } from "@/utils/backend";
 import {
   estimateStakingDuration,
   getSquadPresetId,
   squadStake,
   squadWithdrawSeason1,
-} from "../../utils/game";
-import { useAppNavigation } from "../../utils/navigation";
+} from "@/utils/game";
 import {
   neutral00,
   neutral33,
   secondaryColor,
   yellowDefault,
-} from "../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontMedium24,
   fontMedium32,
   fontMedium48,
   fontSemibold20,
   fontSemibold28,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 const EMBEDDED_VIDEO_URI =

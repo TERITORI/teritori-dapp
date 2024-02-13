@@ -4,57 +4,49 @@ import { ScrollView, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import priceSVG from "../../../assets/icons/price.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { WalletStatusBox } from "../../components/WalletStatusBox";
-import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
-import { FileUploader } from "../../components/fileUploader";
-import {
-  Label,
-  TextInputCustom,
-} from "../../components/inputs/TextInputCustom";
-import {
-  FeedPostingProgressBar,
-  feedPostingStep,
-  FeedPostingStepId,
-} from "../../components/loaders/FeedPostingProgressBar";
-import {
-  NewArticleFormValues,
-  PostCategory,
-} from "../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { generateArticleMetadata } from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
-import { RichText } from "../../components/socialFeed/RichText";
-import { PublishValues } from "../../components/socialFeed/RichText/RichText.type";
-import { SpacerColumn } from "../../components/spacer";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useWalletControl } from "../../context/WalletControlProvider";
-import { useFeedPosting } from "../../hooks/feed/useFeedPosting";
-import { useIpfs } from "../../hooks/useIpfs";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkFeature } from "../../networks";
-import { selectNFTStorageAPI } from "../../store/slices/settings";
-import { generateIpfsKey } from "../../utils/ipfs";
-import { IMAGE_MIME_TYPES } from "../../utils/mime";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { WalletStatusBox } from "@/components/WalletStatusBox";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { FileUploader } from "@/components/fileUploader";
+import { Label, TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgressBar";
+import { RichText } from "@/components/socialFeed/RichText";
+import { PublishValues } from "@/components/socialFeed/RichText/RichText.type";
+import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useWalletControl } from "@/context/WalletControlProvider";
+import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
+import { useIpfs } from "@/hooks/useIpfs";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { NetworkFeature } from "@/networks";
+import { selectNFTStorageAPI } from "@/store/slices/settings";
+import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
+import { generateArticleMetadata } from "@/utils/feed/queries";
+import { generateIpfsKey } from "@/utils/ipfs";
+import { IMAGE_MIME_TYPES } from "@/utils/mime";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import {
   ARTICLE_COVER_IMAGE_MAX_HEIGHT,
   ARTICLE_COVER_IMAGE_RATIO,
   ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT,
   ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH,
-} from "../../utils/social-feed";
+} from "@/utils/social-feed";
 import {
   neutral00,
   neutral11,
   neutral77,
   secondaryColor,
-} from "../../utils/style/colors";
-import { fontSemibold13, fontSemibold20 } from "../../utils/style/fonts";
-import { layout, screenContentMaxWidth } from "../../utils/style/layout";
-import { pluralOrNot } from "../../utils/text";
-import { RemoteFileData } from "../../utils/types/files";
+} from "@/utils/style/colors";
+import { fontSemibold13, fontSemibold20 } from "@/utils/style/fonts";
+import { layout, screenContentMaxWidth } from "@/utils/style/layout";
+import { pluralOrNot } from "@/utils/text";
+import { NewArticleFormValues, PostCategory } from "@/utils/types/feed";
+import { RemoteFileData } from "@/utils/types/files";
 
 //TODO: In mobile : Make ActionsContainer accessible (floating button ?)
 

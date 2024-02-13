@@ -2,14 +2,15 @@ import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 
 import { useDAOGroup } from "./useDAOGroup";
-import { Cw4GroupQueryClient } from "../../contracts-clients/cw4-group/Cw4Group.client";
-import { MemberResponse } from "../../contracts-clients/cw4-group/Cw4Group.types";
+
+import { Cw4GroupQueryClient } from "@/contracts-clients/cw4-group/Cw4Group.client";
+import { MemberResponse } from "@/contracts-clients/cw4-group/Cw4Group.types";
 import {
   NetworkKind,
   mustGetNonSigningCosmWasmClient,
   parseUserId,
-} from "../../networks";
-import { extractGnoNumber } from "../../utils/gno";
+} from "@/networks";
+import { extractGnoNumber } from "@/utils/gno";
 
 const useDAOMember = (
   daoId: string | undefined,

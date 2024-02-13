@@ -1,17 +1,17 @@
 import React, { useMemo } from "react";
 import { View } from "react-native";
 
-import { PostsRequest } from "../../api/feed/v1/feed";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { MobileTitle } from "../../components/ScreenContainer/ScreenContainerMobile";
-import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { neutral22, primaryColor } from "../../utils/style/colors";
-import { fontSemibold20 } from "../../utils/style/fonts";
-import { layout, screenContentMaxWidth } from "../../utils/style/layout";
+import { PostsRequest } from "@/api/feed/v1/feed";
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
+import { NewsFeed } from "@/components/socialFeed/NewsFeed/NewsFeed";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { neutral22, primaryColor } from "@/utils/style/colors";
+import { fontSemibold20 } from "@/utils/style/fonts";
+import { layout, screenContentMaxWidth } from "@/utils/style/layout";
 
 const Header = ({ hashtag }: { hashtag: string }) => {
   const isMobile = useIsMobile();

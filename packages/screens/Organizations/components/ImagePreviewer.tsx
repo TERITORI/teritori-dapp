@@ -2,12 +2,13 @@ import React from "react";
 import { Image, StyleSheet, View } from "react-native";
 
 import dorgSVG from "../../../../assets/icons/dorg-icon.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { web3ToWeb2URI } from "../../../utils/ipfs";
-import { neutral22, neutral33, neutralA3 } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { web3ToWeb2URI } from "@/utils/ipfs";
+import { neutral22, neutral33, neutralA3 } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface ImagePreviewerProps {
   uri?: string;

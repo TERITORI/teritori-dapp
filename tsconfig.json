@@ -9,6 +9,7 @@
     "module": "esnext", // 👈️ set to esnext
     "paths": {
       "@/*": ["./packages/*"],
+      "@/assets/*": ["./assets/*"],
     },
   }
 }

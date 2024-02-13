@@ -1,13 +1,13 @@
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
-import { BrandText } from "../../../components/BrandText";
+import { BrandText } from "@/components/BrandText";
 import {
   neutral33,
   primaryColor,
   primaryTextColor,
   secondaryColor,
-} from "../../../utils/style/colors";
+} from "@/utils/style/colors";
 
 interface NavDefinition {
   name: string;

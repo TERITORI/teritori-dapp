@@ -3,31 +3,32 @@ import { Buffer } from "buffer";
 import React from "react";
 import { View } from "react-native";
 
-import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
-import { MsgBurnTokens } from "../../api/teritori-chain/teritori/mint/v1beta1/tx";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SpacerColumn } from "../../components/spacer";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { TeritoriNftVaultClient } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
-import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
-import { useFeedConfig } from "../../hooks/feed/useFeedConfig";
-import { useBalances } from "../../hooks/useBalances";
-import { useBreedingConfig } from "../../hooks/useBreedingConfig";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useVaultConfig } from "../../hooks/vault/useVaultConfig";
+
+import { Coin } from "@/api/teritori-chain/cosmos/base/v1beta1/coin";
+import { MsgBurnTokens } from "@/api/teritori-chain/teritori/mint/v1beta1/tx";
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { TeritoriNameServiceQueryClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { TeritoriNftVaultClient } from "@/contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { useDAOMakeProposal } from "@/hooks/dao/useDAOMakeProposal";
+import { useFeedConfig } from "@/hooks/feed/useFeedConfig";
+import { useBalances } from "@/hooks/useBalances";
+import { useBreedingConfig } from "@/hooks/useBreedingConfig";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { useVaultConfig } from "@/hooks/vault/useVaultConfig";
 import {
   getCosmosNetwork,
   getKeplrSigningCosmWasmClient,
   getKeplrSigningStargateClient,
   getUserId,
   mustGetNonSigningCosmWasmClient,
-} from "../../networks";
-import { prettyPrice } from "../../utils/coins";
-import { ScreenFC } from "../../utils/navigation";
+} from "@/networks";
+import { prettyPrice } from "@/utils/coins";
+import { ScreenFC } from "@/utils/navigation";
 
 // This is a dev tool for now
 

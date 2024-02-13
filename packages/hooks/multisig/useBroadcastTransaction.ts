@@ -10,14 +10,15 @@ import {
   multisigTransactionsQueryKey,
 } from "./useMultisigTransactions";
 import { multisigTransactionsCountsQueryKey } from "./useMultisigTransactionsCounts";
-import { Signature } from "../../api/multisig/v1/multisig";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
+import useSelectedWallet from "../useSelectedWallet";
+
+import { Signature } from "@/api/multisig/v1/multisig";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
   getCosmosNetworkByChainId,
   getNonSigningStargateClient,
   getUserId,
-} from "../../networks";
-import useSelectedWallet from "../useSelectedWallet";
+} from "@/networks";
 
 export const useBroadcastTransaction = () => {
   const { setToastError, setToastSuccess } = useFeedbacks();

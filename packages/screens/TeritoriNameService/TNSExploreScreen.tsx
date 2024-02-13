@@ -2,20 +2,21 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import { TNSModalCommonProps } from "./TNSHomeScreen";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import GradientModalBase from "../../components/modals/GradientModalBase";
-import { TNSSendFundsModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
-import { FindAName } from "../../components/teritoriNameService/FindAName";
-import { useTNS } from "../../context/TNSProvider";
-import { useNSMintAvailability } from "../../hooks/useNSMintAvailability";
-import { useNSNameOwner } from "../../hooks/useNSNameOwner";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getCosmosNetwork, getUserId } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
-import { neutral17 } from "../../utils/style/colors";
+
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
+import { TNSSendFundsModal } from "@/components/modals/teritoriNameService/TNSSendFundsModal";
+import { FindAName } from "@/components/teritoriNameService/FindAName";
+import { useTNS } from "@/context/TNSProvider";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useNSMintAvailability } from "@/hooks/useNSMintAvailability";
+import { useNSNameOwner } from "@/hooks/useNSNameOwner";
+import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getCosmosNetwork, getUserId } from "@/networks";
+import { neutral17 } from "@/utils/style/colors";
 
 interface TNSExploreScreenProps extends TNSModalCommonProps {}
 

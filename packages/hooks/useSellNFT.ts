@@ -3,20 +3,21 @@ import { Buffer } from "buffer";
 import { ethers } from "ethers";
 import { useCallback } from "react";
 
-import { Wallet } from "./../context/WalletsProvider/wallet";
-import { getMetaMaskEthereumSigner } from "./../utils/ethereum";
 import useSelectedWallet from "./useSelectedWallet";
-import { initialToastError, useFeedbacks } from "../context/FeedbacksProvider";
-import { TeritoriNftClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
-import { TeritoriNft__factory } from "../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
+
+import { initialToastError, useFeedbacks } from "@/context/FeedbacksProvider";
+import { Wallet } from "@/context/WalletsProvider";
+import { TeritoriNftClient } from "@/contracts-clients/teritori-nft/TeritoriNft.client";
+import { TeritoriNft__factory } from "@/evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { NFTVault__factory } from "@/evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import {
   getKeplrSigningCosmWasmClient,
   getNativeCurrency,
   mustGetCosmosNetwork,
   mustGetEthereumNetwork,
   NetworkKind,
-} from "../networks";
+} from "@/networks";
+import { getMetaMaskEthereumSigner } from "@/utils/ethereum";
 
 const teritoriSellNFT = async (
   wallet: Wallet,

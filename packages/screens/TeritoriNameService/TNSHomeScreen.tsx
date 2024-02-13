@@ -12,24 +12,25 @@ import TNSBannerPNG from "../../../assets/banners/tns.png";
 import exploreSVG from "../../../assets/icons/explore-neutral77.svg";
 import penSVG from "../../../assets/icons/pen-neutral77.svg";
 import registerSVG from "../../../assets/icons/register-neutral77.svg";
-import { BrandText } from "../../components/BrandText";
-import { IntroLogoText } from "../../components/IntroLogoText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { ActivityTable } from "../../components/activity/ActivityTable";
-import { TNSNameFinderModal } from "../../components/modals/teritoriNameService/TNSNameFinderModal";
-import { FlowCard } from "../../components/teritoriNameService/FlowCard";
-import { useTNS } from "../../context/TNSProvider";
-import { useWalletControl } from "../../context/WalletControlProvider";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { BrandText } from "@/components/BrandText";
+import { IntroLogoText } from "@/components/IntroLogoText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { ActivityTable } from "@/components/activity/ActivityTable";
+import { TNSNameFinderModal } from "@/components/modals/teritoriNameService/TNSNameFinderModal";
+import { FlowCard } from "@/components/teritoriNameService/FlowCard";
+import { useTNS } from "@/context/TNSProvider";
+import { useWalletControl } from "@/context/WalletControlProvider";
+import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   NetworkKind,
   getCollectionId,
   getCosmosNetwork,
   NetworkFeature,
-} from "../../networks";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+} from "@/networks";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 
 type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
 type TNSModals =
@@ -108,18 +109,16 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
       return;
     }
     try {
-      //@ts-ignore
       const routeName = Object.keys(TNSPathMap).find(
-        //@ts-ignore
+        // @ts-expect-error: description todo
         (key) => TNSPathMap[key] === modal,
       );
-      //@ts-ignore
 
       if (["register", "explore"].includes(modal) && !name) {
         setModalNameFinderVisible(true);
         setPressedTNSItems(modal === "register" ? "TNSRegister" : "TNSExplore");
       } else {
-        //@ts-ignore
+        // @ts-expect-error: description todo
         setActiveModal(routeName);
         setModalNameFinderVisible(false);
       }

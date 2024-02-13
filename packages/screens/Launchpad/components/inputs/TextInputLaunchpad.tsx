@@ -2,8 +2,8 @@ import React from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
 import { TextInputProps } from "react-native";
 
-import { TextInputCustom } from "../../../../components/inputs/TextInputCustom";
-import { layout } from "../../../../utils/style/layout";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { layout } from "@/utils/style/layout";
 
 interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {

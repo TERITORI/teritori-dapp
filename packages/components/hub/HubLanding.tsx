@@ -14,7 +14,6 @@ import {
 import { useBanners } from "../../hooks/useBanners";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { useAppNavigation } from "../../utils/navigation";
 import { Link } from "../Link";
 import { OptimizedImage } from "../OptimizedImage";
 import { Section } from "../Section";
@@ -23,6 +22,8 @@ import { LabelCard } from "../cards/LabelCard";
 import { MyWalletsCard } from "../cards/MyWalletsCard";
 import { CollectionsCarouselSection } from "../carousels/CollectionsCarouselSection";
 import { NewsCarouselSection } from "../carousels/NewsCarouselSection";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const gridHalfGutter = 12;
 

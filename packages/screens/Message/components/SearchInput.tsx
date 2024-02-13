@@ -3,11 +3,12 @@ import { TextInput, TouchableOpacity, View } from "react-native";
 
 import closeSVG from "../../../../assets/icons/close.svg";
 import searchSVG from "../../../../assets/icons/search.svg";
-import { SVG } from "../../../components/SVG";
-import { SpacerRow } from "../../../components/spacer";
-import { secondaryColor, neutral33 } from "../../../utils/style/colors";
-import { fontMedium14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+
+import { SVG } from "@/components/SVG";
+import { SpacerRow } from "@/components/spacer";
+import { neutral33, secondaryColor } from "@/utils/style/colors";
+import { fontMedium14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface SearchInputProps {
   onClose: () => void;

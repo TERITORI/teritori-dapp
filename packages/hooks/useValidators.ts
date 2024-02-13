@@ -4,8 +4,8 @@ import axios from "axios";
 import { partition } from "lodash";
 import { z } from "zod";
 
-import { getCosmosNetwork, getStakingCurrency } from "../networks";
-import { ValidatorInfo } from "../screens/Stake/types";
+import { getCosmosNetwork, getStakingCurrency } from "@/networks";
+import { ValidatorInfo } from "@/utils/types/staking";
 
 interface StakingParams {
   unbonding_time: string;

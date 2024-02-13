@@ -2,15 +2,16 @@ import React from "react";
 import { Switch, TouchableOpacity, View } from "react-native";
 
 import { useCommonStyles } from "./commonStyles";
-import { BrandText } from "../../../components/BrandText";
+import { SettingItemType } from "../types";
+
+import { BrandText } from "@/components/BrandText";
 import {
   neutral55,
   neutralA3,
   primaryColor,
   secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { SettingItemType } from "../types";
+} from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
 
 export const SettingItem: React.FC<{
   item: SettingItemType;
@@ -31,7 +32,7 @@ export const SettingItem: React.FC<{
           ) : null}
         </View>
         <Switch
-          // @ts-expect-error
+          // @ts-expect-error: description todo
           activeThumbColor={primaryColor}
           thumbColor={item.state ? primaryColor : neutral55}
           trackColor={{ true: secondaryColor, false: neutralA3 }}

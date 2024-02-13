@@ -54,12 +54,12 @@ export function numFormatter(
     .slice()
     .reverse()
     .find(function (item) {
-      // @ts-expect-error
+      // @ts-expect-error: description todo
       return num >= item.value;
     });
 
   return item
-    ? // @ts-expect-error
+    ? // @ts-expect-error: description todo
       (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol
     : "0";
 }

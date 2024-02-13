@@ -24,6 +24,7 @@ import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { networksFromCosmosRegistry } from "./cosmos-registry";
 import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
+import { NetworkFeature, NetworkFeatureObject } from "./features";
 import { gnoDevNetwork } from "./gno-dev";
 import { gnoTeritoriNetwork } from "./gno-teritori";
 import { gnoTest3Network } from "./gno-test3";
@@ -490,6 +491,23 @@ export const getKeplrSigningStargateClient = async (
       aminoTypes: cosmosAminoTypes,
     },
   );
+};
+
+export const getNetworkFeature = <
+  F extends NetworkFeature,
+  FO extends NetworkFeatureObject,
+  R = FO extends { type: F } ? FO : never,
+>(
+  networkId: string,
+  feature: F,
+) => {
+  const network = getNetwork(networkId);
+  if (!network?.featureObjects) {
+    return undefined;
+  }
+  return network.featureObjects.find((f) => f.type === feature) as
+    | R
+    | undefined;
 };
 
 export const getKeplrOnlyAminoStargateClient = async (

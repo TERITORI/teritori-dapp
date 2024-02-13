@@ -1,6 +1,5 @@
-import * as Clipboard from "expo-clipboard";
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
 
 import { ConversationAvatar } from "./ConversationAvatar";
@@ -8,24 +7,26 @@ import { GroupDetails } from "./GroupDetails";
 import { SearchInput } from "./SearchInput";
 import dots from "../../../../assets/icons/dots.svg";
 import searchSVG from "../../../../assets/icons/search.svg";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SVG } from "../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
-import { BackButton } from "../../../components/navigation/components/BackButton";
-import { SpacerRow } from "../../../components/spacer";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useDropdowns } from "../../../hooks/useDropdowns";
-import { updateConversationById } from "../../../store/slices/message";
-import { neutral17, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold12 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { Conversation } from "../../../utils/types/message";
-import { weshClient } from "../../../weshnet/client";
-import { subscribeMessages } from "../../../weshnet/message/subscriber";
-import { getConversationName } from "../../../weshnet/messageHelpers";
-import { createMultiMemberShareableLink } from "../../../weshnet/services";
-import { bytesFromString } from "../../../weshnet/utils";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { BackButton } from "@/components/navigation/components/BackButton";
+import { SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useDropdowns } from "@/hooks/useDropdowns";
+import Clipboard from "@/modules/Clipboard";
+import { updateConversationById } from "@/store/slices/message";
+import { neutral17, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold12, fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { Conversation } from "@/utils/types/message";
+import { weshClient } from "@/weshnet";
+import { subscribeMessages } from "@/weshnet/message/subscriber";
+import { getConversationName } from "@/weshnet/messageHelpers";
+import { createMultiMemberShareableLink } from "@/weshnet/services";
+import { bytesFromString } from "@/weshnet/utils";
 
 interface ChatHeaderProps {
   searchInput: string;

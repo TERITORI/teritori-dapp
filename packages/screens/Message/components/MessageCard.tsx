@@ -1,18 +1,20 @@
 import React, { FC } from "react";
 import { SvgProps } from "react-native-svg";
 
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SVG } from "../../../components/SVG";
-import { SpacerRow } from "../../../components/spacer";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SpacerRow } from "@/components/spacer";
 import {
   neutral00,
   neutral33,
   neutral55,
   secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold12, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "@/utils/style/colors";
+import { fontSemibold12, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+
 interface CardProps {
   icon: React.FC<SvgProps>;
   text: string;

@@ -3,19 +3,21 @@ import { View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 import { useSelector } from "react-redux";
 
-import { BrandText } from "../../../components/BrandText";
-import { ErrorText } from "../../../components/ErrorText";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { selectContactInfo } from "../../../store/slices/message";
-import { neutral00, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { weshServices } from "../../../weshnet";
+
+import { BrandText } from "@/components/BrandText";
+import { ErrorText } from "@/components/ErrorText";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { selectContactInfo } from "@/store/slices/message";
+import { neutral00, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+
 interface CreateConversationProps {
   onClose: () => void;
 }

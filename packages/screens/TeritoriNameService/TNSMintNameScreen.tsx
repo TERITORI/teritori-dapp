@@ -10,42 +10,43 @@ import { TNSModalCommonProps } from "./TNSHomeScreen";
 import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
 import longCardSVG from "../../../assets/cards/long-card.svg";
 import coinSVG from "../../../assets/icons/coin.svg";
-import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
 import ModalBase from "../../components/modals/ModalBase";
-import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
-import { NameNFT } from "../../components/teritoriNameService/NameNFT";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useTNS } from "../../context/TNSProvider";
-import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import {
   ExecuteMsg as TNSExecuteMsg,
   Metadata,
 } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
-import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useBalances } from "../../hooks/useBalances";
-import { useCanPay } from "../../hooks/useCanPay";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { useIsLeapConnected } from "../../hooks/useIsLeapConnected";
-import { useNSMintPrice } from "../../hooks/useNSMintPrice";
-import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
-import { useRunOrProposeTransaction } from "../../hooks/useRunOrProposeTransaction";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { Coin } from "@/api/teritori-chain/cosmos/base/v1beta1/coin";
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { NameDataForm } from "@/components/teritoriNameService/NameDataForm";
+import { NameNFT } from "@/components/teritoriNameService/NameNFT";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useTNS } from "@/context/TNSProvider";
+import { TeritoriNameServiceQueryClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useAreThereWallets } from "@/hooks/useAreThereWallets";
+import { useBalances } from "@/hooks/useBalances";
+import { useCanPay } from "@/hooks/useCanPay";
+import { useIsKeplrConnected } from "@/hooks/useIsKeplrConnected";
+import { useIsLeapConnected } from "@/hooks/useIsLeapConnected";
+import { useNSMintPrice } from "@/hooks/useNSMintPrice";
+import { nsNameInfoQueryKey } from "@/hooks/useNSNameInfo";
+import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
+import { useRunOrProposeTransaction } from "@/hooks/useRunOrProposeTransaction";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
-  mustGetNonSigningCosmWasmClient,
-  mustGetCosmosNetwork,
   getCosmosNetwork,
+  mustGetCosmosNetwork,
+  mustGetNonSigningCosmWasmClient,
   parseUserId,
   UserKind,
-} from "../../networks";
-import { prettyPrice } from "../../utils/coins";
-import { useAppNavigation } from "../../utils/navigation";
-import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { defaultMetaData } from "../../utils/types/tns";
+} from "@/networks";
+import { prettyPrice } from "@/utils/coins";
+import { neutral00, neutral17, neutral33 } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { defaultMetaData } from "@/utils/types/tns";
 
 const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
   price,

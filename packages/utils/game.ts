@@ -34,12 +34,13 @@ import {
   parseUserId,
   mustGetEthereumNetwork,
 } from "../networks";
+
 import {
   GameBgCardItem,
   RipperRarity,
   RipperTraitType,
   SquadConfig,
-} from "../screens/RiotGame/types";
+} from "@/utils/types/riot-p2e";
 
 const round = (input: number) => {
   return Math.floor(100 * input) / 100;

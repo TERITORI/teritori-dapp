@@ -8,20 +8,21 @@ import chevronDownSVG from "../../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../../assets/icons/chevron-up.svg";
 import teritoriLogo from "../../../../../assets/icons/networks/teritori-circle.svg";
 import squidRouter from "../../../../../assets/icons/squidrouter.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../../components/boxes/LegacyTertiaryBox";
-import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
-import { GradientText } from "../../../../components/gradientText";
-import { SeparatorGradient } from "../../../../components/separators/SeparatorGradient";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { GradientText } from "@/components/gradientText";
+import { SeparatorGradient } from "@/components/separators/SeparatorGradient";
 import {
   selectIsHowToBuyExpanded,
   setHowToBuyExpanded,
-} from "../../../../store/slices/settings";
-import { useAppDispatch } from "../../../../store/store";
-import { primaryColor, secondaryColor } from "../../../../utils/style/colors";
-import { fontSemibold16, fontSemibold24 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
+} from "@/store/slices/settings";
+import { useAppDispatch } from "@/store/store";
+import { primaryColor, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold16, fontSemibold24 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface Method {
   name: string;

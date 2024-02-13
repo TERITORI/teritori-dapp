@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { TextInput, View, Animated, LayoutChangeEvent } from "react-native";
+import { Animated, LayoutChangeEvent, TextInput, View } from "react-native";
 
 import { CurrencyAmount } from "./CurrencyAmount";
 import { SelectedCurrency } from "./SelectedCurrency";
@@ -10,41 +10,42 @@ import { SwapSettings } from "./SwapSettings";
 import { SwapTokensList } from "./SwapTokensList";
 import chevronCircleDown from "../../../../../assets/icons/chevron-circle-down.svg";
 import chevronCircleUp from "../../../../../assets/icons/chevron-circle-up.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../../components/boxes/LegacyTertiaryBox";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../../../components/buttons/SecondaryButton";
-import { SeparatorGradient } from "../../../../components/separators/SeparatorGradient";
-import { SpacerColumn } from "../../../../components/spacer";
-import { useFeedbacks } from "../../../../context/FeedbacksProvider";
-import { useBalances } from "../../../../hooks/useBalances";
-import { useCoingeckoPrices } from "../../../../hooks/useCoingeckoPrices";
-import { useDropdowns } from "../../../../hooks/useDropdowns";
+import useSelectedWallet from "../../../../hooks/useSelectedWallet";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { SeparatorGradient } from "@/components/separators/SeparatorGradient";
+import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useBalances } from "@/hooks/useBalances";
+import { useCoingeckoPrices } from "@/hooks/useCoingeckoPrices";
+import { useDropdowns } from "@/hooks/useDropdowns";
 import {
   useSelectedNetworkId,
   useSelectedNetworkInfo,
-} from "../../../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../../../hooks/useSelectedWallet";
-import { useSwap } from "../../../../hooks/useSwap";
+} from "@/hooks/useSelectedNetwork";
+import { useSwap } from "@/hooks/useSwap";
 import {
   allNetworks,
   CosmosNetworkInfo,
   CurrencyInfo,
   getNativeCurrency,
   NativeCurrencyInfo,
-} from "../../../../networks";
-import { Balance } from "../../../../utils/coins";
+} from "@/networks";
+import { Balance } from "@/utils/coins";
 import {
   neutral77,
   neutralA3,
   primaryColor,
   secondaryColor,
-} from "../../../../utils/style/colors";
-import { fontSemibold14, fontSemibold20 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import { isFloatText } from "../../../../utils/text";
+} from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { isFloatText } from "@/utils/text";
 
 const INVERT_ANIMATION_DURATION = 200;
 const MAX_WIDTH = 600;

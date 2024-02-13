@@ -2,15 +2,16 @@ import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 
 import { useBreedingConfig } from "./useBreedingConfig";
-import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { ConfigResponse as BreedingConfigResponse } from "../contracts-clients/teritori-breeding/TeritoriBreeding.types";
-import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
-import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
-import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
-import { TeritoriMinter__factory } from "../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
-import { TeritoriNft__factory } from "../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
+
+import { TeritoriBreedingQueryClient } from "@/contracts-clients/teritori-breeding/TeritoriBreeding.client";
+import { TeritoriBunkerMinterQueryClient } from "@/contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
+import { TeritoriNameServiceQueryClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { TeritoriNftQueryClient } from "@/contracts-clients/teritori-nft/TeritoriNft.client";
+import { TeritoriNftVaultQueryClient } from "@/contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { TeritoriMinter__factory } from "@/evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { TeritoriNft__factory } from "@/evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { NFTVault__factory } from "@/evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import {
   CosmosNetworkInfo,
   EthereumNetworkInfo,
@@ -19,11 +20,11 @@ import {
   parseNftId,
   NetworkKind,
   getUserId,
-} from "../networks";
-import { getEthereumProvider } from "../utils/ethereum";
-import { web3ToWeb2URI } from "../utils/ipfs";
-import { nameServiceDefaultImage } from "../utils/tns";
-import { NFTAttribute, NFTInfo } from "../utils/types/nft";
+} from "@/networks";
+import { getEthereumProvider } from "@/utils/ethereum";
+import { web3ToWeb2URI } from "@/utils/ipfs";
+import { nameServiceDefaultImage } from "@/utils/tns";
+import { NFTAttribute, NFTInfo } from "@/utils/types/nft";
 
 export const useNFTInfo = (nftId: string, userId?: string | undefined) => {
   const [network, minterContractAddress, tokenId] = parseNftId(nftId);

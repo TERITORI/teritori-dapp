@@ -1,21 +1,22 @@
-import { MsgVoteEncodeObject, isDeliverTxFailure } from "@cosmjs/stargate";
+import { isDeliverTxFailure, MsgVoteEncodeObject } from "@cosmjs/stargate";
 import moment from "moment";
-import React, { useState, useCallback } from "react";
-import { ScrollView, ViewStyle, StyleProp, View } from "react-native";
+import React, { useCallback, useState } from "react";
+import { ScrollView, StyleProp, View, ViewStyle } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { VictoryPie } from "victory";
 
-import { ProposalStatus } from "./types";
-import { BrandText } from "../../components/BrandText";
-import { ConfirmationVote } from "../../components/GovernanceBox/ConfirmationVote";
-import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getKeplrSigningStargateClient } from "../../networks";
-import { neutral44, tulipTree } from "../../utils/style/colors";
+
+import { BrandText } from "@/components/BrandText";
+import { ConfirmationVote } from "@/components/GovernanceBox/ConfirmationVote";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { getKeplrSigningStargateClient } from "@/networks";
+import { neutral44, tulipTree } from "@/utils/style/colors";
+import { ProposalStatus } from "@/utils/types/gov";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
   <View

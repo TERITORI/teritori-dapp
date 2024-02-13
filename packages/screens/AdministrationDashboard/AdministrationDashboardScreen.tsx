@@ -5,18 +5,19 @@ import { ApplicationStatusCard } from "./component/ApplicationStatusCard";
 import { ApplicationTable } from "./component/ApplicationTable";
 import { CurrentlyHighlightedProject } from "./component/CurrentlyHighLightedProject";
 import { GenesisExplore } from "./component/GenesisExplore";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { SecondaryBox } from "../../components/boxes/SecondaryBox";
-import { Tabs } from "../../components/tabs/Tabs";
-import { useAppNavigation } from "../../utils/navigation";
-import { primaryColor } from "../../utils/style/colors";
+
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { SecondaryBox } from "@/components/boxes/SecondaryBox";
+import { Tabs } from "@/components/tabs/Tabs";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { primaryColor } from "@/utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold20,
   fontSemibold28,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const MD_BREAKPOINT = 820;
 type TabsListType = "pendingApllications" | "pendingConfirmations";

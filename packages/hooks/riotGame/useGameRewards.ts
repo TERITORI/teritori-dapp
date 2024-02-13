@@ -2,12 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import { BigNumber } from "ethers";
 import { useCallback, useState } from "react";
 
-import { useFeedbacks } from "../../context/FeedbacksProvider";
+import useSelectedWallet from "../useSelectedWallet";
+
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
   TeritoriDistributorClient,
   TeritoriDistributorQueryClient,
-} from "../../contracts-clients/teritori-distributor/TeritoriDistributor.client";
-import { Distributor__factory } from "../../evm-contracts-clients/distributor/Distributor__factory";
+} from "@/contracts-clients/teritori-distributor/TeritoriDistributor.client";
+import { Distributor__factory } from "@/evm-contracts-clients/distributor/Distributor__factory";
 import {
   CosmosNetworkInfo,
   EthereumNetworkInfo,
@@ -15,10 +17,9 @@ import {
   mustGetNonSigningCosmWasmClient,
   NetworkKind,
   parseUserId,
-} from "../../networks";
-import { mustGetP2eClient } from "../../utils/backend";
-import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
-import useSelectedWallet from "../useSelectedWallet";
+} from "@/networks";
+import { mustGetP2eClient } from "@/utils/backend";
+import { getMetaMaskEthereumSigner } from "@/utils/ethereum";
 
 const cosmosGetClaimableAmount = async (
   network: CosmosNetworkInfo,

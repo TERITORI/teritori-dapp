@@ -6,18 +6,19 @@ import { RipperAvatar } from "./component/RipperAvatar";
 import breedSVG from "../../../assets/game/breed.svg";
 import defaultInventoryItemPNG from "../../../assets/game/default-inventory-item.png";
 import addCircleFilledSVG from "../../../assets/icons/add-circle-filled.svg";
-import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
-import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
-import { CustomPressable } from "../../components/buttons/CustomPressable";
-import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import { useRippers } from "../../hooks/riotGame/useRippers";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { isNFTStaked } from "../../utils/game";
-import { useAppNavigation } from "../../utils/navigation";
-import { yellowDefault } from "../../utils/style/colors";
-import { fontMedium32 } from "../../utils/style/fonts";
-import { layout, MOBILE_MAX_WIDTH } from "../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useRippers } from "@/hooks/riotGame/useRippers";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { isNFTStaked } from "@/utils/game";
+import { yellowDefault } from "@/utils/style/colors";
+import { fontMedium32 } from "@/utils/style/fonts";
+import { layout, MOBILE_MAX_WIDTH } from "@/utils/style/layout";
 
 export const RiotGameInventoryScreen = () => {
   const navigation = useAppNavigation();

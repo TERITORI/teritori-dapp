@@ -1,16 +1,17 @@
 import React, { FC } from "react";
 
-import { PostsRequest } from "../../../api/feed/v1/feed";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { FeedVideosList } from "../../../components/video/FeedVideosList";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { parseUserId } from "../../../networks";
-import { UppTabKeys } from "../../../utils/upp";
 import { UppTabScreenProps } from "../UserPublicProfileScreen";
 import { UPPHeader } from "../components/UPPHeader";
 import { UPPScreenContentWrapper } from "../components/UPPScreenContentWrapper";
+
+import { PostsRequest } from "@/api/feed/v1/feed";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { FeedVideosList } from "@/components/video/FeedVideosList";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { parseUserId } from "@/networks";
+import { PostCategory } from "@/utils/types/feed";
+import { UppTabKeys } from "@/utils/upp";
 
 export const VideosUPPScreen: FC<UppTabScreenProps> = ({
   userId,

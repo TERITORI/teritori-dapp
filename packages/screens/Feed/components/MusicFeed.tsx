@@ -2,14 +2,15 @@ import React, { FC } from "react";
 import { ScrollView, useWindowDimensions } from "react-native";
 
 import { FeedHeader } from "./FeedHeader";
-import { MobileTitle } from "../../../components/ScreenContainer/ScreenContainerMobile";
-import { FeedMusicList } from "../../../components/music/FeedMusicList";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
+
+import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
+import { FeedMusicList } from "@/components/music/FeedMusicList";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
 import {
   RESPONSIVE_BREAKPOINT_S,
   screenContentMaxWidth,
-} from "../../../utils/style/layout";
+} from "@/utils/style/layout";
 
 export const MusicFeed: FC = () => {
   const { width: windowWidth } = useWindowDimensions();

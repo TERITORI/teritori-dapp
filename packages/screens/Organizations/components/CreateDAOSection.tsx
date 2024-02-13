@@ -4,27 +4,31 @@ import { ScrollView, TextStyle, View, ViewStyle } from "react-native";
 
 import { ImagePreviewer } from "./ImagePreviewer";
 import { RadioDescriptionSelector } from "./RadioDescriptionSelector";
-import { BrandText } from "../../../components/BrandText";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useNSAvailability } from "../../../hooks/useNSAvailability";
-import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
-import { NetworkKind, getCosmosNetwork } from "../../../networks";
+
+import { BrandText } from "@/components/BrandText";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useNSAvailability } from "@/hooks/useNSAvailability";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { getCosmosNetwork, NetworkKind } from "@/networks";
 import {
   neutral33,
   neutral77,
   primaryColor,
   redDefault,
-} from "../../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontSemibold14,
   fontSemibold20,
   fontSemibold28,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
-import { CreateDaoFormType, DaoType } from "../types";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import {
+  CreateDaoFormType,
+  DaoType,
+  ORGANIZATION_DEPLOYER_STEPS,
+} from "@/utils/types/organizations";
 
 //const RADIO_DESCRIPTION_TYPES = ["Membership", "Governance", "Decentralized"];
 

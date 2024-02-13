@@ -1,4 +1,7 @@
+import { NetworkFeature, NetworkFeatureObject } from "./features";
 import { IBCCurrencyInfo } from "./ibc";
+
+export { NetworkFeature } from "./features";
 
 export enum NetworkKind {
   Unknown = "Unknown",
@@ -15,6 +18,7 @@ interface NetworkInfoBase {
   icon?: string;
   currencies: CurrencyInfo[];
   features: NetworkFeature[];
+  featureObjects?: NetworkFeatureObject[];
   idPrefix: string;
   txExplorer: string;
   accountExplorer: string;
@@ -133,21 +137,6 @@ export type NativeCurrencyInfo = {
 };
 
 export type CurrencyInfo = NativeCurrencyInfo | IBCCurrencyInfo;
-
-export enum NetworkFeature {
-  NFTMarketplace = "NFTMarketplace",
-  NFTLaunchpad = "NFTLaunchpad",
-  NameService = "NameService",
-  Swap = "Swap",
-  BurnTokens = "BurnTokens",
-  Organizations = "Organizations",
-  P2E = "P2E",
-  SocialFeed = "SocialFeed",
-  UPP = "UPP",
-  ProjectsProgram = "ProjectsProgram",
-  RiotP2E = "RiotP2E",
-  NFTBridge = "NFTBridge",
-}
 
 export enum UserKind {
   Single = "Single",

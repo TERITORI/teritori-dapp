@@ -19,6 +19,7 @@ import {
   sendMessage,
 } from "../../../weshnet/services";
 import { bytesFromString } from "../../../weshnet/utils";
+
 type Props = {
   name: string;
   isOnline: boolean;

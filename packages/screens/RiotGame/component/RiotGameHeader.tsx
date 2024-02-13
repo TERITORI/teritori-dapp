@@ -11,34 +11,28 @@ import filmSVG from "../../../../assets/icons/film.svg";
 import gameBoxSVG from "../../../../assets/icons/game-box.svg";
 import inventorySVG from "../../../../assets/icons/inventory.svg";
 import trophiesSVG from "../../../../assets/icons/trophies.svg";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { NetworkSelector } from "../../../components/NetworkSelector/NetworkSelector";
-import { SVG } from "../../../components/SVG";
-import { ConnectWalletButton } from "../../../components/TopMenu/ConnectWalletButton";
-import { TopLogo } from "../../../components/navigation/components/TopLogo";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerRow } from "../../../components/spacer";
-import { useForceNetworkFeatures } from "../../../hooks/useForceNetworkFeatures";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useRoute } from "../../../hooks/useRoute";
-import { NetworkFeature } from "../../../networks";
-import {
-  RootStackParamList,
-  useAppNavigation,
-} from "../../../utils/navigation";
-import {
-  neutral33,
-  neutralA3,
-  yellowDefault,
-} from "../../../utils/style/colors";
-import { fontMedium16 } from "../../../utils/style/fonts";
+import { useRoute } from "../../../hooks/navigation/useRoute";
+
+import { BrandText } from "@/components/BrandText";
+import { NetworkSelector } from "@/components/NetworkSelector/NetworkSelector";
+import { SVG } from "@/components/SVG";
+import { ConnectWalletButton } from "@/components/TopMenu/ConnectWalletButton";
+import { TopLogo } from "@/components/navigation/components/TopLogo";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerRow } from "@/components/spacer";
+import { useForceNetworkFeatures } from "@/hooks/useForceNetworkFeatures";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { NetworkFeature } from "@/networks";
+import { RootStackParamList, useAppNavigation } from "@/utils/navigation";
+import { neutral33, neutralA3, yellowDefault } from "@/utils/style/colors";
+import { fontMedium16 } from "@/utils/style/fonts";
 import {
   headerHeight,
   headerMarginHorizontal,
   layout,
-} from "../../../utils/style/layout";
-import { PickByValue } from "../../../utils/types/helper";
+} from "@/utils/style/layout";
+import { PickByValue } from "@/utils/types/helper";
 
 type MenuItem = {
   id: string;
@@ -112,7 +106,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
     if (item.externalRoute) {
       Linking.openURL(item.externalRoute);
     } else if (item.route) {
-      // @ts-expect-error
+      // @ts-expect-error: description todo
       navigation.navigate(item.route);
     }
   };

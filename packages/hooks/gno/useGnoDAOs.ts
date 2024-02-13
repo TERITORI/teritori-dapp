@@ -1,8 +1,8 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 
-import { getGnoNetwork } from "../../networks";
-import { extractGnoJSONString } from "../../utils/gno";
+import { getGnoNetwork } from "@/networks";
+import { extractGnoJSONString } from "@/utils/gno";
 
 export type GnoDAORegistration = {
   pkgPath: string;

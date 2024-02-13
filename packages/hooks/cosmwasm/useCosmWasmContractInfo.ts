@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { bech32 } from "bech32";
 
-import { ContractVersion } from "../../contracts-clients/dao-core/DaoCore.types";
+import { ContractVersion } from "@/contracts-clients/dao-core/DaoCore.types";
 import {
   getNetwork,
   mustGetNonSigningCosmWasmClient,
   NetworkKind,
   parseUserId,
-} from "../../networks";
+} from "@/networks";
 
 const useCosmWasmContractVersion = (
   networkId: string | undefined,

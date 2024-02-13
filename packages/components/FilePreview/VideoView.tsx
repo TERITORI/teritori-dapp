@@ -6,10 +6,10 @@ import { DeleteButton } from "./DeleteButton";
 import { web3ToWeb2URI } from "../../utils/ipfs";
 import { errorColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
+import { SocialFeedVideoMetadata } from "../../utils/types/feed";
 import { LocalFileData, RemoteFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
 import { MediaPlayerVideo } from "../mediaPlayer/MediaPlayerVideo";
-import { SocialFeedVideoMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
 
 interface VideoPreviewProps {
   file: LocalFileData | RemoteFileData;

@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, StyleProp, ViewStyle } from "react-native";
+import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
-import { DepositWithdrawModal } from "./components/DepositWithdrawModal";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
-import { BrandText } from "../../components/BrandText";
-import { CurrencyIcon } from "../../components/CurrencyIcon";
-import { SVG } from "../../components/SVG";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-import { useBalances } from "../../hooks/useBalances";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { parseUserId } from "../../networks";
-import { prettyPrice } from "../../utils/coins";
-import { neutral22, neutral33 } from "../../utils/style/colors";
+
+import { BrandText } from "@/components/BrandText";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
+import { SVG } from "@/components/SVG";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { DepositWithdrawModal } from "@/components/modals/DepositWithdrawModal";
+import { useBalances } from "@/hooks/useBalances";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { parseUserId } from "@/networks";
+import { prettyPrice } from "@/utils/coins";
+import { neutral22, neutral33 } from "@/utils/style/colors";
 
 const collapsedCount = 5;
 

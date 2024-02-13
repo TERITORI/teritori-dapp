@@ -3,20 +3,21 @@ import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 
 import { CarouselHero } from "./CarouselHero";
 import penSVG from "../../../../assets/icons/pen.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { PrimaryBox } from "../../../components/boxes/PrimaryBox";
-import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
-import { GradientText } from "../../../components/gradientText";
-import { useAppNavigation } from "../../../utils/navigation";
-import { neutral17, primaryColor } from "../../../utils/style/colors";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { PrimaryBox } from "@/components/boxes/PrimaryBox";
+import { SecondaryBox } from "@/components/boxes/SecondaryBox";
+import { GradientText } from "@/components/gradientText";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { neutral17, primaryColor } from "@/utils/style/colors";
 import {
   fontSemibold12,
   fontSemibold13,
   fontSemibold14,
   fontSemibold24,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const MD_BREAKPOINT = 820;
 const LG_BREAKPOINT = 1200;

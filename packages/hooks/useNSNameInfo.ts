@@ -2,13 +2,14 @@ import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 
 import { GnoDAORegistration } from "./gno/useGnoDAOs";
+
 import {
   Metadata,
   NftInfoResponse,
-} from "../contracts-clients/teritori-name-service/TeritoriNameService.types";
-import { GnoNetworkInfo, NetworkKind, getNetwork } from "../networks";
-import { getCosmosNameServiceQueryClient } from "../utils/contracts";
-import { extractGnoJSONString, extractGnoString } from "../utils/gno";
+} from "@/contracts-clients/teritori-name-service/TeritoriNameService.types";
+import { GnoNetworkInfo, NetworkKind, getNetwork } from "@/networks";
+import { getCosmosNameServiceQueryClient } from "@/utils/contracts";
+import { extractGnoJSONString, extractGnoString } from "@/utils/gno";
 
 export const nsNameInfoQueryKey = (
   networkId: string | undefined,

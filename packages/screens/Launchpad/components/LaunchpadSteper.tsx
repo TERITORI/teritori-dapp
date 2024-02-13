@@ -2,18 +2,19 @@ import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import ChevronRightSvg from "../../../../assets/icons/chevron-right.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { PrimaryBox } from "../../../components/boxes/PrimaryBox";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import {
   neutral17,
   neutral22,
   neutral77,
   primaryColor,
   primaryTextColor,
-} from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface LaunchpadSteperProps {
   step: number;

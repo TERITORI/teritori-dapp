@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import { useBalances } from "../../../../../hooks/useBalances";
 import { ActionButton } from "../components/action-button/ActionButton";
 import { Button } from "../components/button/Button";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
@@ -15,6 +14,8 @@ import {
   useList,
   useProof,
 } from "../query/useToriData";
+
+import { useBalances } from "@/hooks/useBalances";
 
 const errorTypeMsg = {
   TICKET: {

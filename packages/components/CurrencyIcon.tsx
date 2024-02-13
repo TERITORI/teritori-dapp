@@ -1,6 +1,6 @@
 import { camelCase } from "lodash";
 import React from "react";
-import { View } from "react-native";
+import { Image, View } from "react-native";
 
 import { SVG } from "./SVG";
 import { icons } from "../../assets";
@@ -45,4 +45,10 @@ export const CurrencyIcon: React.FC<{
       />
     );
   }
+  return (
+    <Image
+      source={{ uri: iconToUse }}
+      style={{ width: size, height: size, borderRadius: size / 2 }}
+    /> // this might be broken on mobile with svgs
+  );
 };

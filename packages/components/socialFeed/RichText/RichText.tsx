@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   View,
   KeyboardAvoidingView,
@@ -14,28 +14,53 @@ import {
 import { RichTextProps } from "./RichText.type";
 import { ActionsContainer } from "./Toolbar/ActionsContainer";
 import { ToolbarContainer } from "./Toolbar/ToolbarContainer";
+import { useAppMode } from "../../../hooks/useAppMode";
 import { SOCIAL_FEED_BREAKPOINT_M } from "../../../utils/style/layout";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 
 // /!\ It will not fully work on mobile
-
 export const RichText: React.FC<RichTextProps> = ({
   onChange = () => {},
   onBlur,
   publishDisabled,
   loading,
   isPostConsultation,
+  initialValue,
 }) => {
-  const { width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const richText = useRef(null);
+  const [appMode] = useAppMode();
+  const [initialHeight, setInitialHeight] = useState(windowHeight);
+
+  const handleHeightChange = useCallback((height: number) => {
+    setInitialHeight(height * 2);
+  }, []);
+
   return (
     <View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
+        style={{ flex: 1, minHeight: initialHeight }}
       >
-        <RichEditor ref={richText} onChange={onChange} onBlur={onBlur} />
+        <RichEditor
+          initialContentHTML={initialValue}
+          ref={richText}
+          onChange={onChange}
+          onBlur={onBlur}
+          onHeightChange={handleHeightChange}
+          containerStyle={{ minHeight: initialHeight }}
+          editorStyle={
+            appMode === "mini"
+              ? {
+                  backgroundColor: "#000",
+                  color: "#fff",
+                  caretColor: "#fff",
+                }
+              : {}
+          }
+          disabled={isPostConsultation}
+        />
       </KeyboardAvoidingView>
 
       {!isPostConsultation && (

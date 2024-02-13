@@ -3,16 +3,13 @@ import { TouchableOpacity, View, ViewStyle } from "react-native";
 
 import { GuardiansBox } from "./GuardiansBox";
 import blackCricleSVG from "../../../../assets/icons/black-check.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { BoxStyle } from "../../../components/boxes/Box";
-import {
-  neutralA3,
-  neutral17,
-  primaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { BoxStyle } from "@/components/boxes/Box";
+import { neutral17, neutralA3, primaryColor } from "@/utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type Props = {
   setIsEditHighlighted: (val: boolean) => void;

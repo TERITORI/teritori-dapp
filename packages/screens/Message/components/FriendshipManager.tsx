@@ -1,27 +1,25 @@
 import React, { useMemo } from "react";
-import { Platform, View, useWindowDimensions } from "react-native";
+import { Platform, useWindowDimensions, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { Friends } from "./Friends";
 import { Requests } from "./Requests";
 import plus from "../../../../assets/icons/add-circle.svg";
 import FlexRow from "../../../components/FlexRow";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { BackButton } from "../../../components/navigation/components/BackButton";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn } from "../../../components/spacer";
-import { Tabs } from "../../../components/tabs/Tabs";
-import { useIsMobile } from "../../../hooks/useIsMobile";
+
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { BackButton } from "@/components/navigation/components/BackButton";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn } from "@/components/spacer";
+import { Tabs } from "@/components/tabs/Tabs";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import {
   selectContactRequestList,
   selectConversationList,
-} from "../../../store/slices/message";
-import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
-import { layout } from "../../../utils/style/layout";
-import {
-  Conversation,
-  MessageFriendsTabItem,
-} from "../../../utils/types/message";
+} from "@/store/slices/message";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { layout } from "@/utils/style/layout";
+import { Conversation, MessageFriendsTabItem } from "@/utils/types/message";
 
 interface FriendshipManagerProps {
   setActiveConversation?: (item: Conversation) => void;

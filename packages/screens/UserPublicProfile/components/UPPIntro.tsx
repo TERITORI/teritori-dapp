@@ -1,34 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 import { Linking, useWindowDimensions, View } from "react-native";
 
-import defaultUserProfileBannerPNG from "../../../../assets/default-images/default-user-profile-banner.png";
-import discordSVG from "../../../../assets/icons/discord.svg";
-import infoSVG from "../../../../assets/icons/info_black.svg";
-import shareSVG from "../../../../assets/icons/share.svg";
-import twitterSVG from "../../../../assets/icons/twitter.svg";
-import websiteSVG from "../../../../assets/icons/website.svg";
-import { BrandText } from "../../../components/BrandText";
-import { useCopyToClipboard } from "../../../components/CopyToClipboard";
-import { CopyToClipboardSecondary } from "../../../components/CopyToClipboardSecondary";
-import { OptimizedImage } from "../../../components/OptimizedImage";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
-import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
-import { SocialButton } from "../../../components/buttons/SocialButton";
-import { SocialButtonSecondary } from "../../../components/buttons/SocialButtonSecondary";
-import { ProfileButton } from "../../../components/hub/ProfileButton";
-import { UserAvatarWithFrame } from "../../../components/images/AvatarWithFrame";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { accountExplorerLink, parseUserId } from "../../../networks";
-import { DEFAULT_NAME } from "../../../utils/social-feed";
-import { neutral00, neutral55, neutral77 } from "../../../utils/style/colors";
+import { SubscriptionSetupModal } from "./modals/SubscriptionSetupModal";
+
+import defaultUserProfileBannerPNG from "@/assets/default-images/default-user-profile-banner.png";
+import discordSVG from "@/assets/icons/discord.svg";
+import infoSVG from "@/assets/icons/info_black.svg";
+import shareSVG from "@/assets/icons/share.svg";
+import twitterSVG from "@/assets/icons/twitter.svg";
+import websiteSVG from "@/assets/icons/website.svg";
+import { BrandText } from "@/components/BrandText";
+import { useCopyToClipboard } from "@/components/CopyToClipboard";
+import { CopyToClipboardSecondary } from "@/components/CopyToClipboardSecondary";
+import { OptimizedImage } from "@/components/OptimizedImage";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { SecondaryButtonOutline } from "@/components/buttons/SecondaryButtonOutline";
+import { SocialButton } from "@/components/buttons/SocialButton";
+import { SocialButtonSecondary } from "@/components/buttons/SocialButtonSecondary";
+import { ProfileButton } from "@/components/hub/ProfileButton";
+import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { accountExplorerLink, parseUserId } from "@/networks";
+import { DEFAULT_NAME } from "@/utils/social-feed";
 import {
-  fontBold16,
-  fontMedium14,
-  fontSemibold14,
-} from "../../../utils/style/fonts";
-import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
+  neutral00,
+  neutral55,
+  neutral77,
+  secondaryColor,
+} from "@/utils/style/colors";
+import { fontBold16, fontMedium14, fontSemibold14 } from "@/utils/style/fonts";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
+import { tinyAddress } from "@/utils/text";
 
 export const UPPIntro: React.FC<{
   userId: string;
@@ -41,6 +46,10 @@ export const UPPIntro: React.FC<{
   const { width } = useMaxResolution();
   const { width: windowWidth } = useWindowDimensions();
 
+  const [developerMode] = useDeveloperMode();
+
+  const [subscriptionSetupModalVisible, setSubscriptionSetupModalVisible] =
+    useState(false);
   return (
     <>
       <LegacyTertiaryBox
@@ -115,20 +124,54 @@ export const UPPIntro: React.FC<{
             onPress={() => copyToClipboard(window.location.href, "URL copied")}
           />
         </View>
-        {isUserOwner ? (
-          <ProfileButton
-            style={{ position: "absolute", right: 0, bottom: -80 }}
-            isEdit
-          />
-        ) : (
-          <SecondaryButtonOutline
-            touchableStyle={{ position: "absolute", right: 0, bottom: -80 }}
-            text="Follow this Teritori"
-            size="XL"
-            backgroundColor={neutral00}
-            disabled
-          />
-        )}
+
+        <View
+          style={{
+            position: "absolute",
+            right: 0,
+            bottom: -80,
+            flexDirection: "row",
+          }}
+        >
+          {isUserOwner ? (
+            <>
+              {developerMode && (
+                <>
+                  <SecondaryButton
+                    style={{ width: 132, marginRight: layout.spacing_x2 }}
+                    text="Premium Sub"
+                    size="M"
+                    paddingHorizontal={layout.spacing_x2}
+                    backgroundColor={secondaryColor}
+                    textStyle={{
+                      lineHeight: layout.spacing_x2,
+                      color: neutral00,
+                    }}
+                    onPress={() => {
+                      setSubscriptionSetupModalVisible(true);
+                    }}
+                  />
+                  <SubscriptionSetupModal
+                    userId={userId}
+                    onClose={() => setSubscriptionSetupModalVisible(false)}
+                    isVisible={subscriptionSetupModalVisible}
+                  />
+                </>
+              )}
+              <ProfileButton isEdit buttonSize="M" />
+            </>
+          ) : (
+            <>
+              <SecondaryButtonOutline
+                text="Follow this Teritori"
+                size="M"
+                backgroundColor={neutral00}
+                disabled
+              />
+            </>
+          )}
+        </View>
+
         <UserAvatarWithFrame
           userId={userId}
           style={{
