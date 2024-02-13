@@ -62,7 +62,6 @@ interface MiniCommentInputProps {
   onSubmitSuccess?: () => void;
   onSubmitInProgress?: () => void;
   replyTo?: ReplyToType;
-  daoId?: string;
 }
 
 interface MiniCommentInputInputHandle {
@@ -78,7 +77,7 @@ export const MiniCommentInput = React.forwardRef<
   MiniCommentInputProps
 >(
   (
-    { parentId, replyTo, style, onSubmitSuccess, onSubmitInProgress, daoId },
+    { parentId, replyTo, style, onSubmitSuccess, onSubmitInProgress },
     forwardRef,
   ) => {
     const inputMaxHeight = 400;
@@ -353,7 +352,7 @@ export const MiniCommentInput = React.forwardRef<
     };
 
     return (
-      <View>
+      <View style={{ width: "100%", ...style }}>
         {toastErrors && toastErrors.message && (
           <MiniToast
             type="error"
