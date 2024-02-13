@@ -22,7 +22,8 @@
     "production": {
       "android": {
         "track": "internal",
-        "serviceAccountKeyPath": "./service-account-android-submit.json"
+        "serviceAccountKeyPath": "./service-account-android-submit.json",
+        "releaseStatus": "draft"
       },
       "ios": {
         "appleId": "sakulbudhathoki977@gmail.com",
