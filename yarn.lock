@@ -5511,6 +5511,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-picker/picker@npm:2.6.1":
+  version: 2.6.1
+  resolution: "@react-native-picker/picker@npm:2.6.1"
+  peerDependencies:
+    react: ">=16"
+    react-native: ">=0.57"
+  checksum: a8c58d5d945350b70fd8b5d66dfe97dd04641277db7c702912d8c41ae4da94cfef8b0b73bfa493adfdee8f089af6e0316872c3ee61a4efc18528e6e25a5452bc
+  languageName: node
+  linkType: hard
+
 "@react-native/assets-registry@npm:0.73.1, @react-native/assets-registry@npm:~0.73.1":
   version: 0.73.1
   resolution: "@react-native/assets-registry@npm:0.73.1"
@@ -19005,6 +19015,7 @@ __metadata:
     "@react-native-clipboard/clipboard": ^1.13.2
     "@react-native-community/slider": 4.4.2
     "@react-native-masked-view/masked-view": 0.3.0
+    "@react-native-picker/picker": 2.6.1
     "@react-navigation/bottom-tabs": ^6.5.11
     "@react-navigation/drawer": ^6.6.6
     "@react-navigation/native": ^6.0.11

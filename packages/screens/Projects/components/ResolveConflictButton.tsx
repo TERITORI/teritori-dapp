@@ -1,10 +1,12 @@
-import { FC, useState } from "react";
+import { Picker } from "@react-native-picker/picker";
+import React, { FC, useState } from "react";
 
 import { useProject } from "../hooks/useProjects";
 
 import { BrandText } from "@/components/BrandText";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import ModalBase from "@/components/modals/ModalBase";
 import { SpacerColumn } from "@/components/spacer";
 import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
@@ -49,11 +51,14 @@ const ResolveConflictModal: FC<{
   onClose: () => void;
 }> = ({ userId, projectId, onClose }) => {
   const [network, userAddress] = parseUserId(userId);
+  const [outcome, setOutcome] = useState<number>(1);
+  const [resolutionMessage, setResolutionMessage] = useState<string>("");
   const { data: project } = useProject(network?.id, projectId?.toString());
   const conflicts = project?.conflicts;
   const lastConflict = conflicts?.length
     ? conflicts[conflicts.length - 1]
     : null;
+
   let responderAddress;
   if (lastConflict?.initiator === project?.contractor) {
     responderAddress = project?.funder;
@@ -71,6 +76,7 @@ const ResolveConflictModal: FC<{
   } else {
     userRole = "observer";
   }
+
   return (
     <ModalBase visible onClose={onClose}>
       <SpacerColumn size={2} />
@@ -86,7 +92,7 @@ const ResolveConflictModal: FC<{
         <>
           <SpacerColumn size={2} />
           <UsernameWithAvatar
-            userId={getUserId(network?.id, lastConflict?.initiator)}
+            userId={getUserId(network?.id, responderAddress)}
           />
           <SpacerColumn size={1} />
           <PrimaryBox>
@@ -101,7 +107,28 @@ const ResolveConflictModal: FC<{
             text="Respond"
             loader
             onPress={async () => {
-              throw new Error("todo");
+              if (typeof projectId !== "number") {
+                throw new Error("Invalid project id");
+              }
+              if (!network || !userAddress) {
+                throw new Error("Invalid user id");
+              }
+              const pmFeature = getNetworkFeature(
+                network.id,
+                NetworkFeature.GnoProjectManager,
+              );
+              if (!pmFeature) {
+                throw new Error(
+                  "Project Manager is not supported on this network",
+                );
+              }
+              await adenaVMCall(network.id, {
+                send: "",
+                caller: userAddress,
+                pkg_path: pmFeature.projectsManagerPkgPath,
+                func: "RespondToConflict",
+                args: [projectId.toString(), "Says who"],
+              });
             }}
           />
         </>
@@ -110,18 +137,31 @@ const ResolveConflictModal: FC<{
       {typeof lastConflict?.resolutionMessage === "string" && (
         <>
           <SpacerColumn size={2} />
-          <BrandText>Verdict:</BrandText>
-          <BrandText>{lastConflict.resolutionMessage}</BrandText>
+          <UsernameWithAvatar
+            userId={getUserId(network?.id, project?.conflictHandler)}
+          />
+          <SpacerColumn size={1} />
+          <PrimaryBox>
+            <BrandText>{lastConflict.resolutionMessage}</BrandText>
+          </PrimaryBox>
         </>
       )}
       {userRole === "resolver" && !lastConflict?.resolvedAt && (
         <>
           <SpacerColumn size={2} />
+          <TextInputCustom
+            label="Message"
+            name="resolutionMessage"
+            multiline
+            value={resolutionMessage}
+            onChangeText={setResolutionMessage}
+          />
+          <OutcomeSelect value={outcome} onChange={setOutcome} />
           <PrimaryButton
             text="Resolve conflict"
             loader
             onPress={async () => {
-              if (!projectId) {
+              if (typeof projectId !== "number") {
                 throw new Error("Invalid project id");
               }
               if (!network || !userAddress) {
@@ -141,12 +181,30 @@ const ResolveConflictModal: FC<{
                 caller: userAddress,
                 pkg_path: pmFeature.projectsManagerPkgPath,
                 func: "ResolveConflict",
-                args: [projectId.toString(), "The other guy is not nice"],
+                args: [
+                  projectId.toString(),
+                  outcome.toString(),
+                  "so childish omg",
+                ],
               });
             }}
           />
         </>
       )}
     </ModalBase>
+  );
+};
+
+// react-native/expo-sdk select
+const OutcomeSelect: FC<{
+  value: number;
+  onChange: (value: number) => void;
+}> = ({ value, onChange }) => {
+  return (
+    <Picker<number> selectedValue={value} onValueChange={onChange}>
+      <Picker.Item label="Resume contract" value={1} />
+      <Picker.Item label="Refund funder" value={2} />
+      <Picker.Item label="Pay contractor" value={3} />
+    </Picker>
   );
 };
