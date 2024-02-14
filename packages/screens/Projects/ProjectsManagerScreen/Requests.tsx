@@ -2,36 +2,40 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import githubSVG from "../../../../assets/icons/github.svg";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { Link } from "../../../components/Link";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
-import { SocialButton } from "../../../components/buttons/SocialButton";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
-import { Separator } from "../../../components/separators/Separator";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { mustGetGnoNetwork } from "../../../networks";
-import { adenaVMCall } from "../../../utils/gno";
-import { useAppNavigation } from "../../../utils/navigation";
+import { ProjectStatusTag } from "../components/ProjectStatusTag";
+import { useProjects } from "../hooks/useProjects";
+import { ContractStatus, Project } from "../types";
+
+import { BrandText } from "@/components/BrandText";
+import { Link } from "@/components/Link";
+import { TertiaryBox } from "@/components/boxes/TertiaryBox";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
+import { SocialButton } from "@/components/buttons/SocialButton";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { Separator } from "@/components/separators/Separator";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { useEscrowContract } from "../hooks/useEscrowContract";
+import { useAppNavigation } from "@/utils/navigation";
 import {
   neutral17,
   neutralA3,
   primaryColor,
   redDefault,
-} from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { ProjectStatusTag } from "../components/ProjectStatusTag";
-import { useProjects } from "../hooks/useProjects";
-import { useUtils } from "../hooks/useUtils";
-import { ContractStatus, Project } from "../types";
+} from "@/utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type RequestType = "requestsByBuilders" | "requestsByInvestors";
+
+const Spacing = () => {
+  return (
+    <Separator horizontal style={{ marginHorizontal: layout.spacing_x1_5 }} />
+  );
+};
 
 const RequestItem: React.FC<{
   project: Project;
@@ -39,13 +43,13 @@ const RequestItem: React.FC<{
   walletAddress: string;
   requestType: RequestType;
 }> = ({ project, networkId, walletAddress, requestType }) => {
-  const [isProcessing, setIsProcessing] = useState(false);
-  const { setToastError, setToastSuccess } = useFeedbacks();
-  const [isShowModal, setIsShowModal] = useState(false);
-  const [rejectReason, setRejectReason] = useState("");
   const navigation = useAppNavigation();
 
-  const { mustGetValue } = useUtils();
+  const { execEscrowMethod } = useEscrowContract(networkId, walletAddress);
+
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isShowModal, setIsShowModal] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
 
   const gotoProjectDetail = (project: Project) => {
     navigation.navigate("ProjectsDetail", { id: project.id });
@@ -53,70 +57,17 @@ const RequestItem: React.FC<{
 
   const acceptContract = async (project: Project) => {
     setIsProcessing(true);
-
-    const gnoNetwork = mustGetGnoNetwork(networkId);
-    const caller = mustGetValue(walletAddress, "caller");
-    const escrowPkgPath = mustGetValue(
-      gnoNetwork.escrowPkgPath,
-      "escrow pkg path",
-    );
-
-    try {
-      await adenaVMCall(
-        networkId,
-        {
-          caller,
-          send: "",
-          pkg_path: escrowPkgPath,
-          func: "AcceptContract",
-          args: ["" + project.id],
-        },
-        { gasWanted: 2_000_000 },
-      );
-
-      setToastSuccess({
-        title: "Success",
-        message: "Request has been accepted !",
-      });
-    } catch (e: any) {
-      setToastError({ title: "Error", message: e.message });
-    } finally {
-      setIsProcessing(false);
-    }
+    await execEscrowMethod("AcceptContract", [project.id.toString()]);
+    setIsProcessing(false);
   };
 
   const rejectContract = async (project: Project, rejectReason: string) => {
     setIsProcessing(true);
-
-    const gnoNetwork = mustGetGnoNetwork(networkId);
-    const caller = mustGetValue(walletAddress, "caller");
-    const escrowPkgPath = mustGetValue(
-      gnoNetwork.escrowPkgPath,
-      "escrow pkg path",
-    );
-
-    try {
-      await adenaVMCall(
-        networkId,
-        {
-          caller,
-          send: "",
-          pkg_path: escrowPkgPath,
-          func: "RejectContract",
-          args: ["" + project.id, rejectReason],
-        },
-        { gasWanted: 2_000_000 },
-      );
-      setIsShowModal(false);
-      setToastSuccess({
-        title: "Success",
-        message: "Request has been rejected !",
-      });
-    } catch (e: any) {
-      setToastError({ title: "Error", message: e.message });
-    } finally {
-      setIsProcessing(false);
-    }
+    await execEscrowMethod("RejectContract", [
+      project.id.toString(),
+      rejectReason,
+    ]);
+    setIsProcessing(false);
   };
 
   return (
@@ -146,10 +97,7 @@ const RequestItem: React.FC<{
             </BrandText>
           </View>
 
-          <Separator
-            horizontal
-            style={{ marginHorizontal: layout.spacing_x1_5 }}
-          />
+          <Spacing />
 
           <View style={{ flex: 2 }}>
             <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
@@ -161,10 +109,7 @@ const RequestItem: React.FC<{
             </BrandText>
           </View>
 
-          <Separator
-            horizontal
-            style={{ marginHorizontal: layout.spacing_x1_5 }}
-          />
+          <Spacing />
 
           <View style={{ flex: 4 }}>
             <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
@@ -178,10 +123,7 @@ const RequestItem: React.FC<{
             </BrandText>
           </View>
 
-          <Separator
-            horizontal
-            style={{ marginHorizontal: layout.spacing_x1_5 }}
-          />
+          <Spacing />
 
           <View style={{ flex: 2 }}>
             <BrandText
@@ -203,19 +145,13 @@ const RequestItem: React.FC<{
             </BrandText>
           </View>
 
-          <Separator
-            horizontal
-            style={{ marginHorizontal: layout.spacing_x1_5 }}
-          />
+          <Spacing />
 
           <View style={{ flex: 2 }}>
             <ProjectStatusTag size="XS" status={project.status} />
           </View>
 
-          <Separator
-            horizontal
-            style={{ marginHorizontal: layout.spacing_x1_5 }}
-          />
+          <Spacing />
 
           <View style={{ flex: 1 }}>
             <Link to={project.metadata.teamAndLinkData.githubLink}>

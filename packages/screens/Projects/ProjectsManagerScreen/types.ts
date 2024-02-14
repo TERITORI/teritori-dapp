@@ -4,7 +4,7 @@ export type ViewKey =
   | "myInvestments"
   | "myProjects"
   | "milestonesUpdates"
-  | "requestsByBuilders"
+  | "contractorCandidates"
   | "requestsByInvestors";
 
 type ViewData = {

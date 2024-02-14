@@ -6,16 +6,18 @@ import { MilestonesUpdateManager } from "./MilestonesUpdateManager";
 import { MyProjectsManager } from "./MyProjectsManager";
 import { Requests } from "./Requests";
 import { TabOption, ViewKey } from "./types";
-import { BrandText } from "../../../components/BrandText";
-import { FlexRow } from "../../../components/FlexRow";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { Tabs } from "../../../components/tabs/Tabs";
-import { NetworkKind } from "../../../networks";
-import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
-import { neutral33 } from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { HeaderBackButton } from "../components/HeaderBackButton";
+
+import { BrandText } from "@/components/BrandText";
+import { FlexRow } from "@/components/FlexRow";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { Tabs } from "@/components/tabs/Tabs";
+import { NetworkKind } from "@/networks";
+import { ContractorCandidates } from "@/screens/Projects/ProjectsManagerScreen/ContractorCandidates";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { neutral33 } from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const TAB_OPTIONS: TabOption = {
   myInvestments: {
@@ -30,9 +32,9 @@ const TAB_OPTIONS: TabOption = {
     name: "Reviews",
     component: <MilestonesUpdateManager />,
   },
-  requestsByBuilders: {
+  contractorCandidates: {
     name: "Contractor candidates",
-    component: <Requests type="requestsByBuilders" />,
+    component: <ContractorCandidates />,
   },
   requestsByInvestors: {
     name: "Requests by investors",

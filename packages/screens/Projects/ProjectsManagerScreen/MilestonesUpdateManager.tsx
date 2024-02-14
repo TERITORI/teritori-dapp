@@ -3,32 +3,33 @@ import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import githubSVG from "../../../../assets/icons/github.svg";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { Link } from "../../../components/Link";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { SocialButton } from "../../../components/buttons/SocialButton";
-import { Separator } from "../../../components/separators/Separator";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { useAppNavigation } from "../../../utils/navigation";
+import { MilestonePriorityTag } from "../components/MilestonePriorityTag";
+import { MilestoneStatusTag } from "../components/MilestoneStatusTag";
+import { useProjects } from "../hooks/useProjects";
+import { MsStatus, ProjectMilestone } from "../types";
+
+import { BrandText } from "@/components/BrandText";
+import { Link } from "@/components/Link";
+import { TertiaryBox } from "@/components/boxes/TertiaryBox";
+import { SocialButton } from "@/components/buttons/SocialButton";
+import { Separator } from "@/components/separators/Separator";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { useAppNavigation } from "@/utils/navigation";
 import {
   neutral00,
   neutral17,
   neutral77,
   neutralA3,
   neutralFF,
-} from "../../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold16,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { MilestonePriorityTag } from "../components/MilestonePriorityTag";
-import { MilestoneStatusTag } from "../components/MilestoneStatusTag";
-import { useProjects } from "../hooks/useProjects";
-import { MsStatus, ProjectMilestone } from "../types";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const MilestonesUpdateManager: React.FC = () => {
   const navigation = useAppNavigation();

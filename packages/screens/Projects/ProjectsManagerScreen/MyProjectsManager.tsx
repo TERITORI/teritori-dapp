@@ -1,29 +1,30 @@
 import moment from "moment";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import filterSVG from "../../../../assets/icons/filter.svg";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { ProgressLine } from "../../../components/ProgressLine";
-import { SearchBarInput } from "../../../components/Search/SearchBarInput";
-import { UserNameInline } from "../../../components/UserNameInline";
-import { IconButton } from "../../../components/buttons/IconButton";
-import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { TableRow } from "../../../components/table/TableRow";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getUserId } from "../../../networks";
-import { useAppNavigation } from "../../../utils/navigation";
-import { neutral33, neutralFF } from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { ProjectStatusTag } from "../components/ProjectStatusTag";
 import { ProjectsStatusFilterButtons } from "../components/ProjectsStatusFilterButtons";
 import { useProjects } from "../hooks/useProjects";
 import { ContractStatus, Project } from "../types";
 import { getProjectStats } from "../utils";
+
+import { BrandText } from "@/components/BrandText";
+import { ProgressLine } from "@/components/ProgressLine";
+import { SearchBarInput } from "@/components/Search/SearchBarInput";
+import { UserNameInline } from "@/components/UserNameInline";
+import { IconButton } from "@/components/buttons/IconButton";
+import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { TableRow } from "@/components/table/TableRow";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getUserId } from "@/networks";
+import { useAppNavigation } from "@/utils/navigation";
+import { neutral33, neutralFF } from "@/utils/style/colors";
+import { fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const getTableCols = (projectType: ProjectType) => {
   return {

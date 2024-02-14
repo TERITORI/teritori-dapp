@@ -1,6 +1,6 @@
 import { Link } from "@react-navigation/native";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 
 import { Tag } from "./Milestone";
@@ -28,7 +28,11 @@ import {
   secondaryColor,
   yellowDefault,
 } from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold20 } from "../../../utils/style/fonts";
+import {
+  fontSemibold13,
+  fontSemibold14,
+  fontSemibold20,
+} from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import {
   ContractStatus,
@@ -42,7 +46,12 @@ import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { FundProjectModal } from "@/screens/Projects/components/FundProjectModal";
 import { SubmitContractorCandidateModal } from "@/screens/Projects/components/SubmitContractorCandidateModal";
+import {
+  useEscrowContract,
+  useQueryEscrow,
+} from "@/screens/Projects/hooks/useEscrowContract";
 import { prettyPrice } from "@/utils/coins";
+import { extractGnoString } from "@/utils/gno";
 
 export const ProjectInfo: React.FC<{
   projectStatus?: ContractStatus;
@@ -57,6 +66,18 @@ export const ProjectInfo: React.FC<{
   const [isFundModalVisible, setIsFundModalVisible] = useState(false);
   const [isSubmitContractorModalVisible, setIsSubmitContractorModalVisible] =
     useState(false);
+
+  const { data: candidatesData } = useQueryEscrow(
+    networkId,
+    "GetContractorCandidates",
+    [project?.id],
+    !project?.contractor,
+  );
+
+  const candidates = useMemo(() => {
+    if (!candidatesData) return [];
+    return extractGnoString(candidatesData).split(",");
+  }, [candidatesData]);
 
   return (
     <>
@@ -130,14 +151,19 @@ export const ProjectInfo: React.FC<{
                 selectedWallet?.address !== project.sender &&
                 selectedWallet?.address !== project.funder &&
                 !project.contractor &&
-                project.status === ContractStatus.CREATED && (
+                project.status === ContractStatus.CREATED &&
+                (candidates.includes(selectedWallet?.address || "") ? (
+                  <BrandText style={[fontSemibold14, { color: yellowDefault }]}>
+                    All ready submitted candidate
+                  </BrandText>
+                ) : (
                   <PrimaryButton
                     text="Submit contractor candidate"
                     onPress={() => setIsSubmitContractorModalVisible(true)}
                     size="SM"
                     width={280}
                   />
-                )}
+                ))}
               {/* If current user is not contractor, not creator of project and the project has not funder yet then user can become funder */}
               {project &&
                 selectedWallet?.address !== project.sender &&
