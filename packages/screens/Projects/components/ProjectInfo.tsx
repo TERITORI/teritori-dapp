@@ -250,6 +250,7 @@ export const ProjectInfo: React.FC<{
                   project.status === ContractStatus.CREATED && (
                     <>
                       <PrimaryButton
+                        disabled={!candidates.length}
                         text={`${candidates.length} candidates`}
                         onPress={() =>
                           navigation.navigate("ProjectsManager", {
