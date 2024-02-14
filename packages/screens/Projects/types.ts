@@ -66,7 +66,7 @@ export type ProjectMilestone = {
   priority: MsPriority;
 };
 
-enum ConflictOutcome {
+export enum ConflictOutcome {
   RESUME_CONTRACT = "RESUME_CONTRACT",
   REFUND_FUNDER = "REFUND_FUNDER",
   PAY_CONTRACTOR = "PAY_CONTRACTOR",

@@ -81,6 +81,7 @@ export type RootStackParamList = {
   ProjectsCompleteMilestone: { projectId: number; milestoneId: number };
   ProjectsMakeRequest: { step?: number };
   ProjectsDetail: { id: number };
+  ProjectsConflictSolving: { projectId: string };
 
   OrganizationDeployer: undefined;
   Organizations?: { network?: string };
@@ -231,6 +232,7 @@ const navConfig: {
     ProjectsManager: "projects/manager/:view",
     ProjectsMakeRequest: "projects/make-request",
     ProjectsDetail: "projects/:id",
+    ProjectsConflictSolving: "projects/:projectId/conflicts",
     // === Organization
 
     OrganizationGetStarted: "organization-get-started",

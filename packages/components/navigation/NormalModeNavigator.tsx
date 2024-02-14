@@ -40,6 +40,7 @@ import { MyCollectionScreen } from "@/screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "@/screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "@/screens/Organizations/OrganizationsScreen";
 import { ProjectsCompleteMilestoneScreen } from "@/screens/Projects/CompleteMilestoneScreen";
+import { ProjectsConflictSolvingScreen } from "@/screens/Projects/ProjectsConflictSolvingScreen";
 import { ProjectsDetailScreen } from "@/screens/Projects/ProjectsDetailScreen";
 import { ProjectsMakeRequestScreen } from "@/screens/Projects/ProjectsMakeRequestScreen";
 import { ProjectsManagerScreen } from "@/screens/Projects/ProjectsManagerScreen";
@@ -369,6 +370,15 @@ export const NormalModeNavigator: React.FC = () => {
         options={{
           header: () => null,
           title: screenTitle("Projects Program Make Request"),
+        }}
+      />
+
+      <Nav.Screen
+        name="ProjectsConflictSolving"
+        component={ProjectsConflictSolvingScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Project Conflict Solving"),
         }}
       />
 

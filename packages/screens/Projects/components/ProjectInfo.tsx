@@ -52,7 +52,7 @@ import { SubmitContractorCandidateModal } from "@/screens/Projects/components/Su
 import { TNSName } from "@/screens/Projects/components/TNSName";
 import { useQueryEscrow } from "@/screens/Projects/hooks/useEscrowContract";
 import { prettyPrice } from "@/utils/coins";
-import { adenaVMCall, extractGnoString } from "@/utils/gno";
+import { extractGnoString } from "@/utils/gno";
 import { useAppNavigation } from "@/utils/navigation";
 
 export const ProjectInfo: React.FC<{
@@ -183,28 +183,9 @@ export const ProjectInfo: React.FC<{
                         color={errorColor}
                         text="Request conflict resolution"
                         loader
-                        onPress={async () => {
-                          const pmFeature = getNetworkFeature(
-                            networkId,
-                            NetworkFeature.GnoProjectManager,
-                          );
-                          if (!pmFeature) {
-                            throw new Error(
-                              "Project Manager is not supported on this network",
-                            );
-                          }
-                          if (!selectedWallet?.address) {
-                            throw new Error("No wallet connected");
-                          }
-                          await adenaVMCall(networkId, {
-                            send: "",
-                            caller: selectedWallet.address,
-                            pkg_path: pmFeature.projectsManagerPkgPath,
-                            func: "RequestConflictResolution",
-                            args: [
-                              project.id.toString(),
-                              "The other guy is not nice",
-                            ],
+                        onPress={() => {
+                          navigation.navigate("ProjectsConflictSolving", {
+                            projectId: project.id.toString(),
                           });
                         }}
                         size="SM"
@@ -222,8 +203,7 @@ export const ProjectInfo: React.FC<{
                     selectedWallet.address === project.funder) && (
                     <>
                       <ResolveConflictButton
-                        userId={selectedWallet?.userId}
-                        projectId={project.id}
+                        projectId={project.id.toString()}
                       />
                       <SpacerColumn size={2} />
                     </>
