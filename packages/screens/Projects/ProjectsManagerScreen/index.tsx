@@ -17,6 +17,7 @@ import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { ContractorCandidates } from "@/screens/Projects/ProjectsManagerScreen/ContractorCandidates";
 
 const TAB_OPTIONS: TabOption = {
   myInvestments: {
@@ -33,7 +34,7 @@ const TAB_OPTIONS: TabOption = {
   },
   requestsByBuilders: {
     name: "Contractor candidates",
-    component: <Requests type="requestsByBuilders" />,
+    component: <ContractorCandidates />,
   },
   requestsByInvestors: {
     name: "Requests by investors",

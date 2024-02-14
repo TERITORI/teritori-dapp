@@ -4,7 +4,6 @@ import { TouchableOpacity, View } from "react-native";
 
 import filterSVG from "../../../../assets/icons/filter.svg";
 import FlexRow from "../../../components/FlexRow";
-import { UsernameWithAvatar } from "../../../components/user/UsernameWithAvatar";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { ProjectStatusTag } from "../components/ProjectStatusTag";
 import { ProjectsStatusFilterButtons } from "../components/ProjectsStatusFilterButtons";
@@ -20,7 +19,7 @@ import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { TableRow } from "@/components/table/TableRow";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { getUserId } from "@/networks";
+import { TNSName } from "@/screens/Projects/components/TNSName";
 import { useAppNavigation } from "@/utils/navigation";
 import { neutral33, neutralFF } from "@/utils/style/colors";
 import { fontSemibold13 } from "@/utils/style/fonts";
@@ -56,16 +55,6 @@ const getTableCols = (projectType: ProjectType) => {
 };
 
 type ProjectType = "myInvestments" | "myProjects";
-
-const TNSName: React.FC<{ networkId: string; userAddress: string }> = ({
-  networkId,
-  userAddress,
-}) => {
-  const userId = getUserId(networkId, userAddress);
-
-  if (!userId) return null;
-  return <UsernameWithAvatar userId={userId} />;
-};
 
 const ProjectRow: React.FC<{ project: Project; projectType: ProjectType }> = ({
   project,

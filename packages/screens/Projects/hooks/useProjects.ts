@@ -50,7 +50,7 @@ export const useProject = (
   return useQuery(
     ["useProject", networkId, projectId],
     async () => {
-      if (!networkId || !projectId) {
+      if (!networkId || projectId === undefined) {
         return null;
       }
 
@@ -63,6 +63,7 @@ export const useProject = (
         networkId,
         NetworkFeature.GnoProjectManager,
       );
+
       if (!pmFeature) {
         return null;
       }

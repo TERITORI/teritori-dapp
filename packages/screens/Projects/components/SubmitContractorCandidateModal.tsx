@@ -28,6 +28,7 @@ import {
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
+import { useEscrowContract } from "@/screens/Projects/hooks/useEscrowContract";
 
 type SubmitContractorCandidateModalProps = {
   isVisible: boolean;
@@ -43,45 +44,21 @@ export const SubmitContractorCandidateModal: React.FC<
   const selectedNetwork = useSelectedNetworkInfo();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { setToastError, setToastSuccess } = useFeedbacks();
-  const { mustGetValue } = useUtils();
+
+  const { execEscrowMethod } = useEscrowContract(
+    networkId,
+    selectedWallet?.address || "",
+  );
 
   const submitContractorCandidate = async () => {
     setIsSubmitting(true);
 
-    try {
-      const pmFeature = getNetworkFeature(
-        networkId,
-        NetworkFeature.GnoProjectManager,
-      );
-      if (!pmFeature) {
-        throw new Error("GNO project manager feature not found");
-      }
+    await execEscrowMethod("SubmitContractorCandidate", [
+      project.id.toString(),
+    ]);
 
-      const caller = mustGetValue(selectedWallet?.address, "caller");
-
-      await adenaVMCall(
-        networkId,
-        {
-          caller,
-          send: "",
-          pkg_path: pmFeature.projectsManagerPkgPath,
-          func: "SubmitContractorCandidate",
-          args: [project.id.toString()],
-        },
-        { gasWanted: 1_000_000 },
-      );
-
-      setToastSuccess({
-        title: "Success",
-        message: "You candidate has been submitted",
-      });
-    } catch (e: any) {
-      setToastError({ title: "Error", message: e.message });
-    } finally {
-      setIsSubmitting(false);
-      onClose();
-    }
+    onClose();
+    setIsSubmitting(false);
   };
 
   return (

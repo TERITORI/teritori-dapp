@@ -1,6 +1,6 @@
 import { Link } from "@react-navigation/native";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 
 import { Tag } from "./Milestone";
@@ -28,7 +28,7 @@ import {
   secondaryColor,
   yellowDefault,
 } from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold20 } from "../../../utils/style/fonts";
+import { fontSemibold13, fontSemibold14, fontSemibold16, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import {
   ContractStatus,
@@ -44,8 +44,9 @@ import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature, getNetworkFeature, getUserId } from "@/networks";
 import { FundProjectModal } from "@/screens/Projects/components/FundProjectModal";
 import { SubmitContractorCandidateModal } from "@/screens/Projects/components/SubmitContractorCandidateModal";
+import { useQueryEscrow } from "@/screens/Projects/hooks/useEscrowContract";
 import { prettyPrice } from "@/utils/coins";
-import { adenaVMCall } from "@/utils/gno";
+import { adenaVMCall, extractGnoString } from "@/utils/gno";
 import { useAppNavigation } from "@/utils/navigation";
 
 export const ProjectInfo: React.FC<{
@@ -71,6 +72,20 @@ export const ProjectInfo: React.FC<{
   const authorId = project
     ? getUserId(networkId, project.sender)
     : selectedWallet?.userId;
+
+  const { data: candidatesData } = useQueryEscrow(
+    networkId,
+    "GetContractorCandidates",
+    [project?.id],
+    !project?.contractor,
+  );
+
+  const candidates = useMemo(() => {
+    if (!candidatesData) return [];
+    return extractGnoString(candidatesData)
+      .split(",")
+      .filter((c) => !!c);
+  }, [candidatesData]);
 
   return (
     <>
@@ -191,7 +206,11 @@ export const ProjectInfo: React.FC<{
                     selectedWallet?.address || "",
                   ) ? (
                     <>
-                      <BrandText>You are a candidate</BrandText>
+                      <BrandText
+                        style={[fontSemibold16, { color: yellowDefault }]}
+                      >
+                        You are a candidate
+                      </BrandText>
                       <SpacerColumn size={2} />
                     </>
                   ) : (
@@ -227,7 +246,7 @@ export const ProjectInfo: React.FC<{
                   project.status === ContractStatus.CREATED && (
                     <>
                       <PrimaryButton
-                        text="View candidates"
+                        text={`${candidates.length} candidates`}
                         onPress={() =>
                           navigation.navigate("ProjectsManager", {
                             view: "requestsByBuilders",
