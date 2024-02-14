@@ -9,17 +9,14 @@ import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SecondaryButton } from "@/components/buttons/SecondaryButton";
 import ModalBase from "@/components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
-import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
   useSelectedNetworkId,
   useSelectedNetworkInfo,
 } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { NetworkFeature, getNetworkFeature } from "@/networks";
 import { Tag } from "@/screens/Projects/components/Milestone";
-import { useUtils } from "@/screens/Projects/hooks/useUtils";
+import { useEscrowContract } from "@/screens/Projects/hooks/useEscrowContract";
 import { Project } from "@/screens/Projects/types";
-import { adenaVMCall } from "@/utils/gno";
 import { neutral17, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold12,
@@ -28,7 +25,6 @@ import {
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
-import { useEscrowContract } from "@/screens/Projects/hooks/useEscrowContract";
 
 type SubmitContractorCandidateModalProps = {
   isVisible: boolean;

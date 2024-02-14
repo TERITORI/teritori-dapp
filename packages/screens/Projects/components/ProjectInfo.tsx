@@ -28,7 +28,11 @@ import {
   secondaryColor,
   yellowDefault,
 } from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold14, fontSemibold16, fontSemibold20 } from "../../../utils/style/fonts";
+import {
+  fontSemibold13,
+  fontSemibold16,
+  fontSemibold20,
+} from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import {
   ContractStatus,

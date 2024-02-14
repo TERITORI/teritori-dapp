@@ -12,6 +12,7 @@ import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
 import { TableRow } from "@/components/table/TableRow";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { TNSName } from "@/screens/Projects/components/TNSName";
 import {
   useEscrowContract,
   useQueryEscrow,
@@ -21,7 +22,6 @@ import { useAppNavigation } from "@/utils/navigation";
 import { neutral33, neutralA3, neutralFF } from "@/utils/style/colors";
 import { fontSemibold13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { TNSName } from "@/screens/Projects/components/TNSName";
 
 const TABLE_COLS = {
   name: {
