@@ -187,6 +187,7 @@ export const UPPIntro: React.FC<{
                   style={{ width: 132, marginRight: layout.spacing_x2 }}
                   text="Premium Sub"
                   size="M"
+                  paddingHorizontal={layout.spacing_x2}
                   backgroundColor={secondaryColor}
                   textStyle={{
                     lineHeight: layout.spacing_x2,
