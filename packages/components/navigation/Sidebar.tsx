@@ -150,11 +150,7 @@ export const Sidebar: React.FC = () => {
                   <ToggleButton
                     isActive={appMode === "normal"}
                     style={{ transform: [{ scale: 0.6 }] }}
-                    onValueChange={(value) => {
-                      if (value) {
-                        handleSet("web3Addict");
-                      }
-
+                    onValueChange={() => {
                       handleSet("mini");
                     }}
                   />

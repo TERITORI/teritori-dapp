@@ -46,11 +46,7 @@ export const PreferencesSettingScreen: ScreenFC<"MiniPreferencesSetting"> = ({
 
             <ToggleButton
               isActive={appMode === "mini"}
-              onValueChange={(value) => {
-                if (value) {
-                  handleSet("mini");
-                }
-
+              onValueChange={() => {
                 handleSet("web3Addict");
               }}
             />
