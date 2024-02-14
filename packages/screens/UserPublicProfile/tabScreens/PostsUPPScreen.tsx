@@ -11,6 +11,7 @@ import { useIsDAO } from "@/hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsDAOMember } from "@/hooks/dao/useDAOMember";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
+// import { TNSUpdateNameScreen } from "@/screens/TeritoriNameService/TNSUpdateNameScreen";
 import { UppTabKeys } from "@/utils/upp";
 
 export const PostsUPPScreen: FC<UppTabScreenProps> = ({

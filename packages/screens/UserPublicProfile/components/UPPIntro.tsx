@@ -38,7 +38,8 @@ import { tinyAddress } from "@/utils/text";
 export const UPPIntro: React.FC<{
   userId: string;
   isUserOwner?: boolean;
-}> = ({ userId, isUserOwner }) => {
+  setIsEditProfileModal?: (val: boolean) => void;
+}> = ({ userId, isUserOwner, setIsEditProfileModal = (val) => {} }) => {
   const { metadata } = useNSUserInfo(userId);
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { margin: layout.spacing_x0_75 };
@@ -158,7 +159,13 @@ export const UPPIntro: React.FC<{
                   />
                 </>
               )}
-              <ProfileButton isEdit buttonSize="M" />
+              <ProfileButton
+                isEdit
+                buttonSize="M"
+                setIsEditProfileModal={(val: boolean) => {
+                  setIsEditProfileModal(val);
+                }}
+              />
             </>
           ) : (
             <>

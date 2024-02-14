@@ -21,6 +21,7 @@ export type RootStackParamList = {
   UserPublicProfile: {
     id: string;
     tab?: keyof typeof uppTabItems;
+    isEditProfile?: boolean;
   };
   RiotersFooter: undefined;
   AdministrationDashboard: undefined;
