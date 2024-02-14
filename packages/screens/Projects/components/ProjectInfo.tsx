@@ -30,6 +30,7 @@ import {
 } from "../../../utils/style/colors";
 import {
   fontSemibold13,
+  fontSemibold14,
   fontSemibold16,
   fontSemibold20,
 } from "../../../utils/style/fonts";
@@ -48,6 +49,7 @@ import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature, getNetworkFeature, getUserId } from "@/networks";
 import { FundProjectModal } from "@/screens/Projects/components/FundProjectModal";
 import { SubmitContractorCandidateModal } from "@/screens/Projects/components/SubmitContractorCandidateModal";
+import { TNSName } from "@/screens/Projects/components/TNSName";
 import { useQueryEscrow } from "@/screens/Projects/hooks/useEscrowContract";
 import { prettyPrice } from "@/utils/coins";
 import { adenaVMCall, extractGnoString } from "@/utils/gno";
@@ -102,6 +104,38 @@ export const ProjectInfo: React.FC<{
       >
         {/* Left block ======================================================= */}
         <View style={{ flex: 1 }}>
+          <BrandText style={fontSemibold20}>{shortDescData?.name}</BrandText>
+
+          <FlexRow>
+            <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
+              Project creator
+            </BrandText>
+            <UsernameWithAvatar userId={authorId} addrLen={20} />
+          </FlexRow>
+
+          <SpacerColumn size={1} />
+
+          <FlexRow>
+            {projectStatus && (
+              <ProjectStatusTag status={projectStatus} size="XS" />
+            )}
+
+            <SpacerRow size={2} />
+
+            {shortDescData?.tags.split(",").map((tag, idx) => {
+              return (
+                <Tag
+                  key={idx}
+                  text={tag}
+                  color={neutral77}
+                  borderColor={neutral33}
+                  bgColor={neutral00}
+                  containerStyle={{ marginRight: layout.spacing_x2 }}
+                />
+              );
+            })}
+          </FlexRow>
+
           <FlexRow breakpoint={800}>
             {/* Image */}
             <RoundedGradientImage
@@ -117,15 +151,11 @@ export const ProjectInfo: React.FC<{
               style={{
                 marginHorizontal: layout.spacing_x2,
                 paddingVertical: layout.spacing_x2,
-                height: 236,
+                height: 300,
                 justifyContent: "space-between",
               }}
             >
               <View>
-                <BrandText style={fontSemibold20}>
-                  {shortDescData?.name}
-                </BrandText>
-
                 <BrandText
                   style={[
                     fontSemibold13,
@@ -263,43 +293,11 @@ export const ProjectInfo: React.FC<{
                       <SpacerColumn size={2} />
                     </>
                   )}
-
-                <TertiaryBox
-                  style={{
-                    backgroundColor: neutral22,
-                    borderWidth: 0,
-                    padding: layout.spacing_x1_5,
-                    width: 280,
-                  }}
-                >
-                  <UsernameWithAvatar userId={authorId} addrLen={20} />
-                </TertiaryBox>
               </View>
             </View>
           </FlexRow>
 
           <SpacerColumn size={2} />
-
-          <FlexRow>
-            {projectStatus && (
-              <ProjectStatusTag status={projectStatus} size="XS" />
-            )}
-
-            <SpacerRow size={2} />
-
-            {shortDescData?.tags.split(",").map((tag, idx) => {
-              return (
-                <Tag
-                  key={idx}
-                  text={tag}
-                  color={neutral77}
-                  borderColor={neutral33}
-                  bgColor={neutral00}
-                  containerStyle={{ marginRight: layout.spacing_x2 }}
-                />
-              );
-            })}
-          </FlexRow>
         </View>
 
         {/* Right block ======================================================= */}
@@ -405,11 +403,61 @@ export const ProjectInfo: React.FC<{
               />
             </Link>
           </View>
+
+          <SpacerColumn size={2} />
         </View>
       </FlexRow>
-      <SpacerColumn size={2} />
+
+      <TertiaryBox
+        style={{
+          backgroundColor: neutral22,
+          borderWidth: 0,
+          paddingVertical: 12,
+          paddingHorizontal: 16,
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <FlexRow width="auto">
+          <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
+            Funder
+          </BrandText>
+
+          <TNSName networkId={networkId} userAddress={project?.funder || ""} />
+        </FlexRow>
+
+        <SpacerColumn size={1} />
+
+        <FlexRow width="auto">
+          <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
+            Contractor
+          </BrandText>
+
+          <TNSName
+            networkId={networkId}
+            userAddress={project?.contractor || ""}
+          />
+        </FlexRow>
+
+        <SpacerColumn size={1} />
+
+        <FlexRow width="auto">
+          <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
+            Conflict resolver
+          </BrandText>
+
+          <SpacerRow size={1} />
+
+          <TNSName
+            networkId={networkId}
+            userAddress={project?.conflictHandler || ""}
+          />
+        </FlexRow>
+      </TertiaryBox>
 
       <BrandText>{JSON.stringify(project, null, 2)}</BrandText>
+
+      <SpacerColumn size={2} />
 
       {project && (
         <FundProjectModal
