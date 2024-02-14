@@ -1,10 +1,4 @@
-import {
-  MsPriority,
-  MsStatus,
-  ProjectMilestone,
-  ShortDescData,
-  TeamAndLinkData,
-} from "./types";
+import { ShortDescData, TeamAndLinkData } from "./types";
 
 export const emptyTeamAndLink: TeamAndLinkData = {
   websiteLink: "",
@@ -28,6 +22,7 @@ export const emptyShortDesc: ShortDescData = {
 };
 
 // Used only when dev, for quickly goto next step
+/*
 export const fakeShortDesc: ShortDescData = {
   name: "This is name",
   desc: "This is long description",
@@ -39,6 +34,7 @@ export const fakeShortDesc: ShortDescData = {
   coverImg: "https://thisis.img",
   tags: "tag1,tag2,tag3",
 };
+*/
 export const fakeTeamAndLink: TeamAndLinkData = {
   websiteLink: "https://website.com",
   twitterProfile: "https://twitter.com",
@@ -46,6 +42,7 @@ export const fakeTeamAndLink: TeamAndLinkData = {
   githubLink: "https://github.com",
   teamDesc: "This is long team description",
 };
+/*
 export const fakeMilestones: ProjectMilestone[] = [
   {
     id: 1,
@@ -60,3 +57,4 @@ export const fakeMilestones: ProjectMilestone[] = [
     duration: 60 * 60 * 24 * 7,
   },
 ];
+*/

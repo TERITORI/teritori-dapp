@@ -3,11 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { create } from "zustand";
 
 import { useAppNavigation } from "../../../utils/navigation";
-import {
-  fakeMilestones,
-  fakeShortDesc,
-  fakeTeamAndLink,
-} from "../defaultValues";
+import { emptyShortDesc, fakeTeamAndLink } from "../defaultValues";
 import { ProjectMilestone, ShortDescData, TeamAndLinkData } from "../types";
 
 // TEST DATA
@@ -31,9 +27,9 @@ const TOTAL_STEPS = 5;
 
 const useMakeRequestStore = create<MakeRequestState>((set, get) => ({
   stepIndice: 1,
-  shortDescData: fakeShortDesc,
+  shortDescData: emptyShortDesc,
   teamAndLinkData: fakeTeamAndLink,
-  milestones: fakeMilestones,
+  milestones: [],
   actions: {
     // setStepIndice: (stepIndice: number) => set({ stepIndice }),
     setShortDesc: (shortDescData: ShortDescData) => set({ shortDescData }),

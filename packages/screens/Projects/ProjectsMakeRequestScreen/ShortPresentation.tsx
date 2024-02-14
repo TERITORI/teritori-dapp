@@ -16,11 +16,7 @@ import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
 import { errorColor, neutral77, neutralA3 } from "../../../utils/style/colors";
-import {
-  fontSemibold13,
-  fontSemibold14,
-  fontSemibold20,
-} from "../../../utils/style/fonts";
+import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
 import { TNSResult } from "../components/TNSResult";
 import { emptyShortDesc } from "../defaultValues";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
@@ -215,17 +211,7 @@ export const ShortPresentation: React.FC = () => {
                 variant="labelOutside"
                 onChangeText={handleChange("arbitrator")}
                 value={values.arbitrator}
-                error={errors.arbitrator}
               />
-
-              <BrandText
-                style={[
-                  fontSemibold13,
-                  { color: neutralA3, fontStyle: "italic" },
-                ]}
-              >
-                * hardcoded to gopher20 for now !!!
-              </BrandText>
 
               <SpacerColumn size={2.5} />
 

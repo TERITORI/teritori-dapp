@@ -140,7 +140,7 @@ const NewConflictSection: FC<{
               caller: userAddress,
               pkg_path: pmFeature.projectsManagerPkgPath,
               func: "RequestConflictResolution",
-              args: [projectId, "The other guy is not nice"],
+              args: [projectId, initialMessage],
             });
           }}
         />

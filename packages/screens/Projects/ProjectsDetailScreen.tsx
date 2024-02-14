@@ -267,7 +267,12 @@ export const ProjectsDetailScreen: ScreenFC<"ProjectsDetail"> = () => {
     );
 
   return (
-    <ScreenContainer isLarge responsive headerChildren={<HeaderBackButton />}>
+    <ScreenContainer
+      isLarge
+      responsive
+      headerChildren={<HeaderBackButton />}
+      footerChildren={<></>}
+    >
       <FlexRow>
         <View style={{ flex: 1 }}>
           <ProjectInfo

@@ -435,8 +435,6 @@ export const ProjectInfo: React.FC<{
         </FlexRow>
       </TertiaryBox>
 
-      <BrandText>{JSON.stringify(project, null, 2)}</BrandText>
-
       <SpacerColumn size={2} />
 
       {project && (
