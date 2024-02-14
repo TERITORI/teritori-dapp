@@ -16,6 +16,7 @@ import {
 } from "@/store/slices/dapps-store";
 import { useAppDispatch } from "@/store/store";
 import { getValuesFromId, SEPARATOR } from "@/utils/dapp-store";
+import { RouteName } from "@/utils/navigation";
 import { layout } from "@/utils/style/layout";
 import { dAppType } from "@/utils/types/dapp-store";
 
@@ -125,7 +126,11 @@ export const DAppsList = ({ isEditing }: Props) => {
               icon={item.icon}
               title={item.title}
               isAdded
-              onPress={() => navigation.navigate(item.route)}
+              onPress={() => {
+                if (!["External", "ComingSoon"].includes(item.route)) {
+                  navigation.replace(item.route as RouteName);
+                }
+              }}
             />
           );
         }}
@@ -149,7 +154,11 @@ export const DAppsList = ({ isEditing }: Props) => {
                 title={item?.title || ""}
                 subTitle={item?.description}
                 isEditing={isEditing}
-                onPress={() => navigation.navigate(item.route)}
+                onPress={() => {
+                  if (!["External", "ComingSoon"].includes(item.route)) {
+                    navigation.replace(item.route as RouteName);
+                  }
+                }}
                 isAdded
                 onActionPress={() =>
                   item && handleClick(item.groupKey, item.id)

@@ -1,10 +1,9 @@
 import React from "react";
-import { Platform } from "react-native";
 
-import { Sidebar } from "./Sidebar";
 import { platformScreens } from "./platformSpecific";
-import { Nav, navigatorScreenOptions, screenTitle } from "./util";
+import { getNav, screenTitle } from "./util";
 
+import { useAppMode } from "@/hooks/useAppMode";
 import { AdministrationDashboardScreen } from "@/screens/AdministrationDashboard/AdministrationDashboardScreen";
 import { AllProjectAdministrationDashScreen } from "@/screens/AllProjectAdministrationDash/AllProjectAdministrationDashScreen";
 import { ApplicationRewiewScreen } from "@/screens/ApplicationRewiew/ApplicationRewiew";
@@ -60,19 +59,20 @@ import NativeWallet from "@/screens/Wallet/Screens/NativeWallet";
 import { SuccessScreen } from "@/screens/Wallet/Screens/SucessScreen";
 import { WalletManagerScreen } from "@/screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "@/screens/WalletManager/WalletsScreen";
+import { AppMode } from "@/utils/types/app-mode";
 
-export const NormalModeNavigator: React.FC = () => {
+export const NormalModeNavigator = () => {
+  const [appMode] = useAppMode();
+  const { Nav } = getNav(appMode as AppMode);
+
   return (
-    <Nav.Navigator
-      initialRouteName="Home"
-      drawerContent={() => (Platform.OS === "web" ? null : <Sidebar />)}
-      screenOptions={navigatorScreenOptions as any} // FIXME: upgrade to expo-router
-    >
+    <>
       <Nav.Screen
         name="Home"
         component={HomeScreen}
         options={{ header: () => null, title: screenTitle("Home") }}
       />
+
       <Nav.Screen
         name="MyCollection"
         component={MyCollectionScreen}
@@ -448,6 +448,6 @@ export const NormalModeNavigator: React.FC = () => {
         }}
       />
       {platformScreens}
-    </Nav.Navigator>
+    </>
   );
 };
