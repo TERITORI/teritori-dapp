@@ -5,7 +5,6 @@ import { Tag } from "./Milestone";
 import { ProjectStatusTag } from "./ProjectStatusTag";
 import discordSVG from "../../../../assets/icons/discord.svg";
 import githubSVG from "../../../../assets/icons/github.svg";
-import gnoSVG from "../../../../assets/icons/networks/gno.svg";
 import shareSVG from "../../../../assets/icons/share.svg";
 import twitterSVG from "../../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../../assets/icons/website.svg";
@@ -13,7 +12,6 @@ import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { Link } from "../../../components/Link";
 import { ProgressLine } from "../../../components/ProgressLine";
-import { SVG } from "../../../components/SVG";
 import { BoxStyle } from "../../../components/boxes/Box";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SocialButton } from "../../../components/buttons/SocialButton";
@@ -34,7 +32,9 @@ import {
 import { layout } from "../../../utils/style/layout";
 import { Project } from "../types";
 
+import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getUserId } from "@/networks";
 import { prettyPrice } from "@/utils/coins";
 
 const BOX_WIDTH = 400;
@@ -126,20 +126,14 @@ export const ProjectBox: React.FC<{
         }}
       >
         <FlexRow style={{ justifyContent: "space-between" }}>
-          <SVG source={gnoSVG} width={24} height={24} color="red" />
-
-          <BrandText
-            style={[
-              fontSemibold13,
-              { flexGrow: 1, marginLeft: layout.spacing_x2 },
-            ]}
-          >
-            @{project.metadata.shortDescData.paymentAddr}
-          </BrandText>
+          <UsernameWithAvatar
+            userId={getUserId(networkId, project.sender)}
+            addrLen={14}
+          />
 
           <FlexRow style={{ width: "auto" }}>
             <BrandText style={[fontSemibold13, { color: neutral77 }]}>
-              Grant:
+              Grant:{" "}
             </BrandText>
             <BrandText style={fontSemibold13}>
               {prettyPrice(

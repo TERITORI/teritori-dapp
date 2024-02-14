@@ -1,9 +1,10 @@
 import moment from "moment";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import filterSVG from "../../../../assets/icons/filter.svg";
 import FlexRow from "../../../components/FlexRow";
+import { UsernameWithAvatar } from "../../../components/user/UsernameWithAvatar";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { ProjectStatusTag } from "../components/ProjectStatusTag";
 import { ProjectsStatusFilterButtons } from "../components/ProjectsStatusFilterButtons";
@@ -14,7 +15,6 @@ import { getProjectStats } from "../utils";
 import { BrandText } from "@/components/BrandText";
 import { ProgressLine } from "@/components/ProgressLine";
 import { SearchBarInput } from "@/components/Search/SearchBarInput";
-import { UserNameInline } from "@/components/UserNameInline";
 import { IconButton } from "@/components/buttons/IconButton";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
@@ -64,7 +64,7 @@ const TNSName: React.FC<{ networkId: string; userAddress: string }> = ({
   const userId = getUserId(networkId, userAddress);
 
   if (!userId) return null;
-  return <UserNameInline userId={userId} />;
+  return <UsernameWithAvatar userId={userId} />;
 };
 
 const ProjectRow: React.FC<{ project: Project; projectType: ProjectType }> = ({

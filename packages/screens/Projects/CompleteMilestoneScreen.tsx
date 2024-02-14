@@ -23,7 +23,7 @@ import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { mustGetGnoNetwork } from "../../networks";
+import { NetworkFeature, getNetworkFeature } from "../../networks";
 import { adenaVMCall } from "../../utils/gno";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
@@ -84,20 +84,22 @@ export const ProjectsCompleteMilestoneScreen: ScreenFC<
   ) => {
     setIsProcessing(true);
 
-    const gnoNetwork = mustGetGnoNetwork(networkId);
-    const caller = mustGetValue(selectedWallet?.address, "caller");
-    const escrowPkgPath = mustGetValue(
-      gnoNetwork.escrowPkgPath,
-      "escrow pkg path",
-    );
-
     try {
+      const caller = mustGetValue(selectedWallet?.address, "caller");
+      const pmFeature = getNetworkFeature(
+        networkId,
+        NetworkFeature.GnoProjectManager,
+      );
+      if (!pmFeature) {
+        throw new Error("Project manager feature not found");
+      }
+
       await adenaVMCall(
         networkId,
         {
           caller,
           send: "",
-          pkg_path: escrowPkgPath,
+          pkg_path: pmFeature.projectsManagerPkgPath,
           func: "CompleteMilestoneAndPay",
           args: [project.id.toString(), milestone.id.toString()],
         },

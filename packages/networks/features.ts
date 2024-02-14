@@ -11,6 +11,7 @@ export enum NetworkFeature {
   RiotP2E = "RiotP2E",
   NFTBridge = "NFTBridge",
   CosmWasmPremiumFeed = "CosmWasmPremiumFeed",
+  GnoProjectManager = "GnoProjectManager",
 }
 
 type CosmWasmPremiumFeed = {
@@ -24,4 +25,13 @@ type CosmWasmSocialFeed = {
   feedContractAddress: string;
 };
 
-export type NetworkFeatureObject = CosmWasmPremiumFeed | CosmWasmSocialFeed;
+type GnoProjectManager = {
+  type: NetworkFeature.GnoProjectManager;
+  projectsManagerPkgPath: string;
+  paymentsDenom: string;
+};
+
+export type NetworkFeatureObject =
+  | CosmWasmPremiumFeed
+  | CosmWasmSocialFeed
+  | GnoProjectManager;

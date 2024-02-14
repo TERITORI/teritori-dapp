@@ -1,24 +1,24 @@
 import { Link } from "@react-navigation/native";
 import moment from "moment";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
 import { Tag } from "./Milestone";
 import { ProjectStatusTag } from "./ProjectStatusTag";
+import { ResolveConflictButton } from "./ResolveConflictButton";
 import discordSVG from "../../../../assets/icons/discord.svg";
 import githubSVG from "../../../../assets/icons/github.svg";
-import gnoSVG from "../../../../assets/icons/networks/gno.svg";
 import shareSVG from "../../../../assets/icons/share.svg";
 import twitterSVG from "../../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../../assets/icons/website.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SocialButton } from "../../../components/buttons/SocialButton";
 import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
+  errorColor,
   neutral00,
   neutral22,
   neutral33,
@@ -28,11 +28,7 @@ import {
   secondaryColor,
   yellowDefault,
 } from "../../../utils/style/colors";
-import {
-  fontSemibold13,
-  fontSemibold14,
-  fontSemibold20,
-} from "../../../utils/style/fonts";
+import { fontSemibold13, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import {
   ContractStatus,
@@ -42,16 +38,15 @@ import {
 } from "../types";
 
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { NetworkFeature, getNetworkFeature, getUserId } from "@/networks";
 import { FundProjectModal } from "@/screens/Projects/components/FundProjectModal";
 import { SubmitContractorCandidateModal } from "@/screens/Projects/components/SubmitContractorCandidateModal";
-import {
-  useEscrowContract,
-  useQueryEscrow,
-} from "@/screens/Projects/hooks/useEscrowContract";
 import { prettyPrice } from "@/utils/coins";
-import { extractGnoString } from "@/utils/gno";
+import { adenaVMCall } from "@/utils/gno";
+import { useAppNavigation } from "@/utils/navigation";
 
 export const ProjectInfo: React.FC<{
   projectStatus?: ContractStatus;
@@ -62,22 +57,20 @@ export const ProjectInfo: React.FC<{
 }> = ({ projectStatus, shortDescData, teamAndLinkData, isFunded, project }) => {
   const selectedWallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
+  const navigation = useAppNavigation();
 
   const [isFundModalVisible, setIsFundModalVisible] = useState(false);
   const [isSubmitContractorModalVisible, setIsSubmitContractorModalVisible] =
     useState(false);
 
-  const { data: candidatesData } = useQueryEscrow(
+  const pmFeature = getNetworkFeature(
     networkId,
-    "GetContractorCandidates",
-    [project?.id],
-    !project?.contractor,
+    NetworkFeature.GnoProjectManager,
   );
 
-  const candidates = useMemo(() => {
-    if (!candidatesData) return [];
-    return extractGnoString(candidatesData).split(",");
-  }, [candidatesData]);
+  const authorId = project
+    ? getUserId(networkId, project.sender)
+    : selectedWallet?.userId;
 
   return (
     <>
@@ -101,82 +94,163 @@ export const ProjectInfo: React.FC<{
             />
 
             {/* Name and Description */}
-            <View style={{ marginHorizontal: layout.spacing_x2, flex: 1 }}>
-              <BrandText
-                style={[fontSemibold20, { marginTop: layout.spacing_x2 }]}
-              >
-                {shortDescData?.name}
-              </BrandText>
+            <View
+              style={{
+                marginHorizontal: layout.spacing_x2,
+                paddingVertical: layout.spacing_x2,
+                height: 236,
+                justifyContent: "space-between",
+              }}
+            >
+              <View>
+                <BrandText style={fontSemibold20}>
+                  {shortDescData?.name}
+                </BrandText>
 
-              <BrandText
-                style={[
-                  fontSemibold13,
-                  {
-                    color: neutralA3,
-                    marginTop: layout.spacing_x2,
-                  },
-                ]}
-              >
-                {shortDescData?.desc}
-              </BrandText>
+                <BrandText
+                  style={[
+                    fontSemibold13,
+                    {
+                      color: neutralA3,
+                      marginTop: layout.spacing_x2,
+                      maxWidth: 600,
+                    },
+                  ]}
+                  numberOfLines={2}
+                >
+                  {shortDescData?.desc}
+                </BrandText>
+              </View>
 
-              <SpacerColumn size={2} />
+              <SpacerColumn size={1} />
 
-              <TertiaryBox
-                style={{
-                  backgroundColor: neutral22,
-                  borderWidth: 0,
-                  padding: layout.spacing_x1_5,
-                  width: 280,
-                }}
-              >
-                <FlexRow style={{ justifyContent: "center", width: "100%" }}>
-                  <SVG source={gnoSVG} width={18} height={18} />
-                  <BrandText
-                    style={[
-                      fontSemibold13,
-                      { marginLeft: layout.spacing_x1_5 },
-                    ]}
-                  >
-                    @{shortDescData?.paymentAddr}
-                  </BrandText>
-                </FlexRow>
-              </TertiaryBox>
+              <View>
+                {!!project &&
+                  (selectedWallet?.address === project.funder ||
+                    selectedWallet?.address === project?.contractor) &&
+                  project.status === ContractStatus.ACCEPTED && (
+                    <>
+                      <PrimaryButton
+                        color={errorColor}
+                        text="Request conflict resolution"
+                        loader
+                        onPress={async () => {
+                          const pmFeature = getNetworkFeature(
+                            networkId,
+                            NetworkFeature.GnoProjectManager,
+                          );
+                          if (!pmFeature) {
+                            throw new Error(
+                              "Project Manager is not supported on this network",
+                            );
+                          }
+                          if (!selectedWallet?.address) {
+                            throw new Error("No wallet connected");
+                          }
+                          await adenaVMCall(networkId, {
+                            send: "",
+                            caller: selectedWallet.address,
+                            pkg_path: pmFeature.projectsManagerPkgPath,
+                            func: "RequestConflictResolution",
+                            args: [
+                              project.id.toString(),
+                              "The other guy is not nice",
+                            ],
+                          });
+                        }}
+                        size="SM"
+                        width={280}
+                      />
+                      <SpacerColumn size={2} />
+                    </>
+                  )}
 
-              <SpacerColumn size={2} />
+                {!!project &&
+                  !!selectedWallet &&
+                  project.status === ContractStatus.CONFLICT &&
+                  (selectedWallet.address === project.conflictHandler ||
+                    selectedWallet.address === project.contractor ||
+                    selectedWallet.address === project.funder) && (
+                    <>
+                      <ResolveConflictButton
+                        userId={selectedWallet?.userId}
+                        projectId={project.id}
+                      />
+                      <SpacerColumn size={2} />
+                    </>
+                  )}
 
-              {/* Actions */}
-              {/* If current user is not funder, not creator of project and the project has not contractor yet then user can become contractor */}
-              {project &&
-                selectedWallet?.address !== project.sender &&
-                selectedWallet?.address !== project.funder &&
-                !project.contractor &&
-                project.status === ContractStatus.CREATED &&
-                (candidates.includes(selectedWallet?.address || "") ? (
-                  <BrandText style={[fontSemibold14, { color: yellowDefault }]}>
-                    All ready submitted candidate
-                  </BrandText>
-                ) : (
-                  <PrimaryButton
-                    text="Submit contractor candidate"
-                    onPress={() => setIsSubmitContractorModalVisible(true)}
-                    size="SM"
-                    width={280}
-                  />
-                ))}
-              {/* If current user is not contractor, not creator of project and the project has not funder yet then user can become funder */}
-              {project &&
-                selectedWallet?.address !== project.sender &&
-                selectedWallet?.address !== project.contractor &&
-                !project.funded &&
-                project.status === ContractStatus.CREATED && (
-                  <PrimaryButton
-                    text="Fund this project"
-                    onPress={() => setIsFundModalVisible(true)}
-                    size="SM"
-                    width={200}
-                  />
-                )}
+                {/* Actions */}
+                {/* If current user is not funder, not creator of project and the project has not contractor yet then user can become contractor */}
+                {!!project &&
+                  selectedWallet?.address !== project.sender &&
+                  selectedWallet?.address !== project.funder &&
+                  !project.contractor &&
+                  project.status === ContractStatus.CREATED &&
+                  (project.contractorCandidates.includes(
+                    selectedWallet?.address || "",
+                  ) ? (
+                    <>
+                      <BrandText>You are a candidate</BrandText>
+                      <SpacerColumn size={2} />
+                    </>
+                  ) : (
+                    <>
+                      <PrimaryButton
+                        text="Submit your candidacy as contractor"
+                        onPress={() => setIsSubmitContractorModalVisible(true)}
+                        size="SM"
+                      />
+                      <SpacerColumn size={2} />
+                    </>
+                  ))}
+                {/* If current user is not contractor, not creator of project and the project has not funder yet then user can become funder */}
+                {!!project &&
+                  selectedWallet?.address !== project.sender &&
+                  selectedWallet?.address !== project.contractor &&
+                  !project.funded &&
+                  project.status === ContractStatus.CREATED && (
+                    <>
+                      <PrimaryButton
+                        text="Fund this project"
+                        onPress={() => setIsFundModalVisible(true)}
+                        size="SM"
+                        width={200}
+                      />
+                      <SpacerColumn size={2} />
+                    </>
+                  )}
+
+                {!!project &&
+                  selectedWallet?.address === project.funder &&
+                  project.funded &&
+                  project.status === ContractStatus.CREATED && (
+                    <>
+                      <PrimaryButton
+                        text="View candidates"
+                        onPress={() =>
+                          navigation.navigate("ProjectsManager", {
+                            view: "requestsByBuilders",
+                          })
+                        }
+                        size="SM"
+                        width={200}
+                      />
+                      <SpacerColumn size={2} />
+                    </>
+                  )}
+
+                <TertiaryBox
+                  style={{
+                    backgroundColor: neutral22,
+                    borderWidth: 0,
+                    padding: layout.spacing_x1_5,
+                    width: 280,
+                  }}
+                >
+                  <UsernameWithAvatar userId={authorId} addrLen={20} />
+                </TertiaryBox>
+              </View>
             </View>
           </FlexRow>
 
@@ -228,7 +302,7 @@ export const ProjectInfo: React.FC<{
                 {prettyPrice(
                   networkId,
                   shortDescData?.budget.toString(),
-                  shortDescData.paymentAddr,
+                  pmFeature?.paymentsDenom,
                 )}
               </BrandText>
             </FlexRow>
@@ -310,6 +384,8 @@ export const ProjectInfo: React.FC<{
         </View>
       </FlexRow>
       <SpacerColumn size={2} />
+
+      <BrandText>{JSON.stringify(project, null, 2)}</BrandText>
 
       {project && (
         <FundProjectModal

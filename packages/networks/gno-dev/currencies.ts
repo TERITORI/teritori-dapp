@@ -14,7 +14,7 @@ export const gnoCurrencies: CurrencyInfo[] = [
   },
   {
     denom: "gno.land/r/demo/tori20",
-    displayName: "TORI20",
+    displayName: "TORI",
     decimals: 6,
     variant: "grc20",
     coingeckoId: "gno",

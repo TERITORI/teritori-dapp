@@ -25,7 +25,7 @@ import { layout } from "../../../utils/style/layout";
 import { ProjectMilestone, MsPriority } from "../types";
 
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { useProjectInfo } from "@/screens/Projects/hooks/useProjectInfo";
+import { NetworkFeature, getNetworkFeature } from "@/networks";
 import { prettyPrice } from "@/utils/coins";
 
 export const MilestoneItem: React.FC<{
@@ -35,7 +35,11 @@ export const MilestoneItem: React.FC<{
   onDelete?: (milestone: ProjectMilestone) => void;
 }> = ({ milestone, onPress, isHovered, onDelete }) => {
   const networkId = useSelectedNetworkId();
-  const { escrowToken } = useProjectInfo();
+
+  const pmFeature = getNetworkFeature(
+    networkId,
+    NetworkFeature.GnoProjectManager,
+  );
 
   return (
     <View>
@@ -111,7 +115,7 @@ export const MilestoneItem: React.FC<{
               text={prettyPrice(
                 networkId,
                 milestone.amount.toString(),
-                escrowToken,
+                pmFeature?.paymentsDenom,
               )}
               color={neutral77}
               borderColor={neutral33}

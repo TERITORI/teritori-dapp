@@ -1,7 +1,5 @@
-import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import React, { useMemo, useState } from "react";
 import { Image, View } from "react-native";
-import { useSelector } from "react-redux";
 
 import gnoSVG from "../../../../assets/icons/networks/gno.svg";
 import projectSuccessPaymentPNG from "../../../../assets/project-success-payment.png";
@@ -17,10 +15,8 @@ import {
   useSelectedNetworkInfo,
 } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getUserId, mustGetGnoNetwork } from "../../../networks";
-import { selectNFTStorageAPI } from "../../../store/slices/settings";
-import { adenaVMCall, extractGnoString } from "../../../utils/gno";
-import { generateIpfsKey } from "../../../utils/ipfs";
+import { NetworkFeature, getNetworkFeature } from "../../../networks";
+import { adenaVMCall } from "../../../utils/gno";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
@@ -36,7 +32,7 @@ import {
   fontSemibold16,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
+import { LocalFileData } from "../../../utils/types/files";
 import { Tag } from "../components/Milestone";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 import { useUtils } from "../hooks/useUtils";
@@ -49,8 +45,6 @@ import { useBalances } from "@/hooks/useBalances";
 import { prettyPrice } from "@/utils/coins";
 import { tinyAddress } from "@/utils/text";
 
-const PINATA_GATEWAY = "https://gateway.pinata.cloud/ipfs";
-
 export const ConfirmAndSign: React.FC = () => {
   const [isShowModal, setIsShowModal] = useState(false);
   const [isShowConfirmModal, setIsShowConfirmModal] = useState(true);
@@ -60,14 +54,17 @@ export const ConfirmAndSign: React.FC = () => {
   const networkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
   const { mustGetValue } = useUtils();
-  const { uploadFilesToPinata } = useIpfs();
+  const { uploadToIPFS } = useIpfs();
 
-  const userIPFSKey = useSelector(selectNFTStorageAPI);
+  const pmFeature = getNetworkFeature(
+    networkId,
+    NetworkFeature.GnoProjectManager,
+  );
+
   const selectedWallet = useSelectedWallet();
-  const userId = getUserId(networkId, selectedWallet?.address);
   const selectedNetwork = useSelectedNetworkInfo();
   const balances = useBalances(selectedNetwork?.id, selectedWallet?.address);
-  const bal = balances?.find((b) => b.denom === "ugnot");
+  const bal = balances?.find((b) => b.denom === pmFeature?.paymentsDenom);
 
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
@@ -75,35 +72,15 @@ export const ConfirmAndSign: React.FC = () => {
 
   const uploadFile = async (fileToUpload: LocalFileData) => {
     setIsUploadingImage(true);
-
-    let remoteFiles: RemoteFileData[] = [];
-
-    const pinataJWTKey =
-      userIPFSKey || (await generateIpfsKey(selectedNetwork?.id || "", userId));
-    if (pinataJWTKey) {
-      remoteFiles = await uploadFilesToPinata({
-        files: [fileToUpload],
-        pinataJWTKey,
-      });
-    } else {
-      return setToastError({
-        title: "File upload failed",
-        message: "Unable to get IPFS key",
-      });
-    }
-
-    if (!remoteFiles.find((file) => file.url)) {
-      const message = "Fail to pin to IPFS, please try to Publish again";
-      setToastError({
-        title: "File upload failed",
-        message,
-      });
+    try {
+      if (!selectedWallet) {
+        throw Error("Wallet not found");
+      }
+      const web3URI = await uploadToIPFS(selectedWallet.userId, fileToUpload);
+      return web3URI;
+    } finally {
       setIsUploadingImage(false);
-      throw Error(message);
     }
-
-    setIsUploadingImage(false);
-    return `${PINATA_GATEWAY}/${remoteFiles[0].url.replace("ipfs://", "")}`;
   };
 
   const cancel = async () => {
@@ -124,16 +101,10 @@ export const ConfirmAndSign: React.FC = () => {
     try {
       const coverImg = await uploadFile(shortDescData._coverImgFile);
 
-      const gnoNetwork = mustGetGnoNetwork(networkId);
       const caller = mustGetValue(wallet?.address, "caller");
-      const escrowPkgPath = mustGetValue(
-        gnoNetwork.escrowPkgPath,
-        "escrow pkg path",
-      );
-      const escrowToken = mustGetValue(
-        shortDescData?.paymentAddr,
-        "payment address",
-      );
+      if (!pmFeature) {
+        throw new Error("Project manager feature not found");
+      }
 
       const milestoneTitles = milestones.map((m) => m.title).join(",");
       const milestoneAmounts = milestones.map((m) => m.amount).join(",");
@@ -165,27 +136,10 @@ export const ConfirmAndSign: React.FC = () => {
         });
       }
 
+      let send = "";
       // If creator = funder then we need to send all needed fund
       if (caller === funder) {
-        // Approve Escrow to send the needed foo20 fund
-        // Get Escrow realm Address
-        const provider = new GnoJSONRPCProvider(gnoNetwork.endpoint);
-
-        const escrowAddress = extractGnoString(
-          await provider.evaluateExpression(escrowPkgPath, `CurrentRealm()`),
-        );
-
-        await adenaVMCall(
-          networkId,
-          {
-            caller,
-            send: "",
-            pkg_path: escrowToken,
-            func: "Approve",
-            args: [escrowAddress, "" + shortDescData.budget], // Decimal of gopher20 = 4
-          },
-          { gasWanted: 1_000_000 },
-        );
+        send = totalFunding + pmFeature.paymentsDenom;
       }
 
       // Create the contract
@@ -193,13 +147,13 @@ export const ConfirmAndSign: React.FC = () => {
         networkId,
         {
           caller,
-          send: "",
-          pkg_path: escrowPkgPath,
+          send,
+          pkg_path: pmFeature.projectsManagerPkgPath,
           func: "CreateContract",
           args: [
             contractor,
             funder,
-            escrowToken,
+            pmFeature.paymentsDenom,
             metadata,
             expiryDuration,
             milestoneTitles,
@@ -278,7 +232,7 @@ export const ConfirmAndSign: React.FC = () => {
           </BrandText>
 
           <BrandText style={[{ color: neutral77 }, fontSemibold14]}>
-            {prettyPrice(networkId, totalFunding, "ugnot")}
+            {prettyPrice(networkId, totalFunding, pmFeature?.paymentsDenom)}
           </BrandText>
         </FlexRow>
 
@@ -288,7 +242,7 @@ export const ConfirmAndSign: React.FC = () => {
           </BrandText>
 
           <BrandText style={[{ color: neutral77 }, fontSemibold14]}>
-            {prettyPrice(networkId, bal?.amount, "ugnot")}
+            {prettyPrice(networkId, bal?.amount, pmFeature?.paymentsDenom)}
           </BrandText>
         </FlexRow>
 

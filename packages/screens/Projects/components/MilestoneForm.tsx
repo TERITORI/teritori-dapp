@@ -1,5 +1,5 @@
 import { Formik } from "formik";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { number, object, string } from "yup";
 
@@ -29,8 +29,11 @@ import { layout } from "../../../utils/style/layout";
 import { ProjectMilestone, MsPriority, MsStatus } from "../types";
 
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { getNativeCurrency, mustGetGnoNetwork } from "@/networks";
-import { useProjectInfo } from "@/screens/Projects/hooks/useProjectInfo";
+import {
+  NetworkFeature,
+  getNativeCurrency,
+  getNetworkFeature,
+} from "@/networks";
 
 const PRIORITIES: SelectInputItem[] = [
   { label: "High", value: MsPriority.MS_PRIORITY_HIGH.toString() },
@@ -74,13 +77,13 @@ export const MilestoneForm: React.FC<{
   );
 
   const networkId = useSelectedNetworkId();
-  const { escrowToken } = useProjectInfo();
 
-  const decimals = useMemo(() => {
-    const gnoNetwork = mustGetGnoNetwork(networkId);
-    const currency = getNativeCurrency(gnoNetwork.id, escrowToken);
-    return currency?.decimals || 0;
-  }, [networkId, escrowToken]);
+  const pmFeature = getNetworkFeature(
+    networkId,
+    NetworkFeature.GnoProjectManager,
+  );
+  const currency = getNativeCurrency(networkId, pmFeature?.paymentsDenom);
+  const decimals = currency?.decimals || 0;
 
   return (
     <View>

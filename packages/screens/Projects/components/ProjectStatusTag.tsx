@@ -55,6 +55,19 @@ export const ProjectStatusTag: React.FC<{
       bgColor = neutral00;
       borderColor = neutral22;
       break;
+    case ContractStatus.CONFLICT:
+      text = "Conflict";
+      color = redDefault;
+      bgColor = neutral00;
+      borderColor = neutral22;
+      break;
+    case ContractStatus.ABORTED_IN_FAVOR_OF_CONTRACTOR:
+    case ContractStatus.ABORTED_IN_FAVOR_OF_FUNDER:
+      text = "Aborted";
+      color = redDefault;
+      bgColor = neutral00;
+      borderColor = neutral22;
+      break;
     default:
       color = secondaryColor;
       bgColor = neutral00;

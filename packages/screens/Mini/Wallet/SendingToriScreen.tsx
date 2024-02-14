@@ -23,9 +23,9 @@ import { BrandText } from "@/components/BrandText";
 import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { Dropdown } from "@/components/Dropdown";
 import { SVG } from "@/components/SVG";
-import { UserNameInline } from "@/components/UserNameInline";
 import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
 import { getNativeSigner } from "@/hooks/wallet/getNativeSigner";
 import { useGetAssets } from "@/hooks/wallet/useGetAssets";
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
@@ -71,7 +71,7 @@ const getTxData = (denom: string, amount: string, userId: string) => {
     {
       label: (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <UserNameInline userId={userId} />
+          <UsernameWithAvatar userId={userId} />
           <SpacerRow size={1} />
           <BrandText style={[fontMedium16, { color: neutralA3 }]}>
             ninja.tori

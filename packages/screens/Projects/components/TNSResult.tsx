@@ -17,7 +17,7 @@ export const TNSResult: React.FC<{
   if (!visible) return null;
   return (
     <SearchResultsSection
-      title="Teritori Name Service"
+      title="Users"
       style={{
         width: "100%",
         backgroundColor: neutral00,

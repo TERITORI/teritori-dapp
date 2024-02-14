@@ -28,7 +28,11 @@ import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { mustGetGnoNetwork } from "../../networks";
+import {
+  NetworkFeature,
+  getGnoNetwork,
+  getNetworkFeature,
+} from "../../networks";
 import { adenaVMCall } from "../../utils/gno";
 import { ScreenFC } from "../../utils/navigation";
 import {
@@ -43,8 +47,6 @@ import {
   fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-
-import { useProjectInfo } from "@/screens/Projects/hooks/useProjectInfo";
 
 const STATUSES: SelectInputItem[] = [
   { label: "Open", value: MsStatus.MS_OPEN.toString() },
@@ -74,14 +76,22 @@ const MilestoneDetail: React.FC<{
   ) => {
     setIsProcessing(true);
 
-    const gnoNetwork = mustGetGnoNetwork(networkId);
-    const caller = mustGetValue(selectedWallet?.address, "caller");
-    const escrowPkgPath = mustGetValue(
-      gnoNetwork.escrowPkgPath,
-      "escrow pkg path",
-    );
-
     try {
+      const gnoNetwork = getGnoNetwork(networkId);
+      if (!gnoNetwork) {
+        throw new Error("Network not found");
+      }
+
+      const pmFeature = getNetworkFeature(
+        networkId,
+        NetworkFeature.GnoProjectManager,
+      );
+      if (!pmFeature) {
+        throw new Error("Project manager feature not found");
+      }
+
+      const caller = mustGetValue(selectedWallet?.address, "caller");
+
       // Convert milestone status => status id
       let statusId = 1;
       for (const msStatus in MsStatus) {
@@ -96,7 +106,7 @@ const MilestoneDetail: React.FC<{
         {
           caller,
           send: "",
-          pkg_path: escrowPkgPath,
+          pkg_path: pmFeature.projectsManagerPkgPath,
           func: "ChangeMilestoneStatus",
           args: [
             project.id.toString(),
@@ -240,8 +250,6 @@ export const ProjectsDetailScreen: ScreenFC<"ProjectsDetail"> = () => {
     useState<ProjectMilestone>();
 
   const { data: project } = useProject(networkId, (params as any).id || 0);
-  const { setEscrowToken } = useProjectInfo((state) => state.actions);
-  setEscrowToken(project?.escrowToken || "");
 
   const onSelectMilestone = (milestone: ProjectMilestone) => {
     setSelectedMilestone(

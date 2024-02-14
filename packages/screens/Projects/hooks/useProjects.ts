@@ -1,8 +1,11 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 
-import { useUtils } from "./useUtils";
-import { mustGetGnoNetwork } from "../../../networks";
+import {
+  NetworkFeature,
+  getGnoNetwork,
+  getNetworkFeature,
+} from "../../../networks";
 import { extractGnoString } from "../../../utils/gno";
 import { Project } from "../types";
 
@@ -40,20 +43,33 @@ const toJSON = (contractData: string, isArray: boolean) => {
   return contractJSON;
 };
 
-export const useProject = (networkId: string, projectId: string) => {
-  const { mustGetValue } = useUtils();
-
+export const useProject = (
+  networkId: string | undefined,
+  projectId: string | undefined,
+) => {
   return useQuery(
     ["useProject", networkId, projectId],
     async () => {
-      const gnoNetwork = mustGetGnoNetwork(networkId);
-      const escrowPkgPath = mustGetValue(
-        gnoNetwork.escrowPkgPath,
-        "escrow pkg path",
+      if (!networkId || !projectId) {
+        return null;
+      }
+
+      const gnoNetwork = getGnoNetwork(networkId);
+      if (!gnoNetwork) {
+        return null;
+      }
+
+      const pmFeature = getNetworkFeature(
+        networkId,
+        NetworkFeature.GnoProjectManager,
       );
+      if (!pmFeature) {
+        return null;
+      }
+
       const client = new GnoJSONRPCProvider(gnoNetwork.endpoint);
       const contractData = await client.evaluateExpression(
-        escrowPkgPath,
+        pmFeature.projectsManagerPkgPath,
         `RenderContract(${projectId})`,
       );
 
@@ -70,8 +86,6 @@ export const useProjects = (
   filterByFunder: string = "", // By default, get only projects which have not funder
   filterByContractor: string = "", // By default, get only projects which have not contractor
 ) => {
-  const { mustGetValue } = useUtils();
-
   return useQuery(
     [
       "useProjects",
@@ -82,21 +96,36 @@ export const useProjects = (
       filterByContractor,
     ],
     async () => {
-      const gnoNetwork = mustGetGnoNetwork(networkId);
-      const escrowPkgPath = mustGetValue(
-        gnoNetwork.escrowPkgPath,
-        "escrow pkg path",
+      const gnoNetwork = getGnoNetwork(networkId);
+      if (!gnoNetwork) {
+        return [];
+      }
+
+      const pmFeature = getNetworkFeature(
+        networkId,
+        NetworkFeature.GnoProjectManager,
       );
+      if (!pmFeature) {
+        return [];
+      }
+
       const client = new GnoJSONRPCProvider(gnoNetwork.endpoint);
-      const contractsData = await client.evaluateExpression(
-        escrowPkgPath,
-        `RenderContracts(${startAfter},${limit},"${filterByFunder}","${filterByContractor}")`,
-      );
+
+      const pkgPath = pmFeature.projectsManagerPkgPath;
+      const expr = `RenderContracts(${startAfter},${limit},"${filterByFunder}","${filterByContractor}")`;
+      console.log("projects", pkgPath, expr);
+
+      const contractsData = await client.evaluateExpression(pkgPath, expr);
+
+      console.log("projects data", contractsData);
 
       const projects = toJSON(contractsData, true) as Project[];
       projects.sort((p1, p2) => p2.id - p1.id);
+
+      console.log("projects", projects);
+
       return projects;
     },
-    { initialData: [], refetchInterval: 5000 },
+    { initialData: [], refetchInterval: 10000 },
   );
 };

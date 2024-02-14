@@ -15,7 +15,7 @@ import {
   useSelectedNetworkInfo,
 } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { mustGetGnoNetwork } from "@/networks";
+import { NetworkFeature, getNetworkFeature } from "@/networks";
 import { Tag } from "@/screens/Projects/components/Milestone";
 import { useUtils } from "@/screens/Projects/hooks/useUtils";
 import { Project } from "@/screens/Projects/types";
@@ -50,19 +50,22 @@ export const SubmitContractorCandidateModal: React.FC<
     setIsSubmitting(true);
 
     try {
-      const gnoNetwork = mustGetGnoNetwork(networkId);
-      const caller = mustGetValue(selectedWallet?.address, "caller");
-      const escrowPkgPath = mustGetValue(
-        gnoNetwork.escrowPkgPath,
-        "escrow pkg path",
+      const pmFeature = getNetworkFeature(
+        networkId,
+        NetworkFeature.GnoProjectManager,
       );
+      if (!pmFeature) {
+        throw new Error("GNO project manager feature not found");
+      }
+
+      const caller = mustGetValue(selectedWallet?.address, "caller");
 
       await adenaVMCall(
         networkId,
         {
           caller,
           send: "",
-          pkg_path: escrowPkgPath,
+          pkg_path: pmFeature.projectsManagerPkgPath,
           func: "SubmitContractorCandidate",
           args: [project.id.toString()],
         },

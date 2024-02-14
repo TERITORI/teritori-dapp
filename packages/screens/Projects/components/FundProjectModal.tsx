@@ -1,4 +1,3 @@
-import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 
@@ -18,12 +17,12 @@ import {
   useSelectedNetworkInfo,
 } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { mustGetGnoNetwork } from "@/networks";
+import { NetworkFeature, getNetworkFeature } from "@/networks";
 import { Tag } from "@/screens/Projects/components/Milestone";
 import { useUtils } from "@/screens/Projects/hooks/useUtils";
 import { Project } from "@/screens/Projects/types";
 import { prettyPrice } from "@/utils/coins";
-import { adenaVMCall, extractGnoNumber, extractGnoString } from "@/utils/gno";
+import { adenaVMCall } from "@/utils/gno";
 import { neutral17, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold12,
@@ -48,8 +47,13 @@ export const FundProjectModal: React.FC<FundProjectModalProps> = ({
   const selectedWallet = useSelectedWallet();
   const selectedNetwork = useSelectedNetworkInfo();
 
+  const pmFeature = getNetworkFeature(
+    networkId,
+    NetworkFeature.GnoProjectManager,
+  );
+
   const balances = useBalances(selectedNetwork?.id, selectedWallet?.address);
-  const bal = balances?.find((b) => b.denom === "ugnot");
+  const bal = balances?.find((b) => b.denom === pmFeature?.paymentsDenom);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { setToastError, setToastSuccess } = useFeedbacks();
@@ -59,50 +63,17 @@ export const FundProjectModal: React.FC<FundProjectModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      const gnoNetwork = mustGetGnoNetwork(networkId);
       const caller = mustGetValue(selectedWallet?.address, "caller");
-      const escrowPkgPath = mustGetValue(
-        gnoNetwork.escrowPkgPath,
-        "escrow pkg path",
-      );
-
-      // Approve needed amount
-      // Approve Escrow to send the needed foo20 fund
-      // Get Escrow realm Address
-      const provider = new GnoJSONRPCProvider(gnoNetwork.endpoint);
-
-      const escrowAddress = extractGnoString(
-        await provider.evaluateExpression(escrowPkgPath, `CurrentRealm()`),
-      );
-
-      // Check if Allowance is enough
-      const allowance = extractGnoNumber(
-        await provider.evaluateExpression(
-          project.escrowToken,
-          `Allowance("${selectedWallet?.address}","${escrowAddress}")`,
-        ),
-      );
-
-      if (allowance < project.budget) {
-        await adenaVMCall(
-          networkId,
-          {
-            caller,
-            send: "",
-            pkg_path: project.escrowToken,
-            func: "Approve",
-            args: [escrowAddress, "" + project.budget], // Decimal of tori20 = 4
-          },
-          { gasWanted: 1_000_000 },
-        );
+      if (!pmFeature) {
+        throw new Error("Project manager feature not found");
       }
 
       await adenaVMCall(
         networkId,
         {
           caller,
-          send: "",
-          pkg_path: escrowPkgPath,
+          send: project.budget + pmFeature.paymentsDenom,
+          pkg_path: pmFeature.projectsManagerPkgPath,
           func: "SubmitFunder",
           args: [
             project.id.toString(),
@@ -177,7 +148,7 @@ export const FundProjectModal: React.FC<FundProjectModalProps> = ({
         </BrandText>
 
         <BrandText style={[{ color: neutral77 }, fontSemibold14]}>
-          {prettyPrice(networkId, fundingAmount, "ugnot")}
+          {prettyPrice(networkId, fundingAmount, pmFeature?.paymentsDenom)}
         </BrandText>
       </FlexRow>
 
@@ -187,7 +158,7 @@ export const FundProjectModal: React.FC<FundProjectModalProps> = ({
         </BrandText>
 
         <BrandText style={[{ color: neutral77 }, fontSemibold14]}>
-          {prettyPrice(networkId, bal?.amount, "ugnot")}
+          {prettyPrice(networkId, bal?.amount, pmFeature?.paymentsDenom)}
         </BrandText>
       </FlexRow>
 

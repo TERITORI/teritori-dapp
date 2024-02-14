@@ -21,6 +21,9 @@ export enum ContractStatus {
   PAUSED = "PAUSED",
   COMPLETED = "COMPLETED",
   REJECTED = "REJECTED",
+  CONFLICT = "CONFLICT",
+  ABORTED_IN_FAVOR_OF_FUNDER = "ABORTED_IN_FAVOR_OF_FUNDER",
+  ABORTED_IN_FAVOR_OF_CONTRACTOR = "ABORTED_IN_FAVOR_OF_CONTRACTOR",
 }
 
 export type ShortDescData = {
@@ -30,7 +33,6 @@ export type ShortDescData = {
   duration: number;
   funder: string;
   contractor: string;
-  paymentAddr: string;
   coverImg: string;
   tags: string;
   _coverImgFile?: LocalFileData;
@@ -64,6 +66,24 @@ export type ProjectMilestone = {
   priority: MsPriority;
 };
 
+enum ConflictOutcome {
+  RESUME_CONTRACT = "RESUME_CONTRACT",
+  REFUND_FUNDER = "REFUND_FUNDER",
+  PAY_CONTRACTOR = "PAY_CONTRACTOR",
+  UNKNOWN = "UNKNOWN",
+}
+
+type Conflict = {
+  initiator: string;
+  createdAt: number;
+  respondedAt: number | null;
+  resolvedAt: number | null;
+  initiatorMessage: string;
+  responseMessage: string | null;
+  resolutionMessage: string | null;
+  outcome: ConflictOutcome | null;
+};
+
 export type Project = {
   id: number;
   sender: string;
@@ -75,7 +95,9 @@ export type Project = {
   expireAt: number;
   funderFeedback: string;
   contractorFeedback: string;
+  contractorCandidates: string[];
   milestones: ProjectMilestone[];
+  conflicts: Conflict[];
   activeMilestone: number;
   pausedBy: string;
   conflictHandler: string;

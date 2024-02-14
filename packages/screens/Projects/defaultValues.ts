@@ -20,7 +20,6 @@ export const emptyShortDesc: ShortDescData = {
   budget: 0,
   arbitrator: "",
   duration: 0,
-  paymentAddr: "",
   coverImg: "",
   tags: "",
   funder: "",
@@ -37,7 +36,6 @@ export const fakeShortDesc: ShortDescData = {
   duration: 0,
   funder: "",
   contractor: "",
-  paymentAddr: "ugnot",
   coverImg: "https://thisis.img",
   tags: "tag1,tag2,tag3",
 };

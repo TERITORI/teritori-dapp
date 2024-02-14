@@ -26,14 +26,12 @@ import { emptyShortDesc } from "../defaultValues";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 
 import { ButtonsGroup } from "@/screens/Projects/components/ButtonsGroup";
-import { useProjectInfo } from "@/screens/Projects/hooks/useProjectInfo";
 
 const shortDescSchema = object({
   name: string().required().min(3),
   desc: string().required().min(10),
   funder: string(),
   contractor: string().min(32),
-  paymentAddr: string().required().min(6),
   coverImg: string().required(),
   arbitrator: string().required(),
   tags: string().nullable(),
@@ -53,7 +51,6 @@ export const ShortPresentation: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const [searchTNSText, setSearchTNSText] = useState("");
   const [isTNSVisible, setIsTNSVisible] = useState(false);
-  const { setEscrowToken } = useProjectInfo((state) => state.actions);
 
   const [creatorType, setCreatorType] = useState(CREATOR_TYPE_CONTRACTOR);
 
@@ -89,7 +86,6 @@ export const ShortPresentation: React.FC = () => {
             values.funder = caller;
           }
 
-          setEscrowToken(values.paymentAddr);
           setShortDesc(values);
           goNextStep();
         }}
@@ -222,19 +218,6 @@ export const ShortPresentation: React.FC = () => {
                 error={errors.arbitrator}
               />
 
-              <SpacerColumn size={2.5} />
-
-              <TextInputCustom
-                label="Payment Address (Gnoland) *"
-                name="paymentAddr"
-                fullWidth
-                placeholder="Type Gnoland payment address..."
-                variant="labelOutside"
-                onChangeText={handleChange("paymentAddr")}
-                value={values.paymentAddr}
-                defaultValue="gno.land/r/demo/tori20"
-                error={errors.paymentAddr}
-              />
               <BrandText
                 style={[
                   fontSemibold13,

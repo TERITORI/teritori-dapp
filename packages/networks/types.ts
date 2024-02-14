@@ -117,7 +117,6 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   daoInterfacesPkgPath?: string;
   daoCorePkgPath?: string;
   groupsPkgPath?: string;
-  escrowPkgPath?: string;
   faucetURL?: string;
 };
 

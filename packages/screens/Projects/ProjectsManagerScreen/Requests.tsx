@@ -1,3 +1,4 @@
+import { Link } from "@react-navigation/native";
 import React, { useState } from "react";
 import { View } from "react-native";
 
@@ -5,21 +6,27 @@ import githubSVG from "../../../../assets/icons/github.svg";
 import FlexRow from "../../../components/FlexRow";
 import ModalBase from "../../../components/modals/ModalBase";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import {
+  NetworkFeature,
+  getNetworkFeature,
+  getUserId,
+} from "../../../networks";
+import { adenaVMCall } from "../../../utils/gno";
+import { useAppNavigation } from "../../../utils/navigation";
 import { ProjectStatusTag } from "../components/ProjectStatusTag";
 import { useProjects } from "../hooks/useProjects";
-import { ContractStatus, Project } from "../types";
+import { Project, ContractStatus } from "../types";
 
 import { BrandText } from "@/components/BrandText";
-import { Link } from "@/components/Link";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
 import { SocialButton } from "@/components/buttons/SocialButton";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { Separator } from "@/components/separators/Separator";
+import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { useEscrowContract } from "../hooks/useEscrowContract";
-import { useAppNavigation } from "@/utils/navigation";
 import {
   neutral17,
   neutralA3,
@@ -38,14 +45,14 @@ const Spacing = () => {
 };
 
 const RequestItem: React.FC<{
-  project: Project;
+  project: Project & { contractorCandidate?: string };
   networkId: string;
   walletAddress: string;
   requestType: RequestType;
 }> = ({ project, networkId, walletAddress, requestType }) => {
   const navigation = useAppNavigation();
 
-  const { execEscrowMethod } = useEscrowContract(networkId, walletAddress);
+  const { setToastError, setToastSuccess } = useFeedbacks();
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
@@ -55,19 +62,119 @@ const RequestItem: React.FC<{
     navigation.navigate("ProjectsDetail", { id: project.id });
   };
 
+  const acceptContractor = async () => {
+    setIsProcessing(true);
+
+    try {
+      const caller = walletAddress;
+
+      const pmFeature = getNetworkFeature(
+        networkId,
+        NetworkFeature.GnoProjectManager,
+      );
+      if (!pmFeature) {
+        throw new Error("Project manager feature not found");
+      }
+
+      if (!project.contractorCandidate) {
+        throw new Error("Contractor candidate not found");
+      }
+
+      await adenaVMCall(
+        networkId,
+        {
+          caller,
+          send: "",
+          pkg_path: pmFeature.projectsManagerPkgPath,
+          func: "AcceptContractor",
+          args: ["" + project.id, project.contractorCandidate],
+        },
+        { gasWanted: 2_000_000 },
+      );
+
+      setToastSuccess({
+        title: "Success",
+        message: "Request has been accepted !",
+      });
+    } catch (e: any) {
+      setToastError({ title: "Error", message: e.message });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const acceptContract = async (project: Project) => {
     setIsProcessing(true);
-    await execEscrowMethod("AcceptContract", [project.id.toString()]);
-    setIsProcessing(false);
+
+    try {
+      const caller = walletAddress;
+
+      const pmFeature = getNetworkFeature(
+        networkId,
+        NetworkFeature.GnoProjectManager,
+      );
+      if (!pmFeature) {
+        throw new Error("Project manager feature not found");
+      }
+
+      await adenaVMCall(
+        networkId,
+        {
+          caller,
+          send: "",
+          pkg_path: pmFeature.projectsManagerPkgPath,
+          func: "AcceptContract",
+          args: ["" + project.id],
+        },
+        { gasWanted: 2_000_000 },
+      );
+
+      setToastSuccess({
+        title: "Success",
+        message: "Request has been accepted !",
+      });
+    } catch (e: any) {
+      setToastError({ title: "Error", message: e.message });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const rejectContract = async (project: Project, rejectReason: string) => {
     setIsProcessing(true);
-    await execEscrowMethod("RejectContract", [
-      project.id.toString(),
-      rejectReason,
-    ]);
-    setIsProcessing(false);
+
+    try {
+      const caller = walletAddress;
+
+      const pmFeature = getNetworkFeature(
+        networkId,
+        NetworkFeature.GnoProjectManager,
+      );
+      if (!pmFeature) {
+        throw new Error("Project manager feature not found");
+      }
+
+      await adenaVMCall(
+        networkId,
+        {
+          caller,
+          send: "",
+          pkg_path: pmFeature.projectsManagerPkgPath,
+          func: "RejectContract",
+          args: ["" + project.id, rejectReason],
+        },
+        { gasWanted: 2_000_000 },
+      );
+      setIsShowModal(false);
+      setToastSuccess({
+        title: "Success",
+        message: "Request has been rejected !",
+      });
+    } catch (e: any) {
+      setToastError({ title: "Error", message: e.message });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -111,11 +218,24 @@ const RequestItem: React.FC<{
 
           <Spacing />
 
-          <View style={{ flex: 4 }}>
-            <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-              {requestType === "requestsByBuilders" && "Builder"}
-              {requestType === "requestsByInvestors" && "Investor"}
-            </BrandText>
+          <View
+            style={{
+              flex: 4,
+              alignItems: "flex-start",
+              justifyContent: "center",
+            }}
+          >
+            {requestType === "requestsByBuilders" && (
+              <UsernameWithAvatar
+                userId={getUserId(networkId, project.contractorCandidate)}
+                addrLen={14}
+              />
+            )}
+            {requestType === "requestsByInvestors" && (
+              <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
+                Investor{" "}
+              </BrandText>
+            )}
 
             <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
               {requestType === "requestsByBuilders" && project.contractor}
@@ -184,7 +304,11 @@ const RequestItem: React.FC<{
                   color={primaryColor}
                   size="SM"
                   text="Accept"
-                  onPress={() => acceptContract(project)}
+                  onPress={
+                    requestType === "requestsByBuilders"
+                      ? acceptContractor
+                      : () => acceptContract(project)
+                  }
                 />
               </>
             )}
@@ -253,14 +377,32 @@ export const Requests: React.FC<{
     return null;
   }
 
-  const adjustedProjects =
+  console.log("projects in requests", projects);
+
+  let adjustedProjects: (Project & { contractorCandidate?: string })[] =
     type === "requestsByBuilders"
-      ? projects.filter((p) => p.sender === p.contractor)
-      : projects.filter((p) => p.sender === p.funder);
+      ? projects.filter((p) => p.sender === p.funder)
+      : projects.filter((p) => p.sender === p.contractor);
+
+  if (type === "requestsByBuilders") {
+    // expand by contractor
+    adjustedProjects = adjustedProjects.reduce(
+      (acc, p) => {
+        const newProjects = p.contractorCandidates.map((c) => ({
+          ...p,
+          contractorCandidate: c,
+        }));
+        return [...acc, ...newProjects];
+      },
+      [] as (Project & { contractorCandidate?: string })[],
+    );
+  }
+
+  console.log("adjustedProjects", adjustedProjects);
 
   return (
     <>
-      {adjustedProjects.map((project: Project) => {
+      {adjustedProjects.map((project) => {
         return (
           <RequestItem
             key={project.id}

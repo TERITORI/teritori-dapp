@@ -13,7 +13,6 @@ import { FlexRow } from "@/components/FlexRow";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { Tabs } from "@/components/tabs/Tabs";
 import { NetworkKind } from "@/networks";
-import { ContractorCandidates } from "@/screens/Projects/ProjectsManagerScreen/ContractorCandidates";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
@@ -32,9 +31,9 @@ const TAB_OPTIONS: TabOption = {
     name: "Reviews",
     component: <MilestonesUpdateManager />,
   },
-  contractorCandidates: {
+  requestsByBuilders: {
     name: "Contractor candidates",
-    component: <ContractorCandidates />,
+    component: <Requests type="requestsByBuilders" />,
   },
   requestsByInvestors: {
     name: "Requests by investors",
