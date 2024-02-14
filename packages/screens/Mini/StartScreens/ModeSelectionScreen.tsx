@@ -33,7 +33,7 @@ export const ModeSelectionScreen: ScreenFC<"ModeSelection"> = ({
   const [activeIndex, setActiveIndex] = useState(0);
 
   const onNotNowPress = async () => {
-    await AsyncStorage.setItem("ONBOARDED", JSON.stringify(true));
+    await AsyncStorage.setItem("ONBOARDED", "true");
     navigation.navigate("ChatActivation", { appMode });
   };
 
