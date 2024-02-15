@@ -38,7 +38,7 @@ jobs:
 
       - name: Bump ios buildNumber
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        run: make bump-ios-build-number
+        run: make bump-app-build-number
 
       - name: Fix gitignore
         run: npx tsx ./packages/scripts/app-build/fixGitignore.ts
