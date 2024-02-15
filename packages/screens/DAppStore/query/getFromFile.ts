@@ -62,20 +62,6 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: true,
           alwaysOn: true,
         },
-        ...(Platform.OS !== "web"
-          ? {
-              toriwallet: {
-                id: "toriwallet",
-                title: "Teritori OS Wallet",
-                description: "Wallet",
-                icon: pathwar,
-                route: "NativeWallet",
-                groupKey: "teritori-core-apps",
-                selectedByDefault: true,
-                alwaysOn: false,
-              },
-            }
-          : {}),
         launchpad: {
           id: "launchpad",
           title: "Launchpad",
@@ -96,16 +82,31 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: true,
           alwaysOn: true,
         },
-        wallet: {
-          id: "wallet",
-          title: "My Wallet",
-          description: "Wallet",
-          icon: wallet,
-          route: "WalletManager",
-          groupKey: "teritori-core-apps",
-          selectedByDefault: true,
-          alwaysOn: true,
-        },
+        ...(Platform.OS !== "web"
+          ? {
+              toriwallet: {
+                id: "toriwallet",
+                title: "Teritori OS Wallet",
+                description: "Wallet",
+                icon: wallet,
+                route: "NativeWallet",
+                groupKey: "teritori-core-apps",
+                selectedByDefault: true,
+                alwaysOn: false,
+              },
+            }
+          : {
+              wallet: {
+                id: "wallet",
+                title: "My Wallet",
+                description: "Wallet",
+                icon: wallet,
+                route: "WalletManager",
+                groupKey: "teritori-core-apps",
+                selectedByDefault: true,
+                alwaysOn: true,
+              },
+            }),
         governance: {
           id: "governance",
           title: "Governance",
