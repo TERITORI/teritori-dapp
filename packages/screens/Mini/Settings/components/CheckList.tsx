@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { RedAlert } from "./RedAlert";
@@ -7,6 +7,7 @@ import Checkbox from "../../components/Checkbox/Checkbox";
 import MiniTextInput from "../../components/MiniTextInput";
 
 import { SpacerColumn } from "@/components/spacer";
+import { getValueFor } from "@/hooks/useMobileSecureStore";
 import { neutral22, neutralA3 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
 
@@ -16,7 +17,14 @@ type Props = {
 };
 
 export const CheckList = ({ gotoVisibleScreen, type }: Props) => {
-  const [password, setPassword] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
+  const [securePasswordStore, setSecurePasswordStore] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      setSecurePasswordStore(await getValueFor("password"));
+    })();
+  }, []);
   const [revealSeedsConditions, setRevealSeedsConditions] = useState({
     fullControlOverFunds: false,
     neverShare: false,
@@ -32,9 +40,8 @@ export const CheckList = ({ gotoVisibleScreen, type }: Props) => {
   const onNextPress = () => {
     gotoVisibleScreen();
   };
-  const isDisabled =
-    !password ||
-    !revealSeedsConditions.fullControlOverFunds ||
+  const isDisabled = !passwordInput || passwordInput === securePasswordStore;
+  !revealSeedsConditions.fullControlOverFunds ||
     !revealSeedsConditions.neverShare;
 
   const checkboxes: {
@@ -78,8 +85,8 @@ export const CheckList = ({ gotoVisibleScreen, type }: Props) => {
         <MiniTextInput
           placeholder="Password"
           secureTextEntry
-          value={password}
-          onChangeText={setPassword}
+          value={passwordInput}
+          onChangeText={setPasswordInput}
         />
       </View>
 

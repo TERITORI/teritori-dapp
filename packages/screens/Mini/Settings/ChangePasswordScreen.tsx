@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { CustomButton } from "../components/Button/CustomButton";
@@ -6,6 +6,7 @@ import MiniTextInput from "../components/MiniTextInput";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 import { SpacerColumn } from "@/components/spacer";
+import { getValueFor } from "@/hooks/useMobileSecureStore";
 import { ScreenFC } from "@/utils/navigation";
 import { layout } from "@/utils/style/layout";
 
@@ -18,6 +19,14 @@ export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
     confirmPassword: "",
   });
 
+  const [securePasswordStore, setSecurePasswordStore] = useState();
+
+  useEffect(() => {
+    (async () => {
+      setSecurePasswordStore(await getValueFor("password"));
+    })();
+  }, []);
+
   const gotoSecurityAndPrivacy = () =>
     navigation.replace("MiniSecurityAndPrivacy");
 
@@ -25,7 +34,24 @@ export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
     setFormDate((prev) => ({ ...prev, [key]: text }));
   };
 
-  const onSaveNewPassword = () => {};
+  const onSaveNewPassword = () => {
+    console.log("securePasswordStore", securePasswordStore);
+    if (securePasswordStore === null) {
+      navigation.navigate("CreatePasswordWallet");
+    }
+    if (formData.password !== securePasswordStore) {
+      alert("Current password is incorrect");
+      return;
+    }
+
+    if (formData.newPassword !== formData.confirmPassword) {
+      alert("New password and confirm password does not match");
+      return;
+    }
+
+    alert("Password changed successfully");
+    navigation.replace("MiniSecurityAndPrivacy");
+  };
 
   return (
     <BlurScreenContainer
