@@ -19137,7 +19137,7 @@ __metadata:
     ts-proto: ^1.120.0
     ts-unused-exports: ^10.0.1
     tsx: ^4.7.0
-    typescript: ^5.2.2
+    typescript: ^5.3.0
     uuid: ^9.0.0
     victory: ^36.6.12
     victory-native: ^36.6.8
@@ -19589,7 +19589,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.2.2":
+"typescript@npm:^5.3.0":
   version: 5.3.3
   resolution: "typescript@npm:5.3.3"
   bin:
@@ -19609,7 +19609,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
+"typescript@patch:typescript@^5.3.0#~builtin<compat/typescript>":
   version: 5.3.3
   resolution: "typescript@patch:typescript@npm%3A5.3.3#~builtin<compat/typescript>::version=5.3.3&hash=85af82"
   bin:
