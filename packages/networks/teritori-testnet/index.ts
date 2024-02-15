@@ -31,7 +31,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     {
       type: NetworkFeature.CosmWasmPremiumFeed,
       membershipContractAddress:
-        "tori1yek2csaaw550wq52v06ztwp2snuxp8epkfzzvqfvkv8g6xfv3nqqzgz3p9",
+        "tori1quf0cu5tlg54aqjd8z54gpvcnh29n6l8qcqmllgrl4gz6jlyn7tsrjllj8",
       mintDenom: "utori",
     },
   ],

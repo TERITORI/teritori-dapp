@@ -1,48 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
 import { AccordionSelectComponent } from "./AccordionSelectComponent";
 import { PremiumSubscriptionBottom } from "./PremiumSubscriptionBottom";
-import ModalBase from "../../../../components/modals/ModalBase";
-import { layout } from "../../../../utils/style/layout";
 
 import { BrandText } from "@/components/BrandText";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
+import ModalBase from "@/components/modals/ModalBase";
 import { SpacerColumn } from "@/components/spacer";
-import { MembershipConfig } from "@/contracts-clients/cw721-membership";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { parseUserId } from "@/networks";
+import { mustGetCw721MembershipSigningClient } from "@/utils/feed/client";
 import { DEFAULT_NAME } from "@/utils/social-feed";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import { fontBold16, fontMedium14, fontSemibold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const PremiumSubscriptionModal: React.FC<{
   onClose: () => void;
-  onSubscribe?: () => void;
   isVisible: boolean;
   userId: string;
-}> = ({ onClose, onSubscribe, isVisible, userId }) => {
+}> = ({ onClose, isVisible, userId }) => {
   const { metadata } = useNSUserInfo(userId);
-  const [network] = parseUserId(userId);
-  const [user, userAddress] = parseUserId(userId);
-  const { data: channel } = usePremiumChannel(user?.id, userAddress);
+  const [network, channelAddress] = parseUserId(userId);
+  const { data: channel } = usePremiumChannel(network?.id, channelAddress);
+  const selectedWallet = useSelectedWallet();
+  const { wrapWithFeedback } = useFeedbacks();
 
-  const [selectedItem, setSelectedItem] = useState<MembershipConfig>();
+  const [selectedItemIndex, setSelectedItemIndex] = useState<number>(0);
+  const selectedItem = channel?.memberships_config[selectedItemIndex];
 
-  useEffect(() => {
-    if (channel?.memberships_config) {
-      setSelectedItem((prev) => {
-        if (prev) {
-          return prev;
-        }
-        return channel.memberships_config[0];
-      });
-    }
-  }, [channel]);
-
-  if (!user?.id || channel === undefined || !network) {
+  if (!network?.id || channel === undefined || !network) {
     return null;
   }
 
@@ -57,10 +49,36 @@ export const PremiumSubscriptionModal: React.FC<{
         <PremiumSubscriptionBottom
           networkId={network.id}
           item={selectedItem}
-          onSubscribe={() => {
-            onClose();
-            onSubscribe && onSubscribe();
-          }}
+          onSubscribe={wrapWithFeedback(async () => {
+            try {
+              if (!selectedItem) {
+                throw new Error("No item selected");
+              }
+              if (!selectedWallet) {
+                throw new Error("No wallet selected");
+              }
+              const client = await mustGetCw721MembershipSigningClient(
+                selectedWallet.userId,
+              );
+              await client.subscribe(
+                {
+                  channelAddr: channelAddress,
+                  membershipKind: selectedItemIndex,
+                  recipientAddr: selectedWallet.address,
+                },
+                undefined,
+                undefined,
+                [
+                  {
+                    amount: selectedItem.price.amount,
+                    denom: selectedItem.price.denom,
+                  },
+                ],
+              );
+            } finally {
+              onClose();
+            }
+          })}
         />
       }
     >
@@ -84,7 +102,7 @@ export const PremiumSubscriptionModal: React.FC<{
             {metadata?.tokenId ? metadata?.public_name : DEFAULT_NAME}
           </BrandText>
           <BrandText style={[fontMedium14, { color: neutral55, marginTop: 2 }]}>
-            @{metadata?.tokenId ? metadata.tokenId : userAddress}
+            @{metadata?.tokenId ? metadata.tokenId : channelAddress}
           </BrandText>
         </View>
       </View>
@@ -103,8 +121,8 @@ export const PremiumSubscriptionModal: React.FC<{
               networkId={network.id}
               item={memberships}
               selectedItem={selectedItem}
-              onItemSelect={(item) => {
-                setSelectedItem(item);
+              onItemSelect={() => {
+                setSelectedItemIndex(index);
               }}
             />
           );

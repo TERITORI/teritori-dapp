@@ -1,5 +1,5 @@
 [package]
-name = "cw721_membership"
+name = "cw721-membership"
 version = "0.1.0"
 edition = "2021"
 
@@ -16,3 +16,6 @@ cw-storage-plus = "1.1.0"
 thiserror = "1.0.44"
 cw721 = "0.18.0"
 cw721-metadata-onchain = { version = "0.15.0", features = ["library"] }
+
+[dev-dependencies]
+sylvia = { version = "0.7.0", features = ["mt"] }

@@ -21,9 +21,11 @@ import { SocialButton } from "@/components/buttons/SocialButton";
 import { SocialButtonSecondary } from "@/components/buttons/SocialButtonSecondary";
 import { ProfileButton } from "@/components/hub/ProfileButton";
 import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
+import { usePremiumIsSubscribed } from "@/hooks/feed/usePremiumIsSubscribed";
 import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { accountExplorerLink, parseUserId } from "@/networks";
 import { DEFAULT_NAME } from "@/utils/social-feed";
 import {
@@ -41,6 +43,7 @@ export const UPPIntro: React.FC<{
   isUserOwner?: boolean;
   setIsEditProfileModal?: (val: boolean) => void;
 }> = ({ userId, isUserOwner, setIsEditProfileModal = (val) => {} }) => {
+  const selectedWallet = useSelectedWallet();
   const { metadata } = useNSUserInfo(userId);
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { margin: layout.spacing_x0_75 };
@@ -48,13 +51,17 @@ export const UPPIntro: React.FC<{
   const { width } = useMaxResolution();
   const { width: windowWidth } = useWindowDimensions();
 
+  const { data: isSubscribed } = usePremiumIsSubscribed(
+    userId,
+    selectedWallet?.userId,
+  );
+
   const [developerMode] = useDeveloperMode();
 
   const [subscriptionSetupModalVisible, setSubscriptionSetupModalVisible] =
     useState(false);
   const [premiumSubscriptionModalVisible, setPremiumSubscriptionModalVisible] =
     useState(false);
-  const [isSubscribe, setIsSubscribe] = useState(false);
 
   return (
     <>
@@ -176,7 +183,7 @@ export const UPPIntro: React.FC<{
             <>
               {developerMode && (
                 <>
-                  {isSubscribe ? (
+                  {isSubscribed ? (
                     <SecondaryButtonOutline
                       style={{ width: 132, marginRight: layout.spacing_x2 }}
                       text="Subscribed"
@@ -210,7 +217,6 @@ export const UPPIntro: React.FC<{
                 onClose={() => setPremiumSubscriptionModalVisible(false)}
                 isVisible={premiumSubscriptionModalVisible}
                 userId={userId}
-                onSubscribe={() => setIsSubscribe(true)}
               />
               <SecondaryButtonOutline
                 text="Follow this Teritori"
