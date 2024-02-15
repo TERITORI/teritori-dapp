@@ -54,7 +54,6 @@ import { CreateWalletScreen } from "@/screens/Wallet/Screens/CreateWalletScreen"
 import { ImportWallet } from "@/screens/Wallet/Screens/ImportWallet";
 import NativeWallet from "@/screens/Wallet/Screens/NativeWallet";
 import { SuccessScreen } from "@/screens/Wallet/Screens/SucessScreen";
-import { ViewSeed } from "@/screens/Wallet/Screens/ViewSeed";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -119,11 +118,6 @@ export const MiniModeNavigator: React.FC = () => {
         name="MiniTabs"
         options={{ header: () => null }}
         component={MainTab}
-      />
-      <Stack.Screen
-        name="ViewSeed"
-        component={ViewSeed}
-        options={{ header: () => null, title: "View Seed" }}
       />
       <Stack.Screen
         name="ImportWallet"

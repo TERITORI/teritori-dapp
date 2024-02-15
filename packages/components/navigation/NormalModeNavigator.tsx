@@ -58,7 +58,6 @@ import { CreatePassword } from "@/screens/Wallet/Screens/CreatePassword";
 import { ImportWallet } from "@/screens/Wallet/Screens/ImportWallet";
 import NativeWallet from "@/screens/Wallet/Screens/NativeWallet";
 import { SuccessScreen } from "@/screens/Wallet/Screens/SucessScreen";
-import { ViewSeed } from "@/screens/Wallet/Screens/ViewSeed";
 import { WalletManagerScreen } from "@/screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "@/screens/WalletManager/WalletsScreen";
 
@@ -423,11 +422,6 @@ export const NormalModeNavigator: React.FC = () => {
         name="NativeWallet"
         component={NativeWallet}
         options={{ header: () => null, title: screenTitle("Wallet Create") }}
-      />
-      <Nav.Screen
-        name="ViewSeed"
-        component={ViewSeed}
-        options={{ header: () => null, title: screenTitle("View Seed") }}
       />
       <Nav.Screen
         name="ImportWallet"
