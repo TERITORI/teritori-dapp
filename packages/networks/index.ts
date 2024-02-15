@@ -9,15 +9,16 @@ import {
 import { Decimal } from "@cosmjs/math";
 import { Registry } from "@cosmjs/proto-signing";
 import {
-  SigningStargateClient,
-  GasPrice,
-  defaultRegistryTypes,
   AminoTypes,
-  StargateClient,
   createDefaultAminoConverters,
+  defaultRegistryTypes,
+  GasPrice,
+  SigningStargateClient,
+  StargateClient,
 } from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 import { bech32 } from "bech32";
+import { Platform } from "react-native";
 
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
@@ -49,6 +50,9 @@ import {
   teritoriProtoRegistry,
 } from "../api/teritori-chain";
 import { convertKeplrSigner, getKeplr } from "../utils/keplr";
+
+import { getNativeSigner } from "@/utils/wallet/getNativeSigner";
+import { getNativeWallet } from "@/utils/wallet/getNativeWallet";
 
 export * from "./types";
 
@@ -539,13 +543,25 @@ export const getKeplrSigningCosmWasmClient = async (
   gasPriceKind: "low" | "average" | "high" = "average",
 ) => {
   const network = mustGetCosmosNetwork(networkId);
-
-  const signer = await getKeplrSigner(networkId);
-
   const gasPrice = cosmosNetworkGasPrice(network, gasPriceKind);
   if (!gasPrice) {
     throw new Error("gas price not found");
   }
+  if (Platform.OS !== "web") {
+    const wallet = await getNativeWallet("tori", 0);
+    const address = await wallet
+      .getAccounts()
+      .then((accounts) => accounts[0].address);
+    return getNativeSigner({
+      network: NetworkKind.Cosmos,
+      networkId,
+      index: 0,
+      address,
+      provider: "native",
+    });
+  }
+
+  const signer = await getKeplrSigner(networkId);
 
   return SigningCosmWasmClient.connectWithSigner(network.rpcEndpoint, signer, {
     gasPrice,

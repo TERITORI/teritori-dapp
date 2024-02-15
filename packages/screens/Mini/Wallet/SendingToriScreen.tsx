@@ -26,7 +26,6 @@ import { SVG } from "@/components/SVG";
 import { UserNameInline } from "@/components/UserNameInline";
 import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
-import { getNativeSigner } from "@/hooks/wallet/getNativeSigner";
 import { useGetAssets } from "@/hooks/wallet/useGetAssets";
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 import { getCosmosNetwork, getStakingCurrency } from "@/networks";
@@ -40,6 +39,7 @@ import {
 } from "@/utils/style/colors";
 import { fontMedium16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { getNativeSigner } from "@/utils/wallet/getNativeSigner";
 
 const getTxData = (denom: string, amount: string, userId: string) => {
   const networkId = "teritori"; // networkId placeholder
