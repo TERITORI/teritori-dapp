@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { AccordionSelectComponent } from "./AccordionSelectComponent";
@@ -25,12 +25,24 @@ export const PremiumSubscriptionModal: React.FC<{
   userId: string;
 }> = ({ onClose, onSubscribe, isVisible, userId }) => {
   const { metadata } = useNSUserInfo(userId);
+  const [network] = parseUserId(userId);
   const [user, userAddress] = parseUserId(userId);
   const { data: channel } = usePremiumChannel(user?.id, userAddress);
 
   const [selectedItem, setSelectedItem] = useState<MembershipConfig>();
 
-  if (!user?.id || channel === undefined) {
+  useEffect(() => {
+    if (channel?.memberships_config) {
+      setSelectedItem((prev) => {
+        if (prev) {
+          return prev;
+        }
+        return channel.memberships_config[0];
+      });
+    }
+  }, [channel]);
+
+  if (!user?.id || channel === undefined || !network) {
     return null;
   }
 
@@ -43,6 +55,7 @@ export const PremiumSubscriptionModal: React.FC<{
       label="Premium Subscription"
       childrenBottom={
         <PremiumSubscriptionBottom
+          networkId={network.id}
           item={selectedItem}
           onSubscribe={() => {
             onClose();
@@ -86,6 +99,8 @@ export const PremiumSubscriptionModal: React.FC<{
         {channel?.memberships_config?.map((memberships, index) => {
           return (
             <AccordionSelectComponent
+              key={index}
+              networkId={network.id}
               item={memberships}
               selectedItem={selectedItem}
               onItemSelect={(item) => {

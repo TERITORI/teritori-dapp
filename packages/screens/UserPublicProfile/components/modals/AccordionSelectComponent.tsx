@@ -14,6 +14,7 @@ import { OptimizedImage } from "@/components/OptimizedImage";
 import { SVG } from "@/components/SVG";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { MembershipConfig } from "@/contracts-clients/cw721-membership";
+import { prettyPrice } from "@/utils/coins";
 import {
   neutral00,
   neutral22,
@@ -25,12 +26,14 @@ import { fontSemibold13, fontSemibold16 } from "@/utils/style/fonts";
 
 interface AccordionProps {
   item: MembershipConfig;
-  selectedItem: any;
+  networkId: string;
+  selectedItem: MembershipConfig | undefined;
   onItemSelect: (item: MembershipConfig) => void;
 }
 
 export const AccordionSelectComponent: FC<AccordionProps> = ({
   item,
+  networkId,
   selectedItem,
   onItemSelect,
 }) => {
@@ -108,7 +111,7 @@ export const AccordionSelectComponent: FC<AccordionProps> = ({
                 { color: neutral77, marginLeft: layout.spacing_x1 },
               ]}
             >
-              ${item.price.amount || "0"}
+              {prettyPrice(networkId, item?.price.amount, item?.price.denom)}
             </BrandText>
             <TouchableOpacity
               onPress={() => {

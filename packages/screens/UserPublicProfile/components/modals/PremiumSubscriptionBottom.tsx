@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC } from "react";
 import { View } from "react-native";
 
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
@@ -11,10 +11,9 @@ import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { MembershipConfig } from "@/contracts-clients/cw721-membership";
 import { useBalances } from "@/hooks/useBalances";
-import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { getNativeCurrency, getStakingCurrency } from "@/networks";
-import { premiumPrice } from "@/utils/coins";
+import { getNativeCurrency } from "@/networks";
+import { prettyPrice } from "@/utils/coins";
 import { neutral33, neutral77, secondaryColor } from "@/utils/style/colors";
 import {
   fontMedium14,
@@ -22,23 +21,18 @@ import {
   fontSemibold20,
 } from "@/utils/style/fonts";
 
-export const PremiumSubscriptionBottom = ({
-  item,
-  onSubscribe,
-}: {
+export const PremiumSubscriptionBottom: FC<{
+  networkId: string;
   item: MembershipConfig | undefined;
   onSubscribe: () => void;
-}) => {
+}> = ({ networkId, item, onSubscribe }) => {
   const selectedWallet = useSelectedWallet();
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-  const selectedNetworkId = selectedNetworkInfo?.id || "";
-  const nativeCurrency = getStakingCurrency(selectedNetworkId);
-  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
-  const currencyBalance = balances.find(
-    (bal) => bal.denom === nativeCurrency?.denom,
-  );
-  const amountUsd = currencyBalance?.usdAmount || 0;
-  const currency = getNativeCurrency(selectedNetworkId, nativeCurrency?.denom);
+  const balances = useBalances(networkId, selectedWallet?.address);
+
+  const mintDenom = item?.price.denom;
+
+  const nativeCurrency = getNativeCurrency(networkId, mintDenom);
+  const currencyBalance = balances.find((bal) => bal.denom === mintDenom);
 
   return (
     <View style={{ width: "100%" }}>
@@ -62,7 +56,7 @@ export const PremiumSubscriptionBottom = ({
           <SpacerColumn size={1} />
 
           <BrandText style={[fontSemibold20, { color: secondaryColor }]}>
-            ${(item && item.price.amount) || "0"}
+            {prettyPrice(networkId, item?.price.amount, item?.price.denom)}
           </BrandText>
         </View>
 
@@ -72,7 +66,7 @@ export const PremiumSubscriptionBottom = ({
               flex: 1,
               flexDirection: "row",
               alignItems: "center",
-              justifyContent: "flex-end",
+              justifyContent: "space-between",
             }}
           >
             <BrandText
@@ -93,10 +87,10 @@ export const PremiumSubscriptionBottom = ({
               }}
             >
               <CurrencyIcon
-                icon={currency?.icon}
+                icon={nativeCurrency?.icon}
                 size={16}
-                denom={currency?.denom || ""}
-                networkId={selectedNetworkId}
+                denom={mintDenom || ""}
+                networkId={networkId}
               />
 
               <BrandText
@@ -109,14 +103,17 @@ export const PremiumSubscriptionBottom = ({
                   },
                 ]}
               >
-                {currency?.displayName}
+                {nativeCurrency?.displayName}
               </BrandText>
             </PrimaryBox>
           </View>
           <SpacerColumn size={1} />
 
           <BrandText
-            style={[fontSemibold14, { color: neutral77, lineHeight: 20 }]}
+            style={[
+              fontSemibold14,
+              { color: neutral77, lineHeight: 20, textAlign: "right" },
+            ]}
           >
             Balance:{" "}
             <BrandText
@@ -125,16 +122,11 @@ export const PremiumSubscriptionBottom = ({
                 { color: secondaryColor, lineHeight: 20 },
               ]}
             >
-              {premiumPrice(
-                selectedNetworkId,
-                currencyBalance?.amount,
-                currencyBalance?.denom,
-              )}{" "}
-              <BrandText
-                style={[fontSemibold14, { color: neutral77, lineHeight: 20 }]}
-              >
-                ${parseFloat(amountUsd.toFixed(2).toString())}
-              </BrandText>
+              {prettyPrice(
+                networkId,
+                currencyBalance?.amount || "0",
+                mintDenom,
+              )}
             </BrandText>
           </BrandText>
         </View>
