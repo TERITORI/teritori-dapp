@@ -3,47 +3,47 @@ import { Image, View } from "react-native";
 
 import gnoSVG from "../../../../assets/icons/networks/gno.svg";
 import projectSuccessPaymentPNG from "../../../../assets/project-success-payment.png";
-import { BrandText } from "../../../components/BrandText";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
 import ModalBase from "../../../components/modals/ModalBase";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useIpfs } from "../../../hooks/useIpfs";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { Tag } from "../components/Milestone";
+import { useMakeRequestState } from "../hooks/useMakeRequestHook";
+import { useUtils } from "../hooks/useUtils";
+
+import { BrandText } from "@/components/BrandText";
+import FlexRow from "@/components/FlexRow";
+import { SVG } from "@/components/SVG";
+import { TertiaryBox } from "@/components/boxes/TertiaryBox";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { SecondaryButtonOutline } from "@/components/buttons/SecondaryButtonOutline";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useBalances } from "@/hooks/useBalances";
+import { useIpfs } from "@/hooks/useIpfs";
 import {
   useSelectedNetworkId,
   useSelectedNetworkInfo,
-} from "../../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { NetworkFeature, getNetworkFeature } from "../../../networks";
-import { adenaVMCall } from "../../../utils/gno";
-import { useAppNavigation } from "../../../utils/navigation";
+} from "@/hooks/useSelectedNetwork";
+import { NetworkFeature, getNetworkFeature } from "@/networks";
+import { useEscrowContract } from "@/screens/Projects/hooks/useEscrowContract";
+import { prettyPrice } from "@/utils/coins";
+import { useAppNavigation } from "@/utils/navigation";
 import {
   neutral00,
   neutral17,
   neutral33,
   neutral77,
   neutralFF,
-} from "../../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontSemibold12,
   fontSemibold13,
   fontSemibold14,
   fontSemibold16,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { LocalFileData } from "../../../utils/types/files";
-import { Tag } from "../components/Milestone";
-import { useMakeRequestState } from "../hooks/useMakeRequestHook";
-import { useUtils } from "../hooks/useUtils";
-
-import FlexRow from "@/components/FlexRow";
-import { SVG } from "@/components/SVG";
-import { TertiaryBox } from "@/components/boxes/TertiaryBox";
-import { SecondaryButton } from "@/components/buttons/SecondaryButton";
-import { useBalances } from "@/hooks/useBalances";
-import { prettyPrice } from "@/utils/coins";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
+import { LocalFileData } from "@/utils/types/files";
 
 export const ConfirmAndSign: React.FC = () => {
   const [isShowModal, setIsShowModal] = useState(false);
@@ -69,6 +69,11 @@ export const ConfirmAndSign: React.FC = () => {
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const { setToastError } = useFeedbacks();
+
+  const { execEscrowMethod } = useEscrowContract(
+    networkId,
+    selectedWallet?.address,
+  );
 
   const uploadFile = async (fileToUpload: LocalFileData) => {
     setIsUploadingImage(true);
@@ -103,7 +108,7 @@ export const ConfirmAndSign: React.FC = () => {
 
       const caller = mustGetValue(wallet?.address, "caller");
       if (!pmFeature) {
-        throw new Error("Project manager feature not found");
+        throw Error("Project manager feature not found");
       }
 
       const milestoneTitles = milestones.map((m) => m.title).join(",");
@@ -142,30 +147,23 @@ export const ConfirmAndSign: React.FC = () => {
         send = totalFunding + pmFeature.paymentsDenom;
       }
 
-      // Create the contract
-      await adenaVMCall(
-        networkId,
-        {
-          caller,
-          send,
-          pkg_path: pmFeature.projectsManagerPkgPath,
-          func: "CreateContract",
-          args: [
-            contractor,
-            funder,
-            pmFeature.paymentsDenom,
-            metadata,
-            expiryDuration,
-            milestoneTitles,
-            milestoneDescs,
-            milestoneAmounts,
-            milestoneDurations,
-            milestoneLinks,
-            milestonePriorities,
-            conflictHandler,
-          ],
-        },
-        { gasWanted: 2_000_000 },
+      await execEscrowMethod(
+        "CreateContract",
+        [
+          contractor,
+          funder,
+          pmFeature.paymentsDenom,
+          metadata,
+          expiryDuration,
+          milestoneTitles,
+          milestoneDescs,
+          milestoneAmounts,
+          milestoneDurations,
+          milestoneLinks,
+          milestonePriorities,
+          conflictHandler,
+        ],
+        send,
       );
 
       setIsShowConfirmModal(false);

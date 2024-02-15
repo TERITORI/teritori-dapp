@@ -101,6 +101,7 @@ export const useEscrowContract = (
   const execEscrowMethod = async (
     func: string,
     args: any[],
+    send: string = "",
     gasWanted: number = 2_000_000,
   ) => {
     try {
@@ -117,7 +118,7 @@ export const useEscrowContract = (
         networkId,
         {
           caller,
-          send: "",
+          send,
           pkg_path: escrowPkgPath,
           func,
           args,

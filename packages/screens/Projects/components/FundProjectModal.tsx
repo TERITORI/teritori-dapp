@@ -10,7 +10,6 @@ import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SecondaryButton } from "@/components/buttons/SecondaryButton";
 import ModalBase from "@/components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
-import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useBalances } from "@/hooks/useBalances";
 import {
   useSelectedNetworkId,
@@ -19,10 +18,9 @@ import {
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature, getNetworkFeature } from "@/networks";
 import { Tag } from "@/screens/Projects/components/Milestone";
-import { useUtils } from "@/screens/Projects/hooks/useUtils";
+import { useEscrowContract } from "@/screens/Projects/hooks/useEscrowContract";
 import { Project } from "@/screens/Projects/types";
 import { prettyPrice } from "@/utils/coins";
-import { adenaVMCall } from "@/utils/gno";
 import { neutral17, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold12,
@@ -56,43 +54,21 @@ export const FundProjectModal: React.FC<FundProjectModalProps> = ({
   const bal = balances?.find((b) => b.denom === pmFeature?.paymentsDenom);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { setToastError, setToastSuccess } = useFeedbacks();
-  const { mustGetValue } = useUtils();
+
+  const { execEscrowMethod } = useEscrowContract(
+    networkId,
+    selectedWallet?.address,
+  );
 
   const submitFunder = async () => {
     setIsSubmitting(true);
 
-    try {
-      const caller = mustGetValue(selectedWallet?.address, "caller");
-      if (!pmFeature) {
-        throw new Error("Project manager feature not found");
-      }
+    await execEscrowMethod("SubmitFunder", [
+      project.id.toString(),
+      project.milestones.map((m) => m.id).join(","),
+    ]);
 
-      await adenaVMCall(
-        networkId,
-        {
-          caller,
-          send: project.budget + pmFeature.paymentsDenom,
-          pkg_path: pmFeature.projectsManagerPkgPath,
-          func: "SubmitFunder",
-          args: [
-            project.id.toString(),
-            project.milestones.map((m) => m.id).join(","),
-          ],
-        },
-        { gasWanted: 1_000_000 },
-      );
-
-      setToastSuccess({
-        title: "Success",
-        message: "You become the funder for this project !",
-      });
-      onClose();
-    } catch (e: any) {
-      setToastError({ title: "Error", message: e.message });
-    } finally {
-      setIsSubmitting(false);
-    }
+    setIsSubmitting(false);
   };
 
   const fundingAmount = useMemo(() => {

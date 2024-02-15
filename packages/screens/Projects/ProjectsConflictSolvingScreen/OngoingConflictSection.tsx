@@ -10,6 +10,10 @@ import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { SpacerColumn } from "@/components/spacer";
 import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
 import { getUserId, parseUserId } from "@/networks";
+import {
+  PartyRole,
+  UserRole,
+} from "@/screens/Projects/ProjectsConflictSolvingScreen/types";
 import { useEscrowContract } from "@/screens/Projects/hooks/useEscrowContract";
 import { useProject } from "@/screens/Projects/hooks/useProjects";
 import {
@@ -20,7 +24,6 @@ import {
 } from "@/utils/style/colors";
 import { fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { PartyRole, UserRole } from "@/screens/Projects/ProjectsConflictSolvingScreen/types";
 
 export const OngoingConflictSection: FC<{
   userId: string | undefined;

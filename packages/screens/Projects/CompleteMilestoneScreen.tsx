@@ -6,26 +6,25 @@ import { SvgProps } from "react-native-svg";
 import { HeaderBackButton } from "./components/HeaderBackButton";
 import { MilestoneStatusTag } from "./components/MilestoneStatusTag";
 import { useProject } from "./hooks/useProjects";
-import { useUtils } from "./hooks/useUtils";
 import { Project, ProjectMilestone } from "./types";
 import githubSVG from "../../../assets/icons/github.svg";
-import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import { SocialButton } from "../../components/buttons/SocialButton";
-import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
-import { TextInputCustom } from "../../components/inputs/TextInputCustom";
-import { Separator } from "../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkFeature, getNetworkFeature } from "../../networks";
-import { adenaVMCall } from "../../utils/gno";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { TertiaryBox } from "@/components/boxes/TertiaryBox";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
+import { SocialButton } from "@/components/buttons/SocialButton";
+import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { useEscrowContract } from "@/screens/Projects/hooks/useEscrowContract";
+import { prettyPrice } from "@/utils/coins";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import {
   neutral17,
   neutral77,
@@ -33,17 +32,15 @@ import {
   neutralFF,
   primaryColor,
   redDefault,
-} from "../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold16,
   fontSemibold20,
   fontSemibold28,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-
-import { prettyPrice } from "@/utils/coins";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const CustomSocialButton: React.FC<{
   text: string;
@@ -70,13 +67,16 @@ export const ProjectsCompleteMilestoneScreen: ScreenFC<
   const { projectId, milestoneId } = params as any;
   const [isProcessing, setIsProcessing] = useState(false);
   const selectedWallet = useSelectedWallet();
-  const { setToastError, setToastSuccess } = useFeedbacks();
-  const { mustGetValue } = useUtils();
 
   const { data: project } = useProject(networkId, projectId);
   const milestone = project?.milestones.find((_, idx) => idx === +milestoneId);
 
   const [report, setReport] = useState("");
+
+  const { execEscrowMethod } = useEscrowContract(
+    networkId,
+    selectedWallet?.address,
+  );
 
   const completeMilestone = async (
     project: Project,
@@ -84,38 +84,15 @@ export const ProjectsCompleteMilestoneScreen: ScreenFC<
   ) => {
     setIsProcessing(true);
 
-    try {
-      const caller = mustGetValue(selectedWallet?.address, "caller");
-      const pmFeature = getNetworkFeature(
-        networkId,
-        NetworkFeature.GnoProjectManager,
-      );
-      if (!pmFeature) {
-        throw new Error("Project manager feature not found");
-      }
+    const isOk = await execEscrowMethod("CompleteMilestoneAndPay", [
+      project.id.toString(),
+      milestone.id.toString(),
+    ]);
 
-      await adenaVMCall(
-        networkId,
-        {
-          caller,
-          send: "",
-          pkg_path: pmFeature.projectsManagerPkgPath,
-          func: "CompleteMilestoneAndPay",
-          args: [project.id.toString(), milestone.id.toString()],
-        },
-        { gasWanted: 2_000_000 },
-      );
+    setIsProcessing(true);
 
-      setToastSuccess({
-        title: "Success",
-        message: "Milestone has been completed",
-      });
-
+    if (isOk) {
       navigation.navigate("ProjectsDetail", { id: projectId });
-    } catch (e: any) {
-      setToastError({ title: "Error", message: e.message });
-    } finally {
-      setIsProcessing(false);
     }
   };
 

@@ -6,13 +6,6 @@ import githubSVG from "../../../../assets/icons/github.svg";
 import FlexRow from "../../../components/FlexRow";
 import ModalBase from "../../../components/modals/ModalBase";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import {
-  NetworkFeature,
-  getNetworkFeature,
-  getUserId,
-} from "../../../networks";
-import { adenaVMCall } from "../../../utils/gno";
-import { useAppNavigation } from "../../../utils/navigation";
 import { ProjectStatusTag } from "../components/ProjectStatusTag";
 import { useProjects } from "../hooks/useProjects";
 import { Project, ContractStatus } from "../types";
@@ -25,8 +18,11 @@ import { SocialButton } from "@/components/buttons/SocialButton";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { Separator } from "@/components/separators/Separator";
 import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
-import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getUserId } from "@/networks";
+import { useEscrowContract } from "@/screens/Projects/hooks/useEscrowContract";
+import { useUtils } from "@/screens/Projects/hooks/useUtils";
+import { useAppNavigation } from "@/utils/navigation";
 import {
   neutral17,
   neutralA3,
@@ -52,11 +48,12 @@ const RequestItem: React.FC<{
 }> = ({ project, networkId, walletAddress, requestType }) => {
   const navigation = useAppNavigation();
 
-  const { setToastError, setToastSuccess } = useFeedbacks();
-
   const [isProcessing, setIsProcessing] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
+  const { mustGetValue } = useUtils();
+
+  const { execEscrowMethod } = useEscrowContract(networkId, walletAddress);
 
   const gotoProjectDetail = (project: Project) => {
     navigation.navigate("ProjectsDetail", { id: project.id });
@@ -65,116 +62,32 @@ const RequestItem: React.FC<{
   const acceptContractor = async () => {
     setIsProcessing(true);
 
-    try {
-      const caller = walletAddress;
+    const candidate = mustGetValue(
+      project.contractorCandidate,
+      "contractor candidate",
+    );
 
-      const pmFeature = getNetworkFeature(
-        networkId,
-        NetworkFeature.GnoProjectManager,
-      );
-      if (!pmFeature) {
-        throw new Error("Project manager feature not found");
-      }
+    await execEscrowMethod("AcceptContractor", [
+      project.id.toString(),
+      candidate,
+    ]);
 
-      if (!project.contractorCandidate) {
-        throw new Error("Contractor candidate not found");
-      }
-
-      await adenaVMCall(
-        networkId,
-        {
-          caller,
-          send: "",
-          pkg_path: pmFeature.projectsManagerPkgPath,
-          func: "AcceptContractor",
-          args: ["" + project.id, project.contractorCandidate],
-        },
-        { gasWanted: 2_000_000 },
-      );
-
-      setToastSuccess({
-        title: "Success",
-        message: "Request has been accepted !",
-      });
-    } catch (e: any) {
-      setToastError({ title: "Error", message: e.message });
-    } finally {
-      setIsProcessing(false);
-    }
+    setIsProcessing(false);
   };
 
   const acceptContract = async (project: Project) => {
     setIsProcessing(true);
-
-    try {
-      const caller = walletAddress;
-
-      const pmFeature = getNetworkFeature(
-        networkId,
-        NetworkFeature.GnoProjectManager,
-      );
-      if (!pmFeature) {
-        throw new Error("Project manager feature not found");
-      }
-
-      await adenaVMCall(
-        networkId,
-        {
-          caller,
-          send: "",
-          pkg_path: pmFeature.projectsManagerPkgPath,
-          func: "AcceptContract",
-          args: ["" + project.id],
-        },
-        { gasWanted: 2_000_000 },
-      );
-
-      setToastSuccess({
-        title: "Success",
-        message: "Request has been accepted !",
-      });
-    } catch (e: any) {
-      setToastError({ title: "Error", message: e.message });
-    } finally {
-      setIsProcessing(false);
-    }
+    await execEscrowMethod("AcceptContract", [project.id.toString()]);
+    setIsProcessing(false);
   };
 
   const rejectContract = async (project: Project, rejectReason: string) => {
     setIsProcessing(true);
-
-    try {
-      const caller = walletAddress;
-
-      const pmFeature = getNetworkFeature(
-        networkId,
-        NetworkFeature.GnoProjectManager,
-      );
-      if (!pmFeature) {
-        throw new Error("Project manager feature not found");
-      }
-
-      await adenaVMCall(
-        networkId,
-        {
-          caller,
-          send: "",
-          pkg_path: pmFeature.projectsManagerPkgPath,
-          func: "RejectContract",
-          args: ["" + project.id, rejectReason],
-        },
-        { gasWanted: 2_000_000 },
-      );
-      setIsShowModal(false);
-      setToastSuccess({
-        title: "Success",
-        message: "Request has been rejected !",
-      });
-    } catch (e: any) {
-      setToastError({ title: "Error", message: e.message });
-    } finally {
-      setIsProcessing(false);
-    }
+    await execEscrowMethod("RejectContract", [
+      project.id.toString(),
+      rejectReason,
+    ]);
+    setIsProcessing(false);
   };
 
   return (
