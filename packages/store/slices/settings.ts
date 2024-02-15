@@ -253,6 +253,26 @@ const settingsSlice = createSlice({
   },
 });
 
+interface SettingsSession {
+  unlocked: boolean;
+}
+const settingsSessionInitialState: SettingsSession = {
+  unlocked: false,
+};
+
+const settingsSession = createSlice({
+  name: "settings-session",
+  initialState: settingsSessionInitialState,
+  reducers: {
+    setUnlockState: (state, action: PayloadAction<boolean>) => {
+      state.unlocked = action.payload;
+    },
+  },
+});
+
+export const selectIsAppUnlocked = (state: RootState) =>
+  state.settingsSession.unlocked;
+
 export const {
   setSelectedNetworkId,
   setSelectedWalletId,
@@ -272,3 +292,6 @@ export const {
 } = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;
+
+export const { setUnlockState } = settingsSession.actions;
+export const settingsSessionReducer = settingsSession.reducer;
