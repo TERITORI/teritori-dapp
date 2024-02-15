@@ -62,6 +62,20 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: true,
           alwaysOn: true,
         },
+        ...(Platform.OS !== "web"
+          ? {
+              toriwallet: {
+                id: "toriwallet",
+                title: "Teritori OS Wallet",
+                description: "Wallet",
+                icon: pathwar,
+                route: "NativeWallet",
+                groupKey: "teritori-core-apps",
+                selectedByDefault: true,
+                alwaysOn: false,
+              },
+            }
+          : {}),
         launchpad: {
           id: "launchpad",
           title: "Launchpad",
