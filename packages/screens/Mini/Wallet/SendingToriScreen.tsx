@@ -187,6 +187,7 @@ type SendingModalProps = {
 
 function SendingModal({ visible, onClose, txData, msg }: SendingModalProps) {
   const navigation = useAppNavigation();
+  const [isInProcess, setIsInProcess] = useState(false);
   const selectedWallet = useSelectedNativeWallet();
   const cosmosNetwork = getCosmosNetwork(selectedWallet?.networkId);
   if (!cosmosNetwork) {
@@ -228,35 +229,30 @@ function SendingModal({ visible, onClose, txData, msg }: SendingModalProps) {
             style={{ flex: 1 }}
           />
           <CustomButton
-            title="Sign"
+            title={isInProcess ? "Sending" : "Sign"}
+            isDisabled={isInProcess}
             onPress={async () => {
               let signed: TxRaw;
-              console.log("Signing tx", msg);
-              console.log("Selected wallet", selectedWallet);
 
               if (selectedWallet === undefined) return;
               const client = await getNativeSigner(selectedWallet);
               if (client === undefined) return;
 
               try {
-                const simulation = await client.simulate(
-                  selectedWallet.address,
-                  [msg],
-                  "",
-                );
-                const gasEstimate = simulation;
+                const gasEstimate =
+                  (await client.simulate(selectedWallet.address, [msg], "")) *
+                  1.3; // 30% buffer
                 const fee: StdFee = {
                   gas: gasEstimate.toFixed(0),
                   amount: [
                     {
                       amount: (
-                        gasEstimate * cosmosNetwork.gasPriceStep.low
+                        gasEstimate * cosmosNetwork.gasPriceStep.average
                       ).toFixed(0),
                       denom: stakingCurrency.denom,
                     },
                   ],
                 };
-                console.log("Simulation", simulation);
                 signed = await client.sign(
                   selectedWallet.address,
                   [msg],
@@ -267,11 +263,10 @@ function SendingModal({ visible, onClose, txData, msg }: SendingModalProps) {
                 const txResponse = await client.broadcastTx(
                   Uint8Array.from(txRaw.encode(signed).finish()),
                 );
-                console.log("Tx sent", txResponse);
                 if (isDeliverTxFailure(txResponse)) {
                   throw new Error(txResponse.rawLog);
                 }
-                console.log("Tx sent", txResponse);
+                setIsInProcess(true);
                 navigation.navigate("MiniTabs");
               } catch (e: any) {
                 console.error(e);
