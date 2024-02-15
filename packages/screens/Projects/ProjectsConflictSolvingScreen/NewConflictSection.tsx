@@ -18,10 +18,7 @@ export const NewConflictSection: FC<{
   const [initialMessage, setInitialMessage] = useState("");
   const [network, userAddress] = parseUserId(userId);
 
-  const { execEscrowMethod } = useEscrowContract(
-    network?.id || "",
-    userAddress,
-  );
+  const { execEscrowMethod } = useEscrowContract(network?.id, userAddress);
 
   return (
     <>

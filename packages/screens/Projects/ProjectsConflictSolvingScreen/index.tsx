@@ -31,12 +31,14 @@ export const ProjectsConflictSolvingScreen: ScreenFC<
       {project?.status === ContractStatus.ACCEPTED && userIsParty && (
         <NewConflictSection projectId={projectId} userId={userId} />
       )}
+
       {project?.status === ContractStatus.CONFLICT && (
         <OngoingConflictSection
           userId={selectedWallet?.userId}
           projectId={projectId}
         />
       )}
+
       {(project?.conflicts.length || 0) > 0 &&
         !(
           project?.conflicts.length === 1 &&

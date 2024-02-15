@@ -50,7 +50,7 @@ const Candidate: React.FC<CandidateProps> = ({ projectId, candidate }) => {
 
   const { execEscrowMethod } = useEscrowContract(
     networkId,
-    selectedWallet?.address || "",
+    selectedWallet?.address,
   );
 
   const acceptCandidate = async () => {

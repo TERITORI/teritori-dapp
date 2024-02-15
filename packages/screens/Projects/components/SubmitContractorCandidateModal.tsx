@@ -43,7 +43,7 @@ export const SubmitContractorCandidateModal: React.FC<
 
   const { execEscrowMethod } = useEscrowContract(
     networkId,
-    selectedWallet?.address || "",
+    selectedWallet?.address,
   );
 
   const submitContractorCandidate = async () => {

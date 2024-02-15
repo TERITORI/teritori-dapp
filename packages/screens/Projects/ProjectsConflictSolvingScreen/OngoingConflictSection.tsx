@@ -36,10 +36,7 @@ export const OngoingConflictSection: FC<{
     ? conflicts[conflicts.length - 1]
     : null;
 
-  const { execEscrowMethod } = useEscrowContract(
-    network?.id || "",
-    userAddress,
-  );
+  const { execEscrowMethod } = useEscrowContract(network?.id, userAddress);
 
   let responderAddress;
   if (lastConflict?.initiator === project?.contractor) {

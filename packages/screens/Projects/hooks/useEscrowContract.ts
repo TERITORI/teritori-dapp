@@ -48,11 +48,14 @@ export const useQueryEscrow = (
   );
 };
 
-export const useEscrowContract = (networkId: string, walletAddress: string) => {
+export const useEscrowContract = (
+  networkId: string | undefined,
+  walletAddress: string | undefined,
+) => {
   const { mustGetValue } = useUtils();
   const { setToastError, setToastSuccess } = useFeedbacks();
 
-  const _getEscrowInfo = () => {
+  const _getEscrowInfo = (networkId: string) => {
     const pmFeature = getNetworkFeature(
       networkId,
       NetworkFeature.GnoProjectManager,
@@ -73,7 +76,12 @@ export const useEscrowContract = (networkId: string, walletAddress: string) => {
 
   // This will call contract method and get the data
   const queryEscrow = async (methodName: string, args: any[]) => {
-    const { gnoNetworkEndpoint, escrowPkgPath } = _getEscrowInfo();
+    if (!networkId) {
+      setToastError({ title: "Error", message: "networkId not given" });
+      return;
+    }
+
+    const { gnoNetworkEndpoint, escrowPkgPath } = _getEscrowInfo(networkId);
 
     const client = new GnoJSONRPCProvider(gnoNetworkEndpoint);
     const argsStr = args
@@ -96,7 +104,12 @@ export const useEscrowContract = (networkId: string, walletAddress: string) => {
     gasWanted: number = 2_000_000,
   ) => {
     try {
-      const { escrowPkgPath } = _getEscrowInfo();
+      if (!networkId) {
+        setToastError({ title: "Error", message: "networkId not given" });
+        return false;
+      }
+
+      const { escrowPkgPath } = _getEscrowInfo(networkId);
 
       const caller = mustGetValue(walletAddress, "caller");
 
