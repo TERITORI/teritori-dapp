@@ -72,7 +72,7 @@ export const MilestoneDetail: React.FC<{
     }
 
     await execEscrowMethod("ChangeMilestoneStatus", [
-      project.id.toString(),
+      project.id?.toString(),
       milestone.id.toString(),
       statusId.toString(),
     ]);

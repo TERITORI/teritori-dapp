@@ -64,8 +64,8 @@ export const FundProjectModal: React.FC<FundProjectModalProps> = ({
     setIsSubmitting(true);
 
     await execEscrowMethod("SubmitFunder", [
-      project.id.toString(),
-      project.milestones.map((m) => m.id).join(","),
+      project.id?.toString(),
+      project.milestones?.map((m) => m.id).join(","),
     ]);
 
     setIsSubmitting(false);
@@ -73,7 +73,7 @@ export const FundProjectModal: React.FC<FundProjectModalProps> = ({
 
   const fundingAmount = useMemo(() => {
     return project.milestones
-      .map((m) => m.amount)
+      ?.map((m) => m.amount)
       .reduce((total, amount) => total + amount, 0)
       .toString();
   }, [project]);

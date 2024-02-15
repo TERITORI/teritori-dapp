@@ -8,12 +8,11 @@ import { ProjectMilestones } from "../components/ProjectMilestones";
 import { useProject } from "../hooks/useProjects";
 import { ContractStatus, ProjectMilestone } from "../types";
 
-import { FlexRow } from "@/components/FlexRow";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { ScreenFC } from "@/utils/navigation";
 import { MilestoneDetail } from "@/screens/Projects/ProjectsDetailScreen/MilestoneDetail";
+import { ScreenFC } from "@/utils/navigation";
 
 export const ProjectsDetailScreen: ScreenFC<"ProjectsDetail"> = () => {
   const { params } = useRoute();
@@ -48,35 +47,27 @@ export const ProjectsDetailScreen: ScreenFC<"ProjectsDetail"> = () => {
       headerChildren={<HeaderBackButton />}
       footerChildren={<></>}
     >
-      <FlexRow>
-        <View style={{ flex: 1 }}>
-          <ProjectInfo
-            projectStatus={project.status}
-            isFunded={project.funded}
-            shortDescData={project.metadata.shortDescData}
-            teamAndLinkData={project.metadata.teamAndLinkData}
-            project={project}
-          />
+      <View>
+        <ProjectInfo project={project} />
 
-          <ProjectMilestones
-            onSelectMilestone={onSelectMilestone}
-            milestones={project?.milestones || []}
-          />
-        </View>
+        <ProjectMilestones
+          onSelectMilestone={onSelectMilestone}
+          milestones={project?.milestones || []}
+        />
+      </View>
 
-        {/* Detail view ======================================================= */}
-        {selectedMilestone !== undefined && (
-          <MilestoneDetail
-            project={project}
-            milestone={selectedMilestone}
-            onClose={() => setSelectedMilestone(undefined)}
-            editable={
-              project.contractor === selectedWallet?.address &&
-              project.status === ContractStatus.ACCEPTED
-            }
-          />
-        )}
-      </FlexRow>
+      {/* Detail view ======================================================= */}
+      {selectedMilestone !== undefined && (
+        <MilestoneDetail
+          project={project}
+          milestone={selectedMilestone}
+          onClose={() => setSelectedMilestone(undefined)}
+          editable={
+            project.contractor === selectedWallet?.address &&
+            project.status === ContractStatus.ACCEPTED
+          }
+        />
+      )}
     </ScreenContainer>
   );
 };
