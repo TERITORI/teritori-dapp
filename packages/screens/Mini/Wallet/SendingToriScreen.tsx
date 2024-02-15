@@ -240,8 +240,8 @@ function SendingModal({ visible, onClose, txData, msg }: SendingModalProps) {
 
               try {
                 const gasEstimate =
-                  (await client.simulate(selectedWallet.address, [msg], "")) +
-                  100000; // estimated gas + 100k because is not perfect :(
+                  (await client.simulate(selectedWallet.address, [msg], "")) *
+                  1.3; // 30% buffer
                 const fee: StdFee = {
                   gas: gasEstimate.toFixed(0),
                   amount: [
