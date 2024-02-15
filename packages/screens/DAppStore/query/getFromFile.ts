@@ -190,7 +190,7 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: true,
           alwaysOn: true,
         },
-        projectsProgram: {
+        projects: {
           id: "projects",
           title: "Projects Program",
           icon: projectsProgramSVG,
