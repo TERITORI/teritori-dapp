@@ -40,8 +40,9 @@ export const CheckList = ({ gotoVisibleScreen, type }: Props) => {
   const onNextPress = () => {
     gotoVisibleScreen();
   };
-  const isDisabled = !passwordInput || passwordInput === securePasswordStore;
-  !revealSeedsConditions.fullControlOverFunds ||
+  const isDisabled =
+    passwordInput !== securePasswordStore ||
+    !revealSeedsConditions.fullControlOverFunds ||
     !revealSeedsConditions.neverShare;
 
   const checkboxes: {
