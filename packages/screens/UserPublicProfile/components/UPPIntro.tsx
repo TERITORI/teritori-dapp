@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Linking, useWindowDimensions, View } from "react-native";
 
+import { PremiumSubscriptionModal } from "./modals/PremiumSubscriptionModal";
 import { SubscriptionSetupModal } from "./modals/SubscriptionSetupModal";
 
 import defaultUserProfileBannerPNG from "@/assets/default-images/default-user-profile-banner.png";
@@ -51,6 +52,10 @@ export const UPPIntro: React.FC<{
 
   const [subscriptionSetupModalVisible, setSubscriptionSetupModalVisible] =
     useState(false);
+  const [premiumSubscriptionModalVisible, setPremiumSubscriptionModalVisible] =
+    useState(false);
+  const [isSubscribe, setIsSubscribe] = useState(false);
+
   return (
     <>
       <LegacyTertiaryBox
@@ -169,6 +174,44 @@ export const UPPIntro: React.FC<{
             </>
           ) : (
             <>
+              {developerMode && (
+                <>
+                  {isSubscribe ? (
+                    <SecondaryButtonOutline
+                      style={{ width: 132, marginRight: layout.spacing_x2 }}
+                      text="Subscribed"
+                      size="M"
+                      backgroundColor={neutral00}
+                      disabled
+                    />
+                  ) : (
+                    <SecondaryButton
+                      style={{ width: 132, marginRight: layout.spacing_x2 }}
+                      text="Premium Sub"
+                      size="M"
+                      paddingHorizontal={layout.spacing_x2}
+                      backgroundColor={secondaryColor}
+                      textStyle={{
+                        lineHeight: layout.spacing_x2,
+                        color: neutral00,
+                      }}
+                      onPress={() => {
+                        if (isUserOwner) {
+                          setSubscriptionSetupModalVisible(true);
+                        } else {
+                          setPremiumSubscriptionModalVisible(true);
+                        }
+                      }}
+                    />
+                  )}
+                </>
+              )}
+              <PremiumSubscriptionModal
+                onClose={() => setPremiumSubscriptionModalVisible(false)}
+                isVisible={premiumSubscriptionModalVisible}
+                userId={userId}
+                onSubscribe={() => setIsSubscribe(true)}
+              />
               <SecondaryButtonOutline
                 text="Follow this Teritori"
                 size="M"

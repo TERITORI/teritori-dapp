@@ -3,6 +3,7 @@ import { TabDefinition } from "@/utils/types/tabs";
 
 export enum UppTabKeys {
   posts = "",
+  premiumSubscribe = "premium-content",
   nfts = "nfts",
   quests = "quests",
   mentionsPosts = "mentions-posts",
@@ -18,6 +19,10 @@ export enum UppTabKeys {
 export const uppTabItems: { [key: string]: TabDefinition } = {
   [UppTabKeys.posts]: {
     name: "Posts",
+    networkFeatures: [NetworkFeature.SocialFeed],
+  },
+  [UppTabKeys.premiumSubscribe]: {
+    name: "Premium Content",
     networkFeatures: [NetworkFeature.SocialFeed],
   },
   [UppTabKeys.nfts]: {
