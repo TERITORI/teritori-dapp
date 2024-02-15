@@ -126,6 +126,12 @@ export type QueryMsg1 = {
     start_after?: string | null;
     [k: string]: unknown;
   };
+} | {
+  all_tokens: {
+    limit?: number | null;
+    start_after?: string | null;
+    [k: string]: unknown;
+  };
 };
 export interface AdminFundsResponse {
   funds: Coin[];
@@ -170,6 +176,9 @@ export interface Trait {
   trait_type: string;
   value: string;
 }
+export interface TokensResponse {
+  tokens: string[];
+}
 export interface ChannelResponse {
   memberships_config: MembershipConfig[];
   mint_royalties: number;
@@ -191,7 +200,4 @@ export interface SubscriptionResponse {
 export interface Subscription {
   expiration: Timestamp;
   level_expiration: Timestamp;
-}
-export interface TokensResponse {
-  tokens: string[];
 }

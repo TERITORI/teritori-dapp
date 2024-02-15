@@ -18,19 +18,14 @@ import { SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
   ChannelResponse,
-  Cw721MembershipClient,
   MembershipConfig,
 } from "@/contracts-clients/cw721-membership";
 import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import {
-  getKeplrSigningCosmWasmClient,
-  getNativeCurrency,
-  getNetworkFeature,
-  parseUserId,
-} from "@/networks";
+import { getNativeCurrency, getNetworkFeature, parseUserId } from "@/networks";
 import { NetworkFeature } from "@/networks/features";
 import { bigDaySeconds } from "@/utils/big-time";
+import { mustGetCw721MembershipSigningClient } from "@/utils/feed/client";
 import { mapTierToFormElement } from "@/utils/feed/premium";
 import {
   neutral22,
@@ -301,25 +296,13 @@ const SubscriptionSetupForm: React.FC<{
             if (!chainTiers) {
               throw new Error("Invalid tiers");
             }
-            const sender = selectedWallet?.address;
-            if (!sender) {
+            if (!selectedWallet) {
               throw new Error("No wallet selected");
             }
-            const premiumFeedFeature = getNetworkFeature(
-              networkId,
-              NetworkFeature.CosmWasmPremiumFeed,
-            );
-            if (!premiumFeedFeature) {
-              throw new Error("This network does not support premium feed");
-            }
-            const cosmWasmClient =
-              await getKeplrSigningCosmWasmClient(networkId);
-            const client = new Cw721MembershipClient(
-              cosmWasmClient,
-              sender,
-              premiumFeedFeature.membershipContractAddress,
-            );
 
+            const client = await mustGetCw721MembershipSigningClient(
+              selectedWallet.userId,
+            );
             await client.upsertChannel({
               membershipsConfig: chainTiers,
             });

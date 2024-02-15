@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { InstantiateMsg, ExecuteMsg, ExecMsg, Uint64, Uint128, MembershipConfig, Coin, QueryMsg, QueryMsg1, AdminFundsResponse, Expiration, Timestamp, AllNftInfoResponseForMetadata, OwnerOfResponse, Approval, NftInfoResponseForMetadata, Metadata, Trait, ChannelResponse, ChannelFundsResponse, ContractInfoResponse, NumTokensResponse, SubscriptionResponse, Subscription, TokensResponse } from "./Cw721Membership.types";
+import { InstantiateMsg, ExecuteMsg, ExecMsg, Uint64, Uint128, MembershipConfig, Coin, QueryMsg, QueryMsg1, AdminFundsResponse, Expiration, Timestamp, AllNftInfoResponseForMetadata, OwnerOfResponse, Approval, NftInfoResponseForMetadata, Metadata, Trait, TokensResponse, ChannelResponse, ChannelFundsResponse, ContractInfoResponse, NumTokensResponse, SubscriptionResponse, Subscription } from "./Cw721Membership.types";
 export interface Cw721MembershipReadOnlyInterface {
   contractAddress: string;
   channel: ({
@@ -57,6 +57,13 @@ export interface Cw721MembershipReadOnlyInterface {
     owner: string;
     startAfter?: string;
   }) => Promise<TokensResponse>;
+  allTokens: ({
+    limit,
+    startAfter
+  }: {
+    limit?: number;
+    startAfter?: string;
+  }) => Promise<TokensResponse>;
 }
 export class Cw721MembershipQueryClient implements Cw721MembershipReadOnlyInterface {
   client: CosmWasmClient;
@@ -75,6 +82,7 @@ export class Cw721MembershipQueryClient implements Cw721MembershipReadOnlyInterf
     this.nftInfo = this.nftInfo.bind(this);
     this.allNftInfo = this.allNftInfo.bind(this);
     this.tokens = this.tokens.bind(this);
+    this.allTokens = this.allTokens.bind(this);
   }
 
   channel = async ({
@@ -180,6 +188,20 @@ export class Cw721MembershipQueryClient implements Cw721MembershipReadOnlyInterf
       tokens: {
         limit,
         owner,
+        start_after: startAfter
+      }
+    });
+  };
+  allTokens = async ({
+    limit,
+    startAfter
+  }: {
+    limit?: number;
+    startAfter?: string;
+  }): Promise<TokensResponse> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      all_tokens: {
+        limit,
         start_after: startAfter
       }
     });

@@ -24,7 +24,7 @@ import {
 export const PremiumSubscriptionBottom: FC<{
   networkId: string;
   item: MembershipConfig | undefined;
-  onSubscribe: () => void;
+  onSubscribe: () => Promise<void> | void;
 }> = ({ networkId, item, onSubscribe }) => {
   const selectedWallet = useSelectedWallet();
   const balances = useBalances(networkId, selectedWallet?.address);

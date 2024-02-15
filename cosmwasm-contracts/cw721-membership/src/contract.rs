@@ -28,20 +28,20 @@ pub struct Cw721MembershipContract {
 
 #[cw_serde]
 pub struct MembershipConfig {
-    display_name: String,
-    description: String,
-    nft_image_uri: String,
-    nft_name_prefix: String,
-    duration_seconds: Uint64,
-    trade_royalties: u16, // 0-10000 = 0%-100%,
-    price: Coin,
+    pub display_name: String,
+    pub description: String,
+    pub nft_image_uri: String,
+    pub nft_name_prefix: String,
+    pub duration_seconds: Uint64,
+    pub trade_royalties: u16, // 0-10000 = 0%-100%,
+    pub price: Coin,
 }
 
 #[cw_serde]
 pub struct ChannelResponse {
-    memberships_config: Vec<MembershipConfig>,
-    mint_royalties: u16, // 0-10000 = 0%-100%
-                         // TODO: tokens_count
+    pub memberships_config: Vec<MembershipConfig>,
+    pub mint_royalties: u16, // 0-10000 = 0%-100%
+                             // TODO: tokens_count
 }
 
 #[cw_serde]
@@ -215,12 +215,17 @@ impl Cw721MembershipContract {
             image_uri: membership.nft_image_uri.to_owned(),
             start_time: ctx.env.block.time.to_owned(),
             duration_seconds: membership.duration_seconds,
-            owner_addr: recipient_addr,
+            owner_addr: recipient_addr.to_owned(),
         };
         self.nfts.save(
             ctx.deps.storage,
             (channel_addr.to_owned(), nft_index.into()),
             &nft,
+        )?;
+        self.by_owner.save(
+            ctx.deps.storage,
+            (recipient_addr, channel_addr.to_owned(), nft_index.into()),
+            &(),
         )?;
 
         channel.next_index = channel.next_index.checked_add(Uint64::one())?;
@@ -678,11 +683,11 @@ impl Cw721MembershipContract {
     ) -> Result<TokensResponse, ContractError> {
         let owner_addr = ctx.deps.api.addr_validate(owner.as_str())?;
         let limit = limit.map(|limit| limit as usize).unwrap_or(30);
-        let start_after = match start_after {
+        let min_bound = match start_after {
             Some(start_after) => {
                 let (channel_addr, nft_index) = parse_token_id(&start_after)?;
                 let channel_addr = Addr::unchecked(channel_addr.as_str());
-                Some((channel_addr, nft_index))
+                Some(Bound::exclusive((channel_addr, nft_index)))
             }
             None => None,
         };
@@ -690,12 +695,7 @@ impl Cw721MembershipContract {
         let tokens: Result<Vec<_>, _> = self
             .by_owner
             .sub_prefix(owner_addr)
-            .range(
-                ctx.deps.storage,
-                start_after.map(|sa| Bound::exclusive(sa)),
-                None,
-                Order::Ascending,
-            )
+            .range(ctx.deps.storage, min_bound, None, Order::Ascending)
             .take(limit)
             .map(|item| -> Result<String, ContractError> {
                 let ((channel_addr, nft_index), _) = item?;
@@ -705,6 +705,10 @@ impl Cw721MembershipContract {
         Ok(TokensResponse { tokens: tokens? })
     }
 
+    /// With Enumerable extension.
+    /// Returns all tokens
+    /// Return type: TokensResponse.
+    #[msg(query)]
     pub fn all_tokens(
         &self,
         ctx: QueryCtx,
@@ -773,7 +777,7 @@ impl Cw721MembershipContract {
             token_uri: None,
             extension: NftExtension {
                 name: Some(nft.name),
-                description: None,
+                description: Some(nft.description),
                 image: Some(nft.image_uri),
                 animation_url: None,
                 external_url: None,
