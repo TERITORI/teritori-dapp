@@ -174,33 +174,37 @@ export const UPPIntro: React.FC<{
             </>
           ) : (
             <>
-              {isSubscribe ? (
-                <SecondaryButtonOutline
-                  style={{ width: 132, marginRight: layout.spacing_x2 }}
-                  text="Subscribed"
-                  size="M"
-                  backgroundColor={neutral00}
-                  disabled
-                />
-              ) : (
-                <SecondaryButton
-                  style={{ width: 132, marginRight: layout.spacing_x2 }}
-                  text="Premium Sub"
-                  size="M"
-                  paddingHorizontal={layout.spacing_x2}
-                  backgroundColor={secondaryColor}
-                  textStyle={{
-                    lineHeight: layout.spacing_x2,
-                    color: neutral00,
-                  }}
-                  onPress={() => {
-                    if (isUserOwner) {
-                      setSubscriptionSetupModalVisible(true);
-                    } else {
-                      setPremiumSubscriptionModalVisible(true);
-                    }
-                  }}
-                />
+              {developerMode && (
+                <>
+                  {isSubscribe ? (
+                    <SecondaryButtonOutline
+                      style={{ width: 132, marginRight: layout.spacing_x2 }}
+                      text="Subscribed"
+                      size="M"
+                      backgroundColor={neutral00}
+                      disabled
+                    />
+                  ) : (
+                    <SecondaryButton
+                      style={{ width: 132, marginRight: layout.spacing_x2 }}
+                      text="Premium Sub"
+                      size="M"
+                      paddingHorizontal={layout.spacing_x2}
+                      backgroundColor={secondaryColor}
+                      textStyle={{
+                        lineHeight: layout.spacing_x2,
+                        color: neutral00,
+                      }}
+                      onPress={() => {
+                        if (isUserOwner) {
+                          setSubscriptionSetupModalVisible(true);
+                        } else {
+                          setPremiumSubscriptionModalVisible(true);
+                        }
+                      }}
+                    />
+                  )}
+                </>
               )}
               <PremiumSubscriptionModal
                 onClose={() => setPremiumSubscriptionModalVisible(false)}

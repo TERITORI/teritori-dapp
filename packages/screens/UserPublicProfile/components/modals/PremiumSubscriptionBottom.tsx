@@ -1,12 +1,11 @@
 import React from "react";
 import { View } from "react-native";
 
-import usdcSVG from "../../../../../assets/icons/crypto-usdc.svg";
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import { layout } from "../../../../utils/style/layout";
 
 import { BrandText } from "@/components/BrandText";
-import { SVG } from "@/components/SVG";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
@@ -14,7 +13,7 @@ import { MembershipConfig } from "@/contracts-clients/cw721-membership";
 import { useBalances } from "@/hooks/useBalances";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { getStakingCurrency } from "@/networks";
+import { getNativeCurrency, getStakingCurrency } from "@/networks";
 import { premiumPrice } from "@/utils/coins";
 import { neutral33, neutral77, secondaryColor } from "@/utils/style/colors";
 import {
@@ -39,6 +38,7 @@ export const PremiumSubscriptionBottom = ({
     (bal) => bal.denom === nativeCurrency?.denom,
   );
   const amountUsd = currencyBalance?.usdAmount || 0;
+  const currency = getNativeCurrency(selectedNetworkId, nativeCurrency?.denom);
 
   return (
     <View style={{ width: "100%" }}>
@@ -84,7 +84,7 @@ export const PremiumSubscriptionBottom = ({
               style={{
                 height: 28,
                 flexDirection: "row",
-                paddingHorizontal: layout.spacing_x1_5,
+                paddingHorizontal: layout.spacing_x1,
                 marginLeft: layout.spacing_x0_5,
                 backgroundColor: neutral33,
                 alignItems: "center",
@@ -92,7 +92,12 @@ export const PremiumSubscriptionBottom = ({
                 borderRadius: 32,
               }}
             >
-              <SVG source={usdcSVG} width={16} height={16} />
+              <CurrencyIcon
+                icon={currency?.icon}
+                size={16}
+                denom={currency?.denom || ""}
+                networkId={selectedNetworkId}
+              />
 
               <BrandText
                 style={[
@@ -104,7 +109,7 @@ export const PremiumSubscriptionBottom = ({
                   },
                 ]}
               >
-                USDC
+                {currency?.displayName}
               </BrandText>
             </PrimaryBox>
           </View>
