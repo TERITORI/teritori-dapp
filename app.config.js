@@ -55,6 +55,9 @@ const config = {
         "expo-local-authentication",
         {
           faceIDPermission: "Allow $(PRODUCT_NAME) to use Face ID.",
+          faceIDUse: "Use Face ID to authenticate",
+          fingerprintUse: "Use fingerprint to authenticate",
+          promptMessage: "Unlock",
         },
       ],
     ],

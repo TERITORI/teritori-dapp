@@ -1,4 +1,9 @@
-import { Fragment } from "react";
+import {
+  authenticateAsync,
+  hasHardwareAsync,
+  isEnrolledAsync,
+} from "expo-local-authentication";
+import { Fragment, useState } from "react";
 import { FlatList, View } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -18,10 +23,7 @@ import { useBalances } from "@/hooks/useBalances";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { useSearchTx } from "@/hooks/wallet/useSearchTx";
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
-import {
-  selectAllWallets,
-  setSelectedNativeWalletIndex,
-} from "@/store/slices/wallets";
+import { selectIsAppUnlocked, setUnlockState } from "@/store/slices/settings";
 import { useAppDispatch } from "@/store/store";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral88, neutralA3, secondaryColor } from "@/utils/style/colors";
@@ -33,21 +35,32 @@ import {
 import { layout } from "@/utils/style/layout";
 
 const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
-  const wallets = useSelector(selectAllWallets);
-  const dispatch = useAppDispatch();
-  if (wallets.length === 0) {
-    navigation.navigate("NativeWallet");
-  }
-
   const selectedWallet = useSelectedNativeWallet();
-  if (!selectedWallet) {
-    dispatch(setSelectedNativeWalletIndex(wallets[0].index));
-  }
+
+  const isAppUnlocked = useSelector(selectIsAppUnlocked);
+  const dispatch = useAppDispatch();
 
   const balances = useBalances(
     selectedWallet?.networkId,
     selectedWallet?.address,
   );
+
+  // is wallet unlocked?
+  console.log(isAppUnlocked);
+  if (!isAppUnlocked) {
+    hasHardwareAsync().then((hasHardware) => {
+      console.log("hasHardware", hasHardware);
+      if (hasHardware) {
+        isEnrolledAsync().then((result) => {
+          console.log("authenticateAsync", result);
+          authenticateAsync().then((result) => {
+            console.log("authenticateAsync", result);
+            dispatch(setUnlockState(result.success));
+          });
+        });
+      }
+    });
+  }
 
   return (
     <>
@@ -89,8 +102,8 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
             title="Deposit"
             size="medium"
             onPress={() =>
-              navigation.navigate("MiniDepositTORI", {
-                denom: "utori",
+              navigation.navigate("MiniSelectToken", {
+                navigateTo: "MiniDepositTORI",
               })
             }
           />
@@ -154,6 +167,7 @@ const LastTransactions = () => {
     networkId,
     selectedWallet?.address,
   );
+  console.log("transactions", transactions);
 
   return (
     <>
