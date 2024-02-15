@@ -209,4 +209,17 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 		StartsAt:   "2024-02-07T00:00:00",
 		EndsAt:     "2024-02-11T00:00:00",
 	},
+		// Season 1b
+  	{
+  		ID:         "Season 1b - ETH",
+  		GameID:     THE_RIOT_GAME_ID,
+  		Denom:      "tori",
+  		Decimals:   6,
+  		TotalPrize: 1,
+  		BossName:   "Tori Pup",
+  		BossImage:  "https://bafkreidzf2kol7hi3lae33fpu6iryfw7mgbp5fbqnyewq64kagykc266h4.ipfs.cf-ipfs.com/",
+  		TopN:       500,
+  		StartsAt:   "2024-02-11T00:00:00",
+  		EndsAt:     "2024-02-20T00:00:00",
+  	},
 }
