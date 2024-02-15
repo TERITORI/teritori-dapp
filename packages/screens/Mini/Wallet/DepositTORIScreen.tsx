@@ -18,6 +18,7 @@ import {
 } from "@/utils/style/colors";
 import { fontMedium13, fontMedium16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { tinyAddress } from "@/utils/text";
 import { findByBaseDenom } from "@/utils/wallet/chain-registry";
 
 const QR_SIZE = 248;
@@ -34,13 +35,12 @@ export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
 
   const selectedWallet = useSelectedNativeWallet();
 
-  const accountDetails = {
-    address: selectedWallet?.address,
-    token: denom,
-  };
   const onCopyPress = async () => {
-    await Clipboard.setStringAsync(JSON.stringify(accountDetails));
+    await Clipboard.setStringAsync(selectedWallet?.address || "");
     setIsCopied(true);
+    setInterval(() => {
+      navigation.navigate("MiniWallets");
+    }, 2000);
   };
 
   const selectedToken = findByBaseDenom(denom)?.assets[0];
@@ -70,7 +70,7 @@ export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
               borderRadius: layout.borderRadius,
             }}
           >
-            <QRCode size={QR_SIZE} value={JSON.stringify(accountDetails)} />
+            <QRCode size={QR_SIZE} value={selectedWallet?.address} />
           </View>
         </View>
         <View
@@ -92,16 +92,11 @@ export const DepositTORIScreen: ScreenFC<"MiniDepositTORI"> = ({
             }}
           >
             <BrandText style={[fontMedium16]}>
-              {accountDetails.address}
+              {/*Other wallets don't show account number*/}
+              {/*Account: {selectedWallet?.index}*/}
             </BrandText>
             <BrandText style={[fontMedium16, { color: neutralA3 }]}>
-              {`( ${accountDetails.token.substring(
-                0,
-                5,
-              )}...${accountDetails.token.substring(
-                accountDetails.token.length - 4,
-                accountDetails.token.length,
-              )})`}
+              {tinyAddress(selectedWallet?.address, 30)}
             </BrandText>
           </View>
           <CustomPressable
