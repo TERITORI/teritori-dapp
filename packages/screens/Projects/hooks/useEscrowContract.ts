@@ -52,20 +52,30 @@ export const useEscrowContract = (networkId: string, walletAddress: string) => {
   const { mustGetValue } = useUtils();
   const { setToastError, setToastSuccess } = useFeedbacks();
 
-  const networkFeature = getNetworkFeature(
-    networkId,
-    NetworkFeature.GnoProjectManager,
-  );
+  const _getEscrowInfo = () => {
+    const pmFeature = getNetworkFeature(
+      networkId,
+      NetworkFeature.GnoProjectManager,
+    );
 
-  const gnoNetwork = mustGetGnoNetwork(networkId);
-  const escrowPkgPath = mustGetValue(
-    networkFeature?.projectsManagerPkgPath,
-    "escrow pkg path",
-  );
+    if (!pmFeature) {
+      throw Error("Project Manager is not supported on this network");
+    }
+
+    const gnoNetwork = mustGetGnoNetwork(networkId);
+    const escrowPkgPath = mustGetValue(
+      pmFeature?.projectsManagerPkgPath,
+      "escrow pkg path",
+    );
+
+    return { gnoNetworkEndpoint: gnoNetwork.endpoint, escrowPkgPath };
+  };
 
   // This will call contract method and get the data
   const queryEscrow = async (methodName: string, args: any[]) => {
-    const client = new GnoJSONRPCProvider(gnoNetwork.endpoint);
+    const { gnoNetworkEndpoint, escrowPkgPath } = _getEscrowInfo();
+
+    const client = new GnoJSONRPCProvider(gnoNetworkEndpoint);
     const argsStr = args
       .map((arg) => (typeof arg === "number" ? arg : `"${arg}"`))
       .join(",");
@@ -86,6 +96,8 @@ export const useEscrowContract = (networkId: string, walletAddress: string) => {
     gasWanted: number = 2_000_000,
   ) => {
     try {
+      const { escrowPkgPath } = _getEscrowInfo();
+
       const caller = mustGetValue(walletAddress, "caller");
 
       await adenaVMCall(
@@ -104,8 +116,11 @@ export const useEscrowContract = (networkId: string, walletAddress: string) => {
         title: "Success",
         message: "Action has been done successfully !",
       });
+
+      return true;
     } catch (e: any) {
       setToastError({ title: "Error", message: e.message });
+      return false;
     }
   };
 
