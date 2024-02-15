@@ -3,6 +3,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
 import { feedsTabItems } from "./social-feed";
+import { AppMode } from "./types/app-mode";
 import { NewPostFormValues } from "./types/feed";
 import { Conversation, MessageFriendsTabItem } from "./types/message";
 import { uppTabItems } from "./upp";
@@ -128,7 +129,7 @@ export type RootStackParamList = {
   MiniSelectToken: { navigateTo: RouteName };
   MiniDepositTORI: { back?: RouteName; denom: string };
   ModeSelection: undefined;
-  ChatActivation: undefined;
+  ChatActivation: { appMode: AppMode };
   MiniSendTori: { back?: RouteName; denom: string };
   MiniSendingTori: {
     back?: RouteName;

@@ -6,6 +6,8 @@ import { CustomButton } from "../components/Button/CustomButton";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
+import { useAppMode } from "@/hooks/useAppMode";
+import { useChatActivated } from "@/hooks/useChatActivated";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral77 } from "@/utils/style/colors";
 import {
@@ -17,13 +19,21 @@ import { layout } from "@/utils/style/layout";
 
 export const ChatActivationScreen: ScreenFC<"ChatActivation"> = ({
   navigation,
+  route,
 }) => {
   const { width: windowWidth } = useWindowDimensions();
+  const [, handleSet] = useAppMode();
+  const [, handleChatSet] = useChatActivated();
+
   const onActivatePress = () => {
     navigation.navigate("NativeWallet");
+    handleChatSet(true);
+    handleSet(route.params.appMode);
   };
+
   const onNotNowPress = () => {
     navigation.navigate("NativeWallet");
+    handleSet(route.params.appMode);
   };
   return (
     <SafeAreaView

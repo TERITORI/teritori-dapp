@@ -10,6 +10,7 @@ import { RootStackParamList } from "../../utils/navigation";
 import { neutral00, secondaryColor } from "../../utils/style/colors";
 import { TabBarIcon } from "../TabBarIcon";
 
+import { useOnboardedStatus } from "@/hooks/useOnboardStatus";
 import { FeedPostViewScreen } from "@/screens/FeedPostView/FeedPostViewScreen";
 import { NFTDetailScreen } from "@/screens/Marketplace/NFTDetailScreen";
 import AboutScreen from "@/screens/Mini/About/AboutScreen";
@@ -93,9 +94,15 @@ const MainTab = () => {
   );
 };
 
-export const MiniModeNavigator: React.FC = () => {
+export const MiniModeNavigator = () => {
+  const [isLoading, isOnboarded] = useOnboardedStatus();
+
+  if (isLoading) return null;
+
   return (
-    <Stack.Navigator initialRouteName="MiniTabs">
+    <Stack.Navigator
+      initialRouteName={!isOnboarded ? "ModeSelection" : "NativeWallet"}
+    >
       <Stack.Screen
         name="ModeSelection"
         component={ModeSelectionScreen}
