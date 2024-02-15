@@ -27,6 +27,8 @@ const config = {
         NSPhotoLibraryUsageDescription:
           "Access to your photo library is required for image upload functionality.",
         ITSAppUsesNonExemptEncryption: false,
+        NSCameraUsageDescription: "This app uses the camera to scan QR codes.",
+        NSFaceIDUsageDescription: "This app uses Face ID to authenticate you.",
       },
     },
     android: {
