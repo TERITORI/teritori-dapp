@@ -158,16 +158,20 @@ export function getAvailableApps(): dAppGroup {
       icon: checklogo,
       active: true,
       options: {
-        osmosis: {
-          id: "osmosis",
-          title: "Osmosis Dex",
-          description: "Advanced automated market maker (AMM)",
-          icon: osmosisSVG,
-          route: "Swap",
-          groupKey: "top-apps",
-          selectedByDefault: true,
-          alwaysOn: false,
-        },
+        ...(Platform.OS !== "web"
+          ? {
+              osmosis: {
+                id: "osmosis",
+                title: "Osmosis Dex",
+                description: "Advanced automated market maker (AMM)",
+                icon: osmosisSVG,
+                route: "Swap",
+                groupKey: "top-apps",
+                selectedByDefault: true,
+                alwaysOn: false,
+              },
+            }
+          : {}),
         "social-feed": {
           id: "social-feed",
           title: "Social Feed",
