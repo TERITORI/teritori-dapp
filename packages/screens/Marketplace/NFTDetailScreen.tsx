@@ -228,9 +228,11 @@ const Content: React.FC<{
             />
           )}
 
-          <Target name="main-info">
-            <SpacerColumn size={6} />
-          </Target>
+          {!isMobile && (
+            <Target name="main-info">
+              <SpacerColumn size={6} />
+            </Target>
+          )}
 
           <NFTMainInfo
             nftId={id}

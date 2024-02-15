@@ -5,25 +5,6 @@ import { View, ViewStyle } from "react-native";
 
 import { NFTAttributes } from "./NFTAttributes";
 import starSVG from "../../../assets/icons/star.svg";
-import {
-  AttributeRarityFloor,
-  NFTCollectionAttributesRequest,
-} from "../../api/marketplace/v1/marketplace";
-import { useTransactionModals } from "../../context/TransactionModalsProvider";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { parseNetworkObjectId } from "../../networks";
-import { getMarketplaceClient } from "../../utils/backend";
-import { RootStackParamList } from "../../utils/navigation";
-import { neutral77, primaryColor } from "../../utils/style/colors";
-import {
-  fontMedium14,
-  fontSemibold12,
-  fontSemibold14,
-  fontSemibold28,
-} from "../../utils/style/fonts";
-import { layout, screenContentMaxWidth } from "../../utils/style/layout";
-import { NFTInfo } from "../../utils/types/nft";
 import { BrandText } from "../BrandText";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { ActivityTable } from "../activity/ActivityTable";
@@ -36,6 +17,26 @@ import { CollectionInfoInline } from "../collections/CollectionInfoInline";
 import { TransactionModals } from "../modals/transaction/TransactionModals";
 import { SpacerColumn } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
+
+import {
+  AttributeRarityFloor,
+  NFTCollectionAttributesRequest,
+} from "@/api/marketplace/v1/marketplace";
+import { useTransactionModals } from "@/context/TransactionModalsProvider";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { parseNetworkObjectId } from "@/networks";
+import { getMarketplaceClient } from "@/utils/backend";
+import { RootStackParamList } from "@/utils/navigation";
+import { neutral77, primaryColor } from "@/utils/style/colors";
+import {
+  fontMedium14,
+  fontSemibold12,
+  fontSemibold14,
+  fontSemibold28,
+} from "@/utils/style/fonts";
+import { layout, screenContentMaxWidth } from "@/utils/style/layout";
+import { NFTInfo } from "@/utils/types/nft";
 
 const mainInfoTabItems: {
   about: {
@@ -87,7 +88,6 @@ export const NFTMainInfo: React.FC<{
   const { width } = useMaxResolution({ responsive: true, noMargin: true });
   if (isMobile) {
     delete mainInfoTabItems["details"];
-    sectionContainerStyles.width = width < 600 ? width : 600;
   }
   const { openTransactionModals } = useTransactionModals();
   const { params } = useRoute<RouteProp<RootStackParamList, "NFTDetail">>();
@@ -136,6 +136,10 @@ export const NFTMainInfo: React.FC<{
   }, [network?.id, nftInfo]);
 
   const SelectedTabItemRendering: React.FC = () => {
+    const sectionContainerStyles: ViewStyle = {
+      width: width < 600 ? width : 600,
+      paddingVertical: layout.spacing_x3,
+    };
     switch (selectedTab) {
       case "about":
         return (
@@ -231,6 +235,11 @@ export const NFTMainInfo: React.FC<{
       default: module.CollapsablePriceHistory,
     })),
   );
+  const collapsableContainerStyles: ViewStyle = {
+    width: "100%",
+    maxWidth: screenContentMaxWidth,
+    marginBottom: layout.spacing_x2,
+  };
 
   return (
     <>
@@ -253,7 +262,7 @@ export const NFTMainInfo: React.FC<{
         >
           <ImageWithTextInsert
             imageURL={nftInfo?.imageURL}
-            textInsert={nftInfo?.textInsert}
+            textInsert={!isMobile ? nftInfo?.textInsert : ""}
             sourceSize={462}
             style={{ borderRadius: 8 }}
           />
@@ -379,14 +388,4 @@ export const NFTMainInfo: React.FC<{
       />
     </>
   );
-};
-
-const sectionContainerStyles: ViewStyle = {
-  width: 600,
-  paddingVertical: layout.spacing_x3,
-};
-const collapsableContainerStyles: ViewStyle = {
-  width: "100%",
-  maxWidth: screenContentMaxWidth,
-  marginBottom: layout.spacing_x2,
 };
