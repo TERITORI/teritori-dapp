@@ -2,16 +2,17 @@ import React from "react";
 import { ViewStyle, View, StyleProp, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
+import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
+import { SecondaryBox } from "../boxes/SecondaryBox";
+
 import {
   neutral1A,
   primaryColor,
   primaryTextColor,
   withAlpha,
-} from "../../utils/style/colors";
-import { fontMedium14 } from "../../utils/style/fonts";
-import { BrandText } from "../BrandText";
-import { SVG } from "../SVG";
-import { SecondaryBox } from "../boxes/SecondaryBox";
+} from "@/utils/style/colors";
+import { fontMedium14 } from "@/utils/style/fonts";
 
 export const SocialButtonSecondary: React.FC<{
   text: string;

@@ -15,63 +15,6 @@ import cameraSVG from "../../../../assets/icons/camera.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
 import priceSVG from "../../../../assets/icons/price.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useWalletControl } from "../../../context/WalletControlProvider";
-import { useFeedPosting } from "../../../hooks/feed/useFeedPosting";
-import { useAppMode } from "../../../hooks/useAppMode";
-import { useIpfs } from "../../../hooks/useIpfs";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
-import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import {
-  getNetworkFeature,
-  getUserId,
-  NetworkFeature,
-} from "../../../networks";
-import { selectNFTStorageAPI } from "../../../store/slices/settings";
-import {
-  generatePostMetadata,
-  getPostCategory,
-} from "../../../utils/feed/queries";
-import { generateIpfsKey } from "../../../utils/ipfs";
-import {
-  AUDIO_MIME_TYPES,
-  IMAGE_MIME_TYPES,
-  VIDEO_MIME_TYPES,
-} from "../../../utils/mime";
-import {
-  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
-  hashtagMatch,
-  mentionMatch,
-  removeFileFromArray,
-  replaceFileInArray,
-} from "../../../utils/social-feed";
-import {
-  errorColor,
-  neutral00,
-  neutral17,
-  neutral22,
-  neutral77,
-  primaryColor,
-  primaryTextColor,
-  secondaryColor,
-  yellowDefault,
-  yellowPremium,
-} from "../../../utils/style/colors";
-import {
-  fontSemibold12,
-  fontSemibold13,
-  fontSemibold16,
-} from "../../../utils/style/fonts";
-import {
-  RESPONSIVE_BREAKPOINT_S,
-  SOCIAL_FEED_BREAKPOINT_M,
-  layout,
-} from "../../../utils/style/layout";
-import { replaceBetweenString } from "../../../utils/text";
-import { NewPostFormValues, ReplyToType } from "../../../utils/types/feed";
-import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
 import { BrandText } from "../../BrandText";
 import { FilesPreviewsContainer } from "../../FilePreview/FilesPreviewsContainer";
 import FlexRow from "../../FlexRow";
@@ -88,7 +31,57 @@ import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
 
 import ToggleButton from "@/components/buttons/ToggleButton";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useWalletControl } from "@/context/WalletControlProvider";
+import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
+import { useAppMode } from "@/hooks/useAppMode";
+import { useIpfs } from "@/hooks/useIpfs";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { getNetworkFeature, getUserId, NetworkFeature } from "@/networks";
+import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
+import { generatePostMetadata, getPostCategory } from "@/utils/feed/queries";
+import { generateIpfsKey } from "@/utils/ipfs";
+import {
+  AUDIO_MIME_TYPES,
+  IMAGE_MIME_TYPES,
+  VIDEO_MIME_TYPES,
+} from "@/utils/mime";
+import {
+  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
+  hashtagMatch,
+  mentionMatch,
+  removeFileFromArray,
+  replaceFileInArray,
+} from "@/utils/social-feed";
+import {
+  errorColor,
+  neutral00,
+  neutral17,
+  neutral22,
+  neutral77,
+  primaryColor,
+  primaryTextColor,
+  secondaryColor,
+  yellowDefault,
+  yellowPremium,
+} from "@/utils/style/colors";
+import {
+  fontSemibold12,
+  fontSemibold13,
+  fontSemibold16,
+} from "@/utils/style/fonts";
+import {
+  RESPONSIVE_BREAKPOINT_S,
+  SOCIAL_FEED_BREAKPOINT_M,
+  layout,
+} from "@/utils/style/layout";
+import { replaceBetweenString } from "@/utils/text";
+import { NewPostFormValues, ReplyToType } from "@/utils/types/feed";
+import { LocalFileData, RemoteFileData } from "@/utils/types/files";
 
 interface NewsFeedInputProps {
   type: "comment" | "post";

@@ -3,17 +3,14 @@ import { StyleProp, TouchableOpacity } from "react-native";
 
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
-import {
-  ButtonsSize,
-  cornerWidthDropdownButton,
-  heightDropdownButton,
-} from "../../utils/style/buttons";
-import { neutral33, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold12 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { BoxStyle } from "../boxes/Box";
 import { SecondaryBox } from "../boxes/SecondaryBox";
+
+import { ButtonsSize } from "@/utils/style/buttons";
+import { neutral33, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold12 } from "@/utils/style/fonts";
 
 // Same as _PrimaryButtonTest but with customizable color and backgroundColor
 export const ToggleableButton: React.FC<{

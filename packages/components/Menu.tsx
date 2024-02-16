@@ -3,10 +3,11 @@ import { View, TouchableOpacity } from "react-native";
 
 import { BrandText } from "./BrandText";
 import { PrimaryBox } from "./boxes/PrimaryBox";
-import { useDropdowns } from "../hooks/useDropdowns";
-import { neutral33 } from "../utils/style/colors";
-import { fontSemibold13 } from "../utils/style/fonts";
-import { layout } from "../utils/style/layout";
+
+import { useDropdowns } from "@/hooks/useDropdowns";
+import { neutral33 } from "@/utils/style/colors";
+import { fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const DEFAULT_WIDTH = 164;
 

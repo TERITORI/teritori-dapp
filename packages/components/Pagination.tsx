@@ -12,15 +12,16 @@ import chevronLeftSVG from "../../assets/icons/chevron-left.svg";
 import chevronRightDoubleSVG from "../../assets/icons/chevron-right-double.svg";
 import chevronRightSVG from "../../assets/icons/chevron-right.svg";
 import chevronUpSVG from "../../assets/icons/chevron-up.svg";
-import { useDropdowns } from "../hooks/useDropdowns";
+
+import { useDropdowns } from "@/hooks/useDropdowns";
 import {
   neutral33,
   neutral77,
   neutralA3,
   secondaryColor,
-} from "../utils/style/colors";
-import { fontSemibold13, fontSemibold14 } from "../utils/style/fonts";
-import { layout } from "../utils/style/layout";
+} from "@/utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface PaginationProps {
   currentPage: number;

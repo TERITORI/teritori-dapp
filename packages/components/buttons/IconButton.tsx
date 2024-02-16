@@ -1,16 +1,17 @@
 import React from "react";
-import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
+import { StyleProp, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
+
+import { SVG } from "../SVG";
+import { BoxStyle } from "../boxes/Box";
+import { SecondaryBox } from "../boxes/SecondaryBox";
 
 import {
   borderRadiusButton,
   ButtonsSize,
   heightButton,
-} from "../../utils/style/buttons";
-import { primaryColor } from "../../utils/style/colors";
-import { SVG } from "../SVG";
-import { BoxStyle } from "../boxes/Box";
-import { SecondaryBox } from "../boxes/SecondaryBox";
+} from "@/utils/style/buttons";
+import { primaryColor } from "@/utils/style/colors";
 
 export const IconButton: React.FC<{
   width?: number;
