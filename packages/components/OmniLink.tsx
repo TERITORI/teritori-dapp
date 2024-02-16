@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-interface OmniLinkToType {
+export interface OmniLinkToType {
   screen: string | never;
   params?: object;
 }

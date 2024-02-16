@@ -232,6 +232,22 @@ func (h *Handler) handleExecuteTipPost(e *Message, execMsg *wasmtypes.MsgExecute
 	}
 
 	post.TipAmount += execMsg.Funds[0].Amount.Int64()
+
+	createdAt, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
+	notification := indexerdb.Notification{
+		UserId:    post.AuthorId,
+		TriggerBy: h.config.Network.UserID(execMsg.Sender),
+		Body:      fmt.Sprintf("%s:%s:%s:%s", h.config.Network.ChainID, execMsg.Funds[0].Amount.Int64(), h.config.Network.Currencies[0].Currency.GetDenom(), createdAt.Unix()),
+		Action:    fmt.Sprintf("%s", post.Identifier),
+		Category:  "tip",
+		CreatedAt: createdAt.Unix(),
+	}
+	h.db.Create(&notification)
+
 	h.db.Save(&post)
 
 	if err := h.db.Save(&post).Error; err != nil {
