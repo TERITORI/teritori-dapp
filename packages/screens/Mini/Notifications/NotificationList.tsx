@@ -14,7 +14,10 @@ import {
 import { OmniLinkToType } from "@/components/OmniLink";
 import { Separator } from "@/components/separators/Separator";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
-import { notificationsQueryKey } from "@/hooks/useNotifications";
+import {
+  notificationsQueryKey,
+  useNotifications,
+} from "@/hooks/useNotifications";
 import { parseUserId } from "@/networks";
 import { mustGetNotificationClient } from "@/utils/backend";
 import { prettyPrice } from "@/utils/coins";
@@ -35,6 +38,7 @@ export type NotificationType = {
 };
 
 export const NotificationList = () => {
+  useNotifications({ userId: "123" }); // wip
   return (
     <View
       style={{
