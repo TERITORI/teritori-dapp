@@ -9,10 +9,12 @@ import { LocalFileData, RemoteFileData } from "../utils/types/files";
 import { parseUserId } from "@/networks";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { generateIpfsKey } from "@/utils/ipfs";
+import { AppMode } from "@/utils/types/app-mode";
 
 interface UploadPostFilesToPinataParams {
   files: LocalFileData[];
   pinataJWTKey: string;
+  mode?: AppMode;
 }
 
 interface IPFSUploadProgress {
@@ -23,6 +25,7 @@ interface IPFSUploadProgress {
 export interface PinataFileProps {
   file: LocalFileData;
   pinataJWTKey: string;
+  mode?: AppMode;
 }
 
 export const useIpfs = () => {
@@ -34,10 +37,20 @@ export const useIpfs = () => {
     async ({
       file,
       pinataJWTKey,
+      mode,
     }: PinataFileProps): Promise<string | undefined> => {
       try {
         const formData = new FormData();
-        formData.append("file", file.file);
+        if (mode == "mini") {
+          //@ts-expect-error
+          formData.append("file", {
+            uri: file.url,
+            name: file.fileName,
+            type: file.mimeType,
+          });
+        } else {
+          formData.append("file", file.file);
+        }
 
         const responseFile = await axios({
           onUploadProgress: (progressEvent) => {
@@ -75,6 +88,7 @@ export const useIpfs = () => {
     async ({
       files,
       pinataJWTKey,
+      mode = "normal",
     }: UploadPostFilesToPinataParams): Promise<RemoteFileData[]> => {
       setIpfsUploadProgresses([]);
 
@@ -84,7 +98,9 @@ export const useIpfs = () => {
         const fileIpfsHash = await pinataPinFileToIPFS({
           file,
           pinataJWTKey,
+          mode,
         });
+
         const url = !fileIpfsHash ? "" : "ipfs://" + fileIpfsHash;
 
         if (file.thumbnailFileData) {

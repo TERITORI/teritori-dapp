@@ -1,13 +1,15 @@
+import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
 import React, { useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { TextInput, View, ViewStyle } from "react-native";
-import { launchImageLibrary } from "react-native-image-picker";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
 import { CustomButton } from "./Button/CustomButton";
 import MiniToast from "./MiniToast";
 import cameraSVG from "../../../../assets/icons/camera-white.svg";
+import micSVG from "../../../../assets/icons/mic-white.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
 import priceSVG from "../../../../assets/icons/price.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
@@ -28,12 +30,19 @@ import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature, getUserId } from "@/networks";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
+import { getAudioData } from "@/utils/audio";
 import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
 import { generatePostMetadata, getPostCategory } from "@/utils/feed/queries";
 import { generateIpfsKey } from "@/utils/ipfs";
-import { IMAGE_MIME_TYPES, VIDEO_MIME_TYPES } from "@/utils/mime";
+import {
+  AUDIO_MIME_TYPES,
+  IMAGE_MIME_TYPES,
+  VIDEO_MIME_TYPES,
+} from "@/utils/mime";
 import {
   SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
+  hashtagMatch,
+  mentionMatch,
   removeFileFromArray,
   replaceFileInArray,
 } from "@/utils/social-feed";
@@ -62,6 +71,10 @@ interface MiniCommentInputProps {
   onSubmitSuccess?: () => void;
   onSubmitInProgress?: () => void;
   replyTo?: ReplyToType;
+  // Receive this if the post is created from HashFeedScreen
+  additionalHashtag?: string;
+  // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
+  additionalMention?: string;
 }
 
 interface MiniCommentInputInputHandle {
@@ -77,7 +90,15 @@ export const MiniCommentInput = React.forwardRef<
   MiniCommentInputProps
 >(
   (
-    { parentId, replyTo, style, onSubmitSuccess, onSubmitInProgress },
+    {
+      parentId,
+      replyTo,
+      style,
+      onSubmitSuccess,
+      onSubmitInProgress,
+      additionalHashtag,
+      additionalMention,
+    },
     forwardRef,
   ) => {
     const inputMaxHeight = 400;
@@ -190,11 +211,34 @@ export const MiniCommentInput = React.forwardRef<
       setIsProgressBarShown(true);
       onSubmitInProgress && onSubmitInProgress();
       try {
-        const finalMessage = formValues.message || "";
         const isReplyToValid =
           replyTo &&
           replyTo.parentId &&
           formValues.message.includes(`@${replyTo.username}`);
+
+        // ---- Adding hashtag texts or mentioned texts to the metadata
+        const mentions: string[] = [];
+        mentionMatch(formValues.message)?.map((item) => {
+          //TODO: Check NS token id before sending mentioned text ?
+
+          mentions.push(item);
+        });
+
+        const hashtags: string[] = [];
+        hashtagMatch(formValues.message)?.map((item) => {
+          hashtags.push(item);
+        });
+
+        // ---- Adding hashtag or mentioned user at the end of the message and to the metadata
+        let finalMessage = formValues.message || "";
+        if (additionalMention) {
+          finalMessage += `\n@${additionalMention}`;
+          mentions.push(`@${additionalMention}`);
+        }
+        if (additionalHashtag) {
+          finalMessage += `\n#${additionalHashtag}`;
+          hashtags.push(`#${additionalHashtag}`);
+        }
 
         let remoteFiles: RemoteFileData[] = [];
 
@@ -210,6 +254,7 @@ export const MiniCommentInput = React.forwardRef<
             remoteFiles = await uploadFilesToPinata({
               files: formValues.files,
               pinataJWTKey,
+              mode: "mini",
             });
           }
         }
@@ -252,18 +297,18 @@ export const MiniCommentInput = React.forwardRef<
 
     const onCameraPress = async () => {
       try {
-        const result = await launchImageLibrary({
-          mediaType: "photo",
-          includeBase64: true,
-          presentationStyle: "fullScreen",
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
           selectionLimit: 1,
         });
 
         if (
           result.assets &&
           result.assets.length > 0 &&
-          result.assets[0].type &&
-          IMAGE_MIME_TYPES.includes(result?.assets?.[0]?.type)
+          result.assets[0].mimeType &&
+          IMAGE_MIME_TYPES.includes(
+            result?.assets?.[0]?.mimeType?.toLowerCase(),
+          )
         ) {
           const choseFile = result.assets[0];
 
@@ -275,23 +320,19 @@ export const MiniCommentInput = React.forwardRef<
             return;
 
           const imagePath = choseFile?.uri;
-          const imageMime = `${choseFile.type}`;
+          const imageMime = `${choseFile.mimeType}`;
           if (imagePath) {
-            const picture = await fetch(imagePath);
-            const pictures = await picture.blob();
             const fileName = `${choseFile.fileName}`;
 
-            const imageData = new File([pictures], fileName);
             setValue("files", [
               ...(formValues.files || []),
               {
-                file: imageData,
+                file: new File([], ""),
                 fileName,
                 fileType: "image",
                 mimeType: imageMime,
-                size: imageData.size || 0,
+                size: choseFile.fileSize || 0,
                 url: choseFile?.uri || "",
-                base64Image: choseFile.base64,
               },
             ]);
           }
@@ -301,47 +342,56 @@ export const MiniCommentInput = React.forwardRef<
       }
     };
 
-    const onVideoPress = async () => {
+    const onChooseFilePress = async (fileType: "audio" | "video") => {
       try {
-        const result = await launchImageLibrary({
-          mediaType: "video",
-          presentationStyle: "fullScreen",
-          selectionLimit: 1,
+        const acceptableMimeTypes =
+          fileType === "audio" ? AUDIO_MIME_TYPES : VIDEO_MIME_TYPES;
+        const result = await DocumentPicker.getDocumentAsync({
+          multiple: false,
+          type: acceptableMimeTypes,
         });
 
         if (
           result.assets &&
           result.assets.length > 0 &&
-          result.assets[0].type &&
-          VIDEO_MIME_TYPES.includes(result?.assets?.[0]?.type)
+          result.assets[0].mimeType &&
+          acceptableMimeTypes.includes(result?.assets?.[0]?.mimeType)
         ) {
           const choseFile = result.assets[0];
 
           if (
-            formValues.files?.find(
-              (file) => file.fileName === choseFile.fileName,
-            )
+            formValues.files?.find((file) => file.fileName === choseFile.name)
           )
             return;
+          const filePath = choseFile?.uri;
+          const mimeType = `${choseFile.mimeType}`;
+          if (filePath) {
+            const fileName = `${choseFile.name}`;
+            const file = new File([], "");
 
-          const imagePath = choseFile?.uri;
-          const mimeType = `${choseFile.type}`;
-          if (imagePath) {
-            const video = await fetch(imagePath);
-            const videos = await video.blob();
-            const fileName = `${choseFile.fileName}`;
-
-            const videoData = new File([videos], fileName);
+            const metaData: Pick<
+              LocalFileData,
+              "videoMetadata" | "audioMetadata"
+            > = {
+              videoMetadata: undefined,
+              audioMetadata: undefined,
+            };
+            if (fileType === "video") {
+              metaData.videoMetadata = await getVideoData(file);
+            }
+            if (fileType === "audio") {
+              metaData.audioMetadata = await getAudioData(file);
+            }
 
             setValue("files", [
               {
-                file: videoData,
+                file,
                 fileName,
-                fileType: "video",
+                fileType,
                 mimeType,
-                size: choseFile?.fileSize || 0,
+                size: choseFile?.size || 0,
                 url: choseFile?.uri || "",
-                videoMetadata: getVideoData(videoData),
+                ...metaData,
               },
             ]);
           }
@@ -457,12 +507,22 @@ export const MiniCommentInput = React.forwardRef<
                     ),
                   );
                 }}
-                onDeleteGIF={(url) =>
+                onDeleteGIF={(url) => {
                   setValue(
                     "gifs",
                     (formValues?.gifs || [])?.filter((gif) => gif !== url),
-                  )
-                }
+                  );
+                  const gifFile = formValues?.files?.find((x) => x.url === url);
+                  if (gifFile) {
+                    setValue(
+                      "files",
+                      removeFileFromArray(
+                        formValues?.files || [],
+                        gifFile as LocalFileData,
+                      ),
+                    );
+                  }
+                }}
                 onAudioUpdate={(updatedFile) => {
                   if (formValues?.files?.length) {
                     setValue(
@@ -538,7 +598,27 @@ export const MiniCommentInput = React.forwardRef<
               }
             />
             <CustomPressable
-              onPress={onVideoPress}
+              onPress={() => onChooseFilePress("audio")}
+              disabled={
+                Array.isArray(formValues?.files) &&
+                formValues?.files?.length > 0
+              }
+            >
+              <SVG
+                source={micSVG}
+                height={24}
+                width={24}
+                style={{
+                  opacity:
+                    Array.isArray(formValues?.files) &&
+                    formValues?.files?.length > 0
+                      ? 0.7
+                      : 1,
+                }}
+              />
+            </CustomPressable>
+            <CustomPressable
+              onPress={() => onChooseFilePress("video")}
               disabled={
                 Array.isArray(formValues?.files) &&
                 formValues?.files?.length > 0

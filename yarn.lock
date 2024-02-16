@@ -11038,6 +11038,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-image-picker@npm:^14.7.1":
+  version: 14.7.1
+  resolution: "expo-image-picker@npm:14.7.1"
+  dependencies:
+    expo-image-loader: ~4.6.0
+  peerDependencies:
+    expo: "*"
+  checksum: f9022cc9162365471b8e979df2c7a2156f43819b4717fb6ba376aedb6b55352a7b60b3a50a279dd58cf2551fbdd8a0719c5c903dcde4703436029e0fdca9c035
+  languageName: node
+  linkType: hard
+
 "expo-json-utils@npm:~0.12.0":
   version: 0.12.3
   resolution: "expo-json-utils@npm:0.12.3"
@@ -19071,6 +19082,7 @@ __metadata:
     expo-document-picker: ~11.10.1
     expo-file-system: ~16.0.6
     expo-font: ~11.10.2
+    expo-image-picker: ^14.7.1
     expo-linear-gradient: ~12.7.1
     expo-optimize: ^0.2.20
     expo-secure-store: ~12.8.1
