@@ -254,24 +254,24 @@ const settingsSlice = createSlice({
 });
 
 interface SettingsSession {
-  unlocked: boolean;
+  locked: boolean;
 }
 const settingsSessionInitialState: SettingsSession = {
-  unlocked: false,
+  locked: false,
 };
 
 const settingsSession = createSlice({
   name: "settings-session",
   initialState: settingsSessionInitialState,
   reducers: {
-    setUnlockState: (state, action: PayloadAction<boolean>) => {
-      state.unlocked = action.payload;
+    setLock: (state, action: PayloadAction<boolean>) => {
+      state.locked = action.payload;
     },
   },
 });
 
-export const selectIsAppUnlocked = (state: RootState) =>
-  state.settingsSession.unlocked;
+export const selectIsAppLocked = (state: RootState) =>
+  state.settingsSession.locked;
 
 export const {
   setSelectedNetworkId,
@@ -293,5 +293,5 @@ export const {
 
 export const settingsReducer = settingsSlice.reducer;
 
-export const { setUnlockState } = settingsSession.actions;
+export const { setLock } = settingsSession.actions;
 export const settingsSessionReducer = settingsSession.reducer;

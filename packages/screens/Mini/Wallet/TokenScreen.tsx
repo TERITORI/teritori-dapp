@@ -23,7 +23,7 @@ import { useBalances } from "@/hooks/useBalances";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { useSearchTx } from "@/hooks/wallet/useSearchTx";
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
-import { selectIsAppUnlocked, setUnlockState } from "@/store/slices/settings";
+import { selectIsAppLocked, setLock } from "@/store/slices/settings";
 import { useAppDispatch } from "@/store/store";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral88, neutralA3, secondaryColor } from "@/utils/style/colors";
@@ -37,7 +37,7 @@ import { layout } from "@/utils/style/layout";
 const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
   const selectedWallet = useSelectedNativeWallet();
 
-  const isAppUnlocked = useSelector(selectIsAppUnlocked);
+  const isAppLocked = useSelector(selectIsAppLocked);
   const dispatch = useAppDispatch();
 
   const balances = useBalances(
@@ -46,8 +46,8 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
   );
 
   // is wallet unlocked?
-  console.log(isAppUnlocked);
-  if (!isAppUnlocked) {
+  console.log(isAppLocked);
+  if (isAppLocked) {
     hasHardwareAsync().then((hasHardware) => {
       console.log("hasHardware", hasHardware);
       if (hasHardware) {
@@ -55,7 +55,7 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
           console.log("authenticateAsync", result);
           authenticateAsync().then((result) => {
             console.log("authenticateAsync", result);
-            dispatch(setUnlockState(result.success));
+            dispatch(setLock(result.success));
           });
         });
       }

@@ -20,6 +20,7 @@ import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { selectContactInfo, setContactInfo } from "@/store/slices/message";
+import { setLock } from "@/store/slices/settings";
 import {
   selectAllWallets,
   setSelectedNativeWalletIndex,
@@ -107,6 +108,9 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
               borderRadius: 100,
               flexDirection: "row",
               gap: layout.spacing_x1,
+            }}
+            onPress={() => {
+              dispatch(setLock(true));
             }}
           >
             <SVG source={lockSVG} height={16} width={16} />
