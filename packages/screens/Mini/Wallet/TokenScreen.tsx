@@ -1,11 +1,5 @@
-import {
-  authenticateAsync,
-  hasHardwareAsync,
-  isEnrolledAsync,
-} from "expo-local-authentication";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { FlatList, View } from "react-native";
-import { useSelector } from "react-redux";
 
 import { AddedToken } from "./components/AddedToken";
 import TransactionItem from "./components/TransactionItem";
@@ -20,11 +14,10 @@ import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { useBalances } from "@/hooks/useBalances";
+import { useCheckAppLock } from "@/hooks/useCheckAppLock";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { useSearchTx } from "@/hooks/wallet/useSearchTx";
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
-import { selectIsAppLocked, setLock } from "@/store/slices/settings";
-import { useAppDispatch } from "@/store/store";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral88, neutralA3, secondaryColor } from "@/utils/style/colors";
 import {
@@ -35,32 +28,13 @@ import {
 import { layout } from "@/utils/style/layout";
 
 const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
+  useCheckAppLock();
   const selectedWallet = useSelectedNativeWallet();
-
-  const isAppLocked = useSelector(selectIsAppLocked);
-  const dispatch = useAppDispatch();
 
   const balances = useBalances(
     selectedWallet?.networkId,
     selectedWallet?.address,
   );
-
-  // is wallet unlocked?
-  console.log(isAppLocked);
-  if (isAppLocked) {
-    hasHardwareAsync().then((hasHardware) => {
-      console.log("hasHardware", hasHardware);
-      if (hasHardware) {
-        isEnrolledAsync().then((result) => {
-          console.log("authenticateAsync", result);
-          authenticateAsync().then((result) => {
-            console.log("authenticateAsync", result);
-            dispatch(setLock(result.success));
-          });
-        });
-      }
-    });
-  }
 
   return (
     <>
