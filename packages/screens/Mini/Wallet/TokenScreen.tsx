@@ -154,7 +154,6 @@ const LastTransactions = () => {
     networkId,
     selectedWallet?.address,
   );
-  console.log("transactions", transactions);
 
   return (
     <>

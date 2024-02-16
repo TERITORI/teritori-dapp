@@ -132,7 +132,6 @@ export function capitalizeStr(str: string) {
 
 export async function copyToClipboard(value: string) {
   await Clipboard.setStringAsync(value);
-  alert("Copied");
 }
 
 export default TransactionDetailScreen;

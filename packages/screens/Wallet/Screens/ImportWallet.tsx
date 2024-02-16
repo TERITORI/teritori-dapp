@@ -129,6 +129,7 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {
                       address: accounts[0].address,
                       network: network.kind,
                       provider: "native",
+                      name: `Account ${maxIndex + 1}`,
                       networkId: "teritori",
                       index: maxIndex + 1,
                     }),
