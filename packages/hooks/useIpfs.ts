@@ -42,7 +42,7 @@ export const useIpfs = () => {
       try {
         const formData = new FormData();
         if (mode === "mini") {
-          //@ts-expect-error
+          //@ts-expect-error: description instead of adding file when adding url in formdata file upload to pinata
           formData.append("file", {
             uri: file.url,
             name: file.fileName,
