@@ -185,6 +185,7 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
               alignItems: "center",
             }}
           >
+            {/*{selectedWallet?.connected && <NotificationDrawer />}*/}
             <TogglePlayerButton />
             <Separator
               horizontal

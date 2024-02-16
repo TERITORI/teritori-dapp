@@ -4,34 +4,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { TopMenuSection } from "./TopMenuSection";
 import walletsSVG from "../../../assets/icons/wallets.svg";
-import { useBalances } from "../../hooks/useBalances";
-import { useDelegations } from "../../hooks/useDelegations";
-import {
-  useSelectedNetworkId,
-  useSelectedNetworkInfo,
-} from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  CurrencyInfo,
-  getStakingCurrency,
-  NetworkKind,
-  UserKind,
-} from "../../networks";
-import {
-  gradientColorBlue,
-  gradientColorDarkerBlue,
-  gradientColorTurquoise,
-  neutral17,
-  neutral77,
-  neutralA3,
-  purpleDark,
-} from "../../utils/style/colors";
-import {
-  fontBold12,
-  fontSemibold12,
-  fontSemibold14,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import FlexCol from "../FlexCol";
 import FlexRow from "../FlexRow";
@@ -41,6 +14,33 @@ import { SendModal } from "../modals/SendModal";
 
 import { DepositWithdrawModal } from "@/components/modals/DepositWithdrawModal";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useBalances } from "@/hooks/useBalances";
+import { useDelegations } from "@/hooks/useDelegations";
+import {
+  useSelectedNetworkId,
+  useSelectedNetworkInfo,
+} from "@/hooks/useSelectedNetwork";
+import {
+  CurrencyInfo,
+  getStakingCurrency,
+  NetworkKind,
+  UserKind,
+} from "@/networks";
+import {
+  gradientColorBlue,
+  gradientColorDarkerBlue,
+  gradientColorTurquoise,
+  neutral17,
+  neutral77,
+  neutralA3,
+  purpleDark,
+} from "@/utils/style/colors";
+import {
+  fontBold12,
+  fontSemibold12,
+  fontSemibold14,
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const TokenBalance: React.FC = () => {
   const selectedWallet = useSelectedWallet();

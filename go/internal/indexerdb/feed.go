@@ -11,8 +11,8 @@ userReactions = [
 */
 
 type Post struct {
-	Identifier           string          `gorm:"primaryKey"`
-	ParentPostIdentifier string          `gorm:"index"`
+	Identifier           networks.PostID `gorm:"primaryKey"`
+	ParentPostIdentifier networks.PostID `gorm:"index"`
 	Category             uint32          `gorm:"index"`
 	IsBot                bool            `gorm:"default:false"`
 	Metadata             ObjectJSONB     `gorm:"type:jsonb;default:'{}'"`

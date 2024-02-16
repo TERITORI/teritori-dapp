@@ -4,9 +4,10 @@ import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 import { TopMenuMobile } from "./TopMenuMobile";
 import contactsSVG from "../../../assets/icons/contacts.svg";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { neutral17, neutral33 } from "../../utils/style/colors";
 import { SVG } from "../SVG";
 import { ConnectWalletModal } from "../modals/ConnectWalletModal";
+
+import { neutral17, neutral33 } from "@/utils/style/colors";
 
 export const ConnectWalletButtonMobile: FC<{
   style?: StyleProp<ViewStyle>;

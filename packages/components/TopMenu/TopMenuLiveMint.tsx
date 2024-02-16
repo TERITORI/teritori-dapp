@@ -3,21 +3,22 @@ import { View } from "react-native";
 
 import { TopMenuSection } from "./TopMenuSection";
 import {
-  Collection,
-  MintState,
-  Sort,
-  SortDirection,
-} from "../../api/marketplace/v1/marketplace";
-import { useCollections } from "../../hooks/useCollections";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getNetwork } from "../../networks";
-import { layout, topMenuWidth } from "../../utils/style/layout";
-import {
   CollectionView,
   COLLECTION_VIEW_SM_HEIGHT,
   COLLECTION_VIEW_SM_WIDTH,
 } from "../CollectionView";
 import { SmallCarousel } from "../carousels/SmallCarousel";
+
+import {
+  Collection,
+  MintState,
+  Sort,
+  SortDirection,
+} from "@/api/marketplace/v1/marketplace";
+import { useCollections } from "@/hooks/useCollections";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getNetwork } from "@/networks";
+import { layout, topMenuWidth } from "@/utils/style/layout";
 
 export const TopMenuLiveMint: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();

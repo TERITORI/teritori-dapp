@@ -4,12 +4,14 @@ import { View, ViewStyle, StyleProp } from "react-native";
 
 import { OptimizedImage } from "../OptimizedImage";
 
-type RoundedGradientImageSize = "M" | "XS" | "XXS";
+export type RoundedGradientImageSize = "M" | "S" | "XS" | "XXS";
 
 const dimension = (size: RoundedGradientImageSize) => {
   switch (size) {
     case "M":
       return 140;
+    case "S":
+      return 48;
     case "XS":
       return 32;
     case "XXS":
@@ -21,6 +23,7 @@ const imageDimension = (size: RoundedGradientImageSize) => {
     case "M":
       return dimension(size) - 4;
     case "XS":
+    case "S":
       return dimension(size) - 2;
     case "XXS":
       return dimension(size) - 2;

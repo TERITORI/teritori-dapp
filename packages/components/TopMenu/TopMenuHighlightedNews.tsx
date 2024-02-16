@@ -2,12 +2,13 @@ import React from "react";
 import { Image } from "react-native";
 
 import { TopMenuSection } from "./TopMenuSection";
-import { useBanners } from "../../hooks/useBanners";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { web3ToWeb2URI } from "../../utils/ipfs";
 import FlexCol from "../FlexCol";
 import { Link } from "../Link";
 import { PrimaryBox } from "../boxes/PrimaryBox";
+
+import { useBanners } from "@/hooks/useBanners";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { web3ToWeb2URI } from "@/utils/ipfs";
 
 export const TopMenuHighlightedNews: React.FC = () => {
   const networkId = useSelectedNetworkId();

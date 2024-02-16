@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 
-import NotificationList from "./NotificationList";
+import { NotificationList } from "./NotificationList";
 import CustomAppBar from "../components/AppBar/CustomAppBar";
 import DropdownWithCheck from "../components/Dropdown/DropdownWithCheck";
 

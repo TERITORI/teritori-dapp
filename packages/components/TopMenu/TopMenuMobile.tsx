@@ -2,10 +2,11 @@ import React, { FC } from "react";
 import { View, TouchableOpacity } from "react-native";
 
 import { TopMenuBox } from "./TopMenuBox";
-import { useDropdowns } from "../../hooks/useDropdowns";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { neutral00 } from "../../utils/style/colors";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
+
+import { useDropdowns } from "@/hooks/useDropdowns";
+import { neutral00 } from "@/utils/style/colors";
 
 export const TopMenuMobile: FC = () => {
   const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
