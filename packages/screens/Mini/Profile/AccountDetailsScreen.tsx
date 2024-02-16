@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Linking, TextInput, View } from "react-native";
+import { Alert, Linking, TextInput, View } from "react-native";
 
 import openSVG from "../../../../assets/icons/open-blue.svg";
 import penSVG from "../../../../assets/icons/pen-solid-gray.svg";
@@ -8,10 +8,12 @@ import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { resetWallet } from "@/hooks/wallet/getNativeWallet";
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 import { accountExplorerLink } from "@/networks";
 import { ShowWalletQR } from "@/screens/Mini/Wallet/components/ShowWalletQR";
-import { updateWallet } from "@/store/slices/wallets";
+import { CustomButton } from "@/screens/Mini/components/Button/CustomButton";
+import { removeWalletById, updateWallet } from "@/store/slices/wallets";
 import { useAppDispatch } from "@/store/store";
 import { ScreenFC } from "@/utils/navigation";
 import {
@@ -38,6 +40,31 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
       dispatch(updateWallet({ ...selectedWallet, name: text }));
     }
     setAccountName(text || "");
+  };
+
+  const onResetPress = () => {
+    if (selectedWallet) {
+      Alert.alert(
+        "Are you sure?",
+        "This action will remove the wallet from your device. You can always import it back.",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Delete",
+            onPress: () => {
+              resetWallet(selectedWallet.index); // remove from storage
+              dispatch(removeWalletById(selectedWallet.index)); // remove from redux | app state
+              navigation.navigate("NativeWallet"); // this one is here just in case the user don't have any more wallets
+            },
+            style: "destructive",
+            isPreferred: true,
+          },
+        ],
+      );
+    }
   };
 
   return (
@@ -101,6 +128,14 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
           <SVG source={openSVG} height={22} width={22} />
         </CustomPressable>
       </View>
+      <CustomButton
+        title="Delete"
+        onPress={onResetPress}
+        type="danger"
+        style={{
+          marginTop: layout.spacing_x1_5,
+        }}
+      />
     </BlurScreenContainer>
   );
 };
