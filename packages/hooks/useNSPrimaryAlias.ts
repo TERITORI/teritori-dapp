@@ -6,9 +6,9 @@ import {
   GnoNetworkInfo,
   NetworkKind,
   parseUserId,
-} from "../networks";
-import { getCosmosNameServiceQueryClient } from "../utils/contracts";
-import { extractGnoString } from "../utils/gno";
+} from "@/networks";
+import { getCosmosNameServiceQueryClient } from "@/utils/contracts";
+import { extractGnoString } from "@/utils/gno";
 
 export const nsPrimaryAliasQueryKey = (userId: string | undefined) => [
   "nsPrimaryAlias",

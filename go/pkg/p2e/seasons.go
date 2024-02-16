@@ -18,7 +18,7 @@ type Season struct {
 
 // TODO: We hardcode this right now but should defined in dynamic way in the future (airtable, db...)
 // BossHp is in Days
-var THE_RIOT_SEASONS = []Season{
+var THE_RIOT_COSMOS_SEASONS = []Season{
 	// Season 1
 	{
 		ID:         "Season 1",
@@ -37,7 +37,7 @@ var THE_RIOT_SEASONS = []Season{
 		ID:        "Pre-Season 2",
 		GameID:    THE_RIOT_GAME_ID,
 		BossName:  `== $*=|'¤?")à-£_%`,
-		BossImage: "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.nftstorage.link/",
+		BossImage: "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.cf-ipfs.com/",
 		StartsAt:  "2023-01-24T00:00:00",
 		EndsAt:    "2023-02-05T00:00:00",
 		IsPre:     true,
@@ -50,7 +50,7 @@ var THE_RIOT_SEASONS = []Season{
 		Decimals:   6,
 		TotalPrize: 300_000,
 		BossName:   "Ursula Delahaye",
-		BossImage:  "https://bafybeigidzbfvy6t2a3cjff4zc2e6kk36uml5nn6acyuxaiwyvuuq6ww3a.ipfs.nftstorage.link/",
+		BossImage:  "https://bafybeigidzbfvy6t2a3cjff4zc2e6kk36uml5nn6acyuxaiwyvuuq6ww3a.ipfs.cf-ipfs.com/",
 		TopN:       500,
 		StartsAt:   "2023-02-05T00:00:00",
 		EndsAt:     "2023-02-15T00:00:00",
@@ -60,7 +60,7 @@ var THE_RIOT_SEASONS = []Season{
 		ID:        "Pre-Season 3",
 		GameID:    THE_RIOT_GAME_ID,
 		BossName:  `== $*=|'¤?")à-£_%`,
-		BossImage: "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.nftstorage.link/",
+		BossImage: "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.cf-ipfs.com/",
 		StartsAt:  "2023-02-15T00:00:00",
 		EndsAt:    "2023-02-20T00:00:00",
 		IsPre:     true,
@@ -73,7 +73,7 @@ var THE_RIOT_SEASONS = []Season{
 		Decimals:   6,
 		TotalPrize: 1_200_000,
 		BossName:   "Justin Trado",
-		BossImage:  "https://bafybeidxomcyjsr2iach6ms5ceaj53znjrnx5xlo5qnoldbswcfwocg75i.ipfs.nftstorage.link/",
+		BossImage:  "https://bafybeidxomcyjsr2iach6ms5ceaj53znjrnx5xlo5qnoldbswcfwocg75i.ipfs.cf-ipfs.com/",
 		TopN:       500,
 		StartsAt:   "2023-02-20T00:00:00",
 		EndsAt:     "2023-03-22T00:00:00",
@@ -83,7 +83,7 @@ var THE_RIOT_SEASONS = []Season{
 		ID:        "Pre-Season 4",
 		GameID:    THE_RIOT_GAME_ID,
 		BossName:  `== $*=|'¤?")à-£_%`,
-		BossImage: "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.nftstorage.link/",
+		BossImage: "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.cf-ipfs.com/",
 		StartsAt:  "2023-03-22T00:00:00",
 		EndsAt:    "2023-03-28T00:00:00",
 		IsPre:     true,
@@ -96,7 +96,7 @@ var THE_RIOT_SEASONS = []Season{
 		Decimals:   6,
 		TotalPrize: 280_000,
 		BossName:   "Ursula Delahaye",
-		BossImage:  "https://bafybeieaacwfeglbfqp376owdsjmpolz4uvfkjeji4rr2ck4merxg4r4sa.ipfs.nftstorage.link/",
+		BossImage:  "https://bafybeieaacwfeglbfqp376owdsjmpolz4uvfkjeji4rr2ck4merxg4r4sa.ipfs.cf-ipfs.com/",
 		TopN:       500,
 		StartsAt:   "2023-03-28T00:00:00",
 		EndsAt:     "2023-04-04T00:00:00",
@@ -106,7 +106,7 @@ var THE_RIOT_SEASONS = []Season{
 		ID:        "Pre-Season 4b",
 		GameID:    THE_RIOT_GAME_ID,
 		BossName:  `== $*=|'¤?")à-£_%`,
-		BossImage: "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.nftstorage.link/",
+		BossImage: "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.cf-ipfs.com/",
 		StartsAt:  "2023-04-04T00:00:00",
 		EndsAt:    "2023-04-10T00:00:00",
 		IsPre:     true,
@@ -119,7 +119,7 @@ var THE_RIOT_SEASONS = []Season{
 		Decimals:   6,
 		TotalPrize: 1_200_000,
 		BossName:   "Ursula Delahaye",
-		BossImage:  "https://bafybeieaacwfeglbfqp376owdsjmpolz4uvfkjeji4rr2ck4merxg4r4sa.ipfs.nftstorage.link/",
+		BossImage:  "https://bafybeieaacwfeglbfqp376owdsjmpolz4uvfkjeji4rr2ck4merxg4r4sa.ipfs.cf-ipfs.com/",
 		TopN:       500,
 		StartsAt:   "2023-04-10T00:00:00",
 		EndsAt:     "2023-05-10T00:00:00",
@@ -129,7 +129,7 @@ var THE_RIOT_SEASONS = []Season{
 		ID:        "Pre-Season 5",
 		GameID:    THE_RIOT_GAME_ID,
 		BossName:  `== $*=|'¤?")à-£_%`,
-		BossImage: "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.nftstorage.link/",
+		BossImage: "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.cf-ipfs.com/",
 		StartsAt:  "2023-05-10T00:00:00",
 		EndsAt:    "2023-05-30T00:00:00",
 		IsPre:     true,
@@ -142,7 +142,7 @@ var THE_RIOT_SEASONS = []Season{
 		Decimals:   6,
 		TotalPrize: 1_000_000,
 		BossName:   "Big George",
-		BossImage:  "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.nftstorage.link/",
+		BossImage:  "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.cf-ipfs.com/",
 		TopN:       500,
 		StartsAt:   "2023-05-30T00:00:00",
 		EndsAt:     "2023-06-29T00:00:00",
@@ -152,12 +152,12 @@ var THE_RIOT_SEASONS = []Season{
 		ID:        "Pre-Season 6",
 		GameID:    THE_RIOT_GAME_ID,
 		BossName:  `== $*=|'¤?")à-£_%`,
-		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.nftstorage.link/",
+		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.cf-ipfs.com/",
 		StartsAt:  "2023-06-29T00:00:00",
 		EndsAt:    "2023-08-09T00:00:00",
 		IsPre:     true,
 	},
-  // Season 6
+	// Season 6
 	{
 		ID:         "Season 6",
 		GameID:     THE_RIOT_GAME_ID,
@@ -165,19 +165,61 @@ var THE_RIOT_SEASONS = []Season{
 		Decimals:   6,
 		TotalPrize: 1_000_000,
 		BossName:   "Didier Schmidt",
-		BossImage:  "https://bafybeib76uipog5hwot3lo5nrtrzrna2x3irtkiozmbmp6bazvaomwfa7e.ipfs.nftstorage.link/",
+		BossImage:  "https://bafybeib76uipog5hwot3lo5nrtrzrna2x3irtkiozmbmp6bazvaomwfa7e.ipfs.cf-ipfs.com/",
 		TopN:       500,
 		StartsAt:   "2023-08-09T00:00:00",
 		EndsAt:     "2023-09-08T00:00:00",
 	},
-  // Pre-Season 7
-  {
-    ID:        "Pre-Season 7",
-    GameID:    THE_RIOT_GAME_ID,
-    BossName:  `== $*=|'¤?")à-£_%`,
-    BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.nftstorage.link/",
-    StartsAt:  "2023-09-08T00:00:00",
-    EndsAt:    "2023-12-10T00:00:00",
-    IsPre:     true,
-  },
+	// Pre-Season 7
+	{
+		ID:        "Pre-Season 7",
+		GameID:    THE_RIOT_GAME_ID,
+		BossName:  `== $*=|'¤?")à-£_%`,
+		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.nftstorage.link/",
+		StartsAt:  "2023-09-08T00:00:00",
+		EndsAt:    "2023-12-10T00:00:00",
+		IsPre:     true,
+	},
+}
+
+var THE_RIOT_ETHEREUM_SEASONS = []Season{
+	// Season 0: Used when testing
+	{
+		ID:         "Season 0 - ETH",
+		GameID:     THE_RIOT_GAME_ID,
+		Denom:      "tori",
+		Decimals:   6,
+		TotalPrize: 1,
+		BossName:   "Tori Pup",
+		BossImage:  "https://bafkreidzf2kol7hi3lae33fpu6iryfw7mgbp5fbqnyewq64kagykc266h4.ipfs.cf-ipfs.com/",
+		TopN:       500,
+		StartsAt:   "2023-12-01T00:00:00",
+		EndsAt:     "2024-02-07T00:00:00",
+	},
+	// Season 1
+	{
+		ID:         "Season 1 - ETH",
+		GameID:     THE_RIOT_GAME_ID,
+		Denom:      "tori",
+		Decimals:   6,
+		TotalPrize: 1,
+		BossName:   "Tori Pup",
+		BossImage:  "https://bafkreidzf2kol7hi3lae33fpu6iryfw7mgbp5fbqnyewq64kagykc266h4.ipfs.cf-ipfs.com/",
+		TopN:       500,
+		StartsAt:   "2024-02-07T00:00:00",
+		EndsAt:     "2024-02-11T00:00:00",
+	},
+		// Season 1b
+  	{
+  		ID:         "Season 1b - ETH",
+  		GameID:     THE_RIOT_GAME_ID,
+  		Denom:      "tori",
+  		Decimals:   6,
+  		TotalPrize: 1,
+  		BossName:   "Tori Pup",
+  		BossImage:  "https://bafkreidzf2kol7hi3lae33fpu6iryfw7mgbp5fbqnyewq64kagykc266h4.ipfs.cf-ipfs.com/",
+  		TopN:       500,
+  		StartsAt:   "2024-02-11T00:00:00",
+  		EndsAt:     "2024-02-20T00:00:00",
+  	},
 }

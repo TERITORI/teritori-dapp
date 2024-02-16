@@ -2,19 +2,20 @@ import React from "react";
 import { View } from "react-native";
 
 import { Assets } from "./Assets";
-import { MyNFTs } from "./MyNFTs";
-import { WalletDashboardHeader } from "./WalletDashboardHeader";
 import { WalletHeader } from "./WalletHeader";
 import { WalletItem } from "./WalletItem";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
-import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { ScreenFC } from "../../utils/navigation";
-import { neutral33 } from "../../utils/style/colors";
-import { layout } from "../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { MainConnectWalletButton } from "@/components/connectWallet/MainConnectWalletButton";
+import { MyNFTs } from "@/components/hub/MyNFTs";
+import { WalletDashboardHeader } from "@/components/hub/WalletDashboardHeader";
+import { useAreThereWallets } from "@/hooks/useAreThereWallets";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { ScreenFC } from "@/utils/navigation";
+import { neutral33 } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 
 export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
   const selectedWallet = useSelectedWallet();
@@ -51,7 +52,9 @@ export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
             <BrandText style={{ marginRight: 20, fontSize: 20 }}>
               Wallet
             </BrandText>
-            {selectedWallet && <WalletItem item={selectedWallet} zIndex={10} />}
+            {!!selectedWallet && (
+              <WalletItem item={selectedWallet} zIndex={10} />
+            )}
           </View>
           <MyNFTs />
         </View>

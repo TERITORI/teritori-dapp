@@ -6,41 +6,42 @@ import { Pressable, ScrollView, View } from "react-native";
 import { MultisigSection } from "./components/MultisigSection";
 import trashSVG from "../../../assets/icons/trash.svg";
 import walletInputSVG from "../../../assets/icons/wallet-input.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-import { SearchNSInputContainer } from "../../components/inputs/SearchNSInputContainer";
-import { TextInputCustom } from "../../components/inputs/TextInputCustom";
-import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideLabel";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useMultisigAuthToken } from "../../hooks/multisig/useMultisigAuthToken";
-import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind, getUserId, parseUserId } from "../../networks";
-import { getCosmosAccount } from "../../utils/cosmos";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { SearchNSInputContainer } from "@/components/inputs/SearchNSInputContainer";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { TextInputOutsideLabel } from "@/components/inputs/TextInputOutsideLabel";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useMultisigAuthToken } from "@/hooks/multisig/useMultisigAuthToken";
+import { useMultisigClient } from "@/hooks/multisig/useMultisigClient";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { getUserId, NetworkKind, parseUserId } from "@/networks";
+import { getCosmosAccount } from "@/utils/cosmos";
 import {
   patternOnlyNumbers,
   validateAddress,
   validateMaxNumber,
-} from "../../utils/formRules";
-import { useAppNavigation } from "../../utils/navigation";
+} from "@/utils/formRules";
 import {
   neutral33,
   neutral77,
   neutralA3,
   trashBackground,
-} from "../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold20,
   fontSemibold28,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type CreateMultisigWalletFormType = {
   addresses: { address: string }[];

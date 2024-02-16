@@ -1,22 +1,22 @@
-import { MsgVoteEncodeObject, isDeliverTxFailure } from "@cosmjs/stargate";
-import Long from "long";
+import { isDeliverTxFailure, MsgVoteEncodeObject } from "@cosmjs/stargate";
 import moment from "moment";
-import React, { useState, useCallback } from "react";
-import { ScrollView, ViewStyle, StyleProp, View } from "react-native";
+import React, { useCallback, useState } from "react";
+import { ScrollView, StyleProp, View, ViewStyle } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { VictoryPie } from "victory";
 
-import { ProposalStatus } from "./types";
-import { BrandText } from "../../components/BrandText";
-import { ConfirmationVote } from "../../components/GovernanceBox/ConfirmationVote";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getKeplrSigningStargateClient } from "../../networks";
-import { neutral44, tulipTree } from "../../utils/style/colors";
+
+import { BrandText } from "@/components/BrandText";
+import { ConfirmationVote } from "@/components/GovernanceBox/ConfirmationVote";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { getKeplrSigningStargateClient } from "@/networks";
+import { neutral44, tulipTree } from "@/utils/style/colors";
+import { ProposalStatus } from "@/utils/types/gov";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
   <View
@@ -111,9 +111,7 @@ export const GovernanceDetails: React.FC<{
       const vote: MsgVoteEncodeObject = {
         typeUrl: "/cosmos.gov.v1beta1.MsgVote",
         value: {
-          proposalId: Long.fromNumber(
-            parseInt(numberProposal.substring(1), 10),
-          ),
+          proposalId: BigInt(numberProposal.substring(1)),
           voter: String(selectedWallet.address),
           option: voteOption,
         },
@@ -403,7 +401,7 @@ export const GovernanceDetails: React.FC<{
         </View>
       </View>
 
-      <TertiaryBox
+      <LegacyTertiaryBox
         width={1240}
         height={196}
         style={{ right: "-0.5%", marginTop: 25 }}
@@ -606,12 +604,12 @@ export const GovernanceDetails: React.FC<{
           <PrimaryButton
             width={150}
             size="XL"
-            style={{ position: "absolute", left: 510, bottom: -40 }}
+            boxStyle={{ position: "absolute", left: 510, bottom: -40 }}
             text="Vote"
             onPress={() => activeVote()}
           />
         )}
-      </TertiaryBox>
+      </LegacyTertiaryBox>
 
       {activeConfirmationVotePopup()}
 

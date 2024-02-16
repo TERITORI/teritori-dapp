@@ -7,7 +7,7 @@ export const gnoCurrencies: CurrencyInfo[] = [
     displayName: "GNOT",
     decimals: 6,
     coingeckoId: "gno",
-    icon: "icons/networks/gno.svg",
+    icon: "gno.svg",
     kind: "native",
     color: currencyGNOcolor,
   },

@@ -18,6 +18,7 @@ import {
 } from "react-hook-form";
 import {
   ActivityIndicator,
+  Pressable,
   StyleProp,
   StyleSheet,
   TextInput,
@@ -44,15 +45,18 @@ import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../spacer";
+
+// TODO: Refacto TextInputCustom. Too much props
 
 export interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
   variant?: "regular" | "labelOutside" | "noStyle";
   iconSVG?: React.FC<SvgProps>;
+  onPressChildren?: () => void;
   placeHolder?: string;
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;
@@ -68,6 +72,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
   defaultValue?: PathValue<T, Path<T>>;
   subtitle?: React.ReactElement;
+  sublabel?: React.ReactElement;
   hideLabel?: boolean;
   errorStyle?: ViewStyle;
   valueModifier?: (value: string) => string;
@@ -137,8 +142,10 @@ export const TextInputCustom = <T extends FieldValues>({
   defaultValue,
   rules,
   subtitle,
+  sublabel,
   labelStyle,
   iconSVG,
+  onPressChildren,
   hideLabel,
   valueModifier,
   errorStyle,
@@ -245,14 +252,16 @@ export const TextInputCustom = <T extends FieldValues>({
             </Label>
             {subtitle}
           </View>
+          {sublabel && sublabel}
           <SpacerColumn size={1.5} />
         </>
       )}
-      <TertiaryBox
+      <LegacyTertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
         mainContainerStyle={[
           styles.mainContainer,
+          boxMainContainerStyle,
           noBrokenCorners && styles.noCropBorderBg,
           hovered && { borderColor: secondaryColor },
         ]}
@@ -292,14 +301,15 @@ export const TextInputCustom = <T extends FieldValues>({
               {...restProps}
             />
           </View>
-
           {isLoading ? (
             <ActivityIndicator color={secondaryColor} size="small" />
+          ) : onPressChildren ? (
+            <Pressable onPress={onPressChildren}>{children}</Pressable>
           ) : (
             <>{children}</>
           )}
         </View>
-      </TertiaryBox>
+      </LegacyTertiaryBox>
       <ErrorText>{error || fieldError}</ErrorText>
     </CustomPressable>
   );
@@ -330,7 +340,7 @@ const styles = StyleSheet.create({
     color: secondaryColor,
     fontFamily: "Exo_600SemiBold",
     outlineStyle: "none",
-  },
+  } as TextStyle,
   innerContainer: {
     flexDirection: "row",
     alignItems: "center",

@@ -2,9 +2,10 @@ import React, { useEffect } from "react";
 
 import { Content } from "./content/Content";
 import { ContentContextProvider } from "./context/ContentProvider";
-import { ScreenContainer } from "../../../../components/ScreenContainer";
-import { TopLogo } from "../../../../components/navigation/components/TopLogo";
-import { ScreenFC, useAppNavigation } from "../../../../utils/navigation";
+
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { TopLogo } from "@/components/navigation/components/TopLogo";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 
 export const ToriPunks: ScreenFC<"ToriPunks"> = ({ route }) => {
   const navigation = useAppNavigation();
@@ -19,7 +20,7 @@ export const ToriPunks: ScreenFC<"ToriPunks"> = ({ route }) => {
       fullWidth
       hideSidebar
       headerChildren={<TopLogo />}
-      footerChildren={<div />}
+      footerChildren={<></>}
       forceNetworkId="teritori"
     >
       <ContentContextProvider screen={screen}>

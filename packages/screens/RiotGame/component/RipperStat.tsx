@@ -1,19 +1,15 @@
 import React from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
-import { BrandText } from "../../../components/BrandText";
+import { BrandText } from "@/components/BrandText";
+import { neutral33, neutralA3, yellowDefault } from "@/utils/style/colors";
 import {
-  yellowDefault,
-  neutral33,
-  neutralA3,
-} from "../../../utils/style/colors";
-import {
-  fontMedium48,
+  fontMedium13,
   fontMedium14,
   fontMedium32,
-  fontMedium13,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+  fontMedium48,
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type RipperStatProps = {
   name: string;

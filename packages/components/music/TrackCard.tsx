@@ -1,3 +1,4 @@
+import { isEqual } from "lodash";
 import React, { memo, useMemo, useState } from "react";
 import {
   View,
@@ -16,20 +17,21 @@ import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import { neutral17, neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14, fontMedium13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
+import { ZodSocialFeedTrackMetadata } from "../../utils/types/feed";
 import { Media } from "../../utils/types/mediaPlayer";
 import { BrandText } from "../BrandText";
 import { OmniLink } from "../OmniLink";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { CustomPressable } from "../buttons/CustomPressable";
-import { ZodSocialFeedTrackMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn } from "../spacer";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const BUTTONS_HEIGHT = 28;
 export const TRACK_CARD_WIDTH = 242;
@@ -71,10 +73,6 @@ export const TrackCard: React.FC<{
   const imageStyle = useMemo(() => {
     return [isHovered && { opacity: 0.5 }];
   }, [isHovered]);
-
-  if (post.identifier.startsWith("padded-")) {
-    return <View style={{ width: cardWidth, height: 381 }} />;
-  }
 
   return (
     <View style={[unitCardStyle, style]}>
@@ -142,7 +140,7 @@ export const TrackCard: React.FC<{
       )}
     </View>
   );
-});
+}, isEqual);
 
 const unitCardStyle: ViewStyle = {
   width: TRACK_CARD_WIDTH,
@@ -150,7 +148,6 @@ const unitCardStyle: ViewStyle = {
   padding: layout.spacing_x1_5,
   borderRadius: 12,
   justifyContent: "space-between",
-  height: 381,
 };
 
 const imgBoxStyle: ViewStyle = {

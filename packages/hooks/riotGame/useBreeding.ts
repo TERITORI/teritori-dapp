@@ -3,17 +3,18 @@ import { EncodeObject } from "@cosmjs/proto-signing";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { useCallback, useEffect, useState } from "react";
 
-import { ConfigResponse } from "./../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
-import { TeritoriBreedingQueryClient } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.client";
+import { useBreedingConfig } from "../useBreedingConfig";
+import useSelectedWallet from "../useSelectedWallet";
+
+import { TeritoriBreedingQueryClient } from "@/contracts-clients/teritori-breeding/TeritoriBreeding.client";
+import { ConfigResponse } from "@/contracts-clients/teritori-breeding/TeritoriBreeding.types";
 import {
   getCosmosNetwork,
   getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
-} from "../../networks";
-import { buildApproveNFTMsg, buildBreedingMsg } from "../../utils/game";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { useBreedingConfig } from "../useBreedingConfig";
-import useSelectedWallet from "../useSelectedWallet";
+} from "@/networks";
+import { buildApproveNFTMsg, buildBreedingMsg } from "@/utils/game";
+import { web3ToWeb2URI } from "@/utils/ipfs";
 
 export const useBreeding = (networkId: string | undefined) => {
   const [remainingTokens, setRemainingTokens] = useState<number>(0);
@@ -144,7 +145,7 @@ export const useBreeding = (networkId: string | undefined) => {
         },
       });
 
-      const tokenInfo = { id: tokenId, imageUri: ipfsURLToHTTPURL(image) };
+      const tokenInfo = { id: tokenId, imageUri: web3ToWeb2URI(image) };
       return tokenInfo;
     },
     [networkId],

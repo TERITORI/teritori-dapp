@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 
-import { useWallets } from "../context/WalletsProvider";
-import { selectSelectedWalletId } from "../store/slices/settings";
+import { useWallets } from "@/context/WalletsProvider";
+import { selectSelectedWalletId } from "@/store/slices/settings";
 
 const useSelectedWallet = () => {
   const { wallets } = useWallets();

@@ -10,6 +10,9 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.12.1
+
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
@@ -42,6 +45,9 @@ jobs:
             runner: ubuntu-latest
             arch: amd64
           - os: macos
+            runner: macos-latest
+            arch: amd64
+          - os: windows
             runner: macos-latest
             arch: amd64
     runs-on: ${{ matrix.runner }}
@@ -89,4 +95,12 @@ jobs:
         with:
           name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-dmg
           path: electron/dist/artifacts/local/*.dmg
+          if-no-files-found: error
+
+      - name: Upload exe
+        uses: actions/upload-artifact@v3
+        if: matrix.os == 'windows'
+        with:
+          name: teritori-${{ github.sha }}-${{ matrix.os }}-${{ matrix.arch }}-exe
+          path: electron/dist/artifacts/local/*.exe
           if-no-files-found: error

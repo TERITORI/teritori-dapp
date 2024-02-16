@@ -1,10 +1,13 @@
+import { getMetaMaskEthereumProvider } from "./ethereum";
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import {
   TeritoriSquadStakingClient,
   TeritoriSquadStakingQueryClient,
 } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.client";
+import { SquadStakingV3__factory } from "../evm-contracts-clients/teritori-squad-staking/SquadStakingV3__factory";
 import {
   getCosmosNetwork,
+  getEthereumNetwork,
   getKeplrSigningCosmWasmClient,
   mustGetCosmosNetwork,
   mustGetNonSigningCosmWasmClient,
@@ -30,19 +33,33 @@ export const getCosmosNameServiceQueryClient = async (
     return undefined;
   }
 
-  const nsClient = new TeritoriNameServiceQueryClient(
+  return new TeritoriNameServiceQueryClient(
     cosmWasmClient,
     network.nameServiceContractAddress,
   );
-
-  return nsClient;
 };
 
-export const getSquadStakingQueryClient = async (
+export const getEthereumSquadStakingQueryClient = async (
   networkId: string | undefined,
 ) => {
-  const network = mustGetCosmosNetwork(networkId);
-  const contractAddress = network.riotSquadStakingContractAddressV2;
+  const network = getEthereumNetwork(networkId);
+  const contractAddress = network?.riotSquadStakingContractAddress;
+  if (!contractAddress) {
+    throw new Error("missing squad staking contract address in network config");
+  }
+
+  const provider = await getMetaMaskEthereumProvider(network.chainId);
+  if (!provider) {
+    throw Error("unable to get ethereum provider");
+  }
+  return SquadStakingV3__factory.connect(contractAddress, provider);
+};
+
+export const getCosmosSquadStakingQueryClient = async (
+  networkId: string | undefined,
+) => {
+  const network = getCosmosNetwork(networkId);
+  const contractAddress = network?.riotSquadStakingContractAddressV2;
   if (!contractAddress) {
     throw new Error("missing squad staking contract address in network config");
   }

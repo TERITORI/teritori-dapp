@@ -1,0 +1,35 @@
+{
+  "cli": {
+    "version": ">= 3.17.1",
+    "promptToConfigurePushNotifications": false
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "androidAPK": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {}
+  },
+  "submit": {
+    "production": {
+      "android": {
+        "track": "internal",
+        "serviceAccountKeyPath": "./service-account-android-submit.json",
+        "releaseStatus": "draft"
+      },
+      "ios": {
+        "appleId": "sakulbudhathoki977@gmail.com",
+        "ascAppId": "6448350436",
+        "appleTeamId": "Y7D67GAV2M"
+      }
+    }
+  }
+}

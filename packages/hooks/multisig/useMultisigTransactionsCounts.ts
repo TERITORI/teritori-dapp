@@ -2,8 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
-import { getCosmosNetwork, parseUserId } from "../../networks";
 import useSelectedWallet from "../useSelectedWallet";
+
+import { getCosmosNetwork, parseUserId } from "@/networks";
 
 export const multisigTransactionsCountsQueryKey = (
   networkId: string | undefined,

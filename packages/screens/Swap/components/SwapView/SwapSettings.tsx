@@ -9,22 +9,23 @@ import React, {
 import { Pressable, View } from "react-native";
 
 import infoSVG from "../../../../../assets/icons/info.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { TextInputCustom } from "../../../../components/inputs/TextInputCustom";
+import { FadeInView } from "../FadeInView";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import {
   neutral77,
   neutralA3,
   primaryColor,
   primaryTextColor,
   secondaryColor,
-} from "../../../../utils/style/colors";
-import { fontSemibold14, fontSemibold16 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import { isFloatText } from "../../../../utils/text";
-import { FadeInView } from "../FadeInView";
+} from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { isFloatText } from "@/utils/text";
 
 type SlippageItem = {
   value: number;
@@ -130,7 +131,7 @@ export const SwapSettings: React.FC<{
   if (settingsOpened)
     return (
       <FadeInView style={{ position: "absolute", right: 20, top: 55 }}>
-        <TertiaryBox
+        <LegacyTertiaryBox
           mainContainerStyle={{
             padding: layout.spacing_x2_5,
             alignItems: "flex-start",
@@ -164,7 +165,7 @@ export const SwapSettings: React.FC<{
             </CustomPressable>
           </View>
 
-          <TertiaryBox
+          <LegacyTertiaryBox
             mainContainerStyle={{
               padding: layout.spacing_x0_5,
               flexDirection: "row",
@@ -230,11 +231,11 @@ export const SwapSettings: React.FC<{
                 %
               </BrandText>
             </SelectableItem>
-          </TertiaryBox>
+          </LegacyTertiaryBox>
 
           {/*====== Info box */}
           {infoVisible && (
-            <TertiaryBox
+            <LegacyTertiaryBox
               mainContainerStyle={{ padding: layout.spacing_x2 }}
               style={{ position: "absolute", left: -36, top: -26 }}
               noBrokenCorners
@@ -243,9 +244,9 @@ export const SwapSettings: React.FC<{
                 Your transaction will revert if the price changes {"\n"}
                 unfavorably by more than this percentage.
               </BrandText>
-            </TertiaryBox>
+            </LegacyTertiaryBox>
           )}
-        </TertiaryBox>
+        </LegacyTertiaryBox>
       </FadeInView>
     );
   return <></>;

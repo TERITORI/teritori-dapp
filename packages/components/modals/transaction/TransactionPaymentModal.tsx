@@ -55,13 +55,7 @@ export const TransactionPaymentModal: React.FC<{
   }
 
   return (
-    <ModalBase
-      visible={visible}
-      onClose={onClose}
-      width={372}
-      label={label}
-      noBrokenCorners
-    >
+    <ModalBase visible={visible} onClose={onClose} width={372} label={label}>
       <View>
         {/*==== Text*/}
         <View style={{ flexDirection: "row", marginBottom: 16 }}>
@@ -127,7 +121,7 @@ export const TransactionPaymentModal: React.FC<{
           ) ? (
             <View style={{ alignItems: "center", width: "100%" }}>
               <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                Insufficient funds
+                Not enough funds
               </BrandText>
             </View>
           ) : (

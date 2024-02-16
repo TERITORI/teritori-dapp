@@ -1,19 +1,21 @@
 import { useMemo } from "react";
 
+import { useNFTs } from "../useNFTs";
+import useSelectedWallet from "../useSelectedWallet";
+
 import {
   NFTsRequest,
   Sort,
   SortDirection,
-} from "../../api/marketplace/v1/marketplace";
-import { getCollectionId, getCosmosNetwork } from "../../networks";
-import { isNFTStaked } from "../../utils/game";
-import { useNFTs } from "../useNFTs";
-import useSelectedWallet from "../useSelectedWallet";
+} from "@/api/marketplace/v1/marketplace";
+import { getCollectionId, getNetwork } from "@/networks";
+import { isNFTStaked } from "@/utils/game";
 
 export const useRippers = () => {
   const selectedWallet = useSelectedWallet();
   const networkId = selectedWallet?.networkId;
-  const network = getCosmosNetwork(networkId);
+  const network = getNetwork(networkId);
+
   const riotCollectionIdGen0 = getCollectionId(
     networkId,
     network?.riotContractAddressGen0,
@@ -46,7 +48,6 @@ export const useRippers = () => {
   };
 
   // FIXME: allow to pass multiple collection ids in backend api
-
   const { nfts: myRippers } = useNFTs(myRippersRequest);
   const { nfts: myRipperChilds } = useNFTs(myRipperChildsRequest);
 

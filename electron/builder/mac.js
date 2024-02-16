@@ -6,7 +6,7 @@ const Platform = builder.Platform;
 
 program.argument("<arch>", "target architecture");
 program.parse();
-let arch
+let arch;
 const [archStr] = program.args;
 switch (archStr) {
   case "amd64":
@@ -35,7 +35,7 @@ const options = {
     "node_modules/**/*",
     "package.json",
     "main.js",
-    "icon.icns",
+    "icon.png",
     "splash.html",
     "splash.png",
     "preload.js",
@@ -55,7 +55,7 @@ const options = {
     asarUnpack: ["build/*"],
     hardenedRuntime: true,
     gatekeeperAssess: true,
-    icon: "./icon.icns",
+    icon: "./icon.png",
     extendInfo: {
       // NSAppleEventsUsageDescription: "Let me use Apple Events.",
       // NSCameraUsageDescription: "Let me use the camera.",

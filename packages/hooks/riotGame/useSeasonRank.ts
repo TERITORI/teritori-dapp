@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { parseUserId } from "../../networks";
-import { getP2eClient } from "../../utils/backend";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
+
+import { parseUserId } from "@/networks";
+import { getP2eClient } from "@/utils/backend";
 
 export const useSeasonRank = () => {
   const selectedWallet = useSelectedWallet();
@@ -16,7 +17,7 @@ export const useSeasonRank = () => {
       if (!client) {
         return null;
       }
-      return await client.CurrentSeason({});
+      return await client.CurrentSeason({ networkId });
     },
     { refetchInterval: 300000, staleTime: 300000 },
   );

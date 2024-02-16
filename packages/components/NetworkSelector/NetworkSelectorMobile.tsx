@@ -1,17 +1,17 @@
-import React, { useRef } from "react";
+import React from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import { NetworkSelectorMenu } from "./NetworkSelectorMenu";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
-import { useDropdowns } from "../../context/DropdownsProvider";
+import { useDropdowns } from "../../hooks/useDropdowns";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { NetworkFeature, NetworkKind } from "../../networks";
 import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { NetworkIcon } from "../NetworkIcon";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { SpacerRow } from "../spacer";
 
 export const NetworkSelectorMobile: React.FC<{
@@ -20,14 +20,13 @@ export const NetworkSelectorMobile: React.FC<{
   forceNetworkKind?: NetworkKind;
   forceNetworkFeatures?: NetworkFeature[];
 }> = ({ style, forceNetworkId, forceNetworkKind, forceNetworkFeatures }) => {
-  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
   const selectedNetworkInfo = useSelectedNetworkInfo();
 
   return (
-    <View style={style} ref={dropdownRef}>
-      <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
-        <TertiaryBox
+    <View style={style} ref={dropdownRef} collapsable={false}>
+      <TouchableOpacity onPress={() => setDropdownState(!isDropdownOpen)}>
+        <LegacyTertiaryBox
           noBrokenCorners
           mainContainerStyle={{
             flexDirection: "row",
@@ -38,20 +37,21 @@ export const NetworkSelectorMobile: React.FC<{
           <NetworkIcon networkId={selectedNetworkInfo?.id || ""} size={16} />
           <SpacerRow size={0.5} />
           <SVG
-            source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
+            source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
             width={16}
             height={16}
             color={secondaryColor}
           />
-        </TertiaryBox>
+        </LegacyTertiaryBox>
       </TouchableOpacity>
 
-      {isDropdownOpen(dropdownRef) && (
+      {isDropdownOpen && (
         <NetworkSelectorMenu
           style={{ position: "absolute", top: 48, right: -93 }}
           forceNetworkId={forceNetworkId}
           forceNetworkKind={forceNetworkKind}
           forceNetworkFeatures={forceNetworkFeatures}
+          onSelect={() => setDropdownState(false)}
         />
       )}
     </View>

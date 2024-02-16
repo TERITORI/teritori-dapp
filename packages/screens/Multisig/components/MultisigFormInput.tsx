@@ -3,17 +3,18 @@ import { FieldValues, useWatch } from "react-hook-form";
 import { Pressable } from "react-native";
 
 import copySVG from "../../../../assets/icons/copy.svg";
-import { BrandText } from "../../../components/BrandText";
-import { useCopyToClipboard } from "../../../components/CopyToClipboard";
-import { SVG } from "../../../components/SVG";
-import { MaxButton } from "../../../components/buttons/MaxButton";
+
+import { BrandText } from "@/components/BrandText";
+import { useCopyToClipboard } from "@/components/CopyToClipboard";
+import { SVG } from "@/components/SVG";
+import { MaxButton } from "@/components/buttons/MaxButton";
 import {
   TextInputCustom,
   TextInputCustomProps,
-} from "../../../components/inputs/TextInputCustom";
-import { SpacerRow } from "../../../components/spacer";
-import { neutral55, neutral77, neutralA3 } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
+} from "@/components/inputs/TextInputCustom";
+import { SpacerRow } from "@/components/spacer";
+import { neutral55, neutral77, neutralA3 } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
 
 interface MultisigFormInputProps<T extends FieldValues>
   extends TextInputCustomProps<T> {
@@ -77,7 +78,7 @@ export const MultisigFormInput = <T extends FieldValues>({
           </BrandText>
         </>
       )}
-      {onPressMax && <MaxButton onPress={onPressMax} />}
+      {!!onPressMax && <MaxButton onPress={onPressMax} />}
     </TextInputCustom>
   );
 };

@@ -1,9 +1,9 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 
-import { getGnoNetwork } from "../networks";
-import { getCosmosNameServiceQueryClient } from "../utils/contracts";
-import { extractGnoString } from "../utils/gno";
+import { getGnoNetwork } from "@/networks";
+import { getCosmosNameServiceQueryClient } from "@/utils/contracts";
+import { extractGnoString } from "@/utils/gno";
 
 export const useNSNameOwner = (
   networkId: string | undefined,

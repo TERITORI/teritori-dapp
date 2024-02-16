@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { DAOsRequest } from "../../api/dao/v1/dao";
-import { mustGetDAOClient } from "../../utils/backend";
+import { DAOsRequest } from "@/api/dao/v1/dao";
+import { mustGetDAOClient } from "@/utils/backend";
 
 export const useDAOs = (req: Partial<DAOsRequest>) => {
   const { data, ...other } = useQuery(

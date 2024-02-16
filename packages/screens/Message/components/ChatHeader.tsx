@@ -1,6 +1,5 @@
-import Clipboard from "@react-native-clipboard/clipboard";
-import React, { useRef, useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
 
 import { ConversationAvatar } from "./ConversationAvatar";
@@ -8,34 +7,39 @@ import { GroupDetails } from "./GroupDetails";
 import { SearchInput } from "./SearchInput";
 import dots from "../../../../assets/icons/dots.svg";
 import searchSVG from "../../../../assets/icons/search.svg";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SVG } from "../../../components/SVG";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { SpacerRow } from "../../../components/spacer";
-import { useDropdowns } from "../../../context/DropdownsProvider";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { updateConversationById } from "../../../store/slices/message";
-import { neutral17, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold12 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { Conversation } from "../../../utils/types/message";
-import { weshClient } from "../../../weshnet/client";
-import { subscribeMessages } from "../../../weshnet/message/subscriber";
-import { getConversationName } from "../../../weshnet/messageHelpers";
-import { createMultiMemberShareableLink } from "../../../weshnet/services";
-import { bytesFromString } from "../../../weshnet/utils";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { BackButton } from "@/components/navigation/components/BackButton";
+import { SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useDropdowns } from "@/hooks/useDropdowns";
+import Clipboard from "@/modules/Clipboard";
+import { updateConversationById } from "@/store/slices/message";
+import { neutral17, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold12, fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { Conversation } from "@/utils/types/message";
+import { weshClient } from "@/weshnet";
+import { subscribeMessages } from "@/weshnet/message/subscriber";
+import { getConversationName } from "@/weshnet/messageHelpers";
+import { createMultiMemberShareableLink } from "@/weshnet/services";
+import { bytesFromString } from "@/weshnet/utils";
 
 interface ChatHeaderProps {
   searchInput: string;
   setSearchInput: (input: string) => void;
   conversation: Conversation;
+  onBackPress?: () => void;
 }
 
 export const ChatHeader = ({
   searchInput,
   setSearchInput,
   conversation,
+  onBackPress,
 }: ChatHeaderProps) => {
   const dispatch = useDispatch();
   const { setToastSuccess } = useFeedbacks();
@@ -43,9 +47,7 @@ export const ChatHeader = ({
   const [showTextInput, setShowTextInput] = useState(false);
   const [showGroupDetails, setShowGroupDetails] = useState(false);
 
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
   const handleSearchIconPress = () => {
     setShowTextInput(true);
   };
@@ -57,7 +59,7 @@ export const ChatHeader = ({
         await weshClient.client.MultiMemberGroupLeave({
           groupPk: bytesFromString(conversation.id),
         });
-        closeOpenedDropdown();
+        setDropdownState(false);
       },
     },
     conversation.type === "group" && {
@@ -75,7 +77,7 @@ export const ChatHeader = ({
           groupInfo?.group,
           conversation.name,
         );
-        Clipboard.setString(groupLink || "");
+        Clipboard.setStringAsync(groupLink || "");
         setToastSuccess({
           title: "Group link copied!",
           message: "",
@@ -86,7 +88,7 @@ export const ChatHeader = ({
       label: "View Details",
       onPress: async () => {
         setShowGroupDetails(true);
-        closeOpenedDropdown();
+        setDropdownState(false);
       },
     },
     conversation.status === "archived" && {
@@ -99,7 +101,7 @@ export const ChatHeader = ({
           }),
         );
         subscribeMessages(conversation.id);
-        closeOpenedDropdown();
+        setDropdownState(false);
       },
     },
     conversation.status === "active" && {
@@ -111,7 +113,7 @@ export const ChatHeader = ({
             status: "archived",
           }),
         );
-        closeOpenedDropdown();
+        setDropdownState(false);
       },
     },
     conversation.status === "archived" && {
@@ -123,7 +125,7 @@ export const ChatHeader = ({
             status: "active",
           }),
         );
-        closeOpenedDropdown();
+        setDropdownState(false);
       },
     },
   ].filter(Boolean) as {
@@ -143,8 +145,15 @@ export const ChatHeader = ({
           height: 46,
         }}
         ref={dropdownRef}
+        collapsable={false}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
+          {onBackPress && (
+            <>
+              <BackButton onPress={onBackPress} />
+              <SpacerRow size={2} />
+            </>
+          )}
           <ConversationAvatar conversation={conversation} size={20} />
           <SpacerRow size={1} />
           <View>
@@ -187,12 +196,12 @@ export const ChatHeader = ({
                   style={{
                     padding: layout.spacing_x0_75,
                   }}
-                  onPress={() => onPressDropdownButton(dropdownRef)}
+                  onPress={() => setDropdownState(!isDropdownOpen)}
                 >
                   <SVG source={dots} />
                 </TouchableOpacity>
-                {isDropdownOpen(dropdownRef) && (
-                  <TertiaryBox
+                {isDropdownOpen && (
+                  <LegacyTertiaryBox
                     width={140}
                     style={{ position: "absolute", top: 30, right: 10 }}
                     mainContainerStyle={{
@@ -231,7 +240,7 @@ export const ChatHeader = ({
                         </TouchableOpacity>
                       );
                     })}
-                  </TertiaryBox>
+                  </LegacyTertiaryBox>
                 )}
 
                 <SpacerRow size={1} />

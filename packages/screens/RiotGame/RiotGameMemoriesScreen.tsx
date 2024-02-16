@@ -11,13 +11,14 @@ import {
 
 import { GameContentView } from "./component/GameContentView";
 import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
-import { BrandText } from "../../components/BrandText";
-import { EmbeddedWeb } from "../../components/EmbeddedWeb";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { SpacerColumn } from "../../components/spacer";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { fontMedium32 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { EmbeddedWeb } from "@/components/EmbeddedWeb";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { SpacerColumn } from "@/components/spacer";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { fontMedium32 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const seasonVideoUri =
   "https://www.youtube.com/embed/videoseries?list=PLRcO8OPsbd7zhj7PDysX2XIh095tazSWM";
@@ -26,7 +27,7 @@ const seasonVideoUri =
 const episodes = [
   {
     videoUri:
-      "https://bafybeieid23jjpzug42y6u5au2noc6hpyayqd56udgvh7pfd45jeksykoe.ipfs.nftstorage.link/",
+      "https://bafybeieid23jjpzug42y6u5au2noc6hpyayqd56udgvh7pfd45jeksykoe.ipfs.cf-ipfs.com/",
   },
   { videoUri: "" },
   { videoUri: "" },
@@ -81,7 +82,7 @@ export const RiotGameMemoriesScreen = () => {
         <BrandText style={[fontMedium32, titleStyles]}>
           The R!ot Season I
         </BrandText>
-        <TertiaryBox height={seasonVideoHeight} width={seasonVideoWidth}>
+        <LegacyTertiaryBox height={seasonVideoHeight} width={seasonVideoWidth}>
           {displayYT && (
             <EmbeddedWeb
               uri={seasonVideoUri}
@@ -89,7 +90,7 @@ export const RiotGameMemoriesScreen = () => {
               height={seasonVideoHeight - 2}
             />
           )}
-        </TertiaryBox>
+        </LegacyTertiaryBox>
 
         <SpacerColumn size={8} />
 
@@ -102,7 +103,7 @@ export const RiotGameMemoriesScreen = () => {
           numColumns={numCol}
           key={numCol}
           renderItem={({ item, index }) => (
-            <TertiaryBox
+            <LegacyTertiaryBox
               key={index}
               height={episodeVideoSmHeight - 2}
               width={episodeVideoSmWidth}
@@ -135,7 +136,7 @@ export const RiotGameMemoriesScreen = () => {
                   source={defaultSendToFightPNG}
                 />
               )}
-            </TertiaryBox>
+            </LegacyTertiaryBox>
           )}
         />
       </View>

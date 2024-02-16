@@ -1,9 +1,9 @@
-import { useRoute } from "@react-navigation/native";
 import React from "react";
 import { Linking, StyleSheet, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SvgProps } from "react-native-svg";
 
+import bridgeSVG from "../../../../assets/icons/bridge.svg";
 import cartSVG from "../../../../assets/icons/cart.svg";
 import diamondSVG from "../../../../assets/icons/diamond.svg";
 import fightSVG from "../../../../assets/icons/fight.svg";
@@ -11,33 +11,28 @@ import filmSVG from "../../../../assets/icons/film.svg";
 import gameBoxSVG from "../../../../assets/icons/game-box.svg";
 import inventorySVG from "../../../../assets/icons/inventory.svg";
 import trophiesSVG from "../../../../assets/icons/trophies.svg";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { NetworkSelector } from "../../../components/NetworkSelector/NetworkSelector";
-import { SVG } from "../../../components/SVG";
-import { ConnectWalletButton } from "../../../components/TopMenu/ConnectWalletButton";
-import { TopLogo } from "../../../components/navigation/components/TopLogo";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerRow } from "../../../components/spacer";
-import { useForceNetworkFeatures } from "../../../hooks/useForceNetworkFeatures";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { NetworkFeature } from "../../../networks";
-import {
-  RootStackParamList,
-  useAppNavigation,
-} from "../../../utils/navigation";
-import {
-  neutral33,
-  neutralA3,
-  yellowDefault,
-} from "../../../utils/style/colors";
-import { fontMedium16 } from "../../../utils/style/fonts";
+import { useRoute } from "../../../hooks/navigation/useRoute";
+
+import { BrandText } from "@/components/BrandText";
+import { NetworkSelector } from "@/components/NetworkSelector/NetworkSelector";
+import { SVG } from "@/components/SVG";
+import { ConnectWalletButton } from "@/components/TopMenu/ConnectWalletButton";
+import { TopLogo } from "@/components/navigation/components/TopLogo";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerRow } from "@/components/spacer";
+import { useForceNetworkFeatures } from "@/hooks/useForceNetworkFeatures";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { NetworkFeature } from "@/networks";
+import { RootStackParamList, useAppNavigation } from "@/utils/navigation";
+import { neutral33, neutralA3, yellowDefault } from "@/utils/style/colors";
+import { fontMedium16 } from "@/utils/style/fonts";
 import {
   headerHeight,
   headerMarginHorizontal,
   layout,
-} from "../../../utils/style/layout";
-import { PickByValue } from "../../../utils/types/helper";
+} from "@/utils/style/layout";
+import { PickByValue } from "@/utils/types/helper";
 
 type MenuItem = {
   id: string;
@@ -88,6 +83,12 @@ const MENU_ITEMS: MenuItem[] = [
     route: "RiotGameMemories",
     iconSVG: filmSVG,
   },
+  {
+    id: "bridge",
+    name: "NFT Bridge",
+    route: "RiotGameBridge",
+    iconSVG: bridgeSVG,
+  },
 ];
 
 type RiotGameHeaderProps = {
@@ -101,12 +102,11 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
   const { name: routeName } = useRoute();
   useForceNetworkFeatures([NetworkFeature.RiotP2E]);
   const isMobile = useIsMobile();
-
   const onMenuItemClick = (item: MenuItem) => {
     if (item.externalRoute) {
       Linking.openURL(item.externalRoute);
     } else if (item.route) {
-      // @ts-expect-error
+      // @ts-expect-error: description todo
       navigation.navigate(item.route);
     }
   };

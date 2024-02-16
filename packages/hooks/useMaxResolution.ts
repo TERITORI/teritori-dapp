@@ -2,17 +2,19 @@ import { useMemo } from "react";
 import { useWindowDimensions } from "react-native";
 
 import { useIsMobile } from "./useIsMobile";
-import { useSidebar } from "../context/SidebarProvider";
+
+import { useSidebar } from "@/context/SidebarProvider";
 import {
   fullSidebarWidth,
   getMobileScreenContainerMarginHorizontal,
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
+  MOBILE_HEADER_HEIGHT,
   screenContainerContentMarginHorizontal,
   screenContentMaxWidth,
   screenContentMaxWidthLarge,
   smallSidebarWidth,
-} from "../utils/style/layout";
+} from "@/utils/style/layout";
 
 export const useMaxResolution = ({
   noMargin = false,
@@ -51,7 +53,7 @@ export const useMaxResolution = ({
       : width > screenContentMaxWidth
         ? screenContentMaxWidth
         : width,
-    height: windowHeight - headerHeight,
+    height: windowHeight - (isMobile ? MOBILE_HEADER_HEIGHT : headerHeight),
     contentWidth,
   };
 };

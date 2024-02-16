@@ -1,44 +1,51 @@
 import React, { ReactNode, useState } from "react";
-import { FlatList, StyleProp, TextStyle, View, ViewStyle } from "react-native";
+import {
+  FlatList,
+  Platform,
+  StyleProp,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
+import { useSelector } from "react-redux";
 
-import { PrettyPrint } from "./types";
+import { PeriodFilter } from "./PeriodFilter";
+
 import {
   Collection,
   MintState,
   Sort,
   SortDirection,
-} from "../../api/marketplace/v1/marketplace";
-import { BrandText } from "../../components/BrandText";
-import { CurrencyIcon } from "../../components/CurrencyIcon";
-import { OmniLink } from "../../components/OmniLink";
-import { Pagination } from "../../components/Pagination";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
-import { SearchInput } from "../../components/sorts/SearchInput";
-import { SpacerColumn } from "../../components/spacer";
-import { TableRow } from "../../components/table/TableRow";
-import { Tabs } from "../../components/tabs/Tabs";
-import { useCollections } from "../../hooks/useCollections";
-import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { NetworkFeature } from "../../networks";
-import { prettyPrice } from "../../utils/coins";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import {
-  errorColor,
-  mineShaftColor,
-  successColor,
-} from "../../utils/style/colors";
+} from "@/api/marketplace/v1/marketplace";
+import { BrandText } from "@/components/BrandText";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
+import { OmniLink } from "@/components/OmniLink";
+import { Pagination } from "@/components/Pagination";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
+import { SearchInput } from "@/components/sorts/SearchInput";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { TableRow } from "@/components/table/TableRow";
+import { Tabs } from "@/components/tabs/Tabs";
+import { useCollections } from "@/hooks/useCollections";
+import { useEnabledNetworks } from "@/hooks/useEnabledNetworks";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { NetworkFeature } from "@/networks";
+import { selectTimePeriod } from "@/store/slices/marketplaceFilters";
+import { prettyPrice } from "@/utils/coins";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { errorColor, mineShaftColor, successColor } from "@/utils/style/colors";
 import {
   fontSemibold11,
   fontSemibold13,
   fontSemibold20,
   fontSemibold28,
-} from "../../utils/style/fonts";
-import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
-import { numFormatter } from "../../utils/text";
-import { arrayIncludes } from "../../utils/typescript";
+} from "@/utils/style/fonts";
+import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
+import { numFormatter } from "@/utils/text";
+import { PrettyPrint } from "@/utils/types/marketplace";
+import { arrayIncludes } from "@/utils/typescript";
 
 const TABLE_ROWS = {
   rank: {
@@ -83,6 +90,8 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const enabledNetworks = useEnabledNetworks();
+  const timePeriod = useSelector(selectTimePeriod);
+  const isMobile = useIsMobile();
 
   const marketplaceNetworks = enabledNetworks.filter((network) => {
     return network.features.includes(NetworkFeature.NFTMarketplace);
@@ -111,14 +120,15 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
     sort: Sort.SORT_VOLUME_USD,
     limit: 32,
     offset: 0,
+    periodInMinutes: timePeriod.value,
     mintState: MintState.MINT_STATE_UNSPECIFIED,
   };
 
-  const { collections: borkenCollections } = useCollections(req);
+  const { collections: brokenCollections } = useCollections(req);
 
   // this is a hack, we need to fix these in the indexer but it's pain to replay due to current p2e implem and we need to fix this asap
   // FIXME
-  const collections = borkenCollections.map((collection) => {
+  const collections = brokenCollections.map((collection) => {
     let denom = collection.denom;
     let volumeDenom = collection.volumeDenom;
     switch (collection.id) {
@@ -154,7 +164,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
       >
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: isMobile ? "column" : "row",
             flexWrap: "nowrap",
             justifyContent: "space-between",
             alignItems: "center",
@@ -176,6 +186,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
             justifyContent: "space-between",
             marginTop: layout.spacing_x4,
             marginBottom: layout.spacing_x4,
+            zIndex: 1,
           }}
         >
           <SearchInput
@@ -184,6 +195,8 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
             }}
             handleChangeText={handleChangeText}
           />
+          <SpacerRow size={2} />
+          <PeriodFilter />
         </View>
         <CollectionTable rows={collections} filterText={filterText} />
       </View>
@@ -198,11 +211,13 @@ const CollectionTable: React.FC<{
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [pageIndex, setPageIndex] = useState(0);
   const isMobile = useIsMobile();
-
-  const filteredCollections = rows.filter(
-    ({ collectionName }) =>
-      collectionName?.toLowerCase().includes(filterText.toLowerCase()),
+  const timePeriod = useSelector(selectTimePeriod);
+  const filteredCollections = rows.filter(({ collectionName }) =>
+    collectionName?.toLowerCase().includes(filterText.toLowerCase()),
   );
+  TABLE_ROWS.TimePeriodPercentualVolume.label =
+    timePeriod.shortLabel + " % Volume";
+  TABLE_ROWS.TimePeriodVolume.label = timePeriod.shortLabel + " Volume";
 
   const maxPage = Math.max(Math.ceil(rows.length / itemsPerPage), 1);
   return (
@@ -221,6 +236,7 @@ const CollectionTable: React.FC<{
         }
       />
       <FlatList
+        scrollEnabled={Platform.OS === "web"}
         data={filteredCollections}
         renderItem={({ item, index }) => (
           <CollectionRow collection={item} rank={index} />
@@ -303,7 +319,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         paddingHorizontal: layout.spacing_x2_5,
       }}
       to={{
-        screen: collection.floorPrice !== 0 ? "Collection" : "MintCollection",
+        screen: +collection.floorPrice !== 0 ? "Collection" : "MintCollection",
         params: { id: collection.id },
       }}
     >
@@ -422,7 +438,7 @@ const useRowData = (collection: Collection, rank: number): RowData => {
     },
     totalVolume: {
       networkId: collection.networkId,
-      value: collection.totalVolume,
+      value: +collection.totalVolume,
       denom: collection.denom,
     },
     TimePeriodVolume: {
@@ -434,7 +450,7 @@ const useRowData = (collection: Collection, rank: number): RowData => {
     sales: numFormatter(collection.numTrades, 0),
     floorPrice: {
       networkId: collection.networkId,
-      value: collection.floorPrice,
+      value: +collection.floorPrice,
       denom: collection.denom,
     },
     owners: numFormatter(

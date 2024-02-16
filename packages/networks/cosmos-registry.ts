@@ -9,6 +9,7 @@ const banList = [
   "wavehashtestnet",
   "coreum",
   "seitestnet2",
+  "lavatestnet2",
 ];
 
 export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
@@ -28,6 +29,7 @@ export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
             : chain.pretty_name + " Testnet"
           : chain.pretty_name,
         chainId: chain.chain_id,
+        registryName: chain.chain_name,
         kind: NetworkKind.Cosmos,
         currencies: chainAssets
           .filter((asset) => !(asset.ibc || asset.base.startsWith("ibc/"))) // TODO: remove ibc filter and correctly map ibc currencies
@@ -64,6 +66,7 @@ export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
             return nativeCurrency;
           }),
         features: [],
+        featureObjects: [],
         idPrefix: chain.chain_name,
         addressPrefix: chain.bech32_prefix,
         txExplorer:

@@ -2,9 +2,9 @@ import React, { useMemo } from "react";
 import { View } from "react-native";
 import { z } from "zod";
 
-import { ImagesViews } from "../../../components/FilePreview/ImagesViews";
-import { VideoView } from "../../../components/FilePreview/VideoView";
-import { ZodRemoteFileData } from "../../../utils/types/files";
+import { ImagesViews } from "@/components/FilePreview/ImagesViews";
+import { VideoView } from "@/components/FilePreview/VideoView";
+import { ZodRemoteFileData } from "@/utils/types/files";
 
 interface Props {
   files: z.infer<typeof ZodRemoteFileData>[];

@@ -11,7 +11,6 @@ import { SidebarNestedButton } from "./SidebarNestedButton";
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { useSidebar } from "../../../context/SidebarProvider";
-import { useAppRoute } from "../../../utils/navigation";
 import {
   neutral17,
   neutral33,
@@ -21,13 +20,15 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { SidebarType } from "../../../utils/types/sidebar";
 import { arrayIncludes } from "../../../utils/typescript";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { SVGorImageIcon } from "../../SVG/SVGorImageIcon";
 import { CustomPressable } from "../../buttons/CustomPressable";
 import { SpacerRow } from "../../spacer";
-import { SidebarType } from "../types";
+
+import { useAppRoute } from "@/hooks/navigation/useAppRoute";
 
 export interface SidebarButtonProps extends SidebarType {
   onPress?: (routeName: SidebarType["route"]) => void;

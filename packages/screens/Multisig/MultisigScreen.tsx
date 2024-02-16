@@ -10,23 +10,24 @@ import {
 import { GetStartedOption } from "./components/GetStartedOption";
 import multisigWalletSVG from "../../../assets/icons/organization/multisig-wallet.svg";
 import postJobSVG from "../../../assets/icons/organization/post-job.svg";
-import { JoinState } from "../../api/multisig/v1/multisig";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { AnimationFadeIn } from "../../components/animations/AnimationFadeIn";
-import { LoginButton } from "../../components/multisig/LoginButton";
-import { MultisigTransactions } from "../../components/multisig/MultisigTransactions";
-import { Separator } from "../../components/separators/Separator";
-import { SpacerColumn } from "../../components/spacer";
-import { useMultisigAuthToken } from "../../hooks/multisig/useMultisigAuthToken";
-import { useUserMultisigs } from "../../hooks/multisig/useUserMultisigs";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId, NetworkKind } from "../../networks";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold16, fontSemibold28 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { tinyAddress } from "../../utils/text";
+
+import { JoinState } from "@/api/multisig/v1/multisig";
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { AnimationFadeIn } from "@/components/animations/AnimationFadeIn";
+import { LoginButton } from "@/components/multisig/LoginButton";
+import { MultisigTransactions } from "@/components/multisig/MultisigTransactions";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn } from "@/components/spacer";
+import { useMultisigAuthToken } from "@/hooks/multisig/useMultisigAuthToken";
+import { useUserMultisigs } from "@/hooks/multisig/useUserMultisigs";
+import { getUserId, NetworkKind } from "@/networks";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { neutral33, neutral77, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold16, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { tinyAddress } from "@/utils/text";
 
 export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   const navigation = useAppNavigation();

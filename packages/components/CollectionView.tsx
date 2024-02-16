@@ -22,19 +22,23 @@ export const CollectionView: React.FC<{
   size?: CollectionViewSize;
   linkToMint?: boolean;
   mintState: number;
+  width?: number;
   onPress?: () => void;
-}> = ({ item, size = "XL", linkToMint, mintState, onPress }) => {
+}> = ({ item, size = "XL", linkToMint, mintState, onPress, width }) => {
   const navigateToCollection = useNavigateToCollection(item.id, {
     forceSecondaryDuringMint: item.secondaryDuringMint,
     forceLinkToMint: linkToMint,
   });
   const sizedStyles = useMemo(() => StyleSheet.flatten(styles[size]), [size]);
+  width = typeof width === "number" ? width : sizedStyles.box.width;
 
   const navigateToTwitter = () => {
     Linking.openURL(item.twitterUrl);
   };
 
   const info = useCollectionThumbnailInfo(item.id);
+
+  const imgSize = width - sizedStyles.boxMainContainer.paddingVertical * 2;
 
   return (
     <Pressable
@@ -45,19 +49,14 @@ export const CollectionView: React.FC<{
       }}
       disabled={item.id === "" && item.twitterUrl === ""}
     >
-      <TertiaryBox
-        noBrokenCorners={size === "XS"}
-        mainContainerStyle={sizedStyles.boxMainContainer}
-        width={sizedStyles.box.width}
-        height={sizedStyles.box.height}
-      >
+      <TertiaryBox style={[sizedStyles.boxMainContainer, { width }]}>
         <OptimizedImage
           sourceURI={item.imageUri}
-          width={sizedStyles.image.width}
-          height={sizedStyles.image.height}
+          width={250}
+          height={250}
           style={{
-            width: sizedStyles.image.width,
-            height: sizedStyles.image.height,
+            width: imgSize,
+            height: imgSize,
             alignSelf: "center",
             borderRadius: sizedStyles.image.borderRadius,
           }}
@@ -151,8 +150,7 @@ const styles = {
       height: COLLECTION_VIEW_XL_HEIGHT,
     },
     boxMainContainer: {
-      paddingTop: layout.spacing_x1_5,
-      paddingBottom: layout.spacing_x2_5,
+      paddingVertical: layout.spacing_x2,
     },
     image: {
       width: COLLECTION_VIEW_XL_WIDTH - 24,
@@ -180,8 +178,7 @@ const styles = {
       height: COLLECTION_VIEW_SM_HEIGHT,
     },
     boxMainContainer: {
-      paddingTop: layout.spacing_x1,
-      paddingBottom: layout.spacing_x1,
+      paddingVertical: layout.spacing_x2,
     },
     image: {
       width: 108,

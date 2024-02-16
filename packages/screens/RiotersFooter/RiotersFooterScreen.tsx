@@ -1,54 +1,55 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  View,
+  Image,
+  NativeScrollEvent,
   ScrollView,
   StyleSheet,
-  NativeScrollEvent,
-  Image,
+  View,
 } from "react-native";
 import { DraxProvider, DraxView } from "react-native-drax";
 
 import teritorriSvg from "../../../assets/icons/networks/teritori.svg";
-import {
-  Collection,
-  MintState,
-  NFT,
-  Sort,
-  SortDirection,
-} from "../../api/marketplace/v1/marketplace";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-import { TransactionPaymentModal } from "../../components/modals/transaction/TransactionPaymentModal";
-import { TransactionPendingModal } from "../../components/modals/transaction/TransactionPendingModal";
-import { TransactionSuccessModal } from "../../components/modals/transaction/TransactionSuccessModal";
 import DraxViewReceiverContent from "../../components/riotersFooter/DraxViewReceiverContent";
 import ExistingNftType from "../../components/riotersFooter/ExistingNftType";
 import NewNftType from "../../components/riotersFooter/NewNftType";
 import NftAdjustments from "../../components/riotersFooter/NftAdjustments";
 import NftTypeTab from "../../components/riotersFooter/NftTypeTab";
 import SelectNewNft from "../../components/riotersFooter/SelectedNewNft";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import {
+  Collection,
+  MintState,
+  NFT,
+  Sort,
+  SortDirection,
+} from "@/api/marketplace/v1/marketplace";
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { TransactionPaymentModal } from "@/components/modals/transaction/TransactionPaymentModal";
+import { TransactionPendingModal } from "@/components/modals/transaction/TransactionPendingModal";
+import { TransactionSuccessModal } from "@/components/modals/transaction/TransactionSuccessModal";
 import {
   RioterFooterNftClient,
   RioterFooterNftQueryClient,
-} from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.client";
-import { Uint128 } from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.types";
-import { TeritoriBunkerMinterQueryClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
-import { TeritoriNftQueryClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
-import { useCollections } from "../../hooks/useCollections";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
+} from "@/contracts-clients/rioter-footer-nft/RioterFooterNft.client";
+import { Uint128 } from "@/contracts-clients/rioter-footer-nft/RioterFooterNft.types";
+import { TeritoriBunkerMinterQueryClient } from "@/contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
+import { TeritoriNftQueryClient } from "@/contracts-clients/teritori-nft/TeritoriNft.client";
+import { useCollections } from "@/hooks/useCollections";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   getCosmosNetwork,
   getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
   parseNftId,
-} from "../../networks";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { neutral33, neutral77 } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { NFTDropedAdjustmentType, FooterNftData } from "../../utils/types/nft";
+} from "@/networks";
+import { web3ToWeb2URI } from "@/utils/ipfs";
+import { neutral33, neutral77 } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { FooterNftData, NFTDropedAdjustmentType } from "@/utils/types/nft";
 
 export const RiotersFooterScreen: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
@@ -157,13 +158,13 @@ export const RiotersFooterScreen: React.FC = () => {
             if (!nftInfo || !nftInfo.token_uri) {
               continue;
             }
-            const ipfs = ipfsURLToHTTPURL(nftInfo.token_uri);
+            const ipfs = web3ToWeb2URI(nftInfo.token_uri);
             const response = await fetch(ipfs);
             const responseJSON = await response.json();
             newNfts.push({
               ...nft,
               imageUri: responseJSON.image.startsWith("ipfs://")
-                ? ipfsURLToHTTPURL(responseJSON.image)
+                ? web3ToWeb2URI(responseJSON.image)
                 : responseJSON.image,
               // FIXME: sanitize
               // eslint-disable-next-line no-restricted-syntax

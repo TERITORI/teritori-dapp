@@ -1,51 +1,52 @@
 import React, { FC, useEffect, useMemo, useRef, useState } from "react";
 import { useWindowDimensions, View, ViewStyle } from "react-native";
 import Animated, {
+  runOnJS,
   useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
 
-import { Post } from "../../../api/feed/v1/feed";
-import { BrandText } from "../../../components/BrandText";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { MobileTitle } from "../../../components/ScreenContainer/ScreenContainerMobile";
+import { Post } from "@/api/feed/v1/feed";
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
 import {
   CommentsContainer,
   LINES_HORIZONTAL_SPACE,
-} from "../../../components/cards/CommentsContainer";
-import { CreateShortPostButton } from "../../../components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostButton";
-import { CreateShortPostModal } from "../../../components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostModal";
-import {
-  PostCategory,
-  ReplyToType,
-} from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
+} from "@/components/cards/CommentsContainer";
+import { CreateShortPostButton } from "@/components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostButton";
+import { CreateShortPostModal } from "@/components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostModal";
 import {
   NewsFeedInput,
   NewsFeedInputHandle,
-} from "../../../components/socialFeed/NewsFeed/NewsFeedInput";
-import { RefreshButton } from "../../../components/socialFeed/NewsFeed/RefreshButton/RefreshButton";
-import { RefreshButtonRound } from "../../../components/socialFeed/NewsFeed/RefreshButton/RefreshButtonRound";
-import { SocialThreadCard } from "../../../components/socialFeed/SocialCard/cards/SocialThreadCard";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+} from "@/components/socialFeed/NewsFeed/NewsFeedInput";
+import { RefreshButton } from "@/components/socialFeed/NewsFeed/RefreshButton/RefreshButton";
+import { RefreshButtonRound } from "@/components/socialFeed/NewsFeed/RefreshButton/RefreshButtonRound";
+import { SocialThreadCard } from "@/components/socialFeed/SocialCard/cards/SocialThreadCard";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import {
   combineFetchCommentPages,
   useFetchComments,
-} from "../../../hooks/feed/useFetchComments";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { getNetworkObjectId, parseUserId } from "../../../networks";
-import { useAppNavigation } from "../../../utils/navigation";
-import { DEFAULT_USERNAME } from "../../../utils/social-feed";
-import { fontSemibold20 } from "../../../utils/style/fonts";
+} from "@/hooks/feed/useFetchComments";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { getNetworkObjectId, parseUserId } from "@/networks";
+import { DEFAULT_USERNAME } from "@/utils/social-feed";
+import { fontSemibold20 } from "@/utils/style/fonts";
 import {
   layout,
   RESPONSIVE_BREAKPOINT_S,
   screenContentMaxWidth,
-} from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
-import { OnPressReplyType } from "../FeedPostViewScreen";
+} from "@/utils/style/layout";
+import { tinyAddress } from "@/utils/text";
+import {
+  OnPressReplyType,
+  PostCategory,
+  ReplyToType,
+} from "@/utils/types/feed";
 
 export const FeedPostDefaultView: FC<{
   networkId: string;
@@ -132,7 +133,7 @@ export const FeedPostDefaultView: FC<{
         } else if (flatListContentOffsetY < event.contentOffset.y) {
           isGoingUp.value = false;
         }
-        setFlatListContentOffsetY(event.contentOffset.y);
+        runOnJS(setFlatListContentOffsetY)(event.contentOffset.y);
       },
     },
     [post?.identifier],
@@ -149,10 +150,6 @@ export const FeedPostDefaultView: FC<{
       authorNSInfo?.metadata?.tokenId ||
       tinyAddress(authorAddress) ||
       DEFAULT_USERNAME;
-
-    if (post.category === PostCategory.Article) {
-      return `Article by ${authorDisplayName}`;
-    }
 
     if (post?.parentPostIdentifier) {
       return `Comment by ${authorDisplayName}`;
@@ -313,8 +310,8 @@ export const FeedPostDefaultView: FC<{
           style={{ alignSelf: "center" }}
           ref={feedInputRef}
           type="comment"
-          parentId={postId}
           replyTo={replyTo}
+          parentId={post.identifier}
           onSubmitInProgress={handleSubmitInProgress}
           onSubmitSuccess={() => {
             setReplyTo(undefined);
@@ -324,12 +321,15 @@ export const FeedPostDefaultView: FC<{
       )}
 
       <CreateShortPostModal
+        label="Create a Comment"
         isVisible={isCreateModalVisible}
         onClose={() => setCreateModalVisible(false)}
         onSubmitSuccess={() => {
           setReplyTo(undefined);
           refetchComments();
         }}
+        replyTo={replyTo}
+        parentId={post.identifier}
       />
     </ScreenContainer>
   );

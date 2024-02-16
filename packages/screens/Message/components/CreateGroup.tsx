@@ -1,34 +1,31 @@
 import React, { useMemo, useState } from "react";
-import { View, ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { CheckboxGroup, CheckboxItem } from "./CheckboxGroup";
-import { GroupInfo_Reply } from "../../../api/weshnet/protocoltypes";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
-import { Separator } from "../../../components/separators/Separator";
-import { SeparatorGradient } from "../../../components/separators/SeparatorGradient";
-import { SearchInput } from "../../../components/sorts/SearchInput";
-import { SpacerColumn } from "../../../components/spacer";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
+
+import { GroupInfo_Reply } from "@/api/weshnet/protocoltypes";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { Separator } from "@/components/separators/Separator";
+import { SeparatorGradient } from "@/components/separators/SeparatorGradient";
+import { SearchInput } from "@/components/sorts/SearchInput";
+import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
   selectContactInfo,
   selectConversationList,
-} from "../../../store/slices/message";
-import {
-  neutral00,
-  neutral33,
-  secondaryColor,
-} from "../../../utils/style/colors";
-import { weshClient } from "../../../weshnet/client";
-import { subscribeMessages } from "../../../weshnet/message/subscriber";
+} from "@/store/slices/message";
+import { neutral00, neutral33, secondaryColor } from "@/utils/style/colors";
+import { weshClient } from "@/weshnet";
+import { subscribeMessages } from "@/weshnet/message/subscriber";
 import {
   getConversationAvatar,
   getConversationName,
-} from "../../../weshnet/messageHelpers";
-import { sendMessage } from "../../../weshnet/services";
-import { bytesFromString, stringFromBytes } from "../../../weshnet/utils";
+} from "@/weshnet/messageHelpers";
+import { sendMessage } from "@/weshnet/services";
+import { bytesFromString, stringFromBytes } from "@/weshnet/utils";
 
 interface CreateGroupProps {
   onClose: () => void;

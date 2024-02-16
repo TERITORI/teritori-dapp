@@ -3,15 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
-import {
-  getNativeCurrency,
-  getNetwork,
-  WEI_TOKEN_ADDRESS,
-  NetworkKind,
-} from "../networks";
-import { Balance } from "../utils/coins";
-import { getEthereumProvider } from "../utils/ethereum";
-import { CosmosBalancesResponse } from "../utils/teritori";
+
+import { getNativeCurrency, getNetwork, NetworkKind } from "@/networks";
+import { Balance } from "@/utils/coins";
+import { getEthereumProvider } from "@/utils/ethereum";
+import { CosmosBalancesResponse } from "@/utils/teritori";
 
 export const useBalances = (
   networkId: string | undefined,
@@ -84,7 +80,7 @@ const getNetworkBalances = async (
 
       const balanceItem = {
         amount: balance.toString(),
-        denom: WEI_TOKEN_ADDRESS,
+        denom: network.currencies[0].denom,
       };
       return [balanceItem];
     }

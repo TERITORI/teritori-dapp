@@ -17,9 +17,6 @@ import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import { usePrevious } from "../../../../hooks/usePrevious";
 import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
-import { OnPressReplyType } from "../../../../screens/FeedPostView/FeedPostViewScreen";
-import { useAppNavigation } from "../../../../utils/navigation";
-import { zodTryParseJSON } from "../../../../utils/sanitize";
 import { DEFAULT_USERNAME } from "../../../../utils/social-feed";
 import {
   neutral00,
@@ -31,6 +28,7 @@ import {
 } from "../../../../utils/style/colors";
 import { layout } from "../../../../utils/style/layout";
 import { tinyAddress } from "../../../../utils/text";
+import { OnPressReplyType, PostExtra } from "../../../../utils/types/feed";
 import { AnimationFadeIn } from "../../../animations/AnimationFadeIn";
 import { AnimationFadeInOut } from "../../../animations/AnimationFadeInOut";
 import { CustomPressable } from "../../../buttons/CustomPressable";
@@ -40,13 +38,11 @@ import {
   LINES_HORIZONTAL_SPACE,
 } from "../../../cards/CommentsContainer";
 import { SpacerColumn } from "../../../spacer";
-import {
-  PostExtra,
-  ZodSocialFeedPostMetadata,
-} from "../../NewsFeed/NewsFeed.type";
 import { SocialCardFooter } from "../SocialCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";
 import { SocialMessageContent } from "../SocialMessageContent";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export interface SocialCommentCardProps {
   // We use the cardWidth provided from CommentsContainer.
@@ -97,10 +93,6 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     [data],
   );
   const moreCommentsCount = localComment.subPostLength - comments.length;
-  const metadata = zodTryParseJSON(
-    ZodSocialFeedPostMetadata,
-    localComment.metadata,
-  );
   const authorNSInfo = useNSUserInfo(localComment.authorId);
   const username = authorNSInfo?.metadata?.tokenId
     ? tinyAddress(authorNSInfo?.metadata?.tokenId || "", 19)
@@ -153,7 +145,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
 
   return (
     <CustomPressable
-      onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
+      onLayout={(e) => setViewWidth(e.nativeEvent?.layout?.width)}
       disabled={!!localComment.isInLocal}
       onPress={() =>
         navigation.navigate("FeedPostView", {
@@ -165,7 +157,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
       <AnimationFadeIn
         onLayout={(e) =>
           setReplyListYOffset((prev) => {
-            prev[0] = e.nativeEvent.layout.y;
+            prev[0] = e.nativeEvent?.layout?.y;
             return prev;
           })
         }
@@ -199,15 +191,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
               <SpacerColumn size={1.5} />
 
               {/*====== Card Content */}
-              {!!metadata && (
-                <SocialMessageContent
-                  authorId={localComment.authorId}
-                  postId={localComment.identifier}
-                  metadata={metadata}
-                  postCategory={localComment.category}
-                />
-              )}
-
+              <SocialMessageContent post={localComment} />
               <SpacerColumn size={1.5} />
 
               {/*====== Card Actions */}
@@ -228,8 +212,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
             style={{ marginLeft: isMobile ? 0 : LINES_HORIZONTAL_SPACE }}
             onLayout={(e) =>
               setReplyListYOffset((prev) => {
-                prev[2] = e.nativeEvent.layout.height;
-                setReplyListLayout(e.nativeEvent.layout);
+                prev[2] = e.nativeEvent?.layout?.height;
+                setReplyListLayout(e.nativeEvent?.layout);
                 return prev;
               })
             }
@@ -257,7 +241,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
           style={repliesButtonContainerCStyle}
           onLayout={(e) =>
             setReplyListYOffset((prev) => {
-              prev[1] = e.nativeEvent.layout.y;
+              prev[1] = e.nativeEvent?.layout?.y;
               return prev;
             })
           }

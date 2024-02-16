@@ -5,13 +5,12 @@ import Long from "long";
 import React, { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
-  TouchableOpacity,
   StyleProp,
-  TextStyle,
+  TextInput,
+  TouchableOpacity,
+  useWindowDimensions,
   View,
   ViewStyle,
-  useWindowDimensions,
-  TextInput,
 } from "react-native";
 import ConfettiCannon from "react-native-confetti-cannon";
 import CountDown from "react-native-countdown-component";
@@ -20,78 +19,71 @@ import balanceSVG from "../../../assets/icons/balance.svg";
 import minusSVG from "../../../assets/icons/minus.svg";
 import plusSVG from "../../../assets/icons/plus.svg";
 import sigmaSVG from "../../../assets/icons/sigma.svg";
-import { BrandText } from "../../components/BrandText";
-import { ExternalLink } from "../../components/ExternalLink";
 import FlexRow from "../../components/FlexRow";
-import { OptimizedImage } from "../../components/OptimizedImage";
-import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-import { ProgressionCard } from "../../components/cards/ProgressionCard";
-import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
-import { GradientText } from "../../components/gradientText";
-import { SpacerRow } from "../../components/spacer";
-import {
-  initialToastError,
-  useFeedbacks,
-} from "../../context/FeedbacksProvider";
-import { Wallet } from "../../context/WalletsProvider";
-import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
-import { useBalances } from "../../hooks/useBalances";
-import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { Coin } from "@/api/teritori-chain/cosmos/base/v1beta1/coin";
+import { BrandText } from "@/components/BrandText";
+import { ExternalLink } from "@/components/ExternalLink";
+import { OptimizedImage } from "@/components/OptimizedImage";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { ProgressionCard } from "@/components/cards/ProgressionCard";
+import { CollectionSocialButtons } from "@/components/collections/CollectionSocialButtons";
+import { GradientText } from "@/components/gradientText";
+import { DepositWithdrawModal } from "@/components/modals/DepositWithdrawModal";
+import { SpacerRow } from "@/components/spacer";
+import { initialToastError, useFeedbacks } from "@/context/FeedbacksProvider";
+import { useWalletControl } from "@/context/WalletControlProvider";
+import { Wallet } from "@/context/WalletsProvider";
+import { TeritoriMinter__factory } from "@/evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { useBalances } from "@/hooks/useBalances";
+import { useCanPay } from "@/hooks/useCanPay";
+import { useCollectionInfo } from "@/hooks/useCollectionInfo";
 import {
-  NetworkKind,
   CosmosNetworkInfo,
   EthereumNetworkInfo,
   getCosmosNetwork,
   getCurrency,
+  getEthereumNetwork,
   getKeplrSigningCosmWasmClient,
   getNativeCurrency,
+  NetworkFeature,
+  NetworkKind,
   parseNetworkObjectId,
-  getEthereumNetwork,
-} from "../../networks";
-import { prettyPrice } from "../../utils/coins";
-import { MintPhase } from "../../utils/collection";
-import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
-import { ScreenFC } from "../../utils/navigation";
+} from "@/networks";
+import { prettyPrice } from "@/utils/coins";
+import { MintPhase } from "@/utils/collection";
+import { getMetaMaskEthereumSigner } from "@/utils/ethereum";
+import { ScreenFC } from "@/utils/navigation";
 import {
   neutral17,
+  neutral22,
   neutral30,
   neutral33,
   neutral67,
   neutral77,
-  neutral22,
   neutralA3,
   pinkDefault,
   primaryColor,
-  yellowDefault,
   secondaryColor,
-} from "../../utils/style/colors";
+  yellowDefault,
+} from "@/utils/style/colors";
 import {
   fontMedium14,
   fontSemibold12,
   fontSemibold14,
   fontSemibold16,
   fontSemibold20,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { DepositWithdrawModal } from "../WalletManager/components/DepositWithdrawModal";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const maxImageSize = 532;
 const cardsHalfGap = 6;
-
-const countDownTxtStyleStarts: StyleProp<TextStyle> = {
-  fontSize: 16,
-  letterSpacing: 0,
-  lineHeight: 20,
-  fontFamily: "Exo_600SemiBold",
-  fontWeight: "600",
-  color: pinkDefault,
-};
 
 const sleep = (duration: number) =>
   new Promise((resolve) => setTimeout(resolve, duration));
@@ -102,8 +94,8 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   },
 }) => {
   const { width: currentWidth } = useWindowDimensions();
-
   const wallet = useSelectedWallet();
+  const userId = wallet?.userId;
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
   const {
@@ -112,15 +104,31 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     refetch: refetchCollectionInfo,
   } = useCollectionInfo(id);
   const { setToastError } = useFeedbacks();
+  const { showConnectWalletModal, showNotEnoughFundsModal } =
+    useWalletControl();
   const [viewWidth, setViewWidth] = useState(0);
   const [network, mintAddress] = parseNetworkObjectId(id);
   const balances = useBalances(network?.id, wallet?.address);
   const balance = balances.find((bal) => bal.denom === info?.priceDenom);
-
   const [totalBulkMint, setTotalBulkMint] = useState(1);
-
+  const {
+    discord: discordLink,
+    twitter: twitterLink,
+    website: websiteLink,
+  } = info;
+  const hasLinks = discordLink || twitterLink || websiteLink;
+  const priceCurrency = getCurrency(network?.id, info.priceDenom);
+  const priceNativeCurrency = getNativeCurrency(network?.id, info.priceDenom);
+  const cost: Coin = useMemo(() => {
+    return {
+      amount: info.unitPrice || "0",
+      denom: info?.priceDenom || "",
+    };
+  }, [info.unitPrice, info?.priceDenom]);
+  const canPayForMint = useCanPay({ userId, cost });
+  const forceNetworkFeature = NetworkFeature.NFTLaunchpad;
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
-  const mintButtonDisabled = minted || !wallet?.connected;
+  const mintButtonDisabled = minted;
 
   const updateTotalBulkMint = (newTotalBulkMint: number | string) => {
     const numOnlyRegexp = new RegExp(/^\d+$/);
@@ -140,6 +148,17 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     }
 
     setTotalBulkMint(totalBulkMint);
+  };
+
+  const onPressDeposit = async () => {
+    if (!wallet?.address || !wallet.connected) {
+      showConnectWalletModal({
+        forceNetworkFeature,
+        action: "Mint this Collection",
+      });
+      return;
+    }
+    setDepositVisible(true);
   };
 
   const prettyError = (err: any) => {
@@ -249,6 +268,20 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
 
   const mint = useCallback(async () => {
     try {
+      if (!wallet?.address || !wallet.connected) {
+        showConnectWalletModal({
+          action: "Mint this Collection",
+          forceNetworkFeature,
+        });
+        return;
+      }
+      if (!canPayForMint) {
+        showNotEnoughFundsModal({
+          action: "Mint this Collection",
+          cost,
+        });
+        return;
+      }
       setToastError(initialToastError);
       if (!wallet) {
         setToastError({
@@ -284,13 +317,24 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
       }
       console.error(e);
     }
-  }, [cosmosMint, ethereumMint, network, setToastError, wallet]);
+  }, [
+    cost,
+    showConnectWalletModal,
+    forceNetworkFeature,
+    canPayForMint,
+    cosmosMint,
+    ethereumMint,
+    network,
+    setToastError,
+    wallet,
+    showNotEnoughFundsModal,
+  ]);
 
   const mintTermsConditionsURL = useMemo(() => {
     switch (mintAddress) {
       case getCosmosNetwork(network?.id)?.riotContractAddressGen0:
         return "https://teritori.notion.site/The-R-ot-Terms-Conditions-0ea730897c964b04ab563e0648cc2f5b";
-      case getEthereumNetwork(network?.id)?.riotContractAddress:
+      case getEthereumNetwork(network?.id)?.riotContractAddressGen0:
         return "https://teritori.notion.site/The-Riot-Terms-Conditions-ETH-92328fb2d4494b6fb073b38929b28883";
       default:
         return null;
@@ -300,16 +344,6 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   if (!info) {
     return <ScreenContainer noMargin />;
   }
-
-  const {
-    discord: discordLink,
-    twitter: twitterLink,
-    website: websiteLink,
-  } = info;
-  const hasLinks = discordLink || twitterLink || websiteLink;
-
-  const priceCurrency = getCurrency(network?.id, info.priceDenom);
-  const priceNativeCurrency = getNativeCurrency(network?.id, info.priceDenom);
 
   if (notFound) {
     return (
@@ -398,7 +432,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 }}
               />
 
-              <TertiaryBox noBrokenCorners fullWidth>
+              <LegacyTertiaryBox noBrokenCorners fullWidth>
                 {/* Upper section */}
                 <FlexRow
                   style={{
@@ -475,9 +509,9 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                       </BrandText>
                       <BrandText style={fontSemibold16}>
                         {prettyPrice(
-                          network?.id || "",
+                          network?.id,
                           balance?.amount || "0",
-                          balance?.denom || "",
+                          info.priceDenom,
                         )}
                       </BrandText>
                     </View>
@@ -570,7 +604,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                         width={150}
                         disabled={mintButtonDisabled}
                         loader
-                        onPress={() => setDepositVisible(true)}
+                        onPress={onPressDeposit}
                       />
                     )}
 
@@ -581,18 +615,14 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                         size="XL"
                         text="Mint"
                         width={priceCurrency?.kind === "ibc" ? 100 : 200}
-                        disabled={
-                          mintButtonDisabled ||
-                          parseInt(balance?.amount || "0", 10) <
-                            parseInt(info.unitPrice || "0", 10)
-                        }
+                        disabled={mintButtonDisabled}
                         loader
                         onPress={mint}
                       />
                     )}
                   </View>
                 </FlexRow>
-              </TertiaryBox>
+              </LegacyTertiaryBox>
 
               {mintTermsConditionsURL && (
                 <View
@@ -663,7 +693,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 margin: layout.spacing_x2,
               }}
             >
-              <TertiaryBox style={{ marginBottom: 40 }}>
+              <LegacyTertiaryBox style={{ marginBottom: 40 }}>
                 {info.image ? (
                   <OptimizedImage
                     sourceURI={info.image}
@@ -687,7 +717,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     <ActivityIndicator size="large" style={{ margin: 40 }} />
                   </View>
                 )}
-              </TertiaryBox>
+              </LegacyTertiaryBox>
 
               <BrandText style={[fontSemibold20, { marginBottom: 24 }]}>
                 Activity
@@ -731,7 +761,7 @@ const AttributesCard: React.FC<{
   value: string;
 }> = ({ style, label, value }) => {
   return (
-    <TertiaryBox
+    <LegacyTertiaryBox
       style={style}
       width={132}
       height={62}
@@ -747,7 +777,7 @@ const AttributesCard: React.FC<{
         {label}
       </BrandText>
       <BrandText style={fontMedium14}>{value}</BrandText>
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 };
 
@@ -855,9 +885,23 @@ const PhaseCountdown: React.FC<{
         until={(startsAt || now) - now}
         onFinish={onCountdownEnd}
         size={8}
+        digitTxtStyle={{
+          fontSize: 16,
+          letterSpacing: 0,
+          lineHeight: 20,
+          fontFamily: "Exo_600SemiBold",
+          fontWeight: "600",
+          color: pinkDefault,
+        }}
+        separatorStyle={{
+          fontSize: 16,
+          letterSpacing: 0,
+          lineHeight: 20,
+          fontFamily: "Exo_600SemiBold",
+          fontWeight: "600",
+          color: pinkDefault,
+        }}
         style={{ marginLeft: layout.spacing_x1 }}
-        digitTxtStyle={countDownTxtStyleStarts}
-        separatorStyle={countDownTxtStyleStarts}
         digitStyle={{ backgroundColor: "none" }}
         showSeparator
         timeLabels={{ d: "", h: "", m: "", s: "" }}

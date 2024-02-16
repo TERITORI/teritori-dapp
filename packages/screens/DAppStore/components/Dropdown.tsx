@@ -1,26 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
 import { CheckboxDappStore } from "./CheckboxDappStore";
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
-import { useDropdowns } from "../../../context/DropdownsProvider";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacySecondaryBox } from "@/components/boxes/LegacySecondaryBox";
+import { useDropdowns } from "@/hooks/useDropdowns";
 import {
   selectAvailableApps,
   setAvailableApps,
-} from "../../../store/slices/dapps-store";
-import { useAppDispatch } from "../../../store/store";
-import {
-  neutral33,
-  neutralA3,
-  secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "@/store/slices/dapps-store";
+import { useAppDispatch } from "@/store/store";
+import { neutral33, neutralA3, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const SelectableOption: React.FC<{
   name: string;
@@ -59,8 +56,8 @@ const SelectableOption: React.FC<{
 };
 
 export const DropdownDappsStoreFilter: React.FC = () => {
-  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
+
   const availableApps = useSelector(selectAvailableApps);
   const options = Object.values(availableApps).map((option) => {
     return {
@@ -77,6 +74,7 @@ export const DropdownDappsStoreFilter: React.FC = () => {
         marginRight: layout.spacing_x3,
         marginBottom: layout.spacing_x2,
       }}
+      collapsable={false}
     >
       <TouchableOpacity
         style={{
@@ -84,21 +82,21 @@ export const DropdownDappsStoreFilter: React.FC = () => {
           alignItems: "center",
         }}
         activeOpacity={1}
-        onPress={() => onPressDropdownButton(dropdownRef)}
+        onPress={() => setDropdownState(!isDropdownOpen)}
       >
         <BrandText style={[fontSemibold14, { marginRight: layout.spacing_x1 }]}>
           All dApps
         </BrandText>
         <SVG
-          source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
+          source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
           width={16}
           height={16}
           color={secondaryColor}
         />
       </TouchableOpacity>
 
-      {isDropdownOpen(dropdownRef) && (
-        <SecondaryBox
+      {isDropdownOpen && (
+        <LegacySecondaryBox
           noBrokenCorners
           width={248}
           style={{ position: "absolute", top: 29, right: -14 }}
@@ -117,7 +115,7 @@ export const DropdownDappsStoreFilter: React.FC = () => {
               id={option.id}
             />
           ))}
-        </SecondaryBox>
+        </LegacySecondaryBox>
       )}
     </View>
   );

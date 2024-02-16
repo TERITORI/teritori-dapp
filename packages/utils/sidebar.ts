@@ -1,3 +1,4 @@
+import { SidebarRecordType } from "./types/sidebar";
 import daoSVG from "../../assets/icons/dao.svg";
 import dappStoreSVG from "../../assets/icons/dapp-store.svg";
 import feedSVG from "../../assets/icons/feed.svg";
@@ -16,7 +17,6 @@ import stakingSVG from "../../assets/icons/staking.svg";
 import tnsServiceSVG from "../../assets/icons/tns-service.svg";
 import walletRegSVG from "../../assets/icons/wallet-regular.svg";
 import walletSVG from "../../assets/icons/wallet-sidebar.svg";
-import { SidebarRecordType } from "../components/navigation/types";
 import { NetworkKind } from "../networks";
 
 export const SIDEBAR_LIST: SidebarRecordType = {
@@ -122,7 +122,6 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     id: "Join The R!ot",
     route: "RiotGame",
     icon: riotersGameSVG,
-    disabledOn: [NetworkKind.Ethereum],
   },
   riotersFooter: {
     title: "Rioters Footer",

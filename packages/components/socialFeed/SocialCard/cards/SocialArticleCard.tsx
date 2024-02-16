@@ -8,8 +8,8 @@ import { Post } from "../../../../api/feed/v1/feed";
 import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../../../networks";
-import { useAppNavigation } from "../../../../utils/navigation";
 import { zodTryParseJSON } from "../../../../utils/sanitize";
+import { ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH } from "../../../../utils/social-feed";
 import {
   neutral00,
   neutral33,
@@ -22,25 +22,28 @@ import {
 } from "../../../../utils/style/fonts";
 import {
   layout,
+  RESPONSIVE_BREAKPOINT_S,
   SOCIAL_FEED_BREAKPOINT_M,
 } from "../../../../utils/style/layout";
+import {
+  ZodSocialFeedArticleMetadata,
+  ZodSocialFeedPostMetadata,
+} from "../../../../utils/types/feed";
 import { BrandText } from "../../../BrandText";
 import { OptimizedImage } from "../../../OptimizedImage";
 import { CustomPressable } from "../../../buttons/CustomPressable";
 import { SpacerColumn } from "../../../spacer";
 import {
-  ZodSocialFeedArticleMetadata,
-  ZodSocialFeedPostMetadata,
-} from "../../NewsFeed/NewsFeed.type";
-import {
   createStateFromHTML,
   getTruncatedArticleHTML,
   isArticleHTMLNeedsTruncate,
-} from "../../RichText/RichText.web";
+} from "../../RichText";
 import { FlaggedCardFooter } from "../FlaggedCardFooter";
 import { SocialCardFooter } from "../SocialCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";
 import { SocialCardWrapper } from "../SocialCardWrapper";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const ARTICLE_CARD_PADDING_VERTICAL = layout.spacing_x2;
 const ARTICLE_CARD_PADDING_HORIZONTAL = layout.spacing_x2_5;
@@ -52,8 +55,6 @@ export const SocialArticleCard: FC<{
   refetchFeed?: () => Promise<any>;
   isFlagged?: boolean;
 }> = memo(({ post, isPostConsultation, refetchFeed, style, isFlagged }) => {
-  console.log("post", post);
-
   const navigation = useAppNavigation();
   const [localPost, setLocalPost] = useState<Post>(post);
   const [viewWidth, setViewWidth] = useState(0);
@@ -64,6 +65,8 @@ export const SocialArticleCard: FC<{
   const selectedNetworkId = selectedNetworkInfo?.id || "";
   const articleCardHeight = windowWidth < SOCIAL_FEED_BREAKPOINT_M ? 214 : 254;
   const thumbnailImageWidth = viewWidth / 3;
+  const borderRadius =
+    windowWidth < RESPONSIVE_BREAKPOINT_S ? 0 : SOCIAl_CARD_BORDER_RADIUS;
 
   const metadata = zodTryParseJSON(
     ZodSocialFeedArticleMetadata,
@@ -75,7 +78,7 @@ export const SocialArticleCard: FC<{
   );
   const thumbnailImage =
     metadata?.thumbnailImage ||
-    // Old articles doesn't have thumbnailImage, but they have a file thumbnailImage = true
+    // Old articles doesn't have thumbnailImage, but they have a file with a isCoverImage flag
     oldMetadata?.files?.find((file) => file.isCoverImage);
   const simplePostMetadata = metadata || oldMetadata;
   const message = simplePostMetadata?.message;
@@ -127,7 +130,7 @@ export const SocialArticleCard: FC<{
           {
             borderWidth: 1,
             borderColor: neutral33,
-            borderRadius: SOCIAl_CARD_BORDER_RADIUS,
+            borderRadius,
             backgroundColor: neutral00,
             width: "100%",
             flexDirection: "row",
@@ -190,8 +193,9 @@ export const SocialArticleCard: FC<{
                 : viewWidth - thumbnailImageWidth - 2,
             paddingHorizontal: ARTICLE_CARD_PADDING_HORIZONTAL,
             paddingVertical: ARTICLE_CARD_PADDING_VERTICAL,
-            borderBottomRightRadius: SOCIAl_CARD_BORDER_RADIUS,
-            borderBottomLeftRadius: SOCIAl_CARD_BORDER_RADIUS,
+            borderBottomRightRadius: borderRadius,
+            borderBottomLeftRadius: borderRadius,
+            maxWidth: ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH,
           }}
           start={{ x: 0, y: 1 }}
           end={{ x: 0, y: 0 }}
@@ -219,14 +223,8 @@ export const SocialArticleCard: FC<{
             zIndex: -1,
             width: thumbnailImageWidth,
             height: articleCardHeight - 2,
-            borderTopRightRadius:
-              windowWidth < SOCIAL_FEED_BREAKPOINT_M
-                ? 0
-                : SOCIAl_CARD_BORDER_RADIUS,
-            borderBottomRightRadius:
-              windowWidth < SOCIAL_FEED_BREAKPOINT_M
-                ? 0
-                : SOCIAl_CARD_BORDER_RADIUS,
+            borderTopRightRadius: borderRadius,
+            borderBottomRightRadius: borderRadius,
           }}
         />
       </CustomPressable>

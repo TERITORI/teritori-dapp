@@ -19,8 +19,9 @@ export const OmniLink: React.FC<{
   children: ReactNode | undefined;
   style?: TouchableOpacityProps["style"];
   disabled?: boolean;
-}> = ({ to, action, children, style, disabled }) => {
-  // @ts-ignore
+  noHoverEffect?: boolean;
+}> = ({ to, action, children, style, disabled, noHoverEffect }) => {
+  // @ts-expect-error: description todo
   const { onPress, ...props } = useLinkProps({ to, action });
 
   const [isHovered, setIsHovered] = React.useState(false);
@@ -44,13 +45,13 @@ export const OmniLink: React.FC<{
     // You can add hover effects using `onMouseEnter` and `onMouseLeave`
     return (
       <View
-        // @ts-expect-error
+        // @ts-expect-error: description todo
         onClick={!disabled ? handlePress : null}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         style={[
           {
-            opacity: isHovered && !disabled ? 0.5 : 1,
+            opacity: isHovered && !disabled && !noHoverEffect ? 0.5 : 1,
           },
           { transitionDuration: "150ms" } as ViewStyle, // browser specific
           style,

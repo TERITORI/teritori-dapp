@@ -4,10 +4,11 @@ import { useSelector } from "react-redux";
 
 import { MessageBlankFiller } from "./MessageBlankFiller";
 import RequestList from "./Request";
-import { TextInputCustomBorder } from "../../../components/inputs/TextInputCustomBorder";
-import { SpacerColumn } from "../../../components/spacer";
-import { selectContactRequestList } from "../../../store/slices/message";
-import { ContactRequest } from "../../../utils/types/message";
+
+import { TextInputCustomBorder } from "@/components/inputs/TextInputCustomBorder";
+import { SpacerColumn } from "@/components/spacer";
+import { selectContactRequestList } from "@/store/slices/message";
+import { ContactRequest } from "@/utils/types/message";
 
 interface RequestProps {
   items: ContactRequest[];

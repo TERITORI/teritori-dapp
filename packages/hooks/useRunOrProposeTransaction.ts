@@ -1,6 +1,7 @@
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { isDeliverTxFailure, StdFee } from "@cosmjs/stargate";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import { Buffer } from "buffer";
 import { useCallback } from "react";
 
 import { useDAOMakeProposal } from "./dao/useDAOMakeProposal";
@@ -9,8 +10,9 @@ import { useMultisigClient } from "./multisig/useMultisigClient";
 import { multisigTransactionsQueryKey } from "./multisig/useMultisigTransactions";
 import { multisigTransactionsCountsQueryKey } from "./multisig/useMultisigTransactionsCounts";
 import useSelectedWallet from "./useSelectedWallet";
-import { MultisigService, Token } from "../api/multisig/v1/multisig";
-import { CosmosMsgForEmpty } from "../contracts-clients/dao-core/DaoCore.types";
+
+import { MultisigService, Token } from "@/api/multisig/v1/multisig";
+import { CosmosMsgForEmpty } from "@/contracts-clients/dao-core/DaoCore.types";
 import {
   UserKind,
   parseUserId,
@@ -18,8 +20,8 @@ import {
   getStakingCurrency,
   getKeplrSigningStargateClient,
   cosmosTypesRegistry,
-} from "../networks";
-import { AppNavigationProp, useAppNavigation } from "../utils/navigation";
+} from "@/networks";
+import { AppNavigationProp, useAppNavigation } from "@/utils/navigation";
 
 export const useRunOrProposeTransaction = (
   userId: string | undefined,

@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
-import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
-import { TextInput, View, Animated, LayoutChangeEvent } from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Animated, LayoutChangeEvent, TextInput, View } from "react-native";
 
 import { CurrencyAmount } from "./CurrencyAmount";
 import { SelectedCurrency } from "./SelectedCurrency";
@@ -10,41 +10,42 @@ import { SwapSettings } from "./SwapSettings";
 import { SwapTokensList } from "./SwapTokensList";
 import chevronCircleDown from "../../../../../assets/icons/chevron-circle-down.svg";
 import chevronCircleUp from "../../../../../assets/icons/chevron-circle-up.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../../../components/buttons/SecondaryButton";
-import { SeparatorGradient } from "../../../../components/separators/SeparatorGradient";
-import { SpacerColumn } from "../../../../components/spacer";
-import { useDropdowns } from "../../../../context/DropdownsProvider";
-import { useFeedbacks } from "../../../../context/FeedbacksProvider";
-import { useBalances } from "../../../../hooks/useBalances";
-import { useCoingeckoPrices } from "../../../../hooks/useCoingeckoPrices";
+import useSelectedWallet from "../../../../hooks/useSelectedWallet";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { SeparatorGradient } from "@/components/separators/SeparatorGradient";
+import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useBalances } from "@/hooks/useBalances";
+import { useCoingeckoPrices } from "@/hooks/useCoingeckoPrices";
+import { useDropdowns } from "@/hooks/useDropdowns";
 import {
   useSelectedNetworkId,
   useSelectedNetworkInfo,
-} from "../../../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../../../hooks/useSelectedWallet";
-import { useSwap } from "../../../../hooks/useSwap";
+} from "@/hooks/useSelectedNetwork";
+import { useSwap } from "@/hooks/useSwap";
 import {
   allNetworks,
   CosmosNetworkInfo,
   CurrencyInfo,
   getNativeCurrency,
   NativeCurrencyInfo,
-} from "../../../../networks";
-import { Balance } from "../../../../utils/coins";
+} from "@/networks";
+import { Balance } from "@/utils/coins";
 import {
   neutral77,
   neutralA3,
   primaryColor,
   secondaryColor,
-} from "../../../../utils/style/colors";
-import { fontSemibold14, fontSemibold20 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import { isFloatText } from "../../../../utils/text";
+} from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { isFloatText } from "@/utils/text";
 
 const INVERT_ANIMATION_DURATION = 200;
 const MAX_WIDTH = 600;
@@ -226,13 +227,9 @@ export const SwapView: React.FC = () => {
   const [slippage, setSlippage] = useState(1);
 
   // ---- Dropdowns
-  const { isDropdownOpen, closeOpenedDropdown } = useDropdowns();
-  const [dropdownOutRef, setDropdownOutRef] = useState<RefObject<any> | null>(
-    null,
-  );
-  const [dropdownInRef, setDropdownInRef] = useState<RefObject<any> | null>(
-    null,
-  );
+  const [isDropdownInOpen, setDropdownInState, dropdownInRef] = useDropdowns();
+  const [isDropdownOutOpen, setDropdownOutState, dropdownOutRef] =
+    useDropdowns();
 
   const onChangeAmountIn = (text: string) => {
     if (!text) {
@@ -277,6 +274,11 @@ export const SwapView: React.FC = () => {
     }
   };
 
+  const closeOpenedDropdown = () => {
+    setDropdownInState(false);
+    setDropdownOutState(false);
+  };
+
   // ---- SWAP OSMOSIS
   const { swap, spotPrice, fee } = useSwap(currencyIn, currencyOut);
 
@@ -313,7 +315,10 @@ export const SwapView: React.FC = () => {
 
   // ===== RETURN
   return (
-    <TertiaryBox fullWidth style={{ maxWidth: MAX_WIDTH, alignSelf: "center" }}>
+    <LegacyTertiaryBox
+      fullWidth
+      style={{ maxWidth: MAX_WIDTH, alignSelf: "center" }}
+    >
       <View style={{ width: "100%" }} onLayout={onLayout}>
         <View
           style={{
@@ -339,7 +344,7 @@ export const SwapView: React.FC = () => {
           >
             <View style={{ width: "100%" }}>
               {/*======= First currency */}
-              <TertiaryBox
+              <LegacyTertiaryBox
                 fullWidth
                 mainContainerStyle={{
                   padding: layout.spacing_x2,
@@ -400,7 +405,9 @@ export const SwapView: React.FC = () => {
                     <SelectedCurrency
                       currency={currencyInNative}
                       selectedNetworkId={selectedNetworkId}
-                      setRef={setDropdownInRef}
+                      ref={dropdownInRef}
+                      isDropdownOpen={isDropdownInOpen}
+                      setDropdownState={setDropdownInState}
                     />
                     {/*----- Desired amount for swap */}
                     <View>
@@ -429,11 +436,11 @@ export const SwapView: React.FC = () => {
                     </View>
                   </View>
                 </Animated.View>
-              </TertiaryBox>
+              </LegacyTertiaryBox>
 
               {/*======= Second currency */}
               <SpacerColumn size={1.5} />
-              <TertiaryBox
+              <LegacyTertiaryBox
                 fullWidth
                 mainContainerStyle={{
                   padding: layout.spacing_x2,
@@ -477,7 +484,9 @@ export const SwapView: React.FC = () => {
                       <SelectedCurrency
                         currency={currencyOutNative}
                         selectedNetworkId={selectedNetworkId}
-                        setRef={setDropdownOutRef}
+                        ref={dropdownOutRef}
+                        isDropdownOpen={isDropdownOutOpen}
+                        setDropdownState={setDropdownOutState}
                       />
 
                       {/*----- Amount earned after swap */}
@@ -489,7 +498,7 @@ export const SwapView: React.FC = () => {
                     </View>
                   </Animated.View>
                 </>
-              </TertiaryBox>
+              </LegacyTertiaryBox>
             </View>
 
             {/*======= Currencies In/Out equivalence */}
@@ -512,7 +521,7 @@ export const SwapView: React.FC = () => {
               loader
               text={
                 amountIn && parseFloat(amountIn) > parseFloat(currencyInAmount)
-                  ? "Insufficient balance"
+                  ? "Not enough funds"
                   : "Swap"
               }
               fullWidth
@@ -534,7 +543,7 @@ export const SwapView: React.FC = () => {
         {/*======= Selectable currencies in */}
         <SwapTokensList
           width={viewWidth}
-          isOpened={!!dropdownOutRef && isDropdownOpen(dropdownOutRef)}
+          isOpened={isDropdownOutOpen}
           close={closeOpenedDropdown}
           currencies={selectableCurrencies}
           selectedNetworkId={selectedNetworkId}
@@ -543,13 +552,13 @@ export const SwapView: React.FC = () => {
         {/*======= Selectable currencies out */}
         <SwapTokensList
           width={viewWidth}
-          isOpened={!!dropdownInRef && isDropdownOpen(dropdownInRef)}
+          isOpened={isDropdownInOpen}
           close={closeOpenedDropdown}
           currencies={selectableCurrencies}
           selectedNetworkId={selectedNetworkId}
           setCurrency={setCurrencyIn}
         />
       </View>
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 };

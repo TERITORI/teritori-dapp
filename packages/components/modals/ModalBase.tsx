@@ -17,16 +17,18 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../assets/icons/hamburger-button-cross.svg";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral77, neutral22 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SeparatorGradient } from "../separators/SeparatorGradient";
 import { SpacerColumn } from "../spacer";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
@@ -41,9 +43,8 @@ type ModalBaseProps = {
   childrenBottom?: JSX.Element | JSX.Element[];
   hideMainSeparator?: boolean;
   description?: string;
-  noBrokenCorners?: boolean;
   scrollable?: boolean;
-  contentStyle?: StyleProp<ViewStyle>;
+  boxStyle?: StyleProp<BoxStyle>;
   containerStyle?: StyleProp<ViewStyle>;
   childrenContainerStyle?: StyleProp<ViewStyle>;
   closeButtonStyle?: StyleProp<ViewStyle>;
@@ -80,11 +81,10 @@ const ModalBase: React.FC<ModalBaseProps> = ({
   hideMainSeparator,
   description,
   scrollable,
-  contentStyle,
+  boxStyle,
   containerStyle,
   childrenContainerStyle,
   onBackPress,
-  noBrokenCorners,
   closeButtonStyle,
   verticalPosition = "center",
   closeOnBlur,
@@ -105,7 +105,12 @@ const ModalBase: React.FC<ModalBaseProps> = ({
 
   return (
     <Modal
-      style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        margin: 0,
+      }}
       animationType="fade"
       transparent
       visible={visible}
@@ -143,31 +148,16 @@ const ModalBase: React.FC<ModalBaseProps> = ({
       >
         {/*------ Modal main container */}
         <TertiaryBox
-          fullWidth={windowWidth < RESPONSIVE_BREAKPOINT_S}
-          width={windowWidth < RESPONSIVE_BREAKPOINT_S ? undefined : width}
           style={[
-            { margin: "auto" },
+            {
+              margin: "auto",
+              width: windowWidth < RESPONSIVE_BREAKPOINT_S ? "100%" : width,
+              alignItems: "flex-start",
+            },
             verticalPosition === "top" && { marginTop: 0 },
             verticalPosition === "bottom" && { marginBottom: 0 },
+            boxStyle,
           ]}
-          mainContainerStyle={[
-            {
-              alignItems: "flex-start",
-              backgroundColor: "#000000",
-            },
-            verticalPosition === "top" && {
-              borderTopEndRadius: 0,
-              borderTopStartRadius: 0,
-              borderTopWidth: 0,
-            },
-            verticalPosition === "bottom" && {
-              borderBottomEndRadius: 0,
-              borderBottomStartRadius: 0,
-              borderBottomWidth: 0,
-            },
-            contentStyle,
-          ]}
-          noBrokenCorners={noBrokenCorners}
         >
           {/*------ Modal header */}
           <View
@@ -179,7 +169,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
               paddingVertical: layout.spacing_x2,
             }}
           >
-            {(label || labelComponent || description) && (
+            {!!(label || labelComponent || description) && (
               <View
                 style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
               >
@@ -202,7 +192,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
                 )}
 
                 <View style={{ flex: 1, width: "100%" }}>
-                  {label && (
+                  {!!label && (
                     <BrandText style={{ color: "white", lineHeight: 24 }}>
                       {label}
                     </BrandText>
@@ -210,7 +200,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
 
                   {labelComponent}
 
-                  {description && (
+                  {!!description && (
                     <>
                       <SpacerColumn size={1} />
                       <BrandText
@@ -232,7 +222,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
               </View>
             )}
 
-            {Header && <Header />}
+            {!!Header && <Header />}
 
             <TouchableOpacity
               containerStyle={[
@@ -245,7 +235,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
               <SVG width={32} height={32} source={closeSVG} />
             </TouchableOpacity>
           </View>
-          {children && (
+          {!!children && (
             <View
               style={[
                 { width: "100%", paddingHorizontal: modalMarginPadding },

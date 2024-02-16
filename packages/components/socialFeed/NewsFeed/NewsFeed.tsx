@@ -6,6 +6,7 @@ import {
   ViewStyle,
 } from "react-native";
 import Animated, {
+  runOnJS,
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
@@ -13,7 +14,6 @@ import Animated, {
 import { CreateShortPostButton } from "./CreateShortPost/CreateShortPostButton";
 import { CreateShortPostButtonRound } from "./CreateShortPost/CreateShortPostButtonRound";
 import { CreateShortPostModal } from "./CreateShortPost/CreateShortPostModal";
-import { PostCategory } from "./NewsFeed.type";
 import { NewsFeedInput } from "./NewsFeedInput";
 import { RefreshButton } from "./RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "./RefreshButton/RefreshButtonRound";
@@ -25,15 +25,13 @@ import {
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { fontSemibold20 } from "../../../utils/style/fonts";
 import {
   layout,
   RESPONSIVE_BREAKPOINT_S,
   screenContentMaxWidth,
 } from "../../../utils/style/layout";
-import { BrandText } from "../../BrandText";
+import { PostCategory } from "../../../utils/types/feed";
 import { SpacerColumn, SpacerRow } from "../../spacer";
-import { UploadVideoButton } from "../../video/UploadVideoButton";
 import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
 import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
 import { SocialVideoCard } from "../SocialCard/cards/SocialVideoCard";
@@ -52,7 +50,6 @@ interface NewsFeedProps {
   daoId?: string;
   disablePosting?: boolean;
   isFlagged?: boolean;
-  isVideos?: boolean;
 }
 
 export const NewsFeed: React.FC<NewsFeedProps> = ({
@@ -63,7 +60,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   daoId,
   disablePosting,
   isFlagged,
-  isVideos,
 }) => {
   const isMobile = useIsMobile();
   const { width: windowWidth } = useWindowDimensions();
@@ -85,13 +81,13 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
-      setFlatListContentOffsetY(event.contentOffset.y);
+      runOnJS(setFlatListContentOffsetY)(event.contentOffset.y);
       if (flatListContentOffsetY > event.contentOffset.y) {
         isGoingUp.value = true;
       } else if (flatListContentOffsetY < event.contentOffset.y) {
         isGoingUp.value = false;
       }
-      setFlatListContentOffsetY(event.contentOffset.y);
+      runOnJS(setFlatListContentOffsetY)(event.contentOffset.y);
     },
   });
 
@@ -117,28 +113,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   const ListHeaderComponent = useCallback(
     () => (
       <>
-        <View
-          onLayout={onHeaderLayout}
-          style={{ width, alignSelf: "center", alignItems: "center" }}
-        >
-          <Header />
-          {isVideos && (
-            <>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  width: "100%",
-                  alignItems: "center",
-                }}
-              >
-                <BrandText style={fontSemibold20}>All Videos</BrandText>
-                <UploadVideoButton refetch={refetch} />
-              </View>{" "}
-              <SpacerColumn size={1.5} />
-            </>
-          )}
-        </View>
         {!disablePosting && (
           <Animated.View
             style={[
@@ -176,7 +150,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       </>
     ),
     [
-      Header,
       additionalHashtag,
       additionalMention,
       daoId,
@@ -184,8 +157,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       isLoadingValue,
       isMobile,
       refetch,
-      width,
-      isVideos,
     ],
   );
 
@@ -242,7 +213,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   return (
     <>
       <Animated.FlatList
-        scrollEventThrottle={0.1}
         data={posts}
         renderItem={({ item: post }) => RenderItem(post)}
         ListHeaderComponentStyle={{
@@ -250,11 +220,21 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           width: windowWidth,
           maxWidth: screenContentMaxWidth,
         }}
-        ListHeaderComponent={ListHeaderComponent}
+        ListHeaderComponent={
+          <>
+            <View
+              onLayout={onHeaderLayout}
+              style={{ width, alignSelf: "center", alignItems: "center" }}
+            >
+              <Header />
+            </View>
+            <ListHeaderComponent />
+          </>
+        }
         keyExtractor={(post: Post) => post.identifier}
         onScroll={scrollHandler}
         contentContainerStyle={contentCStyle}
-        onEndReachedThreshold={1}
+        onEndReachedThreshold={4}
         onEndReached={onEndReached}
       />
 
@@ -270,6 +250,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       )}
 
       <CreateShortPostModal
+        label="Create a Post"
         daoId={daoId}
         isVisible={isCreateModalVisible}
         onClose={() => setCreateModalVisible(false)}

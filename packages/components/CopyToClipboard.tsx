@@ -1,23 +1,24 @@
-import Clipboard from "@react-native-clipboard/clipboard";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
-import { TertiaryBox } from "./boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "./boxes/LegacyTertiaryBox";
 import copySVG from "../../assets/icons/copy.svg";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { neutral22 } from "../utils/style/colors";
 
+import Clipboard from "@/modules/Clipboard";
+
 export const useCopyToClipboard = () => {
   const { setToastSuccess } = useFeedbacks();
 
-  const copyToClipboard = (text: string, successText?: string) => {
+  const copyToClipboard = async (text: string, successText?: string) => {
     setToastSuccess({
       title: successText || "Copied",
       message: "",
     });
-    Clipboard.setString(text);
+    Clipboard.setStringAsync(text);
   };
 
   return { copyToClipboard };
@@ -32,7 +33,7 @@ export const CopyToClipboard: React.FC<{
 
   return (
     <TouchableOpacity onPress={() => copyToClipboard(text)}>
-      <TertiaryBox
+      <LegacyTertiaryBox
         height={40}
         width={fullWidth ? undefined : 332}
         fullWidth={fullWidth}
@@ -55,7 +56,7 @@ export const CopyToClipboard: React.FC<{
           source={copySVG}
           style={{ marginRight: 12, marginLeft: 8 }}
         />
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </TouchableOpacity>
   );
 };

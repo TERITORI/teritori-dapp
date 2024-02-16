@@ -47,7 +47,6 @@ export const TransactionSuccessModal: React.FC<{
       onClose={onClose}
       width={width}
       label="Success"
-      noBrokenCorners
     >
       <>{image ? <Image source={image} /> : null}</>
       {textComponent}

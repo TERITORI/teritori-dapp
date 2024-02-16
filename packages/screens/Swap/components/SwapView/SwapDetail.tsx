@@ -3,18 +3,15 @@ import { Pressable, StyleSheet, View } from "react-native";
 
 import chevronDownSVG from "../../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../../assets/icons/chevron-up.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
-import { Separator } from "../../../../components/separators/Separator";
-import { SpacerColumn } from "../../../../components/spacer";
-import {
-  neutral77,
-  neutralA3,
-  secondaryColor,
-} from "../../../../utils/style/colors";
-import { fontSemibold14 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn } from "@/components/spacer";
+import { neutral77, neutralA3, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const SwapDetail: React.FC<{
   slippage: number;
@@ -46,7 +43,7 @@ export const SwapDetail: React.FC<{
       onPress={() => setIsOpen((isOpen) => !isOpen && !!amountIn)}
       style={{ width: "100%" }}
     >
-      <TertiaryBox
+      <LegacyTertiaryBox
         fullWidth
         mainContainerStyle={{ padding: layout.spacing_x2 }}
       >
@@ -122,7 +119,7 @@ export const SwapDetail: React.FC<{
             </View>
           </>
         )}
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </Pressable>
   );
 };

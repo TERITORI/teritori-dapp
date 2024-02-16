@@ -4,15 +4,11 @@ import { GIF_MIME_TYPE } from "./mime";
 import { HASHTAG_REGEX, MENTION_REGEX, URL_REGEX } from "./regex";
 import { zodTryParseJSON } from "./sanitize";
 import { redDefault } from "./style/colors";
+import { PostExtra, PostResultExtra } from "./types/feed";
 import { LocalFileData } from "./types/files";
+import { TabDefinition } from "./types/tabs";
 import flagSVG from "../../assets/icons/notification.svg";
 import { Post, Reaction } from "../api/feed/v1/feed";
-import {
-  PostCategory,
-  PostExtra,
-  PostResultExtra,
-} from "../components/socialFeed/NewsFeed/NewsFeed.type";
-import { TabDefinition } from "../components/tabs/Tabs";
 import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { getUserId } from "../networks";
 
@@ -20,8 +16,11 @@ export const DEFAULT_NAME = "Anon";
 export const DEFAULT_USERNAME = "anonymous";
 export const SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT = 2500;
 export const NB_ROWS_SHOWN_IN_PREVIEW = 5;
-export const ARTICLE_COVER_IMAGE_HEIGHT = 300;
-export const ARTICLE_THUMBNAIL_IMAGE_HEIGHT = 252;
+export const ARTICLE_MAX_WIDTH = 1046;
+export const ARTICLE_COVER_IMAGE_MAX_HEIGHT = 460;
+export const ARTICLE_COVER_IMAGE_RATIO = 2.274;
+export const ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH = 364;
+export const ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT = 252;
 export const BASE_POST: Post = {
   identifier: "",
   category: 0,
@@ -34,6 +33,8 @@ export const BASE_POST: Post = {
   tipAmount: 0,
   reactions: [],
 };
+export const LIKE_EMOJI = "👍";
+export const DISLIKE_EMOJI = "👎";
 
 export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
   const hasIcon = reactions.find((r) => r.icon === icon);
@@ -52,20 +53,14 @@ export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
 };
 
 export const feedsTabItems: { [key: string]: TabDefinition } = {
-  all: {
+  "": {
     name: "Jungle News Feed",
-  },
-  sounds: {
-    name: "Sounds Feed",
   },
   music: {
     name: "Music Feed",
   },
   pics: {
     name: "Pics Feed",
-  },
-  videoNotes: {
-    name: "Video Notes Feed",
   },
   videos: {
     name: "Videos Feed",
@@ -82,28 +77,6 @@ export const feedsTabItems: { [key: string]: TabDefinition } = {
     iconSVG: flagSVG,
     iconColor: redDefault,
   },
-};
-
-// The Social Feed tabs doesn't fully correspond to the Posts categories, so we need to parse like this
-export const feedTabToCategories = (tab: keyof typeof feedsTabItems) => {
-  switch (tab) {
-    case "sounds":
-      return [PostCategory.Audio];
-    case "music":
-      return [PostCategory.MusicAudio];
-    case "pics":
-      return [PostCategory.Picture];
-    case "videoNotes":
-      return [PostCategory.VideoNote];
-    case "videos":
-      return [PostCategory.Video];
-    case "articles":
-      return [PostCategory.Article];
-    case "moderationDAO":
-      return [PostCategory.Flagged];
-    default:
-      return [];
-  }
 };
 
 export const mentionMatch = (text: string) =>
@@ -144,9 +117,6 @@ export const postResultToPost = (
   if ("isInLocal" in postResult) {
     return { ...post, isInLocal: postResult.isInLocal } as PostExtra;
   }
-
-  console.log("postResultToPost", postResult, post);
-
   return post;
 };
 

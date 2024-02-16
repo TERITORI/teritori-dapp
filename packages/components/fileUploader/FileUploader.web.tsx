@@ -18,21 +18,20 @@ import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { DeleteButton } from "../FilePreview/DeleteButton";
 import { SVG } from "../SVG";
-import { PrimaryBox } from "../boxes/PrimaryBox";
+import { LegacyPrimaryBox } from "../boxes/LegacyPrimaryBox";
 import { GradientText } from "../gradientText";
 import { Label } from "../inputs/TextInputCustom";
 
 export const FileUploader: FC<FileUploaderProps> = ({
   label,
   style,
+  fileImageStyle,
   onUpload,
   // multiple is not used at true for now, needs to refactor in parents
   multiple,
   mimeTypes,
   children,
   maxUpload,
-  isImageCover,
-  fileHeight = 256,
   setIsLoading,
 }) => {
   const { setToastError } = useFeedbacks();
@@ -41,8 +40,8 @@ export const FileUploader: FC<FileUploaderProps> = ({
 
   const handleFiles = async (files: File[]) => {
     const _files = multiple ? files : [files[0]];
-    let supportedFiles = [...files].filter(
-      (file) => mimeTypes?.includes(file.type),
+    let supportedFiles = [...files].filter((file) =>
+      mimeTypes?.includes(file.type),
     );
 
     if (maxUpload && supportedFiles.length) {
@@ -138,7 +137,6 @@ export const FileUploader: FC<FileUploaderProps> = ({
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              height: file ? fileHeight : 80,
               borderRadius: 12,
             }}
           >
@@ -155,16 +153,17 @@ export const FileUploader: FC<FileUploaderProps> = ({
                   src={file}
                   style={{
                     overflow: "hidden",
-                    height: fileHeight,
+                    height: 256,
                     backgroundSize: "cover",
-                    width: isImageCover ? "100%" : "auto",
-                    objectFit: isImageCover ? "cover" : "fill",
+                    width: "auto",
+                    objectFit: "fill",
+                    ...fileImageStyle,
                   }}
                   alt="Uploaded file"
                 />
               </>
             ) : (
-              <PrimaryBox
+              <LegacyPrimaryBox
                 noBrokenCorners
                 fullWidth
                 colors={[
@@ -174,7 +173,7 @@ export const FileUploader: FC<FileUploaderProps> = ({
                 ]}
                 style={{ flex: 1 }}
                 mainContainerStyle={{
-                  height: file ? fileHeight : 80,
+                  height: 80,
                   alignItems: "center",
                   padding: layout.spacing_x2_5,
                   borderRadius: 12,
@@ -218,7 +217,7 @@ export const FileUploader: FC<FileUploaderProps> = ({
                     accept={mimeTypes?.join(",")}
                   />
                 </View>
-              </PrimaryBox>
+              </LegacyPrimaryBox>
             )}
           </div>
         </TouchableOpacity>

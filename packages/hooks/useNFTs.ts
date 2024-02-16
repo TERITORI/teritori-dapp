@@ -1,15 +1,15 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo, useRef } from "react";
 
-import { NFTsRequest, NFT } from "../api/marketplace/v1/marketplace";
-import { parseNetworkObjectId } from "../networks";
-import { getMarketplaceClient } from "../utils/backend";
-import { addNftListMetadata } from "../utils/ethereum";
+import { NFTsRequest, NFT } from "@/api/marketplace/v1/marketplace";
+import { parseNetworkObjectId } from "@/networks";
+import { getMarketplaceClient } from "@/utils/backend";
+import { addNftListMetadata } from "@/utils/ethereum";
 
 export const useNFTs = (req: NFTsRequest) => {
   const baseOffset = useRef(req.offset);
 
-  const { data, fetchNextPage } = useInfiniteQuery(
+  const { data, fetchNextPage, isLoading } = useInfiniteQuery(
     ["nfts", { ...req, offset: baseOffset.current }],
     async ({ pageParam = 0 }) => {
       let nfts: NFT[] = [];
@@ -26,6 +26,7 @@ export const useNFTs = (req: NFTsRequest) => {
         ...req,
         offset: baseOffset.current + pageParam,
       };
+
       const stream = marketplaceClient.NFTs(pageReq);
       await stream.forEach((response) => {
         if (!response.nft) {
@@ -38,7 +39,10 @@ export const useNFTs = (req: NFTsRequest) => {
 
       return { nextCursor: pageParam + req.limit, nfts };
     },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+      enabled: !!req.collectionId,
+    },
   );
 
   const nfts = useMemo(() => {
@@ -52,5 +56,5 @@ export const useNFTs = (req: NFTsRequest) => {
     return flat;
   }, [data?.pages]);
 
-  return { nfts, fetchMore: fetchNextPage };
+  return { nfts, isLoading, fetchMore: fetchNextPage };
 };

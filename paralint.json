@@ -1,0 +1,9 @@
+{
+  "eslint": "eslint --cache --ext .js,.jsx,.ts,.tsx .",
+  "tsc": "tsc",
+  "depcheck": "depcheck",
+  "unused-exports": "yarn unused-exports",
+  "validate-networks": "yarn validate-networks",
+  "expo-doctor": "expo-doctor",
+  "unused-env": "tsx packages/scripts/unusedEnv.ts"
+}

@@ -1,4 +1,5 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
+import { Buffer } from "buffer";
 import React, { useCallback, useState } from "react";
 import { StyleProp, View, ViewStyle, useWindowDimensions } from "react-native";
 
@@ -125,7 +126,6 @@ const AddMembersModal: React.FC<{
       label="Add members to DAO"
       onClose={onClose}
       scrollable
-      noBrokenCorners
     >
       <View
         style={{
@@ -160,7 +160,7 @@ const AddMembersModal: React.FC<{
         disabled={!ids.length}
         text="Propose to add members"
         size="XS"
-        style={{ alignSelf: "center" }}
+        boxStyle={{ alignSelf: "center" }}
         loader
         fullWidth
         onPress={wrapWithFeedback(async () => {

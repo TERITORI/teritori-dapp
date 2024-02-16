@@ -13,16 +13,8 @@ import {
   GasPrice,
   defaultRegistryTypes,
   AminoTypes,
-  AminoConverters,
-  createAuthzAminoConverters,
-  createBankAminoConverters,
-  createDistributionAminoConverters,
-  createFeegrantAminoConverters,
-  createGovAminoConverters,
-  createIbcAminoConverters,
-  createStakingAminoConverters,
-  createVestingAminoConverters,
   StargateClient,
+  createDefaultAminoConverters,
 } from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 import { bech32 } from "bech32";
@@ -32,12 +24,17 @@ import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { networksFromCosmosRegistry } from "./cosmos-registry";
 import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
+import { NetworkFeature, NetworkFeatureObject } from "./features";
 import { gnoDevNetwork } from "./gno-dev";
 import { gnoTeritoriNetwork } from "./gno-teritori";
 import { gnoTest3Network } from "./gno-test3";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
+// import { solanaNetwork } from "./solana";
+import { polygonNetwork } from "./polygon";
+import { polygonMumbaiNetwork } from "./polygon-mumbai";
 import { teritoriNetwork } from "./teritori";
+import { teritoriLocalnetNetwork } from "./teritori-localnet";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import {
   CosmosNetworkInfo,
@@ -51,16 +48,15 @@ import {
   teritoriAminoConverters,
   teritoriProtoRegistry,
 } from "../api/teritori-chain";
-import { getKeplr } from "../utils/keplr";
+import { convertKeplrSigner, getKeplr } from "../utils/keplr";
 
 export * from "./types";
-
-export const WEI_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 const packageNetworks = [
   teritoriNetwork,
   cosmosNetwork,
   teritoriTestnetNetwork,
+  teritoriLocalnetNetwork,
   cosmosThetaNetwork,
   ethereumGoerliNetwork,
   ethereumNetwork,
@@ -69,6 +65,8 @@ const packageNetworks = [
   gnoTest3Network,
   gnoDevNetwork,
   gnoTeritoriNetwork,
+  polygonMumbaiNetwork,
+  polygonNetwork,
 ];
 
 export const defaultEnabledNetworks = [
@@ -76,6 +74,8 @@ export const defaultEnabledNetworks = [
   "teritori-testnet",
   "ethereum",
   "ethereum-goerli",
+  "polygon",
+  "polygon-mumbai",
   "cosmos-hub",
   "osmosis",
   "gno-teritori",
@@ -98,20 +98,6 @@ export const cosmosTypesRegistry = new Registry([
   ...wasmTypes,
   ...teritoriProtoRegistry,
 ]);
-
-// FIXME: upgrade stargate since it exposes this function in new versions
-function createDefaultAminoConverters(): AminoConverters {
-  return {
-    ...createAuthzAminoConverters(),
-    ...createBankAminoConverters(),
-    ...createDistributionAminoConverters(),
-    ...createGovAminoConverters(),
-    ...createStakingAminoConverters(""),
-    ...createIbcAminoConverters(),
-    ...createFeegrantAminoConverters(),
-    ...createVestingAminoConverters(),
-  };
-}
 
 const cosmosAminoTypes = new AminoTypes({
   ...createDefaultAminoConverters(),
@@ -173,7 +159,7 @@ export const getNetwork = (networkId: string | undefined) => {
   return allNetworks.find((n) => n.id === networkId);
 };
 
-export const mustGetNetwork = (networkId: string | undefined) => {
+const mustGetNetwork = (networkId: string | undefined) => {
   const network = getNetwork(networkId);
   if (!network) {
     throw new Error(`unknown network '${networkId}'`);
@@ -437,12 +423,11 @@ export const keplrChainInfoFromNetworkInfo = (
     },
     currencies: [stakeCurrency],
     feeCurrencies: [stakeCurrency],
-    gasPriceStep: network.gasPriceStep,
     features: network.cosmosFeatures,
   };
 };
 
-const cosmosNetworkGasPrice = (
+export const cosmosNetworkGasPrice = (
   network: CosmosNetworkInfo,
   kind: "low" | "average" | "high",
 ) => {
@@ -467,7 +452,9 @@ export const getKeplrSigner = async (networkId: string) => {
 
   await keplr.enable(network.chainId);
 
-  return keplr.getOfflineSignerAuto(network.chainId);
+  const keplrSigner = await keplr.getOfflineSignerAuto(network.chainId);
+
+  return convertKeplrSigner(keplrSigner);
 };
 
 const getKeplrOnlyAminoSigner = async (networkId: string) => {
@@ -504,6 +491,23 @@ export const getKeplrSigningStargateClient = async (
       aminoTypes: cosmosAminoTypes,
     },
   );
+};
+
+export const getNetworkFeature = <
+  F extends NetworkFeature,
+  FO extends NetworkFeatureObject,
+  R = FO extends { type: F } ? FO : never,
+>(
+  networkId: string,
+  feature: F,
+) => {
+  const network = getNetwork(networkId);
+  if (!network?.featureObjects) {
+    return undefined;
+  }
+  return network.featureObjects.find((f) => f.type === feature) as
+    | R
+    | undefined;
 };
 
 export const getKeplrOnlyAminoStargateClient = async (

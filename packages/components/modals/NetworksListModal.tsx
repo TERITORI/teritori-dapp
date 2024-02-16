@@ -10,7 +10,6 @@ import { useSelector } from "react-redux";
 
 import ModalBase from "./ModalBase";
 import { allNetworks, getNetwork } from "../../networks";
-import { joinElements } from "../../screens/Multisig/components/MultisigRightSection";
 import {
   selectAreTestnetsEnabled,
   selectNetworkEnabled,
@@ -29,9 +28,11 @@ import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { EmptyList } from "../EmptyList";
 import { NetworkIcon } from "../NetworkIcon";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../spacer";
+
+import { joinElements } from "@/utils/react";
 
 export const NetworksListModal: FC<{
   isVisible: boolean;
@@ -43,7 +44,7 @@ export const NetworksListModal: FC<{
       label="Manage Networks"
       visible={isVisible}
       onClose={onClose}
-      contentStyle={{ minWidth: 360, paddingBottom: modalMarginPadding }}
+      boxStyle={{ minWidth: 360, paddingBottom: modalMarginPadding }}
     >
       <NetworksSettings />
     </ModalBase>
@@ -97,7 +98,10 @@ const NetworkSettingsItem: FC<{ networkId: string }> = memo(({ networkId }) => {
   const n = getNetwork(networkId);
   if (!n) return null;
   return (
-    <TertiaryBox fullWidth mainContainerStyle={{ padding: layout.spacing_x1 }}>
+    <LegacyTertiaryBox
+      fullWidth
+      mainContainerStyle={{ padding: layout.spacing_x1 }}
+    >
       <TouchableOpacity
         onPress={() => {
           dispatch(toggleNetwork({ networkId }));
@@ -123,13 +127,13 @@ const NetworkSettingsItem: FC<{ networkId: string }> = memo(({ networkId }) => {
         </View>
         <SpacerRow size={1} />
         <Switch
-          // @ts-expect-error
+          // @ts-expect-error: description todo
           activeThumbColor={primaryColor}
           thumbColor={state ? primaryColor : neutral55}
           trackColor={{ true: secondaryColor, false: neutralA3 }}
           value={state}
         />
       </TouchableOpacity>
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 });

@@ -1,8 +1,8 @@
 import {
   MultisigServiceClientImpl,
   GrpcWebImpl,
-} from "../../api/multisig/v1/multisig";
-import { getNetwork } from "../../networks";
+} from "@/api/multisig/v1/multisig";
+import { getNetwork } from "@/networks";
 
 // we use a hook to prevent huge refactor in the future if it starts depending on state
 

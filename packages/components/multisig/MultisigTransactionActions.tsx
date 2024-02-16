@@ -176,13 +176,7 @@ export const MultisigTransactionActions: React.FC<
 
   return (
     <AnimationFadeIn style={containerStyles}>
-      <SecondaryButton
-        text="Approve"
-        size="M"
-        squaresBackgroundColor={btnSquaresBackgroundColor}
-        loader
-        onPress={onApprove}
-      />
+      <SecondaryButton text="Approve" size="M" loader onPress={onApprove} />
     </AnimationFadeIn>
   );
 };

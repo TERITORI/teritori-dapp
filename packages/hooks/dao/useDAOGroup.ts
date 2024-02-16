@@ -1,13 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { useDAOVotingModule } from "./useDAOVotingModule";
-import { DaoVotingCw4QueryClient } from "../../contracts-clients/dao-voting-cw4/DaoVotingCw4.client";
+
+import { DaoVotingCw4QueryClient } from "@/contracts-clients/dao-voting-cw4/DaoVotingCw4.client";
 import {
   parseUserId,
   mustGetNonSigningCosmWasmClient,
   NetworkKind,
   getNetwork,
-} from "../../networks";
+} from "@/networks";
 
 export const useDAOGroup = (daoId: string | undefined, enabled?: boolean) => {
   const { daoVotingModule } = useDAOVotingModule(daoId);

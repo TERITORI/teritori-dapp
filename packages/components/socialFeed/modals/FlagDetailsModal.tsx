@@ -112,7 +112,7 @@ export const FlagDetailsModal: React.FC<FlagDetailsModalProps> = ({
           text="OKEY, bye."
           onPress={checkDetails}
           width={120}
-          style={{ alignSelf: "center" }}
+          boxStyle={{ alignSelf: "center" }}
         />
       </View>
       <SpacerColumn size={2.5} />

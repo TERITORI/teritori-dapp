@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "InstantiateMsg",
+  "type": "object",
+  "required": [
+    "admin_addr",
+    "mint_royalties"
+  ],
+  "properties": {
+    "admin_addr": {
+      "type": "string"
+    },
+    "mint_royalties": {
+      "type": "integer",
+      "format": "uint16",
+      "minimum": 0.0
+    }
+  }
+}

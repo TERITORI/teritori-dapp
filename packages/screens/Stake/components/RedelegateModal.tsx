@@ -6,40 +6,37 @@ import { Pressable, StyleSheet, View } from "react-native";
 
 import { ValidatorsTable } from "./ValidatorsList";
 import checkSVG from "../../../../assets/icons/check.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useCosmosValidatorBondedAmount } from "../../../hooks/useCosmosValidatorBondedAmount";
-import { useErrorHandler } from "../../../hooks/useErrorHandler";
-import { useRunOrProposeTransaction } from "../../../hooks/useRunOrProposeTransaction";
-import { useValidators } from "../../../hooks/useValidators";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useCosmosValidatorBondedAmount } from "@/hooks/useCosmosValidatorBondedAmount";
+import { useErrorHandler } from "@/hooks/useErrorHandler";
+import { useRunOrProposeTransaction } from "@/hooks/useRunOrProposeTransaction";
+import { useValidators } from "@/hooks/useValidators";
 import {
-  UserKind,
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
   parseUserId,
-} from "../../../networks";
-import { prettyPrice } from "../../../utils/coins";
-import {
-  neutral22,
-  neutral77,
-  primaryColor,
-} from "../../../utils/style/colors";
+  UserKind,
+} from "@/networks";
+import { prettyPrice } from "@/utils/coins";
+import { neutral22, neutral77, primaryColor } from "@/utils/style/colors";
 import {
   fontSemibold12,
   fontSemibold13,
   fontSemibold14,
   fontSemibold16,
   fontSemibold20,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { StakeFormValuesType, ValidatorInfo } from "../types";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { StakeFormValuesType, ValidatorInfo } from "@/utils/types/staking";
 
 interface RedelegateModalProps {
   onClose?: () => void;
@@ -86,13 +83,13 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       return [];
     }
     let currentValidators = allValidators;
-    if (bondedTokens.atomics && bondedTokens.atomics !== "0") {
+    if (bondedTokens && bondedTokens.amount.atomics !== "0") {
       currentValidators = currentValidators.filter(
         (d) => d.moniker !== validator.moniker,
       );
     }
     return currentValidators;
-  }, [allValidators, bondedTokens.atomics, validator?.moniker]);
+  }, [allValidators, bondedTokens, validator?.moniker]);
 
   const onSubmit = useCallback(
     async (formData: StakeFormValuesType) => {
@@ -281,11 +278,11 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           placeHolder="0"
           currency={keplrCurrencyFromNativeCurrencyInfo(stakingCurrency)}
           defaultValue=""
-          rules={{ required: true, max: bondedTokens.toString() }}
+          rules={{ required: true, max: bondedTokens?.amount.toString() }}
         >
           <Pressable
             onPress={() =>
-              setValue("amount", bondedTokens.toString(), {
+              setValue("amount", bondedTokens?.amount.toString() || "0", {
                 shouldValidate: true,
               })
             }
@@ -299,8 +296,8 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           Tokens bonded to source validator:{" "}
           {prettyPrice(
             networkId,
-            bondedTokens.atomics,
-            stakingCurrency?.denom || "",
+            bondedTokens?.amount.atomics,
+            bondedTokens?.currency.denom,
           )}
         </BrandText>
         <SpacerColumn size={2.5} />
@@ -313,7 +310,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
-    width: 700,
+    width: 900,
   },
   footerRow: {
     flexDirection: "row",

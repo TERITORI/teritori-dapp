@@ -1,22 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { Linking, Pressable, View, useWindowDimensions } from "react-native";
+import { Linking, Pressable, useWindowDimensions, View } from "react-native";
 
 import statsLogo from "../../../assets/logos/stats.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { GradientText } from "../../components/gradientText";
-import { SpacerColumn } from "../../components/spacer";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { getNonSigningStargateClient } from "../../networks";
-import { teritoriNetwork } from "../../networks/teritori";
-import { ScreenFC } from "../../utils/navigation";
-import { errorColor, secondaryColor } from "../../utils/style/colors";
-import { fontBold16, fontSemibold28 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
 
-const targetBlock = 6307200;
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { GradientText } from "@/components/gradientText";
+import { SpacerColumn } from "@/components/spacer";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { getNonSigningStargateClient } from "@/networks";
+import { teritoriNetwork } from "@/networks/teritori";
+import { ScreenFC } from "@/utils/navigation";
+import { errorColor, secondaryColor } from "@/utils/style/colors";
+import { fontBold16, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+
+const targetBlock = 12614400;
 
 export const MetricsScreen: ScreenFC<"Metrics"> = () => {
   const { data: currentHeight } = useCosmosHeight(teritoriNetwork.id);
@@ -103,7 +104,7 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
               ]}
               gradientType="blueExtended"
             >
-              Nov 30th, 2023, 15:51:00 UTC
+              Jan 26th, 2025, 17:30:00 UTC
             </GradientText>
           </BrandText>
         </View>

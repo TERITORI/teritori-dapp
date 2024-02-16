@@ -1,12 +1,13 @@
-import Clipboard from "@react-native-clipboard/clipboard";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 
 import { SVG } from "./SVG";
-import { TertiaryBox } from "./boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "./boxes/LegacyTertiaryBox";
 import copySVG from "../../assets/icons/copy.svg";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { neutral22 } from "../utils/style/colors";
+
+import Clipboard from "@/modules/Clipboard";
 
 export const CopyToClipboardIcon: React.FC<{
   text: string;
@@ -22,12 +23,12 @@ export const CopyToClipboardIcon: React.FC<{
       title: "Copied",
       message: "",
     });
-    Clipboard.setString(text);
+    Clipboard.setStringAsync(text);
   };
 
   return (
     <TouchableOpacity onPress={copyToClipboard}>
-      <TertiaryBox
+      <LegacyTertiaryBox
         height={size}
         width={size}
         mainContainerStyle={{
@@ -37,7 +38,7 @@ export const CopyToClipboardIcon: React.FC<{
         squaresBackgroundColor={squaresBackgroundColor}
       >
         <SVG width={iconSize} height={iconSize} source={copySVG} />
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </TouchableOpacity>
   );
 };

@@ -2,18 +2,21 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import { TNSModalCommonProps } from "./TNSHomeScreen";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import GradientModalBase from "../../components/modals/GradientModalBase";
-import { TNSSendFundsModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
-import { FindAName } from "../../components/teritoriNameService/FindAName";
-import { useTNS } from "../../context/TNSProvider";
-import { useNSMintAvailability } from "../../hooks/useNSMintAvailability";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getCosmosNetwork } from "../../networks";
-import { neutral17 } from "../../utils/style/colors";
+
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
+import { TNSSendFundsModal } from "@/components/modals/teritoriNameService/TNSSendFundsModal";
+import { FindAName } from "@/components/teritoriNameService/FindAName";
+import { useTNS } from "@/context/TNSProvider";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useNSMintAvailability } from "@/hooks/useNSMintAvailability";
+import { useNSNameOwner } from "@/hooks/useNSNameOwner";
+import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getCosmosNetwork, getUserId } from "@/networks";
+import { neutral17 } from "@/utils/style/colors";
 
 interface TNSExploreScreenProps extends TNSModalCommonProps {}
 
@@ -25,6 +28,11 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
   const selectedWallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
   const network = getCosmosNetwork(networkId);
+  const navigation = useAppNavigation();
+  const { nameOwner } = useNSNameOwner(
+    networkId,
+    name + network?.nameServiceTLD || "",
+  );
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
   const tokenId = (name + network?.nameServiceTLD || "").toLowerCase();
   const { nameAvailable, nameError, loading } = useNSMintAvailability(
@@ -34,7 +42,7 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
 
   return (
     <GradientModalBase
-      label="Find a name"
+      label="Find a Name"
       hideMainSeparator
       onClose={() => onClose()}
       modalStatus={name && nameAvailable ? "success" : "danger"}
@@ -66,17 +74,18 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
             <PrimaryButton
               size="XL"
               width={154}
-              text="View"
+              text="View Owner"
               onPress={() => {
-                onClose("TNSConsultName");
+                navigation.navigate("UserPublicProfile", {
+                  id: getUserId(networkId, nameOwner),
+                });
               }}
-              squaresBackgroundColor={neutral17}
             />
             <PrimaryButtonOutline
               size="XL"
               width={154}
               disabled={tokens.includes(tokenId) || !selectedWallet?.connected}
-              text="Send funds"
+              text="Send Funds"
               onPress={() => setSendFundsModalVisible(true)}
               squaresBackgroundColor={neutral17}
             />

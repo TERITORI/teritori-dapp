@@ -7,7 +7,6 @@ import { MultisigTransactionModal } from "./MultisigTransactionModal";
 import { ParsedTransaction } from "../../hooks/multisig/useMultisigTransactions";
 import { getCosmosNetworkByChainId, getUserId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
-import { useAppNavigation } from "../../utils/navigation";
 import {
   neutral17,
   neutral33,
@@ -17,13 +16,15 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { getTxInfo } from "../../utils/transactions/getTxInfo";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { Separator } from "../separators/Separator";
 import { SpacerRow } from "../spacer";
+import { getTxInfo } from "../tx/getTxInfo";
 import { Username } from "../user/Username";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export interface MultisigTransactionItemProps extends ParsedTransaction {
   btnSquaresBackgroundColor?: string;

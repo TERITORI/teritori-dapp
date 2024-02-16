@@ -1,8 +1,8 @@
 import React from "react";
 
-import { BrandText } from "../../../components/BrandText";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { neutralA3 } from "../../../utils/style/colors";
+import { BrandText } from "@/components/BrandText";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { neutralA3 } from "@/utils/style/colors";
 import {
   fontMedium10,
   fontMedium14,
@@ -10,8 +10,8 @@ import {
   fontSemibold15,
   fontSemibold20,
   fontSemibold24,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface InfoBoxProps {
   title: string;
@@ -47,7 +47,7 @@ export const InfoBox: React.FC<InfoBoxProps> = ({
   }
 
   return (
-    <TertiaryBox
+    <LegacyTertiaryBox
       width={width}
       height={height}
       style={{
@@ -62,6 +62,6 @@ export const InfoBox: React.FC<InfoBoxProps> = ({
     >
       <BrandText style={[titleFont, { color: neutralA3 }]}>{title}</BrandText>
       <BrandText style={[contentFont, { marginTop: 5 }]}>{content}</BrandText>
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 };

@@ -1,12 +1,12 @@
 import {
+  FlexStyle,
   ImageBackground,
+  StyleProp,
+  Text,
+  TextStyle,
   TouchableOpacity,
   View,
-  Text,
-  StyleProp,
   ViewStyle,
-  FlexStyle,
-  TextStyle,
 } from "react-native";
 
 import buttonBackgroundBlack from "../../assets/button/RectangleButtonBlack.png";

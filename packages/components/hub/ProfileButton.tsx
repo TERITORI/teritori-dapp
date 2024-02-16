@@ -35,11 +35,23 @@ import { TextInputCustom } from "../inputs/TextInputCustom";
 import ModalBase from "../modals/ModalBase";
 import { SpacerColumn } from "../spacer";
 
+import { useTNS } from "@/context/TNSProvider";
+import { ButtonsSize } from "@/utils/style/buttons";
+
 export const ProfileButton: React.FC<{
+  buttonSize?: ButtonsSize;
   style?: StyleProp<ViewStyle>;
   isEdit?: boolean;
-}> = ({ style, isEdit }) => {
+  setIsEditProfileModal?: (val: boolean) => void;
+}> = ({
+  style,
+  isEdit,
+  buttonSize = "XL",
+  setIsEditProfileModal = (val: boolean) => {},
+}) => {
   const selectedWallet = useSelectedWallet();
+  const { setName } = useTNS();
+
   const network = getNetwork(selectedWallet?.networkId);
   const { metadata } = useNSUserInfo(selectedWallet?.userId);
   if (!network?.features.includes(NetworkFeature.NameService)) {
@@ -47,37 +59,41 @@ export const ProfileButton: React.FC<{
   }
 
   if (selectedWallet && metadata?.tokenId)
-    return (
-      <OmniLink
-        style={style}
-        disabled={network?.kind !== NetworkKind.Cosmos}
-        to={
-          !isEdit
-            ? {
-                screen: "UserPublicProfile",
-                params: {
-                  id: selectedWallet.userId,
-                },
-              }
-            : metadata.tokenId
-              ? {
-                  screen: "TNSHome",
-                  params: {
-                    modal: "update-name",
-                    name: metadata.tokenId.replace(".tori", ""),
-                  },
-                }
-              : { screen: "ComingSoon" }
-        }
-      >
+    if (isEdit) {
+      return (
         <SecondaryButtonOutline
-          size="XL"
+          size={buttonSize}
           disabled={network?.kind !== NetworkKind.Cosmos}
-          text={isEdit ? "Edit profile" : "My profile"}
+          text="Edit profile"
           backgroundColor={neutral00}
+          onPress={() => {
+            const tokenName = metadata?.tokenId?.replace(".tori", "");
+            setIsEditProfileModal(true);
+            setName(tokenName || "");
+          }}
         />
-      </OmniLink>
-    );
+      );
+    } else {
+      return (
+        <OmniLink
+          style={style}
+          disabled={network?.kind !== NetworkKind.Cosmos}
+          to={{
+            screen: "UserPublicProfile",
+            params: {
+              id: selectedWallet.userId,
+            },
+          }}
+        >
+          <SecondaryButtonOutline
+            size={buttonSize}
+            disabled={network?.kind !== NetworkKind.Cosmos}
+            text="My profile"
+            backgroundColor={neutral00}
+          />
+        </OmniLink>
+      );
+    }
 
   return <RegisterButton networkId={network?.id} style={style} />;
 };
@@ -156,9 +172,8 @@ const RegisterGnoNameModal: React.FC<{
     <ModalBase
       label="Register Gno name"
       visible={visible}
-      noBrokenCorners
       onClose={onClose}
-      contentStyle={{ minWidth: 400 }}
+      boxStyle={{ minWidth: 400 }}
     >
       <BrandText style={fontSemibold14}>
         <BrandText style={[fontSemibold14, { color: neutral77 }]}>
@@ -198,7 +213,7 @@ const RegisterGnoNameModal: React.FC<{
         disabled={buttonDisabled}
         fullWidth
         loader
-        style={{ marginBottom: modalMarginPadding }}
+        boxStyle={{ marginBottom: modalMarginPadding }}
         onPress={async () => {
           await wrapWithFeedback(async () => {
             if (!selectedWallet) throw new Error("No wallet selected");

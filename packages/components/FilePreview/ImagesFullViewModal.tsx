@@ -1,16 +1,11 @@
 import React, { useState } from "react";
-import {
-  Image,
-  useWindowDimensions,
-  View,
-  TouchableOpacity,
-} from "react-native";
+import { useWindowDimensions, View, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import chevronRight from "../../../assets/icons/chevron-right.svg";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral22, neutral33 } from "../../utils/style/colors";
+import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import ModalBase from "../modals/ModalBase";
 
@@ -77,8 +72,10 @@ export const ImagesFullViewModal: React.FC<ImageFullViewModalProps> = ({
             onPress={() => setLocalActiveIndex((prev) => prev - 1)}
           />
         )}
-        <Image
-          source={{ uri: ipfsURLToHTTPURL(files[localActiveIndex]) }}
+        <OptimizedImage
+          sourceURI={files[localActiveIndex]}
+          width={1600}
+          height={800}
           resizeMode="contain"
           style={{
             height: height - 100,

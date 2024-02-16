@@ -8,20 +8,44 @@ import (
 	"gorm.io/gorm"
 )
 
+type IndexerMode string
+
+const (
+	IndexerModeData IndexerMode = "data"
+	IndexerModeP2E  IndexerMode = "p2e"
+)
+
 type App struct {
 	ID            uint
 	Height        int64
 	ChunkedHeight int64
 	TxHash        string
+	NetworkID     string
+	IndexerMode   IndexerMode
+}
+
+// Cursor used by Substreams indexer
+type Cursor struct {
+	ID          string `gorm:"primaryKey;notNull"`
+	Cursor      string
+	BlockNum    uint64
+	BlockId     string
+	Network     string      `gorm:"primaryKey;notNull"`
+	IndexerMode IndexerMode `gorm:"primaryKey;notNull"`
 }
 
 type User struct {
 	ID networks.UserID
+
+	NetworkID string `gorm:"index"`
 }
 
 var allModels = []interface{}{
 	// app
 	&App{},
+
+	// cursor
+	&Cursor{},
 
 	// users
 	&User{},
@@ -41,6 +65,7 @@ var allModels = []interface{}{
 	&Trade{},
 	&UpdateNFTPrice{},
 	&Mint{},
+	&RequestMint{},
 	&Burn{},
 	&SendNFT{},
 	&TransferNFT{},
@@ -52,6 +77,8 @@ var allModels = []interface{}{
 	// p2e
 	&P2eSquadStaking{},
 	&P2eLeaderboard{},
+	&P2eDailyReward{},
+	&P2eTotalClaimed{},
 
 	// feed
 	&Post{},

@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { TouchableOpacity, View, Image, Linking } from "react-native";
+import { Image, Linking, TouchableOpacity, View } from "react-native";
 
 const url = "https://www.aaa-metahuahua.com/";
 

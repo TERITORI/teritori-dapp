@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import {
@@ -10,16 +10,15 @@ import {
   SEARCH_RESULTS_MARGIN,
   SearchBarResults,
 } from "./SearchBarResults";
-import { useDropdowns } from "../../context/DropdownsProvider";
 import { useSearchBar } from "../../context/SearchBarProvider";
+import { useDropdowns } from "../../hooks/useDropdowns";
 import { COLLECTION_VIEW_SM_WIDTH } from "../CollectionView";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
   style,
 }) => {
-  const { openDropdown, isDropdownOpen } = useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
   const { hasCollections, hasNames } = useSearchBar();
   const hasSomething = hasNames || hasCollections;
 
@@ -27,10 +26,11 @@ export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
     <View
       style={[{ justifyContent: "center", alignItems: "center" }, style]}
       ref={dropdownRef}
+      collapsable={false}
     >
-      <SearchBarInputGlobal onInteraction={() => openDropdown(dropdownRef)} />
-      {isDropdownOpen(dropdownRef) && hasSomething && (
-        <TertiaryBox
+      <SearchBarInputGlobal onInteraction={() => setDropdownState(true)} />
+      {isDropdownOpen && hasSomething && (
+        <LegacyTertiaryBox
           noBrokenCorners
           style={{
             position: "absolute",
@@ -47,7 +47,7 @@ export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
           }}
         >
           <SearchBarResults />
-        </TertiaryBox>
+        </LegacyTertiaryBox>
       )}
     </View>
   );

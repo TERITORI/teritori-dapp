@@ -1,29 +1,30 @@
 import { useQuery } from "@tanstack/react-query";
+import { z } from "zod";
 
 import { useBreedingConfig } from "./useBreedingConfig";
-import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { ConfigResponse as BreedingConfigResponse } from "../contracts-clients/teritori-breeding/TeritoriBreeding.types";
-import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
-import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
-import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
-import { TeritoriMinter__factory } from "../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
-import { TeritoriNft__factory } from "../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
+
+import { TeritoriBreedingQueryClient } from "@/contracts-clients/teritori-breeding/TeritoriBreeding.client";
+import { TeritoriBunkerMinterQueryClient } from "@/contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
+import { TeritoriNameServiceQueryClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { TeritoriNftQueryClient } from "@/contracts-clients/teritori-nft/TeritoriNft.client";
+import { TeritoriNftVaultQueryClient } from "@/contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { TeritoriMinter__factory } from "@/evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { TeritoriNft__factory } from "@/evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { NFTVault__factory } from "@/evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import {
   CosmosNetworkInfo,
   EthereumNetworkInfo,
   getCollectionId,
   mustGetNonSigningCosmWasmClient,
   parseNftId,
-  WEI_TOKEN_ADDRESS,
   NetworkKind,
   getUserId,
-} from "../networks";
-import { getEthereumProvider } from "../utils/ethereum";
-import { ipfsURLToHTTPURL } from "../utils/ipfs";
-import { nameServiceDefaultImage } from "../utils/tns";
-import { NFTAttribute, NFTInfo } from "../utils/types/nft";
+} from "@/networks";
+import { getEthereumProvider } from "@/utils/ethereum";
+import { web3ToWeb2URI } from "@/utils/ipfs";
+import { nameServiceDefaultImage } from "@/utils/tns";
+import { NFTAttribute, NFTInfo } from "@/utils/types/nft";
 
 export const useNFTInfo = (nftId: string, userId?: string | undefined) => {
   const [network, minterContractAddress, tokenId] = parseNftId(nftId);
@@ -184,35 +185,34 @@ const getEthereumStandardNFTInfo = async (
   );
 
   const nftAddress = await minterClient.callStatic.nft();
+
   const nftClient = TeritoriNft__factory.connect(nftAddress, provider);
   const collectionName = await nftClient.callStatic.name();
   const contractURI = await nftClient.callStatic.contractURI();
   const collectionMetadata = await fetch(contractURI).then((data) =>
     data.json(),
   );
-  const tokenURI = await nftClient.tokenURI(tokenId);
-  const metadataURL = ipfsURLToHTTPURL(tokenURI);
+  // TokenURI must be fetched from deployed NFT
+  const deployedNftClient = TeritoriNft__factory.connect(nftAddress, provider);
+  const tokenURI = await deployedNftClient.tokenURI(tokenId);
+  const metadataURL = web3ToWeb2URI(tokenURI);
   const metadata = await fetch(metadataURL).then((data) => data.json());
   const attributes: NFTAttribute[] = [];
   for (const attr of metadata.attributes) {
     attributes.push({ trait_type: attr.trait_type, value: attr.value });
   }
-
   const vaultClient = NFTVault__factory.connect(
     network.vaultContractAddress,
     provider,
   );
-
   const feeNumerator = await vaultClient.callStatic.feeNumerator();
   const feeDenominator = await vaultClient.callStatic.feeDenominator();
   const royalties = feeNumerator.toNumber() / feeDenominator.toNumber();
-
   const saledNft = await vaultClient.callStatic.nftSales(nftAddress, tokenId);
   let isListed = false;
   let vaultInfo: any = {}; // TODO: Get vault info
 
-  let ownerAddress = await nftClient.callStatic.ownerOf(tokenId);
-
+  let ownerAddress = await deployedNftClient.callStatic.ownerOf(tokenId);
   if (+saledNft.owner !== 0) {
     isListed = true;
     vaultInfo = {
@@ -241,7 +241,7 @@ const getEthereumStandardNFTInfo = async (
     priceDenom: vaultInfo?.denom || "",
     collectionName,
     collectionImageURL: collectionMetadata.image,
-    mintDenom: WEI_TOKEN_ADDRESS,
+    mintDenom: network.currencies[0].denom,
     royalty: royalties,
     breedingsAvailable: 0,
     networkId: network.id,
@@ -251,6 +251,12 @@ const getEthereumStandardNFTInfo = async (
   return nfo;
 };
 
+const zodMinimalCollectionMetadata = z.object({
+  image: z.string(),
+});
+
+type MinimalColectionMetadata = z.infer<typeof zodMinimalCollectionMetadata>;
+
 const getTeritoriBunkerNFTInfo = async (
   network: CosmosNetworkInfo,
   minterContractAddress: string,
@@ -258,7 +264,7 @@ const getTeritoriBunkerNFTInfo = async (
   userId: string | undefined,
   breedingConfig: BreedingConfigResponse | null | undefined,
 ) => {
-  if (!network.vaultContractAddress || !network.riotContractAddressGen1) {
+  if (!network.vaultContractAddress) {
     throw new Error("network not supported");
   }
 
@@ -274,7 +280,10 @@ const getTeritoriBunkerNFTInfo = async (
 
   let breedingsAvailable;
 
-  if (breedingConfig?.parent_contract_addr === minterConfig.nft_addr) {
+  if (
+    network.riotContractAddressGen1 &&
+    breedingConfig?.parent_contract_addr === minterConfig.nft_addr
+  ) {
     const breedingClient = new TeritoriBreedingQueryClient(
       cosmwasmClient,
       network.riotContractAddressGen1,
@@ -290,9 +299,20 @@ const getTeritoriBunkerNFTInfo = async (
     );
   }
 
-  const collectionMetadata = await (
-    await fetch(ipfsURLToHTTPURL(minterConfig.nft_base_uri))
-  ).json();
+  const collectionMetadataURI = web3ToWeb2URI(minterConfig.nft_base_uri);
+  let collectionMetadata: MinimalColectionMetadata;
+  try {
+    collectionMetadata = zodMinimalCollectionMetadata.parse(
+      await (await fetch(collectionMetadataURI)).json(),
+    );
+  } catch (e) {
+    console.warn(
+      "failed to get minimal collection metadata:",
+      collectionMetadataURI,
+      e,
+    );
+    collectionMetadata = { image: "" };
+  }
 
   // ======== Getting NFT client
   const nftClient = new TeritoriNftQueryClient(
@@ -310,7 +330,7 @@ const getTeritoriBunkerNFTInfo = async (
   let royalties = 0;
   if (nftInfo.token_uri) {
     const nftMetadata = await (
-      await fetch(ipfsURLToHTTPURL(nftInfo.token_uri))
+      await fetch(web3ToWeb2URI(nftInfo.token_uri))
     ).json();
     name = nftMetadata.name;
     image = nftMetadata.image;
@@ -401,7 +421,7 @@ const getTeritoriRiotBreedingNFTInfo = async (
   const breedingConfig = await breedingClient.config();
 
   const collectionMetadata = await (
-    await fetch(ipfsURLToHTTPURL(breedingConfig.child_base_uri))
+    await fetch(web3ToWeb2URI(breedingConfig.child_base_uri))
   ).json();
 
   // ======== Getting NFT client
@@ -420,7 +440,7 @@ const getTeritoriRiotBreedingNFTInfo = async (
   let royalties = 0;
   if (nftInfo.token_uri) {
     const nftMetadata = await (
-      await fetch(ipfsURLToHTTPURL(nftInfo.token_uri))
+      await fetch(web3ToWeb2URI(nftInfo.token_uri))
     ).json();
     name = nftMetadata.name;
     image = nftMetadata.image;

@@ -1,7 +1,12 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore, Middleware } from "@reduxjs/toolkit";
+import { Platform } from "react-native";
 import { useDispatch } from "react-redux";
-import { persistStore, persistReducer, createMigrate } from "redux-persist";
+import {
+  persistStore,
+  persistReducer,
+  createMigrate,
+  REHYDRATE,
+} from "redux-persist";
 
 import { dAppsReducer, dAppsReducerPersisted } from "./slices/dapps-store";
 import {
@@ -20,9 +25,14 @@ import {
   settingsReducer,
 } from "./slices/settings";
 import { squadPresetsReducer } from "./slices/squadPresets";
-import { walletsReducer } from "./slices/wallets";
+import {
+  addressBookReducer,
+  tokensReducer,
+  walletsReducer,
+} from "./slices/wallets";
+import { storage } from "./storage";
 import { defaultEnabledNetworks } from "../networks";
-import { isElectron } from "../utils/isElectron";
+import { bootWeshModule } from "../weshnet/services";
 
 const migrations = {
   0: (state: any) => {
@@ -50,26 +60,47 @@ const migrations = {
       },
     };
   },
+  2: (state: any) => {
+    return {
+      ...state,
+      marketplaceFilterUI: {
+        ...state.marketplaceFilterUI,
+        timePeriod: {
+          label: "Last 1 day",
+          shortLabel: "1d",
+          value: 1440,
+        },
+      },
+    };
+  },
+  3: (state: any) => {
+    return {
+      ...state,
+      settings: {
+        ...state.settings,
+        appMode: Platform.OS === "web" ? "normal" : "mini",
+      },
+    };
+  },
+  4: (state: any) => {
+    return {
+      ...state,
+      settings: {
+        ...state.settings,
+        developerMode: false,
+      },
+    };
+  },
 };
-
-let storage = AsyncStorage;
-
-if (isElectron()) {
-  const createElectronStorage = require("redux-persist-electron-storage");
-  storage = createElectronStorage({
-    electronStoreOpts: {
-      projectName: "Teritori",
-    },
-  });
-}
 
 const persistConfig = {
   key: "root",
   storage,
-  version: 0,
+  version: 4,
   migrate: createMigrate(migrations, { debug: false }),
   whitelist: [
     "wallets",
+    "addressBook",
     "settings",
     "dAppsStorePersisted",
     "squadPresets",
@@ -83,6 +114,8 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   wallets: walletsReducer,
+  addressBook: addressBookReducer,
+  tokens: tokensReducer,
   settings: settingsReducer,
   squadPresets: squadPresetsReducer,
   dAppsStorePersisted: dAppsReducerPersisted,
@@ -97,10 +130,19 @@ const rootReducer = combineReducers({
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+const afterRehydrateMiddleware: Middleware = () => (next) => (action) => {
+  if (action.type === REHYDRATE) {
+    bootWeshModule();
+  }
+  return next(action);
+};
+
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ serializableCheck: false }),
+  middleware: (getDefaultMiddleware) => [
+    ...getDefaultMiddleware({ serializableCheck: false }),
+    afterRehydrateMiddleware,
+  ],
 });
 
 export const persistor = persistStore(store);

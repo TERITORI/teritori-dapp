@@ -2,12 +2,13 @@ import React, { memo } from "react";
 import { View } from "react-native";
 
 import { getNetwork } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { getTxInfo } from "../../utils/transactions/getTxInfo";
 import { BrandText } from "../BrandText";
 import { SpacerColumn } from "../spacer";
+import { getTxInfo } from "../tx/getTxInfo";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export const MessagesPreviewList: React.FC<{
   networkId: string | undefined;

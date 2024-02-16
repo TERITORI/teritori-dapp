@@ -20,9 +20,10 @@ import React, {
 import { useFeedbacks } from "./FeedbacksProvider";
 import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
 import { getNetworkObjectId } from "../networks";
-import { ipfsURLToHTTPURL } from "../utils/ipfs";
-import { useAppNavigation } from "../utils/navigation";
+import { web3ToWeb2URI } from "../utils/ipfs";
 import { Media } from "../utils/types/mediaPlayer";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 interface DefaultValue {
   handlePlayPause: () => Promise<void>;
@@ -112,7 +113,7 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
       setMedia(mediaToSet);
       try {
         const { sound: createdSound } = await Audio.Sound.createAsync(
-          { uri: ipfsURLToHTTPURL(mediaToSet.fileUrl) },
+          { uri: web3ToWeb2URI(mediaToSet.fileUrl) },
           undefined,
           async (status: AVPlaybackStatus) => {
             if ("uri" in status && status.isLoaded) {

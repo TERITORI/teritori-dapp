@@ -28,3 +28,23 @@ export type TNSSendFundsFormType = {
 export type NameFinderFormType = {
   name: string;
 };
+
+export type NSAvailability =
+  | {
+      availability: "loading";
+    }
+  | {
+      availability: "invalid";
+    }
+  | {
+      availability: "mint" | "market";
+      price: {
+        denom: string;
+        amount: string;
+      };
+      usdPrice?: number;
+      prettyPrice: string;
+    }
+  | {
+      availability: "none";
+    };

@@ -1,5 +1,5 @@
 import { ResizeMode, Video } from "expo-av";
-import { FC, useState } from "react";
+import React, { FC, useState } from "react";
 import {
   ImageStyle,
   TextStyle,
@@ -12,15 +12,14 @@ import { useSelector } from "react-redux";
 import Add from "../../../assets/icons/add-primary.svg";
 import Img from "../../../assets/icons/img.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useWalletControl } from "../../context/WalletControlProvider";
 import { useFeedPosting } from "../../hooks/feed/useFeedPosting";
+import { useIpfs } from "../../hooks/useIpfs";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkFeature } from "../../networks";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
-import {
-  generateIpfsKey,
-  ipfsURLToHTTPURL,
-  uploadFilesToPinata,
-} from "../../utils/ipfs";
+import { generateIpfsKey, web3ToWeb2URI } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES, VIDEO_MIME_TYPES } from "../../utils/mime";
 import {
   neutral30,
@@ -31,6 +30,7 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { PostCategory, SocialFeedVideoMetadata } from "../../utils/types/feed";
 import { LocalFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
 import { DeleteButton } from "../FilePreview/DeleteButton";
@@ -40,14 +40,12 @@ import { CustomPressable } from "../buttons/CustomPressable";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { FileUploader } from "../fileUploader";
 import { TextInputCustom } from "../inputs/TextInputCustom";
+import { FeedPostingProgressBar } from "../loaders/FeedPostingProgressBar";
 import ModalBase from "../modals/ModalBase";
 import { FeedFeeText } from "../socialFeed/FeedFeeText";
-import {
-  PostCategory,
-  SocialFeedVideoMetadata,
-} from "../socialFeed/NewsFeed/NewsFeed.type";
-import { NotEnoughFundModal } from "../socialFeed/NewsFeed/NotEnoughFundModal";
 import { SpacerColumn, SpacerRow } from "../spacer";
+
+import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
 
 const UPLOAD_VIDEO_MODAL_WIDTH = 590;
 const THUMBNAIL_SIZE = 198;
@@ -60,31 +58,41 @@ export const UploadVideoModal: FC<{
   const selectedNetwork = useSelectedNetworkInfo();
   const selectedWallet = useSelectedWallet();
   const userId = selectedWallet?.userId || "";
-  const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
-
-  const { makePost, canPayForPost, isProcessing } = useFeedPosting(
-    userId,
-    PostCategory.Video,
-  );
-
+  const { uploadFilesToPinata, ipfsUploadProgress } = useIpfs();
+  const postCategory = PostCategory.Video;
+  const {
+    makePost,
+    canPayForPost,
+    isProcessing,
+    publishingFee,
+    step,
+    setStep,
+  } = useFeedPosting(selectedNetwork?.id, userId, postCategory, () => {
+    // Timeout here to let a few time to see the progress bar "100% Done"
+    setTimeout(() => {
+      setIsUploadLoading(false);
+      setLocalImageFile(undefined);
+      setLocalVideoFile(undefined);
+      setDescription("");
+      setTitle("");
+      setIsProgressBarShown(false);
+      onClose();
+    }, 1000);
+  });
   const [isThumbnailContainerHovered, setThumbnailContainerHovered] =
     useState(false);
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isUploadLoading, setIsUploadLoading] = useState(false);
+  const [isProgressBarShown, setIsProgressBarShown] = useState(false);
+  const { showNotEnoughFundsModal, showConnectWalletModal } =
+    useWalletControl();
+  const isLoading = isUploadLoading || isProcessing;
   const userIPFSKey = useSelector(selectNFTStorageAPI);
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [localVideoFile, setLocalVideoFile] = useState<LocalFileData>();
   const [localImageFile, setLocalImageFile] = useState<LocalFileData>();
 
   const processCreateVideoPost = async (video: SocialFeedVideoMetadata) => {
-    if (!canPayForPost) {
-      setNotEnoughFundModal(true);
-      return;
-    }
-
     // we need this hack until the createdAt field is properly provided by the contract
     const videoWithCreationDate = {
       ...video,
@@ -95,23 +103,41 @@ export const UploadVideoModal: FC<{
       await makePost(JSON.stringify(videoWithCreationDate));
     } catch (err) {
       console.error("post submit err", err);
+      setIsUploadLoading(false);
+      setIsProgressBarShown(false);
       setToastError({
         title: "Post creation failed",
         message: err instanceof Error ? err.message : `${err}`,
       });
     }
-    setIsUploading(false);
   };
 
   const onPressUpload = async () => {
-    setIsLoading(true);
-    if (
-      !selectedWallet?.connected ||
-      !selectedWallet.address ||
-      !localVideoFile
-    ) {
+    const action = "Publish a Video";
+    if (!selectedWallet?.address || !selectedWallet.connected) {
+      showConnectWalletModal({
+        forceNetworkFeature: NetworkFeature.SocialFeed,
+        action,
+      });
       return;
     }
+    if (!canPayForPost) {
+      showNotEnoughFundsModal({
+        action,
+        cost: {
+          amount: publishingFee.toString(),
+          denom: publishingFee.denom || "",
+        },
+      });
+      return;
+    }
+    if (!localVideoFile) {
+      return;
+    }
+    setIsUploadLoading(true);
+    setIsProgressBarShown(true);
+    setStep(feedPostingStep(FeedPostingStepId.GENERATING_KEY));
+
     const pinataJWTKey =
       userIPFSKey || (await generateIpfsKey(selectedNetwork?.id || "", userId));
     if (!pinataJWTKey) {
@@ -120,8 +146,10 @@ export const UploadVideoModal: FC<{
         title: "File upload failed",
         message: "No Pinata JWT",
       });
+      setIsUploadLoading(false);
       return;
     }
+    setStep(feedPostingStep(FeedPostingStepId.UPLOADING_FILES));
 
     const uploadedFiles = await uploadFilesToPinata({
       pinataJWTKey,
@@ -139,6 +167,7 @@ export const UploadVideoModal: FC<{
         title: "File upload failed",
         message: "Fail to pin to IPFS, please try to Publish again",
       });
+      setIsUploadLoading(false);
       return;
     }
     const video: SocialFeedVideoMetadata = {
@@ -147,12 +176,6 @@ export const UploadVideoModal: FC<{
       videoFile: uploadedFiles[0],
     };
     await processCreateVideoPost(video);
-    setIsLoading(false);
-    setLocalImageFile(undefined);
-    setLocalVideoFile(undefined);
-    setDescription("");
-    setTitle("");
-    onClose();
   };
 
   return (
@@ -167,7 +190,7 @@ export const UploadVideoModal: FC<{
           onUpload={(files) => setLocalImageFile(files[0])}
           mimeTypes={IMAGE_MIME_TYPES}
           maxUpload={1}
-          setIsLoading={setIsLoading}
+          setIsLoading={setIsUploadLoading}
         >
           {({ onPress }) => (
             <CustomPressable
@@ -178,15 +201,15 @@ export const UploadVideoModal: FC<{
                   width: THUMBNAIL_SIZE,
                   height: THUMBNAIL_SIZE,
                 },
-                (isUploading || isLoading) && { opacity: 0.5 },
+                isLoading && { opacity: 0.5 },
               ]}
               onPress={onPress}
-              disabled={isUploading || isLoading}
+              disabled={isLoading}
             >
               {localImageFile?.url ? (
                 <>
                   <DeleteButton
-                    disabled={isUploading || isLoading}
+                    disabled={isLoading}
                     onPress={() => setLocalImageFile(undefined)}
                     style={{ top: 12, right: 12 }}
                   />
@@ -233,6 +256,8 @@ export const UploadVideoModal: FC<{
             onChangeText={(text) => setTitle(text)}
             label="Video title"
             name="videoTitle"
+            disabled={isLoading}
+            style={isLoading && { opacity: 0.5 }}
           />
           <SpacerColumn size={2.5} />
 
@@ -243,6 +268,8 @@ export const UploadVideoModal: FC<{
             onChangeText={(text) => setDescription(text)}
             label="Video description"
             name="videoDescription"
+            disabled={isLoading}
+            style={isLoading && { opacity: 0.5 }}
           />
         </View>
       </View>
@@ -251,16 +278,13 @@ export const UploadVideoModal: FC<{
       {localVideoFile?.url ? (
         <View>
           <DeleteButton
-            disabled={isUploading || isLoading}
+            disabled={isLoading}
             onPress={() => setLocalVideoFile(undefined)}
-            style={[
-              { top: 12, right: 12 },
-              (isUploading || isLoading) && { opacity: 0.5 },
-            ]}
+            style={[{ top: 12, right: 12 }, isLoading && { opacity: 0.5 }]}
           />
           <Video
             source={{
-              uri: ipfsURLToHTTPURL(localVideoFile.url),
+              uri: web3ToWeb2URI(localVideoFile.url),
             }}
             resizeMode={ResizeMode.COVER}
             useNativeControls
@@ -280,16 +304,13 @@ export const UploadVideoModal: FC<{
           onUpload={(files) => setLocalVideoFile(files[0])}
           style={uploadButtonStyle}
           mimeTypes={VIDEO_MIME_TYPES}
-          setIsLoading={setIsLoading}
+          setIsLoading={setIsUploadLoading}
         >
           {({ onPress }) => (
             <TouchableOpacity
-              style={[
-                buttonContainerStyle,
-                (isUploading || isLoading) && { opacity: 0.5 },
-              ]}
+              style={[buttonContainerStyle, isLoading && { opacity: 0.5 }]}
               onPress={onPress}
-              disabled={isUploading || isLoading}
+              disabled={isLoading}
             >
               <SVG source={Add} width={20} height={20} stroke={primaryColor} />
               <SpacerRow size={1} />
@@ -315,8 +336,9 @@ export const UploadVideoModal: FC<{
       <View style={divideLineStyle} />
 
       <FeedFeeText
+        networkId={selectedNetwork?.id}
         userId={selectedWallet?.userId}
-        category={PostCategory.Video}
+        category={postCategory}
         style={{ marginTop: layout.spacing_x2 }}
       />
 
@@ -328,24 +350,25 @@ export const UploadVideoModal: FC<{
         <PrimaryButton
           text="Upload"
           disabled={
-            !localVideoFile?.url ||
-            !title ||
-            isUploading ||
-            isProcessing ||
-            isLoading ||
-            !canPayForPost
+            !localVideoFile?.url || !title || isLoading || !canPayForPost
           }
           size="SM"
           onPress={onPressUpload}
-          isLoading={isUploading || isLoading || isProcessing}
+          isLoading={isLoading}
+          loader
         />
       </View>
 
-      {isNotEnoughFundModal && (
-        <NotEnoughFundModal
-          visible
-          onClose={() => setNotEnoughFundModal(false)}
-        />
+      {step.id !== "UNDEFINED" && isProgressBarShown && (
+        <>
+          <View style={divideLineStyle} />
+          <SpacerColumn size={2} />
+          <FeedPostingProgressBar
+            step={step}
+            ipfsUploadProgress={ipfsUploadProgress}
+          />
+          <SpacerColumn size={2} />
+        </>
       )}
     </ModalBase>
   );

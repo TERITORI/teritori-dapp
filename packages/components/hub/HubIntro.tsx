@@ -8,9 +8,6 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getNetwork, NetworkKind } from "../../networks";
-import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
-import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
-import { Overview } from "../../screens/WalletManager/components/Overview";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { FullWidthSeparator } from "../FullWidthSeparator";
@@ -22,6 +19,10 @@ import { MainConnectWalletButton } from "../connectWallet/MainConnectWalletButto
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 import { SpacerColumn } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
+
+import { MyNFTs } from "@/components/hub/MyNFTs";
+import { Overview } from "@/components/hub/Overview";
+import { WalletDashboardHeader } from "@/components/hub/WalletDashboardHeader";
 
 const walletsManagerTabItems = {
   overview: {

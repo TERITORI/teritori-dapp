@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 
 import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import { ipfsURLToHTTPURL } from "./ipfs";
+import { web3ToWeb2URI } from "./ipfs";
 import { Attribute, Collection, NFT } from "../api/marketplace/v1/marketplace";
 import {
   EthereumNetworkInfo,
@@ -17,7 +17,7 @@ const proms: {
   [key: string]: Promise<ethers.providers.Web3Provider | null> | undefined;
 } = {};
 
-const getMetaMaskEthereumProvider = async (
+export const getMetaMaskEthereumProvider = async (
   network: ethers.providers.Networkish,
 ) => {
   let provider;
@@ -75,14 +75,21 @@ const getMetaMaskEthereumProvider = async (
 const alchemyProviders: { [key: string]: ethers.providers.AlchemyProvider } =
   {};
 
-export const getEthereumProvider = async (network: EthereumNetworkInfo) => {
-  try {
-    const metamaskProvider = await getMetaMaskEthereumProvider(network.chainId);
-    if (metamaskProvider) {
-      return metamaskProvider;
+export const getEthereumProvider = async (
+  network: EthereumNetworkInfo,
+  forceAlchemyProvider: boolean = false,
+) => {
+  if (!forceAlchemyProvider) {
+    try {
+      const metamaskProvider = await getMetaMaskEthereumProvider(
+        network.chainId,
+      );
+      if (metamaskProvider) {
+        return metamaskProvider;
+      }
+    } catch (err) {
+      console.warn("failed to get metamask ethereum provider:", err);
     }
-  } catch (err) {
-    console.warn("failed to get metamask ethereum provider:", err);
   }
 
   const cacheKey = `${network.chainId}-${network.alchemyApiKey}`;
@@ -120,19 +127,18 @@ export const addCollectionMetadata = async (collection: Collection) => {
 
 const addNftMetadata = async (nft: NFT) => {
   const [network, , nftTokenId] = parseNftId(nft.id);
+
   if (network?.kind !== NetworkKind.Ethereum) {
     return nft;
   }
 
   const provider = await getEthereumProvider(network);
 
-  const nftClient = TeritoriNft__factory.connect(
-    nft.nftContractAddress,
-    provider,
-  );
+  const nftContractAddress = nft.nftContractAddress;
+  const nftClient = TeritoriNft__factory.connect(nftContractAddress, provider);
 
   const tokenURI = await nftClient.callStatic.tokenURI(nftTokenId);
-  const metadataURL = ipfsURLToHTTPURL(tokenURI);
+  const metadataURL = web3ToWeb2URI(tokenURI);
   const infoReply = await fetch(metadataURL);
   const info = await infoReply.json();
 

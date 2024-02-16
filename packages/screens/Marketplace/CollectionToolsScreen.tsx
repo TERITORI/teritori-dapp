@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { useCollectionInfo } from "../../hooks/useCollectionInfo";
-import { parseNetworkObjectId } from "../../networks";
-import { getMarketplaceClient } from "../../utils/backend";
-import { ScreenFC } from "../../utils/navigation";
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { useCollectionInfo } from "@/hooks/useCollectionInfo";
+import { parseNetworkObjectId } from "@/networks";
+import { getMarketplaceClient } from "@/utils/backend";
+import { ScreenFC } from "@/utils/navigation";
 import {
   snapshotCollectionOGs,
   snapshotCollectionOwners,
   snapshotCollectionOwnersWithIds,
-} from "../../utils/snapshots";
+} from "@/utils/snapshots";
 
 // FIXME: support native
 
@@ -26,7 +26,7 @@ const SnapshotEntry: React.FC<{
     <View style={[{ flexDirection: "row" }, style]}>
       <PrimaryButton
         text={`Snapshot ${name}`}
-        style={{ marginRight: 20 }}
+        boxStyle={{ marginRight: 20 }}
         size="M"
         onPress={async () => {
           const data = JSON.stringify(await snapshotFunc(), null, 2);

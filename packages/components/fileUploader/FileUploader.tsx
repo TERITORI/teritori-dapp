@@ -16,32 +16,26 @@ import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { DeleteButton } from "../FilePreview/DeleteButton";
 import { SVG } from "../SVG";
-import { PrimaryBox } from "../boxes/PrimaryBox";
+import { LegacyPrimaryBox } from "../boxes/LegacyPrimaryBox";
 import { GradientText } from "../gradientText";
 import { Label } from "../inputs/TextInputCustom";
 
 //FIXME: Doesn't work for now =>  Only the .web version is used
 
-export const FileUploader: React.FC<FileUploaderProps> = ({
-  label,
-  style,
-  isImageCover,
-  fileHeight = 256,
-}) => {
+export const FileUploader: React.FC<FileUploaderProps> = ({ label, style }) => {
   const [files, setFiles] = useState<File[] | FileList>([]);
 
   return (
     <View style={style}>
       {!!label && <Label style={{ marginBottom: 12 }}>{label}</Label>}
       <TouchableOpacity>
-        <div
+        <View
           style={{
             flex: 1,
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
-            height: files?.length ? fileHeight : 80,
             borderRadius: 12,
           }}
         >
@@ -58,14 +52,13 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                 source={{ uri: files?.[0]?.path }}
                 style={[
                   {
-                    height: fileHeight,
+                    height: 256,
                   },
-                  isImageCover && { width: "100%" },
                 ]}
               />
             </>
           ) : (
-            <PrimaryBox
+            <LegacyPrimaryBox
               noBrokenCorners
               fullWidth
               colors={[
@@ -75,7 +68,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
               ]}
               style={{ flex: 1 }}
               mainContainerStyle={{
-                height: files?.length ? fileHeight : 80,
+                height: 80,
                 alignItems: "center",
                 padding: layout.spacing_x2_5,
                 borderRadius: 12,
@@ -111,9 +104,9 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                   </BrandText>
                 </View>
               </View>
-            </PrimaryBox>
+            </LegacyPrimaryBox>
           )}
-        </div>
+        </View>
       </TouchableOpacity>
     </View>
   );

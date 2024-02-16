@@ -2,8 +2,9 @@ import React, { FC } from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 
 import logoTopVersionMobileSVG from "../../../../assets/logos/logo-version-alpha-small.svg";
-import { useAppNavigation } from "../../../utils/navigation";
 import { SVG } from "../../SVG";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export const TopLogoMobile: FC = () => {
   const navigation = useAppNavigation();

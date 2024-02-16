@@ -12,7 +12,7 @@ import { neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 // FIXME: make a BaseButton and only pass backgroun/border and text colors in this kind of components
 
@@ -81,7 +81,7 @@ export const SecondaryButtonOutline: React.FC<{
       disabled={disabled}
       style={[{ width: fullWidth ? "100%" : width }, touchableStyle]}
     >
-      <TertiaryBox
+      <LegacyTertiaryBox
         height={heightButton(size)}
         mainContainerStyle={{
           flexDirection: "row",
@@ -125,7 +125,7 @@ export const SecondaryButtonOutline: React.FC<{
               <ActivityIndicator color={color} size="small" />
             </View>
           ))}
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </TouchableOpacity>
   );
 };

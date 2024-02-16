@@ -1,4 +1,3 @@
-import Clipboard from "@react-native-clipboard/clipboard";
 import React from "react";
 import { View, Platform, Linking } from "react-native";
 
@@ -25,6 +24,8 @@ import { FilterButton } from "../sorts/FilterButton";
 import { SortButton } from "../sorts/SortButton";
 import { SpacerRow } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
+
+import Clipboard from "@/modules/Clipboard";
 
 // All the screen content before the Flatlist used to display NFTs
 export const CollectionHeader: React.FC<{
@@ -78,7 +79,7 @@ export const CollectionHeader: React.FC<{
     }
 
     try {
-      Clipboard.setString(currentUrl || "");
+      Clipboard.setStringAsync(currentUrl || "");
       setToastSuccess({
         title: "URL Copied!",
         message: "",
@@ -232,7 +233,7 @@ export const CollectionHeader: React.FC<{
               flexDirection: "row",
               flexWrap: "wrap",
               justifyContent: isMobile ? "center" : "flex-start",
-              margin: layout.spacing_x2_5,
+              marginVertical: layout.spacing_x2_5,
               alignItems: "center",
               flex: 1,
             }}

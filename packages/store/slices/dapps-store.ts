@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { dAppGroup } from "../../screens/DAppStore/types";
 import { RootState } from "../store";
+
+import { dAppGroup } from "@/utils/types/dapp-store";
 
 type pinnedAppsCollection = string[];
 
@@ -24,9 +25,8 @@ const initialStatePersisted: DappsStoragePersisted = {
 export const selectAvailableApps = (state: RootState) =>
   state.dAppsStore.availableApps;
 
-export const selectCheckedApps = (state: RootState) => [
-  ...new Set(state.dAppsStorePersisted.selectedApps),
-];
+export const selectCheckedApps = (state: RootState) =>
+  state.dAppsStorePersisted.selectedApps;
 
 const dAppsStore = createSlice({
   name: "dapps-storage",

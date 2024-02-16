@@ -35,7 +35,7 @@ import { Sidebar } from "../navigation/Sidebar";
 import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
 import { Separator } from "../separators/Separator";
 
-export const ScreenContainer: React.FC<{
+export interface ScreenContainerProps {
   headerChildren?: JSX.Element;
   footerChildren?: React.ReactNode;
   mobileTitle?: string;
@@ -51,7 +51,10 @@ export const ScreenContainer: React.FC<{
   onBackPress?: () => void;
   maxWidth?: number;
   children?: ReactNode;
-}> = ({
+  headerMini?: ReactNode;
+}
+
+export const ScreenContainer: React.FC<ScreenContainerProps> = ({
   children,
   headerChildren,
   footerChildren,
@@ -67,6 +70,7 @@ export const ScreenContainer: React.FC<{
   forceNetworkId,
   forceNetworkKind,
   forceNetworkFeatures,
+  headerMini,
 }) => {
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
@@ -117,6 +121,7 @@ export const ScreenContainer: React.FC<{
         forceNetworkId={forceNetworkId}
         forceNetworkKind={forceNetworkKind}
         mobileTitle={mobileTitle}
+        headerMini={headerMini}
       />
     );
   /////////////// default returns
@@ -127,7 +132,7 @@ export const ScreenContainer: React.FC<{
       <View style={styles.container}>
         {!hideSidebar ? <Sidebar /> : null}
 
-        <View style={{ width: "100%", flex: 1 }}>
+        <View style={{ flex: 1 }}>
           {/*==== Header*/}
           <Header onBackPress={onBackPress}>{headerChildren}</Header>
 

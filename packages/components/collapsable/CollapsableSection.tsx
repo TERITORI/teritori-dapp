@@ -1,12 +1,5 @@
-import React, { ReactNode, useEffect, useRef, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
-import Animated, {
-  Extrapolate,
-  interpolate,
-  useAnimatedRef,
-  useAnimatedStyle,
-  withTiming,
-} from "react-native-reanimated";
+import React, { ReactNode, useMemo, useState } from "react";
+import { Pressable, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 // misc
@@ -37,37 +30,14 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
   children,
   isExpandedByDefault = false,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const aref = useAnimatedRef<View>();
-  const heightRef = useRef<number>(0);
-  const style = useAnimatedStyle(
+  const [isExpanded, setIsExpanded] = useState(isExpandedByDefault);
+  const style = useMemo(
     () => ({
-      height: isExpanded ? withTiming(heightRef.current) : withTiming(0),
-      opacity: isExpanded ? withTiming(1) : withTiming(0),
+      height: isExpanded ? undefined : 0,
+      opacity: isExpanded ? 1 : 0,
     }),
     [isExpanded],
   );
-  const rotateStyle = useAnimatedStyle(() => {
-    const rotate = interpolate(
-      isExpanded ? 1 : 0,
-      [0, 1],
-      [0, 180],
-      Extrapolate.CLAMP,
-    );
-
-    return {
-      transform: [{ rotate: `${rotate}deg` }],
-    };
-  }, [isExpanded]);
-
-  // hooks
-  useEffect(() => {
-    setTimeout(() => {
-      if (isExpandedByDefault) {
-        setIsExpanded(true);
-      }
-    }, 1000);
-  }, [isExpandedByDefault]);
 
   // functions
   const toggleExpansion = () => {
@@ -75,9 +45,9 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
   };
 
   return (
-    <TertiaryBox fullWidth>
-      <Pressable onPress={toggleExpansion} style={styles.header}>
-        <View style={styles.rowWithCenter}>
+    <TertiaryBox>
+      <Pressable onPress={toggleExpansion} style={headerCStyle}>
+        <View style={rowWithCenterCStyle}>
           <SVG source={icon} width={14} height={14} color={secondaryColor} />
           <SpacerRow size={1.5} />
           <BrandText style={[fontSemibold14, { lineHeight: 14 }]}>
@@ -85,58 +55,52 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
           </BrandText>
         </View>
 
-        <Animated.View style={[styles.chevronContainer, rotateStyle]}>
+        <View
+          style={[
+            chevronContainerCStyle,
+            isExpanded ? { transform: "rotate(0.5turn)" } : null,
+          ]}
+        >
           <SVG
             source={chevronDownSVG}
             width={16}
             height={16}
             color={isExpanded ? primaryColor : secondaryColor}
           />
-        </Animated.View>
-      </Pressable>
-      <Animated.View style={[styles.childrenContainer, style]}>
-        <View
-          ref={aref}
-          onLayout={({
-            nativeEvent: {
-              layout: { height: h },
-            },
-          }) => (heightRef.current = h)}
-          style={styles.childrenContainer}
-        >
-          {children}
         </View>
-      </Animated.View>
+      </Pressable>
+      <View style={[childrenContainerCStyle, style]}>
+        <View style={childrenContainerCStyle}>{children}</View>
+      </View>
     </TertiaryBox>
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    padding: layout.spacing_x2,
-  },
-  rowWithCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  chevronContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    height: layout.iconButton,
-    width: layout.iconButton,
-    borderRadius: layout.iconButton / 2,
-    backgroundColor: neutral33,
-    borderWidth: 1,
-    borderColor: neutral44,
-  },
-  childrenContainer: {
-    width: "100%",
-  },
-});
+const headerCStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  width: "100%",
+  padding: layout.spacing_x2,
+};
+
+const rowWithCenterCStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+const chevronContainerCStyle: ViewStyle = {
+  alignItems: "center",
+  justifyContent: "center",
+  height: layout.iconButton,
+  width: layout.iconButton,
+  borderRadius: layout.iconButton / 2,
+  backgroundColor: neutral33,
+  borderWidth: 1,
+  borderColor: neutral44,
+};
+
+const childrenContainerCStyle: ViewStyle = {
+  width: "100%",
+};

@@ -9,9 +9,10 @@ import {
 } from "react-native";
 
 import { BrandText } from "../../components/BrandText/BrandText";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { ProposalStatus } from "../../screens/Governance/types";
+import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
 import { tulipTree } from "../../utils/style/colors";
+
+import { ProposalStatus } from "@/utils/types/gov";
 
 // FIXME: code dedup
 
@@ -89,7 +90,7 @@ export const GovernanceBox: React.FC<{
   function activeGovernanceDetailsPopup() {
     if (displayGovernanceDetails) {
       const GovernanceDetails = React.lazy(() =>
-        import("../../screens/Governance/GovernanceDetails").then((module) => ({
+        import("@/screens/Governance/GovernanceDetails").then((module) => ({
           default: module.GovernanceDetails,
         })),
       );
@@ -129,7 +130,7 @@ export const GovernanceBox: React.FC<{
       >
         {activeGovernanceDetailsPopup()}
 
-        <TertiaryBox width={600} height={300}>
+        <LegacyTertiaryBox width={600} height={300}>
           <View
             style={{
               flexDirection: "column",
@@ -393,7 +394,7 @@ export const GovernanceBox: React.FC<{
               </View>
             </View>
           </View>
-        </TertiaryBox>
+        </LegacyTertiaryBox>
       </TouchableOpacity>
     </View>
   );

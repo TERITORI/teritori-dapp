@@ -1,11 +1,11 @@
-import { FC, useRef } from "react";
+import React, { FC } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 
 import { TopMenuBox } from "./TopMenuBox";
 import { WalletView } from "./WalletView";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
-import { useDropdowns } from "../../context/DropdownsProvider";
+import { useDropdowns } from "../../hooks/useDropdowns";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   neutral00,
@@ -15,45 +15,39 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 export const TOP_MENU_BUTTON_HEIGHT = 40;
 
 export const TopMenu: FC = () => {
   const selectedWallet = useSelectedWallet();
-  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
 
   return (
-    <View ref={dropdownRef}>
-      <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
-        <TertiaryBox
+    <View ref={dropdownRef} collapsable={false}>
+      <TouchableOpacity onPress={() => setDropdownState(!isDropdownOpen)}>
+        <LegacyTertiaryBox
           width={220}
           mainContainerStyle={[
             styles.buttonBoxMainContainer,
             {
-              backgroundColor: isDropdownOpen(dropdownRef)
-                ? neutral33
-                : neutral00,
+              backgroundColor: isDropdownOpen ? neutral33 : neutral00,
             },
           ]}
           height={TOP_MENU_BUTTON_HEIGHT}
         >
           <WalletView wallet={selectedWallet} style={styles.walletView} />
           <SVG
-            source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
+            source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
             width={16}
             height={16}
             color={secondaryColor}
           />
-        </TertiaryBox>
+        </LegacyTertiaryBox>
       </TouchableOpacity>
 
       <TopMenuBox
-        style={[
-          styles.menuBox,
-          !isDropdownOpen(dropdownRef) && { display: "none" },
-        ]}
+        style={[styles.menuBox, !isDropdownOpen && { display: "none" }]}
       />
     </View>
   );

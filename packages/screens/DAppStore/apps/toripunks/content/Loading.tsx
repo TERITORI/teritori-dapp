@@ -20,7 +20,7 @@ export const LoadingGame = () => {
       }}
     >
       <View
-        // @ts-expect-error
+        // @ts-expect-error: description todo
         style={{
           flexWrap: "wrap",
           justifyContent: "flex-end",

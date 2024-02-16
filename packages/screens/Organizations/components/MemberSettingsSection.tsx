@@ -4,19 +4,22 @@ import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
 import trashSVG from "../../../../assets/icons/trash.svg";
 import walletInputSVG from "../../../../assets/icons/wallet-input.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { patternOnlyNumbers, validateAddress } from "../../../utils/formRules";
-import { neutral33, neutralA3 } from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
-import { MemberSettingFormType } from "../types";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { patternOnlyNumbers, validateAddress } from "@/utils/formRules";
+import { neutral33, neutralA3 } from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import {
+  MemberSettingFormType,
+  ORGANIZATION_DEPLOYER_STEPS,
+} from "@/utils/types/organizations";
 
 interface MemberSettingsSectionProps {
   onSubmit: (form: MemberSettingFormType) => void;

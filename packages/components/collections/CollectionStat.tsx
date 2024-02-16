@@ -1,13 +1,14 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { PrettyPrint } from "../../screens/Marketplace/types";
 import { neutral22, neutralA3 } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
 import { SpacerColumn } from "../spacer";
+
+import { PrettyPrint } from "@/utils/types/marketplace";
 
 type CollectionStatProps = {
   label: string;

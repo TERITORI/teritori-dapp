@@ -1,14 +1,15 @@
 import React from "react";
 
 import { TNSCloseHandler } from "./TNSHomeScreen";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import GradientModalBase from "../../components/modals/GradientModalBase";
-import { FindAName } from "../../components/teritoriNameService/FindAName";
-import { useTNS } from "../../context/TNSProvider";
-import { useNSMintAvailability } from "../../hooks/useNSMintAvailability";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getCosmosNetwork } from "../../networks";
-import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
+
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { FindAName } from "@/components/teritoriNameService/FindAName";
+import { useTNS } from "@/context/TNSProvider";
+import { useNSMintAvailability } from "@/hooks/useNSMintAvailability";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getCosmosNetwork } from "@/networks";
+import { neutral00, neutral33 } from "@/utils/style/colors";
 
 interface TNSRegisterScreenProps {
   onClose: TNSCloseHandler;
@@ -29,7 +30,7 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
   return (
     <GradientModalBase
       onClose={() => onClose()}
-      label="Find a name"
+      label="Find a Name"
       width={457}
       modalStatus={name && nameAvailable ? "success" : "danger"}
       hideMainSeparator
@@ -55,7 +56,6 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
           <PrimaryButton
             size="XL"
             width={280}
-            squaresBackgroundColor={neutral17}
             text="Register your Username"
             onPress={() => {
               setName(name);
@@ -72,7 +72,6 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
             onPress={() => {
               onClose("TNSConsultName");
             }}
-            squaresBackgroundColor={neutral17}
           />
         )}
       </FindAName>

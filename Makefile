@@ -17,10 +17,15 @@ RIOTER_FOOTER_PACKAGE=rioter-footer-nft
 VAULT_REPO=teritori-vault
 VAULT_PACKAGE=teritori-nft-vault
 
+ADDR_LIST_REPO=cw_addr_list
+ADDR_LIST_PACKAGE=cw-address-list
+
 CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
 DOCKER_REGISTRY=rg.nl-ams.scw.cloud/teritori
 INDEXER_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-indexer:$(shell git rev-parse --short HEAD)
+FLUSH_DATA_IMAGE=$(DOCKER_REGISTRY)/flush-data:$(shell git rev-parse --short HEAD)
+EVM_INDEXER_IMAGE=$(DOCKER_REGISTRY)/evm-indexer:$(shell git rev-parse --short HEAD)
 BACKEND_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
 PRICES_SERVICE_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-service:$(shell git rev-parse --short HEAD)
 PRICES_OHLC_REFRESH_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-ohlc-refresh:$(shell git rev-parse --short HEAD)
@@ -31,6 +36,11 @@ MULTISIG_DOCKER_IMAGE=$(DOCKER_REGISTRY)/cosmos-multisig-backend:$(shell git rev
 node_modules: package.json yarn.lock
 	yarn
 	touch $@
+
+.PHONY: go-mod-tidy
+go-mod-tidy:
+	go mod tidy
+	cd electron && go mod tidy
 
 .PHONY: generate
 generate: generate.protobuf generate.graphql generate.contracts-clients generate.go-networks networks.json
@@ -78,11 +88,24 @@ docker.backend:
 	docker build . -f go/cmd/teritori-dapp-backend/Dockerfile -t teritori/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
 
 .PHONY: generate.contracts-clients
-generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE)
+generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/cw721-membership
 
 .PHONY: generate.go-networks
 generate.go-networks: node_modules validate-networks
-	npx ts-node packages/scripts/generateGoNetworks.ts | gofmt > go/pkg/networks/networks.gen.go
+	npx tsx packages/scripts/generateGoNetworks.ts | gofmt > go/pkg/networks/networks.gen.go
+
+.PHONY/: $(CONTRACTS_CLIENTS_DIR)/cw721-membership
+$(CONTRACTS_CLIENTS_DIR)/cw721-membership: node_modules
+	rm -fr $@
+	cd cosmwasm-contracts/cw721-membership && cargo schema
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema cosmwasm-contracts/cw721-membership/schema \
+		--out $@ \
+		--name cw721-membership \
+		--no-bundle
+	npx tsx packages/scripts/makeTypescriptIndex $@
+	touch $@
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE): node_modules
@@ -208,10 +231,34 @@ $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
 	go fmt ./go/pkg/contracts/vault_types
 	rm -fr $(VAULT_REPO)
 
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(ADDR_LIST_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(ADDR_LIST_PACKAGE): node_modules
+	rm -fr $(ADDR_LIST_REPO)
+	git clone git@github.com:TERITORI/cw_addr_list.git
+	cd $(ADDR_LIST_REPO) && git checkout 01dad8e4ec2998c74145f7be0901630b3720787b
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(ADDR_LIST_REPO)/schema \
+		--out $@ \
+		--name $(ADDR_LIST_PACKAGE) \
+		--no-bundle
+	rm -fr $(ADDR_LIST_REPO)
+
 .PHONY: publish.backend
 publish.backend:
 	docker build -f go/cmd/teritori-dapp-backend/Dockerfile .  --platform linux/amd64 -t $(BACKEND_DOCKER_IMAGE)
 	docker push $(BACKEND_DOCKER_IMAGE)
+
+.PHONY: publish.flush-data
+publish.flush-data:
+	docker build -f go/cmd/flush-data/Dockerfile .  --platform linux/amd64 -t $(FLUSH_DATA_IMAGE)
+	docker push $(FLUSH_DATA_IMAGE)
+
+.PHONY: publish.evm-indexer
+publish.evm-indexer:
+	docker build -f go/cmd/evm-indexer/Dockerfile .  --platform linux/amd64 -t $(EVM_INDEXER_IMAGE)
+	docker push $(EVM_INDEXER_IMAGE)
 
 .PHONY: publish.indexer
 publish.indexer:
@@ -251,24 +298,25 @@ publish.multisig-backend:
 
 .PHONY: validate-networks
 validate-networks: node_modules
-	npx ts-node packages/scripts/validateNetworks.ts
+	yarn validate-networks
 
 .PHONY: networks.json
 networks.json: node_modules validate-networks
-	npx ts-node packages/scripts/generateJSONNetworks.ts > $@
+	npx tsx packages/scripts/generateJSONNetworks.ts > $@
 
 .PHONY: unused-exports
 unused-exports: node_modules
 	## TODO unexclude all paths except packages/api;packages/contracts-clients;packages/evm-contracts-clients
-	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\.web|.electron|.d.ts" --ignoreTestFiles 
+	yarn unused-exports
 
 .PHONY: prepare-electron
 prepare-electron: node_modules
-	yarn rimraf ./web-build
-	yarn cross-env isElectron=prod expo export:web
+	yarn rimraf ./dist
+	yarn cross-env isElectron=prod expo export -p web
 	yarn rimraf ./electron/web-build
 	mkdir ./electron/web-build
-	cp -r ./web-build/* ./electron/web-build
+	cp -r ./dist/* ./electron/web-build
+	yarn tsx ./packages/scripts/electron/fixHTML.ts
 
 # requires prepare-electron
 .PHONY: build-electron-mac-amd64
@@ -305,3 +353,51 @@ build-electron-linux-amd64:
 	cd ./electron && npm i
 	cd ./electron && GOOS=linux GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/linux ./prod.go
 	cd ./electron && node ./builder/linux.js
+
+.PHONY: check-ios-weshframework
+check-ios-weshframework:
+	@if [ ! -e ./weshd/ios/Frameworks/WeshFramework.xcframework ]; then \
+		echo "WeshFramework does not exist. Running a command to create it."; \
+		$(MAKE) build-ios-weshframework; \
+	fi
+
+.PHONY: build-ios-weshframework
+build-ios-weshframework:
+	$(MAKE) init-weshd-go
+	CGO_CPPFLAGS="-Wno-error -Wno-nullability-completeness -Wno-expansion-to-defined -DHAVE_GETHOSTUUID=0"
+	cd ./weshd && gomobile bind \
+	-o ./ios/Frameworks/WeshFramework.xcframework \
+	-tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target ios -iosversion 13.0 \
+	./go/
+
+.PHONY: check-android-weshframework
+check-android-weshframework:
+	@if [ ! -e ./weshd/android/libs/WeshFramework.aar ]; then \
+		echo "WeshFramework does not exist. Running a command to create it."; \
+		$(MAKE) build-android-weshframework; \
+	fi
+
+.PHONY: build-android-weshframework
+build-android-weshframework:
+	mkdir -p ./weshd/android/libs
+	$(MAKE) init-weshd-go
+	CGO_CPPFLAGS="-Wno-error -Wno-nullability-completeness -Wno-expansion-to-defined -DHAVE_GETHOSTUUID=0"
+	cd ./weshd && gomobile bind \
+	-javapkg=com.weshnet \
+	-o ./android/libs/WeshFramework.aar \
+	-tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target android -androidapi 21 \
+	./go/
+
+.PHONY: init-weshd-go
+init-weshd-go:
+	cd ./weshd && go mod tidy
+	cd ./weshd && go get golang.org/x/mobile/cmd/gobind
+	cd ./weshd && go get golang.org/x/mobile/cmd/gomobile
+	cd ./weshd && go install golang.org/x/mobile/cmd/gobind
+	cd ./weshd && go install golang.org/x/mobile/cmd/gomobile
+	cd ./weshd && gomobile init
+
+.PHONY: bump-app-build-number
+bump-app-build-number:  
+	npx tsx packages/scripts/app-build/bumpBuildNumber.ts $(shell echo $$(($$(git rev-list HEAD --count) + 10)))
+

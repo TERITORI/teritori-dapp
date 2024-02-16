@@ -1,24 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { GroupInfo_Reply } from "../../../api/weshnet/protocoltypes";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
+
+import { GroupInfo_Reply } from "@/api/weshnet/protocoltypes";
+import { BrandText } from "@/components/BrandText";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
   selectContactInfo,
   selectConversationList,
-} from "../../../store/slices/message";
-import { RootState } from "../../../store/store";
-import { purpleDark, successColor } from "../../../utils/style/colors";
-import { fontMedium10 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { CONVERSATION_TYPES, Message } from "../../../utils/types/message";
-import { weshClient, weshConfig } from "../../../weshnet";
-import { sendMessage } from "../../../weshnet/services";
-import { stringFromBytes } from "../../../weshnet/utils";
+} from "@/store/slices/message";
+import { RootState } from "@/store/store";
+import { successColor } from "@/utils/style/colors";
+import { fontMedium10 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { CONVERSATION_TYPES, Message } from "@/utils/types/message";
+import { weshClient, weshConfig } from "@/weshnet";
+import { sendMessage } from "@/weshnet/services";
+import { stringFromBytes } from "@/weshnet/utils";
 
 interface GroupInvitationActionProps {
   message: Message;
@@ -111,12 +112,7 @@ export const GroupInvitationAction = ({
     <>
       <SpacerColumn size={1} />
       <FlexRow>
-        <PrimaryButton
-          text="Accept"
-          size="SM"
-          squaresBackgroundColor={purpleDark}
-          onPress={handleAcceptGroup}
-        />
+        <PrimaryButton text="Accept" size="SM" onPress={handleAcceptGroup} />
         <SpacerRow size={1} />
       </FlexRow>
     </>

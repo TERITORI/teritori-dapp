@@ -5,38 +5,35 @@ import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
 
 import { WarningBox } from "./WarningBox";
-import { BrandText } from "../../../components/BrandText";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useCosmosValidatorBondedAmount } from "../../../hooks/useCosmosValidatorBondedAmount";
-import { useErrorHandler } from "../../../hooks/useErrorHandler";
-import { useRunOrProposeTransaction } from "../../../hooks/useRunOrProposeTransaction";
+
+import { BrandText } from "@/components/BrandText";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useCosmosValidatorBondedAmount } from "@/hooks/useCosmosValidatorBondedAmount";
+import { useErrorHandler } from "@/hooks/useErrorHandler";
+import { useRunOrProposeTransaction } from "@/hooks/useRunOrProposeTransaction";
 import {
-  UserKind,
   getCosmosNetwork,
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
   parseUserId,
-} from "../../../networks";
-import { prettyPrice } from "../../../utils/coins";
-import {
-  neutral22,
-  neutral77,
-  primaryColor,
-} from "../../../utils/style/colors";
+  UserKind,
+} from "@/networks";
+import { prettyPrice } from "@/utils/coins";
+import { neutral22, neutral77, primaryColor } from "@/utils/style/colors";
 import {
   fontSemibold12,
   fontSemibold13,
   fontSemibold16,
   fontSemibold20,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { StakeFormValuesType, ValidatorInfo } from "../types";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { StakeFormValuesType, ValidatorInfo } from "@/utils/types/staking";
 
 interface UndelegateModalProps {
   onClose?: () => void;
@@ -241,11 +238,11 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
           placeHolder="0"
           currency={keplrCurrencyFromNativeCurrencyInfo(stakingCurrency)}
           defaultValue=""
-          rules={{ required: true, max: bondedTokens.toString() }}
+          rules={{ required: true, max: bondedTokens?.amount.toString() }}
         >
           <Pressable
             onPress={() =>
-              setValue("amount", bondedTokens.toString(), {
+              setValue("amount", bondedTokens?.amount.toString() || "0", {
                 shouldValidate: true,
               })
             }
@@ -259,8 +256,8 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
           Bonded tokens:{" "}
           {prettyPrice(
             networkId,
-            bondedTokens.atomics,
-            stakingCurrency?.denom || "",
+            bondedTokens?.amount.atomics,
+            bondedTokens?.currency.denom,
           )}
         </BrandText>
         <SpacerColumn size={2.5} />

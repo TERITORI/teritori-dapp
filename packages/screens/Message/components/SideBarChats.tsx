@@ -3,8 +3,8 @@ import {
   Platform,
   ScrollView,
   TouchableOpacity,
-  View,
   useWindowDimensions,
+  View,
 } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -14,25 +14,27 @@ import { FriendsBar } from "./FriendsBar";
 import { SearchInput } from "./SearchInput";
 import addSVG from "../../../../assets/icons/add-circle-filled.svg";
 import searchSVG from "../../../../assets/icons/search.svg";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SVG } from "../../../components/SVG";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useMessage } from "../../../context/MessageProvider";
-import { selectConversationList } from "../../../store/slices/message";
-import { setSearchText } from "../../../store/slices/search";
-import { RootState } from "../../../store/store";
-import { useAppNavigation } from "../../../utils/navigation";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useMessage } from "@/context/MessageProvider";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { selectConversationList } from "@/store/slices/message";
+import { setSearchText } from "@/store/slices/search";
+import { RootState } from "@/store/store";
 import {
-  primaryColor,
-  secondaryColor,
   neutral22,
   neutral77,
-} from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { getConversationName } from "../../../weshnet/messageHelpers";
+  primaryColor,
+  secondaryColor,
+} from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { getConversationName } from "@/weshnet/messageHelpers";
 
 export const SideBarChats = () => {
   const { activeConversationType, activeConversation, setActiveConversation } =
@@ -43,18 +45,20 @@ export const SideBarChats = () => {
 
   const { navigate } = useAppNavigation();
   const { width: windowWidth } = useWindowDimensions();
+  const isMobile = useIsMobile();
 
   const [isSearch, setIsSearch] = useState(false);
   const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
     if (
-      (!activeConversation && conversationList.length) ||
-      !conversationList.find((conv) => conv.id === activeConversation?.id)
+      !isMobile &&
+      ((!activeConversation && conversationList.length) ||
+        !conversationList.find((conv) => conv.id === activeConversation?.id))
     ) {
       setActiveConversation?.(conversationList[0]);
     }
-  }, [activeConversation, conversationList, setActiveConversation]);
+  }, [activeConversation, conversationList, setActiveConversation, isMobile]);
 
   const searchResults = useMemo(() => {
     if (!searchInput) {
@@ -71,8 +75,7 @@ export const SideBarChats = () => {
     <View
       style={{
         paddingHorizontal: layout.spacing_x1_5,
-        width: "100%",
-        maxWidth: Platform.OS === "web" ? 300 : windowWidth,
+        maxWidth: isMobile ? windowWidth : 300,
       }}
     >
       <>
@@ -141,11 +144,11 @@ export const SideBarChats = () => {
               key={index}
               isActive={item.id === activeConversation?.id}
               onPress={() => {
-                if (Platform.OS === "web") {
-                  setActiveConversation?.(item);
-                  navigate("Message");
-                } else {
+                setActiveConversation?.(item);
+                if (Platform.OS !== "web") {
                   navigate("ChatSection", item);
+                } else {
+                  navigate("Message");
                 }
               }}
               isLastItem={index === conversationList.length - 1}

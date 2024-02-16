@@ -1,17 +1,17 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { CSSProperties } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 
 import { LocalFileData } from "../../utils/types/files";
 
 export interface FileUploaderProps {
-  onUpload: (files: LocalFileData[]) => void;
+  defaultFile?: string;
+  onUpload: (files: LocalFileData[]) => Promise<void> | void;
   label?: string;
   style?: StyleProp<ViewStyle>;
-  isImageCover?: boolean;
-  fileHeight?: number;
+  fileImageStyle?: CSSProperties;
   multiple?: boolean;
   mimeTypes?: string[];
   children?: ({ onPress }: { onPress: () => void }) => React.ReactNode;
   maxUpload?: number;
-  setIsLoading?: Dispatch<SetStateAction<boolean>>;
+  setIsLoading?: (value: boolean) => void;
 }

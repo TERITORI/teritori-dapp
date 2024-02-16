@@ -2,18 +2,19 @@ import React from "react";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
 
 import ChevronRightSvg from "../../../../assets/icons/chevron-right.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import {
-  neutral22,
   neutral17,
+  neutral22,
   neutral77,
   primaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold12, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "@/utils/style/colors";
+import { fontSemibold12, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export interface LaunchpadButtonProps {
   url?: string;
@@ -33,7 +34,7 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
       onPress={url ? () => Linking.openURL(url) : undefined}
       style={styles.fill}
     >
-      <TertiaryBox
+      <LegacyTertiaryBox
         style={styles.fill}
         fullWidth
         mainContainerStyle={styles.container}
@@ -50,7 +51,7 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
             <SVG source={ChevronRightSvg} />
           </View>
         </View>
-      </TertiaryBox>
+      </LegacyTertiaryBox>
     </Pressable>
   );
 };

@@ -4,16 +4,17 @@ import { DraxList, DraxProvider } from "react-native-drax";
 import { useSelector } from "react-redux";
 
 import { SelectedDraggable } from "./SelectedDraggable";
-import { BrandText } from "../../../components/BrandText";
+
+import { BrandText } from "@/components/BrandText";
 import {
   selectAvailableApps,
   selectCheckedApps,
   setSelectedApps,
-} from "../../../store/slices/dapps-store";
-import { useAppDispatch } from "../../../store/store";
-import { neutral67 } from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
-import { getValuesFromId } from "../query/util";
+} from "@/store/slices/dapps-store";
+import { useAppDispatch } from "@/store/store";
+import { getValuesFromId } from "@/utils/dapp-store";
+import { neutral67 } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 
 export const LeftRail = () => {
   const dispatch = useAppDispatch();
@@ -52,7 +53,8 @@ export const LeftRail = () => {
               renderItemContent={({ item, index }) => {
                 const { appId, groupKey } = getValuesFromId(item);
                 return availableApps ? (
-                  availableApps[groupKey] ? (
+                  availableApps[groupKey] &&
+                  availableApps[groupKey]?.options[appId] ? (
                     <SelectedDraggable
                       dragHandler={setIsDraggable}
                       option={availableApps[groupKey]?.options[appId]}

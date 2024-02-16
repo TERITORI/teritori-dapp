@@ -3,17 +3,18 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 
 import { useDAOFirstProposalModule } from "./useDAOProposalModules";
-import { DaoProposalSingleQueryClient } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
+
+import { DaoProposalSingleQueryClient } from "@/contracts-clients/dao-proposal-single/DaoProposalSingle.client";
 import {
   ProposalResponse,
   Status,
-} from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
+} from "@/contracts-clients/dao-proposal-single/DaoProposalSingle.types";
 import {
   NetworkKind,
   mustGetNonSigningCosmWasmClient,
   parseUserId,
-} from "../../networks";
-import { extractGnoJSONString } from "../../utils/gno";
+} from "@/networks";
+import { extractGnoJSONString } from "@/utils/gno";
 
 const daoProposalsQueryKey = (daoId: string | undefined) => [
   "dao-proposals",

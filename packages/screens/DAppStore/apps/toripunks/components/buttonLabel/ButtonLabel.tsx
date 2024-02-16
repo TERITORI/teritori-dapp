@@ -1,4 +1,4 @@
-import { StyleProp, View, ViewStyle, Text } from "react-native";
+import { StyleProp, Text, View, ViewStyle } from "react-native";
 
 import { useContentContext } from "../../context/ContentProvider";
 
@@ -28,7 +28,7 @@ export const ButtonLabel: React.FC<ButtonLabelType> = ({
   return (
     <View
       style={[
-        // @ts-expect-error
+        // @ts-expect-error: description todo
         {
           width: size === "Mobile" ? 160 : 238,
           height: "fit-content",

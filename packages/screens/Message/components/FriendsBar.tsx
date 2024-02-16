@@ -1,30 +1,28 @@
 import React from "react";
-import { View, TouchableOpacity, Platform } from "react-native";
+import { Platform, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import forwardSVG from "../../../../assets/icons/forward.svg";
 import friendsSVG from "../../../../assets/icons/friends.svg";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SVG } from "../../../components/SVG";
-import { TertiaryBadge } from "../../../components/badges/TertiaryBadge";
-import { SpacerRow } from "../../../components/spacer";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
+import { SpacerRow } from "@/components/spacer";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import {
-  selectConversationList,
   selectContactRequestList,
-} from "../../../store/slices/message";
-import { useAppNavigation } from "../../../utils/navigation";
-import {
-  neutral22,
-  secondaryColor,
-  primaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
+  selectConversationList,
+} from "@/store/slices/message";
+import { neutral22, primaryColor, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold13 } from "@/utils/style/fonts";
 
 export const FriendsBar = () => {
   const contactRequests = useSelector(selectContactRequestList);
   const conversations = useSelector(selectConversationList);
   const { navigate } = useAppNavigation();
+
   return (
     <View
       style={{
@@ -51,10 +49,10 @@ export const FriendsBar = () => {
             {!!contactRequests?.length && (
               <TouchableOpacity
                 onPress={() => {
-                  if (Platform.OS === "web") {
-                    navigate("Message", { view: "AddFriend", tab: "request" });
-                  } else {
+                  if (Platform.OS !== "web") {
                     navigate("FriendshipManager", { tab: "request" });
+                  } else {
+                    navigate("Message", { view: "AddFriend", tab: "request" });
                   }
                 }}
               >
@@ -71,10 +69,10 @@ export const FriendsBar = () => {
                 alignItems: "center",
               }}
               onPress={() => {
-                if (Platform.OS === "web") {
-                  navigate("Message", { view: "AddFriend", tab: "friends" });
-                } else {
+                if (Platform.OS !== "web") {
                   navigate("FriendshipManager", { tab: "friends" });
+                } else {
+                  navigate("Message", { view: "AddFriend", tab: "friends" });
                 }
               }}
             >

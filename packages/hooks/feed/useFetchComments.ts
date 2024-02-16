@@ -1,20 +1,17 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
-import { TERITORI_FEED_ID } from "../../components/socialFeed/const";
-import { decodeGnoPost } from "../../components/socialFeed/utils";
+import { useSelectedNetworkInfo } from "../useSelectedNetwork";
+
+import { nonSigningSocialFeedClient } from "@/client-creators/socialFeedClient";
 import {
   PostResult,
   Reaction,
-} from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import {
-  GnoNetworkInfo,
-  NetworkKind,
-  parseNetworkObjectId,
-} from "../../networks";
-import { extractGnoJSONString } from "../../utils/gno";
-import { useSelectedNetworkInfo } from "../useSelectedNetwork";
+} from "@/contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import { GnoNetworkInfo, NetworkKind, parseNetworkObjectId } from "@/networks";
+import { TERITORI_FEED_ID } from "@/utils/feed/constants";
+import { decodeGnoPost } from "@/utils/feed/gno";
+import { extractGnoJSONString } from "@/utils/gno";
 
 export type FetchCommentResponse = {
   list: PostResult[];
@@ -51,8 +48,6 @@ const fetchTeritoriComments = async (
     sort: "desc",
     identifier: parentId || "",
   });
-
-  console.log("comment", subComment);
 
   return { list: subComment };
 };

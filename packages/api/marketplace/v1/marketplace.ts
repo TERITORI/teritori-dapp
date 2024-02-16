@@ -189,10 +189,10 @@ export interface Collection {
   secondaryDuringMint: boolean;
   websiteUrl: string;
   twitterUrl: string;
-  floorPrice: number;
+  floorPrice: string;
   maxSupply: number;
   mintPrice: string;
-  totalVolume: number;
+  totalVolume: string;
   numTrades: number;
   numOwners: number;
   denom: string;
@@ -236,6 +236,7 @@ export interface Activity {
   buyerId: string;
   sellerId: string;
   usdPrice: number;
+  targetId: string;
 }
 
 export interface Quest {
@@ -257,6 +258,7 @@ export interface CollectionsRequest {
   upcoming: boolean;
   networkId: string;
   mintState: MintState;
+  periodInMinutes?: number | undefined;
 }
 
 export interface CollectionStatsRequest {
@@ -890,10 +892,10 @@ function createBaseCollection(): Collection {
     secondaryDuringMint: false,
     websiteUrl: "",
     twitterUrl: "",
-    floorPrice: 0,
+    floorPrice: "",
     maxSupply: 0,
     mintPrice: "",
-    totalVolume: 0,
+    totalVolume: "",
     numTrades: 0,
     numOwners: 0,
     denom: "",
@@ -942,8 +944,8 @@ export const Collection = {
     if (message.twitterUrl !== "") {
       writer.uint32(114).string(message.twitterUrl);
     }
-    if (message.floorPrice !== 0) {
-      writer.uint32(120).uint64(message.floorPrice);
+    if (message.floorPrice !== "") {
+      writer.uint32(122).string(message.floorPrice);
     }
     if (message.maxSupply !== 0) {
       writer.uint32(128).int64(message.maxSupply);
@@ -951,8 +953,8 @@ export const Collection = {
     if (message.mintPrice !== "") {
       writer.uint32(138).string(message.mintPrice);
     }
-    if (message.totalVolume !== 0) {
-      writer.uint32(149).float(message.totalVolume);
+    if (message.totalVolume !== "") {
+      writer.uint32(146).string(message.totalVolume);
     }
     if (message.numTrades !== 0) {
       writer.uint32(152).int64(message.numTrades);
@@ -1068,11 +1070,11 @@ export const Collection = {
           message.twitterUrl = reader.string();
           continue;
         case 15:
-          if (tag !== 120) {
+          if (tag !== 122) {
             break;
           }
 
-          message.floorPrice = longToNumber(reader.uint64() as Long);
+          message.floorPrice = reader.string();
           continue;
         case 16:
           if (tag !== 128) {
@@ -1089,11 +1091,11 @@ export const Collection = {
           message.mintPrice = reader.string();
           continue;
         case 18:
-          if (tag !== 149) {
+          if (tag !== 146) {
             break;
           }
 
-          message.totalVolume = reader.float();
+          message.totalVolume = reader.string();
           continue;
         case 19:
           if (tag !== 152) {
@@ -1147,10 +1149,10 @@ export const Collection = {
       secondaryDuringMint: isSet(object.secondaryDuringMint) ? globalThis.Boolean(object.secondaryDuringMint) : false,
       websiteUrl: isSet(object.websiteUrl) ? globalThis.String(object.websiteUrl) : "",
       twitterUrl: isSet(object.twitterUrl) ? globalThis.String(object.twitterUrl) : "",
-      floorPrice: isSet(object.floorPrice) ? globalThis.Number(object.floorPrice) : 0,
+      floorPrice: isSet(object.floorPrice) ? globalThis.String(object.floorPrice) : "",
       maxSupply: isSet(object.maxSupply) ? globalThis.Number(object.maxSupply) : 0,
       mintPrice: isSet(object.mintPrice) ? globalThis.String(object.mintPrice) : "",
-      totalVolume: isSet(object.totalVolume) ? globalThis.Number(object.totalVolume) : 0,
+      totalVolume: isSet(object.totalVolume) ? globalThis.String(object.totalVolume) : "",
       numTrades: isSet(object.numTrades) ? globalThis.Number(object.numTrades) : 0,
       numOwners: isSet(object.numOwners) ? globalThis.Number(object.numOwners) : 0,
       denom: isSet(object.denom) ? globalThis.String(object.denom) : "",
@@ -1199,8 +1201,8 @@ export const Collection = {
     if (message.twitterUrl !== "") {
       obj.twitterUrl = message.twitterUrl;
     }
-    if (message.floorPrice !== 0) {
-      obj.floorPrice = Math.round(message.floorPrice);
+    if (message.floorPrice !== "") {
+      obj.floorPrice = message.floorPrice;
     }
     if (message.maxSupply !== 0) {
       obj.maxSupply = Math.round(message.maxSupply);
@@ -1208,7 +1210,7 @@ export const Collection = {
     if (message.mintPrice !== "") {
       obj.mintPrice = message.mintPrice;
     }
-    if (message.totalVolume !== 0) {
+    if (message.totalVolume !== "") {
       obj.totalVolume = message.totalVolume;
     }
     if (message.numTrades !== 0) {
@@ -1244,10 +1246,10 @@ export const Collection = {
     message.secondaryDuringMint = object.secondaryDuringMint ?? false;
     message.websiteUrl = object.websiteUrl ?? "";
     message.twitterUrl = object.twitterUrl ?? "";
-    message.floorPrice = object.floorPrice ?? 0;
+    message.floorPrice = object.floorPrice ?? "";
     message.maxSupply = object.maxSupply ?? 0;
     message.mintPrice = object.mintPrice ?? "";
-    message.totalVolume = object.totalVolume ?? 0;
+    message.totalVolume = object.totalVolume ?? "";
     message.numTrades = object.numTrades ?? 0;
     message.numOwners = object.numOwners ?? 0;
     message.denom = object.denom ?? "";
@@ -1631,6 +1633,7 @@ function createBaseActivity(): Activity {
     buyerId: "",
     sellerId: "",
     usdPrice: 0,
+    targetId: "",
   };
 }
 
@@ -1671,6 +1674,9 @@ export const Activity = {
     }
     if (message.usdPrice !== 0) {
       writer.uint32(97).double(message.usdPrice);
+    }
+    if (message.targetId !== "") {
+      writer.uint32(106).string(message.targetId);
     }
     return writer;
   },
@@ -1766,6 +1772,13 @@ export const Activity = {
 
           message.usdPrice = reader.double();
           continue;
+        case 13:
+          if (tag !== 106) {
+            break;
+          }
+
+          message.targetId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1789,6 +1802,7 @@ export const Activity = {
       buyerId: isSet(object.buyerId) ? globalThis.String(object.buyerId) : "",
       sellerId: isSet(object.sellerId) ? globalThis.String(object.sellerId) : "",
       usdPrice: isSet(object.usdPrice) ? globalThis.Number(object.usdPrice) : 0,
+      targetId: isSet(object.targetId) ? globalThis.String(object.targetId) : "",
     };
   },
 
@@ -1830,6 +1844,9 @@ export const Activity = {
     if (message.usdPrice !== 0) {
       obj.usdPrice = message.usdPrice;
     }
+    if (message.targetId !== "") {
+      obj.targetId = message.targetId;
+    }
     return obj;
   },
 
@@ -1850,6 +1867,7 @@ export const Activity = {
     message.buyerId = object.buyerId ?? "";
     message.sellerId = object.sellerId ?? "";
     message.usdPrice = object.usdPrice ?? 0;
+    message.targetId = object.targetId ?? "";
     return message;
   },
 };
@@ -2018,7 +2036,16 @@ export const PriceDatum = {
 };
 
 function createBaseCollectionsRequest(): CollectionsRequest {
-  return { limit: 0, offset: 0, sort: 0, sortDirection: 0, upcoming: false, networkId: "", mintState: 0 };
+  return {
+    limit: 0,
+    offset: 0,
+    sort: 0,
+    sortDirection: 0,
+    upcoming: false,
+    networkId: "",
+    mintState: 0,
+    periodInMinutes: undefined,
+  };
 }
 
 export const CollectionsRequest = {
@@ -2043,6 +2070,9 @@ export const CollectionsRequest = {
     }
     if (message.mintState !== 0) {
       writer.uint32(64).int32(message.mintState);
+    }
+    if (message.periodInMinutes !== undefined) {
+      writer.uint32(72).int32(message.periodInMinutes);
     }
     return writer;
   },
@@ -2103,6 +2133,13 @@ export const CollectionsRequest = {
 
           message.mintState = reader.int32() as any;
           continue;
+        case 9:
+          if (tag !== 72) {
+            break;
+          }
+
+          message.periodInMinutes = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2121,6 +2158,7 @@ export const CollectionsRequest = {
       upcoming: isSet(object.upcoming) ? globalThis.Boolean(object.upcoming) : false,
       networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
       mintState: isSet(object.mintState) ? mintStateFromJSON(object.mintState) : 0,
+      periodInMinutes: isSet(object.periodInMinutes) ? globalThis.Number(object.periodInMinutes) : undefined,
     };
   },
 
@@ -2147,6 +2185,9 @@ export const CollectionsRequest = {
     if (message.mintState !== 0) {
       obj.mintState = mintStateToJSON(message.mintState);
     }
+    if (message.periodInMinutes !== undefined) {
+      obj.periodInMinutes = Math.round(message.periodInMinutes);
+    }
     return obj;
   },
 
@@ -2162,6 +2203,7 @@ export const CollectionsRequest = {
     message.upcoming = object.upcoming ?? false;
     message.networkId = object.networkId ?? "";
     message.mintState = object.mintState ?? 0;
+    message.periodInMinutes = object.periodInMinutes ?? undefined;
     return message;
   },
 };
@@ -4460,9 +4502,7 @@ export class GrpcWebImpl {
             }
           },
         });
-        observer.add(() => {
-          return client.close();
-        });
+        observer.add(() => client.close());
       };
       upStream();
     }).pipe(share());

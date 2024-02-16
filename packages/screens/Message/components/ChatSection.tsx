@@ -1,11 +1,11 @@
 import moment from "moment";
 import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
 import {
-  View,
-  TouchableOpacity,
-  useWindowDimensions,
   FlatList,
   Platform,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -14,47 +14,47 @@ import { Conversation } from "./Conversation";
 import { SearchConversation } from "./SearchConversation";
 import closeSVG from "../../../../assets/icons/close.svg";
 import sent from "../../../../assets/icons/sent.svg";
-import { BrandText } from "../../../components/BrandText";
-import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
-import { SVG } from "../../../components/SVG";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import {
+  Conversation as IConversation,
+  Message,
+  ReplyTo,
+} from "../../../utils/types/message";
+
+import { BrandText } from "@/components/BrandText";
+import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useMessage } from "@/context/MessageProvider";
+import { useAppRoute } from "@/hooks/navigation/useAppRoute";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import {
   selectConversationById,
   selectMessageList,
   updateConversationById,
-} from "../../../store/slices/message";
-import { RootState } from "../../../store/store";
-import {
-  ScreenFC,
-  useAppNavigation,
-  useAppRoute,
-} from "../../../utils/navigation";
+} from "@/store/slices/message";
+import { RootState } from "@/store/store";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import {
   neutral00,
   neutral33,
   neutral77,
   neutralA3,
   redDefault,
-} from "../../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontSemibold10,
   fontSemibold12,
   fontSemibold14,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import {
-  Conversation as IConversation,
-  Message,
-  ReplyTo,
-} from "../../../utils/types/message";
-import { weshConfig } from "../../../weshnet";
-import { getNewConversationText } from "../../../weshnet/messageHelpers";
-import { sendMessage } from "../../../weshnet/services";
-import { bytesFromString, stringFromBytes } from "../../../weshnet/utils";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { weshConfig } from "@/weshnet";
+import { getNewConversationText } from "@/weshnet/messageHelpers";
+import { sendMessage } from "@/weshnet/services";
+import { bytesFromString, stringFromBytes } from "@/weshnet/utils";
 
 interface ChatSectionProps {
   conversation: IConversation;
@@ -66,12 +66,15 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const [replyTo, setReplyTo] = useState<ReplyTo>();
   const [inputRef, setInputRef] = useState<RefObject<any> | null>(null);
   const dispatch = useDispatch();
+  const isMobile = useIsMobile();
 
   const [lastReadProcessedId, setLastReadProcessedId] = useState("");
   const conversationItem = useSelector((state: RootState) =>
     selectConversationById(state, conversation.id),
   );
   const [lastReadMessage, setLastReadMessage] = useState<Message | undefined>();
+
+  const { setActiveConversation } = useMessage();
 
   const [searchInput, setSearchInput] = useState("");
 
@@ -110,11 +113,10 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
     if (!searchInput) {
       return [];
     }
-    return messages.filter(
-      (item) =>
-        item?.payload?.message
-          ?.toLowerCase()
-          .includes(searchInput?.toLowerCase()),
+    return messages.filter((item) =>
+      item?.payload?.message
+        ?.toLowerCase()
+        .includes(searchInput?.toLowerCase()),
     );
   }, [messages, searchInput]);
 
@@ -146,7 +148,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
       });
     }
   };
-  const { height } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
   const handleRead = async (lastMessageId: string) => {
     if (lastReadProcessedId === lastMessageId) {
@@ -224,29 +226,16 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
 
   return (
     <KeyboardAvoidingView extraVerticalOffset={32}>
-      <View
-        style={[
-          {
-            height: height - (Platform.OS === "web" ? 210 : 150),
-            width: "100%",
-          },
-          Platform.OS !== "web" && {
-            flex: 1,
-          },
-        ]}
-      >
-        <View
-          style={{
-            flex: 1,
-            width: "100%",
-            minWidth: "100%",
-          }}
-        >
+      <View style={[{ flex: 1, width: isMobile ? width : "100%" }]}>
+        <View style={{ flex: 1 }}>
           <View style={{ zIndex: 11111 }}>
             <ChatHeader
               searchInput={searchInput}
               setSearchInput={setSearchInput}
               conversation={conversation}
+              onBackPress={
+                isMobile ? () => setActiveConversation(undefined) : undefined
+              }
             />
           </View>
           <Separator color={neutral33} />
@@ -326,7 +315,6 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
             style={{
               paddingVertical: layout.spacing_x1_5,
             }}
-            contentContainerStyle={{ flexGrow: 1 }}
             renderItem={({ item, index }) => {
               const previousMessage =
                 index < messages.length - 1 ? messages[index + 1] : undefined;
@@ -519,7 +507,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                   if (
                     Platform.OS === "web" &&
                     e.nativeEvent.key === "Enter" &&
-                    //@ts-ignore
+                    // @ts-expect-error: description todo
                     !e?.shiftKey
                   ) {
                     e.preventDefault();

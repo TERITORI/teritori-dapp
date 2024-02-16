@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  StyleSheet,
-  ImageBackground,
   FlatList,
-  View,
+  ImageBackground,
+  StyleSheet,
   TouchableOpacity,
+  View,
 } from "react-native";
 
 import { GameContentView } from "./component/GameContentView";
@@ -15,37 +15,38 @@ import badgeSVG from "../../../assets/icons/badge.svg";
 import volDownSVG from "../../../assets/icons/vol-down.svg";
 import volUpSVG from "../../../assets/icons/vol-up.svg";
 import logoSVG from "../../../assets/logos/logo-white.svg";
+import FlexRow from "../../components/FlexRow";
+
 import {
   CurrentSeasonResponse,
   LeaderboardResponse,
   UserScore,
-} from "../../api/p2e/v1/p2e";
-import { BrandText } from "../../components/BrandText";
-import FlexRow from "../../components/FlexRow";
-import { SVG } from "../../components/SVG";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { UserAvatarWithFrame } from "../../components/images/AvatarWithFrame";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
-import { parseUserId } from "../../networks";
-import { mustGetP2eClient } from "../../utils/backend";
-import { parseUserScoreInfo } from "../../utils/game";
-import { useAppNavigation } from "../../utils/navigation";
+} from "@/api/p2e/v1/p2e";
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { parseUserId } from "@/networks";
+import { mustGetP2eClient } from "@/utils/backend";
+import { parseUserScoreInfo } from "@/utils/game";
 import {
   additionalGreen,
   additionalRed,
   neutral33,
   neutral77,
   primaryColor,
-} from "../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontMedium16,
   fontSemibold12,
   fontSemibold28,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type RankProps = {
   changes: number;
@@ -129,13 +130,16 @@ export const RiotGameLeaderboardScreen = () => {
 
     const _userScores: UserScore[] = [];
 
-    const currentSeason = await p2eClient.CurrentSeason({});
+    const currentSeason = await p2eClient.CurrentSeason({
+      networkId: selectedNetwork?.id,
+    });
     setCurrentSeason(currentSeason);
 
-    const streamData = await p2eClient.Leaderboard({
+    const streamData = p2eClient.Leaderboard({
       seasonId: currentSeason.id,
       limit: 500,
       offset: 0,
+      networkId: selectedNetwork?.id,
     });
 
     await streamData.forEach((item: LeaderboardResponse) => {
@@ -162,7 +166,7 @@ export const RiotGameLeaderboardScreen = () => {
         <BrandText style={fontMedium16}>{currentSeason?.id}</BrandText>
       </ImageBackground>
 
-      <TertiaryBox fullWidth style={{ marginTop: layout.spacing_x2 }}>
+      <LegacyTertiaryBox fullWidth style={{ marginTop: layout.spacing_x2 }}>
         <FlexRow>
           <View style={{ flex: 1 }}>
             <BrandText
@@ -192,7 +196,7 @@ export const RiotGameLeaderboardScreen = () => {
             </View>
           )}
         </FlexRow>
-      </TertiaryBox>
+      </LegacyTertiaryBox>
 
       <FlatList
         data={userScores}

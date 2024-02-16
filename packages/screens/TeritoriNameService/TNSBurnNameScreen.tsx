@@ -4,22 +4,25 @@ import { View } from "react-native";
 
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 import burnSVG from "../../../assets/icons/burn.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
-import { NameNFT } from "../../components/teritoriNameService/NameNFT";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useTNS } from "../../context/TNSProvider";
-import { TeritoriNameServiceClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { NameNFT } from "@/components/teritoriNameService/NameNFT";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useTNS } from "@/context/TNSProvider";
+import { TeritoriNameServiceClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { nsNameInfoQueryKey } from "@/hooks/useNSNameInfo";
+import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
 import {
+  getCosmosNetwork,
   getKeplrSigningCosmWasmClient,
   mustGetCosmosNetwork,
-} from "../../networks";
-import { neutral17 } from "../../utils/style/colors";
+} from "@/networks";
+import { neutral17, neutralA3 } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 
 interface TNSBurnNameScreenProps extends TNSModalCommonProps {}
 
@@ -29,10 +32,12 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
   const { name } = useTNS();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
-  const network = mustGetCosmosNetwork(selectedWallet?.networkId);
+  const network = getCosmosNetwork(selectedWallet?.networkId);
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
   const walletAddress = selectedWallet?.address;
-  const normalizedTokenId = (name + network.nameServiceTLD || "").toLowerCase();
+  const normalizedTokenId = (
+    name + network?.nameServiceTLD || ""
+  ).toLowerCase();
 
   const queryClient = useQueryClient();
 
@@ -53,6 +58,7 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
     }
 
     try {
+      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
       if (!network.nameServiceContractAddress) {
         throw new Error("network not supported");
       }
@@ -93,10 +99,10 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
     <ModalBase
       hideMainSeparator
       onClose={() => onClose()}
+      label="Burn Name NFT"
       width={457}
-      contentStyle={{
+      boxStyle={{
         backgroundColor: neutral17,
-        borderRadius: 8,
       }}
     >
       <View
@@ -132,7 +138,7 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
               style={{
                 fontSize: 16,
                 lineHeight: 20,
-                color: "#A3A3A3",
+                color: neutralA3,
                 marginTop: 16,
                 marginBottom: 20,
               }}
@@ -146,8 +152,7 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
               size="XS"
               text="I understand, burn it"
               onPress={onSubmit}
-              style={{ marginBottom: 80 }}
-              squaresBackgroundColor={neutral17}
+              style={{ marginBottom: layout.spacing_x4 }}
               loader
             />
           </View>

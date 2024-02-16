@@ -14,8 +14,16 @@ type PostID string
 type NFTID string
 type ActivityID string
 
+func (n *NetworkBase) StringToNFTID(nftIDString string) NFTID {
+	return NFTID(nftIDString)
+}
+
 func (n *NetworkBase) CollectionID(mintContractAddress string) CollectionID {
 	return CollectionID(fmt.Sprintf("%s-%s", n.IDPrefix, mintContractAddress))
+}
+
+func (n *NetworkBase) NftID(mintContractAddress string, tokenID int64) NFTID {
+	return NFTID(fmt.Sprintf("%s-%s-%d", n.IDPrefix, mintContractAddress, tokenID))
 }
 
 // returns <network_id>-<root_contract_address>
@@ -49,7 +57,7 @@ func (netstore NetworkStore) ParseNFTID(nftId string) (Network, string, string, 
 }
 
 func (n *NetworkBase) UserID(address string) UserID {
-	return UserID(fmt.Sprintf("%s-%s", n.IDPrefix, address))
+	return UserID(fmt.Sprintf("%s-%s", n.IDPrefix, strings.ToLower(address)))
 }
 
 func (n *NetworkBase) PostID(identifier string) PostID {
@@ -74,6 +82,10 @@ func (netstore NetworkStore) ParseUserID(userId string) (Network, string, error)
 
 func (n *NetworkBase) ActivityID(txHash string, messageIndex int) ActivityID {
 	return ActivityID(fmt.Sprintf("%s-%s-%d", n.IDPrefix, txHash, messageIndex))
+}
+
+func (n *NetworkBase) SubActivityID(txHash string, messageIndex int, activityIndex int) ActivityID {
+	return ActivityID(fmt.Sprintf("%s-%s-%d-%d", n.IDPrefix, txHash, messageIndex, activityIndex))
 }
 
 // returns <network_id>-<tx_hash>-<message_index>

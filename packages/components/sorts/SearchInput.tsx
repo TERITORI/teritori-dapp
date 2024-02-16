@@ -1,11 +1,17 @@
 import React from "react";
-import { StyleProp, StyleSheet, TextInput, ViewStyle } from "react-native";
+import {
+  StyleProp,
+  StyleSheet,
+  TextInput,
+  TextStyle,
+  ViewStyle,
+} from "react-native";
 
 import searchSVG from "../../../assets/icons/search.svg";
 import { fontMedium14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 export const SearchInput: React.FC<{
   style?: StyleProp<ViewStyle>;
@@ -13,7 +19,7 @@ export const SearchInput: React.FC<{
   handleChangeText?: (e: string) => void;
 }> = ({ handleChangeText, borderRadius, style }) => {
   return (
-    <TertiaryBox
+    <LegacyTertiaryBox
       style={style}
       height={40}
       mainContainerStyle={{
@@ -34,7 +40,7 @@ export const SearchInput: React.FC<{
         placeholderTextColor="#FFFFFF"
         style={textInputStyle}
       />
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 };
 
@@ -45,6 +51,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     width: "100%",
     outlineStyle: "none",
-  },
+  } as TextStyle,
 });
 const textInputStyle = StyleSheet.flatten([styles.textInput, fontMedium14]);

@@ -12,7 +12,6 @@ import {
   NetworkKind,
   parseUserId,
 } from "../../../../networks";
-import { useAppNavigation } from "../../../../utils/navigation";
 import { zodTryParseJSON } from "../../../../utils/sanitize";
 import { DEFAULT_USERNAME } from "../../../../utils/social-feed";
 import {
@@ -31,14 +30,14 @@ import {
   layout,
   SOCIAL_FEED_BREAKPOINT_M,
 } from "../../../../utils/style/layout";
+import {
+  ZodSocialFeedPostMetadata,
+  ZodSocialFeedVideoMetadata,
+} from "../../../../utils/types/feed";
 import { BrandText } from "../../../BrandText";
 import { CustomPressable } from "../../../buttons/CustomPressable";
 import { MediaPlayerVideo } from "../../../mediaPlayer/MediaPlayerVideo";
 import { SpacerColumn, SpacerRow } from "../../../spacer";
-import {
-  ZodSocialFeedPostMetadata,
-  ZodSocialFeedVideoMetadata,
-} from "../../NewsFeed/NewsFeed.type";
 import { DislikeButton } from "../../SocialActions/DislikeButton";
 import { LikeButton } from "../../SocialActions/LikeButton";
 import { ReportButton } from "../../SocialActions/ReportButton";
@@ -47,6 +46,8 @@ import { TipButton } from "../../SocialActions/TipButton";
 import { FlaggedCardFooter } from "../FlaggedCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";
 import { SocialCardWrapper } from "../SocialCardWrapper";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const VIDEO_CARD_PADDING_VERTICAL = layout.spacing_x2;
 const VIDEO_CARD_PADDING_HORIZONTAL = layout.spacing_x2_5;

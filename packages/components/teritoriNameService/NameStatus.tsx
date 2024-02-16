@@ -5,15 +5,14 @@ import mintedSVG from "../../../assets/icons/minted.svg";
 import { errorColor, neutral17, successColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
-// A custom TextInput. You can add children (Ex: An icon or a small container)
 export const NameStatus: React.FC<{
   available?: boolean;
   hasError?: boolean;
 }> = ({ available, hasError }) => {
   return (
-    <TertiaryBox
+    <LegacyTertiaryBox
       mainContainerStyle={{
         flexDirection: "row",
         justifyContent: "flex-start",
@@ -36,6 +35,6 @@ export const NameStatus: React.FC<{
       <BrandText style={{ fontSize: 14, marginLeft: 4 }}>
         {hasError ? "error" : available ? "available" : "minted"}
       </BrandText>
-    </TertiaryBox>
+    </LegacyTertiaryBox>
   );
 };

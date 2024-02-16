@@ -10,23 +10,24 @@ import {
 
 import { ReviewCollapsable } from "./ReviewCollapsable";
 import { ReviewCollapsableItem } from "./ReviewCollapsableItem";
-import { BrandText } from "../../../components/BrandText";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
-import { NetworkKind } from "../../../networks";
-import { neutral00, primaryColor } from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
+
+import { BrandText } from "@/components/BrandText";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { NetworkKind } from "@/networks";
+import { neutral00, primaryColor } from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { tinyAddress } from "@/utils/text";
 import {
-  CreateDaoFormType,
   ConfigureVotingFormType,
-  TokenSettingFormType,
-  MemberSettingFormType,
+  CreateDaoFormType,
   DaoType,
-} from "../types";
+  MemberSettingFormType,
+  TokenSettingFormType,
+} from "@/utils/types/organizations";
 
 interface ReviewInformationSectionProps {
   organizationData?: CreateDaoFormType;

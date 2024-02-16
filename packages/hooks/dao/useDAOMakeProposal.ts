@@ -2,14 +2,15 @@ import { useCallback } from "react";
 
 import { useDAOFirstProposalModule } from "./useDAOProposalModules";
 import { useInvalidateDAOProposals } from "./useDAOProposals";
-import { DaoPreProposeSingleClient } from "../../contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.client";
-import { CosmosMsgForEmpty } from "../../contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.types";
-import { DaoProposalSingleQueryClient } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
+
+import { DaoPreProposeSingleClient } from "@/contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.client";
+import { CosmosMsgForEmpty } from "@/contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.types";
+import { DaoProposalSingleQueryClient } from "@/contracts-clients/dao-proposal-single/DaoProposalSingle.client";
 import {
   mustGetNonSigningCosmWasmClient,
   getKeplrSigningCosmWasmClient,
   parseUserId,
-} from "../../networks";
+} from "@/networks";
 
 export const useDAOMakeProposal = (
   daoId: string | undefined,
@@ -28,7 +29,7 @@ export const useDAOMakeProposal = (
         title: string;
       },
     ) => {
-      if (!enabled) {
+      if (enabled === false) {
         throw new Error("Hook is not enabled");
       }
 

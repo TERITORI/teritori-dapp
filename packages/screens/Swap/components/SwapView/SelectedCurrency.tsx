@@ -1,35 +1,31 @@
-import React, {
-  Dispatch,
-  RefObject,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react";
+import React, { forwardRef, useMemo } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import chevronDownSVG from "../../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../../assets/icons/chevron-up.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { CurrencyIcon } from "../../../../components/CurrencyIcon";
-import { SVG } from "../../../../components/SVG";
-import { useDropdowns } from "../../../../context/DropdownsProvider";
+
+import { BrandText } from "@/components/BrandText";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
+import { SVG } from "@/components/SVG";
 import {
   allNetworks,
   CosmosNetworkInfo,
   NativeCurrencyInfo,
   NetworkKind,
-} from "../../../../networks";
-import { neutralA3, secondaryColor } from "../../../../utils/style/colors";
-import { fontSemibold13 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
+} from "@/networks";
+import { neutralA3, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
-export const SelectedCurrency: React.FC<{
-  currency?: NativeCurrencyInfo;
-  selectedNetworkId: string;
-  setRef: Dispatch<SetStateAction<RefObject<any> | null>>;
-}> = ({ currency, selectedNetworkId, setRef }) => {
-  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
+export const SelectedCurrency = forwardRef<
+  View,
+  {
+    currency?: NativeCurrencyInfo;
+    selectedNetworkId: string;
+    isDropdownOpen: boolean;
+    setDropdownState: (val: boolean) => void;
+  }
+>(({ currency, selectedNetworkId, isDropdownOpen, setDropdownState }, ref) => {
   const currencyNetwork: CosmosNetworkInfo | undefined = useMemo(() => {
     const cosmosNetworks = allNetworks.filter(
       (networkInfo) => networkInfo.kind === NetworkKind.Cosmos,
@@ -39,18 +35,10 @@ export const SelectedCurrency: React.FC<{
     );
   }, [currency?.denom]);
 
-  // Passing ref to parent
-  const ref = useRef<View>(null);
-  useEffect(() => {
-    if (ref.current) {
-      setRef(ref);
-    }
-  }, [setRef]);
-
   return (
-    <View ref={ref}>
+    <View ref={ref} collapsable={false}>
       <TouchableOpacity
-        onPress={() => onPressDropdownButton(ref)}
+        onPress={() => setDropdownState(!isDropdownOpen)}
         style={{
           flexDirection: "row",
           alignItems: "center",
@@ -73,7 +61,7 @@ export const SelectedCurrency: React.FC<{
               {currency?.displayName}
             </BrandText>
             <SVG
-              source={isDropdownOpen(ref) ? chevronUpSVG : chevronDownSVG}
+              source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
               width={16}
               height={16}
               color={secondaryColor}
@@ -86,4 +74,4 @@ export const SelectedCurrency: React.FC<{
       </TouchableOpacity>
     </View>
   );
-};
+});

@@ -7,6 +7,7 @@ import { Datum } from "../components/table/Datum";
 import { HeaderItem } from "../components/table/HeaderItem";
 import { useContentContext } from "../context/ContentProvider";
 import { useMyHistoryData } from "../query/useHistoryData";
+
 interface HistoryItem {
   date: string;
   tickets: {

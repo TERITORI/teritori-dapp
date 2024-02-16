@@ -1,0 +1,251 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QueryMsg",
+  "anyOf": [
+    {
+      "$ref": "#/definitions/QueryMsg"
+    }
+  ],
+  "definitions": {
+    "QueryMsg": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "channel"
+          ],
+          "properties": {
+            "channel": {
+              "type": "object",
+              "required": [
+                "channel_addr"
+              ],
+              "properties": {
+                "channel_addr": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "admin_funds"
+          ],
+          "properties": {
+            "admin_funds": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "channel_funds"
+          ],
+          "properties": {
+            "channel_funds": {
+              "type": "object",
+              "required": [
+                "channel_addr"
+              ],
+              "properties": {
+                "channel_addr": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "subscription"
+          ],
+          "properties": {
+            "subscription": {
+              "type": "object",
+              "required": [
+                "channel_addr",
+                "sub_addr"
+              ],
+              "properties": {
+                "channel_addr": {
+                  "type": "string"
+                },
+                "sub_addr": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "owner_of"
+          ],
+          "properties": {
+            "owner_of": {
+              "type": "object",
+              "required": [
+                "token_id"
+              ],
+              "properties": {
+                "include_expired": {
+                  "description": "unset or false will filter out expired approvals, you must set to true to see them",
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "token_id": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "num_tokens"
+          ],
+          "properties": {
+            "num_tokens": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "contract_info"
+          ],
+          "properties": {
+            "contract_info": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "nft_info"
+          ],
+          "properties": {
+            "nft_info": {
+              "type": "object",
+              "required": [
+                "token_id"
+              ],
+              "properties": {
+                "token_id": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "all_nft_info"
+          ],
+          "properties": {
+            "all_nft_info": {
+              "type": "object",
+              "required": [
+                "token_id"
+              ],
+              "properties": {
+                "include_expired": {
+                  "description": "unset or false will filter out expired approvals, you must set to true to see them",
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "token_id": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "tokens"
+          ],
+          "properties": {
+            "tokens": {
+              "type": "object",
+              "required": [
+                "owner"
+              ],
+              "properties": {
+                "limit": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "format": "uint32",
+                  "minimum": 0.0
+                },
+                "owner": {
+                  "type": "string"
+                },
+                "start_after": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "all_tokens"
+          ],
+          "properties": {
+            "all_tokens": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "format": "uint32",
+                  "minimum": 0.0
+                },
+                "start_after": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

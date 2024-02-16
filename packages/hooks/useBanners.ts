@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getNetwork } from "../networks";
-import { getMarketplaceClient } from "../utils/backend";
+import { getNetwork } from "@/networks";
+import { getMarketplaceClient } from "@/utils/backend";
 
 export const useBanners = (networkId: string) => {
   const { data } = useQuery(
