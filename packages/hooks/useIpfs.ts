@@ -41,7 +41,7 @@ export const useIpfs = () => {
     }: PinataFileProps): Promise<string | undefined> => {
       try {
         const formData = new FormData();
-        if (mode == "mini") {
+        if (mode === "mini") {
           //@ts-expect-error
           formData.append("file", {
             uri: file.url,
