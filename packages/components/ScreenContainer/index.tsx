@@ -27,7 +27,6 @@ import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
 import { SearchBar } from "../Search/SearchBar";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
-import { NotificationDrawer } from "../TopMenu/NotificationDrawer";
 import { Footer } from "../footers/Footer";
 import { MediaPlayerBar } from "../mediaPlayer/MediaPlayerBar";
 import { TogglePlayerButton } from "../mediaPlayer/TogglePlayerButton";
@@ -188,7 +187,7 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
               alignItems: "center",
             }}
           >
-            {selectedWallet?.connected && <NotificationDrawer />}
+            {/*{selectedWallet?.connected && <NotificationDrawer />}*/}
             <TogglePlayerButton />
             <Separator
               horizontal

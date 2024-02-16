@@ -2,11 +2,7 @@ import React from "react";
 import { View } from "react-native";
 
 import { TopMenuSection } from "./TopMenuSection";
-import { DAO } from "../../api/dao/v1/dao";
-import { useDAOs } from "../../hooks/dao/useDAOs";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { fontBold11 } from "../../utils/style/fonts";
-import { layout, topMenuWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import FlexCol from "../FlexCol";
 import FlexRow from "../FlexRow";
@@ -14,6 +10,11 @@ import { OmniLink } from "../OmniLink";
 import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { SmallCarousel } from "../carousels/SmallCarousel";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
+
+import { DAO } from "@/api/dao/v1/dao";
+import { useDAOs } from "@/hooks/dao/useDAOs";
+import { fontBold11 } from "@/utils/style/fonts";
+import { layout, topMenuWidth } from "@/utils/style/layout";
 
 const ORG_CARD_WIDTH = 164;
 const ORG_CARD_TAG_WIDTH = 94;

@@ -5,17 +5,18 @@ import { TopMenuBox } from "./TopMenuBox";
 import { WalletView } from "./WalletView";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
-import { useDropdowns } from "../../hooks/useDropdowns";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { SVG } from "../SVG";
+import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+
+import { useDropdowns } from "@/hooks/useDropdowns";
 import {
   neutral00,
   neutral33,
   purpleLight,
   secondaryColor,
-} from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { SVG } from "../SVG";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+} from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
 
 export const TOP_MENU_BUTTON_HEIGHT = 40;
 

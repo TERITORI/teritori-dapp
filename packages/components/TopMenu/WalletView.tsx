@@ -1,12 +1,13 @@
 import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import { Wallet } from "../../context/WalletsProvider";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { fontMedium14 } from "../../utils/style/fonts";
-import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { WalletProviderIcon } from "../WalletProviderIcon";
+
+import { Wallet } from "@/context/WalletsProvider";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { fontMedium14 } from "@/utils/style/fonts";
+import { tinyAddress } from "@/utils/text";
 
 export const WalletView: React.FC<{
   wallet?: Wallet;

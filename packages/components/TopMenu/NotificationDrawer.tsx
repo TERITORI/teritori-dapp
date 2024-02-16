@@ -1,6 +1,6 @@
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import moment from "moment/moment";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   FlatList,
   ScrollView,
@@ -19,7 +19,6 @@ import {
   Notification,
   NotificationsRequest,
 } from "../../api/notification/v1/notification";
-import { useDropdowns } from "../../context/DropdownsProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import {
   notificationsQueryKey,
@@ -48,9 +47,12 @@ import { OmniLink, OmniLinkToType } from "../OmniLink";
 import { UserNameInline } from "../UserNameInline";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { useDropdowns } from "@/hooks/useDropdowns";
+
 export const NotificationDrawer: React.FC = () => {
-  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
+
   const selectedWallet = useSelectedWallet();
   const notifications = useNotifications({
     userId: selectedWallet?.userId,
@@ -58,8 +60,8 @@ export const NotificationDrawer: React.FC = () => {
 
   return (
     <View ref={dropdownRef}>
-      <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
-        <TertiaryBox
+      <TouchableOpacity onPress={() => setDropdownState(!isDropdownOpen)}>
+        <LegacyTertiaryBox
           width={50}
           style={{
             marginRight: layout.spacing_x1_5,
@@ -68,9 +70,7 @@ export const NotificationDrawer: React.FC = () => {
             justifyContent: "space-between",
             flexDirection: "row",
             paddingHorizontal: 12,
-            backgroundColor: isDropdownOpen(dropdownRef)
-              ? neutral33
-              : neutral00,
+            backgroundColor: isDropdownOpen ? neutral33 : neutral00,
           }}
           height={TOP_MENU_BUTTON_HEIGHT}
         >
@@ -100,19 +100,13 @@ export const NotificationDrawer: React.FC = () => {
                 </BrandText>
               </View>
               <BellAlertIcon
-                color={
-                  isDropdownOpen(dropdownRef) ? primaryColor : secondaryColor
-                }
+                color={isDropdownOpen ? primaryColor : secondaryColor}
               />
             </>
           ) : (
-            <BellIcon
-              color={
-                isDropdownOpen(dropdownRef) ? primaryColor : secondaryColor
-              }
-            />
+            <BellIcon color={isDropdownOpen ? primaryColor : secondaryColor} />
           )}
-        </TertiaryBox>
+        </LegacyTertiaryBox>
       </TouchableOpacity>
 
       <NotificationList
@@ -123,7 +117,7 @@ export const NotificationDrawer: React.FC = () => {
             top: 46,
             right: 0,
           },
-          !isDropdownOpen(dropdownRef) && { display: "none" },
+          !isDropdownOpen && { display: "none" },
         ]}
       />
     </View>
@@ -397,7 +391,7 @@ const getOmniLink = (item: Notification): OmniLinkToType => {
   }
   if (
     ["dao-member-removed", "dao-member-added", "dao-proposal-created"].includes(
-      item.category
+      item.category,
     )
   ) {
     return {
