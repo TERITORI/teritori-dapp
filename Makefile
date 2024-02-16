@@ -1,6 +1,7 @@
 CANDYMACHINE_REPO=teritori-nfts
 BUNKER_MINTER_PACKAGE=teritori-bunker-minter
 GO?=go
+GOFMT?=$(shell $(GO) env GOROOT)/bin/gofmt
 
 TOKEN_REPO=teritori-nfts
 TOKEN_PACKAGE=teritori-nft
@@ -92,7 +93,8 @@ generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(
 
 .PHONY: generate.go-networks
 generate.go-networks: node_modules validate-networks
-	npx tsx packages/scripts/generateGoNetworks.ts | gofmt > go/pkg/networks/networks.gen.go
+	npx tsx packages/scripts/generateGoNetworks.ts | $(GOFMT) > go/pkg/networks/networks.gen.go
+	npx tsx packages/scripts/codegen/generateGoNetworkFeatures.ts | $(GOFMT) > go/pkg/networks/features.gen.go
 
 .PHONY/: $(CONTRACTS_CLIENTS_DIR)/cw721-membership
 $(CONTRACTS_CLIENTS_DIR)/cw721-membership: node_modules

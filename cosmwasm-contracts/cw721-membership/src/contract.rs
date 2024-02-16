@@ -224,20 +224,30 @@ impl Cw721MembershipContract {
         )?;
         self.by_owner.save(
             ctx.deps.storage,
-            (recipient_addr, channel_addr.to_owned(), nft_index.into()),
+            (
+                recipient_addr.to_owned(),
+                channel_addr.to_owned(),
+                nft_index.into(),
+            ),
             &(),
         )?;
 
         channel.next_index = channel.next_index.checked_add(Uint64::one())?;
         self.channels
-            .save(ctx.deps.storage, channel_addr, &channel)?;
+            .save(ctx.deps.storage, channel_addr.to_owned(), &channel)?;
 
         self.num_tokens
             .update::<_, ContractError>(ctx.deps.storage, |num_tokens| {
                 Ok(num_tokens.checked_add(Uint64::one())?)
             })?;
 
-        Ok(Response::default())
+        let nft_metadata =
+            serde_json::to_string(&nft).map_err(|_| ContractError::SerializationError)?;
+
+        Ok(Response::default()
+            .add_attribute("token_id", format_token_id(&channel_addr, nft_index))
+            .add_attribute("recipient_addr", recipient_addr.to_string())
+            .add_attribute("nft_metadata", nft_metadata))
     }
 
     #[msg(exec)]
@@ -838,5 +848,5 @@ pub fn parse_token_id(token_id: &String) -> Result<(String, u64), ContractError>
 }
 
 pub fn format_token_id(channel_addr: &Addr, nft_index: Uint64) -> String {
-    format!("{}#{}", channel_addr, nft_index)
+    format!("{}_{}", channel_addr, nft_index)
 }

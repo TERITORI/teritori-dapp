@@ -140,6 +140,18 @@ func (h *Handler) handleInstantiate(e *Message) error {
 		return errors.Wrap(err, "failed to get outer contract address")
 	}
 
+	// TODO: optimize
+	pmFeature, err := h.config.Network.GetFeatureCosmWasmPremiumFeed()
+	if err != nil {
+		if !errors.Is(err, networks.ErrFeatureNotFound) {
+			return errors.Wrap(err, "failed to query feature")
+		}
+	}
+	pmContractAddress := ""
+	if pmFeature != nil {
+		pmContractAddress = pmFeature.MembershipContractAddress
+	}
+
 	switch contractAddress {
 	case h.config.Network.NameServiceContractAddress:
 		if err := h.handleInstantiateTNS(e, contractAddress, &instantiateMsg); err != nil {
@@ -149,6 +161,10 @@ func (h *Handler) handleInstantiate(e *Message) error {
 	case h.config.Network.RiotContractAddressGen1:
 		if err := h.handleInstantiateBreeding(e, contractAddress, &instantiateMsg); err != nil {
 			return errors.Wrap(err, "failed to handle breeding instantiation")
+		}
+	case pmContractAddress:
+		if err := h.handleInstantiatePremiumFeedMemberships(e, &instantiateMsg); err != nil {
+			return errors.Wrap(err, "failed to handle premium feed collection instantiation")
 		}
 		return nil
 	}
@@ -313,6 +329,11 @@ func (h *Handler) handleExecute(e *Message) error {
 		case "execute":
 			if err := h.handleExecuteDAOExecute(e, &executeMsg); err != nil {
 				return errors.Wrap(err, "failed to handle dao execute")
+			}
+		// Premium feed actions
+		case "subscribe":
+			if err := h.handleExecutePremiumFeedSubscribe(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle premium feed subscribe")
 			}
 		}
 	}

@@ -390,6 +390,7 @@ dependencies = [
  "cw721-metadata-onchain",
  "schemars",
  "serde",
+ "serde_json",
  "sylvia",
  "thiserror",
 ]
