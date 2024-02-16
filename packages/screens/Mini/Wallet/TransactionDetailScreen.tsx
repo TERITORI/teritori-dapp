@@ -130,7 +130,7 @@ export function capitalizeStr(str: string) {
   return firstLetter + lastLetter;
 }
 
-export async function copyToClipboard(value: string) {
+async function copyToClipboard(value: string) {
   await Clipboard.setStringAsync(value);
 }
 
