@@ -14,7 +14,6 @@ import { useForceNetworkKind } from "../../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import {
   getResponsiveScreenContainerMarginHorizontal,
@@ -74,7 +73,6 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
-  const selectedWallet = useSelectedWallet();
   const { width: screenWidth, contentWidth } = useMaxResolution({
     responsive,
     noMargin,
