@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package notification.v1;
+option go_package = "./notificationpb";
+
+service NotificationService {
+  rpc Notifications(NotificationsRequest) returns (NotificationsResponse);
+  rpc DismissNotification(DismissNotificationRequest) returns (DismissNotificationResponse);
+  rpc DismissAllNotifications(DismissAllNotificationsRequest) returns (DismissAllNotificationsResponse);
+}
+
+// DismissNotification
+message DismissNotificationRequest {
+  string user_id = 1;
+  int64 notification_id = 2;
+}
+message DismissNotificationResponse {
+}
+// --
+
+// DismissAllNotification
+message DismissAllNotificationsRequest {
+  string user_id = 1;
+}
+message DismissAllNotificationsResponse {
+}
+// --
+
+// Notifications
+message NotificationsRequest {
+  string user_id = 1;
+}
+
+ message NotificationsResponse {
+   repeated Notification notifications = 1;
+ }
+
+message Notification {
+  string user_id = 1;
+  string trigger_by = 2;
+  string body = 3;
+  string action = 4;
+  string category = 5;
+  int64 created_at = 6;
+  bool dismissed = 7;
+  int64 id = 8;
+}
+// --
