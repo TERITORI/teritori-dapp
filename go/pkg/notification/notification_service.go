@@ -49,6 +49,7 @@ func (s *NotificationService) Notifications(ctx context.Context, req *notificati
 	for i, d := range notifications {
 
 		pbNotifications[i] = &notificationpb.Notification{
+
 			UserId:    string(d.UserId),
 			TriggerBy: string(d.TriggerBy),
 			Body:      d.Body,

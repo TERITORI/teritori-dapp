@@ -28,6 +28,7 @@ import {
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseUserId } from "../../networks";
 import { mustGetNotificationClient } from "../../utils/backend";
+import { prettyPrice } from "../../utils/coins";
 import {
   neutral00,
   neutral33,
@@ -43,13 +44,12 @@ import {
 import { headerHeight, layout, topMenuWidth } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
-import { OmniLink } from "../OmniLink";
+import { OmniLink, OmniLinkToType } from "../OmniLink";
 import { UserNameInline } from "../UserNameInline";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const NotificationDrawer: React.FC = () => {
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
-
   const dropdownRef = useRef<View>(null);
   const selectedWallet = useSelectedWallet();
   const notifications = useNotifications({
@@ -233,12 +233,7 @@ const NotificationItem: React.FC<{ item: Notification }> = ({ item }) => {
         </View>
 
         <View style={{ flex: 4, marginHorizontal: layout.spacing_x1 }}>
-          <OmniLink
-            to={{
-              screen: "FeedPostView",
-              params: { id: item.action },
-            }}
-          >
+          <OmniLink to={getOmniLink(item)}>
             <View>
               <BrandText style={fontSemibold14}>
                 {useBuildBodyText(item)}
@@ -337,6 +332,69 @@ const useBuildBodyText = (item: Notification) => {
   if (item.category === "comment") {
     return `${name} commented your post.`;
   }
+  if (item.category === "tip") {
+    return `💸 ${name} TIP ${getPrettyPrice(item)} your post.`;
+  }
+  if (item.category === "nft-transfer") {
+    return `${name} transfer an NFT.`;
+  }
+  if (item.category === "mint") {
+    return `🤑 Your newly minted NFT is here.`;
+  }
+  if (item.category === "mint-tns") {
+    const tnsTokenId = item.body.split(":");
+    return `🎉 on minting ${tnsTokenId[0]}`;
+  }
+  if (item.category === "nft-trade-buyer") {
+    return `Your NFT was sold for ${getPrettyPrice(item)}.`;
+  }
+  if (item.category === "nft-trade-seller") {
+    return `${name} bought your nft for ${getPrettyPrice(item)}.`;
+  }
+  if (item.category === "p2e-riot-squad-staking") {
+    return `Your R!OT fight ${
+      moment.unix(item.createdAt).isBefore(moment.now())
+        ? `has finished ${moment.unix(item.createdAt).fromNow()}`
+        : `will finish in ${moment.unix(item.createdAt).fromNow()}`
+    }`;
+  }
+};
+
+const getOmniLink = (item: Notification): OmniLinkToType => {
+  if (["reaction", "comment", "tip"].includes(item.category)) {
+    return {
+      screen: "FeedPostView",
+      params: { id: item.action },
+    };
+  }
+  if (
+    [
+      "nft-trade-seller",
+      "nft-trade-buyer",
+      "nft-transfer",
+      "mint",
+      "mint-tns",
+    ].includes(item.category)
+  ) {
+    return {
+      screen: "NFTDetail",
+      params: { id: item.action },
+    };
+  }
+  if (["p2e-riot-squad-staking"].includes(item.category)) {
+    return {
+      screen: "RiotGame",
+    };
+  }
+  return {
+    screen: "Home",
+  };
+};
+
+const getPrettyPrice = (item: Notification): string => {
+  const values = item.body.split(":");
+
+  return prettyPrice(values[0], values[1], values[2]);
 };
 
 const clearAllNotifications = async (
