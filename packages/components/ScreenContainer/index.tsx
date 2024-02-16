@@ -14,6 +14,7 @@ import { useForceNetworkKind } from "../../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import {
   getResponsiveScreenContainerMarginHorizontal,
@@ -26,6 +27,7 @@ import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
 import { SearchBar } from "../Search/SearchBar";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
+import { NotificationDrawer } from "../TopMenu/NotificationDrawer";
 import { Footer } from "../footers/Footer";
 import { MediaPlayerBar } from "../mediaPlayer/MediaPlayerBar";
 import { TogglePlayerButton } from "../mediaPlayer/TogglePlayerButton";
@@ -73,6 +75,7 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
+  const selectedWallet = useSelectedWallet();
   const { width: screenWidth, contentWidth } = useMaxResolution({
     responsive,
     noMargin,
@@ -185,6 +188,7 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
               alignItems: "center",
             }}
           >
+            {selectedWallet?.connected && <NotificationDrawer />}
             <TogglePlayerButton />
             <Separator
               horizontal

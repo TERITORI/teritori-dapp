@@ -10,6 +10,7 @@ import (
 
 type CollectionID string
 type UserID string
+type PostID string
 type NFTID string
 type ActivityID string
 
@@ -57,6 +58,13 @@ func (netstore NetworkStore) ParseNFTID(nftId string) (Network, string, string, 
 
 func (n *NetworkBase) UserID(address string) UserID {
 	return UserID(fmt.Sprintf("%s-%s", n.IDPrefix, strings.ToLower(address)))
+}
+
+func (n *NetworkBase) PostID(identifier string) PostID {
+	if identifier != "" {
+		return PostID(fmt.Sprintf("%s-%s", n.IDPrefix, identifier))
+	}
+	return ""
 }
 
 // returns <network_id>-<user_address>
