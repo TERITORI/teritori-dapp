@@ -324,130 +324,131 @@ export const NewsFeedInput = React.forwardRef<
         style={[{ width }, style]}
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       >
-        <PrimaryBox
-          style={{
-            zIndex: 9,
-            backgroundColor: appMode === "mini" ? neutral00 : neutral22,
-            width: "100%",
-          }}
-        >
-          <Pressable
-            onPress={focusInput}
+        <View style={{ zIndex: 9 }}>
+          <PrimaryBox
             style={{
+              backgroundColor: appMode === "mini" ? neutral00 : neutral22,
               width: "100%",
-              paddingRight: isMobile
-                ? layout.spacing_x1_5
-                : layout.spacing_x2_5,
-              paddingLeft: isMobile ? layout.spacing_x1_5 : layout.spacing_x3,
-              paddingTop: isMobile ? layout.spacing_x1_5 : layout.spacing_x3,
-              paddingBottom: layout.spacing_x1_5,
             }}
           >
-            <FlexRow style={{ marginTop: layout.spacing_x1 }}>
-              <SVG
-                height={24}
-                width={24}
-                source={penSVG}
-                color={secondaryColor}
-                style={{
-                  alignSelf: "flex-end",
-                  marginRight: layout.spacing_x1_5,
-                }}
-              />
-              <Animated.View style={{ flex: 1, height: "auto" }}>
-                <TextInput
-                  ref={inputRef}
-                  value={formValues.message}
-                  onSelectionChange={(event) =>
-                    setSelection(event.nativeEvent.selection)
-                  }
-                  placeholder={`Hey yo! ${
-                    type === "post" ? "Post something" : "Write your comment"
-                  } ${
-                    windowWidth < RESPONSIVE_BREAKPOINT_S ? "" : "here! _____"
-                  }`}
-                  placeholderTextColor={neutral77}
-                  onChangeText={handleTextChange}
-                  multiline
-                  onContentSizeChange={(e) => {
-                    // TODO: onContentSizeChange is not fired when deleting lines. We can only grow the input, but not shrink
-                    if (e.nativeEvent.contentSize.height < inputMaxHeight) {
-                      inputHeight.value = e.nativeEvent.contentSize.height;
-                    }
-                  }}
-                  style={[
-                    fontSemibold16,
-                    {
-                      height: formValues.message
-                        ? inputHeight.value || inputMinHeight
-                        : inputMinHeight,
-                      width: "100%",
-                      color: secondaryColor,
-                      // @ts-expect-error: description todo
-                      outlineStyle: "none",
-                      outlineWidth: 0,
-                    },
-                  ]}
-                />
-              </Animated.View>
-            </FlexRow>
-            {/* Changing this text's color depending on the message length */}
-            <BrandText
-              style={[
-                fontSemibold12,
-                {
-                  color: !formValues?.message
-                    ? neutral77
-                    : formValues?.message?.length >
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
-                            CHARS_LIMIT_WARNING_MULTIPLIER &&
-                        formValues?.message?.length <
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                      ? yellowDefault
-                      : formValues?.message?.length >=
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                        ? errorColor
-                        : primaryColor,
-                  marginTop: layout.spacing_x0_5,
-                  alignSelf: "flex-end",
-                },
-              ]}
+            <Pressable
+              onPress={focusInput}
+              style={{
+                width: "100%",
+                paddingRight: isMobile
+                  ? layout.spacing_x1_5
+                  : layout.spacing_x2_5,
+                paddingLeft: isMobile ? layout.spacing_x1_5 : layout.spacing_x3,
+                paddingTop: isMobile ? layout.spacing_x1_5 : layout.spacing_x3,
+                paddingBottom: layout.spacing_x1_5,
+              }}
             >
-              {formValues?.message?.length}
-              <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-                /{SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT}
+              <FlexRow style={{ marginTop: layout.spacing_x1 }}>
+                <SVG
+                  height={24}
+                  width={24}
+                  source={penSVG}
+                  color={secondaryColor}
+                  style={{
+                    alignSelf: "flex-end",
+                    marginRight: layout.spacing_x1_5,
+                  }}
+                />
+                <Animated.View style={{ flex: 1, height: "auto" }}>
+                  <TextInput
+                    ref={inputRef}
+                    value={formValues.message}
+                    onSelectionChange={(event) =>
+                      setSelection(event.nativeEvent.selection)
+                    }
+                    placeholder={`Hey yo! ${
+                      type === "post" ? "Post something" : "Write your comment"
+                    } ${
+                      windowWidth < RESPONSIVE_BREAKPOINT_S ? "" : "here! _____"
+                    }`}
+                    placeholderTextColor={neutral77}
+                    onChangeText={handleTextChange}
+                    multiline
+                    onContentSizeChange={(e) => {
+                      // TODO: onContentSizeChange is not fired when deleting lines. We can only grow the input, but not shrink
+                      if (e.nativeEvent.contentSize.height < inputMaxHeight) {
+                        inputHeight.value = e.nativeEvent.contentSize.height;
+                      }
+                    }}
+                    style={[
+                      fontSemibold16,
+                      {
+                        height: formValues.message
+                          ? inputHeight.value || inputMinHeight
+                          : inputMinHeight,
+                        width: "100%",
+                        color: secondaryColor,
+                        // @ts-expect-error: description todo
+                        outlineStyle: "none",
+                        outlineWidth: 0,
+                      },
+                    ]}
+                  />
+                </Animated.View>
+              </FlexRow>
+              {/* Changing this text's color depending on the message length */}
+              <BrandText
+                style={[
+                  fontSemibold12,
+                  {
+                    color: !formValues?.message
+                      ? neutral77
+                      : formValues?.message?.length >
+                            SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
+                              CHARS_LIMIT_WARNING_MULTIPLIER &&
+                          formValues?.message?.length <
+                            SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                        ? yellowDefault
+                        : formValues?.message?.length >=
+                            SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                          ? errorColor
+                          : primaryColor,
+                    marginTop: layout.spacing_x0_5,
+                    alignSelf: "flex-end",
+                  },
+                ]}
+              >
+                {formValues?.message?.length}
+                <BrandText style={[fontSemibold12, { color: neutral77 }]}>
+                  /{SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT}
+                </BrandText>
               </BrandText>
-            </BrandText>
-          </Pressable>
+            </Pressable>
 
-          <FilesPreviewsContainer
-            files={formValues.files}
-            gifs={formValues.gifs}
-            onDelete={(file) => {
-              setValue(
-                "files",
-                removeFileFromArray(
-                  formValues?.files || [],
-                  file as LocalFileData,
-                ),
-              );
-            }}
-            onDeleteGIF={(url) =>
-              setValue(
-                "gifs",
-                (formValues?.gifs || [])?.filter((gif) => gif !== url),
-              )
-            }
-            onAudioUpdate={(updatedFile) => {
-              if (formValues?.files?.length) {
+            <FilesPreviewsContainer
+              files={formValues.files}
+              gifs={formValues.gifs}
+              onDelete={(file) => {
                 setValue(
                   "files",
-                  replaceFileInArray(formValues?.files, updatedFile),
+                  removeFileFromArray(
+                    formValues?.files || [],
+                    file as LocalFileData,
+                  ),
                 );
+              }}
+              onDeleteGIF={(url) =>
+                setValue(
+                  "gifs",
+                  (formValues?.gifs || [])?.filter((gif) => gif !== url),
+                )
               }
-            }}
-          />
-        </PrimaryBox>
+              onAudioUpdate={(updatedFile) => {
+                if (formValues?.files?.length) {
+                  setValue(
+                    "files",
+                    replaceFileInArray(formValues?.files, updatedFile),
+                  );
+                }
+              }}
+            />
+          </PrimaryBox>
+        </View>
         <View
           style={{
             backgroundColor: appMode === "mini" ? neutral00 : neutral17,
