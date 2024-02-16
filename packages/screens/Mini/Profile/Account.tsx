@@ -2,14 +2,13 @@ import * as Clipboard from "expo-clipboard";
 import React, { useState } from "react";
 import { Linking, Pressable, View } from "react-native";
 
-import copySVG from "../../../../assets/icons/copy-gray.svg";
-import dotSVG from "../../../../assets/icons/dots-gray.svg";
-import checkedLogo from "../../../../assets/icons/greenCheck.svg";
-import infoSVG from "../../../../assets/icons/info-circle-gray.svg";
-import openSVG from "../../../../assets/icons/open-gray.svg";
-
+import copySVG from "@/assets/icons/copy-gray.svg";
+import dotSVG from "@/assets/icons/dots-gray.svg";
 import googleSVG from "@/assets/icons/google.svg";
+import checkedLogo from "@/assets/icons/greenCheck.svg";
+import infoSVG from "@/assets/icons/info-circle-gray.svg";
 import ledgerSVG from "@/assets/icons/ledger.svg";
+import openSVG from "@/assets/icons/open-gray.svg";
 import questionSVG from "@/assets/icons/question-gray.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
@@ -32,7 +31,7 @@ const getProviderLogo = (provider: ProviderType) => {
     case "ledger":
       return ledgerSVG;
     case "native":
-      return null; //teritoriSVG?;
+      return null; // or teritoriSVG; but the idea here is to not show any icon for native wallets
     default:
       return questionSVG;
   }
@@ -57,6 +56,7 @@ export const Account: React.FC<{ account: StoreWallet; isLast: boolean }> = ({
       setIsCopied(false);
     }, 2000);
   };
+  const logo = getProviderLogo(account.provider);
   return (
     <View
       style={{
@@ -97,7 +97,7 @@ export const Account: React.FC<{ account: StoreWallet; isLast: boolean }> = ({
           gap: layout.spacing_x1,
         }}
       >
-        {getProviderLogo(account.provider) && (
+        {logo && (
           <CustomPressable
             style={{
               backgroundColor: neutral33,
@@ -106,10 +106,7 @@ export const Account: React.FC<{ account: StoreWallet; isLast: boolean }> = ({
               zIndex: -10,
             }}
           >
-            <SVGorImageIcon
-              icon={getProviderLogo(account.provider)}
-              iconSize={20}
-            />
+            <SVGorImageIcon icon={logo} iconSize={20} />
           </CustomPressable>
         )}
         <DropdownWithListItem
