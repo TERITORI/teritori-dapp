@@ -51,7 +51,6 @@ import {
 } from "../api/teritori-chain";
 import { convertKeplrSigner, getKeplr } from "../utils/keplr";
 
-import { getNativeSigner } from "@/utils/wallet/getNativeSigner";
 import { getNativeWallet } from "@/utils/wallet/getNativeWallet";
 
 export * from "./types";
@@ -549,16 +548,14 @@ export const getKeplrSigningCosmWasmClient = async (
   }
   if (Platform.OS !== "web") {
     const wallet = await getNativeWallet("tori", 0);
-    const address = await wallet
-      .getAccounts()
-      .then((accounts) => accounts[0].address);
-    return getNativeSigner({
-      network: NetworkKind.Cosmos,
-      networkId,
-      index: 0,
-      address,
-      provider: "native",
-    });
+
+    return SigningCosmWasmClient.connectWithSigner(
+      network.rpcEndpoint,
+      wallet,
+      {
+        gasPrice,
+      },
+    );
   }
 
   const signer = await getKeplrSigner(networkId);
