@@ -1,7 +1,7 @@
 use crate::error::ContractError;
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    Addr, BankMsg, Coin, CosmosMsg, Order, Response, StdResult, Timestamp, Uint128, Uint64,
+    Addr, BankMsg, Coin, CosmosMsg, Order, Response, StdResult, Storage, Timestamp, Uint128, Uint64,
 };
 use cw721::{
     AllNftInfoResponse, ContractInfoResponse, NftInfoResponse, NumTokensResponse, OwnerOfResponse,
@@ -241,13 +241,15 @@ impl Cw721MembershipContract {
                 Ok(num_tokens.checked_add(Uint64::one())?)
             })?;
 
-        let nft_metadata =
-            serde_json::to_string(&nft).map_err(|_| ContractError::SerializationError)?;
+        // we need these for efficient indexing
+        let token_id = format_token_id(&channel_addr, nft_index);
+        let nft_info = self.internal_nft_info(ctx.deps.storage, &token_id)?;
+        let json_nft_info =
+            serde_json::to_string(&nft_info).map_err(|_| ContractError::SerializationError)?;
 
         Ok(Response::default()
-            .add_attribute("token_id", format_token_id(&channel_addr, nft_index))
-            .add_attribute("recipient_addr", recipient_addr.to_string())
-            .add_attribute("nft_metadata", nft_metadata))
+            .add_attribute("token_id", token_id)
+            .add_attribute("nft_info", json_nft_info))
     }
 
     #[msg(exec)]
@@ -647,8 +649,8 @@ impl Cw721MembershipContract {
     #[msg(query)]
     pub fn contract_info(&self, _ctx: QueryCtx) -> Result<ContractInfoResponse, ContractError> {
         Ok(ContractInfoResponse {
-            name: "Premium Subs".to_string(),
-            symbol: "PSUB".to_string(),
+            name: "Premium Memberships".to_string(),
+            symbol: "PMEM".to_string(),
         })
     }
 
@@ -661,7 +663,7 @@ impl Cw721MembershipContract {
         ctx: QueryCtx,
         token_id: String,
     ) -> Result<NftInfoResponse<NftExtension>, ContractError> {
-        self.internal_nft_info(&ctx, &token_id)
+        self.internal_nft_info(ctx.deps.storage, &token_id)
     }
 
     /// With MetaData Extension.
@@ -676,7 +678,7 @@ impl Cw721MembershipContract {
         include_expired: Option<bool>,
     ) -> Result<AllNftInfoResponse<NftExtension>, ContractError> {
         let access = self.internal_owner_of(&ctx, &token_id)?;
-        let info = self.internal_nft_info(&ctx, &token_id)?;
+        let info = self.internal_nft_info(ctx.deps.storage, &token_id)?;
         Ok(AllNftInfoResponse { access, info })
     }
 
@@ -772,14 +774,14 @@ impl Cw721MembershipContract {
 
     fn internal_nft_info(
         &self,
-        ctx: &QueryCtx,
+        storage: &dyn Storage,
         token_id: &String,
     ) -> Result<NftInfoResponse<NftExtension>, ContractError> {
         let (channel_addr, nft_index) = parse_token_id(token_id)?;
         let unchecked_channel_addr = Addr::unchecked(channel_addr.as_str()); // we don't need to validate the address because we won't find a channel if the address is invalid
         let nft = self
             .nfts
-            .load(ctx.deps.storage, (unchecked_channel_addr, nft_index.into()))?;
+            .load(storage, (unchecked_channel_addr, nft_index.into()))?;
 
         // TODO: improve info
 

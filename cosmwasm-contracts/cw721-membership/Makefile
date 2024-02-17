@@ -3,10 +3,10 @@ ADMIN_ADDR=$(shell teritorid keys show $(ADMIN) --keyring-backend test --output 
 NODE_FLAG=--node https://rpc.testnet.teritori.com:443
 TX_FLAGS=--from $(ADMIN) --chain-id teritori-test-6 $(NODE_FLAG) --gas auto --gas-adjustment 1.3 -y -b sync --output json --keyring-backend test -o json
 QUERY_FLAGS=$(NODE_FLAG) -o json
-CODE_ID=45
+CODE_ID=46
 
 # only informative
-CONTRACT_ADDRESS=tori19z4g3w3s3542n2l90vvwqyy5sehfj4tqz3j55cp0v92ueucv6q3q6ve9nq
+CONTRACT_ADDRESS=tori103mx320crzegp93tdpwp7kvgttcyzn0ayhk6hmshz29vcmlywpjqzuaxf6
 
 artifacts/cw721_membership.wasm:
 	docker run --rm -v "$(PWD)":/code \
