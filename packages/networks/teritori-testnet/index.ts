@@ -8,7 +8,7 @@ const nameServiceContractAddress =
 const premiumFeedFeature: CosmWasmPremiumFeed = {
   type: NetworkFeature.CosmWasmPremiumFeed,
   membershipContractAddress:
-    "tori1gelslcq8jg38rl69xvjmt6j560ks9fypldke5g9er06jgy5n535s048jg5",
+    "tori1922wa7883ftymh47cxxjyun293et400pl8fy6ugkr9602zu7eccqzl4ufk",
   mintDenom: "utori",
 };
 
@@ -43,7 +43,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     "https://explorer.teritori.com/teritori-testnet/account/$address",
   idPrefix: "testori",
   testnet: true,
-  backendEndpoint: "http://localhost:9090",
+  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   addressPrefix: "tori",
   restEndpoint: "https://rest.testnet.teritori.com",
   rpcEndpoint: "https://rpc.testnet.teritori.com",

@@ -7,7 +7,7 @@ CODE_ID=50
 CONFIG=$(shell cat config.json | jq --rawfile desc desc.txt -r '.admin_addr="$(ADMIN_ADDR)" | .description=$$desc | tojson | @sh')
 
 # only informative
-CONTRACT_ADDRESS=tori1gelslcq8jg38rl69xvjmt6j560ks9fypldke5g9er06jgy5n535s048jg5
+CONTRACT_ADDRESS=tori1922wa7883ftymh47cxxjyun293et400pl8fy6ugkr9602zu7eccqzl4ufk
 
 .PHONY: artifacts/cw721_membership.wasm
 artifacts/cw721_membership.wasm:
