@@ -566,7 +566,7 @@ const getPremiumFeedNFTInfo = async (
     isListed: vaultInfo.isListed,
     collectionName: "Premium Memberships",
     collectionImageURL:
-      "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
+      "ipfs://bafybeiaznarsgwk7stav6qrzjnwqw4j7eu7drm3xx4p3fokgsnrouelse4",
     mintDenom: "",
     royalty: 0,
     networkId: network.id,
