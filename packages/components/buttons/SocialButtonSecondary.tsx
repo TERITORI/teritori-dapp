@@ -4,7 +4,7 @@ import { SvgProps } from "react-native-svg";
 
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { SecondaryBox } from "../boxes/SecondaryBox";
+import { Box } from "../boxes/Box";
 
 import {
   neutral1A,
@@ -14,6 +14,7 @@ import {
 } from "@/utils/style/colors";
 import { fontMedium14 } from "@/utils/style/fonts";
 
+// TODO: remove uses of Box component directly in other components
 export const SocialButtonSecondary: React.FC<{
   text: string;
   iconSvg: React.FC<SvgProps>;
@@ -22,17 +23,23 @@ export const SocialButtonSecondary: React.FC<{
 }> = ({ text, onPress, iconSvg, style }) => {
   return (
     <TouchableOpacity onPress={onPress} style={style}>
-      <SecondaryBox
-        style={{ height: 44, backgroundColor: withAlpha(neutral1A, 0.64) }}
+      <Box
+        style={{
+          height: 44,
+          backgroundColor: withAlpha(neutral1A, 0.64),
+          justifyContent: "center",
+        }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <SecondaryBox
+          <Box
             style={{
               marginLeft: 6,
               backgroundColor: primaryColor,
               borderRadius: 6,
               width: 32,
               height: 32,
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
             <SVG
@@ -41,7 +48,7 @@ export const SocialButtonSecondary: React.FC<{
               height={20}
               color={primaryTextColor}
             />
-          </SecondaryBox>
+          </Box>
           <BrandText
             style={[
               fontMedium14,
@@ -51,7 +58,7 @@ export const SocialButtonSecondary: React.FC<{
             {text}
           </BrandText>
         </View>
-      </SecondaryBox>
+      </Box>
     </TouchableOpacity>
   );
 };
