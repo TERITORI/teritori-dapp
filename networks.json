@@ -10939,7 +10939,7 @@
     "featureObjects": [
       {
         "type": "CosmWasmPremiumFeed",
-        "membershipContractAddress": "tori1qv4yn5rpu8v6sdgxww65rdpftujuzdgw5xw3tffhf633qxrzuemqgxctfl",
+        "membershipContractAddress": "tori1gelslcq8jg38rl69xvjmt6j560ks9fypldke5g9er06jgy5n535s048jg5",
         "mintDenom": "utori"
       }
     ],

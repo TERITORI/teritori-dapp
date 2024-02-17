@@ -564,9 +564,9 @@ const getPremiumFeedNFTInfo = async (
     isOwner,
     isSeller: vaultInfo.isListed && isOwner,
     isListed: vaultInfo.isListed,
-    collectionName: "Premium Memberships",
+    collectionName: "Premium Memberships", // FIXME: get from collection config
     collectionImageURL:
-      "ipfs://bafybeiaznarsgwk7stav6qrzjnwqw4j7eu7drm3xx4p3fokgsnrouelse4",
+      "ipfs://bafybeiaznarsgwk7stav6qrzjnwqw4j7eu7drm3xx4p3fokgsnrouelse4", // FIXME: get from collection config
     mintDenom: "",
     royalty: 0,
     networkId: network.id,

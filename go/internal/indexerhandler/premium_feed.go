@@ -10,6 +10,17 @@ import (
 	"go.uber.org/zap"
 )
 
+// TODO: handle collection config update
+
+type PremiumFeedInstantiateMsg struct {
+	AdminAddr     string `json:"admin_addr"`
+	MintRoyalties uint16 `json:"mint_royalties"`
+	Name          string `json:"name"`
+	Description   string `json:"description"`
+	ImageURI      string `json:"image_uri"`
+	Symbol        string `json:"symbol"`
+}
+
 func (h *Handler) handleInstantiatePremiumFeedMemberships(e *Message, instantiateMsg *wasmtypes.MsgInstantiateContract) error {
 	contractAddress, err := e.Events.First("instantiate._contract_address")
 	if err != nil {
@@ -28,6 +39,11 @@ func (h *Handler) handleInstantiatePremiumFeedMemberships(e *Message, instantiat
 		return nil
 	}
 
+	var instantiateData PremiumFeedInstantiateMsg
+	if err := json.Unmarshal(instantiateMsg.Msg, &instantiateData); err != nil {
+		return errors.Wrap(err, "failed to unmarshal instantiate msg")
+	}
+
 	blockTime, err := e.GetBlockTime()
 	if err != nil {
 		return errors.Wrap(err, "failed to get block time")
@@ -36,8 +52,8 @@ func (h *Handler) handleInstantiatePremiumFeedMemberships(e *Message, instantiat
 	collection := indexerdb.Collection{
 		ID:                  h.config.Network.CollectionID(contractAddress),
 		NetworkID:           h.config.Network.ID,
-		Name:                "Premium Memberships",
-		ImageURI:            "",
+		Name:                instantiateData.Name,
+		ImageURI:            instantiateData.ImageURI,
 		MaxSupply:           -1,
 		SecondaryDuringMint: true,
 		Time:                blockTime,

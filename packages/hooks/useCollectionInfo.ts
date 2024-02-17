@@ -393,18 +393,3 @@ const usePremiumFeedCollectionInfo = (
 
   return { info, notFound: false, refetch };
 };
-
-/*
-
-Premium membership cards are held by premium creator subscribers and unlock content reserved for creator communities.
-
-By owning a creator's premium membership card: 
-
-- you support the creation of their content
-- you have privileged access to their creations
-- access to a privileged link with the creator
-- you participate in the global economy of Teritori OS, which charges fees that are reinvested in the $TORI token.
-- you develop the Teritori ecosystem and help finance the radical resilience of tomorrow's communities
-- you benefit from potential future advantages on all Teritori OS features (whitelist, airdrops, early access on new features, alpha information, etc.).
-
-*/
