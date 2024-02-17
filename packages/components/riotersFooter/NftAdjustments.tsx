@@ -146,6 +146,7 @@ const NftAdjustments: React.FC<{
               backgroundColor="#F46F761A"
               style={{ borderWidth: 1, borderRadius: 6 }}
               borderColor={errorColor}
+              squaresBorderColor={errorColor}
             />
             <PrimaryButton
               width={128}

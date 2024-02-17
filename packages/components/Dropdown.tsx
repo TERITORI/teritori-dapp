@@ -6,7 +6,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { useDropdowns } from "@/hooks/useDropdowns";
+import { useDropdowns } from "../hooks/useDropdowns";
 
 interface DropdownProps {
   children:
