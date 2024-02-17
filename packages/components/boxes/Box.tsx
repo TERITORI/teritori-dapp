@@ -8,7 +8,7 @@ import {
   ViewProps,
 } from "react-native";
 
-import { useTheme } from "@/hooks/useTheme";
+import { useTheme } from "../../hooks/useTheme";
 
 // Be very careful while editing this, try to refrain from adding new props
 
