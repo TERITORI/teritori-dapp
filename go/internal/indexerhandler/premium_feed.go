@@ -59,13 +59,57 @@ func (h *Handler) handleInstantiatePremiumFeedMemberships(e *Message, instantiat
 	return nil
 }
 
-type PremiumFeedNFT struct {
-	Name            string `json:"name"`
-	Description     string `json:"description"`
-	ImageURI        string `json:"image_uri"`
-	StartTime       string `json:"start_time"`
-	DurationSeconds string `json:"duration_seconds"`
-	OwnerAddress    string `json:"owner_addr"`
+type PremiumFeedNFTInfo struct {
+	TokenURI  *string                 `json:"token_uri"`
+	Extension PremiumFeedNFTExtension `json:"extension"`
+}
+
+/*
+
+pub struct Metadata {
+    pub image: Option<String>,
+    pub image_data: Option<String>,
+    pub external_url: Option<String>,
+    pub description: Option<String>,
+    pub name: Option<String>,
+    pub attributes: Option<Vec<Trait>>,
+    pub background_color: Option<String>,
+    pub animation_url: Option<String>,
+    pub youtube_url: Option<String>,
+}
+
+#[cw_serde]
+pub struct Trait {
+    pub display_type: Option<String>,
+    pub trait_type: String,
+    pub value: String,
+}
+
+*/
+
+type PremiumSubRequest struct {
+	Subscribe struct {
+		RecipientAddr string `json:"recipient_addr"`
+	} `json:"subscribe"`
+}
+
+type NFTTrait struct {
+	DisplayType *string `json:"display_type"`
+	TraitType   string  `json:"trait_type"`
+	Value       string  `json:"value"`
+}
+
+// converted from rust types above
+type PremiumFeedNFTExtension struct {
+	Image           *string `json:"image"`
+	ImageData       *string `json:"image_data"`
+	ExternalURL     *string `json:"external_url"`
+	Description     *string `json:"description"`
+	Name            *string `json:"name"`
+	Attributes      *[]json.RawMessage
+	BackgroundColor *string `json:"background_color"`
+	AnimationURL    *string `json:"animation_url"`
+	YoutubeURL      *string `json:"youtube_url"`
 }
 
 func (h *Handler) handleExecutePremiumFeedSubscribe(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
@@ -85,34 +129,58 @@ func (h *Handler) handleExecutePremiumFeedSubscribe(e *Message, execMsg *wasmtyp
 		return nil
 	}
 
-	metadata, err := e.Events.First("wasm.nft_metadata")
+	var req PremiumSubRequest
+	if err := json.Unmarshal(execMsg.Msg, &req); err != nil {
+		return errors.Wrap(err, "failed to unmarshal premium feed subscribe request")
+	}
+
+	tokenID, err := e.Events.First("wasm.token_id")
+	if err != nil {
+		return errors.Wrap(err, "failed to get token id")
+	}
+
+	metadata, err := e.Events.First("wasm.nft_info")
 	if err != nil {
 		return errors.Wrap(err, "failed to get nft metadata")
 	}
-	var nftData PremiumFeedNFT
-	if err := json.Unmarshal([]byte(metadata), &nftData); err != nil {
+	var nftInfo PremiumFeedNFTInfo
+	if err := json.Unmarshal([]byte(metadata), &nftInfo); err != nil {
 		return errors.Wrap(err, "failed to unmarshal nft metadata")
 	}
 
-	recipient, err := e.Events.First("wasm.recipient_addr")
-	if err != nil {
-		return errors.Wrap(err, "failed to get recipient")
-	}
+	recipient := req.Subscribe.RecipientAddr
 	recipientID := h.config.Network.UserID(recipient)
 
 	buyerID := h.config.Network.UserID(execMsg.Sender)
 
-	nftID := h.config.Network.NFTID(contractAddress, "42")
+	nftID := h.config.Network.NFTID(contractAddress, tokenID)
+
+	name := ""
+	if nftInfo.Extension.Name != nil {
+		name = *nftInfo.Extension.Name
+	}
+	imageURI := ""
+	if nftInfo.Extension.Image != nil {
+		imageURI = *nftInfo.Extension.Image
+	}
+
+	jsonbAttrs := indexerdb.ArrayJSONB{}
+	if nftInfo.Extension.Attributes != nil {
+		for _, raw := range *nftInfo.Extension.Attributes {
+			jsonbAttrs = append(jsonbAttrs, raw)
+		}
+	}
 
 	nft := indexerdb.NFT{
 		ID:           nftID,
-		Name:         nftData.Name,
-		ImageURI:     nftData.ImageURI,
+		Name:         name,
+		ImageURI:     imageURI,
 		NetworkID:    h.config.Network.ID,
+		Attributes:   jsonbAttrs,
 		CollectionID: h.config.Network.CollectionID(contractAddress),
 		OwnerID:      recipientID,
 		TeritoriNFT: &indexerdb.TeritoriNFT{
-			TokenID:   "42",
+			TokenID:   tokenID,
 			NetworkID: h.config.Network.ID,
 		},
 	}
@@ -126,6 +194,18 @@ func (h *Handler) handleExecutePremiumFeedSubscribe(e *Message, execMsg *wasmtyp
 		return errors.Wrap(err, "failed to get block time")
 	}
 
+	funds := execMsg.Funds
+	if len(funds) != 1 {
+		return errors.New("expected exactly one fund")
+	}
+	amount := funds[0].Amount.String()
+	denom := funds[0].Denom
+
+	usdPrice, err := h.usdAmount(denom, amount, blockTime)
+	if err != nil {
+		return errors.Wrap(err, "failed to get usd price")
+	}
+
 	activityID := h.config.Network.ActivityID(e.TxHash, e.MsgIndex)
 	activity := indexerdb.Activity{
 		ID:        activityID,
@@ -135,9 +215,9 @@ func (h *Handler) handleExecutePremiumFeedSubscribe(e *Message, execMsg *wasmtyp
 		NFTID:     &nftID,
 
 		Mint: &indexerdb.Mint{
-			Price:      "42",                // FIXME
-			PriceDenom: pmFeature.MintDenom, // FIXME
-			USDPrice:   42,                  // FIXME
+			Price:      amount,
+			PriceDenom: denom,
+			USDPrice:   usdPrice,
 			BuyerID:    buyerID,
 			NetworkID:  h.config.Network.ID,
 		},

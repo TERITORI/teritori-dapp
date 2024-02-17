@@ -65,11 +65,13 @@ fn basic_full_flow() {
         .call(sub_user)
         .unwrap();
 
+    let token_id = "AAAAAAAAAAFjaGFubmVsX293bmVy";
+
     let tokens_response = contract.tokens(sub_user.to_string(), None, None).unwrap();
     assert_eq!(
         tokens_response,
         TokensResponse {
-            tokens: vec!["channel_owner#1".to_string()]
+            tokens: vec![token_id.to_string()]
         }
     );
 
@@ -77,11 +79,11 @@ fn basic_full_flow() {
     assert_eq!(
         all_tokens_response,
         TokensResponse {
-            tokens: vec!["channel_owner#1".to_string()]
+            tokens: vec![token_id.to_string()]
         }
     );
 
-    let token_info_response = contract.nft_info("channel_owner#1".to_string()).unwrap();
+    let token_info_response = contract.nft_info(token_id.to_string()).unwrap();
     assert_eq!(
         token_info_response,
         NftInfoResponse {

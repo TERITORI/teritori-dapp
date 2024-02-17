@@ -49,6 +49,8 @@ export const MintUploader: FC<MintUploaderProps> = ({
   };
 
   const handleFiles = async (files: File[]) => {
+    console.log("handles files", files);
+
     const _files = [files[0]];
     let supportedFiles = [...files].filter((file) =>
       mimeTypes?.includes(file.type),
@@ -87,6 +89,7 @@ export const MintUploader: FC<MintUploaderProps> = ({
         title: "Failed to upload file",
         message: error instanceof Error ? error.message : `${error}`,
       });
+      console.error("Failed to upload files:", error);
     }
     setIsLoading(false);
   };

@@ -1,9 +1,16 @@
 import { teritoriTestnetCurrencies } from "./currencies";
-import { NetworkFeature } from "../features";
+import { CosmWasmPremiumFeed, NetworkFeature } from "../features";
 import { NetworkInfo, NetworkKind } from "../types";
 
 const nameServiceContractAddress =
   "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys";
+
+const premiumFeedFeature: CosmWasmPremiumFeed = {
+  type: NetworkFeature.CosmWasmPremiumFeed,
+  membershipContractAddress:
+    "tori1qv4yn5rpu8v6sdgxww65rdpftujuzdgw5xw3tffhf633qxrzuemqgxctfl",
+  mintDenom: "utori",
+};
 
 const riotContractAddressGen0 =
   "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc";
@@ -27,14 +34,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     NetworkFeature.NFTLaunchpad,
     NetworkFeature.CosmWasmPremiumFeed,
   ],
-  featureObjects: [
-    {
-      type: NetworkFeature.CosmWasmPremiumFeed,
-      membershipContractAddress:
-        "tori103mx320crzegp93tdpwp7kvgttcyzn0ayhk6hmshz29vcmlywpjqzuaxf6",
-      mintDenom: "utori",
-    },
-  ],
+  featureObjects: [premiumFeedFeature],
   currencies: teritoriTestnetCurrencies,
   txExplorer: "https://explorer.teritori.com/teritori-testnet/tx/$hash",
   accountExplorer:
@@ -43,7 +43,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     "https://explorer.teritori.com/teritori-testnet/account/$address",
   idPrefix: "testori",
   testnet: true,
-  backendEndpoint: "http://localhost:9090",
+  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   addressPrefix: "tori",
   restEndpoint: "https://rest.testnet.teritori.com",
   rpcEndpoint: "https://rpc.testnet.teritori.com",

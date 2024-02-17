@@ -6,8 +6,10 @@ import { nameServiceDefaultImage } from "./tns";
 import { ConfigResponse } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.types";
 import {
   CosmosNetworkInfo,
+  NetworkFeature,
   NetworkKind,
   getEthereumNetwork,
+  getNetworkFeature,
   parseNetworkObjectId,
 } from "../networks";
 
@@ -58,6 +60,7 @@ export enum CollectionContractKind {
   CosmwasmNameServiceV0 = "CosmwasmNameServiceV0",
   CosmwasmBunkerV0 = "CosmwasmBunkerV0",
   EthereumBunkerV0 = "EthereumBunkerV0",
+  PremiumMembershipsV0 = "PremiumMembershipsV0",
 }
 
 export const collectionContractKindFromID = (id: string | undefined) => {
@@ -66,16 +69,26 @@ export const collectionContractKindFromID = (id: string | undefined) => {
     return CollectionContractKind.Unknown;
   }
   switch (network.kind) {
-    case NetworkKind.Ethereum:
+    case NetworkKind.Ethereum: {
       return CollectionContractKind.EthereumBunkerV0;
-    case NetworkKind.Cosmos:
+    }
+    case NetworkKind.Cosmos: {
       if (rootAddress === network.riotContractAddressGen1) {
         return CollectionContractKind.CosmwasmBreedingV0;
       }
       if (rootAddress === network.nameServiceContractAddress) {
         return CollectionContractKind.CosmwasmNameServiceV0;
       }
+      const pmFeature = getNetworkFeature(
+        network.id,
+        NetworkFeature.CosmWasmPremiumFeed,
+      );
+      if (pmFeature && rootAddress === pmFeature?.membershipContractAddress) {
+        return CollectionContractKind.PremiumMembershipsV0;
+      }
+
       return CollectionContractKind.CosmwasmBunkerV0;
+    }
   }
   return CollectionContractKind.Unknown;
 };

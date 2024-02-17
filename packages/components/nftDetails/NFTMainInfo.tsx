@@ -155,7 +155,10 @@ export const NFTMainInfo: React.FC<{
         return (
           <View style={sectionContainerStyles}>
             {nftInfo && (
-              <NFTAttributes nftAttributes={attributes} nftInfo={nftInfo} />
+              <NFTAttributes
+                nftAttributesRarity={attributes}
+                nftInfo={nftInfo}
+              />
             )}
           </View>
         );
@@ -188,6 +191,20 @@ export const NFTMainInfo: React.FC<{
               </BrandText>
               <BrandText style={fontMedium14} numberOfLines={1}>
                 {nftInfo?.nftAddress}
+              </BrandText>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginBottom: 6,
+              }}
+            >
+              <BrandText style={[fontSemibold12, { color: neutral77 }]}>
+                Token ID
+              </BrandText>
+              <BrandText style={fontMedium14} numberOfLines={1}>
+                {nftInfo?.tokenId}
               </BrandText>
             </View>
             <View

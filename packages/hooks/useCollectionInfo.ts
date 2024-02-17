@@ -68,6 +68,15 @@ export const useCollectionInfo = (
     contractKind === CollectionContractKind.EthereumBunkerV0,
   );
 
+  const {
+    info: premiumFeedCollectionInfo,
+    notFound: premiumNotFound,
+    refetch: premiumRefetch,
+  } = usePremiumFeedCollectionInfo(
+    network?.id,
+    contractKind === CollectionContractKind.PremiumMembershipsV0,
+  );
+
   const { collectionInfo, ...other } = useMemo(() => {
     switch (contractKind) {
       case CollectionContractKind.CosmwasmNameServiceV0:
@@ -102,6 +111,12 @@ export const useCollectionInfo = (
           notFound: ethNotFound,
           refetch: ethRefetch,
         };
+      case CollectionContractKind.PremiumMembershipsV0:
+        return {
+          collectionInfo: premiumFeedCollectionInfo,
+          notFound: premiumNotFound,
+          refetch: premiumRefetch,
+        };
       default:
         return {
           collectionInfo: { mintPhases: [] },
@@ -121,6 +136,9 @@ export const useCollectionInfo = (
     ethRefetch,
     ethereumCollectionInfo,
     network,
+    premiumFeedCollectionInfo,
+    premiumNotFound,
+    premiumRefetch,
   ]);
 
   const clean = useMemo(() => {
@@ -348,4 +366,19 @@ const useEthereumTeritoriBunkerCollectionInfo = (
   }, [refetchConf, refetchCurrentSupply, refetchIsPaused, refetchWhitelists]);
 
   return { info, notFound: isError, refetch };
+};
+
+const usePremiumFeedCollectionInfo = (
+  networkId: string | undefined,
+  enabled?: boolean,
+) => {
+  const info: CollectionInfo = {
+    name: "Premium Memberships",
+    description: "Teritori Premium Feed Memberships",
+    image: "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
+    mintPhases: [],
+    state: "ended",
+  };
+
+  return { info, notFound: false, refetch: () => {} };
 };

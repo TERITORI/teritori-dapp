@@ -1,20 +1,25 @@
 use crate::error::ContractError;
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    Addr, BankMsg, Coin, CosmosMsg, Order, Response, StdResult, Storage, Timestamp, Uint128, Uint64,
+    Addr, BankMsg, Binary, Coin, CosmosMsg, Order, Response, StdResult, Storage, Timestamp,
+    Uint128, Uint64,
 };
 use cw721::{
     AllNftInfoResponse, ContractInfoResponse, NftInfoResponse, NumTokensResponse, OwnerOfResponse,
     TokensResponse,
 };
 use cw721_metadata_onchain::{Metadata, Trait};
-use cw_storage_plus::{Bound, Item, Map};
+use cw_storage_plus::{Bound, Item, KeyDeserialize, Map};
 use sylvia::types::{ExecCtx, InstantiateCtx, QueryCtx};
 use sylvia::{contract, entry_points};
 
 pub type NftExtension = Metadata;
 
 // TODO: allow to transfer channel
+
+// TODO: opti: avoid duplicate parsing of token_id
+
+// TODO: shorter token_id (bech32 with t as prefix of hash of binary data??)
 
 pub struct Cw721MembershipContract {
     pub(crate) config: Item<'static, Config>,
@@ -134,23 +139,27 @@ impl Cw721MembershipContract {
         ctx: ExecCtx,
         memberships_config: Vec<MembershipConfig>,
     ) -> Result<Response, ContractError> {
-        let owner_addr = ctx.info.sender;
+        let channel_addr = ctx.info.sender;
 
         let config = self.config.load(ctx.deps.storage)?;
 
         self.channels
-            .update::<_, ContractError>(ctx.deps.storage, owner_addr, |channel| match channel {
-                Some(channel) => Ok(Channel {
-                    memberships_config,
-                    next_index: channel.next_index,
-                    mint_royalties: channel.mint_royalties,
-                }),
-                None => Ok(Channel {
-                    memberships_config,
-                    next_index: Uint64::one(),
-                    mint_royalties: config.mint_royalties,
-                }),
-            })?;
+            .update::<_, ContractError>(
+                ctx.deps.storage,
+                channel_addr,
+                |channel| match channel {
+                    Some(channel) => Ok(Channel {
+                        memberships_config,
+                        next_index: channel.next_index,
+                        mint_royalties: channel.mint_royalties,
+                    }),
+                    None => Ok(Channel {
+                        memberships_config,
+                        next_index: Uint64::one(),
+                        mint_royalties: config.mint_royalties,
+                    }),
+                },
+            )?;
 
         Ok(Response::default())
     }
@@ -166,6 +175,7 @@ impl Cw721MembershipContract {
         let recipient_addr = ctx.deps.api.addr_validate(recipient_addr.as_str())?;
 
         let unchecked_channel_addr = Addr::unchecked(channel_addr.as_str()); // we don't need to validate the address because we won't find a channel if the address is invalid
+
         let mut channel = self
             .channels
             .load(ctx.deps.storage, unchecked_channel_addr.to_owned())
@@ -527,8 +537,6 @@ impl Cw721MembershipContract {
         let recipient = ctx.deps.api.addr_validate(recipient.as_str())?;
 
         let (channel_addr, nft_index) = parse_token_id(&token_id)?;
-        // we don't need to validate the address because we won't find a nft if the address is invalid
-        let channel_addr = Addr::unchecked(channel_addr.as_str());
 
         self.nfts.update(
             ctx.deps.storage,
@@ -595,8 +603,7 @@ impl Cw721MembershipContract {
     #[msg(exec)]
     pub fn burn(&self, ctx: ExecCtx, token_id: String) -> Result<Response, ContractError> {
         let (channel_addr, nft_index) = parse_token_id(&token_id)?;
-        // we don't need to validate the address because we won't find a nft if the address is invalid
-        let channel_addr = Addr::unchecked(channel_addr.as_str());
+
         let nft = self
             .nfts
             .load(ctx.deps.storage, (channel_addr.to_owned(), nft_index))?;
@@ -698,7 +705,6 @@ impl Cw721MembershipContract {
         let min_bound = match start_after {
             Some(start_after) => {
                 let (channel_addr, nft_index) = parse_token_id(&start_after)?;
-                let channel_addr = Addr::unchecked(channel_addr.as_str());
                 Some(Bound::exclusive((channel_addr, nft_index)))
             }
             None => None,
@@ -732,7 +738,6 @@ impl Cw721MembershipContract {
         let start_after = match start_after {
             Some(start_after) => {
                 let (channel_addr, nft_index) = parse_token_id(&start_after)?;
-                let channel_addr = Addr::unchecked(channel_addr.as_str());
                 Some((channel_addr, nft_index))
             }
             None => None,
@@ -761,11 +766,9 @@ impl Cw721MembershipContract {
         token_id: &String,
     ) -> Result<OwnerOfResponse, ContractError> {
         let (channel_addr, nft_index) = parse_token_id(&token_id)?;
-        let channel_addr = ctx.deps.api.addr_validate(channel_addr.as_str())?;
-        let unchecked_channel_addr = Addr::unchecked(channel_addr.as_str()); // we don't need to validate the address because we won't find a channel if the address is invalid
         let nft = self
             .nfts
-            .load(ctx.deps.storage, (unchecked_channel_addr, nft_index.into()))?;
+            .load(ctx.deps.storage, (channel_addr, nft_index.into()))?;
         Ok(OwnerOfResponse {
             owner: nft.owner_addr.to_string(),
             approvals: vec![],
@@ -778,10 +781,10 @@ impl Cw721MembershipContract {
         token_id: &String,
     ) -> Result<NftInfoResponse<NftExtension>, ContractError> {
         let (channel_addr, nft_index) = parse_token_id(token_id)?;
-        let unchecked_channel_addr = Addr::unchecked(channel_addr.as_str()); // we don't need to validate the address because we won't find a channel if the address is invalid
+
         let nft = self
             .nfts
-            .load(storage, (unchecked_channel_addr, nft_index.into()))?;
+            .load(storage, (channel_addr.to_owned(), nft_index.into()))?;
 
         // TODO: improve info
 
@@ -833,22 +836,20 @@ pub fn assert_exact_funds(ctx: &ExecCtx, amount: Coin) -> Result<Response, Contr
     Ok(Response::default())
 }
 
-// TODO: use base64 url encoding of binary representation
-
-pub fn parse_token_id(token_id: &String) -> Result<(String, u64), ContractError> {
-    let mut split = token_id.splitn(2, '#');
-    let channel_addr = split
-        .next()
-        .ok_or(ContractError::InvalidTokenId)?
-        .to_owned();
-    let nft_index = split
-        .next()
-        .ok_or(ContractError::ChannelNotFound)?
-        .parse::<u64>()
-        .map_err(|_| ContractError::ChannelNotFound)?;
+pub fn parse_token_id(token_id: &String) -> Result<(Addr, u64), ContractError> {
+    let bytes = Binary::from_base64(token_id)?;
+    let nft_index = u64::from_be_bytes(
+        bytes[0..8]
+            .try_into()
+            .map_err(|_| ContractError::InvalidTokenId)?,
+    );
+    let channel_addr = Addr::from_slice(&bytes[8..])?;
     Ok((channel_addr, nft_index))
 }
 
 pub fn format_token_id(channel_addr: &Addr, nft_index: Uint64) -> String {
-    format!("{}_{}", channel_addr, nft_index)
+    let nft_index_bytes = nft_index.to_be_bytes();
+    let channel_addr_bytes = channel_addr.as_bytes();
+    let all_bytes = [&nft_index_bytes, channel_addr_bytes].concat();
+    Binary::from(all_bytes).to_base64()
 }

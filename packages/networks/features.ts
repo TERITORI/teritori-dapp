@@ -21,7 +21,7 @@ const zodCosmWasmPremiumFeed = z.object({
   mintDenom: z.string(),
 });
 
-type CosmWasmPremiumFeed = z.infer<typeof zodCosmWasmPremiumFeed>;
+export type CosmWasmPremiumFeed = z.infer<typeof zodCosmWasmPremiumFeed>;
 
 type CosmWasmSocialFeed = {
   type: NetworkFeature.SocialFeed;

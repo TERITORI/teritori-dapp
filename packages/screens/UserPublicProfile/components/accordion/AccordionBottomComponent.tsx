@@ -72,6 +72,8 @@ export const AccordionBottomComponent = ({
           maxWidth: ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH,
         }}
         onUpload={async (files) => {
+          console.log("onUpload files", files);
+
           if (files.length !== 1) {
             throw new Error("Only one file is allowed");
           }
@@ -82,7 +84,10 @@ export const AccordionBottomComponent = ({
             throw new Error("No tier");
           }
           const file = files[0];
+
+          console.log("uploading files to IPFS", file);
           const web3URI = await uploadToIPFS(selectedWallet.userId, file);
+          console.log("updating files", web3URI);
           update(tierIndex, { ...tier, imageURI: web3URI });
         }}
         setIsLoading={setIsLoading}

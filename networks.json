@@ -10939,7 +10939,7 @@
     "featureObjects": [
       {
         "type": "CosmWasmPremiumFeed",
-        "membershipContractAddress": "tori103mx320crzegp93tdpwp7kvgttcyzn0ayhk6hmshz29vcmlywpjqzuaxf6",
+        "membershipContractAddress": "tori1qv4yn5rpu8v6sdgxww65rdpftujuzdgw5xw3tffhf633qxrzuemqgxctfl",
         "mintDenom": "utori"
       }
     ],
@@ -10969,7 +10969,7 @@
     "contractExplorer": "https://explorer.teritori.com/teritori-testnet/account/$address",
     "idPrefix": "testori",
     "testnet": true,
-    "backendEndpoint": "http://localhost:9090",
+    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
     "addressPrefix": "tori",
     "restEndpoint": "https://rest.testnet.teritori.com",
     "rpcEndpoint": "https://rpc.testnet.teritori.com",
