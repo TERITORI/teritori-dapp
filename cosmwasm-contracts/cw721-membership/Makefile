@@ -4,7 +4,7 @@ NODE_FLAG=--node https://rpc.testnet.teritori.com:443
 TX_FLAGS=--from $(ADMIN) --chain-id teritori-test-6 $(NODE_FLAG) --gas auto --gas-adjustment 1.3 -y -b sync --output json --keyring-backend test -o json
 QUERY_FLAGS=$(NODE_FLAG) -o json
 CODE_ID=50
-CONFIG=$(shell cat config.json | jq -jc '.admin_addr="$(ADMIN_ADDR)"' | jq -Rs '.')
+CONFIG=$(shell cat config.json | jq --rawfile desc desc.txt -r '.admin_addr="$(ADMIN_ADDR)" | .description=$$desc | tojson | @sh')
 
 # only informative
 CONTRACT_ADDRESS=tori1gelslcq8jg38rl69xvjmt6j560ks9fypldke5g9er06jgy5n535s048jg5
@@ -28,7 +28,3 @@ instantiate.testnet: config.json
 	set -o pipefail; \
 	TXHASH=$$(teritorid tx wasm instantiate $(CODE_ID) $(CONFIG) --label Cw721Membership --admin $(ADMIN_ADDR) $(TX_FLAGS) | jq -r .txhash); \
 	while ! teritorid query tx $$TXHASH $(QUERY_FLAGS) 2>/dev/null | jq -r '.logs[0].events[] | select(.type=="instantiate").attributes[] | select(.key=="_contract_address").value'; do sleep 1; done
-	
-
-test:
-	
