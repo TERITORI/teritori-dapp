@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { cloneDeep } from "lodash";
 import Long from "long";
 import { useCallback, useMemo } from "react";
@@ -27,6 +28,7 @@ import {
   getCollectionMetadata,
   getTnsCollectionInfo,
 } from "@/utils/collection";
+import { mustGetCw721MembershipQueryClient } from "@/utils/feed/client";
 import { isLinkBanned } from "@/utils/link-ban";
 
 // NOTE: consider using the indexer for this
@@ -372,26 +374,24 @@ const usePremiumFeedCollectionInfo = (
   networkId: string | undefined,
   enabled?: boolean,
 ) => {
+  const { data: config, refetch } = useQuery(
+    ["premium-feed-config", networkId],
+    async () => {
+      const client = await mustGetCw721MembershipQueryClient(networkId);
+      const config = await client.config();
+      return config;
+    },
+    { enabled },
+  );
+
   const info: CollectionInfo = {
-    name: "Premium Memberships",
-    description: `Premium Memberships are exclusively held by premium subscribers of content creators, offering them access to content specially reserved for the creators' communities.
-
-By holding a Premium Membership from a creator, you:
-
-- Directly support the creation of their unique content.
-- Gain privileged access to their latest creations.
-- Receive access to exclusive perks as defined by the creator.
-- Contribute to the broader economy of Teritori OS, with fees being reinvested into the $TORI token.
-- Play a crucial role in the development of the Teritori ecosystem, aiding in financing the sustainable resilience of future communities.
-- Enjoy potential future benefits across all Teritori OS features, including whitelists, airdrops, early access to new features, alpha information, and more.
-
-Embrace the opportunity to be part of a vibrant creator economy while enjoying exclusive content and perks designed to enrich your experience.`,
-    image: "ipfs://bafybeiaznarsgwk7stav6qrzjnwqw4j7eu7drm3xx4p3fokgsnrouelse4",
+    name: config?.name,
+    description: config?.description,
+    image: config?.image_uri,
     mintPhases: [],
-    state: "ended",
   };
 
-  return { info, notFound: false, refetch: () => {} };
+  return { info, notFound: false, refetch };
 };
 
 /*

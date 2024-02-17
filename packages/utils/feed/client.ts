@@ -10,7 +10,12 @@ import {
   parseUserId,
 } from "@/networks";
 
-export const mustGetCw721MembershipQueryClient = async (networkId: string) => {
+export const mustGetCw721MembershipQueryClient = async (
+  networkId: string | undefined,
+) => {
+  if (!networkId) {
+    throw new Error("Invalid network id");
+  }
   const pmFeature = getNetworkFeature(
     networkId,
     NetworkFeature.CosmWasmPremiumFeed,

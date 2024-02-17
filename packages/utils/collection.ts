@@ -93,11 +93,8 @@ export const collectionContractKindFromID = (id: string | undefined) => {
   return CollectionContractKind.Unknown;
 };
 
-export const getCollectionMetadata = (umetadata: unknown): CollectionInfo => {
+export const getCollectionMetadata = (metadata: unknown): CollectionInfo => {
   const info: CollectionInfo = { mintPhases: [] };
-
-  // FIXME: remove any cast
-  const metadata = umetadata as any; // current ts version does not support logical casts for 'in' keyword
 
   if (typeof metadata !== "object" || !metadata) {
     return info;

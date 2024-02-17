@@ -80,6 +80,10 @@ pub struct Nft {
 pub struct Config {
     pub(crate) admin_addr: Addr,
     pub(crate) mint_royalties: u16, // 0-10000 = 0%-100%
+    pub(crate) name: String,
+    pub(crate) description: String,
+    pub(crate) image_uri: String,
+    pub(crate) symbol: String,
 }
 
 #[cw_serde]
@@ -118,6 +122,10 @@ impl Cw721MembershipContract {
         ctx: InstantiateCtx,
         admin_addr: String,
         mint_royalties: u16,
+        name: String,
+        description: String,
+        image_uri: String,
+        symbol: String,
     ) -> StdResult<Response> {
         let admin_addr = ctx.deps.api.addr_validate(admin_addr.as_str())?;
         self.config.save(
@@ -125,6 +133,10 @@ impl Cw721MembershipContract {
             &Config {
                 admin_addr,
                 mint_royalties,
+                name,
+                description,
+                image_uri,
+                symbol,
             },
         )?;
         self.num_tokens.save(ctx.deps.storage, &Uint64::zero())?;
@@ -268,21 +280,42 @@ impl Cw721MembershipContract {
         ctx: ExecCtx,
         admin_addr: Option<String>,
         mint_royalties: Option<u16>,
+        name: Option<String>,
+        description: Option<String>,
+        image_uri: Option<String>,
+        symbol: Option<String>,
     ) -> Result<Response, ContractError> {
-        let mut config = self.config.load(ctx.deps.storage)?;
-        if ctx.info.sender != config.admin_addr {
-            return Err(ContractError::Unauthorized);
-        }
+        self.config.update(ctx.deps.storage, |mut config| {
+            if ctx.info.sender != config.admin_addr {
+                return Err(ContractError::Unauthorized);
+            }
 
-        if let Some(admin_addr) = admin_addr {
-            config.admin_addr = ctx.deps.api.addr_validate(admin_addr.as_str())?;
-        }
+            if let Some(admin_addr) = admin_addr {
+                config.admin_addr = ctx.deps.api.addr_validate(admin_addr.as_str())?;
+            }
 
-        if let Some(mint_royalties) = mint_royalties {
-            config.mint_royalties = mint_royalties;
-        }
+            if let Some(mint_royalties) = mint_royalties {
+                config.mint_royalties = mint_royalties;
+            }
 
-        self.config.save(ctx.deps.storage, &config)?;
+            if let Some(name) = name {
+                config.name = name;
+            }
+
+            if let Some(description) = description {
+                config.description = description;
+            }
+
+            if let Some(image_uri) = image_uri {
+                config.image_uri = image_uri;
+            }
+
+            if let Some(symbol) = symbol {
+                config.symbol = symbol;
+            }
+
+            Ok(config)
+        })?;
 
         Ok(Response::default())
     }
@@ -419,6 +452,12 @@ impl Cw721MembershipContract {
     }
 
     // Membership queries
+
+    #[msg(query)]
+    pub fn config(&self, ctx: QueryCtx) -> Result<Config, ContractError> {
+        let conf = self.config.load(ctx.deps.storage)?;
+        Ok(conf)
+    }
 
     #[msg(query)]
     pub fn channel(
@@ -655,9 +694,10 @@ impl Cw721MembershipContract {
     /// Returns top-level metadata about the contract: `ContractInfoResponse`
     #[msg(query)]
     pub fn contract_info(&self, _ctx: QueryCtx) -> Result<ContractInfoResponse, ContractError> {
+        let conf = self.config.load(_ctx.deps.storage)?;
         Ok(ContractInfoResponse {
-            name: "Premium Memberships".to_string(),
-            symbol: "PMEM".to_string(),
+            name: conf.name,
+            symbol: conf.symbol,
         })
     }
 

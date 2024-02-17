@@ -17,6 +17,10 @@ fn basic_full_flow() {
     let channel_owner = "channel_owner";
     let sub_user = "sub_user";
     let mint_royalties = 5;
+    let coll_name = "coll_name";
+    let coll_desc = "coll_desc";
+    let coll_image_uri = "coll_image_uri";
+    let coll_symbol = "coll_symbol";
 
     app.app_mut()
         .init_modules(|router, _, storage| {
@@ -30,9 +34,28 @@ fn basic_full_flow() {
         .unwrap();
 
     let contract = code_id
-        .instantiate(admin.to_string(), mint_royalties)
+        .instantiate(
+            admin.to_string(),
+            mint_royalties,
+            coll_name.to_string(),
+            coll_desc.to_string(),
+            coll_image_uri.to_string(),
+            coll_symbol.to_string(),
+        )
         .call(creator)
         .unwrap();
+
+    let info = contract.contract_info().unwrap();
+    assert_eq!(info.name, coll_name.to_string());
+    assert_eq!(info.symbol, coll_symbol.to_string());
+
+    let config = contract.config().unwrap();
+    assert_eq!(config.admin_addr, admin.to_string());
+    assert_eq!(config.mint_royalties, mint_royalties);
+    assert_eq!(config.name, coll_name.to_string());
+    assert_eq!(config.description, coll_desc.to_string());
+    assert_eq!(config.image_uri, coll_image_uri.to_string());
+    assert_eq!(config.symbol, coll_symbol.to_string());
 
     let memberships_config = vec![MembershipConfig {
         display_name: "Channel".to_string(),

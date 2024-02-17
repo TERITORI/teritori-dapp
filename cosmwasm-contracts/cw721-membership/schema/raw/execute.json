@@ -92,6 +92,18 @@
                     "null"
                   ]
                 },
+                "description": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "image_uri": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
                 "mint_royalties": {
                   "type": [
                     "integer",
@@ -99,6 +111,18 @@
                   ],
                   "format": "uint16",
                   "minimum": 0.0
+                },
+                "name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "symbol": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
                 }
               }
             }

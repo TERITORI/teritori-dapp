@@ -6,7 +6,11 @@
 
 export interface InstantiateMsg {
   admin_addr: string;
+  description: string;
+  image_uri: string;
   mint_royalties: number;
+  name: string;
+  symbol: string;
   [k: string]: unknown;
 }
 export type ExecuteMsg = ExecMsg;
@@ -25,7 +29,11 @@ export type ExecMsg = {
 } | {
   update_config: {
     admin_addr?: string | null;
+    description?: string | null;
+    image_uri?: string | null;
     mint_royalties?: number | null;
+    name?: string | null;
+    symbol?: string | null;
     [k: string]: unknown;
   };
 } | {
@@ -75,6 +83,10 @@ export interface Coin {
 }
 export type QueryMsg = QueryMsg1;
 export type QueryMsg1 = {
+  config: {
+    [k: string]: unknown;
+  };
+} | {
   channel: {
     channel_addr: string;
     [k: string]: unknown;
@@ -185,6 +197,15 @@ export interface ChannelResponse {
 }
 export interface ChannelFundsResponse {
   funds: Coin[];
+}
+export type Addr = string;
+export interface Config {
+  admin_addr: Addr;
+  description: string;
+  image_uri: string;
+  mint_royalties: number;
+  name: string;
+  symbol: string;
 }
 export interface ContractInfoResponse {
   name: string;
