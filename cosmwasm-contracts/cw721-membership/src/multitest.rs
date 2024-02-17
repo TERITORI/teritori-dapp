@@ -1,4 +1,5 @@
 use cosmwasm_std::{Addr, Coin, Timestamp, Uint128, Uint64};
+use cw2981_royalties::msg::{CheckRoyaltiesResponse, RoyaltiesInfoResponse};
 use cw721::{NftInfoResponse, TokensResponse};
 use cw721_metadata_onchain::{Metadata, Trait};
 use sylvia::{anyhow::Error, multitest::App};
@@ -9,18 +10,14 @@ use crate::contract::{
 
 #[test]
 fn basic_full_flow() {
+    // ------- deploy contract
+
     let app = App::default();
     let code_id = CodeId::store_code(&app);
 
-    let creator = "creator";
-    let admin = "admin";
-    let channel_owner = "channel_owner";
+    // ------- init app modules
+
     let sub_user = "sub_user";
-    let mint_royalties = 5;
-    let coll_name = "coll_name";
-    let coll_desc = "coll_desc";
-    let coll_image_uri = "coll_image_uri";
-    let coll_symbol = "coll_symbol";
 
     app.app_mut()
         .init_modules(|router, _, storage| {
@@ -33,6 +30,16 @@ fn basic_full_flow() {
         })
         .unwrap();
 
+    // ------- instantiate contract
+
+    let admin = "admin";
+    let contract_creator = "creator";
+    let mint_royalties = 5;
+    let coll_name = "coll_name";
+    let coll_desc = "coll_desc";
+    let coll_image_uri = "coll_image_uri";
+    let coll_symbol = "coll_symbol";
+
     let contract = code_id
         .instantiate(
             admin.to_string(),
@@ -42,7 +49,7 @@ fn basic_full_flow() {
             coll_image_uri.to_string(),
             coll_symbol.to_string(),
         )
-        .call(creator)
+        .call(contract_creator)
         .unwrap();
 
     let info = contract.contract_info().unwrap();
@@ -57,6 +64,8 @@ fn basic_full_flow() {
     assert_eq!(config.image_uri, coll_image_uri.to_string());
     assert_eq!(config.symbol, coll_symbol.to_string());
 
+    // ------- create channel
+
     let memberships_config = vec![MembershipConfig {
         display_name: "Channel".to_string(),
         description: "Channel description".to_string(),
@@ -67,17 +76,22 @@ fn basic_full_flow() {
             denom: "utori".to_string(),
             amount: Uint128::from(1000000u32),
         },
-        trade_royalties: 20,
     }];
 
+    let trade_royalties = 500;
+    let channel_owner = "channel_owner";
+
     contract
-        .upsert_channel(memberships_config.clone())
+        .upsert_channel(memberships_config.clone(), trade_royalties)
         .call(channel_owner)
         .unwrap();
 
     let channel_response = contract.channel(channel_owner.to_string()).unwrap();
     assert_eq!(channel_response.memberships_config, memberships_config);
     assert_eq!(channel_response.mint_royalties, mint_royalties);
+    assert_eq!(channel_response.trade_royalties, trade_royalties);
+
+    // ------- mint a nft
 
     contract
         .subscribe(channel_owner.to_string(), sub_user.to_string(), 0)
@@ -89,6 +103,8 @@ fn basic_full_flow() {
         .unwrap();
 
     let token_id = "AAAAAAAAAAFjaGFubmVsX293bmVy";
+
+    // ------- test nft queries
 
     let tokens_response = contract.tokens(sub_user.to_string(), None, None).unwrap();
     assert_eq!(
@@ -136,6 +152,51 @@ fn basic_full_flow() {
             }
         }
     );
+
+    // ------- test royalty queries
+
+    let royalties_check = contract.check_royalties().unwrap();
+    assert_eq!(
+        royalties_check,
+        CheckRoyaltiesResponse {
+            royalty_payments: true
+        }
+    );
+
+    let royalty_info = contract
+        .royalty_info(token_id.to_string(), Uint128::from(461558079u32))
+        .unwrap();
+    assert_eq!(
+        royalty_info,
+        RoyaltiesInfoResponse {
+            address: channel_owner.to_string(),
+            royalty_amount: Uint128::from(23077903u32) // 5%
+        }
+    );
+
+    // ------- test transfer and back
+
+    let other_user = "other_user";
+
+    contract
+        .transfer_nft(other_user.to_string(), token_id.to_string())
+        .call(sub_user)
+        .unwrap();
+    let new_owner = contract
+        .owner_of(token_id.to_string(), Some(false))
+        .unwrap();
+    assert_eq!(new_owner.owner, other_user.to_string());
+
+    contract
+        .transfer_nft(sub_user.to_string(), token_id.to_string())
+        .call(other_user)
+        .unwrap();
+    let new_owner = contract
+        .owner_of(token_id.to_string(), Some(false))
+        .unwrap();
+    assert_eq!(new_owner.owner, sub_user.to_string());
+
+    // ------- test subscription query
 
     // go 6 days into the future
     app.update_block(|block| {

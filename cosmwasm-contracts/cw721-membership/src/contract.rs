@@ -2,11 +2,12 @@ use crate::error::ContractError;
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
     Addr, BankMsg, Binary, Coin, CosmosMsg, Order, Response, StdResult, Storage, Timestamp,
-    Uint128, Uint64,
+    Uint128, Uint64, WasmMsg,
 };
+use cw2981_royalties::msg::{CheckRoyaltiesResponse, RoyaltiesInfoResponse};
 use cw721::{
-    AllNftInfoResponse, ContractInfoResponse, NftInfoResponse, NumTokensResponse, OwnerOfResponse,
-    TokensResponse,
+    AllNftInfoResponse, ContractInfoResponse, Cw721ReceiveMsg, NftInfoResponse, NumTokensResponse,
+    OwnerOfResponse, TokensResponse,
 };
 use cw721_metadata_onchain::{Metadata, Trait};
 use cw_storage_plus::{Bound, Item, KeyDeserialize, Map};
@@ -38,15 +39,15 @@ pub struct MembershipConfig {
     pub nft_image_uri: String,
     pub nft_name_prefix: String,
     pub duration_seconds: Uint64,
-    pub trade_royalties: u16, // 0-10000 = 0%-100%,
     pub price: Coin,
 }
 
 #[cw_serde]
 pub struct ChannelResponse {
     pub memberships_config: Vec<MembershipConfig>,
-    pub mint_royalties: u16, // 0-10000 = 0%-100%
-                             // TODO: tokens_count
+    pub trade_royalties: u16, // 0-10000 = 0%-100%
+    pub mint_royalties: u16,  // 0-10000 = 0%-100%
+                              // TODO: tokens_count
 }
 
 #[cw_serde]
@@ -62,7 +63,8 @@ pub struct ChannelFundsResponse {
 #[cw_serde]
 pub struct Channel {
     memberships_config: Vec<MembershipConfig>,
-    mint_royalties: u16, // 0-10000 = 0%-100%
+    mint_royalties: u16,  // 0-10000 = 0%-100%
+    trade_royalties: u16, // 0-10000 = 0%-100%
     next_index: Uint64,
 }
 
@@ -150,6 +152,7 @@ impl Cw721MembershipContract {
         &self,
         ctx: ExecCtx,
         memberships_config: Vec<MembershipConfig>,
+        trade_royalties: u16, // 0-10000 = 0%-100%
     ) -> Result<Response, ContractError> {
         let channel_addr = ctx.info.sender;
 
@@ -164,11 +167,13 @@ impl Cw721MembershipContract {
                         memberships_config,
                         next_index: channel.next_index,
                         mint_royalties: channel.mint_royalties,
+                        trade_royalties: channel.trade_royalties,
                     }),
                     None => Ok(Channel {
                         memberships_config,
                         next_index: Uint64::one(),
                         mint_royalties: config.mint_royalties,
+                        trade_royalties,
                     }),
                 },
             )?;
@@ -474,6 +479,7 @@ impl Cw721MembershipContract {
         Ok(ChannelResponse {
             memberships_config: channel.memberships_config,
             mint_royalties: channel.mint_royalties,
+            trade_royalties: channel.trade_royalties,
         })
     }
 
@@ -566,6 +572,7 @@ impl Cw721MembershipContract {
 
     // CW721 Mutations
 
+    /// Transfer is a base message to move a token to another account without triggering actions
     #[msg(exec)]
     pub fn transfer_nft(
         &self,
@@ -573,38 +580,44 @@ impl Cw721MembershipContract {
         recipient: String,
         token_id: String,
     ) -> Result<Response, ContractError> {
-        let recipient = ctx.deps.api.addr_validate(recipient.as_str())?;
+        let sender = ctx.info.sender.to_owned();
 
-        let (channel_addr, nft_index) = parse_token_id(&token_id)?;
+        self.internal_transfer_nft(ctx, recipient.to_owned(), token_id.to_owned())?;
 
-        self.nfts.update(
-            ctx.deps.storage,
-            (channel_addr.to_owned(), nft_index),
-            |nft| match nft {
-                Some(nft) => {
-                    if nft.owner_addr != ctx.info.sender {
-                        return Err(ContractError::Unauthorized);
-                    }
-                    if nft.owner_addr == recipient {
-                        return Err(ContractError::CannotTransferToSelf);
-                    }
-                    Ok(Nft {
-                        owner_addr: recipient.to_owned(),
-                        ..nft
-                    })
-                }
-                None => Err(ContractError::NftNotFound),
-            },
-        )?;
+        Ok(Response::new()
+            .add_attribute("action", "transfer_nft")
+            .add_attribute("sender", sender)
+            .add_attribute("recipient", recipient)
+            .add_attribute("token_id", token_id))
+    }
 
-        self.by_owner.remove(
-            ctx.deps.storage,
-            (ctx.info.sender, channel_addr.to_owned(), nft_index),
-        );
-        self.by_owner
-            .save(ctx.deps.storage, (recipient, channel_addr, nft_index), &())?;
+    /// Send is a base message to transfer a token to a contract and trigger an action
+    /// on the receiving contract.
+    #[msg(exec)]
+    pub fn send_nft(
+        &self,
+        ctx: ExecCtx,
+        contract: String,
+        token_id: String,
+        msg: Binary,
+    ) -> Result<Response, ContractError> {
+        let sender = ctx.info.sender.to_owned();
 
-        Ok(Response::default())
+        self.internal_transfer_nft(ctx, contract.to_owned(), token_id.to_owned())?;
+
+        let send = Cw721ReceiveMsg {
+            sender: sender.to_string(),
+            token_id: token_id.to_owned(),
+            msg,
+        };
+
+        // Send message
+        Ok(Response::new()
+            .add_message(send.into_cosmos_msg(contract.to_owned())?)
+            .add_attribute("action", "send_nft")
+            .add_attribute("sender", sender)
+            .add_attribute("recipient", contract)
+            .add_attribute("token_id", token_id))
     }
 
     // TODO
@@ -658,6 +671,52 @@ impl Cw721MembershipContract {
                 Ok(num_tokens.checked_sub(Uint64::one())?)
             })?;
         Ok(Response::default())
+    }
+
+    // CW2981 Royalty Queries
+
+    /// Should be called on sale to see if royalties are owed
+    /// by the marketplace selling the NFT, if CheckRoyalties
+    /// returns true
+    /// See https://eips.ethereum.org/EIPS/eip-2981
+    #[msg(query)]
+    pub fn royalty_info(
+        &self,
+        _ctx: QueryCtx,
+        token_id: String,
+        // the denom of this sale must also be the denom returned by RoyaltiesInfoResponse
+        // this was originally implemented as a Coin
+        // however that would mean you couldn't buy using CW20s
+        // as CW20 is just mapping of addr -> balance
+        sale_price: Uint128,
+    ) -> Result<RoyaltiesInfoResponse, ContractError> {
+        let (channel_addr, _nft_index) = parse_token_id(&token_id)?;
+
+        let channel = self
+            .channels
+            .load(_ctx.deps.storage, channel_addr.to_owned())
+            .map_err(|_| ContractError::ChannelNotFound)?;
+
+        let royalty_amount = sale_price
+            .checked_mul(Uint128::from(channel.trade_royalties))?
+            .checked_div(Uint128::from(10000u128))?;
+
+        Ok(RoyaltiesInfoResponse {
+            address: channel_addr.to_string(),
+            royalty_amount,
+        })
+    }
+
+    /// Called against contract to determine if this NFT
+    /// implements royalties. Should return a boolean as part of
+    /// CheckRoyaltiesResponse - default can simply be true
+    /// if royalties are implemented at token level
+    /// (i.e. always check on sale)
+    #[msg(query)]
+    pub fn check_royalties(&self, _ctx: QueryCtx) -> Result<CheckRoyaltiesResponse, ContractError> {
+        Ok(CheckRoyaltiesResponse {
+            royalty_payments: true,
+        })
     }
 
     // CW721 Queries
@@ -858,6 +917,46 @@ impl Cw721MembershipContract {
                 image_data: None,
             },
         })
+    }
+
+    fn internal_transfer_nft(
+        &self,
+        ctx: ExecCtx,
+        recipient: String,
+        token_id: String,
+    ) -> Result<Response, ContractError> {
+        let recipient = ctx.deps.api.addr_validate(recipient.as_str())?;
+
+        let (channel_addr, nft_index) = parse_token_id(&token_id)?;
+
+        self.nfts.update(
+            ctx.deps.storage,
+            (channel_addr.to_owned(), nft_index),
+            |nft| match nft {
+                Some(nft) => {
+                    if nft.owner_addr != ctx.info.sender {
+                        return Err(ContractError::Unauthorized);
+                    }
+                    if nft.owner_addr == recipient {
+                        return Err(ContractError::CannotTransferToSelf);
+                    }
+                    Ok(Nft {
+                        owner_addr: recipient.to_owned(),
+                        ..nft
+                    })
+                }
+                None => Err(ContractError::NftNotFound),
+            },
+        )?;
+
+        self.by_owner.remove(
+            ctx.deps.storage,
+            (ctx.info.sender, channel_addr.to_owned(), nft_index),
+        );
+        self.by_owner
+            .save(ctx.deps.storage, (recipient, channel_addr, nft_index), &())?;
+
+        Ok(Response::default())
     }
 }
 

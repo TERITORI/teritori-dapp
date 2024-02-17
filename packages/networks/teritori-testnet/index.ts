@@ -8,7 +8,7 @@ const nameServiceContractAddress =
 const premiumFeedFeature: CosmWasmPremiumFeed = {
   type: NetworkFeature.CosmWasmPremiumFeed,
   membershipContractAddress:
-    "tori1922wa7883ftymh47cxxjyun293et400pl8fy6ugkr9602zu7eccqzl4ufk",
+    "tori16w7h5tkkjtr36rpcdg8qv4sfs2e44xcrz6a9eczcslywyfpsynfqyj5pt0",
   mintDenom: "utori",
 };
 
@@ -73,6 +73,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   distributorContractAddress: "",
   riotersFooterContractAddress: "",
   secondaryDuringMintList: [
+    premiumFeedFeature.membershipContractAddress,
     nameServiceContractAddress,
     riotContractAddressGen0,
     riotContractAddressGen1,

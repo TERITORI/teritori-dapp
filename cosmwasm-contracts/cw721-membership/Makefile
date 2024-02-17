@@ -3,11 +3,11 @@ ADMIN_ADDR=$(shell teritorid keys show $(ADMIN) --keyring-backend test --output 
 NODE_FLAG=--node https://rpc.testnet.teritori.com:443
 TX_FLAGS=--from $(ADMIN) --chain-id teritori-test-6 $(NODE_FLAG) --gas auto --gas-adjustment 1.3 -y -b sync --output json --keyring-backend test -o json
 QUERY_FLAGS=$(NODE_FLAG) -o json
-CODE_ID=50
+CODE_ID=52
 CONFIG=$(shell cat config.json | jq --rawfile desc desc.txt -r '.admin_addr="$(ADMIN_ADDR)" | .description=$$desc | tojson | @sh')
 
 # only informative
-CONTRACT_ADDRESS=tori1922wa7883ftymh47cxxjyun293et400pl8fy6ugkr9602zu7eccqzl4ufk
+CONTRACT_ADDRESS=tori16w7h5tkkjtr36rpcdg8qv4sfs2e44xcrz6a9eczcslywyfpsynfqyj5pt0
 
 .PHONY: artifacts/cw721_membership.wasm
 artifacts/cw721_membership.wasm:

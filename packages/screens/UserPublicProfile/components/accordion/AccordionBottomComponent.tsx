@@ -74,6 +74,10 @@ export const AccordionBottomComponent = ({
         onUpload={async (files) => {
           console.log("onUpload files", files);
 
+          if (files.length === 0) {
+            update(tierIndex, { ...tier, imageURI: "" });
+          }
+
           if (files.length !== 1) {
             throw new Error("Only one file is allowed");
           }

@@ -280,7 +280,7 @@ export const NFTMainInfo: React.FC<{
           <ImageWithTextInsert
             imageURL={nftInfo?.imageURL}
             textInsert={!isMobile ? nftInfo?.textInsert : ""}
-            sourceSize={464}
+            sourceSize={462}
             style={{ borderRadius: 8 }}
           />
         </LegacyTertiaryBox>
