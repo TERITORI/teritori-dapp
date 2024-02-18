@@ -8,10 +8,7 @@ import { Post } from "../../../api/feed/v1/feed";
 import { HTML_TAG_REGEXP } from "../../../utils/regex";
 import { zodTryParseJSON } from "../../../utils/sanitize";
 import { convertGIFToLocalFileType } from "../../../utils/social-feed";
-import {
-  ZodSocialFeedPostMetadata,
-  zodSocialFeedCommonMetadata,
-} from "../../../utils/types/feed";
+import { ZodSocialFeedPostMetadata } from "../../../utils/types/feed";
 import { AudioView } from "../../FilePreview/AudioView";
 import { ImagesViews } from "../../FilePreview/ImagesViews";
 import { VideoView } from "../../FilePreview/VideoView";
@@ -55,14 +52,9 @@ export const SocialMessageContent: React.FC<Props> = ({ post, isPreview }) => {
     );
   }, [postMetadata?.gifs]);
 
-  const commonMetadata = zodTryParseJSON(
-    zodSocialFeedCommonMetadata,
-    post.metadata,
-  );
-
   const selectedWallet = useSelectedWallet();
   const canView = useCanViewPost(
-    commonMetadata?.premium || 0,
+    post.premiumLevel,
     post.authorId,
     selectedWallet?.userId,
   );
