@@ -29,8 +29,9 @@ export interface Post {
   subPostLength: number;
   authorId: string;
   createdAt: number;
-  tipAmount: number;
   reactions: Reaction[];
+  tipAmount: number;
+  premiumLevel: number;
 }
 
 export interface PostFilter {
@@ -266,8 +267,9 @@ function createBasePost(): Post {
     subPostLength: 0,
     authorId: "",
     createdAt: 0,
-    tipAmount: 0,
     reactions: [],
+    tipAmount: 0,
+    premiumLevel: 0,
   };
 }
 
@@ -297,11 +299,14 @@ export const Post = {
     if (message.createdAt !== 0) {
       writer.uint32(64).int64(message.createdAt);
     }
+    for (const v of message.reactions) {
+      Reaction.encode(v!, writer.uint32(74).fork()).ldelim();
+    }
     if (message.tipAmount !== 0) {
       writer.uint32(80).int64(message.tipAmount);
     }
-    for (const v of message.reactions) {
-      Reaction.encode(v!, writer.uint32(74).fork()).ldelim();
+    if (message.premiumLevel !== 0) {
+      writer.uint32(88).uint32(message.premiumLevel);
     }
     return writer;
   },
@@ -369,6 +374,13 @@ export const Post = {
 
           message.createdAt = longToNumber(reader.int64() as Long);
           continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.reactions.push(Reaction.decode(reader, reader.uint32()));
+          continue;
         case 10:
           if (tag !== 80) {
             break;
@@ -376,12 +388,12 @@ export const Post = {
 
           message.tipAmount = longToNumber(reader.int64() as Long);
           continue;
-        case 9:
-          if (tag !== 74) {
+        case 11:
+          if (tag !== 88) {
             break;
           }
 
-          message.reactions.push(Reaction.decode(reader, reader.uint32()));
+          message.premiumLevel = reader.uint32();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -402,10 +414,11 @@ export const Post = {
       subPostLength: isSet(object.subPostLength) ? globalThis.Number(object.subPostLength) : 0,
       authorId: isSet(object.authorId) ? globalThis.String(object.authorId) : "",
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
-      tipAmount: isSet(object.tipAmount) ? globalThis.Number(object.tipAmount) : 0,
       reactions: globalThis.Array.isArray(object?.reactions)
         ? object.reactions.map((e: any) => Reaction.fromJSON(e))
         : [],
+      tipAmount: isSet(object.tipAmount) ? globalThis.Number(object.tipAmount) : 0,
+      premiumLevel: isSet(object.premiumLevel) ? globalThis.Number(object.premiumLevel) : 0,
     };
   },
 
@@ -435,11 +448,14 @@ export const Post = {
     if (message.createdAt !== 0) {
       obj.createdAt = Math.round(message.createdAt);
     }
+    if (message.reactions?.length) {
+      obj.reactions = message.reactions.map((e) => Reaction.toJSON(e));
+    }
     if (message.tipAmount !== 0) {
       obj.tipAmount = Math.round(message.tipAmount);
     }
-    if (message.reactions?.length) {
-      obj.reactions = message.reactions.map((e) => Reaction.toJSON(e));
+    if (message.premiumLevel !== 0) {
+      obj.premiumLevel = Math.round(message.premiumLevel);
     }
     return obj;
   },
@@ -457,8 +473,9 @@ export const Post = {
     message.subPostLength = object.subPostLength ?? 0;
     message.authorId = object.authorId ?? "";
     message.createdAt = object.createdAt ?? 0;
-    message.tipAmount = object.tipAmount ?? 0;
     message.reactions = object.reactions?.map((e) => Reaction.fromPartial(e)) || [];
+    message.tipAmount = object.tipAmount ?? 0;
+    message.premiumLevel = object.premiumLevel ?? 0;
     return message;
   },
 };
