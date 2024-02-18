@@ -6,14 +6,18 @@ export const useCanViewPost = (
   viewerId?: string,
 ) => {
   const { data: subsciption } = usePremiumSubscription(channelId, viewerId);
-  if (!!channelId && !!viewerId && channelId === viewerId) {
-    return true;
-  }
   if (premiumLevel <= 0) {
+    // not premium content
     return true;
   }
-  if (!subsciption || subsciption.level <= 0) {
+  if (!!channelId && !!viewerId && channelId === viewerId) {
+    // viewer is channel owner
+    return true;
+  }
+  if (!subsciption) {
+    // viewer has no subscription to this channel
     return false;
   }
+  // check subscription level
   return subsciption.level >= premiumLevel;
 };
