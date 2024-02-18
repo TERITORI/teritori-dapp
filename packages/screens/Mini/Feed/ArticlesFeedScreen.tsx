@@ -13,8 +13,9 @@ export const ArticlesFeedScreen = () => {
       user: "",
       mentions: [],
       hashtags: [],
-      specifierBlacklist: [],
-      specifierWhitelist: [],
+      premiumLevelMax: -1,
+
+      premiumLevelMin: 0,
     },
     limit: 10,
     offset: 0,

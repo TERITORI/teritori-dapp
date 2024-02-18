@@ -88,8 +88,9 @@ export const MiniVideoPostDetails = ({
       user: localPost.authorId,
       mentions: [],
       hashtags: [],
-      specifierBlacklist: [],
-      specifierWhitelist: [],
+      premiumLevelMax: -1,
+
+      premiumLevelMin: 0,
     },
     limit: 10,
     offset: 0,
@@ -101,8 +102,9 @@ export const MiniVideoPostDetails = ({
       user: "",
       mentions: [],
       hashtags: [],
-      specifierBlacklist: [],
-      specifierWhitelist: [],
+      premiumLevelMax: -1,
+
+      premiumLevelMin: 0,
     },
     limit: 10,
     offset: 0,

@@ -30,8 +30,9 @@ export const PostsUPPScreen: FC<UppTabScreenProps> = ({
         mentions: [],
         categories: [],
         hashtags: [],
-        specifierBlacklist: [],
-        specifierWhitelist: [],
+        premiumLevelMax: -1,
+
+        premiumLevelMin: 0,
       },
       limit: 10,
       offset: 0,
