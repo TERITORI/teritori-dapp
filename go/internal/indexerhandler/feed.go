@@ -167,6 +167,7 @@ func (h *Handler) createPost(
 ) error {
 	var metadataJSON map[string]interface{}
 	if err := json.Unmarshal([]byte(createPostMsg.Metadata), &metadataJSON); err != nil {
+		// We ignore this case because there's no validation for the data on the blockchain, and wrong data would stall the indexer if we returned an error.
 		h.logger.Info("ignored post with malformed metadada", zap.String("tx", e.TxHash), zap.String("contract", execMsg.Contract), zap.Error(err))
 		return nil
 	}
