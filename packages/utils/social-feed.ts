@@ -25,19 +25,6 @@ export const ARTICLE_COVER_IMAGE_MAX_HEIGHT = 460;
 export const ARTICLE_COVER_IMAGE_RATIO = 2.274;
 export const ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH = 364;
 export const ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT = 252;
-export const BASE_POST: Post = {
-  identifier: "",
-  category: 0,
-  authorId: "",
-  metadata: "",
-  isDeleted: false,
-  parentPostIdentifier: "",
-  subPostLength: 0,
-  createdAt: 0,
-  tipAmount: 0,
-  reactions: [],
-  premiumLevel: 0,
-};
 export const LIKE_EMOJI = "👍";
 export const DISLIKE_EMOJI = "👎";
 

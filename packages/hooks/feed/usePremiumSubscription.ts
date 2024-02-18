@@ -7,7 +7,6 @@ export const usePremiumSubscription = (
   channelUserId: string | undefined,
   subUserId: string | undefined,
 ) => {
-  console.log("use premium sub", channelUserId, subUserId);
   return useQuery(
     ["premium-is-subscribed", channelUserId, subUserId],
     async () => {

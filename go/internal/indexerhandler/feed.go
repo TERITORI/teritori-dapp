@@ -2,6 +2,7 @@ package indexerhandler
 
 import (
 	"encoding/json"
+	"math"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
@@ -175,8 +176,8 @@ func (h *Handler) createPost(
 	premium := uint32(0)
 	ipremium, ok := metadataJSON["premium"]
 	if ok {
-		if cpremium, ok := ipremium.(int); ok && cpremium > 0 {
-			premium = uint32(cpremium)
+		if cpremium, ok := ipremium.(float64); ok && cpremium > 0 {
+			premium = uint32(math.Ceil(cpremium))
 		}
 	}
 

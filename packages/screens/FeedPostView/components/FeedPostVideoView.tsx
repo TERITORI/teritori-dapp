@@ -39,7 +39,6 @@ import { getNetwork, NetworkKind, parseUserId } from "@/networks";
 import { generatePostMetadata } from "@/utils/feed/queries";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {
-  BASE_POST,
   DEFAULT_USERNAME,
   hashtagMatch,
   mentionMatch,
@@ -81,7 +80,7 @@ export const FeedPostVideoView: FC<{
   const [viewWidth, setViewWidth] = useState(0);
   const isMobile = useIsMobile();
 
-  const [localPost, setLocalPost] = useState(post || BASE_POST);
+  const [localPost, setLocalPost] = useState(post || Post.create());
   const video = zodTryParseJSON(ZodSocialFeedVideoMetadata, localPost.metadata);
   const authorNSInfo = useNSUserInfo(localPost.authorId);
   const [, authorAddress] = parseUserId(localPost.authorId);
