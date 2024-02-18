@@ -13,9 +13,8 @@ export const ArticlesFeedScreen = () => {
       user: "",
       mentions: [],
       hashtags: [],
-      premiumLevelMax: -1,
-
       premiumLevelMin: 0,
+      premiumLevelMax: -1,
     },
     limit: 10,
     offset: 0,
