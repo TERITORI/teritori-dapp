@@ -33,7 +33,7 @@ export default function ToggleButton({
 
   return (
     <Switch
-      // @ts-expect-error: the active thumb color is a weird green that can't be changed with "activeThumbColor"
+      // @ts-expect-error: the active thumb color is a weird green that can't be changed without "activeThumbColor"
       activeThumbColor={secondaryColor}
       trackColor={{ false: neutral33, true: blueDefault }}
       thumbColor={!focused ? neutral99 : secondaryColor}
