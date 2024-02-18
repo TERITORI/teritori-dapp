@@ -30,6 +30,7 @@ import { Tabs } from "@/components/tabs/Tabs";
 import { useCollections } from "@/hooks/useCollections";
 import { useEnabledNetworks } from "@/hooks/useEnabledNetworks";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useCollectionNavigationTarget } from "@/hooks/useNavigateToCollection";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
 import { selectTimePeriod } from "@/store/slices/marketplaceFilters";
@@ -306,6 +307,10 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
   const rowData = useRowData(collection, rank);
   const isMobile = useIsMobile();
 
+  const target = useCollectionNavigationTarget(collection.id, {
+    forceSecondaryDuringMint: collection.secondaryDuringMint,
+  });
+
   return (
     <OmniLink
       style={{
@@ -318,8 +323,9 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         paddingVertical: layout.spacing_x2,
         paddingHorizontal: layout.spacing_x2_5,
       }}
+      disabled={!target}
       to={{
-        screen: +collection.floorPrice !== 0 ? "Collection" : "MintCollection",
+        screen: target || "",
         params: { id: collection.id },
       }}
     >

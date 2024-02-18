@@ -3,11 +3,13 @@ ADMIN_ADDR=$(shell teritorid keys show $(ADMIN) --keyring-backend test --output 
 NODE_FLAG=--node https://rpc.testnet.teritori.com:443
 TX_FLAGS=--from $(ADMIN) --chain-id teritori-test-6 $(NODE_FLAG) --gas auto --gas-adjustment 1.3 -y -b sync --output json --keyring-backend test -o json
 QUERY_FLAGS=$(NODE_FLAG) -o json
+CODE_ID=52
+CONFIG=$(shell cat config.json | jq --rawfile desc desc.txt -r '.admin_addr="$(ADMIN_ADDR)" | .description=$$desc | tojson | @sh')
 
 # only informative
-CODE_ID=43
-CONTRACT_ADDRESS=tori1quf0cu5tlg54aqjd8z54gpvcnh29n6l8qcqmllgrl4gz6jlyn7tsrjllj8
+CONTRACT_ADDRESS=tori16w7h5tkkjtr36rpcdg8qv4sfs2e44xcrz6a9eczcslywyfpsynfqyj5pt0
 
+.PHONY: artifacts/cw721_membership.wasm
 artifacts/cw721_membership.wasm:
 	docker run --rm -v "$(PWD)":/code \
 		--platform linux/amd64 \
@@ -22,8 +24,7 @@ deploy.testnet: artifacts/cw721_membership.wasm
 	while ! teritorid query tx $$TXHASH $(QUERY_FLAGS) 2>/dev/null | jq -r '.logs[0].events[] | select(.type=="store_code").attributes[] | select(.key=="code_id").value'; do sleep 1; done
 
 .PHONY: instantiate.testnet
-instantiate.testnet:
+instantiate.testnet: config.json
 	set -o pipefail; \
-	TXHASH=$$(teritorid tx wasm instantiate $(CODE_ID) '{ "admin_addr": "$(ADMIN_ADDR)", "mint_royalties": 1000 }' --label Cw721Membership --admin $(ADMIN_ADDR) $(TX_FLAGS) | jq -r .txhash); \
+	TXHASH=$$(teritorid tx wasm instantiate $(CODE_ID) $(CONFIG) --label Cw721Membership --admin $(ADMIN_ADDR) $(TX_FLAGS) | jq -r .txhash); \
 	while ! teritorid query tx $$TXHASH $(QUERY_FLAGS) 2>/dev/null | jq -r '.logs[0].events[] | select(.type=="instantiate").attributes[] | select(.key=="_contract_address").value'; do sleep 1; done
-	

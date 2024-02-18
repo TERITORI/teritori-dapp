@@ -16,16 +16,30 @@ const (
 )
 
 func UnmarshalNetwork(b []byte) (Network, error) {
+	var basej FeaturesContainer
+	if err := json.Unmarshal(b, &basej); err != nil {
+		return nil, errors.Wrap(err, "failed to unmarshal network base")
+	}
+	var features []Feature
+	for _, f := range basej.FeatureObjects {
+		feature, err := UnmarshalFeature(f)
+		if err != nil {
+			return nil, err
+		}
+		features = append(features, feature)
+	}
 	var base NetworkBase
 	if err := json.Unmarshal(b, &base); err != nil {
 		return nil, errors.Wrap(err, "failed to unmarshal network base")
 	}
+	base.FeatureObjects = features
 	switch base.Kind {
 	case NetworkKindEthereum:
 		var n EthereumNetwork
 		if err := json.Unmarshal(b, &n); err != nil {
 			return nil, errors.Wrap(err, "failed to unmarshal Ethereum network")
 		}
+		n.FeatureObjects = features
 		return &n, nil
 
 	case NetworkKindCosmos:
@@ -33,6 +47,7 @@ func UnmarshalNetwork(b []byte) (Network, error) {
 		if err := json.Unmarshal(b, &n); err != nil {
 			return nil, errors.Wrap(err, "failed to unmarshal Cosmos network")
 		}
+		n.FeatureObjects = features
 		return &n, nil
 
 	case NetworkKindSolana:
@@ -40,6 +55,7 @@ func UnmarshalNetwork(b []byte) (Network, error) {
 		if err := json.Unmarshal(b, &n); err != nil {
 			return nil, errors.Wrap(err, "failed to unmarshal Solana network")
 		}
+		n.FeatureObjects = features
 		return &n, nil
 
 	case NetworkKindGno:
@@ -47,6 +63,7 @@ func UnmarshalNetwork(b []byte) (Network, error) {
 		if err := json.Unmarshal(b, &n); err != nil {
 			return nil, errors.Wrap(err, "failed to unmarshal Gno network")
 		}
+		n.FeatureObjects = features
 		return &n, nil
 
 	default:

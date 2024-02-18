@@ -35,4 +35,7 @@ pub enum ContractError {
 
     #[error("Invalid funds.")]
     InvalidFunds,
+
+    #[error("Serialization error")]
+    SerializationError,
 }

@@ -4,7 +4,8 @@
   "type": "object",
   "required": [
     "memberships_config",
-    "mint_royalties"
+    "mint_royalties",
+    "trade_royalties"
   ],
   "properties": {
     "memberships_config": {
@@ -14,6 +15,11 @@
       }
     },
     "mint_royalties": {
+      "type": "integer",
+      "format": "uint16",
+      "minimum": 0.0
+    },
+    "trade_royalties": {
       "type": "integer",
       "format": "uint16",
       "minimum": 0.0
@@ -44,8 +50,7 @@
         "duration_seconds",
         "nft_image_uri",
         "nft_name_prefix",
-        "price",
-        "trade_royalties"
+        "price"
       ],
       "properties": {
         "description": {
@@ -65,11 +70,6 @@
         },
         "price": {
           "$ref": "#/definitions/Coin"
-        },
-        "trade_royalties": {
-          "type": "integer",
-          "format": "uint16",
-          "minimum": 0.0
         }
       },
       "additionalProperties": false

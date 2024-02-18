@@ -158,7 +158,8 @@ const SubscriptionSetupForm: React.FC<{
       denom: feature.mintDenom,
       durationDays: "",
       description: "",
-      imageURI: "",
+      imageURI:
+        "ipfs://bafybeibc4fr7vjmhsw7ysoctwg2amotnfh2lw6x2byy4wqinhn7ano55xq",
       open: false,
     };
     append(newElem);
@@ -172,7 +173,8 @@ const SubscriptionSetupForm: React.FC<{
           !formElem.description ||
           !formElem.amount ||
           !formElem.denom ||
-          !formElem.durationDays
+          !formElem.durationDays ||
+          !formElem.imageURI
         ) {
           throw new Error("Invalid tier");
         }
@@ -194,7 +196,6 @@ const SubscriptionSetupForm: React.FC<{
           duration_seconds: durationSeconds,
           nft_image_uri: formElem.imageURI,
           nft_name_prefix: "Sub",
-          trade_royalties: 80,
         };
         return vt;
       });
@@ -305,6 +306,7 @@ const SubscriptionSetupForm: React.FC<{
             );
             await client.upsertChannel({
               membershipsConfig: chainTiers,
+              tradeRoyalties: 800,
             });
 
             onClose();

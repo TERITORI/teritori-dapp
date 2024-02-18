@@ -1,4 +1,9 @@
-import { allNetworks, getNativeCurrency, NetworkKind } from "../networks";
+import {
+  allNetworks,
+  getNativeCurrency,
+  NetworkFeature,
+  NetworkKind,
+} from "../networks";
 
 const ids: { [key: string]: boolean } = {};
 const idPrefixes: { [key: string]: boolean } = {};
@@ -70,5 +75,30 @@ for (const net of allNetworks) {
         );
       }
     }
+  }
+
+  // check features
+  const features: { [key: string]: boolean } = {};
+  for (const feature of net.features) {
+    if (features[feature]) {
+      throw new Error(
+        `feature '${feature}' of network '${net.id}' is not unique`,
+      );
+    }
+    features[feature] = true;
+  }
+  const featureObjects: { [key: string]: boolean } = {};
+  for (const feature of net.featureObjects || []) {
+    if (featureObjects[feature.type]) {
+      throw new Error(
+        `feature object '${feature.type}' of network '${net.id}' is not unique`,
+      );
+    }
+    if (!features[feature.type]) {
+      throw new Error(
+        `feature object '${feature.type}' of network '${net.id}' does not have a corresponding feature declaration`,
+      );
+    }
+    featureObjects[feature.type] = true;
   }
 }
