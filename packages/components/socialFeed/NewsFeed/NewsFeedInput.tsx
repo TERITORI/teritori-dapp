@@ -53,6 +53,7 @@ import {
   primaryTextColor,
   secondaryColor,
   yellowDefault,
+  yellowPremium,
 } from "../../../utils/style/colors";
 import {
   fontSemibold12,
@@ -532,7 +533,7 @@ export const NewsFeedInput = React.forwardRef<
                     fontSemibold13,
                     {
                       marginRight: layout.spacing_x1,
-                      color: premium ? "white" : "#777777",
+                      color: premium ? yellowPremium : "#777777",
                     },
                   ]}
                 >
