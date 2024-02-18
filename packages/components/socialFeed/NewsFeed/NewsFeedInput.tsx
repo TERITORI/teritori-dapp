@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useRef, useState } from "react";
+import React, { FC, memo, useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Pressable,
@@ -24,7 +24,11 @@ import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getUserId, NetworkFeature } from "../../../networks";
+import {
+  getNetworkFeature,
+  getUserId,
+  NetworkFeature,
+} from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
 import {
   generatePostMetadata,
@@ -326,6 +330,11 @@ export const NewsFeedInput = React.forwardRef<
 
     const focusInput = () => inputRef.current?.focus();
 
+    const networkHasPremiumFeed = !!getNetworkFeature(
+      selectedNetworkId,
+      NetworkFeature.CosmWasmPremiumFeed,
+    );
+
     return (
       <View
         style={[{ width }, style]}
@@ -522,34 +531,22 @@ export const NewsFeedInput = React.forwardRef<
             >
               {viewWidth < BREAKPOINT_S && <SpacerColumn size={1.5} />}
 
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <BrandText
-                  style={[
-                    fontSemibold13,
-                    {
-                      marginRight: layout.spacing_x1,
-                      color: premium ? yellowPremium : "#777777",
-                    },
-                  ]}
-                >
-                  Premium post
-                </BrandText>
-                <ToggleButton value={premium} onValueChange={setPremium} />
-              </View>
-
-              <View
-                style={{
-                  height: layout.spacing_x2,
-                  width: 1,
-                  backgroundColor: "#515151",
-                  marginHorizontal: layout.spacing_x2,
-                }}
-              />
+              {networkHasPremiumFeed && (
+                <>
+                  <PremiumPostToggle
+                    premium={premium}
+                    setPremium={setPremium}
+                  />
+                  <View
+                    style={{
+                      height: layout.spacing_x2,
+                      width: 1,
+                      backgroundColor: "#515151",
+                      marginHorizontal: layout.spacing_x2,
+                    }}
+                  />
+                </>
+              )}
 
               <View
                 style={{
@@ -730,3 +727,30 @@ export const NewsFeedInput = React.forwardRef<
     );
   },
 );
+
+const PremiumPostToggle: FC<{
+  premium: boolean;
+  setPremium: (value: boolean) => void;
+}> = memo(({ premium, setPremium }) => {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
+      <BrandText
+        style={[
+          fontSemibold13,
+          {
+            marginRight: layout.spacing_x1,
+            color: premium ? yellowPremium : "#777777",
+          },
+        ]}
+      >
+        Premium post
+      </BrandText>
+      <ToggleButton value={premium} onValueChange={setPremium} />
+    </View>
+  );
+});
