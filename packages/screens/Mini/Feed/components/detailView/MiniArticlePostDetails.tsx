@@ -29,7 +29,7 @@ import {
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
 import { zodTryParseJSON } from "@/utils/sanitize";
-import { BASE_POST, DEFAULT_USERNAME } from "@/utils/social-feed";
+import { DEFAULT_USERNAME } from "@/utils/social-feed";
 import { fontSemibold16 } from "@/utils/style/fonts";
 import { tinyAddress } from "@/utils/text";
 import { ReplyToType, ZodSocialFeedArticleMetadata } from "@/utils/types/feed";
@@ -53,7 +53,7 @@ export const MiniArticlePostDetails = ({
   const feedInputRef = useRef<NewsFeedInputHandle>(null);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
 
-  const [localPost, setLocalPost] = useState(post || BASE_POST);
+  const [localPost, setLocalPost] = useState(post || Post.create());
 
   const postMetadata = zodTryParseJSON(
     ZodSocialFeedArticleMetadata,

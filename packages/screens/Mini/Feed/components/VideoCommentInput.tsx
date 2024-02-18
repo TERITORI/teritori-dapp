@@ -93,6 +93,7 @@ export const VideoCommentInput = ({
         hashtags,
         mentions,
         gifs: [],
+        premium: false,
       });
 
       await makePost(
