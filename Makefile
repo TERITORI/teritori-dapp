@@ -403,3 +403,10 @@ init-weshd-go:
 bump-app-build-number:  
 	npx tsx packages/scripts/app-build/bumpBuildNumber.ts $(shell echo $$(($$(git rev-list HEAD --count) + 10)))
 
+.PHONY: test.rust
+test.rust:
+	cd cosmwasm-contracts/cw721-membership && cargo test
+
+.PHONY: build.rust
+build.rust:
+	cd cosmwasm-contracts/cw721-membership && cargo wasm

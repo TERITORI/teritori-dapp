@@ -1,0 +1,21 @@
+name: Rust
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Test
+        run: make test.rust
+
+      - name: Check diff
+        run: git diff --exit-code
