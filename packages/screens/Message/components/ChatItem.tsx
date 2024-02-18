@@ -63,12 +63,13 @@ export const ChatItem = ({
     <TouchableOpacity
       activeOpacity={0.9}
       style={{
-        backgroundColor: isActive && isMobile ? neutral00 : neutral22,
-        padding: layout.spacing_x1,
+        backgroundColor: isMobile || !isActive ? neutral00 : neutral22,
         borderRadius: 4,
         borderBottomWidth: isMobile && !isLastItem ? 1 : 0,
         borderBottomColor: neutral22,
         width: "100%",
+        paddingVertical: layout.spacing_x1,
+        paddingHorizontal: layout.spacing_x0_5,
       }}
       onPress={onPress}
     >

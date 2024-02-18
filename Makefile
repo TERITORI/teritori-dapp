@@ -326,7 +326,7 @@ build-electron-macos-amd64:
 	rm -fr ./electron/dist
 	rm -fr ./electron/build
 	cd ./electron && npm i
-	cd ./electron && GOOS=darwin GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/mac ./prod.go
+	cd ./electron && GOOS=darwin GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/mac ../weshd/go/electron/prod.go
 	cd ./electron && node ./builder/mac.js amd64
 
 # requires prepare-electron
@@ -335,7 +335,7 @@ build-electron-macos-arm64:
 	rm -fr ./electron/dist
 	rm -fr ./electron/build
 	cd ./electron && npm i
-	cd ./electron && GOOS=darwin GOARCH=arm64 $(GO) build -tags noNativeLogger -o ./build/mac ./prod.go
+	cd ./electron && GOOS=darwin GOARCH=arm64 $(GO) build -tags noNativeLogger -o ./build/mac ../weshd/go/electron/prod.go
 	cd ./electron && node ./builder/mac.js arm64
 
 # requires prepare-electron
@@ -344,7 +344,7 @@ build-electron-windows-amd64:
 	rm -fr ./electron/dist
 	rm -fr ./electron/build
 	cd ./electron && npm i
-	cd ./electron && GOOS=windows GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/win.exe ./prod.go
+	cd ./electron && GOOS=windows GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/win.exe ../weshd/go/electron/prod.go
 	cd ./electron && node ./builder/win.js
 
 # requires prepare-electron
@@ -353,7 +353,7 @@ build-electron-linux-amd64:
 	rm -fr ./electron/dist
 	rm -fr ./electron/build
 	cd ./electron && npm i
-	cd ./electron && GOOS=linux GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/linux ./prod.go
+	cd ./electron && GOOS=linux GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/linux ../weshd/go/electron/prod.go
 	cd ./electron && node ./builder/linux.js
 
 .PHONY: check-ios-weshframework
@@ -366,11 +366,10 @@ check-ios-weshframework:
 .PHONY: build-ios-weshframework
 build-ios-weshframework:
 	$(MAKE) init-weshd-go
-	CGO_CPPFLAGS="-Wno-error -Wno-nullability-completeness -Wno-expansion-to-defined -DHAVE_GETHOSTUUID=0"
-	cd ./weshd && gomobile bind \
+	cd ./weshd && gomobile bind -v \
 	-o ./ios/Frameworks/WeshFramework.xcframework \
-	-tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target ios -iosversion 13.0 \
-	./go/
+	-tags 'nowatchdog' -target ios \
+	./go/app
 
 .PHONY: check-android-weshframework
 check-android-weshframework:
@@ -388,7 +387,7 @@ build-android-weshframework:
 	-javapkg=com.weshnet \
 	-o ./android/libs/WeshFramework.aar \
 	-tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target android -androidapi 21 \
-	./go/
+	./go/app
 
 .PHONY: init-weshd-go
 init-weshd-go:

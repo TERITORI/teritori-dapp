@@ -1,3 +1,5 @@
+import { Subscription } from "rxjs";
+
 import { processMetadata } from "./processEvent";
 import {
   GroupMetadataEvent,
@@ -7,6 +9,8 @@ import { selectLastIdByKey, setLastId } from "../../store/slices/message";
 import { store } from "../../store/store";
 import { weshClient } from "../client";
 import { bytesFromString, stringFromBytes } from "../utils";
+
+const metadataSubscriptions: Subscription[] = [];
 
 export const subscribeMetadata = async (
   groupPk: Uint8Array | undefined,
@@ -67,11 +71,23 @@ export const subscribeMetadata = async (
         }
       },
       complete: () => {
+        metadataSubscriptions.splice(
+          metadataSubscriptions.indexOf(subscription),
+          1,
+        );
         subscribeMetadata(groupPk);
       },
     };
-    metadata.subscribe(myObserver);
+    const subscription = metadata.subscribe(myObserver);
+
+    metadataSubscriptions.push(subscription);
   } catch (err) {
     console.error("get metadata err", err);
   }
+};
+
+export const unsubscribeMetadataSubscriptions = () => {
+  metadataSubscriptions.forEach((subscription) => {
+    subscription?.unsubscribe?.();
+  });
 };

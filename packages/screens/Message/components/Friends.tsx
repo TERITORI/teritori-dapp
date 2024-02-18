@@ -41,11 +41,10 @@ export const Friends = ({ items, setActiveConversation }: FriendsProps) => {
             handleChatPress={() => {
               setActiveConversation?.(item);
               if (Platform.OS !== "web") {
-                navigate("ChatSection", item);
+                navigate("ChatSection", { id: item.id });
               } else {
                 navigate("Message");
               }
-              setActiveConversation?.(item);
             }}
           />
         ))

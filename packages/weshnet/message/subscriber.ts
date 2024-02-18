@@ -1,4 +1,5 @@
 import { Platform } from "react-native";
+import { Subscription } from "rxjs";
 
 import { processMessage } from "./processEvent";
 import {
@@ -9,6 +10,8 @@ import { selectLastIdByKey, setLastId } from "../../store/slices/message";
 import { store } from "../../store/store";
 import { weshClient } from "../client";
 import { bytesFromString, stringFromBytes } from "../utils";
+
+const messageSubscriptions: Subscription[] = [];
 
 export const subscribeMessages = async (groupPk: string) => {
   try {
@@ -70,6 +73,11 @@ export const subscribeMessages = async (groupPk: string) => {
           console.error("get message err", e);
         },
         complete: async () => {
+          messageSubscriptions.splice(
+            messageSubscriptions.indexOf(subscription),
+            1,
+          );
+
           const lastId = selectLastIdByKey(store.getState(), groupPk);
           if (Platform.OS === "web" && lastId) {
             subscribeMessages(groupPk);
@@ -78,11 +86,20 @@ export const subscribeMessages = async (groupPk: string) => {
           }
         },
       };
-      return messages.subscribe(observer);
+
+      const subscription = messages.subscribe(observer);
+
+      messageSubscriptions.push(subscription);
     } catch (err) {
       console.error("get messages err", err);
     }
   } catch (err) {
     console.error("subscribe message", err);
   }
+};
+
+export const unsubscribeMessageSubscriptions = () => {
+  messageSubscriptions.forEach((subscriber) => {
+    subscriber?.unsubscribe?.();
+  });
 };
