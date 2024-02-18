@@ -49,8 +49,6 @@ export const MintUploader: FC<MintUploaderProps> = ({
   };
 
   const handleFiles = async (files: File[]) => {
-    console.log("handles files", files);
-
     const _files = [files[0]];
     let supportedFiles = [...files].filter((file) =>
       mimeTypes?.includes(file.type),

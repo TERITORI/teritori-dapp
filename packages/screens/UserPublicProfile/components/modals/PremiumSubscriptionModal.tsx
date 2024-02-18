@@ -60,7 +60,6 @@ export const PremiumSubscriptionModal: React.FC<{
               const client = await mustGetCw721MembershipSigningClient(
                 selectedWallet.userId,
               );
-              console.log("will sub to", channelAddress);
               await client.subscribe(
                 {
                   channelAddr: channelAddress,
