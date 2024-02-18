@@ -198,6 +198,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 			CreatedAt:            dbPost.CreatedAt,
 			Reactions:            reactions,
 			TipAmount:            dbPost.TipAmount,
+			PremiumLevel:         dbPost.PremiumLevel,
 		}
 	}
 
