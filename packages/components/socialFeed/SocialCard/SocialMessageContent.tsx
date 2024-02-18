@@ -1,4 +1,6 @@
+import { BlurView } from "expo-blur";
 import React, { Fragment, useMemo } from "react";
+import { View } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
 import defaultThumbnailImage from "../../../../assets/default-images/default-track-thumbnail.png";
@@ -6,12 +8,21 @@ import { Post } from "../../../api/feed/v1/feed";
 import { HTML_TAG_REGEXP } from "../../../utils/regex";
 import { zodTryParseJSON } from "../../../utils/sanitize";
 import { convertGIFToLocalFileType } from "../../../utils/social-feed";
-import { ZodSocialFeedPostMetadata } from "../../../utils/types/feed";
+import {
+  ZodSocialFeedPostMetadata,
+  zodSocialFeedCommonMetadata,
+} from "../../../utils/types/feed";
 import { AudioView } from "../../FilePreview/AudioView";
 import { ImagesViews } from "../../FilePreview/ImagesViews";
 import { VideoView } from "../../FilePreview/VideoView";
 import { SpacerColumn } from "../../spacer";
 import { TextRenderer } from "../NewsFeed/TextRenderer/TextRenderer";
+
+import { BrandText } from "@/components/BrandText";
+import { useCanViewPost } from "@/hooks/feed/useCanViewPost";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { yellowPremium } from "@/utils/style/colors";
+import { fontSemibold13 } from "@/utils/style/fonts";
 interface Props {
   post: Post;
   isPreview?: boolean;
@@ -44,10 +55,22 @@ export const SocialMessageContent: React.FC<Props> = ({ post, isPreview }) => {
     );
   }, [postMetadata?.gifs]);
 
+  const commonMetadata = zodTryParseJSON(
+    zodSocialFeedCommonMetadata,
+    post.metadata,
+  );
+
+  const selectedWallet = useSelectedWallet();
+  const canView = useCanViewPost(
+    commonMetadata?.premium || 0,
+    post.authorId,
+    selectedWallet?.userId,
+  );
+
   try {
     if (!postMetadata) return null;
     return (
-      <>
+      <View>
         <TextRenderer
           isPreview={isPreview}
           text={postMetadata.message.replace(HTML_TAG_REGEXP, "")}
@@ -83,7 +106,26 @@ export const SocialMessageContent: React.FC<Props> = ({ post, isPreview }) => {
             />
           </Fragment>
         ))}
-      </>
+        {!canView && (
+          <BlurView
+            intensity={100}
+            tint="dark"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <BrandText style={[fontSemibold13, { color: yellowPremium }]}>
+              Premium Content
+            </BrandText>
+          </BlurView>
+        )}
+      </View>
     );
   } catch {
     return null;

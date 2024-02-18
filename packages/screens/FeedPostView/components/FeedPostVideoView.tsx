@@ -132,6 +132,8 @@ export const FeedPostVideoView: FC<{
       user: "",
       mentions: [],
       hashtags: [],
+      specifierWhitelist: [],
+      specifierBlacklist: [],
     },
     limit: 10,
     offset: 0,
@@ -142,6 +144,8 @@ export const FeedPostVideoView: FC<{
       user: localPost.authorId,
       mentions: [],
       hashtags: [],
+      specifierWhitelist: [],
+      specifierBlacklist: [],
     },
     limit: 10,
     offset: 0,
@@ -185,6 +189,7 @@ export const FeedPostVideoView: FC<{
         hashtags,
         mentions,
         gifs: [],
+        premium: false,
       });
 
       await makePost(

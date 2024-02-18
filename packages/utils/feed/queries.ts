@@ -91,6 +91,7 @@ export const getPostCategory = ({
 
 interface GeneratePostMetadataParams extends Omit<NewPostFormValues, "files"> {
   files: RemoteFileData[];
+  premium: boolean;
 }
 
 interface GenerateArticleMetadataParams
@@ -110,6 +111,7 @@ export const generatePostMetadata = ({
   hashtags,
   mentions,
   gifs,
+  premium,
 }: GeneratePostMetadataParams): SocialFeedPostMetadata => {
   const m = ZodSocialFeedPostMetadata.parse({
     title,
@@ -118,6 +120,7 @@ export const generatePostMetadata = ({
     hashtags,
     mentions,
     gifs: gifs || [],
+    premium,
   });
   // we need this hack until the createdAt field is properly provided by the contract
   // @ts-expect-error: description todo

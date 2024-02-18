@@ -30,6 +30,7 @@ export const VideoView: React.FC<VideoPreviewProps> = ({
     title: "Video from Social Feed",
     description: "",
     videoFile: file,
+    premium: 0,
   };
 
   if (!file?.url)

@@ -81,12 +81,17 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	var mentions []string
 	var categories []uint32
 	var hashtags []string
+	var whitelist []string
+	var blacklist []string
 
 	if filter != nil {
 		categories = filter.Categories
 		user = filter.User
 		hashtags = filter.Hashtags
 		mentions = filter.Mentions
+		if len(filter.SpecifierBlacklist) > 0 && len(filter.SpecifierWhitelist) > 0 {
+			return nil, errors.New("cannot have both whitelist and blacklist")
+		}
 	}
 
 	queryUserID := req.GetQueryUserId()
@@ -136,6 +141,28 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 			}
 		}
 		query = query.Where(fmt.Sprintf("metadata -> 'mentions' ?| array[%s]", strings.Join(formattedMentions, ",")))
+	}
+
+	if len(whitelist) > 0 {
+		formattedWhitelist := make([]string, 0)
+		for _, item := range whitelist {
+			switch item {
+			case "premium":
+				formattedWhitelist = append(formattedWhitelist, "premium_level > 0")
+			}
+		}
+		query = query.Where(strings.Join(formattedWhitelist, " OR "))
+	}
+
+	if len(blacklist) > 0 {
+		formattedBlacklist := make([]string, 0)
+		for _, item := range blacklist {
+			switch item {
+			case "premium":
+				formattedBlacklist = append(formattedBlacklist, "premium_level <= 0")
+			}
+		}
+		query = query.Where(fmt.Sprintf("NOT (%s)", strings.Join(formattedBlacklist, " OR ")))
 	}
 
 	query = query.

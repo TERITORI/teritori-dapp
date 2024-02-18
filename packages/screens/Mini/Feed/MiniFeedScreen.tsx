@@ -87,6 +87,8 @@ const defaultFeedRequest: Partial<PostsRequest> = {
     user: "",
     mentions: [],
     hashtags: [],
+    specifierWhitelist: [],
+    specifierBlacklist: [],
   },
   limit: 20,
   offset: 0,

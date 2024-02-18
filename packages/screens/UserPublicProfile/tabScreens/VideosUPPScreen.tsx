@@ -30,6 +30,8 @@ export const VideosUPPScreen: FC<UppTabScreenProps> = ({
       user: userId,
       mentions: [],
       hashtags: [],
+      specifierBlacklist: [],
+      specifierWhitelist: [],
     },
     limit: 10,
     offset: 0,

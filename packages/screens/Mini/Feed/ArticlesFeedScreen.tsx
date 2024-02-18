@@ -13,6 +13,8 @@ export const ArticlesFeedScreen = () => {
       user: "",
       mentions: [],
       hashtags: [],
+      specifierBlacklist: [],
+      specifierWhitelist: [],
     },
     limit: 10,
     offset: 0,

@@ -39,6 +39,8 @@ message PostFilter {
   repeated string mentions = 2;
   repeated uint32 categories = 3;
   repeated string hashtags = 4;
+  repeated string specifier_whitelist = 5;
+  repeated string specifier_blacklist = 6;
 }
 
 message PostsRequest {

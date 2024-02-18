@@ -170,6 +170,22 @@ func (h *Handler) createPost(
 		return errors.Wrap(err, "failed to unmarshal metadata")
 	}
 
+	premium := uint32(0)
+	ipremium, ok := metadataJSON["premium"]
+	if ok {
+		switch cpremium := ipremium.(type) {
+		case int:
+			if cpremium > 0 {
+				premium = uint32(cpremium)
+			}
+		case bool:
+			if cpremium {
+				premium = 1
+			}
+		}
+		// TODO: fully coerce like js or put stronger restriction on js
+	}
+
 	createdAt, err := e.GetBlockTime()
 	if err != nil {
 		return errors.Wrap(err, "failed to get block time")
@@ -185,6 +201,7 @@ func (h *Handler) createPost(
 		CreatedAt:            createdAt.Unix(),
 		IsBot:                isBot,
 		NetworkID:            h.config.Network.ID,
+		PremiumLevel:         premium,
 	}
 
 	if err := h.db.Create(&post).Error; err != nil {

@@ -38,6 +38,8 @@ export interface PostFilter {
   mentions: string[];
   categories: number[];
   hashtags: string[];
+  specifierWhitelist: string[];
+  specifierBlacklist: string[];
 }
 
 export interface PostsRequest {
@@ -462,7 +464,7 @@ export const Post = {
 };
 
 function createBasePostFilter(): PostFilter {
-  return { user: "", mentions: [], categories: [], hashtags: [] };
+  return { user: "", mentions: [], categories: [], hashtags: [], specifierWhitelist: [], specifierBlacklist: [] };
 }
 
 export const PostFilter = {
@@ -480,6 +482,12 @@ export const PostFilter = {
     writer.ldelim();
     for (const v of message.hashtags) {
       writer.uint32(34).string(v!);
+    }
+    for (const v of message.specifierWhitelist) {
+      writer.uint32(42).string(v!);
+    }
+    for (const v of message.specifierBlacklist) {
+      writer.uint32(50).string(v!);
     }
     return writer;
   },
@@ -529,6 +537,20 @@ export const PostFilter = {
 
           message.hashtags.push(reader.string());
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.specifierWhitelist.push(reader.string());
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.specifierBlacklist.push(reader.string());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -546,6 +568,12 @@ export const PostFilter = {
         ? object.categories.map((e: any) => globalThis.Number(e))
         : [],
       hashtags: globalThis.Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => globalThis.String(e)) : [],
+      specifierWhitelist: globalThis.Array.isArray(object?.specifierWhitelist)
+        ? object.specifierWhitelist.map((e: any) => globalThis.String(e))
+        : [],
+      specifierBlacklist: globalThis.Array.isArray(object?.specifierBlacklist)
+        ? object.specifierBlacklist.map((e: any) => globalThis.String(e))
+        : [],
     };
   },
 
@@ -563,6 +591,12 @@ export const PostFilter = {
     if (message.hashtags?.length) {
       obj.hashtags = message.hashtags;
     }
+    if (message.specifierWhitelist?.length) {
+      obj.specifierWhitelist = message.specifierWhitelist;
+    }
+    if (message.specifierBlacklist?.length) {
+      obj.specifierBlacklist = message.specifierBlacklist;
+    }
     return obj;
   },
 
@@ -575,6 +609,8 @@ export const PostFilter = {
     message.mentions = object.mentions?.map((e) => e) || [];
     message.categories = object.categories?.map((e) => e) || [];
     message.hashtags = object.hashtags?.map((e) => e) || [];
+    message.specifierWhitelist = object.specifierWhitelist?.map((e) => e) || [];
+    message.specifierBlacklist = object.specifierBlacklist?.map((e) => e) || [];
     return message;
   },
 };

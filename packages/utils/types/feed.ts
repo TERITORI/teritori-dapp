@@ -59,6 +59,22 @@ const MaybeFiles = z
     ),
   );
 
+export const zodSocialFeedCommonMetadata = z.object({
+  premium: z
+    .number({ coerce: true })
+    .optional()
+    .transform((n) => {
+      if (!n || n < 0) {
+        return 0;
+      }
+      return Math.ceil(n);
+    }),
+});
+
+export type SocialFeedCommonMetadata = z.infer<
+  typeof zodSocialFeedCommonMetadata
+>;
+
 export const ZodSocialFeedPostMetadata = z.object({
   title: z.string(),
   message: z.string(),
@@ -66,6 +82,7 @@ export const ZodSocialFeedPostMetadata = z.object({
   gifs: z.array(z.string()).optional(),
   hashtags: z.array(z.string()),
   mentions: z.array(z.string()),
+  ...zodSocialFeedCommonMetadata.shape,
 });
 export type SocialFeedPostMetadata = z.infer<typeof ZodSocialFeedPostMetadata>;
 
@@ -79,6 +96,7 @@ export const ZodSocialFeedArticleMetadata = z.object({
   gifs: z.array(z.string()).optional(),
   hashtags: z.array(z.string()),
   mentions: z.array(z.string()),
+  ...zodSocialFeedCommonMetadata.shape,
 });
 export type SocialFeedArticleMetadata = z.infer<
   typeof ZodSocialFeedArticleMetadata
@@ -88,6 +106,7 @@ export const ZodSocialFeedTrackMetadata = z.object({
   title: z.string(),
   description: z.string().optional(),
   audioFile: ZodRemoteFileData,
+  ...zodSocialFeedCommonMetadata.shape,
 });
 
 export type SocialFeedTrackMetadata = z.infer<
@@ -98,6 +117,7 @@ export const ZodSocialFeedVideoMetadata = z.object({
   title: z.string(),
   description: z.string().optional(),
   videoFile: ZodRemoteFileData,
+  ...zodSocialFeedCommonMetadata.shape,
 });
 
 export type SocialFeedVideoMetadata = z.infer<

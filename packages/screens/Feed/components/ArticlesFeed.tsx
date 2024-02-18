@@ -16,6 +16,8 @@ export const ArticlesFeed: FC = memo(() => {
       user: "",
       mentions: [],
       hashtags: [],
+      specifierWhitelist: [],
+      specifierBlacklist: [],
     },
     limit: 10,
     offset: 0,

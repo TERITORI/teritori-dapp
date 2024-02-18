@@ -154,6 +154,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       title,
       description,
       audioFile: uploadedFiles[0],
+      premium: 0,
     };
     await processCreateMusicAudioPost(track);
   };

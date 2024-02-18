@@ -30,6 +30,8 @@ export const MentionsPostsUPPScreen: FC<UppTabScreenProps> = ({
             [`@${userAddress}`],
         categories: [],
         hashtags: [],
+        specifierWhitelist: [],
+        specifierBlacklist: [],
       },
       limit: 10,
       offset: 0,

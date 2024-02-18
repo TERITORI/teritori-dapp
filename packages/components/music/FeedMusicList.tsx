@@ -45,6 +45,8 @@ export const FeedMusicList: React.FC<{
       user: authorId || "",
       mentions: [],
       hashtags: [],
+      specifierWhitelist: [],
+      specifierBlacklist: [],
     },
     limit: 10,
     offset: 0,
