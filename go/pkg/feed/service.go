@@ -203,19 +203,3 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 
 	return &feedpb.PostsResponse{Posts: posts}, nil
 }
-
-var specifierQueries = map[string]string{
-	"premium": "premium_level > 0",
-}
-
-func getSpecifierQueries(specifiers []string) []string {
-	queries := make([]string, 0)
-	for _, specifier := range specifiers {
-		query, ok := specifierQueries[specifier]
-		if !ok {
-			continue
-		}
-		queries = append(queries, query)
-	}
-	return queries
-}
