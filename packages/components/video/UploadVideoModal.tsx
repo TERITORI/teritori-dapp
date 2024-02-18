@@ -174,7 +174,6 @@ export const UploadVideoModal: FC<{
       title,
       description,
       videoFile: uploadedFiles[0],
-      premium: 0,
     };
     await processCreateVideoPost(video);
   };

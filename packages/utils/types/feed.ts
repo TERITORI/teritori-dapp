@@ -60,15 +60,7 @@ const MaybeFiles = z
   );
 
 export const zodSocialFeedCommonMetadata = z.object({
-  premium: z
-    .number({ coerce: true })
-    .optional()
-    .transform((n) => {
-      if (!n || n < 0) {
-        return 0;
-      }
-      return Math.ceil(n);
-    }),
+  premium: z.number().int().gte(0).optional(),
 });
 
 export type SocialFeedCommonMetadata = z.infer<

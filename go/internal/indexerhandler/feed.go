@@ -167,23 +167,16 @@ func (h *Handler) createPost(
 ) error {
 	var metadataJSON map[string]interface{}
 	if err := json.Unmarshal([]byte(createPostMsg.Metadata), &metadataJSON); err != nil {
-		return errors.Wrap(err, "failed to unmarshal metadata")
+		h.logger.Info("ignored post with malformed metadada", zap.String("tx", e.TxHash), zap.String("contract", execMsg.Contract), zap.Error(err))
+		return nil
 	}
 
 	premium := uint32(0)
 	ipremium, ok := metadataJSON["premium"]
 	if ok {
-		switch cpremium := ipremium.(type) {
-		case int:
-			if cpremium > 0 {
-				premium = uint32(cpremium)
-			}
-		case bool:
-			if cpremium {
-				premium = 1
-			}
+		if cpremium, ok := ipremium.(int); ok && cpremium > 0 {
+			premium = uint32(cpremium)
 		}
-		// TODO: fully coerce like js or put stronger restriction on js
 	}
 
 	createdAt, err := e.GetBlockTime()
