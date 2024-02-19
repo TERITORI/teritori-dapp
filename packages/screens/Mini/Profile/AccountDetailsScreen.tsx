@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Alert, Linking, TextInput, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import openSVG from "../../../../assets/icons/open-blue.svg";
 import penSVG from "../../../../assets/icons/pen-solid-gray.svg";
@@ -9,12 +10,15 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { resetWallet } from "@/hooks/wallet/getNativeWallet";
-import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 import { accountExplorerLink } from "@/networks";
 import { ShowWalletQR } from "@/screens/Mini/Wallet/components/ShowWalletQR";
 import { CustomButton } from "@/screens/Mini/components/Button/CustomButton";
-import { removeWalletById, updateWallet } from "@/store/slices/wallets";
-import { useAppDispatch } from "@/store/store";
+import {
+  removeWalletById,
+  selectWalletById,
+  updateWallet,
+} from "@/store/slices/wallets";
+import { RootState, useAppDispatch } from "@/store/store";
 import { ScreenFC } from "@/utils/navigation";
 import {
   azureBlue,
@@ -32,18 +36,20 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
   const navigateToProfile = () => navigation.replace("MiniProfile");
   const params = route.params;
   const [accountName, setAccountName] = useState(params.accountName);
-  const selectedWallet = useSelectedNativeWallet();
+  const wallet = useSelector((state: RootState) =>
+    selectWalletById(state, params.id),
+  );
   const dispatch = useAppDispatch();
 
   const onAccountNameChange = (text: string) => {
-    if (selectedWallet) {
-      dispatch(updateWallet({ ...selectedWallet, name: text }));
+    if (wallet) {
+      dispatch(updateWallet({ ...wallet, name: text }));
     }
     setAccountName(text || "");
   };
 
   const onResetPress = () => {
-    if (selectedWallet) {
+    if (wallet) {
       Alert.alert(
         "Are you sure?",
         "This action will remove the wallet from your device. You can always import it back.",
@@ -55,8 +61,8 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
           {
             text: "Delete",
             onPress: () => {
-              resetWallet(selectedWallet.index); // remove from storage
-              dispatch(removeWalletById(selectedWallet.index)); // remove from redux | app state
+              resetWallet(wallet.index); // remove from storage
+              dispatch(removeWalletById(wallet.index)); // remove from redux | app state
               navigation.navigate("NativeWallet"); // this one is here just in case the user don't have any more wallets
             },
             style: "destructive",
@@ -97,7 +103,7 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
         </View>
       </View>
 
-      <ShowWalletQR selectedWallet={selectedWallet} />
+      <ShowWalletQR selectedWallet={wallet} />
 
       <View
         style={{
@@ -115,12 +121,9 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
         </BrandText>
         <CustomPressable
           onPress={() => {
-            if (selectedWallet) {
+            if (wallet) {
               Linking.openURL(
-                accountExplorerLink(
-                  selectedWallet.networkId,
-                  selectedWallet.address,
-                ),
+                accountExplorerLink(wallet.networkId, wallet.address),
               );
             }
           }}
