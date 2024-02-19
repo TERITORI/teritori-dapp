@@ -186,7 +186,7 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
               activeOpacity={0.9}
               style={{
                 paddingHorizontal: layout.spacing_x1,
-                borderRadius: 12,
+                borderRadius: layout.spacing_x1_5,
                 backgroundColor: neutral00,
                 borderColor: neutral33,
                 borderWidth: 1,
