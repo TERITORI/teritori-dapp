@@ -18,11 +18,14 @@ type Props = {
 
 export const CheckList = ({ gotoVisibleScreen, type }: Props) => {
   const [passwordInput, setPasswordInput] = useState("");
-  const [securePasswordStore, setSecurePasswordStore] = useState("");
+  const [securePasswordStore, setSecurePasswordStore] = useState<string>();
 
   useEffect(() => {
     (async () => {
-      setSecurePasswordStore(await getValueFor("password"));
+      const password = await getValueFor("password");
+      if (password) {
+        setSecurePasswordStore(password);
+      }
     })();
   }, []);
   const [revealSeedsConditions, setRevealSeedsConditions] = useState({

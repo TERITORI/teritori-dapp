@@ -11018,7 +11018,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-font@npm:~11.10.3":
+"expo-font@npm:~11.10.2, expo-font@npm:~11.10.3":
   version: 11.10.3
   resolution: "expo-font@npm:11.10.3"
   dependencies:
@@ -11054,12 +11054,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-linear-gradient@npm:~12.7.2":
+"expo-linear-gradient@npm:~12.7.1":
   version: 12.7.2
   resolution: "expo-linear-gradient@npm:12.7.2"
   peerDependencies:
     expo: "*"
   checksum: afe4daf423dcaa02900a1252eb670a75089b9c9837bff2bd7f76199b7ad76f4b48efadaeec773b4d328456d9e8e3d56f68f9f665312681e1537adadbd97b54ff
+  languageName: node
+  linkType: hard
+
+"expo-local-authentication@npm:~13.8.0":
+  version: 13.8.0
+  resolution: "expo-local-authentication@npm:13.8.0"
+  dependencies:
+    invariant: ^2.2.4
+  peerDependencies:
+    expo: "*"
+  checksum: d994429644fb776f5d252137ae3fee073d85c0bbd51dc3902198067405ae70f59544e832ee84ac68888f8146658b7a97566c9a856c9be39611790e85b2e7a3d9
   languageName: node
   linkType: hard
 
@@ -19070,8 +19081,9 @@ __metadata:
     expo-doctor: ^1.1.3
     expo-document-picker: ~11.10.1
     expo-file-system: ~16.0.6
-    expo-font: ~11.10.3
-    expo-linear-gradient: ~12.7.2
+    expo-font: ~11.10.2
+    expo-linear-gradient: ~12.7.1
+    expo-local-authentication: ~13.8.0
     expo-optimize: ^0.2.20
     expo-secure-store: ~12.8.1
     expo-splash-screen: ~0.26.4

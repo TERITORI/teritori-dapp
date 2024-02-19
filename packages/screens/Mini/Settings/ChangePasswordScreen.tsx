@@ -19,11 +19,14 @@ export const ChangePasswordScreen: ScreenFC<"MiniChangePassword"> = ({
     confirmPassword: "",
   });
 
-  const [securePasswordStore, setSecurePasswordStore] = useState();
+  const [securePasswordStore, setSecurePasswordStore] = useState<string>();
 
   useEffect(() => {
     (async () => {
-      setSecurePasswordStore(await getValueFor("password"));
+      const password = await getValueFor("password");
+      if (password) {
+        setSecurePasswordStore(password);
+      }
     })();
   }, []);
 
