@@ -1,7 +1,7 @@
 import { bech32 } from "bech32";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { NFTTransferForm } from "./types";
 import { NFT } from "../../api/marketplace/v1/marketplace";
@@ -22,6 +22,7 @@ import { neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import { OptimizedImage } from "../OptimizedImage";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import ModalBase from "../modals/ModalBase";
@@ -179,7 +180,12 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
       onClose={onClose}
     >
       <View style={styles.detailContainer}>
-        <Image source={{ uri: nft?.imageUri }} style={styles.image} />
+        <OptimizedImage
+          width={462}
+          height={462}
+          sourceURI={nft?.imageUri}
+          style={styles.image}
+        />
         <SpacerColumn size={2} />
         <BrandText style={fontSemibold14}>{nft?.name}</BrandText>
         <SpacerColumn size={1.5} />

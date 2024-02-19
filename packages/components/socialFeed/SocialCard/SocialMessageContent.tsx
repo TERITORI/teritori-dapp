@@ -1,4 +1,6 @@
+import { BlurView } from "expo-blur";
 import React, { Fragment, useMemo } from "react";
+import { View } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
 import defaultThumbnailImage from "../../../../assets/default-images/default-track-thumbnail.png";
@@ -12,6 +14,12 @@ import { ImagesViews } from "../../FilePreview/ImagesViews";
 import { VideoView } from "../../FilePreview/VideoView";
 import { SpacerColumn } from "../../spacer";
 import { TextRenderer } from "../NewsFeed/TextRenderer/TextRenderer";
+
+import { BrandText } from "@/components/BrandText";
+import { useCanViewPost } from "@/hooks/feed/useCanViewPost";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { yellowPremium } from "@/utils/style/colors";
+import { fontSemibold13 } from "@/utils/style/fonts";
 interface Props {
   post: Post;
   isPreview?: boolean;
@@ -44,10 +52,17 @@ export const SocialMessageContent: React.FC<Props> = ({ post, isPreview }) => {
     );
   }, [postMetadata?.gifs]);
 
+  const selectedWallet = useSelectedWallet();
+  const canView = useCanViewPost(
+    post.premiumLevel,
+    post.authorId,
+    selectedWallet?.userId,
+  );
+
   try {
     if (!postMetadata) return null;
     return (
-      <>
+      <View>
         <TextRenderer
           isPreview={isPreview}
           text={postMetadata.message.replace(HTML_TAG_REGEXP, "")}
@@ -83,7 +98,26 @@ export const SocialMessageContent: React.FC<Props> = ({ post, isPreview }) => {
             />
           </Fragment>
         ))}
-      </>
+        {!canView && (
+          <BlurView
+            intensity={100}
+            tint="dark"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <BrandText style={[fontSemibold13, { color: yellowPremium }]}>
+              Premium Content
+            </BrandText>
+          </BlurView>
+        )}
+      </View>
     );
   } catch {
     return null;

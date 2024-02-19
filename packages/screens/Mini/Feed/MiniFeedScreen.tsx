@@ -87,6 +87,8 @@ const defaultFeedRequest: Partial<PostsRequest> = {
     user: "",
     mentions: [],
     hashtags: [],
+    premiumLevelMin: 0,
+    premiumLevelMax: -1,
   },
   limit: 20,
   offset: 0,

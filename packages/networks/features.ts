@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export enum NetworkFeature {
   NFTMarketplace = "NFTMarketplace",
   NFTLaunchpad = "NFTLaunchpad",
@@ -13,15 +15,19 @@ export enum NetworkFeature {
   CosmWasmPremiumFeed = "CosmWasmPremiumFeed",
 }
 
-type CosmWasmPremiumFeed = {
-  type: NetworkFeature.CosmWasmPremiumFeed;
-  membershipContractAddress: string;
-  mintDenom: string;
-};
+const zodCosmWasmPremiumFeed = z.object({
+  type: z.literal(NetworkFeature.CosmWasmPremiumFeed),
+  membershipContractAddress: z.string(),
+  mintDenom: z.string(),
+});
+
+export type CosmWasmPremiumFeed = z.infer<typeof zodCosmWasmPremiumFeed>;
 
 type CosmWasmSocialFeed = {
   type: NetworkFeature.SocialFeed;
   feedContractAddress: string;
 };
+
+export const allFeatureObjects = [zodCosmWasmPremiumFeed];
 
 export type NetworkFeatureObject = CosmWasmPremiumFeed | CosmWasmSocialFeed;

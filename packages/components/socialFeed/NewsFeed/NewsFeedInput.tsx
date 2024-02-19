@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useRef, useState } from "react";
+import React, { FC, memo, useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Pressable,
@@ -24,7 +24,11 @@ import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getUserId, NetworkFeature } from "../../../networks";
+import {
+  getNetworkFeature,
+  getUserId,
+  NetworkFeature,
+} from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
 import {
   generatePostMetadata,
@@ -53,6 +57,7 @@ import {
   primaryTextColor,
   secondaryColor,
   yellowDefault,
+  yellowPremium,
 } from "../../../utils/style/colors";
 import {
   fontSemibold12,
@@ -82,6 +87,7 @@ import { SpacerColumn } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
 
+import ToggleButton from "@/components/buttons/ToggleButton";
 import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
 
 interface NewsFeedInputProps {
@@ -145,6 +151,7 @@ export const NewsFeedInput = React.forwardRef<
     const { setToastError } = useFeedbacks();
     const [isUploadLoading, setIsUploadLoading] = useState(false);
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
+    const [premium, setPremium] = useState(false);
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
@@ -193,7 +200,7 @@ export const NewsFeedInput = React.forwardRef<
     });
 
     const processSubmit = async () => {
-      const action = "Publish a Post";
+      const action = premium ? "Publish a Premium Post" : "Publish a Post";
       if (!selectedWallet?.address || !selectedWallet.connected) {
         showConnectWalletModal({
           forceNetworkFeature: NetworkFeature.SocialFeed,
@@ -277,6 +284,7 @@ export const NewsFeedInput = React.forwardRef<
           hashtags,
           mentions,
           gifs: formValues?.gifs || [],
+          premium,
         });
 
         await makePost(
@@ -321,6 +329,11 @@ export const NewsFeedInput = React.forwardRef<
     };
 
     const focusInput = () => inputRef.current?.focus();
+
+    const networkHasPremiumFeed = !!getNetworkFeature(
+      selectedNetworkId,
+      NetworkFeature.CosmWasmPremiumFeed,
+    );
 
     return (
       <View
@@ -518,6 +531,23 @@ export const NewsFeedInput = React.forwardRef<
             >
               {viewWidth < BREAKPOINT_S && <SpacerColumn size={1.5} />}
 
+              {networkHasPremiumFeed && (
+                <>
+                  <PremiumPostToggle
+                    premium={premium}
+                    setPremium={setPremium}
+                  />
+                  <View
+                    style={{
+                      height: layout.spacing_x2,
+                      width: 1,
+                      backgroundColor: "#515151",
+                      marginHorizontal: layout.spacing_x2,
+                    }}
+                  />
+                </>
+              )}
+
               <View
                 style={{
                   flexDirection: "row",
@@ -697,3 +727,30 @@ export const NewsFeedInput = React.forwardRef<
     );
   },
 );
+
+const PremiumPostToggle: FC<{
+  premium: boolean;
+  setPremium: (value: boolean) => void;
+}> = memo(({ premium, setPremium }) => {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
+      <BrandText
+        style={[
+          fontSemibold13,
+          {
+            marginRight: layout.spacing_x1,
+            color: premium ? yellowPremium : "#777777",
+          },
+        ]}
+      >
+        Premium post
+      </BrandText>
+      <ToggleButton value={premium} onValueChange={setPremium} />
+    </View>
+  );
+});

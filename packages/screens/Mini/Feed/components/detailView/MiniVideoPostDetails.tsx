@@ -32,11 +32,7 @@ import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { getNetwork, NetworkKind, parseUserId } from "@/networks";
 import { VideoComment } from "@/screens/FeedPostView/components/VideoComment";
 import { zodTryParseJSON } from "@/utils/sanitize";
-import {
-  BASE_POST,
-  DEFAULT_USERNAME,
-  postResultToPost,
-} from "@/utils/social-feed";
+import { DEFAULT_USERNAME, postResultToPost } from "@/utils/social-feed";
 import { neutralA3 } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -58,7 +54,7 @@ export const MiniVideoPostDetails = ({
   const wallet = useSelectedWallet();
   const network = getNetwork(networkId);
 
-  const [localPost, setLocalPost] = useState(post || BASE_POST);
+  const [localPost, setLocalPost] = useState(post || Post.create());
   const video = zodTryParseJSON(ZodSocialFeedVideoMetadata, localPost.metadata);
   const authorNSInfo = useNSUserInfo(localPost.authorId);
   const [, authorAddress] = parseUserId(localPost.authorId);
@@ -88,6 +84,8 @@ export const MiniVideoPostDetails = ({
       user: localPost.authorId,
       mentions: [],
       hashtags: [],
+      premiumLevelMin: 0,
+      premiumLevelMax: -1,
     },
     limit: 10,
     offset: 0,
@@ -99,6 +97,8 @@ export const MiniVideoPostDetails = ({
       user: "",
       mentions: [],
       hashtags: [],
+      premiumLevelMin: 0,
+      premiumLevelMax: -1,
     },
     limit: 10,
     offset: 0,

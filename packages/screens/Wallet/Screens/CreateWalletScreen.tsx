@@ -168,6 +168,7 @@ export const CreateWalletScreen: ScreenFC<"CreateWallet"> = ({
                     addSelected({
                       address: accounts[0].address,
                       network: network.kind,
+                      name: `Account ${maxIndex + 1}`,
                       provider: "native",
                       networkId: "teritori",
                       index: maxIndex + 1,

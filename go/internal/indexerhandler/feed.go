@@ -2,6 +2,7 @@ package indexerhandler
 
 import (
 	"encoding/json"
+	"math"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
@@ -167,7 +168,17 @@ func (h *Handler) createPost(
 ) error {
 	var metadataJSON map[string]interface{}
 	if err := json.Unmarshal([]byte(createPostMsg.Metadata), &metadataJSON); err != nil {
-		return errors.Wrap(err, "failed to unmarshal metadata")
+		// We ignore this case because there's no validation for the data on the blockchain, and wrong data would stall the indexer if we returned an error.
+		h.logger.Info("ignored post with malformed metadada", zap.String("tx", e.TxHash), zap.String("contract", execMsg.Contract), zap.Error(err))
+		return nil
+	}
+
+	premium := uint32(0)
+	ipremium, ok := metadataJSON["premium"]
+	if ok {
+		if cpremium, ok := ipremium.(float64); ok && cpremium > 0 {
+			premium = uint32(math.Ceil(cpremium))
+		}
 	}
 
 	createdAt, err := e.GetBlockTime()
@@ -185,6 +196,7 @@ func (h *Handler) createPost(
 		CreatedAt:            createdAt.Unix(),
 		IsBot:                isBot,
 		NetworkID:            h.config.Network.ID,
+		PremiumLevel:         premium,
 	}
 
 	if err := h.db.Create(&post).Error; err != nil {

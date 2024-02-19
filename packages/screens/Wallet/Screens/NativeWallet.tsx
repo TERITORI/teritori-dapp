@@ -2,51 +2,24 @@ import { Video } from "expo-av";
 import React, { useEffect } from "react";
 import { Platform, View } from "react-native";
 
-import astroSvg from "../../../../assets/icons/networks/astroport-circle.svg";
-import connectWalletSvg from "../../../../assets/icons/networks/connect-wallet-circle.svg";
-import foxSvg from "../../../../assets/icons/networks/fox-circle.svg";
-import keplerSvg from "../../../../assets/icons/networks/kepler-circle.svg";
 import { CustomButton } from "../../Mini/components/Button/CustomButton";
 import { WalletContainer } from "../layout/WalletContainer";
 
+import adena from "@/assets/icons/adena.svg";
+import connectWalletSvg from "@/assets/icons/networks/connect-wallet-circle.svg";
+import foxSvg from "@/assets/icons/networks/fox-circle.svg";
+import keplerSvg from "@/assets/icons/networks/kepler-circle.svg";
+import { BrandText } from "@/components/BrandText";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
-import { ConnectAdenaButton } from "@/components/connectWallet/ConnectAdenaButton";
-import { ConnectKeplrButton } from "@/components/connectWallet/ConnectKeplrButton";
-import { ConnectLeapButton } from "@/components/connectWallet/ConnectLeapButton";
-import { ConnectMetamaskButton } from "@/components/connectWallet/ConnectMetamaskButton";
 import { SpacerColumn } from "@/components/spacer";
+import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 import { ScreenFC } from "@/utils/navigation";
+import { fontSemibold12 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-function Connect3rdPartyWallet() {
-  return (
-    <>
-      <ConnectMetamaskButton /> <ConnectKeplrButton />
-      <ConnectLeapButton /> <ConnectAdenaButton />
-    </>
-  );
-}
-
-const wallets = [
-  {
-    img: foxSvg,
-    name: "fox",
-  },
-  {
-    img: keplerSvg,
-    name: "kepler",
-  },
-  {
-    img: astroSvg,
-    name: "astroport",
-  },
-  {
-    img: connectWalletSvg,
-    name: "connectWallet",
-  },
-];
-
 const NativeWallet: ScreenFC<"NativeWallet"> = () => {
+  const nativeWallet = useSelectedNativeWallet();
+
   const video = React.useRef<Video>(null);
 
   useEffect(() => {
@@ -89,7 +62,7 @@ const NativeWallet: ScreenFC<"NativeWallet"> = () => {
               navigation.navigate("CreateWallet");
             }}
           />
-          {wallets.length > 0 && (
+          {nativeWallet && (
             <CustomButton
               title="Continue"
               style={{
@@ -101,7 +74,7 @@ const NativeWallet: ScreenFC<"NativeWallet"> = () => {
             />
           )}
           <SpacerColumn size={1.5} />
-          <View style={{ flexDirection: "row", gap: 10 }}>
+          <View style={{ flexDirection: "row", gap: layout.spacing_x1_5 }}>
             <CustomButton
               onPress={(_, navigation) => {
                 navigation.navigate("ImportWallet");
@@ -111,6 +84,7 @@ const NativeWallet: ScreenFC<"NativeWallet"> = () => {
               type="outline"
             />
             <CustomButton
+              isDisabled={Platform.OS !== "web"}
               onPress={(_, navigation) => {
                 navigation.navigate("ConnectLedger");
               }}
@@ -121,13 +95,8 @@ const NativeWallet: ScreenFC<"NativeWallet"> = () => {
           </View>
 
           <SpacerColumn size={3} />
-          <View style={{ flexDirection: "row", gap: 12 }}>
-            {wallets.map((wallet) => {
-              return <SVGorImageIcon icon={wallet.img} iconSize={42} />;
-            })}
-          </View>
+          <Connect3rdPartyWallet />
           <SpacerColumn size={8} />
-          {Platform.OS === "web" && <Connect3rdPartyWallet />}
         </View>
       </View>
     </WalletContainer>
@@ -135,3 +104,51 @@ const NativeWallet: ScreenFC<"NativeWallet"> = () => {
 };
 
 export default NativeWallet;
+
+const Connect3rdPartyWallet: React.FC = () => {
+  const wallets = [
+    {
+      img: foxSvg,
+      name: "fox",
+    },
+    {
+      img: keplerSvg,
+      name: "kepler",
+    },
+    {
+      img: adena,
+      name: "adena",
+    },
+    {
+      img: connectWalletSvg,
+      name: "connectWallet",
+    },
+  ];
+  return (
+    <View
+      style={{
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: layout.spacing_x1_5,
+      }}
+    >
+      <BrandText
+        style={[
+          fontSemibold12,
+          {
+            textTransform: "uppercase",
+          },
+        ]}
+      >
+        Also Available on the Web:
+      </BrandText>
+
+      <View style={{ flexDirection: "row", gap: 12 }}>
+        {wallets.map((wallet) => {
+          return <SVGorImageIcon icon={wallet.img} iconSize={42} />;
+        })}
+      </View>
+    </View>
+  );
+};

@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { cloneDeep } from "lodash";
 import Long from "long";
 import { useCallback, useMemo } from "react";
@@ -27,6 +28,7 @@ import {
   getCollectionMetadata,
   getTnsCollectionInfo,
 } from "@/utils/collection";
+import { mustGetCw721MembershipQueryClient } from "@/utils/feed/client";
 import { isLinkBanned } from "@/utils/link-ban";
 
 // NOTE: consider using the indexer for this
@@ -68,6 +70,15 @@ export const useCollectionInfo = (
     contractKind === CollectionContractKind.EthereumBunkerV0,
   );
 
+  const {
+    info: premiumFeedCollectionInfo,
+    notFound: premiumNotFound,
+    refetch: premiumRefetch,
+  } = usePremiumFeedCollectionInfo(
+    network?.id,
+    contractKind === CollectionContractKind.PremiumMembershipsV0,
+  );
+
   const { collectionInfo, ...other } = useMemo(() => {
     switch (contractKind) {
       case CollectionContractKind.CosmwasmNameServiceV0:
@@ -102,6 +113,12 @@ export const useCollectionInfo = (
           notFound: ethNotFound,
           refetch: ethRefetch,
         };
+      case CollectionContractKind.PremiumMembershipsV0:
+        return {
+          collectionInfo: premiumFeedCollectionInfo,
+          notFound: premiumNotFound,
+          refetch: premiumRefetch,
+        };
       default:
         return {
           collectionInfo: { mintPhases: [] },
@@ -121,6 +138,9 @@ export const useCollectionInfo = (
     ethRefetch,
     ethereumCollectionInfo,
     network,
+    premiumFeedCollectionInfo,
+    premiumNotFound,
+    premiumRefetch,
   ]);
 
   const clean = useMemo(() => {
@@ -348,4 +368,28 @@ const useEthereumTeritoriBunkerCollectionInfo = (
   }, [refetchConf, refetchCurrentSupply, refetchIsPaused, refetchWhitelists]);
 
   return { info, notFound: isError, refetch };
+};
+
+const usePremiumFeedCollectionInfo = (
+  networkId: string | undefined,
+  enabled?: boolean,
+) => {
+  const { data: config, refetch } = useQuery(
+    ["premium-feed-config", networkId],
+    async () => {
+      const client = await mustGetCw721MembershipQueryClient(networkId);
+      const config = await client.config();
+      return config;
+    },
+    { enabled },
+  );
+
+  const info: CollectionInfo = {
+    name: config?.name,
+    description: config?.description,
+    image: config?.image_uri,
+    mintPhases: [],
+  };
+
+  return { info, notFound: false, refetch };
 };
