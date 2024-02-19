@@ -9,10 +9,12 @@ import Animated, {
 import CustomAppBar from "../../../components/AppBar/CustomAppBar";
 
 import { Post } from "@/api/feed/v1/feed";
+import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { CommentsContainer } from "@/components/cards/CommentsContainer";
 import { NewsFeedInputHandle } from "@/components/socialFeed/NewsFeed/NewsFeedInput";
 import { SocialThreadCard } from "@/components/socialFeed/SocialCard/cards/SocialThreadCard";
+import { SpacerColumn } from "@/components/spacer";
 import {
   combineFetchCommentPages,
   useFetchComments,
@@ -20,6 +22,7 @@ import {
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
+import { MiniCommentInput } from "@/screens/Mini/components/MiniCommentInput";
 import { DEFAULT_USERNAME } from "@/utils/social-feed";
 import { tinyAddress } from "@/utils/text";
 import {
@@ -27,12 +30,6 @@ import {
   PostCategory,
   ReplyToType,
 } from "@/utils/types/feed";
-import CustomAppBar from "../../../components/AppBar/CustomAppBar";
-
-import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
-import { SpacerColumn } from "@/components/spacer";
-import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
-import { MiniCommentInput } from "@/screens/Mini/components/MiniCommentInput";
 
 type Props = {
   networkId: string;

@@ -11,6 +11,7 @@ import CustomAppBar from "../../../components/AppBar/CustomAppBar";
 
 import { Post } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
+import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { CommentsContainer } from "@/components/cards/CommentsContainer";
@@ -25,14 +26,12 @@ import {
 } from "@/hooks/feed/useFetchComments";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
+import { MiniCommentInput } from "@/screens/Mini/components/MiniCommentInput";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import { DEFAULT_USERNAME } from "@/utils/social-feed";
 import { fontSemibold16 } from "@/utils/style/fonts";
 import { tinyAddress } from "@/utils/text";
 import { ReplyToType, ZodSocialFeedArticleMetadata } from "@/utils/types/feed";
-
-import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
-import { MiniCommentInput } from "@/screens/Mini/components/MiniCommentInput";
 
 type Props = {
   networkId: string;

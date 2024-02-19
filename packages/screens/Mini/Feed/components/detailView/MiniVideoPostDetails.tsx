@@ -13,6 +13,7 @@ import { VideoCommentInput } from "../VideoCommentInput";
 
 import { Post, PostsRequest } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
+import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { MediaPlayerVideo } from "@/components/mediaPlayer/MediaPlayerVideo";
 import { DislikeButton } from "@/components/socialFeed/SocialActions/DislikeButton";
@@ -38,8 +39,6 @@ import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
 import { PostCategory, ZodSocialFeedVideoMetadata } from "@/utils/types/feed";
-
-import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
 
 type Props = {
   networkId: string;
