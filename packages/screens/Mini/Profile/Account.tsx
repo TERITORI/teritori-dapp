@@ -111,7 +111,7 @@ export const Account: React.FC<{ account: StoreWallet; isLast: boolean }> = ({
         )}
         <DropdownWithListItem
           style={{ paddingHorizontal: 0, width: 210 }}
-          positionStyle={{ top: 35 }}
+          positionStyle={{ top: -20 }}
           icon={dotSVG}
           iconSize={22}
           items={[
