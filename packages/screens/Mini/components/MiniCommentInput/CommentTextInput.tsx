@@ -33,25 +33,31 @@ type Props = {
   setValue: (index: keyof NewPostFormValues, data: any) => void;
   setSelection: (data: { start: number; end: number }) => void;
 };
+export interface MiniCommentInputHandle {
+  setValue: (text: string) => void;
+  focusInput: () => void;
+}
 
 const CHARS_LIMIT_WARNING_MULTIPLIER = 0.92;
 
-export const CommentTextInput = React.forwardRef(
-  ({ formValues, setValue, setSelection }: Props, forwardRef) => {
+export const CommentTextInput = React.forwardRef<MiniCommentInputHandle, Props>(
+  ({ formValues, setValue, setSelection }, forwardRef) => {
     const inputMaxHeight = 400;
     const inputMinHeight = 30;
     const inputHeight = useSharedValue(30);
     const inputRef = useRef<TextInput>(null);
 
     const focusInput = () => inputRef.current?.focus();
-    useImperativeHandle(forwardRef, () => ({
-      focusInput,
-    }));
+
     const handleTextChange = (text: string) => {
       // Comments are blocked at 2500
       if (text.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT) return;
       setValue("message", text);
     };
+    useImperativeHandle(forwardRef, () => ({
+      focusInput,
+      setValue: handleTextChange,
+    }));
 
     return (
       <View

@@ -1,9 +1,9 @@
 import React, { useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { TextInput, View, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
-import { CommentTextInput } from "./CommentTextInput";
+import { CommentTextInput, MiniCommentInputHandle } from "./CommentTextInput";
 import { SelectAudioVideo } from "./SelectAudioVideo";
 import { SelectPicture } from "./SelectPicture";
 import priceSVG from "../../../../../assets/icons/price.svg";
@@ -78,7 +78,7 @@ export const MiniCommentInput = React.forwardRef<
     const selectedNetworkId = selectedNetwork?.id || "teritori";
     const selectedWallet = useSelectedWallet();
     const userId = getUserId(selectedNetworkId, selectedWallet?.address);
-    const inputRef = useRef<TextInput>(null);
+    const inputRef = useRef<MiniCommentInputHandle>(null);
     const [toastErrors, setToastErrors] = useState<{
       title: string;
       message: string;
@@ -133,9 +133,9 @@ export const MiniCommentInput = React.forwardRef<
       end: 10,
     });
     const handleTextChange = (text: string) => {
-      // Comments are blocked at 2500
-      if (text.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT) return;
-      setValue("message", text);
+      if (inputRef?.current?.setValue) {
+        inputRef?.current?.setValue(text);
+      }
     };
     const onEmojiSelected = (emoji: string | null) => {
       if (emoji) {
@@ -150,12 +150,12 @@ export const MiniCommentInput = React.forwardRef<
       }
     };
 
-    const focusInput = () => inputRef?.current?.focus();
+    const focusInput = () => inputRef?.current?.focusInput();
 
     useImperativeHandle(forwardRef, () => ({
       resetForm: reset,
-      setValue: handleTextChange,
       focusInput,
+      setValue: handleTextChange,
     }));
 
     const processSubmit = async () => {
