@@ -110,10 +110,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
 
   // functions
   const onErrorImageLoading = () =>
-    setError("imageUrl", {
-      type: "pattern",
-      message: "This image is invalid",
-    });
+    setError("imageUrl", { type: "pattern", message: "This image is invalid" });
 
   return (
     <View style={fillCStyle}>

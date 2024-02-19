@@ -6,6 +6,8 @@ import {
   additionalRed,
   neutral33,
   neutral77,
+  primaryColor,
+  redDefault,
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { NameFinderFormType } from "../../../utils/types/tns";
@@ -13,6 +15,13 @@ import { BrandText } from "../../BrandText";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../ModalBase";
+
+import { useNSMintAvailability } from "@/hooks/useNSMintAvailability";
+import { useNSMintPrice } from "@/hooks/useNSMintPrice";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { NetworkKind, getCosmosNetwork, parseUserId } from "@/networks";
+import { prettyPrice } from "@/utils/coins";
 
 const AVAILABLE_DOMAINS = [".tori"];
 const COMING_SOON_DOMAINS = [".rioter"];
@@ -105,6 +114,20 @@ export const TNSNameFinderModal: React.FC<{
 }> = ({ visible, onClose, onEnter }) => {
   const { name, setName } = useTNS();
 
+  const selectedWallet = useSelectedWallet();
+  const [network] = parseUserId(selectedWallet?.userId);
+  const networkId = network?.id;
+  const cosmosNetwork = getCosmosNetwork(networkId);
+  const normalizedTokenId = (
+    name + cosmosNetwork?.nameServiceTLD || ""
+  ).toLowerCase();
+
+  const tokenId = name + cosmosNetwork?.nameServiceTLD || "";
+  const selectedNetwork = useSelectedNetworkInfo();
+
+  const { nsMintPrice: price } = useNSMintPrice(networkId, normalizedTokenId);
+  const { nameAvailable, loading } = useNSMintAvailability(networkId, tokenId);
+
   const onPressEnter = () => {
     if (name) {
       onEnter();
@@ -116,6 +139,31 @@ export const TNSNameFinderModal: React.FC<{
     if (visible) setName("");
   }, [setName, visible]);
 
+  let availabilityInfo = <></>;
+  if (name && selectedNetwork?.kind === NetworkKind.Cosmos) {
+    if (price?.invalid) {
+      availabilityInfo = (
+        <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
+          Invalid
+        </BrandText>
+      );
+    } else if (nameAvailable) {
+      availabilityInfo = (
+        <View style={{ flexDirection: "row" }}>
+          <BrandText style={{ color: primaryColor, ...fontSemibold14 }}>
+            {prettyPrice(networkId, price?.amount, price?.denom)}
+          </BrandText>
+        </View>
+      );
+    } else if (!nameAvailable) {
+      availabilityInfo = (
+        <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
+          Taken
+        </BrandText>
+      );
+    }
+  }
+
   return (
     <ModalBase
       visible={visible}
@@ -125,6 +173,23 @@ export const TNSNameFinderModal: React.FC<{
       width={372}
     >
       <TextInputCustom<NameFinderFormType>
+        noBrokenCorners
+        isLoading={loading}
+        variant="labelOutside"
+        label={`NAME${name ? `: ${name + cosmosNetwork?.nameServiceTLD}` : ""}`}
+        placeHolder="Type name here"
+        name="name"
+        rules={{ required: true }}
+        onPressEnter={onPressEnter}
+        onChangeText={setName}
+        regexp={new RegExp(/^[a-zA-Z]+$/)}
+        style={{ marginBottom: 20, width: "100%" }}
+        value={name}
+      >
+        {availabilityInfo}
+      </TextInputCustom>
+
+      {/* <TextInputCustom<NameFinderFormType>
         name="name"
         label="NAME"
         placeHolder="Type name here"
@@ -133,7 +198,7 @@ export const TNSNameFinderModal: React.FC<{
         value={name}
         regexp={new RegExp(/^[a-zA-Z]+$/)}
         style={{ marginBottom: 20, width: "100%" }}
-      />
+      /> */}
       <PrimaryButton
         size="M"
         text="Find"
