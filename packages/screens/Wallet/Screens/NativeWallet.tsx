@@ -145,8 +145,8 @@ const Connect3rdPartyWallet: React.FC = () => {
       </BrandText>
 
       <View style={{ flexDirection: "row", gap: 12 }}>
-        {wallets.map((wallet) => {
-          return <SVGorImageIcon icon={wallet.img} iconSize={42} />;
+        {wallets.map((wallet, index) => {
+          return <SVGorImageIcon key={index} icon={wallet.img} iconSize={42} />;
         })}
       </View>
     </View>
