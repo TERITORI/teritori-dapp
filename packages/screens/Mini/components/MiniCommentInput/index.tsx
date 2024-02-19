@@ -1,24 +1,18 @@
-import * as DocumentPicker from "expo-document-picker";
-import * as ImagePicker from "expo-image-picker";
 import React, { useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { TextInput, View, ViewStyle } from "react-native";
-import Animated, { useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
-import { CustomButton } from "./Button/CustomButton";
-import MiniToast from "./MiniToast";
-import cameraSVG from "../../../../assets/icons/camera-white.svg";
-import micSVG from "../../../../assets/icons/mic-white.svg";
-import penSVG from "../../../../assets/icons/pen.svg";
-import priceSVG from "../../../../assets/icons/price.svg";
-import videoSVG from "../../../../assets/icons/video.svg";
+import { CommentTextInput } from "./CommentTextInput";
+import { SelectAudioVideo } from "./SelectAudioVideo";
+import { SelectPicture } from "./SelectPicture";
+import priceSVG from "../../../../../assets/icons/price.svg";
+import { CustomButton } from "../Button/CustomButton";
+import MiniToast from "../MiniToast";
 
 import { BrandText } from "@/components/BrandText";
-import { FilesPreviewsContainer } from "@/components/FilePreview/FilesPreviewsContainer";
 import FlexRow from "@/components/FlexRow";
 import { SVG } from "@/components/SVG";
-import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgressBar";
 import { EmojiSelector } from "@/components/socialFeed/EmojiSelector";
 import { GIFSelector } from "@/components/socialFeed/GIFSelector";
@@ -30,40 +24,20 @@ import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature, getUserId } from "@/networks";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
-import { getAudioData } from "@/utils/audio";
 import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
 import { generatePostMetadata, getPostCategory } from "@/utils/feed/queries";
 import { generateIpfsKey } from "@/utils/ipfs";
 import {
-  AUDIO_MIME_TYPES,
-  IMAGE_MIME_TYPES,
-  VIDEO_MIME_TYPES,
-} from "@/utils/mime";
-import {
   SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
   hashtagMatch,
   mentionMatch,
-  removeFileFromArray,
-  replaceFileInArray,
 } from "@/utils/social-feed";
-import {
-  errorColor,
-  neutral77,
-  neutralA3,
-  primaryColor,
-  secondaryColor,
-  yellowDefault,
-} from "@/utils/style/colors";
-import {
-  fontSemibold12,
-  fontSemibold13,
-  fontSemibold16,
-} from "@/utils/style/fonts";
+import { neutral77, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { replaceBetweenString } from "@/utils/text";
 import { NewPostFormValues, ReplyToType } from "@/utils/types/feed";
-import { LocalFileData, RemoteFileData } from "@/utils/types/files";
-import { getVideoData } from "@/utils/video";
+import { RemoteFileData } from "@/utils/types/files";
 
 interface MiniCommentInputProps {
   parentId?: string;
@@ -82,7 +56,6 @@ interface MiniCommentInputInputHandle {
   setValue: (text: string) => void;
   focusInput: () => void;
 }
-const CHARS_LIMIT_WARNING_MULTIPLIER = 0.92;
 const MAX_IMAGES = 4;
 
 export const MiniCommentInput = React.forwardRef<
@@ -101,9 +74,6 @@ export const MiniCommentInput = React.forwardRef<
     },
     forwardRef,
   ) => {
-    const inputMaxHeight = 400;
-    const inputMinHeight = 30;
-    const inputHeight = useSharedValue(30);
     const selectedNetwork = useSelectedNetworkInfo();
     const selectedNetworkId = selectedNetwork?.id || "teritori";
     const selectedWallet = useSelectedWallet();
@@ -180,7 +150,7 @@ export const MiniCommentInput = React.forwardRef<
       }
     };
 
-    const focusInput = () => inputRef.current?.focus();
+    const focusInput = () => inputRef?.current?.focus();
 
     useImperativeHandle(forwardRef, () => ({
       resetForm: reset,
@@ -295,112 +265,6 @@ export const MiniCommentInput = React.forwardRef<
       }
     };
 
-    const onCameraPress = async () => {
-      try {
-        const result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          selectionLimit: 1,
-        });
-
-        if (
-          result.assets &&
-          result.assets.length > 0 &&
-          result.assets[0].mimeType &&
-          IMAGE_MIME_TYPES.includes(
-            result?.assets?.[0]?.mimeType?.toLowerCase(),
-          )
-        ) {
-          const choseFile = result.assets[0];
-
-          if (
-            formValues.files?.find(
-              (file) => file.fileName === choseFile.fileName,
-            )
-          )
-            return;
-
-          const imagePath = choseFile?.uri;
-          const imageMime = `${choseFile.mimeType}`;
-          if (imagePath) {
-            const fileName = `${choseFile.fileName}`;
-
-            setValue("files", [
-              ...(formValues.files || []),
-              {
-                file: new File([], ""),
-                fileName,
-                fileType: "image",
-                mimeType: imageMime,
-                size: choseFile.fileSize || 0,
-                url: choseFile?.uri || "",
-              },
-            ]);
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    const onChooseFilePress = async (fileType: "audio" | "video") => {
-      try {
-        const acceptableMimeTypes =
-          fileType === "audio" ? AUDIO_MIME_TYPES : VIDEO_MIME_TYPES;
-        const result = await DocumentPicker.getDocumentAsync({
-          multiple: false,
-          type: acceptableMimeTypes,
-        });
-
-        if (
-          result.assets &&
-          result.assets.length > 0 &&
-          result.assets[0].mimeType &&
-          acceptableMimeTypes.includes(result?.assets?.[0]?.mimeType)
-        ) {
-          const choseFile = result.assets[0];
-
-          if (
-            formValues.files?.find((file) => file.fileName === choseFile.name)
-          )
-            return;
-          const filePath = choseFile?.uri;
-          const mimeType = `${choseFile.mimeType}`;
-          if (filePath) {
-            const fileName = `${choseFile.name}`;
-            const file = new File([], "");
-
-            const metaData: Pick<
-              LocalFileData,
-              "videoMetadata" | "audioMetadata"
-            > = {
-              videoMetadata: undefined,
-              audioMetadata: undefined,
-            };
-            if (fileType === "video") {
-              metaData.videoMetadata = await getVideoData(file);
-            }
-            if (fileType === "audio") {
-              metaData.audioMetadata = await getAudioData(file);
-            }
-
-            setValue("files", [
-              {
-                file,
-                fileName,
-                fileType,
-                mimeType,
-                size: choseFile?.size || 0,
-                url: choseFile?.uri || "",
-                ...metaData,
-              },
-            ]);
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
     return (
       <View style={{ width: "100%", ...style }}>
         {toastErrors && toastErrors.message && (
@@ -414,127 +278,13 @@ export const MiniCommentInput = React.forwardRef<
             }}
           />
         )}
-        <View
-          style={{
-            borderRadius: layout.borderRadius,
-            borderWidth: 1,
-            borderColor: neutralA3,
-            paddingHorizontal: layout.spacing_x1,
-            paddingVertical: layout.spacing_x0_75,
-          }}
-        >
-          <CustomPressable onPress={focusInput}>
-            <FlexRow style={{ marginTop: layout.spacing_x1 }}>
-              <SVG
-                height={24}
-                width={24}
-                source={penSVG}
-                color={secondaryColor}
-                style={{
-                  alignSelf: "flex-end",
-                  marginRight: layout.spacing_x1_5,
-                }}
-              />
-              <Animated.View style={{ flex: 1, height: "auto" }}>
-                <TextInput
-                  ref={inputRef}
-                  value={formValues.message}
-                  onSelectionChange={(event) =>
-                    setSelection(event.nativeEvent.selection)
-                  }
-                  placeholder="Hey yo! Write your comment"
-                  placeholderTextColor={neutral77}
-                  onChangeText={handleTextChange}
-                  multiline
-                  onContentSizeChange={(e) => {
-                    if (e.nativeEvent.contentSize.height < inputMaxHeight) {
-                      inputHeight.value = e.nativeEvent.contentSize.height;
-                    }
-                  }}
-                  style={[
-                    fontSemibold16,
-                    {
-                      height: formValues.message
-                        ? inputHeight.value || inputMinHeight
-                        : inputMinHeight,
-                      width: "100%",
-                      color: secondaryColor,
-                    },
-                  ]}
-                />
-              </Animated.View>
-            </FlexRow>
-          </CustomPressable>
 
-          <BrandText
-            style={[
-              fontSemibold12,
-              {
-                color: !formValues?.message
-                  ? neutral77
-                  : formValues?.message?.length >
-                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
-                          CHARS_LIMIT_WARNING_MULTIPLIER &&
-                      formValues?.message?.length <
-                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                    ? yellowDefault
-                    : formValues?.message?.length >=
-                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT - 10
-                      ? errorColor
-                      : primaryColor,
-                marginTop: layout.spacing_x0_5,
-                alignSelf: "flex-end",
-              },
-            ]}
-          >
-            {formValues?.message?.length}
-            <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-              /{SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT}
-            </BrandText>
-          </BrandText>
-          {formValues.files && formValues.files.length > 0 ? (
-            <>
-              <SpacerColumn size={3} />
-              <FilesPreviewsContainer
-                files={formValues.files}
-                gifs={formValues.gifs}
-                onDelete={(file) => {
-                  setValue(
-                    "files",
-                    removeFileFromArray(
-                      formValues?.files || [],
-                      file as LocalFileData,
-                    ),
-                  );
-                }}
-                onDeleteGIF={(url) => {
-                  setValue(
-                    "gifs",
-                    (formValues?.gifs || [])?.filter((gif) => gif !== url),
-                  );
-                  const gifFile = formValues?.files?.find((x) => x.url === url);
-                  if (gifFile) {
-                    setValue(
-                      "files",
-                      removeFileFromArray(
-                        formValues?.files || [],
-                        gifFile as LocalFileData,
-                      ),
-                    );
-                  }
-                }}
-                onAudioUpdate={(updatedFile) => {
-                  if (formValues?.files?.length) {
-                    setValue(
-                      "files",
-                      replaceFileInArray(formValues?.files, updatedFile),
-                    );
-                  }
-                }}
-              />
-            </>
-          ) : null}
-        </View>
+        <CommentTextInput
+          formValues={formValues}
+          setSelection={setSelection}
+          setValue={setValue}
+          ref={inputRef}
+        />
         <View
           style={[
             {
@@ -597,66 +347,26 @@ export const MiniCommentInput = React.forwardRef<
                   MAX_IMAGES
               }
             />
-            <CustomPressable
-              onPress={() => onChooseFilePress("audio")}
-              disabled={
-                Array.isArray(formValues?.files) &&
-                formValues?.files?.length > 0
-              }
-            >
-              <SVG
-                source={micSVG}
-                height={24}
-                width={24}
-                style={{
-                  opacity:
-                    Array.isArray(formValues?.files) &&
-                    formValues?.files?.length > 0
-                      ? 0.7
-                      : 1,
-                }}
-              />
-            </CustomPressable>
-            <CustomPressable
-              onPress={() => onChooseFilePress("video")}
-              disabled={
-                Array.isArray(formValues?.files) &&
-                formValues?.files?.length > 0
-              }
-            >
-              <SVG
-                source={videoSVG}
-                height={24}
-                width={24}
-                style={{
-                  opacity:
-                    Array.isArray(formValues?.files) &&
-                    formValues?.files?.length > 0
-                      ? 0.7
-                      : 1,
-                }}
-              />
-            </CustomPressable>
-            <CustomPressable
-              onPress={onCameraPress}
-              disabled={
-                Array.isArray(formValues?.files) &&
-                formValues?.files?.length > 0
-              }
-            >
-              <SVG
-                source={cameraSVG}
-                height={24}
-                width={24}
-                style={{
-                  opacity:
-                    Array.isArray(formValues?.files) &&
-                    formValues?.files?.length > 0
-                      ? 0.7
-                      : 1,
-                }}
-              />
-            </CustomPressable>
+            <SelectAudioVideo
+              type="audio"
+              files={formValues.files}
+              onSelectFile={(selectedFiles) => {
+                setValue("files", selectedFiles);
+              }}
+            />
+            <SelectAudioVideo
+              type="video"
+              files={formValues.files}
+              onSelectFile={(selectedFiles) => {
+                setValue("files", selectedFiles);
+              }}
+            />
+            <SelectPicture
+              files={formValues.files}
+              onSelectFile={(data) => {
+                setValue("files", data);
+              }}
+            />
           </FlexRow>
           <CustomButton
             onPress={handleSubmit(processSubmit)}
