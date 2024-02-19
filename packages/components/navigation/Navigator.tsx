@@ -1,8 +1,8 @@
 import { Platform } from "react-native";
 
-import { MiniModeNavigator } from "./MiniModeNavigator";
-import { NormalModeNavigator } from "./NormalModeNavigator";
 import { Sidebar } from "./Sidebar";
+import { getMiniModeScreens } from "./getMiniModeScreens";
+import { getNormalModeScreens } from "./getNormalModeScreens";
 import { getNav } from "./util";
 
 import { useAppMode } from "@/hooks/useAppMode";
@@ -20,8 +20,8 @@ export const Navigator: React.FC = () => {
       }
       screenOptions={navigatorScreenOptions as any} // FIXME: upgrade to expo-router
     >
-      {NormalModeNavigator()}
-      {appMode === "mini" ? MiniModeNavigator() : null}
+      {getNormalModeScreens({ appMode: appMode as AppMode })}
+      {appMode === "mini" ? getMiniModeScreens() : null}
     </Nav.Navigator>
   );
 };

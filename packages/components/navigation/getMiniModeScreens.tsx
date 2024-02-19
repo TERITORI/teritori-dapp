@@ -10,7 +10,6 @@ import { RootStackParamList } from "../../utils/navigation";
 import { neutral00, secondaryColor } from "../../utils/style/colors";
 import { TabBarIcon } from "../TabBarIcon";
 
-import { useOnboardedStatus } from "@/hooks/useOnboardStatus";
 import AboutScreen from "@/screens/Mini/About/AboutScreen";
 import AddAddressBookScreen from "@/screens/Mini/AddressBook/AddAddressBookScreen";
 import AddressBookScreen from "@/screens/Mini/AddressBook/AddressBookScreen";
@@ -49,7 +48,6 @@ import SendingToriScreen from "@/screens/Mini/Wallet/SendingToriScreen";
 import TransactionDetailScreen from "@/screens/Mini/Wallet/TransactionDetailScreen";
 import { CreatePasswordWallet } from "@/screens/Wallet/Screens/CreatePasswordWallet";
 import { CreateWalletScreen } from "@/screens/Wallet/Screens/CreateWalletScreen";
-import { ImportWallet } from "@/screens/Wallet/Screens/ImportWallet";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -89,11 +87,7 @@ const MainTab = () => {
   );
 };
 
-export const MiniModeNavigator = () => {
-  const [isLoading] = useOnboardedStatus();
-
-  if (isLoading) return null;
-
+export const getMiniModeScreens = () => {
   return (
     <>
       <Stack.Screen
@@ -114,14 +108,6 @@ export const MiniModeNavigator = () => {
         name="MiniTabs"
         options={{ header: () => null }}
         component={MainTab}
-      />
-      <Stack.Screen
-        name="ImportWallet"
-        component={ImportWallet}
-        options={{
-          header: () => null,
-          title: "Import Wallet with Seed",
-        }}
       />
 
       <Stack.Screen

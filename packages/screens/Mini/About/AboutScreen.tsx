@@ -50,7 +50,7 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
   const onClose = () =>
     navigation.canGoBack()
       ? navigation.goBack()
-      : navigation.replace("MiniTabs");
+      : navigation.replace("MiniTabs", { screen: "MiniChats" });
 
   return (
     <BlurScreenContainer title="About Teritori" onGoBack={onClose}>
