@@ -1,3 +1,4 @@
+import { grpc } from "@improbable-eng/grpc-web";
 import { Platform } from "react-native";
 
 import {
@@ -8,7 +9,11 @@ import { weshConfig } from "./config";
 import { afterWeshnetConnectionAction } from "./services";
 
 const createWeshClient = (url: string) => {
-  const rpc = new GrpcWebImpl(url, { debug: false });
+  const rpc = new GrpcWebImpl(url, {
+    debug: false,
+    transport: grpc.WebsocketTransport(),
+  });
+
   const client = new ProtocolServiceClientImpl(rpc);
   return client;
 };

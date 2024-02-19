@@ -1,4 +1,3 @@
-import { Platform } from "react-native";
 import { Subscription } from "rxjs";
 
 import { processMessage } from "./processEvent";
@@ -12,6 +11,7 @@ import { weshClient } from "../client";
 import { bytesFromString, stringFromBytes } from "../utils";
 
 const messageSubscriptions: Subscription[] = [];
+const subscribers: { [key: string]: boolean } = {};
 
 export const subscribeMessages = async (groupPk: string) => {
   try {
@@ -20,13 +20,24 @@ export const subscribeMessages = async (groupPk: string) => {
     const config: Partial<GroupMessageList_Request> = {
       groupPk: bytesFromString(groupPk),
     };
+    let uniqKey = groupPk;
 
     if (lastId) {
       config.sinceId = bytesFromString(lastId);
+      uniqKey += "sinceId";
     } else {
       config.untilNow = true;
       config.reverseOrder = true;
+      uniqKey += "untilNow";
     }
+
+    if (subscribers[uniqKey]) {
+      return;
+    }
+
+    subscribers[uniqKey] = true;
+
+    let newLastId: string | undefined;
 
     try {
       await weshClient.client.ActivateGroup({
@@ -52,6 +63,7 @@ export const subscribeMessages = async (groupPk: string) => {
                   value: id,
                 }),
               );
+              newLastId = id;
               isLastIdSet = true;
             }
 
@@ -62,6 +74,7 @@ export const subscribeMessages = async (groupPk: string) => {
                   value: id,
                 }),
               );
+              newLastId = id;
             }
 
             processMessage(data, groupPk);
@@ -78,8 +91,7 @@ export const subscribeMessages = async (groupPk: string) => {
             1,
           );
 
-          const lastId = selectLastIdByKey(store.getState(), groupPk);
-          if (Platform.OS === "web" && lastId) {
+          if (newLastId) {
             subscribeMessages(groupPk);
           } else {
             setTimeout(() => subscribeMessages(groupPk), 3500);
