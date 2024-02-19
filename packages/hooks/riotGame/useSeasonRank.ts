@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { parseUserId } from "../../networks";
-import { getP2eClient } from "../../utils/backend";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
+
+import { parseUserId } from "@/networks";
+import { getP2eClient } from "@/utils/backend";
 
 export const useSeasonRank = () => {
   const selectedWallet = useSelectedWallet();

@@ -2,8 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
-import { parseUserId, NetworkKind } from "../../networks";
 import useSelectedWallet from "../useSelectedWallet";
+
+import { parseUserId, NetworkKind } from "@/networks";
 
 export const multisigInfoQueryKey = (multisigId: string | undefined) => [
   "multisig-info",

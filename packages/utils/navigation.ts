@@ -3,6 +3,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
 import { feedsTabItems } from "./social-feed";
+import { AppMode } from "./types/app-mode";
 import { NewPostFormValues } from "./types/feed";
 import { Conversation, MessageFriendsTabItem } from "./types/message";
 import { uppTabItems } from "./upp";
@@ -28,6 +29,8 @@ export type RootStackParamList = {
   ApplicationReview: undefined;
   ReadyLaunchpadApplications: undefined;
   AllProjectAdministrationDash: undefined;
+
+  LeaderboardMarketplace: undefined;
 
   Launchpad: undefined;
   LaunchpadApply: undefined;
@@ -126,7 +129,7 @@ export type RootStackParamList = {
   MiniSelectToken: { navigateTo: RouteName };
   MiniDepositTORI: { back?: RouteName; denom: string };
   ModeSelection: undefined;
-  ChatActivation: undefined;
+  ChatActivation: { appMode: AppMode };
   MiniSendTori: { back?: RouteName; denom: string };
   MiniSendingTori: {
     back?: RouteName;
@@ -172,6 +175,9 @@ const navConfig: {
     ApplicationReview: "launchpad/application-review",
     ReadyLaunchpadApplications: "launchpad/ready-applications",
     AllProjectAdministrationDash: "launchpad/all-projects",
+
+    LeaderboardMarketplace: "leaderboard/marketplace",
+
     // === RiotGame
     RiotGame: "riot-game",
     RiotGameEnroll: "riot-game/enroll",

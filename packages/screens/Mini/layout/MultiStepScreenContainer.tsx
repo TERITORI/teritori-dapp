@@ -1,15 +1,15 @@
 import { PropsWithChildren } from "react";
-import { View, SafeAreaView } from "react-native";
+import { SafeAreaView, View } from "react-native";
 
 import chevronLeftSVG from "../../../../assets/icons/chevron-left.svg";
 import teritoriSVG from "../../../../assets/icons/teritori-white.svg";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { SpacerColumn } from "../../../components/spacer";
-import { layout } from "../../../utils/style/layout";
 import { ProgressLine } from "../components/ProgressLine";
 
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { SpacerColumn } from "@/components/spacer";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { layout } from "@/utils/style/layout";
 
 interface MultiStepScreenProps extends PropsWithChildren {
   screenPercentage: number;

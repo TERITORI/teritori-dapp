@@ -1,27 +1,27 @@
-import * as Clipboard from "expo-clipboard";
 import React, { useState } from "react";
-import { TextInput, View } from "react-native";
-import QRCode from "react-native-qrcode-svg";
+import { Linking, TextInput, View } from "react-native";
 
-import copySVG from "../../../../assets/icons/copy-gray.svg";
 import openSVG from "../../../../assets/icons/open-blue.svg";
 import penSVG from "../../../../assets/icons/pen-solid-gray.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { ScreenFC } from "../../../utils/navigation";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
+import { accountExplorerLink } from "@/networks";
+import { ShowWalletQR } from "@/screens/Mini/Wallet/components/ShowWalletQR";
+import { updateWallet } from "@/store/slices/wallets";
+import { useAppDispatch } from "@/store/store";
+import { ScreenFC } from "@/utils/navigation";
 import {
   azureBlue,
   azureBlue20,
   neutral22,
   secondaryColor,
-} from "../../../utils/style/colors";
-import { fontMedium16, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { BlurScreenContainer } from "../layout/BlurScreenContainer";
-
-const QR_SIZE = 248;
-const ACCOUNT_DETAILS = "GxF34g10nz0wchvkkj7rr09vcxj5rpt2m3A31";
+} from "@/utils/style/colors";
+import { fontMedium16, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
   navigation,
@@ -30,19 +30,15 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
   const navigateToProfile = () => navigation.replace("MiniProfile");
   const params = route.params;
   const [accountName, setAccountName] = useState(params.accountName);
-  const [accountDetails, setAccountDetails] = useState(ACCOUNT_DETAILS);
-
-  const copyToClipboard = async () => {
-    await Clipboard.setStringAsync(accountDetails);
-    alert("Copied");
-  };
+  const selectedWallet = useSelectedNativeWallet();
+  const dispatch = useAppDispatch();
 
   const onAccountNameChange = (text: string) => {
+    if (selectedWallet) {
+      dispatch(updateWallet({ ...selectedWallet, name: text }));
+    }
     setAccountName(text || "");
-    setAccountDetails(ACCOUNT_DETAILS);
   };
-
-  const handleViewOnTeritoriscan = () => {};
 
   return (
     <BlurScreenContainer title="Account Details" onGoBack={navigateToProfile}>
@@ -72,55 +68,38 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
             cursorColor={secondaryColor}
           />
         </View>
-        <View style={{ alignItems: "center", marginBottom: layout.spacing_x5 }}>
-          {accountDetails && (
-            <View
-              style={{
-                backgroundColor: secondaryColor,
-                width: QR_SIZE + 32,
-                padding: layout.spacing_x2,
-                borderRadius: layout.borderRadius,
-              }}
-            >
-              <QRCode size={QR_SIZE} value={accountDetails} />
-            </View>
-          )}
-        </View>
-        <View
-          style={{
-            backgroundColor: neutral22,
-            paddingHorizontal: layout.spacing_x2,
-            paddingVertical: layout.spacing_x2,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: layout.spacing_x1_5,
-            borderRadius: layout.borderRadius,
+      </View>
+
+      <ShowWalletQR selectedWallet={selectedWallet} />
+
+      <View
+        style={{
+          backgroundColor: azureBlue20,
+          paddingHorizontal: layout.spacing_x2,
+          paddingVertical: layout.spacing_x2,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderRadius: layout.borderRadius,
+        }}
+      >
+        <BrandText style={[fontSemibold14, { color: azureBlue }]}>
+          View on Explorer
+        </BrandText>
+        <CustomPressable
+          onPress={() => {
+            if (selectedWallet) {
+              Linking.openURL(
+                accountExplorerLink(
+                  selectedWallet.networkId,
+                  selectedWallet.address,
+                ),
+              );
+            }
           }}
         >
-          <BrandText style={[fontSemibold14]}>{accountDetails}</BrandText>
-          <CustomPressable onPress={copyToClipboard}>
-            <SVG source={copySVG} height={22} width={22} />
-          </CustomPressable>
-        </View>
-        <View
-          style={{
-            backgroundColor: azureBlue20,
-            paddingHorizontal: layout.spacing_x2,
-            paddingVertical: layout.spacing_x2,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            borderRadius: layout.borderRadius,
-          }}
-        >
-          <BrandText style={[fontSemibold14, { color: azureBlue }]}>
-            View on Teritoriscan
-          </BrandText>
-          <CustomPressable onPress={handleViewOnTeritoriscan}>
-            <SVG source={openSVG} height={22} width={22} />
-          </CustomPressable>
-        </View>
+          <SVG source={openSVG} height={22} width={22} />
+        </CustomPressable>
       </View>
     </BlurScreenContainer>
   );

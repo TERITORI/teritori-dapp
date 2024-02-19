@@ -2,16 +2,17 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { FlatList, View } from "react-native";
 
 import AddNewSvg from "../../../../assets/icons/add-circle-filled.svg";
-import { BrandText } from "../../../components/BrandText";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn } from "../../../components/spacer";
-import { RootStackParamList } from "../../../utils/navigation";
-import { neutralA3 } from "../../../utils/style/colors";
-import { fontNormal15 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import Checkbox from "../components/Checkbox/Checkbox";
 import ListView from "../components/ListView";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { BrandText } from "@/components/BrandText";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn } from "@/components/spacer";
+import { RootStackParamList } from "@/utils/navigation";
+import { neutralA3 } from "@/utils/style/colors";
+import { fontNormal15 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type ChangeNetworkScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ChangeNetwork">;

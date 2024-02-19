@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { TeritoriBunkerMinterQueryClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
-import { mustGetNonSigningCosmWasmClient } from "../../networks";
+import { TeritoriBunkerMinterQueryClient } from "@/contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
+import { mustGetNonSigningCosmWasmClient } from "@/networks";
 
 export const useBunkerMinterWhitelistSize = (
   networkId: string | undefined,

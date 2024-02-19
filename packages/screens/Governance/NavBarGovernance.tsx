@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
-import { BrandText } from "../../components/BrandText/BrandText";
-import { neutral33 } from "../../utils/style/colors";
-import { ProposalStatus } from "../../utils/types/gov";
+import { BrandText } from "@/components/BrandText";
+import { neutral33 } from "@/utils/style/colors";
+import { ProposalStatus } from "@/utils/types/gov";
 
 const def = {
   all: {

@@ -4,13 +4,14 @@ import { Image, View, ViewStyle } from "react-native";
 import avaPNG from "../../../../assets/default-images/ava.png";
 import checkBadgeSVG from "../../../../assets/icons/certified.svg";
 import SolanaCircleSVG from "../../../../assets/icons/networks/solana-circle.svg";
-import { BrandText } from "../../../components/BrandText";
-import { HeaderContent } from "../../../components/HeaderContent/HeaderContent";
-import { SVG } from "../../../components/SVG";
-import { InnerCellText } from "../../../components/applicationTable/InnerCellText";
-import { lightblue, neutral00 } from "../../../utils/style/colors";
-import { fontSemibold16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { HeaderContent } from "@/components/HeaderContent/HeaderContent";
+import { SVG } from "@/components/SVG";
+import { InnerCellText } from "@/components/applicationTable/InnerCellText";
+import { lightblue, neutral00 } from "@/utils/style/colors";
+import { fontSemibold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const TooltipContant = () => {
   return (

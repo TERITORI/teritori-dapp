@@ -1,10 +1,11 @@
 import React from "react";
 import { View } from "react-native";
 
-import { BrandText } from "../../../components/BrandText";
 import ModalBase from "../../../components/modals/ModalBase";
-import { SpacerColumn } from "../../../components/spacer";
-import { Conversation } from "../../../utils/types/message";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn } from "@/components/spacer";
+import { Conversation } from "@/utils/types/message";
 
 interface GroupDetailsProps {
   conversation: Conversation;

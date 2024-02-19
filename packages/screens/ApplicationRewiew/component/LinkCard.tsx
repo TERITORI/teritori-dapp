@@ -1,10 +1,10 @@
 import React from "react";
-import { View, FlatList } from "react-native";
+import { FlatList, View } from "react-native";
 
-import { BrandText } from "../../../components/BrandText";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { neutral77 } from "../../../utils/style/colors";
-import { fontSemibold12, fontSemibold14 } from "../../../utils/style/fonts";
+import { BrandText } from "@/components/BrandText";
+import { TertiaryBox } from "@/components/boxes/TertiaryBox";
+import { neutral77 } from "@/utils/style/colors";
+import { fontSemibold12, fontSemibold14 } from "@/utils/style/fonts";
 
 export const LinkCard: React.FC<{ title: any; linksData: any }> = ({
   title,

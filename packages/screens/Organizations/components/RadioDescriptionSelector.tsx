@@ -1,12 +1,12 @@
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
-import { BrandText } from "../../../components/BrandText";
-import { RadioButton } from "../../../components/RadioButton";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { neutral33, neutralA3 } from "../../../utils/style/colors";
-import { fontMedium13, fontSemibold16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { BrandText } from "@/components/BrandText";
+import { RadioButton } from "@/components/RadioButton";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { neutral33, neutralA3 } from "@/utils/style/colors";
+import { fontMedium13, fontSemibold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const RadioDescriptionSelector: React.FC<{
   disabled?: boolean;

@@ -5,11 +5,11 @@ import {
   NFTsRequest,
   Sort,
   SortDirection,
-} from "../../../api/marketplace/v1/marketplace";
-import { NFTs } from "../../../components/nfts/NFTs";
-import { Tabs } from "../../../components/tabs/Tabs";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
-import { alignDown } from "../../../utils/align";
+} from "@/api/marketplace/v1/marketplace";
+import { NFTs } from "@/components/nfts/NFTs";
+import { Tabs } from "@/components/tabs/Tabs";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { alignDown } from "@/utils/align";
 
 const tabItemsNFTs = {
   collected: { name: "Collected" },

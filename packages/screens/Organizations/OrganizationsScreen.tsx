@@ -1,18 +1,18 @@
 import React from "react";
 import { ScrollView, View } from "react-native";
 
-import { DAOsRequest } from "../../api/dao/v1/dao";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { DAOsList } from "../../components/dao/DAOsList";
-import { SpacerColumn } from "../../components/spacer";
-import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { NetworkFeature } from "../../networks";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { fontSemibold28 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { DAOsRequest } from "@/api/dao/v1/dao";
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { DAOsList } from "@/components/dao/DAOsList";
+import { SpacerColumn } from "@/components/spacer";
+import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { NetworkFeature } from "@/networks";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const OrganizationsScreen: ScreenFC<"Organizations"> = ({
   route: { params },

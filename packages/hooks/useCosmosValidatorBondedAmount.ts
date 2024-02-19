@@ -2,7 +2,8 @@ import { Decimal } from "@cosmjs/math";
 import { useMemo } from "react";
 
 import { useCosmosDelegations } from "./useCosmosDelegations";
-import { getCurrency, getNativeCurrency, parseUserId } from "../networks";
+
+import { getCurrency, getNativeCurrency, parseUserId } from "@/networks";
 
 export const useCosmosValidatorBondedAmount = (
   userId: string | undefined,

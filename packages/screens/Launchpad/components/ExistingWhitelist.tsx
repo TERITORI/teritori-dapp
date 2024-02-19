@@ -3,8 +3,9 @@ import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
-import { SpacerColumn } from "../../../components/spacer";
 import { ExistingWhitelistDetailsFormValues } from "../CreateCollection.type";
+
+import { SpacerColumn } from "@/components/spacer";
 
 export const ExistingWhitelist: React.FC = () => {
   const { control } = useForm<ExistingWhitelistDetailsFormValues>({

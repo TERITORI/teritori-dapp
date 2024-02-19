@@ -11,9 +11,9 @@ import { NFTAttributeCard } from "../cards/NFTAttributeCard";
 const previewCount = 9;
 
 export const NFTAttributes: React.FC<{
-  nftAttributes?: AttributeRarityFloor[];
+  nftAttributesRarity?: AttributeRarityFloor[];
   nftInfo: NFTInfo;
-}> = ({ nftAttributes = [], nftInfo }) => {
+}> = ({ nftAttributesRarity = [], nftInfo }) => {
   const [isMoreDisplayed, setIsMoreDisplayed] = useState(false);
   const isMobile = useIsMobile();
 
@@ -30,21 +30,27 @@ export const NFTAttributes: React.FC<{
         {/*No marginRight for NFTAttributeCard if the Card is at the last column (We use modulo of 3 because we have (not explicitly) 3 columns*/}
         {/*TODO: Responsive*/}
         {(isMoreDisplayed
-          ? nftAttributes
-          : nftAttributes.slice(0, previewCount)
-        ).map((attribute, index) => (
-          <NFTAttributeCard
-            key={index}
-            nftAttribute={attribute}
-            nftInfo={nftInfo}
-            style={{
-              margin: 6,
-            }}
-          />
-        ))}
+          ? nftAttributesRarity
+          : nftAttributesRarity.slice(0, previewCount)
+        ).map((attribute, index) => {
+          const realAttr = nftInfo.attributes.find(
+            (a) => a.trait_type === attribute.traitType,
+          );
+          return (
+            <NFTAttributeCard
+              key={index}
+              nftAttribute={realAttr}
+              nftAttributeRarity={attribute}
+              nftInfo={nftInfo}
+              style={{
+                margin: 6,
+              }}
+            />
+          );
+        })}
       </View>
 
-      {nftAttributes.length > previewCount && (
+      {nftAttributesRarity.length > previewCount && (
         <View
           style={{
             flexDirection: "row",

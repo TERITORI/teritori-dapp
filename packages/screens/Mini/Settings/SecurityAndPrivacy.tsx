@@ -1,11 +1,12 @@
 import React, { Fragment } from "react";
 import { View } from "react-native";
 
-import { SpacerColumn } from "../../../components/spacer";
-import { RouteName, ScreenFC } from "../../../utils/navigation";
-import { layout } from "../../../utils/style/layout";
 import { SettingMenuItem } from "../components/SettingMenuItems";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { SpacerColumn } from "@/components/spacer";
+import { RouteName, ScreenFC } from "@/utils/navigation";
+import { layout } from "@/utils/style/layout";
 
 const settingScreens: {
   title: string;

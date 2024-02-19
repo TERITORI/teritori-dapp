@@ -1,10 +1,10 @@
 import React, { ReactNode } from "react";
 import { StyleProp, TextStyle, View, ViewStyle } from "react-native";
 
-import { BrandText } from "../../../../components/BrandText";
-import { neutral22, neutralA3 } from "../../../../utils/style/colors";
-import { fontBold16, fontMedium15 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
+import { BrandText } from "@/components/BrandText";
+import { neutral22, neutralA3 } from "@/utils/style/colors";
+import { fontBold16, fontMedium15 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type MiniTableRowProps = {
   leftLabel?: string | ReactNode;

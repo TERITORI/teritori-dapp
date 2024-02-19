@@ -1,32 +1,32 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { StyleProp, ViewStyle, useWindowDimensions } from "react-native";
+import { StyleProp, useWindowDimensions, ViewStyle } from "react-native";
 
 import { PostActions } from "./PostActions";
 import { PostHeader } from "./PostHeader";
 import defaultThumbnailImage from "../../../../../assets/default-images/default-article-thumbnail.png";
-import { Post } from "../../../../api/feed/v1/feed";
-import { BrandText } from "../../../../components/BrandText";
-import { OptimizedImage } from "../../../../components/OptimizedImage";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
+
+import { Post } from "@/api/feed/v1/feed";
+import { BrandText } from "@/components/BrandText";
+import { OptimizedImage } from "@/components/OptimizedImage";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
 import {
   createStateFromHTML,
   getTruncatedArticleHTML,
   isArticleHTMLNeedsTruncate,
-} from "../../../../components/socialFeed/RichText";
-import { SpacerColumn } from "../../../../components/spacer";
-import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
-import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
-import { getNetworkObjectId, parseUserId } from "../../../../networks";
-import { zodTryParseJSON } from "../../../../utils/sanitize";
-import { neutralA3 } from "../../../../utils/style/colors";
-import { fontSemibold14, fontSemibold16 } from "../../../../utils/style/fonts";
-import { tinyAddress } from "../../../../utils/text";
+} from "@/components/socialFeed/RichText";
+import { SpacerColumn } from "@/components/spacer";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { getNetworkObjectId, parseUserId } from "@/networks";
+import { zodTryParseJSON } from "@/utils/sanitize";
+import { neutralA3 } from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold16 } from "@/utils/style/fonts";
+import { tinyAddress } from "@/utils/text";
 import {
   ZodSocialFeedArticleMetadata,
   ZodSocialFeedPostMetadata,
-} from "../../../../utils/types/feed";
-
-import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+} from "@/utils/types/feed";
 
 type Props = {
   post: Post;

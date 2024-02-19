@@ -4,18 +4,19 @@ import { useWindowDimensions, View } from "react-native";
 
 import checkSVG from "../../../../assets/icons/check-white.svg";
 import teritoriCircleSVG from "../../../../assets/icons/tori-circle.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { SpacerColumn } from "../../../components/spacer";
-import { ScreenFC } from "../../../utils/navigation";
-import { blueDefault, neutralA3 } from "../../../utils/style/colors";
-import { fontSemibold15 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import CustomAppBar from "../components/AppBar/CustomAppBar";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import MiniTable from "../components/Table/MiniTable";
 import MiniTableRow from "../components/Table/MiniTableRow";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { SpacerColumn } from "@/components/spacer";
+import { ScreenFC } from "@/utils/navigation";
+import { blueDefault, neutralA3 } from "@/utils/style/colors";
+import { fontSemibold15 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const transactionDetail = [
   {
@@ -129,9 +130,8 @@ export function capitalizeStr(str: string) {
   return firstLetter + lastLetter;
 }
 
-export async function copyToClipboard(value: string) {
+async function copyToClipboard(value: string) {
   await Clipboard.setStringAsync(value);
-  alert("Copied");
 }
 
 export default TransactionDetailScreen;

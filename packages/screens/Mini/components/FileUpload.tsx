@@ -1,8 +1,8 @@
 import * as DocumentPicker from "expo-document-picker";
 
-import { TertiaryBadge } from "../../../components/badges/TertiaryBadge";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { blueDefault } from "../../../utils/style/colors";
+import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { blueDefault } from "@/utils/style/colors";
 
 interface FileUploadProps {
   label: string;

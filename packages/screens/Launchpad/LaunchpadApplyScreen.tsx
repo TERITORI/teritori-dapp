@@ -6,13 +6,14 @@ import {
   LaunchpadButton,
   LaunchpadButtonProps,
 } from "./components/LaunchpadButton";
-import { BrandText } from "../../components/BrandText";
-import { OmniLink } from "../../components/OmniLink";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { ScreenFC } from "../../utils/navigation";
-import { neutral77 } from "../../utils/style/colors";
-import { fontSemibold14, fontSemibold28 } from "../../utils/style/fonts";
+
+import { BrandText } from "@/components/BrandText";
+import { OmniLink } from "@/components/OmniLink";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { ScreenFC } from "@/utils/navigation";
+import { neutral77 } from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 
 const BUTTONS: LaunchpadButtonProps[] = [
   {

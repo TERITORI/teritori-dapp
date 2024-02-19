@@ -2,18 +2,18 @@ import { useMemo } from "react";
 import { View, ViewStyle } from "react-native";
 
 import { InfoBox } from "./InfoBox";
-import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
-import { useGameRewards } from "../../../hooks/riotGame/useGameRewards";
-import { useSeasonRank } from "../../../hooks/riotGame/useSeasonRank";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { teritoriCurrencies } from "../../../networks/teritori/currencies";
-import { decimalFromAtomics } from "../../../utils/coins";
-import { yellowDefault } from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
 
+import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
+import { useGameRewards } from "@/hooks/riotGame/useGameRewards";
+import { useSeasonRank } from "@/hooks/riotGame/useSeasonRank";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { teritoriNetwork } from "@/networks/teritori";
+import { teritoriCurrencies } from "@/networks/teritori/currencies";
+import { decimalFromAtomics } from "@/utils/coins";
+import { yellowDefault } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 
 type FightStatsSectionProps = {
   containerStyle?: ViewStyle;

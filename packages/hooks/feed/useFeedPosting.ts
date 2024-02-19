@@ -7,23 +7,23 @@ import { v4 as uuidv4 } from "uuid";
 import { useCreatePost } from "./useCreatePost";
 import { useFeedPostFee } from "./useFeedPostFee";
 import { useFreePostsCount } from "./useFreePostsCount";
-import { signingSocialFeedClient } from "../../client-creators/socialFeedClient";
+import { useIsDAO } from "../cosmwasm/useCosmWasmContractInfo";
+import { useDAOMakeProposal } from "../dao/useDAOMakeProposal";
+import { useBalances } from "../useBalances";
+
+import { signingSocialFeedClient } from "@/client-creators/socialFeedClient";
 import {
   parseUserId,
   getStakingCurrency,
   mustGetCosmosNetwork,
   NetworkKind,
-} from "../../networks";
-import { prettyPrice } from "../../utils/coins";
-import { defaultSocialFeedFee } from "../../utils/fee";
-import { TERITORI_FEED_ID } from "../../utils/feed/constants";
-import { adenaDoContract } from "../../utils/gno";
-import { PostCategory } from "../../utils/types/feed";
-import { useIsDAO } from "../cosmwasm/useCosmWasmContractInfo";
-import { useDAOMakeProposal } from "../dao/useDAOMakeProposal";
-import { useBalances } from "../useBalances";
-
+} from "@/networks";
+import { prettyPrice } from "@/utils/coins";
+import { defaultSocialFeedFee } from "@/utils/fee";
+import { TERITORI_FEED_ID } from "@/utils/feed/constants";
 import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
+import { adenaDoContract } from "@/utils/gno";
+import { PostCategory } from "@/utils/types/feed";
 
 export const useFeedPosting = (
   networkId: string | undefined,

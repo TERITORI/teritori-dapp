@@ -2,15 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 
 import { useBreedingConfig } from "./useBreedingConfig";
-import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { ConfigResponse as BreedingConfigResponse } from "../contracts-clients/teritori-breeding/TeritoriBreeding.types";
-import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
-import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
-import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
-import { TeritoriMinter__factory } from "../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
-import { TeritoriNft__factory } from "../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
+
+import { Metadata as Cw721MembershipMetadata } from "@/contracts-clients/cw721-membership";
+import { TeritoriBreedingQueryClient } from "@/contracts-clients/teritori-breeding/TeritoriBreeding.client";
+import { TeritoriBunkerMinterQueryClient } from "@/contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
+import { TeritoriNameServiceQueryClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { TeritoriNftQueryClient } from "@/contracts-clients/teritori-nft/TeritoriNft.client";
+import { TeritoriNftVaultQueryClient } from "@/contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { TeritoriMinter__factory } from "@/evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { TeritoriNft__factory } from "@/evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { NFTVault__factory } from "@/evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import {
   CosmosNetworkInfo,
   EthereumNetworkInfo,
@@ -19,11 +21,14 @@ import {
   parseNftId,
   NetworkKind,
   getUserId,
-} from "../networks";
-import { getEthereumProvider } from "../utils/ethereum";
-import { web3ToWeb2URI } from "../utils/ipfs";
-import { nameServiceDefaultImage } from "../utils/tns";
-import { NFTAttribute, NFTInfo } from "../utils/types/nft";
+  getNetworkFeature,
+  NetworkFeature,
+  parseUserId,
+} from "@/networks";
+import { getEthereumProvider } from "@/utils/ethereum";
+import { web3ToWeb2URI } from "@/utils/ipfs";
+import { nameServiceDefaultImage } from "@/utils/tns";
+import { NFTAttribute, NFTInfo } from "@/utils/types/nft";
 
 export const useNFTInfo = (nftId: string, userId?: string | undefined) => {
   const [network, minterContractAddress, tokenId] = parseNftId(nftId);
@@ -37,6 +42,9 @@ export const useNFTInfo = (nftId: string, userId?: string | undefined) => {
   } = useQuery(
     ["nftInfo", nftId, userId],
     async () => {
+      if (!network) {
+        return null;
+      }
       switch (network?.kind) {
         case NetworkKind.Ethereum: {
           return await getEthereumStandardNFTInfo(
@@ -47,6 +55,10 @@ export const useNFTInfo = (nftId: string, userId?: string | undefined) => {
           );
         }
         case NetworkKind.Cosmos: {
+          const pmFeature = getNetworkFeature(
+            network.id,
+            NetworkFeature.CosmWasmPremiumFeed,
+          );
           switch (minterContractAddress) {
             case network.nameServiceContractAddress: {
               return await getTNSNFTInfo(
@@ -63,6 +75,9 @@ export const useNFTInfo = (nftId: string, userId?: string | undefined) => {
                 tokenId,
                 userId,
               );
+            }
+            case pmFeature?.membershipContractAddress: {
+              return await getPremiumFeedNFTInfo(network, tokenId, userId);
             }
             default: {
               return await getTeritoriBunkerNFTInfo(
@@ -506,4 +521,107 @@ const getTeritoriRiotBreedingNFTInfo = async (
   };
 
   return nfo;
+};
+
+const getPremiumFeedNFTInfo = async (
+  network: CosmosNetworkInfo,
+  tokenId: string,
+  userId: string | undefined,
+) => {
+  const pmFeature = getNetworkFeature(
+    network.id,
+    NetworkFeature.CosmWasmPremiumFeed,
+  );
+  if (!pmFeature) {
+    throw new Error("This network does not support premium feed");
+  }
+  const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
+  const nftClient = new TeritoriNftQueryClient(
+    cosmwasmClient,
+    pmFeature.membershipContractAddress,
+  );
+  const { info: nftInfo, access } = await nftClient.allNftInfo({ tokenId });
+  const metadata = nftInfo.extension as Cw721MembershipMetadata;
+
+  const vaultInfo = await getNFTVaultInfo(
+    network,
+    pmFeature.membershipContractAddress,
+    tokenId,
+  );
+
+  const [, userAddr] = parseUserId(userId);
+  const owner =
+    (!!vaultInfo.vaultOwnerAddress && vaultInfo.vaultOwnerAddress) ||
+    access.owner;
+  const isOwner = !!userAddr && owner === userAddr;
+
+  const nfo: NFTInfo = {
+    name: metadata.name || "",
+    description: metadata.description || "",
+    nftAddress: pmFeature.membershipContractAddress,
+    imageURL: metadata.image || "",
+    tokenId,
+    isOwner,
+    isSeller: vaultInfo.isListed && isOwner,
+    isListed: vaultInfo.isListed,
+    collectionName: "Premium Memberships", // FIXME: get from collection config
+    collectionImageURL:
+      "ipfs://bafybeiaznarsgwk7stav6qrzjnwqw4j7eu7drm3xx4p3fokgsnrouelse4", // FIXME: get from collection config
+    mintDenom: pmFeature.mintDenom,
+    royalty: 0,
+    networkId: network.id,
+    collectionId: getCollectionId(
+      network.id,
+      pmFeature.membershipContractAddress,
+    ),
+    canSell: isOwner && !vaultInfo.isListed,
+    price: vaultInfo.vaultInfo?.amount || "0",
+    priceDenom: vaultInfo.vaultInfo?.denom || "",
+    mintAddress: pmFeature.membershipContractAddress,
+    ownerAddress: owner,
+    attributes: (metadata.attributes || []).map((attr) => {
+      const frontAttr: NFTAttribute = {
+        trait_type: attr.trait_type,
+        value: attr.value,
+        display_type: attr.display_type || undefined,
+      };
+      return frontAttr;
+    }),
+  };
+  return nfo;
+};
+
+const getNFTVaultInfo = async (
+  network: CosmosNetworkInfo,
+  nftContractAddr: string,
+  tokenId: string,
+) => {
+  if (!network.vaultContractAddress) {
+    throw new Error("network not supported");
+  }
+  const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
+  const vaultClient = new TeritoriNftVaultQueryClient(
+    cosmwasmClient,
+    network.vaultContractAddress,
+  );
+  let vaultOwnerAddress;
+  let vaultInfo;
+  let isListed = false;
+
+  try {
+    vaultInfo = await vaultClient.nftInfo({
+      nftContractAddr,
+      nftTokenId: tokenId,
+    });
+    vaultOwnerAddress = vaultInfo.owner;
+    isListed = true;
+  } catch {
+    // ======== The NFT is not on sale
+  }
+
+  return {
+    vaultOwnerAddress,
+    vaultInfo,
+    isListed,
+  };
 };

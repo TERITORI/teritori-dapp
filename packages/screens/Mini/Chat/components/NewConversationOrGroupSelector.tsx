@@ -3,21 +3,18 @@ import { ScrollView, View } from "react-native";
 
 import { CreateGroupModal } from "./CreateGroupModal";
 import chevronGrayRightSVG from "../../../../../assets/icons/chevron-right-gray.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { Separator } from "../../../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
-import { neutral22, neutralA3 } from "../../../../utils/style/colors";
-import {
-  fontBold10,
-  fontMedium16,
-  fontSemibold12,
-} from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
 import { CustomButton } from "../../components/Button/CustomButton";
 import { ChatAvatar } from "../../components/ChatAvatar";
 import Checkbox from "../../components/Checkbox/Checkbox";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { neutral22, neutralA3 } from "@/utils/style/colors";
+import { fontBold10, fontMedium16, fontSemibold12 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export type ContactSelectionType = {
   id: string;

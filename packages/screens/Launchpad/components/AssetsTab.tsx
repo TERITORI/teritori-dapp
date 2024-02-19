@@ -4,13 +4,14 @@ import { SafeAreaView, View } from "react-native";
 
 import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
 import { MetadataUpdateModal } from "./modals/MetadataUpdateModal";
-import { SelectedFilesPreview } from "../../../components/FilePreview/SelectedFilesPreview/SelectedFilesPreview";
-import { SelectFileUploader } from "../../../components/selectFileUploader";
-import { IMAGE_MIME_TYPES } from "../../../utils/mime";
-import { neutral33 } from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
-import { LocalFileData } from "../../../utils/types/files";
 import { NewCollectionAssetsFormValues } from "../CreateCollection.type";
+
+import { SelectedFilesPreview } from "@/components/FilePreview/SelectedFilesPreview/SelectedFilesPreview";
+import { SelectFileUploader } from "@/components/selectFileUploader";
+import { IMAGE_MIME_TYPES } from "@/utils/mime";
+import { neutral33 } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
+import { LocalFileData } from "@/utils/types/files";
 
 export const AssetsTab: React.FC = () => {
   const [files, setFiles] = useState<LocalFileData[]>([]);

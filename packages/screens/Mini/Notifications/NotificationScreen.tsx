@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 
 import NotificationList from "./NotificationList";
-import { BrandText } from "../../../components/BrandText";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { ScreenFC } from "../../../utils/navigation";
-import { fontSemibold18 } from "../../../utils/style/fonts";
 import CustomAppBar from "../components/AppBar/CustomAppBar";
 import DropdownWithCheck from "../components/Dropdown/DropdownWithCheck";
+
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenFC } from "@/utils/navigation";
+import { fontSemibold18 } from "@/utils/style/fonts";
 
 const filterOptionsConst = [
   {

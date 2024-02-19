@@ -5,22 +5,19 @@ import { useSelector } from "react-redux";
 import { CheckboxDappStore } from "./CheckboxDappStore";
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { LegacySecondaryBox } from "../../../components/boxes/LegacySecondaryBox";
-import { useDropdowns } from "../../../hooks/useDropdowns";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacySecondaryBox } from "@/components/boxes/LegacySecondaryBox";
+import { useDropdowns } from "@/hooks/useDropdowns";
 import {
   selectAvailableApps,
   setAvailableApps,
-} from "../../../store/slices/dapps-store";
-import { useAppDispatch } from "../../../store/store";
-import {
-  neutral33,
-  neutralA3,
-  secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "@/store/slices/dapps-store";
+import { useAppDispatch } from "@/store/store";
+import { neutral33, neutralA3, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const SelectableOption: React.FC<{
   name: string;

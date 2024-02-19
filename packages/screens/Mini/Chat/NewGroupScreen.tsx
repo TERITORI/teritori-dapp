@@ -7,26 +7,27 @@ import {
   NewConversationOrGroupSelector,
 } from "./components/NewConversationOrGroupSelector";
 import searchSVG from "../../../../assets/icons/search-gray.svg";
-import { GroupInfo_Reply } from "../../../api/weshnet/protocoltypes";
-import { SpacerColumn } from "../../../components/spacer";
+import MiniTextInput from "../components/MiniTextInput";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { GroupInfo_Reply } from "@/api/weshnet/protocoltypes";
+import { SpacerColumn } from "@/components/spacer";
 import {
   selectContactInfo,
   selectConversationList,
-} from "../../../store/slices/message";
-import { ScreenFC } from "../../../utils/navigation";
-import { neutralA3 } from "../../../utils/style/colors";
-import { fontMedium14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { weshClient } from "../../../weshnet";
-import { subscribeMessages } from "../../../weshnet/message/subscriber";
+} from "@/store/slices/message";
+import { ScreenFC } from "@/utils/navigation";
+import { neutralA3 } from "@/utils/style/colors";
+import { fontMedium14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { weshClient } from "@/weshnet";
+import { subscribeMessages } from "@/weshnet/message/subscriber";
 import {
   getConversationAvatar,
   getConversationName,
-} from "../../../weshnet/messageHelpers";
-import { sendMessage } from "../../../weshnet/services";
-import { bytesFromString, stringFromBytes } from "../../../weshnet/utils";
-import MiniTextInput from "../components/MiniTextInput";
-import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+} from "@/weshnet/messageHelpers";
+import { sendMessage } from "@/weshnet/services";
+import { bytesFromString, stringFromBytes } from "@/weshnet/utils";
 
 export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
   const [search, setSearch] = useState("");
@@ -137,7 +138,7 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
           icon={searchSVG}
           placeholder="Search by nickname"
           style={{ paddingVertical: layout.spacing_x1 }}
-          inputStyle={[fontMedium14]}
+          inputStyle={[fontMedium14, { lineHeight: 0 }]}
           placeholderTextColor={neutralA3}
         />
         <SpacerColumn size={2} />

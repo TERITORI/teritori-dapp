@@ -3,11 +3,12 @@ import { Image, View } from "react-native";
 
 import LaunchpadBannerImage from "../../../../assets/banners/launchpad.jpg";
 import LogoSimpleSvg from "../../../../assets/icons/logo-simple.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { SpacerColumn } from "../../../components/spacer";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
-import { fontSemibold16, fontSemibold28 } from "../../../utils/style/fonts";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SpacerColumn } from "@/components/spacer";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { fontSemibold16, fontSemibold28 } from "@/utils/style/fonts";
 
 export const LaunchpadBanner: React.FC = () => {
   const { width } = useMaxResolution();

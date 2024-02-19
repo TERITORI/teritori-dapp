@@ -2,9 +2,10 @@ import React from "react";
 import { View } from "react-native";
 
 import { Avatar } from "./Avatar";
-import { layout } from "../../../utils/style/layout";
-import { Conversation } from "../../../utils/types/message";
-import { getConversationAvatar } from "../../../weshnet/messageHelpers";
+
+import { layout } from "@/utils/style/layout";
+import { Conversation } from "@/utils/types/message";
+import { getConversationAvatar } from "@/weshnet/messageHelpers";
 
 interface ConversationAvatarProps {
   conversation: Conversation;

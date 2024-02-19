@@ -5,20 +5,21 @@ import { useSelector } from "react-redux";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import sortSVG from "../../../assets/icons/sort.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useDropdowns } from "../../hooks/useDropdowns";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useDropdowns } from "@/hooks/useDropdowns";
 import {
   marketplacePeriodItems,
   PeriodItem,
   selectTimePeriod,
   setTimePeriod,
-} from "../../store/slices/marketplaceFilters";
-import { useAppDispatch } from "../../store/store";
-import { neutral33, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
+} from "@/store/slices/marketplaceFilters";
+import { useAppDispatch } from "@/store/store";
+import { neutral33, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 
 export const PeriodFilter: FC = () => {
   const { width } = useWindowDimensions();

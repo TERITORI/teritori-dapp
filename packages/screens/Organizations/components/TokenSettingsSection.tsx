@@ -4,24 +4,25 @@ import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
 import trashSVG from "../../../../assets/icons/trash.svg";
 import walletInputSVG from "../../../../assets/icons/wallet-input.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import {
   patternOnlyLetters,
   patternOnlyNumbers,
   validateAddress,
-} from "../../../utils/formRules";
-import { neutral33, neutralA3 } from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "@/utils/formRules";
+import { neutral33, neutralA3 } from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 import {
   ORGANIZATION_DEPLOYER_STEPS,
   TokenSettingFormType,
-} from "../../../utils/types/organizations";
+} from "@/utils/types/organizations";
 
 interface TokenSettingsSectionProps {
   onSubmit: (form: TokenSettingFormType) => void;

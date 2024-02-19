@@ -1,22 +1,55 @@
 package networks
 
+import (
+	"encoding/json"
+)
+
 type NetworkKind string
 
 type Network interface {
 	GetBase() *NetworkBase
 }
 
+type FeatureType string
+
+type Feature interface {
+	Type() FeatureType
+	GetBase() *FeatureBase
+}
+
+type FeatureBase struct {
+	Type FeatureType `json:"type"`
+}
+
+func (fb *FeatureBase) GetBase() *FeatureBase {
+	return fb
+}
+
 type NetworkBase struct {
-	ID         string           `json:"id"`
-	Currencies []CurrencyObj    `json:"currencies"`
-	Kind       NetworkKind      `json:"kind"`
-	IDPrefix   string           `json:"idPrefix"`
-	Testnet    bool             `json:"testnet"`
-	Features   []NetworkFeature `json:"features"`
+	ID             string        `json:"id"`
+	Currencies     []CurrencyObj `json:"currencies"`
+	Kind           NetworkKind   `json:"kind"`
+	IDPrefix       string        `json:"idPrefix"`
+	Testnet        bool          `json:"testnet"`
+	Features       []FeatureType `json:"features"`
+	FeatureObjects []Feature     `json:"-"`
+}
+
+type FeaturesContainer struct {
+	FeatureObjects []json.RawMessage `json:"featureObjects"`
 }
 
 func (nb *NetworkBase) GetBase() *NetworkBase {
 	return nb
+}
+
+func (nb *NetworkBase) GetFeature(featureType FeatureType) (Feature, error) {
+	for i, ft := range nb.FeatureObjects {
+		if ft.Type() == featureType {
+			return nb.FeatureObjects[i], nil
+		}
+	}
+	return nil, ErrFeatureNotFound
 }
 
 var _ Network = &NetworkBase{}

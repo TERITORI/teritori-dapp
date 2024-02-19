@@ -5,11 +5,11 @@ import { CenterSection } from "./component/CenterSection";
 import { GameBgCard } from "./component/GameBgCard";
 import { GameBgOverlay } from "./component/GameBgOverlay";
 import { RiotGameHeader } from "./component/RiotGameHeader";
-import { gameBgData } from "../../utils/game";
-import { neutral00 } from "../../utils/style/colors";
-import { headerHeight } from "../../utils/style/layout";
 
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { gameBgData } from "@/utils/game";
+import { neutral00 } from "@/utils/style/colors";
+import { headerHeight } from "@/utils/style/layout";
 
 export const RiotGameScreen = () => {
   const navigation = useAppNavigation();

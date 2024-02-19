@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 
-import { parseUserId, NetworkKind } from "../networks";
+import { parseUserId, NetworkKind } from "@/networks";
 
 const zodCosmosDelegation = z.object({
   delegation: z.object({

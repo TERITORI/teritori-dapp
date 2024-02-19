@@ -2,11 +2,12 @@ import React from "react";
 import { View } from "react-native";
 
 import { RedAlert } from "./RedAlert";
-import { BrandText } from "../../../../components/BrandText";
-import { SpacerColumn } from "../../../../components/spacer";
-import { fontSemibold14 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
 import BlurViewWrapper from "../../components/BlurViewWrapper";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn } from "@/components/spacer";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const KEY =
   "0xb0b099df345359d948b59adaa3435b2484849335385f2594385ae8f1849019492019f25b5";

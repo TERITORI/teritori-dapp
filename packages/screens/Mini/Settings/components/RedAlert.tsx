@@ -1,10 +1,10 @@
 import React from "react";
 import { View } from "react-native";
 
-import { BrandText } from "../../../../components/BrandText";
-import { dangerColor } from "../../../../utils/style/colors";
-import { fontBold16, fontMedium16 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
+import { BrandText } from "@/components/BrandText";
+import { dangerColor } from "@/utils/style/colors";
+import { fontBold16, fontMedium16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type Props = {
   title?: string;

@@ -1,14 +1,15 @@
 import React, { FC, useCallback, useMemo } from "react";
 
-import { PostsRequest } from "../../../api/feed/v1/feed";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { NewsFeed } from "../../../components/socialFeed/NewsFeed/NewsFeed";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { parseUserId } from "../../../networks";
-import { UppTabKeys } from "../../../utils/upp";
 import { UppTabScreenProps } from "../UserPublicProfileScreen";
 import { UPPHeader } from "../components/UPPHeader";
+
+import { PostsRequest } from "@/api/feed/v1/feed";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { NewsFeed } from "@/components/socialFeed/NewsFeed/NewsFeed";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { parseUserId } from "@/networks";
+import { UppTabKeys } from "@/utils/upp";
 
 export const MentionsPostsUPPScreen: FC<UppTabScreenProps> = ({
   userId,
@@ -29,6 +30,8 @@ export const MentionsPostsUPPScreen: FC<UppTabScreenProps> = ({
             [`@${userAddress}`],
         categories: [],
         hashtags: [],
+        premiumLevelMin: 0,
+        premiumLevelMax: -1,
       },
       limit: 10,
       offset: 0,

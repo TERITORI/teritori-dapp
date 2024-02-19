@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { TeritoriSquadStakingQueryClient } from "../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.client";
-import { Squad } from "../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
+import { TeritoriSquadStakingQueryClient } from "@/contracts-clients/teritori-squad-staking/TeritoriSquadStaking.client";
+import { Squad } from "@/contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import {
   getCosmosNetwork,
   mustGetNonSigningCosmWasmClient,
   parseUserId,
-} from "../../networks";
+} from "@/networks";
 
 export const getSquadStakingSquadsV1QueryKey = (userId: string | undefined) => {
   return ["squadStakingSquadsV1", userId];

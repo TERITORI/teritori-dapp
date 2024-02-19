@@ -2,15 +2,15 @@ import React, { ReactNode } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import chevronLeftSVG from "../../../../../assets/icons/chevron-left.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { SpacerRow } from "../../../../components/spacer";
-import { neutral00 } from "../../../../utils/style/colors";
-import { fontSemibold18 } from "../../../../utils/style/fonts";
-import { MOBILE_HEADER_HEIGHT, layout } from "../../../../utils/style/layout";
 
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { SpacerRow } from "@/components/spacer";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { neutral00 } from "@/utils/style/colors";
+import { fontSemibold18 } from "@/utils/style/fonts";
+import { layout, MOBILE_HEADER_HEIGHT } from "@/utils/style/layout";
 
 type HeaderProps = {
   left?: ReactNode;

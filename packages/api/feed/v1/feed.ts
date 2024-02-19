@@ -29,8 +29,9 @@ export interface Post {
   subPostLength: number;
   authorId: string;
   createdAt: number;
-  tipAmount: number;
   reactions: Reaction[];
+  tipAmount: number;
+  premiumLevel: number;
 }
 
 export interface PostFilter {
@@ -38,6 +39,10 @@ export interface PostFilter {
   mentions: string[];
   categories: number[];
   hashtags: string[];
+  /** inclusive */
+  premiumLevelMin: number;
+  /** inclusive, -1 means infinity */
+  premiumLevelMax: number;
 }
 
 export interface PostsRequest {
@@ -264,8 +269,9 @@ function createBasePost(): Post {
     subPostLength: 0,
     authorId: "",
     createdAt: 0,
-    tipAmount: 0,
     reactions: [],
+    tipAmount: 0,
+    premiumLevel: 0,
   };
 }
 
@@ -295,11 +301,14 @@ export const Post = {
     if (message.createdAt !== 0) {
       writer.uint32(64).int64(message.createdAt);
     }
+    for (const v of message.reactions) {
+      Reaction.encode(v!, writer.uint32(74).fork()).ldelim();
+    }
     if (message.tipAmount !== 0) {
       writer.uint32(80).int64(message.tipAmount);
     }
-    for (const v of message.reactions) {
-      Reaction.encode(v!, writer.uint32(74).fork()).ldelim();
+    if (message.premiumLevel !== 0) {
+      writer.uint32(88).uint32(message.premiumLevel);
     }
     return writer;
   },
@@ -367,6 +376,13 @@ export const Post = {
 
           message.createdAt = longToNumber(reader.int64() as Long);
           continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.reactions.push(Reaction.decode(reader, reader.uint32()));
+          continue;
         case 10:
           if (tag !== 80) {
             break;
@@ -374,12 +390,12 @@ export const Post = {
 
           message.tipAmount = longToNumber(reader.int64() as Long);
           continue;
-        case 9:
-          if (tag !== 74) {
+        case 11:
+          if (tag !== 88) {
             break;
           }
 
-          message.reactions.push(Reaction.decode(reader, reader.uint32()));
+          message.premiumLevel = reader.uint32();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -400,10 +416,11 @@ export const Post = {
       subPostLength: isSet(object.subPostLength) ? globalThis.Number(object.subPostLength) : 0,
       authorId: isSet(object.authorId) ? globalThis.String(object.authorId) : "",
       createdAt: isSet(object.createdAt) ? globalThis.Number(object.createdAt) : 0,
-      tipAmount: isSet(object.tipAmount) ? globalThis.Number(object.tipAmount) : 0,
       reactions: globalThis.Array.isArray(object?.reactions)
         ? object.reactions.map((e: any) => Reaction.fromJSON(e))
         : [],
+      tipAmount: isSet(object.tipAmount) ? globalThis.Number(object.tipAmount) : 0,
+      premiumLevel: isSet(object.premiumLevel) ? globalThis.Number(object.premiumLevel) : 0,
     };
   },
 
@@ -433,11 +450,14 @@ export const Post = {
     if (message.createdAt !== 0) {
       obj.createdAt = Math.round(message.createdAt);
     }
+    if (message.reactions?.length) {
+      obj.reactions = message.reactions.map((e) => Reaction.toJSON(e));
+    }
     if (message.tipAmount !== 0) {
       obj.tipAmount = Math.round(message.tipAmount);
     }
-    if (message.reactions?.length) {
-      obj.reactions = message.reactions.map((e) => Reaction.toJSON(e));
+    if (message.premiumLevel !== 0) {
+      obj.premiumLevel = Math.round(message.premiumLevel);
     }
     return obj;
   },
@@ -455,14 +475,15 @@ export const Post = {
     message.subPostLength = object.subPostLength ?? 0;
     message.authorId = object.authorId ?? "";
     message.createdAt = object.createdAt ?? 0;
-    message.tipAmount = object.tipAmount ?? 0;
     message.reactions = object.reactions?.map((e) => Reaction.fromPartial(e)) || [];
+    message.tipAmount = object.tipAmount ?? 0;
+    message.premiumLevel = object.premiumLevel ?? 0;
     return message;
   },
 };
 
 function createBasePostFilter(): PostFilter {
-  return { user: "", mentions: [], categories: [], hashtags: [] };
+  return { user: "", mentions: [], categories: [], hashtags: [], premiumLevelMin: 0, premiumLevelMax: 0 };
 }
 
 export const PostFilter = {
@@ -480,6 +501,12 @@ export const PostFilter = {
     writer.ldelim();
     for (const v of message.hashtags) {
       writer.uint32(34).string(v!);
+    }
+    if (message.premiumLevelMin !== 0) {
+      writer.uint32(40).int32(message.premiumLevelMin);
+    }
+    if (message.premiumLevelMax !== 0) {
+      writer.uint32(48).int32(message.premiumLevelMax);
     }
     return writer;
   },
@@ -529,6 +556,20 @@ export const PostFilter = {
 
           message.hashtags.push(reader.string());
           continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.premiumLevelMin = reader.int32();
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.premiumLevelMax = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -546,6 +587,8 @@ export const PostFilter = {
         ? object.categories.map((e: any) => globalThis.Number(e))
         : [],
       hashtags: globalThis.Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => globalThis.String(e)) : [],
+      premiumLevelMin: isSet(object.premiumLevelMin) ? globalThis.Number(object.premiumLevelMin) : 0,
+      premiumLevelMax: isSet(object.premiumLevelMax) ? globalThis.Number(object.premiumLevelMax) : 0,
     };
   },
 
@@ -563,6 +606,12 @@ export const PostFilter = {
     if (message.hashtags?.length) {
       obj.hashtags = message.hashtags;
     }
+    if (message.premiumLevelMin !== 0) {
+      obj.premiumLevelMin = Math.round(message.premiumLevelMin);
+    }
+    if (message.premiumLevelMax !== 0) {
+      obj.premiumLevelMax = Math.round(message.premiumLevelMax);
+    }
     return obj;
   },
 
@@ -575,6 +624,8 @@ export const PostFilter = {
     message.mentions = object.mentions?.map((e) => e) || [];
     message.categories = object.categories?.map((e) => e) || [];
     message.hashtags = object.hashtags?.map((e) => e) || [];
+    message.premiumLevelMin = object.premiumLevelMin ?? 0;
+    message.premiumLevelMax = object.premiumLevelMax ?? 0;
     return message;
   },
 };

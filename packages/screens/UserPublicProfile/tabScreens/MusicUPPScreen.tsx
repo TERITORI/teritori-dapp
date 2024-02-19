@@ -1,14 +1,15 @@
 import React, { FC } from "react";
 
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { FeedMusicList } from "../../../components/music/FeedMusicList";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { parseUserId } from "../../../networks";
-import { UppTabKeys } from "../../../utils/upp";
 import { UppTabScreenProps } from "../UserPublicProfileScreen";
 import { UPPHeader } from "../components/UPPHeader";
 import { UPPScreenContentWrapper } from "../components/UPPScreenContentWrapper";
+
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { FeedMusicList } from "@/components/music/FeedMusicList";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { parseUserId } from "@/networks";
+import { UppTabKeys } from "@/utils/upp";
 
 export const MusicUPPScreen: FC<UppTabScreenProps> = ({
   userId,

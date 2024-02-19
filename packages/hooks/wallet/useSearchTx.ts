@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { TxResponseSDKType } from "osmojs/dist/codegen/cosmos/base/abci/v1beta1/abci";
 
-import { getNetwork, NetworkInfo, NetworkKind } from "../../networks";
+import { getNetwork, NetworkInfo, NetworkKind } from "@/networks";
 
 export const useSearchTx = (
   networkId: string | undefined,

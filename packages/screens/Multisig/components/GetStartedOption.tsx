@@ -2,21 +2,21 @@ import React from "react";
 import { Pressable, TextStyle, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { SpacerColumn } from "../../../components/spacer";
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SpacerColumn } from "@/components/spacer";
 import {
   neutral17,
   neutral33,
   neutral55,
   secondaryColor,
-} from "../../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontSemibold12,
   fontSemibold14,
   fontSemibold9,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface GetStartedOptionProps {
   variant?: "big" | "small";

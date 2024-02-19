@@ -6,6 +6,7 @@ DELETE FROM listings WHERE network_id = '<networkID>';
 DELETE FROM cancel_listings WHERE network_id = '<networkID>';
 DELETE FROM transfer_nfts WHERE network_id = '<networkID>';
 DELETE FROM send_nfts WHERE network_id = '<networkID>';
+DELETE FROM request_mints WHERE network_id = '<networkID>';
 DELETE FROM update_nft_prices WHERE network_id = '<networkID>';
 DELETE FROM activities WHERE network_id = '<networkID>';
 DELETE FROM teritori_nfts WHERE network_id = '<networkID>';

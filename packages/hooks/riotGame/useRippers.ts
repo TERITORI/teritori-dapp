@@ -1,14 +1,15 @@
 import { useMemo } from "react";
 
+import { useNFTs } from "../useNFTs";
+import useSelectedWallet from "../useSelectedWallet";
+
 import {
   NFTsRequest,
   Sort,
   SortDirection,
-} from "../../api/marketplace/v1/marketplace";
-import { getCollectionId, getNetwork } from "../../networks";
-import { isNFTStaked } from "../../utils/game";
-import { useNFTs } from "../useNFTs";
-import useSelectedWallet from "../useSelectedWallet";
+} from "@/api/marketplace/v1/marketplace";
+import { getCollectionId, getNetwork } from "@/networks";
+import { isNFTStaked } from "@/utils/game";
 
 export const useRippers = () => {
   const selectedWallet = useSelectedWallet();

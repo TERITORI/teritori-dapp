@@ -1,20 +1,21 @@
 import React, { useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
-import { BrandText } from "../../../components/BrandText";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { SpacerColumn } from "../../../components/spacer";
-import { ScreenFC } from "../../../utils/navigation";
-import { neutral77, neutralA3 } from "../../../utils/style/colors";
+import CustomAppBar from "../../Mini/components/AppBar/CustomAppBar";
+import MiniTextInput from "../../Mini/components/MiniTextInput";
+import { AcceptAndNavigate } from "../layout/AcceptAndNavigate";
+
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { SpacerColumn } from "@/components/spacer";
+import { ScreenFC } from "@/utils/navigation";
+import { neutral77, neutralA3 } from "@/utils/style/colors";
 import {
   fontMedium16,
   fontSemibold16,
   fontSemibold28,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import CustomAppBar from "../../Mini/components/AppBar/CustomAppBar";
-import MiniTextInput from "../../Mini/components/MiniTextInput";
-import { AcceptAndNavigate } from "../layout/AcceptAndNavigate";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const CreatePasswordWallet: ScreenFC<"CreatePasswordWallet"> = () => {
   const { width } = useWindowDimensions();

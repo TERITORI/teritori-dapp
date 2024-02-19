@@ -4,7 +4,11 @@ import { GIF_MIME_TYPE } from "./mime";
 import { HASHTAG_REGEX, MENTION_REGEX, URL_REGEX } from "./regex";
 import { zodTryParseJSON } from "./sanitize";
 import { redDefault } from "./style/colors";
-import { PostExtra, PostResultExtra } from "./types/feed";
+import {
+  PostExtra,
+  PostResultExtra,
+  zodSocialFeedCommonMetadata,
+} from "./types/feed";
 import { LocalFileData } from "./types/files";
 import { TabDefinition } from "./types/tabs";
 import flagSVG from "../../assets/icons/notification.svg";
@@ -21,18 +25,6 @@ export const ARTICLE_COVER_IMAGE_MAX_HEIGHT = 460;
 export const ARTICLE_COVER_IMAGE_RATIO = 2.274;
 export const ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH = 364;
 export const ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT = 252;
-export const BASE_POST: Post = {
-  identifier: "",
-  category: 0,
-  authorId: "",
-  metadata: "",
-  isDeleted: false,
-  parentPostIdentifier: "",
-  subPostLength: 0,
-  createdAt: 0,
-  tipAmount: 0,
-  reactions: [],
-};
 export const LIKE_EMOJI = "👍";
 export const DISLIKE_EMOJI = "👎";
 
@@ -95,6 +87,11 @@ export const postResultToPost = (
     postResult.metadata,
   );
 
+  const commonMetadata = zodTryParseJSON(
+    zodSocialFeedCommonMetadata,
+    postResult.metadata,
+  );
+
   const chainReactions = postResult.reactions;
   const postReactions: Reaction[] = chainReactions.map((reaction) => ({
     icon: reaction.icon,
@@ -113,6 +110,7 @@ export const postResultToPost = (
     authorId: getUserId(networkId, postResult.post_by),
     createdAt: metadata ? Date.parse(metadata.createdAt) / 1000 : 0,
     tipAmount: parseFloat(postResult.tip_amount),
+    premiumLevel: commonMetadata?.premium || 0,
   };
   if ("isInLocal" in postResult) {
     return { ...post, isInLocal: postResult.isInLocal } as PostExtra;

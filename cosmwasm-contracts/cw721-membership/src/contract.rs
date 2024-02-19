@@ -1,20 +1,26 @@
 use crate::error::ContractError;
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    Addr, BankMsg, Coin, CosmosMsg, Order, Response, StdResult, Timestamp, Uint128, Uint64,
+    Addr, BankMsg, Binary, Coin, CosmosMsg, Order, Response, StdResult, Storage, Timestamp,
+    Uint128, Uint64, WasmMsg,
 };
+use cw2981_royalties::msg::{CheckRoyaltiesResponse, RoyaltiesInfoResponse};
 use cw721::{
-    AllNftInfoResponse, ContractInfoResponse, NftInfoResponse, NumTokensResponse, OwnerOfResponse,
-    TokensResponse,
+    AllNftInfoResponse, ContractInfoResponse, Cw721ReceiveMsg, NftInfoResponse, NumTokensResponse,
+    OwnerOfResponse, TokensResponse,
 };
 use cw721_metadata_onchain::{Metadata, Trait};
-use cw_storage_plus::{Bound, Item, Map};
+use cw_storage_plus::{Bound, Item, KeyDeserialize, Map};
 use sylvia::types::{ExecCtx, InstantiateCtx, QueryCtx};
 use sylvia::{contract, entry_points};
 
 pub type NftExtension = Metadata;
 
 // TODO: allow to transfer channel
+
+// TODO: opti: avoid duplicate parsing of token_id
+
+// TODO: shorter token_id (bech32 with t as prefix of hash of binary data??)
 
 pub struct Cw721MembershipContract {
     pub(crate) config: Item<'static, Config>,
@@ -28,20 +34,20 @@ pub struct Cw721MembershipContract {
 
 #[cw_serde]
 pub struct MembershipConfig {
-    display_name: String,
-    description: String,
-    nft_image_uri: String,
-    nft_name_prefix: String,
-    duration_seconds: Uint64,
-    trade_royalties: u16, // 0-10000 = 0%-100%,
-    price: Coin,
+    pub display_name: String,
+    pub description: String,
+    pub nft_image_uri: String,
+    pub nft_name_prefix: String,
+    pub duration_seconds: Uint64,
+    pub price: Coin,
 }
 
 #[cw_serde]
 pub struct ChannelResponse {
-    memberships_config: Vec<MembershipConfig>,
-    mint_royalties: u16, // 0-10000 = 0%-100%
-                         // TODO: tokens_count
+    pub memberships_config: Vec<MembershipConfig>,
+    pub trade_royalties: u16, // 0-10000 = 0%-100%
+    pub mint_royalties: u16,  // 0-10000 = 0%-100%
+                              // TODO: tokens_count
 }
 
 #[cw_serde]
@@ -57,7 +63,8 @@ pub struct ChannelFundsResponse {
 #[cw_serde]
 pub struct Channel {
     memberships_config: Vec<MembershipConfig>,
-    mint_royalties: u16, // 0-10000 = 0%-100%
+    mint_royalties: u16,  // 0-10000 = 0%-100%
+    trade_royalties: u16, // 0-10000 = 0%-100%
     next_index: Uint64,
 }
 
@@ -75,6 +82,10 @@ pub struct Nft {
 pub struct Config {
     pub(crate) admin_addr: Addr,
     pub(crate) mint_royalties: u16, // 0-10000 = 0%-100%
+    pub(crate) name: String,
+    pub(crate) description: String,
+    pub(crate) image_uri: String,
+    pub(crate) symbol: String,
 }
 
 #[cw_serde]
@@ -113,6 +124,10 @@ impl Cw721MembershipContract {
         ctx: InstantiateCtx,
         admin_addr: String,
         mint_royalties: u16,
+        name: String,
+        description: String,
+        image_uri: String,
+        symbol: String,
     ) -> StdResult<Response> {
         let admin_addr = ctx.deps.api.addr_validate(admin_addr.as_str())?;
         self.config.save(
@@ -120,6 +135,10 @@ impl Cw721MembershipContract {
             &Config {
                 admin_addr,
                 mint_royalties,
+                name,
+                description,
+                image_uri,
+                symbol,
             },
         )?;
         self.num_tokens.save(ctx.deps.storage, &Uint64::zero())?;
@@ -133,24 +152,31 @@ impl Cw721MembershipContract {
         &self,
         ctx: ExecCtx,
         memberships_config: Vec<MembershipConfig>,
+        trade_royalties: u16, // 0-10000 = 0%-100%
     ) -> Result<Response, ContractError> {
-        let owner_addr = ctx.info.sender;
+        let channel_addr = ctx.info.sender;
 
         let config = self.config.load(ctx.deps.storage)?;
 
         self.channels
-            .update::<_, ContractError>(ctx.deps.storage, owner_addr, |channel| match channel {
-                Some(channel) => Ok(Channel {
-                    memberships_config,
-                    next_index: channel.next_index,
-                    mint_royalties: channel.mint_royalties,
-                }),
-                None => Ok(Channel {
-                    memberships_config,
-                    next_index: Uint64::one(),
-                    mint_royalties: config.mint_royalties,
-                }),
-            })?;
+            .update::<_, ContractError>(
+                ctx.deps.storage,
+                channel_addr,
+                |channel| match channel {
+                    Some(channel) => Ok(Channel {
+                        memberships_config,
+                        next_index: channel.next_index,
+                        mint_royalties: channel.mint_royalties,
+                        trade_royalties: channel.trade_royalties,
+                    }),
+                    None => Ok(Channel {
+                        memberships_config,
+                        next_index: Uint64::one(),
+                        mint_royalties: config.mint_royalties,
+                        trade_royalties,
+                    }),
+                },
+            )?;
 
         Ok(Response::default())
     }
@@ -166,6 +192,7 @@ impl Cw721MembershipContract {
         let recipient_addr = ctx.deps.api.addr_validate(recipient_addr.as_str())?;
 
         let unchecked_channel_addr = Addr::unchecked(channel_addr.as_str()); // we don't need to validate the address because we won't find a channel if the address is invalid
+
         let mut channel = self
             .channels
             .load(ctx.deps.storage, unchecked_channel_addr.to_owned())
@@ -215,24 +242,41 @@ impl Cw721MembershipContract {
             image_uri: membership.nft_image_uri.to_owned(),
             start_time: ctx.env.block.time.to_owned(),
             duration_seconds: membership.duration_seconds,
-            owner_addr: recipient_addr,
+            owner_addr: recipient_addr.to_owned(),
         };
         self.nfts.save(
             ctx.deps.storage,
             (channel_addr.to_owned(), nft_index.into()),
             &nft,
         )?;
+        self.by_owner.save(
+            ctx.deps.storage,
+            (
+                recipient_addr.to_owned(),
+                channel_addr.to_owned(),
+                nft_index.into(),
+            ),
+            &(),
+        )?;
 
         channel.next_index = channel.next_index.checked_add(Uint64::one())?;
         self.channels
-            .save(ctx.deps.storage, channel_addr, &channel)?;
+            .save(ctx.deps.storage, channel_addr.to_owned(), &channel)?;
 
         self.num_tokens
             .update::<_, ContractError>(ctx.deps.storage, |num_tokens| {
                 Ok(num_tokens.checked_add(Uint64::one())?)
             })?;
 
-        Ok(Response::default())
+        // we need these for efficient indexing
+        let token_id = format_token_id(&channel_addr, nft_index);
+        let nft_info = self.internal_nft_info(ctx.deps.storage, &token_id)?;
+        let json_nft_info =
+            serde_json::to_string(&nft_info).map_err(|_| ContractError::SerializationError)?;
+
+        Ok(Response::default()
+            .add_attribute("token_id", token_id)
+            .add_attribute("nft_info", json_nft_info))
     }
 
     #[msg(exec)]
@@ -241,21 +285,42 @@ impl Cw721MembershipContract {
         ctx: ExecCtx,
         admin_addr: Option<String>,
         mint_royalties: Option<u16>,
+        name: Option<String>,
+        description: Option<String>,
+        image_uri: Option<String>,
+        symbol: Option<String>,
     ) -> Result<Response, ContractError> {
-        let mut config = self.config.load(ctx.deps.storage)?;
-        if ctx.info.sender != config.admin_addr {
-            return Err(ContractError::Unauthorized);
-        }
+        self.config.update(ctx.deps.storage, |mut config| {
+            if ctx.info.sender != config.admin_addr {
+                return Err(ContractError::Unauthorized);
+            }
 
-        if let Some(admin_addr) = admin_addr {
-            config.admin_addr = ctx.deps.api.addr_validate(admin_addr.as_str())?;
-        }
+            if let Some(admin_addr) = admin_addr {
+                config.admin_addr = ctx.deps.api.addr_validate(admin_addr.as_str())?;
+            }
 
-        if let Some(mint_royalties) = mint_royalties {
-            config.mint_royalties = mint_royalties;
-        }
+            if let Some(mint_royalties) = mint_royalties {
+                config.mint_royalties = mint_royalties;
+            }
 
-        self.config.save(ctx.deps.storage, &config)?;
+            if let Some(name) = name {
+                config.name = name;
+            }
+
+            if let Some(description) = description {
+                config.description = description;
+            }
+
+            if let Some(image_uri) = image_uri {
+                config.image_uri = image_uri;
+            }
+
+            if let Some(symbol) = symbol {
+                config.symbol = symbol;
+            }
+
+            Ok(config)
+        })?;
 
         Ok(Response::default())
     }
@@ -394,6 +459,12 @@ impl Cw721MembershipContract {
     // Membership queries
 
     #[msg(query)]
+    pub fn config(&self, ctx: QueryCtx) -> Result<Config, ContractError> {
+        let conf = self.config.load(ctx.deps.storage)?;
+        Ok(conf)
+    }
+
+    #[msg(query)]
     pub fn channel(
         &self,
         ctx: QueryCtx,
@@ -408,6 +479,7 @@ impl Cw721MembershipContract {
         Ok(ChannelResponse {
             memberships_config: channel.memberships_config,
             mint_royalties: channel.mint_royalties,
+            trade_royalties: channel.trade_royalties,
         })
     }
 
@@ -500,6 +572,7 @@ impl Cw721MembershipContract {
 
     // CW721 Mutations
 
+    /// Transfer is a base message to move a token to another account without triggering actions
     #[msg(exec)]
     pub fn transfer_nft(
         &self,
@@ -507,40 +580,44 @@ impl Cw721MembershipContract {
         recipient: String,
         token_id: String,
     ) -> Result<Response, ContractError> {
-        let recipient = ctx.deps.api.addr_validate(recipient.as_str())?;
+        let sender = ctx.info.sender.to_owned();
 
-        let (channel_addr, nft_index) = parse_token_id(&token_id)?;
-        // we don't need to validate the address because we won't find a nft if the address is invalid
-        let channel_addr = Addr::unchecked(channel_addr.as_str());
+        self.internal_transfer_nft(ctx, recipient.to_owned(), token_id.to_owned())?;
 
-        self.nfts.update(
-            ctx.deps.storage,
-            (channel_addr.to_owned(), nft_index),
-            |nft| match nft {
-                Some(nft) => {
-                    if nft.owner_addr != ctx.info.sender {
-                        return Err(ContractError::Unauthorized);
-                    }
-                    if nft.owner_addr == recipient {
-                        return Err(ContractError::CannotTransferToSelf);
-                    }
-                    Ok(Nft {
-                        owner_addr: recipient.to_owned(),
-                        ..nft
-                    })
-                }
-                None => Err(ContractError::NftNotFound),
-            },
-        )?;
+        Ok(Response::new()
+            .add_attribute("action", "transfer_nft")
+            .add_attribute("sender", sender)
+            .add_attribute("recipient", recipient)
+            .add_attribute("token_id", token_id))
+    }
 
-        self.by_owner.remove(
-            ctx.deps.storage,
-            (ctx.info.sender, channel_addr.to_owned(), nft_index),
-        );
-        self.by_owner
-            .save(ctx.deps.storage, (recipient, channel_addr, nft_index), &())?;
+    /// Send is a base message to transfer a token to a contract and trigger an action
+    /// on the receiving contract.
+    #[msg(exec)]
+    pub fn send_nft(
+        &self,
+        ctx: ExecCtx,
+        contract: String,
+        token_id: String,
+        msg: Binary,
+    ) -> Result<Response, ContractError> {
+        let sender = ctx.info.sender.to_owned();
 
-        Ok(Response::default())
+        self.internal_transfer_nft(ctx, contract.to_owned(), token_id.to_owned())?;
+
+        let send = Cw721ReceiveMsg {
+            sender: sender.to_string(),
+            token_id: token_id.to_owned(),
+            msg,
+        };
+
+        // Send message
+        Ok(Response::new()
+            .add_message(send.into_cosmos_msg(contract.to_owned())?)
+            .add_attribute("action", "send_nft")
+            .add_attribute("sender", sender)
+            .add_attribute("recipient", contract)
+            .add_attribute("token_id", token_id))
     }
 
     // TODO
@@ -578,8 +655,7 @@ impl Cw721MembershipContract {
     #[msg(exec)]
     pub fn burn(&self, ctx: ExecCtx, token_id: String) -> Result<Response, ContractError> {
         let (channel_addr, nft_index) = parse_token_id(&token_id)?;
-        // we don't need to validate the address because we won't find a nft if the address is invalid
-        let channel_addr = Addr::unchecked(channel_addr.as_str());
+
         let nft = self
             .nfts
             .load(ctx.deps.storage, (channel_addr.to_owned(), nft_index))?;
@@ -595,6 +671,52 @@ impl Cw721MembershipContract {
                 Ok(num_tokens.checked_sub(Uint64::one())?)
             })?;
         Ok(Response::default())
+    }
+
+    // CW2981 Royalty Queries
+
+    /// Should be called on sale to see if royalties are owed
+    /// by the marketplace selling the NFT, if CheckRoyalties
+    /// returns true
+    /// See https://eips.ethereum.org/EIPS/eip-2981
+    #[msg(query)]
+    pub fn royalty_info(
+        &self,
+        _ctx: QueryCtx,
+        token_id: String,
+        // the denom of this sale must also be the denom returned by RoyaltiesInfoResponse
+        // this was originally implemented as a Coin
+        // however that would mean you couldn't buy using CW20s
+        // as CW20 is just mapping of addr -> balance
+        sale_price: Uint128,
+    ) -> Result<RoyaltiesInfoResponse, ContractError> {
+        let (channel_addr, _nft_index) = parse_token_id(&token_id)?;
+
+        let channel = self
+            .channels
+            .load(_ctx.deps.storage, channel_addr.to_owned())
+            .map_err(|_| ContractError::ChannelNotFound)?;
+
+        let royalty_amount = sale_price
+            .checked_mul(Uint128::from(channel.trade_royalties))?
+            .checked_div(Uint128::from(10000u128))?;
+
+        Ok(RoyaltiesInfoResponse {
+            address: channel_addr.to_string(),
+            royalty_amount,
+        })
+    }
+
+    /// Called against contract to determine if this NFT
+    /// implements royalties. Should return a boolean as part of
+    /// CheckRoyaltiesResponse - default can simply be true
+    /// if royalties are implemented at token level
+    /// (i.e. always check on sale)
+    #[msg(query)]
+    pub fn check_royalties(&self, _ctx: QueryCtx) -> Result<CheckRoyaltiesResponse, ContractError> {
+        Ok(CheckRoyaltiesResponse {
+            royalty_payments: true,
+        })
     }
 
     // CW721 Queries
@@ -631,9 +753,10 @@ impl Cw721MembershipContract {
     /// Returns top-level metadata about the contract: `ContractInfoResponse`
     #[msg(query)]
     pub fn contract_info(&self, _ctx: QueryCtx) -> Result<ContractInfoResponse, ContractError> {
+        let conf = self.config.load(_ctx.deps.storage)?;
         Ok(ContractInfoResponse {
-            name: "Premium Subs".to_string(),
-            symbol: "PSUB".to_string(),
+            name: conf.name,
+            symbol: conf.symbol,
         })
     }
 
@@ -646,7 +769,7 @@ impl Cw721MembershipContract {
         ctx: QueryCtx,
         token_id: String,
     ) -> Result<NftInfoResponse<NftExtension>, ContractError> {
-        self.internal_nft_info(&ctx, &token_id)
+        self.internal_nft_info(ctx.deps.storage, &token_id)
     }
 
     /// With MetaData Extension.
@@ -661,7 +784,7 @@ impl Cw721MembershipContract {
         include_expired: Option<bool>,
     ) -> Result<AllNftInfoResponse<NftExtension>, ContractError> {
         let access = self.internal_owner_of(&ctx, &token_id)?;
-        let info = self.internal_nft_info(&ctx, &token_id)?;
+        let info = self.internal_nft_info(ctx.deps.storage, &token_id)?;
         Ok(AllNftInfoResponse { access, info })
     }
 
@@ -678,11 +801,10 @@ impl Cw721MembershipContract {
     ) -> Result<TokensResponse, ContractError> {
         let owner_addr = ctx.deps.api.addr_validate(owner.as_str())?;
         let limit = limit.map(|limit| limit as usize).unwrap_or(30);
-        let start_after = match start_after {
+        let min_bound = match start_after {
             Some(start_after) => {
                 let (channel_addr, nft_index) = parse_token_id(&start_after)?;
-                let channel_addr = Addr::unchecked(channel_addr.as_str());
-                Some((channel_addr, nft_index))
+                Some(Bound::exclusive((channel_addr, nft_index)))
             }
             None => None,
         };
@@ -690,12 +812,7 @@ impl Cw721MembershipContract {
         let tokens: Result<Vec<_>, _> = self
             .by_owner
             .sub_prefix(owner_addr)
-            .range(
-                ctx.deps.storage,
-                start_after.map(|sa| Bound::exclusive(sa)),
-                None,
-                Order::Ascending,
-            )
+            .range(ctx.deps.storage, min_bound, None, Order::Ascending)
             .take(limit)
             .map(|item| -> Result<String, ContractError> {
                 let ((channel_addr, nft_index), _) = item?;
@@ -705,6 +822,10 @@ impl Cw721MembershipContract {
         Ok(TokensResponse { tokens: tokens? })
     }
 
+    /// With Enumerable extension.
+    /// Returns all tokens
+    /// Return type: TokensResponse.
+    #[msg(query)]
     pub fn all_tokens(
         &self,
         ctx: QueryCtx,
@@ -716,7 +837,6 @@ impl Cw721MembershipContract {
         let start_after = match start_after {
             Some(start_after) => {
                 let (channel_addr, nft_index) = parse_token_id(&start_after)?;
-                let channel_addr = Addr::unchecked(channel_addr.as_str());
                 Some((channel_addr, nft_index))
             }
             None => None,
@@ -745,11 +865,9 @@ impl Cw721MembershipContract {
         token_id: &String,
     ) -> Result<OwnerOfResponse, ContractError> {
         let (channel_addr, nft_index) = parse_token_id(&token_id)?;
-        let channel_addr = ctx.deps.api.addr_validate(channel_addr.as_str())?;
-        let unchecked_channel_addr = Addr::unchecked(channel_addr.as_str()); // we don't need to validate the address because we won't find a channel if the address is invalid
         let nft = self
             .nfts
-            .load(ctx.deps.storage, (unchecked_channel_addr, nft_index.into()))?;
+            .load(ctx.deps.storage, (channel_addr, nft_index.into()))?;
         Ok(OwnerOfResponse {
             owner: nft.owner_addr.to_string(),
             approvals: vec![],
@@ -758,14 +876,14 @@ impl Cw721MembershipContract {
 
     fn internal_nft_info(
         &self,
-        ctx: &QueryCtx,
+        storage: &dyn Storage,
         token_id: &String,
     ) -> Result<NftInfoResponse<NftExtension>, ContractError> {
         let (channel_addr, nft_index) = parse_token_id(token_id)?;
-        let unchecked_channel_addr = Addr::unchecked(channel_addr.as_str()); // we don't need to validate the address because we won't find a channel if the address is invalid
+
         let nft = self
             .nfts
-            .load(ctx.deps.storage, (unchecked_channel_addr, nft_index.into()))?;
+            .load(storage, (channel_addr.to_owned(), nft_index.into()))?;
 
         // TODO: improve info
 
@@ -773,7 +891,7 @@ impl Cw721MembershipContract {
             token_uri: None,
             extension: NftExtension {
                 name: Some(nft.name),
-                description: None,
+                description: Some(nft.description),
                 image: Some(nft.image_uri),
                 animation_url: None,
                 external_url: None,
@@ -800,6 +918,46 @@ impl Cw721MembershipContract {
             },
         })
     }
+
+    fn internal_transfer_nft(
+        &self,
+        ctx: ExecCtx,
+        recipient: String,
+        token_id: String,
+    ) -> Result<Response, ContractError> {
+        let recipient = ctx.deps.api.addr_validate(recipient.as_str())?;
+
+        let (channel_addr, nft_index) = parse_token_id(&token_id)?;
+
+        self.nfts.update(
+            ctx.deps.storage,
+            (channel_addr.to_owned(), nft_index),
+            |nft| match nft {
+                Some(nft) => {
+                    if nft.owner_addr != ctx.info.sender {
+                        return Err(ContractError::Unauthorized);
+                    }
+                    if nft.owner_addr == recipient {
+                        return Err(ContractError::CannotTransferToSelf);
+                    }
+                    Ok(Nft {
+                        owner_addr: recipient.to_owned(),
+                        ..nft
+                    })
+                }
+                None => Err(ContractError::NftNotFound),
+            },
+        )?;
+
+        self.by_owner.remove(
+            ctx.deps.storage,
+            (ctx.info.sender, channel_addr.to_owned(), nft_index),
+        );
+        self.by_owner
+            .save(ctx.deps.storage, (recipient, channel_addr, nft_index), &())?;
+
+        Ok(Response::default())
+    }
 }
 
 pub fn assert_exact_funds(ctx: &ExecCtx, amount: Coin) -> Result<Response, ContractError> {
@@ -817,22 +975,20 @@ pub fn assert_exact_funds(ctx: &ExecCtx, amount: Coin) -> Result<Response, Contr
     Ok(Response::default())
 }
 
-// TODO: use base64 url encoding of binary representation
-
-pub fn parse_token_id(token_id: &String) -> Result<(String, u64), ContractError> {
-    let mut split = token_id.splitn(2, '#');
-    let channel_addr = split
-        .next()
-        .ok_or(ContractError::InvalidTokenId)?
-        .to_owned();
-    let nft_index = split
-        .next()
-        .ok_or(ContractError::ChannelNotFound)?
-        .parse::<u64>()
-        .map_err(|_| ContractError::ChannelNotFound)?;
+pub fn parse_token_id(token_id: &String) -> Result<(Addr, u64), ContractError> {
+    let bytes = Binary::from_base64(token_id)?;
+    let nft_index = u64::from_be_bytes(
+        bytes[0..8]
+            .try_into()
+            .map_err(|_| ContractError::InvalidTokenId)?,
+    );
+    let channel_addr = Addr::from_slice(&bytes[8..])?;
     Ok((channel_addr, nft_index))
 }
 
 pub fn format_token_id(channel_addr: &Addr, nft_index: Uint64) -> String {
-    format!("{}#{}", channel_addr, nft_index)
+    let nft_index_bytes = nft_index.to_be_bytes();
+    let channel_addr_bytes = channel_addr.as_bytes();
+    let all_bytes = [&nft_index_bytes, channel_addr_bytes].concat();
+    Binary::from(all_bytes).to_base64()
 }

@@ -1,11 +1,12 @@
 import React, { FC } from "react";
 
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { DAOProposals } from "../../../components/dao/DAOProposals";
-import { UppTabKeys } from "../../../utils/upp";
 import { UppTabScreenProps } from "../UserPublicProfileScreen";
 import { UPPHeader } from "../components/UPPHeader";
 import { UPPScreenContentWrapper } from "../components/UPPScreenContentWrapper";
+
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { DAOProposals } from "@/components/dao/DAOProposals";
+import { UppTabKeys } from "@/utils/upp";
 
 export const ProposalsUPPScreen: FC<UppTabScreenProps> = ({
   userId,

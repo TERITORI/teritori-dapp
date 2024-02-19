@@ -1,13 +1,12 @@
 import React from "react";
 import { TouchableOpacity } from "react-native";
 
-import { BrandText } from "../../../components/BrandText";
-import { OptimizedImage } from "../../../components/OptimizedImage";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
-import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
-import { layout } from "../../../utils/style/layout";
-
+import { BrandText } from "@/components/BrandText";
+import { OptimizedImage } from "@/components/OptimizedImage";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useCollectionInfo } from "@/hooks/useCollectionInfo";
+import { layout } from "@/utils/style/layout";
 
 type CollectionThumbProps = {
   collectionId: string;

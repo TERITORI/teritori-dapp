@@ -3,8 +3,8 @@ import {
   ActivityIndicator,
   FlatList,
   TouchableOpacity,
-  View,
   useWindowDimensions,
+  View,
 } from "react-native";
 import { SvgProps } from "react-native-svg";
 import { useSelector } from "react-redux";
@@ -13,33 +13,30 @@ import { ChatList } from "./components/ChatList";
 import rightArrowSVG from "../../../../assets/icons/chevron-right-white.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import friendSVG from "../../../../assets/icons/friend.svg";
-import { BrandText } from "../../../components/BrandText/BrandText";
-import { SVG } from "../../../components/SVG";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import DefaultAppBar from "../../../components/mini/DefaultAppBar";
-import { MiniTabScreenFC } from "../../../components/navigation/MiniModeNavigator";
-import { SpacerColumn } from "../../../components/spacer";
-import { RoundedTabs } from "../../../components/tabs/RoundedTabs";
-import { ToastInfo } from "../../../components/toasts/ToastInfo";
-import { useMessage } from "../../../context/MessageProvider";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { MiniTabScreenFC } from "@/components/navigation/MiniModeNavigator";
+import { SpacerColumn } from "@/components/spacer";
+import { RoundedTabs } from "@/components/tabs/RoundedTabs";
+import { ToastInfo } from "@/components/toasts/ToastInfo";
+import { useMessage } from "@/context/MessageProvider";
 import {
   selectConversationList,
   selectIsWeshConnected,
-} from "../../../store/slices/message";
-import { RootState } from "../../../store/store";
-import { RouteName, useAppNavigation } from "../../../utils/navigation";
-import {
-  neutral22,
-  neutral77,
-  secondaryColor,
-} from "../../../utils/style/colors";
+} from "@/store/slices/message";
+import { RootState } from "@/store/store";
+import { RouteName, useAppNavigation } from "@/utils/navigation";
+import { neutral22, neutral77, secondaryColor } from "@/utils/style/colors";
 import {
   fontMedium16,
   fontSemibold14,
   fontSemibold18,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const collectionScreenTabItems = {
   chats: {

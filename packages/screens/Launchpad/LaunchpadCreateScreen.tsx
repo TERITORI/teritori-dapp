@@ -8,15 +8,16 @@ import { LaunchpadDetails } from "./components/LaunchpadDetails";
 import { LaunchpadMinting } from "./components/LaunchpadMinting";
 import { LaunchpadSteper } from "./components/LaunchpadSteper";
 import { LaunchpadTeamandInvestment } from "./components/LaunchpadTeamandInvestment";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-import { SpacerColumn } from "../../components/spacer";
-import { NetworkFeature } from "../../networks";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { neutral33 } from "../../utils/style/colors";
-import { layout } from "../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { SpacerColumn } from "@/components/spacer";
+import { NetworkFeature } from "@/networks";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { neutral33 } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 
 const StepContent = ({ step }: { step: number }) => {
   switch (step) {

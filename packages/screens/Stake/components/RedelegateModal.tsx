@@ -6,43 +6,37 @@ import { Pressable, StyleSheet, View } from "react-native";
 
 import { ValidatorsTable } from "./ValidatorsList";
 import checkSVG from "../../../../assets/icons/check.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useCosmosValidatorBondedAmount } from "../../../hooks/useCosmosValidatorBondedAmount";
-import { useErrorHandler } from "../../../hooks/useErrorHandler";
-import { useRunOrProposeTransaction } from "../../../hooks/useRunOrProposeTransaction";
-import { useValidators } from "../../../hooks/useValidators";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useCosmosValidatorBondedAmount } from "@/hooks/useCosmosValidatorBondedAmount";
+import { useErrorHandler } from "@/hooks/useErrorHandler";
+import { useRunOrProposeTransaction } from "@/hooks/useRunOrProposeTransaction";
+import { useValidators } from "@/hooks/useValidators";
 import {
-  UserKind,
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
   parseUserId,
-} from "../../../networks";
-import { prettyPrice } from "../../../utils/coins";
-import {
-  neutral22,
-  neutral77,
-  primaryColor,
-} from "../../../utils/style/colors";
+  UserKind,
+} from "@/networks";
+import { prettyPrice } from "@/utils/coins";
+import { neutral22, neutral77, primaryColor } from "@/utils/style/colors";
 import {
   fontSemibold12,
   fontSemibold13,
   fontSemibold14,
   fontSemibold16,
   fontSemibold20,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import {
-  StakeFormValuesType,
-  ValidatorInfo,
-} from "../../../utils/types/staking";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { StakeFormValuesType, ValidatorInfo } from "@/utils/types/staking";
 
 interface RedelegateModalProps {
   onClose?: () => void;

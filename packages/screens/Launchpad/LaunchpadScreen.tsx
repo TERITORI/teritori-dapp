@@ -6,14 +6,14 @@ import {
   MintState,
   Sort,
   SortDirection,
-} from "../../api/marketplace/v1/marketplace";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { CollectionsCarouselHeader } from "../../components/carousels/CollectionsCarouselHeader";
-import { CollectionGallery } from "../../components/collections/CollectionGallery";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getNetwork, NetworkFeature } from "../../networks";
-import { ScreenFC } from "../../utils/navigation";
-import { layout } from "../../utils/style/layout";
+} from "@/api/marketplace/v1/marketplace";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { CollectionsCarouselHeader } from "@/components/carousels/CollectionsCarouselHeader";
+import { CollectionGallery } from "@/components/collections/CollectionGallery";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getNetwork, NetworkFeature } from "@/networks";
+import { ScreenFC } from "@/utils/navigation";
+import { layout } from "@/utils/style/layout";
 
 export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
   const selectedNetworkId = useSelectedNetworkId();

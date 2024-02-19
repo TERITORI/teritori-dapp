@@ -3,14 +3,15 @@ import { Image, ImageBackground, StyleSheet } from "react-native";
 
 import { FightProgressBar } from "./FightProgressBar";
 import brokenBoxPNG from "../../../../assets/game/broken-box.png";
-import { CurrentSeasonResponse } from "../../../api/p2e/v1/p2e";
-import { BrandText } from "../../../components/BrandText";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
-import { mustGetP2eClient } from "../../../utils/backend";
-import { gameHighlight } from "../../../utils/style/colors";
-import { fontMedium24, fontBold9 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+
+import { CurrentSeasonResponse } from "@/api/p2e/v1/p2e";
+import { BrandText } from "@/components/BrandText";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { mustGetP2eClient } from "@/utils/backend";
+import { gameHighlight } from "@/utils/style/colors";
+import { fontBold9, fontMedium24 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const FightBossSection: React.FC = () => {
   const [currentSeason, setCurrentSeason] = useState<CurrentSeasonResponse>();

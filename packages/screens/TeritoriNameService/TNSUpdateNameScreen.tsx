@@ -6,25 +6,26 @@ import { View } from "react-native";
 
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 import ModalBase from "../../components/modals/ModalBase";
-import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useTNS } from "../../context/TNSProvider";
-import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
-import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
-import { useDAOs } from "../../hooks/dao/useDAOs";
-import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
-import { useNSNameOwner } from "../../hooks/useNSNameOwner";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { NameDataForm } from "@/components/teritoriNameService/NameDataForm";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useTNS } from "@/context/TNSProvider";
+import { TeritoriNameServiceQueryClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { Metadata } from "@/contracts-clients/teritori-name-service/TeritoriNameService.types";
+import { useDAOMakeProposal } from "@/hooks/dao/useDAOMakeProposal";
+import { useDAOs } from "@/hooks/dao/useDAOs";
+import { nsNameInfoQueryKey } from "@/hooks/useNSNameInfo";
+import { useNSNameOwner } from "@/hooks/useNSNameOwner";
+import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
 import {
   getCosmosNetwork,
   getKeplrSigningCosmWasmClient,
   mustGetCosmosNetwork,
   mustGetNonSigningCosmWasmClient,
-} from "../../networks";
-import { neutral17 } from "../../utils/style/colors";
-import { defaultMetaData } from "../../utils/types/tns";
+} from "@/networks";
+import { neutral17 } from "@/utils/style/colors";
+import { defaultMetaData } from "@/utils/types/tns";
 
 interface TNSUpdateNameScreenProps extends TNSModalCommonProps {}
 

@@ -1,54 +1,52 @@
 import React, { ReactNode, useState } from "react";
 import {
   FlatList,
+  Platform,
   StyleProp,
   TextStyle,
   View,
   ViewStyle,
-  Platform,
 } from "react-native";
 import { useSelector } from "react-redux";
 
 import { PeriodFilter } from "./PeriodFilter";
+
 import {
   Collection,
   MintState,
   Sort,
   SortDirection,
-} from "../../api/marketplace/v1/marketplace";
-import { BrandText } from "../../components/BrandText";
-import { CurrencyIcon } from "../../components/CurrencyIcon";
-import { OmniLink } from "../../components/OmniLink";
-import { Pagination } from "../../components/Pagination";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
-import { SearchInput } from "../../components/sorts/SearchInput";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { TableRow } from "../../components/table/TableRow";
-import { Tabs } from "../../components/tabs/Tabs";
-import { useCollections } from "../../hooks/useCollections";
-import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { NetworkFeature } from "../../networks";
-import { selectTimePeriod } from "../../store/slices/marketplaceFilters";
-import { prettyPrice } from "../../utils/coins";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import {
-  errorColor,
-  mineShaftColor,
-  successColor,
-} from "../../utils/style/colors";
+} from "@/api/marketplace/v1/marketplace";
+import { BrandText } from "@/components/BrandText";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
+import { OmniLink } from "@/components/OmniLink";
+import { Pagination } from "@/components/Pagination";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
+import { SearchInput } from "@/components/sorts/SearchInput";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { TableRow } from "@/components/table/TableRow";
+import { Tabs } from "@/components/tabs/Tabs";
+import { useCollections } from "@/hooks/useCollections";
+import { useEnabledNetworks } from "@/hooks/useEnabledNetworks";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useCollectionNavigationTarget } from "@/hooks/useNavigateToCollection";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { NetworkFeature } from "@/networks";
+import { selectTimePeriod } from "@/store/slices/marketplaceFilters";
+import { prettyPrice } from "@/utils/coins";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { errorColor, mineShaftColor, successColor } from "@/utils/style/colors";
 import {
   fontSemibold11,
   fontSemibold13,
   fontSemibold20,
   fontSemibold28,
-} from "../../utils/style/fonts";
-import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
-import { numFormatter } from "../../utils/text";
-import { PrettyPrint } from "../../utils/types/marketplace";
-import { arrayIncludes } from "../../utils/typescript";
+} from "@/utils/style/fonts";
+import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
+import { numFormatter } from "@/utils/text";
+import { PrettyPrint } from "@/utils/types/marketplace";
+import { arrayIncludes } from "@/utils/typescript";
 
 const TABLE_ROWS = {
   rank: {
@@ -309,6 +307,10 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
   const rowData = useRowData(collection, rank);
   const isMobile = useIsMobile();
 
+  const target = useCollectionNavigationTarget(collection.id, {
+    forceSecondaryDuringMint: collection.secondaryDuringMint,
+  });
+
   return (
     <OmniLink
       style={{
@@ -321,8 +323,9 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         paddingVertical: layout.spacing_x2,
         paddingHorizontal: layout.spacing_x2_5,
       }}
+      disabled={!target}
       to={{
-        screen: +collection.floorPrice !== 0 ? "Collection" : "MintCollection",
+        screen: target || "",
         params: { id: collection.id },
       }}
     >

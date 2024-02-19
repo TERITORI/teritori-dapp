@@ -5,17 +5,18 @@ import { SvgProps } from "react-native-svg";
 import MiniTableRow from "./MiniTableRow";
 import copySVG from "../../../../../assets/icons/copy-gray.svg";
 import externalLinkSVG from "../../../../../assets/icons/external-grey.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { SpacerRow } from "../../../../components/spacer";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { SpacerRow } from "@/components/spacer";
 import {
   neutral22,
   neutralA3,
   secondaryColor,
   withAlpha,
-} from "../../../../utils/style/colors";
-import { fontMedium16, fontSemibold16 } from "../../../../utils/style/fonts";
+} from "@/utils/style/colors";
+import { fontMedium16, fontSemibold16 } from "@/utils/style/fonts";
 
 type MiniTableItem = {
   label: string | ReactNode;

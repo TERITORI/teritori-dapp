@@ -5,13 +5,14 @@ import { SvgProps } from "react-native-svg";
 import addSVG from "../../../../../assets/icons/add-circle-blue.svg";
 import linesSVG from "../../../../../assets/icons/lines-gray.svg";
 import minusSVG from "../../../../../assets/icons/minus-circle-red.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { SVGorImageIcon } from "../../../../components/SVG/SVGorImageIcon";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { neutralA3 } from "../../../../utils/style/colors";
-import { fontMedium13, fontSemibold22 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { neutralA3 } from "@/utils/style/colors";
+import { fontMedium13, fontSemibold22 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type MenuItemProps = {
   icon: string | FC<SvgProps>;

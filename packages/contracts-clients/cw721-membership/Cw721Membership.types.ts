@@ -6,13 +6,18 @@
 
 export interface InstantiateMsg {
   admin_addr: string;
+  description: string;
+  image_uri: string;
   mint_royalties: number;
+  name: string;
+  symbol: string;
   [k: string]: unknown;
 }
 export type ExecuteMsg = ExecMsg;
 export type ExecMsg = {
   upsert_channel: {
     memberships_config: MembershipConfig[];
+    trade_royalties: number;
     [k: string]: unknown;
   };
 } | {
@@ -25,7 +30,11 @@ export type ExecMsg = {
 } | {
   update_config: {
     admin_addr?: string | null;
+    description?: string | null;
+    image_uri?: string | null;
     mint_royalties?: number | null;
+    name?: string | null;
+    symbol?: string | null;
     [k: string]: unknown;
   };
 } | {
@@ -52,6 +61,13 @@ export type ExecMsg = {
     [k: string]: unknown;
   };
 } | {
+  send_nft: {
+    contract: string;
+    msg: Binary;
+    token_id: string;
+    [k: string]: unknown;
+  };
+} | {
   burn: {
     token_id: string;
     [k: string]: unknown;
@@ -59,6 +75,7 @@ export type ExecMsg = {
 };
 export type Uint64 = string;
 export type Uint128 = string;
+export type Binary = string;
 export interface MembershipConfig {
   description: string;
   display_name: string;
@@ -66,7 +83,6 @@ export interface MembershipConfig {
   nft_image_uri: string;
   nft_name_prefix: string;
   price: Coin;
-  trade_royalties: number;
 }
 export interface Coin {
   amount: Uint128;
@@ -75,6 +91,10 @@ export interface Coin {
 }
 export type QueryMsg = QueryMsg1;
 export type QueryMsg1 = {
+  config: {
+    [k: string]: unknown;
+  };
+} | {
   channel: {
     channel_addr: string;
     [k: string]: unknown;
@@ -92,6 +112,16 @@ export type QueryMsg1 = {
   subscription: {
     channel_addr: string;
     sub_addr: string;
+    [k: string]: unknown;
+  };
+} | {
+  royalty_info: {
+    sale_price: Uint128;
+    token_id: string;
+    [k: string]: unknown;
+  };
+} | {
+  check_royalties: {
     [k: string]: unknown;
   };
 } | {
@@ -123,6 +153,12 @@ export type QueryMsg1 = {
   tokens: {
     limit?: number | null;
     owner: string;
+    start_after?: string | null;
+    [k: string]: unknown;
+  };
+} | {
+  all_tokens: {
+    limit?: number | null;
     start_after?: string | null;
     [k: string]: unknown;
   };
@@ -170,12 +206,28 @@ export interface Trait {
   trait_type: string;
   value: string;
 }
+export interface TokensResponse {
+  tokens: string[];
+}
 export interface ChannelResponse {
   memberships_config: MembershipConfig[];
   mint_royalties: number;
+  trade_royalties: number;
 }
 export interface ChannelFundsResponse {
   funds: Coin[];
+}
+export interface CheckRoyaltiesResponse {
+  royalty_payments: boolean;
+}
+export type Addr = string;
+export interface Config {
+  admin_addr: Addr;
+  description: string;
+  image_uri: string;
+  mint_royalties: number;
+  name: string;
+  symbol: string;
 }
 export interface ContractInfoResponse {
   name: string;
@@ -184,6 +236,10 @@ export interface ContractInfoResponse {
 export interface NumTokensResponse {
   count: number;
 }
+export interface RoyaltiesInfoResponse {
+  address: string;
+  royalty_amount: Uint128;
+}
 export interface SubscriptionResponse {
   level: number;
   subscription?: Subscription | null;
@@ -191,7 +247,4 @@ export interface SubscriptionResponse {
 export interface Subscription {
   expiration: Timestamp;
   level_expiration: Timestamp;
-}
-export interface TokensResponse {
-  tokens: string[];
 }

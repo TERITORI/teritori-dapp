@@ -2,8 +2,9 @@ import React from "react";
 import { View } from "react-native";
 
 import { JungleFeedScreen } from "./JungleFeedScreen";
-import { PostsRequest } from "../../../api/feed/v1/feed";
-import { PostCategory } from "../../../utils/types/feed";
+
+import { PostsRequest } from "@/api/feed/v1/feed";
+import { PostCategory } from "@/utils/types/feed";
 
 type Props = object;
 
@@ -14,6 +15,8 @@ export const PictureFeedScreen = (props: Props) => {
       user: "",
       mentions: [],
       hashtags: [],
+      premiumLevelMin: 0,
+      premiumLevelMax: -1,
     },
     limit: 10,
     offset: 0,

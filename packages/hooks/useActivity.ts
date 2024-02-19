@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { Activity, ActivityRequest } from "../api/marketplace/v1/marketplace";
-import { parseNetworkObjectId } from "../networks";
-import { getMarketplaceClient } from "../utils/backend";
+import { Activity, ActivityRequest } from "@/api/marketplace/v1/marketplace";
+import { parseNetworkObjectId } from "@/networks";
+import { getMarketplaceClient } from "@/utils/backend";
 
 const initialData = {
   activities: [],

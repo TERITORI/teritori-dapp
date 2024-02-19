@@ -1,11 +1,12 @@
 import React, { FC } from "react";
 
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { GnoDemo } from "../../../components/dao/GnoDemo";
-import { UppTabKeys } from "../../../utils/upp";
 import { UppTabScreenProps } from "../UserPublicProfileScreen";
 import { UPPHeader } from "../components/UPPHeader";
 import { UPPScreenContentWrapper } from "../components/UPPScreenContentWrapper";
+
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { GnoDemo } from "@/components/dao/GnoDemo";
+import { UppTabKeys } from "@/utils/upp";
 
 export const GnoDemoUPPScreen: FC<UppTabScreenProps> = ({
   userId,
