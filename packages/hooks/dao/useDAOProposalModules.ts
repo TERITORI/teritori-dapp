@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { DaoCoreQueryClient } from "../../contracts-clients/dao-core/DaoCore.client";
-import { ArrayOfProposalModule } from "../../contracts-clients/dao-core/DaoCore.types";
-import { mustGetNonSigningCosmWasmClient, parseUserId } from "../../networks";
+import { DaoCoreQueryClient } from "@/contracts-clients/dao-core/DaoCore.client";
+import { ArrayOfProposalModule } from "@/contracts-clients/dao-core/DaoCore.types";
+import { mustGetNonSigningCosmWasmClient, parseUserId } from "@/networks";
 
 const useDAOProposalModules = (
   daoId: string | undefined,

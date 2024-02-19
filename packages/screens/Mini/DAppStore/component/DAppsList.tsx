@@ -1,21 +1,22 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, View, useWindowDimensions } from "react-native";
+import { FlatList, useWindowDimensions, View } from "react-native";
 import { DraxList, DraxProvider } from "react-native-drax";
 import { useSelector } from "react-redux";
 
 import { DAppStoreMenuItem } from "./DAppStoreMenuItems";
-import { BrandText } from "../../../../components/BrandText";
-import { Separator } from "../../../../components/separators/Separator";
+
+import { BrandText } from "@/components/BrandText";
+import { Separator } from "@/components/separators/Separator";
 import {
   selectAvailableApps,
   selectCheckedApps,
   setCheckedApp,
   setSelectedApps,
-} from "../../../../store/slices/dapps-store";
-import { useAppDispatch } from "../../../../store/store";
-import { SEPARATOR, getValuesFromId } from "../../../../utils/dapp-store";
-import { layout } from "../../../../utils/style/layout";
-import { dAppType } from "../../../../utils/types/dapp-store";
+} from "@/store/slices/dapps-store";
+import { useAppDispatch } from "@/store/store";
+import { getValuesFromId, SEPARATOR } from "@/utils/dapp-store";
+import { layout } from "@/utils/style/layout";
+import { dAppType } from "@/utils/types/dapp-store";
 
 type Props = {
   isEditing: boolean;

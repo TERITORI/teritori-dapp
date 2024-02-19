@@ -71,7 +71,7 @@ func main() {
 		panic("missing indexer-mode or mode is not valid. Only support: p2e, data")
 	}
 
-	if indexerMode == indexerdb.IndexerModeP2E && !slices.Contains(network.GetBase().Features, networks.RiotP2E) {
+	if indexerMode == indexerdb.IndexerModeP2E && !slices.Contains(network.GetBase().Features, networks.FeatureTypeRiotP2E) {
 		panic("The provided network does not support P2E")
 	}
 

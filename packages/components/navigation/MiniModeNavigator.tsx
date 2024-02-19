@@ -10,6 +10,7 @@ import { RootStackParamList } from "../../utils/navigation";
 import { neutral00, secondaryColor } from "../../utils/style/colors";
 import { TabBarIcon } from "../TabBarIcon";
 
+import { useOnboardedStatus } from "@/hooks/useOnboardStatus";
 import { FeedPostViewScreen } from "@/screens/FeedPostView/FeedPostViewScreen";
 import { NFTDetailScreen } from "@/screens/Marketplace/NFTDetailScreen";
 import AboutScreen from "@/screens/Mini/About/AboutScreen";
@@ -54,7 +55,6 @@ import { CreateWalletScreen } from "@/screens/Wallet/Screens/CreateWalletScreen"
 import { ImportWallet } from "@/screens/Wallet/Screens/ImportWallet";
 import NativeWallet from "@/screens/Wallet/Screens/NativeWallet";
 import { SuccessScreen } from "@/screens/Wallet/Screens/SucessScreen";
-import { ViewSeed } from "@/screens/Wallet/Screens/ViewSeed";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -94,9 +94,15 @@ const MainTab = () => {
   );
 };
 
-export const MiniModeNavigator: React.FC = () => {
+export const MiniModeNavigator = () => {
+  const [isLoading, isOnboarded] = useOnboardedStatus();
+
+  if (isLoading) return null;
+
   return (
-    <Stack.Navigator initialRouteName="MiniTabs">
+    <Stack.Navigator
+      initialRouteName={!isOnboarded ? "ModeSelection" : "NativeWallet"}
+    >
       <Stack.Screen
         name="ModeSelection"
         component={ModeSelectionScreen}
@@ -119,11 +125,6 @@ export const MiniModeNavigator: React.FC = () => {
         name="MiniTabs"
         options={{ header: () => null }}
         component={MainTab}
-      />
-      <Stack.Screen
-        name="ViewSeed"
-        component={ViewSeed}
-        options={{ header: () => null, title: "View Seed" }}
       />
       <Stack.Screen
         name="ImportWallet"

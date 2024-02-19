@@ -3,9 +3,10 @@ import { useCallback } from "react";
 
 import { useEnabledNetworks } from "./useEnabledNetworks";
 import { useSelectedNetworkKind } from "./useSelectedNetwork";
-import { NetworkKind } from "../networks";
-import { setSelectedNetworkId } from "../store/slices/settings";
-import { useAppDispatch } from "../store/store";
+
+import { NetworkKind } from "@/networks";
+import { setSelectedNetworkId } from "@/store/slices/settings";
+import { useAppDispatch } from "@/store/store";
 
 export const useForceNetworkKind = (
   networkKind: NetworkKind | NetworkKind[] | undefined,

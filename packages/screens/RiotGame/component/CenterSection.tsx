@@ -2,12 +2,13 @@ import React, { useEffect, useRef } from "react";
 import { Animated, Pressable, View } from "react-native";
 
 import startButtonSVG from "../../../../assets/game/start-button.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { SpacerColumn } from "../../../components/spacer";
-import { neutral00 } from "../../../utils/style/colors";
-import { fontBold16, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SpacerColumn } from "@/components/spacer";
+import { neutral00 } from "@/utils/style/colors";
+import { fontBold16, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface CenterSectionProps {
   cardWidth: number;

@@ -18,12 +18,13 @@ import {
 import { SvgProps } from "react-native-svg";
 
 import closeSVG from "../../../../assets/icons/input-close.svg";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { SpacerRow } from "../../../components/spacer";
-import { neutral22, neutral77, withAlpha } from "../../../utils/style/colors";
-import { fontMedium16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { SpacerRow } from "@/components/spacer";
+import { neutral22, neutral77, withAlpha } from "@/utils/style/colors";
+import { fontMedium16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface MiniTexInputProps extends TextInputProps {
   style?: StyleProp<ViewStyle>;

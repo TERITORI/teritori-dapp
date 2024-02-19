@@ -3,8 +3,9 @@ import { FlatList, View } from "react-native";
 
 import NotificationCard from "./NotificationCard";
 import { notifications } from "./notificationData";
-import { Separator } from "../../../components/separators/Separator";
-import { layout } from "../../../utils/style/layout";
+
+import { Separator } from "@/components/separators/Separator";
+import { layout } from "@/utils/style/layout";
 
 export type NotificationType = {
   notificationId: string;

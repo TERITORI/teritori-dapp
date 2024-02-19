@@ -2,16 +2,17 @@ import React, { FC } from "react";
 import { ScrollView, useWindowDimensions } from "react-native";
 
 import { FeedHeader } from "./FeedHeader";
-import { PostsRequest } from "../../../api/feed/v1/feed";
-import { MobileTitle } from "../../../components/ScreenContainer/ScreenContainerMobile";
-import { FeedVideosList } from "../../../components/video/FeedVideosList";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
+
+import { PostsRequest } from "@/api/feed/v1/feed";
+import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
+import { FeedVideosList } from "@/components/video/FeedVideosList";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
 import {
   RESPONSIVE_BREAKPOINT_S,
   screenContentMaxWidth,
-} from "../../../utils/style/layout";
-import { PostCategory } from "../../../utils/types/feed";
+} from "@/utils/style/layout";
+import { PostCategory } from "@/utils/types/feed";
 
 export const VideosFeed: FC = () => {
   const { width: windowWidth } = useWindowDimensions();
@@ -42,6 +43,8 @@ const feedRequest: Partial<PostsRequest> = {
     user: "",
     mentions: [],
     hashtags: [],
+    premiumLevelMin: 0,
+    premiumLevelMax: -1,
   },
   limit: 10,
   offset: 0,

@@ -239,6 +239,7 @@ export const MiniCommentInput = React.forwardRef<
         }
 
         const metadata = generatePostMetadata({
+          premium: false,
           title: formValues.title || "",
           message: finalMessage,
           files: remoteFiles,

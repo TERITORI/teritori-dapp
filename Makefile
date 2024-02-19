@@ -1,6 +1,7 @@
 CANDYMACHINE_REPO=teritori-nfts
 BUNKER_MINTER_PACKAGE=teritori-bunker-minter
 GO?=go
+GOFMT?=$(shell $(GO) env GOROOT)/bin/gofmt
 
 TOKEN_REPO=teritori-nfts
 TOKEN_PACKAGE=teritori-nft
@@ -92,7 +93,8 @@ generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(
 
 .PHONY: generate.go-networks
 generate.go-networks: node_modules validate-networks
-	npx tsx packages/scripts/generateGoNetworks.ts | gofmt > go/pkg/networks/networks.gen.go
+	npx tsx packages/scripts/generateGoNetworks.ts | $(GOFMT) > go/pkg/networks/networks.gen.go
+	npx tsx packages/scripts/codegen/generateGoNetworkFeatures.ts | $(GOFMT) > go/pkg/networks/features.gen.go
 
 .PHONY/: $(CONTRACTS_CLIENTS_DIR)/cw721-membership
 $(CONTRACTS_CLIENTS_DIR)/cw721-membership: node_modules
@@ -397,7 +399,14 @@ init-weshd-go:
 	cd ./weshd && go install golang.org/x/mobile/cmd/gomobile
 	cd ./weshd && gomobile init
 
-.PHONY: bump-ios-build-number
-bump-ios-build-number:  
+.PHONY: bump-app-build-number
+bump-app-build-number:  
 	npx tsx packages/scripts/app-build/bumpBuildNumber.ts $(shell echo $$(($$(git rev-list HEAD --count) + 10)))
 
+.PHONY: test.rust
+test.rust:
+	cd cosmwasm-contracts/cw721-membership && cargo test
+
+.PHONY: build.rust
+build.rust:
+	cd cosmwasm-contracts/cw721-membership && cargo wasm

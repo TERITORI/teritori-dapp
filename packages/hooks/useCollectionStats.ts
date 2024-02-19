@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
-import { parseNetworkObjectId, NetworkKind } from "../networks";
-import { getMarketplaceClient } from "../utils/backend";
+import { parseNetworkObjectId, NetworkKind } from "@/networks";
+import { getMarketplaceClient } from "@/utils/backend";
 
 export const useCollectionStats = (collectionId: string, ownerId?: string) => {
   const [network] = parseNetworkObjectId(collectionId);

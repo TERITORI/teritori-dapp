@@ -4,12 +4,9 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
-import { ExecutionState, Transaction } from "../../api/multisig/v1/multisig";
-import {
-  cosmosTypesRegistry,
-  getCosmosNetwork,
-  parseUserId,
-} from "../../networks";
+
+import { ExecutionState, Transaction } from "@/api/multisig/v1/multisig";
+import { cosmosTypesRegistry, getCosmosNetwork, parseUserId } from "@/networks";
 
 const batchSize = 16;
 

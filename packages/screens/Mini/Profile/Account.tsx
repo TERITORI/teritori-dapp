@@ -1,42 +1,62 @@
-import React, { FC } from "react";
-import { Pressable, View } from "react-native";
-import { SvgProps } from "react-native-svg";
+import * as Clipboard from "expo-clipboard";
+import React, { useState } from "react";
+import { Linking, Pressable, View } from "react-native";
 
-import copySVG from "../../../../assets/icons/copy-gray.svg";
-import dotSVG from "../../../../assets/icons/dots-gray.svg";
-import infoSVG from "../../../../assets/icons/info-circle-gray.svg";
-import openSVG from "../../../../assets/icons/open-gray.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { DropdownWithListItem } from "../../../components/mini/DropdownWithListItem";
-import { neutral33, neutralA3 } from "../../../utils/style/colors";
-import { fontMedium13, fontSemibold22 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
-import { copyToClipboard } from "../Wallet/TransactionDetailScreen";
-
+import copySVG from "@/assets/icons/copy-gray.svg";
+import dotSVG from "@/assets/icons/dots-gray.svg";
+import googleSVG from "@/assets/icons/google.svg";
+import checkedLogo from "@/assets/icons/greenCheck.svg";
+import infoSVG from "@/assets/icons/info-circle-gray.svg";
+import ledgerSVG from "@/assets/icons/ledger.svg";
+import openSVG from "@/assets/icons/open-gray.svg";
+import questionSVG from "@/assets/icons/question-gray.svg";
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { DropdownWithListItem } from "@/components/mini/DropdownWithListItem";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { accountExplorerLink } from "@/networks";
+import { StoreWallet } from "@/store/slices/wallets";
+import { neutral33, neutralA3 } from "@/utils/style/colors";
+import { fontMedium13, fontSemibold22 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { tinyAddress } from "@/utils/text";
 
-type AccountProps = {
-  accountName: string;
-  logo?: string | FC<SvgProps>;
-  address: string;
-  isLast?: boolean;
+type ProviderType = StoreWallet["provider"];
+const getProviderLogo = (provider: ProviderType) => {
+  switch (provider) {
+    case "google":
+      return googleSVG;
+    case "ledger":
+      return ledgerSVG;
+    case "native":
+      return null; // or teritoriSVG; but the idea here is to not show any icon for native wallets
+    default:
+      return questionSVG;
+  }
 };
 
-export const Account = ({
-  accountName,
-  logo,
-  address,
+export const Account: React.FC<{ account: StoreWallet; isLast: boolean }> = ({
+  account,
   isLast = false,
-}: AccountProps) => {
+}) => {
   const navigation = useAppNavigation();
   const navigateToAccountDetails = () => {
-    navigation.replace("MiniAccountDetails", { id: "12345", accountName });
+    navigation.replace("MiniAccountDetails", {
+      id: account.index.toString(),
+      accountName: account.name,
+    });
   };
-
+  const [isCopied, setIsCopied] = useState(false);
+  const copyToClipboard = async (address: string) => {
+    setIsCopied(true);
+    await Clipboard.setStringAsync(address);
+    setInterval(() => {
+      setIsCopied(false);
+    }, 2000);
+  };
+  const logo = getProviderLogo(account.provider);
   return (
     <View
       style={{
@@ -56,14 +76,18 @@ export const Account = ({
             gap: layout.spacing_x1,
           }}
         >
-          <BrandText style={[fontSemibold22]}>{accountName}</BrandText>
-          <Pressable onPress={() => copyToClipboard(address)}>
-            <SVG source={copySVG} height={20} width={20} />
+          <BrandText style={[fontSemibold22]}>{account.name}</BrandText>
+          <Pressable onPress={() => copyToClipboard(account.address)}>
+            <SVG
+              source={isCopied ? checkedLogo : copySVG}
+              height={20}
+              width={20}
+            />
           </Pressable>
         </View>
 
         <BrandText style={[fontMedium13, { color: neutralA3 }]}>
-          {`${tinyAddress(address, 16)}`}
+          {`${tinyAddress(account.address, 16)}`}
         </BrandText>
       </View>
       <View
@@ -94,7 +118,11 @@ export const Account = ({
             {
               name: "View on Explorer",
               icon: openSVG,
-              onPress: () => alert("Hello Teritoriscan"),
+              onPress: () => {
+                Linking.openURL(
+                  accountExplorerLink(account.networkId, account.address),
+                );
+              },
             },
             {
               name: "Account Details",

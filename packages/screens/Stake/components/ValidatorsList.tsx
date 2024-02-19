@@ -2,23 +2,23 @@ import { Decimal } from "@cosmjs/math";
 import React from "react";
 import { FlatList, StyleProp, View, ViewStyle } from "react-native";
 
-import { BrandText } from "../../../components/BrandText";
-import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
-import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
-import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
-import { SpacerRow } from "../../../components/spacer";
-import { TableRow, TableRowHeading } from "../../../components/table/TableRow";
-import { useCosmosValidatorBondedAmount } from "../../../hooks/useCosmosValidatorBondedAmount";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useKeybaseAvatarURL } from "../../../hooks/useKeybaseAvatarURL";
-import { Reward, rewardsPrice, useRewards } from "../../../hooks/useRewards";
-import { UserKind, getStakingCurrency, parseUserId } from "../../../networks";
-import { prettyPrice } from "../../../utils/coins";
-import { removeObjectKey, removeObjectKeys } from "../../../utils/object";
-import { mineShaftColor } from "../../../utils/style/colors";
-import { fontSemibold11, fontSemibold13 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { ValidatorInfo } from "../../../utils/types/staking";
+import { BrandText } from "@/components/BrandText";
+import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
+import { SecondaryButtonOutline } from "@/components/buttons/SecondaryButtonOutline";
+import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
+import { SpacerRow } from "@/components/spacer";
+import { TableRow, TableRowHeading } from "@/components/table/TableRow";
+import { useCosmosValidatorBondedAmount } from "@/hooks/useCosmosValidatorBondedAmount";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useKeybaseAvatarURL } from "@/hooks/useKeybaseAvatarURL";
+import { Reward, rewardsPrice, useRewards } from "@/hooks/useRewards";
+import { getStakingCurrency, parseUserId, UserKind } from "@/networks";
+import { prettyPrice } from "@/utils/coins";
+import { removeObjectKey, removeObjectKeys } from "@/utils/object";
+import { mineShaftColor } from "@/utils/style/colors";
+import { fontSemibold11, fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { ValidatorInfo } from "@/utils/types/staking";
 
 const TABLE_ROWS = {
   rank: {

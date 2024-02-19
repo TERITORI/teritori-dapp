@@ -9,10 +9,11 @@ import {
   ParsedTransaction,
   multisigTransactionsQueryKey,
 } from "./useMultisigTransactions";
-import { Signature } from "../../api/multisig/v1/multisig";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { getKeplrOnlyAminoStargateClient, getUserId } from "../../networks";
 import useSelectedWallet from "../useSelectedWallet";
+
+import { Signature } from "@/api/multisig/v1/multisig";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { getKeplrOnlyAminoStargateClient, getUserId } from "@/networks";
 
 export const useApproveTransaction = () => {
   const { setToastError } = useFeedbacks();

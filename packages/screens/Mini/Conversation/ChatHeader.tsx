@@ -5,20 +5,21 @@ import { useSelector } from "react-redux";
 
 import chevronLeftSVG from "../../../../assets/icons/chevron-left.svg";
 import phoneCellSVG from "../../../../assets/icons/phone-cell.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { SpacerRow } from "../../../components/spacer";
-import { selectPeerById } from "../../../store/slices/message";
-import { RootState } from "../../../store/store";
-import { RootStackParamList } from "../../../utils/navigation";
-import { MOBILE_HEADER_HEIGHT } from "../../../utils/style/layout";
-import { Conversation } from "../../../utils/types/message";
+import { ChatAvatar } from "../components/ChatAvatar";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { SpacerRow } from "@/components/spacer";
+import { selectPeerById } from "@/store/slices/message";
+import { RootState } from "@/store/store";
+import { RootStackParamList } from "@/utils/navigation";
+import { MOBILE_HEADER_HEIGHT } from "@/utils/style/layout";
+import { Conversation } from "@/utils/types/message";
 import {
   getConversationAvatar,
   getConversationName,
-} from "../../../weshnet/messageHelpers";
-import { ChatAvatar } from "../components/ChatAvatar";
+} from "@/weshnet/messageHelpers";
 
 type HeaderProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "Conversation">;

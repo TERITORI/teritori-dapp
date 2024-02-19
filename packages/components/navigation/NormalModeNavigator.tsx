@@ -24,6 +24,7 @@ import { LaunchpadCreateScreen } from "@/screens/Launchpad/LaunchpadCreateScreen
 import { LaunchpadScreen } from "@/screens/Launchpad/LaunchpadScreen";
 import { MintCollectionScreen } from "@/screens/Launchpad/MintCollectionScreen";
 import { LaunchpadApplicationsScreen } from "@/screens/LaunchpadApplications/LaunchpadApplicationsScreen";
+import { LeaderboardMarketplaceScreen } from "@/screens/LeaderboardMarketplaceScreen/LeaderboardMarketplaceScreen";
 import { CollectionScreen } from "@/screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "@/screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "@/screens/Marketplace/MarketplaceScreen";
@@ -57,7 +58,6 @@ import { CreatePassword } from "@/screens/Wallet/Screens/CreatePassword";
 import { ImportWallet } from "@/screens/Wallet/Screens/ImportWallet";
 import NativeWallet from "@/screens/Wallet/Screens/NativeWallet";
 import { SuccessScreen } from "@/screens/Wallet/Screens/SucessScreen";
-import { ViewSeed } from "@/screens/Wallet/Screens/ViewSeed";
 import { WalletManagerScreen } from "@/screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "@/screens/WalletManager/WalletsScreen";
 
@@ -147,6 +147,15 @@ export const NormalModeNavigator: React.FC = () => {
       <Nav.Screen
         name="ApplicationReview"
         component={ApplicationRewiewScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Application Review"),
+        }}
+      />
+
+      <Nav.Screen
+        name="LeaderboardMarketplace"
+        component={LeaderboardMarketplaceScreen}
         options={{
           header: () => null,
           title: screenTitle("Application Review"),
@@ -413,11 +422,6 @@ export const NormalModeNavigator: React.FC = () => {
         name="NativeWallet"
         component={NativeWallet}
         options={{ header: () => null, title: screenTitle("Wallet Create") }}
-      />
-      <Nav.Screen
-        name="ViewSeed"
-        component={ViewSeed}
-        options={{ header: () => null, title: screenTitle("View Seed") }}
       />
       <Nav.Screen
         name="ImportWallet"

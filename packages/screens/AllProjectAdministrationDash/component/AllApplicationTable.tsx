@@ -2,19 +2,17 @@ import React from "react";
 import { FlatList, View } from "react-native";
 
 import dotsSVG from "../../../../assets/icons/dots.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CollectionNameCell } from "../../../components/applicationTable/CollectionNameCell";
-import { InnerCellText } from "../../../components/applicationTable/InnerCellText";
-import { PercentageVolumeCell } from "../../../components/applicationTable/PercentageVolumeCell";
-import { TableRow } from "../../../components/table/TableRow";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { mineShaftColor } from "../../../utils/style/colors";
-import { fontSemibold11, fontSemibold13 } from "../../../utils/style/fonts";
-import {
-  layout,
-  screenContentMaxWidthLarge,
-} from "../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CollectionNameCell } from "@/components/applicationTable/CollectionNameCell";
+import { InnerCellText } from "@/components/applicationTable/InnerCellText";
+import { PercentageVolumeCell } from "@/components/applicationTable/PercentageVolumeCell";
+import { TableRow } from "@/components/table/TableRow";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { mineShaftColor } from "@/utils/style/colors";
+import { fontSemibold11, fontSemibold13 } from "@/utils/style/fonts";
+import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
 
 const TABLE_ROWS = {
   rank: {

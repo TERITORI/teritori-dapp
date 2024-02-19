@@ -1,7 +1,7 @@
 import { chain } from "lodash";
 import moment from "moment";
 import React, { useMemo, useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import { Avatar } from "./Avatar";
 import { FileRenderer } from "./FileRenderer";
@@ -9,37 +9,38 @@ import { GroupInvitationAction } from "./GroupInvitationAction";
 import { MessagePopup } from "./MessagePopup";
 import doubleCheckSVG from "../../../../assets/icons/double-check.svg";
 import replySVG from "../../../../assets/icons/reply.svg";
-import { BrandText } from "../../../components/BrandText";
-import { Dropdown } from "../../../components/Dropdown";
 import FlexCol from "../../../components/FlexCol";
 import FlexRow from "../../../components/FlexRow";
-import { SVG } from "../../../components/SVG";
-import { EmojiSelector } from "../../../components/socialFeed/EmojiSelector";
-import { Reactions } from "../../../components/socialFeed/SocialActions/Reactions";
-import { SpacerRow } from "../../../components/spacer";
-import {
-  neutral77,
-  secondaryColor,
-  purpleDark,
-  neutral17,
-  neutralA3,
-} from "../../../utils/style/colors";
-import {
-  fontBold9,
-  fontMedium10,
-  fontSemibold11,
-  fontSemibold13,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import {
   Conversation as IConversation,
   Message,
   ReplyTo,
 } from "../../../utils/types/message";
-import { weshConfig } from "../../../weshnet";
-import { getConversationAvatar } from "../../../weshnet/messageHelpers";
-import { sendMessage } from "../../../weshnet/services";
-import { stringFromBytes } from "../../../weshnet/utils";
+
+import { BrandText } from "@/components/BrandText";
+import { Dropdown } from "@/components/Dropdown";
+import { SVG } from "@/components/SVG";
+import { EmojiSelector } from "@/components/socialFeed/EmojiSelector";
+import { Reactions } from "@/components/socialFeed/SocialActions/Reactions";
+import { SpacerRow } from "@/components/spacer";
+import {
+  neutral17,
+  neutral77,
+  neutralA3,
+  purpleDark,
+  secondaryColor,
+} from "@/utils/style/colors";
+import {
+  fontBold9,
+  fontMedium10,
+  fontSemibold11,
+  fontSemibold13,
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { weshConfig } from "@/weshnet";
+import { getConversationAvatar } from "@/weshnet/messageHelpers";
+import { sendMessage } from "@/weshnet/services";
+import { stringFromBytes } from "@/weshnet/utils";
 
 interface ConversationProps {
   conversation: IConversation;

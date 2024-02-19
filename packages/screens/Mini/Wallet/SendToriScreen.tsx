@@ -3,29 +3,25 @@ import { useState } from "react";
 import { View } from "react-native";
 
 import questionSVG from "../../../../assets/icons/question-gray.svg";
-import { BrandText } from "../../../components/BrandText";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { UserAvatarWithFrame } from "../../../components/images/AvatarWithFrame";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { useSelectedNativeWallet } from "../../../hooks/wallet/useSelectedNativeWallet";
-import { prettyPrice } from "../../../utils/coins";
-import { ScreenFC } from "../../../utils/navigation";
-import { neutral39, neutral77 } from "../../../utils/style/colors";
-import {
-  fontMedium13,
-  fontMedium15,
-  fontMedium16,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { getExponentByDenom } from "../../../utils/wallet/chain-registry";
 import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import MiniTextInput from "../components/MiniTextInput";
 import MiniTextInputWithDropdown from "../components/MiniTextInputWithDropdown";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
+import { BrandText } from "@/components/BrandText";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { useGetAssets } from "@/hooks/wallet/useGetAssets";
+import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
+import { prettyPrice } from "@/utils/coins";
+import { ScreenFC } from "@/utils/navigation";
+import { neutral39, neutral77 } from "@/utils/style/colors";
+import { fontMedium13, fontMedium15, fontMedium16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { getExponentByDenom } from "@/utils/wallet/chain-registry";
 
 const tokenOptions = [
   {

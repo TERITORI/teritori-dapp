@@ -2,23 +2,24 @@ import React, { useState } from "react";
 import { TextInput, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 
-import { Post } from "../../../../api/feed/v1/feed";
-import { BrandText } from "../../../../components/BrandText";
-import { UserAvatarWithFrame } from "../../../../components/images/AvatarWithFrame";
-import { NotEnoughFundsModal } from "../../../../components/modals/NotEnoughFundModal";
-import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
-import { useFeedPosting } from "../../../../hooks/feed/useFeedPosting";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
-import { generatePostMetadata } from "../../../../utils/feed/queries";
+import { CustomButton } from "../../components/Button/CustomButton";
+
+import { Post } from "@/api/feed/v1/feed";
+import { BrandText } from "@/components/BrandText";
+import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
+import { NotEnoughFundsModal } from "@/components/modals/NotEnoughFundModal";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
+import { generatePostMetadata } from "@/utils/feed/queries";
 import {
-  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
   hashtagMatch,
   mentionMatch,
-} from "../../../../utils/social-feed";
-import { neutral77, secondaryColor } from "../../../../utils/style/colors";
-import { fontSemibold14, fontSemibold16 } from "../../../../utils/style/fonts";
-import { PostCategory, ReplyToType } from "../../../../utils/types/feed";
-import { CustomButton } from "../../components/Button/CustomButton";
+  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
+} from "@/utils/social-feed";
+import { neutral77, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold16 } from "@/utils/style/fonts";
+import { PostCategory, ReplyToType } from "@/utils/types/feed";
 
 const INPUT_MIN_HEIGHT = 20;
 const INPUT_MAX_HEIGHT = 400;
@@ -92,6 +93,7 @@ export const VideoCommentInput = ({
         hashtags,
         mentions,
         gifs: [],
+        premium: false,
       });
 
       await makePost(

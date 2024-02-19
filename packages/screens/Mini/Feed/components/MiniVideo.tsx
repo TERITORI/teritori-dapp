@@ -1,32 +1,32 @@
 import { ResizeMode } from "expo-av";
 import React, { useEffect, useState } from "react";
-import { StyleProp, ViewStyle, useWindowDimensions } from "react-native";
+import { StyleProp, useWindowDimensions, ViewStyle } from "react-native";
 
 import { PostActions } from "./PostActions";
 import { PostHeader } from "./PostHeader";
-import { Post } from "../../../../api/feed/v1/feed";
-import { BrandText } from "../../../../components/BrandText";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { MediaPlayerVideo } from "../../../../components/mediaPlayer/MediaPlayerVideo";
-import { SpacerColumn } from "../../../../components/spacer";
-import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
-import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
-import { getNetworkObjectId, parseUserId } from "../../../../networks";
-import { zodTryParseJSON } from "../../../../utils/sanitize";
-import { errorColor, neutralA3 } from "../../../../utils/style/colors";
+
+import { Post } from "@/api/feed/v1/feed";
+import { BrandText } from "@/components/BrandText";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { MediaPlayerVideo } from "@/components/mediaPlayer/MediaPlayerVideo";
+import { SpacerColumn } from "@/components/spacer";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { getNetworkObjectId, parseUserId } from "@/networks";
+import { zodTryParseJSON } from "@/utils/sanitize";
+import { errorColor, neutralA3 } from "@/utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold16,
-} from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import { tinyAddress } from "../../../../utils/text";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { tinyAddress } from "@/utils/text";
 import {
   ZodSocialFeedPostMetadata,
   ZodSocialFeedVideoMetadata,
-} from "../../../../utils/types/feed";
-
-import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+} from "@/utils/types/feed";
 
 type Props = {
   post: Post;

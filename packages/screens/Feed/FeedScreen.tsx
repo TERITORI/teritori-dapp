@@ -6,15 +6,16 @@ import { ModerationFeed } from "./components/ModerationFeed";
 import { MusicFeed } from "./components/MusicFeed";
 import { PicsFeed } from "./components/PicsFeed";
 import { VideosFeed } from "./components/VideosFeed";
-import { PostsRequest } from "../../api/feed/v1/feed";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { MobileTitle } from "../../components/ScreenContainer/ScreenContainerMobile";
-import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
-import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { NetworkFeature } from "../../networks";
-import { ScreenFC } from "../../utils/navigation";
+
+import { PostsRequest } from "@/api/feed/v1/feed";
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
+import { NewsFeed } from "@/components/socialFeed/NewsFeed/NewsFeed";
+import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { NetworkFeature } from "@/networks";
+import { ScreenFC } from "@/utils/navigation";
 
 export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
   useForceNetworkSelection(params?.network);
@@ -71,6 +72,8 @@ const defaultFeedRequest: Partial<PostsRequest> = {
     user: "",
     mentions: [],
     hashtags: [],
+    premiumLevelMin: 0,
+    premiumLevelMax: -1,
   },
   limit: 10,
   offset: 0,

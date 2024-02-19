@@ -2,25 +2,23 @@ import { ScrollView, Target } from "@nandorojo/anchor";
 import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { NFTMainInfo } from "../../components/nftDetails/NFTMainInfo";
-import { SpacerColumn } from "../../components/spacer";
-import { Tabs } from "../../components/tabs/Tabs";
-import {
-  initialToastError,
-  useFeedbacks,
-} from "../../context/FeedbacksProvider";
-import { Wallet } from "../../context/WalletsProvider";
-import { TeritoriNftVaultClient } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
-import { NFTVault__factory } from "../../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
-import { useMintEnded } from "../../hooks/collection/useMintEnded";
-import { useCancelNFTListing } from "../../hooks/useCancelNFTListing";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { useNFTInfo } from "../../hooks/useNFTInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useSellNFT } from "../../hooks/useSellNFT";
+
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { NFTMainInfo } from "@/components/nftDetails/NFTMainInfo";
+import { SpacerColumn } from "@/components/spacer";
+import { Tabs } from "@/components/tabs/Tabs";
+import { initialToastError, useFeedbacks } from "@/context/FeedbacksProvider";
+import { Wallet } from "@/context/WalletsProvider";
+import { TeritoriNftVaultClient } from "@/contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { NFTVault__factory } from "@/evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
+import { useMintEnded } from "@/hooks/collection/useMintEnded";
+import { useCancelNFTListing } from "@/hooks/useCancelNFTListing";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { useNFTInfo } from "@/hooks/useNFTInfo";
+import { useSellNFT } from "@/hooks/useSellNFT";
 import {
   getCollectionId,
   getKeplrSigningCosmWasmClient,
@@ -28,10 +26,10 @@ import {
   mustGetEthereumNetwork,
   NetworkKind,
   parseNftId,
-} from "../../networks";
-import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { NFTInfo } from "../../utils/types/nft";
+} from "@/networks";
+import { getMetaMaskEthereumSigner } from "@/utils/ethereum";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { NFTInfo } from "@/utils/types/nft";
 
 const Content: React.FC<{
   id: string;
@@ -230,9 +228,11 @@ const Content: React.FC<{
             />
           )}
 
-          <Target name="main-info">
-            <SpacerColumn size={6} />
-          </Target>
+          {!isMobile && (
+            <Target name="main-info">
+              <SpacerColumn size={6} />
+            </Target>
+          )}
 
           <NFTMainInfo
             nftId={id}

@@ -1,8 +1,9 @@
 import React from "react";
 
-import { ScreenFC } from "../../../utils/navigation";
 import { AllSet } from "../../Mini/ConnectLedger/components/AllSet";
 import MultiStepScreenContainer from "../../Mini/layout/MultiStepScreenContainer";
+
+import { ScreenFC } from "@/utils/navigation";
 
 export const SuccessScreen: ScreenFC<"SuccessScreen"> = ({ navigation }) => {
   return (

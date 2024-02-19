@@ -1,51 +1,44 @@
 import { ResizeMode } from "expo-av";
 import React, { Fragment, useMemo, useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
 
-import { Post, PostsRequest } from "../../../../../api/feed/v1/feed";
-import { BrandText } from "../../../../../components/BrandText";
-import { ScreenContainer } from "../../../../../components/ScreenContainer";
-import { MediaPlayerVideo } from "../../../../../components/mediaPlayer/MediaPlayerVideo";
-import { DislikeButton } from "../../../../../components/socialFeed/SocialActions/DislikeButton";
-import { LikeButton } from "../../../../../components/socialFeed/SocialActions/LikeButton";
-import { ReportButton } from "../../../../../components/socialFeed/SocialActions/ReportButton";
-import { ShareButton } from "../../../../../components/socialFeed/SocialActions/ShareButton";
-import { TipButton } from "../../../../../components/socialFeed/SocialActions/TipButton";
-import { SocialCardHeader } from "../../../../../components/socialFeed/SocialCard/SocialCardHeader";
-import { SOCIAl_CARD_BORDER_RADIUS } from "../../../../../components/socialFeed/SocialCard/cards/SocialThreadCard";
-import { SpacerColumn, SpacerRow } from "../../../../../components/spacer";
-import { VideosList } from "../../../../../components/video/VideosList";
-import {
-  combineFetchCommentPages,
-  useFetchComments,
-} from "../../../../../hooks/feed/useFetchComments";
-import { useNSUserInfo } from "../../../../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../../../../hooks/useSelectedWallet";
-import { NetworkKind, getNetwork, parseUserId } from "../../../../../networks";
-import { zodTryParseJSON } from "../../../../../utils/sanitize";
-import {
-  BASE_POST,
-  DEFAULT_USERNAME,
-  postResultToPost,
-} from "../../../../../utils/social-feed";
-import { neutralA3 } from "../../../../../utils/style/colors";
-import { fontSemibold14 } from "../../../../../utils/style/fonts";
-import { layout } from "../../../../../utils/style/layout";
-import { tinyAddress } from "../../../../../utils/text";
-import {
-  PostCategory,
-  ZodSocialFeedVideoMetadata,
-} from "../../../../../utils/types/feed";
-import { VideoComment } from "../../../../FeedPostView/components/VideoComment";
 import CustomAppBar from "../../../components/AppBar/CustomAppBar";
 import { VideoCommentInput } from "../VideoCommentInput";
 
+import { Post, PostsRequest } from "@/api/feed/v1/feed";
+import { BrandText } from "@/components/BrandText";
 import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { MediaPlayerVideo } from "@/components/mediaPlayer/MediaPlayerVideo";
+import { DislikeButton } from "@/components/socialFeed/SocialActions/DislikeButton";
+import { LikeButton } from "@/components/socialFeed/SocialActions/LikeButton";
+import { ReportButton } from "@/components/socialFeed/SocialActions/ReportButton";
+import { ShareButton } from "@/components/socialFeed/SocialActions/ShareButton";
+import { TipButton } from "@/components/socialFeed/SocialActions/TipButton";
+import { SocialCardHeader } from "@/components/socialFeed/SocialCard/SocialCardHeader";
+import { SOCIAl_CARD_BORDER_RADIUS } from "@/components/socialFeed/SocialCard/cards/SocialThreadCard";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { VideosList } from "@/components/video/VideosList";
+import {
+  combineFetchCommentPages,
+  useFetchComments,
+} from "@/hooks/feed/useFetchComments";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { getNetwork, NetworkKind, parseUserId } from "@/networks";
+import { VideoComment } from "@/screens/FeedPostView/components/VideoComment";
+import { zodTryParseJSON } from "@/utils/sanitize";
+import { DEFAULT_USERNAME, postResultToPost } from "@/utils/social-feed";
+import { neutralA3 } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { tinyAddress } from "@/utils/text";
+import { PostCategory, ZodSocialFeedVideoMetadata } from "@/utils/types/feed";
 
 type Props = {
   networkId: string;
@@ -62,7 +55,7 @@ export const MiniVideoPostDetails = ({
   const wallet = useSelectedWallet();
   const network = getNetwork(networkId);
 
-  const [localPost, setLocalPost] = useState(post || BASE_POST);
+  const [localPost, setLocalPost] = useState(post || Post.create());
   const video = zodTryParseJSON(ZodSocialFeedVideoMetadata, localPost.metadata);
   const authorNSInfo = useNSUserInfo(localPost.authorId);
   const [, authorAddress] = parseUserId(localPost.authorId);
@@ -92,6 +85,8 @@ export const MiniVideoPostDetails = ({
       user: localPost.authorId,
       mentions: [],
       hashtags: [],
+      premiumLevelMin: 0,
+      premiumLevelMax: -1,
     },
     limit: 10,
     offset: 0,
@@ -103,6 +98,8 @@ export const MiniVideoPostDetails = ({
       user: "",
       mentions: [],
       hashtags: [],
+      premiumLevelMin: 0,
+      premiumLevelMax: -1,
     },
     limit: 10,
     offset: 0,

@@ -4,19 +4,20 @@ import { View } from "react-native";
 import { useSelector } from "react-redux";
 
 import addSVG from "../../../../assets/icons/add-circle-outline.svg";
-import { SpacerColumn } from "../../../components/spacer";
-import {
-  addEntry,
-  removeEntry,
-  selectAddressBookById,
-} from "../../../store/slices/wallets";
-import { RootState, useAppDispatch } from "../../../store/store";
-import { ScreenFC } from "../../../utils/navigation";
-import { layout } from "../../../utils/style/layout";
 import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import MiniTextInput from "../components/MiniTextInput";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { SpacerColumn } from "@/components/spacer";
+import {
+  addEntry,
+  removeEntry,
+  selectAddressBookById,
+} from "@/store/slices/wallets";
+import { RootState, useAppDispatch } from "@/store/store";
+import { ScreenFC } from "@/utils/navigation";
+import { layout } from "@/utils/style/layout";
 
 const EditAddressBookScreen: ScreenFC<"EditAddressBook"> = ({
   navigation,

@@ -9,21 +9,23 @@ import { MentionsPostsUPPScreen } from "./tabScreens/MentionsPostsUPPScreen";
 import { MusicUPPScreen } from "./tabScreens/MusicUPPScreen";
 import { NFTsUPPScreen } from "./tabScreens/NFTsUPPScreen";
 import { PostsUPPScreen } from "./tabScreens/PostsUPPScreen";
+import { PremiumContentScreen } from "./tabScreens/PremiumContentScreen";
 import { ProposalsUPPScreen } from "./tabScreens/ProposalsUPPScreen";
 import { QuestsUPPScreen } from "./tabScreens/QuestsUPPScreen";
 import { VideosUPPScreen } from "./tabScreens/VideosUPPScreen";
-import { BrandText } from "../../components/BrandText";
-import { NotFound } from "../../components/NotFound";
+
+import { BrandText } from "@/components/BrandText";
+import { NotFound } from "@/components/NotFound";
 import {
   ScreenContainer,
   ScreenContainerProps,
-} from "../../components/ScreenContainer";
-import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { NetworkKind, parseUserId } from "../../networks";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { fontSemibold20 } from "../../utils/style/fonts";
-import { uppTabItems, UppTabKeys } from "../../utils/upp";
+} from "@/components/ScreenContainer";
+import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { NetworkKind, parseUserId } from "@/networks";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { fontSemibold20 } from "@/utils/style/fonts";
+import { uppTabItems, UppTabKeys } from "@/utils/upp";
 
 export interface UppTabScreenProps {
   userId: string;
@@ -85,6 +87,13 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
     case UppTabKeys.posts:
       return (
         <PostsUPPScreen
+          userId={id}
+          screenContainerOtherProps={screenContainerOtherProps}
+        />
+      );
+    case UppTabKeys.premiumSubscribe:
+      return (
+        <PremiumContentScreen
           userId={id}
           screenContainerOtherProps={screenContainerOtherProps}
         />

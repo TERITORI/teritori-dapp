@@ -5,10 +5,12 @@ import { SvgProps } from "react-native-svg";
 import chevronDownSVG from "../../../../../assets/icons/chevron-down-gray.svg";
 import chevronDownWhiteSVG from "../../../../../assets/icons/chevron-down-white.svg";
 import eyeLensSVG from "../../../../../assets/icons/search-gray.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { Separator } from "../../../../components/separators/Separator";
+import MiniTextInput from "../../components/MiniTextInput";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { Separator } from "@/components/separators/Separator";
 import {
   neutral22,
   neutral39,
@@ -16,10 +18,9 @@ import {
   neutralA3,
   secondaryColor,
   withAlpha,
-} from "../../../../utils/style/colors";
-import { fontMedium16 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import MiniTextInput from "../../components/MiniTextInput";
+} from "@/utils/style/colors";
+import { fontMedium16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type Props = {
   selected: string;

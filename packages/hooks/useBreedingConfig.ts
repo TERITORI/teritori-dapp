@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
-import { getCosmosNetwork, mustGetNonSigningCosmWasmClient } from "../networks";
+import { TeritoriBreedingQueryClient } from "@/contracts-clients/teritori-breeding/TeritoriBreeding.client";
+import { getCosmosNetwork, mustGetNonSigningCosmWasmClient } from "@/networks";
 
 export const useBreedingConfig = (
   networkId: string | undefined,

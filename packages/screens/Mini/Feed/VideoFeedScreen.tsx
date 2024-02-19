@@ -1,9 +1,9 @@
 import React from "react";
 import { View } from "react-native";
 
-import { PostsRequest } from "../../../api/feed/v1/feed";
-import { FeedVideosList } from "../../../components/video/FeedVideosList";
-import { PostCategory } from "../../../utils/types/feed";
+import { PostsRequest } from "@/api/feed/v1/feed";
+import { FeedVideosList } from "@/components/video/FeedVideosList";
+import { PostCategory } from "@/utils/types/feed";
 
 type Props = object;
 
@@ -21,6 +21,8 @@ const feedRequest: Partial<PostsRequest> = {
     user: "",
     mentions: [],
     hashtags: [],
+    premiumLevelMin: 0,
+    premiumLevelMax: -1,
   },
   limit: 10,
   offset: 0,

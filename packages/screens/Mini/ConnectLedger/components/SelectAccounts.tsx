@@ -2,23 +2,20 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import circularPlusSVG from "../../../../../assets/icons/plus-white-circular.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import {
-  neutral17,
-  neutral39,
-  neutral77,
-} from "../../../../utils/style/colors";
+import { CustomButton } from "../../components/Button/CustomButton";
+import Checkbox from "../../components/Checkbox/Checkbox";
+import { StepType } from "../ConnectLedgerScreen";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { neutral17, neutral39, neutral77 } from "@/utils/style/colors";
 import {
   fontMedium16,
   fontSemibold15,
   fontSemibold30,
-} from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import { CustomButton } from "../../components/Button/CustomButton";
-import Checkbox from "../../components/Checkbox/Checkbox";
-import { StepType } from "../ConnectLedgerScreen";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type Props = {
   onStepChange: (step: StepType) => void;

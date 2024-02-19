@@ -19,6 +19,8 @@ jobs:
           go-version: "1.19"
 
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v3
         with:
@@ -35,6 +37,14 @@ jobs:
 
       - name: Install node modules
         run: yarn install
+
+      - name: Bump android versionNumber
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: make bump-app-build-number
+
+      - name: Download service account from env
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: echo ${{ secrets.GOOGLE_SERVICES_JSON }} | base64 --decode > ./service-account-android-submit.json
 
       - name: Fix gitignore
         run: npx tsx ./packages/scripts/app-build/fixGitignore.ts
@@ -57,7 +67,7 @@ jobs:
       - name: Build android
         run: eas build --local --non-interactive --platform=android
 
-      - name: EAS Submit aab
+      - name: Update aab File path
         run: |
           AAB_FILE=$(find ./ -name 'build-*.aab' -type f)
           if [ -z "$AAB_FILE" ]; then
@@ -65,8 +75,11 @@ jobs:
             exit 1
           fi
 
-          # eas submit --platform=android --path=$AAB_FILE --profile=production
           echo "AAB_FILE=$AAB_FILE" >> $GITHUB_ENV
+
+      - name: EAS Submit Android aab
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: eas submit --platform=android --path=${{ env.AAB_FILE }} --profile=production
 
       - name: Upload aab
         uses: actions/upload-artifact@v3

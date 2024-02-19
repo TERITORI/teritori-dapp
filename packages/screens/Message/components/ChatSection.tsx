@@ -1,11 +1,11 @@
 import moment from "moment";
 import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
 import {
-  View,
-  TouchableOpacity,
-  useWindowDimensions,
   FlatList,
   Platform,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -14,47 +14,48 @@ import { Conversation } from "./Conversation";
 import { SearchConversation } from "./SearchConversation";
 import closeSVG from "../../../../assets/icons/close.svg";
 import sent from "../../../../assets/icons/sent.svg";
-import { BrandText } from "../../../components/BrandText";
-import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
-import { SVG } from "../../../components/SVG";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useMessage } from "../../../context/MessageProvider";
-import { useIsMobile } from "../../../hooks/useIsMobile";
+import {
+  Conversation as IConversation,
+  Message,
+  ReplyTo,
+} from "../../../utils/types/message";
+
+import { BrandText } from "@/components/BrandText";
+import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useMessage } from "@/context/MessageProvider";
+import { useAppRoute } from "@/hooks/navigation/useAppRoute";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import {
   selectConversationById,
   selectMessageList,
   updateConversationById,
-} from "../../../store/slices/message";
-import { RootState } from "../../../store/store";
-import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
+} from "@/store/slices/message";
+import { RootState } from "@/store/store";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import {
   neutral00,
   neutral33,
   neutral77,
   neutralA3,
   redDefault,
-} from "../../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontSemibold10,
   fontSemibold12,
   fontSemibold14,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import {
-  Conversation as IConversation,
-  Message,
-  ReplyTo,
-} from "../../../utils/types/message";
-import { weshConfig } from "../../../weshnet";
-import { getNewConversationText } from "../../../weshnet/messageHelpers";
-import { sendMessage } from "../../../weshnet/services";
-import { bytesFromString, stringFromBytes } from "../../../weshnet/utils";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { weshConfig } from "@/weshnet";
+import { getNewConversationText } from "@/weshnet/messageHelpers";
+import { sendMessage } from "@/weshnet/services";
+import { bytesFromString, stringFromBytes } from "@/weshnet/utils";
 
-import { useAppRoute } from "@/hooks/navigation/useAppRoute";
 interface ChatSectionProps {
   conversation: IConversation;
 }

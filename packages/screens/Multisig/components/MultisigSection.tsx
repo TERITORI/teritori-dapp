@@ -5,18 +5,19 @@ import { ActivityIndicator } from "react-native-paper";
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import walletSVG from "../../../../assets/icons/wallet-grey.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { SpacerRow } from "../../../components/spacer";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { SpacerRow } from "@/components/spacer";
 import {
   neutral33,
   neutral77,
   neutralA3,
   secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface MultisigSectionProps {
   title: string;

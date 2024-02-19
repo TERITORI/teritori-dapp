@@ -1,32 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Platform, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 import QRCode from "react-native-qrcode-svg";
 import { useDispatch, useSelector } from "react-redux";
 
 import logoHexagonPNG from "../../../../assets/logos/logo-hexagon.png";
-import { BrandText } from "../../../components/BrandText";
-import { CopyToClipboard } from "../../../components/CopyToClipboard";
-import { ErrorText } from "../../../components/ErrorText";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
-import { QRCodeScannerModal } from "../../../components/modals/QRCodeScannerModal";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useIsMobile } from "../../../hooks/useIsMobile";
+import { weshServices } from "../../../weshnet";
+
+import { BrandText } from "@/components/BrandText";
+import { CopyToClipboard } from "@/components/CopyToClipboard";
+import { ErrorText } from "@/components/ErrorText";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { QRCodeScannerModal } from "@/components/modals/QRCodeScannerModal";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import {
   MessageState,
   selectContactInfo,
   setContactInfo,
-} from "../../../store/slices/message";
-import { neutral00, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { weshServices } from "../../../weshnet";
-import { createSharableLink } from "../../../weshnet/services";
+} from "@/store/slices/message";
+import { neutral00, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { createSharableLink } from "@/weshnet/services";
+
 interface CreateConversationProps {
   onClose: () => void;
 }

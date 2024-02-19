@@ -78,6 +78,7 @@ export const GradientText: React.FC<GradientTextProps> = ({
         lineHeight,
         textOverflow,
         overflow,
+        whiteSpace: "pre-line",
         ...flatStyle,
       }}
     >

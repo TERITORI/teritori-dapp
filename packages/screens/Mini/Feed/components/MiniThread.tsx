@@ -3,23 +3,20 @@ import { StyleProp, ViewStyle } from "react-native";
 
 import { PostActions } from "./PostActions";
 import { PostHeader } from "./PostHeader";
-import { Post } from "../../../../api/feed/v1/feed";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { MusicPostTrackContent } from "../../../../components/socialFeed/SocialCard/MusicPostTrackContent";
-import { SocialCardWrapper } from "../../../../components/socialFeed/SocialCard/SocialCardWrapper";
-import { SocialMessageContent } from "../../../../components/socialFeed/SocialCard/SocialMessageContent";
-import { SpacerColumn } from "../../../../components/spacer";
-import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
-import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
-import { getNetworkObjectId, parseUserId } from "../../../../networks";
-import { zodTryParseJSON } from "../../../../utils/sanitize";
-import { tinyAddress } from "../../../../utils/text";
-import {
-  PostCategory,
-  ZodSocialFeedPostMetadata,
-} from "../../../../utils/types/feed";
 
+import { Post } from "@/api/feed/v1/feed";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { MusicPostTrackContent } from "@/components/socialFeed/SocialCard/MusicPostTrackContent";
+import { SocialCardWrapper } from "@/components/socialFeed/SocialCard/SocialCardWrapper";
+import { SocialMessageContent } from "@/components/socialFeed/SocialCard/SocialMessageContent";
+import { SpacerColumn } from "@/components/spacer";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { getNetworkObjectId, parseUserId } from "@/networks";
+import { zodTryParseJSON } from "@/utils/sanitize";
+import { tinyAddress } from "@/utils/text";
+import { PostCategory, ZodSocialFeedPostMetadata } from "@/utils/types/feed";
 
 type Props = {
   post: Post;

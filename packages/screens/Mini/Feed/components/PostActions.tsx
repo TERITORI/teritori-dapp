@@ -2,12 +2,13 @@ import { Dispatch, SetStateAction } from "react";
 import { View } from "react-native";
 
 import { PostCommentCount } from "./PostCommentCount";
-import { Post } from "../../../../api/feed/v1/feed";
-import { TipButton } from "../../../../components/socialFeed/SocialActions/TipButton";
-import { SpacerRow } from "../../../../components/spacer";
-import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
-import { parseUserId } from "../../../../networks";
+
+import { Post } from "@/api/feed/v1/feed";
+import { TipButton } from "@/components/socialFeed/SocialActions/TipButton";
+import { SpacerRow } from "@/components/spacer";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { parseUserId } from "@/networks";
 
 type CardFooterProps = {
   post: Post;

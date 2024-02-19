@@ -41,8 +41,9 @@ import theGraph from "../../../../assets/logos/theGraph.png";
 import toripunks from "../../../../assets/logos/toniPunks.png";
 import uniswap from "../../../../assets/logos/uniswap.png";
 import yieldmos from "../../../../assets/logos/yieldmos.png";
-import { isElectron } from "../../../utils/isElectron";
-import { dAppGroup } from "../../../utils/types/dapp-store";
+
+import { isElectron } from "@/utils/isElectron";
+import { dAppGroup } from "@/utils/types/dapp-store";
 
 export function getAvailableApps(): dAppGroup {
   return {
@@ -62,20 +63,6 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: true,
           alwaysOn: true,
         },
-        ...(Platform.OS !== "web"
-          ? {
-              toriwallet: {
-                id: "toriwallet",
-                title: "Tori Wallet",
-                description: "Wallet",
-                icon: pathwar,
-                route: "NativeWallet",
-                groupKey: "teritori-core-apps",
-                selectedByDefault: true,
-                alwaysOn: false,
-              },
-            }
-          : {}),
         launchpad: {
           id: "launchpad",
           title: "Launchpad",

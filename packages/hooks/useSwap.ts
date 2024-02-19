@@ -16,12 +16,13 @@ import { useEffect, useMemo, useState } from "react";
 
 import { useSelectedNetworkId } from "./useSelectedNetwork";
 import useSelectedWallet from "./useSelectedWallet";
+
 import {
   CurrencyInfo,
   getCosmosNetwork,
   getKeplrSigner,
   getNativeCurrency,
-} from "../networks";
+} from "@/networks";
 
 interface PriceHash<T> {
   [key: string]: T;

@@ -3,12 +3,13 @@ import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
-import { BrandText } from "../../../components/BrandText";
-import { SpacerColumn } from "../../../components/spacer";
-import { neutral77 } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { ExistingBaseUrlFormValues } from "../CreateCollection.type";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn } from "@/components/spacer";
+import { neutral77 } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const UriTab: React.FC = () => {
   const { control } = useForm<ExistingBaseUrlFormValues>({

@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
 import { FlatList, View } from "react-native";
 
-import { Reaction } from "../../../../api/feed/v1/feed";
-import { BrandText } from "../../../../components/BrandText";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
-import { fontSemibold13 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
+import { Reaction } from "@/api/feed/v1/feed";
+import { BrandText } from "@/components/BrandText";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type Props = {
   reactions: Reaction[];

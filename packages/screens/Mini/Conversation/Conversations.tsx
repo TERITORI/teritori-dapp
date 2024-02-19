@@ -6,32 +6,33 @@ import { ChatInput } from "./ChatInput";
 import { SingleConversation } from "./SingleConversation";
 import closeSVG from "../../../../assets/icons/close.svg";
 import replySVG from "../../../../assets/icons/reply-white.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn } from "../../../components/spacer";
+import { GroupInvitationAction } from "../../Message/components/GroupInvitationAction";
+import { ChatAvatar } from "../components/ChatAvatar";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn } from "@/components/spacer";
 import {
   neutral00,
   neutral22,
   neutral33,
   neutral99,
-} from "../../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontSemibold12,
   fontSemibold14,
   fontSemibold22,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { Conversation, Message, ReplyTo } from "../../../utils/types/message";
-import { weshConfig } from "../../../weshnet";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { Conversation, Message, ReplyTo } from "@/utils/types/message";
+import { weshConfig } from "@/weshnet";
 import {
   getConversationAvatar,
   getConversationName,
-} from "../../../weshnet/messageHelpers";
-import { stringFromBytes } from "../../../weshnet/utils";
-import { GroupInvitationAction } from "../../Message/components/GroupInvitationAction";
-import { ChatAvatar } from "../components/ChatAvatar";
+} from "@/weshnet/messageHelpers";
+import { stringFromBytes } from "@/weshnet/utils";
 
 const DefaultName = "Anon";
 

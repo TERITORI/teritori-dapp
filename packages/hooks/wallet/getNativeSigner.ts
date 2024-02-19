@@ -1,8 +1,9 @@
 import { SigningStargateClient } from "@cosmjs/stargate";
 
 import { getNativeWallet } from "./getNativeWallet";
-import { mustGetCosmosNetwork } from "../../networks";
-import { StoreWallet } from "../../store/slices/wallets";
+
+import { mustGetCosmosNetwork } from "@/networks";
+import { StoreWallet } from "@/store/slices/wallets";
 
 export const getNativeSigner = async (selectedWallet: StoreWallet) => {
   const network = mustGetCosmosNetwork(selectedWallet.networkId);

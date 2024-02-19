@@ -3,24 +3,22 @@ import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { SideCart, useShowCart } from "./SideCart";
-import { SortDirection } from "../../api/marketplace/v1/marketplace";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { CollectionContent } from "../../components/collections/CollectionContent";
-import { CollectionHeader } from "../../components/collections/CollectionHeader";
-import { TabsListType } from "../../components/collections/types";
-import { useCollectionInfo } from "../../hooks/useCollectionInfo";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { parseCollectionId } from "../../networks";
-import {
-  setBuyNow,
-  setShowFilters,
-} from "../../store/slices/marketplaceFilters";
-import { useAppDispatch } from "../../store/store";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { neutral00, neutral33 } from "../../utils/style/colors";
-import { fontSemibold20 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+
+import { SortDirection } from "@/api/marketplace/v1/marketplace";
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { CollectionContent } from "@/components/collections/CollectionContent";
+import { CollectionHeader } from "@/components/collections/CollectionHeader";
+import { TabsListType } from "@/components/collections/types";
+import { useCollectionInfo } from "@/hooks/useCollectionInfo";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { parseCollectionId } from "@/networks";
+import { setBuyNow, setShowFilters } from "@/store/slices/marketplaceFilters";
+import { useAppDispatch } from "@/store/store";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { neutral00, neutral33 } from "@/utils/style/colors";
+import { fontSemibold20 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   const { id } = route.params;

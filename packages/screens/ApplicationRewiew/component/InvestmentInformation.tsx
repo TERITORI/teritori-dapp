@@ -2,9 +2,10 @@ import React from "react";
 import { View, useWindowDimensions } from "react-native";
 
 import { LinkCard } from "./LinkCard";
-import { BoxDetailTeritori } from "../../../components/BoxDetailTeritori/BoxDetailTeritori";
-import { BrandText } from "../../../components/BrandText";
-import { fontSemibold20 } from "../../../utils/style/fonts";
+
+import { BoxDetailTeritori } from "@/components/BoxDetailTeritori/BoxDetailTeritori";
+import { BrandText } from "@/components/BrandText";
+import { fontSemibold20 } from "@/utils/style/fonts";
 
 const MD_BREAKPOINT = 800;
 

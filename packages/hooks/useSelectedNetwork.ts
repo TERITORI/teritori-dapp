@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 
-import { getNetwork } from "../networks";
-import { selectSelectedNetworkId } from "../store/slices/settings";
+import { getNetwork } from "@/networks";
+import { selectSelectedNetworkId } from "@/store/slices/settings";
 
 export const useSelectedNetworkId = () => {
   const currentNetworkId = useSelector(selectSelectedNetworkId);

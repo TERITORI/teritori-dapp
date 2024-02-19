@@ -1,11 +1,12 @@
 import React, { FC } from "react";
 
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { UppTabKeys } from "../../../utils/upp";
 import { Assets } from "../../WalletManager/Assets";
 import { UppTabScreenProps } from "../UserPublicProfileScreen";
 import { UPPHeader } from "../components/UPPHeader";
 import { UPPScreenContentWrapper } from "../components/UPPScreenContentWrapper";
+
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { UppTabKeys } from "@/utils/upp";
 
 export const FundsUPPScreen: FC<UppTabScreenProps> = ({
   userId,

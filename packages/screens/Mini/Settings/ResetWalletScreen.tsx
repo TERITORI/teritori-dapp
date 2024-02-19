@@ -3,23 +3,24 @@ import { View } from "react-native";
 import { useSelector } from "react-redux";
 
 import stopSVG from "../../../../assets/icons/stop.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { SpacerColumn } from "../../../components/spacer";
-import { resetWallet } from "../../../hooks/wallet/getNativeWallet";
+import { CustomButton } from "../components/Button/CustomButton";
+import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SpacerColumn } from "@/components/spacer";
+import { resetWallet } from "@/hooks/wallet/getNativeWallet";
 import {
   resetAllAddressBook,
   resetAllTokens,
   resetAllWallets,
   selectAllWallets,
-} from "../../../store/slices/wallets";
-import { useAppDispatch } from "../../../store/store";
-import { ScreenFC } from "../../../utils/navigation";
-import { neutral77 } from "../../../utils/style/colors";
-import { fontMedium16, fontSemibold30 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { CustomButton } from "../components/Button/CustomButton";
-import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+} from "@/store/slices/wallets";
+import { useAppDispatch } from "@/store/store";
+import { ScreenFC } from "@/utils/navigation";
+import { neutral77 } from "@/utils/style/colors";
+import { fontMedium16, fontSemibold30 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const ResetWalletScreen: ScreenFC<"MiniResetWallet"> = ({
   navigation,

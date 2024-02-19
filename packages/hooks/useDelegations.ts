@@ -3,14 +3,15 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
+
 import {
   getCosmosNetwork,
   getNativeCurrency,
   getNetwork,
   NetworkKind,
-} from "../networks";
-import { Balance } from "../utils/coins";
-import { CosmosDelegationsResponse } from "../utils/teritori";
+} from "@/networks";
+import { Balance } from "@/utils/coins";
+import { CosmosDelegationsResponse } from "@/utils/teritori";
 
 const initialData = { delegation_responses: [] };
 

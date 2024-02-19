@@ -1,10 +1,10 @@
 import React from "react";
 import { View, useWindowDimensions } from "react-native";
 
-import { BoxDetailTeritori } from "../../../components/BoxDetailTeritori/BoxDetailTeritori";
-import { BrandText } from "../../../components/BrandText";
-import { neutral33 } from "../../../utils/style/colors";
-import { fontSemibold20 } from "../../../utils/style/fonts";
+import { BoxDetailTeritori } from "@/components/BoxDetailTeritori/BoxDetailTeritori";
+import { BrandText } from "@/components/BrandText";
+import { neutral33 } from "@/utils/style/colors";
+import { fontSemibold20 } from "@/utils/style/fonts";
 
 const MD_BREAKPOINT = 800;
 

@@ -87,6 +87,7 @@ export const MintUploader: FC<MintUploaderProps> = ({
         title: "Failed to upload file",
         message: error instanceof Error ? error.message : `${error}`,
       });
+      console.error("Failed to upload files:", error);
     }
     setIsLoading(false);
   };

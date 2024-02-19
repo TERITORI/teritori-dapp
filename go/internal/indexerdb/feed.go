@@ -4,12 +4,6 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 )
 
-/*
-userReactions = [
-	{icon: [userId, ...]}
-]
-*/
-
 type Post struct {
 	Identifier           string          `gorm:"primaryKey"`
 	ParentPostIdentifier string          `gorm:"index"`
@@ -18,6 +12,7 @@ type Post struct {
 	Metadata             ObjectJSONB     `gorm:"type:jsonb;default:'{}'"`
 	UserReactions        ObjectJSONB     `gorm:"type:jsonb;default:'{}'"`
 	AuthorId             networks.UserID `gorm:"index"`
+	PremiumLevel         uint32          `gorm:"index"`
 	CreatedAt            int64
 	IsDeleted            bool
 	IsFree               bool

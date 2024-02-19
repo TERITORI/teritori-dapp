@@ -1,5 +1,5 @@
-import { useFeedbacks } from "../context/FeedbacksProvider";
-import { DETAULT_PROCESS_ERROR } from "../utils/errors";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { DETAULT_PROCESS_ERROR } from "@/utils/errors";
 
 type ErrorHandlerType = {
   title: string;

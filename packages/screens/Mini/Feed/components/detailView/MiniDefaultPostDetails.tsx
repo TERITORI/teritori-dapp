@@ -1,35 +1,35 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
 
-import { Post } from "../../../../../api/feed/v1/feed";
-import { ScreenContainer } from "../../../../../components/ScreenContainer";
-import { CommentsContainer } from "../../../../../components/cards/CommentsContainer";
-import { NewsFeedInputHandle } from "../../../../../components/socialFeed/NewsFeed/NewsFeedInput";
-import { SocialThreadCard } from "../../../../../components/socialFeed/SocialCard/cards/SocialThreadCard";
+import CustomAppBar from "../../../components/AppBar/CustomAppBar";
+
+import { Post } from "@/api/feed/v1/feed";
+import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { CommentsContainer } from "@/components/cards/CommentsContainer";
+import { NewsFeedInputHandle } from "@/components/socialFeed/NewsFeed/NewsFeedInput";
+import { SocialThreadCard } from "@/components/socialFeed/SocialCard/cards/SocialThreadCard";
+import { SpacerColumn } from "@/components/spacer";
 import {
   combineFetchCommentPages,
   useFetchComments,
-} from "../../../../../hooks/feed/useFetchComments";
-import { useNSUserInfo } from "../../../../../hooks/useNSUserInfo";
-import { parseUserId } from "../../../../../networks";
-import { BASE_POST, DEFAULT_USERNAME } from "../../../../../utils/social-feed";
-import { tinyAddress } from "../../../../../utils/text";
+} from "@/hooks/feed/useFetchComments";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { parseUserId } from "@/networks";
+import { MiniCommentInput } from "@/screens/Mini/components/MiniCommentInput";
+import { DEFAULT_USERNAME } from "@/utils/social-feed";
+import { tinyAddress } from "@/utils/text";
 import {
   OnPressReplyType,
   PostCategory,
   ReplyToType,
-} from "../../../../../utils/types/feed";
-import CustomAppBar from "../../../components/AppBar/CustomAppBar";
-
-import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
-import { SpacerColumn } from "@/components/spacer";
-import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
-import { MiniCommentInput } from "@/screens/Mini/components/MiniCommentInput";
+} from "@/utils/types/feed";
 
 type Props = {
   networkId: string;
@@ -50,7 +50,7 @@ const MiniDefaultPostDetails = ({
 
   const aref = useAnimatedRef<Animated.ScrollView>();
 
-  const [localPost, setLocalPost] = useState(post || BASE_POST);
+  const [localPost, setLocalPost] = useState(post || Post.create());
   const [replyTo, setReplyTo] = useState<ReplyToType>();
   const {
     data,

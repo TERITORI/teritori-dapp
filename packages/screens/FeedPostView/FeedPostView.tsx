@@ -4,18 +4,19 @@ import { ActivityIndicator } from "react-native";
 import { FeedPostArticleView } from "./components/FeedPostArticleView";
 import { FeedPostDefaultView } from "./components/FeedPostDefaultView";
 import { FeedPostVideoView } from "./components/FeedPostVideoView";
-import { BrandText } from "../../components/BrandText";
-import { NotFound } from "../../components/NotFound";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { usePost } from "../../hooks/feed/usePost";
-import { parseNetworkObjectId } from "../../networks";
-import { gnoTeritoriNetwork } from "../../networks/gno-teritori";
-import { teritoriNetwork } from "../../networks/teritori";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { primaryColor } from "../../utils/style/colors";
-import { fontSemibold20 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { PostCategory } from "../../utils/types/feed";
+
+import { BrandText } from "@/components/BrandText";
+import { NotFound } from "@/components/NotFound";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { usePost } from "@/hooks/feed/usePost";
+import { parseNetworkObjectId } from "@/networks";
+import { gnoTeritoriNetwork } from "@/networks/gno-teritori";
+import { teritoriNetwork } from "@/networks/teritori";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { primaryColor } from "@/utils/style/colors";
+import { fontSemibold20 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { PostCategory } from "@/utils/types/feed";
 
 export const FeedPostView: ScreenFC<"FeedPostView"> = ({
   route: {

@@ -18,29 +18,30 @@ import {
 
 import { GameContentView } from "./component/GameContentView";
 import trashSVG from "../../../assets/icons/trash.svg";
+import FlexRow from "../../components/FlexRow";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+
 import {
   NFT,
   NFTsRequest,
   Sort,
   SortDirection,
-} from "../../api/marketplace/v1/marketplace";
-import { BrandText } from "../../components/BrandText";
-import { ExternalLink } from "../../components/ExternalLink";
-import FlexRow from "../../components/FlexRow";
-import { OptimizedImage } from "../../components/OptimizedImage";
-import { SVG } from "../../components/SVG";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-import { NFTBridge } from "../../components/nfts/NFTBridge";
-import { Separator } from "../../components/separators/Separator";
-import { SpacerColumn } from "../../components/spacer";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { AxelarBridgeETH__factory } from "../../evm-contracts-clients/axelar-bridge-eth/AxelarBridgeETH__factory";
-import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
-import { TeritoriNft__factory } from "../../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import { useNFTs } from "../../hooks/useNFTs";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
+} from "@/api/marketplace/v1/marketplace";
+import { BrandText } from "@/components/BrandText";
+import { ExternalLink } from "@/components/ExternalLink";
+import { OptimizedImage } from "@/components/OptimizedImage";
+import { SVG } from "@/components/SVG";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { NFTBridge } from "@/components/nfts/NFTBridge";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { AxelarBridgeETH__factory } from "@/evm-contracts-clients/axelar-bridge-eth/AxelarBridgeETH__factory";
+import { TeritoriMinter__factory } from "@/evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { TeritoriNft__factory } from "@/evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { useNFTs } from "@/hooks/useNFTs";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   EthereumNetworkInfo,
   NetworkFeature,
@@ -48,10 +49,10 @@ import {
   getEthereumNetwork,
   parseNftId,
   txExplorerLink,
-} from "../../networks";
-import { polygonNetwork } from "../../networks/polygon";
-import { polygonMumbaiNetwork } from "../../networks/polygon-mumbai";
-import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
+} from "@/networks";
+import { polygonNetwork } from "@/networks/polygon";
+import { polygonMumbaiNetwork } from "@/networks/polygon-mumbai";
+import { getMetaMaskEthereumSigner } from "@/utils/ethereum";
 import {
   codGrayColor,
   errorColor,
@@ -60,7 +61,7 @@ import {
   neutral44,
   neutralA3,
   yellowDefault,
-} from "../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontMedium10,
   fontMedium14,
@@ -69,8 +70,8 @@ import {
   fontSemibold12,
   fontSemibold14,
   fontSemibold20,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const _toDecimalNumber = (
   bn: BigNumber,

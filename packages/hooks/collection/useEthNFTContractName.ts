@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { TeritoriNft__factory } from "../../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import { NetworkKind, getNetwork } from "../../networks";
-import { getEthereumProvider } from "../../utils/ethereum";
+import { TeritoriNft__factory } from "@/evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { NetworkKind, getNetwork } from "@/networks";
+import { getEthereumProvider } from "@/utils/ethereum";
 
 export const useEthNFTContractName = (
   networkId: string | undefined,

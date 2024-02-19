@@ -4,20 +4,21 @@ import { FlatList } from "react-native-gesture-handler";
 
 import { NFTAccordion } from "./components/NFTAccordion";
 import searchSvg from "../../../../assets/icons/search-gray.svg";
+import MiniTextInput from "../components/MiniTextInput";
+
 import {
   MintState,
   Sort,
   SortDirection,
-} from "../../../api/marketplace/v1/marketplace";
-import { SpacerColumn } from "../../../components/spacer";
-import { useCollections } from "../../../hooks/useCollections";
-import { useSelectedNativeWallet } from "../../../hooks/wallet/useSelectedNativeWallet";
-import { parseNetworkObjectId } from "../../../networks";
-import { ScreenFC } from "../../../utils/navigation";
-import { neutralA3 } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import MiniTextInput from "../components/MiniTextInput";
+} from "@/api/marketplace/v1/marketplace";
+import { SpacerColumn } from "@/components/spacer";
+import { useCollections } from "@/hooks/useCollections";
+import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
+import { parseNetworkObjectId } from "@/networks";
+import { ScreenFC } from "@/utils/navigation";
+import { neutralA3 } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const NFTScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
   const selectedWallet = useSelectedNativeWallet();

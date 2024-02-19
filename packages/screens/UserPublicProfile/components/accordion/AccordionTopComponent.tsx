@@ -2,12 +2,11 @@ import { Decimal } from "@cosmjs/math";
 import moment from "moment";
 import React from "react";
 import { Control, FieldArrayWithId } from "react-hook-form";
-import { View, TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import chevronDownSVG from "./../../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "./../../../../../assets/icons/chevron-up.svg";
 import defaultTierImage from "../../../../../assets/default-images/default-tier-thumbnail.png";
-import { layout } from "../../../../utils/style/layout";
 
 import { BrandText } from "@/components/BrandText";
 import { OptimizedImage } from "@/components/OptimizedImage";
@@ -17,6 +16,7 @@ import { getNativeCurrency } from "@/networks";
 import { prettyPrice } from "@/utils/coins";
 import { neutral77, neutralA3, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 import { SubscriptionFormValues } from "@/utils/types/premium-feed";
 
 interface AccordionTopProps {

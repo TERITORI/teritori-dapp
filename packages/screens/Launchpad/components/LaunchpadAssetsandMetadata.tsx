@@ -3,11 +3,12 @@ import { View } from "react-native";
 
 import { AssetsTab } from "./AssetsTab";
 import { UriTab } from "./UriTab";
-import { BrandText } from "../../../components/BrandText";
-import { SpacerColumn } from "../../../components/spacer";
-import { Tabs } from "../../../components/tabs/Tabs";
-import { neutral77, primaryColor } from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn } from "@/components/spacer";
+import { Tabs } from "@/components/tabs/Tabs";
+import { neutral77, primaryColor } from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 
 const AssetsandMetadataTabItems = {
   assets: {

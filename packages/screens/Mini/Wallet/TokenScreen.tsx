@@ -1,36 +1,48 @@
 import { Fragment } from "react";
 import { FlatList, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { AddedToken } from "./components/AddedToken";
 import TransactionItem from "./components/TransactionItem";
 import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
 import settingSVG from "../../../../assets/icons/setting-solid.svg";
 import transactionSVG from "../../../../assets/icons/transactions-gray.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn } from "../../../components/spacer";
-import { useBalances } from "../../../hooks/useBalances";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
-import { useSearchTx } from "../../../hooks/wallet/useSearchTx";
-import { useSelectedNativeWallet } from "../../../hooks/wallet/useSelectedNativeWallet";
-import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
+import { CustomButton } from "../components/Button/CustomButton";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn } from "@/components/spacer";
+import { useBalances } from "@/hooks/useBalances";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { useSearchTx } from "@/hooks/wallet/useSearchTx";
+import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 import {
-  neutral88,
-  neutralA3,
-  secondaryColor,
-} from "../../../utils/style/colors";
+  selectAllWallets,
+  setSelectedNativeWalletIndex,
+} from "@/store/slices/wallets";
+import { useAppDispatch } from "@/store/store";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { neutral88, neutralA3, secondaryColor } from "@/utils/style/colors";
 import {
   fontMedium13,
   fontMedium24,
   fontSemibold14,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { CustomButton } from "../components/Button/CustomButton";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
+  const wallets = useSelector(selectAllWallets);
+  const dispatch = useAppDispatch();
+  if (wallets.length === 0) {
+    navigation.navigate("NativeWallet");
+  }
+
   const selectedWallet = useSelectedNativeWallet();
+  if (!selectedWallet) {
+    dispatch(setSelectedNativeWalletIndex(wallets[0].index));
+  }
 
   const balances = useBalances(
     selectedWallet?.networkId,
@@ -77,8 +89,8 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
             title="Deposit"
             size="medium"
             onPress={() =>
-              navigation.navigate("MiniSelectToken", {
-                navigateTo: "MiniDepositTORI",
+              navigation.navigate("MiniDepositTORI", {
+                denom: "utori",
               })
             }
           />
@@ -142,7 +154,6 @@ const LastTransactions = () => {
     networkId,
     selectedWallet?.address,
   );
-  console.log("transactions", transactions);
 
   return (
     <>

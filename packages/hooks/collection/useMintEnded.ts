@@ -1,13 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { TeritoriBunkerMinterQueryClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
-import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { TeritoriBunkerMinterQueryClient } from "@/contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
+import { TeritoriMinter__factory } from "@/evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import {
   mustGetNonSigningCosmWasmClient,
   parseNetworkObjectId,
   NetworkKind,
-} from "../../networks";
-import { getEthereumProvider } from "../../utils/ethereum";
+  NetworkFeature,
+  getNetworkFeature,
+} from "@/networks";
+import { getEthereumProvider } from "@/utils/ethereum";
 
 export const useMintEnded = (collectionId: string, enabled: boolean = true) => {
   const { data } = useQuery(
@@ -21,6 +23,15 @@ export const useMintEnded = (collectionId: string, enabled: boolean = true) => {
 
       if (network?.kind === NetworkKind.Cosmos) {
         if (mintAddress === network.nameServiceContractAddress) {
+          return false;
+        }
+
+        if (
+          !!mintAddress &&
+          mintAddress ===
+            getNetworkFeature(network.id, NetworkFeature.CosmWasmPremiumFeed)
+              ?.membershipContractAddress
+        ) {
           return false;
         }
 

@@ -8,10 +8,10 @@ import {
 
 import { AccordionBottomComponent } from "./AccordionBottomComponent";
 import { AccordionTopComponent } from "./AccordionTopComponent";
-import { layout } from "../../../../utils/style/layout";
 
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { neutral22, neutral33 } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 import { SubscriptionFormValues } from "@/utils/types/premium-feed";
 
 interface AccordionProps {

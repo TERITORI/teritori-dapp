@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 import {
   selectSelectedNativeWalletIndex,
   selectWalletById,
-} from "../../store/slices/wallets";
-import { RootState } from "../../store/store";
+} from "@/store/slices/wallets";
+import { RootState } from "@/store/store";
 
 export const useSelectedNativeWallet = () => {
   const walletId = useSelector(selectSelectedNativeWalletIndex);

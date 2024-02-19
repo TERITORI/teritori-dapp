@@ -5,14 +5,15 @@ import { useBunkerMinterCurrentSupply } from "./useBunkerMinterCurrentSupply";
 import { useEthMinterConfig } from "./useEthMinterConfig";
 import { useEthMinterCurrentSupply } from "./useEthMinterCurrentSupply";
 import { useEthMinterWhitelists } from "./useEthMinterWhitelists";
-import { parseNetworkObjectId } from "../../networks";
+
+import { parseNetworkObjectId } from "@/networks";
 import {
   collectionContractKindFromID,
   CollectionContractKind,
   CollectionThumbnailInfo,
   expandCosmosBunkerConfig,
   expandEthereumBunkerConfig,
-} from "../../utils/collection";
+} from "@/utils/collection";
 
 export const useCollectionThumbnailInfo = (id: string) => {
   const contractKind = collectionContractKindFromID(id);

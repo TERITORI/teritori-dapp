@@ -498,9 +498,12 @@ export const getNetworkFeature = <
   FO extends NetworkFeatureObject,
   R = FO extends { type: F } ? FO : never,
 >(
-  networkId: string,
+  networkId: string | undefined,
   feature: F,
 ) => {
+  if (!networkId) {
+    return undefined;
+  }
   const network = getNetwork(networkId);
   if (!network?.featureObjects) {
     return undefined;
