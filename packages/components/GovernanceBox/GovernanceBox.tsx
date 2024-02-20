@@ -10,15 +10,14 @@ import { BrandText } from "@/components/BrandText";
 import { GovernanceProgressBar } from "@/components/GovernanceBox/GovernanceProgressBar";
 import { GovernanceTitle } from "@/components/GovernanceBox/GovernanceTitle";
 import {
-  additionalRed10,
   additionalSuccess,
-  additionalSuccess10,
   errorColor,
   neutral17,
   neutral22,
   neutralA3,
   primaryColor,
   secondaryColor,
+  withAlpha,
 } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -72,7 +71,7 @@ export const GovernanceBox: React.FC<{
                 titleColor={errorColor}
                 iconSVG={RejectSVG}
                 hasBorder
-                borderColor={additionalRed10}
+                borderColor={withAlpha(errorColor, 0.1)}
               />
             )}
 
@@ -82,7 +81,7 @@ export const GovernanceBox: React.FC<{
                 titleColor={additionalSuccess}
                 iconSVG={PassedSVG}
                 hasBorder
-                borderColor={additionalSuccess10}
+                borderColor={withAlpha(additionalSuccess, 0.1)}
               />
             )}
 
