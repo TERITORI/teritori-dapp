@@ -10939,7 +10939,7 @@
     "featureObjects": [
       {
         "type": "CosmWasmPremiumFeed",
-        "membershipContractAddress": "tori16w7h5tkkjtr36rpcdg8qv4sfs2e44xcrz6a9eczcslywyfpsynfqyj5pt0",
+        "membershipContractAddress": "tori122qmagdhqxr00ldp5jax08zgdumahx4h03shcy4wn9ckchfzky5q3hdylc",
         "mintDenom": "utori"
       }
     ],
@@ -10969,7 +10969,7 @@
     "contractExplorer": "https://explorer.teritori.com/teritori-testnet/account/$address",
     "idPrefix": "testori",
     "testnet": true,
-    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "backendEndpoint": "http://localhost:9090",
     "addressPrefix": "tori",
     "restEndpoint": "https://rest.testnet.teritori.com",
     "rpcEndpoint": "https://rpc.testnet.teritori.com",
@@ -10997,7 +10997,7 @@
     "distributorContractAddress": "",
     "riotersFooterContractAddress": "",
     "secondaryDuringMintList": [
-      "tori16w7h5tkkjtr36rpcdg8qv4sfs2e44xcrz6a9eczcslywyfpsynfqyj5pt0",
+      "tori122qmagdhqxr00ldp5jax08zgdumahx4h03shcy4wn9ckchfzky5q3hdylc",
       "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys",
       "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc",
       ""

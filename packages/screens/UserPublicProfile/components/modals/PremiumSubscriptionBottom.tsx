@@ -70,16 +70,21 @@ export const PremiumSubscriptionBottom: FC<{
             }}
           >
             <BrandText
-              style={[fontSemibold14, { color: neutral77, lineHeight: 20 }]}
+              style={[
+                fontSemibold14,
+                {
+                  color: neutral77,
+                },
+              ]}
             >
-              Pay by:
+              Pay with:
             </BrandText>
             <PrimaryBox
               style={{
                 height: 28,
                 flexDirection: "row",
                 paddingHorizontal: layout.spacing_x1,
-                marginLeft: layout.spacing_x0_5,
+                marginLeft: layout.spacing_x2,
                 backgroundColor: neutral33,
                 alignItems: "center",
                 borderColor: neutral33,
@@ -99,7 +104,6 @@ export const PremiumSubscriptionBottom: FC<{
                   {
                     marginLeft: layout.spacing_x0_5,
                     color: secondaryColor,
-                    lineHeight: layout.spacing_x2,
                   },
                 ]}
               >
@@ -115,11 +119,15 @@ export const PremiumSubscriptionBottom: FC<{
               { color: neutral77, lineHeight: 20, textAlign: "right" },
             ]}
           >
-            Balance:{" "}
+            Balance:
             <BrandText
               style={[
                 fontSemibold14,
-                { color: secondaryColor, lineHeight: 20 },
+                {
+                  color: secondaryColor,
+                  lineHeight: 20,
+                  marginLeft: layout.spacing_x2,
+                },
               ]}
             >
               {prettyPrice(
