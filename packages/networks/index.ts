@@ -550,7 +550,7 @@ export const getKeplrSigningCosmWasmClient = async (
     throw new Error("gas price not found");
   }
   if (Platform.OS !== "web") {
-    const wallet = await getNativeWallet("tori", 0);
+    const wallet = await getNativeWallet("tori", 1); // todo make multi wallet
 
     return SigningCosmWasmClient.connectWithSigner(
       network.rpcEndpoint,
