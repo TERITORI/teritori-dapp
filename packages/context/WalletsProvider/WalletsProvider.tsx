@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useContext, useMemo } from "react";
+import React, { createContext, ReactNode, useContext, useMemo } from "react";
 
 import { useAdena } from "./adena";
 import { useKeplr } from "./keplr";
@@ -8,7 +8,6 @@ import { Wallet } from "./wallet";
 import { WalletProvider } from "../../utils/walletProvider";
 
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
-import { NetworkKind } from "@/networks";
 // import { usePhantom } from "./phantom";
 // import { selectStoreWallets, storeWalletId } from "../../store/slices/wallets";
 // import { WalletProvider } from "../../utils/walletProvider";
