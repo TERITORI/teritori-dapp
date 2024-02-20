@@ -33,7 +33,7 @@ const def = {
   },
 };
 
-export interface PeriodDropdownGovProps {
+interface PeriodDropdownGovProps {
   style?: ViewStyle;
   onChange: (filter?: ProposalStatus) => void;
 }

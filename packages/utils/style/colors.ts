@@ -17,7 +17,6 @@ export const blueDefault = "#007AFF";
 export const codGrayColor = "#1C1C1C";
 export const mineShaftColor = "#3D3D3D";
 export const reefColor = "#D2FFAE";
-export const tulipTree = "#EAA54B";
 
 export const gameHighlight = "#FCEE4F";
 export const yankeesBlue = "#16283C";

@@ -3,7 +3,7 @@ export type ProposalStatus =
   | "PROPOSAL_STATUS_REJECTED"
   | "PROPOSAL_STATUS_VOTING";
 
-export interface Content {
+interface Content {
   "@type": string;
   title: string;
   description: string;
@@ -16,7 +16,7 @@ export interface FinalTallyResult {
   no_with_veto: string;
 }
 
-export interface TotalDeposit {
+interface TotalDeposit {
   denom: string;
   amount: string;
 }

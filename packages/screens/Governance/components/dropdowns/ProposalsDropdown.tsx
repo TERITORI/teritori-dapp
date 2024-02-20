@@ -24,7 +24,7 @@ const def = {
   },
 };
 
-export interface ProposalsDropdownGovProps {
+interface ProposalsDropdownGovProps {
   style?: ViewStyle;
   onChange: (filter?: string) => void;
 }
