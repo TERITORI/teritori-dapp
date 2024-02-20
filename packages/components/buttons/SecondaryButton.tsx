@@ -38,6 +38,7 @@ export const SecondaryButton: React.FC<{
   disabled?: boolean;
   fullWidth?: boolean;
   numberOfLines?: number;
+  hoverBorderColor?: string;
   loader?: boolean;
   textStyle?: TextStyle;
 }> = ({
@@ -54,6 +55,7 @@ export const SecondaryButton: React.FC<{
   iconSVG,
   disabled = false,
   fullWidth = false,
+  hoverBorderColor,
   numberOfLines,
   loader,
   textStyle,
@@ -93,7 +95,9 @@ export const SecondaryButton: React.FC<{
             opacity: isDisabled ? 0.5 : 1,
             width: fullWidth ? "100%" : width,
             borderWidth: 1,
-            borderColor: hovered ? "white" : backgroundColor,
+            borderColor: hovered
+              ? hoverBorderColor || "white"
+              : backgroundColor,
             height: heightButton(size),
             alignItems: "center",
             justifyContent: "center",
