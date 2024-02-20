@@ -3,14 +3,32 @@ export type ProposalStatus =
   | "PROPOSAL_STATUS_REJECTED"
   | "PROPOSAL_STATUS_VOTING";
 
-// FIXME: fully define type
+export interface Content {
+  "@type": string;
+  title: string;
+  description: string;
+}
+
+export interface FinalTallyResult {
+  yes: string;
+  abstain: string;
+  no: string;
+  no_with_veto: string;
+}
+
+export interface TotalDeposit {
+  denom: string;
+  amount: string;
+}
+
 export interface Proposal {
-  content: any;
-  status: ProposalStatus;
   proposal_id: string;
-  final_tally_result: any;
-  voting_end_time: string;
-  voting_start_time: string;
-  deposit_end_time: string;
+  content: Content;
+  status: ProposalStatus;
+  final_tally_result: FinalTallyResult;
   submit_time: string;
+  deposit_end_time: string;
+  total_deposit: TotalDeposit[];
+  voting_start_time: string;
+  voting_end_time: string;
 }

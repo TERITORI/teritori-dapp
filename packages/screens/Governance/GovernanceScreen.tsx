@@ -1,16 +1,18 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 
-import { NavBarGovernance } from "./NavBarGovernance";
+import { PeriodDropdown } from "./components/dropdowns/PeriodDropdown";
+import { ProposalsDropdown } from "./components/dropdowns/ProposalsDropdown";
+import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
 
 import { BrandText } from "@/components/BrandText";
-import { GovernanceBox } from "@/components/GovernanceBox/GovernanceBox";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { SearchInputRounded } from "@/components/sorts/SearchInputRounded";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { mustGetCosmosNetwork, NetworkKind } from "@/networks";
+import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 import { Proposal, ProposalStatus } from "@/utils/types/gov";
-
-// FIXME: properly handle pagination
 
 export const GovernanceScreen: React.FC = () => {
   const [proposals, setProposals] = useState<Proposal[]>([]);
@@ -40,42 +42,47 @@ export const GovernanceScreen: React.FC = () => {
   );
 
   return (
-    <ScreenContainer forceNetworkKind={NetworkKind.Cosmos}>
-      <BrandText style={{ fontSize: 28 }}>Decentralized Governance</BrandText>
-
-      <NavBarGovernance onChange={setFilter} />
+    <ScreenContainer
+      forceNetworkKind={NetworkKind.Cosmos}
+      isLarge
+      headerChildren={
+        <BrandText style={fontSemibold20}>Decentralized Governance</BrandText>
+      }
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          marginTop: layout.spacing_x3,
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <BrandText style={fontSemibold28}>Decentralized Governance</BrandText>
+        <View
+          style={{
+            flexDirection: "row",
+            gap: layout.spacing_x1_5,
+            alignItems: "center",
+          }}
+        >
+          <SearchInputRounded handleChangeSearch={() => {}} />
+          <PeriodDropdown onChange={setFilter} style={{ zIndex: 100 }} />
+          <ProposalsDropdown onChange={() => {}} style={{ zIndex: 100 }} />
+        </View>
+      </View>
 
       <View
         style={{
           display: "flex",
           flexDirection: "row",
           flexWrap: "wrap",
-          marginTop: 110,
-          marginLeft: -70,
-          marginRight: -60,
+          marginTop: 24,
+          marginRight: -20,
+          zIndex: -1,
         }}
       >
         {filteredProposals.map((proposals, index) => (
-          <GovernanceBox
-            key={index}
-            numberProposal={proposals.proposal_id}
-            titleProposal={proposals.content.title}
-            descriptionProposal={proposals.content.description}
-            votingEndTime={proposals.voting_end_time}
-            votingStartTime={proposals.voting_start_time}
-            votingSubmitTime={proposals.submit_time}
-            votingDepositEndTime={proposals.deposit_end_time}
-            colorMostVoted="#16BBFF"
-            percentageNoValue={parseFloat(proposals.final_tally_result.no)}
-            percentageYesValue={parseFloat(proposals.final_tally_result.yes)}
-            percentageNoWithVetoValue={parseFloat(
-              proposals.final_tally_result.no_with_veto,
-            )}
-            percentageAbstainValue={parseFloat(
-              proposals.final_tally_result.abstain,
-            )}
-            status={proposals.status}
-          />
+          <GovernanceBox proposal={proposals} />
         ))}
       </View>
     </ScreenContainer>
