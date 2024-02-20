@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { InstantiateMsg, ExecuteMsg, ExecMsg, Uint64, Uint128, Binary, MembershipConfig, Coin, QueryMsg, QueryMsg1, AdminFundsResponse, Expiration, Timestamp, AllNftInfoResponseForMetadata, OwnerOfResponse, Approval, NftInfoResponseForMetadata, Metadata, Trait, TokensResponse, ChannelResponse, ChannelFundsResponse, CheckRoyaltiesResponse, Addr, Config, ContractInfoResponse, NumTokensResponse, RoyaltiesInfoResponse, SubscriptionResponse, Subscription } from "./Cw721Membership.types";
+import { InstantiateMsg, ExecuteMsg, ExecMsg, Uint64, Uint128, Binary, MembershipConfig, Coin, QueryMsg, QueryMsg1, AdminFundsResponse, Expiration, Timestamp, AllNftInfoResponseForMetadata, OwnerOfResponse, Approval, NftInfoResponseForMetadata, Metadata, Trait, TokensResponse, Addr, ChannelResponse, ChannelFundsResponse, CheckRoyaltiesResponse, Config, ContractInfoResponse, NumTokensResponse, RoyaltiesInfoResponse, SubscriptionResponse, Subscription } from "./Cw721Membership.types";
 export interface Cw721MembershipReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<Config>;
@@ -246,12 +246,27 @@ export class Cw721MembershipQueryClient implements Cw721MembershipReadOnlyInterf
 export interface Cw721MembershipInterface extends Cw721MembershipReadOnlyInterface {
   contractAddress: string;
   sender: string;
-  upsertChannel: ({
+  createChannel: ({
     membershipsConfig,
-    tradeRoyalties
+    tradeRoyaltiesAddr,
+    tradeRoyaltiesPer10k
   }: {
     membershipsConfig: MembershipConfig[];
-    tradeRoyalties: number;
+    tradeRoyaltiesAddr?: string;
+    tradeRoyaltiesPer10k: number;
+  }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
+  updateChannel: ({
+    id,
+    membershipsConfig,
+    owner,
+    tradeRoyaltiesAddr,
+    tradeRoyaltiesPer10k
+  }: {
+    id: Uint64;
+    membershipsConfig?: MembershipConfig[];
+    owner?: string;
+    tradeRoyaltiesAddr?: string;
+    tradeRoyaltiesPer10k?: number;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   subscribe: ({
     channelAddr,
@@ -328,7 +343,8 @@ export class Cw721MembershipClient extends Cw721MembershipQueryClient implements
     this.client = client;
     this.sender = sender;
     this.contractAddress = contractAddress;
-    this.upsertChannel = this.upsertChannel.bind(this);
+    this.createChannel = this.createChannel.bind(this);
+    this.updateChannel = this.updateChannel.bind(this);
     this.subscribe = this.subscribe.bind(this);
     this.updateConfig = this.updateConfig.bind(this);
     this.updateChannelMintPlatformFee = this.updateChannelMintPlatformFee.bind(this);
@@ -339,17 +355,43 @@ export class Cw721MembershipClient extends Cw721MembershipQueryClient implements
     this.burn = this.burn.bind(this);
   }
 
-  upsertChannel = async ({
+  createChannel = async ({
     membershipsConfig,
-    tradeRoyalties
+    tradeRoyaltiesAddr,
+    tradeRoyaltiesPer10k
   }: {
     membershipsConfig: MembershipConfig[];
-    tradeRoyalties: number;
+    tradeRoyaltiesAddr?: string;
+    tradeRoyaltiesPer10k: number;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
-      upsert_channel: {
+      create_channel: {
         memberships_config: membershipsConfig,
-        trade_royalties: tradeRoyalties
+        trade_royalties_addr: tradeRoyaltiesAddr,
+        trade_royalties_per10k: tradeRoyaltiesPer10k
+      }
+    }, fee, memo, _funds);
+  };
+  updateChannel = async ({
+    id,
+    membershipsConfig,
+    owner,
+    tradeRoyaltiesAddr,
+    tradeRoyaltiesPer10k
+  }: {
+    id: Uint64;
+    membershipsConfig?: MembershipConfig[];
+    owner?: string;
+    tradeRoyaltiesAddr?: string;
+    tradeRoyaltiesPer10k?: number;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      update_channel: {
+        id,
+        memberships_config: membershipsConfig,
+        owner,
+        trade_royalties_addr: tradeRoyaltiesAddr,
+        trade_royalties_per10k: tradeRoyaltiesPer10k
       }
     }, fee, memo, _funds);
   };

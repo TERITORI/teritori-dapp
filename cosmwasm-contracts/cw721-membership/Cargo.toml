@@ -18,6 +18,8 @@ thiserror = "1.0.44"
 cw721 = "0.18.0"
 cw721-metadata-onchain = { version = "0.15.0", features = ["library"] }
 cw2981-royalties = "0.18.0"
+integer-encoding = "4.0.0"
+base64 = "0.21.7"
 
 [dev-dependencies]
 sylvia = { version = "0.7.0", features = ["mt"] }

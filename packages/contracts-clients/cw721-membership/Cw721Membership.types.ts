@@ -8,16 +8,26 @@ export interface InstantiateMsg {
   admin_addr: string;
   description: string;
   image_uri: string;
-  mint_royalties: number;
+  mint_royalties_per10k_default: number;
   name: string;
   symbol: string;
   [k: string]: unknown;
 }
 export type ExecuteMsg = ExecMsg;
 export type ExecMsg = {
-  upsert_channel: {
+  create_channel: {
     memberships_config: MembershipConfig[];
-    trade_royalties: number;
+    trade_royalties_addr?: string | null;
+    trade_royalties_per10k: number;
+    [k: string]: unknown;
+  };
+} | {
+  update_channel: {
+    id: Uint64;
+    memberships_config?: MembershipConfig[] | null;
+    owner?: string | null;
+    trade_royalties_addr?: string | null;
+    trade_royalties_per10k?: number | null;
     [k: string]: unknown;
   };
 } | {
@@ -209,10 +219,14 @@ export interface Trait {
 export interface TokensResponse {
   tokens: string[];
 }
+export type Addr = string;
 export interface ChannelResponse {
+  id: Uint64;
   memberships_config: MembershipConfig[];
-  mint_royalties: number;
-  trade_royalties: number;
+  mint_royalties_per10k: number;
+  owner_addr: Addr;
+  trade_royalties_addr: Addr;
+  trade_royalties_per10k: number;
 }
 export interface ChannelFundsResponse {
   funds: Coin[];
@@ -220,12 +234,11 @@ export interface ChannelFundsResponse {
 export interface CheckRoyaltiesResponse {
   royalty_payments: boolean;
 }
-export type Addr = string;
 export interface Config {
   admin_addr: Addr;
   description: string;
   image_uri: string;
-  mint_royalties: number;
+  mint_royalties_per10k_default: number;
   name: string;
   symbol: string;
 }

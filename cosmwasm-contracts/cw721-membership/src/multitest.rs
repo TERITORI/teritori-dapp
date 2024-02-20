@@ -1,8 +1,8 @@
-use cosmwasm_std::{Addr, Coin, Timestamp, Uint128, Uint64};
+use cosmwasm_std::{from_json, Addr, BalanceResponse, BankQuery, Coin, Timestamp, Uint128, Uint64};
 use cw2981_royalties::msg::{CheckRoyaltiesResponse, RoyaltiesInfoResponse};
 use cw721::{NftInfoResponse, TokensResponse};
 use cw721_metadata_onchain::{Metadata, Trait};
-use sylvia::{anyhow::Error, multitest::App};
+use sylvia::{anyhow::Error, cw_multi_test::Module, multitest::App};
 
 use crate::contract::{
     multitest_utils::CodeId, MembershipConfig, Subscription, SubscriptionResponse,
@@ -30,11 +30,34 @@ fn basic_full_flow() {
         })
         .unwrap();
 
+    let get_balance = |addr: String| -> BalanceResponse {
+        app.app()
+            .read_module(|router, api, storage| {
+                let block_info = &app.block_info();
+                let querier = router.querier(api, storage, block_info);
+                let res = router
+                    .bank
+                    .query(
+                        api,
+                        storage,
+                        &querier,
+                        block_info,
+                        BankQuery::Balance {
+                            address: addr,
+                            denom: "utori".to_string(),
+                        },
+                    )
+                    .unwrap();
+                from_json(res)
+            })
+            .unwrap()
+    };
+
     // ------- instantiate contract
 
     let admin = "admin";
     let contract_creator = "creator";
-    let mint_royalties = 5;
+    let mint_royalties = 500;
     let coll_name = "coll_name";
     let coll_desc = "coll_desc";
     let coll_image_uri = "coll_image_uri";
@@ -58,7 +81,7 @@ fn basic_full_flow() {
 
     let config = contract.config().unwrap();
     assert_eq!(config.admin_addr, admin.to_string());
-    assert_eq!(config.mint_royalties, mint_royalties);
+    assert_eq!(config.mint_royalties_per10k_default, mint_royalties);
     assert_eq!(config.name, coll_name.to_string());
     assert_eq!(config.description, coll_desc.to_string());
     assert_eq!(config.image_uri, coll_image_uri.to_string());
@@ -78,18 +101,46 @@ fn basic_full_flow() {
         },
     }];
 
+    let initial_trade_royalties = 1000;
     let trade_royalties = 500;
     let channel_owner = "channel_owner";
+    let channel_vault = "channel_vault";
 
-    contract
-        .upsert_channel(memberships_config.clone(), trade_royalties)
+    let res = contract
+        .create_channel(
+            memberships_config.clone(),
+            initial_trade_royalties,
+            Some(channel_vault.to_string()),
+        )
         .call(channel_owner)
         .unwrap();
 
     let channel_response = contract.channel(channel_owner.to_string()).unwrap();
     assert_eq!(channel_response.memberships_config, memberships_config);
-    assert_eq!(channel_response.mint_royalties, mint_royalties);
-    assert_eq!(channel_response.trade_royalties, trade_royalties);
+    assert_eq!(channel_response.mint_royalties_per10k, mint_royalties);
+    assert_eq!(
+        channel_response.trade_royalties_addr,
+        channel_vault.to_string()
+    );
+    assert_eq!(
+        channel_response.trade_royalties_per10k,
+        initial_trade_royalties
+    );
+
+    contract
+        .update_channel(channel_response.id, None, Some(trade_royalties), None, None)
+        .call(channel_owner)
+        .unwrap();
+
+    let channel_response = contract.channel(channel_owner.to_string()).unwrap();
+    assert_eq!(channel_response.owner_addr, channel_owner);
+    assert_eq!(channel_response.memberships_config, memberships_config);
+    assert_eq!(channel_response.mint_royalties_per10k, mint_royalties);
+    assert_eq!(
+        channel_response.trade_royalties_addr,
+        channel_vault.to_string()
+    );
+    assert_eq!(channel_response.trade_royalties_per10k, trade_royalties);
 
     // ------- mint a nft
 
@@ -102,7 +153,7 @@ fn basic_full_flow() {
         .call(sub_user)
         .unwrap();
 
-    let token_id = "AAAAAAAAAAFjaGFubmVsX293bmVy";
+    let token_id = "AQE";
 
     // ------- test nft queries
 
@@ -129,26 +180,30 @@ fn basic_full_flow() {
             token_uri: None,
             extension: Metadata {
                 image: Some("https://example.com/image.png".to_string()),
-                name: Some("Sub #1".to_string()),
+                image_data: None,
+                external_url: None,
                 description: Some("Channel description".to_string()),
+                name: Some("Sub #1".to_string()),
                 attributes: Some(vec![
                     Trait {
-                        display_type: Some("DISPLAY_TYPE_PROPERTY".to_string()),
-                        trait_type: "Channel address".to_string(),
-                        value: "channel_owner".to_string()
+                        display_type: None,
+                        trait_type: "Channel".to_string(),
+                        value: "1".to_string()
                     },
                     Trait {
-                        display_type: Some("DISPLAY_TYPE_DATE".to_string()),
+                        display_type: Some("date".to_string()),
                         trait_type: "Starts".to_string(),
-                        value: "1571797419.879305533".to_string()
+                        value: "1571797419".to_string()
                     },
                     Trait {
-                        display_type: Some("DISPLAY_TYPE_PROPERTY".to_string()),
-                        trait_type: "Duration in seconds".to_string(),
+                        display_type: Some("duration".to_string()),
+                        trait_type: "Duration".to_string(),
                         value: "604800".to_string()
-                    },
+                    }
                 ]),
-                ..Default::default()
+                background_color: None,
+                animation_url: None,
+                youtube_url: None
             }
         }
     );
@@ -232,4 +287,21 @@ fn basic_full_flow() {
             level: 0
         }
     );
+
+    // check withdraw
+    contract
+        .withdraw_mint_funds(channel_owner.to_string(), Some(channel_vault.to_string()))
+        .call(channel_owner)
+        .unwrap();
+    let channel_balance = get_balance(channel_vault.to_string());
+    assert_eq!(channel_balance.amount.amount, Uint128::from(950000u32));
+
+    let platform_vault = "platform_vault";
+    contract
+        .withdraw_mint_platform_fee(Some(platform_vault.to_string()))
+        .call(admin)
+        .unwrap();
+
+    let platform_balance = get_balance(platform_vault.to_string());
+    assert_eq!(platform_balance.amount.amount, Uint128::from(50000u32));
 }
