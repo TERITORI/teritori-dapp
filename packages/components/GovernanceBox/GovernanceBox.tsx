@@ -27,13 +27,8 @@ import { Proposal } from "@/utils/types/gov";
 export const GovernanceBox: React.FC<{
   proposal: Proposal;
 }> = ({ proposal }) => {
-  function activePopup() {}
-
   return (
     <TouchableOpacity
-      onPress={() => {
-        activePopup();
-      }}
       style={{ width: "50%", marginBottom: layout.spacing_x2_5 }}
     >
       <View
@@ -91,28 +86,25 @@ export const GovernanceBox: React.FC<{
               />
             )}
 
-            <View>
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  paddingTop: 15,
-                  height: 54,
-                  paddingBottom: 15,
-                  alignItems: "center",
-                }}
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                height: 54,
+                paddingBottom: layout.spacing_x1,
+                alignItems: "center",
+              }}
+            >
+              <BrandText
+                style={[
+                  fontSemibold14,
+                  {
+                    color: secondaryColor,
+                  },
+                ]}
               >
-                <BrandText
-                  style={[
-                    fontSemibold14,
-                    {
-                      color: secondaryColor,
-                    },
-                  ]}
-                >
-                  {"#" + proposal.proposal_id + " " + proposal.content.title}
-                </BrandText>
-              </View>
+                {"#" + proposal.proposal_id + " " + proposal.content.title}
+              </BrandText>
             </View>
 
             <GovernanceProgressBar result={proposal.final_tally_result} />
