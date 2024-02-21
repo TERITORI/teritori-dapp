@@ -172,6 +172,7 @@ export const CreateWalletScreen: ScreenFC<"CreateWallet"> = ({
                       provider: "native",
                       networkId: "teritori",
                       index: maxIndex + 1,
+                      hdPath: "m/44'/118'/0'/0/0",
                     }),
                   );
                 });

@@ -132,6 +132,7 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {
                       name: `Account ${maxIndex + 1}`,
                       networkId: "teritori",
                       index: maxIndex + 1,
+                      hdPath: "m/44'/118'/0'/0/0",
                     }),
                   );
                 });
