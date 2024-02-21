@@ -7,10 +7,10 @@ import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 import { PrimaryBox } from "../boxes/PrimaryBox";
 
-import { neutral33 } from "@/utils/style/colors";
+import { neutral33, secondaryColor } from "@/utils/style/colors";
 
 export const SearchInputRounded: React.FC<{
-  handleChangeSearch?: (e: string) => void;
+  handleChangeSearch: (e: string) => void;
 }> = ({ handleChangeSearch }) => {
   return (
     <PrimaryBox
@@ -32,11 +32,11 @@ export const SearchInputRounded: React.FC<{
       <TextInput
         placeholder="Search..."
         onChangeText={handleChangeSearch}
-        placeholderTextColor="#FFFFFF"
+        placeholderTextColor={secondaryColor}
         style={[
           fontMedium14,
           {
-            color: "#FFFFFF",
+            color: secondaryColor,
             width: "100%",
             outlineStyle: "none",
           } as TextStyle,

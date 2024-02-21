@@ -17,6 +17,7 @@ import { Proposal, ProposalStatus } from "@/utils/types/gov";
 export const GovernanceScreen: React.FC = () => {
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [filter, setFilter] = useState<ProposalStatus>();
+  const [searchInput, setSearchInput] = useState("");
   const selectedNetworkId = useSelectedNetworkId();
 
   useEffect(() => {
@@ -65,7 +66,9 @@ export const GovernanceScreen: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <SearchInputRounded handleChangeSearch={() => {}} />
+          <SearchInputRounded
+            handleChangeSearch={(text) => setSearchInput(text)}
+          />
           <PeriodDropdown onChange={setFilter} style={{ zIndex: 100 }} />
           <ProposalsDropdown onChange={() => {}} style={{ zIndex: 100 }} />
         </View>
@@ -81,9 +84,15 @@ export const GovernanceScreen: React.FC = () => {
           zIndex: -1,
         }}
       >
-        {filteredProposals.map((proposals, index) => (
-          <GovernanceBox proposal={proposals} />
-        ))}
+        {filteredProposals
+          .filter((value) =>
+            value.content.title
+              .toLowerCase()
+              .includes(searchInput.toLowerCase()),
+          )
+          .map((proposals) => (
+            <GovernanceBox proposal={proposals} />
+          ))}
       </View>
     </ScreenContainer>
   );
