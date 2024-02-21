@@ -54,6 +54,10 @@ export const layout = Object.freeze({
   get spacing_x1() {
     return this.base;
   },
+  // 10
+  get spacing_x1_25() {
+    return this.base * 1.25;
+  },
   // 12
   get spacing_x1_5() {
     return this.base * 1.5;

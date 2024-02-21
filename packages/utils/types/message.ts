@@ -1,28 +1,21 @@
 import { z } from "zod";
 
-/*
-type MessageType =
-  | "message"
-  | "accept-contact"
-  | "reject-contact"
-  | "group-invite"
-  | "group-join"
-  | "group-leave"
-  | "group-create"
-  | "reaction"
-  | "contact-request"
-  | "read";
-*/
+const MessageType = z.enum([
+  "message",
+  "accept-contact",
+  "reject-contact",
+  "group-invite",
+  "group-join",
+  "group-leave",
+  "group-create",
+  "reaction",
+  "contact-request",
+  "read",
+]);
 
 export type MessageFriendsTabItem = "friends" | "request" | "addFriend";
 
 type ConversationType = "contact" | "group";
-
-/*
-interface MessageFileData extends RemoteFileData {
-  type: string;
-}
-*/
 
 const ZodMessagePayload = z.object({
   files: z.array(z.any()),
@@ -42,7 +35,7 @@ export const ZodMessage = z.object({
   id: z.string(),
   senderId: z.string(),
   groupId: z.string(),
-  type: z.string(),
+  type: MessageType,
   payload: ZodMessagePayload.optional(),
   timestamp: z.string(),
   parentId: z.string().optional(),
@@ -72,6 +65,7 @@ export interface Conversation {
   status: "active" | "archived" | "deleted" | "blocked";
   lastReadIdByMe?: string;
   lastReadIdByContact?: string;
+  recentMessage?: Message;
 }
 
 export interface ContactRequest {

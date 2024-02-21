@@ -11118,6 +11118,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-sharing@npm:~11.10.0":
+  version: 11.10.0
+  resolution: "expo-sharing@npm:11.10.0"
+  peerDependencies:
+    expo: "*"
+  checksum: de17af11fcfd07886da654d8fbad73d4dbe4917bb134d462edb5b5d08162c650e5d37fa4c539d40affc6c9733d68de4950ee202a462539c7c4fc757702f91bfa
+  languageName: node
+  linkType: hard
+
 "expo-splash-screen@npm:~0.26.4":
   version: 0.26.4
   resolution: "expo-splash-screen@npm:0.26.4"
@@ -19074,6 +19083,7 @@ __metadata:
     expo-linear-gradient: ~12.7.2
     expo-optimize: ^0.2.20
     expo-secure-store: ~12.8.1
+    expo-sharing: ~11.10.0
     expo-splash-screen: ~0.26.4
     expo-status-bar: ~1.11.1
     google-protobuf: ^3.21.2

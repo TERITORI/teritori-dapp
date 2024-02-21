@@ -1,13 +1,9 @@
-import { combineReducers, configureStore, Middleware } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { Platform } from "react-native";
 import { useDispatch } from "react-redux";
-import {
-  persistStore,
-  persistReducer,
-  createMigrate,
-  REHYDRATE,
-} from "redux-persist";
+import { persistStore, persistReducer, createMigrate } from "redux-persist";
 
+import { afterRehydrateMiddleware } from "./milldeware/afterRehydrateMiddleware";
 import { dAppsReducer, dAppsReducerPersisted } from "./slices/dapps-store";
 import {
   marketplaceCartItems,
@@ -32,7 +28,6 @@ import {
 } from "./slices/wallets";
 import { storage } from "./storage";
 import { defaultEnabledNetworks } from "../networks";
-import { bootWeshModule } from "../weshnet/services";
 
 const migrations = {
   0: (state: any) => {
@@ -108,6 +103,7 @@ const persistConfig = {
     "marketplaceCartItemsUI",
     "marketplaceFilters",
     "marketplaceFilterUI",
+    "message",
   ],
   blacklist: ["dAppsStore, marketplaceFilterUI"],
 };
@@ -129,13 +125,6 @@ const rootReducer = combineReducers({
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-const afterRehydrateMiddleware: Middleware = () => (next) => (action) => {
-  if (action.type === REHYDRATE) {
-    bootWeshModule();
-  }
-  return next(action);
-};
 
 export const store = configureStore({
   reducer: persistedReducer,

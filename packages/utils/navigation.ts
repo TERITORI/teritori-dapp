@@ -5,7 +5,7 @@ import React from "react";
 import { feedsTabItems } from "./social-feed";
 import { AppMode } from "./types/app-mode";
 import { NewPostFormValues } from "./types/feed";
-import { Conversation, MessageFriendsTabItem } from "./types/message";
+import { MessageFriendsTabItem } from "./types/message";
 import { uppTabItems } from "./upp";
 
 export type RouteName = keyof RootStackParamList;
@@ -89,7 +89,7 @@ export type RootStackParamList = {
 
   Metrics: undefined;
   Message: { view: string; tab?: string } | undefined;
-  ChatSection: Conversation;
+  ChatSection: { id: string };
   FriendshipManager: { tab?: MessageFriendsTabItem } | undefined;
 
   // native wallet screens

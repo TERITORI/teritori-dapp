@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import { Avatar, Badge } from "react-native-paper";
 
+import { MessageAvatar } from "./MessageAvatar";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
@@ -22,16 +22,14 @@ import { bytesFromString } from "../../../weshnet/utils";
 
 type Props = {
   name: string;
-  isOnline: boolean;
+
   avatar: any;
   data: ContactRequest;
 };
 
-const RequestList = ({ isOnline, data }: Props) => {
+export const Request = ({ data }: Props) => {
   const { setToastError } = useFeedbacks();
   const [addLoading, setAddLoading] = useState(false);
-
-  const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
 
   const handleAddFriend = async () => {
     setAddLoading(true);
@@ -60,8 +58,7 @@ const RequestList = ({ isOnline, data }: Props) => {
       await weshClient.client.ContactRequestDiscard({
         contactPk: bytesFromString(data?.contactId),
       });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
+    } catch {
       setToastError({
         title: "Failed",
         message: "Failed to reject contact. Please try again later.",
@@ -73,17 +70,7 @@ const RequestList = ({ isOnline, data }: Props) => {
     <View>
       <FlexRow justifyContent="space-between" style={{ flex: 1 }}>
         <FlexRow style={{ flex: 1 }}>
-          <Avatar.Image size={40} source={{ uri: data.avatar }} />
-          <Badge
-            style={{
-              position: "absolute",
-              top: 30,
-              left: 30,
-
-              backgroundColor: onlineStatusBadgeColor,
-            }}
-            size={12}
-          />
+          <MessageAvatar item={data} />
           <SpacerRow size={1.5} />
           <View>
             <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
@@ -116,5 +103,3 @@ const RequestList = ({ isOnline, data }: Props) => {
     </View>
   );
 };
-
-export default RequestList;
