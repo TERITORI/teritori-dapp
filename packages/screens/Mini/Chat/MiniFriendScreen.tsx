@@ -32,7 +32,7 @@ import {
 import { bytesFromString } from "../../../weshnet/utils";
 import { CustomButton } from "../components/Button/CustomButton";
 import MiniTextInput from "../components/MiniTextInput";
-import MiniToast from "../components/MiniToast";
+import MiniToastWithAction from "../components/MiniToastWithAction";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 type ToastType = {
@@ -54,7 +54,7 @@ export const MiniFriendScreen: ScreenFC<"MiniFriend"> = ({ navigation }) => {
       title="Friend Requests"
       customHeader={
         openToast.type && (
-          <MiniToast
+          <MiniToastWithAction
             message={openToast.message}
             type={openToast.type ?? "info"}
             onClose={() => setOpenToast({ type: undefined, message: "" })}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View } from "react-native";
 import Animated, {
   Easing,
@@ -7,23 +7,30 @@ import Animated, {
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
+import { SvgProps } from "react-native-svg";
 
 import { SVG } from "./SVG";
 
 import refreshSVG from "@/assets/icons/refresh-white.svg";
 
 const SVG_SIZE = 20;
-
-export const Spinner = () => {
+type SpinnerProps = {
+  svg?: React.FC<SvgProps>;
+  size?: number;
+};
+export const Spinner = ({ size, svg }: SpinnerProps) => {
   const rotate = useSharedValue(0);
 
-  rotate.value = withRepeat(
-    withTiming(360, {
-      duration: 1000,
-      easing: Easing.linear,
-    }),
-    -1,
-  );
+  useEffect(() => {
+    rotate.value = withRepeat(
+      withTiming(360, {
+        duration: 1000,
+        easing: Easing.linear,
+      }),
+      -1,
+    );
+  }, [rotate]);
+
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ rotate: `${rotate.value}deg` }],
@@ -32,9 +39,16 @@ export const Spinner = () => {
   return (
     <View>
       <Animated.View
-        style={[animatedStyle, { height: SVG_SIZE, width: SVG_SIZE }]}
+        style={[
+          animatedStyle,
+          { height: size || SVG_SIZE, width: size || SVG_SIZE },
+        ]}
       >
-        <SVG source={refreshSVG} width={SVG_SIZE} height={SVG_SIZE} />
+        <SVG
+          source={svg || refreshSVG}
+          width={size || SVG_SIZE}
+          height={size || SVG_SIZE}
+        />
       </Animated.View>
     </View>
   );
