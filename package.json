@@ -150,6 +150,7 @@
     "text-encoding-polyfill": "^0.6.7",
     "tsx": "^4.7.0",
     "uuid": "^9.0.0",
+    "victory": "^36.6.12",
     "victory-native": "^36.6.8",
     "waveform-data": "^4.3.0",
     "yaml": "^2.3.4",

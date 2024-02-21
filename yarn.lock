@@ -19161,6 +19161,7 @@ __metadata:
     tsx: ^4.7.0
     typescript: ^5.3.0
     uuid: ^9.0.0
+    victory: ^36.6.12
     victory-native: ^36.6.8
     waveform-data: ^4.3.0
     yaml: ^2.3.4
@@ -20509,7 +20510,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory@npm:^36.8.2":
+"victory@npm:^36.6.12, victory@npm:^36.8.2":
   version: 36.8.2
   resolution: "victory@npm:36.8.2"
   dependencies:
