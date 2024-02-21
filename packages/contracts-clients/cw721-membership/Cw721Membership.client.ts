@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { InstantiateMsg, ExecuteMsg, ExecMsg, Uint64, Uint128, Binary, MembershipConfig, Coin, QueryMsg, QueryMsg1, AdminFundsResponse, Expiration, Timestamp, AllNftInfoResponseForMetadata, OwnerOfResponse, Approval, NftInfoResponseForMetadata, Metadata, Trait, TokensResponse, Addr, ChannelResponse, ChannelFundsResponse, CheckRoyaltiesResponse, Config, ContractInfoResponse, NumTokensResponse, RoyaltiesInfoResponse, SubscriptionResponse, Subscription } from "./Cw721Membership.types";
+import { InstantiateMsg, ExecuteMsg, ExecMsg, Uint64, Uint128, Binary, MembershipConfig, Coin, QueryMsg, QueryMsg1, Cw2981BorkedQueryMsg, AdminFundsResponse, Expiration, Timestamp, AllNftInfoResponseForMetadata, OwnerOfResponse, Approval, NftInfoResponseForMetadata, Metadata, Trait, TokensResponse, Addr, ChannelResponse, ChannelFundsResponse, Config, ContractInfoResponse, Cw2981Response, CheckRoyaltiesResponse, RoyaltiesInfoResponse, NumTokensResponse, SubscriptionResponse, Subscription } from "./Cw721Membership.types";
 export interface Cw721MembershipReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<Config>;
@@ -28,14 +28,11 @@ export interface Cw721MembershipReadOnlyInterface {
     channelAddr: string;
     subAddr: string;
   }) => Promise<SubscriptionResponse>;
-  royaltyInfo: ({
-    salePrice,
-    tokenId
+  extension: ({
+    msg
   }: {
-    salePrice: Uint128;
-    tokenId: string;
-  }) => Promise<RoyaltiesInfoResponse>;
-  checkRoyalties: () => Promise<CheckRoyaltiesResponse>;
+    msg: Cw2981BorkedQueryMsg;
+  }) => Promise<Cw2981Response>;
   ownerOf: ({
     includeExpired,
     tokenId
@@ -86,8 +83,7 @@ export class Cw721MembershipQueryClient implements Cw721MembershipReadOnlyInterf
     this.adminFunds = this.adminFunds.bind(this);
     this.channelFunds = this.channelFunds.bind(this);
     this.subscription = this.subscription.bind(this);
-    this.royaltyInfo = this.royaltyInfo.bind(this);
-    this.checkRoyalties = this.checkRoyalties.bind(this);
+    this.extension = this.extension.bind(this);
     this.ownerOf = this.ownerOf.bind(this);
     this.numTokens = this.numTokens.bind(this);
     this.contractInfo = this.contractInfo.bind(this);
@@ -143,23 +139,15 @@ export class Cw721MembershipQueryClient implements Cw721MembershipReadOnlyInterf
       }
     });
   };
-  royaltyInfo = async ({
-    salePrice,
-    tokenId
+  extension = async ({
+    msg
   }: {
-    salePrice: Uint128;
-    tokenId: string;
-  }): Promise<RoyaltiesInfoResponse> => {
+    msg: Cw2981BorkedQueryMsg;
+  }): Promise<Cw2981Response> => {
     return this.client.queryContractSmart(this.contractAddress, {
-      royalty_info: {
-        sale_price: salePrice,
-        token_id: tokenId
+      extension: {
+        msg
       }
-    });
-  };
-  checkRoyalties = async (): Promise<CheckRoyaltiesResponse> => {
-    return this.client.queryContractSmart(this.contractAddress, {
-      check_royalties: {}
     });
   };
   ownerOf = async ({

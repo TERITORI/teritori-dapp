@@ -107,6 +107,13 @@ pub struct SubscriptionResponse {
     pub level: u16,
 }
 
+#[cw_serde]
+#[serde(untagged)]
+pub enum Cw2981Response {
+    CheckRoyaltiesResponse(cw2981_royalties::msg::CheckRoyaltiesResponse),
+    RoyaltiesInfoResponse(cw2981_royalties::msg::RoyaltiesInfoResponse),
+}
+
 #[entry_points]
 #[contract]
 #[error(ContractError)]
@@ -772,14 +779,34 @@ impl Cw721MembershipContract {
 
     // CW2981 Royalty Queries
 
+    #[msg(query)]
+    pub fn extension(
+        &self,
+        ctx: QueryCtx,
+        msg: Cw2981BorkedQueryMsg,
+    ) -> Result<Cw2981Response, ContractError> {
+        match msg {
+            Cw2981BorkedQueryMsg::CheckRoyalties {} => {
+                let res = self.check_royalties()?;
+                Ok(Cw2981Response::CheckRoyaltiesResponse(res))
+            }
+            Cw2981BorkedQueryMsg::RoyaltyInfo {
+                token_id,
+                sale_price,
+            } => {
+                let res = self.royalty_info(ctx, token_id, sale_price)?;
+                Ok(Cw2981Response::RoyaltiesInfoResponse(res))
+            }
+        }
+    }
+
     /// Should be called on sale to see if royalties are owed
     /// by the marketplace selling the NFT, if CheckRoyalties
     /// returns true
     /// See https://eips.ethereum.org/EIPS/eip-2981
-    #[msg(query)]
-    pub fn royalty_info(
+    fn royalty_info(
         &self,
-        _ctx: QueryCtx,
+        ctx: QueryCtx,
         token_id: String,
         // the denom of this sale must also be the denom returned by RoyaltiesInfoResponse
         // this was originally implemented as a Coin
@@ -791,7 +818,7 @@ impl Cw721MembershipContract {
 
         let channel = self
             .channels
-            .load(_ctx.deps.storage, channel_id)
+            .load(ctx.deps.storage, channel_id)
             .map_err(|_| ContractError::ChannelNotFound)?;
 
         let royalty_amount = sale_price
@@ -809,8 +836,7 @@ impl Cw721MembershipContract {
     /// CheckRoyaltiesResponse - default can simply be true
     /// if royalties are implemented at token level
     /// (i.e. always check on sale)
-    #[msg(query)]
-    pub fn check_royalties(&self, _ctx: QueryCtx) -> Result<CheckRoyaltiesResponse, ContractError> {
+    fn check_royalties(&self) -> Result<CheckRoyaltiesResponse, ContractError> {
         Ok(CheckRoyaltiesResponse {
             royalty_payments: true,
         })
@@ -1093,4 +1119,40 @@ pub fn parse_token_id(token_id: &String) -> Result<(u64, u64), ContractError> {
 
 pub fn format_token_id(channel_id: u64, nft_index: u64) -> String {
     URL_SAFE_NO_PAD.encode([nft_index.encode_var_vec(), channel_id.encode_var_vec()].concat())
+}
+
+#[derive(
+    ::cosmwasm_schema::serde::Serialize,
+    ::cosmwasm_schema::serde::Deserialize,
+    ::std::clone::Clone,
+    ::std::fmt::Debug,
+    ::std::cmp::PartialEq,
+    ::cosmwasm_schema::schemars::JsonSchema,
+)]
+#[allow(clippy::derive_partial_eq_without_eq)] // Allow users of `#[cw_serde]` to not implement Eq without clippy complaining
+#[serde(
+  deny_unknown_fields,
+  rename_all = "PascalCase", // this is borked in the Cw2981 libs used in teritori vault
+  crate = "::cosmwasm_schema::serde"
+)]
+#[schemars(crate = "::cosmwasm_schema::schemars")]
+pub enum Cw2981BorkedQueryMsg {
+    /// Should be called on sale to see if royalties are owed
+    /// by the marketplace selling the NFT, if CheckRoyalties
+    /// returns true
+    /// See https://eips.ethereum.org/EIPS/eip-2981
+    RoyaltyInfo {
+        token_id: String,
+        // the denom of this sale must also be the denom returned by RoyaltiesInfoResponse
+        // this was originally implemented as a Coin
+        // however that would mean you couldn't buy using CW20s
+        // as CW20 is just mapping of addr -> balance
+        sale_price: Uint128,
+    },
+    /// Called against contract to determine if this NFT
+    /// implements royalties. Should return a boolean as part of
+    /// CheckRoyaltiesResponse - default can simply be true
+    /// if royalties are implemented at token level
+    /// (i.e. always check on sale)
+    CheckRoyalties {},
 }

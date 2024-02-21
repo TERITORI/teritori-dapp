@@ -27,34 +27,62 @@ const useCw2981RoyaltyInfo = (
     ["cw2981-royalty-info", collectionId, tokenId],
     async () => {
       if (!collectionId || !tokenId) {
-        return null;
+        return 0;
       }
 
       const [network, mintContractAddress] = parseCollectionId(collectionId);
       if (!network) {
-        return null;
+        return 0;
       }
 
       const client = await mustGetNonSigningCosmWasmClient(network.id);
-      const queryClient = new Cw721MembershipQueryClient(
-        client,
-        mintContractAddress,
-      );
+
+      const getRoyaltyGain = async (contractAddress: string) => {
+        const cwClient = new Cw721MembershipQueryClient(
+          client,
+          contractAddress,
+        );
+        const res = await cwClient.extension({
+          msg: {
+            RoyaltyInfo: {
+              token_id: tokenId,
+              sale_price: royaltyQueryRange.toString(),
+            },
+          },
+        });
+        if (!("royalty_amount" in res) || !res.royalty_amount) {
+          throw new Error("RoyaltyInfo response is invalid");
+        }
+        return +res.royalty_amount / royaltyQueryRange;
+      };
 
       try {
-        const checkRes = await queryClient.checkRoyalties();
-        if (!checkRes.royalty_payments) {
+        const cwClient = new Cw721MembershipQueryClient(
+          client,
+          mintContractAddress,
+        );
+
+        const checkRes = await cwClient.extension({
+          msg: { CheckRoyalties: {} },
+        });
+        if (!("check_royalties" in checkRes) || !checkRes.check_royalties) {
           return 0;
         }
 
-        const res = await queryClient.royaltyInfo({
-          tokenId,
-          salePrice: royaltyQueryRange.toString(),
-        });
-
-        return (+res.royalty_amount || 0) / royaltyQueryRange;
+        return await getRoyaltyGain(mintContractAddress);
       } catch (err) {
-        console.error("Failed to fetch royalty info", err);
+        if (
+          err instanceof Error &&
+          err.message.includes("unknown variant `extension`")
+        ) {
+          const conf = await client.queryContractSmart(mintContractAddress, {
+            config: {},
+          });
+
+          const nftContractAddr = conf.nft_addr || conf.child_contract_addr;
+          return await getRoyaltyGain(nftContractAddr);
+        }
+        throw err;
       }
     },
     {

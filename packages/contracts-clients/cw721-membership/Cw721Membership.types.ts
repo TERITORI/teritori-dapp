@@ -125,13 +125,8 @@ export type QueryMsg1 = {
     [k: string]: unknown;
   };
 } | {
-  royalty_info: {
-    sale_price: Uint128;
-    token_id: string;
-    [k: string]: unknown;
-  };
-} | {
-  check_royalties: {
+  extension: {
+    msg: Cw2981BorkedQueryMsg;
     [k: string]: unknown;
   };
 } | {
@@ -172,6 +167,14 @@ export type QueryMsg1 = {
     start_after?: string | null;
     [k: string]: unknown;
   };
+};
+export type Cw2981BorkedQueryMsg = {
+  RoyaltyInfo: {
+    sale_price: Uint128;
+    token_id: string;
+  };
+} | {
+  CheckRoyalties: {};
 };
 export interface AdminFundsResponse {
   funds: Coin[];
@@ -231,9 +234,6 @@ export interface ChannelResponse {
 export interface ChannelFundsResponse {
   funds: Coin[];
 }
-export interface CheckRoyaltiesResponse {
-  royalty_payments: boolean;
-}
 export interface Config {
   admin_addr: Addr;
   description: string;
@@ -246,12 +246,16 @@ export interface ContractInfoResponse {
   name: string;
   symbol: string;
 }
-export interface NumTokensResponse {
-  count: number;
+export type Cw2981Response = CheckRoyaltiesResponse | RoyaltiesInfoResponse;
+export interface CheckRoyaltiesResponse {
+  royalty_payments: boolean;
 }
 export interface RoyaltiesInfoResponse {
   address: string;
   royalty_amount: Uint128;
+}
+export interface NumTokensResponse {
+  count: number;
 }
 export interface SubscriptionResponse {
   level: number;

@@ -5,7 +5,8 @@ use cw721_metadata_onchain::{Metadata, Trait};
 use sylvia::{anyhow::Error, cw_multi_test::Module, multitest::App};
 
 use crate::contract::{
-    multitest_utils::CodeId, MembershipConfig, Subscription, SubscriptionResponse,
+    multitest_utils::CodeId, Cw2981BorkedQueryMsg, Cw2981Response, MembershipConfig, Subscription,
+    SubscriptionResponse,
 };
 
 #[test]
@@ -208,26 +209,61 @@ fn basic_full_flow() {
         }
     );
 
-    // ------- test royalty queries
+    // ------- test borked royalty queries
 
-    let royalties_check = contract.check_royalties().unwrap();
+    let royalties_check = contract
+        .extension(Cw2981BorkedQueryMsg::CheckRoyalties {})
+        .unwrap();
     assert_eq!(
         royalties_check,
-        CheckRoyaltiesResponse {
+        Cw2981Response::CheckRoyaltiesResponse(CheckRoyaltiesResponse {
             royalty_payments: true
-        }
+        }),
     );
 
     let royalty_info = contract
-        .royalty_info(token_id.to_string(), Uint128::from(461558079u32))
+        .extension(Cw2981BorkedQueryMsg::RoyaltyInfo {
+            token_id: token_id.to_string(),
+            sale_price: Uint128::from(461558079u32),
+        })
         .unwrap();
     assert_eq!(
         royalty_info,
-        RoyaltiesInfoResponse {
+        Cw2981Response::RoyaltiesInfoResponse(RoyaltiesInfoResponse {
             address: channel_owner.to_string(),
             royalty_amount: Uint128::from(23077903u32) // 5%
-        }
+        }),
     );
+
+    // ------- test royalty queries
+
+    /*
+    let royalties_check = contract
+        .extension(Cw2981Query::Cw2981QueryMsg(
+            Cw2981QueryMsg::CheckRoyalties {},
+        ))
+        .unwrap();
+    assert_eq!(
+        royalties_check,
+        Cw2981Response::CheckRoyaltiesResponse(CheckRoyaltiesResponse {
+            royalty_payments: true
+        }),
+    );
+
+    let royalty_info = contract
+        .extension(Cw2981Query::Cw2981QueryMsg(Cw2981QueryMsg::RoyaltyInfo {
+            token_id: token_id.to_string(),
+            sale_price: Uint128::from(461558079u32),
+        }))
+        .unwrap();
+    assert_eq!(
+        royalty_info,
+        Cw2981Response::RoyaltiesInfoResponse(RoyaltiesInfoResponse {
+            address: channel_owner.to_string(),
+            royalty_amount: Uint128::from(23077903u32) // 5%
+        }),
+    );
+    */
 
     // ------- test transfer and back
 
