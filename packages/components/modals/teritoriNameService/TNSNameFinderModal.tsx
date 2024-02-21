@@ -6,21 +6,17 @@ import {
   additionalRed,
   neutral33,
   neutral77,
-  primaryColor,
-  redDefault,
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
-import { NameFinderFormType } from "../../../utils/types/tns";
 import { BrandText } from "../../BrandText";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
-import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../ModalBase";
 
+import { AvailableNamesInput } from "@/components/inputs/AvailableNamesInput";
 import { useNSMintAvailability } from "@/hooks/useNSMintAvailability";
 import { useNSMintPrice } from "@/hooks/useNSMintPrice";
-import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { NetworkKind, getCosmosNetwork, parseUserId } from "@/networks";
+import { getCosmosNetwork, parseUserId } from "@/networks";
 import { prettyPrice } from "@/utils/coins";
 
 const AVAILABLE_DOMAINS = [".tori"];
@@ -123,7 +119,6 @@ export const TNSNameFinderModal: React.FC<{
   ).toLowerCase();
 
   const tokenId = name + cosmosNetwork?.nameServiceTLD || "";
-  const selectedNetwork = useSelectedNetworkInfo();
 
   const { nsMintPrice: price } = useNSMintPrice(networkId, normalizedTokenId);
   const { nameAvailable, loading } = useNSMintAvailability(networkId, tokenId);
@@ -139,30 +134,30 @@ export const TNSNameFinderModal: React.FC<{
     if (visible) setName("");
   }, [setName, visible]);
 
-  let availabilityInfo = <></>;
-  if (name && selectedNetwork?.kind === NetworkKind.Cosmos) {
-    if (price?.invalid) {
-      availabilityInfo = (
-        <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
-          Invalid
-        </BrandText>
-      );
-    } else if (nameAvailable) {
-      availabilityInfo = (
-        <View style={{ flexDirection: "row" }}>
-          <BrandText style={{ color: primaryColor, ...fontSemibold14 }}>
-            {prettyPrice(networkId, price?.amount, price?.denom)}
-          </BrandText>
-        </View>
-      );
-    } else if (!nameAvailable) {
-      availabilityInfo = (
-        <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
-          Taken
-        </BrandText>
-      );
-    }
-  }
+  // let availabilityInfo = <></>;
+  // if (name && selectedNetwork?.kind === NetworkKind.Cosmos) {
+  //   if (price?.invalid) {
+  //     availabilityInfo = (
+  //       <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
+  //         Invalid
+  //       </BrandText>
+  //     );
+  //   } else if (nameAvailable) {
+  //     availabilityInfo = (
+  //       <View style={{ flexDirection: "row" }}>
+  //         <BrandText style={{ color: primaryColor, ...fontSemibold14 }}>
+  //           {prettyPrice(networkId, price?.amount, price?.denom)}
+  //         </BrandText>
+  //       </View>
+  //     );
+  //   } else if (!nameAvailable) {
+  //     availabilityInfo = (
+  //       <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
+  //         Taken
+  //       </BrandText>
+  //     );
+  //   }
+  // }
 
   return (
     <ModalBase
@@ -172,7 +167,23 @@ export const TNSNameFinderModal: React.FC<{
       childrenBottom={<DomainsAvailability />}
       width={372}
     >
-      <TextInputCustom<NameFinderFormType>
+      <AvailableNamesInput
+        loading={loading}
+        nameValue={name}
+        label={`NAME${name ? `: ${tokenId}` : ""}`}
+        name="name"
+        placeHolder="Type name here"
+        value={name}
+        onPressEnter={onPressEnter}
+        onChangeText={(value: string) => setName(value)}
+        isInvalid={!!price?.invalid}
+        isNameAvailabel={nameAvailable}
+        isTaken={!nameAvailable}
+        price={prettyPrice(networkId, price?.amount, price?.denom)}
+        style={{ marginBottom: 20, width: "100%" }}
+      />
+
+      {/* <TextInputCustom<NameFinderFormType>
         noBrokenCorners
         isLoading={loading}
         variant="labelOutside"
@@ -187,7 +198,7 @@ export const TNSNameFinderModal: React.FC<{
         value={name}
       >
         {availabilityInfo}
-      </TextInputCustom>
+      </TextInputCustom> */}
 
       {/* <TextInputCustom<NameFinderFormType>
         name="name"
