@@ -1,10 +1,15 @@
 import { Secp256k1HdWallet } from "@cosmjs/amino";
+import { stringToPath } from "@cosmjs/amino/node_modules/@cosmjs/crypto/build/slip10";
 
 import { getValueFor, remove, save } from "../useMobileSecureStore";
 
 import { createMnemonic } from "@/utils/wallet/seed";
 
-export const getNativeWallet = (prefix: string = "tori", index: number = 0) => {
+export const getNativeWallet = (
+  prefix: string = "tori",
+  index: number = 0,
+  path: string = "m/44'/118'/0'/0/0",
+) => {
   return (async () => {
     try {
       let mnemonic = await getMnemonic(index);
@@ -15,6 +20,7 @@ export const getNativeWallet = (prefix: string = "tori", index: number = 0) => {
       }
       return await Secp256k1HdWallet.fromMnemonic(mnemonic, {
         prefix, // maybe add validation ?
+        hdPaths: [stringToPath(path)],
       });
     } catch (e) {
       throw new Error(`failed to get wallet ${e}`);
