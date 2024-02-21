@@ -19,7 +19,7 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
-import { MiniTabScreenFC } from "@/components/navigation/MiniModeNavigator";
+import { MiniTabScreenFC } from "@/components/navigation/getMiniModeScreens";
 import { SpacerColumn } from "@/components/spacer";
 import { RoundedTabs } from "@/components/tabs/RoundedTabs";
 import { ToastInfo } from "@/components/toasts/ToastInfo";
