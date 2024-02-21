@@ -2,18 +2,17 @@ import axios from "axios";
 import { omit } from "lodash";
 import { CID } from "multiformats";
 import { useCallback, useMemo, useState } from "react";
+import { Platform } from "react-native";
 import { useSelector } from "react-redux";
 
 import { parseUserId } from "@/networks";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { generateIpfsKey } from "@/utils/ipfs";
-import { AppMode } from "@/utils/types/app-mode";
 import { LocalFileData, RemoteFileData } from "@/utils/types/files";
 
 interface UploadPostFilesToPinataParams {
   files: LocalFileData[];
   pinataJWTKey: string;
-  mode?: AppMode;
 }
 
 interface IPFSUploadProgress {
@@ -24,7 +23,6 @@ interface IPFSUploadProgress {
 export interface PinataFileProps {
   file: LocalFileData;
   pinataJWTKey: string;
-  mode?: AppMode;
 }
 
 export const useIpfs = () => {
@@ -36,12 +34,11 @@ export const useIpfs = () => {
     async ({
       file,
       pinataJWTKey,
-      mode,
     }: PinataFileProps): Promise<string | undefined> => {
       try {
         const formData = new FormData();
-        if (mode === "mini") {
-          //@ts-expect-error: description instead of adding file when adding url in formdata file upload to pinata
+        if (Platform.OS !== "web") {
+          //@ts-expect-error: description - instead of converting selected file to File type as of WEB just using url to prepare formdata  upload to pinata
           formData.append("file", {
             uri: file.url,
             name: file.fileName,
@@ -87,7 +84,6 @@ export const useIpfs = () => {
     async ({
       files,
       pinataJWTKey,
-      mode = "normal",
     }: UploadPostFilesToPinataParams): Promise<RemoteFileData[]> => {
       setIpfsUploadProgresses([]);
 
@@ -97,7 +93,6 @@ export const useIpfs = () => {
         const fileIpfsHash = await pinataPinFileToIPFS({
           file,
           pinataJWTKey,
-          mode,
         });
 
         const url = !fileIpfsHash ? "" : "ipfs://" + fileIpfsHash;

@@ -224,7 +224,6 @@ export const MiniCommentInput = React.forwardRef<
             remoteFiles = await uploadFilesToPinata({
               files: formValues.files,
               pinataJWTKey,
-              mode: "mini",
             });
           }
         }
