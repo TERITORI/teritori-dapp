@@ -5,9 +5,10 @@ import { Platform } from "react-native";
 import { RootStackParamList } from "@/utils/navigation";
 import { neutral00 } from "@/utils/style/colors";
 import { fullSidebarWidth } from "@/utils/style/layout";
+import { AppMode } from "@/utils/types/app-mode";
 
-const getNav = () => {
-  if (Platform.OS === "web") {
+export const getNav = (appMode: AppMode) => {
+  if (Platform.OS === "web" || appMode === "mini") {
     return {
       Nav: createNativeStackNavigator<RootStackParamList>(),
       navigatorScreenOptions: {},
@@ -26,5 +27,3 @@ const getNav = () => {
 };
 
 export const screenTitle = (title: string) => "Teritori - " + title;
-
-export const { Nav, navigatorScreenOptions } = getNav();

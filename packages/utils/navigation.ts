@@ -10,6 +10,10 @@ import { uppTabItems } from "./upp";
 
 export type RouteName = keyof RootStackParamList;
 
+type MiniTabsScreen = {
+  screen?: "MiniChats" | "MiniWallets" | "MiniFeeds";
+};
+
 export type RootStackParamList = {
   Home?: { network?: string };
   MyCollection: undefined;
@@ -97,7 +101,7 @@ export type RootStackParamList = {
   SuccessScreen: undefined;
 
   //Mini Screens
-  MiniTabs: undefined;
+  MiniTabs: MiniTabsScreen;
   Conversation: { conversationId: string };
   MiniChats: { back?: RouteName };
   MiniWallets: undefined;

@@ -29,7 +29,7 @@ export const ChatHeader = ({ navigation, conversation }: HeaderProps) => {
   const navigateBack = () =>
     navigation.canGoBack()
       ? navigation.goBack()
-      : navigation.replace("MiniTabs");
+      : navigation.replace("MiniTabs", { screen: "MiniChats" });
 
   const handlePhoneCellPress = () => {
     alert("Phone cell");

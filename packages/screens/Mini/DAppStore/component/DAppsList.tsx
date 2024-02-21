@@ -7,6 +7,7 @@ import { DAppStoreMenuItem } from "./DAppStoreMenuItems";
 
 import { BrandText } from "@/components/BrandText";
 import { Separator } from "@/components/separators/Separator";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import {
   selectAvailableApps,
   selectCheckedApps,
@@ -15,6 +16,7 @@ import {
 } from "@/store/slices/dapps-store";
 import { useAppDispatch } from "@/store/store";
 import { getValuesFromId, SEPARATOR } from "@/utils/dapp-store";
+import { RouteName } from "@/utils/navigation";
 import { layout } from "@/utils/style/layout";
 import { dAppType } from "@/utils/types/dapp-store";
 
@@ -24,7 +26,7 @@ type Props = {
 
 export const DAppsList = ({ isEditing }: Props) => {
   const dispatch = useAppDispatch();
-
+  const navigation = useAppNavigation();
   const { width: windowsWidth } = useWindowDimensions();
   const availableApps = useSelector(selectAvailableApps);
   const selectedApps = useSelector(selectCheckedApps);
@@ -95,12 +97,9 @@ export const DAppsList = ({ isEditing }: Props) => {
     }
   }, [topApps, staking, externalApps, selectedApps, getOptions]);
 
-  const alwaysOnApps = useMemo(() => {
-    return [
-      ...Object.values(coreDApps.options).filter((x) => x.alwaysOn),
-      ...Object.values(topApps.options).filter((x) => x.alwaysOn),
-    ];
-  }, [coreDApps, topApps]);
+  const alwaysOnApps = Object.values(coreDApps.options)
+    .concat(Object.values(topApps.options))
+    .filter((x: dAppType) => x.alwaysOn);
 
   const handleClick = (groupKey: string, id: string) => {
     const draggableId = `${groupKey}${SEPARATOR}${id}`;
@@ -127,7 +126,11 @@ export const DAppsList = ({ isEditing }: Props) => {
               icon={item.icon}
               title={item.title}
               isAdded
-              onPress={() => alert(item.title)}
+              onPress={() => {
+                if (!["External", "ComingSoon"].includes(item.route)) {
+                  navigation.replace(item.route as RouteName);
+                }
+              }}
             />
           );
         }}
@@ -135,7 +138,9 @@ export const DAppsList = ({ isEditing }: Props) => {
       />
       <DraxProvider style={{ width: windowsWidth - 30 }}>
         <DraxList
-          data={selectedAppsFromValues}
+          data={selectedAppsFromValues.filter(
+            (item) => item.route !== "External",
+          )}
           onItemReorder={({ fromIndex, toIndex }) => {
             const newData = selectedApps.slice();
             newData.splice(toIndex, 0, newData.splice(fromIndex, 1)[0]);
@@ -149,7 +154,11 @@ export const DAppsList = ({ isEditing }: Props) => {
                 title={item?.title || ""}
                 subTitle={item?.description}
                 isEditing={isEditing}
-                onPress={() => alert(item?.title)}
+                onPress={() => {
+                  if (!["External", "ComingSoon"].includes(item.route)) {
+                    navigation.replace(item.route as RouteName);
+                  }
+                }}
                 isAdded
                 onActionPress={() =>
                   item && handleClick(item.groupKey, item.id)
@@ -164,7 +173,9 @@ export const DAppsList = ({ isEditing }: Props) => {
       <Separator />
       {isEditing && (
         <FlatList
-          data={remainingToSelectApps}
+          data={remainingToSelectApps.filter(
+            (item) => item.route !== "External",
+          )}
           renderItem={({ item, index }) => {
             return (
               <DAppStoreMenuItem
