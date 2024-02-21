@@ -100,6 +100,8 @@ export const DropdownDappsStoreFilter: React.FC = () => {
           style={{
             position: "absolute",
             width: 248,
+            top: 29,
+            right: -14,
             paddingHorizontal: layout.spacing_x1_5,
             paddingTop: layout.spacing_x1_5,
             backgroundColor: neutral33,
