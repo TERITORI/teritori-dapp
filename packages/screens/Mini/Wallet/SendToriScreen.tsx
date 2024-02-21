@@ -5,8 +5,8 @@ import { View } from "react-native";
 import questionSVG from "../../../../assets/icons/question-gray.svg";
 import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
+import MiniAddressSelectorDropdown from "../components/MiniAddressSelectorDropdown";
 import MiniTextInput from "../components/MiniTextInput";
-import MiniTextInputWithDropdown from "../components/MiniTextInputWithDropdown";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 import { BrandText } from "@/components/BrandText";
@@ -22,19 +22,6 @@ import { neutral39, neutral77 } from "@/utils/style/colors";
 import { fontMedium13, fontMedium15, fontMedium16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { getExponentByDenom } from "@/utils/wallet/chain-registry";
-
-const tokenOptions = [
-  {
-    label: "Defi",
-    subLabel: "f1du...2d6a",
-    value: "f1duasdjfanjansjbasd2d6a",
-  },
-  {
-    label: "Defi1",
-    subLabel: "f1du...2d6aasdf",
-    value: "f1dunasdhjfashdf2d6aasdf",
-  },
-];
 
 const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation, route }) => {
   const [address, setAddress] = useState("");
@@ -101,8 +88,7 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation, route }) => {
         <View>
           <SpacerColumn size={3} />
 
-          <MiniTextInputWithDropdown
-            options={tokenOptions}
+          <MiniAddressSelectorDropdown
             value={address}
             onChangeText={setAddress}
           />
