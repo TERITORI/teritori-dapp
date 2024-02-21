@@ -3,8 +3,8 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
-import { LegacySecondaryBox } from "./boxes/LegacySecondaryBox";
 import { LegacyTertiaryBox } from "./boxes/LegacyTertiaryBox";
+import { SecondaryBox } from "./boxes/SecondaryBox";
 import { SpacerRow } from "./spacer";
 import chevronDownSVG from "../../assets/icons/chevron-down.svg";
 import chevronLeftDoubleSVG from "../../assets/icons/chevron-left-double.svg";
@@ -12,15 +12,16 @@ import chevronLeftSVG from "../../assets/icons/chevron-left.svg";
 import chevronRightDoubleSVG from "../../assets/icons/chevron-right-double.svg";
 import chevronRightSVG from "../../assets/icons/chevron-right.svg";
 import chevronUpSVG from "../../assets/icons/chevron-up.svg";
-import { useDropdowns } from "../hooks/useDropdowns";
+
+import { useDropdowns } from "@/hooks/useDropdowns";
 import {
   neutral33,
   neutral77,
   neutralA3,
   secondaryColor,
-} from "../utils/style/colors";
-import { fontSemibold13, fontSemibold14 } from "../utils/style/fonts";
-import { layout } from "../utils/style/layout";
+} from "@/utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface PaginationProps {
   currentPage: number;
@@ -114,11 +115,12 @@ export const Pagination = ({
         </LegacyTertiaryBox>
 
         {isDropdownOpen && (
-          <LegacySecondaryBox
-            noBrokenCorners
-            width={80}
-            style={{ position: "absolute", top: 46, right: 0 }}
-            mainContainerStyle={{
+          <SecondaryBox
+            style={{
+              position: "absolute",
+              top: 46,
+              right: 0,
+              width: 80,
               paddingHorizontal: layout.spacing_x1_5,
               paddingTop: layout.spacing_x1_5,
               backgroundColor: neutral33,
@@ -147,7 +149,7 @@ export const Pagination = ({
                 </BrandText>
               </TouchableOpacity>
             ))}
-          </LegacySecondaryBox>
+          </SecondaryBox>
         )}
       </View>
     </View>
