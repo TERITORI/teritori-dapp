@@ -2,9 +2,9 @@ import { combineReducers, configureStore, Middleware } from "@reduxjs/toolkit";
 import { Platform } from "react-native";
 import { useDispatch } from "react-redux";
 import {
-  persistStore,
-  persistReducer,
   createMigrate,
+  persistReducer,
+  persistStore,
   REHYDRATE,
 } from "redux-persist";
 
@@ -23,6 +23,7 @@ import {
   multisigTokensAdapter,
   networkSettingsAdapter,
   settingsReducer,
+  settingsSessionReducer,
 } from "./slices/settings";
 import { squadPresetsReducer } from "./slices/squadPresets";
 import {
@@ -109,7 +110,7 @@ const persistConfig = {
     "marketplaceFilters",
     "marketplaceFilterUI",
   ],
-  blacklist: ["dAppsStore, marketplaceFilterUI"],
+  blacklist: ["dAppsStore, marketplaceFilterUI", "settings-session"],
 };
 
 const rootReducer = combineReducers({
@@ -117,6 +118,7 @@ const rootReducer = combineReducers({
   addressBook: addressBookReducer,
   tokens: tokensReducer,
   settings: settingsReducer,
+  settingsSession: settingsSessionReducer,
   squadPresets: squadPresetsReducer,
   dAppsStorePersisted: dAppsReducerPersisted,
   dAppsStore: dAppsReducer,

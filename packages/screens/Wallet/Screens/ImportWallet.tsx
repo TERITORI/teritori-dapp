@@ -1,6 +1,7 @@
 import { Secp256k1HdWallet } from "@cosmjs/amino";
 import React, { useState } from "react";
 import { TextInput, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 import { useSelector } from "react-redux";
 
 import { CustomButton } from "../../Mini/components/Button/CustomButton";
@@ -43,47 +44,52 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {
     <MultiStepScreenContainer screenPercentage={25} enableBack>
       <SpacerColumn size={8} />
       <View style={{ flex: 1, paddingHorizontal: layout.spacing_x2 }}>
-        <View style={{ flex: 1 }}>
-          <BrandText style={[fontSemibold28]}>
-            Import with Seed Phrase
-          </BrandText>
-          <BrandText
-            style={[
-              fontSemibold16,
-              {
-                color: neutral77,
-                marginTop: layout.spacing_x1,
-              },
-            ]}
-          >
-            Import an existing wallet with a 12 or 24-word seed phrase.
-          </BrandText>
+        <KeyboardAwareScrollView>
+          <View style={{ flex: 1 }}>
+            <BrandText style={[fontSemibold28]}>
+              Import with Seed Phrase
+            </BrandText>
+            <BrandText
+              style={[
+                fontSemibold16,
+                {
+                  color: neutral77,
+                  marginTop: layout.spacing_x1,
+                },
+              ]}
+            >
+              Import an existing wallet with a 12 or 24-word seed phrase.
+            </BrandText>
 
-          <SpacerColumn size={5} />
-          <View
-            style={{
-              backgroundColor: neutral15,
-              borderRadius: 8,
-              width: "100%",
-              height: 160,
+            <SpacerColumn size={5} />
+            <View
+              style={{
+                backgroundColor: neutral15,
+                borderRadius: 8,
+                width: "100%",
+                height: 160,
 
-              padding: layout.spacing_x1,
-              alignItems: "center",
-              borderWidth: 1,
-              borderColor: neutralA3,
-            }}
-          >
-            <TextInput
-              editable
-              multiline
-              numberOfLines={4}
-              onChangeText={(text) => {
-                setLocalPhrase(correctMnemonic(text));
+                padding: layout.spacing_x1,
+                alignItems: "center",
+                borderWidth: 1,
+                borderColor: neutralA3,
               }}
-              style={[fontSemibold16, { color: secondaryColor, width: "100%" }]}
-            />
+            >
+              <TextInput
+                editable
+                multiline
+                numberOfLines={4}
+                onChangeText={(text) => {
+                  setLocalPhrase(correctMnemonic(text));
+                }}
+                style={[
+                  fontSemibold16,
+                  { color: secondaryColor, width: "100%" },
+                ]}
+              />
+            </View>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
 
         <View>
           <Checkbox

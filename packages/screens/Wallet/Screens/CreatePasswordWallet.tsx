@@ -1,28 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 
 import CustomAppBar from "../../Mini/components/AppBar/CustomAppBar";
 import MiniTextInput from "../../Mini/components/MiniTextInput";
-import { AcceptAndNavigate } from "../layout/AcceptAndNavigate";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
-import { ScreenFC } from "@/utils/navigation";
-import { neutral77, neutralA3 } from "@/utils/style/colors";
-import {
-  fontMedium16,
-  fontSemibold16,
-  fontSemibold28,
-} from "@/utils/style/fonts";
+import { getValueFor, save } from "@/hooks/useMobileSecureStore";
+import { CustomButton } from "@/screens/Mini/components/Button/CustomButton";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { neutral77 } from "@/utils/style/colors";
+import { fontSemibold16, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const CreatePasswordWallet: ScreenFC<"CreatePasswordWallet"> = () => {
   const { width } = useWindowDimensions();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigation = useAppNavigation();
 
   // special case user has password already
+
+  useEffect(() => {
+    (async () => {
+      const hasPassword = await getValueFor("password");
+      if (hasPassword) {
+        navigation.navigate("SuccessScreen");
+      }
+    })();
+  }, [navigation]);
 
   return (
     <ScreenContainer
@@ -75,34 +82,25 @@ export const CreatePasswordWallet: ScreenFC<"CreatePasswordWallet"> = () => {
             secureTextEntry
           />
         </View>
-        {password === confirmPassword &&
-          password.length > 0 &&
-          confirmPassword.length > 0 && (
-            <AcceptAndNavigate
-              buttonText="Save Password"
-              label={
-                <BrandText
-                  style={[fontMedium16, { color: neutralA3, lineHeight: 22 }]}
-                >
-                  I agree to the{" "}
-                  <BrandText
-                    style={[
-                      fontMedium16,
-                      {
-                        color: neutralA3,
-                        lineHeight: 22,
-                        textDecorationLine: "underline",
-                      },
-                    ]}
-                  >
-                    Terms of Service.
-                  </BrandText>
-                </BrandText>
-              }
-              value="terms&service"
-              navigateTo="SuccessScreen"
-            />
-          )}
+
+        <CustomButton
+          onPress={(_, navigation) => {
+            save("password", password)
+              .then(() => {
+                navigation.navigate("SuccessScreen");
+              })
+              .catch((e) => {
+                console.error(e);
+              });
+          }}
+          textStyle={{ textTransform: "uppercase" }}
+          title="Save Password"
+          isDisabled={
+            password !== confirmPassword &&
+            password.length > 0 &&
+            confirmPassword.length > 0
+          }
+        />
       </View>
     </ScreenContainer>
   );

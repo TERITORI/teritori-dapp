@@ -253,6 +253,26 @@ const settingsSlice = createSlice({
   },
 });
 
+interface SettingsSession {
+  locked: boolean;
+}
+const settingsSessionInitialState: SettingsSession = {
+  locked: false,
+};
+
+const settingsSession = createSlice({
+  name: "settings-session",
+  initialState: settingsSessionInitialState,
+  reducers: {
+    setLock: (state, action: PayloadAction<boolean>) => {
+      state.locked = action.payload;
+    },
+  },
+});
+
+export const selectIsAppLocked = (state: RootState) =>
+  state.settingsSession.locked;
+
 export const {
   setSelectedNetworkId,
   setSelectedWalletId,
@@ -272,3 +292,6 @@ export const {
 } = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;
+
+export const { setLock } = settingsSession.actions;
+export const settingsSessionReducer = settingsSession.reducer;
