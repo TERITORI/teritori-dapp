@@ -9,14 +9,14 @@ import { SVG } from "@/components/SVG";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { useDropdowns } from "@/hooks/useDropdowns";
-import { neutral55, secondaryColor } from "@/utils/style/colors";
+import { neutral33, neutral55, secondaryColor } from "@/utils/style/colors";
 import { fontMedium14, fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { ProposalStatus } from "@/utils/types/gov";
 
 const def = {
   all: {
-    name: "All Periods",
+    name: "States in Period",
     filter: undefined,
   },
   voting: {
@@ -33,12 +33,12 @@ const def = {
   },
 };
 
-interface PeriodDropdownGovProps {
+interface StatesDropdownGovProps {
   style?: ViewStyle;
   onChange: (filter?: ProposalStatus) => void;
 }
 
-export const PeriodDropdown = ({ style, onChange }: PeriodDropdownGovProps) => {
+export const StatesDropdown = ({ style, onChange }: StatesDropdownGovProps) => {
   const [isDropdownOpen, setDropdownState, ref] = useDropdowns();
   const [selected, setSelected] = useState<keyof typeof def>("all");
 
@@ -55,7 +55,7 @@ export const PeriodDropdown = ({ style, onChange }: PeriodDropdownGovProps) => {
     >
       <View
         style={{
-          backgroundColor: "#292929",
+          backgroundColor: neutral33,
           borderWidth: 1,
           borderRadius: 8,
         }}
@@ -106,7 +106,7 @@ export const PeriodDropdown = ({ style, onChange }: PeriodDropdownGovProps) => {
                 width: "100%",
                 paddingHorizontal: layout.spacing_x1_5,
                 paddingBottom: layout.spacing_x1,
-                backgroundColor: "#292929",
+                backgroundColor: neutral33,
                 borderBottomEndRadius: 8,
                 borderBottomLeftRadius: 8,
                 alignItems: "flex-start",

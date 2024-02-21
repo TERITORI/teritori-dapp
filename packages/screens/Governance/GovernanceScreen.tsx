@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 
-import { PeriodDropdown } from "./components/dropdowns/PeriodDropdown";
-import { ProposalsDropdown } from "./components/dropdowns/ProposalsDropdown";
+import { StatesDropdown } from "./components/dropdowns/StatesDropdown";
 import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
 
 import { BrandText } from "@/components/BrandText";
@@ -69,8 +68,7 @@ export const GovernanceScreen: React.FC = () => {
           <SearchInputRounded
             handleChangeSearch={(text) => setSearchInput(text)}
           />
-          <PeriodDropdown onChange={setFilter} style={{ zIndex: 100 }} />
-          <ProposalsDropdown onChange={() => {}} style={{ zIndex: 100 }} />
+          <StatesDropdown onChange={setFilter} style={{ zIndex: 100 }} />
         </View>
       </View>
 
