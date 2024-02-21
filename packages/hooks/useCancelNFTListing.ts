@@ -2,7 +2,7 @@ import { useCallback } from "react";
 
 import useSelectedWallet from "./useSelectedWallet";
 
-import { TeritoriNftVaultClient } from "@/contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { NftMarketplaceClient } from "@/contracts-clients/nft-marketplace/NftMarketplace.client";
 import { NFTVault__factory } from "@/evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import {
   getKeplrSigningCosmWasmClient,
@@ -24,7 +24,7 @@ const teritoriCancelNFTListing = async (
     throw new Error("network not supported");
   }
   const cosmwasmClient = await getKeplrSigningCosmWasmClient(networkId);
-  const vaultClient = new TeritoriNftVaultClient(
+  const vaultClient = new NftMarketplaceClient(
     cosmwasmClient,
     sender,
     network.vaultContractAddress,

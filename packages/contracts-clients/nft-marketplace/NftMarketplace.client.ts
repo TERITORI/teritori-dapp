@@ -6,8 +6,8 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StdFee } from "@cosmjs/amino";
-import { Uint128, AllNftsInVaultResponse, NFTInfo, ConfigResponse, ExecuteMsg, Binary, Cw721ReceiveMsg, InstantiateMsg, NftInfoResponse, NftListResponse, NftOwnerInfoResponse, NftQueryMsg, Cw2981QueryMsg, QueryMsg, RoyaltiesInfoResponse } from "./TeritoriNftVault.types";
-export interface TeritoriNftVaultReadOnlyInterface {
+import { Uint128, AllNftsInVaultResponse, NFTInfo, ConfigResponse, ExecuteMsg, Binary, Cw721ReceiveMsg, InstantiateMsg, NftInfoResponse, NftListResponse, NftOwnerInfoResponse, NftQueryMsg, Cw2981QueryMsg, QueryMsg, RoyaltiesInfoResponse } from "./NftMarketplace.types";
+export interface NftMarketplaceReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<ConfigResponse>;
   nftInfo: ({
@@ -18,7 +18,7 @@ export interface TeritoriNftVaultReadOnlyInterface {
     nftTokenId: string;
   }) => Promise<NftInfoResponse>;
 }
-export class TeritoriNftVaultQueryClient implements TeritoriNftVaultReadOnlyInterface {
+export class NftMarketplaceQueryClient implements NftMarketplaceReadOnlyInterface {
   client: CosmWasmClient;
   contractAddress: string;
 
@@ -49,7 +49,7 @@ export class TeritoriNftVaultQueryClient implements TeritoriNftVaultReadOnlyInte
     });
   };
 }
-export interface TeritoriNftVaultInterface extends TeritoriNftVaultReadOnlyInterface {
+export interface NftMarketplaceInterface extends NftMarketplaceReadOnlyInterface {
   contractAddress: string;
   sender: string;
   updateConfig: ({
@@ -95,7 +95,7 @@ export interface TeritoriNftVaultInterface extends TeritoriNftVaultReadOnlyInter
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   withdrawFee: (fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
 }
-export class TeritoriNftVaultClient extends TeritoriNftVaultQueryClient implements TeritoriNftVaultInterface {
+export class NftMarketplaceClient extends NftMarketplaceQueryClient implements NftMarketplaceInterface {
   client: SigningCosmWasmClient;
   sender: string;
   contractAddress: string;
