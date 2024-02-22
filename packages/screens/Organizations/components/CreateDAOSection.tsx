@@ -13,17 +13,8 @@ import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useNSAvailability } from "@/hooks/useNSAvailability";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { NetworkKind } from "@/networks";
-import {
-  neutral33,
-  neutral77,
-  // primaryColor,
-  // redDefault,
-} from "@/utils/style/colors";
-import {
-  // fontSemibold14,
-  fontSemibold20,
-  fontSemibold28,
-} from "@/utils/style/fonts";
+import { neutral33, neutral77 } from "@/utils/style/colors";
+import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
   CreateDaoFormType,
