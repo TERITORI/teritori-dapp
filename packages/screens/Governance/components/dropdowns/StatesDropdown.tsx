@@ -16,7 +16,7 @@ import { ProposalStatus } from "@/utils/types/gov";
 
 const def = {
   all: {
-    name: "States in Period",
+    name: "All states",
     filter: undefined,
   },
   voting: {
