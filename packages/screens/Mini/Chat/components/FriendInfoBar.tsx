@@ -17,6 +17,7 @@ import { layout } from "@/utils/style/layout";
 export default function FriendInfoBar() {
   const navigation = useAppNavigation();
   const contactRequestList = useSelector(selectContactRequestList);
+  console.log(contactRequestList);
 
   return (
     <CustomPressable onPress={() => navigation.navigate("MiniFriend")}>

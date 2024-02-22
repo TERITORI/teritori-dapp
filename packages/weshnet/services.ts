@@ -267,7 +267,6 @@ export const addContact = async (
   contactInfo: MessageState["contactInfo"],
 ) => {
   const url = new URL(shareLink);
-
   if (
     !url?.searchParams.has("accountPk") ||
     !url?.searchParams.has("rdvSeed")

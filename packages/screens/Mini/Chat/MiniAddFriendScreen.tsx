@@ -18,6 +18,7 @@ import {
   neutralA3,
   redDefault,
   secondaryColor,
+  successColor,
   withAlpha,
 } from "@/utils/style/colors";
 import {
@@ -31,6 +32,7 @@ import { weshServices } from "@/weshnet";
 
 export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = () => {
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [addContactLoading, setAddContactLoading] = useState(false);
   const [contactLink, setContactLink] = useState("");
   const contactInfo = useSelector(selectContactInfo);
@@ -38,6 +40,7 @@ export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = () => {
   const handleAddContact = async () => {
     setAddContactLoading(true);
     setError("");
+    setSuccess("");
 
     try {
       if (!contactLink) {
@@ -47,6 +50,8 @@ export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = () => {
       }
 
       await weshServices.addContact(contactLink, contactInfo);
+      setContactLink("");
+      setSuccess("Successfully Added!");
     } catch (err: any) {
       console.log(err);
       setError("Failed to add contact.");
@@ -56,12 +61,20 @@ export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = () => {
   };
 
   return (
-    <BlurScreenContainer title="Create Conversation">
+    <BlurScreenContainer>
       <View style={{ paddingHorizontal: layout.spacing_x2, flex: 1 }}>
         <SpacerColumn size={1} />
         <BrandText style={[fontSemibold30]}>Add contact</BrandText>
         <SpacerColumn size={2} />
 
+        <MiniTextInput
+          placeholder="Paste the contact link here"
+          style={{ backgroundColor: withAlpha(neutral22, 0.9) }}
+          placeholderTextColor={neutralA3}
+          value={contactLink}
+          onChangeText={setContactLink}
+        />
+        <SpacerColumn size={2} />
         {error && (
           <BrandText
             style={[
@@ -76,13 +89,19 @@ export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = () => {
           </BrandText>
         )}
 
-        <MiniTextInput
-          placeholder="Paste the contact link here"
-          style={{ backgroundColor: withAlpha(neutral22, 0.9) }}
-          placeholderTextColor={neutralA3}
-          value={contactLink}
-          onChangeText={setContactLink}
-        />
+        {success && (
+          <BrandText
+            style={[
+              fontMedium14,
+              {
+                marginBottom: layout.spacing_x1,
+                color: successColor,
+              },
+            ]}
+          >
+            {success}
+          </BrandText>
+        )}
         <View
           style={{
             flex: 1,

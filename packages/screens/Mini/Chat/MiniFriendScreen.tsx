@@ -179,14 +179,14 @@ function FriendRequest({ isOnline, data, setOpenToast }: Props) {
         <FlexRow justifyContent="flex-end" style={{ flex: 1 }}>
           <CustomButton
             title="Add"
-            onPress={handleAddFriend}
+            onPress={() => handleAddFriend()}
             size="small"
             width={70}
           />
           <SpacerRow size={1} />
 
           <CustomButton
-            onPress={handleCancelFriend}
+            onPress={() => handleCancelFriend()}
             title="Reject"
             type="danger"
             size="small"

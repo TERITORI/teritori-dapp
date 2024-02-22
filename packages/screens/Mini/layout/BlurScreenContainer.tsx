@@ -1,7 +1,13 @@
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { ReactNode } from "react";
-import { SafeAreaView, useWindowDimensions, View } from "react-native";
+import React, { ReactNode, useRef } from "react";
+import {
+  SafeAreaView,
+  useWindowDimensions,
+  View,
+  PanResponder,
+  Animated,
+} from "react-native";
 
 import chevronSVG from "../../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
@@ -38,6 +44,29 @@ export const BlurScreenContainer = ({
       navigation.replace("MiniProfile");
     }
   };
+
+  const pan = useRef(new Animated.ValueXY()).current;
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: Animated.event([null, { dy: pan.y }], {
+        useNativeDriver: false,
+      }),
+      onPanResponderRelease: (e, gesture) => {
+        if (gesture.dy > 50) {
+          navigation.goBack();
+        } else {
+          Animated.spring(pan, {
+            toValue: { x: 0, y: 0 },
+            useNativeDriver: false,
+          }).start();
+        }
+
+        console.log(e);
+      },
+    }),
+  ).current;
 
   return (
     <SafeAreaView
@@ -81,10 +110,12 @@ export const BlurScreenContainer = ({
           bottom: 0,
         }}
       />
-      <View
+      <Animated.View
         style={{
+          transform: [{ translateY: pan.y }],
           flex: 1,
         }}
+        {...panResponder.panHandlers}
       >
         {customHeader ? (
           <View
@@ -123,15 +154,8 @@ export const BlurScreenContainer = ({
           </View>
         )}
 
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: background,
-          }}
-        >
-          {children}
-        </View>
-      </View>
+        <View style={{ flex: 1, backgroundColor: background }}>{children}</View>
+      </Animated.View>
     </SafeAreaView>
   );
 };
