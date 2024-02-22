@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { InstantiateMsg, ExecuteMsg, ExecMsg, Uint64, Uint128, Binary, MembershipConfig, Coin, QueryMsg, QueryMsg1, Cw2981BorkedQueryMsg, AdminFundsResponse, Expiration, Timestamp, AllNftInfoResponseForMetadata, OwnerOfResponse, Approval, NftInfoResponseForMetadata, Metadata, Trait, TokensResponse, Addr, ChannelResponse, ChannelFundsResponse, Config, ContractInfoResponse, Cw2981Response, CheckRoyaltiesResponse, RoyaltiesInfoResponse, NumTokensResponse, SubscriptionResponse, Subscription } from "./Cw721Membership.types";
+import { InstantiateMsg, ExecuteMsg, ExecMsg, Uint64, Uint128, Binary, MembershipConfig, Coin, QueryMsg, QueryMsg1, Cw2981QueryMsg, AdminFundsResponse, Expiration, Timestamp, AllNftInfoResponseForMetadata, OwnerOfResponse, Approval, NftInfoResponseForMetadata, Metadata, Trait, TokensResponse, Addr, ChannelResponse, ChannelFundsResponse, Config, ContractInfoResponse, Cw2981Response, CheckRoyaltiesResponse, RoyaltiesInfoResponse, NumTokensResponse, SubscriptionResponse, Subscription } from "./Cw721Membership.types";
 export interface Cw721MembershipReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<Config>;
@@ -31,7 +31,7 @@ export interface Cw721MembershipReadOnlyInterface {
   extension: ({
     msg
   }: {
-    msg: Cw2981BorkedQueryMsg;
+    msg: Cw2981QueryMsg;
   }) => Promise<Cw2981Response>;
   ownerOf: ({
     includeExpired,
@@ -142,7 +142,7 @@ export class Cw721MembershipQueryClient implements Cw721MembershipReadOnlyInterf
   extension = async ({
     msg
   }: {
-    msg: Cw2981BorkedQueryMsg;
+    msg: Cw2981QueryMsg;
   }): Promise<Cw2981Response> => {
     return this.client.queryContractSmart(this.contractAddress, {
       extension: {

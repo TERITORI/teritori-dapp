@@ -6,7 +6,7 @@ use cosmwasm_std::{
     Addr, BankMsg, Binary, Coin, CosmosMsg, Order, Response, StdResult, Storage, Timestamp,
     Uint128, Uint64,
 };
-use cw2981_royalties::msg::{CheckRoyaltiesResponse, RoyaltiesInfoResponse};
+use cw2981_royalties::msg::{CheckRoyaltiesResponse, Cw2981QueryMsg, RoyaltiesInfoResponse};
 use cw721::{
     AllNftInfoResponse, ContractInfoResponse, Cw721ReceiveMsg, NftInfoResponse, NumTokensResponse,
     OwnerOfResponse, TokensResponse,
@@ -783,14 +783,14 @@ impl Cw721MembershipContract {
     pub fn extension(
         &self,
         ctx: QueryCtx,
-        msg: Cw2981BorkedQueryMsg,
+        msg: Cw2981QueryMsg,
     ) -> Result<Cw2981Response, ContractError> {
         match msg {
-            Cw2981BorkedQueryMsg::CheckRoyalties {} => {
+            Cw2981QueryMsg::CheckRoyalties {} => {
                 let res = self.check_royalties()?;
                 Ok(Cw2981Response::CheckRoyaltiesResponse(res))
             }
-            Cw2981BorkedQueryMsg::RoyaltyInfo {
+            Cw2981QueryMsg::RoyaltyInfo {
                 token_id,
                 sale_price,
             } => {
@@ -1119,40 +1119,4 @@ pub fn parse_token_id(token_id: &String) -> Result<(u64, u64), ContractError> {
 
 pub fn format_token_id(channel_id: u64, nft_index: u64) -> String {
     URL_SAFE_NO_PAD.encode([nft_index.encode_var_vec(), channel_id.encode_var_vec()].concat())
-}
-
-#[derive(
-    ::cosmwasm_schema::serde::Serialize,
-    ::cosmwasm_schema::serde::Deserialize,
-    ::std::clone::Clone,
-    ::std::fmt::Debug,
-    ::std::cmp::PartialEq,
-    ::cosmwasm_schema::schemars::JsonSchema,
-)]
-#[allow(clippy::derive_partial_eq_without_eq)] // Allow users of `#[cw_serde]` to not implement Eq without clippy complaining
-#[serde(
-  deny_unknown_fields,
-  rename_all = "PascalCase", // this is borked in the Cw2981 libs used in teritori vault
-  crate = "::cosmwasm_schema::serde"
-)]
-#[schemars(crate = "::cosmwasm_schema::schemars")]
-pub enum Cw2981BorkedQueryMsg {
-    /// Should be called on sale to see if royalties are owed
-    /// by the marketplace selling the NFT, if CheckRoyalties
-    /// returns true
-    /// See https://eips.ethereum.org/EIPS/eip-2981
-    RoyaltyInfo {
-        token_id: String,
-        // the denom of this sale must also be the denom returned by RoyaltiesInfoResponse
-        // this was originally implemented as a Coin
-        // however that would mean you couldn't buy using CW20s
-        // as CW20 is just mapping of addr -> balance
-        sale_price: Uint128,
-    },
-    /// Called against contract to determine if this NFT
-    /// implements royalties. Should return a boolean as part of
-    /// CheckRoyaltiesResponse - default can simply be true
-    /// if royalties are implemented at token level
-    /// (i.e. always check on sale)
-    CheckRoyalties {},
 }

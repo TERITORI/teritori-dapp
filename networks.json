@@ -10939,7 +10939,7 @@
     "featureObjects": [
       {
         "type": "CosmWasmPremiumFeed",
-        "membershipContractAddress": "tori156edst4w2cjj2l7g6xezzs7hf2vpl25mrpagkgde85aj360pc22s48m2ff",
+        "membershipContractAddress": "tori1rs244rjrhap2v4setxlugkh8ungxlrsh8asvh0trsgvqvplvkd5q7752l6",
         "mintDenom": "utori"
       }
     ],
@@ -10997,7 +10997,7 @@
     "distributorContractAddress": "",
     "riotersFooterContractAddress": "",
     "secondaryDuringMintList": [
-      "tori156edst4w2cjj2l7g6xezzs7hf2vpl25mrpagkgde85aj360pc22s48m2ff",
+      "tori1rs244rjrhap2v4setxlugkh8ungxlrsh8asvh0trsgvqvplvkd5q7752l6",
       "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys",
       "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc",
       ""

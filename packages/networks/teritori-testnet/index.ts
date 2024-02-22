@@ -8,7 +8,7 @@ const nameServiceContractAddress =
 const premiumFeedFeature: CosmWasmPremiumFeed = {
   type: NetworkFeature.CosmWasmPremiumFeed,
   membershipContractAddress:
-    "tori156edst4w2cjj2l7g6xezzs7hf2vpl25mrpagkgde85aj360pc22s48m2ff",
+    "tori1rs244rjrhap2v4setxlugkh8ungxlrsh8asvh0trsgvqvplvkd5q7752l6",
   mintDenom: "utori",
 };
 

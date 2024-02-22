@@ -126,7 +126,7 @@ export type QueryMsg1 = {
   };
 } | {
   extension: {
-    msg: Cw2981BorkedQueryMsg;
+    msg: Cw2981QueryMsg;
     [k: string]: unknown;
   };
 } | {
@@ -168,13 +168,13 @@ export type QueryMsg1 = {
     [k: string]: unknown;
   };
 };
-export type Cw2981BorkedQueryMsg = {
-  RoyaltyInfo: {
+export type Cw2981QueryMsg = {
+  royalty_info: {
     sale_price: Uint128;
     token_id: string;
   };
 } | {
-  CheckRoyalties: {};
+  check_royalties: {};
 };
 export interface AdminFundsResponse {
   funds: Coin[];

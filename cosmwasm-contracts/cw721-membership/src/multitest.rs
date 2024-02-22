@@ -1,12 +1,11 @@
 use cosmwasm_std::{from_json, Addr, BalanceResponse, BankQuery, Coin, Timestamp, Uint128, Uint64};
-use cw2981_royalties::msg::{CheckRoyaltiesResponse, RoyaltiesInfoResponse};
+use cw2981_royalties::msg::{CheckRoyaltiesResponse, Cw2981QueryMsg, RoyaltiesInfoResponse};
 use cw721::{NftInfoResponse, TokensResponse};
 use cw721_metadata_onchain::{Metadata, Trait};
 use sylvia::{anyhow::Error, cw_multi_test::Module, multitest::App};
 
 use crate::contract::{
-    multitest_utils::CodeId, Cw2981BorkedQueryMsg, Cw2981Response, MembershipConfig, Subscription,
-    SubscriptionResponse,
+    multitest_utils::CodeId, Cw2981Response, MembershipConfig, Subscription, SubscriptionResponse,
 };
 
 #[test]
@@ -212,7 +211,7 @@ fn basic_full_flow() {
     // ------- test borked royalty queries
 
     let royalties_check = contract
-        .extension(Cw2981BorkedQueryMsg::CheckRoyalties {})
+        .extension(Cw2981QueryMsg::CheckRoyalties {})
         .unwrap();
     assert_eq!(
         royalties_check,
@@ -222,7 +221,7 @@ fn basic_full_flow() {
     );
 
     let royalty_info = contract
-        .extension(Cw2981BorkedQueryMsg::RoyaltyInfo {
+        .extension(Cw2981QueryMsg::RoyaltyInfo {
             token_id: token_id.to_string(),
             sale_price: Uint128::from(461558079u32),
         })
