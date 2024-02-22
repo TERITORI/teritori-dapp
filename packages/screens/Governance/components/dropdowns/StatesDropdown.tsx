@@ -62,8 +62,6 @@ export const StatesDropdown = ({ style, onChange }: StatesDropdownGovProps) => {
       >
         <View
           style={{
-            width: "100%",
-            height: 40,
             flexDirection: "row",
             paddingHorizontal: layout.spacing_x1_5,
             alignItems: "center",
@@ -71,13 +69,17 @@ export const StatesDropdown = ({ style, onChange }: StatesDropdownGovProps) => {
         >
           <TouchableOpacity
             style={{
+              width: "100%",
+              height: 40,
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
               flex: 1,
             }}
             activeOpacity={1}
-            onPress={() => setDropdownState()}
+            onPress={() =>
+              isDropdownOpen ? setDropdownState(false) : setDropdownState(true)
+            }
           >
             <BrandText
               style={[
