@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { View, useWindowDimensions } from "react-native";
 
 import { Spinner } from "./Spinner";
@@ -30,7 +30,7 @@ type ToastVariantType = "solid" | "outline";
 
 export type MiniToastProps = {
   status?: ToastStatusType;
-  message?: string;
+  message: string | null;
   variant?: ToastVariantType;
   duration?: number;
   topOffSet?: number;
@@ -75,23 +75,8 @@ export const MiniToast = ({
   showAlways = false,
 }: MiniToastProps) => {
   const { width: windowWidth } = useWindowDimensions();
-  const [toastMessage, setToastMessage] = useState("");
 
-  useEffect(() => {
-    if (message) {
-      setToastMessage(message);
-    }
-    //always show toast when showAlways flag is enabled or status is loading
-    if (!showAlways && status !== "loading") {
-      const timeoutID = setTimeout(() => {
-        setToastMessage("");
-      }, duration || 5000);
-
-      return () => clearTimeout(timeoutID);
-    }
-  }, [message, duration, status, showAlways]);
-
-  if (!toastMessage) {
+  if (!message) {
     return null;
   }
 
@@ -134,7 +119,7 @@ export const MiniToast = ({
           },
         ]}
       >
-        {toastMessage}
+        {message}
       </BrandText>
     </View>
   );
