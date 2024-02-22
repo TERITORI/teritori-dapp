@@ -16,10 +16,10 @@ import { NftMarketplaceClient } from "@/contracts-clients/nft-marketplace/NftMar
 import { TeritoriNameServiceQueryClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { useDAOMakeProposal } from "@/hooks/dao/useDAOMakeProposal";
 import { useFeedConfig } from "@/hooks/feed/useFeedConfig";
+import { useMarketplaceConfig } from "@/hooks/marketplace/useMarketplaceConfig";
 import { useBalances } from "@/hooks/useBalances";
 import { useBreedingConfig } from "@/hooks/useBreedingConfig";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { useVaultConfig } from "@/hooks/vault/useVaultConfig";
 import {
   getCosmosNetwork,
   getKeplrSigningCosmWasmClient,
@@ -141,7 +141,7 @@ const DAOManager: React.FC = () => {
 
 const VaultManager: React.FC<{ networkId: string }> = ({ networkId }) => {
   const network = getCosmosNetwork(networkId);
-  const { vaultConfig } = useVaultConfig(networkId);
+  const { marketplaceConfig: vaultConfig } = useMarketplaceConfig(networkId);
   const vaultBalances = useBalances(networkId, network?.vaultContractAddress);
   const { wrapWithFeedback } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
