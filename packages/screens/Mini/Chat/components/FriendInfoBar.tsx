@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import chevronSVG from "@/assets/icons/chevron-right.svg";
 import friendSVG from "@/assets/icons/friend-gray.svg";
@@ -7,6 +8,7 @@ import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
 import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerRow } from "@/components/spacer";
+import { selectContactRequestList } from "@/store/slices/message";
 import { useAppNavigation } from "@/utils/navigation";
 import { azureBlue, neutral22, withAlpha } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
@@ -14,6 +16,7 @@ import { layout } from "@/utils/style/layout";
 
 export default function FriendInfoBar() {
   const navigation = useAppNavigation();
+  const contactRequestList = useSelector(selectContactRequestList);
 
   return (
     <CustomPressable onPress={() => navigation.navigate("MiniFriend")}>
@@ -41,14 +44,16 @@ export default function FriendInfoBar() {
             justifyContent: "center",
           }}
         >
-          <TertiaryBadge
-            label="2 new"
-            style={{ backgroundColor: withAlpha(azureBlue, 0.15) }}
-            textColor={azureBlue}
-          />
+          {contactRequestList.length > 0 && (
+            <TertiaryBadge
+              label={`${contactRequestList.length} new"`}
+              style={{ backgroundColor: withAlpha(azureBlue, 0.15) }}
+              textColor={azureBlue}
+            />
+          )}
           <SpacerRow size={1} />
 
-          <BrandText style={[fontSemibold14]}>1</BrandText>
+          {/* <BrandText style={[fontSemibold14]}>1</BrandText> */}
 
           <SpacerRow size={0.75} />
           <SVGorImageIcon icon={chevronSVG} iconSize={16} />

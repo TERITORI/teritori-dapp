@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -167,19 +167,14 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
 
   const hasChats = conversationList.length > 0;
 
-  useEffect(() => {
-    // setMessageOnboardingComplete();
-  }, []);
-
   const hideToast = () => {
     setShowToast(false);
   };
   const onLearnMoreToastPress = () => {
     navigation.navigate("MiniChatSetting", { back: undefined });
-    // setIsChatSettingModalVisible(true);
   };
 
-  if (isWeshConnected) {
+  if (!isWeshConnected) {
     return (
       <ScreenContainer
         headerChildren={<></>}
@@ -275,7 +270,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
           <SpacerColumn size={2} />
           <Separator />
 
-          {hasChats ? (
+          {!hasChats ? (
             <View
               style={{
                 flex: 1,
@@ -307,7 +302,6 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
 
           {!hasChats && (
             <>
-              {/* <SpacerColumn size={1} /> */}
               <View>
                 <BrandText
                   style={[
