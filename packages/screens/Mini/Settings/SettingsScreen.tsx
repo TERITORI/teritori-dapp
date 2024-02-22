@@ -30,6 +30,10 @@ const settingScreens: { title: string; navigateTo: RouteName }[] = [
     navigateTo: "MiniChatSetting",
   },
   {
+    title: "Preferences",
+    navigateTo: "MiniPreferencesSetting",
+  },
+  {
     title: "About Teritori",
     navigateTo: "About",
   },
