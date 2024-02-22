@@ -21,18 +21,24 @@ import { SocialButton } from "@/components/buttons/SocialButton";
 import { SocialButtonSecondary } from "@/components/buttons/SocialButtonSecondary";
 import { ProfileButton } from "@/components/hub/ProfileButton";
 import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
+import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
 import { usePremiumIsSubscribed } from "@/hooks/feed/usePremiumIsSubscribed";
-import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { accountExplorerLink, parseUserId } from "@/networks";
+import {
+  accountExplorerLink,
+  getNetworkFeature,
+  NetworkFeature,
+  parseUserId,
+} from "@/networks";
 import { DEFAULT_NAME } from "@/utils/social-feed";
 import {
   neutral00,
   neutral55,
   neutral77,
   secondaryColor,
+  yellowPremium,
 } from "@/utils/style/colors";
 import { fontBold16, fontMedium14, fontSemibold14 } from "@/utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
@@ -50,13 +56,16 @@ export const UPPIntro: React.FC<{
   const [network, userAddress] = parseUserId(userId);
   const { width } = useMaxResolution();
   const { width: windowWidth } = useWindowDimensions();
+  const { data: premiumChannel } = usePremiumChannel(network?.id, userAddress);
+  const networkHasPremiumFeature = !!getNetworkFeature(
+    network?.id,
+    NetworkFeature.CosmWasmPremiumFeed,
+  );
 
   const { data: isSubscribed } = usePremiumIsSubscribed(
     userId,
     selectedWallet?.userId,
   );
-
-  const [developerMode] = useDeveloperMode();
 
   const [subscriptionSetupModalVisible, setSubscriptionSetupModalVisible] =
     useState(false);
@@ -148,12 +157,13 @@ export const UPPIntro: React.FC<{
         >
           {isUserOwner ? (
             <>
-              {developerMode && (
+              {!!networkHasPremiumFeature && (
                 <>
                   <SecondaryButton
-                    style={{ width: 132, marginRight: layout.spacing_x2 }}
-                    text="Premium Sub"
+                    style={{ marginRight: layout.spacing_x2 }}
+                    text="Premium Channel"
                     size="M"
+                    hoverBorderColor={yellowPremium}
                     paddingHorizontal={layout.spacing_x2}
                     backgroundColor={secondaryColor}
                     textStyle={{
@@ -181,11 +191,11 @@ export const UPPIntro: React.FC<{
             </>
           ) : (
             <>
-              {developerMode && (
+              {!!premiumChannel && (
                 <>
                   {isSubscribed ? (
                     <SecondaryButtonOutline
-                      style={{ width: 132, marginRight: layout.spacing_x2 }}
+                      style={{ marginRight: layout.spacing_x2 }}
                       text="Subscribed"
                       size="M"
                       backgroundColor={neutral00}
@@ -193,9 +203,10 @@ export const UPPIntro: React.FC<{
                     />
                   ) : (
                     <SecondaryButton
-                      style={{ width: 132, marginRight: layout.spacing_x2 }}
+                      style={{ marginRight: layout.spacing_x2 }}
                       text="Premium Sub"
                       size="M"
+                      hoverBorderColor={yellowPremium}
                       paddingHorizontal={layout.spacing_x2}
                       backgroundColor={secondaryColor}
                       textStyle={{

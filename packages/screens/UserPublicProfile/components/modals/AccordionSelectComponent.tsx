@@ -21,6 +21,7 @@ import {
   neutral33,
   neutral77,
   secondaryColor,
+  yellowPremium,
 } from "@/utils/style/colors";
 import { fontSemibold13, fontSemibold16 } from "@/utils/style/fonts";
 
@@ -38,14 +39,15 @@ export const AccordionSelectComponent: FC<AccordionProps> = ({
   onItemSelect,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const durationDays = +item?.duration_seconds / (24 * 60 * 60);
   return (
     <PrimaryBox
       style={{
         borderColor: neutral33,
         backgroundColor: isOpen ? neutral22 : neutral00,
         borderWidth: 1,
-        margin: layout.spacing_x1,
-        padding: layout.spacing_x1,
+        marginVertical: layout.spacing_x1,
+        padding: layout.spacing_x2,
       }}
     >
       <View>
@@ -53,13 +55,14 @@ export const AccordionSelectComponent: FC<AccordionProps> = ({
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
+            gap: layout.spacing_x1_5,
           }}
         >
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
-              gap: 12,
+              gap: layout.spacing_x1_5,
             }}
           >
             <TouchableOpacity
@@ -88,12 +91,7 @@ export const AccordionSelectComponent: FC<AccordionProps> = ({
               width={48}
             />
             <View>
-              <BrandText
-                style={[
-                  fontSemibold16,
-                  { color: secondaryColor, marginLeft: layout.spacing_x1 },
-                ]}
-              >
+              <BrandText style={[fontSemibold16, { color: secondaryColor }]}>
                 {item?.display_name || "Tier name"}
               </BrandText>
             </View>
@@ -105,12 +103,10 @@ export const AccordionSelectComponent: FC<AccordionProps> = ({
               gap: layout.spacing_x1_5,
             }}
           >
-            <BrandText
-              style={[
-                fontSemibold16,
-                { color: neutral77, marginLeft: layout.spacing_x1 },
-              ]}
-            >
+            <BrandText style={[fontSemibold16, { color: yellowPremium }]}>
+              {durationDays} day{durationDays !== 1 ? "s" : ""}
+            </BrandText>
+            <BrandText style={[fontSemibold16, { color: neutral77 }]}>
               {prettyPrice(networkId, item?.price.amount, item?.price.denom)}
             </BrandText>
             <TouchableOpacity
@@ -128,7 +124,7 @@ export const AccordionSelectComponent: FC<AccordionProps> = ({
           </View>
         </View>
         {isOpen && (
-          <View style={{ marginVertical: layout.spacing_x2 }}>
+          <View style={{ marginTop: layout.spacing_x2 }}>
             <BrandText style={fontSemibold13}>{item?.description}</BrandText>
           </View>
         )}

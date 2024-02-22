@@ -113,8 +113,11 @@ export const NFTAttributeCard: React.FC<{
 };
 
 const prettyAttributeValue = (attr: NFTAttribute): string => {
-  if (attr.display_type === "DISPLAY_TYPE_DATE") {
-    return moment(parseInt(attr.value.split(".")[0], 10) * 1000).calendar(); // FIXME: verify what date format is expected in this field
+  if (attr.display_type === "date") {
+    return moment(parseInt(attr.value, 10) * 1000).calendar();
+  } else if (attr.display_type === "duration") {
+    const days = moment.duration(parseInt(attr.value, 10) * 1000).asDays();
+    return days + " day" + (days > 1 ? "s" : "");
   }
   return attr.value;
 };
