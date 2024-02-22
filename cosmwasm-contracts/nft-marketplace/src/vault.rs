@@ -65,7 +65,7 @@ pub struct RoyaltiesInfoResponse {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub enum Cw2981QueryMsg {
+pub enum Cw2981BorkedQueryMsg {
     /// Should be called on sale to see if royalties are owed
     /// by the marketplace selling the NFT, if CheckRoyalties
     /// returns true
@@ -86,4 +86,4 @@ pub enum Cw2981QueryMsg {
     CheckRoyalties {},
 }
 
-pub type NftQueryMsg = cw721_base::QueryMsg<Cw2981QueryMsg>;
+pub type NftQueryMsg = cw721_base::QueryMsg<Cw2981BorkedQueryMsg>;

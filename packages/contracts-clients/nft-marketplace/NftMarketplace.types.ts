@@ -120,10 +120,10 @@ export type NftQueryMsg = {
   minter: {};
 } | {
   extension: {
-    msg: Cw2981QueryMsg;
+    msg: Cw2981BorkedQueryMsg;
   };
 };
-export type Cw2981QueryMsg = {
+export type Cw2981BorkedQueryMsg = {
   RoyaltyInfo: {
     sale_price: Uint128;
     token_id: string;

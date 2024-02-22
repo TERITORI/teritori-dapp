@@ -1,15 +1,17 @@
 use crate::state::{Config, NFTInfo, CONFIG, NFT_LIST};
 
 use crate::vault::{
-    ConfigResponse, Cw2981QueryMsg, Cw721HookMsg, ExecuteMsg, InstantiateMsg, NftQueryMsg,
+    ConfigResponse, Cw2981BorkedQueryMsg, Cw721HookMsg, ExecuteMsg, InstantiateMsg, NftQueryMsg,
     QueryMsg, RoyaltiesInfoResponse,
 };
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
-    attr, from_binary, to_binary, Addr, BankMsg, Binary, Coin, CosmosMsg, Deps, DepsMut, Env,
-    MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, WasmMsg, WasmQuery,
+    attr, from_binary, to_binary, to_json_binary, Addr, BankMsg, Binary, Coin, CosmosMsg, Deps,
+    DepsMut, Empty, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128,
+    WasmMsg, WasmQuery,
 };
+use cw2981_royalties::msg::Cw2981QueryMsg;
 use cw721::{Cw721ExecuteMsg, Cw721ReceiveMsg};
 
 //Initialize the contract.
@@ -27,6 +29,12 @@ pub fn instantiate(
 
     CONFIG.save(deps.storage, &config)?;
 
+    Ok(Response::new())
+}
+
+//Migration
+#[cfg_attr(not(feature = "library"), entry_point)]
+pub fn migrate(_deps: DepsMut, _env: Env, _msg: Empty) -> StdResult<Response> {
     Ok(Response::new())
 }
 
@@ -337,16 +345,48 @@ pub fn query_royalties_info(
     contract_addr: String,
     token_id: String,
     sale_price: Uint128,
-) -> StdResult<RoyaltiesInfoResponse> {
-    deps.querier.query(&QueryRequest::Wasm(WasmQuery::Smart {
-        contract_addr,
-        msg: to_binary(&NftQueryMsg::Extension {
-            msg: Cw2981QueryMsg::RoyaltyInfo {
-                token_id,
-                sale_price,
-            },
-        })?,
-    }))
+) -> StdResult<cw2981_royalties::msg::RoyaltiesInfoResponse> {
+    let check: Result<cw2981_royalties::msg::CheckRoyaltiesResponse, StdError> =
+        deps.querier.query(&QueryRequest::Wasm(WasmQuery::Smart {
+            contract_addr: contract_addr.to_owned(),
+            msg: to_json_binary(&cw2981_royalties::QueryMsg::Extension {
+                msg: Cw2981QueryMsg::CheckRoyalties {},
+            })?,
+        }));
+    if let Ok(check) = check {
+        if check.royalty_payments {
+            let royalties_info: Result<cw2981_royalties::msg::RoyaltiesInfoResponse, StdError> =
+                deps.querier.query(&QueryRequest::Wasm(WasmQuery::Smart {
+                    contract_addr: contract_addr.to_owned(),
+                    msg: to_json_binary(&cw2981_royalties::QueryMsg::Extension {
+                        msg: Cw2981QueryMsg::RoyaltyInfo {
+                            token_id: token_id.to_owned(),
+                            sale_price,
+                        },
+                    })?,
+                }));
+            if let Ok(royalties_info) = royalties_info {
+                return Ok(royalties_info);
+            }
+        }
+    }
+
+    let borked_response: Result<RoyaltiesInfoResponse, _> =
+        deps.querier.query(&QueryRequest::Wasm(WasmQuery::Smart {
+            contract_addr,
+            msg: to_binary(&NftQueryMsg::Extension {
+                msg: Cw2981BorkedQueryMsg::RoyaltyInfo {
+                    token_id,
+                    sale_price,
+                },
+            })?,
+        }));
+    borked_response.map(
+        |borked_response| cw2981_royalties::msg::RoyaltiesInfoResponse {
+            address: borked_response.address,
+            royalty_amount: borked_response.royalty_amount,
+        },
+    )
 }
 
 #[cfg(test)]
