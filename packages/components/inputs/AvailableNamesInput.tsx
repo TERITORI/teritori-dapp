@@ -6,8 +6,9 @@ import { TextInputCustom } from "./TextInputCustom";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 
+import { useNSAvailability } from "@/hooks/useNSAvailability";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
-import { NetworkKind } from "@/networks";
+import { NetworkKind, getCosmosNetwork } from "@/networks";
 import {
   neutral33,
   neutral77,
@@ -19,24 +20,18 @@ import { NameFinderFormType } from "@/utils/types/tns";
 export interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   name: Path<T>;
-  loading: boolean;
   nameValue: string;
   label: string;
   placeHolder: string;
   value?: string;
   onChangeText?: (value: string) => void;
   onPressEnter?: () => void;
-  isInvalid: boolean;
-  isNameAvailabel: boolean;
-  isTaken: boolean;
-  price: string;
   usdPrice?: number | undefined;
   control?: Control<T>;
   style?: ViewStyle;
 }
 
 export const AvailableNamesInput = <T extends FieldValues>({
-  loading,
   nameValue,
   label,
   name,
@@ -44,24 +39,27 @@ export const AvailableNamesInput = <T extends FieldValues>({
   value,
   onChangeText = () => {},
   onPressEnter = () => {},
-  isInvalid,
-  isNameAvailabel,
-  isTaken,
-  price,
   usdPrice,
   control,
   style,
 }: TextInputCustomProps<T>) => {
   const selectedNetwork = useSelectedNetworkInfo();
+  const cosmosNetwork = getCosmosNetwork(selectedNetwork?.id);
+  const nameAvailability = useNSAvailability(selectedNetwork?.id, nameValue);
+  const price =
+    nameAvailability.availability === "mint"
+      ? nameAvailability.prettyPrice
+      : "";
+
   let availabilityInfo = <></>;
   if (nameValue && selectedNetwork?.kind === NetworkKind.Cosmos) {
-    if (isInvalid) {
+    if (nameAvailability.availability === "invalid") {
       availabilityInfo = (
         <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
           Invalid
         </BrandText>
       );
-    } else if (isNameAvailabel) {
+    } else if (nameAvailability.availability === "mint") {
       availabilityInfo = (
         <View style={{ flexDirection: "row" }}>
           {!!usdPrice && (
@@ -79,7 +77,10 @@ export const AvailableNamesInput = <T extends FieldValues>({
           </BrandText>
         </View>
       );
-    } else if (isTaken) {
+    } else if (
+      nameAvailability.availability === "market" ||
+      nameAvailability.availability === "none"
+    ) {
       availabilityInfo = (
         <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
           Taken
@@ -91,9 +92,17 @@ export const AvailableNamesInput = <T extends FieldValues>({
   return (
     <TextInputCustom<NameFinderFormType>
       noBrokenCorners
-      isLoading={loading}
+      isLoading={nameAvailability.availability === "loading"}
       variant="labelOutside"
-      label={label}
+      label={`${label}${
+        nameValue
+          ? `: ${
+              selectedNetwork?.kind === NetworkKind.Gno
+                ? "gno.land/r/demo/" + name
+                : nameValue + cosmosNetwork?.nameServiceTLD
+            }`
+          : ""
+      }`}
       placeHolder={placeHolder}
       name={name as "name" | "associatedHandle"}
       onChangeText={(val: string) => onChangeText(val)}

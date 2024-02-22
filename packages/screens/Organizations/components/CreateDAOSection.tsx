@@ -12,7 +12,7 @@ import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useNSAvailability } from "@/hooks/useNSAvailability";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
-import { getCosmosNetwork, NetworkKind } from "@/networks";
+import { NetworkKind } from "@/networks";
 import {
   neutral33,
   neutral77,
@@ -55,7 +55,6 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   });
 
   const selectedNetwork = useSelectedNetworkInfo();
-  const cosmosNetwork = getCosmosNetwork(selectedNetwork?.id);
   const selectedRadioStructure = watch("structure");
   const uri = watch("imageUrl");
   const name = watch("associatedHandle");
@@ -65,50 +64,6 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   useEffect(() => {
     setValue("nameAvailability", nameAvailability);
   }, [setValue, nameAvailability]);
-
-  // let availabilityInfo = <></>;
-  // if (name && selectedNetwork?.kind === NetworkKind.Cosmos) {
-  //   switch (nameAvailability.availability) {
-  //     case "invalid": {
-  //       availabilityInfo = (
-  //         <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
-  //           Invalid
-  //         </BrandText>
-  //       );
-  //       break;
-  //     }
-  //     case "mint": {
-  //       availabilityInfo = (
-  //         <View style={{ flexDirection: "row" }}>
-  //           {!!nameAvailability?.usdPrice && (
-  //             <>
-  //               <BrandText style={{ color: neutral77, ...fontSemibold14 }}>
-  //                 ${nameAvailability.usdPrice?.toFixed(2)}
-  //               </BrandText>
-  //               <BrandText style={{ color: neutral33, ...fontSemibold14 }}>
-  //                 {" - "}
-  //               </BrandText>
-  //             </>
-  //           )}
-  //           <BrandText style={{ color: primaryColor, ...fontSemibold14 }}>
-  //             {nameAvailability.prettyPrice}
-  //           </BrandText>
-  //         </View>
-  //       );
-  //       break;
-  //     }
-  //     case "none":
-  //     case "market": {
-  //       // TODO: handle market case
-  //       availabilityInfo = (
-  //         <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
-  //           Taken
-  //         </BrandText>
-  //       );
-  //       break;
-  //     }
-  //   }
-  // }
 
   // functions
   const onErrorImageLoading = () =>
@@ -142,7 +97,6 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
               <SpacerRow size={2.5} />
               <View style={fillCStyle}>
                 <AvailableNamesInput
-                  loading={nameAvailability.availability === "loading"}
                   nameValue={name}
                   onChangeText={(val: string) => {
                     setValue("associatedHandle", val, {
@@ -151,15 +105,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                       shouldValidate: true,
                     });
                   }}
-                  label={`Associated Handle${
-                    name
-                      ? `: ${
-                          selectedNetwork?.kind === NetworkKind.Gno
-                            ? "gno.land/r/demo/" + name
-                            : name + cosmosNetwork?.nameServiceTLD
-                        }`
-                      : ""
-                  }`}
+                  label="Associated Handle"
                   name="associatedHandle"
                   control={control}
                   placeHolder={
@@ -168,48 +114,12 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                       : "your-organization"
                   }
                   value={name}
-                  isInvalid={nameAvailability.availability === "invalid"}
-                  isNameAvailabel={nameAvailability.availability === "mint"}
-                  isTaken={
-                    nameAvailability.availability === "market" ||
-                    nameAvailability.availability === "none"
-                  }
-                  price={
-                    nameAvailability.availability === "mint"
-                      ? nameAvailability.prettyPrice
-                      : ""
-                  }
                   usdPrice={
                     nameAvailability.availability === "mint"
                       ? nameAvailability?.usdPrice
                       : 0
                   }
                 />
-
-                {/* <TextInputCustom<CreateDaoFormType>
-                  noBrokenCorners
-                  isLoading={nameAvailability.availability === "loading"}
-                  variant="labelOutside"
-                  control={control}
-                  label={`Associated Handle${
-                    name
-                      ? `: ${
-                          selectedNetwork?.kind === NetworkKind.Gno
-                            ? "gno.land/r/demo/" + name
-                            : name + cosmosNetwork?.nameServiceTLD
-                        }`
-                      : ""
-                  }`}
-                  placeHolder={
-                    selectedNetwork?.kind === NetworkKind.Gno
-                      ? "your_organization"
-                      : "your-organization"
-                  }
-                  name="associatedHandle"
-                  rules={{ required: true }}
-                >
-                  {availabilityInfo}
-                </TextInputCustom> */}
               </View>
             </View>
 
