@@ -8,7 +8,6 @@ import { SelectAudioVideo } from "./SelectAudioVideo";
 import { SelectPicture } from "./SelectPicture";
 import priceSVG from "../../../../../assets/icons/price.svg";
 import { CustomButton } from "../Button/CustomButton";
-import MiniToast from "../MiniToast";
 
 import { BrandText } from "@/components/BrandText";
 import FlexRow from "@/components/FlexRow";
@@ -17,6 +16,7 @@ import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgress
 import { EmojiSelector } from "@/components/socialFeed/EmojiSelector";
 import { GIFSelector } from "@/components/socialFeed/GIFSelector";
 import { SpacerColumn } from "@/components/spacer";
+import { useToast } from "@/context/ToastProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
 import { useIpfs } from "@/hooks/useIpfs";
@@ -79,10 +79,8 @@ export const MiniCommentInput = React.forwardRef<
     const selectedWallet = useSelectedWallet();
     const userId = getUserId(selectedNetworkId, selectedWallet?.address);
     const inputRef = useRef<MiniCommentInputHandle>(null);
-    const [toastErrors, setToastErrors] = useState<{
-      title: string;
-      message: string;
-    } | null>(null);
+
+    const { setToast } = useToast();
     const [isUploadLoading, setIsUploadLoading] = useState(false);
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
 
@@ -229,9 +227,9 @@ export const MiniCommentInput = React.forwardRef<
         }
         if (formValues.files?.length && !remoteFiles.find((file) => file.url)) {
           console.error("upload file err : Fail to pin to IPFS");
-          setToastErrors({
-            title: "File upload failed",
+          setToast({
             message: "Fail to pin to IPFS, please try to Publish again",
+            duration: 5000,
           });
           setIsUploadLoading(false);
           return;
@@ -255,30 +253,15 @@ export const MiniCommentInput = React.forwardRef<
         console.error("post submit err", err);
         setIsUploadLoading(false);
         setIsProgressBarShown(false);
-        setToastErrors({
-          title: "Post creation failed",
+        setToast({
           message: err instanceof Error ? err.message : `${err}`,
+          duration: 3000,
         });
-        setTimeout(() => {
-          setToastErrors(null);
-        }, 3000);
       }
     };
 
     return (
       <View style={{ width: "100%", ...style }}>
-        {toastErrors && toastErrors.message && (
-          <MiniToast
-            type="error"
-            message={toastErrors.message}
-            style={{
-              width: "100%",
-              marginLeft: 0,
-              marginBottom: layout.spacing_x0_75,
-            }}
-          />
-        )}
-
         <CommentTextInput
           formValues={formValues}
           setSelection={setSelection}
