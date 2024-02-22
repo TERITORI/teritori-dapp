@@ -12,8 +12,8 @@ import { ScreenContainer } from "@/components/ScreenContainer";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { NftMarketplaceClient } from "@/contracts-clients/nft-marketplace/NftMarketplace.client";
 import { TeritoriNameServiceQueryClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { TeritoriNftVaultClient } from "@/contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { useDAOMakeProposal } from "@/hooks/dao/useDAOMakeProposal";
 import { useFeedConfig } from "@/hooks/feed/useFeedConfig";
 import { useBalances } from "@/hooks/useBalances";
@@ -177,7 +177,7 @@ const VaultManager: React.FC<{ networkId: string }> = ({ networkId }) => {
           const cosmWasmClient = await getKeplrSigningCosmWasmClient(
             selectedWallet.networkId,
           );
-          const vaultClient = new TeritoriNftVaultClient(
+          const vaultClient = new NftMarketplaceClient(
             cosmWasmClient,
             selectedWallet.address,
             network.vaultContractAddress,

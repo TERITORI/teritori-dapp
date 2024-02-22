@@ -5,11 +5,11 @@ import { useBreedingConfig } from "./useBreedingConfig";
 import { ConfigResponse as BreedingConfigResponse } from "../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 
 import { Metadata as Cw721MembershipMetadata } from "@/contracts-clients/cw721-membership";
+import { NftMarketplaceQueryClient } from "@/contracts-clients/nft-marketplace/NftMarketplace.client";
 import { TeritoriBreedingQueryClient } from "@/contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { TeritoriBunkerMinterQueryClient } from "@/contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNameServiceQueryClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { TeritoriNftQueryClient } from "@/contracts-clients/teritori-nft/TeritoriNft.client";
-import { TeritoriNftVaultQueryClient } from "@/contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { TeritoriMinter__factory } from "@/evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { TeritoriNft__factory } from "@/evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import { NFTVault__factory } from "@/evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
@@ -130,7 +130,7 @@ const getTNSNFTInfo = async (
   // ======== Getting NFT owner
   const { owner } = await tnsClient.ownerOf({ tokenId });
   // ======== Getting vault stuff (For selling)
-  const vaultClient = new TeritoriNftVaultQueryClient(
+  const vaultClient = new NftMarketplaceQueryClient(
     cosmwasmClient,
     network.vaultContractAddress,
   );
@@ -362,7 +362,7 @@ const getTeritoriBunkerNFTInfo = async (
   // ======== Getting NFT metadata
 
   // ======== Getting vault stuff (For selling)
-  const vaultClient = new TeritoriNftVaultQueryClient(
+  const vaultClient = new NftMarketplaceQueryClient(
     cosmwasmClient,
     network.vaultContractAddress,
   );
@@ -472,7 +472,7 @@ const getTeritoriRiotBreedingNFTInfo = async (
   // ======== Getting NFT metadata
 
   // ======== Getting vault stuff (For selling)
-  const vaultClient = new TeritoriNftVaultQueryClient(
+  const vaultClient = new NftMarketplaceQueryClient(
     cosmwasmClient,
     network.vaultContractAddress,
   );
@@ -600,7 +600,7 @@ const getNFTVaultInfo = async (
     throw new Error("network not supported");
   }
   const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
-  const vaultClient = new TeritoriNftVaultQueryClient(
+  const vaultClient = new NftMarketplaceQueryClient(
     cosmwasmClient,
     network.vaultContractAddress,
   );
