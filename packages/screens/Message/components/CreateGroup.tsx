@@ -42,7 +42,7 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
 
   const handleChange = (items: CheckboxItem[]) => {
     setCheckedContacts(
-      items.filter((item) => item.checked).map((item) => item.id),
+      items.filter((item) => !item.checked).map((item) => item.id),
     );
   };
 
@@ -156,7 +156,7 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
       <SearchInput borderRadius={12} handleChangeText={setSearchText} />
       <SpacerColumn size={2} />
       <View style={{ maxHeight: 200 }}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView>
           <CheckboxGroup
             items={items}
             onChange={handleChange}

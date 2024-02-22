@@ -69,7 +69,7 @@ const NativeWallet: ScreenFC<"NativeWallet"> = () => {
                 marginVertical: layout.spacing_x2,
               }}
               onPress={(_, navigation) => {
-                navigation.navigate("MiniTabs");
+                navigation.navigate("MiniTabs", { screen: "MiniChats" });
               }}
             />
           )}

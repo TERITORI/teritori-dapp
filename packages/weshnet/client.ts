@@ -1,3 +1,4 @@
+import { grpc } from "@improbable-eng/grpc-web";
 import { Platform } from "react-native";
 
 import {
@@ -5,16 +6,19 @@ import {
   ProtocolServiceClientImpl,
 } from "./../api/weshnet/protocoltypes";
 import { weshConfig } from "./config";
-import { fixWeshPortURLParams } from "./devWeshPortFix";
-import { bootWeshnet } from "./services";
+import { afterWeshnetConnectionAction } from "./services";
 
 const createWeshClient = (url: string) => {
-  const rpc = new GrpcWebImpl(url, { debug: false });
+  const rpc = new GrpcWebImpl(url, {
+    debug: false,
+    transport: grpc.WebsocketTransport(),
+  });
+
   const client = new ProtocolServiceClientImpl(rpc);
   return client;
 };
 
-const getWeshnetAddress = (port: number) => {
+export const getWeshnetAddress = (port: number) => {
   switch (Platform.OS) {
     case "android":
       return `10.0.2.2:${port}`;
@@ -48,13 +52,14 @@ class WeshClient {
       if (port === 0) {
         return false;
       }
+      this.port = port;
 
       const address = getWeshnetAddress(port);
       const client = createWeshClient(address);
       const config = await client.ServiceGetConfiguration({});
       weshConfig.config = config;
       this._client = client;
-      await bootWeshnet();
+      await afterWeshnetConnectionAction();
     } catch (err) {
       console.error("create Client err", err);
     }
@@ -79,16 +84,5 @@ class WeshClient {
 }
 
 const weshClient = new WeshClient();
-
-if (Platform.OS === "web") {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const port = urlParams.get("weshPort");
-
-  if (port) {
-    fixWeshPortURLParams();
-    weshClient.createClient(Number(port) || 4242);
-  }
-}
 
 export { weshClient };

@@ -10,9 +10,6 @@ import { RootStackParamList } from "../../utils/navigation";
 import { neutral00, secondaryColor } from "../../utils/style/colors";
 import { TabBarIcon } from "../TabBarIcon";
 
-import { useOnboardedStatus } from "@/hooks/useOnboardStatus";
-import { FeedPostViewScreen } from "@/screens/FeedPostView/FeedPostViewScreen";
-import { NFTDetailScreen } from "@/screens/Marketplace/NFTDetailScreen";
 import AboutScreen from "@/screens/Mini/About/AboutScreen";
 import AddAddressBookScreen from "@/screens/Mini/AddressBook/AddAddressBookScreen";
 import AddressBookScreen from "@/screens/Mini/AddressBook/AddressBookScreen";
@@ -50,12 +47,8 @@ import SelectTokenScreen from "@/screens/Mini/Wallet/SelectTokenScreen";
 import SendToriScreen from "@/screens/Mini/Wallet/SendToriScreen";
 import SendingToriScreen from "@/screens/Mini/Wallet/SendingToriScreen";
 import TransactionDetailScreen from "@/screens/Mini/Wallet/TransactionDetailScreen";
-import { CreatePassword } from "@/screens/Wallet/Screens/CreatePassword";
 import { CreatePasswordWallet } from "@/screens/Wallet/Screens/CreatePasswordWallet";
 import { CreateWalletScreen } from "@/screens/Wallet/Screens/CreateWalletScreen";
-import { ImportWallet } from "@/screens/Wallet/Screens/ImportWallet";
-import NativeWallet from "@/screens/Wallet/Screens/NativeWallet";
-import { SuccessScreen } from "@/screens/Wallet/Screens/SucessScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -95,15 +88,9 @@ const MainTab = () => {
   );
 };
 
-export const MiniModeNavigator = () => {
-  const [isLoading, isOnboarded] = useOnboardedStatus();
-
-  if (isLoading) return null;
-
+export const getMiniModeScreens = () => {
   return (
-    <Stack.Navigator
-      initialRouteName={!isOnboarded ? "ModeSelection" : "NativeWallet"}
-    >
+    <>
       <Stack.Screen
         name="ModeSelection"
         component={ModeSelectionScreen}
@@ -117,24 +104,13 @@ export const MiniModeNavigator = () => {
           title: "",
         }}
       />
-      <Stack.Screen
-        name="NativeWallet"
-        component={NativeWallet}
-        options={{ header: () => null, title: "Wallet Create" }}
-      />
+
       <Stack.Screen
         name="MiniTabs"
         options={{ header: () => null }}
         component={MainTab}
       />
-      <Stack.Screen
-        name="ImportWallet"
-        component={ImportWallet}
-        options={{
-          header: () => null,
-          title: "Import Wallet with Seed",
-        }}
-      />
+
       <Stack.Screen
         name="CreateWallet"
         component={CreateWalletScreen}
@@ -151,14 +127,7 @@ export const MiniModeNavigator = () => {
           title: "Create Password",
         }}
       />
-      <Stack.Screen
-        name="CreatePassword"
-        component={CreatePassword}
-        options={{
-          header: () => null,
-          title: "Create Password",
-        }}
-      />
+
       <Stack.Screen
         name="Conversation"
         component={ConversationScreeen}
@@ -167,14 +136,7 @@ export const MiniModeNavigator = () => {
           title: "Chat",
         }}
       />
-      <Stack.Screen
-        name="SuccessScreen"
-        component={SuccessScreen}
-        options={{
-          header: () => null,
-          title: "All Set",
-        }}
-      />
+
       <Stack.Screen
         name="MiniProfile"
         component={ProfileScreen}
@@ -446,16 +408,6 @@ export const MiniModeNavigator = () => {
           title: "",
         }}
       />
-      <Stack.Screen
-        name="FeedPostView"
-        component={FeedPostViewScreen}
-        options={{ header: () => null, title: "Feed", animation: "fade" }}
-      />
-      <Stack.Screen
-        name="NFTDetail"
-        component={NFTDetailScreen}
-        options={{ header: () => null, title: "NFT" }}
-      />
-    </Stack.Navigator>
+    </>
   );
 };

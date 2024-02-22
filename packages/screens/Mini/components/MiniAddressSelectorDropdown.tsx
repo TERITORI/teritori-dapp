@@ -10,7 +10,8 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { Separator } from "@/components/separators/Separator";
-import { selectAllAddressBook } from "@/store/slices/wallets";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { selectAllAddressBook, selectAllWallets } from "@/store/slices/wallets";
 import {
   neutral22,
   neutral39,
@@ -22,26 +23,35 @@ import { fontMedium16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
 
-type OptionType = {
-  label: string;
-  subLabel: string;
-  value: string;
-};
-
 interface MiniTextInputWithDropdownProps {
   onChangeText?: (value: string) => void;
   value?: string;
-  options: OptionType[];
 }
 
-export default function MiniTextInputWithDropdown({
+export default function MiniAddressSelectorDropdown({
   onChangeText,
   value,
-  options,
 }: MiniTextInputWithDropdownProps) {
   const [searchValue, setSearchValue] = useState("");
 
-  const addresses = useSelector(selectAllAddressBook).filter((item) =>
+  const addressBookEntries = useSelector(selectAllAddressBook);
+  const maxIndexAddressBook =
+    addressBookEntries.length > 0
+      ? addressBookEntries[addressBookEntries.length].id
+      : 0;
+  const selectedWallet = useSelectedWallet();
+  const myOtherWallets = useSelector(selectAllWallets).filter(
+    (item) => item.address !== selectedWallet?.address,
+  );
+  const options = addressBookEntries.concat(
+    myOtherWallets.map((item) => ({
+      name: `Account ${item.index}`,
+      address: item.address,
+      id: maxIndexAddressBook + item.index,
+      networkId: item.networkId,
+    })),
+  );
+  const filteredOptions = options.filter((item) =>
     item.name.toLowerCase().includes(searchValue.toLowerCase()),
   );
 
@@ -127,7 +137,7 @@ export default function MiniTextInputWithDropdown({
           </View>
           <View>
             <FlatList
-              data={addresses}
+              data={filteredOptions}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item, index }) => (
                 <Fragment key={`${item.address}-${index}`}>
