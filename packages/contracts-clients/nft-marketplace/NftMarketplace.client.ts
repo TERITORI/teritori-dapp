@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StdFee } from "@cosmjs/amino";
-import { Uint128, AllNftsInVaultResponse, NFTInfo, ConfigResponse, ExecuteMsg, Binary, Cw721ReceiveMsg, InstantiateMsg, NftInfoResponse, NftListResponse, NftOwnerInfoResponse, NftQueryMsg, Cw2981QueryMsg, QueryMsg, RoyaltiesInfoResponse } from "./NftMarketplace.types";
+import { Uint128, AllNftsInVaultResponse, NFTInfo, ConfigResponse, ExecuteMsg, Binary, Cw721ReceiveMsg, InstantiateMsg, NftInfoResponse, NftListResponse, NftOwnerInfoResponse, NftQueryMsg, Cw2981BorkedQueryMsg, QueryMsg, RoyaltiesInfoResponse } from "./NftMarketplace.types";
 export interface NftMarketplaceReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<ConfigResponse>;

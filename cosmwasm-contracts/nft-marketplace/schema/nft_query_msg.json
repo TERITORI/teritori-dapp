@@ -306,7 +306,7 @@
           ],
           "properties": {
             "msg": {
-              "$ref": "#/definitions/Cw2981QueryMsg"
+              "$ref": "#/definitions/Cw2981BorkedQueryMsg"
             }
           },
           "additionalProperties": false
@@ -316,7 +316,7 @@
     }
   ],
   "definitions": {
-    "Cw2981QueryMsg": {
+    "Cw2981BorkedQueryMsg": {
       "oneOf": [
         {
           "description": "Should be called on sale to see if royalties are owed by the marketplace selling the NFT, if CheckRoyalties returns true See https://eips.ethereum.org/EIPS/eip-2981",
