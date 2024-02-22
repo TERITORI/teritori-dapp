@@ -17,7 +17,7 @@ import {
 } from "@/utils/style/colors";
 import { NameFinderFormType } from "@/utils/types/tns";
 
-export interface TextInputCustomProps<T extends FieldValues>
+interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   name: Path<T>;
   nameValue: string;
@@ -26,7 +26,6 @@ export interface TextInputCustomProps<T extends FieldValues>
   value?: string;
   onChangeText?: (value: string) => void;
   onPressEnter?: () => void;
-  usdPrice?: number | undefined;
   control?: Control<T>;
   style?: ViewStyle;
 }
@@ -39,7 +38,6 @@ export const AvailableNamesInput = <T extends FieldValues>({
   value,
   onChangeText = () => {},
   onPressEnter = () => {},
-  usdPrice,
   control,
   style,
 }: TextInputCustomProps<T>) => {
@@ -50,6 +48,8 @@ export const AvailableNamesInput = <T extends FieldValues>({
     nameAvailability.availability === "mint"
       ? nameAvailability.prettyPrice
       : "";
+  const usdPrice =
+    nameAvailability.availability === "mint" ? nameAvailability?.usdPrice : 0;
 
   let availabilityInfo = <></>;
   if (nameValue && selectedNetwork?.kind === NetworkKind.Cosmos) {

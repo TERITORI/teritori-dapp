@@ -105,11 +105,6 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                       : "your-organization"
                   }
                   value={name}
-                  usdPrice={
-                    nameAvailability.availability === "mint"
-                      ? nameAvailability?.usdPrice
-                      : 0
-                  }
                 />
               </View>
             </View>
