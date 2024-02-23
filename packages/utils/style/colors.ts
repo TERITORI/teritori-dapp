@@ -17,7 +17,6 @@ export const blueDefault = "#007AFF";
 export const codGrayColor = "#1C1C1C";
 export const mineShaftColor = "#3D3D3D";
 export const reefColor = "#D2FFAE";
-export const tulipTree = "#EAA54B";
 
 export const gameHighlight = "#FCEE4F";
 export const yankeesBlue = "#16283C";
@@ -44,6 +43,7 @@ export const transparentColor = "transparent";
 
 export const additionalRed = "#FFAEAE";
 export const additionalGreen = successColor;
+export const additionalSuccess = "#3EBE7B";
 export const azureBlue = "#0A84FF";
 export const azureBlue20 = "rgba(10, 132, 255, 0.3)";
 

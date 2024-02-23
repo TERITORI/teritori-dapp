@@ -95,13 +95,16 @@ export const ProfileButton: React.FC<{
       );
     }
 
-  return <RegisterButton networkId={network?.id} style={style} />;
+  return (
+    <RegisterButton networkId={network?.id} style={style} size={buttonSize} />
+  );
 };
 
 const RegisterButton: React.FC<{
   style?: StyleProp<ViewStyle>;
   networkId: string | undefined;
-}> = ({ networkId, style }) => {
+  size: ButtonsSize;
+}> = ({ networkId, style, size }) => {
   const network = getNetwork(networkId);
   const [gnoModalVisible, setGnoModalVisible] = useState(false);
 
@@ -117,7 +120,7 @@ const RegisterButton: React.FC<{
         style={style}
       >
         <SecondaryButtonOutline
-          size="XL"
+          size={size}
           text="Create profile"
           backgroundColor={neutral00}
         />
@@ -129,7 +132,7 @@ const RegisterButton: React.FC<{
     return (
       <View style={style}>
         <SecondaryButtonOutline
-          size="XL"
+          size={size}
           text="Create profile"
           backgroundColor={neutral00}
           onPress={() => setGnoModalVisible(true)}

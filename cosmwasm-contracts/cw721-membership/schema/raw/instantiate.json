@@ -6,7 +6,7 @@
     "admin_addr",
     "description",
     "image_uri",
-    "mint_royalties",
+    "mint_royalties_per10k_default",
     "name",
     "symbol"
   ],
@@ -20,7 +20,7 @@
     "image_uri": {
       "type": "string"
     },
-    "mint_royalties": {
+    "mint_royalties_per10k_default": {
       "type": "integer",
       "format": "uint16",
       "minimum": 0.0

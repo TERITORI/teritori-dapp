@@ -21,7 +21,7 @@ export const usePremiumChannel = (
       } catch (error) {
         if (
           error instanceof Error &&
-          error.message.includes("Channel does not exist")
+          error.message.includes("This address does not own a channel.")
         ) {
           return null;
         }

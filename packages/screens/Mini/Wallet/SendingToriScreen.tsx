@@ -225,7 +225,9 @@ function SendingModal({ visible, onClose, txData, msg }: SendingModalProps) {
           <CustomButton
             type="gray"
             title="Cancel"
-            onPress={() => navigation.navigate("MiniTabs")}
+            onPress={() =>
+              navigation.navigate("MiniTabs", { screen: "MiniWallets" })
+            }
             style={{ flex: 1 }}
           />
           <CustomButton
@@ -267,7 +269,8 @@ function SendingModal({ visible, onClose, txData, msg }: SendingModalProps) {
                   throw new Error(txResponse.rawLog);
                 }
                 setIsInProcess(true);
-                navigation.navigate("MiniTabs");
+                console.log("Tx sent", txResponse);
+                navigation.navigate("MiniTabs", { screen: "MiniWallets" });
               } catch (e: any) {
                 console.error(e);
               }

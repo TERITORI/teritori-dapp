@@ -44,7 +44,7 @@ const CustomAppBar = ({
       return;
     }
 
-    navigation.replace("MiniTabs");
+    navigation.replace("MiniTabs", { screen: "MiniChats" });
   };
 
   return (

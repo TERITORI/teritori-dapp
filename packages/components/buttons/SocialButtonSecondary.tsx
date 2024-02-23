@@ -2,17 +2,19 @@ import React from "react";
 import { ViewStyle, View, StyleProp, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
+import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
+import { Box } from "../boxes/Box";
+
 import {
   neutral1A,
   primaryColor,
   primaryTextColor,
   withAlpha,
-} from "../../utils/style/colors";
-import { fontMedium14 } from "../../utils/style/fonts";
-import { BrandText } from "../BrandText";
-import { SVG } from "../SVG";
-import { LegacySecondaryBox } from "../boxes/LegacySecondaryBox";
+} from "@/utils/style/colors";
+import { fontMedium14 } from "@/utils/style/fonts";
 
+// TODO: remove uses of Box component directly in other components
 export const SocialButtonSecondary: React.FC<{
   text: string;
   iconSvg: React.FC<SvgProps>;
@@ -21,23 +23,24 @@ export const SocialButtonSecondary: React.FC<{
 }> = ({ text, onPress, iconSvg, style }) => {
   return (
     <TouchableOpacity onPress={onPress} style={style}>
-      <LegacySecondaryBox
-        noBrokenCorners
-        mainContainerStyle={{ backgroundColor: withAlpha(neutral1A, 0.64) }}
-        height={44}
+      <Box
+        style={{
+          height: 44,
+          backgroundColor: withAlpha(neutral1A, 0.64),
+          justifyContent: "center",
+        }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <LegacySecondaryBox
-            noBrokenCorners
-            style={{ marginLeft: 6 }}
-            mainContainerStyle={{
+          <Box
+            style={{
+              marginLeft: 6,
               backgroundColor: primaryColor,
               borderRadius: 6,
+              width: 32,
+              height: 32,
+              justifyContent: "center",
+              alignItems: "center",
             }}
-            width={32}
-            height={32}
-            squaresBackgroundColor={withAlpha(neutral1A, 0.64)}
-            cornerWidth={5.5}
           >
             <SVG
               source={iconSvg}
@@ -45,7 +48,7 @@ export const SocialButtonSecondary: React.FC<{
               height={20}
               color={primaryTextColor}
             />
-          </LegacySecondaryBox>
+          </Box>
           <BrandText
             style={[
               fontMedium14,
@@ -55,7 +58,7 @@ export const SocialButtonSecondary: React.FC<{
             {text}
           </BrandText>
         </View>
-      </LegacySecondaryBox>
+      </Box>
     </TouchableOpacity>
   );
 };

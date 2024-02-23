@@ -8,11 +8,11 @@ import {
   neutral77,
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
-import { NameFinderFormType } from "../../../utils/types/tns";
 import { BrandText } from "../../BrandText";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
-import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../ModalBase";
+
+import { AvailableNamesInput } from "@/components/inputs/AvailableNamesInput";
 
 const AVAILABLE_DOMAINS = [".tori"];
 const COMING_SOON_DOMAINS = [".rioter"];
@@ -124,14 +124,14 @@ export const TNSNameFinderModal: React.FC<{
       childrenBottom={<DomainsAvailability />}
       width={372}
     >
-      <TextInputCustom<NameFinderFormType>
-        name="name"
+      <AvailableNamesInput
+        nameValue={name}
         label="NAME"
+        name="name"
         placeHolder="Type name here"
-        onPressEnter={onPressEnter}
-        onChangeText={setName}
         value={name}
-        regexp={new RegExp(/^[a-zA-Z]+$/)}
+        onPressEnter={onPressEnter}
+        onChangeText={(value: string) => setName(value)}
         style={{ marginBottom: 20, width: "100%" }}
       />
       <PrimaryButton

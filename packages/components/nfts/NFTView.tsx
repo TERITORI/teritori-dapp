@@ -105,7 +105,7 @@ export const NFTView: React.FC<{
             nft={nft}
             mobileMode={isMobile}
             localSelected={localSelected}
-            size={width}
+            size={width || widthNumber}
           />
         </TertiaryBox>
       </View>

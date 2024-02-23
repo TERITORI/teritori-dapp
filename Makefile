@@ -3,6 +3,9 @@ BUNKER_MINTER_PACKAGE=teritori-bunker-minter
 GO?=go
 GOFMT?=$(shell $(GO) env GOROOT)/bin/gofmt
 
+COSMWASM_CONTRACTS_DIR=cosmwasm-contracts
+INTERNAL_COSMWASM_CONTRACTS=$(wildcard $(COSMWASM_CONTRACTS_DIR)/*)
+
 TOKEN_REPO=teritori-nfts
 TOKEN_PACKAGE=teritori-nft
 SQUAD_STAKING_PACKAGE=teritori-squad-staking
@@ -14,9 +17,6 @@ NAME_SERVICE_PACKAGE=teritori-name-service
 
 RIOTER_FOOTER_REPO=rioters-footer-nft
 RIOTER_FOOTER_PACKAGE=rioter-footer-nft
-
-VAULT_REPO=teritori-vault
-VAULT_PACKAGE=teritori-nft-vault
 
 ADDR_LIST_REPO=cw_addr_list
 ADDR_LIST_PACKAGE=cw-address-list
@@ -41,7 +41,7 @@ node_modules: package.json yarn.lock
 .PHONY: go-mod-tidy
 go-mod-tidy:
 	go mod tidy
-	cd electron && go mod tidy
+	cd ./weshd && go mod tidy
 
 .PHONY: generate
 generate: generate.protobuf generate.graphql generate.contracts-clients generate.go-networks networks.json
@@ -89,25 +89,12 @@ docker.backend:
 	docker build . -f go/cmd/teritori-dapp-backend/Dockerfile -t teritori/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
 
 .PHONY: generate.contracts-clients
-generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/cw721-membership
+generate.contracts-clients: generate.internal-contracts-clients $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE)
 
 .PHONY: generate.go-networks
 generate.go-networks: node_modules validate-networks
 	npx tsx packages/scripts/generateGoNetworks.ts | $(GOFMT) > go/pkg/networks/networks.gen.go
 	npx tsx packages/scripts/codegen/generateGoNetworkFeatures.ts | $(GOFMT) > go/pkg/networks/features.gen.go
-
-.PHONY/: $(CONTRACTS_CLIENTS_DIR)/cw721-membership
-$(CONTRACTS_CLIENTS_DIR)/cw721-membership: node_modules
-	rm -fr $@
-	cd cosmwasm-contracts/cw721-membership && cargo schema
-	npx cosmwasm-ts-codegen generate \
-		--plugin client \
-		--schema cosmwasm-contracts/cw721-membership/schema \
-		--out $@ \
-		--name cw721-membership \
-		--no-bundle
-	npx tsx packages/scripts/makeTypescriptIndex $@
-	touch $@
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE): node_modules
@@ -216,23 +203,6 @@ $(CONTRACTS_CLIENTS_DIR)/$(BREEDING_PACKAGE): node_modules
 	go fmt ./go/pkg/contracts/breeding_minter_types		
 	rm -fr $(CANDYMACHINE_REPO)
 
-.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE)
-$(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
-	rm -fr $(VAULT_REPO)
-	git clone git@github.com:TERITORI/$(VAULT_REPO).git
-	cd $(VAULT_REPO) && git checkout 75a692533b9188587ebfa909c5576376b8d65999
-	rm -fr $@
-	npx cosmwasm-ts-codegen generate \
-		--plugin client \
-		--schema $(VAULT_REPO)/contracts/nft-vault/schema \
-		--out $@ \
-		--name $(VAULT_PACKAGE) \
-		--no-bundle
-	mkdir -p go/pkg/contracts/vault_types
-	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(VAULT_REPO)/contracts/nft-vault/schema/execute_msg.json -o go/pkg/contracts/vault_types/execute_msg.go -p vault_types
-	go fmt ./go/pkg/contracts/vault_types
-	rm -fr $(VAULT_REPO)
-
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(ADDR_LIST_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(ADDR_LIST_PACKAGE): node_modules
 	rm -fr $(ADDR_LIST_REPO)
@@ -326,7 +296,7 @@ build-electron-macos-amd64:
 	rm -fr ./electron/dist
 	rm -fr ./electron/build
 	cd ./electron && npm i
-	cd ./electron && GOOS=darwin GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/mac ./prod.go
+	cd ./weshd && GOOS=darwin GOARCH=amd64 $(GO) build -tags noNativeLogger -o ../electron/build/mac ./go/electron/prod.go
 	cd ./electron && node ./builder/mac.js amd64
 
 # requires prepare-electron
@@ -335,7 +305,7 @@ build-electron-macos-arm64:
 	rm -fr ./electron/dist
 	rm -fr ./electron/build
 	cd ./electron && npm i
-	cd ./electron && GOOS=darwin GOARCH=arm64 $(GO) build -tags noNativeLogger -o ./build/mac ./prod.go
+	cd ./weshd && GOOS=darwin GOARCH=arm64 $(GO) build -tags noNativeLogger -o ../electron/build/mac ./go/electron/prod.go
 	cd ./electron && node ./builder/mac.js arm64
 
 # requires prepare-electron
@@ -344,7 +314,7 @@ build-electron-windows-amd64:
 	rm -fr ./electron/dist
 	rm -fr ./electron/build
 	cd ./electron && npm i
-	cd ./electron && GOOS=windows GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/win.exe ./prod.go
+	cd ./weshd && GOOS=windows GOARCH=amd64 $(GO) build -tags noNativeLogger -o ../electron/build/win.exe ./go/electron/prod.go
 	cd ./electron && node ./builder/win.js
 
 # requires prepare-electron
@@ -353,7 +323,7 @@ build-electron-linux-amd64:
 	rm -fr ./electron/dist
 	rm -fr ./electron/build
 	cd ./electron && npm i
-	cd ./electron && GOOS=linux GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/linux ./prod.go
+	cd ./weshd && GOOS=linux GOARCH=amd64 $(GO) build -tags noNativeLogger -o ../electron/build/linux ./go/electron/prod.go
 	cd ./electron && node ./builder/linux.js
 
 .PHONY: check-ios-weshframework
@@ -366,11 +336,10 @@ check-ios-weshframework:
 .PHONY: build-ios-weshframework
 build-ios-weshframework:
 	$(MAKE) init-weshd-go
-	CGO_CPPFLAGS="-Wno-error -Wno-nullability-completeness -Wno-expansion-to-defined -DHAVE_GETHOSTUUID=0"
-	cd ./weshd && gomobile bind \
+	cd ./weshd && gomobile bind -v \
 	-o ./ios/Frameworks/WeshFramework.xcframework \
-	-tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target ios -iosversion 13.0 \
-	./go/
+	-tags 'nowatchdog' -target ios \
+	./go/app
 
 .PHONY: check-android-weshframework
 check-android-weshframework:
@@ -388,7 +357,7 @@ build-android-weshframework:
 	-javapkg=com.weshnet \
 	-o ./android/libs/WeshFramework.aar \
 	-tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target android -androidapi 21 \
-	./go/
+	./go/app
 
 .PHONY: init-weshd-go
 init-weshd-go:
@@ -405,8 +374,38 @@ bump-app-build-number:
 
 .PHONY: test.rust
 test.rust:
-	cd cosmwasm-contracts/cw721-membership && cargo test
+	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
+		echo "> Testing $${file}" ; \
+		cd $${file} ; \
+		cargo test ; \
+		cd - ; \
+	done
 
 .PHONY: build.rust
 build.rust:
-	cd cosmwasm-contracts/cw721-membership && cargo wasm
+	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
+		echo "> Building $${file}" ; \
+		cd $${file} ; \
+		cargo wasm ; \
+		cd - ; \
+	done
+
+.PHONY: generate.internal-contracts-clients
+generate.internal-contracts-clients: node_modules
+	for indir in $(INTERNAL_COSMWASM_CONTRACTS) ; do \
+		echo "> Generating client for $${indir}" ; \
+		rm -fr $${indir}/schema ; \
+		(cd $${indir} && cargo schema && cd -) || exit 1 ; \
+		pkgname="$$(basename $${indir})" ; \
+		outdir="$(CONTRACTS_CLIENTS_DIR)/$${pkgname}" ; \
+		rm -fr $${outdir} ; \
+		npx cosmwasm-ts-codegen generate \
+			--plugin client \
+			--schema $${indir}/schema \
+			--out $${outdir} \
+			--name $${pkgname} \
+			--no-bundle \
+		|| exit 1 ;\
+		npx tsx packages/scripts/makeTypescriptIndex $${outdir} || exit 1 ; \
+	done
+	

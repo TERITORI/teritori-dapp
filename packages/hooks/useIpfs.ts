@@ -2,6 +2,7 @@ import axios from "axios";
 import { omit } from "lodash";
 import { CID } from "multiformats";
 import { useCallback, useMemo, useState } from "react";
+import { Platform } from "react-native";
 import { useSelector } from "react-redux";
 
 import { parseUserId } from "@/networks";
@@ -36,7 +37,16 @@ export const useIpfs = () => {
     }: PinataFileProps): Promise<string | undefined> => {
       try {
         const formData = new FormData();
-        formData.append("file", file.file);
+        if (Platform.OS !== "web") {
+          //@ts-expect-error: description - instead of converting selected file to File type as of WEB just using url to prepare formdata  upload to pinata
+          formData.append("file", {
+            uri: file.url,
+            name: file.fileName,
+            type: file.mimeType,
+          });
+        } else {
+          formData.append("file", file.file);
+        }
 
         const responseFile = await axios({
           onUploadProgress: (progressEvent) => {
@@ -84,6 +94,7 @@ export const useIpfs = () => {
           file,
           pinataJWTKey,
         });
+
         const url = !fileIpfsHash ? "" : "ipfs://" + fileIpfsHash;
 
         if (file.thumbnailFileData) {
