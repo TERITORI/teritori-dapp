@@ -17,7 +17,7 @@ import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgress
 import { EmojiSelector } from "@/components/socialFeed/EmojiSelector";
 import { GIFSelector } from "@/components/socialFeed/GIFSelector";
 import { SpacerColumn } from "@/components/spacer";
-import { useToast } from "@/context/ToastProvider";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
 import { useIpfs } from "@/hooks/useIpfs";
@@ -82,7 +82,7 @@ export const MiniCommentInput = React.forwardRef<
     const userId = getUserId(selectedNetworkId, selectedWallet?.address);
     const inputRef = useRef<MiniCommentInputHandle>(null);
 
-    const { setToast } = useToast();
+    const { setMiniToast } = useFeedbacks();
     const [isUploadLoading, setIsUploadLoading] = useState(false);
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
     const [showFullCommentInput, setShowFullCommentInput] = useState(false);
@@ -232,7 +232,7 @@ export const MiniCommentInput = React.forwardRef<
         }
         if (formValues.files?.length && !remoteFiles.find((file) => file.url)) {
           console.error("upload file err : Fail to pin to IPFS");
-          setToast({
+          setMiniToast({
             message: "Fail to pin to IPFS, please try to Publish again",
             duration: 5000,
           });
@@ -258,7 +258,7 @@ export const MiniCommentInput = React.forwardRef<
         console.error("post submit err", err);
         setIsUploadLoading(false);
         setIsProgressBarShown(false);
-        setToast({
+        setMiniToast({
           message: err instanceof Error ? err.message : `${err}`,
           duration: 3000,
         });

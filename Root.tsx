@@ -30,7 +30,6 @@ import { MessageContextProvider } from "./packages/context/MessageProvider";
 import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
-import { ToastContextProvider } from "./packages/context/ToastProvider";
 import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
 import { WalletControlContextProvider } from "./packages/context/WalletControlProvider";
 import {
@@ -112,9 +111,7 @@ export default function App() {
                                         <MessageContextProvider>
                                           <MediaPlayerContextProvider>
                                             <StatusBar style="inverted" />
-                                            <ToastContextProvider>
-                                              <Navigator />
-                                            </ToastContextProvider>
+                                            <Navigator />
                                           </MediaPlayerContextProvider>
                                         </MessageContextProvider>
                                       </MenuProvider>
