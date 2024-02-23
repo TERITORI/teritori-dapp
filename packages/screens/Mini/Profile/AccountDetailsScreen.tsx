@@ -52,7 +52,7 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
     if (wallet) {
       Alert.alert(
         "Are you sure?",
-        "This action will remove the wallet from your device. You can always import it back.",
+        "This action will remove the wallet from your device. If you didn't save the seed, this wallet will be lost forever! If you saved the seed, you will be able to import it back later.",
         [
           {
             text: "Cancel",
