@@ -93,7 +93,7 @@ substreams-*/target
 
 
 # weshnet
-/temp/
+temp/
 
 # eslint
 /.eslintcache

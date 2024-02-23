@@ -4,7 +4,7 @@ const config = {
     slug: "teritori",
     version: "1.0.3",
     orientation: "portrait",
-    icon: "./assets/icon.png",
+    icon: "./assets/teritori-icon.png",
     owner: "teritori",
     userInterfaceStyle: "light",
     splash: {
