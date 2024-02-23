@@ -7,6 +7,7 @@ import {
   View,
   PanResponder,
   Animated,
+  GestureResponderEvent,
 } from "react-native";
 
 import chevronSVG from "../../../../assets/icons/chevron-left.svg";
@@ -49,11 +50,18 @@ export const BlurScreenContainer = ({
 
   const panResponder = useRef(
     PanResponder.create({
-      onMoveShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        // Only set pan responder if the gesture is moving downward
+        return (
+          gestureState.dy > 0 &&
+          gestureState.dy > Math.abs(gestureState.dx) &&
+          !isTouchWithinFlatList(evt)
+        );
+      },
       onPanResponderMove: Animated.event([null, { dy: pan.y }], {
         useNativeDriver: false,
       }),
-      onPanResponderRelease: (e, gesture) => {
+      onPanResponderRelease: (_, gesture) => {
         if (gesture.dy > 50) {
           navigation.goBack();
         } else {
@@ -62,11 +70,14 @@ export const BlurScreenContainer = ({
             useNativeDriver: false,
           }).start();
         }
-
-        console.log(e);
       },
     }),
   ).current;
+
+  const isTouchWithinFlatList = (evt: GestureResponderEvent) => {
+    const { locationY } = evt.nativeEvent;
+    return locationY > 0 && locationY < 100;
+  };
 
   return (
     <SafeAreaView
