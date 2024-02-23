@@ -9,7 +9,6 @@ import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
-import { resetWallet } from "@/hooks/wallet/getNativeWallet";
 import { accountExplorerLink } from "@/networks";
 import { ShowWalletQR } from "@/screens/Mini/Wallet/components/ShowWalletQR";
 import { CustomButton } from "@/screens/Mini/components/Button/CustomButton";
@@ -28,6 +27,7 @@ import {
 } from "@/utils/style/colors";
 import { fontMedium16, fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { resetWallet } from "@/utils/wallet/getNativeWallet";
 
 export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
   navigation,
