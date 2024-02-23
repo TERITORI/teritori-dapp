@@ -68,7 +68,6 @@ export const FeedbacksContextProvider: React.FC<{ children: ReactNode }> = ({
   const [miniToast, setMiniToast] = useState<MiniToastProps>(
     defaultValue.miniToast,
   );
-  console.log({ miniToast });
 
   useEffect(() => {
     const toastDuration =
