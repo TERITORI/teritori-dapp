@@ -30,6 +30,7 @@ import {
   selectFilteredConversationList,
   selectIsWeshConnected,
 } from "@/store/slices/message";
+import { selectIsChatActivated } from "@/store/slices/settings";
 import { RootState } from "@/store/store";
 import { RouteName, useAppNavigation } from "@/utils/navigation";
 import { neutral22, neutral77, secondaryColor } from "@/utils/style/colors";
@@ -161,6 +162,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
     selectFilteredConversationList(state, activeConversationType, ""),
   );
   const isWeshConnected = useSelector(selectIsWeshConnected);
+  const isChatActivated = useSelector(selectIsChatActivated);
 
   const hasChats = conversationList.length > 0;
 
@@ -171,7 +173,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
     navigation.navigate("MiniChatSetting", { back: undefined });
   };
 
-  if (!isWeshConnected) {
+  if (!isWeshConnected || !isChatActivated) {
     return (
       <ScreenContainer
         headerChildren={<></>}
@@ -188,17 +190,30 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
             padding: layout.spacing_x1,
           }}
         >
-          <ActivityIndicator size="large" />
-          <BrandText
-            style={[
-              fontSemibold14,
-              { textAlign: "center", marginTop: layout.spacing_x1_5 },
-            ]}
-          >
-            We are currently in the process of setting up Weshnet, and it will
-            be ready within just a few short minutes.{"\n"} Thank you for your
-            understanding
-          </BrandText>
+          {!isChatActivated ? (
+            <BrandText
+              style={[
+                fontSemibold14,
+                { textAlign: "center", marginTop: layout.spacing_x1_5 },
+              ]}
+            >
+              You chat is turned off. Please toggle the button to activate it.
+            </BrandText>
+          ) : (
+            <>
+              <ActivityIndicator size="large" />
+              <BrandText
+                style={[
+                  fontSemibold14,
+                  { textAlign: "center", marginTop: layout.spacing_x1_5 },
+                ]}
+              >
+                We are currently in the process of setting up Weshnet, and it
+                will be ready within just a few short minutes.{"\n"} Thank you
+                for your understanding
+              </BrandText>
+            </>
+          )}
         </View>
       </ScreenContainer>
     );
