@@ -68,6 +68,7 @@ export const FeedbacksContextProvider: React.FC<{ children: ReactNode }> = ({
   const [miniToast, setMiniToast] = useState<MiniToastProps>(
     defaultValue.miniToast,
   );
+  const { onPress, ...miniToastRestProps } = miniToast;
 
   useEffect(() => {
     const toastDuration =
@@ -115,6 +116,13 @@ export const FeedbacksContextProvider: React.FC<{ children: ReactNode }> = ({
       [],
     );
 
+  const tapToClear = () => {
+    setMiniToast(defaultValue.miniToast);
+    if (miniToast.onPress) {
+      miniToast.onPress();
+    }
+  };
+
   return (
     <FeedbacksContext.Provider
       value={{
@@ -152,7 +160,9 @@ export const FeedbacksContextProvider: React.FC<{ children: ReactNode }> = ({
       ) : null}
 
       {/* Mini Toast */}
-      {miniToast && miniToast.message && <MiniToast {...miniToast} />}
+      {miniToast && miniToast.message && (
+        <MiniToast onPress={tapToClear} {...miniToastRestProps} />
+      )}
 
       {/*==== Page content*/}
       {children}

@@ -2,6 +2,7 @@ import React from "react";
 import { View, useWindowDimensions } from "react-native";
 
 import { Spinner } from "./Spinner";
+import { CustomPressable } from "./buttons/CustomPressable";
 
 import checkWhiteSVG from "@/assets/icons/toast/check-circular-white.svg";
 import checkSVG from "@/assets/icons/toast/check-green.svg";
@@ -33,8 +34,9 @@ export type MiniToastProps = {
   message: string | null;
   variant?: ToastVariantType;
   duration?: number;
-  topOffSet?: number;
+  topOffset?: number;
   showAlways?: boolean;
+  onPress?: () => void;
 };
 
 const getColors = (status: ToastStatusType) => {
@@ -70,7 +72,8 @@ export const MiniToast = ({
   status = "info",
   message,
   variant = "solid",
-  topOffSet = 70,
+  topOffset = 70,
+  onPress,
 }: MiniToastProps) => {
   const { width: windowWidth } = useWindowDimensions();
 
@@ -78,47 +81,60 @@ export const MiniToast = ({
     return null;
   }
 
+  const onToastPress = () => {
+    if (onPress) {
+      onPress();
+    }
+  };
+
   return (
-    <View
+    <CustomPressable
+      onPress={onToastPress}
       style={{
         position: "absolute",
-        top: topOffSet || 70,
+        top: topOffset || 70,
         maxWidth: windowWidth - 40,
         zIndex: 50000,
         alignSelf: "center",
-        backgroundColor: variant === "outline" ? neutral00 : getColors(status),
-        borderColor: getColors(status),
-        borderWidth: 1,
-        borderStyle: "solid",
-        borderRadius: variant === "outline" ? 32 : 10,
-        paddingHorizontal: layout.spacing_x2,
-        paddingVertical: layout.spacing_x1_5,
-        flexDirection: "row",
-        gap: layout.spacing_x1,
       }}
     >
-      {status === "loading" ? (
-        <Spinner svg={getIcons(status, variant)} size={16} />
-      ) : (
-        <SVG
-          source={getIcons(status, variant)}
-          height={16}
-          width={16}
-          style={{ flexShrink: 0 }}
-        />
-      )}
-      <BrandText
-        style={[
-          fontSemibold14,
-          {
-            lineHeight: 16,
-            paddingRight: layout.spacing_x2,
-            maxWidth: "100%",
-          },
-        ]}
+      <View
+        style={{
+          backgroundColor:
+            variant === "outline" ? neutral00 : getColors(status),
+          borderColor: getColors(status),
+          borderWidth: 1,
+          borderStyle: "solid",
+          borderRadius: variant === "outline" ? 32 : 10,
+          paddingHorizontal: layout.spacing_x2,
+          paddingVertical: layout.spacing_x1_5,
+          flexDirection: "row",
+          gap: layout.spacing_x1,
+        }}
       >
-        {message}
-      </BrandText>
-    </View>
+        {status === "loading" ? (
+          <Spinner svg={getIcons(status, variant)} size={16} />
+        ) : (
+          <SVG
+            source={getIcons(status, variant)}
+            height={16}
+            width={16}
+            style={{ flexShrink: 0 }}
+          />
+        )}
+        <BrandText
+          style={[
+            fontSemibold14,
+            {
+              lineHeight: 16,
+              paddingRight: layout.spacing_x2,
+              maxWidth: "100%",
+            },
+          ]}
+        >
+          {message}
+        </BrandText>
+      </View>
+    </CustomPressable>
   );
 };
