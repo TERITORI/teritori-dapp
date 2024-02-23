@@ -3,8 +3,7 @@ import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { getNativeWallet } from "./getNativeWallet";
 
 import { mustGetCosmosNetwork } from "@/networks";
-// eslint-disable-next-line no-restricted-imports
-import { StoreWallet } from "@/store/slices/wallets";
+import { StoreWallet } from "@/utils/types/wallet";
 
 export const getNativeSigner = async (selectedWallet: StoreWallet) => {
   const network = mustGetCosmosNetwork(selectedWallet.networkId);
