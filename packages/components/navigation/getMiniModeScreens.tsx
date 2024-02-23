@@ -5,7 +5,6 @@ import {
 import { RouteProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import { useSelector } from "react-redux";
 
 import { neutral00, secondaryColor } from "../../utils/style/colors";
 import { TabBarIcon } from "../TabBarIcon";
@@ -52,7 +51,6 @@ import SendingToriScreen from "@/screens/Mini/Wallet/SendingToriScreen";
 import TransactionDetailScreen from "@/screens/Mini/Wallet/TransactionDetailScreen";
 import { CreatePasswordWallet } from "@/screens/Wallet/Screens/CreatePasswordWallet";
 import { CreateWalletScreen } from "@/screens/Wallet/Screens/CreateWalletScreen";
-import { selectIsOnboardingCompleted } from "@/store/slices/message";
 import { RootStackParamList } from "@/utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -64,18 +62,13 @@ export type MiniTabScreenFC<T extends keyof RootStackParamList> = React.FC<{
 }>;
 
 const MainTab = () => {
-  const isOnboardingCompleted = useSelector(selectIsOnboardingCompleted);
-
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: secondaryColor,
         tabBarIcon: (props) => {
-          if (!isOnboardingCompleted) return null;
-
           return <TabBarIcon {...props} title={route.name} />;
         },
-        tabBarShowLabel: isOnboardingCompleted,
         tabBarStyle: { backgroundColor: neutral00, borderTopWidth: 0 },
       })}
     >

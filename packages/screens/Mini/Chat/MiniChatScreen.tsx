@@ -9,7 +9,6 @@ import {
 import { SvgProps } from "react-native-svg";
 import { useSelector } from "react-redux";
 
-import MiniMessageOnboarding from "./MiniMessageOnboarding";
 import { ChatList } from "./components/ChatList";
 import FriendInfoBar from "./components/FriendInfoBar";
 import rightArrowSVG from "../../../../assets/icons/chevron-right-white.svg";
@@ -29,7 +28,6 @@ import { ToastInfo } from "@/components/toasts/ToastInfo";
 import { useMessage } from "@/context/MessageProvider";
 import {
   selectFilteredConversationList,
-  selectIsOnboardingCompleted,
   selectIsWeshConnected,
 } from "@/store/slices/message";
 import { RootState } from "@/store/store";
@@ -153,7 +151,6 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
   navigation,
   route,
 }) => {
-  const isOnboardingCompleted = useSelector(selectIsOnboardingCompleted);
   const [showToast, setShowToast] = useState(true);
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("chats");
@@ -205,10 +202,6 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
         </View>
       </ScreenContainer>
     );
-  }
-
-  if (!isOnboardingCompleted) {
-    return <MiniMessageOnboarding />;
   }
 
   return (
