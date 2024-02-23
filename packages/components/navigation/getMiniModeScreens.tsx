@@ -23,6 +23,7 @@ import { NewGroupScreen } from "@/screens/Mini/Chat/NewGroupScreen";
 import { ConnectLedgerScreen } from "@/screens/Mini/ConnectLedger/ConnectLedgerScreen";
 import { ConversationScreeen } from "@/screens/Mini/Conversation/ConversationScreen";
 import { DAppStoreScreen } from "@/screens/Mini/DAppStore/DAppStoreScreen";
+import MiniCreatePostScreen from "@/screens/Mini/Feed/MiniCreatePostScreen";
 import { MiniFeedScreen } from "@/screens/Mini/Feed/MiniFeedScreen";
 import ChangeNetworkScreen from "@/screens/Mini/Network/ChangeNetworkScreen";
 import NotificationScreen from "@/screens/Mini/Notifications/NotificationScreen";
@@ -112,6 +113,16 @@ export const getMiniModeScreens = () => {
         name="MiniTabs"
         options={{ header: () => null }}
         component={MainTab}
+      />
+
+      <Stack.Screen
+        name="MiniCreatePost"
+        component={MiniCreatePostScreen}
+        options={{
+          header: () => null,
+          title: "",
+          presentation: "transparentModal",
+        }}
       />
 
       <Stack.Screen

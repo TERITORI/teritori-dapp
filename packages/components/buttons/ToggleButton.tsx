@@ -21,8 +21,6 @@ export default function ToggleButton({
 }: ToggleButtonProps) {
   const [focused, setFocused] = useState(isActive ?? false);
 
-  console.log(focused);
-
   function onValueChangeHandler(value: boolean) {
     setFocused(value);
 
