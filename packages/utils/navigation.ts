@@ -111,6 +111,7 @@ export type RootStackParamList = {
   MiniDAppStore: undefined;
   MiniNewConversation: undefined;
   MiniFriend: undefined;
+  MiniAddFriend: undefined;
   MiniNewGroup: undefined;
   MiniChatSetting: { back?: RouteName };
   MiniPreferencesSetting: { back?: RouteName };
@@ -145,6 +146,8 @@ export type RootStackParamList = {
   MiniTransactionDetail: { type: string; transactionId: string };
   ConnectLedger: undefined;
   CreateWallet: undefined;
+  MiniChatProfile: undefined;
+  MiniChatCreateAccount: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -267,9 +270,11 @@ const navConfig: {
     MiniDAppStore: "mini-dApp-store",
     MiniNewConversation: "mini-new-conversation",
     MiniFriend: "mini-friend",
+    MiniAddFriend: "mini-add-friend",
     MiniNewGroup: "mini-new-group",
     MiniChatSetting: "mini-chat-setting",
     MiniPreferencesSetting: "mini-preferences-setting",
+    MiniChatCreateAccount: "mini-chat-create-account",
     MiniSettings: "mini-settings",
     MiniAccountDetails: "mini-account-details",
     MiniAddAccount: "mini-add-account",
@@ -296,6 +301,7 @@ const navConfig: {
     MiniTransactionDetail: "mini-transaction-detail",
     ConnectLedger: "connect-ledger",
     CreateWallet: "create-wallet",
+    MiniChatProfile: "mini-chat-profile",
   },
 };
 

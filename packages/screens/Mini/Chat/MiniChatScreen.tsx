@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -9,7 +9,9 @@ import {
 import { SvgProps } from "react-native-svg";
 import { useSelector } from "react-redux";
 
+import MiniMessageOnboarding from "./MiniMessageOnboarding";
 import { ChatList } from "./components/ChatList";
+import FriendInfoBar from "./components/FriendInfoBar";
 import rightArrowSVG from "../../../../assets/icons/chevron-right-white.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import friendSVG from "../../../../assets/icons/friend.svg";
@@ -20,12 +22,14 @@ import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { MiniTabScreenFC } from "@/components/navigation/getMiniModeScreens";
+import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { RoundedTabs } from "@/components/tabs/RoundedTabs";
 import { ToastInfo } from "@/components/toasts/ToastInfo";
 import { useMessage } from "@/context/MessageProvider";
 import {
   selectFilteredConversationList,
+  selectIsOnboardingCompleted,
   selectIsWeshConnected,
 } from "@/store/slices/message";
 import { RootState } from "@/store/store";
@@ -52,13 +56,13 @@ const DATA: (ItemProps & { id: string })[] = [
     id: "1",
     title: "Add a friend",
     icon: friendSVG,
-    route: "MiniFriend",
+    route: "MiniChatProfile",
   },
   {
     id: "2",
     title: "New Conversation",
     icon: friendSVG,
-    route: "MiniNewConversation",
+    route: "MiniAddFriend",
   },
   {
     id: "3",
@@ -149,6 +153,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
   navigation,
   route,
 }) => {
+  const isOnboardingCompleted = useSelector(selectIsOnboardingCompleted);
   const [showToast, setShowToast] = useState(true);
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("chats");
@@ -162,6 +167,10 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
 
   const hasChats = conversationList.length > 0;
 
+  useEffect(() => {
+    // setMessageOnboardingComplete();
+  }, []);
+
   const hideToast = () => {
     setShowToast(false);
   };
@@ -170,7 +179,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
     // setIsChatSettingModalVisible(true);
   };
 
-  if (!isWeshConnected) {
+  if (isWeshConnected) {
     return (
       <ScreenContainer
         headerChildren={<></>}
@@ -201,6 +210,10 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
         </View>
       </ScreenContainer>
     );
+  }
+
+  if (!isOnboardingCompleted) {
+    return <MiniMessageOnboarding />;
   }
 
   return (
@@ -257,7 +270,12 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
             width: "100%",
           }}
         >
-          {!hasChats ? (
+          <SpacerColumn size={2} />
+          <FriendInfoBar />
+          <SpacerColumn size={2} />
+          <Separator />
+
+          {hasChats ? (
             <View
               style={{
                 flex: 1,
@@ -289,7 +307,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
 
           {!hasChats && (
             <>
-              <SpacerColumn size={2} />
+              {/* <SpacerColumn size={1} /> */}
               <View>
                 <BrandText
                   style={[

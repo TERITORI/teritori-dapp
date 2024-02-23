@@ -27,7 +27,7 @@ const dropdownItems = [
   {
     icon: ChatGraySVG,
     name: "Create new conversation",
-    onPress: (navigation: any) => navigation.navigate("MiniNewConversation"),
+    onPress: (navigation: any) => navigation.navigate("MiniAddFriend"),
   },
   {
     icon: GroupGraySVG,

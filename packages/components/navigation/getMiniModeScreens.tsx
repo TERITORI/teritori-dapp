@@ -6,7 +6,6 @@ import { RouteProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
-import { RootStackParamList } from "../../utils/navigation";
 import { neutral00, secondaryColor } from "../../utils/style/colors";
 import { TabBarIcon } from "../TabBarIcon";
 
@@ -14,6 +13,8 @@ import AboutScreen from "@/screens/Mini/About/AboutScreen";
 import AddAddressBookScreen from "@/screens/Mini/AddressBook/AddAddressBookScreen";
 import AddressBookScreen from "@/screens/Mini/AddressBook/AddressBookScreen";
 import EditAddressBookScreen from "@/screens/Mini/AddressBook/EditAddressBookScreen";
+import { MiniAddFriendScreen } from "@/screens/Mini/Chat/MiniAddFriendScreen";
+import { MiniChatProfileScreen } from "@/screens/Mini/Chat/MiniChatProfile";
 import { MiniChatScreen } from "@/screens/Mini/Chat/MiniChatScreen";
 import { MiniFriendScreen } from "@/screens/Mini/Chat/MiniFriendScreen";
 import { NewConversationScreen } from "@/screens/Mini/Chat/NewConversationScreen";
@@ -49,6 +50,7 @@ import SendingToriScreen from "@/screens/Mini/Wallet/SendingToriScreen";
 import TransactionDetailScreen from "@/screens/Mini/Wallet/TransactionDetailScreen";
 import { CreatePasswordWallet } from "@/screens/Wallet/Screens/CreatePasswordWallet";
 import { CreateWalletScreen } from "@/screens/Wallet/Screens/CreateWalletScreen";
+import { RootStackParamList } from "@/utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -206,12 +208,29 @@ export const getMiniModeScreens = () => {
         options={{
           header: () => null,
           title: "Settings",
+        }}
+      />
+      <Stack.Screen
+        name="MiniChatProfile"
+        component={MiniChatProfileScreen}
+        options={{
+          header: () => null,
+          title: "Chat Setting",
           presentation: "transparentModal",
         }}
       />
       <Stack.Screen
         name="MiniSettings"
         component={SettingsScreen}
+        options={{
+          header: () => null,
+          title: "Settings",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniAddFriend"
+        component={MiniAddFriendScreen}
         options={{
           header: () => null,
           title: "Settings",
