@@ -1,10 +1,11 @@
 import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 
 import { GovernanceExpire } from "./GovernanceExpire";
 import PassedSVG from "../../../assets/icons/passed.svg";
 import RejectSVG from "../../../assets/icons/reject.svg";
 import VotingSVG from "../../../assets/icons/voting.svg";
+import { OmniLink } from "../OmniLink";
 
 import { BrandText } from "@/components/BrandText";
 import { GovernanceProgressBar } from "@/components/GovernanceBox/GovernanceProgressBar";
@@ -27,7 +28,11 @@ export const GovernanceBox: React.FC<{
   proposal: Proposal;
 }> = ({ proposal }) => {
   return (
-    <TouchableOpacity
+    <OmniLink
+      to={{
+        screen: "GovernanceProposal",
+        params: { id: proposal.proposal_id },
+      }}
       style={{ width: "50%", marginBottom: layout.spacing_x2_5 }}
     >
       <View
@@ -125,6 +130,6 @@ export const GovernanceBox: React.FC<{
           </BrandText>
         </View>
       </View>
-    </TouchableOpacity>
+    </OmniLink>
   );
 };

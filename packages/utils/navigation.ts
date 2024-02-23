@@ -27,6 +27,9 @@ export type RootStackParamList = {
     id: string;
     tab?: keyof typeof uppTabItems;
   };
+  GovernanceProposal: {
+    id: string;
+  };
   RiotersFooter: undefined;
   AdministrationDashboard: undefined;
   LaunchpadApplications: undefined;
@@ -176,6 +179,7 @@ const navConfig: {
     WalletManagerWallets: "wallet-manager/wallets",
     WalletManagerChains: "wallet-manager/chains",
     Governance: "governance",
+    GovernanceProposal: "governance/:id",
     UserPublicProfile: "user/:id/:tab?",
     RiotersFooter: "rioters-footer",
     AdministrationDashboard: "launchpad/admin",
