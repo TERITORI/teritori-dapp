@@ -1,13 +1,13 @@
 import { coins, isDeliverTxFailure, StdFee } from "@cosmjs/stargate";
 import {
+  assets as osmosisAssets,
   calculateAmountWithSlippage,
   LcdPool,
   makeLcdPoolPretty,
   OsmosisApiClient,
-  assets as osmosisAssets,
 } from "@cosmology/core";
 import { useQuery } from "@tanstack/react-query";
-import { osmosis, getSigningOsmosisClient } from "osmojs";
+import { getSigningOsmosisClient, osmosis } from "osmojs";
 import { Coin } from "osmojs/dist/codegen/cosmos/base/v1beta1/coin";
 import { QuerySpotPriceRequest } from "osmojs/dist/codegen/osmosis/gamm/v1beta1/query";
 import { MsgSwapExactAmountIn } from "osmojs/dist/codegen/osmosis/gamm/v1beta1/tx";
@@ -17,12 +17,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useSelectedNetworkId } from "./useSelectedNetwork";
 import useSelectedWallet from "./useSelectedWallet";
 
-import {
-  CurrencyInfo,
-  getCosmosNetwork,
-  getKeplrSigner,
-  getNativeCurrency,
-} from "@/networks";
+import { CurrencyInfo, getCosmosNetwork, getNativeCurrency } from "@/networks";
+import { getKeplrSigner } from "@/networks/signer";
 
 interface PriceHash<T> {
   [key: string]: T;

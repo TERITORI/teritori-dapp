@@ -13,7 +13,6 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   getCosmosNetwork,
   getIBCCurrency,
-  getKeplrSigningStargateClient,
   getNativeCurrency,
   getNetwork,
   keplrCurrencyFromNativeCurrencyInfo,
@@ -30,6 +29,7 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
+import { getKeplrSigningStargateClient } from "@/networks/signer";
 import { TransactionForm } from "@/utils/types/wallet";
 
 type DepositModalProps = {

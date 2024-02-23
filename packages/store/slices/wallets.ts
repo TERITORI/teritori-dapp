@@ -5,17 +5,9 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 
-import { NetworkKind } from "../../networks";
 import { RootState } from "../store";
 
-export interface StoreWallet {
-  index: number;
-  address: string;
-  name: string;
-  provider: "native" | "ledger" | "google";
-  network: NetworkKind;
-  networkId: string;
-}
+import { StoreWallet } from "@/utils/types/wallet";
 
 interface AddressBookEntry {
   id: number;

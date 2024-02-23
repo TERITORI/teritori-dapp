@@ -3,10 +3,11 @@ import {
   TeritoriSocialFeedQueryClient,
 } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.client";
 import {
-  getKeplrSigningCosmWasmClient,
-  mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
+  mustGetNonSigningCosmWasmClient,
 } from "../networks";
+
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 
 interface SigningSocialFeedClientParams {
   networkId: string;

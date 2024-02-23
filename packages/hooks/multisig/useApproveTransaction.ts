@@ -6,14 +6,15 @@ import { useCallback } from "react";
 import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
 import {
-  ParsedTransaction,
   multisigTransactionsQueryKey,
+  ParsedTransaction,
 } from "./useMultisigTransactions";
 import useSelectedWallet from "../useSelectedWallet";
 
 import { Signature } from "@/api/multisig/v1/multisig";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
-import { getKeplrOnlyAminoStargateClient, getUserId } from "@/networks";
+import { getUserId } from "@/networks";
+import { getKeplrOnlyAminoStargateClient } from "@/networks/signer";
 
 export const useApproveTransaction = () => {
   const { setToastError } = useFeedbacks();

@@ -21,12 +21,12 @@ import { useNFTInfo } from "@/hooks/useNFTInfo";
 import { useSellNFT } from "@/hooks/useSellNFT";
 import {
   getCollectionId,
-  getKeplrSigningCosmWasmClient,
   mustGetCosmosNetwork,
   mustGetEthereumNetwork,
   NetworkKind,
   parseNftId,
 } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { getMetaMaskEthereumSigner } from "@/utils/ethereum";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { NFTInfo } from "@/utils/types/nft";

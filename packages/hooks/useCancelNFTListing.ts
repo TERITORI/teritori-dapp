@@ -5,12 +5,12 @@ import useSelectedWallet from "./useSelectedWallet";
 import { NftMarketplaceClient } from "@/contracts-clients/nft-marketplace/NftMarketplace.client";
 import { NFTVault__factory } from "@/evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import {
-  getKeplrSigningCosmWasmClient,
   getNetwork,
   mustGetCosmosNetwork,
   mustGetEthereumNetwork,
   NetworkKind,
 } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { getMetaMaskEthereumSigner } from "@/utils/ethereum";
 
 const teritoriCancelNFTListing = async (

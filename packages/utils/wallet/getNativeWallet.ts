@@ -1,6 +1,6 @@
 import { Secp256k1HdWallet } from "@cosmjs/amino";
 
-import { getValueFor, remove, save } from "../useMobileSecureStore";
+import { getValueFor, remove, save } from "./secure-store";
 
 import { createMnemonic } from "@/utils/wallet/seed";
 
