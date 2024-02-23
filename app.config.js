@@ -4,11 +4,11 @@ const config = {
     slug: "teritori",
     version: "1.0.3",
     orientation: "portrait",
-    icon: "./assets/teritori-icon.png",
+    icon: "./assets/app-icon.png",
     owner: "teritori",
     userInterfaceStyle: "light",
     splash: {
-      image: "./assets/splash-white.png",
+      image: "./assets/splash.png",
       resizeMode: "contain",
       backgroundColor: "#000000",
     },
