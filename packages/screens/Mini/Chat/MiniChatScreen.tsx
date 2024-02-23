@@ -19,13 +19,13 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
-import { MiniTabScreenFC } from "@/components/navigation/MiniModeNavigator";
+import { MiniTabScreenFC } from "@/components/navigation/getMiniModeScreens";
 import { SpacerColumn } from "@/components/spacer";
 import { RoundedTabs } from "@/components/tabs/RoundedTabs";
 import { ToastInfo } from "@/components/toasts/ToastInfo";
 import { useMessage } from "@/context/MessageProvider";
 import {
-  selectConversationList,
+  selectFilteredConversationList,
   selectIsWeshConnected,
 } from "@/store/slices/message";
 import { RootState } from "@/store/store";
@@ -156,7 +156,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
 
   const { activeConversationType } = useMessage();
   const conversationList = useSelector((state: RootState) =>
-    selectConversationList(state, activeConversationType),
+    selectFilteredConversationList(state, activeConversationType, ""),
   );
   const isWeshConnected = useSelector(selectIsWeshConnected);
 

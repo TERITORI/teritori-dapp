@@ -1,4 +1,10 @@
-/.yarn/**            linguist-vendored
-/.yarn/releases/*    binary
-/.yarn/plugins/**/*  binary
-/.pnp.*              binary linguist-generated
+/.yarn/** linguist-vendored
+/.yarn/releases/* binary
+/.yarn/plugins/**/* binary
+/.pnp.* binary linguist-generated
+/cosmwasm-contracts/*/schema/**/* linguist-generated
+/packages/contracts-clients/**/* linguist-generated
+/packages/api/**/* linguist-generated
+/go/pkg/*pb/**/* linguist-generated
+/packages/evm-contracts-clients/**/*.ts linguist-generated
+/.expo-shared/assets.json linguist-generated

@@ -304,10 +304,18 @@ const SubscriptionSetupForm: React.FC<{
             const client = await mustGetCw721MembershipSigningClient(
               selectedWallet.userId,
             );
-            await client.upsertChannel({
-              membershipsConfig: chainTiers,
-              tradeRoyalties: 800,
-            });
+
+            if (channel) {
+              await client.updateChannel({
+                id: channel.id,
+                membershipsConfig: chainTiers,
+              });
+            } else {
+              await client.createChannel({
+                membershipsConfig: chainTiers,
+                tradeRoyaltiesPer10k: 800, // 8% default
+              });
+            }
 
             onClose();
           })}

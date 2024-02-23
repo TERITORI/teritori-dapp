@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -180,6 +181,11 @@ func main() {
 	if err := db.Where(indexerdb.App{IndexerMode: indexerMode, NetworkID: network.ID}).FirstOrCreate(&dbApp).Error; err != nil {
 		panic(errors.Wrap(err, "failed to get or create db app"))
 	}
+	initialHeight := dbApp.Height
+	startTime := time.Now()
+	lastSnapshotHeight := initialHeight
+	lastSnapshotTime := time.Now()
+	bpsContinuous := float64(0)
 
 	lastProcessedHeight := dbApp.Height
 	lastProcessedHash := dbApp.TxHash
@@ -196,6 +202,34 @@ func main() {
 			Title:     q.Title,
 			NetworkID: *networkID,
 		})
+	}
+
+	// stats
+	statIntervalSeconds := 10
+	statContinuousSamples := 60
+	nextStatsPrint := time.Now().Add(time.Duration(statIntervalSeconds) * time.Second)
+	tryPrintStats := func(chainHeight int64, lastProcessedBlock int64) {
+		now := time.Now()
+		if nextStatsPrint.Before(now) {
+
+			totalProcessedBlocks := lastProcessedBlock - initialHeight
+			elapsedTime := now.Sub(startTime).Seconds()
+			bpsTotal := float64(totalProcessedBlocks) / elapsedTime
+
+			processedBlocks := lastProcessedBlock - lastSnapshotHeight
+			bpsInstant := float64(processedBlocks) / float64(now.Sub(lastSnapshotTime).Seconds())
+
+			bpsContinuous = (bpsContinuous * (float64(statContinuousSamples - 1)) / float64(statContinuousSamples)) + (bpsInstant / float64(statContinuousSamples))
+
+			remainingBlocks := chainHeight - lastProcessedBlock
+			eta := time.Duration((float64(remainingBlocks) / bpsContinuous) * 1000000000)
+
+			logger.Info("sync stats", zap.Duration("eta", eta), zap.Int64("remaining-blocks", remainingBlocks), zap.Float64("bps-instant", math.Round(bpsInstant*100)/100), zap.Float64("bps-continuous", math.Round(bpsContinuous*100)/100), zap.Float64("bps-session", math.Round(bpsTotal*100)/100))
+
+			nextStatsPrint = now.Add(time.Duration(statIntervalSeconds) * time.Second)
+			lastSnapshotHeight = lastProcessedBlock
+			lastSnapshotTime = now
+		}
 	}
 
 	// find replay info to use
@@ -227,15 +261,14 @@ func main() {
 			chunkElems := int64(0)
 			page := 1
 
+			res, err := client.Status()
+			if err != nil {
+				panic(errors.Wrap(err, "failed to query status"))
+			}
+			lbh := res.SyncInfo.LatestBlockHeight
+
 			// Find batch end and strategy
 			if replayInfo.FinalHeight == -1 {
-				res, err := client.Status()
-				if err != nil {
-					panic(errors.Wrap(err, "failed to query status"))
-				}
-
-				lbh := res.SyncInfo.LatestBlockHeight
-
 				if chunkedHeight+*chunkSize > lbh-*tailSize {
 					strategy = "tail"
 				}
@@ -305,6 +338,8 @@ func main() {
 							}
 						}
 
+						tryPrintStats(lbh, tx.Height-1)
+
 						if err := handler.HandleTendermintResultTx(tx); err != nil {
 							return errors.Wrap(err, fmt.Sprintf(`failed to handle tx "%s"`, tx.Hash))
 						}
@@ -325,6 +360,7 @@ func main() {
 					chunkedHeight = lastProcessedHeight + 1
 				} else { // chunk strategy
 					chunkedHeight = batchEnd
+					tryPrintStats(lbh, chunkedHeight)
 				}
 
 				if err := dbtx.Model(&indexerdb.App{}).Where("id = ?", dbApp.ID).UpdateColumns(map[string]interface{}{

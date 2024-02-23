@@ -31,14 +31,14 @@
         {
           "type": "object",
           "required": [
-            "upsert_channel"
+            "create_channel"
           ],
           "properties": {
-            "upsert_channel": {
+            "create_channel": {
               "type": "object",
               "required": [
                 "memberships_config",
-                "trade_royalties"
+                "trade_royalties_per10k"
               ],
               "properties": {
                 "memberships_config": {
@@ -47,8 +47,63 @@
                     "$ref": "#/definitions/MembershipConfig"
                   }
                 },
-                "trade_royalties": {
+                "trade_royalties_addr": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "trade_royalties_per10k": {
                   "type": "integer",
+                  "format": "uint16",
+                  "minimum": 0.0
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "update_channel"
+          ],
+          "properties": {
+            "update_channel": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "$ref": "#/definitions/Uint64"
+                },
+                "memberships_config": {
+                  "type": [
+                    "array",
+                    "null"
+                  ],
+                  "items": {
+                    "$ref": "#/definitions/MembershipConfig"
+                  }
+                },
+                "owner": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "trade_royalties_addr": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "trade_royalties_per10k": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
                   "format": "uint16",
                   "minimum": 0.0
                 }

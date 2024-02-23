@@ -9,7 +9,9 @@ export const SuccessScreen: ScreenFC<"SuccessScreen"> = ({ navigation }) => {
   return (
     <MultiStepScreenContainer screenPercentage={100}>
       <AllSet
-        onComplete={() => navigation.navigate("MiniTabs")}
+        onComplete={() =>
+          navigation.navigate("MiniTabs", { screen: "MiniChats" })
+        }
         description="Click on the Start button to launch Teritori."
       />
     </MultiStepScreenContainer>

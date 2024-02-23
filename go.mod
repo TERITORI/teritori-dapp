@@ -290,5 +290,3 @@ require (
 	pgregory.net/rapid v0.5.5 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
-
-replace berty.tech/weshnet => github.com/TERITORI/weshnet v0.0.0-20231127151743-abee97f5abd4

@@ -1,29 +1,48 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 import Constants from "expo-constants";
+import * as DocumentPicker from "expo-document-picker";
+import * as Sharing from "expo-sharing";
+import moment from "moment";
 import { Platform } from "react-native";
 
-import { weshClient } from "./client";
+import { getWeshnetAddress, weshClient } from "./client";
 import { weshConfig } from "./config";
-import { subscribeMessages } from "./message/subscriber";
-import { subscribeMetadata } from "./metadata/subscriber";
+import { fixWeshPortURLParams } from "./devWeshPortFix";
+import {
+  subscribeMessages,
+  unsubscribeMessageSubscriptions,
+} from "./message/subscriber";
+import {
+  subscribeMetadata,
+  unsubscribeMetadataSubscriptions,
+} from "./metadata/subscriber";
 import { bytesFromString, encodeJSON, stringFromBytes } from "./utils";
 import {
   Group,
   GroupInfo_Request,
   GroupType,
+  ServiceExportData_Reply,
 } from "../api/weshnet/protocoltypes";
 import {
   MessageState,
-  selectConversationList,
   setIsWeshConnected,
   setContactInfo,
   setPeerList,
+  selectContactInfo,
+  resetMessageSlice,
+  setIsOnboardingCompleted,
+  selectFilteredConversationList,
 } from "../store/slices/message";
 import { store } from "../store/store";
 import { isElectron } from "../utils/isElectron";
 import { CONVERSATION_TYPES, Message } from "../utils/types/message";
 
+import FileSystem from "@/modules/FileSystem";
+import { blobToDataURI, readFileAsBase64 } from "@/utils/file";
+
 const isRunningInExpoGo = Constants.appOwnership === "expo";
+const DEV_WESHPORT_STORAGE_KEY = "__DEV__WeshPort";
 
 let getPeerListIntervalId: ReturnType<typeof setInterval>;
 
@@ -40,39 +59,44 @@ export const getAndUpdatePeerList = async () => {
   );
 };
 
-export const bootWeshModule = async () => {
+const bootWeshModule = async () => {
+  const WeshnetModule = require("../../weshd");
+  const port = await WeshnetModule.getPort();
+  await AsyncStorage.setItem(DEV_WESHPORT_STORAGE_KEY, String(port));
+  WeshnetModule.boot();
+  setTimeout(() => {
+    weshClient.createClient(port);
+  }, 15 * 1000);
+};
+
+export const checkAndBootWeshModule = async () => {
   try {
     if (Platform.OS === "web" && !isElectron()) {
-      return;
-    }
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const port = urlParams.get("weshPort");
 
-    if (isElectron()) {
+      if (port) {
+        fixWeshPortURLParams();
+        await weshClient.createClient(Number(port) || 4242);
+      }
+    } else if (isElectron()) {
       weshClient.watchPort();
-    } else if (!isRunningInExpoGo) {
-      let port: number;
-      if (__DEV__) {
-        const refPort = await AsyncStorage.getItem("__DEV__WeshPort");
-
+    } else if (isRunningInExpoGo) {
+      // Connects to local wesh; go run ./weshd/go/web
+      await weshClient.createClient(4242);
+    } else {
+      const refPort = await AsyncStorage.getItem(DEV_WESHPORT_STORAGE_KEY);
+      if (refPort) {
         try {
-          port = Number(refPort);
+          const port = Number(refPort);
           await weshClient.createClient(port);
           await weshClient.client.ServiceGetConfiguration({});
         } catch {
-          const WeshnetModule = require("../../weshd");
-          port = await WeshnetModule.getPort();
-          await AsyncStorage.setItem("__DEV__WeshPort", String(port));
-          WeshnetModule.boot();
-          setTimeout(() => {
-            weshClient.createClient(port);
-          }, 15 * 1000);
+          await bootWeshModule();
         }
       } else {
-        const WeshnetModule = require("../../weshd");
-        port = await WeshnetModule.getPort();
-        WeshnetModule.boot();
-        setTimeout(() => {
-          weshClient.createClient(port);
-        }, 15 * 1000);
+        await bootWeshModule();
       }
     }
   } catch (err) {
@@ -80,7 +104,7 @@ export const bootWeshModule = async () => {
   }
 };
 
-export const bootWeshnet = async () => {
+export const afterWeshnetConnectionAction = async () => {
   try {
     store.dispatch(setIsWeshConnected(true));
     await weshClient.client.ContactRequestEnable({});
@@ -91,9 +115,19 @@ export const bootWeshnet = async () => {
       contactRef.publicRendezvousSeed = resetRef.publicRendezvousSeed;
     }
 
+    const publicRendezvousSeed = stringFromBytes(
+      contactRef.publicRendezvousSeed,
+    );
+    const contactInfo = selectContactInfo(store.getState());
+    const shareLink = createSharableLink({
+      ...contactInfo,
+      publicRendezvousSeed,
+    });
+
     store.dispatch(
       setContactInfo({
-        publicRendezvousSeed: stringFromBytes(contactRef.publicRendezvousSeed),
+        shareLink,
+        publicRendezvousSeed,
       }),
     );
 
@@ -113,9 +147,10 @@ export const bootWeshnet = async () => {
 };
 
 const bootSubscribeMessages = () => {
-  const conversations = selectConversationList(
+  const conversations = selectFilteredConversationList(
     store.getState(),
     CONVERSATION_TYPES.ACTIVE,
+    "",
   );
 
   conversations.forEach((item) => {
@@ -313,4 +348,106 @@ export const sendMessage = async ({
   } catch (err) {
     console.error("send message err", err);
   }
+};
+
+export const exportAccount = async () => {
+  const data = await weshClient.client.ServiceExportData({});
+
+  let acc = new Uint8Array(0);
+
+  const promise = new Promise(async (resolve, reject) => {
+    const observer = {
+      next: (data: ServiceExportData_Reply) => {
+        const combinedArray = new Uint8Array(
+          acc.length + data.exportedData.length,
+        );
+        combinedArray.set(acc);
+        combinedArray.set(data.exportedData, acc.length);
+        acc = combinedArray;
+      },
+      error: reject,
+      complete: async () => {
+        try {
+          const blob = new Blob([acc], { type: "application/x-tar" });
+          const fileName = `teritori-message-account-backup-${moment().format("YYYY-MM-DD hh:mm:ss")}.tar`;
+
+          if (Platform.OS === "web") {
+            const downloadLink = document.createElement("a");
+            downloadLink.href = window.URL.createObjectURL(blob);
+            downloadLink.download = fileName;
+
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+
+            document.body.removeChild(downloadLink);
+          } else {
+            const uri = await blobToDataURI(blob);
+            const localFileURI = FileSystem.documentDirectory + fileName;
+            await FileSystem.writeAsStringAsync(
+              localFileURI,
+              uri.split(",")[1],
+              {
+                encoding: FileSystem.EncodingType.Base64,
+              },
+            );
+
+            await Sharing.shareAsync(localFileURI, {
+              UTI: "application/x-tar",
+              mimeType: "application/x-tar",
+            });
+          }
+          resolve("");
+        } catch (err) {
+          reject(err);
+        }
+      },
+    };
+    data.subscribe(observer);
+  });
+
+  await promise;
+};
+
+export const setMessageOnboardingComplete = () => {
+  store.dispatch(setIsOnboardingCompleted(true));
+};
+
+export const handleRestoreAccount = async () => {
+  const result = await DocumentPicker.getDocumentAsync({
+    type: "application/x-tar",
+  });
+
+  if (!result.canceled && result.assets[0]) {
+    let base64String: string;
+
+    if (Platform.OS === "web") {
+      base64String = await readFileAsBase64(result.assets[0].file);
+    } else {
+      base64String = await FileSystem.readAsStringAsync(result.assets[0].uri, {
+        encoding: FileSystem?.EncodingType?.Base64,
+      });
+    }
+
+    const response = await axios.post(
+      `${getWeshnetAddress(weshClient.port)}/restore-account`,
+      base64String,
+    );
+    if (response.status < 200 || response.status > 300) {
+      throw response.data;
+    }
+    await AsyncStorage.removeItem(DEV_WESHPORT_STORAGE_KEY);
+    store.dispatch(resetMessageSlice());
+    unsubscribeMessageSubscriptions();
+    unsubscribeMetadataSubscriptions();
+    store.dispatch(setIsWeshConnected(false));
+    setMessageOnboardingComplete();
+    if (Platform.OS === "web") {
+      setTimeout(() => {
+        checkAndBootWeshModule();
+      }, 15 * 1000);
+    } else {
+      await checkAndBootWeshModule();
+    }
+  }
+  throw new Error("Couldn't load the file");
 };

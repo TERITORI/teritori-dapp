@@ -8,7 +8,7 @@ import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
-import { LegacySecondaryBox } from "@/components/boxes/LegacySecondaryBox";
+import { SecondaryBox } from "@/components/boxes/SecondaryBox";
 import { useDropdowns } from "@/hooks/useDropdowns";
 import {
   selectAvailableApps,
@@ -96,11 +96,12 @@ export const DropdownDappsStoreFilter: React.FC = () => {
       </TouchableOpacity>
 
       {isDropdownOpen && (
-        <LegacySecondaryBox
-          noBrokenCorners
-          width={248}
-          style={{ position: "absolute", top: 29, right: -14 }}
-          mainContainerStyle={{
+        <SecondaryBox
+          style={{
+            position: "absolute",
+            width: 248,
+            top: 29,
+            right: -14,
             paddingHorizontal: layout.spacing_x1_5,
             paddingTop: layout.spacing_x1_5,
             backgroundColor: neutral33,
@@ -115,7 +116,7 @@ export const DropdownDappsStoreFilter: React.FC = () => {
               id={option.id}
             />
           ))}
-        </LegacySecondaryBox>
+        </SecondaryBox>
       )}
     </View>
   );

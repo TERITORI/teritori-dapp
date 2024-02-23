@@ -9,13 +9,12 @@ import Animated, {
 import CustomAppBar from "../../../components/AppBar/CustomAppBar";
 
 import { Post } from "@/api/feed/v1/feed";
+import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { CommentsContainer } from "@/components/cards/CommentsContainer";
-import {
-  NewsFeedInput,
-  NewsFeedInputHandle,
-} from "@/components/socialFeed/NewsFeed/NewsFeedInput";
+import { NewsFeedInputHandle } from "@/components/socialFeed/NewsFeed/NewsFeedInput";
 import { SocialThreadCard } from "@/components/socialFeed/SocialCard/cards/SocialThreadCard";
+import { SpacerColumn } from "@/components/spacer";
 import {
   combineFetchCommentPages,
   useFetchComments,
@@ -23,6 +22,7 @@ import {
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
+import { MiniCommentInput } from "@/screens/Mini/components/MiniCommentInput";
 import { DEFAULT_USERNAME } from "@/utils/social-feed";
 import { tinyAddress } from "@/utils/text";
 import {
@@ -149,40 +149,43 @@ const MiniDefaultPostDetails = ({
         onScroll={scrollHandler}
         scrollEventThrottle={1}
       >
-        <View style={{ flex: 1, width: windowWidth - 20 }}>
-          {!!post && (
-            <View style={{ width: "100%" }}>
-              <SocialThreadCard
-                refetchFeed={refetchPost}
-                style={{
-                  borderRadius: 0,
-                  borderLeftWidth: 0,
-                  borderRightWidth: 0,
-                }}
-                post={localPost}
-                isPostConsultation
-                onPressReply={onPressReply}
-              />
-            </View>
-          )}
-          <CommentsContainer
-            cardWidth={windowWidth - 20}
-            comments={comments}
-            onPressReply={onPressReply}
-          />
-          <NewsFeedInput
-            style={{ alignSelf: "center" }}
-            ref={feedInputRef}
-            type="comment"
-            replyTo={replyTo}
-            parentId={post.identifier}
-            onSubmitInProgress={handleSubmitInProgress}
-            onSubmitSuccess={() => {
-              setReplyTo(undefined);
-              refetchComments();
-            }}
-          />
-        </View>
+        <KeyboardAvoidingView>
+          <View style={{ flex: 1, width: windowWidth - 20 }}>
+            {!!post && (
+              <View style={{ width: "100%" }}>
+                <SocialThreadCard
+                  refetchFeed={refetchPost}
+                  style={{
+                    borderRadius: 0,
+                    borderLeftWidth: 0,
+                    borderRightWidth: 0,
+                  }}
+                  post={localPost}
+                  isPostConsultation
+                  onPressReply={onPressReply}
+                />
+              </View>
+            )}
+            <CommentsContainer
+              cardWidth={windowWidth - 20}
+              comments={comments}
+              onPressReply={onPressReply}
+            />
+            <SpacerColumn size={3} />
+            <MiniCommentInput
+              style={{ alignSelf: "center" }}
+              ref={feedInputRef}
+              replyTo={replyTo}
+              parentId={post.identifier}
+              onSubmitInProgress={handleSubmitInProgress}
+              onSubmitSuccess={() => {
+                setReplyTo(undefined);
+                refetchComments();
+              }}
+            />
+            <SpacerColumn size={3} />
+          </View>
+        </KeyboardAvoidingView>
       </Animated.ScrollView>
     </ScreenContainer>
   );

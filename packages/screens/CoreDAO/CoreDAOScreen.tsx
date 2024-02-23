@@ -12,14 +12,14 @@ import { ScreenContainer } from "@/components/ScreenContainer";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { NftMarketplaceClient } from "@/contracts-clients/nft-marketplace/NftMarketplace.client";
 import { TeritoriNameServiceQueryClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { TeritoriNftVaultClient } from "@/contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { useDAOMakeProposal } from "@/hooks/dao/useDAOMakeProposal";
 import { useFeedConfig } from "@/hooks/feed/useFeedConfig";
+import { useMarketplaceConfig } from "@/hooks/marketplace/useMarketplaceConfig";
 import { useBalances } from "@/hooks/useBalances";
 import { useBreedingConfig } from "@/hooks/useBreedingConfig";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { useVaultConfig } from "@/hooks/vault/useVaultConfig";
 import {
   getCosmosNetwork,
   getKeplrSigningCosmWasmClient,
@@ -141,7 +141,7 @@ const DAOManager: React.FC = () => {
 
 const VaultManager: React.FC<{ networkId: string }> = ({ networkId }) => {
   const network = getCosmosNetwork(networkId);
-  const { vaultConfig } = useVaultConfig(networkId);
+  const { marketplaceConfig: vaultConfig } = useMarketplaceConfig(networkId);
   const vaultBalances = useBalances(networkId, network?.vaultContractAddress);
   const { wrapWithFeedback } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
@@ -177,7 +177,7 @@ const VaultManager: React.FC<{ networkId: string }> = ({ networkId }) => {
           const cosmWasmClient = await getKeplrSigningCosmWasmClient(
             selectedWallet.networkId,
           );
-          const vaultClient = new TeritoriNftVaultClient(
+          const vaultClient = new NftMarketplaceClient(
             cosmWasmClient,
             selectedWallet.address,
             network.vaultContractAddress,

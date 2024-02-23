@@ -33,7 +33,7 @@ import {
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
+export const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
   const wallets = useSelector(selectAllWallets) as StoreWallet[];
   const dispatch = useAppDispatch();
 
@@ -217,5 +217,3 @@ const LastTransactions = () => {
     </>
   );
 };
-
-export default TokenScreen;
