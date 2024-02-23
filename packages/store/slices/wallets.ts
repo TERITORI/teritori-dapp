@@ -49,7 +49,7 @@ const walletsSlice = createSlice({
   reducers: {
     addSelected: storeWalletsAdapter.setOne,
     updateWallet: storeWalletsAdapter.upsertOne,
-    removeSelected: storeWalletsAdapter.removeOne,
+    removeWalletById: storeWalletsAdapter.removeOne,
     resetAllWallets: storeWalletsAdapter.removeAll,
     setSelectedNativeWalletIndex: (state, action: PayloadAction<number>) => {
       // Add new reducer function
@@ -97,10 +97,12 @@ export const addressBookReducer = addressBookSlice.reducer;
 export const tokensReducer = tokensSlice.reducer;
 export const { addEntry, removeEntry, resetAllAddressBook } =
   addressBookSlice.actions;
+
 export const {
   addSelected,
   resetAllWallets,
   setSelectedNativeWalletIndex,
   updateWallet,
+  removeWalletById,
 } = walletsSlice.actions;
 export const { updateToken, resetAllTokens } = tokensSlice.actions;
