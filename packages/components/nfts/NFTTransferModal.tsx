@@ -13,7 +13,6 @@ import {
   NetworkKind,
   CosmosNetworkInfo,
   EthereumNetworkInfo,
-  getKeplrSigningCosmWasmClient,
   getNetwork,
   parseNftId,
 } from "../../networks";
@@ -27,6 +26,8 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import ModalBase from "../modals/ModalBase";
 import { SpacerColumn } from "../spacer";
+
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 
 interface NFTTransferModalProps {
   nft?: NFT;

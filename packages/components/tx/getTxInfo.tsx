@@ -17,12 +17,7 @@ import stakingWhiteSVG from "../../../assets/icons/staking_white.svg";
 import tnsWhiteSVG from "../../../assets/icons/tns-service_white.svg";
 import walletWhiteSVG from "../../../assets/icons/wallet_white.svg";
 import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
-import {
-  NetworkInfo,
-  getUserId,
-  NetworkKind,
-  cosmosTypesRegistry,
-} from "../../networks";
+import { NetworkInfo, getUserId, NetworkKind } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { AppNavigationProp } from "../../utils/navigation";
 import { neutral77 } from "../../utils/style/colors";
@@ -32,6 +27,8 @@ import { BrandText } from "../BrandText";
 import { SocialMessageContent } from "../socialFeed/SocialCard/SocialMessageContent";
 import { SpacerColumn } from "../spacer";
 import { Username } from "../user/Username";
+
+import { cosmosTypesRegistry } from "@/networks/signer";
 
 // once we gather enough different messages here, we should try to establish meaningful abstractions and split this func
 

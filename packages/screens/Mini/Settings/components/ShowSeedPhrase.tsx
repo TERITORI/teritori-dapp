@@ -6,10 +6,10 @@ import BlurViewWrapper from "../../components/BlurViewWrapper";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
-import { getMnemonic } from "@/hooks/wallet/getNativeWallet";
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { getMnemonic } from "@/utils/wallet/getNativeWallet";
 
 export const ShowSeedPhrase = () => {
   const selectedWallet = useSelectedNativeWallet();
