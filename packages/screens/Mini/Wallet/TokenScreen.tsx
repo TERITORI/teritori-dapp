@@ -21,7 +21,6 @@ import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet"
 import {
   selectAllWallets,
   setSelectedNativeWalletIndex,
-  StoreWallet,
 } from "@/store/slices/wallets";
 import { useAppDispatch } from "@/store/store";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
@@ -34,7 +33,7 @@ import {
 import { layout } from "@/utils/style/layout";
 
 export const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
-  const wallets = useSelector(selectAllWallets) as StoreWallet[];
+  const wallets = useSelector(selectAllWallets);
   const dispatch = useAppDispatch();
 
   const selectedWallet = useSelectedNativeWallet();
