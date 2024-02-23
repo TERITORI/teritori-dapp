@@ -2,13 +2,16 @@ import { View } from "react-native";
 import { useSelector } from "react-redux";
 
 import chevronSVG from "@/assets/icons/chevron-right.svg";
-import friendSVG from "@/assets/icons/friend-gray.svg";
+import friendSVG from "@/assets/icons/friends-white.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
 import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerRow } from "@/components/spacer";
-import { selectContactRequestList } from "@/store/slices/message";
+import {
+  selectContactRequestList,
+  selectConversationList,
+} from "@/store/slices/message";
 import { useAppNavigation } from "@/utils/navigation";
 import { azureBlue, neutral22, withAlpha } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
@@ -17,6 +20,11 @@ import { layout } from "@/utils/style/layout";
 export default function FriendInfoBar() {
   const navigation = useAppNavigation();
   const contactRequestList = useSelector(selectContactRequestList);
+  const conversations = useSelector(selectConversationList);
+
+  const totalContactRequests = contactRequestList.length;
+  const totalFriends =
+    conversations?.filter((conv) => conv.type === "contact")?.length || "";
 
   return (
     <CustomPressable onPress={() => navigation.navigate("MiniFriend")}>
@@ -44,14 +52,16 @@ export default function FriendInfoBar() {
             justifyContent: "center",
           }}
         >
-          {contactRequestList.length > 0 && (
+          {totalContactRequests > 0 && (
             <TertiaryBadge
-              label={`${contactRequestList.length} new"`}
+              label={`${totalContactRequests} new`}
               style={{ backgroundColor: withAlpha(azureBlue, 0.15) }}
               textColor={azureBlue}
             />
           )}
           <SpacerRow size={1} />
+
+          <BrandText style={[fontSemibold14]}>{totalFriends}</BrandText>
 
           <SpacerRow size={0.75} />
           <SVGorImageIcon icon={chevronSVG} iconSize={16} />
