@@ -200,10 +200,5 @@
     "@axelar-network/axelarjs-types@^0.33.0": "patch:@axelar-network/axelarjs-types@npm%3A0.33.0#./.yarn/patches/@axelar-network-axelarjs-types-npm-0.33.0-5d36465d11.patch"
   },
   "private": true,
-  "packageManager": "yarn@3.5.0",
-  "expo": {
-    "autolinking": {
-      "nativeModulesDir": "./weshd"
-    }
-  }
+  "packageManager": "yarn@3.5.0"
 }
