@@ -17,7 +17,6 @@ import { layout } from "@/utils/style/layout";
 export default function FriendInfoBar() {
   const navigation = useAppNavigation();
   const contactRequestList = useSelector(selectContactRequestList);
-  console.log(contactRequestList);
 
   return (
     <CustomPressable onPress={() => navigation.navigate("MiniFriend")}>
@@ -53,8 +52,6 @@ export default function FriendInfoBar() {
             />
           )}
           <SpacerRow size={1} />
-
-          {/* <BrandText style={[fontSemibold14]}>1</BrandText> */}
 
           <SpacerRow size={0.75} />
           <SVGorImageIcon icon={chevronSVG} iconSize={16} />
