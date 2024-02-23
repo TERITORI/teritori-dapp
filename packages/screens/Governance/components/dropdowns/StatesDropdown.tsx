@@ -13,6 +13,7 @@ import { neutral33, neutral55, secondaryColor } from "@/utils/style/colors";
 import { fontMedium14, fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { ProposalStatus } from "@/utils/types/gov";
+import { objectKeys } from "@/utils/typescript";
 
 const def = {
   all: {
@@ -120,7 +121,7 @@ export const StatesDropdown = ({ style, onChange }: StatesDropdownGovProps) => {
                 style={{ marginTop: layout.spacing_x1 }}
               />
 
-              {getKeys(def).map((key, index) => {
+              {objectKeys(def).map((key, index) => {
                 return (
                   <TouchableOpacity
                     onPress={() => {
@@ -139,7 +140,7 @@ export const StatesDropdown = ({ style, onChange }: StatesDropdownGovProps) => {
                       {def[key].name}
                     </BrandText>
 
-                    {getKeys(def).length - 1 !== index && (
+                    {objectKeys(def).length - 1 !== index && (
                       <>
                         <SpacerColumn size={1} />
                         <Separator color={neutral55} />
@@ -155,4 +156,3 @@ export const StatesDropdown = ({ style, onChange }: StatesDropdownGovProps) => {
     </View>
   );
 };
-const getKeys = Object.keys as <T extends object>(obj: T) => (keyof T)[];
