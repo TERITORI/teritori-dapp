@@ -69,6 +69,13 @@ const bootWeshModule = async () => {
   }, 15 * 1000);
 };
 
+export const stopWeshModule = async () => {
+  // TODO: Actual implementation later
+  // await WeshdModule.stop();
+  unsubscribeMessageSubscriptions();
+  stopMessegingConnection();
+};
+
 export const checkAndBootWeshModule = async () => {
   try {
     if (Platform.OS === "web" && !isElectron()) {
@@ -436,9 +443,7 @@ export const handleRestoreAccount = async () => {
     }
     await AsyncStorage.removeItem(DEV_WESHPORT_STORAGE_KEY);
     store.dispatch(resetMessageSlice());
-    unsubscribeMessageSubscriptions();
-    unsubscribeMetadataSubscriptions();
-    store.dispatch(setIsWeshConnected(false));
+    stopMessegingConnection();
     setMessageOnboardingComplete();
     if (Platform.OS === "web") {
       setTimeout(() => {
@@ -450,3 +455,9 @@ export const handleRestoreAccount = async () => {
   }
   throw new Error("Couldn't load the file");
 };
+
+function stopMessegingConnection() {
+  unsubscribeMessageSubscriptions();
+  unsubscribeMetadataSubscriptions();
+  store.dispatch(setIsWeshConnected(false));
+}
