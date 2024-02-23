@@ -13,7 +13,10 @@ import { bytesFromString, stringFromBytes } from "../utils";
 const messageSubscriptions: Subscription[] = [];
 const subscribers: { [key: string]: boolean } = {};
 
-export const subscribeMessages = async (groupPk: string) => {
+export const subscribeMessages = async (
+  groupPk: string,
+  ignoreDuplication?: boolean,
+) => {
   try {
     const lastId = selectLastIdByKey(store.getState(), groupPk);
 
@@ -31,7 +34,7 @@ export const subscribeMessages = async (groupPk: string) => {
       uniqKey += "untilNow";
     }
 
-    if (subscribers[uniqKey]) {
+    if (!ignoreDuplication && subscribers[uniqKey]) {
       return;
     }
 
@@ -94,7 +97,7 @@ export const subscribeMessages = async (groupPk: string) => {
           if (newLastId) {
             subscribeMessages(groupPk);
           } else {
-            setTimeout(() => subscribeMessages(groupPk), 3500);
+            setTimeout(() => subscribeMessages(groupPk, true), 3500);
           }
         },
       };
