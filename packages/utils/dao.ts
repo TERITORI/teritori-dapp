@@ -2,15 +2,13 @@ import {
   ExecuteResult,
   SigningCosmWasmClient,
 } from "@cosmjs/cosmwasm-stargate";
-import { StdFee, Coin } from "@cosmjs/stargate";
+import { Coin, StdFee } from "@cosmjs/stargate";
 import { Buffer } from "buffer";
 
 import { TeritoriNameServiceClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import {
-  mustGetCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
-  getStakingCurrency,
-} from "../networks";
+import { getStakingCurrency, mustGetCosmosNetwork } from "../networks";
+
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 
 interface TokenHolder {
   address: string;

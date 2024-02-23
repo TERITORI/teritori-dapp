@@ -8,7 +8,10 @@ import { StoreWallet } from "@/utils/types/wallet";
 export const getNativeSigner = async (selectedWallet: StoreWallet) => {
   const network = mustGetCosmosNetwork(selectedWallet.networkId);
 
-  const wallet = await getNativeWallet(network.addressPrefix, selectedWallet.index);
+  const wallet = await getNativeWallet(
+    network.addressPrefix,
+    selectedWallet.index,
+  );
   const rpcEndpoint = network.rpcEndpoint;
   const client = await SigningCosmWasmClient.connectWithSigner(
     rpcEndpoint,

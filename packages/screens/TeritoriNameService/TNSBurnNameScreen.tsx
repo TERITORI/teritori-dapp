@@ -16,11 +16,8 @@ import { useTNS } from "@/context/TNSProvider";
 import { TeritoriNameServiceClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { nsNameInfoQueryKey } from "@/hooks/useNSNameInfo";
 import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
-import {
-  getCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
-  mustGetCosmosNetwork,
-} from "@/networks";
+import { getCosmosNetwork, mustGetCosmosNetwork } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { neutral17, neutralA3 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
 

@@ -11,12 +11,12 @@ import { TeritoriNftClient } from "@/contracts-clients/teritori-nft/TeritoriNft.
 import { TeritoriNft__factory } from "@/evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import { NFTVault__factory } from "@/evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import {
-  getKeplrSigningCosmWasmClient,
   getNativeCurrency,
   mustGetCosmosNetwork,
   mustGetEthereumNetwork,
   NetworkKind,
 } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { getMetaMaskEthereumSigner } from "@/utils/ethereum";
 
 const teritoriSellNFT = async (

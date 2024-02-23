@@ -20,10 +20,10 @@ import { useNSNameOwner } from "@/hooks/useNSNameOwner";
 import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
 import {
   getCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
   mustGetCosmosNetwork,
   mustGetNonSigningCosmWasmClient,
 } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { neutral17 } from "@/utils/style/colors";
 import { defaultMetaData } from "@/utils/types/tns";
 
