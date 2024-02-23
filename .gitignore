@@ -12,8 +12,6 @@ web-build/
 /cache/
 /ios
 /android
-/weshd/ios/Frameworks/
-/weshd/android/libs/
 /app-build/
 
 # macOS
@@ -94,6 +92,9 @@ substreams-*/target
 
 # weshnet
 temp/
+/weshd/ios/Frameworks/
+/weshd/android/libs/
+/weshd/temp/
 
 # eslint
 /.eslintcache

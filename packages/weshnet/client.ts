@@ -11,7 +11,7 @@ import { afterWeshnetConnectionAction } from "./services";
 const createWeshClient = (url: string) => {
   const rpc = new GrpcWebImpl(url, {
     debug: false,
-    transport: grpc.WebsocketTransport(),
+    transport: Platform.OS === "web" ? undefined : grpc.WebsocketTransport(),
   });
 
   const client = new ProtocolServiceClientImpl(rpc);

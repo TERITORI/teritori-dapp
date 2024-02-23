@@ -27,11 +27,16 @@ public class WeshdModule: Module {
     Events("onChange")
 
     // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
-      AsyncFunction("boot") {
-          WeshFramework.WeshBoot(getDocumentsDirectory())
+    AsyncFunction("boot") {
+      WeshFramework.WeshBoot(getDocumentsDirectory())
     }
-      AsyncFunction("getPort") { () -> Int in
-          return WeshFramework.WeshGetPort()
+    
+    AsyncFunction("getPort") { () -> Int in
+      return WeshFramework.WeshGetPort()
+    }
+
+    AsyncFunction("shutdown") {
+      WeshFramework.WeshShutdown()
     }
 
     // Defines a JavaScript function that always returns a Promise and whose native code
