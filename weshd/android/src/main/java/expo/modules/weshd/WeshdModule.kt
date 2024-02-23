@@ -65,9 +65,13 @@ fun getAbsolutePathForWeshDir(context: Context): String {
     // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
     Function("boot") {  ->
 
-          val absolutePath = getAbsolutePathForWeshDir(context)
-          Wesh.boot(absolutePath)
+      val absolutePath = getAbsolutePathForWeshDir(context)
+      Wesh.boot(absolutePath)
       
+    }
+
+    Function("shutdown") {  ->
+      Wesh.shutdown()
     }
 
     AsyncFunction("getPort") {   ->
