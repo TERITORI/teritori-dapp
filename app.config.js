@@ -8,7 +8,7 @@ const config = {
     owner: "teritori",
     userInterfaceStyle: "light",
     splash: {
-      image: "./assets/splash.png",
+      image: "./assets/splash-white.png",
       resizeMode: "contain",
       backgroundColor: "#000000",
     },
