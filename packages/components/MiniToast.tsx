@@ -70,9 +70,7 @@ export const MiniToast = ({
   status = "info",
   message,
   variant = "solid",
-  duration = 3000,
   topOffSet = 70,
-  showAlways = false,
 }: MiniToastProps) => {
   const { width: windowWidth } = useWindowDimensions();
 

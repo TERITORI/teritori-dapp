@@ -11,6 +11,8 @@ import { LoaderFullScreen } from "../components/loaders/LoaderFullScreen";
 import { ToastError } from "../components/toasts/ToastError";
 import { ToastSuccess } from "../components/toasts/ToastSuccess";
 
+import { MiniToast, MiniToastProps } from "@/components/MiniToast";
+
 interface ToastMessage {
   title: string;
   message: string;
@@ -40,6 +42,8 @@ interface FeedbacksProviderValue {
     success?: { title: string; message?: string },
     errorTransform?: (err: unknown) => { title: string; message?: string },
   ) => () => Promise<void>;
+  miniToast: MiniToastProps;
+  setMiniToast: (data: MiniToastProps) => void;
 }
 const defaultValue: FeedbacksProviderValue = {
   toastError: initialToastError,
@@ -49,6 +53,8 @@ const defaultValue: FeedbacksProviderValue = {
   loadingFullScreen: false,
   setLoadingFullScreen: () => {},
   wrapWithFeedback: () => async () => {},
+  miniToast: { message: "" },
+  setMiniToast: () => {},
 };
 
 const FeedbacksContext = createContext(defaultValue);
@@ -59,18 +65,31 @@ export const FeedbacksContextProvider: React.FC<{ children: ReactNode }> = ({
   const [loadingFullScreen, setLoadingFullScreen] = useState(false);
   const [toastError, setToastError] = useState(initialToastError);
   const [toastSuccess, setToastSuccess] = useState(initialToastSuccess);
+  const [miniToast, setMiniToast] = useState<MiniToastProps>(
+    defaultValue.miniToast,
+  );
+  console.log({ miniToast });
 
   useEffect(() => {
-    const timeoutID = setTimeout(
-      () => {
-        setToastError(initialToastError);
-        setToastSuccess(initialToastSuccess);
-      },
-      toastError.duration || toastSuccess.duration || 8000,
-    );
+    const toastDuration =
+      miniToast.duration ||
+      toastError.duration ||
+      toastSuccess.duration ||
+      miniToast.duration ||
+      8000;
+
+    const timeoutID = setTimeout(() => {
+      setToastError(initialToastError);
+      setToastSuccess(initialToastSuccess);
+
+      //always show mini toast when showAlways flag is enabled or status is loading
+      if (!miniToast.showAlways && miniToast.status !== "loading") {
+        setMiniToast(defaultValue.miniToast);
+      }
+    }, toastDuration);
 
     return () => clearTimeout(timeoutID);
-  }, [toastError, toastSuccess]);
+  }, [toastError, toastSuccess, miniToast]);
 
   const wrapWithFeedback: FeedbacksProviderValue["wrapWithFeedback"] =
     useCallback(
@@ -107,6 +126,8 @@ export const FeedbacksContextProvider: React.FC<{ children: ReactNode }> = ({
         toastSuccess,
         setToastSuccess,
         wrapWithFeedback,
+        miniToast,
+        setMiniToast,
       }}
     >
       {/*==== Loader full screen*/}
@@ -130,6 +151,10 @@ export const FeedbacksContextProvider: React.FC<{ children: ReactNode }> = ({
           message={toastSuccess.message}
         />
       ) : null}
+
+      {/* Mini Toast */}
+      {miniToast && miniToast.message && <MiniToast {...miniToast} />}
+
       {/*==== Page content*/}
       {children}
     </FeedbacksContext.Provider>
