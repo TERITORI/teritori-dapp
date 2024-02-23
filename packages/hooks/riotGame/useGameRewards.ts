@@ -13,11 +13,11 @@ import { Distributor__factory } from "@/evm-contracts-clients/distributor/Distri
 import {
   CosmosNetworkInfo,
   EthereumNetworkInfo,
-  getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
   NetworkKind,
   parseUserId,
 } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { mustGetP2eClient } from "@/utils/backend";
 import { getMetaMaskEthereumSigner } from "@/utils/ethereum";
 

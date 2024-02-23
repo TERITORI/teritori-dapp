@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useContext, useMemo } from "react";
+import React, { createContext, ReactNode, useContext, useMemo } from "react";
 
 import { useAdena } from "./adena";
 import { useKeplr } from "./keplr";
@@ -6,6 +6,8 @@ import { useLeap } from "./leap";
 import { useMetamask } from "./metamask";
 import { Wallet } from "./wallet";
 import { WalletProvider } from "../../utils/walletProvider";
+
+import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 // import { usePhantom } from "./phantom";
 // import { selectStoreWallets, storeWalletId } from "../../store/slices/wallets";
 // import { WalletProvider } from "../../utils/walletProvider";
@@ -31,6 +33,8 @@ export const WalletsProvider: React.FC<{ children: ReactNode }> = React.memo(
     const [hasLeap, leapIsReady, leapWallets] = useLeap();
     const [hasMetamask, metamaskIsReady, metamaskWallets] = useMetamask();
     const [hasAdena, adenaIsReady, adenaWallets] = useAdena();
+    const selectedNativeWallet = useSelectedNativeWallet();
+    const hasNative = !!selectedNativeWallet;
 
     // const storeWallets = useSelector(selectStoreWallets);
 
@@ -118,6 +122,21 @@ export const WalletsProvider: React.FC<{ children: ReactNode }> = React.memo(
         }
       }
 
+      if (hasNative) {
+        walletProviders.push(WalletProvider.Native);
+        if (selectedNativeWallet) {
+          wallets.push({
+            id: selectedNativeWallet.index.toString(),
+            address: selectedNativeWallet.address,
+            provider: WalletProvider.Native,
+            networkKind: selectedNativeWallet.network,
+            networkId: selectedNativeWallet.networkId,
+            userId: `tori-${selectedNativeWallet.address}`,
+            connected: true,
+          });
+        }
+      }
+
       return {
         wallets,
         walletProviders,
@@ -128,6 +147,7 @@ export const WalletsProvider: React.FC<{ children: ReactNode }> = React.memo(
       hasLeap,
       hasMetamask,
       hasAdena,
+      hasNative,
       keplrIsReady,
       metamaskIsReady,
       adenaIsReady,
@@ -136,6 +156,7 @@ export const WalletsProvider: React.FC<{ children: ReactNode }> = React.memo(
       leapWallets,
       metamaskWallets,
       adenaWallets,
+      selectedNativeWallet,
     ]);
 
     return (

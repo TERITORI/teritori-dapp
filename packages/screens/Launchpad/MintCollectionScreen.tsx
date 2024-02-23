@@ -50,12 +50,12 @@ import {
   getCosmosNetwork,
   getCurrency,
   getEthereumNetwork,
-  getKeplrSigningCosmWasmClient,
   getNativeCurrency,
   NetworkFeature,
   NetworkKind,
   parseNetworkObjectId,
 } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { prettyPrice } from "@/utils/coins";
 import { MintPhase } from "@/utils/collection";
 import { getMetaMaskEthereumSigner } from "@/utils/ethereum";

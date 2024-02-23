@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { FlatList, View } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -35,14 +35,18 @@ import { layout } from "@/utils/style/layout";
 export const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
   const wallets = useSelector(selectAllWallets);
   const dispatch = useAppDispatch();
-  if (wallets.length === 0) {
-    navigation.navigate("NativeWallet");
-  }
 
   const selectedWallet = useSelectedNativeWallet();
-  if (!selectedWallet) {
-    dispatch(setSelectedNativeWalletIndex(wallets[0].index));
-  }
+
+  useEffect(() => {
+    if (!selectedWallet) {
+      if (wallets.length !== 0) {
+        dispatch(setSelectedNativeWalletIndex(wallets[0].index));
+      } else {
+        navigation.navigate("NativeWallet");
+      }
+    }
+  }, [dispatch, navigation, selectedWallet, wallets]);
 
   const balances = useBalances(
     selectedWallet?.networkId,

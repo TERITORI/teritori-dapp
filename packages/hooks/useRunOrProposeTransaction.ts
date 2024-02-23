@@ -14,13 +14,15 @@ import useSelectedWallet from "./useSelectedWallet";
 import { MultisigService, Token } from "@/api/multisig/v1/multisig";
 import { CosmosMsgForEmpty } from "@/contracts-clients/dao-core/DaoCore.types";
 import {
-  UserKind,
-  parseUserId,
   getCosmosNetwork,
   getStakingCurrency,
-  getKeplrSigningStargateClient,
-  cosmosTypesRegistry,
+  parseUserId,
+  UserKind,
 } from "@/networks";
+import {
+  cosmosTypesRegistry,
+  getKeplrSigningStargateClient,
+} from "@/networks/signer";
 import { AppNavigationProp, useAppNavigation } from "@/utils/navigation";
 
 export const useRunOrProposeTransaction = (

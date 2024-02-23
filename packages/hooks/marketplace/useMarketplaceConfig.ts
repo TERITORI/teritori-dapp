@@ -1,18 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { TeritoriNftVaultQueryClient } from "@/contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { NftMarketplaceQueryClient } from "@/contracts-clients/nft-marketplace/NftMarketplace.client";
 import { getCosmosNetwork, mustGetNonSigningCosmWasmClient } from "@/networks";
 
-export const useVaultConfig = (networkId: string) => {
-  const { data: vaultConfig, ...other } = useQuery(
-    ["vaultConfig", networkId],
+export const useMarketplaceConfig = (networkId: string | undefined) => {
+  const { data: marketplaceConfig, ...other } = useQuery(
+    ["marketplace-config", networkId],
     async () => {
+      if (!networkId) {
+        return null;
+      }
       const network = getCosmosNetwork(networkId);
       if (!network?.vaultContractAddress) {
-        return undefined;
+        return null;
       }
       const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
-      const client = new TeritoriNftVaultQueryClient(
+      const client = new NftMarketplaceQueryClient(
         cosmwasmClient,
         network.vaultContractAddress,
       );
@@ -20,5 +23,5 @@ export const useVaultConfig = (networkId: string) => {
     },
     { staleTime: Infinity },
   );
-  return { vaultConfig, ...other };
+  return { marketplaceConfig, ...other };
 };

@@ -8,11 +8,12 @@ import { SquadStakingV3__factory } from "../evm-contracts-clients/teritori-squad
 import {
   getCosmosNetwork,
   getEthereumNetwork,
-  getKeplrSigningCosmWasmClient,
   mustGetCosmosNetwork,
   mustGetNonSigningCosmWasmClient,
   parseUserId,
 } from "../networks";
+
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 
 export const getCosmosNameServiceQueryClient = async (
   networkId: string | undefined,

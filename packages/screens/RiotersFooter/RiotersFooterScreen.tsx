@@ -42,10 +42,10 @@ import { useCollections } from "@/hooks/useCollections";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   getCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
   parseNftId,
 } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { web3ToWeb2URI } from "@/utils/ipfs";
 import { neutral33, neutral77 } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";

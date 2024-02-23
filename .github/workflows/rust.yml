@@ -14,6 +14,9 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
 
+      - name: Build
+        run: make build.rust
+
       - name: Test
         run: make test.rust
 

@@ -27,6 +27,7 @@ export type TNSSendFundsFormType = {
 
 export type NameFinderFormType = {
   name: string;
+  associatedHandle: string;
 };
 
 export type NSAvailability =

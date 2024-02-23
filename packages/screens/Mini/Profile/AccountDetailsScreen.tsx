@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Linking, TextInput, View } from "react-native";
+import { Alert, Linking, TextInput, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import openSVG from "../../../../assets/icons/open-blue.svg";
 import penSVG from "../../../../assets/icons/pen-solid-gray.svg";
@@ -8,11 +9,15 @@ import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
-import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 import { accountExplorerLink } from "@/networks";
 import { ShowWalletQR } from "@/screens/Mini/Wallet/components/ShowWalletQR";
-import { updateWallet } from "@/store/slices/wallets";
-import { useAppDispatch } from "@/store/store";
+import { CustomButton } from "@/screens/Mini/components/Button/CustomButton";
+import {
+  removeWalletById,
+  selectWalletById,
+  updateWallet,
+} from "@/store/slices/wallets";
+import { RootState, useAppDispatch } from "@/store/store";
 import { ScreenFC } from "@/utils/navigation";
 import {
   azureBlue,
@@ -22,6 +27,7 @@ import {
 } from "@/utils/style/colors";
 import { fontMedium16, fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { resetWallet } from "@/utils/wallet/getNativeWallet";
 
 export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
   navigation,
@@ -30,14 +36,41 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
   const navigateToProfile = () => navigation.replace("MiniProfile");
   const params = route.params;
   const [accountName, setAccountName] = useState(params.accountName);
-  const selectedWallet = useSelectedNativeWallet();
+  const wallet = useSelector((state: RootState) =>
+    selectWalletById(state, params.id),
+  );
   const dispatch = useAppDispatch();
 
   const onAccountNameChange = (text: string) => {
-    if (selectedWallet) {
-      dispatch(updateWallet({ ...selectedWallet, name: text }));
+    if (wallet) {
+      dispatch(updateWallet({ ...wallet, name: text }));
     }
     setAccountName(text || "");
+  };
+
+  const onResetPress = () => {
+    if (wallet) {
+      Alert.alert(
+        "Are you sure?",
+        "This action will remove the wallet from your device. If you didn't save the seed, this wallet will be lost forever! If you saved the seed, you will be able to import it back later.",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Delete",
+            onPress: () => {
+              resetWallet(wallet.index); // remove from storage
+              dispatch(removeWalletById(wallet.index)); // remove from redux | app state
+              navigation.navigate("NativeWallet"); // this one is here just in case the user don't have any more wallets
+            },
+            style: "destructive",
+            isPreferred: true,
+          },
+        ],
+      );
+    }
   };
 
   return (
@@ -70,7 +103,7 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
         </View>
       </View>
 
-      <ShowWalletQR selectedWallet={selectedWallet} />
+      <ShowWalletQR selectedWallet={wallet} />
 
       <View
         style={{
@@ -88,12 +121,9 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
         </BrandText>
         <CustomPressable
           onPress={() => {
-            if (selectedWallet) {
+            if (wallet) {
               Linking.openURL(
-                accountExplorerLink(
-                  selectedWallet.networkId,
-                  selectedWallet.address,
-                ),
+                accountExplorerLink(wallet.networkId, wallet.address),
               );
             }
           }}
@@ -101,6 +131,14 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
           <SVG source={openSVG} height={22} width={22} />
         </CustomPressable>
       </View>
+      <CustomButton
+        title="Delete"
+        onPress={onResetPress}
+        type="danger"
+        style={{
+          marginTop: layout.spacing_x1_5,
+        }}
+      />
     </BlurScreenContainer>
   );
 };

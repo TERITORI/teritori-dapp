@@ -5,6 +5,7 @@ import { bech32 } from "bech32";
 import _, { cloneDeep } from "lodash";
 import path from "path";
 
+import { InstantiateMsg as MarketplaceVaultInstantiateMsg } from "../../contracts-clients/nft-marketplace/NftMarketplace.types";
 import {
   TeritoriNameServiceClient,
   TeritoriNameServiceQueryClient,
@@ -14,7 +15,6 @@ import {
   ExecuteMsg as NameServiceExecuteMsg,
   InstantiateMsg as NameServiceInstantiateMsg,
 } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
-import { InstantiateMsg as MarketplaceVaultInstantiateMsg } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.types";
 import { InstantiateMsg as SocialFeedInstantiateMsg } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import {
   CosmosNetworkInfo,
