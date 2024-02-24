@@ -14,6 +14,7 @@ import {
   Message,
   CONVERSATION_TYPES,
   PeerItem,
+  GetStartedKeys,
 } from "./../../utils/types/message";
 import { weshConfig } from "../../weshnet/config";
 import { stringFromBytes } from "../../weshnet/utils";
@@ -56,6 +57,7 @@ export interface MessageState {
     publicRendezvousSeed: string;
     shareLink: string;
   };
+  getStartedChecklist: { [key in GetStartedKeys]: boolean };
   contactRequests: EntityState<ContactRequest>;
   messages: EntityState<KVItem<EntityState<Message>>>;
   conversations: EntityState<Conversation>;
@@ -72,6 +74,11 @@ const initialState: MessageState = {
     avatar: "",
     publicRendezvousSeed: "",
     shareLink: "",
+  },
+  getStartedChecklist: {
+    addAFriend: false,
+    newConversation: false,
+    newGroup: false,
   },
   messages: groupEntityAdapter.getInitialState(),
   contactRequests: contactRequestEntityAdapter.getInitialState(),
@@ -94,6 +101,9 @@ export const selectIsForceChatActivated = (state: RootState) =>
 
 export const selectContactInfo = (state: RootState) =>
   state.message.contactInfo;
+
+export const selectGetStartedChecklist = (state: RootState) =>
+  state.message.getStartedChecklist;
 
 const selectGroup = (state: RootState, groupPk: string) =>
   groupSelectors.selectById(state.message.messages, groupPk)?.value;
@@ -307,6 +317,15 @@ const messageSlice = createSlice({
     ) => {
       state.contactInfo = { ...state.contactInfo, ...action.payload };
     },
+    setGetStartedChecklist: (
+      state,
+      action: PayloadAction<Partial<MessageState["getStartedChecklist"]>>,
+    ) => {
+      state.getStartedChecklist = {
+        ...state.getStartedChecklist,
+        ...action.payload,
+      };
+    },
     resetMessageSlice: (state) => {
       state = initialState;
     },
@@ -327,6 +346,7 @@ export const {
   setIsOnboardingCompleted,
   setIsChatActivated,
   setIsForceChatActivated,
+  setGetStartedChecklist,
   resetMessageSlice,
 } = messageSlice.actions;
 

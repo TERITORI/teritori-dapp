@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import { SvgProps } from "react-native-svg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { ChatList } from "./components/ChatList";
 import FriendInfoBar from "./components/FriendInfoBar";
@@ -30,6 +30,8 @@ import {
   selectFilteredConversationList,
   selectIsWeshConnected,
   selectIsChatActivated,
+  setGetStartedChecklist,
+  selectGetStartedChecklist,
 } from "@/store/slices/message";
 import { RootState } from "@/store/store";
 import { RouteName, useAppNavigation } from "@/utils/navigation";
@@ -40,6 +42,7 @@ import {
   fontSemibold18,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { GetStartedKeys } from "@/utils/types/message";
 
 const collectionScreenTabItems = {
   chats: {
@@ -50,21 +53,21 @@ const collectionScreenTabItems = {
   },
 };
 
-const DATA: (ItemProps & { id: string })[] = [
+const DATA: ItemProps[] = [
   {
-    id: "1",
+    id: "addAFriend",
     title: "Add a friend",
     icon: friendSVG,
     route: "MiniChatProfile",
   },
   {
-    id: "2",
+    id: "newConversation",
     title: "New Conversation",
     icon: friendSVG,
     route: "MiniAddFriend",
   },
   {
-    id: "3",
+    id: "newGroup",
     title: "New Group",
     icon: friendSVG,
     route: "MiniNewGroup",
@@ -72,6 +75,7 @@ const DATA: (ItemProps & { id: string })[] = [
 ];
 
 type ItemProps = {
+  id: GetStartedKeys;
   title: string;
   icon: React.FC<SvgProps>;
   route?: RouteName;
@@ -79,7 +83,8 @@ type ItemProps = {
   onClick?: (value: string) => void;
 };
 
-const Item = ({ title, icon, route, value, onClick }: ItemProps) => {
+const Item = ({ id, title, icon, route, value, onClick }: ItemProps) => {
+  const dispatch = useDispatch();
   const navigation = useAppNavigation();
 
   const onNavigateToRoute = () => {
@@ -110,27 +115,32 @@ const Item = ({ title, icon, route, value, onClick }: ItemProps) => {
           },
         ]}
       >
-        <View
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => {
+            dispatch(
+              setGetStartedChecklist({
+                [id]: true,
+              }),
+            );
+          }}
           style={{
-            alignItems: "flex-end",
+            height: 24,
+            width: 24,
+            borderRadius: 50,
+            backgroundColor: "rgba(255,255,255,0.2)",
+            alignItems: "center",
+            justifyContent: "center",
             position: "absolute",
             right: 4,
             top: 4,
+            zIndex: 9,
           }}
+          hitSlop={10}
         >
-          <TouchableOpacity
-            style={{
-              height: 24,
-              width: 24,
-              borderRadius: 50,
-              backgroundColor: "rgba(255,255,255,0.2)",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <SVG source={closeSVG} height={12} width={12} />
-          </TouchableOpacity>
-        </View>
+          <SVG source={closeSVG} height={12} width={12} />
+        </TouchableOpacity>
+
         <View
           style={{
             alignItems: "center",
@@ -163,6 +173,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
   );
   const isWeshConnected = useSelector(selectIsWeshConnected);
   const isChatActivated = useSelector(selectIsChatActivated);
+  const getStartedCheckList = useSelector(selectGetStartedChecklist);
 
   const hasChats = conversationList.length > 0;
 
@@ -308,35 +319,37 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
             <ChatList />
           )}
 
-          {!hasChats && (
-            <>
-              <View>
-                <BrandText
-                  style={[
-                    fontSemibold18,
-                    { color: secondaryColor, marginBottom: 12 },
-                  ]}
-                >
-                  Get Started
-                </BrandText>
-                <FlatList
-                  showsHorizontalScrollIndicator={false}
-                  horizontal
-                  data={DATA}
-                  renderItem={({ item }) => (
-                    <Item
-                      title={item.title}
-                      icon={item.icon}
-                      value={item.value}
-                      route={item.route}
-                    />
-                  )}
-                  keyExtractor={(item) => item.id}
-                  style={{ marginBottom: 16 }}
-                />
-              </View>
-            </>
-          )}
+          {!hasChats &&
+            !!DATA.filter((item) => !getStartedCheckList[item.id]).length && (
+              <>
+                <View>
+                  <BrandText
+                    style={[
+                      fontSemibold18,
+                      { color: secondaryColor, marginBottom: 12 },
+                    ]}
+                  >
+                    Get Started
+                  </BrandText>
+                  <FlatList
+                    showsHorizontalScrollIndicator={false}
+                    horizontal
+                    data={DATA.filter((item) => !getStartedCheckList[item.id])}
+                    renderItem={({ item }) => (
+                      <Item
+                        id={item.id}
+                        title={item.title}
+                        icon={item.icon}
+                        value={item.value}
+                        route={item.route}
+                      />
+                    )}
+                    keyExtractor={(item) => item.id}
+                    style={{ marginBottom: 16 }}
+                  />
+                </View>
+              </>
+            )}
         </View>
       </View>
     </ScreenContainer>
