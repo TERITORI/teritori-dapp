@@ -24,7 +24,9 @@ export const SettingMenuItem = ({
 }: MenuItemProps) => {
   const navigation = useAppNavigation();
   const onMenuItemPress = () => {
-    navigation.replace(navigateTo, { back: "MiniSettings" });
+    if (navigation.replace) {
+      navigation.replace(navigateTo, { back: "MiniSettings" });
+    }
   };
   return (
     <>

@@ -10,7 +10,7 @@ import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
   selectContactInfo,
-  selectConversationList,
+  selectFilteredConversationList,
 } from "@/store/slices/message";
 import { RootState } from "@/store/store";
 import { successColor } from "@/utils/style/colors";
@@ -32,7 +32,7 @@ export const GroupInvitationAction = ({
 
   const contactInfo = useSelector(selectContactInfo);
   const conversations = useSelector((state: RootState) =>
-    selectConversationList(state, CONVERSATION_TYPES.ALL),
+    selectFilteredConversationList(state, CONVERSATION_TYPES.ALL, ""),
   );
 
   const [isAccepted, setIsAccepted] = useState(false);

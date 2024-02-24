@@ -1,4 +1,4 @@
-import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { NftMarketplaceQueryClient } from "../contracts-clients/nft-marketplace/NftMarketplace.client";
 import { mustGetNonSigningCosmWasmClient } from "../networks";
 import { teritoriNetwork } from "../networks/teritori";
 
@@ -10,7 +10,7 @@ const main = async () => {
 
   console.log("contract address:", network.vaultContractAddress);
 
-  const client = new TeritoriNftVaultQueryClient(
+  const client = new NftMarketplaceQueryClient(
     await mustGetNonSigningCosmWasmClient(network.id),
     network.vaultContractAddress,
   );

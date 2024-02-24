@@ -23,7 +23,7 @@ import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useMessage } from "@/context/MessageProvider";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { selectConversationList } from "@/store/slices/message";
+import { selectFilteredConversationList } from "@/store/slices/message";
 import { setSearchText } from "@/store/slices/search";
 import { RootState } from "@/store/store";
 import {
@@ -40,7 +40,7 @@ export const SideBarChats = () => {
   const { activeConversationType, activeConversation, setActiveConversation } =
     useMessage();
   const conversationList = useSelector((state: RootState) =>
-    selectConversationList(state, activeConversationType),
+    selectFilteredConversationList(state, activeConversationType, "asc"),
   );
 
   const { navigate } = useAppNavigation();
@@ -146,7 +146,7 @@ export const SideBarChats = () => {
               onPress={() => {
                 setActiveConversation?.(item);
                 if (Platform.OS !== "web") {
-                  navigate("ChatSection", item);
+                  navigate("ChatSection", { id: item.id });
                 } else {
                   navigate("Message");
                 }

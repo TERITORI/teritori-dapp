@@ -1,9 +1,4 @@
-import {
-  allNetworks,
-  getNativeCurrency,
-  NetworkFeature,
-  NetworkKind,
-} from "../networks";
+import { allNetworks, getNativeCurrency, NetworkKind } from "../networks";
 
 const ids: { [key: string]: boolean } = {};
 const idPrefixes: { [key: string]: boolean } = {};

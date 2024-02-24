@@ -14,11 +14,7 @@ import { Conversation } from "./Conversation";
 import { SearchConversation } from "./SearchConversation";
 import closeSVG from "../../../../assets/icons/close.svg";
 import sent from "../../../../assets/icons/sent.svg";
-import {
-  Conversation as IConversation,
-  Message,
-  ReplyTo,
-} from "../../../utils/types/message";
+import { Message, ReplyTo } from "../../../utils/types/message";
 
 import { BrandText } from "@/components/BrandText";
 import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
@@ -29,7 +25,6 @@ import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useMessage } from "@/context/MessageProvider";
-import { useAppRoute } from "@/hooks/navigation/useAppRoute";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import {
   selectConversationById,
@@ -57,24 +52,23 @@ import { sendMessage } from "@/weshnet/services";
 import { bytesFromString, stringFromBytes } from "@/weshnet/utils";
 
 interface ChatSectionProps {
-  conversation: IConversation;
+  conversationId: string;
 }
 
-export const ChatSection = ({ conversation }: ChatSectionProps) => {
+export const ChatSection = ({ conversationId }: ChatSectionProps) => {
   const [message, setMessage] = useState<any>("");
   const [inputHeight, setInputHeight] = useState(40);
   const [replyTo, setReplyTo] = useState<ReplyTo>();
   const [inputRef, setInputRef] = useState<RefObject<any> | null>(null);
   const dispatch = useDispatch();
   const isMobile = useIsMobile();
+  const { setActiveConversation } = useMessage();
 
   const [lastReadProcessedId, setLastReadProcessedId] = useState("");
-  const conversationItem = useSelector((state: RootState) =>
-    selectConversationById(state, conversation.id),
+  const conversation = useSelector((state: RootState) =>
+    selectConversationById(state, conversationId),
   );
   const [lastReadMessage, setLastReadMessage] = useState<Message | undefined>();
-
-  const { setActiveConversation } = useMessage();
 
   const [searchInput, setSearchInput] = useState("");
 
@@ -82,7 +76,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
 
   const { setToastError } = useFeedbacks();
   const messages = useSelector((state: RootState) =>
-    selectMessageList(state, conversation.id),
+    selectMessageList(state, conversationId),
   );
 
   const contactMessages = useMemo(
@@ -96,7 +90,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
 
   const lastContactReadMessageIndex = useMemo(() => {
     const message = messages.find(
-      (item) => item.id === conversationItem?.lastReadIdByContact,
+      (item) => item.id === conversation?.lastReadIdByContact,
     );
     if (!message) {
       return null;
@@ -107,7 +101,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
       return null;
     }
     return index;
-  }, [conversationItem, messages]);
+  }, [conversation, messages]);
 
   const searchResults = useMemo(() => {
     if (!searchInput) {
@@ -127,7 +121,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
 
     try {
       await sendMessage({
-        groupPk: bytesFromString(conversation.id),
+        groupPk: bytesFromString(conversationId),
         message: {
           type: "message",
           parentId: replyTo?.id || "",
@@ -160,7 +154,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
       if (!lastMessageId) {
         return;
       }
-      if (conversation.type === "group") {
+      if (conversation?.type === "group") {
         dispatch(
           updateConversationById({
             id: conversation.id,
@@ -169,7 +163,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
         );
       } else {
         await sendMessage({
-          groupPk: bytesFromString(conversation.id),
+          groupPk: bytesFromString(conversation?.id),
           message: {
             type: "read",
             payload: {
@@ -204,7 +198,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
 
     if (
       nextMessage &&
-      nextMessage.id !== conversation.lastReadIdByMe &&
+      nextMessage?.id !== conversation?.lastReadIdByMe &&
       lastReadMessage?.id !== nextMessage.id
     ) {
       setLastReadMessage(nextMessage);
@@ -214,16 +208,19 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   }, [conversation, messages]);
 
   useEffect(() => {
-    if (!conversationItem?.id || !contactMessages?.length) {
+    if (!conversation?.id || !contactMessages?.length) {
       return;
     }
 
-    if (contactMessages?.[0]?.id !== conversationItem.lastReadIdByMe) {
+    if (contactMessages?.[0]?.id !== conversation.lastReadIdByMe) {
       handleRead(contactMessages?.[0]?.id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [conversationItem, contactMessages]);
+  }, [conversation, contactMessages]);
 
+  if (!conversation) {
+    return null;
+  }
   return (
     <KeyboardAvoidingView extraVerticalOffset={32}>
       <View style={[{ flex: 1, width: isMobile ? width : "100%" }]}>
@@ -285,7 +282,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                         }}
                         conversation={conversation}
                         message={item}
-                        groupPk={bytesFromString(conversation.id)}
+                        groupPk={bytesFromString(conversationId)}
                       />
                     </>
                   );
@@ -529,8 +526,11 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   );
 };
 
-export const ChatSectionScreen: ScreenFC<"ChatSection"> = () => {
-  const { params } = useAppRoute();
+export const ChatSectionScreen: ScreenFC<"ChatSection"> = ({
+  route: {
+    params: { id },
+  },
+}) => {
   const { navigate } = useAppNavigation();
   return (
     <ScreenContainer
@@ -540,7 +540,7 @@ export const ChatSectionScreen: ScreenFC<"ChatSection"> = () => {
       onBackPress={() => navigate("Message")}
       footerChildren={<></>}
     >
-      <ChatSection conversation={params as IConversation} />
+      <ChatSection conversationId={id} />
     </ScreenContainer>
   );
 };

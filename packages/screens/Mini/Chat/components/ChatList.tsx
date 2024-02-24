@@ -18,7 +18,7 @@ import { useMessage } from "@/context/MessageProvider";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import {
   selectConversationById,
-  selectConversationList,
+  selectFilteredConversationList,
   selectLastContactMessageByGroupPk,
   selectLastMessageByGroupPk,
   selectPeerById,
@@ -37,7 +37,7 @@ export const ChatList = () => {
   const navigation = useAppNavigation();
   const { activeConversationType, setActiveConversation } = useMessage();
   const conversationList = useSelector((state: RootState) =>
-    selectConversationList(state, activeConversationType),
+    selectFilteredConversationList(state, activeConversationType, ""),
   );
 
   const [searchInput, setSearchInput] = useState("");

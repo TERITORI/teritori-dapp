@@ -5,10 +5,14 @@ import React from "react";
 import { feedsTabItems } from "./social-feed";
 import { AppMode } from "./types/app-mode";
 import { NewPostFormValues } from "./types/feed";
-import { Conversation, MessageFriendsTabItem } from "./types/message";
+import { MessageFriendsTabItem } from "./types/message";
 import { uppTabItems } from "./upp";
 
 export type RouteName = keyof RootStackParamList;
+
+type MiniTabsScreen = {
+  screen?: "MiniChats" | "MiniWallets" | "MiniFeeds";
+};
 
 export type RootStackParamList = {
   Home?: { network?: string };
@@ -85,7 +89,7 @@ export type RootStackParamList = {
 
   Metrics: undefined;
   Message: { view: string; tab?: string } | undefined;
-  ChatSection: Conversation;
+  ChatSection: { id: string };
   FriendshipManager: { tab?: MessageFriendsTabItem } | undefined;
 
   // native wallet screens
@@ -97,7 +101,7 @@ export type RootStackParamList = {
   SuccessScreen: undefined;
 
   //Mini Screens
-  MiniTabs: undefined;
+  MiniTabs: MiniTabsScreen;
   Conversation: { conversationId: string };
   MiniChats: { back?: RouteName };
   MiniWallets: undefined;
@@ -109,6 +113,7 @@ export type RootStackParamList = {
   MiniFriend: undefined;
   MiniNewGroup: undefined;
   MiniChatSetting: { back?: RouteName };
+  MiniPreferencesSetting: { back?: RouteName };
   MiniSettings: undefined;
   MiniAccountDetails: { accountName: string; id: string };
   MiniAddAccount: undefined;
@@ -264,6 +269,7 @@ const navConfig: {
     MiniFriend: "mini-friend",
     MiniNewGroup: "mini-new-group",
     MiniChatSetting: "mini-chat-setting",
+    MiniPreferencesSetting: "mini-preferences-setting",
     MiniSettings: "mini-settings",
     MiniAccountDetails: "mini-account-details",
     MiniAddAccount: "mini-add-account",

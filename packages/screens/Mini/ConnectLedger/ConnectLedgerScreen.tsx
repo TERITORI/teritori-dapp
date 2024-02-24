@@ -34,7 +34,8 @@ export const ConnectLedgerScreen: ScreenFC<"ConnectLedger"> = ({
     setActiveStep(step);
   };
 
-  const onComplete = () => navigation.navigate("MiniTabs");
+  const onComplete = () =>
+    navigation.navigate("MiniTabs", { screen: "MiniChats" });
 
   const activeScreenPosition = +activeStep.split("_")[1];
   const screenPercentage =
