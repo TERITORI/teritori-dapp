@@ -1,6 +1,5 @@
 import React from "react";
 import { SafeAreaView, useWindowDimensions, View } from "react-native";
-import { useDispatch } from "react-redux";
 
 import messengerSVG from "../../../../assets/icons/messenger.svg";
 import { CustomButton } from "../components/Button/CustomButton";
@@ -8,7 +7,6 @@ import { CustomButton } from "../components/Button/CustomButton";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { useAppMode } from "@/hooks/useAppMode";
-import { setIsChatActivated } from "@/store/slices/message";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral77 } from "@/utils/style/colors";
 import {
@@ -23,13 +21,11 @@ export const ChatActivationScreen: ScreenFC<"ChatActivation"> = ({
   navigation,
   route,
 }) => {
-  const dispatch = useDispatch();
   const { width: windowWidth } = useWindowDimensions();
   const [, handleSet] = useAppMode();
 
   const onActivatePress = () => {
     navigation.navigate("NativeWallet");
-    dispatch(setIsChatActivated(true));
     checkAndBootWeshModule();
     handleSet(route.params.appMode);
   };

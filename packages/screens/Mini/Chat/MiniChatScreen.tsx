@@ -197,7 +197,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
                 { textAlign: "center", marginTop: layout.spacing_x1_5 },
               ]}
             >
-              You chat is turned off. Please toggle the button to activate it.
+              Chat is turned off. Please toggle the button to activate it.
             </BrandText>
           ) : (
             <>

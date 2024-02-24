@@ -9,10 +9,8 @@ import messageSVG from "../../assets/icons/message.svg";
 import ToggleButton from "@/components/buttons/ToggleButton";
 import {
   selectIsChatActivated,
-  setIsChatActivated,
   selectIsForceChatActivated,
 } from "@/store/slices/message";
-import { store } from "@/store/store";
 import { checkAndBootWeshModule, stopWeshModule } from "@/weshnet/services";
 
 const icons = {
@@ -38,7 +36,6 @@ export const TabBarIcon = ({
   const isForceChatActivated = useSelector(selectIsForceChatActivated);
 
   function toggleChat(value: boolean) {
-    store.dispatch(setIsChatActivated(value));
     if (value) {
       checkAndBootWeshModule();
     } else {

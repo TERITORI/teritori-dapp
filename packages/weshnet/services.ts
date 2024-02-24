@@ -33,6 +33,7 @@ import {
   resetMessageSlice,
   setIsOnboardingCompleted,
   selectFilteredConversationList,
+  setIsChatActivated,
 } from "../store/slices/message";
 import { store } from "../store/store";
 import { isElectron } from "../utils/isElectron";
@@ -77,6 +78,7 @@ export const stopWeshModule = async () => {
 };
 
 export const checkAndBootWeshModule = async () => {
+  store.dispatch(setIsChatActivated(true));
   try {
     if (Platform.OS === "web" && !isElectron()) {
       const queryString = window.location.search;
