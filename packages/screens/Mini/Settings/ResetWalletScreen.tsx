@@ -9,7 +9,6 @@ import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { SpacerColumn } from "@/components/spacer";
-import { resetWallet } from "@/hooks/wallet/getNativeWallet";
 import {
   resetAllAddressBook,
   resetAllTokens,
@@ -21,6 +20,7 @@ import { ScreenFC } from "@/utils/navigation";
 import { neutral77 } from "@/utils/style/colors";
 import { fontMedium16, fontSemibold30 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { resetWallet } from "@/utils/wallet/getNativeWallet";
 
 export const ResetWalletScreen: ScreenFC<"MiniResetWallet"> = ({
   navigation,

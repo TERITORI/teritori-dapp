@@ -16,12 +16,12 @@ import { ConfigureVotingSection } from "@/components/dao/ConfigureVotingSection"
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { nsNameInfoQueryKey } from "@/hooks/useNSNameInfo";
 import {
-  getKeplrSigningCosmWasmClient,
   getNetwork,
   getUserId,
   mustGetCosmosNetwork,
   NetworkKind,
 } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { createDaoMemberBased, createDaoTokenBased } from "@/utils/dao";
 import { adenaDeployGnoDAO } from "@/utils/gnodao/deploy";
 import {

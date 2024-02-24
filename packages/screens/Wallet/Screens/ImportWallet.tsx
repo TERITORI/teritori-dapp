@@ -10,7 +10,6 @@ import MultiStepScreenContainer from "../../Mini/layout/MultiStepScreenContainer
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { getNativeWallet, setMnemonic } from "@/hooks/wallet/getNativeWallet";
 import { mustGetCosmosNetwork } from "@/networks";
 import { addSelected, selectAllWallets } from "@/store/slices/wallets";
 import { useAppDispatch } from "@/store/store";
@@ -24,6 +23,7 @@ import {
 } from "@/utils/style/colors";
 import { fontSemibold16, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { getNativeWallet, setMnemonic } from "@/utils/wallet/getNativeWallet";
 import { correctMnemonic } from "@/utils/wallet/seed";
 
 export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {

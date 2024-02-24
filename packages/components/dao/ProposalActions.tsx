@@ -15,12 +15,7 @@ import {
 } from "../../hooks/dao/useDAOVoteInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  NetworkKind,
-  getKeplrSigningCosmWasmClient,
-  getNetwork,
-  parseUserId,
-} from "../../networks";
+import { NetworkKind, getNetwork, parseUserId } from "../../networks";
 import { adenaVMCall } from "../../utils/gno";
 import { GnoDAOVoteRequest } from "../../utils/gnodao/messages";
 import { neutral77, primaryColor, errorColor } from "../../utils/style/colors";
@@ -30,6 +25,8 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { PrimaryButtonOutline } from "../buttons/PrimaryButtonOutline";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { TertiaryButton } from "../buttons/TertiaryButton";
+
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 
 export const ProposalActions: React.FC<{
   daoId: string | undefined;

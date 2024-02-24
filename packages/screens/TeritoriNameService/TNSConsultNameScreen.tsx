@@ -25,12 +25,8 @@ import {
   useNSPrimaryAlias,
 } from "@/hooks/useNSPrimaryAlias";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import {
-  getCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
-  getUserId,
-  mustGetCosmosNetwork,
-} from "@/networks";
+import { getCosmosNetwork, getUserId, mustGetCosmosNetwork } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { neutral17, neutral33 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
 

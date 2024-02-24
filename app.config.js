@@ -4,7 +4,7 @@ const config = {
     slug: "teritori",
     version: "1.0.3",
     orientation: "portrait",
-    icon: "./assets/icon.png",
+    icon: "./assets/app-icon.png",
     owner: "teritori",
     userInterfaceStyle: "light",
     splash: {
@@ -42,7 +42,6 @@ const config = {
       favicon: "./assets/favicon.png",
     },
     extra: {
-      env: process.env,
       eas: {
         projectId: "9ce165de-0199-478c-b3bd-8688e5ce03eb",
       },

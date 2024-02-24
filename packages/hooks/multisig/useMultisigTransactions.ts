@@ -6,7 +6,8 @@ import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
 
 import { ExecutionState, Transaction } from "@/api/multisig/v1/multisig";
-import { cosmosTypesRegistry, getCosmosNetwork, parseUserId } from "@/networks";
+import { getCosmosNetwork, parseUserId } from "@/networks";
+import { cosmosTypesRegistry } from "@/networks/signer";
 
 const batchSize = 16;
 

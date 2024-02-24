@@ -22,11 +22,13 @@ import { useBreedingConfig } from "@/hooks/useBreedingConfig";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   getCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
-  getKeplrSigningStargateClient,
   getUserId,
   mustGetNonSigningCosmWasmClient,
 } from "@/networks";
+import {
+  getKeplrSigningCosmWasmClient,
+  getKeplrSigningStargateClient,
+} from "@/networks/signer";
 import { prettyPrice } from "@/utils/coins";
 import { ScreenFC } from "@/utils/navigation";
 
