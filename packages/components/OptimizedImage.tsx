@@ -95,7 +95,7 @@ const transformURI = (
 
   const params = resolveParams(width, height);
 
-  return `${process.env.IMG_PROXY_URL}${params}/plain/${encodeURIComponent(
+  return `${process.env.EXPO_PUBLIC_IMG_PROXY_URL}${params}/plain/${encodeURIComponent(
     uri,
   )}`;
 };
