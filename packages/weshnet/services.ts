@@ -71,8 +71,11 @@ const bootWeshModule = async () => {
 };
 
 export const stopWeshModule = async () => {
-  const WeshnetModule = require("../../weshd");
-  await WeshnetModule.shutdown();
+  store.dispatch(setIsChatActivated(false));
+  if (Platform.OS !== "web" && !isRunningInExpoGo) {
+    const WeshnetModule = require("../../weshd");
+    await WeshnetModule.shutdown();
+  }
   unsubscribeMessageSubscriptions();
   stopMessagingConnection();
 };

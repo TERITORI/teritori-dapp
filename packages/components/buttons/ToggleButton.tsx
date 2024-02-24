@@ -1,5 +1,4 @@
-import { SwitchProps } from "react-native";
-import { Switch } from "react-native-gesture-handler";
+import { SwitchProps, Switch } from "react-native";
 
 import {
   blueDefault,
@@ -16,6 +15,7 @@ interface ToggleButtonProps extends SwitchProps {
 export default function ToggleButton({
   isActive = false,
   onValueChange,
+  disabled,
   ...rest
 }: ToggleButtonProps) {
   function onValueChangeHandler(value: boolean) {
@@ -26,16 +26,23 @@ export default function ToggleButton({
     onValueChange(value);
   }
 
+  const getIOSBackgroundColor = () => {
+    if (disabled) {
+      return neutral99;
+    }
+
+    return isActive ? blueDefault : neutral33;
+  };
+
   return (
     <Switch
-      // @ts-expect-error: the active thumb color is a weird green that can't be changed without "activeThumbColor"
-      activeThumbColor={secondaryColor}
       trackColor={{ false: neutral33, true: blueDefault }}
-      thumbColor={!isActive ? neutral99 : secondaryColor}
-      ios_backgroundColor={isActive ? blueDefault : neutral33}
+      thumbColor={isActive ? secondaryColor : neutral99}
+      ios_backgroundColor={getIOSBackgroundColor()}
       value={isActive}
       onValueChange={onValueChangeHandler}
       style={{ transform: [{ scale: 0.8 }] }}
+      disabled={disabled}
       {...rest}
     />
   );

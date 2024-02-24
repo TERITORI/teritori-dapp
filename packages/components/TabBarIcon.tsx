@@ -7,6 +7,7 @@ import walletSVG from "../../assets/icons/bottomTab/wallets.svg";
 import messageSVG from "../../assets/icons/message.svg";
 
 import ToggleButton from "@/components/buttons/ToggleButton";
+import { useCurrentRouteName } from "@/hooks/useCurrentRouteName";
 import {
   selectIsChatActivated,
   selectIsForceChatActivated,
@@ -34,6 +35,7 @@ export const TabBarIcon = ({
 }: TabBarIconProps) => {
   const isChatActivated = useSelector(selectIsChatActivated);
   const isForceChatActivated = useSelector(selectIsForceChatActivated);
+  const currentRouteName = useCurrentRouteName();
 
   function toggleChat(value: boolean) {
     if (value) {
@@ -45,7 +47,11 @@ export const TabBarIcon = ({
 
   if (title === "MiniChats" && !isForceChatActivated) {
     return (
-      <ToggleButton isActive={isChatActivated} onValueChange={toggleChat} />
+      <ToggleButton
+        isActive={isChatActivated}
+        onValueChange={toggleChat}
+        disabled={currentRouteName !== "MiniChats"}
+      />
     );
   }
 
