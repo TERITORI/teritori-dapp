@@ -50,6 +50,7 @@ export interface MessageState {
   isOnboardingCompleted: boolean;
   isChatActivated: boolean;
   isForceChatActivated: boolean;
+  isForceChatInfoChecked: boolean;
   peers: EntityState<PeerItem>;
   contactInfo: {
     name: string;
@@ -69,6 +70,7 @@ const initialState: MessageState = {
   isOnboardingCompleted: false,
   isChatActivated: false,
   isForceChatActivated: false,
+  isForceChatInfoChecked: false,
   contactInfo: {
     name: "Anon",
     avatar: "",
@@ -98,6 +100,9 @@ export const selectIsChatActivated = (state: RootState) =>
 
 export const selectIsForceChatActivated = (state: RootState) =>
   state.message.isForceChatActivated;
+
+export const selectIsForceChatInfoChecked = (state: RootState) =>
+  state.message.isForceChatInfoChecked;
 
 export const selectContactInfo = (state: RootState) =>
   state.message.contactInfo;
@@ -213,6 +218,9 @@ const messageSlice = createSlice({
     },
     setIsForceChatActivated: (state, action: PayloadAction<boolean>) => {
       state.isForceChatActivated = action.payload;
+    },
+    setIsForceChatInfoChecked: (state, action: PayloadAction<boolean>) => {
+      state.isForceChatInfoChecked = action.payload;
     },
 
     setMessage: (
@@ -347,6 +355,7 @@ export const {
   setIsChatActivated,
   setIsForceChatActivated,
   setGetStartedChecklist,
+  setIsForceChatInfoChecked,
   resetMessageSlice,
 } = messageSlice.actions;
 

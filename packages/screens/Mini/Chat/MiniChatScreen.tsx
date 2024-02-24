@@ -32,6 +32,8 @@ import {
   selectIsChatActivated,
   setGetStartedChecklist,
   selectGetStartedChecklist,
+  selectIsForceChatInfoChecked,
+  setIsForceChatInfoChecked,
 } from "@/store/slices/message";
 import { RootState } from "@/store/store";
 import { RouteName, useAppNavigation } from "@/utils/navigation";
@@ -162,11 +164,11 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
   navigation,
   route,
 }) => {
-  const [showToast, setShowToast] = useState(true);
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("chats");
   const { width: windowWidth } = useWindowDimensions();
 
+  const dispatch = useDispatch();
   const { activeConversationType } = useMessage();
   const conversationList = useSelector((state: RootState) =>
     selectFilteredConversationList(state, activeConversationType, ""),
@@ -174,14 +176,17 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
   const isWeshConnected = useSelector(selectIsWeshConnected);
   const isChatActivated = useSelector(selectIsChatActivated);
   const getStartedCheckList = useSelector(selectGetStartedChecklist);
+  const isForceChatInfoChecked = useSelector(selectIsForceChatInfoChecked);
 
   const hasChats = conversationList.length > 0;
 
-  const hideToast = () => {
-    setShowToast(false);
-  };
   const onLearnMoreToastPress = () => {
     navigation.navigate("MiniChatSetting", { back: undefined });
+    markForceChatInfoChecked();
+  };
+
+  const markForceChatInfoChecked = () => {
+    dispatch(setIsForceChatInfoChecked(true));
   };
 
   if (!isWeshConnected || !isChatActivated) {
@@ -238,27 +243,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
       footerChildren={null}
       noScroll
       mobileTitle="Chats"
-      headerMini={
-        showToast ? (
-          <ToastInfo
-            message={
-              <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
-              >
-                <BrandText style={[fontSemibold14]}>
-                  Learn more about Forced Chat tab
-                </BrandText>
-                <SVG source={rightArrowSVG} height={20} width={20} />
-              </View>
-            }
-            onPress={onLearnMoreToastPress}
-            onCrossPress={hideToast}
-            position={{ left: 10, top: 0 }}
-          />
-        ) : (
-          <DefaultAppBar title="Chat" />
-        )
-      }
+      headerMini={<DefaultAppBar title="Chat" />}
     >
       <View
         style={{
@@ -267,6 +252,30 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
           width: windowWidth,
         }}
       >
+        {!isForceChatInfoChecked && (
+          <>
+            <SpacerColumn size={1} />
+            <ToastInfo
+              message={
+                <View
+                  style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+                >
+                  <BrandText style={[fontSemibold14]}>
+                    Learn more about Forced Chat tab
+                  </BrandText>
+                  <SVG source={rightArrowSVG} height={20} width={20} />
+                </View>
+              }
+              onPress={onLearnMoreToastPress}
+              onCrossPress={markForceChatInfoChecked}
+              touchableStyle={{
+                position: "relative",
+                top: 0,
+                left: 0,
+              }}
+            />
+          </>
+        )}
         <SpacerColumn size={1} />
         <RoundedTabs
           items={collectionScreenTabItems}
