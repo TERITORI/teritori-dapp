@@ -3,7 +3,6 @@ import { Platform } from "react-native";
 import { useDispatch } from "react-redux";
 import { persistStore, persistReducer, createMigrate } from "redux-persist";
 
-import { afterRehydrateMiddleware } from "./milldeware/afterRehydrateMiddleware";
 import { dAppsReducer, dAppsReducerPersisted } from "./slices/dapps-store";
 import {
   marketplaceCartItems,
@@ -13,7 +12,7 @@ import {
   marketplaceFilters,
   marketplaceFilterUI,
 } from "./slices/marketplaceFilters";
-import { messageReducer } from "./slices/message";
+import { messageReducer, selectIsForceChatActivated } from "./slices/message";
 import { searchReducer } from "./slices/search";
 import {
   multisigTokensAdapter,
@@ -28,6 +27,8 @@ import {
 } from "./slices/wallets";
 import { storage } from "./storage";
 import { defaultEnabledNetworks } from "../networks";
+
+import { checkAndBootWeshModule } from "@/weshnet/services";
 
 const migrations = {
   0: (state: any) => {
@@ -88,7 +89,7 @@ const migrations = {
   },
 };
 
-const persistConfig = {
+const rootPersistConfig = {
   key: "root",
   storage,
   version: 4,
@@ -103,9 +104,14 @@ const persistConfig = {
     "marketplaceCartItemsUI",
     "marketplaceFilters",
     "marketplaceFilterUI",
-    "message",
   ],
-  blacklist: ["dAppsStore, marketplaceFilterUI"],
+  blacklist: ["dAppsStore, marketplaceFilterUI", "message"],
+};
+
+const messagePersistConfig = {
+  key: "message",
+  storage,
+  blacklist: ["isChatActivated"],
 };
 
 const rootReducer = combineReducers({
@@ -121,20 +127,28 @@ const rootReducer = combineReducers({
   marketplaceFilters,
   marketplaceFilterUI,
   search: searchReducer,
-  message: messageReducer,
+  message: persistReducer(messagePersistConfig, messageReducer),
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) => [
-    ...getDefaultMiddleware({ serializableCheck: false }),
-    afterRehydrateMiddleware,
-  ],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
 });
 
 export const persistor = persistStore(store);
+
+persistor.subscribe(() => {
+  const { bootstrapped } = persistor.getState();
+  if (bootstrapped) {
+    const isForceChatActivated = selectIsForceChatActivated(store.getState());
+    if (isForceChatActivated) {
+      checkAndBootWeshModule();
+    }
+  }
+});
 
 export type RootState = ReturnType<typeof store.getState>;
 

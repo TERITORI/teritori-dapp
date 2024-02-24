@@ -29,8 +29,8 @@ import { useMessage } from "@/context/MessageProvider";
 import {
   selectFilteredConversationList,
   selectIsWeshConnected,
+  selectIsChatActivated,
 } from "@/store/slices/message";
-import { selectIsChatActivated } from "@/store/slices/settings";
 import { RootState } from "@/store/store";
 import { RouteName, useAppNavigation } from "@/utils/navigation";
 import { neutral22, neutral77, secondaryColor } from "@/utils/style/colors";

@@ -16,27 +16,27 @@ import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import {
   selectIsChatActivated,
-  setIsChatActivated,
-} from "@/store/slices/settings";
+  selectIsForceChatActivated,
+  setIsForceChatActivated,
+} from "@/store/slices/message";
 import { store } from "@/store/store";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral77 } from "@/utils/style/colors";
 import { fontMedium13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { checkAndBootWeshModule, stopWeshModule } from "@/weshnet/services";
+import { checkAndBootWeshModule } from "@/weshnet/services";
 
 export const ChatSettingScreen: ScreenFC<"MiniChatSetting"> = ({
   navigation,
 }) => {
   const navigateToSettings = () => navigation.replace("MiniSettings");
+  const isForceChatActivated = useSelector(selectIsForceChatActivated);
   const isChatActivated = useSelector(selectIsChatActivated);
 
   function toggleChat(value: boolean) {
-    store.dispatch(setIsChatActivated(value));
-    if (value) {
+    store.dispatch(setIsForceChatActivated(value));
+    if (value && !isChatActivated) {
       checkAndBootWeshModule();
-    } else {
-      stopWeshModule();
     }
   }
 
@@ -101,7 +101,7 @@ export const ChatSettingScreen: ScreenFC<"MiniChatSetting"> = ({
             </View>
 
             <ToggleButton
-              isActive={isChatActivated}
+              isActive={isForceChatActivated}
               onValueChange={toggleChat}
             />
           </View>

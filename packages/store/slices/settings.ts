@@ -32,7 +32,6 @@ const multisigTokensSelectors = multisigTokensAdapter.getSelectors();
 
 interface Settings {
   appMode: AppMode;
-  isChatActivated: boolean;
   selectedNetworkId: string;
   selectedWalletId: string | undefined;
   NFTStorageAPI: string;
@@ -52,7 +51,6 @@ interface Settings {
 
 const initialState: Settings = {
   appMode: Platform.OS === "web" ? "normal" : "mini",
-  isChatActivated: false,
   selectedWalletId: "",
   selectedNetworkId: "",
   NFTStorageAPI: process.env.NFT_STORAGE_API || "",
@@ -77,9 +75,6 @@ const initialState: Settings = {
 };
 
 export const selectAppMode = (state: RootState) => state.settings.appMode;
-
-export const selectIsChatActivated = (state: RootState) =>
-  state.settings.isChatActivated;
 
 export const selectSelectedNetworkId = (state: RootState) =>
   state.settings.selectedNetworkId;
@@ -244,9 +239,7 @@ const settingsSlice = createSlice({
     setAppMode: (state, action: PayloadAction<AppMode>) => {
       state.appMode = action.payload;
     },
-    setIsChatActivated: (state, action: PayloadAction<boolean>) => {
-      state.isChatActivated = action.payload;
-    },
+
     setDeveloperMode: (state, action: PayloadAction<boolean>) => {
       state.developerMode = action.payload;
     },
@@ -267,7 +260,6 @@ export const {
   toggleNetwork,
   setIsLightTheme,
   setAppMode,
-  setIsChatActivated,
   setDeveloperMode,
 } = settingsSlice.actions;
 

@@ -70,10 +70,10 @@ const bootWeshModule = async () => {
 };
 
 export const stopWeshModule = async () => {
-  // TODO: Actual implementation later
-  // await WeshdModule.stop();
+  const WeshnetModule = require("../../weshd");
+  await WeshnetModule.shutdown();
   unsubscribeMessageSubscriptions();
-  stopMessegingConnection();
+  stopMessagingConnection();
 };
 
 export const checkAndBootWeshModule = async () => {
@@ -443,7 +443,7 @@ export const handleRestoreAccount = async () => {
     }
     await AsyncStorage.removeItem(DEV_WESHPORT_STORAGE_KEY);
     store.dispatch(resetMessageSlice());
-    stopMessegingConnection();
+    stopMessagingConnection();
     setMessageOnboardingComplete();
     if (Platform.OS === "web") {
       setTimeout(() => {
@@ -456,7 +456,7 @@ export const handleRestoreAccount = async () => {
   throw new Error("Couldn't load the file");
 };
 
-function stopMessegingConnection() {
+function stopMessagingConnection() {
   unsubscribeMessageSubscriptions();
   unsubscribeMetadataSubscriptions();
   store.dispatch(setIsWeshConnected(false));

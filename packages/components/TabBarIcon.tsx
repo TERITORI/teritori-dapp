@@ -5,17 +5,19 @@ import { useSelector } from "react-redux";
 import { SVG } from "./SVG";
 import feedSVG from "../../assets/icons/bottomTab/feed.svg";
 import walletSVG from "../../assets/icons/bottomTab/wallets.svg";
+import messageSVG from "../../assets/icons/message-white.svg";
 
 import ToggleButton from "@/components/buttons/ToggleButton";
 import {
   selectIsChatActivated,
   setIsChatActivated,
-} from "@/store/slices/settings";
+  selectIsForceChatActivated,
+} from "@/store/slices/message";
 import { store } from "@/store/store";
 import { checkAndBootWeshModule, stopWeshModule } from "@/weshnet/services";
 
 const icons = {
-  MiniChats: "",
+  MiniChats: messageSVG,
   MiniFeeds: feedSVG,
   MiniWallets: walletSVG,
 };
@@ -34,20 +36,18 @@ export const TabBarIcon = ({
   size,
 }: TabBarIconProps) => {
   const isChatActivated = useSelector(selectIsChatActivated);
+  const isForceChatActivated = useSelector(selectIsForceChatActivated);
 
-  useEffect(() => {
-    if (isChatActivated) {
+  function toggleChat(value: boolean) {
+    store.dispatch(setIsChatActivated(value));
+    if (value) {
       checkAndBootWeshModule();
     } else {
       stopWeshModule();
     }
-  }, [isChatActivated]);
-
-  function toggleChat(value: boolean) {
-    store.dispatch(setIsChatActivated(value));
   }
 
-  if (title === "MiniChats") {
+  if (title === "MiniChats" && !isForceChatActivated) {
     return (
       <ToggleButton isActive={isChatActivated} onValueChange={toggleChat} />
     );

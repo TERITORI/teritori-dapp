@@ -47,6 +47,8 @@ const groupSelectors = groupEntityAdapter.getSelectors();
 export interface MessageState {
   isWeshConnected: boolean;
   isOnboardingCompleted: boolean;
+  isChatActivated: boolean;
+  isForceChatActivated: boolean;
   peers: EntityState<PeerItem>;
   contactInfo: {
     name: string;
@@ -63,6 +65,8 @@ export interface MessageState {
 const initialState: MessageState = {
   isWeshConnected: false,
   isOnboardingCompleted: false,
+  isChatActivated: false,
+  isForceChatActivated: false,
   contactInfo: {
     name: "Anon",
     avatar: "",
@@ -81,6 +85,12 @@ export const selectIsWeshConnected = (state: RootState) =>
 
 export const selectIsOnboardingCompleted = (state: RootState) =>
   state.message.isOnboardingCompleted;
+
+export const selectIsChatActivated = (state: RootState) =>
+  state.message.isChatActivated;
+
+export const selectIsForceChatActivated = (state: RootState) =>
+  state.message.isForceChatActivated;
 
 export const selectContactInfo = (state: RootState) =>
   state.message.contactInfo;
@@ -188,6 +198,13 @@ const messageSlice = createSlice({
     setIsOnboardingCompleted: (state, action: PayloadAction<boolean>) => {
       state.isOnboardingCompleted = action.payload;
     },
+    setIsChatActivated: (state, action: PayloadAction<boolean>) => {
+      state.isChatActivated = action.payload;
+    },
+    setIsForceChatActivated: (state, action: PayloadAction<boolean>) => {
+      state.isForceChatActivated = action.payload;
+    },
+
     setMessage: (
       state,
       action: PayloadAction<{ groupPk: string; data: Message }>,
@@ -308,6 +325,8 @@ export const {
   setPeerList,
   setIsWeshConnected,
   setIsOnboardingCompleted,
+  setIsChatActivated,
+  setIsForceChatActivated,
   resetMessageSlice,
 } = messageSlice.actions;
 
