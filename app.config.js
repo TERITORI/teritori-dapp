@@ -42,7 +42,6 @@ const config = {
       favicon: "./assets/favicon.png",
     },
     extra: {
-      env: process.env,
       eas: {
         projectId: "9ce165de-0199-478c-b3bd-8688e5ce03eb",
       },
