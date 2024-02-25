@@ -36,6 +36,8 @@ export default function ToggleButton({
 
   return (
     <Switch
+      // @ts-expect-error: the active thumb color is a weird green on web that can't be changed without "activeThumbColor"
+      activeThumbColor={secondaryColor}
       trackColor={{ false: neutral33, true: blueDefault }}
       thumbColor={isActive ? secondaryColor : neutral99}
       ios_backgroundColor={getIOSBackgroundColor()}
