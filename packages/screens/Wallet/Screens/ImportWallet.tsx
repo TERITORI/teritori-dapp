@@ -51,7 +51,7 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {
 
   return (
     <MultiStepScreenContainer screenPercentage={25} enableBack>
-      <KeyboardAvoidingView extraVerticalOffset={0}>
+      <KeyboardAvoidingView extraVerticalOffset={-200}>
         <SpacerColumn size={8} />
         <CustomPressable
           style={{
