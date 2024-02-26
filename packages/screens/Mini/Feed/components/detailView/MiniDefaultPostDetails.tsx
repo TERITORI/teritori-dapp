@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
@@ -12,7 +12,6 @@ import { Post } from "@/api/feed/v1/feed";
 import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { CommentsContainer } from "@/components/cards/CommentsContainer";
-import { NewsFeedInputHandle } from "@/components/socialFeed/NewsFeed/NewsFeedInput";
 import { SocialThreadCard } from "@/components/socialFeed/SocialCard/cards/SocialThreadCard";
 import { SpacerColumn } from "@/components/spacer";
 import {
@@ -22,8 +21,13 @@ import {
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
-import { MiniCommentInput } from "@/screens/Mini/components/MiniCommentInput";
+import {
+  MiniCommentInput,
+  MiniCommentInputInputHandle,
+} from "@/screens/Mini/components/MiniCommentInput";
 import { DEFAULT_USERNAME } from "@/utils/social-feed";
+import { neutral00 } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
 import {
   OnPressReplyType,
@@ -86,7 +90,7 @@ const MiniDefaultPostDetails = ({
   const authorNSInfo = useNSUserInfo(authorId);
 
   const [, authorAddress] = parseUserId(post?.authorId);
-  const feedInputRef = useRef<NewsFeedInputHandle>(null);
+  const feedInputRef = useRef<MiniCommentInputInputHandle>(null);
 
   const headerLabel = useMemo(() => {
     const authorDisplayName =
@@ -135,22 +139,28 @@ const MiniDefaultPostDetails = ({
   };
 
   return (
-    <ScreenContainer
-      forceNetworkId={networkId}
-      fullWidth
-      responsive
-      noMargin
-      footerChildren
-      noScroll
-      headerMini={<CustomAppBar backEnabled title={headerLabel} />}
-    >
-      <Animated.ScrollView
-        ref={aref}
-        onScroll={scrollHandler}
-        scrollEventThrottle={1}
+    <KeyboardAvoidingView extraVerticalOffset={-100}>
+      <ScreenContainer
+        forceNetworkId={networkId}
+        fullWidth
+        responsive
+        noMargin
+        footerChildren
+        noScroll
+        headerMini={<CustomAppBar backEnabled title={headerLabel} />}
       >
-        <KeyboardAvoidingView>
-          <View style={{ flex: 1, width: windowWidth - 20 }}>
+        <Animated.ScrollView
+          ref={aref}
+          onScroll={scrollHandler}
+          scrollEventThrottle={0}
+          contentContainerStyle={{ paddingBottom: 150 }}
+        >
+          <View
+            style={{
+              flex: 1,
+              position: "relative",
+            }}
+          >
             {!!post && (
               <View style={{ width: "100%" }}>
                 <SocialThreadCard
@@ -172,22 +182,35 @@ const MiniDefaultPostDetails = ({
               onPressReply={onPressReply}
             />
             <SpacerColumn size={3} />
-            <MiniCommentInput
-              style={{ alignSelf: "center" }}
-              ref={feedInputRef}
-              replyTo={replyTo}
-              parentId={post.identifier}
-              onSubmitInProgress={handleSubmitInProgress}
-              onSubmitSuccess={() => {
-                setReplyTo(undefined);
-                refetchComments();
-              }}
-            />
-            <SpacerColumn size={3} />
           </View>
-        </KeyboardAvoidingView>
-      </Animated.ScrollView>
-    </ScreenContainer>
+        </Animated.ScrollView>
+        <SpacerColumn size={3} />
+        <View
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: neutral00,
+            paddingVertical: layout.spacing_x0_75,
+          }}
+        >
+          <MiniCommentInput
+            style={{
+              alignSelf: "center",
+            }}
+            ref={feedInputRef}
+            replyTo={replyTo}
+            parentId={post.identifier}
+            onSubmitInProgress={handleSubmitInProgress}
+            onSubmitSuccess={() => {
+              setReplyTo(undefined);
+              refetchComments();
+            }}
+          />
+        </View>
+      </ScreenContainer>
+    </KeyboardAvoidingView>
   );
 };
 
