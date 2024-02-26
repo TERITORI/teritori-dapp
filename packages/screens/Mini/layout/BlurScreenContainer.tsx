@@ -8,6 +8,7 @@ import {
   PanResponder,
   Animated,
   GestureResponderEvent,
+  ScrollView,
 } from "react-native";
 
 import chevronSVG from "../../../../assets/icons/chevron-left.svg";
@@ -35,7 +36,7 @@ export const BlurScreenContainer = ({
   background = "transparent",
   customHeader,
 }: Props) => {
-  const { width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const navigation = useAppNavigation();
   const onClose = () => navigation.goBack();
   const navigateToProfile = () => {
@@ -165,7 +166,13 @@ export const BlurScreenContainer = ({
           </View>
         )}
 
-        <View style={{ flex: 1, backgroundColor: background }}>{children}</View>
+        <ScrollView scrollEnabled={false}>
+          <View
+            style={{ backgroundColor: background, height: windowHeight - 160 }}
+          >
+            {children}
+          </View>
+        </ScrollView>
       </Animated.View>
     </SafeAreaView>
   );

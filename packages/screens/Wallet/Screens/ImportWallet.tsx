@@ -1,6 +1,6 @@
 import { Secp256k1HdWallet } from "@cosmjs/amino";
 import React, { useRef, useState } from "react";
-import { ScrollView, TextInput, View, useWindowDimensions } from "react-native";
+import { TextInput, View, useWindowDimensions } from "react-native";
 import { useSelector } from "react-redux";
 
 import { CustomButton } from "../../Mini/components/Button/CustomButton";
@@ -50,120 +50,113 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {
 
   return (
     <MultiStepScreenContainer screenPercentage={25} enableBack>
-      <ScrollView scrollEnabled={false} style={{ flex: 1 }}>
-        <SpacerColumn size={8} />
-        <View style={{ flex: 1 }}>
-          <BrandText style={[fontSemibold28]}>
-            Import with Seed Phrase
-          </BrandText>
-          <BrandText
-            style={[
-              fontSemibold16,
-              {
-                color: neutral77,
-                marginTop: layout.spacing_x1,
-              },
-            ]}
-          >
-            Import an existing wallet with a 12 or 24-word seed phrase.
-          </BrandText>
+      <SpacerColumn size={8} />
+      <View style={{ flex: 1 }}>
+        <BrandText style={[fontSemibold28]}>Import with Seed Phrase</BrandText>
+        <BrandText
+          style={[
+            fontSemibold16,
+            {
+              color: neutral77,
+              marginTop: layout.spacing_x1,
+            },
+          ]}
+        >
+          Import an existing wallet with a 12 or 24-word seed phrase.
+        </BrandText>
 
-          <SpacerColumn size={5} />
-          <CustomPressable
-            onPress={focusInput}
-            style={{
-              backgroundColor: neutral15,
-              borderRadius: 8,
-              width: "100%",
-              height: 160,
-
-              padding: layout.spacing_x1,
-              alignItems: "center",
-              borderWidth: 1,
-              borderColor: neutralA3,
-
-              marginBottom: layout.spacing_x3,
-            }}
-          >
-            <TextInput
-              ref={inputRef}
-              editable
-              multiline
-              numberOfLines={4}
-              onChangeText={(text) => {
-                setLocalPhrase(correctMnemonic(text));
-              }}
-              style={[fontSemibold16, { color: secondaryColor, width: "100%" }]}
-            />
-          </CustomPressable>
-        </View>
-        <View
+        <SpacerColumn size={5} />
+        <CustomPressable
+          onPress={focusInput}
           style={{
-            position: "absolute",
-            top: windowHeight - 270,
-            left: 0,
-            right: 0,
+            backgroundColor: neutral15,
+            borderRadius: 8,
+            width: "100%",
+            height: 160,
+
+            padding: layout.spacing_x1,
+            alignItems: "center",
+            borderWidth: 1,
+            borderColor: neutralA3,
+
+            marginBottom: layout.spacing_x3,
           }}
         >
-          <Checkbox
-            isChecked={isChecked}
-            onPress={() => setIsChecked(true)}
-            value="item"
-            label="This phrase will only be stored on this device. Teritori can’t recover it for you."
-            labelStyle={[{ color: neutralA3, lineHeight: 22, flex: 1 }]}
-            type="circle"
-            size="md"
-            wrapperStyle={{
-              alignItems: "center",
-              borderRadius: layout.borderRadius,
-              backgroundColor: neutral22,
-              paddingVertical: layout.spacing_x1,
-              paddingHorizontal: layout.spacing_x2,
+          <TextInput
+            ref={inputRef}
+            editable
+            multiline
+            numberOfLines={4}
+            onChangeText={(text) => {
+              setLocalPhrase(correctMnemonic(text));
             }}
+            style={[fontSemibold16, { color: secondaryColor, width: "100%" }]}
           />
-          <SpacerColumn size={2} />
-          <CustomButton
-            onPress={(_, navigation) => {
-              console.log(localPhrase);
-              if (!localPhrase) {
+        </CustomPressable>
+      </View>
+      <View
+        style={{
+          position: "absolute",
+          top: windowHeight - 270,
+          left: 0,
+          right: 0,
+        }}
+      >
+        <Checkbox
+          isChecked={isChecked}
+          onPress={() => setIsChecked(true)}
+          value="item"
+          label="This phrase will only be stored on this device. Teritori can’t recover it for you."
+          labelStyle={[{ color: neutralA3, lineHeight: 22, flex: 1 }]}
+          type="circle"
+          size="md"
+          wrapperStyle={{
+            alignItems: "center",
+            borderRadius: layout.borderRadius,
+            backgroundColor: neutral22,
+            paddingVertical: layout.spacing_x1,
+            paddingHorizontal: layout.spacing_x2,
+          }}
+        />
+        <SpacerColumn size={2} />
+        <CustomButton
+          onPress={(_, navigation) => {
+            console.log(localPhrase);
+            if (!localPhrase) {
+              return;
+            }
+            (async () => {
+              await setMnemonic(localPhrase, maxIndex + 1);
+              const native = await getNativeWallet("TORI", maxIndex + 1);
+
+              if ((native as unknown as string) === "bad mnemonic" || !native) {
+                alert("Invalid mnemonic");
                 return;
               }
-              (async () => {
-                await setMnemonic(localPhrase, maxIndex + 1);
-                const native = await getNativeWallet("TORI", maxIndex + 1);
-
-                if (
-                  (native as unknown as string) === "bad mnemonic" ||
-                  !native
-                ) {
-                  alert("Invalid mnemonic");
-                  return;
-                }
-                setWallet(native);
-              })();
-              if (wallet) {
-                wallet.getAccounts().then((accounts) => {
-                  dispatch(
-                    addSelected({
-                      address: accounts[0].address,
-                      network: network.kind,
-                      provider: "native",
-                      name: `Account ${maxIndex + 1}`,
-                      networkId: "teritori",
-                      index: maxIndex + 1,
-                      hdPath: "m/44'/118'/0'/0/0",
-                    }),
-                  );
-                });
-                navigation.navigate("CreatePasswordWallet");
-              }
-            }}
-            textStyle={{ textTransform: "uppercase" }}
-            title="Next"
-            isDisabled={!isChecked}
-          />
-        </View>
-      </ScrollView>
+              setWallet(native);
+            })();
+            if (wallet) {
+              wallet.getAccounts().then((accounts) => {
+                dispatch(
+                  addSelected({
+                    address: accounts[0].address,
+                    network: network.kind,
+                    provider: "native",
+                    name: `Account ${maxIndex + 1}`,
+                    networkId: "teritori",
+                    index: maxIndex + 1,
+                    hdPath: "m/44'/118'/0'/0/0",
+                  }),
+                );
+              });
+              navigation.navigate("CreatePasswordWallet");
+            }
+          }}
+          textStyle={{ textTransform: "uppercase" }}
+          title="Next"
+          isDisabled={!isChecked}
+        />
+      </View>
     </MultiStepScreenContainer>
   );
 };
