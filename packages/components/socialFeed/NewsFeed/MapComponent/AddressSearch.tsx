@@ -7,30 +7,19 @@ import {
   ViewStyle,
 } from "react-native";
 
-import chevronLeft from "../../../../../assets/icons/chevron-left.svg";
-import close from "../../../../../assets/icons/close.svg";
 import location from "../../../../../assets/icons/location.svg";
 import {
   neutral77,
-  neutralA3,
   primaryColor,
   secondaryColor,
 } from "../../../../utils/style/colors";
-import {
-  fontMedium16,
-  fontSemibold13,
-  fontSemibold16,
-} from "../../../../utils/style/fonts";
+import { fontSemibold13 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText";
 import { SVG } from "../../../SVG";
 import { TextInputCustom } from "../../../inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../../inputs/TextInputOutsideLabel";
-import { SpacerRow } from "../../../spacer";
-let typingTimeout: NodeJS.Timeout | undefined;
 
-interface TMapHeaderProps {
-  onClose: () => void;
-}
+let typingTimeout: NodeJS.Timeout | undefined;
 
 interface TAddressSearchProps {
   addressPlaceHolder: any;
@@ -39,35 +28,6 @@ interface TAddressSearchProps {
   setLocationSelected: any;
   setAddressPlaceHolder: any;
 }
-
-interface TDescriptionInputProps {
-  description: any;
-  setDescription: any;
-}
-
-export const MapHeader: React.FC<TMapHeaderProps> = ({ onClose }) => {
-  return (
-    <View style={[header]}>
-      <View style={[headerText]}>
-        <View style={[button32]}>
-          <SVG
-            source={chevronLeft}
-            height={24}
-            width={24}
-            color={secondaryColor}
-          />
-        </View>
-        <BrandText style={[fontSemibold16]}>Add location</BrandText>
-        <SpacerRow size={2} />
-        <BrandText style={[fontMedium16, { color: neutralA3 }]}>2/2</BrandText>
-      </View>
-
-      <TouchableOpacity style={[button32]} onPress={onClose}>
-        <SVG source={close} height={24} width={24} color={secondaryColor} />
-      </TouchableOpacity>
-    </View>
-  );
-};
 
 export const AddressSearch: React.FC<TAddressSearchProps> = ({
   addressPlaceHolder,
@@ -169,50 +129,6 @@ export const AddressSearch: React.FC<TAddressSearchProps> = ({
       </View>
     </>
   );
-};
-
-export const DescriptionInput: React.FC<TDescriptionInputProps> = ({
-  description,
-  setDescription,
-}) => {
-  return (
-    <>
-      <TextInputOutsideLabel label="Describe for people that will find this track on map" />
-      <TextInputCustom
-        noBrokenCorners
-        label=""
-        hideLabel
-        name="description"
-        placeHolder="Description"
-        multiline
-        numberOfLines={4}
-        onChangeText={setDescription}
-        value={description}
-      />
-    </>
-  );
-};
-
-// MapHeader styles
-const header: ViewStyle = {
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "space-between",
-  width: "100%",
-  paddingVertical: 20,
-};
-
-const headerText: ViewStyle = {
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "center",
-};
-
-const button32: ViewStyle = {
-  height: 32,
-  width: 32,
-  alignItems: "center",
-  justifyContent: "center",
 };
 
 // AddressSearch

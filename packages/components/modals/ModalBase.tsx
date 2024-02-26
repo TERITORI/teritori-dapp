@@ -190,7 +190,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
                         borderRadius: 20,
                         alignItems: "center",
                         justifyContent: "center",
-                        marginRight: 12,
+                        marginRight: layout.spacing_x1_5,
                       }}
                       onPress={onBackPress}
                     >
