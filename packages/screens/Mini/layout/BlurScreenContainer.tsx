@@ -166,12 +166,15 @@ export const BlurScreenContainer = ({
           </View>
         )}
 
-        <ScrollView scrollEnabled={false}>
-          <View
-            style={{ backgroundColor: background, height: windowHeight - 160 }}
-          >
-            {children}
-          </View>
+        <ScrollView
+          scrollEnabled={false}
+          style={{ backgroundColor: background, height: windowHeight - 160 }}
+          contentContainerStyle={{
+            backgroundColor: background,
+            height: windowHeight - 155,
+          }}
+        >
+          {children}
         </ScrollView>
       </Animated.View>
     </SafeAreaView>
