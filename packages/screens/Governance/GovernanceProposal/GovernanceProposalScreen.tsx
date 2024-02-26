@@ -54,26 +54,23 @@ export const GovernanceProposalScreen: ScreenFC<"GovernanceProposal"> = ({
       onBackPress={() => navigation.navigate("Governance")}
     >
       {proposal && (
-        <View
-          style={{
-            marginTop: layout.spacing_x3,
-          }}
-        >
+        <View>
+          <SpacerColumn size={layout.spacing_x0_5} />
           <GovernanceVoteHeader proposal={proposal} />
 
-          <SpacerColumn size={4} />
+          <SpacerColumn size={layout.spacing_x0_5} />
           <GovernanceVoteDetails
             result={proposal.final_tally_result}
             isVoteEnable={moment(proposal.voting_end_time).isAfter(moment())}
           />
 
-          <SpacerColumn size={4} />
+          <SpacerColumn size={layout.spacing_x0_5} />
           <GovernanceValidatorsReview validator={0} />
 
-          <SpacerColumn size={4} />
+          <SpacerColumn size={layout.spacing_x0_5} />
           <GovernanceAllValidators validator={25} />
 
-          <SpacerColumn size={4} />
+          <SpacerColumn size={layout.spacing_x0_5} />
           <GovernanceDescription description={proposal.content.description} />
         </View>
       )}
