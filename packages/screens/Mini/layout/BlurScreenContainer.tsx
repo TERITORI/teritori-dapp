@@ -36,7 +36,7 @@ export const BlurScreenContainer = ({
   background = "transparent",
   customHeader,
 }: Props) => {
-  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const { width: windowWidth } = useWindowDimensions();
   const navigation = useAppNavigation();
   const onClose = () => navigation.goBack();
   const navigateToProfile = () => {
@@ -168,7 +168,6 @@ export const BlurScreenContainer = ({
 
         <ScrollView
           scrollEnabled={false}
-          style={{ backgroundColor: background, height: windowHeight - 160 }}
           contentContainerStyle={{
             backgroundColor: background,
             flex: 1,
