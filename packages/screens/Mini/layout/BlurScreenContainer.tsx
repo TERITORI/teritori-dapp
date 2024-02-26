@@ -171,7 +171,7 @@ export const BlurScreenContainer = ({
           style={{ backgroundColor: background, height: windowHeight - 160 }}
           contentContainerStyle={{
             backgroundColor: background,
-            height: windowHeight - 155,
+            flex: 1,
           }}
         >
           {children}
