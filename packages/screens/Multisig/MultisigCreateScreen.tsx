@@ -18,7 +18,6 @@ import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "@/components/inputs/TextInputOutsideLabel";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
-import { useMultisigAuthToken } from "@/hooks/multisig/useMultisigAuthToken";
 import { useMultisigClient } from "@/hooks/multisig/useMultisigClient";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
@@ -54,7 +53,6 @@ const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
 
 export const MultisigCreateScreen = () => {
   const selectedWallet = useSelectedWallet();
-  const authToken = useMultisigAuthToken(selectedWallet?.userId);
   const { wrapWithFeedback } = useFeedbacks();
   const { control, handleSubmit, watch, setValue } =
     useForm<CreateMultisigWalletFormType>();
@@ -63,24 +61,23 @@ export const MultisigCreateScreen = () => {
     emptyPubKeyGroup(),
   ]);
   const navigation = useAppNavigation();
+
+  const selectedNetwork = useSelectedNetworkInfo();
+  const multisigClient = useMultisigClient(selectedNetwork?.id);
   const signatureRequiredValue = watch("signatureRequired");
   useEffect(() => {
-    if (!authToken) {
+    if (!multisigClient) {
       setTimeout(() => {
         // without timeout, the navigation action is not handled
         navigation.navigate("Multisig");
       }, 1000);
     }
-  }, [authToken, navigation]);
+  }, [multisigClient, navigation]);
 
   const defaultNbSignaturesRequired = useMemo(
     () => addressIndexes.length.toString(),
     [addressIndexes.length],
   );
-
-  const selectedNetwork = useSelectedNetworkInfo();
-
-  const multisigClient = useMultisigClient(selectedNetwork?.id);
 
   const removeAddressField = (index: number) => {
     const copyIndexes = [...addressIndexes];
@@ -98,6 +95,10 @@ export const MultisigCreateScreen = () => {
   }: CreateMultisigWalletFormType) => {
     if (!selectedNetwork) {
       throw new Error("No network selected");
+    }
+
+    if (!multisigClient) {
+      throw new Error("No multisig client");
     }
 
     if (selectedNetwork.kind !== NetworkKind.Cosmos) {
@@ -119,7 +120,6 @@ export const MultisigCreateScreen = () => {
     );
 
     const res = await multisigClient.CreateOrJoinMultisig({
-      authToken,
       chainId: selectedNetwork.chainId,
       bech32Prefix: selectedNetwork.addressPrefix,
       multisigPubkeyJson: JSON.stringify(multisigPubkey),

@@ -26,7 +26,7 @@ const main = async () => {
   console.log("Connecting to blockchain...");
   const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
 
-  let nftContractAddress;
+  let nftContractAddress: string | undefined;
   if (minterContractAddress === network.nameServiceContractAddress) {
     console.log("NFT is a name service token");
     nftContractAddress = network.nameServiceContractAddress;
@@ -37,9 +37,13 @@ const main = async () => {
       minterContractAddress,
     );
     const config = await minterClient.config();
-    nftContractAddress = config.nft_addr;
+    nftContractAddress =
+      config.nft_addr || (config.child_contract_addr as string | undefined);
   }
   console.log("NFT contract address:", nftContractAddress);
+  if (!nftContractAddress) {
+    throw new Error("NFT contract address not found");
+  }
   const nftClient = new TeritoriNftQueryClient(
     cosmwasmClient,
     nftContractAddress,

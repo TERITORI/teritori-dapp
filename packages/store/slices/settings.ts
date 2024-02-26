@@ -4,13 +4,11 @@ import {
   EntityState,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import { bech32 } from "bech32";
 import { Platform } from "react-native";
 
-import { Token as MultisigToken, Token } from "../../api/multisig/v1/multisig";
-import { defaultEnabledNetworks } from "../../networks";
 import { RootState } from "../store";
 
+import { defaultEnabledNetworks } from "@/networks";
 import { AppMode } from "@/utils/types/app-mode";
 
 type NetworkSettings = {
@@ -23,12 +21,6 @@ export const networkSettingsAdapter = createEntityAdapter<NetworkSettings>({
 });
 
 const networkSettingsSelectors = networkSettingsAdapter.getSelectors();
-
-export const multisigTokensAdapter = createEntityAdapter<Token>({
-  selectId: (t) => t.userAddress,
-});
-
-const multisigTokensSelectors = multisigTokensAdapter.getSelectors();
 
 interface Settings {
   appMode: AppMode;
@@ -44,10 +36,12 @@ interface Settings {
   areTestnetsEnabled: boolean;
   sideBarExpanded: boolean;
   howToBuyExapanded: boolean;
-  multisigTokens: EntityState<MultisigToken>;
   networkSettings: EntityState<NetworkSettings>;
   isLightTheme: boolean;
   developerMode: boolean;
+  keycloakToken?: string;
+  keycloakRefreshToken?: string;
+  keycloakIdToken?: string;
 }
 
 const initialState: Settings = {
@@ -64,7 +58,6 @@ const initialState: Settings = {
   alreadyVisited: false,
   areTestnetsEnabled: false,
   sideBarExpanded: true,
-  multisigTokens: multisigTokensAdapter.getInitialState(),
   networkSettings: networkSettingsAdapter.upsertMany(
     networkSettingsAdapter.getInitialState(),
     defaultEnabledNetworks.map((nid) => ({
@@ -114,6 +107,15 @@ export const selectNFTStorageAPI = (state: RootState) =>
 export const selectDeveloperMode = (state: RootState) =>
   state.settings.developerMode;
 
+export const selectKeycloakToken = (state: RootState) =>
+  state.settings.keycloakToken;
+
+export const selectKeycloakRefreshToken = (state: RootState) =>
+  state.settings.keycloakToken;
+
+export const selectKeycloakIdToken = (state: RootState) =>
+  state.settings.keycloakIdToken;
+
 export const selectNetworkEnabled = (
   state: RootState,
   networkId: string | undefined,
@@ -131,34 +133,6 @@ export const selectNetworkEnabled = (
 export const selectNetworksSettings = (state: RootState) =>
   networkSettingsSelectors.selectEntities(state.settings.networkSettings);
 
-const universalUserAddress = (userAddress: string) => {
-  const decoded = bech32.decode(userAddress);
-  return bech32.encode("user", decoded.words);
-};
-
-export const selectMultisigToken = (
-  state: RootState,
-  userAddress: string | undefined,
-) => {
-  if (!userAddress) {
-    return undefined;
-  }
-  let addr;
-  try {
-    addr = universalUserAddress(userAddress);
-  } catch (error) {
-    console.warn("failed to transform user address", error, userAddress);
-    return undefined;
-  }
-  const token = multisigTokensSelectors.selectById(
-    state.settings.multisigTokens,
-    addr,
-  );
-  if (!token || Date.parse(token.expiration) <= Date.now()) {
-    return undefined;
-  }
-  return token;
-};
 export const selectIsLightTheme = (state: RootState) =>
   state.settings.isLightTheme;
 
@@ -196,29 +170,6 @@ const settingsSlice = createSlice({
     setNFTStorageAPI: (state, action: PayloadAction<string>) => {
       state.NFTStorageAPI = action.payload;
     },
-    setMultisigToken: (
-      state,
-      action: PayloadAction<{
-        userAddress: string;
-        token: MultisigToken | undefined;
-      }>,
-    ) => {
-      if (!action.payload.token) {
-        let addr;
-        try {
-          addr = universalUserAddress(action.payload.userAddress);
-        } catch (error) {
-          console.warn("failed to transform user address", error, action);
-          return;
-        }
-        multisigTokensAdapter.removeOne(state.multisigTokens, addr);
-        return;
-      }
-      state.multisigTokens = multisigTokensAdapter.setOne(
-        state.multisigTokens,
-        action.payload.token,
-      );
-    },
     toggleNetwork: (state, action: PayloadAction<{ networkId: string }>) => {
       const networkSettings = networkSettingsSelectors.selectById(
         state.networkSettings,
@@ -250,6 +201,18 @@ const settingsSlice = createSlice({
     setDeveloperMode: (state, action: PayloadAction<boolean>) => {
       state.developerMode = action.payload;
     },
+    setKeycloakToken: (state, action: PayloadAction<string | undefined>) => {
+      state.keycloakToken = action.payload;
+    },
+    setKeycloakRefreshToken: (
+      state,
+      action: PayloadAction<string | undefined>,
+    ) => {
+      state.keycloakRefreshToken = action.payload;
+    },
+    setKeycloakIdToken: (state, action: PayloadAction<string | undefined>) => {
+      state.keycloakIdToken = action.payload;
+    },
   },
 });
 
@@ -263,12 +226,14 @@ export const {
   setSidebarExpanded,
   setHowToBuyExpanded,
   setNFTStorageAPI,
-  setMultisigToken,
   toggleNetwork,
   setIsLightTheme,
   setAppMode,
   setIsChatActivated,
   setDeveloperMode,
+  setKeycloakToken,
+  setKeycloakRefreshToken,
+  setKeycloakIdToken,
 } = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;

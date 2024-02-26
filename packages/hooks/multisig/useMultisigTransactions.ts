@@ -1,13 +1,14 @@
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { StdFee } from "@cosmjs/stargate";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { z } from "zod";
 
-import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
 
 import { ExecutionState, Transaction } from "@/api/multisig/v1/multisig";
 import { getCosmosNetwork, parseUserId } from "@/networks";
 import { cosmosTypesRegistry } from "@/networks/signer";
+import { zodMustParseJSON } from "@/utils/sanitize";
 
 const batchSize = 16;
 
@@ -25,13 +26,17 @@ export const multisigTransactionsQueryKey = (
   multisigUserId: string | undefined,
 ) => ["multisig-transactions", networkId, multisigUserId];
 
+const zodCosmosFee = z.object({
+  gas: z.string(),
+  amount: z.array(z.object({ amount: z.string(), denom: z.string() })),
+});
+
 export const useMultisigTransactions = (
   userId: string | undefined,
   multisigUserId: string | undefined,
   types: string[],
   executionState: ExecutionState,
 ) => {
-  const authToken = useMultisigAuthToken(userId);
   const [network] = parseUserId(userId);
   const client = useMultisigClient(network?.id);
 
@@ -40,19 +45,18 @@ export const useMultisigTransactions = (
       ...multisigTransactionsQueryKey(network?.id, multisigUserId),
       types,
       executionState,
-      authToken,
+      client,
     ],
     async ({ pageParam }) => {
       const chainId = getCosmosNetwork(network?.id)?.chainId;
 
-      if (!chainId || !authToken) {
+      if (!chainId || !client) {
         return { data: [], next: null };
       }
 
       const [, multisigAddress] = parseUserId(multisigUserId);
 
       const req = {
-        authToken,
         chainId,
         multisigAddress: multisigAddress || undefined,
         limit: batchSize,
@@ -70,12 +74,11 @@ export const useMultisigTransactions = (
             typeUrl: m.typeUrl,
             value: cosmosTypesRegistry.decode(m),
           }));
+          const fee = zodMustParseJSON(zodCosmosFee, tx.feeJson);
           const t: ParsedTransaction = {
             ...tx,
             msgs,
-            // FIXME: sanitize
-            // eslint-disable-next-line no-restricted-syntax
-            fee: JSON.parse(tx.feeJson),
+            fee,
             createdAt: new Date(tx.createdAt),
           };
           parsedTxs.push(t);

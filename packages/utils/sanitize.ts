@@ -31,3 +31,10 @@ export const zodTryParseJSON = <T extends z.ZodType>(
 ): z.infer<T> | undefined => {
   return zodTryParse(zodType, safeParseJSON(data));
 };
+
+export const zodMustParseJSON = <T extends z.ZodType>(
+  zodType: T,
+  data: string,
+): z.infer<T> => {
+  return zodType.parse(safeParseJSON(data));
+};

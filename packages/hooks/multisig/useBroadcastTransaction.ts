@@ -3,7 +3,6 @@ import { makeMultisignedTxBytes } from "@cosmjs/stargate";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Buffer } from "buffer";
 
-import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
 import {
   ParsedTransaction,
@@ -23,7 +22,6 @@ import {
 export const useBroadcastTransaction = () => {
   const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
-  const authToken = useMultisigAuthToken(selectedWallet?.userId);
   const multisigClient = useMultisigClient(selectedWallet?.networkId);
   const queryClient = useQueryClient();
 
@@ -43,6 +41,10 @@ export const useBroadcastTransaction = () => {
       pubkey?: MultisigThresholdPubkey;
     }) => {
       try {
+        if (!multisigClient) {
+          throw new Error("Multisig client not available");
+        }
+
         if (!pubkey) {
           throw new Error("Pubkey not found");
         }
@@ -76,7 +78,6 @@ export const useBroadcastTransaction = () => {
         }
 
         await multisigClient.CompleteTransaction({
-          authToken,
           transactionId,
           finalHash: result.transactionHash,
         });

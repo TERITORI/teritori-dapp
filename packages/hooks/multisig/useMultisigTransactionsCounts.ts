@@ -1,8 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
-import useSelectedWallet from "../useSelectedWallet";
 
 import { getCosmosNetwork, parseUserId } from "@/networks";
 
@@ -14,8 +12,6 @@ export const useMultisigTransactionsCounts = (
   userId: string | undefined,
   multisigUserId: string | undefined,
 ) => {
-  const walletAccount = useSelectedWallet();
-  const authToken = useMultisigAuthToken(walletAccount?.userId);
   const [network] = parseUserId(userId);
   const multisigClient = useMultisigClient(network?.id);
 
@@ -23,7 +19,6 @@ export const useMultisigTransactionsCounts = (
     [
       ...multisigTransactionsCountsQueryKey(network?.id),
       multisigUserId,
-      authToken,
       multisigClient,
     ],
     async () => {
@@ -33,11 +28,10 @@ export const useMultisigTransactionsCounts = (
       }
       const [, multisigAddress] = parseUserId(multisigUserId);
       const counts = await multisigClient?.TransactionsCounts({
-        authToken,
         chainId: cosmosNetwork.chainId,
         multisigAddress,
       });
-      return counts;
+      return counts || null;
     },
     { staleTime: Infinity },
   );

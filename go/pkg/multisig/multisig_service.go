@@ -8,6 +8,8 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/TERITORI/teritori-dapp/go/pkg/authcrypto"
+	"github.com/TERITORI/teritori-dapp/go/pkg/grpckeycloak"
 	"github.com/TERITORI/teritori-dapp/go/pkg/multisigpb"
 	"github.com/cosmos/cosmos-sdk/codec/legacy"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
@@ -19,6 +21,8 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
+
+var timeNow = time.Now // we use this to override time.Now in tests while preventing bad usage of the functions in this file
 
 const universalBech32Prefix = "user"
 
@@ -81,8 +85,8 @@ func NewMultisigService(opts MultisigServiceOpts) (multisigpb.MultisigServiceSer
 }
 
 // Read
-func (s *multisigService) Multisigs(_ context.Context, req *multisigpb.MultisigsRequest) (*multisigpb.MultisigsResponse, error) {
-	userAddress, err := s.authenticate(s.db, req.GetAuthToken())
+func (s *multisigService) Multisigs(ctx context.Context, req *multisigpb.MultisigsRequest) (*multisigpb.MultisigsResponse, error) {
+	userAddress, err := authenticate(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to authenticate")
 	}
@@ -137,8 +141,8 @@ func (s *multisigService) Multisigs(_ context.Context, req *multisigpb.Multisigs
 	return &multisigpb.MultisigsResponse{Multisigs: multisigs}, nil
 }
 
-func (s *multisigService) MultisigInfo(_ context.Context, req *multisigpb.MultisigInfoRequest) (*multisigpb.MultisigInfoResponse, error) {
-	userAddress, err := s.authenticate(s.db, req.GetAuthToken())
+func (s *multisigService) MultisigInfo(ctx context.Context, req *multisigpb.MultisigInfoRequest) (*multisigpb.MultisigInfoResponse, error) {
+	userAddress, err := authenticate(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to authenticate")
 	}
@@ -190,8 +194,8 @@ func (s *multisigService) MultisigInfo(_ context.Context, req *multisigpb.Multis
 	}, nil
 }
 
-func (s *multisigService) Transactions(_ context.Context, req *multisigpb.TransactionsRequest) (*multisigpb.TransactionsResponse, error) {
-	userAddress, err := s.authenticate(s.db, req.GetAuthToken())
+func (s *multisigService) Transactions(ctx context.Context, req *multisigpb.TransactionsRequest) (*multisigpb.TransactionsResponse, error) {
+	userAddress, err := authenticate(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to authenticate")
 	}
@@ -290,8 +294,8 @@ type TransactionsCount struct {
 	Executed bool
 }
 
-func (s *multisigService) TransactionsCounts(_ context.Context, req *multisigpb.TransactionsCountsRequest) (*multisigpb.TransactionsCountsResponse, error) {
-	userAddress, err := s.authenticate(s.db, req.GetAuthToken())
+func (s *multisigService) TransactionsCounts(ctx context.Context, req *multisigpb.TransactionsCountsRequest) (*multisigpb.TransactionsCountsResponse, error) {
+	userAddress, err := authenticate(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to authenticate")
 	}
@@ -336,12 +340,12 @@ func (s *multisigService) TransactionsCounts(_ context.Context, req *multisigpb.
 }
 
 // Write
-func (s *multisigService) CreateOrJoinMultisig(_ context.Context, req *multisigpb.CreateOrJoinMultisigRequest) (*multisigpb.CreateOrJoinMultisigResponse, error) {
+func (s *multisigService) CreateOrJoinMultisig(ctx context.Context, req *multisigpb.CreateOrJoinMultisigRequest) (*multisigpb.CreateOrJoinMultisigResponse, error) {
 	var created, joined bool
 	multisigAddress := ""
 
 	if err := s.db.Transaction(func(tx *gorm.DB) error {
-		userAddress, err := s.authenticate(tx, req.GetAuthToken())
+		userAddress, err := authenticate(ctx)
 		if err != nil {
 			return errors.Wrap(err, "failed to authenticate")
 		}
@@ -469,8 +473,8 @@ func (s *multisigService) CreateOrJoinMultisig(_ context.Context, req *multisigp
 	return &multisigpb.CreateOrJoinMultisigResponse{Created: created, Joined: joined, MultisigAddress: multisigAddress}, nil
 }
 
-func (s *multisigService) LeaveMultisig(_ context.Context, req *multisigpb.LeaveMultisigRequest) (*multisigpb.LeaveMultisigResponse, error) {
-	userAddress, err := s.authenticate(s.db, req.GetAuthToken())
+func (s *multisigService) LeaveMultisig(ctx context.Context, req *multisigpb.LeaveMultisigRequest) (*multisigpb.LeaveMultisigResponse, error) {
+	userAddress, err := authenticate(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to authenticate")
 	}
@@ -506,8 +510,8 @@ func (s *multisigService) LeaveMultisig(_ context.Context, req *multisigpb.Leave
 	return &multisigpb.LeaveMultisigResponse{Left: left}, nil
 }
 
-func (s *multisigService) CreateTransaction(_ context.Context, req *multisigpb.CreateTransactionRequest) (*multisigpb.CreateTransactionResponse, error) {
-	userAddress, err := s.authenticate(s.db, req.GetAuthToken())
+func (s *multisigService) CreateTransaction(ctx context.Context, req *multisigpb.CreateTransactionRequest) (*multisigpb.CreateTransactionResponse, error) {
+	userAddress, err := authenticate(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to authenticate")
 	}
@@ -561,8 +565,8 @@ func (s *multisigService) CreateTransaction(_ context.Context, req *multisigpb.C
 	return &multisigpb.CreateTransactionResponse{}, nil
 }
 
-func (s *multisigService) SignTransaction(_ context.Context, req *multisigpb.SignTransactionRequest) (*multisigpb.SignTransactionResponse, error) {
-	userAddress, err := s.authenticate(s.db, req.GetAuthToken())
+func (s *multisigService) SignTransaction(ctx context.Context, req *multisigpb.SignTransactionRequest) (*multisigpb.SignTransactionResponse, error) {
+	userAddress, err := authenticate(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to authenticate")
 	}
@@ -600,8 +604,8 @@ func (s *multisigService) SignTransaction(_ context.Context, req *multisigpb.Sig
 	return &multisigpb.SignTransactionResponse{}, nil
 }
 
-func (s *multisigService) CompleteTransaction(_ context.Context, req *multisigpb.CompleteTransactionRequest) (*multisigpb.CompleteTransactionResponse, error) {
-	userAddress, err := s.authenticate(s.db, req.GetAuthToken())
+func (s *multisigService) CompleteTransaction(ctx context.Context, req *multisigpb.CompleteTransactionRequest) (*multisigpb.CompleteTransactionResponse, error) {
+	userAddress, err := authenticate(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to authenticate")
 	}
@@ -653,8 +657,8 @@ func (s *multisigService) CompleteTransaction(_ context.Context, req *multisigpb
 	return &multisigpb.CompleteTransactionResponse{}, nil
 }
 
-func (s *multisigService) ClearSignatures(_ context.Context, req *multisigpb.ClearSignaturesRequest) (*multisigpb.ClearSignaturesResponse, error) {
-	userAddress, err := s.authenticate(s.db, req.GetAuthToken())
+func (s *multisigService) ClearSignatures(ctx context.Context, req *multisigpb.ClearSignaturesRequest) (*multisigpb.ClearSignaturesResponse, error) {
+	userAddress, err := authenticate(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to authenticate")
 	}
@@ -705,7 +709,7 @@ func (s *multisigService) ClearSignatures(_ context.Context, req *multisigpb.Cle
 
 // Auth
 func (s *multisigService) GetChallenge(_ context.Context, req *multisigpb.GetChallengeRequest) (*multisigpb.GetChallengeResponse, error) {
-	challenge, err := makeChallenge(s.privateKey, s.opts.ChallengeDuration)
+	challenge, err := authcrypto.MakeChallenge(s.privateKey, s.opts.ChallengeDuration)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to make challenge")
 	}
@@ -715,7 +719,7 @@ func (s *multisigService) GetChallenge(_ context.Context, req *multisigpb.GetCha
 }
 
 func (s *multisigService) GetToken(_ context.Context, req *multisigpb.GetTokenRequest) (*multisigpb.GetTokenResponse, error) {
-	token, err := makeToken(s.privateKey, s.publicKey, s.opts.TokenDuration, req.GetInfoJson(), req.GetUserSignature())
+	token, err := authcrypto.MakeToken(s.privateKey, s.publicKey, s.opts.TokenDuration, req.GetInfoJson(), req.GetUserSignature())
 	if err != nil {
 		return nil, err
 	}
@@ -725,15 +729,17 @@ func (s *multisigService) GetToken(_ context.Context, req *multisigpb.GetTokenRe
 }
 
 func (s *multisigService) ValidateToken(_ context.Context, req *multisigpb.ValidateTokenRequest) (*multisigpb.ValidateTokenResponse, error) {
-	if err := validateToken(s.publicKey, req.GetAuthToken()); err != nil {
-		return nil, err
-	}
 	return &multisigpb.ValidateTokenResponse{}, nil
 }
 
-func (s *multisigService) authenticate(tx *gorm.DB, token *multisigpb.Token) (string, error) {
-	if err := validateToken(s.publicKey, token); err != nil {
-		return "", err
+func authenticate(ctx context.Context) (string, error) {
+	userInfo, ok := grpckeycloak.UserInfoFromContext(ctx)
+	if !ok {
+		return "", errors.New("missing user info")
 	}
-	return token.UserAddress, nil
+	addr, ok := userInfo["cosmos-universal-address"].(string)
+	if !ok || addr == "" {
+		return "", errors.New("missing cosmos-universal-address")
+	}
+	return addr, nil
 }

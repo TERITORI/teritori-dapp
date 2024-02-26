@@ -3,7 +3,6 @@ import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 
-import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
 import {
   multisigTransactionsQueryKey,
@@ -20,7 +19,6 @@ export const useApproveTransaction = () => {
   const { setToastError } = useFeedbacks();
   const walletAccount = useSelectedWallet();
   const multisigClient = useMultisigClient(walletAccount?.networkId);
-  const authToken = useMultisigAuthToken(walletAccount?.userId);
   const queryClient = useQueryClient();
 
   return useCallback(
@@ -43,6 +41,10 @@ export const useApproveTransaction = () => {
       transactionId: number;
     }) => {
       try {
+        if (!multisigClient) {
+          throw new Error("Multisig client not available");
+        }
+
         const prevSigMatch = currentSignatures.findIndex(
           (signature) => signature.userAddress === walletAccount?.address,
         );
@@ -81,7 +83,6 @@ export const useApproveTransaction = () => {
         const bases64EncodedSignature = toBase64(signatures[0]);
 
         await multisigClient.SignTransaction({
-          authToken,
           signature: bases64EncodedSignature,
           transactionId,
           bodyBytes,
@@ -104,6 +105,6 @@ export const useApproveTransaction = () => {
         });
       }
     },
-    [authToken, multisigClient, queryClient, setToastError, walletAccount],
+    [multisigClient, queryClient, setToastError, walletAccount],
   );
 };

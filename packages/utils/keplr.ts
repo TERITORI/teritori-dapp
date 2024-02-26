@@ -7,8 +7,6 @@ import {
 } from "@keplr-wallet/types";
 import Long from "long";
 
-import { mustGetCosmosNetwork, parseUserId } from "../networks";
-
 export const getKeplr = () => {
   const keplrWindow = window as KeplrWindow;
   if (!keplrWindow.keplr) {
@@ -50,19 +48,4 @@ export const convertKeplrSigner = (
     return keplrSigner;
   }
   throw new Error("unexpected signer shape");
-};
-
-export const keplrSignArbitrary = async (
-  userId: string,
-  data: string | Uint8Array,
-) => {
-  const keplr = getKeplr();
-  const [network, signerAddress] = parseUserId(userId);
-  const cosmosNetwork = mustGetCosmosNetwork(network?.id);
-  const signature = await keplr.signArbitrary(
-    cosmosNetwork.chainId,
-    signerAddress,
-    data,
-  );
-  return signature;
 };

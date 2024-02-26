@@ -22,7 +22,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
-import { MultisigDeauth } from "./packages/components/multisig/MultisigDeauth";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
 import { MediaPlayerContextProvider } from "./packages/context/MediaPlayerProvider";
@@ -36,6 +35,7 @@ import {
   WalletsProvider,
   useWallets,
 } from "./packages/context/WalletsProvider";
+import { KeycloakProvider } from "./packages/context/web3auth/KeycloakProvider";
 import { useSelectedNetworkId } from "./packages/hooks/useSelectedNetwork";
 import useSelectedWallet from "./packages/hooks/useSelectedWallet";
 import { getAvailableApps } from "./packages/screens/DAppStore/query/getFromFile";
@@ -99,27 +99,28 @@ export default function App() {
                       <FeedbacksContextProvider>
                         <DropdownsProvider>
                           <WalletsProvider>
-                            <WalletSyncer />
-                            <DappStoreApps />
-                            <MultisigDeauth />
-                            <WalletControlContextProvider>
-                              <SearchBarContextProvider>
-                                <TransactionModalsProvider>
-                                  <TNSContextProvider>
-                                    <TNSMetaDataListContextProvider>
-                                      <MenuProvider>
-                                        <MessageContextProvider>
-                                          <MediaPlayerContextProvider>
-                                            <StatusBar style="inverted" />
-                                            <Navigator />
-                                          </MediaPlayerContextProvider>
-                                        </MessageContextProvider>
-                                      </MenuProvider>
-                                    </TNSMetaDataListContextProvider>
-                                  </TNSContextProvider>
-                                </TransactionModalsProvider>
-                              </SearchBarContextProvider>
-                            </WalletControlContextProvider>
+                            <KeycloakProvider>
+                              <WalletSyncer />
+                              <DappStoreApps />
+                              <WalletControlContextProvider>
+                                <SearchBarContextProvider>
+                                  <TransactionModalsProvider>
+                                    <TNSContextProvider>
+                                      <TNSMetaDataListContextProvider>
+                                        <MenuProvider>
+                                          <MessageContextProvider>
+                                            <MediaPlayerContextProvider>
+                                              <StatusBar style="inverted" />
+                                              <Navigator />
+                                            </MediaPlayerContextProvider>
+                                          </MessageContextProvider>
+                                        </MenuProvider>
+                                      </TNSMetaDataListContextProvider>
+                                    </TNSContextProvider>
+                                  </TransactionModalsProvider>
+                                </SearchBarContextProvider>
+                              </WalletControlContextProvider>
+                            </KeycloakProvider>
                           </WalletsProvider>
                         </DropdownsProvider>
                       </FeedbacksContextProvider>

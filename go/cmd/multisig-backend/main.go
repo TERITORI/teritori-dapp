@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/TERITORI/teritori-dapp/go/pkg/grpckeycloak"
 	"github.com/TERITORI/teritori-dapp/go/pkg/multisig"
 	"github.com/TERITORI/teritori-dapp/go/pkg/multisigpb"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
@@ -14,6 +15,8 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
+
+type userKey struct{}
 
 func main() {
 	fs := flag.NewFlagSet("cosmos-multisig-backend", flag.ContinueOnError)
@@ -47,7 +50,9 @@ func main() {
 		panic(errors.Wrap(err, "failed to create multisig service"))
 	}
 
-	server := grpc.NewServer()
+	keycloakMiddleware := grpckeycloak.NewGRPCKeycloakMiddleware("http://localhost:8080", logger.Named("auth"))
+
+	server := grpc.NewServer(grpc.UnaryInterceptor(keycloakMiddleware.UnaryServerInterceptor))
 	multisigpb.RegisterMultisigServiceServer(server, svc)
 
 	wrappedServer := grpcweb.WrapServer(server,
