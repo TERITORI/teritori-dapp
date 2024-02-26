@@ -14,6 +14,7 @@ import {
   Message,
   CONVERSATION_TYPES,
   PeerItem,
+  GetStartedKeys,
 } from "./../../utils/types/message";
 import { weshConfig } from "../../weshnet/config";
 import { stringFromBytes } from "../../weshnet/utils";
@@ -47,6 +48,9 @@ const groupSelectors = groupEntityAdapter.getSelectors();
 export interface MessageState {
   isWeshConnected: boolean;
   isOnboardingCompleted: boolean;
+  isChatActivated: boolean;
+  isForceChatActivated: boolean;
+  isForceChatInfoChecked: boolean;
   peers: EntityState<PeerItem>;
   contactInfo: {
     name: string;
@@ -54,6 +58,7 @@ export interface MessageState {
     publicRendezvousSeed: string;
     shareLink: string;
   };
+  getStartedChecklist: { [key in GetStartedKeys]: boolean };
   contactRequests: EntityState<ContactRequest>;
   messages: EntityState<KVItem<EntityState<Message>>>;
   conversations: EntityState<Conversation>;
@@ -63,11 +68,19 @@ export interface MessageState {
 const initialState: MessageState = {
   isWeshConnected: false,
   isOnboardingCompleted: false,
+  isChatActivated: false,
+  isForceChatActivated: false,
+  isForceChatInfoChecked: false,
   contactInfo: {
     name: "Anon",
     avatar: "",
     publicRendezvousSeed: "",
     shareLink: "",
+  },
+  getStartedChecklist: {
+    addAFriend: false,
+    newConversation: false,
+    newGroup: false,
   },
   messages: groupEntityAdapter.getInitialState(),
   contactRequests: contactRequestEntityAdapter.getInitialState(),
@@ -82,8 +95,20 @@ export const selectIsWeshConnected = (state: RootState) =>
 export const selectIsOnboardingCompleted = (state: RootState) =>
   state.message.isOnboardingCompleted;
 
+export const selectIsChatActivated = (state: RootState) =>
+  state.message.isChatActivated;
+
+export const selectIsForceChatActivated = (state: RootState) =>
+  state.message.isForceChatActivated;
+
+export const selectIsForceChatInfoChecked = (state: RootState) =>
+  state.message.isForceChatInfoChecked;
+
 export const selectContactInfo = (state: RootState) =>
   state.message.contactInfo;
+
+export const selectGetStartedChecklist = (state: RootState) =>
+  state.message.getStartedChecklist;
 
 const selectGroup = (state: RootState, groupPk: string) =>
   groupSelectors.selectById(state.message.messages, groupPk)?.value;
@@ -188,6 +213,16 @@ const messageSlice = createSlice({
     setIsOnboardingCompleted: (state, action: PayloadAction<boolean>) => {
       state.isOnboardingCompleted = action.payload;
     },
+    setIsChatActivated: (state, action: PayloadAction<boolean>) => {
+      state.isChatActivated = action.payload;
+    },
+    setIsForceChatActivated: (state, action: PayloadAction<boolean>) => {
+      state.isForceChatActivated = action.payload;
+    },
+    setIsForceChatInfoChecked: (state, action: PayloadAction<boolean>) => {
+      state.isForceChatInfoChecked = action.payload;
+    },
+
     setMessage: (
       state,
       action: PayloadAction<{ groupPk: string; data: Message }>,
@@ -290,6 +325,15 @@ const messageSlice = createSlice({
     ) => {
       state.contactInfo = { ...state.contactInfo, ...action.payload };
     },
+    setGetStartedChecklist: (
+      state,
+      action: PayloadAction<Partial<MessageState["getStartedChecklist"]>>,
+    ) => {
+      state.getStartedChecklist = {
+        ...state.getStartedChecklist,
+        ...action.payload,
+      };
+    },
     resetMessageSlice: (state) => {
       state = initialState;
     },
@@ -308,6 +352,10 @@ export const {
   setPeerList,
   setIsWeshConnected,
   setIsOnboardingCompleted,
+  setIsChatActivated,
+  setIsForceChatActivated,
+  setGetStartedChecklist,
+  setIsForceChatInfoChecked,
   resetMessageSlice,
 } = messageSlice.actions;
 

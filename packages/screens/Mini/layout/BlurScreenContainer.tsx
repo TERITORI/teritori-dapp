@@ -1,7 +1,14 @@
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { ReactNode } from "react";
-import { SafeAreaView, useWindowDimensions, View } from "react-native";
+import React, { ReactNode, useRef } from "react";
+import {
+  SafeAreaView,
+  useWindowDimensions,
+  View,
+  PanResponder,
+  Animated,
+  GestureResponderEvent,
+} from "react-native";
 
 import chevronSVG from "../../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
@@ -37,6 +44,39 @@ export const BlurScreenContainer = ({
     } else {
       navigation.replace("MiniProfile");
     }
+  };
+
+  const pan = useRef(new Animated.ValueXY()).current;
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        // Only set pan responder if the gesture is moving downward
+        return (
+          gestureState.dy > 0 &&
+          gestureState.dy > Math.abs(gestureState.dx) &&
+          !isTouchWithinFlatList(evt)
+        );
+      },
+      onPanResponderMove: Animated.event([null, { dy: pan.y }], {
+        useNativeDriver: false,
+      }),
+      onPanResponderRelease: (_, gesture) => {
+        if (gesture.dy > 50) {
+          navigation.goBack();
+        } else {
+          Animated.spring(pan, {
+            toValue: { x: 0, y: 0 },
+            useNativeDriver: false,
+          }).start();
+        }
+      },
+    }),
+  ).current;
+
+  const isTouchWithinFlatList = (evt: GestureResponderEvent) => {
+    const { locationY } = evt.nativeEvent;
+    return locationY > 0 && locationY < 100;
   };
 
   return (
@@ -81,10 +121,12 @@ export const BlurScreenContainer = ({
           bottom: 0,
         }}
       />
-      <View
+      <Animated.View
         style={{
+          transform: [{ translateY: pan.y }],
           flex: 1,
         }}
+        {...panResponder.panHandlers}
       >
         {customHeader ? (
           <View
@@ -123,15 +165,8 @@ export const BlurScreenContainer = ({
           </View>
         )}
 
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: background,
-          }}
-        >
-          {children}
-        </View>
-      </View>
+        <View style={{ flex: 1, backgroundColor: background }}>{children}</View>
+      </Animated.View>
     </SafeAreaView>
   );
 };

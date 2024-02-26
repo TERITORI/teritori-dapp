@@ -6,7 +6,6 @@ import { RouteProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
-import { RootStackParamList } from "../../utils/navigation";
 import { neutral00, secondaryColor } from "../../utils/style/colors";
 import { TabBarIcon } from "../TabBarIcon";
 
@@ -14,13 +13,17 @@ import AboutScreen from "@/screens/Mini/About/AboutScreen";
 import AddAddressBookScreen from "@/screens/Mini/AddressBook/AddAddressBookScreen";
 import AddressBookScreen from "@/screens/Mini/AddressBook/AddressBookScreen";
 import EditAddressBookScreen from "@/screens/Mini/AddressBook/EditAddressBookScreen";
+import { MiniAddFriendScreen } from "@/screens/Mini/Chat/MiniAddFriendScreen";
+import { MiniChatProfileScreen } from "@/screens/Mini/Chat/MiniChatProfile";
 import { MiniChatScreen } from "@/screens/Mini/Chat/MiniChatScreen";
+import { MiniCreateAccount } from "@/screens/Mini/Chat/MiniCreateAccount";
 import { MiniFriendScreen } from "@/screens/Mini/Chat/MiniFriendScreen";
 import { NewConversationScreen } from "@/screens/Mini/Chat/NewConversationScreen";
 import { NewGroupScreen } from "@/screens/Mini/Chat/NewGroupScreen";
 import { ConnectLedgerScreen } from "@/screens/Mini/ConnectLedger/ConnectLedgerScreen";
 import { ConversationScreeen } from "@/screens/Mini/Conversation/ConversationScreen";
 import { DAppStoreScreen } from "@/screens/Mini/DAppStore/DAppStoreScreen";
+import MiniCreatePostScreen from "@/screens/Mini/Feed/MiniCreatePostScreen";
 import { MiniFeedScreen } from "@/screens/Mini/Feed/MiniFeedScreen";
 import ChangeNetworkScreen from "@/screens/Mini/Network/ChangeNetworkScreen";
 import NotificationScreen from "@/screens/Mini/Notifications/NotificationScreen";
@@ -49,6 +52,7 @@ import SendingToriScreen from "@/screens/Mini/Wallet/SendingToriScreen";
 import TransactionDetailScreen from "@/screens/Mini/Wallet/TransactionDetailScreen";
 import { CreatePasswordWallet } from "@/screens/Wallet/Screens/CreatePasswordWallet";
 import { CreateWalletScreen } from "@/screens/Wallet/Screens/CreateWalletScreen";
+import { RootStackParamList } from "@/utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -109,6 +113,16 @@ export const getMiniModeScreens = () => {
         name="MiniTabs"
         options={{ header: () => null }}
         component={MainTab}
+      />
+
+      <Stack.Screen
+        name="MiniCreatePost"
+        component={MiniCreatePostScreen}
+        options={{
+          header: () => null,
+          title: "",
+          presentation: "transparentModal",
+        }}
       />
 
       <Stack.Screen
@@ -174,6 +188,15 @@ export const getMiniModeScreens = () => {
         }}
       />
       <Stack.Screen
+        name="MiniChatCreateAccount"
+        component={MiniCreateAccount}
+        options={{
+          header: () => null,
+          title: "New Conversation",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
         name="MiniFriend"
         component={MiniFriendScreen}
         options={{
@@ -206,12 +229,29 @@ export const getMiniModeScreens = () => {
         options={{
           header: () => null,
           title: "Settings",
+        }}
+      />
+      <Stack.Screen
+        name="MiniChatProfile"
+        component={MiniChatProfileScreen}
+        options={{
+          header: () => null,
+          title: "Chat Setting",
           presentation: "transparentModal",
         }}
       />
       <Stack.Screen
         name="MiniSettings"
         component={SettingsScreen}
+        options={{
+          header: () => null,
+          title: "Settings",
+          presentation: "transparentModal",
+        }}
+      />
+      <Stack.Screen
+        name="MiniAddFriend"
+        component={MiniAddFriendScreen}
         options={{
           header: () => null,
           title: "Settings",

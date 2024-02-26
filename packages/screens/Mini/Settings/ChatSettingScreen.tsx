@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import dataCabinetSVG from "../../../../assets/icons/data-cabinet.svg";
 import laptopSVG from "../../../../assets/icons/laptop.svg";
@@ -13,15 +14,31 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
+import {
+  selectIsChatActivated,
+  selectIsForceChatActivated,
+  setIsForceChatActivated,
+} from "@/store/slices/message";
+import { store } from "@/store/store";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral77 } from "@/utils/style/colors";
 import { fontMedium13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { checkAndBootWeshModule } from "@/weshnet/services";
 
 export const ChatSettingScreen: ScreenFC<"MiniChatSetting"> = ({
   navigation,
 }) => {
   const navigateToSettings = () => navigation.replace("MiniSettings");
+  const isForceChatActivated = useSelector(selectIsForceChatActivated);
+  const isChatActivated = useSelector(selectIsChatActivated);
+
+  function toggleChat(value: boolean) {
+    store.dispatch(setIsForceChatActivated(value));
+    if (value && !isChatActivated) {
+      checkAndBootWeshModule();
+    }
+  }
 
   return (
     <BlurScreenContainer title="Chat Setting" onGoBack={navigateToSettings}>
@@ -83,7 +100,10 @@ export const ChatSettingScreen: ScreenFC<"MiniChatSetting"> = ({
               <BrandText>Force turn on Chats tab</BrandText>
             </View>
 
-            <ToggleButton isActive />
+            <ToggleButton
+              isActive={isForceChatActivated}
+              onValueChange={toggleChat}
+            />
           </View>
           <SpacerColumn size={1} />
           <BrandText style={[fontMedium13, { color: neutral77 }]}>

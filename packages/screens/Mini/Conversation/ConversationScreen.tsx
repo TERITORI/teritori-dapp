@@ -100,7 +100,7 @@ export const ConversationScreeen: ScreenFC<"Conversation"> = ({
       }}
     >
       <View style={{ paddingHorizontal: layout.spacing_x2, flex: 1 }}>
-        <KeyboardAvoidingView extraVerticalOffset={32}>
+        <KeyboardAvoidingView extraVerticalOffset={-10}>
           <ChatHeader navigation={navigation} conversation={conversationItem} />
           <SpacerRow size={4} />
           <Conversations

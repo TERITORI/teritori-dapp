@@ -10,6 +10,7 @@ import { ChatAvatar } from "../../components/ChatAvatar";
 import MiniTextInput from "../../components/MiniTextInput";
 
 import { BrandText } from "@/components/BrandText";
+import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
 import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { Separator } from "@/components/separators/Separator";
@@ -58,43 +59,45 @@ export const ChatList = () => {
   }
 
   return (
-    <View
-      style={{ flex: 1, paddingVertical: layout.spacing_x2, width: "100%" }}
-    >
-      <MiniTextInput
-        value={searchInput}
-        icon={searchSVG}
-        onChangeText={onSearchChange}
-        style={{
-          backgroundColor: "rgba(118, 118, 128, 0.24)",
-          paddingVertical: layout.spacing_x1,
-        }}
-        inputStyle={[fontSemibold14, { lineHeight: 0 }]}
-        placeholderTextColor={neutralA3}
-        placeholder="Search..."
-      />
-      <SpacerColumn size={3} />
-      <FlatList
-        data={searchResults}
-        renderItem={({ item }) => {
-          return (
-            <>
-              <SingleFriendChatList
-                data={item}
-                onPress={() => {
-                  setActiveConversation?.(item);
-                  navigation.navigate("Conversation", {
-                    conversationId: item?.id,
-                  });
-                }}
-              />
-              <Separator style={{ marginVertical: 12 }} />
-            </>
-          );
-        }}
-        keyExtractor={(item) => item.id}
-      />
-    </View>
+    <KeyboardAvoidingView extraVerticalOffset={60}>
+      <View
+        style={{ flex: 1, paddingVertical: layout.spacing_x2, width: "100%" }}
+      >
+        <MiniTextInput
+          value={searchInput}
+          icon={searchSVG}
+          onChangeText={onSearchChange}
+          style={{
+            backgroundColor: "rgba(118, 118, 128, 0.24)",
+            paddingVertical: layout.spacing_x1,
+          }}
+          inputStyle={[fontSemibold14, { lineHeight: 0 }]}
+          placeholderTextColor={neutralA3}
+          placeholder="Search..."
+        />
+        <SpacerColumn size={3} />
+        <FlatList
+          data={searchResults}
+          renderItem={({ item }) => {
+            return (
+              <>
+                <SingleFriendChatList
+                  data={item}
+                  onPress={() => {
+                    setActiveConversation?.(item);
+                    navigation.navigate("Conversation", {
+                      conversationId: item?.id,
+                    });
+                  }}
+                />
+                <Separator style={{ marginVertical: 12 }} />
+              </>
+            );
+          }}
+          keyExtractor={(item) => item.id}
+        />
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 

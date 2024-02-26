@@ -7,7 +7,6 @@ import { CustomButton } from "../components/Button/CustomButton";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { useAppMode } from "@/hooks/useAppMode";
-import { useChatActivated } from "@/hooks/useChatActivated";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral77 } from "@/utils/style/colors";
 import {
@@ -16,6 +15,7 @@ import {
   fontSemibold30,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { checkAndBootWeshModule } from "@/weshnet/services";
 
 export const ChatActivationScreen: ScreenFC<"ChatActivation"> = ({
   navigation,
@@ -23,11 +23,10 @@ export const ChatActivationScreen: ScreenFC<"ChatActivation"> = ({
 }) => {
   const { width: windowWidth } = useWindowDimensions();
   const [, handleSet] = useAppMode();
-  const [, handleChatSet] = useChatActivated();
 
   const onActivatePress = () => {
     navigation.navigate("NativeWallet");
-    handleChatSet(true);
+    checkAndBootWeshModule();
     handleSet(route.params.appMode);
   };
 

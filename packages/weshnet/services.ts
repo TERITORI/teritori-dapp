@@ -33,6 +33,7 @@ import {
   resetMessageSlice,
   setIsOnboardingCompleted,
   selectFilteredConversationList,
+  setIsChatActivated,
 } from "../store/slices/message";
 import { store } from "../store/store";
 import { isElectron } from "../utils/isElectron";
@@ -69,7 +70,18 @@ const bootWeshModule = async () => {
   }, 15 * 1000);
 };
 
+export const stopWeshModule = async () => {
+  store.dispatch(setIsChatActivated(false));
+  if (Platform.OS !== "web" && !isRunningInExpoGo) {
+    const WeshnetModule = require("../../weshd");
+    await WeshnetModule.shutdown();
+  }
+  unsubscribeMessageSubscriptions();
+  stopMessagingConnection();
+};
+
 export const checkAndBootWeshModule = async () => {
+  store.dispatch(setIsChatActivated(true));
   try {
     if (Platform.OS === "web" && !isElectron()) {
       const queryString = window.location.search;
@@ -267,7 +279,6 @@ export const addContact = async (
   contactInfo: MessageState["contactInfo"],
 ) => {
   const url = new URL(shareLink);
-
   if (
     !url?.searchParams.has("accountPk") ||
     !url?.searchParams.has("rdvSeed")
@@ -437,9 +448,7 @@ export const handleRestoreAccount = async () => {
     }
     await AsyncStorage.removeItem(DEV_WESHPORT_STORAGE_KEY);
     store.dispatch(resetMessageSlice());
-    unsubscribeMessageSubscriptions();
-    unsubscribeMetadataSubscriptions();
-    store.dispatch(setIsWeshConnected(false));
+    stopMessagingConnection();
     setMessageOnboardingComplete();
     if (Platform.OS === "web") {
       setTimeout(() => {
@@ -451,3 +460,9 @@ export const handleRestoreAccount = async () => {
   }
   throw new Error("Couldn't load the file");
 };
+
+function stopMessagingConnection() {
+  unsubscribeMessageSubscriptions();
+  unsubscribeMetadataSubscriptions();
+  store.dispatch(setIsWeshConnected(false));
+}
