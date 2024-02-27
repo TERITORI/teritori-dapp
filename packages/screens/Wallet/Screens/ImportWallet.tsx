@@ -1,4 +1,5 @@
 import { Secp256k1HdWallet } from "@cosmjs/amino";
+import * as bip39 from "bip39";
 import React, { useState } from "react";
 import { TextInput, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -105,21 +106,13 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {
           <SpacerColumn size={2} />
           <CustomButton
             onPress={(_, navigation) => {
-              console.log(localPhrase);
-              if (!localPhrase) {
+              if (!localPhrase || !bip39.validateMnemonic(localPhrase)) {
+                alert("Invalid mnemonic");
                 return;
               }
               (async () => {
                 await setMnemonic(localPhrase, maxIndex + 1);
                 const native = await getNativeWallet("TORI", maxIndex + 1);
-
-                if (
-                  (native as unknown as string) === "bad mnemonic" ||
-                  !native
-                ) {
-                  alert("Invalid mnemonic");
-                  return;
-                }
                 setWallet(native);
               })();
               if (wallet) {
