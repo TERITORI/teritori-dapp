@@ -1,5 +1,5 @@
 import { Secp256k1HdWallet } from "@cosmjs/amino";
-import { stringToPath } from "@cosmjs/amino/node_modules/@cosmjs/crypto/build/slip10";
+import { stringToPath } from "@cosmjs/crypto/build/slip10";
 
 import { getValueFor, remove, save } from "./secure-store";
 
@@ -19,7 +19,7 @@ export const getNativeWallet = (
         await setMnemonic(mnemonic, index);
       }
       return await Secp256k1HdWallet.fromMnemonic(mnemonic, {
-        prefix, // maybe add validation ?
+        prefix,
         hdPaths: [stringToPath(path)],
       });
     } catch (e) {
