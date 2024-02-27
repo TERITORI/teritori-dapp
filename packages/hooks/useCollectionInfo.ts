@@ -150,8 +150,6 @@ export const useCollectionInfo = (
 
     const r = cloneDeep(collectionInfo);
 
-    console.log("discord link", r.discord);
-
     if (isLinkBanned(r.discord)) {
       delete r.discord;
     }
