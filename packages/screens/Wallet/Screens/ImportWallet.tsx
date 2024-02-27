@@ -1,5 +1,5 @@
 import { Secp256k1HdWallet } from "@cosmjs/amino";
-import * as bip39 from "bip39";
+import { validateMnemonic } from "bip39";
 import React, { useState } from "react";
 import { TextInput, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -106,7 +106,7 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {
           <SpacerColumn size={2} />
           <CustomButton
             onPress={(_, navigation) => {
-              if (!localPhrase || !bip39.validateMnemonic(localPhrase)) {
+              if (!localPhrase || !validateMnemonic(localPhrase)) {
                 alert("Invalid mnemonic");
                 return;
               }
