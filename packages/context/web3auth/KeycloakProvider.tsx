@@ -118,7 +118,7 @@ export const KeycloakProvider: React.FC<{ children: ReactNode }> = ({
           console.log("keycloak userInfo", userInfo);
           console.log("keycloak selectedWallet", selectedWallet);
           const universalAddress = userInfo["cosmos-universal-address"];
-          const currentDecoded = bech32.decode(selectedWallet?.address!);
+          const currentDecoded = bech32.decode(selectedWallet.address);
           if (
             bech32.encode("user", currentDecoded.words) !== universalAddress
           ) {
