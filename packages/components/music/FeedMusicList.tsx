@@ -111,7 +111,13 @@ export const FeedMusicList: React.FC<{
           {allowUpload && <UploadMusicButton onPress={onPressUploadMusic} />}
         </View>
       </View>
-      <View style={[contentGroupCStyle]}>
+      <View
+        style={
+          appMode === "mini"
+            ? { marginTop: layout.spacing_x2, paddingBottom: 100 } //paddingBottom :100 to make last card visible completely, otherwise gets hidden behind bottom tabs
+            : [contentGroupCStyle]
+        }
+      >
         <GridList<Post>
           data={tracks}
           minElemWidth={minCardWidth}
@@ -121,6 +127,7 @@ export const FeedMusicList: React.FC<{
             <TrackCard post={item} style={{ width: elemSize }} />
           )}
           onEndReached={onEndReached}
+          noFixedHeight
         />
       </View>
 
@@ -150,6 +157,7 @@ const contentGroupCStyle: ViewStyle = {
   justifyContent: "center",
   flexWrap: "wrap",
   marginTop: layout.spacing_x2,
+  paddingBottom: layout.spacing_x4,
 };
 
 const buttonGroupCStyle: ViewStyle = {
