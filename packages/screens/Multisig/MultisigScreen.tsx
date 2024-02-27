@@ -8,20 +8,19 @@ import {
 } from "react-native";
 
 import { GetStartedOption } from "./components/GetStartedOption";
-import multisigWalletSVG from "../../../assets/icons/organization/multisig-wallet.svg";
-import postJobSVG from "../../../assets/icons/organization/post-job.svg";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
 
 import { JoinState } from "@/api/multisig/v1/multisig";
+import multisigWalletSVG from "@/assets/icons/organization/multisig-wallet.svg";
+import postJobSVG from "@/assets/icons/organization/post-job.svg";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { AnimationFadeIn } from "@/components/animations/AnimationFadeIn";
-import { LoginButton } from "@/components/multisig/LoginButton";
 import { MultisigTransactions } from "@/components/multisig/MultisigTransactions";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
-import { useMultisigAuthToken } from "@/hooks/multisig/useMultisigAuthToken";
+import { useMultisigClient } from "@/hooks/multisig/useMultisigClient";
 import { useUserMultisigs } from "@/hooks/multisig/useUserMultisigs";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getUserId, NetworkKind } from "@/networks";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral33, neutral77, secondaryColor } from "@/utils/style/colors";
@@ -32,13 +31,14 @@ import { tinyAddress } from "@/utils/text";
 export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
-  const authToken = useMultisigAuthToken(selectedWallet?.userId);
 
   const {
     multisigs: data,
     isLoading: isMultisigLoading,
     isFetching: isMultisigFetching,
   } = useUserMultisigs(selectedWallet?.userId, JoinState.JOIN_STATE_IN);
+
+  const multisigClient = useMultisigClient(selectedWallet?.networkId);
 
   const { multisigs: invitations } = useUserMultisigs(
     selectedWallet?.userId,
@@ -61,12 +61,11 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
             <View
               style={{
                 flexDirection: "row",
-                justifyContent: "space-between",
+                justifyContent: "flex-start",
                 alignItems: "center",
               }}
             >
               <BrandText style={fontSemibold28}>My Multisigs</BrandText>
-              <LoginButton userId={selectedWallet?.userId} />
             </View>
             <SpacerColumn size={1.5} />
             <BrandText style={[fontSemibold16, { color: neutral77 }]}>
@@ -102,7 +101,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                   title="Create new"
                   icon={postJobSVG}
                   isBetaVersion
-                  disabled={!authToken}
+                  disabled={!multisigClient}
                   onPress={() => navigation.navigate("MultisigCreate")}
                 />
               )}
@@ -164,7 +163,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
               <SpacerColumn size={3} />
             </>
           )}
-          {!!authToken && (
+          {!!multisigClient && (
             <View style={horizontalContentPaddingCStyle}>
               <Separator color={neutral33} />
               <SpacerColumn size={3} />

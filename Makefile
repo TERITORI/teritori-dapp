@@ -33,6 +33,7 @@ PRICES_OHLC_REFRESH_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-ohlc-refresh:$(shell 
 P2E_DOCKER_IMAGE=$(DOCKER_REGISTRY)/p2e-update-leaderboard:$(shell git rev-parse --short HEAD)
 FEED_DOCKER_IMAGE=$(DOCKER_REGISTRY)/feed-clean-pinata-keys:$(shell git rev-parse --short HEAD)
 MULTISIG_DOCKER_IMAGE=$(DOCKER_REGISTRY)/cosmos-multisig-backend:$(shell git rev-parse --short HEAD)
+OID_PROVIDER_DOCKER_IMAGE=$(DOCKER_REGISTRY)/oid-provider:$(shell git rev-parse --short HEAD)
 
 node_modules: package.json yarn.lock
 	yarn
@@ -267,6 +268,11 @@ publish.feed-clean-pinata-keys:
 publish.multisig-backend:
 	docker build -f go/cmd/multisig-backend/Dockerfile . --platform linux/amd64 -t $(MULTISIG_DOCKER_IMAGE)
 	docker push $(MULTISIG_DOCKER_IMAGE)
+
+.PHONY: publish.oid-provider
+publish.oid-provider:
+	docker build -f go/cmd/oid-provider/Dockerfile . --platform linux/amd64 -t $(OID_PROVIDER_DOCKER_IMAGE)
+	docker push $(OID_PROVIDER_DOCKER_IMAGE)
 
 .PHONY: validate-networks
 validate-networks: node_modules

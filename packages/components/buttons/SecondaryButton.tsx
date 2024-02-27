@@ -41,6 +41,7 @@ export const SecondaryButton: React.FC<{
   hoverBorderColor?: string;
   loader?: boolean;
   textStyle?: TextStyle;
+  isLoading?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -59,22 +60,25 @@ export const SecondaryButton: React.FC<{
   numberOfLines,
   loader,
   textStyle,
+  isLoading: isLoadingProp,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLocalLoading, setIsLocalLoading] = useState(false);
   const [hovered, setHovered] = useState(false);
 
   const handlePress = useCallback(async () => {
-    if (isLoading || !onPress) {
+    if (isLocalLoading || !onPress) {
       return;
     }
-    setIsLoading(true);
+    setIsLocalLoading(true);
     try {
       await onPress();
     } catch (err) {
       console.error(err);
     }
-    setIsLoading(false);
-  }, [onPress, isLoading]);
+    setIsLocalLoading(false);
+  }, [onPress, isLocalLoading]);
+
+  const isLoading = isLoadingProp || isLocalLoading;
 
   const isDisabled = !!(disabled || (loader && isLoading));
 

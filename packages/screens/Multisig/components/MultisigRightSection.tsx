@@ -6,7 +6,6 @@ import React, { useState } from "react";
 import { View, ViewStyle } from "react-native";
 
 import ModalBase from "../../../components/modals/ModalBase";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { TNSMintNameModal } from "../../TeritoriNameService/TNSMintNameScreen";
 import { TNSRegisterScreen } from "../../TeritoriNameService/TNSRegisterScreen";
 
@@ -18,10 +17,8 @@ import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { SendModal } from "@/components/modals/SendModal";
 import { TNSNameFinderModal } from "@/components/modals/teritoriNameService/TNSNameFinderModal";
-import { LoginButton } from "@/components/multisig/LoginButton";
 import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
-import { useMultisigAuthToken } from "@/hooks/multisig/useMultisigAuthToken";
 import { useMultisigClient } from "@/hooks/multisig/useMultisigClient";
 import {
   multisigInfoQueryKey,
@@ -31,6 +28,7 @@ import { multisigTransactionsQueryKey } from "@/hooks/multisig/useMultisigTransa
 import { userMultisigsQueryKey } from "@/hooks/multisig/useUserMultisigs";
 import { useBalances } from "@/hooks/useBalances";
 import { useRunOrProposeTransaction } from "@/hooks/useRunOrProposeTransaction";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import {
   getCosmosNetworkByChainId,
   getNativeCurrency,
@@ -67,7 +65,6 @@ export const MultisigRightSection: React.FC = () => {
   const [joinMultisigModalVisible, setJoinMultisigModalVisible] =
     useState(false);
   const selectedWallet = useSelectedWallet();
-  const authToken = useMultisigAuthToken(selectedWallet?.userId);
   const multisigClient = useMultisigClient(network?.id);
   const { wrapWithFeedback } = useFeedbacks();
   const queryClient = useQueryClient();
@@ -95,9 +92,11 @@ export const MultisigRightSection: React.FC = () => {
 
   const actions: React.ReactElement[] = [];
 
-  if (!authToken) {
-    actions.push(<LoginButton userId={selectedWallet?.userId} />);
-  } else {
+  if (!multisigClient) {
+    return null;
+  }
+
+  if (multisigClient) {
     if (multisig) {
       if (!multisig.joined) {
         actions.push(
@@ -228,7 +227,6 @@ export const MultisigRightSection: React.FC = () => {
             }
             const account = await stargateClient.getAccount(multisig.address);
             await multisigClient.ClearSignatures({
-              authToken,
               multisigChainId: multisig.chainId,
               multisigAddress: multisig.address,
               sequence: account?.sequence || 0,
@@ -369,7 +367,6 @@ const JoinMultisigModal: React.FC<{
 }> = ({ multisigId, userId, visible, onClose }) => {
   const [network] = parseUserId(userId);
   const [name, setName] = useState("");
-  const authToken = useMultisigAuthToken(userId);
   const { multisig } = useMultisigInfo(multisigId);
   const multisigClient = useMultisigClient(network?.id);
   const { wrapWithFeedback } = useFeedbacks();
@@ -405,8 +402,8 @@ const JoinMultisigModal: React.FC<{
             if (!multisig) {
               throw new Error("Multisig not found");
             }
-            if (!authToken) {
-              throw new Error("Need an auth token");
+            if (!multisigClient) {
+              throw new Error("Missing multisig client");
             }
             const cosmosNetwork = getCosmosNetworkByChainId(multisig.chainId);
             if (!cosmosNetwork) {
@@ -415,7 +412,6 @@ const JoinMultisigModal: React.FC<{
             await multisigClient.CreateOrJoinMultisig({
               chainId: multisig.chainId,
               multisigPubkeyJson: multisig.pubkeyJson,
-              authToken,
               name,
               bech32Prefix: cosmosNetwork.addressPrefix,
             });

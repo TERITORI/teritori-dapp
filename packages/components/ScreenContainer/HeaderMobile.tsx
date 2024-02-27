@@ -14,6 +14,7 @@ import { NetworkSelectorMobile } from "../NetworkSelector/NetworkSelectorMobile"
 import { SVG } from "../SVG";
 import { SearchButtonMobile } from "../Search/SearchButtonMobile";
 import { ConnectWalletButtonMobile } from "../TopMenu/ConnectWalletButtonMobile";
+import { KeycloakButton } from "../auth/KeycloakButton";
 import { TogglePlayerButton } from "../mediaPlayer/TogglePlayerButton";
 import { BackButton } from "../navigation/components/BackButton";
 import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
@@ -65,6 +66,8 @@ export const HeaderMobile: FC<{
         />
         <SpacerRow size={1} />
         <ConnectWalletButtonMobile />
+        <SpacerRow size={1} />
+        <KeycloakButton />
         <SpacerRow size={1} />
         <TouchableOpacity
           onPress={() => {

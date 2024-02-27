@@ -5,13 +5,12 @@ import { Buffer } from "buffer";
 import { useCallback } from "react";
 
 import { useDAOMakeProposal } from "./dao/useDAOMakeProposal";
-import { useMultisigAuthToken } from "./multisig/useMultisigAuthToken";
 import { useMultisigClient } from "./multisig/useMultisigClient";
 import { multisigTransactionsQueryKey } from "./multisig/useMultisigTransactions";
 import { multisigTransactionsCountsQueryKey } from "./multisig/useMultisigTransactionsCounts";
 import useSelectedWallet from "./useSelectedWallet";
 
-import { MultisigService, Token } from "@/api/multisig/v1/multisig";
+import { MultisigService } from "@/api/multisig/v1/multisig";
 import { CosmosMsgForEmpty } from "@/contracts-clients/dao-core/DaoCore.types";
 import {
   getCosmosNetwork,
@@ -30,7 +29,6 @@ export const useRunOrProposeTransaction = (
   userKind: UserKind,
 ) => {
   const wallet = useSelectedWallet();
-  const multisigAuthToken = useMultisigAuthToken(wallet?.userId);
   const multisigClient = useMultisigClient(wallet?.networkId);
   const makeDAOProposal = useDAOMakeProposal(
     userId,
@@ -50,6 +48,9 @@ export const useRunOrProposeTransaction = (
       title?: string;
       navigateToProposals?: boolean;
     }) => {
+      if (!multisigClient) {
+        throw new Error("Multisig client not available");
+      }
       await runOrProposeTransaction({
         userKind,
         userId,
@@ -57,7 +58,6 @@ export const useRunOrProposeTransaction = (
         msgs,
         memo,
         multisigClient,
-        multisigAuthToken,
         title,
         makeDAOProposal,
         queryClient,
@@ -67,7 +67,6 @@ export const useRunOrProposeTransaction = (
     },
     [
       makeDAOProposal,
-      multisigAuthToken,
       multisigClient,
       navigation,
       queryClient,
@@ -85,7 +84,6 @@ const runOrProposeTransaction = async ({
   msgs,
   memo,
   multisigClient,
-  multisigAuthToken,
   title,
   makeDAOProposal,
   queryClient,
@@ -97,8 +95,7 @@ const runOrProposeTransaction = async ({
   senderAddress?: string;
   msgs: readonly EncodeObject[];
   memo?: string;
-  multisigClient: MultisigService;
-  multisigAuthToken: Token | undefined;
+  multisigClient: MultisigService | undefined;
   title?: string;
   makeDAOProposal: ReturnType<typeof useDAOMakeProposal>;
   queryClient: QueryClient;
@@ -132,7 +129,7 @@ const runOrProposeTransaction = async ({
       break;
     }
     case UserKind.Multisig: {
-      if (!multisigAuthToken) {
+      if (!multisigClient) {
         throw new Error("Multisig auth token not found");
       }
       if (!senderAddress) {
@@ -159,7 +156,6 @@ const runOrProposeTransaction = async ({
       const encodedMsgs = msgs.map((m) => cosmosTypesRegistry.encodeAsAny(m));
 
       await multisigClient.CreateTransaction({
-        authToken: multisigAuthToken,
         multisigAddress: userAddress,
         chainId: cosmosNetwork.chainId,
         feeJson: JSON.stringify(fee),

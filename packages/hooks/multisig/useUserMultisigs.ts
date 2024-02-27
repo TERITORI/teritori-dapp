@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
 
 import { JoinState } from "@/api/multisig/v1/multisig";
@@ -17,20 +16,15 @@ export const useUserMultisigs = (
   joinState?: JoinState,
 ) => {
   const [network] = parseUserId(userId);
-  const authToken = useMultisigAuthToken(userId);
   const multisigClient = useMultisigClient(network?.id);
   const { data, ...other } = useQuery(
-    [...userMultisigsQueryKey(userId), joinState, authToken, multisigClient],
+    [...userMultisigsQueryKey(userId), joinState, multisigClient],
     async () => {
-      if (network?.kind !== NetworkKind.Cosmos) {
-        return [];
-      }
-      if (!authToken) {
+      if (network?.kind !== NetworkKind.Cosmos || !multisigClient) {
         return [];
       }
       const { multisigs } = await multisigClient.Multisigs({
         limit: batchSize,
-        authToken,
         joinState,
         chainId: network.chainId,
       });

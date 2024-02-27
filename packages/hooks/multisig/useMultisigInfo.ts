@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
 import useSelectedWallet from "../useSelectedWallet";
 
@@ -13,12 +12,11 @@ export const multisigInfoQueryKey = (multisigId: string | undefined) => [
 
 export const useMultisigInfo = (id: string | undefined) => {
   const selectedWallet = useSelectedWallet();
-  const authToken = useMultisigAuthToken(selectedWallet?.userId);
   const client = useMultisigClient(selectedWallet?.networkId);
   const { data, ...other } = useQuery(
-    [...multisigInfoQueryKey(id), authToken, client],
+    [...multisigInfoQueryKey(id), client],
     async () => {
-      if (!authToken || !client) {
+      if (!client) {
         return null;
       }
       const [network, multisigAddress] = parseUserId(id);
@@ -27,7 +25,6 @@ export const useMultisigInfo = (id: string | undefined) => {
       }
       try {
         const { multisig } = await client.MultisigInfo({
-          authToken,
           multisigAddress,
           chainId: network.chainId,
         });

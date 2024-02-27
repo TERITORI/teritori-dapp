@@ -14,11 +14,7 @@ import {
 } from "./slices/marketplaceFilters";
 import { messageReducer, selectIsForceChatActivated } from "./slices/message";
 import { searchReducer } from "./slices/search";
-import {
-  multisigTokensAdapter,
-  networkSettingsAdapter,
-  settingsReducer,
-} from "./slices/settings";
+import { networkSettingsAdapter, settingsReducer } from "./slices/settings";
 import { squadPresetsReducer } from "./slices/squadPresets";
 import {
   addressBookReducer,
@@ -36,7 +32,6 @@ const migrations = {
       ...state,
       settings: {
         ...state.settings,
-        multisigTokens: multisigTokensAdapter.getInitialState(),
         networkSettings: networkSettingsAdapter.upsertMany(
           state.settings.networkSettings,
           defaultEnabledNetworks.map((nid) => ({
@@ -87,12 +82,21 @@ const migrations = {
       },
     };
   },
+  5: (state: any) => {
+    // remove multisigTokens from settings
+    // TODO: init keycloak stuff
+    const { multisigTokens, ...settings } = state.settings;
+    return {
+      ...state,
+      settings,
+    };
+  },
 };
 
 const rootPersistConfig = {
   key: "root",
   storage,
-  version: 4,
+  version: 5,
   migrate: createMigrate(migrations, { debug: false }),
   whitelist: [
     "wallets",

@@ -26,6 +26,7 @@ import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
 import { SearchBar } from "../Search/SearchBar";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
+import { KeycloakButton } from "../auth/KeycloakButton";
 import { Footer } from "../footers/Footer";
 import { MediaPlayerBar } from "../mediaPlayer/MediaPlayerBar";
 import { TogglePlayerButton } from "../mediaPlayer/TogglePlayerButton";
@@ -202,9 +203,8 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
               forceNetworkFeatures={forceNetworkFeatures}
               style={{ marginRight: layout.spacing_x1_5 }}
             />
-            <ConnectWalletButton
-              style={{ marginRight: headerMarginHorizontal }}
-            />
+            <ConnectWalletButton />
+            <KeycloakButton style={{ marginLeft: layout.spacing_x1_5 }} />
           </View>
         </View>
         {/*-----END TODO*/}

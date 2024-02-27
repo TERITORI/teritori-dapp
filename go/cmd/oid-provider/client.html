@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Teritori IdP</title>
+</head>
+
+<body style="background-color: black;">
+  <form id="form" method="post" style="display:none">
+    <input type="hidden" name="scopes" value="openid" />
+    <input id="info-input" type="hidden" name="info" />
+    <input id="signature-input" type="hidden" name="signature" />
+    <input type="submit" type="hidden" value="Verify Cosmos address" />
+  </form>
+  <script>
+    async function main() {
+      const challengeResponse = await fetch("/challenge")
+      const challenge = await challengeResponse.json()
+
+      const keplr = window.keplr
+      const chainId = "cosmoshub-4"
+      await keplr.enable(chainId)
+      const account = await keplr.getKey(chainId)
+
+      if (account.algo !== "secp256k1") {
+        alert("Unsupported key algorithm")
+        return
+      }
+
+      const info = JSON.stringify({
+        kind: "Login to Teritori Services",
+        challenge: challenge,
+        userBech32Prefix: "cosmos",
+        userPubkeyJson: JSON.stringify({
+          type: "tendermint/PubKeySecp256k1",
+          value: await bufferToBase64(account.pubKey),
+        }),
+      })
+      document.getElementById("info-input").value = info
+
+      const { signature } = await keplr.signArbitrary(chainId, account.bech32Address, info)
+      document.getElementById("signature-input").value = signature
+
+      document.getElementById("form").submit()
+    }
+
+    async function bufferToBase64(buffer) {
+      // use a FileReader to generate a base64 data URI:
+      const base64url = await new Promise(r => {
+        const reader = new FileReader()
+        reader.onload = () => r(reader.result)
+        reader.readAsDataURL(new Blob([buffer]))
+      });
+      // remove the `data:...;base64,` part from the start
+      return base64url.slice(base64url.indexOf(",") + 1);
+    }
+
+    window.onload = main
+  </script>
+</body>
+
+</html>

@@ -1,4 +1,4 @@
-package multisig
+package authcrypto
 
 import (
 	"crypto/ed25519"
@@ -18,9 +18,11 @@ import (
 
 var timeNow = time.Now // we use this to override time.Now in tests while preventing bad usage of the functions in this file
 
-const clientMagic = "Login to Teritori Multisig Service"
+const clientMagic = "Login to Teritori Services"
 
-func parsePubKeyJSON(pubkeyJSON string) (*secp256k1.PubKey, error) {
+const universalBech32Prefix = "user"
+
+func ParsePubKeyJSON(pubkeyJSON string) (*secp256k1.PubKey, error) {
 	pk := struct {
 		Type  string `json:"type"`
 		Value []byte `json:"value"`
@@ -38,8 +40,8 @@ func parsePubKeyJSON(pubkeyJSON string) (*secp256k1.PubKey, error) {
 	return &pubkey, nil
 }
 
-func makeChallenge(privateKey ed25519.PrivateKey, duration time.Duration) (*multisigpb.Challenge, error) {
-	nonce, err := makeNonce()
+func MakeChallenge(privateKey ed25519.PrivateKey, duration time.Duration) (*multisigpb.Challenge, error) {
+	nonce, err := MakeNonce()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to make nonce")
 	}
@@ -55,7 +57,7 @@ func makeChallenge(privateKey ed25519.PrivateKey, duration time.Duration) (*mult
 	return chall, nil
 }
 
-func validateChallenge(publicKey ed25519.PublicKey, challenge *multisigpb.Challenge) error {
+func ValidateChallenge(publicKey ed25519.PublicKey, challenge *multisigpb.Challenge) error {
 	expirationString := challenge.GetExpiration()
 	if expirationString == "" {
 		return errors.New("no expiration")
@@ -82,7 +84,7 @@ func validateChallenge(publicKey ed25519.PublicKey, challenge *multisigpb.Challe
 	return nil
 }
 
-func makeADR36SignDoc(data []byte, signerAddress string) []byte {
+func MakeADR36SignDoc(data []byte, signerAddress string) []byte {
 	const template = `{"account_number":"0","chain_id":"","fee":{"amount":[],"gas":"0"},"memo":"","msgs":[{"type":"sign/MsgSignData","value":{"data":%s,"signer":%s}}],"sequence":"0"}`
 	dataJSON, err := json.Marshal(base64.StdEncoding.EncodeToString(data))
 	if err != nil {
@@ -95,7 +97,7 @@ func makeADR36SignDoc(data []byte, signerAddress string) []byte {
 	return []byte(fmt.Sprintf(template, string(dataJSON), string(signerJSON)))
 }
 
-func makeNonce() ([]byte, error) {
+func MakeNonce() ([]byte, error) {
 	nonce := make([]byte, 32)
 	_, err := srand.Read(nonce)
 	if err != nil {
@@ -104,7 +106,7 @@ func makeNonce() ([]byte, error) {
 	return nonce, nil
 }
 
-func makeToken(privateKey ed25519.PrivateKey, publicKey ed25519.PublicKey, tokenDuration time.Duration, infoJSON string, signatureBase64 string) (*multisigpb.Token, error) {
+func MakeToken(privateKey ed25519.PrivateKey, publicKey ed25519.PublicKey, tokenDuration time.Duration, infoJSON string, signatureBase64 string) (*multisigpb.Token, error) {
 	infoBytes := []byte(infoJSON)
 	var info multisigpb.TokenRequestInfo
 	if err := protojson.Unmarshal(infoBytes, &info); err != nil {
@@ -120,12 +122,12 @@ func makeToken(privateKey ed25519.PrivateKey, publicKey ed25519.PublicKey, token
 		return nil, errors.New("missing user bech32 prefix in request")
 	}
 
-	err := validateChallenge(publicKey, info.Challenge)
+	err := ValidateChallenge(publicKey, info.Challenge)
 	if err != nil {
 		return nil, errors.Wrap(err, "invalid challenge")
 	}
 
-	userPublicKey, err := parsePubKeyJSON(info.UserPubkeyJson)
+	userPublicKey, err := ParsePubKeyJSON(info.UserPubkeyJson)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to parse user pubkey json")
 	}
@@ -140,7 +142,7 @@ func makeToken(privateKey ed25519.PrivateKey, publicKey ed25519.PublicKey, token
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to decode signature")
 	}
-	if !userPublicKey.VerifySignature(makeADR36SignDoc(infoBytes, chainUserAddress), []byte(signature)) {
+	if !userPublicKey.VerifySignature(MakeADR36SignDoc(infoBytes, chainUserAddress), []byte(signature)) {
 		return nil, errors.New("invalid user signature")
 	}
 
@@ -149,7 +151,7 @@ func makeToken(privateKey ed25519.PrivateKey, publicKey ed25519.PublicKey, token
 		return nil, errors.Wrap(err, "failed to re-encode user address, this should never happen")
 	}
 
-	nonce, err := makeNonce()
+	nonce, err := MakeNonce()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to make nonce")
 	}
@@ -169,7 +171,7 @@ func makeToken(privateKey ed25519.PrivateKey, publicKey ed25519.PublicKey, token
 	return token, nil
 }
 
-func validateToken(publicKey ed25519.PublicKey, token *multisigpb.Token) error {
+func ValidateToken(publicKey ed25519.PublicKey, token *multisigpb.Token) error {
 	if token == nil {
 		return errors.New("missing token")
 	}

@@ -20,6 +20,14 @@ services:
       - prices-data:/var/lib/postgresql/data/ # persist data even if container shuts down  
     ports:
       - "5433:5432"
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.1
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8080:8080"
+    command: start-dev
 
 volumes:
   teritori-data: # named volumes can be managed easier using docker-compose

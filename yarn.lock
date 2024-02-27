@@ -13540,6 +13540,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"js-sha256@npm:^0.10.1":
+  version: 0.10.1
+  resolution: "js-sha256@npm:0.10.1"
+  checksum: 6eb5c9f95aa902cec1930f036deb3bc664024b75fede456c0ac74b855797776c18620f47efec36787077a56ba2f3b8d6aacc7733ff8a2b5bb9ce6b655a35c5e6
+  languageName: node
+  linkType: hard
+
 "js-sha3@npm:0.8.0, js-sha3@npm:^0.8.0":
   version: 0.8.0
   resolution: "js-sha3@npm:0.8.0"
@@ -13773,6 +13780,24 @@ __metadata:
     object.assign: ^4.1.4
     object.values: ^1.1.6
   checksum: f4b05fa4d7b5234230c905cfa88d36dc8a58a6666975a3891429b1a8cdc8a140bca76c297225cb7a499fad25a2c052ac93934449a2c31a44fc9edd06c773780a
+  languageName: node
+  linkType: hard
+
+"jwt-decode@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "jwt-decode@npm:4.0.0"
+  checksum: 390e2edcb31a92e86c8cbdd1edeea4c0d62acd371f8a8f0a8878e499390c0ecf4c658b365c4e941e4ef37d0170e4ca650aaa49f99a45c0b9695a235b210154b0
+  languageName: node
+  linkType: hard
+
+"keycloak-js@npm:^23.0.1":
+  version: 23.0.7
+  resolution: "keycloak-js@npm:23.0.7"
+  dependencies:
+    base64-js: ^1.5.1
+    js-sha256: ^0.10.1
+    jwt-decode: ^4.0.0
+  checksum: 28b521050f8b80f6c1397a09cfe50210913bcf30374407a700b5dee6351e2fd64ceffaf2ef8c4a9fc0230cb6c03e014b12ae4b3f8247ffa4ed1e19877a33cd82
   languageName: node
   linkType: hard
 
@@ -19101,6 +19126,7 @@ __metadata:
     google-protobuf: ^3.21.2
     html-to-draftjs: ^1.5.0
     immutable: ^4.0.0
+    keycloak-js: ^23.0.1
     kubernetes-models: ^4.3.1
     listr2: ^8.0.1
     lodash: ^4.17.21
