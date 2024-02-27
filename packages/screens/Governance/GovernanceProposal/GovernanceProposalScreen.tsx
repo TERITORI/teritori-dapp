@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { View } from "react-native";
 
 import { GovernanceAllValidators } from "./GovernanceAllValidators/GovernanceValidatorsReview";
@@ -11,38 +11,21 @@ import { GovernanceVoteHeader } from "./GovernanceVoteHeader/GovernanceVoteHeade
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
+import { useProposal } from "@/hooks/governance/useProposal";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { mustGetCosmosNetwork, NetworkKind } from "@/networks";
+import { NetworkKind } from "@/networks";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { Proposal } from "@/utils/types/gov";
 
 export const GovernanceProposalScreen: ScreenFC<"GovernanceProposal"> = ({
   route: {
     params: { id },
   },
 }) => {
-  const [proposal, setProposal] = useState<Proposal>();
   const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
-
-  useEffect(() => {
-    const effect = async () => {
-      try {
-        const network = mustGetCosmosNetwork(selectedNetworkId);
-        const res = await fetch(
-          `${network.restEndpoint}/cosmos/gov/v1beta1/proposals/${id}`,
-        );
-        const data = await res.json();
-
-        setProposal(data.proposal);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    effect();
-  }, [id, selectedNetworkId]);
+  const proposal = useProposal(selectedNetworkId, id);
 
   return (
     <ScreenContainer

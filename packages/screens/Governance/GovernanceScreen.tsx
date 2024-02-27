@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 
 import { StatesDropdown } from "./components/dropdowns/StatesDropdown";
@@ -7,34 +7,19 @@ import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SearchInputRounded } from "@/components/sorts/SearchInputRounded";
+import { useProposals } from "@/hooks/governance/useProposals";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { mustGetCosmosNetwork, NetworkKind } from "@/networks";
+import { NetworkKind } from "@/networks";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { Proposal, ProposalStatus } from "@/utils/types/gov";
+import { ProposalStatus } from "@/utils/types/gov";
 
 export const GovernanceScreen: React.FC = () => {
-  const [proposals, setProposals] = useState<Proposal[]>([]);
   const [filter, setFilter] = useState<ProposalStatus>();
   const [searchInput, setSearchInput] = useState("");
   const selectedNetworkId = useSelectedNetworkId();
 
-  useEffect(() => {
-    const effect = async () => {
-      try {
-        const network = mustGetCosmosNetwork(selectedNetworkId);
-        const res = await fetch(
-          `${network.restEndpoint}/cosmos/gov/v1beta1/proposals`,
-        );
-        const data = await res.json();
-
-        setProposals(data.proposals.reverse());
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    effect();
-  }, [selectedNetworkId]);
+  const proposals = useProposals(selectedNetworkId);
 
   const filteredProposals = useMemo(
     () => (filter ? proposals.filter((p) => p.status === filter) : proposals),
