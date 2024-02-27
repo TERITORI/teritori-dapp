@@ -66,6 +66,12 @@ func NewProvider(secret []byte, clients map[string]*fosite.DefaultClient, logger
 }
 
 func (p *Provider) AuthEndpoint(rw http.ResponseWriter, req *http.Request) {
+	if err := req.ParseForm(); err != nil {
+		p.logger.Error("AuthEndpoint: Error occurred in ParseForm", zap.Any("url", req.URL), zap.Error(err))
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	p.logger.Info("AuthEndpoint", zap.Any("url", req.URL), zap.Any("post-form", req.PostForm))
 
 	// This context will be passed to all methods.
@@ -161,6 +167,12 @@ func (p *Provider) AuthEndpoint(rw http.ResponseWriter, req *http.Request) {
 }
 
 func (p *Provider) TokenEndpoint(rw http.ResponseWriter, req *http.Request) {
+	if err := req.ParseForm(); err != nil {
+		p.logger.Error("TokenEndpoint: Error occurred in ParseForm", zap.Any("url", req.URL), zap.Error(err))
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	p.logger.Info("TokenEndpoint", zap.Any("url", req.URL), zap.Any("post-form", req.PostForm))
 
 	// This context will be passed to all methods.
@@ -211,7 +223,14 @@ func (p *Provider) TokenEndpoint(rw http.ResponseWriter, req *http.Request) {
 }
 
 func (p *Provider) ChallengeEndpoint(rw http.ResponseWriter, req *http.Request) {
+	if err := req.ParseForm(); err != nil {
+		p.logger.Error("ChallengeEndpoint: Error occurred in ParseForm", zap.Any("url", req.URL), zap.Error(err))
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	p.logger.Info("ChallengeEndpoint", zap.Any("url", req.URL), zap.Any("post-form", req.PostForm))
+
 	challenge, err := authcrypto.MakeChallenge(p.challsk, 3*time.Minute)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)

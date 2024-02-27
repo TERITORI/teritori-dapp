@@ -11,8 +11,8 @@ import {
 } from "react";
 import { z } from "zod";
 
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useAppDispatch } from "../../store/store";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { useAppDispatch } from "@/store/store";
 
 type KeycloakContextValue = {
   authenticated: boolean;
@@ -53,7 +53,7 @@ export const KeycloakProvider: React.FC<{ children: ReactNode }> = ({
     if (!provider) {
       throw new Error("KeycloakProvider not initialized");
     }
-    await provider.login({ idpHint: "teritori-idp-dev" });
+    await provider.login({ idpHint: "oidc" });
   }, [provider]);
 
   const logout = useCallback(async () => {
@@ -64,7 +64,13 @@ export const KeycloakProvider: React.FC<{ children: ReactNode }> = ({
   }, [provider]);
 
   useEffect(() => {
-    console.log("KeycloakProvider: effect", selectedWallet);
+    console.log(
+      "KeycloakProvider: effect",
+      selectedWallet,
+      process.env.EXPO_PUBLIC_KEYCLOAK_URL,
+      process.env.EXPO_PUBLIC_KEYCLOAK_REALM,
+      process.env.EXPO_PUBLIC_KEYCLOAK_CLIENT_ID,
+    );
     const effect = async () => {
       try {
         setReady(false);
@@ -73,9 +79,9 @@ export const KeycloakProvider: React.FC<{ children: ReactNode }> = ({
         setToken(undefined);
         setAuthenticated(false);
         if (
-          !process.env.KEYCLOAK_URL ||
-          !process.env.KEYCLOAK_REALM ||
-          !process.env.KEYCLOAK_CLIENT_ID
+          !process.env.EXPO_PUBLIC_KEYCLOAK_URL ||
+          !process.env.EXPO_PUBLIC_KEYCLOAK_REALM ||
+          !process.env.EXPO_PUBLIC_KEYCLOAK_CLIENT_ID
         ) {
           throw new Error("KeycloakProvider not configured");
         }
@@ -83,9 +89,9 @@ export const KeycloakProvider: React.FC<{ children: ReactNode }> = ({
           throw new Error("KeycloakProvider no selected wallet");
         }
         const keycloak = new Keycloak({
-          url: "http://localhost:8080" || process.env.KEYCLOAK_URL,
-          realm: process.env.KEYCLOAK_REALM,
-          clientId: "teritori-dapp-dev" || process.env.KEYCLOAK_CLIENT_ID,
+          url: process.env.EXPO_PUBLIC_KEYCLOAK_URL,
+          realm: process.env.EXPO_PUBLIC_KEYCLOAK_REALM,
+          clientId: process.env.EXPO_PUBLIC_KEYCLOAK_CLIENT_ID,
         });
         console.log("keycloak created", keycloak);
         const authenticated = await keycloak.init({

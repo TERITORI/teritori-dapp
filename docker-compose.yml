@@ -25,8 +25,8 @@ services:
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
-    expose:
-      - "8080"
+    ports:
+      - "8080:8080"
     command: start-dev
 
 volumes:
