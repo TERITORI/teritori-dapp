@@ -18034,7 +18034,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sha3@npm:^2.1.4, sha3@npm:~2.1.0":
+"sha3@npm:~2.1.0":
   version: 2.1.4
   resolution: "sha3@npm:2.1.4"
   dependencies:
