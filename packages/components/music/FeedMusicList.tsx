@@ -127,7 +127,7 @@ export const FeedMusicList: React.FC<{
             <TrackCard post={item} style={{ width: elemSize }} />
           )}
           onEndReached={onEndReached}
-          noFixedHeight
+          noFixedHeight //FIXME: adding noFixedHeight breaks pagination ie.infinite pagination, without it scroll won't work
         />
       </View>
 

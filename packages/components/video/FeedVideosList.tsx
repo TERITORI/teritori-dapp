@@ -117,7 +117,7 @@ export const FeedVideosList: React.FC<{
             />
           )}
           onEndReached={onEndReached}
-          noFixedHeight
+          noFixedHeight //FIXME: adding noFixedHeight breaks pagination ie.infinite pagination, without it scroll won't work
         />
       </View>
 
