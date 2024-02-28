@@ -13,7 +13,6 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
-	"go.uber.org/zap"
 )
 
 type MinterMintWithMetadataInput struct {
@@ -21,6 +20,8 @@ type MinterMintWithMetadataInput struct {
 }
 
 type MetaData struct {
+	Name       string               `json:"name"`
+	Image      string               `json:"image"`
 	Attributes indexerdb.ArrayJSONB `json:"attributes"`
 }
 
@@ -44,14 +45,24 @@ func (h *Handler) handleMintWithMetadata(contractABI *abi.ABI, tx *pb.Tx, args m
 		// Get attributes from URI
 		var metaData MetaData
 		if err := FetchIPFSJSON(nftData.TokenUri, &metaData); err != nil {
-			h.logger.Error("failed to fetch nft metadata", zap.String("metadata-uri", nftData.TokenUri), zap.Error(err))
+			return errors.Wrap(err, fmt.Sprintf("fetch nft metadata from uri: %s", nftData.TokenUri))
+		}
+
+		name := nftData.Extension.Name
+		if name == "" {
+			name = metaData.Name
+		}
+
+		imageURI := nftData.Extension.Image
+		if imageURI == "" {
+			imageURI = metaData.Image
 		}
 
 		nft := indexerdb.NFT{
 			ID:           nftID,
 			OwnerID:      ownerID,
-			Name:         nftData.Extension.Name,
-			ImageURI:     nftData.Extension.Image,
+			Name:         name,
+			ImageURI:     imageURI,
 			CollectionID: collectionID,
 			Attributes:   metaData.Attributes,
 			TeritoriNFT: &indexerdb.TeritoriNFT{
