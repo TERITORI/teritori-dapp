@@ -8,10 +8,7 @@ import DropdownWithCheck from "../components/Dropdown/DropdownWithCheck";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
-import {
-  selectNotificationList,
-  selectTotalNotification,
-} from "@/store/slices/notification";
+import { selectNotificationList } from "@/store/slices/notification";
 import { ScreenFC } from "@/utils/navigation";
 import { fontSemibold18 } from "@/utils/style/fonts";
 
@@ -51,9 +48,8 @@ const filterOptionsConst = [
 const NotificationScreen: ScreenFC<"Notifications"> = ({ navigation }) => {
   const [, setFilterOptions] = useState<any>([]);
   const notifications = useSelector(selectNotificationList);
-  const notificaitonCount = useSelector(selectTotalNotification);
-  console.log(notifications);
-  console.log(notificaitonCount);
+
+  console.log("notifications:", notifications);
 
   const { width: windowWidth } = useWindowDimensions();
 

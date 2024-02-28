@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -35,8 +35,7 @@ import {
   selectIsForceChatInfoChecked,
   setIsForceChatInfoChecked,
 } from "@/store/slices/message";
-import { setNotificationList } from "@/store/slices/notification";
-import { RootState, store } from "@/store/store";
+import { RootState } from "@/store/store";
 import { RouteName, useAppNavigation } from "@/utils/navigation";
 import { neutral22, neutral77, secondaryColor } from "@/utils/style/colors";
 import {

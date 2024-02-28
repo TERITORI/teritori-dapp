@@ -1,11 +1,13 @@
 import React from "react";
 import { View } from "react-native";
 
+import { randomGradients } from "./notificationData";
 import GradientBox from "../components/GradientBox";
 
+import DoubleCheckWhiteSVG from "@/assets/icons/double-check-white.svg";
+import DoubleCheckSVG from "@/assets/icons/double-check.svg";
 import messageSvg from "@/assets/icons/social-threads/chat.svg";
 import { BrandText } from "@/components/BrandText";
-import FlexRow from "@/components/FlexRow";
 import { SVG } from "@/components/SVG";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
@@ -15,28 +17,46 @@ import {
   readNotification,
 } from "@/store/slices/notification";
 import { store } from "@/store/store";
-import {
-  neutral22,
-  neutralA3,
-  primaryColor,
-  secondaryColor,
-  successColor,
-} from "@/utils/style/colors";
+import { useAppNavigation } from "@/utils/navigation";
+import { neutralA3 } from "@/utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export default function MessengerNotificationCard({
   item,
 }: {
   item: TypeNotification;
 }) {
-  //   const randomIndex = Math.floor(Math.random() * 4);
+  const randomIndex = Math.floor(Math.random() * 4);
+  const navigation = useAppNavigation();
 
   return (
-    <FlexRow style={{ backgroundColor: item.isRead ? "" : successColor }}>
+    <CustomPressable
+      style={{
+        flexDirection: "row",
+      }}
+      onPress={() => {
+        store.dispatch(readNotification({ id: item.id }));
+
+        // TODO: Change to appropriate routes
+        if (item.type === "message") {
+          navigation.navigate("MiniChats", {});
+        }
+
+        if (item.type === "contact-request") {
+          navigation.navigate("MiniChats", {});
+        }
+
+        if (item.type === "group-join") {
+          navigation.navigate("MiniChats", {});
+        }
+      }}
+    >
+      {/* <FlexRow style={{ backgroundColor: azureBlue20 }}> */}
       <View style={{ position: "relative" }}>
-        {/* {item.img.url ? (
+        {item.avatar ? (
           <SVGorImageIcon
-            icon={item.img.url}
+            icon={item.avatar}
             iconSize={48}
             style={{
               borderRadius: 6,
@@ -47,7 +67,7 @@ export default function MessengerNotificationCard({
             colors={randomGradients[randomIndex].colors}
             direction={randomGradients[randomIndex].direction ?? "topBottom"}
           />
-        )} */}
+        )}
 
         <View
           style={{
@@ -77,16 +97,26 @@ export default function MessengerNotificationCard({
         />
       )}
 
-      {item.type === "accept-contact" && (
+      {item.type === "contact-request" && (
         <NotificationCardInnerContent
           id={item.id}
-          title="You contact request is accepted!"
+          title="You have received a new contact request!"
           date={item.timestamp}
           desc="message by"
           isRead={item.isRead}
         />
       )}
-    </FlexRow>
+
+      {item.type === "group-join" && (
+        <NotificationCardInnerContent
+          id={item.id}
+          title="You have received a group join request!"
+          date={item.timestamp}
+          desc="message by"
+          isRead={item.isRead}
+        />
+      )}
+    </CustomPressable>
   );
 }
 
@@ -110,65 +140,86 @@ function NotificationCardInnerContent({
   user,
 }: NotiCardContentProps) {
   return (
-    <CustomPressable
-      style={{ flex: 1, backgroundColor: neutralA3 }}
-      onPress={() => store.dispatch(readNotification({ id }))}
+    <View
+      style={{
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        gap: layout.spacing_x2,
+      }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <BrandText style={[fontSemibold14]}>{title}</BrandText>
+      <View style={{ flex: 1 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            flex: 1,
+          }}
+        >
+          <BrandText style={[fontSemibold14]} numberOfLines={2}>
+            {title}
+          </BrandText>
+        </View>
 
+        {/* <SpacerColumn size={0.4} /> */}
+        {/* <View style={{ flexDirection: "row" }}>
+          <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
+            {desc}
+          </BrandText>
+
+          {user && (
+            <>
+              {user?.userAvatar ? (
+                <>
+                  <SpacerRow size={1} />
+                  <SVGorImageIcon
+                    icon={user.userAvatar}
+                    iconSize={18}
+                    style={{
+                      borderRadius: 18 / 2,
+                    }}
+                  />
+                  <BrandText style={[fontSemibold14]}>
+                    {user.username}
+                  </BrandText>
+                </>
+              ) : (
+                <>
+                  <SpacerRow size={1} />
+                  <GradientBox
+                    colors={[secondaryColor, primaryColor]}
+                    size={18}
+                    radius={9}
+                  />
+                  <SpacerRow size={0.7} />
+                  <BrandText style={[fontSemibold14]}>
+                    {user?.username}
+                  </BrandText>
+                </>
+              )}
+            </>
+          )}
+
+          {link && (
+            <>
+              <SpacerRow size={0.7} />
+              <BrandText style={[fontSemibold14]}>{link}</BrandText>
+            </>
+          )}
+        </View> */}
+      </View>
+
+      <View style={{ alignItems: "flex-end" }}>
         <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
           {date}
         </BrandText>
-      </View>
-
-      <SpacerColumn size={0.4} />
-      <View style={{ flexDirection: "row" }}>
-        <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
-          {desc}
-        </BrandText>
-
-        {user && (
-          <>
-            {user?.userAvatar ? (
-              <>
-                <SpacerRow size={1} />
-                <SVGorImageIcon
-                  icon={user.userAvatar}
-                  iconSize={18}
-                  style={{
-                    borderRadius: 18 / 2,
-                  }}
-                />
-                <BrandText style={[fontSemibold14]}>{user.username}</BrandText>
-              </>
-            ) : (
-              <>
-                <SpacerRow size={1} />
-                <GradientBox
-                  colors={[secondaryColor, primaryColor]}
-                  size={18}
-                  radius={9}
-                />
-                <SpacerRow size={0.7} />
-                <BrandText style={[fontSemibold14]}>{user?.username}</BrandText>
-              </>
-            )}
-          </>
-        )}
-
-        {link && (
-          <>
-            <SpacerRow size={0.7} />
-            <BrandText style={[fontSemibold14]}>{link}</BrandText>
-          </>
+        <SpacerColumn size={0.4} />
+        {!isRead ? (
+          <SVG source={DoubleCheckSVG} height={16} width={16} />
+        ) : (
+          <SVG source={DoubleCheckWhiteSVG} height={16} width={16} />
         )}
       </View>
-    </CustomPressable>
+    </View>
   );
 }

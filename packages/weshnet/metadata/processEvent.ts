@@ -17,6 +17,11 @@ import { weshClient } from "../client";
 import { subscribeMessages } from "../message/subscriber";
 import { bytesFromString, decodeJSON, stringFromBytes } from "../utils";
 
+import {
+  setNotificationList,
+  setNotificationRequest,
+} from "@/store/slices/notification";
+
 const processedMetadataIds: string[] = [];
 
 export const processMetadata = async (data: GroupMetadataEvent) => {
@@ -93,6 +98,15 @@ export const processMetadata = async (data: GroupMetadataEvent) => {
           }),
         );
 
+        store.dispatch(
+          setNotificationRequest({
+            id: stringFromBytes(parsedData.payload.contactPk),
+            avatar: parsedData.payload.contactMetadata.avatar,
+            isRead: false,
+            type: "contact-request",
+          }),
+        );
+
         break;
       }
       case EventType.EventTypeAccountContactRequestIncomingDiscarded: {
@@ -113,6 +127,22 @@ export const processMetadata = async (data: GroupMetadataEvent) => {
           ),
         );
 
+        store.dispatch(
+          setNotificationList(
+            contactRequests
+              .filter(
+                (item) =>
+                  item.contactId !==
+                  stringFromBytes(parsedData.payload.contactPk),
+              )
+              .map((notification) => ({
+                id: notification.id,
+                type: "contact-request",
+                isRead: false,
+              })),
+          ),
+        );
+
         break;
       }
       case EventType.EventTypeAccountContactRequestIncomingAccepted: {
@@ -130,6 +160,7 @@ export const processMetadata = async (data: GroupMetadataEvent) => {
 
         if (contactRequestIndex !== -1) {
           const contactRequest = contactRequests[contactRequestIndex];
+
           store.dispatch(
             setContactRequestList(
               contactRequests.filter(
@@ -137,6 +168,21 @@ export const processMetadata = async (data: GroupMetadataEvent) => {
                   item.contactId !==
                   stringFromBytes(parsedData.payload.contactPk),
               ),
+            ),
+          );
+          store.dispatch(
+            setNotificationList(
+              contactRequests
+                .filter(
+                  (item) =>
+                    item.contactId !==
+                    stringFromBytes(parsedData.payload.contactPk),
+                )
+                .map((notification) => ({
+                  id: notification.id,
+                  type: "contact-request",
+                  isRead: false,
+                })),
             ),
           );
           const group = await weshClient.client.GroupInfo({
