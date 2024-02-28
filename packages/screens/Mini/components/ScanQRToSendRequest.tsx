@@ -53,21 +53,21 @@ export const ScanQRToSendRequest = ({
     setAddContactLoading(false);
   };
 
-  const onCloseQRScannerPress = async (data?: string) => {
+  const onCloseQRSacnnerPress = async (data?: string) => {
     if (data) {
       await handleAddContact(data);
     }
     setShowQRScanner(false);
   };
 
-  const onOpenQRScannerPress = () => {
+  const onOpenQRSacnnerPress = () => {
     setShowQRScanner(true);
   };
 
   return (
     <>
       <CustomButton
-        onPress={onOpenQRScannerPress}
+        onPress={onOpenQRSacnnerPress}
         type={buttonVariant}
         style={{
           flexDirection: "row",
@@ -90,7 +90,7 @@ export const ScanQRToSendRequest = ({
           </>
         )}
       </CustomButton>
-      {showQRScanner && <QRCodeScannerModal onClose={onCloseQRScannerPress} />}
+      {showQRScanner && <QRCodeScannerModal onClose={onCloseQRSacnnerPress} />}
     </>
   );
 };
