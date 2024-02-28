@@ -90,7 +90,7 @@ export const FeedbacksContextProvider: React.FC<{ children: ReactNode }> = ({
   const clearToast = () => setToast(initialToast);
 
   useEffect(() => {
-    const toastDuration = toast.duration || 8000;
+    const toastDuration = toast.duration || initialToast.duration;
 
     const timeoutID = setTimeout(() => {
       // If the toast is in "mini" mode and showAlways flag is enabled, do not clear the toast
@@ -120,14 +120,14 @@ export const FeedbacksContextProvider: React.FC<{ children: ReactNode }> = ({
         return async () => {
           try {
             await cb();
-            handleSetToast({
+            setToast({
               mode: "normal",
               type: "success",
               message: "",
               ...success,
             });
           } catch (err) {
-            handleSetToast({
+            setToast({
               mode: "normal",
               type: "error",
               message: "",
@@ -146,29 +146,22 @@ export const FeedbacksContextProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  const handleSetToast = ({ ...restArgs }: Toast) => {
-    setToast({
-      ...restArgs,
-    });
-  };
-  console.log(toast);
-
   return (
     <FeedbacksContext.Provider
       value={{
         loadingFullScreen,
         setLoadingFullScreen,
         setToastError: ({ title = "", ...args }) =>
-          handleSetToast({ mode: "normal", type: "error", title, ...args }),
+          setToast({ mode: "normal", type: "error", title, ...args }),
         setToastSuccess: ({ title = "", ...args }) =>
-          handleSetToast({
+          setToast({
             mode: "normal",
             type: "success",
             title,
             ...args,
           }),
         wrapWithFeedback,
-        setToast: handleSetToast,
+        setToast,
       }}
     >
       {/*==== Loader full screen*/}
