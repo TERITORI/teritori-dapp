@@ -128,7 +128,6 @@ const mapContainer: ViewStyle = {
 };
 
 const unitCardStyle: ViewStyle = {
-  // width: TRACK_CARD_WIDTH,
   backgroundColor: neutral17,
   padding: layout.spacing_x1_5,
   borderRadius: 12,

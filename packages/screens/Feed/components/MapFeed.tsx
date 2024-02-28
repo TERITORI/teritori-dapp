@@ -2,7 +2,6 @@ import React, { Suspense, lazy } from "react";
 import { Platform, ScrollView, useWindowDimensions } from "react-native";
 
 import { FeedHeader } from "./FeedHeader";
-// import { FeedMapList } from "@/components/socialFeed/NewsFeed/MapComponent/FeedMapList.web";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { headerHeight } from "../../../utils/style/layout";
