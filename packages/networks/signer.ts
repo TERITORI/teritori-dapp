@@ -10,7 +10,7 @@ import {
   defaultRegistryTypes,
   SigningStargateClient,
 } from "@cosmjs/stargate";
-import { Platform } from "react-native";
+import { DeviceEventEmitter, Platform } from "react-native";
 
 import {
   teritoriAminoConverters,
@@ -114,7 +114,10 @@ export const getKeplrSigningCosmWasmClient = async (
     throw new Error("gas price not found");
   }
   if (Platform.OS !== "web") {
-    const wallet = await getNativeWallet(network.addressPrefix, 1); // todo make multi wallet
+    DeviceEventEmitter.addListener("native-wallet-index-update", (e) => {
+      console.log(e.message); // This will log: 'This is a global event'
+    });
+    const wallet = await getNativeWallet(network.addressPrefix, 1);
 
     return SigningCosmWasmClient.connectWithSigner(
       network.rpcEndpoint,

@@ -13,6 +13,7 @@ export const getNativeWallet = (
   return (async () => {
     try {
       let mnemonic = await getMnemonic(index);
+      console.log("mnemonic", mnemonic);
       if (!mnemonic) {
         console.log("no mnemonic found, creating new one");
         mnemonic = createMnemonic();
@@ -30,9 +31,11 @@ export const getNativeWallet = (
 
 export const getMnemonic = async (index: number = 0) => {
   try {
+    console.log("getting mnemonic", index);
     return await getValueFor(`mnemonic-${index}`);
   } catch (e) {
-    throw new Error(`failed to get mnemonic ${e}`);
+    console.error(`failed to get mnemonic ${e}`);
+    return null;
   }
 };
 
