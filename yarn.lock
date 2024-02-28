@@ -10891,6 +10891,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-barcode-scanner@npm:~12.9.3":
+  version: 12.9.3
+  resolution: "expo-barcode-scanner@npm:12.9.3"
+  dependencies:
+    expo-image-loader: ~4.6.0
+  peerDependencies:
+    expo: "*"
+  checksum: a07fe72431ca56598d68888cc1afeb7c9e6c55a69220ddb9f4bcbb4c22e80df5bd3f657dcec00066b916078eaf9697db34f44cfd86dd18f825b0c2d594afcaa7
+  languageName: node
+  linkType: hard
+
 "expo-blur@npm:~12.9.2":
   version: 12.9.2
   resolution: "expo-blur@npm:12.9.2"
@@ -16928,20 +16939,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-vision-camera@npm:^3.9.0":
-  version: 3.9.0
-  resolution: "react-native-vision-camera@npm:3.9.0"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-    react-native-worklets-core: "*"
-  peerDependenciesMeta:
-    react-native-worklets-core:
-      optional: true
-  checksum: 52cca29ed7b8d8fcc4ae8f5e8da71844d0a96dfa642833fbda611469dac9a2a9fbcace2d9c2a09ab735d1d91582815a05bd3b466889afbcc2bd1deae2112969b
-  languageName: node
-  linkType: hard
-
 "react-native-web@npm:~0.19.6":
   version: 0.19.10
   resolution: "react-native-web@npm:0.19.10"
@@ -19086,6 +19083,7 @@ __metadata:
     ethers: ^5.7.2
     expo: ~50.0.8
     expo-av: ~13.10.5
+    expo-barcode-scanner: ~12.9.3
     expo-blur: ~12.9.2
     expo-clipboard: ~5.0.1
     expo-dev-client: ~3.3.9
@@ -19148,7 +19146,6 @@ __metadata:
     react-native-text-ticker: ^1.14.0
     react-native-url-polyfill: ^2.0.0
     react-native-vector-icons: ^10.0.2
-    react-native-vision-camera: ^3.9.0
     react-native-web: ~0.19.6
     react-native-webview: 13.6.4
     react-redux: ^8.0.2
