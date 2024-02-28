@@ -44,7 +44,7 @@ func NewHandler(handlerConfig *HandlerConfig) (*Handler, error) {
 	}, nil
 }
 
-var TRANSFER_TOPIC = HashTopic("Transfer(address,address,uint256)")
+var transferTopic = HashTopic("Transfer(address,address,uint256)")
 
 func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	var metaData *bind.MetaData
@@ -72,7 +72,7 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	default:
 		for _, log := range tx.Receipt.Logs {
 			if strings.EqualFold(log.Address, h.network.RiotNFTAddressGen0) {
-				if !bytes.Equal(log.Topics[0], TRANSFER_TOPIC) {
+				if !bytes.Equal(log.Topics[0], transferTopic) {
 					return nil
 				}
 
