@@ -9,6 +9,7 @@ const main = async () => {
 
     import (
       "encoding/json"
+      
       "github.com/pkg/errors"
     )
   `);
