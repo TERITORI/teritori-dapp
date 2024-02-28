@@ -8,6 +8,7 @@ import {
   PanResponder,
   Animated,
   GestureResponderEvent,
+  ScrollView,
 } from "react-native";
 
 import chevronSVG from "../../../../assets/icons/chevron-left.svg";
@@ -165,7 +166,15 @@ export const BlurScreenContainer = ({
           </View>
         )}
 
-        <View style={{ flex: 1, backgroundColor: background }}>{children}</View>
+        <ScrollView
+          scrollEnabled={false}
+          contentContainerStyle={{
+            backgroundColor: background,
+            flex: 1,
+          }}
+        >
+          {children}
+        </ScrollView>
       </Animated.View>
     </SafeAreaView>
   );
