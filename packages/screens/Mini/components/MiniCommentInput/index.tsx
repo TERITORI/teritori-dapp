@@ -230,6 +230,8 @@ export const MiniCommentInput = React.forwardRef<
           setToast({
             message: "Fail to pin to IPFS, please try to Publish again",
             duration: 5000,
+            mode: "mini",
+            type: "error",
           });
           setIsUploadLoading(false);
           return;
@@ -256,6 +258,8 @@ export const MiniCommentInput = React.forwardRef<
         setToast({
           message: err instanceof Error ? err.message : `${err}`,
           duration: 3000,
+          mode: "mini",
+          type: "error",
         });
       }
     };
