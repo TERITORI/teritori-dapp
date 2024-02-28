@@ -1,5 +1,5 @@
 import { ResizeMode } from "expo-av";
-import React, { Fragment, useMemo, useState } from "react";
+import React, { Fragment, useMemo, useRef, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 import Animated, {
   useAnimatedRef,
@@ -9,7 +9,6 @@ import Animated, {
 
 import useSelectedWallet from "../../../../../hooks/useSelectedWallet";
 import CustomAppBar from "../../../components/AppBar/CustomAppBar";
-import { VideoCommentInput } from "../VideoCommentInput";
 
 import { Post, PostsRequest } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
@@ -32,13 +31,21 @@ import {
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { getNetwork, NetworkKind, parseUserId } from "@/networks";
 import { VideoComment } from "@/screens/FeedPostView/components/VideoComment";
+import {
+  MiniCommentInput,
+  MiniCommentInputInputHandle,
+} from "@/screens/Mini/components/MiniCommentInput";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import { DEFAULT_USERNAME, postResultToPost } from "@/utils/social-feed";
-import { neutralA3 } from "@/utils/style/colors";
-import { fontSemibold14 } from "@/utils/style/fonts";
+import { neutral00, neutralA3 } from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
-import { PostCategory, ZodSocialFeedVideoMetadata } from "@/utils/types/feed";
+import {
+  PostCategory,
+  ReplyToType,
+  ZodSocialFeedVideoMetadata,
+} from "@/utils/types/feed";
 
 type Props = {
   networkId: string;
@@ -51,9 +58,12 @@ export const MiniVideoPostDetails = ({
   post,
   refetchPost,
 }: Props) => {
+  const feedInputRef = useRef<MiniCommentInputInputHandle>(null);
+
   const { width: windowWidth } = useWindowDimensions();
   const wallet = useSelectedWallet();
   const network = getNetwork(networkId);
+  const [replyTo, setReplyTo] = useState<ReplyToType>();
 
   const [localPost, setLocalPost] = useState(post || Post.create());
   const video = zodTryParseJSON(ZodSocialFeedVideoMetadata, localPost.metadata);
@@ -68,6 +78,7 @@ export const MiniVideoPostDetails = ({
     data: commentsData,
     hasNextPage,
     fetchNextPage,
+    refetch: refetchComments,
   } = useFetchComments({
     parentId: localPost.identifier,
     totalCount: localPost.subPostLength,
@@ -134,17 +145,23 @@ export const MiniVideoPostDetails = ({
 
   if (!video) return <BrandText>Video not valid</BrandText>;
 
+  const handleSubmitInProgress = () => {
+    if (replyTo?.parentId && replyTo.yOffsetValue)
+      aref.current?.scrollTo(replyTo.yOffsetValue);
+    else aref.current?.scrollTo(0);
+  };
+
   return (
-    <ScreenContainer
-      forceNetworkId={networkId}
-      fullWidth
-      responsive
-      noMargin
-      footerChildren
-      noScroll
-      headerMini={<CustomAppBar backEnabled title={`Video by ${username}`} />}
-    >
-      <KeyboardAvoidingView>
+    <KeyboardAvoidingView extraVerticalOffset={-100}>
+      <ScreenContainer
+        forceNetworkId={networkId}
+        fullWidth
+        responsive
+        noMargin
+        footerChildren
+        noScroll
+        headerMini={<CustomAppBar backEnabled title={`Video by ${username}`} />}
+      >
         <Animated.ScrollView
           ref={aref}
           contentContainerStyle={{
@@ -223,12 +240,13 @@ export const MiniVideoPostDetails = ({
                 </BrandText>
               </>
             )}
-            <VideoCommentInput
-              count={comments.length}
-              networkId={networkId}
-              post={localPost}
-              onComment={refetchPost}
-            />
+
+            <SpacerColumn size={2} />
+            <SpacerColumn size={2} />
+            <BrandText style={fontSemibold16}>
+              {comments.length} comments
+            </BrandText>
+            <SpacerColumn size={1.5} />
             {comments.map((comment, index) => (
               <Fragment key={index}>
                 <SpacerColumn size={2.5} />
@@ -248,7 +266,31 @@ export const MiniVideoPostDetails = ({
             />
           </View>
         </Animated.ScrollView>
-      </KeyboardAvoidingView>
-    </ScreenContainer>
+        <View
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: neutral00,
+            paddingVertical: layout.spacing_x0_75,
+          }}
+        >
+          <MiniCommentInput
+            style={{
+              alignSelf: "center",
+            }}
+            ref={feedInputRef}
+            replyTo={replyTo}
+            parentId={post.identifier}
+            onSubmitInProgress={handleSubmitInProgress}
+            onSubmitSuccess={() => {
+              setReplyTo(undefined);
+              refetchComments();
+            }}
+          />
+        </View>
+      </ScreenContainer>
+    </KeyboardAvoidingView>
   );
 };
