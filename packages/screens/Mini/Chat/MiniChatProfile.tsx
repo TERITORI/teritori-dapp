@@ -1,4 +1,3 @@
-import * as Clipboard from "expo-clipboard";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
@@ -16,6 +15,7 @@ import { OptimizedImage } from "@/components/OptimizedImage";
 import { SVG } from "@/components/SVG";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
 import { SpacerColumn } from "@/components/spacer";
+import Clipboard from "@/modules/Clipboard";
 import { selectContactInfo, setContactInfo } from "@/store/slices/message";
 import { ScreenFC } from "@/utils/navigation";
 import {
