@@ -82,3 +82,8 @@ func DecodeTopicToInt(topicData []byte) (int64, error) {
 	}
 	return numInt, nil
 }
+
+func DecodeTopicToAddr(topicData []byte) string {
+	hexStr := hex.EncodeToString(topicData)
+	return fmt.Sprintf("0x%s", hexStr[len(hexStr)-40:])
+}

@@ -45,6 +45,7 @@ func NewHandler(handlerConfig *HandlerConfig) (*Handler, error) {
 
 func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	var metaData *bind.MetaData
+
 	// NOTE: Order of case if important because  we can have multi call in same tx
 	switch {
 	case strings.EqualFold(tx.Info.To, h.network.RiotSquadStakingContractAddress):
@@ -64,8 +65,28 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	// Bridge
 	case strings.EqualFold(tx.Info.To, h.network.RiotBridgeAddressGen0), strings.EqualFold(tx.Info.To, h.network.RiotBridgeAddressGen1):
 		metaData = abiGo.AxelarBridgeETHMetaData
-	// If not matching with known handlers continue
+	// If the tx is not related to our contract then try to detect if there is nft transfer in the tx
 	default:
+		for _, log := range tx.Receipt.Logs {
+			if strings.EqualFold(log.Address, h.network.RiotNFTAddressGen0) {
+				// Transfer event will have 4 topics
+				if len(log.Topics) != 4 {
+					return nil
+				}
+
+				from := DecodeTopicToAddr(log.Topics[1])
+				to := DecodeTopicToAddr(log.Topics[2])
+				nftID, err := DecodeTopicToInt(log.Topics[3])
+				if err != nil {
+					// If unable to convert topic 3 => int then maybe msg is not transfer
+					return nil
+				}
+
+				if err := h.handleTransfer(tx, log.Address, from, to, nftID); err != nil {
+					return errors.Wrap(err, "failed to handle transfer")
+				}
+			}
+		}
 		return nil
 	}
 
