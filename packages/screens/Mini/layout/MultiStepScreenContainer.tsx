@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
-import { SafeAreaView, View } from "react-native";
+import { SafeAreaView, ScrollView, View } from "react-native";
 
 import chevronLeftSVG from "../../../../assets/icons/chevron-left.svg";
 import teritoriSVG from "../../../../assets/icons/teritori-white.svg";
@@ -54,7 +54,9 @@ export default function MultiStepScreenContainer({
         <SpacerColumn size={2} />
         <ProgressLine percent={screenPercentage} />
       </View>
-      {children}
+      <ScrollView scrollEnabled={false} style={{ flex: 1 }}>
+        {children}
+      </ScrollView>
     </SafeAreaView>
   );
 }
