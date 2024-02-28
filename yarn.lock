@@ -21354,7 +21354,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"victory@npm:^36.6.12, victory@npm:^36.9.1":
+"victory@npm:^36.9.1":
   version: 36.9.1
   resolution: "victory@npm:36.9.1"
   dependencies:
