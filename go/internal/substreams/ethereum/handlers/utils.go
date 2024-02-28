@@ -11,6 +11,7 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/internal/ipfsutil"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/pkg/errors"
+	"golang.org/x/crypto/sha3"
 )
 
 func InputsToJson(method *abi.Method, rawData []byte) ([]byte, error) {
@@ -86,4 +87,10 @@ func DecodeTopicToInt(topicData []byte) (int64, error) {
 func DecodeTopicToAddr(topicData []byte) string {
 	hexStr := hex.EncodeToString(topicData)
 	return fmt.Sprintf("0x%s", hexStr[len(hexStr)-40:])
+}
+
+func HashTopic(topicSignature string) []byte {
+	f := sha3.NewLegacyKeccak256()
+	f.Write([]byte(topicSignature))
+	return f.Sum(nil)
 }
