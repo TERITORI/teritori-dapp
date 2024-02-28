@@ -26,13 +26,8 @@ import {
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-export type ToastStatusType =
-  | "info"
-  | "success"
-  | "error"
-  | "warning"
-  | "loading";
-export type ToastVariantType = "solid" | "outline";
+type ToastStatusType = "info" | "success" | "error" | "warning" | "loading";
+type ToastVariantType = "solid" | "outline";
 
 export interface MiniToastProps {
   type?: ToastStatusType;
