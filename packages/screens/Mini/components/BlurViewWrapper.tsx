@@ -1,5 +1,4 @@
 import { BlurView, BlurViewProps } from "expo-blur";
-import * as Clipboard from "expo-clipboard";
 import { Dispatch, PropsWithChildren, SetStateAction, useState } from "react";
 import { StyleProp, TextStyle, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
@@ -11,6 +10,7 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerColumn } from "@/components/spacer";
+import Clipboard from "@/modules/Clipboard";
 import { neutral09 } from "@/utils/style/colors";
 import { fontSemibold13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
