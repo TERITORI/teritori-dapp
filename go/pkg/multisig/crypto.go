@@ -75,7 +75,7 @@ func validateChallenge(publicKey ed25519.PublicKey, challenge *multisigpb.Challe
 		return errors.Wrap(err, "failed to marshal data")
 	}
 
-	if !ed25519.Verify(publicKey, challengeDataBytes, challenge.ServerSignature) {
+	if !ed25519.Verify(publicKey, challengeDataBytes, challenge.GetServerSignature()) {
 		return errors.New("bad signature")
 	}
 
@@ -111,21 +111,21 @@ func makeToken(privateKey ed25519.PrivateKey, publicKey ed25519.PublicKey, token
 		return nil, errors.Wrap(err, "failed to unmarshal info")
 	}
 
-	if info.Kind != clientMagic {
+	if info.GetKind() != clientMagic {
 		return nil, errors.New("warning! you might be victim of a phishing attack, the client magic is invalid")
 	}
 
-	prefix := info.UserBech32Prefix
+	prefix := info.GetUserBech32Prefix()
 	if prefix == "" {
 		return nil, errors.New("missing user bech32 prefix in request")
 	}
 
-	err := validateChallenge(publicKey, info.Challenge)
+	err := validateChallenge(publicKey, info.GetChallenge())
 	if err != nil {
 		return nil, errors.Wrap(err, "invalid challenge")
 	}
 
-	userPublicKey, err := parsePubKeyJSON(info.UserPubkeyJson)
+	userPublicKey, err := parsePubKeyJSON(info.GetUserPubkeyJson())
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to parse user pubkey json")
 	}
@@ -174,7 +174,7 @@ func validateToken(publicKey ed25519.PublicKey, token *multisigpb.Token) error {
 		return errors.New("missing token")
 	}
 
-	expiration, err := decodeTime(token.Expiration)
+	expiration, err := decodeTime(token.GetExpiration())
 	if err != nil {
 		return errors.Wrap(err, "failed to parse expiration")
 	}
@@ -188,7 +188,7 @@ func validateToken(publicKey ed25519.PublicKey, token *multisigpb.Token) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to marshal token")
 	}
-	signatureBytes, err := decodeBytes(token.ServerSignature)
+	signatureBytes, err := decodeBytes(token.GetServerSignature())
 	if err != nil {
 		return errors.Wrap(err, "failed to decode signature")
 	}

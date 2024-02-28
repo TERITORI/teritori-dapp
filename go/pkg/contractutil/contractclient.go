@@ -37,7 +37,7 @@ type ContractClient struct {
 	execTxFactory  tx.Factory
 }
 
-// This supports only query
+// This supports only query.
 func NewContractQueryClient(chainId string, rpcEndpoint string) ContractClient {
 	cqc := ContractClient{
 		ChainId:     chainId,
@@ -47,7 +47,7 @@ func NewContractQueryClient(chainId string, rpcEndpoint string) ContractClient {
 	return cqc
 }
 
-// This supports exec/query
+// This supports exec/query.
 func NewContractClient(chainId string, rpcEndpoint string, prefix string, sender string, mnemonic string, gasPrices string, gasAdjustment float64) (ContractClient, error) {
 	cc := ContractClient{
 		ChainId:     chainId,

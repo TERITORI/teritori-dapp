@@ -29,7 +29,7 @@ type RewardData struct {
 	Amount *big.Int
 }
 
-// CalculateHash hashes the values of a TestContent
+// CalculateHash hashes the values of a TestContent.
 func (d RewardData) CalculateHash() ([]byte, error) {
 	args := abi.Arguments{
 		{
@@ -57,7 +57,7 @@ func (d RewardData) CalculateHash() ([]byte, error) {
 	return hash, nil
 }
 
-// Equals tests for equality of two Contents
+// Equals tests for equality of two Contents.
 func (d RewardData) Equals(other merkletree.Content) (bool, error) {
 	to := other.(RewardData).To
 	token := other.(RewardData).Token

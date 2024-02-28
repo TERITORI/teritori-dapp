@@ -26,7 +26,7 @@ func getLocalABI(path string) string {
 	return string(result)
 }
 
-// parseNumber parses a number and indicates whether the number is relative, meaning it starts with a +
+// parseNumber parses a number and indicates whether the number is relative, meaning it starts with a +.
 func parseNumber(number string) (int64, bool, error) {
 	numberIsRelative := strings.HasPrefix(number, "+")
 	numberInt64, err := strconv.ParseInt(strings.TrimPrefix(number, "+"), 0, 64)
@@ -55,20 +55,19 @@ func resolveBlockRange(blockRangeInput string, outputModule *pbsubstreams.Module
 		if err != nil {
 			return nil, fmt.Errorf("parse number %q: %w", after, err)
 		}
-
 	}
 
 	// If there is no `:` we assume it's a stop block value right away
 	if !hasTwoNumbers {
 		if beforeInt64 < 1 {
-			return bstream.NewOpenRange(outputModule.InitialBlock), nil
+			return bstream.NewOpenRange(outputModule.GetInitialBlock()), nil
 		}
-		start := outputModule.InitialBlock
+		start := outputModule.GetInitialBlock()
 		stop := resolveBlockNumber(beforeInt64, 0, beforeIsRelative, start)
 		return bstream.NewRangeExcludingEnd(start, stop), nil
 	}
 
-	start := resolveBlockNumber(beforeInt64, outputModule.InitialBlock, beforeIsRelative, outputModule.InitialBlock)
+	start := resolveBlockNumber(beforeInt64, outputModule.GetInitialBlock(), beforeIsRelative, outputModule.GetInitialBlock())
 	if afterInt64 == -1 {
 		return bstream.NewOpenRange(start), nil
 	}

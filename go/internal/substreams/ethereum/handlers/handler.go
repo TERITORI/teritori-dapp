@@ -47,22 +47,22 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	var metaData *bind.MetaData
 	// NOTE: Order of case if important because  we can have multi call in same tx
 	switch {
-	case strings.EqualFold(tx.Info.To, h.network.RiotSquadStakingContractAddress):
+	case strings.EqualFold(tx.GetInfo().GetTo(), h.network.RiotSquadStakingContractAddress):
 		metaData = abiGo.SquadStakingV3MetaData
-	case strings.EqualFold(tx.Info.To, h.network.RiotBridgedNFTAddressGen0), strings.EqualFold(tx.Info.To, h.network.RiotBridgedNFTAddressGen1):
+	case strings.EqualFold(tx.GetInfo().GetTo(), h.network.RiotBridgedNFTAddressGen0), strings.EqualFold(tx.GetInfo().GetTo(), h.network.RiotBridgedNFTAddressGen1):
 		metaData = abiGo.TeritoriNFTAxelarMetaData
 	// RiotNFT contract
-	case strings.EqualFold(tx.Info.To, h.network.RiotNFTAddressGen0), strings.EqualFold(tx.Info.To, h.network.RiotNFTAddressGen1):
+	case strings.EqualFold(tx.GetInfo().GetTo(), h.network.RiotNFTAddressGen0), strings.EqualFold(tx.GetInfo().GetTo(), h.network.RiotNFTAddressGen1):
 		metaData = abiGo.TeritoriNFTMetaData
 	// Minter contract
-	case strings.EqualFold(tx.Info.To, h.network.RiotContractAddressGen0):
+	case strings.EqualFold(tx.GetInfo().GetTo(), h.network.RiotContractAddressGen0):
 		metaData = abiGo.TeritoriMinterMetaData
-	case strings.EqualFold(tx.Info.To, h.network.VaultContractAddress):
+	case strings.EqualFold(tx.GetInfo().GetTo(), h.network.VaultContractAddress):
 		metaData = abiGo.TeritoriVaultMetaData
-	case strings.EqualFold(tx.Info.To, h.network.DistributorContractAddress):
+	case strings.EqualFold(tx.GetInfo().GetTo(), h.network.DistributorContractAddress):
 		metaData = abiGo.DistributorMetaData
 	// Bridge
-	case strings.EqualFold(tx.Info.To, h.network.RiotBridgeAddressGen0), strings.EqualFold(tx.Info.To, h.network.RiotBridgeAddressGen1):
+	case strings.EqualFold(tx.GetInfo().GetTo(), h.network.RiotBridgeAddressGen0), strings.EqualFold(tx.GetInfo().GetTo(), h.network.RiotBridgeAddressGen1):
 		metaData = abiGo.AxelarBridgeETHMetaData
 	// If not matching with known handlers continue
 	default:
@@ -80,9 +80,9 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 
 	// 60806040 is special method where tx sent to minter and it will initialize nft contract
 	// we have to process it differently: we process the internal call of that tx sent to nft contract
-	methodHex := hex.EncodeToString(tx.Info.Input[:4])
+	methodHex := hex.EncodeToString(tx.GetInfo().GetInput()[:4])
 	if methodHex == "60806040" || methodHex == "60c06040" || methodHex == "60a06040" || methodHex == "a6487c53" {
-		if strings.EqualFold(tx.Info.To, h.network.RiotContractAddressGen0) {
+		if strings.EqualFold(tx.GetInfo().GetTo(), h.network.RiotContractAddressGen0) {
 			return h.handleInitialize(tx)
 		}
 
@@ -94,13 +94,13 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 		return nil
 	}
 
-	method, err := ParseMethod(contractABI, tx.Info.Input)
+	method, err := ParseMethod(contractABI, tx.GetInfo().GetInput())
 	if err != nil {
-		return errors.Wrap(err, "failed to parse method. Tx: "+tx.Info.Hash)
+		return errors.Wrap(err, "failed to parse method. Tx: "+tx.GetInfo().GetHash())
 	}
 
 	args := make(map[string]interface{})
-	if err := method.Inputs.UnpackIntoMap(args, []byte(tx.Info.Input[4:])); err != nil {
+	if err := method.Inputs.UnpackIntoMap(args, []byte(tx.GetInfo().GetInput()[4:])); err != nil {
 		return errors.Wrap(err, "failed to unpack args for "+method.Name)
 	}
 

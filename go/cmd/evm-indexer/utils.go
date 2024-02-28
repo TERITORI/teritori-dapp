@@ -37,10 +37,10 @@ func readBlockRange(module *pbsubstreams.Module, input string) (start int64, sto
 
 	// If there is no `:` we assume it's a stop block value right away
 	if !found {
-		start = int64(module.InitialBlock)
+		start = int64(module.GetInitialBlock())
 		stop = uint64(resolveBlockNumber(beforeInt64, 0, beforeRelative, uint64(start)))
 	} else {
-		start = resolveBlockNumber(beforeInt64, int64(module.InitialBlock), beforeRelative, module.InitialBlock)
+		start = resolveBlockNumber(beforeInt64, int64(module.GetInitialBlock()), beforeRelative, module.GetInitialBlock())
 		stop = uint64(resolveBlockNumber(afterInt64, 0, afterRelative, uint64(start)))
 	}
 

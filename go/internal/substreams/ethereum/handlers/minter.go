@@ -32,14 +32,14 @@ func (h *Handler) handleMintWithMetadata(contractABI *abi.ABI, tx *pb.Tx, args m
 
 	for idx, nftData := range data.MintData {
 		// We get owner (user who request mint) from the tx logs
-		txLog := tx.Receipt.Logs[idx]
-		encodedString := hex.EncodeToString(txLog.Topics[2])
+		txLog := tx.GetReceipt().GetLogs()[idx]
+		encodedString := hex.EncodeToString(txLog.GetTopics()[2])
 		owner := fmt.Sprintf("0x%s", encodedString[24:])
 		ownerID := h.network.UserID(owner)
 
 		tokenID := nftData.TokenId.String()
-		collectionID := h.network.CollectionID(tx.Info.To)
-		nftID := h.network.NFTID(tx.Info.To, tokenID)
+		collectionID := h.network.CollectionID(tx.GetInfo().GetTo())
+		nftID := h.network.NFTID(tx.GetInfo().GetTo(), tokenID)
 
 		// Get attributes from URI
 		var metaData MetaData
@@ -68,9 +68,9 @@ func (h *Handler) handleMintWithMetadata(contractABI *abi.ABI, tx *pb.Tx, args m
 
 		// Create mint activity
 		if err := h.dbTransaction.Create(&indexerdb.Activity{
-			ID:   h.network.ActivityID(tx.Info.Hash, int(txLog.Index)),
+			ID:   h.network.ActivityID(tx.GetInfo().GetHash(), int(txLog.GetIndex())),
 			Kind: indexerdb.ActivityKindMint,
-			Time: time.Unix(int64(tx.Clock.Timestamp), 0),
+			Time: time.Unix(int64(tx.GetClock().GetTimestamp()), 0),
 			Mint: &indexerdb.Mint{
 				// TODO: get price
 				BuyerID:   ownerID,
@@ -97,7 +97,7 @@ func (h *Handler) handleSetNft(contractABI *abi.ABI, tx *pb.Tx, args map[string]
 	}
 
 	var teritoriCollection indexerdb.TeritoriCollection
-	if err := h.dbTransaction.Where("mint_contract_address = ?", tx.Info.To).First(&teritoriCollection).Error; err != nil {
+	if err := h.dbTransaction.Where("mint_contract_address = ?", tx.GetInfo().GetTo()).First(&teritoriCollection).Error; err != nil {
 		return errors.Wrap(err, "failed to get collection")
 	}
 

@@ -311,7 +311,6 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	*/
 
 	switch network := network.(type) {
-
 	case *networks.SolanaNetwork:
 		if ownerID != "" {
 			return errors.New("owner id filter not supported on solana")
@@ -376,10 +375,10 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			query = query.Where("owner_id = ?", ownerID)
 		}
 
-		if len(req.Attributes) > 0 {
+		if len(req.GetAttributes()) > 0 {
 			var attributeQueryParts []string
 			var attributeQueryArgs []interface{}
-			for _, attribute := range req.Attributes {
+			for _, attribute := range req.GetAttributes() {
 				attributeQueryParts = append(attributeQueryParts, "attributes @> ?::jsonb")
 				jsonQuery, err := json.Marshal([]indexerdb.Attribute{{Value: attribute.GetValue(), TraitType: attribute.GetTraitType()}})
 				if err != nil {
@@ -392,16 +391,16 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			)
 		}
 
-		if req.IsListed {
+		if req.GetIsListed() {
 			query.Where("is_listed = ?", true) // Options are ALL or buy now
 		}
 
-		if req.PriceRange != nil {
-			if req.PriceRange.Min != "0" && req.PriceRange.Min != "" {
-				query.Where("price_amount >= ?", req.PriceRange.Min)
+		if req.GetPriceRange() != nil {
+			if req.GetPriceRange().GetMin() != "0" && req.GetPriceRange().GetMin() != "" {
+				query.Where("price_amount >= ?", req.GetPriceRange().GetMin())
 			}
-			if req.PriceRange.Max != "0" && req.PriceRange.Max != "" {
-				query.Where("price_amount <= ?", req.PriceRange.Max)
+			if req.GetPriceRange().GetMax() != "0" && req.GetPriceRange().GetMax() != "" {
+				query.Where("price_amount <= ?", req.GetPriceRange().GetMax())
 			}
 		}
 
@@ -516,7 +515,7 @@ func (s *MarkteplaceService) NFTCollectionAttributes(req *marketplacepb.NFTColle
 	queryArgs := []interface{}{collectionID}
 
 	var attributeQueryParts []string
-	for _, attribute := range req.WhereAttributes {
+	for _, attribute := range req.GetWhereAttributes() {
 		attributeQueryParts = append(attributeQueryParts, "(trait_type = ? and value = ?)")
 		queryArgs = append(queryArgs, attribute.GetTraitType(), attribute.GetValue())
 	}
@@ -603,7 +602,6 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 	*/
 
 	switch network := network.(type) {
-
 	case *networks.SolanaNetwork:
 		if nftID != "" {
 			return errors.New("nft id filter not supported on solana")
@@ -923,21 +921,21 @@ func (s *MarkteplaceService) News(ctx context.Context, req *marketplacepb.NewsRe
 
 func (s *MarkteplaceService) SearchNames(ctx context.Context, req *marketplacepb.SearchNamesRequest) (*marketplacepb.SearchNamesResponse, error) {
 	const maxLimit = 21
-	limit := req.Limit
+	limit := req.GetLimit()
 	if limit > maxLimit {
 		limit = maxLimit
 	}
 
 	var names []string
 
-	network, err := s.conf.NetworkStore.GetCosmosNetwork(req.NetworkId)
+	network, err := s.conf.NetworkStore.GetCosmosNetwork(req.GetNetworkId())
 	if err == nil {
 		collectionID := network.CollectionID(network.NameServiceContractAddress)
 		var nfts []indexerdb.NFT
 		if err := s.conf.IndexerDB.
 			Preload("TeritoriNFT").
 			Joins("JOIN teritori_nfts ON teritori_nfts.nft_id = nfts.id").
-			Where("teritori_nfts.token_id ~* ? AND nfts.collection_id = ? AND nfts.burnt = false", req.Input, collectionID).
+			Where("teritori_nfts.token_id ~* ? AND nfts.collection_id = ? AND nfts.burnt = false", req.GetInput(), collectionID).
 			Limit(int(limit)).
 			Find(&nfts).Error; err != nil {
 			return nil, errors.Wrap(err, "failed to read nfts in db")
@@ -954,7 +952,7 @@ func (s *MarkteplaceService) SearchNames(ctx context.Context, req *marketplacepb
 	missing := int(limit) - len(names)
 	if missing > 0 {
 		var dbNames []indexerdb.Name
-		if err := s.conf.IndexerDB.Limit(missing).Where("names.value ~* ?", req.Input).Find(&dbNames).Error; err != nil {
+		if err := s.conf.IndexerDB.Limit(missing).Where("names.value ~* ?", req.GetInput()).Find(&dbNames).Error; err != nil {
 			return nil, errors.Wrap(err, "failed to read names db")
 		}
 		s.conf.Logger.Info("search names", zap.Int("db", len(dbNames)))
@@ -976,12 +974,12 @@ func min[T constraints.Ordered](a, b T) T {
 // TODO: consider merging this into Collections call
 func (s *MarkteplaceService) SearchCollections(ctx context.Context, req *marketplacepb.SearchCollectionsRequest) (*marketplacepb.SearchCollectionsResponse, error) {
 	const maxLimit = 21
-	limit := req.Limit
+	limit := req.GetLimit()
 	if limit > maxLimit {
 		limit = maxLimit
 	}
 
-	if req.Input == "" {
+	if req.GetInput() == "" {
 		return nil, errors.New("no input")
 	}
 
@@ -989,7 +987,7 @@ func (s *MarkteplaceService) SearchCollections(ctx context.Context, req *marketp
 	if err := s.conf.IndexerDB.
 		Preload("TeritoriCollection").
 		Joins("JOIN teritori_collections ON teritori_collections.collection_id = collections.id").
-		Where("name ~* ?", req.Input).
+		Where("name ~* ?", req.GetInput()).
 		Where("teritori_collections.mint_contract_address IN ?", s.conf.Whitelist).
 		Limit(int(limit)).
 		Find(&collections).Error; err != nil {

@@ -91,9 +91,9 @@ func (s *PostgresSinker) Run(ctx context.Context) error {
 }
 
 func (s *PostgresSinker) HandleBlockScopedData(ctx context.Context, data *pbsubstreamsrpc.BlockScopedData, isLive *bool, cursor *sink.Cursor) error {
-	output := data.Output
-	if output.Name != s.OutputModuleName() {
-		return fmt.Errorf("received data from wrong output module, expected to received from %q but got module's output for %q", s.OutputModuleName(), output.Name)
+	output := data.GetOutput()
+	if output.GetName() != s.OutputModuleName() {
+		return fmt.Errorf("received data from wrong output module, expected to received from %q but got module's output for %q", s.OutputModuleName(), output.GetName())
 	}
 
 	var ethereumBlock pb.EthereumBlock
@@ -116,7 +116,7 @@ func (s *PostgresSinker) HandleBlockScopedData(ctx context.Context, data *pbsubs
 		return errors.Wrap(err, "failed to init new handler")
 	}
 
-	for _, tx := range ethereumBlock.Txs {
+	for _, tx := range ethereumBlock.GetTxs() {
 		if err := handler.HandleETHTx(tx); err != nil {
 			panic(err)
 		}

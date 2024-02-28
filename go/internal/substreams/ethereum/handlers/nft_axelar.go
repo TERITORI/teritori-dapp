@@ -25,10 +25,10 @@ func (h *Handler) handleExecute(contractABI *abi.ABI, tx *pb.Tx, args map[string
 		return errors.Wrap(err, "failed to parse transfer input")
 	}
 
-	tokenID, err := DecodeTopicToInt(tx.Receipt.Logs[1].Topics[3])
+	tokenID, err := DecodeTopicToInt(tx.GetReceipt().GetLogs()[1].GetTopics()[3])
 	if err != nil {
 		// Try to decode from 2nd log entry
-		tokenID, err = DecodeTopicToInt(tx.Receipt.Logs[1].Topics[3])
+		tokenID, err = DecodeTopicToInt(tx.GetReceipt().GetLogs()[1].GetTopics()[3])
 
 		if err != nil {
 			return errors.Wrap(err, "failed to decode tokenID")
@@ -37,7 +37,7 @@ func (h *Handler) handleExecute(contractABI *abi.ABI, tx *pb.Tx, args map[string
 
 	var targetMint string
 	var originalCollectionID string
-	switch tx.Info.To {
+	switch tx.GetInfo().GetTo() {
 	case h.network.RiotBridgedNFTAddressGen0:
 		targetMint = h.network.RiotContractAddressGen0
 		originalCollectionID = h.network.RiotOriginalCollectionIdGen0
@@ -45,7 +45,7 @@ func (h *Handler) handleExecute(contractABI *abi.ABI, tx *pb.Tx, args map[string
 		targetMint = h.network.RiotContractAddressGen1
 		originalCollectionID = h.network.RiotOriginalCollectionIdGen1
 	default:
-		return errors.New("Unknown NFT address: " + tx.Info.To)
+		return errors.New("Unknown NFT address: " + tx.GetInfo().GetTo())
 	}
 
 	// NOTE: The collection should exist already at this step
@@ -100,7 +100,7 @@ func (h *Handler) handleBridgeNFT(contractABI *abi.ABI, tx *pb.Tx, args map[stri
 	var mintAddress string
 	var srcNFTAddr string
 
-	switch tx.Info.To {
+	switch tx.GetInfo().GetTo() {
 	case h.network.RiotBridgeAddressGen0:
 		mintAddress = h.network.RiotContractAddressGen0
 		srcNFTAddr = h.network.RiotNFTAddressGen0
@@ -108,11 +108,11 @@ func (h *Handler) handleBridgeNFT(contractABI *abi.ABI, tx *pb.Tx, args map[stri
 		mintAddress = h.network.RiotContractAddressGen1
 		srcNFTAddr = h.network.RiotNFTAddressGen1
 	default:
-		return errors.New("Unknown Bridge address: " + tx.Info.To)
+		return errors.New("Unknown Bridge address: " + tx.GetInfo().GetTo())
 	}
 
 	// Dont process the bridge where source NFT address is not our NFT collection
-	transferedNFTAddress := tx.Receipt.Logs[0].Address
+	transferedNFTAddress := tx.GetReceipt().GetLogs()[0].GetAddress()
 	if transferedNFTAddress != srcNFTAddr {
 		return nil
 	}
@@ -125,7 +125,7 @@ func (h *Handler) handleBridgeNFT(contractABI *abi.ABI, tx *pb.Tx, args map[stri
 		return errors.Wrap(err, "failed to get nft")
 	}
 
-	nft.LockedOn = tx.Info.To
+	nft.LockedOn = tx.GetInfo().GetTo()
 
 	if err := h.dbTransaction.Save(nft).Error; err != nil {
 		return errors.Wrap(err, "failed to update locked on for bridged NFT")
