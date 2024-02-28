@@ -5,7 +5,6 @@ import QRCode from "react-native-qrcode-svg";
 
 import { BrandText } from "@/components/BrandText";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
-import { StoreWallet } from "@/store/slices/wallets";
 import { useAppNavigation } from "@/utils/navigation";
 import {
   neutral22,
@@ -17,6 +16,7 @@ import {
 import { fontMedium13, fontMedium16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
+import { StoreWallet } from "@/utils/types/wallet";
 
 export const ShowWalletQR: React.FC<{ selectedWallet?: StoreWallet }> = ({
   selectedWallet,

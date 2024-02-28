@@ -12,8 +12,17 @@ pub enum ContractError {
     #[error("{0}")]
     DivideByZero(#[from] DivideByZeroError),
 
+    #[error("{0}")]
+    DecodeError(#[from] base64::DecodeError),
+
+    #[error("{0}")]
+    ParseIntError(#[from] std::num::ParseIntError),
+
     #[error("Channel already exists.")]
     ChannelExists,
+
+    #[error("This address does not own a channel.")]
+    UnknownChannelAddress,
 
     #[error("Channel does not exist.")]
     ChannelNotFound,
@@ -36,6 +45,12 @@ pub enum ContractError {
     #[error("Invalid funds.")]
     InvalidFunds,
 
-    #[error("Serialization error")]
+    #[error("Serialization error.")]
     SerializationError,
+
+    #[error("Internal error.")]
+    InternalError,
+
+    #[error("No changes.")]
+    NoChanges,
 }

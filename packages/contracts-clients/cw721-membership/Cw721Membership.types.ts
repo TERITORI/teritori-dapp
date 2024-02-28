@@ -8,16 +8,26 @@ export interface InstantiateMsg {
   admin_addr: string;
   description: string;
   image_uri: string;
-  mint_royalties: number;
+  mint_royalties_per10k_default: number;
   name: string;
   symbol: string;
   [k: string]: unknown;
 }
 export type ExecuteMsg = ExecMsg;
 export type ExecMsg = {
-  upsert_channel: {
+  create_channel: {
     memberships_config: MembershipConfig[];
-    trade_royalties: number;
+    trade_royalties_addr?: string | null;
+    trade_royalties_per10k: number;
+    [k: string]: unknown;
+  };
+} | {
+  update_channel: {
+    id: Uint64;
+    memberships_config?: MembershipConfig[] | null;
+    owner?: string | null;
+    trade_royalties_addr?: string | null;
+    trade_royalties_per10k?: number | null;
     [k: string]: unknown;
   };
 } | {
@@ -115,13 +125,8 @@ export type QueryMsg1 = {
     [k: string]: unknown;
   };
 } | {
-  royalty_info: {
-    sale_price: Uint128;
-    token_id: string;
-    [k: string]: unknown;
-  };
-} | {
-  check_royalties: {
+  extension: {
+    msg: Cw2981QueryMsg;
     [k: string]: unknown;
   };
 } | {
@@ -162,6 +167,14 @@ export type QueryMsg1 = {
     start_after?: string | null;
     [k: string]: unknown;
   };
+};
+export type Cw2981QueryMsg = {
+  royalty_info: {
+    sale_price: Uint128;
+    token_id: string;
+  };
+} | {
+  check_royalties: {};
 };
 export interface AdminFundsResponse {
   funds: Coin[];
@@ -209,23 +222,23 @@ export interface Trait {
 export interface TokensResponse {
   tokens: string[];
 }
+export type Addr = string;
 export interface ChannelResponse {
+  id: Uint64;
   memberships_config: MembershipConfig[];
-  mint_royalties: number;
-  trade_royalties: number;
+  mint_royalties_per10k: number;
+  owner_addr: Addr;
+  trade_royalties_addr: Addr;
+  trade_royalties_per10k: number;
 }
 export interface ChannelFundsResponse {
   funds: Coin[];
 }
-export interface CheckRoyaltiesResponse {
-  royalty_payments: boolean;
-}
-export type Addr = string;
 export interface Config {
   admin_addr: Addr;
   description: string;
   image_uri: string;
-  mint_royalties: number;
+  mint_royalties_per10k_default: number;
   name: string;
   symbol: string;
 }
@@ -233,12 +246,16 @@ export interface ContractInfoResponse {
   name: string;
   symbol: string;
 }
-export interface NumTokensResponse {
-  count: number;
+export type Cw2981Response = CheckRoyaltiesResponse | RoyaltiesInfoResponse;
+export interface CheckRoyaltiesResponse {
+  royalty_payments: boolean;
 }
 export interface RoyaltiesInfoResponse {
   address: string;
   royalty_amount: Uint128;
+}
+export interface NumTokensResponse {
+  count: number;
 }
 export interface SubscriptionResponse {
   level: number;

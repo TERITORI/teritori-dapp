@@ -6,14 +6,14 @@ import { PremiumSubscriptionBottom } from "./PremiumSubscriptionBottom";
 
 import { BrandText } from "@/components/BrandText";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
-import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
+import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
 import ModalBase from "@/components/modals/ModalBase";
 import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { parseUserId } from "@/networks";
+import { getUserId, parseUserId } from "@/networks";
 import { mustGetCw721MembershipSigningClient } from "@/utils/feed/client";
 import { DEFAULT_NAME } from "@/utils/social-feed";
 import { neutral55, neutral77 } from "@/utils/style/colors";
@@ -96,7 +96,10 @@ export const PremiumSubscriptionModal: React.FC<{
 
           <SpacerColumn size={2} />
 
-          <RoundedGradientImage sourceURI={metadata.image} />
+          <UserAvatarWithFrame
+            userId={getUserId(network.id, channelAddress)}
+            size="XL"
+          />
           <SpacerColumn size={2} />
           <BrandText style={[fontBold16]}>
             {metadata?.tokenId ? metadata?.public_name : DEFAULT_NAME}

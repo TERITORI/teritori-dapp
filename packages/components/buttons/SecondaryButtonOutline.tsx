@@ -12,7 +12,8 @@ import { neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { BoxStyle } from "../boxes/Box";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 // FIXME: make a BaseButton and only pass backgroun/border and text colors in this kind of components
 
@@ -25,7 +26,7 @@ export const SecondaryButtonOutline: React.FC<{
   backgroundColor?: string;
   color?: string;
   borderColor?: string;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<BoxStyle>;
   touchableStyle?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
@@ -68,7 +69,6 @@ export const SecondaryButtonOutline: React.FC<{
   }, [onPress, isAutoLoading]);
 
   const boxProps = {
-    style,
     disabled,
     squaresBackgroundColor,
     width,
@@ -81,16 +81,21 @@ export const SecondaryButtonOutline: React.FC<{
       disabled={disabled}
       style={[{ width: fullWidth ? "100%" : width }, touchableStyle]}
     >
-      <LegacyTertiaryBox
-        height={heightButton(size)}
-        mainContainerStyle={{
-          flexDirection: "row",
-          borderRadius: borderRadiusButton(size),
-          backgroundColor,
-          paddingHorizontal: 20,
-          borderColor,
-          opacity: disabled ? 0.5 : 1,
-        }}
+      <TertiaryBox
+        style={[
+          style,
+          {
+            height: heightButton(size),
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: borderRadiusButton(size),
+            backgroundColor,
+            paddingHorizontal: 20,
+            borderColor,
+            opacity: disabled ? 0.5 : 1,
+          },
+        ]}
         {...boxProps}
       >
         {iconSVG ? (
@@ -125,7 +130,7 @@ export const SecondaryButtonOutline: React.FC<{
               <ActivityIndicator color={color} size="small" />
             </View>
           ))}
-      </LegacyTertiaryBox>
+      </TertiaryBox>
     </TouchableOpacity>
   );
 };

@@ -17,11 +17,11 @@ import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { DropdownWithListItem } from "@/components/mini/DropdownWithListItem";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { accountExplorerLink } from "@/networks";
-import { StoreWallet } from "@/store/slices/wallets";
 import { neutral33, neutralA3 } from "@/utils/style/colors";
 import { fontMedium13, fontSemibold22 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
+import { StoreWallet } from "@/utils/types/wallet";
 
 type ProviderType = StoreWallet["provider"];
 const getProviderLogo = (provider: ProviderType) => {
@@ -111,7 +111,7 @@ export const Account: React.FC<{ account: StoreWallet; isLast: boolean }> = ({
         )}
         <DropdownWithListItem
           style={{ paddingHorizontal: 0, width: 210 }}
-          positionStyle={{ top: 35 }}
+          positionStyle={{ top: -20 }}
           icon={dotSVG}
           iconSize={22}
           items={[

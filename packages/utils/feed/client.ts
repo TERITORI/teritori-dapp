@@ -3,12 +3,12 @@ import {
   Cw721MembershipQueryClient,
 } from "@/contracts-clients/cw721-membership";
 import {
-  NetworkFeature,
-  getKeplrSigningCosmWasmClient,
   getNetworkFeature,
   mustGetNonSigningCosmWasmClient,
+  NetworkFeature,
   parseUserId,
 } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 
 export const mustGetCw721MembershipQueryClient = async (
   networkId: string | undefined,
