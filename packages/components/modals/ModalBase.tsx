@@ -172,7 +172,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
                 paddingVertical: layout.spacing_x1_5,
               }}
             >
-              {(label || labelComponent || description) && (
+              {!!(label || labelComponent || description) && (
                 <View
                   style={{
                     flex: 1,

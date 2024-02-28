@@ -99,7 +99,6 @@ export const MapModal: React.FC<TMapModalProps> = ({
             onPress={() => {
               console.log("wait for instructions...🙂");
               console.log({ locationSelected, description });
-              // handleSubmit(processSubmit)();
             }}
           />
         </View>
@@ -124,7 +123,6 @@ const mapContainer: ViewStyle = {
 };
 
 const unitCardStyle: ViewStyle = {
-  // width: TRACK_CARD_WIDTH,
   backgroundColor: neutral17,
   padding: layout.spacing_x1_5,
   borderRadius: 12,
