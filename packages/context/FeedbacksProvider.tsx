@@ -35,6 +35,18 @@ const initialToast: Toast = {
   type: "success",
 };
 
+/**
+ * @deprecated Use initialToast instead
+ */
+export const initialToastError: Pick<
+  INormalToast,
+  "message" | "duration" | "onPress" | "title"
+> = {
+  title: "",
+  message: "",
+  duration: 8000,
+};
+
 interface FeedbacksProviderValue {
   /**
    * @deprecated Use setToast instead
