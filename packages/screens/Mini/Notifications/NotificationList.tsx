@@ -1,10 +1,10 @@
 import React from "react";
 import { FlatList, View } from "react-native";
 
-import NotificationCard from "./NotificationCard";
-import { notifications } from "./notificationData";
+import MessengerNotificationCard from "./MessengerNotificationCard";
 
 import { Separator } from "@/components/separators/Separator";
+import { TypeNotification } from "@/store/slices/notification";
 import { layout } from "@/utils/style/layout";
 
 export type NotificationType = {
@@ -20,7 +20,11 @@ export type NotificationType = {
   to?: string;
 };
 
-export default function NotificationList() {
+export default function NotificationList({
+  notifications,
+}: {
+  notifications: TypeNotification[];
+}) {
   return (
     <View
       style={{
@@ -32,8 +36,8 @@ export default function NotificationList() {
       <FlatList
         data={notifications}
         renderItem={({ item }) => (
-          <React.Fragment key={item.notificationId}>
-            <NotificationCard item={item} />
+          <React.Fragment key={item.id}>
+            <MessengerNotificationCard item={item} />
             <Separator style={{ marginVertical: layout.spacing_x1_5 }} />
           </React.Fragment>
         )}

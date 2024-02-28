@@ -13,6 +13,7 @@ import {
   marketplaceFilterUI,
 } from "./slices/marketplaceFilters";
 import { messageReducer, selectIsForceChatActivated } from "./slices/message";
+import { notificationReducer } from "./slices/notification";
 import { searchReducer } from "./slices/search";
 import {
   multisigTokensAdapter,
@@ -142,6 +143,7 @@ const rootReducer = combineReducers({
   marketplaceFilterUI,
   search: searchReducer,
   message: persistReducer(messagePersistConfig, messageReducer),
+  notifications: notificationReducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
