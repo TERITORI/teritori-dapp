@@ -38,8 +38,7 @@ func (h *Handler) handleTransfer(tx *pb.Tx, nftContract string, from string, to 
 		return errors.Wrap(err, "failed to update nft owner")
 	}
 
-	fmt.Println(nft.OwnerID, nft.ID)
-	// This case is special so we dont track activities
+	// NOTE: This is used only to handle transfers made by another contract so we dont track activities
 
 	return nil
 }
