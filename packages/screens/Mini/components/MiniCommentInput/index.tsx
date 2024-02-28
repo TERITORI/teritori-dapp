@@ -80,7 +80,7 @@ export const MiniCommentInput = React.forwardRef<
     const userId = getUserId(selectedNetworkId, selectedWallet?.address);
     const inputRef = useRef<MiniCommentInputHandle>(null);
 
-    const { setMiniToast } = useFeedbacks();
+    const { setToast } = useFeedbacks();
     const [isUploadLoading, setIsUploadLoading] = useState(false);
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
 
@@ -227,7 +227,7 @@ export const MiniCommentInput = React.forwardRef<
         }
         if (formValues.files?.length && !remoteFiles.find((file) => file.url)) {
           console.error("upload file err : Fail to pin to IPFS");
-          setMiniToast({
+          setToast({
             message: "Fail to pin to IPFS, please try to Publish again",
             duration: 5000,
           });
@@ -253,7 +253,7 @@ export const MiniCommentInput = React.forwardRef<
         console.error("post submit err", err);
         setIsUploadLoading(false);
         setIsProgressBarShown(false);
-        setMiniToast({
+        setToast({
           message: err instanceof Error ? err.message : `${err}`,
           duration: 3000,
         });

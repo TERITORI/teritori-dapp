@@ -1,8 +1,8 @@
 import React from "react";
 import { View, useWindowDimensions } from "react-native";
 
-import { Spinner } from "./Spinner";
-import { CustomPressable } from "./buttons/CustomPressable";
+import { Spinner } from "../Spinner";
+import { CustomPressable } from "../buttons/CustomPressable";
 
 import checkWhiteSVG from "@/assets/icons/toast/check-circular-white.svg";
 import checkSVG from "@/assets/icons/toast/check-green.svg";
@@ -26,21 +26,25 @@ import {
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-type ToastStatusType = "info" | "success" | "error" | "warning" | "loading";
-type ToastVariantType = "solid" | "outline";
+export type ToastStatusType =
+  | "info"
+  | "success"
+  | "error"
+  | "warning"
+  | "loading";
+export type ToastVariantType = "solid" | "outline";
 
-export type MiniToastProps = {
-  status?: ToastStatusType;
-  message: string | null;
+export interface MiniToastProps {
+  type?: ToastStatusType;
+  message: string;
   variant?: ToastVariantType;
-  duration?: number;
   topOffset?: number;
   showAlways?: boolean;
   onPress?: () => void;
-};
+}
 
-const getColors = (status: ToastStatusType) => {
-  switch (status) {
+const getColors = (type: ToastStatusType) => {
+  switch (type) {
     case "error":
       return toastRed;
     case "success":
@@ -54,8 +58,8 @@ const getColors = (status: ToastStatusType) => {
   }
 };
 
-const getIcons = (status: ToastStatusType, variant: ToastVariantType) => {
-  switch (status) {
+const getIcons = (type: ToastStatusType, variant: ToastVariantType) => {
+  switch (type) {
     case "error":
       return variant === "outline" ? crossRedSVG : crossWhiteSVG;
     case "success":
@@ -69,7 +73,7 @@ const getIcons = (status: ToastStatusType, variant: ToastVariantType) => {
   }
 };
 export const MiniToast = ({
-  status = "info",
+  type = "info",
   message,
   variant = "solid",
   topOffset = 70,
@@ -100,9 +104,8 @@ export const MiniToast = ({
     >
       <View
         style={{
-          backgroundColor:
-            variant === "outline" ? neutral00 : getColors(status),
-          borderColor: getColors(status),
+          backgroundColor: variant === "outline" ? neutral00 : getColors(type),
+          borderColor: getColors(type),
           borderWidth: 1,
           borderStyle: "solid",
           borderRadius: variant === "outline" ? 32 : 10,
@@ -112,11 +115,11 @@ export const MiniToast = ({
           gap: layout.spacing_x1,
         }}
       >
-        {status === "loading" ? (
-          <Spinner svg={getIcons(status, variant)} size={16} />
+        {type === "loading" ? (
+          <Spinner svg={getIcons(type, variant)} size={16} />
         ) : (
           <SVG
-            source={getIcons(status, variant)}
+            source={getIcons(type, variant)}
             height={16}
             width={16}
             style={{ flexShrink: 0 }}
