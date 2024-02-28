@@ -32,22 +32,26 @@ type Props = {
   formValues: NewPostFormValues;
   setValue: (index: keyof NewPostFormValues, data: any) => void;
   setSelection: (data: { start: number; end: number }) => void;
+  onBlur?: () => void;
+  onFocus?: () => void;
 };
 export interface MiniCommentInputHandle {
   setValue: (text: string) => void;
   focusInput: () => void;
+  blurInput: () => void;
 }
 
 const CHARS_LIMIT_WARNING_MULTIPLIER = 0.92;
 
 export const CommentTextInput = React.forwardRef<MiniCommentInputHandle, Props>(
-  ({ formValues, setValue, setSelection }, forwardRef) => {
-    const inputMaxHeight = 400;
+  ({ formValues, setValue, setSelection, onBlur, onFocus }, forwardRef) => {
+    const inputMaxHeight = 200;
     const inputMinHeight = 30;
     const inputHeight = useSharedValue(30);
     const inputRef = useRef<TextInput>(null);
 
     const focusInput = () => inputRef.current?.focus();
+    const blurInput = () => inputRef.current?.blur();
 
     const handleTextChange = (text: string) => {
       // Comments are blocked at 2500
@@ -56,6 +60,7 @@ export const CommentTextInput = React.forwardRef<MiniCommentInputHandle, Props>(
     };
     useImperativeHandle(forwardRef, () => ({
       focusInput,
+      blurInput,
       setValue: handleTextChange,
     }));
 
@@ -88,6 +93,8 @@ export const CommentTextInput = React.forwardRef<MiniCommentInputHandle, Props>(
                 onSelectionChange={(event) =>
                   setSelection(event.nativeEvent.selection)
                 }
+                onBlur={onBlur}
+                onFocus={onFocus}
                 placeholder="Hey yo! Write your comment"
                 placeholderTextColor={neutral77}
                 onChangeText={handleTextChange}
@@ -141,43 +148,45 @@ export const CommentTextInput = React.forwardRef<MiniCommentInputHandle, Props>(
         {formValues.files && formValues.files.length > 0 ? (
           <>
             <SpacerColumn size={3} />
-            <FilesPreviewsContainer
-              files={formValues.files}
-              gifs={formValues.gifs}
-              onDelete={(file) => {
-                setValue(
-                  "files",
-                  removeFileFromArray(
-                    formValues?.files || [],
-                    file as LocalFileData,
-                  ),
-                );
-              }}
-              onDeleteGIF={(url) => {
-                setValue(
-                  "gifs",
-                  (formValues?.gifs || [])?.filter((gif) => gif !== url),
-                );
-                const gifFile = formValues?.files?.find((x) => x.url === url);
-                if (gifFile) {
+            <View style={{ maxHeight: 120 }}>
+              <FilesPreviewsContainer
+                files={formValues.files}
+                gifs={formValues.gifs}
+                onDelete={(file) => {
                   setValue(
                     "files",
                     removeFileFromArray(
                       formValues?.files || [],
-                      gifFile as LocalFileData,
+                      file as LocalFileData,
                     ),
                   );
-                }
-              }}
-              onAudioUpdate={(updatedFile) => {
-                if (formValues?.files?.length) {
+                }}
+                onDeleteGIF={(url) => {
                   setValue(
-                    "files",
-                    replaceFileInArray(formValues?.files, updatedFile),
+                    "gifs",
+                    (formValues?.gifs || [])?.filter((gif) => gif !== url),
                   );
-                }
-              }}
-            />
+                  const gifFile = formValues?.files?.find((x) => x.url === url);
+                  if (gifFile) {
+                    setValue(
+                      "files",
+                      removeFileFromArray(
+                        formValues?.files || [],
+                        gifFile as LocalFileData,
+                      ),
+                    );
+                  }
+                }}
+                onAudioUpdate={(updatedFile) => {
+                  if (formValues?.files?.length) {
+                    setValue(
+                      "files",
+                      replaceFileInArray(formValues?.files, updatedFile),
+                    );
+                  }
+                }}
+              />
+            </View>
           </>
         ) : null}
       </View>

@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { CommentTextInput, MiniCommentInputHandle } from "./CommentTextInput";
 import { SelectAudioVideo } from "./SelectAudioVideo";
 import { SelectPicture } from "./SelectPicture";
+import { SimpleCommentInput } from "./SimpleCommentInput";
 import priceSVG from "../../../../../assets/icons/price.svg";
 import { CustomButton } from "../Button/CustomButton";
 import MiniToast from "../MiniToast";
@@ -51,10 +52,11 @@ interface MiniCommentInputProps {
   additionalMention?: string;
 }
 
-interface MiniCommentInputInputHandle {
+export interface MiniCommentInputInputHandle {
   resetForm: () => void;
   setValue: (text: string) => void;
   focusInput: () => void;
+  blurInput: () => void;
 }
 const MAX_IMAGES = 4;
 
@@ -85,6 +87,7 @@ export const MiniCommentInput = React.forwardRef<
     } | null>(null);
     const [isUploadLoading, setIsUploadLoading] = useState(false);
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
+    const [showFullCommentInput, setShowFullCommentInput] = useState(false);
 
     const { showNotEnoughFundsModal, showConnectWalletModal } =
       useWalletControl();
@@ -151,10 +154,12 @@ export const MiniCommentInput = React.forwardRef<
     };
 
     const focusInput = () => inputRef?.current?.focusInput();
+    const blurInput = () => inputRef?.current?.blurInput();
 
     useImperativeHandle(forwardRef, () => ({
       resetForm: reset,
       focusInput,
+      blurInput,
       setValue: handleTextChange,
     }));
 
@@ -265,6 +270,26 @@ export const MiniCommentInput = React.forwardRef<
       }
     };
 
+    const enableShowFullCommentInput = () => {
+      setShowFullCommentInput(true);
+      setTimeout(() => {
+        inputRef?.current?.focusInput();
+      }, 0);
+    };
+
+    const disableShowFullCommentInput = () => {
+      setShowFullCommentInput(false);
+    };
+
+    if (!showFullCommentInput) {
+      return (
+        <SimpleCommentInput
+          value={formValues.message}
+          onFocus={enableShowFullCommentInput}
+        />
+      );
+    }
+
     return (
       <View style={{ width: "100%", ...style }}>
         {toastErrors && toastErrors.message && (
@@ -284,6 +309,7 @@ export const MiniCommentInput = React.forwardRef<
           setSelection={setSelection}
           setValue={setValue}
           ref={inputRef}
+          onBlur={disableShowFullCommentInput}
         />
         <View
           style={[
