@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bytes"
 	"encoding/hex"
 	"strings"
 
@@ -43,6 +44,8 @@ func NewHandler(handlerConfig *HandlerConfig) (*Handler, error) {
 	}, nil
 }
 
+var TRANSFER_TOPIC = HashTopic("Transfer(address,address,uint256)")
+
 func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	var metaData *bind.MetaData
 
@@ -69,8 +72,7 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	default:
 		for _, log := range tx.Receipt.Logs {
 			if strings.EqualFold(log.Address, h.network.RiotNFTAddressGen0) {
-				// Transfer event will have 4 topics
-				if len(log.Topics) != 4 {
+				if !bytes.Equal(log.Topics[0], TRANSFER_TOPIC) {
 					return nil
 				}
 
@@ -78,8 +80,7 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 				to := DecodeTopicToAddr(log.Topics[2])
 				nftID, err := DecodeTopicToInt(log.Topics[3])
 				if err != nil {
-					// If unable to convert topic 3 => int then maybe msg is not transfer
-					return nil
+					return errors.Wrap(err, "failed to decode tokenID")
 				}
 
 				if err := h.handleTransfer(tx, log.Address, from, to, nftID); err != nil {
