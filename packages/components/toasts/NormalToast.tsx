@@ -63,7 +63,14 @@ export const NormalToast: React.FC<NormalToastProps> = ({
         {type === "error" && (
           <>
             <SpacerRow size={3} />
-            <SVG width={24} height={24} source={warningSVG} />
+            <SVG
+              width={24}
+              height={24}
+              source={warningSVG}
+              style={{
+                flexShrink: 0,
+              }}
+            />
           </>
         )}
         <SpacerRow size={3} />
@@ -85,7 +92,6 @@ export const NormalToast: React.FC<NormalToastProps> = ({
               {message}
             </BrandText>
           ) : null}
-          <SpacerRow size={3} />
         </View>
       </Box>
     </TouchableOpacity>

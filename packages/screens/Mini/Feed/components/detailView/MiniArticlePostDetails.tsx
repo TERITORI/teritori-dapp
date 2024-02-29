@@ -15,7 +15,6 @@ import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { CommentsContainer } from "@/components/cards/CommentsContainer";
-import { NewsFeedInputHandle } from "@/components/socialFeed/NewsFeed/NewsFeedInput";
 import { RichText } from "@/components/socialFeed/RichText";
 import { SocialCardHeader } from "@/components/socialFeed/SocialCard/SocialCardHeader";
 import { SocialCardWrapper } from "@/components/socialFeed/SocialCard/SocialCardWrapper";
@@ -26,10 +25,15 @@ import {
 } from "@/hooks/feed/useFetchComments";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
-import { MiniCommentInput } from "@/screens/Mini/components/MiniCommentInput";
+import {
+  MiniCommentInput,
+  MiniCommentInputInputHandle,
+} from "@/screens/Mini/components/MiniCommentInput";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import { DEFAULT_USERNAME } from "@/utils/social-feed";
+import { neutral00 } from "@/utils/style/colors";
 import { fontSemibold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
 import { ReplyToType, ZodSocialFeedArticleMetadata } from "@/utils/types/feed";
 
@@ -49,7 +53,7 @@ export const MiniArticlePostDetails = ({
   const { width: windowWidth } = useWindowDimensions();
 
   const aref = useAnimatedRef<Animated.ScrollView>();
-  const feedInputRef = useRef<NewsFeedInputHandle>(null);
+  const feedInputRef = useRef<MiniCommentInputInputHandle>(null);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
 
   const [localPost, setLocalPost] = useState(post || Post.create());
@@ -134,16 +138,18 @@ export const MiniArticlePostDetails = ({
   if (!metadataToUse) return null;
 
   return (
-    <ScreenContainer
-      forceNetworkId={networkId}
-      fullWidth
-      responsive
-      noMargin
-      footerChildren
-      noScroll
-      headerMini={<CustomAppBar backEnabled title={`Article by ${username}`} />}
-    >
-      <KeyboardAvoidingView>
+    <KeyboardAvoidingView extraVerticalOffset={-100}>
+      <ScreenContainer
+        forceNetworkId={networkId}
+        fullWidth
+        responsive
+        noMargin
+        footerChildren
+        noScroll
+        headerMini={
+          <CustomAppBar backEnabled title={`Article by ${username}`} />
+        }
+      >
         <Animated.ScrollView
           ref={aref}
           onScroll={scrollHandler}
@@ -198,18 +204,6 @@ export const MiniArticlePostDetails = ({
               <SpacerColumn size={1.5} />
             </SocialCardWrapper>
             <View>
-              <SpacerColumn size={3} />
-              <MiniCommentInput
-                style={{ alignSelf: "center" }}
-                ref={feedInputRef}
-                replyTo={replyTo}
-                parentId={post.identifier}
-                onSubmitInProgress={handleSubmitInProgress}
-                onSubmitSuccess={() => {
-                  setReplyTo(undefined);
-                  refetchComments();
-                }}
-              />
               <SpacerColumn size={4} />
               <CommentsContainer
                 cardWidth={windowWidth}
@@ -219,7 +213,31 @@ export const MiniArticlePostDetails = ({
             </View>
           </View>
         </Animated.ScrollView>
-      </KeyboardAvoidingView>
-    </ScreenContainer>
+        <View
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: neutral00,
+            paddingVertical: layout.spacing_x0_75,
+          }}
+        >
+          <MiniCommentInput
+            style={{
+              alignSelf: "center",
+            }}
+            ref={feedInputRef}
+            replyTo={replyTo}
+            parentId={post.identifier}
+            onSubmitInProgress={handleSubmitInProgress}
+            onSubmitSuccess={() => {
+              setReplyTo(undefined);
+              refetchComments();
+            }}
+          />
+        </View>
+      </ScreenContainer>
+    </KeyboardAvoidingView>
   );
 };

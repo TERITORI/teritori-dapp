@@ -52,6 +52,15 @@ module.exports = (() => {
       };
     }
 
+    if (
+      platform === "web" &&
+      ["react-native-vision-camera"].includes(moduleName)
+    ) {
+      return {
+        type: "empty",
+      };
+    }
+
     return context.resolveRequest(context, moduleName, platform);
   };
   return config;

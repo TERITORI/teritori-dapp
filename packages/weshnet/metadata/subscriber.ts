@@ -15,20 +15,16 @@ const subscribers: { [key: string]: boolean } = {};
 
 export const subscribeMetadata = async (
   groupPk: Uint8Array | undefined,
-  ignoreLastId = false,
+  ignoreDuplication?: boolean,
 ) => {
   if (!groupPk) {
     return;
   }
-  let lastId = selectLastIdByKey(store.getState(), "metadata");
+  const lastId = selectLastIdByKey(store.getState(), "metadata");
   const config: Partial<GroupMetadataList_Request> = {
     groupPk,
   };
   let uniqKey = stringFromBytes(groupPk);
-
-  if (ignoreLastId) {
-    lastId = undefined;
-  }
 
   if (lastId) {
     config.sinceId = bytesFromString(lastId);
@@ -39,7 +35,7 @@ export const subscribeMetadata = async (
     uniqKey += "untilNow";
   }
 
-  if (subscribers[uniqKey]) {
+  if (!ignoreDuplication && subscribers[uniqKey]) {
     return;
   }
 
@@ -93,7 +89,7 @@ export const subscribeMetadata = async (
         if (newLastId) {
           subscribeMetadata(groupPk);
         } else {
-          setTimeout(() => subscribeMetadata(groupPk), 3500);
+          setTimeout(() => subscribeMetadata(groupPk, true), 3500);
         }
       },
     };

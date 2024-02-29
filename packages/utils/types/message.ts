@@ -92,3 +92,5 @@ export interface PeerItem {
   id: string;
   isActive: boolean;
 }
+
+export type GetStartedKeys = "addAFriend" | "newConversation" | "newGroup";

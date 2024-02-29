@@ -13,4 +13,5 @@ export interface StoreWallet {
   provider: "native" | "ledger" | "google";
   network: NetworkKind;
   networkId: string;
+  hdPath: string;
 }
