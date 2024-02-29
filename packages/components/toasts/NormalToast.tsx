@@ -75,11 +75,17 @@ export const NormalToast: React.FC<NormalToastProps> = ({
           </BrandText>
           {message ? (
             <BrandText
-              style={{ fontSize: 13, lineHeight: 15, color: neutral77 }}
+              style={{
+                fontSize: 13,
+                lineHeight: 15,
+                color: neutral77,
+                maxWidth: maxWidth - 130,
+              }}
             >
               {message}
             </BrandText>
           ) : null}
+          <SpacerRow size={3} />
         </View>
       </Box>
     </TouchableOpacity>
