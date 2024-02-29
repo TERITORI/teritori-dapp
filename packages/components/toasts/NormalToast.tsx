@@ -86,7 +86,7 @@ export const NormalToast: React.FC<NormalToastProps> = ({
                 fontSize: 13,
                 lineHeight: 15,
                 color: neutral77,
-                maxWidth: maxWidth - 130,
+                maxWidth: type === "error" ? maxWidth - 130 : maxWidth - 50,
               }}
             >
               {message}
