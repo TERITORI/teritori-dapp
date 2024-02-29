@@ -8,11 +8,9 @@ import React, {
 import { Platform, View, ViewStyle } from "react-native";
 import { LatLng } from "react-native-leaflet-view";
 
-import {
-  AddressSearch,
-  DescriptionInput,
-  MapHeader,
-} from "./MapComponent/Component";
+import { AddressSearch } from "./MapComponent/AddressSearch";
+import { MapDescriptionInput } from "./MapComponent/MapDescriptionInput";
+import { MapHeader } from "./MapComponent/MapHeader";
 import {
   neutral17,
   primaryColor,
@@ -82,7 +80,7 @@ export const MapModal: React.FC<TMapModalProps> = ({
 
         <SpacerColumn size={2} />
 
-        <DescriptionInput
+        <MapDescriptionInput
           description={description}
           setDescription={setDescription}
         />
