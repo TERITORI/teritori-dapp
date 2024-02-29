@@ -109,7 +109,7 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		return errors.Wrap(err, "failed to count number of existent nft")
 	}
 	if count == 0 {
-		//New Nft
+		// New Nft
 		if err := h.db.Create(&nft).Error; err != nil {
 			return errors.Wrap(err, "failed to create nft in db")
 		}
@@ -123,7 +123,7 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		if metadata.ImageURI != nil {
 			updates["image_uri"] = *metadata.ImageURI
 		}
-		//NFT existant just update it
+		// NFT existant just update it
 		err := h.db.Model(&indexerdb.NFT{ID: nftId}).UpdateColumns(updates).Error
 		if err != nil {
 			return errors.Wrap(err, "failed to create nft in db")

@@ -28,7 +28,7 @@ type ClaimInput struct {
 }
 
 func (h *Handler) handleClaim(contractABI *abi.ABI, tx *pb.Tx, args map[string]interface{}) error {
-	caller := tx.Info.From
+	caller := tx.GetInfo().GetFrom()
 
 	var input ClaimInput
 	if err := ArgsToStruct(args, &input); err != nil {
@@ -63,7 +63,7 @@ func (h *Handler) handleClaim(contractABI *abi.ABI, tx *pb.Tx, args map[string]i
 }
 
 func (h *Handler) handleSquadUnstake(contractABI *abi.ABI, tx *pb.Tx, args map[string]interface{}) error {
-	totalLogs := len(tx.Receipt.Logs)
+	totalLogs := len(tx.GetReceipt().GetLogs())
 	var tokenIDs []string
 	var nftContracts []string
 
@@ -75,15 +75,15 @@ func (h *Handler) handleSquadUnstake(contractABI *abi.ABI, tx *pb.Tx, args map[s
 	}
 
 	// TODO: find a way to decode topics with go ABI
-	for _, log := range tx.Receipt.Logs[:totalLogs-shifted] {
-		tokenID, err := DecodeTopicToInt(log.Topics[3])
+	for _, log := range tx.GetReceipt().GetLogs()[:totalLogs-shifted] {
+		tokenID, err := DecodeTopicToInt(log.GetTopics()[3])
 
 		if err != nil {
 			return errors.Wrap(err, "failed to parsed event log")
 		}
 
 		tokenIDs = append(tokenIDs, strconv.FormatInt(int64(tokenID), 10))
-		nftContracts = append(nftContracts, log.Address)
+		nftContracts = append(nftContracts, log.GetAddress())
 	}
 
 	indexerAction, err := indexeraction.NewIndexerAction(h.network.NetworkBase, h.dbTransaction, h.logger)
@@ -92,8 +92,8 @@ func (h *Handler) handleSquadUnstake(contractABI *abi.ABI, tx *pb.Tx, args map[s
 	}
 
 	if err := indexerAction.SquadUnstake(
-		tx.Info.To,
-		tx.Info.From,
+		tx.GetInfo().GetTo(),
+		tx.GetInfo().GetFrom(),
 		tokenIDs,
 		nftContracts,
 	); err != nil {
@@ -111,8 +111,8 @@ func (h *Handler) handleSquadStake(contractABI *abi.ABI, tx *pb.Tx, args map[str
 
 	var stakeLogEntry *pb.Log
 
-	for _, log := range tx.Receipt.Logs {
-		if log.Address == h.network.RiotSquadStakingContractAddress {
+	for _, log := range tx.GetReceipt().GetLogs() {
+		if log.GetAddress() == h.network.RiotSquadStakingContractAddress {
 			stakeLogEntry = log
 		}
 	}
@@ -122,7 +122,7 @@ func (h *Handler) handleSquadStake(contractABI *abi.ABI, tx *pb.Tx, args map[str
 	}
 
 	squadStakeEvent := new(abiGo.SquadStakingV3Stake)
-	if err := contractABI.UnpackIntoInterface(squadStakeEvent, "Stake", []byte(stakeLogEntry.Data)); err != nil {
+	if err := contractABI.UnpackIntoInterface(squadStakeEvent, "Stake", []byte(stakeLogEntry.GetData())); err != nil {
 		return err
 	}
 
@@ -218,8 +218,8 @@ func (h *Handler) handleSquadStake(contractABI *abi.ABI, tx *pb.Tx, args map[str
 
 	if err := indexerAction.SquadStake(
 		"V3",
-		tx.Info.To,
-		tx.Info.From,
+		tx.GetInfo().GetTo(),
+		tx.GetInfo().GetFrom(),
 		squadStakeEvent.StartTime.Uint64(),
 		// NOTE: to avoid to register all metadata on NftRegistry, we calculate the endtime on indexer
 		// squadStakeEvent.EndTime.Uint64(),

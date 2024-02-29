@@ -115,7 +115,7 @@ type NFTTrait struct {
 	Value       string  `json:"value"`
 }
 
-// converted from rust types above
+// converted from rust types above.
 type PremiumFeedNFTExtension struct {
 	Image           *string `json:"image"`
 	ImageData       *string `json:"image_data"`

@@ -80,7 +80,7 @@ func NewMultisigService(opts MultisigServiceOpts) (multisigpb.MultisigServiceSer
 	}, nil
 }
 
-// Read
+// Read.
 func (s *multisigService) Multisigs(_ context.Context, req *multisigpb.MultisigsRequest) (*multisigpb.MultisigsResponse, error) {
 	userAddress, err := s.authenticate(s.db, req.GetAuthToken())
 	if err != nil {
@@ -90,14 +90,14 @@ func (s *multisigService) Multisigs(_ context.Context, req *multisigpb.Multisigs
 	var multisigs []*multisigpb.Multisig
 
 	if err := s.db.Transaction(func(tx *gorm.DB) error {
-		limit := int(req.Limit)
+		limit := int(req.GetLimit())
 		if limit == 0 {
 			limit = 10
 		}
 
 		query := tx
-		if req.ChainId != "" {
-			query = query.Where("multisig_chain_id = ?", req.ChainId)
+		if req.GetChainId() != "" {
+			query = query.Where("multisig_chain_id = ?", req.GetChainId())
 		}
 		if req.GetJoinState() != multisigpb.JoinState_JOIN_STATE_UNSPECIFIED {
 			query = query.Where("joined = ?", req.GetJoinState() == multisigpb.JoinState_JOIN_STATE_IN)
@@ -197,7 +197,7 @@ func (s *multisigService) Transactions(_ context.Context, req *multisigpb.Transa
 	}
 
 	// we can't use .Joins( on signature because it does not expect a slice
-	query := transactionsQuery(s.db, userAddress, req.ChainId, req.MultisigAddress, req.ExecutionState, req.Types)
+	query := transactionsQuery(s.db, userAddress, req.GetChainId(), req.GetMultisigAddress(), req.GetExecutionState(), req.GetTypes())
 
 	// handle cursor
 	startAfterString := req.GetStartAfter()
@@ -212,7 +212,7 @@ func (s *multisigService) Transactions(_ context.Context, req *multisigpb.Transa
 	var dbTransactions []Transaction
 	if err := query.
 		Order("transactions.created_at DESC").
-		Limit(int(req.Limit)).
+		Limit(int(req.GetLimit())).
 		Find(&dbTransactions).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to find user multisigs")
 	}
@@ -297,7 +297,7 @@ func (s *multisigService) TransactionsCounts(_ context.Context, req *multisigpb.
 	}
 
 	var countsByType []TransactionsCount
-	query := transactionsQuery(s.db, userAddress, req.ChainId, req.MultisigAddress, multisigpb.ExecutionState_EXECUTION_STATE_UNSPECIFIED, nil)
+	query := transactionsQuery(s.db, userAddress, req.GetChainId(), req.GetMultisigAddress(), multisigpb.ExecutionState_EXECUTION_STATE_UNSPECIFIED, nil)
 	if err := query.
 		Select("count(type) as Count, type as Type, final_hash IS NOT NULL as Executed").
 		Group("Type, Executed").
@@ -320,11 +320,11 @@ func (s *multisigService) TransactionsCounts(_ context.Context, req *multisigpb.
 			all.Pending += count.Count
 		}
 	}
-	all.Total = all.Executed + all.Pending
+	all.Total = all.GetExecuted() + all.GetPending()
 	byTypeSlice := make([]*multisigpb.TransactionsCount, len(byType))
 	i := 0
 	for _, count := range byType {
-		count.Total = count.Executed + count.Pending
+		count.Total = count.GetExecuted() + count.GetPending()
 		byTypeSlice[i] = count
 		i++
 	}
@@ -335,7 +335,7 @@ func (s *multisigService) TransactionsCounts(_ context.Context, req *multisigpb.
 	}, nil
 }
 
-// Write
+// Write.
 func (s *multisigService) CreateOrJoinMultisig(_ context.Context, req *multisigpb.CreateOrJoinMultisigRequest) (*multisigpb.CreateOrJoinMultisigResponse, error) {
 	var created, joined bool
 	multisigAddress := ""
@@ -521,7 +521,7 @@ func (s *multisigService) CreateTransaction(_ context.Context, req *multisigpb.C
 	}
 
 	if err := s.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.First(&UserMultisig{}, "multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", req.ChainId, userAddress, req.MultisigAddress).Error; err != nil {
+		if err := tx.First(&UserMultisig{}, "multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", req.GetChainId(), userAddress, req.GetMultisigAddress()).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return errors.New("user is not a member of the multisig")
 			}
@@ -703,7 +703,7 @@ func (s *multisigService) ClearSignatures(_ context.Context, req *multisigpb.Cle
 	return &multisigpb.ClearSignaturesResponse{}, nil
 }
 
-// Auth
+// Auth.
 func (s *multisigService) GetChallenge(_ context.Context, req *multisigpb.GetChallengeRequest) (*multisigpb.GetChallengeResponse, error) {
 	challenge, err := makeChallenge(s.privateKey, s.opts.ChallengeDuration)
 	if err != nil {
@@ -735,5 +735,5 @@ func (s *multisigService) authenticate(tx *gorm.DB, token *multisigpb.Token) (st
 	if err := validateToken(s.publicKey, token); err != nil {
 		return "", err
 	}
-	return token.UserAddress, nil
+	return token.GetUserAddress(), nil
 }

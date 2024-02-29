@@ -87,12 +87,12 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	)
 
 	if filter != nil {
-		categories = filter.Categories
-		user = filter.User
-		hashtags = filter.Hashtags
-		mentions = filter.Mentions
-		premiumLevelMin = filter.PremiumLevelMin
-		premiumLevelMax = filter.PremiumLevelMax
+		categories = filter.GetCategories()
+		user = filter.GetUser()
+		hashtags = filter.GetHashtags()
+		mentions = filter.GetMentions()
+		premiumLevelMin = filter.GetPremiumLevelMin()
+		premiumLevelMax = filter.GetPremiumLevelMax()
 	}
 
 	queryUserID := req.GetQueryUserId()

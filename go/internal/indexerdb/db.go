@@ -24,7 +24,7 @@ type App struct {
 	IndexerMode   IndexerMode
 }
 
-// Cursor used by Substreams indexer
+// Cursor used by Substreams indexer.
 type Cursor struct {
 	ID          string `gorm:"primaryKey;notNull"`
 	Cursor      string

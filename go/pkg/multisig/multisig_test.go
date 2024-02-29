@@ -54,7 +54,7 @@ func TestChallenge(t *testing.T) {
 
 	{
 		copy := proto.Clone(chall).(*multisigpb.Challenge)
-		expiration, err := decodeTime(chall.Expiration)
+		expiration, err := decodeTime(chall.GetExpiration())
 		require.NoError(t, err)
 		copy.Expiration = encodeTime(expiration.Add(-(24 * time.Hour)))
 		err = validateChallenge(publicKey, copy)
@@ -63,7 +63,7 @@ func TestChallenge(t *testing.T) {
 
 	{
 		copy := proto.Clone(chall).(*multisigpb.Challenge)
-		expiration, err := decodeTime(chall.Expiration)
+		expiration, err := decodeTime(chall.GetExpiration())
 		require.NoError(t, err)
 		copy.Expiration = encodeTime(expiration.Add(24 * time.Hour))
 		err = validateChallenge(publicKey, copy)
@@ -83,7 +83,7 @@ func TestChallenge(t *testing.T) {
 		copy := proto.Clone(chall).(*multisigpb.Challenge)
 		other, err := makeChallenge(privateKey, time.Hour)
 		require.NoError(t, err)
-		copy.ServerSignature = other.ServerSignature
+		copy.ServerSignature = other.GetServerSignature()
 		err = validateChallenge(publicKey, copy)
 		require.ErrorContains(t, err, "bad signature")
 	}
@@ -107,8 +107,8 @@ func TestToken(t *testing.T) {
 	token, err := makeToken(privateKey, publicKey, time.Hour, infoJSON, "2n+PG/4cBnjnm8+BDxhse83Qe4PVy43iY3DiLm3EjGYCpv3Y5nlfVIy3FqedXMUFgYL8xs1F1XDzmGSrG6bInA==")
 	require.NoError(t, err)
 
-	require.Equal(t, "user14grryrkwtf0ugtlthrnr59ktztc9mnfcjv0fh4", token.UserAddress)
-	require.Equal(t, encodeTime(timeNow().Add(time.Hour)), token.Expiration)
+	require.Equal(t, "user14grryrkwtf0ugtlthrnr59ktztc9mnfcjv0fh4", token.GetUserAddress())
+	require.Equal(t, encodeTime(timeNow().Add(time.Hour)), token.GetExpiration())
 
 	err = validateToken(publicKey, token)
 	require.NoError(t, err)

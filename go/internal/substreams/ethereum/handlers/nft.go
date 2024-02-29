@@ -44,7 +44,7 @@ func (h *Handler) handleTransfer(tx *pb.Tx, nftContract string, from string, to 
 }
 
 func (h *Handler) handleTransferFrom(contractABI *abi.ABI, tx *pb.Tx, args map[string]interface{}) error {
-	nftContract := tx.Info.To
+	nftContract := tx.GetInfo().GetTo()
 
 	var input TransferInput
 	if err := ArgsToStruct(args, &input); err != nil {
@@ -70,9 +70,9 @@ func (h *Handler) handleTransferFrom(contractABI *abi.ABI, tx *pb.Tx, args map[s
 
 	// Create send activity
 	if err := h.indexerDB.Create(&indexerdb.Activity{
-		ID:   h.network.ActivityID(tx.Info.Hash, int(tx.Receipt.Logs[0].Index)),
+		ID:   h.network.ActivityID(tx.GetInfo().GetHash(), int(tx.GetReceipt().GetLogs()[0].GetIndex())),
 		Kind: indexerdb.ActivityKindSendNFT,
-		Time: time.Unix(int64(tx.Clock.Timestamp), 0),
+		Time: time.Unix(int64(tx.GetClock().GetTimestamp()), 0),
 		SendNFT: &indexerdb.SendNFT{
 			Sender:    h.network.UserID(input.From.String()),
 			Receiver:  h.network.UserID(input.To.String()),
@@ -94,21 +94,21 @@ func (h *Handler) handleInitialize(tx *pb.Tx) error {
 		return errors.Wrap(err, "failed to parse teritori nft abi")
 	}
 
-	method, err := ParseMethod(contractABI, tx.Calls[2].Input)
+	method, err := ParseMethod(contractABI, tx.GetCalls()[2].GetInput())
 	if err != nil {
 		return errors.Wrap(err, "failed to parse method")
 	}
 
 	args := make(map[string]interface{})
-	if err := method.Inputs.UnpackIntoMap(args, []byte(tx.Calls[2].Input[4:])); err != nil {
+	if err := method.Inputs.UnpackIntoMap(args, []byte(tx.GetCalls()[2].GetInput()[4:])); err != nil {
 		return errors.Wrap(err, "failed to unpack args for "+method.Name)
 	}
 
 	contractURI := args["_contractURI"].(string)
 	collectionName := args["_name"].(string)
 
-	minterAddress := tx.Calls[2].Caller
-	nftAddress := tx.Calls[2].Address
+	minterAddress := tx.GetCalls()[2].GetCaller()
+	nftAddress := tx.GetCalls()[2].GetAddress()
 
 	// try to fetch collection metadata
 	metadataURI := contractURI
@@ -131,12 +131,12 @@ func (h *Handler) handleInitialize(tx *pb.Tx) error {
 		ImageURI:            metadata.ImageURI,
 		MaxSupply:           0,
 		SecondaryDuringMint: false,
-		Time:                time.Unix(int64(tx.Clock.Timestamp), 0),
+		Time:                time.Unix(int64(tx.GetClock().GetTimestamp()), 0),
 		TeritoriCollection: &indexerdb.TeritoriCollection{
 			NetworkID:           network.GetBase().ID,
 			MintContractAddress: minterAddress,
 			NFTContractAddress:  nftAddress,
-			CreatorAddress:      tx.Info.From,
+			CreatorAddress:      tx.GetInfo().GetFrom(),
 			Denom:               network.GetBase().Currencies[0].GetDenom(),
 		},
 	}

@@ -41,12 +41,12 @@ func (h *Handler) handleBuyNFT(contractABI *abi.ABI, tx *pb.Tx, args map[string]
 	}
 
 	if err := indexerAction.BuyNFT(
-		tx.Info.From,
+		tx.GetInfo().GetFrom(),
 		input.Nft.String(),
 		input.TokenId.String(),
-		tx.Info.Hash,
-		int(tx.Receipt.Logs[0].Index),
-		time.Unix(int64(tx.Clock.Timestamp), 0),
+		tx.GetInfo().GetHash(),
+		int(tx.GetReceipt().GetLogs()[0].GetIndex()),
+		time.Unix(int64(tx.GetClock().GetTimestamp()), 0),
 	); err != nil {
 		return errors.Wrap(err, "failed to index withdrawNFT")
 	}
@@ -67,12 +67,12 @@ func (h *Handler) handleWithdrawNFT(contractABI *abi.ABI, tx *pb.Tx, args map[st
 	}
 
 	if err := indexerAction.WithdrawNFT(
-		tx.Info.From,
+		tx.GetInfo().GetFrom(),
 		input.Nft.String(),
 		input.TokenId.String(),
-		tx.Info.Hash,
-		int(tx.Receipt.Logs[1].Index),
-		time.Unix(int64(tx.Clock.Timestamp), 0),
+		tx.GetInfo().GetHash(),
+		int(tx.GetReceipt().GetLogs()[1].GetIndex()),
+		time.Unix(int64(tx.GetClock().GetTimestamp()), 0),
 	); err != nil {
 		return errors.Wrap(err, "failed to index withdrawNFT")
 	}
@@ -93,14 +93,14 @@ func (h *Handler) handleListNFT(contractABI *abi.ABI, tx *pb.Tx, args map[string
 	}
 
 	if err := indexerAction.ListNFT(
-		tx.Info.From,
+		tx.GetInfo().GetFrom(),
 		input.Nft.String(),
 		input.TokenId.String(),
 		input.SaleOption.Token.String(),
 		input.SaleOption.Amount.String(),
-		tx.Info.Hash,
-		int(tx.Receipt.Logs[0].Index),
-		time.Unix(int64(tx.Clock.Timestamp), 0),
+		tx.GetInfo().GetHash(),
+		int(tx.GetReceipt().GetLogs()[0].GetIndex()),
+		time.Unix(int64(tx.GetClock().GetTimestamp()), 0),
 	); err != nil {
 		return errors.Wrap(err, "failed to index listNFT")
 	}

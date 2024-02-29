@@ -129,7 +129,7 @@ func GetRewardsConfigBySeason(seasonId string, network networks.Network) ([]sdk.
 	return seasonRewards, nil
 }
 
-// Rewards for base season
+// Rewards for base season.
 func getBaseRewardsConfig() []sdk.Dec {
 	rankRewardInts := []int64{
 		55_000,

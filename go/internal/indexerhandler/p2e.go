@@ -82,7 +82,7 @@ func (h *Handler) handleInstantiateBreeding(e *Message, contractAddress string, 
 	return nil
 }
 
-// Insert a new P2eSquadStaking record when staking begins
+// Insert a new P2eSquadStaking record when staking begins.
 func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	var squadStakeMsg ExecuteSquadStakeMsg
 	if err := json.Unmarshal(execMsg.Msg, &squadStakeMsg); err != nil {
@@ -199,7 +199,7 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 }
 
 // Increase score on P2eLeaderboard when user unstake
-// Remote unstaked staking
+// Remote unstaked staking.
 func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	unstakedTokenIds := e.Events["wasm.token_id"]
 	if len(unstakedTokenIds) == 0 {

@@ -109,7 +109,6 @@ func (h *Handler) handleExecuteReactPost(e *Message, execMsg *wasmtypes.MsgExecu
 		for _, user := range reactedUsers.([]interface{}) {
 			users = append(users, networks.UserID(user.(string)))
 		}
-
 	} else {
 		users = make([]networks.UserID, 0)
 	}

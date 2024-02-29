@@ -211,7 +211,6 @@ func main() {
 	tryPrintStats := func(chainHeight int64, lastProcessedBlock int64) {
 		now := time.Now()
 		if nextStatsPrint.Before(now) {
-
 			totalProcessedBlocks := lastProcessedBlock - initialHeight
 			elapsedTime := now.Sub(startTime).Seconds()
 			bpsTotal := float64(totalProcessedBlocks) / elapsedTime

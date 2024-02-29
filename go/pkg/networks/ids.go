@@ -25,7 +25,7 @@ func (n *NetworkBase) NftID(mintContractAddress string, tokenID int64) NFTID {
 	return NFTID(fmt.Sprintf("%s-%s-%d", n.IDPrefix, mintContractAddress, tokenID))
 }
 
-// returns <network_id>-<root_contract_address>
+// returns <network_id>-<root_contract_address>.
 func (netstore NetworkStore) ParseCollectionID(userId string) (Network, string, error) {
 	parts := strings.Split(userId, "-")
 	if len(parts) != 2 {
@@ -42,7 +42,7 @@ func (n *NetworkBase) NFTID(mintContractAddress string, tokenId string) NFTID {
 	return NFTID(fmt.Sprintf("%s-%s-%s", n.IDPrefix, mintContractAddress, tokenId))
 }
 
-// returns <network_id>-<root_contract_address>-<token_id>
+// returns <network_id>-<root_contract_address>-<token_id>.
 func (netstore NetworkStore) ParseNFTID(nftId string) (Network, string, string, error) {
 	parts := strings.Split(nftId, "-")
 	if len(parts) != 3 {
@@ -59,7 +59,7 @@ func (n *NetworkBase) UserID(address string) UserID {
 	return UserID(fmt.Sprintf("%s-%s", n.IDPrefix, strings.ToLower(address)))
 }
 
-// returns <network_id>-<user_address>
+// returns <network_id>-<user_address>.
 func (netstore NetworkStore) ParseUserID(userId string) (Network, string, error) {
 	parts := strings.Split(userId, "-")
 	if len(parts) != 2 {
@@ -80,7 +80,7 @@ func (n *NetworkBase) SubActivityID(txHash string, messageIndex int, activityInd
 	return ActivityID(fmt.Sprintf("%s-%s-%d-%d", n.IDPrefix, txHash, messageIndex, activityIndex))
 }
 
-// returns <network_id>-<tx_hash>-<message_index>
+// returns <network_id>-<tx_hash>-<message_index>.
 func (netstore NetworkStore) ParseActivityID(activityId string) (Network, string, int, error) {
 	parts := strings.Split(activityId, "-")
 	if len(parts) != 3 {
