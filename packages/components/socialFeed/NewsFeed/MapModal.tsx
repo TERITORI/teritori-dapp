@@ -1,11 +1,9 @@
 import React, { Suspense, lazy, useState } from "react";
 import { Platform, View, ViewStyle } from "react-native";
 
-import {
-  AddressSearch,
-  DescriptionInput,
-  MapHeader,
-} from "./MapComponent/Component";
+import { AddressSearch } from "./MapComponent/AddressSearch";
+import { MapDescriptionInput } from "./MapComponent/MapDescriptionInput";
+import { MapHeader } from "./MapComponent/MapHeader";
 import {
   neutral17,
   primaryColor,
@@ -74,7 +72,7 @@ export const MapModal: React.FC<TMapModalProps> = ({
 
         <SpacerColumn size={2} />
 
-        <DescriptionInput
+        <MapDescriptionInput
           description={description}
           setDescription={setDescription}
         />
