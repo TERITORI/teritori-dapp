@@ -224,11 +224,12 @@ func (h *Handler) handleExecutePremiumFeedSubscribe(e *Message, execMsg *wasmtyp
 
 	activityID := h.config.Network.ActivityID(e.TxHash, e.MsgIndex)
 	activity := indexerdb.Activity{
-		ID:        activityID,
-		Kind:      indexerdb.ActivityKindMint,
-		Time:      blockTime,
-		NetworkID: h.config.Network.ID,
-		NFTID:     &nftID,
+		ID:           activityID,
+		Kind:         indexerdb.ActivityKindMint,
+		Time:         blockTime,
+		NetworkID:    h.config.Network.ID,
+		NFTID:        &nftID,
+		CollectionID: &nft.CollectionID,
 
 		Mint: &indexerdb.Mint{
 			Price:      amount,
