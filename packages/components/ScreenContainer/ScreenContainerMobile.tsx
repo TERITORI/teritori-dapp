@@ -2,6 +2,7 @@ import React, { FC, ReactNode } from "react";
 import {
   Platform,
   SafeAreaView,
+  ScrollView,
   View,
   useWindowDimensions,
 } from "react-native";
@@ -103,17 +104,15 @@ export const ScreenContainerMobile: FC<{
         <View style={{ flex: 1, width: "100%", height: windowHeight }}>
           <SelectedNetworkGate filter={networkFilter}>
             {hasScroll ? (
-              <View
-                style={[
-                  {
-                    marginHorizontal: layout.spacing_x2,
-                    minHeight: windowHeight - MOBILE_HEADER_HEIGHT,
-                  },
-                ]}
+              <ScrollView
+                style={{
+                  marginHorizontal: layout.spacing_x2,
+                  minHeight: windowHeight - MOBILE_HEADER_HEIGHT,
+                }}
               >
                 {mobileTitle ? <MobileTitle title={mobileTitle} /> : null}
                 <View style={[{ height: "100%" }]}>{children}</View>
-              </View>
+              </ScrollView>
             ) : (
               <>
                 <View
