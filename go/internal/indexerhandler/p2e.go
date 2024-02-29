@@ -359,9 +359,10 @@ func (h *Handler) handleExecuteBreed(e *Message, execMsg *wasmtypes.MsgExecuteCo
 
 	// create request mint activity
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:   activityId,
-		Kind: indexerdb.ActivityKindRequestMint,
-		Time: blockTime,
+		ID:           activityId,
+		Kind:         indexerdb.ActivityKindRequestMint,
+		Time:         blockTime,
+		CollectionID: &collectionId,
 		RequestMint: &indexerdb.RequestMint{
 			BuyerID:      ownerId,
 			NetworkID:    collection.NetworkID,

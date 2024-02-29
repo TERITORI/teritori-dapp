@@ -174,8 +174,9 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 			PriceDenom: denom,
 			USDPrice:   usdAmount,
 		},
-		NFTID:     &nftId,
-		NetworkID: collection.NetworkID,
+		NFTID:        &nftId,
+		CollectionID: &collection.ID,
+		NetworkID:    collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create mint activity")
 	}

@@ -78,10 +78,11 @@ func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExe
 
 	// create activity
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:    h.config.Network.ActivityID(e.TxHash, e.MsgIndex),
-		NFTID: &nftId,
-		Kind:  indexerdb.ActivityKindUpdateNFTPrice,
-		Time:  blockTime,
+		ID:           h.config.Network.ActivityID(e.TxHash, e.MsgIndex),
+		NFTID:        &nftId,
+		CollectionID: &collection.ID,
+		Kind:         indexerdb.ActivityKindUpdateNFTPrice,
+		Time:         blockTime,
 		UpdateNFTPrice: &indexerdb.UpdateNFTPrice{
 			Price:      price,
 			PriceDenom: denom,
@@ -160,10 +161,11 @@ func (h *Handler) handleExecuteWithdraw(e *Message, execMsg *wasmtypes.MsgExecut
 	}
 	activityID := h.config.Network.ActivityID(e.TxHash, e.MsgIndex)
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:    activityID,
-		NFTID: &nftID,
-		Kind:  indexerdb.ActivityKindCancelListing,
-		Time:  blockTime,
+		ID:           activityID,
+		NFTID:        &nftID,
+		CollectionID: &collection.ID,
+		Kind:         indexerdb.ActivityKindCancelListing,
+		Time:         blockTime,
 		CancelListing: &indexerdb.CancelListing{
 			SellerID:  h.config.Network.UserID(execMsg.Sender),
 			NetworkID: collection.NetworkID,
@@ -277,10 +279,11 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 	}
 	activityID := h.config.Network.ActivityID(e.TxHash, e.MsgIndex)
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:    activityID,
-		NFTID: &nftID,
-		Kind:  indexerdb.ActivityKindTrade,
-		Time:  blockTime,
+		ID:           activityID,
+		NFTID:        &nftID,
+		CollectionID: &collection.ID,
+		Kind:         indexerdb.ActivityKindTrade,
+		Time:         blockTime,
 		Trade: &indexerdb.Trade{
 			Price:      price,
 			PriceDenom: denom,
@@ -381,10 +384,11 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 	}
 	activityID := h.config.Network.ActivityID(e.TxHash, e.MsgIndex)
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:    activityID,
-		NFTID: &nftID,
-		Kind:  indexerdb.ActivityKindList,
-		Time:  blockTime,
+		ID:           activityID,
+		NFTID:        &nftID,
+		CollectionID: &collection.ID,
+		Kind:         indexerdb.ActivityKindList,
+		Time:         blockTime,
 		Listing: &indexerdb.Listing{
 			Price:      price,
 			PriceDenom: denom,
