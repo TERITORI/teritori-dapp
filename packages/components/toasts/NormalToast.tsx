@@ -30,7 +30,7 @@ export const NormalToast: React.FC<NormalToastProps> = ({
   type,
   topOffset = 24,
 }) => {
-  const width = 432;
+  const width = type === "success" ? 300 : 432;
   const { width: windowWidth } = useWindowDimensions();
 
   const maxWidth = width < windowWidth ? width : windowWidth - marginHorizontal;
