@@ -2,9 +2,7 @@ import moment from "moment";
 import React from "react";
 import { View } from "react-native";
 
-import { GovernanceAllValidators } from "./GovernanceAllValidators/GovernanceValidatorsReview";
 import { GovernanceDescription } from "./GovernanceDescription/GovernanceDescription";
-import { GovernanceValidatorsReview } from "./GovernanceValidatorsReview/GovernanceValidatorsReview";
 import { GovernanceVoteDetails } from "./GovernanceVoteDetails/GovernanceVoteDetails";
 import { GovernanceVoteHeader } from "./GovernanceVoteHeader/GovernanceVoteHeader";
 
@@ -46,12 +44,6 @@ export const GovernanceProposalScreen: ScreenFC<"GovernanceProposal"> = ({
             result={proposal.final_tally_result}
             isVoteEnable={moment(proposal.voting_end_time).isAfter(moment())}
           />
-
-          <SpacerColumn size={layout.spacing_x0_5} />
-          <GovernanceValidatorsReview validator={0} />
-
-          <SpacerColumn size={layout.spacing_x0_5} />
-          <GovernanceAllValidators validator={25} />
 
           <SpacerColumn size={layout.spacing_x0_5} />
           <GovernanceDescription description={proposal.content.description} />
