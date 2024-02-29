@@ -1,11 +1,11 @@
 import React from "react";
 import { View } from "react-native";
 
-import { BrandText } from "@/components/BrandText";
+import { VoteTimeText } from "./VoteTimeText";
+
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { Separator } from "@/components/separators/Separator";
-import { neutral17, neutral77, secondaryColor } from "@/utils/style/colors";
-import { fontSemibold12, fontSemibold13 } from "@/utils/style/fonts";
+import { neutral17 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
 
 export const VoteTimeDetailsBox: React.FC<{
@@ -36,104 +36,28 @@ export const VoteTimeDetailsBox: React.FC<{
           justifyContent: "space-evenly",
         }}
       >
-        <View>
-          <BrandText
-            style={[
-              fontSemibold12,
-              {
-                color: neutral77,
-              },
-            ]}
-          >
-            Submit Time
-          </BrandText>
-          <BrandText
-            style={[
-              fontSemibold13,
-              {
-                marginTop: layout.spacing_x0_25,
-                color: secondaryColor,
-              },
-            ]}
-          >
-            {`${submit_time.slice(0, 10)} ${submit_time.slice(11, 16)} UTC`}
-          </BrandText>
-        </View>
+        <VoteTimeText
+          label="Submit Time"
+          subLabel={`${submit_time.slice(0, 10)} ${submit_time.slice(11, 16)} UTC`}
+        />
         <Separator horizontal />
 
-        <View>
-          <BrandText
-            style={[
-              fontSemibold12,
-              {
-                color: neutral77,
-              },
-            ]}
-          >
-            Deposit End Time
-          </BrandText>
-          <BrandText
-            style={[
-              fontSemibold13,
-              {
-                marginTop: layout.spacing_x0_25,
-                color: secondaryColor,
-              },
-            ]}
-          >
-            {`${deposit_end_time.slice(0, 10)} ${deposit_end_time.slice(11, 16)} UTC`}
-          </BrandText>
-        </View>
+        <VoteTimeText
+          label="Deposit End Time"
+          subLabel={`${deposit_end_time.slice(0, 10)} ${deposit_end_time.slice(11, 16)} UTC`}
+        />
         <Separator horizontal />
 
-        <View>
-          <BrandText
-            style={[
-              fontSemibold12,
-              {
-                color: neutral77,
-              },
-            ]}
-          >
-            Voting Start
-          </BrandText>
-          <BrandText
-            style={[
-              fontSemibold13,
-              {
-                marginTop: layout.spacing_x0_25,
-                color: secondaryColor,
-              },
-            ]}
-          >
-            {`${voting_start_time.slice(0, 10)} ${voting_start_time.slice(11, 16)} UTC`}
-          </BrandText>
-        </View>
+        <VoteTimeText
+          label="Voting Start"
+          subLabel={`${voting_start_time.slice(0, 10)} ${voting_start_time.slice(11, 16)} UTC`}
+        />
         <Separator horizontal />
 
-        <View>
-          <BrandText
-            style={[
-              fontSemibold12,
-              {
-                color: neutral77,
-              },
-            ]}
-          >
-            Voting End
-          </BrandText>
-          <BrandText
-            style={[
-              fontSemibold13,
-              {
-                marginTop: layout.spacing_x0_25,
-                color: secondaryColor,
-              },
-            ]}
-          >
-            {`${voting_end_time.slice(0, 10)} ${voting_end_time.slice(11, 16)} UTC`}
-          </BrandText>
-        </View>
+        <VoteTimeText
+          label="Voting End"
+          subLabel={`${voting_end_time.slice(0, 10)} ${voting_end_time.slice(11, 16)} UTC`}
+        />
       </View>
     </PrimaryBox>
   );

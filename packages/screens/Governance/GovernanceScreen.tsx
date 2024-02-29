@@ -7,7 +7,7 @@ import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SearchInputRounded } from "@/components/sorts/SearchInputRounded";
-import { useProposals } from "@/hooks/governance/useProposals";
+import { useGetAllProposals } from "@/hooks/governance/useGetAllProposals";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkKind } from "@/networks";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
@@ -19,7 +19,7 @@ export const GovernanceScreen: React.FC = () => {
   const [searchInput, setSearchInput] = useState("");
   const selectedNetworkId = useSelectedNetworkId();
 
-  const proposals = useProposals(selectedNetworkId);
+  const proposals = useGetAllProposals(selectedNetworkId);
 
   const filteredProposals = useMemo(
     () => (filter ? proposals.filter((p) => p.status === filter) : proposals),

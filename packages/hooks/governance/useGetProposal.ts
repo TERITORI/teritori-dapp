@@ -3,19 +3,19 @@ import { useQuery } from "@tanstack/react-query";
 import { mustGetCosmosNetwork } from "@/networks";
 import { Proposal } from "@/utils/types/gov";
 
-export const useProposals = (networkId: string) => {
+export const useGetProposal = (networkId: string, id: string) => {
   const { data } = useQuery(
-    ["proposals", networkId],
+    ["proposal", networkId],
     async () => {
       const network = mustGetCosmosNetwork(networkId);
       const res = await fetch(
-        `${network.restEndpoint}/cosmos/gov/v1beta1/proposals`,
+        `${network.restEndpoint}/cosmos/gov/v1beta1/proposals/${id}`,
       );
-      const data: { proposals: Proposal[] } = await res.json();
+      const data: { proposal: Proposal } = await res.json();
 
-      return data.proposals;
+      return data.proposal;
     },
     { staleTime: Infinity },
   );
-  return data?.reverse() || [];
+  return data;
 };

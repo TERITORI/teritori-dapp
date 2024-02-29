@@ -9,7 +9,7 @@ import { GovernanceVoteHeader } from "./GovernanceVoteHeader/GovernanceVoteHeade
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
-import { useProposal } from "@/hooks/governance/useProposal";
+import { useGetProposal } from "@/hooks/governance/useGetProposal";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkKind } from "@/networks";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
@@ -23,7 +23,7 @@ export const GovernanceProposalScreen: ScreenFC<"GovernanceProposal"> = ({
 }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
-  const proposal = useProposal(selectedNetworkId, id);
+  const proposal = useGetProposal(selectedNetworkId, id);
 
   return (
     <ScreenContainer
