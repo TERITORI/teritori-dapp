@@ -7,6 +7,7 @@ import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SearchInputRounded } from "@/components/sorts/SearchInputRounded";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkKind, mustGetCosmosNetwork } from "@/networks";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
@@ -18,6 +19,7 @@ export const GovernanceScreen: React.FC = () => {
   const [filter, setFilter] = useState<ProposalStatus>();
   const [searchInput, setSearchInput] = useState("");
   const selectedNetworkId = useSelectedNetworkId();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const effect = async () => {
@@ -51,7 +53,7 @@ export const GovernanceScreen: React.FC = () => {
     >
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: isMobile ? "column" : "row",
           marginTop: layout.spacing_x3,
           alignItems: "center",
           justifyContent: "space-between",
@@ -63,9 +65,11 @@ export const GovernanceScreen: React.FC = () => {
             flexDirection: "row",
             gap: layout.spacing_x1_5,
             alignItems: "center",
+            marginTop: isMobile ? layout.spacing_x1_5 : 0,
           }}
         >
           <SearchInputRounded
+            isMobile={isMobile}
             handleChangeSearch={(text) => setSearchInput(text)}
           />
           <StatesDropdown onChange={setFilter} style={{ zIndex: 100 }} />
@@ -75,7 +79,7 @@ export const GovernanceScreen: React.FC = () => {
       <View
         style={{
           display: "flex",
-          flexDirection: "row",
+          flexDirection: isMobile ? "column" : "row",
           flexWrap: "wrap",
           marginTop: 24,
           marginRight: -20,
@@ -89,7 +93,7 @@ export const GovernanceScreen: React.FC = () => {
               .includes(searchInput.toLowerCase()),
           )
           .map((proposals) => (
-            <GovernanceBox proposal={proposals} />
+            <GovernanceBox proposal={proposals} isMobile={isMobile} />
           ))}
       </View>
     </ScreenContainer>

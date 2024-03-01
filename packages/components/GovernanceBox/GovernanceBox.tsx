@@ -26,14 +26,18 @@ import { Proposal } from "@/utils/types/gov";
 
 export const GovernanceBox: React.FC<{
   proposal: Proposal;
-}> = ({ proposal }) => {
+  isMobile: boolean;
+}> = ({ proposal, isMobile }) => {
   return (
     <OmniLink
       to={{
         screen: "GovernanceProposal",
         params: { id: proposal.proposal_id },
       }}
-      style={{ width: "50%", marginBottom: layout.spacing_x2_5 }}
+      style={{
+        width: isMobile ? "auto" : "50%",
+        marginBottom: layout.spacing_x2_5,
+      }}
     >
       <View
         style={{

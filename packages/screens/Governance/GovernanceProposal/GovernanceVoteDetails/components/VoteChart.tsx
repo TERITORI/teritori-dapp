@@ -44,7 +44,7 @@ export const VoteChart: React.FC<{
         </View>
 
         <VictoryPie
-          innerRadius={700}
+          innerRadius={750}
           colorScale={[additionalSuccess, errorColor, additionalRed, neutral55]}
           data={[
             { x: "Yes", y: percentageYes },

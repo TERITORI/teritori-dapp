@@ -1,4 +1,5 @@
 import React from "react";
+import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
@@ -9,7 +10,7 @@ export const GovernanceDescription: React.FC<{
   description: string;
 }> = ({ description }) => {
   return (
-    <>
+    <View style={{ width: 1290 }}>
       <BrandText
         style={[
           fontSemibold20,
@@ -31,6 +32,6 @@ export const GovernanceDescription: React.FC<{
       >
         {description}
       </BrandText>
-    </>
+    </View>
   );
 };
