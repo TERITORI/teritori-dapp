@@ -1,55 +1,26 @@
 # syntax=docker/dockerfile:1
 
-ARG GO_VERSION="1.19"
-ARG RUNNER_IMAGE="gcr.io/distroless/static"
+# Build the application from source
+FROM golang:1.21 AS builder
 
-# --------------------------------------------------------
-# Builder
-# --------------------------------------------------------
-
-FROM golang:${GO_VERSION}-alpine as builder
-
-RUN set -eux; apk add --no-cache ca-certificates build-base; apk add git linux-headers
-
-# Download go dependencies
 WORKDIR /app
-RUN ls
-COPY go.* ./
-RUN --mount=type=cache,target=/root/.cache/go-build \
-  --mount=type=cache,target=/root/go/pkg/mod \
-  go mod download
 
-# Copy the remaining files
+COPY go.mod go.sum ./
+RUN go mod download
+
 COPY go ./go
-COPY .git ./.git
 
-# Build binary
-RUN --mount=type=cache,target=/root/.cache/go-build \
-  --mount=type=cache,target=/root/go/pkg/mod \
-  VERSION=$(echo $(git describe --tags) | sed 's/^v//') && \
-  COMMIT=$(git log -1 --format='%H') && \
-  go build \
-  -mod=readonly \
-  -tags "netgo,ledger,muslc" \
-  -ldflags "-X github.com/cosmos/cosmos-sdk/version.Name="teritori" \
-  -X github.com/cosmos/cosmos-sdk/version.AppName="teritorid" \
-  -X github.com/cosmos/cosmos-sdk/version.Version=$VERSION \
-  -X github.com/cosmos/cosmos-sdk/version.Commit=$COMMIT \
-  -X github.com/cosmos/cosmos-sdk/version.BuildTags='netgo,ledger,muslc' \
-  -w -s -linkmode=external -extldflags '-Wl,-z,muldefs -static'" \
-  -trimpath \
-  -o /app/build/ \
-  ./go/cmd/evm-indexer
+RUN go build -o /evm-indexer ./go/cmd/evm-indexer
 
-RUN touch /app/build/.env
+RUN touch /.env
 
-# --------------------------------------------------------
-# Runner
-# --------------------------------------------------------
-FROM ${RUNNER_IMAGE}
+# Deploy the application binary into a lean image
+FROM gcr.io/distroless/base-debian12 AS runner
 
-COPY --from=builder /app/build/evm-indexer /bin/evm-indexer
-COPY --from=builder /app/build/.env /app/.env
+WORKDIR /
+
+COPY --from=builder /evm-indexer /usr/bin/evm-indexer
+COPY --from=builder /.env /app/.env
 
 ENV HOME /app
 WORKDIR $HOME
