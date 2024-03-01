@@ -18,10 +18,7 @@ export const Notification = z.object({
   timestamp: z.string().optional(),
   avatar: z.string().optional(),
   isRead: z.boolean(),
-  contactId: z.string().optional(),
-  rdvSeed: z.string().optional(),
   name: z.string().optional(),
-  peerId: z.string().optional(),
 });
 
 export type TypeNotification = z.infer<typeof Notification>;

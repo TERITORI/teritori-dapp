@@ -119,6 +119,7 @@ const rootPersistConfig = {
     "marketplaceCartItemsUI",
     "marketplaceFilters",
     "marketplaceFilterUI",
+    "notifications",
   ],
   blacklist: ["dAppsStore, marketplaceFilterUI", "message"],
 };

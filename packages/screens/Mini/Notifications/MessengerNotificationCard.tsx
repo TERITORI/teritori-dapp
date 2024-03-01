@@ -40,11 +40,13 @@ export default function MessengerNotificationCard({
 
         // TODO: Change to appropriate routes
         if (item.type === "message") {
-          navigation.navigate("MiniChats", {});
+          navigation.navigate("Conversation", {
+            conversationId: item?.id,
+          });
         }
 
         if (item.type === "contact-request") {
-          navigation.navigate("MiniChats", {});
+          navigation.navigate("MiniFriend");
         }
 
         if (item.type === "group-join") {
@@ -124,7 +126,7 @@ interface NotiCardContentProps {
   id: string;
   isRead: boolean;
   title: string;
-  date: string;
+  date?: string;
   desc: string;
   link?: string;
   user?: { userAvatar?: string; username: string; id: string };
