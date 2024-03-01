@@ -53,7 +53,6 @@ export type BoxStyle = Pick<
   | "top"
   | "bottom"
   | "flex"
-  | "zIndex"
 > & { borderRadius?: number; backgroundColor?: string; borderColor?: string };
 
 export type GradientParams = Omit<LinearGradientProps, keyof ViewProps>;

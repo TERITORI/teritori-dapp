@@ -17,8 +17,8 @@ export const TertiaryBox: React.FC<{
         {
           borderWidth: 1,
           borderColor: neutral33,
-          justifyContent: "center",
-          alignItems: "center",
+          // justifyContent: "center",
+          // alignItems: "center",
         },
         style,
       ]}
