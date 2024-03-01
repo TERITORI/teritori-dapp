@@ -16,6 +16,7 @@ import ChatGraySVG from "@/assets/icons/chat-gray.svg";
 import FriendGraySVG from "@/assets/icons/friend-gray.svg";
 import notificationSVG from "@/assets/icons/notification-new.svg";
 import OrganizationGraySVG from "@/assets/icons/organization-gray.svg";
+import UserGraySVG from "@/assets/icons/user-gray.svg";
 import GroupGraySVG from "@/assets/icons/users-group-gray.svg";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
@@ -42,6 +43,11 @@ const chatDropdownItems = [
   {
     icon: OrganizationGraySVG,
     name: "Create an organization",
+  },
+  {
+    icon: UserGraySVG,
+    name: "My Teritori ID",
+    onPress: (navigation: any) => navigation.navigate("MiniChatProfile"),
   },
 ];
 

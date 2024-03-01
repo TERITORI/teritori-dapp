@@ -23,11 +23,15 @@ const (
 
 type Activity struct {
 	// ID is network-dependent
-	// Teritori: tori-<tx_hash>-<msg_index>
-	ID        networks.ActivityID
-	Kind      ActivityKind `gorm:"index"`
-	Time      time.Time    `gorm:"index"`
-	NetworkID string       `gorm:"index"`
+	// Teritori: tori-<tx_hash>-<msg_index>[-<activity_index>]
+	ID           networks.ActivityID
+	Kind         ActivityKind    `gorm:"index"`
+	Time         time.Time       `gorm:"index"`
+	NetworkID    string          `gorm:"index"`
+	NFTID        *networks.NFTID `gorm:"index"`
+	NFT          *NFT
+	CollectionID *networks.CollectionID `gorm:"index"`
+	Collection   *Collection
 
 	// "has one" relations
 	Listing        *Listing
@@ -39,8 +43,6 @@ type Activity struct {
 	TransferNFT    *TransferNFT
 	UpdateNFTPrice *UpdateNFTPrice
 	RequestMint    *RequestMint
-	NFTID          *networks.NFTID `gorm:"index"`
-	NFT            *NFT
 }
 
 type Listing struct {
