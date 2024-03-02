@@ -11,12 +11,11 @@ import { LocalFileData, RemoteFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
 import { OptimizedImage } from "../OptimizedImage";
 
-import { useAppMode } from "@/hooks/useAppMode";
-
 interface ImagePreviewProps {
   files: LocalFileData[] | RemoteFileData[];
   onDelete?: (file: LocalFileData | RemoteFileData) => void;
   isEditable?: boolean;
+  showSmallPreview?: boolean;
 }
 
 const getDimension = (index: number, fileLength: number) => {
@@ -40,11 +39,11 @@ export const ImagesViews: React.FC<ImagePreviewProps> = ({
   files,
   onDelete,
   isEditable = false,
+  showSmallPreview = false,
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isFullView, setFullView] = useState(false);
   const [formattedFiles, setFormattedFiles] = useState(files);
-  const [appMode] = useAppMode();
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -103,7 +102,7 @@ export const ImagesViews: React.FC<ImagePreviewProps> = ({
             // @ts-expect-error: description todo
             style={{
               padding: layout.spacing_x1,
-              ...(appMode === "mini"
+              ...(showSmallPreview
                 ? { height: 120, width: "50%" }
                 : getDimension(index, files.length)),
             }}
