@@ -2870,6 +2870,346 @@ func (x *LeaderboardResponse) GetEntry() *LeaderboardEntry {
 	return nil
 }
 
+type Coin struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Amount string `protobuf:"bytes,1,opt,name=amount,proto3" json:"amount,omitempty"`
+	Denom  string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+}
+
+func (x *Coin) Reset() {
+	*x = Coin{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[40]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Coin) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Coin) ProtoMessage() {}
+
+func (x *Coin) ProtoReflect() protoreflect.Message {
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[40]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Coin.ProtoReflect.Descriptor instead.
+func (*Coin) Descriptor() ([]byte, []int) {
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{40}
+}
+
+func (x *Coin) GetAmount() string {
+	if x != nil {
+		return x.Amount
+	}
+	return ""
+}
+
+func (x *Coin) GetDenom() string {
+	if x != nil {
+		return x.Denom
+	}
+	return ""
+}
+
+type PopularCollection struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id                  string  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name                string  `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	ImageUri            string  `protobuf:"bytes,3,opt,name=image_uri,json=imageUri,proto3" json:"image_uri,omitempty"`
+	FloorPrices         []*Coin `protobuf:"bytes,4,rep,name=floor_prices,json=floorPrices,proto3" json:"floor_prices,omitempty"`
+	TradeVolumesByDenom []*Coin `protobuf:"bytes,5,rep,name=trade_volumes_by_denom,json=tradeVolumesByDenom,proto3" json:"trade_volumes_by_denom,omitempty"`
+	MintVolumesByDenom  []*Coin `protobuf:"bytes,15,rep,name=mint_volumes_by_denom,json=mintVolumesByDenom,proto3" json:"mint_volumes_by_denom,omitempty"`
+	TradeUsdVolume      float64 `protobuf:"fixed64,6,opt,name=trade_usd_volume,json=tradeUsdVolume,proto3" json:"trade_usd_volume,omitempty"`
+	TradeUsdVolumePrev  float64 `protobuf:"fixed64,7,opt,name=trade_usd_volume_prev,json=tradeUsdVolumePrev,proto3" json:"trade_usd_volume_prev,omitempty"`
+	MintUsdVolume       float64 `protobuf:"fixed64,8,opt,name=mint_usd_volume,json=mintUsdVolume,proto3" json:"mint_usd_volume,omitempty"`
+	MintUsdVolumePrev   float64 `protobuf:"fixed64,9,opt,name=mint_usd_volume_prev,json=mintUsdVolumePrev,proto3" json:"mint_usd_volume_prev,omitempty"`
+	TradesCount         uint64  `protobuf:"varint,10,opt,name=trades_count,json=tradesCount,proto3" json:"trades_count,omitempty"`
+	MintsCount          uint64  `protobuf:"varint,16,opt,name=mints_count,json=mintsCount,proto3" json:"mints_count,omitempty"`
+	OwnersCount         uint64  `protobuf:"varint,11,opt,name=owners_count,json=ownersCount,proto3" json:"owners_count,omitempty"`
+	Rank                uint32  `protobuf:"varint,12,opt,name=rank,proto3" json:"rank,omitempty"`
+	MaxSupply           int64   `protobuf:"varint,13,opt,name=max_supply,json=maxSupply,proto3" json:"max_supply,omitempty"`
+	CurrentSupply       uint64  `protobuf:"varint,14,opt,name=current_supply,json=currentSupply,proto3" json:"current_supply,omitempty"`
+}
+
+func (x *PopularCollection) Reset() {
+	*x = PopularCollection{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[41]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PopularCollection) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PopularCollection) ProtoMessage() {}
+
+func (x *PopularCollection) ProtoReflect() protoreflect.Message {
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[41]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PopularCollection.ProtoReflect.Descriptor instead.
+func (*PopularCollection) Descriptor() ([]byte, []int) {
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{41}
+}
+
+func (x *PopularCollection) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *PopularCollection) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *PopularCollection) GetImageUri() string {
+	if x != nil {
+		return x.ImageUri
+	}
+	return ""
+}
+
+func (x *PopularCollection) GetFloorPrices() []*Coin {
+	if x != nil {
+		return x.FloorPrices
+	}
+	return nil
+}
+
+func (x *PopularCollection) GetTradeVolumesByDenom() []*Coin {
+	if x != nil {
+		return x.TradeVolumesByDenom
+	}
+	return nil
+}
+
+func (x *PopularCollection) GetMintVolumesByDenom() []*Coin {
+	if x != nil {
+		return x.MintVolumesByDenom
+	}
+	return nil
+}
+
+func (x *PopularCollection) GetTradeUsdVolume() float64 {
+	if x != nil {
+		return x.TradeUsdVolume
+	}
+	return 0
+}
+
+func (x *PopularCollection) GetTradeUsdVolumePrev() float64 {
+	if x != nil {
+		return x.TradeUsdVolumePrev
+	}
+	return 0
+}
+
+func (x *PopularCollection) GetMintUsdVolume() float64 {
+	if x != nil {
+		return x.MintUsdVolume
+	}
+	return 0
+}
+
+func (x *PopularCollection) GetMintUsdVolumePrev() float64 {
+	if x != nil {
+		return x.MintUsdVolumePrev
+	}
+	return 0
+}
+
+func (x *PopularCollection) GetTradesCount() uint64 {
+	if x != nil {
+		return x.TradesCount
+	}
+	return 0
+}
+
+func (x *PopularCollection) GetMintsCount() uint64 {
+	if x != nil {
+		return x.MintsCount
+	}
+	return 0
+}
+
+func (x *PopularCollection) GetOwnersCount() uint64 {
+	if x != nil {
+		return x.OwnersCount
+	}
+	return 0
+}
+
+func (x *PopularCollection) GetRank() uint32 {
+	if x != nil {
+		return x.Rank
+	}
+	return 0
+}
+
+func (x *PopularCollection) GetMaxSupply() int64 {
+	if x != nil {
+		return x.MaxSupply
+	}
+	return 0
+}
+
+func (x *PopularCollection) GetCurrentSupply() uint64 {
+	if x != nil {
+		return x.CurrentSupply
+	}
+	return 0
+}
+
+type PopularCollectionsRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	NetworkId   string `protobuf:"bytes,1,opt,name=network_id,json=networkId,proto3" json:"network_id,omitempty"`
+	PeriodHours uint32 `protobuf:"varint,2,opt,name=period_hours,json=periodHours,proto3" json:"period_hours,omitempty"`
+	Limit       uint32 `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	Offset      uint32 `protobuf:"varint,4,opt,name=offset,proto3" json:"offset,omitempty"`
+}
+
+func (x *PopularCollectionsRequest) Reset() {
+	*x = PopularCollectionsRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[42]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PopularCollectionsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PopularCollectionsRequest) ProtoMessage() {}
+
+func (x *PopularCollectionsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[42]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PopularCollectionsRequest.ProtoReflect.Descriptor instead.
+func (*PopularCollectionsRequest) Descriptor() ([]byte, []int) {
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{42}
+}
+
+func (x *PopularCollectionsRequest) GetNetworkId() string {
+	if x != nil {
+		return x.NetworkId
+	}
+	return ""
+}
+
+func (x *PopularCollectionsRequest) GetPeriodHours() uint32 {
+	if x != nil {
+		return x.PeriodHours
+	}
+	return 0
+}
+
+func (x *PopularCollectionsRequest) GetLimit() uint32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *PopularCollectionsRequest) GetOffset() uint32 {
+	if x != nil {
+		return x.Offset
+	}
+	return 0
+}
+
+type PopularCollectionsResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Collection *PopularCollection `protobuf:"bytes,1,opt,name=collection,proto3" json:"collection,omitempty"`
+}
+
+func (x *PopularCollectionsResponse) Reset() {
+	*x = PopularCollectionsResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[43]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PopularCollectionsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PopularCollectionsResponse) ProtoMessage() {}
+
+func (x *PopularCollectionsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[43]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PopularCollectionsResponse.ProtoReflect.Descriptor instead.
+func (*PopularCollectionsResponse) Descriptor() ([]byte, []int) {
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{43}
+}
+
+func (x *PopularCollectionsResponse) GetCollection() *PopularCollection {
+	if x != nil {
+		return x.Collection
+	}
+	return nil
+}
+
 var File_marketplace_v1_marketplace_proto protoreflect.FileDescriptor
 
 var file_marketplace_v1_marketplace_proto_rawDesc = []byte{
@@ -3210,7 +3550,67 @@ var file_marketplace_v1_marketplace_proto_rawDesc = []byte{
 	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x36, 0x0a, 0x05, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x70, 0x6c,
 	0x61, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x65, 0x61, 0x64, 0x65, 0x72, 0x62, 0x6f, 0x61,
-	0x72, 0x64, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x05, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x2a, 0x7c,
+	0x72, 0x64, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x05, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x22, 0x34,
+	0x0a, 0x04, 0x43, 0x6f, 0x69, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x14,
+	0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64,
+	0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x98, 0x05, 0x0a, 0x11, 0x50, 0x6f, 0x70, 0x75, 0x6c, 0x61, 0x72,
+	0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61,
+	0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1b,
+	0x0a, 0x09, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x5f, 0x75, 0x72, 0x69, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x08, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x55, 0x72, 0x69, 0x12, 0x37, 0x0a, 0x0c, 0x66,
+	0x6c, 0x6f, 0x6f, 0x72, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x14, 0x2e, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x2e,
+	0x76, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x52, 0x0b, 0x66, 0x6c, 0x6f, 0x6f, 0x72, 0x50, 0x72,
+	0x69, 0x63, 0x65, 0x73, 0x12, 0x49, 0x0a, 0x16, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x76, 0x6f,
+	0x6c, 0x75, 0x6d, 0x65, 0x73, 0x5f, 0x62, 0x79, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x05,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x70, 0x6c, 0x61,
+	0x63, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x6f, 0x69, 0x6e, 0x52, 0x13, 0x74, 0x72, 0x61, 0x64,
+	0x65, 0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x73, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12,
+	0x47, 0x0a, 0x15, 0x6d, 0x69, 0x6e, 0x74, 0x5f, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x73, 0x5f,
+	0x62, 0x79, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x0f, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14,
+	0x2e, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x2e,
+	0x43, 0x6f, 0x69, 0x6e, 0x52, 0x12, 0x6d, 0x69, 0x6e, 0x74, 0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65,
+	0x73, 0x42, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x28, 0x0a, 0x10, 0x74, 0x72, 0x61, 0x64,
+	0x65, 0x5f, 0x75, 0x73, 0x64, 0x5f, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x18, 0x06, 0x20, 0x01,
+	0x28, 0x01, 0x52, 0x0e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x55, 0x73, 0x64, 0x56, 0x6f, 0x6c, 0x75,
+	0x6d, 0x65, 0x12, 0x31, 0x0a, 0x15, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x75, 0x73, 0x64, 0x5f,
+	0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x5f, 0x70, 0x72, 0x65, 0x76, 0x18, 0x07, 0x20, 0x01, 0x28,
+	0x01, 0x52, 0x12, 0x74, 0x72, 0x61, 0x64, 0x65, 0x55, 0x73, 0x64, 0x56, 0x6f, 0x6c, 0x75, 0x6d,
+	0x65, 0x50, 0x72, 0x65, 0x76, 0x12, 0x26, 0x0a, 0x0f, 0x6d, 0x69, 0x6e, 0x74, 0x5f, 0x75, 0x73,
+	0x64, 0x5f, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x01, 0x52, 0x0d,
+	0x6d, 0x69, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x12, 0x2f, 0x0a,
+	0x14, 0x6d, 0x69, 0x6e, 0x74, 0x5f, 0x75, 0x73, 0x64, 0x5f, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65,
+	0x5f, 0x70, 0x72, 0x65, 0x76, 0x18, 0x09, 0x20, 0x01, 0x28, 0x01, 0x52, 0x11, 0x6d, 0x69, 0x6e,
+	0x74, 0x55, 0x73, 0x64, 0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x50, 0x72, 0x65, 0x76, 0x12, 0x21,
+	0x0a, 0x0c, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x0a,
+	0x20, 0x01, 0x28, 0x04, 0x52, 0x0b, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x43, 0x6f, 0x75, 0x6e,
+	0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x6d, 0x69, 0x6e, 0x74, 0x73, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74,
+	0x18, 0x10, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0a, 0x6d, 0x69, 0x6e, 0x74, 0x73, 0x43, 0x6f, 0x75,
+	0x6e, 0x74, 0x12, 0x21, 0x0a, 0x0c, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x73, 0x5f, 0x63, 0x6f, 0x75,
+	0x6e, 0x74, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0b, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x73,
+	0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x61, 0x6e, 0x6b, 0x18, 0x0c, 0x20,
+	0x01, 0x28, 0x0d, 0x52, 0x04, 0x72, 0x61, 0x6e, 0x6b, 0x12, 0x1d, 0x0a, 0x0a, 0x6d, 0x61, 0x78,
+	0x5f, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x6d,
+	0x61, 0x78, 0x53, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x12, 0x25, 0x0a, 0x0e, 0x63, 0x75, 0x72, 0x72,
+	0x65, 0x6e, 0x74, 0x5f, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x04,
+	0x52, 0x0d, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x53, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x22,
+	0x8b, 0x01, 0x0a, 0x19, 0x50, 0x6f, 0x70, 0x75, 0x6c, 0x61, 0x72, 0x43, 0x6f, 0x6c, 0x6c, 0x65,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1d, 0x0a,
+	0x0a, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x09, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x49, 0x64, 0x12, 0x21, 0x0a, 0x0c,
+	0x70, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x5f, 0x68, 0x6f, 0x75, 0x72, 0x73, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0d, 0x52, 0x0b, 0x70, 0x65, 0x72, 0x69, 0x6f, 0x64, 0x48, 0x6f, 0x75, 0x72, 0x73, 0x12,
+	0x14, 0x0a, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05,
+	0x6c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x06, 0x6f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x22, 0x5f, 0x0a,
+	0x1a, 0x50, 0x6f, 0x70, 0x75, 0x6c, 0x61, 0x72, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x41, 0x0a, 0x0a, 0x63,
+	0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x21, 0x2e, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x2e, 0x76, 0x31,
+	0x2e, 0x50, 0x6f, 0x70, 0x75, 0x6c, 0x61, 0x72, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x52, 0x0a, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2a, 0x7c,
 	0x0a, 0x04, 0x53, 0x6f, 0x72, 0x74, 0x12, 0x14, 0x0a, 0x10, 0x53, 0x4f, 0x52, 0x54, 0x5f, 0x55,
 	0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x0e, 0x0a, 0x0a,
 	0x53, 0x4f, 0x52, 0x54, 0x5f, 0x50, 0x52, 0x49, 0x43, 0x45, 0x10, 0x01, 0x12, 0x0f, 0x0a, 0x0b,
@@ -3231,7 +3631,7 @@ var file_marketplace_v1_marketplace_proto_rawDesc = []byte{
 	0x44, 0x10, 0x00, 0x12, 0x16, 0x0a, 0x12, 0x4d, 0x49, 0x4e, 0x54, 0x5f, 0x53, 0x54, 0x41, 0x54,
 	0x45, 0x5f, 0x52, 0x55, 0x4e, 0x4e, 0x49, 0x4e, 0x47, 0x10, 0x01, 0x12, 0x14, 0x0a, 0x10, 0x4d,
 	0x49, 0x4e, 0x54, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x45, 0x5f, 0x45, 0x4e, 0x44, 0x45, 0x44, 0x10,
-	0x02, 0x32, 0xc0, 0x08, 0x0a, 0x12, 0x4d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x70, 0x6c, 0x61, 0x63,
+	0x02, 0x32, 0xaf, 0x09, 0x0a, 0x12, 0x4d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x70, 0x6c, 0x61, 0x63,
 	0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x58, 0x0a, 0x0b, 0x43, 0x6f, 0x6c, 0x6c,
 	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x22, 0x2e, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74,
 	0x70, 0x6c, 0x61, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74,
@@ -3299,8 +3699,15 @@ var file_marketplace_v1_marketplace_proto_rawDesc = []byte{
 	0x72, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x23, 0x2e,
 	0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4c,
 	0x65, 0x61, 0x64, 0x65, 0x72, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x30, 0x01, 0x42, 0x11, 0x5a, 0x0f, 0x2e, 0x2f, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74,
-	0x70, 0x6c, 0x61, 0x63, 0x65, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x73, 0x65, 0x30, 0x01, 0x12, 0x6d, 0x0a, 0x12, 0x50, 0x6f, 0x70, 0x75, 0x6c, 0x61, 0x72, 0x43,
+	0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x29, 0x2e, 0x6d, 0x61, 0x72,
+	0x6b, 0x65, 0x74, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x6f, 0x70, 0x75,
+	0x6c, 0x61, 0x72, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2a, 0x2e, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x70, 0x6c,
+	0x61, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x6f, 0x70, 0x75, 0x6c, 0x61, 0x72, 0x43, 0x6f,
+	0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x30, 0x01, 0x42, 0x11, 0x5a, 0x0f, 0x2e, 0x2f, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x70,
+	0x6c, 0x61, 0x63, 0x65, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3316,7 +3723,7 @@ func file_marketplace_v1_marketplace_proto_rawDescGZIP() []byte {
 }
 
 var file_marketplace_v1_marketplace_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_marketplace_v1_marketplace_proto_msgTypes = make([]protoimpl.MessageInfo, 40)
+var file_marketplace_v1_marketplace_proto_msgTypes = make([]protoimpl.MessageInfo, 44)
 var file_marketplace_v1_marketplace_proto_goTypes = []interface{}{
 	(Sort)(0),                               // 0: marketplace.v1.Sort
 	(SortDirection)(0),                      // 1: marketplace.v1.SortDirection
@@ -3361,6 +3768,10 @@ var file_marketplace_v1_marketplace_proto_goTypes = []interface{}{
 	(*LeaderboardEntry)(nil),                // 40: marketplace.v1.LeaderboardEntry
 	(*LeaderboardRequest)(nil),              // 41: marketplace.v1.LeaderboardRequest
 	(*LeaderboardResponse)(nil),             // 42: marketplace.v1.LeaderboardResponse
+	(*Coin)(nil),                            // 43: marketplace.v1.Coin
+	(*PopularCollection)(nil),               // 44: marketplace.v1.PopularCollection
+	(*PopularCollectionsRequest)(nil),       // 45: marketplace.v1.PopularCollectionsRequest
+	(*PopularCollectionsResponse)(nil),      // 46: marketplace.v1.PopularCollectionsResponse
 }
 var file_marketplace_v1_marketplace_proto_depIdxs = []int32{
 	3,  // 0: marketplace.v1.NFT.attributes:type_name -> marketplace.v1.Attribute
@@ -3385,35 +3796,41 @@ var file_marketplace_v1_marketplace_proto_depIdxs = []int32{
 	28, // 19: marketplace.v1.NewsResponse.news:type_name -> marketplace.v1.News
 	7,  // 20: marketplace.v1.SearchCollectionsResponse.collections:type_name -> marketplace.v1.Collection
 	40, // 21: marketplace.v1.LeaderboardResponse.entry:type_name -> marketplace.v1.LeaderboardEntry
-	14, // 22: marketplace.v1.MarketplaceService.Collections:input_type -> marketplace.v1.CollectionsRequest
-	15, // 23: marketplace.v1.MarketplaceService.CollectionStats:input_type -> marketplace.v1.CollectionStatsRequest
-	19, // 24: marketplace.v1.MarketplaceService.NFTs:input_type -> marketplace.v1.NFTsRequest
-	16, // 25: marketplace.v1.MarketplaceService.NFTCollectionAttributes:input_type -> marketplace.v1.NFTCollectionAttributesRequest
-	21, // 26: marketplace.v1.MarketplaceService.Quests:input_type -> marketplace.v1.QuestsRequest
-	23, // 27: marketplace.v1.MarketplaceService.Activity:input_type -> marketplace.v1.ActivityRequest
-	25, // 28: marketplace.v1.MarketplaceService.NFTPriceHistory:input_type -> marketplace.v1.NFTPriceHistoryRequest
-	30, // 29: marketplace.v1.MarketplaceService.Banners:input_type -> marketplace.v1.BannersRequest
-	32, // 30: marketplace.v1.MarketplaceService.News:input_type -> marketplace.v1.NewsRequest
-	36, // 31: marketplace.v1.MarketplaceService.SearchNames:input_type -> marketplace.v1.SearchNamesRequest
-	38, // 32: marketplace.v1.MarketplaceService.SearchCollections:input_type -> marketplace.v1.SearchCollectionsRequest
-	41, // 33: marketplace.v1.MarketplaceService.Leaderboard:input_type -> marketplace.v1.LeaderboardRequest
-	18, // 34: marketplace.v1.MarketplaceService.Collections:output_type -> marketplace.v1.CollectionsResponse
-	17, // 35: marketplace.v1.MarketplaceService.CollectionStats:output_type -> marketplace.v1.CollectionStatsResponse
-	20, // 36: marketplace.v1.MarketplaceService.NFTs:output_type -> marketplace.v1.NFTsResponse
-	10, // 37: marketplace.v1.MarketplaceService.NFTCollectionAttributes:output_type -> marketplace.v1.NFTCollectionAttributesResponse
-	22, // 38: marketplace.v1.MarketplaceService.Quests:output_type -> marketplace.v1.QuestsResponse
-	24, // 39: marketplace.v1.MarketplaceService.Activity:output_type -> marketplace.v1.ActivityResponse
-	26, // 40: marketplace.v1.MarketplaceService.NFTPriceHistory:output_type -> marketplace.v1.NFTPriceHistoryResponse
-	31, // 41: marketplace.v1.MarketplaceService.Banners:output_type -> marketplace.v1.BannersResponse
-	33, // 42: marketplace.v1.MarketplaceService.News:output_type -> marketplace.v1.NewsResponse
-	37, // 43: marketplace.v1.MarketplaceService.SearchNames:output_type -> marketplace.v1.SearchNamesResponse
-	39, // 44: marketplace.v1.MarketplaceService.SearchCollections:output_type -> marketplace.v1.SearchCollectionsResponse
-	42, // 45: marketplace.v1.MarketplaceService.Leaderboard:output_type -> marketplace.v1.LeaderboardResponse
-	34, // [34:46] is the sub-list for method output_type
-	22, // [22:34] is the sub-list for method input_type
-	22, // [22:22] is the sub-list for extension type_name
-	22, // [22:22] is the sub-list for extension extendee
-	0,  // [0:22] is the sub-list for field type_name
+	43, // 22: marketplace.v1.PopularCollection.floor_prices:type_name -> marketplace.v1.Coin
+	43, // 23: marketplace.v1.PopularCollection.trade_volumes_by_denom:type_name -> marketplace.v1.Coin
+	43, // 24: marketplace.v1.PopularCollection.mint_volumes_by_denom:type_name -> marketplace.v1.Coin
+	44, // 25: marketplace.v1.PopularCollectionsResponse.collection:type_name -> marketplace.v1.PopularCollection
+	14, // 26: marketplace.v1.MarketplaceService.Collections:input_type -> marketplace.v1.CollectionsRequest
+	15, // 27: marketplace.v1.MarketplaceService.CollectionStats:input_type -> marketplace.v1.CollectionStatsRequest
+	19, // 28: marketplace.v1.MarketplaceService.NFTs:input_type -> marketplace.v1.NFTsRequest
+	16, // 29: marketplace.v1.MarketplaceService.NFTCollectionAttributes:input_type -> marketplace.v1.NFTCollectionAttributesRequest
+	21, // 30: marketplace.v1.MarketplaceService.Quests:input_type -> marketplace.v1.QuestsRequest
+	23, // 31: marketplace.v1.MarketplaceService.Activity:input_type -> marketplace.v1.ActivityRequest
+	25, // 32: marketplace.v1.MarketplaceService.NFTPriceHistory:input_type -> marketplace.v1.NFTPriceHistoryRequest
+	30, // 33: marketplace.v1.MarketplaceService.Banners:input_type -> marketplace.v1.BannersRequest
+	32, // 34: marketplace.v1.MarketplaceService.News:input_type -> marketplace.v1.NewsRequest
+	36, // 35: marketplace.v1.MarketplaceService.SearchNames:input_type -> marketplace.v1.SearchNamesRequest
+	38, // 36: marketplace.v1.MarketplaceService.SearchCollections:input_type -> marketplace.v1.SearchCollectionsRequest
+	41, // 37: marketplace.v1.MarketplaceService.Leaderboard:input_type -> marketplace.v1.LeaderboardRequest
+	45, // 38: marketplace.v1.MarketplaceService.PopularCollections:input_type -> marketplace.v1.PopularCollectionsRequest
+	18, // 39: marketplace.v1.MarketplaceService.Collections:output_type -> marketplace.v1.CollectionsResponse
+	17, // 40: marketplace.v1.MarketplaceService.CollectionStats:output_type -> marketplace.v1.CollectionStatsResponse
+	20, // 41: marketplace.v1.MarketplaceService.NFTs:output_type -> marketplace.v1.NFTsResponse
+	10, // 42: marketplace.v1.MarketplaceService.NFTCollectionAttributes:output_type -> marketplace.v1.NFTCollectionAttributesResponse
+	22, // 43: marketplace.v1.MarketplaceService.Quests:output_type -> marketplace.v1.QuestsResponse
+	24, // 44: marketplace.v1.MarketplaceService.Activity:output_type -> marketplace.v1.ActivityResponse
+	26, // 45: marketplace.v1.MarketplaceService.NFTPriceHistory:output_type -> marketplace.v1.NFTPriceHistoryResponse
+	31, // 46: marketplace.v1.MarketplaceService.Banners:output_type -> marketplace.v1.BannersResponse
+	33, // 47: marketplace.v1.MarketplaceService.News:output_type -> marketplace.v1.NewsResponse
+	37, // 48: marketplace.v1.MarketplaceService.SearchNames:output_type -> marketplace.v1.SearchNamesResponse
+	39, // 49: marketplace.v1.MarketplaceService.SearchCollections:output_type -> marketplace.v1.SearchCollectionsResponse
+	42, // 50: marketplace.v1.MarketplaceService.Leaderboard:output_type -> marketplace.v1.LeaderboardResponse
+	46, // 51: marketplace.v1.MarketplaceService.PopularCollections:output_type -> marketplace.v1.PopularCollectionsResponse
+	39, // [39:52] is the sub-list for method output_type
+	26, // [26:39] is the sub-list for method input_type
+	26, // [26:26] is the sub-list for extension type_name
+	26, // [26:26] is the sub-list for extension extendee
+	0,  // [0:26] is the sub-list for field type_name
 }
 
 func init() { file_marketplace_v1_marketplace_proto_init() }
@@ -3902,6 +4319,54 @@ func file_marketplace_v1_marketplace_proto_init() {
 				return nil
 			}
 		}
+		file_marketplace_v1_marketplace_proto_msgTypes[40].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Coin); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_marketplace_v1_marketplace_proto_msgTypes[41].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PopularCollection); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_marketplace_v1_marketplace_proto_msgTypes[42].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PopularCollectionsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_marketplace_v1_marketplace_proto_msgTypes[43].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PopularCollectionsResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_marketplace_v1_marketplace_proto_msgTypes[11].OneofWrappers = []interface{}{}
 	type x struct{}
@@ -3910,7 +4375,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_marketplace_v1_marketplace_proto_rawDesc,
 			NumEnums:      3,
-			NumMessages:   40,
+			NumMessages:   44,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
