@@ -185,6 +185,7 @@ export const CommentTextInput = React.forwardRef<MiniCommentInputHandle, Props>(
                     );
                   }
                 }}
+                showSmallPreview
               />
             </View>
           </>
