@@ -34,8 +34,6 @@ export type RootStackParamList = {
   ReadyLaunchpadApplications: undefined;
   AllProjectAdministrationDash: undefined;
 
-  LeaderboardMarketplace: undefined;
-
   Launchpad: undefined;
   LaunchpadApply: undefined;
   LaunchpadCreate: undefined;
@@ -44,6 +42,7 @@ export type RootStackParamList = {
   TNSHome: { modal: string; name?: string } | undefined;
 
   Marketplace: undefined;
+  MarketplaceLeaderboard: undefined;
   Collection: { id: string };
   CollectionTools: { id: string };
   NFTDetail: { id: string; openBuy?: boolean };
@@ -185,8 +184,6 @@ const navConfig: {
     ReadyLaunchpadApplications: "launchpad/ready-applications",
     AllProjectAdministrationDash: "launchpad/all-projects",
 
-    LeaderboardMarketplace: "leaderboard/marketplace",
-
     // === RiotGame
     RiotGame: "riot-game",
     RiotGameEnroll: "riot-game/enroll",
@@ -210,6 +207,7 @@ const navConfig: {
 
     // ==== Marketplace
     Marketplace: "marketplace",
+    MarketplaceLeaderboard: "marketplace/leaderboard",
     Collection: "collection/:id",
     CollectionTools: "collection/:id/tools",
     NFTDetail: "nft/:id",

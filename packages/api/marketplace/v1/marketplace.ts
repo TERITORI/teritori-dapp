@@ -384,6 +384,27 @@ export interface SearchCollectionsResponse {
   collections: Collection[];
 }
 
+export interface LeaderboardEntry {
+  rank: number;
+  userId: string;
+  totalXp: number;
+  mintXp: number;
+  buyXp: number;
+  sellXp: number;
+  boost: number;
+}
+
+export interface LeaderboardRequest {
+  networkId: string;
+  periodHours: number;
+  limit: number;
+  offset: number;
+}
+
+export interface LeaderboardResponse {
+  entry: LeaderboardEntry | undefined;
+}
+
 function createBaseAttribute(): Attribute {
   return { traitType: "", value: "" };
 }
@@ -4032,6 +4053,318 @@ export const SearchCollectionsResponse = {
   },
 };
 
+function createBaseLeaderboardEntry(): LeaderboardEntry {
+  return { rank: 0, userId: "", totalXp: 0, mintXp: 0, buyXp: 0, sellXp: 0, boost: 0 };
+}
+
+export const LeaderboardEntry = {
+  encode(message: LeaderboardEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.rank !== 0) {
+      writer.uint32(8).uint32(message.rank);
+    }
+    if (message.userId !== "") {
+      writer.uint32(18).string(message.userId);
+    }
+    if (message.totalXp !== 0) {
+      writer.uint32(25).double(message.totalXp);
+    }
+    if (message.mintXp !== 0) {
+      writer.uint32(33).double(message.mintXp);
+    }
+    if (message.buyXp !== 0) {
+      writer.uint32(41).double(message.buyXp);
+    }
+    if (message.sellXp !== 0) {
+      writer.uint32(49).double(message.sellXp);
+    }
+    if (message.boost !== 0) {
+      writer.uint32(57).double(message.boost);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): LeaderboardEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLeaderboardEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.rank = reader.uint32();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        case 3:
+          if (tag !== 25) {
+            break;
+          }
+
+          message.totalXp = reader.double();
+          continue;
+        case 4:
+          if (tag !== 33) {
+            break;
+          }
+
+          message.mintXp = reader.double();
+          continue;
+        case 5:
+          if (tag !== 41) {
+            break;
+          }
+
+          message.buyXp = reader.double();
+          continue;
+        case 6:
+          if (tag !== 49) {
+            break;
+          }
+
+          message.sellXp = reader.double();
+          continue;
+        case 7:
+          if (tag !== 57) {
+            break;
+          }
+
+          message.boost = reader.double();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): LeaderboardEntry {
+    return {
+      rank: isSet(object.rank) ? globalThis.Number(object.rank) : 0,
+      userId: isSet(object.userId) ? globalThis.String(object.userId) : "",
+      totalXp: isSet(object.totalXp) ? globalThis.Number(object.totalXp) : 0,
+      mintXp: isSet(object.mintXp) ? globalThis.Number(object.mintXp) : 0,
+      buyXp: isSet(object.buyXp) ? globalThis.Number(object.buyXp) : 0,
+      sellXp: isSet(object.sellXp) ? globalThis.Number(object.sellXp) : 0,
+      boost: isSet(object.boost) ? globalThis.Number(object.boost) : 0,
+    };
+  },
+
+  toJSON(message: LeaderboardEntry): unknown {
+    const obj: any = {};
+    if (message.rank !== 0) {
+      obj.rank = Math.round(message.rank);
+    }
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
+    if (message.totalXp !== 0) {
+      obj.totalXp = message.totalXp;
+    }
+    if (message.mintXp !== 0) {
+      obj.mintXp = message.mintXp;
+    }
+    if (message.buyXp !== 0) {
+      obj.buyXp = message.buyXp;
+    }
+    if (message.sellXp !== 0) {
+      obj.sellXp = message.sellXp;
+    }
+    if (message.boost !== 0) {
+      obj.boost = message.boost;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<LeaderboardEntry>, I>>(base?: I): LeaderboardEntry {
+    return LeaderboardEntry.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<LeaderboardEntry>, I>>(object: I): LeaderboardEntry {
+    const message = createBaseLeaderboardEntry();
+    message.rank = object.rank ?? 0;
+    message.userId = object.userId ?? "";
+    message.totalXp = object.totalXp ?? 0;
+    message.mintXp = object.mintXp ?? 0;
+    message.buyXp = object.buyXp ?? 0;
+    message.sellXp = object.sellXp ?? 0;
+    message.boost = object.boost ?? 0;
+    return message;
+  },
+};
+
+function createBaseLeaderboardRequest(): LeaderboardRequest {
+  return { networkId: "", periodHours: 0, limit: 0, offset: 0 };
+}
+
+export const LeaderboardRequest = {
+  encode(message: LeaderboardRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.networkId !== "") {
+      writer.uint32(10).string(message.networkId);
+    }
+    if (message.periodHours !== 0) {
+      writer.uint32(16).uint32(message.periodHours);
+    }
+    if (message.limit !== 0) {
+      writer.uint32(24).uint32(message.limit);
+    }
+    if (message.offset !== 0) {
+      writer.uint32(32).uint32(message.offset);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): LeaderboardRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLeaderboardRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.periodHours = reader.uint32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.limit = reader.uint32();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.offset = reader.uint32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): LeaderboardRequest {
+    return {
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      periodHours: isSet(object.periodHours) ? globalThis.Number(object.periodHours) : 0,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+      offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
+    };
+  },
+
+  toJSON(message: LeaderboardRequest): unknown {
+    const obj: any = {};
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    if (message.periodHours !== 0) {
+      obj.periodHours = Math.round(message.periodHours);
+    }
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.offset !== 0) {
+      obj.offset = Math.round(message.offset);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<LeaderboardRequest>, I>>(base?: I): LeaderboardRequest {
+    return LeaderboardRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<LeaderboardRequest>, I>>(object: I): LeaderboardRequest {
+    const message = createBaseLeaderboardRequest();
+    message.networkId = object.networkId ?? "";
+    message.periodHours = object.periodHours ?? 0;
+    message.limit = object.limit ?? 0;
+    message.offset = object.offset ?? 0;
+    return message;
+  },
+};
+
+function createBaseLeaderboardResponse(): LeaderboardResponse {
+  return { entry: undefined };
+}
+
+export const LeaderboardResponse = {
+  encode(message: LeaderboardResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.entry !== undefined) {
+      LeaderboardEntry.encode(message.entry, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): LeaderboardResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLeaderboardResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.entry = LeaderboardEntry.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): LeaderboardResponse {
+    return { entry: isSet(object.entry) ? LeaderboardEntry.fromJSON(object.entry) : undefined };
+  },
+
+  toJSON(message: LeaderboardResponse): unknown {
+    const obj: any = {};
+    if (message.entry !== undefined) {
+      obj.entry = LeaderboardEntry.toJSON(message.entry);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<LeaderboardResponse>, I>>(base?: I): LeaderboardResponse {
+    return LeaderboardResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<LeaderboardResponse>, I>>(object: I): LeaderboardResponse {
+    const message = createBaseLeaderboardResponse();
+    message.entry = (object.entry !== undefined && object.entry !== null)
+      ? LeaderboardEntry.fromPartial(object.entry)
+      : undefined;
+    return message;
+  },
+};
+
 export interface MarketplaceService {
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse>;
   CollectionStats(
@@ -4056,6 +4389,7 @@ export interface MarketplaceService {
     request: DeepPartial<SearchCollectionsRequest>,
     metadata?: grpc.Metadata,
   ): Promise<SearchCollectionsResponse>;
+  Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse>;
 }
 
 export class MarketplaceServiceClientImpl implements MarketplaceService {
@@ -4074,6 +4408,7 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     this.News = this.News.bind(this);
     this.SearchNames = this.SearchNames.bind(this);
     this.SearchCollections = this.SearchCollections.bind(this);
+    this.Leaderboard = this.Leaderboard.bind(this);
   }
 
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse> {
@@ -4138,6 +4473,10 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
       SearchCollectionsRequest.fromPartial(request),
       metadata,
     );
+  }
+
+  Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse> {
+    return this.rpc.invoke(MarketplaceServiceLeaderboardDesc, LeaderboardRequest.fromPartial(request), metadata);
   }
 }
 
@@ -4386,6 +4725,29 @@ export const MarketplaceServiceSearchCollectionsDesc: UnaryMethodDefinitionish =
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = SearchCollectionsResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceLeaderboardDesc: UnaryMethodDefinitionish = {
+  methodName: "Leaderboard",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: true,
+  requestType: {
+    serializeBinary() {
+      return LeaderboardRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = LeaderboardResponse.decode(data);
       return {
         ...value,
         toObject() {

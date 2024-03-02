@@ -22,11 +22,11 @@ import { LaunchpadCreateScreen } from "@/screens/Launchpad/LaunchpadCreateScreen
 import { LaunchpadScreen } from "@/screens/Launchpad/LaunchpadScreen";
 import { MintCollectionScreen } from "@/screens/Launchpad/MintCollectionScreen";
 import { LaunchpadApplicationsScreen } from "@/screens/LaunchpadApplications/LaunchpadApplicationsScreen";
-import { LeaderboardMarketplaceScreen } from "@/screens/LeaderboardMarketplaceScreen/LeaderboardMarketplaceScreen";
 import { CollectionScreen } from "@/screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "@/screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "@/screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "@/screens/Marketplace/NFTDetailScreen";
+import { MarketplaceLeaderboardScreen } from "@/screens/MarketplaceLeaderboardScreen/MarketplaceLeaderboardScreen";
 import { MessageScreen } from "@/screens/Message/MessageScreen";
 import { ChatSectionScreen } from "@/screens/Message/components/ChatSection";
 import { FriendshipManagerScreen } from "@/screens/Message/components/FriendshipManager";
@@ -152,8 +152,8 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
       />
 
       <Nav.Screen
-        name="LeaderboardMarketplace"
-        component={LeaderboardMarketplaceScreen}
+        name="MarketplaceLeaderboard"
+        component={MarketplaceLeaderboardScreen}
         options={{
           header: () => null,
           title: screenTitle("Application Review"),
