@@ -2,6 +2,7 @@ package marketplace
 
 import (
 	"context"
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -1017,4 +1018,78 @@ func (s *MarkteplaceService) SearchCollections(ctx context.Context, req *marketp
 		pbCollections = append(pbCollections, nc)
 	}
 	return &marketplacepb.SearchCollectionsResponse{Collections: pbCollections}, nil
+}
+
+//go:embed leaderboard.sql
+var leaderboardQuery string
+
+type dbLeaderboardEntry struct {
+	UserID      string
+	MintUSDSum  float64
+	MintCount   uint64
+	BuyUSDSum   float64
+	BuyCount    uint64
+	SellUSDSum  float64
+	SellCount   uint64
+	Boost       float64
+	TotalUSDSum float64
+	XP          float64
+	Rank        uint32
+}
+
+func (s *MarkteplaceService) Leaderboard(req *marketplacepb.LeaderboardRequest, srv marketplacepb.MarketplaceService_LeaderboardServer) error {
+	periodHours := req.GetPeriodHours()
+	limit := req.GetLimit()
+	if limit == 0 || limit > 100 {
+		limit = 100
+	}
+	offset := req.GetOffset()
+
+	networkId := req.GetNetworkId()
+	network, err := s.conf.NetworkStore.GetCosmosNetwork(networkId)
+	if err != nil {
+		return errors.Wrap(err, "failed to get network")
+	}
+
+	getCollectionID := func(addr string) string {
+		return string(network.GetBase().CollectionID(addr))
+	}
+
+	riotCollections := []string{
+		getCollectionID(network.RiotContractAddressGen0),
+		getCollectionID(network.RiotContractAddressGen1),
+	}
+
+	collectionsWhitelist := make([]string, len(s.conf.Whitelist))
+	for i, v := range s.conf.Whitelist {
+		collectionsWhitelist[i] = getCollectionID(v)
+	}
+
+	var entries []dbLeaderboardEntry
+	if err := s.conf.IndexerDB.Raw(leaderboardQuery,
+		periodHours, networkId, collectionsWhitelist,
+		periodHours, networkId, collectionsWhitelist,
+		periodHours, networkId, collectionsWhitelist,
+		riotCollections, riotCollections,
+		limit,
+		offset,
+	).Scan(&entries).Error; err != nil {
+		return errors.Wrap(err, "failed to query database")
+	}
+
+	for _, e := range entries {
+		if err := srv.Send(&marketplacepb.LeaderboardResponse{Entry: &marketplacepb.LeaderboardEntry{
+			UserId:  e.UserID,
+			MintXp:  e.MintUSDSum,
+			BuyXp:   e.BuyUSDSum,
+			SellXp:  e.SellUSDSum,
+			Boost:   e.Boost,
+			Rank:    e.Rank,
+			TotalXp: (e.MintUSDSum + e.BuyUSDSum + e.SellUSDSum) * e.Boost,
+		}}); err != nil {
+			return errors.Wrap(err, "failed to send leaderboard entry")
+		}
+	}
+
+	return nil
 }

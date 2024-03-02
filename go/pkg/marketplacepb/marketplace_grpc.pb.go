@@ -33,6 +33,7 @@ type MarketplaceServiceClient interface {
 	News(ctx context.Context, in *NewsRequest, opts ...grpc.CallOption) (*NewsResponse, error)
 	SearchNames(ctx context.Context, in *SearchNamesRequest, opts ...grpc.CallOption) (*SearchNamesResponse, error)
 	SearchCollections(ctx context.Context, in *SearchCollectionsRequest, opts ...grpc.CallOption) (*SearchCollectionsResponse, error)
+	Leaderboard(ctx context.Context, in *LeaderboardRequest, opts ...grpc.CallOption) (MarketplaceService_LeaderboardClient, error)
 }
 
 type marketplaceServiceClient struct {
@@ -257,6 +258,38 @@ func (c *marketplaceServiceClient) SearchCollections(ctx context.Context, in *Se
 	return out, nil
 }
 
+func (c *marketplaceServiceClient) Leaderboard(ctx context.Context, in *LeaderboardRequest, opts ...grpc.CallOption) (MarketplaceService_LeaderboardClient, error) {
+	stream, err := c.cc.NewStream(ctx, &MarketplaceService_ServiceDesc.Streams[5], "/marketplace.v1.MarketplaceService/Leaderboard", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &marketplaceServiceLeaderboardClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type MarketplaceService_LeaderboardClient interface {
+	Recv() (*LeaderboardResponse, error)
+	grpc.ClientStream
+}
+
+type marketplaceServiceLeaderboardClient struct {
+	grpc.ClientStream
+}
+
+func (x *marketplaceServiceLeaderboardClient) Recv() (*LeaderboardResponse, error) {
+	m := new(LeaderboardResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // MarketplaceServiceServer is the server API for MarketplaceService service.
 // All implementations must embed UnimplementedMarketplaceServiceServer
 // for forward compatibility
@@ -272,6 +305,7 @@ type MarketplaceServiceServer interface {
 	News(context.Context, *NewsRequest) (*NewsResponse, error)
 	SearchNames(context.Context, *SearchNamesRequest) (*SearchNamesResponse, error)
 	SearchCollections(context.Context, *SearchCollectionsRequest) (*SearchCollectionsResponse, error)
+	Leaderboard(*LeaderboardRequest, MarketplaceService_LeaderboardServer) error
 	mustEmbedUnimplementedMarketplaceServiceServer()
 }
 
@@ -311,6 +345,9 @@ func (UnimplementedMarketplaceServiceServer) SearchNames(context.Context, *Searc
 }
 func (UnimplementedMarketplaceServiceServer) SearchCollections(context.Context, *SearchCollectionsRequest) (*SearchCollectionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchCollections not implemented")
+}
+func (UnimplementedMarketplaceServiceServer) Leaderboard(*LeaderboardRequest, MarketplaceService_LeaderboardServer) error {
+	return status.Errorf(codes.Unimplemented, "method Leaderboard not implemented")
 }
 func (UnimplementedMarketplaceServiceServer) mustEmbedUnimplementedMarketplaceServiceServer() {}
 
@@ -538,6 +575,27 @@ func _MarketplaceService_SearchCollections_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MarketplaceService_Leaderboard_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(LeaderboardRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(MarketplaceServiceServer).Leaderboard(m, &marketplaceServiceLeaderboardServer{stream})
+}
+
+type MarketplaceService_LeaderboardServer interface {
+	Send(*LeaderboardResponse) error
+	grpc.ServerStream
+}
+
+type marketplaceServiceLeaderboardServer struct {
+	grpc.ServerStream
+}
+
+func (x *marketplaceServiceLeaderboardServer) Send(m *LeaderboardResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // MarketplaceService_ServiceDesc is the grpc.ServiceDesc for MarketplaceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -594,6 +652,11 @@ var MarketplaceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "Activity",
 			Handler:       _MarketplaceService_Activity_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "Leaderboard",
+			Handler:       _MarketplaceService_Leaderboard_Handler,
 			ServerStreams: true,
 		},
 	},

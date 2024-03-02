@@ -15,6 +15,7 @@ service MarketplaceService {
   rpc News(NewsRequest) returns (NewsResponse);
   rpc SearchNames(SearchNamesRequest) returns (SearchNamesResponse);
   rpc SearchCollections(SearchCollectionsRequest) returns (SearchCollectionsResponse);
+  rpc Leaderboard(LeaderboardRequest) returns (stream LeaderboardResponse);
 }
 
 enum Sort {
@@ -283,4 +284,25 @@ message SearchCollectionsRequest {
 
 message SearchCollectionsResponse {
   repeated Collection collections = 1;
+}
+
+message LeaderboardEntry {
+  uint32 rank = 1;
+  string user_id = 2;
+  double total_xp = 3;
+  double mint_xp = 4;
+  double buy_xp = 5;
+  double sell_xp = 6;
+  double boost = 7;
+}
+
+message LeaderboardRequest {
+  string network_id = 1;
+  uint32 period_hours = 2;
+  uint32 limit = 3;
+  uint32 offset = 4;
+}
+
+message LeaderboardResponse {
+  LeaderboardEntry entry = 1;
 }

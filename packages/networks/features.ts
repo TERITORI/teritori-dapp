@@ -13,6 +13,7 @@ export enum NetworkFeature {
   RiotP2E = "RiotP2E",
   NFTBridge = "NFTBridge",
   CosmWasmPremiumFeed = "CosmWasmPremiumFeed",
+  NFTMarketplaceLeaderboard = "NFTMarketplaceLeaderboard",
 }
 
 const zodCosmWasmPremiumFeed = z.object({
