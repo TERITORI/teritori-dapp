@@ -23,3 +23,14 @@ export const trimFixed = (val: string) => {
   val = trimRight(val, "0");
   return trimRight(val, ".");
 };
+
+const units = ["", "K", "M", "B", "T", "P", "E", "Z", "Y"];
+
+export function prettyNumber(val: number, maxDecimals: number) {
+  let unitIndex = 0;
+  while (val >= 1000 && unitIndex !== units.length - 1) {
+    val /= 1000;
+    unitIndex++;
+  }
+  return `${trimFixed(val.toFixed(maxDecimals))}${units[unitIndex]}`;
+}

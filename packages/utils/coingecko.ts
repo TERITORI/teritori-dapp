@@ -15,13 +15,19 @@ export const getCoingeckoPrice = (
   amount: string,
   prices: CoingeckoPrices,
 ) => {
+  if (!amount || !denom) {
+    return undefined;
+  }
   const currency = getNativeCurrency(networkId, denom);
+  if (!currency) {
+    return undefined;
+  }
+  const price = prices[currency.coingeckoId];
+  if (!price) {
+    return undefined;
+  }
   return (
-    currency &&
-    Decimal.fromAtomics(
-      // An amount with not enough decimals will be considered as zero
-      Math.round(parseFloat(amount)).toString(),
-      currency.decimals,
-    ).toFloatApproximation() * (prices[currency.coingeckoId]?.usd || 0)
+    Decimal.fromAtomics(amount, currency.decimals).toFloatApproximation() *
+    price.usd
   );
 };
