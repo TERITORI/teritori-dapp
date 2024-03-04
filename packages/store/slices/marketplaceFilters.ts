@@ -23,11 +23,6 @@ export interface PeriodItem {
 
 export const marketplacePeriodItems: PeriodItem[] = [
   {
-    label: "Last 10 minutes",
-    shortLabel: "10m",
-    value: 10,
-  },
-  {
     label: "Last 1 hour",
     shortLabel: "1h",
     value: 60,
