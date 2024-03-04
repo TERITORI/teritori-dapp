@@ -6,7 +6,9 @@ import LeaveGroupModal from "./components/LeaveGroupModal";
 import CustomAppBar from "../components/AppBar/CustomAppBar";
 import { CustomButton } from "../components/Button/CustomButton";
 
+import groupSVG from "@/assets/icons/users-group-white.svg";
 import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerRow } from "@/components/spacer";
@@ -20,10 +22,11 @@ import {
 } from "@/store/slices/message";
 import { RootState } from "@/store/store";
 import { ScreenFC } from "@/utils/navigation";
+import { neutral77 } from "@/utils/style/colors";
 import {
   fontMedium10,
-  fontMedium16,
-  fontSemibold18,
+  fontMedium15,
+  fontSemibold16,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { Contact } from "@/utils/types/message";
@@ -35,7 +38,6 @@ import {
   sendMessage,
 } from "@/weshnet/services";
 import { bytesFromString, stringFromBytes } from "@/weshnet/utils";
-import { neutral77 } from "@/utils/style/colors";
 
 const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
   navigation,
@@ -179,9 +181,18 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
             paddingHorizontal: layout.spacing_x2_5,
             width: windowWidth,
             gap: layout.spacing_x1_5,
+            paddingVertical: layout.spacing_x2_5,
           }}
         >
-          <BrandText style={[fontSemibold18]}>Group members</BrandText>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: layout.spacing_x1_25,
+            }}
+          >
+            <SVG source={groupSVG} height={24} width={24} />
+            <BrandText style={[fontSemibold16]}>Group Members</BrandText>
+          </View>
           <Separator />
           <FlatList
             data={conversation?.members}
@@ -204,7 +215,7 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
                     }}
                   >
                     <Avatar size={32} source={member.avatar} />
-                    <BrandText style={[fontMedium16]}>{member.name}</BrandText>
+                    <BrandText style={[fontMedium15]}>{member.name}</BrandText>
                     {member.hasLeft ? (
                       <BrandText style={[fontMedium10, { color: neutral77 }]}>
                         Left Group
