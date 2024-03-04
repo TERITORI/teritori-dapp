@@ -94,11 +94,7 @@ export const MapModal: React.FC<TMapModalProps> = ({
             loader
             size="M"
             text="Add location"
-            onPress={() => {
-              console.log("wait for instructions...🙂");
-              console.log({ locationSelected, description });
-              // handleSubmit(processSubmit)();
-            }}
+            onPress={handleSubmit}
           />
         </View>
       </View>
