@@ -17,14 +17,14 @@ export const MapHeader: React.FC<TMapHeaderProps> = ({ onClose }) => {
   return (
     <View style={[header]}>
       <View style={[headerText]}>
-        <View style={[button32]}>
+        <TouchableOpacity style={[button32]} onPress={onClose}>
           <SVG
             source={chevronLeft}
             height={24}
             width={24}
             color={secondaryColor}
           />
-        </View>
+        </TouchableOpacity>
         <BrandText style={[fontSemibold16]}>Add location</BrandText>
         <SpacerRow size={2} />
         <BrandText style={[fontMedium16, { color: neutralA3 }]}>2/2</BrandText>
