@@ -3,10 +3,10 @@ import React from "react";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
 
-import chevronLeftSVG from "../../../../assets/icons/chevron-left.svg";
-import dotSVG from "../../../../assets/icons/dots.svg";
-import phoneCellSVG from "../../../../assets/icons/phone-cell.svg";
-import { ChatAvatar } from "../components/ChatAvatar";
+import chevronLeftSVG from "../../../../../assets/icons/chevron-left.svg";
+import dotSVG from "../../../../../assets/icons/dots.svg";
+import phoneCellSVG from "../../../../../assets/icons/phone-cell.svg";
+import { ChatAvatar } from "../../components/ChatAvatar";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
@@ -78,7 +78,9 @@ export const ChatHeader = ({ navigation, conversation }: HeaderProps) => {
         <SpacerRow size={2} />
         <ChatAvatar
           membersAvatar={
-            conversation
+            conversation &&
+            conversation?.members &&
+            Array.isArray(conversation?.members)
               ? conversation?.members.map((_, index) =>
                   getConversationAvatar(conversation, index),
                 )
