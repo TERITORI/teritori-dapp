@@ -9,7 +9,9 @@ import { CustomButton } from "../components/Button/CustomButton";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { Separator } from "@/components/separators/Separator";
+import { SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
+import Clipboard from "@/modules/Clipboard";
 import { Avatar } from "@/screens/Message/components/Avatar";
 import {
   selectContactInfo,
@@ -23,7 +25,11 @@ import { layout } from "@/utils/style/layout";
 import { Contact } from "@/utils/types/message";
 import { weshClient, weshConfig, weshServices } from "@/weshnet";
 import { getConversationName } from "@/weshnet/messageHelpers";
-import { createSharableLinkOfFriends, sendMessage } from "@/weshnet/services";
+import {
+  createMultiMemberShareableLink,
+  createSharableLinkOfFriends,
+  sendMessage,
+} from "@/weshnet/services";
 import { bytesFromString, stringFromBytes } from "@/weshnet/utils";
 
 const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
@@ -47,7 +53,6 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
   const { setToast } = useFeedbacks();
 
   const groupName = conversation && getConversationName(conversation);
-
   const handleLeaveGroupPress = async () => {
     if (conversation?.id) {
       try {
@@ -128,7 +133,30 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
     });
     await handleAddContact(friendShareableLink);
   };
+  const copyGroupLink = async () => {
+    if (!conversation?.id) {
+      return;
+    }
+    const groupInfo = await weshClient.client.GroupInfo({
+      groupPk: bytesFromString(conversation.id),
+    });
 
+    if (!groupInfo.group) {
+      return;
+    }
+
+    const groupLink = createMultiMemberShareableLink(
+      groupInfo?.group,
+      conversation.name,
+    );
+    Clipboard.setStringAsync(groupLink || "");
+    setToast({
+      mode: "mini",
+      type: "success",
+      message: "Group link copied!",
+      duration: 2000,
+    });
+  };
   return (
     <>
       <ScreenContainer
@@ -191,7 +219,12 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
               flex: 1,
             }}
           />
-
+          <CustomButton
+            type="outline"
+            title="Copy Group Link"
+            onPress={copyGroupLink}
+          />
+          <SpacerRow size={1} />
           <CustomButton
             type="danger"
             title="Leave Group"
