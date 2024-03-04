@@ -80,7 +80,8 @@ export const ChatHeader = ({ navigation, conversation }: HeaderProps) => {
           membersAvatar={
             conversation &&
             conversation?.members &&
-            Array.isArray(conversation?.members)
+            Array.isArray(conversation?.members) &&
+            conversation?.members.length > 0
               ? conversation?.members.map((_, index) =>
                   getConversationAvatar(conversation, index),
                 )
@@ -98,14 +99,16 @@ export const ChatHeader = ({ navigation, conversation }: HeaderProps) => {
         <CustomPressable onPress={handlePhoneCellPress}>
           <SVG source={phoneCellSVG} height={28} width={28} />
         </CustomPressable>
-        <CustomPressable onPress={handleMoreActionPress}>
-          <SVG
-            source={dotSVG}
-            height={28}
-            width={28}
-            style={{ transform: [{ rotateZ: "90deg" }] }}
-          />
-        </CustomPressable>
+        {conversation?.type === "group" && (
+          <CustomPressable onPress={handleMoreActionPress}>
+            <SVG
+              source={dotSVG}
+              height={28}
+              width={28}
+              style={{ transform: [{ rotateZ: "90deg" }] }}
+            />
+          </CustomPressable>
+        )}
       </View>
     </View>
   );
