@@ -466,3 +466,7 @@ function stopMessagingConnection() {
   unsubscribeMetadataSubscriptions();
   store.dispatch(setIsWeshConnected(false));
 }
+
+if (Platform.OS === "web") {
+  setTimeout(checkAndBootWeshModule, 1000);
+}
