@@ -20,7 +20,11 @@ import {
 } from "@/store/slices/message";
 import { RootState } from "@/store/store";
 import { ScreenFC } from "@/utils/navigation";
-import { fontMedium16, fontSemibold18 } from "@/utils/style/fonts";
+import {
+  fontMedium10,
+  fontMedium16,
+  fontSemibold18,
+} from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { Contact } from "@/utils/types/message";
 import { weshClient, weshConfig, weshServices } from "@/weshnet";
@@ -31,6 +35,7 @@ import {
   sendMessage,
 } from "@/weshnet/services";
 import { bytesFromString, stringFromBytes } from "@/weshnet/utils";
+import { neutral77 } from "@/utils/style/colors";
 
 const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
   navigation,
@@ -200,6 +205,11 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
                   >
                     <Avatar size={32} source={member.avatar} />
                     <BrandText style={[fontMedium16]}>{member.name}</BrandText>
+                    {member.hasLeft ? (
+                      <BrandText style={[fontMedium10, { color: neutral77 }]}>
+                        Left Group
+                      </BrandText>
+                    ) : null}
                   </View>
                   {!friendMembers.includes(member.id) && !isMe && (
                     <CustomButton
