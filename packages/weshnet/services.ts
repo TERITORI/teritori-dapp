@@ -185,6 +185,31 @@ export const createSharableLink = (
   )}&peerId=${encodeURIComponent(weshConfig.config?.peerId)}`;
 };
 
+export const createSharableLinkOfFriends = ({
+  accountPk,
+  publicRendezvousSeed,
+  name,
+  avatar,
+  peerId,
+}: {
+  accountPk: string;
+  publicRendezvousSeed: string;
+  name: string;
+  avatar: string;
+  peerId: string;
+}) => {
+  if (!accountPk || !publicRendezvousSeed) {
+    return "";
+  }
+  return `https://app.teritori.com/contact?accountPk=${encodeURIComponent(
+    accountPk,
+  )}&rdvSeed=${encodeURIComponent(
+    publicRendezvousSeed,
+  )}&name=${encodeURIComponent(name)}&avatar=${encodeURIComponent(
+    avatar,
+  )}&peerId=${encodeURIComponent(peerId)}`;
+};
+
 export const createMultiMemberShareableLink = (
   group: Group,
   groupName: string,

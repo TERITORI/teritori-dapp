@@ -8,19 +8,22 @@ import { CustomButton } from "../components/Button/CustomButton";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { Separator } from "@/components/separators/Separator";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { Avatar } from "@/screens/Message/components/Avatar";
 import {
   selectContactInfo,
   selectConversationById,
+  selectConversationList,
 } from "@/store/slices/message";
 import { RootState } from "@/store/store";
 import { ScreenFC } from "@/utils/navigation";
-import { fontMedium16 } from "@/utils/style/fonts";
+import { fontMedium16, fontSemibold18 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { weshClient, weshConfig } from "@/weshnet";
+import { Contact } from "@/utils/types/message";
+import { weshClient, weshConfig, weshServices } from "@/weshnet";
 import { getConversationName } from "@/weshnet/messageHelpers";
-import { sendMessage } from "@/weshnet/services";
+import { createSharableLinkOfFriends, sendMessage } from "@/weshnet/services";
 import { bytesFromString, stringFromBytes } from "@/weshnet/utils";
 
 const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
@@ -32,6 +35,11 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
   const conversation = useSelector((state: RootState) =>
     selectConversationById(state, conversationId),
   );
+  const conversationList = useSelector(selectConversationList);
+
+  const friendMembers = conversationList
+    .filter((member) => member.type === "contact")
+    .map((fm) => fm.id);
   const contactInfo = useSelector(selectContactInfo);
   const [showLeaveGroupConfirmation, setShowLeaveGroupConfirmation] =
     useState(false);
@@ -90,6 +98,37 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
     }
   };
 
+  const handleAddContact = async (link: string) => {
+    try {
+      await weshServices.addContact(link, contactInfo);
+      setToast({
+        mode: "mini",
+        type: "success",
+        message: "Request sent successfully.",
+        duration: 3000,
+      });
+    } catch (err: any) {
+      console.log(err);
+      setToast({
+        mode: "mini",
+        type: "success",
+        message: "Failed to sent request.",
+        duration: 3000,
+      });
+    }
+  };
+
+  const handleAddMembers = async (member: Contact) => {
+    const friendShareableLink = createSharableLinkOfFriends({
+      accountPk: member.id,
+      peerId: member.peerId,
+      publicRendezvousSeed: member.rdvSeed,
+      avatar: member.avatar,
+      name: member.name,
+    });
+    await handleAddContact(friendShareableLink);
+  };
+
   return (
     <>
       <ScreenContainer
@@ -104,31 +143,52 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
           style={{
             flex: 1,
             justifyContent: "space-between",
-            padding: layout.spacing_x1,
+            paddingHorizontal: layout.spacing_x2_5,
             width: windowWidth,
             gap: layout.spacing_x1_5,
           }}
         >
+          <BrandText style={[fontSemibold18]}>Group members</BrandText>
+          <Separator />
           <FlatList
             data={conversation?.members}
             renderItem={({ item: member, index }) => {
+              const isMe =
+                member.id === stringFromBytes(weshConfig.config?.accountPk);
+
               return (
                 <View
-                  key={member.tokenId}
                   style={{
                     flexDirection: "row",
-                    gap: layout.spacing_x1_25,
-                    alignItems: "center",
+                    justifyContent: "space-between",
                   }}
                 >
-                  <Avatar size={20} source={member.avatar} />
-                  <BrandText style={[fontMedium16]}>{member.name}</BrandText>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: layout.spacing_x1_25,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Avatar size={32} source={member.avatar} />
+                    <BrandText style={[fontMedium16]}>{member.name}</BrandText>
+                  </View>
+                  {!friendMembers.includes(member.id) && !isMe && (
+                    <CustomButton
+                      onPress={() => handleAddMembers(member)}
+                      title="Add"
+                      type="outline"
+                      size="small"
+                      width={80}
+                    />
+                  )}
                 </View>
               );
             }}
             keyExtractor={(member) => member.id}
             contentContainerStyle={{
-              gap: layout.spacing_x1,
+              gap: layout.spacing_x2,
+              flex: 1,
             }}
           />
 
