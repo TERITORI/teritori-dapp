@@ -15,19 +15,23 @@ export const getCoingeckoPrice = (
   amount: string,
   prices: CoingeckoPrices,
 ) => {
-  if (!amount || !denom) {
+  try {
+    if (!amount || !denom) {
+      return undefined;
+    }
+    const currency = getNativeCurrency(networkId, denom);
+    if (!currency) {
+      return undefined;
+    }
+    const price = prices[currency.coingeckoId];
+    if (!price) {
+      return undefined;
+    }
+    return (
+      Decimal.fromAtomics(amount, currency.decimals).toFloatApproximation() *
+      price.usd
+    );
+  } catch {
     return undefined;
   }
-  const currency = getNativeCurrency(networkId, denom);
-  if (!currency) {
-    return undefined;
-  }
-  const price = prices[currency.coingeckoId];
-  if (!price) {
-    return undefined;
-  }
-  return (
-    Decimal.fromAtomics(amount, currency.decimals).toFloatApproximation() *
-    price.usd
-  );
 };
