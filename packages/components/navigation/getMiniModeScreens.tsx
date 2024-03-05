@@ -5,6 +5,7 @@ import {
 import { RouteProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
+import { useSelector } from "react-redux";
 
 import { neutral00, secondaryColor } from "../../utils/style/colors";
 import { TabBarIcon } from "../TabBarIcon";
@@ -52,6 +53,7 @@ import SendingToriScreen from "@/screens/Mini/Wallet/SendingToriScreen";
 import TransactionDetailScreen from "@/screens/Mini/Wallet/TransactionDetailScreen";
 import { CreatePasswordWallet } from "@/screens/Wallet/Screens/CreatePasswordWallet";
 import { CreateWalletScreen } from "@/screens/Wallet/Screens/CreateWalletScreen";
+import { selectIsChatActivated } from "@/store/slices/message";
 import { RootStackParamList } from "@/utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -63,6 +65,7 @@ export type MiniTabScreenFC<T extends keyof RootStackParamList> = React.FC<{
 }>;
 
 const MainTab = () => {
+  const isChatActivated = useSelector(selectIsChatActivated);
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -72,6 +75,7 @@ const MainTab = () => {
         },
         tabBarStyle: { backgroundColor: neutral00, borderTopWidth: 0 },
       })}
+      initialRouteName={isChatActivated ? "MiniChats" : "MiniFeeds"}
     >
       <Tab.Screen
         name="MiniChats"
@@ -121,7 +125,6 @@ export const getMiniModeScreens = () => {
         options={{
           header: () => null,
           title: "",
-          presentation: "transparentModal",
         }}
       />
 

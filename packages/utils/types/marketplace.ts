@@ -1,5 +1,6 @@
 export interface PrettyPrint {
   networkId: string;
-  value: number;
+  usdValue?: number;
+  amount: string;
   denom: string;
 }
