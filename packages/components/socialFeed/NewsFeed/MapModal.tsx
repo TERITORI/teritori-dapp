@@ -18,6 +18,7 @@ import { ModalWithoutHeader } from "@/components/modals/ModalWithoutHeader";
 
 const MapView = Platform.select({
   native: () => lazy(() => import("./MapComponent/Map.native")),
+  web: () => lazy(() => import("./MapComponent/Map.web")),
   default: () => lazy(() => import("./MapComponent/Map.web")),
 })();
 
