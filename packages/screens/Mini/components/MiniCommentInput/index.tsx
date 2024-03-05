@@ -39,6 +39,7 @@ import { layout } from "@/utils/style/layout";
 import { replaceBetweenString } from "@/utils/text";
 import { NewPostFormValues, ReplyToType } from "@/utils/types/feed";
 import { RemoteFileData } from "@/utils/types/files";
+import { useAppNavigation } from "@/utils/navigation";
 
 interface MiniCommentInputProps {
   type?: "comment" | "post";
@@ -78,6 +79,7 @@ export const MiniCommentInput = React.forwardRef<
     },
     forwardRef,
   ) => {
+    const navigation = useAppNavigation();
     const selectedNetwork = useSelectedNetworkInfo();
     const selectedNetworkId = selectedNetwork?.id || "teritori";
     const selectedWallet = useSelectedWallet();
@@ -258,6 +260,10 @@ export const MiniCommentInput = React.forwardRef<
           JSON.stringify(metadata),
           isReplyToValid ? replyTo.parentId : parentId,
         );
+
+        if (type === "post") {
+          navigation.navigate("MiniFeeds");
+        }
       } catch (err) {
         console.error("post submit err", err);
         setIsUploadLoading(false);
