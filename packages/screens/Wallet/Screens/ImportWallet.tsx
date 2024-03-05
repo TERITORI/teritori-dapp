@@ -1,4 +1,5 @@
 import { Secp256k1HdWallet } from "@cosmjs/amino";
+import { validateMnemonic } from "bip39";
 import React, { useRef, useState } from "react";
 import { TextInput, View, useWindowDimensions } from "react-native";
 import { useSelector } from "react-redux";
@@ -10,6 +11,7 @@ import MultiStepScreenContainer from "../../Mini/layout/MultiStepScreenContainer
 import { BrandText } from "@/components/BrandText";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { mustGetCosmosNetwork } from "@/networks";
 import { addSelected, selectAllWallets } from "@/store/slices/wallets";
@@ -28,6 +30,7 @@ import { getNativeWallet, setMnemonic } from "@/utils/wallet/getNativeWallet";
 import { correctMnemonic } from "@/utils/wallet/seed";
 
 export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {
+  const { setToast } = useFeedbacks();
   const { height: windowHeight } = useWindowDimensions();
   const [localPhrase, setLocalPhrase] = useState<string | undefined>(undefined);
   const wallets = useSelector(selectAllWallets);
@@ -121,18 +124,18 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {
         <SpacerColumn size={2} />
         <CustomButton
           onPress={(_, navigation) => {
-            console.log(localPhrase);
-            if (!localPhrase) {
+            if (!localPhrase || !validateMnemonic(localPhrase)) {
+              setToast({
+                message: "Invalid mnemonic phrase. Please try again.",
+                duration: 5000,
+                mode: "mini",
+                type: "error",
+              });
               return;
             }
             (async () => {
               await setMnemonic(localPhrase, maxIndex + 1);
               const native = await getNativeWallet("TORI", maxIndex + 1);
-
-              if ((native as unknown as string) === "bad mnemonic" || !native) {
-                alert("Invalid mnemonic");
-                return;
-              }
               setWallet(native);
             })();
             if (wallet) {
