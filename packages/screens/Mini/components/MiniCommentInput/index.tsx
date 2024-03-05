@@ -41,6 +41,7 @@ import { NewPostFormValues, ReplyToType } from "@/utils/types/feed";
 import { RemoteFileData } from "@/utils/types/files";
 
 interface MiniCommentInputProps {
+  type?: "comment" | "post";
   parentId?: string;
   style?: ViewStyle;
   onSubmitSuccess?: () => void;
@@ -73,6 +74,7 @@ export const MiniCommentInput = React.forwardRef<
       onSubmitInProgress,
       additionalHashtag,
       additionalMention,
+      type = "comment",
     },
     forwardRef,
   ) => {
@@ -162,7 +164,7 @@ export const MiniCommentInput = React.forwardRef<
     }));
 
     const processSubmit = async () => {
-      const action = "Comment";
+      const action = type === "comment" ? "Comment" : "Post";
       if (!selectedWallet?.address || !selectedWallet.connected) {
         showConnectWalletModal({
           forceNetworkFeature: NetworkFeature.SocialFeed,
@@ -280,7 +282,7 @@ export const MiniCommentInput = React.forwardRef<
       setShowFullCommentInput(false);
     };
 
-    if (!showFullCommentInput) {
+    if (!showFullCommentInput && type === "comment") {
       return (
         <SimpleCommentInput
           value={formValues.message}
@@ -297,6 +299,7 @@ export const MiniCommentInput = React.forwardRef<
           setValue={setValue}
           ref={inputRef}
           onBlur={disableShowFullCommentInput}
+          type={type}
         />
         <View
           style={[
@@ -319,8 +322,8 @@ export const MiniCommentInput = React.forwardRef<
             ]}
           >
             {freePostCount
-              ? `You have ${freePostCount} free comment left`
-              : `The cost for this comment is ${prettyPublishingFee}`}
+              ? `You have ${freePostCount} free ${type} left`
+              : `The cost for this ${type} is ${prettyPublishingFee}`}
           </BrandText>
         </View>
         {step.id !== "UNDEFINED" && isProgressBarShown && (
@@ -343,7 +346,13 @@ export const MiniCommentInput = React.forwardRef<
             paddingHorizontal: layout.spacing_x0_5,
           }}
         >
-          <FlexRow style={{ gap: layout.spacing_x1_5, flex: 1 }}>
+          <FlexRow
+            style={{
+              gap: layout.spacing_x1_5,
+              flex: 1,
+              height: 30,
+            }}
+          >
             <EmojiSelector onEmojiSelected={onEmojiSelected} />
 
             <GIFSelector
@@ -383,7 +392,7 @@ export const MiniCommentInput = React.forwardRef<
           </FlexRow>
           <CustomButton
             onPress={handleSubmit(processSubmit)}
-            title="Comment"
+            title={type === "comment" ? "Comment" : "Post"}
             type="primary"
             size="small"
             width={100}
