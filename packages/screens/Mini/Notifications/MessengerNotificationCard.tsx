@@ -1,4 +1,5 @@
-import React from "react";
+import moment from "moment";
+import React, { useMemo } from "react";
 import { View } from "react-native";
 
 import { randomGradients } from "./notificationData";
@@ -27,8 +28,8 @@ export default function MessengerNotificationCard({
 }: {
   item: TypeNotification;
 }) {
-  const randomIndex = Math.floor(Math.random() * 4);
   const navigation = useAppNavigation();
+  const randomIndex = useMemo(() => Math.floor(Math.random() * 4), []);
 
   return (
     <CustomPressable
@@ -38,23 +39,19 @@ export default function MessengerNotificationCard({
       onPress={() => {
         store.dispatch(readNotification({ id: item.id }));
 
-        // TODO: Change to appropriate routes
-        if (item.type === "message") {
-          navigation.navigate("Conversation", {
-            conversationId: item?.id,
-          });
-        }
-
         if (item.type === "contact-request") {
           navigation.navigate("MiniFriend");
         }
 
+        if (item.type === "group-invite") {
+          navigation.navigate("Conversation", { conversationId: item?.id });
+        }
+
         if (item.type === "group-join") {
-          navigation.navigate("MiniChats", {});
+          navigation.navigate("Conversation", { conversationId: item?.id });
         }
       }}
     >
-      {/* <FlexRow style={{ backgroundColor: azureBlue20 }}> */}
       <View style={{ position: "relative" }}>
         {item.avatar ? (
           <SVGorImageIcon
@@ -89,22 +86,20 @@ export default function MessengerNotificationCard({
       </View>
       <SpacerRow size={3} />
 
-      {item.type === "message" && (
-        <NotificationCardInnerContent
-          id={item.id}
-          title="You received a new message!"
-          date={item.timestamp}
-          desc="message by"
-          isRead={item.isRead}
-        />
-      )}
-
       {item.type === "contact-request" && (
         <NotificationCardInnerContent
           id={item.id}
           title="You have received a new contact request!"
           date={item.timestamp}
-          desc="message by"
+          isRead={item.isRead}
+        />
+      )}
+
+      {item.type === "group-invite" && (
+        <NotificationCardInnerContent
+          id={item.id}
+          title="You have received a group join request!"
+          date={item.timestamp}
           isRead={item.isRead}
         />
       )}
@@ -112,9 +107,8 @@ export default function MessengerNotificationCard({
       {item.type === "group-join" && (
         <NotificationCardInnerContent
           id={item.id}
-          title="You have received a group join request!"
+          title="Group join request is accepted!"
           date={item.timestamp}
-          desc="message by"
           isRead={item.isRead}
         />
       )}
@@ -127,19 +121,12 @@ interface NotiCardContentProps {
   isRead: boolean;
   title: string;
   date?: string;
-  desc: string;
-  link?: string;
-  user?: { userAvatar?: string; username: string; id: string };
 }
 
 function NotificationCardInnerContent({
-  id,
   title,
   date,
-  desc,
-  link,
   isRead,
-  user,
 }: NotiCardContentProps) {
   return (
     <View
@@ -162,58 +149,11 @@ function NotificationCardInnerContent({
             {title}
           </BrandText>
         </View>
-
-        {/* <SpacerColumn size={0.4} /> */}
-        {/* <View style={{ flexDirection: "row" }}>
-          <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
-            {desc}
-          </BrandText>
-
-          {user && (
-            <>
-              {user?.userAvatar ? (
-                <>
-                  <SpacerRow size={1} />
-                  <SVGorImageIcon
-                    icon={user.userAvatar}
-                    iconSize={18}
-                    style={{
-                      borderRadius: 18 / 2,
-                    }}
-                  />
-                  <BrandText style={[fontSemibold14]}>
-                    {user.username}
-                  </BrandText>
-                </>
-              ) : (
-                <>
-                  <SpacerRow size={1} />
-                  <GradientBox
-                    colors={[secondaryColor, primaryColor]}
-                    size={18}
-                    radius={9}
-                  />
-                  <SpacerRow size={0.7} />
-                  <BrandText style={[fontSemibold14]}>
-                    {user?.username}
-                  </BrandText>
-                </>
-              )}
-            </>
-          )}
-
-          {link && (
-            <>
-              <SpacerRow size={0.7} />
-              <BrandText style={[fontSemibold14]}>{link}</BrandText>
-            </>
-          )}
-        </View> */}
       </View>
 
       <View style={{ alignItems: "flex-end" }}>
         <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-          {date}
+          {moment(date).fromNow()}
         </BrandText>
         <SpacerColumn size={0.4} />
         {!isRead ? (

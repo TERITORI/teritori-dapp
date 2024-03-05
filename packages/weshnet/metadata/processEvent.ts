@@ -8,6 +8,7 @@ import {
 } from "../../api/weshnet/protocoltypes";
 import {
   selectContactRequestList,
+  selectConversationList,
   setContactRequest,
   setContactRequestList,
   setConversationList,
@@ -17,10 +18,7 @@ import { weshClient } from "../client";
 import { subscribeMessages } from "../message/subscriber";
 import { bytesFromString, decodeJSON, stringFromBytes } from "../utils";
 
-import {
-  setNotificationList,
-  setNotificationRequest,
-} from "@/store/slices/notification";
+import { setNotificationRequest } from "@/store/slices/notification";
 
 const processedMetadataIds: string[] = [];
 
@@ -126,23 +124,6 @@ export const processMetadata = async (data: GroupMetadataEvent) => {
             ),
           ),
         );
-
-        store.dispatch(
-          setNotificationList(
-            contactRequests
-              .filter(
-                (item) =>
-                  item.contactId !==
-                  stringFromBytes(parsedData.payload.contactPk),
-              )
-              .map((notification) => ({
-                id: notification.id,
-                type: "contact-request",
-                isRead: false,
-              })),
-          ),
-        );
-
         break;
       }
       case EventType.EventTypeAccountContactRequestIncomingAccepted: {
@@ -170,21 +151,7 @@ export const processMetadata = async (data: GroupMetadataEvent) => {
               ),
             ),
           );
-          store.dispatch(
-            setNotificationList(
-              contactRequests
-                .filter(
-                  (item) =>
-                    item.contactId !==
-                    stringFromBytes(parsedData.payload.contactPk),
-                )
-                .map((notification) => ({
-                  id: notification.id,
-                  type: "contact-request",
-                  isRead: false,
-                })),
-            ),
-          );
+
           const group = await weshClient.client.GroupInfo({
             contactPk: bytesFromString(contactRequest.contactId),
           });
@@ -217,17 +184,38 @@ export const processMetadata = async (data: GroupMetadataEvent) => {
       }
       case EventType.EventTypeAccountGroupJoined: {
         const parsedData: any = GroupMetadataEvent.toJSON(data);
-
+        const conversationList = selectConversationList(store.getState());
         parsedData.payload = AccountGroupJoined.decode(data.metadata.payload);
+
+        const groupPk = stringFromBytes(parsedData.payload.group.publicKey);
+        console.log("group-join");
+        const selectedGroup = conversationList.filter(
+          (singleConv) => singleConv.id === groupPk,
+        )[0];
+
         store.dispatch(
           setConversationList({
             id: stringFromBytes(parsedData.payload.group.publicKey),
             type: "group",
-            members: [],
+            members: [parsedData.payload.contactPk],
             name: "Group",
             status: "active",
           }),
         );
+
+        if (
+          selectedGroup &&
+          !selectedGroup?.members.includes(parsedData.payload.contackPk)
+        ) {
+          store.dispatch(
+            setNotificationRequest({
+              id: stringFromBytes(parsedData.payload.group.publicKey),
+              type: "group-join",
+              isRead: false,
+            }),
+          );
+        }
+
         subscribeMessages(stringFromBytes(parsedData.payload.group.publicKey));
 
         break;

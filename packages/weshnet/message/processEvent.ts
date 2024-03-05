@@ -80,15 +80,19 @@ export const processMessage = async (
               data: message,
             }),
           );
-        }
 
-        store.dispatch(
-          setNotificationRequest({
-            id: groupPk,
-            type: "group-join",
-            isRead: false,
-          }),
-        );
+          if (!isSender) {
+            store.dispatch(
+              setNotificationRequest({
+                id: groupPk,
+                name: message?.payload?.metadata?.groupName,
+                type: "group-invite",
+                timestamp: message?.timestamp,
+                isRead: false,
+              }),
+            );
+          }
+        }
 
         break;
       }
@@ -173,6 +177,7 @@ export const processMessage = async (
             ...data,
           }),
         );
+
         break;
       }
       default: {

@@ -8,7 +8,11 @@ import { z } from "zod";
 
 import { RootState } from "../store";
 
-const NotificationType = z.enum(["message", "group-join", "contact-request"]);
+const NotificationType = z.enum([
+  "group-invite",
+  "contact-request",
+  "group-join",
+]);
 
 export const Notification = z.object({
   id: z.string(),
@@ -55,6 +59,18 @@ const notificationSlice = createSlice({
             isRead: true,
           },
         });
+      }
+    },
+    removeNotification: (state, action: PayloadAction<{ id: string }>) => {
+      if (action.payload.id) {
+        const notification = notificationSelectors.selectById(
+          state,
+          action.payload.id,
+        );
+
+        if (!notification) return;
+
+        notificationEntityAdapter.removeOne(state, notification.id);
       }
     },
     setNotificationList: (state, action: PayloadAction<TypeNotification[]>) => {
