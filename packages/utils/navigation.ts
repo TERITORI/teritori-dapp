@@ -110,7 +110,7 @@ export type RootStackParamList = {
   MiniProfileDetail: undefined;
   MiniDAppStore: undefined;
   MiniNewConversation: undefined;
-  MiniFriend: undefined;
+  MiniFriend: { activeTab?: "friends" | "requests" };
   MiniAddFriend: undefined;
   MiniNewGroup: undefined;
   MiniChatSetting: { back?: RouteName };

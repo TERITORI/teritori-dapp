@@ -1,19 +1,23 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { FlatList, View } from "react-native";
-import { Avatar, Badge } from "react-native-paper";
 import { useSelector } from "react-redux";
 
+import messageSVG from "../../../../assets/icons/chat-round.svg";
 import searchSVG from "../../../../assets/icons/search-gray.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { selectContactRequestList } from "../../../store/slices/message";
+import {
+  selectContactRequestList,
+  selectConversationList,
+} from "../../../store/slices/message";
 import { ScreenFC } from "../../../utils/navigation";
 import {
   neutral22,
   neutral77,
   secondaryColor,
+  withAlpha,
 } from "../../../utils/style/colors";
 import {
   fontMedium14,
@@ -30,18 +34,38 @@ import {
 } from "../../../weshnet/services";
 import { bytesFromString } from "../../../weshnet/utils";
 import { CustomButton } from "../components/Button/CustomButton";
+import { ChatAvatar } from "../components/ChatAvatar";
 import MiniTextInput from "../components/MiniTextInput";
 import MiniToastWithAction from "../components/MiniToastWithAction";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
+
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { RoundedTabs } from "@/components/tabs/RoundedTabs";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 type ToastType = {
   type?: "success" | "error";
   message: string;
 };
 
-export const MiniFriendScreen: ScreenFC<"MiniFriend"> = ({ navigation }) => {
+export const miniFriendTabItems = {
+  requests: {
+    name: "Requests",
+  },
+  friends: {
+    name: "Friends",
+  },
+};
+
+export const MiniFriendScreen: ScreenFC<"MiniFriend"> = ({
+  navigation,
+  route,
+}) => {
+  const [selectedTab, setSelectedTab] = useState<
+    keyof typeof miniFriendTabItems
+  >(route.params.activeTab ?? "requests");
   const [searchQuery, setSearchQuery] = useState("");
-  const contactRequestList = useSelector(selectContactRequestList);
   const [openToast, setOpenToast] = useState<ToastType>({
     type: undefined,
     message: "",
@@ -49,7 +73,7 @@ export const MiniFriendScreen: ScreenFC<"MiniFriend"> = ({ navigation }) => {
 
   return (
     <BlurScreenContainer
-      title="Friend Requests"
+      title="Friends"
       customHeader={
         openToast.type && (
           <MiniToastWithAction
@@ -66,46 +90,36 @@ export const MiniFriendScreen: ScreenFC<"MiniFriend"> = ({ navigation }) => {
           flex: 1,
         }}
       >
+        <RoundedTabs
+          items={miniFriendTabItems}
+          onSelect={(key) => setSelectedTab(key)}
+          selected={selectedTab}
+          style={{
+            height: 36,
+            maxHeight: 36,
+            backgroundColor: withAlpha(neutral22, 0.9),
+          }}
+        />
+
+        <SpacerColumn size={2} />
+
         <MiniTextInput
           onChangeText={setSearchQuery}
           value={searchQuery}
           icon={searchSVG}
-          placeholder="Search Friend Requests"
+          placeholder="Search..."
           style={{ paddingVertical: layout.spacing_x1 }}
           inputStyle={[fontMedium14, { lineHeight: 0 }]}
         />
-        <SpacerColumn size={2} />
+        <SpacerColumn size={3} />
 
-        <View style={{ flex: 1 }}>
-          {contactRequestList.length > 0 ? (
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              data={contactRequestList}
-              renderItem={({ item }) => (
-                <FriendRequest
-                  data={item}
-                  name={item.name}
-                  isOnline={false}
-                  avatar={undefined}
-                  setOpenToast={setOpenToast}
-                />
-              )}
-              keyExtractor={(item) => item.id}
-              style={{}}
-            />
-          ) : (
-            <View style={{ flex: 1 }}>
-              <BrandText
-                style={[
-                  fontMedium16,
-                  { textAlign: "center", color: neutral77 },
-                ]}
-              >
-                No Friend Requests yet.
-              </BrandText>
-            </View>
-          )}
-        </View>
+        {selectedTab === "requests" && (
+          <FriendRequests setOpenToast={setOpenToast} />
+        )}
+
+        {selectedTab === "friends" && <Friends />}
+
+        <View style={{ flex: 1 }} />
       </View>
     </BlurScreenContainer>
   );
@@ -119,10 +133,46 @@ type Props = {
   setOpenToast: Dispatch<SetStateAction<ToastType>>;
 };
 
+function FriendRequests({
+  setOpenToast,
+}: {
+  setOpenToast: Dispatch<SetStateAction<ToastType>>;
+}) {
+  const contactRequestList = useSelector(selectContactRequestList);
+
+  if (contactRequestList.length === 0) {
+    return (
+      <View style={{ flex: 1 }}>
+        <BrandText
+          style={[fontMedium16, { textAlign: "center", color: neutral77 }]}
+        >
+          No Friend Requests yet.
+        </BrandText>
+      </View>
+    );
+  }
+
+  return (
+    <FlatList
+      showsVerticalScrollIndicator={false}
+      data={contactRequestList}
+      renderItem={({ item }) => (
+        <FriendRequest
+          data={item}
+          name={item.name}
+          isOnline={false}
+          avatar={undefined}
+          setOpenToast={setOpenToast}
+        />
+      )}
+      keyExtractor={(item) => item.id}
+      style={{}}
+    />
+  );
+}
+
 function FriendRequest({ isOnline, data, setOpenToast }: Props) {
   const [addLoading, setAddLoading] = useState(false);
-
-  const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
 
   const handleAddFriend = async () => {
     setAddLoading(true);
@@ -158,16 +208,7 @@ function FriendRequest({ isOnline, data, setOpenToast }: Props) {
     <View>
       <FlexRow justifyContent="space-between" style={{ flex: 1 }}>
         <FlexRow style={{ flex: 1 }}>
-          <Avatar.Image size={48} source={{ uri: data.avatar }} />
-          <Badge
-            style={{
-              position: "absolute",
-              top: 38,
-              left: 38,
-              backgroundColor: onlineStatusBadgeColor,
-            }}
-            size={12}
-          />
+          <ChatAvatar isActive={isOnline} membersAvatar={[data.avatar ?? ""]} />
           <SpacerRow size={1.5} />
           <View>
             <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
@@ -193,6 +234,87 @@ function FriendRequest({ isOnline, data, setOpenToast }: Props) {
             width={70}
             isDisabled={addLoading}
           />
+        </FlexRow>
+      </FlexRow>
+      <SpacerColumn size={1.3} />
+      <Separator color={neutral22} />
+      <SpacerColumn size={1.3} />
+    </View>
+  );
+}
+
+function Friends() {
+  const conversations = useSelector(selectConversationList);
+
+  const totalFriends =
+    conversations?.filter((conv) => conv.type === "contact") || [];
+
+  console.log(totalFriends);
+
+  if (totalFriends.length === 0) {
+    return (
+      <View style={{ flex: 1 }}>
+        <BrandText
+          style={[fontMedium16, { textAlign: "center", color: neutral77 }]}
+        >
+          No Friend yet.
+        </BrandText>
+      </View>
+    );
+  }
+
+  return (
+    <FlatList
+      showsVerticalScrollIndicator={false}
+      data={totalFriends}
+      renderItem={({ item }) => (
+        <FriendItem
+          id={item.id}
+          name={item.name}
+          isOnline={false}
+          avatar={undefined}
+        />
+      )}
+      keyExtractor={(item) => item.id}
+      style={{}}
+    />
+  );
+}
+
+function FriendItem({
+  id,
+  name,
+  isOnline,
+  avatar,
+}: {
+  id: string;
+  name: string;
+  isOnline: boolean;
+  avatar?: string;
+}) {
+  const navigation = useAppNavigation();
+
+  return (
+    <View>
+      <FlexRow justifyContent="space-between" style={{ flex: 1 }}>
+        <FlexRow style={{ flex: 1 }}>
+          <ChatAvatar isActive={isOnline} membersAvatar={[avatar ?? ""]} />
+          <SpacerRow size={1.5} />
+          <View>
+            <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
+              {name || "Anon"}
+            </BrandText>
+          </View>
+        </FlexRow>
+
+        <FlexRow justifyContent="flex-end" style={{ flex: 1 }}>
+          <CustomPressable
+            onPress={() =>
+              navigation.replace("Conversation", { conversationId: id })
+            }
+          >
+            <SVGorImageIcon icon={messageSVG} iconSize={22} />
+          </CustomPressable>
         </FlexRow>
       </FlexRow>
       <SpacerColumn size={1.3} />
