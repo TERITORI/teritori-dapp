@@ -87,12 +87,26 @@ const migrations = {
       },
     };
   },
+  // set default marketplace time period to 30 days
+  5: (state: any) => {
+    return {
+      ...state,
+      marketplaceFilterUI: {
+        ...state.marketplaceFilterUI,
+        timePeriod: {
+          label: "Last 30 days",
+          shortLabel: "30d",
+          value: 60 * 24 * 30,
+        },
+      },
+    };
+  },
 };
 
 const rootPersistConfig = {
   key: "root",
   storage,
-  version: 4,
+  version: 5,
   migrate: createMigrate(migrations, { debug: false }),
   whitelist: [
     "wallets",

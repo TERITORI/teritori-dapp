@@ -10767,7 +10767,8 @@
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad"
+      "NFTLaunchpad",
+      "NFTMarketplaceLeaderboard"
     ],
     "registryName": "teritori",
     "overrides": "cosmos-registry:teritori",
@@ -10857,7 +10858,8 @@
       "NameService",
       "BurnTokens",
       "NFTLaunchpad",
-      "RiotP2E"
+      "RiotP2E",
+      "NFTMarketplaceLeaderboard"
     ],
     "currencies": [
       {
@@ -10875,7 +10877,7 @@
     "contractExplorer": "",
     "idPrefix": "devtori",
     "testnet": true,
-    "backendEndpoint": "",
+    "backendEndpoint": "http://localhost:9090",
     "addressPrefix": "tori",
     "restEndpoint": "http://127.0.0.1:1317",
     "rpcEndpoint": "http://127.0.0.1:26657",
@@ -10934,7 +10936,8 @@
       "NameService",
       "BurnTokens",
       "NFTLaunchpad",
-      "CosmWasmPremiumFeed"
+      "CosmWasmPremiumFeed",
+      "NFTMarketplaceLeaderboard"
     ],
     "featureObjects": [
       {

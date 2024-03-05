@@ -34,6 +34,7 @@ type Props = {
   setSelection: (data: { start: number; end: number }) => void;
   onBlur?: () => void;
   onFocus?: () => void;
+  type: "comment" | "post";
 };
 export interface MiniCommentInputHandle {
   setValue: (text: string) => void;
@@ -44,7 +45,10 @@ export interface MiniCommentInputHandle {
 const CHARS_LIMIT_WARNING_MULTIPLIER = 0.92;
 
 export const CommentTextInput = React.forwardRef<MiniCommentInputHandle, Props>(
-  ({ formValues, setValue, setSelection, onBlur, onFocus }, forwardRef) => {
+  (
+    { formValues, setValue, setSelection, onBlur, onFocus, type },
+    forwardRef,
+  ) => {
     const inputMaxHeight = 200;
     const inputMinHeight = 30;
     const inputHeight = useSharedValue(30);
@@ -54,7 +58,6 @@ export const CommentTextInput = React.forwardRef<MiniCommentInputHandle, Props>(
     const blurInput = () => inputRef.current?.blur();
 
     const handleTextChange = (text: string) => {
-      // Comments are blocked at 2500
       if (text.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT) return;
       setValue("message", text);
     };
@@ -95,7 +98,7 @@ export const CommentTextInput = React.forwardRef<MiniCommentInputHandle, Props>(
                 }
                 onBlur={onBlur}
                 onFocus={onFocus}
-                placeholder="Hey yo! Write your comment"
+                placeholder={`Hey yo! ${type === "comment" ? "Write your comment" : "Post something"}`}
                 placeholderTextColor={neutral77}
                 onChangeText={handleTextChange}
                 multiline
@@ -185,6 +188,7 @@ export const CommentTextInput = React.forwardRef<MiniCommentInputHandle, Props>(
                     );
                   }
                 }}
+                showSmallPreview
               />
             </View>
           </>

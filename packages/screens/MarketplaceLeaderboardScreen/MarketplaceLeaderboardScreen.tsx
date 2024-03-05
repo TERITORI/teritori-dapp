@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { ObjectKeys } from "react-hook-form/dist/types/path/common";
 import { View, useWindowDimensions } from "react-native";
 
-import { LeaderboardMarketplaceTable } from "./component/LeaderboardMarketplaceTable";
+import { MarketplaceLeaderboardTable } from "./component/MarketplaceLeaderboardTable";
 import LeaderboardBannerImage from "../../../assets/banners/LeaderboardBanner.png";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -11,24 +12,41 @@ import { layout } from "../../utils/style/layout";
 
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { Tabs } from "@/components/tabs/Tabs";
+import { useEnabledNetworks } from "@/hooks/useEnabledNetworks";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { NetworkFeature } from "@/networks";
 
-type TabsListType = "teritori" | "ethereum";
-
-export const LeaderboardMarketplaceScreen: React.FC = () => {
+export const MarketplaceLeaderboardScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const { width } = useWindowDimensions();
   const isMobile = useIsMobile();
-  const [selectedTab, setSelectedTab] = useState<TabsListType>("teritori");
 
-  const tabs = {
-    teritori: {
-      name: "Teritori",
+  const networks = useEnabledNetworks();
+  const tabs = networks.reduce(
+    (r, n) => {
+      if (!n.features.includes(NetworkFeature.NFTMarketplaceLeaderboard)) {
+        return r;
+      }
+      r[n.id] = { name: n.displayName };
+      return r;
     },
-    ethereum: {
-      name: "Ethereum",
+    {} as Record<string, { name: string }>,
+  );
+  const [selectedTab, setSelectedTab] = useState<string>(Object.keys(tabs)[0]);
+  const networkId = selectedTab;
+
+  const timeTabs = {
+    "7d": {
+      name: "7 days",
+      hours: 24 * 7,
+    },
+    "30d": {
+      name: "30 days",
+      hours: 24 * 30,
     },
   };
+  const [selectedPeriod, setSelectedPeriod] =
+    useState<ObjectKeys<typeof timeTabs>>("30d");
 
   return (
     <ScreenContainer
@@ -62,15 +80,26 @@ export const LeaderboardMarketplaceScreen: React.FC = () => {
           }}
         >
           <BrandText style={fontSemibold28}>NFT Traders Leaderboard</BrandText>
-          <Tabs
-            items={tabs}
-            selected={selectedTab}
+          <View
             style={{
-              height: 32,
+              flexDirection: isMobile ? "column-reverse" : "row",
+              gap: layout.spacing_x4,
               marginTop: isMobile ? layout.spacing_x2_5 : 0,
             }}
-            onSelect={setSelectedTab}
-          />
+          >
+            <Tabs
+              items={timeTabs}
+              selected={selectedPeriod}
+              style={{ height: 32 }}
+              onSelect={setSelectedPeriod}
+            />
+            <Tabs
+              items={tabs}
+              selected={selectedTab}
+              style={{ height: 32 }}
+              onSelect={setSelectedTab}
+            />
+          </View>
         </View>
 
         <View
@@ -82,7 +111,10 @@ export const LeaderboardMarketplaceScreen: React.FC = () => {
             marginTop: layout.spacing_x4,
           }}
         >
-          <LeaderboardMarketplaceTable />
+          <MarketplaceLeaderboardTable
+            networkId={networkId}
+            timePeriodHours={timeTabs[selectedPeriod].hours}
+          />
         </View>
       </View>
     </ScreenContainer>

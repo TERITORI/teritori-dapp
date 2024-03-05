@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 
-import { trimFixed } from "./numbers";
+import { prettyNumber } from "./numbers";
 import { getNativeCurrency } from "../networks";
 
 export interface Balance {
@@ -20,8 +20,6 @@ export const decimalFromAtomics = (
   }
   return Decimal.fromAtomics("0", 0);
 };
-
-const units = ["", "K", "M", "B", "T", "P", "E", "Z", "Y"];
 
 // FIXME: rename to prettyAmount
 
@@ -56,16 +54,10 @@ export const prettyPrice = (
       if (noDenom) return `${decval.toString()}`;
       return `${decval.toString()} ${currency.displayName}`;
     }
-    let val = decval.toFloatApproximation();
-    let unitIndex = 0;
-    while (val >= 1000 && unitIndex !== units.length - 1) {
-      val /= 1000;
-      unitIndex++;
-    }
-    if (noDenom) return `${trimFixed(val.toFixed(2))}${units[unitIndex]}`;
-    return `${trimFixed(val.toFixed(2))}${units[unitIndex]} ${
-      currency.displayName
-    }`;
+    const val = decval.toFloatApproximation();
+    const text = prettyNumber(val, 2);
+    if (noDenom) return text;
+    return `${text} ${currency.displayName}`;
   }
   if (noDenom) return `${value}`;
   return `${value} ${denom}`;
