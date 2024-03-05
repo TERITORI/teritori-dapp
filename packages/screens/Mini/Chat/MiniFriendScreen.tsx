@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import { FlatList, View } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -36,18 +36,13 @@ import { bytesFromString } from "../../../weshnet/utils";
 import { CustomButton } from "../components/Button/CustomButton";
 import { ChatAvatar } from "../components/ChatAvatar";
 import MiniTextInput from "../components/MiniTextInput";
-import MiniToastWithAction from "../components/MiniToastWithAction";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { RoundedTabs } from "@/components/tabs/RoundedTabs";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
-
-type ToastType = {
-  type?: "success" | "error";
-  message: string;
-};
 
 export const miniFriendTabItems = {
   requests: {
@@ -66,24 +61,9 @@ export const MiniFriendScreen: ScreenFC<"MiniFriend"> = ({
     keyof typeof miniFriendTabItems
   >(route.params.activeTab ?? "requests");
   const [searchQuery, setSearchQuery] = useState("");
-  const [openToast, setOpenToast] = useState<ToastType>({
-    type: undefined,
-    message: "",
-  });
 
   return (
-    <BlurScreenContainer
-      title="Friends"
-      customHeader={
-        openToast.type && (
-          <MiniToastWithAction
-            message={openToast.message}
-            type={openToast.type ?? "info"}
-            onClose={() => setOpenToast({ type: undefined, message: "" })}
-          />
-        )
-      }
-    >
+    <BlurScreenContainer title="Friends">
       <View
         style={{
           paddingHorizontal: layout.spacing_x2,
@@ -113,9 +93,7 @@ export const MiniFriendScreen: ScreenFC<"MiniFriend"> = ({
         />
         <SpacerColumn size={3} />
 
-        {selectedTab === "requests" && (
-          <FriendRequests setOpenToast={setOpenToast} />
-        )}
+        {selectedTab === "requests" && <FriendRequests />}
 
         {selectedTab === "friends" && <Friends />}
 
@@ -130,14 +108,9 @@ type Props = {
   isOnline: boolean;
   avatar: any;
   data: ContactRequest;
-  setOpenToast: Dispatch<SetStateAction<ToastType>>;
 };
 
-function FriendRequests({
-  setOpenToast,
-}: {
-  setOpenToast: Dispatch<SetStateAction<ToastType>>;
-}) {
+function FriendRequests() {
   const contactRequestList = useSelector(selectContactRequestList);
 
   if (contactRequestList.length === 0) {
@@ -162,7 +135,6 @@ function FriendRequests({
           name={item.name}
           isOnline={false}
           avatar={undefined}
-          setOpenToast={setOpenToast}
         />
       )}
       keyExtractor={(item) => item.id}
@@ -171,11 +143,20 @@ function FriendRequests({
   );
 }
 
-function FriendRequest({ isOnline, data, setOpenToast }: Props) {
+function FriendRequest({ isOnline, data }: Props) {
   const [addLoading, setAddLoading] = useState(false);
+  const navigation = useAppNavigation();
+  const { setToast } = useFeedbacks();
 
   const handleAddFriend = async () => {
     setAddLoading(true);
+    setToast({
+      mode: "mini",
+      showAlways: true,
+      message: "Adding Friend...",
+      type: "loading",
+      variant: "outline",
+    });
     try {
       const contactPk = bytesFromString(data?.contactId);
       await acceptFriendRequest(contactPk);
@@ -186,21 +167,53 @@ function FriendRequest({ isOnline, data, setOpenToast }: Props) {
           type: "accept-contact",
         },
       });
+
+      navigation.replace("Conversation", { conversationId: data?.id });
+      setToast({
+        mode: "mini",
+        message: "Successfully Added Friend.",
+        type: "success",
+        variant: "outline",
+      });
     } catch (err) {
       console.error(err);
-      setOpenToast({ type: "error", message: "Add Friend failed" });
+      setToast({
+        mode: "mini",
+        message: "Error adding friend",
+        type: "error",
+        variant: "outline",
+      });
     }
     setAddLoading(false);
   };
 
   const handleCancelFriend = async () => {
+    setToast({
+      mode: "mini",
+      showAlways: true,
+      message: "Cancelling Friend...",
+      type: "loading",
+      variant: "outline",
+    });
     try {
       await weshClient.client.ContactRequestDiscard({
         contactPk: bytesFromString(data?.contactId),
       });
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      setToast({
+        mode: "mini",
+        message: "Successfully Cancelled Friend Request.",
+        type: "success",
+        variant: "outline",
+      });
     } catch (e) {
-      setOpenToast({ type: "error", message: "Cancel Friend failed" });
+      console.log(e);
+      setToast({
+        mode: "mini",
+        message: "Error canceling friend request",
+        type: "error",
+        variant: "outline",
+      });
     }
   };
 
