@@ -74,39 +74,40 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
           type: "success",
         });
       } catch (error: any) {
-        if (error.code !== 14) {
-          setToast({
-            mode: "mini",
-            message: "Unable to leave group.",
-            duration: 5000,
-            type: "error",
-          });
-          setShowLeaveGroupConfirmation(false);
-        } else {
-          await sendGroupLeaveMessage();
-        }
+        console.error(error.message);
+        setToast({
+          mode: "mini",
+          message: "Unable to leave group.",
+          duration: 5000,
+          type: "error",
+        });
+        setShowLeaveGroupConfirmation(false);
       }
     }
   };
 
   const sendGroupLeaveMessage = async () => {
-    if (conversation?.id) {
-      await sendMessage({
-        groupPk: bytesFromString(conversation.id),
-        message: {
-          type: "group-leave",
-          payload: {
-            message: contactInfo.name + " left group.",
-            files: [],
-            metadata: {
-              contact: {
-                id: stringFromBytes(weshConfig.config?.accountPk),
+    try {
+      if (conversation?.id) {
+        await sendMessage({
+          groupPk: bytesFromString(conversation.id),
+          message: {
+            type: "group-leave",
+            payload: {
+              message: contactInfo.name + " left group.",
+              files: [],
+              metadata: {
+                contact: {
+                  id: stringFromBytes(weshConfig.config?.accountPk),
+                },
               },
             },
           },
-        },
-      });
-      navigation.navigate("MiniTabs", { screen: "MiniChats" });
+        });
+        navigation.navigate("MiniTabs", { screen: "MiniChats" });
+      }
+    } catch (error) {
+      console.error("Sending Group Message:", error);
     }
   };
 
