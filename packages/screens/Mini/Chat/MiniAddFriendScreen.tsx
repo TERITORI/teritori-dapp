@@ -54,18 +54,28 @@ export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = ({
         setAddContactLoading(false);
         return;
       }
+      let conversationId = "";
+      const url = new URL(contactLink);
       if (isGroupLink) {
         await weshServices.multiMemberGroupJoin(contactLink, contactInfo);
+        conversationId = url?.searchParams.get("publicKey") || "";
       } else {
         await weshServices.addContact(contactLink, contactInfo);
+        conversationId = url?.searchParams.get("accountPk") || "";
       }
       setContactLink("");
+
       setToast({
         mode: "mini",
         message: "Successfully Added!",
         type: "success",
       });
-      navigation.canGoBack() && navigation.goBack();
+
+      if (conversationId) {
+        navigation.replace("Conversation", { conversationId });
+      } else {
+        navigation.canGoBack() && navigation.goBack();
+      }
     } catch (err: any) {
       setAddContactLoading(false);
       console.error(err.message);
