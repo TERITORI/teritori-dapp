@@ -1,0 +1,11 @@
+[workspace]
+members = ["cosmwasm-contracts/*"]
+resolver = "2"
+
+[profile.release]
+rpath = false
+lto = true
+overflow-checks = true
+opt-level = 3
+debug = false
+debug-assertions = false
