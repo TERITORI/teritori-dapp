@@ -28,6 +28,7 @@ import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
 import { generatePostMetadata, getPostCategory } from "@/utils/feed/queries";
 import { generateIpfsKey } from "@/utils/ipfs";
+import { useAppNavigation } from "@/utils/navigation";
 import {
   SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
   hashtagMatch,
@@ -39,7 +40,6 @@ import { layout } from "@/utils/style/layout";
 import { replaceBetweenString } from "@/utils/text";
 import { NewPostFormValues, ReplyToType } from "@/utils/types/feed";
 import { RemoteFileData } from "@/utils/types/files";
-import { useAppNavigation } from "@/utils/navigation";
 
 interface MiniCommentInputProps {
   type?: "comment" | "post";
