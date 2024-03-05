@@ -13,6 +13,7 @@ mod test {
     use cosmwasm_std::{Addr, StdError, StdResult};
     use cw_multi_test::{App, AppResponse, ContractWrapper, Executor, error::AnyResult};
 
+    // Test Utils ===================================================================
     struct AppContext {
         app: App,
         contract_addr: Addr,

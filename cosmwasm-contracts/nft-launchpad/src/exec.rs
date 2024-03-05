@@ -1,6 +1,6 @@
 use crate::{
     error::ContractError,
-    msg::InstantiateMsg,
+    msg::{ExecMsg, InstantiateMsg},
     state::{Collection, COLLECTIONS},
 };
 use cosmwasm_std::{DepsMut, Env, MessageInfo, Response, StdResult};
@@ -20,8 +20,7 @@ pub fn exec_create_collection(
     deps: DepsMut,
     _env: Env,
     info: MessageInfo,
-    name: String,
-    image_uri: String,
+    msg: ExecMsg
 ) -> Result<Response, ContractError> {
     // Validate data
     // -------------
@@ -36,10 +35,7 @@ pub fn exec_create_collection(
 
     // Save data
     let collection = Collection {
-        creator: info.sender,
-        name,
-        image_uri,
-        merkle_root: None
+       
     };
 
     COLLECTIONS.save(deps.storage, new_idx, &collection)?;
