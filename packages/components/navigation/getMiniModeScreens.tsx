@@ -125,7 +125,6 @@ export const getMiniModeScreens = () => {
         options={{
           header: () => null,
           title: "",
-          presentation: "transparentModal",
         }}
       />
 
