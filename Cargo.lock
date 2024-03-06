@@ -175,7 +175,7 @@ dependencies = [
  "hex",
  "schemars",
  "serde",
- "serde-json-wasm",
+ "serde-json-wasm 0.5.2",
  "sha2 0.10.8",
  "static_assertions",
  "thiserror",
@@ -588,7 +588,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "sylvia",
+ "sylvia 0.7.1",
  "thiserror",
 ]
 
@@ -960,6 +960,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4e28ab1dc35e09d60c2b8c90d12a9a8d9666c876c10a3739a3196db0103b6043"
 
 [[package]]
+name = "lazy_static"
+version = "1.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
+
+[[package]]
 name = "libc"
 version = "0.2.153"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -977,9 +983,14 @@ version = "0.1.0"
 dependencies = [
  "cosmwasm-schema",
  "cosmwasm-std",
- "cw-multi-test 0.20.0",
  "cw-storage-plus 1.2.0",
+ "cw2981-royalties",
+ "cw721 0.18.0",
+ "cw721-base 0.18.0",
+ "lazy_static",
  "schemars",
+ "serde",
+ "sylvia 0.9.3",
  "thiserror",
 ]
 
@@ -1255,6 +1266,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "serde-json-wasm"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f05da0d153dd4595bdffd5099dc0e9ce425b205ee648eb93437ff7302af8c9a5"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "serde_derive"
 version = "1.0.197"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1378,8 +1398,27 @@ dependencies = [
  "schemars",
  "serde",
  "serde-cw-value",
- "serde-json-wasm",
- "sylvia-derive",
+ "serde-json-wasm 0.5.2",
+ "sylvia-derive 0.7.1",
+]
+
+[[package]]
+name = "sylvia"
+version = "0.9.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a99d4ee0dde6fd6bf3f7d93d90021669e33bc4518bcc3f6c882d64c163fa79d4"
+dependencies = [
+ "anyhow",
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cw-multi-test 0.20.0",
+ "derivative",
+ "konst",
+ "schemars",
+ "serde",
+ "serde-cw-value",
+ "serde-json-wasm 1.0.1",
+ "sylvia-derive 0.9.3",
 ]
 
 [[package]]
@@ -1387,6 +1426,20 @@ name = "sylvia-derive"
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bed182fb775d756fdfe7e87174a4e43f1c446c8f9aff1de38a2165dd04b7d805"
+dependencies = [
+ "convert_case",
+ "proc-macro-crate",
+ "proc-macro-error",
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
+]
+
+[[package]]
+name = "sylvia-derive"
+version = "0.9.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "178e7a0f1a957b2164dc0fd5dfe8c5db1e5fbc7299bffcdac7627b802114ce6f"
 dependencies = [
  "convert_case",
  "proc-macro-crate",
