@@ -6,9 +6,6 @@ pub enum ContractError {
     #[error("{0}")]
     Std(#[from] StdError),
 
-    #[error("NFT code id missing.")]
-    NftCodeIdMissing,
-
-    #[error("Collection not found.")]
-    CollectionNotFound,
+    #[error("Collection idx {idx} does not exist")]
+    CollectionDoesNotExist { idx: u32 },
 }
