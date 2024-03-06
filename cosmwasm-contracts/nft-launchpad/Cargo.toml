@@ -15,7 +15,6 @@ cw-storage-plus = "1.2.0"
 cw2981-royalties = { version = "0.18.0", features = ["library"] }
 cw721 = "0.18.0"
 cw721-base = { version = "0.18.0", features = ["library"] }
-lazy_static = "1.4.0"
 schemars = "0.8.16"
 serde = { version = "1.0.197", features = ["derive"] }
 sylvia = "0.9.3"

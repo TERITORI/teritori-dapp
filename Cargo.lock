@@ -960,12 +960,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4e28ab1dc35e09d60c2b8c90d12a9a8d9666c876c10a3739a3196db0103b6043"
 
 [[package]]
-name = "lazy_static"
-version = "1.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
-
-[[package]]
 name = "libc"
 version = "0.2.153"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -987,7 +981,6 @@ dependencies = [
  "cw2981-royalties",
  "cw721 0.18.0",
  "cw721-base 0.18.0",
- "lazy_static",
  "schemars",
  "serde",
  "sylvia 0.9.3",
