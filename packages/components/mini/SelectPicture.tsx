@@ -3,7 +3,6 @@ import React from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../BrandText";
-import { SpacerRow } from "../spacer";
 
 import cameraSVG from "@/assets/icons/camera-white.svg";
 import Img from "@/assets/icons/img.svg";
@@ -23,6 +22,7 @@ type Props = {
     placeholder?: string;
     height?: number;
   };
+  hideRemove?: boolean;
 };
 
 export const SelectPicture = ({
@@ -33,6 +33,7 @@ export const SelectPicture = ({
     placeholder: "Select Image",
     height: 198,
   },
+  hideRemove = false,
 }: Props) => {
   const onCameraPress = async () => {
     try {
@@ -101,13 +102,15 @@ export const SelectPicture = ({
               paddingRight: layout.spacing_x1_5,
               height: 32,
               marginBottom: layout.spacing_x2,
+              gap: layout.spacing_x1,
             }}
           >
             <SVG source={Img} width={16} height={16} />
-            <SpacerRow size={1} />
-            <BrandText style={fontSemibold14}>
-              {squareSelectorOptions.placeholder}
-            </BrandText>
+            {squareSelectorOptions.placeholder && (
+              <BrandText style={fontSemibold14}>
+                {squareSelectorOptions.placeholder}
+              </BrandText>
+            )}
           </View>
         </View>
       ) : (

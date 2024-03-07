@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
+import {
+  Platform,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 import { useSelector } from "react-redux";
 
 import Add from "../../../../assets/icons/add-primary.svg";
@@ -36,6 +42,7 @@ import { FeedPostingProgressBar } from "../../loaders/FeedPostingProgressBar";
 import { FeedFeeText } from "../../socialFeed/FeedFeeText";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 
+import { SelectAudioVideo } from "@/components/mini/SelectAudioVideo";
 import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
 
 interface Props {
@@ -194,7 +201,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
           onDelete={() => setLocalAudioFile(undefined)}
           onUploadThumbnail={(updatedFile) => setLocalAudioFile(updatedFile)}
         />
-      ) : (
+      ) : Platform.OS === "web" ? (
         <FileUploader
           onUpload={(files) => setLocalAudioFile(files[0])}
           style={uploadButtonStyle}
@@ -213,6 +220,28 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
             </TouchableOpacity>
           )}
         </FileUploader>
+      ) : (
+        <View>
+          <SelectAudioVideo
+            type="audio"
+            onSelectFile={(files) => setLocalAudioFile(files[0])}
+            files={localAudioFile ? [localAudioFile] : []}
+            title={
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  borderColor: neutral33,
+                  borderWidth: 1,
+                  borderRadius: layout.borderRadius,
+                  paddingVertical: layout.spacing_x2,
+                }}
+              >
+                <BrandText style={[fontSemibold14]}>+ Add Audio</BrandText>
+              </View>
+            }
+          />
+        </View>
       )}
       <SpacerColumn size={2.5} />
 
