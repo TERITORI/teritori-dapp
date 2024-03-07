@@ -25,7 +25,7 @@ interface MiniToastProp {
   style?: StyleProp<ViewStyle>;
 }
 
-export default function MiniToastWithAction({
+export function MiniToastWithAction({
   message,
   type = "info",
   onClose,

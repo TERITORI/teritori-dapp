@@ -44,7 +44,7 @@ import { RoundedTabs } from "@/components/tabs/RoundedTabs";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
-export const miniFriendTabItems = {
+const miniFriendTabItems = {
   requests: {
     name: "Requests",
   },
