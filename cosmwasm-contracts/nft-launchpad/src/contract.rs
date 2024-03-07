@@ -1,13 +1,12 @@
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    entry_point, instantiate2_address, to_json_binary, Addr, Binary, CodeInfoResponse, DepsMut,
-    Empty, Env, Order, Reply, Response, StdResult, SubMsg, Timestamp, WasmMsg,
+    to_json_binary, Addr, Empty, Order, Reply, Response, StdResult, SubMsg, Timestamp, WasmMsg,
 };
 use cw_storage_plus::{Item, Map};
 use cw_utils::parse_reply_instantiate_data;
 use sylvia::{
     contract, entry_points,
-    types::{ExecCtx, InstantiateCtx, QueryCtx},
+    types::{ExecCtx, InstantiateCtx, QueryCtx, ReplyCtx},
 };
 
 use crate::error::ContractError;
@@ -19,6 +18,8 @@ const INSTANTIATE_REPLY_ID: u64 = 1u64;
 pub struct NftLaunchpad {
     pub(crate) config: Item<'static, Config>, // nft launchpad config
     pub(crate) collections: Map<'static, u64, Collection>, // collection id => collection info
+
+    pub(crate) instantiating_collection_id: Item<'static, u64>,
 
     pub(crate) deployed_collections: Map<'static, String, u64>, // collection address => collection id
     pub(crate) submitted_collections: Map<'static, u64, Empty>, // collection id
@@ -39,6 +40,8 @@ impl NftLaunchpad {
             deployed_collections: Map::new("deployed_collections"),
             submitted_collections: Map::new("submitted_collections"),
             completed_collections: Map::new("completed_collections"),
+
+            instantiating_collection_id: Item::new("instantiating_collection_id"),
         }
     }
 
@@ -129,7 +132,7 @@ impl NftLaunchpad {
         collection_id: u64,
     ) -> Result<Response, ContractError> {
         // Only allow to deploy completed collection
-        let mut collection = self
+        let collection = self
             .collections
             .load(ctx.deps.storage, collection_id)
             .map_err(|_| ContractError::CollectionNotFound)?;
@@ -153,16 +156,21 @@ impl NftLaunchpad {
         //     .deps
         //     .api
         //     .addr_canonicalize(ctx.env.contract.address.as_str())?;
+
         // let CodeInfoResponse { checksum, .. } =
         //     ctx.deps.querier.query_wasm_code_info(nft_code_id)?;
 
         // // Create salt from collection id
+        // ctx.deps.api.debug("--#1--");
         // let salt = Binary::from(format!("collection-{collection_id}").as_bytes());
+        // ctx.deps.api.debug("--#2--");
 
         // let instantiate2_addr = instantiate2_address(&checksum, &creator, &salt)?;
+
         // let addr = ctx.deps.api.addr_humanize(&instantiate2_addr)?;
 
         // QUESTION: How to ensure that NFT contract has been well deployed ?
+        // NOTE: cannot use wasm_instantiate because we need to specify admin
         let instantiate_msg = WasmMsg::Instantiate {
             admin: Some(sender.clone()),
             code_id: nft_code_id,
@@ -172,7 +180,10 @@ impl NftLaunchpad {
                 minter: sender,
             })?,
             funds: vec![],
-            label: format!("TR721-{} {}", nft_code_id, collection.symbol),
+            label: format!(
+                "TR721 codeId:{} collectionId:{} symbol:{}",
+                nft_code_id, collection_id, collection.symbol
+            ),
         };
 
         // Update collection states
@@ -185,11 +196,16 @@ impl NftLaunchpad {
         // self.collections
         //     .save(ctx.deps.storage, collection_id, &collection)?;
 
+        // Update instantiating collection id
+        self.instantiating_collection_id
+            .save(ctx.deps.storage, &collection_id)?;
+
         let submessage = SubMsg::reply_on_success(instantiate_msg, INSTANTIATE_REPLY_ID);
 
         Ok(Response::new()
             .add_submessage(submessage)
-            .add_attribute("action", "collection_deployed"))
+            .add_attribute("action", "collection_deployed")
+            .add_attribute("collection_id", collection_id.to_string()))
     }
 
     #[msg(query)]
@@ -203,7 +219,7 @@ impl NftLaunchpad {
         &self,
         ctx: QueryCtx,
         collection_addr: String,
-    ) -> StdResult<Collection> {
+    ) -> Result<Collection, ContractError> {
         let deployed_collection_id = self
             .deployed_collections
             .load(ctx.deps.storage, collection_addr)?;
@@ -233,29 +249,36 @@ impl NftLaunchpad {
         Ok(config)
     }
 
-    // Reply ---------------------------------------------------------------
-    fn reply(&self, deps: DepsMut, env: Env, reply: Reply) -> Result<Response, ContractError> {
-        match reply.id {
-            INSTANTIATE_REPLY_ID => handle_instantiate_reply(&self, deps, env, reply),
-            reply_id => Err(ContractError::UnknownReply { reply_id }),
+    #[msg(reply)]
+    pub fn handle_reply(&self, ctx: ReplyCtx, msg: Reply) -> Result<Response, ContractError> {
+        let msg_id = msg.id;
+        let storage = ctx.deps.storage;
+
+        if msg_id == INSTANTIATE_REPLY_ID {
+            let resp = parse_reply_instantiate_data(msg).unwrap();
+            let deployed_addr = resp.contract_address;
+
+            // Get instantiating collection id
+            let collection_id = self.instantiating_collection_id.load(storage)?;
+
+            // Update collection states
+            self.deployed_collections
+                .save(storage, deployed_addr.clone(), &collection_id)?;
+            self.completed_collections.remove(storage, collection_id);
+
+            let mut collection = self.collections.load(storage, collection_id)?;
+            collection.state = Some(CollectionState::Deployed);
+            collection.contract_address = Some(deployed_addr.clone());
+            self.collections.save(storage, collection_id, &collection)?;
+
+            return Ok(Response::new()
+                .add_attribute("action", "collection_instantiated")
+                .add_attribute("collection_id", collection_id.to_string())
+                .add_attribute("collection_addr", deployed_addr));
         }
+
+        Err(ContractError::UnknownReply { reply_id: msg_id })
     }
-}
-
-#[entry_point]
-pub fn reply(deps: DepsMut, env: Env, reply: Reply) -> Result<Response, ContractError> {
-    NftLaunchpad::new().reply(deps, env, reply)
-}
-
-fn handle_instantiate_reply(
-    _instance: &NftLaunchpad,
-    _deps: DepsMut,
-    _env: Env,
-    reply: Reply,
-) -> Result<Response, ContractError> {
-    let _res = parse_reply_instantiate_data(reply)?;
-
-    Ok(Response::new())
 }
 
 // Types definitions ------------------------------------------------------
@@ -341,6 +364,7 @@ pub struct Collection {
     pub base_token_uri: Option<String>,
     pub merkle_root: Option<String>,
     pub state: Option<CollectionState>,
+    pub contract_address: Option<String>,
 }
 #[cw_serde]
 pub enum CollectionState {

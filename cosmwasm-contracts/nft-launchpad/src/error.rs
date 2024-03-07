@@ -13,7 +13,10 @@ pub enum ContractError {
     #[error("Collection not found.")]
     CollectionNotFound,
 
-    #[error("Collection not found.")]
+    #[error("Collection not deployed.")]
+    CollectionNotDeployed,
+
+    #[error("Action is not allowed.")]
     Forbidden,
 
     #[error("Unable to parse reply.")]
