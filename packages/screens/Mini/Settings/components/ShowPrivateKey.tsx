@@ -6,13 +6,15 @@ import BlurViewWrapper from "../../components/BlurViewWrapper";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { getMnemonic } from "@/utils/wallet/getNativeWallet";
 
-const KEY =
-  "0xb0b099df345359d948b59adaa3435b2484849335385f2594385ae8f1849019492019f25b5";
-
-export const ShowPrivateKey = () => {
+export const ShowPrivateKey: React.FC<{ privateKey: string }> = ({
+  privateKey,
+}) => {
   return (
     <View
       style={{
@@ -26,9 +28,9 @@ export const ShowPrivateKey = () => {
         <RedAlert description="Do not share your private key! Anyone with your private key will have full control of your wallet." />
         <SpacerColumn size={1.5} />
 
-        <BlurViewWrapper copy={KEY} wrapperStyle={{ height: 138 }}>
+        <BlurViewWrapper copy={privateKey} wrapperStyle={{ height: 138 }}>
           <BrandText style={[fontSemibold14, { textAlign: "center" }]}>
-            {KEY}
+            {privateKey}
           </BrandText>
         </BlurViewWrapper>
       </View>
