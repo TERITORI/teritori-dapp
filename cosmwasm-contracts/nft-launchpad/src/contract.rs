@@ -1,10 +1,10 @@
-use std::fmt::Debug;
-
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    to_json_binary, Addr, Empty, Order, Response, StdResult, SubMsg, Timestamp, WasmMsg,
+    entry_point, instantiate2_address, to_json_binary, Addr, Binary, CodeInfoResponse, DepsMut,
+    Empty, Env, Order, Reply, Response, StdResult, SubMsg, Timestamp, WasmMsg,
 };
 use cw_storage_plus::{Item, Map};
+use cw_utils::parse_reply_instantiate_data;
 use sylvia::{
     contract, entry_points,
     types::{ExecCtx, InstantiateCtx, QueryCtx},
@@ -13,13 +13,16 @@ use sylvia::{
 use crate::error::ContractError;
 use cw721_base::msg::InstantiateMsg as NftInstantiateMsg;
 
+const INSTANTIATE_REPLY_ID: u64 = 1u64;
+
 // Contract states ------------------------------------------------------
 pub struct NftLaunchpad {
     pub(crate) config: Item<'static, Config>, // nft launchpad config
-    pub(crate) collection_count: Item<'static, u64>, // count total of collections
     pub(crate) collections: Map<'static, u64, Collection>, // collection id => collection info
+
     pub(crate) deployed_collections: Map<'static, String, u64>, // collection address => collection id
-    pub(crate) pending_collections: Map<'static, u64, Empty>,   // collection
+    pub(crate) submitted_collections: Map<'static, u64, Empty>, // collection id
+    pub(crate) completed_collections: Map<'static, u64, Empty>, // collection id
 }
 
 // Contract implement -----------------------------------------------------
@@ -32,39 +35,91 @@ impl NftLaunchpad {
         Self {
             config: Item::new("config"),
 
-            collection_count: Item::new("collection_count"),
             collections: Map::new("collections"),
             deployed_collections: Map::new("deployed_collections"),
-            pending_collections: Map::new("pending_collections"),
+            submitted_collections: Map::new("submitted_collections"),
+            completed_collections: Map::new("completed_collections"),
         }
     }
 
     #[msg(instantiate)]
     pub fn instantiate(&self, ctx: InstantiateCtx, config: Config) -> StdResult<Response> {
         self.config.save(ctx.deps.storage, &config)?;
-        self.collection_count.save(ctx.deps.storage, &0)?;
 
-        Ok(Response::default()
+        Ok(Response::new()
             .add_attribute("action", "instantiate")
             .add_attribute("launchpad_name", config.name))
+    }
+
+    #[msg(exec)]
+    pub fn update_config(&self, ctx: ExecCtx, changes: Config) -> StdResult<Response> {
+        self.config.save(ctx.deps.storage, &changes)?;
+
+        Ok(Response::new().add_attribute("action", "update_config"))
     }
 
     #[msg(exec)]
     pub fn submit_collection(
         &self,
         ctx: ExecCtx,
-        collection: Collection,
+        mut collection: Collection,
     ) -> Result<Response, ContractError> {
         let storage = ctx.deps.storage;
-        let new_id = self.collection_count.load(storage)? + 1;
 
-        self.collection_count.save(storage, &new_id)?;
+        // Increase collection id by 1
+        let last_collection = self.collections.last(storage).unwrap();
+        let new_id: u64 = match last_collection {
+            Some(item) => item.0 + 1,
+            None => 1,
+        };
+
+        collection.state = Some(CollectionState::Submitted);
+
         self.collections.save(storage, new_id, &collection)?;
-        self.pending_collections.save(storage, new_id, &Empty {})?;
+        self.submitted_collections
+            .save(storage, new_id, &Empty {})?;
 
-        Ok(Response::default()
+        Ok(Response::new()
             .add_attribute("action", "submit_collection")
             .add_attribute("collection_id", new_id.to_string()))
+    }
+
+    #[msg(exec)]
+    pub fn update_merkle_root(
+        &self,
+        ctx: ExecCtx,
+        collection_id: u64,
+        merkle_root: String,
+    ) -> Result<Response, ContractError> {
+        let storage = ctx.deps.storage;
+
+        // Only allow to update merke root before deployed
+        let mut collection = self
+            .collections
+            .load(storage, collection_id)
+            .map_err(|_| ContractError::CollectionNotFound)?;
+
+        if collection.state == Some(CollectionState::Deployed) {
+            return Err(ContractError::Forbidden);
+        }
+
+        // If merkle root was empty then update state to completed
+        if collection.merkle_root == None {
+            self.submitted_collections.remove(storage, collection_id);
+            self.completed_collections
+                .save(storage, collection_id, &Empty {})?;
+        }
+
+        // Update merkle root to collection
+        collection.merkle_root = Some(merkle_root.clone());
+        collection.state = Some(CollectionState::Completed);
+
+        // Update collection
+        self.collections.save(storage, collection_id, &collection)?;
+
+        Ok(Response::new()
+            .add_attribute("action", "update_merkle_root")
+            .add_attribute("merkle_root", merkle_root))
     }
 
     #[msg(exec)]
@@ -73,11 +128,13 @@ impl NftLaunchpad {
         ctx: ExecCtx,
         collection_id: u64,
     ) -> Result<Response, ContractError> {
-        let collection = self
+        // Only allow to deploy completed collection
+        let mut collection = self
             .collections
             .load(ctx.deps.storage, collection_id)
             .map_err(|_| ContractError::CollectionNotFound)?;
 
+        // Check nft code id
         let config = self.config.load(ctx.deps.storage)?;
         let sender = ctx.info.sender.to_string();
         let nft_code_id = config.nft_code_id.unwrap_or(0);
@@ -86,12 +143,31 @@ impl NftLaunchpad {
             return Err(ContractError::NftCodeIdMissing);
         }
 
+        // Check collection state
+        if collection.state != Some(CollectionState::Completed) {
+            return Err(ContractError::Forbidden);
+        }
+
+        // Instantiate Nft contract using Instantiate2
+        // let creator = ctx
+        //     .deps
+        //     .api
+        //     .addr_canonicalize(ctx.env.contract.address.as_str())?;
+        // let CodeInfoResponse { checksum, .. } =
+        //     ctx.deps.querier.query_wasm_code_info(nft_code_id)?;
+
+        // // Create salt from collection id
+        // let salt = Binary::from(format!("collection-{collection_id}").as_bytes());
+
+        // let instantiate2_addr = instantiate2_address(&checksum, &creator, &salt)?;
+        // let addr = ctx.deps.api.addr_humanize(&instantiate2_addr)?;
+
         // QUESTION: How to ensure that NFT contract has been well deployed ?
-        let init_msg = WasmMsg::Instantiate {
+        let instantiate_msg = WasmMsg::Instantiate {
             admin: Some(sender.clone()),
             code_id: nft_code_id,
             msg: to_json_binary(&NftInstantiateMsg {
-                name: collection.name,
+                name: collection.name.clone(),
                 symbol: collection.symbol.clone(),
                 minter: sender,
             })?,
@@ -99,8 +175,20 @@ impl NftLaunchpad {
             label: format!("TR721-{} {}", nft_code_id, collection.symbol),
         };
 
-        Ok(Response::default()
-            .add_submessage(SubMsg::reply_on_success(init_msg, 1))
+        // Update collection states
+        // self.deployed_collections
+        //     .save(ctx.deps.storage, addr.to_string(), &collection_id)?;
+        // self.completed_collections
+        //     .remove(ctx.deps.storage, collection_id);
+
+        // collection.state = Some(CollectionState::Deployed);
+        // self.collections
+        //     .save(ctx.deps.storage, collection_id, &collection)?;
+
+        let submessage = SubMsg::reply_on_success(instantiate_msg, INSTANTIATE_REPLY_ID);
+
+        Ok(Response::new()
+            .add_submessage(submessage)
             .add_attribute("action", "collection_deployed"))
     }
 
@@ -111,17 +199,32 @@ impl NftLaunchpad {
     }
 
     #[msg(query)]
-    pub fn get_pending_collections(&self, ctx: QueryCtx) -> StdResult<Vec<u64>> {
-        let mut pending_collections: Vec<u64> = vec![];
-        for key in self
-            .pending_collections
-            .keys(ctx.deps.storage, None, None, Order::Ascending)
-        {
-            let id = key.unwrap();
-            pending_collections.push(id);
-        }
+    pub fn get_collection_by_addr(
+        &self,
+        ctx: QueryCtx,
+        collection_addr: String,
+    ) -> StdResult<Collection> {
+        let deployed_collection_id = self
+            .deployed_collections
+            .load(ctx.deps.storage, collection_addr)?;
 
-        Ok(pending_collections)
+        let collection = self
+            .collections
+            .load(ctx.deps.storage, deployed_collection_id)?;
+
+        Ok(collection)
+    }
+
+    #[msg(query)]
+    pub fn get_summited_collections(&self, ctx: QueryCtx) -> StdResult<Vec<u64>> {
+        // NOTE: The pending collections should not be too many so it might be ok to iter map here ?
+        let summited_collections: Vec<u64> = self
+            .submitted_collections
+            .keys(ctx.deps.storage, None, None, Order::Ascending)
+            .map(|item| item.unwrap())
+            .collect();
+
+        Ok(summited_collections)
     }
 
     #[msg(query)]
@@ -129,6 +232,30 @@ impl NftLaunchpad {
         let config = self.config.load(ctx.deps.storage)?;
         Ok(config)
     }
+
+    // Reply ---------------------------------------------------------------
+    fn reply(&self, deps: DepsMut, env: Env, reply: Reply) -> Result<Response, ContractError> {
+        match reply.id {
+            INSTANTIATE_REPLY_ID => handle_instantiate_reply(&self, deps, env, reply),
+            reply_id => Err(ContractError::UnknownReply { reply_id }),
+        }
+    }
+}
+
+#[entry_point]
+pub fn reply(deps: DepsMut, env: Env, reply: Reply) -> Result<Response, ContractError> {
+    NftLaunchpad::new().reply(deps, env, reply)
+}
+
+fn handle_instantiate_reply(
+    _instance: &NftLaunchpad,
+    _deps: DepsMut,
+    _env: Env,
+    reply: Reply,
+) -> Result<Response, ContractError> {
+    let _res = parse_reply_instantiate_data(reply)?;
+
+    Ok(Response::new())
 }
 
 // Types definitions ------------------------------------------------------
@@ -212,4 +339,12 @@ pub struct Collection {
 
     // Extend info --------------------------
     pub base_token_uri: Option<String>,
+    pub merkle_root: Option<String>,
+    pub state: Option<CollectionState>,
+}
+#[cw_serde]
+pub enum CollectionState {
+    Submitted, // When user summit the collection but missing merkle root
+    Completed, // When user fulfil all needed info (including merkle root)
+    Deployed,  // When collection has been deployed
 }

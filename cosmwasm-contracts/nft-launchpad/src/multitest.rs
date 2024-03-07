@@ -1,38 +1,17 @@
 use cosmwasm_std::{Addr, Attribute, Timestamp};
-use sylvia::multitest::App;
+use sylvia::{cw_multi_test::ContractWrapper, multitest::App};
 
 use crate::{
-    contract::{sv::multitest_utils::CodeId, Collection, Config},
+    contract::{sv::multitest_utils::CodeId, Collection, CollectionState, Config},
     error::ContractError,
 };
 
-fn get_contract_instance() {}
+use cw721_base::entry::{
+    execute as tr721_execute, instantiate as tr721_instantiate, query as tr721_query,
+};
 
-#[test]
-fn instantiate() {
-    let app = App::default();
-    let code_id = CodeId::store_code(&app);
-
-    let sender = "sender";
-
-    // Instantiate
-    let config = Config {
-        name: "teritori launchpad".to_string(),
-        supported_networks: vec![],
-        nft_code_id: None,
-    };
-
-    let contract = code_id.instantiate(config).call(sender).unwrap();
-
-    // Check create config
-    let config = contract.get_config().unwrap();
-    assert_eq!(config.name, "teritori launchpad".to_string());
-}
-
-#[test]
-fn full_flow() {
-    // 1. Create
-    let default_collection = &Collection {
+fn get_default_collection() -> Collection {
+    Collection {
         // Collection info ----------------------------
         name: "name".to_string(),
         desc: "desc".to_string(),
@@ -104,7 +83,35 @@ fn full_flow() {
 
         // Extend info --------------------------
         base_token_uri: None,
+        merkle_root: None,
+        state: None,
+    }
+}
+
+#[test]
+fn instantiate() {
+    let app = App::default();
+    let code_id = CodeId::store_code(&app);
+    let sender = "sender";
+
+    // Instantiate
+    let config = Config {
+        name: "teritori launchpad".to_string(),
+        supported_networks: vec![],
+        nft_code_id: None,
     };
+
+    let contract = code_id.instantiate(config).call(sender).unwrap();
+
+    // Check create config
+    let config = contract.get_config().unwrap();
+    assert_eq!(config.name, "teritori launchpad".to_string());
+}
+
+#[test]
+fn full_flow() {
+    // 1. Create
+    let default_collection = get_default_collection();
 
     let app = App::default();
     let sender = "sender";
@@ -143,10 +150,11 @@ fn full_flow() {
         // Check created collection
         let commited_collection = contract.get_collection_by_id(1).unwrap();
         assert_eq!(commited_collection.name, default_collection.name);
+        assert_eq!(commited_collection.state, Some(CollectionState::Submitted));
 
-        // check pending collection
-        let pending_collections = contract.get_pending_collections().unwrap();
-        assert_eq!(pending_collections, vec![1]);
+        // check summited collection
+        let summited_collections = contract.get_summited_collections().unwrap();
+        assert_eq!(summited_collections, vec![1]);
     }
 
     // Deploy inexist collection  ---------------------------------------------------------
@@ -160,4 +168,52 @@ fn full_flow() {
         let err = contract.deploy_collection(1).call(sender).unwrap_err();
         assert_eq!(err, ContractError::NftCodeIdMissing)
     }
+
+    // Deploy incompleted collection  ---------------------------------------------------------
+    {
+        contract
+            .update_config(Config {
+                name: "test".to_string(),
+                nft_code_id: Some(42),
+                supported_networks: vec![],
+            })
+            .call(sender)
+            .unwrap();
+
+        let err = contract.deploy_collection(1).call(sender).unwrap_err();
+        assert_eq!(err, ContractError::Forbidden)
+    }
+
+    // Update merkle root
+    {
+        // Before set merkle root
+        let collection_before = contract.get_collection_by_id(1).unwrap();
+        assert_eq!(collection_before.state, Some(CollectionState::Submitted));
+
+        let new_merkle_root = "new merkle root";
+        contract
+            .update_merkle_root(1, new_merkle_root.to_string())
+            .call(sender)
+            .unwrap();
+
+        let collection_after = contract.get_collection_by_id(1).unwrap();
+
+        assert_eq!(
+            collection_after.merkle_root,
+            Some(new_merkle_root.to_string())
+        );
+        assert_eq!(collection_after.state, Some(CollectionState::Completed));
+    }
+
+    // Deploy completed collection after update merkle root + nft code id  ---------------------------------------------------------
+    {
+        let err = contract.deploy_collection(1).call(sender).unwrap_err();
+        assert_eq!(err, ContractError::Forbidden)
+    }
+
+    // // Get unexist collection by address  ---------------------------------------------------------
+    // {
+    //     let err = contract.get_collection_by_addr("inexist".to_string()).unwrap_err();
+    //     assert_eq!(err, ContractError::CollectionNotFound)
+    // }
 }
