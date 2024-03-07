@@ -85,6 +85,7 @@ fn get_default_collection() -> Collection {
         base_token_uri: None,
         merkle_root: None,
         state: None,
+        contract_address: None,
     }
 }
 
@@ -93,7 +94,7 @@ fn instantiate() {
     let app = App::default();
     let code_id = CodeId::store_code(&app);
     let sender = "sender";
-
+    
     // Instantiate
     let config = Config {
         name: "teritori launchpad".to_string(),
@@ -113,8 +114,14 @@ fn full_flow() {
     // 1. Create
     let default_collection = get_default_collection();
 
-    let app = App::default();
+    let app: App<sylvia::cw_multi_test::App> = App::default();
     let sender = "sender";
+
+    // Deploy NFT contract
+    let contract_wrapper = ContractWrapper::new(tr721_execute, tr721_instantiate, tr721_query);
+    let launchpad_contract = Box::new(contract_wrapper);
+
+    let deployed_nft_code_id = app.app_mut().store_code(launchpad_contract);
 
     // Instantiate launchpad ---------------------------------------------------------
     let contract = CodeId::store_code(&app)
@@ -169,17 +176,23 @@ fn full_flow() {
         assert_eq!(err, ContractError::NftCodeIdMissing)
     }
 
-    // Deploy incompleted collection  ---------------------------------------------------------
+    // Update config to have deployed nft_code_id
     {
         contract
             .update_config(Config {
                 name: "test".to_string(),
-                nft_code_id: Some(42),
+                nft_code_id: Some(deployed_nft_code_id),
                 supported_networks: vec![],
             })
             .call(sender)
             .unwrap();
 
+        let resp = contract.get_config().unwrap();
+        assert_eq!(resp.nft_code_id, Some(deployed_nft_code_id))
+    }
+
+    // Deploy incompleted collection  ---------------------------------------------------------
+    {
         let err = contract.deploy_collection(1).call(sender).unwrap_err();
         assert_eq!(err, ContractError::Forbidden)
     }
@@ -207,13 +220,21 @@ fn full_flow() {
 
     // Deploy completed collection after update merkle root + nft code id  ---------------------------------------------------------
     {
-        let err = contract.deploy_collection(1).call(sender).unwrap_err();
-        assert_eq!(err, ContractError::Forbidden)
+        let collection_id = 1;
+        let resp = contract.deploy_collection(collection_id).call(sender).unwrap();
+        let attrs = resp.custom_attrs(1);
+        assert_eq!(
+            attrs[1],
+            Attribute {
+                key: "collection_id".to_string(),
+                value: "1".to_string()
+            }
+        );
+
+        // Check deployed contract
+        let collection = contract.get_collection_by_id(collection_id).unwrap();
+        assert_eq!(collection.state, Some(CollectionState::Deployed));
+        assert_eq!(collection.contract_address, Some("contract1".to_string()));
     }
 
-    // // Get unexist collection by address  ---------------------------------------------------------
-    // {
-    //     let err = contract.get_collection_by_addr("inexist".to_string()).unwrap_err();
-    //     assert_eq!(err, ContractError::CollectionNotFound)
-    // }
 }
