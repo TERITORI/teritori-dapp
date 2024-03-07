@@ -1,18 +1,39 @@
 import { MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
 import React from "react";
+import { View } from "react-native";
+
+import { BrandText } from "../BrandText";
+import { SpacerRow } from "../spacer";
 
 import cameraSVG from "@/assets/icons/camera-white.svg";
+import Img from "@/assets/icons/img.svg";
 import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
+import { neutral33 } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 import { LocalFileData } from "@/utils/types/files";
 
 type Props = {
   files?: LocalFileData[];
   onSelectFile: (data: LocalFileData[]) => void;
+  squareSelector?: boolean;
+  squareSelectorOptions?: {
+    placeholder?: string;
+    height?: number;
+  };
 };
 
-export const SelectPicture = ({ files, onSelectFile }: Props) => {
+export const SelectPicture = ({
+  files,
+  onSelectFile,
+  squareSelector = false,
+  squareSelectorOptions = {
+    placeholder: "Select Image",
+    height: 198,
+  },
+}: Props) => {
   const onCameraPress = async () => {
     try {
       const result = await launchImageLibraryAsync({
@@ -57,14 +78,48 @@ export const SelectPicture = ({ files, onSelectFile }: Props) => {
       onPress={onCameraPress}
       disabled={Array.isArray(files) && files?.length > 0}
     >
-      <SVG
-        source={cameraSVG}
-        height={24}
-        width={24}
-        style={{
-          opacity: Array.isArray(files) && files?.length > 0 ? 0.7 : 1,
-        }}
-      />
+      {squareSelector ? (
+        <View
+          style={[
+            {
+              borderRadius: layout.spacing_x1,
+              borderWidth: 1,
+              borderColor: neutral33,
+              height: squareSelectorOptions.height,
+              alignItems: "center",
+              justifyContent: "flex-end",
+            },
+          ]}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "#2B2B33",
+              borderRadius: 32,
+              paddingLeft: layout.spacing_x1,
+              paddingRight: layout.spacing_x1_5,
+              height: 32,
+              marginBottom: layout.spacing_x2,
+            }}
+          >
+            <SVG source={Img} width={16} height={16} />
+            <SpacerRow size={1} />
+            <BrandText style={fontSemibold14}>
+              {squareSelectorOptions.placeholder}
+            </BrandText>
+          </View>
+        </View>
+      ) : (
+        <SVG
+          source={cameraSVG}
+          height={24}
+          width={24}
+          style={{
+            opacity: Array.isArray(files) && files?.length > 0 ? 0.7 : 1,
+          }}
+        />
+      )}
     </CustomPressable>
   );
 };

@@ -4,8 +4,6 @@ import { View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
 import { CommentTextInput, MiniCommentInputHandle } from "./CommentTextInput";
-import { SelectAudioVideo } from "./SelectAudioVideo";
-import { SelectPicture } from "./SelectPicture";
 import { SimpleCommentInput } from "./SimpleCommentInput";
 import priceSVG from "../../../../../assets/icons/price.svg";
 
@@ -14,6 +12,8 @@ import FlexRow from "@/components/FlexRow";
 import { SVG } from "@/components/SVG";
 import { CustomButton } from "@/components/buttons/CustomButton";
 import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgressBar";
+import { SelectAudioVideo } from "@/components/mini/SelectAudioVideo";
+import { SelectPicture } from "@/components/mini/SelectPicture";
 import { EmojiSelector } from "@/components/socialFeed/EmojiSelector";
 import { GIFSelector } from "@/components/socialFeed/GIFSelector";
 import { SpacerColumn } from "@/components/spacer";
