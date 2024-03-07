@@ -79,8 +79,10 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   // Plug or not the playbackStatus from MediaPLayerProvider
   const statusToUse = useMemo(
     () => (isInMediaPlayer ? playbackStatus : localStatus),
-    [isInMediaPlayer, playbackStatus, localStatus],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isInMediaPlayer],
   );
+
   const containerRef = useRef<View>(null);
   const videoRef = useRef<Video>(null);
   const [containerWidth, setContainerWidth] = useState(0);
