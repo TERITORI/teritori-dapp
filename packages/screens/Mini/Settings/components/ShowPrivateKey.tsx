@@ -6,11 +6,8 @@ import BlurViewWrapper from "../../components/BlurViewWrapper";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
-import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { getMnemonic } from "@/utils/wallet/getNativeWallet";
 
 export const ShowPrivateKey: React.FC<{ privateKey: string }> = ({
   privateKey,
