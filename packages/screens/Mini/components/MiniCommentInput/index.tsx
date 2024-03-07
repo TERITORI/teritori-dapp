@@ -8,11 +8,11 @@ import { SelectAudioVideo } from "./SelectAudioVideo";
 import { SelectPicture } from "./SelectPicture";
 import { SimpleCommentInput } from "./SimpleCommentInput";
 import priceSVG from "../../../../../assets/icons/price.svg";
-import { CustomButton } from "../Button/CustomButton";
 
 import { BrandText } from "@/components/BrandText";
 import FlexRow from "@/components/FlexRow";
 import { SVG } from "@/components/SVG";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgressBar";
 import { EmojiSelector } from "@/components/socialFeed/EmojiSelector";
 import { GIFSelector } from "@/components/socialFeed/GIFSelector";

@@ -2,7 +2,6 @@ import { Video } from "expo-av";
 import React, { useEffect } from "react";
 import { View } from "react-native";
 
-import { CustomButton } from "../../Mini/components/Button/CustomButton";
 import { WalletContainer } from "../layout/WalletContainer";
 
 import adena from "@/assets/icons/adena.svg";
@@ -11,6 +10,7 @@ import foxSvg from "@/assets/icons/networks/fox-circle.svg";
 import keplerSvg from "@/assets/icons/networks/kepler-circle.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { SpacerColumn } from "@/components/spacer";
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 import { ScreenFC } from "@/utils/navigation";

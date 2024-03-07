@@ -2,13 +2,13 @@ import { useState } from "react";
 import { View } from "react-native";
 
 import profileSVG from "../../../../assets/icons/input-profile.svg";
-import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import FileUpload from "../components/FileUpload";
 import MiniTextInput from "../components/MiniTextInput";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 import { BrandText } from "@/components/BrandText";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { SpacerColumn } from "@/components/spacer";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral22 } from "@/utils/style/colors";

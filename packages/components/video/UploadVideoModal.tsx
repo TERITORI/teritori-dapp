@@ -2,6 +2,7 @@ import { ResizeMode, Video } from "expo-av";
 import React, { FC, useState } from "react";
 import {
   ImageStyle,
+  Platform,
   TextStyle,
   TouchableOpacity,
   View,
@@ -36,6 +37,7 @@ import { BrandText } from "../BrandText";
 import { DeleteButton } from "../FilePreview/DeleteButton";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
+import { CustomButton } from "../buttons/CustomButton";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { FileUploader } from "../fileUploader";
@@ -300,24 +302,40 @@ export const UploadVideoModal: FC<{
           />
         </View>
       ) : (
-        <FileUploader
-          onUpload={(files) => setLocalVideoFile(files[0])}
-          style={uploadButtonStyle}
-          mimeTypes={VIDEO_MIME_TYPES}
-          setIsLoading={setIsUploadLoading}
-        >
-          {({ onPress }) => (
-            <TouchableOpacity
-              style={[buttonContainerStyle, isLoading && { opacity: 0.5 }]}
-              onPress={onPress}
-              disabled={isLoading}
+        <View>
+          {Platform.OS !== "web" ? (
+            <CustomButton
+              title="Add Video"
+              type="outline"
+              width="100%"
+              onPress={() => {}}
+            />
+          ) : (
+            <FileUploader
+              onUpload={(files) => setLocalVideoFile(files[0])}
+              style={uploadButtonStyle}
+              mimeTypes={VIDEO_MIME_TYPES}
+              setIsLoading={setIsUploadLoading}
             >
-              <SVG source={Add} width={20} height={20} stroke={primaryColor} />
-              <SpacerRow size={1} />
-              <BrandText style={buttonTextStyle}>Add video</BrandText>
-            </TouchableOpacity>
+              {({ onPress }) => (
+                <TouchableOpacity
+                  style={[buttonContainerStyle, isLoading && { opacity: 0.5 }]}
+                  onPress={onPress}
+                  disabled={isLoading}
+                >
+                  <SVG
+                    source={Add}
+                    width={20}
+                    height={20}
+                    stroke={primaryColor}
+                  />
+                  <SpacerRow size={1} />
+                  <BrandText style={buttonTextStyle}>Add video</BrandText>
+                </TouchableOpacity>
+              )}
+            </FileUploader>
           )}
-        </FileUploader>
+        </View>
       )}
       <SpacerColumn size={2.5} />
 

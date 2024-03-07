@@ -3,12 +3,12 @@ import { ScrollView, View } from "react-native";
 
 import { CreateGroupModal } from "./CreateGroupModal";
 import chevronGrayRightSVG from "../../../../../assets/icons/chevron-right-gray.svg";
-import { CustomButton } from "../../components/Button/CustomButton";
 import { ChatAvatar } from "../../components/ChatAvatar";
 import Checkbox from "../../components/Checkbox/Checkbox";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";

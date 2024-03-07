@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { CustomButton } from "../components/Button/CustomButton";
 import MiniTextInput from "../components/MiniTextInput";
 import { ScanQRToSendRequest } from "../components/ScanQRToSendRequest";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
@@ -10,6 +9,7 @@ import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 import addSVG from "@/assets/icons/add-new.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { selectContactInfo } from "@/store/slices/message";
