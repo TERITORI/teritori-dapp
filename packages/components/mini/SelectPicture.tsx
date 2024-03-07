@@ -1,8 +1,7 @@
 import { MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
 import React from "react";
 
-import cameraSVG from "../../../../../assets/icons/camera-white.svg";
-
+import cameraSVG from "@/assets/icons/camera-white.svg";
 import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";

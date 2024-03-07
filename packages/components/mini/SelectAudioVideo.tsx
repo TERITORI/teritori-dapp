@@ -1,9 +1,8 @@
 import * as DocumentPicker from "expo-document-picker";
 import React from "react";
 
-import micSVG from "../../../../../assets/icons/mic-white.svg";
-import videoSVG from "../../../../../assets/icons/video.svg";
-
+import micSVG from "@/assets/icons/mic-white.svg";
+import videoSVG from "@/assets/icons/video.svg";
 import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { getAudioData } from "@/utils/audio";
