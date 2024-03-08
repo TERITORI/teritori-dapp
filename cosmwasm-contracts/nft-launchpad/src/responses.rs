@@ -1,17 +1,6 @@
 use cosmwasm_schema::cw_serde;
 
 #[cw_serde]
-pub struct SupportedNetworksResp {
-    pub networks: Vec<String>
-}
-
-#[cw_serde]
-pub struct TokenInfoResp {
-    pub id: String,
-    pub name: String
-}
-
-#[cw_serde]
 pub struct TokensMintedToUserResp {
     pub count: u128
 }

@@ -7,8 +7,11 @@ pub enum ContractError {
     #[error("{0}")]
     Std(#[from] StdError),
 
-    #[error("NFT code id missing.")]
+    #[error("NFT Code id missing.")]
     NftCodeIdMissing,
+
+    #[error("Merkle root missing.")]
+    MerkleRootMissing,
 
     #[error("Collection not found.")]
     CollectionNotFound,
