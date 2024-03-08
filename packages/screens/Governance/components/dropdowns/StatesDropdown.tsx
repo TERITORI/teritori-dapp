@@ -22,7 +22,7 @@ const def = {
   },
   voting: {
     name: "Voting",
-    filter: "PROPOSAL_STATUS_VOTING",
+    filter: "PROPOSAL_STATUS_DEPOSIT_PERIOD",
   },
   passed: {
     name: "Passed",

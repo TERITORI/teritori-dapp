@@ -2,6 +2,7 @@ import React from "react";
 import { View } from "react-native";
 
 import { VoteTimeDetailsBox } from "./components/VoteTimeDetailsBox";
+import expireSVG from "../../../../../assets/icons/expires.svg";
 import PassedSVG from "../../../../../assets/icons/passed.svg";
 import RejectSVG from "../../../../../assets/icons/reject.svg";
 import VotingSVG from "../../../../../assets/icons/voting.svg";
@@ -26,7 +27,7 @@ export const GovernanceVoteHeader: React.FC<{
 }> = ({ proposal }) => {
   return (
     <>
-      {proposal.status === "PROPOSAL_STATUS_VOTING" && (
+      {proposal.status === "PROPOSAL_STATUS_DEPOSIT_PERIOD" && (
         <View style={{ flexDirection: "row" }}>
           <GovernanceTitle
             title="Voting Period"
@@ -36,6 +37,7 @@ export const GovernanceVoteHeader: React.FC<{
           <GovernanceExpire
             style={{ marginLeft: layout.spacing_x1 }}
             votingEndTime={proposal.deposit_end_time}
+            iconSVG={expireSVG}
           />
         </View>
       )}
