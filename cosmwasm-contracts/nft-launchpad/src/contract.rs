@@ -1,6 +1,6 @@
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    to_json_binary, Addr, Empty, Order, Reply, Response, StdResult, SubMsg, Timestamp, WasmMsg,
+    to_json_binary, Addr, Order, Reply, Response, StdResult, SubMsg, Timestamp, WasmMsg,
 };
 use cw_storage_plus::{Item, Map};
 use cw_utils::parse_reply_instantiate_data;
@@ -10,7 +10,7 @@ use sylvia::{
 };
 
 use crate::error::ContractError;
-use cw721_base::msg::InstantiateMsg as NftInstantiateMsg;
+use crate::tr721::InstantiateMsg as Tr721InstantiateMsg;
 
 const INSTANTIATE_REPLY_ID: u64 = 1u64;
 
@@ -135,7 +135,7 @@ impl NftLaunchpad {
         let instantiate_msg = WasmMsg::Instantiate {
             admin: Some(sender.clone()),
             code_id: nft_code_id.unwrap(),
-            msg: to_json_binary(&NftInstantiateMsg {
+            msg: to_json_binary(&Tr721InstantiateMsg {
                 name: collection.name.clone(),
                 symbol: collection.symbol.clone(),
                 minter: sender,
@@ -143,7 +143,9 @@ impl NftLaunchpad {
             funds: vec![],
             label: format!(
                 "TR721 codeId:{} collectionId:{} symbol:{}",
-                nft_code_id.unwrap(), collection_id, collection.symbol
+                nft_code_id.unwrap(),
+                collection_id,
+                collection.symbol
             ),
         };
 
@@ -172,11 +174,14 @@ impl NftLaunchpad {
         ctx: QueryCtx,
         collection_addr: String,
     ) -> Result<Collection, ContractError> {
-        for item in self.collections.range(ctx.deps.storage, None, None, Order::Ascending) {
+        for item in self
+            .collections
+            .range(ctx.deps.storage, None, None, Order::Ascending)
+        {
             let (_key, collection) = item?;
 
             if collection.deployed_address == Some(collection_addr.clone()) {
-                return Ok(collection)
+                return Ok(collection);
             }
         }
 
@@ -303,6 +308,6 @@ pub struct Collection {
 
 #[cw_serde]
 pub enum CollectionState {
-    Pending,   // When user summit the collection but not deployed yet
-    Deployed,  // When collection has been deployed
+    Pending,  // When user summit the collection but not deployed yet
+    Deployed, // When collection has been deployed
 }
