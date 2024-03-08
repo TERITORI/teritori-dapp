@@ -20,10 +20,6 @@ pub struct NftLaunchpad {
     pub(crate) collections: Map<'static, u64, Collection>, // collection id => collection info
 
     pub(crate) instantiating_collection_id: Item<'static, u64>,
-
-    pub(crate) deployed_collections: Map<'static, String, u64>, // collection address => collection id
-    pub(crate) submitted_collections: Map<'static, u64, Empty>, // collection id
-    pub(crate) completed_collections: Map<'static, u64, Empty>, // collection id
 }
 
 // Contract implement -----------------------------------------------------
@@ -37,10 +33,6 @@ impl NftLaunchpad {
             config: Item::new("config"),
 
             collections: Map::new("collections"),
-            deployed_collections: Map::new("deployed_collections"),
-            submitted_collections: Map::new("submitted_collections"),
-            completed_collections: Map::new("completed_collections"),
-
             instantiating_collection_id: Item::new("instantiating_collection_id"),
         }
     }
@@ -76,11 +68,8 @@ impl NftLaunchpad {
             None => 1,
         };
 
-        collection.state = Some(CollectionState::Submitted);
-
+        // Add new collection
         self.collections.save(storage, new_id, &collection)?;
-        self.submitted_collections
-            .save(storage, new_id, &Empty {})?;
 
         Ok(Response::new()
             .add_attribute("action", "submit_collection")
@@ -96,26 +85,18 @@ impl NftLaunchpad {
     ) -> Result<Response, ContractError> {
         let storage = ctx.deps.storage;
 
-        // Only allow to update merke root before deployed
         let mut collection = self
             .collections
             .load(storage, collection_id)
             .map_err(|_| ContractError::CollectionNotFound)?;
 
-        if collection.state == Some(CollectionState::Deployed) {
+        // Do not allow to update merke root if the collection has been deployed already
+        if collection.deployed_address.is_some() {
             return Err(ContractError::Forbidden);
         }
 
-        // If merkle root was empty then update state to completed
-        if collection.merkle_root == None {
-            self.submitted_collections.remove(storage, collection_id);
-            self.completed_collections
-                .save(storage, collection_id, &Empty {})?;
-        }
-
-        // Update merkle root to collection
+        // Update merkle root
         collection.merkle_root = Some(merkle_root.clone());
-        collection.state = Some(CollectionState::Completed);
 
         // Update collection
         self.collections.save(storage, collection_id, &collection)?;
@@ -131,49 +112,29 @@ impl NftLaunchpad {
         ctx: ExecCtx,
         collection_id: u64,
     ) -> Result<Response, ContractError> {
-        // Only allow to deploy completed collection
         let collection = self
             .collections
             .load(ctx.deps.storage, collection_id)
             .map_err(|_| ContractError::CollectionNotFound)?;
 
-        // Check nft code id
+        // Do not allow to deploy collection if merkle root is not set
+        if collection.merkle_root.is_none() {
+            return Err(ContractError::MerkleRootMissing);
+        }
+
         let config = self.config.load(ctx.deps.storage)?;
         let sender = ctx.info.sender.to_string();
-        let nft_code_id = config.nft_code_id.unwrap_or(0);
+        let nft_code_id = config.nft_code_id;
 
-        if nft_code_id == 0 {
+        // Do not allow to deploy collection is nft_code_is is not set
+        if nft_code_id.is_none() {
             return Err(ContractError::NftCodeIdMissing);
         }
 
-        // Check collection state
-        if collection.state != Some(CollectionState::Completed) {
-            return Err(ContractError::Forbidden);
-        }
-
-        // Instantiate Nft contract using Instantiate2
-        // let creator = ctx
-        //     .deps
-        //     .api
-        //     .addr_canonicalize(ctx.env.contract.address.as_str())?;
-
-        // let CodeInfoResponse { checksum, .. } =
-        //     ctx.deps.querier.query_wasm_code_info(nft_code_id)?;
-
-        // // Create salt from collection id
-        // ctx.deps.api.debug("--#1--");
-        // let salt = Binary::from(format!("collection-{collection_id}").as_bytes());
-        // ctx.deps.api.debug("--#2--");
-
-        // let instantiate2_addr = instantiate2_address(&checksum, &creator, &salt)?;
-
-        // let addr = ctx.deps.api.addr_humanize(&instantiate2_addr)?;
-
-        // QUESTION: How to ensure that NFT contract has been well deployed ?
         // NOTE: cannot use wasm_instantiate because we need to specify admin
         let instantiate_msg = WasmMsg::Instantiate {
             admin: Some(sender.clone()),
-            code_id: nft_code_id,
+            code_id: nft_code_id.unwrap(),
             msg: to_json_binary(&NftInstantiateMsg {
                 name: collection.name.clone(),
                 symbol: collection.symbol.clone(),
@@ -182,19 +143,9 @@ impl NftLaunchpad {
             funds: vec![],
             label: format!(
                 "TR721 codeId:{} collectionId:{} symbol:{}",
-                nft_code_id, collection_id, collection.symbol
+                nft_code_id.unwrap(), collection_id, collection.symbol
             ),
         };
-
-        // Update collection states
-        // self.deployed_collections
-        //     .save(ctx.deps.storage, addr.to_string(), &collection_id)?;
-        // self.completed_collections
-        //     .remove(ctx.deps.storage, collection_id);
-
-        // collection.state = Some(CollectionState::Deployed);
-        // self.collections
-        //     .save(ctx.deps.storage, collection_id, &collection)?;
 
         // Update instantiating collection id
         self.instantiating_collection_id
@@ -214,33 +165,22 @@ impl NftLaunchpad {
         Ok(collection)
     }
 
+    // NOTE: This might be costly !!!
     #[msg(query)]
     pub fn get_collection_by_addr(
         &self,
         ctx: QueryCtx,
         collection_addr: String,
     ) -> Result<Collection, ContractError> {
-        let deployed_collection_id = self
-            .deployed_collections
-            .load(ctx.deps.storage, collection_addr)?;
+        for item in self.collections.range(ctx.deps.storage, None, None, Order::Ascending) {
+            let (_key, collection) = item?;
 
-        let collection = self
-            .collections
-            .load(ctx.deps.storage, deployed_collection_id)?;
+            if collection.deployed_address == Some(collection_addr.clone()) {
+                return Ok(collection)
+            }
+        }
 
-        Ok(collection)
-    }
-
-    #[msg(query)]
-    pub fn get_summited_collections(&self, ctx: QueryCtx) -> StdResult<Vec<u64>> {
-        // NOTE: The pending collections should not be too many so it might be ok to iter map here ?
-        let summited_collections: Vec<u64> = self
-            .submitted_collections
-            .keys(ctx.deps.storage, None, None, Order::Ascending)
-            .map(|item| item.unwrap())
-            .collect();
-
-        Ok(summited_collections)
+        Err(ContractError::CollectionNotFound)
     }
 
     #[msg(query)]
@@ -262,13 +202,8 @@ impl NftLaunchpad {
             let collection_id = self.instantiating_collection_id.load(storage)?;
 
             // Update collection states
-            self.deployed_collections
-                .save(storage, deployed_addr.clone(), &collection_id)?;
-            self.completed_collections.remove(storage, collection_id);
-
             let mut collection = self.collections.load(storage, collection_id)?;
-            collection.state = Some(CollectionState::Deployed);
-            collection.contract_address = Some(deployed_addr.clone());
+            collection.deployed_address = Some(deployed_addr.clone());
             self.collections.save(storage, collection_id, &collection)?;
 
             return Ok(Response::new()
@@ -363,12 +298,11 @@ pub struct Collection {
     // Extend info --------------------------
     pub base_token_uri: Option<String>,
     pub merkle_root: Option<String>,
-    pub state: Option<CollectionState>,
-    pub contract_address: Option<String>,
+    pub deployed_address: Option<String>,
 }
+
 #[cw_serde]
 pub enum CollectionState {
-    Submitted, // When user summit the collection but missing merkle root
-    Completed, // When user fulfil all needed info (including merkle root)
+    Pending,   // When user summit the collection but not deployed yet
     Deployed,  // When collection has been deployed
 }

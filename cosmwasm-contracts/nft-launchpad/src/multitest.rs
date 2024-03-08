@@ -84,8 +84,7 @@ fn get_default_collection() -> Collection {
         // Extend info --------------------------
         base_token_uri: None,
         merkle_root: None,
-        state: None,
-        contract_address: None,
+        deployed_address: None,
     }
 }
 
@@ -157,11 +156,6 @@ fn full_flow() {
         // Check created collection
         let commited_collection = contract.get_collection_by_id(1).unwrap();
         assert_eq!(commited_collection.name, default_collection.name);
-        assert_eq!(commited_collection.state, Some(CollectionState::Submitted));
-
-        // check summited collection
-        let summited_collections = contract.get_summited_collections().unwrap();
-        assert_eq!(summited_collections, vec![1]);
     }
 
     // Deploy inexist collection  ---------------------------------------------------------
@@ -170,7 +164,29 @@ fn full_flow() {
         assert_eq!(err, ContractError::CollectionNotFound)
     }
 
-    // Deploy collection without nft code id  ---------------------------------------------------------
+    // Deploy collection without merkle root  ---------------------------------------------------------
+    {
+        let err = contract.deploy_collection(1).call(sender).unwrap_err();
+        assert_eq!(err, ContractError::MerkleRootMissing)
+    }
+
+    // Update merkle root
+    {
+        let new_merkle_root = "new merkle root";
+        contract
+            .update_merkle_root(1, new_merkle_root.to_string())
+            .call(sender)
+            .unwrap();
+
+        let collection_after = contract.get_collection_by_id(1).unwrap();
+
+        assert_eq!(
+            collection_after.merkle_root,
+            Some(new_merkle_root.to_string())
+        );
+    }
+
+    // Deploy collection with merkle root but dont have nft code id  ---------------------------------------------------------
     {
         let err = contract.deploy_collection(1).call(sender).unwrap_err();
         assert_eq!(err, ContractError::NftCodeIdMissing)
@@ -191,33 +207,6 @@ fn full_flow() {
         assert_eq!(resp.nft_code_id, Some(deployed_nft_code_id))
     }
 
-    // Deploy incompleted collection  ---------------------------------------------------------
-    {
-        let err = contract.deploy_collection(1).call(sender).unwrap_err();
-        assert_eq!(err, ContractError::Forbidden)
-    }
-
-    // Update merkle root
-    {
-        // Before set merkle root
-        let collection_before = contract.get_collection_by_id(1).unwrap();
-        assert_eq!(collection_before.state, Some(CollectionState::Submitted));
-
-        let new_merkle_root = "new merkle root";
-        contract
-            .update_merkle_root(1, new_merkle_root.to_string())
-            .call(sender)
-            .unwrap();
-
-        let collection_after = contract.get_collection_by_id(1).unwrap();
-
-        assert_eq!(
-            collection_after.merkle_root,
-            Some(new_merkle_root.to_string())
-        );
-        assert_eq!(collection_after.state, Some(CollectionState::Completed));
-    }
-
     // Deploy completed collection after update merkle root + nft code id  ---------------------------------------------------------
     {
         let collection_id = 1;
@@ -233,8 +222,7 @@ fn full_flow() {
 
         // Check deployed contract
         let collection = contract.get_collection_by_id(collection_id).unwrap();
-        assert_eq!(collection.state, Some(CollectionState::Deployed));
-        assert_eq!(collection.contract_address, Some("contract1".to_string()));
+        assert_eq!(collection.deployed_address, Some("contract1".to_string()));
     }
 
 }
