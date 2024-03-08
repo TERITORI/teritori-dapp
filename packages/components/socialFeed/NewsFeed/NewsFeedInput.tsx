@@ -35,6 +35,7 @@ import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
 import { useAppMode } from "@/hooks/useAppMode";
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { useIpfs } from "@/hooks/useIpfs";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
@@ -150,6 +151,7 @@ export const NewsFeedInput = React.forwardRef<
       48.8566, 2.3522,
     ]);
     const [description, setDescription] = useState("");
+    const [developerMode] = useDeveloperMode();
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
@@ -715,7 +717,11 @@ export const NewsFeedInput = React.forwardRef<
                         : "Publish"
                   }
                   onPress={() => {
-                    setMapModal(true);
+                    if (developerMode) {
+                      setMapModal(true);
+                    } else {
+                      handleSubmit(processSubmit)();
+                    }
                   }}
                 />
               </View>
