@@ -1,10 +1,6 @@
 import React, { useState } from "react";
-import {
-  useWindowDimensions,
-  View,
-  TouchableOpacity,
-  Platform,
-} from "react-native";
+import { useWindowDimensions, View, TouchableOpacity } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SvgProps } from "react-native-svg";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
@@ -13,6 +9,8 @@ import { neutral22, neutral33 } from "../../utils/style/colors";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import ModalBase from "../modals/ModalBase";
+
+const ESTIMATED_MODAL_HEADER_HEIGHT = 110;
 
 interface ImageFullViewModalProps {
   files: string[];
@@ -57,8 +55,10 @@ export const ImagesFullViewModal: React.FC<ImageFullViewModalProps> = ({
 }) => {
   const [localActiveIndex, setLocalActiveIndex] = useState(activeIndex);
   const { height, width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
-  const imageHeight = Platform.OS !== "web" ? height - 200 : height - 100;
+  const contentHeight =
+    height - (insets.top + insets.bottom) - ESTIMATED_MODAL_HEADER_HEIGHT;
 
   return (
     <ModalBase
@@ -72,6 +72,7 @@ export const ImagesFullViewModal: React.FC<ImageFullViewModalProps> = ({
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
+          height: contentHeight,
         }}
       >
         {localActiveIndex !== 0 && (
@@ -86,7 +87,7 @@ export const ImagesFullViewModal: React.FC<ImageFullViewModalProps> = ({
           height={800}
           resizeMode="contain"
           style={{
-            height: imageHeight,
+            height: "95%",
             width: "auto",
             flex: 1,
           }}
