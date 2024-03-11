@@ -1,12 +1,11 @@
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{from_json, Addr, Binary, Deps, Empty, Env, Response, StdResult};
-use cw2981_royalties::{msg::Cw2981QueryMsg, query, Extension};
+use cosmwasm_std::{from_json, Addr, Binary, Empty, Response, StdResult};
+use cw2981_royalties::{msg::Cw2981QueryMsg, Extension};
 use cw721::{
     AllNftInfoResponse, ApprovalResponse, ApprovalsResponse, ContractInfoResponse, Expiration,
     NftInfoResponse, NumTokensResponse, OperatorResponse, OperatorsResponse, OwnerOfResponse,
     TokensResponse,
 };
-use cw_storage_plus::{IndexedMap, Item, MultiIndex};
 use serde::de::DeserializeOwned;
 use sylvia::{
     contract, entry_points,
@@ -16,16 +15,12 @@ use sylvia::{
 use crate::error::ContractError;
 
 use cw721_base::{
-    msg::InstantiateMsg as Tr721InstantiateMsg,
-    state::{token_owner_idx, TokenIndexes},
-    Cw721Contract, MinterResponse, Ownership,
+    msg::InstantiateMsg as Tr721InstantiateMsg, Cw721Contract, MinterResponse, Ownership,
 };
 
 pub type Tr721Contract<'a> = Cw721Contract<'a, Extension, Empty, Empty, Cw2981QueryMsg>;
 pub type Tr721ExecuteMsg = cw721_base::ExecuteMsg<Extension, Empty>;
 pub type Tr721QueryMsg = cw721_base::QueryMsg<Cw2981QueryMsg>;
-
-const INSTANTIATE_REPLY_ID: u64 = 1u64;
 
 // Version info for migration
 const CONTRACT_NAME: &str = "crates.io:tr721";
