@@ -14,7 +14,7 @@ const MapMobile = ({ locationSelected }: { locationSelected: Tlocation }) => {
       mapCenterPosition={DEFAULT_COORDINATE}
       mapLayers={[
         {
-          url: "https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=QkwJFLzzxPan25YCgnDExGpMFPxA3x4lnyKiUf8zmaqXLP5XyOR8n3yEM8jlKV3W",
+          url: `https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=${process.env.EXPO_PUBLIC_LEAFLET_MAP_TOKEN}`,
         },
       ]}
       mapMarkers={[

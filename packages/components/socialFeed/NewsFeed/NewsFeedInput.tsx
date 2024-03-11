@@ -30,6 +30,7 @@ import { SpacerColumn } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
 
+import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import ToggleButton from "@/components/buttons/ToggleButton";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
@@ -146,7 +147,7 @@ export const NewsFeedInput = React.forwardRef<
     const [isUploadLoading, setIsUploadLoading] = useState(false);
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
     const [premium, setPremium] = useState(false);
-    const [isMapModal, setMapModal] = useState(false);
+    const [isShowMap, setShowMap] = useState(false);
     const [locationSelected, setLocationSelected] = useState<[number, number]>([
       48.8566, 2.3522,
     ]);
@@ -340,11 +341,11 @@ export const NewsFeedInput = React.forwardRef<
         style={[{ width }, style]}
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       >
-        {isMapModal && (
+        {isShowMap && (
           <MapModal
             handleSubmit={() => handleSubmit(processSubmit)()}
             visible
-            onClose={() => setMapModal(false)}
+            onClose={() => setShowMap(false)}
             locationSelected={locationSelected}
             setLocationSelected={setLocationSelected}
             description={description}
@@ -352,8 +353,7 @@ export const NewsFeedInput = React.forwardRef<
           />
         )}
         <View style={{ backgroundColor: neutral22, zIndex: 9 }}>
-          <Pressable
-            onPress={focusInput}
+          <PrimaryBox
             style={{
               backgroundColor: appMode === "mini" ? neutral00 : neutral22,
               width: "100%",
@@ -475,7 +475,7 @@ export const NewsFeedInput = React.forwardRef<
                 }
               }}
             />
-          </Pressable>
+          </PrimaryBox>
         </View>
         <View
           style={{
@@ -718,7 +718,7 @@ export const NewsFeedInput = React.forwardRef<
                   }
                   onPress={() => {
                     if (developerMode) {
-                      setMapModal(true);
+                      setShowMap(true);
                     } else {
                       handleSubmit(processSubmit)();
                     }
