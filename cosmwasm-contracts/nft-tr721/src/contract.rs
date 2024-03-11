@@ -17,7 +17,7 @@ use crate::error::ContractError;
 
 use cw721_base::{
     msg::InstantiateMsg as Tr721InstantiateMsg,
-    state::{token_owner_idx, TokenIndexes, TokenInfo},
+    state::{token_owner_idx, TokenIndexes},
     Cw721Contract, MinterResponse, Ownership,
 };
 
@@ -32,16 +32,7 @@ const CONTRACT_NAME: &str = "crates.io:tr721";
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 // Contract states ------------------------------------------------------
-pub struct Tr721 {
-    pub(crate) ownership: Item<'static, Ownership<Addr>>, // nft launchpad owner/minter
-
-    pub(crate) contract_info: Item<'static, ContractInfoResponse>,
-    // pub(crate) token_count: Item<'static, u64>,
-    // /// Stored as (granter, operator) giving operator full control over granter's account
-    // pub(crate) operators: Map<'static, (&'static Addr, &'static Addr), Expiration>,
-    pub(crate) tokens:
-        IndexedMap<'static, &'static str, TokenInfo<Extension>, TokenIndexes<'static, Extension>>,
-}
+pub struct Tr721 {}
 
 // Contract implement -----------------------------------------------------
 #[entry_points]
@@ -50,15 +41,7 @@ pub struct Tr721 {
 impl Tr721 {
     // Init states
     pub const fn new() -> Self {
-        let indexes = TokenIndexes {
-            owner: MultiIndex::new(token_owner_idx, "tokens", "tokens__owner"),
-        };
-
-        Self {
-            ownership: Item::new("ownership"),
-            contract_info: Item::new("nft_info"),
-            tokens: IndexedMap::new("tokens", indexes),
-        }
+        Self {}
     }
 
     fn proxy_query<T: DeserializeOwned>(&self, ctx: QueryCtx, msg: Tr721QueryMsg) -> StdResult<T> {
