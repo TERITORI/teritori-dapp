@@ -9,6 +9,11 @@ import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 import { BrandText } from "@/components/BrandText";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
+import { getCosmosNetwork } from "@/networks";
+import { updateWallet } from "@/store/slices/wallets";
+import { useAppDispatch } from "@/store/store";
 import { RootStackParamList } from "@/utils/navigation";
 import { neutralA3 } from "@/utils/style/colors";
 import { fontNormal15 } from "@/utils/style/fonts";
@@ -28,20 +33,22 @@ export default function ChangeNetworkScreen({
   navigation,
 }: ChangeNetworkScreenProps) {
   const goBackTo = () => navigation.replace("MiniSettings");
+  const selectedWallet = useSelectedNativeWallet();
 
   const addresses: ChangeNetworkType[] = [
     {
-      id: "asdfdasd",
-      label: "Testnet 3",
-      url: "https://rpc.test3.teritori.com",
+      id: "teritori",
+      label: "Teritori Mainnet",
+      url: getCosmosNetwork("teritori")?.rpcEndpoint!,
     },
-    { id: "asdfdasd8989", label: "Local", url: "https://127.0.0.1:27000" },
     {
-      id: "asdfdasd8989909",
-      label: "Teritori-Testnet",
-      url: "https://testnet.teritori.com:27000",
+      id: "teritori-testnet",
+      label: "Teritori Testnet",
+      url: getCosmosNetwork("teritori-testnet")?.rpcEndpoint!,
     },
   ];
+  const { setToast } = useFeedbacks();
+  const dispatch = useAppDispatch();
 
   return (
     <BlurScreenContainer title="Change Network" onGoBack={goBackTo}>
@@ -74,9 +81,30 @@ export default function ChangeNetworkScreen({
                 rightLabel: (
                   <View>
                     <Checkbox
-                      isChecked
+                      isChecked={selectedWallet?.networkId === item?.id}
                       value={item?.label}
-                      onPress={() => {}}
+                      onPress={() => {
+                        goBackTo();
+                        if (!selectedWallet) {
+                          setToast({
+                            mode: "mini",
+                            type: "error",
+                            message: "No wallet selected",
+                          });
+                          return;
+                        }
+                        dispatch(
+                          updateWallet({
+                            ...selectedWallet,
+                            networkId: item?.id,
+                          }),
+                        );
+                        setToast({
+                          mode: "mini",
+                          type: "success",
+                          message: `Now using ${item?.label} network`,
+                        });
+                      }}
                       checkboxStyle={{
                         borderRadius: 12,
                         width: 24,
