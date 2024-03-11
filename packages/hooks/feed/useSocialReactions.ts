@@ -63,6 +63,20 @@ export const useSocialReactions = ({
         up: true,
       },
     });
+
+    //Update reactions on post
+    const reactions = [...post.reactions];
+    const currentReactionIdx = reactions.findIndex((r) => r.icon === emoji);
+    if (currentReactionIdx > -1) {
+      reactions[currentReactionIdx].count++;
+    } else {
+      reactions.push({
+        icon: emoji,
+        count: 1,
+        ownState: true,
+      });
+    }
+    setPost({ ...post, reactions });
   };
   const gnoReaction = async (emoji: string, rpcEndpoint: string) => {
     const gnoNetwork = mustGetGnoNetwork(selectedNetworkId);
