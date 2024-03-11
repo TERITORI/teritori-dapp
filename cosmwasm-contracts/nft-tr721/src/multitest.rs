@@ -1,4 +1,4 @@
-use cosmwasm_std::Attribute;
+use cosmwasm_std::{Attribute, Uint128};
 use cw2981_royalties::Metadata;
 use cw721::{Approval, ContractInfoResponse};
 use cw721_base::InstantiateMsg;
@@ -12,6 +12,8 @@ const MINTER: &str = "minter_user";
 const OWNER: &str = "owner_user";
 const OPERATOR: &str = "operator_user";
 const UNAUTHOR: &str = "unauthor_user";
+
+const ROYALTY_ADDR: &str = "royalty_addr";
 
 const FIRST_TOKEN_ID: &str = "1";
 
@@ -68,22 +70,30 @@ fn full_flow() {
         );
     }
 
-    // Mint NFT
+    // Mint NFT with metadata onchain + royalty address and query NFT info
     {
         let token_id = FIRST_TOKEN_ID.to_string();
         let owner = OWNER.to_string();
         let token_uri = Some("token_uri".to_string());
-        let extention = Some(Metadata::default());
+        let extention = Some(Metadata {
+            name: Some("this is NFT name".to_string()),
+            royalty_payment_address: Some(ROYALTY_ADDR.to_string()),
+            royalty_percentage: Some(5),  // royalty 5%
+
+            ..Metadata::default()
+        });
         contract
             .mint(token_id, owner, token_uri, extention)
             .call(MINTER)
             .unwrap();
-    }
 
-    // Query NFT info
-    {
         let resp = contract.nft_info(FIRST_TOKEN_ID.to_string()).unwrap();
-        assert_eq!(resp.token_uri, Some("token_uri".to_string()));
+        let ext = resp.extension.unwrap();
+
+        assert_eq!(ext.name, Some("this is NFT name".to_string()));
+        assert_eq!(ext.royalty_payment_address, Some(ROYALTY_ADDR.to_string()));
+
+        // Query balance
     }
 
     // Query All NFT info
@@ -146,5 +156,21 @@ fn full_flow() {
                 expires: cw721::Expiration::Never {}
             }
         )
+    }
+
+    // Check royalties
+    {
+        let resp = contract
+            .check_royalties()
+            .unwrap();
+        assert_eq!(resp.royalty_payments, true)
+    }
+
+    // Query royalties info
+    {
+        let resp = contract
+            .royalty_info(FIRST_TOKEN_ID.to_string(), Uint128::new(1000))
+            .unwrap();
+        assert_eq!(resp.royalty_amount, Uint128::new(50))
     }
 }

@@ -1,6 +1,8 @@
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{from_json, Addr, Binary, Empty, Response, StdResult};
-use cw2981_royalties::{msg::Cw2981QueryMsg, Extension};
+use cosmwasm_std::{from_json, Addr, Binary, Response, StdResult, Uint128};
+use cw2981_royalties::{
+    check_royalties, msg::{CheckRoyaltiesResponse, Cw2981QueryMsg, RoyaltiesInfoResponse}, query_royalties_info, Cw2981Contract as Tr721Contract, ExecuteMsg as Tr721ExecuteMsg, Extension
+};
 use cw721::{
     AllNftInfoResponse, ApprovalResponse, ApprovalsResponse, ContractInfoResponse, Expiration,
     NftInfoResponse, NumTokensResponse, OperatorResponse, OperatorsResponse, OwnerOfResponse,
@@ -14,16 +16,12 @@ use sylvia::{
 
 use crate::error::ContractError;
 
-use cw721_base::{
-    msg::InstantiateMsg as Tr721InstantiateMsg, Cw721Contract, MinterResponse, Ownership,
-};
+use cw721_base::{msg::InstantiateMsg as Tr721InstantiateMsg, MinterResponse, Ownership};
 
-pub type Tr721Contract<'a> = Cw721Contract<'a, Extension, Empty, Empty, Cw2981QueryMsg>;
-pub type Tr721ExecuteMsg = cw721_base::ExecuteMsg<Extension, Empty>;
 pub type Tr721QueryMsg = cw721_base::QueryMsg<Cw2981QueryMsg>;
 
 // Version info for migration
-const CONTRACT_NAME: &str = "crates.io:tr721";
+const CONTRACT_NAME: &str = "crates.io:nft-tr721";
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 // Contract states ------------------------------------------------------
@@ -147,6 +145,17 @@ impl Tr721 {
         token_uri: Option<String>,
         extension: Extension,
     ) -> Result<Response, ContractError> {
+        // validate royalty_percentage to be between 0 and 100
+        // no need to check < 0 because royalty_percentage is u64
+        if extension.to_owned().is_some() {
+            let metadata = extension.to_owned().unwrap();
+            if metadata.royalty_percentage.is_some() {
+                if metadata.royalty_percentage.unwrap() > 100 {
+                    return Err(ContractError::InvalidRoyaltyPercentage);
+                }
+            }
+        }
+
         let msg = Tr721ExecuteMsg::Mint {
             token_id,
             owner,
@@ -312,6 +321,23 @@ impl Tr721 {
     #[msg(query)]
     pub fn extension(&self, _ctx: QueryCtx) -> StdResult<Response> {
         Ok(Response::new())
+    }
+
+    #[msg(query)]
+    pub fn royalty_info(
+        &self,
+        ctx: QueryCtx,
+        token_id: String,
+        sale_price: Uint128,
+    ) -> StdResult<RoyaltiesInfoResponse> {
+        let resp = query_royalties_info(ctx.deps, token_id, sale_price).unwrap();
+        Ok(resp)
+    }
+
+    #[msg(query)]
+    pub fn check_royalties(&self, ctx: QueryCtx) -> StdResult<CheckRoyaltiesResponse> {
+        let resp = check_royalties(ctx.deps).unwrap();
+        Ok(resp)
     }
 }
 
