@@ -85,7 +85,7 @@ export const BlurScreenContainer = ({
       style={{
         flex: 1,
         width: windowWidth,
-        backgroundColor: "rgba(0, 0, 0, .2)",
+        backgroundColor: background || "rgba(0, 0, 0, .2)",
         position: "relative",
       }}
     >
