@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 
 import { NFTView } from "./NFTView";
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
@@ -66,6 +66,7 @@ export const NFTs: React.FC<{
           )}
           minElemWidth={250}
           gap={layout.spacing_x2}
+          noFixedHeight={Platform.OS !== "web"}
         />
       </View>
     </View>
