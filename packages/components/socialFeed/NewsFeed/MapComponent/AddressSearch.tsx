@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -19,7 +20,7 @@ import { SVG } from "../../../SVG";
 import { TextInputCustom } from "../../../inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../../inputs/TextInputOutsideLabel";
 
-let typingTimeout: NodeJS.Timeout | undefined;
+import { useDebounce } from "@/hooks/useDebounce";
 
 interface TAddressSearchProps {
   addressPlaceHolder: any;
@@ -39,38 +40,39 @@ export const AddressSearch: React.FC<TAddressSearchProps> = ({
   const [results, setResults] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const searchAddress = async (params: string) => {
-    return new Promise((resolve, reject) => {
-      fetch(
-        `https://nominatim.openstreetmap.org/search?q=${params}&format=json`,
-      )
-        .then((response) => response.json()) // Parse the JSON response
-        .then((data) => resolve(data)) // Resolve the promise with the location data
-        .catch((error) => reject(error)); // Reject the promise with the error
-    });
-  };
+  const debouncedAddress = useDebounce(address, 1500);
+
+  const { data: searchAddressValue, error } = useQuery(
+    ["searchAddress", debouncedAddress],
+    async () => {
+      setIsLoading(true);
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${debouncedAddress}&format=json`,
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setIsLoading(false);
+      return data;
+    },
+    {
+      enabled: debouncedAddress.trim() !== "",
+    },
+  );
 
   useEffect(() => {
-    if (address.trim() === "") {
-      setIsLoading(false);
-      return;
-    }
-    setIsLoading(true);
-    clearTimeout(typingTimeout);
     setResults([]);
-    typingTimeout = setTimeout(() => {
-      searchAddress(address)
-        .then((searchResults) => {
-          setResults(searchResults);
-          setIsLoading(false);
-        })
-        .catch(() => {
-          setResults([]);
-          setIsLoading(false);
-        });
-    }, 1500);
-    return () => clearTimeout(typingTimeout);
-  }, [address]);
+    if (error) {
+      setResults([]);
+      setIsLoading(false);
+    }
+    if (!searchAddressValue || searchAddressValue.length === 0) {
+      setResults([]);
+    } else {
+      setResults(searchAddressValue);
+    }
+  }, [searchAddressValue, error]);
 
   return (
     <>
@@ -86,7 +88,10 @@ export const AddressSearch: React.FC<TAddressSearchProps> = ({
           hideLabel
           name="address"
           placeHolder={addressPlaceHolder}
-          onChangeText={setAddress}
+          onChangeText={(val: string) => {
+            setIsLoading(true);
+            setAddress(val);
+          }}
           value={address}
         />
         <View
