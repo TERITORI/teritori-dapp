@@ -18,7 +18,9 @@ const MapWeb = ({ locationSelected }: { locationSelected: Tlocation }) => {
       zoom={12}
       attributionControl={false}
     >
-      <TileLayer url="https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=QkwJFLzzxPan25YCgnDExGpMFPxA3x4lnyKiUf8zmaqXLP5XyOR8n3yEM8jlKV3W" />
+      <TileLayer
+        url={`https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=${process.env.EXPO_PUBLIC_LEAFLET_MAP_TOKEN}`}
+      />
       <Marker position={locationSelected} icon={customIcon} />
     </MapContainer>
   );
