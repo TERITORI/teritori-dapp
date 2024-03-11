@@ -5,4 +5,10 @@ use thiserror::Error;
 pub enum ContractError {
     #[error("{0}")]
     Std(#[from] StdError),
+
+    #[error("{0}")]
+    Cw721BaseError(#[from] cw721_base::ContractError),
+
+    #[error("test")]
+    TestError,
 }

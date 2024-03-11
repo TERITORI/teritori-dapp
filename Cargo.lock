@@ -1011,11 +1011,13 @@ dependencies = [
  "cw-multi-test 0.20.0",
  "cw-storage-plus 1.2.0",
  "cw-utils 1.0.3",
+ "cw2 1.1.2",
  "cw2981-royalties",
  "cw721 0.18.0",
  "cw721-base 0.18.0",
  "schemars",
  "serde",
+ "sylvia 0.9.3",
  "thiserror",
 ]
 

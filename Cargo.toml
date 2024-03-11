@@ -9,3 +9,6 @@ overflow-checks = true
 opt-level = 3
 debug = false
 debug-assertions = false
+
+[workspace.dependencies]
+cw2             = "^1.1"

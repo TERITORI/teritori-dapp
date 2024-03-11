@@ -19,6 +19,9 @@ cw721-base = { version = "0.18.0", features = ["library"] }
 schemars = "0.8.16"
 serde = { version = "1.0.197", features = ["derive"] }
 thiserror = "1.0.57"
+cw2 = { workspace = true }
+sylvia = "0.9.3"
 
 [dev-dependencies]
 cw-multi-test = "0.20.0"
+sylvia = { version = "0.9.3", features = ["mt"] }
