@@ -1,24 +1,38 @@
 use cosmwasm_std::Attribute;
 use cw2981_royalties::Metadata;
-use cw721::ContractInfoResponse;
+use cw721::{Approval, ContractInfoResponse};
 use cw721_base::InstantiateMsg;
+use cw_multi_test::AppResponse;
 use sylvia::multitest::App;
 
-use crate::{contract::sv::multitest_utils::CodeId, error::ContractError};
+use crate::contract::sv::multitest_utils::CodeId;
 
-const CREATOR: &str = "creator";
-const MINTER: &str = "minter";
-const OWNER: &str = "owner";
-const OPERATOR: &str = "operator";
-const UNAUTHOR: &str = "unauthor";
+const CREATOR: &str = "creator_user";
+const MINTER: &str = "minter_user";
+const OWNER: &str = "owner_user";
+const OPERATOR: &str = "operator_user";
+const UNAUTHOR: &str = "unauthor_user";
 
 const FIRST_TOKEN_ID: &str = "1";
 
-fn has_attribute(given_attrs: Vec<Attribute>, expected_attr: Attribute) -> bool {
+fn has_attr(given_attrs: &Vec<Attribute>, expected_attr: &Attribute) -> bool {
     let resp = given_attrs
         .iter()
         .find(|item| item.key == expected_attr.key && item.value == expected_attr.value);
     resp.is_some()
+}
+
+fn assert_wasm_attr(app: AppResponse, expected_attr: Attribute) {
+    // app.events[0]: exec events
+    // app.events[1]: wasm events
+    let wasm_attrs = &app.events[1].attributes;
+
+    if !has_attr(wasm_attrs, &expected_attr) {
+        panic!(
+            "Attribute not found. Wasm attrs: {:?} - Expected attr: {:?}",
+            wasm_attrs, expected_attr
+        )
+    }
 }
 
 #[test]
@@ -88,11 +102,49 @@ fn full_flow() {
         assert_eq!(resp.owner, OWNER.to_string());
     }
 
-    // // Query operator
-    // {
-    //     let resp = contract
-    //         .operator(OWNER.to_string(), OPERATOR.to_string(), Some(true))
-    //         .unwrap_err();
-    //     panic!("{:?}", resp)
-    // }
+    // Approve
+    {
+        let resp = contract
+            .approve(OPERATOR.to_string(), FIRST_TOKEN_ID.to_string(), None)
+            .call(OWNER)
+            .unwrap();
+
+        assert_wasm_attr(
+            resp,
+            Attribute {
+                key: "spender".to_string(),
+                value: OPERATOR.to_string(),
+            },
+        );
+    }
+
+    // Approve all
+    {
+        let resp = contract
+            .approve_all(OPERATOR.to_string(), None)
+            .call(OWNER)
+            .unwrap();
+
+        assert_wasm_attr(
+            resp,
+            Attribute {
+                key: "operator".to_string(),
+                value: OPERATOR.to_string(),
+            },
+        );
+    }
+
+    // Query operator
+    {
+        let resp = contract
+            .operator(OWNER.to_string(), OPERATOR.to_string(), Some(false))
+            .unwrap();
+        assert_eq!(
+            resp.approval,
+            Approval {
+                spender: OPERATOR.to_string(),
+                expires: cw721::Expiration::Never {}
+            }
+        )
+    }
 }

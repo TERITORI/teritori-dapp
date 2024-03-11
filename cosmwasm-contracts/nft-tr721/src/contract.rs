@@ -1,9 +1,10 @@
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{from_json, Addr, Deps, Empty, Env, Response, StdResult};
+use cosmwasm_std::{from_json, Addr, Binary, Deps, Empty, Env, Response, StdResult};
 use cw2981_royalties::{msg::Cw2981QueryMsg, query, Extension};
 use cw721::{
-    AllNftInfoResponse, ApprovalResponse, ApprovalsResponse, ContractInfoResponse, NftInfoResponse,
-    NumTokensResponse, OperatorResponse, OperatorsResponse, OwnerOfResponse, TokensResponse,
+    AllNftInfoResponse, ApprovalResponse, ApprovalsResponse, ContractInfoResponse, Expiration,
+    NftInfoResponse, NumTokensResponse, OperatorResponse, OperatorsResponse, OwnerOfResponse,
+    TokensResponse,
 };
 use cw_storage_plus::{IndexedMap, Item, MultiIndex};
 use serde::de::DeserializeOwned;
@@ -68,6 +69,13 @@ impl Tr721 {
         Ok(resp)
     }
 
+    fn proxy_exec(&self, ctx: ExecCtx, msg: Tr721ExecuteMsg) -> Result<Response, ContractError> {
+        let resp = Tr721Contract::default()
+            .execute(ctx.deps, ctx.env, ctx.info, msg)
+            .unwrap();
+        Ok(resp)
+    }
+
     #[msg(instantiate)]
     pub fn instantiate(
         &self,
@@ -79,6 +87,80 @@ impl Tr721 {
     }
 
     #[msg(exec)]
+    pub fn transfer_nft(
+        &self,
+        ctx: ExecCtx,
+        recipient: String,
+        token_id: String,
+    ) -> Result<Response, ContractError> {
+        let msg = Tr721ExecuteMsg::TransferNft {
+            recipient,
+            token_id,
+        };
+        self.proxy_exec(ctx, msg)
+    }
+
+    #[msg(exec)]
+    pub fn send_nft(
+        &self,
+        ctx: ExecCtx,
+        contract: String,
+        token_id: String,
+        msg: Binary,
+    ) -> Result<Response, ContractError> {
+        let msg = Tr721ExecuteMsg::SendNft {
+            contract,
+            token_id,
+            msg,
+        };
+        self.proxy_exec(ctx, msg)
+    }
+
+    #[msg(exec)]
+    pub fn approve(
+        &self,
+        ctx: ExecCtx,
+        spender: String,
+        token_id: String,
+        expires: Option<Expiration>,
+    ) -> Result<Response, ContractError> {
+        let msg = Tr721ExecuteMsg::Approve {
+            spender,
+            token_id,
+            expires,
+        };
+        self.proxy_exec(ctx, msg)
+    }
+
+    #[msg(exec)]
+    pub fn approve_all(
+        &self,
+        ctx: ExecCtx,
+        operator: String,
+        expires: Option<Expiration>,
+    ) -> Result<Response, ContractError> {
+        let msg = Tr721ExecuteMsg::ApproveAll { operator, expires };
+        self.proxy_exec(ctx, msg)
+    }
+
+    #[msg(exec)]
+    pub fn revoke(
+        &self,
+        ctx: ExecCtx,
+        spender: String,
+        token_id: String,
+    ) -> Result<Response, ContractError> {
+        let msg = Tr721ExecuteMsg::Revoke { spender, token_id };
+        self.proxy_exec(ctx, msg)
+    }
+
+    #[msg(exec)]
+    pub fn revoke_all(&self, ctx: ExecCtx, operator: String) -> Result<Response, ContractError> {
+        let msg = Tr721ExecuteMsg::RevokeAll { operator };
+        self.proxy_exec(ctx, msg)
+    }
+
+    #[msg(exec)]
     pub fn mint(
         &self,
         ctx: ExecCtx,
@@ -87,10 +169,13 @@ impl Tr721 {
         token_uri: Option<String>,
         extension: Extension,
     ) -> Result<Response, ContractError> {
-        let resp = Tr721Contract::default()
-            .mint(ctx.deps, ctx.info, token_id, owner, token_uri, extension)
-            .unwrap();
-        Ok(resp)
+        let msg = Tr721ExecuteMsg::Mint {
+            token_id,
+            owner,
+            token_uri,
+            extension,
+        };
+        self.proxy_exec(ctx, msg)
     }
 
     #[msg(query)]
