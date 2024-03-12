@@ -3968,9 +3968,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/metro-config@npm:0.17.5":
-  version: 0.17.5
-  resolution: "@expo/metro-config@npm:0.17.5"
+"@expo/metro-config@npm:0.17.6":
+  version: 0.17.6
+  resolution: "@expo/metro-config@npm:0.17.6"
   dependencies:
     "@babel/core": ^7.20.0
     "@babel/generator": ^7.20.5
@@ -11036,9 +11036,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-file-system@npm:~16.0.7":
-  version: 16.0.7
-  resolution: "expo-file-system@npm:16.0.7"
+"expo-file-system@npm:~16.0.8":
+  version: 16.0.8
+  resolution: "expo-file-system@npm:16.0.8"
   peerDependencies:
     expo: "*"
   checksum: d69baf26f4463a144841f5994e280417f3225573e73d3be51be52cbac01863cc69750d7aa978b6ec965de3766b9ddfe9963b35cf24d6add16b5136268a01acbe
