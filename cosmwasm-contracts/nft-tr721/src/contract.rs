@@ -1,17 +1,18 @@
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{from_json, Addr, Binary, Response, StdResult, Uint128};
+use cosmwasm_std::{from_json, to_json_vec, Addr, Binary, HexBinary, Response, StdResult, Uint128};
 use cw2981_royalties::{
     check_royalties,
     msg::{CheckRoyaltiesResponse, Cw2981QueryMsg, RoyaltiesInfoResponse},
     query_royalties_info, Cw2981Contract as Tr721Contract, ExecuteMsg as Tr721ExecuteMsg,
-    Extension,
+    Extension, Metadata,
 };
 use cw721::{
     AllNftInfoResponse, ApprovalResponse, ApprovalsResponse, ContractInfoResponse, Expiration,
     NftInfoResponse, NumTokensResponse, OperatorResponse, OperatorsResponse, OwnerOfResponse,
     TokensResponse,
 };
-use cw_storage_plus::Item;
+use cw_storage_plus::{IndexedMap, Item, Map, MultiIndex};
+use rs_merkle::{algorithms::Sha256, Hasher, MerkleProof};
 use serde::de::DeserializeOwned;
 use sylvia::{
     contract, entry_points,
@@ -20,7 +21,11 @@ use sylvia::{
 
 use crate::error::ContractError;
 
-use cw721_base::{msg::InstantiateMsg as Tr721InstantiateMsg, MinterResponse, Ownership};
+use cw721_base::{
+    msg::InstantiateMsg as BaseInstantiateMsg,
+    state::{token_owner_idx, TokenIndexes, TokenInfo},
+    MinterResponse, Ownership,
+};
 
 pub type Tr721QueryMsg = cw721_base::QueryMsg<Cw2981QueryMsg>;
 
@@ -30,7 +35,11 @@ const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 // Contract states ------------------------------------------------------
 pub struct Tr721 {
-    contract_version: Item<'static, ContractVersion>,
+    pub(crate) contract_version: Item<'static, ContractVersion>,
+    pub(crate) tokens:
+        IndexedMap<'static, &'static str, TokenInfo<Metadata>, TokenIndexes<'static, Metadata>>,
+    pub(crate) requested_mints: Map<'static, String, Addr>, //  token id => User address
+    pub(crate) config: Item<'static, Config>,
 }
 
 // Contract implement -----------------------------------------------------
@@ -40,23 +49,30 @@ pub struct Tr721 {
 impl Tr721 {
     // Init states
     pub const fn new() -> Self {
+        // The storage keys must not be changed, they link with Cw721 states
+        let indexes = TokenIndexes {
+            owner: MultiIndex::new(token_owner_idx, "tokens", "tokens__owner"),
+        };
+
         Self {
+            // The storage keys must not be changed, they link with Cw721 states
             contract_version: Item::new("contract_info"),
+            tokens: IndexedMap::new("tokens", indexes),
+
+            // Custom states
+            requested_mints: Map::new("tr721_requested_mints"),
+            config: Item::new("tr721_config"),
         }
     }
 
     fn proxy_query<T: DeserializeOwned>(&self, ctx: QueryCtx, msg: Tr721QueryMsg) -> StdResult<T> {
-        let bin = Tr721Contract::default()
-            .query(ctx.deps, ctx.env, msg)
-            .unwrap();
+        let bin = Tr721Contract::default().query(ctx.deps, ctx.env, msg)?;
         let resp = from_json::<T>(bin).unwrap();
         Ok(resp)
     }
 
     fn proxy_exec(&self, ctx: ExecCtx, msg: Tr721ExecuteMsg) -> Result<Response, ContractError> {
-        let resp = Tr721Contract::default()
-            .execute(ctx.deps, ctx.env, ctx.info, msg)
-            .unwrap();
+        let resp = Tr721Contract::default().execute(ctx.deps, ctx.env, ctx.info, msg)?;
         Ok(resp)
     }
 
@@ -67,7 +83,7 @@ impl Tr721 {
         msg: Tr721InstantiateMsg,
     ) -> StdResult<Response> {
         // Set contract version
-        let contract = format!("crate:{CONTRACT_NAME}");
+        let contract = format!("teritori:{CONTRACT_NAME}");
         self.contract_version.save(
             ctx.deps.storage,
             &ContractVersion {
@@ -76,7 +92,15 @@ impl Tr721 {
             },
         )?;
 
-        Ok(Tr721Contract::default().instantiate(ctx.deps, ctx.env, ctx.info, msg)?)
+        self.config.save(ctx.deps.storage, &msg.config)?;
+
+        let base_msg = BaseInstantiateMsg {
+            name: msg.name,
+            minter: msg.minter,
+            symbol: msg.symbol,
+        };
+
+        Ok(Tr721Contract::default().instantiate(ctx.deps, ctx.env, ctx.info, base_msg)?)
     }
 
     #[msg(exec)]
@@ -153,6 +177,8 @@ impl Tr721 {
         self.proxy_exec(ctx, msg)
     }
 
+    // ATTENTION !!!: Should not call mint for now, we have to pass by: request_mint => claim
+    // Deprecated: should remove this, leave it here for now just for testing
     #[msg(exec)]
     pub fn mint(
         &self,
@@ -180,6 +206,97 @@ impl Tr721 {
             extension,
         };
         self.proxy_exec(ctx, msg)
+    }
+
+    #[msg(exec)]
+    pub fn request_mint(&self, ctx: ExecCtx) -> Result<Response, ContractError> {
+        let sender = ctx.deps.api.addr_validate(ctx.info.sender.as_str())?;
+        let token_id = Tr721Contract::default()
+            .increment_tokens(ctx.deps.storage)
+            .unwrap();
+
+        // If token already requested then throw error otherwise then assign to sender
+        self.requested_mints.update(
+            ctx.deps.storage,
+            token_id.to_string(),
+            |current| match current {
+                Some(_) => Err(ContractError::NftAlreadyRequested),
+                None => Ok(sender.clone()),
+            },
+        )?;
+
+        Ok(Response::new()
+            .add_attribute("action", "request_mint")
+            .add_attribute("minter", sender.clone())
+            .add_attribute("owner", sender)
+            .add_attribute("token_id", token_id.to_string()))
+    }
+
+    #[msg(exec)]
+    pub fn claim(
+        &self,
+        ctx: ExecCtx,
+        token_id: String,
+        metadata: Metadata,
+        merkle_proof: String,
+    ) -> Result<Response, ContractError> {
+        let sender = ctx.deps.api.addr_validate(ctx.info.sender.as_str())?;
+        let requested_owner = self
+            .requested_mints
+            .load(ctx.deps.storage, token_id.clone())
+            .map_err(|_| ContractError::NftNotRequested)?;
+
+        if sender != requested_owner {
+            return Err(ContractError::Unauthorized);
+        }
+
+        let proof_hex = HexBinary::from_hex(&merkle_proof).unwrap().to_vec();
+        let proof_from_hex = MerkleProof::<Sha256>::try_from(proof_hex.to_owned()).unwrap();
+
+        let config = self.config.load(ctx.deps.storage)?;
+        let root_hex = config.merkle_root;
+        let root_from_hex: [u8; 32] = HexBinary::from_hex(root_hex.as_str())
+            .unwrap()
+            .to_vec()
+            .try_into()
+            .unwrap();
+
+        let token_id_uint: usize = token_id.parse().unwrap();
+        let leaf_indices = vec![token_id_uint];
+        let leaf_hashes = vec![Sha256::hash(&to_json_vec(&metadata).unwrap())];
+        let total_leaves_count: usize = config.total_supply.try_into().unwrap();
+
+        let is_verified = proof_from_hex.verify(
+            root_from_hex,
+            &leaf_indices,
+            &leaf_hashes,
+            total_leaves_count,
+        );
+
+        if !is_verified {
+            return Err(ContractError::InvalidMerkleProof);
+        }
+
+        // Merkle verification is ok then mint NFT to sender
+        // In default mint, only contract owner can mint so we have to change to logic here instead of proxy call to default method
+        // Create the token
+        let token = TokenInfo {
+            owner: sender.clone(),
+            approvals: vec![],
+            token_uri: None,
+            extension: metadata,
+        };
+        self.tokens
+            .update(ctx.deps.storage, &token_id, |old| match old {
+                Some(_) => Err(ContractError::NftAlreadyClaimed),
+                None => Ok(token),
+            })?;
+
+        Ok(Response::new()
+            .add_attribute("action", "claim")
+            .add_attribute("sender", sender.clone())
+            .add_attribute("owner", sender)
+            .add_attribute("token_id", token_id.to_string()))
     }
 
     #[msg(query)]
@@ -347,6 +464,12 @@ impl Tr721 {
     }
 
     #[msg(query)]
+    pub fn merkle_root(&self, ctx: QueryCtx) -> StdResult<String> {
+        let merkle_root = self.config.load(ctx.deps.storage)?.merkle_root;
+        Ok(merkle_root)
+    }
+
+    #[msg(query)]
     pub fn royalty_info(
         &self,
         ctx: QueryCtx,
@@ -366,14 +489,21 @@ impl Tr721 {
 
 // Types definitions ------------------------------------------------------
 #[cw_serde]
-pub struct Config {
-    pub name: String,
-    pub nft_code_id: Option<u64>,
-    pub supported_networks: Vec<String>,
-}
-
-#[cw_serde]
 pub struct ContractVersion {
     pub contract: String,
     pub version: String,
+}
+
+#[cw_serde]
+pub struct Config {
+    pub merkle_root: String,
+    pub total_supply: u32,
+}
+
+#[cw_serde]
+pub struct Tr721InstantiateMsg {
+    pub name: String,
+    pub symbol: String,
+    pub minter: String,
+    pub config: Config,
 }

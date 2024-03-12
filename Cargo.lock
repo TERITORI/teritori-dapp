@@ -1014,6 +1014,7 @@ dependencies = [
  "cw2981-royalties",
  "cw721 0.18.0",
  "cw721-base 0.18.0",
+ "rs_merkle",
  "schemars",
  "serde",
  "sylvia 0.9.3",
@@ -1184,6 +1185,15 @@ checksum = "f8dd2a808d456c4a54e300a23e9f5a67e122c3024119acbfd73e3bf664491cb2"
 dependencies = [
  "hmac",
  "subtle",
+]
+
+[[package]]
+name = "rs_merkle"
+version = "1.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3b241d2e59b74ef9e98d94c78c47623d04c8392abaf82014dfd372a16041128f"
+dependencies = [
+ "sha2 0.10.8",
 ]
 
 [[package]]
