@@ -1,6 +1,14 @@
-import React, { FC, memo, useImperativeHandle, useRef, useState } from "react";
+import React, {
+  FC,
+  memo,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { useForm } from "react-hook-form";
 import {
+  Platform,
   Pressable,
   TextInput,
   View,
@@ -153,6 +161,22 @@ export const NewsFeedInput = React.forwardRef<
     ]);
     const [description, setDescription] = useState("");
     const [developerMode] = useDeveloperMode();
+
+    useEffect(() => {
+      if (Platform.OS === "web") {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLocationSelected([
+              position.coords.latitude,
+              position.coords.longitude,
+            ]);
+          },
+          (error) => {
+            console.error("Error getting geolocation:", error);
+          },
+        );
+      }
+    }, []);
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
