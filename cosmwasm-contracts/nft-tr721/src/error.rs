@@ -9,6 +9,21 @@ pub enum ContractError {
     #[error(transparent)]
     Cw721BaseError(#[from] cw721_base::ContractError),
 
+    #[error("Unauthorized")]
+    Unauthorized,
+
+    #[error("NFT already requested")]
+    NftAlreadyRequested,
+
+    #[error("NFT already claimed")]
+    NftAlreadyClaimed,
+
+    #[error("NFT not requested yet")]
+    NftNotRequested,
+
+    #[error("Merkle proof is invalid")]
+    InvalidMerkleProof,
+
     #[error("Royalty percentage must be between 0 and 100")]
     InvalidRoyaltyPercentage,
 }
