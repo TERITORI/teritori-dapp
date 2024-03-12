@@ -1,13 +1,17 @@
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{from_json, Addr, Binary, Response, StdResult, Uint128};
 use cw2981_royalties::{
-    check_royalties, msg::{CheckRoyaltiesResponse, Cw2981QueryMsg, RoyaltiesInfoResponse}, query_royalties_info, Cw2981Contract as Tr721Contract, ExecuteMsg as Tr721ExecuteMsg, Extension
+    check_royalties,
+    msg::{CheckRoyaltiesResponse, Cw2981QueryMsg, RoyaltiesInfoResponse},
+    query_royalties_info, Cw2981Contract as Tr721Contract, ExecuteMsg as Tr721ExecuteMsg,
+    Extension,
 };
 use cw721::{
     AllNftInfoResponse, ApprovalResponse, ApprovalsResponse, ContractInfoResponse, Expiration,
     NftInfoResponse, NumTokensResponse, OperatorResponse, OperatorsResponse, OwnerOfResponse,
     TokensResponse,
 };
+use cw_storage_plus::Item;
 use serde::de::DeserializeOwned;
 use sylvia::{
     contract, entry_points,
@@ -21,11 +25,13 @@ use cw721_base::{msg::InstantiateMsg as Tr721InstantiateMsg, MinterResponse, Own
 pub type Tr721QueryMsg = cw721_base::QueryMsg<Cw2981QueryMsg>;
 
 // Version info for migration
-const CONTRACT_NAME: &str = "crates.io:nft-tr721";
+const CONTRACT_NAME: &str = env!("CARGO_PKG_NAME");
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 // Contract states ------------------------------------------------------
-pub struct Tr721 {}
+pub struct Tr721 {
+    contract_version: Item<'static, ContractVersion>,
+}
 
 // Contract implement -----------------------------------------------------
 #[entry_points]
@@ -34,7 +40,9 @@ pub struct Tr721 {}
 impl Tr721 {
     // Init states
     pub const fn new() -> Self {
-        Self {}
+        Self {
+            contract_version: Item::new("contract_info"),
+        }
     }
 
     fn proxy_query<T: DeserializeOwned>(&self, ctx: QueryCtx, msg: Tr721QueryMsg) -> StdResult<T> {
@@ -58,7 +66,16 @@ impl Tr721 {
         ctx: InstantiateCtx,
         msg: Tr721InstantiateMsg,
     ) -> StdResult<Response> {
-        cw2::set_contract_version(ctx.deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
+        // Set contract version
+        let contract = format!("crate:{CONTRACT_NAME}");
+        self.contract_version.save(
+            ctx.deps.storage,
+            &ContractVersion {
+                contract,
+                version: CONTRACT_VERSION.to_string(),
+            },
+        )?;
+
         Ok(Tr721Contract::default().instantiate(ctx.deps, ctx.env, ctx.info, msg)?)
     }
 
@@ -324,6 +341,12 @@ impl Tr721 {
     }
 
     #[msg(query)]
+    pub fn contract_version(&self, ctx: QueryCtx) -> StdResult<ContractVersion> {
+        let contract_version = self.contract_version.load(ctx.deps.storage)?;
+        Ok(contract_version)
+    }
+
+    #[msg(query)]
     pub fn royalty_info(
         &self,
         ctx: QueryCtx,
@@ -347,4 +370,10 @@ pub struct Config {
     pub name: String,
     pub nft_code_id: Option<u64>,
     pub supported_networks: Vec<String>,
+}
+
+#[cw_serde]
+pub struct ContractVersion {
+    pub contract: String,
+    pub version: String,
 }

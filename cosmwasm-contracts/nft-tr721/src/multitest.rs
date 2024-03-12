@@ -5,7 +5,7 @@ use cw721_base::InstantiateMsg;
 use cw_multi_test::AppResponse;
 use sylvia::multitest::App;
 
-use crate::contract::sv::multitest_utils::CodeId;
+use crate::contract::{sv::multitest_utils::CodeId, ContractVersion};
 
 const CREATOR: &str = "creator_user";
 const MINTER: &str = "minter_user";
@@ -78,7 +78,7 @@ fn full_flow() {
         let extention = Some(Metadata {
             name: Some("this is NFT name".to_string()),
             royalty_payment_address: Some(ROYALTY_ADDR.to_string()),
-            royalty_percentage: Some(5),  // royalty 5%
+            royalty_percentage: Some(5), // royalty 5%
 
             ..Metadata::default()
         });
@@ -160,9 +160,7 @@ fn full_flow() {
 
     // Check royalties
     {
-        let resp = contract
-            .check_royalties()
-            .unwrap();
+        let resp = contract.check_royalties().unwrap();
         assert_eq!(resp.royalty_payments, true)
     }
 
@@ -172,5 +170,17 @@ fn full_flow() {
             .royalty_info(FIRST_TOKEN_ID.to_string(), Uint128::new(1000))
             .unwrap();
         assert_eq!(resp.royalty_amount, Uint128::new(50))
+    }
+
+    // Query contract version
+    {
+        let resp = contract.contract_version().unwrap();
+        assert_eq!(
+            resp,
+            ContractVersion {
+                contract: "crate:nft-tr721".to_string(),
+                version: "0.1.0".to_string()
+            }
+        )
     }
 }
