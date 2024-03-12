@@ -11,4 +11,10 @@ debug = false
 debug-assertions = false
 
 [workspace.dependencies]
-cw2             = "^1.1"
+cw-storage-plus = "1.2.0"
+cosmwasm-schema = "1.5.3"
+cw-utils = "1.0.3"
+schemars = "0.8.16"
+serde = { version = "1.0.197", features = ["derive"] }
+thiserror = "1.0.57"
+sylvia = "0.9.3"
