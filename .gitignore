@@ -100,3 +100,4 @@ substreams-*/target
 
 # rust
 /target/
+cosmwasm-contracts/*/target

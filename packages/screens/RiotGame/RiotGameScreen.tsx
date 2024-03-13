@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FlatList, StyleSheet, useWindowDimensions, View } from "react-native";
 
 import { CenterSection } from "./component/CenterSection";
@@ -10,9 +10,15 @@ import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { gameBgData } from "@/utils/game";
 import { neutral00 } from "@/utils/style/colors";
 import { headerHeight } from "@/utils/style/layout";
+import { mustGetLauchpadClient } from "@/utils/backend";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { Metadata, Trait } from "@/api/launchpad/v1/launchpad";
 
 export const RiotGameScreen = () => {
   const navigation = useAppNavigation();
+  const networkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
 
   const { width, height } = useWindowDimensions();
   const cardSize = {
@@ -23,6 +29,36 @@ export const RiotGameScreen = () => {
   const gotoEnroll = () => {
     navigation.navigate("RiotGameEnroll");
   };
+
+   const uploadMetadata = async () => {
+    let client = mustGetLauchpadClient(networkId);
+
+    let metadatas: Metadata[] = [
+      {
+        image: "image0",
+        imageData: "",
+        externalUrl: "",
+        description: "",
+        name: "nft #0",
+        attributes: [
+          {traitType: "type0", value: "value0"},
+        ],
+        backgroundColor: "",
+        animationUrl: "",
+        youtubeUrl: "",
+        royaltyPercentage: 0,
+        royaltyPaymentAddress: "",
+      },
+    ];
+
+    const resp = await client.CalculateMerkleRoot({
+      user: selectedWallet?.address,
+      projectId: 1,
+      networkId: networkId,
+      metadatas
+    })
+    console.log(resp)
+   }
 
   return (
     <View style={styles.container}>
@@ -44,7 +80,7 @@ export const RiotGameScreen = () => {
           )}
         />
         <CenterSection
-          onPress={gotoEnroll}
+          onPress={uploadMetadata}
           cardWidth={cardSize.width}
           cardHeight={cardSize.height}
         />
