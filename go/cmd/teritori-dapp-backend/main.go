@@ -14,6 +14,8 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/daopb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/feed"
 	"github.com/TERITORI/teritori-dapp/go/pkg/feedpb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/launchpad"
+	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplace"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
@@ -129,11 +131,17 @@ func main() {
 		NetStore:  &netstore,
 	})
 
+	launchpadSvc := launchpad.NewLaunchpadService(context.Background(), &launchpad.Config{
+		Logger:    logger,
+		IndexerDB: indexerDB,
+	})
+
 	server := grpc.NewServer()
 	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
 	p2epb.RegisterP2EServiceServer(server, p2eSvc)
 	daopb.RegisterDAOServiceServer(server, daoSvc)
 	feedpb.RegisterFeedServiceServer(server, feedSvc)
+	launchpadpb.RegisterLaunchpadServiceServer(server, launchpadSvc)
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),
