@@ -4466,7 +4466,15 @@
     "features": [
       "Organizations",
       "SocialFeed",
-      "UPP"
+      "UPP",
+      "GnoProjectManager"
+    ],
+    "featureObjects": [
+      {
+        "type": "GnoProjectManager",
+        "projectsManagerPkgPath": "gno.land/r/demo/teritori/escrow",
+        "paymentsDenom": "ugnot"
+      }
     ],
     "currencies": [
       {
@@ -4481,7 +4489,7 @@
       },
       {
         "denom": "gno.land/r/demo/tori20",
-        "displayName": "TORI20",
+        "displayName": "TORI",
         "decimals": 6,
         "variant": "grc20",
         "coingeckoId": "gno",
@@ -4498,7 +4506,7 @@
     "accountExplorer": "https://gnoscan.io/accounts/$address",
     "contractExplorer": "https://gnoscan.io/realms/details?path=$address",
     "testnet": true,
-    "backendEndpoint": "http://localhost:9090",
+    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
     "vaultContractAddress": "",
     "daoRegistryPkgPath": "gno.land/r/demo/teritori/dao_registry",
     "socialFeedsPkgPath": "gno.land/r/demo/teritori/social_feeds",
@@ -4508,7 +4516,6 @@
     "groupsPkgPath": "gno.land/r/demo/teritori/groups",
     "votingGroupPkgPath": "gno.land/p/demo/teritori/dao_voting_group",
     "daoProposalSinglePkgPath": "gno.land/p/demo/teritori/dao_proposal_single",
-    "escrowPkgPath": "gno.land/r/demo/teritori/escrow",
     "daoInterfacesPkgPath": "gno.land/p/demo/teritori/dao_interfaces",
     "daoCorePkgPath": "gno.land/p/demo/teritori/dao_core",
     "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
@@ -4532,7 +4539,8 @@
         "coingeckoId": "gno",
         "icon": "gno.svg",
         "kind": "native",
-        "color": "#232800"
+        "color": "#232800",
+        "variant": "gno"
       }
     ],
     "stakeCurrency": "ugnot",
@@ -4565,7 +4573,15 @@
     "features": [
       "Organizations",
       "SocialFeed",
-      "UPP"
+      "UPP",
+      "GnoProjectManager"
+    ],
+    "featureObjects": [
+      {
+        "type": "GnoProjectManager",
+        "projectsManagerPkgPath": "gno.land/r/demo/teritori/escrow",
+        "paymentsDenom": "ugnot"
+      }
     ],
     "currencies": [
       {
@@ -4598,7 +4614,6 @@
     "groupsPkgPath": "gno.land/r/demo/teritori/groups_v4",
     "votingGroupPkgPath": "gno.land/p/demo/teritori/dao_voting_group_v2",
     "daoProposalSinglePkgPath": "gno.land/p/demo/teritori/dao_proposal_single_v4",
-    "escrowPkgPath": "gno.land/r/demo/teritori/escrow",
     "daoInterfacesPkgPath": "gno.land/p/demo/teritori/dao_interfaces_v5",
     "daoCorePkgPath": "gno.land/p/demo/teritori/dao_core_v4",
     "gnowebURL": "https://testnet.gno.teritori.com",
