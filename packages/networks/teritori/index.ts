@@ -21,6 +21,7 @@ export const teritoriNetwork: CosmosNetworkInfo = {
     NetworkFeature.NameService,
     NetworkFeature.BurnTokens,
     NetworkFeature.NFTLaunchpad,
+    NetworkFeature.NFTMarketplaceLeaderboard,
   ],
   registryName: "teritori",
   overrides: "cosmos-registry:teritori",

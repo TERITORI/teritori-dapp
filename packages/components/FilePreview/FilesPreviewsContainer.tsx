@@ -19,6 +19,7 @@ interface FilePreviewContainerProps {
   onDelete: (file: LocalFileData | RemoteFileData) => void;
   onDeleteGIF: (url: string) => void;
   onAudioUpdate: (updatedFile: LocalFileData) => void;
+  showSmallPreview?: boolean;
 }
 
 export const FilesPreviewsContainer: React.FC<FilePreviewContainerProps> = ({
@@ -27,6 +28,7 @@ export const FilesPreviewsContainer: React.FC<FilePreviewContainerProps> = ({
   onDelete,
   onDeleteGIF,
   onAudioUpdate,
+  showSmallPreview = false,
 }) => {
   const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
@@ -70,6 +72,7 @@ export const FilesPreviewsContainer: React.FC<FilePreviewContainerProps> = ({
             else onDelete(file);
           }}
           isEditable
+          showSmallPreview={showSmallPreview}
         />
       ) : null}
 
@@ -80,6 +83,7 @@ export const FilesPreviewsContainer: React.FC<FilePreviewContainerProps> = ({
           onDelete={onDelete}
           isEditable
           authorId={userId}
+          showSmallPreview={showSmallPreview}
         />
       ))}
 

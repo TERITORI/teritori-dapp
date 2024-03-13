@@ -6,9 +6,9 @@ import { useSelector } from "react-redux";
 import { CommentTextInput, MiniCommentInputHandle } from "./CommentTextInput";
 import { SelectAudioVideo } from "./SelectAudioVideo";
 import { SelectPicture } from "./SelectPicture";
+import { SimpleCommentInput } from "./SimpleCommentInput";
 import priceSVG from "../../../../../assets/icons/price.svg";
 import { CustomButton } from "../Button/CustomButton";
-import MiniToast from "../MiniToast";
 
 import { BrandText } from "@/components/BrandText";
 import FlexRow from "@/components/FlexRow";
@@ -17,6 +17,7 @@ import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgress
 import { EmojiSelector } from "@/components/socialFeed/EmojiSelector";
 import { GIFSelector } from "@/components/socialFeed/GIFSelector";
 import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
 import { useIpfs } from "@/hooks/useIpfs";
@@ -27,6 +28,7 @@ import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
 import { generatePostMetadata, getPostCategory } from "@/utils/feed/queries";
 import { generateIpfsKey } from "@/utils/ipfs";
+import { useAppNavigation } from "@/utils/navigation";
 import {
   SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
   hashtagMatch,
@@ -40,6 +42,7 @@ import { NewPostFormValues, ReplyToType } from "@/utils/types/feed";
 import { RemoteFileData } from "@/utils/types/files";
 
 interface MiniCommentInputProps {
+  type?: "comment" | "post";
   parentId?: string;
   style?: ViewStyle;
   onSubmitSuccess?: () => void;
@@ -51,10 +54,11 @@ interface MiniCommentInputProps {
   additionalMention?: string;
 }
 
-interface MiniCommentInputInputHandle {
+export interface MiniCommentInputInputHandle {
   resetForm: () => void;
   setValue: (text: string) => void;
   focusInput: () => void;
+  blurInput: () => void;
 }
 const MAX_IMAGES = 4;
 
@@ -71,20 +75,21 @@ export const MiniCommentInput = React.forwardRef<
       onSubmitInProgress,
       additionalHashtag,
       additionalMention,
+      type = "comment",
     },
     forwardRef,
   ) => {
+    const navigation = useAppNavigation();
     const selectedNetwork = useSelectedNetworkInfo();
     const selectedNetworkId = selectedNetwork?.id || "teritori";
     const selectedWallet = useSelectedWallet();
     const userId = getUserId(selectedNetworkId, selectedWallet?.address);
     const inputRef = useRef<MiniCommentInputHandle>(null);
-    const [toastErrors, setToastErrors] = useState<{
-      title: string;
-      message: string;
-    } | null>(null);
+
+    const { setToast } = useFeedbacks();
     const [isUploadLoading, setIsUploadLoading] = useState(false);
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
+    const [showFullCommentInput, setShowFullCommentInput] = useState(false);
 
     const { showNotEnoughFundsModal, showConnectWalletModal } =
       useWalletControl();
@@ -151,15 +156,17 @@ export const MiniCommentInput = React.forwardRef<
     };
 
     const focusInput = () => inputRef?.current?.focusInput();
+    const blurInput = () => inputRef?.current?.blurInput();
 
     useImperativeHandle(forwardRef, () => ({
       resetForm: reset,
       focusInput,
+      blurInput,
       setValue: handleTextChange,
     }));
 
     const processSubmit = async () => {
-      const action = "Comment";
+      const action = type === "comment" ? "Comment" : "Post";
       if (!selectedWallet?.address || !selectedWallet.connected) {
         showConnectWalletModal({
           forceNetworkFeature: NetworkFeature.SocialFeed,
@@ -229,9 +236,11 @@ export const MiniCommentInput = React.forwardRef<
         }
         if (formValues.files?.length && !remoteFiles.find((file) => file.url)) {
           console.error("upload file err : Fail to pin to IPFS");
-          setToastErrors({
-            title: "File upload failed",
+          setToast({
             message: "Fail to pin to IPFS, please try to Publish again",
+            duration: 5000,
+            mode: "mini",
+            type: "error",
           });
           setIsUploadLoading(false);
           return;
@@ -251,39 +260,52 @@ export const MiniCommentInput = React.forwardRef<
           JSON.stringify(metadata),
           isReplyToValid ? replyTo.parentId : parentId,
         );
+
+        if (type === "post") {
+          navigation.navigate("MiniFeeds");
+        }
       } catch (err) {
         console.error("post submit err", err);
         setIsUploadLoading(false);
         setIsProgressBarShown(false);
-        setToastErrors({
-          title: "Post creation failed",
+        setToast({
           message: err instanceof Error ? err.message : `${err}`,
+          duration: 3000,
+          mode: "mini",
+          type: "error",
         });
-        setTimeout(() => {
-          setToastErrors(null);
-        }, 3000);
       }
     };
 
+    const enableShowFullCommentInput = () => {
+      setShowFullCommentInput(true);
+      setTimeout(() => {
+        inputRef?.current?.focusInput();
+      }, 0);
+    };
+
+    const disableShowFullCommentInput = () => {
+      setShowFullCommentInput(false);
+    };
+
+    if (!showFullCommentInput && type === "comment") {
+      return (
+        <SimpleCommentInput
+          value={formValues.message}
+          onFocus={enableShowFullCommentInput}
+        />
+      );
+    }
+
     return (
       <View style={{ width: "100%", ...style }}>
-        {toastErrors && toastErrors.message && (
-          <MiniToast
-            type="error"
-            message={toastErrors.message}
-            style={{
-              width: "100%",
-              marginLeft: 0,
-              marginBottom: layout.spacing_x0_75,
-            }}
-          />
-        )}
-
         <CommentTextInput
           formValues={formValues}
           setSelection={setSelection}
           setValue={setValue}
           ref={inputRef}
+          onBlur={disableShowFullCommentInput}
+          type={type}
         />
         <View
           style={[
@@ -306,8 +328,8 @@ export const MiniCommentInput = React.forwardRef<
             ]}
           >
             {freePostCount
-              ? `You have ${freePostCount} free comment left`
-              : `The cost for this comment is ${prettyPublishingFee}`}
+              ? `You have ${freePostCount} free ${type} left`
+              : `The cost for this ${type} is ${prettyPublishingFee}`}
           </BrandText>
         </View>
         {step.id !== "UNDEFINED" && isProgressBarShown && (
@@ -330,7 +352,13 @@ export const MiniCommentInput = React.forwardRef<
             paddingHorizontal: layout.spacing_x0_5,
           }}
         >
-          <FlexRow style={{ gap: layout.spacing_x1_5, flex: 1 }}>
+          <FlexRow
+            style={{
+              gap: layout.spacing_x1_5,
+              flex: 1,
+              height: 30,
+            }}
+          >
             <EmojiSelector onEmojiSelected={onEmojiSelected} />
 
             <GIFSelector
@@ -370,7 +398,7 @@ export const MiniCommentInput = React.forwardRef<
           </FlexRow>
           <CustomButton
             onPress={handleSubmit(processSubmit)}
-            title="Comment"
+            title={type === "comment" ? "Comment" : "Post"}
             type="primary"
             size="small"
             width={100}

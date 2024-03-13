@@ -1,10 +1,10 @@
-import * as Clipboard from "expo-clipboard";
 import React, { useState } from "react";
 import { View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 
 import { BrandText } from "@/components/BrandText";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
+import Clipboard from "@/modules/Clipboard";
 import { useAppNavigation } from "@/utils/navigation";
 import {
   neutral22,

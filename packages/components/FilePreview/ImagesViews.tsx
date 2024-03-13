@@ -15,6 +15,7 @@ interface ImagePreviewProps {
   files: LocalFileData[] | RemoteFileData[];
   onDelete?: (file: LocalFileData | RemoteFileData) => void;
   isEditable?: boolean;
+  showSmallPreview?: boolean;
 }
 
 const getDimension = (index: number, fileLength: number) => {
@@ -38,6 +39,7 @@ export const ImagesViews: React.FC<ImagePreviewProps> = ({
   files,
   onDelete,
   isEditable = false,
+  showSmallPreview = false,
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isFullView, setFullView] = useState(false);
@@ -100,7 +102,9 @@ export const ImagesViews: React.FC<ImagePreviewProps> = ({
             // @ts-expect-error: description todo
             style={{
               padding: layout.spacing_x1,
-              ...getDimension(index, files.length),
+              ...(showSmallPreview
+                ? { height: 120, width: "50%" }
+                : getDimension(index, files.length)),
             }}
           >
             {isEditable && onDelete && (

@@ -28,7 +28,7 @@ export default function ToggleButton({
 
   const getIOSBackgroundColor = () => {
     if (disabled) {
-      return neutral99;
+      return isActive ? neutral99 : neutral33;
     }
 
     return isActive ? blueDefault : neutral33;

@@ -150,9 +150,10 @@ func (h *Handler) handleExecuteBunkerBatchRequestMint(e *Message, execMsg *wasmt
 	for i := uint64(0); i < requestMintMsg.BatchRequestMint.Count; i++ {
 		activityId := h.config.Network.SubActivityID(e.TxHash, e.MsgIndex, int(i))
 		activities[i] = indexerdb.Activity{
-			ID:   activityId,
-			Kind: indexerdb.ActivityKindRequestMint,
-			Time: blockTime,
+			ID:           activityId,
+			Kind:         indexerdb.ActivityKindRequestMint,
+			Time:         blockTime,
+			CollectionID: &collectionId,
 			RequestMint: &indexerdb.RequestMint{
 				BuyerID:      ownerId,
 				NetworkID:    collection.NetworkID,
@@ -320,8 +321,9 @@ func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Coll
 			PriceDenom: denom,
 			USDPrice:   usdPrice,
 		},
-		NFTID:     &nftId,
-		NetworkID: collection.NetworkID,
+		NFTID:        &nftId,
+		CollectionID: &collection.ID,
+		NetworkID:    collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create mint activity")
 	}

@@ -1,4 +1,3 @@
-import * as Clipboard from "expo-clipboard";
 import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -19,6 +18,7 @@ import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
+import Clipboard from "@/modules/Clipboard";
 import { selectContactInfo, setContactInfo } from "@/store/slices/message";
 import {
   selectAllWallets,

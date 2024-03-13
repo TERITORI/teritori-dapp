@@ -54,6 +54,12 @@ const config = {
           iCloudContainerEnvironment: "Production",
         },
       ],
+      [
+        "react-native-vision-camera",
+        {
+          cameraPermissionText: "$(PRODUCT_NAME) needs access to your Camera.",
+        },
+      ],
     ],
   },
 };

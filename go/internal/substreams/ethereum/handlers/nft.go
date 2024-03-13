@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"math/big"
 	"time"
 
@@ -18,6 +19,28 @@ type TransferInput struct {
 	From    common.Address `json:"from"`
 	To      common.Address `json:"to"`
 	TokenID *big.Int       `json:"tokenId"`
+}
+
+func (h *Handler) handleTransfer(tx *pb.Tx, nftContract string, from string, to string, tokenID int64) error {
+	var collection indexerdb.TeritoriCollection
+	if err := h.indexerDB.Where("nft_contract_address = ? AND network_id = ?", nftContract, h.network.ID).First(&collection).Error; err != nil {
+		return errors.Wrap(err, "failed to get collection")
+	}
+
+	nftId := h.network.NFTID(collection.MintContractAddress, fmt.Sprintf("%d", tokenID))
+	var nft indexerdb.NFT
+	if err := h.indexerDB.Where("id", nftId).First(&nft).Error; err != nil {
+		return errors.Wrap(err, "failed to get nft")
+	}
+
+	nft.OwnerID = h.network.UserID(to)
+	if err := h.indexerDB.Save(&nft).Error; err != nil {
+		return errors.Wrap(err, "failed to update nft owner")
+	}
+
+	// NOTE: This is used only to handle transfers made by another contract so we dont track activities
+
+	return nil
 }
 
 func (h *Handler) handleTransferFrom(contractABI *abi.ABI, tx *pb.Tx, args map[string]interface{}) error {
@@ -55,8 +78,9 @@ func (h *Handler) handleTransferFrom(contractABI *abi.ABI, tx *pb.Tx, args map[s
 			Receiver:  h.network.UserID(input.To.String()),
 			NetworkID: collection.NetworkID,
 		},
-		NFTID:     &nftId,
-		NetworkID: collection.NetworkID,
+		NFTID:        &nftId,
+		CollectionID: &collection.CollectionID,
+		NetworkID:    collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create send activity")
 	}

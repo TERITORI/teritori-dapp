@@ -33,6 +33,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     NetworkFeature.BurnTokens,
     NetworkFeature.NFTLaunchpad,
     NetworkFeature.CosmWasmPremiumFeed,
+    NetworkFeature.NFTMarketplaceLeaderboard,
   ],
   featureObjects: [premiumFeedFeature],
   currencies: teritoriTestnetCurrencies,

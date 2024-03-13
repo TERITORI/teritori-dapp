@@ -1,4 +1,3 @@
-import * as Clipboard from "expo-clipboard";
 import React, { useState } from "react";
 import { Linking, Pressable, View } from "react-native";
 
@@ -16,6 +15,7 @@ import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { DropdownWithListItem } from "@/components/mini/DropdownWithListItem";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import Clipboard from "@/modules/Clipboard";
 import { accountExplorerLink } from "@/networks";
 import { neutral33, neutralA3 } from "@/utils/style/colors";
 import { fontMedium13, fontSemibold22 } from "@/utils/style/fonts";

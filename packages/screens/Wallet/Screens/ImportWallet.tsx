@@ -11,6 +11,7 @@ import MultiStepScreenContainer from "../../Mini/layout/MultiStepScreenContainer
 import { BrandText } from "@/components/BrandText";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { mustGetCosmosNetwork } from "@/networks";
 import { addSelected, selectAllWallets } from "@/store/slices/wallets";
@@ -29,6 +30,7 @@ import { getNativeWallet, setMnemonic } from "@/utils/wallet/getNativeWallet";
 import { correctMnemonic } from "@/utils/wallet/seed";
 
 export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {
+  const { setToast } = useFeedbacks();
   const { height: windowHeight } = useWindowDimensions();
   const [localPhrase, setLocalPhrase] = useState<string | undefined>(undefined);
   const wallets = useSelector(selectAllWallets);
@@ -123,7 +125,12 @@ export const ImportWallet: ScreenFC<"ImportWallet"> = ({ navigation }) => {
         <CustomButton
           onPress={(_, navigation) => {
             if (!localPhrase || !validateMnemonic(localPhrase)) {
-              alert("Invalid mnemonic");
+              setToast({
+                message: "Invalid mnemonic phrase. Please try again.",
+                duration: 5000,
+                mode: "mini",
+                type: "error",
+              });
               return;
             }
             (async () => {

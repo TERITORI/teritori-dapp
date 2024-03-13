@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from "react";
-import { FlatList, Image, View } from "react-native";
+import { useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
+import { FlatList, View } from "react-native";
 
-import DefaultEnemyPNG from "../../../../assets/game/default-enemy.png";
 import { InnerCellText } from "../../../components/applicationTable/InnerCellText";
 import { TableRow } from "../../../components/table/TableRow";
 import { useIsMobile } from "../../../hooks/useIsMobile";
@@ -11,8 +11,11 @@ import {
   screenContentMaxWidthLarge,
 } from "../../../utils/style/layout";
 
+import { LeaderboardEntry } from "@/api/marketplace/v1/marketplace";
 import { Pagination } from "@/components/Pagination";
+import { UserNameInline } from "@/components/UserNameInline";
 import { SpacerColumn } from "@/components/spacer";
+import { getMarketplaceClient } from "@/utils/backend";
 
 const TABLE_ROWS = {
   rank: {
@@ -24,52 +27,44 @@ const TABLE_ROWS = {
     flex: 5,
   },
   totalXp: {
-    label: "Total XP",
+    label: "Total",
     flex: 3,
   },
   bonus: {
     label: "Bonus",
     flex: 2,
   },
-  listingXp: {
-    label: "Listing XP",
+  mintXp: {
+    label: "Mints",
     flex: 2,
   },
   salesXp: {
-    label: "Sales XP",
-    flex: 3,
+    label: "Sales",
+    flex: 2,
   },
   buyXp: {
-    label: "Buy XP",
-    flex: 3,
+    label: "Buys",
+    flex: 2,
   },
 };
 
-const dummyData = {
-  rank: 1,
-  trader: "ferryman.tori",
-  totalXp: "1340",
-  bonus: "X2",
-  listingXp: "150",
-  salesXp: 250,
-  buyXp: "2270",
-};
-
-export const LeaderboardMarketplaceTable: React.FC = () => {
+export const MarketplaceLeaderboardTable: React.FC<{
+  networkId: string | undefined;
+  timePeriodHours: number;
+}> = React.memo(({ networkId, timePeriodHours }) => {
   const isMobile = useIsMobile();
   const [pageIndex, setPageIndex] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(50);
+  const [itemsPerPage, setItemsPerPage] = useState(100);
+  const { data: leaderboard } = useMarketplaceLeaderboard(
+    networkId,
+    timePeriodHours,
+  );
 
-  const rowsData = Array(150).fill(dummyData);
+  // NOTE: we only show the first 100 items, because getting the total count to properly find maxPage will slow the query down
+  // see https://stackoverflow.com/questions/28888375/run-a-query-with-a-limit-offset-and-also-get-the-total-number-of-rows
 
-  const displayData = useMemo(() => {
-    const skip = pageIndex * itemsPerPage;
-    const limit = itemsPerPage;
-
-    return rowsData.slice(skip, skip + limit);
-  }, [pageIndex, itemsPerPage, rowsData]);
-
-  const maxPage = Math.max(Math.ceil(rowsData?.length / itemsPerPage), 1);
+  const numItems = leaderboard?.length || 0;
+  const maxPage = Math.max(Math.ceil(numItems / itemsPerPage), 1);
 
   return (
     <View
@@ -88,9 +83,9 @@ export const LeaderboardMarketplaceTable: React.FC = () => {
       />
 
       <FlatList
-        data={displayData}
-        renderItem={({ item, index }) => <LeaderboardRowData rowData={item} />}
-        keyExtractor={(item) => item.id}
+        data={leaderboard}
+        renderItem={({ item }) => <LeaderboardRowData rowData={item} />}
+        keyExtractor={(item) => item.userId}
         style={{
           minHeight: 220,
           borderTopColor: mineShaftColor,
@@ -103,16 +98,18 @@ export const LeaderboardMarketplaceTable: React.FC = () => {
         currentPage={pageIndex}
         maxPage={maxPage}
         itemsPerPage={itemsPerPage}
-        dropdownOptions={[50, 100, 200]}
+        dropdownOptions={[100]}
         setItemsPerPage={setItemsPerPage}
         onChangePage={setPageIndex}
       />
       <SpacerColumn size={2} />
     </View>
   );
-};
+});
 
-const LeaderboardRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
+const LeaderboardRowData: React.FC<{ rowData: LeaderboardEntry }> = ({
+  rowData,
+}) => {
   const isMobile = useIsMobile();
 
   return (
@@ -138,16 +135,13 @@ const LeaderboardRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
           alignItems: "center",
         }}
       >
-        <Image source={DefaultEnemyPNG} style={{ height: 32, width: 32 }} />
-        <InnerCellText style={{ marginLeft: layout.spacing_x1 }}>
-          {rowData.trader}
-        </InnerCellText>
+        <UserNameInline userId={rowData.userId} />
       </View>
       <InnerCellText
         textStyle={{ paddingLeft: layout.spacing_x1 }}
         style={{ flex: TABLE_ROWS.totalXp.flex }}
       >
-        {rowData.totalXp}
+        {prettyXp(rowData.totalXp)}
       </InnerCellText>
       {!isMobile && (
         <>
@@ -155,28 +149,63 @@ const LeaderboardRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
             textStyle={{ paddingLeft: layout.spacing_x1 }}
             style={{ flex: TABLE_ROWS.bonus.flex }}
           >
-            {rowData.bonus}
+            {rowData.boost === 1 ? "-" : `X${rowData.boost}`}
           </InnerCellText>
           <InnerCellText
             textStyle={{ paddingLeft: layout.spacing_x1 }}
-            style={{ flex: TABLE_ROWS.listingXp.flex }}
+            style={{ flex: TABLE_ROWS.mintXp.flex }}
           >
-            {rowData.listingXp}
+            {prettyXp(rowData.mintXp)}
           </InnerCellText>
           <InnerCellText
             textStyle={{ paddingLeft: layout.spacing_x1 }}
             style={{ flex: TABLE_ROWS.salesXp.flex }}
           >
-            {rowData.salesXp}
+            {prettyXp(rowData.sellXp)}
           </InnerCellText>
           <InnerCellText
             textStyle={{ paddingLeft: layout.spacing_x1 }}
             style={{ flex: TABLE_ROWS.buyXp.flex }}
           >
-            {rowData.buyXp}
+            {prettyXp(rowData.buyXp)}
           </InnerCellText>
         </>
       )}
     </View>
+  );
+};
+
+const prettyXp = (xp: number) => {
+  if (xp === 0) {
+    return "-";
+  }
+  if (xp > 0 && xp < 1) {
+    return "<1 XP";
+  }
+  return Math.floor(xp) + " XP";
+};
+
+const useMarketplaceLeaderboard = (
+  networkId: string | undefined,
+  timePeriodHours: number,
+) => {
+  return useQuery(
+    ["marketplace-leaderboard", networkId, timePeriodHours],
+    async () => {
+      const client = getMarketplaceClient(networkId);
+      if (!client) return [];
+      const stream = client.Leaderboard({
+        networkId,
+        periodHours: timePeriodHours,
+      });
+      const data: LeaderboardEntry[] = [];
+      await stream.forEach(({ entry }) => {
+        if (!entry) {
+          return;
+        }
+        data.push(entry);
+      });
+      return data;
+    },
   );
 };
