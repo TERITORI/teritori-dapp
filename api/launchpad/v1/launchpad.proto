@@ -5,6 +5,18 @@ option go_package = "./launchpadpb";
 
 service LaunchpadService {
   rpc UploadMetadata(UploadMetadataRequest) returns (UploadMetadataResponse);
+  rpc CalculateMerkleRoot(CalculateMerkleRootRequest) returns (CalculateMerkleRootResponse);
+}
+
+message CalculateMerkleRootRequest {
+  string user = 1;
+  uint32 project_id = 2;
+  string network_id = 3;
+  repeated Metadata metadatas = 4;
+}
+
+message CalculateMerkleRootResponse {
+  string merkle_root = 1;
 }
 
 message UploadMetadataRequest {
@@ -15,7 +27,7 @@ message UploadMetadataRequest {
 }
 
 message UploadMetadataResponse {
-  bool result = 1;
+  string merkle_root = 1;
 }
 
 message Metadata {
@@ -33,9 +45,8 @@ message Metadata {
 }
 
 message Trait {
-  string display_type = 1;
-  string trait_type = 2;
-  string value = 3;
+  string trait_type = 1;
+  string value = 2;
 }
 
 

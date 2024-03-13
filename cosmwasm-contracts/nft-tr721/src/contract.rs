@@ -1,5 +1,5 @@
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{from_json, to_json_vec, Addr, Binary, HexBinary, Response, StdResult, Uint128};
+use cosmwasm_std::{from_json, Addr, Binary, HexBinary, Response, StdResult, Uint128};
 use cw2981_royalties::{
     check_royalties,
     msg::{CheckRoyaltiesResponse, Cw2981QueryMsg, RoyaltiesInfoResponse},
@@ -19,7 +19,7 @@ use sylvia::{
     types::{ExecCtx, InstantiateCtx, QueryCtx},
 };
 
-use crate::{error::ContractError, hasher::TrKeccak256};
+use crate::{error::ContractError, hasher::TrKeccak256, utils::serialize_metadata};
 
 use cw721_base::{
     msg::InstantiateMsg as BaseInstantiateMsg,
@@ -263,7 +263,7 @@ impl Tr721 {
 
         let token_id_uint: usize = token_id.parse().unwrap();
         let leaf_indices = vec![token_id_uint];
-        let leaf_hashes = vec![TrKeccak256::hash(&to_json_vec(&metadata).unwrap())];
+        let leaf_hashes = vec![TrKeccak256::hash(&serialize_metadata(&metadata).as_bytes())];
         let total_leaves_count: usize = config.total_supply.try_into().unwrap();
 
         let is_verified = proof_from_hex.verify(

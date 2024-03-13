@@ -9,6 +9,11 @@ import {
   GrpcWebImpl as FeedGrpcWebImpl,
 } from "../api/feed/v1/feed";
 import {
+  LaunchpadService,
+  LaunchpadServiceClientImpl,
+  GrpcWebImpl as LaunchpadGrpcWebImpl,
+} from "../api/launchpad/v1/launchpad";
+import {
   MarketplaceServiceClientImpl,
   GrpcWebImpl as MarketplaceGrpcWebImpl,
   MarketplaceService,
@@ -102,6 +107,30 @@ export const getFeedClient = (networkId: string | undefined) => {
 
 export const mustGetFeedClient = (networkId: string | undefined) => {
   const client = getFeedClient(networkId);
+  if (!client) {
+    throw new Error(`failed to get feed client for network '${networkId}'`);
+  }
+  return client;
+};
+
+const launchpadClients: { [key: string]: LaunchpadService } = {};
+
+export const getLaunchpadClient = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  if (!network) {
+    return undefined;
+  }
+  if (!launchpadClients[network.id]) {
+    const rpc = new LaunchpadGrpcWebImpl(network.backendEndpoint, {
+      debug: false,
+    });
+    launchpadClients[network.id] = new LaunchpadServiceClientImpl(rpc);
+  }
+  return launchpadClients[network.id];
+};
+
+export const mustGetLauchpadClient = (networkId: string | undefined) => {
+  const client = getLaunchpadClient(networkId);
   if (!client) {
     throw new Error(`failed to get feed client for network '${networkId}'`);
   }
