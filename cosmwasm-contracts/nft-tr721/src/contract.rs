@@ -12,14 +12,14 @@ use cw721::{
     TokensResponse,
 };
 use cw_storage_plus::{IndexedMap, Item, Map, MultiIndex};
-use rs_merkle::{algorithms::Sha256, Hasher, MerkleProof};
+use rs_merkle::{Hasher, MerkleProof};
 use serde::de::DeserializeOwned;
 use sylvia::{
     contract, entry_points,
     types::{ExecCtx, InstantiateCtx, QueryCtx},
 };
 
-use crate::error::ContractError;
+use crate::{error::ContractError, hasher::TrKeccak256};
 
 use cw721_base::{
     msg::InstantiateMsg as BaseInstantiateMsg,
@@ -251,7 +251,7 @@ impl Tr721 {
         }
 
         let proof_hex = HexBinary::from_hex(&merkle_proof).unwrap().to_vec();
-        let proof_from_hex = MerkleProof::<Sha256>::try_from(proof_hex.to_owned()).unwrap();
+        let proof_from_hex = MerkleProof::<TrKeccak256>::try_from(proof_hex.to_owned()).unwrap();
 
         let config = self.config.load(ctx.deps.storage)?;
         let root_hex = config.merkle_root;
@@ -263,7 +263,7 @@ impl Tr721 {
 
         let token_id_uint: usize = token_id.parse().unwrap();
         let leaf_indices = vec![token_id_uint];
-        let leaf_hashes = vec![Sha256::hash(&to_json_vec(&metadata).unwrap())];
+        let leaf_hashes = vec![TrKeccak256::hash(&to_json_vec(&metadata).unwrap())];
         let total_leaves_count: usize = config.total_supply.try_into().unwrap();
 
         let is_verified = proof_from_hex.verify(
