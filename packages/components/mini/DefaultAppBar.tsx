@@ -13,12 +13,14 @@ import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 import { SpacerRow } from "../spacer";
 
 import ChatGraySVG from "@/assets/icons/chat-gray.svg";
+import LeftArrowSVG from "@/assets/icons/chevron-left.svg";
 import FriendGraySVG from "@/assets/icons/friend-gray.svg";
 import notificationSVG from "@/assets/icons/notification-new.svg";
 import OrganizationGraySVG from "@/assets/icons/organization-gray.svg";
 import UserGraySVG from "@/assets/icons/user-gray.svg";
 import GroupGraySVG from "@/assets/icons/users-group-gray.svg";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useAppRoute } from "@/hooks/navigation/useAppRoute";
 
 type DefaultAppBarProps = {
   title: string;
@@ -61,6 +63,7 @@ const feedsDropdownItems = [
 
 export default function DefaultAppBar({ title }: DefaultAppBarProps) {
   const navigation = useAppNavigation();
+  const route = useAppRoute();
   const wallet = useSelectedNativeWallet();
   const userId = getUserId(wallet?.networkId, wallet?.address);
   const onProfileImagePress = () => navigation.navigate("MiniProfile");
@@ -68,7 +71,8 @@ export default function DefaultAppBar({ title }: DefaultAppBarProps) {
   const onPressNotification = () => {
     navigation.navigate("Notifications");
   };
-
+  console.log("NAVIGATION = ", navigation.getState());
+  console.log("ROUTE = ", route.key);
   return (
     <View
       style={{
@@ -85,12 +89,25 @@ export default function DefaultAppBar({ title }: DefaultAppBarProps) {
         zIndex: 9999,
       }}
     >
-      <CustomPressable onPress={onProfileImagePress}>
-        <UserAvatarWithFrame
-          userId={userId !== "" ? userId : "tori-"}
-          size="S"
-        />
-      </CustomPressable>
+      <View
+        style={{
+          flexDirection: "row",
+          gap: layout.spacing_x1_5,
+          alignItems: "center",
+        }}
+      >
+        {navigation.canGoBack() && (
+          <CustomPressable onPress={() => navigation.goBack()}>
+            <SVG source={LeftArrowSVG} height={22} width={22} />
+          </CustomPressable>
+        )}
+        <CustomPressable onPress={onProfileImagePress}>
+          <UserAvatarWithFrame
+            userId={userId !== "" ? userId : "tori-"}
+            size="S"
+          />
+        </CustomPressable>
+      </View>
       <BrandText
         style={[
           fontSemibold18,
