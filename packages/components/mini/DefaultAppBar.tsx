@@ -5,7 +5,7 @@ import { useSelectedNativeWallet } from "../../hooks/wallet/useSelectedNativeWal
 import { getUserId } from "../../networks";
 import { neutral00, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold18 } from "../../utils/style/fonts";
-import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
+import { MOBILE_HEADER_HEIGHT, layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { CustomPressable } from "../buttons/CustomPressable";
@@ -20,7 +20,7 @@ import OrganizationGraySVG from "@/assets/icons/organization-gray.svg";
 import UserGraySVG from "@/assets/icons/user-gray.svg";
 import GroupGraySVG from "@/assets/icons/users-group-gray.svg";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
-import { useAppRoute } from "@/hooks/navigation/useAppRoute";
+import { RouteName } from "@/utils/navigation";
 
 type DefaultAppBarProps = {
   title: string;
@@ -61,9 +61,15 @@ const feedsDropdownItems = [
   },
 ];
 
+const HideBackButtonNavigationPath: RouteName[] = [
+  "MiniTabs",
+  "MiniChats",
+  "MiniFeeds",
+  "MiniWallets",
+];
+
 export default function DefaultAppBar({ title }: DefaultAppBarProps) {
   const navigation = useAppNavigation();
-  const route = useAppRoute();
   const wallet = useSelectedNativeWallet();
   const userId = getUserId(wallet?.networkId, wallet?.address);
   const onProfileImagePress = () => navigation.navigate("MiniProfile");
@@ -71,8 +77,13 @@ export default function DefaultAppBar({ title }: DefaultAppBarProps) {
   const onPressNotification = () => {
     navigation.navigate("Notifications");
   };
-  console.log("NAVIGATION = ", navigation.getState());
-  console.log("ROUTE = ", route.key);
+  const navigationName =
+    navigation.getState().routes[navigation.getState().index].name;
+
+  const showBackButton =
+    navigation.canGoBack() &&
+    !HideBackButtonNavigationPath.includes(navigationName);
+
   return (
     <View
       style={{
@@ -92,12 +103,15 @@ export default function DefaultAppBar({ title }: DefaultAppBarProps) {
       <View
         style={{
           flexDirection: "row",
-          gap: layout.spacing_x1_5,
+          gap: layout.spacing_x0_5,
           alignItems: "center",
         }}
       >
-        {navigation.canGoBack() && (
-          <CustomPressable onPress={() => navigation.goBack()}>
+        {showBackButton && (
+          <CustomPressable
+            onPress={() => navigation.goBack()}
+            style={{ padding: layout.spacing_x0_5 }}
+          >
             <SVG source={LeftArrowSVG} height={22} width={22} />
           </CustomPressable>
         )}
