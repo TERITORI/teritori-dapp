@@ -18,38 +18,19 @@ public class WeshdModule: Module {
     // The module will be accessible from `requireNativeModule('Weshd')` in JavaScript.
     Name("Weshd")
 
-    // Sets constant properties on the module. Can take a dictionary or a closure that returns a dictionary.
-    Constants([
-      "PI": Double.pi
-    ])
-
-    // Defines event names that the module can send to JavaScript.
-    Events("onChange")
 
     // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
-      AsyncFunction("boot") {
-          WeshFramework.WeshBoot(getDocumentsDirectory())
+    AsyncFunction("boot") {
+      WeshFramework.WeshBoot(getDocumentsDirectory())
     }
-      AsyncFunction("getPort") { () -> Int in
-          return WeshFramework.WeshGetPort()
-    }
-
-    // Defines a JavaScript function that always returns a Promise and whose native code
-    // is by default dispatched on the different thread than the JavaScript runtime runs on.
-    AsyncFunction("setValueAsync") { (value: String) in
-      // Send an event to JavaScript.
-      self.sendEvent("onChange", [
-        "value": value
-      ])
+    
+    AsyncFunction("getPort") { () -> Int in
+      return WeshFramework.WeshGetPort()
     }
 
-    // Enables the module to be used as a native view. Definition components that are accepted as part of the
-    // view definition: Prop, Events.
-    View(WeshdView.self) {
-      // Defines a setter for the `name` prop.
-      Prop("name") { (view: WeshdView, prop: String) in
-        print(prop)
-      }
+    AsyncFunction("shutdown") {
+      WeshFramework.WeshShutdown()
     }
+
   }
 }

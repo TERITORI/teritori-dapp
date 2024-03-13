@@ -1,48 +1,47 @@
 import { Platform } from "react-native";
 
-import BookMarkIcon from "../../../../assets/icons/bookmark.svg";
-import dao from "../../../../assets/icons/dao.svg";
-import socialFeed from "../../../../assets/icons/feed.svg";
-import freelance from "../../../../assets/icons/freelanceservice.svg";
-import governance from "../../../../assets/icons/governance.svg";
-import checklogo from "../../../../assets/icons/greenCheck.svg";
-import launchpad from "../../../../assets/icons/launchpad.svg";
-import leap from "../../../../assets/icons/leap-cosmos-logo.svg";
-import marketplace from "../../../../assets/icons/marketplace.svg";
-import messages from "../../../../assets/icons/messages.svg";
-import multisig from "../../../../assets/icons/multisig.svg";
-import osmosisSVG from "../../../../assets/icons/networks/osmosis.svg";
-import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
-import pathwar from "../../../../assets/icons/pathwar.svg";
-import projectsProgramSVG from "../../../../assets/icons/projects-program.svg";
-import otherAppsIcon from "../../../../assets/icons/random-goods-icon.svg";
-import riot from "../../../../assets/icons/rioters-game.svg";
-import staking from "../../../../assets/icons/staking.svg";
-import tnsService from "../../../../assets/icons/tns-service.svg";
-import wallet from "../../../../assets/icons/wallet.svg";
-import axelarLogo from "../../../../assets/logos/Axelar-logo.svg";
-import mapOfZones from "../../../../assets/logos/MoZ-icon.svg";
-import astroportLogo from "../../../../assets/logos/astroport.svg";
-import calcfinance from "../../../../assets/logos/calc-finance.jpg";
-import coinHallLogo from "../../../../assets/logos/coinhall.svg";
-import mintscanLogo from "../../../../assets/logos/cosmostation-val.png";
-import daodao from "../../../../assets/logos/daodao.png";
-import kjnodes from "../../../../assets/logos/kjnodes-logo.svg";
-import kujirapod from "../../../../assets/logos/kujira-network.svg";
-import nodesguruLogo from "../../../../assets/logos/nodeguru-val.svg";
-import pingpubLogo from "../../../../assets/logos/pingpub-val.svg";
-import pulsarLogo from "../../../../assets/logos/pulsar-logo.svg";
-import radyium from "../../../../assets/logos/raydium.png";
-import restake from "../../../../assets/logos/restake.png";
-import skip from "../../../../assets/logos/skip.png";
-import stakemeLogo from "../../../../assets/logos/stakeme-val.svg";
-import subdao from "../../../../assets/logos/subdao.png";
-import tfm from "../../../../assets/logos/tfm-logo.png";
-import theGraph from "../../../../assets/logos/theGraph.png";
-import toripunks from "../../../../assets/logos/toniPunks.png";
-import uniswap from "../../../../assets/logos/uniswap.png";
-import yieldmos from "../../../../assets/logos/yieldmos.png";
-
+import BookMarkIcon from "@/assets/icons/bookmark.svg";
+import dao from "@/assets/icons/dao.svg";
+import socialFeed from "@/assets/icons/feed.svg";
+import freelance from "@/assets/icons/freelanceservice.svg";
+import governance from "@/assets/icons/governance.svg";
+import checklogo from "@/assets/icons/greenCheck.svg";
+import launchpad from "@/assets/icons/launchpad.svg";
+import leap from "@/assets/icons/leap-cosmos-logo.svg";
+import marketplace from "@/assets/icons/marketplace.svg";
+import messages from "@/assets/icons/messages.svg";
+import multisig from "@/assets/icons/multisig.svg";
+import osmosisSVG from "@/assets/icons/networks/osmosis.svg";
+import teritoriSVG from "@/assets/icons/networks/teritori.svg";
+import pathwar from "@/assets/icons/pathwar.svg";
+import projectsProgramSVG from "@/assets/icons/projects-program.svg";
+import otherAppsIcon from "@/assets/icons/random-goods-icon.svg";
+import riot from "@/assets/icons/rioters-game.svg";
+import staking from "@/assets/icons/staking.svg";
+import tnsService from "@/assets/icons/tns-service.svg";
+import wallet from "@/assets/icons/wallet.svg";
+import axelarLogo from "@/assets/logos/Axelar-logo.svg";
+import mapOfZones from "@/assets/logos/MoZ-icon.svg";
+import astroportLogo from "@/assets/logos/astroport.svg";
+import calcfinance from "@/assets/logos/calc-finance.jpg";
+import coinHallLogo from "@/assets/logos/coinhall.svg";
+import mintscanLogo from "@/assets/logos/cosmostation-val.png";
+import daodao from "@/assets/logos/daodao.png";
+import kjnodes from "@/assets/logos/kjnodes-logo.svg";
+import kujirapod from "@/assets/logos/kujira-network.svg";
+import nodesguruLogo from "@/assets/logos/nodeguru-val.svg";
+import pingpubLogo from "@/assets/logos/pingpub-val.svg";
+import pulsarLogo from "@/assets/logos/pulsar-logo.svg";
+import radyium from "@/assets/logos/raydium.png";
+import restake from "@/assets/logos/restake.png";
+import skip from "@/assets/logos/skip.png";
+import stakemeLogo from "@/assets/logos/stakeme-val.svg";
+import subdao from "@/assets/logos/subdao.png";
+import tfm from "@/assets/logos/tfm-logo.png";
+import theGraph from "@/assets/logos/theGraph.png";
+import toripunks from "@/assets/logos/toniPunks.png";
+import uniswap from "@/assets/logos/uniswap.png";
+import yieldmos from "@/assets/logos/yieldmos.png";
 import { isElectron } from "@/utils/isElectron";
 import { dAppGroup } from "@/utils/types/dapp-store";
 
@@ -64,20 +63,6 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: true,
           alwaysOn: true,
         },
-        ...(Platform.OS !== "web"
-          ? {
-              toriwallet: {
-                id: "toriwallet",
-                title: "Tori Wallet",
-                description: "Wallet",
-                icon: pathwar,
-                route: "NativeWallet",
-                groupKey: "teritori-core-apps",
-                selectedByDefault: true,
-                alwaysOn: false,
-              },
-            }
-          : {}),
         launchpad: {
           id: "launchpad",
           title: "Launchpad",
@@ -98,16 +83,31 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: true,
           alwaysOn: true,
         },
-        wallet: {
-          id: "wallet",
-          title: "My Wallet",
-          description: "Wallet",
-          icon: wallet,
-          route: "WalletManager",
-          groupKey: "teritori-core-apps",
-          selectedByDefault: true,
-          alwaysOn: true,
-        },
+        ...(Platform.OS !== "web"
+          ? {
+              toriwallet: {
+                id: "toriwallet",
+                title: "Teritori OS Wallet",
+                description: "Wallet",
+                icon: wallet,
+                route: "NativeWallet",
+                groupKey: "teritori-core-apps",
+                selectedByDefault: true,
+                alwaysOn: false,
+              },
+            }
+          : {
+              wallet: {
+                id: "wallet",
+                title: "My Wallet",
+                description: "Wallet",
+                icon: wallet,
+                route: "WalletManager",
+                groupKey: "teritori-core-apps",
+                selectedByDefault: true,
+                alwaysOn: true,
+              },
+            }),
         governance: {
           id: "governance",
           title: "Governance",
@@ -160,16 +160,20 @@ export function getAvailableApps(): dAppGroup {
       icon: checklogo,
       active: true,
       options: {
-        osmosis: {
-          id: "osmosis",
-          title: "Osmosis Dex",
-          description: "Advanced automated market maker (AMM)",
-          icon: osmosisSVG,
-          route: "Swap",
-          groupKey: "top-apps",
-          selectedByDefault: true,
-          alwaysOn: false,
-        },
+        ...(Platform.OS !== "web"
+          ? {
+              osmosis: {
+                id: "osmosis",
+                title: "Osmosis Dex",
+                description: "Advanced automated market maker (AMM)",
+                icon: osmosisSVG,
+                route: "Swap",
+                groupKey: "top-apps",
+                selectedByDefault: true,
+                alwaysOn: false,
+              },
+            }
+          : {}),
         "social-feed": {
           id: "social-feed",
           title: "Social Feed",

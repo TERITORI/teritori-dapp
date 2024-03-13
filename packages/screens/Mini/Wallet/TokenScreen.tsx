@@ -1,5 +1,6 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { FlatList, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { AddedToken } from "./components/AddedToken";
 import TransactionItem from "./components/TransactionItem";
@@ -17,6 +18,11 @@ import { useBalances } from "@/hooks/useBalances";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { useSearchTx } from "@/hooks/wallet/useSearchTx";
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
+import {
+  selectAllWallets,
+  setSelectedNativeWalletIndex,
+} from "@/store/slices/wallets";
+import { useAppDispatch } from "@/store/store";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral88, neutralA3, secondaryColor } from "@/utils/style/colors";
 import {
@@ -26,8 +32,21 @@ import {
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
+export const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
+  const wallets = useSelector(selectAllWallets);
+  const dispatch = useAppDispatch();
+
   const selectedWallet = useSelectedNativeWallet();
+
+  useEffect(() => {
+    if (!selectedWallet) {
+      if (wallets.length !== 0) {
+        dispatch(setSelectedNativeWalletIndex(wallets[0].index));
+      } else {
+        navigation.navigate("NativeWallet");
+      }
+    }
+  }, [dispatch, navigation, selectedWallet, wallets]);
 
   const balances = useBalances(
     selectedWallet?.networkId,
@@ -74,8 +93,8 @@ const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
             title="Deposit"
             size="medium"
             onPress={() =>
-              navigation.navigate("MiniSelectToken", {
-                navigateTo: "MiniDepositTORI",
+              navigation.navigate("MiniDepositTORI", {
+                denom: "utori",
               })
             }
           />
@@ -139,7 +158,6 @@ const LastTransactions = () => {
     networkId,
     selectedWallet?.address,
   );
-  console.log("transactions", transactions);
 
   return (
     <>
@@ -198,5 +216,3 @@ const LastTransactions = () => {
     </>
   );
 };
-
-export default TokenScreen;

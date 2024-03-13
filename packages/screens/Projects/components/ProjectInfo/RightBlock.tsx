@@ -15,11 +15,7 @@ import { SocialButton } from "@/components/buttons/SocialButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { getNetworkFeature, NetworkFeature } from "@/networks";
-import {
-  Project,
-  ShortDescData,
-  TeamAndLinkData,
-} from "@/screens/Projects/types";
+import { Project } from "@/screens/Projects/types";
 import { prettyPrice } from "@/utils/coins";
 import {
   neutral22,
@@ -30,7 +26,6 @@ import {
   yellowDefault,
 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
-import { layout } from "@/utils/style/layout";
 
 type RightBlockProps = {
   project: Project;

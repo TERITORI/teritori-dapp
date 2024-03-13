@@ -38,6 +38,8 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
       user: "",
       mentions: [],
       hashtags: [],
+      premiumLevelMin: 0,
+      premiumLevelMax: -1,
     },
     limit: 1,
     offset: 0,

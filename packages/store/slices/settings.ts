@@ -239,6 +239,7 @@ const settingsSlice = createSlice({
     setAppMode: (state, action: PayloadAction<AppMode>) => {
       state.appMode = action.payload;
     },
+
     setDeveloperMode: (state, action: PayloadAction<boolean>) => {
       state.developerMode = action.payload;
     },

@@ -8,11 +8,8 @@ import useSelectedWallet from "../useSelectedWallet";
 
 import { TeritoriBreedingQueryClient } from "@/contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { ConfigResponse } from "@/contracts-clients/teritori-breeding/TeritoriBreeding.types";
-import {
-  getCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
-  mustGetNonSigningCosmWasmClient,
-} from "@/networks";
+import { getCosmosNetwork, mustGetNonSigningCosmWasmClient } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { buildApproveNFTMsg, buildBreedingMsg } from "@/utils/game";
 import { web3ToWeb2URI } from "@/utils/ipfs";
 

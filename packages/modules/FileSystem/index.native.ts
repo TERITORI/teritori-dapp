@@ -14,8 +14,10 @@ if (isRunningInExpoGo) {
   FileSystem = {
     ...ExpoFileSystem,
     readAsStringAsync: async (uri, options) => {
-      console.log("here test");
       return await RNFS.readFile(uri, options?.encoding);
+    },
+    writeAsStringAsync: async (uri, content, options) => {
+      return await RNFS.writeFile(uri, content, options?.encoding);
     },
   };
 }

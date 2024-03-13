@@ -1,12 +1,7 @@
-import { combineReducers, configureStore, Middleware } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { Platform } from "react-native";
 import { useDispatch } from "react-redux";
-import {
-  persistStore,
-  persistReducer,
-  createMigrate,
-  REHYDRATE,
-} from "redux-persist";
+import { persistStore, persistReducer, createMigrate } from "redux-persist";
 
 import { dAppsReducer, dAppsReducerPersisted } from "./slices/dapps-store";
 import {
@@ -17,7 +12,7 @@ import {
   marketplaceFilters,
   marketplaceFilterUI,
 } from "./slices/marketplaceFilters";
-import { messageReducer } from "./slices/message";
+import { messageReducer, selectIsForceChatActivated } from "./slices/message";
 import { searchReducer } from "./slices/search";
 import {
   multisigTokensAdapter,
@@ -32,7 +27,8 @@ import {
 } from "./slices/wallets";
 import { storage } from "./storage";
 import { defaultEnabledNetworks } from "../networks";
-import { bootWeshModule } from "../weshnet/services";
+
+import { checkAndBootWeshModule } from "@/weshnet/services";
 
 const migrations = {
   0: (state: any) => {
@@ -91,12 +87,26 @@ const migrations = {
       },
     };
   },
+  // set default marketplace time period to 30 days
+  5: (state: any) => {
+    return {
+      ...state,
+      marketplaceFilterUI: {
+        ...state.marketplaceFilterUI,
+        timePeriod: {
+          label: "Last 30 days",
+          shortLabel: "30d",
+          value: 60 * 24 * 30,
+        },
+      },
+    };
+  },
 };
 
-const persistConfig = {
+const rootPersistConfig = {
   key: "root",
   storage,
-  version: 4,
+  version: 5,
   migrate: createMigrate(migrations, { debug: false }),
   whitelist: [
     "wallets",
@@ -109,7 +119,13 @@ const persistConfig = {
     "marketplaceFilters",
     "marketplaceFilterUI",
   ],
-  blacklist: ["dAppsStore, marketplaceFilterUI"],
+  blacklist: ["dAppsStore, marketplaceFilterUI", "message"],
+};
+
+const messagePersistConfig = {
+  key: "message",
+  storage,
+  blacklist: ["isChatActivated"],
 };
 
 const rootReducer = combineReducers({
@@ -125,27 +141,28 @@ const rootReducer = combineReducers({
   marketplaceFilters,
   marketplaceFilterUI,
   search: searchReducer,
-  message: messageReducer,
+  message: persistReducer(messagePersistConfig, messageReducer),
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-const afterRehydrateMiddleware: Middleware = () => (next) => (action) => {
-  if (action.type === REHYDRATE) {
-    bootWeshModule();
-  }
-  return next(action);
-};
+const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) => [
-    ...getDefaultMiddleware({ serializableCheck: false }),
-    afterRehydrateMiddleware,
-  ],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
 });
 
 export const persistor = persistStore(store);
+
+persistor.subscribe(() => {
+  const { bootstrapped } = persistor.getState();
+  if (bootstrapped) {
+    const isForceChatActivated = selectIsForceChatActivated(store.getState());
+    if (isForceChatActivated) {
+      checkAndBootWeshModule();
+    }
+  }
+});
 
 export type RootState = ReturnType<typeof store.getState>;
 

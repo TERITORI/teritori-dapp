@@ -51,8 +51,7 @@ const CustomSocialButton: React.FC<{
       text={text}
       iconSvg={iconSvg}
       textColor={neutralA3}
-      style={{ width: "100%" }}
-      bgColor={neutral17}
+      style={{ width: "100%", backgroundColor: neutral17 }}
     />
   );
 };
@@ -69,7 +68,9 @@ export const ProjectsCompleteMilestoneScreen: ScreenFC<
   const selectedWallet = useSelectedWallet();
 
   const { data: project } = useProject(networkId, projectId);
-  const milestone = project?.milestones.find((_, idx) => idx === +milestoneId);
+  const milestone = (project?.milestones || []).find(
+    (_, idx) => idx === +milestoneId,
+  );
 
   const [report, setReport] = useState("");
 
@@ -85,7 +86,7 @@ export const ProjectsCompleteMilestoneScreen: ScreenFC<
     setIsProcessing(true);
 
     const isOk = await execEscrowMethod("CompleteMilestoneAndPay", [
-      project.id.toString(),
+      project?.id?.toString(),
       milestone.id.toString(),
     ]);
 

@@ -1,4 +1,3 @@
-import * as Clipboard from "expo-clipboard";
 import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -8,11 +7,8 @@ import addSVG from "../../../../assets/icons/add-solid-white.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import copySVG from "../../../../assets/icons/copy.svg";
 import dAppStoreSVG from "../../../../assets/icons/dapp-store-solid.svg";
-import googleSVG from "../../../../assets/icons/google.svg";
-import ledgerSVG from "../../../../assets/icons/ledger.svg";
 import lockSVG from "../../../../assets/icons/lock-solid.svg";
 import profileSVG from "../../../../assets/icons/profile-circle-white.svg";
-import questionSVG from "../../../../assets/icons/question-gray.svg";
 import settingSVG from "../../../../assets/icons/setting-solid.svg";
 import { SettingMenuItem } from "../components/SettingMenuItems";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
@@ -22,11 +18,11 @@ import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
+import Clipboard from "@/modules/Clipboard";
 import { selectContactInfo, setContactInfo } from "@/store/slices/message";
 import {
   selectAllWallets,
   setSelectedNativeWalletIndex,
-  StoreWallet,
 } from "@/store/slices/wallets";
 import { useAppDispatch } from "@/store/store";
 import { RouteName, ScreenFC } from "@/utils/navigation";
@@ -60,20 +56,6 @@ const profileScreens: {
     icon: dAppStoreSVG,
   },
 ];
-
-type ProviderType = StoreWallet["provider"];
-const getProviderLogo = (provider: ProviderType) => {
-  switch (provider) {
-    case "google":
-      return googleSVG;
-    case "ledger":
-      return ledgerSVG;
-    case "native":
-      return null; //teritoriSVG;
-    default:
-      return questionSVG;
-  }
-};
 
 export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
   const onClose = () => navigation.goBack();
@@ -154,12 +136,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
                   onClose();
                 }}
               >
-                <Account
-                  accountName={"Seed Phrase #" + item.index}
-                  address={item.address}
-                  logo={getProviderLogo(item.provider) || undefined}
-                  isLast={index === wallets.length - 1}
-                />
+                <Account account={item} isLast={index === wallets.length - 1} />
               </Pressable>
             );
           }}

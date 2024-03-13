@@ -24,17 +24,17 @@ import { Nft as SquadStakeNFT } from "../contracts-clients/teritori-squad-stakin
 import { TeritoriNft__factory } from "../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import { SquadStakingV3__factory } from "../evm-contracts-clients/teritori-squad-staking/SquadStakingV3__factory";
 import {
-  NetworkInfo,
   getCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
   getUserId,
   mustGetCosmosNetwork,
+  mustGetEthereumNetwork,
+  NetworkInfo,
   NetworkKind,
   parseNftId,
   parseUserId,
-  mustGetEthereumNetwork,
 } from "../networks";
 
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import {
   GameBgCardItem,
   RipperRarity,

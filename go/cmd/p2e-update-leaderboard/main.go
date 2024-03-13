@@ -57,7 +57,7 @@ func main() {
 	// get and validate selected network
 	network := netstore.MustGetNetwork(networkID)
 
-	if !slices.Contains(network.GetBase().Features, networks.RiotP2E) {
+	if !slices.Contains(network.GetBase().Features, networks.FeatureTypeRiotP2E) {
 		panic("The provided network does not support P2E")
 	}
 

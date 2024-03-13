@@ -7,6 +7,10 @@
     }
   ],
   "definitions": {
+    "Binary": {
+      "description": "Binary is a wrapper around Vec<u8> to add base64 de/serialization with serde. It also adds some helper methods to help encode inline.\n\nThis is only needed as serde-json-{core,wasm} has a horrible encoding for Vec<u8>. See also <https://github.com/CosmWasm/cosmwasm/blob/main/docs/MESSAGE_TYPES.md>.",
+      "type": "string"
+    },
     "Coin": {
       "type": "object",
       "required": [
@@ -27,13 +31,14 @@
         {
           "type": "object",
           "required": [
-            "upsert_channel"
+            "create_channel"
           ],
           "properties": {
-            "upsert_channel": {
+            "create_channel": {
               "type": "object",
               "required": [
-                "memberships_config"
+                "memberships_config",
+                "trade_royalties_per10k"
               ],
               "properties": {
                 "memberships_config": {
@@ -41,6 +46,66 @@
                   "items": {
                     "$ref": "#/definitions/MembershipConfig"
                   }
+                },
+                "trade_royalties_addr": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "trade_royalties_per10k": {
+                  "type": "integer",
+                  "format": "uint16",
+                  "minimum": 0.0
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "update_channel"
+          ],
+          "properties": {
+            "update_channel": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "$ref": "#/definitions/Uint64"
+                },
+                "memberships_config": {
+                  "type": [
+                    "array",
+                    "null"
+                  ],
+                  "items": {
+                    "$ref": "#/definitions/MembershipConfig"
+                  }
+                },
+                "owner": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "trade_royalties_addr": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "trade_royalties_per10k": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "format": "uint16",
+                  "minimum": 0.0
                 }
               }
             }
@@ -92,6 +157,18 @@
                     "null"
                   ]
                 },
+                "description": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "image_uri": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
                 "mint_royalties": {
                   "type": [
                     "integer",
@@ -99,6 +176,18 @@
                   ],
                   "format": "uint16",
                   "minimum": 0.0
+                },
+                "name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "symbol": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
                 }
               }
             }
@@ -204,6 +293,34 @@
         {
           "type": "object",
           "required": [
+            "send_nft"
+          ],
+          "properties": {
+            "send_nft": {
+              "type": "object",
+              "required": [
+                "contract",
+                "msg",
+                "token_id"
+              ],
+              "properties": {
+                "contract": {
+                  "type": "string"
+                },
+                "msg": {
+                  "$ref": "#/definitions/Binary"
+                },
+                "token_id": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
             "burn"
           ],
           "properties": {
@@ -231,8 +348,7 @@
         "duration_seconds",
         "nft_image_uri",
         "nft_name_prefix",
-        "price",
-        "trade_royalties"
+        "price"
       ],
       "properties": {
         "description": {
@@ -252,11 +368,6 @@
         },
         "price": {
           "$ref": "#/definitions/Coin"
-        },
-        "trade_royalties": {
-          "type": "integer",
-          "format": "uint16",
-          "minimum": 0.0
         }
       },
       "additionalProperties": false

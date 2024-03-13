@@ -106,7 +106,7 @@ export const LeftBlock: React.FC<LeftBlockProps> = ({
             paddingVertical: layout.spacing_x2,
             height: 300,
             justifyContent: "space-between",
-            flex: 1
+            flex: 1,
           }}
         >
           <View>

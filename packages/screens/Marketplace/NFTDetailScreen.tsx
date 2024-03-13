@@ -11,7 +11,7 @@ import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
 import { initialToastError, useFeedbacks } from "@/context/FeedbacksProvider";
 import { Wallet } from "@/context/WalletsProvider";
-import { TeritoriNftVaultClient } from "@/contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { NftMarketplaceClient } from "@/contracts-clients/nft-marketplace/NftMarketplace.client";
 import { NFTVault__factory } from "@/evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import { useMintEnded } from "@/hooks/collection/useMintEnded";
 import { useCancelNFTListing } from "@/hooks/useCancelNFTListing";
@@ -21,12 +21,12 @@ import { useNFTInfo } from "@/hooks/useNFTInfo";
 import { useSellNFT } from "@/hooks/useSellNFT";
 import {
   getCollectionId,
-  getKeplrSigningCosmWasmClient,
   mustGetCosmosNetwork,
   mustGetEthereumNetwork,
   NetworkKind,
   parseNftId,
 } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { getMetaMaskEthereumSigner } from "@/utils/ethereum";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { NFTInfo } from "@/utils/types/nft";
@@ -163,7 +163,7 @@ const Content: React.FC<{
         if (!cosmosNetwork.vaultContractAddress) {
           throw new Error("network not supported");
         }
-        const vaultClient = new TeritoriNftVaultClient(
+        const vaultClient = new NftMarketplaceClient(
           client,
           sender,
           cosmosNetwork.vaultContractAddress,
@@ -228,9 +228,11 @@ const Content: React.FC<{
             />
           )}
 
-          <Target name="main-info">
-            <SpacerColumn size={6} />
-          </Target>
+          {!isMobile && (
+            <Target name="main-info">
+              <SpacerColumn size={6} />
+            </Target>
+          )}
 
           <NFTMainInfo
             nftId={id}
@@ -293,7 +295,7 @@ const teritoriBuy = async (wallet: Wallet, info: NFTInfo) => {
     throw new Error("network not supported");
   }
   const signingCosmwasmClient = await getKeplrSigningCosmWasmClient(network.id);
-  const signingVaultClient = new TeritoriNftVaultClient(
+  const signingVaultClient = new NftMarketplaceClient(
     signingCosmwasmClient,
     wallet.address,
     network.vaultContractAddress,

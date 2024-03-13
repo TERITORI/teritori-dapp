@@ -26,7 +26,6 @@ import { SVG } from "@/components/SVG";
 import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
-import { getNativeSigner } from "@/hooks/wallet/getNativeSigner";
 import { useGetAssets } from "@/hooks/wallet/useGetAssets";
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 import { getCosmosNetwork, getStakingCurrency } from "@/networks";
@@ -40,6 +39,7 @@ import {
 } from "@/utils/style/colors";
 import { fontMedium16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { getNativeSigner } from "@/utils/wallet/getNativeSigner";
 
 const getTxData = (denom: string, amount: string, userId: string) => {
   const networkId = "teritori"; // networkId placeholder
@@ -187,6 +187,7 @@ type SendingModalProps = {
 
 function SendingModal({ visible, onClose, txData, msg }: SendingModalProps) {
   const navigation = useAppNavigation();
+  const [isInProcess, setIsInProcess] = useState(false);
   const selectedWallet = useSelectedNativeWallet();
   const cosmosNetwork = getCosmosNetwork(selectedWallet?.networkId);
   if (!cosmosNetwork) {
@@ -224,39 +225,36 @@ function SendingModal({ visible, onClose, txData, msg }: SendingModalProps) {
           <CustomButton
             type="gray"
             title="Cancel"
-            onPress={() => navigation.navigate("MiniTabs")}
+            onPress={() =>
+              navigation.navigate("MiniTabs", { screen: "MiniWallets" })
+            }
             style={{ flex: 1 }}
           />
           <CustomButton
-            title="Sign"
+            title={isInProcess ? "Sending" : "Sign"}
+            isDisabled={isInProcess}
             onPress={async () => {
               let signed: TxRaw;
-              console.log("Signing tx", msg);
-              console.log("Selected wallet", selectedWallet);
 
               if (selectedWallet === undefined) return;
               const client = await getNativeSigner(selectedWallet);
               if (client === undefined) return;
 
               try {
-                const simulation = await client.simulate(
-                  selectedWallet.address,
-                  [msg],
-                  "",
-                );
-                const gasEstimate = simulation;
+                const gasEstimate =
+                  (await client.simulate(selectedWallet.address, [msg], "")) *
+                  1.3; // 30% buffer
                 const fee: StdFee = {
                   gas: gasEstimate.toFixed(0),
                   amount: [
                     {
                       amount: (
-                        gasEstimate * cosmosNetwork.gasPriceStep.low
+                        gasEstimate * cosmosNetwork.gasPriceStep.average
                       ).toFixed(0),
                       denom: stakingCurrency.denom,
                     },
                   ],
                 };
-                console.log("Simulation", simulation);
                 signed = await client.sign(
                   selectedWallet.address,
                   [msg],
@@ -267,12 +265,12 @@ function SendingModal({ visible, onClose, txData, msg }: SendingModalProps) {
                 const txResponse = await client.broadcastTx(
                   Uint8Array.from(txRaw.encode(signed).finish()),
                 );
-                console.log("Tx sent", txResponse);
                 if (isDeliverTxFailure(txResponse)) {
                   throw new Error(txResponse.rawLog);
                 }
+                setIsInProcess(true);
                 console.log("Tx sent", txResponse);
-                navigation.navigate("MiniTabs");
+                navigation.navigate("MiniTabs", { screen: "MiniWallets" });
               } catch (e: any) {
                 console.error(e);
               }

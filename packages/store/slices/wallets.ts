@@ -5,16 +5,9 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 
-import { NetworkKind } from "../../networks";
 import { RootState } from "../store";
 
-export interface StoreWallet {
-  index: number;
-  address: string;
-  provider: "native" | "ledger" | "google";
-  network: NetworkKind;
-  networkId: string;
-}
+import { StoreWallet } from "@/utils/types/wallet";
 
 interface AddressBookEntry {
   id: number;
@@ -55,7 +48,8 @@ const walletsSlice = createSlice({
   },
   reducers: {
     addSelected: storeWalletsAdapter.setOne,
-    removeSelected: storeWalletsAdapter.removeOne,
+    updateWallet: storeWalletsAdapter.upsertOne,
+    removeWalletById: storeWalletsAdapter.removeOne,
     resetAllWallets: storeWalletsAdapter.removeAll,
     setSelectedNativeWalletIndex: (state, action: PayloadAction<number>) => {
       // Add new reducer function
@@ -78,7 +72,7 @@ const tokensSlice = createSlice({
   name: "tokens",
   initialState: storeTokens.getInitialState(),
   reducers: {
-    updateOne: storeTokens.upsertOne,
+    updateToken: storeTokens.upsertOne,
     removeToken: storeTokens.removeOne,
     resetAllTokens: storeTokens.removeAll,
   },
@@ -103,6 +97,12 @@ export const addressBookReducer = addressBookSlice.reducer;
 export const tokensReducer = tokensSlice.reducer;
 export const { addEntry, removeEntry, resetAllAddressBook } =
   addressBookSlice.actions;
-export const { addSelected, resetAllWallets, setSelectedNativeWalletIndex } =
-  walletsSlice.actions;
-export const { updateOne, resetAllTokens } = tokensSlice.actions;
+
+export const {
+  addSelected,
+  resetAllWallets,
+  setSelectedNativeWalletIndex,
+  updateWallet,
+  removeWalletById,
+} = walletsSlice.actions;
+export const { updateToken, resetAllTokens } = tokensSlice.actions;

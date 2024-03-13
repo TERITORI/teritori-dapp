@@ -35,14 +35,23 @@ import { TextInputCustom } from "../inputs/TextInputCustom";
 import ModalBase from "../modals/ModalBase";
 import { SpacerColumn } from "../spacer";
 
+import { useTNS } from "@/context/TNSProvider";
 import { ButtonsSize } from "@/utils/style/buttons";
 
 export const ProfileButton: React.FC<{
   buttonSize?: ButtonsSize;
   style?: StyleProp<ViewStyle>;
   isEdit?: boolean;
-}> = ({ style, isEdit, buttonSize = "XL" }) => {
+  setIsEditProfileModal?: (val: boolean) => void;
+}> = ({
+  style,
+  isEdit,
+  buttonSize = "XL",
+  setIsEditProfileModal = (val: boolean) => {},
+}) => {
   const selectedWallet = useSelectedWallet();
+  const { setName } = useTNS();
+
   const network = getNetwork(selectedWallet?.networkId);
   const { metadata } = useNSUserInfo(selectedWallet?.userId);
   if (!network?.features.includes(NetworkFeature.NameService)) {
@@ -50,45 +59,52 @@ export const ProfileButton: React.FC<{
   }
 
   if (selectedWallet && metadata?.tokenId)
-    return (
-      <OmniLink
-        style={style}
-        disabled={network?.kind !== NetworkKind.Cosmos}
-        to={
-          !isEdit
-            ? {
-                screen: "UserPublicProfile",
-                params: {
-                  id: selectedWallet.userId,
-                },
-              }
-            : metadata.tokenId
-              ? {
-                  screen: "TNSHome",
-                  params: {
-                    modal: "update-name",
-                    name: metadata.tokenId.replace(".tori", ""),
-                  },
-                }
-              : { screen: "ComingSoon" }
-        }
-      >
+    if (isEdit) {
+      return (
         <SecondaryButtonOutline
           size={buttonSize}
           disabled={network?.kind !== NetworkKind.Cosmos}
-          text={isEdit ? "Edit profile" : "My profile"}
+          text="Edit profile"
           backgroundColor={neutral00}
+          onPress={() => {
+            const tokenName = metadata?.tokenId?.replace(".tori", "");
+            setIsEditProfileModal(true);
+            setName(tokenName || "");
+          }}
         />
-      </OmniLink>
-    );
+      );
+    } else {
+      return (
+        <OmniLink
+          style={style}
+          disabled={network?.kind !== NetworkKind.Cosmos}
+          to={{
+            screen: "UserPublicProfile",
+            params: {
+              id: selectedWallet.userId,
+            },
+          }}
+        >
+          <SecondaryButtonOutline
+            size={buttonSize}
+            disabled={network?.kind !== NetworkKind.Cosmos}
+            text="My profile"
+            backgroundColor={neutral00}
+          />
+        </OmniLink>
+      );
+    }
 
-  return <RegisterButton networkId={network?.id} style={style} />;
+  return (
+    <RegisterButton networkId={network?.id} style={style} size={buttonSize} />
+  );
 };
 
 const RegisterButton: React.FC<{
   style?: StyleProp<ViewStyle>;
   networkId: string | undefined;
-}> = ({ networkId, style }) => {
+  size: ButtonsSize;
+}> = ({ networkId, style, size }) => {
   const network = getNetwork(networkId);
   const [gnoModalVisible, setGnoModalVisible] = useState(false);
 
@@ -104,7 +120,7 @@ const RegisterButton: React.FC<{
         style={style}
       >
         <SecondaryButtonOutline
-          size="XL"
+          size={size}
           text="Create profile"
           backgroundColor={neutral00}
         />
@@ -116,7 +132,7 @@ const RegisterButton: React.FC<{
     return (
       <View style={style}>
         <SecondaryButtonOutline
-          size="XL"
+          size={size}
           text="Create profile"
           backgroundColor={neutral00}
           onPress={() => setGnoModalVisible(true)}

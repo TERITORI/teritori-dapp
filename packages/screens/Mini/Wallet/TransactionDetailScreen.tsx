@@ -1,4 +1,3 @@
-import * as Clipboard from "expo-clipboard";
 import { capitalize } from "lodash";
 import { useWindowDimensions, View } from "react-native";
 
@@ -13,6 +12,7 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
+import Clipboard from "@/modules/Clipboard";
 import { ScreenFC } from "@/utils/navigation";
 import { blueDefault, neutralA3 } from "@/utils/style/colors";
 import { fontSemibold15 } from "@/utils/style/fonts";
@@ -130,9 +130,8 @@ export function capitalizeStr(str: string) {
   return firstLetter + lastLetter;
 }
 
-export async function copyToClipboard(value: string) {
+async function copyToClipboard(value: string) {
   await Clipboard.setStringAsync(value);
-  alert("Copied");
 }
 
 export default TransactionDetailScreen;

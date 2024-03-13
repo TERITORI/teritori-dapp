@@ -11,8 +11,9 @@ import { BrandText } from "@/components/BrandText";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
 import { TableRow } from "@/components/table/TableRow";
+import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { TNSName } from "@/screens/Projects/components/TNSName";
+import { getUserId } from "@/networks";
 import {
   useEscrowContract,
   useQueryEscrow,
@@ -65,7 +66,7 @@ const Candidate: React.FC<CandidateProps> = ({ projectId, candidate }) => {
   return (
     <FlexRow style={{ justifyContent: "space-between" }}>
       <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-        <TNSName networkId={networkId} userAddress={candidate} />
+        <UsernameWithAvatar userId={getUserId(networkId, candidate)} />
       </BrandText>
 
       <PrimaryButton
@@ -111,9 +112,12 @@ const ProjectRow: React.FC<{ project: Project }> = ({ project }) => {
         />
 
         <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("ProjectsDetail", { id: project.id })
-          }
+          onPress={() => {
+            if (!project.id) {
+              return;
+            }
+            navigation.navigate("ProjectsDetail", { id: project.id });
+          }}
         >
           <BrandText
             numberOfLines={2}
@@ -136,7 +140,7 @@ const ProjectRow: React.FC<{ project: Project }> = ({ project }) => {
       {candidates.length > 0 && (
         <View style={{ flex: 8, alignItems: "center" }}>
           {candidates.map((c, idx) => (
-            <Candidate key={idx} candidate={c} projectId={project.id} />
+            <Candidate key={idx} candidate={c} projectId={project.id || -1} />
           ))}
         </View>
       )}

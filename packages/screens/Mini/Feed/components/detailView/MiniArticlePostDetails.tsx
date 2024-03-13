@@ -11,13 +11,10 @@ import CustomAppBar from "../../../components/AppBar/CustomAppBar";
 
 import { Post } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
+import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { CommentsContainer } from "@/components/cards/CommentsContainer";
-import {
-  NewsFeedInput,
-  NewsFeedInputHandle,
-} from "@/components/socialFeed/NewsFeed/NewsFeedInput";
 import { RichText } from "@/components/socialFeed/RichText";
 import { SocialCardHeader } from "@/components/socialFeed/SocialCard/SocialCardHeader";
 import { SocialCardWrapper } from "@/components/socialFeed/SocialCard/SocialCardWrapper";
@@ -28,9 +25,15 @@ import {
 } from "@/hooks/feed/useFetchComments";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
+import {
+  MiniCommentInput,
+  MiniCommentInputInputHandle,
+} from "@/screens/Mini/components/MiniCommentInput";
 import { zodTryParseJSON } from "@/utils/sanitize";
-import { BASE_POST, DEFAULT_USERNAME } from "@/utils/social-feed";
+import { DEFAULT_USERNAME } from "@/utils/social-feed";
+import { neutral00 } from "@/utils/style/colors";
 import { fontSemibold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
 import { ReplyToType, ZodSocialFeedArticleMetadata } from "@/utils/types/feed";
 
@@ -50,10 +53,10 @@ export const MiniArticlePostDetails = ({
   const { width: windowWidth } = useWindowDimensions();
 
   const aref = useAnimatedRef<Animated.ScrollView>();
-  const feedInputRef = useRef<NewsFeedInputHandle>(null);
+  const feedInputRef = useRef<MiniCommentInputInputHandle>(null);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
 
-  const [localPost, setLocalPost] = useState(post || BASE_POST);
+  const [localPost, setLocalPost] = useState(post || Post.create());
 
   const postMetadata = zodTryParseJSON(
     ZodSocialFeedArticleMetadata,
@@ -135,89 +138,106 @@ export const MiniArticlePostDetails = ({
   if (!metadataToUse) return null;
 
   return (
-    <ScreenContainer
-      forceNetworkId={networkId}
-      fullWidth
-      responsive
-      noMargin
-      footerChildren
-      noScroll
-      headerMini={<CustomAppBar backEnabled title={`Article by ${username}`} />}
-    >
-      <Animated.ScrollView
-        ref={aref}
-        onScroll={scrollHandler}
-        scrollEventThrottle={1}
+    <KeyboardAvoidingView extraVerticalOffset={-100}>
+      <ScreenContainer
+        forceNetworkId={networkId}
+        fullWidth
+        responsive
+        noMargin
+        footerChildren
+        noScroll
+        headerMini={
+          <CustomAppBar backEnabled title={`Article by ${username}`} />
+        }
       >
-        <View style={{ flex: 1, width: windowWidth - 20 }}>
-          <SocialCardWrapper post={localPost} refetchFeed={refetchPost}>
-            {!!coverImage && (
-              <>
-                <OptimizedImage
-                  width={windowWidth}
-                  height={200}
-                  sourceURI={thumbnailURI}
-                  fallbackURI={defaultThumbnailImage}
-                  style={{
-                    zIndex: -1,
-                    width: windowWidth,
-                    height: 200 - 2,
-                    borderTopRightRadius: 20,
-                    borderBottomRightRadius: 20,
-                  }}
+        <Animated.ScrollView
+          ref={aref}
+          onScroll={scrollHandler}
+          scrollEventThrottle={1}
+        >
+          <View style={{ flex: 1, width: windowWidth - 20 }}>
+            <SocialCardWrapper post={localPost} refetchFeed={refetchPost}>
+              {!!coverImage && (
+                <>
+                  <OptimizedImage
+                    width={windowWidth}
+                    height={200}
+                    sourceURI={thumbnailURI}
+                    fallbackURI={defaultThumbnailImage}
+                    style={{
+                      zIndex: -1,
+                      width: windowWidth,
+                      height: 200 - 2,
+                      borderTopRightRadius: 20,
+                      borderBottomRightRadius: 20,
+                    }}
+                  />
+                  <SpacerColumn size={3} />
+                </>
+              )}
+              {!!metadataToUse?.title && (
+                <>
+                  <BrandText style={[fontSemibold16]}>
+                    {metadataToUse.title}
+                  </BrandText>
+                  <SpacerColumn size={1.5} />
+                </>
+              )}
+
+              <SocialCardHeader
+                authorAddress={authorAddress}
+                authorId={localPost.authorId}
+                createdAt={post.createdAt}
+                authorMetadata={authorNSInfo?.metadata}
+              />
+
+              {/*========== Article content */}
+              <View>
+                <RichText
+                  initialValue={metadataToUse.message}
+                  isPostConsultation
+                  audioFiles={audioFiles}
+                  postId={postId}
+                  authorId={authorId}
                 />
-                <SpacerColumn size={3} />
-              </>
-            )}
-            {!!metadataToUse?.title && (
-              <>
-                <BrandText style={[fontSemibold16]}>
-                  {metadataToUse.title}
-                </BrandText>
-                <SpacerColumn size={1.5} />
-              </>
-            )}
-
-            <SocialCardHeader
-              authorAddress={authorAddress}
-              authorId={localPost.authorId}
-              createdAt={post.createdAt}
-              authorMetadata={authorNSInfo?.metadata}
-            />
-
-            {/*========== Article content */}
+              </View>
+              <SpacerColumn size={1.5} />
+            </SocialCardWrapper>
             <View>
-              <RichText
-                initialValue={metadataToUse.message}
-                isPostConsultation
-                audioFiles={audioFiles}
-                postId={postId}
-                authorId={authorId}
+              <SpacerColumn size={4} />
+              <CommentsContainer
+                cardWidth={windowWidth}
+                comments={comments}
+                onPressReply={() => {}}
               />
             </View>
-            <SpacerColumn size={1.5} />
-          </SocialCardWrapper>
-          <View>
-            <NewsFeedInput
-              style={{ alignSelf: "center" }}
-              ref={feedInputRef}
-              type="comment"
-              replyTo={replyTo}
-              parentId={post.identifier}
-              onSubmitInProgress={handleSubmitInProgress}
-              onSubmitSuccess={() => {
-                setReplyTo(undefined);
-                refetchComments();
-              }}
-            />
-            <CommentsContainer
-              cardWidth={windowWidth}
-              comments={comments}
-              onPressReply={() => {}}
-            />
           </View>
+        </Animated.ScrollView>
+        <View
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: neutral00,
+            paddingVertical: layout.spacing_x0_75,
+          }}
+        >
+          <MiniCommentInput
+            style={{
+              alignSelf: "center",
+            }}
+            ref={feedInputRef}
+            replyTo={replyTo}
+            parentId={post.identifier}
+            onSubmitInProgress={handleSubmitInProgress}
+            onSubmitSuccess={() => {
+              setReplyTo(undefined);
+              refetchComments();
+            }}
+          />
         </View>
-      </Animated.ScrollView>
-    </ScreenContainer>
+      </ScreenContainer>
+    </KeyboardAvoidingView>
   );
 };

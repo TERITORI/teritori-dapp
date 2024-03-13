@@ -28,6 +28,7 @@ export const TableRow: React.FC<TableRowProps> = ({ headings, labelStyle }) => {
             },
             labelStyle,
           ]}
+          numberOfLines={1}
         >
           {label}
         </BrandText>

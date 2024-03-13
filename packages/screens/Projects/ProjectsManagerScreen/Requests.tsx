@@ -56,6 +56,9 @@ const RequestItem: React.FC<{
   const { execEscrowMethod } = useEscrowContract(networkId, walletAddress);
 
   const gotoProjectDetail = (project: Project) => {
+    if (!project.id) {
+      return;
+    }
     navigation.navigate("ProjectsDetail", { id: project.id });
   };
 
@@ -68,7 +71,7 @@ const RequestItem: React.FC<{
     );
 
     await execEscrowMethod("AcceptContractor", [
-      project.id.toString(),
+      project?.id?.toString(),
       candidate,
     ]);
 
@@ -77,14 +80,14 @@ const RequestItem: React.FC<{
 
   const acceptContract = async (project: Project) => {
     setIsProcessing(true);
-    await execEscrowMethod("AcceptContract", [project.id.toString()]);
+    await execEscrowMethod("AcceptContract", [project?.id?.toString()]);
     setIsProcessing(false);
   };
 
   const rejectContract = async (project: Project, rejectReason: string) => {
     setIsProcessing(true);
     await execEscrowMethod("RejectContract", [
-      project.id.toString(),
+      project?.id?.toString(),
       rejectReason,
     ]);
     setIsProcessing(false);
@@ -174,7 +177,7 @@ const RequestItem: React.FC<{
                 { color: neutralA3, textAlign: "center" },
               ]}
             >
-              {project.milestones.length}
+              {project.milestones?.length || 0}
             </BrandText>
           </View>
 
@@ -192,8 +195,8 @@ const RequestItem: React.FC<{
                 iconSvg={githubSVG}
                 style={{
                   marginRight: layout.spacing_x2,
+                  backgroundColor: neutral17,
                 }}
-                bgColor={neutral17}
               />
             </Link>
           </View>
@@ -290,8 +293,6 @@ export const Requests: React.FC<{
     return null;
   }
 
-  console.log("projects in requests", projects);
-
   let adjustedProjects: (Project & { contractorCandidate?: string })[] =
     type === "requestsByBuilders"
       ? projects.filter((p) => p.sender === p.funder)
@@ -301,6 +302,9 @@ export const Requests: React.FC<{
     // expand by contractor
     adjustedProjects = adjustedProjects.reduce(
       (acc, p) => {
+        if (!p.contractorCandidates) {
+          return acc;
+        }
         const newProjects = p.contractorCandidates.map((c) => ({
           ...p,
           contractorCandidate: c,
@@ -310,8 +314,6 @@ export const Requests: React.FC<{
       [] as (Project & { contractorCandidate?: string })[],
     );
   }
-
-  console.log("adjustedProjects", adjustedProjects);
 
   return (
     <>

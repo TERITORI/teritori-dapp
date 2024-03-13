@@ -18,8 +18,9 @@ import { IconButton } from "@/components/buttons/IconButton";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { TableRow } from "@/components/table/TableRow";
+import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { TNSName } from "@/screens/Projects/components/TNSName";
+import { getUserId } from "@/networks";
 import { useAppNavigation } from "@/utils/navigation";
 import { neutral33, neutralFF } from "@/utils/style/colors";
 import { fontSemibold13 } from "@/utils/style/fonts";
@@ -76,9 +77,12 @@ const ProjectRow: React.FC<{ project: Project; projectType: ProjectType }> = ({
         />
 
         <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("ProjectsDetail", { id: project.id })
-          }
+          onPress={() => {
+            if (!project.id) {
+              return;
+            }
+            navigation.navigate("ProjectsDetail", { id: project.id });
+          }}
         >
           <BrandText
             numberOfLines={2}
@@ -100,10 +104,12 @@ const ProjectRow: React.FC<{ project: Project; projectType: ProjectType }> = ({
       {/* === Manager === */}
       <View style={{ flex: 5, alignItems: "center" }}>
         {projectType === "myProjects" && (
-          <TNSName networkId={networkId} userAddress={project.funder} />
+          <UsernameWithAvatar userId={getUserId(networkId, project.funder)} />
         )}
         {projectType === "myInvestments" && (
-          <TNSName networkId={networkId} userAddress={project.contractor} />
+          <UsernameWithAvatar
+            userId={getUserId(networkId, project.contractor)}
+          />
         )}
       </View>
 

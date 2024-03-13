@@ -4,8 +4,7 @@ export const isElectron = () => {
     if (userAgent.indexOf(" electron/") > -1) {
       return true;
     }
-  } catch (err) {
-    console.log("isElectron err", err);
+  } catch {
+    return false;
   }
-  return false;
 };

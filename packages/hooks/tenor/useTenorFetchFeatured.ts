@@ -7,7 +7,7 @@ export const tenorRequest = axios.create({
   baseURL: "https://tenor.googleapis.com/v2",
   method: "GET",
   params: {
-    key: process.env.PUBLIC_TENOR_KEY,
+    key: process.env.EXPO_PUBLIC_PUBLIC_TENOR_KEY,
   },
 });
 

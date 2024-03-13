@@ -72,6 +72,10 @@ export const AccordionBottomComponent = ({
           maxWidth: ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH,
         }}
         onUpload={async (files) => {
+          if (files.length === 0) {
+            update(tierIndex, { ...tier, imageURI: "" });
+          }
+
           if (files.length !== 1) {
             throw new Error("Only one file is allowed");
           }

@@ -1,11 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { Cw721MembershipQueryClient } from "@/contracts-clients/cw721-membership";
-import {
-  NetworkFeature,
-  getNetworkFeature,
-  mustGetNonSigningCosmWasmClient,
-} from "@/networks";
+import { mustGetCw721MembershipQueryClient } from "@/utils/feed/client";
 
 export const usePremiumChannel = (
   networkId: string | undefined,
@@ -18,19 +13,7 @@ export const usePremiumChannel = (
         return null;
       }
 
-      const premiumFeedFeature = getNetworkFeature(
-        networkId,
-        NetworkFeature.CosmWasmPremiumFeed,
-      );
-      if (!premiumFeedFeature) {
-        return null;
-      }
-
-      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
-      const client = new Cw721MembershipQueryClient(
-        cosmwasmClient,
-        premiumFeedFeature.membershipContractAddress,
-      );
+      const client = await mustGetCw721MembershipQueryClient(networkId);
 
       try {
         const channel = await client.channel({ channelAddr: channelAddress });
@@ -38,7 +21,7 @@ export const usePremiumChannel = (
       } catch (error) {
         if (
           error instanceof Error &&
-          error.message.includes("Channel does not exist")
+          error.message.includes("This address does not own a channel.")
         ) {
           return null;
         }

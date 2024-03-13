@@ -10,7 +10,6 @@ import { TeritoriNameServiceQueryClient } from "../../../contracts-clients/terit
 import { useBalances } from "../../../hooks/useBalances";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
-  getKeplrSigningStargateClient,
   mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
   getStakingCurrency,
@@ -22,6 +21,8 @@ import { TNSSendFundsFormType } from "../../../utils/types/tns";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../ModalBase";
+
+import { getKeplrSigningStargateClient } from "@/networks/signer";
 
 export const TNSSendFundsModal: React.FC<{
   onClose: () => void;

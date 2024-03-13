@@ -7,7 +7,8 @@ import { nonSigningSocialFeedClient } from "@/client-creators/socialFeedClient";
 import { NetworkKind, getNetwork, getUserId } from "@/networks";
 import { decodeGnoPost } from "@/utils/feed/gno";
 import { extractGnoJSONString } from "@/utils/gno";
-import { safeParseJSON } from "@/utils/sanitize";
+import { safeParseJSON, zodTryParseJSON } from "@/utils/sanitize";
+import { zodSocialFeedCommonMetadata } from "@/utils/types/feed";
 
 // FIXME: this is not typed
 export const usePost = (id: string, networkId: string | undefined) => {
@@ -48,6 +49,11 @@ export const usePost = (id: string, networkId: string | undefined) => {
           createdAt = moment(metadata.createdAt).unix();
         }
 
+        const commonMetadata = zodTryParseJSON(
+          zodSocialFeedCommonMetadata,
+          res.metadata,
+        );
+
         const post: Post = {
           identifier: id,
           parentPostIdentifier: res.parent_post_identifier || "",
@@ -59,6 +65,7 @@ export const usePost = (id: string, networkId: string | undefined) => {
           subPostLength: res.sub_post_length,
           createdAt,
           tipAmount: res.tip_amount,
+          premiumLevel: commonMetadata?.premium || 0,
         };
         return post;
       }

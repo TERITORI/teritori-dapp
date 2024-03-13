@@ -48,7 +48,7 @@ export const DropdownWithListItem = ({
           />
         }
         positionStyle={{
-          bottom: -190,
+          top: 35,
           right: 0,
           ...positionStyle,
         }}

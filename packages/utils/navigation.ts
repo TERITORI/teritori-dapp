@@ -3,11 +3,16 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
 import { feedsTabItems } from "./social-feed";
+import { AppMode } from "./types/app-mode";
 import { NewPostFormValues } from "./types/feed";
-import { Conversation, MessageFriendsTabItem } from "./types/message";
+import { MessageFriendsTabItem } from "./types/message";
 import { uppTabItems } from "./upp";
 
 export type RouteName = keyof RootStackParamList;
+
+type MiniTabsScreen = {
+  screen?: "MiniChats" | "MiniWallets" | "MiniFeeds";
+};
 
 export type RootStackParamList = {
   Home?: { network?: string };
@@ -29,8 +34,6 @@ export type RootStackParamList = {
   ReadyLaunchpadApplications: undefined;
   AllProjectAdministrationDash: undefined;
 
-  LeaderboardMarketplace: undefined;
-
   Launchpad: undefined;
   LaunchpadApply: undefined;
   LaunchpadCreate: undefined;
@@ -39,6 +42,7 @@ export type RootStackParamList = {
   TNSHome: { modal: string; name?: string } | undefined;
 
   Marketplace: undefined;
+  MarketplaceLeaderboard: undefined;
   Collection: { id: string };
   CollectionTools: { id: string };
   NFTDetail: { id: string; openBuy?: boolean };
@@ -92,7 +96,7 @@ export type RootStackParamList = {
 
   Metrics: undefined;
   Message: { view: string; tab?: string } | undefined;
-  ChatSection: Conversation;
+  ChatSection: { id: string };
   FriendshipManager: { tab?: MessageFriendsTabItem } | undefined;
 
   // native wallet screens
@@ -104,18 +108,21 @@ export type RootStackParamList = {
   SuccessScreen: undefined;
 
   //Mini Screens
-  MiniTabs: undefined;
+  MiniTabs: MiniTabsScreen;
   Conversation: { conversationId: string };
   MiniChats: { back?: RouteName };
   MiniWallets: undefined;
   MiniFeeds: undefined;
+  MiniCreatePost: undefined;
   MiniProfile: undefined;
   MiniProfileDetail: undefined;
   MiniDAppStore: undefined;
   MiniNewConversation: undefined;
   MiniFriend: undefined;
+  MiniAddFriend: undefined;
   MiniNewGroup: undefined;
   MiniChatSetting: { back?: RouteName };
+  MiniPreferencesSetting: { back?: RouteName };
   MiniSettings: undefined;
   MiniAccountDetails: { accountName: string; id: string };
   MiniAddAccount: undefined;
@@ -136,7 +143,7 @@ export type RootStackParamList = {
   MiniSelectToken: { navigateTo: RouteName };
   MiniDepositTORI: { back?: RouteName; denom: string };
   ModeSelection: undefined;
-  ChatActivation: undefined;
+  ChatActivation: { appMode: AppMode };
   MiniSendTori: { back?: RouteName; denom: string };
   MiniSendingTori: {
     back?: RouteName;
@@ -147,6 +154,8 @@ export type RootStackParamList = {
   MiniTransactionDetail: { type: string; transactionId: string };
   ConnectLedger: undefined;
   CreateWallet: undefined;
+  MiniChatProfile: undefined;
+  MiniChatCreateAccount: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -183,8 +192,6 @@ const navConfig: {
     ReadyLaunchpadApplications: "launchpad/ready-applications",
     AllProjectAdministrationDash: "launchpad/all-projects",
 
-    LeaderboardMarketplace: "leaderboard/marketplace",
-
     // === RiotGame
     RiotGame: "riot-game",
     RiotGameEnroll: "riot-game/enroll",
@@ -208,6 +215,7 @@ const navConfig: {
 
     // ==== Marketplace
     Marketplace: "marketplace",
+    MarketplaceLeaderboard: "marketplace/leaderboard",
     Collection: "collection/:id",
     CollectionTools: "collection/:id/tools",
     NFTDetail: "nft/:id",
@@ -272,14 +280,18 @@ const navConfig: {
     MiniChats: "mini-chat",
     MiniWallets: "mini-wallet",
     MiniFeeds: "mini-feed",
+    MiniCreatePost: "mini-create-post",
     Conversation: "mini-conversation",
     MiniProfile: "mini-profile",
     MiniProfileDetail: "mini-profile-detail",
     MiniDAppStore: "mini-dApp-store",
     MiniNewConversation: "mini-new-conversation",
     MiniFriend: "mini-friend",
+    MiniAddFriend: "mini-add-friend",
     MiniNewGroup: "mini-new-group",
     MiniChatSetting: "mini-chat-setting",
+    MiniPreferencesSetting: "mini-preferences-setting",
+    MiniChatCreateAccount: "mini-chat-create-account",
     MiniSettings: "mini-settings",
     MiniAccountDetails: "mini-account-details",
     MiniAddAccount: "mini-add-account",
@@ -306,6 +318,7 @@ const navConfig: {
     MiniTransactionDetail: "mini-transaction-detail",
     ConnectLedger: "connect-ledger",
     CreateWallet: "create-wallet",
+    MiniChatProfile: "mini-chat-profile",
   },
 };
 

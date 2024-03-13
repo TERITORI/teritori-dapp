@@ -98,7 +98,13 @@ export const FeedVideosList: React.FC<{
 
         {allowUpload && <UploadVideoButton onPress={onPressUploadVideo} />}
       </View>
-      <View style={[contentGroupCStyle]}>
+      <View
+        style={
+          appMode === "mini"
+            ? { marginTop: layout.spacing_x2, paddingBottom: 100 } //paddingBottom :100 to make last card visible completely, otherwise gets hidden behind bottom tabs
+            : [contentGroupCStyle]
+        }
+      >
         <GridList<Post>
           keyExtractor={(item) => `video-${item.identifier}`}
           data={videos}
@@ -111,6 +117,7 @@ export const FeedVideosList: React.FC<{
             />
           )}
           onEndReached={onEndReached}
+          noFixedHeight //FIXME: adding noFixedHeight breaks pagination ie.infinite pagination, without it scroll won't work
         />
       </View>
 
@@ -138,4 +145,5 @@ const contentGroupCStyle: ViewStyle = {
   justifyContent: "center",
   flexWrap: "wrap",
   marginTop: layout.spacing_x2,
+  paddingBottom: layout.spacing_x4,
 };

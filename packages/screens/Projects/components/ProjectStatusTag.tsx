@@ -11,7 +11,7 @@ import {
 import { ContractStatus } from "../types";
 
 export const ProjectStatusTag: React.FC<{
-  status: ContractStatus;
+  status: ContractStatus | undefined;
   onPress?: () => void;
   active?: boolean;
   size?: "XS" | "SM" | "M" | "XL";

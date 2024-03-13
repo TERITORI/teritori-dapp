@@ -3,7 +3,6 @@ import { FlatList, View } from "react-native";
 import { Avatar, Badge } from "react-native-paper";
 import { useSelector } from "react-redux";
 
-import FriendRequestModal from "./components/FriendRequestModal";
 import searchSVG from "../../../../assets/icons/search-gray.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
@@ -32,7 +31,7 @@ import {
 import { bytesFromString } from "../../../weshnet/utils";
 import { CustomButton } from "../components/Button/CustomButton";
 import MiniTextInput from "../components/MiniTextInput";
-import MiniToast from "../components/MiniToast";
+import MiniToastWithAction from "../components/MiniToastWithAction";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 type ToastType = {
@@ -41,7 +40,6 @@ type ToastType = {
 };
 
 export const MiniFriendScreen: ScreenFC<"MiniFriend"> = ({ navigation }) => {
-  const [activeModal, setActiveModal] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const contactRequestList = useSelector(selectContactRequestList);
   const [openToast, setOpenToast] = useState<ToastType>({
@@ -54,7 +52,7 @@ export const MiniFriendScreen: ScreenFC<"MiniFriend"> = ({ navigation }) => {
       title="Friend Requests"
       customHeader={
         openToast.type && (
-          <MiniToast
+          <MiniToastWithAction
             message={openToast.message}
             type={openToast.type ?? "info"}
             onClose={() => setOpenToast({ type: undefined, message: "" })}
@@ -107,17 +105,8 @@ export const MiniFriendScreen: ScreenFC<"MiniFriend"> = ({ navigation }) => {
               </BrandText>
             </View>
           )}
-          <CustomButton
-            onPress={() => setActiveModal("addFriend")}
-            title="Send Friend Request"
-          />
         </View>
       </View>
-
-      <FriendRequestModal
-        visible={activeModal === "addFriend"}
-        onClose={() => setActiveModal("")}
-      />
     </BlurScreenContainer>
   );
 };
@@ -190,14 +179,14 @@ function FriendRequest({ isOnline, data, setOpenToast }: Props) {
         <FlexRow justifyContent="flex-end" style={{ flex: 1 }}>
           <CustomButton
             title="Add"
-            onPress={handleAddFriend}
+            onPress={() => handleAddFriend()}
             size="small"
             width={70}
           />
           <SpacerRow size={1} />
 
           <CustomButton
-            onPress={handleCancelFriend}
+            onPress={() => handleCancelFriend()}
             title="Reject"
             type="danger"
             size="small"

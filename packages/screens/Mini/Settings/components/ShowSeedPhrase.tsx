@@ -6,21 +6,21 @@ import BlurViewWrapper from "../../components/BlurViewWrapper";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
-import { getMnemonic } from "@/hooks/wallet/getNativeWallet";
+import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { getMnemonic } from "@/utils/wallet/getNativeWallet";
 
 export const ShowSeedPhrase = () => {
+  const selectedWallet = useSelectedNativeWallet();
   const [phrase, setPhrase] = useState<string | null>();
 
-  const getPhrase = async () => {
-    const _phrase = await getMnemonic();
-    setPhrase(_phrase);
-  };
-
   useEffect(() => {
-    getPhrase();
-  }, []);
+    (async () => {
+      const _phrase = await getMnemonic(selectedWallet?.index || 0);
+      setPhrase(_phrase);
+    })();
+  }, [selectedWallet?.index]);
 
   return (
     <View

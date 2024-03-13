@@ -1,6 +1,8 @@
 import { MsStatus, Project } from "./types";
 
 export const getProjectStats = (project: Project) => {
+  if (!project.milestones)
+    return { completed: 0, total: 0, percentCompleted: 0 };
   const completed = project.milestones.filter(
     (ms) => ms.status === MsStatus.MS_COMPLETED,
   ).length;

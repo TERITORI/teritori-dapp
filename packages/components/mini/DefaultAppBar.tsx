@@ -16,6 +16,7 @@ import ChatGraySVG from "@/assets/icons/chat-gray.svg";
 import FriendGraySVG from "@/assets/icons/friend-gray.svg";
 import notificationSVG from "@/assets/icons/notification-new.svg";
 import OrganizationGraySVG from "@/assets/icons/organization-gray.svg";
+import UserGraySVG from "@/assets/icons/user-gray.svg";
 import GroupGraySVG from "@/assets/icons/users-group-gray.svg";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
@@ -23,11 +24,11 @@ type DefaultAppBarProps = {
   title: string;
 };
 
-const dropdownItems = [
+const chatDropdownItems = [
   {
     icon: ChatGraySVG,
     name: "Create new conversation",
-    onPress: (navigation: any) => navigation.navigate("MiniNewConversation"),
+    onPress: (navigation: any) => navigation.navigate("MiniAddFriend"),
   },
   {
     icon: GroupGraySVG,
@@ -42,6 +43,19 @@ const dropdownItems = [
   {
     icon: OrganizationGraySVG,
     name: "Create an organization",
+  },
+  {
+    icon: UserGraySVG,
+    name: "My Teritori ID",
+    onPress: (navigation: any) => navigation.navigate("MiniChatProfile"),
+  },
+];
+
+const feedsDropdownItems = [
+  {
+    icon: ChatGraySVG,
+    name: "Create Post",
+    onPress: (navigation: any) => navigation.navigate("MiniCreatePost"),
   },
 ];
 
@@ -82,20 +96,35 @@ export default function DefaultAppBar({ title }: DefaultAppBarProps) {
           fontSemibold18,
           {
             color: secondaryColor,
-            flex: 1,
             textAlign: "center",
-            transform: [{ translateX: 30 }],
           },
         ]}
       >
         {title}
       </BrandText>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
         <Pressable onPress={onPressNotification}>
           <SVG source={notificationSVG} width={22} height={22} />
         </Pressable>
-        <SpacerRow size={2.75} />
-        <DropdownWithListItem items={dropdownItems} iconSize={22} />
+
+        {title === "Chat" && (
+          <>
+            <SpacerRow size={2.75} />
+            <DropdownWithListItem items={chatDropdownItems} iconSize={22} />
+          </>
+        )}
+
+        {title === "Feeds" && (
+          <>
+            <SpacerRow size={2.75} />
+            <DropdownWithListItem items={feedsDropdownItems} iconSize={22} />
+          </>
+        )}
       </View>
     </View>
   );

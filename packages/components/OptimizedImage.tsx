@@ -1,6 +1,6 @@
 import { CID } from "multiformats";
 import React, { memo, useEffect } from "react";
-import { Image, ImageProps, View, StyleSheet, PixelRatio } from "react-native";
+import { Image, ImageProps, View, PixelRatio } from "react-native";
 
 import { neutral33 } from "../utils/style/colors";
 
@@ -16,14 +16,19 @@ export const OptimizedImage: React.FC<
     fallbackURI?: string | null;
   }
 > = memo(
-  ({ sourceURI: baseSourceURI, width, height, fallbackURI, ...other }) => {
+  ({
+    sourceURI: baseSourceURI,
+    width,
+    height,
+    fallbackURI,
+    ...passthrough
+  }) => {
     const [isError, setIsError] = React.useState(false);
     const [isFallbackError, setIsFallbackError] = React.useState(false);
     const shouldUseFallback = !baseSourceURI || isError;
     const sourceURI = shouldUseFallback ? fallbackURI : baseSourceURI;
     const sourceWidth = PixelRatio.getPixelSizeForLayoutSize(width);
     const sourceHeight = PixelRatio.getPixelSizeForLayoutSize(height);
-    const otherStyle = StyleSheet.flatten(other.style);
 
     useEffect(() => {
       setIsError(false);
@@ -35,23 +40,7 @@ export const OptimizedImage: React.FC<
 
     if ((shouldUseFallback && !fallbackURI) || isFallbackError) {
       return (
-        <View
-          style={{
-            width: otherStyle.width,
-            height: otherStyle.height,
-            position: otherStyle.position,
-            top: otherStyle.top,
-            left: otherStyle.left,
-            right: otherStyle.right,
-            bottom: otherStyle.bottom,
-            borderColor: otherStyle.borderColor,
-            borderWidth: otherStyle.borderWidth,
-            borderRadius: otherStyle.borderRadius,
-            borderTopLeftRadius: otherStyle.borderTopLeftRadius,
-            borderBottomLeftRadius: otherStyle.borderBottomLeftRadius,
-            backgroundColor: neutral33,
-          }}
-        />
+        <View style={[{ backgroundColor: neutral33 }, passthrough.style]} />
       );
     }
 
@@ -71,7 +60,7 @@ export const OptimizedImage: React.FC<
           setIsError(true);
         }}
         source={source}
-        {...other}
+        {...passthrough}
       />
     );
   },
@@ -106,7 +95,7 @@ const transformURI = (
 
   const params = resolveParams(width, height);
 
-  return `${process.env.IMG_PROXY_URL}${params}/plain/${encodeURIComponent(
+  return `${process.env.EXPO_PUBLIC_IMG_PROXY_URL}${params}/plain/${encodeURIComponent(
     uri,
   )}`;
 };

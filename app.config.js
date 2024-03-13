@@ -4,7 +4,7 @@ const config = {
     slug: "teritori",
     version: "1.0.3",
     orientation: "portrait",
-    icon: "./assets/icon.png",
+    icon: "./assets/app-icon.png",
     owner: "teritori",
     userInterfaceStyle: "light",
     splash: {
@@ -35,18 +35,32 @@ const config = {
         backgroundColor: "#FFFFFF",
       },
       package: "com.teritori",
+      versionCode: "6",
     },
     web: {
       bundler: "metro",
       favicon: "./assets/favicon.png",
     },
     extra: {
-      env: process.env,
       eas: {
         projectId: "9ce165de-0199-478c-b3bd-8688e5ce03eb",
       },
     },
-    plugins: ["expo-font"],
+    plugins: [
+      "expo-font",
+      [
+        "expo-document-picker",
+        {
+          iCloudContainerEnvironment: "Production",
+        },
+      ],
+      [
+        "react-native-vision-camera",
+        {
+          cameraPermissionText: "$(PRODUCT_NAME) needs access to your Camera.",
+        },
+      ],
+    ],
   },
 };
 

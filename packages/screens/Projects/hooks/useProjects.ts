@@ -121,7 +121,7 @@ export const useProjects = (
       console.log("projects data", contractsData);
 
       const projects = toJSON(contractsData, true) as Project[];
-      projects.sort((p1, p2) => p2.id - p1.id);
+      projects.sort((p1, p2) => (p2.id || -1) - (p1.id || -1));
 
       console.log("projects", projects);
 

@@ -1,5 +1,7 @@
 import { allNetworks, getNativeCurrency, NetworkKind } from "../networks";
 
+import { allFeatureObjects } from "@/networks/features";
+
 const ids: { [key: string]: boolean } = {};
 const idPrefixes: { [key: string]: boolean } = {};
 const cosmosChainIds: { [key: string]: boolean } = {};
@@ -70,5 +72,46 @@ for (const net of allNetworks) {
         );
       }
     }
+  }
+
+  // check features
+  const features: { [key: string]: boolean } = {};
+  for (const feature of net.features) {
+    if (features[feature]) {
+      throw new Error(
+        `feature '${feature}' of network '${net.id}' is not unique`,
+      );
+    }
+    features[feature] = true;
+  }
+  const featureObjects: { [key: string]: boolean } = {};
+  for (const feature of net.featureObjects || []) {
+    if (featureObjects[feature.type]) {
+      throw new Error(
+        `feature object '${feature.type}' of network '${net.id}' is not unique`,
+      );
+    }
+    if (!features[feature.type]) {
+      throw new Error(
+        `feature object '${feature.type}' of network '${net.id}' does not have a corresponding feature declaration`,
+      );
+    }
+    const zodFeatureObj = allFeatureObjects.find(
+      (zo) => zo.shape.type.value === feature.type,
+    );
+    if (!zodFeatureObj) {
+      throw new Error(
+        `feature object '${feature.type}' of network '${net.id}' does not have a corresponding zod declaration`,
+      );
+    }
+    try {
+      zodFeatureObj.parse(feature);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : JSON.stringify(e, null, 2);
+      throw new Error(
+        `feature object '${feature.type}' of network '${net.id}' does not match the zod declaration: ${msg}`,
+      );
+    }
+    featureObjects[feature.type] = true;
   }
 }

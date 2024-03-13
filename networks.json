@@ -4515,6 +4515,49 @@
     "gnowebURL": "http://127.0.0.1:8888"
   },
   {
+    "id": "gno-portal",
+    "kind": "Gno",
+    "displayName": "Gno Portal Loop",
+    "icon": "gno.svg",
+    "features": [
+      "Organizations",
+      "SocialFeed",
+      "UPP"
+    ],
+    "currencies": [
+      {
+        "denom": "ugnot",
+        "displayName": "GNOT",
+        "decimals": 6,
+        "coingeckoId": "gno",
+        "icon": "gno.svg",
+        "kind": "native",
+        "color": "#232800"
+      }
+    ],
+    "stakeCurrency": "ugnot",
+    "idPrefix": "gnoport",
+    "chainId": "portal-loop",
+    "endpoint": "https://rpc.gno.land:443",
+    "txExplorer": "https://gnoscan.io/transactions/details?txhash=$hash",
+    "accountExplorer": "https://gnoscan.io/accounts/$address",
+    "contractExplorer": "https://gnoscan.io/realms/details?path=$address",
+    "testnet": true,
+    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "gnowebURL": "https://gno.land",
+    "vaultContractAddress": "",
+    "nameServiceContractAddress": "gno.land/r/demo/users",
+    "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+    "daoRegistryPkgPath": "gno.land/r/demo/teritori/dao_registry",
+    "socialFeedsPkgPath": "gno.land/r/demo/teritori/social_feeds",
+    "socialFeedsDAOPkgPath": "gno.land/r/demo/teritori/social_feeds_dao",
+    "groupsPkgPath": "gno.land/r/demo/teritori/groups",
+    "votingGroupPkgPath": "gno.land/p/demo/teritori/dao_voting_group",
+    "daoProposalSinglePkgPath": "gno.land/p/demo/teritori/dao_proposal_single",
+    "daoInterfacesPkgPath": "gno.land/p/demo/teritori/dao_interfaces",
+    "daoCorePkgPath": "gno.land/p/demo/teritori/dao_core"
+  },
+  {
     "id": "gno-teritori",
     "kind": "Gno",
     "displayName": "Gno Teritori",
@@ -11276,7 +11319,8 @@
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad"
+      "NFTLaunchpad",
+      "NFTMarketplaceLeaderboard"
     ],
     "registryName": "teritori",
     "overrides": "cosmos-registry:teritori",
@@ -11367,7 +11411,8 @@
       "NameService",
       "BurnTokens",
       "NFTLaunchpad",
-      "RiotP2E"
+      "RiotP2E",
+      "NFTMarketplaceLeaderboard"
     ],
     "currencies": [
       {
@@ -11386,7 +11431,7 @@
     "contractExplorer": "",
     "idPrefix": "devtori",
     "testnet": true,
-    "backendEndpoint": "",
+    "backendEndpoint": "http://localhost:9090",
     "addressPrefix": "tori",
     "restEndpoint": "http://127.0.0.1:1317",
     "rpcEndpoint": "http://127.0.0.1:26657",
@@ -11445,12 +11490,13 @@
       "NameService",
       "BurnTokens",
       "NFTLaunchpad",
-      "CosmWasmPremiumFeed"
+      "CosmWasmPremiumFeed",
+      "NFTMarketplaceLeaderboard"
     ],
     "featureObjects": [
       {
         "type": "CosmWasmPremiumFeed",
-        "membershipContractAddress": "tori1yek2csaaw550wq52v06ztwp2snuxp8epkfzzvqfvkv8g6xfv3nqqzgz3p9",
+        "membershipContractAddress": "tori1rs244rjrhap2v4setxlugkh8ungxlrsh8asvh0trsgvqvplvkd5q7752l6",
         "mintDenom": "utori"
       }
     ],
@@ -11509,6 +11555,7 @@
     "distributorContractAddress": "",
     "riotersFooterContractAddress": "",
     "secondaryDuringMintList": [
+      "tori1rs244rjrhap2v4setxlugkh8ungxlrsh8asvh0trsgvqvplvkd5q7752l6",
       "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys",
       "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc",
       ""

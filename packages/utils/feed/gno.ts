@@ -37,6 +37,7 @@ export const decodeGnoPost = (networkId: string, gnoPost: GnoPost): Post => {
     createdAt: gnoPost.createdAt,
     tipAmount: gnoPost.tipAmount,
     reactions,
+    premiumLevel: 0,
   };
 
   return post;

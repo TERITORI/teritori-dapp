@@ -39,9 +39,9 @@ export const ProjectsConflictSolvingScreen: ScreenFC<
         />
       )}
 
-      {(project?.conflicts.length || 0) > 0 &&
+      {(project?.conflicts?.length || 0) > 0 &&
         !(
-          project?.conflicts.length === 1 &&
+          project?.conflicts?.length === 1 &&
           project.status === ContractStatus.CONFLICT
         ) && (
           <SettledConflictsSection

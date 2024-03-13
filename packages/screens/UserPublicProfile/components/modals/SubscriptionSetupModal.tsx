@@ -18,19 +18,14 @@ import { SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
   ChannelResponse,
-  Cw721MembershipClient,
   MembershipConfig,
 } from "@/contracts-clients/cw721-membership";
 import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import {
-  getKeplrSigningCosmWasmClient,
-  getNativeCurrency,
-  getNetworkFeature,
-  parseUserId,
-} from "@/networks";
+import { getNativeCurrency, getNetworkFeature, parseUserId } from "@/networks";
 import { NetworkFeature } from "@/networks/features";
 import { bigDaySeconds } from "@/utils/big-time";
+import { mustGetCw721MembershipSigningClient } from "@/utils/feed/client";
 import { mapTierToFormElement } from "@/utils/feed/premium";
 import {
   neutral22,
@@ -163,7 +158,8 @@ const SubscriptionSetupForm: React.FC<{
       denom: feature.mintDenom,
       durationDays: "",
       description: "",
-      imageURI: "",
+      imageURI:
+        "ipfs://bafybeibc4fr7vjmhsw7ysoctwg2amotnfh2lw6x2byy4wqinhn7ano55xq",
       open: false,
     };
     append(newElem);
@@ -177,7 +173,8 @@ const SubscriptionSetupForm: React.FC<{
           !formElem.description ||
           !formElem.amount ||
           !formElem.denom ||
-          !formElem.durationDays
+          !formElem.durationDays ||
+          !formElem.imageURI
         ) {
           throw new Error("Invalid tier");
         }
@@ -199,7 +196,6 @@ const SubscriptionSetupForm: React.FC<{
           duration_seconds: durationSeconds,
           nft_image_uri: formElem.imageURI,
           nft_name_prefix: "Sub",
-          trade_royalties: 80,
         };
         return vt;
       });
@@ -301,28 +297,25 @@ const SubscriptionSetupForm: React.FC<{
             if (!chainTiers) {
               throw new Error("Invalid tiers");
             }
-            const sender = selectedWallet?.address;
-            if (!sender) {
+            if (!selectedWallet) {
               throw new Error("No wallet selected");
             }
-            const premiumFeedFeature = getNetworkFeature(
-              networkId,
-              NetworkFeature.CosmWasmPremiumFeed,
-            );
-            if (!premiumFeedFeature) {
-              throw new Error("This network does not support premium feed");
-            }
-            const cosmWasmClient =
-              await getKeplrSigningCosmWasmClient(networkId);
-            const client = new Cw721MembershipClient(
-              cosmWasmClient,
-              sender,
-              premiumFeedFeature.membershipContractAddress,
+
+            const client = await mustGetCw721MembershipSigningClient(
+              selectedWallet.userId,
             );
 
-            await client.upsertChannel({
-              membershipsConfig: chainTiers,
-            });
+            if (channel) {
+              await client.updateChannel({
+                id: channel.id,
+                membershipsConfig: chainTiers,
+              });
+            } else {
+              await client.createChannel({
+                membershipsConfig: chainTiers,
+                tradeRoyaltiesPer10k: 800, // 8% default
+              });
+            }
 
             onClose();
           })}

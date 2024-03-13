@@ -19,6 +19,8 @@ import {
 import { fontSemibold15 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
+export type CustomButtonTypes = "primary" | "danger" | "gray" | "outline";
+
 type Props = {
   onPress: (
     event: GestureResponderEvent,
@@ -27,7 +29,7 @@ type Props = {
   title?: string;
   children?: ReactNode;
   isDisabled?: boolean;
-  type?: "primary" | "danger" | "gray" | "outline";
+  type?: CustomButtonTypes;
   size?: "normal" | "medium" | "small";
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;

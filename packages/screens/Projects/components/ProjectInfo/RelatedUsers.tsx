@@ -4,7 +4,8 @@ import { View } from "react-native";
 import { BrandText } from "@/components/BrandText";
 import FlexRow from "@/components/FlexRow";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
-import { TNSName } from "@/screens/Projects/components/TNSName";
+import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
+import { getUserId } from "@/networks";
 import { Project } from "@/screens/Projects/types";
 import { neutral22, neutralA3 } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
@@ -32,7 +33,7 @@ const RelatedUser: React.FC<RelatedUserProps> = ({
         {label}
       </BrandText>
 
-      <TNSName networkId={networkId} userAddress={address} />
+      <UsernameWithAvatar userId={getUserId(networkId, address)} />
     </View>
   );
 };

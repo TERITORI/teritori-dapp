@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Linking, useWindowDimensions, View } from "react-native";
 
+import { PremiumSubscriptionModal } from "./modals/PremiumSubscriptionModal";
 import { SubscriptionSetupModal } from "./modals/SubscriptionSetupModal";
 
 import defaultUserProfileBannerPNG from "@/assets/default-images/default-user-profile-banner.png";
@@ -20,16 +21,24 @@ import { SocialButton } from "@/components/buttons/SocialButton";
 import { SocialButtonSecondary } from "@/components/buttons/SocialButtonSecondary";
 import { ProfileButton } from "@/components/hub/ProfileButton";
 import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
-import { useDeveloperMode } from "@/hooks/useDeveloperMode";
+import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
+import { usePremiumIsSubscribed } from "@/hooks/feed/usePremiumIsSubscribed";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
-import { accountExplorerLink, parseUserId } from "@/networks";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import {
+  accountExplorerLink,
+  getNetworkFeature,
+  NetworkFeature,
+  parseUserId,
+} from "@/networks";
 import { DEFAULT_NAME } from "@/utils/social-feed";
 import {
   neutral00,
   neutral55,
   neutral77,
   secondaryColor,
+  yellowPremium,
 } from "@/utils/style/colors";
 import { fontBold16, fontMedium14, fontSemibold14 } from "@/utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
@@ -38,18 +47,31 @@ import { tinyAddress } from "@/utils/text";
 export const UPPIntro: React.FC<{
   userId: string;
   isUserOwner?: boolean;
-}> = ({ userId, isUserOwner }) => {
+  setIsEditProfileModal?: (val: boolean) => void;
+}> = ({ userId, isUserOwner, setIsEditProfileModal = (val) => {} }) => {
+  const selectedWallet = useSelectedWallet();
   const { metadata } = useNSUserInfo(userId);
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { margin: layout.spacing_x0_75 };
   const [network, userAddress] = parseUserId(userId);
   const { width } = useMaxResolution();
   const { width: windowWidth } = useWindowDimensions();
+  const { data: premiumChannel } = usePremiumChannel(network?.id, userAddress);
+  const networkHasPremiumFeature = !!getNetworkFeature(
+    network?.id,
+    NetworkFeature.CosmWasmPremiumFeed,
+  );
 
-  const [developerMode] = useDeveloperMode();
+  const { data: isSubscribed } = usePremiumIsSubscribed(
+    userId,
+    selectedWallet?.userId,
+  );
 
   const [subscriptionSetupModalVisible, setSubscriptionSetupModalVisible] =
     useState(false);
+  const [premiumSubscriptionModalVisible, setPremiumSubscriptionModalVisible] =
+    useState(false);
+
   return (
     <>
       <LegacyTertiaryBox
@@ -135,12 +157,13 @@ export const UPPIntro: React.FC<{
         >
           {isUserOwner ? (
             <>
-              {developerMode && (
+              {!!networkHasPremiumFeature && (
                 <>
                   <SecondaryButton
-                    style={{ width: 132, marginRight: layout.spacing_x2 }}
-                    text="Premium Sub"
+                    style={{ marginRight: layout.spacing_x2 }}
+                    text="Premium Channel"
                     size="M"
+                    hoverBorderColor={yellowPremium}
                     paddingHorizontal={layout.spacing_x2}
                     backgroundColor={secondaryColor}
                     textStyle={{
@@ -158,10 +181,54 @@ export const UPPIntro: React.FC<{
                   />
                 </>
               )}
-              <ProfileButton isEdit buttonSize="M" />
+              <ProfileButton
+                isEdit
+                buttonSize="M"
+                setIsEditProfileModal={(val: boolean) => {
+                  setIsEditProfileModal(val);
+                }}
+              />
             </>
           ) : (
             <>
+              {!!premiumChannel && (
+                <>
+                  {isSubscribed ? (
+                    <SecondaryButtonOutline
+                      style={{ marginRight: layout.spacing_x2 }}
+                      text="Subscribed"
+                      size="M"
+                      backgroundColor={neutral00}
+                      disabled
+                    />
+                  ) : (
+                    <SecondaryButton
+                      style={{ marginRight: layout.spacing_x2 }}
+                      text="Premium Sub"
+                      size="M"
+                      hoverBorderColor={yellowPremium}
+                      paddingHorizontal={layout.spacing_x2}
+                      backgroundColor={secondaryColor}
+                      textStyle={{
+                        lineHeight: layout.spacing_x2,
+                        color: neutral00,
+                      }}
+                      onPress={() => {
+                        if (isUserOwner) {
+                          setSubscriptionSetupModalVisible(true);
+                        } else {
+                          setPremiumSubscriptionModalVisible(true);
+                        }
+                      }}
+                    />
+                  )}
+                </>
+              )}
+              <PremiumSubscriptionModal
+                onClose={() => setPremiumSubscriptionModalVisible(false)}
+                isVisible={premiumSubscriptionModalVisible}
+                userId={userId}
+              />
               <SecondaryButtonOutline
                 text="Follow this Teritori"
                 size="M"

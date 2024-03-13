@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useRef, useState } from "react";
+import React, { FC, memo, useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Pressable,
@@ -15,34 +15,48 @@ import cameraSVG from "../../../../assets/icons/camera.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
 import priceSVG from "../../../../assets/icons/price.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useWalletControl } from "../../../context/WalletControlProvider";
-import { useFeedPosting } from "../../../hooks/feed/useFeedPosting";
-import { useAppMode } from "../../../hooks/useAppMode";
-import { useIpfs } from "../../../hooks/useIpfs";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
-import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getUserId, NetworkFeature } from "../../../networks";
-import { selectNFTStorageAPI } from "../../../store/slices/settings";
-import {
-  generatePostMetadata,
-  getPostCategory,
-} from "../../../utils/feed/queries";
-import { generateIpfsKey } from "../../../utils/ipfs";
+import { BrandText } from "../../BrandText";
+import { FilesPreviewsContainer } from "../../FilePreview/FilesPreviewsContainer";
+import FlexRow from "../../FlexRow";
+import { IconBox } from "../../IconBox";
+import { OmniLink } from "../../OmniLink";
+import { SVG } from "../../SVG";
+import { PrimaryBox } from "../../boxes/PrimaryBox";
+import { PrimaryButton } from "../../buttons/PrimaryButton";
+import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
+import { FileUploader } from "../../fileUploader";
+import { FeedPostingProgressBar } from "../../loaders/FeedPostingProgressBar";
+import { SpacerColumn } from "../../spacer";
+import { EmojiSelector } from "../EmojiSelector";
+import { GIFSelector } from "../GIFSelector";
+
+import ToggleButton from "@/components/buttons/ToggleButton";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useWalletControl } from "@/context/WalletControlProvider";
+import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
+import { useAppMode } from "@/hooks/useAppMode";
+import { useIpfs } from "@/hooks/useIpfs";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { getNetworkFeature, getUserId, NetworkFeature } from "@/networks";
+import { selectNFTStorageAPI } from "@/store/slices/settings";
+import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
+import { generatePostMetadata, getPostCategory } from "@/utils/feed/queries";
+import { generateIpfsKey } from "@/utils/ipfs";
 import {
   AUDIO_MIME_TYPES,
   IMAGE_MIME_TYPES,
   VIDEO_MIME_TYPES,
-} from "../../../utils/mime";
+} from "@/utils/mime";
 import {
   SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
   hashtagMatch,
   mentionMatch,
   removeFileFromArray,
   replaceFileInArray,
-} from "../../../utils/social-feed";
+} from "@/utils/social-feed";
 import {
   errorColor,
   neutral00,
@@ -53,36 +67,21 @@ import {
   primaryTextColor,
   secondaryColor,
   yellowDefault,
-} from "../../../utils/style/colors";
+  yellowPremium,
+} from "@/utils/style/colors";
 import {
   fontSemibold12,
   fontSemibold13,
   fontSemibold16,
-} from "../../../utils/style/fonts";
+} from "@/utils/style/fonts";
 import {
   RESPONSIVE_BREAKPOINT_S,
   SOCIAL_FEED_BREAKPOINT_M,
   layout,
-} from "../../../utils/style/layout";
-import { replaceBetweenString } from "../../../utils/text";
-import { NewPostFormValues, ReplyToType } from "../../../utils/types/feed";
-import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
-import { BrandText } from "../../BrandText";
-import { FilesPreviewsContainer } from "../../FilePreview/FilesPreviewsContainer";
-import FlexRow from "../../FlexRow";
-import { IconBox } from "../../IconBox";
-import { OmniLink } from "../../OmniLink";
-import { SVG } from "../../SVG";
-import { LegacyPrimaryBox } from "../../boxes/LegacyPrimaryBox";
-import { PrimaryButton } from "../../buttons/PrimaryButton";
-import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
-import { FileUploader } from "../../fileUploader";
-import { FeedPostingProgressBar } from "../../loaders/FeedPostingProgressBar";
-import { SpacerColumn } from "../../spacer";
-import { EmojiSelector } from "../EmojiSelector";
-import { GIFSelector } from "../GIFSelector";
-
-import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
+} from "@/utils/style/layout";
+import { replaceBetweenString } from "@/utils/text";
+import { NewPostFormValues, ReplyToType } from "@/utils/types/feed";
+import { LocalFileData, RemoteFileData } from "@/utils/types/files";
 
 interface NewsFeedInputProps {
   type: "comment" | "post";
@@ -145,6 +144,7 @@ export const NewsFeedInput = React.forwardRef<
     const { setToastError } = useFeedbacks();
     const [isUploadLoading, setIsUploadLoading] = useState(false);
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
+    const [premium, setPremium] = useState(false);
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
@@ -193,7 +193,7 @@ export const NewsFeedInput = React.forwardRef<
     });
 
     const processSubmit = async () => {
-      const action = "Publish a Post";
+      const action = premium ? "Publish a Premium Post" : "Publish a Post";
       if (!selectedWallet?.address || !selectedWallet.connected) {
         showConnectWalletModal({
           forceNetworkFeature: NetworkFeature.SocialFeed,
@@ -277,6 +277,7 @@ export const NewsFeedInput = React.forwardRef<
           hashtags,
           mentions,
           gifs: formValues?.gifs || [],
+          premium,
         });
 
         await makePost(
@@ -322,138 +323,141 @@ export const NewsFeedInput = React.forwardRef<
 
     const focusInput = () => inputRef.current?.focus();
 
+    const networkHasPremiumFeed = !!getNetworkFeature(
+      selectedNetworkId,
+      NetworkFeature.CosmWasmPremiumFeed,
+    );
+
     return (
       <View
         style={[{ width }, style]}
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       >
-        <LegacyPrimaryBox
-          fullWidth
-          style={{
-            zIndex: 9,
-          }}
-          mainContainerStyle={{
-            backgroundColor: appMode === "mini" ? neutral00 : neutral22,
-          }}
-          noRightBrokenBorder
-        >
-          <Pressable
-            onPress={focusInput}
+        <View style={{ zIndex: 9 }}>
+          <PrimaryBox
             style={{
+              backgroundColor: appMode === "mini" ? neutral00 : neutral22,
               width: "100%",
-              paddingRight: isMobile
-                ? layout.spacing_x1_5
-                : layout.spacing_x2_5,
-              paddingLeft: isMobile ? layout.spacing_x1_5 : layout.spacing_x3,
-              paddingTop: isMobile ? layout.spacing_x1_5 : layout.spacing_x3,
-              paddingBottom: layout.spacing_x1_5,
             }}
           >
-            <FlexRow style={{ marginTop: layout.spacing_x1 }}>
-              <SVG
-                height={24}
-                width={24}
-                source={penSVG}
-                color={secondaryColor}
-                style={{
-                  alignSelf: "flex-end",
-                  marginRight: layout.spacing_x1_5,
-                }}
-              />
-              <Animated.View style={{ flex: 1, height: "auto" }}>
-                <TextInput
-                  ref={inputRef}
-                  value={formValues.message}
-                  onSelectionChange={(event) =>
-                    setSelection(event.nativeEvent.selection)
-                  }
-                  placeholder={`Hey yo! ${
-                    type === "post" ? "Post something" : "Write your comment"
-                  } ${
-                    windowWidth < RESPONSIVE_BREAKPOINT_S ? "" : "here! _____"
-                  }`}
-                  placeholderTextColor={neutral77}
-                  onChangeText={handleTextChange}
-                  multiline
-                  onContentSizeChange={(e) => {
-                    // TODO: onContentSizeChange is not fired when deleting lines. We can only grow the input, but not shrink
-                    if (e.nativeEvent.contentSize.height < inputMaxHeight) {
-                      inputHeight.value = e.nativeEvent.contentSize.height;
-                    }
-                  }}
-                  style={[
-                    fontSemibold16,
-                    {
-                      height: formValues.message
-                        ? inputHeight.value || inputMinHeight
-                        : inputMinHeight,
-                      width: "100%",
-                      color: secondaryColor,
-                      // @ts-expect-error: description todo
-                      outlineStyle: "none",
-                      outlineWidth: 0,
-                    },
-                  ]}
-                />
-              </Animated.View>
-            </FlexRow>
-            {/* Changing this text's color depending on the message length */}
-            <BrandText
-              style={[
-                fontSemibold12,
-                {
-                  color: !formValues?.message
-                    ? neutral77
-                    : formValues?.message?.length >
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
-                            CHARS_LIMIT_WARNING_MULTIPLIER &&
-                        formValues?.message?.length <
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                      ? yellowDefault
-                      : formValues?.message?.length >=
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                        ? errorColor
-                        : primaryColor,
-                  marginTop: layout.spacing_x0_5,
-                  alignSelf: "flex-end",
-                },
-              ]}
+            <Pressable
+              onPress={focusInput}
+              style={{
+                width: "100%",
+                paddingRight: isMobile
+                  ? layout.spacing_x1_5
+                  : layout.spacing_x2_5,
+                paddingLeft: isMobile ? layout.spacing_x1_5 : layout.spacing_x3,
+                paddingTop: isMobile ? layout.spacing_x1_5 : layout.spacing_x3,
+                paddingBottom: layout.spacing_x1_5,
+              }}
             >
-              {formValues?.message?.length}
-              <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-                /{SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT}
+              <FlexRow style={{ marginTop: layout.spacing_x1 }}>
+                <SVG
+                  height={24}
+                  width={24}
+                  source={penSVG}
+                  color={secondaryColor}
+                  style={{
+                    alignSelf: "flex-end",
+                    marginRight: layout.spacing_x1_5,
+                  }}
+                />
+                <Animated.View style={{ flex: 1, height: "auto" }}>
+                  <TextInput
+                    ref={inputRef}
+                    value={formValues.message}
+                    onSelectionChange={(event) =>
+                      setSelection(event.nativeEvent.selection)
+                    }
+                    placeholder={`Hey yo! ${
+                      type === "post" ? "Post something" : "Write your comment"
+                    } ${
+                      windowWidth < RESPONSIVE_BREAKPOINT_S ? "" : "here! _____"
+                    }`}
+                    placeholderTextColor={neutral77}
+                    onChangeText={handleTextChange}
+                    multiline
+                    onContentSizeChange={(e) => {
+                      // TODO: onContentSizeChange is not fired when deleting lines. We can only grow the input, but not shrink
+                      if (e.nativeEvent.contentSize.height < inputMaxHeight) {
+                        inputHeight.value = e.nativeEvent.contentSize.height;
+                      }
+                    }}
+                    style={[
+                      fontSemibold16,
+                      {
+                        height: formValues.message
+                          ? inputHeight.value || inputMinHeight
+                          : inputMinHeight,
+                        width: "100%",
+                        color: secondaryColor,
+                        // @ts-expect-error: description todo
+                        outlineStyle: "none",
+                        outlineWidth: 0,
+                      },
+                    ]}
+                  />
+                </Animated.View>
+              </FlexRow>
+              {/* Changing this text's color depending on the message length */}
+              <BrandText
+                style={[
+                  fontSemibold12,
+                  {
+                    color: !formValues?.message
+                      ? neutral77
+                      : formValues?.message?.length >
+                            SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
+                              CHARS_LIMIT_WARNING_MULTIPLIER &&
+                          formValues?.message?.length <
+                            SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                        ? yellowDefault
+                        : formValues?.message?.length >=
+                            SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                          ? errorColor
+                          : primaryColor,
+                    marginTop: layout.spacing_x0_5,
+                    alignSelf: "flex-end",
+                  },
+                ]}
+              >
+                {formValues?.message?.length}
+                <BrandText style={[fontSemibold12, { color: neutral77 }]}>
+                  /{SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT}
+                </BrandText>
               </BrandText>
-            </BrandText>
-          </Pressable>
+            </Pressable>
 
-          <FilesPreviewsContainer
-            files={formValues.files}
-            gifs={formValues.gifs}
-            onDelete={(file) => {
-              setValue(
-                "files",
-                removeFileFromArray(
-                  formValues?.files || [],
-                  file as LocalFileData,
-                ),
-              );
-            }}
-            onDeleteGIF={(url) =>
-              setValue(
-                "gifs",
-                (formValues?.gifs || [])?.filter((gif) => gif !== url),
-              )
-            }
-            onAudioUpdate={(updatedFile) => {
-              if (formValues?.files?.length) {
+            <FilesPreviewsContainer
+              files={formValues.files}
+              gifs={formValues.gifs}
+              onDelete={(file) => {
                 setValue(
                   "files",
-                  replaceFileInArray(formValues?.files, updatedFile),
+                  removeFileFromArray(
+                    formValues?.files || [],
+                    file as LocalFileData,
+                  ),
                 );
+              }}
+              onDeleteGIF={(url) =>
+                setValue(
+                  "gifs",
+                  (formValues?.gifs || [])?.filter((gif) => gif !== url),
+                )
               }
-            }}
-          />
-        </LegacyPrimaryBox>
+              onAudioUpdate={(updatedFile) => {
+                if (formValues?.files?.length) {
+                  setValue(
+                    "files",
+                    replaceFileInArray(formValues?.files, updatedFile),
+                  );
+                }
+              }}
+            />
+          </PrimaryBox>
+        </View>
         <View
           style={{
             backgroundColor: appMode === "mini" ? neutral00 : neutral17,
@@ -517,6 +521,23 @@ export const NewsFeedInput = React.forwardRef<
               ]}
             >
               {viewWidth < BREAKPOINT_S && <SpacerColumn size={1.5} />}
+
+              {networkHasPremiumFeed && (
+                <>
+                  <PremiumPostToggle
+                    premium={premium}
+                    setPremium={setPremium}
+                  />
+                  <View
+                    style={{
+                      height: layout.spacing_x2,
+                      width: 1,
+                      backgroundColor: "#515151",
+                      marginHorizontal: layout.spacing_x2,
+                    }}
+                  />
+                </>
+              )}
 
               <View
                 style={{
@@ -697,3 +718,30 @@ export const NewsFeedInput = React.forwardRef<
     );
   },
 );
+
+const PremiumPostToggle: FC<{
+  premium: boolean;
+  setPremium: (value: boolean) => void;
+}> = memo(({ premium, setPremium }) => {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
+      <BrandText
+        style={[
+          fontSemibold13,
+          {
+            marginRight: layout.spacing_x1,
+            color: premium ? yellowPremium : "#777777",
+          },
+        ]}
+      >
+        Premium post
+      </BrandText>
+      <ToggleButton value={premium} onValueChange={setPremium} />
+    </View>
+  );
+});

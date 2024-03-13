@@ -31,11 +31,8 @@ import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { Wallet } from "@/context/WalletsProvider";
 import { useBalances } from "@/hooks/useBalances";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
-import {
-  getKeplrSigningCosmWasmClient,
-  parseNftId,
-  txExplorerLink,
-} from "@/networks";
+import { parseNftId, txExplorerLink } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import {
   emptyCart,
   removeSelected,

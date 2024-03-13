@@ -6,6 +6,8 @@ import {
   mustGetNonSigningCosmWasmClient,
   parseNetworkObjectId,
   NetworkKind,
+  NetworkFeature,
+  getNetworkFeature,
 } from "@/networks";
 import { getEthereumProvider } from "@/utils/ethereum";
 
@@ -21,6 +23,15 @@ export const useMintEnded = (collectionId: string, enabled: boolean = true) => {
 
       if (network?.kind === NetworkKind.Cosmos) {
         if (mintAddress === network.nameServiceContractAddress) {
+          return false;
+        }
+
+        if (
+          !!mintAddress &&
+          mintAddress ===
+            getNetworkFeature(network.id, NetworkFeature.CosmWasmPremiumFeed)
+              ?.membershipContractAddress
+        ) {
           return false;
         }
 

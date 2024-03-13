@@ -123,7 +123,7 @@ export const MilestoneItem: React.FC<{
               containerStyle={{ marginRight: layout.spacing_x2 }}
             />
 
-            <SocialButton iconSvg={githubSVG} height={32} />
+            <SocialButton iconSvg={githubSVG} style={{ height: 32 }} />
           </FlexRow>
         </TertiaryBox>
       </TouchableOpacity>

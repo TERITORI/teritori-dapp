@@ -4,10 +4,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { getCodeError } from "../query/codeError";
 
 import { Wallet } from "@/context/WalletsProvider";
-import {
-  getKeplrSigningCosmWasmClient,
-  getNetworkByIdPrefix,
-} from "@/networks";
+import { getNetworkByIdPrefix } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 
 export const useList = ({ selectedWallet }: { selectedWallet?: Wallet }) => {
   const addr = selectedWallet?.address || "";

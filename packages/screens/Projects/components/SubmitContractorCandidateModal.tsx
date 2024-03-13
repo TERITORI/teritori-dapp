@@ -50,7 +50,7 @@ export const SubmitContractorCandidateModal: React.FC<
     setIsSubmitting(true);
 
     await execEscrowMethod("SubmitContractorCandidate", [
-      project.id.toString(),
+      project?.id?.toString(),
     ]);
 
     onClose();

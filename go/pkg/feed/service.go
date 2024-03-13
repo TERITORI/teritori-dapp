@@ -77,16 +77,22 @@ func (s *FeedService) IPFSKey(ctx context.Context, req *feedpb.IPFSKeyRequest) (
 
 func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*feedpb.PostsResponse, error) {
 	filter := req.GetFilter()
-	var user string
-	var mentions []string
-	var categories []uint32
-	var hashtags []string
+	var (
+		user            string
+		mentions        []string
+		categories      []uint32
+		hashtags        []string
+		premiumLevelMin int32
+		premiumLevelMax int32
+	)
 
 	if filter != nil {
 		categories = filter.Categories
 		user = filter.User
 		hashtags = filter.Hashtags
 		mentions = filter.Mentions
+		premiumLevelMin = filter.PremiumLevelMin
+		premiumLevelMax = filter.PremiumLevelMax
 	}
 
 	queryUserID := req.GetQueryUserId()
@@ -138,6 +144,13 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		query = query.Where(fmt.Sprintf("metadata -> 'mentions' ?| array[%s]", strings.Join(formattedMentions, ",")))
 	}
 
+	if premiumLevelMin > 0 {
+		query = query.Where("premium_level >= ?", premiumLevelMin)
+	}
+	if premiumLevelMax >= 0 {
+		query = query.Where("premium_level <= ?", premiumLevelMax)
+	}
+
 	query = query.
 		Order("created_at DESC").
 		Limit(int(limit)).
@@ -185,6 +198,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 			CreatedAt:            dbPost.CreatedAt,
 			Reactions:            reactions,
 			TipAmount:            dbPost.TipAmount,
+			PremiumLevel:         dbPost.PremiumLevel,
 		}
 	}
 

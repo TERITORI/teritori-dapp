@@ -50,7 +50,7 @@ export const MilestonesUpdateManager: React.FC = () => {
   return (
     <>
       {projects.map((project) =>
-        project.milestones
+        (project.milestones || [])
           .filter((m) => m.status === MsStatus.MS_REVIEW)
           .map((milestone: ProjectMilestone, milestoneIdx: number) => {
             return (
@@ -162,18 +162,19 @@ export const MilestonesUpdateManager: React.FC = () => {
                         iconSvg={githubSVG}
                         style={{
                           marginRight: layout.spacing_x2,
+                          backgroundColor: neutral17,
                         }}
-                        bgColor={neutral17}
                       />
                     </Link>
 
                     <TouchableOpacity
-                      onPress={() =>
+                      onPress={() => {
+                        if (!project.id) return;
                         navigation.navigate("ProjectsCompleteMilestone", {
                           projectId: project.id,
                           milestoneId: milestone.id,
-                        })
-                      }
+                        });
+                      }}
                     >
                       <BrandText
                         style={[

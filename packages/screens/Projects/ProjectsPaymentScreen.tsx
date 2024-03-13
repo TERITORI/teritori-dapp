@@ -49,8 +49,7 @@ const CustomSocialButton: React.FC<{
       text={text}
       iconSvg={iconSvg}
       textColor={neutralA3}
-      style={{ width: "100%" }}
-      bgColor={neutral17}
+      style={{ width: "100%", backgroundColor: neutral17 }}
     />
   );
 };
@@ -62,7 +61,9 @@ export const ProjectsPaymentScreen: ScreenFC<"ProjectsPayment"> = () => {
   const { projectId, milestoneIdx } = params as any;
 
   const { data: project } = useProject(networkId, projectId);
-  const milestone = project?.milestones.find((_, idx) => idx === +milestoneIdx);
+  const milestone = (project?.milestones || []).find(
+    (_, idx) => idx === +milestoneIdx,
+  );
 
   const [report, setReport] = useState("");
 

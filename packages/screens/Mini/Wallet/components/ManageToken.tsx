@@ -6,7 +6,7 @@ import questionSVG from "../../../../../assets/icons/question-gray.svg";
 
 import { BrandText } from "@/components/BrandText";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
-import { selectTokenId, updateOne } from "@/store/slices/wallets";
+import { selectTokenId, updateToken } from "@/store/slices/wallets";
 import { RootState, useAppDispatch } from "@/store/store";
 import { prettyPrice } from "@/utils/coins";
 import {
@@ -37,7 +37,7 @@ export const ManageToken = ({ amount, showSwitch = true, denom }: Props) => {
   const onToggleSwitch = () => {
     if (!token) {
       dispatch(
-        updateOne({
+        updateToken({
           denom,
           enabled: true,
           networkId: "teritori",
@@ -47,7 +47,7 @@ export const ManageToken = ({ amount, showSwitch = true, denom }: Props) => {
       );
     } else {
       dispatch(
-        updateOne({
+        updateToken({
           ...token,
           enabled: !token.enabled,
         }),

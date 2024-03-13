@@ -45,6 +45,8 @@ export const ProjectBox: React.FC<{
   project: Project;
 }> = ({ containerStyle, onPress, project }) => {
   const stats = useMemo(() => {
+    if (!project.milestones)
+      return { completed: 0, total: 0, percentCompleted: 0 };
     const completed = project.milestones.filter(
       (ms) => ms.status === "MS_COMPLETED",
     ).length;

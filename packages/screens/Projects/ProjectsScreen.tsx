@@ -31,7 +31,10 @@ export const ProjectsScreen: ScreenFC<"Projects"> = () => {
 
   const navigation = useAppNavigation();
 
-  const gotoProjectsDetail = (id: number) => {
+  const gotoProjectsDetail = (id: number | undefined) => {
+    if (!id) {
+      return;
+    }
     navigation.navigate("ProjectsDetail", { id });
   };
 
@@ -117,7 +120,7 @@ export const ProjectsScreen: ScreenFC<"Projects"> = () => {
           flexWrap: "wrap",
         }}
       >
-        {filteredProjects.map((project, idx) => {
+        {filteredProjects.map((project) => {
           return (
             <ProjectBox
               key={project.id}
