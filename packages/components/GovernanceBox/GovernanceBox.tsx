@@ -123,7 +123,7 @@ export const GovernanceBox: React.FC<{
 
         <View
           style={{
-            width: "18%",
+            width: isMobile ? "24%" : "18%",
             justifyContent: "center",
             alignItems: "center",
           }}

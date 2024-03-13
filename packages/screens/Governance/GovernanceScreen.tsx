@@ -57,7 +57,11 @@ export const GovernanceScreen: React.FC = () => {
             isMobile={isMobile}
             handleChangeSearch={(text) => setSearchInput(text)}
           />
-          <StatesDropdown onChange={setFilter} style={{ zIndex: 100 }} />
+          <StatesDropdown
+            onChange={setFilter}
+            style={{ zIndex: 100 }}
+            isMobile={isMobile}
+          />
         </View>
       </View>
 

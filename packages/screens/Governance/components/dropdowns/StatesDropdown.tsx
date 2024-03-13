@@ -37,9 +37,14 @@ const def = {
 interface StatesDropdownGovProps {
   style?: ViewStyle;
   onChange: (filter?: ProposalStatus) => void;
+  isMobile: boolean;
 }
 
-export const StatesDropdown = ({ style, onChange }: StatesDropdownGovProps) => {
+export const StatesDropdown = ({
+  style,
+  onChange,
+  isMobile,
+}: StatesDropdownGovProps) => {
   const [isDropdownOpen, setDropdownState, ref] = useDropdowns();
   const [selected, setSelected] = useState<keyof typeof def>("all");
 
@@ -48,7 +53,7 @@ export const StatesDropdown = ({ style, onChange }: StatesDropdownGovProps) => {
       style={[
         {
           zIndex: 1,
-          width: 148,
+          width: isMobile ? "auto" : 148,
         },
         style,
       ]}
