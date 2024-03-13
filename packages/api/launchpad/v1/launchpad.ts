@@ -6,6 +6,17 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "launchpad.v1";
 
+export interface CalculateMerkleRootRequest {
+  user: string;
+  projectId: number;
+  networkId: string;
+  metadatas: Metadata[];
+}
+
+export interface CalculateMerkleRootResponse {
+  merkleRoot: string;
+}
+
 export interface UploadMetadataRequest {
   user: string;
   projectId: number;
@@ -14,7 +25,7 @@ export interface UploadMetadataRequest {
 }
 
 export interface UploadMetadataResponse {
-  result: boolean;
+  merkleRoot: string;
 }
 
 export interface Metadata {
@@ -32,7 +43,6 @@ export interface Metadata {
 }
 
 export interface Trait {
-  displayType: string;
   traitType: string;
   value: string;
 }
@@ -92,6 +102,169 @@ export interface Collection {
   merkleRoot: string;
   deployedAddress: string;
 }
+
+function createBaseCalculateMerkleRootRequest(): CalculateMerkleRootRequest {
+  return { user: "", projectId: 0, networkId: "", metadatas: [] };
+}
+
+export const CalculateMerkleRootRequest = {
+  encode(message: CalculateMerkleRootRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.user !== "") {
+      writer.uint32(10).string(message.user);
+    }
+    if (message.projectId !== 0) {
+      writer.uint32(16).uint32(message.projectId);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(26).string(message.networkId);
+    }
+    for (const v of message.metadatas) {
+      Metadata.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CalculateMerkleRootRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCalculateMerkleRootRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.user = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.projectId = reader.uint32();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.metadatas.push(Metadata.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CalculateMerkleRootRequest {
+    return {
+      user: isSet(object.user) ? globalThis.String(object.user) : "",
+      projectId: isSet(object.projectId) ? globalThis.Number(object.projectId) : 0,
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      metadatas: globalThis.Array.isArray(object?.metadatas)
+        ? object.metadatas.map((e: any) => Metadata.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: CalculateMerkleRootRequest): unknown {
+    const obj: any = {};
+    if (message.user !== "") {
+      obj.user = message.user;
+    }
+    if (message.projectId !== 0) {
+      obj.projectId = Math.round(message.projectId);
+    }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    if (message.metadatas?.length) {
+      obj.metadatas = message.metadatas.map((e) => Metadata.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CalculateMerkleRootRequest>, I>>(base?: I): CalculateMerkleRootRequest {
+    return CalculateMerkleRootRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CalculateMerkleRootRequest>, I>>(object: I): CalculateMerkleRootRequest {
+    const message = createBaseCalculateMerkleRootRequest();
+    message.user = object.user ?? "";
+    message.projectId = object.projectId ?? 0;
+    message.networkId = object.networkId ?? "";
+    message.metadatas = object.metadatas?.map((e) => Metadata.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseCalculateMerkleRootResponse(): CalculateMerkleRootResponse {
+  return { merkleRoot: "" };
+}
+
+export const CalculateMerkleRootResponse = {
+  encode(message: CalculateMerkleRootResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.merkleRoot !== "") {
+      writer.uint32(10).string(message.merkleRoot);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CalculateMerkleRootResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCalculateMerkleRootResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.merkleRoot = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CalculateMerkleRootResponse {
+    return { merkleRoot: isSet(object.merkleRoot) ? globalThis.String(object.merkleRoot) : "" };
+  },
+
+  toJSON(message: CalculateMerkleRootResponse): unknown {
+    const obj: any = {};
+    if (message.merkleRoot !== "") {
+      obj.merkleRoot = message.merkleRoot;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CalculateMerkleRootResponse>, I>>(base?: I): CalculateMerkleRootResponse {
+    return CalculateMerkleRootResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CalculateMerkleRootResponse>, I>>(object: I): CalculateMerkleRootResponse {
+    const message = createBaseCalculateMerkleRootResponse();
+    message.merkleRoot = object.merkleRoot ?? "";
+    return message;
+  },
+};
 
 function createBaseUploadMetadataRequest(): UploadMetadataRequest {
   return { user: "", projectId: 0, networkId: "", metadatas: [] };
@@ -200,13 +373,13 @@ export const UploadMetadataRequest = {
 };
 
 function createBaseUploadMetadataResponse(): UploadMetadataResponse {
-  return { result: false };
+  return { merkleRoot: "" };
 }
 
 export const UploadMetadataResponse = {
   encode(message: UploadMetadataResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.result === true) {
-      writer.uint32(8).bool(message.result);
+    if (message.merkleRoot !== "") {
+      writer.uint32(10).string(message.merkleRoot);
     }
     return writer;
   },
@@ -219,11 +392,11 @@ export const UploadMetadataResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
+          if (tag !== 10) {
             break;
           }
 
-          message.result = reader.bool();
+          message.merkleRoot = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -235,13 +408,13 @@ export const UploadMetadataResponse = {
   },
 
   fromJSON(object: any): UploadMetadataResponse {
-    return { result: isSet(object.result) ? globalThis.Boolean(object.result) : false };
+    return { merkleRoot: isSet(object.merkleRoot) ? globalThis.String(object.merkleRoot) : "" };
   },
 
   toJSON(message: UploadMetadataResponse): unknown {
     const obj: any = {};
-    if (message.result === true) {
-      obj.result = message.result;
+    if (message.merkleRoot !== "") {
+      obj.merkleRoot = message.merkleRoot;
     }
     return obj;
   },
@@ -251,7 +424,7 @@ export const UploadMetadataResponse = {
   },
   fromPartial<I extends Exact<DeepPartial<UploadMetadataResponse>, I>>(object: I): UploadMetadataResponse {
     const message = createBaseUploadMetadataResponse();
-    message.result = object.result ?? false;
+    message.merkleRoot = object.merkleRoot ?? "";
     return message;
   },
 };
@@ -480,19 +653,16 @@ export const Metadata = {
 };
 
 function createBaseTrait(): Trait {
-  return { displayType: "", traitType: "", value: "" };
+  return { traitType: "", value: "" };
 }
 
 export const Trait = {
   encode(message: Trait, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.displayType !== "") {
-      writer.uint32(10).string(message.displayType);
-    }
     if (message.traitType !== "") {
-      writer.uint32(18).string(message.traitType);
+      writer.uint32(10).string(message.traitType);
     }
     if (message.value !== "") {
-      writer.uint32(26).string(message.value);
+      writer.uint32(18).string(message.value);
     }
     return writer;
   },
@@ -509,17 +679,10 @@ export const Trait = {
             break;
           }
 
-          message.displayType = reader.string();
+          message.traitType = reader.string();
           continue;
         case 2:
           if (tag !== 18) {
-            break;
-          }
-
-          message.traitType = reader.string();
-          continue;
-        case 3:
-          if (tag !== 26) {
             break;
           }
 
@@ -536,7 +699,6 @@ export const Trait = {
 
   fromJSON(object: any): Trait {
     return {
-      displayType: isSet(object.displayType) ? globalThis.String(object.displayType) : "",
       traitType: isSet(object.traitType) ? globalThis.String(object.traitType) : "",
       value: isSet(object.value) ? globalThis.String(object.value) : "",
     };
@@ -544,9 +706,6 @@ export const Trait = {
 
   toJSON(message: Trait): unknown {
     const obj: any = {};
-    if (message.displayType !== "") {
-      obj.displayType = message.displayType;
-    }
     if (message.traitType !== "") {
       obj.traitType = message.traitType;
     }
@@ -561,7 +720,6 @@ export const Trait = {
   },
   fromPartial<I extends Exact<DeepPartial<Trait>, I>>(object: I): Trait {
     const message = createBaseTrait();
-    message.displayType = object.displayType ?? "";
     message.traitType = object.traitType ?? "";
     message.value = object.value ?? "";
     return message;
@@ -1346,6 +1504,10 @@ export interface LaunchpadService {
     request: DeepPartial<UploadMetadataRequest>,
     metadata?: grpc.Metadata,
   ): Promise<UploadMetadataResponse>;
+  CalculateMerkleRoot(
+    request: DeepPartial<CalculateMerkleRootRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<CalculateMerkleRootResponse>;
 }
 
 export class LaunchpadServiceClientImpl implements LaunchpadService {
@@ -1354,6 +1516,7 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.UploadMetadata = this.UploadMetadata.bind(this);
+    this.CalculateMerkleRoot = this.CalculateMerkleRoot.bind(this);
   }
 
   UploadMetadata(
@@ -1361,6 +1524,17 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
     metadata?: grpc.Metadata,
   ): Promise<UploadMetadataResponse> {
     return this.rpc.unary(LaunchpadServiceUploadMetadataDesc, UploadMetadataRequest.fromPartial(request), metadata);
+  }
+
+  CalculateMerkleRoot(
+    request: DeepPartial<CalculateMerkleRootRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<CalculateMerkleRootResponse> {
+    return this.rpc.unary(
+      LaunchpadServiceCalculateMerkleRootDesc,
+      CalculateMerkleRootRequest.fromPartial(request),
+      metadata,
+    );
   }
 }
 
@@ -1379,6 +1553,29 @@ export const LaunchpadServiceUploadMetadataDesc: UnaryMethodDefinitionish = {
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = UploadMetadataResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const LaunchpadServiceCalculateMerkleRootDesc: UnaryMethodDefinitionish = {
+  methodName: "CalculateMerkleRoot",
+  service: LaunchpadServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return CalculateMerkleRootRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = CalculateMerkleRootResponse.decode(data);
       return {
         ...value,
         toObject() {

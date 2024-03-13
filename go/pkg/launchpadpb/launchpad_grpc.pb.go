@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LaunchpadServiceClient interface {
 	UploadMetadata(ctx context.Context, in *UploadMetadataRequest, opts ...grpc.CallOption) (*UploadMetadataResponse, error)
+	CalculateMerkleRoot(ctx context.Context, in *CalculateMerkleRootRequest, opts ...grpc.CallOption) (*CalculateMerkleRootResponse, error)
 }
 
 type launchpadServiceClient struct {
@@ -42,11 +43,21 @@ func (c *launchpadServiceClient) UploadMetadata(ctx context.Context, in *UploadM
 	return out, nil
 }
 
+func (c *launchpadServiceClient) CalculateMerkleRoot(ctx context.Context, in *CalculateMerkleRootRequest, opts ...grpc.CallOption) (*CalculateMerkleRootResponse, error) {
+	out := new(CalculateMerkleRootResponse)
+	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/CalculateMerkleRoot", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LaunchpadServiceServer is the server API for LaunchpadService service.
 // All implementations must embed UnimplementedLaunchpadServiceServer
 // for forward compatibility
 type LaunchpadServiceServer interface {
 	UploadMetadata(context.Context, *UploadMetadataRequest) (*UploadMetadataResponse, error)
+	CalculateMerkleRoot(context.Context, *CalculateMerkleRootRequest) (*CalculateMerkleRootResponse, error)
 	mustEmbedUnimplementedLaunchpadServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedLaunchpadServiceServer struct {
 
 func (UnimplementedLaunchpadServiceServer) UploadMetadata(context.Context, *UploadMetadataRequest) (*UploadMetadataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UploadMetadata not implemented")
+}
+func (UnimplementedLaunchpadServiceServer) CalculateMerkleRoot(context.Context, *CalculateMerkleRootRequest) (*CalculateMerkleRootResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CalculateMerkleRoot not implemented")
 }
 func (UnimplementedLaunchpadServiceServer) mustEmbedUnimplementedLaunchpadServiceServer() {}
 
@@ -88,6 +102,24 @@ func _LaunchpadService_UploadMetadata_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LaunchpadService_CalculateMerkleRoot_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CalculateMerkleRootRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LaunchpadServiceServer).CalculateMerkleRoot(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/launchpad.v1.LaunchpadService/CalculateMerkleRoot",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LaunchpadServiceServer).CalculateMerkleRoot(ctx, req.(*CalculateMerkleRootRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LaunchpadService_ServiceDesc is the grpc.ServiceDesc for LaunchpadService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var LaunchpadService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UploadMetadata",
 			Handler:    _LaunchpadService_UploadMetadata_Handler,
+		},
+		{
+			MethodName: "CalculateMerkleRoot",
+			Handler:    _LaunchpadService_CalculateMerkleRoot_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -90,6 +90,10 @@ var allModels = []interface{}{
 
 	// names
 	&Name{},
+
+	// launchpad
+	&LaunchpadProject{},
+	&LaunchpadNftMetadata{},
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {
