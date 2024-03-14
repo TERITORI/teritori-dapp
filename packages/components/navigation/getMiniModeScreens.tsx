@@ -205,7 +205,7 @@ export const getMiniModeScreens = () => {
         options={{
           header: () => null,
           title: "Friends",
-          presentation: "transparentModal",
+          presentation: "containedTransparentModal",
         }}
       />
       <Stack.Screen
@@ -214,7 +214,7 @@ export const getMiniModeScreens = () => {
         options={{
           header: () => null,
           title: "New Group",
-          presentation: "transparentModal",
+          presentation: "containedTransparentModal",
         }}
       />
       <Stack.Screen
