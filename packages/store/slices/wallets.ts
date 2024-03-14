@@ -4,7 +4,6 @@ import {
   EntityId,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import { DeviceEventEmitter } from "react-native";
 
 import { RootState } from "../store";
 
@@ -53,11 +52,6 @@ const walletsSlice = createSlice({
     removeWalletById: storeWalletsAdapter.removeOne,
     resetAllWallets: storeWalletsAdapter.removeAll,
     setSelectedNativeWalletIndex: (state, action: PayloadAction<number>) => {
-      DeviceEventEmitter.emit("native-wallet-index-update", {
-        index: action.payload,
-      });
-      console.log("Setting selected wallet index to", action.payload);
-
       state.selectedWalletId = action.payload;
     },
   },
