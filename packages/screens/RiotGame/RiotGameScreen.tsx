@@ -33,23 +33,40 @@ export const RiotGameScreen = () => {
    const uploadMetadata = async () => {
     let client = mustGetLauchpadClient(networkId);
 
-    let metadatas: Metadata[] = [
-      {
-        image: "image0",
-        imageData: "",
-        externalUrl: "",
-        description: "",
-        name: "nft #0",
-        attributes: [
-          {traitType: "type0", value: "value0"},
-        ],
-        backgroundColor: "",
-        animationUrl: "",
-        youtubeUrl: "",
-        royaltyPercentage: 0,
-        royaltyPaymentAddress: "",
-      },
-    ];
+    const nft0 = {
+      image: "image0",
+      imageData: "",
+      externalUrl: "",
+      description: "",
+      name: "nft #0",
+      attributes: [
+        {traitType: "type0", value: "value0"},
+        {traitType: "type1", value: "value1"},
+      ],
+      backgroundColor: "",
+      animationUrl: "",
+      youtubeUrl: "",
+      royaltyPercentage: 0,
+      royaltyPaymentAddress: "",
+    };
+
+    const nft1 = {
+      image: "image1",
+      imageData: "",
+      externalUrl: "",
+      description: "",
+      name: "nft #1",
+      attributes: [
+        {traitType: "type1", value: "value1"},
+      ],
+      backgroundColor: "",
+      animationUrl: "",
+      youtubeUrl: "",
+      royaltyPercentage: 5,
+      royaltyPaymentAddress: "",
+    }
+
+    let metadatas: Metadata[] = [nft0, nft1];
 
     const resp = await client.CalculateMerkleRoot({
       user: selectedWallet?.address,

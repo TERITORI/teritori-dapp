@@ -301,7 +301,7 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 		i++
 	}
 
-	tree, err := merkletree.New(leaves)
+	tree, err := merkletree.New(leaves, true)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to created merkle tree")
 	}

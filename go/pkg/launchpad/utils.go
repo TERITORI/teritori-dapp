@@ -1,54 +1,39 @@
 package launchpad
 
 import (
-	"fmt"
-
 	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/merkletree"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
 type Metadata struct {
-	Image                 string
-	ImageData             string
-	ExternalUrl           string
-	Description           string
-	Name                  string
-	Attributes            []*launchpadpb.Trait
-	BackgroundColor       string
-	AnimationUrl          string
-	YoutubeUrl            string
-	RoyaltyPercentage     uint64
-	RoyaltyPaymentAddress string
+	launchpadpb.Metadata
 }
 
-func (m Metadata) serialize() string {
-	// format!("{image}|{image_data}|{external_url}|{description}|{name}|{attributes}|{background_color}|{animation_url}|{youtube_url}|{royalty_percentage}|{royalty_payment_address}")
-	attributes := ""
-
-	for _, item := range m.Attributes {
-		attr := fmt.Sprintf("%s%s", item.TraitType, item.Value)
-		attributes += attr
+func NewMetadataFromPb(data *launchpadpb.Metadata) *Metadata {
+	return &Metadata{
+		Metadata: launchpadpb.Metadata{
+			Image:                 data.Image,
+			ImageData:             data.ImageData,
+			ExternalUrl:           data.ExternalUrl,
+			Description:           data.Description,
+			Name:                  data.Name,
+			Attributes:            data.Attributes,
+			BackgroundColor:       data.BackgroundColor,
+			AnimationUrl:          data.AnimationUrl,
+			YoutubeUrl:            data.YoutubeUrl,
+			RoyaltyPercentage:     data.RoyaltyPercentage,
+			RoyaltyPaymentAddress: data.RoyaltyPaymentAddress,
+		},
 	}
+}
 
-	return fmt.Sprintf(
-		"%s|%s|%s|%s|%s|%s|%s|%s|%s|%d|%s",
-		m.Image,
-		m.ImageData,
-		m.ExternalUrl,
-		m.Description,
-		m.Name,
-		attributes,
-		m.BackgroundColor,
-		m.AnimationUrl,
-		m.YoutubeUrl,
-		m.RoyaltyPercentage,
-		m.RoyaltyPaymentAddress,
-	)
+func (m *Metadata) serialize() string {
+	return m.String()
 }
 
 // CalculateHash hashes the values of a TestContent
-func (m Metadata) CalculateHash() ([]byte, error) {
+func (m *Metadata) CalculateHash() ([]byte, error) {
 	serialized := m.serialize()
 	bytes := []byte(serialized)
 	res := crypto.Keccak256(bytes)
@@ -56,13 +41,13 @@ func (m Metadata) CalculateHash() ([]byte, error) {
 }
 
 // Equals tests for equality of two Contents
-func (m Metadata) Equals(other merkletree.Content) (bool, error) {
+func (m *Metadata) Equals(other merkletree.Content) (bool, error) {
 	data := m.serialize()
-	other_data := other.(Metadata).serialize()
+	other_data := other.(*Metadata).serialize()
 
 	return data == other_data, nil
 }
 
-func (m Metadata) ToJSONB() interface{} {
+func (m *Metadata) ToJSONB() interface{} {
 	return map[string]interface{}{}
 }

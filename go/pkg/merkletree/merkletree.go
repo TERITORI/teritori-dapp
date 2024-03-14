@@ -60,10 +60,10 @@ func toHex(bytesValue []byte) string {
 	return fmt.Sprintf("0x%s", hex.EncodeToString(bytesValue))
 }
 
-func New(cs []Content) (*MerkleTree, error) {
+func New(cs []Content, sort bool) (*MerkleTree, error) {
 	t := &MerkleTree{
 		hashStrategy: sha3.NewLegacyKeccak256,
-		sort:         true,
+		sort:         sort,
 	}
 	root, leafs, err := buildWithContent(cs, t)
 	if err != nil {

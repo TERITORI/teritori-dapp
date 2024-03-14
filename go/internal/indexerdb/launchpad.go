@@ -1,5 +1,7 @@
 package indexerdb
 
+import "gorm.io/datatypes"
+
 type LaunchpadProject struct {
 	ProjectID uint32 `gorm:"primaryKey"`
 	NetworkID string `gorm:"primaryKey"`
@@ -12,5 +14,5 @@ type LaunchpadNftMetadata struct {
 	NetworkID string `gorm:"primaryKey"`
 	NftIdx    uint32 `gorm:"primaryKey"`
 
-	Metadata ObjectJSONB `gorm:"type:jsonb;default:'{}'"`
+	Metadata datatypes.JSON
 }
