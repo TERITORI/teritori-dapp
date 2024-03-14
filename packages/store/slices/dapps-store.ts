@@ -4,7 +4,7 @@ import { RootState } from "../store";
 
 import { dAppGroup } from "@/utils/types/dapp-store";
 
-type pinnedAppsCollection = string[];
+export type pinnedAppsCollection = string[];
 
 interface DappsStorage {
   availableApps: dAppGroup;

@@ -9,6 +9,7 @@ import { BrandText } from "@/components/BrandText";
 import { Separator } from "@/components/separators/Separator";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import {
+  pinnedAppsCollection,
   selectAvailableApps,
   selectCheckedApps,
   setCheckedApp,
@@ -18,7 +19,7 @@ import { useAppDispatch } from "@/store/store";
 import { getValuesFromId, SEPARATOR } from "@/utils/dapp-store";
 import { RouteName } from "@/utils/navigation";
 import { layout } from "@/utils/style/layout";
-import { dAppType } from "@/utils/types/dapp-store";
+import { dAppGroup, dAppType } from "@/utils/types/dapp-store";
 
 type Props = {
   isEditing: boolean;
@@ -28,8 +29,8 @@ export const DAppsList = ({ isEditing }: Props) => {
   const dispatch = useAppDispatch();
   const navigation = useAppNavigation();
   const { width: windowsWidth } = useWindowDimensions();
-  const availableApps = useSelector(selectAvailableApps);
-  const selectedApps = useSelector(selectCheckedApps);
+  const availableApps = useSelector(selectAvailableApps) as dAppGroup;
+  const selectedApps = useSelector(selectCheckedApps) as pinnedAppsCollection;
 
   const coreDApps = availableApps["teritori-core-apps"];
   const externalApps = availableApps["bookmarks"];
@@ -58,7 +59,7 @@ export const DAppsList = ({ isEditing }: Props) => {
     (item: typeof externalApps) => {
       if (item?.options && Object.values(item?.options).length) {
         return Object.values(item.options).filter(
-          (x) => !selectedOptionsIds.includes(x.id) && !x.alwaysOn,
+          (x: dAppType) => !selectedOptionsIds.includes(x.id) && !x.alwaysOn,
         );
       }
       return [];
@@ -79,7 +80,11 @@ export const DAppsList = ({ isEditing }: Props) => {
         .filter(Boolean) as dAppType[];
 
       if (selected) {
-        setSelectedAppsFromValues(selected);
+        setSelectedAppsFromValues(
+          selected.filter((x) => {
+            return !["External", "Swap"].includes(x.route);
+          }),
+        );
       }
     }
   }, [selectedApps, availableApps]);
@@ -92,12 +97,16 @@ export const DAppsList = ({ isEditing }: Props) => {
         ...getOptions(externalApps),
       ];
       if (remainingToSelectApps) {
-        setRemainingToSelectApps(remainingToSelectApps);
+        setRemainingToSelectApps(
+          remainingToSelectApps.filter((x: dAppType) => {
+            return !["External", "Swap"].includes(x.route);
+          }),
+        );
       }
     }
   }, [topApps, staking, externalApps, selectedApps, getOptions]);
 
-  const alwaysOnApps = Object.values(coreDApps.options)
+  const alwaysOnApps: dAppType[] = Object.values(coreDApps.options)
     .concat(Object.values(topApps.options))
     .filter((x: dAppType) => x.alwaysOn);
 
