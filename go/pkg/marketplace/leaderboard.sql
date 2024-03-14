@@ -8,9 +8,9 @@ with mint_agg as (
     left join mints as m on a.id = m.activity_id
   where
     a.kind = 'mint'
-    and a.time >= now() - interval '1 hour' * ?
-    and a.network_id = ?
-    and a.collection_id in ?
+    and a.time >= now() - interval '1 hour' * @period_hours
+    and a.network_id = @network_id
+    and a.collection_id in @collections_whitelist
   group by
     m.buyer_id
 ),
@@ -24,9 +24,9 @@ buy_agg as (
     left join trades as t on a.id = t.activity_id
   where
     a.kind = 'trade'
-    and a.time >= now() - interval '1 hour' * ?
-    and a.network_id = ?
-    and a.collection_id in ?
+    and a.time >= now() - interval '1 hour' * @period_hours
+    and a.network_id = @network_id
+    and a.collection_id in @collections_whitelist
   group by
     t.buyer_id
 ),
@@ -40,9 +40,9 @@ sell_agg as (
     left join trades as t on a.id = t.activity_id
   where
     a.kind = 'trade'
-    and a.time >= now() - interval '1 hour' * ?
-    and a.network_id = ?
-    and a.collection_id in ?
+    and a.time >= now() - interval '1 hour' * @period_hours
+    and a.network_id = @network_id
+    and a.collection_id in @collections_whitelist
   group by
     t.seller_id
 ),
@@ -63,7 +63,7 @@ cancelled as (
       'burn'
     )
   where
-    n.collection_id in ?
+    n.collection_id in @riot_collections
   group by
     n.id
 ),
@@ -75,7 +75,7 @@ riot_holders as (
     left join cancelled c on c.id = n.id
   where
     c.id is null
-    and n.collection_id in ?
+    and n.collection_id in @riot_collections
 ),
 totals as (
   select
@@ -109,4 +109,6 @@ from
 order by
   xp desc
 limit
-  ? offset ?
+  @limit
+offset
+  @offset

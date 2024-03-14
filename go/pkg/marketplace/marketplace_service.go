@@ -2,6 +2,7 @@ package marketplace
 
 import (
 	"context"
+	"database/sql"
 	_ "embed"
 	"encoding/json"
 	"fmt"
@@ -20,6 +21,7 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/types"
 	"go.uber.org/zap"
 	"golang.org/x/exp/constraints"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -164,7 +166,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
       INNER JOIN teritori_collections tc ON tc.collection_id = c.id
       %s
       AND c.network_id = ?
-      AND tc.mint_contract_address IN ?
+      AND c.id IN ?
     ),
     nft_by_collection AS (
       SELECT  tc.id,n.id  nft_id  FROM tori_collections AS tc
@@ -991,7 +993,7 @@ func (s *MarkteplaceService) SearchCollections(ctx context.Context, req *marketp
 		Preload("TeritoriCollection").
 		Joins("JOIN teritori_collections ON teritori_collections.collection_id = collections.id").
 		Where("name ~* ?", req.Input).
-		Where("teritori_collections.mint_contract_address IN ?", s.conf.Whitelist).
+		Where("id IN ?", s.conf.Whitelist).
 		Limit(int(limit)).
 		Find(&collections).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to read db")
@@ -1060,19 +1062,14 @@ func (s *MarkteplaceService) Leaderboard(req *marketplacepb.LeaderboardRequest, 
 		getCollectionID(network.RiotContractAddressGen1),
 	}
 
-	collectionsWhitelist := make([]string, len(s.conf.Whitelist))
-	for i, v := range s.conf.Whitelist {
-		collectionsWhitelist[i] = getCollectionID(v)
-	}
-
 	var entries []dbLeaderboardEntry
 	if err := s.conf.IndexerDB.Raw(leaderboardQuery,
-		periodHours, networkId, collectionsWhitelist,
-		periodHours, networkId, collectionsWhitelist,
-		periodHours, networkId, collectionsWhitelist,
-		riotCollections, riotCollections,
-		limit,
-		offset,
+		sql.Named("period_hours", periodHours),
+		sql.Named("network_id", networkId),
+		sql.Named("collections_whitelist", s.conf.Whitelist),
+		sql.Named("riot_collections", riotCollections),
+		sql.Named("limit", limit),
+		sql.Named("offset", offset),
 	).Scan(&entries).Error; err != nil {
 		return errors.Wrap(err, "failed to query database")
 	}
@@ -1086,6 +1083,98 @@ func (s *MarkteplaceService) Leaderboard(req *marketplacepb.LeaderboardRequest, 
 			Boost:   e.Boost,
 			Rank:    e.Rank,
 			TotalXp: (e.MintUSDSum + e.BuyUSDSum + e.SellUSDSum) * e.Boost,
+		}}); err != nil {
+			return errors.Wrap(err, "failed to send leaderboard entry")
+		}
+	}
+
+	return nil
+}
+
+//go:embed popular_collections.sql
+var popularCollectionsQuery string
+
+type popSum struct {
+	Denom  string `json:"f1"`
+	Amount string `json:"f2"`
+	Count  uint64 `json:"f3"`
+}
+
+func (da *popSum) toCoin() *marketplacepb.Coin {
+	return &marketplacepb.Coin{
+		Denom:  da.Denom,
+		Amount: da.Amount,
+	}
+}
+
+func denomAmountsToCoins(das datatypes.JSONSlice[popSum]) []*marketplacepb.Coin {
+	coins := make([]*marketplacepb.Coin, len(das))
+	for i, da := range das {
+		coins[i] = da.toCoin()
+	}
+	return coins
+}
+
+type popularCollectionsEntry struct {
+	ID             string
+	Name           string
+	ImageURI       string
+	MaxSupply      int64
+	FloorPrices    datatypes.JSONSlice[popSum]
+	TradeDenomSums datatypes.JSONSlice[popSum]
+	MintDenomSums  datatypes.JSONSlice[popSum]
+	NftsCount      uint64
+	OwnersCount    uint64
+	MintCount      uint64
+	PrevMintCount  uint64
+	TradeCount     uint64
+	PrevTradeCount uint64
+	MintSum        float64
+	PrevMintSum    float64
+	TradeSum       float64
+	PrevTradeSum   float64
+	TotalSum       float64
+	Rank           uint32
+}
+
+func (s *MarkteplaceService) PopularCollections(req *marketplacepb.PopularCollectionsRequest, srv marketplacepb.MarketplaceService_PopularCollectionsServer) error {
+	periodHours := req.GetPeriodHours()
+	limit := req.GetLimit()
+	if limit == 0 || limit > 100 {
+		limit = 100
+	}
+	offset := req.GetOffset()
+	networkId := req.GetNetworkId()
+
+	var entries []popularCollectionsEntry
+	if err := s.conf.IndexerDB.Raw(popularCollectionsQuery,
+		sql.Named("period_hours", periodHours),
+		sql.Named("network_id", networkId),
+		sql.Named("collections_whitelist", s.conf.Whitelist),
+		sql.Named("limit", limit),
+		sql.Named("offset", offset),
+	).Scan(&entries).Error; err != nil {
+		return errors.Wrap(err, "failed to query database")
+	}
+
+	for _, e := range entries {
+		if err := srv.Send(&marketplacepb.PopularCollectionsResponse{Collection: &marketplacepb.PopularCollection{
+			Id:                  e.ID,
+			Name:                e.Name,
+			ImageUri:            e.ImageURI,
+			MaxSupply:           e.MaxSupply,
+			FloorPrices:         denomAmountsToCoins(e.FloorPrices),
+			TradeVolumesByDenom: denomAmountsToCoins(e.TradeDenomSums),
+			MintVolumesByDenom:  denomAmountsToCoins(e.MintDenomSums),
+			CurrentSupply:       e.NftsCount,
+			OwnersCount:         e.OwnersCount,
+			TradeUsdVolume:      e.TradeSum,
+			TradeUsdVolumePrev:  e.PrevTradeSum,
+			MintUsdVolume:       e.MintSum,
+			MintUsdVolumePrev:   e.PrevMintSum,
+			TradesCount:         e.TradeCount,
+			MintsCount:          e.MintCount,
+			Rank:                e.Rank,
 		}}); err != nil {
 			return errors.Wrap(err, "failed to send leaderboard entry")
 		}

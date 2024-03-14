@@ -34,6 +34,7 @@ type MarketplaceServiceClient interface {
 	SearchNames(ctx context.Context, in *SearchNamesRequest, opts ...grpc.CallOption) (*SearchNamesResponse, error)
 	SearchCollections(ctx context.Context, in *SearchCollectionsRequest, opts ...grpc.CallOption) (*SearchCollectionsResponse, error)
 	Leaderboard(ctx context.Context, in *LeaderboardRequest, opts ...grpc.CallOption) (MarketplaceService_LeaderboardClient, error)
+	PopularCollections(ctx context.Context, in *PopularCollectionsRequest, opts ...grpc.CallOption) (MarketplaceService_PopularCollectionsClient, error)
 }
 
 type marketplaceServiceClient struct {
@@ -290,6 +291,38 @@ func (x *marketplaceServiceLeaderboardClient) Recv() (*LeaderboardResponse, erro
 	return m, nil
 }
 
+func (c *marketplaceServiceClient) PopularCollections(ctx context.Context, in *PopularCollectionsRequest, opts ...grpc.CallOption) (MarketplaceService_PopularCollectionsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &MarketplaceService_ServiceDesc.Streams[6], "/marketplace.v1.MarketplaceService/PopularCollections", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &marketplaceServicePopularCollectionsClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type MarketplaceService_PopularCollectionsClient interface {
+	Recv() (*PopularCollectionsResponse, error)
+	grpc.ClientStream
+}
+
+type marketplaceServicePopularCollectionsClient struct {
+	grpc.ClientStream
+}
+
+func (x *marketplaceServicePopularCollectionsClient) Recv() (*PopularCollectionsResponse, error) {
+	m := new(PopularCollectionsResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // MarketplaceServiceServer is the server API for MarketplaceService service.
 // All implementations must embed UnimplementedMarketplaceServiceServer
 // for forward compatibility
@@ -306,6 +339,7 @@ type MarketplaceServiceServer interface {
 	SearchNames(context.Context, *SearchNamesRequest) (*SearchNamesResponse, error)
 	SearchCollections(context.Context, *SearchCollectionsRequest) (*SearchCollectionsResponse, error)
 	Leaderboard(*LeaderboardRequest, MarketplaceService_LeaderboardServer) error
+	PopularCollections(*PopularCollectionsRequest, MarketplaceService_PopularCollectionsServer) error
 	mustEmbedUnimplementedMarketplaceServiceServer()
 }
 
@@ -348,6 +382,9 @@ func (UnimplementedMarketplaceServiceServer) SearchCollections(context.Context, 
 }
 func (UnimplementedMarketplaceServiceServer) Leaderboard(*LeaderboardRequest, MarketplaceService_LeaderboardServer) error {
 	return status.Errorf(codes.Unimplemented, "method Leaderboard not implemented")
+}
+func (UnimplementedMarketplaceServiceServer) PopularCollections(*PopularCollectionsRequest, MarketplaceService_PopularCollectionsServer) error {
+	return status.Errorf(codes.Unimplemented, "method PopularCollections not implemented")
 }
 func (UnimplementedMarketplaceServiceServer) mustEmbedUnimplementedMarketplaceServiceServer() {}
 
@@ -596,6 +633,27 @@ func (x *marketplaceServiceLeaderboardServer) Send(m *LeaderboardResponse) error
 	return x.ServerStream.SendMsg(m)
 }
 
+func _MarketplaceService_PopularCollections_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(PopularCollectionsRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(MarketplaceServiceServer).PopularCollections(m, &marketplaceServicePopularCollectionsServer{stream})
+}
+
+type MarketplaceService_PopularCollectionsServer interface {
+	Send(*PopularCollectionsResponse) error
+	grpc.ServerStream
+}
+
+type marketplaceServicePopularCollectionsServer struct {
+	grpc.ServerStream
+}
+
+func (x *marketplaceServicePopularCollectionsServer) Send(m *PopularCollectionsResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // MarketplaceService_ServiceDesc is the grpc.ServiceDesc for MarketplaceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -657,6 +715,11 @@ var MarketplaceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "Leaderboard",
 			Handler:       _MarketplaceService_Leaderboard_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "PopularCollections",
+			Handler:       _MarketplaceService_PopularCollections_Handler,
 			ServerStreams: true,
 		},
 	},
