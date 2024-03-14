@@ -63,35 +63,31 @@ const fetchGnoFeed = async (
 
   const [, userAddress] = parseUserId(userId);
 
-  try {
-    const offset = pageParam || 0;
-    const limit = req.limit;
-    const categories = req.filter?.categories || []; // Default = all
-    const categoriesStr = `[]uint64{${categories.join(",")}}`;
-    const parentId = 0;
+  const offset = pageParam || 0;
+  const limit = req.limit;
+  const categories = req.filter?.categories || []; // Default = all
+  const categoriesStr = `[]uint64{${categories.join(",")}}`;
+  const parentId = 0;
 
-    const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
-    const output = await provider.evaluateExpression(
-      selectedNetwork.socialFeedsPkgPath,
-      `GetPostsWithCaller(${TERITORI_FEED_ID}, ${parentId}, "${callerAddress}", "${userAddress}", ${categoriesStr}, ${offset}, ${limit})`,
-    );
+  const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
+  const output = await provider.evaluateExpression(
+    selectedNetwork.socialFeedsPkgPath,
+    `GetPostsWithCaller(${TERITORI_FEED_ID}, ${parentId}, "${callerAddress}", "${userAddress}", ${categoriesStr}, ${offset}, ${limit})`,
+  );
 
-    const posts: Post[] = [];
-    const gnoPosts = extractGnoJSONString(output);
+  const posts: Post[] = [];
+  const gnoPosts = extractGnoJSONString(output);
 
-    for (const gnoPost of gnoPosts) {
-      const post = decodeGnoPost(selectedNetwork.id, gnoPost);
-      posts.push(post);
-    }
-
-    const result = {
-      list: posts.sort((p1, p2) => p2.createdAt - p1.createdAt),
-      totalCount: posts.length,
-    } as PostsList;
-    return result;
-  } catch (err) {
-    throw err;
+  for (const gnoPost of gnoPosts) {
+    const post = decodeGnoPost(selectedNetwork.id, gnoPost);
+    posts.push(post);
   }
+
+  const result = {
+    list: posts.sort((p1, p2) => p2.createdAt - p1.createdAt),
+    totalCount: posts.length,
+  } as PostsList;
+  return result;
 };
 
 export const useFetchFeed = (req: Partial<PostsRequest>) => {
