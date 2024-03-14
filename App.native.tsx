@@ -8,9 +8,5 @@ import "react-native-gesture-handler";
 
 import Root from "./Root";
 
-if (!globalThis.Buffer) {
-  globalThis.Buffer = require("buffer").Buffer;
-}
-
 grpc.setDefaultTransport(ReactNativeTransport({}));
 export default Root;
