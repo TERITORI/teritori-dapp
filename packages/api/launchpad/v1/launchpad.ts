@@ -29,20 +29,21 @@ export interface UploadMetadataResponse {
 }
 
 export interface Metadata {
-  image: string;
-  imageData: string;
-  externalUrl: string;
-  description: string;
-  name: string;
+  image?: string | undefined;
+  imageData?: string | undefined;
+  externalUrl?: string | undefined;
+  description?: string | undefined;
+  name?: string | undefined;
   attributes: Trait[];
-  backgroundColor: string;
-  animationUrl: string;
-  youtubeUrl: string;
-  royaltyPercentage: number;
-  royaltyPaymentAddress: string;
+  backgroundColor?: string | undefined;
+  animationUrl?: string | undefined;
+  youtubeUrl?: string | undefined;
+  royaltyPercentage?: number | undefined;
+  royaltyPaymentAddress?: string | undefined;
 }
 
 export interface Trait {
+  displayType?: string | undefined;
   traitType: string;
   value: string;
 }
@@ -431,53 +432,53 @@ export const UploadMetadataResponse = {
 
 function createBaseMetadata(): Metadata {
   return {
-    image: "",
-    imageData: "",
-    externalUrl: "",
-    description: "",
-    name: "",
+    image: undefined,
+    imageData: undefined,
+    externalUrl: undefined,
+    description: undefined,
+    name: undefined,
     attributes: [],
-    backgroundColor: "",
-    animationUrl: "",
-    youtubeUrl: "",
-    royaltyPercentage: 0,
-    royaltyPaymentAddress: "",
+    backgroundColor: undefined,
+    animationUrl: undefined,
+    youtubeUrl: undefined,
+    royaltyPercentage: undefined,
+    royaltyPaymentAddress: undefined,
   };
 }
 
 export const Metadata = {
   encode(message: Metadata, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.image !== "") {
+    if (message.image !== undefined) {
       writer.uint32(10).string(message.image);
     }
-    if (message.imageData !== "") {
+    if (message.imageData !== undefined) {
       writer.uint32(18).string(message.imageData);
     }
-    if (message.externalUrl !== "") {
+    if (message.externalUrl !== undefined) {
       writer.uint32(26).string(message.externalUrl);
     }
-    if (message.description !== "") {
+    if (message.description !== undefined) {
       writer.uint32(34).string(message.description);
     }
-    if (message.name !== "") {
+    if (message.name !== undefined) {
       writer.uint32(42).string(message.name);
     }
     for (const v of message.attributes) {
       Trait.encode(v!, writer.uint32(50).fork()).ldelim();
     }
-    if (message.backgroundColor !== "") {
+    if (message.backgroundColor !== undefined) {
       writer.uint32(58).string(message.backgroundColor);
     }
-    if (message.animationUrl !== "") {
+    if (message.animationUrl !== undefined) {
       writer.uint32(66).string(message.animationUrl);
     }
-    if (message.youtubeUrl !== "") {
+    if (message.youtubeUrl !== undefined) {
       writer.uint32(74).string(message.youtubeUrl);
     }
-    if (message.royaltyPercentage !== 0) {
+    if (message.royaltyPercentage !== undefined) {
       writer.uint32(80).uint64(message.royaltyPercentage);
     }
-    if (message.royaltyPaymentAddress !== "") {
+    if (message.royaltyPaymentAddress !== undefined) {
       writer.uint32(90).string(message.royaltyPaymentAddress);
     }
     return writer;
@@ -578,55 +579,57 @@ export const Metadata = {
 
   fromJSON(object: any): Metadata {
     return {
-      image: isSet(object.image) ? globalThis.String(object.image) : "",
-      imageData: isSet(object.imageData) ? globalThis.String(object.imageData) : "",
-      externalUrl: isSet(object.externalUrl) ? globalThis.String(object.externalUrl) : "",
-      description: isSet(object.description) ? globalThis.String(object.description) : "",
-      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      image: isSet(object.image) ? globalThis.String(object.image) : undefined,
+      imageData: isSet(object.imageData) ? globalThis.String(object.imageData) : undefined,
+      externalUrl: isSet(object.externalUrl) ? globalThis.String(object.externalUrl) : undefined,
+      description: isSet(object.description) ? globalThis.String(object.description) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
       attributes: globalThis.Array.isArray(object?.attributes)
         ? object.attributes.map((e: any) => Trait.fromJSON(e))
         : [],
-      backgroundColor: isSet(object.backgroundColor) ? globalThis.String(object.backgroundColor) : "",
-      animationUrl: isSet(object.animationUrl) ? globalThis.String(object.animationUrl) : "",
-      youtubeUrl: isSet(object.youtubeUrl) ? globalThis.String(object.youtubeUrl) : "",
-      royaltyPercentage: isSet(object.royaltyPercentage) ? globalThis.Number(object.royaltyPercentage) : 0,
-      royaltyPaymentAddress: isSet(object.royaltyPaymentAddress) ? globalThis.String(object.royaltyPaymentAddress) : "",
+      backgroundColor: isSet(object.backgroundColor) ? globalThis.String(object.backgroundColor) : undefined,
+      animationUrl: isSet(object.animationUrl) ? globalThis.String(object.animationUrl) : undefined,
+      youtubeUrl: isSet(object.youtubeUrl) ? globalThis.String(object.youtubeUrl) : undefined,
+      royaltyPercentage: isSet(object.royaltyPercentage) ? globalThis.Number(object.royaltyPercentage) : undefined,
+      royaltyPaymentAddress: isSet(object.royaltyPaymentAddress)
+        ? globalThis.String(object.royaltyPaymentAddress)
+        : undefined,
     };
   },
 
   toJSON(message: Metadata): unknown {
     const obj: any = {};
-    if (message.image !== "") {
+    if (message.image !== undefined) {
       obj.image = message.image;
     }
-    if (message.imageData !== "") {
+    if (message.imageData !== undefined) {
       obj.imageData = message.imageData;
     }
-    if (message.externalUrl !== "") {
+    if (message.externalUrl !== undefined) {
       obj.externalUrl = message.externalUrl;
     }
-    if (message.description !== "") {
+    if (message.description !== undefined) {
       obj.description = message.description;
     }
-    if (message.name !== "") {
+    if (message.name !== undefined) {
       obj.name = message.name;
     }
     if (message.attributes?.length) {
       obj.attributes = message.attributes.map((e) => Trait.toJSON(e));
     }
-    if (message.backgroundColor !== "") {
+    if (message.backgroundColor !== undefined) {
       obj.backgroundColor = message.backgroundColor;
     }
-    if (message.animationUrl !== "") {
+    if (message.animationUrl !== undefined) {
       obj.animationUrl = message.animationUrl;
     }
-    if (message.youtubeUrl !== "") {
+    if (message.youtubeUrl !== undefined) {
       obj.youtubeUrl = message.youtubeUrl;
     }
-    if (message.royaltyPercentage !== 0) {
+    if (message.royaltyPercentage !== undefined) {
       obj.royaltyPercentage = Math.round(message.royaltyPercentage);
     }
-    if (message.royaltyPaymentAddress !== "") {
+    if (message.royaltyPaymentAddress !== undefined) {
       obj.royaltyPaymentAddress = message.royaltyPaymentAddress;
     }
     return obj;
@@ -637,32 +640,35 @@ export const Metadata = {
   },
   fromPartial<I extends Exact<DeepPartial<Metadata>, I>>(object: I): Metadata {
     const message = createBaseMetadata();
-    message.image = object.image ?? "";
-    message.imageData = object.imageData ?? "";
-    message.externalUrl = object.externalUrl ?? "";
-    message.description = object.description ?? "";
-    message.name = object.name ?? "";
+    message.image = object.image ?? undefined;
+    message.imageData = object.imageData ?? undefined;
+    message.externalUrl = object.externalUrl ?? undefined;
+    message.description = object.description ?? undefined;
+    message.name = object.name ?? undefined;
     message.attributes = object.attributes?.map((e) => Trait.fromPartial(e)) || [];
-    message.backgroundColor = object.backgroundColor ?? "";
-    message.animationUrl = object.animationUrl ?? "";
-    message.youtubeUrl = object.youtubeUrl ?? "";
-    message.royaltyPercentage = object.royaltyPercentage ?? 0;
-    message.royaltyPaymentAddress = object.royaltyPaymentAddress ?? "";
+    message.backgroundColor = object.backgroundColor ?? undefined;
+    message.animationUrl = object.animationUrl ?? undefined;
+    message.youtubeUrl = object.youtubeUrl ?? undefined;
+    message.royaltyPercentage = object.royaltyPercentage ?? undefined;
+    message.royaltyPaymentAddress = object.royaltyPaymentAddress ?? undefined;
     return message;
   },
 };
 
 function createBaseTrait(): Trait {
-  return { traitType: "", value: "" };
+  return { displayType: undefined, traitType: "", value: "" };
 }
 
 export const Trait = {
   encode(message: Trait, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.displayType !== undefined) {
+      writer.uint32(10).string(message.displayType);
+    }
     if (message.traitType !== "") {
-      writer.uint32(10).string(message.traitType);
+      writer.uint32(18).string(message.traitType);
     }
     if (message.value !== "") {
-      writer.uint32(18).string(message.value);
+      writer.uint32(26).string(message.value);
     }
     return writer;
   },
@@ -679,10 +685,17 @@ export const Trait = {
             break;
           }
 
-          message.traitType = reader.string();
+          message.displayType = reader.string();
           continue;
         case 2:
           if (tag !== 18) {
+            break;
+          }
+
+          message.traitType = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
             break;
           }
 
@@ -699,6 +712,7 @@ export const Trait = {
 
   fromJSON(object: any): Trait {
     return {
+      displayType: isSet(object.displayType) ? globalThis.String(object.displayType) : undefined,
       traitType: isSet(object.traitType) ? globalThis.String(object.traitType) : "",
       value: isSet(object.value) ? globalThis.String(object.value) : "",
     };
@@ -706,6 +720,9 @@ export const Trait = {
 
   toJSON(message: Trait): unknown {
     const obj: any = {};
+    if (message.displayType !== undefined) {
+      obj.displayType = message.displayType;
+    }
     if (message.traitType !== "") {
       obj.traitType = message.traitType;
     }
@@ -720,6 +737,7 @@ export const Trait = {
   },
   fromPartial<I extends Exact<DeepPartial<Trait>, I>>(object: I): Trait {
     const message = createBaseTrait();
+    message.displayType = object.displayType ?? undefined;
     message.traitType = object.traitType ?? "";
     message.value = object.value ?? "";
     return message;
