@@ -58,7 +58,7 @@ impl NftLaunchpad {
     pub fn submit_collection(
         &self,
         ctx: ExecCtx,
-        mut collection: Collection,
+        collection: Collection,
     ) -> Result<Response, ContractError> {
         let storage = ctx.deps.storage;
 

@@ -1,5 +1,5 @@
 [workspace]
-members = ["cosmwasm-contracts/*"]
+members = ["rust/*"]
 resolver = "2"
 
 [profile.release]
@@ -18,3 +18,7 @@ schemars = "0.8.16"
 serde = { version = "1.0.197", features = ["derive"] }
 thiserror = "1.0.57"
 sylvia = "0.9.3"
+prost = "0.12.3"
+apipb = { version = "0.1.0", path = "./rust/apipb" }
+
+

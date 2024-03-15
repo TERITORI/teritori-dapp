@@ -19,7 +19,7 @@ use sylvia::{
     types::{ExecCtx, InstantiateCtx, QueryCtx},
 };
 
-use crate::{error::ContractError, hasher::TrKeccak256, utils::serialize_metadata};
+use crate::{error::ContractError, hasher::TrKeccak256, utils::proto_encode};
 
 use cw721_base::{
     msg::InstantiateMsg as BaseInstantiateMsg,
@@ -263,7 +263,7 @@ impl Tr721 {
 
         let token_id_uint: usize = token_id.parse().unwrap();
         let leaf_indices = vec![token_id_uint];
-        let leaf_hashes = vec![TrKeccak256::hash(&serialize_metadata(&metadata).as_bytes())];
+        let leaf_hashes = vec![TrKeccak256::hash(&proto_encode(&metadata))];
         let total_leaves_count: usize = config.total_supply.try_into().unwrap();
 
         let is_verified = proof_from_hex.verify(

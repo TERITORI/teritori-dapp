@@ -2,7 +2,7 @@ use cosmwasm_std::{Addr, Attribute, Timestamp};
 use sylvia::{cw_multi_test::ContractWrapper, multitest::App};
 
 use crate::{
-    contract::{sv::multitest_utils::CodeId, Collection, CollectionState, Config},
+    contract::{sv::multitest_utils::CodeId, Collection, Config},
     error::ContractError,
 };
 
@@ -93,7 +93,7 @@ fn instantiate() {
     let app = App::default();
     let code_id = CodeId::store_code(&app);
     let sender = "sender";
-    
+
     // Instantiate
     let config = Config {
         name: "teritori launchpad".to_string(),
@@ -210,7 +210,10 @@ fn full_flow() {
     // Deploy completed collection after update merkle root + nft code id  ---------------------------------------------------------
     {
         let collection_id = 1;
-        let resp = contract.deploy_collection(collection_id).call(sender).unwrap();
+        let resp = contract
+            .deploy_collection(collection_id)
+            .call(sender)
+            .unwrap();
         let attrs = resp.custom_attrs(1);
         assert_eq!(
             attrs[1],
@@ -224,5 +227,4 @@ fn full_flow() {
         let collection = contract.get_collection_by_id(collection_id).unwrap();
         assert_eq!(collection.deployed_address, Some("contract1".to_string()));
     }
-
 }

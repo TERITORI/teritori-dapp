@@ -31,22 +31,23 @@ message UploadMetadataResponse {
 }
 
 message Metadata {
-  string image = 1;
-  string image_data = 2;
-  string external_url = 3;
-  string description = 4;
-  string name = 5;
+  optional string image = 1;
+  optional string image_data = 2;
+  optional string external_url = 3;
+  optional string description = 4;
+  optional string name = 5;
   repeated Trait attributes = 6;
-  string background_color = 7;
-  string animation_url = 8;
-  string youtube_url = 9;
-  uint64 royalty_percentage = 10;
-  string royalty_payment_address = 11;
+  optional string background_color = 7;
+  optional string animation_url = 8;
+  optional string youtube_url = 9;
+  optional uint64 royalty_percentage = 10;
+  optional string royalty_payment_address = 11;
 }
 
 message Trait {
-  string trait_type = 1;
-  string value = 2;
+  optional string display_type = 1;
+  string trait_type = 2;
+  string value = 3;
 }
 
 
