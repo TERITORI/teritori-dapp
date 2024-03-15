@@ -46,8 +46,6 @@ export default function MobileModal({
     };
   }, []);
 
-  console.log(keyboardVisible);
-
   return (
     <Modal
       style={{
