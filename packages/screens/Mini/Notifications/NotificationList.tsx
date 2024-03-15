@@ -1,10 +1,15 @@
 import React from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, View, useWindowDimensions } from "react-native";
 
 import MessengerNotificationCard from "./MessengerNotificationCard";
 
+import NoNotificaionsSVG from "@/assets/icons/no-notifications.svg";
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
 import { Separator } from "@/components/separators/Separator";
 import { TypeNotification } from "@/store/slices/notification";
+import { neutral77 } from "@/utils/style/colors";
+import { fontMedium16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export type NotificationType = {
@@ -25,6 +30,7 @@ export default function NotificationList({
 }: {
   notifications: TypeNotification[];
 }) {
+  const { height: windowHeight } = useWindowDimensions();
   return (
     <View
       style={{
@@ -41,6 +47,25 @@ export default function NotificationList({
             <Separator style={{ marginVertical: layout.spacing_x1_5 }} />
           </React.Fragment>
         )}
+        ListEmptyComponent={
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              height: windowHeight - 220,
+            }}
+          >
+            <SVG source={NoNotificaionsSVG} height={148} width={148} />
+            <BrandText
+              style={[
+                fontMedium16,
+                { color: neutral77, marginTop: layout.spacing_x2_5 },
+              ]}
+            >
+              No notifications yet
+            </BrandText>
+          </View>
+        }
       />
     </View>
   );
