@@ -1,3 +1,4 @@
+import { Link } from "@react-navigation/native";
 import React from "react";
 import { View, Linking } from "react-native";
 
@@ -14,9 +15,10 @@ import {
 import { useBanners } from "../../hooks/useBanners";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { Link } from "../Link";
+// import { Link } from "../Link";
 import { OptimizedImage } from "../OptimizedImage";
 import { Section } from "../Section";
+import { CustomPressable } from "../buttons/CustomPressable";
 import { DAppCard } from "../cards/DAppCard";
 import { LabelCard } from "../cards/LabelCard";
 import { MyWalletsCard } from "../cards/MyWalletsCard";
@@ -33,12 +35,18 @@ export const HubLanding: React.FC = () => {
   const networkId = useSelectedNetworkId();
   const banners = useBanners(networkId);
   const banner = banners?.length ? banners[0] : undefined;
+  const postId = banner?.url
+    ? banner.url.split("/")[banner.url.split("/").length - 1]
+    : "";
 
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
       <View style={{ flex: 1 }}>
+        {/* <Link to={banner?.url}> */}
         {!!banner && (
-          <Link to={banner?.url || ""}>
+          <CustomPressable
+            onPress={() => navigation.navigate("FeedPostView", { id: postId })}
+          >
             <OptimizedImage
               sourceURI={banner?.image}
               width={width}
@@ -50,8 +58,9 @@ export const HubLanding: React.FC = () => {
                 marginTop: 56,
               }}
             />
-          </Link>
+          </CustomPressable>
         )}
+        {/* </Link> */}
 
         <NewsCarouselSection />
 
