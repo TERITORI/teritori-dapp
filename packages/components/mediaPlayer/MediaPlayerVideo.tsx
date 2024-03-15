@@ -4,7 +4,6 @@ import {
   ResizeMode,
   Video,
 } from "expo-av";
-import { VideoFullscreenUpdate } from "expo-av/src/Video.types";
 import { LinearGradient } from "expo-linear-gradient";
 import React, {
   Dispatch,
@@ -66,40 +65,16 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   resizeMode,
   style,
 }) => {
-  const isMobile = useIsMobile();
-  const { media, playbackStatus, onLayoutPlayerVideo } = useMediaPlayer();
-  const id = useMemo(() => uuidv4(), []);
-  const [localStatus, setLocalStatus] = useState<AVPlaybackStatusSuccess>();
-  const isInMediaPlayer = useMemo(() => media?.id === id, [media?.id, id]);
-  // Plug or not the playbackStatus from MediaPLayerProvider
-  const statusToUse = useMemo(
-    () => (isInMediaPlayer ? playbackStatus : localStatus),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isInMediaPlayer],
-  );
+  const { media, onLayoutPlayerVideo } = useMediaPlayer();
+  const { current: id } = useRef(uuidv4());
+  const isInMediaPlayer = useMemo(() => media?.id === id, [id, media?.id]);
 
+  console.log(isInMediaPlayer);
   const containerRef = useRef<View>(null);
   const videoRef = useRef<Video>(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
   const [isControlsShown, setControlsShown] = useState(false);
-
-  // Handle show/hide controls by hovering the video area with mouse
-  const mousePosition = useMousePosition();
-  containerRef.current?.measure((ox, oy, width, height, px, py) => {
-    if (
-      (mousePosition.x >= px &&
-        mousePosition.x <= px + width &&
-        mousePosition.y >= py &&
-        mousePosition.y <= py + height &&
-        !isMobile) ||
-      !statusToUse?.isPlaying
-    ) {
-      setControlsShown(true);
-    } else {
-      setControlsShown(false);
-    }
-  });
 
   return (
     <View
@@ -116,6 +91,7 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
       {/*---- expo-av Video */}
       <ExpoAvVideo
         videoRef={videoRef}
+        containerRef={containerRef}
         containerWidth={containerWidth}
         containerHeight={containerHeight}
         isControlsShown={isControlsShown}
@@ -125,8 +101,7 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
         postId={postId}
         resizeMode={resizeMode}
         id={id}
-        setLocalStatus={setLocalStatus}
-        statusToUse={statusToUse}
+        setControlsShown={setControlsShown}
       />
     </View>
   );
@@ -135,6 +110,7 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
 type ExpoAvVideoType = {
   isInMediaPlayer: boolean;
   videoRef: RefObject<Video>;
+  containerRef: RefObject<View>;
   containerWidth: number;
   containerHeight: number;
   isControlsShown: boolean;
@@ -143,8 +119,7 @@ type ExpoAvVideoType = {
   resizeMode?: ResizeMode;
   authorId: string;
   id: string;
-  setLocalStatus: Dispatch<SetStateAction<AVPlaybackStatusSuccess | undefined>>;
-  statusToUse?: AVPlaybackStatusSuccess;
+  setControlsShown: Dispatch<SetStateAction<boolean>>;
 };
 
 function ExpoAvVideo({
@@ -158,8 +133,8 @@ function ExpoAvVideo({
   resizeMode,
   authorId,
   id,
-  setLocalStatus,
-  statusToUse,
+  containerRef,
+  setControlsShown,
 }: ExpoAvVideoType) {
   const {
     onVideoStatusUpdate,
@@ -169,15 +144,35 @@ function ExpoAvVideo({
   } = useMediaPlayer();
 
   const { setToastError } = useFeedbacks();
+  const isMobile = useIsMobile();
+  const [localStatus, setLocalStatus] = useState<AVPlaybackStatusSuccess>();
   const [extraPressCount, setExtraPressCount] = useState(0);
   const [pressTimer, setPressTimer] = useState<NodeJS.Timeout>();
-  const [fullScreenUpdate, setFullScreenUpdate] =
-    useState<VideoFullscreenUpdate>();
   const [isThumbnailShown, setThumbnailShown] = useState(true);
+  // why?: Linked to problem code in onLocalPlaybackStatusUpdate()
+  // const [fullScreenUpdate, setFullScreenUpdate] =
+  //   useState<VideoFullscreenUpdate>();
 
   const selectedNetwork = useSelectedNetworkInfo();
   const userInfo = useNSUserInfo(authorId);
   const { isDAO } = useIsDAO(authorId);
+
+  // Handle show/hide controls by hovering the video area with mouse
+  const mousePosition = useMousePosition();
+  containerRef.current?.measure((ox, oy, width, height, px, py) => {
+    if (
+      (mousePosition.x >= px &&
+        mousePosition.x <= px + width &&
+        mousePosition.y >= py &&
+        mousePosition.y <= py + height &&
+        !isMobile) ||
+      !localStatus?.isPlaying
+    ) {
+      setControlsShown(true);
+    } else {
+      setControlsShown(false);
+    }
+  });
 
   const thumbnailURI =
     videoMetadata.videoFile.thumbnailFileData?.url ||
@@ -234,17 +229,19 @@ function ExpoAvVideo({
   const onLocalPlaybackStatusUpdate = async (status: AVPlaybackStatus) => {
     if ("uri" in status && status.isLoaded) {
       setLocalStatus(status);
+
       if (isInMediaPlayer && status.positionMillis > 0) {
         onVideoStatusUpdate(status);
       }
+      // Fix me: This code is not working and stoping video to play
       // Sync with MediaProvider, if not synced, if the video is played for the first time, on fullscreen
-      else if (
-        fullScreenUpdate === VideoFullscreenUpdate.PLAYER_DID_PRESENT &&
-        status.isPlaying &&
-        videoRef.current
-      ) {
-        await firstPlayVideo(videoRef.current, mediaToSet);
-      }
+      // else if (
+      //   fullScreenUpdate === VideoFullscreenUpdate.PLAYER_DID_PRESENT &&
+      //   status.isPlaying &&
+      //   videoRef.current
+      // ) {
+      //   await firstPlayVideo(videoRef.current, mediaToSet);
+      // }
     }
     if ("error" in status) {
       console.error("Error while playbackStatus update: ", status.error);
@@ -281,10 +278,10 @@ function ExpoAvVideo({
         )}
         <Video
           ref={videoRef}
-          status={statusToUse}
-          onFullscreenUpdate={(e) => setFullScreenUpdate(e.fullscreenUpdate)}
           onPlaybackStatusUpdate={onLocalPlaybackStatusUpdate}
           useNativeControls={false}
+          // Why?: Linked to problem code in onLocalPlaybackStatusUpdate()
+          // onFullscreenUpdate={(e) => setFullScreenUpdate(e.fullscreenUpdate)}
           source={{
             uri: web3ToWeb2URI(videoMetadata.videoFile.url),
           }}
@@ -302,7 +299,7 @@ function ExpoAvVideo({
       {isControlsShown && (
         <MediaPlayerController
           containerWidth={containerWidth}
-          statusToUse={statusToUse}
+          playbackStatus={localStatus}
           isInMediaPlayer={isInMediaPlayer}
           videoRef={videoRef}
           onPressPlayPause={onPressPlayPause}
@@ -314,7 +311,7 @@ function ExpoAvVideo({
 
 type TypeMediaPlayerController = {
   containerWidth: number;
-  statusToUse?: AVPlaybackStatusSuccess;
+  playbackStatus?: AVPlaybackStatusSuccess;
   isInMediaPlayer: boolean;
   videoRef: RefObject<Video>;
   onPressPlayPause: () => void;
@@ -322,7 +319,7 @@ type TypeMediaPlayerController = {
 
 function MediaPlayerController({
   containerWidth,
-  statusToUse,
+  playbackStatus,
   isInMediaPlayer,
   videoRef,
   onPressPlayPause,
@@ -375,10 +372,10 @@ function MediaPlayerController({
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <CustomPressable
               style={{ alignItems: "center", justifyContent: "center" }}
-              onPress={onPressPlayPause}
+              onPress={() => onPressPlayPause()}
             >
               <SVG
-                source={statusToUse?.isPlaying ? PauseIcon : PlayIcon}
+                source={playbackStatus?.isPlaying ? PauseIcon : PlayIcon}
                 height={24}
                 width={24}
                 color={secondaryColor}
@@ -389,7 +386,7 @@ function MediaPlayerController({
             {/*TODO: handle Next for Videos */}
             <CustomPressable
               style={{ alignItems: "center", justifyContent: "center" }}
-              onPress={nextMedia}
+              onPress={() => nextMedia()}
               disabled
             >
               <SVG source={NextIcon} height={20} width={20} color={neutralA3} />
@@ -398,7 +395,7 @@ function MediaPlayerController({
 
             {!isMobile && (
               <>
-                <VolumeSlider useAltStyle playbackStatus={statusToUse} />
+                <VolumeSlider useAltStyle playbackStatus={playbackStatus} />
                 <SpacerRow size={1.5} />
               </>
             )}
@@ -406,8 +403,8 @@ function MediaPlayerController({
             {/* Display time */}
             <BrandText style={fontSemibold13}>
               {`${prettyMediaDuration(
-                statusToUse?.positionMillis,
-              )} / ${prettyMediaDuration(statusToUse?.durationMillis)}`}
+                playbackStatus?.positionMillis,
+              )} / ${prettyMediaDuration(playbackStatus?.durationMillis)}`}
             </BrandText>
           </View>
 
@@ -430,7 +427,7 @@ function MediaPlayerController({
         <TimerSlider
           width={containerWidth - CONTROLS_PADDING_HORIZONTAL * 2}
           hideDuration
-          playbackStatus={statusToUse}
+          playbackStatus={playbackStatus}
         />
         <SpacerColumn size={2.5} />
       </View>
