@@ -1,5 +1,4 @@
 import {
-  EntityState,
   PayloadAction,
   createEntityAdapter,
   createSlice,
@@ -14,7 +13,7 @@ const NotificationType = z.enum([
   "group-join",
 ]);
 
-export const Notification = z.object({
+const Notification = z.object({
   id: z.string(),
   senderId: z.string().optional(),
   groupId: z.string().optional(),
@@ -30,15 +29,8 @@ export type TypeNotification = z.infer<typeof Notification>;
 const notificationEntityAdapter = createEntityAdapter<TypeNotification>();
 const notificationSelectors = notificationEntityAdapter.getSelectors();
 
-export interface NotificationState {
-  notifications: EntityState<TypeNotification>;
-}
-
 export const selectNotificationList = (state: RootState) =>
   notificationSelectors.selectAll(state.notifications);
-
-export const selectTotalNotification = (state: RootState) =>
-  notificationSelectors.selectTotal(state.notifications);
 
 const notificationSlice = createSlice({
   name: "notifications",
@@ -85,7 +77,7 @@ const notificationSlice = createSlice({
   },
 });
 
-export const { setNotificationList, setNotificationRequest, readNotification } =
+export const { setNotificationRequest, readNotification } =
   notificationSlice.actions;
 
 export const notificationReducer = notificationSlice.reducer;
