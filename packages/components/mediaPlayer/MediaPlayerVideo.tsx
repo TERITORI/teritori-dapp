@@ -69,7 +69,6 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   const { current: id } = useRef(uuidv4());
   const isInMediaPlayer = useMemo(() => media?.id === id, [id, media?.id]);
 
-  console.log(isInMediaPlayer);
   const containerRef = useRef<View>(null);
   const videoRef = useRef<Video>(null);
   const [containerWidth, setContainerWidth] = useState(0);
@@ -88,7 +87,6 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
         setContainerHeight(e.nativeEvent.layout.height);
       }}
     >
-      {/*---- expo-av Video */}
       <ExpoAvVideo
         videoRef={videoRef}
         containerRef={containerRef}
@@ -143,7 +141,7 @@ function ExpoAvVideo({
     handlePlayPause,
   } = useMediaPlayer();
 
-  const { setToastError } = useFeedbacks();
+  const { setToast } = useFeedbacks();
   const isMobile = useIsMobile();
   const [localStatus, setLocalStatus] = useState<AVPlaybackStatusSuccess>();
   const [extraPressCount, setExtraPressCount] = useState(0);
@@ -245,9 +243,10 @@ function ExpoAvVideo({
     }
     if ("error" in status) {
       console.error("Error while playbackStatus update: ", status.error);
-      setToastError({
-        title: "Error while playbackStatus update",
-        message: status.error || "",
+      setToast({
+        mode: "mini",
+        type: "error",
+        message: `Error while playbackStatus update : ${status.error}`,
       });
     }
   };
