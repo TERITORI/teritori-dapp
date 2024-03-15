@@ -1,7 +1,7 @@
 export type ProposalStatus =
   | "PROPOSAL_STATUS_PASSED"
   | "PROPOSAL_STATUS_REJECTED"
-  | "PROPOSAL_STATUS_VOTING";
+  | "PROPOSAL_STATUS_DEPOSIT_PERIOD";
 
 interface Content {
   "@type": string;
