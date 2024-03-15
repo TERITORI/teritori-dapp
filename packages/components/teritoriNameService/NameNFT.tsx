@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleProp, ViewStyle, View } from "react-native";
+import { Image, Platform, StyleProp, View, ViewStyle } from "react-native";
 
 import { NameAndTldText } from "./NameAndTldText";
 import defaultNameNFT from "../../../assets/default-images/default-name-nft.png";
@@ -10,6 +10,9 @@ import { web3ToWeb2URI } from "../../utils/ipfs";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold16 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
+import { OptimizedImage } from "../OptimizedImage";
+import { SpacerColumn } from "../spacer";
+
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const NameNFT: React.FC<{
   style?: StyleProp<ViewStyle>;
@@ -26,28 +29,50 @@ export const NameNFT: React.FC<{
 
   return (
     <View style={[{ alignItems: "center" }, style]}>
-      <Image
-        source={
-          typeof token?.extension.image === "string"
-            ? web3ToWeb2URI(token.extension.image)
-            : defaultNameNFT
-        }
-        style={{
-          width: width - imageMargin * 2,
-          height: width - imageMargin * 2,
-          minHeight: width - imageMargin * 2,
-          margin: imageMargin,
-        }}
-      />
+      {Platform.OS === "web" ? (
+        <Image
+          source={
+            typeof token?.extension.image === "string"
+              ? web3ToWeb2URI(token.extension.image)
+              : defaultNameNFT
+          }
+          style={{
+            width: width - imageMargin * 2,
+            height: width - imageMargin * 2,
+            minHeight: width - imageMargin * 2,
+            margin: imageMargin,
+          }}
+        />
+      ) : (
+        <OptimizedImage
+          width={width - imageMargin * 2}
+          height={width - imageMargin * 2}
+          sourceURI={web3ToWeb2URI(token?.extension?.image || "")}
+          style={[
+            {
+              width: width - imageMargin * 2,
+              height: width - imageMargin * 2,
+              backgroundColor: "black",
+            },
+          ]}
+        />
+      )}
 
-      <NameAndTldText
-        nameAndTldStr={tokenId}
-        style={{
-          justifyContent: "center",
-          marginHorizontal: imageMargin,
-          width: width - imageMargin * 2,
-        }}
-      />
+      {Platform.OS === "web" ? (
+        <NameAndTldText
+          nameAndTldStr={tokenId}
+          style={{
+            justifyContent: "center",
+            marginHorizontal: imageMargin,
+            width: width - imageMargin * 2,
+          }}
+        />
+      ) : (
+        <>
+          <SpacerColumn size={1.5} />
+          <BrandText>{tokenId}</BrandText>
+        </>
+      )}
       <BrandText style={[fontSemibold16, { color: neutral77 }]}>
         {name}
       </BrandText>
