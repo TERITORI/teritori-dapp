@@ -10,6 +10,14 @@ export const gnoDevNetwork: GnoNetworkInfo = {
     NetworkFeature.Organizations,
     NetworkFeature.SocialFeed,
     NetworkFeature.UPP,
+    NetworkFeature.GnoProjectManager,
+  ],
+  featureObjects: [
+    {
+      type: NetworkFeature.GnoProjectManager,
+      projectsManagerPkgPath: "gno.land/r/demo/teritori/escrow",
+      paymentsDenom: "ugnot",
+    },
   ],
   currencies: gnoCurrencies,
   stakeCurrency: "ugnot",
@@ -20,7 +28,8 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   accountExplorer: "https://gnoscan.io/accounts/$address",
   contractExplorer: "https://gnoscan.io/realms/details?path=$address",
   testnet: true,
-  backendEndpoint: "http://localhost:9090",
+  // backendEndpoint: "http://localhost:9090",
+  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   vaultContractAddress: "",
   daoRegistryPkgPath: "gno.land/r/demo/teritori/dao_registry",
   socialFeedsPkgPath: "gno.land/r/demo/teritori/social_feeds",
@@ -30,6 +39,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   groupsPkgPath: "gno.land/r/demo/teritori/groups",
   votingGroupPkgPath: "gno.land/p/demo/teritori/dao_voting_group",
   daoProposalSinglePkgPath: "gno.land/p/demo/teritori/dao_proposal_single",
+
   daoInterfacesPkgPath: "gno.land/p/demo/teritori/dao_interfaces",
   daoCorePkgPath: "gno.land/p/demo/teritori/dao_core",
   nameServiceDefaultImage:

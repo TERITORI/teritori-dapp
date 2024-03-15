@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
+import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { BrandText } from "@/components/BrandText";
@@ -19,7 +19,7 @@ interface SimpleButtonProps {
   bgColor?: string;
   onPress?(): void;
   containerStyle?: ViewStyle;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   loading?: boolean;
   disabled?: boolean;
   iconSVG?: React.FC<SvgProps>;
@@ -41,24 +41,29 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
 }) => {
   let padH: number;
   let padV: number;
+  let radius: number;
 
   switch (size) {
     case "XL":
       padH = layout.spacing_x3;
       padV = layout.spacing_x2_5;
+      radius = layout.spacing_x1_5;
       break;
     case "SM":
       padH = layout.spacing_x2;
       padV = layout.spacing_x1_5;
+      radius = layout.spacing_x0_75;
       break;
     case "XS":
       padH = layout.spacing_x1_5;
       padV = layout.spacing_x0_5;
+      radius = layout.spacing_x0_5;
       break;
     case "M":
     default:
       padH = layout.spacing_x2_5;
       padV = layout.spacing_x2;
+      radius = layout.spacing_x1;
       break;
   }
 
@@ -70,12 +75,16 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
     >
       <BrandText
         style={[
-          styles.btnStyle,
+          fontSemibold14,
           {
+            alignSelf: "center",
+            borderRadius: radius,
             display: "flex",
-            color: outline ? yellowDefault : color,
-            backgroundColor: outline ? neutral00 : bgColor,
-            borderColor: outline ? yellowDefault : bgColor,
+            color: outline ? color || yellowDefault : color || primaryTextColor,
+            backgroundColor: outline ? neutral00 : bgColor || yellowDefault,
+            borderColor: outline
+              ? color || yellowDefault
+              : bgColor || yellowDefault,
             borderWidth: 1,
             paddingHorizontal: padH,
             paddingVertical: padV,
@@ -95,13 +104,3 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
     </TouchableOpacity>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  btnStyle: {
-    alignSelf: "center",
-    borderRadius: layout.spacing_x1_5,
-    ...(fontSemibold14 as object),
-  },
-});

@@ -79,6 +79,14 @@ export type RootStackParamList = {
 
   Settings: undefined;
 
+  Projects: undefined;
+  ProjectsManager: { view?: string };
+  ProjectsPayment: { projectId: string; milestoneId: string };
+  ProjectsCompleteMilestone: { projectId: number; milestoneId: number };
+  ProjectsMakeRequest: { step?: number };
+  ProjectsDetail: { id: number };
+  ProjectsConflictSolving: { projectId: string };
+
   OrganizationDeployer: undefined;
   Organizations?: { network?: string };
   CoreDAO: undefined;
@@ -224,6 +232,15 @@ const navConfig: {
     Organizations: "orgs",
     CoreDAO: "core-dao",
 
+    // === Projects Program
+    Projects: "projects",
+    ProjectsPayment: "projects/payment",
+    ProjectsCompleteMilestone:
+      "projects/completeMilestone/:projectId/:milestoneId",
+    ProjectsManager: "projects/manager/:view",
+    ProjectsMakeRequest: "projects/make-request",
+    ProjectsDetail: "projects/:id",
+    ProjectsConflictSolving: "projects/:projectId/conflicts",
     // === Organization
 
     OrganizationGetStarted: "organization-get-started",

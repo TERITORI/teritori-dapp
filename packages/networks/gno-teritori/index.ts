@@ -10,6 +10,14 @@ export const gnoTeritoriNetwork: GnoNetworkInfo = {
     NetworkFeature.Organizations,
     NetworkFeature.SocialFeed,
     NetworkFeature.UPP,
+    NetworkFeature.GnoProjectManager,
+  ],
+  featureObjects: [
+    {
+      type: NetworkFeature.GnoProjectManager,
+      projectsManagerPkgPath: "gno.land/r/demo/teritori/escrow",
+      paymentsDenom: "ugnot",
+    },
   ],
   currencies: gnoCurrencies,
   stakeCurrency: "ugnot",

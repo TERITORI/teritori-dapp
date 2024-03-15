@@ -10,14 +10,14 @@ import FlexCol from "../FlexCol";
 import FlexRow from "../FlexRow";
 import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
-import { UserNameInline } from "../UserNameInline";
+import { UsernameWithAvatar } from "../user/UsernameWithAvatar";
 
 export const TopMenuAccount: React.FC = () => {
   const selectedWallet = useSelectedWallet();
 
   return (
     <FlexCol style={containerCStyle}>
-      <UserNameInline
+      <UsernameWithAvatar
         userId={selectedWallet?.userId || ""}
         style={userImageLineCStyle}
       />

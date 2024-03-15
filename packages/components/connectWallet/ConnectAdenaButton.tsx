@@ -31,6 +31,7 @@ export const ConnectAdenaButton: React.FC<{
       const address = account.data.address;
       const chainId = account.data.chainId;
       const network = getGnoNetworkFromChainId(chainId);
+
       if (!network) {
         throw new Error(`Unsupported chainId ${chainId}`);
       }

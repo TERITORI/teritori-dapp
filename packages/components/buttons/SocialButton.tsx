@@ -2,17 +2,18 @@ import React from "react";
 import { ViewStyle, View, StyleProp, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { BrandText } from "../BrandText";
-import { SVG } from "../SVG";
-import { Box } from "../boxes/Box";
-
-import { neutral22, neutral33, withAlpha } from "@/utils/style/colors";
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { Box } from "@/components/boxes/Box";
+import { withAlpha, neutral22, neutral33 } from "@/utils/style/colors";
 import { fontMedium14 } from "@/utils/style/fonts";
 
 // TODO: remove uses of Box component directly in other components
 export const SocialButton: React.FC<{
-  text: string;
+  text?: string;
   iconSvg: React.FC<SvgProps>;
+  iconColor?: string;
+  textColor?: string;
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
 }> = ({ text, onPress, iconSvg, style }) => {
