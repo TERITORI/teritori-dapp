@@ -50,7 +50,6 @@ const getTxData = (denom: string, amount: string, userId: string) => {
       label: "Token",
       value: <CurrencyIcon networkId={networkId} denom={denom} size={28} />,
       icon: "link",
-      onPress: () => alert("Token"),
     },
     {
       label: "Amount",

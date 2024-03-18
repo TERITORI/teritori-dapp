@@ -15,6 +15,7 @@ import {
   useProof,
 } from "../query/useToriData";
 
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useBalances } from "@/hooks/useBalances";
 
 const errorTypeMsg = {
@@ -41,6 +42,7 @@ const errorTypeMsg = {
 };
 
 export const Russian = () => {
+  const { setToast } = useFeedbacks();
   const [result, setResult] = useState<boolean>(false);
   const { isMinimunWindowWidth, setLoadingGame, selectedWallet } =
     useContentContext();
@@ -187,7 +189,13 @@ export const Russian = () => {
         balance[0].denom === "utori" &&
         parseInt(balance[0].amount, 10) < bet * 1000000
       ) {
-        alert(`You need at least ${bet} TORI in your wallet to play.`);
+        setToast({
+          title: "Error",
+          message: `You need at least ${bet} TORI in your wallet to play.`,
+          duration: 5000,
+          mode: "normal",
+          type: "error",
+        });
         return;
       }
     }

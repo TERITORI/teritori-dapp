@@ -2,12 +2,12 @@ import React, { RefObject, useState } from "react";
 import { FlatList, Image, useWindowDimensions, View } from "react-native";
 import { Asset, launchImageLibrary } from "react-native-image-picker";
 
-import cameraSVG from "../../../../assets/icons/camera-white.svg";
-import crossSVG from "../../../../assets/icons/close.svg";
-import micSVG from "../../../../assets/icons/mic-white.svg";
-import chatPlusSVG from "../../../../assets/icons/plus-white.svg";
-import sendSVG from "../../../../assets/icons/sent.svg";
-import MiniTextInput from "../components/MiniTextInput";
+import cameraSVG from "../../../../../assets/icons/camera-white.svg";
+import crossSVG from "../../../../../assets/icons/close.svg";
+import micSVG from "../../../../../assets/icons/mic-white.svg";
+import chatPlusSVG from "../../../../../assets/icons/plus-white.svg";
+import sendSVG from "../../../../../assets/icons/sent.svg";
+import MiniTextInput from "../../components/MiniTextInput";
 
 import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
