@@ -151,6 +151,7 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
           await av?.stopAsync();
           await av?.unloadAsync();
         }
+        await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
         await createdSound?.playAsync();
         setAv(createdSound);
         setIsMediaPlayerOpen(true);
@@ -172,6 +173,7 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
     );
     setMedia(media);
     try {
+      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
       await av?.stopAsync();
       await av?.unloadAsync();
       setAv(video);
