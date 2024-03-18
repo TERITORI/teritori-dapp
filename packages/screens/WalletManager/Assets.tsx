@@ -28,7 +28,7 @@ export const Assets: React.FC<{
   const [targetCurrency, setTargetCurrency] = useState<string>();
   const [expanded, setExpanded] = useState(false);
   const [network, userAddress] = parseUserId(userId);
-  const balances = useBalances(network?.id, userAddress);
+  const { balances } = useBalances(network?.id, userAddress);
 
   if (!network) {
     return null;

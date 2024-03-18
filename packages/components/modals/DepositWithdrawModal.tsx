@@ -74,7 +74,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
       ? convertCosmosAddress(selectedWallet?.address, destinationNetworkId)
       : selectedWallet?.address;
 
-  const balances = useBalances(sourceNetworkId, fromAccount);
+  const { balances } = useBalances(sourceNetworkId, fromAccount);
 
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
 
