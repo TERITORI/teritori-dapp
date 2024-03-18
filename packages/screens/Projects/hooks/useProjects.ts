@@ -113,7 +113,7 @@ export const useProjects = (
       const client = new GnoJSONRPCProvider(gnoNetwork.endpoint);
 
       const pkgPath = pmFeature.projectsManagerPkgPath;
-      const expr = `RenderContracts(${startAfter},${limit},"${filterByFunder}","${filterByContractor}")`;
+      const expr = `RenderContracts(${startAfter},${limit})`;
       console.log("projects", pkgPath, expr);
 
       const contractsData = await client.evaluateExpression(pkgPath, expr);

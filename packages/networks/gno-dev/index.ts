@@ -15,15 +15,15 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   featureObjects: [
     {
       type: NetworkFeature.GnoProjectManager,
-      projectsManagerPkgPath: "gno.land/r/demo/teritori/escrow",
+      projectsManagerPkgPath: "gno.land/r/demo/teritori/projects_manager",
       paymentsDenom: "ugnot",
     },
   ],
   currencies: gnoCurrencies,
   stakeCurrency: "ugnot",
   idPrefix: "gnodev",
-  chainId: "dev",
-  endpoint: "http://127.0.0.1:36657/http://127.0.0.1:26657",
+  chainId: "tendermint_test",
+  endpoint: "http://127.0.0.1:36657",
   txExplorer: "https://gnoscan.io/transactions/details?txhash=$hash",
   accountExplorer: "https://gnoscan.io/accounts/$address",
   contractExplorer: "https://gnoscan.io/realms/details?path=$address",
