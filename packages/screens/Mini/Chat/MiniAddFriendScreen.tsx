@@ -73,6 +73,8 @@ export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = () => {
           placeholderTextColor={neutralA3}
           value={contactLink}
           onChangeText={setContactLink}
+          returnKeyType="done"
+          onSubmitEditing={handleAddContact}
         />
         <SpacerColumn size={2} />
         {error && (
