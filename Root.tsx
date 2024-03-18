@@ -45,6 +45,10 @@ import { persistor, store, useAppDispatch } from "./packages/store/store";
 import { isElectron } from "./packages/utils/isElectron";
 import { linking } from "./packages/utils/navigation";
 
+if (!globalThis.Buffer) {
+  globalThis.Buffer = require("buffer").Buffer;
+}
+
 if (Platform.OS === "web") {
   const plausible = Plausible({
     domain: "app.teritori.com",
