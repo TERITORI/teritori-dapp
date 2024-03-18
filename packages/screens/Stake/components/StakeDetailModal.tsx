@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 
 import validatorIconSVG from "../../../../assets/default-images/validator-icon.svg";
 import ModalBase from "../../../components/modals/ModalBase";
@@ -7,13 +7,12 @@ import ModalBase from "../../../components/modals/ModalBase";
 import { Avatar } from "@/components/Avatar";
 import { BrandText } from "@/components/BrandText";
 import { ExternalLink } from "@/components/ExternalLink";
-import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SecondaryButton } from "@/components/buttons/SecondaryButton";
 import { GradientText } from "@/components/gradientText";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useKeybaseAvatarURL } from "@/hooks/useKeybaseAvatarURL";
-import { neutral77 } from "@/utils/style/colors";
+import { neutral30, neutral77, primaryColor } from "@/utils/style/colors";
 import {
   fontSemibold14,
   fontSemibold16,
@@ -54,9 +53,13 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
                 Commission
               </BrandText>
               <SpacerRow size={1} />
-              <GradientText gradientType="blueExtended">
-                {data?.commission}
-              </GradientText>
+              {Platform.OS !== "web" ? (
+                <BrandText>{data?.commission}</BrandText>
+              ) : (
+                <GradientText gradientType="blueExtended">
+                  {data?.commission}
+                </GradientText>
+              )}
             </View>
           </View>
         </View>
@@ -70,7 +73,13 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
       <>
         <Separator />
         <View style={styles.footerRow}>
-          <PrimaryButton size="SM" text="Close" onPress={onClose} />
+          <SecondaryButton
+            size="SM"
+            text="Close"
+            onPress={onClose}
+            backgroundColor={primaryColor}
+            color={neutral30}
+          />
           <SpacerRow size={2} />
           <SecondaryButton
             size="SM"
@@ -136,8 +145,10 @@ const styles = StyleSheet.create({
   footerRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
     padding: layout.spacing_x2_5,
+    flexWrap: "wrap",
+    gap: layout.spacing_x1,
   },
   container: {
     width: 446,

@@ -1,7 +1,9 @@
 import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
+import { SvgProps } from "react-native-svg";
 
 import { BrandText } from "../BrandText/BrandText";
+import { SVG } from "../SVG";
 
 import { neutral22, redDefault } from "@/utils/style/colors";
 import { fontSemibold12 } from "@/utils/style/fonts";
@@ -25,7 +27,8 @@ const getExpireDate = (votingEndTime: string): string => {
 export const GovernanceExpire: React.FC<{
   style?: StyleProp<ViewStyle>;
   votingEndTime: string;
-}> = ({ votingEndTime, style }) => {
+  iconSVG: React.FC<SvgProps>;
+}> = ({ votingEndTime, style, iconSVG }) => {
   return (
     <View style={[{ flexDirection: "row", gap: layout.spacing_x0_5 }, style]}>
       <View
@@ -40,15 +43,7 @@ export const GovernanceExpire: React.FC<{
           gap: layout.spacing_x0_25,
         }}
       >
-        <View
-          style={{
-            width: 8,
-            height: 8,
-            backgroundColor: redDefault,
-            borderRadius: layout.spacing_x0_5,
-          }}
-        />
-
+        <SVG source={iconSVG} width={14} height={14} />
         <BrandText
           style={[
             fontSemibold12,
