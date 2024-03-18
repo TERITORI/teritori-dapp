@@ -266,6 +266,9 @@ const CollectionTable: React.FC<{
           borderTopColor: mineShaftColor,
           borderTopWidth: 1,
         }}
+        contentContainerStyle={{
+          paddingBottom: 150, //just to make last element visible on mobile
+        }}
       />
       {filteredCollections.length > 50 && (
         <>

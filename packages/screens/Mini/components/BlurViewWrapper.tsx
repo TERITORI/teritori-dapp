@@ -10,6 +10,7 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import Clipboard from "@/modules/Clipboard";
 import { neutral09 } from "@/utils/style/colors";
 import { fontSemibold13 } from "@/utils/style/fonts";
@@ -140,9 +141,15 @@ type ButtonGroupsProps = {
 };
 
 function ButtonGroups({ show, copy, setShow }: ButtonGroupsProps) {
+  const { setToast } = useFeedbacks();
   const onCopySeedPhrasesPress = async () => {
     await Clipboard.setStringAsync(JSON.stringify(copy));
-    alert("Copied");
+    setToast({
+      message: "Copied",
+      duration: 2000,
+      mode: "mini",
+      type: "success",
+    });
   };
 
   const onToggleSeedPhrasesPress = async () => {

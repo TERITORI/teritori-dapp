@@ -12,6 +12,7 @@ import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 import { GroupInfo_Reply } from "@/api/weshnet/protocoltypes";
 import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
   selectContactInfo,
   selectConversationList,
@@ -20,7 +21,7 @@ import { ScreenFC } from "@/utils/navigation";
 import { neutralA3 } from "@/utils/style/colors";
 import { fontMedium14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { weshClient } from "@/weshnet";
+import { weshClient, weshConfig } from "@/weshnet";
 import { subscribeMessages } from "@/weshnet/message/subscriber";
 import {
   getConversationAvatar,
@@ -33,6 +34,7 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
   const [search, setSearch] = useState("");
   const conversations = useSelector(selectConversationList);
   const contactInfo = useSelector(selectContactInfo);
+  const { setToast } = useFeedbacks();
 
   const usersList = conversations.reduce((acc, conversation) => {
     const name = getConversationName(conversation);
@@ -65,6 +67,14 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
     selectedContacts: string[],
     groupName: string,
   ) => {
+    setToast({
+      mode: "mini",
+      message: "Group Creating...",
+      showAlways: true,
+      type: "loading",
+      variant: "outline",
+    });
+
     if (!groupName) {
       return;
     }
@@ -83,6 +93,14 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
             message: "",
             files: [],
             metadata: {
+              contact: {
+                id: stringFromBytes(weshConfig.config?.accountPk),
+                rdvSeed: stringFromBytes(weshConfig.metadata.rdvSeed),
+                tokenId: weshConfig.metadata.tokenId,
+                name: contactInfo.name,
+                avatar: contactInfo.avatar,
+                peerId: weshConfig.config?.peerId,
+              },
               groupName,
             },
           },
@@ -119,8 +137,25 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
       );
 
       subscribeMessages(stringFromBytes(groupInfo.group?.publicKey));
+      setToast({
+        mode: "mini",
+        message: "Group Successfully Created",
+        type: "success",
+        variant: "outline",
+        duration: 3000,
+      });
+      navigation.replace("Conversation", {
+        conversationId: stringFromBytes(group.groupPk),
+      });
     } catch (err: any) {
       console.error("create group err", err);
+      setToast({
+        mode: "mini",
+        message: "Error Creating Group",
+        type: "error",
+        variant: "outline",
+        duration: 3000,
+      });
     }
   };
 
