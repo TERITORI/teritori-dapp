@@ -23,6 +23,7 @@ import { NewConversationScreen } from "@/screens/Mini/Chat/NewConversationScreen
 import { NewGroupScreen } from "@/screens/Mini/Chat/NewGroupScreen";
 import { ConnectLedgerScreen } from "@/screens/Mini/ConnectLedger/ConnectLedgerScreen";
 import { ConversationScreeen } from "@/screens/Mini/Conversation/ConversationScreen";
+import GroupActionScreen from "@/screens/Mini/Conversation/GroupActionScreen";
 import { DAppStoreScreen } from "@/screens/Mini/DAppStore/DAppStoreScreen";
 import MiniCreatePostScreen from "@/screens/Mini/Feed/MiniCreatePostScreen";
 import { MiniFeedScreen } from "@/screens/Mini/Feed/MiniFeedScreen";
@@ -446,6 +447,14 @@ export const getMiniModeScreens = () => {
       <Stack.Screen
         name="ConnectLedger"
         component={ConnectLedgerScreen}
+        options={{
+          header: () => null,
+          title: "",
+        }}
+      />
+      <Stack.Screen
+        name="MiniGroupActions"
+        component={GroupActionScreen}
         options={{
           header: () => null,
           title: "",

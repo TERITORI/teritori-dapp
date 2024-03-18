@@ -2,9 +2,9 @@ import { chain } from "lodash";
 import React, { useMemo } from "react";
 import { FlatList, Image, useWindowDimensions, View } from "react-native";
 
-import doubleCheckSVG from "../../../../assets/icons/double-check.svg";
-import replySVG from "../../../../assets/icons/reply-white.svg";
-import { PostReactions } from "../Feed/components/PostReactions";
+import doubleCheckSVG from "../../../../../assets/icons/double-check.svg";
+import replySVG from "../../../../../assets/icons/reply-white.svg";
+import { PostReactions } from "../../Feed/components/PostReactions";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
