@@ -23,7 +23,7 @@ export const useSearchTx = (
     },
     {
       staleTime: 1000 * 60, // data is considered fresh for 1 minute
-      retry: 3,
+      retry: 5,
     },
   );
 
@@ -55,11 +55,12 @@ const getLastFiveTransactions = async (
         `transfer.sender='${address}'`,
         "message.action='/cosmos.bank.v1beta1.MsgSend'",
       ];
+      const limit = 100;
 
       const responseSender = await axios.get(
         `${nodeUrl}/cosmos/tx/v1beta1/txs?events=${sender.join(
           "&",
-        )}&limit=5&order_by=2`,
+        )}&limit=${limit}&order_by=2`,
       );
 
       const recipient = [
@@ -70,9 +71,8 @@ const getLastFiveTransactions = async (
       const responseRecipient = await axios.get(
         `${nodeUrl}/cosmos/tx/v1beta1/txs?events=${recipient.join(
           "&",
-        )}&limit=5&order_by=2`,
+        )}&limit=${limit}&order_by=2`,
       );
-
       // merge and sort
       const blocks = responseSender.data.tx_responses.concat(
         responseRecipient.data.tx_responses,
@@ -81,7 +81,6 @@ const getLastFiveTransactions = async (
       blocks.sort((a: TxResponseSDKType, b: TxResponseSDKType) => {
         return Number(b.height) - Number(a.height);
       });
-
       return blocks.map((txResponse: TxResponseSDKType) => {
         return {
           // @ts-expect-error: description todo

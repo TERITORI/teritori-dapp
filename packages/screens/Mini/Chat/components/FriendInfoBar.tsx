@@ -27,7 +27,11 @@ export default function FriendInfoBar() {
     conversations?.filter((conv) => conv.type === "contact")?.length || "";
 
   return (
-    <CustomPressable onPress={() => navigation.navigate("MiniFriend")}>
+    <CustomPressable
+      onPress={() =>
+        navigation.navigate("MiniFriend", { activeTab: "friends" })
+      }
+    >
       <View
         style={{
           backgroundColor: withAlpha(neutral22, 0.9),
@@ -45,7 +49,10 @@ export default function FriendInfoBar() {
           <BrandText style={[fontSemibold14]}>Friends</BrandText>
         </View>
 
-        <View
+        <CustomPressable
+          onPress={() =>
+            navigation.navigate("MiniFriend", { activeTab: "requests" })
+          }
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -65,7 +72,7 @@ export default function FriendInfoBar() {
 
           <SpacerRow size={0.75} />
           <SVGorImageIcon icon={chevronSVG} iconSize={16} />
-        </View>
+        </CustomPressable>
       </View>
     </CustomPressable>
   );
