@@ -14,7 +14,6 @@ import {
 import { useBanners } from "../../hooks/useBanners";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-// import { Link } from "../Link";
 import { OptimizedImage } from "../OptimizedImage";
 import { Section } from "../Section";
 import { CustomPressable } from "../buttons/CustomPressable";
