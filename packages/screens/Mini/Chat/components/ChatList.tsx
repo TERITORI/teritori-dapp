@@ -113,7 +113,7 @@ const SingleFriendChatList = ({ data, onPress }: SingleChatListType) => {
   const lastContactMessage = useSelector((state: RootState) =>
     selectLastContactMessageByGroupPk(state, data.id),
   );
-  const contactInfo = data.members?.[0];
+  const contactInfo = data?.members?.[0];
   const conversation = useSelector((state: RootState) =>
     selectConversationById(state, data.id),
   );
@@ -128,6 +128,7 @@ const SingleFriendChatList = ({ data, onPress }: SingleChatListType) => {
   const handleListPress = () => {
     onPress();
   };
+
   return (
     <CustomPressable
       onPress={handleListPress}
@@ -139,8 +140,10 @@ const SingleFriendChatList = ({ data, onPress }: SingleChatListType) => {
     >
       <ChatAvatar
         membersAvatar={
-          conversation
-            ? conversation?.members.map((_, index) =>
+          conversation &&
+          conversation?.members &&
+          Array.isArray(conversation?.members)
+            ? conversation?.members?.map((_, index) =>
                 getConversationAvatar(conversation, index),
               )
             : [""]
