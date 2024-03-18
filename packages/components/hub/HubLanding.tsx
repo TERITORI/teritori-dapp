@@ -1,4 +1,3 @@
-import { Link } from "@react-navigation/native";
 import React from "react";
 import { View, Linking } from "react-native";
 
@@ -42,7 +41,6 @@ export const HubLanding: React.FC = () => {
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
       <View style={{ flex: 1 }}>
-        {/* <Link to={banner?.url}> */}
         {!!banner && (
           <CustomPressable
             onPress={() => navigation.navigate("FeedPostView", { id: postId })}
@@ -60,7 +58,6 @@ export const HubLanding: React.FC = () => {
             />
           </CustomPressable>
         )}
-        {/* </Link> */}
 
         <NewsCarouselSection />
 
