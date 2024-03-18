@@ -1,5 +1,6 @@
 import { GroupMessageEvent } from "../../api/weshnet/protocoltypes";
 import {
+  removeConversationById,
   selectConversationById,
   setMessage,
   updateConversationById,
@@ -51,9 +52,9 @@ export const processMessage = async (
           updateConversationById({
             id: groupPk,
             name: message?.payload?.metadata?.groupName,
+            members: [message?.payload?.metadata?.contact],
           }),
         );
-
         break;
       }
       case "group-invite": {
@@ -84,11 +85,11 @@ export const processMessage = async (
       case "group-join": {
         if (conversation) {
           const newMember: ContactRequest[] = [];
+          const oldMembers = conversation.members.map((member) => member.id);
 
           if (
             message?.payload?.metadata?.contact?.id &&
-            stringFromBytes(weshConfig.config?.accountPk) !==
-              message?.payload?.metadata?.contact?.id
+            !oldMembers.includes(message?.payload?.metadata?.contact?.id)
           ) {
             newMember.push(message?.payload?.metadata?.contact);
           }
@@ -106,6 +107,42 @@ export const processMessage = async (
               data: message,
             }),
           );
+        }
+
+        break;
+      }
+      case "group-leave": {
+        if (conversation) {
+          const oldMembers = conversation.members;
+          const memberId = message?.senderId;
+
+          const updatedMembers = oldMembers.map((member) => {
+            if (member.id !== memberId) {
+              return member;
+            }
+            return {
+              ...member,
+              hasLeft: true,
+            };
+          });
+          if (isSender) {
+            store.dispatch(removeConversationById({ id: conversation.id }));
+          } else {
+            store.dispatch(
+              updateConversationById({
+                id: groupPk,
+                name: message?.payload?.metadata?.groupName,
+                members: updatedMembers,
+              }),
+            );
+
+            store.dispatch(
+              setMessage({
+                groupPk,
+                data: message,
+              }),
+            );
+          }
         }
 
         break;
