@@ -12,6 +12,7 @@ import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 import { GroupInfo_Reply } from "@/api/weshnet/protocoltypes";
 import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
   selectContactInfo,
   selectConversationList,
@@ -33,6 +34,7 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
   const [search, setSearch] = useState("");
   const conversations = useSelector(selectConversationList);
   const contactInfo = useSelector(selectContactInfo);
+  const { setToast } = useFeedbacks();
 
   const usersList = conversations.reduce((acc, conversation) => {
     const name = getConversationName(conversation);
@@ -65,6 +67,14 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
     selectedContacts: string[],
     groupName: string,
   ) => {
+    setToast({
+      mode: "mini",
+      message: "Group Creating...",
+      showAlways: true,
+      type: "loading",
+      variant: "outline",
+    });
+
     if (!groupName) {
       return;
     }
@@ -127,8 +137,25 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
       );
 
       subscribeMessages(stringFromBytes(groupInfo.group?.publicKey));
+      setToast({
+        mode: "mini",
+        message: "Group Successfully Created",
+        type: "success",
+        variant: "outline",
+        duration: 3000,
+      });
+      navigation.replace("Conversation", {
+        conversationId: stringFromBytes(group.groupPk),
+      });
     } catch (err: any) {
       console.error("create group err", err);
+      setToast({
+        mode: "mini",
+        message: "Error Creating Group",
+        type: "error",
+        variant: "outline",
+        duration: 3000,
+      });
     }
   };
 

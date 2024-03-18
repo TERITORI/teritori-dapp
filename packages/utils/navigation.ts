@@ -27,6 +27,9 @@ export type RootStackParamList = {
     id: string;
     tab?: keyof typeof uppTabItems;
   };
+  GovernanceProposal: {
+    id: string;
+  };
   RiotersFooter: undefined;
   AdministrationDashboard: undefined;
   LaunchpadApplications: undefined;
@@ -110,7 +113,7 @@ export type RootStackParamList = {
   MiniProfileDetail: undefined;
   MiniDAppStore: undefined;
   MiniNewConversation: undefined;
-  MiniFriend: undefined;
+  MiniFriend: { activeTab?: "friends" | "requests" };
   MiniAddFriend: undefined;
   MiniNewGroup: undefined;
   MiniChatSetting: { back?: RouteName };
@@ -177,6 +180,7 @@ const navConfig: {
     WalletManagerWallets: "wallet-manager/wallets",
     WalletManagerChains: "wallet-manager/chains",
     Governance: "governance",
+    GovernanceProposal: "governance/:id",
     UserPublicProfile: "user/:id/:tab?",
     RiotersFooter: "rioters-footer",
     AdministrationDashboard: "launchpad/admin",
