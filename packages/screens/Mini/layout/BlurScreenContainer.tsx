@@ -9,6 +9,7 @@ import {
   Animated,
   GestureResponderEvent,
   ScrollView,
+  Platform,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -103,6 +104,11 @@ export const BlurScreenContainer = ({
           right: 0,
           bottom: 0,
         }}
+        blurReductionFactor={5}
+        //https://docs.expo.dev/versions/latest/sdk/blur-view/#experimentalblurmethod-1
+        experimentalBlurMethod={
+          Platform.OS === "android" ? "dimezisBlurView" : "none"
+        }
       />
       <LinearGradient
         start={{ x: 1, y: 1 }}

@@ -1,6 +1,6 @@
 import { BlurView, BlurViewProps } from "expo-blur";
 import { Dispatch, PropsWithChildren, SetStateAction, useState } from "react";
-import { StyleProp, TextStyle, View, ViewStyle } from "react-native";
+import { Platform, StyleProp, TextStyle, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { CustomButton } from "./Button/CustomButton";
@@ -87,6 +87,7 @@ export default function BlurViewWrapper({
 
           {!show && (
             <BlurView
+              tint="dark"
               intensity={30}
               style={[
                 {
@@ -102,6 +103,11 @@ export default function BlurViewWrapper({
                 },
                 blurContainerStyle,
               ]}
+              blurReductionFactor={5}
+              //https://docs.expo.dev/versions/latest/sdk/blur-view/#experimentalblurmethod-1
+              experimentalBlurMethod={
+                Platform.OS === "android" ? "dimezisBlurView" : "none"
+              }
               {...rest}
             >
               {showIcon && (
