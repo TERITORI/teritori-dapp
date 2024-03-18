@@ -54,7 +54,7 @@ export default function MultiStepScreenContainer({
         <SpacerColumn size={2} />
         <ProgressLine percent={screenPercentage} />
       </View>
-      <ScrollView scrollEnabled={false} style={{ flex: 1 }}>
+      <ScrollView scrollEnabled={false} contentContainerStyle={{ flex: 1 }}>
         {children}
       </ScrollView>
     </SafeAreaView>
