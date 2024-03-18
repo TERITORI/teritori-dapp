@@ -161,7 +161,7 @@ export const getMiniModeScreens = () => {
         options={{
           header: () => null,
           title: "Profile",
-          presentation: "transparentModal",
+          presentation: "containedTransparentModal",
         }}
       />
       <Stack.Screen
