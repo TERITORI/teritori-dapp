@@ -21,7 +21,7 @@ import { ScreenFC } from "@/utils/navigation";
 import { neutralA3 } from "@/utils/style/colors";
 import { fontMedium14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { weshClient } from "@/weshnet";
+import { weshClient, weshConfig } from "@/weshnet";
 import { subscribeMessages } from "@/weshnet/message/subscriber";
 import {
   getConversationAvatar,
@@ -93,6 +93,14 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
             message: "",
             files: [],
             metadata: {
+              contact: {
+                id: stringFromBytes(weshConfig.config?.accountPk),
+                rdvSeed: stringFromBytes(weshConfig.metadata.rdvSeed),
+                tokenId: weshConfig.metadata.tokenId,
+                name: contactInfo.name,
+                avatar: contactInfo.avatar,
+                peerId: weshConfig.config?.peerId,
+              },
               groupName,
             },
           },
