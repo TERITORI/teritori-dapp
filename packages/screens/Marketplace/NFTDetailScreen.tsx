@@ -1,6 +1,6 @@
 import { ScrollView, Target } from "@nandorojo/anchor";
 import React, { useCallback, useEffect, useState } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 
@@ -208,7 +208,7 @@ const Content: React.FC<{
       <View style={{ flex: 1 }}>
         <ScrollView
           style={{ width: "100%" }}
-          stickyHeaderIndices={[0]}
+          stickyHeaderIndices={Platform.OS === "web" ? [0] : undefined} // value [0] makes component unscrollable on mobile
           contentContainerStyle={{
             width: "100%",
             alignItems: "center",
