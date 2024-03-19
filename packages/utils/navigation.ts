@@ -1,5 +1,6 @@
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import * as Linking from "expo-linking";
 import React from "react";
 
 import { feedsTabItems } from "./social-feed";
@@ -313,7 +314,9 @@ const navConfig: {
   },
 };
 
+const prefix = Linking.createURL("/");
+
 export const linking = {
-  prefixes: [],
+  prefixes: [prefix],
   config: navConfig,
 };
