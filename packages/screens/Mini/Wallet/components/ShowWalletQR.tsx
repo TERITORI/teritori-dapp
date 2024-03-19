@@ -28,7 +28,7 @@ export const ShowWalletQR: React.FC<{ selectedWallet?: StoreWallet }> = ({
   const onCopyPress = async () => {
     await Clipboard.setStringAsync(selectedWallet?.address || "");
     setIsCopied(true);
-    setInterval(() => {
+    setTimeout(() => {
       navigation.navigate("MiniWallets");
     }, 2000);
   };

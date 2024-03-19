@@ -95,6 +95,7 @@ export const NFTView: React.FC<{
             {
               width: widthNumber,
               padding: 0,
+              flex: 1,
             },
             localSelected && {
               backgroundColor: neutral22,
