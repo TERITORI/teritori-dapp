@@ -9,7 +9,6 @@ import { BrandText } from "@/components/BrandText";
 import { Separator } from "@/components/separators/Separator";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import {
-  pinnedAppsCollection,
   selectAvailableApps,
   selectCheckedApps,
   setCheckedApp,
@@ -19,7 +18,7 @@ import { useAppDispatch } from "@/store/store";
 import { getValuesFromId, SEPARATOR } from "@/utils/dapp-store";
 import { RouteName } from "@/utils/navigation";
 import { layout } from "@/utils/style/layout";
-import { dAppGroup, dAppType } from "@/utils/types/dapp-store";
+import { dAppType } from "@/utils/types/dapp-store";
 
 type Props = {
   isEditing: boolean;
@@ -29,8 +28,8 @@ export const DAppsList = ({ isEditing }: Props) => {
   const dispatch = useAppDispatch();
   const navigation = useAppNavigation();
   const { width: windowsWidth } = useWindowDimensions();
-  const availableApps = useSelector(selectAvailableApps) as dAppGroup;
-  const selectedApps = useSelector(selectCheckedApps) as pinnedAppsCollection;
+  const availableApps = useSelector(selectAvailableApps);
+  const selectedApps = useSelector(selectCheckedApps);
 
   const coreDApps = availableApps["teritori-core-apps"];
   const externalApps = availableApps["bookmarks"];
