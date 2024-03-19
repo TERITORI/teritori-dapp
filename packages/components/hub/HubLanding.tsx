@@ -14,9 +14,9 @@ import {
 import { useBanners } from "../../hooks/useBanners";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { Link } from "../Link";
 import { OptimizedImage } from "../OptimizedImage";
 import { Section } from "../Section";
-import { CustomPressable } from "../buttons/CustomPressable";
 import { DAppCard } from "../cards/DAppCard";
 import { LabelCard } from "../cards/LabelCard";
 import { MyWalletsCard } from "../cards/MyWalletsCard";
@@ -33,17 +33,11 @@ export const HubLanding: React.FC = () => {
   const networkId = useSelectedNetworkId();
   const banners = useBanners(networkId);
   const banner = banners?.length ? banners[0] : undefined;
-  const postId = banner?.url
-    ? banner.url.split("/")[banner.url.split("/").length - 1]
-    : "";
-
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
       <View style={{ flex: 1 }}>
         {!!banner && (
-          <CustomPressable
-            onPress={() => navigation.navigate("FeedPostView", { id: postId })}
-          >
+          <Link to={banner?.url} style={{ width: "100%", maxHeight: 500 }}>
             <OptimizedImage
               sourceURI={banner?.image}
               width={width}
@@ -55,7 +49,7 @@ export const HubLanding: React.FC = () => {
                 marginTop: 56,
               }}
             />
-          </CustomPressable>
+          </Link>
         )}
 
         <NewsCarouselSection />
