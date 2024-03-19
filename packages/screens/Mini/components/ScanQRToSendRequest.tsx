@@ -10,6 +10,7 @@ import { SVG } from "@/components/SVG";
 import { Spinner } from "@/components/Spinner";
 import { QRCodeScannerModal } from "@/components/modals/QRCodeScannerModal";
 import { selectContactInfo } from "@/store/slices/message";
+import { useAppNavigation } from "@/utils/navigation";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { weshServices } from "@/weshnet";
@@ -30,32 +31,67 @@ export const ScanQRToSendRequest = ({
   style,
 }: Props) => {
   const contactInfo = useSelector(selectContactInfo);
+  const navigation = useAppNavigation();
 
   const [showQRScanner, setShowQRScanner] = useState(false);
-  const [addContactLoading, setAddContactLoading] = useState(false);
+  const [loading, setLoading] = useState({ status: false, type: "" });
+
   const handleAddContact = async (contactLink: string) => {
-    setAddContactLoading(true);
+    setLoading({ status: true, type: "contact" });
     setError("");
 
     try {
       if (!contactLink) {
         setError("Please provide the link.");
-        setAddContactLoading(false);
+        setLoading({ status: false, type: "" });
         return;
       }
 
       await weshServices.addContact(contactLink, contactInfo);
+      const url = new URL(contactLink);
+      const conversationId = url?.searchParams.get("accountPk");
+      if (conversationId) {
+        navigation.replace("Conversation", { conversationId });
+      }
     } catch (err: any) {
       console.log(err);
       setError("Failed to add contact.");
     }
 
-    setAddContactLoading(false);
+    setLoading({ status: false, type: "" });
+  };
+
+  const handleAddGroup = async (contactLink: string) => {
+    setLoading({ status: true, type: "group" });
+    setError("");
+
+    try {
+      if (!contactLink) {
+        setError("Please provide the link.");
+        setLoading({ status: false, type: "" });
+        return;
+      }
+
+      await weshServices.multiMemberGroupJoin(contactLink, contactInfo);
+      const url = new URL(contactLink);
+      const conversationId = url?.searchParams.get("publicKey");
+      if (conversationId) {
+        navigation.replace("Conversation", { conversationId });
+      }
+    } catch (err: any) {
+      console.log(err);
+      setError("Failed to join group.");
+    }
+
+    setLoading({ status: false, type: "" });
   };
 
   const onCloseQRScannerPress = async (data?: string) => {
-    if (data) {
+    if (data?.includes("contact")) {
       await handleAddContact(data);
+    }
+    if (data?.includes("group")) {
+      await handleAddGroup(data);
     }
     setShowQRScanner(false);
   };
@@ -76,17 +112,21 @@ export const ScanQRToSendRequest = ({
           alignItems: "center",
           ...style,
         }}
-        isDisabled={addContactLoading}
+        isDisabled={loading.status}
       >
-        {addContactLoading && loadingComponent ? (
+        {loading.status && loadingComponent ? (
           loadingComponent
         ) : (
           <>
             <SVG source={cameraSVG} height={20} width={20} />
             <BrandText style={[fontSemibold14]}>
-              {addContactLoading ? "Adding Contact" : label || "Tap to scan"}
+              {loading.status
+                ? loading.type === "group"
+                  ? "Joining Group"
+                  : "Adding Contact"
+                : label || "Tap to scan"}
             </BrandText>
-            {addContactLoading && <Spinner />}
+            {loading.status && <Spinner />}
           </>
         )}
       </CustomButton>
