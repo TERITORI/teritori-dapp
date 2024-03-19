@@ -83,12 +83,13 @@ export const CreateGroupModal = ({
                 {validationError}
               </BrandText>
             )}
-
+            <SpacerColumn size={3} />
             <MiniTextInput
               placeholder="Group Name"
               style={{ backgroundColor: withAlpha(neutral33, 0.9) }}
               placeholderTextColor={neutralA3}
               value={groupName}
+              onSubmitEditing={onCreateGroupPress}
               onChangeText={(text) => {
                 if (validationError) {
                   setValidationError("");
@@ -98,6 +99,7 @@ export const CreateGroupModal = ({
             />
             <SpacerColumn size={1.5} />
             <CustomButton title="Create" onPress={onCreateGroupPress} />
+            <SpacerColumn size={2} />
           </View>
         </>
       </View>

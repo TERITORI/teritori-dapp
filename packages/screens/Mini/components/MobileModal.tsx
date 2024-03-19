@@ -1,12 +1,14 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import {
+  KeyboardAvoidingView as KeyboardAvoiding,
   DimensionValue,
   Modal,
   SafeAreaView,
   StyleProp,
   View,
   ViewStyle,
+  Keyboard,
 } from "react-native";
 
 import { CustomPressable } from "@/components/buttons/CustomPressable";
@@ -27,7 +29,22 @@ export default function MobileModal({
   children,
   innerContainerOptions = { style: {}, height: "85%" },
 }: MobileModalProps) {
-  const { style, height } = innerContainerOptions;
+  const { style } = innerContainerOptions;
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardWillShow", () => {
+      setKeyboardVisible(true);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardWillHide", () => {
+      setKeyboardVisible(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
 
   return (
     <Modal
@@ -52,17 +69,16 @@ export default function MobileModal({
         <CustomPressable style={{ flex: 1 }} onPress={onClose}>
           <View style={{ flex: 1 }} />
         </CustomPressable>
-        <View
-          style={[
-            {
-              height,
-              borderTopLeftRadius: 24,
-              borderTopRightRadius: 24,
-              position: "relative",
-              backgroundColor: "red",
-            },
-            style ?? {},
-          ]}
+
+        <KeyboardAvoiding
+          behavior="padding"
+          keyboardVerticalOffset={keyboardVisible ? 150 : 0}
+          style={{
+            flex: 0.7,
+            borderTopLeftRadius: 24,
+            borderTopRightRadius: 24,
+            position: "relative",
+          }}
         >
           <LinearGradient
             start={{ x: 0, y: 0 }}
@@ -80,8 +96,19 @@ export default function MobileModal({
               bottom: 0,
             }}
           />
-          {children}
-        </View>
+          <View
+            style={[
+              {
+                flex: 1,
+
+                position: "relative",
+              },
+              style ?? {},
+            ]}
+          >
+            {children}
+          </View>
+        </KeyboardAvoiding>
       </SafeAreaView>
     </Modal>
   );
