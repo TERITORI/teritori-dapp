@@ -11,6 +11,7 @@ import addSVG from "@/assets/icons/add-new.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { selectContactInfo } from "@/store/slices/message";
 import { ScreenFC } from "@/utils/navigation";
 import {
@@ -25,17 +26,22 @@ import {
   fontMedium14,
   fontSemibold14,
   fontSemibold15,
-  fontSemibold30,
+  fontSemibold16,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { weshServices } from "@/weshnet";
 
-export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = () => {
+export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = ({
+  navigation,
+}) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [addContactLoading, setAddContactLoading] = useState(false);
   const [contactLink, setContactLink] = useState("");
   const contactInfo = useSelector(selectContactInfo);
+  const { setToast } = useFeedbacks();
+
+  const isGroupLink = contactLink.includes("&groupName=");
 
   const handleAddContact = async () => {
     setAddContactLoading(true);
@@ -48,31 +54,65 @@ export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = () => {
         setAddContactLoading(false);
         return;
       }
-
-      await weshServices.addContact(contactLink, contactInfo);
+      let conversationId = "";
+      const url = new URL(contactLink);
+      if (isGroupLink) {
+        await weshServices.multiMemberGroupJoin(contactLink, contactInfo);
+        conversationId = url?.searchParams.get("publicKey") || "";
+      } else {
+        await weshServices.addContact(contactLink, contactInfo);
+        conversationId = url?.searchParams.get("accountPk") || "";
+      }
       setContactLink("");
-      setSuccess("Successfully Added!");
-    } catch (err: any) {
-      console.log(err);
-      setError("Failed to add contact.");
-    }
 
-    setAddContactLoading(false);
+      setToast({
+        mode: "mini",
+        message: "Successfully Added!",
+        type: "success",
+      });
+
+      if (conversationId) {
+        navigation.replace("Conversation", { conversationId });
+      } else {
+        navigation.canGoBack() && navigation.goBack();
+      }
+    } catch (err: any) {
+      setAddContactLoading(false);
+      console.error(err.message);
+
+      if (err?.message?.includes("Invalid URL")) {
+        setError("Invalid URL.");
+      } else if (err?.message?.includes("already present in group")) {
+        setError("Already present in group.");
+      } else {
+        setError(
+          isGroupLink ? "Failed to join group." : "Failed to add contact.",
+        );
+      }
+    }
   };
 
+  const inputLabel = !contactLink
+    ? "Add new contact or Join a group"
+    : isGroupLink
+      ? "Join a group"
+      : "Add new contact";
+
   return (
-    <BlurScreenContainer>
+    <BlurScreenContainer title="Add Contact">
       <View style={{ paddingHorizontal: layout.spacing_x2, flex: 1 }}>
         <SpacerColumn size={1} />
-        <BrandText style={[fontSemibold30]}>Add contact</BrandText>
+        <BrandText style={[fontSemibold16]}>{inputLabel}</BrandText>
         <SpacerColumn size={2} />
 
         <MiniTextInput
-          placeholder="Paste the contact link here"
+          placeholder="Paste the shared link here"
           style={{ backgroundColor: withAlpha(neutral22, 0.9) }}
           placeholderTextColor={neutralA3}
           value={contactLink}
           onChangeText={setContactLink}
+          returnKeyType="done"
+          onSubmitEditing={handleAddContact}
         />
         <SpacerColumn size={2} />
         {error && (
@@ -119,7 +159,9 @@ export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = () => {
         >
           <SVG height={16} width={16} source={addSVG} color="#fff" />
           <SpacerRow size={1} />
-          <BrandText style={[fontSemibold15, { lineHeight: 0 }]}>Add</BrandText>
+          <BrandText style={[fontSemibold15, { lineHeight: 0 }]}>
+            {isGroupLink ? "Join group" : "Add"}
+          </BrandText>
         </CustomButton>
 
         <SpacerColumn size={1.5} />

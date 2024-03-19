@@ -1,6 +1,6 @@
 import { Video } from "expo-av";
 import React, { useEffect } from "react";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 
 import { CustomButton } from "../../Mini/components/Button/CustomButton";
 import { WalletContainer } from "../layout/WalletContainer";
@@ -83,7 +83,8 @@ const NativeWallet: ScreenFC<"NativeWallet"> = () => {
               style={{ flex: 1 }}
               type="outline"
             />
-            <CustomButton
+            {/* Hiding connect ledger option until it is ready for implementation */}
+            {/* <CustomButton
               isDisabled={Platform.OS !== "web"}
               onPress={(_, navigation) => {
                 navigation.navigate("ConnectLedger");
@@ -91,7 +92,7 @@ const NativeWallet: ScreenFC<"NativeWallet"> = () => {
               title="Connect Ledger"
               style={{ flex: 1 }}
               type="outline"
-            />
+            /> */}
           </View>
 
           <SpacerColumn size={3} />
