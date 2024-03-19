@@ -6,6 +6,7 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { HeaderMobile } from "./HeaderMobile";
 import { useSearchBar } from "../../context/SearchBarProvider";
@@ -66,6 +67,7 @@ export const ScreenContainerMobile: FC<{
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
   const [appMode] = useAppMode();
+  const safeAreaInset = useSafeAreaInsets();
 
   return (
     <SafeAreaView
@@ -73,6 +75,7 @@ export const ScreenContainerMobile: FC<{
         flex: 1,
         width: "100%",
         backgroundColor: "#000000",
+        paddingTop: safeAreaInset.top,
       }}
     >
       <View
