@@ -16,7 +16,7 @@ export const QRCodeScannerModal = ({
 }: {
   onClose: (data?: string) => void;
 }) => {
-  const { setToastError } = useFeedbacks();
+  const { setToast } = useFeedbacks();
   const { width, height } = useWindowDimensions();
   const [cameraPermissionStatus, setCameraPermissionStatus] =
     useState<CameraPermissionStatus>("not-determined");
@@ -29,17 +29,18 @@ export const QRCodeScannerModal = ({
 
       if (
         typeof data === "string" &&
-        data.startsWith("https://app.teritori.com/contact")
+        data.startsWith("https://app.teritori.com/")
       ) {
         onClose(data);
       } else {
-        setToastError({
+        setToast({
+          mode: "normal",
           title: "QR Error",
-          message: "QR is not of Teritori contact",
+          message: "QR is not of Teritori",
         });
       }
     },
-    [onClose, setToastError],
+    [onClose, setToast],
   );
 
   const codeScanner = useCodeScanner({
