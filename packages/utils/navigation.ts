@@ -146,7 +146,16 @@ export type RootStackParamList = {
     denom: string;
     address: string;
   };
-  MiniTransactionDetail: { type: string; transactionId: string };
+  MiniTransactionDetail: {
+    type: string;
+    transactionId: string;
+    from: string;
+    to: string;
+    amount: {
+      denom: string;
+      amount: string;
+    };
+  };
   ConnectLedger: undefined;
   CreateWallet: undefined;
   MiniChatProfile: undefined;
