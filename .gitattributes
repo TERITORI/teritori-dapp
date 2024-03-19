@@ -8,3 +8,4 @@
 /go/pkg/*pb/**/* linguist-generated
 /packages/evm-contracts-clients/**/*.ts linguist-generated
 /.expo-shared/assets.json linguist-generated
+/rust/**/schema/raw/**/*.json linguist-generated
