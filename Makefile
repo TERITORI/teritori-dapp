@@ -3,7 +3,7 @@ BUNKER_MINTER_PACKAGE=teritori-bunker-minter
 GO?=go
 GOFMT?=$(shell $(GO) env GOROOT)/bin/gofmt
 
-COSMWASM_CONTRACTS_DIR=cosmwasm-contracts
+COSMWASM_CONTRACTS_DIR=rust
 INTERNAL_COSMWASM_CONTRACTS=$(wildcard $(COSMWASM_CONTRACTS_DIR)/*)
 
 TOKEN_REPO=teritori-nfts
@@ -402,6 +402,7 @@ build.rust:
 .PHONY: generate.internal-contracts-clients
 generate.internal-contracts-clients: node_modules
 	for indir in $(INTERNAL_COSMWASM_CONTRACTS) ; do \
+		if [[ $${indir} == "rust/apipb" ]]; then continue; fi ; \
 		echo "> Generating client for $${indir}" ; \
 		rm -fr $${indir}/schema ; \
 		(cd $${indir} && cargo schema && cd -) || exit 1 ; \

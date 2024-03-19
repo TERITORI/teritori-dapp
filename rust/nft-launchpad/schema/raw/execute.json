@@ -1,0 +1,370 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ExecuteMsg",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": [
+        "update_config"
+      ],
+      "properties": {
+        "update_config": {
+          "type": "object",
+          "required": [
+            "changes"
+          ],
+          "properties": {
+            "changes": {
+              "$ref": "#/definitions/Config"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "submit_collection"
+      ],
+      "properties": {
+        "submit_collection": {
+          "type": "object",
+          "required": [
+            "collection"
+          ],
+          "properties": {
+            "collection": {
+              "$ref": "#/definitions/Collection"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "update_merkle_root"
+      ],
+      "properties": {
+        "update_merkle_root": {
+          "type": "object",
+          "required": [
+            "collection_id",
+            "merkle_root"
+          ],
+          "properties": {
+            "collection_id": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
+            },
+            "merkle_root": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "deploy_collection"
+      ],
+      "properties": {
+        "deploy_collection": {
+          "type": "object",
+          "required": [
+            "collection_id"
+          ],
+          "properties": {
+            "collection_id": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  ],
+  "definitions": {
+    "Addr": {
+      "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
+      "type": "string"
+    },
+    "Collection": {
+      "type": "object",
+      "required": [
+        "artwork_desc",
+        "contact_discord_name",
+        "contact_email",
+        "cover_img_uri",
+        "dao_whitelist_count",
+        "desc",
+        "dox_state",
+        "escrow_mint_proceeds_period",
+        "expected_mint_date",
+        "expected_public_mint_price",
+        "expected_supply",
+        "invested_amount",
+        "investment_link",
+        "is_applied_previously",
+        "is_project_derivative",
+        "is_ready_for_mint",
+        "limit_per_address",
+        "name",
+        "partners",
+        "project_desc",
+        "project_type",
+        "roadmap_link",
+        "start_time",
+        "symbol",
+        "target_network",
+        "team_desc",
+        "team_link",
+        "tokens_count",
+        "twitter_followers_count",
+        "twitter_profile",
+        "unit_price",
+        "whitelist_addresses",
+        "whitelist_end_time",
+        "whitelist_limit_per_address",
+        "whitelist_member_limit",
+        "whitelist_start_time",
+        "whitelist_unit_price",
+        "whitepaper_link"
+      ],
+      "properties": {
+        "artwork_desc": {
+          "type": "string"
+        },
+        "base_token_uri": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "contact_discord_name": {
+          "type": "string"
+        },
+        "contact_email": {
+          "type": "string"
+        },
+        "cover_img_uri": {
+          "type": "string"
+        },
+        "dao_whitelist_count": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "deployed_address": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "desc": {
+          "type": "string"
+        },
+        "dox_state": {
+          "type": "string"
+        },
+        "escrow_mint_proceeds_period": {
+          "$ref": "#/definitions/Timestamp"
+        },
+        "expected_mint_date": {
+          "$ref": "#/definitions/Timestamp"
+        },
+        "expected_public_mint_price": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "expected_supply": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "external_link": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "invested_amount": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "investment_link": {
+          "type": "string"
+        },
+        "is_applied_previously": {
+          "type": "boolean"
+        },
+        "is_project_derivative": {
+          "type": "boolean"
+        },
+        "is_ready_for_mint": {
+          "type": "boolean"
+        },
+        "limit_per_address": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "merkle_root": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "partners": {
+          "type": "string"
+        },
+        "project_desc": {
+          "type": "string"
+        },
+        "project_type": {
+          "type": "string"
+        },
+        "roadmap_link": {
+          "type": "string"
+        },
+        "royalty_address": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Addr"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "royalty_percentage": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint8",
+          "minimum": 0.0
+        },
+        "start_time": {
+          "$ref": "#/definitions/Timestamp"
+        },
+        "symbol": {
+          "type": "string"
+        },
+        "target_network": {
+          "type": "string"
+        },
+        "team_desc": {
+          "type": "string"
+        },
+        "team_link": {
+          "type": "string"
+        },
+        "tokens_count": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "twitter_followers_count": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "twitter_profile": {
+          "type": "string"
+        },
+        "unit_price": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "website_link": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "whitelist_addresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "whitelist_end_time": {
+          "$ref": "#/definitions/Timestamp"
+        },
+        "whitelist_limit_per_address": {
+          "type": "string"
+        },
+        "whitelist_member_limit": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "whitelist_start_time": {
+          "$ref": "#/definitions/Timestamp"
+        },
+        "whitelist_unit_price": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "whitepaper_link": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Config": {
+      "type": "object",
+      "required": [
+        "name",
+        "supported_networks"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "nft_code_id": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "supported_networks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Timestamp": {
+      "description": "A point in time in nanosecond precision.\n\nThis type can represent times from 1970-01-01T00:00:00Z to 2554-07-21T23:34:33Z.\n\n## Examples\n\n``` # use cosmwasm_std::Timestamp; let ts = Timestamp::from_nanos(1_000_000_202); assert_eq!(ts.nanos(), 1_000_000_202); assert_eq!(ts.seconds(), 1); assert_eq!(ts.subsec_nanos(), 202);\n\nlet ts = ts.plus_seconds(2); assert_eq!(ts.nanos(), 3_000_000_202); assert_eq!(ts.seconds(), 3); assert_eq!(ts.subsec_nanos(), 202); ```",
+      "allOf": [
+        {
+          "$ref": "#/definitions/Uint64"
+        }
+      ]
+    },
+    "Uint64": {
+      "description": "A thin wrapper around u64 that is using strings for JSON encoding/decoding, such that the full u64 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u64` to get the value out:\n\n``` # use cosmwasm_std::Uint64; let a = Uint64::from(42u64); assert_eq!(a.u64(), 42);\n\nlet b = Uint64::from(70u32); assert_eq!(b.u64(), 70); ```",
+      "type": "string"
+    }
+  }
+}
