@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "InstantiateMsg",
+  "type": "object",
+  "required": [
+    "msg"
+  ],
+  "properties": {
+    "msg": {
+      "$ref": "#/definitions/Tr721InstantiateMsg"
+    }
+  },
+  "definitions": {
+    "Config": {
+      "type": "object",
+      "required": [
+        "merkle_root",
+        "total_supply"
+      ],
+      "properties": {
+        "merkle_root": {
+          "type": "string"
+        },
+        "total_supply": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        }
+      },
+      "additionalProperties": false
+    },
+    "Tr721InstantiateMsg": {
+      "type": "object",
+      "required": [
+        "config",
+        "minter",
+        "name",
+        "symbol"
+      ],
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/Config"
+        },
+        "minter": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "symbol": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

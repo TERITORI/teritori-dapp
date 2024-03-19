@@ -9,7 +9,7 @@ use sylvia::{
     types::{ExecCtx, InstantiateCtx, QueryCtx, ReplyCtx},
 };
 
-use crate::{error::ContractError};
+use crate::error::ContractError;
 
 use cw721_base::msg::InstantiateMsg as NftInstantiateMsg;
 
@@ -144,7 +144,9 @@ impl NftLaunchpad {
             funds: vec![],
             label: format!(
                 "TR721 codeId:{} collectionId:{} symbol:{}",
-                nft_code_id.unwrap(), collection_id, collection.symbol
+                nft_code_id.unwrap(),
+                collection_id,
+                collection.symbol
             ),
         };
 
@@ -173,11 +175,14 @@ impl NftLaunchpad {
         ctx: QueryCtx,
         collection_addr: String,
     ) -> Result<Collection, ContractError> {
-        for item in self.collections.range(ctx.deps.storage, None, None, Order::Ascending) {
+        for item in self
+            .collections
+            .range(ctx.deps.storage, None, None, Order::Ascending)
+        {
             let (_key, collection) = item?;
 
             if collection.deployed_address == Some(collection_addr.clone()) {
-                return Ok(collection)
+                return Ok(collection);
             }
         }
 
@@ -304,6 +309,6 @@ pub struct Collection {
 
 #[cw_serde]
 pub enum CollectionState {
-    Pending,   // When user summit the collection but not deployed yet
-    Deployed,  // When collection has been deployed
+    Pending,  // When user summit the collection but not deployed yet
+    Deployed, // When collection has been deployed
 }
