@@ -1,10 +1,12 @@
 import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 
 import { GovernanceExpire } from "./GovernanceExpire";
+import expireSVG from "../../../assets/icons/expires.svg";
 import PassedSVG from "../../../assets/icons/passed.svg";
 import RejectSVG from "../../../assets/icons/reject.svg";
 import VotingSVG from "../../../assets/icons/voting.svg";
+import { OmniLink } from "../OmniLink";
 
 import { BrandText } from "@/components/BrandText";
 import { GovernanceProgressBar } from "@/components/GovernanceBox/GovernanceProgressBar";
@@ -25,10 +27,18 @@ import { Proposal } from "@/utils/types/gov";
 
 export const GovernanceBox: React.FC<{
   proposal: Proposal;
-}> = ({ proposal }) => {
+  isMobile: boolean;
+}> = ({ proposal, isMobile }) => {
   return (
-    <TouchableOpacity
-      style={{ width: "50%", marginBottom: layout.spacing_x2_5 }}
+    <OmniLink
+      to={{
+        screen: "GovernanceProposal",
+        params: { id: proposal.proposal_id },
+      }}
+      style={{
+        width: isMobile ? "auto" : "50%",
+        marginBottom: layout.spacing_x2_5,
+      }}
     >
       <View
         style={{
@@ -51,7 +61,7 @@ export const GovernanceBox: React.FC<{
               paddingRight: layout.spacing_x2,
             }}
           >
-            {proposal.status === "PROPOSAL_STATUS_VOTING" && (
+            {proposal.status === "PROPOSAL_STATUS_DEPOSIT_PERIOD" && (
               <View style={{ flexDirection: "row" }}>
                 <GovernanceTitle
                   title="Voting Period"
@@ -61,6 +71,7 @@ export const GovernanceBox: React.FC<{
                 <GovernanceExpire
                   style={{ marginLeft: layout.spacing_x1 }}
                   votingEndTime={proposal.deposit_end_time}
+                  iconSVG={expireSVG}
                 />
               </View>
             )}
@@ -112,7 +123,7 @@ export const GovernanceBox: React.FC<{
 
         <View
           style={{
-            width: "18%",
+            width: isMobile ? "24%" : "18%",
             justifyContent: "center",
             alignItems: "center",
           }}
@@ -125,6 +136,6 @@ export const GovernanceBox: React.FC<{
           </BrandText>
         </View>
       </View>
-    </TouchableOpacity>
+    </OmniLink>
   );
 };

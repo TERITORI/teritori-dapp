@@ -4,9 +4,16 @@ import {
   ResizeMode,
   Video,
 } from "expo-av";
-import { VideoFullscreenUpdate } from "expo-av/src/Video.types";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { FC, useMemo, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  FC,
+  RefObject,
+  SetStateAction,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
@@ -58,39 +65,112 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   resizeMode,
   style,
 }) => {
-  const { setToastError } = useFeedbacks();
-  const selectedNetwork = useSelectedNetworkInfo();
-  const userInfo = useNSUserInfo(authorId);
-  const { isDAO } = useIsDAO(authorId);
-  const isMobile = useIsMobile();
-  const {
-    media,
-    onVideoStatusUpdate,
-    playbackStatus,
-    handlePlayPause,
-    nextMedia,
-    firstPlayVideo,
-    triggerVideoFullscreen,
-    onLayoutPlayerVideo,
-  } = useMediaPlayer();
-  const id = useMemo(() => uuidv4(), []);
-  const [localStatus, setLocalStatus] = useState<AVPlaybackStatusSuccess>();
-  const isInMediaPlayer = useMemo(() => media?.id === id, [media?.id, id]);
-  // Plug or not the playbackStatus from MediaPLayerProvider
-  const statusToUse = useMemo(
-    () => (isInMediaPlayer ? playbackStatus : localStatus),
-    [isInMediaPlayer, playbackStatus, localStatus],
-  );
+  const { media, onLayoutPlayerVideo } = useMediaPlayer();
+  const { current: id } = useRef(uuidv4());
+  const isInMediaPlayer = useMemo(() => media?.id === id, [id, media?.id]);
+
   const containerRef = useRef<View>(null);
   const videoRef = useRef<Video>(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
+  const [isControlsShown, setControlsShown] = useState(false);
+
+  return (
+    <View
+      ref={containerRef}
+      style={[{ width: "100%" }, style]}
+      onLayout={(e) => {
+        if (isInMediaPlayer && videoRef.current) {
+          onLayoutPlayerVideo(videoRef.current);
+        }
+        setContainerWidth(e.nativeEvent.layout.width);
+        setContainerHeight(e.nativeEvent.layout.height);
+      }}
+    >
+      <ExpoAvVideo
+        videoRef={videoRef}
+        containerRef={containerRef}
+        containerWidth={containerWidth}
+        containerHeight={containerHeight}
+        isControlsShown={isControlsShown}
+        isInMediaPlayer={isInMediaPlayer}
+        videoMetadata={videoMetadata}
+        authorId={authorId}
+        postId={postId}
+        resizeMode={resizeMode}
+        id={id}
+        setControlsShown={setControlsShown}
+      />
+    </View>
+  );
+};
+
+type ExpoAvVideoType = {
+  isInMediaPlayer: boolean;
+  videoRef: RefObject<Video>;
+  containerRef: RefObject<View>;
+  containerWidth: number;
+  containerHeight: number;
+  isControlsShown: boolean;
+  videoMetadata: SocialFeedVideoMetadata;
+  postId?: string;
+  resizeMode?: ResizeMode;
+  authorId: string;
+  id: string;
+  setControlsShown: Dispatch<SetStateAction<boolean>>;
+};
+
+function ExpoAvVideo({
+  isInMediaPlayer,
+  videoRef,
+  containerWidth,
+  containerHeight,
+  isControlsShown,
+  videoMetadata,
+  postId,
+  resizeMode,
+  authorId,
+  id,
+  containerRef,
+  setControlsShown,
+}: ExpoAvVideoType) {
+  const {
+    onVideoStatusUpdate,
+    firstPlayVideo,
+    triggerVideoFullscreen,
+    handlePlayPause,
+  } = useMediaPlayer();
+
+  const { setToast } = useFeedbacks();
+  const isMobile = useIsMobile();
+  const [localStatus, setLocalStatus] = useState<AVPlaybackStatusSuccess>();
   const [extraPressCount, setExtraPressCount] = useState(0);
   const [pressTimer, setPressTimer] = useState<NodeJS.Timeout>();
-  const [fullScreenUpdate, setFullScreenUpdate] =
-    useState<VideoFullscreenUpdate>();
-  const [isControlsShown, setControlsShown] = useState(false);
   const [isThumbnailShown, setThumbnailShown] = useState(true);
+  // why?: Linked to problem code in onLocalPlaybackStatusUpdate()
+  // const [fullScreenUpdate, setFullScreenUpdate] =
+  //   useState<VideoFullscreenUpdate>();
+
+  const selectedNetwork = useSelectedNetworkInfo();
+  const userInfo = useNSUserInfo(authorId);
+  const { isDAO } = useIsDAO(authorId);
+
+  // Handle show/hide controls by hovering the video area with mouse
+  const mousePosition = useMousePosition();
+  containerRef.current?.measure((ox, oy, width, height, px, py) => {
+    if (
+      (mousePosition.x >= px &&
+        mousePosition.x <= px + width &&
+        mousePosition.y >= py &&
+        mousePosition.y <= py + height &&
+        !isMobile) ||
+      !localStatus?.isPlaying
+    ) {
+      setControlsShown(true);
+    } else {
+      setControlsShown(false);
+    }
+  });
 
   const thumbnailURI =
     videoMetadata.videoFile.thumbnailFileData?.url ||
@@ -147,57 +227,32 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   const onLocalPlaybackStatusUpdate = async (status: AVPlaybackStatus) => {
     if ("uri" in status && status.isLoaded) {
       setLocalStatus(status);
+
       if (isInMediaPlayer && status.positionMillis > 0) {
         onVideoStatusUpdate(status);
       }
+      // Fix me: This code is not working and stoping video to play
       // Sync with MediaProvider, if not synced, if the video is played for the first time, on fullscreen
-      else if (
-        fullScreenUpdate === VideoFullscreenUpdate.PLAYER_DID_PRESENT &&
-        status.isPlaying &&
-        videoRef.current
-      ) {
-        await firstPlayVideo(videoRef.current, mediaToSet);
-      }
+      // else if (
+      //   fullScreenUpdate === VideoFullscreenUpdate.PLAYER_DID_PRESENT &&
+      //   status.isPlaying &&
+      //   videoRef.current
+      // ) {
+      //   await firstPlayVideo(videoRef.current, mediaToSet);
+      // }
     }
     if ("error" in status) {
       console.error("Error while playbackStatus update: ", status.error);
-      setToastError({
-        title: "Error while playbackStatus update",
-        message: status.error || "",
+      setToast({
+        mode: "mini",
+        type: "error",
+        message: `Error while playbackStatus update : ${status.error}`,
       });
     }
   };
 
-  // Handle show/hide controls by hovering the video area with mouse
-  const mousePosition = useMousePosition();
-  containerRef.current?.measure((ox, oy, width, height, px, py) => {
-    if (
-      (mousePosition.x >= px &&
-        mousePosition.x <= px + width &&
-        mousePosition.y >= py &&
-        mousePosition.y <= py + height &&
-        !isMobile) ||
-      !statusToUse?.isPlaying
-    ) {
-      setControlsShown(true);
-    } else {
-      setControlsShown(false);
-    }
-  });
-
   return (
-    <View
-      ref={containerRef}
-      style={[{ width: "100%" }, style]}
-      onLayout={(e) => {
-        if (isInMediaPlayer && videoRef.current) {
-          onLayoutPlayerVideo(videoRef.current);
-        }
-        setContainerWidth(e.nativeEvent.layout.width);
-        setContainerHeight(e.nativeEvent.layout.height);
-      }}
-    >
-      {/*---- expo-av Video */}
+    <>
       <CustomPressable
         onPress={onPressVideoWrapper}
         style={{
@@ -222,10 +277,10 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
         )}
         <Video
           ref={videoRef}
-          status={statusToUse}
-          onFullscreenUpdate={(e) => setFullScreenUpdate(e.fullscreenUpdate)}
           onPlaybackStatusUpdate={onLocalPlaybackStatusUpdate}
           useNativeControls={false}
+          // Why?: Linked to problem code in onLocalPlaybackStatusUpdate()
+          // onFullscreenUpdate={(e) => setFullScreenUpdate(e.fullscreenUpdate)}
           source={{
             uri: web3ToWeb2URI(videoMetadata.videoFile.url),
           }}
@@ -241,117 +296,140 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
       </CustomPressable>
 
       {isControlsShown && (
-        <>
-          {/* Shadow */}
-          <LinearGradient
-            start={{ x: 0, y: 1 }}
-            end={{ x: 0, y: 0.5 }}
-            colors={[
-              "rgba(0,0,0,1)",
-              "rgba(0,0,0,.9)",
-              "rgba(0,0,0,.3)",
-              "rgba(0,0,0,0)",
-            ]}
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              height: "20%",
-              width: "100%",
-              borderBottomRightRadius: 8,
-              borderBottomLeftRadius: 8,
-              zIndex: 2,
-            }}
-          />
+        <MediaPlayerController
+          containerWidth={containerWidth}
+          playbackStatus={localStatus}
+          isInMediaPlayer={isInMediaPlayer}
+          videoRef={videoRef}
+          onPressPlayPause={onPressPlayPause}
+        />
+      )}
+    </>
+  );
+}
 
-          {/*---- Custom controls*/}
-          <View
-            style={{
-              zIndex: 3,
-              position: "absolute",
-              left: 0,
-              bottom: 0,
-              paddingHorizontal: CONTROLS_PADDING_HORIZONTAL,
-              width: containerWidth,
-              height: CONTROLS_HEIGHT,
+type TypeMediaPlayerController = {
+  containerWidth: number;
+  playbackStatus?: AVPlaybackStatusSuccess;
+  isInMediaPlayer: boolean;
+  videoRef: RefObject<Video>;
+  onPressPlayPause: () => void;
+};
+
+function MediaPlayerController({
+  containerWidth,
+  playbackStatus,
+  isInMediaPlayer,
+  videoRef,
+  onPressPlayPause,
+}: TypeMediaPlayerController) {
+  const { nextMedia, triggerVideoFullscreen } = useMediaPlayer();
+  const isMobile = useIsMobile();
+  return (
+    <>
+      {/* Shadow */}
+      <LinearGradient
+        start={{ x: 0, y: 1 }}
+        end={{ x: 0, y: 0.5 }}
+        colors={[
+          "rgba(0,0,0,1)",
+          "rgba(0,0,0,.9)",
+          "rgba(0,0,0,.3)",
+          "rgba(0,0,0,0)",
+        ]}
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          height: "20%",
+          width: "100%",
+          borderBottomRightRadius: 8,
+          borderBottomLeftRadius: 8,
+          zIndex: 2,
+        }}
+      />
+
+      {/*---- Custom controls*/}
+      <View
+        style={{
+          zIndex: 3,
+          position: "absolute",
+          left: 0,
+          bottom: 0,
+          paddingHorizontal: CONTROLS_PADDING_HORIZONTAL,
+          width: containerWidth,
+          height: CONTROLS_HEIGHT,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <CustomPressable
+              style={{ alignItems: "center", justifyContent: "center" }}
+              onPress={() => onPressPlayPause()}
+            >
+              <SVG
+                source={playbackStatus?.isPlaying ? PauseIcon : PlayIcon}
+                height={24}
+                width={24}
+                color={secondaryColor}
+              />
+            </CustomPressable>
+
+            <SpacerRow size={1.5} />
+            {/*TODO: handle Next for Videos */}
+            <CustomPressable
+              style={{ alignItems: "center", justifyContent: "center" }}
+              onPress={() => nextMedia()}
+              disabled
+            >
+              <SVG source={NextIcon} height={20} width={20} color={neutralA3} />
+            </CustomPressable>
+            <SpacerRow size={isMobile ? 1.5 : 0.5} />
+
+            {!isMobile && (
+              <>
+                <VolumeSlider useAltStyle playbackStatus={playbackStatus} />
+                <SpacerRow size={1.5} />
+              </>
+            )}
+
+            {/* Display time */}
+            <BrandText style={fontSemibold13}>
+              {`${prettyMediaDuration(
+                playbackStatus?.positionMillis,
+              )} / ${prettyMediaDuration(playbackStatus?.durationMillis)}`}
+            </BrandText>
+          </View>
+
+          <CustomPressable
+            onPress={() => {
+              if (isInMediaPlayer) triggerVideoFullscreen();
+              else videoRef.current?._setFullscreen(true);
             }}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <CustomPressable
-                  style={{ alignItems: "center", justifyContent: "center" }}
-                  onPress={onPressPlayPause}
-                >
-                  <SVG
-                    source={statusToUse?.isPlaying ? PauseIcon : PlayIcon}
-                    height={24}
-                    width={24}
-                    color={secondaryColor}
-                  />
-                </CustomPressable>
-
-                <SpacerRow size={1.5} />
-                {/*TODO: handle Next for Videos */}
-                <CustomPressable
-                  style={{ alignItems: "center", justifyContent: "center" }}
-                  onPress={nextMedia}
-                  disabled
-                >
-                  <SVG
-                    source={NextIcon}
-                    height={20}
-                    width={20}
-                    color={neutralA3}
-                  />
-                </CustomPressable>
-                <SpacerRow size={isMobile ? 1.5 : 0.5} />
-
-                {!isMobile && (
-                  <>
-                    <VolumeSlider useAltStyle playbackStatus={statusToUse} />
-                    <SpacerRow size={1.5} />
-                  </>
-                )}
-
-                {/* Display time */}
-                <BrandText style={fontSemibold13}>
-                  {`${prettyMediaDuration(
-                    statusToUse?.positionMillis,
-                  )} / ${prettyMediaDuration(statusToUse?.durationMillis)}`}
-                </BrandText>
-              </View>
-
-              <CustomPressable
-                onPress={() => {
-                  if (isInMediaPlayer) triggerVideoFullscreen();
-                  else videoRef.current?._setFullscreen(true);
-                }}
-              >
-                <SVG
-                  source={FullScreenIcon}
-                  width={20}
-                  height={20}
-                  color={secondaryColor}
-                />
-              </CustomPressable>
-            </View>
-
-            <SpacerColumn size={1} />
-            <TimerSlider
-              width={containerWidth - CONTROLS_PADDING_HORIZONTAL * 2}
-              hideDuration
-              playbackStatus={statusToUse}
+            <SVG
+              source={FullScreenIcon}
+              width={20}
+              height={20}
+              color={secondaryColor}
             />
-            <SpacerColumn size={2.5} />
-          </View>
-        </>
-      )}
-    </View>
+          </CustomPressable>
+        </View>
+
+        <SpacerColumn size={1} />
+        <TimerSlider
+          width={containerWidth - CONTROLS_PADDING_HORIZONTAL * 2}
+          hideDuration
+          playbackStatus={playbackStatus}
+        />
+        <SpacerColumn size={2.5} />
+      </View>
+    </>
   );
-};
+}

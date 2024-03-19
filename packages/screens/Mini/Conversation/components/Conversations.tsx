@@ -4,10 +4,10 @@ import { FlatList, View } from "react-native";
 
 import { ChatInput } from "./ChatInput";
 import { SingleConversation } from "./SingleConversation";
-import closeSVG from "../../../../assets/icons/close.svg";
-import replySVG from "../../../../assets/icons/reply-white.svg";
-import { GroupInvitationAction } from "../../Message/components/GroupInvitationAction";
-import { ChatAvatar } from "../components/ChatAvatar";
+import closeSVG from "../../../../../assets/icons/close.svg";
+import replySVG from "../../../../../assets/icons/reply-white.svg";
+import { GroupInvitationAction } from "../../../Message/components/GroupInvitationAction";
+import { ChatAvatar } from "../../components/ChatAvatar";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";

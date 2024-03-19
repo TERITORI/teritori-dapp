@@ -190,7 +190,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
       childrenBottom={Footer()}
       hideMainSeparator
     >
-      <View style={styles.container}>
+      <View style={{ width: "100%", maxWidth: 446 }}>
         <Separator />
         <SpacerColumn size={2.5} />
         <WarningBox
@@ -247,9 +247,6 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
 // FIXME: remove StyleSheet.create
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
-  container: {
-    width: 446,
-  },
   footerRow: {
     flexDirection: "row",
     alignItems: "center",

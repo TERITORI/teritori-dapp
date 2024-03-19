@@ -173,9 +173,11 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
     );
     setMedia(media);
     try {
+      if (av) {
+        stopOldAv(av);
+      }
+
       await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-      await av?.stopAsync();
-      await av?.unloadAsync();
       setAv(video);
       await video.playAsync();
     } catch (e: any) {
@@ -187,6 +189,11 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
     }
     setIsMediaPlayerOpen(true);
   };
+
+  async function stopOldAv(av: Video | Audio.Sound) {
+    await av?.stopAsync();
+    await av?.unloadAsync();
+  }
 
   // Used to restore videoRef.current (av) after the current Video has been reloaded.
   // (If not, the playbackStatus is sync correctly, but not the av, and an error occurs "Video has not been loaded yet")
