@@ -76,8 +76,10 @@ export const TipButton: React.FC<{
         forceNetworkFeature: NetworkFeature.SocialFeed,
         action: "Tip",
       });
+
       return;
     }
+
     setTipModalVisible(true);
   };
 
