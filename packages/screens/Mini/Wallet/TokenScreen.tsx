@@ -118,7 +118,12 @@ export const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
             <AddedToken
               dollarAmount={balance.usdAmount?.toLocaleString() || "N/A"}
               icon={teritoriSVG}
-              onPress={() => {}}
+              onPress={() => {
+                navigation.replace("MiniSendTori", {
+                  back: "MiniSelectToken",
+                  denom: balance.denom,
+                });
+              }}
               denom={balance.denom}
               amount={balance.amount}
             />
