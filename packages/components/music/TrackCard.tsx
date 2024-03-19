@@ -108,11 +108,13 @@ export const TrackCard: React.FC<{
               />
             </TouchableOpacity>
 
-            <TrackOptionsButton
-              trackName={track?.title || "Track"}
-              post={post}
-              username={username}
-            />
+            <CustomPressable onPress={(e) => e.stopPropagation()}>
+              <TrackOptionsButton
+                trackName={track?.title || "Track"}
+                post={post}
+                username={username}
+              />
+            </CustomPressable>
           </View>
         </CustomPressable>
         <BrandText style={[fontSemibold14, { height: 40 }]} numberOfLines={2}>

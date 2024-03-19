@@ -20,16 +20,11 @@ import { SpacerRow } from "../../spacer";
 interface ShareButtonProps {
   postId: string;
   useAltStyle?: boolean;
-  onSharePress?: () => void;
 }
 
 const WEBSITE_URL = "https://app.teritori.com";
 
-export const ShareButton = ({
-  postId,
-  useAltStyle,
-  onSharePress,
-}: ShareButtonProps) => {
+export const ShareButton = ({ postId, useAltStyle }: ShareButtonProps) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const windowOrigin =
     Platform.OS === "web" ? window.location.origin : WEBSITE_URL;
@@ -67,9 +62,6 @@ export const ShareButton = ({
           },
         ]}
         onPress={() => {
-          if (onSharePress) {
-            onSharePress();
-          }
           setIsModalVisible(true);
         }}
       >

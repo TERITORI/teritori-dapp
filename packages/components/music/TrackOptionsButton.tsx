@@ -26,7 +26,9 @@ export const TrackOptionsButton = ({ trackName, post, username }: Props) => {
   const [showMenu, setShowMenu] = useState(false);
   const [appMode] = useAppMode();
 
-  const onClose = () => setShowMenu(false);
+  const onClose = () => {
+    setShowMenu(false);
+  };
 
   const TrackOptionModalHeader = () => {
     return <BrandText numberOfLines={2}>{trackName}</BrandText>;
@@ -34,7 +36,11 @@ export const TrackOptionsButton = ({ trackName, post, username }: Props) => {
 
   return (
     <>
-      <TouchableOpacity onPress={() => setShowMenu(true)}>
+      <TouchableOpacity
+        onPress={() => {
+          setShowMenu(true);
+        }}
+      >
         <SVG
           source={ThreeDotsCircleWhite}
           width={BUTTONS_HEIGHT}
@@ -45,42 +51,44 @@ export const TrackOptionsButton = ({ trackName, post, username }: Props) => {
         visible={showMenu}
         onClose={onClose}
         width={MENU_CONTAINER_MODAL_WIDTH}
-        boxStyle={{ height: 250 }}
+        boxStyle={{ height: 240 }}
         hideMainSeparator={appMode === "mini"}
         Header={TrackOptionModalHeader}
       >
         {appMode === "mini" && <Separator />}
-        <SpacerColumn size={2} />
+        <SpacerColumn size={3} />
         <View
           style={{
             flexDirection: "row",
             gap: layout.spacing_x1_5,
             alignItems: "center",
             marginBottom: layout.spacing_x3,
+            justifyContent: "space-evenly",
           }}
         >
-          <BrandText style={{ width: 60 }}>Share</BrandText>
-          <ShareButton
-            postId={post.identifier}
-            useAltStyle
-            onSharePress={onClose}
-          />
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            gap: layout.spacing_x1_5,
-            alignItems: "center",
-          }}
-        >
-          <BrandText style={{ width: 60 }}>Tip</BrandText>
-          <TipButton
-            postId={post.identifier}
-            author={username}
-            amount={post.tipAmount}
-            useAltStyle
-            onTipPress={onClose}
-          />
+          <View
+            style={{
+              gap: layout.spacing_x1_5,
+              alignItems: "center",
+            }}
+          >
+            <BrandText>Share</BrandText>
+            <ShareButton postId={post.identifier} useAltStyle />
+          </View>
+          <View
+            style={{
+              gap: layout.spacing_x1_5,
+              alignItems: "center",
+            }}
+          >
+            <BrandText>Tip</BrandText>
+            <TipButton
+              postId={post.identifier}
+              author={username}
+              amount={post.tipAmount}
+              useAltStyle
+            />
+          </View>
         </View>
       </ModalBase>
     </>

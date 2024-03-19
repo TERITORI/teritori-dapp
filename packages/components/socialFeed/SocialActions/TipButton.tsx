@@ -62,8 +62,7 @@ export const TipButton: React.FC<{
   amount: number;
   disabled?: boolean;
   useAltStyle?: boolean;
-  onTipPress?: () => void;
-}> = ({ postId, author, amount, disabled, useAltStyle, onTipPress }) => {
+}> = ({ postId, author, amount, disabled, useAltStyle }) => {
   const selectedWallet = useSelectedWallet();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const { showConnectWalletModal } = useWalletControl();
@@ -72,10 +71,6 @@ export const TipButton: React.FC<{
   const [appMode] = useAppMode();
 
   const onPress = async () => {
-    if (onTipPress) {
-      onTipPress();
-    }
-
     if (!selectedWallet?.address || !selectedWallet.connected) {
       showConnectWalletModal({
         forceNetworkFeature: NetworkFeature.SocialFeed,
@@ -84,7 +79,6 @@ export const TipButton: React.FC<{
 
       return;
     }
-    console.log("Yes Wallet");
 
     setTipModalVisible(true);
   };
