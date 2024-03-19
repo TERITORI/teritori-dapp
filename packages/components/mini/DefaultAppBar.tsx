@@ -5,7 +5,7 @@ import { useSelectedNativeWallet } from "../../hooks/wallet/useSelectedNativeWal
 import { getUserId } from "../../networks";
 import { neutral00, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold18 } from "../../utils/style/fonts";
-import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
+import { MOBILE_HEADER_HEIGHT, layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { CustomPressable } from "../buttons/CustomPressable";
@@ -13,12 +13,14 @@ import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 import { SpacerRow } from "../spacer";
 
 import ChatGraySVG from "@/assets/icons/chat-gray.svg";
+import LeftArrowSVG from "@/assets/icons/chevron-left.svg";
 import FriendGraySVG from "@/assets/icons/friend-gray.svg";
 import notificationSVG from "@/assets/icons/notification-new.svg";
 import OrganizationGraySVG from "@/assets/icons/organization-gray.svg";
 import UserGraySVG from "@/assets/icons/user-gray.svg";
 import GroupGraySVG from "@/assets/icons/users-group-gray.svg";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { RouteName } from "@/utils/navigation";
 
 type DefaultAppBarProps = {
   title: string;
@@ -38,7 +40,7 @@ const chatDropdownItems = [
   {
     icon: FriendGraySVG,
     name: "Add a friend",
-    onPress: (navigation: any) => navigation.navigate("MiniFriend"),
+    onPress: (navigation: any) => navigation.navigate("MiniFriend", {}),
   },
   {
     icon: OrganizationGraySVG,
@@ -59,6 +61,13 @@ const feedsDropdownItems = [
   },
 ];
 
+const HideBackButtonNavigationPath: RouteName[] = [
+  "MiniTabs",
+  "MiniChats",
+  "MiniFeeds",
+  "MiniWallets",
+];
+
 export default function DefaultAppBar({ title }: DefaultAppBarProps) {
   const navigation = useAppNavigation();
   const wallet = useSelectedNativeWallet();
@@ -68,6 +77,12 @@ export default function DefaultAppBar({ title }: DefaultAppBarProps) {
   const onPressNotification = () => {
     navigation.navigate("Notifications");
   };
+  const navigationName =
+    navigation.getState().routes[navigation.getState().index].name;
+
+  const showBackButton =
+    navigation.canGoBack() &&
+    !HideBackButtonNavigationPath.includes(navigationName);
 
   return (
     <View
@@ -85,12 +100,28 @@ export default function DefaultAppBar({ title }: DefaultAppBarProps) {
         zIndex: 9999,
       }}
     >
-      <CustomPressable onPress={onProfileImagePress}>
-        <UserAvatarWithFrame
-          userId={userId !== "" ? userId : "tori-"}
-          size="S"
-        />
-      </CustomPressable>
+      <View
+        style={{
+          flexDirection: "row",
+          gap: layout.spacing_x0_5,
+          alignItems: "center",
+        }}
+      >
+        {showBackButton && (
+          <CustomPressable
+            onPress={() => navigation.goBack()}
+            style={{ padding: layout.spacing_x0_5 }}
+          >
+            <SVG source={LeftArrowSVG} height={22} width={22} />
+          </CustomPressable>
+        )}
+        <CustomPressable onPress={onProfileImagePress}>
+          <UserAvatarWithFrame
+            userId={userId !== "" ? userId : "tori-"}
+            size="S"
+          />
+        </CustomPressable>
+      </View>
       <BrandText
         style={[
           fontSemibold18,

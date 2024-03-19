@@ -12,7 +12,7 @@ import { useCosmosValidatorBondedAmount } from "@/hooks/useCosmosValidatorBonded
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useKeybaseAvatarURL } from "@/hooks/useKeybaseAvatarURL";
 import { Reward, rewardsPrice, useRewards } from "@/hooks/useRewards";
-import { getStakingCurrency, parseUserId, UserKind } from "@/networks";
+import { UserKind, getStakingCurrency, parseUserId } from "@/networks";
 import { prettyPrice } from "@/utils/coins";
 import { removeObjectKey, removeObjectKeys } from "@/utils/object";
 import { mineShaftColor } from "@/utils/style/colors";
@@ -64,9 +64,10 @@ export const ValidatorsTable: React.FC<{
   userId: string | undefined;
   userKind: UserKind;
 }> = ({ validators, actions, style, userId, userKind }) => {
-  const ROWS_TMP = actions
-    ? TABLE_ROWS
-    : removeObjectKey(TABLE_ROWS, "actions");
+  const isMobile = useIsMobile();
+
+  const ROWS_TMP =
+    actions && !isMobile ? TABLE_ROWS : removeObjectKey(TABLE_ROWS, "actions");
   const ROWS = userId
     ? ROWS_TMP
     : removeObjectKeys(ROWS_TMP, ["staked", "claimable"]);
@@ -114,143 +115,172 @@ const ValidatorRow: React.FC<{
   );
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        width: "100%",
-        minHeight: layout.contentSpacing,
-        paddingHorizontal: layout.spacing_x2_5,
-        borderColor: mineShaftColor,
-        borderTopWidth: 1,
-        paddingVertical: layout.spacing_x2,
-      }}
-    >
-      <BrandText
-        style={[
-          isMobile ? fontSemibold11 : fontSemibold13,
-          { flex: TABLE_ROWS.rank.flex, paddingRight: layout.spacing_x1 },
-        ]}
-      >
-        {validator.rank}
-      </BrandText>
+    <>
       <View
         style={{
           flexDirection: "row",
           alignItems: "center",
-          flex: TABLE_ROWS.name.flex,
-          paddingRight: layout.spacing_x1,
+          justifyContent: "space-between",
+          width: "100%",
+          minHeight: layout.contentSpacing,
+          paddingHorizontal: layout.spacing_x2_5,
+          borderColor: mineShaftColor,
+          borderTopWidth: 1,
+          paddingVertical: layout.spacing_x2,
         }}
       >
-        <RoundedGradientImage
-          size="XS"
-          sourceURI={imageURL}
-          style={{ marginRight: isMobile ? 8 : 30 }}
-        />
-
-        <SpacerRow size={1} />
         <BrandText
-          style={[isMobile ? fontSemibold11 : fontSemibold13]}
-          numberOfLines={1}
-          ellipsizeMode="clip"
+          style={[
+            isMobile ? fontSemibold11 : fontSemibold13,
+            { flex: TABLE_ROWS.rank.flex, paddingRight: layout.spacing_x1 },
+          ]}
         >
-          {validator.moniker || ""}
+          {validator.rank}
         </BrandText>
-      </View>
-      <BrandText
-        style={[
-          isMobile ? fontSemibold11 : fontSemibold13,
-          {
-            flex: TABLE_ROWS.votingPower.flex,
-            paddingRight: layout.spacing_x1,
-          },
-        ]}
-      >
-        {validator.votingPowerPercent.toFixed(2)}%
-        {!!stakingCurrency &&
-          " - " +
-            prettyPrice(
-              network?.id,
-              Decimal.fromUserInput(
-                validator.votingPower,
-                stakingCurrency?.decimals,
-              ).atomics,
-              stakingCurrency?.denom,
-            )}
-      </BrandText>
-      <BrandText
-        style={[
-          fontSemibold13,
-          {
-            flex: TABLE_ROWS.commission.flex,
-            paddingRight: actions || userId ? layout.spacing_x1 : 0,
-          },
-        ]}
-      >
-        {validator.commission}
-      </BrandText>
-      {!!userId && (
-        <>
-          <View
-            style={{
-              flex: TABLE_ROWS.staked.flex,
-              paddingRight: layout.spacing_x1,
-              flexDirection: isMobile ? "column" : "row",
-              alignItems: "center",
-              justifyContent: "flex-start",
-            }}
-          >
-            {!!bondedTokens &&
-              (bondedTokens.amount.toFloatApproximation() || 0) > 0 && (
-                <BrandText style={[isMobile ? fontSemibold11 : fontSemibold13]}>
-                  {prettyPrice(
-                    network?.id,
-                    bondedTokens.amount.atomics,
-                    bondedTokens.currency.denom,
-                  )}
-                </BrandText>
-              )}
-          </View>
-          <View
-            style={{
-              flex: TABLE_ROWS.claimable.flex,
-              paddingRight: actions ? layout.spacing_x1 : 0,
-              flexDirection: isMobile ? "column" : "row",
-              alignItems: "center",
-            }}
-          >
-            {!!claimablePrice && (
-              <BrandText style={[isMobile ? fontSemibold11 : fontSemibold13]}>
-                {`$${claimablePrice.toFixed(2)}`}
-              </BrandText>
-            )}
-            {!!pendingRewards?.length && (
-              <PrimaryButtonOutline
-                size={isMobile ? "XXS" : "XS"}
-                style={
-                  isMobile
-                    ? { paddingTop: layout.spacing_x1 }
-                    : { paddingLeft: layout.spacing_x2 }
-                }
-                text="Claim"
-                disabled={!userAddress}
-                onPress={() => {
-                  claimReward(validator.address);
-                }}
-              />
-            )}
-          </View>
-        </>
-      )}
-
-      {!!actions && (
         <View
           style={{
-            flex: TABLE_ROWS.actions.flex,
+            flexDirection: isMobile ? "column" : "row",
+            alignItems: isMobile ? "flex-start" : "center",
+            gap: layout.spacing_x0_5,
+            flex: TABLE_ROWS.name.flex,
+            paddingRight: layout.spacing_x1,
+          }}
+        >
+          <RoundedGradientImage size="XS" sourceURI={imageURL} />
+
+          <SpacerRow size={1} />
+          <BrandText
+            style={[isMobile ? fontSemibold11 : fontSemibold13]}
+            numberOfLines={1}
+            ellipsizeMode="clip"
+          >
+            {validator.moniker || ""}
+          </BrandText>
+        </View>
+        <BrandText
+          style={[
+            isMobile ? fontSemibold11 : fontSemibold13,
+            {
+              flex: TABLE_ROWS.votingPower.flex,
+              paddingRight: layout.spacing_x1,
+            },
+          ]}
+        >
+          {validator.votingPowerPercent.toFixed(2)}%
+          {!!stakingCurrency &&
+            " - " +
+              prettyPrice(
+                network?.id,
+                Decimal.fromUserInput(
+                  validator.votingPower,
+                  stakingCurrency?.decimals,
+                ).atomics,
+                stakingCurrency?.denom,
+              )}
+        </BrandText>
+        <BrandText
+          style={[
+            fontSemibold13,
+            {
+              flex: TABLE_ROWS.commission.flex,
+              paddingRight: actions || userId ? layout.spacing_x1 : 0,
+            },
+          ]}
+        >
+          {validator.commission}
+        </BrandText>
+        {!!userId && (
+          <>
+            <View
+              style={{
+                flex: TABLE_ROWS.staked.flex,
+                paddingRight: layout.spacing_x1,
+                flexDirection: isMobile ? "column" : "row",
+                alignItems: "center",
+                justifyContent: "flex-start",
+              }}
+            >
+              {!!bondedTokens &&
+                (bondedTokens.amount.toFloatApproximation() || 0) > 0 && (
+                  <BrandText
+                    style={[isMobile ? fontSemibold11 : fontSemibold13]}
+                  >
+                    {prettyPrice(
+                      network?.id,
+                      bondedTokens.amount.atomics,
+                      bondedTokens.currency.denom,
+                    )}
+                  </BrandText>
+                )}
+            </View>
+            <View
+              style={{
+                flex: TABLE_ROWS.claimable.flex,
+                paddingRight: actions ? layout.spacing_x1 : 0,
+                flexDirection: isMobile ? "column" : "row",
+                alignItems: "center",
+              }}
+            >
+              {!!claimablePrice && (
+                <BrandText style={[isMobile ? fontSemibold11 : fontSemibold13]}>
+                  {`$${claimablePrice.toFixed(2)}`}
+                </BrandText>
+              )}
+              {!!pendingRewards?.length && (
+                <PrimaryButtonOutline
+                  size={isMobile ? "XXS" : "XS"}
+                  style={
+                    isMobile
+                      ? { paddingTop: layout.spacing_x1 }
+                      : { paddingLeft: layout.spacing_x2 }
+                  }
+                  text="Claim"
+                  disabled={!userAddress}
+                  onPress={() => {
+                    claimReward(validator.address);
+                  }}
+                />
+              )}
+            </View>
+          </>
+        )}
+        {!!actions && !isMobile && (
+          <View
+            style={{
+              flex: TABLE_ROWS.actions.flex,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {actions(validator).map((action, index) =>
+              action.renderComponent ? (
+                action.renderComponent()
+              ) : (
+                <SecondaryButtonOutline
+                  key={index}
+                  onPress={() => {
+                    if (typeof action.onPress !== "function") {
+                      return;
+                    }
+                    action.onPress(validator);
+                  }}
+                  text={action.label || ""}
+                  size={isMobile ? "XXS" : "XS"}
+                />
+              ),
+            )}
+          </View>
+        )}
+      </View>
+      {!!actions && isMobile && (
+        <View
+          style={{
             flexDirection: "row",
-            alignItems: "center",
+            alignSelf: "flex-end",
             justifyContent: "center",
+            width: 100,
+            marginBottom: layout.spacing_x2,
           }}
         >
           {actions(validator).map((action, index) =>
@@ -272,6 +302,6 @@ const ValidatorRow: React.FC<{
           )}
         </View>
       )}
-    </View>
+    </>
   );
 };
