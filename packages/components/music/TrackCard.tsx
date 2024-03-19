@@ -1,17 +1,17 @@
 import { isEqual } from "lodash";
 import React, { memo, useMemo, useState } from "react";
 import {
-  View,
-  TouchableOpacity,
-  ViewStyle,
-  TextStyle,
   StyleProp,
   StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
 } from "react-native";
 
+import { TrackOptionsButton } from "./TrackOptionsButton";
 import defaultThumbnailImage from "../../../assets/default-images/default-track-thumbnail.png";
 import NormalPlay from "../../../assets/icons/music/normal-play.svg";
-import ThreeDotsCircleWhite from "../../../assets/icons/music/three-dot-circle-white.svg";
 import { Post } from "../../api/feed/v1/feed";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
@@ -19,7 +19,7 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getNetworkObjectId, parseUserId } from "../../networks";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import { neutral17, neutral77, primaryColor } from "../../utils/style/colors";
-import { fontSemibold14, fontMedium13 } from "../../utils/style/fonts";
+import { fontMedium13, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { ZodSocialFeedTrackMetadata } from "../../utils/types/feed";
@@ -108,13 +108,13 @@ export const TrackCard: React.FC<{
               />
             </TouchableOpacity>
 
-            <TouchableOpacity>
-              <SVG
-                source={ThreeDotsCircleWhite}
-                width={BUTTONS_HEIGHT}
-                height={BUTTONS_HEIGHT}
+            <CustomPressable onPress={(e) => e.stopPropagation()}>
+              <TrackOptionsButton
+                trackName={track?.title || "Track"}
+                post={post}
+                username={username}
               />
-            </TouchableOpacity>
+            </CustomPressable>
           </View>
         </CustomPressable>
         <BrandText style={[fontSemibold14, { height: 40 }]} numberOfLines={2}>
