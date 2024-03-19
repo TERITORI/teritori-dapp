@@ -21,10 +21,10 @@ import { useErrorHandler } from "@/hooks/useErrorHandler";
 import { useRunOrProposeTransaction } from "@/hooks/useRunOrProposeTransaction";
 import { useValidators } from "@/hooks/useValidators";
 import {
+  UserKind,
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
   parseUserId,
-  UserKind,
 } from "@/networks";
 import { prettyPrice } from "@/utils/coins";
 import { neutral22, neutral77, primaryColor } from "@/utils/style/colors";
@@ -226,7 +226,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       childrenBottom={Footer()}
       hideMainSeparator
     >
-      <View style={styles.container}>
+      <View style={{ width: "100%", maxWidth: 900 }}>
         <Separator />
         <SpacerColumn size={2.5} />
         <TextInputCustom<StakeFormValuesType>
@@ -309,9 +309,6 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
 // FIXME: remove StyleSheet.create
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
-  container: {
-    width: 900,
-  },
   footerRow: {
     flexDirection: "row",
     alignItems: "center",

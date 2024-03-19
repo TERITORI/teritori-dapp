@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { SafeAreaView, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
-import { ChatHeader } from "./ChatHeader";
-import { Conversations } from "./Conversations";
+import { ChatHeader } from "./components/ChatHeader";
+import { Conversations } from "./components/Conversations";
 
 import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
 import { SpacerRow } from "@/components/spacer";
