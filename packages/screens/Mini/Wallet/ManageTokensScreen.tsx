@@ -21,7 +21,7 @@ export const ManageTokensScreen: ScreenFC<"MiniManageTokens"> = ({
 
   const selectedWallet = useSelectedNativeWallet();
 
-  const balances = useBalances(
+  const { balances } = useBalances(
     selectedWallet?.networkId,
     selectedWallet?.address,
   );

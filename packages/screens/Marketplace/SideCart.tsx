@@ -264,7 +264,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
   const { setToastError, setLoadingFullScreen, setToastSuccess } =
     useFeedbacks();
 
-  const balances = useBalances(wallet?.networkId, wallet?.address);
+  const { balances } = useBalances(wallet?.networkId, wallet?.address);
   const hasEnoughMoney = selectedNFTData.every((nft) => {
     const balance =
       balances.find((bal) => bal.denom === nft.denom)?.amount || "0";

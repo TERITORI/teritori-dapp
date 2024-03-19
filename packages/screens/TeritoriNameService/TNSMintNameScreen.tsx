@@ -186,7 +186,7 @@ export const TNSMintNameModal: React.FC<
     name + cosmosNetwork?.nameServiceTLD || ""
   ).toLowerCase();
   const [isSuccessModal, setSuccessModal] = useState(false);
-  const balances = useBalances(networkId, userAddress);
+  const { balances } = useBalances(networkId, userAddress);
   const isKeplrConnected = useIsKeplrConnected();
   const isLeapConnected = useIsLeapConnected();
 

@@ -54,7 +54,7 @@ export const CoreDAOScreen: ScreenFC<"CoreDAO"> = () => {
 const DAOManager: React.FC = () => {
   const networkId = useSelectedNetworkId();
   const network = getCosmosNetwork(networkId);
-  const balances = useBalances(networkId, network?.coreDAOAddress);
+  const { balances } = useBalances(networkId, network?.coreDAOAddress);
   const selectedWallet = useSelectedWallet();
   const makeProposal = useDAOMakeProposal(
     getUserId(networkId, network?.coreDAOAddress),
@@ -144,7 +144,10 @@ const DAOManager: React.FC = () => {
 const VaultManager: React.FC<{ networkId: string }> = ({ networkId }) => {
   const network = getCosmosNetwork(networkId);
   const { marketplaceConfig: vaultConfig } = useMarketplaceConfig(networkId);
-  const vaultBalances = useBalances(networkId, network?.vaultContractAddress);
+  const { balances: vaultBalances } = useBalances(
+    networkId,
+    network?.vaultContractAddress,
+  );
   const { wrapWithFeedback } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
 
@@ -230,7 +233,7 @@ const NameServiceManager: React.FC<{ networkId: string }> = ({ networkId }) => {
 const SocialFeedManager: React.FC<{ networkId: string }> = ({ networkId }) => {
   const network = getCosmosNetwork(networkId);
   const { feedConfig } = useFeedConfig(networkId);
-  const feedBalances = useBalances(
+  const { balances: feedBalances } = useBalances(
     networkId,
     network?.socialFeedContractAddress,
   );
@@ -264,7 +267,7 @@ const SocialFeedManager: React.FC<{ networkId: string }> = ({ networkId }) => {
 const BreedingManager: React.FC<{ networkId: string }> = ({ networkId }) => {
   const network = getCosmosNetwork(networkId);
   const { breedingConfig } = useBreedingConfig(networkId);
-  const breedingBalances = useBalances(
+  const { balances: breedingBalances } = useBalances(
     networkId,
     network?.riotContractAddressGen1,
   );
