@@ -393,6 +393,7 @@ test.rust:
 .PHONY: build.rust
 build.rust:
 	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
+		if [[ $${indir} == "rust/apipb" ]]; then continue; fi ; \
 		echo "> Building $${file}" ; \
 		cd $${file} ; \
 		cargo wasm ; \
