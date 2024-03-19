@@ -64,7 +64,7 @@ export const SendModal: React.FC<SendModalProps> = ({
   );
   const [userNetwork, userAddress] = parseUserId(selectedUserId);
   const networkId = userNetwork?.id;
-  const balances = useBalances(userNetwork?.id, userAddress);
+  const { balances } = useBalances(userNetwork?.id, userAddress);
 
   const ModalHeader = useCallback(
     () => (

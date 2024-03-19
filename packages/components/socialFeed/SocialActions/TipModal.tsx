@@ -60,7 +60,7 @@ export const TipModal: React.FC<{
   const selectedNetworkId = selectedNetworkInfo?.id || "";
   const nativeCurrency = getStakingCurrency(selectedNetworkId);
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
+  const { balances } = useBalances(selectedNetworkId, selectedWallet?.address);
   const currencyBalance = balances.find(
     (bal) => bal.denom === nativeCurrency?.denom,
   );
