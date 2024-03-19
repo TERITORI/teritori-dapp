@@ -292,7 +292,6 @@ export const TNSMintNameModal: React.FC<
       hideMainSeparator
       boxStyle={{
         backgroundColor: neutral17,
-        flex: 1,
         paddingBottom: 80,
       }}
     >
