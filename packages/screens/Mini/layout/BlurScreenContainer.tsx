@@ -11,6 +11,7 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import chevronSVG from "../../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
@@ -87,13 +88,9 @@ export const BlurScreenContainer = ({
       style={{
         flex: 1,
         width: windowWidth,
-        backgroundColor:
-          Platform.OS === "android" ? "rgb(0,0,0)" : "rgba(0, 0, 0, .2)",
+        backgroundColor: background || "rgba(0, 0, 0, .2)",
         position: "relative",
-<<<<<<< HEAD
         paddingTop: safeAreaInset.top,
-=======
->>>>>>> d8f0ae8a (fix: replaced blur with solid black background in android)
       }}
     >
       <BlurView
@@ -106,6 +103,8 @@ export const BlurScreenContainer = ({
           left: 0,
           right: 0,
           bottom: 0,
+          backgroundColor:
+            Platform.OS === "android" ? "rgb(0,0,0)" : "transparent",
         }}
       />
       <LinearGradient
