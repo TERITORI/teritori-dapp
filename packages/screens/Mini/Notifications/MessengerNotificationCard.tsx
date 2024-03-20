@@ -40,7 +40,7 @@ export default function MessengerNotificationCard({
         store.dispatch(readNotification({ id: item.id }));
 
         if (item.type === "contact-request") {
-          navigation.navigate("MiniFriend");
+          navigation.navigate("MiniFriend", { activeTab: "requests" });
         }
 
         if (item.type === "group-invite") {
