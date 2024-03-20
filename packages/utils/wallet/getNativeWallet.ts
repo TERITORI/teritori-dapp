@@ -13,14 +13,12 @@ export const getNativeWallet = (
   return (async () => {
     try {
       let mnemonic = await getMnemonic(index);
-      console.log("mnemonic", mnemonic);
       if (!mnemonic) {
-        console.log("no mnemonic found, creating new one");
         mnemonic = createMnemonic();
         await setMnemonic(mnemonic, index);
       }
       return await Secp256k1HdWallet.fromMnemonic(mnemonic, {
-        prefix, // maybe add validation ?
+        prefix,
         hdPaths: [stringToPath(path)],
       });
     } catch (e) {
@@ -31,7 +29,6 @@ export const getNativeWallet = (
 
 export const getMnemonic = async (index: number = 0) => {
   try {
-    console.log("getting mnemonic", index);
     return await getValueFor(`mnemonic-${index}`);
   } catch (e) {
     console.error(`failed to get mnemonic ${e}`);
