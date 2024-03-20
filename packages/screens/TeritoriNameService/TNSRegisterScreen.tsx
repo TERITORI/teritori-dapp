@@ -1,4 +1,5 @@
 import React from "react";
+import { Platform, useWindowDimensions } from "react-native";
 
 import { TNSCloseHandler } from "./TNSHomeScreen";
 import GradientModalBase from "../../components/modals/GradientModalBase";
@@ -18,6 +19,8 @@ interface TNSRegisterScreenProps {
 export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
   onClose,
 }) => {
+  const { width: windowWidth } = useWindowDimensions();
+
   const networkId = useSelectedNetworkId();
   const { name, setName } = useTNS();
   const network = getCosmosNetwork(networkId);
@@ -27,14 +30,19 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
     tokenId,
   );
 
+  const width = windowWidth < 457 ? windowWidth : 457;
+
   return (
     <GradientModalBase
       onClose={() => onClose()}
       label="Find a Name"
-      width={457}
+      width={width}
       modalStatus={name && nameAvailable ? "success" : "danger"}
       hideMainSeparator
       scrollable
+      contentStyle={{
+        marginTop: Platform.OS === "web" ? 0 : 60,
+      }}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
       <FindAName
