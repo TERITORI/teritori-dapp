@@ -35,11 +35,11 @@ const links = [
   },
   {
     label: "Help & Support",
-    url: "https://teritori.notion.site/Privacy-Policy-16e2332744d346db9b78909a91cb44e3",
+    url: "https://discord.com/invite/teritori",
   },
   {
     label: "GitHub",
-    url: "https://github.com/TERITORI",
+    url: "https://github.com/TERITORI/teritori-dapp",
   },
   {
     label: "Developer Docs",
