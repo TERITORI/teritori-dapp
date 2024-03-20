@@ -92,7 +92,7 @@ export const WalletDashboardHeader: React.FC = () => {
   const selectedWallet = useSelectedWallet();
   const selectedNetworkId = selectedWallet?.networkId;
   const userInfo = useNSUserInfo(selectedWallet?.userId);
-  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
+  const { balances } = useBalances(selectedNetworkId, selectedWallet?.address);
   const navigation = useAppNavigation();
   const { delegationsBalances } = useDelegations(
     selectedNetworkId,

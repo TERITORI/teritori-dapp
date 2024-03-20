@@ -35,7 +35,6 @@ import ProfileDetailScreen from "@/screens/Mini/Profile/ProfileDetailScreen";
 import { ProfileScreen } from "@/screens/Mini/Profile/ProfileScreen";
 import { ChangePasswordScreen } from "@/screens/Mini/Settings/ChangePasswordScreen";
 import { ChatSettingScreen } from "@/screens/Mini/Settings/ChatSettingScreen";
-import { ExportPrivateKeyScreen } from "@/screens/Mini/Settings/ExportPrivateKeyScreen";
 import FaceIdLoginScreen from "@/screens/Mini/Settings/FaceIdLoginScreen";
 import { PreferencesSettingScreen } from "@/screens/Mini/Settings/PreferencesSetttingScreen";
 import { ResetWalletScreen } from "@/screens/Mini/Settings/ResetWalletScreen";
@@ -336,15 +335,6 @@ export const getMiniModeScreens = () => {
         options={{
           header: () => null,
           title: "Reveal Seed Phrase",
-          presentation: "transparentModal",
-        }}
-      />
-      <Stack.Screen
-        name="MiniExportPrivateKey"
-        component={ExportPrivateKeyScreen}
-        options={{
-          header: () => null,
-          title: "Export Private Key",
           presentation: "transparentModal",
         }}
       />

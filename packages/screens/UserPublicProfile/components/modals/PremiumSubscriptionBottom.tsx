@@ -27,7 +27,7 @@ export const PremiumSubscriptionBottom: FC<{
   onSubscribe: () => Promise<void> | void;
 }> = ({ networkId, item, onSubscribe }) => {
   const selectedWallet = useSelectedWallet();
-  const balances = useBalances(networkId, selectedWallet?.address);
+  const { balances } = useBalances(networkId, selectedWallet?.address);
 
   const mintDenom = item?.price.denom;
 

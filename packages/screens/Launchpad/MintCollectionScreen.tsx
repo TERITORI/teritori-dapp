@@ -108,7 +108,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     useWalletControl();
   const [viewWidth, setViewWidth] = useState(0);
   const [network, mintAddress] = parseNetworkObjectId(id);
-  const balances = useBalances(network?.id, wallet?.address);
+  const { balances } = useBalances(network?.id, wallet?.address);
   const balance = balances.find((bal) => bal.denom === info?.priceDenom);
   const [totalBulkMint, setTotalBulkMint] = useState(1);
   const {

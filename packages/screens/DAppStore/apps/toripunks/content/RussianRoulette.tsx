@@ -55,7 +55,7 @@ export const Russian = () => {
   const [winning, setWinning] = useState<number>(0);
   const [losing, setLosing] = useState<number>(0);
   const [remaningTicket, setRemaningTicket] = useState<number>(0);
-  const balance = useBalances(
+  const { balances } = useBalances(
     selectedWallet?.networkId,
     selectedWallet?.address,
   );
@@ -184,10 +184,10 @@ export const Russian = () => {
       return setResult(!result);
     }
     if (!bet) return;
-    if (balance.length > 0) {
+    if (balances.length > 0) {
       if (
-        balance[0].denom === "utori" &&
-        parseInt(balance[0].amount, 10) < bet * 1000000
+        balances[0].denom === "utori" &&
+        parseInt(balances[0].amount, 10) < bet * 1000000
       ) {
         setToast({
           title: "Error",

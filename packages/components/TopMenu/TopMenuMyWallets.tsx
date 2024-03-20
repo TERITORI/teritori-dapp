@@ -49,7 +49,7 @@ const TokenBalance: React.FC = () => {
     selectedNetworkId,
     selectedWallet?.address,
   );
-  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
+  const { balances } = useBalances(selectedNetworkId, selectedWallet?.address);
   const GAUGE_WIDTH = 300;
 
   const availableUSDBalance = useMemo(

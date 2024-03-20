@@ -12,7 +12,7 @@ interface CanPayForPostParams {
 
 export const useCanPay = ({ userId, cost }: CanPayForPostParams) => {
   const [network, userAddress] = parseUserId(userId);
-  const balances = useBalances(network?.id, userAddress);
+  const { balances } = useBalances(network?.id, userAddress);
   const costBalance = balances.find((bal) => bal.denom === cost?.denom);
   const canPay =
     cost &&

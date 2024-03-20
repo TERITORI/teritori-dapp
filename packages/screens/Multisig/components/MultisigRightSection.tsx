@@ -279,7 +279,7 @@ const BurnModal: React.FC<{
   const [userAmount, setUserAmount] = useState<string>("0");
   const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);
   const [userNetwork, userAddress] = parseUserId(userId);
-  const balances = useBalances(userNetwork?.id, userAddress);
+  const { balances } = useBalances(userNetwork?.id, userAddress);
   const nativeCurrency = getNativeCurrency(networkId, denom);
   const { wrapWithFeedback } = useFeedbacks();
   const balance = balances.find((b) => b.denom === nativeCurrency?.denom);

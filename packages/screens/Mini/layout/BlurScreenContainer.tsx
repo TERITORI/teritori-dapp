@@ -10,6 +10,7 @@ import {
   GestureResponderEvent,
   ScrollView,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import chevronSVG from "../../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
@@ -48,6 +49,7 @@ export const BlurScreenContainer = ({
   };
 
   const pan = useRef(new Animated.ValueXY()).current;
+  const safeAreaInset = useSafeAreaInsets();
 
   const panResponder = useRef(
     PanResponder.create({
@@ -87,6 +89,7 @@ export const BlurScreenContainer = ({
         width: windowWidth,
         backgroundColor: background || "rgba(0, 0, 0, .2)",
         position: "relative",
+        paddingTop: safeAreaInset.top,
       }}
     >
       <BlurView

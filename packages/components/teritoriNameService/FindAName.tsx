@@ -54,6 +54,7 @@ export const FindAName: React.FC<{
                 {
                   marginTop: 12,
                   marginBottom: children ? 20 : 0,
+                  flex: 1,
                 },
                 nameNFTStyle,
               ]}
