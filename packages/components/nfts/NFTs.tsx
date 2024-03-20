@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { View } from "react-native";
+import { FlatList, Platform, View } from "react-native";
 
 import { NFTView } from "./NFTView";
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
@@ -20,7 +20,6 @@ export const NFTs: React.FC<{
   const { nfts, fetchMore } = useNFTs(req);
 
   const { height } = useMaxResolution({ isLarge: true });
-
   const handleEndReached = useCallback(() => {
     fetchMore();
   }, [fetchMore]);
@@ -53,20 +52,38 @@ export const NFTs: React.FC<{
             }}
           />
         )}
-        <GridList<NFT>
-          data={nfts}
-          onEndReached={handleEndReached}
-          keyExtractor={keyExtractor}
-          renderItem={(info, elemWidth) => (
-            <NFTView
-              key={info.item.id}
-              data={info.item}
-              style={{ width: elemWidth }}
-            />
-          )}
-          minElemWidth={250}
-          gap={layout.spacing_x2}
-        />
+        {Platform.OS === "web" ? (
+          <GridList<NFT>
+            data={nfts}
+            onEndReached={handleEndReached}
+            keyExtractor={keyExtractor}
+            renderItem={(info, elemWidth) => (
+              <NFTView
+                key={info.item.id}
+                data={info.item}
+                style={{ width: elemWidth }}
+              />
+            )}
+            minElemWidth={250}
+            gap={layout.spacing_x2}
+          />
+        ) : (
+          <FlatList
+            data={nfts}
+            onEndReached={handleEndReached}
+            keyExtractor={keyExtractor}
+            onEndReachedThreshold={4}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ gap: layout.spacing_x3_5 }}
+            renderItem={(info) => (
+              <NFTView
+                key={info.item.id}
+                data={info.item}
+                style={{ width: 400, maxWidth: "100%" }}
+              />
+            )}
+          />
+        )}
       </View>
     </View>
   );

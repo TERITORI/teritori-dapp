@@ -315,6 +315,17 @@ const messageSlice = createSlice({
         });
       }
     },
+    removeConversationById: (
+      state,
+      action: PayloadAction<Partial<Conversation>>,
+    ) => {
+      if (action.payload.id) {
+        conversationEntityAdapter.removeOne(
+          state.conversations,
+          action.payload.id,
+        );
+      }
+    },
     setLastId: (state, action: PayloadAction<KVItem<string>>) => {
       kvEntityAdapter.setOne(state.lastIds, action.payload);
     },
@@ -357,6 +368,7 @@ export const {
   setGetStartedChecklist,
   setIsForceChatInfoChecked,
   resetMessageSlice,
+  removeConversationById,
 } = messageSlice.actions;
 
 export const messageReducer = messageSlice.reducer;
