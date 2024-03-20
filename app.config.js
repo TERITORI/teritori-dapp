@@ -27,6 +27,14 @@ const config = {
         NSPhotoLibraryUsageDescription:
           "Access to your photo library is required for image upload functionality.",
         ITSAppUsesNonExemptEncryption: false,
+        NSPrivacyAccessedAPICategoryDiskSpace:
+          "To efficiently manage local storage and cache files for improved app performance.",
+        NSPrivacyAccessedAPICategoryFileTimestamp:
+          "To track file modification dates for app data synchronization and integrity checks.",
+        NSPrivacyAccessedAPICategoryUserDefaults:
+          "To store user preferences and settings locally for a customized user experience.",
+        NSPrivacyAccessedAPICategorySystemBootTime:
+          "To optimize app launch times and resource utilization based on system boot information.",
       },
     },
     android: {
