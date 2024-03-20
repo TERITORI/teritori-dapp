@@ -17,6 +17,9 @@ import { SocialButton } from "../../buttons/SocialButton";
 import ModalBase from "../../modals/ModalBase";
 import { SpacerRow } from "../../spacer";
 
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getNetworkObjectId } from "@/networks";
+
 interface ShareButtonProps {
   postId: string;
   useAltStyle?: boolean;
@@ -28,13 +31,16 @@ export const ShareButton = ({ postId, useAltStyle }: ShareButtonProps) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const windowOrigin =
     Platform.OS === "web" ? window.location.origin : WEBSITE_URL;
+
+  const networkId = useSelectedNetworkId();
+
   const SOCIAL_BUTTONS = [
     {
       text: "Twitter",
       iconSvg: twitterSVG,
       onPress: () => {
-        const message = `${windowOrigin}/feed/post/${postId}
-#Teritori`;
+        const id = getNetworkObjectId(networkId, postId);
+        const message = `${windowOrigin}/feed/post/${id}#Teritori`;
 
         Linking.openURL(
           `https://twitter.com/intent/tweet?text=${encodeURIComponent(
