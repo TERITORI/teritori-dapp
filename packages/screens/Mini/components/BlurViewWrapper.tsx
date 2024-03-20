@@ -100,14 +100,11 @@ export default function BlurViewWrapper({
                   justifyContent: "center",
                   borderRadius: layout.borderRadius,
                   overflow: "hidden",
+                  backgroundColor:
+                    Platform.OS === "android" ? "rgb(0,0,0)" : "transparent",
                 },
                 blurContainerStyle,
               ]}
-              blurReductionFactor={5}
-              //https://docs.expo.dev/versions/latest/sdk/blur-view/#experimentalblurmethod-1
-              experimentalBlurMethod={
-                Platform.OS === "android" ? "dimezisBlurView" : "none"
-              }
               {...rest}
             >
               {showIcon && (
