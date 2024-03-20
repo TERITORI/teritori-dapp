@@ -271,7 +271,7 @@ const navConfig: {
     MiniWallets: "mini-wallet",
     MiniFeeds: "mini-feed",
     MiniCreatePost: "mini-create-post",
-    Conversation: "mini-conversation",
+    Conversation: "mini-conversation/:conversationId",
     MiniProfile: "mini-profile",
     MiniProfileDetail: "mini-profile-detail",
     MiniDAppStore: "mini-dApp-store",

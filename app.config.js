@@ -1,5 +1,6 @@
 const config = {
   expo: {
+    scheme: "teritori",
     name: "Teritori",
     slug: "teritori",
     version: "1.0.3",
@@ -48,6 +49,7 @@ const config = {
         "CHANGE_WIFI_MULTICAST_STATE",
         "NFC",
       ],
+      scheme: "teritori",
       intentFilters: [
         {
           action: "VIEW",
