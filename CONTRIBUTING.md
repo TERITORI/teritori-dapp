@@ -1,6 +1,8 @@
-# Contributor guidelines
+# Contributing
 
-## Core contributor loop
+## Contributor guidelines
+
+### Core contributor loop
 
 - Check the [list of PRs that need review](https://github.com/TERITORI/teritori-dapp/pulls?q=is%3Apr+is%3Aopen+review%3Arequired+draft%3Afalse+) and review releveant PRs, see [Reviewing a PR](#reviewing-a-pr)
 - Check your [assigned PRs that require changes](https://github.com/TERITORI/teritori-dapp/pulls?q=is%3Apr+is%3Aopen+review%3Achanges_requested+draft%3Afalse+assignee%3A%40me+) and address the reviews
@@ -10,14 +12,14 @@
 
 For all tasks, create a PR as soon as possible to make other mates aware of your work and to prevent you from going in a bad direction
 
-## Creating a PR
+### Creating a PR
 
 - Make sure the PR's title follows [the conventional commits standard](https://www.conventionalcommits.org/en/v1.0.0/) as it will be used as the squashed commit title on main
 - Make sure your are assigned to the PR, this helps you to know [which PRs require your attention](https://github.com/TERITORI/teritori-dapp/pulls?q=is%3Apr+is%3Aopen+assignee%3A%40me)
 - Try to keep the PR [atomic](https://fagnerbrack.com/one-pull-request-one-concern-e84a27dfe9f1), it will be merged faster and benefit all your mates
 - Self-review the changes and pass CI before asking for other peoples reviews, see [Reviewing a PR](#reviewing-a-pr)
 
-## Reviewing a PR
+### Reviewing a PR
 
 - Read and understand all changes
   
@@ -32,3 +34,53 @@ For all tasks, create a PR as soon as possible to make other mates aware of your
   If there is changes in code used at other places, test for regressions in affected features
 
 If the PR is not atomic enough and makes reviewing hard, you can ask the author to split it
+
+## Technology overview
+
+### Web3 vs Web2
+
+TODO
+
+### Frontend
+
+TODO
+
+### Backend
+
+TODO
+
+## Patterns
+
+### Multi-chain
+
+TODO: talk about networks, how to use them, network object ids, network features, etc...
+
+### Handling currencies
+
+TODO: talk about how an amount is defined, how it should be handled, displayed, etc...
+
+### Cross-platform 
+
+TODO: talk about the proper ways to make platform-specific code and common pitfalls coming from web-only
+
+### Handling client-provided data
+
+TODO: why and how all user-generated stuff must be validated
+
+### Type-safety and linting
+
+TODO: explain the importance of type-safety, why ignore rules are bad and in what cases you can use them
+
+### Implement an UI
+
+TODO: explain how to properly take a figma and turn it into code
+
+### Handling users
+
+TODO: explain userid, showcase components used to render username, avatar, etc..
+
+### Handling nfts
+
+TODO: explain nftid, collectionid, showcase components used to collections and nfts, explain indexed vs on-chain data
+
+### TODO
