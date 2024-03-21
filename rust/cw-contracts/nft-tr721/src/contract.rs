@@ -1,5 +1,5 @@
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{from_json, Addr, Binary, HexBinary, Response, StdResult, Uint128};
+use cosmwasm_std::{from_json, Addr, Binary, HexBinary, Response, StdResult, Timestamp, Uint128};
 use cw2981_royalties::{
     check_royalties,
     msg::{CheckRoyaltiesResponse, Cw2981QueryMsg, RoyaltiesInfoResponse},
@@ -39,7 +39,8 @@ pub struct Tr721 {
     pub(crate) tokens:
         IndexedMap<'static, &'static str, TokenInfo<Metadata>, TokenIndexes<'static, Metadata>>,
     pub(crate) requested_mints: Map<'static, String, Addr>, //  token id => User address
-    pub(crate) config: Item<'static, Config>,
+    pub(crate) mint_info: Item<'static, MintInfo>,
+    pub(crate) launchpad_contract: Item<'static, String>,
 }
 
 // Contract implement -----------------------------------------------------
@@ -61,7 +62,8 @@ impl Tr721 {
 
             // Custom states
             requested_mints: Map::new("tr721_requested_mints"),
-            config: Item::new("tr721_config"),
+            mint_info: Item::new("mint_info"),
+            launchpad_contract: Item::new("launchpad_contract"),
         }
     }
 
@@ -80,24 +82,29 @@ impl Tr721 {
     pub fn instantiate(
         &self,
         ctx: InstantiateCtx,
-        msg: Tr721InstantiateMsg,
+        name: String,
+        minter: String,
+        symbol: String,
+        launchpad_contract: String,
+        mint_info: MintInfo,
     ) -> StdResult<Response> {
         // Set contract version
-        let contract = format!("teritori:{CONTRACT_NAME}");
         self.contract_version.save(
             ctx.deps.storage,
             &ContractVersion {
-                contract,
+                contract: format!("teritori:{CONTRACT_NAME}"),
                 version: CONTRACT_VERSION.to_string(),
             },
         )?;
-
-        self.config.save(ctx.deps.storage, &msg.config)?;
+        self.launchpad_contract
+            .save(ctx.deps.storage, &launchpad_contract)?;
+        self.mint_info
+            .save(ctx.deps.storage, &mint_info)?;
 
         let base_msg = BaseInstantiateMsg {
-            name: msg.name,
-            minter: msg.minter,
-            symbol: msg.symbol,
+            name,
+            minter,
+            symbol,
         };
 
         Ok(Tr721Contract::default().instantiate(ctx.deps, ctx.env, ctx.info, base_msg)?)
@@ -210,6 +217,9 @@ impl Tr721 {
 
     #[msg(exec)]
     pub fn request_mint(&self, ctx: ExecCtx) -> Result<Response, ContractError> {
+        // Check conditions
+        let mint_info = self.mint_info.load(ctx.deps.storage)?;
+
         let sender = ctx.deps.api.addr_validate(ctx.info.sender.as_str())?;
         let token_id = Tr721Contract::default()
             .increment_tokens(ctx.deps.storage)
@@ -250,11 +260,12 @@ impl Tr721 {
             return Err(ContractError::Unauthorized);
         }
 
+        let collection_info = self.mint_info.load(ctx.deps.storage)?;
+
         let proof_hex = HexBinary::from_hex(&merkle_proof).unwrap().to_vec();
         let proof_from_hex = MerkleProof::<TrKeccak256>::try_from(proof_hex.to_owned()).unwrap();
 
-        let config = self.config.load(ctx.deps.storage)?;
-        let root_hex = config.merkle_root;
+        let root_hex = collection_info.merkle_root;
         let root_from_hex: [u8; 32] = HexBinary::from_hex(root_hex.as_str())
             .unwrap()
             .to_vec()
@@ -264,7 +275,7 @@ impl Tr721 {
         let token_id_uint: usize = token_id.parse().unwrap();
         let leaf_indices = vec![token_id_uint];
         let leaf_hashes = vec![TrKeccak256::hash(&proto_encode(&metadata))];
-        let total_leaves_count: usize = config.total_supply.try_into().unwrap();
+        let total_leaves_count: usize = collection_info.tokens_count.try_into().unwrap();
 
         let is_verified = proof_from_hex.verify(
             root_from_hex,
@@ -465,7 +476,10 @@ impl Tr721 {
 
     #[msg(query)]
     pub fn merkle_root(&self, ctx: QueryCtx) -> StdResult<String> {
-        let merkle_root = self.config.load(ctx.deps.storage)?.merkle_root;
+        let merkle_root = self
+            .mint_info
+            .load(ctx.deps.storage)?
+            .merkle_root;
         Ok(merkle_root)
     }
 
@@ -495,15 +509,35 @@ pub struct ContractVersion {
 }
 
 #[cw_serde]
-pub struct Config {
-    pub merkle_root: String,
-    pub total_supply: u32,
+pub struct WhitelistMinting {
+    pub addresses: Vec<String>,
+    pub unit_price: u64,
+    pub limit_per_address: String,
+    pub member_limit: u32,
+    pub start_time: Timestamp,
+    pub end_time: Timestamp,
 }
 
 #[cw_serde]
-pub struct Tr721InstantiateMsg {
+pub struct MintInfo {
+    // Collection info ----------------------------
     pub name: String,
     pub symbol: String,
-    pub minter: String,
-    pub config: Config,
+
+    // Minting details ----------------------------
+    pub tokens_count: u32,
+    pub unit_price: u64,
+    pub limit_per_address: u32,
+    pub start_time: Timestamp,
+
+    // Whitelist minting --------------------------
+    pub whitelist_mintings: Vec<WhitelistMinting>,
+
+    // Royalty --------------------------
+    pub royalty_address: Option<Addr>,
+    pub royalty_percentage: Option<u8>,
+
+    // Extend info --------------------------
+    pub base_token_uri: Option<String>,
+    pub merkle_root: String,
 }
