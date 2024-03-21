@@ -55,6 +55,10 @@ TODO
 
 TODO: explain why the CI is here, how merge queue works, merge requirements, when to add new ci tasks
 
+### Deployments
+
+TODO: explain how backend and apps (web, mobile and desktop) are deployed
+
 ### Multi-chain
 
 TODO: talk about networks, how to use them, network object ids
