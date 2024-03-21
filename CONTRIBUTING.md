@@ -51,9 +51,21 @@ TODO
 
 ## Patterns
 
+### CI
+
+TODO: explain why the CI is here, how merge queue works, merge requirements, when to add new ci tasks
+
 ### Multi-chain
 
-TODO: talk about networks, how to use them, network object ids, network features, etc...
+TODO: talk about networks, how to use them, network object ids
+
+### Network features
+
+TODO: explain what is a network feature, when and how to add a new one
+
+### Developer mode
+
+TODO: explain how and why to use developer mode gating
 
 ### Handling currencies
 
@@ -69,11 +81,19 @@ TODO: why and how all user-generated stuff must be validated
 
 ### Type-safety and linting
 
-TODO: explain the importance of type-safety, why ignore rules are bad and in what cases you can use them
+TODO: explain the importance of type-safety and linters, why ignore rules are bad and in what cases you can use them
 
 ### Implement an UI
 
 TODO: explain how to properly take a figma and turn it into code
+
+### Nested scroll
+
+TODO: explain nested scrolling patterns
+
+### GridList
+
+TODO: explain how and when to use GridList
 
 ### Handling users
 
@@ -81,6 +101,8 @@ TODO: explain userid, showcase components used to render username, avatar, etc..
 
 ### Handling nfts
 
-TODO: explain nftid, collectionid, showcase components used to collections and nfts, explain indexed vs on-chain data
+TODO: explain nftid, collectionid, showcase components used to render collections and nfts, explain indexed vs on-chain data
 
-### TODO
+### App modes
+
+TODO: explain app modes
