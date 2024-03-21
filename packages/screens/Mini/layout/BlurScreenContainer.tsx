@@ -9,6 +9,7 @@ import {
   Animated,
   GestureResponderEvent,
   ScrollView,
+  Platform,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -102,6 +103,8 @@ export const BlurScreenContainer = ({
           left: 0,
           right: 0,
           bottom: 0,
+          backgroundColor:
+            Platform.OS === "android" ? "rgb(0,0,0)" : "transparent",
         }}
       />
       <LinearGradient

@@ -1,6 +1,6 @@
 import { BlurView, BlurViewProps } from "expo-blur";
 import { Dispatch, PropsWithChildren, SetStateAction, useState } from "react";
-import { StyleProp, TextStyle, View, ViewStyle } from "react-native";
+import { Platform, StyleProp, TextStyle, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { CustomButton } from "./Button/CustomButton";
@@ -87,6 +87,7 @@ export default function BlurViewWrapper({
 
           {!show && (
             <BlurView
+              tint="dark"
               intensity={30}
               style={[
                 {
@@ -99,6 +100,8 @@ export default function BlurViewWrapper({
                   justifyContent: "center",
                   borderRadius: layout.borderRadius,
                   overflow: "hidden",
+                  backgroundColor:
+                    Platform.OS === "android" ? "rgb(0,0,0)" : "transparent",
                 },
                 blurContainerStyle,
               ]}
