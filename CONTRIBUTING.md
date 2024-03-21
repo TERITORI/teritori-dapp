@@ -63,6 +63,10 @@ TODO: talk about networks, how to use them, network object ids
 
 TODO: explain what is a network feature, when and how to add a new one
 
+### IPFS
+
+TODO: explain how to pin and retrieve files, ipfs:// uris vs cid, link to OptimizedImage, etc...
+
 ### Developer mode
 
 TODO: explain how and why to use developer mode gating
@@ -94,6 +98,10 @@ TODO: explain nested scrolling patterns
 ### GridList
 
 TODO: explain how and when to use GridList
+
+### OptimizedImage
+
+TODO: explain how and when to use OptimizedImage
 
 ### Handling users
 
