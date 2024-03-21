@@ -103,6 +103,10 @@ TODO: explain nested scrolling patterns
 
 TODO: explain how and when to use GridList
 
+### Image proxy
+
+TODO: explain what is the image proxy, why it's here and how to use it
+
 ### OptimizedImage
 
 TODO: explain how and when to use OptimizedImage
