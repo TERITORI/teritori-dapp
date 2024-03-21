@@ -20,6 +20,7 @@ schemars = "0.8.16"
 serde = { version = "1.0.197", features = ["derive"] }
 sylvia = "0.9.3"
 thiserror = "1.0.57"
+nft-tr721 = { workspace = true }
 
 [dev-dependencies]
 sylvia = { version = "0.9.3", features = ["mt"] }

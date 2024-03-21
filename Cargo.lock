@@ -998,6 +998,7 @@ dependencies = [
  "cw2981-royalties",
  "cw721 0.18.0",
  "cw721-base 0.18.0",
+ "nft-tr721",
  "schemars",
  "serde",
  "sylvia 0.9.3",

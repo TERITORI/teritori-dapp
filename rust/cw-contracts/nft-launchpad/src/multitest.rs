@@ -1,16 +1,25 @@
 use cosmwasm_std::{Addr, Attribute, Timestamp};
-use sylvia::{cw_multi_test::ContractWrapper, multitest::App};
+use sylvia::multitest::App;
 
 use crate::{
-    contract::{sv::multitest_utils::CodeId, Collection, Config},
+    contract::{
+        sv::multitest_utils::CodeId as LaunchpadCodeId, Collection, Config, WhitelistMinting
+    },
     error::ContractError,
 };
 
-use cw721_base::entry::{
-    execute as tr721_execute, instantiate as tr721_instantiate, query as tr721_query,
-};
+use nft_tr721::contract::sv::multitest_utils::CodeId as NftTr721CodeId;
 
 fn get_default_collection() -> Collection {
+    let whitelist_mintings = vec![WhitelistMinting {
+        addresses: vec![],
+        unit_price: 10,
+        limit_per_address: "SYMBOL".to_string(),
+        member_limit: 3,
+        start_time: Timestamp::default(),
+        end_time: Timestamp::default(),
+    }];
+    
     Collection {
         // Collection info ----------------------------
         name: "name".to_string(),
@@ -69,13 +78,7 @@ fn get_default_collection() -> Collection {
         start_time: Timestamp::default(),
 
         // Whitelist minting --------------------------
-        whitelist_addresses: vec![],
-
-        whitelist_unit_price: 10,
-        whitelist_limit_per_address: "SYMBOL".to_string(),
-        whitelist_member_limit: 3,
-        whitelist_start_time: Timestamp::default(),
-        whitelist_end_time: Timestamp::default(),
+        whitelist_mintings,
 
         // Royalty --------------------------
         royalty_address: Some(Addr::unchecked("royalty_address")),
@@ -91,7 +94,7 @@ fn get_default_collection() -> Collection {
 #[test]
 fn instantiate() {
     let app = App::default();
-    let code_id = CodeId::store_code(&app);
+    let code_id = LaunchpadCodeId::store_code(&app);
     let sender = "sender";
 
     // Instantiate
@@ -116,14 +119,17 @@ fn full_flow() {
     let app: App<sylvia::cw_multi_test::App> = App::default();
     let sender = "sender";
 
-    // Deploy NFT contract
-    let contract_wrapper = ContractWrapper::new(tr721_execute, tr721_instantiate, tr721_query);
-    let launchpad_contract = Box::new(contract_wrapper);
+    // Deploy NFT contract for non-sylvia contract
+    // let contract_wrapper = ContractWrapper::new(tr721_execute, tr721_instantiate, tr721_query);
+    // let launchpad_contract = Box::new(contract_wrapper);
+    // let deployed_nft_code_id = app.app_mut().store_code(launchpad_contract);
 
-    let deployed_nft_code_id = app.app_mut().store_code(launchpad_contract);
+    // Deploy NFT for sylvia contract
+    let nft_contract = NftTr721CodeId::store_code(&app);
+    let deployed_nft_code_id = nft_contract.code_id();
 
     // Instantiate launchpad ---------------------------------------------------------
-    let contract = CodeId::store_code(&app)
+    let contract = LaunchpadCodeId::store_code(&app)
         .instantiate(Config {
             name: "teritori launchpad".to_string(),
             supported_networks: vec![],

@@ -11,7 +11,7 @@ use sylvia::{
 
 use crate::error::ContractError;
 
-use cw721_base::msg::InstantiateMsg as NftInstantiateMsg;
+use nft_tr721::{contract::sv::InstantiateMsg as Tr721InstantiateMsg, test_helpers::get_default_mint_info};
 
 const INSTANTIATE_REPLY_ID: u64 = 1u64;
 
@@ -136,10 +136,12 @@ impl NftLaunchpad {
         let instantiate_msg = WasmMsg::Instantiate {
             admin: Some(sender.clone()),
             code_id: nft_code_id.unwrap(),
-            msg: to_json_binary(&NftInstantiateMsg {
+            msg: to_json_binary(&Tr721InstantiateMsg {
                 name: collection.name.clone(),
                 symbol: collection.symbol.clone(),
                 minter: sender,
+                launchpad_contract: "launchpad_contract".to_string(),
+                mint_info: get_default_mint_info(),
             })?,
             funds: vec![],
             label: format!(
@@ -231,6 +233,16 @@ pub struct Config {
 }
 
 #[cw_serde]
+pub struct WhitelistMinting {
+    pub addresses: Vec<String>,
+    pub unit_price: u64,
+    pub limit_per_address: String,
+    pub member_limit: u32,
+    pub start_time: Timestamp,
+    pub end_time: Timestamp,
+}
+
+#[cw_serde]
 pub struct Collection {
     // Collection info ----------------------------
     pub name: String,
@@ -289,13 +301,7 @@ pub struct Collection {
     pub start_time: Timestamp,
 
     // Whitelist minting --------------------------
-    pub whitelist_addresses: Vec<String>,
-
-    pub whitelist_unit_price: u64,
-    pub whitelist_limit_per_address: String,
-    pub whitelist_member_limit: u32,
-    pub whitelist_start_time: Timestamp,
-    pub whitelist_end_time: Timestamp,
+    pub whitelist_mintings: Vec<WhitelistMinting>,
 
     // Royalty --------------------------
     pub royalty_address: Option<Addr>,
@@ -311,4 +317,29 @@ pub struct Collection {
 pub enum CollectionState {
     Pending,  // When user summit the collection but not deployed yet
     Deployed, // When collection has been deployed
+}
+
+// This is subset of collection, contains only needed info for minting
+#[cw_serde]
+pub struct CollectionInfo {
+    // Collection info ----------------------------
+    pub name: String,
+    pub symbol: String,
+
+    // Minting details ----------------------------
+    pub tokens_count: u32,
+    pub unit_price: u64,
+    pub limit_per_address: u32,
+    pub start_time: Timestamp,
+
+    // Whitelist minting --------------------------
+    pub whitelist_mintings: Vec<WhitelistMinting>,
+
+    // Royalty --------------------------
+    pub royalty_address: Option<Addr>,
+    pub royalty_percentage: Option<u8>,
+
+    // Extend info --------------------------
+    pub base_token_uri: Option<String>,
+    pub merkle_root: Option<String>,
 }
