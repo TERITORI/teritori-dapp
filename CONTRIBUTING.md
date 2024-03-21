@@ -39,11 +39,7 @@ You can deny the review if the PR does not pass CI
 
 ## Technology overview
 
-### Transitioning from Web2 to Web3: A Developer's Guide 🌐➡️🔗
-
-Welcome to the evolving landscape of web development. As we move from the centralized world of Web2 to the decentralized ecosystem of Web3, developers are presented with new paradigms, challenges, and opportunities. This guide aims to bridge the gap, highlighting the key differences between Web2 and Web3 and providing insights to ease the transition.
-
-#### Understanding Web2 and Web3 🤔
+### Web2 to Web3
 
 ##### Technical Infrastructure 🏗️
 
@@ -59,46 +55,6 @@ Welcome to the evolving landscape of web development. As we move from the centra
 
 - **Web2:** Centralized databases and object storage services (e.g., Amazon S3) are prevalent, with data controlled by service providers.
 - **Web3:** Decentralized storage solutions (e.g., IPFS, Filecoin) allow data to be distributed across the network, reducing reliance on central entities and improving data sovereignty.
-
-#### Expanding the Comparison 📈
-
-##### Data Ownership and Privacy 🔐
-
-Web3 places a strong emphasis on user sovereignty and data privacy. Unlike Web2, where user data is often monetized by the platform, Web3 technologies empower users with control over their data, potentially revolutionizing privacy and security in the digital space.
-
-##### Development and Maintenance 👨‍💻
-
-Web3 emphasizes open-source development and collaborative maintenance, encouraging innovation and community engagement. This model contrasts with the proprietary technologies and platforms that dominate Web2.
-
-##### Scalability and Performance ⚖️
-
-While Web2 offers mature, scalable solutions, Web3 faces challenges related to its decentralized nature. However, ongoing developments in scaling solutions aim to address these issues.
-
-##### User Experience 🧑‍🤝‍🧑
-
-Web3 technologies often present a steeper learning curve for users. Developers are tasked with simplifying complex concepts to improve accessibility and drive adoption.
-
-#### Navigating the Transition 🚀
-
-##### Embrace the Learning Curve 📚
-
-Familiarize yourself with blockchain basics, smart contracts, and the decentralized web. Resources are plentiful, ranging from online courses to community forums.
-
-##### Experiment with Development Tools 🛠️
-
-Explore Web3 development frameworks and tools (e.g., Truffle, Hardhat, Ethereum, Solana). Many offer robust environments for building decentralized applications (dApps).
-
-##### Participate in Communities 👥
-
-Join Web3 communities and forums. The open-source nature of Web3 development encourages collaboration and peer learning.
-
-##### Focus on User Experience 💡
-
-Consider the end-user experience in your projects. Simplifying interactions with Web3 technologies is crucial for broader adoption.
-
-#### Conclusion 🎉
-
-Transitioning from Web2 to Web3 is not merely a technological shift but a paradigmatic change in how we interact with the web. For developers, it represents an exciting opportunity to be at the forefront of building a more decentralized, transparent, and user-empowered internet. While challenges exist, the potential for innovation and impact is immense. Welcome to the future of web development.
 
 ### Frontend
 
