@@ -1,5 +1,5 @@
-import { Video } from "expo-av";
-import React, { useEffect } from "react";
+import { ResizeMode, Video } from "expo-av";
+import React from "react";
 import { View } from "react-native";
 
 import { CustomButton } from "../../Mini/components/Button/CustomButton";
@@ -20,36 +20,23 @@ import { layout } from "@/utils/style/layout";
 const NativeWallet: ScreenFC<"NativeWallet"> = () => {
   const nativeWallet = useSelectedNativeWallet();
 
-  const video = React.useRef<Video>(null);
-
-  useEffect(() => {
-    if (video.current) {
-      video.current.unloadAsync().then(() => {
-        video?.current?.loadAsync(
-          require("../../../../assets/videos/teritori-os-anim-ios.mp4"),
-          {
-            shouldPlay: true,
-          },
-        );
-      });
-    }
-  }, []);
-
   return (
     <WalletContainer>
       <View
         style={{ flex: 1, height: "100%", justifyContent: "space-between" }}
       >
-        <Video
-          ref={video}
-          shouldPlay
-          isLooping
-          style={{
-            flex: 1,
-            borderWidth: 1,
-            marginBottom: layout.spacing_x2,
-          }}
-        />
+        <View style={{ flex: 1, position: "relative" }}>
+          <Video
+            source={require("../../../../assets/videos/teritori-os-anim-ios.mp4")}
+            shouldPlay
+            isLooping
+            resizeMode={ResizeMode.CONTAIN}
+            style={{
+              flex: 1,
+              marginBottom: layout.spacing_x2,
+            }}
+          />
+        </View>
         <View
           style={{
             justifyContent: "space-around",
