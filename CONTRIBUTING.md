@@ -7,3 +7,12 @@
 - Make sure you have self-reviewed your exitsing PRs and the CI passes on them
 - Continue on your assigned tasks
 - If you have nothing to do at this point, ask for new task
+
+## Creating a PR
+
+- Make sure the PR's title follows [the conventional commits standard](https://www.conventionalcommits.org/en/v1.0.0/) as it will be used as the squashed commit title on main
+- Self-review the final changes, see [Reviewing a PR](#reviewing-a-pr)
+
+## Reviewing a PR
+
+TODO
