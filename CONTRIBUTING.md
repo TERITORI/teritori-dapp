@@ -13,8 +13,20 @@
 - Make sure the PR's title follows [the conventional commits standard](https://www.conventionalcommits.org/en/v1.0.0/) as it will be used as the squashed commit title on main
 - Make sure your are assigned to the PR, this helps you to know [which PRs require your attention](https://github.com/TERITORI/teritori-dapp/pulls?q=is%3Apr+is%3Aopen+assignee%3A%40me)
 - Try to keep the PR [atomic](https://fagnerbrack.com/one-pull-request-one-concern-e84a27dfe9f1), it will be merged faster and benefit all your mates
-- Sself-review the changes and pass CI before asking for other peoples reviews, see [Reviewing a PR](#reviewing-a-pr)
+- Self-review the changes and pass CI before asking for other peoples reviews, see [Reviewing a PR](#reviewing-a-pr)
 
 ## Reviewing a PR
 
-TODO
+- Read and understand all changes
+  
+  You can use the GitHub diff and check each file as viewed, this will help in subsequent reviews as unchanged files will keep the "Viewed" status
+  
+  <img width="448" alt="Screenshot 2024-03-21 at 20 01 38" src="https://github.com/TERITORI/teritori-dapp/assets/7917064/6141fdd3-2746-498d-916f-9945a56c7ff0">
+
+- Test
+  
+  Check that the feature works or the bug is fixed
+
+  If there is changes in code used at other places, test for regressions in affected features
+
+If the PR is not atomic enough and makes reviewing hard, you can ask the author to split it
