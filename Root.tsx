@@ -114,7 +114,13 @@ export default function App() {
                                       <MenuProvider>
                                         <MessageContextProvider>
                                           <MediaPlayerContextProvider>
-                                            <StatusBar style="inverted" />
+                                            <StatusBar
+                                              style={
+                                                Platform.OS === "android"
+                                                  ? "light"
+                                                  : "inverted"
+                                              }
+                                            />
                                             <Navigator />
                                           </MediaPlayerContextProvider>
                                         </MessageContextProvider>
