@@ -51,7 +51,7 @@ fn get_default_collection() -> Collection {
 
         partners: "partners".to_string(),
 
-        invested_amount: 1000,
+        investment_desc: "investment_desc".to_string(),
         investment_link: "investment_link".to_string(),
 
         whitepaper_link: "whitepaper_link".to_string(),

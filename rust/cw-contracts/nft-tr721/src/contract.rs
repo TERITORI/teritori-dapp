@@ -1,5 +1,7 @@
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{from_json, Addr, Binary, HexBinary, Response, StdResult, Timestamp, Uint128};
+use cosmwasm_std::{
+    from_json, Addr, Binary, Coin, HexBinary, Order, Response, StdResult, Storage, Uint128,
+};
 use cw2981_royalties::{
     check_royalties,
     msg::{CheckRoyaltiesResponse, Cw2981QueryMsg, RoyaltiesInfoResponse},
@@ -36,11 +38,15 @@ const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 // Contract states ------------------------------------------------------
 pub struct Tr721 {
     pub(crate) contract_version: Item<'static, ContractVersion>,
+    pub(crate) admin: Item<'static, String>,
     pub(crate) tokens:
         IndexedMap<'static, &'static str, TokenInfo<Metadata>, TokenIndexes<'static, Metadata>>,
     pub(crate) requested_mints: Map<'static, String, Addr>, //  token id => User address
-    pub(crate) mint_info: Item<'static, MintInfo>,
     pub(crate) launchpad_contract: Item<'static, String>,
+    pub(crate) mint_info: Item<'static, MintInfo>,
+    pub(crate) whitelist_mint_infos: Map<'static, u32, WhitelistMintInfo>,
+    pub(crate) whitelist_minted_count: Map<'static, (u32, String), u32>, // Map (whitelist period, user) => count
+    pub(crate) minted_count: Map<'static, String, u32>,                  // Map user => count
 }
 
 // Contract implement -----------------------------------------------------
@@ -61,10 +67,40 @@ impl Tr721 {
             tokens: IndexedMap::new("tokens", indexes),
 
             // Custom states
+            admin: Item::new("admin"),
             requested_mints: Map::new("tr721_requested_mints"),
             mint_info: Item::new("mint_info"),
+            whitelist_mint_infos: Map::new("whitelist_mint_infos"),
             launchpad_contract: Item::new("launchpad_contract"),
+            whitelist_minted_count: Map::new("whitelist_minted_count"),
+            minted_count: Map::new("minted_count"),
         }
+    }
+
+    fn assert_admin(&self, store: &dyn Storage, user: String) -> Result<(), ContractError> {
+        let admin = self.admin.load(store)?;
+        if user != admin {
+            return Err(ContractError::Unauthorized);
+        }
+
+        Ok(())
+    }
+
+    pub fn assert_funds(
+        &self,
+        funds: &Vec<Coin>,
+        expected_denom: String,
+        expected_amount: Uint128,
+    ) -> Result<(), ContractError> {
+        if funds.len() != 1 {
+            return Err(ContractError::InvalidFund);
+        } else if funds[0].denom != expected_denom {
+            return Err(ContractError::InvalidDenom);
+        } else if funds[0].amount != expected_amount {
+            return Err(ContractError::InvalidAmount);
+        }
+
+        Ok(())
     }
 
     fn proxy_query<T: DeserializeOwned>(&self, ctx: QueryCtx, msg: Tr721QueryMsg) -> StdResult<T> {
@@ -82,11 +118,13 @@ impl Tr721 {
     pub fn instantiate(
         &self,
         ctx: InstantiateCtx,
+        admin: String,
         name: String,
         minter: String,
         symbol: String,
         launchpad_contract: String,
         mint_info: MintInfo,
+        whitelist_mint_infos: Vec<WhitelistMintInfo>,
     ) -> StdResult<Response> {
         // Set contract version
         self.contract_version.save(
@@ -96,10 +134,21 @@ impl Tr721 {
                 version: CONTRACT_VERSION.to_string(),
             },
         )?;
+
+        self.admin.save(ctx.deps.storage, &admin)?;
+
         self.launchpad_contract
             .save(ctx.deps.storage, &launchpad_contract)?;
-        self.mint_info
-            .save(ctx.deps.storage, &mint_info)?;
+
+        self.mint_info.save(ctx.deps.storage, &mint_info)?;
+
+        for (idx, whitelist_mint_info) in whitelist_mint_infos.iter().enumerate() {
+            self.whitelist_mint_infos.save(
+                ctx.deps.storage,
+                idx.try_into().unwrap(),
+                whitelist_mint_info,
+            )?;
+        }
 
         let base_msg = BaseInstantiateMsg {
             name,
@@ -215,10 +264,116 @@ impl Tr721 {
         self.proxy_exec(ctx, msg)
     }
 
+    // NOTE: Normally we should not update info, this endpoint exists mostly for testing or used in very urgent/critical case
+    #[msg(exec)]
+    pub fn update_mint_info(
+        &self,
+        ctx: ExecCtx,
+        mint_info: MintInfo,
+    ) -> Result<Response, ContractError> {
+        self.assert_admin(ctx.deps.storage, ctx.info.sender.to_string())?;
+
+        self.mint_info.save(ctx.deps.storage, &mint_info)?;
+        Ok(Response::new().add_attribute("action", "update_mint_info"))
+    }
+
+    // NOTE: Normally we should not update whitelist, this endpoint exists mostly for testing or used in very urgent/critical case
+    #[msg(exec)]
+    pub fn update_whitelist_mint_info(
+        &self,
+        ctx: ExecCtx,
+        whitelist_id: u32,
+        whitelist_mint_info: WhitelistMintInfo,
+    ) -> Result<Response, ContractError> {
+        self.assert_admin(ctx.deps.storage, ctx.info.sender.to_string())?;
+
+        self.whitelist_mint_infos
+            .save(ctx.deps.storage, whitelist_id, &whitelist_mint_info)?;
+        Ok(Response::new().add_attribute("action", "update_whitelist_mint_info"))
+    }
+
     #[msg(exec)]
     pub fn request_mint(&self, ctx: ExecCtx) -> Result<Response, ContractError> {
-        // Check conditions
+        // Check conditions:
         let mint_info = self.mint_info.load(ctx.deps.storage)?;
+        let now = ctx.env.block.time.seconds();
+        let sender = ctx.info.sender.to_string();
+
+        // Check if we reach to total tokens
+        let total_minted = Tr721Contract::default()
+            .token_count(ctx.deps.storage)
+            .unwrap();
+        if total_minted >= mint_info.tokens_count {
+            return Err(ContractError::MintExceedMaxTokens);
+        }
+
+        // Check if user is in whitelist
+        // - is time matched
+        // - is address in whitelist
+        let mut current_whitelist: Option<WhitelistMintInfo> = None;
+        let mut current_period: Option<u32> = None;
+        for item in self
+            .whitelist_mint_infos
+            .range(ctx.deps.storage, None, None, Order::Ascending)
+        {
+            let (period, whitelist) = item?;
+
+            if now >= whitelist.start_time
+                && now < whitelist.end_time
+                && whitelist.addresses.contains(&sender)
+            {
+                current_whitelist = Some(whitelist);
+                current_period = Some(period);
+                break;
+            }
+        }
+
+        // Whitelist mint:check if sender has not reach the max per user
+        if current_whitelist.is_some() && current_period.is_some() {
+            self.whitelist_minted_count.update(
+                ctx.deps.storage,
+                (current_period.unwrap(), sender),
+                |count| -> Result<u32, ContractError> {
+                    let current_count = count.unwrap_or(0);
+                    if current_count >= current_whitelist.to_owned().unwrap().limit_per_address {
+                        return Err(ContractError::WhitelistMintExceedMaxPerUser);
+                    }
+
+                    Ok(current_count + 1)
+                },
+            )?;
+
+            self.assert_funds(
+                &ctx.info.funds,
+                current_whitelist.to_owned().unwrap().denom,
+                current_whitelist.to_owned().unwrap().unit_price,
+            )?;
+        }
+        // Normal mint: check if user has not reach max per user
+        else if now >= mint_info.start_time {
+            self.minted_count.update(
+                ctx.deps.storage,
+                sender,
+                |count| -> Result<u32, ContractError> {
+                    let current_count = count.unwrap_or(0);
+                    if current_count >= mint_info.limit_per_address {
+                        return Err(ContractError::MintExceedMaxPerUser);
+                    }
+
+                    Ok(current_count + 1)
+                },
+            )?;
+
+            self.assert_funds(
+                &ctx.info.funds,
+                mint_info.to_owned().denom,
+                mint_info.to_owned().unit_price,
+            )?;
+        }
+        // If neither in Normal mint nor Whitelist mint then raise error
+        else {
+            return Err(ContractError::MintNotStarted);
+        }
 
         let sender = ctx.deps.api.addr_validate(ctx.info.sender.as_str())?;
         let token_id = Tr721Contract::default()
@@ -308,6 +463,62 @@ impl Tr721 {
             .add_attribute("sender", sender.clone())
             .add_attribute("owner", sender)
             .add_attribute("token_id", token_id.to_string()))
+    }
+
+    // Total minted = minted + whitelist minted
+    #[msg(query)]
+    pub fn total_minted(&self, ctx: QueryCtx) -> StdResult<u64> {
+        let total_minted = Tr721Contract::default()
+            .token_count(ctx.deps.storage)
+            .unwrap();
+
+        Ok(total_minted)
+    }
+
+    #[msg(query)]
+    pub fn minted_count_by_user(&self, ctx: QueryCtx, user: String) -> StdResult<u32> {
+        let validated_addr = ctx.deps.api.addr_validate(&user)?.to_string();
+        let count = self
+            .minted_count
+            .load(ctx.deps.storage, validated_addr)
+            .unwrap_or(0);
+        Ok(count)
+    }
+
+    #[msg(query)]
+    pub fn whitelist_minted_count_by_user(
+        &self,
+        ctx: QueryCtx,
+        period: u32,
+        user: String,
+    ) -> StdResult<u32> {
+        let validated_addr = ctx.deps.api.addr_validate(&user)?.to_string();
+        let count = self
+            .whitelist_minted_count
+            .load(ctx.deps.storage, (period, validated_addr))
+            .unwrap_or(0);
+        Ok(count)
+    }
+
+    #[msg(query)]
+    pub fn mint_info(&self, ctx: QueryCtx) -> StdResult<MintInfo> {
+        let mint_info = self.mint_info.load(ctx.deps.storage)?;
+        Ok(mint_info)
+    }
+
+    #[msg(query)]
+    pub fn whitelist_mint_infos(&self, ctx: QueryCtx) -> StdResult<Vec<WhitelistMintInfo>> {
+        let mut whitelist_mint_infos: Vec<WhitelistMintInfo> = vec![];
+
+        for item in self
+            .whitelist_mint_infos
+            .range(ctx.deps.storage, None, None, Order::Ascending)
+        {
+            let (_key, info) = item?;
+            whitelist_mint_infos.push(info);
+        }
+
+        Ok(whitelist_mint_infos)
     }
 
     #[msg(query)]
@@ -476,10 +687,7 @@ impl Tr721 {
 
     #[msg(query)]
     pub fn merkle_root(&self, ctx: QueryCtx) -> StdResult<String> {
-        let merkle_root = self
-            .mint_info
-            .load(ctx.deps.storage)?
-            .merkle_root;
+        let merkle_root = self.mint_info.load(ctx.deps.storage)?.merkle_root;
         Ok(merkle_root)
     }
 
@@ -509,35 +717,31 @@ pub struct ContractVersion {
 }
 
 #[cw_serde]
-pub struct WhitelistMinting {
+#[derive(Default)]
+pub struct WhitelistMintInfo {
     pub addresses: Vec<String>,
-    pub unit_price: u64,
-    pub limit_per_address: String,
+    pub unit_price: Uint128,
+    pub denom: String,
+    pub limit_per_address: u32,
     pub member_limit: u32,
-    pub start_time: Timestamp,
-    pub end_time: Timestamp,
+    pub start_time: u64,
+    pub end_time: u64,
 }
 
 #[cw_serde]
+#[derive(Default)]
 pub struct MintInfo {
-    // Collection info ----------------------------
-    pub name: String,
-    pub symbol: String,
-
     // Minting details ----------------------------
-    pub tokens_count: u32,
-    pub unit_price: u64,
+    pub tokens_count: u64,
+    pub unit_price: Uint128,
+    pub denom: String,
     pub limit_per_address: u32,
-    pub start_time: Timestamp,
-
-    // Whitelist minting --------------------------
-    pub whitelist_mintings: Vec<WhitelistMinting>,
+    pub start_time: u64,
 
     // Royalty --------------------------
     pub royalty_address: Option<Addr>,
     pub royalty_percentage: Option<u8>,
 
     // Extend info --------------------------
-    pub base_token_uri: Option<String>,
     pub merkle_root: String,
 }
