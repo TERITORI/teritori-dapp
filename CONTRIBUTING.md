@@ -61,7 +61,7 @@ TODO: explain how backend and apps (web, mobile and desktop) are deployed
 
 ### Multi-chain
 
-TODO: talk about networks, how to use them, network object ids
+TODO: talk about networks, how to use them, network object ids, talk about the chain registry and how it's integrated into networks
 
 ### Network features
 
