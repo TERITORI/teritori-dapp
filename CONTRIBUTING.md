@@ -6,7 +6,7 @@
 
 - Check the [list of PRs that need review](https://github.com/TERITORI/teritori-dapp/pulls?q=is%3Apr+is%3Aopen+review%3Arequired+draft%3Afalse+) and review relevant PRs, see [Reviewing a PR](#reviewing-a-pr)
 - Check your [assigned PRs that require changes](https://github.com/TERITORI/teritori-dapp/pulls?q=is%3Apr+is%3Aopen+review%3Achanges_requested+draft%3Afalse+assignee%3A%40me+) and address the reviews
-- Make sure you have self-reviewed your existing PRs and the CI passes on them
+- Make sure you have self-reviewed your existing PRs and the CI passes on them, see [Reviewing a PR]
 - Continue on your assigned tasks
 - If you have nothing to do at this point, ask for a new task
 
@@ -23,7 +23,7 @@ For all tasks, create a PR as soon as possible to make other mates aware of your
 
 - Read and understand all changes
   
-  You can use the GitHub diff and check each file as viewed, this will help in subsequent reviews as unchanged files will keep the "Viewed" status
+  You can use the GitHub diff and mark each file as viewed, this will help in subsequent reviews as unchanged files will keep the "Viewed" status
   
   <img width="448" alt="Screenshot 2024-03-21 at 20 01 38" src="https://github.com/TERITORI/teritori-dapp/assets/7917064/6141fdd3-2746-498d-916f-9945a56c7ff0">
 
@@ -34,6 +34,8 @@ For all tasks, create a PR as soon as possible to make other mates aware of your
   If there is changes in code used at other places, test for regressions in affected features
 
 If the PR is not atomic enough and makes reviewing hard, you can ask the author to split it
+
+You can deny the review if the PR does not pass CI
 
 ## Technology overview
 
