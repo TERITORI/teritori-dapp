@@ -26,4 +26,25 @@ pub enum ContractError {
 
     #[error("Royalty percentage must be between 0 and 100")]
     InvalidRoyaltyPercentage,
+
+    #[error("Mint has not started yet")]
+    MintNotStarted,
+
+    #[error("Exceed max tokens")]
+    MintExceedMaxTokens,
+
+    #[error("Exceed max per user")]
+    MintExceedMaxPerUser,
+
+    #[error("Exceed max per whitelisted user")]
+    WhitelistMintExceedMaxPerUser,
+
+    #[error("Invalid fund")]
+    InvalidFund,
+
+    #[error("Invalid denom")]
+    InvalidDenom,
+
+    #[error("Invalid amount")]
+    InvalidAmount,
 }

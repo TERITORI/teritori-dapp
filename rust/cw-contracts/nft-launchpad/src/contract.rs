@@ -11,7 +11,7 @@ use sylvia::{
 
 use crate::error::ContractError;
 
-use nft_tr721::{contract::sv::InstantiateMsg as Tr721InstantiateMsg, test_helpers::get_default_mint_info};
+use nft_tr721::{contract::sv::InstantiateMsg as Tr721InstantiateMsg, test_helpers::{get_default_mint_info, get_default_whitelist_mint_infos}};
 
 const INSTANTIATE_REPLY_ID: u64 = 1u64;
 
@@ -137,11 +137,13 @@ impl NftLaunchpad {
             admin: Some(sender.clone()),
             code_id: nft_code_id.unwrap(),
             msg: to_json_binary(&Tr721InstantiateMsg {
+                admin: sender.clone(),
                 name: collection.name.clone(),
                 symbol: collection.symbol.clone(),
                 minter: sender,
                 launchpad_contract: "launchpad_contract".to_string(),
                 mint_info: get_default_mint_info(),
+                whitelist_mint_infos: get_default_whitelist_mint_infos(),
             })?,
             funds: vec![],
             label: format!(
@@ -274,7 +276,7 @@ pub struct Collection {
 
     pub partners: String,
 
-    pub invested_amount: u64,
+    pub investment_desc: String,
     pub investment_link: String,
 
     pub whitepaper_link: String,
