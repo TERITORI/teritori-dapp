@@ -315,6 +315,6 @@ const navConfig: {
 const prefix = Linking.createURL("/");
 
 export const linking = {
-  prefixes: [prefix],
+  prefixes: [prefix, "https://app.teritori.com"],
   config: navConfig,
 };
