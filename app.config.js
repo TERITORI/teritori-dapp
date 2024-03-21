@@ -30,10 +30,6 @@ const config = {
       },
     },
     android: {
-      adaptiveIcon: {
-        foregroundImage: "./assets/icon.png",
-        backgroundColor: "#FFFFFF",
-      },
       package: "com.teritori",
       versionCode: "6",
     },
