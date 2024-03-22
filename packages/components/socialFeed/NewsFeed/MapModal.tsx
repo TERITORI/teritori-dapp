@@ -2,6 +2,7 @@ import React, { Suspense, lazy, useState } from "react";
 import { View, ViewStyle } from "react-native";
 
 import { AddressSearch } from "./MapComponent/AddressSearch";
+// import MapView from "./MapComponent/Map";
 import { MapDescriptionInput } from "./MapComponent/MapDescriptionInput";
 import { MapHeader } from "./MapComponent/MapHeader";
 import {
@@ -17,11 +18,6 @@ import { SpacerColumn, SpacerRow } from "../../spacer";
 import { ModalWithoutHeader } from "@/components/modals/ModalWithoutHeader";
 const MapView = lazy(() => import("./MapComponent/Map"));
 
-// const MapView = Platform.select({
-//   native: () => lazy(() => import("./MapComponent/Map.native")),
-//   web: () => lazy(() => import("./MapComponent/Map.web")),
-//   default: () => lazy(() => import("./MapComponent/Map.web")),
-// })();
 
 interface TMapModalProps {
   visible: boolean;
@@ -38,6 +34,7 @@ export const MapModal: React.FC<TMapModalProps> = ({
   onClose,
   visible,
   locationSelected,
+
   setLocationSelected,
   description,
   setDescription,
@@ -120,7 +117,6 @@ const mapContainer: ViewStyle = {
 };
 
 const unitCardStyle: ViewStyle = {
-  // width: TRACK_CARD_WIDTH,
   backgroundColor: neutral17,
   padding: layout.spacing_x1_5,
   borderRadius: 12,
