@@ -8,10 +8,10 @@ import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { accountExplorerLink } from "@/networks";
 import { ShowWalletQR } from "@/screens/Mini/Wallet/components/ShowWalletQR";
-import { CustomButton } from "@/screens/Mini/components/Button/CustomButton";
 import {
   removeWalletById,
   selectWalletById,

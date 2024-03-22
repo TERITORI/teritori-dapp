@@ -4,11 +4,11 @@ import React, { useRef, useState } from "react";
 import { TextInput, View, useWindowDimensions } from "react-native";
 import { useSelector } from "react-redux";
 
-import { CustomButton } from "../../Mini/components/Button/CustomButton";
 import Checkbox from "../../Mini/components/Checkbox/Checkbox";
 import MultiStepScreenContainer from "../../Mini/layout/MultiStepScreenContainer";
 
 import { BrandText } from "@/components/BrandText";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";

@@ -1,10 +1,10 @@
 import React from "react";
 import { View } from "react-native";
 
-import { CustomButton } from "../../components/Button/CustomButton";
 import MobileModal from "../../components/MobileModal";
 
 import { BrandText } from "@/components/BrandText";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { fontMedium14, fontSemibold18 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
