@@ -68,7 +68,7 @@ pub fn get_default_whitelist_mint_info() -> WhitelistMintInfo {
         unit_price: Uint128::new(1),
         denom: "denom".to_string(),
         limit_per_address: 2,
-        member_limit: 1,
+        addresses_count: 1,
         start_time: DEFAULT_BLOCK_TIME,
         end_time: DEFAULT_BLOCK_TIME,
     }

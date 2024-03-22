@@ -1,25 +1,24 @@
-use cosmwasm_std::{Addr, Attribute, Timestamp};
+use cosmwasm_std::{Addr, Attribute, Uint128};
 use sylvia::multitest::App;
 
 use crate::{
-    contract::{
-        sv::multitest_utils::CodeId as LaunchpadCodeId, Collection, Config, WhitelistMinting
-    },
+    contract::{sv::multitest_utils::CodeId as LaunchpadCodeId, Collection, Config},
     error::ContractError,
 };
 
-use nft_tr721::contract::sv::multitest_utils::CodeId as NftTr721CodeId;
+use nft_tr721::contract::{sv::multitest_utils::CodeId as NftTr721CodeId, WhitelistMintInfo};
 
 fn get_default_collection() -> Collection {
-    let whitelist_mintings = vec![WhitelistMinting {
+    let whitelist_mint_infos = vec![WhitelistMintInfo {
         addresses: vec![],
-        unit_price: 10,
-        limit_per_address: "SYMBOL".to_string(),
-        member_limit: 3,
-        start_time: Timestamp::default(),
-        end_time: Timestamp::default(),
+        unit_price: Uint128::new(10),
+        denom: "denom".to_string(),
+        limit_per_address: 2,
+        addresses_count: 3,
+        start_time: u64::default(),
+        end_time: u64::default(),
     }];
-    
+
     Collection {
         // Collection info ----------------------------
         name: "name".to_string(),
@@ -64,21 +63,22 @@ fn get_default_collection() -> Collection {
 
         expected_supply: 1000,
         expected_public_mint_price: 100,
-        expected_mint_date: Timestamp::default(),
+        expected_mint_date: u64::default(),
 
-        escrow_mint_proceeds_period: Timestamp::default(),
-        dox_state: "dox_state".to_string(),
+        escrow_mint_proceeds_period: u64::default(),
+        is_dox: true,
 
         dao_whitelist_count: 10,
 
         // Minting details ----------------------------
         tokens_count: 1000,
-        unit_price: 100,
+        denom: "denom".to_string(),
+        unit_price: Uint128::new(100),
         limit_per_address: 2,
-        start_time: Timestamp::default(),
+        start_time: u64::default(),
 
         // Whitelist minting --------------------------
-        whitelist_mintings,
+        whitelist_mint_infos,
 
         // Royalty --------------------------
         royalty_address: Some(Addr::unchecked("royalty_address")),
