@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useState } from "react";
-import { Platform, View, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { AddressSearch } from "./MapComponent/AddressSearch";
 import { MapDescriptionInput } from "./MapComponent/MapDescriptionInput";
@@ -15,12 +15,13 @@ import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 
 import { ModalWithoutHeader } from "@/components/modals/ModalWithoutHeader";
+const MapView = lazy(() => import("./MapComponent/Map"));
 
-const MapView = Platform.select({
-  native: () => lazy(() => import("./MapComponent/Map.native")),
-  web: () => lazy(() => import("./MapComponent/Map.web")),
-  default: () => lazy(() => import("./MapComponent/Map.web")),
-})();
+// const MapView = Platform.select({
+//   native: () => lazy(() => import("./MapComponent/Map.native")),
+//   web: () => lazy(() => import("./MapComponent/Map.web")),
+//   default: () => lazy(() => import("./MapComponent/Map.web")),
+// })();
 
 interface TMapModalProps {
   visible: boolean;
