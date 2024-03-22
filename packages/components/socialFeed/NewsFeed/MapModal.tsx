@@ -18,7 +18,6 @@ import { SpacerColumn, SpacerRow } from "../../spacer";
 import { ModalWithoutHeader } from "@/components/modals/ModalWithoutHeader";
 const MapView = lazy(() => import("./MapComponent/Map"));
 
-
 interface TMapModalProps {
   visible: boolean;
   onClose: () => void;
