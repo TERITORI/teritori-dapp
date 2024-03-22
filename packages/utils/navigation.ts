@@ -115,7 +115,7 @@ export type RootStackParamList = {
   MiniDAppStore: undefined;
   MiniNewConversation: undefined;
   MiniFriend: { activeTab?: "friends" | "requests" };
-  MiniAddFriend: undefined;
+  MiniAddFriend: { contactUrl: string } | undefined;
   MiniNewGroup: undefined;
   MiniChatSetting: { back?: RouteName };
   MiniPreferencesSetting: { back?: RouteName };
