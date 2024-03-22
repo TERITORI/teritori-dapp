@@ -212,7 +212,11 @@ export const MiniVideoPostDetails = ({
                 />
 
                 <SpacerRow size={1.5} />
-                <ShareButton postId={localPost.identifier} useAltStyle />
+                <ShareButton
+                  postId={localPost.identifier}
+                  network_Id={network?.id}
+                  useAltStyle
+                />
 
                 {network?.kind === NetworkKind.Gno && (
                   <>

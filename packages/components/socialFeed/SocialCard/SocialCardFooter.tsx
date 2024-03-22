@@ -90,7 +90,10 @@ export const SocialCardFooter: FC<{
         )}
 
         <SpacerRow size={2} />
-        <ShareButton postId={post.identifier} />
+        <ShareButton
+          postId={post.identifier}
+          network_Id={selectedNetworkInfo?.id}
+        />
       </View>
     </FlexRow>
   );
