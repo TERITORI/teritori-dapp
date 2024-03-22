@@ -12,6 +12,36 @@ import (
 	"github.com/pkg/errors"
 )
 
+type WhitelistAddress struct {
+	value string
+}
+
+func NewWhitelistAddress(addr string) *WhitelistAddress {
+	return &WhitelistAddress{value: addr}
+}
+
+func (addr *WhitelistAddress) toStr() string {
+	return fmt.Sprintf("%s", addr.value)
+}
+
+func (addr *WhitelistAddress) toBytes() []byte {
+	return []byte(addr.toStr())
+}
+
+func (addr *WhitelistAddress) CalculateHash() ([]byte, error) {
+	res := crypto.Keccak256(addr.toBytes())
+	return res, nil
+}
+
+func (addr *WhitelistAddress) Equals(other merkletree.Content) (bool, error) {
+	otherVal := other.(*WhitelistAddress).toStr()
+	return otherVal == addr.toStr(), nil
+}
+
+func (addr *WhitelistAddress) ToJSONB() interface{} {
+	return map[string]interface{}{}
+}
+
 type Metadata struct {
 	launchpadpb.Metadata
 }

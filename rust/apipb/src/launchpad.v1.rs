@@ -1,39 +1,97 @@
 // @generated
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct CalculateMerkleRootRequest {
+pub struct UpdateCollectionMetadatasRequest {
     #[prost(string, tag="1")]
-    pub user: ::prost::alloc::string::String,
-    #[prost(uint32, tag="2")]
-    pub project_id: u32,
-    #[prost(string, tag="3")]
+    pub sender: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
     pub network_id: ::prost::alloc::string::String,
+    #[prost(uint32, tag="3")]
+    pub project_id: u32,
     #[prost(message, repeated, tag="4")]
     pub metadatas: ::prost::alloc::vec::Vec<Metadata>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct CalculateMerkleRootResponse {
+pub struct UpdateCollectionMetadatasResponse {
     #[prost(string, tag="1")]
     pub merkle_root: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UploadMetadataRequest {
+pub struct CalculateCollectionMerkleRootRequest {
     #[prost(string, tag="1")]
-    pub user: ::prost::alloc::string::String,
-    #[prost(uint32, tag="2")]
-    pub project_id: u32,
-    #[prost(string, tag="3")]
-    pub network_id: ::prost::alloc::string::String,
-    #[prost(message, repeated, tag="4")]
+    pub sender: ::prost::alloc::string::String,
+    #[prost(message, repeated, tag="2")]
     pub metadatas: ::prost::alloc::vec::Vec<Metadata>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UploadMetadataResponse {
+pub struct CalculateCollectionMerkleRootResponse {
     #[prost(string, tag="1")]
     pub merkle_root: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct TokenMetadataRequest {
+    #[prost(string, tag="1")]
+    pub sender: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub network_id: ::prost::alloc::string::String,
+    #[prost(uint32, tag="3")]
+    pub project_id: u32,
+    #[prost(uint32, tag="4")]
+    pub token_id: u32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct TokenMetadataResponse {
+    #[prost(string, tag="1")]
+    pub merkle_root: ::prost::alloc::string::String,
+    #[prost(message, optional, tag="2")]
+    pub metadata: ::core::option::Option<Metadata>,
+    #[prost(string, repeated, tag="3")]
+    pub merkle_proof: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateCollectionWhitelistsRequest {
+    #[prost(string, tag="1")]
+    pub sender: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub network_id: ::prost::alloc::string::String,
+    #[prost(uint32, tag="3")]
+    pub project_id: u32,
+    #[prost(message, repeated, tag="4")]
+    pub whitelist_mint_infos: ::prost::alloc::vec::Vec<WhitelistMintInfo>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateCollectionWhitelistsResponse {
+    #[prost(string, repeated, tag="1")]
+    pub merkle_roots: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct WhitelistedAddressMerkleInfoRequest {
+    #[prost(string, tag="1")]
+    pub sender: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub network_id: ::prost::alloc::string::String,
+    #[prost(uint32, tag="3")]
+    pub project_id: u32,
+    #[prost(uint32, tag="4")]
+    pub whitelist_id: u32,
+    #[prost(string, tag="5")]
+    pub address: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct WhitelistedAddressMerkleInfoResponse {
+    #[prost(string, tag="1")]
+    pub merkle_root: ::prost::alloc::string::String,
+    #[prost(string, repeated, tag="2")]
+    pub merkle_proof: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -113,8 +171,8 @@ pub struct Collection {
     pub team_link: ::prost::alloc::string::String,
     #[prost(string, tag="18")]
     pub partners: ::prost::alloc::string::String,
-    #[prost(uint64, tag="19")]
-    pub invested_amount: u64,
+    #[prost(string, tag="19")]
+    pub investment_desc: ::prost::alloc::string::String,
     #[prost(string, tag="20")]
     pub investment_link: ::prost::alloc::string::String,
     #[prost(string, tag="21")]
@@ -134,8 +192,8 @@ pub struct Collection {
     pub expected_mint_date: u64,
     #[prost(uint64, tag="28")]
     pub escrow_mint_proceeds_period: u64,
-    #[prost(string, tag="29")]
-    pub dox_state: ::prost::alloc::string::String,
+    #[prost(bool, tag="29")]
+    pub is_dox: bool,
     #[prost(uint32, tag="30")]
     pub dao_whitelist_count: u32,
     /// Minting details ----------------------------
@@ -147,30 +205,38 @@ pub struct Collection {
     pub limit_per_address: u32,
     #[prost(uint64, tag="34")]
     pub start_time: u64,
-    /// Whitelist minting --------------------------
-    #[prost(string, repeated, tag="35")]
-    pub whitelist_addresses: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-    #[prost(uint64, tag="36")]
-    pub whitelist_unit_price: u64,
-    #[prost(string, tag="37")]
-    pub whitelist_limit_per_address: ::prost::alloc::string::String,
-    #[prost(uint32, tag="38")]
-    pub whitelist_member_limit: u32,
-    #[prost(uint64, tag="39")]
-    pub whitelist_start_time: u64,
-    #[prost(uint64, tag="40")]
-    pub whitelist_end_time: u64,
+    // Whitelist minting --------------------------
+    // repeated WhitelistMinting whitelist_mintings = 35;
+
     /// Royalty --------------------------
-    #[prost(string, tag="41")]
+    #[prost(string, tag="35")]
     pub royalty_address: ::prost::alloc::string::String,
-    #[prost(uint32, tag="42")]
+    #[prost(uint32, tag="36")]
     pub royalty_percentage: u32,
     /// Extend info --------------------------
-    #[prost(string, tag="43")]
+    #[prost(string, tag="37")]
     pub base_token_uri: ::prost::alloc::string::String,
-    #[prost(string, tag="44")]
+    #[prost(string, tag="38")]
     pub merkle_root: ::prost::alloc::string::String,
-    #[prost(string, tag="45")]
+    #[prost(string, tag="39")]
     pub deployed_address: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct WhitelistMintInfo {
+    #[prost(string, repeated, tag="1")]
+    pub addresses: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(uint64, tag="2")]
+    pub unit_price: u64,
+    #[prost(string, tag="3")]
+    pub denom: ::prost::alloc::string::String,
+    #[prost(uint32, tag="4")]
+    pub limit_per_address: u32,
+    #[prost(uint32, tag="5")]
+    pub addresses_count: u32,
+    #[prost(uint64, tag="6")]
+    pub start_time: u64,
+    #[prost(uint64, tag="7")]
+    pub end_time: u64,
 }
 // @@protoc_insertion_point(module)
