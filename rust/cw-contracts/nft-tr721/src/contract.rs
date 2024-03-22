@@ -723,7 +723,7 @@ pub struct WhitelistMintInfo {
     pub unit_price: Uint128,
     pub denom: String,
     pub limit_per_address: u32,
-    pub member_limit: u32,
+    pub addresses_count: u32,
     pub start_time: u64,
     pub end_time: u64,
 }

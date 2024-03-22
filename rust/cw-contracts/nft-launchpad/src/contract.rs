@@ -1,6 +1,6 @@
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    to_json_binary, Addr, Order, Reply, Response, StdResult, SubMsg, Timestamp, WasmMsg,
+    to_json_binary, Addr, Order, Reply, Response, StdResult, SubMsg, Uint128, WasmMsg,
 };
 use cw_storage_plus::{Item, Map};
 use cw_utils::parse_reply_instantiate_data;
@@ -11,7 +11,10 @@ use sylvia::{
 
 use crate::error::ContractError;
 
-use nft_tr721::{contract::sv::InstantiateMsg as Tr721InstantiateMsg, test_helpers::{get_default_mint_info, get_default_whitelist_mint_infos}};
+use nft_tr721::{
+    contract::sv::InstantiateMsg as Tr721InstantiateMsg,
+    contract::{MintInfo as Tr721MintInfo, WhitelistMintInfo as Tr721WhitelistMintInfo},
+};
 
 const INSTANTIATE_REPLY_ID: u64 = 1u64;
 
@@ -142,8 +145,21 @@ impl NftLaunchpad {
                 symbol: collection.symbol.clone(),
                 minter: sender,
                 launchpad_contract: "launchpad_contract".to_string(),
-                mint_info: get_default_mint_info(),
-                whitelist_mint_infos: get_default_whitelist_mint_infos(),
+                mint_info: Tr721MintInfo {
+                    tokens_count: collection.tokens_count,
+                    unit_price: collection.unit_price,
+                    denom: collection.denom,
+                    limit_per_address: collection.limit_per_address,
+                    start_time: collection.start_time,
+
+                    // Royalty --------------------------
+                    royalty_address: collection.royalty_address,
+                    royalty_percentage: collection.royalty_percentage,
+
+                    // Extend info --------------------------
+                    merkle_root: collection.merkle_root.unwrap(),
+                },
+                whitelist_mint_infos: collection.whitelist_mint_infos,
             })?,
             funds: vec![],
             label: format!(
@@ -235,16 +251,6 @@ pub struct Config {
 }
 
 #[cw_serde]
-pub struct WhitelistMinting {
-    pub addresses: Vec<String>,
-    pub unit_price: u64,
-    pub limit_per_address: String,
-    pub member_limit: u32,
-    pub start_time: Timestamp,
-    pub end_time: Timestamp,
-}
-
-#[cw_serde]
 pub struct Collection {
     // Collection info ----------------------------
     pub name: String,
@@ -287,23 +293,24 @@ pub struct Collection {
 
     pub is_ready_for_mint: bool,
 
-    pub expected_supply: u32,
+    pub expected_supply: u64,
     pub expected_public_mint_price: u64,
-    pub expected_mint_date: Timestamp,
+    pub expected_mint_date: u64,
 
-    pub escrow_mint_proceeds_period: Timestamp,
-    pub dox_state: String,
+    pub escrow_mint_proceeds_period: u64,
+    pub is_dox: bool,
 
     pub dao_whitelist_count: u32,
 
     // Minting details ----------------------------
-    pub tokens_count: u32,
-    pub unit_price: u64,
+    pub tokens_count: u64,
+    pub denom: String,
+    pub unit_price: Uint128,
     pub limit_per_address: u32,
-    pub start_time: Timestamp,
+    pub start_time: u64,
 
     // Whitelist minting --------------------------
-    pub whitelist_mintings: Vec<WhitelistMinting>,
+    pub whitelist_mint_infos: Vec<Tr721WhitelistMintInfo>,
 
     // Royalty --------------------------
     pub royalty_address: Option<Addr>,
@@ -319,29 +326,4 @@ pub struct Collection {
 pub enum CollectionState {
     Pending,  // When user summit the collection but not deployed yet
     Deployed, // When collection has been deployed
-}
-
-// This is subset of collection, contains only needed info for minting
-#[cw_serde]
-pub struct CollectionInfo {
-    // Collection info ----------------------------
-    pub name: String,
-    pub symbol: String,
-
-    // Minting details ----------------------------
-    pub tokens_count: u32,
-    pub unit_price: u64,
-    pub limit_per_address: u32,
-    pub start_time: Timestamp,
-
-    // Whitelist minting --------------------------
-    pub whitelist_mintings: Vec<WhitelistMinting>,
-
-    // Royalty --------------------------
-    pub royalty_address: Option<Addr>,
-    pub royalty_percentage: Option<u8>,
-
-    // Extend info --------------------------
-    pub base_token_uri: Option<String>,
-    pub merkle_root: Option<String>,
 }
