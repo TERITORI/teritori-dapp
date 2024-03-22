@@ -185,7 +185,11 @@ export const SocialVideoCard: FC<{
               />
 
               <SpacerRow size={1.5} />
-              <ShareButton postId={localPost.identifier} useAltStyle />
+              <ShareButton
+                postId={localPost.identifier}
+                network_Id={selectedNetworkInfo?.id}
+                useAltStyle
+              />
 
               {selectedNetworkInfo?.kind === NetworkKind.Gno && (
                 <>
