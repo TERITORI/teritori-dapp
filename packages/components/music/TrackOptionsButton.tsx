@@ -12,6 +12,7 @@ import { SpacerColumn } from "../spacer";
 
 import { Post } from "@/api/feed/v1/feed";
 import { useAppMode } from "@/hooks/useAppMode";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { layout } from "@/utils/style/layout";
 
 const BUTTONS_HEIGHT = 28;
@@ -25,6 +26,8 @@ type Props = {
 export const TrackOptionsButton = ({ trackName, post, username }: Props) => {
   const [showMenu, setShowMenu] = useState(false);
   const [appMode] = useAppMode();
+
+  const selectedNetworkInfo = useSelectedNetworkInfo();
 
   const onClose = () => {
     setShowMenu(false);
@@ -73,7 +76,11 @@ export const TrackOptionsButton = ({ trackName, post, username }: Props) => {
             }}
           >
             <BrandText>Share</BrandText>
-            <ShareButton postId={post.identifier} useAltStyle />
+            <ShareButton
+              postId={post.identifier}
+              network_Id={selectedNetworkInfo?.id}
+              useAltStyle
+            />
           </View>
           <View
             style={{
