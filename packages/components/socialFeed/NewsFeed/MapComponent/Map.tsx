@@ -10,6 +10,7 @@ const MapWeb = ({ locationSelected }: { locationSelected: Tlocation }) => {
     iconUrl: "https://i.ibb.co/gSnJ70P/location.png", //load image from web; not work with local image
     iconSize: [32, 32],
   });
+console.log('1111');
 
   return (
     <MapContainer
