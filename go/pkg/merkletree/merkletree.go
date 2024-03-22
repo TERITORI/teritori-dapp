@@ -185,3 +185,7 @@ func (m *MerkleTree) GetRoot() []byte {
 func (m *MerkleTree) GetHexRoot() string {
 	return toHex(m.GetRoot())
 }
+
+func (m *MerkleTree) GetHexRootWithoutPrefix() string {
+	return m.GetHexRoot()[2:]
+}

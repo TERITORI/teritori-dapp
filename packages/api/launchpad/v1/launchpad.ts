@@ -6,26 +6,61 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "launchpad.v1";
 
-export interface CalculateMerkleRootRequest {
-  user: string;
-  projectId: number;
+export interface UpdateCollectionMetadatasRequest {
+  sender: string;
   networkId: string;
+  projectId: number;
   metadatas: Metadata[];
 }
 
-export interface CalculateMerkleRootResponse {
+export interface UpdateCollectionMetadatasResponse {
   merkleRoot: string;
 }
 
-export interface UploadMetadataRequest {
-  user: string;
-  projectId: number;
-  networkId: string;
+export interface CalculateCollectionMerkleRootRequest {
+  sender: string;
   metadatas: Metadata[];
 }
 
-export interface UploadMetadataResponse {
+export interface CalculateCollectionMerkleRootResponse {
   merkleRoot: string;
+}
+
+export interface TokenMetadataRequest {
+  sender: string;
+  networkId: string;
+  projectId: number;
+  tokenId: number;
+}
+
+export interface TokenMetadataResponse {
+  merkleRoot: string;
+  metadata: Metadata | undefined;
+  merkleProof: string[];
+}
+
+export interface UpdateCollectionWhitelistsRequest {
+  sender: string;
+  networkId: string;
+  projectId: number;
+  whitelistMintInfos: WhitelistMintInfo[];
+}
+
+export interface UpdateCollectionWhitelistsResponse {
+  merkleRoots: string[];
+}
+
+export interface WhitelistedAddressMerkleInfoRequest {
+  sender: string;
+  networkId: string;
+  projectId: number;
+  whitelistId: number;
+  address: string;
+}
+
+export interface WhitelistedAddressMerkleInfoResponse {
+  merkleRoot: string;
+  merkleProof: string[];
 }
 
 export interface Metadata {
@@ -70,7 +105,7 @@ export interface Collection {
   teamDesc: string;
   teamLink: string;
   partners: string;
-  investedAmount: number;
+  investmentDesc: string;
   investmentLink: string;
   whitepaperLink: string;
   roadmapLink: string;
@@ -81,20 +116,13 @@ export interface Collection {
   expectedPublicMintPrice: number;
   expectedMintDate: number;
   escrowMintProceedsPeriod: number;
-  doxState: string;
+  isDox: boolean;
   daoWhitelistCount: number;
   /** Minting details ---------------------------- */
   tokensCount: number;
   unitPrice: number;
   limitPerAddress: number;
   startTime: number;
-  /** Whitelist minting -------------------------- */
-  whitelistAddresses: string[];
-  whitelistUnitPrice: number;
-  whitelistLimitPerAddress: string;
-  whitelistMemberLimit: number;
-  whitelistStartTime: number;
-  whitelistEndTime: number;
   /** Royalty -------------------------- */
   royaltyAddress: string;
   royaltyPercentage: number;
@@ -104,20 +132,30 @@ export interface Collection {
   deployedAddress: string;
 }
 
-function createBaseCalculateMerkleRootRequest(): CalculateMerkleRootRequest {
-  return { user: "", projectId: 0, networkId: "", metadatas: [] };
+export interface WhitelistMintInfo {
+  addresses: string[];
+  unitPrice: number;
+  denom: string;
+  limitPerAddress: number;
+  addressesCount: number;
+  startTime: number;
+  endTime: number;
 }
 
-export const CalculateMerkleRootRequest = {
-  encode(message: CalculateMerkleRootRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.user !== "") {
-      writer.uint32(10).string(message.user);
-    }
-    if (message.projectId !== 0) {
-      writer.uint32(16).uint32(message.projectId);
+function createBaseUpdateCollectionMetadatasRequest(): UpdateCollectionMetadatasRequest {
+  return { sender: "", networkId: "", projectId: 0, metadatas: [] };
+}
+
+export const UpdateCollectionMetadatasRequest = {
+  encode(message: UpdateCollectionMetadatasRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
     }
     if (message.networkId !== "") {
-      writer.uint32(26).string(message.networkId);
+      writer.uint32(18).string(message.networkId);
+    }
+    if (message.projectId !== 0) {
+      writer.uint32(24).uint32(message.projectId);
     }
     for (const v of message.metadatas) {
       Metadata.encode(v!, writer.uint32(34).fork()).ldelim();
@@ -125,10 +163,10 @@ export const CalculateMerkleRootRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CalculateMerkleRootRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateCollectionMetadatasRequest {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCalculateMerkleRootRequest();
+    const message = createBaseUpdateCollectionMetadatasRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -137,21 +175,21 @@ export const CalculateMerkleRootRequest = {
             break;
           }
 
-          message.user = reader.string();
+          message.sender = reader.string();
           continue;
         case 2:
-          if (tag !== 16) {
-            break;
-          }
-
-          message.projectId = reader.uint32();
-          continue;
-        case 3:
-          if (tag !== 26) {
+          if (tag !== 18) {
             break;
           }
 
           message.networkId = reader.string();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.projectId = reader.uint32();
           continue;
         case 4:
           if (tag !== 34) {
@@ -169,27 +207,27 @@ export const CalculateMerkleRootRequest = {
     return message;
   },
 
-  fromJSON(object: any): CalculateMerkleRootRequest {
+  fromJSON(object: any): UpdateCollectionMetadatasRequest {
     return {
-      user: isSet(object.user) ? globalThis.String(object.user) : "",
-      projectId: isSet(object.projectId) ? globalThis.Number(object.projectId) : 0,
+      sender: isSet(object.sender) ? globalThis.String(object.sender) : "",
       networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      projectId: isSet(object.projectId) ? globalThis.Number(object.projectId) : 0,
       metadatas: globalThis.Array.isArray(object?.metadatas)
         ? object.metadatas.map((e: any) => Metadata.fromJSON(e))
         : [],
     };
   },
 
-  toJSON(message: CalculateMerkleRootRequest): unknown {
+  toJSON(message: UpdateCollectionMetadatasRequest): unknown {
     const obj: any = {};
-    if (message.user !== "") {
-      obj.user = message.user;
-    }
-    if (message.projectId !== 0) {
-      obj.projectId = Math.round(message.projectId);
+    if (message.sender !== "") {
+      obj.sender = message.sender;
     }
     if (message.networkId !== "") {
       obj.networkId = message.networkId;
+    }
+    if (message.projectId !== 0) {
+      obj.projectId = Math.round(message.projectId);
     }
     if (message.metadatas?.length) {
       obj.metadatas = message.metadatas.map((e) => Metadata.toJSON(e));
@@ -197,35 +235,39 @@ export const CalculateMerkleRootRequest = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<CalculateMerkleRootRequest>, I>>(base?: I): CalculateMerkleRootRequest {
-    return CalculateMerkleRootRequest.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<UpdateCollectionMetadatasRequest>, I>>(
+    base?: I,
+  ): UpdateCollectionMetadatasRequest {
+    return UpdateCollectionMetadatasRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<CalculateMerkleRootRequest>, I>>(object: I): CalculateMerkleRootRequest {
-    const message = createBaseCalculateMerkleRootRequest();
-    message.user = object.user ?? "";
-    message.projectId = object.projectId ?? 0;
+  fromPartial<I extends Exact<DeepPartial<UpdateCollectionMetadatasRequest>, I>>(
+    object: I,
+  ): UpdateCollectionMetadatasRequest {
+    const message = createBaseUpdateCollectionMetadatasRequest();
+    message.sender = object.sender ?? "";
     message.networkId = object.networkId ?? "";
+    message.projectId = object.projectId ?? 0;
     message.metadatas = object.metadatas?.map((e) => Metadata.fromPartial(e)) || [];
     return message;
   },
 };
 
-function createBaseCalculateMerkleRootResponse(): CalculateMerkleRootResponse {
+function createBaseUpdateCollectionMetadatasResponse(): UpdateCollectionMetadatasResponse {
   return { merkleRoot: "" };
 }
 
-export const CalculateMerkleRootResponse = {
-  encode(message: CalculateMerkleRootResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const UpdateCollectionMetadatasResponse = {
+  encode(message: UpdateCollectionMetadatasResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.merkleRoot !== "") {
       writer.uint32(10).string(message.merkleRoot);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CalculateMerkleRootResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateCollectionMetadatasResponse {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCalculateMerkleRootResponse();
+    const message = createBaseUpdateCollectionMetadatasResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -245,11 +287,11 @@ export const CalculateMerkleRootResponse = {
     return message;
   },
 
-  fromJSON(object: any): CalculateMerkleRootResponse {
+  fromJSON(object: any): UpdateCollectionMetadatasResponse {
     return { merkleRoot: isSet(object.merkleRoot) ? globalThis.String(object.merkleRoot) : "" };
   },
 
-  toJSON(message: CalculateMerkleRootResponse): unknown {
+  toJSON(message: UpdateCollectionMetadatasResponse): unknown {
     const obj: any = {};
     if (message.merkleRoot !== "") {
       obj.merkleRoot = message.merkleRoot;
@@ -257,41 +299,39 @@ export const CalculateMerkleRootResponse = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<CalculateMerkleRootResponse>, I>>(base?: I): CalculateMerkleRootResponse {
-    return CalculateMerkleRootResponse.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<UpdateCollectionMetadatasResponse>, I>>(
+    base?: I,
+  ): UpdateCollectionMetadatasResponse {
+    return UpdateCollectionMetadatasResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<CalculateMerkleRootResponse>, I>>(object: I): CalculateMerkleRootResponse {
-    const message = createBaseCalculateMerkleRootResponse();
+  fromPartial<I extends Exact<DeepPartial<UpdateCollectionMetadatasResponse>, I>>(
+    object: I,
+  ): UpdateCollectionMetadatasResponse {
+    const message = createBaseUpdateCollectionMetadatasResponse();
     message.merkleRoot = object.merkleRoot ?? "";
     return message;
   },
 };
 
-function createBaseUploadMetadataRequest(): UploadMetadataRequest {
-  return { user: "", projectId: 0, networkId: "", metadatas: [] };
+function createBaseCalculateCollectionMerkleRootRequest(): CalculateCollectionMerkleRootRequest {
+  return { sender: "", metadatas: [] };
 }
 
-export const UploadMetadataRequest = {
-  encode(message: UploadMetadataRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.user !== "") {
-      writer.uint32(10).string(message.user);
-    }
-    if (message.projectId !== 0) {
-      writer.uint32(16).uint32(message.projectId);
-    }
-    if (message.networkId !== "") {
-      writer.uint32(26).string(message.networkId);
+export const CalculateCollectionMerkleRootRequest = {
+  encode(message: CalculateCollectionMerkleRootRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
     }
     for (const v of message.metadatas) {
-      Metadata.encode(v!, writer.uint32(34).fork()).ldelim();
+      Metadata.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): UploadMetadataRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): CalculateCollectionMerkleRootRequest {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUploadMetadataRequest();
+    const message = createBaseCalculateCollectionMerkleRootRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -300,24 +340,10 @@ export const UploadMetadataRequest = {
             break;
           }
 
-          message.user = reader.string();
+          message.sender = reader.string();
           continue;
         case 2:
-          if (tag !== 16) {
-            break;
-          }
-
-          message.projectId = reader.uint32();
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.networkId = reader.string();
-          continue;
-        case 4:
-          if (tag !== 34) {
+          if (tag !== 18) {
             break;
           }
 
@@ -332,27 +358,19 @@ export const UploadMetadataRequest = {
     return message;
   },
 
-  fromJSON(object: any): UploadMetadataRequest {
+  fromJSON(object: any): CalculateCollectionMerkleRootRequest {
     return {
-      user: isSet(object.user) ? globalThis.String(object.user) : "",
-      projectId: isSet(object.projectId) ? globalThis.Number(object.projectId) : 0,
-      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      sender: isSet(object.sender) ? globalThis.String(object.sender) : "",
       metadatas: globalThis.Array.isArray(object?.metadatas)
         ? object.metadatas.map((e: any) => Metadata.fromJSON(e))
         : [],
     };
   },
 
-  toJSON(message: UploadMetadataRequest): unknown {
+  toJSON(message: CalculateCollectionMerkleRootRequest): unknown {
     const obj: any = {};
-    if (message.user !== "") {
-      obj.user = message.user;
-    }
-    if (message.projectId !== 0) {
-      obj.projectId = Math.round(message.projectId);
-    }
-    if (message.networkId !== "") {
-      obj.networkId = message.networkId;
+    if (message.sender !== "") {
+      obj.sender = message.sender;
     }
     if (message.metadatas?.length) {
       obj.metadatas = message.metadatas.map((e) => Metadata.toJSON(e));
@@ -360,35 +378,37 @@ export const UploadMetadataRequest = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<UploadMetadataRequest>, I>>(base?: I): UploadMetadataRequest {
-    return UploadMetadataRequest.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<CalculateCollectionMerkleRootRequest>, I>>(
+    base?: I,
+  ): CalculateCollectionMerkleRootRequest {
+    return CalculateCollectionMerkleRootRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<UploadMetadataRequest>, I>>(object: I): UploadMetadataRequest {
-    const message = createBaseUploadMetadataRequest();
-    message.user = object.user ?? "";
-    message.projectId = object.projectId ?? 0;
-    message.networkId = object.networkId ?? "";
+  fromPartial<I extends Exact<DeepPartial<CalculateCollectionMerkleRootRequest>, I>>(
+    object: I,
+  ): CalculateCollectionMerkleRootRequest {
+    const message = createBaseCalculateCollectionMerkleRootRequest();
+    message.sender = object.sender ?? "";
     message.metadatas = object.metadatas?.map((e) => Metadata.fromPartial(e)) || [];
     return message;
   },
 };
 
-function createBaseUploadMetadataResponse(): UploadMetadataResponse {
+function createBaseCalculateCollectionMerkleRootResponse(): CalculateCollectionMerkleRootResponse {
   return { merkleRoot: "" };
 }
 
-export const UploadMetadataResponse = {
-  encode(message: UploadMetadataResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const CalculateCollectionMerkleRootResponse = {
+  encode(message: CalculateCollectionMerkleRootResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.merkleRoot !== "") {
       writer.uint32(10).string(message.merkleRoot);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): UploadMetadataResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): CalculateCollectionMerkleRootResponse {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUploadMetadataResponse();
+    const message = createBaseCalculateCollectionMerkleRootResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -408,11 +428,11 @@ export const UploadMetadataResponse = {
     return message;
   },
 
-  fromJSON(object: any): UploadMetadataResponse {
+  fromJSON(object: any): CalculateCollectionMerkleRootResponse {
     return { merkleRoot: isSet(object.merkleRoot) ? globalThis.String(object.merkleRoot) : "" };
   },
 
-  toJSON(message: UploadMetadataResponse): unknown {
+  toJSON(message: CalculateCollectionMerkleRootResponse): unknown {
     const obj: any = {};
     if (message.merkleRoot !== "") {
       obj.merkleRoot = message.merkleRoot;
@@ -420,12 +440,591 @@ export const UploadMetadataResponse = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<UploadMetadataResponse>, I>>(base?: I): UploadMetadataResponse {
-    return UploadMetadataResponse.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<CalculateCollectionMerkleRootResponse>, I>>(
+    base?: I,
+  ): CalculateCollectionMerkleRootResponse {
+    return CalculateCollectionMerkleRootResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<UploadMetadataResponse>, I>>(object: I): UploadMetadataResponse {
-    const message = createBaseUploadMetadataResponse();
+  fromPartial<I extends Exact<DeepPartial<CalculateCollectionMerkleRootResponse>, I>>(
+    object: I,
+  ): CalculateCollectionMerkleRootResponse {
+    const message = createBaseCalculateCollectionMerkleRootResponse();
     message.merkleRoot = object.merkleRoot ?? "";
+    return message;
+  },
+};
+
+function createBaseTokenMetadataRequest(): TokenMetadataRequest {
+  return { sender: "", networkId: "", projectId: 0, tokenId: 0 };
+}
+
+export const TokenMetadataRequest = {
+  encode(message: TokenMetadataRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(18).string(message.networkId);
+    }
+    if (message.projectId !== 0) {
+      writer.uint32(24).uint32(message.projectId);
+    }
+    if (message.tokenId !== 0) {
+      writer.uint32(32).uint32(message.tokenId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TokenMetadataRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTokenMetadataRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.projectId = reader.uint32();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.tokenId = reader.uint32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TokenMetadataRequest {
+    return {
+      sender: isSet(object.sender) ? globalThis.String(object.sender) : "",
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      projectId: isSet(object.projectId) ? globalThis.Number(object.projectId) : 0,
+      tokenId: isSet(object.tokenId) ? globalThis.Number(object.tokenId) : 0,
+    };
+  },
+
+  toJSON(message: TokenMetadataRequest): unknown {
+    const obj: any = {};
+    if (message.sender !== "") {
+      obj.sender = message.sender;
+    }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    if (message.projectId !== 0) {
+      obj.projectId = Math.round(message.projectId);
+    }
+    if (message.tokenId !== 0) {
+      obj.tokenId = Math.round(message.tokenId);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<TokenMetadataRequest>, I>>(base?: I): TokenMetadataRequest {
+    return TokenMetadataRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<TokenMetadataRequest>, I>>(object: I): TokenMetadataRequest {
+    const message = createBaseTokenMetadataRequest();
+    message.sender = object.sender ?? "";
+    message.networkId = object.networkId ?? "";
+    message.projectId = object.projectId ?? 0;
+    message.tokenId = object.tokenId ?? 0;
+    return message;
+  },
+};
+
+function createBaseTokenMetadataResponse(): TokenMetadataResponse {
+  return { merkleRoot: "", metadata: undefined, merkleProof: [] };
+}
+
+export const TokenMetadataResponse = {
+  encode(message: TokenMetadataResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.merkleRoot !== "") {
+      writer.uint32(10).string(message.merkleRoot);
+    }
+    if (message.metadata !== undefined) {
+      Metadata.encode(message.metadata, writer.uint32(18).fork()).ldelim();
+    }
+    for (const v of message.merkleProof) {
+      writer.uint32(26).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TokenMetadataResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTokenMetadataResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.merkleRoot = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.metadata = Metadata.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.merkleProof.push(reader.string());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TokenMetadataResponse {
+    return {
+      merkleRoot: isSet(object.merkleRoot) ? globalThis.String(object.merkleRoot) : "",
+      metadata: isSet(object.metadata) ? Metadata.fromJSON(object.metadata) : undefined,
+      merkleProof: globalThis.Array.isArray(object?.merkleProof)
+        ? object.merkleProof.map((e: any) => globalThis.String(e))
+        : [],
+    };
+  },
+
+  toJSON(message: TokenMetadataResponse): unknown {
+    const obj: any = {};
+    if (message.merkleRoot !== "") {
+      obj.merkleRoot = message.merkleRoot;
+    }
+    if (message.metadata !== undefined) {
+      obj.metadata = Metadata.toJSON(message.metadata);
+    }
+    if (message.merkleProof?.length) {
+      obj.merkleProof = message.merkleProof;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<TokenMetadataResponse>, I>>(base?: I): TokenMetadataResponse {
+    return TokenMetadataResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<TokenMetadataResponse>, I>>(object: I): TokenMetadataResponse {
+    const message = createBaseTokenMetadataResponse();
+    message.merkleRoot = object.merkleRoot ?? "";
+    message.metadata = (object.metadata !== undefined && object.metadata !== null)
+      ? Metadata.fromPartial(object.metadata)
+      : undefined;
+    message.merkleProof = object.merkleProof?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseUpdateCollectionWhitelistsRequest(): UpdateCollectionWhitelistsRequest {
+  return { sender: "", networkId: "", projectId: 0, whitelistMintInfos: [] };
+}
+
+export const UpdateCollectionWhitelistsRequest = {
+  encode(message: UpdateCollectionWhitelistsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(18).string(message.networkId);
+    }
+    if (message.projectId !== 0) {
+      writer.uint32(24).uint32(message.projectId);
+    }
+    for (const v of message.whitelistMintInfos) {
+      WhitelistMintInfo.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateCollectionWhitelistsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateCollectionWhitelistsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.projectId = reader.uint32();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.whitelistMintInfos.push(WhitelistMintInfo.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateCollectionWhitelistsRequest {
+    return {
+      sender: isSet(object.sender) ? globalThis.String(object.sender) : "",
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      projectId: isSet(object.projectId) ? globalThis.Number(object.projectId) : 0,
+      whitelistMintInfos: globalThis.Array.isArray(object?.whitelistMintInfos)
+        ? object.whitelistMintInfos.map((e: any) => WhitelistMintInfo.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: UpdateCollectionWhitelistsRequest): unknown {
+    const obj: any = {};
+    if (message.sender !== "") {
+      obj.sender = message.sender;
+    }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    if (message.projectId !== 0) {
+      obj.projectId = Math.round(message.projectId);
+    }
+    if (message.whitelistMintInfos?.length) {
+      obj.whitelistMintInfos = message.whitelistMintInfos.map((e) => WhitelistMintInfo.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UpdateCollectionWhitelistsRequest>, I>>(
+    base?: I,
+  ): UpdateCollectionWhitelistsRequest {
+    return UpdateCollectionWhitelistsRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UpdateCollectionWhitelistsRequest>, I>>(
+    object: I,
+  ): UpdateCollectionWhitelistsRequest {
+    const message = createBaseUpdateCollectionWhitelistsRequest();
+    message.sender = object.sender ?? "";
+    message.networkId = object.networkId ?? "";
+    message.projectId = object.projectId ?? 0;
+    message.whitelistMintInfos = object.whitelistMintInfos?.map((e) => WhitelistMintInfo.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseUpdateCollectionWhitelistsResponse(): UpdateCollectionWhitelistsResponse {
+  return { merkleRoots: [] };
+}
+
+export const UpdateCollectionWhitelistsResponse = {
+  encode(message: UpdateCollectionWhitelistsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.merkleRoots) {
+      writer.uint32(10).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateCollectionWhitelistsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateCollectionWhitelistsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.merkleRoots.push(reader.string());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateCollectionWhitelistsResponse {
+    return {
+      merkleRoots: globalThis.Array.isArray(object?.merkleRoots)
+        ? object.merkleRoots.map((e: any) => globalThis.String(e))
+        : [],
+    };
+  },
+
+  toJSON(message: UpdateCollectionWhitelistsResponse): unknown {
+    const obj: any = {};
+    if (message.merkleRoots?.length) {
+      obj.merkleRoots = message.merkleRoots;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UpdateCollectionWhitelistsResponse>, I>>(
+    base?: I,
+  ): UpdateCollectionWhitelistsResponse {
+    return UpdateCollectionWhitelistsResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UpdateCollectionWhitelistsResponse>, I>>(
+    object: I,
+  ): UpdateCollectionWhitelistsResponse {
+    const message = createBaseUpdateCollectionWhitelistsResponse();
+    message.merkleRoots = object.merkleRoots?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseWhitelistedAddressMerkleInfoRequest(): WhitelistedAddressMerkleInfoRequest {
+  return { sender: "", networkId: "", projectId: 0, whitelistId: 0, address: "" };
+}
+
+export const WhitelistedAddressMerkleInfoRequest = {
+  encode(message: WhitelistedAddressMerkleInfoRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(18).string(message.networkId);
+    }
+    if (message.projectId !== 0) {
+      writer.uint32(24).uint32(message.projectId);
+    }
+    if (message.whitelistId !== 0) {
+      writer.uint32(32).uint32(message.whitelistId);
+    }
+    if (message.address !== "") {
+      writer.uint32(42).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WhitelistedAddressMerkleInfoRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWhitelistedAddressMerkleInfoRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.projectId = reader.uint32();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.whitelistId = reader.uint32();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WhitelistedAddressMerkleInfoRequest {
+    return {
+      sender: isSet(object.sender) ? globalThis.String(object.sender) : "",
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      projectId: isSet(object.projectId) ? globalThis.Number(object.projectId) : 0,
+      whitelistId: isSet(object.whitelistId) ? globalThis.Number(object.whitelistId) : 0,
+      address: isSet(object.address) ? globalThis.String(object.address) : "",
+    };
+  },
+
+  toJSON(message: WhitelistedAddressMerkleInfoRequest): unknown {
+    const obj: any = {};
+    if (message.sender !== "") {
+      obj.sender = message.sender;
+    }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    if (message.projectId !== 0) {
+      obj.projectId = Math.round(message.projectId);
+    }
+    if (message.whitelistId !== 0) {
+      obj.whitelistId = Math.round(message.whitelistId);
+    }
+    if (message.address !== "") {
+      obj.address = message.address;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<WhitelistedAddressMerkleInfoRequest>, I>>(
+    base?: I,
+  ): WhitelistedAddressMerkleInfoRequest {
+    return WhitelistedAddressMerkleInfoRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<WhitelistedAddressMerkleInfoRequest>, I>>(
+    object: I,
+  ): WhitelistedAddressMerkleInfoRequest {
+    const message = createBaseWhitelistedAddressMerkleInfoRequest();
+    message.sender = object.sender ?? "";
+    message.networkId = object.networkId ?? "";
+    message.projectId = object.projectId ?? 0;
+    message.whitelistId = object.whitelistId ?? 0;
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+function createBaseWhitelistedAddressMerkleInfoResponse(): WhitelistedAddressMerkleInfoResponse {
+  return { merkleRoot: "", merkleProof: [] };
+}
+
+export const WhitelistedAddressMerkleInfoResponse = {
+  encode(message: WhitelistedAddressMerkleInfoResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.merkleRoot !== "") {
+      writer.uint32(10).string(message.merkleRoot);
+    }
+    for (const v of message.merkleProof) {
+      writer.uint32(18).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WhitelistedAddressMerkleInfoResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWhitelistedAddressMerkleInfoResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.merkleRoot = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.merkleProof.push(reader.string());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WhitelistedAddressMerkleInfoResponse {
+    return {
+      merkleRoot: isSet(object.merkleRoot) ? globalThis.String(object.merkleRoot) : "",
+      merkleProof: globalThis.Array.isArray(object?.merkleProof)
+        ? object.merkleProof.map((e: any) => globalThis.String(e))
+        : [],
+    };
+  },
+
+  toJSON(message: WhitelistedAddressMerkleInfoResponse): unknown {
+    const obj: any = {};
+    if (message.merkleRoot !== "") {
+      obj.merkleRoot = message.merkleRoot;
+    }
+    if (message.merkleProof?.length) {
+      obj.merkleProof = message.merkleProof;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<WhitelistedAddressMerkleInfoResponse>, I>>(
+    base?: I,
+  ): WhitelistedAddressMerkleInfoResponse {
+    return WhitelistedAddressMerkleInfoResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<WhitelistedAddressMerkleInfoResponse>, I>>(
+    object: I,
+  ): WhitelistedAddressMerkleInfoResponse {
+    const message = createBaseWhitelistedAddressMerkleInfoResponse();
+    message.merkleRoot = object.merkleRoot ?? "";
+    message.merkleProof = object.merkleProof?.map((e) => e) || [];
     return message;
   },
 };
@@ -764,7 +1363,7 @@ function createBaseCollection(): Collection {
     teamDesc: "",
     teamLink: "",
     partners: "",
-    investedAmount: 0,
+    investmentDesc: "",
     investmentLink: "",
     whitepaperLink: "",
     roadmapLink: "",
@@ -774,18 +1373,12 @@ function createBaseCollection(): Collection {
     expectedPublicMintPrice: 0,
     expectedMintDate: 0,
     escrowMintProceedsPeriod: 0,
-    doxState: "",
+    isDox: false,
     daoWhitelistCount: 0,
     tokensCount: 0,
     unitPrice: 0,
     limitPerAddress: 0,
     startTime: 0,
-    whitelistAddresses: [],
-    whitelistUnitPrice: 0,
-    whitelistLimitPerAddress: "",
-    whitelistMemberLimit: 0,
-    whitelistStartTime: 0,
-    whitelistEndTime: 0,
     royaltyAddress: "",
     royaltyPercentage: 0,
     baseTokenUri: "",
@@ -850,8 +1443,8 @@ export const Collection = {
     if (message.partners !== "") {
       writer.uint32(146).string(message.partners);
     }
-    if (message.investedAmount !== 0) {
-      writer.uint32(152).uint64(message.investedAmount);
+    if (message.investmentDesc !== "") {
+      writer.uint32(154).string(message.investmentDesc);
     }
     if (message.investmentLink !== "") {
       writer.uint32(162).string(message.investmentLink);
@@ -880,8 +1473,8 @@ export const Collection = {
     if (message.escrowMintProceedsPeriod !== 0) {
       writer.uint32(224).uint64(message.escrowMintProceedsPeriod);
     }
-    if (message.doxState !== "") {
-      writer.uint32(234).string(message.doxState);
+    if (message.isDox === true) {
+      writer.uint32(232).bool(message.isDox);
     }
     if (message.daoWhitelistCount !== 0) {
       writer.uint32(240).uint32(message.daoWhitelistCount);
@@ -898,38 +1491,20 @@ export const Collection = {
     if (message.startTime !== 0) {
       writer.uint32(272).uint64(message.startTime);
     }
-    for (const v of message.whitelistAddresses) {
-      writer.uint32(282).string(v!);
-    }
-    if (message.whitelistUnitPrice !== 0) {
-      writer.uint32(288).uint64(message.whitelistUnitPrice);
-    }
-    if (message.whitelistLimitPerAddress !== "") {
-      writer.uint32(298).string(message.whitelistLimitPerAddress);
-    }
-    if (message.whitelistMemberLimit !== 0) {
-      writer.uint32(304).uint32(message.whitelistMemberLimit);
-    }
-    if (message.whitelistStartTime !== 0) {
-      writer.uint32(312).uint64(message.whitelistStartTime);
-    }
-    if (message.whitelistEndTime !== 0) {
-      writer.uint32(320).uint64(message.whitelistEndTime);
-    }
     if (message.royaltyAddress !== "") {
-      writer.uint32(330).string(message.royaltyAddress);
+      writer.uint32(282).string(message.royaltyAddress);
     }
     if (message.royaltyPercentage !== 0) {
-      writer.uint32(336).uint32(message.royaltyPercentage);
+      writer.uint32(288).uint32(message.royaltyPercentage);
     }
     if (message.baseTokenUri !== "") {
-      writer.uint32(346).string(message.baseTokenUri);
+      writer.uint32(298).string(message.baseTokenUri);
     }
     if (message.merkleRoot !== "") {
-      writer.uint32(354).string(message.merkleRoot);
+      writer.uint32(306).string(message.merkleRoot);
     }
     if (message.deployedAddress !== "") {
-      writer.uint32(362).string(message.deployedAddress);
+      writer.uint32(314).string(message.deployedAddress);
     }
     return writer;
   },
@@ -1068,11 +1643,11 @@ export const Collection = {
           message.partners = reader.string();
           continue;
         case 19:
-          if (tag !== 152) {
+          if (tag !== 154) {
             break;
           }
 
-          message.investedAmount = longToNumber(reader.uint64() as Long);
+          message.investmentDesc = reader.string();
           continue;
         case 20:
           if (tag !== 162) {
@@ -1138,11 +1713,11 @@ export const Collection = {
           message.escrowMintProceedsPeriod = longToNumber(reader.uint64() as Long);
           continue;
         case 29:
-          if (tag !== 234) {
+          if (tag !== 232) {
             break;
           }
 
-          message.doxState = reader.string();
+          message.isDox = reader.bool();
           continue;
         case 30:
           if (tag !== 240) {
@@ -1184,73 +1759,31 @@ export const Collection = {
             break;
           }
 
-          message.whitelistAddresses.push(reader.string());
+          message.royaltyAddress = reader.string();
           continue;
         case 36:
           if (tag !== 288) {
             break;
           }
 
-          message.whitelistUnitPrice = longToNumber(reader.uint64() as Long);
+          message.royaltyPercentage = reader.uint32();
           continue;
         case 37:
           if (tag !== 298) {
             break;
           }
 
-          message.whitelistLimitPerAddress = reader.string();
-          continue;
-        case 38:
-          if (tag !== 304) {
-            break;
-          }
-
-          message.whitelistMemberLimit = reader.uint32();
-          continue;
-        case 39:
-          if (tag !== 312) {
-            break;
-          }
-
-          message.whitelistStartTime = longToNumber(reader.uint64() as Long);
-          continue;
-        case 40:
-          if (tag !== 320) {
-            break;
-          }
-
-          message.whitelistEndTime = longToNumber(reader.uint64() as Long);
-          continue;
-        case 41:
-          if (tag !== 330) {
-            break;
-          }
-
-          message.royaltyAddress = reader.string();
-          continue;
-        case 42:
-          if (tag !== 336) {
-            break;
-          }
-
-          message.royaltyPercentage = reader.uint32();
-          continue;
-        case 43:
-          if (tag !== 346) {
-            break;
-          }
-
           message.baseTokenUri = reader.string();
           continue;
-        case 44:
-          if (tag !== 354) {
+        case 38:
+          if (tag !== 306) {
             break;
           }
 
           message.merkleRoot = reader.string();
           continue;
-        case 45:
-          if (tag !== 362) {
+        case 39:
+          if (tag !== 314) {
             break;
           }
 
@@ -1285,7 +1818,7 @@ export const Collection = {
       teamDesc: isSet(object.teamDesc) ? globalThis.String(object.teamDesc) : "",
       teamLink: isSet(object.teamLink) ? globalThis.String(object.teamLink) : "",
       partners: isSet(object.partners) ? globalThis.String(object.partners) : "",
-      investedAmount: isSet(object.investedAmount) ? globalThis.Number(object.investedAmount) : 0,
+      investmentDesc: isSet(object.investmentDesc) ? globalThis.String(object.investmentDesc) : "",
       investmentLink: isSet(object.investmentLink) ? globalThis.String(object.investmentLink) : "",
       whitepaperLink: isSet(object.whitepaperLink) ? globalThis.String(object.whitepaperLink) : "",
       roadmapLink: isSet(object.roadmapLink) ? globalThis.String(object.roadmapLink) : "",
@@ -1299,22 +1832,12 @@ export const Collection = {
       escrowMintProceedsPeriod: isSet(object.escrowMintProceedsPeriod)
         ? globalThis.Number(object.escrowMintProceedsPeriod)
         : 0,
-      doxState: isSet(object.doxState) ? globalThis.String(object.doxState) : "",
+      isDox: isSet(object.isDox) ? globalThis.Boolean(object.isDox) : false,
       daoWhitelistCount: isSet(object.daoWhitelistCount) ? globalThis.Number(object.daoWhitelistCount) : 0,
       tokensCount: isSet(object.tokensCount) ? globalThis.Number(object.tokensCount) : 0,
       unitPrice: isSet(object.unitPrice) ? globalThis.Number(object.unitPrice) : 0,
       limitPerAddress: isSet(object.limitPerAddress) ? globalThis.Number(object.limitPerAddress) : 0,
       startTime: isSet(object.startTime) ? globalThis.Number(object.startTime) : 0,
-      whitelistAddresses: globalThis.Array.isArray(object?.whitelistAddresses)
-        ? object.whitelistAddresses.map((e: any) => globalThis.String(e))
-        : [],
-      whitelistUnitPrice: isSet(object.whitelistUnitPrice) ? globalThis.Number(object.whitelistUnitPrice) : 0,
-      whitelistLimitPerAddress: isSet(object.whitelistLimitPerAddress)
-        ? globalThis.String(object.whitelistLimitPerAddress)
-        : "",
-      whitelistMemberLimit: isSet(object.whitelistMemberLimit) ? globalThis.Number(object.whitelistMemberLimit) : 0,
-      whitelistStartTime: isSet(object.whitelistStartTime) ? globalThis.Number(object.whitelistStartTime) : 0,
-      whitelistEndTime: isSet(object.whitelistEndTime) ? globalThis.Number(object.whitelistEndTime) : 0,
       royaltyAddress: isSet(object.royaltyAddress) ? globalThis.String(object.royaltyAddress) : "",
       royaltyPercentage: isSet(object.royaltyPercentage) ? globalThis.Number(object.royaltyPercentage) : 0,
       baseTokenUri: isSet(object.baseTokenUri) ? globalThis.String(object.baseTokenUri) : "",
@@ -1379,8 +1902,8 @@ export const Collection = {
     if (message.partners !== "") {
       obj.partners = message.partners;
     }
-    if (message.investedAmount !== 0) {
-      obj.investedAmount = Math.round(message.investedAmount);
+    if (message.investmentDesc !== "") {
+      obj.investmentDesc = message.investmentDesc;
     }
     if (message.investmentLink !== "") {
       obj.investmentLink = message.investmentLink;
@@ -1409,8 +1932,8 @@ export const Collection = {
     if (message.escrowMintProceedsPeriod !== 0) {
       obj.escrowMintProceedsPeriod = Math.round(message.escrowMintProceedsPeriod);
     }
-    if (message.doxState !== "") {
-      obj.doxState = message.doxState;
+    if (message.isDox === true) {
+      obj.isDox = message.isDox;
     }
     if (message.daoWhitelistCount !== 0) {
       obj.daoWhitelistCount = Math.round(message.daoWhitelistCount);
@@ -1426,24 +1949,6 @@ export const Collection = {
     }
     if (message.startTime !== 0) {
       obj.startTime = Math.round(message.startTime);
-    }
-    if (message.whitelistAddresses?.length) {
-      obj.whitelistAddresses = message.whitelistAddresses;
-    }
-    if (message.whitelistUnitPrice !== 0) {
-      obj.whitelistUnitPrice = Math.round(message.whitelistUnitPrice);
-    }
-    if (message.whitelistLimitPerAddress !== "") {
-      obj.whitelistLimitPerAddress = message.whitelistLimitPerAddress;
-    }
-    if (message.whitelistMemberLimit !== 0) {
-      obj.whitelistMemberLimit = Math.round(message.whitelistMemberLimit);
-    }
-    if (message.whitelistStartTime !== 0) {
-      obj.whitelistStartTime = Math.round(message.whitelistStartTime);
-    }
-    if (message.whitelistEndTime !== 0) {
-      obj.whitelistEndTime = Math.round(message.whitelistEndTime);
     }
     if (message.royaltyAddress !== "") {
       obj.royaltyAddress = message.royaltyAddress;
@@ -1486,7 +1991,7 @@ export const Collection = {
     message.teamDesc = object.teamDesc ?? "";
     message.teamLink = object.teamLink ?? "";
     message.partners = object.partners ?? "";
-    message.investedAmount = object.investedAmount ?? 0;
+    message.investmentDesc = object.investmentDesc ?? "";
     message.investmentLink = object.investmentLink ?? "";
     message.whitepaperLink = object.whitepaperLink ?? "";
     message.roadmapLink = object.roadmapLink ?? "";
@@ -1496,18 +2001,12 @@ export const Collection = {
     message.expectedPublicMintPrice = object.expectedPublicMintPrice ?? 0;
     message.expectedMintDate = object.expectedMintDate ?? 0;
     message.escrowMintProceedsPeriod = object.escrowMintProceedsPeriod ?? 0;
-    message.doxState = object.doxState ?? "";
+    message.isDox = object.isDox ?? false;
     message.daoWhitelistCount = object.daoWhitelistCount ?? 0;
     message.tokensCount = object.tokensCount ?? 0;
     message.unitPrice = object.unitPrice ?? 0;
     message.limitPerAddress = object.limitPerAddress ?? 0;
     message.startTime = object.startTime ?? 0;
-    message.whitelistAddresses = object.whitelistAddresses?.map((e) => e) || [];
-    message.whitelistUnitPrice = object.whitelistUnitPrice ?? 0;
-    message.whitelistLimitPerAddress = object.whitelistLimitPerAddress ?? "";
-    message.whitelistMemberLimit = object.whitelistMemberLimit ?? 0;
-    message.whitelistStartTime = object.whitelistStartTime ?? 0;
-    message.whitelistEndTime = object.whitelistEndTime ?? 0;
     message.royaltyAddress = object.royaltyAddress ?? "";
     message.royaltyPercentage = object.royaltyPercentage ?? 0;
     message.baseTokenUri = object.baseTokenUri ?? "";
@@ -1517,15 +2016,175 @@ export const Collection = {
   },
 };
 
+function createBaseWhitelistMintInfo(): WhitelistMintInfo {
+  return { addresses: [], unitPrice: 0, denom: "", limitPerAddress: 0, addressesCount: 0, startTime: 0, endTime: 0 };
+}
+
+export const WhitelistMintInfo = {
+  encode(message: WhitelistMintInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.addresses) {
+      writer.uint32(10).string(v!);
+    }
+    if (message.unitPrice !== 0) {
+      writer.uint32(16).uint64(message.unitPrice);
+    }
+    if (message.denom !== "") {
+      writer.uint32(26).string(message.denom);
+    }
+    if (message.limitPerAddress !== 0) {
+      writer.uint32(32).uint32(message.limitPerAddress);
+    }
+    if (message.addressesCount !== 0) {
+      writer.uint32(40).uint32(message.addressesCount);
+    }
+    if (message.startTime !== 0) {
+      writer.uint32(48).uint64(message.startTime);
+    }
+    if (message.endTime !== 0) {
+      writer.uint32(56).uint64(message.endTime);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WhitelistMintInfo {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWhitelistMintInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.addresses.push(reader.string());
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.unitPrice = longToNumber(reader.uint64() as Long);
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.denom = reader.string();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.limitPerAddress = reader.uint32();
+          continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.addressesCount = reader.uint32();
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.startTime = longToNumber(reader.uint64() as Long);
+          continue;
+        case 7:
+          if (tag !== 56) {
+            break;
+          }
+
+          message.endTime = longToNumber(reader.uint64() as Long);
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WhitelistMintInfo {
+    return {
+      addresses: globalThis.Array.isArray(object?.addresses)
+        ? object.addresses.map((e: any) => globalThis.String(e))
+        : [],
+      unitPrice: isSet(object.unitPrice) ? globalThis.Number(object.unitPrice) : 0,
+      denom: isSet(object.denom) ? globalThis.String(object.denom) : "",
+      limitPerAddress: isSet(object.limitPerAddress) ? globalThis.Number(object.limitPerAddress) : 0,
+      addressesCount: isSet(object.addressesCount) ? globalThis.Number(object.addressesCount) : 0,
+      startTime: isSet(object.startTime) ? globalThis.Number(object.startTime) : 0,
+      endTime: isSet(object.endTime) ? globalThis.Number(object.endTime) : 0,
+    };
+  },
+
+  toJSON(message: WhitelistMintInfo): unknown {
+    const obj: any = {};
+    if (message.addresses?.length) {
+      obj.addresses = message.addresses;
+    }
+    if (message.unitPrice !== 0) {
+      obj.unitPrice = Math.round(message.unitPrice);
+    }
+    if (message.denom !== "") {
+      obj.denom = message.denom;
+    }
+    if (message.limitPerAddress !== 0) {
+      obj.limitPerAddress = Math.round(message.limitPerAddress);
+    }
+    if (message.addressesCount !== 0) {
+      obj.addressesCount = Math.round(message.addressesCount);
+    }
+    if (message.startTime !== 0) {
+      obj.startTime = Math.round(message.startTime);
+    }
+    if (message.endTime !== 0) {
+      obj.endTime = Math.round(message.endTime);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<WhitelistMintInfo>, I>>(base?: I): WhitelistMintInfo {
+    return WhitelistMintInfo.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<WhitelistMintInfo>, I>>(object: I): WhitelistMintInfo {
+    const message = createBaseWhitelistMintInfo();
+    message.addresses = object.addresses?.map((e) => e) || [];
+    message.unitPrice = object.unitPrice ?? 0;
+    message.denom = object.denom ?? "";
+    message.limitPerAddress = object.limitPerAddress ?? 0;
+    message.addressesCount = object.addressesCount ?? 0;
+    message.startTime = object.startTime ?? 0;
+    message.endTime = object.endTime ?? 0;
+    return message;
+  },
+};
+
 export interface LaunchpadService {
-  UploadMetadata(
-    request: DeepPartial<UploadMetadataRequest>,
+  UpdateCollectionMetadatas(
+    request: DeepPartial<UpdateCollectionMetadatasRequest>,
     metadata?: grpc.Metadata,
-  ): Promise<UploadMetadataResponse>;
-  CalculateMerkleRoot(
-    request: DeepPartial<CalculateMerkleRootRequest>,
+  ): Promise<UpdateCollectionMetadatasResponse>;
+  CalculateCollectionMerkleRoot(
+    request: DeepPartial<CalculateCollectionMerkleRootRequest>,
     metadata?: grpc.Metadata,
-  ): Promise<CalculateMerkleRootResponse>;
+  ): Promise<CalculateCollectionMerkleRootResponse>;
+  UpdateCollectionWhitelists(
+    request: DeepPartial<UpdateCollectionWhitelistsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<UpdateCollectionWhitelistsResponse>;
+  TokenMetadata(request: DeepPartial<TokenMetadataRequest>, metadata?: grpc.Metadata): Promise<TokenMetadataResponse>;
+  WhitelistedAddressMerkleInfo(
+    request: DeepPartial<WhitelistedAddressMerkleInfoRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<WhitelistedAddressMerkleInfoResponse>;
 }
 
 export class LaunchpadServiceClientImpl implements LaunchpadService {
@@ -1533,24 +2192,57 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
 
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.UploadMetadata = this.UploadMetadata.bind(this);
-    this.CalculateMerkleRoot = this.CalculateMerkleRoot.bind(this);
+    this.UpdateCollectionMetadatas = this.UpdateCollectionMetadatas.bind(this);
+    this.CalculateCollectionMerkleRoot = this.CalculateCollectionMerkleRoot.bind(this);
+    this.UpdateCollectionWhitelists = this.UpdateCollectionWhitelists.bind(this);
+    this.TokenMetadata = this.TokenMetadata.bind(this);
+    this.WhitelistedAddressMerkleInfo = this.WhitelistedAddressMerkleInfo.bind(this);
   }
 
-  UploadMetadata(
-    request: DeepPartial<UploadMetadataRequest>,
+  UpdateCollectionMetadatas(
+    request: DeepPartial<UpdateCollectionMetadatasRequest>,
     metadata?: grpc.Metadata,
-  ): Promise<UploadMetadataResponse> {
-    return this.rpc.unary(LaunchpadServiceUploadMetadataDesc, UploadMetadataRequest.fromPartial(request), metadata);
-  }
-
-  CalculateMerkleRoot(
-    request: DeepPartial<CalculateMerkleRootRequest>,
-    metadata?: grpc.Metadata,
-  ): Promise<CalculateMerkleRootResponse> {
+  ): Promise<UpdateCollectionMetadatasResponse> {
     return this.rpc.unary(
-      LaunchpadServiceCalculateMerkleRootDesc,
-      CalculateMerkleRootRequest.fromPartial(request),
+      LaunchpadServiceUpdateCollectionMetadatasDesc,
+      UpdateCollectionMetadatasRequest.fromPartial(request),
+      metadata,
+    );
+  }
+
+  CalculateCollectionMerkleRoot(
+    request: DeepPartial<CalculateCollectionMerkleRootRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<CalculateCollectionMerkleRootResponse> {
+    return this.rpc.unary(
+      LaunchpadServiceCalculateCollectionMerkleRootDesc,
+      CalculateCollectionMerkleRootRequest.fromPartial(request),
+      metadata,
+    );
+  }
+
+  UpdateCollectionWhitelists(
+    request: DeepPartial<UpdateCollectionWhitelistsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<UpdateCollectionWhitelistsResponse> {
+    return this.rpc.unary(
+      LaunchpadServiceUpdateCollectionWhitelistsDesc,
+      UpdateCollectionWhitelistsRequest.fromPartial(request),
+      metadata,
+    );
+  }
+
+  TokenMetadata(request: DeepPartial<TokenMetadataRequest>, metadata?: grpc.Metadata): Promise<TokenMetadataResponse> {
+    return this.rpc.unary(LaunchpadServiceTokenMetadataDesc, TokenMetadataRequest.fromPartial(request), metadata);
+  }
+
+  WhitelistedAddressMerkleInfo(
+    request: DeepPartial<WhitelistedAddressMerkleInfoRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<WhitelistedAddressMerkleInfoResponse> {
+    return this.rpc.unary(
+      LaunchpadServiceWhitelistedAddressMerkleInfoDesc,
+      WhitelistedAddressMerkleInfoRequest.fromPartial(request),
       metadata,
     );
   }
@@ -1558,19 +2250,19 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
 
 export const LaunchpadServiceDesc = { serviceName: "launchpad.v1.LaunchpadService" };
 
-export const LaunchpadServiceUploadMetadataDesc: UnaryMethodDefinitionish = {
-  methodName: "UploadMetadata",
+export const LaunchpadServiceUpdateCollectionMetadatasDesc: UnaryMethodDefinitionish = {
+  methodName: "UpdateCollectionMetadatas",
   service: LaunchpadServiceDesc,
   requestStream: false,
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return UploadMetadataRequest.encode(this).finish();
+      return UpdateCollectionMetadatasRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = UploadMetadataResponse.decode(data);
+      const value = UpdateCollectionMetadatasResponse.decode(data);
       return {
         ...value,
         toObject() {
@@ -1581,19 +2273,88 @@ export const LaunchpadServiceUploadMetadataDesc: UnaryMethodDefinitionish = {
   } as any,
 };
 
-export const LaunchpadServiceCalculateMerkleRootDesc: UnaryMethodDefinitionish = {
-  methodName: "CalculateMerkleRoot",
+export const LaunchpadServiceCalculateCollectionMerkleRootDesc: UnaryMethodDefinitionish = {
+  methodName: "CalculateCollectionMerkleRoot",
   service: LaunchpadServiceDesc,
   requestStream: false,
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return CalculateMerkleRootRequest.encode(this).finish();
+      return CalculateCollectionMerkleRootRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = CalculateMerkleRootResponse.decode(data);
+      const value = CalculateCollectionMerkleRootResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const LaunchpadServiceUpdateCollectionWhitelistsDesc: UnaryMethodDefinitionish = {
+  methodName: "UpdateCollectionWhitelists",
+  service: LaunchpadServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return UpdateCollectionWhitelistsRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = UpdateCollectionWhitelistsResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const LaunchpadServiceTokenMetadataDesc: UnaryMethodDefinitionish = {
+  methodName: "TokenMetadata",
+  service: LaunchpadServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return TokenMetadataRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = TokenMetadataResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const LaunchpadServiceWhitelistedAddressMerkleInfoDesc: UnaryMethodDefinitionish = {
+  methodName: "WhitelistedAddressMerkleInfo",
+  service: LaunchpadServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return WhitelistedAddressMerkleInfoRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = WhitelistedAddressMerkleInfoResponse.decode(data);
       return {
         ...value,
         toObject() {

@@ -4,49 +4,64 @@ package launchpad.v1;
 option go_package = "./launchpadpb";
 
 service LaunchpadService {
-  rpc UpdateMetadatas(UpdateMetadatasRequest) returns (UpdateMetadatasResponse);
-  rpc TokenMerkleInfo(TokenMerkleInfoRequest) returns (TokenMerkleInfoResponse);
-  rpc UpdateWhitelists(UpdateWhitelistsRequest) returns(UpdateWhitelistsResponse);
+  rpc UpdateCollectionMetadatas(UpdateCollectionMetadatasRequest) returns (UpdateCollectionMetadatasResponse);
+  rpc CalculateCollectionMerkleRoot(CalculateCollectionMerkleRootRequest) returns (CalculateCollectionMerkleRootResponse);
+  rpc UpdateCollectionWhitelists(UpdateCollectionWhitelistsRequest) returns(UpdateCollectionWhitelistsResponse);
+
+  rpc TokenMetadata(TokenMetadataRequest) returns (TokenMetadataResponse);
   rpc WhitelistedAddressMerkleInfo(WhitelistedAddressMerkleInfoRequest) returns (WhitelistedAddressMerkleInfoResponse);
 }
 
-message UpdateMetadatasRequest {
-  string user = 1;
-  uint32 project_id = 2;
-  string network_id = 3;
+message UpdateCollectionMetadatasRequest {
+  string sender = 1;
+  string network_id = 2;
+  uint32 project_id = 3;
   repeated Metadata metadatas = 4;
 }
 
-message UpdateMetadatasResponse {
+message UpdateCollectionMetadatasResponse {
   string merkle_root = 1;
 }
 
-message TokenMerkleInfoRequest {
+message CalculateCollectionMerkleRootRequest {
   string sender = 1;
-  uint32 project_id = 2;
-  string token_id = 3;
+  repeated Metadata metadatas = 2;
 }
 
-message TokenMerkleInfoResponse {
+message CalculateCollectionMerkleRootResponse {
   string merkle_root = 1;
-  repeated string merkle_proof = 2;
 }
 
-message UpdateWhitelistsRequest {
+message TokenMetadataRequest {
   string sender = 1;
-  uint32 project_id = 2;
-  repeated WhitelistMintInfo whitelist_mint_infos = 35; 
+  string network_id = 2;
+  uint32 project_id = 3;
+  uint32 token_id = 4;
 }
 
-message UpdateWhitelistsResponse {
+message TokenMetadataResponse {
   string merkle_root = 1;
+  Metadata metadata = 2;
+  repeated string merkle_proof = 3;
+}
+
+message UpdateCollectionWhitelistsRequest {
+  string sender = 1;
+  string network_id = 2;
+  uint32 project_id = 3;
+  repeated WhitelistMintInfo whitelist_mint_infos = 4; 
+}
+
+message UpdateCollectionWhitelistsResponse {
+  repeated string merkle_roots = 1;
 }
 
 message WhitelistedAddressMerkleInfoRequest {
   string sender = 1;
-  uint32 project_id = 2;
-  uint32 whitelist_id = 3;
-  string address = 4;
+  string network_id = 2;
+  uint32 project_id = 3;
+  uint32 whitelist_id = 4;
+  string address = 5;
 }
 
 message WhitelistedAddressMerkleInfoResponse {

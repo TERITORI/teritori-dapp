@@ -22,8 +22,11 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LaunchpadServiceClient interface {
-	UploadMetadata(ctx context.Context, in *UploadMetadataRequest, opts ...grpc.CallOption) (*UploadMetadataResponse, error)
-	CalculateMerkleRoot(ctx context.Context, in *CalculateMerkleRootRequest, opts ...grpc.CallOption) (*CalculateMerkleRootResponse, error)
+	UpdateCollectionMetadatas(ctx context.Context, in *UpdateCollectionMetadatasRequest, opts ...grpc.CallOption) (*UpdateCollectionMetadatasResponse, error)
+	CalculateCollectionMerkleRoot(ctx context.Context, in *CalculateCollectionMerkleRootRequest, opts ...grpc.CallOption) (*CalculateCollectionMerkleRootResponse, error)
+	UpdateCollectionWhitelists(ctx context.Context, in *UpdateCollectionWhitelistsRequest, opts ...grpc.CallOption) (*UpdateCollectionWhitelistsResponse, error)
+	TokenMetadata(ctx context.Context, in *TokenMetadataRequest, opts ...grpc.CallOption) (*TokenMetadataResponse, error)
+	WhitelistedAddressMerkleInfo(ctx context.Context, in *WhitelistedAddressMerkleInfoRequest, opts ...grpc.CallOption) (*WhitelistedAddressMerkleInfoResponse, error)
 }
 
 type launchpadServiceClient struct {
@@ -34,18 +37,45 @@ func NewLaunchpadServiceClient(cc grpc.ClientConnInterface) LaunchpadServiceClie
 	return &launchpadServiceClient{cc}
 }
 
-func (c *launchpadServiceClient) UploadMetadata(ctx context.Context, in *UploadMetadataRequest, opts ...grpc.CallOption) (*UploadMetadataResponse, error) {
-	out := new(UploadMetadataResponse)
-	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/UploadMetadata", in, out, opts...)
+func (c *launchpadServiceClient) UpdateCollectionMetadatas(ctx context.Context, in *UpdateCollectionMetadatasRequest, opts ...grpc.CallOption) (*UpdateCollectionMetadatasResponse, error) {
+	out := new(UpdateCollectionMetadatasResponse)
+	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/UpdateCollectionMetadatas", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *launchpadServiceClient) CalculateMerkleRoot(ctx context.Context, in *CalculateMerkleRootRequest, opts ...grpc.CallOption) (*CalculateMerkleRootResponse, error) {
-	out := new(CalculateMerkleRootResponse)
-	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/CalculateMerkleRoot", in, out, opts...)
+func (c *launchpadServiceClient) CalculateCollectionMerkleRoot(ctx context.Context, in *CalculateCollectionMerkleRootRequest, opts ...grpc.CallOption) (*CalculateCollectionMerkleRootResponse, error) {
+	out := new(CalculateCollectionMerkleRootResponse)
+	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/CalculateCollectionMerkleRoot", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *launchpadServiceClient) UpdateCollectionWhitelists(ctx context.Context, in *UpdateCollectionWhitelistsRequest, opts ...grpc.CallOption) (*UpdateCollectionWhitelistsResponse, error) {
+	out := new(UpdateCollectionWhitelistsResponse)
+	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/UpdateCollectionWhitelists", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *launchpadServiceClient) TokenMetadata(ctx context.Context, in *TokenMetadataRequest, opts ...grpc.CallOption) (*TokenMetadataResponse, error) {
+	out := new(TokenMetadataResponse)
+	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/TokenMetadata", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *launchpadServiceClient) WhitelistedAddressMerkleInfo(ctx context.Context, in *WhitelistedAddressMerkleInfoRequest, opts ...grpc.CallOption) (*WhitelistedAddressMerkleInfoResponse, error) {
+	out := new(WhitelistedAddressMerkleInfoResponse)
+	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/WhitelistedAddressMerkleInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,8 +86,11 @@ func (c *launchpadServiceClient) CalculateMerkleRoot(ctx context.Context, in *Ca
 // All implementations must embed UnimplementedLaunchpadServiceServer
 // for forward compatibility
 type LaunchpadServiceServer interface {
-	UploadMetadata(context.Context, *UploadMetadataRequest) (*UploadMetadataResponse, error)
-	CalculateMerkleRoot(context.Context, *CalculateMerkleRootRequest) (*CalculateMerkleRootResponse, error)
+	UpdateCollectionMetadatas(context.Context, *UpdateCollectionMetadatasRequest) (*UpdateCollectionMetadatasResponse, error)
+	CalculateCollectionMerkleRoot(context.Context, *CalculateCollectionMerkleRootRequest) (*CalculateCollectionMerkleRootResponse, error)
+	UpdateCollectionWhitelists(context.Context, *UpdateCollectionWhitelistsRequest) (*UpdateCollectionWhitelistsResponse, error)
+	TokenMetadata(context.Context, *TokenMetadataRequest) (*TokenMetadataResponse, error)
+	WhitelistedAddressMerkleInfo(context.Context, *WhitelistedAddressMerkleInfoRequest) (*WhitelistedAddressMerkleInfoResponse, error)
 	mustEmbedUnimplementedLaunchpadServiceServer()
 }
 
@@ -65,11 +98,20 @@ type LaunchpadServiceServer interface {
 type UnimplementedLaunchpadServiceServer struct {
 }
 
-func (UnimplementedLaunchpadServiceServer) UploadMetadata(context.Context, *UploadMetadataRequest) (*UploadMetadataResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UploadMetadata not implemented")
+func (UnimplementedLaunchpadServiceServer) UpdateCollectionMetadatas(context.Context, *UpdateCollectionMetadatasRequest) (*UpdateCollectionMetadatasResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCollectionMetadatas not implemented")
 }
-func (UnimplementedLaunchpadServiceServer) CalculateMerkleRoot(context.Context, *CalculateMerkleRootRequest) (*CalculateMerkleRootResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CalculateMerkleRoot not implemented")
+func (UnimplementedLaunchpadServiceServer) CalculateCollectionMerkleRoot(context.Context, *CalculateCollectionMerkleRootRequest) (*CalculateCollectionMerkleRootResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CalculateCollectionMerkleRoot not implemented")
+}
+func (UnimplementedLaunchpadServiceServer) UpdateCollectionWhitelists(context.Context, *UpdateCollectionWhitelistsRequest) (*UpdateCollectionWhitelistsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCollectionWhitelists not implemented")
+}
+func (UnimplementedLaunchpadServiceServer) TokenMetadata(context.Context, *TokenMetadataRequest) (*TokenMetadataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TokenMetadata not implemented")
+}
+func (UnimplementedLaunchpadServiceServer) WhitelistedAddressMerkleInfo(context.Context, *WhitelistedAddressMerkleInfoRequest) (*WhitelistedAddressMerkleInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WhitelistedAddressMerkleInfo not implemented")
 }
 func (UnimplementedLaunchpadServiceServer) mustEmbedUnimplementedLaunchpadServiceServer() {}
 
@@ -84,38 +126,92 @@ func RegisterLaunchpadServiceServer(s grpc.ServiceRegistrar, srv LaunchpadServic
 	s.RegisterService(&LaunchpadService_ServiceDesc, srv)
 }
 
-func _LaunchpadService_UploadMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UploadMetadataRequest)
+func _LaunchpadService_UpdateCollectionMetadatas_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCollectionMetadatasRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LaunchpadServiceServer).UploadMetadata(ctx, in)
+		return srv.(LaunchpadServiceServer).UpdateCollectionMetadatas(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/launchpad.v1.LaunchpadService/UploadMetadata",
+		FullMethod: "/launchpad.v1.LaunchpadService/UpdateCollectionMetadatas",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LaunchpadServiceServer).UploadMetadata(ctx, req.(*UploadMetadataRequest))
+		return srv.(LaunchpadServiceServer).UpdateCollectionMetadatas(ctx, req.(*UpdateCollectionMetadatasRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LaunchpadService_CalculateMerkleRoot_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CalculateMerkleRootRequest)
+func _LaunchpadService_CalculateCollectionMerkleRoot_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CalculateCollectionMerkleRootRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LaunchpadServiceServer).CalculateMerkleRoot(ctx, in)
+		return srv.(LaunchpadServiceServer).CalculateCollectionMerkleRoot(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/launchpad.v1.LaunchpadService/CalculateMerkleRoot",
+		FullMethod: "/launchpad.v1.LaunchpadService/CalculateCollectionMerkleRoot",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LaunchpadServiceServer).CalculateMerkleRoot(ctx, req.(*CalculateMerkleRootRequest))
+		return srv.(LaunchpadServiceServer).CalculateCollectionMerkleRoot(ctx, req.(*CalculateCollectionMerkleRootRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LaunchpadService_UpdateCollectionWhitelists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCollectionWhitelistsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LaunchpadServiceServer).UpdateCollectionWhitelists(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/launchpad.v1.LaunchpadService/UpdateCollectionWhitelists",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LaunchpadServiceServer).UpdateCollectionWhitelists(ctx, req.(*UpdateCollectionWhitelistsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LaunchpadService_TokenMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TokenMetadataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LaunchpadServiceServer).TokenMetadata(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/launchpad.v1.LaunchpadService/TokenMetadata",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LaunchpadServiceServer).TokenMetadata(ctx, req.(*TokenMetadataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LaunchpadService_WhitelistedAddressMerkleInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WhitelistedAddressMerkleInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LaunchpadServiceServer).WhitelistedAddressMerkleInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/launchpad.v1.LaunchpadService/WhitelistedAddressMerkleInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LaunchpadServiceServer).WhitelistedAddressMerkleInfo(ctx, req.(*WhitelistedAddressMerkleInfoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -128,12 +224,24 @@ var LaunchpadService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*LaunchpadServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "UploadMetadata",
-			Handler:    _LaunchpadService_UploadMetadata_Handler,
+			MethodName: "UpdateCollectionMetadatas",
+			Handler:    _LaunchpadService_UpdateCollectionMetadatas_Handler,
 		},
 		{
-			MethodName: "CalculateMerkleRoot",
-			Handler:    _LaunchpadService_CalculateMerkleRoot_Handler,
+			MethodName: "CalculateCollectionMerkleRoot",
+			Handler:    _LaunchpadService_CalculateCollectionMerkleRoot_Handler,
+		},
+		{
+			MethodName: "UpdateCollectionWhitelists",
+			Handler:    _LaunchpadService_UpdateCollectionWhitelists_Handler,
+		},
+		{
+			MethodName: "TokenMetadata",
+			Handler:    _LaunchpadService_TokenMetadata_Handler,
+		},
+		{
+			MethodName: "WhitelistedAddressMerkleInfo",
+			Handler:    _LaunchpadService_WhitelistedAddressMerkleInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
