@@ -45,11 +45,37 @@ TODO
 
 ### Frontend
 
-TODO
+#### Language: Typescript
+
+We use a strict [Typescript](https://github.com/pmndrs/zustand) configuration and try to enforce type-safety. Typescript very easily allows to bypass it's type-safety mechanism so it requires some discipline from the developer.
+
+#### Framework: Expo
+
+We use [the Expo framework](https://docs.expo.dev/) to support Web, Android, iOS, Windows, Macos and Linux with the same codebase.
+This uses [react-native](https://reactnative.dev/docs/getting-started) to support mobile and [react-native-web](https://necolas.github.io/react-native-web/docs/) for web. The desktop build uses electron and react-native-web.
+
+#### Data fetching: react-query
+
+We use [react-query](https://tanstack.com/query/v4/docs/framework/react/overview) to fetch data. It provides call-deduplication and configurable caching.
+You can use it for optimistic mutations too but in most mutations case an async callback is enough.
+
+#### App state: redux
+
+We use [redux](https://redux-toolkit.js.org/) for global app state, it supports persistence. We're considering switching to [zustand](https://github.com/pmndrs/zustand).
 
 ### Backend
 
-TODO
+#### Language: golang
+
+We use golang to write the backend services, it's not a strict rule but if you have the choice, use golang.
+
+#### Decentralized service: teritorid
+
+The main service is the Teritori blockchain daemon, [teritorid](https://github.com/TERITORI/teritori-chain).
+
+#### Protocol for centralized services: GRPC
+
+We use [GRPC](https://grpc.io/) as communication protocol for the centralized APIs. The models and endpoints definition are written in [protobuf](https://protobuf.dev/), this allows to generate types, servers and clients in any language. The definition are in the [api folder](api). The backend servers in the [go/pkg folder](go/pkg). The clients in the [js/packages/api folder](js/packages/api).
 
 ## Patterns
 
