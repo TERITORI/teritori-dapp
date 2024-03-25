@@ -35,6 +35,7 @@ const config = {
           "To store user preferences and settings locally for a customized user experience.",
         NSPrivacyAccessedAPICategorySystemBootTime:
           "To optimize app launch times and resource utilization based on system boot information.",
+        UIBackgroundModes: ["audio"],
       },
     },
     android: {
@@ -44,6 +45,7 @@ const config = {
       },
       package: "com.teritori",
       versionCode: "6",
+      permissions: ["WAKE_LOCK"],
     },
     web: {
       bundler: "metro",

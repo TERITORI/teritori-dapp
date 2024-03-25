@@ -3,6 +3,8 @@ import {
   Audio,
   AVPlaybackStatus,
   AVPlaybackStatusSuccess,
+  InterruptionModeAndroid,
+  InterruptionModeIOS,
   Video,
 } from "expo-av";
 import { shuffle } from "lodash";
@@ -75,6 +77,14 @@ const defaultValue: DefaultValue = {
 };
 
 const MediaPlayerContext = createContext(defaultValue);
+
+const AudioModes = {
+  playsInSilentModeIOS: true,
+  staysActiveInBackground: true,
+  interruptionModeIOS: InterruptionModeIOS.DuckOthers,
+  interruptionModeAndroid: InterruptionModeAndroid.DuckOthers,
+  shouldDuckAndroid: true,
+};
 
 export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
   children,
@@ -151,7 +161,7 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
           await av?.stopAsync();
           await av?.unloadAsync();
         }
-        await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+        await Audio.setAudioModeAsync(AudioModes);
         await createdSound?.playAsync();
         setAv(createdSound);
         setIsMediaPlayerOpen(true);
@@ -177,7 +187,7 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
         stopOldAv(av);
       }
 
-      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+      await Audio.setAudioModeAsync(AudioModes);
       setAv(video);
       await video.playAsync();
     } catch (e: any) {
