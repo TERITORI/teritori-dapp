@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -7,6 +7,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
+import { LatLng } from "react-native-leaflet-view";
 
 import location from "../../../../../assets/icons/location.svg";
 import {
@@ -22,12 +23,18 @@ import { TextInputOutsideLabel } from "../../../inputs/TextInputOutsideLabel";
 
 import { useDebounce } from "@/hooks/useDebounce";
 
+interface NominatimSearchResult {
+  lat: string;
+  lon: string;
+  display_name: string;
+}
+
 interface TAddressSearchProps {
-  addressPlaceHolder: any;
-  address: any;
-  setAddress: any;
-  setLocationSelected: any;
-  setAddressPlaceHolder: any;
+  addressPlaceHolder: string;
+  address: string;
+  setAddress: Dispatch<SetStateAction<string>>;
+  setLocationSelected: Dispatch<SetStateAction<LatLng>>;
+  setAddressPlaceHolder: Dispatch<SetStateAction<string>>;
 }
 
 export const AddressSearch: React.FC<TAddressSearchProps> = ({
@@ -37,7 +44,7 @@ export const AddressSearch: React.FC<TAddressSearchProps> = ({
   setLocationSelected,
   setAddressPlaceHolder,
 }) => {
-  const [results, setResults] = useState<any>([]);
+  const [results, setResults] = useState<NominatimSearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const debouncedAddress = useDebounce(address, 1500);
@@ -52,7 +59,7 @@ export const AddressSearch: React.FC<TAddressSearchProps> = ({
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      const data = await response.json();
+      const data: NominatimSearchResult[] = await response.json();
       setIsLoading(false);
       return data;
     },
@@ -104,12 +111,15 @@ export const AddressSearch: React.FC<TAddressSearchProps> = ({
             <ActivityIndicator size="large" color={secondaryColor} />
           ) : (
             <ScrollView showsVerticalScrollIndicator>
-              {results.map((item: any, index: number) => (
+              {results.map((item, index) => (
                 <TouchableOpacity
                   key={index.toString()}
                   style={[locationItem]}
                   onPress={() => {
-                    setLocationSelected([item.lat, item.lon]);
+                    setLocationSelected([
+                      parseFloat(item.lat),
+                      parseFloat(item.lon),
+                    ]);
                     setAddressPlaceHolder(item.display_name);
                     setAddress("");
                     setResults([]);

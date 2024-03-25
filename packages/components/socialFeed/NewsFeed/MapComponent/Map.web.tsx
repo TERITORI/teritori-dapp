@@ -2,10 +2,9 @@ import "./styles.css";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { LatLng } from "react-native-leaflet-view";
 
-type Tlocation = [number, number];
-
-const MapWeb = ({ locationSelected }: { locationSelected: Tlocation }) => {
+const MapWeb = ({ locationSelected }: { locationSelected: LatLng }) => {
   const customIcon = new Icon({
     iconUrl: "https://i.ibb.co/gSnJ70P/location.png", //load image from web; not work with local image
     iconSize: [32, 32],

@@ -1,7 +1,6 @@
 import { LatLng, LeafletView } from "react-native-leaflet-view";
-type Tlocation = [number, number];
 
-const MapMobile = ({ locationSelected }: { locationSelected: Tlocation }) => {
+const MapMobile = ({ locationSelected }: { locationSelected: LatLng }) => {
   const DEFAULT_COORDINATE: LatLng = {
     lat: locationSelected[0],
     lng: locationSelected[1],

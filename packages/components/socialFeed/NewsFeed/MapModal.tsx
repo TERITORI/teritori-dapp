@@ -1,5 +1,12 @@
-import React, { Suspense, lazy, useState } from "react";
+import React, {
+  Suspense,
+  lazy,
+  useState,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import { Platform, View, ViewStyle } from "react-native";
+import { LatLng } from "react-native-leaflet-view";
 
 import { AddressSearch } from "./MapComponent/AddressSearch";
 import { MapDescriptionInput } from "./MapComponent/MapDescriptionInput";
@@ -26,8 +33,8 @@ interface TMapModalProps {
   visible: boolean;
   onClose: () => void;
   handleSubmit?: () => void;
-  locationSelected: [number, number];
-  setLocationSelected: (newLocationSelected: [number, number]) => void;
+  locationSelected: LatLng;
+  setLocationSelected: Dispatch<SetStateAction<LatLng>>;
   description: string;
   setDescription: (newDescription: string) => void;
 }

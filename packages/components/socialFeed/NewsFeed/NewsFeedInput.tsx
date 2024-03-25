@@ -7,6 +7,7 @@ import {
   ViewStyle,
   useWindowDimensions,
 } from "react-native";
+import { LatLng } from "react-native-leaflet-view";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
@@ -148,7 +149,7 @@ export const NewsFeedInput = React.forwardRef<
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
     const [premium, setPremium] = useState(false);
     const [isShowMap, setShowMap] = useState(false);
-    const [locationSelected, setLocationSelected] = useState<[number, number]>([
+    const [locationSelected, setLocationSelected] = useState<LatLng>([
       48.8566, 2.3522,
     ]);
     const [description, setDescription] = useState("");
