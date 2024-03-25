@@ -29,8 +29,9 @@ export default function MobileModal({
   children,
   innerContainerOptions = { style: {}, height: "85%" },
 }: MobileModalProps) {
-  const { style } = innerContainerOptions;
+  const { style, height } = innerContainerOptions;
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const keyboardAvoidingStyle = height ? { height } : { flex: 0.7 };
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardWillShow", () => {
@@ -73,12 +74,14 @@ export default function MobileModal({
         <KeyboardAvoiding
           behavior="padding"
           keyboardVerticalOffset={keyboardVisible ? 150 : 0}
-          style={{
-            flex: 0.7,
-            borderTopLeftRadius: 24,
-            borderTopRightRadius: 24,
-            position: "relative",
-          }}
+          style={[
+            {
+              borderTopLeftRadius: 24,
+              borderTopRightRadius: 24,
+              position: "relative",
+            },
+            keyboardAvoidingStyle,
+          ]}
         >
           <LinearGradient
             start={{ x: 0, y: 0 }}
@@ -100,7 +103,6 @@ export default function MobileModal({
             style={[
               {
                 flex: 1,
-
                 position: "relative",
               },
               style ?? {},
