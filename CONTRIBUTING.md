@@ -39,9 +39,22 @@ You can deny the review if the PR does not pass CI
 
 ## Technology overview
 
-### Web3 vs Web2
+### Web2 vs Web3
 
-TODO
+#### Technical Infrastructure 🏗️
+
+- **Web2:** Centralized servers and cloud providers like AWS, Google Cloud, and Azure dominate, offering scalable and reliable infrastructure but centralizing control.
+- **Web3:** Utilizes decentralized networks, such as blockchain and peer-to-peer protocols, distributing data across numerous nodes to ensure security, privacy, and resistance to censorship.
+
+#### Authentication 🔑
+
+- **Web2:** Relies on centralized authentication services (e.g., OAuth, OpenID) where users log in using credentials managed by a third party.
+- **Web3:** Employs asymmetric cryptography, allowing users to control their identities through cryptographic keys, enhancing security and privacy.
+
+#### Data Storage and Management 📦
+
+- **Web2:** Centralized databases and object storage services (e.g., Amazon S3) are prevalent, with data controlled by service providers.
+- **Web3:** Decentralized storage solutions (e.g., IPFS, Filecoin) allow data to be distributed across the network, reducing reliance on central entities and improving data sovereignty.
 
 ### Frontend
 
